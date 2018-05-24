@@ -1,0 +1,12 @@
+{
+  "name": "Invader ItemSet for Chosen",
+  "items": [
+    434988,
+    435000,
+    435012,
+    435024,
+    435036,
+    435048
+  ],
+  "query": "select * from war_world.item_infos where name like '%invader%' and career = 4096"
+}

@@ -1,0 +1,31 @@
+﻿{
+  "entry": 444,
+  "set-name": "SetName",
+  "class-restriction": "ClassName",
+  "set-bonus": [
+    {
+      "type": "Wounds",
+      "value": 12
+    },
+    {
+      "type": "Wounds",
+      "value": 12
+    }
+  ],
+  "items": {
+    "entry": 123,
+    "name": "ItemName",
+    "min-level": 40,
+    "min-rank": 40,
+    "item-bonus": [
+      {
+        "type": "Wounds",
+        "value": 12
+      },
+      {
+        "type": "Wounds",
+        "value": 12
+      }
+    ]
+  }
+}

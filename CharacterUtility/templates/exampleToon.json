@@ -1,0 +1,58 @@
+{
+  "name": "ExampleName",
+  "surname": "Something",
+  "level": 40,
+  "renownrank": 80,
+  "class": "Chosen",
+  "race": 7,
+  "realm": 1,
+  "modelId": 51,
+  "sex": 1,
+  "realmId" :  1, 
+  "itemset": "itemset-invader-chosen.json",
+  "items": [
+
+  ],
+  "description": "Hello World"
+}
+
+// Realm
+// 1: Order
+// 2: Dest
+
+//Races
+//1	Dwarf
+//2	Orc
+//3	Goblin
+//4	High Elves
+//5	Dark Elves
+//6	Empire
+//7	Chaos
+
+
+//Careers
+
+//Archmage
+//Black Guard
+//Black Orc
+//Bright Wizard
+//Choppa
+//Chosen
+//Disciple Of Khaine
+//Engineer
+//Iron Breaker
+//Knight of the Blazing Sun
+//Magus
+//Marauder
+//Rune Priest
+//Shadow Warrior
+//Shaman
+//Slayer
+//Sorceress
+//Squig Herder
+//Sword Master
+//Warrior Priest
+//White Lion
+//Witch Elf
+//Witch Hunter
+//Zealot

@@ -1,0 +1,491 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1552992A-BA62-4639-AB53-6FA36E5B4AB1}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WorldServer</RootNamespace>
+    <AssemblyName>WorldServer</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>WorldServer.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.5.3\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="API\ApiPacket.cs" />
+    <Compile Include="API\CircularBuffer.cs" />
+    <Compile Include="API\Client.cs" />
+    <Compile Include="API\Opcodes.cs" />
+    <Compile Include="API\Packet.cs" />
+    <Compile Include="API\Protocol.cs" />
+    <Compile Include="API\Server.cs" />
+    <Compile Include="Configs\WorldConfigs.cs" />
+    <Compile Include="Managers\Commands\AbilityCommands.cs" />
+    <Compile Include="Managers\Commands\AddCommands.cs" />
+    <Compile Include="Managers\Commands\CampaignCommands.cs" />
+    <Compile Include="Managers\Commands\ChapterCommands.cs" />
+    <Compile Include="Managers\Commands\CheckCommands.cs" />
+    <Compile Include="Managers\Commands\TicketCommands.cs" />
+    <Compile Include="Managers\Commands\CommandDeclarations.cs" />
+    <Compile Include="Managers\Commands\CommandsBuilder.cs" />
+    <Compile Include="Managers\Commands\DatabaseCommands.cs" />
+    <Compile Include="Managers\Commands\EquipCommands.cs" />
+    <Compile Include="Managers\Commands\EventCommands.cs" />
+    <Compile Include="Managers\Commands\GmCommandHandler.cs" />
+    <Compile Include="Managers\Commands\GMUtils.cs" />
+    <Compile Include="Managers\Commands\GmMgr.cs" />
+    <Compile Include="Managers\Commands\GoCommands.cs" />
+    <Compile Include="Managers\Commands\InstanceCommands.cs" />
+    <Compile Include="Managers\Commands\ModifyCommands.cs" />
+    <Compile Include="Managers\Commands\MountCommands.cs" />
+    <Compile Include="Managers\Commands\NpcCommands.cs" />
+    <Compile Include="Managers\Commands\PqCommands.cs" />
+    <Compile Include="Managers\Commands\RespawnCommands.cs" />
+    <Compile Include="Managers\Commands\RespecCommands.cs" />
+    <Compile Include="Managers\Commands\ScenarioCommands.cs" />
+    <Compile Include="Managers\Commands\SearchCommands.cs" />
+    <Compile Include="Managers\Commands\SettingCommands.cs" />
+    <Compile Include="Managers\Commands\StatesCommand.cs" />
+    <Compile Include="Managers\Commands\TeleportCommands.cs" />
+    <Compile Include="Managers\Commands\WaypointCommands.cs" />
+    <Compile Include="NetWork\Handler\SiegeHandlers.cs" />
+    <Compile Include="Services\ServiceBase.cs" />
+    <Compile Include="Services\World\AnnounceService.cs" />
+    <Compile Include="Services\World\CellSpawnService.cs" />
+    <Compile Include="Services\World\BagService.cs" />
+    <Compile Include="Services\World\ChapterService.cs" />
+    <Compile Include="Services\World\CreatureService.cs" />
+    <Compile Include="Services\World\DyeService.cs" />
+    <Compile Include="Services\World\GameObjectService.cs" />
+    <Compile Include="Services\World\GuildService.cs" />
+    <Compile Include="Services\World\ItemService.cs" />
+    <Compile Include="Services\World\BattlefrontService.cs" />
+    <Compile Include="Services\World\InstanceService.cs" />
+    <Compile Include="Services\World\PQuestService.cs" />
+    <Compile Include="Services\World\QuestService.cs" />
+    <Compile Include="Services\World\RallyPointService.cs" />
+    <Compile Include="Services\World\ScenarioService.cs" />
+    <Compile Include="Services\World\TokService.cs" />
+    <Compile Include="Services\World\VendorService.cs" />
+    <Compile Include="Services\World\WaypointService.cs" />
+    <Compile Include="Services\World\XpRenownService.cs" />
+    <Compile Include="Services\World\ZoneService.cs" />
+    <Compile Include="World\Abilities\AbilityModifierInvoker.cs" />
+    <Compile Include="World\Abilities\Buffs\SpecialBuffs\BouncingBuff.cs" />
+    <Compile Include="World\Abilities\Buffs\SpecialBuffs\AuraBuff.cs" />
+    <Compile Include="World\Abilities\Buffs\SpecialBuffs\InteractionBuff.cs" />
+    <Compile Include="World\Abilities\Buffs\SpecialBuffs\HoldObjectBuff.cs" />
+    <Compile Include="World\Abilities\Buffs\SpecialBuffs\DarkProtectorBuff.cs" />
+    <Compile Include="World\Abilities\Buffs\SpecialBuffs\OYGAuraBuff.cs" />
+    <Compile Include="World\Abilities\Buffs\SpecialBuffs\OathFriendBuff.cs" />
+    <Compile Include="World\Abilities\Buffs\SpecialBuffs\OYGBuff.cs" />
+    <Compile Include="World\Abilities\Buffs\SpecialBuffs\RationBuff.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_Blackguard.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_Ironbreaker.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_BWSorc.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_EngineerMagus.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_KnightChosen.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_WHWE.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_SquigHerder.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_AMShaman.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_WPDoK.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_WhiteLion.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_RPZealot.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_ShadowWarrior.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_Marauder.cs" />
+    <Compile Include="World\Abilities\Components\AbilityConstants.cs" />
+    <Compile Include="World\Abilities\Components\AbilityEnums.cs" />
+    <Compile Include="World\Abilities\Components\AbilityInfo.cs" />
+    <Compile Include="World\Abilities\Components\BuffCommandInfo.cs" />
+    <Compile Include="World\Abilities\Components\BuffInfo.cs" />
+    <Compile Include="World\Abilities\Components\AbilityCommandInfo.cs" />
+    <Compile Include="World\Abilities\Components\AbilityDamageInfo.cs" />
+    <Compile Include="World\Abilities\Console\ReloadScriptsCommand.cs" />
+    <Compile Include="Managers\AreaMapMgr.cs" />
+    <Compile Include="Managers\CharMgr.cs" />
+    <Compile Include="Managers\ClientFileMgr.cs" />
+    <Compile Include="Managers\CommandMgr.cs" />
+    <Compile Include="Managers\Commands\BaseCommands.cs" />
+    <Compile Include="Managers\LootsMgr.cs" />
+    <Compile Include="Managers\ScriptsManager.cs" />
+    <Compile Include="NetWork\Handler\AuctionHandlers.cs" />
+    <Compile Include="NetWork\Handler\AuthentificationHandlers.cs" />
+    <Compile Include="NetWork\Handler\CharacterHandlers.cs" />
+    <Compile Include="NetWork\Handler\ClientDatas.cs" />
+    <Compile Include="NetWork\Handler\CombatHandlers.cs" />
+    <Compile Include="NetWork\Handler\GroupHandlers.cs" />
+    <Compile Include="NetWork\Handler\GuildHandlers.cs" />
+    <Compile Include="NetWork\Handler\HelpHandlers.cs" />
+    <Compile Include="NetWork\Handler\InterfaceHandlers.cs" />
+    <Compile Include="NetWork\Handler\InventoryHandlers.cs" />
+    <Compile Include="NetWork\Handler\MailHandlers.cs" />
+    <Compile Include="NetWork\Handler\MovementHandlers.cs" />
+    <Compile Include="NetWork\Handler\QuestHandlers.cs" />
+    <Compile Include="NetWork\Handler\ScenarioHandlers.cs" />
+    <Compile Include="NetWork\Handler\SocialHandlers.cs" />
+    <Compile Include="NetWork\Handler\TchatHandlers.cs" />
+    <Compile Include="NetWork\Handler\F_UNK1.cs" />
+    <Compile Include="World\Abilities\AbilityInterface.cs" />
+    <Compile Include="World\Abilities\AbilityMgr.cs" />
+    <Compile Include="World\Abilities\AbilityEffectInvoker.cs" />
+    <Compile Include="World\Abilities\Buffs\BuffEffectInvoker.cs" />
+    <Compile Include="World\Abilities\Buffs\LinkedBuffInteraction.cs" />
+    <Compile Include="World\Abilities\Buffs\SpecialBuffs\GuardBuff.cs" />
+    <Compile Include="World\Abilities\Buffs\NewBuff.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_SlayerChoppa.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_BlackOrc.cs" />
+    <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_Swordmaster.cs" />
+    <Compile Include="World\Abilities\NewChannelHandler.cs" />
+    <Compile Include="World\Abilities\AbilityProcessor.cs" />
+    <Compile Include="World\Abilities\CombatManager.cs" />
+    <Compile Include="World\Abilities\Objects\GroundTarget.cs" />
+    <Compile Include="World\Abilities\Objects\BuffHostObject.cs" />
+    <Compile Include="World\Abilities\Objects\LandMine.cs" />
+    <Compile Include="World\Abilities\RunicBlessingsHandler.cs" />
+    <Compile Include="World\AI\ABrain.cs" />
+    <Compile Include="World\AI\AgressiveBrain.cs" />
+    <Compile Include="World\AI\DummyBrain.cs" />
+    <Compile Include="World\AI\GuardBrain.cs" />
+    <Compile Include="World\AI\PassiveBrain.cs" />
+    <Compile Include="World\Auction\AuctionHouse.cs" />
+    <Compile Include="World\Battlefronts\AAOTracker.cs" />
+    <Compile Include="World\Battlefronts\BattlefrontConstants.cs" />
+    <Compile Include="World\Battlefronts\BattlefrontList.cs" />
+    <Compile Include="World\Battlefronts\ContributionTracker.cs" />
+    <Compile Include="World\Battlefronts\IBattlefront.cs" />
+    <Compile Include="World\Battlefronts\Legacy\ProximityBattlefront.cs" />
+    <Compile Include="World\Battlefronts\Legacy\ProximityProgressingBattlefront.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\AAOTracker.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\BattlefrontConstants.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\IBattlefrontManager.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\LowerTierRacialPairManager.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\NewDawnBattlefieldObjective.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\NewDawnBattlefront.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\LowerTierBattlefrontManager.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\RacialPairIdentifier.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\RacialPairManager.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\RVRRewardManager.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\UpperTierBattlefrontManager.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\INewDawnBattlefront.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\UpperTierRacialPairManager.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\NewDawnCommunications.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\ProximityEngine.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\RacialPair.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\RacialPairHelper.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\VictoryPoint.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\VictoryPointProgress.cs" />
+    <Compile Include="World\Battlefronts\Objectives\IBattlefrontFlag.cs" />
+    <Compile Include="World\Battlefronts\Objectives\ObjectivePortalsMgr.cs" />
+    <Compile Include="World\Battlefronts\Objectives\PortalToObjective.cs" />
+    <Compile Include="World\Battlefronts\Objectives\PortalBase.cs" />
+    <Compile Include="World\Battlefronts\Objectives\PortalToWarcamp.cs" />
+    <Compile Include="World\Battlefronts\Objectives\ProximityFlag.cs" />
+    <Compile Include="World\Battlefronts\Objectives\QuadrantHistoryTracker.cs" />
+    <Compile Include="World\Battlefronts\Objectives\StateFlags.cs" />
+    <Compile Include="World\Battlefronts\RationTracker.cs" />
+    <Compile Include="World\Battlefronts\T1Battlefront.cs" />
+    <Compile Include="World\Battlefronts\RoRBattlefront.cs" />
+    <Compile Include="World\Battlefronts\Legacy\Battlefront.cs" />
+    <Compile Include="World\Battlefronts\Legacy\BattlefrontObjective.cs" />
+    <Compile Include="World\Battlefronts\Keeps\Keep.cs" />
+    <Compile Include="World\Battlefronts\Legacy\BattlefrontFlag.cs" />
+    <Compile Include="World\Abilities\Buffs\BuffInterface.cs" />
+    <Compile Include="World\Battlefronts\Keeps\KeepDoor.cs" />
+    <Compile Include="World\Battlefronts\Keeps\KeepNpcCreature.cs" />
+    <Compile Include="World\Battlefronts\Legacy\ProgressingBattlefront.cs" />
+    <Compile Include="World\Battlefronts\Legacy\ResourceBox.cs" />
+    <Compile Include="World\Instances\TOTVL.cs" />
+    <Compile Include="World\Scripting\BasicScript.cs" />
+    <Compile Include="World\Scripting\BehaviorLib.cs" />
+    <Compile Include="World\Scripting\Dungeons\AltdorfSewers\AltdorfSewersWingIII.cs" />
+    <Compile Include="World\Scripting\Dungeons\Gunbad\Arathremia.cs" />
+    <Compile Include="World\Scripting\Dungeons\Gunbad\ArdtaFeed.cs" />
+    <Compile Include="World\Scripting\Dungeons\Gunbad\BasicGunbad.cs" />
+    <Compile Include="World\Scripting\Dungeons\Gunbad\BroodMotherSzikalax.cs" />
+    <Compile Include="World\Scripting\Dungeons\Gunbad\ElderKizzig.cs" />
+    <Compile Include="World\Scripting\Dungeons\Gunbad\FoulMoufdaUngry.cs" />
+    <Compile Include="World\Scripting\Dungeons\Gunbad\GarrolaththePoxbearer.cs" />
+    <Compile Include="World\Scripting\Dungeons\Gunbad\GlompDaSquigMasta.cs" />
+    <Compile Include="World\Scripting\Dungeons\Gunbad\GriblikdaStinka.cs" />
+    <Compile Include="World\Scripting\Dungeons\Gunbad\HeraldofSolithex.cs" />
+    <Compile Include="World\Scripting\Dungeons\Gunbad\Logazor.cs" />
+    <Compile Include="World\Scripting\Dungeons\Gunbad\MastaMixa.cs" />
+    <Compile Include="World\Scripting\Dungeons\Gunbad\MastaWranglaGlix.cs" />
+    <Compile Include="World\Scripting\Dungeons\Gunbad\RedeyeBigOaf.cs" />
+    <Compile Include="World\Scripting\Dungeons\Gunbad\BlazAndVelkyrrix.cs" />
+    <Compile Include="World\Scripting\Dungeons\Gunbad\WightLordSolithex.cs" />
+    <Compile Include="World\Scripting\Events\Halloween\BasicHalloween.cs" />
+    <Compile Include="World\Scripting\Lairs\Beastlords\BasicBeastlord.cs" />
+    <Compile Include="World\Scripting\Lairs\Beastlords\AllBeastlords.cs" />
+    <Compile Include="World\Scripting\PublicQuests\BasicPublicQuest.cs" />
+    <Compile Include="World\Scripting\PublicQuests\Destro\DeathstoneQuarry.cs" />
+    <Compile Include="World\Scripting\PublicQuests\Order\RavenHostVanguard.cs" />
+    <Compile Include="World\Scripting\Quests\BasicQuest.cs" />
+    <Compile Include="World\Scripting\Quests\GrimmenhagenBurning.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="World\Scripting\Quests\HeartsAndMinds.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="World\WorldSettings\WorldSettings.cs" />
+    <Compile Include="World\Instances\Instance.cs" />
+    <Compile Include="World\Instances\InstanceDoor.cs" />
+    <Compile Include="World\Instances\InstanceMgr.cs" />
+    <Compile Include="World\Instances\InstanceObject.cs" />
+    <Compile Include="World\Interfaces\CombatInterface\CombatInterface_NPC.cs" />
+    <Compile Include="World\Interfaces\CombatInterface\CombatInterface_Pet.cs" />
+    <Compile Include="World\Interfaces\CombatInterface\CombatInterface_Player.cs" />
+    <Compile Include="World\Interfaces\CraftingApoInterface.cs" />
+    <Compile Include="World\Interfaces\GatheringInterface.cs" />
+    <Compile Include="World\Interfaces\CraftingTalInterface.cs" />
+    <Compile Include="World\Interfaces\SiegeInterface.cs" />
+    <Compile Include="World\Interfaces\TacticsInterface.cs" />
+    <Compile Include="World\Interfaces\CultivationInterface.cs" />
+    <Compile Include="World\Interfaces\RenownInterface.cs" />
+    <Compile Include="World\Map\HotSpot.cs" />
+    <Compile Include="World\Guild\Guild.cs" />
+    <Compile Include="World\Interfaces\AIInterface.cs" />
+    <Compile Include="World\Interfaces\BaseInterface.cs" />
+    <Compile Include="World\Interfaces\CombatInterface.cs" />
+    <Compile Include="World\Interfaces\EventInterface.cs" />
+    <Compile Include="World\Interfaces\GroupInterface.cs" />
+    <Compile Include="World\Interfaces\ObjectStateInterface.cs" />
+    <Compile Include="World\Interfaces\GuildInterface.cs" />
+    <Compile Include="World\Interfaces\MailInterface.cs" />
+    <Compile Include="World\Interfaces\ScenarioInterface.cs" />
+    <Compile Include="World\Interfaces\ScriptsInterface.cs" />
+    <Compile Include="World\Objects\Instances\InstanceBossSpawn.cs" />
+    <Compile Include="World\Objects\Instances\InstanceSpawn.cs" />
+    <Compile Include="World\Objects\PublicQuests\ContributionInfo.cs" />
+    <Compile Include="World\Objects\PublicQuests\PQuestCreature.cs" />
+    <Compile Include="World\Objects\PublicQuests\PQuestGameObject.cs" />
+    <Compile Include="World\Objects\PublicQuests\PQuestObjective.cs" />
+    <Compile Include="World\Objects\PublicQuests\PQuestStage.cs" />
+    <Compile Include="World\Objects\RvRStructure.cs" />
+    <Compile Include="World\Objects\Siege.cs" />
+    <Compile Include="World\Objects\ScenarioGroupsHandler.cs" />
+    <Compile Include="World\Objects\WarbandHandler.cs" />
+    <Compile Include="World\Objects\Group.cs" />
+    <Compile Include="World\Objects\Item.cs" />
+    <Compile Include="World\Interfaces\ItemsInterface.cs" />
+    <Compile Include="World\Interfaces\MovementInterface.cs" />
+    <Compile Include="World\Interfaces\QuestsInterface.cs" />
+    <Compile Include="World\Interfaces\SocialInterface.cs" />
+    <Compile Include="World\Interfaces\StatsInterface.cs" />
+    <Compile Include="World\Interfaces\TokInterface.cs" />
+    <Compile Include="World\Map\CellMgr.cs" />
+    <Compile Include="World\Map\RegionMgr.cs" />
+    <Compile Include="Managers\WorldMgr.cs" />
+    <Compile Include="World\Map\ZoneMgr.cs" />
+    <Compile Include="NetWork\Crypt\RC4Crypto.cs" />
+    <Compile Include="NetWork\GameClient.cs" />
+    <Compile Include="NetWork\Opcodes.cs" />
+    <Compile Include="NetWork\TCPServer.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="World\Objects\ChapterObject.cs" />
+    <Compile Include="World\Objects\Creature.cs" />
+    <Compile Include="World\Objects\GameObject.cs" />
+    <Compile Include="World\Objects\Object.cs" />
+    <Compile Include="World\Objects\Party.cs" />
+    <Compile Include="World\Objects\GoldChest.cs" />
+    <Compile Include="World\Objects\Standard.cs" />
+    <Compile Include="World\Objects\Pet.cs" />
+    <Compile Include="World\Objects\Player.cs" />
+    <Compile Include="World\Objects\PublicQuests\PublicQuest.cs" />
+    <Compile Include="World\Objects\Unit.cs" />
+    <Compile Include="World\Positions\IPoint2D.cs" />
+    <Compile Include="World\Positions\IPoint3D.cs" />
+    <Compile Include="World\Positions\Point2D.cs" />
+    <Compile Include="World\Positions\Point3D.cs" />
+    <Compile Include="World\Scenarios\CaptureTheFlagScenario.cs" />
+    <Compile Include="World\Scenarios\DominationScenarioPush.cs" />
+    <Compile Include="World\Scenarios\Objects\Bomb.cs" />
+    <Compile Include="World\Scenarios\Objects\ClickFlag.cs" />
+    <Compile Include="World\Scenarios\DominationScenarioKhaine.cs" />
+    <Compile Include="World\Scenarios\DominationScenarioPushCenter.cs" />
+    <Compile Include="World\Scenarios\DominationScenarioEC.cs" />
+    <Compile Include="World\Scenarios\Objects\CapturePoint.cs" />
+    <Compile Include="World\Scenarios\DominationScenario.cs" />
+    <Compile Include="World\Scenarios\DoubleDominationScenario.cs" />
+    <Compile Include="World\Scenarios\DropBombScenario.cs" />
+    <Compile Include="World\Scenarios\DropPartScenario.cs" />
+    <Compile Include="World\Scenarios\FlagDominationScenario.cs" />
+    <Compile Include="World\Scenarios\Objects\GunPowder.cs" />
+    <Compile Include="World\Scenarios\Objects\Part.cs" />
+    <Compile Include="World\Scenarios\Objects\ProximityFlag.cs" />
+    <Compile Include="World\Scenarios\Objects\HoldObject.cs" />
+    <Compile Include="World\Scenarios\MurderballScenario.cs" />
+    <Compile Include="World\Scenarios\Scenario.cs" />
+    <Compile Include="World\Scenarios\ScenarioMgr.cs" />
+    <Compile Include="World\Scripting\AGeneralScript.cs" />
+    <Compile Include="World\Scripting\Creatures\WorldMountsScript.cs" />
+    <Compile Include="World\Scripting\Events\BrightWizardCollegeReopen\BalthasarGelt.cs" />
+    <Compile Include="World\Scripting\Events\BrightWizardCollegeReopen\ThyrusGormann.cs" />
+    <Compile Include="World\Scripting\GameObject\Door.cs" />
+    <Compile Include="World\Scripting\GameObject\MailBoxScript.cs" />
+    <Compile Include="World\Scripting\GeneralScriptAttributes.cs" />
+    <Compile Include="World\Scripting\Items\PotionScript.cs" />
+    <Compile Include="World\Scripting\PacketSenderScript.cs" />
+    <Compile Include="World\WorldSettings\WorldSettingsMgr.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{8bc085cd-429b-41d1-bb47-9621fd32ec23}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FrameWork\FrameWork.csproj">
+      <Project>{d5c98f3a-d5d2-4aed-a5a7-06d2de095095}</Project>
+      <Name>FrameWork</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WarZoneLib\WarZoneLib.csproj">
+      <Project>{b8c7c7a3-e302-4251-a3b1-44f905cf2aa6}</Project>
+      <Name>WarZoneLib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Configs\LocalDevelopment\Account.xml" />
+    <Content Include="Configs\LocalDevelopment\Launcher.xml" />
+    <Content Include="Configs\LocalDevelopment\Lobby.xml" />
+    <Content Include="Configs\LocalDevelopment\World.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if not exist $(TargetDir)\PatcherFilesDirectory mkdir $(TargetDir)\PatcherFilesDirectory
+if not exist $(TargetDir)\TempFilesDirectory mkdir $(TargetDir)\TempFilesDirectory
+if not exist $(TargetDir)\Abilities mkdir $(TargetDir)\Abilities
+</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

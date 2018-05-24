@@ -1,0 +1,20 @@
+﻿namespace WorldServer.World.Battlefronts.NewDawn
+{
+    public enum RacialPairIdentifier
+    {
+        RACIAL_PAIR_T1_EMP_CHAOS,
+        RACIAL_PAIR_T2_EMP_CHAOS,
+        RACIAL_PAIR_T3_EMP_CHAOS,
+        RACIAL_PAIR_T4_EMP_CHAOS,
+        RACIAL_PAIR_T1_DWARF_GREENSKIN,
+        RACIAL_PAIR_T2_DWARF_GREENSKIN,
+        RACIAL_PAIR_T3_DWARF_GREENSKIN,
+        RACIAL_PAIR_T4_DWARF_GREENSKIN,
+        RACIAL_PAIR_T1_ELF_DARKELF,
+        RACIAL_PAIR_T2_ELF_DARKELF,
+        RACIAL_PAIR_T3_ELF_DARKELF,
+        RACIAL_PAIR_T4_ELF_DARKELF,
+        RACIAL_PAIR_T5_LOTD
+
+    }
+}
