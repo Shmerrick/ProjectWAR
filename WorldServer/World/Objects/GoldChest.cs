@@ -653,14 +653,14 @@ namespace WorldServer
         {
             switch (menu.Menu)
             {
-                case 15: // Fermeture du loot
+                case 15: // Close the loot
                     return;
 
-                case 13: // Récupération de tous les items
+                case 13: // Retrieve all items
                     TakeAll(player);
                     break;
 
-                case 12: // Récupération d'un item
+                case 12: // Retrieve an item
                     TakeLoot(player);
                     break;
             }
