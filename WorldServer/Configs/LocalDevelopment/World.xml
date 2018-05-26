@@ -58,7 +58,7 @@
   <DiscoverAll>false</DiscoverAll>
   <OpenRvR>true</OpenRvR>
   <PreloadAllCharacters>true</PreloadAllCharacters>
-  <Motd>Welcome to NewDawn!</Motd>
+  <Motd>Welcome WAR: Apocalypse</Motd>
   <RegionOcclusionFolder>los/</RegionOcclusionFolder>
   <ZoneFolder>zones/</ZoneFolder>
   <EnableAPI>true</EnableAPI>

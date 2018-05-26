@@ -1271,7 +1271,7 @@ namespace WorldServer
             SendPacket(channelPacket);
         }
 
-        private static string _motd = "\nWelcome to Warhammer Online\n"
+        private static string _motd = "\nWelcome to WAR: Apocalypse\n"
             + "Rank Cap is: " + Program.Config.RankCap
             + "\nRenown Cap is: " + Program.Config.RenownCap
             + "\nThe server rules are available in-game by entering the command '.rules'.";

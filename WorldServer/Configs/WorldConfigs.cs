@@ -43,7 +43,7 @@ namespace WorldServer
 
         // Loading
         public bool PreloadAllCharacters = true;
-        public string Motd = "Welcome to NewDawn!";
+        public string Motd = "Welcome to WAR: Apocalypse";
         public string RegionOcclusionFolder = "los/";
         public string ZoneFolder = "zones/";
 
