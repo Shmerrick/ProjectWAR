@@ -44,15 +44,12 @@
     </Reference>
     <Reference Include="Evolve, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Evolve.1.8.0\lib\net451\Evolve.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.DotNet.PlatformAbstractions, Version=1.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Evolve.1.8.0\lib\net451\Microsoft.DotNet.PlatformAbstractions.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Extensions.DependencyModel, Version=1.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Evolve.1.8.0\lib\net451\Microsoft.Extensions.DependencyModel.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="MySql.Data">
       <HintPath>..\FrameWork\Database\MySql.Data.dll</HintPath>
@@ -63,7 +60,6 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Evolve.1.8.0\lib\net451\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.5.5\lib\net45\NLog.dll</HintPath>
