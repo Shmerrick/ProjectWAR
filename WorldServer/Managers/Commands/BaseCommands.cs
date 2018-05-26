@@ -2187,27 +2187,6 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        public static bool TokFix(Player plr, ref List<string> values)
-        {
-            plr.SendClientMessage("This command is disabled.", SystemData.ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-
-            /*Dictionary<uint, List<Character_tok_kills>> charToksKills = CharMgr.Database.SelectAllObjects<Character_tok_kills>().Where(x => x.CharacterId == plr.CharacterId).GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
-
-            plr.TokInterface.FixTokItems();
-
-            foreach (Character_tok_kills kill in charToksKills[plr.CharacterId])
-            {
-                if (kill != null)
-                { 
-                    Tok_Bestary TB = WorldMgr.Database.SelectObject<Tok_Bestary>("bestary_id = " + kill.NPCEntry);
-                    if (TB != null)
-                        plr.TokInterface.CheckTokKills(TB.Creature_Sub_Type,kill.Count);
-                }
-            }*/
-
-            return true;
-        }
-
         public static bool RvRStatus(Player plr, ref List<string> values)
         {
             string s = "";
