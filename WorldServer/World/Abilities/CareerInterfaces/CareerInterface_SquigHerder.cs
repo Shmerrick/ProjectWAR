@@ -151,23 +151,5 @@ namespace WorldServer
         {
             return EArchetype.ARCHETYPE_DPS;
         }
-
-        public override void NotifyInitialized()
-        {
-            myPlayer.SendClientMessage("This class has modifications. Enter the command \".ab changelist\" to see the changelist.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-        }
-
-        public override void DisplayChangeList()
-        {
-            myPlayer.SendClientMessage("Global changes to Squig Herder:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-            myPlayer.SendClientMessage("+ The Horned Squig's Strength improves based on your Ballistic Skill rather than your Strength.");
-
-            myPlayer.SendClientMessage("Path of Big Shootin':", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-            myPlayer.SendClientMessage("- Finish 'em off gains its additional damage modifier if the target has 30% of their HPs or below (up from 20%).");
-            myPlayer.SendClientMessage("- Reduced increased AP cost of the Aimin' Quickly tactic to 13 (down from 20).");
-
-            myPlayer.SendClientMessage("Path of Quick Shootin':", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-            myPlayer.SendClientMessage("- Buffed Behind Ya to mirror Flanking Shot, damage increased and the critical chance of the ability is increased by the percentage of life lost on the enemy target.");
-        }
     }
 }

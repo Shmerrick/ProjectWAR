@@ -226,26 +226,5 @@ namespace WorldServer
         {
             return EArchetype.ARCHETYPE_DPS;
         }
-
-        public override void NotifyInitialized()
-        {
-            if (myPlayer.Info.CareerLine == (int)CareerLine.CAREERLINE_BRIGHT_WIZARD)
-                myPlayer.SendClientMessage("This class has modifications. Enter the command \".ab changelist\" to see the changelist.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-        }
-
-        public override void DisplayChangeList()
-        {
-            if (myPlayer.Info.CareerLine == (int)CareerLine.CAREERLINE_BRIGHT_WIZARD)
-            {
-                myPlayer.SendClientMessage("Global changes to Bright Wizard:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                myPlayer.SendClientMessage("- Tactic - Flashfire - Set this effect can now only happen once every 6 seconds.");
-                
-            }
-
-            else
-            {
-                
-            }
-        }
     }
 }

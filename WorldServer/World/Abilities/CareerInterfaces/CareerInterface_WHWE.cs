@@ -134,35 +134,12 @@ namespace WorldServer
             return EArchetype.ARCHETYPE_DPS;
         }
 
-        public override void NotifyInitialized()
-        {
-            myPlayer.SendClientMessage("This class has modifications. Enter the command \".ab changelist\" to see the changelist.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-        }
-
         public override byte GetCurrentResourceLevelForClass(byte which)
         {
             if (which > 0)
                 return (byte)(_careerResource / ((which * 10f)));
 
             return _careerResource;
-        }
-
-        public override void DisplayChangeList()
-        {
-            if (myPlayer.Info.CareerLine == (int)CareerLine.CAREERLINE_WITCH_HUNTER)
-            {
-                myPlayer.SendClientMessage("Global changes to Witch Hunter:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                myPlayer.SendClientMessage("+ You may change Bullets while Incognito.");
-                myPlayer.SendClientMessage("+ Ability - Dragon Gun now knocks down the primary target for 3s.");
-            }
-
-            else
-            {
-                myPlayer.SendClientMessage("Global changes to Witch Elf:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                myPlayer.SendClientMessage("+ You may change Kisses while Shadow Prowling.");
-                myPlayer.SendClientMessage("+ Ability - Sacrificial Stab now grants the Blessing of Shriek of Death for 10s, this Blessing increases the players Auto Attack speed by 10% per resource point spent.");
-                myPlayer.SendClientMessage("+ Ability - Sacrificial Stab now casts the Ailment Hindering Cut upon the hit target, this Ailment snares the player affected by it by 3% per resource point spent.");
-            }
         }
     }
 }

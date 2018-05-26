@@ -204,35 +204,5 @@ namespace WorldServer
         {
             return EArchetype.ARCHETYPE_DPS;
         }
-
-        public override void NotifyInitialized()
-        {
-            myPlayer.SendClientMessage("This class has modifications. Enter the command \".ab changelist\" to see the changelist.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-        }
-
-        public override void DisplayChangeList()
-        {
-            myPlayer.SendClientMessage("Global changes to White Lion:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-            myPlayer.SendClientMessage("- Pounce's cooldown is 10 seconds, and it will grant a 3 second 35% speed boost to the White Lion when they land. This boost will be removed if the White Lion uses any ability.");
-            myPlayer.SendClientMessage("- AOE splash damage no longer lands on Lions, AOEs can be anchored off them and they will take damage from an AOE if they are the primary target but they wont melt from splash any more so they will be more survivable UNLESS attacked directly where they will be weaker unless significant investment is place into the Guardian tree.");
-            myPlayer.SendClientMessage("- Pet Wounds, Toughness, Weaponskill, Strength and Initiative are being reduced.");
-            myPlayer.SendClientMessage("- You can build these stats back into the Lion pet with points in the various trees, the more points you have in the appropriate trees the more stats your Lion gains. The higher points in the tree give more to your Lion pet than the lower points do so investment brings benefits past the abilities in them.");
-            myPlayer.SendClientMessage("- Points in Path of the Hunter grants Strength and Weaponskill to your Lion.");
-            myPlayer.SendClientMessage("- Points in Path of the Axeman grants Toughness and Initiative to your Lion.");
-            myPlayer.SendClientMessage("- Points in the Guardian Tree grants Wounds, Toughness, Weaponskill, Strength and Initiative.");
-
-            myPlayer.SendClientMessage("Path of the Axeman:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-            myPlayer.SendClientMessage("- Trained to Threaten - This ability now boosts the Lion pets Toughness and Wounds by 50% of the players Strength gained from items. The stance allows for the augmentation of the 'harassment' pet using dps main stat (as he should be dealing damage) and should prevent a full guardian built and spec'd WL from swapping to this stance and making an uber tank pet.");
-
-            myPlayer.SendClientMessage("Path of the Guardian:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-            myPlayer.SendClientMessage("- Trained to Kill - This ability now boosts the Lion pets Strength by the Wounds the player has from items and Weaponskill from the Toughness that a player has from items. The stance now correctly benefits those who play support to the Lion pet as opposed to giving the most benefit to those who go full on dps.");
-            myPlayer.SendClientMessage("- 3 point tactic - Tactic - Furious Mending - Heal value increased.");
-            myPlayer.SendClientMessage("- 5 point ability - Echoing Roar.");
-            myPlayer.SendClientMessage("- 7 point tactic - Baited Trap - The armour increase additional from this tactic will now stack with potions.");
-            myPlayer.SendClientMessage("- 9 point ability - Brutal Pounce.");
-            myPlayer.SendClientMessage("- 11 point tactic - Stalker - This tactic now grants your Lion an increase in their Strength and Toughness (160 each stat at lvl 40).");
-            myPlayer.SendClientMessage("- 13 point ability - Leonine Frenzy - Internal Cooldown on damage procs reduced to 1s, scales off the players Wounds.");
-            myPlayer.SendClientMessage("- 15 point ability - Rampage.");
-        }
     }
 }

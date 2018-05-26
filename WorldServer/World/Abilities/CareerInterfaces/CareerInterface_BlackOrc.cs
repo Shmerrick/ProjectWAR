@@ -75,21 +75,5 @@ namespace WorldServer
         {
             return EArchetype.ARCHETYPE_Tank;
         }
-
-        public override void NotifyInitialized()
-        {
-            myPlayer.SendClientMessage("This class has modifications. Enter the command \".ab changelist\" to see the changelist.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-        }
-
-        public override void DisplayChangeList()
-        {
-            myPlayer.SendClientMessage("Global changes to Black Orc:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-            myPlayer.SendClientMessage("+ Down Ya Go is available at 9 points in Da' Boss, swapped with Can't Hit Me!");
-
-            myPlayer.SendClientMessage("Path of Da' Boss:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-            myPlayer.SendClientMessage("- Big Brawlin' Tactic now adds a 10s CD to Big Swing when slotted giving the disorient and snare effect a 50% uptime.");
-            myPlayer.SendClientMessage("- Rock 'Ard now places the absorb component on groupmates within 80ft.");
-            myPlayer.SendClientMessage("- WAAAAAAAGH! now places the buff Red Frenzy on groupmates within 30ft granting an Autoattack speed increase of 20% for 5s.");
-        }
     }
 }

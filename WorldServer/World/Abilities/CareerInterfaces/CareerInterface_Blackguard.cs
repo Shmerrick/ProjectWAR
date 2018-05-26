@@ -230,29 +230,5 @@ namespace WorldServer
         {
             return EArchetype.ARCHETYPE_Tank;
         }
-
-        public override void NotifyInitialized()
-        {
-            myPlayer.SendClientMessage("This class has modifications. Enter the command \".ab changelist\" to see the changelist.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-        }
-
-        public override void DisplayChangeList()
-        {
-            myPlayer.SendClientMessage("Global changes to Blackguard:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-
-            myPlayer.SendClientMessage("The Path of Loathing mastery tree has been reordered:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-            myPlayer.SendClientMessage("13pts: Force of Fury");
-            myPlayer.SendClientMessage("Force of Fury has its armor buff component now stacking with everything and of course goes on your Dark Protector as well");
-            myPlayer.SendClientMessage("11pts: Feeding on Pain");
-            myPlayer.SendClientMessage("9pts: Wave of Scorn");
-            myPlayer.SendClientMessage("7pts: Terrifying Foe");
-            myPlayer.SendClientMessage("5pts: None Shall Pass");
-            myPlayer.SendClientMessage("Force of Fury will now also be placed upon your Dark Protector if they are within 50ft.");
-            myPlayer.SendClientMessage("3pts: Anger Drives Me");
-
-            myPlayer.SendClientMessage("The Path of Malice mastery tree has been reordered:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-            myPlayer.SendClientMessage("9pts: NEW ability Get Down!");
-            myPlayer.SendClientMessage("5pts: Enraged Beating");
-        }
     }
 }

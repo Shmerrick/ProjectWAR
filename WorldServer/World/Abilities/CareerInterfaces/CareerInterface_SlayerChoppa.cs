@@ -323,29 +323,5 @@ namespace WorldServer
         {
             return EArchetype.ARCHETYPE_DPS;
         }
-
-        public override void NotifyInitialized()
-        {
-            myPlayer.SendClientMessage("This class has modifications. Enter the command \".ab changelist\" to see the changelist.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-        }
-
-        public override void DisplayChangeList()
-        {
-            if (myPlayer.Info.CareerLine == (int)CareerLine.CAREERLINE_SLAYER)
-            {
-                myPlayer.SendClientMessage("Global changes to Slayer:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                myPlayer.SendClientMessage("+ Spellbreaker attempts to remove a shield before it inflicts damage instead of after.");
-                myPlayer.SendClientMessage("- Inevitable Doom is cleansable as an Ailment.");
-                myPlayer.SendClientMessage("- Reckless Gamble triggers on every hit of AoE attacks.");
-                myPlayer.SendClientMessage("- Removed the negative effect from the tactics Breaking Point and Strong Finish for 2h Slayer/Choppa.");
-            }
-
-            else
-            {
-                myPlayer.SendClientMessage("Global changes to Choppa:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                myPlayer.SendClientMessage("- Hurtin' LastUpdatedTime triggers on every hit of AoE attacks.");
-                myPlayer.SendClientMessage("- Removed the negative effect from the tactics Breaking Point and Strong Finish for 2h Slayer/Choppa.");
-            }
-        }
     }
 }

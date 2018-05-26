@@ -2106,7 +2106,7 @@ namespace WorldServer.Managers.Commands
 
         public static bool SendRules(Player plr, ref List<string> values)
         {
-            plr.SendClientMessage("===================================== Warhammer Online  =====================================", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+            plr.SendClientMessage("===================================== WAR: Apocalypse  =====================================", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
             plr.SendClientMessage("These rules are a short version of the ones written on the forum and serve as a warning.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
             plr.SendClientMessage("Because of this, our staff are under no obligation whatsoever to issue a warning before taking action against any player.\n", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
@@ -2171,13 +2171,6 @@ namespace WorldServer.Managers.Commands
                     plr.SendClientMessage("General changes:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     plr.SendClientMessage("Resurrection Illness now applies a 25% stat debuff (down from 50%, still excluding Wounds)", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     break;
-                /*case "exmode":
-                    plr.SendClientMessage("=====================================\nRoR Features: Experimental Mode\n=====================================\n", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                    plr.SendClientMessage("Some careers have Experimental Modes, which contain more major class reworks.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                    plr.SendClientMessage("Careers with Experimental Mode notify you of this when you log them in.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                    plr.SendClientMessage("You may enter the command .ab ex to activate or deactivate such experimental modes.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                    plr.SendClientMessage("Doing so will also show a list of changes.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                    break;*/
                 case "items":
                     plr.SendClientMessage("=====================================\nRoR Features: New Items and Sets\n=====================================\n", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     plr.SendClientMessage("Most item sets have had their stats adjusted to be more favorable.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);

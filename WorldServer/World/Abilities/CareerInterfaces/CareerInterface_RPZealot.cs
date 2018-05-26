@@ -265,35 +265,5 @@ namespace WorldServer
 
             return EArchetype.ARCHETYPE_Healer;
         }
-
-        public override void NotifyInitialized()
-        {
-            myPlayer.SendClientMessage("This class has modifications. Enter the command \".ab changelist\" to see the changelist.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-        }
-
-        public override void DisplayChangeList()
-        {
-            if (myPlayer.Info.CareerLine == (int)CareerLine.CAREERLINE_RUNE_PRIEST)
-            {
-                myPlayer.SendClientMessage("Global changes to Runepriest:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                myPlayer.SendClientMessage("+ Rune of Mending can be cast while moving.");
-                myPlayer.SendClientMessage("Path of Valaya changes:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                myPlayer.SendClientMessage("+ Rune of Fate cooldown reduced to 20s.");
-                myPlayer.SendClientMessage("Path of Grimnir changes:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                myPlayer.SendClientMessage("+ Rune of battle cooldown cut to 30s ability is unaffected by cooldown reduction abilities.");
-                myPlayer.SendClientMessage("Path of Grungni changes:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                myPlayer.SendClientMessage("+ Rune of Nullification duration increased to 10s.");
-            }
-
-            else
-            {
-                myPlayer.SendClientMessage("Global changes to Zealot:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                myPlayer.SendClientMessage("+ Dark Medicine can be cast while moving.");
-                myPlayer.SendClientMessage("Path of Witchcraft changes:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                myPlayer.SendClientMessage("+ Storm of Ravens now carries a snare component.");
-                myPlayer.SendClientMessage("+ Mirror of Madness now causes damage to the recipient on DIRECT HEAL RECEIVED instead of heal cast, damage occurs once per second max.");
-                myPlayer.SendClientMessage("+ Mirror of Madness can be cast on the move.");
-            }
-        }
     }
 }

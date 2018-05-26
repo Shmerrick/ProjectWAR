@@ -75,18 +75,5 @@ namespace WorldServer
         {
             return EArchetype.ARCHETYPE_Tank;
         }
-
-        public override void NotifyInitialized()
-        {
-            myPlayer.SendClientMessage("This class has modifications. Enter the command \".ab changelist\" to see the changelist.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-        }
-
-        public override void DisplayChangeList()
-        {
-            myPlayer.SendClientMessage("Global changes to Swordmaster:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-            myPlayer.SendClientMessage("- Crashing Wave is available at 9 points in Vaul, swapped with Crushing Advance.");
-            myPlayer.SendClientMessage("- Phoenix's Wing no longer requires a target, and inflicts Spirit damage.");
-            myPlayer.SendClientMessage("- Protection of Hoeth now places the absorb component on groupmates within 50ft");
-        }
     }
 }

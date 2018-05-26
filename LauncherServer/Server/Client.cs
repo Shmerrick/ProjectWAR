@@ -395,26 +395,6 @@ namespace AuthenticationServer.Server
         public void RequestAddonFile(string Addon, uint hash)
         {
             return;
-            /*
-            //verify that server can give all requested assets
-            var foundAsset = Program.AcctMgr.GetPatcherFiles().Where(e => e.CRC32 == hash).FirstOrDefault();
-
-            //if asset is not found in database, of server does not have local file
-            if (foundAsset == null || string.IsNullOrEmpty(foundAsset.Name) || !File.Exists(Path.Combine("F:\\Code\\ReturnOfReckoning\\Client\\Data\\", foundAsset.Name)))
-            {
-                PacketOut Out = new PacketOut((byte)Opcodes.LCR_DATA_NOT_FOUND);
-                Out.WriteUInt32((uint)Archive.NONE);
-                Out.WriteUInt64(hash);
-                SendTCPRaw(Out);
-                return;
-            }
-
-            if (foundAsset.GmLevel == 0 || Utils.HasFlag((int)foundAsset.GmLevel, _account.GmLevel))
-            {
-                QueueFileUpload(foundAsset, FileCompressionMode.WHOLE);
-                ProcessFileUploadQueue();
-            }
-            */
         }
 
         public void OnSetPatchNotes(string notes)
