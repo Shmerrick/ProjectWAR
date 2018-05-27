@@ -109,7 +109,7 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetNextTier(1) == 1);
             Assert.IsTrue(manager.GetNextTier(2) == 3);
             Assert.IsTrue(manager.GetNextTier(3) == 4);
-            Assert.IsTrue(manager.GetNextTier(4) == 5);
+            Assert.IsTrue(manager.GetNextTier(4) == 2);
             Assert.IsTrue(manager.GetNextTier(99) == 2);
             Assert.IsTrue(manager.GetNextTier(5) == 2);
         }
@@ -156,7 +156,7 @@ namespace WorldServer.Test
             Assert.IsTrue(RacialPairHelper.Equals(newPairing, RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 4)));
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         public void AdvancePairing_T4_to_T5()
         {
             manager.SetActivePairing(RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 4));
@@ -184,12 +184,25 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetActivePairing().Tier == 5);
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         public void AdvancePairing_T5_to_T2()
         {
             manager.SetActivePairing(RacialPairManager.GetByPair(Pairing.PAIRING_LAND_OF_THE_DEAD, 5));
             Assert.IsTrue(manager.GetActivePairing().Pairing == GameData.Pairing.PAIRING_LAND_OF_THE_DEAD);
             Assert.IsTrue(manager.GetActivePairing().Tier == 5);
+
+            var newPairing = manager.AdvancePairing();
+
+            Assert.IsNotNull(newPairing);
+            Assert.IsTrue(newPairing.Tier == 2);
+
+        }
+
+        public void AdvancePairing_T4_to_T2()
+        {
+            manager.SetActivePairing(RacialPairManager.GetByPair(Pairing.PAIRING_ELVES_DARKELVES, 4));
+            Assert.IsTrue(manager.GetActivePairing().Pairing == GameData.Pairing.PAIRING_ELVES_DARKELVES);
+            Assert.IsTrue(manager.GetActivePairing().Tier == 4);
 
             var newPairing = manager.AdvancePairing();
 

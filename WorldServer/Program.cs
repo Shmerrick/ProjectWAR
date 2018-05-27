@@ -66,6 +66,7 @@ namespace WorldServer
             WorldMgr.StartingPairing = WorldMgr.Database.ExecuteQueryInt("SELECT FLOOR(RAND() * 3) + 1");
 
 
+
             WorldMgr.UpperTierBattlefrontManager = new UpperTierBattlefrontManager();
             WorldMgr.UpperTierBattlefrontManager.SetInitialPairActive();
             Log.Texte("Creating Upper Tier Battlefront Manager", WorldMgr.UpperTierBattlefrontManager.GetActivePairing().PairingName, ConsoleColor.Cyan);
