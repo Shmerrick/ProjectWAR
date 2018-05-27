@@ -170,7 +170,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// </summary>
         public void GenerateLockReward(Player plr)
         {
-            var mailItem = new MailItem(208405, 5);
+            var mailItem = new MailItem(208400, 5);
 
             Character_mail mail = new Character_mail
             {
@@ -181,7 +181,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
                 SendDate = (uint)TCPManager.GetTimeStamp(),
                 Title = "RVR Reward",
                 Content = "You won an RVR Loot Bag",
-                Money = 500,
+                Money = 5000,
                 Opened = false
             };
 
