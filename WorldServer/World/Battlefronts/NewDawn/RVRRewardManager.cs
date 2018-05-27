@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using WorldServer.Services.World;
 
 namespace WorldServer.World.Battlefronts.NewDawn
 {
@@ -54,9 +56,36 @@ namespace WorldServer.World.Battlefronts.NewDawn
             _logger.Debug($"Delayed Rewards for Player : {killer.Name}  - {xprEntry.ToString()}");
         }
 
+        /// <summary>
+        /// Return an additional scale value based upon who is holding a BO and how many players from either side are close.
+        /// </summary>
+        /// <param name="owningRealm"></param>
+        /// <param name="closeOrderCount"></param>
+        /// <param name="closeDestroCount"></param>
+        /// <returns></returns>
+        public float CalculateObjectiveRewardScale(Realms owningRealm, short closeOrderCount, short closeDestroCount)
+        {
+            if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
+            {
+                return Math.Abs(1 - (closeOrderCount / closeDestroCount));
+            }
+            else
+            {
+
+                if (owningRealm == Realms.REALMS_REALM_ORDER)
+                {
+                    return Math.Abs(1 - (closeDestroCount / closeOrderCount));
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
         //public float CalculateRewardScaleMultipler(int closeOrderCount, int closeDestroCount, Realms owningRealm, int secureProgress, float objectiveRewardScaler)
         //{
-          
+
 
         //    int playerCount;
         //    ushort influenceId;
@@ -115,7 +144,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
                 player.AddXp(Math.Max((uint)baseXp, 1), false, false);
                 player.AddRenown(Math.Max((uint)baseRp, 1), false, RewardType.ObjectiveCapture, objectiveName);
                 player.AddInfluence(influenceId, Math.Max((ushort)baseInf, (ushort)1));
-                
+
                 // TODO
                 //Battlefront.AddContribution(player, (uint)baseRp);
 
@@ -133,6 +162,33 @@ namespace WorldServer.World.Battlefronts.NewDawn
                 _logger.Debug($"Dest-held {objectiveName} +2 Dest -1 Order");
                 return new VictoryPoint(-1, 2);
             }
+        }
+
+
+        /// <summary>
+        /// For this player, calculate and send lock rewards
+        /// </summary>
+        public void GenerateLockReward(Player plr)
+        {
+            var mailItem = new MailItem(208405, 5);
+
+            Character_mail mail = new Character_mail
+            {
+                Guid = CharMgr.GenerateMailGuid(),
+                CharacterId = plr.CharacterId,
+                SenderName = "RVR Reward System",
+                ReceiverName = plr.Name,
+                SendDate = (uint)TCPManager.GetTimeStamp(),
+                Title = "RVR Reward",
+                Content = "You won an RVR Loot Bag",
+                Money = 500,
+                Opened = false
+            };
+
+            // Attach the mail item to the mail.
+            mail.Items.Add(mailItem);
+
+            CharMgr.AddMail(mail);
         }
     }
 }

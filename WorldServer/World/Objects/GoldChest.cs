@@ -31,24 +31,24 @@ namespace WorldServer
     }
 
     public class GoldBag
+    {
+        public uint bagWon;
+        public byte careerLine;
+        public string plrName;
+        public GoldBag(uint OurBagWon, byte OurPlrCareer, string OurPlrName)
         {
-            public uint bagWon;
-            public byte careerLine;
-            public string plrName;
-            public GoldBag(uint OurBagWon, byte OurPlrCareer, string OurPlrName)
-            {
-                bagWon = OurBagWon;
-                careerLine = OurPlrCareer;
-                plrName = OurPlrName;
-            }
+            bagWon = OurBagWon;
+            careerLine = OurPlrCareer;
+            plrName = OurPlrName;
         }
+    }
 
-        public class GoldChest : GameObject
+    public class GoldChest : GameObject
     {
         const int white = 0, green = 1, blue = 2, purple = 3, gold = 4;
         double goldChance = 0.01, purpChance = 0.05, blueChance = 0.1, greenChance = 0.15, whiteChance = 0.2;
 
-        private readonly byte[] _bags = 
+        private readonly byte[] _bags =
         {
             1, // wht
             0, // grn
@@ -81,7 +81,7 @@ namespace WorldServer
             _publicQuestInfo = info;
             //Note: _amountOfBags is the original calulation for generating bags, testing math.min to see if this is the cause of the empty bags (clientside limitations)
             int _amountOfBags = (int)(players.Count * bagCountMod);
-            if(info.PQType == 2 && WorldMgr.WorldSettingsMgr.GetGenericSetting(16) == 0)
+            if (info.PQType == 2 && WorldMgr.WorldSettingsMgr.GetGenericSetting(16) == 0)
             {
                 foreach (ContributionInfo contrib in players.Values)
                 {
@@ -261,17 +261,17 @@ namespace WorldServer
             if (region != null && region.Bttlfront != null && region.Bttlfront is ProximityBattlefront)
             {
                 bf = region.Bttlfront as ProximityBattlefront;
-                if(bf != null)
+                if (bf != null)
                 {
                     aaoMult = Math.Abs(bf._againstAllOddsMult);
-                    if(aaoMult != 0)
+                    if (aaoMult != 0)
                         aaoRealm = bf._againstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
                 }
 
                 if (targPlayer != null)
                 {
                     //T2 16-19, use bonus rolls
-                    if(region.GetTier() == 2)
+                    if (region.GetTier() == 2)
                     {
                         if (targPlayer.Level < 16 || targPlayer.Level > 19)
                         {
@@ -347,7 +347,7 @@ namespace WorldServer
 
                 }
                 player.RandomBonus = (uint)(Math.Max(2, temporaryBonus));
-                if(targPlayer != null)
+                if (targPlayer != null)
                     targPlayer.SendClientMessage("You roll " + player.RandomBonus + ".", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
             }
             else
@@ -401,7 +401,7 @@ namespace WorldServer
                             {
                                 targPlayer.SendClientMessage("You have won a gold loot bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                             }
-                            
+
                             break;
                         }
                         else
@@ -425,7 +425,7 @@ namespace WorldServer
                             }
                             if (targPlayer != null)
                                 targPlayer.SendClientMessage("You have won a purple loot bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                            
+
                             break;
                         }
                         else
@@ -464,11 +464,11 @@ namespace WorldServer
                             _bags[green] = 1;
                             if (isBonusAppliedAndConsumed)
                             {
-                                if(targPlayer != null)
+                                if (targPlayer != null)
                                     targPlayer.SendClientMessage("Your green loot bag bonus roll has been consumed.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                                 pool.BagPool_Value = 0;
                             }
-                            if(targPlayer != null)
+                            if (targPlayer != null)
                                 targPlayer.SendClientMessage("You have won a green loot bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                             break;
                         }
@@ -481,7 +481,7 @@ namespace WorldServer
                     else if (pool.Bag_Type == 0)
                     {
                         _bags[white] = 1;
-                        if(targPlayer != null)
+                        if (targPlayer != null)
                             targPlayer.SendClientMessage("You have won a white loot bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                         pool.BagPool_Value = 0;
                     }
@@ -502,7 +502,7 @@ namespace WorldServer
             if (bagWon == 0)
             {
                 if (targPlayer != null)
-                   targPlayer.SendClientMessage("You have not contributed enough to this zone's capture, and thus have not rolled.");
+                    targPlayer.SendClientMessage("You have not contributed enough to this zone's capture, and thus have not rolled.");
                 return;
             }
             //Log.Success("Winner", player.PlayerName + " Realm: " + player.PlayerRealm + " Bag Type: " + bagWon.ToString() + "Roll: " + player.RandomBonus + " Contrib: " + player.BaseContribution + " Avg Contrib: " + acv + " BonusConsumed: " + player.ContributionBonus);
@@ -527,7 +527,7 @@ namespace WorldServer
                 if (plrInfo.OptOutType == 1)
                 {
                     plrInfo.RandomBonus = 1;
-                    if(targPlayer != null)
+                    if (targPlayer != null)
                         targPlayer.SendLocalizeString(_publicQuestInfo.Name, ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_PUBLIC_QUEST_OPT_OUT_APPLIED);
                 }
                 /*else if (_publicQuestInfo.PQType == 2 && (_publicQuestInfo.PQTier == 2 || _publicQuestInfo.PQTier == 3) && plrInfo.Player.Level > 30)
@@ -582,7 +582,7 @@ namespace WorldServer
 
             if (info == null)
             {
-                Log.Error("GoldChest", "NULL PQuest in Region "+region);
+                Log.Error("GoldChest", "NULL PQuest in Region " + region);
                 return;
             }
 
@@ -711,7 +711,7 @@ namespace WorldServer
         {
             GoldBag bag;
             byte bagtype = 0;
-            if(!_lootBags.TryGetValue(characterId, out bag))
+            if (!_lootBags.TryGetValue(characterId, out bag))
             {
                 Log.Error("Bag ERROR: ", "There is no bag for player of ID: " + characterId);
                 return null;
@@ -779,7 +779,7 @@ namespace WorldServer
                 }
 
                 items.Add(new Talisman(chestitem, (byte)(bagtype == 4 ? 5 : bagtype), 0, 0));
-                
+
             }
 
 
@@ -795,7 +795,7 @@ namespace WorldServer
                 if (_availableBags[i] > 0 && (!optOutGold || i != gold))
                 {
                     --_availableBags[i];
-                    return (byte) (i + 1);
+                    return (byte)(i + 1);
                 }
             }
 
@@ -861,7 +861,7 @@ namespace WorldServer
                 flags |= 8; // Attackable (stops invalid target errors)
 
             LootContainer loots = LootsMgr.GenerateLoot(this, plr, 1);
-            if ((loots != null && loots.IsLootable()) || (plr.QtsInterface.PublicQuest!= null) || plr.QtsInterface.GameObjectNeeded(Spawn.Entry) || Spawn.DoorId != 0)
+            if ((loots != null && loots.IsLootable()) || (plr.QtsInterface.PublicQuest != null) || plr.QtsInterface.GameObjectNeeded(Spawn.Entry) || Spawn.DoorId != 0)
             {
                 flags |= 4; // Interactable
             }
@@ -951,7 +951,7 @@ namespace WorldServer
             */
 
             targPlayer.SendPacket(Out);
-           // Info.SendCurrentStage(plr);
+            // Info.SendCurrentStage(plr);
         }  //  d4 c0 01
 
         public void PersonalScoreboard(ContributionInfo playerRoll, byte bagWon)

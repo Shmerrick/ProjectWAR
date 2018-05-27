@@ -13,19 +13,19 @@ namespace WorldServer.Test
         {
             var ndBO = new NewDawnBattlefieldObjective();
 
-            var objectiveMultiplierDest = ndBO.CalculateObjectiveRewardScale(Realms.REALMS_REALM_DESTRUCTION, 10, 10);
+            var objectiveMultiplierDest = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_DESTRUCTION, 10, 10);
 
             Assert.IsTrue(objectiveMultiplierDest == 0);
 
-            var objectiveMultiplierNeut = ndBO.CalculateObjectiveRewardScale(Realms.REALMS_REALM_NEUTRAL, 10, 10);
+            var objectiveMultiplierNeut = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_NEUTRAL, 10, 10);
 
             Assert.IsTrue(objectiveMultiplierNeut == 0);
 
-            var objectiveMultiplierOrder = ndBO.CalculateObjectiveRewardScale(Realms.REALMS_REALM_ORDER, 10, 10);
+            var objectiveMultiplierOrder = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_ORDER, 10, 10);
 
             Assert.IsTrue(objectiveMultiplierOrder == 0);
 
-            var objectiveMultiplierSomethingElse = ndBO.CalculateObjectiveRewardScale(Realms.REALMS_REALM_HOSTILE, 10, 10);
+            var objectiveMultiplierSomethingElse = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_HOSTILE, 10, 10);
 
             Assert.IsTrue(objectiveMultiplierSomethingElse == 0);
         }
@@ -35,7 +35,7 @@ namespace WorldServer.Test
         {
             var ndBO = new NewDawnBattlefieldObjective();
 
-            var objectiveMultiplierDest = ndBO.CalculateObjectiveRewardScale(Realms.REALMS_REALM_DESTRUCTION, 50, 5);
+            var objectiveMultiplierDest = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_DESTRUCTION, 50, 5);
 
             Assert.IsTrue(objectiveMultiplierDest == 9.0f);
         }
@@ -45,7 +45,7 @@ namespace WorldServer.Test
         {
             var ndBO = new NewDawnBattlefieldObjective();
 
-            var objectiveMultiplierOrder = ndBO.CalculateObjectiveRewardScale(Realms.REALMS_REALM_ORDER, 5, 50);
+            var objectiveMultiplierOrder = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_ORDER, 5, 50);
 
             Assert.IsTrue(objectiveMultiplierOrder == 9.0f);
         }
@@ -55,7 +55,7 @@ namespace WorldServer.Test
         {
             var ndBO = new NewDawnBattlefieldObjective();
 
-            var objectiveMultiplierDest = ndBO.CalculateObjectiveRewardScale(Realms.REALMS_REALM_DESTRUCTION, 5, 50);
+            var objectiveMultiplierDest = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_DESTRUCTION, 5, 50);
 
             Assert.IsTrue(objectiveMultiplierDest == 1f);
         }
@@ -65,7 +65,7 @@ namespace WorldServer.Test
         {
             var ndBO = new NewDawnBattlefieldObjective();
 
-            var objectiveMultiplierOrder = ndBO.CalculateObjectiveRewardScale(Realms.REALMS_REALM_ORDER, 50, 5);
+            var objectiveMultiplierOrder = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_ORDER, 50, 5);
 
             Assert.IsTrue(objectiveMultiplierOrder == 1f);
         }

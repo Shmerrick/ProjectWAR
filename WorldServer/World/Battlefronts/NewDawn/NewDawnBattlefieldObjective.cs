@@ -222,44 +222,20 @@ namespace WorldServer.World.Battlefronts.NewDawn
             //    _secureProgress,
             //    objectiveRewardScaler);
 
-            // Reward should be 
-            var objectiveRewardScaler = CalculateObjectiveRewardScale(OwningRealm, _closeOrderCount, _closeDestroCount);
+            
+            var objectiveRewardScaler = this.RewardManager.CalculateObjectiveRewardScale(OwningRealm, _closeOrderCount, _closeDestroCount);
 
+            // Scalers in this model are additive. 
 
             return this.RewardManager.RewardCaptureTick(_closePlayers, 
                 OwningRealm, 
                 _tier, 
                 Name,
-                objectiveRewardScaler+ pairingRewardScaler);
+                objectiveRewardScaler + pairingRewardScaler);
         }
 
 
-        /// <summary>
-        /// Return an additional scale value based upon who is holding a BO and how many players from either side are close.
-        /// </summary>
-        /// <param name="owningRealm"></param>
-        /// <param name="closeOrderCount"></param>
-        /// <param name="closeDestroCount"></param>
-        /// <returns></returns>
-        public float CalculateObjectiveRewardScale(Realms owningRealm, short closeOrderCount, short closeDestroCount)
-        {
-            if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
-            {
-                return Math.Abs(1 - (closeOrderCount / closeDestroCount));
-            }
-            else
-            {
-
-                if (owningRealm == Realms.REALMS_REALM_ORDER)
-                {
-                    return Math.Abs(1 - (closeDestroCount / closeOrderCount));
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-        }
+       
 
 
         public bool FlagActive()

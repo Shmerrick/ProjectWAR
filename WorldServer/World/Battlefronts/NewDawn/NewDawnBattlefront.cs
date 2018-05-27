@@ -41,6 +41,8 @@ namespace WorldServer.World.Battlefronts.NewDawn
         private volatile int _destroCount = 0;
 
 
+
+
         #region Against All Odds
 
         private readonly HashSet<Player> _playersInLakeSet = new HashSet<Player>();
@@ -59,7 +61,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
         private AAOTracker _aaoTracker;
         private ContributionTracker _contributionTracker;
-
+        private RVRRewardManager _rewardManager;
         /// <summary>
         /// List of existing keeps in Battlefront.
         /// </summary>
@@ -98,6 +100,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
             _contributionTracker = new ContributionTracker(Tier, regionMgr);
             _aaoTracker = new AAOTracker();
+            _rewardManager = new RVRRewardManager();
 
             _EvtInterface.AddEvent(UpdateBattlefrontScalers, 12000, 0); // 120000
             _EvtInterface.AddEvent(UpdateVictoryPoints, 6000, 0);
@@ -397,7 +400,14 @@ namespace WorldServer.World.Battlefronts.NewDawn
                 _contributionTracker.CreateGoldChest(realm);
                 _contributionTracker.HandleLockReward(realm, 1, message, 0);
 
+                
 
+                _logger.Debug($"Generating Lock Rewards..");
+                foreach (var player in PlayersInLakeSet)
+                {
+                    _logger.Trace($"{player.Name}...");
+                    _rewardManager.GenerateLockReward(player);
+                }
             }
             else
             {
