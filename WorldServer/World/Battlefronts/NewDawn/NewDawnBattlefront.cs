@@ -395,24 +395,29 @@ namespace WorldServer.World.Battlefronts.NewDawn
                 var newRegion = WorldMgr.GetRegion((ushort)newRegionId, false);
 
                 newRegion.ndbf.ResetPairing();
-
-                // Generate RP and rewards
-                _contributionTracker.CreateGoldChest(realm);
-                _contributionTracker.HandleLockReward(realm, 1, message, 0);
-
-                
-
-                _logger.Debug($"Generating Lock Rewards..");
-                foreach (var player in PlayersInLakeSet)
-                {
-                    _logger.Trace($"{player.Name}...");
-                    _rewardManager.GenerateLockReward(player);
-                }
+               
             }
             else
             {
                 WorldMgr.UpperTierBattlefrontManager.AdvancePairing();
                 Broadcast($"The campaign has moved to {WorldMgr.UpperTierBattlefrontManager.GetActivePairing().PairingName}");
+
+                // This may need a rethink and restructure -- reset the VPP for the new Region
+                var newRegionId = WorldMgr.UpperTierBattlefrontManager.GetActivePairing().RegionId;
+                var newRegion = WorldMgr.GetRegion((ushort)newRegionId, false);
+
+                newRegion.ndbf.ResetPairing();
+            }
+
+            // Generate RP and rewards
+            _contributionTracker.CreateGoldChest(realm);
+            _contributionTracker.HandleLockReward(realm, 1, message, 0);
+
+            _logger.Debug($"Generating Lock Rewards..");
+            foreach (var player in PlayersInLakeSet)
+            {
+                _logger.Trace($"{player.Name}...");
+                _rewardManager.GenerateLockReward(player);
             }
         }
 
