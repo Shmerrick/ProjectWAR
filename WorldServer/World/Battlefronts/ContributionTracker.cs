@@ -4,6 +4,7 @@ using GameData;
 using System;
 using System.Collections.Generic;
 using SystemData;
+using NLog;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Objects.PublicQuests;
@@ -13,7 +14,7 @@ namespace WorldServer.World.Battlefronts
 {
     internal class ContributionTracker
     {
-
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private const float RENOWN_CONTRIBUTION_FACTOR = 0.1f;
         private const int CONTRIB_ELAPSE_INTERVAL = 60 * 60; // 1 hour of no contribution forfeits.
 
@@ -236,14 +237,14 @@ namespace WorldServer.World.Battlefronts
         /// </summary>
         /// <param name="keep">Taken keep</param>
         /// <param name="realm">Realm that gained control of the keep</param>
-        internal void CreateGoldChest(Keep keep, Realms realm)
+        internal void CreateGoldChest(Realms realm)
         {
-            Dictionary<uint, ContributionInfo> contributors = GetContributorsFromRealm((Realms)keep.Info.Realm);
-
+            Dictionary<uint, ContributionInfo> contributors = GetContributorsFromRealm(realm);
+            _logger.Debug($"Creating Gold Chest -- not implemented. Contributor Count = {contributors.Count}");
             if (contributors.Count > 0)
             {
-                Log.Info("Battlefront", $"Creating gold chest for {keep.Info.Name} for {contributors.Count} {((Realms)keep.Info.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction")} contributors");
-                GoldChest.Create(_region, keep.Info.PQuest, ref contributors, (Realms)keep.Info.Realm == realm ? WinnerShare : LoserShare);
+                //Log.Info("Battlefront", $"Creating gold chest for {keep.Info.Name} for {contributors.Count} {((Realms)keep.Info.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction")} contributors");
+                //GoldChest.Create(_region, keep.Info.PQuest, ref contributors, (Realms)keep.Info.Realm == realm ? WinnerShare : LoserShare);
             }
         }
 

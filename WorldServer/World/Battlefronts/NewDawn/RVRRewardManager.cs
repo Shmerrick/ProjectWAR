@@ -20,7 +20,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
         public RVRRewardManager()
         {
-            _logger.Trace($"CTOR RVRRewardManager");
+            //
         }
 
         

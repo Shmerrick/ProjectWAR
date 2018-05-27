@@ -54,7 +54,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         public override string ToString()
         {
             return
-                $"Order VP:{OrderVictoryPoints} ({OrderVictoryPoints*100 / BattlefrontConstants.LOCK_VICTORY_POINTS}%) Destruction VP:{DestructionVictoryPoints} ({DestructionVictoryPoints * 100 / BattlefrontConstants.LOCK_VICTORY_POINTS}%)";
+                $"Order VP:{OrderVictoryPoints} ({OrderVictoryPoints * 100 / BattlefrontConstants.LOCK_VICTORY_POINTS}%) Destruction VP:{DestructionVictoryPoints} ({DestructionVictoryPoints * 100 / BattlefrontConstants.LOCK_VICTORY_POINTS}%)";
         }
 
         public void Lock(Realms lockingRealm)
@@ -76,6 +76,16 @@ namespace WorldServer.World.Battlefronts.NewDawn
                 DestructionVictoryPoints = 0;
             }
 
+        }
+
+        /// <summary>
+        /// Reset the realm to be owned by Neutral. 
+        /// </summary>
+        public void Reset()
+        {
+            _logger.Debug($"Resetting Realm to Neutral");
+            OrderVictoryPoints = 0;
+            DestructionVictoryPoints = 0;
         }
     }
 }

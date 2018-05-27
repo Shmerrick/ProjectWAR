@@ -370,6 +370,8 @@ namespace WorldServer.World.Battlefronts.NewDawn
             foreach (var keep in _Keeps)
                 keep.LockKeep(realm, true, false);
 
+            this.VictoryPointProgress.Lock(realm);
+
             // Assigning a non-neutral realm effectively locks the Pair
             LockingRealm = realm;
             
@@ -381,14 +383,26 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
             if (Tier == 1)
             {
+                // Advance the pairing
                 WorldMgr.LowerTierBattlefrontManager.AdvancePairing();
-                Broadcast($"Lower Tier {WorldMgr.LowerTierBattlefrontManager.GetActivePairing().PairingName} is now active.");
+                Broadcast($"{message}. {WorldMgr.LowerTierBattlefrontManager.GetActivePairing().PairingName} is now active.");
+
+                // This may need a rethink and restructure -- reset the VPP for the new Region
+                var newRegionId = WorldMgr.LowerTierBattlefrontManager.GetActivePairing().RegionId;
+                var newRegion = WorldMgr.GetRegion((ushort) newRegionId, false);
+                newRegion.ndbf.VictoryPointProgress.Reset();
+                _logger.Debug($"New Region {newRegionId} VPP reset");
+
+                // Generate RP and rewards
+                _contributionTracker.CreateGoldChest(realm);
+                _contributionTracker.HandleLockReward(realm, 1, message, 0);
+
+
             }
             else
             {
                 WorldMgr.UpperTierBattlefrontManager.AdvancePairing();
-                Broadcast($"Upper Tier {WorldMgr.UpperTierBattlefrontManager.GetActivePairing().PairingName} is now active.");
-
+                Broadcast($"{message}. {WorldMgr.UpperTierBattlefrontManager.GetActivePairing().PairingName} is now active.");
             }
         }
 
