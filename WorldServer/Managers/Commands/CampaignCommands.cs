@@ -148,6 +148,24 @@ namespace WorldServer.Managers.Commands
                 plr.SendClientMessage("Second parameter must be 0 or 1 - 0 no rewards, 1 grants rewards.");
         }
 
+
+        [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks the pairing the player is in for the given realm (1 - Order, 2 - Dest). 0 - no reward, 1 - reward")]
+        public static void LockPairing(Player plr, Realms realm, string noReward)
+        {
+            if (noReward == "0" || noReward == "1")
+            {
+                plr.SendClientMessage($"Attempting to lock the {plr.Region.RegionId} campaign...");
+
+                IBattlefront battlefront = plr.Region.Bttlfront;
+
+                bool b = noReward == "0";
+
+                WorldMgr.GetRegion(plr.Region.RegionId, false).ndbf.LockPairing(realm);
+            }
+            else
+                plr.SendClientMessage("Second parameter must be 0 or 1 - 0 no rewards, 1 grants rewards.");
+        }
+
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks the current battlefront, no winners")]
         public static void Draw(Player plr)
         {
