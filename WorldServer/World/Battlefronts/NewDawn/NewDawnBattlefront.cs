@@ -390,8 +390,8 @@ namespace WorldServer.World.Battlefronts.NewDawn
                 // This may need a rethink and restructure -- reset the VPP for the new Region
                 var newRegionId = WorldMgr.LowerTierBattlefrontManager.GetActivePairing().RegionId;
                 var newRegion = WorldMgr.GetRegion((ushort) newRegionId, false);
-                newRegion.ndbf.VictoryPointProgress.Reset();
-                _logger.Debug($"New Region {newRegionId} VPP reset");
+
+                newRegion.ndbf.ResetPairing();
 
                 // Generate RP and rewards
                 _contributionTracker.CreateGoldChest(realm);
@@ -453,7 +453,9 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
         public void ResetPairing()
         {
-            _logger.Trace(".");
+            _logger.Trace($"Resetting Pairing...");
+
+            VictoryPointProgress.Reset(this);
             LockingRealm = Realms.REALMS_REALM_NEUTRAL;
 
             //VictoryPoints = 50;
@@ -596,7 +598,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
         public void Broadcast(string message)
         {
-            _logger.Debug(message);
+            _logger.Info(message);
             lock (Player._Players)
             {
                 foreach (Player plr in Player._Players)
@@ -612,6 +614,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
         public void Broadcast(string message, Realms realm)
         {
+            _logger.Info(message);
             foreach (Player plr in Region.Players)
             {
                 if (!plr.ValidInTier(Tier, true))

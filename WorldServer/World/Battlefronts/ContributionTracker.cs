@@ -580,6 +580,11 @@ namespace WorldServer.World.Battlefronts
             PlayerContributions.Clear();
         }
 
+        internal void CreateGoldChest(Keep keep, Realms realm)
+        {
+            throw new NotImplementedException();
+        }
+
         internal void UpdateLoserShare(int _orderCount, int _destroCount)
         {
             int minPlayerCount = Math.Min(_orderCount, _destroCount);

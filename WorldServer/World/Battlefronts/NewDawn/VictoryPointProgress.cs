@@ -81,9 +81,9 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// <summary>
         /// Reset the realm to be owned by Neutral. 
         /// </summary>
-        public void Reset()
+        public void Reset(NewDawnBattlefront battlefront)
         {
-            _logger.Debug($"Resetting Realm to Neutral");
+            _logger.Debug($"Resetting battlefront {battlefront.ActiveZoneName} to Neutral");
             OrderVictoryPoints = 0;
             DestructionVictoryPoints = 0;
         }
