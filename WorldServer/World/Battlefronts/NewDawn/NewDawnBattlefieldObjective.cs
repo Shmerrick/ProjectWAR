@@ -225,6 +225,9 @@ namespace WorldServer.World.Battlefronts.NewDawn
             
             var objectiveRewardScaler = this.RewardManager.CalculateObjectiveRewardScale(OwningRealm, _closeOrderCount, _closeDestroCount);
 
+            // Temporary fix - remove objectiveRewardScaler from impacting RR gains.
+            objectiveRewardScaler = 0;
+
             // Scalers in this model are additive. 
 
             return this.RewardManager.RewardCaptureTick(_closePlayers, 
