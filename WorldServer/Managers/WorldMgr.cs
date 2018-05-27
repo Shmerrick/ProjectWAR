@@ -55,7 +55,7 @@ namespace WorldServer
 
         public static List<RegionMgr> _Regions = new List<RegionMgr>();
         private static ReaderWriterLockSlim RegionsRWLock = new ReaderWriterLockSlim();
-        
+
 
         public static RegionMgr GetRegion(ushort RegionId, bool Create)
         {
@@ -330,7 +330,7 @@ namespace WorldServer
             else
                 killer.PriorityGroup.AddXpFromKill(killer, victim, bonusMod);
         }
-        
+
         public static uint GenerateRenownCount(Player killer, Player victim)
         {
             if (killer == null || victim == null || killer == victim)
@@ -345,7 +345,7 @@ namespace WorldServer
         }
 
         #endregion
-        
+
         #region Vendors
         public static void SendVendor(Player Plr, ushort id)
         {
@@ -356,7 +356,7 @@ namespace WorldServer
             List<Vendor_items> Itemsprecheck = VendorService.GetVendorItems(id).ToList();
             List<Vendor_items> Items = new List<Vendor_items>();
 
-            foreach(Vendor_items vi in Itemsprecheck)
+            foreach (Vendor_items vi in Itemsprecheck)
             {
                 if (vi.ReqGuildlvl > 0 && Plr.GldInterface.IsInGuild() && vi.ReqGuildlvl > Plr.GldInterface.Guild.Info.Level)
                     continue;
@@ -462,7 +462,7 @@ namespace WorldServer
                 return;
             }
 
-            foreach (KeyValuePair<uint,ushort> Kp in Vendors[Num].ItemsReq)
+            foreach (KeyValuePair<uint, ushort> Kp in Vendors[Num].ItemsReq)
             {
                 if (!Plr.ItmInterface.HasItemCountInInventory(Kp.Key, (ushort)(Kp.Value * Count)))
                 {
@@ -478,7 +478,7 @@ namespace WorldServer
             if (result == ItemResult.RESULT_OK)
             {
                 Plr.RemoveMoney(Vendors[Num].Price * Count);
-                foreach (KeyValuePair<uint,ushort> Kp in Vendors[Num].ItemsReq)
+                foreach (KeyValuePair<uint, ushort> Kp in Vendors[Num].ItemsReq)
                     Plr.ItmInterface.RemoveItems(Kp.Key, (ushort)(Kp.Value * Count));
             }
             else if (result == ItemResult.RESULT_MAX_BAG)
@@ -491,7 +491,7 @@ namespace WorldServer
             }
         }
         #endregion
-        
+
         #region Quests
         // TODO move that to QuestService
         public static void GenerateObjective(Quest_Objectives Obj, Quest Q)
@@ -902,7 +902,7 @@ namespace WorldServer
                 }
 
                 if (!skipLoad)
-                   CellSpawnService.GetRegionCell(Zone.Region, (ushort)((float)(Info.PinX / 4096) + Zone.OffX), (ushort)((float)(Info.PinY / 4096) + Zone.OffY)).AddPQuest(Info);
+                    CellSpawnService.GetRegionCell(Zone.Region, (ushort)((float)(Info.PinX / 4096) + Zone.OffX), (ushort)((float)(Info.PinY / 4096) + Zone.OffY)).AddPQuest(Info);
             }
 
             if (skippedPQs.Count > 0)
@@ -1010,7 +1010,7 @@ namespace WorldServer
                 }
             }
         }
-        
+
 
         #endregion
 
@@ -1205,16 +1205,16 @@ namespace WorldServer
         }
 
 
-        public static Dictionary<int,int> GetZonesFightLevel()
+        public static Dictionary<int, int> GetZonesFightLevel()
         {
-            var level = new Dictionary<int,int>();
+            var level = new Dictionary<int, int>();
             foreach (var region in WorldMgr._Regions.Where(e => e.Bttlfront != null).ToList())
             {
                 foreach (var zone in region.ZonesMgr.ToList())
                 {
                     var hotspots = zone.GetHotSpots();
                     if (hotspots.Count > 0)
-                        level[zone.ZoneId] = hotspots.Where(e=>e.Item2 >= ZoneMgr.LOW_FIGHT).Max(e => e.Item2);
+                        level[zone.ZoneId] = hotspots.Where(e => e.Item2 >= ZoneMgr.LOW_FIGHT).Max(e => e.Item2);
                 }
             }
             return level;
@@ -1335,15 +1335,15 @@ namespace WorldServer
                     {
                         foreach (KeyValuePair<uint, GroupAction> grpAction in _worldActions)
                         {
-                            if(g.GroupId == grpAction.Key)
+                            if (g.GroupId == grpAction.Key)
                                 g.EnqueuePendingGroupAction(grpAction.Value);
                         }
 
                         g.Update(TCPManager.GetTimeStampMS());
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
-                        Log.Error("Caught exception", "Exception thrown: "+e);
+                        Log.Error("Caught exception", "Exception thrown: " + e);
                         continue;
                     }
                 }
@@ -1361,33 +1361,21 @@ namespace WorldServer
             if (region == null)
                 Out.Fill(0, 3);
             else
-                if (region.ndbf != null)
-                    region.ndbf.WriteCaptureStatus(Out);
-                else
-                {
-                    region.ndbf.WriteCaptureStatus(Out, region.ndbf.LockingRealm);    
-            }
-            
+                region.ndbf.WriteCaptureStatus(Out, region.ndbf.LockingRealm);
         }
 
         public static void BuildBattlefrontStatus(PacketOut Out, RegionMgr region)
         {
             if (region == null)
                 Out.Fill(0, 3);
-            else if (region.ndbf != null)
-            {
-                region.ndbf.WriteBattlefrontStatus(Out);
-            }
-            else
-            {
-                region.ndbf.WriteBattlefrontStatus(Out);
-            }
+
+            region.ndbf.WriteBattlefrontStatus(Out);
         }
 
         public static void SendCampaignStatus(Player plr)
         {
             _logger.Trace("Send Campaign Status");
-            PacketOut Out = new PacketOut((byte) Opcodes.F_CAMPAIGN_STATUS, 159);
+            PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
             Out.WriteHexStringBytes("0005006700CB00"); // 7
 
             // Dwarfs vs Greenskins T1
@@ -1426,7 +1414,7 @@ namespace WorldServer
             // High Elves vs Dark Elves T4
             BuildCaptureStatus(Out, GetRegion(4, false));
 
-            Out.Fill(0,83);
+            Out.Fill(0, 83);
 
             // RB   4/24/2016   Added logic for T4 campaign progression.
             //gs t4
@@ -1459,7 +1447,7 @@ namespace WorldServer
                         if (player == null || player.IsDisposed || !player.IsInWorld())
                             continue;
 
-                        PacketOut playerCampaignStatus = new PacketOut(0, 159) {Position = 0};
+                        PacketOut playerCampaignStatus = new PacketOut(0, 159) { Position = 0 };
                         playerCampaignStatus.Write(buffer, 0, buffer.Length);
 
                         if (player.Region?.ndbf != null)
@@ -1492,7 +1480,7 @@ namespace WorldServer
         public static void EvaluateT4CampaignStatus(ushort Region)
         {
             ProximityProgressingBattlefront DvG = (ProximityProgressingBattlefront)GetRegion(2, false).Bttlfront;
-            ProximityProgressingBattlefront EvC = (ProximityProgressingBattlefront)GetRegion(11, false).Bttlfront; 
+            ProximityProgressingBattlefront EvC = (ProximityProgressingBattlefront)GetRegion(11, false).Bttlfront;
             ProximityProgressingBattlefront HEvDE = (ProximityProgressingBattlefront)GetRegion(4, false).Bttlfront;
             // codeword p0tat0 - changed for DoomsDay
             /*ProgressingBattlefront DvG = (ProgressingBattlefront)GetRegion(2, false).Bttlfront;
@@ -1506,9 +1494,9 @@ namespace WorldServer
 
                 long _pairingLockTime = (30 * 60 * 1000);
 
-                #if (DEBUG)
-                    _pairingLockTime = (5 * 60 * 1000);
-                #endif
+#if (DEBUG)
+                _pairingLockTime = (5 * 60 * 1000);
+#endif
 
                 if (Constants.DoomsdaySwitch == 0)
                 {
@@ -1533,10 +1521,10 @@ namespace WorldServer
 
                             plr.SendLocalizeString("The forces of Order have beaten back their foes at every turn, cleansed their lands, and secured a time of peace! Unfortunately, they lack the resources to take the fight to the enemy's gates, and drive home their victory.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
                             plr.SendLocalizeString("The forces of Order have beaten back their foes at every turn, cleansed their lands, and secured a time of peace! Unfortunately, they lack the resources to take the fight to the enemy's gates, and drive home their victory.", DvG.GetZoneOwnership(3) == (int)Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE, Localized_text.CHAT_TAG_DEFAULT);
-                            
+
                             if (plr.Realm == Realms.REALMS_REALM_ORDER && plr.CbtInterface.IsPvp && plr.CurrentArea.IsRvR && (zone == 3 || zone == 103 || zone == 203))
                                 plr.ItmInterface.CreateItem(13000250, 1);
-                            
+
                         }
                     }
                 }
@@ -1554,10 +1542,10 @@ namespace WorldServer
 
                             plr.SendLocalizeString("The forces of Destruction have slaughtered, pillaged and razed a path into the very heartlands of their foes! But their infighting and the spoils of war slow them, and they lack the cohesion to subjugate their hated foes further.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
                             plr.SendLocalizeString("The forces of Destruction have slaughtered, pillaged and razed a path into the very heartlands of their foes! But their infighting and the spoils of war slow them, and they lack the cohesion to subjugate their hated foes further.", DvG.GetZoneOwnership(3) == (int)Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE, Localized_text.CHAT_TAG_DEFAULT);
-                            
+
                             if (plr.Realm == Realms.REALMS_REALM_DESTRUCTION && plr.CbtInterface.IsPvp && plr.CurrentArea.IsRvR && (zone == 9 || zone == 109 || zone == 209))
                                 plr.ItmInterface.CreateItem(13000249, 1);
-                            
+
                         }
                     }
                 }
@@ -1579,7 +1567,7 @@ namespace WorldServer
                     }
                 }
 
-                if(Constants.DoomsdaySwitch > 0)
+                if (Constants.DoomsdaySwitch > 0)
                 {
                     if (Region == 2) //DvG
                         Region = 12;
@@ -1715,7 +1703,7 @@ namespace WorldServer
             }
         }
         #endregion
-        
+
         #region Logging
         [LoadingFunction(true)]
         public static void ResetPacketLogSettings()

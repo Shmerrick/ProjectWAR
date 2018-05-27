@@ -212,7 +212,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         {
             // Not implemented.
             _logger.Trace(".");
-    }
+        }
 
         /// <summary>
         /// Writes the current zone capture status (gauge in upper right corner of client UI).
@@ -242,7 +242,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
                     break;
             }
 
-            _logger.Trace($"{(byte)orderPercent} {(byte)destroPercent}");
+            _logger.Debug($"{BattlefrontName} : {(byte)orderPercent} {(byte)destroPercent}");
 
             Out.WriteByte((byte)orderPercent);
             Out.WriteByte((byte)destroPercent);
@@ -374,22 +374,22 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
             // Assigning a non-neutral realm effectively locks the Pair
             LockingRealm = realm;
-            
-            //WorldMgr.SendCampaignStatus(null);
+
+            WorldMgr.SendCampaignStatus(null);
 
             string message = string.Concat(Region.ZonesInfo[0].Name, " and ", Region.ZonesInfo[1].Name, " have been locked by ", (realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"), "!");
             _logger.Debug(message);
-            
+
 
             if (Tier == 1)
             {
                 // Advance the pairing
                 WorldMgr.LowerTierBattlefrontManager.AdvancePairing();
-                Broadcast($"{message}. {WorldMgr.LowerTierBattlefrontManager.GetActivePairing().PairingName} is now active.");
+                Broadcast($" The campaign has moved to  {WorldMgr.LowerTierBattlefrontManager.GetActivePairing().PairingName}");
 
                 // This may need a rethink and restructure -- reset the VPP for the new Region
                 var newRegionId = WorldMgr.LowerTierBattlefrontManager.GetActivePairing().RegionId;
-                var newRegion = WorldMgr.GetRegion((ushort) newRegionId, false);
+                var newRegion = WorldMgr.GetRegion((ushort)newRegionId, false);
 
                 newRegion.ndbf.ResetPairing();
 
@@ -402,7 +402,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
             else
             {
                 WorldMgr.UpperTierBattlefrontManager.AdvancePairing();
-                Broadcast($"{message}. {WorldMgr.UpperTierBattlefrontManager.GetActivePairing().PairingName} is now active.");
+                Broadcast($"The campaign has moved to {WorldMgr.UpperTierBattlefrontManager.GetActivePairing().PairingName}");
             }
         }
 
@@ -541,7 +541,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
             // Victory points update
             VictoryPointProgress.OrderVictoryPoints = Math.Min(LOCK_VICTORY_POINTS, orderVictoryPoints);
             VictoryPointProgress.DestructionVictoryPoints = Math.Min(LOCK_VICTORY_POINTS, destroVictoryPoints);
-            
+
             if (VictoryPointProgress.OrderVictoryPoints >= LOCK_VICTORY_POINTS)
                 LockPairing(Realms.REALMS_REALM_ORDER);
             else if (VictoryPointProgress.DestructionVictoryPoints >= LOCK_VICTORY_POINTS)
@@ -550,8 +550,23 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
         public void WriteVictoryPoints(Realms realm, PacketOut Out)
         {
-            _logger.Trace("Writing Victory Points... (nothing to see here)");
-            // not implemented.
+
+            Out.WriteByte((byte)this.VictoryPointProgress.OrderVictoryPoints);
+            Out.WriteByte((byte)this.VictoryPointProgress.DestructionVictoryPoints);
+
+            //no clue but set to a value wont show the pool updatetimer
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+
+            Out.WriteByte(00);
+
+            //local timer for poolupdates
+            //int curTimeSeconds = TCPManager.GetTimeStamp();
+
+            //if (_nextVpUpdateTime == 0 || curTimeSeconds > _nextVpUpdateTime)
+            //    Out.WriteUInt32(0);
+            //else
+            //    Out.WriteUInt32((uint) (_nextVpUpdateTime - curTimeSeconds)); //in seconds
         }
 
         public int GetZoneOwnership(ushort zoneId)

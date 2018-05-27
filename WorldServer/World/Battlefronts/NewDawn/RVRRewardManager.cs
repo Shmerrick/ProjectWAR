@@ -18,12 +18,6 @@ namespace WorldServer.World.Battlefronts.NewDawn
         public Dictionary<uint, XpRenown> DelayedRewards = new Dictionary<uint, XpRenown>();
         public float RewardScaleMultiplier { get; set; }
 
-        public RVRRewardManager()
-        {
-            //
-        }
-
-        
         /// <summary>
         /// Add delayed XPR rewards for kills in RVR. 
         /// </summary>
