@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -65,6 +66,27 @@ namespace WorldServer
 
             WorldMgr.StartingPairing = WorldMgr.Database.ExecuteQueryInt("SELECT FLOOR(RAND() * 3) + 1");
 
+            // Ensure directory structure is correct
+            if (!Directory.Exists("Zones"))
+            {
+                Log.Texte("Directory Check", "Zones directory does not exist", ConsoleColor.Red);
+                ConsoleMgr.WaitAndExit(2000);
+            }
+            if (!Directory.Exists("Scripts"))
+            {
+                Log.Texte("Directory Check", "Scripts directory does not exist", ConsoleColor.Red);
+                ConsoleMgr.WaitAndExit(2000);
+            }
+            if (!Directory.Exists("World"))
+            {
+                Log.Texte("Directory Check", "World directory does not exist", ConsoleColor.Red);
+                ConsoleMgr.WaitAndExit(2000);
+            }
+            if (!Directory.Exists("Abilities"))
+            {
+                Log.Texte("Directory Check", "Abilities directory does not exist", ConsoleColor.Red);
+                ConsoleMgr.WaitAndExit(2000);
+            }
 
 
             WorldMgr.UpperTierBattlefrontManager = new UpperTierBattlefrontManager();
