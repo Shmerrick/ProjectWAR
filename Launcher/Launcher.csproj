@@ -182,6 +182,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Artwork\background.png" />
     <Content Include="Artwork\button.png" />
     <Content Include="Artwork\final1.png" />
     <Content Include="Artwork\final2.png" />

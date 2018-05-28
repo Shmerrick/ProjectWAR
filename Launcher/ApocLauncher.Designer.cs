@@ -48,6 +48,15 @@
             this.edNewUserCode = new System.Windows.Forms.TextBox();
             this.lblConnection = new System.Windows.Forms.Label();
             this.bnClose = new System.Windows.Forms.Button();
+            this.panelCreateAccount = new System.Windows.Forms.Panel();
+            this.buttonCreate = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBoxPassword = new System.Windows.Forms.TextBox();
+            this.textBoxUsername = new System.Windows.Forms.TextBox();
+            this.buttonPanelCreateAccount = new System.Windows.Forms.Button();
+            this.panelCreateAccount.SuspendLayout();
             this.SuspendLayout();
             // 
             // T_username
@@ -84,7 +93,7 @@
             this.B_start.BackColor = System.Drawing.Color.Transparent;
             this.B_start.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.B_start.ForeColor = System.Drawing.Color.Transparent;
-            this.B_start.Location = new System.Drawing.Point(0, 12);
+            this.B_start.Location = new System.Drawing.Point(12, -4);
             this.B_start.Name = "B_start";
             this.B_start.Size = new System.Drawing.Size(119, 28);
             this.B_start.TabIndex = 4;
@@ -217,6 +226,116 @@
             this.bnClose.UseVisualStyleBackColor = false;
             this.bnClose.Click += new System.EventHandler(this.bnClose_Click);
             // 
+            // panelCreateAccount
+            // 
+            this.panelCreateAccount.BackColor = System.Drawing.Color.Transparent;
+            this.panelCreateAccount.BackgroundImage = global::Launcher.Properties.Resources.background;
+            this.panelCreateAccount.Controls.Add(this.buttonCreate);
+            this.panelCreateAccount.Controls.Add(this.label3);
+            this.panelCreateAccount.Controls.Add(this.label2);
+            this.panelCreateAccount.Controls.Add(this.label1);
+            this.panelCreateAccount.Controls.Add(this.textBoxPassword);
+            this.panelCreateAccount.Controls.Add(this.textBoxUsername);
+            this.panelCreateAccount.Location = new System.Drawing.Point(366, 177);
+            this.panelCreateAccount.Name = "panelCreateAccount";
+            this.panelCreateAccount.Size = new System.Drawing.Size(590, 300);
+            this.panelCreateAccount.TabIndex = 15;
+            this.panelCreateAccount.Visible = false;
+            // 
+            // buttonCreate
+            // 
+            this.buttonCreate.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.buttonCreate.Font = new System.Drawing.Font("Friz Quadrata", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonCreate.ForeColor = System.Drawing.Color.DarkOrange;
+            this.buttonCreate.Location = new System.Drawing.Point(0, 237);
+            this.buttonCreate.Name = "buttonCreate";
+            this.buttonCreate.Size = new System.Drawing.Size(586, 60);
+            this.buttonCreate.TabIndex = 16;
+            this.buttonCreate.Text = "CREATE";
+            this.buttonCreate.UseVisualStyleBackColor = true;
+            this.buttonCreate.Click += new System.EventHandler(this.buttonCreate_Click);
+            // 
+            // label3
+            // 
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.Font = new System.Drawing.Font("Friz Quadrata", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.DarkOrange;
+            this.label3.Location = new System.Drawing.Point(1, 154);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(272, 53);
+            this.label3.TabIndex = 20;
+            this.label3.Text = "PASSWORD";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label2
+            // 
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Font = new System.Drawing.Font("Friz Quadrata", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.DarkOrange;
+            this.label2.Location = new System.Drawing.Point(0, 78);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(272, 53);
+            this.label2.TabIndex = 19;
+            this.label2.Text = "USERNAME";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label1
+            // 
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.label1.Font = new System.Drawing.Font("Friz Quadrata", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.DarkOrange;
+            this.label1.Location = new System.Drawing.Point(3, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(587, 40);
+            this.label1.TabIndex = 18;
+            this.label1.Text = "CREATE ACCOUNT";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // textBoxPassword
+            // 
+            this.textBoxPassword.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.textBoxPassword.BackColor = System.Drawing.Color.Black;
+            this.textBoxPassword.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBoxPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxPassword.ForeColor = System.Drawing.Color.DarkOrange;
+            this.textBoxPassword.Location = new System.Drawing.Point(277, 144);
+            this.textBoxPassword.Margin = new System.Windows.Forms.Padding(0);
+            this.textBoxPassword.MaxLength = 50;
+            this.textBoxPassword.Multiline = true;
+            this.textBoxPassword.Name = "textBoxPassword";
+            this.textBoxPassword.Size = new System.Drawing.Size(301, 53);
+            this.textBoxPassword.TabIndex = 17;
+            // 
+            // textBoxUsername
+            // 
+            this.textBoxUsername.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.textBoxUsername.BackColor = System.Drawing.Color.Black;
+            this.textBoxUsername.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBoxUsername.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxUsername.ForeColor = System.Drawing.Color.DarkOrange;
+            this.textBoxUsername.Location = new System.Drawing.Point(277, 69);
+            this.textBoxUsername.Margin = new System.Windows.Forms.Padding(0);
+            this.textBoxUsername.MaxLength = 50;
+            this.textBoxUsername.Multiline = true;
+            this.textBoxUsername.Name = "textBoxUsername";
+            this.textBoxUsername.Size = new System.Drawing.Size(301, 52);
+            this.textBoxUsername.TabIndex = 16;
+            // 
+            // buttonPanelCreateAccount
+            // 
+            this.buttonPanelCreateAccount.BackColor = System.Drawing.Color.Transparent;
+            this.buttonPanelCreateAccount.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.buttonPanelCreateAccount.Font = new System.Drawing.Font("Friz Quadrata", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonPanelCreateAccount.ForeColor = System.Drawing.Color.DarkOrange;
+            this.buttonPanelCreateAccount.Location = new System.Drawing.Point(12, 30);
+            this.buttonPanelCreateAccount.Name = "buttonPanelCreateAccount";
+            this.buttonPanelCreateAccount.Size = new System.Drawing.Size(226, 49);
+            this.buttonPanelCreateAccount.TabIndex = 21;
+            this.buttonPanelCreateAccount.Text = "CREATE ACCOUNT";
+            this.buttonPanelCreateAccount.UseVisualStyleBackColor = false;
+            this.buttonPanelCreateAccount.Click += new System.EventHandler(this.buttonPanelCreateAccount_Click);
+            // 
             // ApocLauncher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -225,6 +344,8 @@
             this.BackgroundImage = global::Launcher.Properties.Resources.final2;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(1280, 720);
+            this.Controls.Add(this.buttonPanelCreateAccount);
+            this.Controls.Add(this.panelCreateAccount);
             this.Controls.Add(this.bnClose);
             this.Controls.Add(this.lblConnection);
             this.Controls.Add(this.bnTestServer);
@@ -242,6 +363,8 @@
             this.Text = "WAR: APOCALYPSE";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Disconnect);
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.panelCreateAccount.ResumeLayout(false);
+            this.panelCreateAccount.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -268,6 +391,14 @@
         private System.Windows.Forms.Label label7;
         public System.Windows.Forms.Label lblConnection;
         private System.Windows.Forms.Button bnClose;
+        private System.Windows.Forms.Panel panelCreateAccount;
+        private System.Windows.Forms.TextBox textBoxUsername;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox textBoxPassword;
+        private System.Windows.Forms.Button buttonCreate;
+        private System.Windows.Forms.Button buttonPanelCreateAccount;
     }
 }
 
