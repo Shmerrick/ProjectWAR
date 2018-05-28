@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.B_start = new System.Windows.Forms.Button();
             this.B_stop = new System.Windows.Forms.Button();
             this.StartAccountCheckBox = new System.Windows.Forms.CheckBox();
@@ -110,6 +111,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.ClientSize = new System.Drawing.Size(261, 154);
             this.Controls.Add(this.StartWorldCheckBox);
             this.Controls.Add(this.StartLobbyCheckBox);
@@ -117,7 +119,10 @@
             this.Controls.Add(this.StartAccountCheckBox);
             this.Controls.Add(this.B_stop);
             this.Controls.Add(this.B_start);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ServerLauncher";
             this.ResumeLayout(false);
             this.PerformLayout();
