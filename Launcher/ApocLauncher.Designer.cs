@@ -57,12 +57,12 @@
             this.T_username.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.T_username.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.T_username.ForeColor = System.Drawing.Color.DarkOrange;
-            this.T_username.Location = new System.Drawing.Point(172, 648);
+            this.T_username.Location = new System.Drawing.Point(173, 649);
             this.T_username.Margin = new System.Windows.Forms.Padding(0);
             this.T_username.MaxLength = 50;
             this.T_username.Multiline = true;
             this.T_username.Name = "T_username";
-            this.T_username.Size = new System.Drawing.Size(330, 50);
+            this.T_username.Size = new System.Drawing.Size(330, 44);
             this.T_username.TabIndex = 0;
             // 
             // T_password
@@ -72,13 +72,12 @@
             this.T_password.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.T_password.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.T_password.ForeColor = System.Drawing.Color.DarkOrange;
-            this.T_password.Location = new System.Drawing.Point(779, 648);
+            this.T_password.Location = new System.Drawing.Point(777, 649);
             this.T_password.Margin = new System.Windows.Forms.Padding(0);
             this.T_password.Name = "T_password";
             this.T_password.Size = new System.Drawing.Size(294, 44);
             this.T_password.TabIndex = 1;
             this.T_password.UseSystemPasswordChar = true;
-            
             // 
             // B_start
             // 
@@ -132,7 +131,7 @@
             this.bnTestServer.Location = new System.Drawing.Point(1084, 620);
             this.bnTestServer.Margin = new System.Windows.Forms.Padding(0);
             this.bnTestServer.Name = "bnTestServer";
-            this.bnTestServer.Size = new System.Drawing.Size(196, 95);
+            this.bnTestServer.Size = new System.Drawing.Size(196, 99);
             this.bnTestServer.TabIndex = 12;
             this.bnTestServer.UseVisualStyleBackColor = false;
             this.bnTestServer.Click += new System.EventHandler(this.bnTestServer_Click);
@@ -218,14 +217,14 @@
             this.bnClose.UseVisualStyleBackColor = false;
             this.bnClose.Click += new System.EventHandler(this.bnClose_Click);
             // 
-            // Accueil
+            // ApocLauncher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.BackgroundImage = global::Launcher.Properties.Resources.final2;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.ClientSize = new System.Drawing.Size(1280, 740);
+            this.ClientSize = new System.Drawing.Size(1280, 720);
             this.Controls.Add(this.bnClose);
             this.Controls.Add(this.lblConnection);
             this.Controls.Add(this.bnTestServer);
@@ -237,7 +236,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "Accueil";
+            this.Name = "ApocLauncher";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "WAR: APOCALYPSE";
