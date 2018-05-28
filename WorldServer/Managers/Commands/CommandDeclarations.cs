@@ -113,6 +113,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("logpackets", LogPackets, null, EGmLevel.SourceDev, 0, "Toggles logging outgoing packet volume."),
             new GmCommandHandler("readpackets", ReadPackets, null, EGmLevel.SourceDev, 0, "Displays the volume of outgoing packets over the defined period."),
             new GmCommandHandler("los", StartStopLosMonitor, null, EGmLevel.AllStaff, 0, "Starts/Stops line of sight monitoring for selected target."),
+            new GmCommandHandler("population", GetServerPopulation, null, EGmLevel.SourceDev, 0, "Finds all players in the game."),
         };
 
         /// <summary>Database commands under .database</summary>

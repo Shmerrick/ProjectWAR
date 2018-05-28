@@ -45,10 +45,11 @@ namespace WorldServer
         /// <summary>Races associated with the pairing, may be null</summary>
         private readonly Races[] _races;
 
-        public RegionMgr(ushort regionId, List<Zone_Info> zones)
+        public RegionMgr(ushort regionId, List<Zone_Info> zones, string name)
         {
             RegionId = regionId;
             ZonesInfo = zones;
+            RegionName = name;
 
             LoadSpawns();
 
@@ -311,6 +312,9 @@ namespace WorldServer
         /// </summary>
         public readonly List<Player> Players = new List<Player>();
 
+        public  int OrderPlayers { get; set; }
+        public  int DestPlayers { get; set; }
+
         private void AddNewObjects()
         {
             try
@@ -332,7 +336,17 @@ namespace WorldServer
                             {
                                 plr.InRegionChange = true;
                                 if (!Players.Contains(plr))
+                                {
                                     Players.Add(plr);
+                                    if (plr.Realm == Realms.REALMS_REALM_ORDER)
+                                    {
+                                        OrderPlayers++;
+                                    }
+                                    if (plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                                    {
+                                        DestPlayers++;
+                                    }
+                                }
                             }
                         }
 

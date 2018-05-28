@@ -49,7 +49,7 @@ namespace WorldServer
             ID = id;
             ZoneID = zoneid;
             Realm = realm;
-            Region = new RegionMgr(zoneid, ZoneService.GetZoneRegion(zoneid));
+            Region = new RegionMgr(zoneid, ZoneService.GetZoneRegion(zoneid),"");
             InstanceService._InstanceInfo.TryGetValue(zoneid,out Info);
             LoadBossSpawns();
             LoadSpawns(); // todo get the saved progress from group

@@ -57,7 +57,7 @@ namespace WorldServer
         private static ReaderWriterLockSlim RegionsRWLock = new ReaderWriterLockSlim();
 
 
-        public static RegionMgr GetRegion(ushort RegionId, bool Create)
+        public static RegionMgr GetRegion(ushort RegionId, bool Create, string name="")
         {
             RegionsRWLock.EnterReadLock();
             RegionMgr Mgr = _Regions.Find(region => region != null && region.RegionId == RegionId);
@@ -65,7 +65,7 @@ namespace WorldServer
 
             if (Mgr == null && Create)
             {
-                Mgr = new RegionMgr(RegionId, ZoneService.GetZoneRegion(RegionId));
+                Mgr = new RegionMgr(RegionId, ZoneService.GetZoneRegion(RegionId), name);
                 RegionsRWLock.EnterWriteLock();
                 _Regions.Add(Mgr);
                 RegionsRWLock.ExitWriteLock();
@@ -755,26 +755,26 @@ namespace WorldServer
             // Preload T4 regions
             Log.Info("Regions", "Preloading pairing regions...");
             // Tier 1
-            GetRegion(1, true); // dw/gs
-            GetRegion(3, true); // he/de
-            GetRegion(8, true); // em/ch
+            GetRegion(1, true, new LowerTierRacialPairManager().GetByRegion(1).PairingName); // dw/gs
+            GetRegion(3, true, new LowerTierRacialPairManager().GetByRegion(3).PairingName); // he/de
+            GetRegion(8, true, new LowerTierRacialPairManager().GetByRegion(8).PairingName); // em/ch
 
             // Tier 2
-            GetRegion(12, true); // dw/gs
-            GetRegion(15, true); // he/de
-            GetRegion(14, true); // em/ch
+            GetRegion(12, true, new UpperTierRacialPairManager().GetByRegion(12).PairingName); // dw/gs
+            GetRegion(15, true, new UpperTierRacialPairManager().GetByRegion(15).PairingName); // he/de
+            GetRegion(14, true, new UpperTierRacialPairManager().GetByRegion(14).PairingName); // em/ch
 
             // Tier 3
-            GetRegion(10, true); // dw/gs
-            GetRegion(16, true); // he/de
-            GetRegion(6, true); // em/ch
+            GetRegion(10, true, new UpperTierRacialPairManager().GetByRegion(10).PairingName); // dw/gs
+            GetRegion(16, true, new UpperTierRacialPairManager().GetByRegion(16).PairingName); // he/de
+            GetRegion(6, true, new UpperTierRacialPairManager().GetByRegion(6).PairingName); // em/ch
 
             // Tier 4
-            GetRegion(2, true); // dw/gs
-            GetRegion(4, true);  // he/de
-            GetRegion(11, true); // em/ch
+            GetRegion(2, true, new UpperTierRacialPairManager().GetByRegion(2).PairingName); // dw/gs
+            GetRegion(4, true, new UpperTierRacialPairManager().GetByRegion(4).PairingName);  // he/de
+            GetRegion(11, true, new UpperTierRacialPairManager().GetByRegion(11).PairingName); // em/ch
 
-            GetRegion(9, true); // lotd
+            GetRegion(9, true, new UpperTierRacialPairManager().GetByRegion(9).PairingName); // lotd
             Log.Success("Regions", "Preloaded pairing regions.");
         }
 
@@ -1286,7 +1286,7 @@ namespace WorldServer
                 {
                     SendZoneFightLevel();
 
-                    foreach (var region in WorldMgr._Regions.Where(e => e.Bttlfront != null).ToList())
+                    foreach (var region in WorldMgr._Regions.Where(e => e.ndbf != null).ToList())
                     {
                         foreach (var zone in region.ZonesMgr.ToList())
                         {

@@ -48,6 +48,28 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        public static bool GetServerPopulation(Player plr, ref List<string> values)
+        {
+            plr.SendClientMessage($"Server Population " +
+                                  $"Online players : {Program.Rm.OnlinePlayers} " +
+                                  $"Order : {Program.Rm.OrderCount} " +
+                                  $"Destro : {Program.Rm.DestructionCount}");
+
+            var message = String.Empty;
+
+            foreach (var regionMgr in WorldMgr._Regions)
+            {
+                message += $"{regionMgr.RegionName} " +
+                           $"Total : {regionMgr.Players.Count} " +
+                           $"Order : {regionMgr.OrderPlayers} " +
+                           $"Dest : {regionMgr.DestPlayers} \n";
+            }
+            plr.SendClientMessage(message);
+
+
+            return true;
+        }
+
         /// <summary>
         /// Finds all players currently in range.
         /// </summary>

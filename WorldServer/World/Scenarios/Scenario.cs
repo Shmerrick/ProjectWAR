@@ -180,7 +180,7 @@ namespace WorldServer.Scenarios
                 RespawnHeadings[i] = respawn.WorldO;
             }
 
-            Region = new RegionMgr(Info.MapId, ZoneService.GetZoneRegion(Info.MapId)) { Scenario = this };
+            Region = new RegionMgr(Info.MapId, ZoneService.GetZoneRegion(Info.MapId), info.Name) { Scenario = this };
 
             /* create groups */
             for (int i = 0; i < 2; ++i)

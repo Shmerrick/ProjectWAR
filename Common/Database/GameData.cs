@@ -3540,8 +3540,8 @@ namespace GameData
         #if DEBUG
         public static int DoomsdaySwitch = 2; // DoomsdaySwitch = 0 - Aza age RvR; 1 - single pairing open; 2 - 1 zone open per pairing
         public static bool DisableDebolster = true;
-        public static int[] MinTierLevel = {0, 16, 16, 16};
-        public static int[] MaxTierLevel = {15, 40, 40, 40};
+        public static int[] MinTierLevel = {0, 16, 16, 40};
+        public static int[] MaxTierLevel = {15, 39, 39, 40};
 #else
         public static int DoomsdaySwitch = 2;
         public static bool DisableDebolster = true;
