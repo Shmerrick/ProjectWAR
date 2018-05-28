@@ -223,7 +223,13 @@
       <Name>FrameWork</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Icons\account.ico" />
+    <Content Include="Icons\launcher.ico" />
+    <Content Include="Icons\lobby.ico" />
+    <Content Include="Icons\server.ico" />
+    <Content Include="Icons\world.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
