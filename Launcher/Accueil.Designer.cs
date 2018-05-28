@@ -28,10 +28,9 @@
         /// </ summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Accueil));
             this.T_username = new System.Windows.Forms.TextBox();
             this.T_password = new System.Windows.Forms.MaskedTextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.B_start = new System.Windows.Forms.Button();
             this.RealmName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Online = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -55,44 +54,47 @@
             // 
             // T_username
             // 
-            this.T_username.Location = new System.Drawing.Point(297, 61);
+            this.T_username.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.T_username.BackColor = System.Drawing.Color.Black;
+            this.T_username.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.T_username.Font = new System.Drawing.Font("Friz Quadrata", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.T_username.ForeColor = System.Drawing.Color.DarkOrange;
+            this.T_username.Location = new System.Drawing.Point(172, 648);
+            this.T_username.Margin = new System.Windows.Forms.Padding(0);
+            this.T_username.MaxLength = 50;
+            this.T_username.Multiline = true;
             this.T_username.Name = "T_username";
-            this.T_username.Size = new System.Drawing.Size(162, 20);
+            this.T_username.Size = new System.Drawing.Size(330, 50);
             this.T_username.TabIndex = 0;
+            this.T_username.TextChanged += new System.EventHandler(this.T_username_TextChanged);
             // 
             // T_password
             // 
-            this.T_password.Location = new System.Drawing.Point(487, 61);
+            this.T_password.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.T_password.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.T_password.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.T_password.Font = new System.Drawing.Font("Friz Quadrata", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.T_password.ForeColor = System.Drawing.Color.DarkOrange;
+            this.T_password.Location = new System.Drawing.Point(779, 648);
+            this.T_password.Margin = new System.Windows.Forms.Padding(0);
             this.T_password.Name = "T_password";
-            this.T_password.Size = new System.Drawing.Size(151, 20);
+            this.T_password.Size = new System.Drawing.Size(294, 50);
             this.T_password.TabIndex = 1;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(294, 28);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(47, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Account";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(484, 28);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(53, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Password";
+            this.T_password.UseSystemPasswordChar = true;
+            this.T_password.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.T_password_MaskInputRejected);
             // 
             // B_start
             // 
-            this.B_start.Location = new System.Drawing.Point(476, 400);
+            this.B_start.BackColor = System.Drawing.Color.Transparent;
+            this.B_start.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.B_start.ForeColor = System.Drawing.Color.Transparent;
+            this.B_start.Location = new System.Drawing.Point(0, 12);
             this.B_start.Name = "B_start";
-            this.B_start.Size = new System.Drawing.Size(151, 31);
+            this.B_start.Size = new System.Drawing.Size(119, 28);
             this.B_start.TabIndex = 4;
-            this.B_start.Text = "Connect Local";
-            this.B_start.UseVisualStyleBackColor = true;
+            this.B_start.Text = "LOCAL";
+            this.B_start.UseVisualStyleBackColor = false;
+            this.B_start.Visible = false;
             this.B_start.Click += new System.EventHandler(this.B_start_Click);
             // 
             // RealmName
@@ -125,14 +127,16 @@
             // 
             // bnTestServer
             // 
-            this.bnTestServer.BackColor = System.Drawing.Color.Black;
+            this.bnTestServer.BackColor = System.Drawing.Color.Transparent;
+            this.bnTestServer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.bnTestServer.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.bnTestServer.ForeColor = System.Drawing.Color.Gold;
-            this.bnTestServer.Location = new System.Drawing.Point(40, 28);
+            this.bnTestServer.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.bnTestServer.ForeColor = System.Drawing.Color.Transparent;
+            this.bnTestServer.Location = new System.Drawing.Point(1084, 620);
+            this.bnTestServer.Margin = new System.Windows.Forms.Padding(0);
             this.bnTestServer.Name = "bnTestServer";
-            this.bnTestServer.Size = new System.Drawing.Size(219, 53);
+            this.bnTestServer.Size = new System.Drawing.Size(196, 95);
             this.bnTestServer.TabIndex = 12;
-            this.bnTestServer.Text = "LOGIN";
             this.bnTestServer.UseVisualStyleBackColor = false;
             this.bnTestServer.Click += new System.EventHandler(this.bnTestServer_Click);
             // 
@@ -196,10 +200,10 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 679);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 718);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.statusStrip1.Size = new System.Drawing.Size(1264, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1280, 22);
             this.statusStrip1.TabIndex = 14;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -219,19 +223,24 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Black;
+            this.BackgroundImage = global::Launcher.Properties.Resources.final2;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.ClientSize = new System.Drawing.Size(1264, 701);
+            this.ClientSize = new System.Drawing.Size(1280, 740);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.bnTestServer);
             this.Controls.Add(this.lblLauncherServer);
             this.Controls.Add(this.B_start);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.T_password);
             this.Controls.Add(this.T_username);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "Accueil";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Warhammer Online";
+            this.Text = "WAR: APOCALYPSE";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Disconnect);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.statusStrip1.ResumeLayout(false);
@@ -245,8 +254,6 @@
 
         private System.Windows.Forms.TextBox T_username;
         private System.Windows.Forms.MaskedTextBox T_password;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button B_start;
         private System.Windows.Forms.DataGridViewTextBoxColumn RealmName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Online;

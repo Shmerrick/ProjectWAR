@@ -126,5 +126,15 @@ namespace Launcher
         {
 
         }
+
+        private void T_username_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void T_password_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
+        {
+
+        }
     }
 }

@@ -173,11 +173,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Artwork\button.png" />
     <Content Include="Artwork\final1.png" />
     <Content Include="Artwork\final2.png" />
     <Content Include="Artwork\final3.png" />
     <Content Include="Artwork\final4.png" />
     <Content Include="Artwork\final5.png" />
+    <Content Include="Artwork\WAR.ico" />
     <Content Include="Artwork\WAR.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
