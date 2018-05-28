@@ -31,8 +31,9 @@ namespace WorldServer.Test
             var result1 = new RacialPairManager().GetRandomRace(GameData.Pairing.PAIRING_GREENSKIN_DWARVES);
             Assert.IsTrue(result1 != GameData.Pairing.PAIRING_GREENSKIN_DWARVES);
             var result2 = new RacialPairManager().GetRandomRace(GameData.Pairing.PAIRING_EMPIRE_CHAOS);
-            Assert.IsTrue(result1 != GameData.Pairing.PAIRING_EMPIRE_CHAOS);
-
+            Assert.IsTrue(result2 != GameData.Pairing.PAIRING_EMPIRE_CHAOS);
+            var result3 = new RacialPairManager().GetRandomRace(GameData.Pairing.PAIRING_ELVES_DARKELVES);
+            Assert.IsTrue(result3 != GameData.Pairing.PAIRING_ELVES_DARKELVES);
         }
     }
 }

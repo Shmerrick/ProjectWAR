@@ -46,7 +46,8 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// <summary>
         /// Advance the battlefront pairing on lock of a pairing (or start of the server).
         /// Pairings logic is (if nothing active, set random T2 pairing), otherwise follow the racial pairings (eg T2 Chaos -> T3 Chaos -> T4 Chaos).
-        /// On lock of T4 select random T2 pairing.
+        /// On lock of T4 select random T4 pairing not the locked one.
+        /// On lock of 2 T4 zones (regardless of owner), head to T2
         /// </summary>
         public RacialPair AdvancePairing()
         {
@@ -73,11 +74,11 @@ namespace WorldServer.World.Battlefronts.NewDawn
                     // This racial group
                     var activeRacialPairing = activePairing.Pairing;
                     // If Tier 5 has locked, start a random Tier 2.
-                    if ((nextTier == 2) && (activePairing.Tier == 5))
+                    if ((nextTier == 2) && (activePairing.Tier == 4))
                     {
                         var race = this.RacialPairManager.GetRandomRace(activeRacialPairing);
-                        _logger.Debug($"T4->T2 race : {race} ");
-                        _logger.Debug($"New Active Pair : {this.RacialPairManager.GetByPair(race, nextTier).ToString()}");
+                        _logger.Info($"T4->T2 race : {race} ");
+                        _logger.Info($"New Active Pair : {this.RacialPairManager.GetByPair(race, nextTier).ToString()}");
                         return SetActivePairing(this.RacialPairManager.GetByPair(race, nextTier));
                     }
                 }

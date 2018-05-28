@@ -197,7 +197,7 @@ namespace WorldServer.Test
             Assert.IsTrue(newPairing.Tier == 2);
 
         }
-
+        [TestMethod]
         public void AdvancePairing_T4_to_T2()
         {
             manager.SetActivePairing(RacialPairManager.GetByPair(Pairing.PAIRING_ELVES_DARKELVES, 4));
@@ -207,6 +207,7 @@ namespace WorldServer.Test
             var newPairing = manager.AdvancePairing();
 
             Assert.IsNotNull(newPairing);
+            Assert.IsTrue(newPairing.Tier == 2);
             Assert.IsTrue(newPairing.Tier == 2);
 
         }
