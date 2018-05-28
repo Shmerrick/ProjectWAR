@@ -16,15 +16,26 @@ using NLog;
 
 namespace Launcher
 {
-    public partial class Accueil : Form
+    public partial class ApocLauncher : Form
     {
-        public static Accueil Acc;
+        public static ApocLauncher Acc;
         private static Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-        public Accueil()
+        public ApocLauncher()
         {
             InitializeComponent();
             Acc = this;
         }
+
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+            if (m.Msg == WM_NCHITTEST)
+                m.Result = (IntPtr)(HT_CAPTION);
+        }
+
+        private const int WM_NCHITTEST = 0x84;
+        private const int HT_CLIENT = 0x1;
+        private const int HT_CAPTION = 0x2;
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -41,7 +52,7 @@ namespace Launcher
         {
             Client.Connect(Client.LocalServerIP, Client.LocalServerPort);
 
-            Accueil.Acc.statusStrip1.Items[0].Text = $@"Connecting to : {Client.LocalServerIP}:{Client.LocalServerPort}";
+            lblConnection.Text = $@"Connecting to : {Client.LocalServerIP}:{Client.LocalServerPort}";
 
             string userCode = T_username.Text.ToLower();
             string userPassword = T_password.Text.ToLower();
@@ -100,7 +111,7 @@ namespace Launcher
             var IpAddress = serverConfig.GetTestIpAddress();
 
             Client.Connect(IpAddress, Client.TestServerPort);
-            Accueil.Acc.statusStrip1.Items[0].Text = $@"Connecting to : {IpAddress}:{Client.TestServerPort}";
+            lblConnection.Text = $@"Connecting to : {IpAddress}:{Client.TestServerPort}";
 
             string userCode = T_username.Text.ToLower();
             string userPassword = T_password.Text.ToLower();
@@ -135,6 +146,11 @@ namespace Launcher
         private void T_password_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
         {
 
+        }
+
+        private void bnClose_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

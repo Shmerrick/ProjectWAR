@@ -1,6 +1,6 @@
 ﻿namespace Launcher
 {
-    partial class Accueil
+    partial class ApocLauncher
     {
         /// <summary>
         /// Variable needed by the designer.
@@ -28,7 +28,7 @@
         /// </ summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Accueil));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApocLauncher));
             this.T_username = new System.Windows.Forms.TextBox();
             this.T_password = new System.Windows.Forms.MaskedTextBox();
             this.B_start = new System.Windows.Forms.Button();
@@ -46,10 +46,8 @@
             this.label6 = new System.Windows.Forms.Label();
             this.edPassword = new System.Windows.Forms.MaskedTextBox();
             this.edNewUserCode = new System.Windows.Forms.TextBox();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.statusStrip1.SuspendLayout();
+            this.lblConnection = new System.Windows.Forms.Label();
+            this.bnClose = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // T_username
@@ -57,7 +55,7 @@
             this.T_username.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.T_username.BackColor = System.Drawing.Color.Black;
             this.T_username.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.T_username.Font = new System.Drawing.Font("Friz Quadrata", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.T_username.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.T_username.ForeColor = System.Drawing.Color.DarkOrange;
             this.T_username.Location = new System.Drawing.Point(172, 648);
             this.T_username.Margin = new System.Windows.Forms.Padding(0);
@@ -73,12 +71,12 @@
             this.T_password.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.T_password.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.T_password.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.T_password.Font = new System.Drawing.Font("Friz Quadrata", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.T_password.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.T_password.ForeColor = System.Drawing.Color.DarkOrange;
             this.T_password.Location = new System.Drawing.Point(779, 648);
             this.T_password.Margin = new System.Windows.Forms.Padding(0);
             this.T_password.Name = "T_password";
-            this.T_password.Size = new System.Drawing.Size(294, 50);
+            this.T_password.Size = new System.Drawing.Size(294, 44);
             this.T_password.TabIndex = 1;
             this.T_password.UseSystemPasswordChar = true;
             this.T_password.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.T_password_MaskInputRejected);
@@ -195,29 +193,31 @@
             this.edNewUserCode.Size = new System.Drawing.Size(175, 20);
             this.edNewUserCode.TabIndex = 4;
             // 
-            // statusStrip1
+            // lblConnection
             // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1,
-            this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 718);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.statusStrip1.Size = new System.Drawing.Size(1280, 22);
-            this.statusStrip1.TabIndex = 14;
-            this.statusStrip1.Text = "statusStrip1";
+            this.lblConnection.AutoSize = true;
+            this.lblConnection.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.lblConnection.Location = new System.Drawing.Point(1081, 718);
+            this.lblConnection.Name = "lblConnection";
+            this.lblConnection.Size = new System.Drawing.Size(0, 13);
+            this.lblConnection.TabIndex = 13;
             // 
-            // toolStripStatusLabel1
+            // bnClose
             // 
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
-            this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // toolStripStatusLabel2
-            // 
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(0, 17);
-            this.toolStripStatusLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.bnClose.BackColor = System.Drawing.Color.Transparent;
+            this.bnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.bnClose.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.bnClose.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.bnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bnClose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.bnClose.Location = new System.Drawing.Point(1229, -4);
+            this.bnClose.Margin = new System.Windows.Forms.Padding(0);
+            this.bnClose.Name = "bnClose";
+            this.bnClose.Size = new System.Drawing.Size(51, 44);
+            this.bnClose.TabIndex = 14;
+            this.bnClose.Text = "X";
+            this.bnClose.UseVisualStyleBackColor = false;
+            this.bnClose.Click += new System.EventHandler(this.bnClose_Click);
             // 
             // Accueil
             // 
@@ -227,7 +227,8 @@
             this.BackgroundImage = global::Launcher.Properties.Resources.final2;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(1280, 740);
-            this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.bnClose);
+            this.Controls.Add(this.lblConnection);
             this.Controls.Add(this.bnTestServer);
             this.Controls.Add(this.lblLauncherServer);
             this.Controls.Add(this.B_start);
@@ -243,8 +244,6 @@
             this.Text = "WAR: APOCALYPSE";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Disconnect);
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -269,9 +268,8 @@
         private System.Windows.Forms.TextBox edNewUserCode;
         private System.Windows.Forms.TextBox edHashCode;
         private System.Windows.Forms.Label label7;
-        public System.Windows.Forms.StatusStrip statusStrip1;
-        public System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        public System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        public System.Windows.Forms.Label lblConnection;
+        private System.Windows.Forms.Button bnClose;
     }
 }
 

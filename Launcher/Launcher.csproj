@@ -104,11 +104,11 @@
   <ItemGroup>
     <Compile Include="NetWork\ServerConfig.cs" />
     <Compile Include="NetWork\Client.cs" />
-    <Compile Include="Accueil.cs">
+    <Compile Include="ApocLauncher.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Accueil.Designer.cs">
-      <DependentUpon>Accueil.cs</DependentUpon>
+    <Compile Include="ApocLauncher.Designer.cs">
+      <DependentUpon>ApocLauncher.cs</DependentUpon>
     </Compile>
     <Compile Include="NetWork\Marshal.cs" />
     <Compile Include="NetWork\Opcodes.cs" />
@@ -116,8 +116,8 @@
     <Compile Include="NetWork\PacketOut.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Accueil.resx">
-      <DependentUpon>Accueil.cs</DependentUpon>
+    <EmbeddedResource Include="ApocLauncher.resx">
+      <DependentUpon>ApocLauncher.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

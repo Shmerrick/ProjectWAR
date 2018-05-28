@@ -34,7 +34,7 @@ namespace Launcher
 
         public static void Print(string Message)
         {
-            Accueil.Acc.Print(Message);
+            ApocLauncher.Acc.Print(Message);
         }
 
         public static bool Connect(string ip, int port)
@@ -408,7 +408,7 @@ namespace Launcher
 
                 case Opcodes.LCR_START:
 
-                    Accueil.Acc.ReceiveStart();
+                    ApocLauncher.Acc.ReceiveStart();
 
                     byte response = packet.GetUint8();
                     _logger.Debug($"HandlePacket. Response Code : {response}");
@@ -416,32 +416,32 @@ namespace Launcher
                     if (response == 1) //invalud user/pass
                     {
                         _logger.Warn($"Invalid User / Pass");
-                        Accueil.Acc.statusStrip1.Items[1].Text = $@"Invalid User / Pass";
+                        ApocLauncher.Acc.lblConnection.Text = $@"Invalid User / Pass";
                         return;
                     }
                     else if (response == 2) //banned
                     {
                         _logger.Warn($"Account is banned");
-                        Accueil.Acc.statusStrip1.Items[1].Text = $@"Account is banned";
+                        ApocLauncher.Acc.lblConnection.Text = $@"Account is banned";
                         return;
                     }
                     else if (response == 3) //account not active
                     {
                         _logger.Warn($"Account is not active");
-                        Accueil.Acc.statusStrip1.Items[1].Text = $@"Account is not active";
+                        ApocLauncher.Acc.lblConnection.Text = $@"Account is not active";
                         return;
                     }
                     else if (response > 3)
                     {
                         _logger.Error($"Unknown Response");
-                        Accueil.Acc.statusStrip1.Items[1].Text = $@"Unknown Response";
+                        ApocLauncher.Acc.lblConnection.Text = $@"Unknown Response";
                         return;
                     }
                     else
                     {
                         authToken = packet.GetString();
                         _logger.Info($"Authentication Token Received : {authToken}");
-                        Accueil.Acc.statusStrip1.Items[1].Text = $@"Starting Client..";
+                        ApocLauncher.Acc.lblConnection.Text = $@"Starting Client..";
                         try
                         {
                             
