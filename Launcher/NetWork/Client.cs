@@ -371,7 +371,7 @@ namespace Launcher
         {
             if(!Enum.IsDefined(typeof(Opcodes),(byte)packet.Opcode))
             {
-                Print("Invalid opcode : " + packet.Opcode.ToString("X02"));
+                Print($"Invalid opcode : {packet.Opcode.ToString("X02")}");
                 return;
             }
 
@@ -445,17 +445,19 @@ namespace Launcher
                         try
                         {
                             
-                            string CurrentDir = Directory.GetCurrentDirectory();
+                            string CurrentDir = Directory.GetCurrentDirectory()+"\\..";
+
                             patchExe();
                             UpdateWarData();
 
                             _logger.Info($"Starting Client {CurrentDir}\\WAR.exe");
 
-                            Process Pro = new Process();
-                            Pro.StartInfo.FileName = "WAR.exe";
-                            Pro.StartInfo.Arguments = " --acctname=" + Convert.ToBase64String(Encoding.ASCII.GetBytes(User)) + " --sesstoken=" + Convert.ToBase64String(Encoding.ASCII.GetBytes(authToken));
-                            _logger.Info($"Starting process WAR.exe");
-                            Pro.Start();
+                            Process process = new Process();
+                            process.StartInfo.WorkingDirectory = CurrentDir;
+                            process.StartInfo.FileName = "WAR.exe";
+                            process.StartInfo.Arguments = " --acctname=" + Convert.ToBase64String(Encoding.ASCII.GetBytes(User)) + " --sesstoken=" + Convert.ToBase64String(Encoding.ASCII.GetBytes(authToken));
+                            _logger.Info($"Starting process WAR.exe (in {CurrentDir})");
+                            process.Start();
                             Directory.SetCurrentDirectory(CurrentDir);
                         }
                         catch (Exception e)

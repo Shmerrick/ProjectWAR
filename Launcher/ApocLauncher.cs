@@ -101,13 +101,7 @@ namespace Launcher
         private void bnTestServer_Click(object sender, EventArgs e)
         {
             var serverConfig = new ServerConfig();
-
-            serverConfig.ZoneDirectoryLocation = "abc";
-
             var zoneDirectoryLocation = serverConfig.ZoneDirectoryLocation;
-
-            serverConfig.ZoneDirectoryLocation = "def";
-
             var IpAddress = serverConfig.GetTestIpAddress();
 
             Client.Connect(IpAddress, Client.TestServerPort);
@@ -131,21 +125,6 @@ namespace Launcher
             Out.WriteString(encryptedPassword);
 
             Client.SendTCP(Out);
-        }
-
-        private void groupBox1_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void T_username_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void T_password_MaskInputRejected(object sender, MaskInputRejectedEventArgs e)
-        {
-
         }
 
         private void bnClose_Click(object sender, EventArgs e)

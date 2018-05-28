@@ -64,7 +64,6 @@
             this.T_username.Name = "T_username";
             this.T_username.Size = new System.Drawing.Size(330, 50);
             this.T_username.TabIndex = 0;
-            this.T_username.TextChanged += new System.EventHandler(this.T_username_TextChanged);
             // 
             // T_password
             // 
@@ -79,7 +78,7 @@
             this.T_password.Size = new System.Drawing.Size(294, 44);
             this.T_password.TabIndex = 1;
             this.T_password.UseSystemPasswordChar = true;
-            this.T_password.MaskInputRejected += new System.Windows.Forms.MaskInputRejectedEventHandler(this.T_password_MaskInputRejected);
+            
             // 
             // B_start
             // 
