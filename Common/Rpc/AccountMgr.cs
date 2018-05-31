@@ -261,7 +261,6 @@ namespace Common {
             Acct.Token = Convert.ToBase64String(Encoding.ASCII.GetBytes(GUID));
 
             Database.ExecuteNonQuery("UPDATE war_accounts.accounts SET Token='" + Acct.Token + "' WHERE Username = '" + Database.Escape(username) + "'");
-
             return Acct.Token;
         }
 
@@ -472,7 +471,7 @@ namespace Common {
 
         private string[] _bannedNames = { "zyklon", "fuck", "hitler", "nigger", "nigga", "faggot", "jihad", "muhajid" };
 
-        public bool CreateAccount(string username, string password, int gmLevel) {
+        public bool CreateAccount(string username, string password, int gmLevel, string ip = "127.0.0.1") {
             Account Acct = GetAccount(username);
             if (Acct != null) {
                 Log.Error("CreateAccount", "This username is already used");
@@ -497,9 +496,11 @@ namespace Common {
             };
 
             Acct.CryptPassword = Account.ConvertSHA256(Acct.Username + ":" + Acct.Password);
+            //  Database.ExecuteNonQuery($"INSERT INTO war_accounts.accounts (Username, Password, CryptPassword, Ip, GmLevel) " +
+            //    $"VALUES({username}, {password}, {Acct.CryptPassword}, {ip}, {gmLevel})");
 
-            Acct.Password = "";
-            Acct.Ip = "127.0.0.1";
+            Acct.Password = password;
+            Acct.Ip = ip;
             Acct.Token = "";
             Acct.GmLevel = (sbyte)gmLevel;
             Acct.Banned = 0;
