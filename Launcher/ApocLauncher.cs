@@ -37,32 +37,7 @@ namespace Launcher {
             if (!string.IsNullOrEmpty(Settings.Default.LastLogin))
                 T_username.Text = Settings.Default.LastLogin;
 
-            var serverConfig = new ServerConfig();
-            var zoneDirectoryLocation = serverConfig.ZoneDirectoryLocation;
-            var IpAddress = serverConfig.GetTestIpAddress();
 
-            Client.Connect(IpAddress, Client.TestServerPort);
-            lblConnection.Text = $@"Connecting to : {IpAddress}:{Client.TestServerPort}";
-
-            string userCode = "test";
-            string userPassword = "apoca";
-
-            Settings.Default.LastLogin = userCode;
-            Settings.Default.Save();
-
-            Client.User = userCode;
-
-
-            string encryptedPassword = ConvertSHA256(userPassword);
-
-            _logger.Info($@"Connecting to : {IpAddress}:{Client.TestServerPort} as {userCode}/{userPassword} [{encryptedPassword}]");
-
-            _logger.Info($"Sending CL_START to {IpAddress}:{Client.TestServerPort}");
-            PacketOut Out = new PacketOut((byte)Opcodes.CL_CREATE);
-            Out.WriteString(userCode);
-            Out.WriteString(encryptedPassword);
-
-            Client.SendTCP(Out);
         }
 
         private void Disconnect(object sender, FormClosedEventArgs e) {
@@ -162,20 +137,16 @@ namespace Launcher {
             string userCode = textBoxUsername.Text.ToLower();
             string userPassword = textBoxPassword.Text.ToLower();
 
-            Settings.Default.LastLogin = userCode;
-            Settings.Default.Save();
-
             Client.User = userCode;
 
 
-            string encryptedPassword = ConvertSHA256(userPassword);
 
-            _logger.Info($@"Connecting to : {IpAddress}:{Client.TestServerPort} as {userCode}/{userPassword} [{encryptedPassword}]");
+            _logger.Info($@"Create account : {IpAddress}:{Client.TestServerPort} as {userCode}/{userPassword}");
 
             _logger.Info($"Sending CL_START to {IpAddress}:{Client.TestServerPort}");
             PacketOut Out = new PacketOut((byte)Opcodes.CL_CREATE);
             Out.WriteString(userCode);
-            Out.WriteString(encryptedPassword);
+            Out.WriteString(userPassword);
 
             Client.SendTCP(Out);
         }

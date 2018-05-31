@@ -57,7 +57,6 @@
             this.textBoxUsername = new System.Windows.Forms.TextBox();
             this.buttonPanelCreateAccount = new System.Windows.Forms.Button();
             this.buttonAccountClose = new System.Windows.Forms.Button();
-            this.labelInfo = new System.Windows.Forms.Label();
             this.panelCreateAccount.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -206,7 +205,7 @@
             // 
             this.lblConnection.AutoSize = true;
             this.lblConnection.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.lblConnection.Location = new System.Drawing.Point(1081, 718);
+            this.lblConnection.Location = new System.Drawing.Point(1092, 703);
             this.lblConnection.Name = "lblConnection";
             this.lblConnection.Size = new System.Drawing.Size(0, 13);
             this.lblConnection.TabIndex = 13;
@@ -357,17 +356,6 @@
             this.buttonAccountClose.UseVisualStyleBackColor = false;
             this.buttonAccountClose.Click += new System.EventHandler(this.buttonAccountClose_Click);
             // 
-            // labelInfo
-            // 
-            this.labelInfo.BackColor = System.Drawing.Color.Transparent;
-            this.labelInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelInfo.ForeColor = System.Drawing.Color.Snow;
-            this.labelInfo.Location = new System.Drawing.Point(366, 552);
-            this.labelInfo.Name = "labelInfo";
-            this.labelInfo.Size = new System.Drawing.Size(590, 48);
-            this.labelInfo.TabIndex = 22;
-            this.labelInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // ApocLauncher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -376,7 +364,6 @@
             this.BackgroundImage = global::Launcher.Properties.Resources.final2;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(1280, 720);
-            this.Controls.Add(this.labelInfo);
             this.Controls.Add(this.buttonPanelCreateAccount);
             this.Controls.Add(this.panelCreateAccount);
             this.Controls.Add(this.bnClose);
@@ -433,7 +420,6 @@
         private System.Windows.Forms.Button buttonCreate;
         private System.Windows.Forms.Button buttonPanelCreateAccount;
         private System.Windows.Forms.Button buttonAccountClose;
-        private System.Windows.Forms.Label labelInfo;
     }
 }
 

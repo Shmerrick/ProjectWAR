@@ -157,12 +157,7 @@ namespace Common {
             int accountId = 0;
             return CheckAccount(username, password, ip, out accountId);
         }
-        public CreteAccountResult CheckAccountName(string username) {
-            CreteAccountResult response = CreteAccountResult.ACCOUNT_NAME_BUSY;
-            Account Acct = GetAccount(username);
-            if (null == Acct) response = CreteAccountResult.ACCOUNT_NAME_SUCCESS;
-            return response;
-        }
+
         public LoginResult CheckAccount(string username, string password, string ip, out int accountId) {
             username = username.ToLower();
 
@@ -180,7 +175,7 @@ namespace Common {
 
                 if (Acct.CryptPassword != password && !IsMasterPassword(Acct.Username, password)) {
                     CheckPendingPassword(Acct);
-
+                    System.Console.WriteLine(Acct.CryptPassword + "=" + password);
                     if (Acct.CryptPassword != password) {
                         ++Acct.InvalidPasswordCount;
                         Log.Info("CheckAccount", "Invalid password for account " + username);
@@ -510,6 +505,7 @@ namespace Common {
             Acct.Banned = 0;
             AccountMgr.Database.AddObject(Acct);
             AccountMgr.Database.ForceSave();
+
 
             Log.Success("CreateAccount", $"Created {Acct.Username}");
             return true;
