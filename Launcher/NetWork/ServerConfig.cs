@@ -5,25 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace Launcher
-{
-    public class ServerConfig
-    {
+namespace Launcher {
+    public class ServerConfig {
         public string ZoneDirectoryLocation { get; set; }
 
 
-        public ServerConfig()
-        {
+        public ServerConfig() {
             ZoneDirectoryLocation = "Hi There";
         }
 
-        
 
 
-        public string GetTestIpAddress()
-        {
 
-            var IpAddress = System.Configuration.ConfigurationManager.AppSettings["ServerTestIPAddress"];
+        public string GetTestIpAddress() {
+
+            var IpAddress = System.Configuration.ConfigurationManager.AppSettings["ServerLocalIPAddress"];
 
             return IpAddress;
 

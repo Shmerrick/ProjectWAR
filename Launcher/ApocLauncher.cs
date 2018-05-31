@@ -179,5 +179,9 @@ namespace Launcher {
 
             Client.SendTCP(Out);
         }
+
+        private void buttonAccountClose_Click(object sender, EventArgs e) {
+            panelCreateAccount.Visible = false;
+        }
     }
 }
