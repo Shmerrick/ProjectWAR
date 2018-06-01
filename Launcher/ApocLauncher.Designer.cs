@@ -63,6 +63,7 @@ namespace Launcher
             this.textBoxUsername = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.buttonPanelCreateAccount = new System.Windows.Forms.Button();
+            this.bnCreateLocal = new System.Windows.Forms.Button();
             this.panelCreateAccount.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -237,6 +238,7 @@ namespace Launcher
             // 
             this.panelCreateAccount.BackColor = System.Drawing.Color.Transparent;
             this.panelCreateAccount.BackgroundImage = global::Launcher.Properties.Resources.background;
+            this.panelCreateAccount.Controls.Add(this.bnCreateLocal);
             this.panelCreateAccount.Controls.Add(this.buttonAccountClose);
             this.panelCreateAccount.Controls.Add(this.buttonCreate);
             this.panelCreateAccount.Controls.Add(this.label3);
@@ -362,6 +364,20 @@ namespace Launcher
             this.buttonPanelCreateAccount.UseVisualStyleBackColor = false;
             this.buttonPanelCreateAccount.Click += new System.EventHandler(this.buttonPanelCreateAccount_Click);
             // 
+            // bnCreateLocal
+            // 
+            this.bnCreateLocal.BackColor = System.Drawing.Color.Transparent;
+            this.bnCreateLocal.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.bnCreateLocal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.bnCreateLocal.Location = new System.Drawing.Point(385, 210);
+            this.bnCreateLocal.Name = "bnCreateLocal";
+            this.bnCreateLocal.Size = new System.Drawing.Size(176, 21);
+            this.bnCreateLocal.TabIndex = 23;
+            this.bnCreateLocal.Text = "LOCAL";
+            this.bnCreateLocal.UseVisualStyleBackColor = false;
+            this.bnCreateLocal.Visible = false;
+            this.bnCreateLocal.Click += new System.EventHandler(this.bnCreateLocal_Click);
+            // 
             // ApocLauncher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -426,6 +442,7 @@ namespace Launcher
         private Button buttonCreate;
         private Button buttonPanelCreateAccount;
         private Button buttonAccountClose;
+        private Button bnCreateLocal;
     }
 }
 

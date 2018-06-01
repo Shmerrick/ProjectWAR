@@ -51,10 +51,9 @@ namespace Launcher {
                 Array.Copy(BitConverter.GetBytes(keepAliveInterval), 0, inArray, size, size);
                 Array.Copy(BitConverter.GetBytes(retryInterval), 0, inArray, size * 2, size);
                 _Socket.IOControl(IOControlCode.KeepAliveValues, inArray, null);
-
-                //MessageBox.Show(_Socket.Connected.ToString());
+                
                 BeginReceive();
-                //MessageBox.Show(_Socket.Connected.ToString());
+                
                 SendCheck();
             } catch (Exception e) {
                 MessageBox.Show("Can not connect to : " + ip + ":" + port + "\n" + e.Message);
@@ -189,7 +188,9 @@ namespace Launcher {
                     Buffer.BlockCopy(buf, 0, m_tcpSendBuffer, 0, buf.Length);
 
                     _Socket.BeginSend(m_tcpSendBuffer, 0, buf.Length, SocketFlags.None, m_asyncTcpCallback, null);
-                } catch {
+                } catch (Exception e)
+                {
+                    _logger.Trace($"{e.Message}");
                     Close();
                 }
             }
@@ -357,26 +358,26 @@ namespace Launcher {
                     if (response == 1) //invalud user/pass
                     {
                         _logger.Warn($"Invalid User / Pass");
-                        ApocLauncher.Acc.lblConnection.Text = $@"Invalid User / Pass";
+                        //ApocLauncher.Acc.lblConnection.Text = $@"Invalid User / Pass";
                         return;
                     } else if (response == 2) //banned
                       {
                         _logger.Warn($"Account is banned");
-                        ApocLauncher.Acc.lblConnection.Text = $@"Account is banned";
+                        ///ApocLauncher.Acc.lblConnection.Text = $@"Account is banned";
                         return;
                     } else if (response == 3) //account not active
                       {
                         _logger.Warn($"Account is not active");
-                        ApocLauncher.Acc.lblConnection.Text = $@"Account is not active";
+                        //ApocLauncher.Acc.lblConnection.Text = $@"Account is not active";
                         return;
                     } else if (response > 3) {
                         _logger.Error($"Unknown Response");
-                        ApocLauncher.Acc.lblConnection.Text = $@"Unknown Response";
+                        //ApocLauncher.Acc.lblConnection.Text = $@"Unknown Response";
                         return;
                     } else {
                         authToken = packet.GetString();
                         _logger.Info($"Authentication Token Received : {authToken}");
-                        ApocLauncher.Acc.lblConnection.Text = $@"Starting Client..";
+                        //ApocLauncher.Acc.lblConnection.Text = $@"Starting Client..";
                         try {
 
                             string CurrentDir = Directory.GetCurrentDirectory() + "\\..";
@@ -428,17 +429,17 @@ namespace Launcher {
                     if (respons == 0) //invalud user/pass
                     {
                         _logger.Warn($"Account Name busy!");
-                        ApocLauncher.Acc.lblConnection.Text = $@"Account Name busy!";
+                        //ApocLauncher.Acc.lblConnection.Text = $@"Account Name busy!";
                         return;
                     } else if (respons == 1) //success
                         {
                         _logger.Warn($"Account create!");
-                        ApocLauncher.Acc.lblConnection.Text = $@"Account created!";
+                        //ApocLauncher.Acc.lblConnection.Text = $@"Account created!";
                         return;
                     } else if (respons == 2) //banned
                       {
                         _logger.Warn($"Account is banned!");
-                        ApocLauncher.Acc.lblConnection.Text = $@"Account is banned";
+                        //ApocLauncher.Acc.lblConnection.Text = $@"Account is banned";
                         return;
                     }
 

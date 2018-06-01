@@ -24,9 +24,15 @@ namespace Launcher
             Acc = this;
 
             if (allowLocal)
+            {
                 this.bnConnectLocal.Visible = true;
+                this.bnCreateLocal.Visible = true;
+            }
             else
+            {
                 this.bnConnectLocal.Visible = false;
+                this.bnCreateLocal.Visible = false;
+            }
         }
 
         protected override void WndProc(ref Message m)
@@ -42,8 +48,6 @@ namespace Launcher
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            if (!String.IsNullOrEmpty(Settings.Default.LastLogin))
-                T_username.Text = Settings.Default.LastLogin;
         }
 
         private void Disconnect(object sender, FormClosedEventArgs e)
@@ -59,9 +63,6 @@ namespace Launcher
 
             string userCode = T_username.Text.ToLower();
             string userPassword = T_password.Text.ToLower();
-
-            Settings.Default.LastLogin = userCode;
-            Settings.Default.Save();
 
             Client.User = userCode;
 
@@ -107,8 +108,6 @@ namespace Launcher
             string userCode = T_username.Text.ToLower();
             string userPassword = T_password.Text.ToLower();
 
-            Settings.Default.LastLogin = userCode;
-            Settings.Default.Save();
 
             Client.User = userCode;
 
@@ -134,6 +133,11 @@ namespace Launcher
             panelCreateAccount.Visible = true;
         }
 
+        /// <summary>
+        /// Create new user account.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonCreate_Click(object sender, EventArgs e)
         {
             if (String.IsNullOrEmpty(textBoxUsername.Text) || String.IsNullOrEmpty(textBoxPassword.Text)) return;
@@ -146,9 +150,9 @@ namespace Launcher
 
             Client.User = userCode;
 
-            _logger.Info($@"Create account : {LocalServerIP}:{TestServerPort} as {userCode}/{userPassword}");
+            _logger.Info($@"Create account : {TestServerIP}:{TestServerPort} as {userCode}/{userPassword}");
 
-            _logger.Info($"Sending CL_START to {TestServerIP}:{TestServerPort}");
+            _logger.Info($"Sending CL_CREATE to {TestServerIP}:{TestServerPort}");
             PacketOut Out = new PacketOut((byte)Opcodes.CL_CREATE);
             Out.WriteString(userCode);
             Out.WriteString(userPassword);
@@ -159,6 +163,28 @@ namespace Launcher
         private void buttonAccountClose_Click(object sender, EventArgs e)
         {
             panelCreateAccount.Visible = false;
+        }
+
+        private void bnCreateLocal_Click(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(textBoxUsername.Text) || String.IsNullOrEmpty(textBoxPassword.Text)) return;
+
+            Client.Connect(LocalServerIP, LocalServerPort);
+            lblConnection.Text = $@"Connecting to : {LocalServerIP}:{LocalServerPort}";
+
+            string userCode = textBoxUsername.Text.ToLower();
+            string userPassword = textBoxPassword.Text.ToLower();
+
+            Client.User = userCode;
+
+            _logger.Info($@"Create account : {LocalServerIP}:{LocalServerPort} as {userCode}/{userPassword}");
+
+            _logger.Info($"Sending CL_CREATE to {LocalServerIP}:{LocalServerPort}");
+            PacketOut Out = new PacketOut((byte)Opcodes.CL_CREATE);
+            Out.WriteString(userCode);
+            Out.WriteString(userPassword);
+
+            Client.SendTCP(Out);
         }
     }
 }
