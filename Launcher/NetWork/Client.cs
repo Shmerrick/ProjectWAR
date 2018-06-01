@@ -15,10 +15,7 @@ namespace Launcher {
     public static class Client {
         public static int Version = 1;
         //Server WAREMU is running from.
-        public static string LocalServerIP = "127.0.0.1";
-        //public static string TestServerIP = "72.218.160.249";
-        public static int LocalServerPort = 8000;
-        public static int TestServerPort = 8000;
+       
         public static bool Started;
 
         public static string User;
