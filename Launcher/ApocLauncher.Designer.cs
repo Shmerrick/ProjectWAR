@@ -56,6 +56,7 @@
             this.textBoxPassword = new System.Windows.Forms.TextBox();
             this.textBoxUsername = new System.Windows.Forms.TextBox();
             this.buttonPanelCreateAccount = new System.Windows.Forms.Button();
+            this.lblVersion = new System.Windows.Forms.Label();
             this.panelCreateAccount.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -245,7 +246,7 @@
             // buttonCreate
             // 
             this.buttonCreate.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.buttonCreate.Font = new System.Drawing.Font("Friz Quadrata", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonCreate.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonCreate.ForeColor = System.Drawing.Color.DarkOrange;
             this.buttonCreate.Location = new System.Drawing.Point(0, 237);
             this.buttonCreate.Name = "buttonCreate";
@@ -258,7 +259,7 @@
             // label3
             // 
             this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Font = new System.Drawing.Font("Friz Quadrata", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.DarkOrange;
             this.label3.Location = new System.Drawing.Point(1, 154);
             this.label3.Name = "label3";
@@ -270,7 +271,7 @@
             // label2
             // 
             this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Font = new System.Drawing.Font("Friz Quadrata", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.DarkOrange;
             this.label2.Location = new System.Drawing.Point(0, 78);
             this.label2.Name = "label2";
@@ -283,7 +284,7 @@
             // 
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.label1.Font = new System.Drawing.Font("Friz Quadrata", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.DarkOrange;
             this.label1.Location = new System.Drawing.Point(3, 9);
             this.label1.Name = "label1";
@@ -326,7 +327,7 @@
             // 
             this.buttonPanelCreateAccount.BackColor = System.Drawing.Color.Transparent;
             this.buttonPanelCreateAccount.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.buttonPanelCreateAccount.Font = new System.Drawing.Font("Friz Quadrata", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonPanelCreateAccount.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonPanelCreateAccount.ForeColor = System.Drawing.Color.DarkOrange;
             this.buttonPanelCreateAccount.Location = new System.Drawing.Point(12, 30);
             this.buttonPanelCreateAccount.Name = "buttonPanelCreateAccount";
@@ -336,6 +337,15 @@
             this.buttonPanelCreateAccount.UseVisualStyleBackColor = false;
             this.buttonPanelCreateAccount.Click += new System.EventHandler(this.buttonPanelCreateAccount_Click);
             // 
+            // lblVersion
+            // 
+            this.lblVersion.AutoSize = true;
+            this.lblVersion.ForeColor = System.Drawing.Color.DarkOrange;
+            this.lblVersion.Location = new System.Drawing.Point(24, 698);
+            this.lblVersion.Name = "lblVersion";
+            this.lblVersion.Size = new System.Drawing.Size(0, 13);
+            this.lblVersion.TabIndex = 22;
+            // 
             // ApocLauncher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -344,6 +354,7 @@
             this.BackgroundImage = global::Launcher.Properties.Resources.final5;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(1280, 720);
+            this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.buttonPanelCreateAccount);
             this.Controls.Add(this.panelCreateAccount);
             this.Controls.Add(this.bnClose);
@@ -399,6 +410,7 @@
         private System.Windows.Forms.TextBox textBoxPassword;
         private System.Windows.Forms.Button buttonCreate;
         private System.Windows.Forms.Button buttonPanelCreateAccount;
+        private System.Windows.Forms.Label lblVersion;
     }
 }
 

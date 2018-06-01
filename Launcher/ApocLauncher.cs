@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -37,32 +38,9 @@ namespace Launcher {
             if (!string.IsNullOrEmpty(Settings.Default.LastLogin))
                 T_username.Text = Settings.Default.LastLogin;
 
-            var serverConfig = new ServerConfig();
-            var zoneDirectoryLocation = serverConfig.ZoneDirectoryLocation;
-            var IpAddress = serverConfig.GetTestIpAddress();
-
-            Client.Connect(IpAddress, Client.TestServerPort);
-            lblConnection.Text = $@"Connecting to : {IpAddress}:{Client.TestServerPort}";
-
-            string userCode = "test";
-            string userPassword = "apoca";
-
-            Settings.Default.LastLogin = userCode;
-            Settings.Default.Save();
-
-            Client.User = userCode;
-
-
-            string encryptedPassword = ConvertSHA256(userPassword);
-
-            _logger.Info($@"Connecting to : {IpAddress}:{Client.TestServerPort} as {userCode}/{userPassword} [{encryptedPassword}]");
-
-            _logger.Info($"Sending CL_START to {IpAddress}:{Client.TestServerPort}");
-            PacketOut Out = new PacketOut((byte)Opcodes.CL_CREATE);
-            Out.WriteString(userCode);
-            Out.WriteString(encryptedPassword);
-
-            Client.SendTCP(Out);
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            this.lblVersion.Text = fvi.FileVersion;
         }
 
         private void Disconnect(object sender, FormClosedEventArgs e) {
