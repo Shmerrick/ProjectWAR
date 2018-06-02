@@ -6,10 +6,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Launcher
-{
-    public partial class ApocLauncher : Form
-    {
+namespace Launcher {
+    public partial class ApocLauncher : Form {
         public static ApocLauncher Acc;
 
         public static string LocalServerIP = "127.0.0.1";
@@ -19,25 +17,20 @@ namespace Launcher
 
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ApocLauncher(bool allowLocal)
-        {
+        public ApocLauncher(bool allowLocal) {
             InitializeComponent();
             Acc = this;
 
-            if (allowLocal)
-            {
+            if (allowLocal) {
                 this.bnConnectLocal.Visible = true;
                 this.bnCreateLocal.Visible = true;
-            }
-            else
-            {
+            } else {
                 this.bnConnectLocal.Visible = false;
                 this.bnCreateLocal.Visible = false;
             }
         }
 
-        protected override void WndProc(ref Message m)
-        {
+        protected override void WndProc(ref Message m) {
             base.WndProc(ref m);
             if (m.Msg == WM_NCHITTEST)
                 m.Result = (IntPtr)(HT_CAPTION);
@@ -54,13 +47,11 @@ namespace Launcher
             this.lblVersion.Text = fvi.FileVersion;
         }
 
-        private void Disconnect(object sender, FormClosedEventArgs e)
-        {
+        private void Disconnect(object sender, FormClosedEventArgs e) {
             Client.Close();
         }
 
-        private void B_start_Click(object sender, EventArgs e)
-        {
+        private void B_start_Click(object sender, EventArgs e) {
             Client.Connect(LocalServerIP, LocalServerPort);
 
             lblConnection.Text = $@"Connecting to : {LocalServerIP}:{LocalServerPort}";
@@ -83,29 +74,24 @@ namespace Launcher
             //B_start.Enabled = false;
         }
 
-        public static string ConvertSHA256(string value)
-        {
+        public static string ConvertSHA256(string value) {
             SHA256 sha = SHA256.Create();
             byte[] data = sha.ComputeHash(Encoding.Default.GetBytes(value));
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < data.Length; i++)
-            {
+            for (int i = 0; i < data.Length; i++) {
                 sb.Append(data[i].ToString("x2"));
             }
             return sb.ToString();
         }
 
-        public void ReceiveStart()
-        {
+        public void ReceiveStart() {
             //B_start.Enabled = true;
         }
 
-        public void Print(string Message)
-        {
+        public void Print(string Message) {
         }
 
-        private void bnTestServer_Click(object sender, EventArgs e)
-        {
+        private void bnTestServer_Click(object sender, EventArgs e) {
             Client.Connect(TestServerIP, TestServerPort);
             lblConnection.Text = $@"Connecting to : {TestServerIP}:{TestServerPort}";
 
@@ -127,13 +113,11 @@ namespace Launcher
             Client.SendTCP(Out);
         }
 
-        private void bnClose_Click(object sender, EventArgs e)
-        {
+        private void bnClose_Click(object sender, EventArgs e) {
             Application.Exit();
         }
 
-        private void buttonPanelCreateAccount_Click(object sender, EventArgs e)
-        {
+        private void buttonPanelCreateAccount_Click(object sender, EventArgs e) {
             panelCreateAccount.Visible = true;
         }
 
@@ -142,8 +126,7 @@ namespace Launcher
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void buttonCreate_Click(object sender, EventArgs e)
-        {
+        private void buttonCreate_Click(object sender, EventArgs e) {
             if (String.IsNullOrEmpty(textBoxUsername.Text) || String.IsNullOrEmpty(textBoxPassword.Text)) return;
 
             Client.Connect(TestServerIP, TestServerPort);
@@ -164,13 +147,21 @@ namespace Launcher
             Client.SendTCP(Out);
         }
 
-        private void buttonAccountClose_Click(object sender, EventArgs e)
-        {
+        private void buttonAccountClose_Click(object sender, EventArgs e) {
             panelCreateAccount.Visible = false;
         }
 
-        private void bnCreateLocal_Click(object sender, EventArgs e)
-        {
+        public void sendUI(string msg) {
+            if (lblConnection.InvokeRequired) {
+                lblConnection.BeginInvoke(new Action(() => {
+                    sendUI(msg);
+                }));
+                return;
+            }
+
+            lblConnection.Text = msg;
+        }
+        private void bnCreateLocal_Click(object sender, EventArgs e) {
             if (String.IsNullOrEmpty(textBoxUsername.Text) || String.IsNullOrEmpty(textBoxPassword.Text)) return;
 
             Client.Connect(LocalServerIP, LocalServerPort);
@@ -191,8 +182,7 @@ namespace Launcher
             Client.SendTCP(Out);
         }
 
-        private void bnConnectLocal_Click(object sender, EventArgs e)
-        {
+        private void bnConnectLocal_Click(object sender, EventArgs e) {
             Client.Connect(LocalServerIP, LocalServerPort);
             lblConnection.Text = $@"Connecting to : {LocalServerIP}:{LocalServerPort}";
 
