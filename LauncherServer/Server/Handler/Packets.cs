@@ -26,7 +26,7 @@ namespace AuthenticationServer.Server.Handler {
             if (Program.AcctMgr.CheckIp(ip)) {
                 Log.Debug("CL_CREATE", "Create Account Request : " + username + " " + result);
 
-                if (Program.AcctMgr.CreateAccount(username, password, 0, ip)) {
+                if (Program.AcctMgr.CreateAccount(username, password, 1, ip)) {
                     result = CreteAccountResult.ACCOUNT_NAME_SUCCESS;
                     Log.Debug("CL_CREATE", "Create Account Request SUCCESS");
                 } else {
