@@ -14,7 +14,7 @@ namespace AuthenticationServer.Server.Handler {
             string username = packet.GetString();
             string password = packet.GetString();
 
-            // System.Console.WriteLine($"CL_CREATE Create Request : {username} {password} ");
+            Log.Debug("CL_CREATE", $"CL_CREATE Create Request : {username} {password} ");
 
             CreteAccountResult result = CreteAccountResult.ACCOUNT_BANNED;
 
@@ -42,7 +42,7 @@ namespace AuthenticationServer.Server.Handler {
                 Out.WriteByte((byte)result); // Banned
 
             }
-
+            Log.Debug("CL_CREATE", $"Writing response to Client {Out} ");
             cclient.SendPacketNoBlock(Out);
 
 
