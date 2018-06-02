@@ -327,12 +327,12 @@ namespace WorldServer.Managers.Commands
         /// <summary>Contains the list of teleportation commands under .teleport</summary>
         public static List<GmCommandHandler> TeleportCommands = new List<GmCommandHandler>
         {
-            new GmCommandHandler("map",TeleportMap, null, 0, 4, "Teleports you to the specified world coordinates in a given zone (byte ZoneID , uint WorldX, uint WorldY, uint WorldZ)"),
-            new GmCommandHandler("center",TeleportCenter, null, 0, 1, "Teleport to the centre of the given map."),
-            new GmCommandHandler("appear",TeleportAppear, null, 0, 1, "Teleports you to a player's location (string playerName)"),
-            new GmCommandHandler("summon",TeleportSummon, null, 0, 1, "Summons a player/group to your location (string playerName optional GROUP)"),
-            new GmCommandHandler("set",TeleportSet, null, 0, 5, "Sets offline/online players coordinates in database (player_name byte byte ZoneID , uint WorldX, uint WorldY, uint WorldZ)"),
-            new GmCommandHandler("objective",TeleportObjective, null, 0, 1, "Teleport player to BO (ObjectiveId)"),
+            new GmCommandHandler("map",TeleportMap, null, EGmLevel.AnyGM, 4, "Teleports you to the specified world coordinates in a given zone (byte ZoneID , uint WorldX, uint WorldY, uint WorldZ)"),
+            new GmCommandHandler("center",TeleportCenter, null, EGmLevel.AnyGM, 1, "Teleport to the centre of the given map."),
+            new GmCommandHandler("appear",TeleportAppear, null, EGmLevel.AnyGM, 1, "Teleports you to a player's location (string playerName)"),
+            new GmCommandHandler("summon",TeleportSummon, null, EGmLevel.AnyGM, 1, "Summons a player/group to your location (string playerName optional GROUP)"),
+            new GmCommandHandler("set",TeleportSet, null, EGmLevel.AnyGM, 5, "Sets offline/online players coordinates in database (player_name byte byte ZoneID , uint WorldX, uint WorldY, uint WorldZ)"),
+            new GmCommandHandler("objective",TeleportObjective, null, EGmLevel.AnyGM, 1, "Teleport player to BO (ObjectiveId)"),
             
         };
 
