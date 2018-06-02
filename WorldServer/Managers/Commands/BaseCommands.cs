@@ -2244,7 +2244,7 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
-
+/*
 #if DEBUG
         public static bool GearTester(Player plr, ref List<string> values)
         {
@@ -2368,6 +2368,7 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 #endif
+*/
 
         public static bool QuestComplete(Player plr, ref List<string> values)
         {
