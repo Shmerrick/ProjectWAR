@@ -14,9 +14,36 @@ namespace AuthenticationServer.Server.Handler {
             string username = packet.GetString();
             string password = packet.GetString();
 
-            Log.Debug("CL_CREATE", "Create Request : " + username + " " + password);
+            Log.Debug("CL_CREATE", $"CL_CREATE Create Request : {username} {password} ");
+
+            CreteAccountResult result = CreteAccountResult.ACCOUNT_BANNED;
+
+            PacketOut Out = new PacketOut((byte)Opcodes.LCR_CREATE);
+
+            string ip = client.GetIp().Split(':')[0];
+
+            // Check Ip Ban
+            if (Program.AcctMgr.CheckIp(ip)) {
+                Log.Debug("CL_CREATE", "Create Account Request : " + username + " " + result);
+
+                if (Program.AcctMgr.CreateAccount(username, password, 0, ip)) {
+                    result = CreteAccountResult.ACCOUNT_NAME_SUCCESS;
+                    Log.Debug("CL_CREATE", "Create Account Request SUCCESS");
+                } else {
+                    Log.Debug("CL_CREATE", "Create Account Request BUSY");
+                    result = CreteAccountResult.ACCOUNT_NAME_BUSY;
+                }
 
 
+                Out.WriteByte((byte)result);
+
+
+            } else {
+                Out.WriteByte((byte)result); // Banned
+
+            }
+            Log.Debug("CL_CREATE", $"Writing response to Client {Out} ");
+            cclient.SendPacketNoBlock(Out);
 
 
         }

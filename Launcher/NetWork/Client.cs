@@ -11,10 +11,8 @@ using nsHashDictionary;
 using MYPHandler;
 using NLog;
 
-namespace Launcher
-{
-    public static class Client
-    {
+namespace Launcher {
+    public static class Client {
         public static int Version = 1;
         //Server WAREMU is running from.
         public static string LocalServerIP = "127.0.0.1";
@@ -31,16 +29,13 @@ namespace Launcher
 
         private static Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public static void Print(string Message)
-        {
+        public static void Print(string Message) {
             ApocLauncher.Acc.Print(Message);
         }
 
-        public static bool Connect(string ip, int port)
-        {
-            try
-            {
-                
+        public static bool Connect(string ip, int port) {
+            try {
+
 
                 if (_Socket != null)
                     _Socket.Close();
@@ -58,14 +53,11 @@ namespace Launcher
                 Array.Copy(BitConverter.GetBytes(keepAliveInterval), 0, inArray, size, size);
                 Array.Copy(BitConverter.GetBytes(retryInterval), 0, inArray, size * 2, size);
                 _Socket.IOControl(IOControlCode.KeepAliveValues, inArray, null);
-
-                //MessageBox.Show(_Socket.Connected.ToString());
+                
                 BeginReceive();
-                //MessageBox.Show(_Socket.Connected.ToString());
+                
                 SendCheck();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 MessageBox.Show("Can not connect to : " + ip + ":" + port + "\n" + e.Message);
                 return false;
             }
@@ -73,28 +65,22 @@ namespace Launcher
             return true;
         }
 
-        public static void Close()
-        {
-            try
-            {
+        public static void Close() {
+            try {
                 if (_Socket != null)
                     _Socket.Close();
-              
-            }
-            catch(Exception)
-            {
+
+            } catch (Exception) {
 
             }
         }
 
-        public static void UpdateLanguage()
-        {
+        public static void UpdateLanguage() {
             if (Language.Length <= 0)
                 return;
 
             int LangueId = 1;
-            switch (Language)
-            {
+            switch (Language) {
                 case "French":
                     LangueId = 2;
                     break;
@@ -105,7 +91,7 @@ namespace Launcher
                     LangueId = 3;
                     break;
                 case "Italian":
-                    LangueId = 4; 
+                    LangueId = 4;
                     break;
                 case "Spanish":
                     LangueId = 5;
@@ -126,26 +112,23 @@ namespace Launcher
 
             string CurDir = Directory.GetCurrentDirectory();
 
-            try
-            {
+            try {
                 Directory.SetCurrentDirectory(CurDir + "\\..\\user\\");
 
                 StreamReader Reader = new StreamReader("UserSettings.xml");
                 string line = "";
                 string TotalStream = "";
-                while ( (line = Reader.ReadLine()) != null)
-                {
+                while ((line = Reader.ReadLine()) != null) {
                     Print(line);
                     int Pos = line.IndexOf("Language id=");
-                    if (Pos > 0)
-                    {
-                        Pos = line.IndexOf("\"")+1;
+                    if (Pos > 0) {
+                        Pos = line.IndexOf("\"") + 1;
                         int Pos2 = line.LastIndexOf("\"");
-                        line = line.Remove(Pos, Pos2-Pos);
+                        line = line.Remove(Pos, Pos2 - Pos);
                         line = line.Insert(Pos, "" + LangueId);
                     }
 
-                    TotalStream += line +"\n";
+                    TotalStream += line + "\n";
                 }
                 Reader.Close();
 
@@ -153,15 +136,12 @@ namespace Launcher
                 Writer.Write(TotalStream);
                 Writer.Flush();
                 Writer.Close();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Print("Writing : " + e);
             }
         }
 
-        public static void UpdateRealms()
-        {
+        public static void UpdateRealms() {
             PacketOut Out = new PacketOut((byte)Opcodes.CL_INFO);
             SendTCP(Out);
         }
@@ -178,8 +158,7 @@ namespace Launcher
         static bool m_sendingTcp;
 
         // Envoi un packet
-        public static void SendTCP(PacketOut packet)
-        {
+        public static void SendTCP(PacketOut packet) {
             _logger.Info($"Sending TCP Packet {packet.Opcode}");
             //Fix the packet size
             packet.WritePacketLength();
@@ -191,21 +170,16 @@ namespace Launcher
             SendTCP(buf);
         }
 
-        public static void SendTCP(byte[] buf)
-        {
+        public static void SendTCP(byte[] buf) {
             if (m_tcpSendBuffer == null)
                 return;
 
             //Check if client is connected
-            if (_Socket.Connected)
-            {
+            if (_Socket.Connected) {
 
-                try
-                {
-                    lock (m_tcpQueue)
-                    {
-                        if (m_sendingTcp)
-                        {
+                try {
+                    lock (m_tcpQueue) {
+                        if (m_sendingTcp) {
                             m_tcpQueue.Enqueue(buf);
                             return;
                         }
@@ -216,9 +190,9 @@ namespace Launcher
                     Buffer.BlockCopy(buf, 0, m_tcpSendBuffer, 0, buf.Length);
 
                     _Socket.BeginSend(m_tcpSendBuffer, 0, buf.Length, SocketFlags.None, m_asyncTcpCallback, null);
-                }
-                catch
+                } catch (Exception e)
                 {
+                    _logger.Trace($"{e.Message}");
                     Close();
                 }
             }
@@ -226,10 +200,8 @@ namespace Launcher
 
         static readonly AsyncCallback m_asyncTcpCallback = AsyncTcpSendCallback;
 
-        static void AsyncTcpSendCallback(IAsyncResult ar)
-        {
-            try
-            {
+        static void AsyncTcpSendCallback(IAsyncResult ar) {
+            try {
                 Queue<byte[]> q = m_tcpQueue;
 
                 int sent = _Socket.EndSend(ar);
@@ -240,15 +212,12 @@ namespace Launcher
                 if (data == null)
                     return;
 
-                lock (q)
-                {
-                    if (q.Count > 0)
-                    {
+                lock (q) {
+                    if (q.Count > 0) {
                         //						Log.WarnFormat("async sent {0} bytes, sending queued packets count: {1}", sent, q.Count);
                         count = CombinePackets(data, q, data.Length);
                     }
-                    if (count <= 0)
-                    {
+                    if (count <= 0) {
                         //						Log.WarnFormat("async sent {0} bytes", sent);
                         m_sendingTcp = false;
                         return;
@@ -257,23 +226,17 @@ namespace Launcher
 
                 _Socket.BeginSend(data, 0, count, SocketFlags.None, m_asyncTcpCallback, null);
 
-            }
-            catch (Exception)
-            {
-                    Close();
+            } catch (Exception) {
+                Close();
             }
         }
 
-        private static int CombinePackets(byte[] buf, Queue<byte[]> q, int length)
-        {
+        private static int CombinePackets(byte[] buf, Queue<byte[]> q, int length) {
             int i = 0;
-            do
-            {
+            do {
                 var pak = q.Peek();
-                if (i + pak.Length > buf.Length)
-                {
-                    if (i == 0)
-                    {
+                if (i + pak.Length > buf.Length) {
+                    if (i == 0) {
                         q.Dequeue();
                         continue;
                     }
@@ -289,8 +252,7 @@ namespace Launcher
             return i;
         }
 
-        public static void SendTCPRaw(PacketOut packet)
-        {
+        public static void SendTCPRaw(PacketOut packet) {
             SendTCP((byte[])packet.GetBuffer().Clone());
         }
 
@@ -302,15 +264,12 @@ namespace Launcher
         static byte[] _pBuf = new byte[2048];
 
 
-        private static void OnReceiveHandler(IAsyncResult ar)
-        {
-            try
-            {
+        private static void OnReceiveHandler(IAsyncResult ar) {
+            try {
                 int numBytes = _Socket.EndReceive(ar);
                 _logger.Debug($"Recieving {numBytes} bytes");
 
-                if (numBytes > 0)
-                {
+                if (numBytes > 0) {
                     byte[] buffer = _pBuf;
                     int bufferSize = numBytes;
 
@@ -318,32 +277,24 @@ namespace Launcher
                     OnReceive(pack);
                     BeginReceive();
 
-                }
-                else
-                {
+                } else {
                     Close();
                 }
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 _logger.Debug($"Exception : {ex.Message}");
             }
         }
 
-        public static void BeginReceive()
-        {
+        public static void BeginReceive() {
             _logger.Debug($"Socket Connected {_Socket.Connected}");
-            
-            if (_Socket != null && _Socket.Connected)
-            {
+
+            if (_Socket != null && _Socket.Connected) {
                 int bufSize = _pBuf.Length;
 
                 if (0 >= bufSize) //Do we have space to receive?
                 {
                     Close();
-                }
-                else
-                {
+                } else {
                     _Socket.BeginReceive(_pBuf, 0, bufSize, SocketFlags.None, ReceiveCallback, null);
                 }
             }
@@ -351,11 +302,9 @@ namespace Launcher
 
         #endregion
 
-        public static void OnReceive(PacketIn packet)
-        {
-            lock (packet)
-            {
-                
+        public static void OnReceive(PacketIn packet) {
+            lock (packet) {
+
                 packet.Size = packet.GetUint32();
                 packet.Opcode = packet.GetUint8();
                 _logger.Debug($"OnReceive Packet size : {packet.Size} opCode : {packet.Opcode}");
@@ -366,24 +315,20 @@ namespace Launcher
 
         #region Packet
 
-        public static void Handle(PacketIn packet)
-        {
-            if(!Enum.IsDefined(typeof(Opcodes),(byte)packet.Opcode))
-            {
+        public static void Handle(PacketIn packet) {
+            if (!Enum.IsDefined(typeof(Opcodes), (byte)packet.Opcode)) {
                 Print($"Invalid opcode : {packet.Opcode.ToString("X02")}");
                 return;
             }
 
             _logger.Debug($"HandlePacket{packet}");
 
-            switch((Opcodes)packet.Opcode)
-            {
+            switch ((Opcodes)packet.Opcode) {
                 case Opcodes.LCR_CHECK:
-                    
+
                     byte Result = packet.GetUint8();
 
-                    switch((CheckResult)Result)
-                    {
+                    switch ((CheckResult)Result) {
                         case CheckResult.LAUNCHER_OK:
                             Start();
                             break;
@@ -397,7 +342,7 @@ namespace Launcher
                             string File = packet.GetString();
                             byte[] Bt = Encoding.ASCII.GetBytes(File);
 
-                            FileInfo Info = new FileInfo("mythloginserviceconfig.xml");  
+                            FileInfo Info = new FileInfo("mythloginserviceconfig.xml");
                             FileStream Str = Info.Create();
                             Str.Write(Bt, 0, Bt.Length);  // Bt is sent from the server (configs/mythloginserviceconfig.xml) - it overwrites the file on the client side.
                             Str.Close();
@@ -415,36 +360,29 @@ namespace Launcher
                     if (response == 1) //invalud user/pass
                     {
                         _logger.Warn($"Invalid User / Pass");
-                        ApocLauncher.Acc.lblConnection.Text = $@"Invalid User / Pass";
+                        //ApocLauncher.Acc.lblConnection.Text = $@"Invalid User / Pass";
                         return;
-                    }
-                    else if (response == 2) //banned
-                    {
+                    } else if (response == 2) //banned
+                      {
                         _logger.Warn($"Account is banned");
-                        ApocLauncher.Acc.lblConnection.Text = $@"Account is banned";
+                        ///ApocLauncher.Acc.lblConnection.Text = $@"Account is banned";
                         return;
-                    }
-                    else if (response == 3) //account not active
-                    {
+                    } else if (response == 3) //account not active
+                      {
                         _logger.Warn($"Account is not active");
-                        ApocLauncher.Acc.lblConnection.Text = $@"Account is not active";
+                        //ApocLauncher.Acc.lblConnection.Text = $@"Account is not active";
                         return;
-                    }
-                    else if (response > 3)
-                    {
+                    } else if (response > 3) {
                         _logger.Error($"Unknown Response");
-                        ApocLauncher.Acc.lblConnection.Text = $@"Unknown Response";
+                        //ApocLauncher.Acc.lblConnection.Text = $@"Unknown Response";
                         return;
-                    }
-                    else
-                    {
+                    } else {
                         authToken = packet.GetString();
                         _logger.Info($"Authentication Token Received : {authToken}");
-                        ApocLauncher.Acc.lblConnection.Text = $@"Starting Client..";
-                        try
-                        {
-                            
-                            string CurrentDir = Directory.GetCurrentDirectory()+"\\..";
+                        //ApocLauncher.Acc.lblConnection.Text = $@"Starting Client..";
+                        try {
+
+                            string CurrentDir = Directory.GetCurrentDirectory() + "\\..";
 
                             patchExe();
                             UpdateWarData();
@@ -458,9 +396,7 @@ namespace Launcher
                             _logger.Info($"Starting process WAR.exe (in {CurrentDir})");
                             process.Start();
                             Directory.SetCurrentDirectory(CurrentDir);
-                        }
-                        catch (Exception e)
-                        {
+                        } catch (Exception e) {
                             _logger.Info($"Failed to start Client {e.ToString()}");
                             Print(e.ToString());
                         }
@@ -468,8 +404,7 @@ namespace Launcher
 
                     break;
 
-                case Opcodes.LCR_INFO:
-                    {
+                case Opcodes.LCR_INFO: {
                         _logger.Info($"Processing LCR_INFO : Number Realms : {packet.GetUint8()} Name : {packet.GetString()} Parsed : {packet.GetParsedString()}");
 
                         //Accueil.Acc.ClearRealms();
@@ -485,42 +420,61 @@ namespace Launcher
                         //    //Accueil.Acc.AddRealm(Name, Online, OnlinePlayers, OrderCount, DestructionCount);
 
                         //}
-                    }break;
+                    }
+                    break;
+
+                case Opcodes.LCR_CREATE:
+
+                    byte respons = packet.GetUint8();
+                    _logger.Debug($"HandlePacket. Response Code : {respons}");
+
+                    if (respons == 0) //invalud user/pass
+                    {
+                        _logger.Warn($"Account Name busy!");
+                        //ApocLauncher.Acc.lblConnection.Text = $@"Account Name busy!";
+                        return;
+                    } else if (respons == 1) //success
+                        {
+                        _logger.Warn($"Account create!");
+                        //ApocLauncher.Acc.lblConnection.Text = $@"Account created!";
+                        return;
+                    } else if (respons == 2) //banned
+                      {
+                        _logger.Warn($"Account is banned!");
+                        //ApocLauncher.Acc.lblConnection.Text = $@"Account is banned";
+                        return;
+                    }
+
+
+                    break;
             }
         }
 
-        public static void Start()
-        {
-            if(Started)
+        public static void Start() {
+            if (Started)
                 return;
 
-           Started = true;
+            Started = true;
         }
 
-        public static void SendCheck()
-        {
+        public static void SendCheck() {
             _logger.Info("Starting SendCheck (CL_CHECK)");
             PacketOut Out = new PacketOut((byte)Opcodes.CL_CHECK);
             Out.WriteUInt32((uint)Version);
 
             FileInfo Info = new FileInfo("mythloginserviceconfig.xml");
-            if (Info.Exists)
-            {
+            if (Info.Exists) {
                 Out.WriteByte(1);
                 Out.WriteUInt64((ulong)Info.Length);
-            }
-            else
-            {
+            } else {
                 Out.WriteByte(0);
             }
 
             SendTCP(Out);
         }
-        public static void patchExe()
-        {
+        public static void patchExe() {
             _logger.Info("Patching WAR.exe");
-            using (Stream stream = new FileStream(Directory.GetCurrentDirectory() + "\\..\\WAR.exe", FileMode.OpenOrCreate))
-            {
+            using (Stream stream = new FileStream(Directory.GetCurrentDirectory() + "\\..\\WAR.exe", FileMode.OpenOrCreate)) {
 
                 int encryptAddress = (0x00957FBE + 3) - 0x00400000;
                 stream.Seek(encryptAddress, SeekOrigin.Begin);
@@ -550,10 +504,8 @@ namespace Launcher
             }
             _logger.Info("Done patching WAR.exe");
         }
-        public static void UpdateWarData()
-        {
-            try
-            {
+        public static void UpdateWarData() {
+            try {
                 _logger.Info("Updating mythloginserviceconfig.xml and data.myp");
                 FileStream fs = new FileStream(Application.StartupPath + "\\mythloginserviceconfig.xml", FileMode.Open, FileAccess.Read);
 
@@ -566,14 +518,12 @@ namespace Launcher
 
                 FileInArchive theFile = mypHandler.SearchForFile("mythloginserviceconfig.xml");
 
-                if (theFile == null)
-                {
+                if (theFile == null) {
                     _logger.Error("Can not find config file in data.myp");
                     return;
                 }
 
-                if (File.Exists(Application.StartupPath + "\\mythloginserviceconfig.xml") == false)
-                {
+                if (File.Exists(Application.StartupPath + "\\mythloginserviceconfig.xml") == false) {
                     _logger.Error("Missing file : mythloginserviceconfig.xml");
                     return;
                 }
@@ -581,9 +531,7 @@ namespace Launcher
                 mypHandler.ReplaceFile(theFile, fs);
 
                 fs.Close();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Print(e.ToString());
             }
         }

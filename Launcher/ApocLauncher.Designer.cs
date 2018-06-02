@@ -1,11 +1,17 @@
-﻿namespace Launcher
+﻿using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
+using Launcher.Properties;
+
+namespace Launcher
 {
     partial class ApocLauncher
     {
         /// <summary>
         /// Variable needed by the designer.
         /// </ summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Cleaning the resources used.
@@ -31,7 +37,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApocLauncher));
             this.T_username = new System.Windows.Forms.TextBox();
             this.T_password = new System.Windows.Forms.MaskedTextBox();
-            this.B_start = new System.Windows.Forms.Button();
+            this.bnConnectLocal = new System.Windows.Forms.Button();
             this.RealmName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Online = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Players = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -49,12 +55,13 @@
             this.lblConnection = new System.Windows.Forms.Label();
             this.bnClose = new System.Windows.Forms.Button();
             this.panelCreateAccount = new System.Windows.Forms.Panel();
+            this.buttonAccountClose = new System.Windows.Forms.Button();
             this.buttonCreate = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.textBoxPassword = new System.Windows.Forms.TextBox();
             this.textBoxUsername = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.buttonPanelCreateAccount = new System.Windows.Forms.Button();
             this.lblVersion = new System.Windows.Forms.Label();
             this.panelCreateAccount.SuspendLayout();
@@ -67,12 +74,12 @@
             this.T_username.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.T_username.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.T_username.ForeColor = System.Drawing.Color.DarkOrange;
-            this.T_username.Location = new System.Drawing.Point(173, 649);
+            this.T_username.Location = new System.Drawing.Point(183, 649);
             this.T_username.Margin = new System.Windows.Forms.Padding(0);
             this.T_username.MaxLength = 50;
             this.T_username.Multiline = true;
             this.T_username.Name = "T_username";
-            this.T_username.Size = new System.Drawing.Size(330, 44);
+            this.T_username.Size = new System.Drawing.Size(303, 44);
             this.T_username.TabIndex = 0;
             // 
             // T_password
@@ -82,26 +89,26 @@
             this.T_password.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.T_password.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.T_password.ForeColor = System.Drawing.Color.DarkOrange;
-            this.T_password.Location = new System.Drawing.Point(777, 649);
+            this.T_password.Location = new System.Drawing.Point(789, 649);
             this.T_password.Margin = new System.Windows.Forms.Padding(0);
             this.T_password.Name = "T_password";
-            this.T_password.Size = new System.Drawing.Size(294, 44);
+            this.T_password.Size = new System.Drawing.Size(282, 44);
             this.T_password.TabIndex = 1;
             this.T_password.UseSystemPasswordChar = true;
             // 
-            // B_start
+            // bnConnectLocal
             // 
-            this.B_start.BackColor = System.Drawing.Color.Transparent;
-            this.B_start.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.B_start.ForeColor = System.Drawing.Color.Transparent;
-            this.B_start.Location = new System.Drawing.Point(12, -4);
-            this.B_start.Name = "B_start";
-            this.B_start.Size = new System.Drawing.Size(119, 28);
-            this.B_start.TabIndex = 4;
-            this.B_start.Text = "LOCAL";
-            this.B_start.UseVisualStyleBackColor = false;
-            this.B_start.Visible = false;
-            this.B_start.Click += new System.EventHandler(this.B_start_Click);
+            this.bnConnectLocal.BackColor = System.Drawing.Color.Transparent;
+            this.bnConnectLocal.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.bnConnectLocal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.bnConnectLocal.Location = new System.Drawing.Point(1095, 622);
+            this.bnConnectLocal.Name = "bnConnectLocal";
+            this.bnConnectLocal.Size = new System.Drawing.Size(176, 21);
+            this.bnConnectLocal.TabIndex = 4;
+            this.bnConnectLocal.Text = "LOCAL";
+            this.bnConnectLocal.UseVisualStyleBackColor = false;
+            this.bnConnectLocal.Visible = false;
+            this.bnConnectLocal.Click += new System.EventHandler(this.B_start_Click);
             // 
             // RealmName
             // 
@@ -136,12 +143,12 @@
             this.bnTestServer.BackColor = System.Drawing.Color.Transparent;
             this.bnTestServer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.bnTestServer.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.bnTestServer.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.bnTestServer.ForeColor = System.Drawing.Color.Transparent;
-            this.bnTestServer.Location = new System.Drawing.Point(1084, 620);
+            this.bnTestServer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bnTestServer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.bnTestServer.Location = new System.Drawing.Point(1095, 648);
             this.bnTestServer.Margin = new System.Windows.Forms.Padding(0);
             this.bnTestServer.Name = "bnTestServer";
-            this.bnTestServer.Size = new System.Drawing.Size(196, 99);
+            this.bnTestServer.Size = new System.Drawing.Size(176, 50);
             this.bnTestServer.TabIndex = 12;
             this.bnTestServer.UseVisualStyleBackColor = false;
             this.bnTestServer.Click += new System.EventHandler(this.bnTestServer_Click);
@@ -205,7 +212,7 @@
             // 
             this.lblConnection.AutoSize = true;
             this.lblConnection.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.lblConnection.Location = new System.Drawing.Point(1081, 718);
+            this.lblConnection.Location = new System.Drawing.Point(1092, 703);
             this.lblConnection.Name = "lblConnection";
             this.lblConnection.Size = new System.Drawing.Size(0, 13);
             this.lblConnection.TabIndex = 13;
@@ -215,10 +222,10 @@
             this.bnClose.BackColor = System.Drawing.Color.Transparent;
             this.bnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.bnClose.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.bnClose.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.bnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bnClose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.bnClose.Location = new System.Drawing.Point(1229, -4);
+            this.bnClose.Location = new System.Drawing.Point(1229, 0);
             this.bnClose.Margin = new System.Windows.Forms.Padding(0);
             this.bnClose.Name = "bnClose";
             this.bnClose.Size = new System.Drawing.Size(51, 44);
@@ -231,26 +238,45 @@
             // 
             this.panelCreateAccount.BackColor = System.Drawing.Color.Transparent;
             this.panelCreateAccount.BackgroundImage = global::Launcher.Properties.Resources.background;
+            this.panelCreateAccount.Controls.Add(this.bnCreateLocal);
+            this.panelCreateAccount.Controls.Add(this.buttonAccountClose);
             this.panelCreateAccount.Controls.Add(this.buttonCreate);
             this.panelCreateAccount.Controls.Add(this.label3);
             this.panelCreateAccount.Controls.Add(this.label2);
-            this.panelCreateAccount.Controls.Add(this.label1);
             this.panelCreateAccount.Controls.Add(this.textBoxPassword);
             this.panelCreateAccount.Controls.Add(this.textBoxUsername);
+            this.panelCreateAccount.Controls.Add(this.label1);
             this.panelCreateAccount.Location = new System.Drawing.Point(366, 177);
             this.panelCreateAccount.Name = "panelCreateAccount";
-            this.panelCreateAccount.Size = new System.Drawing.Size(590, 300);
+            this.panelCreateAccount.Size = new System.Drawing.Size(590, 309);
             this.panelCreateAccount.TabIndex = 15;
             this.panelCreateAccount.Visible = false;
+            // 
+            // buttonAccountClose
+            // 
+            this.buttonAccountClose.BackColor = System.Drawing.Color.Transparent;
+            this.buttonAccountClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.buttonAccountClose.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.buttonAccountClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonAccountClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonAccountClose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.buttonAccountClose.Location = new System.Drawing.Point(539, 1);
+            this.buttonAccountClose.Margin = new System.Windows.Forms.Padding(0);
+            this.buttonAccountClose.Name = "buttonAccountClose";
+            this.buttonAccountClose.Size = new System.Drawing.Size(51, 44);
+            this.buttonAccountClose.TabIndex = 22;
+            this.buttonAccountClose.Text = "X";
+            this.buttonAccountClose.UseVisualStyleBackColor = false;
+            this.buttonAccountClose.Click += new System.EventHandler(this.buttonAccountClose_Click);
             // 
             // buttonCreate
             // 
             this.buttonCreate.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.buttonCreate.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonCreate.Font = new System.Drawing.Font("Friz Quadrata", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonCreate.ForeColor = System.Drawing.Color.DarkOrange;
-            this.buttonCreate.Location = new System.Drawing.Point(0, 237);
+            this.buttonCreate.Location = new System.Drawing.Point(30, 237);
             this.buttonCreate.Name = "buttonCreate";
-            this.buttonCreate.Size = new System.Drawing.Size(586, 60);
+            this.buttonCreate.Size = new System.Drawing.Size(531, 51);
             this.buttonCreate.TabIndex = 16;
             this.buttonCreate.Text = "CREATE";
             this.buttonCreate.UseVisualStyleBackColor = true;
@@ -261,7 +287,7 @@
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.DarkOrange;
-            this.label3.Location = new System.Drawing.Point(1, 154);
+            this.label3.Location = new System.Drawing.Point(3, 153);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(272, 53);
             this.label3.TabIndex = 20;
@@ -273,7 +299,7 @@
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.DarkOrange;
-            this.label2.Location = new System.Drawing.Point(0, 78);
+            this.label2.Location = new System.Drawing.Point(3, 78);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(272, 53);
             this.label2.TabIndex = 19;
@@ -284,7 +310,7 @@
             // 
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Font = new System.Drawing.Font("Friz Quadrata", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.DarkOrange;
             this.label1.Location = new System.Drawing.Point(3, 9);
             this.label1.Name = "label1";
@@ -300,12 +326,13 @@
             this.textBoxPassword.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBoxPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxPassword.ForeColor = System.Drawing.Color.DarkOrange;
-            this.textBoxPassword.Location = new System.Drawing.Point(277, 144);
+            this.textBoxPassword.Location = new System.Drawing.Point(277, 153);
             this.textBoxPassword.Margin = new System.Windows.Forms.Padding(0);
             this.textBoxPassword.MaxLength = 50;
             this.textBoxPassword.Multiline = true;
             this.textBoxPassword.Name = "textBoxPassword";
-            this.textBoxPassword.Size = new System.Drawing.Size(301, 53);
+            this.textBoxPassword.PasswordChar = '*';
+            this.textBoxPassword.Size = new System.Drawing.Size(284, 53);
             this.textBoxPassword.TabIndex = 17;
             // 
             // textBoxUsername
@@ -315,21 +342,34 @@
             this.textBoxUsername.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBoxUsername.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxUsername.ForeColor = System.Drawing.Color.DarkOrange;
-            this.textBoxUsername.Location = new System.Drawing.Point(277, 69);
+            this.textBoxUsername.Location = new System.Drawing.Point(277, 78);
             this.textBoxUsername.Margin = new System.Windows.Forms.Padding(0);
             this.textBoxUsername.MaxLength = 50;
             this.textBoxUsername.Multiline = true;
             this.textBoxUsername.Name = "textBoxUsername";
-            this.textBoxUsername.Size = new System.Drawing.Size(301, 52);
+            this.textBoxUsername.Size = new System.Drawing.Size(284, 52);
             this.textBoxUsername.TabIndex = 16;
+            // 
+            // label1
+            // 
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.DarkOrange;
+            this.label1.Location = new System.Drawing.Point(3, 2);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(587, 49);
+            this.label1.TabIndex = 18;
+            this.label1.Text = "CREATE ACCOUNT";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // buttonPanelCreateAccount
             // 
             this.buttonPanelCreateAccount.BackColor = System.Drawing.Color.Transparent;
-            this.buttonPanelCreateAccount.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.buttonPanelCreateAccount.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonPanelCreateAccount.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonPanelCreateAccount.ForeColor = System.Drawing.Color.DarkOrange;
-            this.buttonPanelCreateAccount.Location = new System.Drawing.Point(12, 30);
+            this.buttonPanelCreateAccount.Location = new System.Drawing.Point(12, 22);
             this.buttonPanelCreateAccount.Name = "buttonPanelCreateAccount";
             this.buttonPanelCreateAccount.Size = new System.Drawing.Size(226, 49);
             this.buttonPanelCreateAccount.TabIndex = 21;
@@ -346,6 +386,20 @@
             this.lblVersion.Size = new System.Drawing.Size(0, 13);
             this.lblVersion.TabIndex = 22;
             // 
+            // bnCreateLocal
+            // 
+            this.bnCreateLocal.BackColor = System.Drawing.Color.Transparent;
+            this.bnCreateLocal.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.bnCreateLocal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.bnCreateLocal.Location = new System.Drawing.Point(385, 210);
+            this.bnCreateLocal.Name = "bnCreateLocal";
+            this.bnCreateLocal.Size = new System.Drawing.Size(176, 21);
+            this.bnCreateLocal.TabIndex = 23;
+            this.bnCreateLocal.Text = "LOCAL";
+            this.bnCreateLocal.UseVisualStyleBackColor = false;
+            this.bnCreateLocal.Visible = false;
+            this.bnCreateLocal.Click += new System.EventHandler(this.bnCreateLocal_Click);
+            // 
             // ApocLauncher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -361,7 +415,7 @@
             this.Controls.Add(this.lblConnection);
             this.Controls.Add(this.bnTestServer);
             this.Controls.Add(this.lblLauncherServer);
-            this.Controls.Add(this.B_start);
+            this.Controls.Add(this.bnConnectLocal);
             this.Controls.Add(this.T_password);
             this.Controls.Add(this.T_username);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -411,6 +465,8 @@
         private System.Windows.Forms.Button buttonCreate;
         private System.Windows.Forms.Button buttonPanelCreateAccount;
         private System.Windows.Forms.Label lblVersion;
+        private Button bnCreateLocal;
+        private Button buttonAccountClose;
     }
 }
 
