@@ -5616,7 +5616,7 @@ namespace WorldServer
                 DisconnectTime -= 5000;
                 CloseClient = closeClient;
 
-                if (!IsDisposed && (DisconnectTime < 0 || GmLevel > 1 || (GmLevel == 1 && (CurrentArea == null || !CurrentArea.IsRvR)))) // Leave
+                if (!IsDisposed && (DisconnectTime < 0 || GmLevel >= 1 || (GmLevel == 1 && (CurrentArea == null || !CurrentArea.IsRvR)))) // Leave
                 {
                     DisconnectType = EDisconnectType.Clean;
                     if (GmMgr.GmList.Contains(this))
