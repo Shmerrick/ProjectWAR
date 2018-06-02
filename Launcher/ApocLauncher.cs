@@ -72,7 +72,7 @@ namespace Launcher
 
             string encryptedPassword = ConvertSHA256(userCode + ":" + userPassword);
 
-            _logger.Info($@"Connecting to : {LocalServerIP}:{LocalServerPort} as {userCode}/{userPassword} [{encryptedPassword}]");
+            _logger.Info($@"Connecting to : {LocalServerIP}:{LocalServerPort} as {userCode} [{encryptedPassword}]");
             _logger.Info($"Sending CL_START to {LocalServerIP}:{LocalServerPort}");
 
             PacketOut Out = new PacketOut((byte)Opcodes.CL_START);
@@ -117,7 +117,7 @@ namespace Launcher
 
             string encryptedPassword = ConvertSHA256(userCode + ":" + userPassword);
 
-            _logger.Info($@"Connecting to : {TestServerIP}:{TestServerPort} as {userCode}/{userPassword} [{encryptedPassword}]");
+            _logger.Info($@"Connecting to : {TestServerIP}:{TestServerPort} as {userCode} [{encryptedPassword}]");
 
             _logger.Info($"Sending CL_START to {TestServerIP}:{TestServerPort}");
             PacketOut Out = new PacketOut((byte)Opcodes.CL_START);
@@ -154,7 +154,7 @@ namespace Launcher
 
             Client.User = userCode;
 
-            _logger.Info($@"Create account : {TestServerIP}:{TestServerPort} as {userCode}/{userPassword}");
+            _logger.Info($@"Create account : {TestServerIP}:{TestServerPort} as {userCode}");
 
             _logger.Info($"Sending CL_CREATE to {TestServerIP}:{TestServerPort}");
             PacketOut Out = new PacketOut((byte)Opcodes.CL_CREATE);
@@ -181,7 +181,7 @@ namespace Launcher
 
             Client.User = userCode;
 
-            _logger.Info($@"Create account : {LocalServerIP}:{LocalServerPort} as {userCode}/{userPassword}");
+            _logger.Info($@"Create account : {LocalServerIP}:{LocalServerPort} as {userCode}");
 
             _logger.Info($"Sending CL_CREATE to {LocalServerIP}:{LocalServerPort}");
             PacketOut Out = new PacketOut((byte)Opcodes.CL_CREATE);
@@ -204,7 +204,7 @@ namespace Launcher
 
             string encryptedPassword = ConvertSHA256(userCode + ":" + userPassword);
 
-            _logger.Info($@"Connecting to : {LocalServerIP}:{LocalServerPort} as {userCode}/{userPassword} [{encryptedPassword}]");
+            _logger.Info($@"Connecting to : {LocalServerIP}:{LocalServerPort} as {userCode} [{encryptedPassword}]");
 
             _logger.Info($"Sending CL_START to {LocalServerIP}:{LocalServerPort}");
             PacketOut Out = new PacketOut((byte)Opcodes.CL_START);
