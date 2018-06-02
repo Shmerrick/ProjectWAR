@@ -493,8 +493,8 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("previewmodel", PreviewItemModel, null, EGmLevel.TrustedGM, 1, "Temporary sets equipped item model (int slotIndex, int modelID)"),
             new GmCommandHandler("recreateplayer", CreatePlayer, null, EGmLevel.DatabaseDev, 1, "Requests player info is resent"),
             new GmCommandHandler("quest", QuestComplete, null, EGmLevel.DatabaseDev, 2, "Used to debug quests <QuestId> <Operation> Operation 1 - add, 2 - finish quest, 3 - delete quest from player"),
-            new GmCommandHandler("geartester", GearTester, null, 0, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
-            new GmCommandHandler("gunbad", Gunbad, null, 0, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
+            new GmCommandHandler("geartester", GearTester, null, EGmLevel.AnyGM, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
+            new GmCommandHandler("gunbad", Gunbad, null, EGmLevel.AnyGM, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
 #endif
 #if (!DEBUG)
             new GmCommandHandler("playeffect", PlayEffect, null, EGmLevel.SourceDev, 2, "Play effect from data/gamedata/effectlist.csv"),
