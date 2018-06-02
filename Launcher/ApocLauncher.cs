@@ -1,6 +1,7 @@
 ﻿using Launcher.Properties;
 using NLog;
 using System;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
@@ -47,8 +48,6 @@ namespace Launcher
         private const int HT_CAPTION = 0x2;
 
         private void Form1_Load(object sender, EventArgs e) {
-            if (!string.IsNullOrEmpty(Settings.Default.LastLogin))
-                T_username.Text = Settings.Default.LastLogin;
 
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
@@ -188,6 +187,29 @@ namespace Launcher
             PacketOut Out = new PacketOut((byte)Opcodes.CL_CREATE);
             Out.WriteString(userCode);
             Out.WriteString(userPassword);
+
+            Client.SendTCP(Out);
+        }
+
+        private void bnConnectLocal_Click(object sender, EventArgs e)
+        {
+            Client.Connect(LocalServerIP, LocalServerPort);
+            lblConnection.Text = $@"Connecting to : {LocalServerIP}:{LocalServerPort}";
+
+            string userCode = T_username.Text.ToLower();
+            string userPassword = T_password.Text.ToLower();
+
+
+            Client.User = userCode;
+
+            string encryptedPassword = ConvertSHA256(userCode + ":" + userPassword);
+
+            _logger.Info($@"Connecting to : {LocalServerIP}:{LocalServerPort} as {userCode}/{userPassword} [{encryptedPassword}]");
+
+            _logger.Info($"Sending CL_START to {LocalServerIP}:{LocalServerPort}");
+            PacketOut Out = new PacketOut((byte)Opcodes.CL_START);
+            Out.WriteString(userCode);
+            Out.WriteString(encryptedPassword);
 
             Client.SendTCP(Out);
         }

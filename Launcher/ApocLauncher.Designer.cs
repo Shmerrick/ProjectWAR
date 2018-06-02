@@ -37,7 +37,6 @@ namespace Launcher
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApocLauncher));
             this.T_username = new System.Windows.Forms.TextBox();
             this.T_password = new System.Windows.Forms.MaskedTextBox();
-            this.bnConnectLocal = new System.Windows.Forms.Button();
             this.RealmName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Online = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Players = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -55,6 +54,7 @@ namespace Launcher
             this.lblConnection = new System.Windows.Forms.Label();
             this.bnClose = new System.Windows.Forms.Button();
             this.panelCreateAccount = new System.Windows.Forms.Panel();
+            this.bnCreateLocal = new System.Windows.Forms.Button();
             this.buttonAccountClose = new System.Windows.Forms.Button();
             this.buttonCreate = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
@@ -64,6 +64,7 @@ namespace Launcher
             this.label1 = new System.Windows.Forms.Label();
             this.buttonPanelCreateAccount = new System.Windows.Forms.Button();
             this.lblVersion = new System.Windows.Forms.Label();
+            this.bnConnectLocal = new System.Windows.Forms.Button();
             this.panelCreateAccount.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -95,20 +96,6 @@ namespace Launcher
             this.T_password.Size = new System.Drawing.Size(282, 44);
             this.T_password.TabIndex = 1;
             this.T_password.UseSystemPasswordChar = true;
-            // 
-            // bnConnectLocal
-            // 
-            this.bnConnectLocal.BackColor = System.Drawing.Color.Transparent;
-            this.bnConnectLocal.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.bnConnectLocal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.bnConnectLocal.Location = new System.Drawing.Point(1095, 622);
-            this.bnConnectLocal.Name = "bnConnectLocal";
-            this.bnConnectLocal.Size = new System.Drawing.Size(176, 21);
-            this.bnConnectLocal.TabIndex = 4;
-            this.bnConnectLocal.Text = "LOCAL";
-            this.bnConnectLocal.UseVisualStyleBackColor = false;
-            this.bnConnectLocal.Visible = false;
-            this.bnConnectLocal.Click += new System.EventHandler(this.B_start_Click);
             // 
             // RealmName
             // 
@@ -252,6 +239,20 @@ namespace Launcher
             this.panelCreateAccount.TabIndex = 15;
             this.panelCreateAccount.Visible = false;
             // 
+            // bnCreateLocal
+            // 
+            this.bnCreateLocal.BackColor = System.Drawing.Color.Transparent;
+            this.bnCreateLocal.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.bnCreateLocal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.bnCreateLocal.Location = new System.Drawing.Point(385, 210);
+            this.bnCreateLocal.Name = "bnCreateLocal";
+            this.bnCreateLocal.Size = new System.Drawing.Size(176, 21);
+            this.bnCreateLocal.TabIndex = 23;
+            this.bnCreateLocal.Text = "LOCAL";
+            this.bnCreateLocal.UseVisualStyleBackColor = false;
+            this.bnCreateLocal.Visible = false;
+            this.bnCreateLocal.Click += new System.EventHandler(this.bnCreateLocal_Click);
+            // 
             // buttonAccountClose
             // 
             this.buttonAccountClose.BackColor = System.Drawing.Color.Transparent;
@@ -272,7 +273,7 @@ namespace Launcher
             // buttonCreate
             // 
             this.buttonCreate.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.buttonCreate.Font = new System.Drawing.Font("Friz Quadrata", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonCreate.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonCreate.ForeColor = System.Drawing.Color.DarkOrange;
             this.buttonCreate.Location = new System.Drawing.Point(30, 237);
             this.buttonCreate.Name = "buttonCreate";
@@ -305,19 +306,6 @@ namespace Launcher
             this.label2.TabIndex = 19;
             this.label2.Text = "USERNAME";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label1
-            // 
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.label1.Font = new System.Drawing.Font("Friz Quadrata", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.DarkOrange;
-            this.label1.Location = new System.Drawing.Point(3, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(587, 40);
-            this.label1.TabIndex = 18;
-            this.label1.Text = "CREATE ACCOUNT";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // textBoxPassword
             // 
@@ -386,19 +374,16 @@ namespace Launcher
             this.lblVersion.Size = new System.Drawing.Size(0, 13);
             this.lblVersion.TabIndex = 22;
             // 
-            // bnCreateLocal
+            // bnConnectLocal
             // 
-            this.bnCreateLocal.BackColor = System.Drawing.Color.Transparent;
-            this.bnCreateLocal.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.bnCreateLocal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.bnCreateLocal.Location = new System.Drawing.Point(385, 210);
-            this.bnCreateLocal.Name = "bnCreateLocal";
-            this.bnCreateLocal.Size = new System.Drawing.Size(176, 21);
-            this.bnCreateLocal.TabIndex = 23;
-            this.bnCreateLocal.Text = "LOCAL";
-            this.bnCreateLocal.UseVisualStyleBackColor = false;
-            this.bnCreateLocal.Visible = false;
-            this.bnCreateLocal.Click += new System.EventHandler(this.bnCreateLocal_Click);
+            this.bnConnectLocal.Enabled = false;
+            this.bnConnectLocal.ForeColor = System.Drawing.Color.DarkOrange;
+            this.bnConnectLocal.Location = new System.Drawing.Point(1095, 622);
+            this.bnConnectLocal.Name = "bnConnectLocal";
+            this.bnConnectLocal.Size = new System.Drawing.Size(176, 23);
+            this.bnConnectLocal.TabIndex = 24;
+            this.bnConnectLocal.Text = "Local";
+            this.bnConnectLocal.Click += new System.EventHandler(this.bnConnectLocal_Click);
             // 
             // ApocLauncher
             // 
@@ -408,6 +393,7 @@ namespace Launcher
             this.BackgroundImage = global::Launcher.Properties.Resources.final5;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(1280, 720);
+            this.Controls.Add(this.bnConnectLocal);
             this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.buttonPanelCreateAccount);
             this.Controls.Add(this.panelCreateAccount);
@@ -415,7 +401,6 @@ namespace Launcher
             this.Controls.Add(this.lblConnection);
             this.Controls.Add(this.bnTestServer);
             this.Controls.Add(this.lblLauncherServer);
-            this.Controls.Add(this.bnConnectLocal);
             this.Controls.Add(this.T_password);
             this.Controls.Add(this.T_username);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -465,8 +450,9 @@ namespace Launcher
         private System.Windows.Forms.Button buttonCreate;
         private System.Windows.Forms.Button buttonPanelCreateAccount;
         private System.Windows.Forms.Label lblVersion;
-        private Button bnCreateLocal;
-        private Button buttonAccountClose;
+        private System.Windows.Forms.Button bnCreateLocal;
+        private System.Windows.Forms.Button buttonAccountClose;
+        private Button bnConnectLocal;
     }
 }
 
