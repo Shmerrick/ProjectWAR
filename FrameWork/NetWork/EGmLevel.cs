@@ -7,8 +7,8 @@ namespace FrameWork
 {
     public enum EGmLevel
     {
-        Staff = 1,
-        GM = 2,
+        Staff = 2,
+        GM = 3,
         TrustedGM = 4,
         DatabaseDev = 8,
         SourceDev = 16,

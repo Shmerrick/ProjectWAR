@@ -72,7 +72,7 @@ namespace WorldServer.Managers.Commands
         {
             new GmCommandHandler("item",AddItem, null, EGmLevel.TrustedStaff, 1, "Add item to player"),
 #if DEBUG
-            new GmCommandHandler("money",AddMoney, null, EGmLevel.Staff, 1, "Add money to player"),
+            new GmCommandHandler("money",AddMoney, null, EGmLevel.DatabaseDev, 1, "Add money to player"),
             new GmCommandHandler("tok",AddTok, null, EGmLevel.DatabaseDev, 1, "Add tok to player"),
             new GmCommandHandler("renown",AddRenown, null, EGmLevel.TrustedStaff, 1, "Add renown to player"),
             new GmCommandHandler("influence",AddInf, null, EGmLevel.TrustedStaff, 1, "Add Influence to player"),
@@ -185,9 +185,9 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("guildleader", ModifyGuildLeader, null, EGmLevel.EmpoweredStaff, 2, "Changes the leader of the guild (string newLeader, string guildName)"),
             new GmCommandHandler("guildnamebyid", ModifyGuildNameByID, null, EGmLevel.TrustedGM, 2, "Changes the name of the guild by ID (int guildID string guildName)"),
 #if DEBUG
-            new GmCommandHandler("level", ModifyLevel, null, EGmLevel.Staff, 1, "Changes the level of the targeted player (int Rank)"),
-            new GmCommandHandler("renown", ModifyRenown, null, EGmLevel.Staff, 2, "Changes the renown rank of a player (string playerName, int RenownRank)"),
-            new GmCommandHandler("stat",ModifyStat, null, EGmLevel.Staff, 2, "Changes your proficiency in your current crafting skill (byte Skill)"),
+            new GmCommandHandler("level", ModifyLevel, null, EGmLevel.DatabaseDev, 1, "Changes the level of the targeted player (int Rank)"),
+            new GmCommandHandler("renown", ModifyRenown, null, EGmLevel.DatabaseDev, 2, "Changes the renown rank of a player (string playerName, int RenownRank)"),
+            new GmCommandHandler("stat",ModifyStat, null, EGmLevel.DatabaseDev, 2, "Changes your proficiency in your current crafting skill (byte Skill)"),
 #endif
 #if (!DEBUG)
             new GmCommandHandler("level", ModifyLevel, null, EGmLevel.Management, 1, "Changes the level of the targeted player (int Rank)"),
