@@ -199,10 +199,11 @@ namespace Launcher
             // 
             this.lblConnection.AutoSize = true;
             this.lblConnection.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.lblConnection.Location = new System.Drawing.Point(1092, 703);
+            this.lblConnection.Location = new System.Drawing.Point(1071, 701);
             this.lblConnection.Name = "lblConnection";
             this.lblConnection.Size = new System.Drawing.Size(0, 13);
             this.lblConnection.TabIndex = 13;
+            this.lblConnection.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // bnClose
             // 
