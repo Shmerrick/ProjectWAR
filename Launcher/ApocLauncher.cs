@@ -182,7 +182,10 @@ namespace Launcher {
             Client.SendTCP(Out);
         }
 
-        private void bnConnectLocal_Click(object sender, EventArgs e) {
+   
+
+        private void button1_Click(object sender, EventArgs e)
+        {
             Client.Connect(LocalServerIP, LocalServerPort);
             lblConnection.Text = $@"Connecting to : {LocalServerIP}:{LocalServerPort}";
 

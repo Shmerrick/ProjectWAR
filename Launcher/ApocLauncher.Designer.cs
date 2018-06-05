@@ -377,14 +377,17 @@ namespace Launcher
             // 
             // bnConnectLocal
             // 
-            this.bnConnectLocal.Enabled = false;
-            this.bnConnectLocal.ForeColor = System.Drawing.Color.DarkOrange;
-            this.bnConnectLocal.Location = new System.Drawing.Point(1095, 622);
+            this.bnConnectLocal.BackColor = System.Drawing.Color.Transparent;
+            this.bnConnectLocal.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.bnConnectLocal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.bnConnectLocal.Location = new System.Drawing.Point(1092, 624);
             this.bnConnectLocal.Name = "bnConnectLocal";
-            this.bnConnectLocal.Size = new System.Drawing.Size(176, 23);
+            this.bnConnectLocal.Size = new System.Drawing.Size(179, 21);
             this.bnConnectLocal.TabIndex = 24;
-            this.bnConnectLocal.Text = "Local";
-            this.bnConnectLocal.Click += new System.EventHandler(this.bnConnectLocal_Click);
+            this.bnConnectLocal.Text = "LOCAL";
+            this.bnConnectLocal.UseVisualStyleBackColor = false;
+            this.bnConnectLocal.Visible = false;
+            this.bnConnectLocal.Click += new System.EventHandler(this.button1_Click);
             // 
             // ApocLauncher
             // 

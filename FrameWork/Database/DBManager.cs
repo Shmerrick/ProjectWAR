@@ -4,8 +4,10 @@ using System.Text;
 using System.Reflection;
 using System.IO;
 
-namespace FrameWork {
-    public class DatabaseInfo {
+namespace FrameWork
+{
+    public class DatabaseInfo
+    {
         public string Server = "127.0.0.1";
         public string Port = "3306";
         public string Database = "warserver";
@@ -18,18 +20,24 @@ namespace FrameWork {
 
         public ConnectionType ConnectionType = ConnectionType.DATABASE_MYSQL;
 
-        public string Total() {
+        public string Total()
+        {
             string Result = "";
 
-            if (ConnectionType == ConnectionType.DATABASE_MYSQL) {
+            if (ConnectionType == ConnectionType.DATABASE_MYSQL)
+            {
                 Result += "Server=" + Server + ";";
                 Result += "Port=" + Port + ";";
                 Result += "Database=" + Database + ";";
-            } else if (ConnectionType == ConnectionType.DATABASE_MSSQL) {
-                if (IPAddress.Length > 0) {
+            }
+            else if (ConnectionType == ConnectionType.DATABASE_MSSQL)
+            {
+                if (IPAddress.Length > 0)
+                {
                     Result += "Data Source=" + IPAddress + "," + Port + ";";
                     Result += "Network Library=DBMSSOCN;";
-                } else
+                }
+                else
                     Result += "Server=" + Server + "," + Port + ";";
 
                 Result += "Initial Catalog=" + Catalog + ";";
@@ -44,14 +52,17 @@ namespace FrameWork {
     }
 
 
-    public class DBManager {
+    public class DBManager
+    {
         private readonly FileInfo _file = new FileInfo("sql.conf");
 
-        public static IObjectDatabase Start(string sqlconfig, ConnectionType Type, string databaseName, string schemaName) {
+        public static IObjectDatabase Start(string sqlconfig, ConnectionType Type, string databaseName, string schemaName)
+        {
             Log.Debug("IObjectDatabase", databaseName + "->Start " + sqlconfig + "...");
             IObjectDatabase _database = null;
 
-            try {
+            try
+            {
                 _database = ObjectDatabase.GetObjectDatabase(Type, sqlconfig, schemaName);
                 if (_database == null)
                     return null;
@@ -59,25 +70,34 @@ namespace FrameWork {
                 LoadTables(_database, databaseName);
 
                 return _database;
-            } catch {
+            }
+            catch
+            {
                 return null;
             }
         }
 
-        public static void LoadTables(IObjectDatabase Database, string DatabaseName) {
+        public static void LoadTables(IObjectDatabase Database, string DatabaseName)
+        {
             List<string> typeNames = new List<string>();
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) {
-                foreach (Type type in assembly.GetTypes()) {
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (Type type in assembly.GetTypes())
+                {
                     if (type.IsClass != true)
                         continue;
 
-                    try {
+                    try
+                    {
                         DataTable[] attrib = (DataTable[])type.GetCustomAttributes(typeof(DataTable), true);
-                        if (attrib.Length > 0 && attrib[0].DatabaseName == DatabaseName) {
+                        if (attrib.Length > 0 && attrib[0].DatabaseName == DatabaseName)
+                        {
                             Database.RegisterDataObject(type);
                             typeNames.Add(type.Name);
                         }
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e)
+                    {
                         Log.Error("DBManager", "Can not load : " + e);
                     }
                 }
