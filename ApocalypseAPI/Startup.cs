@@ -11,17 +11,20 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NLog;
 
 namespace ApocalypseAPI
 {
     public class Startup
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        public IHostingEnvironment HostingEnvironment { get; }
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -32,6 +35,8 @@ namespace ApocalypseAPI
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            _logger.Debug("Config:"+Configuration["db-connection-string"]);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
