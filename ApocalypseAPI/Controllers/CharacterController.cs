@@ -27,13 +27,20 @@ namespace ApocalypseAPI.Controllers
         [HttpGet]
         public List<Character> GetAll()
         {
-            return dbConnection.Query<Character>("select CharacterId, Name from war_characters.characters").ToList();
+            return dbConnection.Query<Character>($"select c.CharacterId, c.Name, cv.Level as CharacterLevel, cv.RenownRank as RenownLevel, c.Career, c.Realm, cv.ZoneId, zi.Name " +
+                                                 $"from war_characters.characters c, war_characters.characters_value cv, war_world.zone_infos zi " +
+                                                 $"where cv.CharacterId = c.CharacterId " +
+                                                 $"and zi.ZoneId=cv.ZoneId ").ToList();
         }
 
         [HttpGet("{id}", Name = "GetById")]
         public IActionResult GetById(long id)
         {
-            var item = dbConnection.Query<Character>($"select CharacterId, Name from war_characters.characters where CharacterId = {id}");
+            var item = dbConnection.Query<Character>($"select c.CharacterId, c.Name, cv.Level as CharacterLevel, cv.RenownRank as RenownLevel, c.Career, c.Realm, cv.ZoneId, zi.Name " +
+                                                     $"from war_characters.characters c, war_characters.characters_value cv, war_world.zone_infos zi " +
+                                                     $"where cv.CharacterId = c.CharacterId " +
+                                                     $"and zi.ZoneId=cv.ZoneId " +
+                                                     $"and c.CharacterId = {id}");
             if (item == null)
             {
                 return NotFound();

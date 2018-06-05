@@ -9,5 +9,11 @@ namespace ApocalypseAPI.Models
     {
         public int CharacterId { get; set; }
         public string Name { get; set; }
+        public int CharacterLevel { get; set; }
+        public int RenownLevel { get; set; }
+        public int Career { get; set; }
+        public int Realm { get; set; }
+        public int ZoneId { get; set; }
+        
     }
 }
