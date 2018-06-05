@@ -32,7 +32,7 @@ namespace ApocalypseAPI.Controllers
             try
             {
                 _logger.Debug($"calling getall");
-                return dbConnection.Query<Character>($"select c.CharacterId, c.Name, cv.Level as CharacterLevel, cv.RenownRank as RenownLevel, c.Career, c.Realm, cv.ZoneId, zi.Name " +
+                return dbConnection.Query<Character>($"select c.CharacterId, c.Name as Name, cv.Level as CharacterLevel, cv.RenownRank as RenownLevel, c.Career, c.Realm, cv.ZoneId, zi.Name as ZoneName " +
                                                      $"from war_characters.characters c, war_characters.characters_value cv, war_world.zone_infos zi " +
                                                      $"where cv.CharacterId = c.CharacterId " +
                                                      $"and zi.ZoneId=cv.ZoneId ").ToList();
@@ -49,7 +49,7 @@ namespace ApocalypseAPI.Controllers
         public IActionResult GetById(long id)
         {
             _logger.Debug($"calling get by id {id}");
-            var item = dbConnection.Query<Character>($"select c.CharacterId, c.Name, cv.Level as CharacterLevel, cv.RenownRank as RenownLevel, c.Career, c.Realm, cv.ZoneId, zi.Name " +
+            var item = dbConnection.Query<Character>($"select c.CharacterId, c.Name as Name, cv.Level as CharacterLevel, cv.RenownRank as RenownLevel, c.Career, c.Realm, cv.ZoneId, zi.Name as ZoneName " +
                                                      $"from war_characters.characters c, war_characters.characters_value cv, war_world.zone_infos zi " +
                                                      $"where cv.CharacterId = c.CharacterId " +
                                                      $"and zi.ZoneId=cv.ZoneId " +

@@ -14,6 +14,7 @@ namespace ApocalypseAPI.Models
         public int Career { get; set; }
         public int Realm { get; set; }
         public int ZoneId { get; set; }
+        public string ZoneName { get; set; }
         
     }
 }
