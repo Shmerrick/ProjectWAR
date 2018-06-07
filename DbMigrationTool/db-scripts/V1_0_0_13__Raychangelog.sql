@@ -1,0 +1,25 @@
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `TwoHanded`, `ItemSet`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `TokUnlock2`) VALUES ('5501630', 'Sentry\'s Witchstaff of Reverence', '11', '16', '8407', '10', '4', '0', '8388608', '1', '0', '0', '885', '340', '40', '55', '0', '9:60:0:0;6:45:0:0;78:3:0:0;35:0.25:0:0;', '30', '2', '1', '56', '0', '0', '0', '1', '0', '0', '0', '0');
+
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `TwoHanded`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `TokUnlock2`) VALUES ('5501632', 'Titan\'s Stiletto of Reverence', '12', '16', '3260', '13', '4', '2097152', '0', '1', '0', '0', '610', '2.0', '40', '55', '0', '1:30:0:0;7:22:0:0;76:2:0:0;41:5:0:0;', '30', '1', '1', '56', '0', '1', '0', '0', '0', '0');
+
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `Unk27`, `TwoHanded`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `TokUnlock2`) VALUES ('5501633', 'Titan\'s Torment of Reverence', '12', '16', '9246', '13', '4', '2097152', '0', '1', '0', '0', '610', '2.0', '40', '55', '0', '1:30:0:0;7:22:0:0;76:2:0:0;:86:5:0.5:0;\n', '30', '1', '1', '56', '1', '0', '0', '1', '0', '0', '0', '0');
+UPDATE `war_world`.`item_infos` SET `Name`='Titan\'s Witchstaff of Reverence', `Career`='8388608', `Skills`='0', `Stats`='9:60;6:45;78:3;32:6;82:20;' WHERE `Entry`='5501630';
+
+UPDATE `war_world`.`item_infos` SET `ModelId`='3364' WHERE `Entry`='5501630';
+
+UPDATE `war_world`.`item_infos` SET `ModelId`='3268', `Speed`='200', `Stats`='1:30;7:22;76:2;32:3;80:15;' WHERE `Entry`='5501632';
+
+UPDATE `war_world`.`item_infos` SET `Speed`='200', `Stats`='1:30;7:22;76:2;:86:5:5;80:15;\n' WHERE `Entry`='5501633';
+
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `TwoHanded`, `ItemSet`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `TokUnlock2`) VALUES ('5501634', 'Titan\'s Stabba of Reverence', '14', '4', '5377', '11', '4', '128', '0', '1', '0', '0', '610', '240', '40', '55', '0', '8:30;7:22;77:2;107:5;81:15;', '30', '1', '1', '56', '1', '0', '0', '1', '0', '0', '0', '0');
+
+UPDATE `war_world`.`item_infos` SET `UniqueEquiped`='1' WHERE `Entry`='5501630';
+UPDATE `war_world`.`item_infos` SET `UniqueEquiped`='1' WHERE `Entry`='5501631';
+
+UPDATE `war_world`.`item_infos` SET `UniqueEquiped`='1' WHERE `Entry`='5501632';
+
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `TwoHanded`, `ItemSet`, `DyeAble`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `TokUnlock2`) VALUES ('5501635', 'Titan\'s Shoota of Reverence', '7', '4', '5061', '10', '4', '128', '0', '1', '0', '0', '610', '200', '40', '55', '0', '8:30;7:22;77:2;32:5;81:15;', '30', '1', '1', '56', '1', '0', '0', '0', '1', '0', '0', '0', '0');
+
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `TwoHanded`, `ItemSet`, `DyeAble`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `TokUnlock2`) VALUES ('5501636', 'Titan\'s Painblade of Reverence', '1', '16', '1866', '10', '4', '4194304', '0', '1', '0', '0', '610', '240', '40', '55', '0', '1:30;7:22;76:2;:86:5:5;80:15;', '30', '1', '1', '56', '1', '0', '0', '0', '1', '0', '0', '0', '0');
+
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `TwoHanded`, `ItemSet`, `DyeAble`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `TokUnlock2`) VALUES ('5501637', 'Titan\'s Ninestaff of Reverence', '11', '64', '1808', '10', '4', '32768', '0', '1', '0', '0', '885', '340', '40', '55', '0', '9:60;6:45;78:3;32:6;82:20;', '30', '2', '1', '56', '1', '0', '0', '0', '1', '0', '0', '0', '0');
