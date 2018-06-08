@@ -43,7 +43,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         public static int FLAG_SECURE_REWARD_INTERVAL = 6000;
 
         /// <summary>Base reward scaler for players defending a secured flag</summary>
-        public static float FLAG_SECURE_REWARD_SCALER = 100f; //50f
+        public static float FLAG_SECURE_REWARD_SCALER = 50f; //50f
 
         /// <summary>Scaler applied to contributions in order to compute lock rewards</summary>
         public static float LOCK_REWARD_SCALER = 0.25f;

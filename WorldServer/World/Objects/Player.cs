@@ -5570,7 +5570,7 @@ namespace WorldServer
         {
             try
             {
-                if (GmLevel == 0)
+                if ((GmLevel == 0) || (GmLevel == 1))
                 {
                     if (IsMoving)
                     {
@@ -5616,7 +5616,7 @@ namespace WorldServer
                 DisconnectTime -= 5000;
                 CloseClient = closeClient;
 
-                if (!IsDisposed && (DisconnectTime < 0 || GmLevel >= 1 || (GmLevel == 1 && (CurrentArea == null || !CurrentArea.IsRvR)))) // Leave
+                if (!IsDisposed && (DisconnectTime < 0 || GmLevel > 1 || (GmLevel == 1 && (CurrentArea == null)))) // Leave
                 {
                     DisconnectType = EDisconnectType.Clean;
                     if (GmMgr.GmList.Contains(this))
@@ -5633,7 +5633,7 @@ namespace WorldServer
         public bool Save(Object sender, object args)
         {
             EvtInterface.AddEvent(Save, AUTO_SAVE_TIME, 0);
-            return true; // True, doit être delete après lancement
+            return true; 
         }
         public override void Save()
         {
