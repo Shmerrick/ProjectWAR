@@ -2911,12 +2911,8 @@ namespace WorldServer
             if (_currentXp == null)
                 return;
 
-#if !DEBUG
-
             if (Level >= Program.Config.RankCap)
                 return;
-
-#endif
 
             if (scalesWithRest && _Value.RestXp > 0)
             {
@@ -3100,12 +3096,8 @@ namespace WorldServer
             if (shouldPool)
                 _renownPool += (uint)(renown * 0.25f);
 
-#if !DEBUG
-
             if (value.RenownRank >= Program.Config.RenownCap)
                 return;
-
-#endif
 
             if (CurrentRenown == null)
                 throw new NullReferenceException("NULL CurrentRenown for " + Name);
@@ -3188,11 +3180,10 @@ namespace WorldServer
 
             _renownPool += (uint)(renown * 0.25f);
 
-#if (!DEBUG)
+
             // RB   4/17/2016   Lock Renown Rank to double the Career Rank. Cannot gain renown if Renown Rank is higher than 2*Career Rank.
             if (_Value.RenownRank >= Program.Config.RenownCap || (_Value.Level < 32 && _Value.RenownRank > (2 * _Value.Level)))
                 return;
-#endif
 
             RewardType type = this == killer ? RewardType.Kill : RewardType.Assist;
             string text = this == killer ? victim.Name : killer.Name;
@@ -3224,12 +3215,9 @@ namespace WorldServer
 
         public void RenownUp(uint remainder)
         {
-#if !DEBUG
             // RB   4/17/2016   Lock Renown Rank to Double Career Rank. Cannot gain renown if Renown Rank is higher than 2*Career Rank.
             if (_Value.RenownRank >= Program.Config.RenownCap || (_Value.Level < 32 && _Value.RenownRank >= (2 * _Value.Level)))
                 return;
-
-#endif
 
             CurrentRenown = XpRenownService.GetRenown_Info((byte)(_Value.RenownRank + 1));
             if (CurrentRenown == null)
