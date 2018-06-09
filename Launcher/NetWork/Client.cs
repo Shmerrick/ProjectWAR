@@ -524,8 +524,8 @@ namespace Launcher
                     }
                     else if (respons == 1) //success
                     {
-                        _logger.Warn($"Account create!");
-                        ApocLauncher.Acc.sendUI("Account create!");
+                        _logger.Warn($"Account created!");
+                        ApocLauncher.Acc.sendUI("Account created!");
                         return;
                     }
                     else if (respons == 2) //banned
