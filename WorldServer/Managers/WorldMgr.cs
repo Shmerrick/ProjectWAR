@@ -320,15 +320,22 @@ namespace WorldServer
 
         public static void GenerateXP(Player killer, Unit victim, float bonusMod)
         {
+            _logger.Trace($"Killer : {killer.Name} Victim : {victim.Name} Bonus : {bonusMod}");
             if (killer == null) return;
 
             if (killer.Level != killer.EffectiveLevel)
                 bonusMod = 0.0f;
 
             if (killer.PriorityGroup == null)
+            {
+               
                 killer.AddXp((uint)(GenerateXPCount(killer, victim) * bonusMod), true, true);
+            }
             else
+            {
+                _logger.Trace($"Priority Group : {killer.Name} Victim : {victim.Name} Bonus : {bonusMod}");
                 killer.PriorityGroup.AddXpFromKill(killer, victim, bonusMod);
+            }
         }
 
         public static uint GenerateRenownCount(Player killer, Player victim)

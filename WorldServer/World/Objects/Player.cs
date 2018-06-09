@@ -19,6 +19,7 @@ using WorldServer.Scenarios;
 using WorldServer.World.Battlefronts.Objectives;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.NewDawn;
+using NLog;
 
 namespace WorldServer
 {
@@ -219,6 +220,8 @@ namespace WorldServer
         }
 
         #endregion
+
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public Character Info;
         public Character_value _Value;
@@ -2903,6 +2906,7 @@ namespace WorldServer
         }
         private void InternalAddXp(uint xp, bool shouldPool, bool scalesWithRest)
         {
+            _logger.Trace($"xp : {xp} awarded to {this.Name}");
             if (shouldPool)
                 _xpPool += (uint)(xp * 0.25f);
 
@@ -3066,7 +3070,7 @@ namespace WorldServer
             {
                 renown = Math.Max(20, renown);
             }
-
+            _logger.Trace($"RP : {renown} awarded to {this.Name} ");
             InternalAddRenown(renown, shouldPool, type, rewardString);
         }
 
@@ -3090,6 +3094,8 @@ namespace WorldServer
                 SendClientMessage("You somehow gained an amount of renown larger than the system allows (" + renown + "). You have been given the cap.");
                 return;
             }
+
+            _logger.Trace($"renown : {renown} awarded to {this.Name} for {rewardString}");
 
             EvtInterface.Notify(EventName.OnAddRenown, this, renown);
 

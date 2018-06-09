@@ -8,6 +8,7 @@ using GameData;
 using WorldServer.World.Battlefronts;
 using WorldServer.World.Battlefronts.NewDawn;
 using WorldServer.World.Battlefronts.Objectives;
+using NLog;
 
 namespace WorldServer
 {
@@ -306,6 +307,8 @@ namespace WorldServer
         }
 
         #endregion
+
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public WarbandHandler _warbandHandler;
         public bool IsWarband => _warbandHandler != null;
@@ -1727,6 +1730,8 @@ namespace WorldServer
                 lvlSum += mbr.Level;
             }
 
+            _logger.Trace($"Killer : {killer.Name} Victim : {victim.Name} Bonus : {bonusMod} Members : {members.Count} lvlSum : {lvlSum}");
+
             if (members.Count == 0)
             {
                 killer.AddXp((uint) (WorldMgr.GenerateXPCount(killer, victim)*bonusMod), true, true);
@@ -1735,13 +1740,17 @@ namespace WorldServer
 
             foreach (Player plr in members)
             {
+                _logger.Trace($"Player : {plr.Name} Victim Level : {victim.Level} CurTime : {curTime} DeathTime : {plr.deathTime}");
+
                 if ((plr.Level > victim.Level + 8 && !victim.IsPlayer()) || (plr.IsDead && curTime - plr.deathTime > 120000)) // player can no longer gain xp when dead for longer than 2 min
                 {
                     return;
                 } else
                 {
                     xpQuotient = (plr.Level / (lvlSum / 100)) / 100;
-                    plr.AddXp((uint)((WorldMgr.GenerateXPCount(plr, victim) * bonusMod) * xpQuotient), true, true);
+                    _logger.Trace($"xpQuotient : {xpQuotient}");
+
+                   plr.AddXp((uint)((WorldMgr.GenerateXPCount(plr, victim) * bonusMod) * xpQuotient), true, true);
                 }
             }    
         }
@@ -1801,9 +1810,12 @@ namespace WorldServer
                 return;
             }
 
+            _logger.Trace($"Killer : {killer.Name} Victim : {victim.Name} bonus : {bonusMod} members : {members.Count}");
+
             foreach (Player plr in members)
                 if (!plr.IsDead || (plr.IsDead && curTime - plr.deathTime < 120000))
                 {
+                    _logger.Trace($"Group RP : Player : {plr.Name} Victim {victim.Name} members: {members.Count} ");
                     plr.AddKillRenown((uint)((WorldMgr.GenerateRenownCount(plr, victim) * bonusMod) / members.Count), killer, victim);
                 }
         }
