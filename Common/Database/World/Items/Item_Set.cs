@@ -27,7 +27,7 @@ using FrameWork;
 
 namespace Common
 {
-    // Valeur Fixe d'un character
+    
     [FrameWork.DataTable(PreCache = false, TableName = "item_sets", DatabaseName = "World")]
     [Serializable]
     public class Item_Set : DataObject
@@ -113,6 +113,18 @@ namespace Common
                 Dirty = true;
             }
         }
+
+        [DataElement(AllowDbNull = false)]
+        public int ClassId { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public string Comments { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public string ItemSetList { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public String ItemSetFullDescription { get; set; }
 
         public Dictionary<uint, string> Items = new Dictionary<uint, string>();
         public Dictionary<byte, string> Bonus = new Dictionary<byte, string>();
