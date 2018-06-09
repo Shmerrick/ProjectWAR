@@ -6036,7 +6036,7 @@ namespace WorldServer
 
         public void CalculateFallDamage(bool terminal = false)
         {
-
+            /*
             // Bunny hop detection!
             if (_slowOnLand)
             {
@@ -6044,6 +6044,7 @@ namespace WorldServer
                     ApplyLandPenalty();
                 _slowOnLand = false;
             }
+            */
 
             if (!terminal && (!_apexHit || FallGuard || FallState >= 21))
                 return;
