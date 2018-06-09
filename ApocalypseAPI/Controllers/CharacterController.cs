@@ -13,7 +13,7 @@ using NLog;
 namespace ApocalypseAPI.Controllers
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/Character")]
     public class CharacterController : ControllerBase
     {
         private readonly IDbConnectionService _db;
@@ -45,7 +45,7 @@ namespace ApocalypseAPI.Controllers
            
         }
 
-        [HttpGet("{id}", Name = "GetById")]
+        [HttpGet("{id}")]
         public IActionResult GetById(long id)
         {
             _logger.Debug($"calling get by id {id}");

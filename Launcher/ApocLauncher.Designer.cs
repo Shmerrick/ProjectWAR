@@ -387,7 +387,7 @@ namespace Launcher
             this.bnConnectLocal.Text = "LOCAL";
             this.bnConnectLocal.UseVisualStyleBackColor = false;
             this.bnConnectLocal.Visible = false;
-            this.bnConnectLocal.Click += new System.EventHandler(this.button1_Click);
+            this.bnConnectLocal.Click += new System.EventHandler(this.bnConnectLocal_Click);
             // 
             // ApocLauncher
             // 
