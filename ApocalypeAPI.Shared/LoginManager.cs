@@ -28,7 +28,7 @@ namespace ApocalypseAPI.Shared
         /// <param name="userName"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public bool CanLogin(string userName, string password)
+        public bool CanLogin(string userName, string password, string authKey)
         {
             try
             {
@@ -48,6 +48,28 @@ namespace ApocalypseAPI.Shared
                 _logger.Error($"Exception for {userName} {e.Message}");
                 Console.WriteLine(e);
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// Is the Auth Key valid (number and divisible by 7)
+        /// </summary>
+        /// <param name="authKey"></param>
+        /// <returns></returns>
+        public bool ValidAuthKey(string authKey)
+        {
+            int number;
+            bool result = Int32.TryParse(authKey, out number);
+            if (!result)
+            {
+                return false;
+            }
+            else
+            {
+                if ((number % 7) == 0)
+                    return true;
+                else
+                    return false;
             }
         }
     }

@@ -8,6 +8,7 @@ using MySql.Data.MySqlClient;
 using NLog;
 using System.Collections.Generic;
 using ApocalypseAPI.Shared;
+using Microsoft.Extensions.Primitives;
 
 namespace ApocalypseAPI.Controllers
 {
@@ -45,12 +46,15 @@ namespace ApocalypseAPI.Controllers
 
                 // authKey is sent by the client in Request headers. 
                 var authKey = Request.Headers["auth-key"];
+                if (!ValidAuthKey(authKey))
+                    return Unauthorized();
+
                 // Get the plain password.
                 var plainPassword = Cryptography.DecryptString(encryptedPassword, TokenManager.ServerEncryptionKey);
                 // Create a token string (plain)
                 var plainTokenString = TokenManager.CreateToken(userName, plainPassword);
 
-                var canLogin = LoginManager.CanLogin(userName, plainPassword);
+                var canLogin = LoginManager.CanLogin(userName, plainPassword, authKey);
                 if (canLogin)
                 {
                     var encodedToken = TokenManager.EncodeEncryptToken(plainTokenString);
@@ -71,5 +75,6 @@ namespace ApocalypseAPI.Controllers
             }
         }
 
+       
     }
 }
