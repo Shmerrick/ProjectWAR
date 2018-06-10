@@ -10,6 +10,7 @@
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
+      "commandLineArgs": "username=123&encryptedPassword=444",
       "launchBrowser": true,
       "launchUrl": "api/values",
       "environmentVariables": {
