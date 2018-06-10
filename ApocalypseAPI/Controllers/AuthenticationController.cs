@@ -20,24 +20,26 @@ namespace ApocalypseAPI.Controllers
         private readonly IDbConnectionService _db;
         private MySqlConnection dbConnection { get; set; }
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        public TimeTokenManager TokenManager { get; set; }
+        public ITimeTokenManager TokenManager { get; set; }
         public ILoginManager LoginManager { get; }
+        
 
-        public AuthenticationController(IDbConnectionService db, ILoginManager loginManager)
+        public AuthenticationController(IDbConnectionService db, ILoginManager loginManager, ITimeTokenManager timeTokenManager)
         {
             _db = db;
             LoginManager = loginManager;
+            TokenManager = timeTokenManager;
             dbConnection = new MySqlConnection(db.GetConnectionString());
-            TokenManager = new TimeTokenManager();
+            
         }
 
         /// <summary>
         /// Returns an encoded, encrypted token for a login attempt (user/password).
         /// </summary>
         /// <param name="userName"></param>
-        /// <param name="encryptedPassword"> Encoded AES</param>
+        /// <param name="encryptedPassword"> Encoded + AES</param>
         /// <returns></returns>
-        [HttpGet("")]
+        [HttpGet]
         public IActionResult Login(string userName, string encryptedPassword)
         {
             try
@@ -46,11 +48,11 @@ namespace ApocalypseAPI.Controllers
 
                 // authKey is sent by the client in Request headers. 
                 var authKey = Request.Headers["auth-key"];
-                if (!ValidAuthKey(authKey))
+                if (!LoginManager.ValidAuthKey(authKey))
                     return Unauthorized();
-
-                // Get the plain password.
-                var plainPassword = Cryptography.DecryptString(encryptedPassword, TokenManager.ServerEncryptionKey);
+                
+                // Get the plain password. 
+                var plainPassword = TokenManager.DecodeDecryptToken(encryptedPassword);
                 // Create a token string (plain)
                 var plainTokenString = TokenManager.CreateToken(userName, plainPassword);
 
@@ -71,7 +73,7 @@ namespace ApocalypseAPI.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                return StatusCode(500);
             }
         }
 

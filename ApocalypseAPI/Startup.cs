@@ -32,6 +32,8 @@ namespace ApocalypseAPI
         {
             services.AddMvc();
             services.AddTransient<IDbConnectionService>(s => new DbConnectionService(Configuration["db-connection-string"]));
+            services.AddTransient<ILoginManager, LoginManager>();
+            services.AddSingleton<ITimeTokenManager, TimeTokenManager>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

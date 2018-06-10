@@ -36,7 +36,7 @@ namespace ApocalypseAPI.Shared
                 // Generates the password as per the client Launcher
                 var cryptPassword = Cryptography.ConvertSHA256(userName + ":" + password);
                 _logger.Trace($"Crypt password {cryptPassword}");
-                var accountId = dbConnection.ExecuteScalar<int>($"SELECT AccountId from war_accounts.accounts where CryptPassword = {cryptPassword} and Username = {userName}");
+                var accountId = dbConnection.ExecuteScalar<int>($"SELECT AccountId from war_accounts.accounts where CryptPassword = '{cryptPassword}' and Username = '{userName}'");
                 _logger.Trace($"AccountId {accountId}");
                 if (accountId > 0)
                     return true;

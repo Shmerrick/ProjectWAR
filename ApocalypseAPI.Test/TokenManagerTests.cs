@@ -160,8 +160,10 @@ namespace ApocalypseAPI.Test
         public void ValidTokenNonExistingFails()
         {
             var manager = new TimeTokenManager();
+            var eePassword = manager.EncodeEncryptToken("123");
+                       
 
-            var token1 = manager.CreateToken("sam", "pwd1");
+            var token1 = manager.CreateToken("az", "123");
             
             var wellFormedToken = manager.EncodeEncryptToken(token1);
 

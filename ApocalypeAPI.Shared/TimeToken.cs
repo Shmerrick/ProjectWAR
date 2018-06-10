@@ -12,6 +12,8 @@ namespace ApocalypseAPI.Shared
         public DateTime Timestamp { get; set; }
         public String UserName { get; set; }
 
+        // Although we are using timestamp as part of the token, this is only in here for future purposes.
+        // The intention would be to use the time to force relogin after N mins.
         public TimeToken(string userName, string token, DateTime timestamp)
         {
             UserName = userName;

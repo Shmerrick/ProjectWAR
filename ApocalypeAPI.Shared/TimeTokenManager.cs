@@ -25,8 +25,9 @@ namespace ApocalypseAPI.Shared
         {
             if (WellFormedToken(encodedTokenString))
             {
+                var userName = DecodeDecryptToken(encodedTokenString).Split('|')[1];
 
-                var foundToken = GetTokenByTokenString(encodedTokenString);
+                var foundToken = GetTokenByUserName(userName);
                 if (foundToken != null)
                 {
                     _logger.Debug($"Token is valid");
