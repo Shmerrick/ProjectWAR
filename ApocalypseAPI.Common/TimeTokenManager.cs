@@ -1,9 +1,9 @@
-﻿using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 
-namespace ApocalypseAPI.Shared
+namespace ApocalypseAPI.Common
 {
     public class TimeTokenManager : ITimeTokenManager
     {
@@ -120,7 +120,7 @@ namespace ApocalypseAPI.Shared
 
         public string EncodeEncryptToken(string plainToken)
         {
-            var encryptedToken = Shared.Cryptography.EncryptString(plainToken, ServerEncryptionKey);
+            var encryptedToken = Common.Cryptography.EncryptString(plainToken, ServerEncryptionKey);
             var encodedToken = Cryptography.Base64Encode(encryptedToken);
             return encodedToken;
 

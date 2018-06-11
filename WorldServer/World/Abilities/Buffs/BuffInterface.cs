@@ -905,7 +905,7 @@ namespace WorldServer
             if (buffList.Count == 0)
                 return;
 
-            int curTime = TCPManager.GetTimeStamp();
+            uint curTime = (uint) TCPManager.GetTimeStamp();
 
             for (int i=0; i < buffList.Count; ++i)
             {

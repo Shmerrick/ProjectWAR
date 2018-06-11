@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using NLog;
 using System.Collections.Generic;
-using ApocalypseAPI.Shared;
+using ApocalypseAPI.Common;
 using Microsoft.Extensions.Primitives;
 
 namespace ApocalypseAPI.Controllers
@@ -61,6 +61,7 @@ namespace ApocalypseAPI.Controllers
                 {
                     var encodedToken = TokenManager.EncodeEncryptToken(plainTokenString);
                     _logger.Trace($"Encoded token {encodedToken}");
+                    
                     TokenManager.AddToken(new TimeToken(userName, encodedToken, DateTime.Now));
                     return Ok(encodedToken);
                 }

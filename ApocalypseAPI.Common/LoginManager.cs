@@ -1,12 +1,9 @@
-﻿using MySql.Data.MySqlClient;
-using NLog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
 using Dapper;
+using MySql.Data.MySqlClient;
+using NLog;
 
-namespace ApocalypseAPI.Shared
+namespace ApocalypseAPI.Common
 {
     public class LoginManager : ILoginManager
     {

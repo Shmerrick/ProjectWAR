@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ApocalypeAPI.Shared\ApocalypseAPI.Shared.csproj" />
+    <ProjectReference Include="..\ApocalypseAPI.Common\ApocalypseAPI.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

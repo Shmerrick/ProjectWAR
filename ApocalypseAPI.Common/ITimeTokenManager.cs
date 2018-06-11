@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ApocalypseAPI.Shared
+namespace ApocalypseAPI.Common
 {
     public interface ITimeTokenManager
     {

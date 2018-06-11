@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="dapper" Version="1.50.5" />
-    <PackageReference Include="mysql.data" Version="8.0.11" />
+    <PackageReference Include="Mysql.data" Version="8.0.11" />
     <PackageReference Include="nlog" Version="4.5.6" />
   </ItemGroup>
 

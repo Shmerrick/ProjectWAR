@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ApocalypseAPI.Shared
+namespace ApocalypseAPI.Common
 {
     public class DbConnectionService : IDbConnectionService
     {

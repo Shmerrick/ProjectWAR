@@ -1,7 +1,7 @@
-﻿using ApocalypseAPI.Shared;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ApocalypseAPI.Common;
 using Xunit;
 
 namespace ApocalypseAPI.Test

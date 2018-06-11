@@ -1,4 +1,4 @@
-﻿namespace ApocalypseAPI.Shared
+﻿namespace ApocalypseAPI.Common
 {
     public interface ILoginManager
     {

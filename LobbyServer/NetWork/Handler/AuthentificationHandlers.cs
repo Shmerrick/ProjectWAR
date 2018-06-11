@@ -49,7 +49,7 @@ namespace LobbyServer.NetWork.Handler
             authReq.MergeFrom(packet.ToArray());
 
             string session = Encoding.ASCII.GetString(authReq.SessionToken.ToByteArray());
-           // Log.Debug("AuthSession", "session " + session);
+            Log.Debug("AuthSession", "session " + session);
             cclient.Username = "";                                  //username is not important anymore in 1.4.8
             cclient.Token = session;
 
