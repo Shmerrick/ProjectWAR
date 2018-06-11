@@ -17,28 +17,28 @@ namespace ApocalypseAPI.Controllers
     public class ItemSetController : Controller
     {
         private readonly IDbConnectionService _db;
-        private MySqlConnection dbConnection { get; set; }
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private MySqlConnection DbConnection { get; set; }
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public ItemSetController(IDbConnectionService db)
         {
             _db = db;
-            dbConnection = new MySqlConnection(db.GetConnectionString());
+            DbConnection = new MySqlConnection(db.GetConnectionString());
         }
 
         [HttpGet]
         public List<ItemSet> GetAll()
         {
+            Logger.Debug($"calling getall");
             try
             {
-                _logger.Debug($"calling getall");
-                return dbConnection.Query<ItemSet>( $"SELECT sets.Entry, sets.Name, sets.ClassId, c.ClassName, sets.ItemSetFullDescription FROM war_world.item_sets sets, war_world.classes c " +
+                return DbConnection.Query<ItemSet>( $"SELECT sets.Entry, sets.Name, sets.ClassId, c.ClassName, sets.ItemSetFullDescription FROM war_world.item_sets sets, war_world.classes c " +
                                                     $"where c.ClassId = sets.ClassId " +
                                                     $" order by sets.Name; ").ToList();
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Error(e.Message);
                 throw;
             }
 
@@ -47,16 +47,25 @@ namespace ApocalypseAPI.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(long id)
         {
-            _logger.Debug($"calling get by id {id}");
-            var item =  dbConnection.Query<ItemSet>($"SELECT sets.Entry, sets.Name, sets.ClassId, c.ClassName, sets.ItemSetFullDescription FROM war_world.item_sets sets, war_world.classes c " +
-                                     $"where c.ClassId = sets.ClassId " +
-                                     $" and sets.Entry = {id}; ").ToList();
-
-            if (item == null)
+            Logger.Debug($"calling get by id {id}");
+            try
             {
-                return NotFound();
+                var item = DbConnection.Query<ItemSet>(
+                    $"SELECT sets.Entry, sets.Name, sets.ClassId, c.ClassName, sets.ItemSetFullDescription FROM war_world.item_sets sets, war_world.classes c " +
+                    $"where c.ClassId = sets.ClassId " +
+                    $" and sets.Entry = {id}; ").ToList();
+
+                if (item == null)
+                {
+                    return NotFound();
+                }
+                return Ok(item);
             }
-            return Ok(item);
+            catch (Exception e)
+            {
+                Logger.Error(e.Message);
+                throw;
+            }
         }
     }
 }
