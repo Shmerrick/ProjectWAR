@@ -123,7 +123,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
             // Population scale factors can up this to 9000 if the region is full of people and then raise or lower it depending on population balance.
             var baseXp = BattlefrontConstants.FLAG_SECURE_REWARD_SCALER * tier * rewardScaleMultiplier;
             var baseRp = baseXp / 10f;
-            var baseInf = baseRp / 2.5f;
+            var baseInf = baseRp / 2.2f;
 
             foreach (var player in playersWithinRange)
             {

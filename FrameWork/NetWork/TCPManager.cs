@@ -592,7 +592,7 @@ namespace FrameWork
         public void HandlePacket(BaseClient client, PacketIn packet)
         {
             //#if DEBUG
-            Log.Info("HandlePacket", $"Packet : {packet.Opcode} ({packet.Opcode.ToString("X8")})");
+            Log.Debug("HandlePacket", $"Packet : {packet.Opcode} ({packet.Opcode.ToString("X8")})");
             Log.Dump("HandlePacket", packet.ToArray(), 0, packet.ToArray().Length);
             //#endif
 
