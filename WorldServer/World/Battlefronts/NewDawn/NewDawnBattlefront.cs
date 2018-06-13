@@ -363,7 +363,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
             if (PairingLocked)
             {
-                _logger.Debug($"But... it's already locked?!?");
+                _logger.Warn($"But... it's already locked?!?");
                 return; // No effect
             }
 

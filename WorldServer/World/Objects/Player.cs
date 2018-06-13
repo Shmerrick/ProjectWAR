@@ -222,6 +222,7 @@ namespace WorldServer
         #endregion
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
 
         public Character Info;
         public Character_value _Value;
@@ -2906,7 +2907,7 @@ namespace WorldServer
         }
         private void InternalAddXp(uint xp, bool shouldPool, bool scalesWithRest)
         {
-            _logger.Trace($"xp : {xp} awarded to {this.Name}");
+            RewardLogger.Debug($"xp : {xp} awarded to {this.Name}");
             if (shouldPool)
                 _xpPool += (uint)(xp * 0.25f);
 
@@ -3070,7 +3071,7 @@ namespace WorldServer
             {
                 renown = Math.Max(20, renown);
             }
-            _logger.Trace($"RP : {renown} awarded to {this.Name} ");
+            RewardLogger.Trace($"RP : {renown} awarded to {this.Name} ");
             InternalAddRenown(renown, shouldPool, type, rewardString);
         }
 
@@ -3095,7 +3096,7 @@ namespace WorldServer
                 return;
             }
 
-            _logger.Trace($"renown : {renown} awarded to {this.Name} for {rewardString}");
+            RewardLogger.Debug($"renown : {renown} awarded to {this.Name} for {rewardString}");
 
             EvtInterface.Notify(EventName.OnAddRenown, this, renown);
 
@@ -3937,6 +3938,8 @@ namespace WorldServer
                 totalRenown *= 5;
             }
 
+            RewardLogger.Debug($"Total XP : {totalXP} RP : {totalRenown} INF : {totalInfluence}");
+
             #endregion
 
             #region Remove players irrelevant to the kill
@@ -3948,6 +3951,8 @@ namespace WorldServer
                 {
                     TotalDamageTaken -= DamageSources[plr];
                     damageSourceRemovals.Add(plr);
+
+                    RewardLogger.Debug($"Removed Player {plr.Name}");
                 }
             }
 
@@ -3965,11 +3970,15 @@ namespace WorldServer
                 #region Get reward values for this player
                 Player curPlayer = kvpair.Key;
 
+                RewardLogger.Trace($"Damage Sources included for {curPlayer.Name}");
+
                 float damageFactor = (float)kvpair.Value / TotalDamageTaken;
 
                 uint xpShare = (uint)(totalXP * damageFactor);
                 uint renownShare = (uint)(totalRenown * damageFactor);
                 ushort influenceShare = (ushort)(totalInfluence * damageFactor);
+
+                RewardLogger.Debug($"Shared reward XP : {xpShare} RP : {renownShare} INF : {influenceShare}");
 
                 if (damageFactor >= 2f)
                 {
@@ -3981,6 +3990,7 @@ namespace WorldServer
 
                 if (curPlayer.PriorityGroup == null)
                 {
+                    RewardLogger.Trace($"Solo Reward {curPlayer.Name} - null prioritygroup");
                     #region Handle solo rewards
                     if (curPlayer.ScnInterface.Scenario == null || !curPlayer.ScnInterface.Scenario.DeferKillReward(curPlayer, xpShare, renownShare))
                     {
@@ -3990,6 +4000,10 @@ namespace WorldServer
                         {
                             if (deathRewardScaler < 1f)
                                 curPlayer.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_PLAYER_REDUCED_XPRP);
+
+                            RewardLogger.Trace($"Awarded XP: {xpShare} BonusMod : {bonusMod} Killer : {killer} This : {this.Name}");
+                            RewardLogger.Trace($"Awarded RP: {renownShare} BonusMod : {bonusMod} Killer : {killer} This : {this.Name}");
+
                             curPlayer.AddXp(xpShare, bonusMod, true, true);
                             curPlayer.AddKillRenown(renownShare, bonusMod, killer, this);
                             if (influenceId != 0)
@@ -3997,6 +4011,7 @@ namespace WorldServer
 
                             if (closestFlag != null && closestFlag.FlagState != ObjectiveFlags.ZoneLocked)
                             {
+                                RewardLogger.Trace($"Delayed Rewards RP: {renownShare} BonusMod : {bonusMod} Killer : {killer} This : {this.Name}");
                                 closestFlag.RewardManager.AddDelayedRewardsFrom(curPlayer, this, (uint)(xpShare * transferenceFactor), (uint)(renownShare * transferenceFactor));
                                 Region.ndbf.AddContribution(curPlayer, (uint)(renownShare * bonusMod));
                             }
@@ -4016,7 +4031,7 @@ namespace WorldServer
                 else
                 {
                     #region Collate group rewards
-
+                    RewardLogger.Trace($"Group Reward {curPlayer.Name}");
                     if (totalRenown == 0)
                     {
                         curPlayer.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_PLAYER_WORTH_NO_XPRP);
@@ -4038,7 +4053,11 @@ namespace WorldServer
             if (groupXPRenown.Count > 0)
             {
                 foreach (KeyValuePair<Group, XpRenown> kvpair in groupXPRenown)
-                    kvpair.Key.HandleKillRewards(this, killer, bonusMod, kvpair.Value.XP, kvpair.Value.Renown, influenceId, kvpair.Value.Influence, transferenceFactor, closestFlag);
+                {
+                    RewardLogger.Trace($"Group Player Rewards: this : {this.Name} killer : {killer.Name} bonus : {bonusMod} XP {kvpair.Value.XP}, RP {kvpair.Value.Renown}, INF {kvpair.Value.Influence}");
+                    kvpair.Key.HandleKillRewards(this, killer, bonusMod, kvpair.Value.XP, kvpair.Value.Renown, influenceId, kvpair.Value.Influence, transferenceFactor,
+                        closestFlag);
+                }
             }
             #endregion
         }

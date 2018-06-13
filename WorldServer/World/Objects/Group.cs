@@ -22,7 +22,7 @@ namespace WorldServer
         private readonly List<Player> _playersGreeding = new List<Player>();
         private readonly List<Player> _playersNeeding = new List<Player>();
         private readonly List<Player> _playersPassing = new List<Player>();
-
+        
         public LootRoll(byte lootID, Item_Info item)
         {
             LootID = lootID;
@@ -193,6 +193,8 @@ namespace WorldServer
     {
         #region Static
 
+        private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
+        
         private static int _maxGroupID;
         public static int GetNextGroupId()
         {
@@ -1866,13 +1868,21 @@ namespace WorldServer
                 uint xpShare = (uint)(xp/members.Count);
                 uint renownShare = (uint)(renown/members.Count);
 
+                RewardLogger.Debug($"Cur player {curPlayer.Name} XP Share {xpShare} RP Share {renownShare}");
+
                 if (curPlayer.ScnInterface.Scenario == null || !curPlayer.ScnInterface.Scenario.DeferKillReward(curPlayer, xpShare, renownShare))
                 {
                     curPlayer.AddXp(xpShare, bonusMod, true, true);
                     if (playerVictim != null)
+                    {
+                        RewardLogger.Trace($"Add Kill Renown (Player Victim)");
                         curPlayer.AddKillRenown(renownShare, bonusMod, killer, playerVictim, members.Count());
+                    }
                     else
+                    {
+                        RewardLogger.Trace($"Player not victim");
                         curPlayer.AddRenown(renownShare, bonusMod, true);
+                    }
                 }
                 if (influenceId != 0)
                     curPlayer.AddInfluence(influenceId, (ushort)(influence / members.Count));
