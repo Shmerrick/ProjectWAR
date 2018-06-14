@@ -5,8 +5,31 @@ namespace WorldServer.World.Battlefronts.NewDawn
 {
     public class UpperTierRacialPairManager : RacialPairManager
     {
+        public List<CampaignTrack> CampaignTracks { get; set; }
+
+
         public UpperTierRacialPairManager()
         {
+            var ct = new CampaignTrack
+            {
+                CampaignPairing = Pairing.PAIRING_EMPIRE_CHAOS,
+                CampaignStages = new List<RacialPair>
+                {
+                    new RacialPair(RacialPairIdentifier.RACIAL_PAIR_T2_EMP_CHAOS, Pairing.PAIRING_EMPIRE_CHAOS, "T2 Emp/Chaos", 2, 14),
+                    new RacialPair(RacialPairIdentifier.RACIAL_PAIR_T3_EMP_CHAOS, Pairing.PAIRING_EMPIRE_CHAOS, "T3 Emp/Chaos", 3, 6),
+                    new RacialPair(RacialPairIdentifier.RACIAL_PAIR_T4_EMP_CHAOS, Pairing.PAIRING_EMPIRE_CHAOS, "T4 Emp/Chaos", 4, 11)
+                }
+            };
+
+            //CampaignTracks = new List<CampaignTrack>
+            //{
+            //    new CampaignTrack{ 
+            //        Pairing.PAIRING_EMPIRE_CHAOS,
+
+            //        }
+                    
+            //};
+
             RacialPairList = new List<RacialPair>
             {
                 new RacialPair(RacialPairIdentifier.RACIAL_PAIR_T2_EMP_CHAOS, Pairing.PAIRING_EMPIRE_CHAOS, "T2 Emp/Chaos", 2, 14),

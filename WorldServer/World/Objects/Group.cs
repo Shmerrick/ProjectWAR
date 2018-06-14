@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using SystemData;
@@ -22,7 +23,7 @@ namespace WorldServer
         private readonly List<Player> _playersGreeding = new List<Player>();
         private readonly List<Player> _playersNeeding = new List<Player>();
         private readonly List<Player> _playersPassing = new List<Player>();
-        
+
         public LootRoll(byte lootID, Item_Info item)
         {
             LootID = lootID;
@@ -31,7 +32,7 @@ namespace WorldServer
         }
 
         public int ProcessVote(Player voter, ushort vote)
-        { 
+        {
             if (_playersNeeding.Contains(voter) || _playersGreeding.Contains(voter))
             {
                 voter.SendClientMessage("You've already rolled on this item.", ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL);
@@ -40,7 +41,7 @@ namespace WorldServer
 
             switch (vote)
             {
-                case 0: 
+                case 0:
                     // Explicitly check whether a player can use this item.
                     // Need on use doesn't appear to work on the client side, so we change Need rolls to Greed
                     // for items not usable by the player's career or race.
@@ -49,15 +50,15 @@ namespace WorldServer
                         voter.SendClientMessage("Your Need vote was changed to Greed because you cannot use this item.", ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL);
                         goto case 1;
                     }
-                    _playersNeeding.Add(voter); 
+                    _playersNeeding.Add(voter);
                     voter.SendLocalizeString(Item.Name, ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL, Localized_text.TEXT_YOU_SELECT_NEED_FOR);
                     return 0;
-                case 1: 
-                    _playersGreeding.Add(voter); 
-                    voter.SendLocalizeString(Item.Name, ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL, Localized_text.TEXT_YOU_SELECT_GREED_FOR);  
+                case 1:
+                    _playersGreeding.Add(voter);
+                    voter.SendLocalizeString(Item.Name, ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL, Localized_text.TEXT_YOU_SELECT_GREED_FOR);
                     return 1;
-                case 2: 
-                    _playersPassing.Add(voter); 
+                case 2:
+                    _playersPassing.Add(voter);
                     voter.SendLocalizeString(Item.Name, ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL, Localized_text.TEXT_YOU_SELECT_PASS_FOR);
                     return 2;
             }
@@ -73,15 +74,15 @@ namespace WorldServer
         public bool GetWinner(Group gr)
         {
             int value;
-            int highestRand=0;
-            Player highestPlayer=null;
+            int highestRand = 0;
+            Player highestPlayer = null;
 
-            if(_playersNeeding.Count > 0)
+            if (_playersNeeding.Count > 0)
             {
                 foreach (Player plr in gr.Members)
                     plr.SendLocalizeString(Item.Name, ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL, Localized_text.TEXT_NEED_ROLL_HEADER);
-                
-                foreach(Player plr in _playersNeeding)
+
+                foreach (Player plr in _playersNeeding)
                 {
                     value = StaticRandom.Instance.Next(1, 100);
                     if (value > highestRand)
@@ -99,7 +100,7 @@ namespace WorldServer
 
             }
 
-            else if(_playersGreeding.Count > 0)
+            else if (_playersGreeding.Count > 0)
             {
                 foreach (Player player in gr.Members)
                     player.SendLocalizeString(Item.Name, ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL, Localized_text.TEXT_GREED_ROLL_HEADER);
@@ -130,7 +131,7 @@ namespace WorldServer
                 foreach (Player mem in gr.Members)
                 {
                     if (mem != highestPlayer)
-                        mem.SendLocalizeString(new [] { highestPlayer.Name, Item.Name, "1" }, ChatLogFilters.CHATLOGFILTERS_LOOT, Localized_text.TEXT_PLAYER_X_RECEIVES_ITEM_X);
+                        mem.SendLocalizeString(new[] { highestPlayer.Name, Item.Name, "1" }, ChatLogFilters.CHATLOGFILTERS_LOOT, Localized_text.TEXT_PLAYER_X_RECEIVES_ITEM_X);
                 }
                 highestPlayer.ItmInterface.CreateItem(Item, 1);
             }
@@ -194,7 +195,7 @@ namespace WorldServer
         #region Static
 
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
-        
+
         private static int _maxGroupID;
         public static int GetNextGroupId()
         {
@@ -305,7 +306,7 @@ namespace WorldServer
 
         public static bool PlayerInRvR(Player player)
         {
-            return ZoneRVRAreas.ContainsKey(player.Zone.ZoneId) && InPoly(ZoneRVRAreas[player.Zone.ZoneId], (ushort) player.X, (ushort) player.Y);
+            return ZoneRVRAreas.ContainsKey(player.Zone.ZoneId) && InPoly(ZoneRVRAreas[player.Zone.ZoneId], (ushort)player.X, (ushort)player.Y);
         }
 
         #endregion
@@ -318,7 +319,7 @@ namespace WorldServer
         public bool IsScenarioGroup { get; }
 
         public ushort GroupId;
-        
+
         public Player Leader => _warbandHandler?.Leader ?? _leader;
         private Player _leader;
         private Player _masterLooter;
@@ -351,12 +352,13 @@ namespace WorldServer
             _groupStatusDirty = true;
 
             GroupLockStatic.EnterWriteLock();
-                try {
-                    lock (Group.WorldGroups)
-                    {
-                        WorldGroups.Add(this);
-                    }
+            try
+            {
+                lock (Group.WorldGroups)
+                {
+                    WorldGroups.Add(this);
                 }
+            }
             finally { GroupLockStatic.ExitWriteLock(); }
         }
 
@@ -372,7 +374,8 @@ namespace WorldServer
             _groupStatusDirty = true;
 
             GroupLockStatic.EnterWriteLock();
-            try {
+            try
+            {
                 lock (Group.WorldGroups)
                 {
                     WorldGroups.Add(this);
@@ -402,7 +405,7 @@ namespace WorldServer
                 //also scenario groups are handled by the scenario manager, so dont process them. like, at all.
                 if (_warbandHandler != null && !(_warbandHandler is ScenarioGroupsHandler))
                 {
-                        _warbandHandler.Update(tick);
+                    _warbandHandler.Update(tick);
                 }
             }
             else
@@ -529,7 +532,7 @@ namespace WorldServer
                 else
                     _groupActions.Add(action);
             }
-            
+
         }
 
         private void ProcessGroupActions()
@@ -708,7 +711,7 @@ namespace WorldServer
                 {
                     _activeLootRolls.Add(new LootRoll(++_lootId, lootContainer.LootInfo[i].Item));
 
-                    PacketOut Out = new PacketOut((byte) Opcodes.F_INTERACT_RESPONSE);
+                    PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE);
                     Out.WriteByte(0x07);
                     Out.WriteByte(0x10);
                     Out.WriteByte(0x6F);
@@ -871,7 +874,7 @@ namespace WorldServer
                     Out.WriteZigZag(plr._Value.ZoneId);
                 else
                     Out.WriteVarUInt(0);
-             
+
 
                 Out.WriteByte(1);
 
@@ -887,7 +890,7 @@ namespace WorldServer
             }
             //Only send this info once.
             //SendGroupOidList();
-          
+
             //Out = new PacketOut((byte)Opcodes.F_CHARACTER_INFO);
             //Out.WriteByte(0x06); // Group info
             //Out.WriteUInt16(0x0001);
@@ -1134,7 +1137,7 @@ namespace WorldServer
                 return new HashSet<Player>(Members);
             }
             finally { _memberRWLock.ExitReadLock(); }
-        } 
+        }
 
         public List<Player> GetPlayersCloseTo(Unit target, int maxDist)
         {
@@ -1262,7 +1265,7 @@ namespace WorldServer
                 return;
 
             if (_warbandHandler != null)
-            { 
+            {
                 _warbandHandler.SetLeader(player);
                 return;
             }
@@ -1344,7 +1347,7 @@ namespace WorldServer
 
             player.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_SAY, _warbandSlave ? Localized_text.TEXT_BG_YOU_LEFT : Localized_text.TEXT_YOU_LEFT_PARTY);
             player.EvtInterface.Notify(EventName.OnLeaveGroup, null, null);
-            
+
             foreach (Player grpPlr in Members)
                 grpPlr.SendLocalizeString(player.Name, ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_X_LEFT_PARTY);
 
@@ -1458,7 +1461,7 @@ namespace WorldServer
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_GROUP_STATUS);
             Out.WriteUInt16(GroupId);
-            Out.WriteByte(TYPE_OPTIONS);  
+            Out.WriteByte(TYPE_OPTIONS);
             Out.WriteByte(0);
             Out.WriteByte(_lootOption);
             Out.WriteByte(_lootThreshold);
@@ -1510,7 +1513,7 @@ namespace WorldServer
                     foreach (Player player in Members)
                         player.SendCopy(Out);
                 }
-                finally {  _memberRWLock.ExitReadLock(); }
+                finally { _memberRWLock.ExitReadLock(); }
             }
 
             else
@@ -1576,7 +1579,7 @@ namespace WorldServer
 
         public void PartyRoll(Player sender, string text)
         {
-            string[] rollString = { sender.Name,  StaticRandom.Instance.Next(1, 100).ToString() };
+            string[] rollString = { sender.Name, StaticRandom.Instance.Next(1, 100).ToString() };
 
             sender.SendLocalizeString(rollString[1], ChatLogFilters.CHATLOGFILTERS_GROUP, Localized_text.TEXT_YOU_ROLL_NUMBER);
             foreach (Player plr in Members)
@@ -1718,11 +1721,11 @@ namespace WorldServer
 
         #region Reward Distribution
 
-        private const int MAX_SHARE_DIST = 300; 
+        private const int MAX_SHARE_DIST = 300;
 
         public void AddXpFromKill(Player killer, Unit victim, float bonusMod)
         {
-            List<Player> members = GetPlayersCloseTo(killer, MAX_SHARE_DIST); 
+            List<Player> members = GetPlayersCloseTo(killer, MAX_SHARE_DIST);
             double lvlSum = 0;
             double xpQuotient = 0;
             long curTime = TCPManager.GetTimeStampMS();
@@ -1736,7 +1739,7 @@ namespace WorldServer
 
             if (members.Count == 0)
             {
-                killer.AddXp((uint) (WorldMgr.GenerateXPCount(killer, victim)*bonusMod), true, true);
+                killer.AddXp((uint)(WorldMgr.GenerateXPCount(killer, victim) * bonusMod), true, true);
                 return;
             }
 
@@ -1747,14 +1750,15 @@ namespace WorldServer
                 if ((plr.Level > victim.Level + 8 && !victim.IsPlayer()) || (plr.IsDead && curTime - plr.deathTime > 120000)) // player can no longer gain xp when dead for longer than 2 min
                 {
                     return;
-                } else
+                }
+                else
                 {
                     xpQuotient = (plr.Level / (lvlSum / 100)) / 100;
                     _logger.Trace($"xpQuotient : {xpQuotient}");
 
-                   plr.AddXp((uint)((WorldMgr.GenerateXPCount(plr, victim) * bonusMod) * xpQuotient), true, true);
+                    plr.AddXp((uint)((WorldMgr.GenerateXPCount(plr, victim) * bonusMod) * xpQuotient), true, true);
                 }
-            }    
+            }
         }
 
         public void AddXpCount(Player killer, uint xpCount)
@@ -1776,7 +1780,7 @@ namespace WorldServer
             }
 
             foreach (Player player in members)
-                if (!player.IsDead || (player.IsDead && curTime - player.deathTime < 120000))  
+                if (!player.IsDead || (player.IsDead && curTime - player.deathTime < 120000))
                 {
                     xpQuotient = (player.Level / (lvlSum / 100)) / 100;
                     player.AddXp((uint)(xpCount * xpQuotient), true, true);
@@ -1795,7 +1799,7 @@ namespace WorldServer
             }
 
             foreach (Player plr in members)
-                if (!plr.IsDead || (plr.IsDead && curTime - plr.deathTime < 120000))  
+                if (!plr.IsDead || (plr.IsDead && curTime - plr.deathTime < 120000))
                 {
                     plr.AddInfluence(chapter, (ushort)(value / members.Count));
                 }
@@ -1865,44 +1869,57 @@ namespace WorldServer
 
             foreach (Player curPlayer in members)
             {
-                uint xpShare = (uint)(xp/members.Count);
-                uint renownShare = (uint)(renown/members.Count);
-
-                RewardLogger.Debug($"Cur player {curPlayer.Name} XP Share {xpShare} RP Share {renownShare}");
-
-                if (curPlayer.ScnInterface.Scenario == null || !curPlayer.ScnInterface.Scenario.DeferKillReward(curPlayer, xpShare, renownShare))
+                uint xpShare = (uint)(xp / members.Count);
+                uint renownShare = (uint)(renown / members.Count);
+                try
                 {
-                    curPlayer.AddXp(xpShare, bonusMod, true, true);
+
+
+
+                    RewardLogger.Debug($"Cur player {curPlayer.Name} XP Share {xpShare} RP Share {renownShare}");
+
+                    if (curPlayer.ScnInterface.Scenario == null || !curPlayer.ScnInterface.Scenario.DeferKillReward(curPlayer, xpShare, renownShare))
+                    {
+                        RewardLogger.Trace($"Add Xp {xpShare} to {curPlayer.Name}");
+                        curPlayer.AddXp(xpShare, bonusMod, true, true);
+                        if (playerVictim != null)
+                        {
+                            RewardLogger.Trace($"Add Kill Renown (Victim is a player)");
+                            curPlayer.AddKillRenown(renownShare, bonusMod, killer, playerVictim, members.Count());
+                        }
+                        else
+                        {
+                            RewardLogger.Trace($"Player not victim");
+                            curPlayer.AddRenown(renownShare, bonusMod, true);
+                        }
+                    }
+                    if (influenceId != 0)
+                        curPlayer.AddInfluence(influenceId, (ushort)(influence / members.Count));
+
+                    if (closestFlag != null && closestFlag.FlagState != ObjectiveFlags.ZoneLocked)
+                    {
+                        if (playerVictim != null)
+                            closestFlag.RewardManager.AddDelayedRewardsFrom(curPlayer, playerVictim, (uint)(xpShare * transferenceFactor), (uint)(renownShare * transferenceFactor));
+
+                        RewardLogger.Trace($"Adding contribution to Battlefront: {curPlayer.Name} ");
+                        curPlayer.Region.ndbf.AddContribution(curPlayer, (uint)(renownShare * bonusMod));
+                    }
+                    RewardLogger.Trace($"Level Check. Current player : {curPlayer.EffectiveLevel} Victim : {victim.EffectiveLevel}");
+                    // Prevent farming low levels for kill quests, and also stop throttled kills
                     if (playerVictim != null)
                     {
-                        RewardLogger.Trace($"Add Kill Renown (Player Victim)");
-                        curPlayer.AddKillRenown(renownShare, bonusMod, killer, playerVictim, members.Count());
-                    }
-                    else
-                    {
-                        RewardLogger.Trace($"Player not victim");
-                        curPlayer.AddRenown(renownShare, bonusMod, true);
+                        if (curPlayer.EffectiveLevel <= victim.EffectiveLevel + 10)
+                            curPlayer.QtsInterface.HandleEvent(Objective_Type.QUEST_KILL_PLAYERS, playerVictim.Info.CareerLine, 1, true);
+
+                        curPlayer.EvtInterface.Notify(EventName.OnKill, killer, null);
+                        curPlayer._Value.RVRKills++;
+                        curPlayer.SendRVRStats();
                     }
                 }
-                if (influenceId != 0)
-                    curPlayer.AddInfluence(influenceId, (ushort)(influence / members.Count));
-
-                if (closestFlag != null && closestFlag.FlagState != ObjectiveFlags.ZoneLocked)
+                catch (Exception e)
                 {
-                    if (playerVictim != null)
-                        closestFlag.RewardManager.AddDelayedRewardsFrom(curPlayer, playerVictim, (uint)(xpShare * transferenceFactor), (uint)(renownShare * transferenceFactor));
-                    curPlayer.Region.Bttlfront.AddContribution(curPlayer, (uint)(renownShare * bonusMod));
-                }
-
-                // Prevent farming low levels for kill quests, and also stop throttled kills
-                if (playerVictim != null)
-                {
-                    if (curPlayer.EffectiveLevel <= victim.EffectiveLevel + 10)
-                        curPlayer.QtsInterface.HandleEvent(Objective_Type.QUEST_KILL_PLAYERS, playerVictim.Info.CareerLine, 1, true);
-
-                    curPlayer.EvtInterface.Notify(EventName.OnKill, killer, null);
-                    curPlayer._Value.RVRKills++;
-                    curPlayer.SendRVRStats();
+                    RewardLogger.Error($"Exception : {e.Message} {e.StackTrace}");
+                    throw;
                 }
             }
         }
@@ -1927,7 +1944,7 @@ namespace WorldServer
                     Out.WriteByte(4);
                 else if (PlayerInRvR(Leader))
                     Out.WriteByte(2);
-                else if (Leader.QtsInterface.PublicQuest!= null && Leader.QtsInterface.PublicQuest.ObjectWithinRadiusFeet(Leader, 1000))
+                else if (Leader.QtsInterface.PublicQuest != null && Leader.QtsInterface.PublicQuest.ObjectWithinRadiusFeet(Leader, 1000))
                     Out.WriteByte(3);
                 else
                     Out.WriteByte(1);
@@ -1938,7 +1955,7 @@ namespace WorldServer
                 Out.WriteByte(0);
 
                 //PQ name
-                if (Leader.QtsInterface.PublicQuest!= null)
+                if (Leader.QtsInterface.PublicQuest != null)
                     Out.WritePascalString(Leader.QtsInterface.PublicQuest.Name);
                 else
                     Out.WriteByte(0);
@@ -1948,7 +1965,7 @@ namespace WorldServer
                 else if (player.Zone.Region.RegionId != Leader.Zone.Region.RegionId)
                     Out.WriteUInt16(350); //if leader is in different region, give it 6min
                 else
-                    Out.WriteUInt16((ushort) (player.GetDistanceToObject(Leader)/10));
+                    Out.WriteUInt16((ushort)(player.GetDistanceToObject(Leader) / 10));
 
 
                 Out.WriteByte(8);
@@ -1956,8 +1973,8 @@ namespace WorldServer
 
                 List<Player> members = GetPlayerListCopy();
 
-                Out.WriteByte((byte) members.Count);
-                Out.WriteByte((byte) members.Count);
+                Out.WriteByte((byte)members.Count);
+                Out.WriteByte((byte)members.Count);
 
                 foreach (Player member in GetPlayerListCopy())
                 {

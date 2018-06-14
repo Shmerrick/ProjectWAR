@@ -257,6 +257,7 @@
     <Compile Include="World\Battlefronts\Legacy\ProximityProgressingBattlefront.cs" />
     <Compile Include="World\Battlefronts\NewDawn\AAOTracker.cs" />
     <Compile Include="World\Battlefronts\NewDawn\BattlefrontConstants.cs" />
+    <Compile Include="World\Battlefronts\NewDawn\CampaignTrack.cs" />
     <Compile Include="World\Battlefronts\NewDawn\IBattlefrontManager.cs" />
     <Compile Include="World\Battlefronts\NewDawn\LowerTierRacialPairManager.cs" />
     <Compile Include="World\Battlefronts\NewDawn\NewDawnBattlefieldObjective.cs" />

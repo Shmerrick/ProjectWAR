@@ -616,7 +616,7 @@ namespace WorldServer
             }
             catch (Exception e)
             {
-                DeathLogger.Warn($"Exception : {e.Message}");
+                DeathLogger.Warn($"Exception : {e.Message} {e.StackTrace}");
                 throw;
             }
             
@@ -624,7 +624,7 @@ namespace WorldServer
 
         protected virtual void HandleDeathRewards(Player killer)
         {
-            RewardLogger.Warn($"Unit.HandleDeathRewards : {killer.Name}");
+            DeathLogger.Warn($"Unit.HandleDeathRewards : {killer.Name}");
             if (killer == this)
                 return;
 
@@ -841,7 +841,9 @@ namespace WorldServer
 
         public virtual void GenerateLoot(Player looter, float dropMod)
         {
+            DeathLogger.Warn($"Looter : {looter.Name}");
             RewardLogger.Warn($"Looter : {looter.Name}");
+            
             lootContainer = LootsMgr.GenerateLoot(this, looter, dropMod);
             
             if (lootContainer != null)

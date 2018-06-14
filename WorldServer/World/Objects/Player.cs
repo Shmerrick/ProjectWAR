@@ -3979,7 +3979,7 @@ namespace WorldServer
                 #region Get reward values for this player
                 Player curPlayer = kvpair.Key;
 
-                RewardLogger.Trace($"Damage Sources included for {curPlayer.Name}");
+                RewardLogger.Trace($"!!Damage Sources included for {curPlayer.Name}");
 
                 float damageFactor = (float)kvpair.Value / TotalDamageTaken;
 
@@ -4040,7 +4040,7 @@ namespace WorldServer
                 else
                 {
                     #region Collate group rewards
-                    RewardLogger.Trace($"Group Reward {curPlayer.Name}");
+                    RewardLogger.Trace($"Group Reward for {curPlayer.Name} Awarded XP: {xpShare} BonusMod : {bonusMod} Killer : {killer} ");
                     if (totalRenown == 0)
                     {
                         curPlayer.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_PLAYER_WORTH_NO_XPRP);
