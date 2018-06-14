@@ -223,6 +223,7 @@ namespace WorldServer
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
+        private static readonly Logger DeathLogger = LogManager.GetLogger("DeathLogger");
 
         public Character Info;
         public Character_value _Value;
@@ -2907,7 +2908,7 @@ namespace WorldServer
         }
         private void InternalAddXp(uint xp, bool shouldPool, bool scalesWithRest)
         {
-            RewardLogger.Debug($"xp : {xp} awarded to {this.Name}");
+            RewardLogger.Debug($"{xp} XP awarded to {this.Name}");
             if (shouldPool)
                 _xpPool += (uint)(xp * 0.25f);
 
@@ -2953,13 +2954,10 @@ namespace WorldServer
         }
         public void LevelUp(uint restXp)
         {
-#if !DEBUG
 
             if (Level >= Program.Config.RankCap)
                 return;
-
-#endif
-
+            
             _Value.Xp = 0;
             SetLevel((byte)(Level + 1));
 
@@ -3071,7 +3069,7 @@ namespace WorldServer
             {
                 renown = Math.Max(20, renown);
             }
-            RewardLogger.Trace($"RP : {renown} awarded to {this.Name} ");
+            RewardLogger.Trace($"{renown} RP awarded to {this.Name} for {rewardString} ");
             InternalAddRenown(renown, shouldPool, type, rewardString);
         }
 
@@ -3096,7 +3094,7 @@ namespace WorldServer
                 return;
             }
 
-            RewardLogger.Debug($"renown : {renown} awarded to {this.Name} for {rewardString}");
+            RewardLogger.Debug($"{renown} RP awarded to {this.Name} for {rewardString}");
 
             EvtInterface.Notify(EventName.OnAddRenown, this, renown);
 
@@ -3129,6 +3127,8 @@ namespace WorldServer
                 SendClientMessage("You somehow gained an amount of renown larger than the system allows (" + renown + "). This gain has been prevented.");
                 return;
             }
+
+            RewardLogger.Trace($"Kill Renown {renown} RP awarded to {killer.Name} for kiling {victim.Name} #participants {participants}");
 
             scaleFactor += StsInterface.GetTotalStat(Stats.RenownReceived) * 0.01f;
             renown = (uint)(renown * scaleFactor);
@@ -3194,6 +3194,8 @@ namespace WorldServer
 
             RewardType type = this == killer ? RewardType.Kill : RewardType.Assist;
             string text = this == killer ? victim.Name : killer.Name;
+
+            RewardLogger.Trace($"Type : {type} Text : {text}");
 
             // If the amount of renown you have + the renown you've gained is more than required to level...
             if (_Value.Renown + renown > CurrentRenown.Renown)
@@ -3680,6 +3682,7 @@ namespace WorldServer
 
         private void SendPlayerDeath()
         {
+            DeathLogger.Trace($"0x31 {Oid} {RespawnTime}");
             PacketOut Out = new PacketOut((byte)Opcodes.F_PLAYER_DEATH, 4);
             Out.WriteUInt16(Oid);
             Out.WriteUInt16(RespawnTime);
@@ -3688,6 +3691,7 @@ namespace WorldServer
 
         protected override void SetDeath(Unit killer)
         {
+            DeathLogger.Debug($"Victim : {this.Name} killed by {killer.Name}");
             base.SetDeath(killer);
 
             if (WeaponStance == WeaponStance.Standard)
@@ -3702,7 +3706,7 @@ namespace WorldServer
                 CurrentSiege.SiegeInterface.RemovePlayer(this);
                 CurrentSiege = null;
             }
-
+            DeathLogger.Trace($"Victim : {this.Name} calling AutomaticRespawnPlayer ");
             EvtInterface.AddEvent(AutomaticRespawnPlayer, RespawnTime * 1000, 1); // If the player don't resurrect. autoresurrect in 10 Minutes.
 
             BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.OnDie, null, killer);
@@ -3796,11 +3800,16 @@ namespace WorldServer
                         subtype = 64;
                         break;
                 }
-
+                DeathLogger.Trace($"Victim : {this.Name} playerKiller.PriorityGroup Leader : {playerKiller.PriorityGroup.Leader.Name} ");
+                foreach (var pg in playerKiller.PriorityGroup.Members)
+                {
+                    DeathLogger.Trace($"Victim : {this.Name} Group Member : {pg.Name} ");
+                }
+                
                 if (playerKiller.PriorityGroup != null)
                 {
                     List<Player> curMembers = playerKiller.PriorityGroup.GetPlayersCloseTo(playerKiller, 150);
-
+                    DeathLogger.Trace($"Victim : {this.Name} curMembers {curMembers} ");
                     foreach (Player subPlayer in curMembers)
                         subPlayer.TokInterface.AddKill(subtype);
                 }
@@ -3909,10 +3918,10 @@ namespace WorldServer
             #region Initialize reward values
 
             float deathRewardScaler = 1f;
-#if !DEBUG
+
             if (_lastPvPDeathSeconds > 0)
                 deathRewardScaler = Math.Min(1f, (TCPManager.GetTimeStamp() - _lastPvPDeathSeconds) / (ScnInterface.Scenario == null ? 300f : 60f));
-#endif
+
 
             _lastPvPDeathSeconds = TCPManager.GetTimeStamp();
 
