@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2026
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WarZone", "WarZone\WarZone.vcxproj", "{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release - Console|Win32 = Release - Console|Win32
+		Release - Console|x64 = Release - Console|x64
+		Release - X64|Win32 = Release - X64|Win32
+		Release - X64|x64 = Release - X64|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Debug|Win32.Build.0 = Debug|Win32
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Debug|x64.ActiveCfg = Debug - X86 - Static|x64
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Debug|x64.Build.0 = Debug|x64
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Debug|x64.Build.2 = Debug - X86 - Static|x64
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release - Console|Win32.ActiveCfg = Release - Console|Win32
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release - Console|Win32.Build.0 = Release - Console|Win32
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release - Console|x64.ActiveCfg = Release - Console|x64
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release - Console|x64.Build.0 = Release - Console|x64
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release - X64|Win32.ActiveCfg = Release - X64|x64
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release - X64|Win32.Build.0 = Release - X64|x64
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release - X64|x64.ActiveCfg = Release - X64|x64
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release - X64|x64.Build.0 = Release - X64|x64
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release|Win32.ActiveCfg = Release|Win32
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release|Win32.Build.0 = Release|Win32
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release|x64.ActiveCfg = Release|x64
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8C081CC3-A0DD-4484-B160-37EA0AEA0510}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://207.244.152.188:8080/tfs/w2
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = WarZone\\WarZone.vcxproj
+		SccProjectName1 = WarZone
+		SccLocalPath1 = WarZone
+	EndGlobalSection
+EndGlobal
