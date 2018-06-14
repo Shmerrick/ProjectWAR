@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Common;
 using FrameWork;
 using GameData;
+using NLog;
 using WarZoneLib;
 
 namespace WorldServer
@@ -66,6 +67,9 @@ namespace WorldServer
         public static int HEALTH_REGEN_TIME = 4000; // 4secondes
         public static int ACTION_REGEN_TIME = 1000; // 1seconde
         public static int CR_REGEN_TIME = 1000;
+
+        private static readonly Logger DeathLogger = LogManager.GetLogger("DeathLogger");
+        private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
 
         public static InteractType GenerateInteractType(Creature_proto proto)
         {
@@ -560,38 +564,67 @@ namespace WorldServer
         /// <summary>Flags this unit as dead and generates XP and loot.</summary>
         protected virtual void SetDeath(Unit killer)
         {
-            Health = 0;
+            
 
-            States.Add((byte)CreatureState.Dead); // Death State
+            DeathLogger.Trace($"Base.SetDeath {killer.Name}");
+            try
+            {
+                Health = 0;
 
-            SendCollatedHit();
+                States.Add((byte)CreatureState.Dead); // Death State
+                DeathLogger.Trace($"SendCollatedHit {killer.Name}");
+                SendCollatedHit();
 
-            Pet pet = (killer as Pet);
-            Player credited = (pet != null) ? pet.Owner : (killer as Player);
+                Pet pet = (killer as Pet);
+                Player credited = (pet != null) ? pet.Owner : (killer as Player);
 
-            PacketOut Out = new PacketOut((byte)Opcodes.F_OBJECT_DEATH, 12);
+                if (credited == null)
+                    DeathLogger.Trace($"Credited is empty {killer.Name}");
+                else
+                {
+                    DeathLogger.Trace($"Credited : {killer.Name}");
+                }
+
+                DeathLogger.Trace($"SendPacket 0x0A {killer.Name}");
+                PacketOut Out = new PacketOut((byte)Opcodes.F_OBJECT_DEATH, 12);
                 Out.WriteUInt16(Oid);
                 Out.WriteByte(1);
                 Out.WriteByte(0);
                 Out.WriteUInt16(credited?.Oid ?? killer.Oid);
                 Out.Fill(0, 6);
-            DispatchPacket(Out, true);
+                DispatchPacket(Out, true);
 
-            AbtInterface.Cancel(true);
-            ScrInterface.OnDie(this);
-            BuffInterface.RemoveBuffsOnDeath();
-            AiInterface.OnOwnerDied();
+                DeathLogger.Trace($"Interfaces {killer.Name}");
 
-            EvtInterface.Notify(EventName.OnDie, this, credited ?? killer);
+                AbtInterface.Cancel(true);
+                ScrInterface.OnDie(this);
+                BuffInterface.RemoveBuffsOnDeath();
+                AiInterface.OnOwnerDied();
 
-            if (credited != null && credited.Zone != null && !credited.PendingDisposal)
-                HandleDeathRewards(credited);
+                DeathLogger.Trace($"Notify OnDie {killer.Name}");
 
-            ClearTrackedDamage();
+                EvtInterface.Notify(EventName.OnDie, this, credited ?? killer);
+
+                DeathLogger.Trace($"Base HandleDeath {killer.Name} {credited?.Name}" );
+
+                if (credited != null && credited.Zone != null && !credited.PendingDisposal)
+                    HandleDeathRewards(credited);
+
+                DeathLogger.Trace($"Clearing {killer.Name}");
+
+                ClearTrackedDamage();
+            }
+            catch (Exception e)
+            {
+                DeathLogger.Warn($"Exception : {e.Message}");
+                throw;
+            }
+            
         }
 
         protected virtual void HandleDeathRewards(Player killer)
         {
+            RewardLogger.Warn($"Unit.HandleDeathRewards : {killer.Name}");
             if (killer == this)
                 return;
 
@@ -808,6 +841,7 @@ namespace WorldServer
 
         public virtual void GenerateLoot(Player looter, float dropMod)
         {
+            RewardLogger.Warn($"Looter : {looter.Name}");
             lootContainer = LootsMgr.GenerateLoot(this, looter, dropMod);
             
             if (lootContainer != null)
