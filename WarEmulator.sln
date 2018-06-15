@@ -39,9 +39,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbMigrationTool", "DbMigrat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbUtilityTool", "DbUtilityTool\DbUtilityTool.csproj", "{EC6B10C4-938C-458B-8AA5-C08BEEF88CE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApocalypseAPI.Test", "ApocalypseAPI.Test\ApocalypseAPI.Test.csproj", "{318E47C3-2304-4513-A3D9-CB7C2F1A1BDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApocalypseAPI.Test", "ApocalypseAPI.Test\ApocalypseAPI.Test.csproj", "{318E47C3-2304-4513-A3D9-CB7C2F1A1BDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApocalypseAPI.Common", "ApocalypseAPI.Common\ApocalypseAPI.Common.csproj", "{482425A5-C8C9-4AAF-8387-D8FDE2BEA578}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApocalypseAPI.Common", "ApocalypseAPI.Common\ApocalypseAPI.Common.csproj", "{482425A5-C8C9-4AAF-8387-D8FDE2BEA578}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
