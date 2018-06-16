@@ -9,27 +9,110 @@ namespace WorldServer.World.Battlefronts.Bounty
 {
     public class ImpactMatrixManager
     {
-        public ConcurrentDictionary<uint, PlayerImpact> ImpactMatrix { get; set; }
+        public ConcurrentDictionary<uint, List<PlayerImpact>> ImpactMatrix { get; set; }
         public const int IMPACT_EXPIRY_TIME = 60;
 
         public ImpactMatrixManager()
         {
-            ImpactMatrix = new ConcurrentDictionary<uint, PlayerImpact>();
+            ImpactMatrix = new ConcurrentDictionary<uint, List<PlayerImpact>>();
         }
 
-        public void AddOrUpdate(Player target, PlayerImpact playerImpact)
+        public PlayerImpact UpdateMatrix(uint targetCharacterId, PlayerImpact playerImpact)
         {
-            this.ImpactMatrix.AddOrUpdate(target.CharacterId, playerImpact, (key, existingImpact) =>
-            {
-                var newPlayerImpact = new PlayerImpact();
-                newPlayerImpact.SetImpact(
-                    existingImpact.ImpactValue + playerImpact.ImpactValue, 
-                    FrameWork.TCPManager.GetTimeStamp() + IMPACT_EXPIRY_TIME, 
-                    playerImpact.ModificationValue, 
-                    playerImpact.player);
-                return newPlayerImpact;
 
-            });
+            if (this.ImpactMatrix.ContainsKey(targetCharacterId))
+            {
+                var targetPlayerImpactList = ImpactMatrix[targetCharacterId];
+                // Look for player in playerimpact
+                foreach (var impact in targetPlayerImpactList)
+                {
+                    if (impact.CharacterId == playerImpact.CharacterId)
+                    {
+                        // Found the attacker, updating.
+                        return  impact.SetImpact(
+                            impact.ImpactValue + playerImpact.ImpactValue,
+                            playerImpact.ExpiryTimestamp + IMPACT_EXPIRY_TIME,
+                            playerImpact.ModificationValue,
+                            playerImpact.CharacterId);
+                    }
+                }
+                // Couldnt find the player in playerimpact, add.
+                targetPlayerImpactList.Add(playerImpact);
+            }
+            else
+            {
+                // No dictionary entry
+                this.ImpactMatrix.TryAdd(targetCharacterId, new List<PlayerImpact> {playerImpact});
+                return playerImpact;
+            }
+            return null;
+        }
+
+        //return this.ImpactMatrix.UpdateMatrix(targetCharacterId, AddFactory, (key, existingImpactList) =>
+            //{
+            //    var newPlayerImpact = new PlayerImpact();
+            //    // Loop over the list of impacts for this target. 
+            //    foreach (var impact in existingImpactList)
+            //    {
+            //        if (impact.CharacterId == playerImpact.CharacterId)
+            //        {
+            //            // Found the attacker, updating.
+            //            impact.SetImpact(
+            //                impact.ImpactValue + playerImpact.ImpactValue,
+            //                FrameWork.TCPManager.GetTimeStamp() + IMPACT_EXPIRY_TIME,
+            //                playerImpact.ModificationValue,
+            //                playerImpact.CharacterId);
+
+            //            return existingImpactList;
+            //        }
+            //    }
+            //    // Couldn't find the attacker, append.
+            //    newPlayerImpact.SetImpact(
+            //        playerImpact.ImpactValue,
+            //        FrameWork.TCPManager.GetTimeStamp() + IMPACT_EXPIRY_TIME,
+            //        playerImpact.ModificationValue,
+            //        playerImpact.CharacterId);
+
+            //    existingImpactList.Add(newPlayerImpact);
+
+
+            //    return existingImpactList;
+
+            //});
+        //}
+
+        private List<PlayerImpact> AddFactory(uint arg)
+        {
+            throw new NotImplementedException();
+        }
+
+        private Func<uint, List<PlayerImpact>> GetPlayerImpactList(PlayerImpact playerImpact)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static PlayerImpact GetPlayerImpact(PlayerImpact playerImpact)
+        {
+            return playerImpact;
+        }
+
+        public int ExpireImpacts(int expiryTime)
+        {
+            int removedCount = 0;
+            List<PlayerImpact> removedPlayerImpactList;
+
+            foreach (KeyValuePair<uint, List<PlayerImpact>> entry in this.ImpactMatrix)
+            {
+                foreach (var playerImpact in entry.Value)
+                {
+                    if (playerImpact.ExpiryTimestamp < expiryTime)
+                    {
+                        if (this.ImpactMatrix.TryRemove(entry.Key, out removedPlayerImpactList))
+                            removedCount++;
+                    }
+                }
+            }
+            return removedCount;
         }
     }
 

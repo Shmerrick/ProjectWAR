@@ -251,6 +251,8 @@
     <Compile Include="World\Battlefronts\AAOTracker.cs" />
     <Compile Include="World\Battlefronts\BattlefrontConstants.cs" />
     <Compile Include="World\Battlefronts\BattlefrontList.cs" />
+    <Compile Include="World\Battlefronts\Bounty\PlayerImpact.cs" />
+    <Compile Include="World\Battlefronts\Bounty\ImpactMatrixManager.cs" />
     <Compile Include="World\Battlefronts\ContributionTracker.cs" />
     <Compile Include="World\Battlefronts\IBattlefront.cs" />
     <Compile Include="World\Battlefronts\Legacy\ProximityBattlefront.cs" />

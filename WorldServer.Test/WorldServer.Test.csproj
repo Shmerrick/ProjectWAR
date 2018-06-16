@@ -64,6 +64,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ImpactMatrixTests.cs" />
     <Compile Include="LowerTierBattlefrontManagerTest.cs" />
     <Compile Include="RacialPairManagerTest.cs" />
     <Compile Include="CalculateObjectiveRewardScaleTest.cs" />
@@ -76,6 +77,10 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{8BC085CD-429B-41D1-BB47-9621FD32EC23}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FrameWork\FrameWork.csproj">
+      <Project>{d5c98f3a-d5d2-4aed-a5a7-06d2de095095}</Project>
+      <Name>FrameWork</Name>
     </ProjectReference>
     <ProjectReference Include="..\WorldServer\WorldServer.csproj">
       <Project>{1552992A-BA62-4639-AB53-6FA36E5B4AB1}</Project>
