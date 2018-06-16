@@ -202,5 +202,33 @@ namespace WorldServer.Test
             }
         }
 
+        [TestMethod]
+        public void FullHealClearsImpactList()
+        {
+            var im = new ImpactMatrixManager();
+
+            var impact1 = (PlayerImpact) SamplePlayerImpact.Clone();
+            var returnValue1 = im.UpdateMatrix(123, impact1);
+
+            var impact2 = (PlayerImpact) SamplePlayerImpact.Clone();
+            var returnValue2 = im.UpdateMatrix(123, impact2);
+
+            var impact3 = (PlayerImpact) SamplePlayerImpact.Clone();
+            impact3.CharacterId = 998;
+            impact3.ImpactValue = 1200;
+            // Now have 2 impacts from 999 (additive) and one from 998
+            var returnValue3 = im.UpdateMatrix(123, impact3);
+
+            var impact4 = (PlayerImpact) SamplePlayerImpact.Clone();
+            var returnValue4 = im.UpdateMatrix(123, impact4);
+
+            Assert.IsTrue(im.ImpactMatrix[123].Count == 2);
+
+            im.FullHeal(123);
+
+            Assert.IsTrue(im.ImpactMatrix[123].Count == 0);
+
+        }
+
     }
-}
+    }

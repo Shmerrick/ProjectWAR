@@ -66,6 +66,19 @@ namespace WorldServer.World.Battlefronts.Bounty
             }
             return removedCount;
         }
+
+        /// <summary>
+        /// Target character has been healed to full, clear their impactList
+        /// </summary>
+        /// <param name="targetCharacterId"></param>
+        public void FullHeal(uint targetCharacterId)
+        {
+            if (this.ImpactMatrix.ContainsKey(targetCharacterId))
+            {
+                ImpactMatrix[targetCharacterId].Clear();
+            }
+        }
+
     }
 
 
