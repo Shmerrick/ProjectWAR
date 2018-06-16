@@ -29,8 +29,9 @@ namespace WorldServer.Test
             SamplePlayerImpact = new PlayerImpact
             {
                 ImpactValue = 500,
-                ExpiryTimestamp = (int) (BaseDateTime - EpochDateTime).TotalSeconds,
-                ModificationValue = 1.2f, CharacterId = 999
+                ExpiryTimestamp = (int)(BaseDateTime - EpochDateTime).TotalSeconds,
+                ModificationValue = 1.2f,
+                CharacterId = 999
             };
         }
 
@@ -106,7 +107,7 @@ namespace WorldServer.Test
         {
             var im = new ImpactMatrixManager();
             var numberRemoved = im.ExpireImpacts((int)(BaseDateTime - EpochDateTime).TotalSeconds + 60);
-            Assert.IsTrue(numberRemoved==0);
+            Assert.IsTrue(numberRemoved == 0);
         }
 
         [TestMethod]
@@ -116,7 +117,7 @@ namespace WorldServer.Test
             var impact1 = (PlayerImpact)SamplePlayerImpact.Clone();
             impact1.ExpiryTimestamp = (int)(BaseDateTime - EpochDateTime).TotalSeconds + 60;
             var returnValue = im.UpdateMatrix(123, impact1);
-            var numberRemoved = im.ExpireImpacts((int)(BaseDateTime - EpochDateTime).TotalSeconds );
+            var numberRemoved = im.ExpireImpacts((int)(BaseDateTime - EpochDateTime).TotalSeconds);
             Assert.IsTrue(numberRemoved == 0);
         }
 
@@ -124,7 +125,7 @@ namespace WorldServer.Test
         public void ExpireDoesEffectsExpiredImpacts()
         {
             var im = new ImpactMatrixManager();
-            SamplePlayerImpact.ExpiryTimestamp = (int) (BaseDateTime - EpochDateTime).TotalSeconds - 120;
+            SamplePlayerImpact.ExpiryTimestamp = (int)(BaseDateTime - EpochDateTime).TotalSeconds - 120;
             var returnValue = im.UpdateMatrix(123, SamplePlayerImpact);
             var numberRemoved = im.ExpireImpacts((int)(BaseDateTime - EpochDateTime).TotalSeconds + 60);
             Assert.IsTrue(numberRemoved == 1);
@@ -145,7 +146,7 @@ namespace WorldServer.Test
         {
             var im = new ImpactMatrixManager();
 
-            var impact1 = (PlayerImpact) SamplePlayerImpact.Clone();
+            var impact1 = (PlayerImpact)SamplePlayerImpact.Clone();
             impact1.ExpiryTimestamp = (int)(BaseDateTime - EpochDateTime).TotalSeconds - 120;
             var returnValue1 = im.UpdateMatrix(123, impact1);
 
@@ -207,19 +208,19 @@ namespace WorldServer.Test
         {
             var im = new ImpactMatrixManager();
 
-            var impact1 = (PlayerImpact) SamplePlayerImpact.Clone();
+            var impact1 = (PlayerImpact)SamplePlayerImpact.Clone();
             var returnValue1 = im.UpdateMatrix(123, impact1);
 
-            var impact2 = (PlayerImpact) SamplePlayerImpact.Clone();
+            var impact2 = (PlayerImpact)SamplePlayerImpact.Clone();
             var returnValue2 = im.UpdateMatrix(123, impact2);
 
-            var impact3 = (PlayerImpact) SamplePlayerImpact.Clone();
+            var impact3 = (PlayerImpact)SamplePlayerImpact.Clone();
             impact3.CharacterId = 998;
             impact3.ImpactValue = 1200;
             // Now have 2 impacts from 999 (additive) and one from 998
             var returnValue3 = im.UpdateMatrix(123, impact3);
 
-            var impact4 = (PlayerImpact) SamplePlayerImpact.Clone();
+            var impact4 = (PlayerImpact)SamplePlayerImpact.Clone();
             var returnValue4 = im.UpdateMatrix(123, impact4);
 
             Assert.IsTrue(im.ImpactMatrix[123].Count == 2);
@@ -230,5 +231,55 @@ namespace WorldServer.Test
 
         }
 
+        [TestMethod]
+        public void ReturnGetKillImpacts()
+        {
+            var im = new ImpactMatrixManager();
+
+            var impact1 = (PlayerImpact)SamplePlayerImpact.Clone();
+            var returnValue1 = im.UpdateMatrix(123, impact1);
+
+            var impact2 = (PlayerImpact)SamplePlayerImpact.Clone();
+            var returnValue2 = im.UpdateMatrix(123, impact2);
+
+            var impact3 = (PlayerImpact)SamplePlayerImpact.Clone();
+            impact3.CharacterId = 998;
+            impact3.ImpactValue = 1200;
+            // Now have 2 impacts from 999 (additive) and one from 998
+            var returnValue3 = im.UpdateMatrix(123, impact3);
+            var impact4 = (PlayerImpact)SamplePlayerImpact.Clone();
+            var returnValue4 = im.UpdateMatrix(123, impact4);
+
+            Assert.IsTrue(im.ImpactMatrix[123].Count == 2);
+
+            var killImpacts = im.GetKillImpacts(123);
+
+            Assert.IsTrue(killImpacts.Count == 2);
+
+        }
+
+        [TestMethod]
+        public void ReturnGetKillImpactsLargeList()
+        {
+            var im = new ImpactMatrixManager();
+            // Create 20 impacts
+            for (int i = 0; i < 20; i++)
+            {
+                var impact3 = (PlayerImpact)SamplePlayerImpact.Clone();
+                impact3.CharacterId = (uint)(10000 + i);
+                im.UpdateMatrix(123, impact3);
+            }
+            var killImpacts = im.GetKillImpacts(123);
+            Assert.IsTrue(killImpacts.Count == 20);
+
+            var impact4 = (PlayerImpact)SamplePlayerImpact.Clone();
+            impact4.CharacterId = (uint)(20000);
+            im.UpdateMatrix(123, impact4);
+
+            var killImpacts2 = im.GetKillImpacts(123);
+            Assert.IsTrue(killImpacts2.Count == 20);
+
+        }
+
     }
-    }
+}

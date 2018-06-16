@@ -7,16 +7,24 @@ using System.Threading.Tasks;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
+
     public class ImpactMatrixManager
     {
         public ConcurrentDictionary<uint, List<PlayerImpact>> ImpactMatrix { get; set; }
         public const int IMPACT_EXPIRY_TIME = 60;
+        public const int MAX_REWARD_IMPACT_COUNT = 20;
 
         public ImpactMatrixManager()
         {
             ImpactMatrix = new ConcurrentDictionary<uint, List<PlayerImpact>>();
         }
 
+        /// <summary>
+        /// Update the Impact matrix with a PlayerImpact object. (Create new if required)
+        /// </summary>
+        /// <param name="targetCharacterId"></param>
+        /// <param name="playerImpact"></param>
+        /// <returns></returns>
         public PlayerImpact UpdateMatrix(uint targetCharacterId, PlayerImpact playerImpact)
         {
 
@@ -48,6 +56,11 @@ namespace WorldServer.World.Battlefronts.Bounty
             return null;
         }
 
+        /// <summary>
+        /// Scan over the Impact matrix and remove any PlayerImpact objects that have expired.
+        /// </summary>
+        /// <param name="expiryTime"></param>
+        /// <returns></returns>
         public int ExpireImpacts(int expiryTime)
         {
             int removedCount = 0;
@@ -76,6 +89,23 @@ namespace WorldServer.World.Battlefronts.Bounty
             if (this.ImpactMatrix.ContainsKey(targetCharacterId))
             {
                 ImpactMatrix[targetCharacterId].Clear();
+            }
+        }
+
+        /// <summary>
+        /// Once killed, return the list of PlayerImpacts for reward calculation
+        /// </summary>
+        /// <param name="targetCharacterId"></param>
+        /// <returns></returns>
+        public List<PlayerImpact> GetKillImpacts(uint targetCharacterId)
+        {
+            if (this.ImpactMatrix.ContainsKey(targetCharacterId))
+            {
+                return ImpactMatrix[targetCharacterId].Take(MAX_REWARD_IMPACT_COUNT).OrderBy(o => o.ImpactValue).ToList();
+            }
+            else
+            {
+                return null;
             }
         }
 
