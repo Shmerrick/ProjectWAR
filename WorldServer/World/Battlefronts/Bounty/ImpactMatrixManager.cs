@@ -48,54 +48,6 @@ namespace WorldServer.World.Battlefronts.Bounty
             return null;
         }
 
-        //return this.ImpactMatrix.UpdateMatrix(targetCharacterId, AddFactory, (key, existingImpactList) =>
-            //{
-            //    var newPlayerImpact = new PlayerImpact();
-            //    // Loop over the list of impacts for this target. 
-            //    foreach (var impact in existingImpactList)
-            //    {
-            //        if (impact.CharacterId == playerImpact.CharacterId)
-            //        {
-            //            // Found the attacker, updating.
-            //            impact.SetImpact(
-            //                impact.ImpactValue + playerImpact.ImpactValue,
-            //                FrameWork.TCPManager.GetTimeStamp() + IMPACT_EXPIRY_TIME,
-            //                playerImpact.ModificationValue,
-            //                playerImpact.CharacterId);
-
-            //            return existingImpactList;
-            //        }
-            //    }
-            //    // Couldn't find the attacker, append.
-            //    newPlayerImpact.SetImpact(
-            //        playerImpact.ImpactValue,
-            //        FrameWork.TCPManager.GetTimeStamp() + IMPACT_EXPIRY_TIME,
-            //        playerImpact.ModificationValue,
-            //        playerImpact.CharacterId);
-
-            //    existingImpactList.Add(newPlayerImpact);
-
-
-            //    return existingImpactList;
-
-            //});
-        //}
-
-        private List<PlayerImpact> AddFactory(uint arg)
-        {
-            throw new NotImplementedException();
-        }
-
-        private Func<uint, List<PlayerImpact>> GetPlayerImpactList(PlayerImpact playerImpact)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static PlayerImpact GetPlayerImpact(PlayerImpact playerImpact)
-        {
-            return playerImpact;
-        }
-
         public int ExpireImpacts(int expiryTime)
         {
             int removedCount = 0;
