@@ -4,6 +4,7 @@ using GameData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using SystemData;
 using NLog;
 using WorldServer.Services.World;
@@ -356,6 +357,41 @@ namespace WorldServer.World.Battlefronts.NewDawn
             // Buffs
             plr.BuffInterface.RemoveBuffByEntry((ushort)GameBuffs.FieldOfGlory);
         }
+
+        public void LockBattleObjective(Realms realm, int objectiveToLock, IList<Battlefront_Objective> objectives)
+        {
+            _logger.Debug($"Locking Battle Objective : {realm.ToString()}...");
+
+            //if (PairingLocked)
+            //{
+            //    _logger.Debug($"Pairing already locked");
+            //    return; // No effect
+            //}
+
+            var myObjectives = new List<NewDawnBattlefieldObjective>();
+
+            foreach (Battlefront_Objective obj in objectives)
+            {
+                NewDawnBattlefieldObjective flag = new NewDawnBattlefieldObjective(obj, Region.GetTier());
+                Objectives.Add(flag);
+                Region.AddObject(flag, obj.ZoneId);
+                flag.Battlefront = this;
+
+                //orderDistanceSum += flag.GetWarcampDistance(Realms.REALMS_REALM_ORDER);
+                //destroDistanceSum += flag.GetWarcampDistance(Realms.REALMS_REALM_DESTRUCTION);
+            }
+
+            foreach (var flag in Objectives)
+            {
+                if (flag.Id == objectiveToLock)
+                {
+                    flag.LockObjective(realm, false);
+                }
+            
+            }
+        }
+         
+
 
         public void LockPairing(Realms realm)
         {

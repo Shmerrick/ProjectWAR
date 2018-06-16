@@ -251,8 +251,16 @@
     <Compile Include="World\Battlefronts\AAOTracker.cs" />
     <Compile Include="World\Battlefronts\BattlefrontConstants.cs" />
     <Compile Include="World\Battlefronts\BattlefrontList.cs" />
+    <Compile Include="World\Battlefronts\Bounty\BountyException.cs" />
+    <Compile Include="World\Battlefronts\Bounty\CharacterBounty.cs" />
+    <Compile Include="World\Battlefronts\Bounty\ContributionManager.cs" />
+    <Compile Include="World\Battlefronts\Bounty\BountyManager.cs" />
+    <Compile Include="World\Battlefronts\Bounty\IBountyManager.cs" />
+    <Compile Include="World\Battlefronts\Bounty\IContributionManager.cs" />
+    <Compile Include="World\Battlefronts\Bounty\IImpactMatrixManager.cs" />
     <Compile Include="World\Battlefronts\Bounty\PlayerImpact.cs" />
     <Compile Include="World\Battlefronts\Bounty\ImpactMatrixManager.cs" />
+    <Compile Include="World\Battlefronts\Bounty\RewardManager.cs" />
     <Compile Include="World\Battlefronts\ContributionTracker.cs" />
     <Compile Include="World\Battlefronts\IBattlefront.cs" />
     <Compile Include="World\Battlefronts\Legacy\ProximityBattlefront.cs" />
@@ -453,6 +461,7 @@
     <None Include="app.config" />
     <None Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>

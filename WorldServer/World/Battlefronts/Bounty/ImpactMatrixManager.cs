@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace WorldServer.World.Battlefronts.Bounty
 {
 
-    public class ImpactMatrixManager
+    public class ImpactMatrixManager : IImpactMatrixManager
     {
         public ConcurrentDictionary<uint, List<PlayerImpact>> ImpactMatrix { get; set; }
         // Number of seconds until the impact is removed from the ImpactMatrix.
@@ -116,6 +116,17 @@ namespace WorldServer.World.Battlefronts.Bounty
                 return null;
             }
         }
+
+        /// <summary>
+        ///  Returns the sum of the total impact for this target.
+        /// </summary>
+        /// <param name="targetCharacterId"></param>
+        /// <returns></returns>
+        public int GetTotalImpact(uint targetCharacterId)
+        {
+            return GetKillImpacts(targetCharacterId).Sum(x => x.ImpactValue);
+        }
+
 
     }
 

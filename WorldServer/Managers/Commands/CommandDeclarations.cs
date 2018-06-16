@@ -306,7 +306,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("rotate", ScenarioRotate, null, EGmLevel.TrustedGM, 0, "Rotates the active scenarios.")
         };
 
-        /// <summary>Search commands under .search</summary>
+        /// <summary>Search commands under .search</summacamry>
         public static List<GmCommandHandler> SearchCommands = new List<GmCommandHandler>
         {
             new GmCommandHandler("item",SearchItem, null, EGmLevel.DatabaseDev, 1, "Search an item by name <name>"),
