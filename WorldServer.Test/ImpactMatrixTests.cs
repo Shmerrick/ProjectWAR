@@ -281,5 +281,35 @@ namespace WorldServer.Test
 
         }
 
+        [TestMethod, ExpectedException(typeof(KeyNotFoundException))]
+        public void AddSingleImpactUnderMinimumNotAdded()
+        {
+            var im = new ImpactMatrixManager();
+            var impact4 = (PlayerImpact)SamplePlayerImpact.Clone();
+            impact4.CharacterId = (uint)(20000);
+            impact4.ImpactValue = 20;
+            im.UpdateMatrix(123, impact4);
+
+            // Expect this to throw an exception as the amount was too low and not added.
+            var returnValue2 = im.ImpactMatrix[123];
+        }
+
+        [TestMethod]
+        public void AddLowImpactToExistingListNotAdded()
+        {
+            var im = new ImpactMatrixManager();
+            var impact3 = (PlayerImpact)SamplePlayerImpact.Clone();
+            impact3.CharacterId = (uint)(20000);
+            impact3.ImpactValue = 2000;
+            im.UpdateMatrix(123, impact3);
+
+            var impact4 = (PlayerImpact)SamplePlayerImpact.Clone();
+            impact4.CharacterId = (uint)(20000);
+            impact4.ImpactValue = 20;
+            im.UpdateMatrix(123, impact4);
+            var returnValue2 = im.ImpactMatrix[123];
+            Assert.IsTrue(returnValue2.Count == 1);
+            Assert.IsTrue(returnValue2[0].ImpactValue == 2000);
+        }
     }
 }

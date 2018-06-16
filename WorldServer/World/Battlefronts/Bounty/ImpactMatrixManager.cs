@@ -11,8 +11,13 @@ namespace WorldServer.World.Battlefronts.Bounty
     public class ImpactMatrixManager
     {
         public ConcurrentDictionary<uint, List<PlayerImpact>> ImpactMatrix { get; set; }
+        // Number of seconds until the impact is removed from the ImpactMatrix.
         public const int IMPACT_EXPIRY_TIME = 60;
+        // Maximum number of PlayerImpacts to return when calculating a kill
         public const int MAX_REWARD_IMPACT_COUNT = 20;
+        // Minimum impact value for the record to be stored in the Impact Matrix
+        public const int MIN_IMPACT_VALIDITY = 500;
+
 
         public ImpactMatrixManager()
         {
@@ -27,6 +32,9 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <returns></returns>
         public PlayerImpact UpdateMatrix(uint targetCharacterId, PlayerImpact playerImpact)
         {
+            // Only add if minimum value passed.
+            if (playerImpact.ImpactValue < MIN_IMPACT_VALIDITY)
+                return playerImpact;
 
             if (this.ImpactMatrix.ContainsKey(targetCharacterId))
             {
