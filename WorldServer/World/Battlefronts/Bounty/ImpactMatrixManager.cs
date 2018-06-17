@@ -24,6 +24,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             ImpactMatrix = new ConcurrentDictionary<uint, List<PlayerImpact>>();
         }
 
+      
         /// <summary>
         /// Update the Impact matrix with a PlayerImpact object. (Create new if required)
         /// </summary>

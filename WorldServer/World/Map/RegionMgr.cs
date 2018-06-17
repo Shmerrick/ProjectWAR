@@ -18,6 +18,7 @@ using WorldServer.World.Battlefronts.Objectives;
 using Common.Database.World.Maps;
 using NLog;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Battlefronts.NewDawn;
 
 namespace WorldServer
@@ -41,6 +42,7 @@ namespace WorldServer
         public NewDawnBattlefront ndbf;
         public Scenario Scenario;
         public string RegionName;
+        public ImpactMatrixManager ImpactMatrix;
 
         /// <summary>Races associated with the pairing, may be null</summary>
         private readonly Races[] _races;
@@ -52,6 +54,8 @@ namespace WorldServer
             RegionName = name;
 
             LoadSpawns();
+
+            ImpactMatrix = new ImpactMatrixManager();
 
             if (Constants.DoomsdaySwitch == 2)
             {

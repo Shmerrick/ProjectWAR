@@ -56,6 +56,8 @@ namespace WorldServer
         public static uint OrderCount;
         public static uint DestruCount;
 
+        public int EffectiveBountyLevel => (2 * _Value.Level) + (_Value.RenownRank);
+
         public static void AddPlayer(Player newPlayer)
         {
             bool Found = false;

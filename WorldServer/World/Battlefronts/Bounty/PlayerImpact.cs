@@ -30,7 +30,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <param name="modificationValue"></param>
         /// <param name="player"></param>
         /// <returns></returns>
-        public PlayerImpact SetImpact(int impactValue, int expiryTimestamp, float modificationValue, uint characterId)
+        public PlayerImpact SetImpact(int impactValue, int expiryTimestamp, float modificationValue, uint impactingCharacterId)
         {
             
             if (impactValue > MAX_IMPACT_VALUE)
@@ -45,7 +45,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 ModificationValue = MAX_MODIFICATION_VALUE;
             ModificationValue = modificationValue;
 
-            this.CharacterId = characterId;
+            this.CharacterId = impactingCharacterId;
 
             return this;
         }

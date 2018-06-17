@@ -94,7 +94,8 @@ namespace WorldServer.World.Battlefronts.Bounty
                     BaseRP = (int) (BOUNTY_BASE_RP_MODIFIER * modifiedEffectiveLevel * impactFraction * playerImpact.ModificationValue),
                     InsigniaCount = insigniaCount,
                     InsigniaItemId = insigniaItemId,
-                    BaseMoney = (int) (GetRenownBandMoneyBase(renownBand) * impactFraction)
+                    BaseMoney = (int) (GetRenownBandMoneyBase(renownBand) * impactFraction),
+                    RenownBand = renownBand
 
                 };
                 rewardDictionary.TryAdd(playerImpact.CharacterId, reward);

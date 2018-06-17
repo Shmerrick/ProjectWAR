@@ -55,8 +55,14 @@ namespace WorldServer.Test
                 fakeStaticWrapper);
 
             // Pass in random number to ensure we effect as expected. StaticRandom.Instance.Next(1, 100)
-
             var result = rm.GenerateBaseReward(123, 99);
+
+            Assert.IsTrue(result.Count == 3);
+            Assert.IsTrue(result[999].RenownBand == 30);
+            Assert.IsTrue(result[999].BaseRP == 152 );
+            Assert.IsTrue(result[999].BaseXP == 334);
+            Assert.IsTrue(result[999].BaseInf == 24);
+            Assert.IsTrue(result[999].BaseMoney == 671);
         }
     }
 

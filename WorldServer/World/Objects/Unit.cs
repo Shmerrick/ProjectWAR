@@ -5,6 +5,7 @@ using FrameWork;
 using GameData;
 using NLog;
 using WarZoneLib;
+using WorldServer.World.Battlefronts.Bounty;
 
 namespace WorldServer
 {
@@ -535,6 +536,19 @@ namespace WorldServer
             if (DamageSources.ContainsKey(caster))
                 DamageSources[caster] += damage;
             else DamageSources.Add(caster, damage);
+
+
+            // Added impact to ImpactMatrix
+            this.Region.ImpactMatrix.UpdateMatrix((this as Player).CharacterId,
+                new PlayerImpact
+                {
+                    CharacterId = caster.Info.CharacterId,
+                    ExpiryTimestamp = FrameWork.TCPManager.GetTimeStamp() + ImpactMatrixManager.IMPACT_EXPIRY_TIME,
+                    ImpactValue = (int) damage,
+                    ModificationValue = (float) Math.Log(((caster.EffectiveBountyLevel / (this as Player).EffectiveBountyLevel) + 1), 2)
+                });
+
+
         }
 
         public void ClearTrackedDamage()
