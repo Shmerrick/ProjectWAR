@@ -547,8 +547,6 @@ namespace WorldServer
                     ImpactValue = (int) damage,
                     ModificationValue = (float) Math.Log(((caster.EffectiveBountyLevel / (this as Player).EffectiveBountyLevel) + 1), 2)
                 });
-
-
         }
 
         public void ClearTrackedDamage()

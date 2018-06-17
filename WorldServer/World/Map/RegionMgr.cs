@@ -43,6 +43,7 @@ namespace WorldServer
         public Scenario Scenario;
         public string RegionName;
         public ImpactMatrixManager ImpactMatrix;
+        public RewardManager RewardManager;
 
         /// <summary>Races associated with the pairing, may be null</summary>
         private readonly Races[] _races;
@@ -56,6 +57,7 @@ namespace WorldServer
             LoadSpawns();
 
             ImpactMatrix = new ImpactMatrixManager();
+            RewardManager = new RewardManager(new BountyManager(), new ContributionManager(), new ImpactMatrixManager(), new StaticWrapper() );
 
             if (Constants.DoomsdaySwitch == 2)
             {

@@ -3873,6 +3873,12 @@ namespace WorldServer
                 else if (CurrentObjectiveFlag != null)
                     CurrentObjectiveFlag.CheckKillValid(this);
 
+                var influenceId = 0;
+                if (killer.CurrentArea != null && killer.CurrentArea.IsRvR)
+                {
+                    influenceId = (killer.Realm == Realms.REALMS_REALM_DESTRUCTION) ? (ushort) killer.CurrentArea.DestroInfluenceId : (ushort) killer.CurrentArea.OrderInfluenceId;
+                }
+
                 float rewardScale = Region.ndbf.ModifyKill(killer, this);
 
                 // Maximum 25% bonus depending on how much damage the target took while alive.
@@ -3891,9 +3897,32 @@ namespace WorldServer
                     else _recentLooters[killer.CharacterId] = TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL;
                 }
 #endif
+                var rewardDictionary = Region.RewardManager.GenerateBaseReward((this).Info.CharacterId, StaticRandom.Instance.Next(1, 100));
+                
+                foreach (var reward in rewardDictionary)
+                {
+                    if (PlayersByCharId.ContainsKey(reward.Key))
+                    {
+                        var player = PlayersByCharId[reward.Key];
+                        player.InternalAddXp((uint) reward.Value.BaseXP, true, true);
+                        player.InternalAddRenown((uint)reward.Value.BaseRP, true, RewardType.Kill, $"{Info.Name} assisted in the killing of {player.Name}");
+                        player.AddInfluence((ushort) influenceId, (ushort) reward.Value.BaseInf);
+                        player.AddMoney((uint) reward.Value.BaseMoney);
 
-                HandleXPRenown(killer, rewardScale);
-                GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
+                        for (int i = 0; i < reward.Value.InsigniaCount; i++)
+                        {
+                            var li = new LootInfo(ItemService.GetItem_Info((uint) reward.Value.InsigniaItemId));
+                            lootContainer.LootInfo.Add(li);
+                        }
+                        lootContainer.TakeAll(player, true);
+                        SetLootable(false, player);
+
+                        RewardLogger.Debug($"Total XP : {reward.Value.BaseXP} RP : {reward.Value.BaseRP} INF : {reward.Value.BaseInf}");
+                    }
+                }
+
+                //HandleXPRenown(killer, rewardScale);
+                //GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
             }
 
             #endregion
