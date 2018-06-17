@@ -5,9 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security;
 using SystemData;
 using NLog;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Battlefronts.Objectives;
 using WorldServer.World.Objects.PublicQuests;
@@ -309,6 +311,10 @@ namespace WorldServer.World.Battlefronts.NewDawn
                         _orderCount++;
                     else
                         _destroCount++;
+
+                    // Add player to the bounty manager on entry to the Lake.
+                    Region.BountyManager.AddCharacter(plr.CharacterId, plr.Level, plr.RenownRank);
+                    Region.ContributionManager.AddCharacter(plr.CharacterId, 0);
                 }
             }
 
@@ -351,6 +357,9 @@ namespace WorldServer.World.Battlefronts.NewDawn
                         _orderCount--;
                     else
                         _destroCount--;
+
+                    // Remove player from the bounty manager on leaving the Lake.
+                    Region.BountyManager.RemoveCharacter(plr.CharacterId);
                 }
             }
 

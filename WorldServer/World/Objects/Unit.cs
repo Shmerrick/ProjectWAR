@@ -537,7 +537,7 @@ namespace WorldServer
                 DamageSources[caster] += damage;
             else DamageSources.Add(caster, damage);
 
-
+            var modificationValue = (float) Math.Log(((float)caster.EffectiveBountyLevel / (float)(this as Player).EffectiveBountyLevel + 1), 2);
             // Added impact to ImpactMatrix
             this.Region.ImpactMatrix.UpdateMatrix((this as Player).CharacterId,
                 new PlayerImpact
@@ -545,7 +545,7 @@ namespace WorldServer
                     CharacterId = caster.Info.CharacterId,
                     ExpiryTimestamp = FrameWork.TCPManager.GetTimeStamp() + ImpactMatrixManager.IMPACT_EXPIRY_TIME,
                     ImpactValue = (int) damage,
-                    ModificationValue = (float) Math.Log(((caster.EffectiveBountyLevel / (this as Player).EffectiveBountyLevel) + 1), 2)
+                    ModificationValue = modificationValue
                 });
         }
 

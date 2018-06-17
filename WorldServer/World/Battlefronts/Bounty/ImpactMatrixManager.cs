@@ -16,7 +16,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         // Maximum number of PlayerImpacts to return when calculating a kill
         public const int MAX_REWARD_IMPACT_COUNT = 20;
         // Minimum impact value for the record to be stored in the Impact Matrix
-        public const int MIN_IMPACT_VALIDITY = 500;
+        public const int MIN_IMPACT_VALIDITY = 50;
 
 
         public ImpactMatrixManager()

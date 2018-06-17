@@ -36,7 +36,7 @@ namespace WorldServer.Services.World
 
         public static RenownBandReward GetRenownBandReward(int renownBand)
         {
-            return _RewardBandRewards[renownBand];
+            return _RewardBandRewards.Single(x=>x.RenownBand == renownBand);
         }
 
     }

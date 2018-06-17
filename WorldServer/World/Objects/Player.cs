@@ -3909,6 +3909,9 @@ namespace WorldServer
                         player.AddInfluence((ushort) influenceId, (ushort) reward.Value.BaseInf);
                         player.AddMoney((uint) reward.Value.BaseMoney);
 
+                        if (lootContainer == null)
+                            lootContainer = new LootContainer();
+
                         for (int i = 0; i < reward.Value.InsigniaCount; i++)
                         {
                             var li = new LootInfo(ItemService.GetItem_Info((uint) reward.Value.InsigniaItemId));

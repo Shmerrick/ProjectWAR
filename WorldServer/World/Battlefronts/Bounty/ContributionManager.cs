@@ -44,5 +44,26 @@ namespace WorldServer.World.Battlefronts.Bounty
                 throw new BountyException($"Could not locate target character {targetCharacterId} for contribution");
 
         }
+
+        /// <summary>
+        /// Add Character to Contribution Dictionary
+        /// </summary>
+        /// <param name="characterId"></param>
+        /// <param name="characterLevel"></param>
+        /// <param name="renownLevel"></param>
+        public void AddCharacter(uint characterId, uint contribution)
+        {
+            UpdateContribution(characterId, contribution);
+        }
+
+        /// <summary>
+        /// Remove Character from Contribution Dict
+        /// </summary>
+        /// <param name="characterId"></param>
+        public void RemoveCharacter(uint characterId)
+        {
+            uint contribution;
+            this.ContributionDictionary.TryRemove(characterId, out contribution);
+        }
     }
 }

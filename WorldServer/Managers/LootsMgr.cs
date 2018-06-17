@@ -25,6 +25,11 @@ namespace WorldServer
         public uint Money;
         public List<LootInfo> LootInfo;
 
+        public LootContainer()
+        {
+            LootInfo = new List<LootInfo>();
+        }
+
         public bool IsLootable()
         {
             return LootCount > 0 || Money > 0;

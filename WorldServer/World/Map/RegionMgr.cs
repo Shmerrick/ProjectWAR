@@ -44,6 +44,8 @@ namespace WorldServer
         public string RegionName;
         public ImpactMatrixManager ImpactMatrix;
         public RewardManager RewardManager;
+        public BountyManager BountyManager;
+        public ContributionManager ContributionManager;
 
         /// <summary>Races associated with the pairing, may be null</summary>
         private readonly Races[] _races;
@@ -57,7 +59,9 @@ namespace WorldServer
             LoadSpawns();
 
             ImpactMatrix = new ImpactMatrixManager();
-            RewardManager = new RewardManager(new BountyManager(), new ContributionManager(), new ImpactMatrixManager(), new StaticWrapper() );
+            BountyManager = new BountyManager();
+            ContributionManager = new ContributionManager();
+            RewardManager = new RewardManager(BountyManager, ContributionManager, ImpactMatrix, new StaticWrapper() );
 
             if (Constants.DoomsdaySwitch == 2)
             {
