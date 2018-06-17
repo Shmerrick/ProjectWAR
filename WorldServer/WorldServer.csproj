@@ -163,6 +163,7 @@
     <Compile Include="Services\World\PQuestService.cs" />
     <Compile Include="Services\World\QuestService.cs" />
     <Compile Include="Services\World\RallyPointService.cs" />
+    <Compile Include="Services\World\RewardService.cs" />
     <Compile Include="Services\World\ScenarioService.cs" />
     <Compile Include="Services\World\TokService.cs" />
     <Compile Include="Services\World\VendorService.cs" />
@@ -260,7 +261,11 @@
     <Compile Include="World\Battlefronts\Bounty\IImpactMatrixManager.cs" />
     <Compile Include="World\Battlefronts\Bounty\PlayerImpact.cs" />
     <Compile Include="World\Battlefronts\Bounty\ImpactMatrixManager.cs" />
+    <Compile Include="World\Battlefronts\Bounty\RenownBandRVRObjectiveTick.cs" />
+    <Compile Include="World\Battlefronts\Bounty\RenownBandReward.cs" />
+    <Compile Include="World\Battlefronts\Bounty\RenownBandRVRZoneLock.cs" />
     <Compile Include="World\Battlefronts\Bounty\RewardManager.cs" />
+    <Compile Include="World\Battlefronts\Bounty\StaticWrapper.cs" />
     <Compile Include="World\Battlefronts\ContributionTracker.cs" />
     <Compile Include="World\Battlefronts\IBattlefront.cs" />
     <Compile Include="World\Battlefronts\Legacy\ProximityBattlefront.cs" />

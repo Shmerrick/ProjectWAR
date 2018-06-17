@@ -17,6 +17,11 @@ namespace WorldServer.World.Battlefronts.Bounty
         // The player that performed this impact action
         public uint CharacterId { get; set; }
 
+        public override string ToString()
+        {
+            return $"ImpactValue {ImpactValue}, Expiry {ExpiryTimestamp} Modification {ModificationValue} Character Id {CharacterId}";
+        }
+
         /// <summary>
         /// Set the impact values, but ensure they make sense.
         /// </summary>

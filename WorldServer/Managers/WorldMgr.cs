@@ -31,6 +31,7 @@ namespace WorldServer
         typeof(PQuestService),
         typeof(QuestService),
         typeof(RallyPointService),
+        typeof(RewardService),
         typeof(ScenarioService),
         typeof(TokService),
         typeof(VendorService),

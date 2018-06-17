@@ -1,0 +1,64 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using FakeItEasy;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Bounty;
+using WorldServer.World.Battlefronts.NewDawn.Rewards;
+
+namespace WorldServer.Test
+{
+    [TestClass]
+    public class RewardTests
+    {
+       
+        [TestMethod]
+        public void ReplicateTestCase1()
+        {
+            var fakeBountyManager = A.Fake<IBountyManager>();
+            var fakeContributionManager = A.Fake<IContributionManager>();
+            var fakeImpactMatrixManager = A.Fake<IImpactMatrixManager>();
+            var fakeRewardManager = A.Fake<RewardManager>();
+            var fakeStaticWrapper = A.Fake<IStaticWrapper>();
+            
+            var sampleRenownBandReward = new RenownBandReward
+            {
+                CrestCount = 1, CrestId = 208431, Money = 1500
+            };
+            // Bounty for the character being killed.
+            var charBounty = new CharacterBounty
+            {
+                EffectiveLevel = 60, CharacterLevel = 15, RenownLevel = 30, LastDeath = 0
+            };
+            // Impacts upon the target character
+            var fakeImpacts = new List<PlayerImpact>
+            {
+                new PlayerImpact {CharacterId = 999, ExpiryTimestamp = 0, ImpactValue = 1500, ModificationValue = 0.85f},
+                new PlayerImpact {CharacterId = 1000, ExpiryTimestamp = 0, ImpactValue = 1250, ModificationValue = 2.32f},
+                new PlayerImpact {CharacterId = 1001, ExpiryTimestamp = 0, ImpactValue = 600, ModificationValue = 2.69f}
+            };
+
+            A.CallTo(() => fakeBountyManager.GetBounty(123)).Returns(charBounty);
+            A.CallTo(() => fakeContributionManager.GetContribution(123)).Returns<uint>(100);
+            A.CallTo(() => fakeImpactMatrixManager.GetKillImpacts(123)).Returns(fakeImpacts);
+            A.CallTo(() => fakeImpactMatrixManager.GetTotalImpact(123)).Returns(3350);
+
+            A.CallTo(() => fakeStaticWrapper.GetRenownBandReward(30)).Returns(sampleRenownBandReward);
+
+            var rm = new RewardManager(
+                fakeBountyManager, 
+                fakeContributionManager, 
+                fakeImpactMatrixManager, 
+                fakeStaticWrapper);
+
+            // Pass in random number to ensure we effect as expected. StaticRandom.Instance.Next(1, 100)
+
+            var result = rm.GenerateBaseReward(123, 99);
+        }
+    }
+
+ 
+}

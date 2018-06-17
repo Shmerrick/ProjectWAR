@@ -26,6 +26,8 @@ namespace WorldServer.World.Battlefronts.Bounty
                 (key, existingCharacterBounty) => characterBounty);
         }
 
+     
+
         /// <summary>
         /// Add Character to Bounty Dictionary
         /// </summary>
