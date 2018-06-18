@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -34,6 +35,7 @@ namespace ApocalypseAPI
             services.AddTransient<IDbConnectionService>(s => new DbConnectionService(Configuration["db-connection-string"]));
             services.AddTransient<ILoginManager, LoginManager>();
             services.AddSingleton<ITimeTokenManager, TimeTokenManager>();
+            services.AddSingleton<IReferenceManager, ReferenceManager>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
