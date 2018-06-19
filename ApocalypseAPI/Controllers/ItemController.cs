@@ -29,12 +29,17 @@ namespace ApocalypseAPI.Controllers
         }
 
         [HttpGet]
-        public List<Item> GetAll(int careerLine, int minRank = 0, int minRenown = 0)
+        public List<Item> GetAll(int careerLine, int minRank = 0, int minRenown = 0, string nameFilter = "")
         {
             Logger.Debug($"calling getall");
 
             try
             {
+                string nameFilterExpression = String.Empty;
+                if (!String.IsNullOrEmpty(nameFilter))
+                    nameFilterExpression = $" and Name like '%{nameFilter}%' ";
+
+
                 var slots = string.Join(',', Enum.GetValues(typeof(EquipmentSlotEnum)).Cast<int>());
                 var query = $" SELECT *, Stats as Statistics from war_world.Item_Infos ii " +
                             $" where SlotId in ({slots}) " +
@@ -44,7 +49,11 @@ namespace ApocalypseAPI.Controllers
                             $" and Career = {careerLine} " +
                             $" and MinRank >= {minRank} " +
                             $" and MinRenown >= {minRenown} " +
+                            $" {nameFilterExpression} " +
                             $" order by MinRank, Name";
+
+                Logger.Debug(query);
+
                 var itemList =  DbConnection.Query<Item>(query).ToList();
 
                 foreach (var itemInfo in itemList)
