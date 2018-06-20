@@ -15,6 +15,7 @@ using WorldServer.World.Battlefronts.Objectives;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.NewDawn;
 using BattlefrontConstants = WorldServer.World.Battlefronts.NewDawn.BattlefrontConstants;
+using WorldServer.World.Battlefronts.NewDawn;
 
 namespace WorldServer.Managers.Commands
 {
@@ -165,6 +166,18 @@ namespace WorldServer.Managers.Commands
             else
                 plr.SendClientMessage("Second parameter must be 0 or 1 - 0 no rewards, 1 grants rewards.");
         }
+
+        [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks a battle objective for the given realm (1 - Order, 2 - Dest).")]
+        public static void LockObj(Player plr, Realms realm, int values)
+        {               
+                plr.SendClientMessage($"Attempting to lock objective...");
+
+                var objectiveToLock = values;
+
+                WorldMgr.GetRegion(plr.Region.RegionId, false).ndbf.LockBattleObjective(realm, objectiveToLock);
+
+        }
+
 
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks the current battlefront, no winners")]
         public static void Draw(Player plr)
@@ -481,6 +494,8 @@ namespace WorldServer.Managers.Commands
 
             plr.SendClientMessage($"  Battlefront Status : {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierBattlefrontManager.GetActivePairing().RegionId, false).GetBattleFrontStatus()}");
 
+            foreach (var flag in plr.Region.ndbf.Objectives)
+                plr.SendClientMessage($"{plr.Region.ndbf.Objectives.ToString()}");
         }
 
         [CommandAttribute(EGmLevel.DatabaseDev, "Sets an objective flag portal location, flag to warcamp if no objective name / otherwise warcamp to flag")]

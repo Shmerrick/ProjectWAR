@@ -357,7 +357,20 @@ namespace WorldServer.World.Battlefronts.NewDawn
             plr.BuffInterface.RemoveBuffByEntry((ushort)GameBuffs.FieldOfGlory);
         }
 
-        public void LockPairing(Realms realm)
+        public void LockBattleObjective(Realms realm, int objectiveToLock)
+        {
+            _logger.Debug($"Locking Battle Objective : {realm.ToString()}...");
+
+            foreach (var flag in Objectives)
+            {
+                if (flag.Id == objectiveToLock)
+                {
+                    flag.LockObjective(realm, true);
+                }
+            }
+            }
+
+            public void LockPairing(Realms realm)
         {
             _logger.Debug($"Locking Pair : {realm.ToString()}...");
 

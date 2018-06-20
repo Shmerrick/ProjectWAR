@@ -311,11 +311,13 @@ namespace WorldServer.World.Battlefronts.NewDawn
                 {
                     OwningRealm = Realms.REALMS_REALM_NEUTRAL;
                     State = StateFlags.Unsecure;
+                    SendFlagState(GetPlayer(), announce, true);
                 }
                 else if (newTransitionSpeed == 0 && _closeOrderCount == _closeDestroCount) // Abandonned
                 {
                     OwningRealm = Realms.REALMS_REALM_NEUTRAL;
                     State = StateFlags.Unsecure;
+                    SendFlagState(GetPlayer(), announce, true);
                 }
                 else { 
 
@@ -359,6 +361,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
                 if (toOrder == isOrder) // Securing
                 {
                     State = StateFlags.Secure;
+                    SendFlagState(GetPlayer(), announce, true);
                     remainingTransitionTime = MAX_CONTROL_GAUGE;
                     if (toOrder)
                         remainingTransitionTime += _controlGauge;
@@ -375,6 +378,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
                     _displayedTimer =
                         (short)((Math.Abs(MAX_CONTROL_GAUGE / newTransitionSpeed) + remainingTransitionTime) /
                                  1000); // Full secure time + remaining assault time
+                    SendFlagState(GetPlayer(), announce, true);
                 }
 
                 // Updates next transition timestamp
@@ -540,7 +544,8 @@ namespace WorldServer.World.Battlefronts.NewDawn
         {
             State = StateFlags.Unsecure;
             OwningRealm = Realms.REALMS_REALM_NEUTRAL;
-            BroadcastFlagInfo(false);
+            BroadcastFlagInfo(true);
+            SendFlagState(GetPlayer(), true, true);
         }
 
         /// <summary>
@@ -840,13 +845,15 @@ namespace WorldServer.World.Battlefronts.NewDawn
             var largeFilter = OwningRealm == Realms.REALMS_REALM_ORDER
                 ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE
                 : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE;
+            foreach (var player in Region.Players)
+                player.SendPacket(Out);
             PacketOut snd = null;
 
             switch (State)
             {
-                //case StateFlags.Unsecure:
-                //    message = string.Concat(Name, " is now open for capture !");
-                //    break;
+                case StateFlags.Unsecure:
+                    message = string.Concat(Name, " is now open for capture !");
+                    break;
                 case StateFlags.Contested:
                     if (_lastBroadCastState != State)
                     {
@@ -871,11 +878,13 @@ namespace WorldServer.World.Battlefronts.NewDawn
                             snd.WriteByte(0);
                             snd.WriteUInt16(OwningRealm == Realms.REALMS_REALM_ORDER ? (ushort)0x0C : (ushort)0x332);
                             snd.Fill(0, 10);
+                            break;
                         }
                         else
                         {
                             message = string.Concat($"The forces of ", GetRealmString(OwningRealm), " are securing ",
                                 Name, "!");
+                            break;
                         }
                     }
                     break;
@@ -892,8 +901,8 @@ namespace WorldServer.World.Battlefronts.NewDawn
                         continue;
 
                     // Notify RvR flagged players of activity
-                    //player.SendLocalizeString(message, ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                    //player.SendLocalizeString(message, largeFilter, Localized_text.CHAT_TAG_DEFAULT);
+                    player.SendLocalizeString(message, ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
+                    player.SendLocalizeString(message, largeFilter, Localized_text.CHAT_TAG_DEFAULT);
                     if (snd != null)
                         player.SendPacket(snd);
                 }
@@ -949,6 +958,8 @@ namespace WorldServer.World.Battlefronts.NewDawn
             _closeOrderCount = 0;
             _closeDestroCount = 0;
             _closePlayers.Clear();
+
+            SendFlagState(GetPlayer(), true, true);
 
             if (!announce)
                 return;
