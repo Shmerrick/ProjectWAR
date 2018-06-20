@@ -374,7 +374,7 @@ namespace Launcher
                 return;
             }
 
-            _logger.Debug($"HandlePacket{packet}");
+            _logger.Trace($"HandlePacket{packet}");
 
             switch ((Opcodes)packet.Opcode)
             {
