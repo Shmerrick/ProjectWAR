@@ -122,11 +122,11 @@ namespace WorldServer.World.Battlefronts.NewDawn
             {
                 if (Region.GetTier() == 1)
                 {
-                    plr.SendClientMessage($"RVR Status : {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierBattlefrontManager.GetActivePairing().RegionId, false).GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    plr.SendClientMessage($"RvR Status : {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierBattlefrontManager.GetActivePairing().RegionId, false).GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
                 }
                 else
                 {
-                    plr.SendClientMessage($"RVR Status : {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierBattlefrontManager.GetActivePairing().RegionId, false).GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    plr.SendClientMessage($"RvR Status : {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierBattlefrontManager.GetActivePairing().RegionId, false).GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
                 }
             }
         }
