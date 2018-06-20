@@ -616,7 +616,7 @@ namespace WorldServer
                     }
                 }
 
-                SendClientMessage("The current pickup scenario is " + ScenarioMgr.PickupScenarioName + ".", ChatLogFilters.CHATLOGFILTERS_SCENARIO);
+                // SendClientMessage("The current pickup scenario is " + ScenarioMgr.PickupScenarioName + ".", ChatLogFilters.CHATLOGFILTERS_SCENARIO);
 
                 if (Level > 15)
                 {
