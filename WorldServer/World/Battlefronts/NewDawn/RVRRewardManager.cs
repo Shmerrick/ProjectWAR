@@ -176,11 +176,11 @@ namespace WorldServer.World.Battlefronts.NewDawn
             {
                 Guid = CharMgr.GenerateMailGuid(),
                 CharacterId = plr.CharacterId,
-                SenderName = "RVR Reward System",
+                SenderName = "RvR Reward System",
                 ReceiverName = plr.Name,
                 SendDate = (uint)TCPManager.GetTimeStamp(),
-                Title = "RVR Reward",
-                Content = "You won an RVR Loot Bag",
+                Title = "RvR Reward",
+                Content = "You won an RvR Reward!",
                 Money = 5000,
                 Opened = false
             };

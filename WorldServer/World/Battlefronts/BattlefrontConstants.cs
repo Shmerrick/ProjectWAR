@@ -51,7 +51,7 @@ namespace WorldServer.World.Battlefronts
 
         #region Victory points
         /// <summary>Minimal number of victory points required for victory in t1</summary>
-        public static float LOCK_VICTORY_POINTS = 5000f;
+        public static float LOCK_VICTORY_POINTS = 2000f;
         #endregion
 
 

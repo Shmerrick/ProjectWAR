@@ -2474,11 +2474,14 @@ namespace WorldServer.Managers.Commands
             plr.SendClientMessage("State of the Realm Addon Enabled: 1.0.3", SystemData.ChatLogFilters.CHATLOGFILTERS_SAY);
             return true;
         }
+
+        /*
         public static bool PugScenario(Player plr, ref List<string> values)
         {
             plr.SendClientMessage("The current pickup scenario is " + ScenarioMgr.PickupScenarioName + ".", ChatLogFilters.CHATLOGFILTERS_SCENARIO);
             return true;
         }
+        */
 
         public static bool BolsterLevel(Player plr, ref List<string> values)
         {
