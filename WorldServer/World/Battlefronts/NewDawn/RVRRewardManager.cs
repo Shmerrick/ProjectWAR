@@ -170,7 +170,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// </summary>
         public void GenerateLockReward(Player plr)
         {
-            var mailItem = new MailItem(1, 5);
+            var mailItem = new MailItem(208470, 5);
 
             Character_mail mail = new Character_mail
             {
