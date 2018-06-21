@@ -50,7 +50,10 @@ namespace WorldServer.World.Battlefronts.NewDawn
         #endregion
 
         #region Victory points
-        /// <summary>Minimal number of victory points required for locking</summary>
+        /// <summary>
+        /// Minimal number of victory points required for locking
+        /// NOT What the game is using as lock values.
+        /// </summary>
         public static float LOCK_VICTORY_POINTS = 5000f;
 
         #endregion
