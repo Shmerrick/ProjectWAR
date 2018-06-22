@@ -8,6 +8,7 @@ using FrameWork;
 using GameData;
 using NLog;
 using WorldServer.Services.World;
+using WorldServer;
 
 namespace WorldServer.World.Battlefronts.NewDawn
 {
@@ -19,6 +20,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public Dictionary<uint, XpRenown> DelayedRewards = new Dictionary<uint, XpRenown>();
         public float RewardScaleMultiplier { get; set; }
+        public object PlrLevel { get; private set; }
 
         /// <summary>
         /// Add delayed XPR rewards for kills in RVR. 
@@ -170,8 +172,12 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// </summary>
         public void GenerateLockReward(Player plr)
         {
-            var mailItem = new MailItem(208470, 5);
-
+            //T1
+            var mailItem1 = new MailItem(208470, 5);
+            //T2 & T3
+            var mailItem2 = new MailItem(208470, 10);
+            //T4
+            var mailItem3 = new MailItem(208470, 20);
             Character_mail mail = new Character_mail
             {
                 Guid = CharMgr.GenerateMailGuid(),
@@ -186,7 +192,23 @@ namespace WorldServer.World.Battlefronts.NewDawn
             };
 
             // Attach the mail item to the mail.
-            mail.Items.Add(mailItem);
+
+            PlrLevel = plr.Level;
+            
+            if (plr.Level <= 15)
+            { 
+                mail.Items.Add(mailItem1);
+            }
+
+            if (plr.Level > 15 & plr.Level <= 39)
+            { 
+                mail.Items.Add(mailItem2);
+            }
+
+            if (plr.Level == 40)
+            {
+                mail.Items.Add(mailItem3);
+            }
 
             CharMgr.AddMail(mail);
         }
