@@ -38,6 +38,9 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// <summary>The zone info id within which the battlefront exists.</summary>
         public new readonly ushort ZoneId;
 
+        /// <summary> The region id within which the battlefront exists.</summary>
+        public new readonly ushort RegionId;
+
         /// <summary>Influence area containing the objective</summary>
         private Zone_Area _area;
 
@@ -150,6 +153,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
             Id = obj.Entry;
             Name = obj.Name;
             ZoneId = obj.ZoneId;
+            RegionId = obj.RegionId;
             _tier = (byte)Tier;
 
             _x = (uint)obj.X;
