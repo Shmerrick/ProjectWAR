@@ -447,7 +447,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
                 // This may need a rethink and restructure -- reset the VPP for the new Region
                 var newRegionId = WorldMgr.UpperTierBattlefrontManager.GetActivePairing().RegionId;
                 var newRegion = WorldMgr.GetRegion((ushort)newRegionId, false);
-                if (Tier >= 3) { 
+                if (Tier < 3) { 
                 newRegion.ndbf.ResetPairing();
                 }
                 

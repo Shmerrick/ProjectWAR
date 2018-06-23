@@ -61,16 +61,6 @@ namespace WorldServer.Services.World
 
             return null;
         }
-
-        public static List<Battlefront_Objective> GetBattlefrontT4Objectives(uint ZoneId)
-        {
-            if (_BattlefrontObjectives.ContainsKey(ZoneId))
-            {
-                return _BattlefrontObjectives[ZoneId];
-            }
-
-            return null;
-        }
         #endregion
 
         #region Keeps
