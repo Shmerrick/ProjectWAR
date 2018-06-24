@@ -103,14 +103,16 @@ BOOL WINAPI DllMain(HANDLE hInst, ULONG ul_reason, LPVOID lpReserved)
 
 int main()
 {
+	//DEBUG build will create exe allowing to debug and single step through code.
+	//RELEASE build, main() is ignored and DllMain is used as entry point
 
-	InitZones("C:\\Users\\Administrator\\Documents\\Visual Studio 2012\\Projects\\WarZoneLib-master\\Run", 125);
-	LoadZone(100);
+	//InitZones("C:\\Users\\Administrator\\Documents\\Visual Studio 2012\\Projects\\WarZoneLib-master\\Run", 125);
+	//LoadZone(100);
 	//_manager.InitPath("C:\\Users\\Administrator\\Documents\\Visual Studio 2012\\Projects\\WarZoneLib-master\\Run");
 	//_manager.LoadZone(132, 190);
-	OcclussionInfo info;
-	SetFixtureVisible(100, 11645, 1, false);
-	SegmentIntersect(100, 100, 849900, 824970, 8019+100 , 850324, 826137, 7930+12, true, true,190,  &info);
+	//OcclussionInfo info;
+	//SetFixtureVisible(100, 11645, 1, false);
+	//SegmentIntersect(100, 100, 849900, 824970, 8019+100 , 850324, 826137, 7930+12, true, true,190,  &info);
 	//_manager.SegmentIntersect(132,484261,358614,0xFFFF,479125,370464,0, true, true,250,  &info);
 	//char c;
 	//cin >> c;
