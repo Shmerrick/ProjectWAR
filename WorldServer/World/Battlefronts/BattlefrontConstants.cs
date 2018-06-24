@@ -55,7 +55,7 @@ namespace WorldServer.World.Battlefronts
         /// This is what the current RvR system is using as it's lock value.
         /// </summary>
         /// 
-        public static float LOCK_VICTORY_POINTS = 2000f;
+        public static float LOCK_VICTORY_POINTS = 5000f;
         #endregion
 
 
