@@ -50,8 +50,12 @@ namespace WorldServer.World.Battlefronts
         #endregion
 
         #region Victory points
-        /// <summary>Minimal number of victory points required for victory in t1</summary>
-        public static float LOCK_VICTORY_POINTS = 5000f;
+        /// <summary>
+        /// Minimal number of victory points required for victory in t1
+        /// This is what the current RvR system is using as it's lock value.
+        /// </summary>
+        /// 
+        public static float LOCK_VICTORY_POINTS = 2000f;
         #endregion
 
 

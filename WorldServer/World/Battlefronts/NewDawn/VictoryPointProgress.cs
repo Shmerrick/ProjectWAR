@@ -54,7 +54,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         public override string ToString()
         {
             return
-                $"Order VP:{OrderVictoryPoints} ({OrderVictoryPoints * 100 / BattlefrontConstants.LOCK_VICTORY_POINTS}%) Destruction VP:{DestructionVictoryPoints} ({DestructionVictoryPoints * 100 / BattlefrontConstants.LOCK_VICTORY_POINTS}%)";
+                $"Order VP:{OrderVictoryPoints} ({OrderVictoryPoints * 100 / WorldServer.World.Battlefronts.BattlefrontConstants.LOCK_VICTORY_POINTS}%) Destruction VP:{DestructionVictoryPoints} ({DestructionVictoryPoints * 100 / WorldServer.World.Battlefronts.BattlefrontConstants.LOCK_VICTORY_POINTS}%)";
         }
 
         public void Lock(Realms lockingRealm)

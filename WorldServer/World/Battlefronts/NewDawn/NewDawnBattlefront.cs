@@ -100,6 +100,24 @@ namespace WorldServer.World.Battlefronts.NewDawn
             Tier = (byte)Region.GetTier();
             LoadObjectives();
             LoadKeeps();
+            //On making a battlefront if the tier is 4 locks Objectives adjacent to starting zone
+            if (Tier == 4)
+            {
+                switch (Region.RegionId)
+                {
+                    case 11:
+                        LockBattleObjectivesByZone(105);
+                        break;
+                    case 4:
+                        LockBattleObjectivesByZone(205);
+                        break;
+                    case 2:
+                        LockBattleObjectivesByZone(5);
+                        break;
+                }
+                
+            }
+
 
             _contributionTracker = new ContributionTracker(Tier, regionMgr);
             _aaoTracker = new AAOTracker();
@@ -125,11 +143,11 @@ namespace WorldServer.World.Battlefronts.NewDawn
             {
                 if (Region.GetTier() == 1)
                 {
-                    plr.SendClientMessage($"RVR Status : {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierBattlefrontManager.GetActivePairing().RegionId, false).GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    plr.SendClientMessage($"RvR Status : {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierBattlefrontManager.GetActivePairing().RegionId, false).GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
                 }
                 else
                 {
-                    plr.SendClientMessage($"RVR Status : {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierBattlefrontManager.GetActivePairing().RegionId, false).GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    plr.SendClientMessage($"RvR Status : {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierBattlefrontManager.GetActivePairing().RegionId, false).GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
                 }
             }
         }
@@ -402,7 +420,31 @@ namespace WorldServer.World.Battlefronts.NewDawn
          
 
 
-        public void LockPairing(Realms realm)
+        public void LockBattleObjectivesByZone(int zoneId)
+        {
+            foreach (var flag in Objectives)
+            {
+                if ((flag.ZoneId != zoneId) && (flag.RegionId == Region.RegionId))
+                {
+                    flag.LockObjective(LockingRealm, true);
+                }
+            }
+        }
+
+        public void LockBattleObjective(Realms realm, int objectiveToLock)
+        {
+            _logger.Debug($"Locking Battle Objective : {realm.ToString()}...");
+
+            foreach (var flag in Objectives)
+            {
+                if (flag.Id == objectiveToLock)
+                {
+                    flag.LockObjective(realm, true);
+                }
+            }
+            }
+
+            public void LockPairing(Realms realm)
         {
             _logger.Debug($"Locking Pair : {realm.ToString()}...");
 
@@ -450,8 +492,10 @@ namespace WorldServer.World.Battlefronts.NewDawn
                 // This may need a rethink and restructure -- reset the VPP for the new Region
                 var newRegionId = WorldMgr.UpperTierBattlefrontManager.GetActivePairing().RegionId;
                 var newRegion = WorldMgr.GetRegion((ushort)newRegionId, false);
-
+                if (Tier < 3) { 
                 newRegion.ndbf.ResetPairing();
+                }
+                
             }
 
             // Generate RP and rewards

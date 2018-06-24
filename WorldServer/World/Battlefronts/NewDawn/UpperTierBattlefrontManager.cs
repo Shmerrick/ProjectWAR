@@ -53,6 +53,9 @@ namespace WorldServer.World.Battlefronts.NewDawn
         {
             // Current pairing that has just locked.
             var activePairing = GetActivePairing();
+            bool elfLocked = false;
+            bool empLocked = false;
+            bool dwarfLocked = false;
             _logger.Debug($"About to Advance Pairing. Currently Active Pair : {activePairing?.ToString()}");
 
             // If nothing is active, return T2 Emp/Chaos
@@ -64,6 +67,8 @@ namespace WorldServer.World.Battlefronts.NewDawn
             {
                 var nextTier = GetNextTier(activePairing.Tier);
                 _logger.Debug($"Next Tier = {nextTier} ");
+                
+
 
                 if (nextTier == 5)
                 {
@@ -74,12 +79,19 @@ namespace WorldServer.World.Battlefronts.NewDawn
                     // This racial group
                     var activeRacialPairing = activePairing.Pairing;
                     // If Tier 5 has locked, start a random Tier 2.
-                    if ((nextTier == 2) && (activePairing.Tier == 4))
+             //     if ((nextTier == 2) && (activePairing.Tier == 5))
+             //     {
+             //         var race = this.RacialPairManager.GetRandomRace(activeRacialPairing);
+             //         _logger.Info($"T4->T2 race : {race} ");
+             //         _logger.Info($"New Active Pair : {this.RacialPairManager.GetByPair(race, nextTier).ToString()}");
+             //         return SetActivePairing(this.RacialPairManager.GetByPair(race, nextTier));
+             //     }
+                    if (activePairing.Tier == 4)
                     {
                         var race = this.RacialPairManager.GetRandomRace(activeRacialPairing);
-                        _logger.Info($"T4->T2 race : {race} ");
-                        _logger.Info($"New Active Pair : {this.RacialPairManager.GetByPair(race, nextTier).ToString()}");
-                        return SetActivePairing(this.RacialPairManager.GetByPair(race, nextTier));
+                        _logger.Info($"T4->T4 race : {race} ");
+                        _logger.Info($"New Active Pair : {this.RacialPairManager.GetByPair(race, 4).ToString()}");
+                        return SetActivePairing(this.RacialPairManager.GetByPair(race, 4));
                     }
                 }
                 
@@ -94,6 +106,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// <returns></returns>
         public int GetNextTier(int activeTier)
         {
+            int tierFourInt = 0;
             switch (activeTier)
             {
                 case 1: return 1;

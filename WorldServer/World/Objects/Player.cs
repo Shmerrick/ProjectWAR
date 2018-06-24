@@ -618,7 +618,7 @@ namespace WorldServer
                     }
                 }
 
-                SendClientMessage("The current pickup scenario is " + ScenarioMgr.PickupScenarioName + ".", ChatLogFilters.CHATLOGFILTERS_SCENARIO);
+                // SendClientMessage("The current pickup scenario is " + ScenarioMgr.PickupScenarioName + ".", ChatLogFilters.CHATLOGFILTERS_SCENARIO);
 
                 if (Level > 15)
                 {
@@ -5218,16 +5218,14 @@ namespace WorldServer
                     }
                 }
                 else */
+
                 switch (_bolsterTier)
                 {
                     case 1:
-                        if (Level > 11)
-                            newMaxLevel = 15;
-                        else if (Level > 7)
-                            newMaxLevel = 17;
-                        else
-                            newMaxLevel = 19;
+                        if (Level < 15)
+                            newMaxLevel = 16;
                         break;
+                        /*
                     case 2:
                     case 3:
                         if (Level > 27)
@@ -5237,6 +5235,7 @@ namespace WorldServer
                         else
                             newMaxLevel = 36;
                         break;
+                        */
                 }
 
                 if (Constants.DoomsdaySwitch > 0 && Level > 15 && ScnInterface.Scenario == null)
