@@ -176,18 +176,35 @@ bool ZoneManager::GetFixtureInfo(int zoneID, int index, FixtureInfo* info)
 	}
 	return false;
 }
-
-bool ZoneManager::SetFixtureVisible(int zoneID, uint32_t uniqueID, uint8_t instanceID, bool visible)
+bool ZoneManager::GetFixtureVisible(int zoneID, uint32_t uniqueID, uint8_t instanceID)
 {
 	if (!LoadZone(zoneID))
 		return false;
 
 	int id = (instanceID << 24) | uniqueID;
+
+	if (_zones[zoneID]->Fixtures.find(id) != _zones[zoneID]->Fixtures.end())
+	{
+		return _zones[zoneID]->Fixtures[id]->Visible;
+	}
+	return false;
+}
+
+bool ZoneManager::SetFixtureVisible(int zoneID, uint32_t uniqueID, uint8_t instanceID, bool visible)
+{
+	int doorData = (((uniqueID >> 14 & 0xFF) << 30) | (zoneID << 20) | ((uniqueID & 0x3FFF) << 6) | 0x28 + instanceID);
+	//Log("setting los (" + ::to_string(visible) + ") for doorID " + ::to_string(doorData));
+
+	if (!LoadZone(zoneID))
+		return false;
+
+	int id = (instanceID << 24) | uniqueID;
+
 	if (_zones[zoneID]->Fixtures.find(id) != _zones[zoneID]->Fixtures.end())
 	{
 		_zones[zoneID]->Fixtures[id]->Visible = visible;
 		for (int i = _zones[zoneID]->Fixtures[id]->TriangleStartIndex;
-			i<_zones[zoneID]->Fixtures[id]->TriangleStartIndex + _zones[zoneID]->Fixtures[id]->TriangleCount;
+			i < _zones[zoneID]->Fixtures[id]->TriangleStartIndex + _zones[zoneID]->Fixtures[id]->TriangleCount;
 			i++)
 		{
 			_zones[zoneID]->kd_tree->SetTriangleVisible(i, visible);

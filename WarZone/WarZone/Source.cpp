@@ -65,6 +65,14 @@ extern "C"
 	   return _manager->SetFixtureVisible(zoneID, uniqueID, instanceID, visible);
    }
 
+   __declspec(dllexport) bool GetFixtureVisible(int zoneID, uint32_t uniqueID, uint8_t instanceID)
+   {
+	   if (_manager == nullptr)
+		   return false;
+
+	   return _manager->GetFixtureVisible(zoneID, uniqueID, instanceID);
+   }
+
     __declspec(dllexport) int GetFixtureCount(int zoneID)
 	{
 		if (_manager == nullptr)
@@ -101,7 +109,8 @@ int main()
 	//_manager.InitPath("C:\\Users\\Administrator\\Documents\\Visual Studio 2012\\Projects\\WarZoneLib-master\\Run");
 	//_manager.LoadZone(132, 190);
 	OcclussionInfo info;
-	SegmentIntersect(100, 100, 848564, 830523, 7904 +100, 848849, 831736, 7565 +100, true, true,190,  &info);
+	SetFixtureVisible(100, 11645, 1, false);
+	SegmentIntersect(100, 100, 849900, 824970, 8019+100 , 850324, 826137, 7930+12, true, true,190,  &info);
 	//_manager.SegmentIntersect(132,484261,358614,0xFFFF,479125,370464,0, true, true,250,  &info);
 	//char c;
 	//cin >> c;

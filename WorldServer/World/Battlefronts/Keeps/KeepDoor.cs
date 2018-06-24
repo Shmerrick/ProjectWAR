@@ -4,6 +4,7 @@ using Common;
 using FrameWork;
 using GameData;
 using WorldServer.Services.World;
+using WorldServer.World.Map;
 
 namespace WorldServer.World.Battlefronts.Keeps
 {
@@ -90,7 +91,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 OpenDoor(false);
                 EvtInterface.RemoveEventNotify(EventName.OnReceiveDamage, OnReceiveDamage);
                 _keep.OnDoorDestroyed(_keepDoor.Info.Number, killer.Realm);
-                WarZoneLib.RegionData.HideDoor(true, Zone.ZoneId, _keepDoor.Info.DoorId);
+                Occlusion.SetFixtureVisible(_keepDoor.Info.DoorId, false);
             }
 
             /// <summary>Inflicts damage upon this unit and returns whether lethal damage was dealt.</summary>
@@ -301,7 +302,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 _keepDoor.GameObject = new KeepGameObject(Spawn, _keepDoor, _keep);
                 Region.AddObject(_keepDoor.GameObject, Spawn.ZoneId);
 
-                WarZoneLib.RegionData.HideDoor(false, Spawn.ZoneId, _keepDoor.Info.DoorId);
+                Occlusion.SetFixtureVisible(_keepDoor.Info.DoorId, true);
                 Destroy();
 
                 if (_keepDoor.Info.Number == (int)KeepDoorType.OuterMain && _keep.LastMessage >= Keep.KeepMessage.Outer0)
@@ -342,8 +343,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             GameObject.SetAttackable(Keep.KeepStatus != KeepStatus.KEEPSTATUS_LOCKED);
 
-            WarZoneLib.RegionData.HideDoor(false, Info.ZoneId, Info.DoorId);
-            
+            Occlusion.SetFixtureVisible(Info.DoorId, true);
         }
 
 
