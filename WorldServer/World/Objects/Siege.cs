@@ -5,7 +5,7 @@ using Common;
 using FrameWork;
 using GameData;
 using CreatureSubTypes = GameData.CreatureSubTypes;
-using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.Services.World;
 
 namespace WorldServer

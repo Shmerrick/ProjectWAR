@@ -10,15 +10,15 @@ using System.Threading.Tasks;
 
 using Common;
 using FrameWork;
-using WorldServer.World.Battlefronts;
+using WorldServer.World.BattleFronts;
 using GameData;
 using WorldServer.World.Objects.PublicQuests;
 using WorldServer.Scenarios;
-using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.BattleFronts.Objectives;
 using Common.Database.World.Maps;
 using NLog;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.NewDawn;
+using WorldServer.World.BattleFronts.NewDawn;
 
 namespace WorldServer
 {
@@ -37,8 +37,8 @@ namespace WorldServer
         private readonly Thread _updater;
         private bool _running = true;
         public List<Zone_Info> ZonesInfo;
-        public IBattlefront Bttlfront;
-        public NewDawnBattlefront ndbf;
+        public IBattleFront Bttlfront;
+        public NewDawnBattleFront ndbf;
         public Scenario Scenario;
         public string RegionName;
 
@@ -60,47 +60,47 @@ namespace WorldServer
                 //    case 2:
                 //    case 4:
                 //    case 11: // This is T4
-                //        Bttlfront = new ProximityProgressingBattlefront(this, true);
+                //        Bttlfront = new ProximityProgressingBattleFront(this, true);
                 //        break;
                 //    case 1: // t1 dw/gs
                 //    case 3: // t1 he/de
                 //    case 8: // t1 em/ch
-                // Bttlfront = new T1Battlefront(this, true);
+                // Bttlfront = new T1BattleFront(this, true);
                 //        break;
                 //    case 12: // T2
-                //        Bttlfront = new T1Battlefront(this, true);
+                //        Bttlfront = new T1BattleFront(this, true);
                 //        break;
                 //    case 14: // T2
-                //        Bttlfront = new T1Battlefront(this, true);
+                //        Bttlfront = new T1BattleFront(this, true);
                 //        break;
                 //    case 15: // T2
-                //        Bttlfront = new T1Battlefront(this, true);
+                //        Bttlfront = new T1BattleFront(this, true);
                 //        break;
                 //    case 6:  // T3
-                //        Bttlfront = new T1Battlefront(this, true);
+                //        Bttlfront = new T1BattleFront(this, true);
                 //        break;
                 //    case 10: // T3
-                //        Bttlfront = new T1Battlefront(this, true);
+                //        Bttlfront = new T1BattleFront(this, true);
                 //        break;
                 //    case 16: // T3
-                //        Bttlfront = new T1Battlefront(this, true);
+                //        Bttlfront = new T1BattleFront(this, true);
                 //        break;
                 //    default: // Everything else...
-                //        Bttlfront = new ProximityBattlefront(this, false);
+                //        Bttlfront = new ProximityBattleFront(this, false);
                 //        break;
                 //}
 
-                switch (regionId)
-                {
-                    case 1: // t1 dw/gs
-                    case 3: // t1 he/de
-                    case 8: // t1 em/ch
-                        ndbf = new NewDawnBattlefront(this, new List<BattlefrontObjective>(), new HashSet<Player>(), WorldMgr.LowerTierBattlefrontManager);
-                        break;
-                    default: // Everything else...
-                        ndbf = new NewDawnBattlefront(this, new List<BattlefrontObjective>(), new HashSet<Player>(), WorldMgr.UpperTierBattlefrontManager);
-                        break;
-                }
+                //switch (regionId)
+                //{
+                //    case 1: // t1 dw/gs
+                //    case 3: // t1 he/de
+                //    case 8: // t1 em/ch
+                //        ndbf = new NewDawnBattleFront(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager);
+                //        break;
+                //    default: // Everything else...
+                //        ndbf = new NewDawnBattleFront(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager);
+                //        break;
+                //}
             }
             else
             {
@@ -109,12 +109,12 @@ namespace WorldServer
                 //    case 2:
                 //    case 4:
                 //    case 11: // This is T4
-                //        Bttlfront = new ProgressingBattlefront(this, true);
+                //        Bttlfront = new ProgressingBattleFront(this, true);
                 //        break;
                 //    case 1: // t1 dw/gs
                 //    case 3: // t1 he/de
                 //    case 8: // t1 em/ch
-                //        Bttlfront = new T1Battlefront(this, true);
+                //        Bttlfront = new T1BattleFront(this, true);
                 //        break;
                 //    case 12: // T2
                 //    case 14: // T2
@@ -122,10 +122,10 @@ namespace WorldServer
                 //    case 6:  // T3
                 //    case 10: // T3
                 //    case 16: // T3
-                //        Bttlfront = new Battlefront(this, zones.First().Type == 0);
+                //        Bttlfront = new BattleFront(this, zones.First().Type == 0);
                 //        break;
                 //    default: // Everything else...
-                //        Bttlfront = new Battlefront(this, false);
+                //        Bttlfront = new BattleFront(this, false);
                 //        break;
                 //}
             }
@@ -151,9 +151,9 @@ namespace WorldServer
 
         public string GetBattleFrontStatus()
         {
-            var activePairing = this.ndbf.BattleFrontManager.GetActivePairing();
+            var activeBattleFront = this.ndbf.BattleFrontManager.ActiveBattleFront;
 
-            return $"Victory Points Progress for {activePairing.PairingName} : {this.ndbf.VictoryPointProgress.ToString()}";
+            return $"Victory Points Progress for {activeBattleFront.Description} : {this.ndbf.VictoryPointProgress.ToString()}";
 
         }
 
@@ -449,7 +449,7 @@ namespace WorldServer
 
                     if (obj is Player)
                         ((Player)obj).SendClientMessage(e.GetType().Name + " was thrown from " + e.TargetSite?.Name + ".");
-                    else if (obj is IBattlefrontFlag)
+                    else if (obj is IBattleFrontFlag)
                     {
                         try
                         {

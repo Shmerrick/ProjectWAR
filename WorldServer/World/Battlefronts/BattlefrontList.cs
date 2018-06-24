@@ -1,39 +1,39 @@
 ﻿using GameData;
 using System.Collections.Generic;
 
-namespace WorldServer.World.Battlefronts
+namespace WorldServer.World.BattleFronts
 {
     /// <summary>
-    /// Static class holding the whole server RvR campain of battlefronts.
+    /// Static class holding the whole server RvR campain of BattleFronts.
     /// </summary>
-    public class BattlefrontList
+    public class BattleFrontList
     {
 
-        private BattlefrontList() { }
+        private BattleFrontList() { }
 
         // TODO set to private and create search methods (instead of lamda queries)
 
         /// <summary>RegionManagers indexed by "tier-1"</summary>
-        public static List<IBattlefront>[] Battlefronts = { new List<IBattlefront>(), new List<IBattlefront>(), new List<IBattlefront>(), new List<IBattlefront>() };
+        public static List<IBattleFront>[] BattleFronts = { new List<IBattleFront>(), new List<IBattleFront>(), new List<IBattleFront>(), new List<IBattleFront>() };
         /// <summary>Active RegionManagers indexed by "tier-1"</summary>
-        public static IBattlefront[] ActiveFronts = new IBattlefront[4];
+        public static IBattleFront[] ActiveFronts = new IBattleFront[4];
 
         /// <summary>
-        /// Registers the given battlefront.
+        /// Registers the given BattleFront.
         /// </summary>
         /// <param name="front"></param>
         /// <remarks>public for legacy purpose</remarks>
-        public static void AddBattlefront(IBattlefront front, int tier)
+        public static void AddBattleFront(IBattleFront front, int tier)
         {
-            Battlefronts[tier - 1].Add(front);
+            BattleFronts[tier - 1].Add(front);
         }
 
         /// <summary>
-        /// Gets the active battlefront depending on a player's level.
+        /// Gets the active BattleFront depending on a player's level.
         /// </summary>
         /// <param name="level">level from 1 to 40 (may be out of bounds)</param>
-        /// <returns>Active battlefront (unique per tier)</returns>
-        public static IBattlefront GetActiveFront(byte level)
+        /// <returns>Active BattleFront (unique per tier)</returns>
+        public static IBattleFront GetActiveFront(byte level)
         {
             if (level <= Constants.MaxTierLevel[0]) // 15
                 return ActiveFronts[0];

@@ -5,17 +5,17 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.World.Battlefronts;
+using WorldServer.World.BattleFronts;
 using WorldServer.World.Objects.PublicQuests;
-using WorldServer.World.Battlefronts.Keeps;
-using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.Services.World;
 
 namespace WorldServer
 {
-    public sealed class ProximityProgressingBattlefront : ProximityBattlefront
+    public sealed class ProximityProgressingBattleFront : ProximityBattleFront
     {
-        public readonly BattlefrontStatus _battlefrontStatus;
+        public readonly BattleFrontStatus _BattleFrontStatus;
 
         // This is used to modify the timer of VP Update - default from Aza system was 120 seconds, 
         // so TIMER_MODIFIER should be set to 1.0f, currently we are cutting it by half, change it
@@ -23,11 +23,11 @@ namespace WorldServer
         // to rule them all (timers).
         private const float TIMER_MODIFIER = 0.5f;
 
-        public override string ActiveZoneName => Zones[_battlefrontStatus?.OpenZoneIndex ?? 1].Name;
+        public override string ActiveZoneName => Zones[_BattleFrontStatus?.OpenZoneIndex ?? 1].Name;
 
-        public ProximityProgressingBattlefront(RegionMgr region, bool oRvRFront) : base(region, oRvRFront)
+        public ProximityProgressingBattleFront(RegionMgr region, bool oRvRFront) : base(region, oRvRFront)
         {
-            _battlefrontStatus = BattlefrontService.GetStatusFor(region.RegionId);
+            _BattleFrontStatus = BattleFrontService.GetStatusFor(region.RegionId);
 
             // RB   4/24/2016   A lot of non-RvR zones are included in the T4 regions, so those need to be discarded. And we need to do this manually.
 
@@ -103,7 +103,7 @@ namespace WorldServer
                     break;
             }
 
-            // RB   4/29/2016   If this is a T4 Campaign region and we are building this Battlefront for the first time, load it after setting BOs.
+            // RB   4/29/2016   If this is a T4 Campaign region and we are building this BattleFront for the first time, load it after setting BOs.
             LoadPairing();
         }
 
@@ -161,15 +161,15 @@ namespace WorldServer
             // Look here before push, it was == 2 before
             if (_held[Zones.FindIndex(z => z.ZoneId == zoneId), 1] + _held[Zones.FindIndex(z => z.ZoneId == zoneId), 2] > 0)
             {
-                if (BattlefrontList.ActiveFronts[arr - 1] == null)
+                if (BattleFrontList.ActiveFronts[arr - 1] == null)
                 {
-                    lock (BattlefrontList.ActiveFronts)
+                    lock (BattleFrontList.ActiveFronts)
                     {
-                        if (BattlefrontList.ActiveFronts[arr - 1] == null)
-                            BattlefrontList.ActiveFronts[arr - 1] = this;
+                        if (BattleFrontList.ActiveFronts[arr - 1] == null)
+                            BattleFrontList.ActiveFronts[arr - 1] = this;
                     }
 
-                    if (BattlefrontList.ActiveFronts[arr - 1] == this)
+                    if (BattleFrontList.ActiveFronts[arr - 1] == this)
                         EnableSupplies();
                 }
             }
@@ -197,7 +197,7 @@ namespace WorldServer
                 HeldObjectives[2] = 0;
                 foreach (ProximityFlag flag in _Objectives)
                 {
-                    if (Zones[_battlefrontStatus.OpenZoneIndex].ZoneId == flag.ZoneId && flag._state == StateFlags.Secure)
+                    if (Zones[_BattleFrontStatus.OpenZoneIndex].ZoneId == flag.ZoneId && flag._state == StateFlags.Secure)
                     {
                         switch (flag.OwningRealm)
                         {
@@ -250,7 +250,7 @@ namespace WorldServer
                         break;
                 }
 
-                LockZone(realm, Zones[_battlefrontStatus.OpenZoneIndex].ZoneId, true, false, false, true);
+                LockZone(realm, Zones[_BattleFrontStatus.OpenZoneIndex].ZoneId, true, false, false, true);
             }
 
             CountRealmObjectives();
@@ -308,7 +308,7 @@ namespace WorldServer
                     VictoryPoints = Math.Min(maxShift, VictoryPoints + delta);
 
                     if (VictoryPoints == 100)
-                        LockZone(Realms.REALMS_REALM_ORDER, Zones[_battlefrontStatus.OpenZoneIndex].ZoneId, true, false);
+                        LockZone(Realms.REALMS_REALM_ORDER, Zones[_BattleFrontStatus.OpenZoneIndex].ZoneId, true, false);
 
                     else if (VictoryPoints - LastAnnouncedVictoryPoints >= 15)
                     {
@@ -337,7 +337,7 @@ namespace WorldServer
                 {
                     VictoryPoints = Math.Max(maxShift, VictoryPoints + delta);
                     if (VictoryPoints == 0)
-                        LockZone(Realms.REALMS_REALM_DESTRUCTION, Zones[_battlefrontStatus.OpenZoneIndex].ZoneId, true, false);
+                        LockZone(Realms.REALMS_REALM_DESTRUCTION, Zones[_BattleFrontStatus.OpenZoneIndex].ZoneId, true, false);
 
                     else if (LastAnnouncedVictoryPoints - VictoryPoints >= 15)
                     {
@@ -430,7 +430,7 @@ namespace WorldServer
 
         public void LockZone(Realms realm, int zoneId, bool announce, bool reset, bool noRewards = false, bool draw = false)
         {
-            Log.Debug("Battlefront.LockT4Zone", "Locking zone " + zoneId + " for " + realm);
+            Log.Debug("BattleFront.LockT4Zone", "Locking zone " + zoneId + " for " + realm);
 
             foreach (ProximityFlag flag in _Objectives.ToList())
             {
@@ -489,7 +489,7 @@ namespace WorldServer
                         Log.Success("Logging keep rewards...", "");
                         Log.Success("Zone", ActiveZoneName);
                         Log.Success("Is defender pop too small to award rewards", DefenderPopTooSmall.ToString());
-                        Log.Success("ProgressingBattlefront", $"Creating gold chest for {keep.Info.Name} for {contributors.Count} {(targetRealm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction")} contributors");
+                        Log.Success("ProgressingBattleFront", $"Creating gold chest for {keep.Info.Name} for {contributors.Count} {(targetRealm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction")} contributors");
                         GoldChest.Create(Region, keep.Info.PQuest, ref contributors, targetRealm == realm ? WinnerShare : LoserShare);
                     }
 
@@ -532,7 +532,7 @@ namespace WorldServer
 #endif
 
 
-                    Log.Info("Battlefront.LockT4Zone", "Locked all of region " + Region.RegionId);
+                    Log.Info("BattleFront.LockT4Zone", "Locked all of region " + Region.RegionId);
 
                     winnerRewardScale = 1.25f;
 
@@ -593,7 +593,7 @@ namespace WorldServer
                     break;
 
                 default:
-                    Log.Error("Battlefront.LockT4Zone", "The campaign progress was somehow at stage " + campaignProgress + ". This is not supposed to happen.");
+                    Log.Error("BattleFront.LockT4Zone", "The campaign progress was somehow at stage " + campaignProgress + ". This is not supposed to happen.");
                     return;
             }
 
@@ -625,18 +625,18 @@ namespace WorldServer
             else
                 arr = Tier;
 
-            if (BattlefrontList.ActiveFronts[arr - 1] == this)
-                BattlefrontList.ActiveFronts[arr - 1] = null;
+            if (BattleFrontList.ActiveFronts[arr - 1] == this)
+                BattleFrontList.ActiveFronts[arr - 1] = null;
 
             // This should be 2 to make it work correct with 3 open zones, codeword c4rr0t
             if (Constants.DoomsdaySwitch != 2)
             {
                 int i = 0;
-                foreach (IBattlefront b in BattlefrontList.Battlefronts[Tier - 1])
+                foreach (IBattleFront b in BattleFrontList.BattleFronts[Tier - 1])
                 {
                     if (i > 0)
                     {
-                        ProximityBattlefront front = b as ProximityBattlefront;
+                        ProximityBattleFront front = b as ProximityBattleFront;
                         if (front != this && !front.PairingLocked)
                             front.EvtInterface.AddEvent(front.SupplyLineReset, 1, 1);
                     }
@@ -645,7 +645,7 @@ namespace WorldServer
             }
             /*else
             {
-                foreach (ProximityBattlefront b in BattlefrontList.RegionManagers[arr - 1])
+                foreach (ProximityBattleFront b in BattleFrontList.RegionManagers[arr - 1])
                     if (b != this && !b.PairingLocked && b.pairing == pairing)
                         //b.EvtInterface.AddEvent(b.SupplyLineReset, 1, 1);
         }*/
@@ -668,7 +668,7 @@ namespace WorldServer
             else
                 maxOpenZones = 3;
 
-            /*foreach (IBattlefront t4front in BattlefrontList.ActiveFronts)
+            /*foreach (IBattleFront t4front in BattleFrontList.ActiveFronts)
             {
                 if (t4front != null)
                     currentOpenZones++;
@@ -676,9 +676,9 @@ namespace WorldServer
 
             for (int i = 0; i < 4; i++)
             {
-                foreach (IBattlefront b in BattlefrontList.Battlefronts[i])
+                foreach (IBattleFront b in BattleFrontList.BattleFronts[i])
                 {
-                    ProximityBattlefront front = b as ProximityBattlefront;
+                    ProximityBattleFront front = b as ProximityBattleFront;
                     if (front != null && !front.PairingLocked && front.Tier > 1)
                         currentOpenZones++;
                 }
@@ -689,9 +689,9 @@ namespace WorldServer
                 currentOpenZones = 0;
                 for (int i = 0; i < 4; i++)
                 {
-                    foreach (IBattlefront b in BattlefrontList.Battlefronts[i])
+                    foreach (IBattleFront b in BattleFrontList.BattleFronts[i])
                     {
-                        ProximityProgressingBattlefront front = b as ProximityProgressingBattlefront;
+                        ProximityProgressingBattleFront front = b as ProximityProgressingBattleFront;
                         if (front != null && !front.PairingLocked && front.Tier > 1 && front != this)
                             currentOpenZones++;
                     }
@@ -712,7 +712,7 @@ namespace WorldServer
 
                     for (int i = 1; i < 4; i++)
                     {
-                        foreach (ProximityBattlefront b in BattlefrontList.Battlefronts[i])
+                        foreach (ProximityBattleFront b in BattleFrontList.BattleFronts[i])
                         {
                             if ((int)b.pairing == 1 && !b.PairingLocked)
                             {
@@ -755,9 +755,9 @@ namespace WorldServer
                     {
                         if (i != (int)pairing - 1)
                         {
-                            foreach (IBattlefront b in BattlefrontList.Battlefronts[i])
+                            foreach (IBattleFront b in BattleFrontList.BattleFronts[i])
                             {
-                                ProximityBattlefront front = b as ProximityBattlefront;
+                                ProximityBattleFront front = b as ProximityBattleFront;
                                 if (front != null && front.PairingLocked && front.Tier == 2 && front.pairing != pairing && (int)front.pairing == newPairing)
                                 {
                                     front.LoadMidTierPairing(true);
@@ -810,17 +810,17 @@ namespace WorldServer
 
             if (Constants.DoomsdaySwitch > 0)
             {
-                _battlefrontStatus.OpenZoneIndex = Zones.FindIndex(z => z.ZoneId == zoneId);
-                _battlefrontStatus.ActiveRegionOrZone = zoneId;
-                WorldMgr.Database.SaveObject(_battlefrontStatus);
+                _BattleFrontStatus.OpenZoneIndex = Zones.FindIndex(z => z.ZoneId == zoneId);
+                _BattleFrontStatus.ActiveRegionOrZone = zoneId;
+                WorldMgr.Database.SaveObject(_BattleFrontStatus);
             }
             else
             {
                 if (!reset)
                 {
-                    _battlefrontStatus.OpenZoneIndex = Zones.FindIndex(z => z.ZoneId == zoneId);
-                    _battlefrontStatus.ActiveRegionOrZone = zoneId;
-                    WorldMgr.Database.SaveObject(_battlefrontStatus);
+                    _BattleFrontStatus.OpenZoneIndex = Zones.FindIndex(z => z.ZoneId == zoneId);
+                    _BattleFrontStatus.ActiveRegionOrZone = zoneId;
+                    WorldMgr.Database.SaveObject(_BattleFrontStatus);
                 }
             }
 
@@ -891,11 +891,11 @@ namespace WorldServer
 
         private void LoadPairing()
         {
-            Log.Info("Battlefront.LoadPairing", " Region: " + Region.RegionId + " | LOADING CAMPAIGN");
+            Log.Info("BattleFront.LoadPairing", " Region: " + Region.RegionId + " | LOADING CAMPAIGN");
 
-            if (_battlefrontStatus == null)
+            if (_BattleFrontStatus == null)
             {
-                Log.Error("Battlefront.LoadPairing", "No Battlefront Status - campaign resetting.");
+                Log.Error("BattleFront.LoadPairing", "No BattleFront Status - campaign resetting.");
                 ResetPairing();
                 return;
             }
@@ -911,7 +911,7 @@ namespace WorldServer
                 GraceDisabled = false;
             }
 
-            for (int i = 0; i < _battlefrontStatus.OpenZoneIndex; ++i)
+            for (int i = 0; i < _BattleFrontStatus.OpenZoneIndex; ++i)
             {
                 Log.Info("LoadPairing", "Setting ownership of " + Zones[i].Name + " to Destruction");
                 LockZone(Realms.REALMS_REALM_DESTRUCTION, Zones[i].ZoneId, false, true);
@@ -924,16 +924,16 @@ namespace WorldServer
 
 
             if (Constants.DoomsdaySwitch > 0)
-                LockZone(Realms.REALMS_REALM_NEUTRAL, Zones[_battlefrontStatus.OpenZoneIndex].ZoneId, false, true);
+                LockZone(Realms.REALMS_REALM_NEUTRAL, Zones[_BattleFrontStatus.OpenZoneIndex].ZoneId, false, true);
             else
             {
-                LiftZoneLock(Zones[_battlefrontStatus.OpenZoneIndex].ZoneId, true);
-                Log.Info("LoadPairing", "Setting ownership of " + Zones[_battlefrontStatus.OpenZoneIndex].Name + " to Contested");
+                LiftZoneLock(Zones[_BattleFrontStatus.OpenZoneIndex].ZoneId, true);
+                Log.Info("LoadPairing", "Setting ownership of " + Zones[_BattleFrontStatus.OpenZoneIndex].Name + " to Contested");
             }
 
 
 
-            for (int i = _battlefrontStatus.OpenZoneIndex + 1; i < 3; ++i)
+            for (int i = _BattleFrontStatus.OpenZoneIndex + 1; i < 3; ++i)
             {
                 LockZone(Realms.REALMS_REALM_ORDER, Zones[i].ZoneId, false, true);
                 Log.Info("LoadPairing", "Setting ownership of " + Zones[i].Name + " to Order");
@@ -951,8 +951,8 @@ namespace WorldServer
 
         public override void ResetPairing()
         {
-            Log.Info("Battlefront.ResetT4Campaign", " Region: " + Region.RegionId + " | RESETTING CAMPAIGN");
-            //Log.Info("LockTimer: ", "Timer was " + PairingDrawTime.ToString() + " and its now " + TCPManager.GetTimeStamp().ToString() + " ProximityProgressingBattlefront");
+            Log.Info("BattleFront.ResetT4Campaign", " Region: " + Region.RegionId + " | RESETTING CAMPAIGN");
+            //Log.Info("LockTimer: ", "Timer was " + PairingDrawTime.ToString() + " and its now " + TCPManager.GetTimeStamp().ToString() + " ProximityProgressingBattleFront");
             PairingLocked = false;
             GraceDisabled = false;
 
@@ -992,10 +992,10 @@ namespace WorldServer
             DefendingRealm = Realms.REALMS_REALM_NEUTRAL;
             WorldMgr.SendCampaignStatus(null);
 
-            if (_battlefrontStatus != null)
+            if (_BattleFrontStatus != null)
             {
-                _battlefrontStatus.OpenZoneIndex = 1;
-                WorldMgr.Database.SaveObject(_battlefrontStatus);
+                _BattleFrontStatus.OpenZoneIndex = 1;
+                WorldMgr.Database.SaveObject(_BattleFrontStatus);
             }
         }
 
@@ -1020,9 +1020,9 @@ namespace WorldServer
             HeldObjectives[1] = 0;
             HeldObjectives[2] = 0;
 
-            _held[_battlefrontStatus.OpenZoneIndex, 0] = 4;
-            _held[_battlefrontStatus.OpenZoneIndex, 1] = 0;
-            _held[_battlefrontStatus.OpenZoneIndex, 2] = 0;
+            _held[_BattleFrontStatus.OpenZoneIndex, 0] = 4;
+            _held[_BattleFrontStatus.OpenZoneIndex, 1] = 0;
+            _held[_BattleFrontStatus.OpenZoneIndex, 2] = 0;
         }
 
         #endregion
@@ -1037,19 +1037,19 @@ namespace WorldServer
 
             if (HeldObjectives[1] + HeldObjectives[2] < 4)
             {
-                Keep orderKeep = _Keeps.First(keep => keep.Realm == Realms.REALMS_REALM_ORDER && keep.Info.ZoneId == Zones[_battlefrontStatus.OpenZoneIndex].ZoneId);
+                Keep orderKeep = _Keeps.First(keep => keep.Realm == Realms.REALMS_REALM_ORDER && keep.Info.ZoneId == Zones[_BattleFrontStatus.OpenZoneIndex].ZoneId);
 
                 if (orderKeep == null)
                 {
-                    Log.Error("ProgressingBattlefront", "Unable to find an Order keep?");
+                    Log.Error("ProgressingBattleFront", "Unable to find an Order keep?");
                     return;
                 }
 
-                Keep destroKeep = _Keeps.First(keep => keep.Realm == Realms.REALMS_REALM_DESTRUCTION && keep.Info.ZoneId == Zones[_battlefrontStatus.OpenZoneIndex].ZoneId);
+                Keep destroKeep = _Keeps.First(keep => keep.Realm == Realms.REALMS_REALM_DESTRUCTION && keep.Info.ZoneId == Zones[_BattleFrontStatus.OpenZoneIndex].ZoneId);
 
                 if (destroKeep == null)
                 {
-                    Log.Error("ProgressingBattlefront", "Unable to find a Destruction keep?");
+                    Log.Error("ProgressingBattleFront", "Unable to find a Destruction keep?");
                     return;
                 }
 
@@ -1098,9 +1098,9 @@ namespace WorldServer
             }
 
 
-            string message = "The forces of Order and Destruction direct their supply lines towards " + Zones[_battlefrontStatus.OpenZoneIndex].Name + "!";
+            string message = "The forces of Order and Destruction direct their supply lines towards " + Zones[_BattleFrontStatus.OpenZoneIndex].Name + "!";
 
-            Log.Info("ProgressingBattlefront", message);
+            Log.Info("ProgressingBattleFront", message);
 
             lock (Player._Players)
             {
@@ -1119,7 +1119,7 @@ namespace WorldServer
             if (PairingDrawTime == 0)
                 PairingDrawTime = TCPManager.GetTimeStamp() + 14400;
 
-            //Log.Info("LockTimer: ", "set to: " + PairingDrawTime.ToString() + " on zone " + Zones[_battlefrontStatus.OpenZoneIndex].Name);
+            //Log.Info("LockTimer: ", "set to: " + PairingDrawTime.ToString() + " on zone " + Zones[_BattleFrontStatus.OpenZoneIndex].Name);
         }
 
         public override void DisableSupplies()
@@ -1132,7 +1132,7 @@ namespace WorldServer
             //foreach (var objective in _Objectives)
             //  objective.BlockSupplySpawn();
 
-            string message = "The forces of Order and Destruction have pulled their supply lines out of " + Zones[_battlefrontStatus.OpenZoneIndex].Name + "!";
+            string message = "The forces of Order and Destruction have pulled their supply lines out of " + Zones[_BattleFrontStatus.OpenZoneIndex].Name + "!";
 
             lock (Player._Players)
             {
@@ -1151,7 +1151,7 @@ namespace WorldServer
             RemoveSiege();
         }
 
-        public override void WriteBattlefrontStatus(PacketOut Out)
+        public override void WriteBattleFrontStatus(PacketOut Out)
         {
             Out.WriteByte((byte)GetZoneOwnership(Zones[2].ZoneId));
             Out.WriteByte((byte)GetZoneOwnership(Zones[1].ZoneId));
@@ -1193,9 +1193,9 @@ namespace WorldServer
                 }
 
                 if (Constants.DoomsdaySwitch == 2)
-                    plr.SendClientMessage("Currently active battlefront: " + (BattlefrontList.ActiveFronts[(int)pairing - 1] != null ? ((ProximityProgressingBattlefront)BattlefrontList.ActiveFronts[(int)pairing - 1]).Zones[0].Name : "None"));
+                    plr.SendClientMessage("Currently active BattleFront: " + (BattleFrontList.ActiveFronts[(int)pairing - 1] != null ? ((ProximityProgressingBattleFront)BattleFrontList.ActiveFronts[(int)pairing - 1]).Zones[0].Name : "None"));
                 else
-                    plr.SendClientMessage("Currently active battlefront: " + (BattlefrontList.ActiveFronts[Tier - 1] != null ? ((ProximityProgressingBattlefront)BattlefrontList.ActiveFronts[Tier - 1]).Zones[0].Name : "None"));
+                    plr.SendClientMessage("Currently active BattleFront: " + (BattleFrontList.ActiveFronts[Tier - 1] != null ? ((ProximityProgressingBattleFront)BattleFrontList.ActiveFronts[Tier - 1]).Zones[0].Name : "None"));
             }
             else
                 plr.SendClientMessage("Region " + Region.RegionId + " is not part of the Tier 4 Campaign.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);

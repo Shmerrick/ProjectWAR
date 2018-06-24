@@ -1,11 +1,11 @@
 ﻿using Common;
-using Common.Database.World.Battlefront;
+using Common.Database.World.BattleFront;
 using FrameWork;
 using GameData;
 using System.Collections.Generic;
 using WorldServer.Services.World;
 
-namespace WorldServer.World.Battlefronts.Objectives
+namespace WorldServer.World.BattleFronts.Objectives
 {
     /// <summary>
     /// Object responsible of managing spawn of portals bound to a battlefield objective.
@@ -16,9 +16,9 @@ namespace WorldServer.World.Battlefronts.Objectives
         private readonly ProximityFlag _objective;
 
         /// <summary>Database objects providing data for portal from objective to warcamps</summary>
-        private BattlefrontObject _objectivePortalData;
+        private BattleFrontObject _objectivePortalData;
         /// <summary>Database objects providing data for portals from warcamps to objective</summary>
-        private BattlefrontObject _orderPortalData, _destroPortalData;
+        private BattleFrontObject _orderPortalData, _destroPortalData;
 
         /// <summary>Portal from objective to warcamps, available when locked</summary>
         private PortalToWarcamp _objectivePortal;
@@ -40,7 +40,7 @@ namespace WorldServer.World.Battlefronts.Objectives
         {
             ushort _zoneId = _objective.ZoneId;
             int objectiveId = _objective.ID;
-            _objectivePortalData = BattlefrontService.GetPortalToWarcamp(_zoneId, objectiveId);
+            _objectivePortalData = BattleFrontService.GetPortalToWarcamp(_zoneId, objectiveId);
             _orderPortalData = GetPortalToObjective(Realms.REALMS_REALM_ORDER);
             _destroPortalData = GetPortalToObjective(Realms.REALMS_REALM_DESTRUCTION);
             
@@ -54,7 +54,7 @@ namespace WorldServer.World.Battlefronts.Objectives
                 if (_orderPortalData == null) missingInfo.Add("order portal");
                 if (_destroPortalData == null) missingInfo.Add("destro portal");
                 Log.Error("ObjectivePortalsMgr", $"Missing portal data for objective {_objective.Name} ({_objective.ID}) : " + string.Join(", ", missingInfo));
-                BattlefrontService.LoadBattlefrontObjects();
+                BattleFrontService.LoadBattleFrontObjects();
             }
 #endif
 
@@ -67,11 +67,11 @@ namespace WorldServer.World.Battlefronts.Objectives
         /// </summary>
         /// <param name="realm">Realm of warcamp to seach</param>
         /// <returns>Portal of null if missing info</returns>
-        private BattlefrontObject GetPortalToObjective(Realms realm)
+        private BattleFrontObject GetPortalToObjective(Realms realm)
         {
             ushort zoneId = _objective.ZoneId;
             int objectiveId = _objective.ID;
-            BattlefrontObject portalData = BattlefrontService.GetPortalToObjective(zoneId, objectiveId, realm);
+            BattleFrontObject portalData = BattleFrontService.GetPortalToObjective(zoneId, objectiveId, realm);
 
             if (portalData != null) // A portal exists in same zone
                 return portalData;
@@ -81,7 +81,7 @@ namespace WorldServer.World.Battlefronts.Objectives
             {
                 if (zone.ZoneId == zoneId)
                     continue;
-                portalData = BattlefrontService.GetPortalToObjective(zone.ZoneId, objectiveId, realm);
+                portalData = BattleFrontService.GetPortalToObjective(zone.ZoneId, objectiveId, realm);
                 if (portalData != null)
                     return portalData;
             }
@@ -166,7 +166,7 @@ namespace WorldServer.World.Battlefronts.Objectives
         /// <param name="portal">Portal to spawn or despawn</param>
         /// <param name="portalData">Data bound to the portal</param>
         /// <param name="spawn">True to spawn the portal, false to despawn it</param>
-        private void UpdatePortalSpawn(PortalToObjective portal, BattlefrontObject portalData, bool spawn)
+        private void UpdatePortalSpawn(PortalToObjective portal, BattleFrontObject portalData, bool spawn)
         {
             if (portal.IsInWorld() != spawn)
             {

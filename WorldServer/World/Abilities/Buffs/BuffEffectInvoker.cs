@@ -23,8 +23,8 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.World.Battlefronts;
-using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.BattleFronts;
+using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Services.World;
 
@@ -1306,7 +1306,7 @@ namespace WorldServer
                 Creature weapon = (Creature)hostBuff.OptionalObject;
                 Siege siege = weapon as Siege;
 
-                IBattlefront front = weapon.Region?.Bttlfront;
+                IBattleFront front = weapon.Region?.Bttlfront;
 
                 if (front == null)
                     return;
@@ -2995,7 +2995,7 @@ namespace WorldServer
             private static bool RefreshIfMoving(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
             {
             //lets not let a refresh of a buff happen to a keep lord
-            WorldServer.World.Battlefronts.Keeps.KeepNpcCreature.KeepCreature Lord = target as WorldServer.World.Battlefronts.Keeps.KeepNpcCreature.KeepCreature;
+            WorldServer.World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature Lord = target as WorldServer.World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature;
             if (Lord != null && Lord.returnflag().Info.KeepLord)
                 return true;
 

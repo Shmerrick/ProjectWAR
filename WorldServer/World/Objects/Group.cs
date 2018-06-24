@@ -6,9 +6,9 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.World.Battlefronts;
-using WorldServer.World.Battlefronts.NewDawn;
-using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.BattleFronts;
+using WorldServer.World.BattleFronts.NewDawn;
+using WorldServer.World.BattleFronts.Objectives;
 using NLog;
 
 namespace WorldServer
@@ -1901,7 +1901,7 @@ namespace WorldServer
                         if (playerVictim != null)
                             closestFlag.RewardManager.AddDelayedRewardsFrom(curPlayer, playerVictim, (uint)(xpShare * transferenceFactor), (uint)(renownShare * transferenceFactor));
 
-                        RewardLogger.Trace($"Adding contribution to Battlefront: {curPlayer.Name} ");
+                        RewardLogger.Trace($"Adding contribution to BattleFront: {curPlayer.Name} ");
                         curPlayer.Region.ndbf.AddContribution(curPlayer, (uint)(renownShare * bonusMod));
                     }
                     RewardLogger.Trace($"Level Check. Current player : {curPlayer.EffectiveLevel} Victim : {victim.EffectiveLevel}");

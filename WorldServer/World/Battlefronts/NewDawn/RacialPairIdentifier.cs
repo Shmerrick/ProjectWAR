@@ -1,4 +1,4 @@
-﻿namespace WorldServer.World.Battlefronts.NewDawn
+﻿namespace WorldServer.World.BattleFronts.NewDawn
 {
     public enum RacialPairIdentifier
     {

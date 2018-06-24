@@ -9,7 +9,7 @@ using WorldServer.Scenarios;
 using static System.UInt16;
 using static WorldServer.Managers.Commands.GMUtils;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts;
+using WorldServer.World.BattleFronts;
 
 namespace WorldServer.Managers.Commands
 {
@@ -2194,7 +2194,7 @@ namespace WorldServer.Managers.Commands
             {
                 if (i == 0)
                 {
-                    foreach (World.Battlefronts.RoRBattlefront b in World.Battlefronts.BattlefrontList.Battlefronts[i])
+                    foreach (World.BattleFronts.RoRBattleFront b in World.BattleFronts.BattleFrontList.BattleFronts[i])
                     {
                         if (!b.PairingLocked)
                         {
@@ -2207,7 +2207,7 @@ namespace WorldServer.Managers.Commands
                 {
                     if (Constants.DoomsdaySwitch == 2)
                     {
-                        foreach (ProximityBattlefront b in World.Battlefronts.BattlefrontList.Battlefronts[i])
+                        foreach (ProximityBattleFront b in World.BattleFronts.BattleFrontList.BattleFronts[i])
                         {
                             if (!b.PairingLocked)
                             {
@@ -2228,7 +2228,7 @@ namespace WorldServer.Managers.Commands
                     }
                     else
                     {
-                        foreach (Battlefront b in World.Battlefronts.BattlefrontList.Battlefronts[i])
+                        foreach (BattleFront b in World.BattleFronts.BattleFrontList.BattleFronts[i])
                         {
                             if (!b.PairingLocked)
                             {
@@ -2458,16 +2458,16 @@ namespace WorldServer.Managers.Commands
             {
                 if (i == 0)
                 {
-                    foreach (RoRBattlefront b in BattlefrontList.Battlefronts[i])
+                    foreach (RoRBattleFront b in BattleFrontList.BattleFronts[i])
                         b.UpdateStateOfTheRealm();
                 }
                 else
                 {
                     if (Constants.DoomsdaySwitch == 2)
-                        foreach (ProximityBattlefront b in BattlefrontList.Battlefronts[i])
+                        foreach (ProximityBattleFront b in BattleFrontList.BattleFronts[i])
                             b.UpdateStateOfTheRealm();
                     else
-                        foreach (Battlefront b in BattlefrontList.Battlefronts[i])
+                        foreach (BattleFront b in BattleFrontList.BattleFronts[i])
                             b.UpdateStateOfTheRealm();
                 }
             }
@@ -2557,7 +2557,7 @@ namespace WorldServer.Managers.Commands
                 {
                     plr.SendClientMessage("Low pop keep rewards limits are disabled.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
                     if (Constants.DoomsdaySwitch == 2)
-                        ((ProximityBattlefront)plr.Region.Bttlfront).DefenderPopTooSmall = false;
+                        ((ProximityBattleFront)plr.Region.Bttlfront).DefenderPopTooSmall = false;
                 }
 
 

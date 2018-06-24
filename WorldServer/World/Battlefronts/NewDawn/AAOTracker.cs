@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using GameData;
 using NLog;
 
-namespace WorldServer.World.Battlefronts.NewDawn
+namespace WorldServer.World.BattleFronts.NewDawn
 {
     /// <summary>
-    /// Object bound to a battlefront responsible of tracking players to compute AAO.
+    /// Object bound to a BattleFront responsible of tracking players to compute AAO.
     /// </summary>
     internal class AAOTracker
     {

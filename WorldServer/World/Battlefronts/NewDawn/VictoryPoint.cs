@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WorldServer.World.Battlefronts.NewDawn
+namespace WorldServer.World.BattleFronts.NewDawn
 {
     public class VictoryPoint
     {

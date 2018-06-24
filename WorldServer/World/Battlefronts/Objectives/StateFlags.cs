@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WorldServer.World.Battlefronts.Objectives
+namespace WorldServer.World.BattleFronts.Objectives
 {
     /// <summary>
     /// Bit flags describing an objective state.
@@ -15,7 +15,7 @@ namespace WorldServer.World.Battlefronts.Objectives
         Abandoned = 2,
         /// <summary>A realm in contesting the objective to the other</summary>
         Contested = 4,
-        /// <summary>Locked (because of battlefront state)</summary>
+        /// <summary>Locked (because of BattleFront state)</summary>
         Locked = 8,
         /// <summary>Secured (or securing), have bright halo</summary>
         Secure = 16,

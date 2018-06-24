@@ -7,20 +7,20 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using Common.Database.World.Battlefront;
-using WorldServer.World.Battlefronts.Keeps;
+using Common.Database.World.BattleFront;
+using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.Scenarios;
 using WorldServer.Services.World;
 using Common.Database.World.Maps;
 using NLog;
-using WorldServer.World.Battlefronts;
-using WorldServer.World.Battlefronts.NewDawn;
+using WorldServer.World.BattleFronts;
+using WorldServer.World.BattleFronts.NewDawn;
 
 namespace WorldServer
 {
     [Service(
         typeof(AnnounceService),
-        typeof(BattlefrontService),
+        typeof(BattleFrontService),
         typeof(CellSpawnService),
         typeof(ChapterService),
         typeof(CreatureService),
@@ -31,6 +31,7 @@ namespace WorldServer
         typeof(PQuestService),
         typeof(QuestService),
         typeof(RallyPointService),
+        typeof(RVRProgressionService),
         typeof(ScenarioService),
         typeof(TokService),
         typeof(VendorService),
@@ -45,8 +46,8 @@ namespace WorldServer
         private static bool _running = true;
         public static long StartingPairing;
 
-        public static UpperTierBattlefrontManager UpperTierBattlefrontManager;
-        public static LowerTierBattlefrontManager LowerTierBattlefrontManager;
+        public static UpperTierBattleFrontManager UpperTierBattleFrontManager;
+        public static LowerTierBattleFrontManager LowerTierBattleFrontManager;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         //Log.Success("StartingPairing: ", StartingPairing.ToString());
@@ -659,26 +660,26 @@ namespace WorldServer
 
                         if (ObjID != 0)
                         {
-                            foreach (List<Battlefront_Objective> boList in BattlefrontService._BattlefrontObjectives.Values)
+                            foreach (List<BattleFront_Objective> boList in BattleFrontService._BattleFrontObjectives.Values)
                             {
-                                foreach (Battlefront_Objective bo in boList)
+                                foreach (BattleFront_Objective bo in boList)
                                 {
                                     if (bo.Entry == ObjID)
                                     {
-                                        Obj.BattlefrontObjective = bo;
+                                        Obj.BattleFrontObjective = bo;
                                         break;
                                     }
                                 }
 
-                                if (Obj.BattlefrontObjective != null)
+                                if (Obj.BattleFrontObjective != null)
                                     break;
                             }
                         }
 
-                        if (Obj.BattlefrontObjective == null)
+                        if (Obj.BattleFrontObjective == null)
                             Obj.Description = "Invalid Battlefield Objective - QuestID=" + Obj.Entry + ", ObjId=" + Obj.ObjID;
                         else
-                            if (Obj.Description == null || Obj.Description.Length <= Obj.BattlefrontObjective.Name.Length)
+                            if (Obj.Description == null || Obj.Description.Length <= Obj.BattleFrontObjective.Name.Length)
                             Obj.Description = "Capture " + Obj.Scenario.Name;
                     }
                     break;
@@ -690,7 +691,7 @@ namespace WorldServer
 
                         if (ObjID != 0)
                         {
-                            foreach (List<Keep_Info> keepList in BattlefrontService._KeepInfos.Values)
+                            foreach (List<Keep_Info> keepList in BattleFrontService._KeepInfos.Values)
                             {
                                 foreach (Keep_Info keep in keepList)
                                 {
@@ -752,7 +753,7 @@ namespace WorldServer
             LoadQuestsRelation();
             LoadScripts(false);
 
-            foreach (List<Keep_Info> keepInfos in BattlefrontService._KeepInfos.Values)
+            foreach (List<Keep_Info> keepInfos in BattleFrontService._KeepInfos.Values)
                 foreach (Keep_Info keepInfo in keepInfos)
                     if (PQuestService._PQuests.ContainsKey(keepInfo.PQuestId))
                         keepInfo.PQuest = PQuestService._PQuests[keepInfo.PQuestId];
@@ -762,26 +763,26 @@ namespace WorldServer
             // Preload T4 regions
             Log.Info("Regions", "Preloading pairing regions...");
             // Tier 1
-            GetRegion(1, true, new LowerTierRacialPairManager().GetByRegion(1).PairingName); // dw/gs
-            GetRegion(3, true, new LowerTierRacialPairManager().GetByRegion(3).PairingName); // he/de
-            GetRegion(8, true, new LowerTierRacialPairManager().GetByRegion(8).PairingName); // em/ch
+            GetRegion(1, true, Constants.RegionName[1]); // dw/gs
+            GetRegion(3, true, Constants.RegionName[3]); // he/de
+            GetRegion(8, true, Constants.RegionName[8]); // em/ch
 
             // Tier 2
-            GetRegion(12, true, new UpperTierRacialPairManager().GetByRegion(12).PairingName); // dw/gs
-            GetRegion(15, true, new UpperTierRacialPairManager().GetByRegion(15).PairingName); // he/de
-            GetRegion(14, true, new UpperTierRacialPairManager().GetByRegion(14).PairingName); // em/ch
+            GetRegion(12, true, Constants.RegionName[12]); // dw/gs
+            GetRegion(15, true, Constants.RegionName[15]); // he/de
+            GetRegion(14, true, Constants.RegionName[14]); // em/ch
 
             // Tier 3
-            GetRegion(10, true, new UpperTierRacialPairManager().GetByRegion(10).PairingName); // dw/gs
-            GetRegion(16, true, new UpperTierRacialPairManager().GetByRegion(16).PairingName); // he/de
-            GetRegion(6, true, new UpperTierRacialPairManager().GetByRegion(6).PairingName); // em/ch
+            GetRegion(10, true, Constants.RegionName[10]); // dw/gs
+            GetRegion(16, true, Constants.RegionName[16]); // he/de
+            GetRegion(6, true, Constants.RegionName[6]); // em/ch
 
             // Tier 4
-            GetRegion(2, true, new UpperTierRacialPairManager().GetByRegion(2).PairingName); // dw/gs
-            GetRegion(4, true, new UpperTierRacialPairManager().GetByRegion(4).PairingName);  // he/de
-            GetRegion(11, true, new UpperTierRacialPairManager().GetByRegion(11).PairingName); // em/ch
+            GetRegion(2, true, Constants.RegionName[2]); // dw/gs
+            GetRegion(4, true, Constants.RegionName[4]);  // he/de
+            GetRegion(11, true, Constants.RegionName[11]); // em/ch
 
-            GetRegion(9, true, new UpperTierRacialPairManager().GetByRegion(9).PairingName); // lotd
+            GetRegion(9, true, Constants.RegionName[9]); // lotd
             Log.Success("Regions", "Preloaded pairing regions.");
         }
 
@@ -898,7 +899,7 @@ namespace WorldServer
 
                 bool skipLoad = false;
 
-                foreach (List<Keep_Info> keepInfos in BattlefrontService._KeepInfos.Values)
+                foreach (List<Keep_Info> keepInfos in BattleFrontService._KeepInfos.Values)
                 {
                     if (keepInfos.Any(keep => keep.PQuestId == Kp.Key))
                     {
@@ -1371,12 +1372,12 @@ namespace WorldServer
                 region.ndbf.WriteCaptureStatus(Out, region.ndbf.LockingRealm);
         }
 
-        public static void BuildBattlefrontStatus(PacketOut Out, RegionMgr region)
+        public static void BuildBattleFrontStatus(PacketOut Out, RegionMgr region)
         {
             if (region == null)
                 Out.Fill(0, 3);
 
-            region.ndbf.WriteBattlefrontStatus(Out);
+            region.ndbf.WriteBattleFrontStatus(Out);
         }
 
         public static void SendCampaignStatus(Player plr)
@@ -1427,17 +1428,17 @@ namespace WorldServer
             //gs t4
             // 0 contested 1 order controled 2 destro controled 3 notcontroled locked
             Out.WriteByte(3);   //dwarf fort
-            BuildBattlefrontStatus(Out, GetRegion(2, false));   //kadrin valley
+            BuildBattleFrontStatus(Out, GetRegion(2, false));   //kadrin valley
             Out.WriteByte(3);   //orc fort
 
             //chaos t4
             Out.WriteByte(3);   //empire fort
-            BuildBattlefrontStatus(Out, GetRegion(11, false));   //reikland
+            BuildBattleFrontStatus(Out, GetRegion(11, false));   //reikland
             Out.WriteByte(3);   //chaos fort
 
             //elf
             Out.WriteByte(3);   //elf fort
-            BuildBattlefrontStatus(Out, GetRegion(4, false));   //etaine
+            BuildBattleFrontStatus(Out, GetRegion(4, false));   //etaine
             Out.WriteByte(3);   //delf fort
 
             Out.WriteByte(0); // Order underdog rating
@@ -1486,13 +1487,13 @@ namespace WorldServer
         // This is used to change the fronts during campaign, DoomsDay changes below
         public static void EvaluateT4CampaignStatus(ushort Region)
         {
-            ProximityProgressingBattlefront DvG = (ProximityProgressingBattlefront)GetRegion(2, false).Bttlfront;
-            ProximityProgressingBattlefront EvC = (ProximityProgressingBattlefront)GetRegion(11, false).Bttlfront;
-            ProximityProgressingBattlefront HEvDE = (ProximityProgressingBattlefront)GetRegion(4, false).Bttlfront;
+            ProximityProgressingBattleFront DvG = (ProximityProgressingBattleFront)GetRegion(2, false).Bttlfront;
+            ProximityProgressingBattleFront EvC = (ProximityProgressingBattleFront)GetRegion(11, false).Bttlfront;
+            ProximityProgressingBattleFront HEvDE = (ProximityProgressingBattleFront)GetRegion(4, false).Bttlfront;
             // codeword p0tat0 - changed for DoomsDay
-            /*ProgressingBattlefront DvG = (ProgressingBattlefront)GetRegion(2, false).Bttlfront;
-            ProgressingBattlefront EvC = (ProgressingBattlefront)GetRegion(11, false).Bttlfront;
-            ProgressingBattlefront HEvDE = (ProgressingBattlefront)GetRegion(4, false).Bttlfront;*/
+            /*ProgressingBattleFront DvG = (ProgressingBattleFront)GetRegion(2, false).Bttlfront;
+            ProgressingBattleFront EvC = (ProgressingBattleFront)GetRegion(11, false).Bttlfront;
+            ProgressingBattleFront HEvDE = (ProgressingBattleFront)GetRegion(4, false).Bttlfront;*/
 
             // Evaluate if all three pairings are locked.
             if (DvG.PairingLocked && EvC.PairingLocked && HEvDE.PairingLocked)
@@ -1620,15 +1621,15 @@ namespace WorldServer
                             }
                         }
 
-                        ProximityBattlefront bttlfrnt = (ProximityBattlefront)GetRegion(region, false).Bttlfront;
+                        ProximityBattleFront bttlfrnt = (ProximityBattleFront)GetRegion(region, false).Bttlfront;
                         bttlfrnt.ResetPairing();
 
                         /*bool campaignReset = true;
                         for (int i = 0; i < 3; i++)
                         {
-                            foreach (IBattlefront bf in BattlefrontList.RegionManagers[i])
+                            foreach (IBattleFront bf in BattleFrontList.RegionManagers[i])
                             {
-                                ProximityBattlefront front = bf as ProximityBattlefront;
+                                ProximityBattleFront front = bf as ProximityBattleFront;
                                 if (front != null && !front.PairingLocked)
                                 {
                                     campaignReset = false;
@@ -1639,24 +1640,24 @@ namespace WorldServer
 
                         if (campaignReset)
                         {
-                            ProximityBattlefront bttlfrnt;
+                            ProximityBattleFront bttlfrnt;
 
-                            bttlfrnt = (ProximityBattlefront)GetRegion(12, false).Bttlfront;
+                            bttlfrnt = (ProximityBattleFront)GetRegion(12, false).Bttlfront;
                             bttlfrnt.ResetPairing();
                             bttlfrnt.UpdateStateOfTheRealm();
-                            bttlfrnt = (ProximityBattlefront)GetRegion(14, false).Bttlfront;
+                            bttlfrnt = (ProximityBattleFront)GetRegion(14, false).Bttlfront;
                             bttlfrnt.ResetPairing();
                             bttlfrnt.UpdateStateOfTheRealm();
-                            bttlfrnt = (ProximityBattlefront)GetRegion(15, false).Bttlfront;
+                            bttlfrnt = (ProximityBattleFront)GetRegion(15, false).Bttlfront;
                             bttlfrnt.ResetPairing();
                             bttlfrnt.UpdateStateOfTheRealm();
                         }*/
                     }
                     else
                     {
-                        Battlefront bttlfrnt = (Battlefront)GetRegion(Region, false).Bttlfront;
+                        BattleFront bttlfrnt = (BattleFront)GetRegion(Region, false).Bttlfront;
 
-                        foreach (Battlefront b in BattlefrontList.Battlefronts[1])
+                        foreach (BattleFront b in BattleFrontList.BattleFronts[1])
                         {
                             if (Constants.DoomsdaySwitch == 2)
                             {
@@ -1684,7 +1685,7 @@ namespace WorldServer
 
         public static void SendKeepStatus(Player Plr)
         {
-            foreach (List<Keep_Info> list in BattlefrontService._KeepInfos.Values)
+            foreach (List<Keep_Info> list in BattleFrontService._KeepInfos.Values)
             {
                 foreach (Keep_Info KeepInfo in list)
                 {
@@ -1725,5 +1726,25 @@ namespace WorldServer
 
 
         #endregion
+
+        public static void AttachBattleFronts()
+        {
+            _logger.Info($"Attaching Battlefronts to Regions");
+            foreach (var regionMgr in _Regions)
+            {
+                switch (regionMgr.RegionId)
+                {
+                    case 1: // t1 dw/gs
+                    case 3: // t1 he/de
+                    case 8: // t1 em/ch
+                        regionMgr.ndbf = new NewDawnBattleFront(regionMgr, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager);
+                        break;
+                    default: // Everything else...
+                        regionMgr.ndbf = new NewDawnBattleFront(regionMgr, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager);
+                        break;
+                }
+            }
+            
+        }
     }
 }

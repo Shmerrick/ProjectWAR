@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using GameData;
 
-namespace WorldServer.World.Battlefronts.NewDawn
+namespace WorldServer.World.BattleFronts.NewDawn
 {
     public class RacialPairManager
     {

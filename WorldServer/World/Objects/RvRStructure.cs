@@ -179,8 +179,8 @@ namespace WorldServer
 
             RvRStructure curStruct = plr.CbtInterface.GetCurrentTarget() as RvRStructure;
 
-            RvRObjectInfo info = BattlefrontService.GetRvRObjectInfo(entry);
-            _logger.Debug($"RVRStructure BattlefrontService.GetRvRObjectInfo Entry={entry} info={info.Name} {info.ModelId} {info.ObjectId}");
+            RvRObjectInfo info = BattleFrontService.GetRvRObjectInfo(entry);
+            _logger.Debug($"RVRStructure BattleFrontService.GetRvRObjectInfo Entry={entry} info={info.Name} {info.ModelId} {info.ObjectId}");
 
             if (curStruct != null)
             {

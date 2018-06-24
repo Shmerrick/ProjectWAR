@@ -128,6 +128,8 @@
     <Compile Include="Database\World\Battlefront\Keep_Creature.cs" />
     <Compile Include="Database\World\Battlefront\Keep_Door.cs" />
     <Compile Include="Database\World\Battlefront\Keep_Info.cs" />
+    <Compile Include="Database\World\Battlefront\RVRPairing.cs" />
+    <Compile Include="Database\World\Battlefront\RVRProgression.cs" />
     <Compile Include="Database\World\Chapters\Chapter_Info.cs" />
     <Compile Include="Database\World\Chapters\Chapter_Reward.cs" />
     <Compile Include="Database\World\Characters\CharacterInfo.cs" />

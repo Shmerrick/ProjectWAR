@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using FrameWork;
 using GameData;
 
-namespace WorldServer.World.Battlefronts.NewDawn
+namespace WorldServer.World.BattleFronts.NewDawn
 {
     public class NewDawnCommunications
     {

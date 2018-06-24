@@ -10,11 +10,11 @@ using CreatureSubTypes = GameData.CreatureSubTypes;
 using WorldServer.World.Objects.PublicQuests;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.NewDawn;
+using WorldServer.World.BattleFronts.NewDawn;
 
-namespace WorldServer.World.Battlefronts.Keeps
+namespace WorldServer.World.BattleFronts.Keeps
 {
-    public class Keep : BattlefrontObjective
+    public class Keep : BattleFrontObjective
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -94,7 +94,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         public List<KeepDoor> Doors = new List<KeepDoor>();
         public List<KeepDoor.KeepGameObject> KeepGOs = new List<KeepDoor.KeepGameObject>();
 
-        public List<BattlefrontResourceSpawn> SupplyReturnPoints;
+        public List<BattleFrontResourceSpawn> SupplyReturnPoints;
 
         public bool RamDeployed = false;
 
@@ -156,7 +156,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 WorldMgr._Keeps.Add(Info.KeepId, this);
             }
 
-            SupplyReturnPoints = BattlefrontService.GetResourceSpawns(Info.KeepId);
+            SupplyReturnPoints = BattleFrontService.GetResourceSpawns(Info.KeepId);
 
             if (SupplyReturnPoints == null)
                 Log.Error("Keep", $"No resource return points for {Info.Name}");
@@ -844,9 +844,9 @@ namespace WorldServer.World.Battlefronts.Keeps
 
 //            float resourceValue;
 //            if (Constants.DoomsdaySwitch == 2)
-//                resourceValue = ((ProximityBattlefront)Region.ndbf).GetResourceValue(returner.Realm, _resourceValueMax[Rank]);
+//                resourceValue = ((ProximityBattleFront)Region.ndbf).GetResourceValue(returner.Realm, _resourceValueMax[Rank]);
 //            else
-//                resourceValue = ((Battlefront)Region.ndbf).GetResourceValue(returner.Realm, _resourceValueMax[Rank]);
+//                resourceValue = ((BattleFront)Region.ndbf).GetResourceValue(returner.Realm, _resourceValueMax[Rank]);
 
 //            float distFactor = sender.GetDistanceToObject(box.Objective) / 2000f;
 
@@ -973,9 +973,9 @@ namespace WorldServer.World.Battlefronts.Keeps
 
 //#if DEBUG
 //            if (Constants.DoomsdaySwitch == 2)
-//                returner.SendClientMessage($"Resource worth {resourceValue} ({((ProximityBattlefront)Region.ndbf).GetResourceValue(returner.Realm, _resourceValueMax[Rank])} base * {GetDistanceToObject(box.Objective) / 2000f} dist factor) returned!");
+//                returner.SendClientMessage($"Resource worth {resourceValue} ({((ProximityBattleFront)Region.ndbf).GetResourceValue(returner.Realm, _resourceValueMax[Rank])} base * {GetDistanceToObject(box.Objective) / 2000f} dist factor) returned!");
 //            else
-//                returner.SendClientMessage($"Resource worth {resourceValue} ({((Battlefront)Region.ndbf).GetResourceValue(returner.Realm, _resourceValueMax[Rank])} base * {GetDistanceToObject(box.Objective) / 2000f} dist factor) returned!");
+//                returner.SendClientMessage($"Resource worth {resourceValue} ({((BattleFront)Region.ndbf).GetResourceValue(returner.Realm, _resourceValueMax[Rank])} base * {GetDistanceToObject(box.Objective) / 2000f} dist factor) returned!");
 
 //            returner.SendClientMessage($"Resources: {_currentResource}/{_maxResource} ({_currentResourcePercent}%)");
 //#endif
@@ -1004,7 +1004,7 @@ namespace WorldServer.World.Battlefronts.Keeps
    //         int curTime = TCPManager.GetTimeStamp();
 
    //         // Sustain keep if resources were returned within last 10 minutes and enough players exist to support the rank
-   //         ProximityBattlefront front = (ProximityBattlefront)Region.ndbf;
+   //         ProximityBattleFront front = (ProximityBattleFront)Region.ndbf;
    //         if (_lastReturnSeconds + _rankDecayTimer[Rank] > curTime && CanSustainRank(Rank) && front.HeldObjectives[(int)Realm] > WorldMgr.WorldSettingsMgr.GetGenericSetting(9))
    //             return;
 
@@ -1960,7 +1960,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             Realm playerRealm;
             if (Ruin)
             {
-                foreach (KeyValuePair<ushort, Point3D[]> entry in BattlefrontService._warcampEntrances)
+                foreach (KeyValuePair<ushort, Point3D[]> entry in BattleFrontService._warcampEntrances)
                 {
                     if (player.PointWithinRadiusFeet(entry.Value[(int)player.Realm-1],50))
                     {
@@ -2069,9 +2069,9 @@ namespace WorldServer.World.Battlefronts.Keeps
                 keepStatus = "SoR_T" + this.Tier + "_Keep_Update:" + this.ZoneId + ":" + this.Info.KeepId + ":" + (int)this.Realm + ":" + this.Rank + ":" + (int)this.KeepStatus + ":" + (int)this.LastMessage;
                 if (Tier == 4)
                 {
-                    BattlefrontStatus battlefrontStatus = BattlefrontService.GetStatusFor(Region.RegionId);
-                    if (battlefrontStatus != null)
-                        keepStatus = keepStatus + ":" + battlefrontStatus.OpenZoneIndex;
+                    BattleFrontStatus BattleFrontStatus = BattleFrontService.GetStatusFor(Region.RegionId);
+                    if (BattleFrontStatus != null)
+                        keepStatus = keepStatus + ":" + BattleFrontStatus.OpenZoneIndex;
                     else
                         keepStatus = keepStatus + ":-1";
                 }

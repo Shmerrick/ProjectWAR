@@ -2,22 +2,22 @@
 using GameData;
 using System;
 using System.Collections.Generic;
-using WorldServer.World.Battlefronts.Objectives;
-using static WorldServer.World.Battlefronts.BattlefrontConstants;
+using WorldServer.World.BattleFronts.Objectives;
+using static WorldServer.World.BattleFronts.BattleFrontConstants;
 
-namespace WorldServer.World.Battlefronts
+namespace WorldServer.World.BattleFronts
 {
      /// <summary>
-    /// Implementation of battlefronts dedicated to t1 mechanics.
+    /// Implementation of BattleFronts dedicated to t1 mechanics.
     /// </summary>
     /// <remarks>
     /// Mostly concerns victory points computing and transmission.
     /// </remarks>
-    public class T1Battlefront : RoRBattlefront
+    public class T1BattleFront : RoRBattleFront
     {
         
         #region Load
-        public T1Battlefront(RegionMgr region, bool oRvRFront) : base(region, oRvRFront)
+        public T1BattleFront(RegionMgr region, bool oRvRFront) : base(region, oRvRFront)
         {
             if (oRvRFront)
             {
@@ -123,29 +123,29 @@ namespace WorldServer.World.Battlefronts
             // 2 active parings
             // then 1 lock -> 1 active zone
             // the the last parings is locked -> unlock the two others
-            IList<IBattlefront> battlefronts = BattlefrontList.Battlefronts[Tier - 1];
+            IList<IBattleFront> BattleFronts = BattleFrontList.BattleFronts[Tier - 1];
             int lockedParingCount = 0;
-            foreach (IBattlefront battlefront in battlefronts)
+            foreach (IBattleFront BattleFront in BattleFronts)
             {
-                if (((RoRBattlefront)battlefront).PairingLocked)
+                if (((RoRBattleFront)BattleFront).PairingLocked)
                     lockedParingCount++;
             }
 
-            if (lockedParingCount == battlefronts.Count)
-                UnlockOtherBattlefronts();
+            if (lockedParingCount == BattleFronts.Count)
+                UnlockOtherBattleFronts();
             // Can't delay for some reason
-            //     _EvtInterface.AddEvent(UnlockOtherBattlefronts, 10 * 1000, 1);
+            //     _EvtInterface.AddEvent(UnlockOtherBattleFronts, 10 * 1000, 1);
         }
 
         /// <summary>
-        /// Unlocks other battlefronts except the one that was just locked.
+        /// Unlocks other BattleFronts except the one that was just locked.
         /// </summary>
-        private void UnlockOtherBattlefronts()
+        private void UnlockOtherBattleFronts()
         {
-            foreach (IBattlefront battlefront in BattlefrontList.Battlefronts[Tier - 1])
+            foreach (IBattleFront BattleFront in BattleFrontList.BattleFronts[Tier - 1])
             {
-                if (battlefront != this && ((RoRBattlefront)battlefront).PairingLocked)
-                    battlefront.ResetPairing();
+                if (BattleFront != this && ((RoRBattleFront)BattleFront).PairingLocked)
+                    BattleFront.ResetPairing();
             }
         }
 

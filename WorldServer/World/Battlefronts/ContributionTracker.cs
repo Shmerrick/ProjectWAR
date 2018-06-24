@@ -6,11 +6,11 @@ using System.Collections.Generic;
 using SystemData;
 using NLog;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.Objects.PublicQuests;
-using static WorldServer.World.Battlefronts.BattlefrontConstants;
+using static WorldServer.World.BattleFronts.BattleFrontConstants;
 
-namespace WorldServer.World.Battlefronts
+namespace WorldServer.World.BattleFronts
 {
     internal class ContributionTracker
     {
@@ -243,7 +243,7 @@ namespace WorldServer.World.Battlefronts
             _logger.Debug($"Creating Gold Chest -- not implemented. Contributor Count = {contributors.Count}");
             if (contributors.Count > 0)
             {
-                //Log.Info("Battlefront", $"Creating gold chest for {keep.Info.Name} for {contributors.Count} {((Realms)keep.Info.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction")} contributors");
+                //Log.Info("BattleFront", $"Creating gold chest for {keep.Info.Name} for {contributors.Count} {((Realms)keep.Info.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction")} contributors");
                 //GoldChest.Create(_region, keep.Info.PQuest, ref contributors, (Realms)keep.Info.Realm == realm ? WinnerShare : LoserShare);
             }
         }
@@ -263,7 +263,7 @@ namespace WorldServer.World.Battlefronts
 
             The rewards are scaled by the proximity of a zone to the enemy fortress.
 
-            The rewards are also scaled by the relative Battlefront scaler, which cripples rewards for players 
+            The rewards are also scaled by the relative BattleFront scaler, which cripples rewards for players 
             refusing to fight in the most hotly contested zone.
 
             For the losing side, the reward is also scaled by the % of rewards, linked to the Victory Point pool.

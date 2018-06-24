@@ -3,9 +3,9 @@ using FrameWork;
 
 namespace Common
 {
-    [DataTable(PreCache = false, TableName = "battlefront_resource_spawns", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
+    [DataTable(PreCache = false, TableName = "BattleFront_resource_spawns", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
-    public class BattlefrontResourceSpawn : DataObject
+    public class BattleFrontResourceSpawn : DataObject
     {
         [PrimaryKey(AutoIncrement = true)]
         public int Guid { get; set; }

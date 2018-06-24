@@ -1,7 +1,7 @@
 ﻿using System;
 using GameData;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using WorldServer.World.Battlefronts.NewDawn;
+using WorldServer.World.BattleFronts.NewDawn;
 
 namespace WorldServer.Test
 {

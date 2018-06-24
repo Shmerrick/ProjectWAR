@@ -1687,8 +1687,8 @@ namespace GameData
         TEXT_ABOVE_HEAD_RENOWN_AND_GUILD_TITLES,	//<<1>> of <<2>>
         TEXT_CAMPAIGN_CAPTURED,	//<<1>> seizes control of <<2>>.
         TEXT_CAMPAIGN_LOST,	//<<1>> loses control of <<2>>.
-        TEXT_CAMPAIGN_BATTLEFRONT_SHIFT,	//The WAR has moved to <<1>>.
-        TEXT_CAMPAIGN_BATTLEFRONT_TAKEN,	//The forces of <<1>> have taken <<2>>.
+        TEXT_CAMPAIGN_BattleFront_SHIFT,	//The WAR has moved to <<1>>.
+        TEXT_CAMPAIGN_BattleFront_TAKEN,	//The forces of <<1>> have taken <<2>>.
         TEXT_CAMPAIGN_CAPITOL_WARNING,	//<<2>> has fallen to the forces of <<1>>! Prepare to defend the city!
         TEXT_CAMPAIGN_CAPITOL_VULNERABLE,	//<<2>> has fallen to the forces of <<1>>! <<3>> is vulnerable to assault!
         TEXT_CAPITOL_CHANGED_HANDS,	//<<1>> has fallen!

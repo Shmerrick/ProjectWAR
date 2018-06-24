@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WorldServer.World.Battlefronts.Objectives
+namespace WorldServer.World.BattleFronts.Objectives
 {
     /// <summary>
     /// Object bound to an objective responsible of tracking players around with an history.
@@ -43,8 +43,8 @@ namespace WorldServer.World.Battlefronts.Objectives
         /// <summary>
         /// Advances the internal history tables of this tracker.
         /// </summary>
-        /// <param name="orderCount">Total number of orders in the battlefront lake</param>
-        /// <param name="destroCount">Total number of orders in the battlefront lake</param>
+        /// <param name="orderCount">Total number of orders in the BattleFront lake</param>
+        /// <param name="destroCount">Total number of orders in the BattleFront lake</param>
         internal void AdvancePopHistory(int orderCount, int destroCount)
         {
             _controlRatioHistory[0][_curIndex] = orderCount == 0 ? 0 : (float)_quadrantPop[0] / orderCount;

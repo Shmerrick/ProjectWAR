@@ -10,15 +10,15 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.World.Battlefronts;
+using WorldServer.World.BattleFronts;
 using WorldServer.Managers.Commands;
 using WorldServer.World.Objects.PublicQuests;
-using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Scenarios;
-using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.NewDawn;
+using WorldServer.World.BattleFronts.NewDawn;
 using NLog;
 
 namespace WorldServer
@@ -623,11 +623,11 @@ namespace WorldServer
 
                 if (Level > 15)
                 {
-                    IBattlefront front;
+                    IBattleFront front;
                     if (Constants.DoomsdaySwitch == 2)
                         front = null;
                     else
-                        front = BattlefrontList.GetActiveFront(Level);
+                        front = BattleFrontList.GetActiveFront(Level);
 
                     if (front != null)
                     {
@@ -3157,7 +3157,7 @@ namespace WorldServer
         public void AddKillRenown(uint renown, Player killer, Player victim, int participants = 1)
         {
 
-            ProximityBattlefront bf = null;
+            ProximityBattleFront bf = null;
             int aaoMult = 0;
             Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
             if (Region != null && Region.ndbf != null)

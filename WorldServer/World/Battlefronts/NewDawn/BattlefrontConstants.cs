@@ -1,16 +1,16 @@
 ﻿
-namespace WorldServer.World.Battlefronts.NewDawn
+namespace WorldServer.World.BattleFronts.NewDawn
 {
     /// <summary>
-    /// Constants for RoR battlefronts that can be changed using GM Commands.
+    /// Constants for RoR BattleFronts that can be changed using GM Commands.
     /// </summary>
     /// <remarks>
     /// After these values have been stabilized, GM commands should be removed
     /// and declarations have to be converted to "const".
     /// </remarks>
-    internal class BattlefrontConstants
+    internal class BattleFrontConstants
     {
-        private BattlefrontConstants() { }
+        private BattleFrontConstants() { }
 
         #region Ranges
         /// <summary>LastUpdatedTime in millis between each detection of close players around flags<summary>
@@ -70,7 +70,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         #endregion
 
 #if _DEBUG
-        static BattlefrontConstants() {
+        static BattleFrontConstants() {
             MAX_SECURE_PROGRESS /= 5;
             MAX_CONTROL_GAUGE /= 5;
             T1_LOCK_VICTORY_POINTS /= 10;

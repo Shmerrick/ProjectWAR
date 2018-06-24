@@ -1,135 +1,126 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Common.Database.World.Battlefront;
 using GameData;
 using NLog;
 
 // ReSharper disable InconsistentNaming
 
-namespace WorldServer.World.Battlefronts.NewDawn
+namespace WorldServer.World.BattleFronts.NewDawn
 {
-    public class UpperTierBattlefrontManager : IBattlefrontManager
+    public class UpperTierBattleFrontManager : IBattleFrontManager
     {
-        private static Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-        /// <summary>
-        /// List of Racial Pairs that should be dealt with using the LowerTier rules.
-        /// </summary>
-        public RacialPairManager RacialPairManager { get; set; }
+        public List<RVRProgression> BattleFrontProgressions { get; }
+        private static readonly Logger ProgressionLogger = LogManager.GetLogger("RVRProgressionLogger");
         /// <summary>
         /// The RacialPair that is currently active.
         /// </summary>
-        public RacialPair ActiveRacialPair { get; set; }
+        public RVRProgression ActiveBattleFront { get; set; }
+
+        /// <summary>
+        /// Log the status of all battlefronts 
+        /// </summary>
+        public void AuditBattleFronts(int tier)
+        {
+            foreach (var regionMgr in WorldMgr._Regions)
+            {
+                if (regionMgr.GetTier() == tier)
+                {
+                    foreach (var objective in regionMgr.ndbf.Objectives)
+                    {
+                        ProgressionLogger.Debug($"{regionMgr.RegionName} {objective.Name} {objective.FlagState} {objective.State}");
+                    }
+                    foreach (var keep in regionMgr.ndbf.Keeps)
+                    {
+                        ProgressionLogger.Debug($"{regionMgr.RegionName} {keep.Name} {keep.KeepStatus} ");
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Log the status of all battlefronts 
+        /// </summary>
+        public void LockBattleFronts(int tier)
+        {
+            foreach (var regionMgr in WorldMgr._Regions)
+            {
+                if (regionMgr.GetTier() == tier)
+                {
+                    foreach (var objective in regionMgr.ndbf.Objectives)
+                    {
+                        objective.LockObjective(Realms.REALMS_REALM_NEUTRAL, false);
+                        ProgressionLogger.Debug($" Locking to Neutral {objective.Name} {objective.FlagState} {objective.State}");
+                    }
+                    foreach (var keep in regionMgr.ndbf.Keeps)
+                    {
+                        keep.LockKeep(Realms.REALMS_REALM_NEUTRAL, false, false);
+                        ProgressionLogger.Debug($" Locking to Neutral {keep.Name} {keep.KeepStatus} ");
+                    }
+                }
+            }
+        }
+
+        public UpperTierBattleFrontManager(List<RVRProgression> _RVRT4Progressions)
+        {
+            BattleFrontProgressions = _RVRT4Progressions;
+        }
+
+        public void OpenActiveBattlefront()
+        {
+            var activeRegion = WorldMgr._Regions.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
+            ProgressionLogger.Info($" Opening battlefront in {activeRegion.RegionName}");
+            activeRegion.ndbf.ResetPairing();
+        }
 
         /// <summary>
         /// Set the Active Pairing to be null. Not expected to be needed.
         /// </summary>
-        public void ResetActivePairings()
+        public RVRProgression ResetBattleFrontProgression()
         {
-            ActiveRacialPair = null;
+            ProgressionLogger.Debug($" Resetting battlefront progression...");
+            // HACK
+            ActiveBattleFront = GetBattleFrontByName("Praag");
+            ProgressionLogger.Debug($"Active : {this.ActiveBattleFrontName}");
+            return ActiveBattleFront;
+        }
+
+        public RVRProgression GetBattleFrontByName(string name)
+        {
+            return BattleFrontProgressions.Single(x => x.Description.Contains(name));
+        }
+
+        public RVRProgression GetBattleFrontByBattleFrontId(int id)
+        {
+            return BattleFrontProgressions.Single(x => x.BattleFrontId == id);
+        }
+
+        public string ActiveBattleFrontName
+        {
+            get => ActiveBattleFront.Description;
+            set => ActiveBattleFront.Description = value;
         }
 
         /// <summary>
-        /// Returns the Active battlefront pair.
         /// </summary>
-        /// <returns></returns>
-        public RacialPair GetActivePairing() => ActiveRacialPair;
-
-        /// <summary>
-        /// Set and return the Active battlefront pair. 
-        /// </summary>
-        /// <returns></returns>
-        public RacialPair SetActivePairing(RacialPair newActivePair)
+        public RVRProgression AdvanceBattleFront(Realms lockingRealm)
         {
-            ActiveRacialPair = newActivePair;
-            return newActivePair;
-        }
-
-        /// <summary>
-        /// Advance the battlefront pairing on lock of a pairing (or start of the server).
-        /// Pairings logic is (if nothing active, set random T2 pairing), otherwise follow the racial pairings (eg T2 Chaos -> T3 Chaos -> T4 Chaos).
-        /// On lock of T4 select random T4 pairing not the locked one.
-        /// On lock of 2 T4 zones (regardless of owner), head to T2
-        /// </summary>
-        public RacialPair AdvancePairing()
-        {
-            // Current pairing that has just locked.
-            var activePairing = GetActivePairing();
-            bool elfLocked = false;
-            bool empLocked = false;
-            bool dwarfLocked = false;
-            _logger.Debug($"About to Advance Pairing. Currently Active Pair : {activePairing?.ToString()}");
-
-            // If nothing is active, return T2 Emp/Chaos
-            if (activePairing == null)
+            if (lockingRealm == Realms.REALMS_REALM_ORDER)
             {
-                return SetActivePairing(RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 2));
+                var newBattleFront = GetBattleFrontByBattleFrontId(ActiveBattleFront.OrderWinProgression);
+                ProgressionLogger.Debug($"Order Win : Advancing Battlefront from {this.ActiveBattleFrontName} to {newBattleFront.Description}");
+                return ActiveBattleFront = newBattleFront;
             }
-            else
+
+            if (lockingRealm == Realms.REALMS_REALM_DESTRUCTION)
             {
-                var nextTier = GetNextTier(activePairing.Tier);
-                _logger.Debug($"Next Tier = {nextTier} ");
-                
-
-
-                if (nextTier == 5)
-                {
-                    return SetActivePairing(this.RacialPairManager.GetByPair(Pairing.PAIRING_LAND_OF_THE_DEAD, nextTier));
-                }
-                else
-                {
-                    // This racial group
-                    var activeRacialPairing = activePairing.Pairing;
-                    // If Tier 5 has locked, start a random Tier 2.
-             //     if ((nextTier == 2) && (activePairing.Tier == 5))
-             //     {
-             //         var race = this.RacialPairManager.GetRandomRace(activeRacialPairing);
-             //         _logger.Info($"T4->T2 race : {race} ");
-             //         _logger.Info($"New Active Pair : {this.RacialPairManager.GetByPair(race, nextTier).ToString()}");
-             //         return SetActivePairing(this.RacialPairManager.GetByPair(race, nextTier));
-             //     }
-                    if (activePairing.Tier == 4)
-                    {
-                        var race = this.RacialPairManager.GetRandomRace(activeRacialPairing);
-                        _logger.Info($"T4->T4 race : {race} ");
-                        _logger.Info($"New Active Pair : {this.RacialPairManager.GetByPair(race, 4).ToString()}");
-                        return SetActivePairing(this.RacialPairManager.GetByPair(race, 4));
-                    }
-                }
-                
-                return SetActivePairing(this.RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, nextTier));
+                var newBattleFront = GetBattleFrontByBattleFrontId(ActiveBattleFront.DestWinProgression);
+                ProgressionLogger.Debug($"Destruction Win : Advancing Battlefront from {this.ActiveBattleFrontName} to {newBattleFront.Description}");
+                return ActiveBattleFront = newBattleFront;
             }
+            return ResetBattleFrontProgression();
         }
-
-        /// <summary>
-        /// Return the next tier if the zone pair locks.
-        /// </summary>
-        /// <param name="activeTier"></param>
-        /// <returns></returns>
-        public int GetNextTier(int activeTier)
-        {
-            int tierFourInt = 0;
-            switch (activeTier)
-            {
-                case 1: return 1;
-                case 2: return 3;
-                case 3: return 4;
-                case 4: return 2;
-                default: return 2;
-            }
-        }
-
-       
-
-        public UpperTierBattlefrontManager()
-        {
-            RacialPairManager = new UpperTierRacialPairManager();
-        }
-
-        public RacialPair SetInitialPairActive()
-        {
-            return SetActivePairing(RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 2));
-        }
-
-      
     }
-    
 }

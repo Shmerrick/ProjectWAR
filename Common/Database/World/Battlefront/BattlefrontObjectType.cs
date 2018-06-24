@@ -1,10 +1,10 @@
 ﻿
-namespace Common.Database.World.Battlefront
+namespace Common.Database.World.BattleFront
 {
     /// <summary>
-    /// Enumeration of battlefront object types.
+    /// Enumeration of BattleFront object types.
     /// </summary>
-    public enum BattlefrontObjectType : ushort
+    public enum BattleFrontObjectType : ushort
     {
         /// <summary>Point marking the entrance of warcamps.</summary>
         /// <remarks>Necessary for warcamp farm debuffs and objective reward scalers</remarks>

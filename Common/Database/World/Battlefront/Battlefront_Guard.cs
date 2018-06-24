@@ -22,9 +22,9 @@ using FrameWork;
 
 namespace Common
 {
-    [DataTable(PreCache = false, TableName = "battlefront_guards", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
+    [DataTable(PreCache = false, TableName = "BattleFront_guards", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
-    public class Battlefront_Guard : DataObject
+    public class BattleFront_Guard : DataObject
     {
         [DataElement(AllowDbNull = false)]
         public int ObjectiveId { get; set; }

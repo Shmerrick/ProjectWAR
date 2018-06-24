@@ -6,39 +6,39 @@ using FrameWork;
 using GameData;
 using System.Linq;
 using NLog;
-using static WorldServer.World.Battlefronts.BattlefrontConstants;
+using static WorldServer.World.BattleFronts.BattleFrontConstants;
 using WorldServer.World.Objects.PublicQuests;
-using WorldServer.World.Battlefronts.Keeps;
-using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.Services.World;
 
-namespace WorldServer.World.Battlefronts
+namespace WorldServer.World.BattleFronts
 {
      /// <summary>
     /// Responsible for tracking the RvR campaign's progress along a single front of battle.
     /// </summary>
-    public class RoRBattlefront : IBattlefront
+    public class RoRBattleFront : IBattleFront
     {
         private static Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         /// <summary>
-        /// A list of battlefield objectives within this Battlefront.
+        /// A list of battlefield objectives within this BattleFront.
         /// </summary>
         private readonly List<ProximityFlag> _Objectives = new List<ProximityFlag>();
         /// <summary>
-        /// A list of keeps within this Battlefront.
+        /// A list of keeps within this BattleFront.
         /// </summary>
         private readonly List<Keep> _Keeps = new List<Keep>();
 
         /// <summary>
-        /// A list of zones within the scope of this Battlefront.
+        /// A list of zones within the scope of this BattleFront.
         /// </summary>
         private readonly List<Zone_Info> Zones;
         /// <summary>
-        /// The associated region managed by this Battlefront.
+        /// The associated region managed by this BattleFront.
         /// </summary>
         private readonly RegionMgr Region;
         /// <summary>
-        /// The tier within which this Battlefront exists.
+        /// The tier within which this BattleFront exists.
         /// </summary>
         public readonly byte Tier;
 
@@ -51,7 +51,7 @@ namespace WorldServer.World.Battlefronts
         private ContributionTracker _contributionTracker;
 
         #region Load
-        public RoRBattlefront(RegionMgr region, bool oRvRFront)
+        public RoRBattleFront(RegionMgr region, bool oRvRFront)
         {
             Region = region;
             Region.Bttlfront = this;
@@ -63,7 +63,7 @@ namespace WorldServer.World.Battlefronts
                 Tier = 3;
             
             if (oRvRFront && Tier > 0)
-                 BattlefrontList.AddBattlefront(this, Tier);
+                 BattleFrontList.AddBattleFront(this, Tier);
 
             Zones = Region.ZonesInfo;
 
@@ -78,16 +78,16 @@ namespace WorldServer.World.Battlefronts
 
                 _EvtInterface.AddEvent(RecalculateAAO, 10000, 0); // 20000
                 _EvtInterface.AddEvent(BattlePopulationDistributionData, 6000, 0); // 60000
-                _EvtInterface.AddEvent(UpdateBattlefrontScalers, 12000, 0); // 120000
+                _EvtInterface.AddEvent(UpdateBattleFrontScalers, 12000, 0); // 120000
             }
         }
 
         /// <summary>
-        /// Loads battlefront objectives.
+        /// Loads BattleFront objectives.
         /// </summary>
         private void LoadObjectives()
         {
-            List<Battlefront_Objective> objectives = BattlefrontService.GetBattlefrontObjectives(Region.RegionId);
+            List<BattleFront_Objective> objectives = BattleFrontService.GetBattleFrontObjectives(Region.RegionId);
 
             _logger.Warn($"Calling LoadObjectives from RoRBattleFront");
 
@@ -97,7 +97,7 @@ namespace WorldServer.World.Battlefronts
             float orderDistanceSum = 0f;
             float destroDistanceSum = 0f;
 
-            foreach (Battlefront_Objective obj in objectives)
+            foreach (BattleFront_Objective obj in objectives)
             {
                 ProximityFlag flag = new ProximityFlag(obj, this, Region, Tier);
                 _Objectives.Add(flag);
@@ -127,7 +127,7 @@ namespace WorldServer.World.Battlefronts
         /// </summary>
         private void LoadKeeps()
         {
-            List<Keep_Info> keeps = BattlefrontService.GetKeepInfos(Region.RegionId);
+            List<Keep_Info> keeps = BattleFrontService.GetKeepInfos(Region.RegionId);
 
             if (keeps == null)
                 return; // t1 or database lack
@@ -152,7 +152,7 @@ namespace WorldServer.World.Battlefronts
 
         #region Updates
         /// <summary>
-        /// Main battlefront update method, invoked by region manager, short perdiod.
+        /// Main BattleFront update method, invoked by region manager, short perdiod.
         /// </summary>
         /// <param name="start">Timestamp of region manager update start time</param>
         public void Update(long tick)
@@ -210,7 +210,7 @@ namespace WorldServer.World.Battlefronts
 
         /// <summary>
         /// Notifies the given player has entered the lake,
-        /// removing it from the battlefront's active players list and setting the rvr buff(s).
+        /// removing it from the BattleFront's active players list and setting the rvr buff(s).
         /// </summary>
         /// <param name="plr">Player to add, not null</param>
         public void NotifyEnteredLake(Player plr)
@@ -238,7 +238,7 @@ namespace WorldServer.World.Battlefronts
 
         /// <summary>
         /// Notifies the given player has left the lake,
-        /// removing it from the battlefront's active players lift and removing the rvr buff(s).
+        /// removing it from the BattleFront's active players lift and removing the rvr buff(s).
         /// </summary>
         /// <param name="plr">Player to remove, not null</param>
         public void NotifyLeftLake(Player plr)
@@ -368,7 +368,7 @@ namespace WorldServer.World.Battlefronts
         {
             foreach (Player player in _syncPlayersList)
             {
-                BattlefrontFlag flag = (BattlefrontFlag)GetClosestFlag(player.WorldPosition, true);
+                BattleFrontFlag flag = (BattleFrontFlag)GetClosestFlag(player.WorldPosition, true);
 
                 if (flag != null && flag.FlagState != ObjectiveFlags.ZoneLocked)
                     flag.AddPlayerInQuadrant(player);
@@ -377,7 +377,7 @@ namespace WorldServer.World.Battlefronts
                 if (player.Zone != null)
                 {
                     Realms opposite = player.Realm == Realms.REALMS_REALM_DESTRUCTION ? Realms.REALMS_REALM_ORDER : Realms.REALMS_REALM_DESTRUCTION;
-                    Point3D warcampLoc = BattlefrontService.GetWarcampEntrance(player.Zone.ZoneId, opposite);
+                    Point3D warcampLoc = BattleFrontService.GetWarcampEntrance(player.Zone.ZoneId, opposite);
 
                     if (warcampLoc != null)
                     {
@@ -391,7 +391,7 @@ namespace WorldServer.World.Battlefronts
             }
         }
 
-        public IBattlefrontFlag GetClosestFlag(Point3D destPos, bool inPlay = false)
+        public IBattleFrontFlag GetClosestFlag(Point3D destPos, bool inPlay = false)
         {
             ProximityFlag bestFlag = null;
             ulong bestDist = 0;
@@ -478,7 +478,7 @@ namespace WorldServer.World.Battlefronts
         /// <summary>
         /// Scales battlefield objective rewards by the following factors:
         /// <para>- The internal AAO</para>
-        /// <para>- The relative activity in this Battlefront compared to others in its tier</para>
+        /// <para>- The relative activity in this BattleFront compared to others in its tier</para>
         /// <para>- The total number of people fighting</para>
         /// <para>- The capturing realm's population at this objective.</para>
         /// </summary>
@@ -558,7 +558,7 @@ namespace WorldServer.World.Battlefronts
         /// <summary>
         /// Locks a pairing, preventing any interaction with objectives within.
         /// </summary>
-        /// <param name="realm">Realm that locked the battlefront</param>
+        /// <param name="realm">Realm that locked the BattleFront</param>
         /// <param name="announce">True to announce the lock to players</param>
         public virtual void LockPairing(Realms realm, bool announce, bool restoreStatus = false, bool noRewards = false, bool draw = false)
         {
@@ -625,12 +625,12 @@ namespace WorldServer.World.Battlefronts
 
         #region Keeps
         /// <summary>
-        /// List of existing battlefield objectives within this Battlefront.
+        /// List of existing battlefield objectives within this BattleFront.
         /// </summary>
         /// <remarks>
-        /// Must not be updated outside Battlefront implementations.
+        /// Must not be updated outside BattleFront implementations.
         /// </remarks>
-        public IEnumerable<IBattlefrontFlag> Objectives
+        public IEnumerable<IBattleFrontFlag> Objectives
         {
             get
             {
@@ -639,10 +639,10 @@ namespace WorldServer.World.Battlefronts
         }
 
         /// <summary>
-        /// List of existing keeps in Battlefront.
+        /// List of existing keeps in BattleFront.
         /// </summary>
         /// <remarks>
-        /// Must not be updated outside Battlefront implementations.
+        /// Must not be updated outside BattleFront implementations.
         /// </remarks>
         public List<Keep> Keeps
         {
@@ -655,14 +655,14 @@ namespace WorldServer.World.Battlefronts
         
         #region Reward Splitting
         /// <summary>
-        /// A scaler for the reward of objectives captured in this Battlefront, based on its activity relative to other fronts of the same tier.
+        /// A scaler for the reward of objectives captured in this BattleFront, based on its activity relative to other fronts of the same tier.
         /// </summary>
         public float RelativeActivityFactor { get; private set; } = 1f;
         
         /// <summary>
         /// 100 players max for consideration. Push 30% of reward per hour spent in zone = 0.5% per minute shift max.
         /// </summary>
-        public void UpdateBattlefrontScalers()
+        public void UpdateBattleFrontScalers()
         {
             _contributionTracker.UpdateLoserShare(_orderCount, _destroCount);
 
@@ -671,13 +671,13 @@ namespace WorldServer.World.Battlefronts
 
             if (index < 0 || index > 3)
             {
-                Log.Error("Battlefront", "Region "+Region.RegionId+" has Battlefront with tier index "+index);
+                Log.Error("BattleFront", "Region "+Region.RegionId+" has BattleFront with tier index "+index);
                 return;
             }
 
             ulong maxContribution = 1;
 
-            foreach (RoRBattlefront fnt in BattlefrontList.Battlefronts[index])
+            foreach (RoRBattleFront fnt in BattleFrontList.BattleFronts[index])
             {
                 if (fnt == null || fnt._contributionTracker == null)
                     continue; // Still not fully initialized
@@ -687,9 +687,9 @@ namespace WorldServer.World.Battlefronts
 
             RelativeActivityFactor = _contributionTracker.TotalContribFromRenown / (float)maxContribution;
 
-#if Battlefront_DEBUG
+#if BattleFront_DEBUG
             foreach (Player player in Region.Players)
-                player.SendClientMessage($"UpdateBattlefrontScalers: Relative scaler for this Battlefront: {RelativeActivityFactor} Winner VP: {WinnerShare} Loser VP: {LoserShare}");
+                player.SendClientMessage($"UpdateBattleFrontScalers: Relative scaler for this BattleFront: {RelativeActivityFactor} Winner VP: {WinnerShare} Loser VP: {LoserShare}");
 #endif
 
             _nextVpUpdateTime = TCPManager.GetTimeStamp() + 120;
@@ -766,7 +766,7 @@ namespace WorldServer.World.Battlefronts
 
         #region Send
         /// <summary>
-        /// Sends information to a player about the objectives within a Battlefront upon their entry.
+        /// Sends information to a player about the objectives within a BattleFront upon their entry.
         /// </summary>
         /// <param name="plr"></param>
         public void SendObjectives(Player plr)
@@ -802,9 +802,9 @@ namespace WorldServer.World.Battlefronts
             }
         }
 
-        public virtual void WriteBattlefrontStatus(PacketOut Out)
+        public virtual void WriteBattleFrontStatus(PacketOut Out)
         {
-            //throw new InvalidOperationException("Only valid for a T4 Battlefront.");
+            //throw new InvalidOperationException("Only valid for a T4 BattleFront.");
         }
 
         public virtual void WriteCaptureStatus(PacketOut Out)
@@ -850,10 +850,10 @@ namespace WorldServer.World.Battlefronts
 
             if (!bLocalZone)
             {
-                List<IBattlefront> battleFronts = BattlefrontList.Battlefronts[Tier - 1];
-                foreach (IBattlefront battleFront in battleFronts)
-                    if (!ReferenceEquals(battleFront, this))
-                        battleFront.CampaignDiagnostic(player, true);
+                List<IBattleFront> BattleFronts = BattleFrontList.BattleFronts[Tier - 1];
+                foreach (IBattleFront BattleFront in BattleFronts)
+                    if (!ReferenceEquals(BattleFront, this))
+                        BattleFront.CampaignDiagnostic(player, true);
             }
         }
 
@@ -903,7 +903,7 @@ namespace WorldServer.World.Battlefronts
         [Obsolete("in use ?")]
         public string ActiveZoneName => $"{Zones[0].Name} and {Zones[1].Name}";
 
-        /// <summary>Gets the pairing of the battlefront</summary>
+        /// <summary>Gets the pairing of the BattleFront</summary>
         public Pairing Pairing => (Pairing)Region.ZonesInfo[0].Pairing;
         #endregion
 
@@ -975,7 +975,7 @@ namespace WorldServer.World.Battlefronts
         public bool NoSupplies { get { return true; } }
 
         /// <summary>For legacy purpose.</summary>
-        public float GetControlHighFor(IBattlefrontFlag currentFlag, Realms realm)
+        public float GetControlHighFor(IBattleFrontFlag currentFlag, Realms realm)
         {
             return 0f;
         }

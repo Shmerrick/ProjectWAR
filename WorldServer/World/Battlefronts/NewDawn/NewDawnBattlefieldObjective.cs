@@ -5,10 +5,10 @@ using Common;
 using FrameWork;
 using GameData;
 using NLog;
-using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.BattleFronts.Objectives;
 
 
-namespace WorldServer.World.Battlefronts.NewDawn
+namespace WorldServer.World.BattleFronts.NewDawn
 {
     public class NewDawnBattlefieldObjective : Object
     {
@@ -29,17 +29,17 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// <summary>Maximum players each side taken in consideration for assaults a flag</summary>
         public static short MAX_CLOSE_PLAYERS = 6;
 
-        /// <summary>The tier within which the battlefront exists.</summary>
+        /// <summary>The tier within which the BattleFront exists.</summary>
         public readonly byte _tier;
 
-        /// <summary>Battlefront objective id</summary>
+        /// <summary>BattleFront objective id</summary>
         public readonly int Id;
 
-        /// <summary>The zone info id within which the battlefront exists.</summary>
+        /// <summary>The zone info id within which the BattleFront exists.</summary>
         public new readonly ushort ZoneId;
 
-        /// <summary> The region id within which the battlefront exists.</summary>
-        public new readonly ushort RegionId;
+        /// <summary> The region id within which the BattleFront exists.</summary>
+        public readonly ushort RegionId;
 
         /// <summary>Influence area containing the objective</summary>
         private Zone_Area _area;
@@ -111,7 +111,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
         public NewDawnCommunications CommsEngine { get; set; }
         public ProximityEngine ProximityEngine { get; set; }
-        public NewDawnBattlefront Battlefront { get; set; }
+        public NewDawnBattleFront BattleFront { get; set; }
         public string Name { get; set; }
 
         public StateFlags State { get; set; }
@@ -148,7 +148,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         ///     Constructor
         /// </summary>
         /// <param name="obj"></param>
-        public NewDawnBattlefieldObjective(Battlefront_Objective obj, int Tier)
+        public NewDawnBattlefieldObjective(BattleFront_Objective obj, int Tier)
         {
             Id = obj.Entry;
             Name = obj.Name;
@@ -213,7 +213,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// <returns></returns>
         public VictoryPoint RewardCaptureTick(float pairingRewardScaler)
         {
-            if (_secureProgress != BattlefrontConstants.MAX_SECURE_PROGRESS)
+            if (_secureProgress != BattleFrontConstants.MAX_SECURE_PROGRESS)
                 return new VictoryPoint(0, 0);
             if (_closeOrderCount > 0 == _closeDestroCount > 0)
                 return new VictoryPoint(0, 0); // Both sides have players in range, or none of them -> not fully secured
@@ -279,7 +279,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
             if (State == StateFlags.ZoneLocked)
                 return;
 
-            var frnt = Battlefront;
+            var frnt = BattleFront;
             if (frnt != null && frnt.PairingLocked)
                 return;
             
@@ -578,8 +578,8 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
             if (_tier == 4)
             {
-                var prFrnt = (ProximityProgressingBattlefront)Region.Bttlfront;
-                if (prFrnt != null && ZoneId != prFrnt.Zones[prFrnt._battlefrontStatus.OpenZoneIndex].ZoneId)
+                var prFrnt = (ProximityProgressingBattleFront)Region.Bttlfront;
+                if (prFrnt != null && ZoneId != prFrnt.Zones[prFrnt._BattleFrontStatus.OpenZoneIndex].ZoneId)
                 {
                     owningRealm = OwningRealm;
                     assaultingRealm = OwningRealm;
@@ -1005,8 +1005,8 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// <summary>
         /// Advances the internal history tables of this objective's quadrant tracker.
         /// </summary>
-        /// <param name="orderCount">Total number of orders in the battlefront lake</param>
-        /// <param name="destroCount">Total number of orders in the battlefront lake</param>
+        /// <param name="orderCount">Total number of orders in the BattleFront lake</param>
+        /// <param name="destroCount">Total number of orders in the BattleFront lake</param>
         public void AdvancePopHistory(int orderCount, int destroCount)
             => _quadrantHistoryTracker.AdvancePopHistory(orderCount, destroCount);
 

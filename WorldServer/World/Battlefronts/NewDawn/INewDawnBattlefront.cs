@@ -2,7 +2,7 @@
 using FrameWork;
 using GameData;
 
-namespace WorldServer.World.Battlefronts.NewDawn
+namespace WorldServer.World.BattleFronts.NewDawn
 {
     /// <summary>
     /// RegionManagers as seen by external parts of the server.
@@ -10,24 +10,24 @@ namespace WorldServer.World.Battlefronts.NewDawn
     /// <remarks>
     /// Both lecacy and RoR battlefonts implement this interface.
     /// </remarks>
-    public interface INewDawnBattlefront
+    public interface INewDawnBattleFront
     {
         /// <summary>
-        /// Main battlefront update method, invoked by region manager, short perdiod.
+        /// Main BattleFront update method, invoked by region manager, short perdiod.
         /// </summary>
         /// <param name="start">Timestamp of region manager update start time</param>
         void Update(long start);
 
         /// <summary>
         /// Notifies the given player has entered the lake,
-        /// removing it from the battlefront's active players list and setting the rvr buff(s).
+        /// removing it from the BattleFront's active players list and setting the rvr buff(s).
         /// </summary>
         /// <param name="plr">Player to add, not null</param>
         void NotifyEnteredLake(Player plr);
 
         /// <summary>
         /// Notifies the given player has left the lake,
-        /// removing it from the battlefront's active players lift and removing the rvr buff(s).
+        /// removing it from the BattleFront's active players lift and removing the rvr buff(s).
         /// </summary>
         /// <param name="plr">Player to remove, not null</param>
         void NotifyLeftLake(Player plr);
@@ -35,7 +35,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// <summary>
         /// Locks a pairing, preventing any interaction with objectives within.
         /// </summary>
-        /// <param name="realm">Realm that locked the battlefront</param>
+        /// <param name="realm">Realm that locked the BattleFront</param>
         void LockPairing(Realm realm);
 
         /// <summary>
@@ -51,13 +51,13 @@ namespace WorldServer.World.Battlefronts.NewDawn
         #region Send
 
         /// <summary>
-        /// Sends information to a player about the objectives within a battlefront upon their entry.
+        /// Sends information to a player about the objectives within a BattleFront upon their entry.
         /// </summary>
         /// <param name="plr">Player to send list to</param>
         void SendObjectives(Player plr);
 
         /// <summary>
-        /// Writes current capture status of the battlefront in output.
+        /// Writes current capture status of the BattleFront in output.
         /// </summary>
         /// <param name="Out">TCP output</param>
         void WriteCaptureStatus(PacketOut Out);
@@ -73,7 +73,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// Writes battle front advancement status (t4 only, otherwise throws a notimplemented exception).
         /// </summary>
         /// <param name="Out">TCP output</param>
-        void WriteBattlefrontStatus(PacketOut Out);
+        void WriteBattleFrontStatus(PacketOut Out);
 
         /// <summary>
         /// Broadcasts a message to all valid players in the lake.

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WorldServer.World.Battlefronts.NewDawn
+namespace WorldServer.World.BattleFronts.NewDawn
 {
     public static class RacialPairHelper
     {

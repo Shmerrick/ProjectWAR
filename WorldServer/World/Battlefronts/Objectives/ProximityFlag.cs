@@ -6,30 +6,30 @@ using FrameWork;
 using SystemData;
 using Common;
 using NLog;
-using static WorldServer.World.Battlefronts.BattlefrontConstants;
+using static WorldServer.World.BattleFronts.BattleFrontConstants;
 using WorldServer.Services.World;
 using WorldServer.Scenarios.Objects;
-using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.BattleFronts.Keeps;
 
-namespace WorldServer.World.Battlefronts.Objectives
+namespace WorldServer.World.BattleFronts.Objectives
 {
 
     /// <summary>
-    /// Internal implementation of battlefront flags.
+    /// Internal implementation of BattleFront flags.
     /// </summary>
-    public class ProximityFlag : BattlefrontObjective, IBattlefrontFlag
+    public class ProximityFlag : BattleFrontObjective, IBattleFrontFlag
     {
         private static Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public readonly IBattlefront Battlefront;
+        public readonly IBattleFront BattleFront;
 
         const int DEFENSE_TICK_INTERVAL_SECONDS = 300;
 
-        /// <summary>Battlefront objective id</summary>
+        /// <summary>BattleFront objective id</summary>
         public readonly int ID;
-        /// <summary>The zone info id within which the battlefront exists.</summary>
+        /// <summary>The zone info id within which the BattleFront exists.</summary>
         public new readonly ushort ZoneId;
-        /// <summary>The tier within which the battlefront exists.</summary>
+        /// <summary>The tier within which the BattleFront exists.</summary>
         public readonly byte _tier;
         /// <summary>Influence area containing the objective</summary>
         private Zone_Area _area;
@@ -58,7 +58,7 @@ namespace WorldServer.World.Battlefronts.Objectives
         }
 
         #region Load
-        public ProximityFlag(Battlefront_Objective obj, IBattlefront battlefront, RegionMgr region, byte tier)
+        public ProximityFlag(BattleFront_Objective obj, IBattleFront BattleFront, RegionMgr region, byte tier)
         {
             ID = obj.Entry;
             Name = obj.Name;
@@ -82,12 +82,12 @@ namespace WorldServer.World.Battlefronts.Objectives
             // TODO - remove the tier = X or ... should just be a general cast.
             // Region data
             //if ((tier == 1 || tier == 2 || tier ==3))
-                Battlefront = (RoRBattlefront)battlefront;
+                BattleFront = (RoRBattleFront)BattleFront;
             //else
-            //    Battlefront = (ProximityBattlefront)battlefront;
+            //    BattleFront = (ProximityBattleFront)BattleFront;
 
             _tier = tier;
-            _supplySpawns = BattlefrontService.GetResourceSpawns(ID);
+            _supplySpawns = BattleFrontService.GetResourceSpawns(ID);
 
             ZoneMgr zone = region.GetZoneMgr(obj.ZoneId);
             _area = zone.ClientInfo.GetZoneAreaFor((ushort)X, (ushort)Y, ZoneId,(ushort)Z);
@@ -113,10 +113,10 @@ namespace WorldServer.World.Battlefronts.Objectives
         /// <param name="y"></param>
         /// <param name="z"></param>
         /// <param name="o"></param>
-        /// <param name="battlefront"></param>
+        /// <param name="BattleFront"></param>
         /// <param name="region"></param>
         /// <param name="tier"></param>
-        public ProximityFlag(int entry, string name, ushort zoneId, uint x, uint y, ushort z, ushort o, IBattlefront battlefront, RegionMgr region, byte tier)
+        public ProximityFlag(int entry, string name, ushort zoneId, uint x, uint y, ushort z, ushort o, IBattleFront BattleFront, RegionMgr region, byte tier)
         {
             ID = entry;
             Name = name;
@@ -138,12 +138,12 @@ namespace WorldServer.World.Battlefronts.Objectives
 
             // Region data
             if (tier == 1)
-                Battlefront = (RoRBattlefront)battlefront;
+                BattleFront = (RoRBattleFront)BattleFront;
             else
-                Battlefront = (ProximityBattlefront)battlefront;
+                BattleFront = (ProximityBattleFront)BattleFront;
 
             _tier = tier;
-            _supplySpawns = BattlefrontService.GetResourceSpawns(ID);
+            _supplySpawns = BattleFrontService.GetResourceSpawns(ID);
 
             ZoneMgr zone = region.GetZoneMgr(zoneId);
             _area = zone.ClientInfo.GetZoneAreaFor((ushort)X, (ushort)Y, ZoneId, (ushort)Z);
@@ -156,8 +156,8 @@ namespace WorldServer.World.Battlefronts.Objectives
             _quadrantHistoryTracker = new QuadrantHistoryTracker(this);
             //_objectivePortalMgr = new ObjectivePortalsMgr(this, region);
 
-            _logger.Debug($"Entry={entry} Name={name} Battlefront={battlefront.ActiveZoneName} NoSupplyFlag={battlefront.NoSupplies} NbrObjectives={battlefront.Objectives.Count()}");
-            foreach (var obj in battlefront.Objectives)
+            _logger.Debug($"Entry={entry} Name={name} BattleFront={BattleFront.ActiveZoneName} NoSupplyFlag={BattleFront.NoSupplies} NbrObjectives={BattleFront.Objectives.Count()}");
+            foreach (var obj in BattleFront.Objectives)
             {
                 _logger.Debug($"Objective={obj.ObjectiveName} {obj.FlagState} {obj.OwningRealm}");
             }
@@ -196,7 +196,7 @@ namespace WorldServer.World.Battlefronts.Objectives
 
         public override void Update(long tick)
         {
-            ProximityBattlefront bttlfrnt = Region.Bttlfront as ProximityBattlefront;
+            ProximityBattleFront bttlfrnt = Region.Bttlfront as ProximityBattleFront;
 
             if (bttlfrnt != null && _owningRealm != Realms.REALMS_REALM_NEUTRAL)
             {
@@ -304,15 +304,15 @@ namespace WorldServer.World.Battlefronts.Objectives
             // we will handle that when we get there...
             //if (_tier > 1)
             //{
-                T1Battlefront frnt = (T1Battlefront)Region.Bttlfront;
+                T1BattleFront frnt = (T1BattleFront)Region.Bttlfront;
                 if (frnt != null && frnt.PairingLocked)
                     return;
             //}
 
             //if (_tier == 4)
             //{
-            //    ProximityProgressingBattlefront prFrnt = (ProximityProgressingBattlefront)Region.Bttlfront;
-            //    if (prFrnt != null && ZoneId != prFrnt.Zones[prFrnt._battlefrontStatus.OpenZoneIndex].ZoneId)
+            //    ProximityProgressingBattleFront prFrnt = (ProximityProgressingBattleFront)Region.Bttlfront;
+            //    if (prFrnt != null && ZoneId != prFrnt.Zones[prFrnt._BattleFrontStatus.OpenZoneIndex].ZoneId)
             //        return;
             //}
 
@@ -376,13 +376,13 @@ namespace WorldServer.World.Battlefronts.Objectives
                         _owningRealm = Realms.REALMS_REALM_ORDER;
                         if (_tier == 4 && Constants.DoomsdaySwitch == 2)
                         {
-                            ProximityProgressingBattlefront proxBttlfrnt = (ProximityProgressingBattlefront)Region.Bttlfront;
+                            ProximityProgressingBattleFront proxBttlfrnt = (ProximityProgressingBattleFront)Region.Bttlfront;
                             proxBttlfrnt.ObjectiveCaptured(_assaultingRealm, _owningRealm, ZoneId);
                         }
                         else if (_tier > 1 && Constants.DoomsdaySwitch == 2)
                         {
-                            //T1Battlefront proxBttlfrnt = (T1Battlefront)Region.Bttlfront;
-                            ProximityBattlefront proxBttlfrnt = (ProximityBattlefront)Region.Bttlfront;
+                            //T1BattleFront proxBttlfrnt = (T1BattleFront)Region.Bttlfront;
+                            ProximityBattleFront proxBttlfrnt = (ProximityBattleFront)Region.Bttlfront;
 
                             proxBttlfrnt.ObjectiveCaptured(_assaultingRealm, _owningRealm, ZoneId);
                         }
@@ -393,12 +393,12 @@ namespace WorldServer.World.Battlefronts.Objectives
                         _owningRealm = Realms.REALMS_REALM_DESTRUCTION;
                         if (_tier == 4 && Constants.DoomsdaySwitch == 2)
                         {
-                            ProximityProgressingBattlefront proxBttlfrnt = (ProximityProgressingBattlefront)Region.Bttlfront;
+                            ProximityProgressingBattleFront proxBttlfrnt = (ProximityProgressingBattleFront)Region.Bttlfront;
                             proxBttlfrnt.ObjectiveCaptured(_assaultingRealm, _owningRealm, ZoneId);
                         }
                         else if (_tier > 1 && Constants.DoomsdaySwitch == 2)
                         {
-                            ProximityBattlefront proxBttlfrnt = (ProximityBattlefront)Region.Bttlfront;
+                            ProximityBattleFront proxBttlfrnt = (ProximityBattleFront)Region.Bttlfront;
                             proxBttlfrnt.ObjectiveCaptured(_assaultingRealm, _owningRealm, ZoneId);
                         }
                     }
@@ -683,7 +683,7 @@ namespace WorldServer.World.Battlefronts.Objectives
                 player.AddXp(Math.Max((uint)baseXp, 1), false, false);
                 player.AddRenown(Math.Max((uint)baseRp, 1), false, RewardType.ObjectiveCapture, Name);
                 player.AddInfluence(influenceId, Math.Max((ushort)baseInf, (ushort)1));
-                Battlefront.AddContribution(player, (uint)baseRp);
+                BattleFront.AddContribution(player, (uint)baseRp);
             }
 
             // Scaler return
@@ -732,7 +732,7 @@ namespace WorldServer.World.Battlefronts.Objectives
             // Population scale factors can up this to 9000 if the region is full of people and then raise or lower it depending on population balance.
             float keepRank = 0;
 
-            ProximityBattlefront bttlfrnt = (ProximityBattlefront)Region.Bttlfront;
+            ProximityBattleFront bttlfrnt = (ProximityBattleFront)Region.Bttlfront;
 
             keepRank = bttlfrnt.RealmRank[(int)OwningRealm-1];
             
@@ -769,7 +769,7 @@ namespace WorldServer.World.Battlefronts.Objectives
                     player.AddRenown((uint)baseRp, false, RewardType.ObjectiveCapture, Name);
                     player.AddInfluence(influenceId, (ushort)baseInf);
                     // We are removing contribution from holding BOs
-                    //Battlefront.AddContribution(player, (uint)baseRp);
+                    //BattleFront.AddContribution(player, (uint)baseRp);
                 }
             }
         }
@@ -803,7 +803,7 @@ namespace WorldServer.World.Battlefronts.Objectives
 
             uint renownReward = (uint)(renownShare * killer.GetKillRewardScaler(killed));
 
-#if BATTLEFRONT_DEBUG
+#if BattleFront_DEBUG
             player.SendClientMessage($"{ObjectiveName} storing {xpShare} XP and {renownReward} renown");
 #endif
             _delayedRewards.TryGetValue(killer.CharacterId, out curEntry);
@@ -992,7 +992,7 @@ namespace WorldServer.World.Battlefronts.Objectives
         private float ComputeWarcampDistance(ZoneMgr zone, Realms realm)
         {
             Zone_Info zoneInfo = zone.Info;
-            Point3D warcampPosition = BattlefrontService.GetWarcampEntrance(ZoneId, realm);
+            Point3D warcampPosition = BattleFrontService.GetWarcampEntrance(ZoneId, realm);
 
             // Warcamps can be declared for a single zone in region
             if (warcampPosition == null)
@@ -1001,7 +1001,7 @@ namespace WorldServer.World.Battlefronts.Objectives
                 {
                     if (other.ZoneId != ZoneId)
                     {
-                        warcampPosition = BattlefrontService.GetWarcampEntrance(other.ZoneId, realm);
+                        warcampPosition = BattleFrontService.GetWarcampEntrance(other.ZoneId, realm);
                         if (warcampPosition != null)
                             zoneInfo = other;
                             break;
@@ -1115,8 +1115,8 @@ namespace WorldServer.World.Battlefronts.Objectives
 
             if (_tier == 4)
             {
-                ProximityProgressingBattlefront prFrnt = (ProximityProgressingBattlefront)Region.Bttlfront;
-                if (prFrnt != null && ZoneId != prFrnt.Zones[prFrnt._battlefrontStatus.OpenZoneIndex].ZoneId)
+                ProximityProgressingBattleFront prFrnt = (ProximityProgressingBattleFront)Region.Bttlfront;
+                if (prFrnt != null && ZoneId != prFrnt.Zones[prFrnt._BattleFrontStatus.OpenZoneIndex].ZoneId)
                 {
                     owningRealm = _owningRealm;
                     assaultingRealm = _owningRealm;
@@ -1410,8 +1410,8 @@ namespace WorldServer.World.Battlefronts.Objectives
         /// <summary>
         /// Advances the internal history tables of this objective's quadrant tracker.
         /// </summary>
-        /// <param name="orderCount">Total number of orders in the battlefront lake</param>
-        /// <param name="destroCount">Total number of orders in the battlefront lake</param>
+        /// <param name="orderCount">Total number of orders in the BattleFront lake</param>
+        /// <param name="destroCount">Total number of orders in the BattleFront lake</param>
         public void AdvancePopHistory(int orderCount, int destroCount)
             => _quadrantHistoryTracker.AdvancePopHistory(orderCount, destroCount);
 
@@ -1433,7 +1433,7 @@ namespace WorldServer.World.Battlefronts.Objectives
         private int _supplyRespawnTimeMs = (int)(180 * 1000);
         private const int SUPPLY_CLIENT_TIMER_MS = (int)(175 * 1000);
 
-        private readonly List<BattlefrontResourceSpawn> _supplySpawns;
+        private readonly List<BattleFrontResourceSpawn> _supplySpawns;
 
         private ResourceBox _supplies;
         private int _generationTimerEnd;
@@ -1445,7 +1445,7 @@ namespace WorldServer.World.Battlefronts.Objectives
         private void LoadResources()
         {
             //codeword p0tat02
-            /*BattlefrontResourceSpawn destSpawn = _supplySpawns[StaticRandom.Instance.Next(_supplySpawns.Count)];
+            /*BattleFrontResourceSpawn destSpawn = _supplySpawns[StaticRandom.Instance.Next(_supplySpawns.Count)];
 
             Point3D homePos = ZoneService.GetWorldPosition(Zone.Info, (ushort)destSpawn.X, (ushort)destSpawn.Y, (ushort)destSpawn.Z);
             _supplies = new ResourceBox(
@@ -1586,7 +1586,7 @@ namespace WorldServer.World.Battlefronts.Objectives
 
             if (_supplies == null)
             {
-                Log.Error(ObjectiveName + " in " + Zone.Info.Name + " with Battlefront supply block status " + Region.Bttlfront.NoSupplies, "Supplies are null!");
+                Log.Error(ObjectiveName + " in " + Zone.Info.Name + " with BattleFront supply block status " + Region.Bttlfront.NoSupplies, "Supplies are null!");
                 return;
             }
             //Region.Bttlfront.SendPairingBroadcast("Respawning resource for " + ObjectiveName + ".", Realms.REALMS_REALM_ORDER);
@@ -1609,7 +1609,7 @@ namespace WorldServer.World.Battlefronts.Objectives
 
             if (_supplies == null)
             {
-                Log.Error("BATTLEFRONT", "NO SUPPLIES AT " + ObjectiveName + " WITH ID " + ID);
+                Log.Error("BattleFront", "NO SUPPLIES AT " + ObjectiveName + " WITH ID " + ID);
                 return;
             }
 
@@ -1624,10 +1624,10 @@ namespace WorldServer.World.Battlefronts.Objectives
             if (WorldMgr.WorldSettingsMgr.GetGenericSetting(10) == 0 && _state == StateFlags.Abandoned)
                 return;
 
-            ProximityBattlefront bttlfrnt = ((ProximityBattlefront)Region.Bttlfront);
-            ProximityProgressingBattlefront pBttlfrnt = Region.Bttlfront as ProximityProgressingBattlefront;
+            ProximityBattleFront bttlfrnt = ((ProximityBattleFront)Region.Bttlfront);
+            ProximityProgressingBattleFront pBttlfrnt = Region.Bttlfront as ProximityProgressingBattleFront;
 
-            if (!bttlfrnt.PairingLocked && (_tier < 4 || (pBttlfrnt != null && ZoneId == pBttlfrnt.Zones[pBttlfrnt._battlefrontStatus.OpenZoneIndex].ZoneId)))
+            if (!bttlfrnt.PairingLocked && (_tier < 4 || (pBttlfrnt != null && ZoneId == pBttlfrnt.Zones[pBttlfrnt._BattleFrontStatus.OpenZoneIndex].ZoneId)))
             {
 
                 // Some zones have bad BO placement - we try to fix this here: Eataine 209
@@ -1697,7 +1697,7 @@ namespace WorldServer.World.Battlefronts.Objectives
 
             /*if (OwningRealm == keep.Realm && OwningRealm != Realms.REALMS_REALM_NEUTRAL && keep.KeepStatus != KeepStatus.KEEPSTATUS_LOCKED && !keep.Ruin && (_state == StateFlags.Secure || _state == StateFlags.Abandoned))
             {
-                ProximityBattlefront bttlfrnt = ((ProximityBattlefront)Region.Bttlfront);
+                ProximityBattleFront bttlfrnt = ((ProximityBattleFront)Region.Bttlfront);
 
                 float resourceValue = bttlfrnt.GetResourceValue(OwningRealm, keep._resourceValueMax[keep.Rank]);
                 resourceValue = resourceValue / WorldMgr.WorldSettingsMgr.GetSuppliesScaler(); // New "box" is generated every 6 seconds, not every 120 seconds, that's why we divide it by 20
@@ -1810,7 +1810,7 @@ namespace WorldServer.World.Battlefronts.Objectives
                     {
                         if (player.DebugMode)
                         { 
-                            player.SendClientMessage($"Resource worth {resourceValue} ({((ProximityBattlefront)Region.Bttlfront).GetResourceValue(player.Realm, keep._resourceValueMax[keep.Rank])} base * {GetDistanceToObject(keep.ResourceReturnFlag) / 2000f * (2.0f / _tier) * zoneModifier} dist factor) returned!");
+                            player.SendClientMessage($"Resource worth {resourceValue} ({((ProximityBattleFront)Region.Bttlfront).GetResourceValue(player.Realm, keep._resourceValueMax[keep.Rank])} base * {GetDistanceToObject(keep.ResourceReturnFlag) / 2000f * (2.0f / _tier) * zoneModifier} dist factor) returned!");
                             player.SendClientMessage($"Resources: {keep._currentResource}/{keep._maxResource} ({keep._currentResourcePercent}%)");
                         }
                     }
@@ -1825,12 +1825,12 @@ namespace WorldServer.World.Battlefronts.Objectives
             { 
                 int arr = (int)OwningRealm - 1;
 
-                ProximityBattlefront bttlfrnt = ((ProximityBattlefront)Region.Bttlfront);
-                ProximityProgressingBattlefront pBttlfrnt = Region.Bttlfront as ProximityProgressingBattlefront;
+                ProximityBattleFront bttlfrnt = ((ProximityBattleFront)Region.Bttlfront);
+                ProximityProgressingBattleFront pBttlfrnt = Region.Bttlfront as ProximityProgressingBattleFront;
 
                 bttlfrnt.SetRealmSupplyRequirement(arr);
 
-                if (!bttlfrnt.PairingLocked && (_tier < 4 || (pBttlfrnt != null && ZoneId == pBttlfrnt.Zones[pBttlfrnt._battlefrontStatus.OpenZoneIndex].ZoneId)))
+                if (!bttlfrnt.PairingLocked && (_tier < 4 || (pBttlfrnt != null && ZoneId == pBttlfrnt.Zones[pBttlfrnt._BattleFrontStatus.OpenZoneIndex].ZoneId)))
                 {
                     float resourceValue = bttlfrnt.GetResourceValue(OwningRealm, bttlfrnt._RealmResourceValueMax[bttlfrnt.RealmRank[arr]]);
                     resourceValue = resourceValue / WorldMgr.WorldSettingsMgr.GetSuppliesScaler(); // New "box" is generated every 6 seconds, not every 120 seconds, that's why we divide it by 20
@@ -1966,7 +1966,7 @@ namespace WorldServer.World.Battlefronts.Objectives
                                 {
                                     if (player.DebugMode)
                                     {
-                                        player.SendClientMessage($"Resource worth {resourceValue} ({((ProximityBattlefront)Region.Bttlfront).GetResourceValue(player.Realm, keep._resourceValueMax[keep.Rank])} base * {GetDistanceToObject(keep.ResourceReturnFlag) / 2000f * (2.0f / _tier) * zoneModifier} dist factor) returned!");
+                                        player.SendClientMessage($"Resource worth {resourceValue} ({((ProximityBattleFront)Region.Bttlfront).GetResourceValue(player.Realm, keep._resourceValueMax[keep.Rank])} base * {GetDistanceToObject(keep.ResourceReturnFlag) / 2000f * (2.0f / _tier) * zoneModifier} dist factor) returned!");
                                         player.SendClientMessage($"Resources: {keep._currentResource}/{keep._maxResource} ({keep._currentResourcePercent}%)");
                                     }
                                 }
@@ -2052,9 +2052,9 @@ namespace WorldServer.World.Battlefronts.Objectives
             // Defense rewards scale the more objectives are held.
             float defenseBias;
             if (Constants.DoomsdaySwitch == 2)
-                defenseBias = ((ProximityBattlefront)Region.Bttlfront).GetDefenseBias(_owningRealm);
+                defenseBias = ((ProximityBattleFront)Region.Bttlfront).GetDefenseBias(_owningRealm);
             else
-                defenseBias = ((Battlefront)Region.Bttlfront).GetDefenseBias(_owningRealm);
+                defenseBias = ((BattleFront)Region.Bttlfront).GetDefenseBias(_owningRealm);
 
             Item_Info medallionInfo = null;
 
@@ -2089,7 +2089,7 @@ namespace WorldServer.World.Battlefronts.Objectives
                         // Not ready to distribute rewards.
                         if (curTimeSeconds < curEntry.LastUpdatedTime)
                         {
-#if BATTLEFRONT_DEBUG
+#if BattleFront_DEBUG
                         plr.SendClientMessage($"TickDefense: next tick is in {curEntry.LastUpdatedTime - curTimeSeconds}s.");
 #endif
                             continue;
@@ -2102,7 +2102,7 @@ namespace WorldServer.World.Battlefronts.Objectives
                             continue;
                         }
 
-#if BATTLEFRONT_DEBUG
+#if BattleFront_DEBUG
                     plr.SendClientMessage($"{ObjectiveName} distributing {curEntry.XP} XP and {curEntry.Renown} with bias scale {defenseBias}");
 #endif
 

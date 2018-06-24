@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using WorldServer.World.Battlefronts;
+using WorldServer.World.BattleFronts;
 
 namespace WorldServer.Services.World
 {

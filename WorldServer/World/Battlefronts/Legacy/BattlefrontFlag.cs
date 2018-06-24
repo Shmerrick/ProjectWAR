@@ -1,7 +1,7 @@
-﻿//#define BATTLEFRONT_DEBUG
+﻿//#define BattleFront_DEBUG
 
-#if !DEBUG && BATTLEFRONT_DEBUG
-#error BATTLEFRONT DEBUG ENABLED IN RELEASE BUILD
+#if !DEBUG && BattleFront_DEBUG
+#error BattleFront DEBUG ENABLED IN RELEASE BUILD
 #endif
 
 using System;
@@ -12,9 +12,9 @@ using Common;
 using FrameWork;
 using GameData;
 using NLog;
-using WorldServer.World.Battlefronts;
+using WorldServer.World.BattleFronts;
 using WorldServer.Scenarios.Objects;
-using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.Services.World;
 
 namespace WorldServer
@@ -110,7 +110,7 @@ namespace WorldServer
         ZoneLocked = 9
     };
 
-    public class BattlefrontFlag : BattlefrontObjective, IBattlefrontFlag
+    public class BattleFrontFlag : BattleFrontObjective, IBattleFrontFlag
     {
         private static Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -145,7 +145,7 @@ namespace WorldServer
 
         private static bool _allowLockTimer = true;
 
-        public BattlefrontFlag(int id, string name, ushort zoneId, int x, int y, int z, int o, int tokdiscovery, int tokunlocked, byte tier)
+        public BattleFrontFlag(int id, string name, ushort zoneId, int x, int y, int z, int o, int tokdiscovery, int tokunlocked, byte tier)
         {
             ID = id;
             ObjectiveName = name;
@@ -158,7 +158,7 @@ namespace WorldServer
             _tokunlocked = tokunlocked;
 
             _tier = tier;
-            _supplySpawns = BattlefrontService.GetResourceSpawns(ID);
+            _supplySpawns = BattleFrontService.GetResourceSpawns(ID);
 
             CaptureDuration = 10;
 
@@ -382,7 +382,7 @@ namespace WorldServer
 
             uint renownReward = (uint) (renownShare * killer.GetKillRewardScaler(killed));
 
-            #if BATTLEFRONT_DEBUG
+            #if BattleFront_DEBUG
             player.SendClientMessage($"{ObjectiveName} storing {xpShare} XP and {renownReward} renown");
             #endif
             _delayedRewards.TryGetValue(killer.CharacterId, out curEntry);
@@ -413,7 +413,7 @@ namespace WorldServer
         {
             long curTimeSeconds = TCPManager.GetTimeStamp();
 
-            float attackBias = ((Battlefront)Region.Bttlfront).GetAttackBias(capturingRealm);
+            float attackBias = ((BattleFront)Region.Bttlfront).GetAttackBias(capturingRealm);
 
             Item_Info medallionInfo = null;
 
@@ -436,7 +436,7 @@ namespace WorldServer
 
                 if (curEntry.XP > 0)
                 {
-                    #if BATTLEFRONT_DEBUG
+                    #if BattleFront_DEBUG
                     plr.SendClientMessage($"{ObjectiveName} distributing {curEntry.XP} XP and {curEntry.Renown} renown with scaler {scaleFactor}");
                     #endif
 
@@ -480,9 +480,9 @@ namespace WorldServer
             // Defense rewards scale the more objectives are held.
             float defenseBias;
             if (Constants.DoomsdaySwitch == 2)
-                defenseBias = ((ProximityBattlefront)Region.Bttlfront).GetDefenseBias(_owningRealm);
+                defenseBias = ((ProximityBattleFront)Region.Bttlfront).GetDefenseBias(_owningRealm);
             else
-                defenseBias = ((Battlefront)Region.Bttlfront).GetDefenseBias(_owningRealm);
+                defenseBias = ((BattleFront)Region.Bttlfront).GetDefenseBias(_owningRealm);
 
             Item_Info medallionInfo = null;
 
@@ -515,7 +515,7 @@ namespace WorldServer
                     // Not ready to distribute rewards.
                     if (curTimeSeconds < curEntry.LastUpdatedTime)
                     {
-                        #if BATTLEFRONT_DEBUG
+                        #if BattleFront_DEBUG
                         plr.SendClientMessage($"TickDefense: next tick is in {curEntry.LastUpdatedTime - curTimeSeconds}s.");
                         #endif
                         continue;
@@ -528,7 +528,7 @@ namespace WorldServer
                         continue;
                     }
 
-                    #if BATTLEFRONT_DEBUG
+                    #if BattleFront_DEBUG
                     plr.SendClientMessage($"{ObjectiveName} distributing {curEntry.XP} XP and {curEntry.Renown} with bias scale {defenseBias}");
                     #endif
 
@@ -601,7 +601,7 @@ namespace WorldServer
                     if (influenceId == 0)
                         influenceId = plr.Realm == Realms.REALMS_REALM_DESTRUCTION ? plr.CurrentArea.DestroInfluenceId : plr.CurrentArea.OrderInfluenceId;
 
-                    #if BATTLEFRONT_DEBUG
+                    #if BattleFront_DEBUG
                     plr.SendClientMessage($"{ObjectiveName} capture reward: {750 * _tier} XP and {75 * _tier} renown with scale mult {scaleMult}");
                     #endif
 
@@ -799,9 +799,9 @@ namespace WorldServer
                 }
 
                 if (Constants.DoomsdaySwitch == 2)
-                    ((ProximityBattlefront)Region.Bttlfront).ObjectiveCaptured(oldRealm, newRealm, ZoneId);
+                    ((ProximityBattleFront)Region.Bttlfront).ObjectiveCaptured(oldRealm, newRealm, ZoneId);
                 else
-                    ((Battlefront)Region.Bttlfront).ObjectiveCaptured(oldRealm, newRealm, ZoneId);
+                    ((BattleFront)Region.Bttlfront).ObjectiveCaptured(oldRealm, newRealm, ZoneId);
             }
         }
 
@@ -813,7 +813,7 @@ namespace WorldServer
         private int _supplyRespawnTimeMs = (int)(140000 * TIMER_MODIFIER);
         private const int SUPPLY_CLIENT_TIMER_MS = (int)(135000 * TIMER_MODIFIER);
 
-        private readonly List<BattlefrontResourceSpawn> _supplySpawns;
+        private readonly List<BattleFrontResourceSpawn> _supplySpawns;
 
         private ResourceBox _supplies;
         private int _generationTimerEnd;
@@ -825,7 +825,7 @@ namespace WorldServer
         private void LoadResources()
         {
             // codeword p0tat0 - Disabled for DoomsDay
-            /*BattlefrontResourceSpawn destSpawn = _supplySpawns[StaticRandom.Instance.Next(_supplySpawns.Count)];
+            /*BattleFrontResourceSpawn destSpawn = _supplySpawns[StaticRandom.Instance.Next(_supplySpawns.Count)];
 
             Point3D homePos = ZoneService.GetWorldPosition(Zone.Info, (ushort)destSpawn.X, (ushort)destSpawn.Y, (ushort)destSpawn.Z);
             _supplies = new ResourceBox(
@@ -966,7 +966,7 @@ namespace WorldServer
 
             if (_supplies == null)
             {
-                Log.Error(ObjectiveName+" in "+Zone.Info.Name+" with Battlefront supply block status "+Region.Bttlfront.NoSupplies, "Supplies are null!");
+                Log.Error(ObjectiveName+" in "+Zone.Info.Name+" with BattleFront supply block status "+Region.Bttlfront.NoSupplies, "Supplies are null!");
                 return;
             }
             //Region.Bttlfront.SendPairingBroadcast("Respawning resource for " + ObjectiveName + ".", Realms.REALMS_REALM_ORDER);
@@ -989,7 +989,7 @@ namespace WorldServer
 
             if (_supplies == null)
             {
-                Log.Error("BATTLEFRONT", "NO SUPPLIES AT " + ObjectiveName + " WITH ID " + ID);
+                Log.Error("BattleFront", "NO SUPPLIES AT " + ObjectiveName + " WITH ID " + ID);
                 return;
             }
 
@@ -1205,9 +1205,9 @@ namespace WorldServer
 
                 if (_tier == 4)
                 {
-                    BattlefrontStatus battlefrontStatus = BattlefrontService.GetStatusFor(Region.RegionId);
-                    if (battlefrontStatus != null)
-                        stateOfTheRealmMessage = stateOfTheRealmMessage + ":" + battlefrontStatus.OpenZoneIndex;
+                    BattleFrontStatus BattleFrontStatus = BattleFrontService.GetStatusFor(Region.RegionId);
+                    if (BattleFrontStatus != null)
+                        stateOfTheRealmMessage = stateOfTheRealmMessage + ":" + BattleFrontStatus.OpenZoneIndex;
                     else
                         stateOfTheRealmMessage = stateOfTheRealmMessage + ":-1";
                 }

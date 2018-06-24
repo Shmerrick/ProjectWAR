@@ -10,7 +10,7 @@ using NLog;
 using WorldServer.Services.World;
 using WorldServer;
 
-namespace WorldServer.World.Battlefronts.NewDawn
+namespace WorldServer.World.BattleFronts.NewDawn
 {
     /// <summary>
     /// Manages rewards from RVR mechanic.
@@ -38,7 +38,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
             uint renownReward = (uint)(renownShare * killer.GetKillRewardScaler(killed));
 
-#if BATTLEFRONT_DEBUG
+#if BattleFront_DEBUG
             player.SendClientMessage($"{ObjectiveName} storing {xpShare} XP and {renownReward} renown");
 #endif
             DelayedRewards.TryGetValue(killer.CharacterId, out xprEntry);
@@ -123,7 +123,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
             // Because of the Field of Glory buff, the XP value here is doubled.
             // The base reward in T4 is therefore 3000 XP.
             // Population scale factors can up this to 9000 if the region is full of people and then raise or lower it depending on population balance.
-            var baseXp = BattlefrontConstants.FLAG_SECURE_REWARD_SCALER * tier * rewardScaleMultiplier;
+            var baseXp = BattleFrontConstants.FLAG_SECURE_REWARD_SCALER * tier * rewardScaleMultiplier;
             var baseRp = baseXp / 10f;
             var baseInf = baseRp / 2.2f;
 
@@ -148,7 +148,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
                 player.AddInfluence(influenceId, Math.Max((ushort)baseInf, (ushort)1));
 
                 // TODO
-                //Battlefront.AddContribution(player, (uint)baseRp);
+                //BattleFront.AddContribution(player, (uint)baseRp);
 
                 _logger.Trace($"Player:{player.Name} ScaleMult:{rewardScaleMultiplier} XP:{xp} RR:{rr} INF:{inf}");
             }

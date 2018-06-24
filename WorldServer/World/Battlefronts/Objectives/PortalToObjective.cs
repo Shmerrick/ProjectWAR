@@ -1,9 +1,9 @@
-﻿using Common.Database.World.Battlefront;
+﻿using Common.Database.World.BattleFront;
 using FrameWork;
 using SystemData;
-using static WorldServer.World.Battlefronts.BattlefrontConstants;
+using static WorldServer.World.BattleFronts.BattleFrontConstants;
 
-namespace WorldServer.World.Battlefronts.Objectives
+namespace WorldServer.World.BattleFronts.Objectives
 {
     /// <summary>
     /// Game object representing a portal around an objective
@@ -14,12 +14,12 @@ namespace WorldServer.World.Battlefronts.Objectives
         private const string NAME_START = "Portal to ";
 
         /// <summary>Portal targets depending on realm</summary>
-        private BattlefrontObject _target;
+        private BattleFrontObject _target;
         private Point3D _targetPos;
 
         private long _nextAvailableTimestamp;
 
-        public PortalToObjective(BattlefrontObject origin, BattlefrontObject target, string name)
+        public PortalToObjective(BattleFrontObject origin, BattleFrontObject target, string name)
             : base(origin)
         {
             Name = NAME_START + name;

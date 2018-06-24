@@ -163,6 +163,7 @@
     <Compile Include="Services\World\PQuestService.cs" />
     <Compile Include="Services\World\QuestService.cs" />
     <Compile Include="Services\World\RallyPointService.cs" />
+    <Compile Include="Services\World\RVRProgressionService.cs" />
     <Compile Include="Services\World\ScenarioService.cs" />
     <Compile Include="Services\World\TokService.cs" />
     <Compile Include="Services\World\VendorService.cs" />
@@ -257,9 +258,7 @@
     <Compile Include="World\Battlefronts\Legacy\ProximityProgressingBattlefront.cs" />
     <Compile Include="World\Battlefronts\NewDawn\AAOTracker.cs" />
     <Compile Include="World\Battlefronts\NewDawn\BattlefrontConstants.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\CampaignTrack.cs" />
     <Compile Include="World\Battlefronts\NewDawn\IBattlefrontManager.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\LowerTierRacialPairManager.cs" />
     <Compile Include="World\Battlefronts\NewDawn\NewDawnBattlefieldObjective.cs" />
     <Compile Include="World\Battlefronts\NewDawn\NewDawnBattlefront.cs" />
     <Compile Include="World\Battlefronts\NewDawn\LowerTierBattlefrontManager.cs" />
@@ -268,7 +267,6 @@
     <Compile Include="World\Battlefronts\NewDawn\RVRRewardManager.cs" />
     <Compile Include="World\Battlefronts\NewDawn\UpperTierBattlefrontManager.cs" />
     <Compile Include="World\Battlefronts\NewDawn\INewDawnBattlefront.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\UpperTierRacialPairManager.cs" />
     <Compile Include="World\Battlefronts\NewDawn\NewDawnCommunications.cs" />
     <Compile Include="World\Battlefronts\NewDawn\ProximityEngine.cs" />
     <Compile Include="World\Battlefronts\NewDawn\RacialPair.cs" />
@@ -477,6 +475,9 @@
     <Content Include="Configs\LocalDevelopment\Lobby.xml" />
     <Content Include="Configs\LocalDevelopment\World.xml" />
     <Content Include="world.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="World\Battlefronts\Progression\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -3,10 +3,10 @@ using System.Xml.Schema;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.World.Battlefronts;
+using WorldServer.World.BattleFronts;
 using WorldServer.Services.World;
 
-namespace WorldServer.World.Battlefronts.Keeps
+namespace WorldServer.World.BattleFronts.Keeps
 {
     public class KeepNpcCreature
     {
@@ -235,10 +235,10 @@ namespace WorldServer.World.Battlefronts.Keeps
                     return;
 
                 float scaler;
-                if (playerCount >= BattlefrontConstants.MAX_LORD_SCALER_POP)
-                    scaler = 1f - BattlefrontConstants.MAX_LORD_SCALER;
+                if (playerCount >= BattleFrontConstants.MAX_LORD_SCALER_POP)
+                    scaler = 1f - BattleFrontConstants.MAX_LORD_SCALER;
                 else
-                    scaler = 1f - (BattlefrontConstants.MAX_LORD_SCALER * playerCount / BattlefrontConstants.MAX_LORD_SCALER_POP);
+                    scaler = 1f - (BattleFrontConstants.MAX_LORD_SCALER * playerCount / BattleFrontConstants.MAX_LORD_SCALER_POP);
                 _damageScaler = scaler;
             }
 

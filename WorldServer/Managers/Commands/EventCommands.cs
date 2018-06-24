@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.Objects.PublicQuests;
 using static WorldServer.Managers.Commands.GMUtils;
 

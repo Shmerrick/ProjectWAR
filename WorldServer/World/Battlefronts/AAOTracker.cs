@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace WorldServer.World.Battlefronts
+namespace WorldServer.World.BattleFronts
 {
     /// <summary>
-    /// Object bound to a battlefront responsible of tracking players to compute AAO.
+    /// Object bound to a BattleFront responsible of tracking players to compute AAO.
     /// </summary>
     internal class AAOTracker
     {

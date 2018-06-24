@@ -5,7 +5,7 @@ using FrameWork;
 using GameData;
 using WorldServer.Services.World;
 
-namespace WorldServer.World.Battlefronts.Keeps
+namespace WorldServer.World.BattleFronts.Keeps
 {
     public enum KeepDoorType
     {

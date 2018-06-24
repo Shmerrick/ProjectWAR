@@ -1,14 +1,14 @@
 ﻿using GameData;
 
-namespace WorldServer.World.Battlefronts.Objectives
+namespace WorldServer.World.BattleFronts.Objectives
 {
     /// <summary>
-    /// Battlefront flags as seen by external parts of the server.
+    /// BattleFront flags as seen by external parts of the server.
     /// </summary>
     /// <remarks>
     /// Both lecacy and RoR flags implement this interface.
     /// </remarks>
-    public interface IBattlefrontFlag
+    public interface IBattleFrontFlag
     {
 
         /// <summary>

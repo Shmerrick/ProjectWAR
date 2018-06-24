@@ -7,29 +7,29 @@ using System.Linq;
 using SystemData;
 using NLog;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.Keeps;
-using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.World.Objects.PublicQuests;
-using static WorldServer.World.Battlefronts.BattlefrontConstants;
+using static WorldServer.World.BattleFronts.BattleFrontConstants;
 
-namespace WorldServer.World.Battlefronts.NewDawn
+namespace WorldServer.World.BattleFronts.NewDawn
 {
     /// <summary>
     /// Represents an open RVR front in a given Region (1 Region -> n Zones) Eg Region 14 (T2 Emp -> Zone 101 Troll Country & Zone 107 Ostland
     /// </summary>
-    public class NewDawnBattlefront
+    public class NewDawnBattleFront
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public VictoryPointProgress VictoryPointProgress { get; set; }
 
         public RegionMgr Region { get; set; }
-        public IBattlefrontManager BattleFrontManager { get; set; }
+        public IBattleFrontManager BattleFrontManager { get; set; }
         /// <summary>
-        /// A list of keeps within this Battlefront.
+        /// A list of keeps within this BattleFront.
         /// </summary>
         private readonly List<Keep> _Keeps = new List<Keep>();
-        public List<BattlefrontObjective> BattlefrontObjectives { get; set; }
-        public string BattlefrontName { get; set; }
+        public List<BattleFrontObjective> BattleFrontObjectives { get; set; }
+        public string BattleFrontName { get; set; }
 
         protected readonly EventInterface _EvtInterface = new EventInterface();
 
@@ -63,10 +63,10 @@ namespace WorldServer.World.Battlefronts.NewDawn
         private ContributionTracker _contributionTracker;
         private RVRRewardManager _rewardManager;
         /// <summary>
-        /// List of existing keeps in Battlefront.
+        /// List of existing keeps in BattleFront.
         /// </summary>
         /// <remarks>
-        /// Must not be updated outside Battlefront implementations.
+        /// Must not be updated outside BattleFront implementations.
         /// </remarks>
         public List<Keep> Keeps
         {
@@ -84,43 +84,43 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// <param name="regionMgr"></param>
         /// <param name="objectives"></param>
         /// <param name="players"></param>
-        public NewDawnBattlefront(RegionMgr regionMgr, List<BattlefrontObjective> objectives, HashSet<Player> players, IBattlefrontManager bfm)
+        public NewDawnBattleFront(RegionMgr regionMgr, List<BattleFrontObjective> objectives, HashSet<Player> players, IBattleFrontManager bfm)
         {
             this.Region = regionMgr;
             this.VictoryPointProgress = new VictoryPointProgress();
-            this.BattlefrontObjectives = objectives;
+            this.BattleFrontObjectives = objectives;
             this.PlayersInLakeSet = players;
             this.Objectives = new List<NewDawnBattlefieldObjective>();
             this.BattleFrontManager = bfm;
-            this.BattlefrontName = bfm.GetActivePairing().PairingName;
+            this.BattleFrontName = bfm.ActiveBattleFrontName;
 
             Tier = (byte)Region.GetTier();
             LoadObjectives();
             LoadKeeps();
-            //On making a battlefront if the tier is 4 locks Objectives adjacent to starting zone
-            if (Tier == 4)
-            {
-                switch (Region.RegionId)
-                {
-                    case 11:
-                        LockBattleObjectivesByZone(105);
-                        break;
-                    case 4:
-                        LockBattleObjectivesByZone(205);
-                        break;
-                    case 2:
-                        LockBattleObjectivesByZone(5);
-                        break;
-                }
-                
-            }
+            ////On making a BattleFront if the tier is 4 locks Objectives adjacent to starting zone
+            //if (Tier == 4)
+            //{
+            //    switch (Region.RegionId)
+            //    {
+            //        case 11:
+            //            LockBattleObjectivesByZone(105);
+            //            break;
+            //        case 4:
+            //            LockBattleObjectivesByZone(205);
+            //            break;
+            //        case 2:
+            //            LockBattleObjectivesByZone(5);
+            //            break;
+            //    }
+
+            //}
 
 
             _contributionTracker = new ContributionTracker(Tier, regionMgr);
             _aaoTracker = new AAOTracker();
             _rewardManager = new RVRRewardManager();
 
-            _EvtInterface.AddEvent(UpdateBattlefrontScalers, 12000, 0); // 120000
+            _EvtInterface.AddEvent(UpdateBattleFrontScalers, 12000, 0); // 120000
             _EvtInterface.AddEvent(UpdateVictoryPoints, 6000, 0);
             // Tell each player the RVR status
             _EvtInterface.AddEvent(UpdateRVRStatus, 60000, 0);
@@ -140,22 +140,22 @@ namespace WorldServer.World.Battlefronts.NewDawn
             {
                 if (Region.GetTier() == 1)
                 {
-                    plr.SendClientMessage($"RvR Status : {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierBattlefrontManager.GetActivePairing().RegionId, false).GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    plr.SendClientMessage($"RvR Status : {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierBattleFrontManager.ActiveBattleFront.RegionId, false).GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
                 }
                 else
                 {
-                    plr.SendClientMessage($"RvR Status : {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierBattlefrontManager.GetActivePairing().RegionId, false).GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    plr.SendClientMessage($"RvR Status : {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierBattleFrontManager.ActiveBattleFront.RegionId, false).GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
                 }
             }
         }
 
         /// <summary>
-        /// Loads battlefront objectives.
+        /// Loads BattleFront objectives.
         /// </summary>
 
         private void LoadObjectives()
         {
-            List<Battlefront_Objective> objectives = BattlefrontService.GetBattlefrontObjectives(Region.RegionId);
+            List<BattleFront_Objective> objectives = BattleFrontService.GetBattleFrontObjectives(Region.RegionId);
 
             if (objectives == null)
                 return; // t1 or database lack
@@ -163,12 +163,12 @@ namespace WorldServer.World.Battlefronts.NewDawn
             float orderDistanceSum = 0f;
             float destroDistanceSum = 0f;
 
-            foreach (Battlefront_Objective obj in objectives)
+            foreach (BattleFront_Objective obj in objectives)
             {
                 NewDawnBattlefieldObjective flag = new NewDawnBattlefieldObjective(obj, Region.GetTier());
                 Objectives.Add(flag);
                 Region.AddObject(flag, obj.ZoneId);
-                flag.Battlefront = this;
+                flag.BattleFront = this;
 
                 //orderDistanceSum += flag.GetWarcampDistance(Realms.REALMS_REALM_ORDER);
                 //destroDistanceSum += flag.GetWarcampDistance(Realms.REALMS_REALM_DESTRUCTION);
@@ -180,7 +180,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// </summary>
         private void LoadKeeps()
         {
-            List<Keep_Info> keeps = BattlefrontService.GetKeepInfos(Region.RegionId);
+            List<Keep_Info> keeps = BattleFrontService.GetKeepInfos(Region.RegionId);
 
             if (keeps == null)
                 return; // t1 or database lack
@@ -239,7 +239,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// Writes the current zone capture status (gauge in upper right corner of client UI).
         /// </summary>
         /// <param name="Out">Packet to write</param>
-        /// <param name="lockingRealm">Realm that is locking the Battlefront</param>
+        /// <param name="lockingRealm">Realm that is locking the BattleFront</param>
         public void WriteCaptureStatus(PacketOut Out, Realms lockingRealm)
         {
             _logger.Trace(".");
@@ -258,12 +258,12 @@ namespace WorldServer.World.Battlefronts.NewDawn
                     break;
 
                 default:
-                    orderPercent = (VictoryPointProgress.OrderVictoryPoints * 100) / BattlefrontConstants.LOCK_VICTORY_POINTS;
-                    destroPercent = (VictoryPointProgress.DestructionVictoryPoints * 100) / BattlefrontConstants.LOCK_VICTORY_POINTS;
+                    orderPercent = (VictoryPointProgress.OrderVictoryPoints * 100) / BattleFrontConstants.LOCK_VICTORY_POINTS;
+                    destroPercent = (VictoryPointProgress.DestructionVictoryPoints * 100) / BattleFrontConstants.LOCK_VICTORY_POINTS;
                     break;
             }
 
-            _logger.Debug($"{BattlefrontName} : {(byte)orderPercent} {(byte)destroPercent}");
+            _logger.Debug($"{BattleFrontName} : {(byte)orderPercent} {(byte)destroPercent}");
 
             Out.WriteByte((byte)orderPercent);
             Out.WriteByte((byte)destroPercent);
@@ -272,24 +272,24 @@ namespace WorldServer.World.Battlefronts.NewDawn
         #region Reward Splitting
 
         /// <summary>
-        /// A scaler for the reward of objectives captured in this Battlefront, based on its activity relative to other fronts of the same tier.
+        /// A scaler for the reward of objectives captured in this BattleFront, based on its activity relative to other fronts of the same tier.
         /// </summary>
         public float RelativeActivityFactor { get; private set; } = 1f;
 
         /// <summary>
         /// 100 players max for consideration. Push 30% of reward per hour spent in zone = 0.5% per minute shift max.
         /// </summary>
-        public void UpdateBattlefrontScalers()
+        public void UpdateBattleFrontScalers()
         {
 
             // 12.05.18 RA - Not this function currently does nothing.
-            _logger.Trace($"Updating Battlefront scaler : {this.BattleFrontManager.GetActivePairing().PairingName}");
+            _logger.Trace($"Updating BattleFront scaler : {this.BattleFrontManager.ActiveBattleFrontName}");
             // Update comparative gain
             int index = Tier - 1;
 
             if (index < 0 || index > 3)
             {
-                Log.Error("Battlefront", "Region " + Region.RegionId + " has Battlefront with tier index " + index);
+                Log.Error("BattleFront", "Region " + Region.RegionId + " has BattleFront with tier index " + index);
                 return;
             }
 
@@ -309,7 +309,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
         /// <summary>
         /// Notifies the given player has entered the lake,
-        /// removing it from the battlefront's active players list and setting the rvr buff(s).
+        /// removing it from the BattleFront's active players list and setting the rvr buff(s).
         /// </summary>
         /// <param name="plr">Player to add, not null</param>
         public void NotifyEnteredLake(Player plr)
@@ -351,7 +351,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
         /// <summary>
         /// Notifies the given player has left the lake,
-        /// removing it from the battlefront's active players lift and removing the rvr buff(s).
+        /// removing it from the BattleFront's active players lift and removing the rvr buff(s).
         /// </summary>
         /// <param name="plr">Player to remove, not null</param>
         public void NotifyLeftLake(Player plr)
@@ -397,11 +397,11 @@ namespace WorldServer.World.Battlefronts.NewDawn
                     flag.LockObjective(realm, true);
                 }
             }
-            }
+        }
 
-            public void LockPairing(Realms realm)
+        public void LockPairing(Realms realm)
         {
-            _logger.Debug($"Locking Pair : {realm.ToString()}...");
+            _logger.Info($"Locking Pair : {realm.ToString()}...");
 
             if (PairingLocked)
             {
@@ -426,32 +426,32 @@ namespace WorldServer.World.Battlefronts.NewDawn
             _logger.Debug(message);
 
 
-            if (Tier == 1)
-            {
-                // Advance the pairing
-                WorldMgr.LowerTierBattlefrontManager.AdvancePairing();
-                Broadcast($" The campaign has moved to  {WorldMgr.LowerTierBattlefrontManager.GetActivePairing().PairingName}");
+            //if (Tier == 1)
+            //{
+            // Advance the pairing
+            BattleFrontManager.AdvanceBattleFront(realm);
+            Broadcast($"The campaign has moved to  {BattleFrontManager.ActiveBattleFrontName}");
 
-                // This may need a rethink and restructure -- reset the VPP for the new Region
-                var newRegionId = WorldMgr.LowerTierBattlefrontManager.GetActivePairing().RegionId;
-                var newRegion = WorldMgr.GetRegion((ushort)newRegionId, false);
+            var newRegion = WorldMgr.GetRegion((ushort)BattleFrontManager.ActiveBattleFront.RegionId, false);
+            newRegion.ndbf.ResetPairing();
 
-                newRegion.ndbf.ResetPairing();
-               
-            }
-            else
-            {
-                WorldMgr.UpperTierBattlefrontManager.AdvancePairing();
-                Broadcast($"The campaign has moved to {WorldMgr.UpperTierBattlefrontManager.GetActivePairing().PairingName}");
+            // Logs the status of all battlefronts known to the Battlefront Manager.
+            BattleFrontManager.AuditBattleFronts(this.Tier);
 
-                // This may need a rethink and restructure -- reset the VPP for the new Region
-                var newRegionId = WorldMgr.UpperTierBattlefrontManager.GetActivePairing().RegionId;
-                var newRegion = WorldMgr.GetRegion((ushort)newRegionId, false);
-                if (Tier < 3) { 
-                newRegion.ndbf.ResetPairing();
-                }
-                
-            }
+            //}
+            //else
+            //{
+            //    BattleFrontManager.AdvanceBattleFront(realm);
+            //    Broadcast($"The campaign has moved to {BattleFrontManager.ActiveBattleFrontName}");
+
+            //    // This may need a rethink and restructure -- reset the VPP for the new Region
+            //    var newRegionId = WorldMgr.UpperTierBattleFrontManager.ActiveBattleFront.RegionId;
+            //    var newRegion = WorldMgr.GetRegion((ushort)newRegionId, false);
+            //    if (Tier < 3) { 
+            //    newRegion.ndbf.ResetPairing();
+            //    }
+
+            //}
 
             // Generate RP and rewards
             _contributionTracker.CreateGoldChest(realm);
@@ -490,7 +490,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// <summary>
         /// Scales battlefield objective rewards by the following factors:
         /// <para>- The internal AAO</para>
-        /// <para>- The relative activity in this Battlefront compared to others in its tier</para>
+        /// <para>- The relative activity in this BattleFront compared to others in its tier</para>
         /// <para>- The total number of people fighting</para>
         /// <para>- The capturing realm's population at this objective.</para>
         /// </summary>
@@ -510,15 +510,15 @@ namespace WorldServer.World.Battlefronts.NewDawn
         //}
 
 
+        ///
+        /// Unlocks this NDBF for capture.
+        /// 
         public void ResetPairing()
         {
-            _logger.Trace($"Resetting Pairing...");
-
+            _logger.Trace($"Resetting Pairing...{this.ActiveZoneName}");
+            
             VictoryPointProgress.Reset(this);
             LockingRealm = Realms.REALMS_REALM_NEUTRAL;
-
-            //VictoryPoints = 50;
-            //LastAnnouncedVictoryPoints = 50;
 
             foreach (var flag in Objectives)
                 flag.UnlockObjective();
@@ -526,13 +526,9 @@ namespace WorldServer.World.Battlefronts.NewDawn
             foreach (Keep keep in _Keeps)
                 keep.NotifyPairingUnlocked();
 
-            //Broadcast(Region.ZonesInfo[0].Name + " and " + Region.ZonesInfo[1].Name + " battlefield objectives are now open for capture!");
-
-            //ActiveSupplyLine = 1;
-
             //UpdateStateOfTheRealm();
 
-            // This seems to look at all battlefronts and report their status, but incorrectly in the new system.
+            // This seems to look at all BattleFronts and report their status, but incorrectly in the new system.
             // TODO - fix
             // WorldMgr.SendCampaignStatus(null);
         }
@@ -543,7 +539,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
         { get; set; }
 
         /// <summary>
-        /// Sends information to a player about the objectives within a Battlefront upon their entry.
+        /// Sends information to a player about the objectives within a BattleFront upon their entry.
         /// </summary>
         /// <param name="plr"></param>
         public void SendObjectives(Player plr)
@@ -558,13 +554,13 @@ namespace WorldServer.World.Battlefronts.NewDawn
         /// </summary>
         private void UpdateVictoryPoints()
         {
-            _logger.Trace($"Updating Victory Points for {this.BattlefrontName}");
+            _logger.Trace($"Updating Victory Points for {this.BattleFrontName}");
             // Locked by Order/Dest
             if (PairingLocked)
                 return; // Nothing to do
 
             // Only update an active pair
-            if (BattleFrontManager.GetActivePairing().RegionId != this.Region.RegionId)
+            if (BattleFrontManager.ActiveBattleFront.RegionId != this.Region.RegionId)
                 return;
 
             // Victory depends on objective securization in t1
@@ -574,7 +570,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
             foreach (NewDawnBattlefieldObjective flag in Objectives)
             {
-                _logger.Trace($"Reward Ticks {this.BattlefrontName} - {flag.ToString()}");
+                _logger.Trace($"Reward Ticks {this.BattleFrontName} - {flag.ToString()}");
                 // TODO - perhaps use AAO calculation here as a pairing scaler?.
                 var vp = flag.RewardCaptureTick(1f);
 
@@ -662,7 +658,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
             return ZONE_STATUS_CONTESTED;
         }
 
-        public void WriteBattlefrontStatus(PacketOut Out)
+        public void WriteBattleFrontStatus(PacketOut Out)
         {
             _logger.Trace(".");
             //Out.WriteByte((byte)GetZoneOwnership(Zones[2].ZoneId));
@@ -718,10 +714,10 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
             if (!bLocalZone)
             {
-                List<IBattlefront> battleFronts = BattlefrontList.Battlefronts[Tier - 1];
-                foreach (IBattlefront battleFront in battleFronts)
-                    if (!ReferenceEquals(battleFront, this))
-                        battleFront.CampaignDiagnostic(player, true);
+                List<IBattleFront> BattleFronts = BattleFrontList.BattleFronts[Tier - 1];
+                foreach (IBattleFront BattleFront in BattleFronts)
+                    if (!ReferenceEquals(BattleFront, this))
+                        BattleFront.CampaignDiagnostic(player, true);
             }
         }
 
@@ -785,7 +781,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
             }
         }
 
-        public float GetControlHighFor(IBattlefrontFlag currentFlag, Realms realm)
+        public float GetControlHighFor(IBattleFrontFlag currentFlag, Realms realm)
         {
             int count = 0, totalCount;
 
@@ -858,7 +854,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
                 if (player.Zone != null)
                 {
                     Realms opposite = player.Realm == Realms.REALMS_REALM_DESTRUCTION ? Realms.REALMS_REALM_ORDER : Realms.REALMS_REALM_DESTRUCTION;
-                    Point3D warcampLoc = BattlefrontService.GetWarcampEntrance(player.Zone.ZoneId, opposite);
+                    Point3D warcampLoc = BattleFrontService.GetWarcampEntrance(player.Zone.ZoneId, opposite);
 
                     if (warcampLoc != null)
                     {

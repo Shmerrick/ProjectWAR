@@ -1,148 +1,125 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
+using Common.Database.World.Battlefront;
 using GameData;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorldServer.Managers.Commands;
-using WorldServer.World.Battlefronts.NewDawn;
+using WorldServer.World.BattleFronts.NewDawn;
 
 namespace WorldServer.Test
 {
     [TestClass]
-    public class LowerTierBattlefrontManagerTest
+    public class LowerTierBattleFrontManagerTest
     {
-        public LowerTierBattlefrontManager manager { get; set; }
-        public LowerTierRacialPairManager RacialPairManager { get; set; }
+        public LowerTierBattleFrontManager manager { get; set; }
+        public List<RVRProgression> SampleProgressionList { get; set; }
 
+      
         [TestInitialize]
         public void Setup()
         {
-            manager = new LowerTierBattlefrontManager();
-            RacialPairManager = new LowerTierRacialPairManager();
-        }
-        [TestMethod]
-        public void SetInitialPairActive_ReturnsT1Emp()
-        {
-            manager.SetInitialPairActive();
-            Assert.IsTrue(RacialPairHelper.Equals(manager.GetActivePairing(), RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 1)));
+
+            SampleProgressionList = new List<RVRProgression>();
+            SampleProgressionList.Add(new RVRProgression
+            {
+                Tier = 1,
+                ZoneId = 100,
+                BattleFrontId = 1,
+                Description = "Norsca",   // named for default pickup
+                DestWinProgression = 2,
+                OrderWinProgression = 3,
+                PairingId = 2
+            });
+            SampleProgressionList.Add(new RVRProgression
+            {
+                Tier = 1,
+                ZoneId = 110,
+                BattleFrontId = 2,
+                Description = "BF2",
+                DestWinProgression = 6,
+                OrderWinProgression = 7,
+                PairingId = 2
+            });
+            SampleProgressionList.Add(new RVRProgression
+            {
+                Tier = 1,
+                ZoneId = 120,
+                BattleFrontId = 6,
+                Description = "BF3",
+                DestWinProgression = 1,
+                OrderWinProgression = 2,
+                PairingId = 1
+            });
+            manager = new LowerTierBattleFrontManager(SampleProgressionList);
         }
 
-       
+        [TestMethod]
+        public void Constructor_NoPairings_CreatesError()
+        {
+            var manager = new LowerTierBattleFrontManager(null);
+            Assert.IsNull(manager.ActiveBattleFront);
+        }
+
+        [TestMethod]
+        public void Constructor_NoActivePairings_CreatesError()
+        {
+            var manager = new LowerTierBattleFrontManager(SampleProgressionList);
+            Assert.IsNull(manager.ActiveBattleFront);
+        }
+
         [TestMethod]
         public void ResetActivePairing()
         {
-            manager.SetActivePairing(RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 1));
-            manager.ResetActivePairings();
-
-            Assert.IsNull(manager.GetActivePairing());
-
+            var manager = new LowerTierBattleFrontManager(SampleProgressionList);
+            var bf = manager.ResetBattleFrontProgression();
+            Assert.IsTrue(bf.BattleFrontId == 1);
         }
 
         [TestMethod]
         public void ActivePairingLocated()
         {
-            manager.SetActivePairing(RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 1));
-            Assert.IsTrue(RacialPairHelper.Equals(manager.GetActivePairing(), RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 1)));
-            Assert.IsFalse(RacialPairHelper.Equals(manager.GetActivePairing(), RacialPairManager.GetByPair(Pairing.PAIRING_GREENSKIN_DWARVES, 1)));
-            Assert.IsFalse(RacialPairHelper.Equals(manager.GetActivePairing(), RacialPairManager.GetByPair(Pairing.PAIRING_ELVES_DARKELVES, 1)));
 
-            manager.SetActivePairing(RacialPairManager.GetByPair(Pairing.PAIRING_GREENSKIN_DWARVES, 1));
-            Assert.IsFalse(RacialPairHelper.Equals(manager.GetActivePairing(), RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 1)));
-            Assert.IsTrue(RacialPairHelper.Equals(manager.GetActivePairing(), RacialPairManager.GetByPair(Pairing.PAIRING_GREENSKIN_DWARVES, 1)));
-            Assert.IsFalse(RacialPairHelper.Equals(manager.GetActivePairing(), RacialPairManager.GetByPair(Pairing.PAIRING_ELVES_DARKELVES, 1)));
+            var manager = new LowerTierBattleFrontManager(SampleProgressionList);
+            var bf = manager.ResetBattleFrontProgression();
+            Assert.IsTrue(bf.DestWinProgression == 2);
+            Assert.IsTrue(bf.BattleFrontId == 1);
 
-        }
+            bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            Assert.IsTrue(bf.BattleFrontId == 2);
+            Assert.IsTrue(bf.DestWinProgression == 6);
+            Assert.IsTrue(bf.OrderWinProgression == 7);
+            Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 2);
 
-        [TestMethod]
-        public void SetActivePair_Deactivates()
-        {
+            bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            Assert.IsTrue(bf.BattleFrontId == 6);
+            Assert.IsTrue(bf.DestWinProgression == 1);
+            Assert.IsTrue(bf.OrderWinProgression == 2);
+            Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 6);
 
-            manager.SetActivePairing(RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 1));
+            bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_ORDER);
+            Assert.IsTrue(bf.BattleFrontId == 2);
+            Assert.IsTrue(bf.DestWinProgression == 6);
+            Assert.IsTrue(bf.OrderWinProgression == 7);
+            Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 2);
 
-            Assert.IsFalse(RacialPairHelper.Equals(manager.GetActivePairing(), RacialPairManager.GetByPair(Pairing.PAIRING_GREENSKIN_DWARVES, 1)));
-            Assert.IsFalse(RacialPairHelper.Equals(manager.GetActivePairing(), RacialPairManager.GetByPair(Pairing.PAIRING_GREENSKIN_DWARVES, 1)));
-        }
+            bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            Assert.IsTrue(bf.BattleFrontId == 6);
+            Assert.IsTrue(bf.DestWinProgression == 1);
+            Assert.IsTrue(bf.OrderWinProgression == 2);
+            Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 6);
 
-        [TestMethod]
-        public void SetActivePair_Activates()
-        {
-            manager.SetActivePairing(RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 1));
-            Assert.IsTrue(RacialPairHelper.Equals(manager.GetActivePairing(), RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 1)));
+            bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            Assert.IsTrue(bf.BattleFrontId == 1);
+            Assert.IsTrue(bf.DestWinProgression == 2);
+            Assert.IsTrue(bf.OrderWinProgression == 3);
 
-            manager.SetActivePairing(RacialPairManager.GetByPair(Pairing.PAIRING_GREENSKIN_DWARVES, 1));
-            Assert.IsTrue(RacialPairHelper.Equals(manager.GetActivePairing(), RacialPairManager.GetByPair(Pairing.PAIRING_GREENSKIN_DWARVES, 1)));
-
-            manager.SetActivePairing(RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 1));
-            Assert.IsTrue(RacialPairHelper.Equals(manager.GetActivePairing(), RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 1)));
-
-        }
-
-        [TestMethod]
-        public void GetNextTier_ReturnsCorrectValues()
-        {
-            Assert.IsTrue(manager.GetNextTier(0) == 1);
-            Assert.IsTrue(manager.GetNextTier(1) == 1);
-            Assert.IsTrue(manager.GetNextTier(2) == 1);
-            Assert.IsTrue(manager.GetNextTier(3) == 1);
-            Assert.IsTrue(manager.GetNextTier(4) == 1);
-            Assert.IsTrue(manager.GetNextTier(99) == 1);
-        }
-
-
-
-        [TestMethod]
-        public void AdvancePairing_NoActivePairing()
-        {
-
-            var newPairing = manager.AdvancePairing();
-            Assert.IsNotNull(newPairing);
-            Assert.IsFalse(RacialPairHelper.Equals(newPairing, RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 1)));
-        }
-
-
-        [TestMethod]
-        public void AdvancePairing()
-        {
-            // Chaos -> Elf
-
-            manager.SetActivePairing(RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 1));
-
-            var newPairing1 = manager.AdvancePairing();
-            Assert.IsNotNull(newPairing1);
-            Assert.IsFalse(RacialPairHelper.Equals(newPairing1, RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 1)));
-            Assert.IsTrue(RacialPairHelper.Equals(newPairing1, RacialPairManager.GetByPair(Pairing.PAIRING_ELVES_DARKELVES, 1)));
-
-
-            // Elf -> Greenskin
-            manager.SetActivePairing(RacialPairManager.GetByPair(Pairing.PAIRING_ELVES_DARKELVES, 1));
-
-            var newPairing2 = manager.AdvancePairing();
-            Assert.IsNotNull(newPairing2);
-            Assert.IsTrue(RacialPairHelper.Equals(newPairing2, RacialPairManager.GetByPair(Pairing.PAIRING_GREENSKIN_DWARVES, 1)));
-            
-            // Greenskin -> Chaos
-            manager.SetActivePairing(RacialPairManager.GetByPair(Pairing.PAIRING_GREENSKIN_DWARVES, 1));
-
-            var newPairing3 = manager.AdvancePairing();
-            Assert.IsNotNull(newPairing3);
-            Assert.IsTrue(RacialPairHelper.Equals(newPairing3, RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 1)));
-
-
-            var newPairing4 = manager.AdvancePairing();
-            Assert.IsNotNull(newPairing4);
-            Assert.IsTrue(RacialPairHelper.Equals(newPairing4, RacialPairManager.GetByPair(Pairing.PAIRING_ELVES_DARKELVES, 1)));
-
-            var newPairing5 = manager.AdvancePairing();
-            Assert.IsNotNull(newPairing5);
-            Assert.IsTrue(RacialPairHelper.Equals(newPairing5, RacialPairManager.GetByPair(Pairing.PAIRING_GREENSKIN_DWARVES, 1)));
-
-            var newPairing6 = manager.AdvancePairing();
-            Assert.IsNotNull(newPairing6);
-            Assert.IsTrue(RacialPairHelper.Equals(newPairing6, RacialPairManager.GetByPair(Pairing.PAIRING_EMPIRE_CHAOS, 1)));
-
-
+            Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 1);
+            Assert.IsTrue(manager.ActiveBattleFront.DestWinProgression == 2);
+            Assert.IsTrue(manager.ActiveBattleFront.OrderWinProgression == 3);
         }
 
 
     }
+
 }

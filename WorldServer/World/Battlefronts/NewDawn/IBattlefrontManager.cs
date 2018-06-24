@@ -1,41 +1,20 @@
 ﻿using System.Collections.Generic;
+using Common.Database.World.Battlefront;
+using GameData;
 
-namespace WorldServer.World.Battlefronts.NewDawn
+namespace WorldServer.World.BattleFronts.NewDawn
 {
-    public interface IBattlefrontManager
+    public interface IBattleFrontManager
     {
-        RacialPairManager RacialPairManager { get; set; }
+        RVRProgression ResetBattleFrontProgression();
+        RVRProgression GetBattleFrontByName(string name);
+        RVRProgression GetBattleFrontByBattleFrontId(int id);
+        RVRProgression AdvanceBattleFront(Realms lockingRealm);
 
-        /// <summary>
-        /// For each pairing set their active status = false.
-        /// </summary>
-        void ResetActivePairings();
-
-        /// <summary>
-        /// Returns the Active battlefront pair.
-        /// </summary>
-        /// <returns></returns>
-        RacialPair GetActivePairing();
-
-        /// <summary>
-        /// Set the Active battlefront pair. Set all others to be inactive.
-        /// </summary>
-        /// <returns></returns>
-        RacialPair SetActivePairing(RacialPair newActivePair);
-
-        /// <summary>
-        /// Advance the battlefront pairing on lock of a pairing (or start of the server).
-        /// Pairings logic is (if nothing active, set random T2 pairing), otherwise follow the racial pairings (eg T2 Chaos -> T3 Chaos -> T4 Chaos).
-        /// On lock of T4 select random T2 pairing.
-        /// </summary>
-        RacialPair AdvancePairing();
-
-        /// <summary>
-        /// Return the next tier if the zone pair locks.
-        /// </summary>
-        /// <param name="activeTier"></param>
-        /// <returns></returns>
-        int GetNextTier(int activeTier);
-
+        string ActiveBattleFrontName { get; set; }
+        RVRProgression ActiveBattleFront { get; set; }
+        void AuditBattleFronts(int tier);
+        void LockBattleFronts(int tier);
+        void OpenActiveBattlefront();
     }
 }

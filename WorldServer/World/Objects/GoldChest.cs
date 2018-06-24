@@ -7,7 +7,7 @@ using SystemData;
 using System.Linq;
 using WorldServer.World.Objects.PublicQuests;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts;
+using WorldServer.World.BattleFronts;
 
 namespace WorldServer
 {
@@ -252,15 +252,15 @@ namespace WorldServer
             {
                 _bags[i] = 0;
             }
-            ProximityBattlefront bf = null;
+            ProximityBattleFront bf = null;
             int aaoMult = 0;
             bool isBonusAppliedAndConsumed = true;
             Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
             Player targPlayer = Player.GetPlayer(player.PlayerCharId);
             Character targCharacter = CharMgr.GetCharacter(player.PlayerCharId, true);
-            if (region != null && region.Bttlfront != null && region.Bttlfront is ProximityBattlefront)
+            if (region != null && region.Bttlfront != null && region.Bttlfront is ProximityBattleFront)
             {
-                bf = region.Bttlfront as ProximityBattlefront;
+                bf = region.Bttlfront as ProximityBattleFront;
                 if (bf != null)
                 {
                     aaoMult = Math.Abs(bf._againstAllOddsMult);

@@ -1,11 +1,11 @@
 ﻿using FrameWork;
 using GameData;
 using System.Collections.Generic;
-using WorldServer.World.Battlefronts.Keeps;
-using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.World.Objects.PublicQuests;
 
-namespace WorldServer.World.Battlefronts
+namespace WorldServer.World.BattleFronts
 {
     /// <summary>
     /// RegionManagers as seen by external parts of the server.
@@ -13,24 +13,24 @@ namespace WorldServer.World.Battlefronts
     /// <remarks>
     /// Both lecacy and RoR battlefonts implement this interface.
     /// </remarks>
-    public interface IBattlefront
+    public interface IBattleFront
     {
         /// <summary>
-        /// Main battlefront update method, invoked by region manager, short perdiod.
+        /// Main BattleFront update method, invoked by region manager, short perdiod.
         /// </summary>
         /// <param name="start">Timestamp of region manager update start time</param>
         void Update(long start);
 
         /// <summary>
         /// Notifies the given player has entered the lake,
-        /// removing it from the battlefront's active players list and setting the rvr buff(s).
+        /// removing it from the BattleFront's active players list and setting the rvr buff(s).
         /// </summary>
         /// <param name="plr">Player to add, not null</param>
         void NotifyEnteredLake(Player plr);
 
         /// <summary>
         /// Notifies the given player has left the lake,
-        /// removing it from the battlefront's active players lift and removing the rvr buff(s).
+        /// removing it from the BattleFront's active players lift and removing the rvr buff(s).
         /// </summary>
         /// <param name="plr">Player to remove, not null</param>
         void NotifyLeftLake(Player plr);
@@ -38,7 +38,7 @@ namespace WorldServer.World.Battlefronts
         /// <summary>
         /// Locks a pairing, preventing any interaction with objectives within.
         /// </summary>
-        /// <param name="realm">Realm that locked the battlefront</param>
+        /// <param name="realm">Realm that locked the BattleFront</param>
         /// <param name="announce">True to announce the lock to players</param>
         void LockPairing(Realms realm, bool announce, bool restoreStatus = false, bool noRewards = false, bool draw = false);
 
@@ -91,7 +91,7 @@ namespace WorldServer.World.Battlefronts
         /// <summary>
         /// Scales battlefield objective rewards by the following factors:
         /// <para>- The internal AAO</para>
-        /// <para>- The relative activity in this battlefront compared to others in its tier</para>
+        /// <para>- The relative activity in this BattleFront compared to others in its tier</para>
         /// <para>- The total number of people fighting</para>
         /// <para>- The capturing realm's population at this objective.</para>
         /// </summary>
@@ -115,7 +115,7 @@ namespace WorldServer.World.Battlefronts
         float GetLockPopulationScaler(Realms realm);
 
         /// <summary>
-        /// A scaler for the reward of objectives captured in this battlefront, based on its activity relative to other fronts of the same tier.
+        /// A scaler for the reward of objectives captured in this BattleFront, based on its activity relative to other fronts of the same tier.
         /// </summary>
         float RelativeActivityFactor { get; }
 
@@ -129,13 +129,13 @@ namespace WorldServer.World.Battlefronts
 
         #region Send
         /// <summary>
-        /// Sends information to a player about the objectives within a battlefront upon their entry.
+        /// Sends information to a player about the objectives within a BattleFront upon their entry.
         /// </summary>
         /// <param name="plr">Player to send list to</param>
         void SendObjectives(Player plr);
 
         /// <summary>
-        /// Writes current capture status of the battlefront in output.
+        /// Writes current capture status of the BattleFront in output.
         /// </summary>
         /// <param name="Out">TCP output</param>
         void WriteCaptureStatus(PacketOut Out);
@@ -151,7 +151,7 @@ namespace WorldServer.World.Battlefronts
         /// Writes battle front advancement status (t4 only, otherwise throws a notimplemented exception).
         /// </summary>
         /// <param name="Out">TCP output</param>
-        void WriteBattlefrontStatus(PacketOut Out);
+        void WriteBattleFrontStatus(PacketOut Out);
 
         /// <summary>
         /// Broadcasts a message to all valid players in the lake.
@@ -194,15 +194,15 @@ namespace WorldServer.World.Battlefronts
         bool CanSustainRank(Realms realm, int resourceValueMax);
 
         /// <summary>
-        /// List of existing battlefield objectives within this battlefront.
+        /// List of existing battlefield objectives within this BattleFront.
         /// </summary>
-        IEnumerable<IBattlefrontFlag> Objectives { get; }
+        IEnumerable<IBattleFrontFlag> Objectives { get; }
 
         /// <summary>
-        /// List of existing keeps in battlefront.
+        /// List of existing keeps in BattleFront.
         /// </summary>
         /// <remarks>
-        /// Must not be updated outside battlefront implementations.
+        /// Must not be updated outside BattleFront implementations.
         /// </remarks>
         List<Keep> Keeps { get; }
 
@@ -210,7 +210,7 @@ namespace WorldServer.World.Battlefronts
         /// Utility method returning the closest keep of the given point.
         /// </summary>
         /// <param name="destPos">Point to search flag from</param>
-        /// <returns>Keep or null if battlefront has noo keep</returns>
+        /// <returns>Keep or null if BattleFront has noo keep</returns>
         Keep GetClosestKeep(Point3D destPos);
 
         /// <summary>
@@ -218,14 +218,14 @@ namespace WorldServer.World.Battlefronts
         /// </summary>
         /// <param name="destPos">Point to search flag from</param>
         /// <param name="inPlay">True to require the returned flag being in an active zone</param>
-        /// <returns>Flag (or null if battlefront has no flag)</returns>
-        IBattlefrontFlag GetClosestFlag(Point3D destPos, bool inPlay = false);
+        /// <returns>Flag (or null if BattleFront has no flag)</returns>
+        IBattleFrontFlag GetClosestFlag(Point3D destPos, bool inPlay = false);
         #endregion
         
         /// <summary>For legacy purpose.</summary>
         bool NoSupplies { get; }
 
         /// <summary>For legacy purpose.</summary>
-        float GetControlHighFor(IBattlefrontFlag currentFlag, Realms realm);
+        float GetControlHighFor(IBattleFrontFlag currentFlag, Realms realm);
     }
 }

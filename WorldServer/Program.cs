@@ -8,7 +8,8 @@ using System.Reflection;
 
 using Common;
 using FrameWork;
-using WorldServer.World.Battlefronts.NewDawn;
+using WorldServer.Services.World;
+using WorldServer.World.BattleFronts.NewDawn;
 
 namespace WorldServer
 {
@@ -89,16 +90,6 @@ namespace WorldServer
             }
 
 
-            WorldMgr.UpperTierBattlefrontManager = new UpperTierBattlefrontManager();
-            WorldMgr.UpperTierBattlefrontManager.SetInitialPairActive();
-            Log.Texte("Creating Upper Tier Battlefront Manager", WorldMgr.UpperTierBattlefrontManager.GetActivePairing().PairingName, ConsoleColor.Cyan);
-
-            WorldMgr.LowerTierBattlefrontManager = new LowerTierBattlefrontManager();
-            WorldMgr.LowerTierBattlefrontManager.SetInitialPairActive();
-            Log.Texte("Creating Lower Tier Battlefront Manager", WorldMgr.LowerTierBattlefrontManager.GetActivePairing().PairingName, ConsoleColor.Cyan);
-
-
-            Log.Texte("StartingPairing: ", WorldMgr.StartingPairing.ToString(), ConsoleColor.Cyan);
 
             Client = new RpcClient("WorldServer-" + Config.RealmId, Config.AccountCacherInfo.RpcLocalIp, 1);
             if (!Client.Start(Config.AccountCacherInfo.RpcServerIp, Config.AccountCacherInfo.RpcServerPort))
@@ -113,6 +104,29 @@ namespace WorldServer
             }
 
             LoaderMgr.Start();
+
+            WorldMgr.UpperTierBattleFrontManager = new UpperTierBattleFrontManager(RVRProgressionService._RVRProgressions.Where(x=>x.Tier == 4).ToList());
+
+            WorldMgr.LowerTierBattleFrontManager = new LowerTierBattleFrontManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 1).ToList());
+            WorldMgr.UpperTierBattleFrontManager.ResetBattleFrontProgression();
+            WorldMgr.LowerTierBattleFrontManager.ResetBattleFrontProgression();
+            // Attach Battlefronts to regions
+            WorldMgr.AttachBattleFronts();
+
+            WorldMgr.UpperTierBattleFrontManager.LockBattleFronts(4);
+            WorldMgr.UpperTierBattleFrontManager.AuditBattleFronts(4);
+            Log.Texte("Creating Upper Tier BattleFront Manager", WorldMgr.UpperTierBattleFrontManager.ActiveBattleFrontName, ConsoleColor.Cyan);
+
+            WorldMgr.LowerTierBattleFrontManager.LockBattleFronts(1);
+            WorldMgr.LowerTierBattleFrontManager.AuditBattleFronts(1);
+            Log.Texte("Creating Lower Tier BattleFront Manager", WorldMgr.LowerTierBattleFrontManager.ActiveBattleFrontName, ConsoleColor.Cyan);
+
+            WorldMgr.UpperTierBattleFrontManager.OpenActiveBattlefront();
+            WorldMgr.LowerTierBattleFrontManager.OpenActiveBattlefront();
+
+
+            Log.Texte("StartingPairing: ", WorldMgr.StartingPairing.ToString(), ConsoleColor.Cyan);
+
 
             if (!TCPManager.Listen<TCPServer>(Rm.Port, "World"))
                 ConsoleMgr.WaitAndExit(2000);

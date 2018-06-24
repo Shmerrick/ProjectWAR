@@ -6,9 +6,9 @@ namespace WorldServer
 { 
     class ResourceBox : HoldObject
     {
-        // Codeword p0tat0 This is for DoomsDay event and cannot be done by switch, default type here was BattlefrontFlag, not ProximityFlag
-        //public BattlefrontFlag Objective;
-        public World.Battlefronts.Objectives.ProximityFlag Objective;
+        // Codeword p0tat0 This is for DoomsDay event and cannot be done by switch, default type here was BattleFrontFlag, not ProximityFlag
+        //public BattleFrontFlag Objective;
+        public World.BattleFronts.Objectives.ProximityFlag Objective;
 
         public ResourceBox(uint identifier, string name, Point3D homePosition, ushort buffId, int groundResetTime, InteractAction onPickupAction, BallAction onDropAction, BallAction onResetAction, BuffQueueInfo.BuffCallbackDelegate onBuffCallback, ushort groundModelId, ushort homeModelId) 
             : base(identifier, name, homePosition, buffId, groundResetTime, onPickupAction, onDropAction, onResetAction, onBuffCallback, groundModelId, homeModelId)
