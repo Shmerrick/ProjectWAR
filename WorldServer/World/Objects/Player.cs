@@ -225,6 +225,8 @@ namespace WorldServer
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
         private static readonly Logger DeathLogger = LogManager.GetLogger("DeathLogger");
 
+        private ushort _maxActionPoints;
+
         public Character Info;
         public Character_value _Value;
 
@@ -571,6 +573,7 @@ namespace WorldServer
 
                 SetLevel(_Value.Level);
                 SetRenownLevel(_Value.RenownRank);
+                SetMaxActionPoints(_Value.RenownRank);
 
                 SendLocalizeString(/*Program.Config.Motd*/ _motd, ChatLogFilters.CHATLOGFILTERS_CITY_ANNOUNCE, Localized_text.TEXT_SERVER_MOTD);
                 MlInterface.SendMailCount();
@@ -679,6 +682,22 @@ namespace WorldServer
                 BuffInterface.RemoveBuffByEntry(5968);
             }
 
+        }
+
+        private void SetMaxActionPoints(byte valueRenownRank)
+        {
+            if (valueRenownRank > 65)
+            {
+                MaxActionPoints = 275;
+            }
+            else if (valueRenownRank > 75)
+            {
+                MaxActionPoints = 300;
+            }
+            else
+            {
+                MaxActionPoints = 250;
+            }
         }
 
         public void StartInit()
@@ -2957,7 +2976,7 @@ namespace WorldServer
 
             if (Level >= Program.Config.RankCap)
                 return;
-            
+
             _Value.Xp = 0;
             SetLevel((byte)(Level + 1));
 
@@ -3036,7 +3055,7 @@ namespace WorldServer
             if (renown == 0)
                 return;
 
-            
+
             int aaoMult = 0;
             Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
             if (Region != null && Region.ndbf != null)
@@ -3045,7 +3064,7 @@ namespace WorldServer
                 {
                     aaoMult = Math.Abs(Region.ndbf.AgainstAllOddsMult);
                     if (aaoMult != 0)
-                        aaoRealm = Region.ndbf.AgainstAllOddsMult> 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
+                        aaoRealm = Region.ndbf.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
                 }
                 if (aaoMult > 2)
                     aaoMult = 2;
@@ -3089,7 +3108,7 @@ namespace WorldServer
             if (renown > 100000)
             {
                 renown = 100000;
-                Log.Error("AddKillRenown (mult)", "Player received outrageous renown level (" + renown + ") - " + "(" + type.ToString() + ") - " + "(" + shouldPool.ToString() + ") - "+ Environment.StackTrace);
+                Log.Error("AddKillRenown (mult)", "Player received outrageous renown level (" + renown + ") - " + "(" + type.ToString() + ") - " + "(" + shouldPool.ToString() + ") - " + Environment.StackTrace);
                 SendClientMessage("You somehow gained an amount of renown larger than the system allows (" + renown + "). You have been given the cap.");
                 return;
             }
@@ -3143,7 +3162,7 @@ namespace WorldServer
             Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
             if (Region != null && Region.ndbf != null)
             {
-                
+
                 if (Region.ndbf != null)
                 {
                     aaoMult = Math.Abs(Region.ndbf.AgainstAllOddsMult);
@@ -3805,7 +3824,7 @@ namespace WorldServer
                 {
                     DeathLogger.Trace($"Victim : {this.Name} Group Member : {pg.Name} ");
                 }
-                
+
                 if (playerKiller.PriorityGroup != null)
                 {
                     List<Player> curMembers = playerKiller.PriorityGroup.GetPlayersCloseTo(playerKiller, 150);
@@ -4351,7 +4370,8 @@ namespace WorldServer
             }
         }
 
-        public ushort MaxActionPoints { get; set; } = 250;
+        public ushort MaxActionPoints { get; set; }
+
 
         public byte PctAp => (byte)((ActionPoints * 100) / MaxActionPoints);
 
@@ -5654,7 +5674,7 @@ namespace WorldServer
         public bool Save(Object sender, object args)
         {
             EvtInterface.AddEvent(Save, AUTO_SAVE_TIME, 0);
-            return true; 
+            return true;
         }
         public override void Save()
         {
