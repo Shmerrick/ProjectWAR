@@ -158,6 +158,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 return false;
             }
 
+            /*
             // Keep doors block all hits that are not from ST siege
             public override void ModifyDamageIn(AbilityDamageInfo damageInfo)
             {
@@ -197,6 +198,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                         break;
                 }
             }
+            */
 
             public override bool AllowInteract(Player interactor)
             {
