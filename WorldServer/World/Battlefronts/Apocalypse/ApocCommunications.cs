@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FrameWork;
-using GameData;
+﻿using FrameWork;
 
-namespace WorldServer.World.BattleFronts.NewDawn
+namespace WorldServer.World.Battlefronts.Apocalypse
 {
-    public class NewDawnCommunications
+    public class ApocCommunications
     {
         public void SendFlagLeft(Player plr, int id)
         {

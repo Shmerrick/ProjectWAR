@@ -1,7 +1,7 @@
 ﻿using GameData;
 using NLog;
 
-namespace WorldServer.World.BattleFronts.NewDawn
+namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public class VictoryPointProgress
     {
@@ -81,7 +81,7 @@ namespace WorldServer.World.BattleFronts.NewDawn
         /// <summary>
         /// Reset the realm to be owned by Neutral. 
         /// </summary>
-        public void Reset(NewDawnBattleFront BattleFront)
+        public void Reset(ApocBattleFront BattleFront)
         {
             _logger.Debug($"Resetting BattleFront {BattleFront.ActiveZoneName} to Neutral");
             OrderVictoryPoints = 0;

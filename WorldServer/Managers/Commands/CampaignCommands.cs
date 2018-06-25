@@ -13,9 +13,8 @@ using Common.Database.World.BattleFront;
 using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.Services.World;
-using WorldServer.World.BattleFronts.NewDawn;
-using BattleFrontConstants = WorldServer.World.BattleFronts.NewDawn.BattleFrontConstants;
-using WorldServer.World.BattleFronts.NewDawn;
+using WorldServer.World.Battlefronts.Apocalypse;
+using BattleFrontConstants = WorldServer.World.Battlefronts.Apocalypse.BattleFrontConstants;
 
 namespace WorldServer.Managers.Commands
 {
@@ -467,7 +466,7 @@ namespace WorldServer.Managers.Commands
                 SendCsr(plr, "CAMPAIGN SUPPLY: Must be in a RvR zone to use this command.");
                 return;
             }
-            var BattleFront = (NewDawnBattleFront)plr.Region.ndbf;
+            var BattleFront = (ApocBattleFront)plr.Region.ndbf;
 
             if (realm == Realms.REALMS_REALM_ORDER)
                 BattleFront.VictoryPointProgress.OrderVictoryPoints = points;

@@ -5,7 +5,7 @@ using Common.Database.World.Battlefront;
 using GameData;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorldServer.Managers.Commands;
-using WorldServer.World.BattleFronts.NewDawn;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer.Test
 {

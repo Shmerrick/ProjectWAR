@@ -7,9 +7,9 @@ using Common;
 using FrameWork;
 using GameData;
 using WorldServer.World.BattleFronts;
-using WorldServer.World.BattleFronts.NewDawn;
 using WorldServer.World.BattleFronts.Objectives;
 using NLog;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer
 {
@@ -1861,7 +1861,7 @@ namespace WorldServer
             }
         }
 
-        public void HandleKillRewards(Unit victim, Player killer, float bonusMod, uint xp, uint renown, ushort influenceId, ushort influence, float transferenceFactor, NewDawnBattlefieldObjective closestFlag)
+        public void HandleKillRewards(Unit victim, Player killer, float bonusMod, uint xp, uint renown, ushort influenceId, ushort influence, float transferenceFactor, ApocBattlefieldObjective closestFlag)
         {
             List<Player> members = GetPlayersCloseTo(victim, MAX_SHARE_DIST);
 

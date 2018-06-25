@@ -1,23 +1,23 @@
-﻿using Common;
-using FrameWork;
-using GameData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
+using Common;
+using FrameWork;
+using GameData;
 using NLog;
 using WorldServer.Services.World;
+using WorldServer.World.BattleFronts;
 using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.World.Objects.PublicQuests;
-using static WorldServer.World.BattleFronts.BattleFrontConstants;
 
-namespace WorldServer.World.BattleFronts.NewDawn
+namespace WorldServer.World.Battlefronts.Apocalypse
 {
     /// <summary>
     /// Represents an open RVR front in a given Region (1 Region -> n Zones) Eg Region 14 (T2 Emp -> Zone 101 Troll Country & Zone 107 Ostland
     /// </summary>
-    public class NewDawnBattleFront
+    public class ApocBattleFront
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public VictoryPointProgress VictoryPointProgress { get; set; }
@@ -33,7 +33,7 @@ namespace WorldServer.World.BattleFronts.NewDawn
         protected readonly EventInterface _EvtInterface = new EventInterface();
 
         public HashSet<Player> PlayersInLakeSet;
-        public List<NewDawnBattlefieldObjective> Objectives;
+        public List<ApocBattlefieldObjective> Objectives;
         public bool PairingLocked => LockingRealm != Realms.REALMS_REALM_NEUTRAL;
         public Realms LockingRealm { get; protected set; } = Realms.REALMS_REALM_NEUTRAL;
         private volatile int _orderCount = 0;
@@ -83,7 +83,7 @@ namespace WorldServer.World.BattleFronts.NewDawn
         /// <param name="regionMgr"></param>
         /// <param name="objectives"></param>
         /// <param name="players"></param>
-        public NewDawnBattleFront(RegionMgr regionMgr, List<NewDawnBattlefieldObjective> objectives, HashSet<Player> players, IBattleFrontManager bfm)
+        public ApocBattleFront(RegionMgr regionMgr, List<ApocBattlefieldObjective> objectives, HashSet<Player> players, IBattleFrontManager bfm)
         {
             this.Region = regionMgr;
             this.VictoryPointProgress = new VictoryPointProgress();
@@ -172,7 +172,7 @@ namespace WorldServer.World.BattleFronts.NewDawn
 
             foreach (BattleFront_Objective obj in objectives)
             {
-                NewDawnBattlefieldObjective flag = new NewDawnBattlefieldObjective(obj, Region.GetTier());
+                ApocBattlefieldObjective flag = new ApocBattlefieldObjective(obj, Region.GetTier());
                 Objectives.Add(flag);
                 Region.AddObject(flag, obj.ZoneId);
                 flag.BattleFront = this;
@@ -552,7 +552,7 @@ namespace WorldServer.World.BattleFronts.NewDawn
         public void SendObjectives(Player plr)
         {
             _logger.Trace(".");
-            foreach (NewDawnBattlefieldObjective bo in Objectives)
+            foreach (ApocBattlefieldObjective bo in Objectives)
                 bo.SendFlagState(plr, false);
         }
 
@@ -575,7 +575,7 @@ namespace WorldServer.World.BattleFronts.NewDawn
             float destroVictoryPoints = VictoryPointProgress.DestructionVictoryPoints;
             int flagCount = 0, destroFlagCount = 0, orderFlagCount = 0;
 
-            foreach (NewDawnBattlefieldObjective flag in Objectives)
+            foreach (ApocBattlefieldObjective flag in Objectives)
             {
                 _logger.Trace($"Reward Ticks {this.BattleFrontName} - {flag.ToString()}");
                 // TODO - perhaps use AAO calculation here as a pairing scaler?.
@@ -601,12 +601,12 @@ namespace WorldServer.World.BattleFronts.NewDawn
             }
 
             // Victory points update
-            VictoryPointProgress.OrderVictoryPoints = Math.Min(LOCK_VICTORY_POINTS, orderVictoryPoints);
-            VictoryPointProgress.DestructionVictoryPoints = Math.Min(LOCK_VICTORY_POINTS, destroVictoryPoints);
+            VictoryPointProgress.OrderVictoryPoints = Math.Min(BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS, orderVictoryPoints);
+            VictoryPointProgress.DestructionVictoryPoints = Math.Min(BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS, destroVictoryPoints);
 
-            if (VictoryPointProgress.OrderVictoryPoints >= LOCK_VICTORY_POINTS)
+            if (VictoryPointProgress.OrderVictoryPoints >= BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS)
                 LockPairing(Realms.REALMS_REALM_ORDER);
-            else if (VictoryPointProgress.DestructionVictoryPoints >= LOCK_VICTORY_POINTS)
+            else if (VictoryPointProgress.DestructionVictoryPoints >= BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS)
                 LockPairing(Realms.REALMS_REALM_DESTRUCTION);
         }
 
@@ -866,8 +866,8 @@ namespace WorldServer.World.BattleFronts.NewDawn
                     if (warcampLoc != null)
                     {
                         float range = (float)player.GetDistanceTo(warcampLoc);
-                        if (range < WARCAMP_FARM_RANGE)
-                            player.WarcampFarmScaler = range / WARCAMP_FARM_RANGE;
+                        if (range < BattleFronts.BattleFrontConstants.WARCAMP_FARM_RANGE)
+                            player.WarcampFarmScaler = range / BattleFronts.BattleFrontConstants.WARCAMP_FARM_RANGE;
                         else
                             player.WarcampFarmScaler = 1f;
                     }
@@ -875,13 +875,13 @@ namespace WorldServer.World.BattleFronts.NewDawn
             }
         }
 
-        public NewDawnBattlefieldObjective GetClosestFlag(Point3D destPos, bool inPlay = false)
+        public ApocBattlefieldObjective GetClosestFlag(Point3D destPos, bool inPlay = false)
         {
             _logger.Trace(".");
-            NewDawnBattlefieldObjective bestFlag = null;
+            ApocBattlefieldObjective bestFlag = null;
             ulong bestDist = 0;
 
-            foreach (NewDawnBattlefieldObjective flag in Objectives)
+            foreach (ApocBattlefieldObjective flag in Objectives)
             {
                 ulong curDist = flag.GetDistanceSquare(destPos);
 

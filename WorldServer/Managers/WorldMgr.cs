@@ -13,8 +13,8 @@ using WorldServer.Scenarios;
 using WorldServer.Services.World;
 using Common.Database.World.Maps;
 using NLog;
+using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.BattleFronts;
-using WorldServer.World.BattleFronts.NewDawn;
 
 namespace WorldServer
 {
@@ -1740,24 +1740,24 @@ namespace WorldServer
                     case 1: // t1 dw/gs
                     case 3: // t1 he/de
                     case 8: // t1 em/ch
-                        regionMgr.ndbf = new NewDawnBattleFront(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager);
+                        regionMgr.ndbf = new ApocBattleFront(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager);
                         break;
                     default: // Everything else...
-                        regionMgr.ndbf = new NewDawnBattleFront(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager);
+                        regionMgr.ndbf = new ApocBattleFront(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager);
                         break;
                 }
             }
             
         }
 
-        public static List<NewDawnBattlefieldObjective> LoadObjectives(RegionMgr regionMgr)
+        public static List<ApocBattlefieldObjective> LoadObjectives(RegionMgr regionMgr)
         {
             List<BattleFront_Objective> objectives = BattleFrontService.GetBattleFrontObjectives(regionMgr.RegionId);
-            var resultList = new List<NewDawnBattlefieldObjective>();
+            var resultList = new List<ApocBattlefieldObjective>();
 
             foreach (BattleFront_Objective obj in objectives)
             {
-                NewDawnBattlefieldObjective flag = new NewDawnBattlefieldObjective(obj, regionMgr.GetTier());
+                ApocBattlefieldObjective flag = new ApocBattlefieldObjective(obj, regionMgr.GetTier());
                 resultList.Add(flag);
             }
 

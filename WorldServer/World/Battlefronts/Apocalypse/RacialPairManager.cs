@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using GameData;
 
-namespace WorldServer.World.BattleFronts.NewDawn
+namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public class RacialPairManager
     {

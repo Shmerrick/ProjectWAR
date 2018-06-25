@@ -1,13 +1,12 @@
-﻿using GameData;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Common.Database.World.Battlefront;
+using GameData;
 using NLog;
 
 // ReSharper disable InconsistentNaming
 
-namespace WorldServer.World.BattleFronts.NewDawn
+namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public class LowerTierBattleFrontManager : IBattleFrontManager
     {

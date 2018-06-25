@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace WorldServer.World.BattleFronts.NewDawn
+﻿namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public static class RacialPairHelper
     {

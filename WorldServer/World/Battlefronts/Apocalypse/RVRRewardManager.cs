@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Common;
 using FrameWork;
 using GameData;
 using NLog;
-using WorldServer.Services.World;
-using WorldServer;
 
-namespace WorldServer.World.BattleFronts.NewDawn
+namespace WorldServer.World.Battlefronts.Apocalypse
 {
     /// <summary>
     /// Manages rewards from RVR mechanic.

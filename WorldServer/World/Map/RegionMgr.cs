@@ -18,7 +18,7 @@ using WorldServer.World.BattleFronts.Objectives;
 using Common.Database.World.Maps;
 using NLog;
 using WorldServer.Services.World;
-using WorldServer.World.BattleFronts.NewDawn;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer
 {
@@ -38,7 +38,7 @@ namespace WorldServer
         private bool _running = true;
         public List<Zone_Info> ZonesInfo;
         public IBattleFront Bttlfront;
-        public NewDawnBattleFront ndbf;
+        public ApocBattleFront ndbf;
         public Scenario Scenario;
         public string RegionName;
 
@@ -95,10 +95,10 @@ namespace WorldServer
                 //    case 1: // t1 dw/gs
                 //    case 3: // t1 he/de
                 //    case 8: // t1 em/ch
-                //        ndbf = new NewDawnBattleFront(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager);
+                //        ndbf = new ApocBattleFront(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager);
                 //        break;
                 //    default: // Everything else...
-                //        ndbf = new NewDawnBattleFront(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager);
+                //        ndbf = new ApocBattleFront(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager);
                 //        break;
                 //}
             }

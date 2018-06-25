@@ -18,8 +18,8 @@ using WorldServer.Scenarios.Objects;
 using WorldServer.Scenarios;
 using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.Services.World;
-using WorldServer.World.BattleFronts.NewDawn;
 using NLog;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer
 {
@@ -3929,7 +3929,7 @@ namespace WorldServer
             // Factor of kill rewards to transfer to objective
             float transferenceFactor = 2.5f - bonusMod;
 
-            NewDawnBattlefieldObjective closestFlag = null;
+            ApocBattlefieldObjective closestFlag = null;
 
             if (ScnInterface.Scenario == null)
                 closestFlag = Region.ndbf.GetClosestFlag(WorldPosition);
@@ -4324,7 +4324,7 @@ namespace WorldServer
         public Keep CurrentKeep { get; set; }
         public Creature CurrentSiege { get; set; }
         public RvRStructure Palisade { get; set; }
-        public NewDawnBattlefieldObjective CurrentObjectiveFlag { get; set; }
+        public ApocBattlefieldObjective CurrentObjectiveFlag { get; set; }
 
         #endregion
 

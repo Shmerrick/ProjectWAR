@@ -1,6 +1,6 @@
 ﻿using GameData;
 
-namespace WorldServer.World.BattleFronts.NewDawn
+namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public class RacialPair
     {

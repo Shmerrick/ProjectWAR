@@ -10,7 +10,6 @@ using CreatureSubTypes = GameData.CreatureSubTypes;
 using WorldServer.World.Objects.PublicQuests;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Services.World;
-using WorldServer.World.BattleFronts.NewDawn;
 
 namespace WorldServer.World.BattleFronts.Keeps
 {

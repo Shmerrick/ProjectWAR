@@ -2,7 +2,7 @@
 using FrameWork;
 using GameData;
 
-namespace WorldServer.World.BattleFronts.NewDawn
+namespace WorldServer.World.Battlefronts.Apocalypse
 {
     /// <summary>
     /// RegionManagers as seen by external parts of the server.
@@ -10,7 +10,7 @@ namespace WorldServer.World.BattleFronts.NewDawn
     /// <remarks>
     /// Both lecacy and RoR battlefonts implement this interface.
     /// </remarks>
-    public interface INewDawnBattleFront
+    public interface IApocBattleFront
     {
         /// <summary>
         /// Main BattleFront update method, invoked by region manager, short perdiod.

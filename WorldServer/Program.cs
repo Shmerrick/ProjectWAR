@@ -9,7 +9,7 @@ using System.Reflection;
 using Common;
 using FrameWork;
 using WorldServer.Services.World;
-using WorldServer.World.BattleFronts.NewDawn;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer
 {

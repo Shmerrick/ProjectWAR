@@ -7,10 +7,9 @@ using GameData;
 using NLog;
 using WorldServer.World.BattleFronts.Objectives;
 
-
-namespace WorldServer.World.BattleFronts.NewDawn
+namespace WorldServer.World.Battlefronts.Apocalypse
 {
-    public class NewDawnBattlefieldObjective : Object
+    public class ApocBattlefieldObjective : Object
     {
         private const int DEFENSE_TICK_INTERVAL_SECONDS = 300;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -109,9 +108,9 @@ namespace WorldServer.World.BattleFronts.NewDawn
         private QuadrantHistoryTracker _quadrantHistoryTracker;
 
 
-        public NewDawnCommunications CommsEngine { get; set; }
+        public ApocCommunications CommsEngine { get; set; }
         public ProximityEngine ProximityEngine { get; set; }
-        public NewDawnBattleFront BattleFront { get; set; }
+        public ApocBattleFront BattleFront { get; set; }
         public string Name { get; set; }
 
         public StateFlags State { get; set; }
@@ -137,9 +136,9 @@ namespace WorldServer.World.BattleFronts.NewDawn
         /// <summary>
         /// Constructor to assist in isolation testing.
         /// </summary>
-        public NewDawnBattlefieldObjective()
+        public ApocBattlefieldObjective()
         {
-            CommsEngine = new NewDawnCommunications();
+            CommsEngine = new ApocCommunications();
             ProximityEngine = new ProximityEngine();
             RewardManager = new RVRRewardManager();
         }
@@ -148,7 +147,7 @@ namespace WorldServer.World.BattleFronts.NewDawn
         ///     Constructor
         /// </summary>
         /// <param name="obj"></param>
-        public NewDawnBattlefieldObjective(BattleFront_Objective obj, int Tier)
+        public ApocBattlefieldObjective(BattleFront_Objective obj, int Tier)
         {
             Id = obj.Entry;
             Name = obj.Name;
@@ -168,7 +167,7 @@ namespace WorldServer.World.BattleFronts.NewDawn
             WorldPosition.Y = (int)_y;
             WorldPosition.Z = _z;
 
-            CommsEngine = new NewDawnCommunications();
+            CommsEngine = new ApocCommunications();
 
             ProximityEngine = new ProximityEngine();
 

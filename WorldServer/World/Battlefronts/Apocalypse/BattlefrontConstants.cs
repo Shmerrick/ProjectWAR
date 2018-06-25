@@ -1,5 +1,5 @@
 ﻿
-namespace WorldServer.World.BattleFronts.NewDawn
+namespace WorldServer.World.Battlefronts.Apocalypse
 {
     /// <summary>
     /// Constants for RoR BattleFronts that can be changed using GM Commands.

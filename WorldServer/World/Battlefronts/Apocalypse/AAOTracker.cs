@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using GameData;
 using NLog;
 
-namespace WorldServer.World.BattleFronts.NewDawn
+namespace WorldServer.World.Battlefronts.Apocalypse
 {
     /// <summary>
     /// Object bound to a BattleFront responsible of tracking players to compute AAO.

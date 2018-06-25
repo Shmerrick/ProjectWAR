@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using Common.Database.World.Battlefront;
+﻿using Common.Database.World.Battlefront;
 using GameData;
 
-namespace WorldServer.World.BattleFronts.NewDawn
+namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public interface IBattleFrontManager
     {
