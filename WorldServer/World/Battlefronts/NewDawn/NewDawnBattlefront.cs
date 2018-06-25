@@ -28,7 +28,6 @@ namespace WorldServer.World.BattleFronts.NewDawn
         /// A list of keeps within this BattleFront.
         /// </summary>
         private readonly List<Keep> _Keeps = new List<Keep>();
-        public List<BattleFrontObjective> BattleFrontObjectives { get; set; }
         public string BattleFrontName { get; set; }
 
         protected readonly EventInterface _EvtInterface = new EventInterface();
@@ -84,18 +83,17 @@ namespace WorldServer.World.BattleFronts.NewDawn
         /// <param name="regionMgr"></param>
         /// <param name="objectives"></param>
         /// <param name="players"></param>
-        public NewDawnBattleFront(RegionMgr regionMgr, List<BattleFrontObjective> objectives, HashSet<Player> players, IBattleFrontManager bfm)
+        public NewDawnBattleFront(RegionMgr regionMgr, List<NewDawnBattlefieldObjective> objectives, HashSet<Player> players, IBattleFrontManager bfm)
         {
             this.Region = regionMgr;
             this.VictoryPointProgress = new VictoryPointProgress();
-            this.BattleFrontObjectives = objectives;
             this.PlayersInLakeSet = players;
-            this.Objectives = new List<NewDawnBattlefieldObjective>();
+            this.Objectives = objectives;
             this.BattleFrontManager = bfm;
             this.BattleFrontName = bfm.ActiveBattleFrontName;
 
             Tier = (byte)Region.GetTier();
-            LoadObjectives();
+            PlaceObjectives();
             LoadKeeps();
             ////On making a BattleFront if the tier is 4 locks Objectives adjacent to starting zone
             //if (Tier == 4)
@@ -126,6 +124,15 @@ namespace WorldServer.World.BattleFronts.NewDawn
             _EvtInterface.AddEvent(UpdateRVRStatus, 60000, 0);
             // Recalculate AAO
             _EvtInterface.AddEvent(UpdateAAOBuffs, 60000, 0);
+        }
+
+        private void PlaceObjectives()
+        {
+            foreach (var battleFrontObjective in Objectives)
+            {
+                Region.AddObject(battleFrontObjective, battleFrontObjective.ZoneId);
+                battleFrontObjective.BattleFront = this;
+            }
         }
 
         private void UpdateAAOBuffs()

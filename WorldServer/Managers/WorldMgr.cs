@@ -1732,19 +1732,36 @@ namespace WorldServer
             _logger.Info($"Attaching Battlefronts to Regions");
             foreach (var regionMgr in _Regions)
             {
+
+                var objectiveList = LoadObjectives(regionMgr);
+
                 switch (regionMgr.RegionId)
                 {
                     case 1: // t1 dw/gs
                     case 3: // t1 he/de
                     case 8: // t1 em/ch
-                        regionMgr.ndbf = new NewDawnBattleFront(regionMgr, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager);
+                        regionMgr.ndbf = new NewDawnBattleFront(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager);
                         break;
                     default: // Everything else...
-                        regionMgr.ndbf = new NewDawnBattleFront(regionMgr, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager);
+                        regionMgr.ndbf = new NewDawnBattleFront(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager);
                         break;
                 }
             }
             
+        }
+
+        public static List<NewDawnBattlefieldObjective> LoadObjectives(RegionMgr regionMgr)
+        {
+            List<BattleFront_Objective> objectives = BattleFrontService.GetBattleFrontObjectives(regionMgr.RegionId);
+            var resultList = new List<NewDawnBattlefieldObjective>();
+
+            foreach (BattleFront_Objective obj in objectives)
+            {
+                NewDawnBattlefieldObjective flag = new NewDawnBattlefieldObjective(obj, regionMgr.GetTier());
+                resultList.Add(flag);
+            }
+
+            return resultList;
         }
     }
 }
