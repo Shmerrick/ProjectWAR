@@ -1166,7 +1166,7 @@ namespace WorldServer
 //            // i == 0 -> Order; i == 1 --> Destro
 //            for (int i = 0; i < 2; ++i)
 //            {
-//                Keep currentKeep = _Keeps.Find(keep => (int)keep.Realm == i + 1 && keep.KeepStatus != KeepStatus.KEEPSTATUS_LOCKED && keep.KeepStatus != KeepStatus.KEEPSTATUS_SEIZED);
+//                Keep currentKeep = Keeps.Find(keep => (int)keep.Realm == i + 1 && keep.KeepStatus != KeepStatus.KEEPSTATUS_LOCKED && keep.KeepStatus != KeepStatus.KEEPSTATUS_SEIZED);
 
 //                if (currentKeep == null)
 //                {

@@ -12,7 +12,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     public class ApocBattlefieldObjective : Object
     {
         private const int DEFENSE_TICK_INTERVAL_SECONDS = 300;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
 
         /// <summary>
         /// Absolute maximum of the control gauges of the flags
@@ -203,7 +203,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public override string ToString()
         {
-            return $"Objective : {this.Name} Owner : {this.OwningRealm} Close (O/D) : {this._closeOrderCount}/{this._closeDestroCount}";
+            return $"Objective : {this.Name} Status : {FlagActive()} Owner : {this.OwningRealm} Close players (O/D) : {this._closeOrderCount}/{this._closeDestroCount}";
         }
 
         /// <summary>
@@ -545,6 +545,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         public void UnlockObjective()
         {
+
+            BattlefrontLogger.Debug($"Unlocking objective {this.Name}");
             State = StateFlags.Unsecure;
             OwningRealm = Realms.REALMS_REALM_NEUTRAL;
             BroadcastFlagInfo(true);
@@ -945,8 +947,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         public void LockObjective(Realms lockingRealm, bool announce)
         {
-            _logger.Debug($"Locking Objective {Name} for {lockingRealm.ToString()}");
-
+            BattlefrontLogger.Debug($"Locking Objective {Name} for {lockingRealm.ToString()}");
+            
             OwningRealm = lockingRealm;
             AssaultingRealm = Realms.REALMS_REALM_NEUTRAL;
             State = StateFlags.ZoneLocked;

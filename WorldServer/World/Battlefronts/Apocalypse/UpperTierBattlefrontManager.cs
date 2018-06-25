@@ -3,6 +3,7 @@ using System.Linq;
 using Common.Database.World.Battlefront;
 using GameData;
 using NLog;
+using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -68,8 +69,43 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void OpenActiveBattlefront()
         {
             var activeRegion = WorldMgr._Regions.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
-            ProgressionLogger.Info($" Opening battlefront in {activeRegion.RegionName}");
-            activeRegion.ndbf.ResetPairing();
+            ProgressionLogger.Info($" Opening battlefront in {activeRegion.RegionName} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
+            
+            activeRegion.ndbf.VictoryPointProgress.Reset(activeRegion.ndbf);
+            activeRegion.ndbf.LockingRealm = Realms.REALMS_REALM_NEUTRAL;
+
+            foreach (var flag in activeRegion.ndbf.Objectives)
+            {
+                if (this.ActiveBattleFront.ZoneId == flag.ZoneId)
+                    flag.UnlockObjective();
+            }
+
+            foreach (Keep keep in activeRegion.ndbf.Keeps)
+            {
+                if (this.ActiveBattleFront.ZoneId == keep.ZoneId)
+                    keep.NotifyPairingUnlocked();
+            }
+        }
+
+        public void LockBattleFront(Realms realm)
+        {
+            var activeRegion = WorldMgr._Regions.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
+            ProgressionLogger.Info($" Locking battlefront in {activeRegion.RegionName} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
+            
+            foreach (var flag in activeRegion.ndbf.Objectives)
+            {
+                if (this.ActiveBattleFront.ZoneId == flag.ZoneId)
+                    flag.LockObjective(realm, true);
+            }
+
+            foreach (Keep keep in activeRegion.ndbf.Keeps)
+            {
+                if (this.ActiveBattleFront.ZoneId == keep.ZoneId)
+                    keep.LockKeep(realm, true, true);
+            }
+
+            activeRegion.ndbf.LockPairing(realm);
+
         }
 
         /// <summary>

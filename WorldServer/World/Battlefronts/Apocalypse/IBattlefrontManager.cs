@@ -15,5 +15,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         void AuditBattleFronts(int tier);
         void LockBattleFronts(int tier);
         void OpenActiveBattlefront();
+
+        void LockBattleFront(Realms realm);
     }
 }

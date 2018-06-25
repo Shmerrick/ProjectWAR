@@ -160,7 +160,7 @@ namespace WorldServer.Managers.Commands
 
                 bool b = noReward == "0";
 
-                WorldMgr.GetRegion(plr.Region.RegionId, false).ndbf.LockPairing(realm);
+                WorldMgr.GetRegion(plr.Region.RegionId, false).ndbf.BattleFrontManager.LockBattleFront(realm);
             }
             else
                 plr.SendClientMessage("Second parameter must be 0 or 1 - 0 no rewards, 1 grants rewards.");
@@ -328,7 +328,7 @@ namespace WorldServer.Managers.Commands
                 BattleFront.ResetPairing();
             else
             {
-                plr.Region.ndbf.ResetPairing();
+                plr.Region.ndbf.ResetBattleFront();
             }
         }
 
@@ -342,9 +342,9 @@ namespace WorldServer.Managers.Commands
             IBattleFront EvC = WorldMgr.GetRegion(11, false).Bttlfront;
             IBattleFront HEvDE = WorldMgr.GetRegion(4, false).Bttlfront;
 
-            DvG.ResetPairing();
-            EvC.ResetPairing();
-            HEvDE.ResetPairing();*/
+            DvG.ResetBattleFront();
+            EvC.ResetBattleFront();
+            HEvDE.ResetBattleFront();*/
         }
 
         [CommandAttribute(EGmLevel.DatabaseDev, "Adds a resource spawn point at the current location for the nearest objective - legacy")]
@@ -487,14 +487,14 @@ namespace WorldServer.Managers.Commands
             }
             plr.SendClientMessage($"Lower Tier {WorldMgr.LowerTierBattleFrontManager.ActiveBattleFrontName} is active.");
 
-            plr.SendClientMessage($"  BattleFront Status : {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierBattleFrontManager.ActiveBattleFront.RegionId, false).GetBattleFrontStatus()}");
+            plr.SendClientMessage($"  BattleFront Status : {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierBattleFrontManager.ActiveBattleFront.RegionId, false).ndbf.GetBattleFrontStatus()}");
 
             plr.SendClientMessage($"Upper Tier {WorldMgr.UpperTierBattleFrontManager.ActiveBattleFrontName} is active.");
 
-            plr.SendClientMessage($"  BattleFront Status : {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierBattleFrontManager.ActiveBattleFront.RegionId, false).GetBattleFrontStatus()}");
+            plr.SendClientMessage($"  BattleFront Status : {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierBattleFrontManager.ActiveBattleFront.RegionId, false).ndbf.GetBattleFrontStatus()}");
 
             foreach (var flag in plr.Region.ndbf.Objectives)
-                plr.SendClientMessage($"{plr.Region.ndbf.Objectives.ToString()}");
+                plr.SendClientMessage($"{flag.ToString()}");
         }
 
         [CommandAttribute(EGmLevel.DatabaseDev, "Sets an objective flag portal location, flag to warcamp if no objective name / otherwise warcamp to flag")]

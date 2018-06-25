@@ -58,11 +58,34 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
+        public void LockBattleFront(Realms realm)
+        {
+            var activeRegion = WorldMgr._Regions.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
+            ProgressionLogger.Info($" Locking battlefront in {activeRegion.RegionName} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
+
+            foreach (var flag in activeRegion.ndbf.Objectives)
+            {
+                if (this.ActiveBattleFront.ZoneId == flag.ZoneId)
+                    flag.LockObjective(realm, true);
+            }
+
+            activeRegion.ndbf.LockPairing(realm);
+        }
+
         public void OpenActiveBattlefront()
         {
             var activeRegion = WorldMgr._Regions.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
             ProgressionLogger.Info($" Opening battlefront in {activeRegion.RegionName}");
-            activeRegion.ndbf.ResetPairing();
+
+            activeRegion.ndbf.VictoryPointProgress.Reset(activeRegion.ndbf);
+            activeRegion.ndbf.LockingRealm = Realms.REALMS_REALM_NEUTRAL;
+
+            foreach (var flag in activeRegion.ndbf.Objectives)
+            {
+                if (this.ActiveBattleFront.ZoneId == flag.ZoneId)
+                    flag.UnlockObjective();
+            }
+
         }
 
         /// <summary>

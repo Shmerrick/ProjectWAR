@@ -149,13 +149,7 @@ namespace WorldServer
             _updater.Start();
         }
 
-        public string GetBattleFrontStatus()
-        {
-            var activeBattleFront = this.ndbf.BattleFrontManager.ActiveBattleFront;
-
-            return $"Victory Points Progress for {activeBattleFront.Description} : {this.ndbf.VictoryPointProgress.ToString()}";
-
-        }
+       
 
         public void Stop()
         {

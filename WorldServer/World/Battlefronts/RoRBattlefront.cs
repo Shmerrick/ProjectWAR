@@ -186,7 +186,7 @@ namespace WorldServer.World.BattleFronts
 
             //// Unlocking
             //if (PairingUnlockTime > 0 && PairingUnlockTime < TCPManager.GetTimeStampMS())
-            //    ResetPairing();
+            //    ResetBattleFront();
         }
         #endregion
 
@@ -944,7 +944,7 @@ namespace WorldServer.World.BattleFronts
 
                     /*keepStatus = "SoR_T" + zone.Tier + "_Keep:" + zone.ZoneId;
 
-                    foreach (Keep keep in _Keeps)
+                    foreach (Keep keep in Keeps)
                     {
                         if (keep != null)
                         {

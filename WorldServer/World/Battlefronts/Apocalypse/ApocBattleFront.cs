@@ -19,7 +19,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     /// </summary>
     public class ApocBattleFront
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
         public VictoryPointProgress VictoryPointProgress { get; set; }
 
         public RegionMgr Region { get; set; }
@@ -27,7 +27,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         /// A list of keeps within this BattleFront.
         /// </summary>
-        private readonly List<Keep> _Keeps = new List<Keep>();
+        public readonly List<Keep> Keeps = new List<Keep>();
         public string BattleFrontName { get; set; }
 
         protected readonly EventInterface _EvtInterface = new EventInterface();
@@ -35,12 +35,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public HashSet<Player> PlayersInLakeSet;
         public List<ApocBattlefieldObjective> Objectives;
         public bool PairingLocked => LockingRealm != Realms.REALMS_REALM_NEUTRAL;
-        public Realms LockingRealm { get; protected set; } = Realms.REALMS_REALM_NEUTRAL;
+        public Realms LockingRealm { get; set; } = Realms.REALMS_REALM_NEUTRAL;
         private volatile int _orderCount = 0;
         private volatile int _destroCount = 0;
-
-
-
 
         #region Against All Odds
 
@@ -61,19 +58,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private AAOTracker _aaoTracker;
         private ContributionTracker _contributionTracker;
         private RVRRewardManager _rewardManager;
-        /// <summary>
-        /// List of existing keeps in BattleFront.
-        /// </summary>
-        /// <remarks>
-        /// Must not be updated outside BattleFront implementations.
-        /// </remarks>
-        public List<Keep> Keeps
-        {
-            get
-            {
-                return _Keeps;
-            }
-        }
+       
 
         public int Tier { get; set; }
 
@@ -91,9 +76,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             this.Objectives = objectives;
             this.BattleFrontManager = bfm;
             this.BattleFrontName = bfm.ActiveBattleFrontName;
-
+           
             Tier = (byte)Region.GetTier();
             PlaceObjectives();
+            
             LoadKeeps();
             ////On making a BattleFront if the tier is 4 locks Objectives adjacent to starting zone
             //if (Tier == 4)
@@ -135,6 +121,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
+        public string GetBattleFrontStatus()
+        {
+            return $"Victory Points Progress for {this.BattleFrontName} : {this.VictoryPointProgress.ToString()}";
+        }
+    
+
         private void UpdateAAOBuffs()
         {
             _aaoTracker.RecalculateAAO(Region.Players, _orderCount, _destroCount);
@@ -147,11 +139,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (Region.GetTier() == 1)
                 {
-                    plr.SendClientMessage($"RvR Status : {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierBattleFrontManager.ActiveBattleFront.RegionId, false).GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    plr.SendClientMessage($"RvR Status : {this.GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
                 }
                 else
                 {
-                    plr.SendClientMessage($"RvR Status : {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierBattleFrontManager.ActiveBattleFront.RegionId, false).GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    plr.SendClientMessage($"RvR Status : {this.GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
                 }
             }
         }
@@ -196,7 +188,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 Keep keep = new Keep(info, (byte)this.Tier, Region);
                 keep.Realm = (Realms)keep.Info.Realm;
-                _Keeps.Add(keep);
+                Keeps.Add(keep);
                 Region.AddObject(keep, info.ZoneId);
 
                 if (info.Creatures != null)
@@ -214,7 +206,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Keep bestKeep = null;
             ulong bestDist = 0;
 
-            foreach (Keep keep in _Keeps)
+            foreach (Keep keep in Keeps)
             {
                 ulong curDist = keep.GetDistanceSquare(destPos);
 
@@ -230,7 +222,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public Keep GetZoneKeep(ushort zoneId, int realm)
         {
-            foreach (Keep keep in _Keeps)
+            foreach (Keep keep in Keeps)
                 if (keep.Info.KeepId == realm)
                     return keep;
             return null;
@@ -239,7 +231,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void WriteCaptureStatus(PacketOut Out)
         {
             // Not implemented.
-            _logger.Trace(".");
+            BattlefrontLogger.Trace(".");
         }
 
         /// <summary>
@@ -249,7 +241,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="lockingRealm">Realm that is locking the BattleFront</param>
         public void WriteCaptureStatus(PacketOut Out, Realms lockingRealm)
         {
-            _logger.Trace(".");
+            BattlefrontLogger.Trace(".");
             Out.WriteByte(0);
             float orderPercent, destroPercent = 0;
             switch (lockingRealm)
@@ -270,7 +262,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     break;
             }
 
-            _logger.Debug($"{BattleFrontName} : {(byte)orderPercent} {(byte)destroPercent}");
+            BattlefrontLogger.Debug($"{BattleFrontName} : {(byte)orderPercent} {(byte)destroPercent}");
 
             Out.WriteByte((byte)orderPercent);
             Out.WriteByte((byte)destroPercent);
@@ -290,7 +282,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
 
             // 12.05.18 RA - Not this function currently does nothing.
-            _logger.Trace($"Updating BattleFront scaler : {this.BattleFrontManager.ActiveBattleFrontName}");
+            BattlefrontLogger.Trace($"Updating BattleFront scaler : {this.BattleFrontManager.ActiveBattleFrontName}");
             // Update comparative gain
             int index = Tier - 1;
 
@@ -395,7 +387,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void LockBattleObjective(Realms realm, int objectiveToLock)
         {
-            _logger.Debug($"Locking Battle Objective : {realm.ToString()}...");
+            BattlefrontLogger.Debug($"Locking Battle Objective : {realm.ToString()}...");
 
             foreach (var flag in Objectives)
             {
@@ -408,66 +400,39 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void LockPairing(Realms realm)
         {
-            _logger.Info($"Locking Pair : {realm.ToString()}...");
+            BattlefrontLogger.Info($"Locking Pair {this.BattleFrontName} to {realm.ToString()}...");
 
             if (PairingLocked)
             {
-                _logger.Warn($"But... it's already locked?!?");
+                BattlefrontLogger.Warn($"But... it's already locked?!?");
                 return; // No effect
             }
-
-            foreach (var flag in Objectives)
-                flag.LockObjective(realm, false);
-
-            foreach (var keep in _Keeps)
-                keep.LockKeep(realm, true, false);
-
+           
             this.VictoryPointProgress.Lock(realm);
 
-            // Assigning a non-neutral realm effectively locks the Pair
             LockingRealm = realm;
 
             WorldMgr.SendCampaignStatus(null);
 
             string message = string.Concat(Region.ZonesInfo[0].Name, " and ", Region.ZonesInfo[1].Name, " have been locked by ", (realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"), "!");
-            _logger.Debug(message);
+            BattlefrontLogger.Debug(message);
 
-
-            //if (Tier == 1)
-            //{
-            // Advance the pairing
             BattleFrontManager.AdvanceBattleFront(realm);
             Broadcast($"The campaign has moved to  {BattleFrontManager.ActiveBattleFrontName}");
 
-            var newRegion = WorldMgr.GetRegion((ushort)BattleFrontManager.ActiveBattleFront.RegionId, false);
-            newRegion.ndbf.ResetPairing();
+            BattleFrontManager.OpenActiveBattlefront();
 
             // Logs the status of all battlefronts known to the Battlefront Manager.
             BattleFrontManager.AuditBattleFronts(this.Tier);
-
-            //}
-            //else
-            //{
-            //    BattleFrontManager.AdvanceBattleFront(realm);
-            //    Broadcast($"The campaign has moved to {BattleFrontManager.ActiveBattleFrontName}");
-
-            //    // This may need a rethink and restructure -- reset the VPP for the new Region
-            //    var newRegionId = WorldMgr.UpperTierBattleFrontManager.ActiveBattleFront.RegionId;
-            //    var newRegion = WorldMgr.GetRegion((ushort)newRegionId, false);
-            //    if (Tier < 3) { 
-            //    newRegion.ndbf.ResetPairing();
-            //    }
-
-            //}
 
             // Generate RP and rewards
             _contributionTracker.CreateGoldChest(realm);
             _contributionTracker.HandleLockReward(realm, 1, message, 0);
 
-            _logger.Debug($"Generating Lock Rewards..");
+            BattlefrontLogger.Debug($"Generating Lock Rewards..");
             foreach (var player in PlayersInLakeSet)
             {
-                _logger.Trace($"{player.Name}...");
+                BattlefrontLogger.Trace($"{player.Name}...");
                 _rewardManager.GenerateLockReward(player);
             }
         }
@@ -520,9 +485,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         ///
         /// Unlocks this NDBF for capture.
         /// 
-        public void ResetPairing()
+        public void ResetBattleFront()
         {
-            _logger.Trace($"Resetting Pairing...{this.ActiveZoneName}");
+            BattlefrontLogger.Trace($"Resetting Battlefront...{this.BattleFrontName}");
             
             VictoryPointProgress.Reset(this);
             LockingRealm = Realms.REALMS_REALM_NEUTRAL;
@@ -530,7 +495,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             foreach (var flag in Objectives)
                 flag.UnlockObjective();
 
-            foreach (Keep keep in _Keeps)
+            foreach (Keep keep in Keeps)
                 keep.NotifyPairingUnlocked();
 
             //UpdateStateOfTheRealm();
@@ -551,7 +516,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="plr"></param>
         public void SendObjectives(Player plr)
         {
-            _logger.Trace(".");
+            BattlefrontLogger.Trace(".");
             foreach (ApocBattlefieldObjective bo in Objectives)
                 bo.SendFlagState(plr, false);
         }
@@ -561,7 +526,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         private void UpdateVictoryPoints()
         {
-            _logger.Trace($"Updating Victory Points for {this.BattleFrontName}");
+            BattlefrontLogger.Trace($"Updating Victory Points for {this.BattleFrontName}");
             // Locked by Order/Dest
             if (PairingLocked)
                 return; // Nothing to do
@@ -577,7 +542,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             foreach (ApocBattlefieldObjective flag in Objectives)
             {
-                _logger.Trace($"Reward Ticks {this.BattleFrontName} - {flag.ToString()}");
+                BattlefrontLogger.Trace($"Reward Ticks {this.BattleFrontName} - {flag.ToString()}");
                 // TODO - perhaps use AAO calculation here as a pairing scaler?.
                 var vp = flag.RewardCaptureTick(1f);
 
@@ -597,7 +562,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 //    orderFlagCount++;
                 //else if (secureRealm == Realms.REALMS_REALM_DESTRUCTION)
                 //    destroFlagCount++;
-                _logger.Trace($"{flag.Name} Order VP:{VictoryPointProgress.OrderVictoryPoints} Dest VP:{VictoryPointProgress.DestructionVictoryPoints}");
+                BattlefrontLogger.Trace($"{flag.Name} Order VP:{VictoryPointProgress.OrderVictoryPoints} Dest VP:{VictoryPointProgress.DestructionVictoryPoints}");
             }
 
             // Victory points update
@@ -605,9 +570,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             VictoryPointProgress.DestructionVictoryPoints = Math.Min(BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS, destroVictoryPoints);
 
             if (VictoryPointProgress.OrderVictoryPoints >= BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS)
-                LockPairing(Realms.REALMS_REALM_ORDER);
+                BattleFrontManager.LockBattleFront(Realms.REALMS_REALM_ORDER);
             else if (VictoryPointProgress.DestructionVictoryPoints >= BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS)
-                LockPairing(Realms.REALMS_REALM_DESTRUCTION);
+                BattleFrontManager.LockBattleFront(Realms.REALMS_REALM_DESTRUCTION);
         }
 
         public void WriteVictoryPoints(Realms realm, PacketOut Out)
@@ -633,7 +598,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public int GetZoneOwnership(ushort zoneId)
         {
-            _logger.Trace($"GetZoneOwnership {zoneId}");
+            BattlefrontLogger.Trace($"GetZoneOwnership {zoneId}");
             const int ZONE_STATUS_CONTESTED = 0;
             const int ZONE_STATUS_ORDER_LOCKED = 1;
             const int ZONE_STATUS_DESTRO_LOCKED = 2;
@@ -642,7 +607,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             byte orderKeepsOwned = 0;
             byte destroKeepsOwned = 0;
 
-            //foreach (Keep keep in _Keeps)
+            //foreach (Keep keep in Keeps)
             //{
             //    if (keep.Realm == Realms.REALMS_REALM_ORDER && keep.Info.ZoneId == zoneId && keep.KeepStatus == KeepStatus.KEEPSTATUS_LOCKED)
             //    {
@@ -667,7 +632,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void WriteBattleFrontStatus(PacketOut Out)
         {
-            _logger.Trace(".");
+            BattlefrontLogger.Trace(".");
             //Out.WriteByte((byte)GetZoneOwnership(Zones[2].ZoneId));
             //Out.WriteByte((byte)GetZoneOwnership(Zones[1].ZoneId));
             //Out.WriteByte((byte)GetZoneOwnership(Zones[0].ZoneId));
@@ -675,7 +640,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void Broadcast(string message)
         {
-            _logger.Info(message);
+            BattlefrontLogger.Info(message);
             lock (Player._Players)
             {
                 foreach (Player plr in Player._Players)
@@ -691,7 +656,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void Broadcast(string message, Realms realm)
         {
-            _logger.Info(message);
+            BattlefrontLogger.Info(message);
             foreach (Player plr in Region.Players)
             {
                 if (!plr.ValidInTier(Tier, true))
@@ -713,7 +678,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             player.SendClientMessage("The pairing is " + (PairingLocked ? "locked" : "contested."));
 
-            //foreach (var keep in _Keeps)
+            //foreach (var keep in Keeps)
             //    keep.SendDiagnostic(player);
 
             foreach (var objective in Objectives)
@@ -783,7 +748,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 if (obj.FlagState != ObjectiveFlags.ZoneLocked)
                 {
                     obj.AdvancePopHistory(orderCount, destroCount);
-                    _logger.Debug($"AdvancePopHistory Order={orderCount} DestCount={destroCount}");
+                    BattlefrontLogger.Debug($"AdvancePopHistory Order={orderCount} DestCount={destroCount}");
                 }
             }
         }
@@ -820,7 +785,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             _syncPlayersList.Clear();
 
-            _logger.Debug($"GetControlHighFor Count={count} TotalCount={totalCount} result={(float)count / totalCount}");
+            BattlefrontLogger.Debug($"GetControlHighFor Count={count} TotalCount={totalCount} result={(float)count / totalCount}");
 
             return (float)count / totalCount;
         }
@@ -877,7 +842,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public ApocBattlefieldObjective GetClosestFlag(Point3D destPos, bool inPlay = false)
         {
-            _logger.Trace(".");
+            BattlefrontLogger.Trace(".");
             ApocBattlefieldObjective bestFlag = null;
             ulong bestDist = 0;
 

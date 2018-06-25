@@ -4982,7 +4982,9 @@ namespace WorldServer
             if (tier < 1 || tier > 4)
                 return true;
 
-            return (Level >= Constants.MinTierLevel[tier - 1] && Level <= Constants.MaxTierLevel[tier - 1]) || (checkDebolster && (_bolsterTier == tier || (_bolsterTier == 2 && tier == 3) || (_bolsterTier == 3 && tier == 2)));
+            var validInTier = (Level >= Constants.MinTierLevel[tier - 1] && Level <= Constants.MaxTierLevel[tier - 1]) || (checkDebolster && (_bolsterTier == tier || (_bolsterTier == 2 && tier == 3) || (_bolsterTier == 3 && tier == 2)));
+            _logger.Trace($"Player : {this.Name} validity in tier : {validInTier}");
+            return validInTier;
         }
 
         public bool ShouldDebolster(int tier)
@@ -6293,8 +6295,7 @@ namespace WorldServer
                                 // NEWDAWN
                                 if (Region.ndbf != null)
                                     Region.ndbf.NotifyEnteredLake(this);
-                                else
-                                    Region.ndbf.NotifyEnteredLake(this);
+                                
                             }
                         }
                     }

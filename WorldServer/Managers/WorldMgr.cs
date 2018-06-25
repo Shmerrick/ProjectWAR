@@ -1643,13 +1643,13 @@ namespace WorldServer
                             ProximityBattleFront bttlfrnt;
 
                             bttlfrnt = (ProximityBattleFront)GetRegion(12, false).Bttlfront;
-                            bttlfrnt.ResetPairing();
+                            bttlfrnt.ResetBattleFront();
                             bttlfrnt.UpdateStateOfTheRealm();
                             bttlfrnt = (ProximityBattleFront)GetRegion(14, false).Bttlfront;
-                            bttlfrnt.ResetPairing();
+                            bttlfrnt.ResetBattleFront();
                             bttlfrnt.UpdateStateOfTheRealm();
                             bttlfrnt = (ProximityBattleFront)GetRegion(15, false).Bttlfront;
-                            bttlfrnt.ResetPairing();
+                            bttlfrnt.ResetBattleFront();
                             bttlfrnt.UpdateStateOfTheRealm();
                         }*/
                     }
