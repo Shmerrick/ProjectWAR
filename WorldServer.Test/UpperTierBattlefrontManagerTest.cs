@@ -51,6 +51,9 @@ namespace WorldServer.Test
             Region1 = new RegionMgr(1, R1ZoneList, "Region1");
             Region3 = new RegionMgr(3, R3ZoneList, "Region3");
 
+            Region1.ndbf =  new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager);
+            Region3.ndbf = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager);
+
             RegionMgrs.Add(Region1);
             RegionMgrs.Add(Region3);
 
@@ -91,7 +94,8 @@ namespace WorldServer.Test
                 Description = "Praag", // named for default pickup
                 DestWinProgression = 2,
                 OrderWinProgression = 3,
-                PairingId = 2
+                PairingId = 2,
+                RegionId = 1
             });
             SampleProgressionList.Add(new RVRProgression
             {
@@ -101,7 +105,8 @@ namespace WorldServer.Test
                 Description = "Chaos Wastes",
                 DestWinProgression = 6,
                 OrderWinProgression = 7,
-                PairingId = 2
+                PairingId = 2,
+                RegionId = 1
             });
             SampleProgressionList.Add(new RVRProgression
             {
@@ -111,7 +116,8 @@ namespace WorldServer.Test
                 Description = "Thunder Mountain",
                 DestWinProgression = 7,
                 OrderWinProgression = 2,
-                PairingId = 1
+                PairingId = 1,
+                RegionId = 3
             });
             SampleProgressionList.Add(new RVRProgression
             {
@@ -121,7 +127,8 @@ namespace WorldServer.Test
                 Description = "Kadrin Valley",
                 DestWinProgression = 1,
                 OrderWinProgression = 1,
-                PairingId = 1
+                PairingId = 1,
+                RegionId = 3
             });
             manager = new UpperTierBattleFrontManager(SampleProgressionList, RegionMgrs);
         }
