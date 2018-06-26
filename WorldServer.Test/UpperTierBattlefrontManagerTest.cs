@@ -5,6 +5,7 @@ using GameData;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.BattleFronts.Objectives;
+using FakeItEasy;
 
 
 namespace WorldServer.Test
@@ -24,16 +25,18 @@ namespace WorldServer.Test
         public List<ApocBattlefieldObjective> Region1BOList { get; set; }
         public List<ApocBattlefieldObjective> Region3BOList { get; set; }
         public List<RegionMgr> RegionMgrs { get; set; }
+        public IApocCommunications FakeComms { get; set; }
+        
 
         [TestInitialize]
         public void Setup()
         {
-
+            FakeComms = A.Fake<IApocCommunications>();
             RegionMgrs = new List<RegionMgr>();
 
             PraagBOList = new List<ApocBattlefieldObjective>();
-            ChaosWastesBOList= new List<ApocBattlefieldObjective>();
-            ThunderMountainBOList= new List<ApocBattlefieldObjective>();
+            ChaosWastesBOList = new List<ApocBattlefieldObjective>();
+            ThunderMountainBOList = new List<ApocBattlefieldObjective>();
             KadrinValleyBOList = new List<ApocBattlefieldObjective>();
 
             Region1BOList = new List<ApocBattlefieldObjective>();
@@ -41,18 +44,16 @@ namespace WorldServer.Test
 
 
             var R1ZoneList = new List<Zone_Info>();
-            R1ZoneList.Add(new Zone_Info { ZoneId = 200, Name = "R1Zone200 PR", Pairing = 2});
-            R1ZoneList.Add(new Zone_Info { ZoneId = 201, Name = "R1Zone201 CW", Pairing = 2 });
+            R1ZoneList.Add(new Zone_Info { ZoneId = 200, Name = "R1Zone200 PR", Pairing = 2, Tier = 4 });
+            R1ZoneList.Add(new Zone_Info { ZoneId = 201, Name = "R1Zone201 CW", Pairing = 2, Tier = 4 });
 
             var R3ZoneList = new List<Zone_Info>();
-            R3ZoneList.Add(new Zone_Info { ZoneId = 400, Name = "R3Zone400 TM", Pairing =1 });
-            R3ZoneList.Add(new Zone_Info { ZoneId = 401, Name = "R3Zone401 KV", Pairing = 1 });
+            R3ZoneList.Add(new Zone_Info { ZoneId = 400, Name = "R3Zone400 TM", Pairing = 1, Tier = 4});
+            R3ZoneList.Add(new Zone_Info { ZoneId = 401, Name = "R3Zone401 KV", Pairing = 1, Tier = 4 });
 
-            Region1 = new RegionMgr(1, R1ZoneList, "Region1");
-            Region3 = new RegionMgr(3, R3ZoneList, "Region3");
+            Region1 = new RegionMgr(1, R1ZoneList, "Region1", FakeComms);
+            Region3 = new RegionMgr(3, R3ZoneList, "Region3", FakeComms);
 
-            Region1.ndbf =  new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager);
-            Region3.ndbf = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager);
 
             RegionMgrs.Add(Region1);
             RegionMgrs.Add(Region3);
@@ -131,6 +132,13 @@ namespace WorldServer.Test
                 RegionId = 3
             });
             manager = new UpperTierBattleFrontManager(SampleProgressionList, RegionMgrs);
+            // Must be run before attaching ApocBattleFronts to get an ActiveBF
+            manager.ResetBattleFrontProgression();
+
+            Region1.ndbf = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.ndbf = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+
+
         }
 
         [TestMethod]
@@ -159,8 +167,13 @@ namespace WorldServer.Test
         public void ActivePairingLocated()
         {
 
-            var manager = new UpperTierBattleFrontManager(SampleProgressionList, RegionMgrs);
+            manager = new UpperTierBattleFrontManager(SampleProgressionList, RegionMgrs);
+            // Must be run before attaching ApocBattleFronts to get an ActiveBF
             var bf = manager.ResetBattleFrontProgression();
+
+            Region1.ndbf = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.ndbf = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+
             Assert.IsTrue(bf.DestWinProgression == 2);
 
             bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
@@ -171,7 +184,7 @@ namespace WorldServer.Test
 
             bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
             Assert.IsTrue(bf.BattleFrontId == 6);
-            Assert.IsTrue(bf.DestWinProgression == 1);
+            Assert.IsTrue(bf.DestWinProgression ==7);
             Assert.IsTrue(bf.OrderWinProgression == 2);
             Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 6);
 
@@ -183,43 +196,44 @@ namespace WorldServer.Test
 
             bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
             Assert.IsTrue(bf.BattleFrontId == 6);
-            Assert.IsTrue(bf.DestWinProgression == 1);
+            Assert.IsTrue(bf.DestWinProgression == 7);
             Assert.IsTrue(bf.OrderWinProgression == 2);
             Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 6);
 
             bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
-            Assert.IsTrue(bf.BattleFrontId == 1);
-            Assert.IsTrue(bf.DestWinProgression == 2);
-            Assert.IsTrue(bf.OrderWinProgression == 3);
+            Assert.IsTrue(bf.BattleFrontId == 7);
+            Assert.IsTrue(bf.DestWinProgression == 1);
+            Assert.IsTrue(bf.OrderWinProgression == 1);
 
-            Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 1);
-            Assert.IsTrue(manager.ActiveBattleFront.DestWinProgression == 2);
-            Assert.IsTrue(manager.ActiveBattleFront.OrderWinProgression == 3);
+            Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 7);
+            Assert.IsTrue(manager.ActiveBattleFront.DestWinProgression == 1);
+            Assert.IsTrue(manager.ActiveBattleFront.OrderWinProgression == 1);
         }
 
         [TestMethod]
         public void OpenActiveBattleFrontSetsCorrectBOFlags()
         {
-
-            // Emp/Chaos battleFront
-            var manager = new UpperTierBattleFrontManager(SampleProgressionList, RegionMgrs);
+            manager = new UpperTierBattleFrontManager(SampleProgressionList, RegionMgrs);
+            // Must be run before attaching ApocBattleFronts to get an ActiveBF
             var bf = manager.ResetBattleFrontProgression();
-            var bfEmpireChaos = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager);
 
+            Region1.ndbf = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.ndbf = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+            // Open Praag (BF==1)
             manager.OpenActiveBattlefront();
             Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 1); // Praag
 
             // Ensure that the BOs for this battlefront ONLY are unlocked.
-            foreach (var bo in bfEmpireChaos.Objectives)
+            foreach (var bo in Region1.ndbf.Objectives)
             {
                 if (bo.ZoneId == 200)
                 {
                     // Locking the Region should set all BOs in the region to be zonelocked (
-                    Assert.IsFalse(bo.FlagState == ObjectiveFlags.ZoneLocked);
+                    Assert.IsTrue(bo.State == StateFlags.Unsecure);
                 }
                 else
                 {
-                    Assert.IsTrue(bo.FlagState == ObjectiveFlags.ZoneLocked);
+                    Assert.IsTrue(bo.State == StateFlags.ZoneLocked);
                 }
             }
         }
@@ -227,28 +241,30 @@ namespace WorldServer.Test
         [TestMethod]
         public void LockRegion1()
         {
-            // Emp/Chaos battleFront
-            var manager = new UpperTierBattleFrontManager(SampleProgressionList, RegionMgrs);
+            var fakeCommsEngine = A.Fake<IApocCommunications>();
+            manager = new UpperTierBattleFrontManager(SampleProgressionList, RegionMgrs);
+            // Must be run before attaching ApocBattleFronts to get an ActiveBF
             var bf = manager.ResetBattleFrontProgression();
-            var bfEmpireChaos = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager);
 
+            Region1.ndbf = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.ndbf = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+            // Open Praag (BF==1)
             manager.OpenActiveBattlefront();
-            Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 1); // Praag
-
+            // Locking Region1.ndbf
             manager.LockBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 
             // Ensure battlefront 1 is locked and to Destro
-            Assert.IsTrue(bfEmpireChaos.LockingRealm == Realms.REALMS_REALM_DESTRUCTION);
-            Assert.IsTrue(bfEmpireChaos.VictoryPointProgress.DestructionVictoryPoints == BattleFrontConstants.LOCK_VICTORY_POINTS);
+            Assert.IsTrue(Region1.ndbf.LockingRealm == Realms.REALMS_REALM_DESTRUCTION);
+            Assert.IsTrue(Region1.ndbf.VictoryPointProgress.DestructionVictoryPoints == BattleFrontConstants.LOCK_VICTORY_POINTS);
 
-            // BF has progressed
+            // BF has progressed (still on Region1.ndbf)
             Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 2);
-            Assert.IsTrue(bfEmpireChaos.LockingRealm == Realms.REALMS_REALM_NEUTRAL);
-            Assert.IsTrue(bfEmpireChaos.VictoryPointProgress.DestructionVictoryPoints == 0);
-            Assert.IsTrue(bfEmpireChaos.VictoryPointProgress.OrderVictoryPoints == 0);
+            Assert.IsTrue(Region1.ndbf.LockingRealm == Realms.REALMS_REALM_NEUTRAL);
+            Assert.IsTrue(Region1.ndbf.VictoryPointProgress.DestructionVictoryPoints == 0);
+            Assert.IsTrue(Region1.ndbf.VictoryPointProgress.OrderVictoryPoints == 0);
 
             // Ensure that the BOs for this battlefront ONLY are locked.
-            foreach (var apocBattlefieldObjective in bfEmpireChaos.Objectives)
+            foreach (var apocBattlefieldObjective in Region1.ndbf.Objectives)
             {
                 // Locking a battlefront should ZoneLock the BOs in that Zone, and Open those in the next battlefront.
                 if (apocBattlefieldObjective.ZoneId == 200)

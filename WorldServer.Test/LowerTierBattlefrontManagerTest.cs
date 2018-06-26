@@ -18,6 +18,7 @@ namespace WorldServer.Test
         public RegionMgr Region1 { get; set; }
         public RegionMgr Region3 { get; set; }
         public List<RegionMgr> RegionMgrs { get; set; }
+        public IApocCommunications FakeComms { get; set; }
 
 
         [TestInitialize]
@@ -34,8 +35,8 @@ namespace WorldServer.Test
             R3ZoneList.Add(new Zone_Info { ZoneId = 400, Name = "R3Zone400 TM", Pairing = 1 });
             R3ZoneList.Add(new Zone_Info { ZoneId = 401, Name = "R3Zone401 KV", Pairing = 1 });
 
-            Region1 = new RegionMgr(1, R1ZoneList, "Region1");
-            Region3 = new RegionMgr(3, R3ZoneList, "Region3");
+            Region1 = new RegionMgr(1, R1ZoneList, "Region1", FakeComms);
+            Region3 = new RegionMgr(3, R3ZoneList, "Region3", FakeComms);
 
             RegionMgrs.Add(Region1);
             RegionMgrs.Add(Region3);

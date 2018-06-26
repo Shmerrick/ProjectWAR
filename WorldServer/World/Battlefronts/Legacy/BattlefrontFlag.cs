@@ -16,6 +16,7 @@ using WorldServer.World.BattleFronts;
 using WorldServer.Scenarios.Objects;
 using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer
 {
@@ -771,7 +772,7 @@ namespace WorldServer
             SendFlagState(null, true);
 
             if (_tier == 1)
-                WorldMgr.SendCampaignStatus(null);
+                new ApocCommunications().SendCampaignStatus(null, null);
         }
 
         private void ChangeOwnership(Realms newRealm)

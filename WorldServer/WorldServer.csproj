@@ -250,6 +250,7 @@
     <Compile Include="World\AI\PassiveBrain.cs" />
     <Compile Include="World\Auction\AuctionHouse.cs" />
     <Compile Include="World\Battlefronts\AAOTracker.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\IApocCommunications.cs" />
     <Compile Include="World\Battlefronts\BattlefrontConstants.cs" />
     <Compile Include="World\Battlefronts\BattlefrontList.cs" />
     <Compile Include="World\Battlefronts\ContributionTracker.cs" />

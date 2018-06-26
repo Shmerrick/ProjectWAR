@@ -32,7 +32,7 @@ namespace WorldServer
         public static int MaxVisibilityRange = 400; // It was 400 on Age of Reckoning
 
         private long _lastRegionUpdate = TCPManager.GetTimeStampMS();
-
+        public IApocCommunications ApocCommunications { get; set; }
         public ushort RegionId;
         private readonly Thread _updater;
         private bool _running = true;
@@ -45,12 +45,13 @@ namespace WorldServer
         /// <summary>Races associated with the pairing, may be null</summary>
         private readonly Races[] _races;
 
-        public RegionMgr(ushort regionId, List<Zone_Info> zones, string name)
+        public RegionMgr(ushort regionId, List<Zone_Info> zones, string name, IApocCommunications apocCommunications)
         {
+            ApocCommunications = apocCommunications;
             RegionId = regionId;
             ZonesInfo = zones;
             RegionName = name;
-
+            
             LoadSpawns();
 
             if (Constants.DoomsdaySwitch == 2)
@@ -358,7 +359,7 @@ namespace WorldServer
                             //Bttlfront?.SendObjectives(plr);
 
                             ndbf?.SendObjectives(plr);
-                            WorldMgr.SendCampaignStatus(plr);
+                            ApocCommunications.SendCampaignStatus(plr, ndbf?.VictoryPointProgress);
                         }
                     }
                     _objectsToAdd.Clear();

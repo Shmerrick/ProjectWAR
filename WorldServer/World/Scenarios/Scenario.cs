@@ -8,6 +8,7 @@ using FrameWork;
 using GameData;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer.Scenarios
 {
@@ -161,7 +162,7 @@ namespace WorldServer.Scenarios
                 RespawnHeadings[i] = respawn.WorldO;
             }
 
-            Region = new RegionMgr(Info.MapId, ZoneService.GetZoneRegion(Info.MapId), info.Name) { Scenario = this };
+            Region = new RegionMgr(Info.MapId, ZoneService.GetZoneRegion(Info.MapId), info.Name, new ApocCommunications()) { Scenario = this };
 
             /* create groups */
             for (int i = 0; i < 2; ++i)

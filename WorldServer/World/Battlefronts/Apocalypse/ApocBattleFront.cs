@@ -24,6 +24,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public RegionMgr Region { get; set; }
         public IBattleFrontManager BattleFrontManager { get; set; }
+        public IApocCommunications CommunicationsEngine { get; }
+
         /// <summary>
         /// A list of keeps within this BattleFront.
         /// </summary>
@@ -34,8 +36,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public HashSet<Player> PlayersInLakeSet;
         public List<ApocBattlefieldObjective> Objectives;
-        public bool BattleFrontLocked => LockingRealm != Realms.REALMS_REALM_NEUTRAL;
-        public Realms LockingRealm { get; set; } = Realms.REALMS_REALM_NEUTRAL;
+        //public bool BattleFrontLocked => LockingRealm != Realms.REALMS_REALM_NEUTRAL;
+        //public Realms LockingRealm { get; set; } = Realms.REALMS_REALM_NEUTRAL;
         private volatile int _orderCount = 0;
         private volatile int _destroCount = 0;
 
@@ -58,7 +60,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private AAOTracker _aaoTracker;
         private ContributionTracker _contributionTracker;
         private RVRRewardManager _rewardManager;
-       
+
 
         public int Tier { get; set; }
 
@@ -68,18 +70,23 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="regionMgr"></param>
         /// <param name="objectives"></param>
         /// <param name="players"></param>
-        public ApocBattleFront(RegionMgr regionMgr, List<ApocBattlefieldObjective> objectives, HashSet<Player> players, IBattleFrontManager bfm)
+        public ApocBattleFront(RegionMgr regionMgr,
+            List<ApocBattlefieldObjective> objectives,
+            HashSet<Player> players,
+            IBattleFrontManager bfm,
+            IApocCommunications communicationsEngine)
         {
             this.Region = regionMgr;
             this.VictoryPointProgress = new VictoryPointProgress();
             this.PlayersInLakeSet = players;
             this.Objectives = objectives;
             this.BattleFrontManager = bfm;
+            CommunicationsEngine = communicationsEngine;
             this.BattleFrontName = bfm.ActiveBattleFrontName;
-           
+
             Tier = (byte)Region.GetTier();
             PlaceObjectives();
-            
+
             LoadKeeps();
             ////On making a BattleFront if the tier is 4 locks Objectives adjacent to starting zone
             //if (Tier == 4)
@@ -125,7 +132,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             return $"Victory Points Progress for {this.BattleFrontName} : {this.VictoryPointProgress.ToString()}";
         }
-    
+
 
         private void UpdateAAOBuffs()
         {
@@ -374,13 +381,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             plr.BuffInterface.RemoveBuffByEntry((ushort)GameBuffs.FieldOfGlory);
         }
 
-        public void LockBattleObjectivesByZone(int zoneId)
+        public void LockBattleObjectivesByZone(int zoneId, Realms realm)
         {
             foreach (var flag in Objectives)
             {
                 if ((flag.ZoneId != zoneId) && (flag.RegionId == Region.RegionId))
                 {
-                    flag.LockObjective(LockingRealm, true);
+                    flag.LockObjective(realm, true);
                 }
             }
         }
@@ -406,23 +413,26 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             BattlefrontLogger.Info($"Locking Battlefront {this.BattleFrontName} to {realm.ToString()}...");
 
-            if (BattleFrontLocked)
+            if (IsBattleFrontLocked())
             {
                 BattlefrontLogger.Warn($"But... it's already locked?!?");
                 return; // No effect
             }
-           
+
             this.VictoryPointProgress.Lock(realm);
 
-            LockingRealm = realm;
+            //LockingRealm = realm;
 
-            WorldMgr.SendCampaignStatus(null);
+            CommunicationsEngine.SendCampaignStatus(null, VictoryPointProgress);
 
             string message = string.Concat(Region.ZonesInfo[0].Name, " and ", Region.ZonesInfo[1].Name, " have been locked by ", (realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"), "!");
             BattlefrontLogger.Debug(message);
 
             BattleFrontManager.AdvanceBattleFront(realm);
-            Broadcast($"The campaign has moved to  {BattleFrontManager.ActiveBattleFrontName}");
+
+            var campaignMoveMessage = $"The campaign has moved to  {BattleFrontManager.ActiveBattleFrontName}";
+            BattlefrontLogger.Info(campaignMoveMessage);
+            CommunicationsEngine.Broadcast(campaignMoveMessage, this.Tier);
 
             BattleFrontManager.OpenActiveBattlefront();
 
@@ -430,8 +440,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             BattleFrontManager.AuditBattleFronts(this.Tier);
 
             // Generate RP and rewards
-            _contributionTracker.CreateGoldChest(realm);
-            _contributionTracker.HandleLockReward(realm, 1, message, 0);
+            //_contributionTracker.CreateGoldChest(realm);
+            //_contributionTracker.HandleLockReward(realm, 1, message, 0, Tier);
 
             BattlefrontLogger.Debug($"Generating Lock Rewards..");
             foreach (var player in PlayersInLakeSet)
@@ -439,6 +449,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattlefrontLogger.Trace($"{player.Name}...");
                 _rewardManager.GenerateLockReward(player);
             }
+        }
+
+        public bool IsBattleFrontLocked()
+        {
+            return true;
         }
 
         /// <summary>
@@ -492,7 +507,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void ResetBattleFront()
         {
             BattlefrontLogger.Trace($"Resetting Battlefront...{this.BattleFrontName}");
-            
+
             VictoryPointProgress.Reset(this);
             LockingRealm = Realms.REALMS_REALM_NEUTRAL;
 
@@ -532,7 +547,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             BattlefrontLogger.Trace($"Updating Victory Points for {this.BattleFrontName}");
             // Locked by Order/Dest
-            if (BattleFrontLocked)
+            if (IsBattleFrontLocked())
                 return; // Nothing to do
 
             // Only update an active battlefront
@@ -579,26 +594,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattleFrontManager.LockBattleFront(Realms.REALMS_REALM_DESTRUCTION);
         }
 
-        public void WriteVictoryPoints(Realms realm, PacketOut Out)
-        {
 
-            Out.WriteByte((byte)this.VictoryPointProgress.OrderVictoryPoints);
-            Out.WriteByte((byte)this.VictoryPointProgress.DestructionVictoryPoints);
-
-            //no clue but set to a value wont show the pool updatetimer
-            Out.WriteByte(0);
-            Out.WriteByte(0);
-
-            Out.WriteByte(00);
-
-            //local timer for poolupdates
-            //int curTimeSeconds = TCPManager.GetTimeStamp();
-
-            //if (_nextVpUpdateTime == 0 || curTimeSeconds > _nextVpUpdateTime)
-            //    Out.WriteUInt32(0);
-            //else
-            //    Out.WriteUInt32((uint) (_nextVpUpdateTime - curTimeSeconds)); //in seconds
-        }
 
         public int GetZoneOwnership(ushort zoneId)
         {
@@ -642,34 +638,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             //Out.WriteByte((byte)GetZoneOwnership(Zones[0].ZoneId));
         }
 
-        public void Broadcast(string message)
-        {
-            BattlefrontLogger.Info(message);
-            lock (Player._Players)
-            {
-                foreach (Player plr in Player._Players)
-                {
-                    if (!plr.ValidInTier(Tier, true))
-                        continue;
-
-                    plr.SendLocalizeString(message, ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                    plr.SendLocalizeString(message, plr.Realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE, Localized_text.CHAT_TAG_DEFAULT);
-                }
-            }
-        }
-
-        public void Broadcast(string message, Realms realm)
-        {
-            BattlefrontLogger.Info(message);
-            foreach (Player plr in Region.Players)
-            {
-                if (!plr.ValidInTier(Tier, true))
-                    continue;
-
-                plr.SendLocalizeString(message, ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                plr.SendLocalizeString(message, realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE, Localized_text.CHAT_TAG_DEFAULT);
-            }
-        }
 
         /// <summary>
         /// Sends campain diagnostic information to player (gm only).
@@ -680,7 +648,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             player.SendClientMessage("***** Campaign Status : Region " + Region.RegionId + " *****", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
-            player.SendClientMessage("The Battelfront is " + (BattleFrontLocked ? "locked" : "contested."));
+            player.SendClientMessage("The Battlefront is " + (IsBattleFrontLocked() ? "locked" : "contested."));
 
             //foreach (var keep in Keeps)
             //    keep.SendDiagnostic(player);

@@ -11,6 +11,7 @@ using WorldServer.World.Objects.PublicQuests;
 using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer.World.BattleFronts
 {
@@ -576,14 +577,14 @@ namespace WorldServer.World.BattleFronts
             
             LockingRealm = realm;
 
-            WorldMgr.SendCampaignStatus(null);
+            new ApocCommunications().SendCampaignStatus(null, null);
 
             string message = string.Concat(Region.ZonesInfo[0].Name, " and ", Region.ZonesInfo[1].Name, " have been locked by ", (realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"), "!");
 
             try
             {
                 //Log.Info("Zone Lock", "Locking "+Region.ZonesInfo[0].Name + " and " + Region.ZonesInfo[1].Name);
-                _contributionTracker.HandleLockReward(realm, 1, message, 0);
+                _contributionTracker.HandleLockReward(realm, 1, message, 0, Tier);
             }
             catch (Exception e)
             {
@@ -619,7 +620,7 @@ namespace WorldServer.World.BattleFronts
 
             UpdateStateOfTheRealm();
 
-            WorldMgr.SendCampaignStatus(null);
+            new ApocCommunications().SendCampaignStatus(null, null);
         }
 #endregion
 
@@ -695,7 +696,7 @@ namespace WorldServer.World.BattleFronts
             _nextVpUpdateTime = TCPManager.GetTimeStamp() + 120;
 
             foreach (Player player in Region.Players)
-                WorldMgr.SendCampaignStatus(player);
+                new ApocCommunications().SendCampaignStatus(player, null);
         }
         #endregion
 

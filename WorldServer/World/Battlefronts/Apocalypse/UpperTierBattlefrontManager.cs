@@ -7,6 +7,13 @@ using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
+    public class BattleFrontMetrics
+    {
+        public int BattleFrontId { get; set; }
+        public Realms LockingRealm { get; set; }
+        public VictoryPointProgress VictoryPointAtLock { get; set; }
+    }
+
     public class UpperTierBattleFrontManager : IBattleFrontManager
     {
         public List<RegionMgr> RegionMgrs { get; }
@@ -16,6 +23,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// The RacialPair that is currently active.
         /// </summary>
         public RVRProgression ActiveBattleFront { get; set; }
+
+        //public bool ActiveBattleFrontLocked => LockingRealm != Realms.REALMS_REALM_NEUTRAL;
+        public Realms ActiveBattleFrontLockingRealm { get; set; } = Realms.REALMS_REALM_NEUTRAL;
 
         public UpperTierBattleFrontManager(List<RVRProgression> _RVRT4Progressions, List<RegionMgr> regionMgrs)
         {
@@ -78,6 +88,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             activeRegion.ndbf.VictoryPointProgress.Reset(activeRegion.ndbf);
             activeRegion.ndbf.LockingRealm = Realms.REALMS_REALM_NEUTRAL;
 
+            LockingRealm = Realms.REALMS_REALM_NEUTRAL;
+
             foreach (var flag in activeRegion.ndbf.Objectives)
             {
                 if (this.ActiveBattleFront.ZoneId == flag.ZoneId)
@@ -109,6 +121,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
 
             activeRegion.ndbf.LockBattleFront(realm);
+
+            // Use Locking Realm in the BFM, not the BF (BF applies to region)
 
         }
 

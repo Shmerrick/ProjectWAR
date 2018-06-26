@@ -9,6 +9,7 @@ using WorldServer.World.BattleFronts;
 using WorldServer.World.Objects.PublicQuests;
 using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer
 {
@@ -472,7 +473,7 @@ namespace WorldServer
             VictoryPoints = 50;
             LastAnnouncedVictoryPoints = 50;
 
-            WorldMgr.SendCampaignStatus(null);
+            new ApocCommunications().SendCampaignStatus(null, null);
 
             winnerRewardScale *= RelativeActivityFactor;
 
@@ -580,7 +581,7 @@ namespace WorldServer
                 }
             }
 
-            WorldMgr.SendCampaignStatus(null);
+            new ApocCommunications().SendCampaignStatus(null, null);
         }
         
         private void LoadPairing()
@@ -640,7 +641,7 @@ namespace WorldServer
 
             LockingRealm = Realms.REALMS_REALM_NEUTRAL;
             DefendingRealm = Realms.REALMS_REALM_NEUTRAL;
-            WorldMgr.SendCampaignStatus(null);
+            new ApocCommunications().SendCampaignStatus(null, null);
         }
 
         public override void ResetPairing()
@@ -653,7 +654,7 @@ namespace WorldServer
             LockZone(Realms.REALMS_REALM_ORDER, Zones[2].ZoneId, false, true);
             LockingRealm = Realms.REALMS_REALM_NEUTRAL;
             DefendingRealm = Realms.REALMS_REALM_NEUTRAL;
-            WorldMgr.SendCampaignStatus(null);
+            new ApocCommunications().SendCampaignStatus(null, null);
 
             if (_BattleFrontStatus != null)
             {

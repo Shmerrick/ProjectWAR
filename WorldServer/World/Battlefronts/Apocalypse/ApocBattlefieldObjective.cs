@@ -158,6 +158,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             ZoneId = (ushort)zoneId;
             RegionId = (ushort)regionId;
             Tier = (byte)tier;
+            State = StateFlags.ZoneLocked;
         }
 
         /// <summary>
@@ -179,6 +180,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _o = (ushort)objective.O;
             _tokdiscovery = objective.TokDiscovered;
             _tokunlocked = objective.TokUnlocked;
+
+            State = StateFlags.ZoneLocked;
 
             Heading = _o;
             WorldPosition.X = (int)_x;
@@ -221,7 +224,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public override string ToString()
         {
-            return $"Objective : {this.Name} Status : {FlagActive()} Owner : {this.OwningRealm} Close players (O/D) : {this._closeOrderCount}/{this._closeDestroCount}";
+            return $"Objective : {this.Name} Status : {State} Owner : {this.OwningRealm} Close players (O/D) : {this._closeOrderCount}/{this._closeDestroCount}";
         }
 
         /// <summary>
@@ -297,7 +300,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 return;
 
             var frnt = BattleFront;
-            if (frnt != null && frnt.BattleFrontLocked)
+            if (frnt != null && frnt.IsBattleFrontLocked())
                 return;
 
             // Apply previously computed transition speed since last update
@@ -569,7 +572,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             State = StateFlags.Unsecure;
             OwningRealm = Realms.REALMS_REALM_NEUTRAL;
             BroadcastFlagInfo(true);
-            SendFlagState(GetPlayer(), true, true);
+            SendFlagState(GetPlayer(), false, true);
         }
 
         /// <summary>

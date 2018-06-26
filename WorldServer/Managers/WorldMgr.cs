@@ -66,7 +66,7 @@ namespace WorldServer
 
             if (Mgr == null && Create)
             {
-                Mgr = new RegionMgr(RegionId, ZoneService.GetZoneRegion(RegionId), name);
+                Mgr = new RegionMgr(RegionId, ZoneService.GetZoneRegion(RegionId), name, new ApocCommunications());
                 RegionsRWLock.EnterWriteLock();
                 _Regions.Add(Mgr);
                 RegionsRWLock.ExitWriteLock();
@@ -1364,125 +1364,7 @@ namespace WorldServer
 
         }
 
-        public static void BuildCaptureStatus(PacketOut Out, RegionMgr region)
-        {
-            if (region == null)
-                Out.Fill(0, 3);
-            else
-                region.ndbf.WriteCaptureStatus(Out, region.ndbf.LockingRealm);
-        }
-
-        public static void BuildBattleFrontStatus(PacketOut Out, RegionMgr region)
-        {
-            if (region == null)
-                Out.Fill(0, 3);
-
-            region.ndbf.WriteBattleFrontStatus(Out);
-        }
-
-        public static void SendCampaignStatus(Player plr)
-        {
-            _logger.Trace("Send Campaign Status");
-            PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
-            Out.WriteHexStringBytes("0005006700CB00"); // 7
-
-            // Dwarfs vs Greenskins T1
-            BuildCaptureStatus(Out, GetRegion(1, false));
-
-            // Dwarfs vs Greenskins T2
-            BuildCaptureStatus(Out, GetRegion(12, false));
-
-            // Dwarfs vs Greenskins T3
-            BuildCaptureStatus(Out, GetRegion(10, false));
-
-            // Dwarfs vs Greenskins T4
-            BuildCaptureStatus(Out, GetRegion(2, false));
-
-            // Empire vs Chaos T1
-            BuildCaptureStatus(Out, GetRegion(8, false));
-
-            // Empire vs Chaos T2
-            BuildCaptureStatus(Out, GetRegion(14, false));
-
-            // Empire vs Chaos T3
-            BuildCaptureStatus(Out, GetRegion(6, false));
-
-            // Empire vs Chaos T4
-            BuildCaptureStatus(Out, GetRegion(11, false));
-
-            // High Elves vs Dark Elves T1
-            BuildCaptureStatus(Out, GetRegion(3, false));
-
-            // High Elves vs Dark Elves T2
-            BuildCaptureStatus(Out, GetRegion(15, false));
-
-            // High Elves vs Dark Elves T3
-            BuildCaptureStatus(Out, GetRegion(16, false));
-
-            // High Elves vs Dark Elves T4
-            BuildCaptureStatus(Out, GetRegion(4, false));
-
-            Out.Fill(0, 83);
-
-            // RB   4/24/2016   Added logic for T4 campaign progression.
-            //gs t4
-            // 0 contested 1 order controled 2 destro controled 3 notcontroled locked
-            Out.WriteByte(3);   //dwarf fort
-            BuildBattleFrontStatus(Out, GetRegion(2, false));   //kadrin valley
-            Out.WriteByte(3);   //orc fort
-
-            //chaos t4
-            Out.WriteByte(3);   //empire fort
-            BuildBattleFrontStatus(Out, GetRegion(11, false));   //reikland
-            Out.WriteByte(3);   //chaos fort
-
-            //elf
-            Out.WriteByte(3);   //elf fort
-            BuildBattleFrontStatus(Out, GetRegion(4, false));   //etaine
-            Out.WriteByte(3);   //delf fort
-
-            Out.WriteByte(0); // Order underdog rating
-            Out.WriteByte(0); // Destruction underdog rating
-
-            if (plr == null)
-            {
-                byte[] buffer = Out.ToArray();
-
-                lock (Player._Players)
-                {
-                    foreach (Player player in Player._Players)
-                    {
-                        if (player == null || player.IsDisposed || !player.IsInWorld())
-                            continue;
-
-                        PacketOut playerCampaignStatus = new PacketOut(0, 159) { Position = 0 };
-                        playerCampaignStatus.Write(buffer, 0, buffer.Length);
-
-                        if (player.Region?.ndbf != null)
-                            player.Region.ndbf.WriteVictoryPoints(player.Realm, playerCampaignStatus);
-
-                        else
-                            playerCampaignStatus.Fill(0, 9);
-
-                        playerCampaignStatus.Fill(0, 4);
-
-                        player.SendPacket(playerCampaignStatus);
-                    }
-                }
-            }
-            else
-            {
-                if (plr.Region?.ndbf != null)
-                    plr.Region.ndbf.WriteVictoryPoints(plr.Realm, Out);
-
-                else
-                    Out.Fill(0, 9);
-
-                Out.Fill(0, 4);
-
-                plr.SendPacket(Out);
-            }
-        }
+        
 
         // This is used to change the fronts during campaign, DoomsDay changes below
         public static void EvaluateT4CampaignStatus(ushort Region)
@@ -1740,10 +1622,10 @@ namespace WorldServer
                     case 1: // t1 dw/gs
                     case 3: // t1 he/de
                     case 8: // t1 em/ch
-                        regionMgr.ndbf = new ApocBattleFront(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager);
+                        regionMgr.ndbf = new ApocBattleFront(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager, new ApocCommunications());
                         break;
                     default: // Everything else...
-                        regionMgr.ndbf = new ApocBattleFront(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager);
+                        regionMgr.ndbf = new ApocBattleFront(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager, new ApocCommunications());
                         break;
                 }
             }

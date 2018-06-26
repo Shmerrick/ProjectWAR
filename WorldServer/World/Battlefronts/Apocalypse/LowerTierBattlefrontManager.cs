@@ -80,7 +80,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             ProgressionLogger.Info($" Opening battlefront in {activeRegion.RegionName}");
 
             activeRegion.ndbf.VictoryPointProgress.Reset(activeRegion.ndbf);
-            activeRegion.ndbf.LockingRealm = Realms.REALMS_REALM_NEUTRAL;
+            activeRegion.ndbf.IsBattleFrontLocked() = Realms.REALMS_REALM_NEUTRAL;
 
             foreach (var flag in activeRegion.ndbf.Objectives)
             {

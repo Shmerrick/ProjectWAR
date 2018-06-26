@@ -1258,7 +1258,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         private void ReclaimKeep()
         {
-            Region.ndbf.Broadcast($"{Info.Name} has been reclaimed by the forces of {(Info.Realm == 1 ? "Order" : "Destruction")}!");
+            Region.ndbf.CommunicationsEngine.Broadcast($"{Info.Name} has been reclaimed by the forces of {(Info.Realm == 1 ? "Order" : "Destruction")}!", Tier);
 
             Realm = (Realms) Info.Realm;
 
