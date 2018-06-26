@@ -29,7 +29,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static short MAX_CLOSE_PLAYERS = 6;
 
         /// <summary>The tier within which the BattleFront exists.</summary>
-        public readonly byte _tier;
+        public readonly byte Tier;
 
         /// <summary>BattleFront objective id</summary>
         public readonly int Id;
@@ -49,7 +49,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         private volatile short _closeOrderCount, _closeDestroCount;
 
-        
+
         /// <summary>Set of all players in close range, not limited</summary>
         private ISet<Player> _closePlayers = new HashSet<Player>();
 
@@ -144,23 +144,41 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
         /// <summary>
+        /// Constructor to assist in testing - dont use in production.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <param name="zoneId"></param>
+        /// <param name="regionId"></param>
+        /// <param name="tier"></param>
+        public ApocBattlefieldObjective(int id, string name, int zoneId, int regionId, int tier)
+        {
+            Id = id;
+            Name = name;
+            ZoneId = (ushort)zoneId;
+            RegionId = (ushort)regionId;
+            Tier = (byte)tier;
+        }
+
+        /// <summary>
         ///     Constructor
         /// </summary>
-        /// <param name="obj"></param>
-        public ApocBattlefieldObjective(BattleFront_Objective obj, int Tier)
+        /// <param name="objective"></param>
+        /// <param name="tier"></param>
+        public ApocBattlefieldObjective(BattleFront_Objective objective, int tier)
         {
-            Id = obj.Entry;
-            Name = obj.Name;
-            ZoneId = obj.ZoneId;
-            RegionId = obj.RegionId;
-            _tier = (byte)Tier;
+            Id = objective.Entry;
+            Name = objective.Name;
+            ZoneId = objective.ZoneId;
+            RegionId = objective.RegionId;
+            Tier = (byte)tier;
 
-            _x = (uint)obj.X;
-            _y = (uint)obj.Y;
-            _z = (ushort)obj.Z;
-            _o = (ushort)obj.O;
-            _tokdiscovery = obj.TokDiscovered;
-            _tokunlocked = obj.TokUnlocked;
+            _x = (uint)objective.X;
+            _y = (uint)objective.Y;
+            _z = (ushort)objective.Z;
+            _o = (ushort)objective.O;
+            _tokdiscovery = objective.TokDiscovered;
+            _tokunlocked = objective.TokUnlocked;
 
             Heading = _o;
             WorldPosition.X = (int)_x;
@@ -225,7 +243,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             //    _secureProgress,
             //    objectiveRewardScaler);
 
-            
+
             var objectiveRewardScaler = this.RewardManager.CalculateObjectiveRewardScale(OwningRealm, _closeOrderCount, _closeDestroCount);
 
             // Temporary fix - remove objectiveRewardScaler from impacting RR gains.
@@ -233,15 +251,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             // Scalers in this model are additive. 
 
-            return this.RewardManager.RewardCaptureTick(_closePlayers, 
-                OwningRealm, 
-                _tier, 
+            return this.RewardManager.RewardCaptureTick(_closePlayers,
+                OwningRealm,
+                Tier,
                 Name,
                 objectiveRewardScaler + pairingRewardScaler);
         }
 
 
-       
+
 
 
         public bool FlagActive()
@@ -279,9 +297,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 return;
 
             var frnt = BattleFront;
-            if (frnt != null && frnt.PairingLocked)
+            if (frnt != null && frnt.BattleFrontLocked)
                 return;
-            
+
             // Apply previously computed transition speed since last update
             if (_lastTransitionUpdateSpeed != 0)
             {
@@ -322,7 +340,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     State = StateFlags.Unsecure;
                     SendFlagState(GetPlayer(), announce, true);
                 }
-                else { 
+                else
+                {
 
                     if (Ruin)
                         foreach (var keep in Region.Bttlfront.Keeps)
@@ -439,12 +458,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
 
-        
+
 
         public override void AddInRange(Object obj)
         {
             var plr = obj as Player;
-            if (plr != null && plr.ValidInTier(_tier, true))
+            if (plr != null && plr.ValidInTier(Tier, true))
             {
                 SendFlagInfo(plr);
                 plr.CurrentObjectiveFlag = this;
@@ -577,7 +596,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var owningRealm = OwningRealm;
             var assaultingRealm = AssaultingRealm;
 
-            if (_tier == 4)
+            if (Tier == 4)
             {
                 var prFrnt = (ProximityProgressingBattleFront)Region.Bttlfront;
                 if (prFrnt != null && ZoneId != prFrnt.Zones[prFrnt._BattleFrontStatus.OpenZoneIndex].ZoneId)
@@ -948,7 +967,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void LockObjective(Realms lockingRealm, bool announce)
         {
             BattlefrontLogger.Debug($"Locking Objective {Name} for {lockingRealm.ToString()}");
-            
+
             OwningRealm = lockingRealm;
             AssaultingRealm = Realms.REALMS_REALM_NEUTRAL;
             State = StateFlags.ZoneLocked;
@@ -979,22 +998,22 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             foreach (Player plr in PlayersInRange)
             {
-                if (plr.Realm == this.OwningRealm && plr.ValidInTier(_tier, true))
+                if (plr.Realm == this.OwningRealm && plr.ValidInTier(Tier, true))
                 {
                     if (AccumulatedKills < 3)
                     {
                         plr.SendLocalizeString("Defending this objective was a noble duty. You have received a small reward for your service.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                        plr.ItmInterface.CreateItem((uint)208399 + _tier, 1);
+                        plr.ItmInterface.CreateItem((uint)208399 + Tier, 1);
                     }
                     else if (AccumulatedKills <= 6)
                     {
                         plr.SendLocalizeString("Your defense of this objective has been noteworthy! You have received a moderate reward.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                        plr.ItmInterface.CreateItem((uint)208399 + _tier, 2);
+                        plr.ItmInterface.CreateItem((uint)208399 + Tier, 2);
                     }
                     else if (AccumulatedKills > 6)
                     {
                         plr.SendLocalizeString("Your defense of this objective has been heroic! You have received a respectable reward.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                        plr.ItmInterface.CreateItem((uint)208399 + _tier, 3);
+                        plr.ItmInterface.CreateItem((uint)208399 + Tier, 3);
                     }
                 }
             }
@@ -1020,6 +1039,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         #endregion
 
 
-        
+
     }
 }

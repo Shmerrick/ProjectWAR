@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
+using Common;
 using Common.Database.World.Battlefront;
 using GameData;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -14,11 +15,30 @@ namespace WorldServer.Test
     {
         public LowerTierBattleFrontManager manager { get; set; }
         public List<RVRProgression> SampleProgressionList { get; set; }
+        public RegionMgr Region1 { get; set; }
+        public RegionMgr Region3 { get; set; }
+        public List<RegionMgr> RegionMgrs { get; set; }
 
-      
+
         [TestInitialize]
         public void Setup()
         {
+            RegionMgrs = new List<RegionMgr>();
+
+
+            var R1ZoneList = new List<Zone_Info>();
+            R1ZoneList.Add(new Zone_Info { ZoneId = 200, Name = "R1Zone200 PR", Pairing = 2 });
+            R1ZoneList.Add(new Zone_Info { ZoneId = 201, Name = "R1Zone201 CW", Pairing = 2 });
+
+            var R3ZoneList = new List<Zone_Info>();
+            R3ZoneList.Add(new Zone_Info { ZoneId = 400, Name = "R3Zone400 TM", Pairing = 1 });
+            R3ZoneList.Add(new Zone_Info { ZoneId = 401, Name = "R3Zone401 KV", Pairing = 1 });
+
+            Region1 = new RegionMgr(1, R1ZoneList, "Region1");
+            Region3 = new RegionMgr(3, R3ZoneList, "Region3");
+
+            RegionMgrs.Add(Region1);
+            RegionMgrs.Add(Region3);
 
             SampleProgressionList = new List<RVRProgression>();
             SampleProgressionList.Add(new RVRProgression
@@ -51,27 +71,27 @@ namespace WorldServer.Test
                 OrderWinProgression = 2,
                 PairingId = 1
             });
-            manager = new LowerTierBattleFrontManager(SampleProgressionList);
+            manager = new LowerTierBattleFrontManager(SampleProgressionList, RegionMgrs);
         }
 
         [TestMethod]
         public void Constructor_NoPairings_CreatesError()
         {
-            var manager = new LowerTierBattleFrontManager(null);
+            var manager = new LowerTierBattleFrontManager(null, RegionMgrs);
             Assert.IsNull(manager.ActiveBattleFront);
         }
 
         [TestMethod]
         public void Constructor_NoActivePairings_CreatesError()
         {
-            var manager = new LowerTierBattleFrontManager(SampleProgressionList);
+            var manager = new LowerTierBattleFrontManager(SampleProgressionList,RegionMgrs);
             Assert.IsNull(manager.ActiveBattleFront);
         }
 
         [TestMethod]
         public void ResetActivePairing()
         {
-            var manager = new LowerTierBattleFrontManager(SampleProgressionList);
+            var manager = new LowerTierBattleFrontManager(SampleProgressionList, RegionMgrs);
             var bf = manager.ResetBattleFrontProgression();
             Assert.IsTrue(bf.BattleFrontId == 1);
         }
@@ -80,7 +100,7 @@ namespace WorldServer.Test
         public void ActivePairingLocated()
         {
 
-            var manager = new LowerTierBattleFrontManager(SampleProgressionList);
+            var manager = new LowerTierBattleFrontManager(SampleProgressionList, RegionMgrs);
             var bf = manager.ResetBattleFrontProgression();
             Assert.IsTrue(bf.DestWinProgression == 2);
             Assert.IsTrue(bf.BattleFrontId == 1);

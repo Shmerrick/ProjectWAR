@@ -1391,7 +1391,7 @@ namespace WorldServer
         }
 
         /// <summary>
-        /// This is used instead of PairingLocked to allow some killing after zone is locked
+        /// This is used instead of BattleFrontLocked to allow some killing after zone is locked
         /// </summary>
         public void EndGrace()
         {

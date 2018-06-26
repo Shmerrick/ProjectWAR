@@ -1779,7 +1779,7 @@ namespace WorldServer
         }
 
         /// <summary>
-        /// This is used instead of PairingLocked to allow some killing after zone is locked
+        /// This is used instead of BattleFrontLocked to allow some killing after zone is locked
         /// </summary>
         public void EndGrace()
         {
@@ -2861,7 +2861,7 @@ namespace WorldServer
                     VictoryPoints = Math.Min(maxShift, VictoryPoints + delta);
 
                     if (VictoryPoints == 100)
-                        LockPairing(Realms.REALMS_REALM_ORDER, true);
+                        LockBattleFront(Realms.REALMS_REALM_ORDER, true);
 
                     else if (VictoryPoints - LastAnnouncedVictoryPoints >= 15)
                     {
@@ -2890,7 +2890,7 @@ namespace WorldServer
                 {
                     VictoryPoints = Math.Max(maxShift, VictoryPoints + delta);
                     if (VictoryPoints == 0)
-                        LockPairing(Realms.REALMS_REALM_DESTRUCTION, true);
+                        LockBattleFront(Realms.REALMS_REALM_DESTRUCTION, true);
 
                     else if (LastAnnouncedVictoryPoints - VictoryPoints >= 15)
                     {

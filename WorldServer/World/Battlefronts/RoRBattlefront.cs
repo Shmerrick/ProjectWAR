@@ -179,7 +179,7 @@ namespace WorldServer.World.BattleFronts
 
             //if (Tier > 1)
             //{
-            //    if (!PairingLocked)
+            //    if (!BattleFrontLocked)
             //        UpdateVictoryPoints();
             //    UpdateRationing();
             //}

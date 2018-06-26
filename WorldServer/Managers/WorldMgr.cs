@@ -1630,7 +1630,7 @@ namespace WorldServer
                             foreach (IBattleFront bf in BattleFrontList.RegionManagers[i])
                             {
                                 ProximityBattleFront front = bf as ProximityBattleFront;
-                                if (front != null && !front.PairingLocked)
+                                if (front != null && !front.BattleFrontLocked)
                                 {
                                     campaignReset = false;
                                     break;

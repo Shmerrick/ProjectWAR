@@ -34,7 +34,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public HashSet<Player> PlayersInLakeSet;
         public List<ApocBattlefieldObjective> Objectives;
-        public bool PairingLocked => LockingRealm != Realms.REALMS_REALM_NEUTRAL;
+        public bool BattleFrontLocked => LockingRealm != Realms.REALMS_REALM_NEUTRAL;
         public Realms LockingRealm { get; set; } = Realms.REALMS_REALM_NEUTRAL;
         private volatile int _orderCount = 0;
         private volatile int _destroCount = 0;
@@ -398,11 +398,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public void LockPairing(Realms realm)
+        /// <summary>
+        /// Lock, Advance and handle rewards for Lock of Battlefront
+        /// </summary>
+        /// <param name="realm"></param>
+        public void LockBattleFront(Realms realm)
         {
-            BattlefrontLogger.Info($"Locking Pair {this.BattleFrontName} to {realm.ToString()}...");
+            BattlefrontLogger.Info($"Locking Battlefront {this.BattleFrontName} to {realm.ToString()}...");
 
-            if (PairingLocked)
+            if (BattleFrontLocked)
             {
                 BattlefrontLogger.Warn($"But... it's already locked?!?");
                 return; // No effect
@@ -528,10 +532,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             BattlefrontLogger.Trace($"Updating Victory Points for {this.BattleFrontName}");
             // Locked by Order/Dest
-            if (PairingLocked)
+            if (BattleFrontLocked)
                 return; // Nothing to do
 
-            // Only update an active pair
+            // Only update an active battlefront
             if (BattleFrontManager.ActiveBattleFront.RegionId != this.Region.RegionId)
                 return;
 
@@ -676,7 +680,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             player.SendClientMessage("***** Campaign Status : Region " + Region.RegionId + " *****", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
-            player.SendClientMessage("The pairing is " + (PairingLocked ? "locked" : "contested."));
+            player.SendClientMessage("The Battelfront is " + (BattleFrontLocked ? "locked" : "contested."));
 
             //foreach (var keep in Keeps)
             //    keep.SendDiagnostic(player);
@@ -865,7 +869,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public bool PreventKillReward()
         {
-            return PairingLocked; // Removed from legacy : && Tier > 1
+            return BattleFrontLocked; // Removed from legacy : && Tier > 1
         }
 
 
@@ -882,7 +886,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
 
             float rewardMod = 1f;
-            if (PairingLocked)
+            if (BattleFrontLocked)
                 return rewardMod;
 
             var closestFlag = GetClosestFlag(killed.WorldPosition);

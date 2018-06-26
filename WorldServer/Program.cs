@@ -105,9 +105,9 @@ namespace WorldServer
 
             LoaderMgr.Start();
 
-            WorldMgr.UpperTierBattleFrontManager = new UpperTierBattleFrontManager(RVRProgressionService._RVRProgressions.Where(x=>x.Tier == 4).ToList());
+            WorldMgr.UpperTierBattleFrontManager = new UpperTierBattleFrontManager(RVRProgressionService._RVRProgressions.Where(x=>x.Tier == 4).ToList(), WorldMgr._Regions);
 
-            WorldMgr.LowerTierBattleFrontManager = new LowerTierBattleFrontManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 1).ToList());
+            WorldMgr.LowerTierBattleFrontManager = new LowerTierBattleFrontManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 1).ToList(), WorldMgr._Regions);
             WorldMgr.UpperTierBattleFrontManager.ResetBattleFrontProgression();
             WorldMgr.LowerTierBattleFrontManager.ResetBattleFrontProgression();
             // Attach Battlefronts to regions

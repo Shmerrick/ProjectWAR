@@ -8,7 +8,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     /// After these values have been stabilized, GM commands should be removed
     /// and declarations have to be converted to "const".
     /// </remarks>
-    internal class BattleFrontConstants
+    public class BattleFrontConstants
     {
         private BattleFrontConstants() { }
 

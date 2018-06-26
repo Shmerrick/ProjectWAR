@@ -10,6 +10,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public class LowerTierBattleFrontManager : IBattleFrontManager
     {
+        public List<RegionMgr> RegionMgrs { get; }
         public List<RVRProgression> BattleFrontProgressions { get; }
         private static readonly Logger ProgressionLogger = LogManager.GetLogger("RVRProgressionLogger");
         /// <summary>
@@ -17,9 +18,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         public RVRProgression ActiveBattleFront { get; set; }
 
-        public LowerTierBattleFrontManager(List<RVRProgression> _RVRT1Progressions)
+        public LowerTierBattleFrontManager(List<RVRProgression> _RVRT1Progressions, List<RegionMgr> regionMgrs)
         {
             BattleFrontProgressions = _RVRT1Progressions;
+            RegionMgrs = regionMgrs;
         }
 
         /// <summary>
@@ -27,7 +29,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         public void AuditBattleFronts(int tier)
         {
-            foreach (var regionMgr in WorldMgr._Regions)
+            foreach (var regionMgr in RegionMgrs)
             {
                 if (regionMgr.GetTier() == tier)
                 {
@@ -44,7 +46,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         public void LockBattleFronts(int tier)
         {
-            foreach (var regionMgr in WorldMgr._Regions)
+            foreach (var regionMgr in RegionMgrs)
             {
                 if (regionMgr.GetTier() == tier)
                 {
@@ -60,7 +62,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void LockBattleFront(Realms realm)
         {
-            var activeRegion = WorldMgr._Regions.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
+            var activeRegion = RegionMgrs.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
             ProgressionLogger.Info($" Locking battlefront in {activeRegion.RegionName} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
 
             foreach (var flag in activeRegion.ndbf.Objectives)
@@ -69,12 +71,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     flag.LockObjective(realm, true);
             }
 
-            activeRegion.ndbf.LockPairing(realm);
+            activeRegion.ndbf.LockBattleFront(realm);
         }
 
         public void OpenActiveBattlefront()
         {
-            var activeRegion = WorldMgr._Regions.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
+            var activeRegion = RegionMgrs.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
             ProgressionLogger.Info($" Opening battlefront in {activeRegion.RegionName}");
 
             activeRegion.ndbf.VictoryPointProgress.Reset(activeRegion.ndbf);

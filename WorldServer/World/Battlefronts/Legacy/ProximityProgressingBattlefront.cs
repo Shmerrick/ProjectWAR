@@ -646,7 +646,7 @@ namespace WorldServer
             /*else
             {
                 foreach (ProximityBattleFront b in BattleFrontList.RegionManagers[arr - 1])
-                    if (b != this && !b.PairingLocked && b.pairing == pairing)
+                    if (b != this && !b.BattleFrontLocked && b.pairing == pairing)
                         //b.EvtInterface.AddEvent(b.SupplyLineReset, 1, 1);
         }*/
             DefenderPopTooSmall = false;
