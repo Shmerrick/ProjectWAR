@@ -176,7 +176,7 @@ namespace WorldServer
             LockingRealm = Realms.REALMS_REALM_NEUTRAL;
             DefendingRealm = Realms.REALMS_REALM_NEUTRAL;
 
-            new ApocCommunications().SendCampaignStatus(null, null);
+            new ApocCommunications().SendCampaignStatus(null, null, Realms.REALMS_REALM_NEUTRAL);
         }
 
         public void MinuteUpdate()
@@ -1339,7 +1339,7 @@ namespace WorldServer
 
             LockingRealm = realm;
 
-            new ApocCommunications().SendCampaignStatus(null, null);
+            new ApocCommunications().SendCampaignStatus(null, null, Realms.REALMS_REALM_NEUTRAL);
 
             // DoomsDay change - we want to unlock stuff only after we locked something
             if (Constants.DoomsdaySwitch == 0)
@@ -1947,7 +1947,7 @@ namespace WorldServer
             _BattleFrontStatus.ControlingRealm = 0;
             WorldMgr.Database.SaveObject(_BattleFrontStatus);
 
-            new ApocCommunications().SendCampaignStatus(null, null);
+            new ApocCommunications().SendCampaignStatus(null, null, Realms.REALMS_REALM_NEUTRAL);
 
             UpdateStateOfTheRealm();
         }
@@ -2285,7 +2285,7 @@ namespace WorldServer
             _nextVpUpdateTime = TCPManager.GetTimeStamp() + (int)(120 * TIMER_MODIFIER);
 
             foreach (Player player in Region.Players)
-                new ApocCommunications().SendCampaignStatus(player, null);
+                new ApocCommunications().SendCampaignStatus(player, null, Realms.REALMS_REALM_NEUTRAL);
         }
 
 #endregion

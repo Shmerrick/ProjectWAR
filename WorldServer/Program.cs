@@ -113,10 +113,10 @@ namespace WorldServer
             // Attach Battlefronts to regions
             WorldMgr.AttachBattleFronts();
 
-            WorldMgr.UpperTierBattleFrontManager.LockBattleFronts(4);
+            WorldMgr.UpperTierBattleFrontManager.LockBattleFrontsAllRegions(4);
             Log.Texte("Creating Upper Tier BattleFront Manager", WorldMgr.UpperTierBattleFrontManager.ActiveBattleFrontName, ConsoleColor.Cyan);
 
-            WorldMgr.LowerTierBattleFrontManager.LockBattleFronts(1);
+            WorldMgr.LowerTierBattleFrontManager.LockBattleFrontsAllRegions(1);
             Log.Texte("Creating Lower Tier BattleFront Manager", WorldMgr.LowerTierBattleFrontManager.ActiveBattleFrontName, ConsoleColor.Cyan);
 
             WorldMgr.UpperTierBattleFrontManager.OpenActiveBattlefront();

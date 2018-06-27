@@ -473,7 +473,7 @@ namespace WorldServer
             VictoryPoints = 50;
             LastAnnouncedVictoryPoints = 50;
 
-            new ApocCommunications().SendCampaignStatus(null, null);
+            new ApocCommunications().SendCampaignStatus(null, null, Realms.REALMS_REALM_NEUTRAL);
 
             winnerRewardScale *= RelativeActivityFactor;
 
@@ -581,7 +581,7 @@ namespace WorldServer
                 }
             }
 
-            new ApocCommunications().SendCampaignStatus(null, null);
+            new ApocCommunications().SendCampaignStatus(null, null, Realms.REALMS_REALM_NEUTRAL);
         }
         
         private void LoadPairing()
@@ -641,7 +641,7 @@ namespace WorldServer
 
             LockingRealm = Realms.REALMS_REALM_NEUTRAL;
             DefendingRealm = Realms.REALMS_REALM_NEUTRAL;
-            new ApocCommunications().SendCampaignStatus(null, null);
+            new ApocCommunications().SendCampaignStatus(null, null, Realms.REALMS_REALM_NEUTRAL);
         }
 
         public override void ResetPairing()
@@ -654,7 +654,7 @@ namespace WorldServer
             LockZone(Realms.REALMS_REALM_ORDER, Zones[2].ZoneId, false, true);
             LockingRealm = Realms.REALMS_REALM_NEUTRAL;
             DefendingRealm = Realms.REALMS_REALM_NEUTRAL;
-            new ApocCommunications().SendCampaignStatus(null, null);
+            new ApocCommunications().SendCampaignStatus(null, null, Realms.REALMS_REALM_NEUTRAL);
 
             if (_BattleFrontStatus != null)
             {

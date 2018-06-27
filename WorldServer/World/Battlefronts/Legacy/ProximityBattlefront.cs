@@ -204,7 +204,7 @@ namespace WorldServer
             LockingRealm = Realms.REALMS_REALM_NEUTRAL;
             DefendingRealm = Realms.REALMS_REALM_NEUTRAL;
 
-            new ApocCommunications().SendCampaignStatus(null, null);
+            new ApocCommunications().SendCampaignStatus(null, null, Realms.REALMS_REALM_NEUTRAL);
         }
 
         public void MinuteUpdate()
@@ -1605,7 +1605,7 @@ namespace WorldServer
 
             LockingRealm = realm;
 
-            new ApocCommunications().SendCampaignStatus(null, null);
+            new ApocCommunications().SendCampaignStatus(null, null, Realms.REALMS_REALM_NEUTRAL);
 
             // DoomsDay change - we want to unlock stuff only after we locked something
             if (Constants.DoomsdaySwitch == 0)
@@ -2399,7 +2399,7 @@ namespace WorldServer
             _BattleFrontStatus.ControlingRealm = 0;
             WorldMgr.Database.SaveObject(_BattleFrontStatus);
 
-            new ApocCommunications().SendCampaignStatus(null, null);
+            new ApocCommunications().SendCampaignStatus(null, null, Realms.REALMS_REALM_NEUTRAL);
 
             UpdateStateOfTheRealm();
         }
@@ -2727,7 +2727,7 @@ namespace WorldServer
             _nextVpUpdateTime = TCPManager.GetTimeStamp() + (int)(120 * TIMER_MODIFIER);
 
             foreach (Player player in Region.Players)
-                new ApocCommunications().SendCampaignStatus(player, null);
+                new ApocCommunications().SendCampaignStatus(player, null, Realms.REALMS_REALM_NEUTRAL);
         }
 
         #endregion
@@ -2863,7 +2863,7 @@ namespace WorldServer
                     VictoryPoints = Math.Min(maxShift, VictoryPoints + delta);
 
                     if (VictoryPoints == 100)
-                        LockBattleFront(Realms.REALMS_REALM_ORDER, true);
+                        LockActiveBattleFront(Realms.REALMS_REALM_ORDER, true);
 
                     else if (VictoryPoints - LastAnnouncedVictoryPoints >= 15)
                     {
@@ -2892,7 +2892,7 @@ namespace WorldServer
                 {
                     VictoryPoints = Math.Max(maxShift, VictoryPoints + delta);
                     if (VictoryPoints == 0)
-                        LockBattleFront(Realms.REALMS_REALM_DESTRUCTION, true);
+                        LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION, true);
 
                     else if (LastAnnouncedVictoryPoints - VictoryPoints >= 15)
                     {

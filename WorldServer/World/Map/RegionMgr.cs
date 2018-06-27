@@ -19,6 +19,7 @@ using Common.Database.World.Maps;
 using NLog;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
+using BattleFrontConstants = WorldServer.World.Battlefronts.Apocalypse.BattleFrontConstants;
 
 namespace WorldServer
 {
@@ -359,7 +360,7 @@ namespace WorldServer
                             //Bttlfront?.SendObjectives(plr);
 
                             ndbf?.SendObjectives(plr);
-                            ApocCommunications.SendCampaignStatus(plr, ndbf?.VictoryPointProgress);
+                            ApocCommunications.SendCampaignStatus(plr, ndbf?.VictoryPointProgress, (ndbf?.VictoryPointProgress.DestructionVictoryPoints >= BattleFrontConstants.LOCK_VICTORY_POINTS) ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER);
                         }
                     }
                     _objectsToAdd.Clear();

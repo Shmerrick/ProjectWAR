@@ -160,7 +160,7 @@ namespace WorldServer.Managers.Commands
 
                 bool b = noReward == "0";
 
-                WorldMgr.GetRegion(plr.Region.RegionId, false).ndbf.BattleFrontManager.LockBattleFront(realm);
+                WorldMgr.GetRegion(plr.Region.RegionId, false).ndbf.BattleFrontManager.LockActiveBattleFront(realm);
             }
             else
                 plr.SendClientMessage("Second parameter must be 0 or 1 - 0 no rewards, 1 grants rewards.");
@@ -315,37 +315,8 @@ namespace WorldServer.Managers.Commands
                 }
             }
         }
-
-        // Temporary until new rvr is stabilized
-        [CommandAttribute(EGmLevel.EmpoweredStaff, "Resets the current BattleFront (under t4)")]
-        public static void Reset(Player plr)
-        {
-            plr.SendClientMessage($"Attempting to reset the {plr.Region.RegionId} campaign...");
-
-            IBattleFront BattleFront = plr.Region.Bttlfront;
-            //NEWDAWN
-            if (BattleFront != null)
-                BattleFront.ResetPairing();
-            else
-            {
-                plr.Region.ndbf.ResetBattleFront();
-            }
-        }
-
-        [CommandAttribute(EGmLevel.EmpoweredStaff, "Attempts to reset the T4 campaign")]
-        public static void ResetT4(Player plr)
-        {
-            plr.SendClientMessage("This command is disabled, as it will break T4 RvR...");
-            //plr.SendClientMessage("Attempting to reset the T4 campaign...");
-
-            /*IBattleFront DvG = WorldMgr.GetRegion(2, false).Bttlfront;
-            IBattleFront EvC = WorldMgr.GetRegion(11, false).Bttlfront;
-            IBattleFront HEvDE = WorldMgr.GetRegion(4, false).Bttlfront;
-
-            DvG.ResetBattleFront();
-            EvC.ResetBattleFront();
-            HEvDE.ResetBattleFront();*/
-        }
+        
+       
 
         [CommandAttribute(EGmLevel.DatabaseDev, "Adds a resource spawn point at the current location for the nearest objective - legacy")]
         public static void Point(Player plr)

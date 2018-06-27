@@ -2,10 +2,10 @@
 using Common;
 using Common.Database.World.Battlefront;
 using GameData;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.BattleFronts.Objectives;
 using FakeItEasy;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
 namespace WorldServer.Test
@@ -251,17 +251,15 @@ namespace WorldServer.Test
             // Open Praag (BF==1)
             manager.OpenActiveBattlefront();
             // Locking Region1.ndbf
-            manager.LockBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            Region1.ndbf.VictoryPointProgress.DestructionVictoryPoints = 5000f;
+            Region1.ndbf.VictoryPointProgress.OrderVictoryPoints = 1000f;
+            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 
             // Ensure battlefront 1 is locked and to Destro
-            Assert.IsTrue(Region1.ndbf.LockingRealm == Realms.REALMS_REALM_DESTRUCTION);
-            Assert.IsTrue(Region1.ndbf.VictoryPointProgress.DestructionVictoryPoints == BattleFrontConstants.LOCK_VICTORY_POINTS);
-
-            // BF has progressed (still on Region1.ndbf)
-            Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 2);
-            Assert.IsTrue(Region1.ndbf.LockingRealm == Realms.REALMS_REALM_NEUTRAL);
-            Assert.IsTrue(Region1.ndbf.VictoryPointProgress.DestructionVictoryPoints == 0);
-            Assert.IsTrue(Region1.ndbf.VictoryPointProgress.OrderVictoryPoints == 0);
+            Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).LockingRealm == Realms.REALMS_REALM_DESTRUCTION);
+            Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).Locked);
+            Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).FinalVictoryPoint.DestructionVictoryPoints == 5000f);
+            Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).FinalVictoryPoint.OrderVictoryPoints == 1000f);
 
             // Ensure that the BOs for this battlefront ONLY are locked.
             foreach (var apocBattlefieldObjective in Region1.ndbf.Objectives)

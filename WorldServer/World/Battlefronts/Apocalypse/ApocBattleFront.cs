@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SystemData;
 using Common;
+using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
 using NLog;
@@ -61,7 +62,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private ContributionTracker _contributionTracker;
         private RVRRewardManager _rewardManager;
 
-
+        public string ActiveZoneName { get; }
+        public bool DefenderPopTooSmall{ get; set; }
         public int Tier { get; set; }
 
         /// <summary>
@@ -423,22 +425,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             //LockingRealm = realm;
 
-            CommunicationsEngine.SendCampaignStatus(null, VictoryPointProgress);
+            CommunicationsEngine.SendCampaignStatus(null, VictoryPointProgress, realm);
 
             string message = string.Concat(Region.ZonesInfo[0].Name, " and ", Region.ZonesInfo[1].Name, " have been locked by ", (realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"), "!");
             BattlefrontLogger.Debug(message);
 
-            BattleFrontManager.AdvanceBattleFront(realm);
-
-            var campaignMoveMessage = $"The campaign has moved to  {BattleFrontManager.ActiveBattleFrontName}";
-            BattlefrontLogger.Info(campaignMoveMessage);
-            CommunicationsEngine.Broadcast(campaignMoveMessage, this.Tier);
-
-            BattleFrontManager.OpenActiveBattlefront();
-
-            // Logs the status of all battlefronts known to the Battlefront Manager.
-            BattleFrontManager.AuditBattleFronts(this.Tier);
-
+            
             // Generate RP and rewards
             //_contributionTracker.CreateGoldChest(realm);
             //_contributionTracker.HandleLockReward(realm, 1, message, 0, Tier);
@@ -451,9 +443,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
+        /// <summary>
+        /// Helper function to determine whether the active battlefront progression associated with this battlefront is locked.
+        /// </summary>
+        /// <returns></returns>
         public bool IsBattleFrontLocked()
         {
-            return true;
+            return this.BattleFrontManager.IsBattleFrontLocked(this.BattleFrontManager.ActiveBattleFront.BattleFrontId);
         }
 
         /// <summary>
@@ -501,33 +497,30 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         //}
 
 
-        ///
-        /// Unlocks this NDBF for capture.
-        /// 
-        public void ResetBattleFront()
-        {
-            BattlefrontLogger.Trace($"Resetting Battlefront...{this.BattleFrontName}");
+        /////
+        ///// Unlocks this NDBF for capture.
+        ///// 
+        //public void ResetBattleFront()
+        //{
+        //    BattlefrontLogger.Trace($"Resetting Battlefront...{this.BattleFrontName}");
 
-            VictoryPointProgress.Reset(this);
-            LockingRealm = Realms.REALMS_REALM_NEUTRAL;
+        //    VictoryPointProgress.Reset(this);
+        //    LockingRealm = Realms.REALMS_REALM_NEUTRAL;
 
-            foreach (var flag in Objectives)
-                flag.UnlockObjective();
+        //    foreach (var flag in Objectives)
+        //        flag.UnlockObjective();
 
-            foreach (Keep keep in Keeps)
-                keep.NotifyPairingUnlocked();
+        //    foreach (Keep keep in Keeps)
+        //        keep.NotifyPairingUnlocked();
 
-            //UpdateStateOfTheRealm();
+        //    //UpdateStateOfTheRealm();
 
-            // This seems to look at all BattleFronts and report their status, but incorrectly in the new system.
-            // TODO - fix
-            // WorldMgr.SendCampaignStatus(null);
-        }
+        //    // This seems to look at all BattleFronts and report their status, but incorrectly in the new system.
+        //    // TODO - fix
+        //    // WorldMgr.SendCampaignStatus(null);
+        //}
 
-        public string ActiveZoneName { get; }
-        public bool DefenderPopTooSmall
-
-        { get; set; }
+      
 
         /// <summary>
         /// Sends information to a player about the objectives within a BattleFront upon their entry.
@@ -589,11 +582,40 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             VictoryPointProgress.DestructionVictoryPoints = Math.Min(BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS, destroVictoryPoints);
 
             if (VictoryPointProgress.OrderVictoryPoints >= BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS)
-                BattleFrontManager.LockBattleFront(Realms.REALMS_REALM_ORDER);
-            else if (VictoryPointProgress.DestructionVictoryPoints >= BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS)
-                BattleFrontManager.LockBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            {
+                BattleFrontManager.LockActiveBattleFront(Realms.REALMS_REALM_ORDER);
+                // Select the next Progression
+                var nextBattleFront = BattleFrontManager.AdvanceBattleFront(Realms.REALMS_REALM_ORDER);
+                // Tell the players
+                SendCampaignMovementMessage(nextBattleFront);
+                // Unlock the next Progression
+                BattleFrontManager.OpenActiveBattlefront();
+                // Logs the status of all battlefronts known to the Battlefront Manager.
+                BattleFrontManager.AuditBattleFronts(this.Tier);
+
+            }
+            else if (VictoryPointProgress.DestructionVictoryPoints >=
+                     BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS)
+            {
+                BattleFrontManager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+                // Select the next Progression
+                var nextBattleFront = BattleFrontManager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+                // Tell the players
+                SendCampaignMovementMessage(nextBattleFront);
+                // Unlock the next Progression
+                BattleFrontManager.OpenActiveBattlefront();
+                // Logs the status of all battlefronts known to the Battlefront Manager.
+                BattleFrontManager.AuditBattleFronts(this.Tier);
+            }
+            
         }
 
+        private void SendCampaignMovementMessage(RVRProgression nextBattleFront)
+        {
+            var campaignMoveMessage = $"The campaign has moved to  {nextBattleFront.Description}";
+            BattlefrontLogger.Info(campaignMoveMessage);
+            CommunicationsEngine.Broadcast(campaignMoveMessage, this.Tier);
+        }
 
 
         public int GetZoneOwnership(ushort zoneId)
@@ -837,7 +859,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public bool PreventKillReward()
         {
-            return BattleFrontLocked; // Removed from legacy : && Tier > 1
+            return BattleFrontManager.IsBattleFrontLocked(this.BattleFrontManager.ActiveBattleFront.BattleFrontId); // Removed from legacy : && Tier > 1
         }
 
 
@@ -854,7 +876,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
 
             float rewardMod = 1f;
-            if (BattleFrontLocked)
+            if (IsBattleFrontLocked())
                 return rewardMod;
 
             var closestFlag = GetClosestFlag(killed.WorldPosition);

@@ -577,7 +577,7 @@ namespace WorldServer.World.BattleFronts
             
             LockingRealm = realm;
 
-            new ApocCommunications().SendCampaignStatus(null, null);
+            new ApocCommunications().SendCampaignStatus(null, null, Realms.REALMS_REALM_NEUTRAL);
 
             string message = string.Concat(Region.ZonesInfo[0].Name, " and ", Region.ZonesInfo[1].Name, " have been locked by ", (realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"), "!");
 
@@ -620,7 +620,7 @@ namespace WorldServer.World.BattleFronts
 
             UpdateStateOfTheRealm();
 
-            new ApocCommunications().SendCampaignStatus(null, null);
+            new ApocCommunications().SendCampaignStatus(null, null, Realms.REALMS_REALM_NEUTRAL);
         }
 #endregion
 
@@ -696,7 +696,7 @@ namespace WorldServer.World.BattleFronts
             _nextVpUpdateTime = TCPManager.GetTimeStamp() + 120;
 
             foreach (Player player in Region.Players)
-                new ApocCommunications().SendCampaignStatus(player, null);
+                new ApocCommunications().SendCampaignStatus(player, null, Realms.REALMS_REALM_NEUTRAL);
         }
         #endregion
 

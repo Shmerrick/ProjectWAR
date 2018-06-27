@@ -1,4 +1,5 @@
-﻿using Common.Database.World.Battlefront;
+﻿using System.Collections.Generic;
+using Common.Database.World.Battlefront;
 using GameData;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
@@ -8,14 +9,20 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         RVRProgression ResetBattleFrontProgression();
         RVRProgression GetBattleFrontByName(string name);
         RVRProgression GetBattleFrontByBattleFrontId(int id);
-        RVRProgression AdvanceBattleFront(Realms lockingRealm);
+        
 
         string ActiveBattleFrontName { get; set; }
         RVRProgression ActiveBattleFront { get; set; }
         void AuditBattleFronts(int tier);
-        void LockBattleFronts(int tier);
-        void OpenActiveBattlefront();
+        void LockBattleFrontsAllRegions(int tier);
 
-        void LockBattleFront(Realms realm);
+        RVRProgression AdvanceBattleFront(Realms lockingRealm);
+        RVRProgression OpenActiveBattlefront();
+        RVRProgression LockActiveBattleFront(Realms realm);
+
+        List<ApocBattleFrontStatus> GetBattleFrontStatusList(int regionId);
+        bool IsBattleFrontLocked(int battleFrontId);
+
+        ApocBattleFrontStatus GetBattleFrontStatus(int battleFrontId);
     }
 }

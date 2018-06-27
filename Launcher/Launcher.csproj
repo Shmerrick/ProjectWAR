@@ -174,10 +174,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ApocalypseAPI.Common\ApocalypseAPI.Common.csproj">
-      <Project>{482425a5-c8c9-4aaf-8387-d8fde2bea578}</Project>
-      <Name>ApocalypseAPI.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{8bc085cd-429b-41d1-bb47-9621fd32ec23}</Project>
       <Name>Common</Name>
@@ -197,7 +193,6 @@
     <Content Include="Artwork\final5.png" />
     <Content Include="Artwork\WAR.ico" />
     <Content Include="Artwork\WAR.png" />
-    
     <Content Include="WAR.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

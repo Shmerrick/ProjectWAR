@@ -19,12 +19,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             plr.SendPacket(Out);
         }
 
-        public void BuildCaptureStatus(PacketOut Out, RegionMgr region)
+        public void BuildCaptureStatus(PacketOut Out, RegionMgr region, Realms realm)
         {
             if (region == null)
                 Out.Fill(0, 3);
             else
-                region.ndbf.WriteCaptureStatus(Out, region.ndbf.LockingRealm);
+                region.ndbf.WriteCaptureStatus(Out, realm);
         }
 
         public void BuildBattleFrontStatus(PacketOut Out, RegionMgr region)
@@ -35,47 +35,47 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 region.ndbf.WriteBattleFrontStatus(Out);
         }
 
-        public void SendCampaignStatus(Player plr, VictoryPointProgress vpp)
+        public void SendCampaignStatus(Player plr, VictoryPointProgress vpp, Realms realm)
         {
             _logger.Trace("Send Campaign Status");
             PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
             Out.WriteHexStringBytes("0005006700CB00"); // 7
 
             // Dwarfs vs Greenskins T1
-            BuildCaptureStatus(Out, WorldMgr.GetRegion(1, false));
+            BuildCaptureStatus(Out, WorldMgr.GetRegion(1, false), realm);
 
             // Dwarfs vs Greenskins T2
-            BuildCaptureStatus(Out, WorldMgr.GetRegion(12, false));
+            BuildCaptureStatus(Out, WorldMgr.GetRegion(12, false), realm);
 
             // Dwarfs vs Greenskins T3
-            BuildCaptureStatus(Out, WorldMgr.GetRegion(10, false));
+            BuildCaptureStatus(Out, WorldMgr.GetRegion(10, false), realm);
 
             // Dwarfs vs Greenskins T4
-            BuildCaptureStatus(Out, WorldMgr.GetRegion(2, false));
+            BuildCaptureStatus(Out, WorldMgr.GetRegion(2, false), realm);
 
             // Empire vs Chaos T1
-            BuildCaptureStatus(Out, WorldMgr.GetRegion(8, false));
+            BuildCaptureStatus(Out, WorldMgr.GetRegion(8, false), realm);
 
             // Empire vs Chaos T2
-            BuildCaptureStatus(Out, WorldMgr.GetRegion(14, false));
+            BuildCaptureStatus(Out, WorldMgr.GetRegion(14, false), realm);
 
             // Empire vs Chaos T3
-            BuildCaptureStatus(Out, WorldMgr.GetRegion(6, false));
+            BuildCaptureStatus(Out, WorldMgr.GetRegion(6, false), realm);
 
             // Empire vs Chaos T4
-            BuildCaptureStatus(Out, WorldMgr.GetRegion(11, false));
+            BuildCaptureStatus(Out, WorldMgr.GetRegion(11, false), realm);
 
             // High Elves vs Dark Elves T1
-            BuildCaptureStatus(Out, WorldMgr.GetRegion(3, false));
+            BuildCaptureStatus(Out, WorldMgr.GetRegion(3, false), realm);
 
             // High Elves vs Dark Elves T2
-            BuildCaptureStatus(Out, WorldMgr.GetRegion(15, false));
+            BuildCaptureStatus(Out, WorldMgr.GetRegion(15, false), realm);
 
             // High Elves vs Dark Elves T3
-            BuildCaptureStatus(Out, WorldMgr.GetRegion(16, false));
+            BuildCaptureStatus(Out, WorldMgr.GetRegion(16, false), realm);
 
             // High Elves vs Dark Elves T4
-            BuildCaptureStatus(Out, WorldMgr.GetRegion(4, false));
+            BuildCaptureStatus(Out, WorldMgr.GetRegion(4, false), realm);
 
             Out.Fill(0, 83);
 

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2037
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{8BC085CD-429B-41D1-BB47-9621FD32EC23}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -33,15 +33,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerLauncher", "ServerLau
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterUtility", "CharacterUtility\CharacterUtility.csproj", "{09D1201A-EF4C-4990-8904-64BDD68E8232}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApocalypseAPI", "ApocalypseAPI\ApocalypseAPI.csproj", "{DF0F3CE9-F6E5-4D43-ADD9-03173E913EC8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbMigrationTool", "DbMigrationTool\DbMigrationTool.csproj", "{E253EB56-4AC9-46B5-B20C-3D546843FB9A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbUtilityTool", "DbUtilityTool\DbUtilityTool.csproj", "{EC6B10C4-938C-458B-8AA5-C08BEEF88CE9}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApocalypseAPI.Test", "ApocalypseAPI.Test\ApocalypseAPI.Test.csproj", "{318E47C3-2304-4513-A3D9-CB7C2F1A1BDB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApocalypseAPI.Common", "ApocalypseAPI.Common\ApocalypseAPI.Common.csproj", "{482425A5-C8C9-4AAF-8387-D8FDE2BEA578}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -135,14 +129,6 @@ Global
 		{09D1201A-EF4C-4990-8904-64BDD68E8232}.Release|Any CPU.Build.0 = Release|Any CPU
 		{09D1201A-EF4C-4990-8904-64BDD68E8232}.Release|x64.ActiveCfg = Release|Any CPU
 		{09D1201A-EF4C-4990-8904-64BDD68E8232}.Release|x64.Build.0 = Release|Any CPU
-		{DF0F3CE9-F6E5-4D43-ADD9-03173E913EC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DF0F3CE9-F6E5-4D43-ADD9-03173E913EC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DF0F3CE9-F6E5-4D43-ADD9-03173E913EC8}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{DF0F3CE9-F6E5-4D43-ADD9-03173E913EC8}.Debug|x64.Build.0 = Debug|Any CPU
-		{DF0F3CE9-F6E5-4D43-ADD9-03173E913EC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DF0F3CE9-F6E5-4D43-ADD9-03173E913EC8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DF0F3CE9-F6E5-4D43-ADD9-03173E913EC8}.Release|x64.ActiveCfg = Release|Any CPU
-		{DF0F3CE9-F6E5-4D43-ADD9-03173E913EC8}.Release|x64.Build.0 = Release|Any CPU
 		{E253EB56-4AC9-46B5-B20C-3D546843FB9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E253EB56-4AC9-46B5-B20C-3D546843FB9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E253EB56-4AC9-46B5-B20C-3D546843FB9A}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -159,22 +145,6 @@ Global
 		{EC6B10C4-938C-458B-8AA5-C08BEEF88CE9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EC6B10C4-938C-458B-8AA5-C08BEEF88CE9}.Release|x64.ActiveCfg = Release|Any CPU
 		{EC6B10C4-938C-458B-8AA5-C08BEEF88CE9}.Release|x64.Build.0 = Release|Any CPU
-		{318E47C3-2304-4513-A3D9-CB7C2F1A1BDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{318E47C3-2304-4513-A3D9-CB7C2F1A1BDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{318E47C3-2304-4513-A3D9-CB7C2F1A1BDB}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{318E47C3-2304-4513-A3D9-CB7C2F1A1BDB}.Debug|x64.Build.0 = Debug|Any CPU
-		{318E47C3-2304-4513-A3D9-CB7C2F1A1BDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{318E47C3-2304-4513-A3D9-CB7C2F1A1BDB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{318E47C3-2304-4513-A3D9-CB7C2F1A1BDB}.Release|x64.ActiveCfg = Release|Any CPU
-		{318E47C3-2304-4513-A3D9-CB7C2F1A1BDB}.Release|x64.Build.0 = Release|Any CPU
-		{482425A5-C8C9-4AAF-8387-D8FDE2BEA578}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{482425A5-C8C9-4AAF-8387-D8FDE2BEA578}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{482425A5-C8C9-4AAF-8387-D8FDE2BEA578}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{482425A5-C8C9-4AAF-8387-D8FDE2BEA578}.Debug|x64.Build.0 = Debug|Any CPU
-		{482425A5-C8C9-4AAF-8387-D8FDE2BEA578}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{482425A5-C8C9-4AAF-8387-D8FDE2BEA578}.Release|Any CPU.Build.0 = Release|Any CPU
-		{482425A5-C8C9-4AAF-8387-D8FDE2BEA578}.Release|x64.ActiveCfg = Release|Any CPU
-		{482425A5-C8C9-4AAF-8387-D8FDE2BEA578}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

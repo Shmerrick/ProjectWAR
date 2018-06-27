@@ -772,7 +772,7 @@ namespace WorldServer
             SendFlagState(null, true);
 
             if (_tier == 1)
-                new ApocCommunications().SendCampaignStatus(null, null);
+                new ApocCommunications().SendCampaignStatus(null, null, Realms.REALMS_REALM_NEUTRAL);
         }
 
         private void ChangeOwnership(Realms newRealm)
