@@ -265,21 +265,14 @@ namespace WorldServer.Test
             foreach (var apocBattlefieldObjective in Region1.ndbf.Objectives)
             {
                 // Locking a battlefront should ZoneLock the BOs in that Zone, and Open those in the next battlefront.
-                if (apocBattlefieldObjective.ZoneId == 200)
+                if ((apocBattlefieldObjective.ZoneId == 200) || (apocBattlefieldObjective.ZoneId == 201))
                 {
                     // Should be all locked.
-
                     Assert.IsTrue(apocBattlefieldObjective.State == StateFlags.ZoneLocked);
                 }
-                else
-                {
-                    // Next BF
-                    if (apocBattlefieldObjective.ZoneId == 201)
-                    {
-                        Assert.IsTrue(apocBattlefieldObjective.State == StateFlags.Unsecure);
-                    }
-                }
+         
             }
         }
+
     }
 }

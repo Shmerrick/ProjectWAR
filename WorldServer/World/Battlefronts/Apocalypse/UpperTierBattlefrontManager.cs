@@ -21,8 +21,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             BattleFrontProgressions = _RVRT4Progressions;
             RegionMgrs = regionMgrs;
             ApocBattleFrontStatuses = new List<ApocBattleFrontStatus>();
-
-            BuildApocBattleFrontStatusList(BattleFrontProgressions);
+            if (_RVRT4Progressions != null)
+                BuildApocBattleFrontStatusList(BattleFrontProgressions);
         }
 
         /// <summary>
