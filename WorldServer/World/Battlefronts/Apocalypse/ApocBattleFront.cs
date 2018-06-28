@@ -31,7 +31,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// A list of keeps within this BattleFront.
         /// </summary>
         public readonly List<Keep> Keeps = new List<Keep>();
-        public string BattleFrontName { get; set; }
+        public string BattleFrontName {
+            get { return this.BattleFrontManager.ActiveBattleFrontName;  }
+        }
 
         protected readonly EventInterface _EvtInterface = new EventInterface();
 
@@ -84,8 +86,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             this.Objectives = objectives;
             this.BattleFrontManager = bfm;
             CommunicationsEngine = communicationsEngine;
-            this.BattleFrontName = bfm.ActiveBattleFrontName;
-
+            
             Tier = (byte)Region.GetTier();
             PlaceObjectives();
 
@@ -415,12 +416,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             BattlefrontLogger.Info($"Locking Battlefront {this.BattleFrontName} to {realm.ToString()}...");
 
-            if (IsBattleFrontLocked())
-            {
-                BattlefrontLogger.Warn($"But... it's already locked?!?");
-                return; // No effect
-            }
-
+        
             this.VictoryPointProgress.Lock(realm);
 
             //LockingRealm = realm;

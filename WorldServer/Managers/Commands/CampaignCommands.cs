@@ -166,14 +166,34 @@ namespace WorldServer.Managers.Commands
                 plr.SendClientMessage("Second parameter must be 0 or 1 - 0 no rewards, 1 grants rewards.");
         }
 
+        [CommandAttribute(EGmLevel.EmpoweredStaff, "Advances the pairing the player is in ")]
+        public static void AdvancePairing(Player plr, Realms realm, int tier)
+        {
+
+            if (tier == 1)
+            {
+                var progression = WorldMgr.LowerTierBattleFrontManager.AdvanceBattleFront(realm);
+                WorldMgr.LowerTierBattleFrontManager.OpenActiveBattlefront();
+                plr.SendClientMessage($"{realm.ToString()} pushes - next battle is in {progression.Description}");
+            }
+            else
+            {
+                var progression = WorldMgr.UpperTierBattleFrontManager.AdvanceBattleFront(realm);
+                WorldMgr.UpperTierBattleFrontManager.OpenActiveBattlefront();
+                plr.SendClientMessage($"{realm.ToString()} pushes - next battle is in {progression.Description}");
+
+            }
+
+        }
+
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks a battle objective for the given realm (1 - Order, 2 - Dest).")]
         public static void LockObj(Player plr, Realms realm, int values)
-        {               
-                plr.SendClientMessage($"Attempting to lock objective...");
+        {
+            plr.SendClientMessage($"Attempting to lock objective...");
 
-                var objectiveToLock = values;
+            var objectiveToLock = values;
 
-                WorldMgr.GetRegion(plr.Region.RegionId, false).ndbf.LockBattleObjective(realm, objectiveToLock);
+            WorldMgr.GetRegion(plr.Region.RegionId, false).ndbf.LockBattleObjective(realm, objectiveToLock);
 
         }
 
@@ -267,7 +287,7 @@ namespace WorldServer.Managers.Commands
                 }
             }
         }
-        
+
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Makes keep safe again.")]
         public static void SafeKeep(Player plr)
         {
@@ -315,8 +335,8 @@ namespace WorldServer.Managers.Commands
                 }
             }
         }
-        
-       
+
+
 
         [CommandAttribute(EGmLevel.DatabaseDev, "Adds a resource spawn point at the current location for the nearest objective - legacy")]
         public static void Point(Player plr)
@@ -458,11 +478,11 @@ namespace WorldServer.Managers.Commands
             }
             plr.SendClientMessage($"Lower Tier {WorldMgr.LowerTierBattleFrontManager.ActiveBattleFrontName} is active.");
 
-            plr.SendClientMessage($"  BattleFront Status : {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierBattleFrontManager.ActiveBattleFront.RegionId, false).ndbf.GetBattleFrontStatus()}");
+            plr.SendClientMessage($"  BattleFront Status : \t {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierBattleFrontManager.ActiveBattleFront.RegionId, false).ndbf.GetBattleFrontStatus()}");
 
             plr.SendClientMessage($"Upper Tier {WorldMgr.UpperTierBattleFrontManager.ActiveBattleFrontName} is active.");
 
-            plr.SendClientMessage($"  BattleFront Status : {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierBattleFrontManager.ActiveBattleFront.RegionId, false).ndbf.GetBattleFrontStatus()}");
+            plr.SendClientMessage($"  BattleFront Status : \t {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierBattleFrontManager.ActiveBattleFront.RegionId, false).ndbf.GetBattleFrontStatus()}");
 
             foreach (var flag in plr.Region.ndbf.Objectives)
                 plr.SendClientMessage($"{flag.ToString()}");

@@ -224,7 +224,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public override string ToString()
         {
-            return $"Objective : {this.Name} Status : {State} Owner : {this.OwningRealm} Close players (O/D) : {this._closeOrderCount}/{this._closeDestroCount}";
+            return $"Objective : {this.Name} \t Status : {State} \t Owner : {this.OwningRealm} \t Close players (O/D) : {this._closeOrderCount}/{this._closeDestroCount}";
         }
 
         /// <summary>

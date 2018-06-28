@@ -88,7 +88,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             //chaos t4
             Out.WriteByte(3);   //empire fort
-            BuildBattleFrontStatus(Out, WorldMgr.GetRegion(11, false));   //reikland
+
+            Out.WriteByte((byte)0);
+            Out.WriteByte((byte)1);  //ZONE_STATUS_ORDER_LOCKED
+            Out.WriteByte((byte)0); //ZONE_STATUS_CONTESTED
+
+
+            //BuildBattleFrontStatus(Out, WorldMgr.GetRegion(11, false));   //reikland
             Out.WriteByte(3);   //chaos fort
 
             //elf
