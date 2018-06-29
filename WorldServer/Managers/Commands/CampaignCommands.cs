@@ -154,13 +154,10 @@ namespace WorldServer.Managers.Commands
         {
             if (noReward == "0" || noReward == "1")
             {
-                plr.SendClientMessage($"Attempting to lock the {plr.Region.RegionId} campaign...");
-
-                IBattleFront BattleFront = plr.Region.Bttlfront;
-
-                bool b = noReward == "0";
+                plr.SendClientMessage($"Attempting to lock the {plr.Region.BattleFront.BattleFrontName} campaign... (call AdvancePairing to move ahead)");
 
                 WorldMgr.GetRegion(plr.Region.RegionId, false).BattleFront.BattleFrontManager.LockActiveBattleFront(realm);
+                
             }
             else
                 plr.SendClientMessage("Second parameter must be 0 or 1 - 0 no rewards, 1 grants rewards.");
@@ -174,12 +171,14 @@ namespace WorldServer.Managers.Commands
             {
                 var progression = WorldMgr.LowerTierBattleFrontManager.AdvanceBattleFront(realm);
                 WorldMgr.LowerTierBattleFrontManager.OpenActiveBattlefront();
+                WorldMgr.UpdateRegionCaptureStatus();
                 plr.SendClientMessage($"{realm.ToString()} pushes - next battle is in {progression.Description}");
             }
             else
             {
                 var progression = WorldMgr.UpperTierBattleFrontManager.AdvanceBattleFront(realm);
                 WorldMgr.UpperTierBattleFrontManager.OpenActiveBattlefront();
+                WorldMgr.UpdateRegionCaptureStatus();
                 plr.SendClientMessage($"{realm.ToString()} pushes - next battle is in {progression.Description}");
 
             }
@@ -196,12 +195,15 @@ namespace WorldServer.Managers.Commands
 
             if (realm == 1)
                 lockingRealm = Realms.REALMS_REALM_ORDER;
-            if (realm == 2)
-                lockingRealm = Realms.REALMS_REALM_DESTRUCTION;
             else
-                lockingRealm = Realms.REALMS_REALM_NEUTRAL;
+            {
+                if (realm == 2)
+                    lockingRealm = Realms.REALMS_REALM_DESTRUCTION;
+                else
+                    lockingRealm = Realms.REALMS_REALM_NEUTRAL;
+            }
 
-            //new ApocCommunications().UpdateRegionCaptureStatus(player, lockingRealm, vpp);
+            new ApocCommunications().UpdateRegionCaptureStatus(player, lockingRealm, vpp);
 
            // new ApocCommunications().SendCampaignStatus(player, vpp, lockingRealm);
         }

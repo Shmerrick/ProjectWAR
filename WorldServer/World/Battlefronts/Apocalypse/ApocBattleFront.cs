@@ -577,7 +577,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Victory points update
             VictoryPointProgress.OrderVictoryPoints = Math.Min(BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS, orderVictoryPoints);
             VictoryPointProgress.DestructionVictoryPoints = Math.Min(BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS, destroVictoryPoints);
-
+            ///
+            /// Check to Lock and Advance the Battlefront
+            /// 
             if (VictoryPointProgress.OrderVictoryPoints >= BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS)
             {
                 BattleFrontManager.LockActiveBattleFront(Realms.REALMS_REALM_ORDER);

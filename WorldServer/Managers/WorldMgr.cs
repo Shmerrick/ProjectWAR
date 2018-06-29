@@ -1672,8 +1672,8 @@ namespace WorldServer
             // Dwarfs vs Greenskins T4
             //BuildCaptureStatus(Out, WorldMgr.GetRegion(2, false), realm);
             Out.WriteByte(0);
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER1_EKRUND).OrderVictoryPointPercentage);  // % Order lock
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER1_EKRUND).DestructionVictoryPointPercentage);    // % Dest lock
+            Out.WriteByte(0);  // % Order lock
+            Out.WriteByte(0);    // % Dest lock
             // Empire vs Chaos T1
             //BuildCaptureStatus(Out, WorldMgr.GetRegion(8, false), realm);
             Out.WriteByte(0);
@@ -1692,8 +1692,8 @@ namespace WorldServer
             // Empire vs Chaos T4
             // BuildCaptureStatus(Out, WorldMgr.GetRegion(11, false), realm);
             Out.WriteByte(0);
-            Out.WriteByte((byte)LowerTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER1_NORDLAND).OrderVictoryPointPercentage);  // % Order lock
-            Out.WriteByte((byte)LowerTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER1_NORDLAND).DestructionVictoryPointPercentage);    // % Dest lock
+            Out.WriteByte(0);  // % Order lock
+            Out.WriteByte(0);    // % Dest lock
             // High Elves vs Dark Elves T1
             //BuildCaptureStatus(Out, WorldMgr.GetRegion(3, false), realm);
             Out.WriteByte(0);
@@ -1712,8 +1712,8 @@ namespace WorldServer
             // High Elves vs Dark Elves T4
             //BuildCaptureStatus(Out, WorldMgr.GetRegion(4, false), realm);
             Out.WriteByte(0);
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER1_CHRACE).OrderVictoryPointPercentage);  // % Order lock
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER1_CHRACE).DestructionVictoryPointPercentage);    // % Dest lock
+            Out.WriteByte(0);  // % Order lock
+            Out.WriteByte(0);    // % Dest lock
 
             Out.Fill(0, 83);
 

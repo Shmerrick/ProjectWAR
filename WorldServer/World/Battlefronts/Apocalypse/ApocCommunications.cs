@@ -40,14 +40,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             //region.BattleFront.WriteBattleFrontStatus(Out);
         }
 
-        public void UpdateRegionCaptureStatus(Player plr, LowerTierBattleFrontManager lowerBFM, UpperTierBattleFrontManager upperBFM, VictoryPointProgress vpp)
+        public void UpdateRegionCaptureStatus(Player plr, Realms realm, VictoryPointProgress vpp)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
             Out.WriteHexStringBytes("0005006700CB00"); // 7
 
             // Dwarfs vs Greenskins T1
             
-           // Out.WriteByte(lowerBFM.GetBattleFrontByBattleFrontId());    // 0 and ignored
+            Out.WriteByte(0);    // 0 and ignored
             Out.WriteByte(100);  // % Order lock
             Out.WriteByte(0);    // % Dest lock
             // Dwarfs vs Greenskins T2
