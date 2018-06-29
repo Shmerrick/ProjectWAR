@@ -248,15 +248,15 @@ namespace WorldServer.World.BattleFronts.Keeps
                         {
                             if (WorldMgr.WorldSettingsMgr.GetPopRewardSwitchSetting() == 1)
                             {
-                                _DestroCount = Region.ndbf._totalMaxDestro;
-                                _OrderCount = Region.ndbf._totalMaxOrder;
+                                _DestroCount = Region.BattleFront._totalMaxDestro;
+                                _OrderCount = Region.BattleFront._totalMaxOrder;
 
 #if !DEBUG
                                 if (Info.Realm == (byte)Realms.REALMS_REALM_ORDER)
                                 {
                                     if (_DestroCount > _OrderCount * 4)
                                     {
-                                        Region.ndbf.DefenderPopTooSmall = true;
+                                        Region.BattleFront.DefenderPopTooSmall = true;
                                         SendRegionMessage("The forces of Destruction are attacking abandoned keep, there are no spoils of war inside!");
                                     }
                                 }
@@ -264,7 +264,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                                 {
                                     if (_OrderCount > _DestroCount * 4)
                                     {
-                                        Region.ndbf.DefenderPopTooSmall = true;
+                                        Region.BattleFront.DefenderPopTooSmall = true;
                                         SendRegionMessage("The forces of Order are attacking abandoned keep, there are no spoils of war inside!");
                                     }
                                 }
@@ -299,10 +299,10 @@ namespace WorldServer.World.BattleFronts.Keeps
                         }
 
                         if (realm == Realms.REALMS_REALM_DESTRUCTION)
-                            this.Region.ndbf.VictoryPointProgress.DestructionVictoryPoints += KEEP_INNER_DOOR_VICTORYPOINTS;
+                            this.Region.BattleFront.VictoryPointProgress.DestructionVictoryPoints += KEEP_INNER_DOOR_VICTORYPOINTS;
                         else
                         {
-                            this.Region.ndbf.VictoryPointProgress.OrderVictoryPoints += KEEP_INNER_DOOR_VICTORYPOINTS;
+                            this.Region.BattleFront.VictoryPointProgress.OrderVictoryPoints += KEEP_INNER_DOOR_VICTORYPOINTS;
                         }
 
                         _logger.Debug($"Inner door destroyed for realm {Realms.REALMS_REALM_DESTRUCTION} adding {KEEP_INNER_DOOR_VICTORYPOINTS} VP");
@@ -327,10 +327,10 @@ namespace WorldServer.World.BattleFronts.Keeps
                         _logger.Debug($"Outer door destroyed for realm {Realms.REALMS_REALM_DESTRUCTION} adding {KEEP_OUTER_DOOR_VICTORYPOINTS} VP");
 
                         if (realm == Realms.REALMS_REALM_DESTRUCTION)
-                            this.Region.ndbf.VictoryPointProgress.DestructionVictoryPoints += KEEP_OUTER_DOOR_VICTORYPOINTS;
+                            this.Region.BattleFront.VictoryPointProgress.DestructionVictoryPoints += KEEP_OUTER_DOOR_VICTORYPOINTS;
                         else
                         {
-                            this.Region.ndbf.VictoryPointProgress.OrderVictoryPoints += KEEP_OUTER_DOOR_VICTORYPOINTS;
+                            this.Region.BattleFront.VictoryPointProgress.OrderVictoryPoints += KEEP_OUTER_DOOR_VICTORYPOINTS;
                         }
 
 
@@ -411,7 +411,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             /*if (_playersKilledInRange >= (4*Tier))
             {
-                Dictionary<uint, ContributionInfo> attackers = Region.ndbf.GetContributorsFromRealm(Realm);
+                Dictionary<uint, ContributionInfo> attackers = Region.BattleFront.GetContributorsFromRealm(Realm);
                 GoldChest.Create(Region, Info.PQuest, ref attackers);
             }*/
 
@@ -428,8 +428,8 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void SpawnRuinFlag(KeepNpcCreature crea)
         {
-            //var flag = new Objectives(Info.KeepId, "Ruins of " + Info.Name, (ushort)ZoneId, (uint)crea.Info.X, (uint)crea.Info.Y, (ushort)crea.Info.Z, (ushort)crea.Info.O, Region.ndbf, Region, Tier);
-            // TODO - replace??? Region.ndbf.Objectives.Add(flag);
+            //var flag = new Objectives(Info.KeepId, "Ruins of " + Info.Name, (ushort)ZoneId, (uint)crea.Info.X, (uint)crea.Info.Y, (ushort)crea.Info.Z, (ushort)crea.Info.O, Region.BattleFront, Region, Tier);
+            // TODO - replace??? Region.BattleFront.Objectives.Add(flag);
             //Region.AddObject(flag, (ushort)ZoneId);
 
             //flag.Ruin = true;
@@ -447,7 +447,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             bool battlePenalty = false;
 
-            foreach (var flag in Region.ndbf.Objectives)
+            foreach (var flag in Region.BattleFront.Objectives)
             {
                 // RB   5/21/2016   Battlefield Objectives now reward defenders when a keep is captured.
                 if (flag.OwningRealm == Realm)
@@ -461,7 +461,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             int totalRenown = (120*Tier) + (60*Tier*objCount) + (_playersKilledInRange*Tier*12); // 480 + 960 = 1440 for base in T4, 32 * 50 = 1600 for 50 players killed in range?
             int totalInfluence = (40*Tier) + (20*Tier*objCount) + (_playersKilledInRange*Tier*6);
 
-            float rewardScaler = Region.ndbf.RelativeActivityFactor;
+            float rewardScaler = Region.BattleFront.RelativeActivityFactor;
 
             totalXp = (int) (totalXp*rewardScaler);
             totalRenown = (int) (totalRenown*rewardScaler);
@@ -478,7 +478,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             Log.Info("Keep", $"Lock XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
 
-            Dictionary<uint, ContributionInfo> contributors = Region.ndbf.GetContributorsFromRealm(Realm);
+            Dictionary<uint, ContributionInfo> contributors = Region.BattleFront.GetContributorsFromRealm(Realm);
 
             if (contributors.Count == 0)
             {
@@ -729,7 +729,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         //{
         //    if (realm > -1)
         //    {
-        //        Region.ndbf.RealmMaxResource[realm-1] = Region.ndbf._RealmResourcePerRank[Region.ndbf.RealmRank[realm-1]] * Region.ndbf._RealmResourceValueMax[Region.ndbf.RealmRank[realm - 1]];
+        //        Region.BattleFront.RealmMaxResource[realm-1] = Region.BattleFront._RealmResourcePerRank[Region.BattleFront.RealmRank[realm-1]] * Region.BattleFront._RealmResourceValueMax[Region.BattleFront.RealmRank[realm - 1]];
         //    }
         //    else
         //        _maxResource = _resourcePerRank[Rank] * _resourceValueMax[Rank];
@@ -843,9 +843,9 @@ namespace WorldServer.World.BattleFronts.Keeps
 
 //            float resourceValue;
 //            if (Constants.DoomsdaySwitch == 2)
-//                resourceValue = ((ProximityBattleFront)Region.ndbf).GetResourceValue(returner.Realm, _resourceValueMax[Rank]);
+//                resourceValue = ((ProximityBattleFront)Region.BattleFront).GetResourceValue(returner.Realm, _resourceValueMax[Rank]);
 //            else
-//                resourceValue = ((BattleFront)Region.ndbf).GetResourceValue(returner.Realm, _resourceValueMax[Rank]);
+//                resourceValue = ((BattleFront)Region.BattleFront).GetResourceValue(returner.Realm, _resourceValueMax[Rank]);
 
 //            float distFactor = sender.GetDistanceToObject(box.Objective) / 2000f;
 
@@ -868,7 +868,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
 //            returner.AddXp(renownCount * 5, false, false);
 //            returner.AddRenown(renownCount, false);
-//            Region.ndbf.AddContribution(returner, renownCount);
+//            Region.BattleFront.AddContribution(returner, renownCount);
 
 //            if (returner.ItmInterface.CreateItem(medallionInfo, medallionCount) == ItemResult.RESULT_OK)
 //                returner.SendLocalizeString(new[] { medallionInfo.Name, medallionCount.ToString() }, ChatLogFilters.CHATLOGFILTERS_LOOT, Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
@@ -883,7 +883,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 //                    {
 //                        player.AddXp((uint)resourceValue * 50, false, false);
 //                        player.AddRenown((uint)resourceValue * 10, false);
-//                        Region.ndbf.AddContribution(player, (uint)resourceValue * 10);
+//                        Region.BattleFront.AddContribution(player, (uint)resourceValue * 10);
 
 //                        if (player.ItmInterface.CreateItem(medallionInfo, medallionCount) == ItemResult.RESULT_OK)
 //                            player.SendLocalizeString(new[] { medallionInfo.Name, medallionCount.ToString() }, ChatLogFilters.CHATLOGFILTERS_LOOT, Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
@@ -908,7 +908,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
 //                    door.GameObject.ReceiveHeal(returner, (uint)healCapability);
 
-//                    Region.ndbf.Broadcast($"{returner.Name} has repaired {Info.Name}'s keep door by {(int)(healCapability / door.GameObject.MaxHealth * 100)}%!", Realm);
+//                    Region.BattleFront.Broadcast($"{returner.Name} has repaired {Info.Name}'s keep door by {(int)(healCapability / door.GameObject.MaxHealth * 100)}%!", Realm);
 
 //                    resourceValue *= 1f - consumeFactor;
 
@@ -935,13 +935,13 @@ namespace WorldServer.World.BattleFronts.Keeps
 //                        ++Rank;
 //                    SetSupplyRequirement();
 //                    _currentResource = resourceValue;
-//                    Region.ndbf.Broadcast($"{Info.Name} is now Rank {Rank}!", Realm);
+//                    Region.BattleFront.Broadcast($"{Info.Name} is now Rank {Rank}!", Realm);
 //                    if (Rank == 1)
 //                    {
 //                        if (LastMessage >= KeepMessage.Inner0)
-//                            Region.ndbf.Broadcast($"{Info.Name}'s postern doors are barred once again!", Realm);
+//                            Region.BattleFront.Broadcast($"{Info.Name}'s postern doors are barred once again!", Realm);
 //                        else if (LastMessage >= KeepMessage.Outer0)
-//                            Region.ndbf.Broadcast($"{Info.Name}'s outer postern doors are barred once again!", Realm);
+//                            Region.BattleFront.Broadcast($"{Info.Name}'s outer postern doors are barred once again!", Realm);
 //                    }
 //                }
 
@@ -972,9 +972,9 @@ namespace WorldServer.World.BattleFronts.Keeps
 
 //#if DEBUG
 //            if (Constants.DoomsdaySwitch == 2)
-//                returner.SendClientMessage($"Resource worth {resourceValue} ({((ProximityBattleFront)Region.ndbf).GetResourceValue(returner.Realm, _resourceValueMax[Rank])} base * {GetDistanceToObject(box.Objective) / 2000f} dist factor) returned!");
+//                returner.SendClientMessage($"Resource worth {resourceValue} ({((ProximityBattleFront)Region.BattleFront).GetResourceValue(returner.Realm, _resourceValueMax[Rank])} base * {GetDistanceToObject(box.Objective) / 2000f} dist factor) returned!");
 //            else
-//                returner.SendClientMessage($"Resource worth {resourceValue} ({((BattleFront)Region.ndbf).GetResourceValue(returner.Realm, _resourceValueMax[Rank])} base * {GetDistanceToObject(box.Objective) / 2000f} dist factor) returned!");
+//                returner.SendClientMessage($"Resource worth {resourceValue} ({((BattleFront)Region.BattleFront).GetResourceValue(returner.Realm, _resourceValueMax[Rank])} base * {GetDistanceToObject(box.Objective) / 2000f} dist factor) returned!");
 
 //            returner.SendClientMessage($"Resources: {_currentResource}/{_maxResource} ({_currentResourcePercent}%)");
 //#endif
@@ -995,7 +995,7 @@ namespace WorldServer.World.BattleFronts.Keeps
    //     public void TickUpkeep()
    //     {
    //         // We are ticking Realm Rank in sync here
-   //         Region.ndbf.TickRealmRankTimer();
+   //         Region.BattleFront.TickRealmRankTimer();
 
    //         if (Rank == 0 && _currentResource == 0)
    //             return;
@@ -1003,7 +1003,7 @@ namespace WorldServer.World.BattleFronts.Keeps
    //         int curTime = TCPManager.GetTimeStamp();
 
    //         // Sustain keep if resources were returned within last 10 minutes and enough players exist to support the rank
-   //         ProximityBattleFront front = (ProximityBattleFront)Region.ndbf;
+   //         ProximityBattleFront front = (ProximityBattleFront)Region.BattleFront;
    //         if (_lastReturnSeconds + _rankDecayTimer[Rank] > curTime && CanSustainRank(Rank) && front.HeldObjectives[(int)Realm] > WorldMgr.WorldSettingsMgr.GetGenericSetting(9))
    //             return;
 
@@ -1011,7 +1011,7 @@ namespace WorldServer.World.BattleFronts.Keeps
    //         {
    //             _nextDegenerationWarnTime = curTime + 5000;
    //             // codeword 0ni0n
-   //             //Region.ndbf.Broadcast(CanSustainRank(Rank) ? $"{Info.Name} is not meeting its supply upkeep!" : $"Not enough warriors are present to sustain {Info.Name}'s current rank!", Realm);
+   //             //Region.BattleFront.Broadcast(CanSustainRank(Rank) ? $"{Info.Name} is not meeting its supply upkeep!" : $"Not enough warriors are present to sustain {Info.Name}'s current rank!", Realm);
    //         }
 
    //         // Degeneration for failing to supply keep or for failing numbers threshold.
@@ -1030,13 +1030,13 @@ namespace WorldServer.World.BattleFronts.Keeps
    //                 --Rank;
    //                 SetSupplyRequirement();
    //                 _currentResource = _maxResource*0.95f;
-   //                 Region.ndbf.Broadcast($"{Info.Name}'s rank has fallen to {Rank}!", Realm);
+   //                 Region.BattleFront.Broadcast($"{Info.Name}'s rank has fallen to {Rank}!", Realm);
    //                 if (Rank == 0)
    //                 {
    //                     if (LastMessage >= KeepMessage.Inner0)
-   //                         Region.ndbf.Broadcast($"{Info.Name}'s postern doors are no longer defended!", Realm);
+   //                         Region.BattleFront.Broadcast($"{Info.Name}'s postern doors are no longer defended!", Realm);
    //                     else if (LastMessage >= KeepMessage.Outer0)
-   //                         Region.ndbf.Broadcast($"{Info.Name}'s outer postern doors are no longer defended!", Realm);
+   //                         Region.BattleFront.Broadcast($"{Info.Name}'s outer postern doors are no longer defended!", Realm);
    //                 }
    //             }
    //         }
@@ -1065,7 +1065,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 //            if (rank > 5)
 //                rank = 5;
 
-//            return Region.ndbf.CanSustainRank(Realm, _resourceValueMax[rank]);
+//            return Region.BattleFront.CanSustainRank(Realm, _resourceValueMax[rank]);
 //        }
 
 //        public bool ShouldRation()
@@ -1171,7 +1171,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 if (KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
                     TickSafety();
                 // No more keep reclaiming, sorry...
-                /*else if (Region.ndbf.CanReclaimKeep((Realms)Info.Realm))
+                /*else if (Region.BattleFront.CanReclaimKeep((Realms)Info.Realm))
                     ReclaimKeep();*/
             }
 
@@ -1258,7 +1258,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         private void ReclaimKeep()
         {
-            Region.ndbf.CommunicationsEngine.Broadcast($"{Info.Name} has been reclaimed by the forces of {(Info.Realm == 1 ? "Order" : "Destruction")}!", Tier);
+            Region.BattleFront.CommunicationsEngine.Broadcast($"{Info.Name} has been reclaimed by the forces of {(Info.Realm == 1 ? "Order" : "Destruction")}!", Tier);
 
             Realm = (Realms) Info.Realm;
 

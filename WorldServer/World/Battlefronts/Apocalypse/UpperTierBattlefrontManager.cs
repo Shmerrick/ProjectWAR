@@ -54,11 +54,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (regionMgr.GetTier() == tier)
                 {
-                    foreach (var objective in regionMgr.ndbf.Objectives)
+                    foreach (var objective in regionMgr.BattleFront.Objectives)
                     {
                         ProgressionLogger.Debug($"{regionMgr.RegionName} {objective.Name} {objective.FlagState} {objective.State}");
                     }
-                    foreach (var keep in regionMgr.ndbf.Keeps)
+                    foreach (var keep in regionMgr.BattleFront.Keeps)
                     {
                         ProgressionLogger.Debug($"{regionMgr.RegionName} {keep.Name} {keep.KeepStatus} ");
                     }
@@ -87,12 +87,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         ApocBattleFrontStatus.LockTimeStamp = FrameWork.TCPManager.GetTimeStamp();
                     }
 
-                    foreach (var objective in regionMgr.ndbf.Objectives)
+                    foreach (var objective in regionMgr.BattleFront.Objectives)
                     {
                         objective.LockObjective(Realms.REALMS_REALM_NEUTRAL, false);
                         ProgressionLogger.Debug($" Locking BO to Neutral {objective.Name} {objective.FlagState} {objective.State}");
                     }
-                    foreach (var keep in regionMgr.ndbf.Keeps)
+                    foreach (var keep in regionMgr.BattleFront.Keeps)
                     {
                         keep.LockKeep(Realms.REALMS_REALM_NEUTRAL, false, false);
                         ProgressionLogger.Debug($" Locking Keep to Neutral {keep.Name} {keep.KeepStatus} ");
@@ -108,7 +108,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var activeRegion = RegionMgrs.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
             ProgressionLogger.Info($" Opening battlefront in {activeRegion.RegionName} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
 
-            activeRegion.ndbf.VictoryPointProgress.Reset(activeRegion.ndbf);
+            activeRegion.BattleFront.VictoryPointProgress.Reset(activeRegion.BattleFront);
 
             // Find and update the status of the battlefront status.
             foreach (var ApocBattleFrontStatus in ApocBattleFrontStatuses)
@@ -123,13 +123,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 }
             }
 
-            foreach (var flag in activeRegion.ndbf.Objectives)
+            foreach (var flag in activeRegion.BattleFront.Objectives)
             {
                 if (this.ActiveBattleFront.ZoneId == flag.ZoneId)
                     flag.UnlockObjective();
             }
 
-            foreach (Keep keep in activeRegion.ndbf.Keeps)
+            foreach (Keep keep in activeRegion.BattleFront.Keeps)
             {
                 if (this.ActiveBattleFront.ZoneId == keep.ZoneId)
                     keep.NotifyPairingUnlocked();
@@ -149,31 +149,31 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     ApocBattleFrontStatus.Locked = true;
                     ApocBattleFrontStatus.LockingRealm = realm;
-                    ApocBattleFrontStatus.FinalVictoryPoint = activeRegion.ndbf.VictoryPointProgress;
+                    ApocBattleFrontStatus.FinalVictoryPoint = activeRegion.BattleFront.VictoryPointProgress;
                     ApocBattleFrontStatus.LockTimeStamp = FrameWork.TCPManager.GetTimeStamp();
                 }
             }
             
-            foreach (var flag in activeRegion.ndbf.Objectives)
+            foreach (var flag in activeRegion.BattleFront.Objectives)
             {
                 if (this.ActiveBattleFront.ZoneId == flag.ZoneId)
                     flag.LockObjective(realm, true);
             }
 
-            foreach (Keep keep in activeRegion.ndbf.Keeps)
+            foreach (Keep keep in activeRegion.BattleFront.Keeps)
             {
                 if (this.ActiveBattleFront.ZoneId == keep.ZoneId)
                     keep.LockKeep(realm, true, true);
             }
 
-            activeRegion.ndbf.LockBattleFront(realm);
+            activeRegion.BattleFront.LockBattleFront(realm);
 
             // Use Locking Realm in the BFM, not the BF (BF applies to region)
             return this.ActiveBattleFront;
 
         }
 
-        public List<ApocBattleFrontStatus> GetBattleFrontStatusList(int regionId)
+        public List<ApocBattleFrontStatus> GetBattleFrontStatusList()
         {
             return this.ApocBattleFrontStatuses;
         }

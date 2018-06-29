@@ -135,8 +135,8 @@ namespace WorldServer.Test
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
             manager.ResetBattleFrontProgression();
 
-            Region1.ndbf = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
-            Region3.ndbf = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+            Region1.BattleFront = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.BattleFront = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
 
 
         }
@@ -171,8 +171,8 @@ namespace WorldServer.Test
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
             var bf = manager.ResetBattleFrontProgression();
 
-            Region1.ndbf = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
-            Region3.ndbf = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+            Region1.BattleFront = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.BattleFront = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
 
             Assert.IsTrue(bf.DestWinProgression == 2);
 
@@ -217,14 +217,14 @@ namespace WorldServer.Test
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
             var bf = manager.ResetBattleFrontProgression();
 
-            Region1.ndbf = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
-            Region3.ndbf = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+            Region1.BattleFront = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.BattleFront = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
             // Open Praag (BF==1)
             manager.OpenActiveBattlefront();
             Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 1); // Praag
 
             // Ensure that the BOs for this battlefront ONLY are unlocked.
-            foreach (var bo in Region1.ndbf.Objectives)
+            foreach (var bo in Region1.BattleFront.Objectives)
             {
                 if (bo.ZoneId == 200)
                 {
@@ -246,13 +246,13 @@ namespace WorldServer.Test
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
             var bf = manager.ResetBattleFrontProgression();
 
-            Region1.ndbf = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
-            Region3.ndbf = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+            Region1.BattleFront = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.BattleFront = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
             // Open Praag (BF==1)
             manager.OpenActiveBattlefront();
-            // Locking Region1.ndbf
-            Region1.ndbf.VictoryPointProgress.DestructionVictoryPoints = 5000f;
-            Region1.ndbf.VictoryPointProgress.OrderVictoryPoints = 1000f;
+            // Locking Region1.BattleFront
+            Region1.BattleFront.VictoryPointProgress.DestructionVictoryPoints = 5000f;
+            Region1.BattleFront.VictoryPointProgress.OrderVictoryPoints = 1000f;
             manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 
             // Ensure battlefront 1 is locked and to Destro
@@ -262,7 +262,7 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).FinalVictoryPoint.OrderVictoryPoints == 1000f);
 
             // Ensure that the BOs for this battlefront ONLY are locked.
-            foreach (var apocBattlefieldObjective in Region1.ndbf.Objectives)
+            foreach (var apocBattlefieldObjective in Region1.BattleFront.Objectives)
             {
                 // Locking a battlefront should ZoneLock the BOs in that Zone, and Open those in the next battlefront.
                 if ((apocBattlefieldObjective.ZoneId == 200) || (apocBattlefieldObjective.ZoneId == 201))
@@ -282,13 +282,13 @@ namespace WorldServer.Test
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
             var bf = manager.ResetBattleFrontProgression();
 
-            Region1.ndbf = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
-            Region3.ndbf = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+            Region1.BattleFront = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.BattleFront = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
             // Open Praag (BF==1)
             manager.OpenActiveBattlefront();
-            // Locking Region1.ndbf
-            Region1.ndbf.VictoryPointProgress.DestructionVictoryPoints = 5000f;
-            Region1.ndbf.VictoryPointProgress.OrderVictoryPoints = 1000f;
+            // Locking Region1.BattleFront
+            Region1.BattleFront.VictoryPointProgress.DestructionVictoryPoints = 5000f;
+            Region1.BattleFront.VictoryPointProgress.OrderVictoryPoints = 1000f;
             manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 
             // Ensure battlefront 1 is locked and to Destro
@@ -309,7 +309,7 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).FinalVictoryPoint.DestructionVictoryPoints == 0f);
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).FinalVictoryPoint.OrderVictoryPoints == 0f);
 
-            foreach (var apocBattlefieldObjective in Region1.ndbf.Objectives)
+            foreach (var apocBattlefieldObjective in Region1.BattleFront.Objectives)
             {
                 // Locking a battlefront should ZoneLock the BOs in that Zone, and Open those in the next battlefront.
                 if (apocBattlefieldObjective.ZoneId == 201)
@@ -324,8 +324,8 @@ namespace WorldServer.Test
                 }
             }
 
-            Region1.ndbf.VictoryPointProgress.DestructionVictoryPoints = 5000f;
-            Region1.ndbf.VictoryPointProgress.OrderVictoryPoints = 2200f;
+            Region1.BattleFront.VictoryPointProgress.DestructionVictoryPoints = 5000f;
+            Region1.BattleFront.VictoryPointProgress.OrderVictoryPoints = 2200f;
 
             // Lock Destro again
             manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
@@ -337,7 +337,7 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).FinalVictoryPoint.OrderVictoryPoints == 2200f);
 
             // Ensure that the BOs for this battlefront ONLY are locked.
-            foreach (var apocBattlefieldObjective in Region1.ndbf.Objectives)
+            foreach (var apocBattlefieldObjective in Region1.BattleFront.Objectives)
             {
                 // Locking a battlefront should ZoneLock the BOs in that Zone, and Open those in the next battlefront.
                 if ((apocBattlefieldObjective.ZoneId == 200) || (apocBattlefieldObjective.ZoneId == 201))
@@ -348,7 +348,7 @@ namespace WorldServer.Test
             }
 
             // Ensure that the BOs for this battlefront ONLY are locked.
-            foreach (var apocBattlefieldObjective in Region3.ndbf.Objectives)
+            foreach (var apocBattlefieldObjective in Region3.BattleFront.Objectives)
             {
                 // Should be all locked.
                 Assert.IsTrue(apocBattlefieldObjective.State == StateFlags.ZoneLocked);
@@ -364,13 +364,13 @@ namespace WorldServer.Test
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
             var bf = manager.ResetBattleFrontProgression();
 
-            Region1.ndbf = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
-            Region3.ndbf = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+            Region1.BattleFront = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.BattleFront = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
             // Open Praag (BF==1)
             manager.OpenActiveBattlefront();
-            // Locking Region1.ndbf
-            Region1.ndbf.VictoryPointProgress.DestructionVictoryPoints = 5000f;
-            Region1.ndbf.VictoryPointProgress.OrderVictoryPoints = 1000f;
+            // Locking Region1.BattleFront
+            Region1.BattleFront.VictoryPointProgress.DestructionVictoryPoints = 5000f;
+            Region1.BattleFront.VictoryPointProgress.OrderVictoryPoints = 1000f;
             manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 
             // Ensure battlefront 1 is locked and to Destro
@@ -386,8 +386,8 @@ namespace WorldServer.Test
 
             manager.OpenActiveBattlefront();
 
-            Region1.ndbf.VictoryPointProgress.DestructionVictoryPoints = 5000f;
-            Region1.ndbf.VictoryPointProgress.OrderVictoryPoints = 2200f;
+            Region1.BattleFront.VictoryPointProgress.DestructionVictoryPoints = 5000f;
+            Region1.BattleFront.VictoryPointProgress.OrderVictoryPoints = 2200f;
 
             // Lock Destro again
             manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
@@ -403,7 +403,7 @@ namespace WorldServer.Test
 
 
             // Ensure that the BOs for this battlefront ONLY are locked.
-            foreach (var apocBattlefieldObjective in Region1.ndbf.Objectives)
+            foreach (var apocBattlefieldObjective in Region1.BattleFront.Objectives)
             {
                 // Locking a battlefront should ZoneLock the BOs in that Zone, and Open those in the next battlefront.
                 if (apocBattlefieldObjective.ZoneId == 400)
@@ -416,7 +416,7 @@ namespace WorldServer.Test
             manager.OpenActiveBattlefront();
 
             // Ensure that the BOs for this battlefront ONLY are locked.
-            foreach (var apocBattlefieldObjective in Region1.ndbf.Objectives)
+            foreach (var apocBattlefieldObjective in Region1.BattleFront.Objectives)
             {
                 // Locking a battlefront should ZoneLock the BOs in that Zone, and Open those in the next battlefront.
                 if (apocBattlefieldObjective.ZoneId == 400)
@@ -426,8 +426,8 @@ namespace WorldServer.Test
                 }
             }
 
-            Region3.ndbf.VictoryPointProgress.DestructionVictoryPoints = 2200f;
-            Region3.ndbf.VictoryPointProgress.OrderVictoryPoints = 5000f;
+            Region3.BattleFront.VictoryPointProgress.DestructionVictoryPoints = 2200f;
+            Region3.BattleFront.VictoryPointProgress.OrderVictoryPoints = 5000f;
 
             // Lock Destro again
             manager.LockActiveBattleFront(Realms.REALMS_REALM_ORDER);

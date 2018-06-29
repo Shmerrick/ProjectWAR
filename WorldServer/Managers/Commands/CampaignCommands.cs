@@ -29,7 +29,7 @@ namespace WorldServer.Managers.Commands
         {
             // Weird algorithm but it's for legacy purpose only
             bool bLocalZone = true;
-            var BattleFront = plr.Region.ndbf;
+            var BattleFront = plr.Region.BattleFront;
             switch (targetString)
             {
                 case "zone":
@@ -49,7 +49,7 @@ namespace WorldServer.Managers.Commands
                             SendCsr(plr, "Unkown region : ", regionId.ToString());
                             return;
                         }
-                        BattleFront = region.ndbf;
+                        BattleFront = region.BattleFront;
                     }
                     else
                         SendCsr(plr, "Please enter a valid regionID");
@@ -160,7 +160,7 @@ namespace WorldServer.Managers.Commands
 
                 bool b = noReward == "0";
 
-                WorldMgr.GetRegion(plr.Region.RegionId, false).ndbf.BattleFrontManager.LockActiveBattleFront(realm);
+                WorldMgr.GetRegion(plr.Region.RegionId, false).BattleFront.BattleFrontManager.LockActiveBattleFront(realm);
             }
             else
                 plr.SendClientMessage("Second parameter must be 0 or 1 - 0 no rewards, 1 grants rewards.");
@@ -183,7 +183,27 @@ namespace WorldServer.Managers.Commands
                 plr.SendClientMessage($"{realm.ToString()} pushes - next battle is in {progression.Description}");
 
             }
+        }
 
+        [CommandAttribute(EGmLevel.SourceDev, "Sends server commands to the client")]
+        public static void SendComms(Player player, int destVP, int orderVP, int realm)
+        {
+            var vpp = new VictoryPointProgress();
+            vpp.DestructionVictoryPoints = destVP;
+            vpp.OrderVictoryPoints = orderVP;
+
+            Realms lockingRealm;
+
+            if (realm == 1)
+                lockingRealm = Realms.REALMS_REALM_ORDER;
+            if (realm == 2)
+                lockingRealm = Realms.REALMS_REALM_DESTRUCTION;
+            else
+                lockingRealm = Realms.REALMS_REALM_NEUTRAL;
+
+            //new ApocCommunications().UpdateRegionCaptureStatus(player, lockingRealm, vpp);
+
+           // new ApocCommunications().SendCampaignStatus(player, vpp, lockingRealm);
         }
 
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks a battle objective for the given realm (1 - Order, 2 - Dest).")]
@@ -193,7 +213,7 @@ namespace WorldServer.Managers.Commands
 
             var objectiveToLock = values;
 
-            WorldMgr.GetRegion(plr.Region.RegionId, false).ndbf.LockBattleObjective(realm, objectiveToLock);
+            WorldMgr.GetRegion(plr.Region.RegionId, false).BattleFront.LockBattleObjective(realm, objectiveToLock);
 
         }
 
@@ -452,12 +472,12 @@ namespace WorldServer.Managers.Commands
         [CommandAttribute(EGmLevel.DatabaseDev, "Sets the number of VP for a realm")]
         public static void SetVictoryPoints(Player plr, Realms realm, int points)
         {
-            if (plr.Zone == null || plr.Region.ndbf == null)
+            if (plr.Zone == null || plr.Region.BattleFront == null)
             {
                 SendCsr(plr, "CAMPAIGN SUPPLY: Must be in a RvR zone to use this command.");
                 return;
             }
-            var BattleFront = (ApocBattleFront)plr.Region.ndbf;
+            var BattleFront = (ApocBattleFront)plr.Region.BattleFront;
 
             if (realm == Realms.REALMS_REALM_ORDER)
                 BattleFront.VictoryPointProgress.OrderVictoryPoints = points;
@@ -471,20 +491,20 @@ namespace WorldServer.Managers.Commands
         [CommandAttribute(EGmLevel.DatabaseDev, "Returns the World Campaign Status")]
         public static void Status(Player plr)
         {
-            if (plr.Zone == null || plr.Region.ndbf == null)
+            if (plr.Zone == null || plr.Region.BattleFront == null)
             {
                 SendCsr(plr, "Must be in a RvR zone to use this command.");
                 return;
             }
             plr.SendClientMessage($"Lower Tier {WorldMgr.LowerTierBattleFrontManager.ActiveBattleFrontName} is active.");
 
-            plr.SendClientMessage($"  BattleFront Status : \t {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierBattleFrontManager.ActiveBattleFront.RegionId, false).ndbf.GetBattleFrontStatus()}");
+            plr.SendClientMessage($"  BattleFront Status : \t {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierBattleFrontManager.ActiveBattleFront.RegionId, false).BattleFront.GetBattleFrontStatus()}");
 
             plr.SendClientMessage($"Upper Tier {WorldMgr.UpperTierBattleFrontManager.ActiveBattleFrontName} is active.");
 
-            plr.SendClientMessage($"  BattleFront Status : \t {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierBattleFrontManager.ActiveBattleFront.RegionId, false).ndbf.GetBattleFrontStatus()}");
+            plr.SendClientMessage($"  BattleFront Status : \t {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierBattleFrontManager.ActiveBattleFront.RegionId, false).BattleFront.GetBattleFrontStatus()}");
 
-            foreach (var flag in plr.Region.ndbf.Objectives)
+            foreach (var flag in plr.Region.BattleFront.Objectives)
                 plr.SendClientMessage($"{flag.ToString()}");
         }
 

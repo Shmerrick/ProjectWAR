@@ -39,7 +39,7 @@ namespace WorldServer
         private bool _running = true;
         public List<Zone_Info> ZonesInfo;
         public IBattleFront Bttlfront;
-        public ApocBattleFront ndbf;
+        public ApocBattleFront BattleFront;
         public Scenario Scenario;
         public string RegionName;
 
@@ -97,10 +97,10 @@ namespace WorldServer
                 //    case 1: // t1 dw/gs
                 //    case 3: // t1 he/de
                 //    case 8: // t1 em/ch
-                //        ndbf = new ApocBattleFront(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager);
+                //        BattleFront = new ApocBattleFront(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager);
                 //        break;
                 //    default: // Everything else...
-                //        ndbf = new ApocBattleFront(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager);
+                //        BattleFront = new ApocBattleFront(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager);
                 //        break;
                 //}
             }
@@ -276,7 +276,7 @@ namespace WorldServer
                     UpdateActors(start);
 
                     //Bttlfront?.Update(start);
-                    ndbf?.Update(start);
+                    BattleFront?.Update(start);
                 }
 
                 catch (Exception e)
@@ -359,8 +359,8 @@ namespace WorldServer
                         {
                             //Bttlfront?.SendObjectives(plr);
 
-                            ndbf?.SendObjectives(plr);
-                            ApocCommunications.SendCampaignStatus(plr, ndbf?.VictoryPointProgress, (ndbf?.VictoryPointProgress.DestructionVictoryPoints >= BattleFrontConstants.LOCK_VICTORY_POINTS) ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER);
+                            BattleFront?.SendObjectives(plr);
+                            ApocCommunications.SendCampaignStatus(plr, BattleFront?.VictoryPointProgress, (BattleFront?.VictoryPointProgress.DestructionVictoryPoints >= BattleFrontConstants.LOCK_VICTORY_POINTS) ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER);
                         }
                     }
                     _objectsToAdd.Clear();

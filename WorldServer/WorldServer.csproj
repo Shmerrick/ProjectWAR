@@ -264,15 +264,11 @@
     <Compile Include="World\Battlefronts\Apocalypse\ApocBattlefieldObjective.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\ApocBattleFront.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\LowerTierBattlefrontManager.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\RacialPairIdentifier.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\RacialPairManager.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\RVRRewardManager.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\UpperTierBattlefrontManager.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\IApocBattleFront.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\ApocCommunications.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\ProximityEngine.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\RacialPair.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\RacialPairHelper.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\VictoryPoint.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\VictoryPointProgress.cs" />
     <Compile Include="World\Battlefronts\Objectives\IBattlefrontFlag.cs" />

@@ -170,7 +170,7 @@ namespace WorldServer.Managers.Commands
             int value = GetInt(ref values);
 
             plr = GetTargetOrMe(plr) as Player;
-            plr.Region.ndbf.AddContribution(plr, (uint)value);
+            plr.Region.BattleFront.AddContribution(plr, (uint)value);
 
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;

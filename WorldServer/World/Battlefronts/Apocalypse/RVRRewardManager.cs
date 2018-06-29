@@ -99,7 +99,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         //    }
 
         //    // No multiplier based on population
-        //    scaleMult *= Region.ndbf.GetObjectiveRewardScaler(OwningRealm, playerCount);
+        //    scaleMult *= Region.BattleFront.GetObjectiveRewardScaler(OwningRealm, playerCount);
 
         //    return scaleMult;
         //}

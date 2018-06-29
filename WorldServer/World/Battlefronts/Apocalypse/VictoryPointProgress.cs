@@ -51,10 +51,20 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             DestructionVictoryPoints = 0;
         }
 
+        public float DestructionVictoryPointPercentage
+        {
+            get { return DestructionVictoryPoints * 100 / WorldServer.World.BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS; }
+        }
+
+        public float OrderVictoryPointPercentage
+        {
+            get { return OrderVictoryPoints * 100 / WorldServer.World.BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS; }
+        }
+
         public override string ToString()
         {
             return
-                $"Order VP:{OrderVictoryPoints} ({OrderVictoryPoints * 100 / WorldServer.World.BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS}%) Destruction VP:{DestructionVictoryPoints} ({DestructionVictoryPoints * 100 / WorldServer.World.BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS}%)";
+                $"Order VP:{OrderVictoryPoints} ({OrderVictoryPointPercentage}%) Destruction VP:{DestructionVictoryPoints} ({DestructionVictoryPointPercentage}%)";
         }
 
         public void Lock(Realms lockingRealm)

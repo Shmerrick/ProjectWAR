@@ -421,7 +421,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             //LockingRealm = realm;
 
-            CommunicationsEngine.SendCampaignStatus(null, VictoryPointProgress, realm);
+            //CommunicationsEngine.SendCampaignStatus(null, VictoryPointProgress, realm);
+            //CommunicationsEngine.
 
             string message = string.Concat(Region.ZonesInfo[0].Name, " and ", Region.ZonesInfo[1].Name, " have been locked by ", (realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"), "!");
             BattlefrontLogger.Debug(message);
@@ -586,6 +587,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 SendCampaignMovementMessage(nextBattleFront);
                 // Unlock the next Progression
                 BattleFrontManager.OpenActiveBattlefront();
+                // This is kind of nasty, should use an event to signal the WorldMgr
+                // Tell the server that the RVR status has changed.
+                WorldMgr.UpdateRegionCaptureStatus();
                 // Logs the status of all battlefronts known to the Battlefront Manager.
                 BattleFrontManager.AuditBattleFronts(this.Tier);
 
@@ -600,6 +604,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 SendCampaignMovementMessage(nextBattleFront);
                 // Unlock the next Progression
                 BattleFrontManager.OpenActiveBattlefront();
+                // This is kind of nasty, should use an event to signal the WorldMgr
+                // Tell the server that the RVR status has changed.
+                WorldMgr.UpdateRegionCaptureStatus();
                 // Logs the status of all battlefronts known to the Battlefront Manager.
                 BattleFrontManager.AuditBattleFronts(this.Tier);
             }

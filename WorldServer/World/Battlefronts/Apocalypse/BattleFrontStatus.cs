@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FrameWork;
 using GameData;
 using WorldServer.World.Battlefronts.Apocalypse;
 
@@ -17,6 +18,30 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public int LockTimeStamp { get; set; }
         public bool Locked { get; set; }
 
-    }
+        public float DestructionVictoryPointPercentage
+        {
+            get { return FinalVictoryPoint.DestructionVictoryPointPercentage; }
+        }
+        public float OrderVictoryPointPercentage
+        {
+            get { return FinalVictoryPoint.OrderVictoryPointPercentage; }
+        }
 
+        /// <summary>
+        /// Get the lock status of this battlefront (for use in communicating with the client)
+        /// </summary>
+        public int LockStatus
+        {
+            get
+            {
+                if (DestructionVictoryPointPercentage >= 100)
+                    return BattleFrontConstants.ZONE_STATUS_DESTRO_LOCKED;
+                if (OrderVictoryPointPercentage >= 100)
+                    return BattleFrontConstants.ZONE_STATUS_ORDER_LOCKED;
+
+                return BattleFrontConstants.ZONE_STATUS_CONTESTED;
+            }
+        }
+    }
 }
+

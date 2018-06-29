@@ -24,15 +24,117 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (region == null)
                 Out.Fill(0, 3);
             else
-                region.ndbf.WriteCaptureStatus(Out, realm);
+                region.BattleFront.WriteCaptureStatus(Out, realm);
         }
 
         public void BuildBattleFrontStatus(PacketOut Out, RegionMgr region)
         {
-            if (region == null)
-                Out.Fill(0, 3);
-            else
-                region.ndbf.WriteBattleFrontStatus(Out);
+            //if (region == null)
+            //    Out.Fill(0, 3);
+            //else
+            //{
+                Out.WriteByte((byte)0);
+                Out.WriteByte((byte)0);
+                Out.WriteByte((byte)1);
+            //}
+            //region.BattleFront.WriteBattleFrontStatus(Out);
+        }
+
+        public void UpdateRegionCaptureStatus(Player plr, LowerTierBattleFrontManager lowerBFM, UpperTierBattleFrontManager upperBFM, VictoryPointProgress vpp)
+        {
+            PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
+            Out.WriteHexStringBytes("0005006700CB00"); // 7
+
+            // Dwarfs vs Greenskins T1
+            
+           // Out.WriteByte(lowerBFM.GetBattleFrontByBattleFrontId());    // 0 and ignored
+            Out.WriteByte(100);  // % Order lock
+            Out.WriteByte(0);    // % Dest lock
+            // Dwarfs vs Greenskins T2
+            //BuildCaptureStatus(Out, WorldMgr.GetRegion(12, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(50);
+            Out.WriteByte(50);
+            // Dwarfs vs Greenskins T3
+            //BuildCaptureStatus(Out, WorldMgr.GetRegion(10, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.WriteByte(100);
+            // Dwarfs vs Greenskins T4
+            //BuildCaptureStatus(Out, WorldMgr.GetRegion(2, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(100);
+            Out.WriteByte(0);
+            // Empire vs Chaos T1
+            //BuildCaptureStatus(Out, WorldMgr.GetRegion(8, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(100);
+            Out.WriteByte(0);
+            // Empire vs Chaos T2
+            //BuildCaptureStatus(Out, WorldMgr.GetRegion(14, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.WriteByte(100);
+            // Empire vs Chaos T3
+            // BuildCaptureStatus(Out, WorldMgr.GetRegion(6, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.WriteByte(100);
+            // Empire vs Chaos T4
+            // BuildCaptureStatus(Out, WorldMgr.GetRegion(11, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.WriteByte(100);
+            // High Elves vs Dark Elves T1
+            //BuildCaptureStatus(Out, WorldMgr.GetRegion(3, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(100);
+            Out.WriteByte(0);
+            // High Elves vs Dark Elves T2
+            //BuildCaptureStatus(Out, WorldMgr.GetRegion(15, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(100);
+            Out.WriteByte(0);
+            // High Elves vs Dark Elves T3
+            // BuildCaptureStatus(Out, WorldMgr.GetRegion(16, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(100);
+            Out.WriteByte(0);
+            // High Elves vs Dark Elves T4
+            //BuildCaptureStatus(Out, WorldMgr.GetRegion(4, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(100);
+            Out.WriteByte(0);
+
+            Out.Fill(0, 83);
+
+            Out.WriteByte(3);   //dwarf fort
+            BuildBattleFrontStatus(Out, null);
+            Out.WriteByte(3);   //or
+
+            Out.WriteByte(3);   //emp fort
+            BuildBattleFrontStatus(Out, null);
+            Out.WriteByte(3);   //or
+
+            Out.WriteByte(3);   //elf fort
+            BuildBattleFrontStatus(Out, null);
+            Out.WriteByte(3);   //or
+
+            //if (plr.Region?.BattleFront != null)
+            //    WriteVictoryPoints(plr.Realm, Out, vpp);
+
+            //else
+            //    Out.Fill(0, 9);
+            Out.WriteByte((byte)vpp.OrderVictoryPoints);
+            Out.WriteByte((byte)vpp.DestructionVictoryPoints);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+
+            Out.WriteByte(00);
+
+            Out.Fill(0, 4);
+
+            plr.SendPacket(Out);
         }
 
         public void SendCampaignStatus(Player plr, VictoryPointProgress vpp, Realms realm)
@@ -89,12 +191,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             //chaos t4
             Out.WriteByte(3);   //empire fort
 
-            Out.WriteByte((byte)0);
-            Out.WriteByte((byte)1);  //ZONE_STATUS_ORDER_LOCKED
-            Out.WriteByte((byte)0); //ZONE_STATUS_CONTESTED
-
-
-            //BuildBattleFrontStatus(Out, WorldMgr.GetRegion(11, false));   //reikland
+            Out.WriteByte((byte)3);
+            BuildBattleFrontStatus(Out, WorldMgr.GetRegion(11, false));   //reikland
             Out.WriteByte(3);   //chaos fort
 
             //elf
@@ -124,7 +222,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             PacketOut playerCampaignStatus = new PacketOut(0, 159) { Position = 0 };
                             playerCampaignStatus.Write(buffer, 0, buffer.Length);
 
-                            if (player.Region?.ndbf != null)
+                            if (player.Region?.BattleFront != null)
                                 WriteVictoryPoints(player.Realm, playerCampaignStatus, vpp);
 
                             else
@@ -139,7 +237,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
             else
             {
-                if (plr.Region?.ndbf != null)
+                if (plr.Region?.BattleFront != null)
                     WriteVictoryPoints(plr.Realm, Out, vpp);
 
                 else
