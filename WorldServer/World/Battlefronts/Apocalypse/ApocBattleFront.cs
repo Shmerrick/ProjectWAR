@@ -417,7 +417,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             BattlefrontLogger.Info($"Locking Battlefront {this.BattleFrontName} to {realm.ToString()}...");
 
         
-            this.VictoryPointProgress.Lock(realm);
+            //this.VictoryPointProgress.Lock(realm);
 
             //LockingRealm = realm;
 
