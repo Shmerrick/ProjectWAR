@@ -76,7 +76,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {
                         ApocBattleFrontStatus.Locked = true;
                         ApocBattleFrontStatus.OpenTimeStamp = FrameWork.TCPManager.GetTimeStamp();
-                        ApocBattleFrontStatus.LockingRealm = Realms.REALMS_REALM_NEUTRAL;
+                        // Determine what the "start" realm this battlefront should be locked to. 
+                        ApocBattleFrontStatus.LockingRealm = (Realms)BattleFrontProgressions.Single(x => x.BattleFrontId == ApocBattleFrontStatus.BattleFrontId).DefaultRealmLock;
                         ApocBattleFrontStatus.FinalVictoryPoint = new VictoryPointProgress();
                         ApocBattleFrontStatus.LockTimeStamp = FrameWork.TCPManager.GetTimeStamp();
                     }

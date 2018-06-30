@@ -109,21 +109,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Out.Fill(0, 83);
 
             Out.WriteByte(3);   //dwarf fort
-            Out.WriteByte((byte)0);  // 0 contested, 1 order, 2 dest
-            Out.WriteByte((byte)0);
-            Out.WriteByte((byte)0);
+            Out.WriteByte((byte)1);  // KV 0 contested, 1 order, 2 dest
+            Out.WriteByte((byte)1);  // TM
+            Out.WriteByte((byte)1);  // BC
             Out.WriteByte(3);   //or
 
             Out.WriteByte(3);   //emp fort
             Out.WriteByte((byte)1);   // reik
             Out.WriteByte((byte)1);   // praag
-            Out.WriteByte((byte)0);   // cw
+            Out.WriteByte((byte)1);   // cw
             Out.WriteByte(3);   //or
 
             Out.WriteByte(3);   //elf fort
-            Out.WriteByte((byte)0);
-            Out.WriteByte((byte)0);
-            Out.WriteByte((byte)0);
+            Out.WriteByte((byte)1);  // Eataine
+            Out.WriteByte((byte)1);  // DW
+            Out.WriteByte((byte)0);  // Caledor
             Out.WriteByte(3);   //or
 
             //if (plr.Region?.BattleFront != null)

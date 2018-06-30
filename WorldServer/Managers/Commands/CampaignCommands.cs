@@ -162,7 +162,7 @@ namespace WorldServer.Managers.Commands
                 else
                     lockingRealm = Realms.REALMS_REALM_NEUTRAL;
             }
-
+            WorldMgr.UpdateRegionCaptureStatus();
             new ApocCommunications().UpdateRegionCaptureStatus(player, lockingRealm, vpp);
 
            // new ApocCommunications().SendCampaignStatus(player, vpp, lockingRealm);

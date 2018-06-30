@@ -360,7 +360,8 @@ namespace WorldServer
                             //Bttlfront?.SendObjectives(plr);
 
                             BattleFront?.SendObjectives(plr);
-                            ApocCommunications.SendCampaignStatus(plr, BattleFront?.VictoryPointProgress, (BattleFront?.VictoryPointProgress.DestructionVictoryPoints >= BattleFrontConstants.LOCK_VICTORY_POINTS) ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER);
+                            // ApocCommunications.SendCampaignStatus(plr, BattleFront?.VictoryPointProgress, (BattleFront?.VictoryPointProgress.DestructionVictoryPoints >= BattleFrontConstants.LOCK_VICTORY_POINTS) ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER);
+                            WorldMgr.UpdateRegionCaptureStatus();
                         }
                     }
                     _objectsToAdd.Clear();

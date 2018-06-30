@@ -122,7 +122,8 @@ namespace WorldServer
             WorldMgr.UpperTierBattleFrontManager.OpenActiveBattlefront();
             WorldMgr.LowerTierBattleFrontManager.OpenActiveBattlefront();
 
-
+            WorldMgr.UpdateRegionCaptureStatus();
+                
             Log.Texte("StartingPairing: ", WorldMgr.StartingPairing.ToString(), ConsoleColor.Cyan);
 
 

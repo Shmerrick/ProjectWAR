@@ -593,7 +593,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 // Tell the server that the RVR status has changed.
                 WorldMgr.UpdateRegionCaptureStatus();
                 // Logs the status of all battlefronts known to the Battlefront Manager.
-                BattleFrontManager.AuditBattleFronts(this.Tier);
+                // BattleFrontManager.AuditBattleFronts(this.Tier);
 
             }
             else if (VictoryPointProgress.DestructionVictoryPoints >=
@@ -610,7 +610,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 // Tell the server that the RVR status has changed.
                 WorldMgr.UpdateRegionCaptureStatus();
                 // Logs the status of all battlefronts known to the Battlefront Manager.
-                BattleFrontManager.AuditBattleFronts(this.Tier);
+                // BattleFrontManager.AuditBattleFronts(this.Tier);
             }
             
         }

@@ -45,5 +45,10 @@ namespace Common.Database.World.Battlefront
         [DataElement(AllowDbNull = false)]
         public int ZoneId { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public int DefaultRealmLock { get; set; }
+
     }
+
+
 }

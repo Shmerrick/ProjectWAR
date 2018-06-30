@@ -1421,7 +1421,6 @@ namespace WorldServer
             _logger.Info($"Attaching Battlefronts to Regions");
             foreach (var regionMgr in _Regions)
             {
-
                 var objectiveList = LoadObjectives(regionMgr);
 
                 switch (regionMgr.RegionId)
@@ -1436,7 +1435,6 @@ namespace WorldServer
                         break;
                 }
             }
-
         }
 
         public static List<ApocBattlefieldObjective> LoadObjectives(RegionMgr regionMgr)
@@ -1551,7 +1549,14 @@ namespace WorldServer
             lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus.ToString();
             lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus.ToString();
             lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus.ToString();
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
 
+            Out.WriteByte(00);
+
+            Out.Fill(0, 4);
 
 
             byte[] buffer = Out.ToArray();
