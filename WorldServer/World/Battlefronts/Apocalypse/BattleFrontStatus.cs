@@ -34,12 +34,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             get
             {
-                if (DestructionVictoryPointPercentage >= 100)
-                    return BattleFrontConstants.ZONE_STATUS_DESTRO_LOCKED;
-                if (OrderVictoryPointPercentage >= 100)
-                    return BattleFrontConstants.ZONE_STATUS_ORDER_LOCKED;
-
+                if (Locked)
+                {
+                    if (LockingRealm == Realms.REALMS_REALM_DESTRUCTION)
+                        return BattleFrontConstants.ZONE_STATUS_DESTRO_LOCKED;
+                    if (LockingRealm == Realms.REALMS_REALM_ORDER)
+                        return BattleFrontConstants.ZONE_STATUS_ORDER_LOCKED;
+                }
                 return BattleFrontConstants.ZONE_STATUS_CONTESTED;
+
+         
             }
         }
     }

@@ -109,15 +109,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Out.Fill(0, 83);
 
             Out.WriteByte(3);   //dwarf fort
-            BuildBattleFrontStatus(Out, null);
+            Out.WriteByte((byte)0);  // 0 contested, 1 order, 2 dest
+            Out.WriteByte((byte)0);
+            Out.WriteByte((byte)0);
             Out.WriteByte(3);   //or
 
             Out.WriteByte(3);   //emp fort
-            BuildBattleFrontStatus(Out, null);
+            Out.WriteByte((byte)0);
+            Out.WriteByte((byte)1);
+            Out.WriteByte((byte)0);
             Out.WriteByte(3);   //or
 
             Out.WriteByte(3);   //elf fort
-            BuildBattleFrontStatus(Out, null);
+            Out.WriteByte((byte)0);
+            Out.WriteByte((byte)0);
+            Out.WriteByte((byte)0);
             Out.WriteByte(3);   //or
 
             //if (plr.Region?.BattleFront != null)
@@ -133,6 +139,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Out.WriteByte(00);
 
             Out.Fill(0, 4);
+
+            _logger.Debug("APOCCOMM:"+Out.ToString());
 
             plr.SendPacket(Out);
         }

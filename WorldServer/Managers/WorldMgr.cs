@@ -1735,7 +1735,21 @@ namespace WorldServer
             Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus);
             Out.WriteByte(3);   //or
 
+            //For debugging purposes
+            var lockStr = UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus.ToString();
+            lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN).LockStatus.ToString();
+            lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY).LockStatus.ToString();
+            lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus.ToString();
+            lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG).LockStatus.ToString();
+            lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus.ToString();
+            lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus.ToString();
+            lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus.ToString();
+            lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus.ToString();
+
+
+
             byte[] buffer = Out.ToArray();
+            _logger.Debug("WorldMgr : " + lockStr);
 
             lock (Player._Players)
             {
@@ -1744,26 +1758,28 @@ namespace WorldServer
                     if (player == null || player.IsDisposed || !player.IsInWorld())
                         continue;
 
-                    PacketOut playerCampaignStatus = new PacketOut(0, 159) { Position = 0 };
-                    playerCampaignStatus.Write(buffer, 0, buffer.Length);
+                    player.SendPacket(Out);
 
-                    if (player.Region?.BattleFront != null)
-                    {
-                        Out.WriteByte((byte)player.Region?.BattleFront.VictoryPointProgress.OrderVictoryPointPercentage);
-                        Out.WriteByte((byte)player.Region?.BattleFront.VictoryPointProgress.DestructionVictoryPointPercentage);
+                    //PacketOut playerCampaignStatus = new PacketOut(0, 159) { Position = 0 };
+                    //playerCampaignStatus.Write(buffer, 0, buffer.Length);
 
-                        //no clue but set to a value wont show the pool updatetimer
-                        Out.WriteByte(0);
-                        Out.WriteByte(0);
+                    //if (player.Region?.BattleFront != null)
+                    //{
+                    //    Out.WriteByte((byte)player.Region?.BattleFront.VictoryPointProgress.OrderVictoryPointPercentage);
+                    //    Out.WriteByte((byte)player.Region?.BattleFront.VictoryPointProgress.DestructionVictoryPointPercentage);
 
-                        Out.WriteByte(00);
-                    }
-                    else
-                        playerCampaignStatus.Fill(0, 9);
+                    //    //no clue but set to a value wont show the pool updatetimer
+                    //    Out.WriteByte(0);
+                    //    Out.WriteByte(0);
 
-                    playerCampaignStatus.Fill(0, 4);
+                    //    Out.WriteByte(00);
+                    //}
+                    //else
+                    //    playerCampaignStatus.Fill(0, 9);
 
-                    player.SendPacket(playerCampaignStatus);
+                    //playerCampaignStatus.Fill(0, 4);
+
+                    //player.SendPacket(playerCampaignStatus);
                 }
             }
         }
