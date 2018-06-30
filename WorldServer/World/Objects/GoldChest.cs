@@ -83,11 +83,11 @@ namespace WorldServer
             int _amountOfBags = (int)(players.Count * bagCountMod);
             if (info.PQType == 2 && WorldMgr.WorldSettingsMgr.GetGenericSetting(16) == 0)
             {
-                foreach (ContributionInfo contrib in players.Values)
-                {
-                    RollForPersonalBag(contrib, 1f, players, region);
+                //foreach (ContributionInfo contrib in players.Values)
+                //{
+                //    RollForPersonalBag(contrib, 1f, players, region);
 
-                }
+                //}
                 EvtInterface.AddEvent(Destroy, 180 * 1000, 1);
                 // AssignPersonalLoot(player);
             }
@@ -241,275 +241,276 @@ namespace WorldServer
             }
         }
 
-        private void RollForPersonalBag(ContributionInfo player, float bagCountMod, Dictionary<uint, ContributionInfo> players, RegionMgr region)
-        {
+        // Sevetar - commented out as it contains legacy RVR calls. Kept in as it might include useful logic
+        //private void RollForPersonalBag(ContributionInfo player, float bagCountMod, Dictionary<uint, ContributionInfo> players, RegionMgr region)
+        //{
 
-            for (int i = 0; i < 5; ++i)
-            {
-                _availableBags[i] = 0;
-            }
-            for (int i = 0; i < 5; ++i)
-            {
-                _bags[i] = 0;
-            }
-            ProximityBattleFront bf = null;
-            int aaoMult = 0;
-            bool isBonusAppliedAndConsumed = true;
-            Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
-            Player targPlayer = Player.GetPlayer(player.PlayerCharId);
-            Character targCharacter = CharMgr.GetCharacter(player.PlayerCharId, true);
-            if (region != null && region.Bttlfront != null && region.Bttlfront is ProximityBattleFront)
-            {
-                bf = region.Bttlfront as ProximityBattleFront;
-                if (bf != null)
-                {
-                    aaoMult = Math.Abs(bf._againstAllOddsMult);
-                    if (aaoMult != 0)
-                        aaoRealm = bf._againstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
-                }
+        //    for (int i = 0; i < 5; ++i)
+        //    {
+        //        _availableBags[i] = 0;
+        //    }
+        //    for (int i = 0; i < 5; ++i)
+        //    {
+        //        _bags[i] = 0;
+        //    }
+        //    ProximityBattleFront bf = null;
+        //    int aaoMult = 0;
+        //    bool isBonusAppliedAndConsumed = true;
+        //    Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
+        //    Player targPlayer = Player.GetPlayer(player.PlayerCharId);
+        //    Character targCharacter = CharMgr.GetCharacter(player.PlayerCharId, true);
+        //    if (region != null && region.Bttlfront != null && region.Bttlfront is ProximityBattleFront)
+        //    {
+        //        bf = region.Bttlfront as ProximityBattleFront;
+        //        if (bf != null)
+        //        {
+        //            aaoMult = Math.Abs(bf._againstAllOddsMult);
+        //            if (aaoMult != 0)
+        //                aaoRealm = bf._againstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
+        //        }
 
-                if (targPlayer != null)
-                {
-                    //T2 16-19, use bonus rolls
-                    if (region.GetTier() == 2)
-                    {
-                        if (targPlayer.Level < 16 || targPlayer.Level > 19)
-                        {
-                            isBonusAppliedAndConsumed = false;
-                        }
-                    }
-                    //T3 20-29, use bonus rolls
-                    if (region.GetTier() == 3)
-                    {
-                        if (targPlayer.Level < 20 || targPlayer.Level > 29)
-                        {
-                            isBonusAppliedAndConsumed = false;
-                        }
-                    }
+        //        if (targPlayer != null)
+        //        {
+        //            //T2 16-19, use bonus rolls
+        //            if (region.GetTier() == 2)
+        //            {
+        //                if (targPlayer.Level < 16 || targPlayer.Level > 19)
+        //                {
+        //                    isBonusAppliedAndConsumed = false;
+        //                }
+        //            }
+        //            //T3 20-29, use bonus rolls
+        //            if (region.GetTier() == 3)
+        //            {
+        //                if (targPlayer.Level < 20 || targPlayer.Level > 29)
+        //                {
+        //                    isBonusAppliedAndConsumed = false;
+        //                }
+        //            }
 
-                    if (region.GetTier() == 4)
-                    {
-                        if (targPlayer.Level < 30)
-                        {
-                            isBonusAppliedAndConsumed = false;
-                        }
-                    }
-                }
-            }
-            //Which side is outnumbered?
-            float aaoMultOutnumberedSide = aaoMult / 2.5f;
-            //Which side is outnumbering the other side?
-            float aaoMultOutnumberingSide = aaoMult / 2.5f;
+        //            if (region.GetTier() == 4)
+        //            {
+        //                if (targPlayer.Level < 30)
+        //                {
+        //                    isBonusAppliedAndConsumed = false;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    //Which side is outnumbered?
+        //    float aaoMultOutnumberedSide = aaoMult / 2.5f;
+        //    //Which side is outnumbering the other side?
+        //    float aaoMultOutnumberingSide = aaoMult / 2.5f;
 
-            //Being outnumbered has a cap of 2, 10% bonus to your roll.
-            if (aaoMultOutnumberedSide > 1f)
-                aaoMultOutnumberedSide = 1f;
+        //    //Being outnumbered has a cap of 2, 10% bonus to your roll.
+        //    if (aaoMultOutnumberedSide > 1f)
+        //        aaoMultOutnumberedSide = 1f;
 
-            //Being utnumbering has a cap of 40% penalty.
-            if (aaoMultOutnumberingSide > 4f)
-                aaoMultOutnumberingSide = 4f;
+        //    //Being utnumbering has a cap of 40% penalty.
+        //    if (aaoMultOutnumberingSide > 4f)
+        //        aaoMultOutnumberingSide = 4f;
 
-            //Divide by 10f to get sane multipliers for rolls
-            aaoMultOutnumberedSide = aaoMultOutnumberedSide / 10f;
-            aaoMultOutnumberingSide = aaoMultOutnumberingSide / 10f;
+        //    //Divide by 10f to get sane multipliers for rolls
+        //    aaoMultOutnumberedSide = aaoMultOutnumberedSide / 10f;
+        //    aaoMultOutnumberingSide = aaoMultOutnumberingSide / 10f;
 
-            const double goldChance = 0.01, purpChance = 0.05, blueChance = 0.1, greenChance = 0.15, whiteChance = 0.2;
-            _preRoll = players.OrderByDescending(plrs => plrs.Value.BaseContribution).ToList();
-            float acv = _preRoll.Sum(plrs => plrs.Value.BaseContribution) / _preRoll.Count;
-            //handle roll value
-            if (player.OptOutType == 1)
-            {
-                player.RandomBonus = 1;
-                if (targPlayer != null)
-                {
-                    targPlayer.SendLocalizeString(_publicQuestInfo.Name, ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_PUBLIC_QUEST_OPT_OUT_APPLIED);
-                }
-            }
-            else if (player.BaseContribution > acv * .10)
-            {
-                player.RandomBonus = (ushort)RandomMgr.Next(0, 1000);
+        //    const double goldChance = 0.01, purpChance = 0.05, blueChance = 0.1, greenChance = 0.15, whiteChance = 0.2;
+        //    _preRoll = players.OrderByDescending(plrs => plrs.Value.BaseContribution).ToList();
+        //    float acv = _preRoll.Sum(plrs => plrs.Value.BaseContribution) / _preRoll.Count;
+        //    //handle roll value
+        //    if (player.OptOutType == 1)
+        //    {
+        //        player.RandomBonus = 1;
+        //        if (targPlayer != null)
+        //        {
+        //            targPlayer.SendLocalizeString(_publicQuestInfo.Name, ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_PUBLIC_QUEST_OPT_OUT_APPLIED);
+        //        }
+        //    }
+        //    else if (player.BaseContribution > acv * .10)
+        //    {
+        //        player.RandomBonus = (ushort)RandomMgr.Next(0, 1000);
 
-                int temporaryBonus = (int)player.RandomBonus;
-                if (aaoRealm != Realms.REALMS_REALM_NEUTRAL && aaoMult != 0)
-                {
-                    if (targPlayer != null)
-                    {
-                        targPlayer.SendClientMessage("Your roll has been adjusted due to your army's size.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                    }
-                    if (player.PlayerRealm == aaoRealm)
-                    {
-                        temporaryBonus += (int)(player.RandomBonus * (aaoMultOutnumberedSide));
-                    }
-                    else
-                    {
-                        temporaryBonus -= (int)(player.RandomBonus * (aaoMultOutnumberingSide));
-                    }
+        //        int temporaryBonus = (int)player.RandomBonus;
+        //        if (aaoRealm != Realms.REALMS_REALM_NEUTRAL && aaoMult != 0)
+        //        {
+        //            if (targPlayer != null)
+        //            {
+        //                targPlayer.SendClientMessage("Your roll has been adjusted due to your army's size.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+        //            }
+        //            if (player.PlayerRealm == aaoRealm)
+        //            {
+        //                temporaryBonus += (int)(player.RandomBonus * (aaoMultOutnumberedSide));
+        //            }
+        //            else
+        //            {
+        //                temporaryBonus -= (int)(player.RandomBonus * (aaoMultOutnumberingSide));
+        //            }
 
-                }
-                player.RandomBonus = (uint)(Math.Max(2, temporaryBonus));
-                if (targPlayer != null)
-                    targPlayer.SendClientMessage("You roll " + player.RandomBonus + ".", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-            }
-            else
-            {
-                player.RandomBonus = 1;
-            }
+        //        }
+        //        player.RandomBonus = (uint)(Math.Max(2, temporaryBonus));
+        //        if (targPlayer != null)
+        //            targPlayer.SendClientMessage("You roll " + player.RandomBonus + ".", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+        //    }
+        //    else
+        //    {
+        //        player.RandomBonus = 1;
+        //    }
 
-            float contribFactor = player.BaseContribution > acv ? player.BaseContribution / acv : 1f;
-            float malus = 0;
+        //    float contribFactor = player.BaseContribution > acv ? player.BaseContribution / acv : 1f;
+        //    float malus = 0;
 
-            //get player bag pools
+        //    //get player bag pools
 
-            if (targCharacter != null)
-            {
-                if (targCharacter.Bag_Pools == null)
-                    targCharacter.Bag_Pools = new List<Characters_bag_pools>();
+        //    if (targCharacter != null)
+        //    {
+        //        if (targCharacter.Bag_Pools == null)
+        //            targCharacter.Bag_Pools = new List<Characters_bag_pools>();
 
-                _bagPools = targCharacter.Bag_Pools.OrderByDescending(bgpools => bgpools.Bag_Type).ToList();
-                if (_bagPools.Count == 0)
-                {
-                    foreach (int pool in _bpools)
-                    {
-                        Characters_bag_pools _bagPool = new Characters_bag_pools((int)player.PlayerCharId, pool, 0);
-                        targCharacter.Bag_Pools.Add(_bagPool);
-                        CharMgr.Database.AddObject(_bagPool);
-                    }
-                    _bagPools = targCharacter.Bag_Pools.OrderByDescending(bgpools => bgpools.Bag_Type).ToList();
-                }
-            }
+        //        _bagPools = targCharacter.Bag_Pools.OrderByDescending(bgpools => bgpools.Bag_Type).ToList();
+        //        if (_bagPools.Count == 0)
+        //        {
+        //            foreach (int pool in _bpools)
+        //            {
+        //                Characters_bag_pools _bagPool = new Characters_bag_pools((int)player.PlayerCharId, pool, 0);
+        //                targCharacter.Bag_Pools.Add(_bagPool);
+        //                CharMgr.Database.AddObject(_bagPool);
+        //            }
+        //            _bagPools = targCharacter.Bag_Pools.OrderByDescending(bgpools => bgpools.Bag_Type).ToList();
+        //        }
+        //    }
 
-            //roll for each bag type
-            foreach (Characters_bag_pools pool in _bagPools)
-            {
-                player.ContributionBonus = (uint)pool.BagPool_Value;
-                if (player.RandomBonus > 1)
-                {
-                    if (pool.Bag_Type == 4)
-                    {
-                        if ((player.RandomBonus - malus + (isBonusAppliedAndConsumed ? pool.BagPool_Value : 0)) >= 1000 - (1000 * (WorldMgr.WorldSettingsMgr.GetGenericSetting(12) > 0 ? WorldMgr.WorldSettingsMgr.GetGenericSetting(12) / 1000d : goldChance * contribFactor)))
-                        {
-                            _bags[gold] = 1;
-                            if (isBonusAppliedAndConsumed)
-                            {
-                                if (targPlayer != null)
-                                {
-                                    targPlayer.SendClientMessage("Your gold bag bonus roll has been consumed.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                                }
-                                pool.BagPool_Value = 0;
-                            }
-                            if (targPlayer != null)
-                            {
-                                targPlayer.SendClientMessage("You have won a gold loot bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                            }
+        //    //roll for each bag type
+        //    foreach (Characters_bag_pools pool in _bagPools)
+        //    {
+        //        player.ContributionBonus = (uint)pool.BagPool_Value;
+        //        if (player.RandomBonus > 1)
+        //        {
+        //            if (pool.Bag_Type == 4)
+        //            {
+        //                if ((player.RandomBonus - malus + (isBonusAppliedAndConsumed ? pool.BagPool_Value : 0)) >= 1000 - (1000 * (WorldMgr.WorldSettingsMgr.GetGenericSetting(12) > 0 ? WorldMgr.WorldSettingsMgr.GetGenericSetting(12) / 1000d : goldChance * contribFactor)))
+        //                {
+        //                    _bags[gold] = 1;
+        //                    if (isBonusAppliedAndConsumed)
+        //                    {
+        //                        if (targPlayer != null)
+        //                        {
+        //                            targPlayer.SendClientMessage("Your gold bag bonus roll has been consumed.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+        //                        }
+        //                        pool.BagPool_Value = 0;
+        //                    }
+        //                    if (targPlayer != null)
+        //                    {
+        //                        targPlayer.SendClientMessage("You have won a gold loot bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+        //                    }
 
-                            break;
-                        }
-                        else
-                        {
-                            if (isBonusAppliedAndConsumed)
-                                pool.BagPool_Value += (int)((player.RandomBonus - (0) + pool.BagPool_Value) * .01);
-                        }
-                    }
-                    else if (pool.Bag_Type == 3)
-                    {
-                        if ((player.RandomBonus - malus + (isBonusAppliedAndConsumed ? pool.BagPool_Value : 0)) >= 1000 - (1000 * (WorldMgr.WorldSettingsMgr.GetGenericSetting(13) > 0 ? WorldMgr.WorldSettingsMgr.GetGenericSetting(13) / 1000d : purpChance * contribFactor)))
-                        {
-                            _bags[purple] = 1;
-                            if (isBonusAppliedAndConsumed)
-                            {
-                                if (targPlayer != null)
-                                {
-                                    targPlayer.SendClientMessage("Your purple bag bonus roll has been consumed.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                                }
-                                pool.BagPool_Value = 0;
-                            }
-                            if (targPlayer != null)
-                                targPlayer.SendClientMessage("You have won a purple loot bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+        //                    break;
+        //                }
+        //                else
+        //                {
+        //                    if (isBonusAppliedAndConsumed)
+        //                        pool.BagPool_Value += (int)((player.RandomBonus - (0) + pool.BagPool_Value) * .01);
+        //                }
+        //            }
+        //            else if (pool.Bag_Type == 3)
+        //            {
+        //                if ((player.RandomBonus - malus + (isBonusAppliedAndConsumed ? pool.BagPool_Value : 0)) >= 1000 - (1000 * (WorldMgr.WorldSettingsMgr.GetGenericSetting(13) > 0 ? WorldMgr.WorldSettingsMgr.GetGenericSetting(13) / 1000d : purpChance * contribFactor)))
+        //                {
+        //                    _bags[purple] = 1;
+        //                    if (isBonusAppliedAndConsumed)
+        //                    {
+        //                        if (targPlayer != null)
+        //                        {
+        //                            targPlayer.SendClientMessage("Your purple bag bonus roll has been consumed.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+        //                        }
+        //                        pool.BagPool_Value = 0;
+        //                    }
+        //                    if (targPlayer != null)
+        //                        targPlayer.SendClientMessage("You have won a purple loot bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
-                            break;
-                        }
-                        else
-                        {
-                            if (isBonusAppliedAndConsumed)
-                                pool.BagPool_Value += (int)((player.RandomBonus - (0) + pool.BagPool_Value) * .02);
-                        }
-                    }
-                    else if (pool.Bag_Type == 2)
-                    {
-                        if ((player.RandomBonus + -malus + (isBonusAppliedAndConsumed ? pool.BagPool_Value : 0)) >= 1000 - (1000 * (WorldMgr.WorldSettingsMgr.GetGenericSetting(14) > 0 ? WorldMgr.WorldSettingsMgr.GetGenericSetting(14) / 1000d : blueChance * contribFactor)))
-                        {
-                            _bags[blue] = 1;
-                            if (isBonusAppliedAndConsumed)
-                            {
-                                if (targPlayer != null)
-                                {
-                                    targPlayer.SendClientMessage("Your blue loot bag bonus roll has been consumed.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                                    pool.BagPool_Value = 0;
-                                }
-                            }
-                            if (targPlayer != null)
-                                targPlayer.SendClientMessage("You have won a blue loot bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                            break;
-                        }
-                        else
-                        {
-                            if (isBonusAppliedAndConsumed)
-                                pool.BagPool_Value += (int)((player.RandomBonus - (0) + pool.BagPool_Value) * .03);
-                        }
-                    }
-                    else if (pool.Bag_Type == 1)
-                    {
-                        if ((player.RandomBonus - malus + (isBonusAppliedAndConsumed ? pool.BagPool_Value : 0)) >= 1000 - (1000 * (WorldMgr.WorldSettingsMgr.GetGenericSetting(15) > 0 ? WorldMgr.WorldSettingsMgr.GetGenericSetting(15) / 1000d : greenChance * contribFactor)))
-                        {
-                            _bags[green] = 1;
-                            if (isBonusAppliedAndConsumed)
-                            {
-                                if (targPlayer != null)
-                                    targPlayer.SendClientMessage("Your green loot bag bonus roll has been consumed.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                                pool.BagPool_Value = 0;
-                            }
-                            if (targPlayer != null)
-                                targPlayer.SendClientMessage("You have won a green loot bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                            break;
-                        }
-                        else
-                        {
-                            if (isBonusAppliedAndConsumed)
-                                pool.BagPool_Value += (int)((player.RandomBonus - (0) + pool.BagPool_Value) * .04);
-                        }
-                    }
-                    else if (pool.Bag_Type == 0)
-                    {
-                        _bags[white] = 1;
-                        if (targPlayer != null)
-                            targPlayer.SendClientMessage("You have won a white loot bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                        pool.BagPool_Value = 0;
-                    }
-                }
-            }
-            foreach (Characters_bag_pools pool in _bagPools)
-            {
-                CharMgr.Database.SaveObject(pool);
-            }
+        //                    break;
+        //                }
+        //                else
+        //                {
+        //                    if (isBonusAppliedAndConsumed)
+        //                        pool.BagPool_Value += (int)((player.RandomBonus - (0) + pool.BagPool_Value) * .02);
+        //                }
+        //            }
+        //            else if (pool.Bag_Type == 2)
+        //            {
+        //                if ((player.RandomBonus + -malus + (isBonusAppliedAndConsumed ? pool.BagPool_Value : 0)) >= 1000 - (1000 * (WorldMgr.WorldSettingsMgr.GetGenericSetting(14) > 0 ? WorldMgr.WorldSettingsMgr.GetGenericSetting(14) / 1000d : blueChance * contribFactor)))
+        //                {
+        //                    _bags[blue] = 1;
+        //                    if (isBonusAppliedAndConsumed)
+        //                    {
+        //                        if (targPlayer != null)
+        //                        {
+        //                            targPlayer.SendClientMessage("Your blue loot bag bonus roll has been consumed.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+        //                            pool.BagPool_Value = 0;
+        //                        }
+        //                    }
+        //                    if (targPlayer != null)
+        //                        targPlayer.SendClientMessage("You have won a blue loot bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+        //                    break;
+        //                }
+        //                else
+        //                {
+        //                    if (isBonusAppliedAndConsumed)
+        //                        pool.BagPool_Value += (int)((player.RandomBonus - (0) + pool.BagPool_Value) * .03);
+        //                }
+        //            }
+        //            else if (pool.Bag_Type == 1)
+        //            {
+        //                if ((player.RandomBonus - malus + (isBonusAppliedAndConsumed ? pool.BagPool_Value : 0)) >= 1000 - (1000 * (WorldMgr.WorldSettingsMgr.GetGenericSetting(15) > 0 ? WorldMgr.WorldSettingsMgr.GetGenericSetting(15) / 1000d : greenChance * contribFactor)))
+        //                {
+        //                    _bags[green] = 1;
+        //                    if (isBonusAppliedAndConsumed)
+        //                    {
+        //                        if (targPlayer != null)
+        //                            targPlayer.SendClientMessage("Your green loot bag bonus roll has been consumed.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+        //                        pool.BagPool_Value = 0;
+        //                    }
+        //                    if (targPlayer != null)
+        //                        targPlayer.SendClientMessage("You have won a green loot bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+        //                    break;
+        //                }
+        //                else
+        //                {
+        //                    if (isBonusAppliedAndConsumed)
+        //                        pool.BagPool_Value += (int)((player.RandomBonus - (0) + pool.BagPool_Value) * .04);
+        //                }
+        //            }
+        //            else if (pool.Bag_Type == 0)
+        //            {
+        //                _bags[white] = 1;
+        //                if (targPlayer != null)
+        //                    targPlayer.SendClientMessage("You have won a white loot bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+        //                pool.BagPool_Value = 0;
+        //            }
+        //        }
+        //    }
+        //    foreach (Characters_bag_pools pool in _bagPools)
+        //    {
+        //        CharMgr.Database.SaveObject(pool);
+        //    }
 
-            for (int i = 0; i < 5; ++i)
-            {
-                _availableBags[i] = _bags[i];
-            }
+        //    for (int i = 0; i < 5; ++i)
+        //    {
+        //        _availableBags[i] = _bags[i];
+        //    }
 
 
-            byte bagWon = GetWonBagType(player.OptOutType == 2);
-            if (bagWon == 0)
-            {
-                if (targPlayer != null)
-                    targPlayer.SendClientMessage("You have not contributed enough to this zone's capture, and thus have not rolled.");
-                return;
-            }
-            //Log.Success("Winner", player.PlayerName + " Realm: " + player.PlayerRealm + " Bag Type: " + bagWon.ToString() + "Roll: " + player.RandomBonus + " Contrib: " + player.BaseContribution + " Avg Contrib: " + acv + " BonusConsumed: " + player.ContributionBonus);
-            player.BagWon = bagWon;
-            _lootBags.Add(player.PlayerCharId, new GoldBag(PublicQuest.GetBag(player.BagWon), player.PlayerCareerLine, player.PlayerName));
-            PersonalScoreboard(player, bagWon);
-        }
+        //    byte bagWon = GetWonBagType(player.OptOutType == 2);
+        //    if (bagWon == 0)
+        //    {
+        //        if (targPlayer != null)
+        //            targPlayer.SendClientMessage("You have not contributed enough to this zone's capture, and thus have not rolled.");
+        //        return;
+        //    }
+        //    //Log.Success("Winner", player.PlayerName + " Realm: " + player.PlayerRealm + " Bag Type: " + bagWon.ToString() + "Roll: " + player.RandomBonus + " Contrib: " + player.BaseContribution + " Avg Contrib: " + acv + " BonusConsumed: " + player.ContributionBonus);
+        //    player.BagWon = bagWon;
+        //    _lootBags.Add(player.PlayerCharId, new GoldBag(PublicQuest.GetBag(player.BagWon), player.PlayerCareerLine, player.PlayerName));
+        //    PersonalScoreboard(player, bagWon);
+        //}
 
         private void AssignLoot(Dictionary<uint, ContributionInfo> players)
         {

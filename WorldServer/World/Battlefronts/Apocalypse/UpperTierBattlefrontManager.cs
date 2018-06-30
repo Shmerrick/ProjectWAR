@@ -56,7 +56,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     foreach (var objective in regionMgr.BattleFront.Objectives)
                     {
-                        ProgressionLogger.Debug($"{regionMgr.RegionName} {objective.Name} {objective.FlagState} {objective.State}");
+                        ProgressionLogger.Debug($"{regionMgr.RegionName} {objective.Name} {objective.State}");
                     }
                     foreach (var keep in regionMgr.BattleFront.Keeps)
                     {
@@ -90,7 +90,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     foreach (var objective in regionMgr.BattleFront.Objectives)
                     {
                         objective.LockObjective(Realms.REALMS_REALM_NEUTRAL, false);
-                        ProgressionLogger.Debug($" Locking BO to Neutral {objective.Name} {objective.FlagState} {objective.State}");
+                        ProgressionLogger.Debug($" Locking BO to Neutral {objective.Name} {objective.State} {objective.State}");
                     }
                     foreach (var keep in regionMgr.BattleFront.Keeps)
                     {

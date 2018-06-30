@@ -406,9 +406,9 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("standard",AssignStandard, null, 0, 0, "Assigns Standard Bearer Titel to the Player."),
             new GmCommandHandler("ror", RoRFeatures, null, 0, 0, "Help Files for RoR-specific features."),
             new GmCommandHandler("changename", RequestNameChange, null, 0, 1, "Requests a name change, one per account per month (string newName)"),
-            new GmCommandHandler("rvrstatus", RvRStatus, null, 0, 0, "Displays current status of RvR."),
+            
             // new GmCommandHandler("pug", PugScenario, null, 0, 0, "Displays current PUG scenario."),
-            new GmCommandHandler("sorenable", SoREnable, null, 0, 0, "Enables SoR addon."),
+            
             // Halloween event stuff
             new GmCommandHandler("spooky", Spooky, null, 0, 0, "This command will make you spooky..."),
             new GmCommandHandler("notspooky", NotSpooky, null, 0, 0, "You don't want to be spooky :(... You need to run this command upon logging on server, it do not disable spookieness if you are already spooky."),
@@ -521,7 +521,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("structure", CreateRvRObject, null, EGmLevel.SourceDev, 0, "Creates a structure."),
             new GmCommandHandler("bolsterlevel", BolsterLevel, null, EGmLevel.SourceDev, 1, "Changes max bolster level for T2 T3 and T4."),
             new GmCommandHandler("playerdrop", ChangePlayerDrop, null, EGmLevel.SourceDev, 1, "Switch that changes how medallions are generated for killed players."),
-            new GmCommandHandler("keepreward", KeepReward, null, EGmLevel.SourceDev, 1, "Switch that change rewards from taking zone. 0 - disables the 20% limit for defenders. 1 - enables it."),
+            
             new GmCommandHandler("beastmaster", Beastmaster, null, EGmLevel.SourceDev, 0, "Changes your whitelion to beastmaster."),
             new GmCommandHandler("setpet", SetPet, null, EGmLevel.SourceDev, 1, "Changes your pet model to number provided.")
 #endregion

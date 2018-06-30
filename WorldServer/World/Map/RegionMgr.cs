@@ -38,7 +38,7 @@ namespace WorldServer
         private readonly Thread _updater;
         private bool _running = true;
         public List<Zone_Info> ZonesInfo;
-        public IBattleFront Bttlfront;
+        
         public ApocBattleFront BattleFront;
         public Scenario Scenario;
         public string RegionName;
@@ -445,7 +445,7 @@ namespace WorldServer
 
                     if (obj is Player)
                         ((Player)obj).SendClientMessage(e.GetType().Name + " was thrown from " + e.TargetSite?.Name + ".");
-                    else if (obj is IBattleFrontFlag)
+                    else if (obj is IApocBattleFront)
                     {
                         try
                         {

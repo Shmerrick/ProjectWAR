@@ -53,12 +53,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public float DestructionVictoryPointPercentage
         {
-            get { return DestructionVictoryPoints * 100 / WorldServer.World.BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS; }
+            get { return DestructionVictoryPoints * 100 / BattleFrontConstants.LOCK_VICTORY_POINTS; }
         }
 
         public float OrderVictoryPointPercentage
         {
-            get { return OrderVictoryPoints * 100 / WorldServer.World.BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS; }
+            get { return OrderVictoryPoints * 100 / BattleFrontConstants.LOCK_VICTORY_POINTS; }
         }
 
         public override string ToString()

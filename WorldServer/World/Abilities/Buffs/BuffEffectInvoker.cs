@@ -27,6 +27,7 @@ using WorldServer.World.BattleFronts;
 using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer
 {
@@ -1306,7 +1307,7 @@ namespace WorldServer
                 Creature weapon = (Creature)hostBuff.OptionalObject;
                 Siege siege = weapon as Siege;
 
-                IBattleFront front = weapon.Region?.Bttlfront;
+                ApocBattleFront front = weapon.Region?.BattleFront;
 
                 if (front == null)
                     return;
@@ -3124,10 +3125,10 @@ namespace WorldServer
 
                     List<Player> nearby = player.WorldGroup.GetPlayersCloseTo(player, 50);
 
-                    player.Region.Bttlfront.AddContribution(player, 5);
+                    player.Region.BattleFront.AddContribution(player, 5);
 
                     foreach (Player member in nearby)
-                        player.Region.Bttlfront.AddContribution(member, 5);
+                        player.Region.BattleFront.AddContribution(member, 5);
 
                     cmd.EventChance -= (byte)(nearby.Count * 5);
                 }

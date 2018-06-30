@@ -1,7 +1,7 @@
 ﻿using Common.Database.World.BattleFront;
 using FrameWork;
 using SystemData;
-using static WorldServer.World.BattleFronts.BattleFrontConstants;
+using static WorldServer.World.Battlefronts.Apocalypse.BattleFrontConstants;
 
 namespace WorldServer.World.BattleFronts.Objectives
 {

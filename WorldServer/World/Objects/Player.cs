@@ -623,22 +623,22 @@ namespace WorldServer
 
                 if (Level > 15)
                 {
-                    IBattleFront front;
-                    if (Constants.DoomsdaySwitch == 2)
-                        front = null;
-                    else
-                        front = BattleFrontList.GetActiveFront(Level);
+                    // Sevetar - commented out as it contains legacy RVR calls. Kept in as it might include useful logic
+                    //if (Constants.DoomsdaySwitch == 2)
+                    //    front = null;
+                    //else
+                    //    front = BattleFrontList.GetActiveFront(Level);
 
-                    if (front != null)
-                    {
-                        SendClientMessage("Your realm's supply lines are directed towards " + front.ActiveZoneName + ".", ChatLogFilters.CHATLOGFILTERS_RVR);
-                        SendClientMessage("You may still battle in other zones, but no supplies will be delivered there.", ChatLogFilters.CHATLOGFILTERS_RVR);
-                    }
-                    else
-                    {
-                        //SendClientMessage("Your realm's supply lines are not directed anywhere at the moment.", ChatLogFilters.CHATLOGFILTERS_RVR);
-                        //SendClientMessage("Take control of Battlefield Objectives in a pairing to direct them there.", ChatLogFilters.CHATLOGFILTERS_RVR);
-                    }
+                    //if (front != null)
+                    //{
+                    //    SendClientMessage("Your realm's supply lines are directed towards " + front.ActiveZoneName + ".", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    //    SendClientMessage("You may still battle in other zones, but no supplies will be delivered there.", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    //}
+                    //else
+                    //{
+                    //    //SendClientMessage("Your realm's supply lines are not directed anywhere at the moment.", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    //    //SendClientMessage("Take control of Battlefield Objectives in a pairing to direct them there.", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    //}
                 }
             }
 
@@ -3157,7 +3157,7 @@ namespace WorldServer
         public void AddKillRenown(uint renown, Player killer, Player victim, int participants = 1)
         {
 
-            ProximityBattleFront bf = null;
+            
             int aaoMult = 0;
             Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
             if (Region != null && Region.BattleFront != null)
@@ -3959,12 +3959,12 @@ namespace WorldServer
                 totalInfluence = (uint)(100 * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
             }
 
-            // 500% bonus for killing resource carrier
-            if (HeldObject is ResourceBox)
-            {
-                totalXP *= 5;
-                totalRenown *= 5;
-            }
+            //// 500% bonus for killing resource carrier
+            //if (HeldObject is ResourceBox)
+            //{
+            //    totalXP *= 5;
+            //    totalRenown *= 5;
+            //}
 
             RewardLogger.Debug($"Total XP : {totalXP} RP : {totalRenown} INF : {totalInfluence}");
 
@@ -4037,7 +4037,7 @@ namespace WorldServer
                             if (influenceId != 0)
                                 curPlayer.AddInfluence(influenceId, influenceShare);
 
-                            if (closestFlag != null && closestFlag.FlagState != ObjectiveFlags.ZoneLocked)
+                            if (closestFlag != null && closestFlag.State != StateFlags.ZoneLocked)
                             {
                                 RewardLogger.Trace($"Delayed Rewards RP: {renownShare} BonusMod : {bonusMod} Killer : {killer} This : {this.Name}");
                                 closestFlag.RewardManager.AddDelayedRewardsFrom(curPlayer, this, (uint)(xpShare * transferenceFactor), (uint)(renownShare * transferenceFactor));

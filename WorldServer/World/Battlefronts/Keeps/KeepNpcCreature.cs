@@ -5,6 +5,7 @@ using FrameWork;
 using GameData;
 using WorldServer.World.BattleFronts;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer.World.BattleFronts.Keeps
 {

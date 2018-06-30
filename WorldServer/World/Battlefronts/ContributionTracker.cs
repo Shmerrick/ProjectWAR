@@ -6,9 +6,10 @@ using System.Collections.Generic;
 using SystemData;
 using NLog;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.Objects.PublicQuests;
-using static WorldServer.World.BattleFronts.BattleFrontConstants;
+
 
 namespace WorldServer.World.BattleFronts
 {
@@ -288,7 +289,7 @@ namespace WorldServer.World.BattleFronts
             uint winMaxContrib = GetMaxContribution(winnerContrib);
             //Log.Info(zoneName, $"Winner contributor count : {winnerContrib.Count} Max contribution: {winMaxContrib}");
 
-            uint winRP = (uint)(winMaxContrib * 1.5 * winnerRewardScale * LOCK_REWARD_SCALER);
+            uint winRP = (uint)(winMaxContrib * 1.5 * winnerRewardScale * BattleFrontConstants.LOCK_REWARD_SCALER);
             uint winXP = winRP * 4;
             ushort winInf = (ushort)(winRP * 0.25f);
             ushort winMedallionCount = (ushort)Math.Min(20, winRP / (450 * tier));

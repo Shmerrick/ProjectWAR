@@ -1896,7 +1896,7 @@ namespace WorldServer
                     if (influenceId != 0)
                         curPlayer.AddInfluence(influenceId, (ushort)(influence / members.Count));
 
-                    if (closestFlag != null && closestFlag.FlagState != ObjectiveFlags.ZoneLocked)
+                    if (closestFlag != null && closestFlag.State != StateFlags.ZoneLocked)
                     {
                         if (playerVictim != null)
                             closestFlag.RewardManager.AddDelayedRewardsFrom(curPlayer, playerVictim, (uint)(xpShare * transferenceFactor), (uint)(renownShare * transferenceFactor));

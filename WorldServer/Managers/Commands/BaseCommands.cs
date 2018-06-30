@@ -2187,63 +2187,6 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        public static bool RvRStatus(Player plr, ref List<string> values)
-        {
-            string s = "";
-            for (int i = 0; i < 4; i++)
-            {
-                if (i == 0)
-                {
-                    foreach (World.BattleFronts.RoRBattleFront b in World.BattleFronts.BattleFrontList.BattleFronts[i])
-                    {
-                        if (!b.PairingLocked)
-                        {
-                            s = "T1 " + b.ActiveZoneName + " is open.";
-                            plr.SendClientMessage(s, SystemData.ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                        }
-                    }
-                }
-                else
-                {
-                    if (Constants.DoomsdaySwitch == 2)
-                    {
-                        foreach (ProximityBattleFront b in World.BattleFronts.BattleFrontList.BattleFronts[i])
-                        {
-                            if (!b.PairingLocked)
-                            {
-                                s = "T" + b.Region.GetTier() + " " + b.ActiveZoneName + " is open.";
-                                if (b.ActiveSupplyLine == 1)
-                                {
-                                    s = s + " Supply lines are active in this zone.\n";
-                                    s = s + "Order Realm Rank: " + b.RealmRank[0].ToString();
-                                    s = s + " Destruction Realm Rank: " + b.RealmRank[1].ToString();
-                                }
-                                if (b.PairingDrawTime != 0)
-                                {
-                                    s = s + "\nThis zone will draw in " + ((int)((b.PairingDrawTime - TCPManager.GetTimeStamp()) / 60)).ToString() + " minutes.";
-                                }
-                                plr.SendClientMessage(s, SystemData.ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (BattleFront b in World.BattleFronts.BattleFrontList.BattleFronts[i])
-                        {
-                            if (!b.PairingLocked)
-                            {
-                                s = "T" + b.Region.GetTier() + " " + b.ActiveZoneName + " is open.";
-                                if (b.ActiveSupplyLine == 1)
-                                    s = s + " Supply lines are active in this zone.";
-                                plr.SendClientMessage(s, SystemData.ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return true;
-        }
 /*
 #if DEBUG
         public static bool GearTester(Player plr, ref List<string> values)
@@ -2451,29 +2394,29 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        public static bool SoREnable(Player plr, ref List<string> values)
-        {
-            plr.SoREnabled = true;
-            for (int i = 0; i < 4; i++)
-            {
-                if (i == 0)
-                {
-                    foreach (RoRBattleFront b in BattleFrontList.BattleFronts[i])
-                        b.UpdateStateOfTheRealm();
-                }
-                else
-                {
-                    if (Constants.DoomsdaySwitch == 2)
-                        foreach (ProximityBattleFront b in BattleFrontList.BattleFronts[i])
-                            b.UpdateStateOfTheRealm();
-                    else
-                        foreach (BattleFront b in BattleFrontList.BattleFronts[i])
-                            b.UpdateStateOfTheRealm();
-                }
-            }
-            plr.SendClientMessage("State of the Realm Addon Enabled: 1.0.3", SystemData.ChatLogFilters.CHATLOGFILTERS_SAY);
-            return true;
-        }
+        //public static bool SoREnable(Player plr, ref List<string> values)
+        //{
+        //    plr.SoREnabled = true;
+        //    for (int i = 0; i < 4; i++)
+        //    {
+        //        if (i == 0)
+        //        {
+        //            foreach (RoRBattleFront b in BattleFrontList.BattleFronts[i])
+        //                b.UpdateStateOfTheRealm();
+        //        }
+        //        else
+        //        {
+        //            if (Constants.DoomsdaySwitch == 2)
+        //                foreach (ProximityBattleFront b in BattleFrontList.BattleFronts[i])
+        //                    b.UpdateStateOfTheRealm();
+        //            else
+        //                foreach (BattleFront b in BattleFrontList.BattleFronts[i])
+        //                    b.UpdateStateOfTheRealm();
+        //        }
+        //    }
+        //    plr.SendClientMessage("State of the Realm Addon Enabled: 1.0.3", SystemData.ChatLogFilters.CHATLOGFILTERS_SAY);
+        //    return true;
+        //}
 
         /*
         public static bool PugScenario(Player plr, ref List<string> values)
@@ -2538,36 +2481,7 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        public static bool KeepReward(Player plr, ref List<string> values)
-        {
-            if (values.Count < 1)
-            {
-                plr.SendClientMessage("KEEPREWARD: No value provided.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-                return true;
-            }
-            int value = GetInt(ref values);
-            if (value == 0 || value == 1)
-            {
-                WorldMgr.WorldSettingsMgr.SetPopRewardSwitchSetting(value);
-                if (value == 1)
-                {
-                    plr.SendClientMessage("Low pop keep rewards limits are enabled.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
-                }
-                else
-                {
-                    plr.SendClientMessage("Low pop keep rewards limits are disabled.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
-                    if (Constants.DoomsdaySwitch == 2)
-                        ((ProximityBattleFront)plr.Region.Bttlfront).DefenderPopTooSmall = false;
-                }
-
-
-            }
-            else
-                plr.SendClientMessage("KEEPREWARD: Incorrect value, 0 - disabled, 1 - enabled", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-
-            return true;
-        }
-
+        
         public static bool RequestNameChange(Player plr, ref List<string> values)
         {
             if (values.Count < 1)

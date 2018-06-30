@@ -1,5 +1,6 @@
 ﻿using GameData;
 using System.Threading;
+using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.BattleFronts;
 
 namespace WorldServer
@@ -10,13 +11,13 @@ namespace WorldServer
     /// </summary>
     public class RationBuff : NewBuff
     {
-        private IBattleFront _BattleFront;
+        private ApocBattleFront _BattleFront;
         private float _rationDebuffFactor;
         public float PendingDebuffFactor;
 
         public override void StartBuff()
         {
-            _BattleFront = Target.Region?.Bttlfront;
+            _BattleFront = Target.Region?.BattleFront;
 
             if (_BattleFront == null)
             {
@@ -24,13 +25,13 @@ namespace WorldServer
                 return;
             }
 
-            _rationDebuffFactor = _BattleFront.GetRationFactor(Target);
+            //_rationDebuffFactor = _BattleFront.GetRationFactor(Target);
 
-            if (_rationDebuffFactor == 1f)
-            {
-                BuffHasExpired = true;
-                return;
-            }
+            //if (_rationDebuffFactor == 1f)
+            //{
+            //    BuffHasExpired = true;
+            //    return;
+            //}
 
             AddBuffParameter(1, -1);
 

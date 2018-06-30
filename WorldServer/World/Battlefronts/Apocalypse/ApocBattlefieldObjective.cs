@@ -105,8 +105,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         /// <summary> This marks BO flags that are created inside ruins</summary>
         public bool Ruin = false;
-        private QuadrantHistoryTracker _quadrantHistoryTracker;
-
 
         public ApocCommunications CommsEngine { get; set; }
         public ProximityEngine ProximityEngine { get; set; }
@@ -127,9 +125,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
          * HELPER Methods
          */
         internal bool HasThreateningPlayer => _hasThreateningPlayer;
-
-        public ObjectiveFlags FlagState // TODO clean up
-            => (ObjectiveFlags)State;
 
         #endregion
 
@@ -267,8 +262,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public bool FlagActive()
         {
-            return FlagState != ObjectiveFlags.Locked && FlagState != ObjectiveFlags.ZoneLocked &&
-                   OwningRealm != Realms.REALMS_REALM_NEUTRAL;
+            return this.State != StateFlags.ZoneLocked && this.State != StateFlags.Locked && OwningRealm != Realms.REALMS_REALM_NEUTRAL;
         }
 
         public bool CheckKillValid(Player player)
@@ -347,7 +341,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
 
                     if (Ruin)
-                        foreach (var keep in Region.Bttlfront.Keeps)
+                        foreach (var keep in Region.BattleFront.Keeps)
                             if (Id == keep.Info.KeepId)
                             {
                                 keep.Realm = OwningRealm;
@@ -599,15 +593,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var owningRealm = OwningRealm;
             var assaultingRealm = AssaultingRealm;
 
-            if (Tier == 4)
-            {
-                var prFrnt = (ProximityProgressingBattleFront)Region.Bttlfront;
-                if (prFrnt != null && ZoneId != prFrnt.Zones[prFrnt._BattleFrontStatus.OpenZoneIndex].ZoneId)
-                {
-                    owningRealm = OwningRealm;
-                    assaultingRealm = OwningRealm;
-                }
-            }
+            //if (Tier == 4)
+            //{
+            //    var prFrnt = (ProximityProgressingBattleFront)Region.Bttlfront;
+            //    if (prFrnt != null && ZoneId != prFrnt.Zones[prFrnt._BattleFrontStatus.OpenZoneIndex].ZoneId)
+            //    {
+            //        owningRealm = OwningRealm;
+            //        assaultingRealm = OwningRealm;
+            //    }
+            //}
 
             // Log.Info("Name", ID.ToString());
             // Log.Info("OwningRealm", Enum.GetName(typeof(Realms), owningRealm));
@@ -785,8 +779,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <returns>Bit flags representation</returns>
         private byte GetStateFlags()
         {
-            if (FlagState == ObjectiveFlags.ZoneLocked)
-                return (byte)ObjectiveFlags.Locked;
+            if (State == StateFlags.ZoneLocked)
+                return (byte)StateFlags.Locked;
 
             var flagState = (byte)State;
 
@@ -1024,22 +1018,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             AccumulatedKills = 0;
         }
 
-        #region Delegates
-        /// <summary>
-        /// Advances the internal history tables of this objective's quadrant tracker.
-        /// </summary>
-        /// <param name="orderCount">Total number of orders in the BattleFront lake</param>
-        /// <param name="destroCount">Total number of orders in the BattleFront lake</param>
-        public void AdvancePopHistory(int orderCount, int destroCount)
-            => _quadrantHistoryTracker.AdvancePopHistory(orderCount, destroCount);
-
-        /// <summary>
-        /// Registers a player as around the objective.
-        /// </summary>
-        /// <param name="player">Player around, not null</param>
-        public void AddPlayerInQuadrant(Player player)
-            => _quadrantHistoryTracker.AddPlayerInQuadrant(player);
-        #endregion
 
 
 

@@ -575,12 +575,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
 
             // Victory points update
-            VictoryPointProgress.OrderVictoryPoints = Math.Min(BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS, orderVictoryPoints);
-            VictoryPointProgress.DestructionVictoryPoints = Math.Min(BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS, destroVictoryPoints);
+            VictoryPointProgress.OrderVictoryPoints = Math.Min(BattleFrontConstants.LOCK_VICTORY_POINTS, orderVictoryPoints);
+            VictoryPointProgress.DestructionVictoryPoints = Math.Min(BattleFrontConstants.LOCK_VICTORY_POINTS, destroVictoryPoints);
             ///
             /// Check to Lock and Advance the Battlefront
             /// 
-            if (VictoryPointProgress.OrderVictoryPoints >= BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS)
+            if (VictoryPointProgress.OrderVictoryPoints >= BattleFrontConstants.LOCK_VICTORY_POINTS)
             {
                 BattleFrontManager.LockActiveBattleFront(Realms.REALMS_REALM_ORDER);
                 // Select the next Progression
@@ -597,7 +597,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             }
             else if (VictoryPointProgress.DestructionVictoryPoints >=
-                     BattleFronts.BattleFrontConstants.LOCK_VICTORY_POINTS)
+                     BattleFrontConstants.LOCK_VICTORY_POINTS)
             {
                 BattleFrontManager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
                 // Select the next Progression
@@ -667,32 +667,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 
         /// <summary>
-        /// Sends campain diagnostic information to player (gm only).
-        /// </summary>
-        /// <param name="player">GM to send data to</param>
-        /// <param name="bLocalZone">True to display player's local zone, false for tier zones</param>
-        public void CampaignDiagnostic(Player player, bool bLocalZone)
-        {
-            player.SendClientMessage("***** Campaign Status : Region " + Region.RegionId + " *****", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-
-            player.SendClientMessage("The Battlefront is " + (IsBattleFrontLocked() ? "locked" : "contested."));
-
-            //foreach (var keep in Keeps)
-            //    keep.SendDiagnostic(player);
-
-            foreach (var objective in Objectives)
-                objective.SendDiagnostic(player);
-
-            if (!bLocalZone)
-            {
-                List<IBattleFront> BattleFronts = BattleFrontList.BattleFronts[Tier - 1];
-                foreach (IBattleFront BattleFront in BattleFronts)
-                    if (!ReferenceEquals(BattleFront, this))
-                        BattleFront.CampaignDiagnostic(player, true);
-            }
-        }
-
-        /// <summary>
         /// Gets a ream players contribution.
         /// </summary>
         /// <returns>Contribution infos indexed by character id</returns>
@@ -744,51 +718,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             foreach (var obj in this.Objectives)
             {
-                if (obj.FlagState != ObjectiveFlags.ZoneLocked)
+                if (obj.State != StateFlags.ZoneLocked)
                 {
-                    obj.AdvancePopHistory(orderCount, destroCount);
+                    //obj.AdvancePopHistory(orderCount, destroCount);
                     BattlefrontLogger.Debug($"AdvancePopHistory Order={orderCount} DestCount={destroCount}");
                 }
             }
         }
 
-        public float GetControlHighFor(IBattleFrontFlag currentFlag, Realms realm)
-        {
-            int count = 0, totalCount;
-
-            if (realm == Realms.REALMS_REALM_ORDER)
-            {
-                lock (_orderInLake)
-                {
-                    _syncPlayersList.AddRange(_orderInLake);
-                    totalCount = _orderInLake.Count;
-                }
-            }
-
-            else
-            {
-                lock (_destroInLake)
-                {
-                    _syncPlayersList.AddRange(_destroInLake);
-                    totalCount = _destroInLake.Count;
-                }
-            }
-
-            foreach (Player player in _syncPlayersList)
-            {
-                var flag = GetClosestFlag(player.WorldPosition, true);
-
-                if (flag != null && flag == currentFlag)
-                    ++count;
-            }
-
-            _syncPlayersList.Clear();
-
-            BattlefrontLogger.Debug($"GetControlHighFor Count={count} TotalCount={totalCount} result={(float)count / totalCount}");
-
-            return (float)count / totalCount;
-        }
-
+      
         // Higher if enemy realm's population is lower.
         public float GetLockPopulationScaler(Realms realm)
         {
@@ -818,8 +756,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 var flag = GetClosestFlag(player.WorldPosition, true);
 
-                if (flag != null && flag.FlagState != ObjectiveFlags.ZoneLocked)
-                    flag.AddPlayerInQuadrant(player);
+                //if (flag != null && flag.State != StateFlags.ZoneLocked)
+                    //flag.AddPlayerInQuadrant(player);
 
                 // Check warcamp farm
                 if (player.Zone != null)
@@ -830,8 +768,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (warcampLoc != null)
                     {
                         float range = (float)player.GetDistanceTo(warcampLoc);
-                        if (range < BattleFronts.BattleFrontConstants.WARCAMP_FARM_RANGE)
-                            player.WarcampFarmScaler = range / BattleFronts.BattleFrontConstants.WARCAMP_FARM_RANGE;
+                        if (range < BattleFrontConstants.WARCAMP_FARM_RANGE)
+                            player.WarcampFarmScaler = range / BattleFrontConstants.WARCAMP_FARM_RANGE;
                         else
                             player.WarcampFarmScaler = 1f;
                     }
@@ -849,7 +787,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 ulong curDist = flag.GetDistanceSquare(destPos);
 
-                if (bestFlag == null || (curDist < bestDist && (!inPlay || flag.FlagState != ObjectiveFlags.ZoneLocked)))
+                if (bestFlag == null || (curDist < bestDist && (!inPlay || flag.State != StateFlags.ZoneLocked)))
                 {
                     bestFlag = flag;
                     bestDist = flag.GetDistanceSquare(destPos);
@@ -899,6 +837,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
 
             return rewardMod;
+        }
+
+        public float GetArtilleryDamageScale(Realms weaponRealm)
+        {
+            return 1f;
         }
     }
 }

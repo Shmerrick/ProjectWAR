@@ -1217,7 +1217,7 @@ namespace WorldServer
         public static Dictionary<int, int> GetZonesFightLevel()
         {
             var level = new Dictionary<int, int>();
-            foreach (var region in WorldMgr._Regions.Where(e => e.Bttlfront != null).ToList())
+            foreach (var region in WorldMgr._Regions.Where(e => e.BattleFront != null).ToList())
             {
                 foreach (var zone in region.ZonesMgr.ToList())
                 {
@@ -1277,7 +1277,7 @@ namespace WorldServer
                 }
             }
 
-            foreach (var region in WorldMgr._Regions.Where(e => e.Bttlfront != null).ToList())
+            foreach (var region in WorldMgr._Regions.Where(e => e.BattleFront != null).ToList())
             {
                 foreach (var zone in region.ZonesMgr.ToList())
                 {
@@ -1366,200 +1366,6 @@ namespace WorldServer
         }
 
 
-
-        // This is used to change the fronts during campaign, DoomsDay changes below
-        public static void EvaluateT4CampaignStatus(ushort Region)
-        {
-            ProximityProgressingBattleFront DvG = (ProximityProgressingBattleFront)GetRegion(2, false).Bttlfront;
-            ProximityProgressingBattleFront EvC = (ProximityProgressingBattleFront)GetRegion(11, false).Bttlfront;
-            ProximityProgressingBattleFront HEvDE = (ProximityProgressingBattleFront)GetRegion(4, false).Bttlfront;
-            // codeword p0tat0 - changed for DoomsDay
-            /*ProgressingBattleFront DvG = (ProgressingBattleFront)GetRegion(2, false).Bttlfront;
-            ProgressingBattleFront EvC = (ProgressingBattleFront)GetRegion(11, false).Bttlfront;
-            ProgressingBattleFront HEvDE = (ProgressingBattleFront)GetRegion(4, false).Bttlfront;*/
-
-            // Evaluate if all three pairings are locked.
-            if (DvG.PairingLocked && EvC.PairingLocked && HEvDE.PairingLocked)
-            {
-                Log.Debug("WorldMgr.EvaluateT4CampaignStatus", "*** ALL THREE PAIRINGS HAVE BEEN LOCKED ***");
-
-                long _pairingLockTime = (30 * 60 * 1000);
-
-#if (DEBUG)
-                _pairingLockTime = (5 * 60 * 1000);
-#endif
-
-                if (Constants.DoomsdaySwitch == 0)
-                {
-                    DvG.PairingUnlockTime = TCPManager.GetTimeStampMS() + _pairingLockTime;
-                    EvC.PairingUnlockTime = TCPManager.GetTimeStampMS() + _pairingLockTime;
-                    HEvDE.PairingUnlockTime = TCPManager.GetTimeStampMS() + _pairingLockTime;
-                }
-
-                ushort zone = 0;
-
-                // If all the pairings are locked and Order owns all 3 pairings...
-                if (DvG.GetZoneOwnership(3) == 1 && EvC.GetZoneOwnership(103) == 1 && HEvDE.GetZoneOwnership(203) == 1)
-                {
-                    lock (Player._Players)
-                    {
-                        foreach (Player plr in Player._Players)
-                        {
-                            if (!plr.ValidInTier(4, false) || plr.CurrentArea == null)
-                                continue;
-
-                            zone = plr.CurrentArea.ZoneId;
-
-                            plr.SendLocalizeString("The forces of Order have beaten back their foes at every turn, cleansed their lands, and secured a time of peace! Unfortunately, they lack the resources to take the fight to the enemy's gates, and drive home their victory.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                            plr.SendLocalizeString("The forces of Order have beaten back their foes at every turn, cleansed their lands, and secured a time of peace! Unfortunately, they lack the resources to take the fight to the enemy's gates, and drive home their victory.", DvG.GetZoneOwnership(3) == (int)Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE, Localized_text.CHAT_TAG_DEFAULT);
-
-                            if (plr.Realm == Realms.REALMS_REALM_ORDER && plr.CbtInterface.IsPvp && plr.CurrentArea.IsRvR && (zone == 3 || zone == 103 || zone == 203))
-                                plr.ItmInterface.CreateItem(13000250, 1);
-
-                        }
-                    }
-                }
-                // If all the pairings are locked and Destro owns all 3 pairings...
-                else if (DvG.GetZoneOwnership(9) == 2 && EvC.GetZoneOwnership(109) == 2 && HEvDE.GetZoneOwnership(209) == 2)
-                {
-                    lock (Player._Players)
-                    {
-                        foreach (Player plr in Player._Players)
-                        {
-                            if (!plr.ValidInTier(4, false) || plr.CurrentArea == null)
-                                continue;
-
-                            zone = plr.CurrentArea.ZoneId;
-
-                            plr.SendLocalizeString("The forces of Destruction have slaughtered, pillaged and razed a path into the very heartlands of their foes! But their infighting and the spoils of war slow them, and they lack the cohesion to subjugate their hated foes further.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                            plr.SendLocalizeString("The forces of Destruction have slaughtered, pillaged and razed a path into the very heartlands of their foes! But their infighting and the spoils of war slow them, and they lack the cohesion to subjugate their hated foes further.", DvG.GetZoneOwnership(3) == (int)Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE, Localized_text.CHAT_TAG_DEFAULT);
-
-                            if (plr.Realm == Realms.REALMS_REALM_DESTRUCTION && plr.CbtInterface.IsPvp && plr.CurrentArea.IsRvR && (zone == 9 || zone == 109 || zone == 209))
-                                plr.ItmInterface.CreateItem(13000249, 1);
-
-                        }
-                    }
-                }
-                // If all the pairings are just locked
-                else
-                {
-                    lock (Player._Players)
-                    {
-                        foreach (Player plr in Player._Players)
-                        {
-                            if (!plr.ValidInTier(4, false) || plr.CurrentArea == null)
-                                continue;
-
-                            zone = plr.CurrentArea.ZoneId;
-
-                            plr.SendLocalizeString("The forces of Order and Destruction have traded blows all the way to the gates of their foes! But their supply lines are exposed, and the enemy threatens their back lines. Both are forced to abandon the victories, and pull back for a time.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                            plr.SendLocalizeString("The forces of Order and Destruction have traded blows all the way to the gates of their foes! But their supply lines are exposed, and the enemy threatens their back lines. Both are forced to abandon the victories, and pull back for a time.", ChatLogFilters.CHATLOGFILTERS_C_WHITE, Localized_text.CHAT_TAG_DEFAULT);
-                        }
-                    }
-                }
-
-                if (Constants.DoomsdaySwitch > 0)
-                {
-                    if (Region == 2) //DvG
-                        Region = 12;
-                    else if (Region == 4) //HEvDE
-                        Region = 15;
-                    else if (Region == 11) //EvC
-                        Region = 14;
-
-                    Random random = new Random();
-
-                    if (Constants.DoomsdaySwitch == 2)
-                    {
-                        int newPairing = random.Next(1, 4);
-                        ushort region = 12;
-
-                        switch (newPairing)
-                        {
-                            case 1:
-                                region = 12;
-                                break;
-                            case 2:
-                                region = 14;
-                                break;
-                            case 3:
-                                region = 15;
-                                break;
-                        }
-
-                        while (region == Region)
-                        {
-                            newPairing = random.Next(1, 4);
-                            switch (newPairing)
-                            {
-                                case 1:
-                                    region = 12;
-                                    break;
-                                case 2:
-                                    region = 14;
-                                    break;
-                                case 3:
-                                    region = 15;
-                                    break;
-                            }
-                        }
-
-                        ProximityBattleFront bttlfrnt = (ProximityBattleFront)GetRegion(region, false).Bttlfront;
-                        bttlfrnt.ResetPairing();
-
-                        /*bool campaignReset = true;
-                        for (int i = 0; i < 3; i++)
-                        {
-                            foreach (IBattleFront bf in BattleFrontList.RegionManagers[i])
-                            {
-                                ProximityBattleFront front = bf as ProximityBattleFront;
-                                if (front != null && !front.BattleFrontLocked)
-                                {
-                                    campaignReset = false;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (campaignReset)
-                        {
-                            ProximityBattleFront bttlfrnt;
-
-                            bttlfrnt = (ProximityBattleFront)GetRegion(12, false).Bttlfront;
-                            bttlfrnt.ResetBattleFront();
-                            bttlfrnt.UpdateStateOfTheRealm();
-                            bttlfrnt = (ProximityBattleFront)GetRegion(14, false).Bttlfront;
-                            bttlfrnt.ResetBattleFront();
-                            bttlfrnt.UpdateStateOfTheRealm();
-                            bttlfrnt = (ProximityBattleFront)GetRegion(15, false).Bttlfront;
-                            bttlfrnt.ResetBattleFront();
-                            bttlfrnt.UpdateStateOfTheRealm();
-                        }*/
-                    }
-                    else
-                    {
-                        BattleFront bttlfrnt = (BattleFront)GetRegion(Region, false).Bttlfront;
-
-                        foreach (BattleFront b in BattleFrontList.BattleFronts[1])
-                        {
-                            if (Constants.DoomsdaySwitch == 2)
-                            {
-                                b.ResetPairing();
-                                b.UpdateStateOfTheRealm();
-                            }
-                            else
-                            {
-                                if (b != bttlfrnt)
-                                {
-                                    b.ResetPairing();
-                                    b.UpdateStateOfTheRealm();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
         #endregion
 
