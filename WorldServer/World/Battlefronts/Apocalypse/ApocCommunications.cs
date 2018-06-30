@@ -63,7 +63,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Dwarfs vs Greenskins T4
             //BuildCaptureStatus(Out, WorldMgr.GetRegion(2, false), realm);
             Out.WriteByte(0);
-            Out.WriteByte(100);
+            Out.WriteByte(0);
             Out.WriteByte(0);
             // Empire vs Chaos T1
             //BuildCaptureStatus(Out, WorldMgr.GetRegion(8, false), realm);
@@ -84,27 +84,27 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // BuildCaptureStatus(Out, WorldMgr.GetRegion(11, false), realm);
             Out.WriteByte(0);
             Out.WriteByte(0);
-            Out.WriteByte(100);
+            Out.WriteByte(0);
             // High Elves vs Dark Elves T1
             //BuildCaptureStatus(Out, WorldMgr.GetRegion(3, false), realm);
             Out.WriteByte(0);
-            Out.WriteByte(100);
+            Out.WriteByte(0);
             Out.WriteByte(0);
             // High Elves vs Dark Elves T2
             //BuildCaptureStatus(Out, WorldMgr.GetRegion(15, false), realm);
             Out.WriteByte(0);
-            Out.WriteByte(100);
+            Out.WriteByte(0);
             Out.WriteByte(0);
             // High Elves vs Dark Elves T3
             // BuildCaptureStatus(Out, WorldMgr.GetRegion(16, false), realm);
             Out.WriteByte(0);
-            Out.WriteByte(100);
+            Out.WriteByte(0);
             Out.WriteByte(0);
             // High Elves vs Dark Elves T4
             //BuildCaptureStatus(Out, WorldMgr.GetRegion(4, false), realm);
             Out.WriteByte(0);
             Out.WriteByte(100);
-            Out.WriteByte(0);
+            Out.WriteByte(100);
 
             Out.Fill(0, 83);
 
@@ -115,9 +115,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Out.WriteByte(3);   //or
 
             Out.WriteByte(3);   //emp fort
-            Out.WriteByte((byte)0);
-            Out.WriteByte((byte)1);
-            Out.WriteByte((byte)0);
+            Out.WriteByte((byte)1);   // reik
+            Out.WriteByte((byte)1);   // praag
+            Out.WriteByte((byte)0);   // cw
             Out.WriteByte(3);   //or
 
             Out.WriteByte(3);   //elf fort
@@ -131,8 +131,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             //else
             //    Out.Fill(0, 9);
-            Out.WriteByte((byte)vpp.OrderVictoryPoints);
-            Out.WriteByte((byte)vpp.DestructionVictoryPoints);
+            //Out.WriteByte((byte)vpp.OrderVictoryPoints);
+            //Out.WriteByte((byte)vpp.DestructionVictoryPoints);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
             Out.WriteByte(0);
             Out.WriteByte(0);
 
