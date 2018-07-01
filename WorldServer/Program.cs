@@ -109,7 +109,7 @@ namespace WorldServer
             Log.Texte("Battlefront Manager", "Creating Lower Tier BattleFront Manager", ConsoleColor.Cyan);
             WorldMgr.LowerTierBattleFrontManager = new LowerTierBattleFrontManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 1).ToList(), WorldMgr._Regions);
             Log.Texte("Battlefront Manager", "Resetting Progression", ConsoleColor.Cyan);
-            //WorldMgr.UpperTierBattleFrontManager.ResetBattleFrontProgression();
+            WorldMgr.UpperTierBattleFrontManager.ResetBattleFrontProgression();
             WorldMgr.LowerTierBattleFrontManager.ResetBattleFrontProgression();
             Log.Texte("Battlefront Manager", "Attaching Battlefronts to Regions", ConsoleColor.Cyan);
             // Attach Battlefronts to regions

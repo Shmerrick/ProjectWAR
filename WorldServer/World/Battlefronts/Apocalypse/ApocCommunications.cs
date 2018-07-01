@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using SystemData;
 using FrameWork;
 using GameData;
@@ -40,7 +41,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             //region.BattleFront.WriteBattleFrontStatus(Out);
         }
 
-        public void UpdateRegionCaptureStatus(Player plr, Realms realm, VictoryPointProgress vpp)
+        public void ResetProgressionCommunications(Player plr, Realms realm, VictoryPointProgress vpp, string forceT4)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
             Out.WriteHexStringBytes("0005006700CB00"); // 7
@@ -108,31 +109,47 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             Out.Fill(0, 83);
 
-            Out.WriteByte(3);   //dwarf fort
-            Out.WriteByte((byte)1);  // KV 0 contested, 1 order, 2 dest
-            Out.WriteByte((byte)0);  // TM
-            Out.WriteByte((byte)2);  // BC
-            Out.WriteByte(3);   //or
+            if (string.IsNullOrEmpty(forceT4))
+            {
 
-            Out.WriteByte(3);   //emp fort
-            Out.WriteByte((byte)1);   // reik
-            Out.WriteByte((byte)0);   // praag
-            Out.WriteByte((byte)2);   // cw
-            Out.WriteByte(3);   //or
+                Out.WriteByte(3); //dwarf fort
+                Out.WriteByte((byte) 1); // KV 0 contested, 1 order, 2 dest
+                Out.WriteByte((byte) 0); // TM
+                Out.WriteByte((byte) 2); // BC
+                Out.WriteByte(3); //fort
 
-            Out.WriteByte(3);   //elf fort
-            Out.WriteByte((byte)1);  // Eataine
-            Out.WriteByte((byte)0);  // DW
-            Out.WriteByte((byte)2);  // Caledor
-            Out.WriteByte(3);   //or
+                Out.WriteByte(3); //emp fort
+                Out.WriteByte((byte) 1); // reik
+                Out.WriteByte((byte) 0); // praag
+                Out.WriteByte((byte) 2); // cw
+                Out.WriteByte(3); //fort
 
-            //if (plr.Region?.BattleFront != null)
-            //    WriteVictoryPoints(plr.Realm, Out, vpp);
+                Out.WriteByte(3); //elf fort
+                Out.WriteByte((byte) 1); // Eataine
+                Out.WriteByte((byte) 0); // DW
+                Out.WriteByte((byte) 2); // Caledor
+                Out.WriteByte(3); //fort
+            }
+            else
+            {
+                Out.WriteByte(3); //dwarf fort
+                Out.WriteByte(Convert.ToByte(forceT4[0].ToString())); // KV 0 contested, 1 order, 2 dest
+                Out.WriteByte(Convert.ToByte(forceT4[1].ToString())); // TM
+                Out.WriteByte(Convert.ToByte(forceT4[2].ToString())); // BC
+                Out.WriteByte(3); //fort
 
-            //else
-            //    Out.Fill(0, 9);
-            //Out.WriteByte((byte)vpp.OrderVictoryPoints);
-            //Out.WriteByte((byte)vpp.DestructionVictoryPoints);
+                Out.WriteByte(3); //emp fort
+                Out.WriteByte(Convert.ToByte(forceT4[3].ToString())); // reik
+                Out.WriteByte(Convert.ToByte(forceT4[4].ToString())); // praag
+                Out.WriteByte(Convert.ToByte(forceT4[5].ToString())); // cw
+                Out.WriteByte(3); //fort
+
+                Out.WriteByte(3); //elf fort
+                Out.WriteByte(Convert.ToByte(forceT4[6].ToString())); // Eataine
+                Out.WriteByte(Convert.ToByte(forceT4[7].ToString())); // DW
+                Out.WriteByte(Convert.ToByte(forceT4[8].ToString())); // Caledor
+                Out.WriteByte(3); //fort
+            }
             Out.WriteByte(0);
             Out.WriteByte(0);
             Out.WriteByte(0);

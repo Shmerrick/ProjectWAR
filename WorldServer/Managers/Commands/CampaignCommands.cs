@@ -150,8 +150,86 @@ namespace WorldServer.Managers.Commands
             WorldMgr.UpdateRegionCaptureStatus();
         }
 
-        [CommandAttribute(EGmLevel.SourceDev, "Sends server commands to the client")]
-        public static void ResetProgressionCommunications(Player player, int destVP, int orderVP, int realm)
+        //.campaign SetRegionCaptureStatus 111111110 7    -- lock all to order except Eataine. Make it the active BF
+        [CommandAttribute(EGmLevel.EmpoweredStaff, "Force lock and advance on all progressions. Params : T4progression string, activeBattlefrontId")]
+        public static void SetRegionCaptureStatus(Player plr, string T4Progression, int activeBattleFrontId)
+        {
+            var lockingRealm = Realms.REALMS_REALM_NEUTRAL;
+            foreach (var status in WorldMgr.UpperTierBattleFrontManager.ApocBattleFrontStatuses)
+            {
+                
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[0].ToString());
+                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[1].ToString());
+                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[2].ToString());
+                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[3].ToString());
+                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[4].ToString());
+                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[5].ToString());
+                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[6].ToString());
+                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[7].ToString());
+                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[8].ToString());
+                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+            }
+
+            WorldMgr.UpperTierBattleFrontManager.ActiveBattleFront = WorldMgr.UpperTierBattleFrontManager.GetBattleFrontByBattleFrontId(activeBattleFrontId);
+            WorldMgr.UpperTierBattleFrontManager.OpenActiveBattlefront();
+
+            WorldMgr.UpdateRegionCaptureStatus();
+        }
+
+        private static Realms GetLockRealmFromT4Progression(string str)
+        {
+            switch (str)
+            {
+                case "1":
+                    return  Realms.REALMS_REALM_ORDER;
+                case "0":
+                    return Realms.REALMS_REALM_NEUTRAL;
+                case "2":
+                    return Realms.REALMS_REALM_DESTRUCTION;
+            }
+            return Realms.REALMS_REALM_NEUTRAL;
+        }
+
+        // Example : .campaign ResetProgressionCommunications 0 100 1 102102102
+        [CommandAttribute(EGmLevel.SourceDev, "Sends server commands to the client. forceT4 is a 9 char setting (1 order, 2 dest). eg 102110102")]
+        public static void ResetProgressionCommunications(Player player, int destVP, int orderVP, int realm, string forceT4)
         {
             var vpp = new VictoryPointProgress();
             vpp.DestructionVictoryPoints = destVP;
@@ -169,36 +247,13 @@ namespace WorldServer.Managers.Commands
                     lockingRealm = Realms.REALMS_REALM_NEUTRAL;
             }
             
-            new ApocCommunications().ResetProgressionCommunications(player, lockingRealm, vpp);
+            new ApocCommunications().ResetProgressionCommunications(player, lockingRealm, vpp, forceT4);
 
            // new ApocCommunications().SendCampaignStatus(player, vpp, lockingRealm);
         }
 
-        [CommandAttribute(EGmLevel.SourceDev, "Sends server commands to the client")]
-        public static void ResetProgression(Player player, int destVP, int orderVP, int realm)
-        {
-            var vpp = new VictoryPointProgress();
-            vpp.DestructionVictoryPoints = destVP;
-            vpp.OrderVictoryPoints = orderVP;
-
-            Realms lockingRealm;
-
-            if (realm == 1)
-                lockingRealm = Realms.REALMS_REALM_ORDER;
-            else
-            {
-                if (realm == 2)
-                    lockingRealm = Realms.REALMS_REALM_DESTRUCTION;
-                else
-                    lockingRealm = Realms.REALMS_REALM_NEUTRAL;
-            }
-
-            new ApocCommunications().ResetProgressionCommunications(player, lockingRealm, vpp);
-
-            // new ApocCommunications().SendCampaignStatus(player, vpp, lockingRealm);
-        }
-
-        WorldMgr.UpdateRegionCaptureStatus();
+        
+        
 
         [CommandAttribute(EGmLevel.SourceDev, "Report on the status of the t4 progression")]
         public static void ProgressionStatus(Player plr)
