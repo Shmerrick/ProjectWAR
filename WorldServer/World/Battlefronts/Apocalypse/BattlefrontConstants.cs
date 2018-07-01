@@ -91,9 +91,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static int BATTLEFRONT_ELF_DARKELF_TIER1_CHRACE = 12;
         public static int BATTLEFRONT_ELF_DARKELF_TIER2 = 11;
         public static int BATTLEFRONT_ELF_DARKELF_TIER3 = 11;
-        public static int BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE = 4;
-        public static int BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE = 5;
-        public static int BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR = 6;
+        public static int BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE =7;
+        public static int BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE = 8;
+        public static int BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR = 9;
 
         public const int ZONE_STATUS_CONTESTED = 0;
         public const int ZONE_STATUS_ORDER_LOCKED = 1;

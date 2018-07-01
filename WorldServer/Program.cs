@@ -104,29 +104,28 @@ namespace WorldServer
             }
 
             LoaderMgr.Start();
-
+            Log.Texte("Battlefront Manager", "Creating Upper Tier BattleFront Manager", ConsoleColor.Cyan);
             WorldMgr.UpperTierBattleFrontManager = new UpperTierBattleFrontManager(RVRProgressionService._RVRProgressions.Where(x=>x.Tier == 4).ToList(), WorldMgr._Regions);
-
+            Log.Texte("Battlefront Manager", "Creating Lower Tier BattleFront Manager", ConsoleColor.Cyan);
             WorldMgr.LowerTierBattleFrontManager = new LowerTierBattleFrontManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 1).ToList(), WorldMgr._Regions);
+            Log.Texte("Battlefront Manager", "Resetting Progression", ConsoleColor.Cyan);
             WorldMgr.UpperTierBattleFrontManager.ResetBattleFrontProgression();
             WorldMgr.LowerTierBattleFrontManager.ResetBattleFrontProgression();
+            Log.Texte("Battlefront Manager", "Attaching Battlefronts to Regions", ConsoleColor.Cyan);
             // Attach Battlefronts to regions
             WorldMgr.AttachBattleFronts();
 
+            Log.Texte("Battlefront Manager", "Locking Battlefronts", ConsoleColor.Cyan);
             WorldMgr.UpperTierBattleFrontManager.LockBattleFrontsAllRegions(4);
-            Log.Texte("Creating Upper Tier BattleFront Manager", WorldMgr.UpperTierBattleFrontManager.ActiveBattleFrontName, ConsoleColor.Cyan);
-
             WorldMgr.LowerTierBattleFrontManager.LockBattleFrontsAllRegions(1);
-            Log.Texte("Creating Lower Tier BattleFront Manager", WorldMgr.LowerTierBattleFrontManager.ActiveBattleFrontName, ConsoleColor.Cyan);
 
+            Log.Texte("Battlefront Manager", "Opening Active battlefronts", ConsoleColor.Cyan);
             WorldMgr.UpperTierBattleFrontManager.OpenActiveBattlefront();
             WorldMgr.LowerTierBattleFrontManager.OpenActiveBattlefront();
 
             WorldMgr.UpdateRegionCaptureStatus();
                 
-            Log.Texte("StartingPairing: ", WorldMgr.StartingPairing.ToString(), ConsoleColor.Cyan);
-
-
+            
             if (!TCPManager.Listen<TCPServer>(Rm.Port, "World"))
                 ConsoleMgr.WaitAndExit(2000);
 

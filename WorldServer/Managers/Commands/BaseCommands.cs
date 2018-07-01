@@ -2394,29 +2394,29 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        //public static bool SoREnable(Player plr, ref List<string> values)
-        //{
-        //    plr.SoREnabled = true;
-        //    for (int i = 0; i < 4; i++)
-        //    {
-        //        if (i == 0)
-        //        {
-        //            foreach (RoRBattleFront b in BattleFrontList.BattleFronts[i])
-        //                b.UpdateStateOfTheRealm();
-        //        }
-        //        else
-        //        {
-        //            if (Constants.DoomsdaySwitch == 2)
-        //                foreach (ProximityBattleFront b in BattleFrontList.BattleFronts[i])
-        //                    b.UpdateStateOfTheRealm();
-        //            else
-        //                foreach (BattleFront b in BattleFrontList.BattleFronts[i])
-        //                    b.UpdateStateOfTheRealm();
-        //        }
-        //    }
-        //    plr.SendClientMessage("State of the Realm Addon Enabled: 1.0.3", SystemData.ChatLogFilters.CHATLOGFILTERS_SAY);
-        //    return true;
-        //}
+        public static bool SoREnable(Player plr, ref List<string> values)
+        {
+            plr.SoREnabled = true;
+            for (int i = 0; i < 4; i++)
+            {
+                //if (i == 0)
+                //{
+                //    foreach (RoRBattleFront b in BattleFrontList.BattleFronts[i])
+                //        b.UpdateStateOfTheRealm();
+                //}
+                //else
+                //{
+                //    if (Constants.DoomsdaySwitch == 2)
+                //        foreach (ProximityBattleFront b in BattleFrontList.BattleFronts[i])
+                //            b.UpdateStateOfTheRealm();
+                //    else
+                //        foreach (BattleFront b in BattleFrontList.BattleFronts[i])
+                //            b.UpdateStateOfTheRealm();
+                //}
+            }
+            plr.SendClientMessage("State of the Realm Addon Enabled: 1.0.3", SystemData.ChatLogFilters.CHATLOGFILTERS_SAY);
+            return true;
+        }
 
         /*
         public static bool PugScenario(Player plr, ref List<string> values)

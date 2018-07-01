@@ -1522,21 +1522,21 @@ namespace WorldServer
             Out.Fill(0, 83);
 
             Out.WriteByte(3);   //dwarf fort
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
+            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
             Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN).LockStatus);
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY).LockStatus);
+            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus);
             Out.WriteByte(3);   //or
 
             Out.WriteByte(3);   //emp fort
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
+            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
             Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG).LockStatus);
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus);
+            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus);
             Out.WriteByte(3);   //or
 
             Out.WriteByte(3);   //elf fort
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
+            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
             Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus);
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus);
+            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus);
             Out.WriteByte(3);   //or
 
             //For debugging purposes

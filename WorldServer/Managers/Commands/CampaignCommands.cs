@@ -168,6 +168,23 @@ namespace WorldServer.Managers.Commands
            // new ApocCommunications().SendCampaignStatus(player, vpp, lockingRealm);
         }
 
+        [CommandAttribute(EGmLevel.SourceDev, "Report on the status of the t4 progression")]
+        public static void ProgressionStatus(Player plr)
+        {
+            var lockStr = $"BC :{WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus.ToString()}";
+            lockStr += $"TM :{WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN).LockStatus.ToString()}";
+            lockStr += $"KV :{WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY).LockStatus.ToString()}";
+            lockStr += $"CW :{WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus.ToString()}";
+            lockStr += $"PR :{WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG).LockStatus.ToString()}";
+            lockStr += $"RK :{WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus.ToString()}";
+            lockStr += $"CA :{WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus.ToString()}";
+            lockStr += $"DW :{WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus.ToString()}";
+            lockStr += $"EA :{ WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus.ToString()}";
+
+            plr.SendClientMessage($"Porgression Status : {lockStr}");
+        }
+
+
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks a battle objective for the given realm (1 - Order, 2 - Dest).")]
         public static void LockObj(Player plr, Realms realm, int values)
         {

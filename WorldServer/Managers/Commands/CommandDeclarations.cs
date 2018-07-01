@@ -406,7 +406,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("standard",AssignStandard, null, 0, 0, "Assigns Standard Bearer Titel to the Player."),
             new GmCommandHandler("ror", RoRFeatures, null, 0, 0, "Help Files for RoR-specific features."),
             new GmCommandHandler("changename", RequestNameChange, null, 0, 1, "Requests a name change, one per account per month (string newName)"),
-            
+            new GmCommandHandler("sorenable", SoREnable, null, 0, 0, "Enables SoR addon."), 
             // new GmCommandHandler("pug", PugScenario, null, 0, 0, "Displays current PUG scenario."),
             
             // Halloween event stuff
