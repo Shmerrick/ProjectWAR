@@ -1458,8 +1458,9 @@ namespace WorldServer
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
             Out.WriteHexStringBytes("0005006700CB00"); // 7
-                                                       // Dwarfs vs Greenskins T1
-
+    
+            
+            // Dwarfs vs Greenskins T1
             Out.WriteByte(0);    // 0 and ignored
             Out.WriteByte((byte)LowerTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER1_EKRUND).OrderVictoryPointPercentage);  // % Order lock
             Out.WriteByte((byte)LowerTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER1_EKRUND).DestructionVictoryPointPercentage);    // % Dest lock

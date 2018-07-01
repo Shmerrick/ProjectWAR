@@ -165,7 +165,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             foreach (var flag in activeRegion.BattleFront.Objectives)
             {
-                if (this.ActiveBattleFront.ZoneId == flag.ZoneId)
+                if (this.ActiveBattleFront.RegionId == flag.RegionId)
                     flag.UnlockObjective();
             }
             return this.ActiveBattleFront;
