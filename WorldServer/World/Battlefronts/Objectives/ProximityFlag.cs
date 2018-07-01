@@ -2061,7 +2061,7 @@ namespace WorldServer.World.Battlefronts.Objectives
             if (_tier > 1)
             {
                 //medallionInfo = ItemService.GetItem_Info((uint)(208399 + (_tier - 1)));
-                medallionInfo = ItemService.GetItem_Info((uint)(208402));
+                medallionInfo = ItemService.GetItem_Info((uint)(208470));
 
                 try
                 {

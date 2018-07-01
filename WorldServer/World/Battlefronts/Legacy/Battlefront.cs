@@ -1590,10 +1590,10 @@ namespace WorldServer
 
 #endregion
 
-            Item_Info medallionInfo = ItemService.GetItem_Info((uint)(208399 + Tier));
-            Item_Info T3Token = ItemService.GetItem_Info(2165);
-            Item_Info T4Token = ItemService.GetItem_Info(2166);
-            Item_Info conqMedallion = ItemService.GetItem_Info(1698);
+            Item_Info medallionInfo = ItemService.GetItem_Info((uint)(208470 + Tier));
+            Item_Info T3Token = ItemService.GetItem_Info(208470);
+            Item_Info T4Token = ItemService.GetItem_Info(208470);
+            Item_Info conqMedallion = ItemService.GetItem_Info(208470);
 
             ushort tokenCount = 2;
 
