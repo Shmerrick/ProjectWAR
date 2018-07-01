@@ -416,7 +416,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             BattlefrontLogger.Info($"Locking Battlefront {this.BattleFrontName} to {realm.ToString()}...");
 
-        
+
             //this.VictoryPointProgress.Lock(realm);
 
             //LockingRealm = realm;
@@ -425,6 +425,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             //CommunicationsEngine.
 
             string message = string.Concat(Region.ZonesInfo[0].Name, " and ", Region.ZonesInfo[1].Name, " have been locked by ", (realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"), "!");
+
             BattlefrontLogger.Debug(message);
 
             

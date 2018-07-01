@@ -28,3 +28,6 @@ INSERT INTO `war_world`.`rvr_progression` (`tier`, `PairingId`, `Description`, `
 INSERT INTO `war_world`.`rvr_progression` (`tier`, `PairingId`, `Description`, `BattleFrontId`, `OrderWinProgression`, `DestWinProgression`, `OrderWinReward`, `DestWinReward`, `OrderLossReward`, `DestLossReward`, `RegionId`, `ZoneId`, `DefaultRealmLock`, `ResetProgressionOnEntry`) VALUES ('1', '2', 'Norsca / Nordland', '10', '11', '11', '0', '0', '0', '0', '8', '106', '0', '1');
 INSERT INTO `war_world`.`rvr_progression` (`tier`, `PairingId`, `Description`, `BattleFrontId`, `OrderWinProgression`, `DestWinProgression`, `OrderWinReward`, `DestWinReward`, `OrderLossReward`, `DestLossReward`, `RegionId`, `ZoneId`, `DefaultRealmLock`) VALUES ('1', '1', 'Ekrund / Mt Bloodhorn', '11', '12', '12', '0', '0', '0', '0', '1', '6', '2');
 INSERT INTO `war_world`.`rvr_progression` (`tier`, `PairingId`, `Description`, `BattleFrontId`, `OrderWinProgression`, `DestWinProgression`, `OrderWinReward`, `DestWinReward`, `OrderLossReward`, `DestLossReward`, `RegionId`, `ZoneId`, `DefaultRealmLock`) VALUES ('1', '3', 'Chrace / Blighted Isle', '12', '10', '10', '0', '0', '0', '0', '3', '206', '1');
+
+UPDATE `war_world`.`rvr_progression` SET `OrderWinProgression`='9' WHERE `BattleFrontId`='9';
+UPDATE `war_world`.`rvr_progression` SET `DestWinProgression`='7' WHERE `BattleFrontId`='8';
