@@ -783,7 +783,8 @@ namespace WorldServer
             GetRegion(4, true, Constants.RegionName[4]);  // he/de
             GetRegion(11, true, Constants.RegionName[11]); // em/ch
 
-            GetRegion(9, true, Constants.RegionName[9]); // lotd
+            // removed for now, as this will also trigger an attempt to load BOs for the region.
+            //GetRegion(9, true, Constants.RegionName[9]); // lotd
             Log.Success("Regions", "Preloaded pairing regions.");
         }
 
@@ -1421,6 +1422,7 @@ namespace WorldServer
             _logger.Info($"Attaching Battlefronts to Regions");
             foreach (var regionMgr in _Regions)
             {
+                _logger.Info($"Connecting region : {regionMgr.RegionId}");
                 var objectiveList = LoadObjectives(regionMgr);
 
                 switch (regionMgr.RegionId)
@@ -1440,8 +1442,13 @@ namespace WorldServer
         public static List<ApocBattlefieldObjective> LoadObjectives(RegionMgr regionMgr)
         {
             List<BattleFront_Objective> objectives = BattleFrontService.GetBattleFrontObjectives(regionMgr.RegionId);
+            if (objectives == null)
+            {
+                _logger.Warn($"Region = {regionMgr.RegionId} has no objectives");
+                return null;
+            }
             var resultList = new List<ApocBattlefieldObjective>();
-
+            _logger.Debug($"Region = {regionMgr.RegionId} ObjectiveCount = {objectives.Count}");
             foreach (BattleFront_Objective obj in objectives)
             {
                 ApocBattlefieldObjective flag = new ApocBattlefieldObjective(obj, regionMgr.GetTier());

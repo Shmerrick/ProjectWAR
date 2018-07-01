@@ -30,3 +30,24 @@ battlefront_objects
 battlefront_objectives
 
 The .GO SPAWN object 'Battlefield Objective' should not be confused with code/DB driven battlefronts. This object is only a nuetral flag that has been named  'Battlefield Objective'.
+
+### T1 and T4 Progression - July 2018 ###
+
+The T1 and T4 Battlefront progressions have been re-written.
+
+T1 is designed to rotate from Emp -> Dwarf -> Elf. This should look and act in a similar fashion to the current T1 flow.
+
+T4 is based upon starting at Praag. Locking that zone will take you to CW or Reik, depending upon the winner of Praag. If that same side locks CW or Reik, the pairing itself will lock and the campaign will move to Dwarf (TM). If the other realm locks, they will return to Praag. 
+
+Simple rewards have been added (mail items), this section is not complete.
+
+The process will repeat through Dwarf and into Elf, until one side locks all 9 zones and then the system will reset and you will be back at Praag. 
+
+Commands of interest : 
+.campaign status (gives you the status of the T4 region). 
+.campaign lockpairing <#> <#> (locks the current pairing. # - [1 Order, 2 Dest], # - [0 - no reward, 1 - reward])
+.campaign advancepairing <#> <#> (moves the pairing # - [1 Order, 2 Dest], # - tier (1 or 4))
+.campaign UpdateRegionCaptureStatus (forces a refresh of the progression [ie the client's map])
+.campaign SetRegionCaptureStatus <#> <#> (this one is complex # - forces the region progression to change to the first parameter. This is defined in <BC><TM><KV> where 1 is lock to Order, 2 is lock to Dest, 0 is unlocked. So 111111110 is lock all to order except Caledor. # - Open and make active the region Id defined by the number). An example is .campaign SetRegionCaptureStatus 111111110 7
+
+If it all goes haywire, reset by .campaign SetRegionCaptureStatus 102102102 2  -- this will reset you to Praag.

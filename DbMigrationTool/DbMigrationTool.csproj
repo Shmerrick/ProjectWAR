@@ -85,6 +85,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="db-scripts\T4Progression.sql" />
     <Content Include="db-scripts\V1_0_0_10__Raychangelog.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
