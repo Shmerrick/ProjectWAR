@@ -1556,6 +1556,11 @@ namespace WorldServer.World.BattleFronts.Keeps
                 Realm = (Realms) Info.Realm;
                 KeepStatus = KeepStatus.KEEPSTATUS_LOCKED;
             }
+            else
+            {
+                Realm = lockingRealm;
+                KeepStatus = KeepStatus.KEEPSTATUS_LOCKED;
+            }
 
             if (KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
             {

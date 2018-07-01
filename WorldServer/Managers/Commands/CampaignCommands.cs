@@ -144,8 +144,14 @@ namespace WorldServer.Managers.Commands
             }
         }
 
+        [CommandAttribute(EGmLevel.EmpoweredStaff, "Updates the clients with current region capture status")]
+        public static void UpdateRegionCaptureStatus(Player plr)
+        {
+            WorldMgr.UpdateRegionCaptureStatus();
+        }
+
         [CommandAttribute(EGmLevel.SourceDev, "Sends server commands to the client")]
-        public static void SendComms(Player player, int destVP, int orderVP, int realm)
+        public static void ResetProgressionCommunications(Player player, int destVP, int orderVP, int realm)
         {
             var vpp = new VictoryPointProgress();
             vpp.DestructionVictoryPoints = destVP;
@@ -162,11 +168,37 @@ namespace WorldServer.Managers.Commands
                 else
                     lockingRealm = Realms.REALMS_REALM_NEUTRAL;
             }
-            WorldMgr.UpdateRegionCaptureStatus();
-            new ApocCommunications().UpdateRegionCaptureStatus(player, lockingRealm, vpp);
+            
+            new ApocCommunications().ResetProgressionCommunications(player, lockingRealm, vpp);
 
            // new ApocCommunications().SendCampaignStatus(player, vpp, lockingRealm);
         }
+
+        [CommandAttribute(EGmLevel.SourceDev, "Sends server commands to the client")]
+        public static void ResetProgression(Player player, int destVP, int orderVP, int realm)
+        {
+            var vpp = new VictoryPointProgress();
+            vpp.DestructionVictoryPoints = destVP;
+            vpp.OrderVictoryPoints = orderVP;
+
+            Realms lockingRealm;
+
+            if (realm == 1)
+                lockingRealm = Realms.REALMS_REALM_ORDER;
+            else
+            {
+                if (realm == 2)
+                    lockingRealm = Realms.REALMS_REALM_DESTRUCTION;
+                else
+                    lockingRealm = Realms.REALMS_REALM_NEUTRAL;
+            }
+
+            new ApocCommunications().ResetProgressionCommunications(player, lockingRealm, vpp);
+
+            // new ApocCommunications().SendCampaignStatus(player, vpp, lockingRealm);
+        }
+
+        WorldMgr.UpdateRegionCaptureStatus();
 
         [CommandAttribute(EGmLevel.SourceDev, "Report on the status of the t4 progression")]
         public static void ProgressionStatus(Player plr)

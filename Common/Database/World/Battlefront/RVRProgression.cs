@@ -48,6 +48,9 @@ namespace Common.Database.World.Battlefront
         [DataElement(AllowDbNull = false)]
         public int DefaultRealmLock { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public int ResetProgressionOnEntry { get; set; }
+        
     }
 
 

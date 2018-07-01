@@ -108,6 +108,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public RVRProgression OpenActiveBattlefront()
         {
+            // If this battlefront is the reset battlefront (ie Praag), reset all the progressions upon our return to it.
+            if (this.ActiveBattleFront.ResetProgressionOnEntry == 1)
+            {
+                // Reset the status list.
+                BuildApocBattleFrontStatusList(this.BattleFrontProgressions);
+                // Tells the attached players about it.
+                WorldMgr.UpdateRegionCaptureStatus();
+            }
+
+
             var activeRegion = RegionMgrs.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
             ProgressionLogger.Info($" Opening battlefront in {activeRegion.RegionName} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
 
