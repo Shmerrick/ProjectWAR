@@ -23,7 +23,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// Absolute maximum of the control gauges of the flags.
         /// Is used as a base timer in milliseconds when securing objectives.
         /// <summary>
-        public static int MAX_CONTROL_GAUGE = MAX_SECURE_PROGRESS * 600;
+        public static int MAX_CONTROL_GAUGE = MAX_SECURE_PROGRESS * 200;
 
         /// <summary>Maximum players each side taken in consideration for assaults a flag</summary>
         public static short MAX_CLOSE_PLAYERS = 6;
