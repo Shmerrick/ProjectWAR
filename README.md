@@ -45,9 +45,12 @@ The process will repeat through Dwarf and into Elf, until one side locks all 9 z
 
 Commands of interest : 
 .campaign status (gives you the status of the T4 region). 
+.campaign setvictorypoints <#> <#> (Number of victory points, and the realm to assign)
 .campaign lockpairing <#> <#> (locks the current pairing. # - [1 Order, 2 Dest], # - [0 - no reward, 1 - reward])
 .campaign advancepairing <#> <#> (moves the pairing # - [1 Order, 2 Dest], # - tier (1 or 4))
 .campaign UpdateRegionCaptureStatus (forces a refresh of the progression [ie the client's map])
 .campaign SetRegionCaptureStatus <#> <#> (this one is complex # - forces the region progression to change to the first parameter. The first parameter is a list of 9 digits, the first three representing Dwarf, the next three Empire and the final three Elf. Within each of these pairings is the region, eg <BC><TM><KV> where 1 is lock to Order, 2 is lock to Dest, 0 is unlocked. So 111111110 is lock all to order except Caledor. # - Open and make active the region Id defined by the number). An example is .campaign SetRegionCaptureStatus 111111110 7
+
+Note : Lockpairing and Advancepairing are only two steps in the 'flip' process. They should only be used by developers (ie dont use them in Production). For testing, it is better to use .campaign setvictorypoints <#> <#>, as this emulates holding BOs/keep takes equivalent to the number of VP.
 
 If it all goes haywire, reset by .campaign SetRegionCaptureStatus 102102102 2  -- this will reset you to Praag.
