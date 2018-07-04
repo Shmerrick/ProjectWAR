@@ -29,8 +29,8 @@ namespace WorldServer
         public int XpRate = 1;
         public int RenownRate = 1;
         public int InfluenceRate = 1;
-        public int RankCap = 15;
-        public int RenownCap = 30;
+        public int RankCap = 40;
+        public int RenownCap = 100;
 
         // Crossrealming
         public bool ChatBetweenRealms = true;
