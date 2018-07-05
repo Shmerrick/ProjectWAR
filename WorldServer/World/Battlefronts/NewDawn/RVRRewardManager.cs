@@ -173,11 +173,11 @@ namespace WorldServer.World.Battlefronts.NewDawn
         public void GenerateLockReward(Player plr)
         {
             //T1
-            var mailItem1 = new MailItem(208470, 5);
+            var mailItem1 = new MailItem(208470, 1);
             //T2 & T3
-            var mailItem2 = new MailItem(208470, 10);
+            var mailItem2 = new MailItem(208470, 2);
             //T4
-            var mailItem3 = new MailItem(208470, 20);
+            var mailItem3 = new MailItem(208470, 4);
             Character_mail mail = new Character_mail
             {
                 Guid = CharMgr.GenerateMailGuid(),
@@ -194,14 +194,14 @@ namespace WorldServer.World.Battlefronts.NewDawn
             // Attach the mail item to the mail.
 
             PlrLevel = plr.Level;
-            
+
             if (plr.Level <= 15)
-            { 
+            {
                 mail.Items.Add(mailItem1);
             }
 
             if (plr.Level > 15 & plr.Level <= 39)
-            { 
+            {
                 mail.Items.Add(mailItem2);
             }
 

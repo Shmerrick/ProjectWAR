@@ -29,8 +29,8 @@ namespace WorldServer
         public int XpRate = 1;
         public int RenownRate = 1;
         public int InfluenceRate = 1;
-        public int RankCap = 15;
-        public int RenownCap = 30;
+        public int RankCap = 32;
+        public int RenownCap = 32;
 
         // Crossrealming
         public bool ChatBetweenRealms = true;
@@ -43,7 +43,7 @@ namespace WorldServer
 
         // Loading
         public bool PreloadAllCharacters = true;
-        public string Motd = "Welcome to WAR: Apocalypse";
+        public string Motd = "Welcome to WAR: Apocalypse, Max Level 32, Max RR 32.";
         public string RegionOcclusionFolder = "los/";
         public string ZoneFolder = "zones/";
 
