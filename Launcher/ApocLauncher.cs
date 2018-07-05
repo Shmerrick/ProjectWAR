@@ -2,8 +2,10 @@
 using NLog;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,7 +58,8 @@ namespace Launcher
 
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-            this.lblVersion.Text = fvi.FileVersion;
+            var attrs = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
+            this.lblVersion.Text = $"{fvi.FileVersion} ({attrs.Single(x => x.Key == "GitHash").Value})";
         }
 
         private void Disconnect(object sender, FormClosedEventArgs e)

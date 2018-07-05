@@ -67,6 +67,8 @@ namespace WorldServer.Managers.Commands
 
         };
 
+        
+
         /// <summary>Addition commands under .add</summary>
         public static List<GmCommandHandler> AddCommands = new List<GmCommandHandler>
         {
@@ -409,6 +411,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("rvrstatus", RvRStatus, null, 0, 0, "Displays current status of RvR."),
             // new GmCommandHandler("pug", PugScenario, null, 0, 0, "Displays current PUG scenario."),
             new GmCommandHandler("sorenable", SoREnable, null, 0, 0, "Enables SoR addon."),
+            new GmCommandHandler("version", GetVersion, null, 0, 0, "Gets the WorldServer version."),
             // Halloween event stuff
             new GmCommandHandler("spooky", Spooky, null, 0, 0, "This command will make you spooky..."),
             new GmCommandHandler("notspooky", NotSpooky, null, 0, 0, "You don't want to be spooky :(... You need to run this command upon logging on server, it do not disable spookieness if you are already spooky."),
