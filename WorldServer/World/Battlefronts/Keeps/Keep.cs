@@ -705,7 +705,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public void ModifyLoot(LootContainer lootContainer)
         {
             if (StaticRandom.Instance.Next(100) <= 10)
-                lootContainer.LootInfo.Add(new LootInfo(ItemService.GetItem_Info(208401)));
+                lootContainer.LootInfo.Add(new LootInfo(ItemService.GetItem_Info(208470)));
         }
 
 #endregion

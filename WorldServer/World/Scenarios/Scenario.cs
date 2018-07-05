@@ -561,7 +561,7 @@ namespace WorldServer.Scenarios
 
             uint[] endingXp = new uint[2];
             uint[] endingRenown = new uint[2];
-            byte[] emblemCount = new byte[2];
+            byte[] emblemCount = new byte[1];
 
             for (int i = 0; i < 2; ++i)
             {

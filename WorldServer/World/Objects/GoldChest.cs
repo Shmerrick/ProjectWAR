@@ -765,18 +765,18 @@ namespace WorldServer
                 uint chestitem = 0;
                 switch (_publicQuestInfo.PQTier)
                 {
-                    case 2: chestitem = 208401; break;
-                    case 3: chestitem = 208402; break;
-                    case 4: chestitem = 1698/*208403*/; break; // This was officer medallion previously, now it is conqueror
-                    case 5: chestitem = 208404; break;
-                    case 6: chestitem = 208405; break;
+                    case 2: chestitem = 208470; break; //Was Scout now war crest
+                    case 3: chestitem = 208470; break; //Was soldier now war cres
+                    case 4: chestitem = 208470; break; // This was officer medallion previously, now it is conqueror
+                    case 5: chestitem = 208470; break; //was conq
+                    case 6: chestitem = 208470; break; //was fused inv
 
 #warning need to add chests for fort city and so on
 
                 }
                 if (Constants.DoomsdaySwitch > 0 && (_publicQuestInfo.PQTier == 2 || _publicQuestInfo.PQTier == 3))
                 {
-                    chestitem = 1698;
+                    chestitem = 208470; //was conq crest now war crest
                 }
 
                 items.Add(new Talisman(chestitem, (byte)(bagtype == 4 ? 5 : bagtype), 0, 0));

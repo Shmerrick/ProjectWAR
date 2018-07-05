@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using SystemData;
 using Common;
 using FrameWork;
@@ -2416,6 +2418,17 @@ namespace WorldServer.Managers.Commands
             }
             plr.SendClientMessage("State of the Realm Addon Enabled: 1.0.3", SystemData.ChatLogFilters.CHATLOGFILTERS_SAY);
             return true;
+        }
+
+        public static bool GetVersion(Player plr, ref List<string> values)
+        {
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            var attrs = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
+            plr.SendClientMessage($"WorldServer : {fvi.FileVersion} ({attrs.Single(x => x.Key == "GitHash").Value})");
+            return true;
+
+
         }
 
         /*

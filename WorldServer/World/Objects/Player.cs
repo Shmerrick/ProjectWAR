@@ -4538,19 +4538,18 @@ namespace WorldServer
                         SendHealth();
                     }
                 }
+
                 else if (!Panicked && tick <= CbtInterface.LastInteractionTime + MORALE_REGEN_HOLD)
                 {
                     if (_morale < 3600)
                     {
                         int baseMorale = 10;
 
-                        if (WorldGroup != null && _enemiesInRange > 18)
+                        if (WorldGroup != null && WorldGroup.MemberCount > 1)
                         {
-                            if (_enemiesInRange > 72)
-                                baseMorale += 5 * (WorldGroup.MemberCount - 1);
-                            else
-                                baseMorale += (int)(5 * (WorldGroup.MemberCount - 1) * ((_enemiesInRange - 18) / 54f));
+                            baseMorale = 36;
                         }
+
                         AddMorale(baseMorale + StsInterface.GetTotalStat(Stats.MoraleRegen));
                     }
                 }

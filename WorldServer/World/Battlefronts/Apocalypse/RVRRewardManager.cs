@@ -189,14 +189,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Attach the mail item to the mail.
 
             PlrLevel = plr.Level;
-            
+
             if (plr.Level <= 15)
-            { 
+            {
                 mail.Items.Add(mailItem1);
             }
 
             if (plr.Level > 15 & plr.Level <= 39)
-            { 
+            {
                 mail.Items.Add(mailItem2);
             }
 
