@@ -350,7 +350,7 @@ namespace WorldServer
                 }
                 else if (receiver.SocInterface.blocksTells && plr.GmLevel == 0 && (plr.GldInterface.Guild == null || receiver.GldInterface.Guild == null || plr.GldInterface.Guild != receiver.GldInterface.Guild))
                 {
-                    if (receiver.GmLevel > 0)
+                    if (receiver.GmLevel > 1)
                     {
                         plr.SendClientMessage("This player is a staff member and is currently rejecting communications.");
                         plr.SendClientMessage("To report bugs, use the Bugtracker - do not report bugs via in-game chat.");
