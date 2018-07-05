@@ -187,7 +187,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
                 SendDate = (uint)TCPManager.GetTimeStamp(),
                 Title = "RvR Reward",
                 Content = "You won an RvR Reward!",
-                Money = 5000,
+                Money = 0,
                 Opened = false
             };
 
