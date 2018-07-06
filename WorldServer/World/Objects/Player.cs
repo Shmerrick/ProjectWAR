@@ -2917,7 +2917,8 @@ namespace WorldServer
             _logger.Trace($"AddXp. XP {xp} scalefactor {scaleFactor} shouldPool {shouldPool} scaleswithRest {scalesWithRest}");
 
             var statScaleFactor = StsInterface.GetTotalStat(Stats.XpReceived);
-            if (statScaleFactor == 0)
+            // Instructions Boon
+            if (statScaleFactor == -100)
                 scaleFactor = 0;
 
             scaleFactor += statScaleFactor * 0.01f;
