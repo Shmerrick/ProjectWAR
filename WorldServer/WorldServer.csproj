@@ -499,6 +499,7 @@
   <!-- Set the BuildHash property to contain the GitVersion, if it wasn't already set.-->
   <PropertyGroup>
     <BuildHash>@(GitVersion)</BuildHash>
+    <MSBuildGitHashValidate>False</MSBuildGitHashValidate>
   </PropertyGroup>    
 </Target><Target Name="WriteGitHash" BeforeTargets="CoreCompile">
   <!-- names the obj/.../CustomAssemblyInfo.cs file -->
