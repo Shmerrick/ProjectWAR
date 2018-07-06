@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using Common;
 using FrameWork;
 using GameData;
+using NLog;
 
 namespace WorldServer
 {
     public class StatsInterface : BaseInterface
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private class UnitStat
         {
             private List<ushort>[] _bonusStats;
@@ -530,15 +532,26 @@ namespace WorldServer
             UnitStat modifier = _statModifiers[(int) statType];
 
             if (modifier == null)
+            {
+                _logger.Debug($"Modifier : null");
                 return 0;
+            }
+            else
+            {
+                _logger.Debug($"Modifier : {modifier.TotalStat} {modifier.TotalMultiplier} {modifier.AvailableItemBonus} {modifier.InternalItemBonus} {modifier.ItemAddFromStat}");
+            }
 
             int linearStat = modifier.TotalStat;
 
             if (modifier.ItemAddFromStat != 0)
                 linearStat += _statModifiers[modifier.ItemAddFromStat].InternalItemBonus;
 
+            _logger.Debug($"HTStacks : {HTLStacks} linearstat {linearStat}" );
+
             if (HTLStacks == 0 || (statType != Stats.Disrupt && statType != Stats.Evade))
                 return linearStat;
+
+            _logger.Debug($"return is {linearStat + Math.Min((byte)3, HTLStacks) * 15}");
 
             return linearStat + Math.Min((byte)3, HTLStacks) * 15;
         }
@@ -591,21 +604,41 @@ namespace WorldServer
 
         public short GetTotalStat(Stats bonusType)
         {
-            if (GetUnit() == null)
-                return 0;
 
+            if (GetUnit() == null)
+            {
+                _logger.Trace($" GetUnit is null, returning 0");
+                return 0;
+            }
+
+            _logger.Trace($" Bonus Type {bonusType}");
             int value = GetCoreStat(bonusType);
+            _logger.Trace($" Bonus Type Core Stat value = {value}");
 
             UnitStat statModifier = _statModifiers[(int)bonusType];
+            
 
             if (statModifier == null)
-                return (short)value;
+            {
+                _logger.Trace($" statModifier = null {value}");
+                return (short) value;
+            }
+            else
+            {
+                _logger.Trace($" statModifier = {statModifier.TotalStat}");
+            }
 
             if (bonusType < Stats.BaseStatCount && value + GetStatLinearModifier(bonusType) <= 0)
+            {
+                _logger.Trace($" base returning 0 ");
                 return 0;
-            
-            value = (int)((value + GetStatLinearModifier(bonusType)) * statModifier.TotalMultiplier);
+            }
 
+            _logger.Trace($"GetStatLinearModifier {GetStatLinearModifier(bonusType)} ");
+            _logger.Trace($"statModifier.TotalMultiplier {statModifier.TotalMultiplier} ");
+
+            value = (int)((value + GetStatLinearModifier(bonusType)) * statModifier.TotalMultiplier);
+            _logger.Trace($"value {value} ");
             return (short)value;
         }
 
