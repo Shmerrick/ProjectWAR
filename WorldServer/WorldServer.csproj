@@ -483,14 +483,16 @@
       <Version>0.3.0</Version>
     </PackageReference>
   </ItemGroup>
+  
    <Target Name="GetGitHash" BeforeTargets="WriteGitHash" Condition="'$(BuildHash)' == ''">
   <PropertyGroup>
     <!-- temp file for the git version (lives in "obj" folder)-->
     <VerFile>$(IntermediateOutputPath)gitver</VerFile>
+    <MSBuildGitHashValidate>False</MSBuildGitHashValidate>
   </PropertyGroup>
  
   <!-- write the hash to the temp file.-->
-  <Exec Command="git -C $(ProjectDir) rev-parse --short HEAD --dirty  &gt; $(VerFile)" />
+  <Exec Command="git -C $(ProjectDir) rev-parse HEAD  &gt; $(VerFile)" />
  
   <!-- read the version into the GitVersion itemGroup-->
   <ReadLinesFromFile File="$(VerFile)">
@@ -498,8 +500,9 @@
   </ReadLinesFromFile>
   <!-- Set the BuildHash property to contain the GitVersion, if it wasn't already set.-->
   <PropertyGroup>
+  <MSBuildGitHashValidate>False</MSBuildGitHashValidate>
     <BuildHash>@(GitVersion)</BuildHash>
-    <MSBuildGitHashValidate>False</MSBuildGitHashValidate>
+    
   </PropertyGroup>    
 </Target><Target Name="WriteGitHash" BeforeTargets="CoreCompile">
   <!-- names the obj/.../CustomAssemblyInfo.cs file -->
