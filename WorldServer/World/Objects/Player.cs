@@ -2933,6 +2933,8 @@ namespace WorldServer
             _logger.Trace($"AddXp. XP {xp} shouldPool {shouldPool} scaleswithRest {scalesWithRest}");
             float scaleFactor = 1 + StsInterface.GetTotalStat(Stats.XpReceived) * 0.01f;
             _logger.Trace($"AddXp. Scalefactor {scaleFactor} EffectiveLevel {EffectiveLevel} Level {Level}");
+            if (scaleFactor < 0)
+                scaleFactor = 0;
             if (EffectiveLevel == Level)
             {
                 xp = (uint)(xp * scaleFactor);
