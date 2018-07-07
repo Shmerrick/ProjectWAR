@@ -2918,7 +2918,7 @@ namespace WorldServer
 
             var statScaleFactor = StsInterface.GetTotalStat(Stats.XpReceived);
             // Instructions Boon
-            if (statScaleFactor == -100)
+            if (statScaleFactor <= 0 )
                 scaleFactor = 0;
 
             scaleFactor += statScaleFactor * 0.01f;
