@@ -234,42 +234,42 @@ namespace Launcher
             Client.SendTCP(Out);
         }
 
-        private void button1_Click_1Async(object sender, EventArgs e)
-        {
-           RunAsync().GetAwaiter().GetResult();
+        //private void button1_Click_1Async(object sender, EventArgs e)
+        //{
+        //   RunAsync().GetAwaiter().GetResult();
 
           
-        }
+        //}
 
-        async Task RunAsync()
-        {
-            // Update port # in the following line.
+        //async Task RunAsync()
+        //{
+        //    // Update port # in the following line.
 
-            var userName = T_username.Text.Trim();
-            var timeTokenManager = new ApocalypseAPI.Common.TimeTokenManager();
-            var encPassword = timeTokenManager.EncodeEncryptToken(T_password.Text.Trim());
+        //    var userName = T_username.Text.Trim();
+        //    var timeTokenManager = new ApocalypseAPI.Common.TimeTokenManager();
+        //    var encPassword = timeTokenManager.EncodeEncryptToken(T_password.Text.Trim());
                 
 
-            client.BaseAddress = new Uri($"http://localhost:16594/api/authentication?userName={userName}&encryptedPassword={encPassword}");
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.Add("auth-key", "14");
+        //    client.BaseAddress = new Uri($"http://localhost:16594/api/authentication?userName={userName}&encryptedPassword={encPassword}");
+        //    client.DefaultRequestHeaders.Accept.Clear();
+        //    client.DefaultRequestHeaders.Accept.Add(
+        //        new MediaTypeWithQualityHeaderValue("application/json"));
+        //    client.DefaultRequestHeaders.Add("auth-key", "14");
             
 
-            var token = await GetAuthentication(client.BaseAddress.PathAndQuery);
+        //    var token = await GetAuthentication(client.BaseAddress.PathAndQuery);
             
-        }
+        //}
 
-        static async Task<string> GetAuthentication(string path)
-        {
-            string result = String.Empty; 
-            HttpResponseMessage response = client.GetAsync(path).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                result = await response.Content.ReadAsStringAsync();
-            }
-            return result;
-        }
+        //static async Task<string> GetAuthentication(string path)
+        //{
+        //    string result = String.Empty; 
+        //    HttpResponseMessage response = client.GetAsync(path).Result;
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        result = await response.Content.ReadAsStringAsync();
+        //    }
+        //    return result;
+        //}
     }
 }
