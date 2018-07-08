@@ -3925,6 +3925,11 @@ namespace WorldServer
                     else _recentLooters[killer.CharacterId] = TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL;
                 }
 #endif
+                // +1 VP for a kill
+                if (killer.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                    killer.Region.BattleFront.VictoryPointProgress.DestructionVictoryPoints++;
+                else
+                    killer.Region.BattleFront.VictoryPointProgress.OrderVictoryPoints++;
 
                 HandleXPRenown(killer, rewardScale);
                 GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
