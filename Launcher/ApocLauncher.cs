@@ -1,14 +1,11 @@
-﻿using Launcher.Properties;
-using NLog;
+﻿using NLog;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Launcher
