@@ -37,6 +37,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbMigrationTool", "DbMigrat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbUtilityTool", "DbUtilityTool\DbUtilityTool.csproj", "{EC6B10C4-938C-458B-8AA5-C08BEEF88CE9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{BC0B5C1C-1695-447E-A1D0-C3635E1D783C}"
+	ProjectSection(SolutionItems) = preProject
+		ScaleFactorFix.sql = ScaleFactorFix.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

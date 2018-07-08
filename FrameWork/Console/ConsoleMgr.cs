@@ -113,7 +113,9 @@ namespace FrameWork
                         Log.Info("ConsoleMgr", "." + consoleHandlerAttribs[0].Command + " : " + consoleHandlerAttribs[0].Description);
                         RegisterHandler(consoleHandlerAttribs[0].Command, (IConsoleHandler)Activator.CreateInstance(type));
                     }
+                    Log.Debug("ConsoleMgr", type.FullName);
                 }
+                Log.Debug("ConsoleMgr", assembly.FullName);
             }
         }
 

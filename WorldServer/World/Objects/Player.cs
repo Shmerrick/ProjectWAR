@@ -2907,22 +2907,39 @@ namespace WorldServer
             EvtInterface.Notify(EventName.OnLevelUp, this, null);
         }
 
+
         /// <summary>
         /// Used for kill rewards.
         /// </summary>
         public void AddXp(uint xp, float scaleFactor, bool shouldPool, bool scalesWithRest)
         {
-            scaleFactor += StsInterface.GetTotalStat(Stats.XpReceived) * 0.01f;
+            _logger.Trace($"Player {this.Name}");
+            _logger.Trace($"AddXp. XP {xp} scalefactor {scaleFactor} shouldPool {shouldPool} scaleswithRest {scalesWithRest}");
+
+            var statScaleFactor = StsInterface.GetTotalStat(Stats.XpReceived);
+            // Instructions Boon
+            if (statScaleFactor <= 0 )
+                scaleFactor = 0;
+
+            scaleFactor += statScaleFactor * 0.01f;
+            _logger.Trace($"AddXp. Scalefactor {scaleFactor}");
             xp = (uint)(xp * scaleFactor);
+            _logger.Debug($"PVP AddXp. XP {xp} for {this.Name} Scale: {scaleFactor}");
             InternalAddXp(xp, shouldPool, scalesWithRest);
         }
         public void AddXp(uint xp, bool shouldPool, bool scalesWithRest)
         {
+            _logger.Trace($"Player {this.Name}");
+            _logger.Trace($"AddXp. XP {xp} shouldPool {shouldPool} scaleswithRest {scalesWithRest}");
             float scaleFactor = 1 + StsInterface.GetTotalStat(Stats.XpReceived) * 0.01f;
+            _logger.Trace($"AddXp. Scalefactor {scaleFactor} EffectiveLevel {EffectiveLevel} Level {Level}");
+            if (scaleFactor < 0)
+                scaleFactor = 0;
             if (EffectiveLevel == Level)
             {
                 xp = (uint)(xp * scaleFactor);
             }
+            _logger.Debug($"PVE AddXp. XP {xp} for {this.Name} Scale: {scaleFactor}");
             InternalAddXp(xp, shouldPool, scalesWithRest);
         }
         private void InternalAddXp(uint xp, bool shouldPool, bool scalesWithRest)

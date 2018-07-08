@@ -80,6 +80,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
     <Reference Include="FakeItEasy">
       <HintPath>..\packages\FakeItEasy.4.6.0\lib\net45\FakeItEasy.dll</HintPath>
     </Reference>

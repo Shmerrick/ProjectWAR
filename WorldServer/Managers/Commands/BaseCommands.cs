@@ -2424,8 +2424,8 @@ namespace WorldServer.Managers.Commands
         {
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-            var attrs = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
-            plr.SendClientMessage($"WorldServer : {fvi.FileVersion} ({attrs.Single(x => x.Key == "GitHash").Value})");
+            string version = fvi.FileVersion;
+            plr.SendClientMessage($"WorldServer :{version}");
             return true;
 
 
