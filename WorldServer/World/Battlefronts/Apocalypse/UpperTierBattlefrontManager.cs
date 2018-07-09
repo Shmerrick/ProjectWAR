@@ -46,11 +46,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     FinalVictoryPoint = new VictoryPointProgress(),
                         OpenTimeStamp = 0,
                         LockTimeStamp = 0,
-                        Locked = true
+                        Locked = true,
+                        RegionId = battleFrontProgression.RegionId
                     });
                 }
             }
         }
+
+        public ApocBattleFrontStatus GetRegionBattleFrontStatus(int regionId)
+        {
+            return this.ApocBattleFrontStatuses.Single(x => x.RegionId == regionId);
+        }
+
 
         /// <summary>
         /// Log the status of all battlefronts 

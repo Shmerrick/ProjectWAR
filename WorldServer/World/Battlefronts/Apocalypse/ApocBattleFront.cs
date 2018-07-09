@@ -20,6 +20,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     /// </summary>
     public class ApocBattleFront
     {
+        public static IObjectDatabase Database = null;
+
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
         public VictoryPointProgress VictoryPointProgress { get; set; }
 
@@ -120,6 +122,27 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(UpdateRVRStatus, 60000, 0);
             // Recalculate AAO
             _EvtInterface.AddEvent(UpdateAAOBuffs, 60000, 0);
+            // Recalculate AAO
+            _EvtInterface.AddEvent(RecordMetrics, 30000, 0);
+
+        }
+
+        private void RecordMetrics()
+        {
+            var battleFrontStatus  = this.BattleFrontManager.GetRegionBattleFrontStatus(Region.RegionId);
+
+            var metrics = new RVRMetrics();
+            metrics.BattlefrontId = battleFrontStatus.BattleFrontId;
+            metrics.BattlefrontName = this.BattleFrontName;
+            metrics.DestructionVictoryPoints = (int) this.VictoryPointProgress.DestructionVictoryPoints;
+            metrics.OrderVictoryPoints = (int) this.VictoryPointProgress.OrderVictoryPoints;
+            metrics.Locked = battleFrontStatus.LockStatus;
+            metrics.PlayersInLake = this.PlayersInLakeSet.Count;
+            metrics.Tier = this.Tier;
+
+            
+            Database.SaveObject(metrics);
+
         }
 
         private void PlaceObjectives()

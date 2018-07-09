@@ -378,6 +378,7 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).Locked);
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).FinalVictoryPoint.DestructionVictoryPoints == 5000f);
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).FinalVictoryPoint.OrderVictoryPoints == 1000f);
+            Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).RegionId ==1);
 
             // Advance Destro
             var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);

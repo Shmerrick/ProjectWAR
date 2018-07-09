@@ -40,9 +40,20 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     FinalVictoryPoint = new VictoryPointProgress(),
                     OpenTimeStamp = 0,
                     LockTimeStamp = 0,
-                    Locked = true
+                    Locked = true,
+                    RegionId = battleFrontProgression.RegionId
                 });
             }
+        }
+
+        /// <summary>
+        /// Return the first battlefront status for Lower tier (BF crosses regions)
+        /// </summary>
+        /// <param name="regionId"></param>
+        /// <returns></returns>
+        public ApocBattleFrontStatus GetRegionBattleFrontStatus(int regionId)
+        {
+            return this.ApocBattleFrontStatuses.First(x => x.RegionId == regionId);
         }
 
         /// <summary>

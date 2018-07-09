@@ -17,6 +17,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public int OpenTimeStamp { get; set; }
         public int LockTimeStamp { get; set; }
         public bool Locked { get; set; }
+        public int RegionId { get; set; }
 
         public float DestructionVictoryPointPercentage
         {
@@ -46,6 +47,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
          
             }
         }
+
+        
     }
 }
 
