@@ -59,7 +59,7 @@ namespace Launcher
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             var attrs = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
-            this.lblVersion.Text = $"{fvi.FileVersion} ({attrs.Single(x => x.Key == "GitHash").Value})";
+            //this.lblVersion.Text = $"{fvi.FileVersion} ({attrs.Single(x => x.Key == "GitHash").Value})";
         }
 
         private void Disconnect(object sender, FormClosedEventArgs e)

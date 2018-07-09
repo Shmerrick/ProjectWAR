@@ -39,7 +39,7 @@ namespace WorldServer
         private bool _running = true;
         public List<Zone_Info> ZonesInfo;
         
-        public ApocBattleFront BattleFront;
+        public Campaign BattleFront;
         public Scenario Scenario;
         public string RegionName;
 
@@ -97,10 +97,10 @@ namespace WorldServer
                 //    case 1: // t1 dw/gs
                 //    case 3: // t1 he/de
                 //    case 8: // t1 em/ch
-                //        BattleFront = new ApocBattleFront(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager);
+                //        BattleFront = new Campaign(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager);
                 //        break;
                 //    default: // Everything else...
-                //        BattleFront = new ApocBattleFront(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager);
+                //        BattleFront = new Campaign(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager);
                 //        break;
                 //}
             }

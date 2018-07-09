@@ -53,7 +53,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <returns></returns>
         public ApocBattleFrontStatus GetRegionBattleFrontStatus(int regionId)
         {
-            return this.ApocBattleFrontStatuses.First(x => x.RegionId == regionId);
+            return this.ApocBattleFrontStatuses.FirstOrDefault(x => x.RegionId == regionId);
         }
 
         /// <summary>

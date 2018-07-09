@@ -388,7 +388,7 @@ namespace WorldServer.Managers.Commands
                 SendCsr(plr, "CAMPAIGN SUPPLY: Must be in a RvR zone to use this command.");
                 return;
             }
-            var BattleFront = (ApocBattleFront)plr.Region.BattleFront;
+            var BattleFront = (Campaign)plr.Region.BattleFront;
 
             if (realm == Realms.REALMS_REALM_ORDER)
                 BattleFront.VictoryPointProgress.OrderVictoryPoints = points;

@@ -3951,7 +3951,7 @@ namespace WorldServer
             // Factor of kill rewards to transfer to objective
             float transferenceFactor = 2.5f - bonusMod;
 
-            ApocBattlefieldObjective closestFlag = null;
+            CampaignObjective closestFlag = null;
 
             if (ScnInterface.Scenario == null)
                 closestFlag = Region.BattleFront.GetClosestFlag(WorldPosition);
@@ -4346,7 +4346,7 @@ namespace WorldServer
         public Keep CurrentKeep { get; set; }
         public Creature CurrentSiege { get; set; }
         public RvRStructure Palisade { get; set; }
-        public ApocBattlefieldObjective CurrentObjectiveFlag { get; set; }
+        public CampaignObjective CurrentObjectiveFlag { get; set; }
 
         #endregion
 

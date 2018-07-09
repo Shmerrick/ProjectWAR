@@ -258,8 +258,8 @@
     <Compile Include="World\Battlefronts\Apocalypse\AAOTracker.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\BattlefrontConstants.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\IBattlefrontManager.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\ApocBattlefieldObjective.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\ApocBattleFront.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\CampaignObjective.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Campaign.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\LowerTierBattlefrontManager.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\RVRRewardManager.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\UpperTierBattlefrontManager.cs" />
@@ -459,9 +459,12 @@
     <Content Include="Configs\LocalDevelopment\Launcher.xml" />
     <Content Include="Configs\LocalDevelopment\Lobby.xml" />
     <Content Include="Configs\LocalDevelopment\World.xml" />
+    <Content Include="WarZone64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="world.ico" />
   </ItemGroup>
-  
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if not exist $(TargetDir)\PatcherFilesDirectory mkdir $(TargetDir)\PatcherFilesDirectory

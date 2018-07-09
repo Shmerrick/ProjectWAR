@@ -18,7 +18,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     /// <summary>
     /// Represents an open RVR front in a given Region (1 Region -> n Zones) Eg Region 14 (T2 Emp -> Zone 101 Troll Country & Zone 107 Ostland
     /// </summary>
-    public class ApocBattleFront
+    public class Campaign
     {
         public static IObjectDatabase Database = null;
 
@@ -28,8 +28,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public RegionMgr Region { get; set; }
         public IBattleFrontManager BattleFrontManager { get; set; }
         public IApocCommunications CommunicationsEngine { get; }
+        public int BattleFrontId { get; set; }
+    
 
-        /// <summary>
+    /// <summary>
         /// A list of keeps within this BattleFront.
         /// </summary>
         public readonly List<Keep> Keeps = new List<Keep>();
@@ -40,7 +42,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         protected readonly EventInterface _EvtInterface = new EventInterface();
 
         public HashSet<Player> PlayersInLakeSet;
-        public List<ApocBattlefieldObjective> Objectives;
+        public List<CampaignObjective> Objectives;
         //public bool BattleFrontLocked => LockingRealm != Realms.REALMS_REALM_NEUTRAL;
         //public Realms LockingRealm { get; set; } = Realms.REALMS_REALM_NEUTRAL;
         private volatile int _orderCount = 0;
@@ -76,8 +78,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="regionMgr"></param>
         /// <param name="objectives"></param>
         /// <param name="players"></param>
-        public ApocBattleFront(RegionMgr regionMgr,
-            List<ApocBattlefieldObjective> objectives,
+        public Campaign(RegionMgr regionMgr,
+            List<CampaignObjective> objectives,
             HashSet<Player> players,
             IBattleFrontManager bfm,
             IApocCommunications communicationsEngine)
@@ -123,25 +125,33 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Recalculate AAO
             _EvtInterface.AddEvent(UpdateAAOBuffs, 60000, 0);
             // Recalculate AAO
-            _EvtInterface.AddEvent(RecordMetrics, 30000, 0);
+            //_EvtInterface.AddEvent(RecordMetrics, 30000, 0);
 
         }
 
         private void RecordMetrics()
         {
-            var battleFrontStatus  = this.BattleFrontManager.GetRegionBattleFrontStatus(Region.RegionId);
+            try
+            {
+                    var metrics = new RVRMetrics
+                    {
+                        BattlefrontId = this.BattleFrontId,
+                        BattlefrontName = this.BattleFrontName,
+                        DestructionVictoryPoints = (int)this.VictoryPointProgress.DestructionVictoryPoints,
+                        OrderVictoryPoints = (int)this.VictoryPointProgress.OrderVictoryPoints,
+                        Locked = this.BattleFrontManager.GetBattleFrontStatus(this.BattleFrontId).LockStatus,
+                        PlayersInLake = this.PlayersInLakeSet.Count,
+                        Tier = this.Tier
+                    };
 
-            var metrics = new RVRMetrics();
-            metrics.BattlefrontId = battleFrontStatus.BattleFrontId;
-            metrics.BattlefrontName = this.BattleFrontName;
-            metrics.DestructionVictoryPoints = (int) this.VictoryPointProgress.DestructionVictoryPoints;
-            metrics.OrderVictoryPoints = (int) this.VictoryPointProgress.OrderVictoryPoints;
-            metrics.Locked = battleFrontStatus.LockStatus;
-            metrics.PlayersInLake = this.PlayersInLakeSet.Count;
-            metrics.Tier = this.Tier;
-
+                    Database.SaveObject(metrics);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
             
-            Database.SaveObject(metrics);
 
         }
 
@@ -197,7 +207,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             foreach (BattleFront_Objective obj in objectives)
             {
-                ApocBattlefieldObjective flag = new ApocBattlefieldObjective(obj, Region.GetTier());
+                CampaignObjective flag = new CampaignObjective(obj, Region.GetTier());
                 Objectives.Add(flag);
                 Region.AddObject(flag, obj.ZoneId);
                 flag.BattleFront = this;
@@ -550,7 +560,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void SendObjectives(Player plr)
         {
             BattlefrontLogger.Trace(".");
-            foreach (ApocBattlefieldObjective bo in Objectives)
+            foreach (CampaignObjective bo in Objectives)
                 bo.SendFlagState(plr, false);
         }
 
@@ -573,7 +583,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             float destroVictoryPoints = VictoryPointProgress.DestructionVictoryPoints;
             int flagCount = 0, destroFlagCount = 0, orderFlagCount = 0;
 
-            foreach (ApocBattlefieldObjective flag in Objectives)
+            foreach (CampaignObjective flag in Objectives)
             {
                 BattlefrontLogger.Trace($"Reward Ticks {this.BattleFrontName} - {flag.ToString()}");
                 // TODO - perhaps use AAO calculation here as a pairing scaler?.
@@ -801,13 +811,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public ApocBattlefieldObjective GetClosestFlag(Point3D destPos, bool inPlay = false)
+        public CampaignObjective GetClosestFlag(Point3D destPos, bool inPlay = false)
         {
             BattlefrontLogger.Trace(".");
-            ApocBattlefieldObjective bestFlag = null;
+            CampaignObjective bestFlag = null;
             ulong bestDist = 0;
 
-            foreach (ApocBattlefieldObjective flag in Objectives)
+            foreach (CampaignObjective flag in Objectives)
             {
                 ulong curDist = flag.GetDistanceSquare(destPos);
 

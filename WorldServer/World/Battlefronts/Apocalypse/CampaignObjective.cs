@@ -9,7 +9,7 @@ using WorldServer.World.BattleFronts.Objectives;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
-    public class ApocBattlefieldObjective : Object
+    public class CampaignObjective : Object
     {
         private const int DEFENSE_TICK_INTERVAL_SECONDS = 300;
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
@@ -108,7 +108,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public ApocCommunications CommsEngine { get; set; }
         public ProximityEngine ProximityEngine { get; set; }
-        public ApocBattleFront BattleFront { get; set; }
+        public Campaign BattleFront { get; set; }
         public string Name { get; set; }
 
         public StateFlags State { get; set; }
@@ -131,7 +131,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         /// Constructor to assist in isolation testing.
         /// </summary>
-        public ApocBattlefieldObjective()
+        public CampaignObjective()
         {
             CommsEngine = new ApocCommunications();
             ProximityEngine = new ProximityEngine();
@@ -146,7 +146,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="zoneId"></param>
         /// <param name="regionId"></param>
         /// <param name="tier"></param>
-        public ApocBattlefieldObjective(int id, string name, int zoneId, int regionId, int tier)
+        public CampaignObjective(int id, string name, int zoneId, int regionId, int tier)
         {
             Id = id;
             Name = name;
@@ -161,7 +161,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         /// <param name="objective"></param>
         /// <param name="tier"></param>
-        public ApocBattlefieldObjective(BattleFront_Objective objective, int tier)
+        public CampaignObjective(BattleFront_Objective objective, int tier)
         {
             Id = objective.Entry;
             Name = objective.Name;

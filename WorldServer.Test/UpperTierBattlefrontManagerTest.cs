@@ -17,13 +17,13 @@ namespace WorldServer.Test
         public List<RVRProgression> SampleProgressionList { get; set; }
         public RegionMgr Region1 { get; set; }
         public RegionMgr Region3 { get; set; }
-        public List<ApocBattlefieldObjective> PraagBOList { get; set; }
-        public List<ApocBattlefieldObjective> ChaosWastesBOList { get; set; }
-        public List<ApocBattlefieldObjective> ThunderMountainBOList { get; set; }
-        public List<ApocBattlefieldObjective> KadrinValleyBOList { get; set; }
+        public List<CampaignObjective> PraagBOList { get; set; }
+        public List<CampaignObjective> ChaosWastesBOList { get; set; }
+        public List<CampaignObjective> ThunderMountainBOList { get; set; }
+        public List<CampaignObjective> KadrinValleyBOList { get; set; }
 
-        public List<ApocBattlefieldObjective> Region1BOList { get; set; }
-        public List<ApocBattlefieldObjective> Region3BOList { get; set; }
+        public List<CampaignObjective> Region1BOList { get; set; }
+        public List<CampaignObjective> Region3BOList { get; set; }
         public List<RegionMgr> RegionMgrs { get; set; }
         public IApocCommunications FakeComms { get; set; }
 
@@ -34,13 +34,13 @@ namespace WorldServer.Test
             FakeComms = A.Fake<IApocCommunications>();
             RegionMgrs = new List<RegionMgr>();
 
-            PraagBOList = new List<ApocBattlefieldObjective>();
-            ChaosWastesBOList = new List<ApocBattlefieldObjective>();
-            ThunderMountainBOList = new List<ApocBattlefieldObjective>();
-            KadrinValleyBOList = new List<ApocBattlefieldObjective>();
+            PraagBOList = new List<CampaignObjective>();
+            ChaosWastesBOList = new List<CampaignObjective>();
+            ThunderMountainBOList = new List<CampaignObjective>();
+            KadrinValleyBOList = new List<CampaignObjective>();
 
-            Region1BOList = new List<ApocBattlefieldObjective>();
-            Region3BOList = new List<ApocBattlefieldObjective>();
+            Region1BOList = new List<CampaignObjective>();
+            Region3BOList = new List<CampaignObjective>();
 
 
             var R1ZoneList = new List<Zone_Info>();
@@ -59,25 +59,25 @@ namespace WorldServer.Test
             RegionMgrs.Add(Region3);
 
 
-            PraagBOList.Add(new ApocBattlefieldObjective(1, "BO1", 200, 1, 4));
-            PraagBOList.Add(new ApocBattlefieldObjective(2, "BO2", 200, 1, 4));
-            PraagBOList.Add(new ApocBattlefieldObjective(3, "BO3", 200, 1, 4));
-            PraagBOList.Add(new ApocBattlefieldObjective(4, "BO4", 200, 1, 4));
+            PraagBOList.Add(new CampaignObjective(1, "BO1", 200, 1, 4));
+            PraagBOList.Add(new CampaignObjective(2, "BO2", 200, 1, 4));
+            PraagBOList.Add(new CampaignObjective(3, "BO3", 200, 1, 4));
+            PraagBOList.Add(new CampaignObjective(4, "BO4", 200, 1, 4));
 
-            ChaosWastesBOList.Add(new ApocBattlefieldObjective(11, "BO1", 201, 1, 4));
-            ChaosWastesBOList.Add(new ApocBattlefieldObjective(12, "BO2", 201, 1, 4));
-            ChaosWastesBOList.Add(new ApocBattlefieldObjective(13, "BO3", 201, 1, 4));
-            ChaosWastesBOList.Add(new ApocBattlefieldObjective(14, "BO4", 201, 1, 4));
+            ChaosWastesBOList.Add(new CampaignObjective(11, "BO1", 201, 1, 4));
+            ChaosWastesBOList.Add(new CampaignObjective(12, "BO2", 201, 1, 4));
+            ChaosWastesBOList.Add(new CampaignObjective(13, "BO3", 201, 1, 4));
+            ChaosWastesBOList.Add(new CampaignObjective(14, "BO4", 201, 1, 4));
 
-            ThunderMountainBOList.Add(new ApocBattlefieldObjective(21, "BO1", 400, 3, 4));
-            ThunderMountainBOList.Add(new ApocBattlefieldObjective(22, "BO2", 400, 3, 4));
-            ThunderMountainBOList.Add(new ApocBattlefieldObjective(23, "BO3", 400, 3, 4));
-            ThunderMountainBOList.Add(new ApocBattlefieldObjective(24, "BO4", 400, 3, 4));
+            ThunderMountainBOList.Add(new CampaignObjective(21, "BO1", 400, 3, 4));
+            ThunderMountainBOList.Add(new CampaignObjective(22, "BO2", 400, 3, 4));
+            ThunderMountainBOList.Add(new CampaignObjective(23, "BO3", 400, 3, 4));
+            ThunderMountainBOList.Add(new CampaignObjective(24, "BO4", 400, 3, 4));
 
-            KadrinValleyBOList.Add(new ApocBattlefieldObjective(31, "BO1", 401, 3, 4));
-            KadrinValleyBOList.Add(new ApocBattlefieldObjective(32, "BO2", 401, 3, 4));
-            KadrinValleyBOList.Add(new ApocBattlefieldObjective(33, "BO3", 401, 3, 4));
-            KadrinValleyBOList.Add(new ApocBattlefieldObjective(34, "BO4", 401, 3, 4));
+            KadrinValleyBOList.Add(new CampaignObjective(31, "BO1", 401, 3, 4));
+            KadrinValleyBOList.Add(new CampaignObjective(32, "BO2", 401, 3, 4));
+            KadrinValleyBOList.Add(new CampaignObjective(33, "BO3", 401, 3, 4));
+            KadrinValleyBOList.Add(new CampaignObjective(34, "BO4", 401, 3, 4));
 
             Region1BOList.AddRange(PraagBOList);
             Region1BOList.AddRange(ChaosWastesBOList);
@@ -135,8 +135,8 @@ namespace WorldServer.Test
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
             manager.ResetBattleFrontProgression();
 
-            Region1.BattleFront = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
-            Region3.BattleFront = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+            Region1.BattleFront = new Campaign(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.BattleFront = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
 
 
         }
@@ -171,8 +171,8 @@ namespace WorldServer.Test
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
             var bf = manager.ResetBattleFrontProgression();
 
-            Region1.BattleFront = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
-            Region3.BattleFront = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+            Region1.BattleFront = new Campaign(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.BattleFront = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
 
             Assert.IsTrue(bf.DestWinProgression == 2);
 
@@ -217,8 +217,8 @@ namespace WorldServer.Test
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
             var bf = manager.ResetBattleFrontProgression();
 
-            Region1.BattleFront = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
-            Region3.BattleFront = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+            Region1.BattleFront = new Campaign(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.BattleFront = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
             // Open Praag (BF==1)
             manager.OpenActiveBattlefront();
             Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 1); // Praag
@@ -246,8 +246,8 @@ namespace WorldServer.Test
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
             var bf = manager.ResetBattleFrontProgression();
 
-            Region1.BattleFront = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
-            Region3.BattleFront = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+            Region1.BattleFront = new Campaign(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.BattleFront = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
             // Open Praag (BF==1)
             manager.OpenActiveBattlefront();
             // Locking Region1.BattleFront
@@ -282,8 +282,8 @@ namespace WorldServer.Test
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
             var bf = manager.ResetBattleFrontProgression();
 
-            Region1.BattleFront = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
-            Region3.BattleFront = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+            Region1.BattleFront = new Campaign(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.BattleFront = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
             // Open Praag (BF==1)
             manager.OpenActiveBattlefront();
             // Locking Region1.BattleFront
@@ -364,8 +364,8 @@ namespace WorldServer.Test
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
             var bf = manager.ResetBattleFrontProgression();
 
-            Region1.BattleFront = new ApocBattleFront(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
-            Region3.BattleFront = new ApocBattleFront(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+            Region1.BattleFront = new Campaign(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.BattleFront = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
             // Open Praag (BF==1)
             manager.OpenActiveBattlefront();
             // Locking Region1.BattleFront

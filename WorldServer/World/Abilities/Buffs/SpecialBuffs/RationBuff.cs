@@ -11,7 +11,7 @@ namespace WorldServer
     /// </summary>
     public class RationBuff : NewBuff
     {
-        private ApocBattleFront _BattleFront;
+        private Campaign _BattleFront;
         private float _rationDebuffFactor;
         public float PendingDebuffFactor;
 

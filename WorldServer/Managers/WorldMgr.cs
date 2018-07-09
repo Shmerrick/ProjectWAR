@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading;
 using SystemData;
 using Common;
+using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
 using Common.Database.World.BattleFront;
@@ -1417,29 +1418,35 @@ namespace WorldServer
 
         #endregion
 
-        public static void AttachBattleFronts()
+        public static void AttachUpperTierBattleFronts(List<RVRProgression> progressions)
         {
-            _logger.Info($"Attaching Battlefronts to Regions");
-            foreach (var regionMgr in _Regions)
+            foreach (var rvrProgression in progressions)
             {
-                _logger.Info($"Connecting region : {regionMgr.RegionId}");
-                var objectiveList = LoadObjectives(regionMgr);
-
-                switch (regionMgr.RegionId)
+                _logger.Info($"Attaching Battlefronts to Regions");
+                foreach (var regionMgr in _Regions)
                 {
-                    case 1: // t1 dw/gs
-                    case 3: // t1 he/de
-                    case 8: // t1 em/ch
-                        regionMgr.BattleFront = new ApocBattleFront(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager, new ApocCommunications());
-                        break;
-                    default: // Everything else...
-                        regionMgr.BattleFront = new ApocBattleFront(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager, new ApocCommunications());
-                        break;
+
+
+                    _logger.Info($"Connecting region : {regionMgr.RegionId}");
+                    var objectiveList = LoadObjectives(regionMgr);
+
+                    switch (regionMgr.RegionId)
+                    {
+                        //case 1: // t1 dw/gs
+                        //case 3: // t1 he/de
+                        //case 8: // t1 em/ch
+                        //    regionMgr.BattleFront = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager, new ApocCommunications());
+                        //    break;
+                        default: // Everything else...
+                            regionMgr.BattleFront = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager, new ApocCommunications());
+                            break;
+                    }
                 }
             }
+           
         }
 
-        public static List<ApocBattlefieldObjective> LoadObjectives(RegionMgr regionMgr)
+        public static List<CampaignObjective> LoadObjectives(RegionMgr regionMgr)
         {
             List<BattleFront_Objective> objectives = BattleFrontService.GetBattleFrontObjectives(regionMgr.RegionId);
             if (objectives == null)
@@ -1447,11 +1454,11 @@ namespace WorldServer
                 _logger.Warn($"Region = {regionMgr.RegionId} has no objectives");
                 return null;
             }
-            var resultList = new List<ApocBattlefieldObjective>();
+            var resultList = new List<CampaignObjective>();
             _logger.Debug($"Region = {regionMgr.RegionId} ObjectiveCount = {objectives.Count}");
             foreach (BattleFront_Objective obj in objectives)
             {
-                ApocBattlefieldObjective flag = new ApocBattlefieldObjective(obj, regionMgr.GetTier());
+                CampaignObjective flag = new CampaignObjective(obj, regionMgr.GetTier());
                 resultList.Add(flag);
             }
 

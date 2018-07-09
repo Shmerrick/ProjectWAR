@@ -55,7 +55,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public ApocBattleFrontStatus GetRegionBattleFrontStatus(int regionId)
         {
-            return this.ApocBattleFrontStatuses.Single(x => x.RegionId == regionId);
+            if (this.ApocBattleFrontStatuses != null)
+            {
+                return this.ApocBattleFrontStatuses.SingleOrDefault(x => x.RegionId == regionId);
+            }
+            else
+            {
+                ProgressionLogger.Debug($"Call to get region status with no statuses");
+                return null;
+            }
         }
 
 

@@ -91,7 +91,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         /// Reset the realm to be owned by Neutral. 
         /// </summary>
-        public void Reset(ApocBattleFront BattleFront)
+        public void Reset(Campaign BattleFront)
         {
             _logger.Debug($"Resetting BattleFront VP {BattleFront.BattleFrontName} to Neutral");
             OrderVictoryPoints = 0;

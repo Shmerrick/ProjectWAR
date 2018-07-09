@@ -1307,7 +1307,7 @@ namespace WorldServer
                 Creature weapon = (Creature)hostBuff.OptionalObject;
                 Siege siege = weapon as Siege;
 
-                ApocBattleFront front = weapon.Region?.BattleFront;
+                Campaign front = weapon.Region?.BattleFront;
 
                 if (front == null)
                     return;

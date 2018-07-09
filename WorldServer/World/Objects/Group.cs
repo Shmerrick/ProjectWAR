@@ -1861,7 +1861,7 @@ namespace WorldServer
             }
         }
 
-        public void HandleKillRewards(Unit victim, Player killer, float bonusMod, uint xp, uint renown, ushort influenceId, ushort influence, float transferenceFactor, ApocBattlefieldObjective closestFlag)
+        public void HandleKillRewards(Unit victim, Player killer, float bonusMod, uint xp, uint renown, ushort influenceId, ushort influence, float transferenceFactor, CampaignObjective closestFlag)
         {
             List<Player> members = GetPlayersCloseTo(victim, MAX_SHARE_DIST);
 
