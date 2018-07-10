@@ -28,16 +28,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public RegionMgr Region { get; set; }
         public IBattleFrontManager BattleFrontManager { get; set; }
         public IApocCommunications CommunicationsEngine { get; }
-        public int BattleFrontId { get; set; }
-    
 
-    /// <summary>
-        /// A list of keeps within this BattleFront.
+        // List of battlefront statuses for this Campaign
+        public List<BattleFrontStatus> ApocBattleFrontStatuses => GetBattleFrontStatuses(this.Region.RegionId);
+        
+        /// <summary>
+        /// A list of keeps within this Campaign.
         /// </summary>
         public readonly List<Keep> Keeps = new List<Keep>();
-        public string BattleFrontName {
-            get { return this.BattleFrontManager.ActiveBattleFrontName;  }
-        }
+        public string CampaignName => this.BattleFrontManager.ActiveBattleFrontName;
 
         protected readonly EventInterface _EvtInterface = new EventInterface();
 
@@ -95,25 +94,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             PlaceObjectives();
 
             LoadKeeps();
-            ////On making a BattleFront if the tier is 4 locks Objectives adjacent to starting zone
-            //if (Tier == 4)
-            //{
-            //    switch (Region.RegionId)
-            //    {
-            //        case 11:
-            //            LockBattleObjectivesByZone(105);
-            //            break;
-            //        case 4:
-            //            LockBattleObjectivesByZone(205);
-            //            break;
-            //        case 2:
-            //            LockBattleObjectivesByZone(5);
-            //            break;
-            //    }
-
-            //}
-
-
+          
+          
             _contributionTracker = new ContributionTracker(Tier, regionMgr);
             _aaoTracker = new AAOTracker();
             _rewardManager = new RVRRewardManager();
@@ -133,26 +115,38 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             try
             {
+                BattlefrontLogger.Debug($"Recording metrics for Campaign {this.CampaignName}");
+                foreach (var apocBattleFrontStatus in ApocBattleFrontStatuses)
+                {
                     var metrics = new RVRMetrics
                     {
-                        BattlefrontId = this.BattleFrontId,
-                        BattlefrontName = this.BattleFrontName,
+                        BattlefrontId = apocBattleFrontStatus.BattleFrontId,
+                        BattlefrontName = this.CampaignName,
                         DestructionVictoryPoints = (int)this.VictoryPointProgress.DestructionVictoryPoints,
                         OrderVictoryPoints = (int)this.VictoryPointProgress.OrderVictoryPoints,
-                        Locked = this.BattleFrontManager.GetBattleFrontStatus(this.BattleFrontId).LockStatus,
+                        Locked = apocBattleFrontStatus.LockStatus,
                         PlayersInLake = this.PlayersInLakeSet.Count,
                         Tier = this.Tier
                     };
 
                     Database.SaveObject(metrics);
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
-            
+        }
 
+        /// <summary>
+        /// Return the list of Battlefront statuses for a give region.
+        /// </summary>
+        /// <param name="regionId"></param>
+        /// <returns></returns>
+        public List<BattleFrontStatus> GetBattleFrontStatuses(int regionId)
+        {
+            return this.BattleFrontManager.GetBattleFrontStatusList().Where(x => x.RegionId == regionId).ToList();
         }
 
         private void PlaceObjectives()
@@ -166,7 +160,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public string GetBattleFrontStatus()
         {
-            return $"Victory Points Progress for {this.BattleFrontName} : {this.VictoryPointProgress.ToString()}";
+            return $"Victory Points Progress for {this.CampaignName} : {this.VictoryPointProgress.ToString()}";
         }
 
 
@@ -192,7 +186,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
         /// <summary>
-        /// Loads BattleFront objectives.
+        /// Loads Campaign objectives.
         /// </summary>
 
         private void LoadObjectives()
@@ -281,7 +275,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// Writes the current zone capture status (gauge in upper right corner of client UI).
         /// </summary>
         /// <param name="Out">Packet to write</param>
-        /// <param name="lockingRealm">Realm that is locking the BattleFront</param>
+        /// <param name="lockingRealm">Realm that is locking the Campaign</param>
         public void WriteCaptureStatus(PacketOut Out, Realms lockingRealm)
         {
             BattlefrontLogger.Trace(".");
@@ -305,7 +299,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     break;
             }
 
-            BattlefrontLogger.Debug($"{BattleFrontName} : {(byte)orderPercent} {(byte)destroPercent}");
+            BattlefrontLogger.Debug($"{CampaignName} : {(byte)orderPercent} {(byte)destroPercent}");
 
             Out.WriteByte((byte)orderPercent);
             Out.WriteByte((byte)destroPercent);
@@ -314,7 +308,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         #region Reward Splitting
 
         /// <summary>
-        /// A scaler for the reward of objectives captured in this BattleFront, based on its activity relative to other fronts of the same tier.
+        /// A scaler for the reward of objectives captured in this Campaign, based on its activity relative to other fronts of the same tier.
         /// </summary>
         public float RelativeActivityFactor { get; private set; } = 1f;
 
@@ -325,13 +319,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
 
             // 12.05.18 RA - Not this function currently does nothing.
-            BattlefrontLogger.Trace($"Updating BattleFront scaler : {this.BattleFrontManager.ActiveBattleFrontName}");
+            BattlefrontLogger.Trace($"Updating Campaign scaler : {this.BattleFrontManager.ActiveBattleFrontName}");
             // Update comparative gain
             int index = Tier - 1;
 
             if (index < 0 || index > 3)
             {
-                Log.Error("BattleFront", "Region " + Region.RegionId + " has BattleFront with tier index " + index);
+                Log.Error("Campaign", "Region " + Region.RegionId + " has Campaign with tier index " + index);
                 return;
             }
 
@@ -351,7 +345,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         /// <summary>
         /// Notifies the given player has entered the lake,
-        /// removing it from the BattleFront's active players list and setting the rvr buff(s).
+        /// removing it from the Campaign's active players list and setting the rvr buff(s).
         /// </summary>
         /// <param name="plr">Player to add, not null</param>
         public void NotifyEnteredLake(Player plr)
@@ -393,7 +387,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         /// <summary>
         /// Notifies the given player has left the lake,
-        /// removing it from the BattleFront's active players lift and removing the rvr buff(s).
+        /// removing it from the Campaign's active players lift and removing the rvr buff(s).
         /// </summary>
         /// <param name="plr">Player to remove, not null</param>
         public void NotifyLeftLake(Player plr)
@@ -447,7 +441,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="realm"></param>
         public void LockBattleFront(Realms realm)
         {
-            BattlefrontLogger.Info($"Locking Battlefront {this.BattleFrontName} to {realm.ToString()}...");
+            BattlefrontLogger.Info($"Locking Battlefront {this.CampaignName} to {realm.ToString()}...");
 
 
             //this.VictoryPointProgress.Lock(realm);
@@ -508,7 +502,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         /// Scales battlefield objective rewards by the following factors:
         /// <para>- The internal AAO</para>
-        /// <para>- The relative activity in this BattleFront compared to others in its tier</para>
+        /// <para>- The relative activity in this Campaign compared to others in its tier</para>
         /// <para>- The total number of people fighting</para>
         /// <para>- The capturing realm's population at this objective.</para>
         /// </summary>
@@ -533,7 +527,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         ///// 
         //public void ResetBattleFront()
         //{
-        //    BattlefrontLogger.Trace($"Resetting Battlefront...{this.BattleFrontName}");
+        //    BattlefrontLogger.Trace($"Resetting Battlefront...{this.CampaignName}");
 
         //    VictoryPointProgress.Reset(this);
         //    LockingRealm = Realms.REALMS_REALM_NEUTRAL;
@@ -554,7 +548,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
       
 
         /// <summary>
-        /// Sends information to a player about the objectives within a BattleFront upon their entry.
+        /// Sends information to a player about the objectives within a Campaign upon their entry.
         /// </summary>
         /// <param name="plr"></param>
         public void SendObjectives(Player plr)
@@ -569,7 +563,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         private void UpdateVictoryPoints()
         {
-            BattlefrontLogger.Trace($"Updating Victory Points for {this.BattleFrontName}");
+            BattlefrontLogger.Trace($"Updating Victory Points for {this.CampaignName}");
             // Locked by Order/Dest
             if (IsBattleFrontLocked())
                 return; // Nothing to do
@@ -585,7 +579,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             foreach (CampaignObjective flag in Objectives)
             {
-                BattlefrontLogger.Trace($"Reward Ticks {this.BattleFrontName} - {flag.ToString()}");
+                BattlefrontLogger.Trace($"Reward Ticks {this.CampaignName} - {flag.ToString()}");
                 // TODO - perhaps use AAO calculation here as a pairing scaler?.
                 var vp = flag.RewardCaptureTick(1f);
 

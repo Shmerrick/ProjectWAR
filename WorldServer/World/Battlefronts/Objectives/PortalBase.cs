@@ -27,7 +27,7 @@ namespace WorldServer.World.BattleFronts.Objectives
         }
 
         /// <summary>
-        /// Creates a game object spawn entity from given BattleFront portal object.
+        /// Creates a game object spawn entity from given Campaign portal object.
         /// </summary>
         /// <param name="BattleFrontObject">Portal object providing raw data</param>
         /// <returns>newly created spawn entity</returns>

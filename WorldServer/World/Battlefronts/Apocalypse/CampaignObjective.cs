@@ -28,16 +28,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>Maximum players each side taken in consideration for assaults a flag</summary>
         public static short MAX_CLOSE_PLAYERS = 6;
 
-        /// <summary>The tier within which the BattleFront exists.</summary>
+        /// <summary>The tier within which the Campaign exists.</summary>
         public readonly byte Tier;
 
-        /// <summary>BattleFront objective id</summary>
+        /// <summary>Campaign objective id</summary>
         public readonly int Id;
 
-        /// <summary>The zone info id within which the BattleFront exists.</summary>
+        /// <summary>The zone info id within which the Campaign exists.</summary>
         public new readonly ushort ZoneId;
 
-        /// <summary> The region id within which the BattleFront exists.</summary>
+        /// <summary> The region id within which the Campaign exists.</summary>
         public readonly ushort RegionId;
 
         /// <summary>Influence area containing the objective</summary>
@@ -341,7 +341,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
 
                     if (Ruin)
-                        foreach (var keep in Region.BattleFront.Keeps)
+                        foreach (var keep in Region.Campaign.Keeps)
                             if (Id == keep.Info.KeepId)
                             {
                                 keep.Realm = OwningRealm;

@@ -260,9 +260,9 @@
     <Compile Include="World\Battlefronts\Apocalypse\IBattlefrontManager.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\CampaignObjective.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Campaign.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\LowerTierBattlefrontManager.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\LowerTierCampaignManager.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\RVRRewardManager.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\UpperTierBattlefrontManager.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\UpperTierCampaignManager.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\IApocBattleFront.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\ApocCommunications.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\ProximityEngine.cs" />

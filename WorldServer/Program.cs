@@ -21,6 +21,8 @@ namespace WorldServer
         public static TCPServer Server;
         public static Realm Rm;
         private static Timer _timer;
+        // DEV - Development mode, PRD - Production Mode. 
+        public static string ServerMode;
 
         [STAThread]
         static void Main(string[] args)
@@ -29,6 +31,30 @@ namespace WorldServer
             Console.CancelKeyPress += new ConsoleCancelEventHandler(OnClose);
 
             Log.Texte("", "-------------------- World Server ---------------------", ConsoleColor.DarkRed);
+
+            // Default the server to DEV mode.
+            if (args.Length == 0)
+                ServerMode = "DEV";
+            else
+            {
+                if (args.Length == 1)
+                {
+                    if (args[0] == "DEV")
+                    {
+                        ServerMode = "DEV";
+                    }
+                    if (args[0] == "PRD")
+                    {
+                        ServerMode = "PRD";
+                    }
+                }
+                else
+                {
+                    ServerMode = "DEV";
+                }
+            }  
+
+
 
             // Loading all configs files
             ConfigMgr.LoadConfigs();
@@ -104,24 +130,24 @@ namespace WorldServer
             }
 
             LoaderMgr.Start();
-            Log.Texte("Battlefront Manager", "Creating Upper Tier BattleFront Manager", ConsoleColor.Cyan);
-            WorldMgr.UpperTierBattleFrontManager = new UpperTierBattleFrontManager(RVRProgressionService._RVRProgressions.Where(x=>x.Tier == 4).ToList(), WorldMgr._Regions);
-            Log.Texte("Battlefront Manager", "Creating Lower Tier BattleFront Manager", ConsoleColor.Cyan);
-            WorldMgr.LowerTierBattleFrontManager = new LowerTierBattleFrontManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 1).ToList(), WorldMgr._Regions);
+            Log.Texte("Battlefront Manager", "Creating Upper Tier Campaign Manager", ConsoleColor.Cyan);
+            WorldMgr.UpperTierCampaignManager = new UpperTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x=>x.Tier == 4).ToList(), WorldMgr._Regions);
+            Log.Texte("Battlefront Manager", "Creating Lower Tier Campaign Manager", ConsoleColor.Cyan);
+            WorldMgr.LowerTierCampaignManager = new LowerTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 1).ToList(), WorldMgr._Regions);
             Log.Texte("Battlefront Manager", "Resetting Progression", ConsoleColor.Cyan);
-            WorldMgr.UpperTierBattleFrontManager.ResetBattleFrontProgression();
-            WorldMgr.LowerTierBattleFrontManager.ResetBattleFrontProgression();
+            WorldMgr.UpperTierCampaignManager.ResetBattleFrontProgression();
+            WorldMgr.LowerTierCampaignManager.ResetBattleFrontProgression();
             Log.Texte("Battlefront Manager", "Attaching Battlefronts to Regions", ConsoleColor.Cyan);
             // Attach Battlefronts to regions
             WorldMgr.AttachUpperTierBattleFronts(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 4).ToList());
 
             Log.Texte("Battlefront Manager", "Locking Battlefronts", ConsoleColor.Cyan);
-            WorldMgr.UpperTierBattleFrontManager.LockBattleFrontsAllRegions(4);
-            WorldMgr.LowerTierBattleFrontManager.LockBattleFrontsAllRegions(1);
+            WorldMgr.UpperTierCampaignManager.LockBattleFrontsAllRegions(4);
+            WorldMgr.LowerTierCampaignManager.LockBattleFrontsAllRegions(1);
 
             Log.Texte("Battlefront Manager", "Opening Active battlefronts", ConsoleColor.Cyan);
-            WorldMgr.UpperTierBattleFrontManager.OpenActiveBattlefront();
-            WorldMgr.LowerTierBattleFrontManager.OpenActiveBattlefront();
+            WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront();
+            WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront();
 
             WorldMgr.UpdateRegionCaptureStatus();
                 

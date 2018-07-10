@@ -48,8 +48,8 @@ namespace WorldServer
         private static bool _running = true;
         public static long StartingPairing;
 
-        public static UpperTierBattleFrontManager UpperTierBattleFrontManager;
-        public static LowerTierBattleFrontManager LowerTierBattleFrontManager;
+        public static UpperTierCampaignManager UpperTierCampaignManager;
+        public static LowerTierCampaignManager LowerTierCampaignManager;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         //Log.Success("StartingPairing: ", StartingPairing.ToString());
@@ -136,7 +136,7 @@ namespace WorldServer
                         return resp;
 
                     #region RvR area respawns
-                    var front = player.Region.BattleFront;
+                    var front = player.Region.Campaign;
 
                     if (front != null)
                     {
@@ -1219,7 +1219,7 @@ namespace WorldServer
         public static Dictionary<int, int> GetZonesFightLevel()
         {
             var level = new Dictionary<int, int>();
-            foreach (var region in WorldMgr._Regions.Where(e => e.BattleFront != null).ToList())
+            foreach (var region in WorldMgr._Regions.Where(e => e.Campaign != null).ToList())
             {
                 foreach (var zone in region.ZonesMgr.ToList())
                 {
@@ -1279,7 +1279,7 @@ namespace WorldServer
                 }
             }
 
-            foreach (var region in WorldMgr._Regions.Where(e => e.BattleFront != null).ToList())
+            foreach (var region in WorldMgr._Regions.Where(e => e.Campaign != null).ToList())
             {
                 foreach (var zone in region.ZonesMgr.ToList())
                 {
@@ -1297,7 +1297,7 @@ namespace WorldServer
                 {
                     SendZoneFightLevel();
 
-                    foreach (var region in WorldMgr._Regions.Where(e => e.BattleFront != null).ToList())
+                    foreach (var region in WorldMgr._Regions.Where(e => e.Campaign != null).ToList())
                     {
                         foreach (var zone in region.ZonesMgr.ToList())
                         {
@@ -1435,10 +1435,10 @@ namespace WorldServer
                         //case 1: // t1 dw/gs
                         //case 3: // t1 he/de
                         //case 8: // t1 em/ch
-                        //    regionMgr.BattleFront = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager, new ApocCommunications());
+                        //    regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierCampaignManager, new ApocCommunications());
                         //    break;
                         default: // Everything else...
-                            regionMgr.BattleFront = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager, new ApocCommunications());
+                            regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierCampaignManager, new ApocCommunications());
                             break;
                     }
                 }
@@ -1476,8 +1476,8 @@ namespace WorldServer
             
             // Dwarfs vs Greenskins T1
             Out.WriteByte(0);    // 0 and ignored
-            Out.WriteByte((byte)LowerTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER1_EKRUND).OrderVictoryPointPercentage);  // % Order lock
-            Out.WriteByte((byte)LowerTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER1_EKRUND).DestructionVictoryPointPercentage);    // % Dest lock
+            Out.WriteByte((byte)LowerTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER1_EKRUND).OrderVictoryPointPercentage);  // % Order lock
+            Out.WriteByte((byte)LowerTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER1_EKRUND).DestructionVictoryPointPercentage);    // % Dest lock
             // Dwarfs vs Greenskins T2
             //BuildCaptureStatus(Out, WorldMgr.GetRegion(12, false), realm);
             Out.WriteByte(0);
@@ -1496,8 +1496,8 @@ namespace WorldServer
             // Empire vs Chaos T1
             //BuildCaptureStatus(Out, WorldMgr.GetRegion(8, false), realm);
             Out.WriteByte(0);
-            Out.WriteByte((byte)LowerTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER1_NORDLAND).OrderVictoryPointPercentage);  // % Order lock
-            Out.WriteByte((byte)LowerTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER1_NORDLAND).DestructionVictoryPointPercentage);    // % Dest lock
+            Out.WriteByte((byte)LowerTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER1_NORDLAND).OrderVictoryPointPercentage);  // % Order lock
+            Out.WriteByte((byte)LowerTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER1_NORDLAND).DestructionVictoryPointPercentage);    // % Dest lock
             // Empire vs Chaos T2
             //BuildCaptureStatus(Out, WorldMgr.GetRegion(14, false), realm);
             Out.WriteByte(0);
@@ -1516,8 +1516,8 @@ namespace WorldServer
             // High Elves vs Dark Elves T1
             //BuildCaptureStatus(Out, WorldMgr.GetRegion(3, false), realm);
             Out.WriteByte(0);
-            Out.WriteByte((byte)LowerTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER1_CHRACE).OrderVictoryPointPercentage);  // % Order lock
-            Out.WriteByte((byte)LowerTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER1_CHRACE).DestructionVictoryPointPercentage);    // % Dest lock
+            Out.WriteByte((byte)LowerTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER1_CHRACE).OrderVictoryPointPercentage);  // % Order lock
+            Out.WriteByte((byte)LowerTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER1_CHRACE).DestructionVictoryPointPercentage);    // % Dest lock
             // High Elves vs Dark Elves T2
             //BuildCaptureStatus(Out, WorldMgr.GetRegion(15, false), realm);
             Out.WriteByte(0);
@@ -1537,33 +1537,33 @@ namespace WorldServer
             Out.Fill(0, 83);
 
             Out.WriteByte(3);   //dwarf fort
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN).LockStatus);
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus);
+            Out.WriteByte((byte)UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
+            Out.WriteByte((byte)UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN).LockStatus);
+            Out.WriteByte((byte)UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus);
             Out.WriteByte(3);   //or
 
             Out.WriteByte(3);   //emp fort
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG).LockStatus);
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus);
+            Out.WriteByte((byte)UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
+            Out.WriteByte((byte)UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG).LockStatus);
+            Out.WriteByte((byte)UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus);
             Out.WriteByte(3);   //or
 
             Out.WriteByte(3);   //elf fort
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus);
-            Out.WriteByte((byte)UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus);
+            Out.WriteByte((byte)UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
+            Out.WriteByte((byte)UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus);
+            Out.WriteByte((byte)UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus);
             Out.WriteByte(3);   //or
 
             //For debugging purposes
-            var lockStr = UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus.ToString();
-            lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN).LockStatus.ToString();
-            lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY).LockStatus.ToString();
-            lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus.ToString();
-            lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG).LockStatus.ToString();
-            lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus.ToString();
-            lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus.ToString();
-            lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus.ToString();
-            lockStr += UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus.ToString();
+            var lockStr = UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus.ToString();
+            lockStr += UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN).LockStatus.ToString();
+            lockStr += UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY).LockStatus.ToString();
+            lockStr += UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus.ToString();
+            lockStr += UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG).LockStatus.ToString();
+            lockStr += UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus.ToString();
+            lockStr += UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus.ToString();
+            lockStr += UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus.ToString();
+            lockStr += UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus.ToString();
             Out.WriteByte(0);
             Out.WriteByte(0);
             Out.WriteByte(0);
@@ -1589,10 +1589,10 @@ namespace WorldServer
                     //PacketOut playerCampaignStatus = new PacketOut(0, 159) { Position = 0 };
                     //playerCampaignStatus.Write(buffer, 0, buffer.Length);
 
-                    //if (player.Region?.BattleFront != null)
+                    //if (player.Region?.Campaign != null)
                     //{
-                    //    Out.WriteByte((byte)player.Region?.BattleFront.VictoryPointProgress.OrderVictoryPointPercentage);
-                    //    Out.WriteByte((byte)player.Region?.BattleFront.VictoryPointProgress.DestructionVictoryPointPercentage);
+                    //    Out.WriteByte((byte)player.Region?.Campaign.VictoryPointProgress.OrderVictoryPointPercentage);
+                    //    Out.WriteByte((byte)player.Region?.Campaign.VictoryPointProgress.DestructionVictoryPointPercentage);
 
                     //    //no clue but set to a value wont show the pool updatetimer
                     //    Out.WriteByte(0);

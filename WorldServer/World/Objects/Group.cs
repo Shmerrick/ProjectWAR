@@ -1901,8 +1901,8 @@ namespace WorldServer
                         if (playerVictim != null)
                             closestFlag.RewardManager.AddDelayedRewardsFrom(curPlayer, playerVictim, (uint)(xpShare * transferenceFactor), (uint)(renownShare * transferenceFactor));
 
-                        RewardLogger.Trace($"Adding contribution to BattleFront: {curPlayer.Name} ");
-                        curPlayer.Region.BattleFront.AddContribution(curPlayer, (uint)(renownShare * bonusMod));
+                        RewardLogger.Trace($"Adding contribution to Campaign: {curPlayer.Name} ");
+                        curPlayer.Region.Campaign.AddContribution(curPlayer, (uint)(renownShare * bonusMod));
                     }
                     RewardLogger.Trace($"Level Check. Current player : {curPlayer.EffectiveLevel} Victim : {victim.EffectiveLevel}");
                     // Prevent farming low levels for kill quests, and also stop throttled kills

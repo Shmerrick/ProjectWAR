@@ -25,7 +25,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (region == null)
                 Out.Fill(0, 3);
             else
-                region.BattleFront.WriteCaptureStatus(Out, realm);
+                region.Campaign.WriteCaptureStatus(Out, realm);
         }
 
         public void BuildBattleFrontStatus(PacketOut Out, RegionMgr region)
@@ -38,7 +38,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 Out.WriteByte((byte)0);
                 Out.WriteByte((byte)1);
             //}
-            //region.BattleFront.WriteBattleFrontStatus(Out);
+            //region.Campaign.WriteBattleFrontStatus(Out);
         }
 
         public void ResetProgressionCommunications(Player plr, Realms realm, VictoryPointProgress vpp, string forceT4)
@@ -249,7 +249,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             PacketOut playerCampaignStatus = new PacketOut(0, 159) { Position = 0 };
                             playerCampaignStatus.Write(buffer, 0, buffer.Length);
 
-                            if (player.Region?.BattleFront != null)
+                            if (player.Region?.Campaign != null)
                                 WriteVictoryPoints(player.Realm, playerCampaignStatus, vpp);
 
                             else
@@ -264,7 +264,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
             else
             {
-                if (plr.Region?.BattleFront != null)
+                if (plr.Region?.Campaign != null)
                     WriteVictoryPoints(plr.Realm, Out, vpp);
 
                 else

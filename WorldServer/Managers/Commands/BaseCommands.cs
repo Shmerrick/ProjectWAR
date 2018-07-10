@@ -2412,7 +2412,7 @@ namespace WorldServer.Managers.Commands
                 //        foreach (ProximityBattleFront b in BattleFrontList.BattleFronts[i])
                 //            b.UpdateStateOfTheRealm();
                 //    else
-                //        foreach (BattleFront b in BattleFrontList.BattleFronts[i])
+                //        foreach (Campaign b in BattleFrontList.BattleFronts[i])
                 //            b.UpdateStateOfTheRealm();
                 //}
             }

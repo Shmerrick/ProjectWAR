@@ -1070,13 +1070,13 @@ namespace WorldServer
                 {
 
                     // NEWDAWN
-                    if (Region.BattleFront != null)
+                    if (Region.Campaign != null)
                     {
-                        Region.BattleFront.NotifyLeftLake(this);
+                        Region.Campaign.NotifyLeftLake(this);
                     }
                     else
                     {
-                        Region.BattleFront.NotifyLeftLake(this);
+                        Region.Campaign.NotifyLeftLake(this);
                     }
                 }
 
@@ -3075,13 +3075,13 @@ namespace WorldServer
 
             int aaoMult = 0;
             Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
-            if (Region != null && Region.BattleFront != null)
+            if (Region != null && Region.Campaign != null)
             {
-                if (Region.BattleFront != null)
+                if (Region.Campaign != null)
                 {
-                    aaoMult = Math.Abs(Region.BattleFront.AgainstAllOddsMult);
+                    aaoMult = Math.Abs(Region.Campaign.AgainstAllOddsMult);
                     if (aaoMult != 0)
-                        aaoRealm = Region.BattleFront.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
+                        aaoRealm = Region.Campaign.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
                 }
                 if (aaoMult > 2)
                     aaoMult = 2;
@@ -3177,14 +3177,14 @@ namespace WorldServer
             
             int aaoMult = 0;
             Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
-            if (Region != null && Region.BattleFront != null)
+            if (Region != null && Region.Campaign != null)
             {
 
-                if (Region.BattleFront != null)
+                if (Region.Campaign != null)
                 {
-                    aaoMult = Math.Abs(Region.BattleFront.AgainstAllOddsMult);
+                    aaoMult = Math.Abs(Region.Campaign.AgainstAllOddsMult);
                     if (aaoMult != 0)
-                        aaoRealm = Region.BattleFront.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
+                        aaoRealm = Region.Campaign.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
                 }
                 if (aaoMult != 0 && aaoRealm != Realms.REALMS_REALM_NEUTRAL && Realm != aaoRealm)
                     renown = Math.Max(1, renown);
@@ -3899,7 +3899,7 @@ namespace WorldServer
                 if (_recentLooters.ContainsKey(killer.CharacterId) && _recentLooters[killer.CharacterId] > TCPManager.GetTimeStampMS())
                     return;
 
-                if (Region.BattleFront.PreventKillReward() || (killer.Client?._Account != null && CheckKillFarm(killer)))
+                if (Region.Campaign.PreventKillReward() || (killer.Client?._Account != null && CheckKillFarm(killer)))
                     return;
 
                 if (CurrentKeep != null)
@@ -3907,7 +3907,7 @@ namespace WorldServer
                 else if (CurrentObjectiveFlag != null)
                     CurrentObjectiveFlag.CheckKillValid(this);
 
-                float rewardScale = Region.BattleFront.ModifyKill(killer, this);
+                float rewardScale = Region.Campaign.ModifyKill(killer, this);
 
                 // Maximum 25% bonus depending on how much damage the target took while alive.
                 rewardScale += Math.Min(0.25f, (TotalDamageTaken * 0.05f) / MaxHealth);
@@ -3927,9 +3927,9 @@ namespace WorldServer
 #endif
                 // +1 VP for a kill
                 if (killer.Realm == Realms.REALMS_REALM_DESTRUCTION)
-                    killer.Region.BattleFront.VictoryPointProgress.DestructionVictoryPoints++;
+                    killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints++;
                 else
-                    killer.Region.BattleFront.VictoryPointProgress.OrderVictoryPoints++;
+                    killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints++;
 
                 HandleXPRenown(killer, rewardScale);
                 GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
@@ -3954,7 +3954,7 @@ namespace WorldServer
             CampaignObjective closestFlag = null;
 
             if (ScnInterface.Scenario == null)
-                closestFlag = Region.BattleFront.GetClosestFlag(WorldPosition);
+                closestFlag = Region.Campaign.GetClosestFlag(WorldPosition);
 
             #region Initialize reward values
 
@@ -4063,7 +4063,7 @@ namespace WorldServer
                             {
                                 RewardLogger.Trace($"Delayed Rewards RP: {renownShare} BonusMod : {bonusMod} Killer : {killer} This : {this.Name}");
                                 closestFlag.RewardManager.AddDelayedRewardsFrom(curPlayer, this, (uint)(xpShare * transferenceFactor), (uint)(renownShare * transferenceFactor));
-                                Region.BattleFront.AddContribution(curPlayer, (uint)(renownShare * bonusMod));
+                                Region.Campaign.AddContribution(curPlayer, (uint)(renownShare * bonusMod));
                             }
                         }
                     }
@@ -6051,13 +6051,13 @@ namespace WorldServer
             if (CurrentArea != null && CurrentArea.IsRvR)
             {
                 // NEWDAWN
-                if (Region.BattleFront != null)
+                if (Region.Campaign != null)
                 {
-                    oldRegion?.BattleFront?.NotifyLeftLake(this);
+                    oldRegion?.Campaign?.NotifyLeftLake(this);
                 }
                 else
                 {
-                    oldRegion?.BattleFront?.NotifyLeftLake(this);
+                    oldRegion?.Campaign?.NotifyLeftLake(this);
                 }
             }
 
@@ -6254,7 +6254,7 @@ namespace WorldServer
                 }
                 else if (pqarea > 28)  // keeps
                 {
-                    foreach (Keep keep in Region.BattleFront.Keeps)
+                    foreach (Keep keep in Region.Campaign.Keeps)
                     {
                         if (keep.Info.ZoneId == Zone.ZoneId && keep.Info.PQuest?.PQAreaId == pqarea)
                         {
@@ -6314,8 +6314,8 @@ namespace WorldServer
                             if (CurrentArea == null || !CurrentArea.IsRvR || CurrentArea.ZoneId != newArea.ZoneId)
                             {
                                 // NEWDAWN
-                                if (Region.BattleFront != null)
-                                    Region.BattleFront.NotifyEnteredLake(this);
+                                if (Region.Campaign != null)
+                                    Region.Campaign.NotifyEnteredLake(this);
                                 
                             }
                         }
@@ -6332,10 +6332,10 @@ namespace WorldServer
                         if (CurrentArea != null && CurrentArea.IsRvR)
                         {
                             // NEWDAWN
-                            if (Region.BattleFront != null)
-                                Region.BattleFront.NotifyLeftLake(this);
+                            if (Region.Campaign != null)
+                                Region.Campaign.NotifyLeftLake(this);
                             else
-                                Region.BattleFront.NotifyLeftLake(this);
+                                Region.Campaign.NotifyLeftLake(this);
                         }
                     }
                 }
@@ -6345,10 +6345,10 @@ namespace WorldServer
                     if (CurrentArea != null && CurrentArea.IsRvR)
                     {
                         // NEWDAWN
-                        if (Region.BattleFront != null)
-                            Region.BattleFront.NotifyLeftLake(this);
+                        if (Region.Campaign != null)
+                            Region.Campaign.NotifyLeftLake(this);
                         else
-                            Region.BattleFront.NotifyLeftLake(this);
+                            Region.Campaign.NotifyLeftLake(this);
 
                     }
 

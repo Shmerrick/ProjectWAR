@@ -13,21 +13,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     public interface IApocBattleFront
     {
         /// <summary>
-        /// Main BattleFront update method, invoked by region manager, short perdiod.
+        /// Main Campaign update method, invoked by region manager, short perdiod.
         /// </summary>
         /// <param name="start">Timestamp of region manager update start time</param>
         void Update(long start);
 
         /// <summary>
         /// Notifies the given player has entered the lake,
-        /// removing it from the BattleFront's active players list and setting the rvr buff(s).
+        /// removing it from the Campaign's active players list and setting the rvr buff(s).
         /// </summary>
         /// <param name="plr">Player to add, not null</param>
         void NotifyEnteredLake(Player plr);
 
         /// <summary>
         /// Notifies the given player has left the lake,
-        /// removing it from the BattleFront's active players lift and removing the rvr buff(s).
+        /// removing it from the Campaign's active players lift and removing the rvr buff(s).
         /// </summary>
         /// <param name="plr">Player to remove, not null</param>
         void NotifyLeftLake(Player plr);
@@ -35,7 +35,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         /// Locks a pairing, preventing any interaction with objectives within.
         /// </summary>
-        /// <param name="realm">Realm that locked the BattleFront</param>
+        /// <param name="realm">Realm that locked the Campaign</param>
         void LockPairing(Realm realm);
 
         /// <summary>
@@ -51,13 +51,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         #region Send
 
         /// <summary>
-        /// Sends information to a player about the objectives within a BattleFront upon their entry.
+        /// Sends information to a player about the objectives within a Campaign upon their entry.
         /// </summary>
         /// <param name="plr">Player to send list to</param>
         void SendObjectives(Player plr);
 
         /// <summary>
-        /// Writes current capture status of the BattleFront in output.
+        /// Writes current capture status of the Campaign in output.
         /// </summary>
         /// <param name="Out">TCP output</param>
         void WriteCaptureStatus(PacketOut Out);

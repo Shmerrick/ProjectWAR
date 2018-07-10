@@ -17,7 +17,7 @@ namespace WorldServer
 
         public override void StartBuff()
         {
-            _BattleFront = Target.Region?.BattleFront;
+            _BattleFront = Target.Region?.Campaign;
 
             if (_BattleFront == null)
             {

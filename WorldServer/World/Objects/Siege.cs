@@ -611,7 +611,7 @@ namespace WorldServer
                         if (influenceId != 0)
                             curPlayer.AddInfluence(influenceId, influenceShare);
 
-                        Region.BattleFront?.AddContribution(curPlayer, renownShare);
+                        Region.Campaign?.AddContribution(curPlayer, renownShare);
                     }
 
                     curPlayer.EvtInterface.Notify(EventName.OnKill, killer, null);

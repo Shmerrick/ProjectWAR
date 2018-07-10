@@ -13,7 +13,7 @@ namespace WorldServer.Test
     [TestClass]
     public class LowerTierBattleFrontManagerTest
     {
-        public LowerTierBattleFrontManager manager { get; set; }
+        public LowerTierCampaignManager manager { get; set; }
         public List<RVRProgression> SampleProgressionList { get; set; }
         public RegionMgr Region1 { get; set; }
         public RegionMgr Region3 { get; set; }
@@ -72,27 +72,27 @@ namespace WorldServer.Test
                 OrderWinProgression = 2,
                 PairingId = 1
             });
-            manager = new LowerTierBattleFrontManager(SampleProgressionList, RegionMgrs);
+            manager = new LowerTierCampaignManager(SampleProgressionList, RegionMgrs);
         }
 
         [TestMethod]
         public void Constructor_NoPairings_CreatesError()
         {
-            var manager = new LowerTierBattleFrontManager(null, RegionMgrs);
+            var manager = new LowerTierCampaignManager(null, RegionMgrs);
             Assert.IsNull(manager.ActiveBattleFront);
         }
 
         [TestMethod]
         public void Constructor_NoActivePairings_CreatesError()
         {
-            var manager = new LowerTierBattleFrontManager(SampleProgressionList,RegionMgrs);
+            var manager = new LowerTierCampaignManager(SampleProgressionList,RegionMgrs);
             Assert.IsNull(manager.ActiveBattleFront);
         }
 
         [TestMethod]
         public void ResetActivePairing()
         {
-            var manager = new LowerTierBattleFrontManager(SampleProgressionList, RegionMgrs);
+            var manager = new LowerTierCampaignManager(SampleProgressionList, RegionMgrs);
             var bf = manager.ResetBattleFrontProgression();
             Assert.IsTrue(bf.BattleFrontId == 1);
         }
@@ -101,7 +101,7 @@ namespace WorldServer.Test
         public void ActivePairingLocated()
         {
 
-            var manager = new LowerTierBattleFrontManager(SampleProgressionList, RegionMgrs);
+            var manager = new LowerTierCampaignManager(SampleProgressionList, RegionMgrs);
             var bf = manager.ResetBattleFrontProgression();
             Assert.IsTrue(bf.DestWinProgression == 2);
             Assert.IsTrue(bf.BattleFrontId == 1);

@@ -6,7 +6,7 @@ using NLog;
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
     /// <summary>
-    /// Object bound to a BattleFront responsible of tracking players to compute AAO.
+    /// Object bound to a Campaign responsible of tracking players to compute AAO.
     /// </summary>
     internal class AAOTracker
     {

@@ -320,7 +320,7 @@ namespace WorldServer
             _weapon.MvtInterface.StopMove();
 
             if (Type == SiegeType.RAM)
-                _Owner.Region.BattleFront.GetClosestKeep(_Owner.WorldPosition)?.TryAlignRam(_Owner, player);
+                _Owner.Region.Campaign.GetClosestKeep(_Owner.WorldPosition)?.TryAlignRam(_Owner, player);
 
             foreach (Player p in _Owner.PlayersInRange)
             {

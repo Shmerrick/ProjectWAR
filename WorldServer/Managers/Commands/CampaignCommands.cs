@@ -29,7 +29,7 @@ namespace WorldServer.Managers.Commands
         {
             // Weird algorithm but it's for legacy purpose only
             bool bLocalZone = true;
-            var BattleFront = plr.Region.BattleFront;
+            var BattleFront = plr.Region.Campaign;
             switch (targetString)
             {
                 case "zone":
@@ -49,14 +49,14 @@ namespace WorldServer.Managers.Commands
                             SendCsr(plr, "Unkown region : ", regionId.ToString());
                             return;
                         }
-                        BattleFront = region.BattleFront;
+                        BattleFront = region.Campaign;
                     }
                     else
                         SendCsr(plr, "Please enter a valid regionID");
                     break;
             }
 
-            //BattleFront.CampaignDiagnostic(plr, bLocalZone);
+            //Campaign.CampaignDiagnostic(plr, bLocalZone);
         }
 
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Updates some constant parameters. Give no arg to list constants.")]
@@ -114,9 +114,9 @@ namespace WorldServer.Managers.Commands
         {
             if (noReward == "0" || noReward == "1")
             {
-                plr.SendClientMessage($"Attempting to lock the {plr.Region.BattleFront.BattleFrontName} campaign... (call AdvancePairing to move ahead)");
+                plr.SendClientMessage($"Attempting to lock the {plr.Region.Campaign.CampaignName} campaign... (call AdvancePairing to move ahead)");
 
-                WorldMgr.GetRegion(plr.Region.RegionId, false).BattleFront.BattleFrontManager.LockActiveBattleFront(realm);
+                WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign.BattleFrontManager.LockActiveBattleFront(realm);
                 
             }
             else
@@ -129,15 +129,15 @@ namespace WorldServer.Managers.Commands
 
             if (tier == 1)
             {
-                var progression = WorldMgr.LowerTierBattleFrontManager.AdvanceBattleFront(realm);
-                WorldMgr.LowerTierBattleFrontManager.OpenActiveBattlefront();
+                var progression = WorldMgr.LowerTierCampaignManager.AdvanceBattleFront(realm);
+                WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront();
                 WorldMgr.UpdateRegionCaptureStatus();
                 plr.SendClientMessage($"{realm.ToString()} pushes - next battle is in {progression.Description}");
             }
             else
             {
-                var progression = WorldMgr.UpperTierBattleFrontManager.AdvanceBattleFront(realm);
-                WorldMgr.UpperTierBattleFrontManager.OpenActiveBattlefront();
+                var progression = WorldMgr.UpperTierCampaignManager.AdvanceBattleFront(realm);
+                WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront();
                 WorldMgr.UpdateRegionCaptureStatus();
                 plr.SendClientMessage($"{realm.ToString()} pushes - next battle is in {progression.Description}");
 
@@ -155,60 +155,60 @@ namespace WorldServer.Managers.Commands
         public static void SetRegionCaptureStatus(Player plr, string T4Progression, int activeBattleFrontId)
         {
             var lockingRealm = Realms.REALMS_REALM_NEUTRAL;
-            foreach (var status in WorldMgr.UpperTierBattleFrontManager.ApocBattleFrontStatuses)
+            foreach (var status in WorldMgr.UpperTierCampaignManager.BattleFrontStatuses)
             {
                 
                 if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY)
                 {
                     lockingRealm = GetLockRealmFromT4Progression(T4Progression[0].ToString());
-                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
                 }
                 if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN)
                 {
                     lockingRealm = GetLockRealmFromT4Progression(T4Progression[1].ToString());
-                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
                 }
                 if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG)
                 {
                     lockingRealm = GetLockRealmFromT4Progression(T4Progression[2].ToString());
-                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
                 }
 
                 if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND)
                 {
                     lockingRealm = GetLockRealmFromT4Progression(T4Progression[3].ToString());
-                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
                 }
                 if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG)
                 {
                     lockingRealm = GetLockRealmFromT4Progression(T4Progression[4].ToString());
-                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
                 }
                 if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES)
                 {
                     lockingRealm = GetLockRealmFromT4Progression(T4Progression[5].ToString());
-                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
                 }
 
                 if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE)
                 {
                     lockingRealm = GetLockRealmFromT4Progression(T4Progression[6].ToString());
-                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
                 }
                 if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE)
                 {
                     lockingRealm = GetLockRealmFromT4Progression(T4Progression[7].ToString());
-                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
                 }
                 if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR)
                 {
                     lockingRealm = GetLockRealmFromT4Progression(T4Progression[8].ToString());
-                    WorldMgr.UpperTierBattleFrontManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
                 }
             }
 
-            WorldMgr.UpperTierBattleFrontManager.ActiveBattleFront = WorldMgr.UpperTierBattleFrontManager.GetBattleFrontByBattleFrontId(activeBattleFrontId);
-            WorldMgr.UpperTierBattleFrontManager.OpenActiveBattlefront();
+            WorldMgr.UpperTierCampaignManager.ActiveBattleFront = WorldMgr.UpperTierCampaignManager.GetBattleFrontByBattleFrontId(activeBattleFrontId);
+            WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront();
 
             WorldMgr.UpdateRegionCaptureStatus();
         }
@@ -258,15 +258,15 @@ namespace WorldServer.Managers.Commands
         [CommandAttribute(EGmLevel.SourceDev, "Report on the status of the t4 progression")]
         public static void ProgressionStatus(Player plr)
         {
-            var lockStr = $"BC :{WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus.ToString()}";
-            lockStr += $"TM :{WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN).LockStatus.ToString()}";
-            lockStr += $"KV :{WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY).LockStatus.ToString()}";
-            lockStr += $"CW :{WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus.ToString()}";
-            lockStr += $"PR :{WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG).LockStatus.ToString()}";
-            lockStr += $"RK :{WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus.ToString()}";
-            lockStr += $"CA :{WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus.ToString()}";
-            lockStr += $"DW :{WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus.ToString()}";
-            lockStr += $"EA :{ WorldMgr.UpperTierBattleFrontManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus.ToString()}";
+            var lockStr = $"BC :{WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus.ToString()}";
+            lockStr += $"TM :{WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN).LockStatus.ToString()}";
+            lockStr += $"KV :{WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY).LockStatus.ToString()}";
+            lockStr += $"CW :{WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus.ToString()}";
+            lockStr += $"PR :{WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG).LockStatus.ToString()}";
+            lockStr += $"RK :{WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus.ToString()}";
+            lockStr += $"CA :{WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus.ToString()}";
+            lockStr += $"DW :{WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus.ToString()}";
+            lockStr += $"EA :{ WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus.ToString()}";
 
             plr.SendClientMessage($"Porgression Status : {lockStr}");
         }
@@ -279,7 +279,7 @@ namespace WorldServer.Managers.Commands
 
             var objectiveToLock = values;
 
-            WorldMgr.GetRegion(plr.Region.RegionId, false).BattleFront.LockBattleObjective(realm, objectiveToLock);
+            WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign.LockBattleObjective(realm, objectiveToLock);
 
         }
 
@@ -346,13 +346,13 @@ namespace WorldServer.Managers.Commands
         //        SendCsr(plr, "CAMPAIGN DROP: Must be in a zone to use this command.");
         //        return;
         //    }
-        //    else if (!(plr.Region.Bttlfront is BattleFront))
+        //    else if (!(plr.Region.Bttlfront is Campaign))
         //    {
         //        SendCsr(plr, "CAMPAIGN DROP: This command is supported in legacy RvR.");
         //        return;
         //    }
 
-        //    Keep closestKeep = ((BattleFront)plr.Region.Bttlfront).GetZoneKeep(plr.Zone.ZoneId, realmIndex);
+        //    Keep closestKeep = ((Campaign)plr.Region.Bttlfront).GetZoneKeep(plr.Zone.ZoneId, realmIndex);
 
         //    if (closestKeep == null)
         //    {
@@ -383,12 +383,12 @@ namespace WorldServer.Managers.Commands
         [CommandAttribute(EGmLevel.DatabaseDev, "Sets the number of VP for a realm")]
         public static void SetVictoryPoints(Player plr, Realms realm, int points)
         {
-            if (plr.Zone == null || plr.Region.BattleFront == null)
+            if (plr.Zone == null || plr.Region.Campaign == null)
             {
                 SendCsr(plr, "CAMPAIGN SUPPLY: Must be in a RvR zone to use this command.");
                 return;
             }
-            var BattleFront = (Campaign)plr.Region.BattleFront;
+            var BattleFront = (Campaign)plr.Region.Campaign;
 
             if (realm == Realms.REALMS_REALM_ORDER)
                 BattleFront.VictoryPointProgress.OrderVictoryPoints = points;
@@ -402,20 +402,20 @@ namespace WorldServer.Managers.Commands
         [CommandAttribute(EGmLevel.DatabaseDev, "Returns the World Campaign Status")]
         public static void Status(Player plr)
         {
-            if (plr.Zone == null || plr.Region.BattleFront == null)
+            if (plr.Zone == null || plr.Region.Campaign == null)
             {
                 SendCsr(plr, "Must be in a RvR zone to use this command.");
                 return;
             }
-            plr.SendClientMessage($"Lower Tier {WorldMgr.LowerTierBattleFrontManager.ActiveBattleFrontName} is active.");
+            plr.SendClientMessage($"Lower Tier {WorldMgr.LowerTierCampaignManager.ActiveBattleFrontName} is active.");
 
-            plr.SendClientMessage($"  BattleFront Status : \t {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierBattleFrontManager.ActiveBattleFront.RegionId, false).BattleFront.GetBattleFrontStatus()}");
+            plr.SendClientMessage($"  Campaign Status : \t {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierCampaignManager.ActiveBattleFront.RegionId, false).Campaign.GetBattleFrontStatus()}");
 
-            plr.SendClientMessage($"Upper Tier {WorldMgr.UpperTierBattleFrontManager.ActiveBattleFrontName} is active.");
+            plr.SendClientMessage($"Upper Tier {WorldMgr.UpperTierCampaignManager.ActiveBattleFrontName} is active.");
 
-            plr.SendClientMessage($"  BattleFront Status : \t {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierBattleFrontManager.ActiveBattleFront.RegionId, false).BattleFront.GetBattleFrontStatus()}");
+            plr.SendClientMessage($"  Campaign Status : \t {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierCampaignManager.ActiveBattleFront.RegionId, false).Campaign.GetBattleFrontStatus()}");
 
-            foreach (var flag in plr.Region.BattleFront.Objectives)
+            foreach (var flag in plr.Region.Campaign.Objectives)
                 plr.SendClientMessage($"{flag.ToString()}");
         }
 
@@ -483,7 +483,7 @@ namespace WorldServer.Managers.Commands
         /// Adds the given object at player location.
         /// </summary>
         /// <param name="plr">Player providing the location or created object.</param>
-        /// <param name="newObject">Object to add with BattleFront specific properties configured</param>
+        /// <param name="newObject">Object to add with Campaign specific properties configured</param>
         private static void AddObject(Player plr, BattleFrontObject newObject)
         {
             int max = (int)WorldMgr.Database.GetMaxColValue<BattleFrontObject>("Entry");

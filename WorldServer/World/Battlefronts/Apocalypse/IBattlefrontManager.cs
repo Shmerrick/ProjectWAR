@@ -20,11 +20,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         RVRProgression OpenActiveBattlefront();
         RVRProgression LockActiveBattleFront(Realms realm);
 
-        List<ApocBattleFrontStatus> GetBattleFrontStatusList();
+        List<BattleFrontStatus> GetBattleFrontStatusList();
         bool IsBattleFrontLocked(int battleFrontId);
 
-        ApocBattleFrontStatus GetBattleFrontStatus(int battleFrontId);
+        BattleFrontStatus GetBattleFrontStatus(int battleFrontId);
         void LockBattleFrontStatus(int battleFrontId, Realms lockingRealm, VictoryPointProgress vpp);
-        ApocBattleFrontStatus GetRegionBattleFrontStatus(int regionId);
+        BattleFrontStatus GetRegionBattleFrontStatus(int regionId);
     }
 }

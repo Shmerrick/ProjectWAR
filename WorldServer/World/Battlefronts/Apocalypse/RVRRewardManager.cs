@@ -99,7 +99,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         //    }
 
         //    // No multiplier based on population
-        //    scaleMult *= Region.BattleFront.GetObjectiveRewardScaler(OwningRealm, playerCount);
+        //    scaleMult *= Region.Campaign.GetObjectiveRewardScaler(OwningRealm, playerCount);
 
         //    return scaleMult;
         //}
@@ -143,7 +143,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 player.AddInfluence(influenceId, Math.Max((ushort)baseInf, (ushort)1));
 
                 // TODO
-                //BattleFront.AddContribution(player, (uint)baseRp);
+                //Campaign.AddContribution(player, (uint)baseRp);
 
                 _logger.Trace($"Player:{player.Name} ScaleMult:{rewardScaleMultiplier} XP:{xp} RR:{rr} INF:{inf}");
             }

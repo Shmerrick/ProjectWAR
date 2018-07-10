@@ -93,7 +93,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         public void Reset(Campaign BattleFront)
         {
-            _logger.Debug($"Resetting BattleFront VP {BattleFront.BattleFrontName} to Neutral");
+            _logger.Debug($"Resetting Campaign VP {BattleFront.CampaignName} to Neutral");
             OrderVictoryPoints = 0;
             DestructionVictoryPoints = 0;
         }

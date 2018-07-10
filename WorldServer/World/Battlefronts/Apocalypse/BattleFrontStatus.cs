@@ -9,7 +9,7 @@ using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
-    public class ApocBattleFrontStatus
+    public class BattleFrontStatus
     {
         public int BattleFrontId { get; set; }
         public Realms LockingRealm { get; set; }

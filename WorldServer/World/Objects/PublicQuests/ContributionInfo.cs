@@ -8,7 +8,7 @@ using System.Text;
 namespace WorldServer.World.Objects.PublicQuests
 {
     /// <summary>
-    /// Entity regrouping a player's contributon to a public quest or a BattleFront.
+    /// Entity regrouping a player's contributon to a public quest or a Campaign.
     /// </summary>
     public class ContributionInfo
     {

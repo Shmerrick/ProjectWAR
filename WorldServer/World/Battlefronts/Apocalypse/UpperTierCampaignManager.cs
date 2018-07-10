@@ -7,22 +7,23 @@ using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
-    public class UpperTierBattleFrontManager : IBattleFrontManager
+    public class UpperTierCampaignManager : IBattleFrontManager
     {
-        static readonly object _lockObject = new object();
+        static readonly object LockObject = new object();
+        private static readonly Logger ProgressionLogger = LogManager.GetLogger("RVRProgressionLogger");
 
         public const int BATTLEFRONT_TIER = 4;
         public List<RegionMgr> RegionMgrs { get; }
         public List<RVRProgression> BattleFrontProgressions { get; }
-        private static readonly Logger ProgressionLogger = LogManager.GetLogger("RVRProgressionLogger");
+        
         public RVRProgression ActiveBattleFront { get; set; }
-        public List<ApocBattleFrontStatus> ApocBattleFrontStatuses { get; set; }
+        public List<BattleFrontStatus> BattleFrontStatuses { get; set; }
 
-        public UpperTierBattleFrontManager(List<RVRProgression> _RVRT4Progressions, List<RegionMgr> regionMgrs)
+        public UpperTierCampaignManager(List<RVRProgression> _RVRT4Progressions, List<RegionMgr> regionMgrs)
         {
             BattleFrontProgressions = _RVRT4Progressions;
             RegionMgrs = regionMgrs;
-            ApocBattleFrontStatuses = new List<ApocBattleFrontStatus>();
+            BattleFrontStatuses = new List<BattleFrontStatus>();
             if (_RVRT4Progressions != null)
                 BuildApocBattleFrontStatusList(BattleFrontProgressions);
         }
@@ -34,12 +35,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private void BuildApocBattleFrontStatusList(List<RVRProgression> battleFrontProgressions)
         {
 
-            lock (_lockObject)
+            lock (LockObject)
             {
-                this.ApocBattleFrontStatuses.Clear();
+                this.BattleFrontStatuses.Clear();
                 foreach (var battleFrontProgression in battleFrontProgressions)
                 {
-                    this.ApocBattleFrontStatuses.Add(new ApocBattleFrontStatus
+                    this.BattleFrontStatuses.Add(new BattleFrontStatus
                     {
                         BattleFrontId = battleFrontProgression.BattleFrontId,
                         LockingRealm = (Realms)BattleFrontProgressions.Single(x => x.BattleFrontId == battleFrontProgression.BattleFrontId).DefaultRealmLock,
@@ -53,11 +54,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public ApocBattleFrontStatus GetRegionBattleFrontStatus(int regionId)
+        public BattleFrontStatus GetRegionBattleFrontStatus(int regionId)
         {
-            if (this.ApocBattleFrontStatuses != null)
+            if (this.BattleFrontStatuses != null)
             {
-                return this.ApocBattleFrontStatuses.SingleOrDefault(x => x.RegionId == regionId);
+                return this.BattleFrontStatuses.SingleOrDefault(x => x.RegionId == regionId);
             }
             else
             {
@@ -76,11 +77,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (regionMgr.GetTier() == tier)
                 {
-                    foreach (var objective in regionMgr.BattleFront.Objectives)
+                    foreach (var objective in regionMgr.Campaign.Objectives)
                     {
                         ProgressionLogger.Debug($"{regionMgr.RegionName} {objective.Name} {objective.State}");
                     }
-                    foreach (var keep in regionMgr.BattleFront.Keeps)
+                    foreach (var keep in regionMgr.Campaign.Keeps)
                     {
                         ProgressionLogger.Debug($"{regionMgr.RegionName} {keep.Name} {keep.KeepStatus} ");
                     }
@@ -100,7 +101,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
 
                     // Find and update the status of the battlefront status (list of BFStatuses is only for this Tier)
-                    foreach (var apocBattleFrontStatus in ApocBattleFrontStatuses)
+                    foreach (var apocBattleFrontStatus in BattleFrontStatuses)
                     {
                         apocBattleFrontStatus.Locked = true;
                         apocBattleFrontStatus.OpenTimeStamp = FrameWork.TCPManager.GetTimeStamp();
@@ -110,12 +111,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         apocBattleFrontStatus.LockTimeStamp = FrameWork.TCPManager.GetTimeStamp();
                     }
 
-                    foreach (var objective in regionMgr.BattleFront.Objectives)
+                    foreach (var objective in regionMgr.Campaign.Objectives)
                     {
                         objective.LockObjective(Realms.REALMS_REALM_NEUTRAL, false);
                         ProgressionLogger.Debug($" Locking BO to Neutral {objective.Name} {objective.State} {objective.State}");
                     }
-                    foreach (var keep in regionMgr.BattleFront.Keeps)
+                    foreach (var keep in regionMgr.Campaign.Keeps)
                     {
                         keep.LockKeep(Realms.REALMS_REALM_NEUTRAL, false, false);
                         ProgressionLogger.Debug($" Locking Keep to Neutral {keep.Name} {keep.KeepStatus} ");
@@ -142,10 +143,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var activeRegion = RegionMgrs.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
             ProgressionLogger.Info($" Opening battlefront in {activeRegion.RegionName} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
 
-            activeRegion.BattleFront.VictoryPointProgress.Reset(activeRegion.BattleFront);
+            activeRegion.Campaign.VictoryPointProgress.Reset(activeRegion.Campaign);
 
             // Find and update the status of the battlefront status.
-            foreach (var ApocBattleFrontStatus in ApocBattleFrontStatuses)
+            foreach (var ApocBattleFrontStatus in BattleFrontStatuses)
             {
                 if (ApocBattleFrontStatus.BattleFrontId == this.ActiveBattleFront.BattleFrontId)
                 {
@@ -157,13 +158,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 }
             }
 
-            foreach (var flag in activeRegion.BattleFront.Objectives)
+            foreach (var flag in activeRegion.Campaign.Objectives)
             {
                 if (this.ActiveBattleFront.ZoneId == flag.ZoneId)
                     flag.UnlockObjective();
             }
 
-            foreach (Keep keep in activeRegion.BattleFront.Keeps)
+            foreach (Keep keep in activeRegion.Campaign.Keeps)
             {
                 if (this.ActiveBattleFront.ZoneId == keep.ZoneId)
                     keep.NotifyPairingUnlocked();
@@ -177,21 +178,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var activeRegion = RegionMgrs.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
             ProgressionLogger.Info($" Locking battlefront in {activeRegion.RegionName} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
 
-            LockBattleFrontStatus(this.ActiveBattleFront.BattleFrontId, realm, activeRegion.BattleFront.VictoryPointProgress);
+            LockBattleFrontStatus(this.ActiveBattleFront.BattleFrontId, realm, activeRegion.Campaign.VictoryPointProgress);
 
-            foreach (var flag in activeRegion.BattleFront.Objectives)
+            foreach (var flag in activeRegion.Campaign.Objectives)
             {
                 if (this.ActiveBattleFront.ZoneId == flag.ZoneId)
                     flag.LockObjective(realm, true);
             }
 
-            foreach (Keep keep in activeRegion.BattleFront.Keeps)
+            foreach (Keep keep in activeRegion.Campaign.Keeps)
             {
                 if (this.ActiveBattleFront.ZoneId == keep.ZoneId)
                     keep.LockKeep(realm, true, true);
             }
 
-            activeRegion.BattleFront.LockBattleFront(realm);
+            activeRegion.Campaign.LockBattleFront(realm);
 
             // Use Locking Realm in the BFM, not the BF (BF applies to region)
             return this.ActiveBattleFront;
@@ -200,7 +201,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void LockBattleFrontStatus(int battleFrontId, Realms lockingRealm, VictoryPointProgress vpp)
         {
-            var activeStatus = ApocBattleFrontStatuses.Single(x => x.BattleFrontId == battleFrontId);
+            var activeStatus = BattleFrontStatuses.Single(x => x.BattleFrontId == battleFrontId);
 
             activeStatus.Locked = true;
             activeStatus.LockingRealm = lockingRealm;
@@ -208,14 +209,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             activeStatus.LockTimeStamp = FrameWork.TCPManager.GetTimeStamp();
         }
 
-        public List<ApocBattleFrontStatus> GetBattleFrontStatusList()
+        public List<BattleFrontStatus> GetBattleFrontStatusList()
         {
-            return this.ApocBattleFrontStatuses;
+            return this.BattleFrontStatuses;
         }
 
         public bool IsBattleFrontLocked(int battleFrontId)
         {
-            foreach (var ApocBattleFrontStatus in ApocBattleFrontStatuses)
+            foreach (var ApocBattleFrontStatus in BattleFrontStatuses)
             {
                 if (ApocBattleFrontStatus.BattleFrontId == this.ActiveBattleFront.BattleFrontId)
                 {
@@ -225,9 +226,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return false;
         }
 
-        public ApocBattleFrontStatus GetBattleFrontStatus(int battleFrontId)
+        public BattleFrontStatus GetBattleFrontStatus(int battleFrontId)
         {
-            return this.ApocBattleFrontStatuses.Single(x => x.BattleFrontId == battleFrontId);
+            return this.BattleFrontStatuses.Single(x => x.BattleFrontId == battleFrontId);
         }
 
 

@@ -15,7 +15,7 @@ namespace WorldServer.World.BattleFronts.Objectives
         Abandoned = 2,
         /// <summary>A realm in contesting the objective to the other</summary>
         Contested = 4,
-        /// <summary>Locked (because of BattleFront state)</summary>
+        /// <summary>Locked (because of Campaign state)</summary>
         Locked = 8,
         /// <summary>Secured (or securing), have bright halo</summary>
         Secure = 16,

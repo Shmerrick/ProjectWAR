@@ -49,7 +49,7 @@ namespace WorldServer.Services.World
                 ++Count;
             }
 
-            Log.Success("WorldMgr", "Loaded " + Count + " BattleFront Objectives");
+            Log.Success("WorldMgr", "Loaded " + Count + " Campaign Objectives");
         }
 
         public static List<BattleFront_Objective> GetBattleFrontObjectives(uint RegionId)
@@ -173,7 +173,7 @@ namespace WorldServer.Services.World
                 ++Count;
             }
 
-            Log.Success("WorldMgr", "Loaded " + Count + " BattleFront Guards");
+            Log.Success("WorldMgr", "Loaded " + Count + " Campaign Guards");
         }
         #endregion
 
@@ -230,7 +230,7 @@ namespace WorldServer.Services.World
 
         #endregion
 
-        #region Generic BattleFront objects
+        #region Generic Campaign objects
         /// <summary>
         /// Arrays of warcamp entrances (0/1 for order/destro) indexed by zone id
         /// This must be changed to private later
@@ -252,7 +252,7 @@ namespace WorldServer.Services.World
             _portalsToWarcamp = new Dictionary<ushort, Dictionary<int, BattleFrontObject>>();
             _portalsToObjective = new Dictionary<ushort, Dictionary<int, BattleFrontObject>[]>();
 
-            Log.Debug("WorldMgr", "Loading BattleFront objects...");
+            Log.Debug("WorldMgr", "Loading Campaign objects...");
 
             IList<BattleFrontObject> objects = Database.SelectAllObjects<BattleFrontObject>();
 
@@ -298,7 +298,7 @@ namespace WorldServer.Services.World
                 ++count;
             }
 
-            Log.Success("WorldMgr", "Loaded " + count + " BattleFront objects.");
+            Log.Success("WorldMgr", "Loaded " + count + " Campaign objects.");
         }
 
         /// <summary>

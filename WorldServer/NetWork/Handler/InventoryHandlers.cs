@@ -155,7 +155,7 @@ namespace WorldServer
 
             if (item.Info.Entry == 86203 || item.Info.Entry == 86207 || item.Info.Entry == 86211 || item.Info.Entry == 86215 || item.Info.Entry == 86219 || item.Info.Entry == 86223) // siege oil
             {
-                Keep keep = Plr.Region.BattleFront.GetClosestKeep(Plr.WorldPosition);
+                Keep keep = Plr.Region.Campaign.GetClosestKeep(Plr.WorldPosition);
 
                 if (keep.Realm == Plr.Realm)
                     keep.SpawnOil(Plr, slot);

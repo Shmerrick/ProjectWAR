@@ -1307,7 +1307,7 @@ namespace WorldServer
                 Creature weapon = (Creature)hostBuff.OptionalObject;
                 Siege siege = weapon as Siege;
 
-                Campaign front = weapon.Region?.BattleFront;
+                Campaign front = weapon.Region?.Campaign;
 
                 if (front == null)
                     return;
@@ -3125,10 +3125,10 @@ namespace WorldServer
 
                     List<Player> nearby = player.WorldGroup.GetPlayersCloseTo(player, 50);
 
-                    player.Region.BattleFront.AddContribution(player, 5);
+                    player.Region.Campaign.AddContribution(player, 5);
 
                     foreach (Player member in nearby)
-                        player.Region.BattleFront.AddContribution(member, 5);
+                        player.Region.Campaign.AddContribution(member, 5);
 
                     cmd.EventChance -= (byte)(nearby.Count * 5);
                 }

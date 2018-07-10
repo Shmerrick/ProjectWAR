@@ -39,7 +39,7 @@ namespace WorldServer
         private bool _running = true;
         public List<Zone_Info> ZonesInfo;
         
-        public Campaign BattleFront;
+        public Campaign Campaign;
         public Scenario Scenario;
         public string RegionName;
 
@@ -97,10 +97,10 @@ namespace WorldServer
                 //    case 1: // t1 dw/gs
                 //    case 3: // t1 he/de
                 //    case 8: // t1 em/ch
-                //        BattleFront = new Campaign(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.LowerTierBattleFrontManager);
+                //        Campaign = new Campaign(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.LowerTierCampaignManager);
                 //        break;
                 //    default: // Everything else...
-                //        BattleFront = new Campaign(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.UpperTierBattleFrontManager);
+                //        Campaign = new Campaign(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.UpperTierCampaignManager);
                 //        break;
                 //}
             }
@@ -124,10 +124,10 @@ namespace WorldServer
                 //    case 6:  // T3
                 //    case 10: // T3
                 //    case 16: // T3
-                //        Bttlfront = new BattleFront(this, zones.First().Type == 0);
+                //        Bttlfront = new Campaign(this, zones.First().Type == 0);
                 //        break;
                 //    default: // Everything else...
-                //        Bttlfront = new BattleFront(this, false);
+                //        Bttlfront = new Campaign(this, false);
                 //        break;
                 //}
             }
@@ -276,7 +276,7 @@ namespace WorldServer
                     UpdateActors(start);
 
                     //Bttlfront?.Update(start);
-                    BattleFront?.Update(start);
+                    Campaign?.Update(start);
                 }
 
                 catch (Exception e)
@@ -359,8 +359,8 @@ namespace WorldServer
                         {
                             //Bttlfront?.SendObjectives(plr);
 
-                            BattleFront?.SendObjectives(plr);
-                            // ApocCommunications.SendCampaignStatus(plr, BattleFront?.VictoryPointProgress, (BattleFront?.VictoryPointProgress.DestructionVictoryPoints >= BattleFrontConstants.LOCK_VICTORY_POINTS) ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER);
+                            Campaign?.SendObjectives(plr);
+                            // ApocCommunications.SendCampaignStatus(plr, Campaign?.VictoryPointProgress, (Campaign?.VictoryPointProgress.DestructionVictoryPoints >= BattleFrontConstants.LOCK_VICTORY_POINTS) ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER);
                             WorldMgr.UpdateRegionCaptureStatus();
                         }
                     }
