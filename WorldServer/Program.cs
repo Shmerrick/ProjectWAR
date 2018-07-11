@@ -54,7 +54,8 @@ namespace WorldServer
                 }
             }  
 
-
+            Log.Texte("", "SERVER running in "+ ServerMode + " mode", ConsoleColor.Cyan);
+            
 
             // Loading all configs files
             ConfigMgr.LoadConfigs();
@@ -131,6 +132,11 @@ namespace WorldServer
 
             LoaderMgr.Start();
             Log.Texte("Battlefront Manager", "Creating Upper Tier Campaign Manager", ConsoleColor.Cyan);
+            if (RVRProgressionService._RVRProgressions.Count == 0)
+            {
+                Log.Error("RVR Progression", "NO RVR Progressions in DB");
+                return;
+            }
             WorldMgr.UpperTierCampaignManager = new UpperTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x=>x.Tier == 4).ToList(), WorldMgr._Regions);
             Log.Texte("Battlefront Manager", "Creating Lower Tier Campaign Manager", ConsoleColor.Cyan);
             WorldMgr.LowerTierCampaignManager = new LowerTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 1).ToList(), WorldMgr._Regions);

@@ -134,8 +134,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                BattlefrontLogger.Error($"Could not write rvr metrics..continuing. {e.Message}");
+                
             }
         }
 
