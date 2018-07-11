@@ -47,6 +47,8 @@ namespace WorldServer
         private static Thread _groupThread;
         private static bool _running = true;
         public static long StartingPairing;
+        // DEV - Development mode, PRD - Production Mode. 
+        public static string ServerMode;
 
         public static UpperTierCampaignManager UpperTierCampaignManager;
         public static LowerTierCampaignManager LowerTierCampaignManager;

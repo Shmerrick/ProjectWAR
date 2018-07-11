@@ -411,7 +411,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("sorenable", SoREnable, null, 0, 0, "Enables SoR addon."), 
             // new GmCommandHandler("pug", PugScenario, null, 0, 0, "Displays current PUG scenario."),
             new GmCommandHandler("sorenable", SoREnable, null, 0, 0, "Enables SoR addon."),
-            new GmCommandHandler("version", GetVersion, null, 0, 0, "Gets the WorldServer version."),
+         //   new GmCommandHandler("version", GetVersion, null, 0, 0, "Gets the WorldServer version."),
             // Halloween event stuff
             new GmCommandHandler("spooky", Spooky, null, 0, 0, "This command will make you spooky..."),
             new GmCommandHandler("notspooky", NotSpooky, null, 0, 0, "You don't want to be spooky :(... You need to run this command upon logging on server, it do not disable spookieness if you are already spooky."),
@@ -496,7 +496,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("previewmodel", PreviewItemModel, null, EGmLevel.TrustedGM, 1, "Temporary sets equipped item model (int slotIndex, int modelID)"),
             new GmCommandHandler("recreateplayer", CreatePlayer, null, EGmLevel.DatabaseDev, 1, "Requests player info is resent"),
             new GmCommandHandler("quest", QuestComplete, null, EGmLevel.DatabaseDev, 2, "Used to debug quests <QuestId> <Operation> Operation 1 - add, 2 - finish quest, 3 - delete quest from player"),
-            //new GmCommandHandler("geartester", GearTester, null, EGmLevel.AnyGM, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
+            new GmCommandHandler("geartester", GearTester, null, EGmLevel.SourceDev, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
             //new GmCommandHandler("gunbad", Gunbad, null, EGmLevel.AnyGM, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
 #endif
 #if (!DEBUG)

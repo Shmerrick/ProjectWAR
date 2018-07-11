@@ -21,8 +21,7 @@ namespace WorldServer
         public static TCPServer Server;
         public static Realm Rm;
         private static Timer _timer;
-        // DEV - Development mode, PRD - Production Mode. 
-        public static string ServerMode;
+        
 
         [STAThread]
         static void Main(string[] args)
@@ -34,27 +33,27 @@ namespace WorldServer
 
             // Default the server to DEV mode.
             if (args.Length == 0)
-                ServerMode = "DEV";
+                WorldMgr.ServerMode = "DEV";
             else
             {
                 if (args.Length == 1)
                 {
                     if (args[0] == "DEV")
                     {
-                        ServerMode = "DEV";
+                        WorldMgr.ServerMode = "DEV";
                     }
                     if (args[0] == "PRD")
                     {
-                        ServerMode = "PRD";
+                        WorldMgr.ServerMode = "PRD";
                     }
                 }
                 else
                 {
-                    ServerMode = "DEV";
+                    WorldMgr.ServerMode = "DEV";
                 }
             }  
 
-            Log.Texte("", "SERVER running in "+ ServerMode + " mode", ConsoleColor.Cyan);
+            Log.Texte("", "SERVER running in " + WorldMgr.ServerMode + " mode", ConsoleColor.Cyan);
             
 
             // Loading all configs files
