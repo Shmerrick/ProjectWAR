@@ -2192,11 +2192,7 @@ namespace WorldServer.Managers.Commands
 
         public static bool GearTester(Player plr, ref List<string> values)
         {
-            //Unit target = plr.CbtInterface.GetCurrentTarget();
-            //Player player = target as Player;
-            //if (player == null || !player.IsPlayer())
-            //    player = plr;
-
+         
             // Ensure this code is only ever called IN DEV!!
             if (WorldMgr.ServerMode != "DEV")
                 return false;

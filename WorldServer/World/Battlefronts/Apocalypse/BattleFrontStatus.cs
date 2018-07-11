@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FrameWork;
-using GameData;
-using WorldServer.World.Battlefronts.Apocalypse;
+﻿using GameData;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -18,11 +11,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public int LockTimeStamp { get; set; }
         public bool Locked { get; set; }
         public int RegionId { get; set; }
+        public string Description { get; set; }
 
         public float DestructionVictoryPointPercentage
         {
             get { return FinalVictoryPoint.DestructionVictoryPointPercentage; }
         }
+
         public float OrderVictoryPointPercentage
         {
             get { return FinalVictoryPoint.OrderVictoryPointPercentage; }
@@ -43,12 +38,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         return BattleFrontConstants.ZONE_STATUS_ORDER_LOCKED;
                 }
                 return BattleFrontConstants.ZONE_STATUS_CONTESTED;
-
-         
             }
         }
-
-        
     }
 }
-

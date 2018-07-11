@@ -533,12 +533,12 @@ namespace WorldServer
 
             if (modifier == null)
             {
-                _logger.Debug($"Modifier : null");
+                _logger.Trace($"Modifier : null");
                 return 0;
             }
             else
             {
-                _logger.Debug($"Modifier : {modifier.TotalStat} {modifier.TotalMultiplier} {modifier.AvailableItemBonus} {modifier.InternalItemBonus} {modifier.ItemAddFromStat}");
+                _logger.Trace($"Modifier : {modifier.TotalStat} {modifier.TotalMultiplier} {modifier.AvailableItemBonus} {modifier.InternalItemBonus} {modifier.ItemAddFromStat}");
             }
 
             int linearStat = modifier.TotalStat;
@@ -546,12 +546,12 @@ namespace WorldServer
             if (modifier.ItemAddFromStat != 0)
                 linearStat += _statModifiers[modifier.ItemAddFromStat].InternalItemBonus;
 
-            _logger.Debug($"HTStacks : {HTLStacks} linearstat {linearStat}" );
+            _logger.Trace($"HTStacks : {HTLStacks} linearstat {linearStat}" );
 
             if (HTLStacks == 0 || (statType != Stats.Disrupt && statType != Stats.Evade))
                 return linearStat;
 
-            _logger.Debug($"return is {linearStat + Math.Min((byte)3, HTLStacks) * 15}");
+            _logger.Trace($"return is {linearStat + Math.Min((byte)3, HTLStacks) * 15}");
 
             return linearStat + Math.Min((byte)3, HTLStacks) * 15;
         }

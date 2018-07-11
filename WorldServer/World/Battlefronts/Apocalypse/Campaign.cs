@@ -21,6 +21,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     public class Campaign
     {
         public static IObjectDatabase Database = null;
+        static readonly object LockObject = new object();
 
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
         public VictoryPointProgress VictoryPointProgress { get; set; }
@@ -42,6 +43,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public HashSet<Player> PlayersInLakeSet;
         public List<CampaignObjective> Objectives;
+
+        public Dictionary<int, int> OrderPlayerPopulationList = new Dictionary<int, int>();
+        public Dictionary<int, int> DestructionPlayerPopulationList = new Dictionary<int, int>();
+
         //public bool BattleFrontLocked => LockingRealm != Realms.REALMS_REALM_NEUTRAL;
         //public Realms LockingRealm { get; set; } = Realms.REALMS_REALM_NEUTRAL;
         private volatile int _orderCount = 0;
@@ -94,11 +99,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             PlaceObjectives();
 
             LoadKeeps();
-          
+            BuildPopulationList();
           
             _contributionTracker = new ContributionTracker(Tier, regionMgr);
             _aaoTracker = new AAOTracker();
             _rewardManager = new RVRRewardManager();
+            //OrderBattleFrontPlayerDictionary = new Dictionary<Player, int>();
+            //DestructionBattleFrontPlayerDictionary = new Dictionary<int, int>();
 
             _EvtInterface.AddEvent(UpdateBattleFrontScalers, 12000, 0); // 120000
             _EvtInterface.AddEvent(UpdateVictoryPoints, 6000, 0);
@@ -107,8 +114,20 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Recalculate AAO
             _EvtInterface.AddEvent(UpdateAAOBuffs, 60000, 0);
             // Recalculate AAO
-            //_EvtInterface.AddEvent(RecordMetrics, 30000, 0);
+            _EvtInterface.AddEvent(RecordMetrics, 30000, 0);
 
+        }
+
+        private void BuildPopulationList()
+        {
+            lock (LockObject)
+            {
+                foreach (var status in ApocBattleFrontStatuses)
+                {
+                    this.OrderPlayerPopulationList.Add(status.BattleFrontId, 0);
+                    this.DestructionPlayerPopulationList.Add(status.BattleFrontId, 0);
+                }
+            }
         }
 
         private void RecordMetrics()
@@ -121,15 +140,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     var metrics = new RVRMetrics
                     {
                         BattlefrontId = apocBattleFrontStatus.BattleFrontId,
-                        BattlefrontName = this.CampaignName,
+                        BattlefrontName = apocBattleFrontStatus.Description,
                         DestructionVictoryPoints = (int)this.VictoryPointProgress.DestructionVictoryPoints,
                         OrderVictoryPoints = (int)this.VictoryPointProgress.OrderVictoryPoints,
                         Locked = apocBattleFrontStatus.LockStatus,
-                        PlayersInLake = this.PlayersInLakeSet.Count,
-                        Tier = this.Tier
+                        OrderPlayersInLake = this.OrderPlayerPopulationList[apocBattleFrontStatus.BattleFrontId],
+                        DestructionPlayersInLake = this.DestructionPlayerPopulationList[apocBattleFrontStatus.BattleFrontId],
+                        Tier = this.Tier,
+                        Timestamp = DateTime.UtcNow
                     };
 
-                    Database.SaveObject(metrics);
+                    WorldMgr.Database.AddObject(metrics);
+                    
                 }
             }
             catch (Exception e)
@@ -350,6 +372,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="plr">Player to add, not null</param>
         public void NotifyEnteredLake(Player plr)
         {
+            if (plr == null)
+                return;
+
             if (!plr.ValidInTier(Tier, true))
                 return;
 
@@ -358,10 +383,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (PlayersInLakeSet.Add(plr))
                 {
+                    // Which battlefrontId?
+                    var battleFrontId = this.BattleFrontManager.ActiveBattleFront.BattleFrontId;
+                    
                     if (plr.Realm == Realms.REALMS_REALM_ORDER)
+                    {
+                        this.OrderPlayerPopulationList[battleFrontId] += 1;
                         _orderCount++;
+                    }
                     else
+                    {
+                        this.DestructionPlayerPopulationList[battleFrontId] += 1;
                         _destroCount++;
+                    }
                 }
             }
 

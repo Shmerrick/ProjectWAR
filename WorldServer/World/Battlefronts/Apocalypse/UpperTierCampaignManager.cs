@@ -1,21 +1,21 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Common.Database.World.Battlefront;
+﻿using Common.Database.World.Battlefront;
 using GameData;
 using NLog;
+using System.Collections.Generic;
+using System.Linq;
 using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public class UpperTierCampaignManager : IBattleFrontManager
     {
-        static readonly object LockObject = new object();
+        private static readonly object LockObject = new object();
         private static readonly Logger ProgressionLogger = LogManager.GetLogger("RVRProgressionLogger");
 
         public const int BATTLEFRONT_TIER = 4;
         public List<RegionMgr> RegionMgrs { get; }
         public List<RVRProgression> BattleFrontProgressions { get; }
-        
+
         public RVRProgression ActiveBattleFront { get; set; }
         public List<BattleFrontStatus> BattleFrontStatuses { get; set; }
 
@@ -29,12 +29,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
         /// <summary>
-        /// Sets up the Battlefront status list with default values. 
+        /// Sets up the Battlefront status list with default values.
         /// </summary>
         /// <param name="battleFrontProgressions"></param>
         private void BuildApocBattleFrontStatusList(List<RVRProgression> battleFrontProgressions)
         {
-
             lock (LockObject)
             {
                 this.BattleFrontStatuses.Clear();
@@ -44,11 +43,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {
                         BattleFrontId = battleFrontProgression.BattleFrontId,
                         LockingRealm = (Realms)BattleFrontProgressions.Single(x => x.BattleFrontId == battleFrontProgression.BattleFrontId).DefaultRealmLock,
-                    FinalVictoryPoint = new VictoryPointProgress(),
+                        FinalVictoryPoint = new VictoryPointProgress(),
                         OpenTimeStamp = 0,
                         LockTimeStamp = 0,
                         Locked = true,
-                        RegionId = battleFrontProgression.RegionId
+                        RegionId = battleFrontProgression.RegionId,
+                        Description = battleFrontProgression.Description
                     });
                 }
             }
@@ -67,9 +67,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-
         /// <summary>
-        /// Log the status of all battlefronts 
+        /// Log the status of all battlefronts
         /// </summary>
         public void AuditBattleFronts(int tier)
         {
@@ -89,7 +88,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-
         /// <summary>
         /// Lock Battlefronts across all the regions.
         /// </summary>
@@ -99,13 +97,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (regionMgr.GetTier() == tier)
                 {
-
                     // Find and update the status of the battlefront status (list of BFStatuses is only for this Tier)
                     foreach (var apocBattleFrontStatus in BattleFrontStatuses)
                     {
                         apocBattleFrontStatus.Locked = true;
                         apocBattleFrontStatus.OpenTimeStamp = FrameWork.TCPManager.GetTimeStamp();
-                        // Determine what the "start" realm this battlefront should be locked to. 
+                        // Determine what the "start" realm this battlefront should be locked to.
                         apocBattleFrontStatus.LockingRealm = (Realms)BattleFrontProgressions.Single(x => x.BattleFrontId == apocBattleFrontStatus.BattleFrontId).DefaultRealmLock;
                         apocBattleFrontStatus.FinalVictoryPoint = new VictoryPointProgress();
                         apocBattleFrontStatus.LockTimeStamp = FrameWork.TCPManager.GetTimeStamp();
@@ -125,8 +122,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-
-
         public RVRProgression OpenActiveBattlefront()
         {
             // If this battlefront is the reset battlefront (ie Praag), reset all the progressions upon our return to it.
@@ -138,7 +133,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 // Tells the attached players about it.
                 WorldMgr.UpdateRegionCaptureStatus();
             }
-
 
             var activeRegion = RegionMgrs.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
             ProgressionLogger.Info($" Opening battlefront in {activeRegion.RegionName} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
@@ -196,7 +190,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             // Use Locking Realm in the BFM, not the BF (BF applies to region)
             return this.ActiveBattleFront;
-
         }
 
         public void LockBattleFrontStatus(int battleFrontId, Realms lockingRealm, VictoryPointProgress vpp)
@@ -230,7 +223,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             return this.BattleFrontStatuses.Single(x => x.BattleFrontId == battleFrontId);
         }
-
 
         /// <summary>
         /// Set the Active Pairing to be null. Not expected to be needed.

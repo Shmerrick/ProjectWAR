@@ -31,9 +31,17 @@ namespace Common.Database.World.Battlefront
         public string BattlefrontName { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public int PlayersInLake { get; set; }
+        public int OrderPlayersInLake { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int DestructionPlayersInLake { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public int Locked { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public DateTime Timestamp { get; set; }
+
+        
     }
 }
