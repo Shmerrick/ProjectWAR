@@ -132,7 +132,9 @@ namespace WorldServer.Managers.Commands
                 var progression = WorldMgr.LowerTierCampaignManager.AdvanceBattleFront(realm);
                 WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront();
                 WorldMgr.UpdateRegionCaptureStatus();
-                plr.SendClientMessage($"{realm.ToString()} pushes - next battle is in {progression.Description}");
+                plr.SendClientMessage(realm == Realms.REALMS_REALM_DESTRUCTION
+                    ? $"Destruction vanquishes Order, the campaign moves to {progression.Description}"
+                    : $"Order conquers Destruction, the campaign moves to {progression.Description}");
             }
             else
             {

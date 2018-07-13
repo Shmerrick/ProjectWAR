@@ -99,7 +99,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             PlaceObjectives();
 
             LoadKeeps();
-            BuildPopulationList();
+            
           
             _contributionTracker = new ContributionTracker(Tier, regionMgr);
             _aaoTracker = new AAOTracker();
@@ -122,6 +122,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             lock (LockObject)
             {
+                this.OrderPlayerPopulationList.Clear();
+                this.DestructionPlayerPopulationList.Clear();
                 foreach (var status in ApocBattleFrontStatuses)
                 {
                     this.OrderPlayerPopulationList.Add(status.BattleFrontId, 0);
@@ -134,6 +136,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             try
             {
+                if ((OrderPlayerPopulationList.Count == 0) || (DestructionPlayerPopulationList.Count == 0))
+                    return;
+
                 BattlefrontLogger.Debug($"Recording metrics for Campaign {this.CampaignName}");
                 foreach (var apocBattleFrontStatus in ApocBattleFrontStatuses)
                 {
@@ -377,6 +382,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             if (!plr.ValidInTier(Tier, true))
                 return;
+
+            // If the system has defined the population (by battlefront) structures
+            if ((OrderPlayerPopulationList.Count == 0) || (DestructionPlayerPopulationList.Count == 0))
+                BuildPopulationList();
+
 
             // Player list tracking
             lock (PlayersInLakeSet)

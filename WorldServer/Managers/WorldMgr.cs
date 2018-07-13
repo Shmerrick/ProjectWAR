@@ -1425,20 +1425,21 @@ namespace WorldServer
             foreach (var rvrProgression in progressions)
             {
                 _logger.Info($"Attaching Battlefronts to Regions");
+                
                 foreach (var regionMgr in _Regions)
                 {
 
 
-                    _logger.Info($"Connecting region : {regionMgr.RegionId}");
+                    _logger.Info($"Connecting region : {regionMgr.RegionId} to {rvrProgression.BattleFrontId} {rvrProgression.Description} ({rvrProgression.RegionId})");
                     var objectiveList = LoadObjectives(regionMgr);
 
                     switch (regionMgr.RegionId)
                     {
-                        //case 1: // t1 dw/gs
-                        //case 3: // t1 he/de
-                        //case 8: // t1 em/ch
-                        //    regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierCampaignManager, new ApocCommunications());
-                        //    break;
+                        case 1: // t1 dw/gs
+                        case 3: // t1 he/de
+                        case 8: // t1 em/ch
+                            regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierCampaignManager, new ApocCommunications());
+                            break;
                         default: // Everything else...
                             regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierCampaignManager, new ApocCommunications());
                             break;
