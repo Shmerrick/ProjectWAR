@@ -41,7 +41,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     OpenTimeStamp = 0,
                     LockTimeStamp = 0,
                     Locked = true,
-                    RegionId = battleFrontProgression.RegionId
+                    RegionId = battleFrontProgression.RegionId,
+                    Description = battleFrontProgression.Description
                 });
             }
         }
