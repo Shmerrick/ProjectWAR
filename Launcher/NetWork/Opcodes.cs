@@ -1,6 +1,4 @@
-﻿
- 
-using System;
+﻿using System;
 
 public enum Opcodes : byte
 {
