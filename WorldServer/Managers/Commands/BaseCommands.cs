@@ -2197,122 +2197,30 @@ namespace WorldServer.Managers.Commands
             if (WorldMgr.ServerMode != "DEV")
                 return false;
 
-            foreach (Player player in Player._Players)
+            foreach (var regionMgr in WorldMgr._Regions)
             {
-
-                // Setting gold
-                int money = 10000000;
-                player.AddMoney((uint)money);
-
-                // Setting SC and RvR currencies
-                Item_Info conqMedallion = ItemService.GetItem_Info(1698);
-                Item_Info conqEmblem = ItemService.GetItem_Info(1699);
-                Item_Info warCrest = ItemService.GetItem_Info(208470);
-
-                player.ItmInterface.CreateItem(conqMedallion, 5000);
-                player.ItmInterface.CreateItem(conqEmblem, 5000);
-                player.ItmInterface.CreateItem(warCrest, 5000);
-
-                //Item_Info ruin = ItemService.GetItem_Info(129838571);
-                //Item_Info genesis1 = ItemService.GetItem_Info(486);
-                //Item_Info genesis2 = ItemService.GetItem_Info(487);
-                //Item_Info genesis3 = ItemService.GetItem_Info(488);
-                //Item_Info genesis4 = ItemService.GetItem_Info(489);
-                //Item_Info genesis5 = ItemService.GetItem_Info(490);
-                //Item_Info warrant1 = ItemService.GetItem_Info(498);
-                //Item_Info warrant2 = ItemService.GetItem_Info(499);
-
-                //// Scrolls
-                //Item_Info gunbadScroll = ItemService.GetItem_Info(65826);
-                //Item_Info scroll = null;
-                //if (player.Realm == Realms.REALMS_REALM_ORDER)
-                //    scroll = ItemService.GetItem_Info(12983325);
-                //else
-                //    scroll = ItemService.GetItem_Info(12983324);
-
-                //// Setting potions and talismans
-                //Item_Info officersElixer1 = ItemService.GetItem_Info(208291);
-                //Item_Info officersElixer2 = ItemService.GetItem_Info(208292);
-                //Item_Info draughtRecovery = ItemService.GetItem_Info(3000209);
-                //Item_Info quickeningDraught = ItemService.GetItem_Info(3000406);
-                //Item_Info lastingPower = ItemService.GetItem_Info(3000649);
-                //Item_Info lastingDiscipline = ItemService.GetItem_Info(3001049);
-                //Item_Info lastingBrilliance = ItemService.GetItem_Info(3000849);
-                //Item_Info lastingVerity = ItemService.GetItem_Info(3001249);
-                //Item_Info lastingUnguent = ItemService.GetItem_Info(197552);
-                //Item_Info taliChampion = ItemService.GetItem_Info(907197);
-                //Item_Info taliPolymath = ItemService.GetItem_Info(907317);
-                //Item_Info taliTenacity = ItemService.GetItem_Info(907357);
-                //Item_Info taliMartyrdom = ItemService.GetItem_Info(907477);
-                //Item_Info taliAssassin = ItemService.GetItem_Info(907237);
-                //Item_Info taliAggressor = ItemService.GetItem_Info(907277);
-                //Item_Info taliGladiator = ItemService.GetItem_Info(907397);
-                //Item_Info taliPrevarication = ItemService.GetItem_Info(907437);
-                //Item_Info taliSmith = ItemService.GetItem_Info(907037);
-
-
-                //player.ItmInterface.CreateItem(ruin, 100);
-                //player.ItmInterface.CreateItem(genesis1, 100);
-                //player.ItmInterface.CreateItem(genesis2, 100);
-                //player.ItmInterface.CreateItem(genesis3, 100);
-                //player.ItmInterface.CreateItem(genesis4, 100);
-                //player.ItmInterface.CreateItem(genesis5, 100);
-                //player.ItmInterface.CreateItem(warrant1, 100);
-                //player.ItmInterface.CreateItem(warrant2, 100);
-                //player.ItmInterface.CreateItem(officersElixer1, 20);
-                //player.ItmInterface.CreateItem(officersElixer2, 20);
-                //player.ItmInterface.CreateItem(draughtRecovery, 20);
-                //player.ItmInterface.CreateItem(quickeningDraught, 20);
-                //player.ItmInterface.CreateItem(lastingPower, 20);
-                //player.ItmInterface.CreateItem(lastingDiscipline, 20);
-                //player.ItmInterface.CreateItem(lastingBrilliance, 20);
-                //player.ItmInterface.CreateItem(lastingVerity, 20);
-                //player.ItmInterface.CreateItem(lastingUnguent, 20);
-                //player.ItmInterface.CreateItem(taliChampion, 20);
-                //player.ItmInterface.CreateItem(taliPolymath, 20);
-                //player.ItmInterface.CreateItem(taliTenacity, 20);
-                //player.ItmInterface.CreateItem(taliMartyrdom, 20);
-                //player.ItmInterface.CreateItem(taliAssassin, 20);
-                //player.ItmInterface.CreateItem(taliAggressor, 20);
-                //player.ItmInterface.CreateItem(taliGladiator, 20);
-                //player.ItmInterface.CreateItem(taliPrevarication, 20);
-                //player.ItmInterface.CreateItem(taliSmith, 20);
-                //player.ItmInterface.CreateItem(gunbadScroll, 20);
-                //player.ItmInterface.CreateItem(scroll, 1);
-
-                // Setting level
-                int level = 40;
-                player.SetLevel((byte)level);
-
-                // Setting renown
-                int renownLevel = 60;
-
-                Character chara = CharMgr.GetCharacter(player.Name, false);
-
-                if (chara == null)
+                foreach (var player in regionMgr.Players)
                 {
-                    plr.SendClientMessage($"MODIFY RENOWN: The player {player.Name} in question does not exist.");
-                    return true;
+                    int money = 10000000;
+                    player.AddMoney((uint)money);
+
+                    // Setting SC and RvR currencies
+                    Item_Info conqMedallion = ItemService.GetItem_Info(1698);
+                    Item_Info conqEmblem = ItemService.GetItem_Info(1699);
+                    Item_Info warCrest = ItemService.GetItem_Info(208470);
+
+                    player.ItmInterface.CreateItem(conqMedallion, 5000);
+                    player.ItmInterface.CreateItem(conqEmblem, 5000);
+                    player.ItmInterface.CreateItem(warCrest, 8000);
+
+                    player.SetLevel((byte)40);
+
+                    player.SetRenownLevel((byte)60);
+
+                    plr.SendClientMessage($"Giving gear to {player.Name}", ChatLogFilters.CHATLOGFILTERS_SAY);
                 }
-
-                int desiredRenownRank = renownLevel > 0 ? renownLevel : Math.Max(1, chara.Value.RenownRank + renownLevel);
-                desiredRenownRank = Math.Min(100, desiredRenownRank);
-
-                if (player != null)
-                    player.SetRenownLevel((byte)desiredRenownRank);
-                else
-                {
-                    chara.Value.Renown = 0;
-                    chara.Value.RenownRank = (byte)desiredRenownRank;
-                    CharMgr.Database.SaveObject(chara.Value);
-                }
-
-                if (player != plr)
-                    plr.SendClientMessage($"MODIFY RENOWN: {player.Name}'s renown rank is now {chara.Value.RenownRank}.");
-
-                return true;
             }
-            return false;
+            return true;
         }
 
         public static bool Gunbad(Player player, ref List<string> values)
