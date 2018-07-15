@@ -248,6 +248,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (keeps == null)
                 return; // t1 or database lack
 
+            BattlefrontLogger.Debug($"Loading {keeps.Count} keeps for Region {Region.RegionId}");
             foreach (Keep_Info info in keeps)
             {
                 Keep keep = new Keep(info, (byte)this.Tier, Region);
@@ -256,12 +257,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 Region.AddObject(keep, info.ZoneId);
 
                 if (info.Creatures != null)
+                {
+                    BattlefrontLogger.Debug($"Adding {info.Creatures.Count} mobs for Keep {info.KeepId}");
                     foreach (Keep_Creature crea in info.Creatures)
                         keep.Creatures.Add(new KeepNpcCreature(Region, crea, keep));
+                }
 
                 if (info.Doors != null)
+                {
+                    BattlefrontLogger.Debug($"Adding {info.Doors.Count} doors for Keep {info.KeepId}");
                     foreach (Keep_Door door in info.Doors)
                         keep.Doors.Add(new KeepDoor(Region, door, keep));
+                }
             }
         }
 
