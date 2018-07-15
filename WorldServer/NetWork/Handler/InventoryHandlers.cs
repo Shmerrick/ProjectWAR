@@ -150,8 +150,10 @@ namespace WorldServer
             if (!item.CanBeUsedBy(Plr))
                 return;
 
-            if ((Item.ItemType) item.Info.Type == Item.ItemType.Quest)
-                Plr.QtsInterface.HandleEvent(Objective_Type.QUEST_USE_ITEM, item.Info.Entry, 1);
+            if (item.Info.Entry == 1337)
+            {
+                Plr.SetLevel((byte)40);
+            }
 
             if (item.Info.Entry == 86203 || item.Info.Entry == 86207 || item.Info.Entry == 86211 || item.Info.Entry == 86215 || item.Info.Entry == 86219 || item.Info.Entry == 86223) // siege oil
             {
