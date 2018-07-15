@@ -391,6 +391,12 @@ namespace WorldServer.Test
             Region1.Campaign.VictoryPointProgress.DestructionVictoryPoints = 5000f;
             Region1.Campaign.VictoryPointProgress.OrderVictoryPoints = 2200f;
 
+            var activeCampaign = manager.GetActiveCampaign();
+            Assert.IsTrue(activeCampaign.CampaignName == "Chaos Wastes");
+            Assert.IsTrue(activeCampaign.Region.RegionId == 1);
+            Assert.IsTrue(activeCampaign.VictoryPointProgress.DestructionVictoryPoints == 5000f);
+            Assert.IsTrue(activeCampaign.VictoryPointProgress.OrderVictoryPoints == 2200f);
+
             // Lock Destro again
             manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
             
@@ -476,17 +482,12 @@ namespace WorldServer.Test
             Region3.Campaign = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
             // Open Praag (BF==1)
             manager.OpenActiveBattlefront();
-            
-            //foreach (var upperTierCampaign in manager.GetCampaign(Region1.RegionId))
-            //{
-            //    //var statusList = upperTierCampaign.
-            //}
 
-
-            //Assert.IsTrue(status.Locked == false);
-            //Assert.IsTrue(status.FinalVictoryPoint.DestructionVictoryPoints == 0);
-            //Assert.IsTrue(status.FinalVictoryPoint.OrderVictoryPoints == 0);
-            //Assert.IsTrue(status.LockStatus == BattleFrontConstants.ZONE_STATUS_CONTESTED);
+            var activeCampaign = manager.GetActiveCampaign();
+            Assert.IsTrue(activeCampaign.CampaignName == "Praag");
+            Assert.IsTrue(activeCampaign.Region.RegionId == 1);
+            Assert.IsTrue(activeCampaign.VictoryPointProgress.DestructionVictoryPoints == 0f);
+            Assert.IsTrue(activeCampaign.VictoryPointProgress.OrderVictoryPoints == 0f);
 
         }
 

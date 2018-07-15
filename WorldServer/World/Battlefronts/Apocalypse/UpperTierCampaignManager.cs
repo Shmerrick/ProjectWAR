@@ -54,6 +54,23 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
+        /// <summary>
+        /// Returns the active campaign based upon the region.
+        /// </summary>
+        /// <returns></returns>
+        public Campaign GetActiveCampaign()
+        {
+            var activeRegionId = ActiveBattleFront.RegionId;
+            foreach (var regionMgr in RegionMgrs)
+            {
+                if (regionMgr.RegionId == activeRegionId)
+                {
+                    return regionMgr.Campaign;
+                }
+            }
+            return null;
+        }
+
         public BattleFrontStatus GetRegionBattleFrontStatus(int regionId)
         {
             if (this.BattleFrontStatuses != null)
