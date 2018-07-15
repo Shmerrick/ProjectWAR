@@ -6,6 +6,7 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
+using NLog;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
@@ -131,6 +132,7 @@ namespace WorldServer.Scenarios
 
     public abstract class Scenario
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private static readonly uint[] _emblemIds = { 208470, 208470, 208470, 208470 };
         public Scenario_Info Info { get; }
 
@@ -618,6 +620,25 @@ namespace WorldServer.Scenarios
                 if (realmIndex == winningTeam)
                     plr.QtsInterface.HandleEvent(Objective_Type.QUEST_WIN_SCENARIO, Info.ScenarioId, 1);
             }
+
+            try
+            {
+                if (winningTeam == 1)
+                {
+                    _logger.Debug($"Scenario {Info.Name} won by Destruction. {Score[1]} to {Score[0]}");
+                }
+                if (winningTeam == 2)
+                {
+                    _logger.Debug($"Scenario {Info.Name} won by Order. {Score[0]} to {Score[1]}");
+                }
+
+            }
+            catch (Exception e)
+            {
+               _logger.Error($"Scenario reporting exception {e.Message}");
+            }
+           
+
 
             SendScoreboardUpdate();
         }

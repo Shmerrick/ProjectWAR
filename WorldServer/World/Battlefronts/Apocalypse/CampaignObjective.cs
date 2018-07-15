@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using System;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.World.BattleFronts.Objectives;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
@@ -49,7 +49,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         private volatile short _closeOrderCount, _closeDestroCount;
 
-
         /// <summary>Set of all players in close range, not limited</summary>
         private ISet<Player> _closePlayers = new HashSet<Player>();
 
@@ -77,7 +76,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private long _lastGaugeUpdateTick;
         private bool _lastSecutedState;
-
 
         /// <summary>Absolute transition speed last time it was recomputed</summary>
         private float _lastTransitionUpdateSpeed;
@@ -121,12 +119,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public RVRRewardManager RewardManager { get; set; }
 
         #region Helpers
+
         /*
          * HELPER Methods
          */
         internal bool HasThreateningPlayer => _hasThreateningPlayer;
 
-        #endregion
+        #endregion Helpers
 
         /// <summary>
         /// Constructor to assist in isolation testing.
@@ -190,9 +189,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             RewardManager = new RVRRewardManager();
         }
 
-
-
-
         public override void OnLoad()
         {
             // Objective position
@@ -208,7 +204,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             // Initial state
             IsActive = true;
-
 
             //if (!Ruin)
             //    _objectivePortalMgr.ObjectiveUnlocked(); // Updates portals
@@ -233,21 +228,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (_closeOrderCount > 0 == _closeDestroCount > 0)
                 return new VictoryPoint(0, 0); // Both sides have players in range, or none of them -> not fully secured
 
-
             //var scaleMultiplier = this.RewardManager.CalculateRewardScaleMultipler(
-            //    _closeOrderCount, 
+            //    _closeOrderCount,
             //    _closeDestroCount,
-            //    OwningRealm, 
+            //    OwningRealm,
             //    _secureProgress,
             //    objectiveRewardScaler);
-
 
             var objectiveRewardScaler = this.RewardManager.CalculateObjectiveRewardScale(OwningRealm, _closeOrderCount, _closeDestroCount);
 
             // Temporary fix - remove objectiveRewardScaler from impacting RR gains.
             objectiveRewardScaler = 0;
 
-            // Scalers in this model are additive. 
+            // Scalers in this model are additive.
 
             return this.RewardManager.RewardCaptureTick(_closePlayers,
                 OwningRealm,
@@ -255,10 +248,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 Name,
                 objectiveRewardScaler + pairingRewardScaler);
         }
-
-
-
-
 
         public bool FlagActive()
         {
@@ -311,7 +300,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 _controlGauge += (int)((tick - _lastGaugeUpdateTick) * defaultTransitionSpeed);
                 if (wasOrder != _controlGauge < 0) // If reached zero
                     _controlGauge = 0;
-
             }
 
             var newTransitionSpeed = GetNewTransitionSpeed();
@@ -319,8 +307,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             var announce = true;
 
-            if (newTransitionSpeed == 0f
-            ) // Status quo or fully secured || (OwningRealm == Realms.REALMS_REALM_DESTRUCTION) == assaultSpeed > 0
+            if (newTransitionSpeed == 0f) // Status quo or fully secured || (OwningRealm == Realms.REALMS_REALM_DESTRUCTION) == assaultSpeed > 0
             {
                 // _controlGauge = CONTROL_GAUGE_MAX;
                 AssaultingRealm = Realms.REALMS_REALM_NEUTRAL;
@@ -339,7 +326,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 }
                 else
                 {
-
                     if (Ruin)
                         foreach (var keep in Region.Campaign.Keeps)
                             if (Id == keep.Info.KeepId)
@@ -426,7 +412,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             BroadcastFlagInfo(announce);
         }
 
-
         /// <summary>
         ///     Conputes the assaulting speed depending of players in close range.
         /// </summary>
@@ -453,9 +438,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 speed = -1f + (diff + 1) / 5f;
             return speed;
         }
-
-
-
 
         public override void AddInRange(Object obj)
         {
@@ -561,7 +543,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         public void UnlockObjective()
         {
-
             BattlefrontLogger.Debug($"Unlocking objective {this.Name}");
             State = StateFlags.Unsecure;
             OwningRealm = Realms.REALMS_REALM_NEUTRAL;
@@ -614,9 +595,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Out.WriteByte(1);
             Out.WriteUInt16(0);
             Out.WritePascalString(Name);
-            // 
-            // 
-            // 
+            //
+            //
+            //
             Out.WriteByte(2);
             Out.WriteUInt32(0x0000348F);
             Out.WriteByte((byte)assaultingRealm); // (byte)AssaultingRealm
@@ -697,16 +678,22 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 case StateFlags.Secure:
                     return _secureProgress == MAX_SECURE_PROGRESS ? "GENERATING" : "SECURING";
+
                 case StateFlags.Abandoned:
                     return "ABANDONED";
+
                 case StateFlags.Contested:
                     return realm == OwningRealm ? "DEFEND" : "ASSAULT";
+
                 case StateFlags.Unsecure:
                     return "OPEN";
+
                 case StateFlags.Hidden:
                     return "";
+
                 case StateFlags.ZoneLocked:
                     return "LOCKED";
+
                 case StateFlags.Locked:
                     return "SECURED";
             }
@@ -736,12 +723,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 case Realms.REALMS_REALM_NEUTRAL:
                     displayId = 3442;
                     break;
+
                 case Realms.REALMS_REALM_ORDER:
                     displayId = 3443;
                     break;
+
                 case Realms.REALMS_REALM_DESTRUCTION:
                     displayId = 3438;
                     break;
+
                 default:
                     displayId = 3442;
                     break;
@@ -875,6 +865,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 case StateFlags.Unsecure:
                     message = string.Concat(Name, " is now open for capture !");
                     break;
+
                 case StateFlags.Contested:
                     if (_lastBroadCastState != State)
                     {
@@ -884,6 +875,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             GetRealmString(AssaultingRealm), "!");
                     }
                     break;
+
                 case StateFlags.Secure:
                     var securedState = _secureProgress == MAX_SECURE_PROGRESS;
                     if (_lastBroadCastState != State || _lastSecutedState != securedState)
@@ -957,7 +949,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             //player.SendClientMessage($"Order / Destro warcamp distances: {_orderWarcampDistance} / {_destroWarcampDistance}");
         }
 
-
         /// <summary>
         ///     Prevents this objective from being captured.
         /// </summary>
@@ -1017,9 +1008,5 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             AccumulatedKills = 0;
         }
-
-
-
-
     }
 }
