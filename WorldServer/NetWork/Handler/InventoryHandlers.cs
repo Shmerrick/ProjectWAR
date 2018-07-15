@@ -153,6 +153,7 @@ namespace WorldServer
             if (item.Info.Entry == 1337)
             {
                 Plr.SetLevel((byte)40);
+                Plr.ItmInterface.DeleteItem(slot, 1);
             }
 
             if (item.Info.Entry == 86203 || item.Info.Entry == 86207 || item.Info.Entry == 86211 || item.Info.Entry == 86215 || item.Info.Entry == 86219 || item.Info.Entry == 86223) // siege oil
