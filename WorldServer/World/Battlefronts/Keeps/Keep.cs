@@ -407,6 +407,18 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 SendRegionMessage(Info.Name + "'s Keep Lord has fallen!");
                 LastMessage = KeepMessage.Fallen;
+                _logger.Info($"Awarding VP for Keep Lord kill");
+                if (Realm == Realms.REALMS_REALM_ORDER)
+                {
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints += 500;
+                }
+                else
+                {
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += 500;
+                }
+               
+                
+
             }
 
             /*if (_playersKilledInRange >= (4*Tier))
