@@ -1420,33 +1420,24 @@ namespace WorldServer
 
         #endregion
 
-        public static void AttachUpperTierBattleFronts(List<RVRProgression> progressions)
+        public static void AttachCampaignsToRegions()
         {
-            foreach (var rvrProgression in progressions)
+
+            foreach (var regionMgr in _Regions)
             {
-                _logger.Info($"Attaching Battlefronts to Regions");
-                
-                foreach (var regionMgr in _Regions)
+                var objectiveList = LoadObjectives(regionMgr);
+                switch (regionMgr.RegionId)
                 {
-
-
-                    _logger.Info($"Connecting region : {regionMgr.RegionId} to {rvrProgression.BattleFrontId} {rvrProgression.Description} ({rvrProgression.RegionId})");
-                    var objectiveList = LoadObjectives(regionMgr);
-
-                    switch (regionMgr.RegionId)
-                    {
-                        case 1: // t1 dw/gs
-                        case 3: // t1 he/de
-                        case 8: // t1 em/ch
-                            regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierCampaignManager, new ApocCommunications());
-                            break;
-                        default: // Everything else...
-                            regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierCampaignManager, new ApocCommunications());
-                            break;
-                    }
+                    case 1: // t1 dw/gs
+                    case 3: // t1 he/de
+                    case 8: // t1 em/ch
+                        regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierCampaignManager, new ApocCommunications());
+                        break;
+                    default: // Everything else...
+                        regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierCampaignManager, new ApocCommunications());
+                        break;
                 }
             }
-           
         }
 
         public static List<CampaignObjective> LoadObjectives(RegionMgr regionMgr)
@@ -1475,8 +1466,8 @@ namespace WorldServer
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
             Out.WriteHexStringBytes("0005006700CB00"); // 7
-    
-            
+
+
             // Dwarfs vs Greenskins T1
             Out.WriteByte(0);    // 0 and ignored
             Out.WriteByte((byte)LowerTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER1_EKRUND).OrderVictoryPointPercentage);  // % Order lock

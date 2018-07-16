@@ -144,7 +144,7 @@ namespace WorldServer
             WorldMgr.LowerTierCampaignManager.ResetBattleFrontProgression();
             Log.Texte("Battlefront Manager", "Attaching Battlefronts to Regions", ConsoleColor.Cyan);
             // Attach Battlefronts to regions
-            WorldMgr.AttachUpperTierBattleFronts(RVRProgressionService._RVRProgressions.ToList());
+            WorldMgr.AttachCampaignsToRegions();
 
             Log.Texte("Battlefront Manager", "Locking Battlefronts", ConsoleColor.Cyan);
             WorldMgr.UpperTierCampaignManager.LockBattleFrontsAllRegions(4);

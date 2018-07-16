@@ -253,7 +253,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 Keep keep = new Keep(info, (byte)this.Tier, Region);
                 keep.Realm = (Realms)keep.Info.Realm;
+           
                 Keeps.Add(keep);
+
                 Region.AddObject(keep, info.ZoneId);
 
                 if (info.Creatures != null)
