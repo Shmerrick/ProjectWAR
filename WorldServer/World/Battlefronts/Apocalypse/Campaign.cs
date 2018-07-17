@@ -139,24 +139,29 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 if ((OrderPlayerPopulationList.Count == 0) || (DestructionPlayerPopulationList.Count == 0))
                     return;
 
-                BattlefrontLogger.Debug($"Recording metrics for Campaign {this.CampaignName}");
-                foreach (var apocBattleFrontStatus in ApocBattleFrontStatuses)
+                lock (LockObject)
                 {
-                    var metrics = new RVRMetrics
+                    var groupId = Guid.NewGuid().ToString();
+                    BattlefrontLogger.Debug($"Recording metrics for Campaign {this.CampaignName}");
+                    foreach (var apocBattleFrontStatus in ApocBattleFrontStatuses)
                     {
-                        BattlefrontId = apocBattleFrontStatus.BattleFrontId,
-                        BattlefrontName = apocBattleFrontStatus.Description,
-                        DestructionVictoryPoints = (int)this.VictoryPointProgress.DestructionVictoryPoints,
-                        OrderVictoryPoints = (int)this.VictoryPointProgress.OrderVictoryPoints,
-                        Locked = apocBattleFrontStatus.LockStatus,
-                        OrderPlayersInLake = this.OrderPlayerPopulationList[apocBattleFrontStatus.BattleFrontId],
-                        DestructionPlayersInLake = this.DestructionPlayerPopulationList[apocBattleFrontStatus.BattleFrontId],
-                        Tier = this.Tier,
-                        Timestamp = DateTime.UtcNow
-                    };
+                        var metrics = new RVRMetrics
+                        {
+                            BattlefrontId = apocBattleFrontStatus.BattleFrontId,
+                            BattlefrontName = apocBattleFrontStatus.Description,
+                            DestructionVictoryPoints = (int) this.VictoryPointProgress.DestructionVictoryPoints,
+                            OrderVictoryPoints = (int) this.VictoryPointProgress.OrderVictoryPoints,
+                            Locked = apocBattleFrontStatus.LockStatus,
+                            OrderPlayersInLake = this.OrderPlayerPopulationList[apocBattleFrontStatus.BattleFrontId],
+                            DestructionPlayersInLake = this.DestructionPlayerPopulationList[apocBattleFrontStatus.BattleFrontId],
+                            Tier = this.Tier,
+                            Timestamp = DateTime.UtcNow,
+                            GroupId = groupId
+                        };
 
-                    WorldMgr.Database.AddObject(metrics);
-                    
+                        WorldMgr.Database.AddObject(metrics);
+
+                    }
                 }
             }
             catch (Exception e)

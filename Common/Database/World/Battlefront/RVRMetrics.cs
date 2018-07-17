@@ -7,7 +7,7 @@ using FrameWork;
 
 namespace Common.Database.World.Battlefront
 {
-    // Fixed value of a character 
+    
     [DataTable(PreCache = false, TableName = "rvr_metrics", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class RVRMetrics : DataObject
@@ -42,6 +42,9 @@ namespace Common.Database.World.Battlefront
         [DataElement(AllowDbNull = false)]
         public DateTime Timestamp { get; set; }
 
-        
+        [DataElement(AllowDbNull = false)]
+        public string GroupId { get; set; }
+
+
     }
 }
