@@ -16,6 +16,7 @@ namespace WorldServer.World.Battlefronts.Bounty
     //TODO : Attach this to BattlefrontStatus object. (Which we probably want to persist).
     public class ContributionManager : IContributionManager
     {
+        private readonly Object _lockObject = new Object();
         // Holds the characterId, and the list of contributions the player has added in the current battlefront.
         public ConcurrentDictionary<uint, List<PlayerContribution>> ContributionDictionary { get; set; }
         // Reference contribution factors
@@ -27,17 +28,50 @@ namespace WorldServer.World.Battlefronts.Bounty
             ContributionFactors = contributionFactors;
         }
 
-        public bool UpdateContribution(uint targetCharacterId, byte contibutionId)
+        public List<PlayerContribution> UpdateContribution(uint targetCharacterId, byte contibutionId)
         {
-            //var contributionFactor = ContributionFactors.SingleOrDefault(x => x.ContributionId == contibutionId);
-            var item = GetContribution(targetCharacterId);
-            item.Add(new PlayerContribution
-            {
-                ContributionId = contibutionId,
-                Timestamp = FrameWork.TCPManager.GetTimeStamp()
-            });
 
-            return this.ContributionDictionary.TryAdd(targetCharacterId, item);
+            lock (_lockObject)
+            {
+                var item = GetContribution(targetCharacterId);
+
+                //filteredResults.AddOrUpdate(unfilteredResult.Key, new List<int> { number }, (k, v) => v.Add(number));
+               return this.ContributionDictionary.AddOrUpdate(targetCharacterId,
+                    new List<PlayerContribution>
+                    {
+                        new PlayerContribution
+                        {
+                            ContributionId = contibutionId,
+                            Timestamp = FrameWork.TCPManager.GetTimeStamp()
+                        }
+                    }, (k, v) =>
+                    {
+                        v.Add(new PlayerContribution
+                        {
+                            ContributionId = contibutionId,
+                            Timestamp = FrameWork.TCPManager.GetTimeStamp()
+                        });
+                        return v;
+                    });
+
+                //if (item == null)
+                //{
+                //    var newPlayerContributionList = new List<PlayerContribution>()>;
+                //    newPlayerContributionList.Add(new PlayerContribution
+                //    {
+                //        ContributionId = contibutionId,
+                //        Timestamp = FrameWork.TCPManager.GetTimeStamp()
+                //    });
+                //}
+
+                //    item.Add(new PlayerContribution
+                //    {
+                //        ContributionId = contibutionId,
+                //        Timestamp = FrameWork.TCPManager.GetTimeStamp()
+                //    });
+
+                //return this.ContributionDictionary.TryAdd(targetCharacterId, item);
+            }
 
             //return this.ContributionDictionary.AddOrUpdate(
             //    targetCharacterId,
@@ -70,6 +104,12 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             short contributionValue = 0;
 
+            if (contributionList == null)
+                return contributionValue;
+
+            if (ContributionFactors == null)
+                return contributionValue;
+
             foreach (var playerContribution in contributionList)
             {
                 foreach (var contributionFactor in ContributionFactors)
@@ -87,19 +127,19 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <summary>
         /// Add Character to Contribution Dictionary
         /// </summary>
-        public void AddCharacter(uint characterId, byte contributionId)
+        public void AddCharacter(uint characterId)
         {
-            UpdateContribution(characterId, contributionId);
+            UpdateContribution(characterId, 0);
         }
 
         /// <summary>
         /// Remove Character from Contribution Dict
         /// </summary>
         /// <param name="characterId"></param>
-        public void RemoveCharacter(uint characterId)
+        public bool RemoveCharacter(uint characterId)
         {
             List<PlayerContribution> contribution;
-            this.ContributionDictionary.TryRemove(characterId, out contribution);
+            return this.ContributionDictionary.TryRemove(characterId, out contribution);
         }
 
         public void Clear()

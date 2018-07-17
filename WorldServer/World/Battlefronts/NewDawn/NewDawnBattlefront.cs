@@ -332,7 +332,7 @@ namespace WorldServer.World.Battlefronts.NewDawn
 
                     // Add player to the bounty manager on entry to the Lake.
                     Region.BountyManager.AddCharacter(plr.CharacterId, plr.Level, plr.RenownRank);
-                    Region.ContributionManager.AddCharacter(plr.CharacterId, 0);
+                    Region.ContributionManager.AddCharacter(plr.CharacterId);
                 }
             }
 

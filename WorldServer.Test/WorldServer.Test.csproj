@@ -72,6 +72,7 @@
     <Compile Include="RacialPairManagerTest.cs" />
     <Compile Include="CalculateObjectiveRewardScaleTest.cs" />
     <Compile Include="RewardTests.cs" />
+    <Compile Include="ContributionTests.cs" />
     <Compile Include="UpperTierBattlefrontManagerTest.cs" />
     <Compile Include="CommandTest.cs" />
     <Compile Include="LootTests.cs" />
