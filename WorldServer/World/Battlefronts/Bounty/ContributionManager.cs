@@ -8,23 +8,40 @@ using System.Threading.Tasks;
 namespace WorldServer.World.Battlefronts.Bounty
 {
 
+    /// <summary>
+    /// Each character (player) holds a list of contributions that they have earnt in a specific battlefront.
+    /// </summary>
+
+
+    //TODO : Attach this to BattlefrontStatus object. (Which we probably want to persist).
     public class ContributionManager : IContributionManager
     {
         public const int MAX_CONTRIBUTION = 110;
 
-        // Holds the characterId, the last death time since epoch, and the amount of bounty
-        public ConcurrentDictionary<uint, uint> ContributionDictionary { get; set; }
+        // Holds the characterId, and the list of contributions the player has added in the current battlefront.
+        public ConcurrentDictionary<uint, List<PlayerContribution>> ContributionDictionary { get; set; }
+        // Reference contribution factors
+        public List<ContributionFactor> ContributionFactors { get; }
 
-        public ContributionManager()
+        public ContributionManager(ConcurrentDictionary<uint, List<PlayerContribution>> contributionDictionary, List<ContributionFactor> contributionFactors)
         {
-            ContributionDictionary = new ConcurrentDictionary<uint, uint>();
+            ContributionDictionary = contributionDictionary;
+            ContributionFactors = contributionFactors;
         }
 
-        public uint UpdateContribution(uint targetCharacterId, uint contribution)
+        public uint UpdateContribution(uint targetCharacterId, byte contibutionId)
         {
+            //var contributionFactor = ContributionFactors.SingleOrDefault(x => x.ContributionId == contibutionId);
+            var item = GetContribution(targetCharacterId);
+            item.Add(new PlayerContribution
+            {
+                ContributionId = contibutionId,
+                Timestamp = FrameWork.TCPManager.GetTimeStamp()
+            });
+
             return this.ContributionDictionary.AddOrUpdate(
                 targetCharacterId,
-                contribution,
+                item,
                 (key, existingContibution) =>
                 {
                     var newContribution = existingContibution + contribution;
@@ -36,7 +53,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 });
         }
 
-        public uint GetContribution(uint targetCharacterId)
+        public List<PlayerContribution> GetContribution(uint targetCharacterId)
         {
             if (this.ContributionDictionary.ContainsKey(targetCharacterId))
                 return this.ContributionDictionary[targetCharacterId];
@@ -48,12 +65,9 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <summary>
         /// Add Character to Contribution Dictionary
         /// </summary>
-        /// <param name="characterId"></param>
-        /// <param name="characterLevel"></param>
-        /// <param name="renownLevel"></param>
-        public void AddCharacter(uint characterId, uint contribution)
+        public void AddCharacter(uint characterId, byte contributionId)
         {
-            UpdateContribution(characterId, contribution);
+            UpdateContribution(characterId, contributionId);
         }
 
         /// <summary>
@@ -62,8 +76,35 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <param name="characterId"></param>
         public void RemoveCharacter(uint characterId)
         {
-            uint contribution;
+            List<PlayerContribution> contribution;
             this.ContributionDictionary.TryRemove(characterId, out contribution);
         }
+
+        public void Clear()
+        {
+            this.ContributionDictionary.Clear();
+        }
+    }
+
+    /// <summary>
+    /// Structure to hold the defintion of contributions.
+    /// </summary>
+    public class ContributionFactor
+    {
+        public byte ContributionId { get; set; }
+        public string ContributionDescription { get; set; }
+        public byte ContributionValue { get; set; }
+        public byte MaxContributionCount { get; set; }
+
+    }
+
+    /// <summary>
+    /// The actual class to be added to the Contribution dictionary
+    /// </summary>
+    public class PlayerContribution
+    {
+        public byte ContributionId { get; set; }
+        
+        public long Timestamp { get; set; }
     }
 }

@@ -1,10 +1,13 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
     public interface IContributionManager
     {
         uint UpdateContribution(uint targetCharacterId, uint contribution);
-        uint GetContribution(uint targetCharacterId);
+        List<PlayerContribution> GetContribution(uint targetCharacterId);
+
+        void Clear();
     }
 }
