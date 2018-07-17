@@ -192,5 +192,27 @@ namespace WorldServer.Test
             var result = contributionManager.GetContributionValue(100);
             Assert.IsTrue(result ==0 );
         }
+
+        [TestMethod]
+        public void AddMultipleCharactersThenClear()
+        {
+            var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), ContributionFactorReferenceList);
+
+            contributionManager.UpdateContribution(100, 1);
+            contributionManager.UpdateContribution(102, 2);
+            contributionManager.UpdateContribution(104, 2);
+            contributionManager.UpdateContribution(104, 1);
+
+            contributionManager.RemoveCharacter(102);
+            var result = contributionManager.GetContributionValue(102);
+            Assert.IsTrue(result == 0);
+
+            contributionManager.Clear();
+            var result2 = contributionManager.GetContributionValue(102);
+            Assert.IsTrue(result2 == 0);
+            var result3 = contributionManager.GetContributionValue(104);
+            Assert.IsTrue(result3 == 0);
+
+        }
     }
 }

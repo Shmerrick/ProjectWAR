@@ -15,5 +15,6 @@ namespace WorldServer.World.Battlefronts.Bounty
         bool RemoveCharacter(uint characterId);
 
         void Clear();
+        void AddCharacter(uint characterId);
     }
 }
