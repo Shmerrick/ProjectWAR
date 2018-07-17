@@ -54,13 +54,13 @@ namespace WorldServer.World.Battlefronts.Bounty
         public ConcurrentDictionary<uint, Reward> GenerateBaseReward(uint targetCharacterId, int randomNumber)
         {
             var characterBounty = BountyManager.GetBounty(targetCharacterId);
-            var contribution = ContributionManager.GetContribution(targetCharacterId);
+            var contributionValue = ContributionManager.GetContributionValue(targetCharacterId);
             var impacts = ImpactMatrixManager.GetKillImpacts(targetCharacterId);
             var totalImpact = ImpactMatrixManager.GetTotalImpact(targetCharacterId);
 
             RewardLogger.Info($"Calculating Reward for impacting {targetCharacterId}");
             RewardLogger.Debug($"Character Bounty : {characterBounty.ToString()}");
-            RewardLogger.Debug($"Contribution : {contribution}");
+            RewardLogger.Debug($"Contribution : {contributionValue}");
             RewardLogger.Debug($"Impacts : {String.Join(",", impacts)}");
 
      
@@ -72,7 +72,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             foreach (var playerImpact in impacts)
             {
                 var impactFraction = CalculateImpactFraction(playerImpact.ImpactValue, totalImpact);
-                var modifiedEffectiveLevel = CalculateModifiedEffectiveLevel(characterBounty, contribution);
+                var modifiedEffectiveLevel = CalculateModifiedEffectiveLevel(characterBounty, contributionValue);
 
                 int insigniaCount = 0;
                 int insigniaItemId = 0;
@@ -110,9 +110,9 @@ namespace WorldServer.World.Battlefronts.Bounty
             return impactValue / totalImpact;
         }
 
-        private float CalculateModifiedEffectiveLevel(CharacterBounty characterBounty, uint contribution)
+        private float CalculateModifiedEffectiveLevel(CharacterBounty characterBounty, short contributionValue)
         {
-            return characterBounty.EffectiveLevel + contribution;
+            return characterBounty.EffectiveLevel + contributionValue;
         }
     }
 

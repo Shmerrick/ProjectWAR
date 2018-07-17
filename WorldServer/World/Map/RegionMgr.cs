@@ -1,6 +1,7 @@
 ﻿//#define NO_CREATURE
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -60,7 +61,28 @@ namespace WorldServer
 
             ImpactMatrix = new ImpactMatrixManager();
             BountyManager = new BountyManager();
-            ContributionManager = new ContributionManager();
+
+            /*
+             * Using Region as a proxy for Campaign in T4. ContributionFactorReferenceList is used as a proxy from the DB managing this.
+             */
+            var contributionFactorReferenceList = new List<ContributionFactor>
+            {
+                new ContributionFactor
+                {
+                    ContributionId = 1,
+                    ContributionDescription = "PVP Kill",
+                    ContributionValue = 1,
+                    MaxContributionCount = 10
+                },
+                new ContributionFactor
+                {
+                    ContributionId = 2,
+                    ContributionDescription = "BO Capture",
+                    ContributionValue = 1,
+                    MaxContributionCount = 4
+                }
+            };
+            ContributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), contributionFactorReferenceList);
             RewardManager = new RewardManager(BountyManager, ContributionManager, ImpactMatrix, new StaticWrapper() );
 
             if (Constants.DoomsdaySwitch == 2)

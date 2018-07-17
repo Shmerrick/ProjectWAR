@@ -16,7 +16,7 @@ namespace WorldServer.Test
     {
        
         [TestMethod]
-        public void ReplicateTestCase1()
+        public void Replicate_Excel_TestCase1()
         {
             var fakeBountyManager = A.Fake<IBountyManager>();
             var fakeContributionManager = A.Fake<IContributionManager>();
@@ -42,7 +42,7 @@ namespace WorldServer.Test
             };
 
             A.CallTo(() => fakeBountyManager.GetBounty(123)).Returns(charBounty);
-            A.CallTo(() => fakeContributionManager.GetContribution(123)).Returns<uint>(100);
+            A.CallTo(() => fakeContributionManager.GetContributionValue(123)).Returns<short>(100);
             A.CallTo(() => fakeImpactMatrixManager.GetKillImpacts(123)).Returns(fakeImpacts);
             A.CallTo(() => fakeImpactMatrixManager.GetTotalImpact(123)).Returns(3350);
 
