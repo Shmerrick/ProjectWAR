@@ -97,7 +97,8 @@ namespace WorldServer.Test
                 DestWinProgression = 2,
                 OrderWinProgression = 3,
                 PairingId = 2,
-                RegionId = 1
+                RegionId = 1,
+                ResetProgressionOnEntry = 1
             });
             SampleProgressionList.Add(new RVRProgression
             {
@@ -108,7 +109,8 @@ namespace WorldServer.Test
                 DestWinProgression = 6,
                 OrderWinProgression = 7,
                 PairingId = 2,
-                RegionId = 1
+                RegionId = 1,
+                ResetProgressionOnEntry = 0
             });
             SampleProgressionList.Add(new RVRProgression
             {
@@ -119,7 +121,8 @@ namespace WorldServer.Test
                 DestWinProgression = 7,
                 OrderWinProgression = 2,
                 PairingId = 1,
-                RegionId = 3
+                RegionId = 3,
+                ResetProgressionOnEntry = 0
             });
             SampleProgressionList.Add(new RVRProgression
             {
@@ -130,7 +133,8 @@ namespace WorldServer.Test
                 DestWinProgression = 1,
                 OrderWinProgression = 1,
                 PairingId = 1,
-                RegionId = 3
+                RegionId = 3,
+                ResetProgressionOnEntry = 0
             });
             manager = new UpperTierCampaignManager(SampleProgressionList, RegionMgrs);
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
@@ -488,6 +492,93 @@ namespace WorldServer.Test
             Assert.IsTrue(activeCampaign.Region.RegionId == 1);
             Assert.IsTrue(activeCampaign.VictoryPointProgress.DestructionVictoryPoints == 0f);
             Assert.IsTrue(activeCampaign.VictoryPointProgress.OrderVictoryPoints == 0f);
+
+        }
+
+
+        [TestMethod]
+        public void RollAllRegionsBackToStart()
+        {
+            var fakeCommsEngine = A.Fake<IApocCommunications>();
+            manager = new UpperTierCampaignManager(SampleProgressionList, RegionMgrs);
+            // Must be run before attaching ApocBattleFronts to get an ActiveBF
+            var bf = manager.ResetBattleFrontProgression();
+
+            Region1.Campaign = new Campaign(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
+            Region3.Campaign = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
+            // Open Praag (BF==1)
+            manager.OpenActiveBattlefront();
+            // Locking Region1.Campaign
+            Region1.Campaign.VictoryPointProgress.DestructionVictoryPoints = 5000f;
+            Region1.Campaign.VictoryPointProgress.OrderVictoryPoints = 1000f;
+            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+
+            // Ensure battlefront 1 is locked and to Destro
+            Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).LockingRealm == Realms.REALMS_REALM_DESTRUCTION);
+            Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).Locked);
+            Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).FinalVictoryPoint.DestructionVictoryPoints == 5000f);
+            Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).FinalVictoryPoint.OrderVictoryPoints == 1000f);
+            Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).RegionId == 1);
+
+            // Advance Destro
+            var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            Assert.IsTrue(progression.BattleFrontId == 2);
+            Assert.IsTrue(progression.ZoneId == 201);
+            manager.OpenActiveBattlefront();
+            Region1.Campaign.VictoryPointProgress.DestructionVictoryPoints = 5000f;
+            Region1.Campaign.VictoryPointProgress.OrderVictoryPoints = 2200f;
+
+            var activeCampaign = manager.GetActiveCampaign();
+            Assert.IsTrue(activeCampaign.CampaignName == "Chaos Wastes");
+            Assert.IsTrue(activeCampaign.Region.RegionId == 1);
+            Assert.IsTrue(activeCampaign.VictoryPointProgress.DestructionVictoryPoints == 5000f);
+            Assert.IsTrue(activeCampaign.VictoryPointProgress.OrderVictoryPoints == 2200f);
+
+            // Lock Destro again
+            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+
+            // Ensure battlefront is locked and to Destro
+            Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).LockingRealm == Realms.REALMS_REALM_DESTRUCTION);
+            Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).Locked);
+
+            // Advance Destro
+            var progression2 = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            Assert.IsTrue(progression2.BattleFrontId == 6);
+            Assert.IsTrue(progression2.ZoneId == 400);
+
+            // KV
+            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            var progression3 = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            manager.OpenActiveBattlefront();
+            Assert.IsTrue(progression3.BattleFrontId == 7);
+            Assert.IsTrue(progression3.ZoneId == 401);
+
+            //Back to Emp
+            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            var progression4 = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            manager.OpenActiveBattlefront();
+            Assert.IsTrue(progression4.BattleFrontId == 1);
+            Assert.IsTrue(progression4.ZoneId == 200);
+
+            // Should be all unlocked in Praag
+            // Ensure that the BOs for this battlefront ONLY are locked.
+            foreach (var apocBattlefieldObjective in Region1.Campaign.Objectives)
+            {
+                // Locking a battlefront should ZoneLock the BOs in that Zone, and Open those in the next battlefront.
+                if (apocBattlefieldObjective.ZoneId == 200)
+                {
+                    // Should be all unsecure.
+                    Assert.IsTrue(apocBattlefieldObjective.State == StateFlags.Unsecure);
+                }
+                else
+                {
+                    Assert.IsTrue(apocBattlefieldObjective.State == StateFlags.ZoneLocked);
+                }
+            }
+
+            Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).LockingRealm == Realms.REALMS_REALM_NEUTRAL);
+            Assert.IsFalse(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).Locked);
+
 
         }
 

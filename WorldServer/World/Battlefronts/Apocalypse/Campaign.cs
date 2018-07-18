@@ -677,7 +677,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattleFrontManager.OpenActiveBattlefront();
                 // This is kind of nasty, should use an event to signal the WorldMgr
                 // Tell the server that the RVR status has changed.
-                WorldMgr.UpdateRegionCaptureStatus();
+                WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
                 // Logs the status of all battlefronts known to the Battlefront Manager.
                 // BattleFrontManager.AuditBattleFronts(this.Tier);
 
@@ -694,7 +694,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattleFrontManager.OpenActiveBattlefront();
                 // This is kind of nasty, should use an event to signal the WorldMgr
                 // Tell the server that the RVR status has changed.
-                WorldMgr.UpdateRegionCaptureStatus();
+                WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
                 // Logs the status of all battlefronts known to the Battlefront Manager.
                 // BattleFrontManager.AuditBattleFronts(this.Tier);
             }
@@ -703,7 +703,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void SendCampaignMovementMessage(RVRProgression nextBattleFront)
         {
-            var campaignMoveMessage = $"The campaign has moved to  {nextBattleFront.Description}";
+            var campaignMoveMessage = $"The campaign has moved to {nextBattleFront.Description}";
             BattlefrontLogger.Info(campaignMoveMessage);
             CommunicationsEngine.Broadcast(campaignMoveMessage, this.Tier);
         }

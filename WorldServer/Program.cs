@@ -154,7 +154,7 @@ namespace WorldServer
             WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront();
             WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront();
 
-            WorldMgr.UpdateRegionCaptureStatus();
+            WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
                 
             
             if (!TCPManager.Listen<TCPServer>(Rm.Port, "World"))

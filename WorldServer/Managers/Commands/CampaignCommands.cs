@@ -131,7 +131,7 @@ namespace WorldServer.Managers.Commands
             {
                 var progression = WorldMgr.LowerTierCampaignManager.AdvanceBattleFront(realm);
                 WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront();
-                WorldMgr.UpdateRegionCaptureStatus();
+                WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
                 plr.SendClientMessage(realm == Realms.REALMS_REALM_DESTRUCTION
                     ? $"Destruction vanquishes Order, the campaign moves to {progression.Description}"
                     : $"Order conquers Destruction, the campaign moves to {progression.Description}");
@@ -140,7 +140,7 @@ namespace WorldServer.Managers.Commands
             {
                 var progression = WorldMgr.UpperTierCampaignManager.AdvanceBattleFront(realm);
                 WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront();
-                WorldMgr.UpdateRegionCaptureStatus();
+                WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
                 plr.SendClientMessage(realm == Realms.REALMS_REALM_DESTRUCTION
                     ? $"Destruction vanquishes Order, the campaign moves to {progression.Description}"
                     : $"Order conquers Destruction, the campaign moves to {progression.Description}");
@@ -150,7 +150,7 @@ namespace WorldServer.Managers.Commands
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Updates the clients with current region capture status")]
         public static void UpdateRegionCaptureStatus(Player plr)
         {
-            WorldMgr.UpdateRegionCaptureStatus();
+            WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
         }
 
         //.campaign SetRegionCaptureStatus 111111110 7    -- lock all to order except Eataine. Make it the active BF
@@ -213,7 +213,7 @@ namespace WorldServer.Managers.Commands
             WorldMgr.UpperTierCampaignManager.ActiveBattleFront = WorldMgr.UpperTierCampaignManager.GetBattleFrontByBattleFrontId(activeBattleFrontId);
             WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront();
 
-            WorldMgr.UpdateRegionCaptureStatus();
+            WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
         }
 
         private static Realms GetLockRealmFromT4Progression(string str)

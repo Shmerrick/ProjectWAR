@@ -223,7 +223,7 @@ namespace WorldServer.Managers.Commands
         /// <summary>NPC commands under .npc</summary>
         public static List<GmCommandHandler> NpcCommands = new List<GmCommandHandler>
         {
-#if DEBUG
+
             new GmCommandHandler("spawn",NpcSpawn, null, EGmLevel.DatabaseDev, 1, "Spawn an npc"),
             new GmCommandHandler("remove",NpcRemove, null, EGmLevel.DatabaseDev, 1, "Delete the target <(0=World,1=Database)>"),
             new GmCommandHandler("go",NpcGoTo, null, EGmLevel.DatabaseDev, 3, "Npc Go To Target <X,Y,Z>"),
@@ -238,7 +238,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("move",NpcChangeSpawnPlace, null, EGmLevel.DatabaseDev, 0, "Makes NPC come to player and updates his position in DB."),
             new GmCommandHandler("addtoevent",NpcEventConvert, null, EGmLevel.DatabaseDev, 1, "Adds NPC to event. Currently doesn't work."),
             new GmCommandHandler("health",NpcHealth, null, EGmLevel.DatabaseDev, 1, "Sets NPC or GO health to specified value percent.")
-#endif
+
 #if (!DEBUG)
             new GmCommandHandler("spawn",NpcSpawn, null, EGmLevel.SourceDev, 1, "Spawn an npc"),
             new GmCommandHandler("remove",NpcRemove, null, EGmLevel.SourceDev, 1, "Delete the target <(0=World,1=Database)>"),
@@ -433,12 +433,12 @@ namespace WorldServer.Managers.Commands
             // All empowered staff
             new GmCommandHandler("kill", Kill, null, EGmLevel.EmpoweredStaff, 0, "Slays the targeted Unit."),
             new GmCommandHandler("nuke", Nuke, null, EGmLevel.EmpoweredStaff, 2, "Slays everyone in radius. Takes 2 parameters, realm and radius in ft. Realm 0 - all, 1 - order, 2 - destro"),
-#if (DEBUG)
+
             new GmCommandHandler("boot", Reboot, null, EGmLevel.EmpoweredStaff, 0, "Reboots the server."),
             new GmCommandHandler("clearboot",ClearServer, null, EGmLevel.EmpoweredStaff, 0, "Removes all players from server."),
             new GmCommandHandler("revive",Revive, null, EGmLevel.Staff, 0, "Resurrects the targeted Unit."),
             new GmCommandHandler("fly", SetFlightState, null, EGmLevel.Staff, 0, "Grants the ability to fly (byte enableFlight)"),
-#endif
+
 #if (!DEBUG)
             new GmCommandHandler("boot",Reboot, null, EGmLevel.Management, 0, "Reboots the server."),
             new GmCommandHandler("clearboot",ClearServer, null, EGmLevel.Management, 0, "Removes all players from server."),
