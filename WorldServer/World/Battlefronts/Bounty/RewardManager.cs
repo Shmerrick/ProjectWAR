@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using FrameWork;
 using NLog;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.NewDawn.Rewards;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
@@ -23,23 +24,25 @@ namespace WorldServer.World.Battlefronts.Bounty
         public IContributionManager ContributionManager { get; }
         public IImpactMatrixManager ImpactMatrixManager { get; }
         public IStaticWrapper StaticWrapper { get; }
+        public List<RenownBandReward> RewardBands { get; }
 
-        public RewardManager(IBountyManager bountyManager, IContributionManager contributionManager, IImpactMatrixManager impactMatrixManager, IStaticWrapper staticWrapper)
+        public RewardManager(IBountyManager bountyManager, IContributionManager contributionManager, IImpactMatrixManager impactMatrixManager, IStaticWrapper staticWrapper, List<RenownBandReward>  rewardBands)
         {
             BountyManager = bountyManager;
             ContributionManager = contributionManager;
             ImpactMatrixManager = impactMatrixManager;
             StaticWrapper = staticWrapper;
+            RewardBands = rewardBands;
         }
 
         public virtual int GetInsigniaItemId(int renownBand)
         {
-            return (int)RewardService._RewardBandRewards.Single(x => x.RenownBand == renownBand).CrestId;
+            return (int)RewardBands.Single(x => x.RenownBand == renownBand).CrestId;
         }
 
         public virtual int GetInsigniaItemCount(int renownBand)
         {
-            return (int)RewardService._RewardBandRewards.Single(x => x.RenownBand == renownBand).CrestCount;
+            return (int)RewardBands.Single(x => x.RenownBand == renownBand).CrestCount;
         }
 
         public virtual double GetRenownBandMoneyBase(int renownBand)

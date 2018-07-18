@@ -83,7 +83,7 @@ namespace WorldServer
                 }
             };
             ContributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), contributionFactorReferenceList);
-            RewardManager = new RewardManager(BountyManager, ContributionManager, ImpactMatrix, new StaticWrapper() );
+            RewardManager = new RewardManager(BountyManager, ContributionManager, ImpactMatrix, new StaticWrapper(), RewardService._RewardBandRewards );
 
             if (Constants.DoomsdaySwitch == 2)
             {

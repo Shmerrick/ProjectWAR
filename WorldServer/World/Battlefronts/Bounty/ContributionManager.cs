@@ -55,38 +55,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                          });
                          return v;
                      });
-
-                //if (item == null)
-                //{
-                //    var newPlayerContributionList = new List<PlayerContribution>()>;
-                //    newPlayerContributionList.Add(new PlayerContribution
-                //    {
-                //        ContributionId = contibutionId,
-                //        Timestamp = FrameWork.TCPManager.GetTimeStamp()
-                //    });
-                //}
-
-                //    item.Add(new PlayerContribution
-                //    {
-                //        ContributionId = contibutionId,
-                //        Timestamp = FrameWork.TCPManager.GetTimeStamp()
-                //    });
-
-                //return this.ContributionDictionary.TryAdd(targetCharacterId, item);
             }
-
-            //return this.ContributionDictionary.AddOrUpdate(
-            //    targetCharacterId,
-            //    item,
-            //    (key, existingContibution) =>
-            //    {
-            //        var newContribution = existingContibution + contribution;
-            //        if (newContribution > MAX_CONTRIBUTION)
-            //        {
-            //            return MAX_CONTRIBUTION;
-            //        }
-            //        return newContribution;
-            //    });
         }
 
         public List<PlayerContribution> GetContribution(uint targetCharacterId)
@@ -118,23 +87,6 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
                 contributionValue += contributionStage.Value.ContributionStageSum;
             }
-
-            //foreach (var contributionFactor in ContributionFactors)
-            //{
-            //    // Prepare the ContributionValueTriplet
-
-            //}
-
-            //foreach (var playerContribution in contributionList)
-            //{
-            //    foreach (var contributionFactor in ContributionFactors)
-            //    {
-            //        if (contributionFactor.ContributionId == playerContribution.ContributionId)
-            //        {
-            //            contributionValue += contributionFactor.ContributionValue;
-            //        }
-            //    }
-            //}
 
             if (contributionValue > short.MaxValue)
             {
@@ -198,7 +150,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         }
 
-       
+
 
         /// <summary>
         /// Add Character to Contribution Dictionary
