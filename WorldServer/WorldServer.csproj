@@ -259,6 +259,7 @@
     <Compile Include="World\Battlefronts\Bounty\ContributionFactor.cs" />
     <Compile Include="World\Battlefronts\Bounty\ContributionManager.cs" />
     <Compile Include="World\Battlefronts\Bounty\BountyManager.cs" />
+    <Compile Include="World\Battlefronts\Bounty\ContributionStage.cs" />
     <Compile Include="World\Battlefronts\Bounty\IBountyManager.cs" />
     <Compile Include="World\Battlefronts\Bounty\IContributionManager.cs" />
     <Compile Include="World\Battlefronts\Bounty\IImpactMatrixManager.cs" />

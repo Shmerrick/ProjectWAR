@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
@@ -16,6 +17,7 @@ namespace WorldServer.World.Battlefronts.Bounty
     //TODO : Attach this to BattlefrontStatus object. (Which we probably want to persist).
     public class ContributionManager : IContributionManager
     {
+        private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
         private readonly Object _lockObject = new Object();
         // Holds the characterId, and the list of contributions the player has added in the current battlefront.
         public ConcurrentDictionary<uint, List<PlayerContribution>> ContributionDictionary { get; set; }
@@ -36,23 +38,23 @@ namespace WorldServer.World.Battlefronts.Bounty
                 var item = GetContribution(targetCharacterId);
 
                 //filteredResults.AddOrUpdate(unfilteredResult.Key, new List<int> { number }, (k, v) => v.Add(number));
-               return this.ContributionDictionary.AddOrUpdate(targetCharacterId,
-                    new List<PlayerContribution>
-                    {
+                return this.ContributionDictionary.AddOrUpdate(targetCharacterId,
+                     new List<PlayerContribution>
+                     {
                         new PlayerContribution
                         {
                             ContributionId = contibutionId,
                             Timestamp = FrameWork.TCPManager.GetTimeStamp()
                         }
-                    }, (k, v) =>
-                    {
-                        v.Add(new PlayerContribution
-                        {
-                            ContributionId = contibutionId,
-                            Timestamp = FrameWork.TCPManager.GetTimeStamp()
-                        });
-                        return v;
-                    });
+                     }, (k, v) =>
+                     {
+                         v.Add(new PlayerContribution
+                         {
+                             ContributionId = contibutionId,
+                             Timestamp = FrameWork.TCPManager.GetTimeStamp()
+                         });
+                         return v;
+                     });
 
                 //if (item == null)
                 //{
@@ -110,19 +112,93 @@ namespace WorldServer.World.Battlefronts.Bounty
             if (ContributionFactors == null)
                 return contributionValue;
 
-            foreach (var playerContribution in contributionList)
+            var response = ConvertContributionListToContributionStages(contributionList, this.ContributionFactors);
+
+            foreach (var contributionStage in response)
             {
-                foreach (var contributionFactor in ContributionFactors)
-                {
-                    if (contributionFactor.ContributionId == playerContribution.ContributionId)
-                    {
-                        contributionValue += contributionFactor.ContributionValue;
-                    }
-                }
+                contributionValue += contributionStage.Value.ContributionStageSum;
+            }
+
+            //foreach (var contributionFactor in ContributionFactors)
+            //{
+            //    // Prepare the ContributionValueTriplet
+
+            //}
+
+            //foreach (var playerContribution in contributionList)
+            //{
+            //    foreach (var contributionFactor in ContributionFactors)
+            //    {
+            //        if (contributionFactor.ContributionId == playerContribution.ContributionId)
+            //        {
+            //            contributionValue += contributionFactor.ContributionValue;
+            //        }
+            //    }
+            //}
+
+            if (contributionValue > short.MaxValue)
+            {
+                RewardLogger.Debug($"Contribution exceeds max for Character {targetCharacterId}. {contributionList.Count} contribution records.");
+                contributionValue = short.MaxValue;
             }
 
             return contributionValue;
         }
+
+        public ConcurrentDictionary<short, ContributionStage> ConvertContributionListToContributionStages(List<PlayerContribution> contributionList, List<ContributionFactor> contributionFactors)
+        {
+            var result = new ConcurrentDictionary<short, ContributionStage>();
+            // Prepare the stages
+            foreach (var contributionFactor in contributionFactors)
+            {
+                if (contributionFactor.MaxContributionCount > 0)
+                {
+                    result.TryAdd(contributionFactor.ContributionId,
+                        new ContributionStage
+                        {
+                            Description = contributionFactor.ContributionDescription,
+                            ContributionStageCount = 0,
+                            ContributionStageSum = 0,
+                            ContributionStageMax = contributionFactor.MaxContributionCount
+                        });
+                }
+            }
+
+            foreach (var contributionFactor in ContributionFactors)
+            {
+                foreach (var playerContribution in contributionList)
+                {
+                    if (playerContribution.ContributionId == contributionFactor.ContributionId)
+                    {
+                        // If we need to add something is wrong, dont add it.
+                        result.AddOrUpdate(contributionFactor.ContributionId,
+                            new ContributionStage
+                            {
+                                Description = contributionFactor.ContributionDescription,
+                                ContributionStageCount = 1,
+                                ContributionStageSum = contributionFactor.ContributionValue,
+                                ContributionStageMax = contributionFactor.MaxContributionCount
+                            },
+                            (k, v) =>
+                        {
+                            // If we have more than we need, skip.
+                            if (v.ContributionStageCount + 1 <= v.ContributionStageMax)
+                            {
+                                v.ContributionStageCount = (short)(v.ContributionStageCount + 1);
+                                v.ContributionStageSum += contributionFactor.ContributionValue;
+                            }
+
+                            return v;
+                        });
+
+                    }
+                }
+            }
+            return result;
+
+        }
+
+       
 
         /// <summary>
         /// Add Character to Contribution Dictionary

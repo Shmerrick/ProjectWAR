@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.Remoting;
 using WorldServer.World.Battlefronts.Bounty;
 
 namespace WorldServer.Test
@@ -106,8 +108,8 @@ namespace WorldServer.Test
         {
             var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), ContributionFactorReferenceList);
 
-           Assert.IsFalse( contributionManager.RemoveCharacter(100));
-         
+            Assert.IsFalse(contributionManager.RemoveCharacter(100));
+
 
         }
 
@@ -119,7 +121,7 @@ namespace WorldServer.Test
             contributionManager.AddCharacter(100);
             Assert.IsTrue(contributionManager.RemoveCharacter(100));
             var result = contributionManager.GetContributionValue(100);
-            Assert.IsTrue(result ==0);
+            Assert.IsTrue(result == 0);
 
         }
 
@@ -156,7 +158,7 @@ namespace WorldServer.Test
             var result = contributionManager.GetContributionValue(100);
             Assert.IsTrue(result == 8);
 
-            
+
         }
 
         [TestMethod]
@@ -190,7 +192,7 @@ namespace WorldServer.Test
             contributionManager.AddCharacter(100);
 
             var result = contributionManager.GetContributionValue(100);
-            Assert.IsTrue(result ==0 );
+            Assert.IsTrue(result == 0);
         }
 
         [TestMethod]
@@ -212,6 +214,249 @@ namespace WorldServer.Test
             Assert.IsTrue(result2 == 0);
             var result3 = contributionManager.GetContributionValue(104);
             Assert.IsTrue(result3 == 0);
+
+        }
+
+        [TestMethod]
+        public void TimingOnLargeSetUpdates()
+        {
+            var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), ContributionFactorReferenceList);
+
+            contributionManager.UpdateContribution(100, 1);
+            contributionManager.UpdateContribution(102, 2);
+            Stopwatch sw = new Stopwatch();
+
+            sw.Start();
+            var result2 = contributionManager.GetContributionValue(102);
+            Assert.IsTrue(result2 == 3);
+            sw.Stop();
+
+            contributionManager.UpdateContribution(104, 2);
+            contributionManager.UpdateContribution(104, 1);
+            for (uint i = 0; i < 2000; i++)
+            {
+                contributionManager.UpdateContribution(i + 200, 1);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 1);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 1);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 1);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 1);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 1);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+                contributionManager.UpdateContribution(i + 200, 2);
+            }
+
+            var result = contributionManager.GetContributionValue(102);
+            Assert.IsTrue(result == 3);
+            sw.Start();
+            var result4 = contributionManager.GetContributionValue(200);
+            sw.Stop();
+            var elapsed = sw.ElapsedMilliseconds;
+
+        }
+
+        [TestMethod]
+        public void NoPlayerContributionReturnsPreparedStructure()
+        {
+            var contributionList = new List<PlayerContribution>();
+            var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), ContributionFactorReferenceList);
+
+            var result = contributionManager.ConvertContributionListToContributionStages(contributionList, ContributionFactorReferenceList);
+
+            Assert.IsTrue(result.Count == ContributionFactorReferenceList.Count);
+            Assert.IsTrue(result[0].ContributionStageSum == 0);
+            Assert.IsTrue(result[1].ContributionStageSum == 0);
+            Assert.IsTrue(result[2].ContributionStageSum == 0);
+
+            Assert.IsTrue(result[0].ContributionStageCount == 0);
+            Assert.IsTrue(result[1].ContributionStageCount == 0);
+            Assert.IsTrue(result[2].ContributionStageCount == 0);
+
+            Assert.IsTrue(result[0].ContributionStageMax == ContributionFactorReferenceList[0].MaxContributionCount);
+            Assert.IsTrue(result[1].ContributionStageMax == ContributionFactorReferenceList[1].MaxContributionCount);
+            Assert.IsTrue(result[2].ContributionStageMax == ContributionFactorReferenceList[2].MaxContributionCount);
+
+        }
+
+        [TestMethod]
+        public void SimpleContributionCalculatedCorrectly()
+        {
+            var contributionList = new List<PlayerContribution>();
+            var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), ContributionFactorReferenceList);
+
+            contributionList.Add(new PlayerContribution {ContributionId = 1, Timestamp = 1111} );
+
+            var response = contributionManager.ConvertContributionListToContributionStages(contributionList, ContributionFactorReferenceList);
+
+            Assert.IsTrue(response[1].ContributionStageCount == 1);
+            Assert.IsTrue(response[0].ContributionStageCount == 0);
+            Assert.IsTrue(response[2].ContributionStageCount == 0);
+
+            Assert.IsTrue(response[1].ContributionStageSum == 1);
+            Assert.IsTrue(response[0].ContributionStageSum == 0);
+            Assert.IsTrue(response[2].ContributionStageSum == 0);
+         
+        }
+
+        [TestMethod]
+        public void ComplexContributionNoMax()
+        {
+            var contributionList = new List<PlayerContribution>();
+            var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), ContributionFactorReferenceList);
+
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+
+            contributionList.Add(new PlayerContribution { ContributionId = 2, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 2, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 2, Timestamp = 1111 });
+
+            var response = contributionManager.ConvertContributionListToContributionStages(contributionList, ContributionFactorReferenceList);
+
+            Assert.IsTrue(response[1].ContributionStageCount == 7);
+            Assert.IsTrue(response[0].ContributionStageCount == 0);
+            Assert.IsTrue(response[2].ContributionStageCount == 3);
+
+            Assert.IsTrue(response[1].ContributionStageSum == 7);
+            Assert.IsTrue(response[0].ContributionStageSum == 0);
+            Assert.IsTrue(response[2].ContributionStageSum == 9);
+
+        }
+
+        [TestMethod]
+        public void ComplexContributionWithMax()
+        {
+            var contributionList = new List<PlayerContribution>();
+            var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), ContributionFactorReferenceList);
+
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 1, Timestamp = 1111 });
+
+            contributionList.Add(new PlayerContribution { ContributionId = 2, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 2, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 2, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 2, Timestamp = 1111 });
+            contributionList.Add(new PlayerContribution { ContributionId = 2, Timestamp = 1111 });
+
+            var response = contributionManager.ConvertContributionListToContributionStages(contributionList, ContributionFactorReferenceList);
+
+            // maxes out at 10 count
+            Assert.IsTrue(response[1].ContributionStageCount == 10);
+            Assert.IsTrue(response[0].ContributionStageCount == 0);
+            Assert.IsTrue(response[2].ContributionStageCount == 4);
+
+            Assert.IsTrue(response[1].ContributionStageSum == 10);
+            Assert.IsTrue(response[0].ContributionStageSum == 0);
+            Assert.IsTrue(response[2].ContributionStageSum ==12);
 
         }
     }

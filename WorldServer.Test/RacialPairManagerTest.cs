@@ -3,6 +3,7 @@ using GameData;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorldServer.World.Battlefronts.NewDawn;
 
+
 namespace WorldServer.Test
 {
     [TestClass]
