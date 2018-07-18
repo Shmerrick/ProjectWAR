@@ -160,6 +160,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 ProgressionLogger.Info($"Resetting VP Progress {activeRegion.RegionName} BF Id : {this.ActiveBattleFront.BattleFrontId} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
                 activeRegion.Campaign.VictoryPointProgress.Reset(activeRegion.Campaign);
 
+                ProgressionLogger.Info($"Resetting BFStatus {activeRegion.RegionName} BF Id : {this.ActiveBattleFront.BattleFrontId} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
                 // Find and update the status of the battlefront status.
                 foreach (var apocBattleFrontStatus in BattleFrontStatuses)
                 {
@@ -172,6 +173,23 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         apocBattleFrontStatus.LockTimeStamp = 0;
                     }
                 }
+
+                ProgressionLogger.Info($"Unlocking objectives {activeRegion.RegionName} BF Id : {this.ActiveBattleFront.BattleFrontId} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
+
+                if (activeRegion.Campaign == null)
+                {
+                    ProgressionLogger.Info($"activeRegion.Campaign is null");
+                }
+
+                if (activeRegion.Campaign.Objectives == null)
+                {
+                    ProgressionLogger.Info($"activeRegion.Campaign (objectives) is null");
+                }
+                if (activeRegion.Campaign.Keeps == null)
+                {
+                    ProgressionLogger.Info($"activeRegion.Campaign (keeps) is null");
+                }
+
 
                 foreach (var flag in activeRegion.Campaign.Objectives)
                 {
@@ -189,7 +207,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
             catch (Exception e)
             {
-                ProgressionLogger.Error($"Exception. Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName} {e.Message}");
+                ProgressionLogger.Error($"Exception. Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName} {e.Message} {e.StackTrace}");
                 throw;
             }
         }
