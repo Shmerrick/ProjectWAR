@@ -58,7 +58,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                     if (keepDoor.Info.Number == (int)KeepDoorType.InnerMain || keepDoor.Info.Number == (int)KeepDoorType.OuterMain)
                     {
                         Realm = keep.Realm;
-                        Spawn.Proto.HealthPoints = (uint)_keep.Tier * 10000;
+                        Spawn.Proto.HealthPoints = (uint)_keep.Tier * 100000;
                     }
                 }
                 else
@@ -66,7 +66,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                     if (keepDoor.Info.Number == (int)KeepDoorType.InnerMain || keepDoor.Info.Number == (int)KeepDoorType.OuterMain)
                     {
                         Realm = keep.Realm;
-                        Spawn.Proto.HealthPoints = 4 * 10000;
+                        Spawn.Proto.HealthPoints = 4 * 100000;
                     }
                 }
 
