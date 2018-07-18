@@ -126,6 +126,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         apocBattleFrontStatus.LockTimeStamp = FrameWork.TCPManager.GetTimeStamp();
                     }
 
+                    if (regionMgr.Campaign == null)
+                        continue;
+
                     foreach (var objective in regionMgr.Campaign.Objectives)
                     {
                         objective.LockObjective(Realms.REALMS_REALM_NEUTRAL, false);
