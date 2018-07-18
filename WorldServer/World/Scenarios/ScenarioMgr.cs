@@ -600,12 +600,14 @@ namespace WorldServer.Scenarios
                     Log.Error("ScenarioMgr", e.ToString());
                 }
 
+                /*
                 if (Program.Rm.NextRotationTime < TCPManager.GetTimeStamp())
                 {
                     RotateScenarios();
                     Program.Rm.NextRotationTime += 60*60*24*7;
                     Program.AcctMgr.UpdateRealmScenarioRotationTime(Program.Rm.RealmId, Program.Rm.NextRotationTime);
                 }
+                */
 
                 long curTime = TCPManager.GetTimeStampMS();
 
@@ -1576,8 +1578,9 @@ namespace WorldServer.Scenarios
 
         #region Scenario Rotation
 
-        const int MAX_SCENARIOS = 9;
+        const int MAX_SCENARIOS = 2;
 
+        /*
         public void RotateScenarios()
         {
             RemoveAllSoloPlayers();
@@ -1620,6 +1623,7 @@ namespace WorldServer.Scenarios
                 }
             }
         }
+        */
 
         private void RemoveAllSoloPlayers()
         {
