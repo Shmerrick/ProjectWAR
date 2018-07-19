@@ -65,7 +65,6 @@ namespace Launcher
             this.buttonPanelCreateAccount = new System.Windows.Forms.Button();
             this.lblVersion = new System.Windows.Forms.Label();
             this.bnConnectLocal = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.panelCreateAccount.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -390,17 +389,6 @@ namespace Launcher
             this.bnConnectLocal.Visible = false;
             this.bnConnectLocal.Click += new System.EventHandler(this.button1_Click);
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(578, 666);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(102, 45);
-            this.button1.TabIndex = 26;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Visible = false;
-            
-            // 
             // ApocLauncher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -409,7 +397,6 @@ namespace Launcher
             this.BackgroundImage = global::Launcher.Properties.Resources.final1;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(1280, 720);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.bnConnectLocal);
             this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.buttonPanelCreateAccount);
@@ -470,7 +457,6 @@ namespace Launcher
         private System.Windows.Forms.Button bnCreateLocal;
         private System.Windows.Forms.Button buttonAccountClose;
         private Button bnConnectLocal;
-        private Button button1;
     }
 }
 

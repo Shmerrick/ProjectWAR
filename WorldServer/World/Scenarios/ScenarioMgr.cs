@@ -1,23 +1,4 @@
-﻿/*
- * Copyright (C) 2014 WarEmu
- *	http://WarEmu.com
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -600,12 +581,14 @@ namespace WorldServer.Scenarios
                     Log.Error("ScenarioMgr", e.ToString());
                 }
 
+                /*
                 if (Program.Rm.NextRotationTime < TCPManager.GetTimeStamp())
                 {
                     RotateScenarios();
                     Program.Rm.NextRotationTime += 60*60*24*7;
                     Program.AcctMgr.UpdateRealmScenarioRotationTime(Program.Rm.RealmId, Program.Rm.NextRotationTime);
                 }
+                */
 
                 long curTime = TCPManager.GetTimeStampMS();
 
@@ -1576,8 +1559,9 @@ namespace WorldServer.Scenarios
 
         #region Scenario Rotation
 
-        const int MAX_SCENARIOS = 9;
+        const int MAX_SCENARIOS = 2;
 
+        /*
         public void RotateScenarios()
         {
             RemoveAllSoloPlayers();
@@ -1620,6 +1604,7 @@ namespace WorldServer.Scenarios
                 }
             }
         }
+        */
 
         private void RemoveAllSoloPlayers()
         {

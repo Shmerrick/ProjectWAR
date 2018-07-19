@@ -600,7 +600,6 @@ namespace WorldServer
 
                         if (curLev == null)
                             _Value.RestXp = 0;
-
                         else
                         {
                             // A rank 17 in the old game managed to fill his bars completely over 4 days of rest.
@@ -615,6 +614,9 @@ namespace WorldServer
                             // Rest XP can't exceed 1.5 times the XP required for the current level
                             _Value.RestXp = Math.Min((uint)(_Value.RestXp + restHours * restXpFactorPerHour * curLev.Xp), (uint)(curLev.Xp * 1.5f));
                         }
+
+                        if (StsInterface.GetTotalStat(Stats.XpReceived) == 0)
+                            _Value.RestXp = 0;
                         _Value.LastSeen = TCPManager.GetTimeStamp();
                     }
                 }
@@ -667,7 +669,7 @@ namespace WorldServer
                 CharMgr.Database.SaveObject(_Value);
             }
 
-            if (GmLevel > 0)
+            if (GmLevel > 1)
             {
 
                 //if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
@@ -686,11 +688,11 @@ namespace WorldServer
 
         private void SetMaxActionPoints(byte valueRenownRank)
         {
-            if (valueRenownRank > 65)
+            if (valueRenownRank >= 65 && valueRenownRank < 75)
             {
                 MaxActionPoints = 275;
             }
-            else if (valueRenownRank > 75)
+            else if (valueRenownRank >= 75)
             {
                 MaxActionPoints = 300;
             }
@@ -738,8 +740,8 @@ namespace WorldServer
 
                 }
             }
-            //if gm toggled invincibility and switched sone then it should still be active.
-            if (IsInvulnerable && GmLevel > 0)
+            //if gm toggled invincibility and switched zone then it should still be active.
+            if (IsInvulnerable && GmLevel > 1)
             {
                 string temp = "3";
                 List<string> paramValue = temp.Split(' ').ToList();

@@ -111,6 +111,7 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        /*
         /// <summary>
         /// 
         /// </summary>
@@ -123,5 +124,6 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
+        */
     }
 }
