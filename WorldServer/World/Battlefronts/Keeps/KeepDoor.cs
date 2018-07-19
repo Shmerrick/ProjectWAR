@@ -66,7 +66,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                     if (keepDoor.Info.Number == (int)KeepDoorType.InnerMain || keepDoor.Info.Number == (int)KeepDoorType.OuterMain)
                     {
                         Realm = keep.Realm;
-                        Spawn.Proto.HealthPoints = 4 * 100000;
+                        Spawn.Proto.HealthPoints = 4 * 300000;
                     }
                 }
 
