@@ -237,7 +237,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("disable",NpcDisable, null, EGmLevel.DatabaseDev, 0, "Disables NPC from spawns. Can be restored using the DB."),
             new GmCommandHandler("move",NpcChangeSpawnPlace, null, EGmLevel.DatabaseDev, 0, "Makes NPC come to player and updates his position in DB."),
             new GmCommandHandler("addtoevent",NpcEventConvert, null, EGmLevel.DatabaseDev, 1, "Adds NPC to event. Currently doesn't work."),
-            new GmCommandHandler("health",NpcHealth, null, EGmLevel.DatabaseDev, 1, "Sets NPC or GO health to specified value percent.")
+            new GmCommandHandler("health",NpcHealth, null, EGmLevel.DatabaseDev, 1, "Sets NPC or GO health to specified value percent."),
 
 #if (!DEBUG)
             new GmCommandHandler("spawn",NpcSpawn, null, EGmLevel.SourceDev, 1, "Spawn an npc"),
