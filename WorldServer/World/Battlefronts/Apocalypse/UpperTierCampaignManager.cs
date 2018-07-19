@@ -182,15 +182,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 if (activeRegion.Campaign == null)
                 {
                     ProgressionLogger.Info($"activeRegion.Campaign is null");
+                    return this.ActiveBattleFront;
                 }
 
                 if (activeRegion.Campaign.Objectives == null)
                 {
-                    ProgressionLogger.Info($"activeRegion.Campaign (objectives) is null");
+                    ProgressionLogger.Warn($"activeRegion.Campaign (objectives) is null");
+                    return this.ActiveBattleFront;
                 }
                 if (activeRegion.Campaign.Keeps == null)
                 {
-                    ProgressionLogger.Info($"activeRegion.Campaign (keeps) is null");
+                    ProgressionLogger.Warn($"activeRegion.Campaign (keeps) is null");
+                    return this.ActiveBattleFront;
                 }
 
 
