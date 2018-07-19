@@ -5,7 +5,7 @@ using FrameWork;
 using GameData;
 using WorldServer.Services.World;
 
-namespace WorldServer.World.Battlefronts.Keeps
+namespace WorldServer.World.BattleFronts.Keeps
 {
     public enum KeepDoorType
     {
@@ -58,7 +58,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     if (keepDoor.Info.Number == (int)KeepDoorType.InnerMain || keepDoor.Info.Number == (int)KeepDoorType.OuterMain)
                     {
                         Realm = keep.Realm;
-                        Spawn.Proto.HealthPoints = (uint)_keep.Tier * 10000;
+                        Spawn.Proto.HealthPoints = (uint)_keep.Tier * 100000;
                     }
                 }
                 else
@@ -66,7 +66,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     if (keepDoor.Info.Number == (int)KeepDoorType.InnerMain || keepDoor.Info.Number == (int)KeepDoorType.OuterMain)
                     {
                         Realm = keep.Realm;
-                        Spawn.Proto.HealthPoints = 4 * 10000;
+                        Spawn.Proto.HealthPoints = 4 * 300000;
                     }
                 }
 
@@ -133,7 +133,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     foreach (KeyValuePair<Player, byte> p in siege.SiegeInterface.Players)
                     {
                         p.Key.CbtInterface.OnDealDamage(this, damage);
-                        Region.Bttlfront.AddContribution(p.Key, 10);
+                        Region.Campaign.AddContribution(p.Key, 10);
                     }
                 }
                 else

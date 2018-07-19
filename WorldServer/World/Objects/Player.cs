@@ -10,16 +10,16 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.World.Battlefronts;
+using WorldServer.World.BattleFronts;
 using WorldServer.Managers.Commands;
 using WorldServer.World.Objects.PublicQuests;
-using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Scenarios;
-using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.NewDawn;
 using NLog;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer
 {
@@ -625,22 +625,22 @@ namespace WorldServer
 
                 if (Level > 15)
                 {
-                    IBattlefront front;
-                    if (Constants.DoomsdaySwitch == 2)
-                        front = null;
-                    else
-                        front = BattlefrontList.GetActiveFront(Level);
+                    // Sevetar - commented out as it contains legacy RVR calls. Kept in as it might include useful logic
+                    //if (Constants.DoomsdaySwitch == 2)
+                    //    front = null;
+                    //else
+                    //    front = BattleFrontList.GetActiveFront(Level);
 
-                    if (front != null)
-                    {
-                        SendClientMessage("Your realm's supply lines are directed towards " + front.ActiveZoneName + ".", ChatLogFilters.CHATLOGFILTERS_RVR);
-                        SendClientMessage("You may still battle in other zones, but no supplies will be delivered there.", ChatLogFilters.CHATLOGFILTERS_RVR);
-                    }
-                    else
-                    {
-                        //SendClientMessage("Your realm's supply lines are not directed anywhere at the moment.", ChatLogFilters.CHATLOGFILTERS_RVR);
-                        //SendClientMessage("Take control of Battlefield Objectives in a pairing to direct them there.", ChatLogFilters.CHATLOGFILTERS_RVR);
-                    }
+                    //if (front != null)
+                    //{
+                    //    SendClientMessage("Your realm's supply lines are directed towards " + front.ActiveZoneName + ".", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    //    SendClientMessage("You may still battle in other zones, but no supplies will be delivered there.", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    //}
+                    //else
+                    //{
+                    //    //SendClientMessage("Your realm's supply lines are not directed anywhere at the moment.", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    //    //SendClientMessage("Take control of Battlefield Objectives in a pairing to direct them there.", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    //}
                 }
             }
 
@@ -1072,13 +1072,13 @@ namespace WorldServer
                 {
 
                     // NEWDAWN
-                    if (Region.ndbf != null)
+                    if (Region.Campaign != null)
                     {
-                        Region.ndbf.NotifyLeftLake(this);
+                        Region.Campaign.NotifyLeftLake(this);
                     }
                     else
                     {
-                        Region.ndbf.NotifyLeftLake(this);
+                        Region.Campaign.NotifyLeftLake(this);
                     }
                 }
 
@@ -3077,13 +3077,13 @@ namespace WorldServer
 
             int aaoMult = 0;
             Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
-            if (Region != null && Region.ndbf != null)
+            if (Region != null && Region.Campaign != null)
             {
-                if (Region.ndbf != null)
+                if (Region.Campaign != null)
                 {
-                    aaoMult = Math.Abs(Region.ndbf.AgainstAllOddsMult);
+                    aaoMult = Math.Abs(Region.Campaign.AgainstAllOddsMult);
                     if (aaoMult != 0)
-                        aaoRealm = Region.ndbf.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
+                        aaoRealm = Region.Campaign.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
                 }
                 if (aaoMult > 2)
                     aaoMult = 2;
@@ -3176,17 +3176,17 @@ namespace WorldServer
         public void AddKillRenown(uint renown, Player killer, Player victim, int participants = 1)
         {
 
-            ProximityBattlefront bf = null;
+            
             int aaoMult = 0;
             Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
-            if (Region != null && Region.ndbf != null)
+            if (Region != null && Region.Campaign != null)
             {
 
-                if (Region.ndbf != null)
+                if (Region.Campaign != null)
                 {
-                    aaoMult = Math.Abs(Region.ndbf.AgainstAllOddsMult);
+                    aaoMult = Math.Abs(Region.Campaign.AgainstAllOddsMult);
                     if (aaoMult != 0)
-                        aaoRealm = Region.ndbf.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
+                        aaoRealm = Region.Campaign.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
                 }
                 if (aaoMult != 0 && aaoRealm != Realms.REALMS_REALM_NEUTRAL && Realm != aaoRealm)
                     renown = Math.Max(1, renown);
@@ -3901,7 +3901,7 @@ namespace WorldServer
                 if (_recentLooters.ContainsKey(killer.CharacterId) && _recentLooters[killer.CharacterId] > TCPManager.GetTimeStampMS())
                     return;
 
-                if (Region.ndbf.PreventKillReward() || (killer.Client?._Account != null && CheckKillFarm(killer)))
+                if (Region.Campaign.PreventKillReward() || (killer.Client?._Account != null && CheckKillFarm(killer)))
                     return;
 
                 if (CurrentKeep != null)
@@ -3909,7 +3909,7 @@ namespace WorldServer
                 else if (CurrentObjectiveFlag != null)
                     CurrentObjectiveFlag.CheckKillValid(this);
 
-                float rewardScale = Region.ndbf.ModifyKill(killer, this);
+                float rewardScale = Region.Campaign.ModifyKill(killer, this);
 
                 // Maximum 25% bonus depending on how much damage the target took while alive.
                 rewardScale += Math.Min(0.25f, (TotalDamageTaken * 0.05f) / MaxHealth);
@@ -3927,6 +3927,11 @@ namespace WorldServer
                     else _recentLooters[killer.CharacterId] = TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL;
                 }
 #endif
+                // +1 VP for a kill
+                if (killer.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                    killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints++;
+                else
+                    killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints++;
 
                 HandleXPRenown(killer, rewardScale);
                 GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
@@ -3948,10 +3953,10 @@ namespace WorldServer
             // Factor of kill rewards to transfer to objective
             float transferenceFactor = 2.5f - bonusMod;
 
-            NewDawnBattlefieldObjective closestFlag = null;
+            CampaignObjective closestFlag = null;
 
             if (ScnInterface.Scenario == null)
-                closestFlag = Region.ndbf.GetClosestFlag(WorldPosition);
+                closestFlag = Region.Campaign.GetClosestFlag(WorldPosition);
 
             #region Initialize reward values
 
@@ -3978,12 +3983,12 @@ namespace WorldServer
                 totalInfluence = (uint)(100 * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
             }
 
-            // 500% bonus for killing resource carrier
-            if (HeldObject is ResourceBox)
-            {
-                totalXP *= 5;
-                totalRenown *= 5;
-            }
+            //// 500% bonus for killing resource carrier
+            //if (HeldObject is ResourceBox)
+            //{
+            //    totalXP *= 5;
+            //    totalRenown *= 5;
+            //}
 
             RewardLogger.Debug($"Total XP : {totalXP} RP : {totalRenown} INF : {totalInfluence}");
 
@@ -4056,11 +4061,11 @@ namespace WorldServer
                             if (influenceId != 0)
                                 curPlayer.AddInfluence(influenceId, influenceShare);
 
-                            if (closestFlag != null && closestFlag.FlagState != ObjectiveFlags.ZoneLocked)
+                            if (closestFlag != null && closestFlag.State != StateFlags.ZoneLocked)
                             {
                                 RewardLogger.Trace($"Delayed Rewards RP: {renownShare} BonusMod : {bonusMod} Killer : {killer} This : {this.Name}");
                                 closestFlag.RewardManager.AddDelayedRewardsFrom(curPlayer, this, (uint)(xpShare * transferenceFactor), (uint)(renownShare * transferenceFactor));
-                                Region.ndbf.AddContribution(curPlayer, (uint)(renownShare * bonusMod));
+                                Region.Campaign.AddContribution(curPlayer, (uint)(renownShare * bonusMod));
                             }
                         }
                     }
@@ -4343,7 +4348,7 @@ namespace WorldServer
         public Keep CurrentKeep { get; set; }
         public Creature CurrentSiege { get; set; }
         public RvRStructure Palisade { get; set; }
-        public NewDawnBattlefieldObjective CurrentObjectiveFlag { get; set; }
+        public CampaignObjective CurrentObjectiveFlag { get; set; }
 
         #endregion
 
@@ -5000,7 +5005,9 @@ namespace WorldServer
             if (tier < 1 || tier > 4)
                 return true;
 
-            return (Level >= Constants.MinTierLevel[tier - 1] && Level <= Constants.MaxTierLevel[tier - 1]) || (checkDebolster && (_bolsterTier == tier || (_bolsterTier == 2 && tier == 3) || (_bolsterTier == 3 && tier == 2)));
+            var validInTier = (Level >= Constants.MinTierLevel[tier - 1] && Level <= Constants.MaxTierLevel[tier - 1]) || (checkDebolster && (_bolsterTier == tier || (_bolsterTier == 2 && tier == 3) || (_bolsterTier == 3 && tier == 2)));
+            _logger.Trace($"Player : {this.Name} validity in tier : {validInTier}");
+            return validInTier;
         }
 
         public bool ShouldDebolster(int tier)
@@ -6046,13 +6053,13 @@ namespace WorldServer
             if (CurrentArea != null && CurrentArea.IsRvR)
             {
                 // NEWDAWN
-                if (Region.ndbf != null)
+                if (Region.Campaign != null)
                 {
-                    oldRegion?.ndbf?.NotifyLeftLake(this);
+                    oldRegion?.Campaign?.NotifyLeftLake(this);
                 }
                 else
                 {
-                    oldRegion?.ndbf?.NotifyLeftLake(this);
+                    oldRegion?.Campaign?.NotifyLeftLake(this);
                 }
             }
 
@@ -6249,7 +6256,7 @@ namespace WorldServer
                 }
                 else if (pqarea > 28)  // keeps
                 {
-                    foreach (Keep keep in Region.ndbf.Keeps)
+                    foreach (Keep keep in Region.Campaign.Keeps)
                     {
                         if (keep.Info.ZoneId == Zone.ZoneId && keep.Info.PQuest?.PQAreaId == pqarea)
                         {
@@ -6309,10 +6316,9 @@ namespace WorldServer
                             if (CurrentArea == null || !CurrentArea.IsRvR || CurrentArea.ZoneId != newArea.ZoneId)
                             {
                                 // NEWDAWN
-                                if (Region.ndbf != null)
-                                    Region.ndbf.NotifyEnteredLake(this);
-                                else
-                                    Region.ndbf.NotifyEnteredLake(this);
+                                if (Region.Campaign != null)
+                                    Region.Campaign.NotifyEnteredLake(this);
+                                
                             }
                         }
                     }
@@ -6328,10 +6334,10 @@ namespace WorldServer
                         if (CurrentArea != null && CurrentArea.IsRvR)
                         {
                             // NEWDAWN
-                            if (Region.ndbf != null)
-                                Region.ndbf.NotifyLeftLake(this);
+                            if (Region.Campaign != null)
+                                Region.Campaign.NotifyLeftLake(this);
                             else
-                                Region.ndbf.NotifyLeftLake(this);
+                                Region.Campaign.NotifyLeftLake(this);
                         }
                     }
                 }
@@ -6341,10 +6347,10 @@ namespace WorldServer
                     if (CurrentArea != null && CurrentArea.IsRvR)
                     {
                         // NEWDAWN
-                        if (Region.ndbf != null)
-                            Region.ndbf.NotifyLeftLake(this);
+                        if (Region.Campaign != null)
+                            Region.Campaign.NotifyLeftLake(this);
                         else
-                            Region.ndbf.NotifyLeftLake(this);
+                            Region.Campaign.NotifyLeftLake(this);
 
                     }
 

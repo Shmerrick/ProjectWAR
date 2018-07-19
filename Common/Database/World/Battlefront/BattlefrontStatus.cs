@@ -3,20 +3,20 @@ using FrameWork;
 
 namespace Common
 {
-    [DataTable(PreCache = false, TableName = "battlefront_status", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
+    [DataTable(PreCache = false, TableName = "BattleFront_status", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
-    public class BattlefrontStatus : DataObject
+    public class BattleFrontStatus : DataObject
     {
         private int _openZoneIndex;
         private int _activeRegionOrZone;
         private int _controlingRealm;
 
-        public BattlefrontStatus()
+        public BattleFrontStatus()
         {
             
         }
 
-        public BattlefrontStatus(int regionId)
+        public BattleFrontStatus(int regionId)
         {
             RegionId = regionId;
             OpenZoneIndex = 1;

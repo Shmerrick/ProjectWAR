@@ -67,17 +67,17 @@ namespace WorldServer.Managers.Commands
         /// <returns>True if command was correctly handled, false if operation was canceled</returns>
         public static bool TeleportObjective(Player plr, ref List<string> values)
         {
-            IList<Battlefront_Objective> battlefrontObjectives = WorldMgr.Database.SelectAllObjects<Battlefront_Objective>();
+            IList<BattleFront_Objective> BattleFrontObjectives = WorldMgr.Database.SelectAllObjects<BattleFront_Objective>();
             var respawnToTravelTo = GetInt(ref values);
 
-            var battlefrontObjective = battlefrontObjectives.SingleOrDefault(x => x.Entry == respawnToTravelTo);
-            if (battlefrontObjective == null)
+            var BattleFrontObjective = BattleFrontObjectives.SingleOrDefault(x => x.Entry == respawnToTravelTo);
+            if (BattleFrontObjective == null)
                 return false;
 
-            var zone = ZoneService.GetZone_Info((ushort)battlefrontObjective.ZoneId);
+            var zone = ZoneService.GetZone_Info((ushort)BattleFrontObjective.ZoneId);
 
             // X+50 so you dont get stuck on flags on the objective
-            plr.Teleport((ushort)battlefrontObjective.ZoneId, (uint)battlefrontObjective.X+50, (uint)battlefrontObjective.Y, (ushort)battlefrontObjective.Z, 0);
+            plr.Teleport((ushort)BattleFrontObjective.ZoneId, (uint)BattleFrontObjective.X+50, (uint)BattleFrontObjective.Y, (ushort)BattleFrontObjective.Z, 0);
 
             return true;
         }

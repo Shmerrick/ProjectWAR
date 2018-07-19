@@ -4,10 +4,11 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.World.Battlefronts;
-using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.BattleFronts;
+using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer
 {
@@ -1287,7 +1288,7 @@ namespace WorldServer
                 Creature weapon = (Creature)hostBuff.OptionalObject;
                 Siege siege = weapon as Siege;
 
-                IBattlefront front = weapon.Region?.Bttlfront;
+                Campaign front = weapon.Region?.Campaign;
 
                 if (front == null)
                     return;
@@ -2976,7 +2977,7 @@ namespace WorldServer
             private static bool RefreshIfMoving(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
             {
             //lets not let a refresh of a buff happen to a keep lord
-            WorldServer.World.Battlefronts.Keeps.KeepNpcCreature.KeepCreature Lord = target as WorldServer.World.Battlefronts.Keeps.KeepNpcCreature.KeepCreature;
+            WorldServer.World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature Lord = target as WorldServer.World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature;
             if (Lord != null && Lord.returnflag().Info.KeepLord)
                 return true;
 
@@ -3105,10 +3106,10 @@ namespace WorldServer
 
                     List<Player> nearby = player.WorldGroup.GetPlayersCloseTo(player, 50);
 
-                    player.Region.Bttlfront.AddContribution(player, 5);
+                    player.Region.Campaign.AddContribution(player, 5);
 
                     foreach (Player member in nearby)
-                        player.Region.Bttlfront.AddContribution(member, 5);
+                        player.Region.Campaign.AddContribution(member, 5);
 
                     cmd.EventChance -= (byte)(nearby.Count * 5);
                 }

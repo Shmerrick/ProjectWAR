@@ -2,7 +2,7 @@
 using System;
 using FrameWork;
 using System.Collections.Generic;
-using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.BattleFronts.Keeps;
 using static WorldServer.Managers.Commands.GMUtils;
 
 namespace WorldServer.Managers.Commands

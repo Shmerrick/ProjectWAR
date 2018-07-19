@@ -7,9 +7,9 @@ using FrameWork;
 
 namespace Common
 {
-    [DataTable(PreCache = false, TableName = "battlefront_objectives", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
+    [DataTable(PreCache = false, TableName = "BattleFront_objectives", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
-    public class Battlefront_Objective : DataObject
+    public class BattleFront_Objective : DataObject
     {
         [PrimaryKey]
         public int Entry { get; set; }
@@ -41,6 +41,6 @@ namespace Common
         [DataElement(AllowDbNull = false)]
         public uint TokUnlocked { get; set; }
 
-        public List<Battlefront_Guard> Guards;
+        public List<BattleFront_Guard> Guards;
     }
 }

@@ -533,9 +533,9 @@ namespace WorldServer
                 if (player == null)
                     return false;
 
-                /*if (BattlefrontService.GetWarcampEntrance((ushort)player.ZoneId, player.Realm).IsWithinRadiusFeet(player, 100))
+                /*if (BattleFrontService.GetWarcampEntrance((ushort)player.ZoneId, player.Realm).IsWithinRadiusFeet(player, 100))
                 {
-                    ProximityBattlefront front = player.Region.Bttlfront as ProximityBattlefront;
+                    ProximityBattleFront front = player.Region.Bttlfront as ProximityBattleFront;
                     if (front != null && front.RealmLostKeep[(int)player.Realm-1])
                         return front.CanDeploySiegeAtWarcamp(player, abInfo.Level, (uint)abInfo.CommandInfo[0].PrimaryValue);
                 }

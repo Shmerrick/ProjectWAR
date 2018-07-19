@@ -8,7 +8,8 @@ using System.Reflection;
 
 using Common;
 using FrameWork;
-using WorldServer.World.Battlefronts.NewDawn;
+using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer
 {
@@ -20,6 +21,7 @@ namespace WorldServer
         public static TCPServer Server;
         public static Realm Rm;
         private static Timer _timer;
+        
 
         [STAThread]
         static void Main(string[] args)
@@ -28,6 +30,31 @@ namespace WorldServer
             Console.CancelKeyPress += new ConsoleCancelEventHandler(OnClose);
 
             Log.Texte("", "-------------------- World Server ---------------------", ConsoleColor.DarkRed);
+
+            // Default the server to DEV mode.
+            if (args.Length == 0)
+                WorldMgr.ServerMode = "DEV";
+            else
+            {
+                if (args.Length == 1)
+                {
+                    if (args[0] == "DEV")
+                    {
+                        WorldMgr.ServerMode = "DEV";
+                    }
+                    if (args[0] == "PRD")
+                    {
+                        WorldMgr.ServerMode = "PRD";
+                    }
+                }
+                else
+                {
+                    WorldMgr.ServerMode = "DEV";
+                }
+            }  
+
+            Log.Texte("", "SERVER running in " + WorldMgr.ServerMode + " mode", ConsoleColor.Cyan);
+            
 
             // Loading all configs files
             ConfigMgr.LoadConfigs();
@@ -89,16 +116,6 @@ namespace WorldServer
             }
 
 
-            WorldMgr.UpperTierBattlefrontManager = new UpperTierBattlefrontManager();
-            WorldMgr.UpperTierBattlefrontManager.SetInitialPairActive();
-            Log.Texte("Creating Upper Tier Battlefront Manager", WorldMgr.UpperTierBattlefrontManager.GetActivePairing().PairingName, ConsoleColor.Cyan);
-
-            WorldMgr.LowerTierBattlefrontManager = new LowerTierBattlefrontManager();
-            WorldMgr.LowerTierBattlefrontManager.SetInitialPairActive();
-            Log.Texte("Creating Lower Tier Battlefront Manager", WorldMgr.LowerTierBattlefrontManager.GetActivePairing().PairingName, ConsoleColor.Cyan);
-
-
-            Log.Texte("StartingPairing: ", WorldMgr.StartingPairing.ToString(), ConsoleColor.Cyan);
 
             Client = new RpcClient("WorldServer-" + Config.RealmId, Config.AccountCacherInfo.RpcLocalIp, 1);
             if (!Client.Start(Config.AccountCacherInfo.RpcServerIp, Config.AccountCacherInfo.RpcServerPort))
@@ -113,7 +130,33 @@ namespace WorldServer
             }
 
             LoaderMgr.Start();
+            Log.Texte("Battlefront Manager", "Creating Upper Tier Campaign Manager", ConsoleColor.Cyan);
+            if (RVRProgressionService._RVRProgressions.Count == 0)
+            {
+                Log.Error("RVR Progression", "NO RVR Progressions in DB");
+                return;
+            }
+            WorldMgr.UpperTierCampaignManager = new UpperTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x=>x.Tier == 4).ToList(), WorldMgr._Regions);
+            Log.Texte("Battlefront Manager", "Creating Lower Tier Campaign Manager", ConsoleColor.Cyan);
+            WorldMgr.LowerTierCampaignManager = new LowerTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 1).ToList(), WorldMgr._Regions);
+            Log.Texte("Battlefront Manager", "Resetting Progression", ConsoleColor.Cyan);
+            WorldMgr.UpperTierCampaignManager.ResetBattleFrontProgression();
+            WorldMgr.LowerTierCampaignManager.ResetBattleFrontProgression();
+            Log.Texte("Battlefront Manager", "Attaching Battlefronts to Regions", ConsoleColor.Cyan);
+            // Attach Battlefronts to regions
+            WorldMgr.AttachCampaignsToRegions();
 
+            Log.Texte("Battlefront Manager", "Locking Battlefronts", ConsoleColor.Cyan);
+            WorldMgr.UpperTierCampaignManager.LockBattleFrontsAllRegions(4);
+            WorldMgr.LowerTierCampaignManager.LockBattleFrontsAllRegions(1);
+
+            Log.Texte("Battlefront Manager", "Opening Active battlefronts", ConsoleColor.Cyan);
+            WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront();
+            WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront();
+
+            WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
+                
+            
             if (!TCPManager.Listen<TCPServer>(Rm.Port, "World"))
                 ConsoleMgr.WaitAndExit(2000);
 

@@ -1,9 +1,9 @@
-﻿using Common.Database.World.Battlefront;
+﻿using Common.Database.World.BattleFront;
 using System;
 using Common;
 using WorldServer.Services.World;
 
-namespace WorldServer.World.Battlefronts.Objectives
+namespace WorldServer.World.BattleFronts.Objectives
 {
     /// <summary>
     /// Game object representing a portal around an objective
@@ -16,7 +16,7 @@ namespace WorldServer.World.Battlefronts.Objectives
 
         private Random random = new Random();
 
-        internal PortalBase(BattlefrontObject origin)
+        internal PortalBase(BattleFrontObject origin)
         {
             Spawn = CreateSpawn(origin);
         }
@@ -27,11 +27,11 @@ namespace WorldServer.World.Battlefronts.Objectives
         }
 
         /// <summary>
-        /// Creates a game object spawn entity from given battlefront portal object.
+        /// Creates a game object spawn entity from given Campaign portal object.
         /// </summary>
-        /// <param name="battlefrontObject">Portal object providing raw data</param>
+        /// <param name="BattleFrontObject">Portal object providing raw data</param>
         /// <returns>newly created spawn entity</returns>
-        private GameObject_spawn CreateSpawn(BattlefrontObject battlefrontObject)
+        private GameObject_spawn CreateSpawn(BattleFrontObject BattleFrontObject)
         {
             GameObject_proto proto = GameObjectService.GetGameObjectProto(PORTAL_PROTO_ENTRY);
             proto = (GameObject_proto)proto.Clone();
@@ -44,24 +44,24 @@ namespace WorldServer.World.Battlefronts.Objectives
             proto.Scale = 25;
             // spawn.DisplayID = 1675;
             spawn.DisplayID = 1675;
-            spawn.ZoneId = battlefrontObject.ZoneId;
+            spawn.ZoneId = BattleFrontObject.ZoneId;
 
-            Point3D worldPos = GetWorldPosition(battlefrontObject);
+            Point3D worldPos = GetWorldPosition(BattleFrontObject);
             spawn.WorldX = worldPos.X;
             spawn.WorldY = worldPos.Y;
             spawn.WorldZ = worldPos.Z;
-            spawn.WorldO = battlefrontObject.O;
+            spawn.WorldO = BattleFrontObject.O;
 
             return spawn;
         }
 
-        protected Point3D GetWorldPosition(BattlefrontObject bObject)
+        protected Point3D GetWorldPosition(BattleFrontObject bObject)
         {
             Zone_Info zone = ZoneService.GetZone_Info(bObject.ZoneId);
             return ZoneService.GetWorldPosition(zone, (ushort)bObject.X, (ushort)bObject.Y, (ushort)bObject.Z);
         }
 
-        protected void Teleport(Player player, BattlefrontObject target, Point3D targetPos)
+        protected void Teleport(Player player, BattleFrontObject target, Point3D targetPos)
         {
             Point2D randomPoint = targetPos.GetPointFromHeading((ushort)random.Next(0, 4096), 5);
             player.Teleport(target.ZoneId, (uint)randomPoint.X, (uint)randomPoint.Y, (ushort)targetPos.Z, (ushort)target.O);

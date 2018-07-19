@@ -197,7 +197,7 @@ namespace WorldServer
         protected override void OnReceive(byte[] packetBuffer)
         {
             // Wrap the input stream in a PacketIn
-            Log.Error("HandlePacket", $"Packet...{packetBuffer.Length}");
+            Log.Debug("HandlePacket", $"Packet...{packetBuffer.Length}");
             PacketIn inStream = new PacketIn(packetBuffer, 0, packetBuffer.Length, true, true);
 
             lock (this)

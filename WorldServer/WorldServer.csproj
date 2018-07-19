@@ -165,6 +165,7 @@
     <Compile Include="Services\World\PQuestService.cs" />
     <Compile Include="Services\World\QuestService.cs" />
     <Compile Include="Services\World\RallyPointService.cs" />
+    <Compile Include="Services\World\RVRProgressionService.cs" />
     <Compile Include="Services\World\ScenarioService.cs" />
     <Compile Include="Services\World\TokService.cs" />
     <Compile Include="Services\World\VendorService.cs" />
@@ -251,52 +252,32 @@
     <Compile Include="World\AI\PassiveBrain.cs" />
     <Compile Include="World\Auction\AuctionHouse.cs" />
     <Compile Include="World\Battlefronts\AAOTracker.cs" />
-    <Compile Include="World\Battlefronts\BattlefrontConstants.cs" />
-    <Compile Include="World\Battlefronts\BattlefrontList.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\BattleFrontStatus.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\IApocCommunications.cs" />
     <Compile Include="World\Battlefronts\ContributionTracker.cs" />
-    <Compile Include="World\Battlefronts\IBattlefront.cs" />
-    <Compile Include="World\Battlefronts\Legacy\ProximityBattlefront.cs" />
-    <Compile Include="World\Battlefronts\Legacy\ProximityProgressingBattlefront.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\AAOTracker.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\BattlefrontConstants.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\CampaignTrack.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\IBattlefrontManager.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\LowerTierRacialPairManager.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\NewDawnBattlefieldObjective.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\NewDawnBattlefront.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\LowerTierBattlefrontManager.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\RacialPairIdentifier.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\RacialPairManager.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\RVRRewardManager.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\UpperTierBattlefrontManager.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\INewDawnBattlefront.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\UpperTierRacialPairManager.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\NewDawnCommunications.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\ProximityEngine.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\RacialPair.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\RacialPairHelper.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\VictoryPoint.cs" />
-    <Compile Include="World\Battlefronts\NewDawn\VictoryPointProgress.cs" />
-    <Compile Include="World\Battlefronts\Objectives\IBattlefrontFlag.cs" />
-    <Compile Include="World\Battlefronts\Objectives\ObjectivePortalsMgr.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\AAOTracker.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\BattlefrontConstants.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\IBattlefrontManager.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\CampaignObjective.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Campaign.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\LowerTierCampaignManager.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\RVRRewardManager.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\UpperTierCampaignManager.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\IApocBattleFront.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\ApocCommunications.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\ProximityEngine.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\VictoryPoint.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\VictoryPointProgress.cs" />
     <Compile Include="World\Battlefronts\Objectives\PortalToObjective.cs" />
     <Compile Include="World\Battlefronts\Objectives\PortalBase.cs" />
     <Compile Include="World\Battlefronts\Objectives\PortalToWarcamp.cs" />
-    <Compile Include="World\Battlefronts\Objectives\ProximityFlag.cs" />
-    <Compile Include="World\Battlefronts\Objectives\QuadrantHistoryTracker.cs" />
     <Compile Include="World\Battlefronts\Objectives\StateFlags.cs" />
     <Compile Include="World\Battlefronts\RationTracker.cs" />
-    <Compile Include="World\Battlefronts\T1Battlefront.cs" />
-    <Compile Include="World\Battlefronts\RoRBattlefront.cs" />
-    <Compile Include="World\Battlefronts\Legacy\Battlefront.cs" />
     <Compile Include="World\Battlefronts\Legacy\BattlefrontObjective.cs" />
     <Compile Include="World\Battlefronts\Keeps\Keep.cs" />
-    <Compile Include="World\Battlefronts\Legacy\BattlefrontFlag.cs" />
     <Compile Include="World\Abilities\Buffs\BuffInterface.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepDoor.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepNpcCreature.cs" />
-    <Compile Include="World\Battlefronts\Legacy\ProgressingBattlefront.cs" />
-    <Compile Include="World\Battlefronts\Legacy\ResourceBox.cs" />
     <Compile Include="World\Instances\TOTVL.cs" />
     <Compile Include="World\Scripting\BasicScript.cs" />
     <Compile Include="World\Scripting\BehaviorLib.cs" />
@@ -478,9 +459,12 @@
     <Content Include="Configs\LocalDevelopment\Launcher.xml" />
     <Content Include="Configs\LocalDevelopment\Lobby.xml" />
     <Content Include="Configs\LocalDevelopment\World.xml" />
+    <Content Include="WarZone64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="world.ico" />
   </ItemGroup>
-  
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if not exist $(TargetDir)\PatcherFilesDirectory mkdir $(TargetDir)\PatcherFilesDirectory

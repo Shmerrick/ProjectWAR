@@ -9,7 +9,7 @@ using WarZoneLib;
 using CreatureSubTypes = GameData.CreatureSubTypes;
 using CreatureTypes = GameData.CreatureTypes;
 using Vector3 = FrameWork.Vector3;
-using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.Services.World;
 
 namespace WorldServer
@@ -320,7 +320,7 @@ namespace WorldServer
             _weapon.MvtInterface.StopMove();
 
             if (Type == SiegeType.RAM)
-                _Owner.Region.Bttlfront.GetClosestKeep(_Owner.WorldPosition)?.TryAlignRam(_Owner, player);
+                _Owner.Region.Campaign.GetClosestKeep(_Owner.WorldPosition)?.TryAlignRam(_Owner, player);
 
             foreach (Player p in _Owner.PlayersInRange)
             {

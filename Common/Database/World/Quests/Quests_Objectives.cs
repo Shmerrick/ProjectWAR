@@ -60,7 +60,7 @@ namespace Common
         public Creature_proto Creature = null;
         public GameObject_proto GameObject = null;
         public Scenario_Info Scenario = null;
-        public Battlefront_Objective BattlefrontObjective = null;
+        public BattleFront_Objective BattleFrontObjective = null;
         public Keep_Info Keep = null;
     }
 }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Objects;
 
 namespace WorldServer
@@ -49,7 +50,7 @@ namespace WorldServer
             ID = id;
             ZoneID = zoneid;
             Realm = realm;
-            Region = new RegionMgr(zoneid, ZoneService.GetZoneRegion(zoneid),"");
+            Region = new RegionMgr(zoneid, ZoneService.GetZoneRegion(zoneid),"", new ApocCommunications());
             InstanceService._InstanceInfo.TryGetValue(zoneid,out Info);
             LoadBossSpawns();
             LoadSpawns(); // todo get the saved progress from group

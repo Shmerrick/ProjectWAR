@@ -772,10 +772,10 @@ namespace WorldServer
                Zone.ZoneId, X, Y, Z + CHARACTER_HEIGHT,
                target.Zone.ZoneId, target.X, target.Y, target.Z + CHARACTER_HEIGHT, ref playnice);
 
-            #if DEBUG
-            if (IsPlayer())
-                GetPlayer().SendLocalizeString("Result: " + result, SystemData.ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_DEFAULT);
-            #endif
+            //#if DEBUG
+            //if (IsPlayer())
+            //    GetPlayer().SendLocalizeString("Result: " + result, SystemData.ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_DEFAULT);
+            //#endif
 
             return result != RegionData.OcclusionResult.Occluded;
         }
@@ -793,10 +793,10 @@ namespace WorldServer
                Zone.ZoneId, X, Y, Z + CHARACTER_HEIGHT,
               zoneId, pinPos.X, pinPos.Y, pinPos.Z + CHARACTER_HEIGHT, ref playnice);
 
-            #if DEBUG
-            if (IsPlayer())
-                GetPlayer().SendLocalizeString("Result: " + result, SystemData.ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_DEFAULT);
-            #endif
+            //#if DEBUG
+            //if (IsPlayer())
+            //    GetPlayer().SendLocalizeString("Result: " + result, SystemData.ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_DEFAULT);
+            //#endif
 
             return result != RegionData.OcclusionResult.Occluded;
         }

@@ -1,5 +1,5 @@
 ﻿using Common;
-using Common.Database.World.Battlefront;
+using Common.Database.World.BattleFront;
 using FrameWork;
 using GameData;
 using System.Collections.Generic;
@@ -8,55 +8,55 @@ using System.Linq;
 namespace WorldServer.Services.World
 {
     [Service]
-    public class BattlefrontService : ServiceBase
+    public class BattleFrontService : ServiceBase
     {
         [LoadingFunction(true)]
-        public static void LoadBattlefront()
+        public static void LoadBattleFront()
         {
-            BattlefrontStatus = Database.SelectAllObjects<BattlefrontStatus>().ToDictionary(g => g.RegionId);
+            BattleFrontStatus = Database.SelectAllObjects<BattleFrontStatus>().ToDictionary(g => g.RegionId);
 
-            LoadBattlefrontGuards();
+            LoadBattleFrontGuards();
             LoadResourceSpawns();
 
-            LoadBattlefrontObjectives();
-            LoadBattlefrontObjects();
+            LoadBattleFrontObjectives();
+            LoadBattleFrontObjects();
 
             LoadKeepInfos();
         }
 
         #region Objectives
-        public static Dictionary<uint, List<Battlefront_Objective>> _BattlefrontObjectives = new Dictionary<uint, List<Battlefront_Objective>>();
+        public static Dictionary<uint, List<BattleFront_Objective>> _BattleFrontObjectives = new Dictionary<uint, List<BattleFront_Objective>>();
 
-        private static void LoadBattlefrontObjectives()
+        private static void LoadBattleFrontObjectives()
         {
-            _BattlefrontObjectives = new Dictionary<uint, List<Battlefront_Objective>>();
+            _BattleFrontObjectives = new Dictionary<uint, List<BattleFront_Objective>>();
 
-            Log.Debug("WorldMgr", "Loading Battlefront_Objectives...");
+            Log.Debug("WorldMgr", "Loading BattleFront_Objectives...");
 
-            IList<Battlefront_Objective> Objectives = Database.SelectAllObjects<Battlefront_Objective>();
+            IList<BattleFront_Objective> Objectives = Database.SelectAllObjects<BattleFront_Objective>();
 
             int Count = 0;
-            foreach (Battlefront_Objective Obj in Objectives)
+            foreach (BattleFront_Objective Obj in Objectives)
             {
-                if (!_BattlefrontObjectives.ContainsKey(Obj.RegionId))
-                    _BattlefrontObjectives.Add(Obj.RegionId, new List<Battlefront_Objective>());
+                if (!_BattleFrontObjectives.ContainsKey(Obj.RegionId))
+                    _BattleFrontObjectives.Add(Obj.RegionId, new List<BattleFront_Objective>());
 
-                _BattlefrontObjectives[Obj.RegionId].Add(Obj);
+                _BattleFrontObjectives[Obj.RegionId].Add(Obj);
 
-                if (_BattlefrontGuards.ContainsKey(Obj.Entry))
-                    Obj.Guards = _BattlefrontGuards[Obj.Entry];
+                if (_BattleFrontGuards.ContainsKey(Obj.Entry))
+                    Obj.Guards = _BattleFrontGuards[Obj.Entry];
 
                 ++Count;
             }
 
-            Log.Success("WorldMgr", "Loaded " + Count + " Battlefront Objectives");
+            Log.Success("WorldMgr", "Loaded " + Count + " Campaign Objectives");
         }
 
-        public static List<Battlefront_Objective> GetBattlefrontObjectives(uint RegionId)
+        public static List<BattleFront_Objective> GetBattleFrontObjectives(uint RegionId)
         {
-            if (_BattlefrontObjectives.ContainsKey(RegionId))
+            if (_BattleFrontObjectives.ContainsKey(RegionId))
             {
-                return _BattlefrontObjectives[RegionId];
+                return _BattleFrontObjectives[RegionId];
             }
 
             return null;
@@ -73,7 +73,7 @@ namespace WorldServer.Services.World
 
             _KeepInfos = new Dictionary<uint, List<Keep_Info>>();
 
-            Log.Debug("WorldMgr", "Loading Battlefront_Objectives...");
+            Log.Debug("WorldMgr", "Loading BattleFront_Objectives...");
 
             IList<Keep_Info> keepInfos = Database.SelectAllObjects<Keep_Info>();
 
@@ -154,46 +154,46 @@ namespace WorldServer.Services.World
         #endregion
 
         #region Guards
-        public static Dictionary<int, List<Battlefront_Guard>> _BattlefrontGuards = new Dictionary<int, List<Battlefront_Guard>>();
-        public static void LoadBattlefrontGuards()
+        public static Dictionary<int, List<BattleFront_Guard>> _BattleFrontGuards = new Dictionary<int, List<BattleFront_Guard>>();
+        public static void LoadBattleFrontGuards()
         {
-            _BattlefrontGuards = new Dictionary<int, List<Battlefront_Guard>>();
+            _BattleFrontGuards = new Dictionary<int, List<BattleFront_Guard>>();
 
-            Log.Debug("WorldMgr", "Loading Battlefront_Guards...");
+            Log.Debug("WorldMgr", "Loading BattleFront_Guards...");
 
-            IList<Battlefront_Guard> Guards = Database.SelectAllObjects<Battlefront_Guard>();
+            IList<BattleFront_Guard> Guards = Database.SelectAllObjects<BattleFront_Guard>();
 
             int Count = 0;
-            foreach (Battlefront_Guard Guard in Guards)
+            foreach (BattleFront_Guard Guard in Guards)
             {
-                if (!_BattlefrontGuards.ContainsKey(Guard.ObjectiveId))
-                    _BattlefrontGuards.Add(Guard.ObjectiveId, new List<Battlefront_Guard>());
+                if (!_BattleFrontGuards.ContainsKey(Guard.ObjectiveId))
+                    _BattleFrontGuards.Add(Guard.ObjectiveId, new List<BattleFront_Guard>());
 
-                _BattlefrontGuards[Guard.ObjectiveId].Add(Guard);
+                _BattleFrontGuards[Guard.ObjectiveId].Add(Guard);
                 ++Count;
             }
 
-            Log.Success("WorldMgr", "Loaded " + Count + " Battlefront Guards");
+            Log.Success("WorldMgr", "Loaded " + Count + " Campaign Guards");
         }
         #endregion
 
         #region Resources
-        public static Dictionary<int, List<BattlefrontResourceSpawn>> ResourceSpawns = new Dictionary<int, List<BattlefrontResourceSpawn>>();
+        public static Dictionary<int, List<BattleFrontResourceSpawn>> ResourceSpawns = new Dictionary<int, List<BattleFrontResourceSpawn>>();
 
         private static void LoadResourceSpawns()
         {
-            ResourceSpawns = new Dictionary<int, List<BattlefrontResourceSpawn>>();
+            ResourceSpawns = new Dictionary<int, List<BattleFrontResourceSpawn>>();
 
             Log.Debug("WorldMgr", "Loading Resource Spawns...");
 
-            IList<BattlefrontResourceSpawn> resSpawns = Database.SelectAllObjects<BattlefrontResourceSpawn>();
+            IList<BattleFrontResourceSpawn> resSpawns = Database.SelectAllObjects<BattleFrontResourceSpawn>();
 
             int count = 0;
 
-            foreach (BattlefrontResourceSpawn res in resSpawns)
+            foreach (BattleFrontResourceSpawn res in resSpawns)
             {
                 if (!ResourceSpawns.ContainsKey(res.Entry))
-                    ResourceSpawns.Add(res.Entry, new List<BattlefrontResourceSpawn>());
+                    ResourceSpawns.Add(res.Entry, new List<BattleFrontResourceSpawn>());
 
                 ResourceSpawns[res.Entry].Add(res);
                 ++count;
@@ -202,7 +202,7 @@ namespace WorldServer.Services.World
             Log.Success("WorldMgr", "Loaded " + count + " resource points.");
         }
 
-        public static List<BattlefrontResourceSpawn> GetResourceSpawns(int objectiveId)
+        public static List<BattleFrontResourceSpawn> GetResourceSpawns(int objectiveId)
         {
             return ResourceSpawns.ContainsKey(objectiveId) ? ResourceSpawns[objectiveId] : null;
         }
@@ -230,7 +230,7 @@ namespace WorldServer.Services.World
 
         #endregion
 
-        #region Generic battlefront objects
+        #region Generic Campaign objects
         /// <summary>
         /// Arrays of warcamp entrances (0/1 for order/destro) indexed by zone id
         /// This must be changed to private later
@@ -238,31 +238,31 @@ namespace WorldServer.Services.World
         public static Dictionary<ushort, Point3D[]> _warcampEntrances;
 
         /// <summary>Arrays of portals to warcamp indexed by zone id and objective ID</summary>
-        private static Dictionary<ushort, Dictionary<int, BattlefrontObject>> _portalsToWarcamp;
+        private static Dictionary<ushort, Dictionary<int, BattleFrontObject>> _portalsToWarcamp;
         /// <summary>Arrays of portals to warcamp indexed by zone id, realm (0/1 for order/destro) and objective ID</summary>
-        private static Dictionary<ushort, Dictionary<int, BattlefrontObject>[]> _portalsToObjective;
+        private static Dictionary<ushort, Dictionary<int, BattleFrontObject>[]> _portalsToObjective;
 
         /// <summary>
-        /// Loads battlefront_objects table.
+        /// Loads BattleFront_objects table.
         /// </summary>
         /// <remarks>Public for gm commands</remarks>
-        public static void LoadBattlefrontObjects()
+        public static void LoadBattleFrontObjects()
         {
             _warcampEntrances = new Dictionary<ushort, Point3D[]>();
-            _portalsToWarcamp = new Dictionary<ushort, Dictionary<int, BattlefrontObject>>();
-            _portalsToObjective = new Dictionary<ushort, Dictionary<int, BattlefrontObject>[]>();
+            _portalsToWarcamp = new Dictionary<ushort, Dictionary<int, BattleFrontObject>>();
+            _portalsToObjective = new Dictionary<ushort, Dictionary<int, BattleFrontObject>[]>();
 
-            Log.Debug("WorldMgr", "Loading battlefront objects...");
+            Log.Debug("WorldMgr", "Loading Campaign objects...");
 
-            IList<BattlefrontObject> objects = Database.SelectAllObjects<BattlefrontObject>();
+            IList<BattleFrontObject> objects = Database.SelectAllObjects<BattleFrontObject>();
 
             int count = 0;
 
-            foreach (BattlefrontObject res in objects)
+            foreach (BattleFrontObject res in objects)
             {
                 switch (res.Type)
                 {
-                    case (ushort)BattlefrontObjectType.WARCAMP_ENTRANCE:
+                    case (ushort)BattleFrontObjectType.WARCAMP_ENTRANCE:
                         // Entrances to warcamp necessary to compute objective rewards and spawn farm check
                         if (!_warcampEntrances.ContainsKey(res.ZoneId))
                             _warcampEntrances.Add(res.ZoneId, new Point3D[2]);
@@ -270,21 +270,21 @@ namespace WorldServer.Services.World
                         _warcampEntrances[res.ZoneId][res.Realm - 1] = new Point3D(res.X, res.Y, res.Z);
                         break;
 
-                    case (ushort)BattlefrontObjectType.WARCAMP_PORTAL:
+                    case (ushort)BattleFrontObjectType.WARCAMP_PORTAL:
                         // Objective -> warcamp portals
                         if (!_portalsToWarcamp.ContainsKey(res.ZoneId))
-                            _portalsToWarcamp.Add(res.ZoneId, new Dictionary<int, BattlefrontObject>());
+                            _portalsToWarcamp.Add(res.ZoneId, new Dictionary<int, BattleFrontObject>());
 
                         _portalsToWarcamp[res.ZoneId].Add(res.ObjectiveID, res);
                         break;
 
-                    case (ushort)BattlefrontObjectType.OBJECTIVE_PORTAL:
+                    case (ushort)BattleFrontObjectType.OBJECTIVE_PORTAL:
                         // Warcamp -> objective portals
                         if (!_portalsToObjective.ContainsKey(res.ZoneId))
                         {
-                            _portalsToObjective.Add(res.ZoneId, new Dictionary<int, BattlefrontObject>[] {
-                                    new Dictionary<int, BattlefrontObject>(),
-                                    new Dictionary<int, BattlefrontObject>(),
+                            _portalsToObjective.Add(res.ZoneId, new Dictionary<int, BattleFrontObject>[] {
+                                    new Dictionary<int, BattleFrontObject>(),
+                                    new Dictionary<int, BattleFrontObject>(),
                                 });
                         }
 
@@ -298,7 +298,7 @@ namespace WorldServer.Services.World
                 ++count;
             }
 
-            Log.Success("WorldMgr", "Loaded " + count + " battlefront objects.");
+            Log.Success("WorldMgr", "Loaded " + count + " Campaign objects.");
         }
 
         /// <summary>
@@ -321,11 +321,11 @@ namespace WorldServer.Services.World
         /// <param name="zoneId">Zone identifer</param>
         /// <param name="objectiveId">Objective identifier</param>
         /// <returns>Portal, null if not found</returns>
-        public static BattlefrontObject GetPortalToWarcamp(ushort zoneId, int objectiveId)
+        public static BattleFrontObject GetPortalToWarcamp(ushort zoneId, int objectiveId)
         {
             if (_portalsToWarcamp.ContainsKey(zoneId))
             {
-                Dictionary<int, BattlefrontObject> zoneObjects = _portalsToWarcamp[zoneId];
+                Dictionary<int, BattleFrontObject> zoneObjects = _portalsToWarcamp[zoneId];
                 if (zoneObjects.ContainsKey(objectiveId))
                     return zoneObjects[objectiveId];
             }
@@ -339,11 +339,11 @@ namespace WorldServer.Services.World
         /// <param name="objectiveId">Objective identifier</param>
         /// <param name="realm">From order/destro warcamp</param>
         /// <returns>List of portals indexed by objective ID, null if not found</returns>
-        public static BattlefrontObject GetPortalToObjective(ushort zoneId, int objectiveId, Realms realm)
+        public static BattleFrontObject GetPortalToObjective(ushort zoneId, int objectiveId, Realms realm)
         {
             if (_portalsToObjective.ContainsKey(zoneId))
             {
-                Dictionary<int, BattlefrontObject>[] zoneObjects = _portalsToObjective[zoneId];
+                Dictionary<int, BattleFrontObject>[] zoneObjects = _portalsToObjective[zoneId];
                 if (zoneObjects[(int)realm - 1].ContainsKey(objectiveId))
                     return _portalsToObjective[zoneId][(int)realm - 1][objectiveId];
             }
@@ -352,29 +352,29 @@ namespace WorldServer.Services.World
         #endregion
 
         #region Status - Updated at runtime
-        public static Dictionary<int, BattlefrontStatus> BattlefrontStatus;
-        public static BattlefrontStatus GetStatusFor(int regionId)
+        public static Dictionary<int, BattleFrontStatus> BattleFrontStatus;
+        public static BattleFrontStatus GetStatusFor(int regionId)
         {
-            lock (BattlefrontStatus)
+            lock (BattleFrontStatus)
             {
-                if (BattlefrontStatus.ContainsKey(regionId))
-                    return BattlefrontStatus[regionId];
+                if (BattleFrontStatus.ContainsKey(regionId))
+                    return BattleFrontStatus[regionId];
 
-                BattlefrontStatus.Add(regionId, new BattlefrontStatus(regionId));
+                BattleFrontStatus.Add(regionId, new BattleFrontStatus(regionId));
             }
 
-            Database.AddObject(BattlefrontStatus[regionId]);
+            Database.AddObject(BattleFrontStatus[regionId]);
 
-            return BattlefrontStatus[regionId];
+            return BattleFrontStatus[regionId];
         }
         #endregion
 
         /* no idea what it is for
-        public static void CheckBattlefrontPositions()
+        public static void CheckBattleFrontPositions()
         {
-            IList<Battlefront_Objective> Objectives = Database.SelectAllObjects<Battlefront_Objective>();
+            IList<BattleFront_Objective> Objectives = Database.SelectAllObjects<BattleFront_Objective>();
 
-            foreach (Battlefront_Objective Obj in Objectives)
+            foreach (BattleFront_Objective Obj in Objectives)
             {
                 // Buggy Pin coords - calculate!
                 if (Obj.X <= 65535)

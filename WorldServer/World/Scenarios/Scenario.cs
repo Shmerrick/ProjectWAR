@@ -6,8 +6,10 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
+using NLog;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer.Scenarios
 {
@@ -130,6 +132,7 @@ namespace WorldServer.Scenarios
 
     public abstract class Scenario
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private static readonly uint[] _emblemIds = { 208470, 208470, 208470, 208470 };
         public Scenario_Info Info { get; }
 
@@ -161,7 +164,7 @@ namespace WorldServer.Scenarios
                 RespawnHeadings[i] = respawn.WorldO;
             }
 
-            Region = new RegionMgr(Info.MapId, ZoneService.GetZoneRegion(Info.MapId), info.Name) { Scenario = this };
+            Region = new RegionMgr(Info.MapId, ZoneService.GetZoneRegion(Info.MapId), info.Name, new ApocCommunications()) { Scenario = this };
 
             /* create groups */
             for (int i = 0; i < 2; ++i)
@@ -617,6 +620,33 @@ namespace WorldServer.Scenarios
                 if (realmIndex == winningTeam)
                     plr.QtsInterface.HandleEvent(Objective_Type.QUEST_WIN_SCENARIO, Info.ScenarioId, 1);
             }
+
+            try
+            {
+                // Destro win
+                if (winningTeam == 1)
+                {
+                    _logger.Debug($"Scenario {Info.Name} won by Destruction. {Score[1]} to {Score[0]}");
+                    _logger.Debug($"Suggest {Score[1] / 10} additional VP to winner,  {Score[0] / 20} to loser.");
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += (Score[1] / 10);
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints += (Score[0] / 20);
+                }
+                if (winningTeam == 2)
+                {
+                    _logger.Debug($"Scenario {Info.Name} won by Order. {Score[0]} to {Score[1]}");
+                    _logger.Debug($"Suggest {Score[0] / 10} additional VP to winner,  {Score[1] / 20} to loser.");
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints += (Score[1] / 10);
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += (Score[0] / 20);
+
+                }
+
+            }
+            catch (Exception e)
+            {
+               _logger.Error($"Scenario reporting exception {e.Message}");
+            }
+           
+
 
             SendScoreboardUpdate();
         }

@@ -6,10 +6,10 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.World.Battlefronts;
-using WorldServer.World.Battlefronts.NewDawn;
-using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.BattleFronts;
+using WorldServer.World.BattleFronts.Objectives;
 using NLog;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer
 {
@@ -1861,7 +1861,7 @@ namespace WorldServer
             }
         }
 
-        public void HandleKillRewards(Unit victim, Player killer, float bonusMod, uint xp, uint renown, ushort influenceId, ushort influence, float transferenceFactor, NewDawnBattlefieldObjective closestFlag)
+        public void HandleKillRewards(Unit victim, Player killer, float bonusMod, uint xp, uint renown, ushort influenceId, ushort influence, float transferenceFactor, CampaignObjective closestFlag)
         {
             List<Player> members = GetPlayersCloseTo(victim, MAX_SHARE_DIST);
 
@@ -1896,13 +1896,13 @@ namespace WorldServer
                     if (influenceId != 0)
                         curPlayer.AddInfluence(influenceId, (ushort)(influence / members.Count));
 
-                    if (closestFlag != null && closestFlag.FlagState != ObjectiveFlags.ZoneLocked)
+                    if (closestFlag != null && closestFlag.State != StateFlags.ZoneLocked)
                     {
                         if (playerVictim != null)
                             closestFlag.RewardManager.AddDelayedRewardsFrom(curPlayer, playerVictim, (uint)(xpShare * transferenceFactor), (uint)(renownShare * transferenceFactor));
 
-                        RewardLogger.Trace($"Adding contribution to Battlefront: {curPlayer.Name} ");
-                        curPlayer.Region.ndbf.AddContribution(curPlayer, (uint)(renownShare * bonusMod));
+                        RewardLogger.Trace($"Adding contribution to Campaign: {curPlayer.Name} ");
+                        curPlayer.Region.Campaign.AddContribution(curPlayer, (uint)(renownShare * bonusMod));
                     }
                     RewardLogger.Trace($"Level Check. Current player : {curPlayer.EffectiveLevel} Victim : {victim.EffectiveLevel}");
                     // Prevent farming low levels for kill quests, and also stop throttled kills

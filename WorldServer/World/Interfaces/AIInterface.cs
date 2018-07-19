@@ -7,7 +7,7 @@ using Common;
 using FrameWork;
 using GameData;
 using WorldServer.World.Objects.PublicQuests;
-using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.Services.World;
 
 namespace WorldServer

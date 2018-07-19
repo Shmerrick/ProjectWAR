@@ -5,22 +5,24 @@ using System.Reflection;
 using System.Threading;
 using SystemData;
 using Common;
+using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
-using Common.Database.World.Battlefront;
-using WorldServer.World.Battlefronts.Keeps;
+using Common.Database.World.BattleFront;
+using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.Scenarios;
 using WorldServer.Services.World;
 using Common.Database.World.Maps;
 using NLog;
-using WorldServer.World.Battlefronts;
-using WorldServer.World.Battlefronts.NewDawn;
+using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.BattleFronts;
+using BattleFrontConstants = WorldServer.World.Battlefronts.Apocalypse.BattleFrontConstants;
 
 namespace WorldServer
 {
     [Service(
         typeof(AnnounceService),
-        typeof(BattlefrontService),
+        typeof(BattleFrontService),
         typeof(CellSpawnService),
         typeof(ChapterService),
         typeof(CreatureService),
@@ -31,6 +33,7 @@ namespace WorldServer
         typeof(PQuestService),
         typeof(QuestService),
         typeof(RallyPointService),
+        typeof(RVRProgressionService),
         typeof(ScenarioService),
         typeof(TokService),
         typeof(VendorService),
@@ -44,9 +47,11 @@ namespace WorldServer
         private static Thread _groupThread;
         private static bool _running = true;
         public static long StartingPairing;
+        // DEV - Development mode, PRD - Production Mode. 
+        public static string ServerMode;
 
-        public static UpperTierBattlefrontManager UpperTierBattlefrontManager;
-        public static LowerTierBattlefrontManager LowerTierBattlefrontManager;
+        public static UpperTierCampaignManager UpperTierCampaignManager;
+        public static LowerTierCampaignManager LowerTierCampaignManager;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         //Log.Success("StartingPairing: ", StartingPairing.ToString());
@@ -57,7 +62,7 @@ namespace WorldServer
         private static ReaderWriterLockSlim RegionsRWLock = new ReaderWriterLockSlim();
 
 
-        public static RegionMgr GetRegion(ushort RegionId, bool Create, string name="")
+        public static RegionMgr GetRegion(ushort RegionId, bool Create, string name = "")
         {
             RegionsRWLock.EnterReadLock();
             RegionMgr Mgr = _Regions.Find(region => region != null && region.RegionId == RegionId);
@@ -65,7 +70,7 @@ namespace WorldServer
 
             if (Mgr == null && Create)
             {
-                Mgr = new RegionMgr(RegionId, ZoneService.GetZoneRegion(RegionId), name);
+                Mgr = new RegionMgr(RegionId, ZoneService.GetZoneRegion(RegionId), name, new ApocCommunications());
                 RegionsRWLock.EnterWriteLock();
                 _Regions.Add(Mgr);
                 RegionsRWLock.ExitWriteLock();
@@ -133,7 +138,7 @@ namespace WorldServer
                         return resp;
 
                     #region RvR area respawns
-                    var front = player.Region.ndbf;
+                    var front = player.Region.Campaign;
 
                     if (front != null)
                     {
@@ -328,7 +333,7 @@ namespace WorldServer
 
             if (killer.PriorityGroup == null)
             {
-               
+
                 killer.AddXp((uint)(GenerateXPCount(killer, victim) * bonusMod), true, true);
             }
             else
@@ -659,26 +664,26 @@ namespace WorldServer
 
                         if (ObjID != 0)
                         {
-                            foreach (List<Battlefront_Objective> boList in BattlefrontService._BattlefrontObjectives.Values)
+                            foreach (List<BattleFront_Objective> boList in BattleFrontService._BattleFrontObjectives.Values)
                             {
-                                foreach (Battlefront_Objective bo in boList)
+                                foreach (BattleFront_Objective bo in boList)
                                 {
                                     if (bo.Entry == ObjID)
                                     {
-                                        Obj.BattlefrontObjective = bo;
+                                        Obj.BattleFrontObjective = bo;
                                         break;
                                     }
                                 }
 
-                                if (Obj.BattlefrontObjective != null)
+                                if (Obj.BattleFrontObjective != null)
                                     break;
                             }
                         }
 
-                        if (Obj.BattlefrontObjective == null)
+                        if (Obj.BattleFrontObjective == null)
                             Obj.Description = "Invalid Battlefield Objective - QuestID=" + Obj.Entry + ", ObjId=" + Obj.ObjID;
                         else
-                            if (Obj.Description == null || Obj.Description.Length <= Obj.BattlefrontObjective.Name.Length)
+                            if (Obj.Description == null || Obj.Description.Length <= Obj.BattleFrontObjective.Name.Length)
                             Obj.Description = "Capture " + Obj.Scenario.Name;
                     }
                     break;
@@ -690,7 +695,7 @@ namespace WorldServer
 
                         if (ObjID != 0)
                         {
-                            foreach (List<Keep_Info> keepList in BattlefrontService._KeepInfos.Values)
+                            foreach (List<Keep_Info> keepList in BattleFrontService._KeepInfos.Values)
                             {
                                 foreach (Keep_Info keep in keepList)
                                 {
@@ -752,7 +757,7 @@ namespace WorldServer
             LoadQuestsRelation();
             LoadScripts(false);
 
-            foreach (List<Keep_Info> keepInfos in BattlefrontService._KeepInfos.Values)
+            foreach (List<Keep_Info> keepInfos in BattleFrontService._KeepInfos.Values)
                 foreach (Keep_Info keepInfo in keepInfos)
                     if (PQuestService._PQuests.ContainsKey(keepInfo.PQuestId))
                         keepInfo.PQuest = PQuestService._PQuests[keepInfo.PQuestId];
@@ -762,26 +767,27 @@ namespace WorldServer
             // Preload T4 regions
             Log.Info("Regions", "Preloading pairing regions...");
             // Tier 1
-            GetRegion(1, true, new LowerTierRacialPairManager().GetByRegion(1).PairingName); // dw/gs
-            GetRegion(3, true, new LowerTierRacialPairManager().GetByRegion(3).PairingName); // he/de
-            GetRegion(8, true, new LowerTierRacialPairManager().GetByRegion(8).PairingName); // em/ch
+            GetRegion(1, true, Constants.RegionName[1]); // dw/gs
+            GetRegion(3, true, Constants.RegionName[3]); // he/de
+            GetRegion(8, true, Constants.RegionName[8]); // em/ch
 
             // Tier 2
-            GetRegion(12, true, new UpperTierRacialPairManager().GetByRegion(12).PairingName); // dw/gs
-            GetRegion(15, true, new UpperTierRacialPairManager().GetByRegion(15).PairingName); // he/de
-            GetRegion(14, true, new UpperTierRacialPairManager().GetByRegion(14).PairingName); // em/ch
+            GetRegion(12, true, Constants.RegionName[12]); // dw/gs
+            GetRegion(15, true, Constants.RegionName[15]); // he/de
+            GetRegion(14, true, Constants.RegionName[14]); // em/ch
 
             // Tier 3
-            GetRegion(10, true, new UpperTierRacialPairManager().GetByRegion(10).PairingName); // dw/gs
-            GetRegion(16, true, new UpperTierRacialPairManager().GetByRegion(16).PairingName); // he/de
-            GetRegion(6, true, new UpperTierRacialPairManager().GetByRegion(6).PairingName); // em/ch
+            GetRegion(10, true, Constants.RegionName[10]); // dw/gs
+            GetRegion(16, true, Constants.RegionName[16]); // he/de
+            GetRegion(6, true, Constants.RegionName[6]); // em/ch
 
             // Tier 4
-            GetRegion(2, true, new UpperTierRacialPairManager().GetByRegion(2).PairingName); // dw/gs
-            GetRegion(4, true, new UpperTierRacialPairManager().GetByRegion(4).PairingName);  // he/de
-            GetRegion(11, true, new UpperTierRacialPairManager().GetByRegion(11).PairingName); // em/ch
+            GetRegion(2, true, Constants.RegionName[2]); // dw/gs
+            GetRegion(4, true, Constants.RegionName[4]);  // he/de
+            GetRegion(11, true, Constants.RegionName[11]); // em/ch
 
-            GetRegion(9, true, new UpperTierRacialPairManager().GetByRegion(9).PairingName); // lotd
+            // removed for now, as this will also trigger an attempt to load BOs for the region.
+            //GetRegion(9, true, Constants.RegionName[9]); // lotd
             Log.Success("Regions", "Preloaded pairing regions.");
         }
 
@@ -898,7 +904,7 @@ namespace WorldServer
 
                 bool skipLoad = false;
 
-                foreach (List<Keep_Info> keepInfos in BattlefrontService._KeepInfos.Values)
+                foreach (List<Keep_Info> keepInfos in BattleFrontService._KeepInfos.Values)
                 {
                     if (keepInfos.Any(keep => keep.PQuestId == Kp.Key))
                     {
@@ -1215,7 +1221,7 @@ namespace WorldServer
         public static Dictionary<int, int> GetZonesFightLevel()
         {
             var level = new Dictionary<int, int>();
-            foreach (var region in WorldMgr._Regions.Where(e => e.Bttlfront != null).ToList())
+            foreach (var region in WorldMgr._Regions.Where(e => e.Campaign != null).ToList())
             {
                 foreach (var zone in region.ZonesMgr.ToList())
                 {
@@ -1275,7 +1281,7 @@ namespace WorldServer
                 }
             }
 
-            foreach (var region in WorldMgr._Regions.Where(e => e.Bttlfront != null).ToList())
+            foreach (var region in WorldMgr._Regions.Where(e => e.Campaign != null).ToList())
             {
                 foreach (var zone in region.ZonesMgr.ToList())
                 {
@@ -1293,7 +1299,7 @@ namespace WorldServer
                 {
                     SendZoneFightLevel();
 
-                    foreach (var region in WorldMgr._Regions.Where(e => e.ndbf != null).ToList())
+                    foreach (var region in WorldMgr._Regions.Where(e => e.Campaign != null).ToList())
                     {
                         foreach (var zone in region.ZonesMgr.ToList())
                         {
@@ -1363,319 +1369,7 @@ namespace WorldServer
 
         }
 
-        public static void BuildCaptureStatus(PacketOut Out, RegionMgr region)
-        {
-            if (region == null)
-                Out.Fill(0, 3);
-            else
-                region.ndbf.WriteCaptureStatus(Out, region.ndbf.LockingRealm);
-        }
 
-        public static void BuildBattlefrontStatus(PacketOut Out, RegionMgr region)
-        {
-            if (region == null)
-                Out.Fill(0, 3);
-
-            region.ndbf.WriteBattlefrontStatus(Out);
-        }
-
-        public static void SendCampaignStatus(Player plr)
-        {
-            _logger.Trace("Send Campaign Status");
-            PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
-            Out.WriteHexStringBytes("0005006700CB00"); // 7
-
-            // Dwarfs vs Greenskins T1
-            BuildCaptureStatus(Out, GetRegion(1, false));
-
-            // Dwarfs vs Greenskins T2
-            BuildCaptureStatus(Out, GetRegion(12, false));
-
-            // Dwarfs vs Greenskins T3
-            BuildCaptureStatus(Out, GetRegion(10, false));
-
-            // Dwarfs vs Greenskins T4
-            BuildCaptureStatus(Out, GetRegion(2, false));
-
-            // Empire vs Chaos T1
-            BuildCaptureStatus(Out, GetRegion(8, false));
-
-            // Empire vs Chaos T2
-            BuildCaptureStatus(Out, GetRegion(14, false));
-
-            // Empire vs Chaos T3
-            BuildCaptureStatus(Out, GetRegion(6, false));
-
-            // Empire vs Chaos T4
-            BuildCaptureStatus(Out, GetRegion(11, false));
-
-            // High Elves vs Dark Elves T1
-            BuildCaptureStatus(Out, GetRegion(3, false));
-
-            // High Elves vs Dark Elves T2
-            BuildCaptureStatus(Out, GetRegion(15, false));
-
-            // High Elves vs Dark Elves T3
-            BuildCaptureStatus(Out, GetRegion(16, false));
-
-            // High Elves vs Dark Elves T4
-            BuildCaptureStatus(Out, GetRegion(4, false));
-
-            Out.Fill(0, 83);
-
-            // RB   4/24/2016   Added logic for T4 campaign progression.
-            //gs t4
-            // 0 contested 1 order controled 2 destro controled 3 notcontroled locked
-            Out.WriteByte(3);   //dwarf fort
-            BuildBattlefrontStatus(Out, GetRegion(2, false));   //kadrin valley
-            Out.WriteByte(3);   //orc fort
-
-            //chaos t4
-            Out.WriteByte(3);   //empire fort
-            BuildBattlefrontStatus(Out, GetRegion(11, false));   //reikland
-            Out.WriteByte(3);   //chaos fort
-
-            //elf
-            Out.WriteByte(3);   //elf fort
-            BuildBattlefrontStatus(Out, GetRegion(4, false));   //etaine
-            Out.WriteByte(3);   //delf fort
-
-            Out.WriteByte(0); // Order underdog rating
-            Out.WriteByte(0); // Destruction underdog rating
-
-            if (plr == null)
-            {
-                byte[] buffer = Out.ToArray();
-
-                lock (Player._Players)
-                {
-                    foreach (Player player in Player._Players)
-                    {
-                        if (player == null || player.IsDisposed || !player.IsInWorld())
-                            continue;
-
-                        PacketOut playerCampaignStatus = new PacketOut(0, 159) { Position = 0 };
-                        playerCampaignStatus.Write(buffer, 0, buffer.Length);
-
-                        if (player.Region?.ndbf != null)
-                            player.Region.ndbf.WriteVictoryPoints(player.Realm, playerCampaignStatus);
-
-                        else
-                            playerCampaignStatus.Fill(0, 9);
-
-                        playerCampaignStatus.Fill(0, 4);
-
-                        player.SendPacket(playerCampaignStatus);
-                    }
-                }
-            }
-            else
-            {
-                if (plr.Region?.ndbf != null)
-                    plr.Region.ndbf.WriteVictoryPoints(plr.Realm, Out);
-
-                else
-                    Out.Fill(0, 9);
-
-                Out.Fill(0, 4);
-
-                plr.SendPacket(Out);
-            }
-        }
-
-        // This is used to change the fronts during campaign, DoomsDay changes below
-        public static void EvaluateT4CampaignStatus(ushort Region)
-        {
-            ProximityProgressingBattlefront DvG = (ProximityProgressingBattlefront)GetRegion(2, false).Bttlfront;
-            ProximityProgressingBattlefront EvC = (ProximityProgressingBattlefront)GetRegion(11, false).Bttlfront;
-            ProximityProgressingBattlefront HEvDE = (ProximityProgressingBattlefront)GetRegion(4, false).Bttlfront;
-            // codeword p0tat0 - changed for DoomsDay
-            /*ProgressingBattlefront DvG = (ProgressingBattlefront)GetRegion(2, false).Bttlfront;
-            ProgressingBattlefront EvC = (ProgressingBattlefront)GetRegion(11, false).Bttlfront;
-            ProgressingBattlefront HEvDE = (ProgressingBattlefront)GetRegion(4, false).Bttlfront;*/
-
-            // Evaluate if all three pairings are locked.
-            if (DvG.PairingLocked && EvC.PairingLocked && HEvDE.PairingLocked)
-            {
-                Log.Debug("WorldMgr.EvaluateT4CampaignStatus", "*** ALL THREE PAIRINGS HAVE BEEN LOCKED ***");
-
-                long _pairingLockTime = (30 * 60 * 1000);
-
-#if (DEBUG)
-                _pairingLockTime = (5 * 60 * 1000);
-#endif
-
-                if (Constants.DoomsdaySwitch == 0)
-                {
-                    DvG.PairingUnlockTime = TCPManager.GetTimeStampMS() + _pairingLockTime;
-                    EvC.PairingUnlockTime = TCPManager.GetTimeStampMS() + _pairingLockTime;
-                    HEvDE.PairingUnlockTime = TCPManager.GetTimeStampMS() + _pairingLockTime;
-                }
-
-                ushort zone = 0;
-
-                // If all the pairings are locked and Order owns all 3 pairings...
-                if (DvG.GetZoneOwnership(3) == 1 && EvC.GetZoneOwnership(103) == 1 && HEvDE.GetZoneOwnership(203) == 1)
-                {
-                    lock (Player._Players)
-                    {
-                        foreach (Player plr in Player._Players)
-                        {
-                            if (!plr.ValidInTier(4, false) || plr.CurrentArea == null)
-                                continue;
-
-                            zone = plr.CurrentArea.ZoneId;
-
-                            plr.SendLocalizeString("The forces of Order have beaten back their foes at every turn, cleansed their lands, and secured a time of peace! Unfortunately, they lack the resources to take the fight to the enemy's gates, and drive home their victory.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                            plr.SendLocalizeString("The forces of Order have beaten back their foes at every turn, cleansed their lands, and secured a time of peace! Unfortunately, they lack the resources to take the fight to the enemy's gates, and drive home their victory.", DvG.GetZoneOwnership(3) == (int)Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE, Localized_text.CHAT_TAG_DEFAULT);
-
-                            if (plr.Realm == Realms.REALMS_REALM_ORDER && plr.CbtInterface.IsPvp && plr.CurrentArea.IsRvR && (zone == 3 || zone == 103 || zone == 203))
-                                plr.ItmInterface.CreateItem(13000250, 1);
-
-                        }
-                    }
-                }
-                // If all the pairings are locked and Destro owns all 3 pairings...
-                else if (DvG.GetZoneOwnership(9) == 2 && EvC.GetZoneOwnership(109) == 2 && HEvDE.GetZoneOwnership(209) == 2)
-                {
-                    lock (Player._Players)
-                    {
-                        foreach (Player plr in Player._Players)
-                        {
-                            if (!plr.ValidInTier(4, false) || plr.CurrentArea == null)
-                                continue;
-
-                            zone = plr.CurrentArea.ZoneId;
-
-                            plr.SendLocalizeString("The forces of Destruction have slaughtered, pillaged and razed a path into the very heartlands of their foes! But their infighting and the spoils of war slow them, and they lack the cohesion to subjugate their hated foes further.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                            plr.SendLocalizeString("The forces of Destruction have slaughtered, pillaged and razed a path into the very heartlands of their foes! But their infighting and the spoils of war slow them, and they lack the cohesion to subjugate their hated foes further.", DvG.GetZoneOwnership(3) == (int)Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE, Localized_text.CHAT_TAG_DEFAULT);
-
-                            if (plr.Realm == Realms.REALMS_REALM_DESTRUCTION && plr.CbtInterface.IsPvp && plr.CurrentArea.IsRvR && (zone == 9 || zone == 109 || zone == 209))
-                                plr.ItmInterface.CreateItem(13000249, 1);
-
-                        }
-                    }
-                }
-                // If all the pairings are just locked
-                else
-                {
-                    lock (Player._Players)
-                    {
-                        foreach (Player plr in Player._Players)
-                        {
-                            if (!plr.ValidInTier(4, false) || plr.CurrentArea == null)
-                                continue;
-
-                            zone = plr.CurrentArea.ZoneId;
-
-                            plr.SendLocalizeString("The forces of Order and Destruction have traded blows all the way to the gates of their foes! But their supply lines are exposed, and the enemy threatens their back lines. Both are forced to abandon the victories, and pull back for a time.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                            plr.SendLocalizeString("The forces of Order and Destruction have traded blows all the way to the gates of their foes! But their supply lines are exposed, and the enemy threatens their back lines. Both are forced to abandon the victories, and pull back for a time.", ChatLogFilters.CHATLOGFILTERS_C_WHITE, Localized_text.CHAT_TAG_DEFAULT);
-                        }
-                    }
-                }
-
-                if (Constants.DoomsdaySwitch > 0)
-                {
-                    if (Region == 2) //DvG
-                        Region = 12;
-                    else if (Region == 4) //HEvDE
-                        Region = 15;
-                    else if (Region == 11) //EvC
-                        Region = 14;
-
-                    Random random = new Random();
-
-                    if (Constants.DoomsdaySwitch == 2)
-                    {
-                        int newPairing = random.Next(1, 4);
-                        ushort region = 12;
-
-                        switch (newPairing)
-                        {
-                            case 1:
-                                region = 12;
-                                break;
-                            case 2:
-                                region = 14;
-                                break;
-                            case 3:
-                                region = 15;
-                                break;
-                        }
-
-                        while (region == Region)
-                        {
-                            newPairing = random.Next(1, 4);
-                            switch (newPairing)
-                            {
-                                case 1:
-                                    region = 12;
-                                    break;
-                                case 2:
-                                    region = 14;
-                                    break;
-                                case 3:
-                                    region = 15;
-                                    break;
-                            }
-                        }
-
-                        ProximityBattlefront bttlfrnt = (ProximityBattlefront)GetRegion(region, false).Bttlfront;
-                        bttlfrnt.ResetPairing();
-
-                        /*bool campaignReset = true;
-                        for (int i = 0; i < 3; i++)
-                        {
-                            foreach (IBattlefront bf in BattlefrontList.RegionManagers[i])
-                            {
-                                ProximityBattlefront front = bf as ProximityBattlefront;
-                                if (front != null && !front.PairingLocked)
-                                {
-                                    campaignReset = false;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (campaignReset)
-                        {
-                            ProximityBattlefront bttlfrnt;
-
-                            bttlfrnt = (ProximityBattlefront)GetRegion(12, false).Bttlfront;
-                            bttlfrnt.ResetPairing();
-                            bttlfrnt.UpdateStateOfTheRealm();
-                            bttlfrnt = (ProximityBattlefront)GetRegion(14, false).Bttlfront;
-                            bttlfrnt.ResetPairing();
-                            bttlfrnt.UpdateStateOfTheRealm();
-                            bttlfrnt = (ProximityBattlefront)GetRegion(15, false).Bttlfront;
-                            bttlfrnt.ResetPairing();
-                            bttlfrnt.UpdateStateOfTheRealm();
-                        }*/
-                    }
-                    else
-                    {
-                        Battlefront bttlfrnt = (Battlefront)GetRegion(Region, false).Bttlfront;
-
-                        foreach (Battlefront b in BattlefrontList.Battlefronts[1])
-                        {
-                            if (Constants.DoomsdaySwitch == 2)
-                            {
-                                b.ResetPairing();
-                                b.UpdateStateOfTheRealm();
-                            }
-                            else
-                            {
-                                if (b != bttlfrnt)
-                                {
-                                    b.ResetPairing();
-                                    b.UpdateStateOfTheRealm();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
         #endregion
 
@@ -1684,7 +1378,7 @@ namespace WorldServer
 
         public static void SendKeepStatus(Player Plr)
         {
-            foreach (List<Keep_Info> list in BattlefrontService._KeepInfos.Values)
+            foreach (List<Keep_Info> list in BattleFrontService._KeepInfos.Values)
             {
                 foreach (Keep_Info KeepInfo in list)
                 {
@@ -1725,5 +1419,192 @@ namespace WorldServer
 
 
         #endregion
+
+        public static void AttachCampaignsToRegions()
+        {
+
+            foreach (var regionMgr in _Regions)
+            {
+                var objectiveList = LoadObjectives(regionMgr);
+                switch (regionMgr.RegionId)
+                {
+                    case 1: // t1 dw/gs
+                    case 3: // t1 he/de
+                    case 8: // t1 em/ch
+                        regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierCampaignManager, new ApocCommunications());
+                        break;
+                    default: // Everything else...
+                        regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierCampaignManager, new ApocCommunications());
+                        break;
+                }
+            }
+        }
+
+        public static List<CampaignObjective> LoadObjectives(RegionMgr regionMgr)
+        {
+            List<BattleFront_Objective> objectives = BattleFrontService.GetBattleFrontObjectives(regionMgr.RegionId);
+            if (objectives == null)
+            {
+                _logger.Warn($"Region = {regionMgr.RegionId} has no objectives");
+                return null;
+            }
+            var resultList = new List<CampaignObjective>();
+            _logger.Debug($"Region = {regionMgr.RegionId} ObjectiveCount = {objectives.Count}");
+            foreach (BattleFront_Objective obj in objectives)
+            {
+                CampaignObjective flag = new CampaignObjective(obj, regionMgr.GetTier());
+                resultList.Add(flag);
+            }
+
+            return resultList;
+        }
+
+        /// <summary>
+        /// Inform the server of the change in the RVR Progression across all regions.
+        /// </summary>
+        public static void UpdateRegionCaptureStatus(LowerTierCampaignManager lowerTierCampaignManager, UpperTierCampaignManager upperTierCampaignManager)
+        {
+            if ((lowerTierCampaignManager == null) || (upperTierCampaignManager == null))
+                return;
+
+            PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
+            Out.WriteHexStringBytes("0005006700CB00"); // 7
+
+
+            // Dwarfs vs Greenskins T1
+            Out.WriteByte(0);    // 0 and ignored
+            Out.WriteByte((byte)lowerTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER1_EKRUND).OrderVictoryPointPercentage);  // % Order lock
+            Out.WriteByte((byte)lowerTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER1_EKRUND).DestructionVictoryPointPercentage);    // % Dest lock
+            // Dwarfs vs Greenskins T2
+            //BuildCaptureStatus(Out, WorldMgr.GetRegion(12, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(0);  // % Order lock
+            Out.WriteByte(0);    // % Dest lock
+            // Dwarfs vs Greenskins T3
+            //BuildCaptureStatus(Out, WorldMgr.GetRegion(10, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(0);  // % Order lock
+            Out.WriteByte(0);    // % Dest lock
+            // Dwarfs vs Greenskins T4
+            //BuildCaptureStatus(Out, WorldMgr.GetRegion(2, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(0);  // % Order lock
+            Out.WriteByte(0);    // % Dest lock
+            // Empire vs Chaos T1
+            //BuildCaptureStatus(Out, WorldMgr.GetRegion(8, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte((byte)lowerTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER1_NORDLAND).OrderVictoryPointPercentage);  // % Order lock
+            Out.WriteByte((byte)lowerTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER1_NORDLAND).DestructionVictoryPointPercentage);    // % Dest lock
+            // Empire vs Chaos T2
+            //BuildCaptureStatus(Out, WorldMgr.GetRegion(14, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(0);  // % Order lock
+            Out.WriteByte(0);    // % Dest lock
+            // Empire vs Chaos T3
+            // BuildCaptureStatus(Out, WorldMgr.GetRegion(6, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(0);  // % Order lock
+            Out.WriteByte(0);    // % Dest lock
+            // Empire vs Chaos T4
+            // BuildCaptureStatus(Out, WorldMgr.GetRegion(11, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(0);  // % Order lock
+            Out.WriteByte(0);    // % Dest lock
+            // High Elves vs Dark Elves T1
+            //BuildCaptureStatus(Out, WorldMgr.GetRegion(3, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte((byte)lowerTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER1_CHRACE).OrderVictoryPointPercentage);  // % Order lock
+            Out.WriteByte((byte)lowerTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER1_CHRACE).DestructionVictoryPointPercentage);    // % Dest lock
+            // High Elves vs Dark Elves T2
+            //BuildCaptureStatus(Out, WorldMgr.GetRegion(15, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(0);  // % Order lock
+            Out.WriteByte(0);    // % Dest lock
+            // High Elves vs Dark Elves T3
+            // BuildCaptureStatus(Out, WorldMgr.GetRegion(16, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(0);  // % Order lock
+            Out.WriteByte(0);    // % Dest lock
+            // High Elves vs Dark Elves T4
+            //BuildCaptureStatus(Out, WorldMgr.GetRegion(4, false), realm);
+            Out.WriteByte(0);
+            Out.WriteByte(0);  // % Order lock
+            Out.WriteByte(0);    // % Dest lock
+
+            Out.Fill(0, 83);
+
+            Out.WriteByte(3);   //dwarf fort
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN).LockStatus);
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus);
+            Out.WriteByte(3);   //or
+
+            Out.WriteByte(3);   //emp fort
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG).LockStatus);
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus);
+            Out.WriteByte(3);   //or
+
+            Out.WriteByte(3);   //elf fort
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus);
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus);
+            Out.WriteByte(3);   //or
+
+            //For debugging purposes
+            var lockStr = upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus.ToString();
+            lockStr += upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN).LockStatus.ToString();
+            lockStr += upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY).LockStatus.ToString();
+            lockStr += upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus.ToString();
+            lockStr += upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG).LockStatus.ToString();
+            lockStr += upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus.ToString();
+            lockStr += upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus.ToString();
+            lockStr += upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus.ToString();
+            lockStr += upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus.ToString();
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+
+            Out.WriteByte(00);
+
+            Out.Fill(0, 4);
+
+
+            byte[] buffer = Out.ToArray();
+            _logger.Debug("WorldMgr : " + lockStr);
+
+            lock (Player._Players)
+            {
+                foreach (Player player in Player._Players)
+                {
+                    if (player == null || player.IsDisposed || !player.IsInWorld())
+                        continue;
+
+                    player.SendPacket(Out);
+
+                    //PacketOut playerCampaignStatus = new PacketOut(0, 159) { Position = 0 };
+                    //playerCampaignStatus.Write(buffer, 0, buffer.Length);
+
+                    //if (player.Region?.Campaign != null)
+                    //{
+                    //    Out.WriteByte((byte)player.Region?.Campaign.VictoryPointProgress.OrderVictoryPointPercentage);
+                    //    Out.WriteByte((byte)player.Region?.Campaign.VictoryPointProgress.DestructionVictoryPointPercentage);
+
+                    //    //no clue but set to a value wont show the pool updatetimer
+                    //    Out.WriteByte(0);
+                    //    Out.WriteByte(0);
+
+                    //    Out.WriteByte(00);
+                    //}
+                    //else
+                    //    playerCampaignStatus.Fill(0, 9);
+
+                    //playerCampaignStatus.Fill(0, 4);
+
+                    //player.SendPacket(playerCampaignStatus);
+                }
+            }
+        }
     }
 }

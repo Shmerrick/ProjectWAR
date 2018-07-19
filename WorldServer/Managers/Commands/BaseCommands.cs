@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using SystemData;
 using Common;
 using FrameWork;
@@ -11,7 +9,7 @@ using WorldServer.Scenarios;
 using static System.UInt16;
 using static WorldServer.Managers.Commands.GMUtils;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts;
+using WorldServer.World.BattleFronts;
 
 namespace WorldServer.Managers.Commands
 {
@@ -2189,177 +2187,39 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        public static bool RvRStatus(Player plr, ref List<string> values)
-        {
-            string s = "";
-            for (int i = 0; i < 4; i++)
-            {
-                if (i == 0)
-                {
-                    foreach (World.Battlefronts.RoRBattlefront b in World.Battlefronts.BattlefrontList.Battlefronts[i])
-                    {
-                        if (!b.PairingLocked)
-                        {
-                            s = "T1 " + b.ActiveZoneName + " is open.";
-                            plr.SendClientMessage(s, SystemData.ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                        }
-                    }
-                }
-                else
-                {
-                    if (Constants.DoomsdaySwitch == 2)
-                    {
-                        foreach (ProximityBattlefront b in World.Battlefronts.BattlefrontList.Battlefronts[i])
-                        {
-                            if (!b.PairingLocked)
-                            {
-                                s = "T" + b.Region.GetTier() + " " + b.ActiveZoneName + " is open.";
-                                if (b.ActiveSupplyLine == 1)
-                                {
-                                    s = s + " Supply lines are active in this zone.\n";
-                                    s = s + "Order Realm Rank: " + b.RealmRank[0].ToString();
-                                    s = s + " Destruction Realm Rank: " + b.RealmRank[1].ToString();
-                                }
-                                if (b.PairingDrawTime != 0)
-                                {
-                                    s = s + "\nThis zone will draw in " + ((int)((b.PairingDrawTime - TCPManager.GetTimeStamp()) / 60)).ToString() + " minutes.";
-                                }
-                                plr.SendClientMessage(s, SystemData.ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (Battlefront b in World.Battlefronts.BattlefrontList.Battlefronts[i])
-                        {
-                            if (!b.PairingLocked)
-                            {
-                                s = "T" + b.Region.GetTier() + " " + b.ActiveZoneName + " is open.";
-                                if (b.ActiveSupplyLine == 1)
-                                    s = s + " Supply lines are active in this zone.";
-                                plr.SendClientMessage(s, SystemData.ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                            }
-                        }
-                    }
-                }
-            }
 
-            return true;
-        }
-/*
-#if DEBUG
+
+
         public static bool GearTester(Player plr, ref List<string> values)
         {
-            Unit target = plr.CbtInterface.GetCurrentTarget();
-            Player player = target as Player;
-            if (player == null || !player.IsPlayer())
-                player = plr;
+         
+            // Ensure this code is only ever called IN DEV!!
+            if (WorldMgr.ServerMode != "DEV")
+                return false;
 
-            // Setting gold
-            int money = 10000000;
-            player.AddMoney((uint)money);
-
-            // Setting SC and RvR currencies
-            Item_Info conqMedallion = ItemService.GetItem_Info(1698);
-            Item_Info conqEmblem = ItemService.GetItem_Info(1699);
-            Item_Info ruin = ItemService.GetItem_Info(129838571);
-            Item_Info genesis1 = ItemService.GetItem_Info(486);
-            Item_Info genesis2 = ItemService.GetItem_Info(487);
-            Item_Info genesis3 = ItemService.GetItem_Info(488);
-            Item_Info genesis4 = ItemService.GetItem_Info(489);
-            Item_Info genesis5 = ItemService.GetItem_Info(490);
-            Item_Info warrant1 = ItemService.GetItem_Info(498);
-            Item_Info warrant2 = ItemService.GetItem_Info(499);
-
-            // Scrolls
-            Item_Info gunbadScroll = ItemService.GetItem_Info(65826);
-            Item_Info scroll = null;
-            if (player.Realm == Realms.REALMS_REALM_ORDER)
-                scroll = ItemService.GetItem_Info(12983325);
-            else
-                scroll = ItemService.GetItem_Info(12983324);
-
-            // Setting potions and talismans
-            Item_Info officersElixer1 = ItemService.GetItem_Info(208291);
-            Item_Info officersElixer2 = ItemService.GetItem_Info(208292);
-            Item_Info draughtRecovery = ItemService.GetItem_Info(3000209);
-            Item_Info quickeningDraught = ItemService.GetItem_Info(3000406);
-            Item_Info lastingPower = ItemService.GetItem_Info(3000649);
-            Item_Info lastingDiscipline = ItemService.GetItem_Info(3001049);
-            Item_Info lastingBrilliance = ItemService.GetItem_Info(3000849);
-            Item_Info lastingVerity = ItemService.GetItem_Info(3001249);
-            Item_Info lastingUnguent = ItemService.GetItem_Info(197552);
-            Item_Info taliChampion = ItemService.GetItem_Info(907197);
-            Item_Info taliPolymath = ItemService.GetItem_Info(907317);
-            Item_Info taliTenacity = ItemService.GetItem_Info(907357);
-            Item_Info taliMartyrdom = ItemService.GetItem_Info(907477);
-            Item_Info taliAssassin = ItemService.GetItem_Info(907237);
-            Item_Info taliAggressor = ItemService.GetItem_Info(907277);
-            Item_Info taliGladiator = ItemService.GetItem_Info(907397);
-            Item_Info taliPrevarication = ItemService.GetItem_Info(907437);
-            Item_Info taliSmith = ItemService.GetItem_Info(907037);
-
-            player.ItmInterface.CreateItem(conqMedallion, 5000);
-            player.ItmInterface.CreateItem(conqEmblem, 5000);
-            player.ItmInterface.CreateItem(ruin, 100);
-            player.ItmInterface.CreateItem(genesis1, 100);
-            player.ItmInterface.CreateItem(genesis2, 100);
-            player.ItmInterface.CreateItem(genesis3, 100);
-            player.ItmInterface.CreateItem(genesis4, 100);
-            player.ItmInterface.CreateItem(genesis5, 100);
-            player.ItmInterface.CreateItem(warrant1, 100);
-            player.ItmInterface.CreateItem(warrant2, 100);
-            player.ItmInterface.CreateItem(officersElixer1, 20);
-            player.ItmInterface.CreateItem(officersElixer2, 20);
-            player.ItmInterface.CreateItem(draughtRecovery, 20);
-            player.ItmInterface.CreateItem(quickeningDraught, 20);
-            player.ItmInterface.CreateItem(lastingPower, 20);
-            player.ItmInterface.CreateItem(lastingDiscipline, 20);
-            player.ItmInterface.CreateItem(lastingBrilliance, 20);
-            player.ItmInterface.CreateItem(lastingVerity, 20);
-            player.ItmInterface.CreateItem(lastingUnguent, 20);
-            player.ItmInterface.CreateItem(taliChampion, 20);
-            player.ItmInterface.CreateItem(taliPolymath, 20);
-            player.ItmInterface.CreateItem(taliTenacity, 20);
-            player.ItmInterface.CreateItem(taliMartyrdom, 20);
-            player.ItmInterface.CreateItem(taliAssassin, 20);
-            player.ItmInterface.CreateItem(taliAggressor, 20);
-            player.ItmInterface.CreateItem(taliGladiator, 20);
-            player.ItmInterface.CreateItem(taliPrevarication, 20);
-            player.ItmInterface.CreateItem(taliSmith, 20);
-            player.ItmInterface.CreateItem(gunbadScroll, 20);
-            player.ItmInterface.CreateItem(scroll, 1);
-
-            // Setting level
-            int level = 40;
-            player.SetLevel((byte)level);
-
-            // Setting renown
-            int renownLevel = 45;
-
-            Character chara = CharMgr.GetCharacter(player.Name, false);
-
-            if (chara == null)
+            foreach (var regionMgr in WorldMgr._Regions)
             {
-                plr.SendClientMessage($"MODIFY RENOWN: The player {player.Name} in question does not exist.");
-                return true;
+                foreach (var player in regionMgr.Players)
+                {
+                    int money = 10000000;
+                    player.AddMoney((uint)money);
+
+                    // Setting SC and RvR currencies
+                    Item_Info conqMedallion = ItemService.GetItem_Info(1698);
+                    Item_Info conqEmblem = ItemService.GetItem_Info(1699);
+                    Item_Info warCrest = ItemService.GetItem_Info(208470);
+
+                    player.ItmInterface.CreateItem(conqMedallion, 5000);
+                    player.ItmInterface.CreateItem(conqEmblem, 5000);
+                    player.ItmInterface.CreateItem(warCrest, 8000);
+
+                    player.SetLevel((byte)40);
+
+                    player.SetRenownLevel((byte)60);
+
+                    plr.SendClientMessage($"Giving gear to {player.Name}", ChatLogFilters.CHATLOGFILTERS_SAY);
+                }
             }
-
-            int desiredRenownRank = renownLevel > 0 ? renownLevel : Math.Max(1, chara.Value.RenownRank + renownLevel);
-            desiredRenownRank = Math.Min(100, desiredRenownRank);
-
-            if (player != null)
-                player.SetRenownLevel((byte)desiredRenownRank);
-            else
-            {
-                chara.Value.Renown = 0;
-                chara.Value.RenownRank = (byte)desiredRenownRank;
-                CharMgr.Database.SaveObject(chara.Value);
-            }
-
-            if (player != plr)
-                plr.SendClientMessage($"MODIFY RENOWN: {player.Name}'s renown rank is now {chara.Value.RenownRank}.");
-
             return true;
         }
 
@@ -2369,8 +2229,7 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
-#endif
-*/
+
 
         public static bool QuestComplete(Player plr, ref List<string> values)
         {
@@ -2458,43 +2317,29 @@ namespace WorldServer.Managers.Commands
             plr.SoREnabled = true;
             for (int i = 0; i < 4; i++)
             {
-                if (i == 0)
-                {
-                    foreach (RoRBattlefront b in BattlefrontList.Battlefronts[i])
-                        b.UpdateStateOfTheRealm();
-                }
-                else
-                {
-                    if (Constants.DoomsdaySwitch == 2)
-                        foreach (ProximityBattlefront b in BattlefrontList.Battlefronts[i])
-                            b.UpdateStateOfTheRealm();
-                    else
-                        foreach (Battlefront b in BattlefrontList.Battlefronts[i])
-                            b.UpdateStateOfTheRealm();
-                }
+                //if (i == 0)
+                //{
+                //    foreach (RoRBattleFront b in BattleFrontList.BattleFronts[i])
+                //        b.UpdateStateOfTheRealm();
+                //}
+                //else
+                //{
+                //    if (Constants.DoomsdaySwitch == 2)
+                //        foreach (ProximityBattleFront b in BattleFrontList.BattleFronts[i])
+                //            b.UpdateStateOfTheRealm();
+                //    else
+                //        foreach (Campaign b in BattleFrontList.BattleFronts[i])
+                //            b.UpdateStateOfTheRealm();
+                //}
             }
             plr.SendClientMessage("State of the Realm Addon Enabled: 1.0.3", SystemData.ChatLogFilters.CHATLOGFILTERS_SAY);
             return true;
         }
-
-        public static bool GetVersion(Player plr, ref List<string> values)
-        {
-            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-            string version = fvi.FileVersion;
-            plr.SendClientMessage($"WorldServer :{version}");
-            return true;
-
-
-        }
-
-        /*
         public static bool PugScenario(Player plr, ref List<string> values)
         {
             plr.SendClientMessage("The current pickup scenario is " + ScenarioMgr.PickupScenarioName + ".", ChatLogFilters.CHATLOGFILTERS_SCENARIO);
             return true;
         }
-        */
 
         public static bool BolsterLevel(Player plr, ref List<string> values)
         {
@@ -2551,35 +2396,6 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        public static bool KeepReward(Player plr, ref List<string> values)
-        {
-            if (values.Count < 1)
-            {
-                plr.SendClientMessage("KEEPREWARD: No value provided.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-                return true;
-            }
-            int value = GetInt(ref values);
-            if (value == 0 || value == 1)
-            {
-                WorldMgr.WorldSettingsMgr.SetPopRewardSwitchSetting(value);
-                if (value == 1)
-                {
-                    plr.SendClientMessage("Low pop keep rewards limits are enabled.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
-                }
-                else
-                {
-                    plr.SendClientMessage("Low pop keep rewards limits are disabled.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
-                    if (Constants.DoomsdaySwitch == 2)
-                        ((ProximityBattlefront)plr.Region.Bttlfront).DefenderPopTooSmall = false;
-                }
-
-
-            }
-            else
-                plr.SendClientMessage("KEEPREWARD: Incorrect value, 0 - disabled, 1 - enabled", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-
-            return true;
-        }
 
         public static bool RequestNameChange(Player plr, ref List<string> values)
         {
@@ -4099,7 +3915,7 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-            #endregion
-        }
+        #endregion
+    }
 }
 

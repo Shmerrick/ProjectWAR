@@ -5,7 +5,7 @@ using Common;
 using FrameWork;
 using GameData;
 using CreatureSubTypes = GameData.CreatureSubTypes;
-using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.Services.World;
 
 namespace WorldServer
@@ -611,7 +611,7 @@ namespace WorldServer
                         if (influenceId != 0)
                             curPlayer.AddInfluence(influenceId, influenceShare);
 
-                        Region.Bttlfront?.AddContribution(curPlayer, renownShare);
+                        Region.Campaign?.AddContribution(curPlayer, renownShare);
                     }
 
                     curPlayer.EvtInterface.Notify(EventName.OnKill, killer, null);
