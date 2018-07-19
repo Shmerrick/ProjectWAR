@@ -331,6 +331,30 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     State = StateFlags.Unsecure;
                     SendFlagState(GetPlayer(), announce, true);
                 }
+
+                //Objective changes back to secured if attackers repelled
+                if (State == StateFlags.Contested)
+                {
+                    if (_closeOrderCount == 0 || _closeDestroCount == 0)
+                    {
+                        State = StateFlags.Secure;
+                        SendFlagState(GetPlayer(), announce, true);
+                    }
+                }
+                //Sets flag state to contested
+                if (_closeOrderCount != 0 && _closeDestroCount != 0)
+                {   
+                    if (OwningRealm == Realms.REALMS_REALM_ORDER)
+                    {
+                        AssaultingRealm = Realms.REALMS_REALM_DESTRUCTION;
+                    }
+                    else
+                    {
+                        AssaultingRealm = Realms.REALMS_REALM_ORDER;
+                    }
+                    State = StateFlags.Contested;
+                    SendFlagState(GetPlayer(), announce, true);
+                }
                 else if (newTransitionSpeed == 0 && _closeOrderCount == _closeDestroCount) // Abandonned
                 {
                     OwningRealm = Realms.REALMS_REALM_NEUTRAL;
@@ -807,8 +831,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Out.WriteUInt32((uint)Id);
 
             if (
-                State == StateFlags
-                    .Contested /*|| (State == StateFlags.Secure && MAX_SECURE_PROGRESS == _secureProgress)*/)
+                State == StateFlags.Contested /*|| (State == StateFlags.Secure && MAX_SECURE_PROGRESS == _secureProgress)*/)
             {
                 Out.Fill(0, 2);
                 Out.WriteUInt16((ushort)_displayedTimer);
