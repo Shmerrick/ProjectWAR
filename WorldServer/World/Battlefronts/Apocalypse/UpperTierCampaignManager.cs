@@ -203,6 +203,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         flag.UnlockObjective();
                 }
 
+                ProgressionLogger.Info($"Unlocking keeps {activeRegion.RegionName} BF Id : {this.ActiveBattleFront.BattleFrontId} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
+
                 foreach (Keep keep in activeRegion.Campaign.Keeps)
                 {
                     if (this.ActiveBattleFront.ZoneId == keep.ZoneId)
