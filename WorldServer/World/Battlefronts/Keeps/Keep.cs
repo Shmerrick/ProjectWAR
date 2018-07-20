@@ -600,7 +600,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             if (KeepStatus != KeepStatus.KEEPSTATUS_SAFE && KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
             {
-                _safeKeepTimer = TCPManager.GetTimeStamp() + 5 * 60;
+                _safeKeepTimer = TCPManager.GetTimeStamp() + 15 * 60;
             }
         }
 
