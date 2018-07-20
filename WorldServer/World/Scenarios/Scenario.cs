@@ -593,6 +593,7 @@ namespace WorldServer.Scenarios
             // Winner rewards for stomping are halved
             if (_dominatingRealm != Realms.REALMS_REALM_NEUTRAL)
             {
+
                 endingXp[(int) _dominatingRealm - 1] /= 2;
                 endingRenown[(int)_dominatingRealm - 1] /= 2;
                 emblemCount[(int)_dominatingRealm - 1] /= 2;
@@ -620,7 +621,7 @@ namespace WorldServer.Scenarios
                 if (realmIndex == winningTeam)
                 {
                     // HACK
-                    var mailItem = new MailItem(208470, 2);
+                    var mailItem = new MailItem(208470, 3);
                     Character_mail mail = new Character_mail
                     {
                         Guid = CharMgr.GenerateMailGuid(),
