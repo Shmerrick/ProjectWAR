@@ -2428,8 +2428,8 @@ namespace WorldServer
                 return;
 
             // Added to stop guilds levelling like crazy due to xp farming / buffer overruns.
-            if (xp > 2000)
-                xp = 2000;
+            if (xp > 5000)
+                return;
 
             Info.Xp += xp;
             Guild_Xp xpNext = GuildService.GetGuild_Xp((byte)(Info.Level + 1));
