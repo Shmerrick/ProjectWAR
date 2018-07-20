@@ -40,7 +40,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{BC0B5C1C-1695-447E-A1D0-C3635E1D783C}"
 	ProjectSection(SolutionItems) = preProject
 		CharValueDump.sql = CharValueDump.sql
-		ScaleFactorFix.sql = ScaleFactorFix.sql
 	EndProjectSection
 EndProject
 Global
