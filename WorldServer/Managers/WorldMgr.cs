@@ -306,10 +306,10 @@ namespace WorldServer
                 switch (victim.Rank)
                 {
                     case 1:
-                        XP *= 2; break;
+                        XP *= 4; break;
                     case 2:
                         if (plr.WorldGroup != null)
-                            XP *= 8;
+                            XP *= 12;
                         break;
                 }
             }

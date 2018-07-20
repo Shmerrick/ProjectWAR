@@ -298,6 +298,17 @@ namespace WorldServer.World.BattleFronts.Keeps
                             }
                         }
 
+                        // Small reward for inner door destruction
+                        foreach (Player player in Region.Players)
+                        {
+                            if (!player.Initialized)
+                                continue;
+                            Random rnd = new Random();
+                            int random = rnd.Next(1, 25);
+                            player.AddXp((uint)(1500 * (1 + (random / 100))), false, false);
+                            player.AddRenown((uint)(400 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, Info.Name);
+                        }
+
                         if (realm == Realms.REALMS_REALM_DESTRUCTION)
                             this.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints += KEEP_INNER_DOOR_VICTORYPOINTS;
                         else
@@ -313,6 +324,20 @@ namespace WorldServer.World.BattleFronts.Keeps
 						if (Rank == 0)
                         	SendRegionMessage($"{Info.Name}'s outer postern{(Tier == 2 ? " is " : "s are ")} no longer defended!");
                         LastMessage = KeepMessage.Outer0;
+
+
+                        // Small reward for outer door destruction
+                        foreach (Player player in Region.Players)
+                        {
+                            if (!player.Initialized)
+                                continue;
+
+                            Random rnd = new Random();
+                            int random = rnd.Next(1, 25);
+
+                            player.AddXp((uint) (1000 * (1+(random/100))), false, false);
+                            player.AddRenown((uint) (200 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, Info.Name);
+                        }
 
                         foreach (Hardpoint h in _hardpoints)
                         {
@@ -385,7 +410,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             UpdateKeepStatus(KeepStatus.KEEPSTATUS_SEIZED);
             Ruin = true;
             
-
             _safeKeepTimer = TCPManager.GetTimeStamp() + 45 * 60;
 
             // Despawn Keep Creatures
@@ -575,11 +599,9 @@ namespace WorldServer.World.BattleFronts.Keeps
         public void ResetSafeTimer()
         {
             if (KeepStatus != KeepStatus.KEEPSTATUS_SAFE && KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
-#if DEBUG
-                _safeKeepTimer = TCPManager.GetTimeStamp() + 2 * 60;
-#else
-            _safeKeepTimer = TCPManager.GetTimeStamp() + 5 * 60;
-#endif
+            {
+                _safeKeepTimer = TCPManager.GetTimeStamp() + 5 * 60;
+            }
         }
 
         public void SafeKeep()
@@ -700,9 +722,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             int antiFarmCount = 3;
 
-#if (DEBUG)
             antiFarmCount = 0;
-#endif
 
             if (KeepStatus != KeepStatus.KEEPSTATUS_LOCKED && _playersInRange >= antiFarmCount && player.CurrentKeep == this)
             {

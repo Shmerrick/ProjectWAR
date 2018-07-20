@@ -618,7 +618,45 @@ namespace WorldServer.Scenarios
                 }
 
                 if (realmIndex == winningTeam)
+                {
+                    // HACK
+                    var mailItem = new MailItem(208470, 2);
+                    Character_mail mail = new Character_mail
+                    {
+                        Guid = CharMgr.GenerateMailGuid(),
+                        CharacterId = plr.CharacterId,
+                        SenderName = "SC Reward System",
+                        ReceiverName = plr.Name,
+                        SendDate = (uint) TCPManager.GetTimeStamp(),
+                        Title = "SC Reward",
+                        Content = "You won an SC Reward!",
+                        Money = 5000,
+                        Opened = false
+                    };
+                    mail.Items.Add(mailItem);
+                    CharMgr.AddMail(mail);
+
                     plr.QtsInterface.HandleEvent(Objective_Type.QUEST_WIN_SCENARIO, Info.ScenarioId, 1);
+                }
+                else
+                {
+                    // HACK
+                    var mailItem = new MailItem(208470, 1);
+                    Character_mail mail = new Character_mail
+                    {
+                        Guid = CharMgr.GenerateMailGuid(),
+                        CharacterId = plr.CharacterId,
+                        SenderName = "SC Reward System",
+                        ReceiverName = plr.Name,
+                        SendDate = (uint)TCPManager.GetTimeStamp(),
+                        Title = "SC Reward",
+                        Content = "You won an SC Reward!",
+                        Money = 2500,
+                        Opened = false
+                    };
+                    mail.Items.Add(mailItem);
+                    CharMgr.AddMail(mail);
+                }
             }
 
             try

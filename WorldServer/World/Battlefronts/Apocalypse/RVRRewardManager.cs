@@ -182,7 +182,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 SendDate = (uint)TCPManager.GetTimeStamp(),
                 Title = "RvR Reward",
                 Content = "You won an RvR Reward!",
-                Money = 0,
+                Money = 5000,
                 Opened = false
             };
 

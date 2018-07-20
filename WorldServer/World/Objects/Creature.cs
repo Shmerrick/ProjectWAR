@@ -1044,23 +1044,13 @@ namespace WorldServer
         {
             int LevelDiff = Spawn.Level - caster.Level;
 
-            if (LevelDiff >= 10)
+            if ((Spawn.Level - caster.Level) >= 10)
             {
                 damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_BLOCK;
                 damageInfo.Mitigation = damageInfo.Damage;
                 damageInfo.Damage = 0;
                 damageInfo.PrecalcMitigation = damageInfo.Damage;
                 damageInfo.PrecalcDamage = 0;
-            } 
-            else if (LevelDiff > 4 && LevelDiff < 10)
-            {
-                int ScaleFactor = 10 - LevelDiff;
-                float ScalePercent = 0.17f;
-
-                damageInfo.Mitigation = damageInfo.Mitigation * (ScalePercent * ScaleFactor);
-                damageInfo.Damage = damageInfo.Damage * (ScalePercent * ScaleFactor);
-                damageInfo.PrecalcMitigation = damageInfo.PrecalcMitigation * (ScalePercent * ScaleFactor);
-                damageInfo.PrecalcDamage = damageInfo.PrecalcDamage * (ScalePercent * ScaleFactor);
             }
         }
 
