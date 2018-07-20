@@ -299,7 +299,7 @@ namespace WorldServer
             if (KLvl > VLvl + 8)
                 return 0;
 
-            uint XP = VLvl * 70;
+            uint XP = VLvl * 100;
 
             if (victim is Creature)
             {
