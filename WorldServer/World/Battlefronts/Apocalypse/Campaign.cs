@@ -458,10 +458,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (PlayersInLakeSet.Remove(plr))
                 {
+                    // Which battlefrontId?
+                    var battleFrontId = this.BattleFrontManager.ActiveBattleFront.BattleFrontId;
+
                     if (plr.Realm == Realms.REALMS_REALM_ORDER)
-                        _orderCount--;
+                    {
+                        this.OrderPlayerPopulationList[battleFrontId] -= 1;
+                        _orderCount++;
+                    }
                     else
-                        _destroCount--;
+                    {
+                        this.DestructionPlayerPopulationList[battleFrontId] -= 1;
+                        _destroCount++;
+                    }
                 }
             }
 
