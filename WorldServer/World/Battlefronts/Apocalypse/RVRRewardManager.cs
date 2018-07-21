@@ -170,6 +170,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             //T1
             if (plr.Realm == lockingRealm)
             {
+
+                Random rnd = new Random();
+                int random = rnd.Next(1, 25);
+                plr.AddXp((uint)(1500 * (1 + (random / 100))), false, false);
+                plr.AddRenown((uint)(400 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
+
+
                 var mailItem3 = new MailItem(208470, 2);
                 Character_mail mail = new Character_mail
                 {
@@ -192,6 +199,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
             else
             {
+                Random rnd = new Random();
+                int random = rnd.Next(1, 25);
+                plr.AddXp((uint)(1500 * (1 + (random / 100))), false, false);
+                plr.AddRenown((uint)(200 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
+
                 var mailItem3 = new MailItem(208470, 1);
                 Character_mail mail = new Character_mail
                 {
@@ -219,6 +231,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             if (plr.Realm == lockingRealm)
             {
+                Random rnd = new Random();
+                int random = rnd.Next(1, 25);
+                plr.AddXp((uint)(2000 * (1 + (random / 100))), false, false);
+                plr.AddRenown((uint)(1500 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
+
                 var mailItem3 = new MailItem(208470, 4);
                 Character_mail mail = new Character_mail
                 {
@@ -241,6 +258,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
             else
             {
+
+                Random rnd = new Random();
+                int random = rnd.Next(1, 25);
+                plr.AddXp((uint)(500 * (1 + (random / 100))), false, false);
+                plr.AddRenown((uint)(500 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
+
                 var mailItem3 = new MailItem(208470, 2);
                 Character_mail mail = new Character_mail
                 {
