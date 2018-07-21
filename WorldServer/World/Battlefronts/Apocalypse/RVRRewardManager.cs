@@ -120,7 +120,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Population scale factors can up this to 9000 if the region is full of people and then raise or lower it depending on population balance.
             var baseXp = BattleFrontConstants.FLAG_SECURE_REWARD_SCALER * tier * rewardScaleMultiplier;
             var baseRp = baseXp / 10f;
-            var baseInf = baseRp / 2.2f;
+            var baseInf = baseRp / 3.2f;
 
             foreach (var player in playersWithinRange)
             {
@@ -165,47 +165,104 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         /// For this player, calculate and send lock rewards
         /// </summary>
-        public void GenerateLockReward(Player plr)
+        public void GenerateLockReward(Player plr, Realms lockingRealm)
         {
             //T1
-            var mailItem1 = new MailItem(208470, 1);
-            //T2 & T3
-            var mailItem2 = new MailItem(208470, 2);
-            //T4
-            var mailItem3 = new MailItem(208470, 4);
-            Character_mail mail = new Character_mail
+            if (plr.Realm == lockingRealm)
             {
-                Guid = CharMgr.GenerateMailGuid(),
-                CharacterId = plr.CharacterId,
-                SenderName = "RvR Reward System",
-                ReceiverName = plr.Name,
-                SendDate = (uint)TCPManager.GetTimeStamp(),
-                Title = "RvR Reward",
-                Content = "You won an RvR Reward!",
-                Money = 5000,
-                Opened = false
-            };
+                var mailItem3 = new MailItem(208470, 2);
+                Character_mail mail = new Character_mail
+                {
+                    Guid = CharMgr.GenerateMailGuid(),
+                    CharacterId = plr.CharacterId,
+                    SenderName = "RvR Reward System",
+                    ReceiverName = plr.Name,
+                    SendDate = (uint)TCPManager.GetTimeStamp(),
+                    Title = "RvR Reward",
+                    Content = "You won an RvR Reward!",
+                    Money = 5000,
+                    Opened = false
+                };
 
-            // Attach the mail item to the mail.
-
-            PlrLevel = plr.Level;
-
-            if (plr.Level <= 15)
+                if (plr.Level <= 15)
+                {
+                    mail.Items.Add(mailItem3);
+                    CharMgr.AddMail(mail);
+                }
+            }
+            else
             {
-                mail.Items.Add(mailItem1);
+                var mailItem3 = new MailItem(208470, 1);
+                Character_mail mail = new Character_mail
+                {
+                    Guid = CharMgr.GenerateMailGuid(),
+                    CharacterId = plr.CharacterId,
+                    SenderName = "RvR Reward System",
+                    ReceiverName = plr.Name,
+                    SendDate = (uint)TCPManager.GetTimeStamp(),
+                    Title = "RvR Reward",
+                    Content = "You won an RvR Reward!",
+                    Money = 5000,
+                    Opened = false
+                };
+
+                if (plr.Level <= 15)
+                {
+                    mail.Items.Add(mailItem3);
+                    CharMgr.AddMail(mail);
+                }
             }
 
-            if (plr.Level > 15 & plr.Level <= 39)
+
+
+            // Tier 4
+
+            if (plr.Realm == lockingRealm)
             {
-                mail.Items.Add(mailItem2);
+                var mailItem3 = new MailItem(208470, 4);
+                Character_mail mail = new Character_mail
+                {
+                    Guid = CharMgr.GenerateMailGuid(),
+                    CharacterId = plr.CharacterId,
+                    SenderName = "RvR Reward System",
+                    ReceiverName = plr.Name,
+                    SendDate = (uint)TCPManager.GetTimeStamp(),
+                    Title = "RvR Reward",
+                    Content = "You won an RvR Reward!",
+                    Money = 5000,
+                    Opened = false
+                };
+
+                if (plr.Level > 15)
+                {
+                    mail.Items.Add(mailItem3);
+                    CharMgr.AddMail(mail);
+                }
+            }
+            else
+            {
+                var mailItem3 = new MailItem(208470, 2);
+                Character_mail mail = new Character_mail
+                {
+                    Guid = CharMgr.GenerateMailGuid(),
+                    CharacterId = plr.CharacterId,
+                    SenderName = "RvR Reward System",
+                    ReceiverName = plr.Name,
+                    SendDate = (uint)TCPManager.GetTimeStamp(),
+                    Title = "RvR Reward",
+                    Content = "You won an RvR Reward!",
+                    Money = 5000,
+                    Opened = false
+                };
+
+                if (plr.Level > 15)
+                {
+                    mail.Items.Add(mailItem3);
+                    CharMgr.AddMail(mail);
+                }
             }
 
-            if (plr.Level == 40)
-            {
-                mail.Items.Add(mailItem3);
-            }
-
-            CharMgr.AddMail(mail);
+          
         }
     }
 }

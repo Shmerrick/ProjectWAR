@@ -299,7 +299,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                         }
 
                         // Small reward for inner door destruction
-                        foreach (Player player in Region.Players)
+                        foreach (Player player in PlayersInRange)
                         {
                             if (!player.Initialized)
                                 continue;
@@ -327,7 +327,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
 
                         // Small reward for outer door destruction
-                        foreach (Player player in Region.Players)
+                        foreach (Player player in PlayersInRange)
                         {
                             if (!player.Initialized)
                                 continue;

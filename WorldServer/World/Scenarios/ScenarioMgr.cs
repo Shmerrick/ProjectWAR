@@ -838,13 +838,7 @@ namespace WorldServer.Scenarios
             // 2/2/2 balance as well as is possible) is above the scenario's minimum player threshold.
             int orderPlayerCount = _queuedPlayers[info][tier][0].GetMaxInitiallyFieldable();
 
-            if (orderPlayerCount < info.MinPlayers)
-                return;
-
             int destroPlayerCount = _queuedPlayers[info][tier][1].GetMaxInitiallyFieldable();
-
-            if (destroPlayerCount < info.MinPlayers)
-                return;
 
             int desiredPlayerCount = Math.Min(orderPlayerCount, destroPlayerCount);
 
@@ -859,6 +853,17 @@ namespace WorldServer.Scenarios
                 }
                 return;
             }
+
+            if (destroPlayerCount < info.MinPlayers)
+                return;
+
+
+            if (orderPlayerCount < info.MinPlayers)
+                return;
+
+          
+
+           
 
             List<Player> orderPlayers = _queuedPlayers[info][tier][0].GetPlayers(desiredPlayerCount);
             List<Player> destroPlayers = _queuedPlayers[info][tier][1].GetPlayers(desiredPlayerCount);

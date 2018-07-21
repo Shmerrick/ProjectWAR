@@ -531,7 +531,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             foreach (var player in PlayersInLakeSet)
             {
                 BattlefrontLogger.Trace($"{player.Name}...");
-                _rewardManager.GenerateLockReward(player);
+                _rewardManager.GenerateLockReward(player, realm);
             }
         }
 

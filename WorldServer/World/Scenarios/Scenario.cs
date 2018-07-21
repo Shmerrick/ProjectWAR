@@ -157,7 +157,7 @@ namespace WorldServer.Scenarios
 
             for (byte i = 0; i < 2; ++i)
             {
-                Zone_Respawn respawn = WorldMgr.GetZoneRespawn(Info.MapId, (byte) (i + 1), null);
+                Zone_Respawn respawn = WorldMgr.GetZoneRespawn(Info.MapId, (byte)(i + 1), null);
                 if (respawn == null)
                     throw new Exception("Scenario " + Info.Name + " is missing a respawn!");
                 RespawnLocations[i] = ZoneService.GetWorldPosition(ZoneService.GetZone_Info(Info.MapId), respawn.PinX, respawn.PinY, respawn.PinZ);
@@ -184,13 +184,13 @@ namespace WorldServer.Scenarios
 
         private byte _countdownStage;
 
-        public long StartTime   { get; protected set; }
-        public long EndTime     { get; protected set; }
-        public bool HasStarted  { get; protected set; }
-        public bool HasEnded    { get; protected set; }
-        public bool IsClosed    { get; protected set; }
+        public long StartTime { get; protected set; }
+        public long EndTime { get; protected set; }
+        public bool HasStarted { get; protected set; }
+        public bool HasEnded { get; protected set; }
+        public bool IsClosed { get; protected set; }
 
-        private bool ShouldEnd => (TCPManager.GetTimeStampMS() - StartTime)/1000 > 900;
+        private bool ShouldEnd => (TCPManager.GetTimeStampMS() - StartTime) / 1000 > 900;
 
         /// <summary>
         /// Displays countdown messages to clients, and finally starts the game.
@@ -319,7 +319,7 @@ namespace WorldServer.Scenarios
             uint maxScore = Math.Max(Score[0], Score[1]);
 
             if (maxScore > 0)
-                CharMgr.Database.AddObject(new ScenarioDurationRecord {ScenarioId = Info.ScenarioId, Tier = (byte)Tier, DurationSeconds = (uint) ((EndTime - StartTime)*0.001f), StartTime = StartTime});
+                CharMgr.Database.AddObject(new ScenarioDurationRecord { ScenarioId = Info.ScenarioId, Tier = (byte)Tier, DurationSeconds = (uint)((EndTime - StartTime) * 0.001f), StartTime = StartTime });
 
             SendToAll(WorldMgr.ScenarioMgr.BuildScenarioInfo(this));
 
@@ -396,7 +396,7 @@ namespace WorldServer.Scenarios
             if (Info.KillPointScore == 0)
                 return false;
 
-            Player killed = (Player) pkilled;
+            Player killed = (Player)pkilled;
 
             if (killer.Realm != killed.Realm)
             {
@@ -454,10 +454,10 @@ namespace WorldServer.Scenarios
             if (Score[teamIndex] > 500)
                 Score[teamIndex] = 500;
 
-            PacketOut Out = new PacketOut((byte) Opcodes.F_SCENARIO_POINT_UPDATE, 8);
-            Out.WriteByte((byte) team);
+            PacketOut Out = new PacketOut((byte)Opcodes.F_SCENARIO_POINT_UPDATE, 8);
+            Out.WriteByte((byte)team);
             Out.WriteByte(0);
-            Out.WriteUInt16((ushort) Score[teamIndex]);
+            Out.WriteUInt16((ushort)Score[teamIndex]);
             Out.Fill(0, 4);
             SendToAll(Out);
 
@@ -465,10 +465,10 @@ namespace WorldServer.Scenarios
             {
                 // Check for spawncamping.
                 if (!fromKill)
-                    CheckDomination((Realms) team, null);
+                    CheckDomination((Realms)team, null);
 
                 // If scenario uses deferred mechanics, loot is issued based upon points scored.
-                _realmScoreProgress[teamIndex] += (int) points;
+                _realmScoreProgress[teamIndex] += (int)points;
 
                 if (_realmScoreProgress[teamIndex] >= 150)
                 {
@@ -476,7 +476,7 @@ namespace WorldServer.Scenarios
                     ++_lootIssued;
 
                     if (_lootIssued > 5)
-                        Log.Error("Scenario", "Attempted to drop too much loot. Times: "+_lootIssued);
+                        Log.Error("Scenario", "Attempted to drop too much loot. Times: " + _lootIssued);
                     else
                     {
                         ZoneMgr curZone = Region.GetZoneMgr(Info.MapId);
@@ -534,16 +534,16 @@ namespace WorldServer.Scenarios
 
             if (Score[winningTeam] == 0)
             {
-                GivePoints(losingTeam + 1, (uint) (500*(1f/_rampFactor)));
-                GivePoints(winningTeam + 1, (uint) (500*(1f/_rampFactor)));
+                GivePoints(losingTeam + 1, (uint)(500 * (1f / _rampFactor)));
+                GivePoints(winningTeam + 1, (uint)(500 * (1f / _rampFactor)));
             }
 
             else
             {
-                float scaleFactor = (500 - Score[winningTeam])*(1f/_rampFactor)/Score[winningTeam];
+                float scaleFactor = (500 - Score[winningTeam]) * (1f / _rampFactor) / Score[winningTeam];
 
-                GivePoints(losingTeam + 1, (uint) (Score[losingTeam]*scaleFactor));
-                GivePoints(winningTeam + 1, (uint) (Score[winningTeam]*scaleFactor));
+                GivePoints(losingTeam + 1, (uint)(Score[losingTeam] * scaleFactor));
+                GivePoints(winningTeam + 1, (uint)(Score[winningTeam] * scaleFactor));
             }
 
             --_rampFactor;
@@ -563,20 +563,20 @@ namespace WorldServer.Scenarios
 
             uint[] endingXp = new uint[2];
             uint[] endingRenown = new uint[2];
-            byte[] emblemCount = new byte[1];
+            byte[] emblemCount = new byte[2];
 
             for (int i = 0; i < 2; ++i)
             {
-                endingXp[i] = (uint) (Score[i] * 10 * Tier * Info.RewardScaler);
-                endingRenown[i] = (uint) (Score[i] * 0.25f * Tier * Info.RewardScaler);
-                emblemCount[i] = (byte) (Score[i] * 0.01f * Info.RewardScaler);
+                endingXp[i] = (uint)(Score[i] * 10 * Tier * Info.RewardScaler);
+                endingRenown[i] = (uint)(Score[i] * 0.25f * Tier * Info.RewardScaler);
+                emblemCount[i] = 3;
             }
 
             byte winningTeam = 2;
 
             if (Score[0] != Score[1])
             {
-                winningTeam = (Score[0] > Score[1] ? (byte) 0 : (byte) 1);
+                winningTeam = (Score[0] > Score[1] ? (byte)0 : (byte)1);
 
                 endingRenown[winningTeam] *= 2;
                 ++emblemCount[winningTeam];
@@ -588,13 +588,13 @@ namespace WorldServer.Scenarios
             if (Info.DeferKills)
                 AddEstimatedKillRewards();
 
-            Item_Info desiredItem = ItemService.GetItem_Info(Tier == 4 ? 1699 : _emblemIds[Tier - 1]);
+            Item_Info desiredItem = ItemService.GetItem_Info(_emblemIds[Tier - 1]);
 
             // Winner rewards for stomping are halved
             if (_dominatingRealm != Realms.REALMS_REALM_NEUTRAL)
             {
 
-                endingXp[(int) _dominatingRealm - 1] /= 2;
+                endingXp[(int)_dominatingRealm - 1] /= 2;
                 endingRenown[(int)_dominatingRealm - 1] /= 2;
                 emblemCount[(int)_dominatingRealm - 1] /= 2;
             }
@@ -604,7 +604,7 @@ namespace WorldServer.Scenarios
                 if (plr == null)
                     continue;
 
-                byte realmIndex = (byte) (plr.Realm == Realms.REALMS_REALM_DESTRUCTION ? 1 : 0);
+                byte realmIndex = (byte)(plr.Realm == Realms.REALMS_REALM_DESTRUCTION ? 1 : 0);
 
                 plr.AddXp(endingXp[realmIndex], false, false);
                 plr.AddRenown(endingRenown[realmIndex], false);
@@ -612,52 +612,32 @@ namespace WorldServer.Scenarios
                 _playersScore[plr].EndXP = endingXp[realmIndex];
                 _playersScore[plr].EndRenown = endingRenown[realmIndex];
 
-                if (emblemCount[realmIndex] > 0)
-                {
-                    plr.ItmInterface.CreateItem(desiredItem, emblemCount[realmIndex]);
-                    plr.SendLocalizeString(new [] { desiredItem.Name, emblemCount[realmIndex].ToString() },  ChatLogFilters.CHATLOGFILTERS_LOOT, Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
-                }
 
                 if (realmIndex == winningTeam)
                 {
-                    // HACK
-                    var mailItem = new MailItem(208470, 3);
-                    Character_mail mail = new Character_mail
+                    // Lower reward for domination
+                    if (_dominatingRealm != Realms.REALMS_REALM_NEUTRAL)
                     {
-                        Guid = CharMgr.GenerateMailGuid(),
-                        CharacterId = plr.CharacterId,
-                        SenderName = "SC Reward System",
-                        ReceiverName = plr.Name,
-                        SendDate = (uint) TCPManager.GetTimeStamp(),
-                        Title = "SC Reward",
-                        Content = "You won an SC Reward!",
-                        Money = 5000,
-                        Opened = false
-                    };
-                    mail.Items.Add(mailItem);
-                    CharMgr.AddMail(mail);
-
+                        plr.ItmInterface.CreateItem(desiredItem, 1);
+                        plr.SendLocalizeString(new[] { desiredItem.Name, "1" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
+                            Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
+                    }
+                    else
+                    {
+                        plr.ItmInterface.CreateItem(desiredItem, 3);
+                        plr.SendLocalizeString(new[] { desiredItem.Name, "3" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
+                            Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
+                    }
+                   
                     plr.QtsInterface.HandleEvent(Objective_Type.QUEST_WIN_SCENARIO, Info.ScenarioId, 1);
                 }
                 else
                 {
-                    // HACK
-                    var mailItem = new MailItem(208470, 1);
-                    Character_mail mail = new Character_mail
-                    {
-                        Guid = CharMgr.GenerateMailGuid(),
-                        CharacterId = plr.CharacterId,
-                        SenderName = "SC Reward System",
-                        ReceiverName = plr.Name,
-                        SendDate = (uint)TCPManager.GetTimeStamp(),
-                        Title = "SC Reward",
-                        Content = "You won an SC Reward!",
-                        Money = 2500,
-                        Opened = false
-                    };
-                    mail.Items.Add(mailItem);
-                    CharMgr.AddMail(mail);
+                    plr.ItmInterface.CreateItem(desiredItem, 1);
+                    plr.SendLocalizeString(new[] { desiredItem.Name, "1" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
+                        Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
                 }
+
             }
 
             try
@@ -667,13 +647,15 @@ namespace WorldServer.Scenarios
                 {
                     _logger.Debug($"Scenario {Info.Name} won by Destruction. {Score[1]} to {Score[0]}");
                     _logger.Debug($"Suggest {Score[1] / 10} additional VP to winner,  {Score[0] / 20} to loser.");
+                    new ApocCommunications().Broadcast("Order has defeated Destruction in a critical battle! Their forces come closer to victory.", Tier);
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += (Score[1] / 10);
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints += (Score[0] / 20);
                 }
-                if (winningTeam == 2)
+                if (winningTeam == 0)
                 {
                     _logger.Debug($"Scenario {Info.Name} won by Order. {Score[0]} to {Score[1]}");
                     _logger.Debug($"Suggest {Score[0] / 10} additional VP to winner,  {Score[1] / 20} to loser.");
+                    new ApocCommunications().Broadcast("Destruction has defeated Order in a critical battle! Their forces come closer to victory.", Tier);
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints += (Score[1] / 10);
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += (Score[0] / 20);
 
@@ -682,9 +664,9 @@ namespace WorldServer.Scenarios
             }
             catch (Exception e)
             {
-               _logger.Error($"Scenario reporting exception {e.Message}");
+                _logger.Error($"Scenario reporting exception {e.Message}");
             }
-           
+
 
 
             SendScoreboardUpdate();
@@ -796,7 +778,7 @@ namespace WorldServer.Scenarios
                 List<Player> toRemove = new List<Player>();
                 foreach (Player plr in _pendingPlayers[i].Keys)
                 {
-                    if(tick - _pendingPlayers[i][plr] > 60000)
+                    if (tick - _pendingPlayers[i][plr] > 60000)
                     {
                         toRemove.Add(plr);
                     }
@@ -810,7 +792,7 @@ namespace WorldServer.Scenarios
                     if (!HasEnded && player.DisconnectType == Player.EDisconnectType.Unclean)
                     {
                         ScenarioMgr.UpdateQuitter(player);
-                        player.SendClientMessage("Your invitation to "+Info.Name+" has elapsed, and you have been given the Quitter! debuff.");
+                        player.SendClientMessage("Your invitation to " + Info.Name + " has elapsed, and you have been given the Quitter! debuff.");
                     }
                 }
             }
@@ -821,7 +803,7 @@ namespace WorldServer.Scenarios
 
         public void EnqueueScenarioAction(ScenarioQueueAction action)
         {
-            lock(_scenarioQueueActions)
+            lock (_scenarioQueueActions)
                 _scenarioQueueActions.Add(action);
         }
 
@@ -888,7 +870,7 @@ namespace WorldServer.Scenarios
 
                 // Notify scenario available
                 ScenarioMgr.SendScenarioStatus(plr, ScenarioUpdateType.Pop, Info);
-               
+
                 ScenarioMgr.AddToBalanceVector(BalanceVectors[(byte)plr.Realm - 1], plr);
             }
         }
@@ -901,7 +883,7 @@ namespace WorldServer.Scenarios
 
         public void IncrementPlayers(Player player)
         {
-            Interlocked.Increment(ref _activePlayers[(int) (player.Realm - 1)]);
+            Interlocked.Increment(ref _activePlayers[(int)(player.Realm - 1)]);
         }
 
         public void DecrementPlayers(Player player)
@@ -971,7 +953,7 @@ namespace WorldServer.Scenarios
         public void RemovePendingPlayer(Player plr)
         {
             int realmIndex = plr.Realm == Realms.REALMS_REALM_DESTRUCTION ? 1 : 0;
-            
+
             if (!_pendingPlayers[realmIndex].Remove(plr))
                 return;
 
@@ -983,7 +965,7 @@ namespace WorldServer.Scenarios
 
             if (!HasEnded)
             {
-                ScenarioMgr.RemoveFromBalanceVector(BalanceVectors[(byte) plr.Realm - 1], plr);
+                ScenarioMgr.RemoveFromBalanceVector(BalanceVectors[(byte)plr.Realm - 1], plr);
 
                 if (plr.DisconnectType == Player.EDisconnectType.Unclean)
                 {
@@ -993,7 +975,7 @@ namespace WorldServer.Scenarios
             }
 
             // Update Reserved Slots
-                SendReservedSlots(plr.Realm);
+            SendReservedSlots(plr.Realm);
             // send null scenario
         }
 
@@ -1025,15 +1007,15 @@ namespace WorldServer.Scenarios
             // Reset to nearest spawn point if taking SC in ORvR area while in presence of BO or keep
             if (plr.CurrentArea != null && plr.CurrentArea.IsRvR && plr.Zone != null && (plr.CurrentKeep != null || plr.CurrentObjectiveFlag != null))
             {
-                Zone_Respawn warcampRespawn = WorldMgr.GetZoneRespawn(plr.Zone.ZoneId, (byte) plr.Realm, plr);
+                Zone_Respawn warcampRespawn = WorldMgr.GetZoneRespawn(plr.Zone.ZoneId, (byte)plr.Realm, plr);
 
-                Point3D world = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort) warcampRespawn.ZoneID), warcampRespawn.PinX, warcampRespawn.PinY, warcampRespawn.PinZ);
+                Point3D world = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)warcampRespawn.ZoneID), warcampRespawn.PinX, warcampRespawn.PinY, warcampRespawn.PinZ);
 
                 plr.ScnInterface.ScenarioEntryWorldX = world.X;
                 plr.ScnInterface.ScenarioEntryWorldZ = world.Z;
                 plr.ScnInterface.ScenarioEntryWorldY = world.Y;
                 plr.ScnInterface.ScenarioEntryWorldO = warcampRespawn.WorldO;
-                plr.ScnInterface.ScenarioEntryZoneId = (ushort) warcampRespawn.ZoneID;
+                plr.ScnInterface.ScenarioEntryZoneId = (ushort)warcampRespawn.ZoneID;
             }
 
             else
@@ -1053,7 +1035,7 @@ namespace WorldServer.Scenarios
             }
 
             TeleportInOut(plr, Region, Info.MapId,
-                (uint) RespawnLocations[realmIndex].X, (uint) RespawnLocations[realmIndex].Y, (ushort) RespawnLocations[realmIndex].Z, RespawnHeadings[realmIndex]);
+                (uint)RespawnLocations[realmIndex].X, (uint)RespawnLocations[realmIndex].Y, (ushort)RespawnLocations[realmIndex].Z, RespawnHeadings[realmIndex]);
 
             if (plr.ChickenDebuff != null)
             {
@@ -1074,7 +1056,7 @@ namespace WorldServer.Scenarios
 
             foreach (KeyValuePair<Player, ScenarioScoreboard> plrScore in _playersScore)
                 plrScore.Value.SendScore(plr);
-            
+
             if (!_playersScore.ContainsKey(plr))
             {
                 ScenarioScoreboard score = new ScenarioScoreboard(plr);
@@ -1113,7 +1095,7 @@ namespace WorldServer.Scenarios
 
             if (!HasEnded)
             {
-                ScenarioMgr.RemoveFromBalanceVector(BalanceVectors[(byte) plr.Realm - 1], plr);
+                ScenarioMgr.RemoveFromBalanceVector(BalanceVectors[(byte)plr.Realm - 1], plr);
             }
 
             if (_playersScore.Keys.Contains(plr))
@@ -1134,8 +1116,8 @@ namespace WorldServer.Scenarios
                 }
 
                 if (teleport)
-                    TeleportInOut(plr, null, (ushort) plr.ScnInterface.ScenarioEntryZoneId,
-                        (uint) plr.ScnInterface.ScenarioEntryWorldX, (uint) plr.ScnInterface.ScenarioEntryWorldY, (ushort) plr.ScnInterface.ScenarioEntryWorldZ, (ushort) plr.ScnInterface.ScenarioEntryWorldO);
+                    TeleportInOut(plr, null, (ushort)plr.ScnInterface.ScenarioEntryZoneId,
+                        (uint)plr.ScnInterface.ScenarioEntryWorldX, (uint)plr.ScnInterface.ScenarioEntryWorldY, (ushort)plr.ScnInterface.ScenarioEntryWorldZ, (ushort)plr.ScnInterface.ScenarioEntryWorldO);
             }
             else
             {
@@ -1161,7 +1143,7 @@ namespace WorldServer.Scenarios
 
         public int GetTotalTeamCount(byte team) => _activePlayers[team];
 
-        public bool HasFreeSlots(byte team) => (GetTotalTeamCount(team) < Info.MaxPlayers) && (GetTotalTeamCount(team) - GetTotalTeamCount((byte) (1 - team)) <= 0);
+        public bool HasFreeSlots(byte team) => (GetTotalTeamCount(team) < Info.MaxPlayers) && (GetTotalTeamCount(team) - GetTotalTeamCount((byte)(1 - team)) <= 0);
 
         public bool PartialGroupExistsFor(Player player)
         {
@@ -1191,9 +1173,9 @@ namespace WorldServer.Scenarios
 
         public void CheckPopulation()
         {
-            #if DEBUG
+#if DEBUG
             return;
-            #endif
+#endif
             float popFactor;
 
             if (Players[0].Count == 0 || Players[1].Count == 0)
@@ -1201,10 +1183,10 @@ namespace WorldServer.Scenarios
 
             else
             {
-                popFactor = Players[0].Count/(float) Players[1].Count;
+                popFactor = Players[0].Count / (float)Players[1].Count;
 
                 if (popFactor < 1)
-                    popFactor = 1/popFactor;
+                    popFactor = 1 / popFactor;
             }
 
             if (popFactor > 1.4f)
@@ -1219,7 +1201,7 @@ namespace WorldServer.Scenarios
                         player.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_SCENARIO_SHUTDOWN_IMBALANCED);
                     }
                     foreach (Player player in Players[1])
-                    { 
+                    {
                         player.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR_HIGH_PRIORITY, Localized_text.TEXT_SCENARIO_SHUTDOWN_IMBALANCED);
                         player.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_SCENARIO_SHUTDOWN_IMBALANCED);
                     }
@@ -1260,10 +1242,10 @@ namespace WorldServer.Scenarios
 
         public void SendScoreboardUpdate()
         {
-            PacketOut Out = new PacketOut((byte) Opcodes.F_SCENARIO_PLAYER_INFO);
+            PacketOut Out = new PacketOut((byte)Opcodes.F_SCENARIO_PLAYER_INFO);
             Out.WriteByte(1); // Scoreboard
             Out.WriteUInt16(0); // Unk
-            Out.WriteByte((byte) _playersScore.Count); // Count
+            Out.WriteByte((byte)_playersScore.Count); // Count
 
             foreach (ScenarioScoreboard score in _playersScore.Values)
             {
@@ -1332,7 +1314,7 @@ namespace WorldServer.Scenarios
 
         public void PlaySoundToAll(ushort sound)
         {
-            PacketOut Out = new PacketOut((byte) Opcodes.F_PLAY_SOUND, 14);
+            PacketOut Out = new PacketOut((byte)Opcodes.F_PLAY_SOUND, 14);
             Out.WriteByte(0);
             Out.WriteUInt16(sound);
             Out.Fill(0, 10);
@@ -1341,7 +1323,7 @@ namespace WorldServer.Scenarios
 
         public void PlaySoundToTeam(ushort sound, int team)
         {
-            PacketOut Out = new PacketOut((byte) Opcodes.F_PLAY_SOUND, 14);
+            PacketOut Out = new PacketOut((byte)Opcodes.F_PLAY_SOUND, 14);
             Out.WriteByte(0);
             Out.WriteUInt16(sound);
             Out.Fill(0, 10);
@@ -1353,7 +1335,7 @@ namespace WorldServer.Scenarios
         #region Domination / Farm check
 
         private readonly int[] _totalKills = new int[2];
-        private readonly List<float>[] _killRelativeDist = {new List<float>(), new List<float>()};
+        private readonly List<float>[] _killRelativeDist = { new List<float>(), new List<float>() };
         private readonly float[] _spawncampingFactor = new float[2];
 
         private Realms _dominatingRealm;
@@ -1369,7 +1351,7 @@ namespace WorldServer.Scenarios
                 int killedDistToSpawn = Math.Max(1, killed.WorldPosition.GetDistanceTo(RespawnLocations[thisRealm]) - 100);
                 int interSpawnDist = Math.Max(1, RespawnLocations[thisRealm].GetDistanceTo(RespawnLocations[foeRealm]) - 200);
 
-                _killRelativeDist[thisRealm].Add(killedDistToSpawn/(float)interSpawnDist);
+                _killRelativeDist[thisRealm].Add(killedDistToSpawn / (float)interSpawnDist);
 
                 // A factor determining how close, on average, kills are to the enemy's spawnpoint
                 _spawncampingFactor[thisRealm] = _killRelativeDist[thisRealm].Average();
@@ -1411,13 +1393,13 @@ namespace WorldServer.Scenarios
         /// </summary>
         public void TickDomination()
         {
-            foreach (Player player in Players[1 - ((int) _dominatingRealm - 1)])
+            foreach (Player player in Players[1 - ((int)_dominatingRealm - 1)])
                 player.BuffInterface.QueueBuff(new BuffQueueInfo(player, player.Level, AbilityMgr.GetBuffInfo(24589)));
         }
 
         public void ForceDomination(int destrealm)
         {
-            Realms realm = (Realms) destrealm;
+            Realms realm = (Realms)destrealm;
 
             if (_dominatingRealm == realm)
                 return;
@@ -1462,7 +1444,7 @@ namespace WorldServer.Scenarios
             else
                 checking.SendClientMessage("Kill domination: None");
 
-            checking.SendClientMessage("Order total kills "+ _totalKills[0] + ", spawncamping factor: "+_spawncampingFactor[0]);
+            checking.SendClientMessage("Order total kills " + _totalKills[0] + ", spawncamping factor: " + _spawncampingFactor[0]);
             checking.SendClientMessage("Destruction total kills " + _totalKills[1] + ", spawncamping factor: " + _spawncampingFactor[1]);
         }
 
@@ -1555,9 +1537,9 @@ namespace WorldServer.Scenarios
         /// </summary>
         protected void SendFlagObjectState(Player plr, HoldObject ball)
         {
-            PacketOut Out = new PacketOut((byte) Opcodes.F_FLAG_OBJECT_STATE, 32);
+            PacketOut Out = new PacketOut((byte)Opcodes.F_FLAG_OBJECT_STATE, 32);
             Out.WriteUInt32(ball.Identifier);
-            Out.WriteByte((byte) ball.HeldState);
+            Out.WriteByte((byte)ball.HeldState);
             Out.WriteByte(ball.ObjectType);
 
             switch (ball.HeldState)
