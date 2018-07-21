@@ -187,7 +187,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     SendDate = (uint)TCPManager.GetTimeStamp(),
                     Title = "RvR Reward",
                     Content = "You won an RvR Reward!",
-                    Money = 5000,
+                    Money = 0,
                     Opened = false
                 };
 
@@ -214,7 +214,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     SendDate = (uint)TCPManager.GetTimeStamp(),
                     Title = "RvR Reward",
                     Content = "You won an RvR Reward!",
-                    Money = 5000,
+                    Money = 0,
                     Opened = false
                 };
 
@@ -236,7 +236,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 plr.AddXp((uint)(2000 * (1 + (random / 100))), false, false);
                 plr.AddRenown((uint)(1500 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
 
-                var mailItem3 = new MailItem(208470, 4);
+                var mailItem3 = new MailItem(208470, 6);
                 Character_mail mail = new Character_mail
                 {
                     Guid = CharMgr.GenerateMailGuid(),
@@ -246,7 +246,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     SendDate = (uint)TCPManager.GetTimeStamp(),
                     Title = "RvR Reward",
                     Content = "You won an RvR Reward!",
-                    Money = 5000,
+                    Money = 0,
                     Opened = false
                 };
 
@@ -264,7 +264,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 plr.AddXp((uint)(500 * (1 + (random / 100))), false, false);
                 plr.AddRenown((uint)(500 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
 
-                var mailItem3 = new MailItem(208470, 2);
+                var mailItem3 = new MailItem(208470, 3);
                 Character_mail mail = new Character_mail
                 {
                     Guid = CharMgr.GenerateMailGuid(),
@@ -274,7 +274,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     SendDate = (uint)TCPManager.GetTimeStamp(),
                     Title = "RvR Reward",
                     Content = "You won an RvR Reward!",
-                    Money = 5000,
+                    Money = 0,
                     Opened = false
                 };
 
