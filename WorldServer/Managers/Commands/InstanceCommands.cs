@@ -4,6 +4,7 @@ using FrameWork;
 using System.Collections.Generic;
 using WorldServer.World.BattleFronts.Keeps;
 using static WorldServer.Managers.Commands.GMUtils;
+using WorldServer.World.Map;
 
 namespace WorldServer.Managers.Commands
 {
@@ -200,7 +201,7 @@ namespace WorldServer.Managers.Commands
 
                 if (open == 0)
                 {
-                    WarZoneLib.RegionData.HideDoor(false, plr.Zone.ZoneId, (uint)uniqueID, (uint)instanceId);
+                    Occlusion.SetFixtureVisible((uint)uniqueID, true);
                     Out.WritePacketString(@"|17 55 00 00 08 00 38 49 00 16 09 4B 00 |.<q.U....8I...K.|
                                         |0C B7 6C FF FF 1E 02 00 01 67 2E 00 00 06 00 00 |..l......g......|
                                         |00 00 52 BF 67 55 BB 00 00 00 00 0E 47 61 74 65 |..R.gU......Gate|
@@ -208,7 +209,7 @@ namespace WorldServer.Managers.Commands
                 }
                 else
                 {
-                    WarZoneLib.RegionData.HideDoor(true, plr.Zone.ZoneId, (uint)uniqueID, (uint)instanceId);
+                    Occlusion.SetFixtureVisible((uint)uniqueID, false);
                     Out.WritePacketString(@"|17 55 00 01 08 00 38 49 00 16 09 4B 00 |.<q.U....8I...K.|
                                         |0C B7 6C FF FF 1E 02 00 01 67 2E 00 00 06 00 00 |..l......g......|
                                         |00 00 52 BF 67 55 BB 00 00 00 00 0E 47 61 74 65 |..R.gU......Gate|
@@ -267,16 +268,9 @@ namespace WorldServer.Managers.Commands
             {
                 var door = (KeepDoor.KeepGameObject)plr.CbtInterface.GetCurrentTarget();
 
-                if (WarZoneLib.RegionData._zones[door.Zone.ZoneId] != null && WarZoneLib.RegionData._zones[door.Zone.ZoneId].ID != 0)
-                {
-                    plr.SendClientMessage("DoorID=" + door.DoorId);
-                    if (WarZoneLib.RegionData._zones[door.Zone.ZoneId].Collision.Fixtures.ContainsKey(door.DoorId))
-                        plr.SendClientMessage("Occlusion_Hidden=" + WarZoneLib.RegionData._zones[door.Zone.ZoneId].Collision.Fixtures[door.DoorId].Hidden);
-                    else
-                        plr.SendClientMessage("Occlusion_Hidden=FIXTURE_NOT_FOUND");
-                }
-                else
-                    plr.SendClientMessage("Occlusion_Hidden=ZONE_NOT_LOADED");
+                plr.SendClientMessage("DoorID=" + door.DoorId);
+                plr.SendClientMessage("Occlusion_Visible=" + Occlusion.GetFixtureVisible(door.DoorId));
+
             }
             return true;
         }

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using Common;
 using FrameWork;
 using GameData;
-using NLog;
-using WarZoneLib;
 
 namespace WorldServer
 {
@@ -750,7 +748,7 @@ namespace WorldServer
         public bool LOSHit(Unit target)
         {
             if (Zone == null)
-            { 
+            {
                 Log.Error("LOSHit", "No Zone");
                 return false;
             }
@@ -767,17 +765,33 @@ namespace WorldServer
                 return false;
             }
 
-            WarZoneLib.Vector3 playnice = new WarZoneLib.Vector3();
-            RegionData.OcclusionResult result = RegionData.OcclusionQuery(
-               Zone.ZoneId, X, Y, Z + CHARACTER_HEIGHT,
-               target.Zone.ZoneId, target.X, target.Y, target.Z + CHARACTER_HEIGHT, ref playnice);
+            if (!World.Map.Occlusion.Initialized)
+            {
+                Log.Error("LOSHit", "Occlusion library not initialized");
+                return false;
+            }
 
-            //#if DEBUG
-            //if (IsPlayer())
-            //    GetPlayer().SendLocalizeString("Result: " + result, SystemData.ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_DEFAULT);
-            //#endif
+            if (Zone.ZoneId != target.Zone.ZoneId)
+            {
+                Log.Info("LOSHit", "Cross zone LOS not implemented");
+                return false;
+            }
 
-            return result != RegionData.OcclusionResult.Occluded;
+            var playnice = new World.Map.OcclusionInfo();
+
+            int fromRegionX = X + (Zone.Info.OffX << 12);
+            int fromRegionY = Y + (Zone.Info.OffY << 12);
+            int toRegionX = target.X + (Zone.Info.OffX << 12);
+            int toRegionY = target.Y + (Zone.Info.OffY << 12);
+
+            World.Map.Occlusion.SegmentIntersect(Zone.ZoneId, Zone.ZoneId, fromRegionX, fromRegionY, Z + CHARACTER_HEIGHT, toRegionX, toRegionY, target.Z + CHARACTER_HEIGHT, true, true, 190, ref playnice);
+
+#if DEBUG
+            if (IsPlayer())
+                GetPlayer().SendLocalizeString(playnice.ToString(), SystemData.ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_DEFAULT);
+#endif
+
+            return playnice.Result == World.Map.OcclusionResult.NotOccluded;
         }
 
         public bool LOSHit(ushort zoneId, Point3D pinPos)
@@ -788,17 +802,27 @@ namespace WorldServer
                 return false;
             }
 
-            WarZoneLib.Vector3 playnice = new WarZoneLib.Vector3();
-            RegionData.OcclusionResult result = RegionData.OcclusionQuery(
-               Zone.ZoneId, X, Y, Z + CHARACTER_HEIGHT,
-              zoneId, pinPos.X, pinPos.Y, pinPos.Z + CHARACTER_HEIGHT, ref playnice);
+            if (!World.Map.Occlusion.Initialized)
+            {
+                Log.Error("LOSHit", "Occlusion library not initialized");
+                return false;
+            }
 
-            //#if DEBUG
-            //if (IsPlayer())
-            //    GetPlayer().SendLocalizeString("Result: " + result, SystemData.ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_DEFAULT);
-            //#endif
+            var playnice = new World.Map.OcclusionInfo();
 
-            return result != RegionData.OcclusionResult.Occluded;
+            int fromRegionX = X + (Zone.Info.OffX << 12);
+            int fromRegionY = Y + (Zone.Info.OffY << 12);
+            int toRegionX = pinPos.X + (Zone.Info.OffX << 12);
+            int toRegionY = pinPos.Y + (Zone.Info.OffY << 12);
+
+            World.Map.Occlusion.SegmentIntersect(Zone.ZoneId, Zone.ZoneId, fromRegionX, fromRegionY, Z + CHARACTER_HEIGHT, toRegionX, toRegionY, pinPos.Z + CHARACTER_HEIGHT, true, true, 190, ref playnice);
+          
+            #if DEBUG
+            if (IsPlayer())
+                GetPlayer().SendLocalizeString(playnice.ToString(), SystemData.ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_DEFAULT);
+#endif
+
+            return playnice.Result == World.Map.OcclusionResult.NotOccluded;
         }
 
         /// <summary>Performs an auto-attack against the target using the specified hand.</summary>

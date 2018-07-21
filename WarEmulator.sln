@@ -17,13 +17,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LobbyServer", "LobbyServer\LobbyServer.csproj", "{DE9AE7F9-7F5E-43DE-812F-E6FECEBCBA89}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldServer", "WorldServer\WorldServer.csproj", "{1552992A-BA62-4639-AB53-6FA36E5B4AB1}"
-	ProjectSection(ProjectDependencies) = postProject
-		{B8C7C7A3-E302-4251-A3B1-44F905CF2AA6} = {B8C7C7A3-E302-4251-A3B1-44F905CF2AA6}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrameWork", "FrameWork\FrameWork.csproj", "{D5C98F3A-D5D2-4AED-A5A7-06D2DE095095}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarZoneLib", "WarZoneLib\WarZoneLib.csproj", "{B8C7C7A3-E302-4251-A3B1-44F905CF2AA6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scripts", "Scripts\Scripts.csproj", "{586FBA60-6267-4A8C-8846-144DD1059D44}"
 EndProject
@@ -37,6 +32,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbMigrationTool", "DbMigrat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbUtilityTool", "DbUtilityTool\DbUtilityTool.csproj", "{EC6B10C4-938C-458B-8AA5-C08BEEF88CE9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WarZone", "WarZone\WarZone\WarZone.vcxproj", "{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}"
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{BC0B5C1C-1695-447E-A1D0-C3635E1D783C}"
 	ProjectSection(SolutionItems) = preProject
 		CharValueDump.sql = CharValueDump.sql
@@ -124,6 +120,8 @@ Global
 		{D5C98F3A-D5D2-4AED-A5A7-06D2DE095095}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D5C98F3A-D5D2-4AED-A5A7-06D2DE095095}.Release|x64.ActiveCfg = Release|Any CPU
 		{D5C98F3A-D5D2-4AED-A5A7-06D2DE095095}.Release|x86.ActiveCfg = Release|Any CPU
+		{D5C98F3A-D5D2-4AED-A5A7-06D2DE095095}.Release|x86.Build.0 = Release|Any CPU
+		{D5C98F3A-D5D2-4AED-A5A7-06D2DE095095}.Release|x86.ActiveCfg = Release|Any CPU
 		{B8C7C7A3-E302-4251-A3B1-44F905CF2AA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B8C7C7A3-E302-4251-A3B1-44F905CF2AA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8C7C7A3-E302-4251-A3B1-44F905CF2AA6}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -204,6 +202,18 @@ Global
 		{EC6B10C4-938C-458B-8AA5-C08BEEF88CE9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EC6B10C4-938C-458B-8AA5-C08BEEF88CE9}.Release|x64.ActiveCfg = Release|Any CPU
 		{EC6B10C4-938C-458B-8AA5-C08BEEF88CE9}.Release|x64.Build.0 = Release|Any CPU
+		{EC6B10C4-938C-458B-8AA5-C08BEEF88CE9}.Release|x86.ActiveCfg = Release|Any CPU
+		{EC6B10C4-938C-458B-8AA5-C08BEEF88CE9}.Release|x86.Build.0 = Release|Any CPU
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Debug|x64.ActiveCfg = Debug|x64
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Debug|x64.Build.0 = Debug|x64
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Debug|x86.ActiveCfg = Debug|Win32
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Debug|x86.Build.0 = Debug|Win32
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release|Any CPU.ActiveCfg = Release|Win32
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release|x64.ActiveCfg = Release|x64
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release|x64.Build.0 = Release|x64
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release|x86.ActiveCfg = Release|Win32
+		{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}.Release|x86.Build.0 = Release|Win32
 		{EC6B10C4-938C-458B-8AA5-C08BEEF88CE9}.Release|x86.ActiveCfg = Release|Any CPU
 		{EC6B10C4-938C-458B-8AA5-C08BEEF88CE9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection

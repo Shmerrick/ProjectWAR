@@ -279,6 +279,7 @@
     <Compile Include="World\Battlefronts\Keeps\KeepDoor.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepNpcCreature.cs" />
     <Compile Include="World\Instances\TOTVL.cs" />
+    <Compile Include="World\Map\Occlusion.cs" />
     <Compile Include="World\Scripting\BasicScript.cs" />
     <Compile Include="World\Scripting\BehaviorLib.cs" />
     <Compile Include="World\Scripting\Dungeons\AltdorfSewers\AltdorfSewersWingIII.cs" />
@@ -448,10 +449,6 @@
     <ProjectReference Include="..\FrameWork\FrameWork.csproj">
       <Project>{d5c98f3a-d5d2-4aed-a5a7-06d2de095095}</Project>
       <Name>FrameWork</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WarZoneLib\WarZoneLib.csproj">
-      <Project>{b8c7c7a3-e302-4251-a3b1-44f905cf2aa6}</Project>
-      <Name>WarZoneLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
