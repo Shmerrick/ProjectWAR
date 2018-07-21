@@ -3094,11 +3094,6 @@ namespace WorldServer
             if (Program.Config.RenownRate > 0)
                 renown *= (uint)Program.Config.RenownRate;
 
-            /*
-            if (_Value.RenownRank >= 40)
-                renown /= 2;
-            */
-
             if (aaoMult != 0 && aaoRealm != Realms.REALMS_REALM_NEUTRAL && Realm != aaoRealm)
             {
                 renown = Math.Max(1, renown);
