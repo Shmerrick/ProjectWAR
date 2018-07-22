@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Common;
 using FrameWork;
 using GameData;
+using NLog;
 
 namespace WorldServer
 {

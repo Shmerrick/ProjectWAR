@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
+using System.Threading;
 
 namespace WorldServer.World.Map
 {
@@ -132,6 +134,9 @@ namespace WorldServer.World.Map
 
         public static void InitZones(string path)
         {
+            foreach (var file in Directory.GetFiles(path, "*.bin"))
+                WorldServer.World.Map.Occlusion.LoadZone(int.Parse(Path.GetFileNameWithoutExtension(file)));
+
             if (!Initialized)
             {
                 InitZones(path, 190);
@@ -142,6 +147,10 @@ namespace WorldServer.World.Map
         [SuppressUnmanagedCodeSecurity]
         [DllImport(@"WarZone64.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
         private static extern void InitZones(string path, int triCount);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(@"WarZone64.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl, EntryPoint = "LoadZone")]
+        private static extern void LoadZoneInternal(int zoneID);
 
         [SuppressUnmanagedCodeSecurity]
         [DllImport(@"WarZone64.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
