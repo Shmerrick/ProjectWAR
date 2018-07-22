@@ -1053,6 +1053,7 @@ namespace WorldServer
 
         public override void Dispose()
         {
+
             QtsInterface.PublicQuest?.RemovePlayer(this, true);
             CurrentKeep?.RemovePlayer(this);
 

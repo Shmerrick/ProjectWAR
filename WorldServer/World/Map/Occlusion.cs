@@ -85,7 +85,8 @@ namespace WorldServer.World.Map
 
         public override string ToString()
         {
-            return $"Result:{Result} HitX:{HitX} HitY:{HitY} HitZ{HitZ} Surface:{SurfaceType} WaterDepth:{WaterDepth} Fixture{FixtureID}";
+            return "";
+            //return $"Result:{Result} HitX:{HitX} HitY:{HitY} HitZ{HitZ} Surface:{SurfaceType} WaterDepth:{WaterDepth} Fixture{FixtureID}";
         }
     }
 
@@ -136,7 +137,7 @@ namespace WorldServer.World.Map
         public static void InitZones(string path)
         {
           
-
+            
             if (!Initialized)
             {
                 InitZones(path, 190);
