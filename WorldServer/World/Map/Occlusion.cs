@@ -187,6 +187,9 @@ namespace WorldServer.World.Map
 
         public static bool SetFixtureVisible(uint doorID, bool visible)
         {
+            if (doorID == 3169384)
+                return true;
+
             var zoneID = ((int)doorID >> 20) & 0x3FF;
             int uniqueID = ((((int)doorID >> 30) & 0x3) << 14) | (((int)doorID >> 6) & 0x3FFF);
             int doorIndex = ((int)doorID & 0x3F) - 0x28;
