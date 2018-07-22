@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace WorldServer.World.Map
 {
@@ -134,14 +135,22 @@ namespace WorldServer.World.Map
 
         public static void InitZones(string path)
         {
-            foreach (var file in Directory.GetFiles(path, "*.bin"))
-                WorldServer.World.Map.Occlusion.LoadZone(int.Parse(Path.GetFileNameWithoutExtension(file)));
+          
 
             if (!Initialized)
             {
                 InitZones(path, 190);
+                var tasks = new List<Task>();
+
+                foreach (var file in Directory.GetFiles(path, "*.bin"))
+                    tasks.Add(Task.Run(()=>WorldServer.World.Map.Occlusion.LoadZone(int.Parse(Path.GetFileNameWithoutExtension(file)))));
+
+                Task.WhenAll(tasks).Wait();
+                
                 Initialized = true;
             }
+
+           
         }
 
         [SuppressUnmanagedCodeSecurity]
