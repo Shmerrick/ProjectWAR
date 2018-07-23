@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using SystemData;
 using Common;
-using WarZoneLib;
 using CreatureSubTypes = GameData.CreatureSubTypes;
 using CreatureTypes = GameData.CreatureTypes;
 using Vector3 = FrameWork.Vector3;
 using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.Services.World;
+using WorldServer.World.Map;
 
 namespace WorldServer
 {
@@ -830,12 +830,15 @@ namespace WorldServer
             Log.Info("Artillery", "Direct LOS check failed, checking arc...");
             #endif
 
-            WarZoneLib.Vector3 playnice = new WarZoneLib.Vector3();
-
+            var playnice = new World.Map.OcclusionInfo();
             int maxZDisplacement = Math.Min(_Owner.Z, pinPos.Z) + 100 * 12; // check 100 feet upwards
 
             Point3D weaponTopPoint = new Point3D();
             Point3D destPoint = new Point3D();
+            int fromRegionX = weaponTopPoint.X + (_weapon.Zone.Info.OffX << 12);
+            int fromRegionY = weaponTopPoint.Y + (_weapon.Zone.Info.OffY << 12);
+            int toRegionX = pinPos.X + (_weapon.Zone.Info.OffX << 12);
+            int toRegionY = pinPos.Y + (_weapon.Zone.Info.OffY << 12);
 
             Vector2 toTarget = new Vector2(worldPos.X - _weapon.WorldPosition.X, worldPos.Y - _weapon.WorldPosition.Y);
             toTarget.Normalize();
@@ -856,15 +859,18 @@ namespace WorldServer
                 destPoint.X += (int)(toTarget.X*50*12);
                 destPoint.Y += (int)(toTarget.Y*50*12);
 
-                #if DEBUG && ARTILLERY_ARC_DEBUG
+#if DEBUG && ARTILLERY_ARC_DEBUG
                 Log.Info("Artillery", "Checking weapon to destination point: " + destPoint);
-                #endif
+#endif
 
-                RegionData.OcclusionResult arc1Result = RegionData.OcclusionQuery(
-                   zoneId, weaponTopPoint.X, weaponTopPoint.Y, weaponTopPoint.Z + 120,
-                   zoneId, destPoint.X, destPoint.Y, destPoint.Z, ref playnice);
+               fromRegionX = weaponTopPoint.X + (_weapon.Zone.Info.OffX << 12);
+               fromRegionY = weaponTopPoint.Y + (_weapon.Zone.Info.OffY << 12);
+               toRegionX = destPoint.X + (_weapon.Zone.Info.OffX << 12);
+               toRegionY = destPoint.Y + (_weapon.Zone.Info.OffY << 12);
 
-                if (arc1Result == RegionData.OcclusionResult.Occluded)
+                World.Map.Occlusion.SegmentIntersect(zoneId, zoneId, fromRegionX, fromRegionY, weaponTopPoint.Z + 120, toRegionX, toRegionY, destPoint.Z, true, true, 190, ref playnice);
+
+                if (playnice.Result != OcclusionResult.NotOccluded)
                 {
                     #if DEBUG && ARTILLERY_ARC_DEBUG
                     Log.Info("Artillery", "Arc check failed (obstruction between cannon and arc apex 1)");
@@ -890,15 +896,22 @@ namespace WorldServer
                 // Much more lenient on drop - 10ft
                 destPoint.X -= (int)(toTarget.X * 10 * 12);
                 destPoint.Y -= (int)(toTarget.Y * 10 * 12);
-                #if DEBUG && ARTILLERY_ARC_DEBUG
-                Log.Info("Artillery", "Checking target location to destination point: " + destPoint);
-                #endif
+                //#if DEBUG && ARTILLERY_ARC_DEBUG
+                //Log.Info("Artillery", "Checking target location to destination point: " + destPoint);
+                //#endif
 
-                RegionData.OcclusionResult arc2Result = RegionData.OcclusionQuery(
-                   zoneId, pinPos.X, pinPos.Y, pinPos.Z + 120,
-                   zoneId, destPoint.X, destPoint.Y, destPoint.Z, ref playnice);
+                //RegionData.OcclusionResult arc2Result = RegionData.OcclusionQuery(
+                //   zoneId, pinPos.X, pinPos.Y, pinPos.Z + 120,
+                //   zoneId, destPoint.X, destPoint.Y, destPoint.Z, ref playnice);
+               fromRegionX = weaponTopPoint.X + (_weapon.Zone.Info.OffX << 12);
+               fromRegionY = weaponTopPoint.Y + (_weapon.Zone.Info.OffY << 12);
+               toRegionX = destPoint.X + (_weapon.Zone.Info.OffX << 12);
+               toRegionY = destPoint.Y + (_weapon.Zone.Info.OffY << 12);
 
-                if (arc2Result == RegionData.OcclusionResult.Occluded)
+                World.Map.Occlusion.SegmentIntersect(zoneId, zoneId, fromRegionX, fromRegionY, weaponTopPoint.Z + 120, toRegionX, toRegionY, destPoint.Z, true, true, 190, ref playnice);
+
+
+                if (playnice.Result != OcclusionResult.NotOccluded)
                 {
                     #if DEBUG && ARTILLERY_ARC_DEBUG
                     Log.Info("Artillery", "Arc check failed (obstruction between target point and arc apex 2)");
@@ -911,24 +924,27 @@ namespace WorldServer
                 pinPos.SetCoordsFrom(destPoint);
             }
 
-            #if DEBUG && ARTILLERY_ARC_DEBUG
+#if DEBUG && ARTILLERY_ARC_DEBUG
             Log.Info("Artillery", "Checking apex 1 "+weaponTopPoint+" to apex 2 " + pinPos);
-            #endif
+#endif
+
+            fromRegionX = weaponTopPoint.X + (_weapon.Zone.Info.OffX << 12);
+            fromRegionY = weaponTopPoint.Y + (_weapon.Zone.Info.OffY << 12);
+            toRegionX = pinPos.X + (_weapon.Zone.Info.OffX << 12);
+            toRegionY = pinPos.Y + (_weapon.Zone.Info.OffY << 12);
 
             // Check LOS between two apex points
-            RegionData.OcclusionResult result = RegionData.OcclusionQuery(
-            zoneId, weaponTopPoint.X, weaponTopPoint.Y, weaponTopPoint.Z + 120,
-            zoneId, pinPos.X, pinPos.Y, pinPos.Z + 120, ref playnice);
+            World.Map.Occlusion.SegmentIntersect(zoneId, zoneId, fromRegionX, fromRegionY, weaponTopPoint.Z + 120, toRegionX, toRegionY, pinPos.Z, true, true, 190, ref playnice);
 
-            if (result == RegionData.OcclusionResult.Occluded)
+            if (playnice.Result != OcclusionResult.NotOccluded)
             {
-                #if DEBUG && ARTILLERY_ARC_DEBUG
+#if DEBUG && ARTILLERY_ARC_DEBUG
                 Log.Info("Artillery", "Arc check failed (obstruction between arc apexes)");
                 //foreach (var player in Players)
                 //    player.Key.ZoneTeleport((ushort)weaponTopPoint.X, (ushort)weaponTopPoint.Y, (ushort)weaponTopPoint.Z, 0);
                 foreach (var player in Players)
                     player.Key.ZoneTeleport((ushort)pinPos.X, (ushort)pinPos.Y, (ushort)pinPos.Z, 0);
-                #endif
+#endif
                 return false;
             }
 

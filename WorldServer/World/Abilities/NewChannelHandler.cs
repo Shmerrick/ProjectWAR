@@ -136,6 +136,13 @@ namespace WorldServer
 
         public void Update(long tick)
         {
+            if (_target.IsDead)
+            {
+                SendChannelEnd();
+                _channelInfo = null;
+                _channelBuff = null;
+            }
+
             if (TCPManager.GetTimeStampMS() >= _channelStartTime + _channelInfo.CastTime)
             {
                 SendChannelEnd();

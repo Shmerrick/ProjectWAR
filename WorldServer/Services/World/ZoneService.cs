@@ -26,16 +26,7 @@ namespace WorldServer.Services.World
 
             if (Program.Config.RegionOcclusionFolder != null && Directory.Exists(WorldServer.Program.Config.RegionOcclusionFolder))
             {
-                foreach (var regionID in _Zone_Info.Where(e => !e.Illegal).GroupBy(e => e.Region).Select(e => e.Key).ToList())
-                {
-                    string path = Path.Combine(WorldServer.Program.Config.RegionOcclusionFolder, "regiondata" + regionID + ".bin");
-                    if (File.Exists(path))
-                    {
-                        Log.Debug("WorldMgr", "Loading occlusion for region " + regionID);
-                        DateTime start = DateTime.Now;
-                        WarZoneLib.RegionData.LoadDataFile(regionID, path);
-                    }
-                }
+                WorldServer.World.Map.Occlusion.InitZones(WorldServer.Program.Config.RegionOcclusionFolder);
             }
             else
                 Log.Error("WorldServer", "RegionOcclusionFolder not specified/found in World.config. No server side LOS will be performed.");

@@ -136,7 +136,7 @@ namespace WorldServer
                 Log.Error("RVR Progression", "NO RVR Progressions in DB");
                 return;
             }
-            WorldMgr.UpperTierCampaignManager = new UpperTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x=>x.Tier == 4).ToList(), WorldMgr._Regions);
+            WorldMgr.UpperTierCampaignManager = new UpperTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 4).ToList(), WorldMgr._Regions);
             Log.Texte("Battlefront Manager", "Creating Lower Tier Campaign Manager", ConsoleColor.Cyan);
             WorldMgr.LowerTierCampaignManager = new LowerTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 1).ToList(), WorldMgr._Regions);
             Log.Texte("Battlefront Manager", "Resetting Progression", ConsoleColor.Cyan);
@@ -155,8 +155,8 @@ namespace WorldServer
             WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront();
 
             WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
-                
-            
+
+
             if (!TCPManager.Listen<TCPServer>(Rm.Port, "World"))
                 ConsoleMgr.WaitAndExit(2000);
 

@@ -464,12 +464,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (plr.Realm == Realms.REALMS_REALM_ORDER)
                     {
                         this.OrderPlayerPopulationList[battleFrontId] -= 1;
-                        _orderCount++;
+                        _orderCount--;
                     }
                     else
                     {
                         this.DestructionPlayerPopulationList[battleFrontId] -= 1;
-                        _destroCount++;
+                        _destroCount--;
                     }
                 }
             }

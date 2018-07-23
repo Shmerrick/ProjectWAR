@@ -164,14 +164,6 @@ namespace WorldServer.Managers.Commands
 
             if (target != null)
             {
-                if (WarZoneLib.RegionData._zones[plr.Zone.ZoneId] != null && WarZoneLib.RegionData._zones[plr.Zone.ZoneId].ID != 0)
-                {
-                    plr.SendClientMessage("Zone " + plr.Zone.ZoneId + " Occlusion Info: Fixtures=" + WarZoneLib.RegionData._zones[plr.Zone.ZoneId].Collision.Fixtures.Count + " BSPTriangles="
-                        + WarZoneLib.RegionData._zones[plr.Zone.ZoneId].Collision.BSP.Triangles);
-                }
-                else
-                    plr.SendClientMessage("Zone " + plr.Zone.ZoneId + " Occlusion Info: NOT LOADED");
-
                 plr.EvtInterface.AddEvent(() =>
                 {
                     if (plr.LOSHit(target))

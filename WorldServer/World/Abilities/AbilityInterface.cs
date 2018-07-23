@@ -25,12 +25,12 @@ namespace WorldServer
         private List<AbilityInfo> _abilities = new List<AbilityInfo>();
 
         ///<summary>The set of abilities that are actually castable by this player.</summary>
-        private readonly HashSet<ushort> _abilitySet = new HashSet<ushort>(); 
+        private readonly HashSet<ushort> _abilitySet = new HashSet<ushort>();
 
         private readonly ushort[] _morales = new ushort[4];
 
         private AbilityProcessor _abilityProcessor;
-        public AbilityProcessor GetAbiityProcessor() {  return _abilityProcessor;  }
+        public AbilityProcessor GetAbiityProcessor() { return _abilityProcessor; }
 
         #region Init/Storage
 
@@ -262,7 +262,7 @@ namespace WorldServer
         public override void Stop()
         {
             _abilityProcessor?.Stop();
-            
+
             base.Stop();
         }
 
@@ -349,7 +349,7 @@ namespace WorldServer
 
             try
             {
-                
+
                 if (AbilityMgr.HasCommandsFor(abilityID) || abInfo.ConstantInfo.ChannelID != 0)
                 {
                     if (_abilityProcessor == null)
@@ -370,8 +370,8 @@ namespace WorldServer
 
             catch (Exception e)
             {
-                if(_Owner is Player)
-                (_Owner as Player)?.SendClientMessage(abilityID + " " + AbilityMgr.GetAbilityNameFor(abilityID) + " threw an unhandled " + e.GetType().Name + " from " + e.TargetSite + ".");
+                if (_Owner is Player)
+                    (_Owner as Player)?.SendClientMessage(abilityID + " " + AbilityMgr.GetAbilityNameFor(abilityID) + " threw an unhandled " + e.GetType().Name + " from " + e.TargetSite + ".");
                 Log.Error("Ability System", e.ToString());
                 return false;
             }
@@ -431,7 +431,7 @@ namespace WorldServer
 
         public void Cancel(bool force, ushort messageCode = 0)
         {
-            if (_abilityProcessor != null &&_abilityProcessor.HasInfo())
+            if (_abilityProcessor != null && _abilityProcessor.HasInfo())
                 _abilityProcessor.CancelCast(messageCode, force);
         }
 
@@ -486,9 +486,9 @@ namespace WorldServer
         /// <param name="silent">False to transmit new value to client, true otherwise</param>
         public void SetCooldown(ushort abilityId, long duration, bool silent = false)
         {
-            #if DEBUG && ABILITY_DEVELOPMENT
+#if DEBUG && ABILITY_DEVELOPMENT
             duration = 0;
-            #endif
+#endif
 
             if (abilityId == ushort.MaxValue)
                 return;
@@ -648,7 +648,7 @@ namespace WorldServer
         /// </summary>
         public void RefreshBonusMasteryPoints()
         {
-            byte[] oldBonus = (byte[]) _bonusMasteryPoints.Clone();
+            byte[] oldBonus = (byte[])_bonusMasteryPoints.Clone();
 
             _bonusMasteryPoints[0] = Convert.ToByte(_playerOwner.StsInterface.GetBonusStat(Stats.Mastery1Bonus));
             _bonusMasteryPoints[1] = Convert.ToByte(_playerOwner.StsInterface.GetBonusStat(Stats.Mastery2Bonus));
@@ -684,10 +684,10 @@ namespace WorldServer
 
             for (int i = 1; i <= MAX_TREE_ABILITIES; i++)
             {
-                if ((_pointsInTree[masteryTree] < ( (i*2)+1) ) && _activeSkillsInTree[masteryTree, i-1] == 1)
+                if ((_pointsInTree[masteryTree] < ((i * 2) + 1)) && _activeSkillsInTree[masteryTree, i - 1] == 1)
                 {
-                    toRemove.Add(_masteryAbilities[masteryTree, i-1].Entry);
-                    _activeSkillsInTree[masteryTree, i-1] = 0;
+                    toRemove.Add(_masteryAbilities[masteryTree, i - 1].Entry);
+                    _activeSkillsInTree[masteryTree, i - 1] = 0;
                 }
             }
 
@@ -734,16 +734,16 @@ namespace WorldServer
             string[] temp = _playerOwner._Value.MasterySkills.Split(';');
 
             // RB   4/9/2016    Apply free mastery points from gear.
-            _pointsInTree[0] = (byte) (Convert.ToByte(temp[0]) + _bonusMasteryPoints[0]);
-            _pointsInTree[1] = (byte) (Convert.ToByte(temp[1]) + _bonusMasteryPoints[1]);
-            _pointsInTree[2] = (byte) (Convert.ToByte(temp[2]) + _bonusMasteryPoints[2]);
+            _pointsInTree[0] = (byte)(Convert.ToByte(temp[0]) + _bonusMasteryPoints[0]);
+            _pointsInTree[1] = (byte)(Convert.ToByte(temp[1]) + _bonusMasteryPoints[1]);
+            _pointsInTree[2] = (byte)(Convert.ToByte(temp[2]) + _bonusMasteryPoints[2]);
 
-            for (byte i=0; i < 3; i++)
+            for (byte i = 0; i < 3; i++)
             {
-                var tempSkills = temp[i+3].Split(',');
+                var tempSkills = temp[i + 3].Split(',');
                 for (int j = 0; j < 7; j++)
-                    _activeSkillsInTree[i,j] = Convert.ToByte(tempSkills[j]);
-            }           
+                    _activeSkillsInTree[i, j] = Convert.ToByte(tempSkills[j]);
+            }
         }
 
         private void SaveMastery()
@@ -892,7 +892,7 @@ namespace WorldServer
                     Out.Fill(0, 4);
                     _playerOwner.SendPacket(Out);
 
-                    #warning FIXME. This is a skill send packet, but it sends 5 skills - 4 empties and this mastery skill at rank 0. Why is it here? - Az
+#warning FIXME. This is a skill send packet, but it sends 5 skills - 4 empties and this mastery skill at rank 0. Why is it here? - Az
                     if (_activeSkillsInTree[i, j] == 1)
                     {
                         Out = new PacketOut((byte)Opcodes.F_CHARACTER_INFO, 48);
@@ -1005,7 +1005,7 @@ namespace WorldServer
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_BUY_CAREER_PACKAGE, (int)eClientState.Playing, "F_BUY_CAREER_PACKAGE")]
         public static void F_BUY_CAREER_PACKAGE(BaseClient client, PacketIn packet)
         {
-            GameClient cclient = (GameClient) client;
+            GameClient cclient = (GameClient)client;
 
             if (cclient.Plr == null)
                 return;
@@ -1019,7 +1019,7 @@ namespace WorldServer
 
             if (resource != 7) // renown training
             {
-                cclient.Plr.RenInterface.PurchaseRenownAbility(resource,tree);
+                cclient.Plr.RenInterface.PurchaseRenownAbility(resource, tree);
                 return;
             }
 
@@ -1075,7 +1075,7 @@ namespace WorldServer
         {
             if (!force && !_playerOwner.CrrInterface.ExperimentalMode)
             {
-                if (!_playerOwner.HasMoney((uint) (GetTotalSpent()*2000)))
+                if (!_playerOwner.HasMoney((uint)(GetTotalSpent() * 2000)))
                     return;
                 _playerOwner.RemoveMoney((uint)(GetTotalSpent() * 2000));
             }
