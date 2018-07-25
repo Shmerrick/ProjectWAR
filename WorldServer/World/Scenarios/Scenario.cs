@@ -628,7 +628,7 @@ namespace WorldServer.Scenarios
                         plr.SendLocalizeString(new[] { desiredItem.Name, "3" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
                             Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
                     }
-                   
+
                     plr.QtsInterface.HandleEvent(Objective_Type.QUEST_WIN_SCENARIO, Info.ScenarioId, 1);
                 }
                 else
@@ -1173,9 +1173,6 @@ namespace WorldServer.Scenarios
 
         public void CheckPopulation()
         {
-#if DEBUG
-            return;
-#endif
             float popFactor;
 
             if (Players[0].Count == 0 || Players[1].Count == 0)
