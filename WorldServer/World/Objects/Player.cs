@@ -3834,18 +3834,31 @@ namespace WorldServer
                         subtype = 64;
                         break;
                 }
-                DeathLogger.Trace($"Victim : {this.Name} playerKiller.PriorityGroup Leader : {playerKiller.PriorityGroup.Leader.Name} ");
-                foreach (var pg in playerKiller.PriorityGroup.Members)
+
+                if (playerKiller.PriorityGroup != null)
                 {
-                    DeathLogger.Trace($"Victim : {this.Name} Group Member : {pg.Name} ");
+                    DeathLogger.Trace($"Victim : {this.Name} playerKiller.PriorityGroup Leader : {playerKiller.PriorityGroup?.Leader?.Name} ");
+                    foreach (var pg in playerKiller.PriorityGroup.Members)
+                    {
+                        DeathLogger.Trace($"Victim : {this.Name} Group Member : {pg.Name} ");
+                    }
                 }
+                
+
+               
 
                 if (playerKiller.PriorityGroup != null)
                 {
                     List<Player> curMembers = playerKiller.PriorityGroup.GetPlayersCloseTo(playerKiller, 150);
-                    DeathLogger.Trace($"Victim : {this.Name} curMembers {curMembers} ");
-                    foreach (Player subPlayer in curMembers)
-                        subPlayer.TokInterface.AddKill(subtype);
+                    if (curMembers != null)
+                    {
+                        foreach (Player subPlayer in curMembers)
+                        {
+                            DeathLogger.Trace($"Victim : {this.Name} curMembers {subPlayer.Name} ");
+                            subPlayer.TokInterface.AddKill(subtype);
+                        }
+                    }
+                    
                 }
                 else
                     playerKiller.TokInterface.AddKill(subtype);

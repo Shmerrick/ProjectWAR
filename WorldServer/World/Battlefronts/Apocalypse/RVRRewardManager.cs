@@ -128,24 +128,31 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     continue;
 
                 // Bad dirty hak by Hargrim to fix Area Influence bug
-                if (owningRealm == Realms.REALMS_REALM_ORDER)
-                    influenceId = (ushort)player.CurrentArea.OrderInfluenceId;
-                else
-                    influenceId = (ushort)player.CurrentArea.DestroInfluenceId;
+                if (player.CurrentArea != null)
+                {
+                    if (owningRealm == Realms.REALMS_REALM_ORDER)
+                        influenceId = (ushort) player.CurrentArea.OrderInfluenceId;
+                    else
+                        influenceId = (ushort) player.CurrentArea.DestroInfluenceId;
 
+                    // Doesnt do anything?
+                    var inf = Math.Max((ushort)baseInf, (ushort)1);
+                    player.AddInfluence(influenceId, Math.Max((ushort)baseInf, (ushort)1));
+                }
 
-                var xp = Math.Max((uint)baseXp, 1);
-                var rr = Math.Max((uint)baseRp, 1);
-                var inf = Math.Max((ushort)baseInf, (ushort)1);
+                Random rnd = new Random();
+                int random = rnd.Next(-25, 25);
+                var xp = (uint)Math.Max((baseXp * (1 + (random / 100))), 1);
 
-                player.AddXp(Math.Max((uint)baseXp, 1), false, false);
-                player.AddRenown(Math.Max((uint)baseRp, 1), false, RewardType.ObjectiveCapture, objectiveName);
-                player.AddInfluence(influenceId, Math.Max((ushort)baseInf, (ushort)1));
-
+                var rr = (uint) Math.Max((baseRp * (1 + (random / 100))), 1);
+                
+                player.AddXp(xp, false, false);
+                player.AddRenown(rr, false, RewardType.ObjectiveCapture, objectiveName);
+                
                 // TODO
                 //Campaign.AddContribution(player, (uint)baseRp);
 
-                _logger.Trace($"Player:{player.Name} ScaleMult:{rewardScaleMultiplier} XP:{xp} RR:{rr} INF:{inf}");
+                _logger.Trace($"Player:{player.Name} ScaleMult:{rewardScaleMultiplier} XP:{xp} RR:{rr}");
             }
 
             // Returns 2 VP per tick for locking realm, -1 for non locking realm.
