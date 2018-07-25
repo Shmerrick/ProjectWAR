@@ -2894,7 +2894,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            if (target.GmLevel > 0)
+            if (target.GmLevel > 1)
             {
                 plr.SendClientMessage("HELLMUTE: " + playerName + " is a staff member.");
                 return true;
