@@ -4070,6 +4070,10 @@ namespace WorldServer
                             if (influenceId != 0)
                                 curPlayer.AddInfluence(influenceId, influenceShare);
 
+                            curPlayer.SendClientMessage("Awarded 1 Crest to " + killer + " for Solo Kill");
+                            RewardLogger.Trace($"Awarded 1 Crest to Killer : {killer} for Solo Kill");
+                            curPlayer.ItmInterface.CreateItem(208470, 1);
+
                             if (closestFlag != null && closestFlag.State != StateFlags.ZoneLocked)
                             {
                                 RewardLogger.Trace($"Delayed Rewards RP: {renownShare} BonusMod : {bonusMod} Killer : {killer} This : {this.Name}");
@@ -4118,6 +4122,17 @@ namespace WorldServer
                     RewardLogger.Trace($"Group Player Rewards: this : {this.Name} killer : {killer.Name} bonus : {bonusMod} XP {kvpair.Value.XP}, RP {kvpair.Value.Renown}, INF {kvpair.Value.Influence}");
                     kvpair.Key.HandleKillRewards(this, killer, bonusMod, kvpair.Value.XP, kvpair.Value.Renown, influenceId, kvpair.Value.Influence, transferenceFactor,
                         closestFlag);
+
+                    foreach (var player in kvpair.Key.Members)
+                    {
+                        var rnd = StaticRandom.Instance.Next(100);
+                        if (rnd <= 20)
+                        {
+                            player.SendClientMessage("Awarded 1 Crest to "+ player.Name +" for Group Kill");
+                            RewardLogger.Trace($"Awarded 1 Crest to {player.Name} for Group Kill");
+                            player.ItmInterface.CreateItem(208470, 1);
+                        }
+                    }
                 }
             }
             #endregion
