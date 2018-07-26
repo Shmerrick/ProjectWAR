@@ -129,6 +129,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (regionMgr.Campaign == null)
                         continue;
 
+                    regionMgr.Campaign.VictoryPointProgress = new VictoryPointProgress();
+
                     foreach (var objective in regionMgr.Campaign.Objectives)
                     {
                         objective.LockObjective(Realms.REALMS_REALM_NEUTRAL, false);
