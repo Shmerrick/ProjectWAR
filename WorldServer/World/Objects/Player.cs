@@ -4062,21 +4062,21 @@ namespace WorldServer
                             if (deathRewardScaler < 1f)
                                 curPlayer.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_PLAYER_REDUCED_XPRP);
 
-                            RewardLogger.Trace($"Awarded XP: {xpShare} BonusMod : {bonusMod} Killer : {killer} This : {this.Name}");
-                            RewardLogger.Trace($"Awarded RP: {renownShare} BonusMod : {bonusMod} Killer : {killer} This : {this.Name}");
+                            RewardLogger.Trace($"Awarded XP: {xpShare} BonusMod : {bonusMod} Killer : {killer.Name} This : {this.Name}");
+                            RewardLogger.Trace($"Awarded RP: {renownShare} BonusMod : {bonusMod} Killer : {killer.Name} This : {this.Name}");
 
                             curPlayer.AddXp(xpShare, bonusMod, true, true);
                             curPlayer.AddKillRenown(renownShare, bonusMod, killer, this);
                             if (influenceId != 0)
                                 curPlayer.AddInfluence(influenceId, influenceShare);
 
-                            curPlayer.SendClientMessage("Awarded 1 Crest to " + killer + " for Solo Kill");
-                            RewardLogger.Trace($"Awarded 1 Crest to Killer : {killer} for Solo Kill");
+                            curPlayer.SendClientMessage("Awarded 1 Crest to " + killer.Name + " for Solo Kill");
+                            RewardLogger.Trace($"Awarded 1 Crest to Killer : {killer.Name} for Solo Kill");
                             curPlayer.ItmInterface.CreateItem(208470, 1);
 
                             if (closestFlag != null && closestFlag.State != StateFlags.ZoneLocked)
                             {
-                                RewardLogger.Trace($"Delayed Rewards RP: {renownShare} BonusMod : {bonusMod} Killer : {killer} This : {this.Name}");
+                                RewardLogger.Trace($"Delayed Rewards RP: {renownShare} BonusMod : {bonusMod} Killer : {killer.Name} This : {this.Name}");
                                 closestFlag.RewardManager.AddDelayedRewardsFrom(curPlayer, this, (uint)(xpShare * transferenceFactor), (uint)(renownShare * transferenceFactor));
                                 Region.Campaign.AddContribution(curPlayer, (uint)(renownShare * bonusMod));
                             }

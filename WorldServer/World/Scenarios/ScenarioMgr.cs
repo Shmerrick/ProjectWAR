@@ -843,7 +843,7 @@ namespace WorldServer.Scenarios
             int desiredPlayerCount = Math.Min(orderPlayerCount, destroPlayerCount);
 
             // Dev server case
-            if (desiredPlayerCount == 0)
+            if (info.MinPlayers == 0)
             {
                 if (orderPlayerCount > 0 || destroPlayerCount > 0)
                 {

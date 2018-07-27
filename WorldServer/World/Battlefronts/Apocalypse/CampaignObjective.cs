@@ -547,6 +547,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             _closeOrderCount = orderCount;
             _closeDestroCount = destroCount;
+
+            
         }
 
         /// <summary>
