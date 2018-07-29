@@ -618,30 +618,7 @@ namespace WorldServer
 
                 return;
             }
-            #region Defense
-            // Perform Block/Parry/Dodge/Evasion check  --&& WasDefended(damageInfo, caster, target)
-            //if (damageInfo.DamageEvent > 0 || (!damageInfo.Undefendable ) )
-            //{
-            //    PacketOut outp = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
-
-            //    outp.WriteUInt16(caster.Oid);
-            //    outp.WriteUInt16(target.Oid);
-            //    outp.WriteUInt16(damageInfo.DisplayEntry);
-
-            //    outp.WriteByte(0);
-            //    outp.WriteByte(damageInfo.DamageEvent);
-            //    outp.WriteByte(5);
-
-            //    outp.WriteByte(0);
-
-            //    target.DispatchPacketUnreliable(outp, true, caster);
-
-            //    caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.WasDefended, damageInfo, target);
-            //    target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DefendedAgainst, damageInfo, caster);
-
-            //    return;
-            //}
-            #endregion
+            
 
             if (damageInfo.DamageType != DamageTypes.RawDamage)
             {
