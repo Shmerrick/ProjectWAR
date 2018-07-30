@@ -21,6 +21,7 @@ namespace WorldServer.Scenarios
         public uint DeathBlows;
         public uint Deaths;
         public uint Damage;
+        public uint GuardDamage;
         public uint Healing;
         public uint Renown, EndRenown;
         public uint Xp, EndXP;
@@ -382,7 +383,7 @@ namespace WorldServer.Scenarios
 
         public uint[] Score { get; } = new uint[2];
         private readonly int[] _realmScoreProgress = new int[2];
-        private readonly Dictionary<Player, ScenarioScoreboard> _playersScore = new Dictionary<Player, ScenarioScoreboard>();
+        public Dictionary<Player, ScenarioScoreboard> PlayerScoreboard = new Dictionary<Player, ScenarioScoreboard>();
 
         public virtual bool OnPlayerKilled(Object pkilled, object instigator)
         {
@@ -599,7 +600,7 @@ namespace WorldServer.Scenarios
                 emblemCount[(int)_dominatingRealm - 1] /= 2;
             }
 
-            foreach (Player plr in _playersScore.Keys)
+            foreach (Player plr in PlayerScoreboard.Keys)
             {
                 if (plr == null)
                     continue;
@@ -609,8 +610,8 @@ namespace WorldServer.Scenarios
                 plr.AddXp(endingXp[realmIndex], false, false);
                 plr.AddRenown(endingRenown[realmIndex], false);
 
-                _playersScore[plr].EndXP = endingXp[realmIndex];
-                _playersScore[plr].EndRenown = endingRenown[realmIndex];
+                PlayerScoreboard[plr].EndXP = endingXp[realmIndex];
+                PlayerScoreboard[plr].EndRenown = endingRenown[realmIndex];
 
 
                 if (realmIndex == winningTeam)
@@ -683,12 +684,12 @@ namespace WorldServer.Scenarios
 
                 /*
                 // No kills, no rewards
-                if (_playersScore[player].Kills == 0 || _totalKills[0] == 0)
+                if (PlayerScoreboard[player].Kills == 0 || _totalKills[0] == 0)
                     continue;
 
                 // If this player has too few kill contributions,
-                if (_totalKills[0]/_playersScore[player].Kills > 4)
-                    pointScaleFactor *= _playersScore[player].Kills/(float) _totalKills[0];
+                if (_totalKills[0]/PlayerScoreboard[player].Kills > 4)
+                    pointScaleFactor *= PlayerScoreboard[player].Kills/(float) _totalKills[0];
                 */
 
                 uint curXp = 0;
@@ -716,12 +717,12 @@ namespace WorldServer.Scenarios
 
                 /*
                 // No kills, no rewards
-                if (_playersScore[player].Kills == 0 || _totalKills[1] == 0)
+                if (PlayerScoreboard[player].Kills == 0 || _totalKills[1] == 0)
                     continue;
 
                 // If this player has too few kill contributions, reduce rewards
-                if (_totalKills[1] / _playersScore[player].Kills > 4)
-                    pointScaleFactor *= _playersScore[player].Kills / (float)_totalKills[1];
+                if (_totalKills[1] / PlayerScoreboard[player].Kills > 4)
+                    pointScaleFactor *= PlayerScoreboard[player].Kills / (float)_totalKills[1];
                 */
 
                 uint curXp = 0;
@@ -1054,17 +1055,17 @@ namespace WorldServer.Scenarios
             plr.SendPacket(WorldMgr.ScenarioMgr.BuildScenarioInfo(this));
             SendObjectiveStates(plr);
 
-            foreach (KeyValuePair<Player, ScenarioScoreboard> plrScore in _playersScore)
+            foreach (KeyValuePair<Player, ScenarioScoreboard> plrScore in PlayerScoreboard)
                 plrScore.Value.SendScore(plr);
 
-            if (!_playersScore.ContainsKey(plr))
+            if (!PlayerScoreboard.ContainsKey(plr))
             {
                 ScenarioScoreboard score = new ScenarioScoreboard(plr);
-                _playersScore.Add(plr, score);
+                PlayerScoreboard.Add(plr, score);
             }
 
-            foreach (KeyValuePair<Player, ScenarioScoreboard> plrScore in _playersScore)
-                _playersScore[plr].SendScore(plrScore.Key);
+            foreach (KeyValuePair<Player, ScenarioScoreboard> plrScore in PlayerScoreboard)
+                PlayerScoreboard[plr].SendScore(plrScore.Key);
 
             plr.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_SCENARIO_CHAT_INSTRUCTIONS);
 
@@ -1098,10 +1099,10 @@ namespace WorldServer.Scenarios
                 ScenarioMgr.RemoveFromBalanceVector(BalanceVectors[(byte)plr.Realm - 1], plr);
             }
 
-            if (_playersScore.Keys.Contains(plr))
+            if (PlayerScoreboard.Keys.Contains(plr))
             {
-                _playersScore[plr].ClearEventNotifies();
-                _playersScore.Remove(plr);
+                PlayerScoreboard[plr].ClearEventNotifies();
+                PlayerScoreboard.Remove(plr);
             }
 
             if (!plr.PendingDisposal && plr.Client != null)
@@ -1225,8 +1226,11 @@ namespace WorldServer.Scenarios
 
         public void OnGuardHit(Player attacker, uint damageCount)
         {
-            if (_playersScore.ContainsKey(attacker))
-                _playersScore[attacker].Damage += damageCount;
+            if (PlayerScoreboard.ContainsKey(attacker))
+            {
+                PlayerScoreboard[attacker].Damage += damageCount;
+                PlayerScoreboard[attacker].GuardDamage += damageCount;
+            }
         }
 
         public virtual void SendObjectiveStates(Player plr)
@@ -1242,9 +1246,9 @@ namespace WorldServer.Scenarios
             PacketOut Out = new PacketOut((byte)Opcodes.F_SCENARIO_PLAYER_INFO);
             Out.WriteByte(1); // Scoreboard
             Out.WriteUInt16(0); // Unk
-            Out.WriteByte((byte)_playersScore.Count); // Count
+            Out.WriteByte((byte)PlayerScoreboard.Count); // Count
 
-            foreach (ScenarioScoreboard score in _playersScore.Values)
+            foreach (ScenarioScoreboard score in PlayerScoreboard.Values)
             {
                 Out.WriteUInt32(score.MyPlayer.CharacterId);
                 Out.WriteUInt32(score.SoloKills);
@@ -1443,6 +1447,15 @@ namespace WorldServer.Scenarios
 
             checking.SendClientMessage("Order total kills " + _totalKills[0] + ", spawncamping factor: " + _spawncampingFactor[0]);
             checking.SendClientMessage("Destruction total kills " + _totalKills[1] + ", spawncamping factor: " + _spawncampingFactor[1]);
+        }
+
+
+        public void GetScenarioScore(Player player)
+        {
+            player.SendClientMessage($"Kills:{PlayerScoreboard[player].Kills}" +
+                                     $"Guard Damage:{PlayerScoreboard[player].GuardDamage}" +
+                                     $"Solo Kills:{PlayerScoreboard[player].SoloKills}"+
+                                     $"Healing:{PlayerScoreboard[player].Healing}");
         }
 
         #endregion

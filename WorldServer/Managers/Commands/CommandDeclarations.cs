@@ -305,8 +305,10 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("status",ScenarioStatus, null, EGmLevel.AllStaff, 0, "Shows player count and score of all running scenarios."),
             new GmCommandHandler("balance", CheckBalance, null, EGmLevel.SourceDev, 0, "Checks the current scenario's balance internals."),
             new GmCommandHandler("domination", CheckDomination, null, EGmLevel.SourceDev, 0, "Checks the current scenario's domination internals."),
+            new GmCommandHandler("score", GetScenarioScore, null, EGmLevel.SourceDev, 0, "Returns targets scenario scores."),
             // new GmCommandHandler("rotate", ScenarioRotate, null, EGmLevel.TrustedGM, 0, "Rotates the active scenarios.")
         };
+
 
         /// <summary>Search commands under .search</summary>
         public static List<GmCommandHandler> SearchCommands = new List<GmCommandHandler>

@@ -1857,16 +1857,26 @@ namespace WorldServer.Scenarios
             plr.SendLocalizeString("Queue last updated "+SecondsSinceUpdate+" seconds ago.", ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_MONSTER_EMOTE);
 
             foreach (Scenario_Info info in _instances.Keys)
+            {
                 foreach (byte tier in _instances[info].Keys)
                 {
-                    plr.SendLocalizeString(info.Name + " Tier " + tier, ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_MONSTER_EMOTE);
+                    plr.SendLocalizeString(info.Name + " Tier " + tier, ChatLogFilters.CHATLOGFILTERS_SAY,
+                        Localized_text.CHAT_TAG_MONSTER_EMOTE);
 
                     foreach (Scenario scenario in _instances[info][tier])
                     {
                         if (!scenario.HasEnded)
-                            plr.SendLocalizeString("Order Players: " + scenario.Players[0].Count + " Destro Players: " + scenario.Players[1].Count + " Order Score: " + scenario.Score[0] + " Destro Score: " + scenario.Score[1], ChatLogFilters.CHATLOGFILTERS_MISC, Localized_text.CHAT_TAG_MONSTER_EMOTE);
+                        {
+                            plr.SendLocalizeString(
+                                "Order Players: " + scenario.Players[0].Count + " Destro Players: " +
+                                scenario.Players[1].Count + " Order Score: " + scenario.Score[0] + " Destro Score: " +
+                                scenario.Score[1], ChatLogFilters.CHATLOGFILTERS_MISC,
+                                Localized_text.CHAT_TAG_MONSTER_EMOTE);
+
+                        }
                     }
                 }
+            }
         }
 
         public static byte GetScenarioTier(byte level)
