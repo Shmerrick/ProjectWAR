@@ -1741,7 +1741,7 @@ namespace WorldServer
                 }
 
                 Player attackerPlr = attacker as Player;
-                attackerPlr?.ScnInterface.Scenario?.OnGuardHit((Player)attacker, (uint)tempDmg.Damage);
+                attackerPlr?.ScnInterface.Scenario?.OnGuardHit((Player)attacker, (uint)tempDmg.Damage, (Player)receiver);
             }
 
             receiver.DispatchPacketUnreliable(outl, true, null);

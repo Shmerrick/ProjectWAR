@@ -1224,12 +1224,12 @@ namespace WorldServer.Scenarios
         {
         }
 
-        public void OnGuardHit(Player attacker, uint damageCount)
+        public void OnGuardHit(Player attacker, uint damageCount, Player tank)
         {
             if (PlayerScoreboard.ContainsKey(attacker))
             {
                 PlayerScoreboard[attacker].Damage += damageCount;
-                PlayerScoreboard[attacker].GuardDamage += damageCount;
+                PlayerScoreboard[tank].GuardDamage += damageCount;
             }
         }
 
@@ -1452,10 +1452,10 @@ namespace WorldServer.Scenarios
 
         public void GetScenarioScore(Player player)
         {
-            player.SendClientMessage($"Kills:{PlayerScoreboard[player].Kills}" +
-                                     $"Guard Damage:{PlayerScoreboard[player].GuardDamage}" +
-                                     $"Solo Kills:{PlayerScoreboard[player].SoloKills}"+
-                                     $"Healing:{PlayerScoreboard[player].Healing}");
+            player.SendClientMessage($"Kills:{PlayerScoreboard[player].Kills} " +
+                                     $"Guard Damage:{PlayerScoreboard[player].GuardDamage} " +
+                                     $"Solo Kills:{PlayerScoreboard[player].SoloKills} "+
+                                     $"Healing:{PlayerScoreboard[player].Healing} ");
         }
 
         #endregion
