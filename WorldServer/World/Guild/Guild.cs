@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security;
 using System.Threading;
 using SystemData;
 using Common;
 using FrameWork;
 using GameData;
 using System.Text.RegularExpressions;
+using NLog;
 using WorldServer.Services.World;
 
 namespace WorldServer
@@ -34,6 +36,7 @@ namespace WorldServer
     }
     public class GuildInvitation
     {
+        private static readonly Logger GuildLogger = LogManager.GetLogger("GuildLogger");
         private Player _owner;
         private Dictionary<Player, bool> _invites = new Dictionary<Player, bool>();
         private string _name;
@@ -76,15 +79,24 @@ namespace WorldServer
         {
             foreach (Player plr in _invites.Keys)
             {
+                LogGuildBug(plr);
                 PacketOut Out = new PacketOut((byte)Opcodes.F_PLAYERORG_APPROVAL, 32);
                 Out.WriteUInt16(0);
                 Out.WriteStringToZero(_name);
                 plr.SendPacket(Out);
             }
         }
+        private void LogGuildBug(Player plr)
+        {
+            if (plr.Name.Contains("Arena") || plr.Name.Contains("Poko") || plr.Name.Contains("Bram") || plr.Name.Contains("Dacrusha") || plr.Name.Contains("Angrone"))
+            {
+                GuildLogger.Debug($"{plr.Name}");
+            }
 
+        }
         public void InviteResponse(Player plr, bool accepted)
         {
+            LogGuildBug(plr);
             if (!_invites.Keys.Contains(plr))
             {
                 foreach (Player invtPlr in _invites.Keys)
@@ -117,6 +129,8 @@ namespace WorldServer
 
         private void CheckInvites()
         {
+            GuildLogger.Debug("...");
+
             foreach (KeyValuePair<Player, bool> invite in _invites)
             {
                 if (invite.Value == false)
@@ -252,6 +266,7 @@ namespace WorldServer
     public class Guild
     {
         #region Statics (Global guild management)
+        private static readonly Logger GuildLogger = LogManager.GetLogger("GuildLogger");
 
         public static List<Guild> Guilds = new List<Guild>();
         public static int MaxGuildGUID = 1;
@@ -336,6 +351,9 @@ namespace WorldServer
 
         public static void BuildGuild(ref PacketOut Out, Guild guild)
         {
+           GuildLogger.Debug("...");
+
+
             Out.WriteUInt32(guild.Info.GuildId);
             Out.WriteByte(guild.Info.Level); //level
             Out.WriteShortString(guild.Info.Name);
@@ -362,6 +380,7 @@ namespace WorldServer
 
         public static void SendNullGuild(Player plr)
         {
+            GuildLogger.Debug("...");
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA, 2);
             Out.WriteUInt16(0);
             plr.SendPacket(Out);
@@ -443,6 +462,7 @@ namespace WorldServer
 
         public Guild(Guild_info info)
         {
+            GuildLogger.Debug("...");
             this.Info = info;
 
             //info.Banner.Split(";")[0];
@@ -511,6 +531,7 @@ namespace WorldServer
 
         public void SendGuildInfo(Player plr)
         {
+            LogGuildBug(plr);
             // This clears the guild interface
             SendNullGuild(plr);
 
@@ -552,6 +573,7 @@ namespace WorldServer
 
         public void SendGuildProfile(Player plr)
         {
+            LogGuildBug(plr);
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA, 256);
             Out.WriteByte(1);
             Out.WriteUInt16(0);
@@ -577,6 +599,7 @@ namespace WorldServer
 
         public void SendGuildRanks(Player plr)
         {
+            LogGuildBug(plr);
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA, 3 + Info.Ranks.Count * 20);
             Out.WriteByte(4);
             Out.WriteByte(1);
@@ -599,6 +622,7 @@ namespace WorldServer
 
         public void SendAllMembers(Player plr)
         {
+            LogGuildBug(plr);
             byte count = 0;
 
             PacketOut buffer = new PacketOut(0);
@@ -652,6 +676,7 @@ namespace WorldServer
 
         public void SendAllNotes(Player plr)
         {
+            LogGuildBug(plr);
             byte count = 0;
 
             PacketOut buffer = new PacketOut(0);
@@ -679,6 +704,7 @@ namespace WorldServer
 
         private void SendBuffer(Player plr, ref PacketOut buffer, byte type, ref byte count ,bool first)
         {
+            LogGuildBug(plr);
             byte[] arrayBuf = buffer.ToArray();
             PacketOut packet = new PacketOut((byte)Opcodes.F_GUILD_DATA);
             packet.WriteByte(type);
@@ -711,6 +737,7 @@ namespace WorldServer
 
         public void SendMember(Player plr, Guild_member guildPlr)
         {
+            LogGuildBug(plr);
             Player onlinePlr = GetGuildPlayer(guildPlr.CharacterId);
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
@@ -747,6 +774,7 @@ namespace WorldServer
 
         public void SendGuildXp(Player plr)
         {
+            LogGuildBug(plr);
             Guild_Xp xpCurr = GuildService.GetGuild_Xp(Info.Level);
             Guild_Xp xpNext = GuildService.GetGuild_Xp((byte)(Info.Level + 1));
 
@@ -771,6 +799,7 @@ namespace WorldServer
 
         public void SendGuildTax(Player plr)
         {
+            LogGuildBug(plr);
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
             Out.WriteByte(0x1E);
             Out.WriteByte(0x1E);
@@ -782,6 +811,7 @@ namespace WorldServer
 
         public void SendAlliance(Player plr)
         {
+            LogGuildBug(plr);
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
             Out.WriteByte(0x07);
             Out.WriteByte(0x0);
@@ -809,6 +839,7 @@ namespace WorldServer
 
         public void SendAllianceGuilds(Player Plr)
         {
+            GuildLogger.Debug("...");
             foreach (uint guildid in Alliance.Alliances[Info.AllianceId].Members)
             {
                 List<Guild_member> officers = new List<Guild_member>();
@@ -872,6 +903,7 @@ namespace WorldServer
 
         public void SendAlliancePlayerCount(Player plr)
         {
+            LogGuildBug(plr);
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
             Out.WriteByte(0x09);
             Out.WriteByte((byte)Alliance.Alliances[Info.AllianceId].Members.Count);
@@ -1190,6 +1222,7 @@ namespace WorldServer
 
         public void SendGuildVault(Player plr)
         {
+            LogGuildBug(plr);
             if (Info.Level < 3)
                 return;
 
@@ -1199,12 +1232,14 @@ namespace WorldServer
 
         public void SendVaultUpdate()
         {
+            GuildLogger.Debug("...");
             foreach (Player plr in GuildVaultUser)
                 SendVaultUpdate(plr);
         }
 
         public void SendVaultUpdate(Player plr)
         {
+            LogGuildBug(plr);
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
             Out.WriteByte(0x18);
 
@@ -1320,6 +1355,7 @@ namespace WorldServer
 
         public void SendGuildTactics(Player plr)
         {
+            LogGuildBug(plr);
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
             Out.WritePacketString(@"|0C 48 38 D1 00 00 38 D2 38 D1 38 D3 38 |...H8...8.8.8.8|
 |D2 38 D4 00 00 38 D5 38 D4 38 D6 38 D5 38 D7 00 |.8...8.8.8.8.8..|
@@ -1346,6 +1382,7 @@ namespace WorldServer
 
         public void SendGuildTacticsPurchased(Player plr)
         {
+            LogGuildBug(plr);
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
             Out.WriteByte(0x0B);
             Out.WriteByte(0);
@@ -1388,7 +1425,7 @@ namespace WorldServer
 
         public void GuildsTacticRespec(Player plr)
         {
-
+            LogGuildBug(plr);
             if (!HasPermissions(Info.Ranks[Info.Members[plr.CharacterId].RankId], GuildPermissions.GUILDPERMISSONS_BANNER_MANAGEMENT))
             {
                 plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GUILD_GENERAL_NO_PERMISSION);
@@ -1429,6 +1466,7 @@ namespace WorldServer
 
         public void TrainGuildTactics(byte slot, ushort spell)
         {
+            GuildLogger.Debug("...");
             Info.GuildTacticsPurchased[slot] = spell;
             CharMgr.Database.SaveObject(Info);
             SendGuildTacticsPurchased(null);
@@ -1436,7 +1474,7 @@ namespace WorldServer
 
         public void SendGuildHeraldry(Player plr)
         {
-            
+            LogGuildBug(plr);
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
             Out.WriteByte(0x13);
             Out.WriteByte(0);
@@ -1450,7 +1488,8 @@ namespace WorldServer
 
         public void BuildHeraldry(PacketOut Out)
         {
-            if(Info.Level<20 && Info.Realm == 1)
+            GuildLogger.Debug("...");
+            if (Info.Level<20 && Info.Realm == 1)
                 Out.WriteUInt16(1);  // chaos
             else if (Info.Level < 20 && Info.Realm == 2)
                 Out.WriteUInt16(2);  // chaos
@@ -1464,6 +1503,7 @@ namespace WorldServer
 
         public void SendGuildBanner(Player plr)
         {
+            LogGuildBug(plr);
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
             Out.WriteByte(0x0D);
             Out.WriteByte(0);
@@ -1634,6 +1674,7 @@ namespace WorldServer
 
         public void SaveBanner(byte banner, byte post, ushort spell1, ushort spell2, ushort spell3)
         {
+            GuildLogger.Debug($"...");
             _banners[banner, 0] = post;
             _banners[banner, 1] = spell1;
             _banners[banner, 2] = spell2;
@@ -1662,6 +1703,7 @@ namespace WorldServer
 
         public void SendGuildLog(Guild_log log, bool all, Player plr)
         {
+            LogGuildBug(plr);
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
             Out.WriteByte(0x0F);
             Out.WriteByte(1);
@@ -1679,6 +1721,7 @@ namespace WorldServer
 
         public void SendGuildRecruitment(Player plr)
         {
+            LogGuildBug(plr);
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
             Out.WriteByte(0x14); // 20 - Guild Recruitment Info
             Out.WriteByte(1); // Count?
@@ -1693,6 +1736,7 @@ namespace WorldServer
 
         public void SendGuildPlayerContributed(Player plr, Guild_member guildPlr)
         {
+            LogGuildBug(plr);
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
             Out.WriteByte(0x21); 
             Out.WriteByte(1);
@@ -1712,6 +1756,7 @@ namespace WorldServer
 
         public bool CanAddTo(Player player, int vaultIndex)
         {
+            LogGuildBug(player);
             GuildPermissions permission = GuildPermissions.GUILDPERMISSONS_VAULT1_ADD_ITEM;
 
             switch (vaultIndex)
@@ -1744,6 +1789,7 @@ namespace WorldServer
 
         public bool CanTakeFrom(Player player, int vaultIndex)
         {
+            LogGuildBug(player);
             GuildPermissions permission = GuildPermissions.GUILDPERMISSONS_VAULT1_TAKE_ITEM; ;
 
             switch (vaultIndex)
@@ -1776,6 +1822,7 @@ namespace WorldServer
 
         public void BuyVaultSlot(Player plr, byte vault, uint money)
         {
+            LogGuildBug(plr);
             if (!plr.RemoveMoney(money))
             {
                 plr.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GUILD_VAULT_EXPANSION_NO_MONEY);
@@ -1789,6 +1836,7 @@ namespace WorldServer
 
         public void DepositMoney(Player plr, uint money)
         {
+            LogGuildBug(plr);
             if (!HasPermissions(Info.Ranks[Info.Members[plr.CharacterId].RankId], GuildPermissions.GUILDPERMISSONS_VAULT_DEPOSIT))
             {
                 plr.SendLocalizeString(Info.Ranks[Info.Members[plr.CharacterId].RankId].Name, ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GUILD_VAULT_RANK_X_NO_DEPOSIT_MONEY);
@@ -1815,6 +1863,7 @@ namespace WorldServer
 
         public void WithdrawMoney(Player plr, uint money)
         {
+            LogGuildBug(plr);
             if (!HasPermissions(Info.Ranks[Info.Members[plr.CharacterId].RankId], GuildPermissions.GUILDPERMISSONS_VAULT_WITHDRAW))
             {
                 plr.SendLocalizeString(Info.Ranks[Info.Members[plr.CharacterId].RankId].Name, ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GUILD_VAULT_RANK_X_NO_WITHDRAW_MONEY);
@@ -1836,6 +1885,7 @@ namespace WorldServer
 
         public void MoveVaultItem(Player plr, byte sourceVault, ushort sourceSlot, byte destVault, ushort destSlot)
         {
+            LogGuildBug(plr);
             if (!CanTakeFrom(plr, sourceVault) || !CanAddTo(plr, destVault))
                 return;
 
@@ -1879,6 +1929,9 @@ namespace WorldServer
 
         public void DepositVaultItem(Player plr, byte destVault, ushort destSlot, ushort itemSlot)
         {
+
+            LogGuildBug(plr);
+
             Item item = plr.ItmInterface.GetItemInSlot(itemSlot);
 
             if (item == null)
@@ -1950,8 +2003,18 @@ namespace WorldServer
             SendVaultUpdate();
         }
 
+        private void LogGuildBug(Player plr)
+        {
+            if (plr.Name.Contains("Arena") || plr.Name.Contains("Poko") || plr.Name.Contains("Bram") || plr.Name.Contains("Dacrusha") || plr.Name.Contains("Angrone"))
+            {
+                GuildLogger.Debug($"{plr.Name}");
+            }
+
+        }
+
         public void WithdrawVaultItem(Player plr, byte sourceVault, ushort sourceSlot, ushort itemSlot)
         {
+            LogGuildBug(plr);
             if (!CanTakeFrom(plr, sourceVault))
                 return;
 
@@ -1982,6 +2045,7 @@ namespace WorldServer
 
         public void LockVaultItem(Player plr, byte vault, byte slot, byte itemslot)
         {
+            LogGuildBug(plr);
             if (!CanTakeFrom(plr, vault))
                 return;
 
@@ -1997,6 +2061,7 @@ namespace WorldServer
 
         public void ReleaseVaultItemLock(Player plr, byte vault, byte slot)
         {
+            LogGuildBug(plr);
             GuildVaultItem gv;
 
             lock (Info.Vaults)
@@ -2011,6 +2076,7 @@ namespace WorldServer
 
         public void GuildVaultClosed(Player plr)
         {
+            LogGuildBug(plr);
             GuildVaultUser.Remove(plr);
         }
 
@@ -2196,6 +2262,7 @@ namespace WorldServer
 
         public Player GetGuildPlayer(uint id)
         {
+            GuildLogger.Debug($"...");
             foreach (Player plr in OnlineMembers)
             {
                 if (plr.Info.CharacterId == id)
@@ -2207,6 +2274,7 @@ namespace WorldServer
 
         public void SendToGuild(PacketOut Out)
         {
+            GuildLogger.Debug($"...");
             foreach (Player plr in OnlineMembers)
             {
                 plr.SendCopy(Out);
@@ -2215,6 +2283,7 @@ namespace WorldServer
 
         public void AddOnlineMember(Player plr)
         {
+            LogGuildBug(plr);
             lock (OnlineMembers)
             {
                 OnlineMembers.Add(plr);
@@ -2230,6 +2299,7 @@ namespace WorldServer
 
         public void RemoveOnlineMember(Player plr)
         {
+            LogGuildBug(plr);
             lock (OnlineMembers)
             {
                 OnlineMembers.Remove(plr);
@@ -2252,6 +2322,7 @@ namespace WorldServer
 
         public void JoinGuild(Player plr)
         {
+            LogGuildBug(plr);
             Guild_member member = new Guild_member
             {
                 CharacterId = plr.Info.CharacterId,
