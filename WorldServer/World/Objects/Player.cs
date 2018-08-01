@@ -3926,7 +3926,7 @@ namespace WorldServer
                     influenceId = (killer.Realm == Realms.REALMS_REALM_DESTRUCTION) ? (ushort) killer.CurrentArea.DestroInfluenceId : (ushort) killer.CurrentArea.OrderInfluenceId;
                 }
 
-                float rewardScale = Region.ndbf.ModifyKill(killer, this);
+                float rewardScale = Region.Campaign.ModifyKill(killer, this);
 
                 // Maximum 25% bonus depending on how much damage the target took while alive.
                 rewardScale += Math.Min(0.25f, (TotalDamageTaken * 0.05f) / MaxHealth);
@@ -3943,7 +3943,7 @@ namespace WorldServer
                         _recentLooters.Add(killer.CharacterId, TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL);
                     else _recentLooters[killer.CharacterId] = TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL;
                 }
-#endif
+
                 var rewardDictionary = Region.RewardManager.GenerateBaseReward((this).Info.CharacterId, StaticRandom.Instance.Next(1, 100));
                 
                 foreach (var reward in rewardDictionary)

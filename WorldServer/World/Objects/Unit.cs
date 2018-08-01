@@ -4,7 +4,6 @@ using Common;
 using FrameWork;
 using GameData;
 using NLog;
-using WarZoneLib;
 using WorldServer.World.Battlefronts.Bounty;
 
 namespace WorldServer
