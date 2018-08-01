@@ -1,7 +1,7 @@
 ﻿using System;
 using GameData;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using WorldServer.World.Battlefronts.NewDawn;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer.Test
 {
@@ -11,7 +11,7 @@ namespace WorldServer.Test
         [TestMethod]
         public void EqualPlayerNumbers()
         {
-            var ndBO = new NewDawnBattlefieldObjective();
+            var ndBO = new CampaignObjective();
 
             var objectiveMultiplierDest = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_DESTRUCTION, 10, 10);
 
@@ -33,7 +33,7 @@ namespace WorldServer.Test
         [TestMethod]
         public void SmallDestroDefendingBO()
         {
-            var ndBO = new NewDawnBattlefieldObjective();
+            var ndBO = new CampaignObjective();
 
             var objectiveMultiplierDest = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_DESTRUCTION, 50, 5);
 
@@ -43,7 +43,7 @@ namespace WorldServer.Test
         [TestMethod]
         public void SmallOrderDefendingBO()
         {
-            var ndBO = new NewDawnBattlefieldObjective();
+            var ndBO = new CampaignObjective();
 
             var objectiveMultiplierOrder = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_ORDER, 5, 50);
 
@@ -53,7 +53,7 @@ namespace WorldServer.Test
         [TestMethod]
         public void SmallDestroAttackingBO()
         {
-            var ndBO = new NewDawnBattlefieldObjective();
+            var ndBO = new CampaignObjective();
 
             var objectiveMultiplierDest = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_DESTRUCTION, 5, 50);
 
@@ -63,7 +63,7 @@ namespace WorldServer.Test
         [TestMethod]
         public void SmallOrderAttackingBO()
         {
-            var ndBO = new NewDawnBattlefieldObjective();
+            var ndBO = new CampaignObjective();
 
             var objectiveMultiplierOrder = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_ORDER, 50, 5);
 

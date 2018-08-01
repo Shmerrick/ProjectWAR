@@ -11,16 +11,17 @@ using System.Threading.Tasks;
 
 using Common;
 using FrameWork;
-using WorldServer.World.Battlefronts;
+using WorldServer.World.BattleFronts;
 using GameData;
 using WorldServer.World.Objects.PublicQuests;
 using WorldServer.Scenarios;
-using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.BattleFronts.Objectives;
 using Common.Database.World.Maps;
 using NLog;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
+using BattleFrontConstants = WorldServer.World.Battlefronts.Apocalypse.BattleFrontConstants;
 using WorldServer.World.Battlefronts.Bounty;
-using WorldServer.World.Battlefronts.NewDawn;
 
 namespace WorldServer
 {
@@ -34,13 +35,13 @@ namespace WorldServer
         public static int MaxVisibilityRange = 400; // It was 400 on Age of Reckoning
 
         private long _lastRegionUpdate = TCPManager.GetTimeStampMS();
-
+        public IApocCommunications ApocCommunications { get; set; }
         public ushort RegionId;
         private readonly Thread _updater;
         private bool _running = true;
         public List<Zone_Info> ZonesInfo;
-        public IBattlefront Bttlfront;
-        public NewDawnBattlefront ndbf;
+        
+        public Campaign Campaign;
         public Scenario Scenario;
         public string RegionName;
         public ImpactMatrixManager ImpactMatrix;
@@ -51,12 +52,13 @@ namespace WorldServer
         /// <summary>Races associated with the pairing, may be null</summary>
         private readonly Races[] _races;
 
-        public RegionMgr(ushort regionId, List<Zone_Info> zones, string name)
+        public RegionMgr(ushort regionId, List<Zone_Info> zones, string name, IApocCommunications apocCommunications)
         {
+            ApocCommunications = apocCommunications;
             RegionId = regionId;
             ZonesInfo = zones;
             RegionName = name;
-
+            
             LoadSpawns();
 
             ImpactMatrix = new ImpactMatrixManager();
@@ -92,47 +94,47 @@ namespace WorldServer
                 //    case 2:
                 //    case 4:
                 //    case 11: // This is T4
-                //        Bttlfront = new ProximityProgressingBattlefront(this, true);
+                //        Bttlfront = new ProximityProgressingBattleFront(this, true);
                 //        break;
                 //    case 1: // t1 dw/gs
                 //    case 3: // t1 he/de
                 //    case 8: // t1 em/ch
-                // Bttlfront = new T1Battlefront(this, true);
+                // Bttlfront = new T1BattleFront(this, true);
                 //        break;
                 //    case 12: // T2
-                //        Bttlfront = new T1Battlefront(this, true);
+                //        Bttlfront = new T1BattleFront(this, true);
                 //        break;
                 //    case 14: // T2
-                //        Bttlfront = new T1Battlefront(this, true);
+                //        Bttlfront = new T1BattleFront(this, true);
                 //        break;
                 //    case 15: // T2
-                //        Bttlfront = new T1Battlefront(this, true);
+                //        Bttlfront = new T1BattleFront(this, true);
                 //        break;
                 //    case 6:  // T3
-                //        Bttlfront = new T1Battlefront(this, true);
+                //        Bttlfront = new T1BattleFront(this, true);
                 //        break;
                 //    case 10: // T3
-                //        Bttlfront = new T1Battlefront(this, true);
+                //        Bttlfront = new T1BattleFront(this, true);
                 //        break;
                 //    case 16: // T3
-                //        Bttlfront = new T1Battlefront(this, true);
+                //        Bttlfront = new T1BattleFront(this, true);
                 //        break;
                 //    default: // Everything else...
-                //        Bttlfront = new ProximityBattlefront(this, false);
+                //        Bttlfront = new ProximityBattleFront(this, false);
                 //        break;
                 //}
 
-                switch (regionId)
-                {
-                    case 1: // t1 dw/gs
-                    case 3: // t1 he/de
-                    case 8: // t1 em/ch
-                        ndbf = new NewDawnBattlefront(this, new List<BattlefrontObjective>(), new HashSet<Player>(), WorldMgr.LowerTierBattlefrontManager);
-                        break;
-                    default: // Everything else...
-                        ndbf = new NewDawnBattlefront(this, new List<BattlefrontObjective>(), new HashSet<Player>(), WorldMgr.UpperTierBattlefrontManager);
-                        break;
-                }
+                //switch (regionId)
+                //{
+                //    case 1: // t1 dw/gs
+                //    case 3: // t1 he/de
+                //    case 8: // t1 em/ch
+                //        Campaign = new Campaign(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.LowerTierCampaignManager);
+                //        break;
+                //    default: // Everything else...
+                //        Campaign = new Campaign(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.UpperTierCampaignManager);
+                //        break;
+                //}
             }
             else
             {
@@ -141,12 +143,12 @@ namespace WorldServer
                 //    case 2:
                 //    case 4:
                 //    case 11: // This is T4
-                //        Bttlfront = new ProgressingBattlefront(this, true);
+                //        Bttlfront = new ProgressingBattleFront(this, true);
                 //        break;
                 //    case 1: // t1 dw/gs
                 //    case 3: // t1 he/de
                 //    case 8: // t1 em/ch
-                //        Bttlfront = new T1Battlefront(this, true);
+                //        Bttlfront = new T1BattleFront(this, true);
                 //        break;
                 //    case 12: // T2
                 //    case 14: // T2
@@ -154,10 +156,10 @@ namespace WorldServer
                 //    case 6:  // T3
                 //    case 10: // T3
                 //    case 16: // T3
-                //        Bttlfront = new Battlefront(this, zones.First().Type == 0);
+                //        Bttlfront = new Campaign(this, zones.First().Type == 0);
                 //        break;
                 //    default: // Everything else...
-                //        Bttlfront = new Battlefront(this, false);
+                //        Bttlfront = new Campaign(this, false);
                 //        break;
                 //}
             }
@@ -181,13 +183,7 @@ namespace WorldServer
             _updater.Start();
         }
 
-        public string GetBattleFrontStatus()
-        {
-            var activePairing = this.ndbf.BattleFrontManager.GetActivePairing();
-
-            return $"Victory Points Progress for {activePairing.PairingName} : {this.ndbf.VictoryPointProgress.ToString()}";
-
-        }
+       
 
         public void Stop()
         {
@@ -312,7 +308,7 @@ namespace WorldServer
                     UpdateActors(start);
 
                     //Bttlfront?.Update(start);
-                    ndbf?.Update(start);
+                    Campaign?.Update(start);
                 }
 
                 catch (Exception e)
@@ -395,8 +391,9 @@ namespace WorldServer
                         {
                             //Bttlfront?.SendObjectives(plr);
 
-                            ndbf?.SendObjectives(plr);
-                            WorldMgr.SendCampaignStatus(plr);
+                            Campaign?.SendObjectives(plr);
+                            // ApocCommunications.SendCampaignStatus(plr, Campaign?.VictoryPointProgress, (Campaign?.VictoryPointProgress.DestructionVictoryPoints >= BattleFrontConstants.LOCK_VICTORY_POINTS) ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER);
+                            WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
                         }
                     }
                     _objectsToAdd.Clear();
@@ -481,7 +478,7 @@ namespace WorldServer
 
                     if (obj is Player)
                         ((Player)obj).SendClientMessage(e.GetType().Name + " was thrown from " + e.TargetSite?.Name + ".");
-                    else if (obj is IBattlefrontFlag)
+                    else if (obj is IApocBattleFront)
                     {
                         try
                         {

@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.BattleFronts.Keeps;
 
-namespace WorldServer.World.Battlefronts
+namespace WorldServer.World.BattleFronts
 {
     internal class RationTracker
     {

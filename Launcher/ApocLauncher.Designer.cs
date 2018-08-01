@@ -65,7 +65,6 @@ namespace Launcher
             this.buttonPanelCreateAccount = new System.Windows.Forms.Button();
             this.lblVersion = new System.Windows.Forms.Label();
             this.bnConnectLocal = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.panelCreateAccount.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -409,7 +408,6 @@ namespace Launcher
             this.BackgroundImage = global::Launcher.Properties.Resources.final1;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(1280, 720);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.bnConnectLocal);
             this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.buttonPanelCreateAccount);
@@ -470,7 +468,6 @@ namespace Launcher
         private System.Windows.Forms.Button bnCreateLocal;
         private System.Windows.Forms.Button buttonAccountClose;
         private Button bnConnectLocal;
-        private Button button1;
     }
 }
 

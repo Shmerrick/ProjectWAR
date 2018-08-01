@@ -240,7 +240,7 @@ namespace WorldServer
                                 {
                                     if (lgi == null)
                                         continue;
-                                    if (deadPlayer.Level < 40 && deadPlayer.RenownRank < 41 && corpseRenown < looter.GetPlayer().RenownRank && looter.RenownRank > 40)
+                                    if (deadPlayer.Level < 41 && deadPlayer.RenownRank < 41 && corpseRenown < looter.GetPlayer().RenownRank && looter.RenownRank > 40)
                                     {
                                         if (lgi.ItemID == 208470 || lgi.ItemID == 208470 || lgi.ItemID == 208470)
                                             candidateItems.Add(lgi);

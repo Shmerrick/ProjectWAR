@@ -31,7 +31,7 @@ namespace WorldServer
 
         public RvRStructure(RvRObjectInfo info, Point3D loc, ushort rot, Player constructor)
         {
-            _logger.Debug($"RVRStructure constructor {info.ModelId} {info.Name} {loc.ToString()} {rot} {constructor.Name}");
+            // _logger.Debug($"RVRStructure constructor {info.ModelId} {info.Name} {loc.ToString()} {rot} {constructor.Name}");
 
             WorldPosition.X = loc.X;
             WorldPosition.Y = loc.Y;
@@ -63,7 +63,7 @@ namespace WorldServer
             base.OnLoad();
             IsActive = true;
 
-            _logger.Debug($"RVRStructure OnLoad Oid={Oid} {IsActive} {Faction} {Realm} {Level} {X} {Y} {Z} {XOffset} {YOffset} ");
+            // _logger.Debug($"RVRStructure OnLoad Oid={Oid} {IsActive} {Faction} {Realm} {Level} {X} {Y} {Z} {XOffset} {YOffset} ");
 
         }
 
@@ -142,7 +142,7 @@ namespace WorldServer
                     break;
             }
 
-            _logger.Debug($"RVRStructure Sendinteract Oid={Oid} {IsActive} {_buildState} {Faction} {Realm} {Level} {X} {Y} {Z} {XOffset} {YOffset} ");
+            // _logger.Debug($"RVRStructure Sendinteract Oid={Oid} {IsActive} {_buildState} {Faction} {Realm} {Level} {X} {Y} {Z} {XOffset} {YOffset} ");
         }
 
         public override void Update(long tick)
@@ -179,8 +179,8 @@ namespace WorldServer
 
             RvRStructure curStruct = plr.CbtInterface.GetCurrentTarget() as RvRStructure;
 
-            RvRObjectInfo info = BattlefrontService.GetRvRObjectInfo(entry);
-            _logger.Debug($"RVRStructure BattlefrontService.GetRvRObjectInfo Entry={entry} info={info.Name} {info.ModelId} {info.ObjectId}");
+            RvRObjectInfo info = BattleFrontService.GetRvRObjectInfo(entry);
+            // _logger.Debug($"RVRStructure BattleFrontService.GetRvRObjectInfo Entry={entry} info={info.Name} {info.ModelId} {info.ObjectId}");
 
             if (curStruct != null)
             {
@@ -237,7 +237,7 @@ namespace WorldServer
 
             plr.Region.AddObject(newStruct, plr.Zone.ZoneId, true);
 
-            _logger.Debug($"RVRStructure CreateNew Entry={entry} {curStruct.Name} {curStruct.Oid} Zone={plr.Zone.ZoneId}");
+            // _logger.Debug($"RVRStructure CreateNew Entry={entry} {curStruct.Name} {curStruct.Oid} Zone={plr.Zone.ZoneId}");
         }
 
         private void ProcessConstruction(long tick)

@@ -1,23 +1,4 @@
-﻿/*
- * Copyright (C) 2014 WarEmu
- *	http://WarEmu.com
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -600,12 +581,14 @@ namespace WorldServer.Scenarios
                     Log.Error("ScenarioMgr", e.ToString());
                 }
 
+                /*
                 if (Program.Rm.NextRotationTime < TCPManager.GetTimeStamp())
                 {
                     RotateScenarios();
                     Program.Rm.NextRotationTime += 60*60*24*7;
                     Program.AcctMgr.UpdateRealmScenarioRotationTime(Program.Rm.RealmId, Program.Rm.NextRotationTime);
                 }
+                */
 
                 long curTime = TCPManager.GetTimeStampMS();
 
@@ -855,18 +838,12 @@ namespace WorldServer.Scenarios
             // 2/2/2 balance as well as is possible) is above the scenario's minimum player threshold.
             int orderPlayerCount = _queuedPlayers[info][tier][0].GetMaxInitiallyFieldable();
 
-            if (orderPlayerCount < info.MinPlayers)
-                return;
-
             int destroPlayerCount = _queuedPlayers[info][tier][1].GetMaxInitiallyFieldable();
-
-            if (destroPlayerCount < info.MinPlayers)
-                return;
 
             int desiredPlayerCount = Math.Min(orderPlayerCount, destroPlayerCount);
 
             // Dev server case
-            if (desiredPlayerCount == 0)
+            if (info.MinPlayers == 0)
             {
                 if (orderPlayerCount > 0 || destroPlayerCount > 0)
                 {
@@ -876,6 +853,17 @@ namespace WorldServer.Scenarios
                 }
                 return;
             }
+
+            if (destroPlayerCount < info.MinPlayers)
+                return;
+
+
+            if (orderPlayerCount < info.MinPlayers)
+                return;
+
+          
+
+           
 
             List<Player> orderPlayers = _queuedPlayers[info][tier][0].GetPlayers(desiredPlayerCount);
             List<Player> destroPlayers = _queuedPlayers[info][tier][1].GetPlayers(desiredPlayerCount);
@@ -1576,8 +1564,9 @@ namespace WorldServer.Scenarios
 
         #region Scenario Rotation
 
-        const int MAX_SCENARIOS = 9;
+        const int MAX_SCENARIOS = 2;
 
+        /*
         public void RotateScenarios()
         {
             RemoveAllSoloPlayers();
@@ -1620,6 +1609,7 @@ namespace WorldServer.Scenarios
                 }
             }
         }
+        */
 
         private void RemoveAllSoloPlayers()
         {
@@ -1867,16 +1857,26 @@ namespace WorldServer.Scenarios
             plr.SendLocalizeString("Queue last updated "+SecondsSinceUpdate+" seconds ago.", ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_MONSTER_EMOTE);
 
             foreach (Scenario_Info info in _instances.Keys)
+            {
                 foreach (byte tier in _instances[info].Keys)
                 {
-                    plr.SendLocalizeString(info.Name + " Tier " + tier, ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_MONSTER_EMOTE);
+                    plr.SendLocalizeString(info.Name + " Tier " + tier, ChatLogFilters.CHATLOGFILTERS_SAY,
+                        Localized_text.CHAT_TAG_MONSTER_EMOTE);
 
                     foreach (Scenario scenario in _instances[info][tier])
                     {
                         if (!scenario.HasEnded)
-                            plr.SendLocalizeString("Order Players: " + scenario.Players[0].Count + " Destro Players: " + scenario.Players[1].Count + " Order Score: " + scenario.Score[0] + " Destro Score: " + scenario.Score[1], ChatLogFilters.CHATLOGFILTERS_MISC, Localized_text.CHAT_TAG_MONSTER_EMOTE);
+                        {
+                            plr.SendLocalizeString(
+                                "Order Players: " + scenario.Players[0].Count + " Destro Players: " +
+                                scenario.Players[1].Count + " Order Score: " + scenario.Score[0] + " Destro Score: " +
+                                scenario.Score[1], ChatLogFilters.CHATLOGFILTERS_MISC,
+                                Localized_text.CHAT_TAG_MONSTER_EMOTE);
+
+                        }
                     }
                 }
+            }
         }
 
         public static byte GetScenarioTier(byte level)

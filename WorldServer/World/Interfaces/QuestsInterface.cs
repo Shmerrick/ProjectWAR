@@ -606,7 +606,7 @@ namespace WorldServer
                                 break;
 
                             case Objective_Type.QUEST_CAPTURE_BO:
-                                if (objective.Objective.BattlefrontObjective != null && entry == objective.Objective.BattlefrontObjective.Entry)
+                                if (objective.Objective.BattleFrontObjective != null && entry == objective.Objective.BattleFrontObjective.Entry)
                                 {
                                     canAdd = true;
                                     newCount += count;

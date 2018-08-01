@@ -1,8 +1,8 @@
-﻿using Common.Database.World.Battlefront;
+﻿using Common.Database.World.BattleFront;
 using GameData;
 using SystemData;
 
-namespace WorldServer.World.Battlefronts.Objectives
+namespace WorldServer.World.BattleFronts.Objectives
 {
     /// <summary>
     /// Game object representing a portal around an objective
@@ -13,12 +13,12 @@ namespace WorldServer.World.Battlefronts.Objectives
         private const string NAME = "Portal to warcamp";
 
         /// <summary>Portal targets depending on realm</summary>
-        private BattlefrontObject _orderTarget, _destroTarget;
+        private BattleFrontObject _orderTarget, _destroTarget;
         private Point3D _orderTargetPos, _destroTargetPos;
 
         public PortalToWarcamp(
-            BattlefrontObject origin,
-            BattlefrontObject orderTarget, BattlefrontObject destroTarget)
+            BattleFrontObject origin,
+            BattleFrontObject orderTarget, BattleFrontObject destroTarget)
             : base(origin)
         {
             Name = NAME;
@@ -40,7 +40,7 @@ namespace WorldServer.World.Battlefronts.Objectives
             }
 
             // Gets the port target
-            BattlefrontObject target;
+            BattleFrontObject target;
             Point3D targetPos;
             if (player.Realm == Realms.REALMS_REALM_ORDER)
             {

@@ -3,19 +3,18 @@ using System;
 using System.Collections.Generic;
 using SystemData;
 using static WorldServer.Managers.Commands.GMUtils;
-using WorldServer.World.Battlefronts;
+using WorldServer.World.BattleFronts;
 using FrameWork;
 using System.Reflection;
 using System.Linq;
 using System.Text.RegularExpressions;
 using GameData;
-using Common.Database.World.Battlefront;
-using WorldServer.World.Battlefronts.Keeps;
-using WorldServer.World.Battlefronts.Objectives;
+using Common.Database.World.BattleFront;
+using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.NewDawn;
-using BattlefrontConstants = WorldServer.World.Battlefronts.NewDawn.BattlefrontConstants;
-using WorldServer.World.Battlefronts.NewDawn;
+using WorldServer.World.Battlefronts.Apocalypse;
+using BattleFrontConstants = WorldServer.World.Battlefronts.Apocalypse.BattleFrontConstants;
 
 namespace WorldServer.Managers.Commands
 {
@@ -30,7 +29,7 @@ namespace WorldServer.Managers.Commands
         {
             // Weird algorithm but it's for legacy purpose only
             bool bLocalZone = true;
-            var battlefront = plr.Region.ndbf;
+            var BattleFront = plr.Region.Campaign;
             switch (targetString)
             {
                 case "zone":
@@ -50,20 +49,20 @@ namespace WorldServer.Managers.Commands
                             SendCsr(plr, "Unkown region : ", regionId.ToString());
                             return;
                         }
-                        battlefront = region.ndbf;
+                        BattleFront = region.Campaign;
                     }
                     else
                         SendCsr(plr, "Please enter a valid regionID");
                     break;
             }
 
-            battlefront.CampaignDiagnostic(plr, bLocalZone);
+            //Campaign.CampaignDiagnostic(plr, bLocalZone);
         }
 
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Updates some constant parameters. Give no arg to list constants.")]
         public static void Constants(Player plr, string nameOrShortcut = "", string newValue = "")
         {
-            Type type = typeof(BattlefrontConstants);
+            Type type = typeof(BattleFrontConstants);
 
             nameOrShortcut = nameOrShortcut.ToUpperInvariant();
             bool match = false;
@@ -107,47 +106,7 @@ namespace WorldServer.Managers.Commands
                 SendCsr(plr, "Please enter a valid constant name");
         }
 
-        [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks the current battlefront (under t4)")]
-        public static void Lock(Player plr, Realms realm, string noReward)
-        {
-            if (noReward == "0" || noReward == "1")
-            {
-                plr.SendClientMessage($"Attempting to lock the {plr.Region.RegionId} campaign...");
-
-                IBattlefront battlefront = plr.Region.Bttlfront;
-
-                bool b = false;
-                if (noReward == "0")
-                    b = true;
-
-                if (GameData.Constants.DoomsdaySwitch == 2)
-                {
-                    ProximityProgressingBattlefront pBttlfront = battlefront as ProximityProgressingBattlefront;
-                    if (pBttlfront != null)
-                    {
-                        pBttlfront.LockZone(realm, (int)plr.ZoneId, true, false, b); // Reset changed to false
-                    }
-                    else
-                        battlefront.LockPairing(realm, false, false, b);
-
-                }
-                else if (GameData.Constants.DoomsdaySwitch > 0)
-                {
-                    ProgressingBattlefront pBttlfront = battlefront as ProgressingBattlefront;
-                    if (pBttlfront != null)
-                    {
-                        pBttlfront.LockZone(realm, (int)plr.ZoneId, true, true, b);
-                    }
-                    else
-                        battlefront.LockPairing(realm, false, false, b);
-
-                }
-                else
-                    battlefront.LockPairing(realm, true);
-            }
-            else
-                plr.SendClientMessage("Second parameter must be 0 or 1 - 0 no rewards, 1 grants rewards.");
-        }
+      
 
 
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks the pairing the player is in for the given realm (1 - Order, 2 - Dest). 0 - no reward, 1 - reward")]
@@ -155,324 +114,289 @@ namespace WorldServer.Managers.Commands
         {
             if (noReward == "0" || noReward == "1")
             {
-                plr.SendClientMessage($"Attempting to lock the {plr.Region.RegionId} campaign...");
+                plr.SendClientMessage($"Attempting to lock the {plr.Region.Campaign.CampaignName} campaign... (call AdvancePairing to move ahead)");
 
-                IBattlefront battlefront = plr.Region.Bttlfront;
-
-                bool b = noReward == "0";
-
-                WorldMgr.GetRegion(plr.Region.RegionId, false).ndbf.LockPairing(realm);
+                WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign.BattleFrontManager.LockActiveBattleFront(realm);
+                
             }
             else
                 plr.SendClientMessage("Second parameter must be 0 or 1 - 0 no rewards, 1 grants rewards.");
         }
 
+        [CommandAttribute(EGmLevel.EmpoweredStaff, "Advances the pairing the player is in ")]
+        public static void AdvancePairing(Player plr, Realms realm, int tier)
+        {
+
+            if (tier == 1)
+            {
+                var progression = WorldMgr.LowerTierCampaignManager.AdvanceBattleFront(realm);
+                WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront();
+                WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
+                plr.SendClientMessage(realm == Realms.REALMS_REALM_DESTRUCTION
+                    ? $"Destruction vanquishes Order, the campaign moves to {progression.Description}"
+                    : $"Order conquers Destruction, the campaign moves to {progression.Description}");
+            }
+            else
+            {
+                var progression = WorldMgr.UpperTierCampaignManager.AdvanceBattleFront(realm);
+                WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront();
+                WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
+                plr.SendClientMessage(realm == Realms.REALMS_REALM_DESTRUCTION
+                    ? $"Destruction vanquishes Order, the campaign moves to {progression.Description}"
+                    : $"Order conquers Destruction, the campaign moves to {progression.Description}");
+            }
+        }
+
+        [CommandAttribute(EGmLevel.EmpoweredStaff, "Updates the clients with current region capture status")]
+        public static void UpdateRegionCaptureStatus(Player plr)
+        {
+            WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
+        }
+
+        //.campaign SetRegionCaptureStatus 111111110 7    -- lock all to order except Eataine. Make it the active BF
+        [CommandAttribute(EGmLevel.EmpoweredStaff, "Force lock and advance on all progressions. Params : T4progression string, activeBattlefrontId")]
+        public static void SetRegionCaptureStatus(Player plr, string T4Progression, int activeBattleFrontId)
+        {
+            var lockingRealm = Realms.REALMS_REALM_NEUTRAL;
+            foreach (var status in WorldMgr.UpperTierCampaignManager.BattleFrontStatuses)
+            {
+                
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[0].ToString());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[1].ToString());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[2].ToString());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[3].ToString());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[4].ToString());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[5].ToString());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[6].ToString());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[7].ToString());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+                if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR)
+                {
+                    lockingRealm = GetLockRealmFromT4Progression(T4Progression[8].ToString());
+                    WorldMgr.UpperTierCampaignManager.LockBattleFrontStatus(status.BattleFrontId, lockingRealm, new VictoryPointProgress());
+                }
+            }
+
+            WorldMgr.UpperTierCampaignManager.ActiveBattleFront = WorldMgr.UpperTierCampaignManager.GetBattleFrontByBattleFrontId(activeBattleFrontId);
+            WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront();
+
+            WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
+        }
+
+        private static Realms GetLockRealmFromT4Progression(string str)
+        {
+            switch (str)
+            {
+                case "1":
+                    return  Realms.REALMS_REALM_ORDER;
+                case "0":
+                    return Realms.REALMS_REALM_NEUTRAL;
+                case "2":
+                    return Realms.REALMS_REALM_DESTRUCTION;
+            }
+            return Realms.REALMS_REALM_NEUTRAL;
+        }
+
+        // Example : .campaign ResetProgressionCommunications 0 100 1 102102102
+        [CommandAttribute(EGmLevel.SourceDev, "Sends server commands to the client. forceT4 is a 9 char setting (1 order, 2 dest). eg 102110102")]
+        public static void ResetProgressionCommunications(Player player, int destVP, int orderVP, int realm, string forceT4)
+        {
+            var vpp = new VictoryPointProgress();
+            vpp.DestructionVictoryPoints = destVP;
+            vpp.OrderVictoryPoints = orderVP;
+
+            Realms lockingRealm;
+
+            if (realm == 1)
+                lockingRealm = Realms.REALMS_REALM_ORDER;
+            else
+            {
+                if (realm == 2)
+                    lockingRealm = Realms.REALMS_REALM_DESTRUCTION;
+                else
+                    lockingRealm = Realms.REALMS_REALM_NEUTRAL;
+            }
+            
+            new ApocCommunications().ResetProgressionCommunications(player, lockingRealm, vpp, forceT4);
+
+           // new ApocCommunications().SendCampaignStatus(player, vpp, lockingRealm);
+        }
+
+        
+        
+
+        [CommandAttribute(EGmLevel.SourceDev, "Report on the status of the t4 progression")]
+        public static void ProgressionStatus(Player plr)
+        {
+            var lockStr = $"BC :{WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus.ToString()}";
+            lockStr += $"TM :{WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN).LockStatus.ToString()}";
+            lockStr += $"KV :{WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY).LockStatus.ToString()}";
+            lockStr += $"CW :{WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus.ToString()}";
+            lockStr += $"PR :{WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG).LockStatus.ToString()}";
+            lockStr += $"RK :{WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus.ToString()}";
+            lockStr += $"CA :{WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus.ToString()}";
+            lockStr += $"DW :{WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus.ToString()}";
+            lockStr += $"EA :{ WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus.ToString()}";
+
+            plr.SendClientMessage($"Porgression Status : {lockStr}");
+        }
+
+
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks a battle objective for the given realm (1 - Order, 2 - Dest).")]
         public static void LockObj(Player plr, Realms realm, int values)
-        {               
-                plr.SendClientMessage($"Attempting to lock objective...");
-
-                var objectiveToLock = values;
-
-                WorldMgr.GetRegion(plr.Region.RegionId, false).ndbf.LockBattleObjective(realm, objectiveToLock);
-
-        }
-
-
-        [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks the current battlefront, no winners")]
-        public static void Draw(Player plr)
         {
-            plr.SendClientMessage($"Attempting to lock the {plr.Region.RegionId} campaign...");
-            IBattlefront battlefront = plr.Region.Bttlfront;
+            plr.SendClientMessage($"Attempting to lock objective...");
 
-            Random random = new Random();
-            Realms realm;
+            var objectiveToLock = values;
 
-            switch (random.Next(1, 3))
-            {
-                case 1:
-                    realm = Realms.REALMS_REALM_ORDER;
-                    break;
-                case 2:
-                    realm = Realms.REALMS_REALM_DESTRUCTION;
-                    break;
-                default:
-                    realm = Realms.REALMS_REALM_ORDER;
-                    break;
-            }
+            WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign.LockBattleObjective(realm, objectiveToLock);
 
-            if (GameData.Constants.DoomsdaySwitch == 2)
-            {
-                ProximityProgressingBattlefront pBttlfront = battlefront as ProximityProgressingBattlefront;
-                if (pBttlfront != null)
-                    pBttlfront.LockZone(realm, (int)plr.ZoneId, true, false, false, true); // Reset changed to false
-                else
-                    battlefront.LockPairing(realm, false, false, false, true);
-            }
-            else
-                battlefront.LockPairing(realm, true);
         }
 
-        [CommandAttribute(EGmLevel.EmpoweredStaff, "Enables or disables grace.")]
-        public static void Grace(Player plr)
-        {
-            IBattlefront battlefront = plr.Region.Bttlfront;
-            if (GameData.Constants.DoomsdaySwitch == 2)
-            {
-                ProximityProgressingBattlefront pBttlfront = battlefront as ProximityProgressingBattlefront;
 
-                if (pBttlfront != null)
-                {
-                    if (pBttlfront.GraceDisabled)
-                        pBttlfront.StartGrace();
-                    else
-                        pBttlfront.EndGrace();
+       
 
-                    plr.SendClientMessage("Current Value of Grace: " + pBttlfront.GraceDisabled, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
-                }
-                else
-                {
-                    ProximityBattlefront bttlfront = battlefront as ProximityBattlefront;
 
-                    if (bttlfront.GraceDisabled)
-                        bttlfront.StartGrace();
-                    else
-                        bttlfront.EndGrace();
 
-                    plr.SendClientMessage("Current Value of Grace: " + bttlfront.GraceDisabled, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
-                }
-            }
-            else
-            {
-                ProgressingBattlefront pBttlfront = battlefront as ProgressingBattlefront;
+        //[CommandAttribute(EGmLevel.DatabaseDev, "Adds a resource spawn point at the current location for the nearest objective - legacy")]
+        //public static void Point(Player plr)
+        //{
+        //    if (plr.Zone == null)
+        //    {
+        //        SendCsr(plr, "CAMPAIGN POINT: Must be in a zone to use this command.");
+        //        return;
+        //    }
 
-                if (pBttlfront != null)
-                {
-                    if (pBttlfront.GraceDisabled)
-                        pBttlfront.StartGrace();
-                    else
-                        pBttlfront.EndGrace();
+        //    IBattleFrontFlag closestFlag = plr.Region.Bttlfront.GetClosestFlag(plr.WorldPosition);
 
-                    plr.SendClientMessage("Current Value of Grace: " + pBttlfront.GraceDisabled);
-                }
-                else
-                {
-                    Battlefront bttlfront = battlefront as Battlefront;
+        //    if (closestFlag == null)
+        //    {
+        //        SendCsr(plr, "CAMPAIGN POINT: Must be in an open-world RvR zone.");
+        //        return;
+        //    }
+        //    else if (!(closestFlag is BattleFrontFlag))
+        //    {
+        //        SendCsr(plr, "CAMPAIGN POINT: This command is supported in legacy RvR.");
+        //        return;
+        //    }
 
-                    if (bttlfront.GraceDisabled)
-                        bttlfront.StartGrace();
-                    else
-                        bttlfront.EndGrace();
+        //    plr.SendClientMessage("Flag: " + closestFlag.ObjectiveName);
+        //    GameObject_proto proto = GameObjectService.GetGameObjectProto(429);
 
-                    plr.SendClientMessage("Current Value of Grace: " + pBttlfront.GraceDisabled);
-                }
-            }
-        }
-        
-        [CommandAttribute(EGmLevel.EmpoweredStaff, "Makes keep safe again.")]
-        public static void SafeKeep(Player plr)
-        {
-            IBattlefront battlefront = plr.Region.Bttlfront;
-            if (GameData.Constants.DoomsdaySwitch == 2)
-            {
-                ProximityProgressingBattlefront pBttlfront = battlefront as ProximityProgressingBattlefront;
+        //    GameObject_spawn spawn = new GameObject_spawn
+        //    {
+        //        Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
+        //        WorldX = plr.WorldPosition.X,
+        //        WorldY = plr.WorldPosition.Y,
+        //        WorldZ = plr.WorldPosition.Z,
+        //        WorldO = plr.Heading,
+        //        ZoneId = plr.Zone.ZoneId
+        //    };
 
-                if (pBttlfront != null)
-                {
-                    foreach (Keep keep in pBttlfront._Keeps)
-                        keep.SafeKeep();
+        //    spawn.BuildFromProto(proto);
+        //    plr.Region.CreateGameObject(spawn);
 
-                    plr.SendClientMessage("Keeps set to status safe");
-                }
-                else
-                {
-                    ProximityBattlefront bttlfront = battlefront as ProximityBattlefront;
+        //    BattleFrontResourceSpawn res = new BattleFrontResourceSpawn
+        //    {
+        //        Entry = ((BattleFrontFlag)closestFlag).ID,
+        //        X = plr.X,
+        //        Y = plr.Y,
+        //        Z = plr.Z,
+        //        O = plr.Heading
+        //    };
 
-                    foreach (Keep keep in bttlfront._Keeps)
-                        keep.SafeKeep();
+        //    WorldMgr.Database.AddObject(res);
+        //}
 
-                    plr.SendClientMessage("Keeps set to status safe");
-                }
-            }
-            else
-            {
-                ProgressingBattlefront pBttlfront = battlefront as ProgressingBattlefront;
+        //[CommandAttribute(EGmLevel.DatabaseDev, "Adds a resource return point at the current location - legacy")]
+        //public static void Drop(Player plr, int realmIndex)
+        //{
+        //    if (plr.Zone == null)
+        //    {
+        //        SendCsr(plr, "CAMPAIGN DROP: Must be in a zone to use this command.");
+        //        return;
+        //    }
+        //    else if (!(plr.Region.Bttlfront is Campaign))
+        //    {
+        //        SendCsr(plr, "CAMPAIGN DROP: This command is supported in legacy RvR.");
+        //        return;
+        //    }
 
-                if (pBttlfront != null)
-                {
-                    foreach (Keep keep in pBttlfront._Keeps)
-                        keep.SafeKeep();
+        //    Keep closestKeep = ((Campaign)plr.Region.Bttlfront).GetZoneKeep(plr.Zone.ZoneId, realmIndex);
 
-                    plr.SendClientMessage("Keeps set to status safe");
-                }
-                else
-                {
-                    Battlefront bttlfront = battlefront as Battlefront;
+        //    if (closestKeep == null)
+        //    {
+        //        SendCsr(plr, "CAMPAIGN DROP: Must be in an open-world RvR zone.");
+        //        return;
+        //    }
 
-                    foreach (Keep keep in bttlfront._Keeps)
-                        keep.SafeKeep();
+        //    plr.SendClientMessage("Keep: " + closestKeep.Info.Name);
 
-                    plr.SendClientMessage("Keeps set to status safe");
-                }
-            }
-        }
+        //    BattleFrontResourceSpawn res = new BattleFrontResourceSpawn
+        //    {
+        //        Entry = closestKeep.Info.KeepId,
+        //        X = plr.X,
+        //        Y = plr.Y,
+        //        Z = plr.Z,
+        //        O = plr.Heading
+        //    };
 
-        // Temporary until new rvr is stabilized
-        [CommandAttribute(EGmLevel.EmpoweredStaff, "Resets the current battlefront (under t4)")]
-        public static void Reset(Player plr)
-        {
-            plr.SendClientMessage($"Attempting to reset the {plr.Region.RegionId} campaign...");
+        //    WorldMgr.Database.AddObject(res);
 
-            IBattlefront battlefront = plr.Region.Bttlfront;
-            //NEWDAWN
-            if (battlefront != null)
-                battlefront.ResetPairing();
-            else
-            {
-                plr.Region.ndbf.ResetPairing();
-            }
-        }
+        //    closestKeep.SupplyReturnPoints.Clear();
+        //    closestKeep.SupplyReturnPoints.Add(res);
+        //    closestKeep.CreateSupplyDrops();
+        //}
 
-        [CommandAttribute(EGmLevel.EmpoweredStaff, "Attempts to reset the T4 campaign")]
-        public static void ResetT4(Player plr)
-        {
-            plr.SendClientMessage("This command is disabled, as it will break T4 RvR...");
-            //plr.SendClientMessage("Attempting to reset the T4 campaign...");
-
-            /*IBattlefront DvG = WorldMgr.GetRegion(2, false).Bttlfront;
-            IBattlefront EvC = WorldMgr.GetRegion(11, false).Bttlfront;
-            IBattlefront HEvDE = WorldMgr.GetRegion(4, false).Bttlfront;
-
-            DvG.ResetPairing();
-            EvC.ResetPairing();
-            HEvDE.ResetPairing();*/
-        }
-
-        [CommandAttribute(EGmLevel.DatabaseDev, "Adds a resource spawn point at the current location for the nearest objective - legacy")]
-        public static void Point(Player plr)
-        {
-            if (plr.Zone == null)
-            {
-                SendCsr(plr, "CAMPAIGN POINT: Must be in a zone to use this command.");
-                return;
-            }
-
-            IBattlefrontFlag closestFlag = plr.Region.Bttlfront.GetClosestFlag(plr.WorldPosition);
-
-            if (closestFlag == null)
-            {
-                SendCsr(plr, "CAMPAIGN POINT: Must be in an open-world RvR zone.");
-                return;
-            }
-            else if (!(closestFlag is BattlefrontFlag))
-            {
-                SendCsr(plr, "CAMPAIGN POINT: This command is supported in legacy RvR.");
-                return;
-            }
-
-            plr.SendClientMessage("Flag: " + closestFlag.ObjectiveName);
-            GameObject_proto proto = GameObjectService.GetGameObjectProto(429);
-
-            GameObject_spawn spawn = new GameObject_spawn
-            {
-                Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
-                WorldX = plr.WorldPosition.X,
-                WorldY = plr.WorldPosition.Y,
-                WorldZ = plr.WorldPosition.Z,
-                WorldO = plr.Heading,
-                ZoneId = plr.Zone.ZoneId
-            };
-
-            spawn.BuildFromProto(proto);
-            plr.Region.CreateGameObject(spawn);
-
-            BattlefrontResourceSpawn res = new BattlefrontResourceSpawn
-            {
-                Entry = ((BattlefrontFlag)closestFlag).ID,
-                X = plr.X,
-                Y = plr.Y,
-                Z = plr.Z,
-                O = plr.Heading
-            };
-
-            WorldMgr.Database.AddObject(res);
-        }
-
-        [CommandAttribute(EGmLevel.DatabaseDev, "Adds a resource return point at the current location - legacy")]
-        public static void Drop(Player plr, int realmIndex)
-        {
-            if (plr.Zone == null)
-            {
-                SendCsr(plr, "CAMPAIGN DROP: Must be in a zone to use this command.");
-                return;
-            }
-            else if (!(plr.Region.Bttlfront is Battlefront))
-            {
-                SendCsr(plr, "CAMPAIGN DROP: This command is supported in legacy RvR.");
-                return;
-            }
-
-            Keep closestKeep = ((Battlefront)plr.Region.Bttlfront).GetZoneKeep(plr.Zone.ZoneId, realmIndex);
-
-            if (closestKeep == null)
-            {
-                SendCsr(plr, "CAMPAIGN DROP: Must be in an open-world RvR zone.");
-                return;
-            }
-
-            plr.SendClientMessage("Keep: " + closestKeep.Info.Name);
-
-            BattlefrontResourceSpawn res = new BattlefrontResourceSpawn
-            {
-                Entry = closestKeep.Info.KeepId,
-                X = plr.X,
-                Y = plr.Y,
-                Z = plr.Z,
-                O = plr.Heading
-            };
-
-            WorldMgr.Database.AddObject(res);
-
-            closestKeep.SupplyReturnPoints.Clear();
-            closestKeep.SupplyReturnPoints.Add(res);
-            closestKeep.CreateSupplyDrops();
-        }
-
-        [CommandAttribute(EGmLevel.DatabaseDev, "Toggles supply system for current map - legacy")]
-        public static void SupplyToggle(Player plr)
-        {
-            if (plr.Zone == null || plr.Region.Bttlfront == null)
-            {
-                SendCsr(plr, "CAMPAIGN SUPPLY: Must be in a RvR zone to use this command.");
-                return;
-            }
-            else if (!(plr.Region.Bttlfront is Battlefront))
-            {
-                SendCsr(plr, "CAMPAIGN SUPPLY: This command is supported in legacy RvR.");
-                return;
-            }
-
-            Battlefront battlefront = (Battlefront)plr.Region.Bttlfront;
-
-            battlefront.ToggleSupplies();
-
-            plr.SendClientMessage("Supplies " + (battlefront.NoSupplies ? "disabled." : "enabled."));
-        }
+   
 
         [CommandAttribute(EGmLevel.DatabaseDev, "Sets the number of VP for a realm")]
         public static void SetVictoryPoints(Player plr, Realms realm, int points)
         {
-            if (plr.Zone == null || plr.Region.ndbf == null)
+            if (plr.Zone == null || plr.Region.Campaign == null)
             {
                 SendCsr(plr, "CAMPAIGN SUPPLY: Must be in a RvR zone to use this command.");
                 return;
             }
-            var battlefront = (NewDawnBattlefront)plr.Region.ndbf;
+            var BattleFront = (Campaign)plr.Region.Campaign;
 
             if (realm == Realms.REALMS_REALM_ORDER)
-                battlefront.VictoryPointProgress.OrderVictoryPoints = points;
+                BattleFront.VictoryPointProgress.OrderVictoryPoints = points;
             if (realm == Realms.REALMS_REALM_DESTRUCTION)
-                battlefront.VictoryPointProgress.DestructionVictoryPoints = points;
+                BattleFront.VictoryPointProgress.DestructionVictoryPoints = points;
 
             plr.SendClientMessage($"Victory Points set to {points} for realm {realm}");
         }
@@ -481,113 +405,24 @@ namespace WorldServer.Managers.Commands
         [CommandAttribute(EGmLevel.DatabaseDev, "Returns the World Campaign Status")]
         public static void Status(Player plr)
         {
-            if (plr.Zone == null || plr.Region.ndbf == null)
+            if (plr.Zone == null || plr.Region.Campaign == null)
             {
                 SendCsr(plr, "Must be in a RvR zone to use this command.");
                 return;
             }
-            plr.SendClientMessage($"Lower Tier {WorldMgr.LowerTierBattlefrontManager.GetActivePairing().PairingName} is active.");
+            plr.SendClientMessage($"Lower Tier {WorldMgr.LowerTierCampaignManager.ActiveBattleFrontName} is active.");
 
-            plr.SendClientMessage($"  Battlefront Status : {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierBattlefrontManager.GetActivePairing().RegionId, false).GetBattleFrontStatus()}");
+            plr.SendClientMessage($"  Campaign Status : \t {WorldMgr.GetRegion((ushort)WorldMgr.LowerTierCampaignManager.ActiveBattleFront.RegionId, false).Campaign.GetBattleFrontStatus()}");
 
-            plr.SendClientMessage($"Upper Tier {WorldMgr.UpperTierBattlefrontManager.GetActivePairing().PairingName} is active.");
+            plr.SendClientMessage($"Upper Tier {WorldMgr.UpperTierCampaignManager.ActiveBattleFrontName} is active.");
 
-            plr.SendClientMessage($"  Battlefront Status : {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierBattlefrontManager.GetActivePairing().RegionId, false).GetBattleFrontStatus()}");
+            plr.SendClientMessage($"  Campaign Status : \t {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierCampaignManager.ActiveBattleFront.RegionId, false).Campaign.GetBattleFrontStatus()}");
 
-            foreach (var flag in plr.Region.ndbf.Objectives)
-                plr.SendClientMessage($"{plr.Region.ndbf.Objectives.ToString()}");
+            foreach (var flag in plr.Region.Campaign.Objectives)
+                plr.SendClientMessage($"{flag.ToString()}");
         }
 
-        [CommandAttribute(EGmLevel.DatabaseDev, "Sets an objective flag portal location, flag to warcamp if no objective name / otherwise warcamp to flag")]
-        public static void Portal(Player plr, string objectiveName = null)
-        {
-            // Current player battlefront
-            IBattlefront battlefront;
-            if (plr.Region.GetTier() == 1)
-                battlefront = plr.Region.Bttlfront as RoRBattlefront;
-            else if (plr.Region.GetTier() > 1)
-                battlefront = plr.Region.Bttlfront as ProximityBattlefront;
-            else
-                return;
-
-            if (battlefront == null)
-            {
-                SendCsr(plr, "CAMPAIGN PORTAL: Must be in a battlefront.");
-                return;
-            }
-
-            // Current flag
-            ProximityFlag flag;
-            string notFoundMessage;
-            string successMessage;
-            BattlefrontObjectType type;
-            if (objectiveName == null)
-            {
-                flag = battlefront.GetClosestFlag(plr.WorldPosition) as ProximityFlag;
-                type = BattlefrontObjectType.WARCAMP_PORTAL;
-                notFoundMessage = "CAMPAIGN PORTAL: Must be near a proximity flag in rvr lake if no name is given.";
-                successMessage = $"CAMPAIGN PORTAL: Portal from {(flag != null ? flag.Name : "")} to warcamp has been set.";
-            }
-            else
-            {
-                flag = GetFlag(battlefront, objectiveName);
-                notFoundMessage = "CAMPAIGN PORTAL: Could not find objective of name : " + objectiveName;
-                type = BattlefrontObjectType.OBJECTIVE_PORTAL;
-                successMessage = $"CAMPAIGN PORTAL: Portal from warcamp to {(flag != null ? flag.Name : "")} has been set for ";
-            }
-
-            if (flag == null)
-            {
-                SendCsr(plr, notFoundMessage);
-                return;
-            }
-
-            // Database update
-            BattlefrontService.LoadBattlefrontObjects();
-            BattlefrontObject newObject = new BattlefrontObject()
-            {
-                Type = (byte)type,
-                ObjectiveID = flag.ID,
-            };
-
-            BattlefrontObject oldObject;
-
-            if (type == BattlefrontObjectType.OBJECTIVE_PORTAL)
-            {
-                // Compute realm, depending on its location - quite a hack but will avoid parameter errors
-                Realms realm;
-
-                int orderDistance = GetWarcampDistance(plr, Realms.REALMS_REALM_ORDER);
-                int destroDistance = GetWarcampDistance(plr, Realms.REALMS_REALM_DESTRUCTION);
-                if (orderDistance < destroDistance) // In order warcamp
-                {
-                    realm = Realms.REALMS_REALM_ORDER;
-                    successMessage += "Order.";
-                }
-                else // In destro warcamp
-                {
-                    realm = Realms.REALMS_REALM_DESTRUCTION;
-                    successMessage += "Destruction.";
-                }
-
-                newObject.Realm = (ushort)realm;
-                oldObject = BattlefrontService.GetPortalToObjective(plr.ZoneId.Value, flag.ID, realm);
-            }
-            else
-            {
-                oldObject = BattlefrontService.GetPortalToWarcamp(plr.ZoneId.Value, flag.ID);
-            }
-
-            if (oldObject != null)
-            {
-                WorldMgr.Database.DeleteObject(oldObject);
-                oldObject.Dirty = true;
-                WorldMgr.Database.ForceSave();
-            }
-            AddObject(plr, newObject);
-            SendCsr(plr, successMessage);
-        }
-
+  
         [CommandAttribute(EGmLevel.DatabaseDev, "Get or sets warcamp entrance, use realm parameter order|destruction or 1|2 to update entrabce coordinate")]
         public static void Warcamp(Player plr, string realm = "")
         {
@@ -596,8 +431,8 @@ namespace WorldServer.Managers.Commands
             if (realm == "")
             {
                 // Display current entrances locations
-                plr.SendClientMessage("Order spawn (1) : " + BattlefrontService.GetWarcampEntrance(zoneId, Realms.REALMS_REALM_ORDER));
-                plr.SendClientMessage("Destruction spawn (2) : " + BattlefrontService.GetWarcampEntrance(zoneId, Realms.REALMS_REALM_DESTRUCTION));
+                plr.SendClientMessage("Order spawn (1) : " + BattleFrontService.GetWarcampEntrance(zoneId, Realms.REALMS_REALM_ORDER));
+                plr.SendClientMessage("Destruction spawn (2) : " + BattleFrontService.GetWarcampEntrance(zoneId, Realms.REALMS_REALM_DESTRUCTION));
                 return;
             }
 
@@ -612,7 +447,7 @@ namespace WorldServer.Managers.Commands
                 return;
             }
 
-            BattlefrontObject oldObject = WorldMgr.Database.SelectObject<BattlefrontObject>($"ZoneId = {zoneId} AND Realm = {(int)newRealm}");
+            BattleFrontObject oldObject = WorldMgr.Database.SelectObject<BattleFrontObject>($"ZoneId = {zoneId} AND Realm = {(int)newRealm}");
             if (oldObject != null)
             {
                 WorldMgr.Database.DeleteObject(oldObject);
@@ -620,34 +455,19 @@ namespace WorldServer.Managers.Commands
                 WorldMgr.Database.ForceSave();
             }
 
-            BattlefrontObject newObject = new BattlefrontObject
+            BattleFrontObject newObject = new BattleFrontObject
             {
-                Type = (ushort)BattlefrontObjectType.WARCAMP_ENTRANCE,
+                Type = (ushort)BattleFrontObjectType.WARCAMP_ENTRANCE,
                 ObjectiveID = 0,
                 Realm = (ushort)newRealm,
             };
             AddObject(plr, newObject);
-            BattlefrontService.LoadBattlefrontObjects();
+            BattleFrontService.LoadBattleFrontObjects();
 
             SendCsr(plr, $"CAMPAIGN WARCAMP: {(newRealm == Realms.REALMS_REALM_ORDER ? "order" : "destruction")} warcamp is set");
         }
 
-        /// <summary>
-        /// Gets an objective flag in current battlefront depending on given id.
-        /// </summary>
-        /// <param name="battlefront">Battlefront to search in</param>
-        /// <param name="name">Name of the searched objective (starts with)</param>
-        /// <returns>flag or null</returns>
-        private static ProximityFlag GetFlag(IBattlefront battlefront, String name)
-        {
-            if (name == null)
-                return null;
-            name = name.ToLowerInvariant();
-            foreach (ProximityFlag existing in battlefront.Objectives)
-                if (existing.Name.ToLowerInvariant().Contains(name))
-                    return existing;
-            return null;
-        }
+   
 
         /// <summary>
         /// Computes distance of player to warcamp of given realm.
@@ -658,7 +478,7 @@ namespace WorldServer.Managers.Commands
         private static int GetWarcampDistance(Player plr, Realms realm)
         {
             ushort zoneId = plr.ZoneId.Value;
-            Point3D warcampLoc = BattlefrontService.GetWarcampEntrance(zoneId, realm);
+            Point3D warcampLoc = BattleFrontService.GetWarcampEntrance(zoneId, realm);
             return warcampLoc != null ? plr.GetDistanceTo(warcampLoc) : int.MaxValue;
         }
 
@@ -666,10 +486,10 @@ namespace WorldServer.Managers.Commands
         /// Adds the given object at player location.
         /// </summary>
         /// <param name="plr">Player providing the location or created object.</param>
-        /// <param name="newObject">Object to add with battlefront specific properties configured</param>
-        private static void AddObject(Player plr, BattlefrontObject newObject)
+        /// <param name="newObject">Object to add with Campaign specific properties configured</param>
+        private static void AddObject(Player plr, BattleFrontObject newObject)
         {
-            int max = (int)WorldMgr.Database.GetMaxColValue<BattlefrontObject>("Entry");
+            int max = (int)WorldMgr.Database.GetMaxColValue<BattleFrontObject>("Entry");
             newObject.Entry = max + 1;
 
             newObject.RegionId = plr.Region.RegionId;

@@ -6,11 +6,12 @@ using System.Collections.Generic;
 using SystemData;
 using NLog;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.Objects.PublicQuests;
-using static WorldServer.World.Battlefronts.BattlefrontConstants;
 
-namespace WorldServer.World.Battlefronts
+
+namespace WorldServer.World.BattleFronts
 {
     internal class ContributionTracker
     {
@@ -243,7 +244,7 @@ namespace WorldServer.World.Battlefronts
             _logger.Debug($"Creating Gold Chest -- not implemented. Contributor Count = {contributors.Count}");
             if (contributors.Count > 0)
             {
-                //Log.Info("Battlefront", $"Creating gold chest for {keep.Info.Name} for {contributors.Count} {((Realms)keep.Info.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction")} contributors");
+                //Log.Info("Campaign", $"Creating gold chest for {keep.Info.Name} for {contributors.Count} {((Realms)keep.Info.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction")} contributors");
                 //GoldChest.Create(_region, keep.Info.PQuest, ref contributors, (Realms)keep.Info.Realm == realm ? WinnerShare : LoserShare);
             }
         }
@@ -251,7 +252,7 @@ namespace WorldServer.World.Battlefronts
         /// <summary>
         /// Rewards players based on their contribution, converting it to XP, RP, Influence and Medallions.
         /// </summary>
-        internal void HandleLockReward(Realms realm, float winnerRewardScale, string lockMessage, int zoneId)
+        internal void HandleLockReward(Realms realm, float winnerRewardScale, string lockMessage, int zoneId, int tier)
         {
             /*
             Some general notes on this.
@@ -263,7 +264,7 @@ namespace WorldServer.World.Battlefronts
 
             The rewards are scaled by the proximity of a zone to the enemy fortress.
 
-            The rewards are also scaled by the relative Battlefront scaler, which cripples rewards for players 
+            The rewards are also scaled by the relative Campaign scaler, which cripples rewards for players 
             refusing to fight in the most hotly contested zone.
 
             For the losing side, the reward is also scaled by the % of rewards, linked to the Victory Point pool.
@@ -278,9 +279,9 @@ namespace WorldServer.World.Battlefronts
                 zoneName = ZoneService.GetZone_Info((ushort)zoneId).Name;
 
 
-            uint xpCap = (uint)(_tier * 19000);
-            uint rpCap = (uint)(_tier * 10000);
-            ushort infCap = (ushort)(_tier * 2000);
+            uint xpCap = (uint)(tier * 19000);
+            uint rpCap = (uint)(tier * 10000);
+            ushort infCap = (ushort)(tier * 2000);
 
             #region Init winner rewards
             Dictionary<uint, ContributionInfo> winnerContrib = GetContributorsFromRealm(realm);
@@ -288,10 +289,10 @@ namespace WorldServer.World.Battlefronts
             uint winMaxContrib = GetMaxContribution(winnerContrib);
             //Log.Info(zoneName, $"Winner contributor count : {winnerContrib.Count} Max contribution: {winMaxContrib}");
 
-            uint winRP = (uint)(winMaxContrib * 1.5 * winnerRewardScale * LOCK_REWARD_SCALER);
+            uint winRP = (uint)(winMaxContrib * 1.5 * winnerRewardScale * BattleFrontConstants.LOCK_REWARD_SCALER);
             uint winXP = winRP * 4;
             ushort winInf = (ushort)(winRP * 0.25f);
-            ushort winMedallionCount = (ushort)Math.Min(20, winRP / (450 * _tier));
+            ushort winMedallionCount = (ushort)Math.Min(20, winRP / (450 * tier));
 
             //Log.Info(zoneName, $"Lock XP: {winXP} RP: {winRP} Inf: {winInf} Medals: {winMedallionCount}");
 
@@ -314,7 +315,7 @@ namespace WorldServer.World.Battlefronts
 
             #endregion
 
-            Item_Info medallionInfo = ItemService.GetItem_Info((uint)(208399 + _tier));
+            Item_Info medallionInfo = ItemService.GetItem_Info((uint)(208399 + tier));
             Item_Info T3Token = ItemService.GetItem_Info(2165);
             Item_Info T4Token = ItemService.GetItem_Info(2166);
 
@@ -417,11 +418,11 @@ namespace WorldServer.World.Battlefronts
                     */
                     if (contributionFactor > 0 && plr != null)
                     {
-                        if ((_tier == 2 || _tier == 3) && plr.ItmInterface.CreateItem(T3Token, tokenCount) == ItemResult.RESULT_OK)
+                        if ((tier == 2 || tier == 3) && plr.ItmInterface.CreateItem(T3Token, tokenCount) == ItemResult.RESULT_OK)
                         {
                             plr.SendLocalizeString(new[] { T3Token.Name, tokenCount.ToString() }, ChatLogFilters.CHATLOGFILTERS_LOOT, Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
                         }
-                        if (_tier == 4 && plr.ItmInterface.CreateItem(T4Token, tokenCount) == ItemResult.RESULT_OK)
+                        if (tier == 4 && plr.ItmInterface.CreateItem(T4Token, tokenCount) == ItemResult.RESULT_OK)
                         {
                             plr.SendLocalizeString(new[] { T4Token.Name, tokenCount.ToString() }, ChatLogFilters.CHATLOGFILTERS_LOOT, Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
                         }
@@ -450,11 +451,11 @@ namespace WorldServer.World.Battlefronts
                                 Opened = false
                             };
                             medallionMail.Items.Add(new MailItem(medallionInfo.Entry, resultantCount));
-                            if (_tier == 2 || _tier == 3)
+                            if (tier == 2 || tier == 3)
                             {
                                 medallionMail.Items.Add(new MailItem(T3Token.Entry, tokenCount));
                             }
-                            if (_tier == 4)
+                            if (tier == 4)
                             {
                                 medallionMail.Items.Add(new MailItem(T4Token.Entry, tokenCount));
                             }
@@ -532,11 +533,11 @@ namespace WorldServer.World.Battlefronts
                     */
                     if (scaleFactor > 0 && plr != null)
                     {
-                        if ((_tier == 2 || _tier == 3) && plr.ItmInterface.CreateItem(T3Token, tokenCount) == ItemResult.RESULT_OK)
+                        if ((tier == 2 || tier == 3) && plr.ItmInterface.CreateItem(T3Token, tokenCount) == ItemResult.RESULT_OK)
                         {
                             plr.SendLocalizeString(new[] { T3Token.Name, tokenCount.ToString() }, ChatLogFilters.CHATLOGFILTERS_LOOT, Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
                         }
-                        if (_tier == 4 && plr.ItmInterface.CreateItem(T4Token, tokenCount) == ItemResult.RESULT_OK)
+                        if (tier == 4 && plr.ItmInterface.CreateItem(T4Token, tokenCount) == ItemResult.RESULT_OK)
                         {
                             plr.SendLocalizeString(new[] { T4Token.Name, tokenCount.ToString() }, ChatLogFilters.CHATLOGFILTERS_LOOT, Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
                         }
@@ -563,11 +564,11 @@ namespace WorldServer.World.Battlefronts
                                 Opened = false
                             };
                             medallionMail.Items.Add(new MailItem(medallionInfo.Entry, resultantCount));
-                            if (_tier == 2 || _tier == 3)
+                            if (tier == 2 || tier == 3)
                             {
                                 medallionMail.Items.Add(new MailItem(T3Token.Entry, tokenCount));
                             }
-                            if (_tier == 4)
+                            if (tier == 4)
                             {
                                 medallionMail.Items.Add(new MailItem(T4Token.Entry, tokenCount));
                             }

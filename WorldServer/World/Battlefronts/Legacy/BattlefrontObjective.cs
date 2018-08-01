@@ -1,6 +1,6 @@
 ﻿namespace WorldServer
 {
-    public abstract class BattlefrontObjective : Object
+    public abstract class BattleFrontObjective : Object
     {
     }
 }

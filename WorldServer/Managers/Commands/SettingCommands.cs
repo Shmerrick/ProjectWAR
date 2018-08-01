@@ -11,7 +11,7 @@ using WorldServer.Scenarios;
 using static System.UInt16;
 using static WorldServer.Managers.Commands.GMUtils;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts;
+using WorldServer.World.BattleFronts;
 
 namespace WorldServer.Managers.Commands
 {

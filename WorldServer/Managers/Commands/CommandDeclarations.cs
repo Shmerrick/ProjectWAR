@@ -223,7 +223,7 @@ namespace WorldServer.Managers.Commands
         /// <summary>NPC commands under .npc</summary>
         public static List<GmCommandHandler> NpcCommands = new List<GmCommandHandler>
         {
-#if DEBUG
+
             new GmCommandHandler("spawn",NpcSpawn, null, EGmLevel.DatabaseDev, 1, "Spawn an npc"),
             new GmCommandHandler("remove",NpcRemove, null, EGmLevel.DatabaseDev, 1, "Delete the target <(0=World,1=Database)>"),
             new GmCommandHandler("go",NpcGoTo, null, EGmLevel.DatabaseDev, 3, "Npc Go To Target <X,Y,Z>"),
@@ -237,8 +237,8 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("disable",NpcDisable, null, EGmLevel.DatabaseDev, 0, "Disables NPC from spawns. Can be restored using the DB."),
             new GmCommandHandler("move",NpcChangeSpawnPlace, null, EGmLevel.DatabaseDev, 0, "Makes NPC come to player and updates his position in DB."),
             new GmCommandHandler("addtoevent",NpcEventConvert, null, EGmLevel.DatabaseDev, 1, "Adds NPC to event. Currently doesn't work."),
-            new GmCommandHandler("health",NpcHealth, null, EGmLevel.DatabaseDev, 1, "Sets NPC or GO health to specified value percent.")
-#endif
+            new GmCommandHandler("health",NpcHealth, null, EGmLevel.DatabaseDev, 1, "Sets NPC or GO health to specified value percent."),
+
 #if (!DEBUG)
             new GmCommandHandler("spawn",NpcSpawn, null, EGmLevel.SourceDev, 1, "Spawn an npc"),
             new GmCommandHandler("remove",NpcRemove, null, EGmLevel.SourceDev, 1, "Delete the target <(0=World,1=Database)>"),
@@ -305,10 +305,12 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("status",ScenarioStatus, null, EGmLevel.AllStaff, 0, "Shows player count and score of all running scenarios."),
             new GmCommandHandler("balance", CheckBalance, null, EGmLevel.SourceDev, 0, "Checks the current scenario's balance internals."),
             new GmCommandHandler("domination", CheckDomination, null, EGmLevel.SourceDev, 0, "Checks the current scenario's domination internals."),
-            new GmCommandHandler("rotate", ScenarioRotate, null, EGmLevel.TrustedGM, 0, "Rotates the active scenarios.")
+            new GmCommandHandler("score", GetScenarioScore, null, 0, 0, "Returns targets scenario scores."),
+            // new GmCommandHandler("rotate", ScenarioRotate, null, EGmLevel.TrustedGM, 0, "Rotates the active scenarios.")
         };
 
-        /// <summary>Search commands under .search</summacamry>
+
+        /// <summary>Search commands under .search</summary>
         public static List<GmCommandHandler> SearchCommands = new List<GmCommandHandler>
         {
             new GmCommandHandler("item",SearchItem, null, EGmLevel.DatabaseDev, 1, "Search an item by name <name>"),
@@ -408,10 +410,10 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("standard",AssignStandard, null, 0, 0, "Assigns Standard Bearer Titel to the Player."),
             new GmCommandHandler("ror", RoRFeatures, null, 0, 0, "Help Files for RoR-specific features."),
             new GmCommandHandler("changename", RequestNameChange, null, 0, 1, "Requests a name change, one per account per month (string newName)"),
-            new GmCommandHandler("rvrstatus", RvRStatus, null, 0, 0, "Displays current status of RvR."),
+            new GmCommandHandler("sorenable", SoREnable, null, 0, 0, "Enables SoR addon."), 
             // new GmCommandHandler("pug", PugScenario, null, 0, 0, "Displays current PUG scenario."),
             new GmCommandHandler("sorenable", SoREnable, null, 0, 0, "Enables SoR addon."),
-            new GmCommandHandler("version", GetVersion, null, 0, 0, "Gets the WorldServer version."),
+         //   new GmCommandHandler("version", GetVersion, null, 0, 0, "Gets the WorldServer version."),
             // Halloween event stuff
             new GmCommandHandler("spooky", Spooky, null, 0, 0, "This command will make you spooky..."),
             new GmCommandHandler("notspooky", NotSpooky, null, 0, 0, "You don't want to be spooky :(... You need to run this command upon logging on server, it do not disable spookieness if you are already spooky."),
@@ -433,12 +435,12 @@ namespace WorldServer.Managers.Commands
             // All empowered staff
             new GmCommandHandler("kill", Kill, null, EGmLevel.EmpoweredStaff, 0, "Slays the targeted Unit."),
             new GmCommandHandler("nuke", Nuke, null, EGmLevel.EmpoweredStaff, 2, "Slays everyone in radius. Takes 2 parameters, realm and radius in ft. Realm 0 - all, 1 - order, 2 - destro"),
-#if (DEBUG)
+
             new GmCommandHandler("boot", Reboot, null, EGmLevel.EmpoweredStaff, 0, "Reboots the server."),
             new GmCommandHandler("clearboot",ClearServer, null, EGmLevel.EmpoweredStaff, 0, "Removes all players from server."),
             new GmCommandHandler("revive",Revive, null, EGmLevel.Staff, 0, "Resurrects the targeted Unit."),
             new GmCommandHandler("fly", SetFlightState, null, EGmLevel.Staff, 0, "Grants the ability to fly (byte enableFlight)"),
-#endif
+
 #if (!DEBUG)
             new GmCommandHandler("boot",Reboot, null, EGmLevel.Management, 0, "Reboots the server."),
             new GmCommandHandler("clearboot",ClearServer, null, EGmLevel.Management, 0, "Removes all players from server."),
@@ -496,7 +498,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("previewmodel", PreviewItemModel, null, EGmLevel.TrustedGM, 1, "Temporary sets equipped item model (int slotIndex, int modelID)"),
             new GmCommandHandler("recreateplayer", CreatePlayer, null, EGmLevel.DatabaseDev, 1, "Requests player info is resent"),
             new GmCommandHandler("quest", QuestComplete, null, EGmLevel.DatabaseDev, 2, "Used to debug quests <QuestId> <Operation> Operation 1 - add, 2 - finish quest, 3 - delete quest from player"),
-            //new GmCommandHandler("geartester", GearTester, null, EGmLevel.AnyGM, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
+            new GmCommandHandler("geartester", GearTester, null, EGmLevel.SourceDev, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
             //new GmCommandHandler("gunbad", Gunbad, null, EGmLevel.AnyGM, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
 #endif
 #if (!DEBUG)
@@ -524,7 +526,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("structure", CreateRvRObject, null, EGmLevel.SourceDev, 0, "Creates a structure."),
             new GmCommandHandler("bolsterlevel", BolsterLevel, null, EGmLevel.SourceDev, 1, "Changes max bolster level for T2 T3 and T4."),
             new GmCommandHandler("playerdrop", ChangePlayerDrop, null, EGmLevel.SourceDev, 1, "Switch that changes how medallions are generated for killed players."),
-            new GmCommandHandler("keepreward", KeepReward, null, EGmLevel.SourceDev, 1, "Switch that change rewards from taking zone. 0 - disables the 20% limit for defenders. 1 - enables it."),
+            
             new GmCommandHandler("beastmaster", Beastmaster, null, EGmLevel.SourceDev, 0, "Changes your whitelion to beastmaster."),
             new GmCommandHandler("setpet", SetPet, null, EGmLevel.SourceDev, 1, "Changes your pet model to number provided.")
 #endregion

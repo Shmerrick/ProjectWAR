@@ -93,6 +93,25 @@ namespace WorldServer.Managers.Commands
         }
 
         /// <summary>
+        /// Returns the Scenario score information for yourself
+        /// </summary>
+        /// <param name="plr">Player that initiated the command</param>
+        /// <param name="values">List of command arguments (after command name)</param>
+        /// <returns>True if command was correctly handled, false if operation was canceled</returns>
+        public static bool GetScenarioScore(Player plr, ref List<string> values)
+        {
+            if (plr.ScnInterface.Scenario == null)
+            {
+                plr.SendClientMessage("SCENARIO SCORES: You are not in a scenario.");
+                return true;
+            }
+
+            plr.ScnInterface.Scenario.GetScenarioScore(plr);
+
+            return true;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="plr">Player that initiated the command</param>
@@ -111,6 +130,7 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        /*
         /// <summary>
         /// 
         /// </summary>
@@ -123,5 +143,6 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
+        */
     }
 }

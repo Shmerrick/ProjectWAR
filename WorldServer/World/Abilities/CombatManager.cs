@@ -3,7 +3,7 @@ using FrameWork;
 using System;
 using SystemData;
 using GameData;
-using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer
 {
@@ -339,6 +339,8 @@ namespace WorldServer
 
         private static bool WasDefended(AbilityDamageInfo damageInfo, Unit caster, Unit target)
         {
+
+
             if (target is GameObject)
                 return false;
 
@@ -481,7 +483,7 @@ namespace WorldServer
                         secondaryDefense = (secondaryDefense * caster.StsInterface.GetStatPercentageModifier(Stats.DisruptStrikethrough));
                         double finalRoll = (StaticRandom.Instance.NextDouble() * (100d + baseRoll));
 
-                        if (secondaryDefense >= finalRoll) // Dodge
+                        if (secondaryDefense >= finalRoll) // Disrupt
                         {
                             if (damageInfo.OverrideDefenseEvent != 0)
                                 damageInfo.DamageEvent = damageInfo.OverrideDefenseEvent;
@@ -616,30 +618,7 @@ namespace WorldServer
 
                 return;
             }
-            #region Defense
-            // Perform Block/Parry/Dodge/Evasion check
-            if (damageInfo.DamageEvent > 0 || (!damageInfo.Undefendable && WasDefended(damageInfo, caster, target)))
-            {
-                PacketOut outp = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
-
-                outp.WriteUInt16(caster.Oid);
-                outp.WriteUInt16(target.Oid);
-                outp.WriteUInt16(damageInfo.DisplayEntry);
-
-                outp.WriteByte(0);
-                outp.WriteByte(damageInfo.DamageEvent);
-                outp.WriteByte(5);
-
-                outp.WriteByte(0);
-
-                target.DispatchPacketUnreliable(outp, true, caster);
-
-                caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.WasDefended, damageInfo, target);
-                target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DefendedAgainst, damageInfo, caster);
-
-                return;
-            }
-            #endregion
+            
 
             if (damageInfo.DamageType != DamageTypes.RawDamage)
             {
@@ -1762,7 +1741,7 @@ namespace WorldServer
                 }
 
                 Player attackerPlr = attacker as Player;
-                attackerPlr?.ScnInterface.Scenario?.OnGuardHit((Player)attacker, (uint)tempDmg.Damage);
+                attackerPlr?.ScnInterface.Scenario?.OnGuardHit((Player)attacker, (uint)tempDmg.Damage, (Player)receiver);
             }
 
             receiver.DispatchPacketUnreliable(outl, true, null);

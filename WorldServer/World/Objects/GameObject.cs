@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using WorldServer.Services.World;
 using WorldServer.World.Objects.PublicQuests;
 using GameData;
+using WorldServer.World.Map;
 
 namespace WorldServer
 {
@@ -705,7 +706,7 @@ namespace WorldServer
 
 
             if (Zone != null && Zone.Region != null && Spawn != null)
-                WarZoneLib.RegionData.HideDoor(true, Zone.ZoneId, Spawn.DoorId);
+                Occlusion.SetFixtureVisible(Spawn.DoorId, false);
 
             if (autoClose)
                 EvtInterface.AddEvent(CloseDoor, 7000, 1);
@@ -721,7 +722,7 @@ namespace WorldServer
             VfxState = 0;
 
             if (Zone != null && Zone.Region != null && Spawn != null)
-                WarZoneLib.RegionData.HideDoor(false, Zone.ZoneId, Spawn.DoorId);
+                Occlusion.SetFixtureVisible(Spawn.DoorId, true); 
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 20);
                 Out.WriteUInt16(Oid);

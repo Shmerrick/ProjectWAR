@@ -136,25 +136,39 @@ namespace WorldServer
 
         public void Update(long tick)
         {
-            if (TCPManager.GetTimeStampMS() >= _channelStartTime + _channelInfo.CastTime)
+            // Target is dead.
+            if (_target.IsDead)
             {
                 SendChannelEnd();
-                _parent.NotifyChannelEnded();
                 _channelInfo = null;
                 _channelBuff = null;
+                _parent.NotifyChannelEnded();
             }
-            else if (TCPManager.GetTimeStampMS() >= _nextTickTime)
+          
+            // Cast finishes
+            if (_channelInfo != null)
             {
-                if (_channelInfo.ApCost > 0 && !_host.ConsumeActionPoints(_channelInfo.ApCost))
-                    _parent.CancelCast((byte)GameData.AbilityResult.ABILITYRESULT_AP);
-                else if (_playerHost != null && _channelInfo.SpecialCost > 3 && !_playerHost.CrrInterface.ConsumeResource((byte)_channelInfo.SpecialCost, true))
-                    _parent.CancelCast(1);
-                else if (_target != _host && !_host.IsInCastRange(_target, Math.Max((uint)25, _channelInfo.Range)))
-                    _parent.CancelCast((byte)GameData.AbilityResult.ABILITYRESULT_OUTOFRANGE);
-                else if (_checkVisibility && !_host.LOSHit(_target))
-                    _parent.CancelCast((byte)GameData.AbilityResult.ABILITYRESULT_NOT_VISIBLE);
-                else
-                    _nextTickTime += 1000;
+                if (TCPManager.GetTimeStampMS() >= _channelStartTime + _channelInfo.CastTime)
+                {
+                    SendChannelEnd();
+                    _parent.NotifyChannelEnded();
+                    _channelInfo = null;
+                    _channelBuff = null;
+                }
+
+                else if (TCPManager.GetTimeStampMS() >= _nextTickTime)
+                {
+                    if (_channelInfo.ApCost > 0 && !_host.ConsumeActionPoints(_channelInfo.ApCost))
+                        _parent.CancelCast((byte) GameData.AbilityResult.ABILITYRESULT_AP);
+                    else if (_playerHost != null && _channelInfo.SpecialCost > 3 && !_playerHost.CrrInterface.ConsumeResource((byte) _channelInfo.SpecialCost, true))
+                        _parent.CancelCast(1);
+                    else if (_target != _host && !_host.IsInCastRange(_target, Math.Max((uint) 25, _channelInfo.Range)))
+                        _parent.CancelCast((byte) GameData.AbilityResult.ABILITYRESULT_OUTOFRANGE);
+                    else if (_checkVisibility && !_host.LOSHit(_target))
+                        _parent.CancelCast((byte) GameData.AbilityResult.ABILITYRESULT_NOT_VISIBLE);
+                    else
+                        _nextTickTime += 1000;
+                }
             }
         }
 

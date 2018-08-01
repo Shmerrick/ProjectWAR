@@ -10,16 +10,16 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.World.Battlefronts;
+using WorldServer.World.BattleFronts;
 using WorldServer.Managers.Commands;
 using WorldServer.World.Objects.PublicQuests;
-using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Scenarios;
-using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.NewDawn;
 using NLog;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer
 {
@@ -602,7 +602,6 @@ namespace WorldServer
 
                         if (curLev == null)
                             _Value.RestXp = 0;
-
                         else
                         {
                             // A rank 17 in the old game managed to fill his bars completely over 4 days of rest.
@@ -617,6 +616,9 @@ namespace WorldServer
                             // Rest XP can't exceed 1.5 times the XP required for the current level
                             _Value.RestXp = Math.Min((uint)(_Value.RestXp + restHours * restXpFactorPerHour * curLev.Xp), (uint)(curLev.Xp * 1.5f));
                         }
+
+                        if (StsInterface.GetTotalStat(Stats.XpReceived) == 0)
+                            _Value.RestXp = 0;
                         _Value.LastSeen = TCPManager.GetTimeStamp();
                     }
                 }
@@ -625,22 +627,22 @@ namespace WorldServer
 
                 if (Level > 15)
                 {
-                    IBattlefront front;
-                    if (Constants.DoomsdaySwitch == 2)
-                        front = null;
-                    else
-                        front = BattlefrontList.GetActiveFront(Level);
+                    // Sevetar - commented out as it contains legacy RVR calls. Kept in as it might include useful logic
+                    //if (Constants.DoomsdaySwitch == 2)
+                    //    front = null;
+                    //else
+                    //    front = BattleFrontList.GetActiveFront(Level);
 
-                    if (front != null)
-                    {
-                        SendClientMessage("Your realm's supply lines are directed towards " + front.ActiveZoneName + ".", ChatLogFilters.CHATLOGFILTERS_RVR);
-                        SendClientMessage("You may still battle in other zones, but no supplies will be delivered there.", ChatLogFilters.CHATLOGFILTERS_RVR);
-                    }
-                    else
-                    {
-                        //SendClientMessage("Your realm's supply lines are not directed anywhere at the moment.", ChatLogFilters.CHATLOGFILTERS_RVR);
-                        //SendClientMessage("Take control of Battlefield Objectives in a pairing to direct them there.", ChatLogFilters.CHATLOGFILTERS_RVR);
-                    }
+                    //if (front != null)
+                    //{
+                    //    SendClientMessage("Your realm's supply lines are directed towards " + front.ActiveZoneName + ".", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    //    SendClientMessage("You may still battle in other zones, but no supplies will be delivered there.", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    //}
+                    //else
+                    //{
+                    //    //SendClientMessage("Your realm's supply lines are not directed anywhere at the moment.", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    //    //SendClientMessage("Take control of Battlefield Objectives in a pairing to direct them there.", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    //}
                 }
             }
 
@@ -669,7 +671,7 @@ namespace WorldServer
                 CharMgr.Database.SaveObject(_Value);
             }
 
-            if (GmLevel > 0)
+            if (GmLevel > 1)
             {
 
                 //if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
@@ -688,11 +690,11 @@ namespace WorldServer
 
         private void SetMaxActionPoints(byte valueRenownRank)
         {
-            if (valueRenownRank > 65)
+            if (valueRenownRank >= 65 && valueRenownRank < 75)
             {
                 MaxActionPoints = 275;
             }
-            else if (valueRenownRank > 75)
+            else if (valueRenownRank >= 75)
             {
                 MaxActionPoints = 300;
             }
@@ -740,8 +742,8 @@ namespace WorldServer
 
                 }
             }
-            //if gm toggled invincibility and switched sone then it should still be active.
-            if (IsInvulnerable && GmLevel > 0)
+            //if gm toggled invincibility and switched zone then it should still be active.
+            if (IsInvulnerable && GmLevel > 1)
             {
                 string temp = "3";
                 List<string> paramValue = temp.Split(' ').ToList();
@@ -1053,6 +1055,7 @@ namespace WorldServer
 
         public override void Dispose()
         {
+
             QtsInterface.PublicQuest?.RemovePlayer(this, true);
             CurrentKeep?.RemovePlayer(this);
 
@@ -1072,13 +1075,13 @@ namespace WorldServer
                 {
 
                     // NEWDAWN
-                    if (Region.ndbf != null)
+                    if (Region.Campaign != null)
                     {
-                        Region.ndbf.NotifyLeftLake(this);
+                        Region.Campaign.NotifyLeftLake(this);
                     }
                     else
                     {
-                        Region.ndbf.NotifyLeftLake(this);
+                        Region.Campaign.NotifyLeftLake(this);
                     }
                 }
 
@@ -2915,8 +2918,8 @@ namespace WorldServer
         /// </summary>
         public void AddXp(uint xp, float scaleFactor, bool shouldPool, bool scalesWithRest)
         {
-            _logger.Trace($"Player {this.Name}");
-            _logger.Trace($"AddXp. XP {xp} scalefactor {scaleFactor} shouldPool {shouldPool} scaleswithRest {scalesWithRest}");
+            // _logger.Trace($"Player {this.Name}");
+            // _logger.Trace($"AddXp. XP {xp} scalefactor {scaleFactor} shouldPool {shouldPool} scaleswithRest {scalesWithRest}");
 
             var statScaleFactor = StsInterface.GetTotalStat(Stats.XpReceived);
             // Instructions Boon
@@ -2924,24 +2927,24 @@ namespace WorldServer
                 scaleFactor = 0;
 
             scaleFactor += statScaleFactor * 0.01f;
-            _logger.Trace($"AddXp. Scalefactor {scaleFactor}");
+            // _logger.Trace($"AddXp. Scalefactor {scaleFactor}");
             xp = (uint)(xp * scaleFactor);
-            _logger.Debug($"PVP AddXp. XP {xp} for {this.Name} Scale: {scaleFactor}");
+            // _logger.Debug($"PVP AddXp. XP {xp} for {this.Name} Scale: {scaleFactor}");
             InternalAddXp(xp, shouldPool, scalesWithRest);
         }
         public void AddXp(uint xp, bool shouldPool, bool scalesWithRest)
         {
-            _logger.Trace($"Player {this.Name}");
-            _logger.Trace($"AddXp. XP {xp} shouldPool {shouldPool} scaleswithRest {scalesWithRest}");
+            // _logger.Trace($"Player {this.Name}");
+            // _logger.Trace($"AddXp. XP {xp} shouldPool {shouldPool} scaleswithRest {scalesWithRest}");
             float scaleFactor = 1 + StsInterface.GetTotalStat(Stats.XpReceived) * 0.01f;
-            _logger.Trace($"AddXp. Scalefactor {scaleFactor} EffectiveLevel {EffectiveLevel} Level {Level}");
+            // _logger.Trace($"AddXp. Scalefactor {scaleFactor} EffectiveLevel {EffectiveLevel} Level {Level}");
             if (scaleFactor < 0)
                 scaleFactor = 0;
             if (EffectiveLevel == Level)
             {
                 xp = (uint)(xp * scaleFactor);
             }
-            _logger.Debug($"PVE AddXp. XP {xp} for {this.Name} Scale: {scaleFactor}");
+            // _logger.Debug($"PVE AddXp. XP {xp} for {this.Name} Scale: {scaleFactor}");
             InternalAddXp(xp, shouldPool, scalesWithRest);
         }
         private void InternalAddXp(uint xp, bool shouldPool, bool scalesWithRest)
@@ -3077,13 +3080,13 @@ namespace WorldServer
 
             int aaoMult = 0;
             Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
-            if (Region != null && Region.ndbf != null)
+            if (Region != null && Region.Campaign != null)
             {
-                if (Region.ndbf != null)
+                if (Region.Campaign != null)
                 {
-                    aaoMult = Math.Abs(Region.ndbf.AgainstAllOddsMult);
+                    aaoMult = Math.Abs(Region.Campaign.AgainstAllOddsMult);
                     if (aaoMult != 0)
-                        aaoRealm = Region.ndbf.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
+                        aaoRealm = Region.Campaign.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
                 }
                 if (aaoMult > 2)
                     aaoMult = 2;
@@ -3093,11 +3096,6 @@ namespace WorldServer
 
             if (Program.Config.RenownRate > 0)
                 renown *= (uint)Program.Config.RenownRate;
-
-            /*
-            if (_Value.RenownRank >= 40)
-                renown /= 2;
-            */
 
             if (aaoMult != 0 && aaoRealm != Realms.REALMS_REALM_NEUTRAL && Realm != aaoRealm)
             {
@@ -3176,17 +3174,17 @@ namespace WorldServer
         public void AddKillRenown(uint renown, Player killer, Player victim, int participants = 1)
         {
 
-            ProximityBattlefront bf = null;
+            
             int aaoMult = 0;
             Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
-            if (Region != null && Region.ndbf != null)
+            if (Region != null && Region.Campaign != null)
             {
 
-                if (Region.ndbf != null)
+                if (Region.Campaign != null)
                 {
-                    aaoMult = Math.Abs(Region.ndbf.AgainstAllOddsMult);
+                    aaoMult = Math.Abs(Region.Campaign.AgainstAllOddsMult);
                     if (aaoMult != 0)
-                        aaoRealm = Region.ndbf.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
+                        aaoRealm = Region.Campaign.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
                 }
                 if (aaoMult != 0 && aaoRealm != Realms.REALMS_REALM_NEUTRAL && Realm != aaoRealm)
                     renown = Math.Max(1, renown);
@@ -3838,18 +3836,31 @@ namespace WorldServer
                         subtype = 64;
                         break;
                 }
-                DeathLogger.Trace($"Victim : {this.Name} playerKiller.PriorityGroup Leader : {playerKiller.PriorityGroup.Leader.Name} ");
-                foreach (var pg in playerKiller.PriorityGroup.Members)
+
+                if (playerKiller.PriorityGroup != null)
                 {
-                    DeathLogger.Trace($"Victim : {this.Name} Group Member : {pg.Name} ");
+                    DeathLogger.Trace($"Victim : {this.Name} playerKiller.PriorityGroup Leader : {playerKiller.PriorityGroup?.Leader?.Name} ");
+                    foreach (var pg in playerKiller.PriorityGroup.Members)
+                    {
+                        DeathLogger.Trace($"Victim : {this.Name} Group Member : {pg.Name} ");
+                    }
                 }
+                
+
+               
 
                 if (playerKiller.PriorityGroup != null)
                 {
                     List<Player> curMembers = playerKiller.PriorityGroup.GetPlayersCloseTo(playerKiller, 150);
-                    DeathLogger.Trace($"Victim : {this.Name} curMembers {curMembers} ");
-                    foreach (Player subPlayer in curMembers)
-                        subPlayer.TokInterface.AddKill(subtype);
+                    if (curMembers != null)
+                    {
+                        foreach (Player subPlayer in curMembers)
+                        {
+                            DeathLogger.Trace($"Victim : {this.Name} curMembers {subPlayer.Name} ");
+                            subPlayer.TokInterface.AddKill(subtype);
+                        }
+                    }
+                    
                 }
                 else
                     playerKiller.TokInterface.AddKill(subtype);
@@ -3901,7 +3912,7 @@ namespace WorldServer
                 if (_recentLooters.ContainsKey(killer.CharacterId) && _recentLooters[killer.CharacterId] > TCPManager.GetTimeStampMS())
                     return;
 
-                if (Region.ndbf.PreventKillReward() || (killer.Client?._Account != null && CheckKillFarm(killer)))
+                if (Region.Campaign.PreventKillReward() || (killer.Client?._Account != null && CheckKillFarm(killer)))
                     return;
 
                 if (CurrentKeep != null)
@@ -3924,7 +3935,7 @@ namespace WorldServer
                 if (WorldGroup != null)
                     rewardScale += 0.25f * (WorldGroup.GetPlayerCountWithinDist(this, 200) / 5f);
 
-#if !DEBUG
+
                 // Throttle any kill that could have been the result of farming or soloing.
                 if (rewardScale < 1.1f)
                 {
@@ -3962,6 +3973,15 @@ namespace WorldServer
 
                 //HandleXPRenown(killer, rewardScale);
                 //GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
+                if (killer.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                {
+                    killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints++;
+                }
+                else
+                {
+                    killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints++;
+                }
+                killer.SendClientMessage($"+1 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
             }
 
             #endregion
@@ -3980,10 +4000,10 @@ namespace WorldServer
             // Factor of kill rewards to transfer to objective
             float transferenceFactor = 2.5f - bonusMod;
 
-            NewDawnBattlefieldObjective closestFlag = null;
+            CampaignObjective closestFlag = null;
 
             if (ScnInterface.Scenario == null)
-                closestFlag = Region.ndbf.GetClosestFlag(WorldPosition);
+                closestFlag = Region.Campaign.GetClosestFlag(WorldPosition);
 
             #region Initialize reward values
 
@@ -4010,12 +4030,12 @@ namespace WorldServer
                 totalInfluence = (uint)(100 * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
             }
 
-            // 500% bonus for killing resource carrier
-            if (HeldObject is ResourceBox)
-            {
-                totalXP *= 5;
-                totalRenown *= 5;
-            }
+            //// 500% bonus for killing resource carrier
+            //if (HeldObject is ResourceBox)
+            //{
+            //    totalXP *= 5;
+            //    totalRenown *= 5;
+            //}
 
             RewardLogger.Debug($"Total XP : {totalXP} RP : {totalRenown} INF : {totalInfluence}");
 
@@ -4080,19 +4100,23 @@ namespace WorldServer
                             if (deathRewardScaler < 1f)
                                 curPlayer.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_PLAYER_REDUCED_XPRP);
 
-                            RewardLogger.Trace($"Awarded XP: {xpShare} BonusMod : {bonusMod} Killer : {killer} This : {this.Name}");
-                            RewardLogger.Trace($"Awarded RP: {renownShare} BonusMod : {bonusMod} Killer : {killer} This : {this.Name}");
+                            RewardLogger.Trace($"Awarded XP: {xpShare} BonusMod : {bonusMod} Killer : {killer.Name} This : {this.Name}");
+                            RewardLogger.Trace($"Awarded RP: {renownShare} BonusMod : {bonusMod} Killer : {killer.Name} This : {this.Name}");
 
                             curPlayer.AddXp(xpShare, bonusMod, true, true);
                             curPlayer.AddKillRenown(renownShare, bonusMod, killer, this);
                             if (influenceId != 0)
                                 curPlayer.AddInfluence(influenceId, influenceShare);
 
-                            if (closestFlag != null && closestFlag.FlagState != ObjectiveFlags.ZoneLocked)
+                            curPlayer.SendClientMessage("Awarded 1 Crest to " + killer.Name + " for Solo Kill");
+                            RewardLogger.Trace($"Awarded 1 Crest to Killer : {killer.Name} for Solo Kill");
+                            curPlayer.ItmInterface.CreateItem(208470, 1);
+
+                            if (closestFlag != null && closestFlag.State != StateFlags.ZoneLocked)
                             {
-                                RewardLogger.Trace($"Delayed Rewards RP: {renownShare} BonusMod : {bonusMod} Killer : {killer} This : {this.Name}");
+                                RewardLogger.Trace($"Delayed Rewards RP: {renownShare} BonusMod : {bonusMod} Killer : {killer.Name} This : {this.Name}");
                                 closestFlag.RewardManager.AddDelayedRewardsFrom(curPlayer, this, (uint)(xpShare * transferenceFactor), (uint)(renownShare * transferenceFactor));
-                                Region.ndbf.AddContribution(curPlayer, (uint)(renownShare * bonusMod));
+                                Region.Campaign.AddContribution(curPlayer, (uint)(renownShare * bonusMod));
                             }
                         }
                     }
@@ -4136,6 +4160,17 @@ namespace WorldServer
                     RewardLogger.Trace($"Group Player Rewards: this : {this.Name} killer : {killer.Name} bonus : {bonusMod} XP {kvpair.Value.XP}, RP {kvpair.Value.Renown}, INF {kvpair.Value.Influence}");
                     kvpair.Key.HandleKillRewards(this, killer, bonusMod, kvpair.Value.XP, kvpair.Value.Renown, influenceId, kvpair.Value.Influence, transferenceFactor,
                         closestFlag);
+
+                    foreach (var player in kvpair.Key.Members)
+                    {
+                        var rnd = StaticRandom.Instance.Next(100);
+                        if (rnd <= 20)
+                        {
+                            player.SendClientMessage("Awarded 1 Crest to "+ player.Name +" for Group Kill");
+                            RewardLogger.Trace($"Awarded 1 Crest to {player.Name} for Group Kill");
+                            player.ItmInterface.CreateItem(208470, 1);
+                        }
+                    }
                 }
             }
             #endregion
@@ -4375,7 +4410,7 @@ namespace WorldServer
         public Keep CurrentKeep { get; set; }
         public Creature CurrentSiege { get; set; }
         public RvRStructure Palisade { get; set; }
-        public NewDawnBattlefieldObjective CurrentObjectiveFlag { get; set; }
+        public CampaignObjective CurrentObjectiveFlag { get; set; }
 
         #endregion
 
@@ -5032,7 +5067,9 @@ namespace WorldServer
             if (tier < 1 || tier > 4)
                 return true;
 
-            return (Level >= Constants.MinTierLevel[tier - 1] && Level <= Constants.MaxTierLevel[tier - 1]) || (checkDebolster && (_bolsterTier == tier || (_bolsterTier == 2 && tier == 3) || (_bolsterTier == 3 && tier == 2)));
+            var validInTier = (Level >= Constants.MinTierLevel[tier - 1] && Level <= Constants.MaxTierLevel[tier - 1]) || (checkDebolster && (_bolsterTier == tier || (_bolsterTier == 2 && tier == 3) || (_bolsterTier == 3 && tier == 2)));
+            // _logger.Trace($"Player : {this.Name} validity in tier : {validInTier}");
+            return validInTier;
         }
 
         public bool ShouldDebolster(int tier)
@@ -6078,13 +6115,13 @@ namespace WorldServer
             if (CurrentArea != null && CurrentArea.IsRvR)
             {
                 // NEWDAWN
-                if (Region.ndbf != null)
+                if (Region.Campaign != null)
                 {
-                    oldRegion?.ndbf?.NotifyLeftLake(this);
+                    oldRegion?.Campaign?.NotifyLeftLake(this);
                 }
                 else
                 {
-                    oldRegion?.ndbf?.NotifyLeftLake(this);
+                    oldRegion?.Campaign?.NotifyLeftLake(this);
                 }
             }
 
@@ -6281,7 +6318,7 @@ namespace WorldServer
                 }
                 else if (pqarea > 28)  // keeps
                 {
-                    foreach (Keep keep in Region.ndbf.Keeps)
+                    foreach (Keep keep in Region.Campaign.Keeps)
                     {
                         if (keep.Info.ZoneId == Zone.ZoneId && keep.Info.PQuest?.PQAreaId == pqarea)
                         {
@@ -6341,10 +6378,9 @@ namespace WorldServer
                             if (CurrentArea == null || !CurrentArea.IsRvR || CurrentArea.ZoneId != newArea.ZoneId)
                             {
                                 // NEWDAWN
-                                if (Region.ndbf != null)
-                                    Region.ndbf.NotifyEnteredLake(this);
-                                else
-                                    Region.ndbf.NotifyEnteredLake(this);
+                                if (Region.Campaign != null)
+                                    Region.Campaign.NotifyEnteredLake(this);
+                                
                             }
                         }
                     }
@@ -6360,10 +6396,10 @@ namespace WorldServer
                         if (CurrentArea != null && CurrentArea.IsRvR)
                         {
                             // NEWDAWN
-                            if (Region.ndbf != null)
-                                Region.ndbf.NotifyLeftLake(this);
+                            if (Region.Campaign != null)
+                                Region.Campaign.NotifyLeftLake(this);
                             else
-                                Region.ndbf.NotifyLeftLake(this);
+                                Region.Campaign.NotifyLeftLake(this);
                         }
                     }
                 }
@@ -6373,10 +6409,10 @@ namespace WorldServer
                     if (CurrentArea != null && CurrentArea.IsRvR)
                     {
                         // NEWDAWN
-                        if (Region.ndbf != null)
-                            Region.ndbf.NotifyLeftLake(this);
+                        if (Region.Campaign != null)
+                            Region.Campaign.NotifyLeftLake(this);
                         else
-                            Region.ndbf.NotifyLeftLake(this);
+                            Region.Campaign.NotifyLeftLake(this);
 
                     }
 
