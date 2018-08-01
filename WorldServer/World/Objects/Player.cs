@@ -3927,7 +3927,7 @@ namespace WorldServer
                 if (WorldGroup != null)
                     rewardScale += 0.25f * (WorldGroup.GetPlayerCountWithinDist(this, 200) / 5f);
 
-#if !DEBUG
+
                 // Throttle any kill that could have been the result of farming or soloing.
                 if (rewardScale < 1.1f)
                 {
@@ -3935,12 +3935,17 @@ namespace WorldServer
                         _recentLooters.Add(killer.CharacterId, TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL);
                     else _recentLooters[killer.CharacterId] = TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL;
                 }
-#endif
+
                 // +1 VP for a kill
                 if (killer.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                {
                     killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints++;
+                }
                 else
+                {
                     killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints++;
+                }
+                killer.SendClientMessage($"+1 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
 
                 HandleXPRenown(killer, rewardScale);
                 GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
