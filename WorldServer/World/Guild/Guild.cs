@@ -88,6 +88,8 @@ namespace WorldServer
         }
         private void LogGuildBug(Player plr)
         {
+            if (plr == null)
+                return;
             if (plr.Name.Contains("Arena") || plr.Name.Contains("Poko") || plr.Name.Contains("Bram") || plr.Name.Contains("Dacrusha") || plr.Name.Contains("Angrone"))
             {
                 GuildLogger.Debug($"{plr.Name}");
@@ -2005,6 +2007,9 @@ namespace WorldServer
 
         private void LogGuildBug(Player plr)
         {
+            if (plr == null)
+                return;
+
             if (plr.Name.Contains("Arena") || plr.Name.Contains("Poko") || plr.Name.Contains("Bram") || plr.Name.Contains("Dacrusha") || plr.Name.Contains("niffils") || plr.Name.Contains("ikdorf"))
             {
                 GuildLogger.Debug($"{plr.Name}");

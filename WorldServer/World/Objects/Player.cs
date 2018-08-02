@@ -1079,7 +1079,7 @@ namespace WorldServer
                     }
                     else
                     {
-                        Region.Campaign.NotifyLeftLake(this);
+                        Region?.Campaign?.NotifyLeftLake(this);
                     }
                 }
 
