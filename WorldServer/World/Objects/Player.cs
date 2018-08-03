@@ -3165,7 +3165,13 @@ namespace WorldServer
             RewardLogger.Trace($"Kill Renown {renown} RP awarded to {killer.Name} for kiling {victim.Name} #participants {participants}");
 
             scaleFactor += StsInterface.GetTotalStat(Stats.RenownReceived) * 0.01f;
-            renown = (uint)(renown * scaleFactor);
+
+			var bonus = (scaleFactor - 1) >= 0 ? (uint)(renown * (scaleFactor - 1)) : 0;
+
+			if (bonus > 0)
+				killer.SendClientMessage("You gain +" + bonus + " Renown bonus for fighting near a Battlefield Objective!");
+
+			renown = (uint)(renown * scaleFactor);
             AddKillRenown(renown, killer, victim, participants);
         }
 
@@ -3984,12 +3990,10 @@ namespace WorldServer
 			
             _lastPvPDeathSeconds = TCPManager.GetTimeStamp();
 
-            uint totalXP = (uint)(WorldMgr.GenerateXPCount(killer, this) * bonusMod * (1f + killer.AAOBonus * deathRewardScaler));
-			uint baseRenown = WorldMgr.GenerateRenownCount(killer, this);
-			killer.SendClientMessage("You gain +" + Math.Round(baseRenown * bonusMod, 0) + " Renown bonus for fighting near a Battlefield Objective!");
-			uint totalRenown = (uint)(baseRenown * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
+            uint totalXP = (uint)(WorldMgr.GenerateXPCount(killer, this) * (1f + killer.AAOBonus * deathRewardScaler));
+			uint totalRenown = (uint)(WorldMgr.GenerateRenownCount(killer, this) * (1f + killer.AAOBonus) * deathRewardScaler);
 
-            if (Constants.DoomsdaySwitch > 0 && totalRenown < 100)
+			if (Constants.DoomsdaySwitch > 0 && totalRenown < 100)
                 totalRenown = 100;
 
             ushort influenceId = 0;
