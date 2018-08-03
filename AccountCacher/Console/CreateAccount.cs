@@ -20,4 +20,25 @@ namespace AccountCacher {
             return Program.AcctMgr.CreateAccount(Username, Password, GmLevel);
         }
     }
+
+    [ConsoleHandler("reset", 2, "Reset Password <Username,Password>")]
+    public class ResetPassword : IConsoleHandler
+    {
+        public bool HandleCommand(string command, List<string> args)
+        {
+            string userName = args[0];
+            string password = args[1];
+
+            var account = Program.AcctMgr.LoadAccount(userName);
+            account.Password = password;
+            account.CryptPassword = Account.ConvertSHA256(userName + ":" + password);
+
+
+            AccountMgr.Database.AddObject(account);
+            AccountMgr.Database.ForceSave();
+
+            return true;
+
+        }
+    }
 }
