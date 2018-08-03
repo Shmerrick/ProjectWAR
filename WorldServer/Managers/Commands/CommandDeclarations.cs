@@ -186,16 +186,10 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("playernametemp",ModifyPlayerNameTemp, null, EGmLevel.EmpoweredStaff, 0, "Temporarily changes players name until server restart."),
             new GmCommandHandler("guildleader", ModifyGuildLeader, null, EGmLevel.EmpoweredStaff, 2, "Changes the leader of the guild (string newLeader, string guildName)"),
             new GmCommandHandler("guildnamebyid", ModifyGuildNameByID, null, EGmLevel.TrustedGM, 2, "Changes the name of the guild by ID (int guildID string guildName)"),
-#if DEBUG
-            new GmCommandHandler("level", ModifyLevel, null, EGmLevel.DatabaseDev, 1, "Changes the level of the targeted player (int Rank)"),
-            new GmCommandHandler("renown", ModifyRenown, null, EGmLevel.DatabaseDev, 2, "Changes the renown rank of a player (string playerName, int RenownRank)"),
-            new GmCommandHandler("stat",ModifyStat, null, EGmLevel.DatabaseDev, 2, "Changes your proficiency in your current crafting skill (byte Skill)"),
-#endif
-#if (!DEBUG)
+
             new GmCommandHandler("level", ModifyLevel, null, EGmLevel.Management, 1, "Changes the level of the targeted player (int Rank)"),
             new GmCommandHandler("renown", ModifyRenown, null, EGmLevel.Management, 2, "Changes the renown rank of a player (string playerName, int RenownRank)"),
             new GmCommandHandler("stat",ModifyStat, null, EGmLevel.SourceDev, 2, "Changes your proficiency in your current crafting skill (byte Skill)"),
-#endif
 
             new GmCommandHandler("access", ModifyAccess, null, EGmLevel.Management, 1, "Changes the access level of the designated account (string username, int newAccessLevel)"),
             new GmCommandHandler("morale", ModifyMorale, null, EGmLevel.SourceDev, 1, "Changes the morale of the selected player (int Morale)"),
@@ -239,56 +233,26 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("addtoevent",NpcEventConvert, null, EGmLevel.DatabaseDev, 1, "Adds NPC to event. Currently doesn't work."),
             new GmCommandHandler("health",NpcHealth, null, EGmLevel.DatabaseDev, 1, "Sets NPC or GO health to specified value percent."),
 
-#if (!DEBUG)
-            new GmCommandHandler("spawn",NpcSpawn, null, EGmLevel.SourceDev, 1, "Spawn an npc"),
-            new GmCommandHandler("remove",NpcRemove, null, EGmLevel.SourceDev, 1, "Delete the target <(0=World,1=Database)>"),
-            new GmCommandHandler("go",NpcGoTo, null, EGmLevel.SourceDev, 3, "Npc Go To Target <X,Y,Z>"),
-            new GmCommandHandler("come",NpcCome, null, EGmLevel.SourceDev, 0, "Move target to my position"),
-            new GmCommandHandler("modify",NpcModify, null, EGmLevel.SourceDev, 2, "Modify a column value <columnname,value,0 target- 1 all>"),
-            new GmCommandHandler("quote",NpcQuote, null, EGmLevel.SourceDev, 1, "Adds speech to the targeted NPC, by spawn (string text)"),
-            new GmCommandHandler("tint",NpcTint, null, EGmLevel.SourceDev, 3, "Sets armor piece color <slotIndex (0=all), pri_tint, sec_tint (from tintpalette_equipment.csv)>"),
-            new GmCommandHandler("animscript", NpcAnimScript, null, EGmLevel.SourceDev, 1, "Sets monster's animation script <animID> (animID from anim_scripts.csv. 0 to remove)."),
-            new GmCommandHandler("animationset", NpcPermaAnimScript, null, EGmLevel.SourceDev, 1, "Sets monster's animation script <animID> (animID from anim_scripts.csv. 0 to remove). This is permanent, updates DB."),
-            new GmCommandHandler("level",NpcLevel, null, EGmLevel.SourceDev, 1, "Sets NPC Level to specified value"),
-            new GmCommandHandler("disable",NpcDisable, null, EGmLevel.SourceDev, 0, "Disables NPC from spawns. Can be restored using the DB."),
-            new GmCommandHandler("addtoevent",NpcEventConvert, null, EGmLevel.SourceDev, 1, "Disables NPC from spawns. Can be restored using the DB."),
-            new GmCommandHandler("move",NpcChangeSpawnPlace, null, EGmLevel.SourceDev, 0, "Makes NPC come to player and updates his position in DB."),
-            new GmCommandHandler("health",NpcHealth, null, EGmLevel.SourceDev, 1, "Sets NPC or GO health to specified value percent.")
-#endif
+
         };
 
         /// <summary>Public Quest commands under .pq</summary>
         public static List<GmCommandHandler> PqCommands = new List<GmCommandHandler>
         {
-#if DEBUG
+
             new GmCommandHandler("spawn",PqSpawn, null, EGmLevel.DatabaseDev, 3, "Spawn a PQ NPC <object id> <objective id> <type 1 = NPC>"),
             new GmCommandHandler("convert",PqConvert, null, EGmLevel.DatabaseDev, 1, "Converts selected Object to a PQ spawn <objective id>"),
             new GmCommandHandler("next",PqNextStage, null, EGmLevel.DatabaseDev, 0, "Lets go onto the next pq stage"),
             new GmCommandHandler("clear",PqClear, null, EGmLevel.DatabaseDev, 0, "Despawns all npc of the current stage stage"),
             new GmCommandHandler("reset",PqReset, null, EGmLevel.DatabaseDev, 0, "Resets the current pq")
-#endif
-#if (!DEBUG)
-            new GmCommandHandler("spawn",PqSpawn, null, EGmLevel.SourceDev, 3, "Spawn a PQ NPC <object id> <objective id> <type 1 = NPC>"),
-            new GmCommandHandler("convert",PqConvert, null, EGmLevel.SourceDev, 1, "Converts selected Object to a PQ spawn <objective id>"),
-            new GmCommandHandler("next",PqNextStage, null, EGmLevel.SourceDev, 0, "Lets go onto the next pq stage"),
-            new GmCommandHandler("clear",PqClear, null, EGmLevel.SourceDev, 0, "Despawns all npc of the current stage stage"),
-            new GmCommandHandler("reset",PqReset, null, EGmLevel.SourceDev, 0, "Resets the current pq")
-#endif
         };
 
         /// <summary>Respawn modification commands under .respawn</summary>
         public static List<GmCommandHandler> RespawnCommands = new List<GmCommandHandler>
         {
-#if DEBUG
             new GmCommandHandler("add",RespawnAdd, null, EGmLevel.DatabaseDev, 0, "Add respawn point to your position <1=Order or 2=Destruction>"),
             new GmCommandHandler("modify",RespawnModify, null, EGmLevel.DatabaseDev, 1, "Modify existing point to you position <ID>"),
             new GmCommandHandler("remove",RespawnRemove, null, EGmLevel.DatabaseDev, 1, "Delete existing point <ID>")
-#endif
-#if (!DEBUG)
-            new GmCommandHandler("add",RespawnAdd, null, EGmLevel.SourceDev, 0, "Add respawn point to your position <1=Order or 2=Destruction>"),
-            new GmCommandHandler("modify",RespawnModify, null, EGmLevel.SourceDev, 1, "Modify existing point to you position <ID>"),
-            new GmCommandHandler("remove",RespawnRemove, null, EGmLevel.SourceDev, 1, "Delete existing point <ID>")
-#endif
         };
 
         /// <summary>Respecialization commands under .respec</summary>
@@ -354,20 +318,12 @@ namespace WorldServer.Managers.Commands
         /// <summary>Waypoint commands under .warpoint</summary>
         public static List<GmCommandHandler> WaypointCommands = new List<GmCommandHandler>
         {
-#if DEBUG
+
             new GmCommandHandler("add",NpcAddWaypoint, null, EGmLevel.DatabaseDev, 0, "Adds a waypoint on your current position to your current target."),
             new GmCommandHandler("remove",NpcRemoveWaypoint, null, EGmLevel.DatabaseDev, 1, "Remove a waypoint from the target (int Id)"),
             new GmCommandHandler("move",NpcMoveWaypoint, null, EGmLevel.DatabaseDev, 1, "Moves the specified waypoint of target to your position (int Id)"),
             new GmCommandHandler("list",NpcListWaypoint, null, EGmLevel.DatabaseDev, 0, "Shows the list of waypoints."),
             new GmCommandHandler("info",NpcInfoWaypoint, null, EGmLevel.DatabaseDev, 0, "Shows information about the current waypoint.")
-#endif
-#if (!DEBUG)
-            new GmCommandHandler("add",NpcAddWaypoint, null, EGmLevel.SourceDev, 0, "Adds a waypoint on your current position to your current target."),
-            new GmCommandHandler("remove",NpcRemoveWaypoint, null, EGmLevel.SourceDev, 1, "Remove a waypoint from the target (int Id)"),
-            new GmCommandHandler("move",NpcMoveWaypoint, null, EGmLevel.SourceDev, 1, "Moves the specified waypoint of target to your position (int Id)"),
-            new GmCommandHandler("list",NpcListWaypoint, null, EGmLevel.SourceDev, 0, "Shows the list of waypoints."),
-            new GmCommandHandler("info",NpcInfoWaypoint, null, EGmLevel.SourceDev, 0, "Shows information about the current waypoint.")
-#endif
         };
 
         /// <summary>Root commands list.</summary>
@@ -440,13 +396,8 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("clearboot",ClearServer, null, EGmLevel.EmpoweredStaff, 0, "Removes all players from server."),
             new GmCommandHandler("revive",Revive, null, EGmLevel.Staff, 0, "Resurrects the targeted Unit."),
             new GmCommandHandler("fly", SetFlightState, null, EGmLevel.Staff, 0, "Grants the ability to fly (byte enableFlight)"),
+            
 
-#if (!DEBUG)
-            new GmCommandHandler("boot",Reboot, null, EGmLevel.Management, 0, "Reboots the server."),
-            new GmCommandHandler("clearboot",ClearServer, null, EGmLevel.Management, 0, "Removes all players from server."),
-            new GmCommandHandler("revive",Revive, null, EGmLevel.EmpoweredStaff, 0, "Resurrects the targeted Unit."),
-            new GmCommandHandler("fly", SetFlightState, null, EGmLevel.EmpoweredStaff, 0, "Grants the ability to fly (byte enableFlight)"),
-#endif
             new GmCommandHandler("announce", Announce, null, EGmLevel.EmpoweredStaff, 1, "Sends a global message (string Message). SoundID can be specified .announce sound <id> <message>"),
             new GmCommandHandler("shroud", Shroud, null, EGmLevel.EmpoweredStaff, 0, "Causes you to become invisible to other players."),
             new GmCommandHandler("invincible",InvincibleMe, null, EGmLevel.EmpoweredStaff, 0, "Toggles invulnerability on the current target."),
@@ -489,7 +440,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("hide", Hide, null, EGmLevel.AnyGM, 0, "Hides you from the gmlist"),
 
             // Database dev commands
-#if DEBUG
+
             new GmCommandHandler("playeffect", PlayEffect, null, EGmLevel.DatabaseDev, 2, "Play effect from data/gamedata/effectlist.csv"),
             new GmCommandHandler("playability", PlayAbility, null, EGmLevel.DatabaseDev, 2, "Plays ability from data/gamedata/effect.csv (string playerName, ushort effectID)"),
             new GmCommandHandler("playsound", PlaySound, null, EGmLevel.DatabaseDev, 1, "Play sound from data/gamedata/audio_server.csv. Multiple sounds can be specified .playsound <soundID:delayInSeconds> ... (ex: .playsound 628:10 1010:15 1319:25)"),
@@ -499,18 +450,6 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("recreateplayer", CreatePlayer, null, EGmLevel.DatabaseDev, 1, "Requests player info is resent"),
             new GmCommandHandler("quest", QuestComplete, null, EGmLevel.DatabaseDev, 2, "Used to debug quests <QuestId> <Operation> Operation 1 - add, 2 - finish quest, 3 - delete quest from player"),
             new GmCommandHandler("geartester", GearTester, null, EGmLevel.SourceDev, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
-            //new GmCommandHandler("gunbad", Gunbad, null, EGmLevel.AnyGM, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
-#endif
-#if (!DEBUG)
-            new GmCommandHandler("playeffect", PlayEffect, null, EGmLevel.SourceDev, 2, "Play effect from data/gamedata/effectlist.csv"),
-            new GmCommandHandler("playability", PlayAbility, null, EGmLevel.SourceDev, 2, "Plays ability from data/gamedata/effect.csv (string playerName, ushort effectID)"),
-            new GmCommandHandler("playsound", PlaySound, null, EGmLevel.SourceDev, 1, "Play sound from data/gamedata/audio_server.csv. Multiple sounds can be specified .playsound <soundID:delayInSeconds> ... (ex: .playsound 628:10 1010:15 1319:25)"),
-            new GmCommandHandler("save",Save, null, EGmLevel.SourceDev, 0, "Performs a database save on the target."),
-            new GmCommandHandler("objectivestate", ObjectiveState, null, EGmLevel.SourceDev, 1, "Set vfx for objective (int oid)."),
-            new GmCommandHandler("previewmodel", PreviewItemModel, null, EGmLevel.SourceDev, 1, "Temporary sets equipped item model (int slotIndex, int modelID)"),
-            new GmCommandHandler("recreateplayer", CreatePlayer, null, EGmLevel.SourceDev, 1, "Requests player info is resent"),
-            new GmCommandHandler("quest", QuestComplete, null, EGmLevel.SourceDev, 2, "Used to debug quests <QuestId> <Operation> Operation 1 - add, 2 - finish quest, 3 - delete quest from player"),
-#endif
 
             // Source dev commands
             new GmCommandHandler("lockcasting", PreventCasting, null, EGmLevel.SourceDev, 0, "Prevents all casting (byte blockAllCasts)"),
