@@ -3986,7 +3986,7 @@ namespace WorldServer
 
             uint totalXP = (uint)(WorldMgr.GenerateXPCount(killer, this) * bonusMod * (1f + killer.AAOBonus * deathRewardScaler));
 			uint baseRenown = WorldMgr.GenerateRenownCount(killer, this);
-			killer.SendClientMessage("You gained +" + Math.Round(baseRenown * bonusMod, 0) + "renown bonus for fighting near a battlefield objective!");
+			killer.SendClientMessage("You gain +" + Math.Round(baseRenown * bonusMod, 0) + " Renown bonus for fighting near a Battlefield Objective!");
 			uint totalRenown = (uint)(baseRenown * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
 
             if (Constants.DoomsdaySwitch > 0 && totalRenown < 100)
