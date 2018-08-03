@@ -2010,7 +2010,7 @@ namespace WorldServer
             if (plr == null)
                 return;
 
-            if (plr.Name.Contains("Arena") || plr.Name.Contains("Poko") || plr.Name.Contains("Bram") || plr.Name.Contains("Dacrusha") || plr.Name.Contains("niffils") || plr.Name.Contains("ikdorf"))
+            if (plr.Name.Contains("Arena") || plr.Name.Contains("Poko") || plr.Name.Contains("Bram") || plr.Name.Contains("zanu") || plr.Name.Contains("niffils") || plr.Name.Contains("ikdorf"))
             {
                 GuildLogger.Debug($"{plr.Name}");
             }
