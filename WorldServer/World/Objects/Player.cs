@@ -3912,11 +3912,11 @@ namespace WorldServer
 
                 if (Region.Campaign.PreventKillReward() || (killer.Client?._Account != null && CheckKillFarm(killer)))
                     return;
-
+				
                 if (CurrentKeep != null)
                     CurrentKeep.CheckKillValid(this);
                 else if (CurrentObjectiveFlag != null)
-                    CurrentObjectiveFlag.CheckKillValid(this);
+					CurrentObjectiveFlag.CheckKillValid(this);
 
                 float rewardScale = Region.Campaign.ModifyKill(killer, this);
 
@@ -3945,9 +3945,10 @@ namespace WorldServer
                 {
                     killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints++;
                 }
-                killer.SendClientMessage($"+1 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
 
-                HandleXPRenown(killer, rewardScale);
+				killer.SendClientMessage($"+1 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
+
+				HandleXPRenown(killer, rewardScale);
                 GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
             }
 
@@ -3956,10 +3957,12 @@ namespace WorldServer
 
         public float AAOBonus { get; set; }
 
-        /// <summary>
-        /// Grants XP, Renown, Influence, ToK kill incrementation and kill contribution credit to all players inflicting damage.
-        /// </summary>
-        private void HandleXPRenown(Player killer, float bonusMod)
+		/// <summary>
+		/// Grants XP, Renown, Influence, ToK kill incrementation and kill contribution credit to all players inflicting damage.
+		/// </summary>
+		/// <param name="killer"></param>
+		/// <param name="bonusMod"> x >= 1.0f </param>
+		private void HandleXPRenown(Player killer, float bonusMod)
         {
             Dictionary<Group, XpRenown> groupXPRenown = new Dictionary<Group, XpRenown>();
             List<Player> damageSourceRemovals = new List<Player>();
@@ -3978,12 +3981,13 @@ namespace WorldServer
 
             if (_lastPvPDeathSeconds > 0)
                 deathRewardScaler = Math.Min(1f, (TCPManager.GetTimeStamp() - _lastPvPDeathSeconds) / (ScnInterface.Scenario == null ? 300f : 60f));
-
-
+			
             _lastPvPDeathSeconds = TCPManager.GetTimeStamp();
 
-            uint totalXP = (uint)(WorldMgr.GenerateXPCount(killer, this) * (1f + killer.AAOBonus) * deathRewardScaler);
-            uint totalRenown = (uint)(WorldMgr.GenerateRenownCount(killer, this) * (1f + killer.AAOBonus) * deathRewardScaler);
+            uint totalXP = (uint)(WorldMgr.GenerateXPCount(killer, this) * bonusMod * (1f + killer.AAOBonus * deathRewardScaler));
+			uint baseRenown = WorldMgr.GenerateRenownCount(killer, this);
+			killer.SendClientMessage("You gained +" + Math.Round(baseRenown * bonusMod, 0) + "renown bonus for fighting near a battlefield objective!");
+			uint totalRenown = (uint)(baseRenown * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
 
             if (Constants.DoomsdaySwitch > 0 && totalRenown < 100)
                 totalRenown = 100;

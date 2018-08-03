@@ -900,12 +900,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return BattleFrontManager.IsBattleFrontLocked(this.BattleFrontManager.ActiveBattleFront.BattleFrontId); // Removed from legacy : && Tier > 1
         }
 
-
-
-        /// <summary>
-        /// Increases the value of the closest battlefield objective to the kill and determines reward scaling based on proximity to the objective. 
-        /// </summary>
-        public float ModifyKill(Player killer, Player killed)
+		/// <summary>
+		/// Increases the value of the closest battlefield objective to the kill and determines reward scaling based on proximity to the objective. 
+		/// </summary>
+		public float ModifyKill(Player killer, Player killed)
         {
             if (killed.WorldPosition == null)
             {
@@ -929,9 +927,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 // Attack kill. Weight the kill higher if it was closer to the objective (high penetration)
                 else
                     rewardMod += (1000 - Math.Min(killed.GetDistanceTo(closestFlag), 1000)) * 0.001f * 0.5f;
-            }
 
-            return rewardMod;
+				// calculate ObjectiveReward scale on near players
+				var scale = closestFlag.CalculateObjectiveRewardScale(killer);
+				BattlefrontLogger.Debug("objective scale = " + scale);
+				rewardMod += scale;
+			}
+
+			return rewardMod;
         }
 
         public float GetArtilleryDamageScale(Realms weaponRealm)
