@@ -109,8 +109,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     else
                         influenceId = (ushort) player.CurrentArea.DestroInfluenceId;
 
-                    // Doesnt do anything?
-                    var inf = Math.Max((ushort)baseInf, (ushort)1);
+					// half the infl ticks
+					var inf = (ushort)baseInf / 2;
                     player.AddInfluence(influenceId, Math.Max((ushort)baseInf, (ushort)1));
                 }
 
@@ -118,7 +118,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 int random = rnd.Next(-25, 25);
                 var xp = (uint)Math.Max((baseXp * (1 + (random / 100))), 1);
 
-                var rr = (uint) Math.Max((baseRp * (1 + (random / 100))), 1);
+				// half the rr ticks
+				baseRp /= 2;
+				var rr = (uint) Math.Max((baseRp * (1 + (random / 100))), 1);
                 
                 player.AddXp(xp, false, false);
                 player.AddRenown(rr, false, RewardType.ObjectiveCapture, objectiveName);
