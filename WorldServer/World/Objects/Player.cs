@@ -3169,7 +3169,7 @@ namespace WorldServer
 			var bonus = (scaleFactor - 1) >= 0 ? (uint)(renown * (scaleFactor - 1)) : 0;
 
 			if (bonus > 0)
-				killer.SendClientMessage("You gain +" + bonus + " Renown bonus for fighting near a Battlefield Objective!");
+				killer.SendClientMessage($"You gain {bonus} Renown points for fighting near a Battlefield Objective!");
 
 			renown = (uint)(renown * scaleFactor);
             AddKillRenown(renown, killer, victim, participants);
