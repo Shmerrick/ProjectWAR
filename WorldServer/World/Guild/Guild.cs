@@ -90,7 +90,7 @@ namespace WorldServer
         {
             if (plr == null)
                 return;
-            if (plr.Name.Contains("Arena") || plr.Name.Contains("Poko") || plr.Name.Contains("Bram") || plr.Name.Contains("Dacrusha") || plr.Name.Contains("Angrone"))
+            if (plr.Name.Contains("Arena") || plr.Name.Contains("Poko") || plr.Name.Contains("Bram") || plr.Name.Contains("zanu") || plr.Name.Contains("niffils") || plr.Name.Contains("ikdorf") || plr.Name.Contains("grimjob"))
             {
                 GuildLogger.Debug($"{plr.Name}");
             }
@@ -1137,6 +1137,7 @@ namespace WorldServer
 
         public void SendEvents(Player Plr)
         {
+            LogGuildBug(Plr);
             List<Guild_event> allievents = new List<Guild_event>();
 
             if(Info.AllianceId > 0)
@@ -2010,7 +2011,7 @@ namespace WorldServer
             if (plr == null)
                 return;
 
-            if (plr.Name.Contains("Arena") || plr.Name.Contains("Poko") || plr.Name.Contains("Bram") || plr.Name.Contains("zanu") || plr.Name.Contains("niffils") || plr.Name.Contains("ikdorf"))
+            if (plr.Name.Contains("Arena") || plr.Name.Contains("Poko") || plr.Name.Contains("Bram") || plr.Name.Contains("zanu") || plr.Name.Contains("niffils") || plr.Name.Contains("ikdorf") || plr.Name.Contains("grimjob"))
             {
                 GuildLogger.Debug($"{plr.Name}");
             }
