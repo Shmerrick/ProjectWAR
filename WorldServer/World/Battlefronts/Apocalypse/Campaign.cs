@@ -208,11 +208,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (Region.GetTier() == 1)
                 {
-                    plr.SendClientMessage($"RvR Status : {this.GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    plr.SendClientMessage($"RvR Status : {this.BattleFrontManager.GetActiveCampaign().GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
                 }
                 else
                 {
-                    plr.SendClientMessage($"RvR Status : {this.GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    plr.SendClientMessage($"RvR Status : {this.BattleFrontManager.GetActiveCampaign().GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
                 }
             }
         }
