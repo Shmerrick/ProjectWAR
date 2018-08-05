@@ -208,11 +208,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (Region.GetTier() == 1)
                 {
-                    plr.SendClientMessage($"RvR Status : {this.GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    plr.SendClientMessage($"RvR Status : {this.BattleFrontManager.GetActiveCampaign().GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
                 }
                 else
                 {
-                    plr.SendClientMessage($"RvR Status : {this.GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    plr.SendClientMessage($"RvR Status : {this.BattleFrontManager.GetActiveCampaign().GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
                 }
             }
         }
@@ -647,9 +647,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             foreach (CampaignObjective flag in Objectives)
             {
                 BattlefrontLogger.Trace($"Reward Ticks {this.CampaignName} - {flag.ToString()}");
-                // TODO - perhaps use AAO calculation here as a pairing scaler?.
-                var vp = flag.RewardCaptureTick(1f);
 
+				VictoryPoint vp = new VictoryPoint();
+				if (!Objectives.Any(x => !x.Equals(flag) && x.State == StateFlags.Contested))
+				{
+					// TODO - perhaps use AAO calculation here as a pairing scaler?.
+					vp = flag.RewardCaptureTick(1f);
+				}
+                
                 orderVictoryPoints += vp.OrderVictoryPoints;
                 destroVictoryPoints += vp.DestructionVictoryPoints;
 

@@ -71,6 +71,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 spawn.ZoneId = Info.ZoneId;
 
                 Creature = new KeepCreature(spawn, this, Keep);
+                
                 /*if (Info.KeepLord)
                     Log.Info(Keep.Info.Name, (Keep.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction") + " keep lord spawned.");*/
                 Region.AddObject(Creature, spawn.ZoneId);

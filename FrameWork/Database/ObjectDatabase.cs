@@ -241,7 +241,7 @@ namespace FrameWork
             }
 
 
-            Log.Notice("ObjectDatabase","Can not save, AllowSave = False " + dataObject.TableName + " : " + dataObject.ObjectId);
+            Log.Notice("ObjectDatabase", "Can not save, AllowAdd = False " + dataObject.TableName + " : " + dataObject.ObjectId);
             return false;
         }
 

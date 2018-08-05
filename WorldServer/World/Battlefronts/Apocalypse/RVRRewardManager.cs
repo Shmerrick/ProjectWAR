@@ -118,9 +118,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 int random = rnd.Next(-25, 25);
                 var xp = (uint)Math.Max((baseXp * (1 + (random / 100))), 1);
 
-				// half the rr ticks
-				baseRp /= 2;
-				var rr = (uint) Math.Max((baseRp * (1 + (random / 100))), 1);
+                var rr = (uint) Math.Max((baseRp * (1 + (random / 100))), 1);
+
+                rr = rr / 2;
                 
                 player.AddXp(xp, false, false);
                 player.AddRenown(rr, false, RewardType.ObjectiveCapture, objectiveName);
@@ -216,8 +216,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 Random rnd = new Random();
                 int random = rnd.Next(1, 25);
-                plr.AddXp((uint)(2000 * (1 + (random / 100))), false, false);
-                plr.AddRenown((uint)(1500 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
+                plr.AddXp((uint)(4000 * (1 + (random / 100))), false, false);
+                plr.AddRenown((uint)(2000 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
 
                 var mailItem3 = new MailItem(208470, 6);
                 Character_mail mail = new Character_mail
@@ -244,8 +244,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 Random rnd = new Random();
                 int random = rnd.Next(1, 25);
-                plr.AddXp((uint)(500 * (1 + (random / 100))), false, false);
-                plr.AddRenown((uint)(500 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
+                plr.AddXp((uint)(1500 * (1 + (random / 100))), false, false);
+                plr.AddRenown((uint)(1000 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
 
                 var mailItem3 = new MailItem(208470, 3);
                 Character_mail mail = new Character_mail

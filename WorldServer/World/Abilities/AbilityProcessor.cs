@@ -1040,9 +1040,6 @@ namespace WorldServer
         {
             flightTimeMs = (ushort) (flightTimeMs*AbInfo.FlightTimeMod);
 
-            #if DEBUG
-            (_caster as Player)?.SendClientMessage("Flight time: " + flightTimeMs + "ms");
-            #endif
             PacketOut Out = new PacketOut((byte)Opcodes.F_USE_ABILITY, 20);
 
             Out.WriteUInt16(0);

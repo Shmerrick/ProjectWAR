@@ -78,9 +78,7 @@ namespace WorldServer
                             if (value != 0 || (!string.IsNullOrEmpty(command) && !ren.Passive))
                             {
                                 ExecuteCommand(command, stat, value);
-                                #if DEBUG
-                                _player.SendClientMessage("Saving CommandInfo: "+command+", stat: "+stat+" value: "+value);
-                                #endif
+                               
                                 _savedCommandInfo.Add(new Tuple<string, byte, int>(command, stat, value));
                             }
 
@@ -102,9 +100,7 @@ namespace WorldServer
                 if (command != null)
                 {
                     ExecuteCommand(command, stat, value);
-                    #if DEBUG
-                    _player.SendClientMessage("Saving CommandInfo: " + command + ", stat: " + stat + " value: " + value);
-                    #endif
+                  
                     _savedCommandInfo.Add(new Tuple<string, byte, int>(command, stat, value));
                 }
 
@@ -154,22 +150,16 @@ namespace WorldServer
             switch (cmdInfo.Item1)
             {
                 case "ModifyStat":
-                    #if DEBUG
-                    _player.SendClientMessage("Removing " + cmdInfo.Item3 + " from core stat " + cmdInfo.Item2);
-                    #endif
+                    
                     _player.StsInterface.SetRenownStat((Stats)cmdInfo.Item2, 0);
                     break;
                 case "ModifyEvasion":
-                    #if DEBUG
-                    _player.SendClientMessage("Removing " + cmdInfo.Item3 + " from base dodge/disrupt");
-                    #endif
+                  
                     _player.StsInterface.SetRenownStat(Stats.Evade, 0);
                     _player.StsInterface.SetRenownStat(Stats.Disrupt, 0);
                     break;
                 case "IncreaseAPPool":
-                    #if DEBUG
-                    _player.SendClientMessage("Removing " + cmdInfo.Item3 + " from max action points");
-                    #endif
+                 
                     _player.MaxActionPoints = (ushort)(_player.MaxActionPoints - cmdInfo.Item3);
                     break;
                 case "AddAbility":

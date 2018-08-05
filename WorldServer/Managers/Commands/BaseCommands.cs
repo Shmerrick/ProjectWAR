@@ -1261,7 +1261,22 @@ namespace WorldServer.Managers.Commands
                             .ToArray();
         }
 
+
         #endregion
+
+
+        public static bool GetPing(Player plr, ref List<string> values)
+        {
+            Unit target = plr.CbtInterface.GetCurrentTarget();
+
+            if (target == null)
+                target = plr;
+
+            plr.UpdatePing();
+
+            return true;
+        }
+
 
         #region DeathKill
 
