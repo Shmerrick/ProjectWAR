@@ -396,7 +396,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("clearboot",ClearServer, null, EGmLevel.EmpoweredStaff, 0, "Removes all players from server."),
             new GmCommandHandler("revive",Revive, null, EGmLevel.Staff, 0, "Resurrects the targeted Unit."),
             new GmCommandHandler("fly", SetFlightState, null, EGmLevel.Staff, 0, "Grants the ability to fly (byte enableFlight)"),
-            
+            new GmCommandHandler("ping", GetPing, null, EGmLevel.Anyone, 0, "{Ping from server to client}"),
 
             new GmCommandHandler("announce", Announce, null, EGmLevel.EmpoweredStaff, 1, "Sends a global message (string Message). SoundID can be specified .announce sound <id> <message>"),
             new GmCommandHandler("shroud", Shroud, null, EGmLevel.EmpoweredStaff, 0, "Causes you to become invisible to other players."),

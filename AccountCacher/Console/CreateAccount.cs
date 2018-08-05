@@ -30,12 +30,19 @@ namespace AccountCacher {
             string password = args[1];
 
             var account = Program.AcctMgr.LoadAccount(userName);
-            account.Password = password;
-            account.CryptPassword = Account.ConvertSHA256(userName + ":" + password);
-
-
-            AccountMgr.Database.AddObject(account);
-            AccountMgr.Database.ForceSave();
+            if (account == null)
+            {
+                Log.Info("ResetPassword", $"Could not locate {userName} to reset password");
+                return false;
+            }
+            else
+            {
+                account.Password = password;
+                account.CryptPassword = Account.ConvertSHA256(userName + ":" + password);
+                AccountMgr.Database.SaveObject(account);
+                AccountMgr.Database.ForceSave();
+            }
+           
 
             return true;
 

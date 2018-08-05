@@ -27,9 +27,9 @@ namespace WorldServer
             Guild_Alliance_info alli = new Guild_Alliance_info
             {
                 Name = name,
-                AllianceId = (uint) Interlocked.Increment(ref MaxAllianceGUID)
+                AllianceId = (uint)Interlocked.Increment(ref MaxAllianceGUID)
             };
-            Alliances.Add(alli.AllianceId,alli);
+            Alliances.Add(alli.AllianceId, alli);
             CharMgr.Database.AddObject(alli);
             return alli.AllianceId;
         }
@@ -88,11 +88,12 @@ namespace WorldServer
         }
         private void LogGuildBug(Player plr)
         {
-            if (plr == null)
-                return;
-            if (plr.Name.Contains("Arena") || plr.Name.Contains("Poko") || plr.Name.Contains("Bram") || plr.Name.Contains("zanu") || plr.Name.Contains("niffils") || plr.Name.Contains("ikdorf") || plr.Name.Contains("grimjob"))
+            if (plr.Name.Contains("arena") || plr.Name.Contains("poko") || plr.Name.Contains("bram") || plr.Name.Contains("zanu") || plr.Name.Contains("niffils") ||
+                plr.Name.Contains("ikdorf") || plr.Name.Contains("grimjob"))
             {
-                GuildLogger.Debug($"{plr.Name}");
+                var l_CurrentStack = new System.Diagnostics.StackTrace(true);
+
+                GuildLogger.Debug($"{plr.Name} {l_CurrentStack.ToString()}");
             }
 
         }
@@ -326,7 +327,7 @@ namespace WorldServer
                 {
                     if (pop == 0 || guild.Info.Members.Count > pop)
                     {
-                        if (online == 0 ||guild.OnlineMembers.Count > online)
+                        if (online == 0 || guild.OnlineMembers.Count > online)
                         {
                             if (guild.Info.Level > guildRank)
                             {
@@ -341,7 +342,7 @@ namespace WorldServer
                             }
                         }
                     }
-                }     
+                }
             }
             return guilds;
         }
@@ -353,7 +354,7 @@ namespace WorldServer
 
         public static void BuildGuild(ref PacketOut Out, Guild guild)
         {
-           GuildLogger.Debug("...");
+            GuildLogger.Debug("...");
 
 
             Out.WriteUInt32(guild.Info.GuildId);
@@ -388,7 +389,7 @@ namespace WorldServer
             plr.SendPacket(Out);
         }
 
-        public static void HasPermissionsByte( ref int Byte, ref int bit, byte command)
+        public static void HasPermissionsByte(ref int Byte, ref int bit, byte command)
         {
             Byte++;
             for (int i = 0; i < command; i++)
@@ -420,7 +421,7 @@ namespace WorldServer
 
         public static bool HasPermissions(Guild_rank rank, GuildPermissions permission)
         {
-            return HasPermissions(rank,(byte)permission);
+            return HasPermissions(rank, (byte)permission);
         }
 
         public static byte[] ConvertHexStringToByteArray(string hexString)
@@ -447,18 +448,18 @@ namespace WorldServer
         public List<Player> OnlineMembers = new List<Player>();
         public List<Player> GuildVaultUser = new List<Player>();
         public Guild_info Info;
-        ushort[,] _banners = { { 1,0,0,0 }, { 1,0,0,0 }, { 1,0,0,0 }};
-        long[] _bannerlock = {  0 ,  0 ,  0 };
+        ushort[,] _banners = { { 1, 0, 0, 0 }, { 1, 0, 0, 0 }, { 1, 0, 0, 0 } };
+        long[] _bannerlock = { 0, 0, 0 };
 
         public bool Inactive = false;
 
 
         //heraldry
-        ushort _heraldryEmblem=2;
-        ushort _heraldryPattern=100;
-        byte _heraldryColor1=2;
-        byte _heraldryColor2=2;
-        byte _heraldryShape=1;
+        ushort _heraldryEmblem = 2;
+        ushort _heraldryPattern = 100;
+        byte _heraldryColor1 = 2;
+        byte _heraldryColor2 = 2;
+        byte _heraldryShape = 1;
 
 
 
@@ -505,13 +506,13 @@ namespace WorldServer
                 _heraldryShape = byte.Parse(info.Heraldry.Split(';')[4]);
             }
 
-            if(string.IsNullOrEmpty(info.Banners))
+            if (string.IsNullOrEmpty(info.Banners))
             {
                 info.Banners = "1, 0, 0, 0; 1, 0, 0, 0; 1, 0, 0, 0";
             }
             else
             {
-                string[] tmp =  info.Banners.Split(';');
+                string[] tmp = info.Banners.Split(';');
                 _banners = new[,] { { ushort.Parse(tmp[0].Split(',')[0]), ushort.Parse(tmp[0].Split(',')[1]), ushort.Parse(tmp[0].Split(',')[2]), ushort.Parse(tmp[0].Split(',')[3]) }, { ushort.Parse(tmp[1].Split(',')[0]), ushort.Parse(tmp[1].Split(',')[1]), ushort.Parse(tmp[1].Split(',')[2]), ushort.Parse(tmp[1].Split(',')[3]) }, { ushort.Parse(tmp[2].Split(',')[0]), ushort.Parse(tmp[2].Split(',')[1]), ushort.Parse(tmp[2].Split(',')[2]), ushort.Parse(tmp[2].Split(',')[3]) } };
             }
             if (info.Level >= 3 && info.guildvaultpurchased[0] == 0)
@@ -527,7 +528,7 @@ namespace WorldServer
 
             CalcMaxStandardBearers();
 
-            }
+        }
 
         #region Packets 
 
@@ -559,7 +560,7 @@ namespace WorldServer
 
 
 
-            if(Info.AllianceId > 0)
+            if (Info.AllianceId > 0)
                 SendAlliance(plr);
 
             foreach (Guild_log log in Info.Logs)
@@ -568,7 +569,7 @@ namespace WorldServer
 
             SendGuildRecruitment(plr);
 
-            
+
 
             SendGuildPlayerContributed(plr, Info.Members[plr.CharacterId]);
         }
@@ -663,8 +664,8 @@ namespace WorldServer
                 //Buffer.WriteUInt32(0x01010100);
                 buffer.WriteByte((byte)(member.GuildRecruiter ? 1 : 0)); // 1 - guild recruiter (red) 2 - guild recruiter (blue)
                 //Buffer.WriteByte(0x1);
-                buffer.WriteByte((byte)(onlinePlr == null ? 0 : onlinePlr.WorldGroup == null ? 0 :  onlinePlr.WorldGroup.IsWarband? 2:1)); // 1 - party 2 - warband
-                buffer.WriteByte((byte)(onlinePlr == null ? 0 : onlinePlr.WorldGroup == null ? 0 :  onlinePlr.WorldGroup.PartyOpen ? 2 : 0)); // 0 - closed 2 - open
+                buffer.WriteByte((byte)(onlinePlr == null ? 0 : onlinePlr.WorldGroup == null ? 0 : onlinePlr.WorldGroup.IsWarband ? 2 : 1)); // 1 - party 2 - warband
+                buffer.WriteByte((byte)(onlinePlr == null ? 0 : onlinePlr.WorldGroup == null ? 0 : onlinePlr.WorldGroup.PartyOpen ? 2 : 0)); // 0 - closed 2 - open
                 buffer.WriteByte(0);
                 count++;
             }
@@ -704,7 +705,7 @@ namespace WorldServer
                 SendBuffer(plr, ref buffer, 0x05, ref count, first);
         }
 
-        private void SendBuffer(Player plr, ref PacketOut buffer, byte type, ref byte count ,bool first)
+        private void SendBuffer(Player plr, ref PacketOut buffer, byte type, ref byte count, bool first)
         {
             LogGuildBug(plr);
             byte[] arrayBuf = buffer.ToArray();
@@ -739,8 +740,12 @@ namespace WorldServer
 
         public void SendMember(Player plr, Guild_member guildPlr)
         {
-            LogGuildBug(plr);
+            GuildLogger.Debug($"...SendMember");
+            if (plr != null)
+                GuildLogger.Debug($"{plr.Name}");
             Player onlinePlr = GetGuildPlayer(guildPlr.CharacterId);
+
+            LogGuildBug(onlinePlr);
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
             Out.WriteByte(2);
@@ -749,7 +754,7 @@ namespace WorldServer
             Out.WriteUInt16((ushort)(onlinePlr == null ? 0 : onlinePlr.IsInWorld() ? onlinePlr.Zone.ZoneId : 0));
             Out.WriteByte((byte)(guildPlr.StandardBearer ? 1 : 0)); // 1 - standard bearer
             Out.WriteByte((byte)(guildPlr.RealmCaptain ? 1 : 0)); // 1 -realm captain
-            Out.WriteByte(guildPlr.RankId); 
+            Out.WriteByte(guildPlr.RankId);
             Out.WriteByte(0);
             Out.WriteStringToZero(Info.Ranks[guildPlr.RankId].Name);
             Out.WriteByte((byte)((guildPlr.RankId == 9 ? 4 : guildPlr.AllianceOfficer ? 3 : guildPlr.RankId > 0 ? 2 : 0)));   //todo Alliance rank
@@ -761,13 +766,13 @@ namespace WorldServer
             Out.WriteByte(0);
             Out.WriteUInt32(guildPlr.LastSeen);
             Out.WriteByte((byte)(guildPlr.GuildRecruiter ? 1 : 0)); // 1 - guild recruiter (red) 2 - guild recruiter (blue)
-            Out.WriteByte((byte)(onlinePlr == null ? 0 : onlinePlr.WorldGroup == null ? 0 :  onlinePlr.WorldGroup.IsWarband? 2:1)); // 1 - party 2 - warband
-            Out.WriteByte((byte)(onlinePlr == null ? 0 : onlinePlr.WorldGroup == null ? 0 : onlinePlr.WorldGroup.PartyOpen? 2:0)); // 0 - closed 2 - open
+            Out.WriteByte((byte)(onlinePlr == null ? 0 : onlinePlr.WorldGroup == null ? 0 : onlinePlr.WorldGroup.IsWarband ? 2 : 1)); // 1 - party 2 - warband
+            Out.WriteByte((byte)(onlinePlr == null ? 0 : onlinePlr.WorldGroup == null ? 0 : onlinePlr.WorldGroup.PartyOpen ? 2 : 0)); // 0 - closed 2 - open
             Out.WriteByte(1);
             Out.WriteShortStringToZero(guildPlr.PublicNote);
             Out.WriteShortStringToZero(guildPlr.OfficerNote);
 
-          
+
             if (plr == null)
                 SendToGuild(Out);
             else
@@ -782,13 +787,13 @@ namespace WorldServer
 
             uint soFar = Info.Level >= MaxGuildLevel ? Info.Xp : (Info.Xp - xpCurr.Xp);
             uint next = Info.Level >= MaxGuildLevel ? Info.Xp : xpNext.Xp;
- 
+
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
             Out.WriteByte(0x03);
             Out.WriteUInt32(0);
             Out.WriteByte(Info.Level);
             Out.WriteUInt32(Info.Xp); // Total Guild Xp
-            Out.WriteUInt32(next); 
+            Out.WriteUInt32(next);
             Out.WriteUInt64(Info.Renown); // Renown
             Out.WriteUInt32(soFar); // Next Guild Rank
 
@@ -829,7 +834,7 @@ namespace WorldServer
             plr.SendPacket(Out);
 
             SendAllianceGuilds(plr);
-         
+
             // SendAllianceGuilds(Plr);
             /*
                         00 00 00 00 DF 00 0C 4C 65 20 4F 6C |...........Le Ol|
@@ -847,7 +852,7 @@ namespace WorldServer
                 List<Guild_member> officers = new List<Guild_member>();
 
                 Guild gl = GetGuild(guildid);
-                if(gl == null)
+                if (gl == null)
                 {
                     continue;
                 }
@@ -858,7 +863,7 @@ namespace WorldServer
                         officers.Add(gm.Value);
                 }
 
-                
+
                 PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
                 Out.WriteByte(0x08);
                 Out.WriteByte(0x01);
@@ -870,7 +875,7 @@ namespace WorldServer
                 Out.WriteByte((byte)officers.Count);  //number of alliance officers / leaders 
                 gl.BuildHeraldry(Out);
                 Out.WriteByte(0x00);
-                Out.WritePascalString(CharMgr.GetCharacter(gl.Info.LeaderId,true).Name + (CharMgr.GetCharacter(gl.Info.LeaderId, true).Sex == 1 ? "^F" : "^M"));
+                Out.WritePascalString(CharMgr.GetCharacter(gl.Info.LeaderId, true).Name + (CharMgr.GetCharacter(gl.Info.LeaderId, true).Sex == 1 ? "^F" : "^M"));
                 Out.WriteUInt32((uint)gl.Info.CreateDate);   // created
                 Out.WriteByte(gl.Info.Level);   // guild rank
                 Out.Fill(0, 4);
@@ -878,14 +883,14 @@ namespace WorldServer
                 {
                     Out.WriteUInt32(member.CharacterId);
                     Out.WriteByte(0x00);
-                    Out.WriteByte((byte)(CharMgr.GetCharacter(member.CharacterId,false).Name.Length + 1));
+                    Out.WriteByte((byte)(CharMgr.GetCharacter(member.CharacterId, false).Name.Length + 1));
                     Out.WriteStringBytes((CharMgr.GetCharacter(member.CharacterId, false).Name));
                     Out.WriteByte(0x00);
                     Out.WriteByte((byte)(member.RankId == 9 ? 4 : 3));   // rank  3 alli officer   4 alli leader
                     Out.WriteByte(0x00);
                     Out.WriteByte(0x69);  // no clue yet
                 }
-                if(Plr != null)
+                if (Plr != null)
                     Plr.SendPacket(Out);
                 else
                 {
@@ -925,7 +930,7 @@ namespace WorldServer
 
         #region event
 
-        public void CreateEvent(uint player,uint begin,uint end, string name , string description,byte alliance,byte locked)
+        public void CreateEvent(uint player, uint begin, uint end, string name, string description, byte alliance, byte locked)
         {
             lock (Info.Event)
             {
@@ -964,7 +969,7 @@ namespace WorldServer
             }
         }
 
-        public void DeleteEvent(Player plr,byte key,uint guildid)
+        public void DeleteEvent(Player plr, byte key, uint guildid)
         {
             lock (Info.Event)
             {
@@ -987,7 +992,7 @@ namespace WorldServer
 
         public void EventSignup(Player plr, byte key, uint guildid)
         {
-            lock(Info.Event)
+            lock (Info.Event)
             {
                 Guild_event events;
 
@@ -1012,7 +1017,7 @@ namespace WorldServer
                 if (notsightup)
                 {
                     events._Signups.Add(new KeyValuePair<uint, bool>(plr.CharacterId, false));
-                    
+
                     SendEvents(null);
                 }
                 events.Dirty = true;
@@ -1034,8 +1039,8 @@ namespace WorldServer
                     plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GUILD_GENERAL_NO_PERMISSION);
                     return;
                 }
-               
-                for(int i = 0;i < events._Signups.Count; i++)
+
+                for (int i = 0; i < events._Signups.Count; i++)
                 {
                     if (events._Signups[i].Key == plr.CharacterId)
                         events._Signups.RemoveAt(i);
@@ -1044,11 +1049,11 @@ namespace WorldServer
                 CharMgr.Database.SaveObject(events);
 
                 SendEvents(null);
-                
+
             }
         }
 
-        public void EventSignupKick(Player plr, byte key, uint guildid,uint characterid)
+        public void EventSignupKick(Player plr, byte key, uint guildid, uint characterid)
         {
             lock (Info.Event)
             {
@@ -1076,7 +1081,7 @@ namespace WorldServer
             }
         }
 
-        public void EventEdit(Player plr,byte eventid,uint guildid, uint begin, uint end, string name, string description, byte alliance, byte locked)
+        public void EventEdit(Player plr, byte eventid, uint guildid, uint begin, uint end, string name, string description, byte alliance, byte locked)
         {
             lock (Info.Event)
             {
@@ -1104,7 +1109,7 @@ namespace WorldServer
             SendEvents(null);
         }
 
-        public void EventSignupApproved(Player plr, byte key, uint guildid,uint charId)
+        public void EventSignupApproved(Player plr, byte key, uint guildid, uint charId)
         {
             lock (Info.Event)
             {
@@ -1123,7 +1128,7 @@ namespace WorldServer
                 {
                     if (events._Signups[i].Key == charId)
                     {
-                        if(events._Signups[i].Value)
+                        if (events._Signups[i].Value)
                             events._Signups[i] = new KeyValuePair<uint, bool>(charId, false);
                         else
                             events._Signups[i] = new KeyValuePair<uint, bool>(charId, true);
@@ -1140,28 +1145,28 @@ namespace WorldServer
             LogGuildBug(Plr);
             List<Guild_event> allievents = new List<Guild_event>();
 
-            if(Info.AllianceId > 0)
-            foreach (uint alli in Alliance.Alliances[Info.AllianceId].Members)
-            {
-                if (alli == Info.GuildId)
-                    continue;
-
-                Guild gl = GetGuild(alli);
-
-                foreach (KeyValuePair<byte, Guild_event> evn in gl.Info.Event)
+            if (Info.AllianceId > 0)
+                foreach (uint alli in Alliance.Alliances[Info.AllianceId].Members)
                 {
-                    if (evn.Value.Alliance)
+                    if (alli == Info.GuildId)
+                        continue;
+
+                    Guild gl = GetGuild(alli);
+
+                    foreach (KeyValuePair<byte, Guild_event> evn in gl.Info.Event)
                     {
-                        allievents.Add(evn.Value);
+                        if (evn.Value.Alliance)
+                        {
+                            allievents.Add(evn.Value);
+                        }
                     }
                 }
-            }
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
             Out.WriteByte(0x10);
-            Out.WriteByte((byte)(Info.Event.Count +allievents.Count));
+            Out.WriteByte((byte)(Info.Event.Count + allievents.Count));
             Out.WriteByte(0);
-            foreach(KeyValuePair<byte, Guild_event> evn in Info.Event)
+            foreach (KeyValuePair<byte, Guild_event> evn in Info.Event)
             {
                 Out.WriteByte(evn.Key);
                 Out.WriteUInt32(Info.GuildId);
@@ -1175,7 +1180,7 @@ namespace WorldServer
                 Out.WriteByte(0);
                 Out.WritePascalString(evn.Value.Description);
                 Out.WriteByte((byte)evn.Value._Signups.Count);
-                foreach (KeyValuePair<uint,bool> plr in evn.Value._Signups)
+                foreach (KeyValuePair<uint, bool> plr in evn.Value._Signups)
                 {
                     Out.WriteUInt32(plr.Key);
                     Out.WriteByte((byte)(plr.Value ? 1 : 0));
@@ -1404,7 +1409,7 @@ namespace WorldServer
             {
                 if (Info.GuildTacticsPurchased[i] == 0)
                     continue;
-                Out.WriteByte(first? numberofspells : (byte)(why==2?0:1));  // ?? 
+                Out.WriteByte(first ? numberofspells : (byte)(why == 2 ? 0 : 1));  // ?? 
                 Out.WriteUInt16(Info.GuildTacticsPurchased[i]);    // spell id 
                 Out.WriteByte(i);           // tactic slot
                 if (first)
@@ -1438,9 +1443,9 @@ namespace WorldServer
 
             uint money = 0;
 
-            for(int i =0; i < 40 ; i++)
+            for (int i = 0; i < 40; i++)
             {
-                if(Info.GuildTacticsPurchased[i] > 0)
+                if (Info.GuildTacticsPurchased[i] > 0)
                 {
                     money += 100000;
                 }
@@ -1483,7 +1488,7 @@ namespace WorldServer
             Out.WriteByte(0);
             BuildHeraldry(Out);
             Out.WriteByte(0);
-           if (plr == null)
+            if (plr == null)
                 SendToGuild(Out);
             else
                 plr.SendPacket(Out);
@@ -1492,7 +1497,7 @@ namespace WorldServer
         public void BuildHeraldry(PacketOut Out)
         {
             GuildLogger.Debug("...");
-            if (Info.Level<20 && Info.Realm == 1)
+            if (Info.Level < 20 && Info.Realm == 1)
                 Out.WriteUInt16(1);  // chaos
             else if (Info.Level < 20 && Info.Realm == 2)
                 Out.WriteUInt16(2);  // chaos
@@ -1515,13 +1520,13 @@ namespace WorldServer
             Out.WriteByte(0x1F);   //??1f
             Out.WriteByte(0x4A);   //??4a
 
-            
-            if(Info.Level >= 30)
-                Out.WriteByte(3); 
+
+            if (Info.Level >= 30)
+                Out.WriteByte(3);
             else if (Info.Level >= 18)
-                Out.WriteByte(2); 
+                Out.WriteByte(2);
             else if (Info.Level >= 5)
-                Out.WriteByte(1); 
+                Out.WriteByte(1);
             else
                 Out.WriteByte(0); // standart unlock 1 lvl 5 2 lvl 18 3 lvl 30
 
@@ -1534,7 +1539,7 @@ namespace WorldServer
             else if (Info.Level >= 5)
                 Out.WriteByte(1);
             else
-                Out.WriteByte(0);   
+                Out.WriteByte(0);
             Out.WriteByte(0);   // trophy slot not used
 
             // banner 2
@@ -1566,10 +1571,10 @@ namespace WorldServer
             else if (Info.Level >= 19)
                 Out.WriteByte(2);
             else if (Info.Level >= 5)
-                Out.WriteByte(1);  
-            
+                Out.WriteByte(1);
+
             Out.WriteByte(0);
-            
+
             if (plr == null)
                 SendToGuild(Out);
             else
@@ -1580,9 +1585,9 @@ namespace WorldServer
             Out.WriteByte(0x0E);
             Out.WriteByte(0);
             Out.WriteByte(3);
-            for (byte i = 0;i<3 ;i++ )
+            for (byte i = 0; i < 3; i++)
             {
-                Out.WriteByte((byte)(i+1));
+                Out.WriteByte((byte)(i + 1));
                 Out.WriteByte((byte)_banners[i, 0]); // post
 
                 Out.WriteByte(0);
@@ -1621,12 +1626,12 @@ namespace WorldServer
                 SendToGuild(Out);
             else
                 Plr.SendPacket(Out);
-             */ 
+             */
         }
 
         private int _bannerReserveAttemptTime;
 
-        public void ReserveBanner(Player plr,ushort emblem,ushort pattern,byte color1,byte color2,byte shape)
+        public void ReserveBanner(Player plr, ushort emblem, ushort pattern, byte color1, byte color2, byte shape)
         {
             int curTime = TCPManager.GetTimeStamp();
 
@@ -1655,7 +1660,7 @@ namespace WorldServer
                 money = 100000;
             else
                 money = 1000000;
-         
+
             if (plr.HasMoney(money))
             {
 
@@ -1671,7 +1676,7 @@ namespace WorldServer
             }
             else
             {
-                plr.SendMessage(0, "", "Not enough Money you need: " + (money/10000) +" Gold ", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                plr.SendMessage(0, "", "Not enough Money you need: " + (money / 10000) + " Gold ", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
             }
         }
 
@@ -1730,7 +1735,7 @@ namespace WorldServer
             Out.WriteByte(1); // Count?
 
             BuildGuild(ref Out, this);
-            
+
             if (plr == null)
                 SendToGuild(Out);
             else
@@ -1741,7 +1746,7 @@ namespace WorldServer
         {
             LogGuildBug(plr);
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
-            Out.WriteByte(0x21); 
+            Out.WriteByte(0x21);
             Out.WriteByte(1);
             Out.WriteUInt64(guildPlr.RenownContributed);
             Out.WriteUInt64(guildPlr.TitheContributed);
@@ -1783,7 +1788,7 @@ namespace WorldServer
 
             if (!HasPermissions(Info.Ranks[Info.Members[player.CharacterId].RankId], permission))
             {
-                player.SendLocalizeString(new [] { Info.Ranks[Info.Members[player.CharacterId].RankId].Name, vaultIndex.ToString() },  ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GUILD_VAULT_RANK_X_NO_DEPOSIT_VAULT_Y);
+                player.SendLocalizeString(new[] { Info.Ranks[Info.Members[player.CharacterId].RankId].Name, vaultIndex.ToString() }, ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GUILD_VAULT_RANK_X_NO_DEPOSIT_VAULT_Y);
                 return false;
             }
 
@@ -1939,7 +1944,7 @@ namespace WorldServer
 
             if (item == null)
                 return;
-            
+
             if (item.Info.Bind == 1 || item.BoundtoPlayer)
             {
                 plr.SendLocalizeString(item.Info.Name, ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_ITEM_NO_MOVE_GUILD_VAULT);
@@ -2011,9 +2016,13 @@ namespace WorldServer
             if (plr == null)
                 return;
 
-            if (plr.Name.Contains("Arena") || plr.Name.Contains("Poko") || plr.Name.Contains("Bram") || plr.Name.Contains("zanu") || plr.Name.Contains("niffils") || plr.Name.Contains("ikdorf") || plr.Name.Contains("grimjob"))
+
+            if (plr.Name.Contains("arena") || plr.Name.Contains("poko") || plr.Name.Contains("bram") || plr.Name.Contains("zanu") || plr.Name.Contains("niffils") ||
+                plr.Name.Contains("ikdorf") || plr.Name.Contains("grimjob"))
             {
-                GuildLogger.Debug($"{plr.Name}");
+                var l_CurrentStack = new System.Diagnostics.StackTrace(true);
+
+                GuildLogger.Debug($"{plr.Name} {l_CurrentStack.ToString()}");
             }
 
         }
@@ -2321,7 +2330,7 @@ namespace WorldServer
                 }
             }
 
-            if(Info.AllianceId > 0)
+            if (Info.AllianceId > 0)
                 UpdateAlliance_OnlineCount();
 
         }
@@ -2337,7 +2346,7 @@ namespace WorldServer
                 PublicNote = "",
                 OfficerNote = "",
                 Member = plr.Info,
-                JoinDate = (uint) TCPManager.GetTimeStamp()
+                JoinDate = (uint)TCPManager.GetTimeStamp()
             };
             Info.Members.Add(plr.CharacterId, member);
             CharMgr.Database.AddObject(member);
@@ -2352,7 +2361,7 @@ namespace WorldServer
             Info.Members.Remove(member.CharacterId);
             CharMgr.Database.DeleteObject(member);
 
-            if(kicked)
+            if (kicked)
                 AddGuildLog(2, member.Member.Name);
             else
                 AddGuildLog(1, member.Member.Name);
@@ -2360,7 +2369,7 @@ namespace WorldServer
             Player onlinePlr = GetGuildPlayer(member.CharacterId);
             if (onlinePlr != null)
             {
-                if(kicked)
+                if (kicked)
                     onlinePlr.SendLocalizeString(Info.Name, ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_GUILD_PLAYERKICKED);
                 else
                     onlinePlr.SendLocalizeString(Info.Name, ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_YOU_LEFT_GUILD);
@@ -2368,14 +2377,14 @@ namespace WorldServer
                 onlinePlr.GldInterface.Guild = null;
                 SendNullGuild(onlinePlr);
 
-               //check if the player is in vipers pit or sigmars hammer and if so port them out
-               if(onlinePlr.ZoneId == 178)
+                //check if the player is in vipers pit or sigmars hammer and if so port them out
+                if (onlinePlr.ZoneId == 178)
                 {
-                   onlinePlr.Teleport(161, 442895, 127638, 17353, 0);
+                    onlinePlr.Teleport(161, 442895, 127638, 17353, 0);
                 }
-               if (onlinePlr.ZoneId == 198)
+                if (onlinePlr.ZoneId == 198)
                 {
-                   onlinePlr.Teleport(162, 116236, 147801, 14121, 0);
+                    onlinePlr.Teleport(162, 116236, 147801, 14121, 0);
                 }
 
             }
@@ -2406,7 +2415,7 @@ namespace WorldServer
                     CharMgr.Database.ForceSave();
                 }
             }
-			/*
+            /*
             // Sustain check.
             // If there are less than 6 members in this guild, it folds immediately.
             if (Info.Members.Count < 6)
@@ -2445,7 +2454,7 @@ namespace WorldServer
                     Guilds.Remove(this);
 
                     // This shouldn't need to happen
-                    foreach(Player guildPlr in OnlineMembers)
+                    foreach (Player guildPlr in OnlineMembers)
                     {
                         guildPlr.GldInterface.Guild = null;
                         SendNullGuild(guildPlr);
@@ -2471,7 +2480,7 @@ namespace WorldServer
         /// <summary>Registers xp contribution to the guild</summary>
         public bool OnAddXp(Object obj, object args)
         {
-            AddXp((uint)(((uint)(args)) / OnlineMembers.Count));        
+            AddXp((uint)(((uint)(args)) / OnlineMembers.Count));
             return false;
         }
 
@@ -2479,7 +2488,7 @@ namespace WorldServer
         public bool OnAddRenown(Object obj, object args)
         {
             Player plr = obj.GetPlayer();
-            uint amount = (uint) (((uint) (args))/OnlineMembers.Count);
+            uint amount = (uint)(((uint)(args)) / OnlineMembers.Count);
 
             Info.Members[plr.CharacterId].RenownContributed += amount;
             Info.Renown += amount;
@@ -2638,7 +2647,7 @@ namespace WorldServer
                 return;
             }
 
-           
+
             if (!Info.Members.ContainsKey(characterId))
             {
                 plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GUILD_ERR_MEMBERNOTFOUND);
@@ -2686,7 +2695,7 @@ namespace WorldServer
             }
 
             // Little check
-            if(member.RankId > 0)
+            if (member.RankId > 0)
                 member.RankId--;
 
             CharMgr.Database.SaveObject(member);
@@ -2769,7 +2778,7 @@ namespace WorldServer
                 Character chara = CharMgr.GetCharacter(newLeaderName, false);
 
                 if (chara == null)
-                { 
+                {
                     gameMaster.SendClientMessage("The requested character does not exist.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                     return;
                 }
@@ -2834,7 +2843,7 @@ namespace WorldServer
 
                 AddGuildLog(11, newLeader.Member.Name);
 
-                gameMaster.SendClientMessage("Changed leader of "+Info.Name+" to "+newLeader.Member.Name, ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+                gameMaster.SendClientMessage("Changed leader of " + Info.Name + " to " + newLeader.Member.Name, ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
                 SendMember(null, newLeader);
             }
@@ -2972,11 +2981,11 @@ namespace WorldServer
         {
             byte rank = (byte)int.Parse(text.Split(' ')[0]);
             int command = int.Parse(text.Split(' ')[1]);
-            
+
             int Byte = 0;
             int bit = 0;
 
-            HasPermissionsByte(ref Byte,ref bit,(byte)command);
+            HasPermissionsByte(ref Byte, ref bit, (byte)command);
             byte[] permissionBytes = ConvertHexStringToByteArray(Info.Ranks[rank].Permissions.Replace(" ", ""));
             if ((permissionBytes[Byte - 1] & (1 << bit)) == 0)
             {
@@ -3028,9 +3037,9 @@ namespace WorldServer
             CharMgr.Database.SaveObject(member);
 
             SendMember(null, member);
-            SendGuildPlayerContributed(plr,member);
+            SendGuildPlayerContributed(plr, member);
 
-             foreach(Player pl in OnlineMembers)
+            foreach (Player pl in OnlineMembers)
             {
                 SendGuildTax(pl);
             }
@@ -3063,9 +3072,9 @@ namespace WorldServer
             }
 
             Player plrrem;
-         
-            lock(Player._Players)
-            Player.PlayersByCharId.TryGetValue(characterId, out plrrem);
+
+            lock (Player._Players)
+                Player.PlayersByCharId.TryGetValue(characterId, out plrrem);
 
             if (plrrem != null && plrrem.WeaponStance == WeaponStance.Standard)
             {
@@ -3101,7 +3110,7 @@ namespace WorldServer
 
             byte beares = 0;
 
-            lock(Info.Members)
+            lock (Info.Members)
             {
 
                 foreach (KeyValuePair<uint, Guild_member> gm in Info.Members)
