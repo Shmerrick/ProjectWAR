@@ -649,7 +649,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattlefrontLogger.Trace($"Reward Ticks {this.CampaignName} - {flag.ToString()}");
 
 				VictoryPoint vp = new VictoryPoint();
-				if (flag.State != StateFlags.Contested)
+				if (!Objectives.Any(x => !x.Equals(flag) && x.State == StateFlags.Contested))
 				{
 					// TODO - perhaps use AAO calculation here as a pairing scaler?.
 					vp = flag.RewardCaptureTick(1f);
