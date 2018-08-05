@@ -88,7 +88,7 @@ namespace WorldServer
         }
         private void LogGuildBug(Player plr)
         {
-            if (plr.Name.Contains("arena") || plr.Name.Contains("poko") || plr.Name.Contains("bram") || plr.Name.Contains("zanu") || plr.Name.Contains("niffils") ||
+            if (plr.Name.Contains("arena") || plr.Name.Contains("poko") || plr.Name.Contains("bram") || plr.Name.Contains("zaru") || plr.Name.Contains("niffils") ||
                 plr.Name.Contains("ikdorf") || plr.Name.Contains("grimjob"))
             {
                 var l_CurrentStack = new System.Diagnostics.StackTrace(true);
