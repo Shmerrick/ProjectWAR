@@ -554,6 +554,17 @@ namespace WorldServer.Managers.Commands
                 case 0:
                     plr.Cloak(2);
                     plr.OSInterface.AddEffect(0x0C);
+
+                    GMCommandLog logOn = new GMCommandLog
+                    {
+                        PlayerName = plr.Name,
+                        AccountId = (uint)plr.Client._Account.AccountId,
+                        Command = "SHROUD TOGGLED on " + plr.Name,
+                        Date = DateTime.Now
+                    };
+
+                    CharMgr.Database.AddObject(logOn);
+
                     break;
                 case 1:
                     plr.SendClientMessage("Shroud cannot be used if legitimate stealth is active.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
@@ -561,8 +572,22 @@ namespace WorldServer.Managers.Commands
                 case 2:
                     plr.Uncloak();
                     plr.OSInterface.RemoveEffect(0x0C);
+
+
+                    GMCommandLog logOff = new GMCommandLog
+                    {
+                        PlayerName = plr.Name,
+                        AccountId = (uint)plr.Client._Account.AccountId,
+                        Command = "SHROUD TOGGLED off " + plr.Name,
+                        Date = DateTime.Now
+                    };
+
+                    CharMgr.Database.AddObject(logOff);
+
                     break;
             }
+
+           
 
             return true;
         }
@@ -2811,6 +2836,16 @@ namespace WorldServer.Managers.Commands
 
             Program.AcctMgr.UpdateAccount(account);
 
+
+            GMCommandLog log = new GMCommandLog
+            {
+                PlayerName = plr.Name,
+                AccountId = (uint)plr.Client._Account.AccountId,
+                Command = "WARN PLAYER " + playerName,
+                Date = DateTime.UtcNow
+            };
+            CharMgr.Database.AddObject(log);
+
             return true;
         }
 
@@ -2905,13 +2940,13 @@ namespace WorldServer.Managers.Commands
 
             if (target?.Client == null)
             {
-                plr.SendClientMessage("HELLMUTE: " + playerName + " is not in the game.");
+                plr.SendClientMessage("MUTE: " + playerName + " is not in the game.");
                 return true;
             }
 
             if (target.GmLevel > 1)
             {
-                plr.SendClientMessage("HELLMUTE: " + playerName + " is a staff member.");
+                plr.SendClientMessage("MUTE: " + playerName + " is a staff member.");
                 return true;
             }
 
@@ -2919,7 +2954,7 @@ namespace WorldServer.Managers.Commands
 
             if (duration == 0)
             {
-                plr.SendClientMessage("User " + playerName + " is no longer hellmuted.");
+                plr.SendClientMessage("User " + playerName + " is no longer muted.");
 
                 target.Client._Account.StealthMuteEnd = 0;
                 Program.AcctMgr.UpdateAccount(target.Client._Account);
@@ -2933,7 +2968,7 @@ namespace WorldServer.Managers.Commands
 
             if (lengthTypeString == "")
             {
-                plr.SendClientMessage("HELLMUTE: Requires a length modifier (string: months, days, hours, minutes, seconds)");
+                plr.SendClientMessage("MUTE: Requires a length modifier (string: months, days, hours, minutes, seconds)");
                 return true;
             }
 
@@ -2968,13 +3003,13 @@ namespace WorldServer.Managers.Commands
 
             if (reasonString == "")
             {
-                plr.SendClientMessage("HELLMUTE: Requires a reason.");
+                plr.SendClientMessage("MUTE: Requires a reason.");
                 return true;
             }
 
             target.Client._Account.StealthMuteEnd = TCPManager.GetTimeStamp() + duration * durationMult;
             Program.AcctMgr.UpdateAccount(target.Client._Account);
-            LogSanction(target.Client._Account.AccountId, plr, "Hellmute", duration + " " + lengthTypeString, reasonString);
+            LogSanction(target.Client._Account.AccountId, plr, "Mute", duration + " " + lengthTypeString, reasonString);
             plr.SendClientMessage("User " + playerName + " is now hellmuted.");
 
             GMCommandLog log = new GMCommandLog
@@ -3315,6 +3350,16 @@ namespace WorldServer.Managers.Commands
             LogSanction(account.AccountId, plr, "Lift Ban", "", liftString);
 
             Program.AcctMgr.UpdateAccount(account);
+
+            GMCommandLog log = new GMCommandLog
+            {
+                PlayerName = plr.Name,
+                AccountId = (uint)plr.Client._Account.AccountId,
+                Command = "UNBAN PLAYER " + playerName,
+                Date = DateTime.UtcNow
+            };
+            CharMgr.Database.AddObject(log);
+
 
             return true;
         }
