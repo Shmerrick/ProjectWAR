@@ -49,6 +49,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         private volatile short _closeOrderCount, _closeDestroCount;
 
+		private volatile short _nearOrderCount, _nearDestroCount;
+
         /// <summary>Set of all players in close range, not limited</summary>
         private ISet<Player> _closePlayers = new HashSet<Player>();
 
@@ -228,25 +230,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (_closeOrderCount > 0 == _closeDestroCount > 0)
                 return new VictoryPoint(0, 0); // Both sides have players in range, or none of them -> not fully secured
 
-            //var scaleMultiplier = this.RewardManager.CalculateRewardScaleMultipler(
-            //    _closeOrderCount,
-            //    _closeDestroCount,
-            //    OwningRealm,
-            //    _secureProgress,
-            //    objectiveRewardScaler);
-
-            var objectiveRewardScaler = this.RewardManager.CalculateObjectiveRewardScale(OwningRealm, _closeOrderCount, _closeDestroCount);
-
-            // Temporary fix - remove objectiveRewardScaler from impacting RR gains.
-            objectiveRewardScaler = 0;
-
-            // Scalers in this model are additive.
-
-            return this.RewardManager.RewardCaptureTick(_closePlayers,
+			// Scalers in this model are additive.
+			return this.RewardManager.RewardCaptureTick(_closePlayers,
                 OwningRealm,
                 Tier,
                 Name,
-                objectiveRewardScaler + pairingRewardScaler);
+                pairingRewardScaler);
         }
 
         public bool FlagActive()
@@ -504,7 +493,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             short orderCount = 0;
             short destroCount = 0;
-            var closeHeight = 70 / 2 * UNITS_TO_FEET;
+
+			short orderCount_200 = 0;
+			short destroCount_200 = 0;
+
+			var closeHeight = 70 / 2 * UNITS_TO_FEET;
             var threatenHeight = 200 / 2 * UNITS_TO_FEET;
 
             _hasThreateningPlayer = false;
@@ -525,8 +518,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     _closePlayersBuffer.Add(player);
                 }
 
-                // Updates the threatening flag if was not already set
-                _hasThreateningPlayer |= player.Realm != OwningRealm // One player of opposite realm
+				// near count is used for calculating objectiveRewardScaler
+				if (distance < 200 && heightDiff < closeHeight)
+				{
+					if (player.Realm == Realms.REALMS_REALM_ORDER)
+						orderCount_200++;
+					else
+						destroCount_200++;
+				}
+
+				// Updates the threatening flag if was not already set
+				_hasThreateningPlayer |= player.Realm != OwningRealm // One player of opposite realm
                                          && distance < 200 && heightDiff < threatenHeight; // under threaten range
             }
 
@@ -548,8 +550,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _closeOrderCount = orderCount;
             _closeDestroCount = destroCount;
 
-            
-        }
+			_nearOrderCount = orderCount_200;
+			_nearDestroCount = destroCount_200;
+		}
 
         /// <summary>
         ///     Update thread.
@@ -1033,5 +1036,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             AccumulatedKills = 0;
         }
-    }
+
+		public float CalculateObjectiveRewardScale(Player player)
+		{
+			return RewardManager.CalculateObjectiveRewardScale(player.Realm, _nearOrderCount, _nearDestroCount);
+		}
+	}
 }
