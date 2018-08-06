@@ -42,7 +42,7 @@ namespace WorldServer.Managers.Commands
         {
             new GmCommandHandler("exmode", ExperimentalMode, null, 0, 0, "Enables experimental mode on the current target if the current class supports it."),
             new GmCommandHandler("changelist", CareerChangeList, null, 0, 0, "Displays a list of changes made to the career."),
-#if DEBUG
+
             new GmCommandHandler("addstat", AddStatBonus, null, EGmLevel.DatabaseDev, 2, "Increases a given stat by a given value."),
             new GmCommandHandler("buff", SendBuffAppearance, null, EGmLevel.DatabaseDev, 1, "Sends a fake buff start packet (int buffId)"),
             new GmCommandHandler("effect", SendCastPlayerEffect, null, EGmLevel.DatabaseDev, 2, "Sends a cast player effect packet."),
@@ -52,18 +52,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("cast",InvokeAbility, null, EGmLevel.DatabaseDev, 1, "If possible, casts the ability of the specified ID."),
             new GmCommandHandler("buffcast",InvokeBuff, null, EGmLevel.DatabaseDev, 2, "Invokes the buff of the specified ID."),
             new GmCommandHandler("zerostats",SendZeroStats, null, EGmLevel.DatabaseDev, 0, "Sends zero stats to the client for debug purposes.")
-#endif
-#if (!DEBUG)
-            new GmCommandHandler("addstat", AddStatBonus, null, EGmLevel.SourceDev, 2, "Increases a given stat by a given value."),
-            new GmCommandHandler("buff", SendBuffAppearance, null, EGmLevel.SourceDev, 1, "Sends a fake buff start packet (int buffId)"),
-            new GmCommandHandler("effect", SendCastPlayerEffect, null, EGmLevel.SourceDev, 2, "Sends a cast player effect packet."),
-            new GmCommandHandler("start", SendCastPlayerStart, null, EGmLevel.SourceDev, 2, "Sends a buff effect start packet."),
-            new GmCommandHandler("end", SendCastPlayerEnd, null, EGmLevel.SourceDev, 2, "Send a buff effect end packet."),
-            new GmCommandHandler("send", SendTestAbility, null, EGmLevel.SourceDev, 1, "Send an ability to the client."),
-            new GmCommandHandler("cast",InvokeAbility, null, EGmLevel.SourceDev, 1, "If possible, casts the ability of the specified ID."),
-            new GmCommandHandler("buffcast",InvokeBuff, null, EGmLevel.SourceDev, 2, "Invokes the buff of the specified ID."),
-            new GmCommandHandler("zerostats",SendZeroStats, null, EGmLevel.SourceDev, 0, "Sends zero stats to the client for debug purposes.")
-#endif
+
 
         };
 
@@ -73,22 +62,12 @@ namespace WorldServer.Managers.Commands
         public static List<GmCommandHandler> AddCommands = new List<GmCommandHandler>
         {
             new GmCommandHandler("item",AddItem, null, EGmLevel.TrustedStaff, 1, "Add item to player"),
-#if DEBUG
             new GmCommandHandler("money",AddMoney, null, EGmLevel.DatabaseDev, 1, "Add money to player"),
             new GmCommandHandler("tok",AddTok, null, EGmLevel.DatabaseDev, 1, "Add tok to player"),
             new GmCommandHandler("renown",AddRenown, null, EGmLevel.TrustedStaff, 1, "Add renown to player"),
             new GmCommandHandler("influence",AddInf, null, EGmLevel.TrustedStaff, 1, "Add Influence to player"),
             new GmCommandHandler("xp",AddXp, null, EGmLevel.TrustedStaff, 1, "Add xp to player"),
             new GmCommandHandler("contribution",AddContrib, null, EGmLevel.TrustedStaff, 1, "Add contribution to player")
-#endif
-#if (!DEBUG)
-            new GmCommandHandler("money",AddMoney, null, EGmLevel.SourceDev, 1, "Add money to player"),
-            new GmCommandHandler("tok",AddTok, null, EGmLevel.SourceDev, 1, "Add tok to player"),
-            new GmCommandHandler("renown",AddRenown, null, EGmLevel.SourceDev, 1, "Add renown to player"),
-            new GmCommandHandler("influence",AddInf, null, EGmLevel.SourceDev, 1, "Add Influence to player"),
-            new GmCommandHandler("xp",AddXp, null, EGmLevel.SourceDev, 1, "Add xp to player")
-#endif
-
         };
 
         /// <summary>RvR campaign commmands under .campaign</summary>
@@ -121,39 +100,23 @@ namespace WorldServer.Managers.Commands
         /// <summary>Database commands under .database</summary>
         public static List<GmCommandHandler> DatabaseCommands = new List<GmCommandHandler>
         {
-//#if DEBUG
             new GmCommandHandler("itemsreload",ReloadItems, null, EGmLevel.DatabaseDev, 0, "Reload items information"),
             new GmCommandHandler("characterreload",ReloadCharacter, null, EGmLevel.DatabaseDev, 0, "Reload character <name>"),
             new GmCommandHandler("creaturesreload",ReloadCreatures, null, EGmLevel.DatabaseDev, 0, "Reload creatures in your region"),
             new GmCommandHandler("gameobjectsreload",ReloadGameObjects, null, EGmLevel.DatabaseDev, 0, "Reload game objects in your region"),
             new GmCommandHandler("reloadabilities", ReloadAbilities, null, EGmLevel.DatabaseDev, 0, "Reload abilities."),
             new GmCommandHandler("reloadpetmodifiers", ReloadPetModifiers, null, EGmLevel.DatabaseDev, 0, "Reload pet modifiers")
-//#endif
-////#if (!DEBUG)
-//            new GmCommandHandler("itemsreload", ReloadItems, null, EGmLevel.SourceDev, 0, "Reload items information"),
-//            new GmCommandHandler("characterreload",ReloadCharacter, null, EGmLevel.SourceDev, 0, "Reload character <name>"),
-//            new GmCommandHandler("creaturesreload",ReloadCreatures, null, EGmLevel.SourceDev, 0, "Reload creatures in your region"),
-//            new GmCommandHandler("gameobjectsreload",ReloadGameObjects, null, EGmLevel.SourceDev, 0, "Reload game objects in your region"),
-//            new GmCommandHandler("reloadabilities", ReloadAbilities, null, EGmLevel.SourceDev, 0, "Reload abilities."),
-//            new GmCommandHandler("reloadpetmodifiers", ReloadPetModifiers, null, EGmLevel.SourceDev, 0, "Reload pet modifiers")
-////#endif
+
         };
 
         /// <summary>Creature equipment modification commands under .equip</summary>
         public static List<GmCommandHandler> EquipCommands = new List<GmCommandHandler>
         {
-#if DEBUG
             new GmCommandHandler("add",EquipAdd, null, EGmLevel.DatabaseDev, 3, "Add Equipement to target <Model,Slot,Save>"),
             new GmCommandHandler("remove",EquipRemove, null, EGmLevel.DatabaseDev, 2, "Remove Equipement to target <Slot,Save>"),
             new GmCommandHandler("clear",EquipClear, null, EGmLevel.DatabaseDev, 1, "Remove All Equipements to target <Save>"),
             new GmCommandHandler("list",EquipList, null, EGmLevel.DatabaseDev, 0, "Draw Equipement list of target")
-#endif
-#if (!DEBUG)
-            new GmCommandHandler("add",EquipAdd, null, EGmLevel.SourceDev, 3, "Add Equipement to target <Model,Slot,Save>"),
-            new GmCommandHandler("remove",EquipRemove, null, EGmLevel.SourceDev, 2, "Remove Equipement to target <Slot,Save>"),
-            new GmCommandHandler("clear",EquipClear, null, EGmLevel.SourceDev, 1, "Remove All Equipements to target <Save>"),
-            new GmCommandHandler("list",EquipList, null, EGmLevel.SourceDev, 0, "Draw Equipement list of target")
-#endif
+
         };
 
         /// <summary>Game object commands under .go</summary>
@@ -164,18 +127,13 @@ namespace WorldServer.Managers.Commands
         {
             new GmCommandHandler("doorinfo",DoorInfo, null, 0, 0, "Returns LOS information about keep door"),
             new GmCommandHandler("info",InIinfo, null, EGmLevel.AllStaff, 0, "instance infos optional: <instanceid>"),
-#if DEBUG
             new GmCommandHandler("spawn",InISpawn, null, EGmLevel.DatabaseDev, 4, "Spawn a Instance NPC <object id> <bossid> <spawngroup> <realm>"),
             new GmCommandHandler("convert",InstanceConvert, null, EGmLevel.DatabaseDev, 3, "Converts selected Object to a Instance spawn <bossid> <spawngroup> <realm>"),
             new GmCommandHandler("bossspawn",InIBossSpawn, null, EGmLevel.DatabaseDev, 4, "Spawn a Instance Boss NPC <object id> <bossid> <spawngroup> <instanceid>"),
             new GmCommandHandler("bossconvert",InstanceBossConvert, null, EGmLevel.DatabaseDev, 3, "Converts selected Object to a Instance Boss spawn <bossid> <spawngroup> <instanceid>"),
             new GmCommandHandler("reset",InstanceReset, null, EGmLevel.DatabaseDev, 0, "Resets the current pq"),
             new GmCommandHandler("opendoor",InstanceOpenDoor, null, EGmLevel.DatabaseDev, 0, "Opens door inside instance (uniqueID, instanceID, open=1/close=0)"),
-#endif
-#if (!DEBUG)
-            new GmCommandHandler("opendoor",InstanceOpenDoor, null, EGmLevel.SourceDev, 0, "Opens door inside instance (uniqueID, instanceID, open=1/close=0)"),
-            new GmCommandHandler("reset",InstanceReset, null, EGmLevel.SourceDev, 0, "Resets the current pq"),
-#endif
+
         };
 
         /// <summary>Unit modification commands under .modify</summary>
@@ -204,12 +162,7 @@ namespace WorldServer.Managers.Commands
         public static List<GmCommandHandler> MountCommands = new List<GmCommandHandler>
         {
             new GmCommandHandler("set", SetMountCommand, null, EGmLevel.TrustedGM, 1, "Changes the mount of the selected unit (int Entry)"),
-#if DEBUG
             new GmCommandHandler("add", AddMountCommand, null, EGmLevel.DatabaseDev, 3, "Adds a new mount to the database (int Entry, int Speed, string Name)"),
-#endif
-#if (!DEBUG)
-            new GmCommandHandler("add", AddMountCommand, null, EGmLevel.SourceDev, 3, "Adds a new mount to the database (int Entry, int Speed, string Name)"),
-#endif
             new GmCommandHandler("remove", RemoveMountCommand, null, EGmLevel.TrustedGM, 0, "Removes the mount of the selected unit."),
             new GmCommandHandler("list", ListMountsCommand, null, EGmLevel.DatabaseDev, 0, "Shows the list of all mounts.")
         };
@@ -245,14 +198,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("next",PqNextStage, null, EGmLevel.GM, 0, "Lets go onto the next pq stage"),
             new GmCommandHandler("clear",PqClear, null, EGmLevel.GM, 0, "Despawns all npc of the current stage stage"),
             new GmCommandHandler("reset",PqReset, null, EGmLevel.GM, 0, "Resets the current pq")
-#endif
-#if (!DEBUG)
-            new GmCommandHandler("spawn",PqSpawn, null, EGmLevel.SourceDev, 3, "Spawn a PQ NPC <object id> <objective id> <type 1 = NPC>"),
-            new GmCommandHandler("convert",PqConvert, null, EGmLevel.SourceDev, 1, "Converts selected Object to a PQ spawn <objective id>"),
-            new GmCommandHandler("next",PqNextStage, null, EGmLevel.SourceDev, 0, "Lets go onto the next pq stage"),
-            new GmCommandHandler("clear",PqClear, null, EGmLevel.SourceDev, 0, "Despawns all npc of the current stage stage"),
-            new GmCommandHandler("reset",PqReset, null, EGmLevel.SourceDev, 0, "Resets the current pq")
-#endif
+
         };
 
         /// <summary>Respawn modification commands under .respawn</summary>
@@ -337,7 +283,7 @@ namespace WorldServer.Managers.Commands
         /// <summary>Root commands list.</summary>
         public static List<GmCommandHandler> BaseCommand = new List<GmCommandHandler>
         {
-#region Group Handlers
+#region Command Group Handlers
             new GmCommandHandler("ability",null, AbilityCommands, 0, 0, "Ability commands."),
             new GmCommandHandler("add",null, AddCommands, EGmLevel.TrustedStaff, 0, "Addition commands."),
             new GmCommandHandler("campaign",null, CampaignCommands, EGmLevel.GM, 0, "RvR campaign commmands."),
@@ -405,12 +351,6 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("revive",Revive, null, EGmLevel.GM, 0, "Resurrects the targeted Unit."),
             new GmCommandHandler("fly", SetFlightState, null, EGmLevel.GM, 0, "Grants the ability to fly (byte enableFlight)"),
 
-#if (!DEBUG)
-            new GmCommandHandler("boot",Reboot, null, EGmLevel.Management, 0, "Reboots the server."),
-            new GmCommandHandler("clearboot",ClearServer, null, EGmLevel.Management, 0, "Removes all players from server."),
-            new GmCommandHandler("revive",Revive, null, EGmLevel.EmpoweredStaff, 0, "Resurrects the targeted Unit."),
-            new GmCommandHandler("fly", SetFlightState, null, EGmLevel.EmpoweredStaff, 0, "Grants the ability to fly (byte enableFlight)"),
-#endif
             new GmCommandHandler("announce", Announce, null, EGmLevel.GM, 1, "Sends a global message (string Message). SoundID can be specified .announce sound <id> <message>"),
             new GmCommandHandler("shroud", Shroud, null, EGmLevel.GM, 0, "Causes you to become invisible to other players."),
             new GmCommandHandler("invincible",InvincibleMe, null, EGmLevel.GM, 0, "Toggles invulnerability on the current target."),
@@ -464,17 +404,6 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("quest", QuestComplete, null, EGmLevel.DatabaseDev, 2, "Used to debug quests <QuestId> <Operation> Operation 1 - add, 2 - finish quest, 3 - delete quest from player"),
             new GmCommandHandler("geartester", GearTester, null, EGmLevel.SourceDev, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
             //new GmCommandHandler("gunbad", Gunbad, null, EGmLevel.GM, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
-#endif
-#if (!DEBUG)
-            new GmCommandHandler("playeffect", PlayEffect, null, EGmLevel.SourceDev, 2, "Play effect from data/gamedata/effectlist.csv"),
-            new GmCommandHandler("playability", PlayAbility, null, EGmLevel.SourceDev, 2, "Plays ability from data/gamedata/effect.csv (string playerName, ushort effectID)"),
-            new GmCommandHandler("playsound", PlaySound, null, EGmLevel.SourceDev, 1, "Play sound from data/gamedata/audio_server.csv. Multiple sounds can be specified .playsound <soundID:delayInSeconds> ... (ex: .playsound 628:10 1010:15 1319:25)"),
-            new GmCommandHandler("save",Save, null, EGmLevel.SourceDev, 0, "Performs a database save on the target."),
-            new GmCommandHandler("objectivestate", ObjectiveState, null, EGmLevel.SourceDev, 1, "Set vfx for objective (int oid)."),
-            new GmCommandHandler("previewmodel", PreviewItemModel, null, EGmLevel.SourceDev, 1, "Temporary sets equipped item model (int slotIndex, int modelID)"),
-            new GmCommandHandler("recreateplayer", CreatePlayer, null, EGmLevel.SourceDev, 1, "Requests player info is resent"),
-            new GmCommandHandler("quest", QuestComplete, null, EGmLevel.SourceDev, 2, "Used to debug quests <QuestId> <Operation> Operation 1 - add, 2 - finish quest, 3 - delete quest from player"),
-#endif
 
             // Source dev commands
             new GmCommandHandler("lockcasting", PreventCasting, null, EGmLevel.SourceDev, 0, "Prevents all casting (byte blockAllCasts)"),
