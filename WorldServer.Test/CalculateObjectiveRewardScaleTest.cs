@@ -15,7 +15,7 @@ namespace WorldServer.Test
 
             var objectiveMultiplierDest = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_DESTRUCTION, 10, 10);
 
-            Assert.IsTrue(objectiveMultiplierDest == 0);
+            Assert.IsTrue(Math.Abs(objectiveMultiplierDest - .69321472f) < 0.1);
 
             var objectiveMultiplierNeut = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_NEUTRAL, 10, 10);
 

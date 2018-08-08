@@ -36,23 +36,32 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="eligiblePlayers"></param>
         /// <param name="availableLootItems"></param>
         /// <returns></returns>
-        public ConcurrentDictionary<uint, uint> SelectLootBagWinners(List<KeyValuePair<uint, uint>> eligiblePlayers, Dictionary<uint, List<LootOption>> availableLootItems)
+        public ConcurrentDictionary<uint, uint> SelectLootBagWinners(List<KeyValuePair<uint, uint>> eligiblePlayers, Dictionary<uint, List<LootOption>> availableLootItems, bool randomisePlayers = true)
         {
             var assignedLootDictionary = new ConcurrentDictionary<uint, uint>();
 
-            if (!eligiblePlayers.Any())
+            if (eligiblePlayers == null)
                 return null;
 
-            if (!availableLootItems.Any())
+            if (availableLootItems == null)
                 return null;
 
-            var randomisedPlayerList = RandomisePlayerList(eligiblePlayers);
+            List<KeyValuePair<uint, uint>> playerList = new List<KeyValuePair<uint, uint>>();
+
+            if (randomisePlayers)
+            {
+                playerList = RandomisePlayerList(eligiblePlayers);
+            }
+            else
+            {
+                playerList = eligiblePlayers;
+            }
 
             foreach (var lootItem in availableLootItems)
             {
-                foreach (var player in randomisedPlayerList)
+                foreach (var player in playerList)
                 {
-                    var playerCentricLootList = GetPlayerCentricLootList(player.Value, lootItem.Value);
+                    var playerCentricLootList = GetPlayerCentricLootList(player.Key, lootItem.Value);
 
                     if (playerCentricLootList == null)
                         continue;
