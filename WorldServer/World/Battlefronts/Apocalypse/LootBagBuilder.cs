@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
-using FrameWork;
+using System.Collections.Specialized;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -13,14 +13,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     {
     
         // Dictionary of players (character Id and RenownBand)
-        public Dictionary<uint, uint> EligiblePlayers { get; set; }
+        public List<KeyValuePair<uint, uint>> EligiblePlayers { get; set; }
         
         // Dictionary of renownband, (item id, chance to drop)
-        public Dictionary<uint, Dictionary<uint, uint>> AvailableLootItems { get; set; }
+        public Dictionary<uint, List<LootOption>> AvailableLootItems { get; set; }
 
         public IRandomGenerator RandomGenerator { get; }
 
-        public LootBagBuilder(Dictionary<uint, uint> eligiblePlayers, Dictionary<uint, Dictionary<uint, uint>> availableLootItems, IRandomGenerator randomGenerator)
+        public LootBagBuilder(List<KeyValuePair<uint, uint>> eligiblePlayers, Dictionary<uint, List<LootOption>> availableLootItems, IRandomGenerator randomGenerator)
         {
             EligiblePlayers = eligiblePlayers;
             AvailableLootItems = availableLootItems;
@@ -36,7 +36,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="eligiblePlayers"></param>
         /// <param name="availableLootItems"></param>
         /// <returns></returns>
-        public ConcurrentDictionary<uint, uint> SelectLootBagWinners(Dictionary<uint, uint> eligiblePlayers, Dictionary<uint, List<LootOption>> availableLootItems)
+        public ConcurrentDictionary<uint, uint> SelectLootBagWinners(List<KeyValuePair<uint, uint>> eligiblePlayers, Dictionary<uint, List<LootOption>> availableLootItems)
         {
             var assignedLootDictionary = new ConcurrentDictionary<uint, uint>();
 
@@ -62,7 +62,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {
                         assignedLootDictionary.TryAdd(playerCentricLootList.ItemId, player.Key);   // player.Key is characterId
                         // Remove player from winning any further rolls
-                        eligiblePlayers.Remove(player.Key);
+                        eligiblePlayers.Remove(player);
                         // Move to next loot item.
                     }
                 }
@@ -85,11 +85,24 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         }
 
-        // Randomise the player list to ensure we do not bias loot rolls
-        private Dictionary<uint, uint> RandomisePlayerList(Dictionary<uint, uint> playerList)
+        //// Randomise the player list to ensure we do not bias loot rolls
+        public List<KeyValuePair<uint, uint>> RandomisePlayerList(List<KeyValuePair<uint, uint>> playerList)
         {
-           return playerList.OrderBy(x => RandomGenerator.Generate(1))
-                .ToDictionary(item => item.Key, item => item.Value);
+            if (playerList == null)
+                return null;
+
+            int n = playerList.Count;
+
+            for (int i = playerList.Count - 1; i > 1; i--)
+            {
+                var rnd = RandomGenerator.Generate(i + 1);
+
+                var value = playerList[rnd];
+                playerList[rnd] = playerList[i];
+                playerList[i] = value;
+            }
+
+            return playerList;
         }
 
         ///// <summary>
@@ -101,7 +114,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         //{
         //    foreach (var assignedLoot in assignedLootDictionary)
         //    {
-                
+
         //        Character_mail mail = new Character_mail
         //        {
         //            Guid = CharMgr.GenerateMailGuid(),
