@@ -11,10 +11,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public class LootBagBuilder : ILootBagBuilder
     {
-    
+
         // Dictionary of players (character Id and RenownBand)
         public List<KeyValuePair<uint, uint>> EligiblePlayers { get; set; }
-        
+
         // Dictionary of renownband, (item id, chance to drop)
         public Dictionary<uint, List<LootOption>> AvailableLootItems { get; set; }
 
@@ -38,6 +38,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <returns></returns>
         public ConcurrentDictionary<uint, uint> SelectLootBagWinners(List<KeyValuePair<uint, uint>> eligiblePlayers, Dictionary<uint, List<LootOption>> availableLootItems, bool randomisePlayers = true)
         {
+            var lootItemAssigned = false;
             var assignedLootDictionary = new ConcurrentDictionary<uint, uint>();
 
             if (eligiblePlayers == null)
@@ -61,18 +62,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 foreach (var player in playerList)
                 {
+                    //player.key is RRBand
                     var playerCentricLootList = GetPlayerCentricLootList(player.Key, lootItem.Value);
 
                     if (playerCentricLootList == null)
                         continue;
-                    
+
                     // lootItem.Value is the chance to win the loot item.
                     if (RandomGenerator.Generate(100) <= playerCentricLootList.WinChance)
                     {
-                        assignedLootDictionary.TryAdd(playerCentricLootList.ItemId, player.Key);   // player.Key is characterId
-                        // Remove player from winning any further rolls
-                        eligiblePlayers.Remove(player);
-                        // Move to next loot item.
+                        // player can only win one roll. 
+                        if (!assignedLootDictionary.ContainsKey(player.Value))
+                        {
+                            assignedLootDictionary.TryAdd(player.Value, playerCentricLootList.ItemId); // player.Key is characterId
+                            break;
+                        }
                     }
                 }
                 // If not won, then bad luck!
