@@ -23,7 +23,7 @@ namespace WorldServer.Test
 
             var objectiveMultiplierOrder = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_ORDER, 10, 10);
 
-            Assert.IsTrue(objectiveMultiplierOrder == 0);
+            Assert.IsTrue(Math.Abs(objectiveMultiplierOrder - .69321472f) < 0.1);
 
             var objectiveMultiplierSomethingElse = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_HOSTILE, 10, 10);
 
@@ -37,7 +37,7 @@ namespace WorldServer.Test
 
             var objectiveMultiplierDest = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_DESTRUCTION, 50, 5);
 
-            Assert.IsTrue(objectiveMultiplierDest == 9.0f);
+            Assert.IsTrue(objectiveMultiplierDest == 1.0f);
         }
 
         [TestMethod]
@@ -47,7 +47,7 @@ namespace WorldServer.Test
 
             var objectiveMultiplierOrder = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_ORDER, 5, 50);
 
-            Assert.IsTrue(objectiveMultiplierOrder == 9.0f);
+            Assert.IsTrue(objectiveMultiplierOrder == 1f);
         }
 
         [TestMethod]
@@ -57,7 +57,7 @@ namespace WorldServer.Test
 
             var objectiveMultiplierDest = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_DESTRUCTION, 5, 50);
 
-            Assert.IsTrue(objectiveMultiplierDest == 1f);
+            Assert.IsTrue(Math.Abs(objectiveMultiplierDest - .4054651f) < 0.1);
         }
 
         [TestMethod]
@@ -67,7 +67,7 @@ namespace WorldServer.Test
 
             var objectiveMultiplierOrder = ndBO.RewardManager.CalculateObjectiveRewardScale(Realms.REALMS_REALM_ORDER, 50, 5);
 
-            Assert.IsTrue(objectiveMultiplierOrder == 1f);
+            Assert.IsTrue(Math.Abs(objectiveMultiplierOrder - .4054651f) < 0.1);
         }
 
     }
