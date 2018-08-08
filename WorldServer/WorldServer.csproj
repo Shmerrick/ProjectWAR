@@ -254,6 +254,11 @@
     <Compile Include="World\Battlefronts\AAOTracker.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\BattleFrontStatus.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\IApocCommunications.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\ILootBagBuilder.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\IRandomGenerator.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\LootBagBuilder.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\LootOption.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\RandomGenerator.cs" />
     <Compile Include="World\Battlefronts\ContributionTracker.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\AAOTracker.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\BattlefrontConstants.cs" />

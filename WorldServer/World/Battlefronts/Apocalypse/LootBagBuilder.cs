@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,68 +11,116 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public class LootBagBuilder : ILootBagBuilder
     {
-        public string EventGeneratorName { get; set; }
-        public string EventName { get; set; }
-        public string EventDescription { get; set; }
-        public ITCPManager TcpManager { get; }
-        public IAccountManager AccountManager { get; set; }
+    
+        // Dictionary of players (character Id and RenownBand)
+        public Dictionary<uint, uint> EligiblePlayers { get; set; }
+        
+        // Dictionary of renownband, (item id, chance to drop)
+        public Dictionary<uint, Dictionary<uint, uint>> AvailableLootItems { get; set; }
 
-        public LootBagBuilder(string eventGeneratorName, string eventName, string eventDescription, ITCPManager tcpManager, IAccountManager accountManager)
+        public IRandomGenerator RandomGenerator { get; }
+
+        public LootBagBuilder(Dictionary<uint, uint> eligiblePlayers, Dictionary<uint, Dictionary<uint, uint>> availableLootItems, IRandomGenerator randomGenerator)
         {
-            EventGeneratorName = eventGeneratorName;
-            EventName = eventName;
-            EventDescription = eventDescription;
-            TcpManager = tcpManager;
-            AccountManager = accountManager;
+            EligiblePlayers = eligiblePlayers;
+            AvailableLootItems = availableLootItems;
+            RandomGenerator = randomGenerator;
         }
 
-        public List<uint> SelectLootBagWinners(List<uint> eligiblePlayers)
-        {
 
 
-        }
 
         /// <summary>
-        /// Given a list of winning players assign availableLootItems to them, remaining players receive the defaultReward
-        /// Return a dictionary of players - lootItems
+        /// Given a list of eligible players, and a list of available loot items, select and assign the items to those players.
         /// </summary>
-        /// <param name="winningPlayers"></param>
+        /// <param name="eligiblePlayers"></param>
         /// <param name="availableLootItems"></param>
         /// <returns></returns>
-        public Dictionary<uint, uint> AssignLootToWinners(List<uint> winningPlayers, List<uint> availableLootItems, uint defaultReward)
+        public ConcurrentDictionary<uint, uint> SelectLootBagWinners(Dictionary<uint, uint> eligiblePlayers, Dictionary<uint, List<LootOption>> availableLootItems)
         {
-        }
+            var assignedLootDictionary = new ConcurrentDictionary<uint, uint>();
 
+            if (!eligiblePlayers.Any())
+                return null;
 
-        /// <summary>
-        /// For each item of assigned loot, create a mail item.
-        /// </summary>
-        /// <param name="assignedLoot"></param>
-        /// <returns></returns>
-        public List<MailItem> GenerateMailItems(Dictionary<uint, uint> assignedLootDictionary)
-        {
-            foreach (var assignedLoot in assignedLootDictionary)
+            if (!availableLootItems.Any())
+                return null;
+
+            var randomisedPlayerList = RandomisePlayerList(eligiblePlayers);
+
+            foreach (var lootItem in availableLootItems)
             {
-                
-                Character_mail mail = new Character_mail
+                foreach (var player in randomisedPlayerList)
                 {
-                    Guid = CharMgr.GenerateMailGuid(),
-                    CharacterId = assignedLoot.Key,
-                    SenderName = EventGeneratorName,
-                    ReceiverName = AccountManager.GetCharacterName(assignedLootKey),
-                    SendDate = (uint)TcpManager.GetTimeStamp(),
-                    Title = EventName,
-                    Content = EventDescription,
-                    Money = 0,
-                    Opened = false
-                };
+                    var playerCentricLootList = GetPlayerCentricLootList(player.Value, lootItem.Value);
 
-                var mailItem = new MailItem(assignedLoot.Value);
-                mail.Items.Add(mailItem);
-                CharMgr.AddMail(mail);
-
+                    if (playerCentricLootList == null)
+                        continue;
+                    
+                    // lootItem.Value is the chance to win the loot item.
+                    if (RandomGenerator.Generate(100) <= playerCentricLootList.WinChance)
+                    {
+                        assignedLootDictionary.TryAdd(playerCentricLootList.ItemId, player.Key);   // player.Key is characterId
+                        // Remove player from winning any further rolls
+                        eligiblePlayers.Remove(player.Key);
+                        // Move to next loot item.
+                    }
+                }
+                // If not won, then bad luck!
             }
+
+            return assignedLootDictionary;
         }
+
+        // For a given list of loot options, find the right one for the player's renown-band
+        public LootOption GetPlayerCentricLootList(uint renownBand, List<LootOption> lootOptions)
+        {
+            foreach (var lootOption in lootOptions)
+            {
+                if (lootOption.RenownBand == renownBand)
+                    return lootOption;
+            }
+            // Could not find an item for this renown band
+            return null;
+
+        }
+
+        // Randomise the player list to ensure we do not bias loot rolls
+        private Dictionary<uint, uint> RandomisePlayerList(Dictionary<uint, uint> playerList)
+        {
+           return playerList.OrderBy(x => RandomGenerator.Generate(1))
+                .ToDictionary(item => item.Key, item => item.Value);
+        }
+
+        ///// <summary>
+        ///// For each item of assigned loot, create a mail item.
+        ///// </summary>
+        ///// <param name="assignedLoot"></param>
+        ///// <returns></returns>
+        //public List<MailItem> GenerateMailItems(Dictionary<uint, uint> assignedLootDictionary)
+        //{
+        //    foreach (var assignedLoot in assignedLootDictionary)
+        //    {
+                
+        //        Character_mail mail = new Character_mail
+        //        {
+        //            Guid = CharMgr.GenerateMailGuid(),
+        //            CharacterId = assignedLoot.Key,
+        //            SenderName = EventGeneratorName,
+        //            ReceiverName = AccountManager.GetCharacterName(assignedLootKey),
+        //            SendDate = (uint)TcpManager.GetTimeStamp(),
+        //            Title = EventName,
+        //            Content = EventDescription,
+        //            Money = 0,
+        //            Opened = false
+        //        };
+
+        //        var mailItem = new MailItem(assignedLoot.Value);
+        //        mail.Items.Add(mailItem);
+        //        CharMgr.AddMail(mail);
+
+        //    }
+        //}
 
     }
 }
