@@ -3962,6 +3962,7 @@ namespace WorldServer
                     else _recentLooters[killer.CharacterId] = TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL;
                 }
 
+                
                 // +1 VP for a kill
                 if (killer.Realm == Realms.REALMS_REALM_DESTRUCTION)
                 {
@@ -3997,6 +3998,9 @@ namespace WorldServer
             float transferenceFactor = 2.5f - bonusMod;
 
             CampaignObjective closestFlag = null;
+
+            var activeBattleFrontId = killer.Region.Campaign.BattleFrontManager.ActiveBattleFront.BattleFrontId;
+            var activeBattleFrontStatus = killer.Region.Campaign.BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
 
             if (ScnInterface.Scenario == null)
                 closestFlag = Region.Campaign.GetClosestFlag(WorldPosition);
@@ -4107,6 +4111,8 @@ namespace WorldServer
                             RewardLogger.Trace($"Awarded 1 Crest to Killer : {killer.Name} for Solo Kill");
                             curPlayer.ItmInterface.CreateItem(208470, 1);
 
+                            activeBattleFrontStatus.AddKillContribution(curPlayer);
+
                             if (closestFlag != null && closestFlag.State != StateFlags.ZoneLocked)
                             {
                                 RewardLogger.Trace($"Delayed Rewards RP: {renownShare} BonusMod : {bonusMod} Killer : {killer.Name} This : {this.Name}");
@@ -4165,6 +4171,8 @@ namespace WorldServer
                             RewardLogger.Trace($"Awarded 1 Crest to {player.Name} for Group Kill");
                             player.ItmInterface.CreateItem(208470, 1);
                         }
+
+                        activeBattleFrontStatus.AddKillContribution(player);
                     }
                 }
             }

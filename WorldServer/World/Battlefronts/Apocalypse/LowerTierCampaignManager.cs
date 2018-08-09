@@ -25,6 +25,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BuildApocBattleFrontStatusList(BattleFrontProgressions);
         }
 
+        public BattleFrontStatus GetActiveBattleFrontStatus(int battleFrontId)
+        {
+            return BattleFrontStatuses.Single(x => x.BattleFrontId == battleFrontId);
+        }
+
         /// <summary>
         /// Sets up the Battlefront status list with default values. 
         /// </summary>

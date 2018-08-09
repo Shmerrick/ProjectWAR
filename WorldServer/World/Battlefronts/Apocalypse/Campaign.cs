@@ -33,6 +33,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         // List of battlefront statuses for this Campaign
         public List<BattleFrontStatus> ApocBattleFrontStatuses => GetBattleFrontStatuses(this.Region.RegionId);
         
+        
         /// <summary>
         /// A list of keeps within this Campaign.
         /// </summary>
@@ -180,6 +181,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             return this.BattleFrontManager.GetBattleFrontStatusList().Where(x => x.RegionId == regionId).ToList();
         }
+
 
         private void PlaceObjectives()
         {
@@ -528,6 +530,31 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             //_contributionTracker.HandleLockReward(realm, 1, message, 0, Tier);
 
             BattlefrontLogger.Debug($"Generating Lock Rewards..");
+            var activeBattleFrontId = BattleFrontManager.ActiveBattleFront.BattleFrontId;
+            var activeBattleFrontStatus = BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
+
+
+            var eligiblePlayers = new List<KeyValuePair<uint, uint>>();
+
+            foreach (var playerKillContribution in activeBattleFrontStatus.KillContributionSet)
+            {
+                //TODO replace 10 with a real value.
+                eligiblePlayers.Add(new KeyValuePair<uint, uint>(playerKillContribution, 10));
+            }
+            
+            foreach (var campaignObjective in Objectives)
+            {
+                var contributionList = campaignObjective.CampaignObjectiveContributions;
+                foreach (var contribution in contributionList)
+                {
+                    //TODO replace 10 with a real value.
+                    eligiblePlayers.Add(new KeyValuePair<uint, uint>(contribution.Key, 10));
+                }
+            }
+
+            var lootBagBuilder = new LootBagBuilder(eligiblePlayers, null, new RandomGenerator());
+            
+            // Need to rebuild this piece as well.
             foreach (var player in PlayersInLakeSet)
             {
                 BattlefrontLogger.Trace($"{player.Name}...");

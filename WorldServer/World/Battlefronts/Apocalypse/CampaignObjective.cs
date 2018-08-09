@@ -3,6 +3,7 @@ using FrameWork;
 using GameData;
 using NLog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using SystemData;
 using WorldServer.World.BattleFronts.Objectives;
@@ -120,6 +121,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public RVRRewardManager RewardManager { get; set; }
 
+        public ConcurrentDictionary<uint, uint> CampaignObjectiveContributions { get; set; }
+
         #region Helpers
 
         /*
@@ -230,12 +233,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (_closeOrderCount > 0 == _closeDestroCount > 0)
                 return new VictoryPoint(0, 0); // Both sides have players in range, or none of them -> not fully secured
 
-			// Scalers in this model are additive.
-			return this.RewardManager.RewardCaptureTick(_closePlayers,
+            // Record the character received a tick at this BO (proxy for contribution).
+            foreach (var closePlayer in _closePlayers)
+            {
+                this.CampaignObjectiveContributions.TryAdd(closePlayer.CharacterId, (uint)this.Id);
+            }
+            
+            // Scalers in this model are additive.
+            return this.RewardManager.RewardCaptureTick(_closePlayers,
                 OwningRealm,
                 Tier,
                 Name,
                 pairingRewardScaler);
+
         }
 
         public bool FlagActive()

@@ -257,6 +257,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             activeStatus.LockTimeStamp = FrameWork.TCPManager.GetTimeStamp();
         }
 
+        public BattleFrontStatus GetActiveBattleFrontStatus(int battleFrontId)
+        {
+            return BattleFrontStatuses.Single(x => x.BattleFrontId == battleFrontId);
+        }
+
+
         public List<BattleFrontStatus> GetBattleFrontStatusList()
         {
             return this.BattleFrontStatuses;
