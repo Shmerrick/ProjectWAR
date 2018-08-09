@@ -270,5 +270,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
           
         }
+
+        public uint CalculateRenownBand(byte playerRenown)
+        {
+            return ((uint) Math.Round((playerRenown / 10.0)) * 10);
+        }
     }
 }

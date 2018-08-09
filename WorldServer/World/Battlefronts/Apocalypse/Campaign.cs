@@ -534,12 +534,24 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var activeBattleFrontStatus = BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
 
 
-            var eligiblePlayers = new List<KeyValuePair<uint, uint>>();
+            var eligiblePlayers = new List<KeyValuePair<uint, PlayerRewardOptions>>();
 
             foreach (var playerKillContribution in activeBattleFrontStatus.KillContributionSet)
             {
-                //TODO replace 10 with a real value.
-                eligiblePlayers.Add(new KeyValuePair<uint, uint>(playerKillContribution, 10));
+                var player = Player.GetPlayer(playerKillContribution);
+                var playerItemList = player.ItmInterface.Items;
+                var playerRenown = player.CurrentRenown.Level;
+
+                var rewardOptions = new PlayerRewardOptions
+                {
+                    CharacterId = playerKillContribution,
+                    CharacterName = player.Name,
+                    ItemList = playerItemList,
+                    RenownLevel = playerRenown,
+                    RenownBand = _rewardManager.CalculateRenownBand(playerRenown)
+                };
+
+                eligiblePlayers.Add(new KeyValuePair<uint, PlayerRewardOptions>(playerKillContribution, rewardOptions));
             }
             
             foreach (var campaignObjective in Objectives)
@@ -547,18 +559,31 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 var contributionList = campaignObjective.CampaignObjectiveContributions;
                 foreach (var contribution in contributionList)
                 {
-                    //TODO replace 10 with a real value.
-                    eligiblePlayers.Add(new KeyValuePair<uint, uint>(contribution.Key, 10));
+                    var player = Player.GetPlayer(contribution.Key);
+                    var playerItemList = player.ItmInterface.Items;
+                    var playerRenown = player.CurrentRenown.Level;
+
+                    var rewardOptions = new PlayerRewardOptions
+                    {
+                        CharacterId = contribution.Key,
+                        CharacterName = player.Name,
+                        CharacterRealm = player.Realm,
+                        ItemList = playerItemList,
+                        RenownLevel = playerRenown,
+                        RenownBand = _rewardManager.CalculateRenownBand(playerRenown)
+                    };
+
+                    eligiblePlayers.Add(new KeyValuePair<uint, PlayerRewardOptions>(contribution.Key, rewardOptions));
                 }
             }
 
             var lootBagBuilder = new LootBagBuilder(eligiblePlayers, null, new RandomGenerator());
             
             // Need to rebuild this piece as well.
-            foreach (var player in PlayersInLakeSet)
+            foreach (var player in eligiblePlayers)
             {
-                BattlefrontLogger.Trace($"{player.Name}...");
-                _rewardManager.GenerateLockReward(player, realm);
+                BattlefrontLogger.Trace($"{player.Value.CharacterName}...");
+                _rewardManager.GenerateLockReward(Player.GetPlayer(player.Key), realm);
             }
         }
 
@@ -973,5 +998,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             return 1f;
         }
+    }
+
+    public class PlayerRewardOptions
+    {
+        public uint CharacterId { get; set; }
+        public Item[] ItemList { get; set; }
+        public uint RenownLevel { get; set; }
+        public uint RenownBand { get; set; }
+        public string CharacterName { get; set; }
+        public Realms CharacterRealm { get; set; }
     }
 }

@@ -12,15 +12,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     public class LootBagBuilder : ILootBagBuilder
     {
 
-        // Dictionary of players (character Id and RenownBand)
-        public List<KeyValuePair<uint, uint>> EligiblePlayers { get; set; }
+        // Dictionary of players (RenownBand and PlayerInfo)
+        public List<KeyValuePair<uint, PlayerRewardOptions>> EligiblePlayers { get; set; }
 
         // Dictionary of renownband, (item id, chance to drop)
         public Dictionary<uint, List<LootOption>> AvailableLootItems { get; set; }
 
         public IRandomGenerator RandomGenerator { get; }
 
-        public LootBagBuilder(List<KeyValuePair<uint, uint>> eligiblePlayers, Dictionary<uint, List<LootOption>> availableLootItems, IRandomGenerator randomGenerator)
+        public LootBagBuilder(List<KeyValuePair<uint, PlayerRewardOptions>> eligiblePlayers, Dictionary<uint, List<LootOption>> availableLootItems, IRandomGenerator randomGenerator)
         {
             EligiblePlayers = eligiblePlayers;
             AvailableLootItems = availableLootItems;
@@ -36,7 +36,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="eligiblePlayers"></param>
         /// <param name="availableLootItems"></param>
         /// <returns></returns>
-        public ConcurrentDictionary<uint, uint> SelectLootBagWinners(List<KeyValuePair<uint, uint>> eligiblePlayers, Dictionary<uint, List<LootOption>> availableLootItems, bool randomisePlayers = true)
+        public ConcurrentDictionary<uint, uint> SelectLootBagWinners(List<KeyValuePair<uint, PlayerRewardOptions>> eligiblePlayers, Dictionary<uint, List<LootOption>> availableLootItems, bool randomisePlayers = true)
         {
             var lootItemAssigned = false;
             var assignedLootDictionary = new ConcurrentDictionary<uint, uint>();
@@ -47,7 +47,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (availableLootItems == null)
                 return null;
 
-            List<KeyValuePair<uint, uint>> playerList = new List<KeyValuePair<uint, uint>>();
+            List<KeyValuePair<uint, PlayerRewardOptions>> playerList = new List<KeyValuePair<uint, PlayerRewardOptions>>();
 
             if (randomisePlayers)
             {
@@ -72,9 +72,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (RandomGenerator.Generate(100) <= playerCentricLootList.WinChance)
                     {
                         // player can only win one roll. 
-                        if (!assignedLootDictionary.ContainsKey(player.Value))
+                        if (!assignedLootDictionary.ContainsKey(player.Value.RenownBand))
                         {
-                            assignedLootDictionary.TryAdd(player.Value, playerCentricLootList.ItemId); // player.Key is characterId
+                            assignedLootDictionary.TryAdd(player.Value.RenownBand, playerCentricLootList.ItemId); // player.Key is characterId
                             break;
                         }
                     }
@@ -99,7 +99,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
         //// Randomise the player list to ensure we do not bias loot rolls
-        public List<KeyValuePair<uint, uint>> RandomisePlayerList(List<KeyValuePair<uint, uint>> playerList)
+        public List<KeyValuePair<uint, PlayerRewardOptions>> RandomisePlayerList(List<KeyValuePair<uint, PlayerRewardOptions>> playerList)
         {
             if (playerList == null)
                 return null;

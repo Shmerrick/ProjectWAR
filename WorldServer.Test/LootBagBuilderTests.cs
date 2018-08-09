@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GameData;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorldServer.World.Battlefronts.Apocalypse;
 
@@ -8,35 +9,35 @@ namespace WorldServer.Test
     [TestClass]
     public class LootBagBuilderTests
     {
-        public List<KeyValuePair<uint, uint>> SamplePlayers { get; set; }
-        public List<KeyValuePair<uint, uint>> SinglePlayer { get; set; }
-        public List<KeyValuePair<uint, uint>> TwoPayersSameRRBand { get; set; }
+        public List<KeyValuePair<uint, PlayerRewardOptions>> SamplePlayers { get; set; }
+        public List<KeyValuePair<uint, PlayerRewardOptions>> SinglePlayer { get; set; }
+        public List<KeyValuePair<uint, PlayerRewardOptions>> TwoPayersSameRRBand { get; set; }
         
         public Dictionary<uint, List<LootOption>> SampleLootItems { get; set; }
 
         [TestInitialize]
         public void Init()
         {
-            SamplePlayers = new List<KeyValuePair<uint, uint>>
+            SamplePlayers = new List<KeyValuePair<uint, PlayerRewardOptions>>
             {
-                new KeyValuePair<uint, uint>(10, 102),
+                new KeyValuePair<uint, PlayerRewardOptions>(10, new PlayerRewardOptions {CharacterId = 102, CharacterName = "X", CharacterRealm = Realms.REALMS_REALM_DESTRUCTION, RenownBand = 10, RenownLevel = 4, ItemList = []}),
                 new KeyValuePair<uint, uint>(20, 104),
                 new KeyValuePair<uint, uint>(30, 106),
                 new KeyValuePair<uint, uint>(40, 108),
             };
 
-            SinglePlayer = new List<KeyValuePair<uint, uint>>
+            SinglePlayer = new List<KeyValuePair<uint, PlayerRewardOptions>>
             {
                 new KeyValuePair<uint, uint>(10, 999)
             };
 
-            TwoPayersSameRRBand = new List<KeyValuePair<uint, uint>>
+            TwoPayersSameRRBand = new List<KeyValuePair<uint, PlayerRewardOptions>>
             {
                 new KeyValuePair<uint, uint>(10, 999),
                 new KeyValuePair<uint, uint>(10, 1000)
             };
 
-            SamplePlayers = new List<KeyValuePair<uint, uint>>
+            SamplePlayers = new List<KeyValuePair<uint, PlayerRewardOptions>>
             {
                 new KeyValuePair<uint, uint>(10, 102),
                 new KeyValuePair<uint, uint>(20, 104),
