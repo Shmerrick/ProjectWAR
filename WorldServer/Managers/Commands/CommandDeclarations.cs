@@ -139,8 +139,9 @@ namespace WorldServer.Managers.Commands
         /// <summary>Unit modification commands under .modify</summary>
         public static List<GmCommandHandler> ModifyCommands = new List<GmCommandHandler>
         {
-            new GmCommandHandler("speed",ModifySpeed, null, EGmLevel.EmpoweredStaff, 1, "Changes the speed of the targeted player (int Speed, 0-1000)"),
-            new GmCommandHandler("playername",ModifyPlayerName, null, EGmLevel.EmpoweredStaff, 2, "Changes players name"),
+            
+            new GmCommandHandler("speed",ModifySpeed, null, EGmLevel.GM, 1, "Changes the speed of the targeted player (int Speed, 0-1000)"),
+            new GmCommandHandler("playername",ModifyPlayerName, null, EGmLevel.GM, 2, "Changes players name"),
             new GmCommandHandler("playernametemp",ModifyPlayerNameTemp, null, EGmLevel.EmpoweredStaff, 0, "Temporarily changes players name until server restart."),
             new GmCommandHandler("guildleader", ModifyGuildLeader, null, EGmLevel.EmpoweredStaff, 2, "Changes the leader of the guild (string newLeader, string guildName)"),
             new GmCommandHandler("guildnamebyid", ModifyGuildNameByID, null, EGmLevel.TrustedGM, 2, "Changes the name of the guild by ID (int guildID string guildName)"),
@@ -154,8 +155,8 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("faction",ModifyFaction, null, EGmLevel.SourceDev, 1, "Changes the current faction of selected Unit (byte Faction)"),
             new GmCommandHandler("influence",ModifyInf, null, EGmLevel.SourceDev, 1, "Change the Influence Chaptter Value"),
             new GmCommandHandler("resource",ModifyCrrRes, null, EGmLevel.SourceDev, 1, "Modify your career resource value (byte careerResource)"),
-            new GmCommandHandler("gatheringskill",ModifyGath, null, EGmLevel.SourceDev, 1, "Changes your proficiency in your current gathering skill (byte Skill)"),
-            new GmCommandHandler("craftingskill",ModifyCraf, null, EGmLevel.SourceDev, 1, "Changes your proficiency in your current crafting skill (byte Skill)"),
+            new GmCommandHandler("gatheringskill",ModifyGath, null, EGmLevel.GM, 1, "Changes your proficiency in your current gathering skill (byte Skill)"),
+            new GmCommandHandler("craftingskill",ModifyCraf, null, EGmLevel.GM, 1, "Changes your proficiency in your current crafting skill (byte Skill)"),
         };
 
         /// <summary>Mount commands under .mount</summary>
@@ -293,7 +294,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("equip", null, EquipCommands, EGmLevel.DatabaseDev, 0, "Creature equipment modification commands."),
             new GmCommandHandler("go",null, GoCommands, EGmLevel.DatabaseDev, 0, "Game object commands."),
             new GmCommandHandler("instance",null, InstanceCommands, EGmLevel.DatabaseDev, 0, "PVE Instance commands."),
-            new GmCommandHandler("modify",null, ModifyCommands, EGmLevel.EmpoweredStaff, 0, "Unit modification commands."),
+            new GmCommandHandler("modify",null, ModifyCommands, EGmLevel.GM, 0, "Unit modification commands."),
             new GmCommandHandler("mount",null, MountCommands, EGmLevel.DatabaseDev, 0, "Mount commands."),
             new GmCommandHandler("npc",null, NpcCommands, EGmLevel.DatabaseDev, 0, "NPC commands."),
             new GmCommandHandler("pq",null, PqCommands, EGmLevel.DatabaseDev, 0, "Public Quest commands."),
@@ -302,7 +303,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("scenario", null, ScenarioCommands, EGmLevel.AllStaff, 0, "Scenario commands."),
             new GmCommandHandler("search",null, SearchCommands, EGmLevel.DatabaseDev, 0, "Search commands."),
             new GmCommandHandler("states",null, StatesCommand, EGmLevel.DatabaseDev, 0, "State modification commands."),
-            new GmCommandHandler("teleport",null, TeleportCommands, EGmLevel.EmpoweredStaff, 0, "Contains the list of teleportation commands."),
+            new GmCommandHandler("teleport",null, TeleportCommands, EGmLevel.GM, 0, "Contains the list of teleportation commands."),
             new GmCommandHandler("ticket", null, TicketCommands, EGmLevel.GM, 0, "Contains the list of ticket commands"),
             new GmCommandHandler("waypoints",null, WaypointCommands, EGmLevel.DatabaseDev, 0, "Waypoint commands."),
             new GmCommandHandler("setting",null, SettingCommands, EGmLevel.SourceDev, 0, "World settings commands."),
@@ -343,11 +344,11 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("getguildlead", GetGuildLead, null, EGmLevel.AllStaff, 1, "Returns the guild leader of the guild specified (string guildname)"),
 
             // All empowered staff
-            new GmCommandHandler("kill", Kill, null, EGmLevel.EmpoweredStaff, 0, "Slays the targeted Unit."),
+            new GmCommandHandler("kill", Kill, null, EGmLevel.GM, 0, "Slays the targeted Unit."),
             new GmCommandHandler("nuke", Nuke, null, EGmLevel.EmpoweredStaff, 2, "Slays everyone in radius. Takes 2 parameters, realm and radius in ft. Realm 0 - all, 1 - order, 2 - destro"),
 
             new GmCommandHandler("boot", Reboot, null, EGmLevel.EmpoweredStaff, 0, "Reboots the server."),
-            new GmCommandHandler("clearboot",ClearServer, null, EGmLevel.EmpoweredStaff, 0, "Removes all players from server."),
+            new GmCommandHandler("clearboot",ClearServer, null, EGmLevel.GM, 0, "Removes all players from server."),
             new GmCommandHandler("revive",Revive, null, EGmLevel.GM, 0, "Resurrects the targeted Unit."),
             new GmCommandHandler("fly", SetFlightState, null, EGmLevel.GM, 0, "Grants the ability to fly (byte enableFlight)"),
 
