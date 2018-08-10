@@ -131,17 +131,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 _logger.Trace($"Player:{player.Name} ScaleMult:{rewardScaleMultiplier} XP:{xp} RR:{rr}");
             }
 
-            // Returns 2 VP per tick for locking realm, -1 for non locking realm.
-            if (owningRealm == Realms.REALMS_REALM_ORDER)
-            {
-                _logger.Debug($"Order-held {objectiveName} +2 Order -1 Dest");
-                return new VictoryPoint(2, -1);
-            }
-            else
-            {
-                _logger.Debug($"Dest-held {objectiveName} +2 Dest -1 Order");
-                return new VictoryPoint(-1, 2);
-            }
+			return new VictoryPoint(0, 0);
+
+            //// Returns 2 VP per tick for locking realm, -1 for non locking realm.
+            //if (owningRealm == Realms.REALMS_REALM_ORDER)
+            //{
+            //    _logger.Debug($"Order-held {objectiveName} +2 Order -1 Dest");
+            //    return new VictoryPoint(2, -1);
+            //}
+            //else
+            //{
+            //    _logger.Debug($"Dest-held {objectiveName} +2 Dest -1 Order");
+            //    return new VictoryPoint(-1, 2);
+            //}
         }
 
 

@@ -109,8 +109,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             _EvtInterface.AddEvent(UpdateBattleFrontScalers, 12000, 0); // 120000
             _EvtInterface.AddEvent(UpdateVictoryPoints, 6000, 0);
-            // Tell each player the RVR status
-            _EvtInterface.AddEvent(UpdateRVRStatus, 60000, 0);
+
+			_EvtInterface.AddEvent(UpdateBOs, 5000, 0);
+			// Tell each player the RVR status
+			_EvtInterface.AddEvent(UpdateRVRStatus, 60000, 0);
             // Recalculate AAO
             _EvtInterface.AddEvent(UpdateAAOBuffs, 60000, 0);
             // Recalculate AAO
@@ -233,7 +235,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             foreach (BattleFront_Objective obj in objectives)
             {
-                CampaignObjective flag = new CampaignObjective(obj, Region.GetTier());
+                CampaignObjective flag = new CampaignObjective(Region, obj);
                 Objectives.Add(flag);
                 Region.AddObject(flag, obj.ZoneId);
                 flag.BattleFront = this;
@@ -622,13 +624,29 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             BattlefrontLogger.Trace(".");
             foreach (CampaignObjective bo in Objectives)
-                bo.SendFlagState(plr, false);
+                bo.SendState(plr, false);
         }
 
-        /// <summary>
-        ///  Updates the victory points per realm and fires lock when necessary.
-        /// </summary>
-        private void UpdateVictoryPoints()
+		private void UpdateBOs()
+		{
+			// Locked by Order/Dest
+			if (IsBattleFrontLocked())
+				return; // Nothing to do
+
+			// Only update an active battlefront
+			if (BattleFrontManager.ActiveBattleFront.RegionId != this.Region.RegionId)
+				return;
+
+			foreach (CampaignObjective flag in Objectives)
+			{
+				flag.Update(TCPManager.GetTimeStampMS());
+			}
+		}
+
+		/// <summary>
+		///  Updates the victory points per realm and fires lock when necessary.
+		/// </summary>
+		private void UpdateVictoryPoints()
         {
             BattlefrontLogger.Trace($"Updating Victory Points for {this.CampaignName}");
             // Locked by Order/Dest
@@ -642,37 +660,37 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Victory depends on objective securization in t1
             float orderVictoryPoints = VictoryPointProgress.OrderVictoryPoints;
             float destroVictoryPoints = VictoryPointProgress.DestructionVictoryPoints;
-            int flagCount = 0, destroFlagCount = 0, orderFlagCount = 0;
+            //int flagCount = 0, destroFlagCount = 0, orderFlagCount = 0;
 
-            foreach (CampaignObjective flag in Objectives)
-            {
-                BattlefrontLogger.Trace($"Reward Ticks {this.CampaignName} - {flag.ToString()}");
+    //        foreach (CampaignObjective flag in Objectives)
+    //        {
+    //            BattlefrontLogger.Trace($"Reward Ticks {this.CampaignName} - {flag.ToString()}");
 
-				VictoryPoint vp = new VictoryPoint();
-				if (!Objectives.Any(x => !x.Equals(flag) && x.State == StateFlags.Contested))
-				{
-					// TODO - perhaps use AAO calculation here as a pairing scaler?.
-					vp = flag.RewardCaptureTick(1f);
-				}
+				//VictoryPoint vp = new VictoryPoint();
+				//if (!Objectives.Any(x => !x.Equals(flag) && x.State == StateFlags.Contested))
+				//{
+				//	// TODO - perhaps use AAO calculation here as a pairing scaler?.
+				//	vp = flag.RewardCaptureTick(1f);
+				//}
                 
-                orderVictoryPoints += vp.OrderVictoryPoints;
-                destroVictoryPoints += vp.DestructionVictoryPoints;
+    //            orderVictoryPoints += vp.OrderVictoryPoints;
+    //            destroVictoryPoints += vp.DestructionVictoryPoints;
 
-                // Make sure VP dont go less than 0
-                if (orderVictoryPoints <= 0)
-                    orderVictoryPoints = 0;
+    //            // Make sure VP dont go less than 0
+    //            if (orderVictoryPoints <= 0)
+    //                orderVictoryPoints = 0;
 
-                if (destroVictoryPoints <= 0)
-                    destroVictoryPoints = 0;
+    //            if (destroVictoryPoints <= 0)
+    //                destroVictoryPoints = 0;
 
-                //flagCount++;
-                //Realms secureRealm = flag.GetSecureRealm();
-                //if (secureRealm == Realms.REALMS_REALM_ORDER)
-                //    orderFlagCount++;
-                //else if (secureRealm == Realms.REALMS_REALM_DESTRUCTION)
-                //    destroFlagCount++;
-                BattlefrontLogger.Trace($"{flag.Name} Order VP:{VictoryPointProgress.OrderVictoryPoints} Dest VP:{VictoryPointProgress.DestructionVictoryPoints}");
-            }
+    //            //flagCount++;
+    //            //Realms secureRealm = flag.GetSecureRealm();
+    //            //if (secureRealm == Realms.REALMS_REALM_ORDER)
+    //            //    orderFlagCount++;
+    //            //else if (secureRealm == Realms.REALMS_REALM_DESTRUCTION)
+    //            //    destroFlagCount++;
+    //            BattlefrontLogger.Trace($"{flag.Name} Order VP:{VictoryPointProgress.OrderVictoryPoints} Dest VP:{VictoryPointProgress.DestructionVictoryPoints}");
+    //        }
 
             // Victory points update
             VictoryPointProgress.OrderVictoryPoints = Math.Min(BattleFrontConstants.LOCK_VICTORY_POINTS, orderVictoryPoints);
