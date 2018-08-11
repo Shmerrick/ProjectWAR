@@ -7,6 +7,12 @@ using NLog;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
+	public enum BORewardType
+	{
+		SMALL = 0,
+		BIG = 1
+	}
+
     /// <summary>
     /// Manages rewards from RVR mechanic.
     /// </summary>
@@ -83,7 +89,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         ///     Grants a small reward to all players in close range for defending.
         /// </summary>
         /// <remarks>Invoked in short periods of time</remarks>
-        public VictoryPoint RewardCaptureTick(ISet<Player> playersWithinRange, Realms owningRealm, int tier, string objectiveName, float rewardScaleMultiplier)
+        public VictoryPoint RewardCaptureTick(ISet<Player> playersWithinRange, Realms owningRealm, int tier, string objectiveName, float rewardScaleMultiplier, BORewardType boRewardType)
         {
             ushort influenceId;
 
@@ -92,7 +98,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Because of the Field of Glory buff, the XP value here is doubled.
             // The base reward in T4 is therefore 3000 XP.
             // Population scale factors can up this to 9000 if the region is full of people and then raise or lower it depending on population balance.
-            var baseXp = BattleFrontConstants.FLAG_SECURE_REWARD_SCALER * tier * rewardScaleMultiplier;
+            var baseXp = (boRewardType == BORewardType.SMALL) ? BattleFrontConstants.FLAG_SECURE_REWARD_SCALER * tier * rewardScaleMultiplier * 10 : BattleFrontConstants.FLAG_SECURE_REWARD_SCALER * tier * rewardScaleMultiplier * 25;
             var baseRp = baseXp / 10f;
             var baseInf = baseRp / 3.2f;
 
@@ -108,18 +114,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         influenceId = (ushort) player.CurrentArea.OrderInfluenceId;
                     else
                         influenceId = (ushort) player.CurrentArea.DestroInfluenceId;
-
-					// half the infl ticks
-					var inf = (ushort)baseInf / 2;
+					
                     player.AddInfluence(influenceId, Math.Max((ushort)baseInf, (ushort)1));
-                }
+				}
 
                 Random rnd = new Random();
                 int random = rnd.Next(-25, 25);
                 var xp = (uint)Math.Max((baseXp * (1 + (random / 100))), 1);
 
-				// half the rr ticks
-				baseRp /= 2;
 				var rr = (uint) Math.Max((baseRp * (1 + (random / 100))), 1);
                 
                 player.AddXp(xp, false, false);

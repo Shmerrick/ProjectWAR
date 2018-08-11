@@ -3115,14 +3115,15 @@ namespace WorldServer
             if (Program.Config.RenownRate > 0)
                 renown *= (uint)Program.Config.RenownRate;
 
-            if (aaoMult != 0 && aaoRealm != Realms.REALMS_REALM_NEUTRAL && Realm != aaoRealm)
-            {
-                renown = Math.Max(1, renown);
-            }
-            else
-            {
-                renown = Math.Max(20, renown);
-            }
+			// ZARU: deactivated due to intention on no cap on renown
+            //if (aaoMult != 0 && aaoRealm != Realms.REALMS_REALM_NEUTRAL && Realm != aaoRealm)
+            //{
+            //    renown = Math.Max(1, renown);
+            //}
+            //else
+            //{
+            //    renown = Math.Max(20, renown);
+            //}
             RewardLogger.Trace($"{renown} RP awarded to {this.Name} for {rewardString} ");
             InternalAddRenown(renown, shouldPool, type, rewardString);
         }

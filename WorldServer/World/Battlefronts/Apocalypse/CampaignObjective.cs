@@ -28,8 +28,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 		/// <summary>
 		public static int MAX_CONTROL_GAUGE = MAX_SECURE_PROGRESS * 200;
 
-		public static int CONTESTED_TIMESPAN = 60; //300; // 5 min contested
-		public static int SECURED_TIMESPAN = 60; //900; // 15 min secured
+		public static int CONTESTED_TIMESPAN = 300; //300; // 5 min contested
+		public static int SECURED_TIMESPAN = 900; //900; // 15 min secured
 
 		private int _stopWatch_Mode = 0;
 		private Stopwatch _stopWatch = null;
@@ -259,7 +259,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 OwningRealm,
                 Tier,
                 Name,
-                pairingRewardScaler);
+                pairingRewardScaler, BORewardType.SMALL);
         }
 
         public bool FlagActive()
@@ -507,14 +507,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				}
 			}
 
-			if (AllowInteract(player) && InteractableFor(player) && !_captureInProgress)
+			if (AllowInteract(player) && InteractableFor(player))
 			{
-				CapturingPlayer = null;
-				_captureInProgress = true;
-				BeginInteraction(player);
-			}
+				if (_captureInProgress)
+				{
+					player.SendClientMessage(CapturingPlayer?.Name + " is already interacting with this object.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+				}
+				else
+				{
+					CapturingPlayer = null;
+					_captureInProgress = true;
+					BeginInteraction(player);
 
-			_secureProgress = Math.Abs(_controlGauge) * MAX_SECURE_PROGRESS / MAX_CONTROL_GAUGE;
+					_secureProgress = Math.Abs(_controlGauge) * MAX_SECURE_PROGRESS / MAX_CONTROL_GAUGE;
+				}
+			}
 		}
 
 		public override void NotifyInteractionBroken(NewBuff b)
@@ -1181,12 +1188,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 		{
 			if (State == StateFlags.ZoneLocked)
 				return;
-
-			VictoryPoint VP = RewardManager.RewardCaptureTick(_closePlayers,
-				OwningRealm,
-				Tier,
-				Name,
-				1f); // AAO
 			
 			switch (State)
 			{
@@ -1200,6 +1201,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 					{
 						BattleFront.VictoryPointProgress.DestructionVictoryPoints += 5;
 					}
+
+					RewardManager.RewardCaptureTick(_closePlayers, OwningRealm, Tier, Name, 1f, BORewardType.SMALL);
 					break;
 
 				case StateFlags.Secure: // big tick
@@ -1212,6 +1215,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 					{
 						BattleFront.VictoryPointProgress.DestructionVictoryPoints += 50;
 					}
+
+					RewardManager.RewardCaptureTick(_closePlayers, OwningRealm, Tier, Name, 1f, BORewardType.BIG);
 					break;
 
 				case StateFlags.Locked: // small tick
@@ -1224,6 +1229,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 					{
 						BattleFront.VictoryPointProgress.DestructionVictoryPoints += 10;
 					}
+
+					RewardManager.RewardCaptureTick(_closePlayers, OwningRealm, Tier, Name, 1f, BORewardType.SMALL);
 					break;
 
 				default:

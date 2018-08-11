@@ -22,7 +22,14 @@ namespace WorldServer.Scenarios.Objects
             Region.AddObject(FlagGrd.Creature, Spawn.ZoneId);
             Destroy();
         }
-    }
+
+		public override void OnLoad()
+		{
+			base.OnLoad();
+
+
+		}
+	}
 
     public class FlagGuard
     {
@@ -70,7 +77,7 @@ namespace WorldServer.Scenarios.Objects
 			Spawn.RespawnMinutes = 3;
 
 			Creature = new GuardCreature(Spawn, this);
-            Region.AddObject(Creature, Spawn.ZoneId);
+			Region.AddObject(Creature, Spawn.ZoneId);
         }
 
 		public void DespawnGuard()
