@@ -221,7 +221,6 @@ namespace WorldServer.Managers.Commands
         /// <summary>Scenario commands under .scenario</summary>
         public static List<GmCommandHandler> ScenarioCommands = new List<GmCommandHandler>
         {
-            new GmCommandHandler("status",ScenarioStatus, null, EGmLevel.AllStaff, 0, "Shows player count and score of all running scenarios."),
             new GmCommandHandler("balance", CheckBalance, null, EGmLevel.SourceDev, 0, "Checks the current scenario's balance internals."),
             new GmCommandHandler("domination", CheckDomination, null, EGmLevel.SourceDev, 0, "Checks the current scenario's domination internals."),
             new GmCommandHandler("score", GetScenarioScore, null, 0, 0, "Returns targets scenario scores."),
@@ -312,6 +311,7 @@ namespace WorldServer.Managers.Commands
 
 #region Standalone Commands
             // User commands
+            new GmCommandHandler("scenariostatus",ScenarioStatus, null, 0, 0, "Shows player count and score of all running scenarios."),
             new GmCommandHandler("gmlist", GmMgr.ListGameMasters, null, 0, 0, "Lists available GMs."),
             new GmCommandHandler("rules", SendRules, null, 0, 0, "Sends a condensed list of in-game rules."),
             new GmCommandHandler("assist", Assist, null, 0, 1, "Switches to friendly target's target"),
