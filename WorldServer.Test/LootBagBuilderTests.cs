@@ -20,29 +20,29 @@ namespace WorldServer.Test
         {
             SamplePlayers = new List<KeyValuePair<uint, PlayerRewardOptions>>
             {
-                new KeyValuePair<uint, PlayerRewardOptions>(10, new PlayerRewardOptions {CharacterId = 102, CharacterName = "X", CharacterRealm = Realms.REALMS_REALM_DESTRUCTION, RenownBand = 10, RenownLevel = 4, ItemList = []}),
-                new KeyValuePair<uint, uint>(20, 104),
-                new KeyValuePair<uint, uint>(30, 106),
-                new KeyValuePair<uint, uint>(40, 108),
+                new KeyValuePair<uint, PlayerRewardOptions>(10, new PlayerRewardOptions {CharacterId = 102, CharacterName = "X", CharacterRealm = Realms.REALMS_REALM_DESTRUCTION, RenownBand = 10, RenownLevel = 4}),
+                //new KeyValuePair<uint, uint>(20, 104),
+                //new KeyValuePair<uint, uint>(30, 106),
+                //new KeyValuePair<uint, uint>(40, 108),
             };
 
             SinglePlayer = new List<KeyValuePair<uint, PlayerRewardOptions>>
             {
-                new KeyValuePair<uint, uint>(10, 999)
+                //new KeyValuePair<uint, uint>(10, 999)
             };
 
             TwoPayersSameRRBand = new List<KeyValuePair<uint, PlayerRewardOptions>>
             {
-                new KeyValuePair<uint, uint>(10, 999),
-                new KeyValuePair<uint, uint>(10, 1000)
+                //new KeyValuePair<uint, uint>(10, 999),
+                //new KeyValuePair<uint, uint>(10, 1000)
             };
 
             SamplePlayers = new List<KeyValuePair<uint, PlayerRewardOptions>>
             {
-                new KeyValuePair<uint, uint>(10, 102),
-                new KeyValuePair<uint, uint>(20, 104),
-                new KeyValuePair<uint, uint>(30, 106),
-                new KeyValuePair<uint, uint>(40, 108),
+                //new KeyValuePair<uint, uint>(10, 102),
+                //new KeyValuePair<uint, uint>(20, 104),
+                //new KeyValuePair<uint, uint>(30, 106),
+                //new KeyValuePair<uint, uint>(40, 108),
             };
 
 
@@ -204,8 +204,8 @@ namespace WorldServer.Test
                 new KeyValuePair<uint, uint>(40, 108),
             };
 
-            var lootbagBuilder = new LootBagBuilder(duplicatedRRBandPlayers, SampleLootItems, new LockedRandomNumberGenerator(2));
-            var result = lootbagBuilder.SelectLootBagWinners(duplicatedRRBandPlayers, SampleLootItems, false);
+            var lootbagBuilder = new LootBagBuilder(null, SampleLootItems, new LockedRandomNumberGenerator(2));
+            var result = lootbagBuilder.SelectLootBagWinners(null, SampleLootItems, false);
 
             Assert.IsTrue(result.Count == 3);
             // Player 999
@@ -237,8 +237,8 @@ namespace WorldServer.Test
                 new KeyValuePair<uint, uint>(40, 108),
             };
 
-            var lootbagBuilder = new LootBagBuilder(duplicatedRRBandPlayers, SampleLootItems, new LockedRandomNumberGenerator(2));
-            var result = lootbagBuilder.SelectLootBagWinners(duplicatedRRBandPlayers, SampleLootItems, false);
+            var lootbagBuilder = new LootBagBuilder(null, SampleLootItems, new LockedRandomNumberGenerator(2));
+            var result = lootbagBuilder.SelectLootBagWinners(null, SampleLootItems, false);
 
             Assert.IsTrue(result.Count == 3);
             // Player 999
@@ -279,8 +279,8 @@ namespace WorldServer.Test
 
             var availableLootItems = new Dictionary<uint, List<LootOption>> {{1, sampleLootOptions3}};
 
-            var lootbagBuilder = new LootBagBuilder(duplicatedRRBandPlayers, availableLootItems, new LockedRandomNumberGenerator(2));
-            var result = lootbagBuilder.SelectLootBagWinners(duplicatedRRBandPlayers, availableLootItems, false);
+            var lootbagBuilder = new LootBagBuilder(null, availableLootItems, new LockedRandomNumberGenerator(2));
+            var result = lootbagBuilder.SelectLootBagWinners(null, availableLootItems, false);
 
             Assert.IsTrue(result.Count == 0);
             // Player 999
@@ -301,8 +301,8 @@ namespace WorldServer.Test
                 new KeyValuePair<uint, uint>(40, 108),
             };
 
-            var lootbagBuilder = new LootBagBuilder(duplicatedRRBandPlayers, SampleLootItems, new LockedRandomNumberGenerator(12));
-            var result = lootbagBuilder.SelectLootBagWinners(duplicatedRRBandPlayers, SampleLootItems, false);
+            var lootbagBuilder = new LootBagBuilder(null, SampleLootItems, new LockedRandomNumberGenerator(12));
+            var result = lootbagBuilder.SelectLootBagWinners(null, SampleLootItems, false);
 
             Assert.IsTrue(result.Count == 1);
             Assert.IsTrue(result.ContainsKey(106));
@@ -326,8 +326,8 @@ namespace WorldServer.Test
                 new KeyValuePair<uint, uint>(40, 108),
             };
 
-            var lootbagBuilder = new LootBagBuilder(duplicatedRRBandPlayers, SampleLootItems, new LockedRandomNumberGenerator(10));
-            var result = lootbagBuilder.SelectLootBagWinners(duplicatedRRBandPlayers, SampleLootItems, false);
+            var lootbagBuilder = new LootBagBuilder(null, SampleLootItems, new LockedRandomNumberGenerator(10));
+            var result = lootbagBuilder.SelectLootBagWinners(null, SampleLootItems, false);
 
             Assert.IsTrue(result.Count == 3);
             Assert.IsTrue(result.ContainsKey(102));
