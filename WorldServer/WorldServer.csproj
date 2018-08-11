@@ -166,6 +166,7 @@
     <Compile Include="Services\World\QuestService.cs" />
     <Compile Include="Services\World\RallyPointService.cs" />
     <Compile Include="Services\World\RVRProgressionService.cs" />
+    <Compile Include="Services\World\RVRZoneRewardService.cs" />
     <Compile Include="Services\World\ScenarioService.cs" />
     <Compile Include="Services\World\TokService.cs" />
     <Compile Include="Services\World\VendorService.cs" />
@@ -260,6 +261,7 @@
     <Compile Include="World\Battlefronts\Apocalypse\Loot\LootBagBuilder.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\LootBagRarity.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\LootBagTypeDefinition.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\LootDecider.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\LootOption.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\RandomGenerator.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardAssigner.cs" />
