@@ -256,6 +256,7 @@
     <Compile Include="World\Battlefronts\Apocalypse\IApocCommunications.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\ILootBagBuilder.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\IRandomGenerator.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\IRewardAssigner.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\IRewardSelector.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\LootBagBuilder.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\LootBagRarity.cs" />
