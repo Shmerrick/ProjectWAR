@@ -1195,11 +1195,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 					if (capturingRealm == Realms.REALMS_REALM_ORDER)
 					{
 
-						BattleFront.VictoryPointProgress.OrderVictoryPoints += 5;
+						BattleFront.VictoryPointProgress.OrderVictoryPoints += 15;
 					}
 					else if (capturingRealm == Realms.REALMS_REALM_DESTRUCTION)
 					{
-						BattleFront.VictoryPointProgress.DestructionVictoryPoints += 5;
+						BattleFront.VictoryPointProgress.DestructionVictoryPoints += 15;
 					}
 
 					RewardManager.RewardCaptureTick(_closePlayers, OwningRealm, Tier, Name, 1f, BORewardType.SMALL);
@@ -1209,11 +1209,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 					if (capturingRealm == Realms.REALMS_REALM_ORDER)
 					{
 
-						BattleFront.VictoryPointProgress.OrderVictoryPoints += 50;
+						BattleFront.VictoryPointProgress.OrderVictoryPoints += 200;
 					}
 					else if (capturingRealm == Realms.REALMS_REALM_DESTRUCTION)
 					{
-						BattleFront.VictoryPointProgress.DestructionVictoryPoints += 50;
+						BattleFront.VictoryPointProgress.DestructionVictoryPoints += 200;
 					}
 
 					RewardManager.RewardCaptureTick(_closePlayers, OwningRealm, Tier, Name, 1f, BORewardType.BIG);
@@ -1223,11 +1223,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 					if (capturingRealm == Realms.REALMS_REALM_ORDER)
 					{
 
-						BattleFront.VictoryPointProgress.OrderVictoryPoints += 10;
+						BattleFront.VictoryPointProgress.OrderVictoryPoints += 30;
 					}
 					else if (capturingRealm == Realms.REALMS_REALM_DESTRUCTION)
 					{
-						BattleFront.VictoryPointProgress.DestructionVictoryPoints += 10;
+						BattleFront.VictoryPointProgress.DestructionVictoryPoints += 30;
 					}
 
 					RewardManager.RewardCaptureTick(_closePlayers, OwningRealm, Tier, Name, 1f, BORewardType.SMALL);
