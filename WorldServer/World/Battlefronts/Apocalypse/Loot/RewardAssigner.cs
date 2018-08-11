@@ -36,8 +36,5 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 }
             }
         }
-
-
     }
-
 }
