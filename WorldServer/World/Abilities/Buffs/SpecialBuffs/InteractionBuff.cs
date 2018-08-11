@@ -99,7 +99,10 @@ namespace WorldServer
 
         public override void InvokeDamageEvent(byte eventId, AbilityDamageInfo damageInfo, Unit eventInstigator)
         {
-            TryCancel();
+			if (eventId == (byte)BuffCombatEvents.ReceivingDamage && !damageInfo.IsAoE)
+			{
+				TryCancel();
+			}
         }
 
         public override void InvokeCastEvent(byte eventID, AbilityInfo abInfo)

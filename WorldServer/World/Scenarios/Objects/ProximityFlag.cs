@@ -22,7 +22,14 @@ namespace WorldServer.Scenarios.Objects
             Region.AddObject(FlagGrd.Creature, Spawn.ZoneId);
             Destroy();
         }
-    }
+
+		public override void OnLoad()
+		{
+			base.OnLoad();
+
+
+		}
+	}
 
     public class FlagGuard
     {
@@ -67,10 +74,16 @@ namespace WorldServer.Scenarios.Objects
             Spawn.WorldZ = z;
             Spawn.WorldX = x;
             Spawn.ZoneId = ZoneId;
+			Spawn.RespawnMinutes = 3;
 
-            Creature = new GuardCreature(Spawn, this);
-            Region.AddObject(Creature, Spawn.ZoneId);
+			Creature = new GuardCreature(Spawn, this);
+			Region.AddObject(Creature, Spawn.ZoneId);
         }
+
+		public void DespawnGuard()
+		{
+			Region.RemoveObject(Creature);
+		}
     }
 
     public class ProximityFlag : Object
