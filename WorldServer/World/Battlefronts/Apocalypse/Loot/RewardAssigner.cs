@@ -9,14 +9,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
     public class RewardAssigner : IRewardAssigner
     {
         public IRandomGenerator RandomGenerator { get; set; }
-      
+        public ILootDecider LootDecider { get; set; }
 
-        public RewardAssigner(IRandomGenerator randomGenerator)
+
+        public RewardAssigner(IRandomGenerator randomGenerator, ILootDecider lootDecider)
         {
             RandomGenerator = randomGenerator;
+            LootDecider = lootDecider;
         }
 
-        public void AssignLootToPlayers(List<uint> eligiblePlayers)
+        public void AssignLootToPlayer(List<uint> eligiblePlayers)
         {
             var rewardSelector = new RewardSelector(RandomGenerator);
             // Randomise the players
@@ -31,16 +33,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 foreach (var player in randomisedPlayerList)
                 {
                     lootBagTypeDefinition.Assignee = player;
-                    
                 }
             }
-
-
         }
-    }
 
-    public interface IRewardAssigner
-    {
 
     }
+
 }

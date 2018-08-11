@@ -8,13 +8,15 @@ using Common.Database.World.Battlefront;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
-    public class LootDecider
+    public class LootDecider : ILootDecider
     {
         public List<RVRZoneReward> RVRZoneRewards { get; private set; }
+        public IRandomGenerator RandomGenerator { get; set; }
 
-        public LootDecider(List<RVRZoneReward> rvrZoneRewards)
+        public LootDecider(List<RVRZoneReward> rvrZoneRewards, IRandomGenerator randomGenerator)
         {
             RVRZoneRewards = rvrZoneRewards;
+            RandomGenerator = randomGenerator;
         }
 
         /// <summary>
@@ -29,9 +31,40 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         {
             // get a closer list of matching items.
             var matchingRewards = RVRZoneRewards.Where(x => x.Class == playerClass && x.RRBand == playerRRBand && lootBag.BagRarity == (LootBagRarity) x.Rarity);
+            if (matchingRewards == null)
+                return lootBag;
             
+            Shuffle(matchingRewards.ToList());
 
+            foreach (var matchingReward in matchingRewards)
+            {
+                // Does this matching reward exist in player's items? And we cannot duplicate move on.
+                if (playerItems.Exists(x => x.Entry == matchingReward.ItemId || matchingReward.CanAwardDuplicate == 0))
+                {
+                    continue;
+                }
+                else
+                {
+                    lootBag.ItemCount = (uint) matchingReward.ItemCount;
+                    lootBag.ItemId = (uint) matchingReward.ItemId;
+                    break;
+                }
+            }
 
+            return lootBag;
+        }
+
+        public void Shuffle<T>(IList<T> list)
+        {
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = RandomGenerator.Generate(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
         }
     }
 }
