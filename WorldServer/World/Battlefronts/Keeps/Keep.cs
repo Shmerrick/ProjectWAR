@@ -434,11 +434,11 @@ namespace WorldServer.World.BattleFronts.Keeps
                 _logger.Info($"Awarding VP for Keep Lord kill");
                 if (Realm == Realms.REALMS_REALM_ORDER)
                 {
-                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints += 1000;
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints += 1500;
                 }
                 else
                 {
-                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += 1000;
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += 1500;
                 }
                
                 
