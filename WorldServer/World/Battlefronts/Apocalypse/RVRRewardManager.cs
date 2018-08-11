@@ -53,58 +53,32 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _logger.Debug($"Delayed Rewards for Player : {killer.Name}  - {xprEntry.ToString()}");
         }
 
-        /// <summary>
-        /// Return an additional scale value based upon who is holding a BO and how many players from either side are close.
-        /// </summary>
-        /// <param name="owningRealm"></param>
-        /// <param name="closeOrderCount"></param>
-        /// <param name="closeDestroCount"></param>
-        /// <returns></returns>
-        public float CalculateObjectiveRewardScale(Realms owningRealm, short closeOrderCount, short closeDestroCount)
+		/// <summary>
+		/// Return an additional scale value based upon who is holding a BO and how many players from either side are near.
+		/// </summary>
+		/// <param name="owningRealm"></param>
+		/// <param name="nearOrderCount"></param>
+		/// <param name="nearDestroCount"></param>
+		/// <returns></returns>
+		public float CalculateObjectiveRewardScale(Realms owningRealm, short nearOrderCount, short nearDestroCount)
         {
+			float scale = 0.0f;
             if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
             {
-                return Math.Abs(1 - (closeOrderCount / closeDestroCount));
+				scale = (float)Math.Abs(Math.Log(nearOrderCount / 10f + 1f));
             }
             else
             {
-
                 if (owningRealm == Realms.REALMS_REALM_ORDER)
                 {
-                    return Math.Abs(1 - (closeDestroCount / closeOrderCount));
-                }
-                else
-                {
-                    return 0;
-                }
+                    scale = (float)Math.Abs(Math.Log(nearDestroCount / 10f + 1f));
+				}
             }
+			if (scale > 1f)
+				scale = 1f;
+			return scale;
         }
-
-        //public float CalculateRewardScaleMultipler(int closeOrderCount, int closeDestroCount, Realms owningRealm, int secureProgress, float objectiveRewardScaler)
-        //{
-
-
-        //    int playerCount;
-        //    ushort influenceId;
-        //    float scaleMult;
-        //    if (owningRealm == Realms.REALMS_REALM_ORDER)
-        //    {
-        //        playerCount = closeOrderCount;
-        //        scaleMult = 1;
-        //    }
-        //    else
-        //    {
-        //        playerCount = closeDestroCount;
-        //        scaleMult = 1;
-        //    }
-
-        //    // No multiplier based on population
-        //    scaleMult *= Region.Campaign.GetObjectiveRewardScaler(OwningRealm, playerCount);
-
-        //    return scaleMult;
-        //}
-
-
+		
         /// <summary>
         ///     Grants a small reward to all players in close range for defending.
         /// </summary>
@@ -135,8 +109,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     else
                         influenceId = (ushort) player.CurrentArea.DestroInfluenceId;
 
-                    // Doesnt do anything?
-                    var inf = Math.Max((ushort)baseInf, (ushort)1);
+					// half the infl ticks
+					var inf = (ushort)baseInf / 2;
                     player.AddInfluence(influenceId, Math.Max((ushort)baseInf, (ushort)1));
                 }
 
@@ -145,6 +119,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 var xp = (uint)Math.Max((baseXp * (1 + (random / 100))), 1);
 
                 var rr = (uint) Math.Max((baseRp * (1 + (random / 100))), 1);
+
+                rr = rr / 2;
                 
                 player.AddXp(xp, false, false);
                 player.AddRenown(rr, false, RewardType.ObjectiveCapture, objectiveName);
@@ -240,8 +216,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 Random rnd = new Random();
                 int random = rnd.Next(1, 25);
-                plr.AddXp((uint)(2000 * (1 + (random / 100))), false, false);
-                plr.AddRenown((uint)(1500 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
+                plr.AddXp((uint)(4000 * (1 + (random / 100))), false, false);
+                plr.AddRenown((uint)(2000 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
 
                 var mailItem3 = new MailItem(208470, 6);
                 Character_mail mail = new Character_mail
@@ -268,8 +244,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 Random rnd = new Random();
                 int random = rnd.Next(1, 25);
-                plr.AddXp((uint)(500 * (1 + (random / 100))), false, false);
-                plr.AddRenown((uint)(500 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
+                plr.AddXp((uint)(1500 * (1 + (random / 100))), false, false);
+                plr.AddRenown((uint)(1000 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
 
                 var mailItem3 = new MailItem(208470, 3);
                 Character_mail mail = new Character_mail

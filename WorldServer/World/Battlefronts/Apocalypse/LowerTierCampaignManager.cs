@@ -57,6 +57,20 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return this.BattleFrontStatuses.FirstOrDefault(x => x.RegionId == regionId);
         }
 
+        public Campaign GetActiveCampaign()
+        {
+
+            var activeRegionId = ActiveBattleFront.RegionId;
+            foreach (var regionMgr in RegionMgrs)
+            {
+                if (regionMgr.RegionId == activeRegionId)
+                {
+                    return regionMgr.Campaign;
+                }
+            }
+            return null;
+        }
+
         /// <summary>
         /// Log the status of all battlefronts 
         /// </summary>

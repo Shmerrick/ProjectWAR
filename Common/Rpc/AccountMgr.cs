@@ -49,7 +49,7 @@ namespace Common {
                 Account acct = Database.SelectObject<Account>("Username='" + Database.Escape(username) + "'");
 
                 if (acct == null) {
-                    Log.Error("LoadAccount", "Account " + username + "not found.");
+                    Log.Error("LoadAccount", "Account " + username + " not found.");
                     return null;
                 }
 

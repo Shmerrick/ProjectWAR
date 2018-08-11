@@ -26,5 +26,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         BattleFrontStatus GetBattleFrontStatus(int battleFrontId);
         void LockBattleFrontStatus(int battleFrontId, Realms lockingRealm, VictoryPointProgress vpp);
         BattleFrontStatus GetRegionBattleFrontStatus(int regionId);
+
+        Campaign GetActiveCampaign();
     }
 }
