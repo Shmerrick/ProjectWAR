@@ -122,7 +122,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 int random = rnd.Next(-25, 25);
                 var xp = (uint)Math.Max((baseXp * (1 + (random / 100))), 1);
 
-				var rr = (uint) Math.Max((baseRp * (1 + (random / 100))), 1);
+                var rr = (uint) Math.Max((baseRp * (1 + (random / 100))), 1);
+
+                rr = rr / 2;
                 
                 player.AddXp(xp, false, false);
                 player.AddRenown(rr, false, RewardType.ObjectiveCapture, objectiveName);
