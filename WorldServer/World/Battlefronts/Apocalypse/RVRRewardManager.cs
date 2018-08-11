@@ -156,6 +156,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         public void GenerateLockReward(Player plr, Realms lockingRealm)
         {
+            var influenceId = 0;
+            if (lockingRealm == Realms.REALMS_REALM_ORDER)
+                influenceId = (ushort)plr.CurrentArea.OrderInfluenceId;
+            else
+                influenceId = (ushort)plr.CurrentArea.DestroInfluenceId;
+
             //T1
             if (plr.Realm == lockingRealm)
             {
@@ -223,9 +229,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 Random rnd = new Random();
                 int random = rnd.Next(1, 25);
                 plr.AddXp((uint)(4000 * (1 + (random / 100))), false, false);
-                plr.AddRenown((uint)(2000 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
+                plr.AddRenown((uint)(5000 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
+                plr.AddInfluence((ushort)influenceId, 1000);
 
-                var mailItem3 = new MailItem(208470, 6);
+                var mailItem3 = new MailItem(208470, 25);
                 Character_mail mail = new Character_mail
                 {
                     Guid = CharMgr.GenerateMailGuid(),
@@ -251,9 +258,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 Random rnd = new Random();
                 int random = rnd.Next(1, 25);
                 plr.AddXp((uint)(1500 * (1 + (random / 100))), false, false);
-                plr.AddRenown((uint)(1000 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
+                plr.AddRenown((uint)(2000 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
+                plr.AddInfluence((ushort) influenceId, 500);
 
-                var mailItem3 = new MailItem(208470, 3);
+                var mailItem3 = new MailItem(208470, 10);
                 Character_mail mail = new Character_mail
                 {
                     Guid = CharMgr.GenerateMailGuid(),
