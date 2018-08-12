@@ -9,8 +9,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 {
 	public enum BORewardType
 	{
-		SMALL = 0,
-		BIG = 1
+		SMALL_CONTESTED = 0,
+		SMALL_LOCKED = 1,
+		BIG = 2
 	}
 
     /// <summary>
@@ -95,10 +96,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             _logger.Trace($"Objective {objectiveName} has {playersWithinRange} players nearby");
 
-            // Because of the Field of Glory buff, the XP value here is doubled.
-            // The base reward in T4 is therefore 3000 XP.
-            // Population scale factors can up this to 9000 if the region is full of people and then raise or lower it depending on population balance.
-            var baseXp = (boRewardType == BORewardType.SMALL) ? BattleFrontConstants.FLAG_SECURE_REWARD_SCALER * tier * rewardScaleMultiplier * 10 : BattleFrontConstants.FLAG_SECURE_REWARD_SCALER * tier * rewardScaleMultiplier * 25;
+			// Because of the Field of Glory buff, the XP value here is doubled.
+			// The base reward in T4 is therefore 3000 XP.
+			// Population scale factors can up this to 9000 if the region is full of people and then raise or lower it depending on population balance.
+			var baseXp = (boRewardType == BORewardType.SMALL_CONTESTED || boRewardType == BORewardType.SMALL_LOCKED) ? BattleFrontConstants.FLAG_SECURE_REWARD_SCALER * tier * rewardScaleMultiplier * 10 : BattleFrontConstants.FLAG_SECURE_REWARD_SCALER * tier * rewardScaleMultiplier * 25;
             var baseRp = baseXp / 10f;
             var baseInf = baseRp / 3.2f;
 
@@ -135,22 +136,36 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 _logger.Trace($"Player:{player.Name} ScaleMult:{rewardScaleMultiplier} XP:{xp} RR:{rr}");
             }
 
-			return new VictoryPoint(0, 0);
+			VictoryPoint VP = new VictoryPoint(0, 0);
+			switch (boRewardType)
+			{
+				case BORewardType.SMALL_CONTESTED: // small tick
+					if (owningRealm == Realms.REALMS_REALM_ORDER)
+						VP.OrderVictoryPoints += 15;
+					else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
+						VP.DestructionVictoryPoints += 15;
+					break;
 
-            //// Returns 2 VP per tick for locking realm, -1 for non locking realm.
-            //if (owningRealm == Realms.REALMS_REALM_ORDER)
-            //{
-            //    _logger.Debug($"Order-held {objectiveName} +2 Order -1 Dest");
-            //    return new VictoryPoint(2, -1);
-            //}
-            //else
-            //{
-            //    _logger.Debug($"Dest-held {objectiveName} +2 Dest -1 Order");
-            //    return new VictoryPoint(-1, 2);
-            //}
-        }
+				case BORewardType.BIG: // big tick
+					if (owningRealm == Realms.REALMS_REALM_ORDER)
+						VP.OrderVictoryPoints += 200;
+					else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
+						VP.DestructionVictoryPoints += 200;
+					break;
 
+				case BORewardType.SMALL_LOCKED: // small tick
+					if (owningRealm == Realms.REALMS_REALM_ORDER)
+						VP.OrderVictoryPoints += 30;
+					else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
+						VP.DestructionVictoryPoints += 30;
+					break;
 
+				default:
+					break;
+			}
+			return VP;
+		}
+		
         /// <summary>
         /// For this player, calculate and send lock rewards
         /// </summary>
