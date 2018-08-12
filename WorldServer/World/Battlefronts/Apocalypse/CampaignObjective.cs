@@ -28,9 +28,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 		/// <summary>
 		public static int MAX_CONTROL_GAUGE = MAX_SECURE_PROGRESS * 200;
 
-		public static int CONTESTED_TIMESPAN = 300; //300; // 5 min contested
-		public static int SECURED_TIMESPAN = 900; //900; // 15 min secured
-		public static int GUARDSPAWN_DELAY = 60; //60; // 1 min delayed
+		public static int CONTESTED_TIMESPAN = 30; //300; // 5 min contested
+		public static int SECURED_TIMESPAN = 60; //900; // 15 min secured
+		public static int GUARDSPAWN_DELAY = 10; //60; // 1 min delayed
 
 		private int _stopWatch_Mode = 0;
 		private Stopwatch _stopWatch = null;
@@ -505,7 +505,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 			foreach (var guard in Guards)
 			{
-				if (guard.Creature != null && !guard.Creature.IsDead && guard.Creature.Realm == OwningRealm && GetDistanceTo(guard.Creature) < 100)
+				if (guard.Creature != null && !guard.Creature.IsDead && GetDistanceTo(guard.Creature) < 100)
 				{
 					player.SendClientMessage("Can't capture while a guard (" + guard.Creature.Name + ") is still alive.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
 					return;
@@ -546,7 +546,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			State = StateFlags.Contested;
 			_captureInProgress = false;
 			SendState(CapturingPlayer, true, true);
-			
+
+			DespawnAllGuards();
+
 			_displayedTimer = Convert.ToInt16(CONTESTED_TIMESPAN);
 			BroadcastFlagInfo(true);
 			GrantCaptureRewards(OwningRealm);
