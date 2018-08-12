@@ -259,7 +259,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 OwningRealm,
                 Tier,
                 Name,
-                pairingRewardScaler, BORewardType.SMALL);
+                pairingRewardScaler, BORewardType.SMALL_CONTESTED);
         }
 
         public bool FlagActive()
@@ -1188,55 +1188,31 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 		{
 			if (State == StateFlags.ZoneLocked)
 				return;
-			
+
+			VictoryPoint VP = new VictoryPoint(0,0);
 			switch (State)
 			{
 				case StateFlags.Contested: // small tick
-					if (capturingRealm == Realms.REALMS_REALM_ORDER)
-					{
-
-						BattleFront.VictoryPointProgress.OrderVictoryPoints += 15;
-					}
-					else if (capturingRealm == Realms.REALMS_REALM_DESTRUCTION)
-					{
-						BattleFront.VictoryPointProgress.DestructionVictoryPoints += 15;
-					}
-
-					RewardManager.RewardCaptureTick(_closePlayers, OwningRealm, Tier, Name, 1f, BORewardType.SMALL);
+					VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_CONTESTED);
 					break;
 
 				case StateFlags.Secure: // big tick
-					if (capturingRealm == Realms.REALMS_REALM_ORDER)
-					{
-
-						BattleFront.VictoryPointProgress.OrderVictoryPoints += 200;
-					}
-					else if (capturingRealm == Realms.REALMS_REALM_DESTRUCTION)
-					{
-						BattleFront.VictoryPointProgress.DestructionVictoryPoints += 200;
-					}
-
-					RewardManager.RewardCaptureTick(_closePlayers, OwningRealm, Tier, Name, 1f, BORewardType.BIG);
+					VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.BIG);
 					break;
 
 				case StateFlags.Locked: // small tick
-					if (capturingRealm == Realms.REALMS_REALM_ORDER)
-					{
-
-						BattleFront.VictoryPointProgress.OrderVictoryPoints += 30;
-					}
-					else if (capturingRealm == Realms.REALMS_REALM_DESTRUCTION)
-					{
-						BattleFront.VictoryPointProgress.DestructionVictoryPoints += 30;
-					}
-
-					RewardManager.RewardCaptureTick(_closePlayers, OwningRealm, Tier, Name, 1f, BORewardType.SMALL);
+					VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_LOCKED);
 					break;
 
 				default:
 					break;
 			}
-			
+
+			if (capturingRealm == Realms.REALMS_REALM_ORDER)
+				BattleFront.VictoryPointProgress.OrderVictoryPoints += VP.OrderVictoryPoints;
+			else if (capturingRealm == Realms.REALMS_REALM_DESTRUCTION)
+				BattleFront.VictoryPointProgress.DestructionVictoryPoints += VP.DestructionVictoryPoints;
+
 			// Make sure VP dont go less than 0
 			if (BattleFront.VictoryPointProgress.OrderVictoryPoints <= 0)
 				BattleFront.VictoryPointProgress.OrderVictoryPoints = 0;
