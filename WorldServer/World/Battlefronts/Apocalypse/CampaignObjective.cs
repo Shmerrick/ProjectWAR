@@ -32,10 +32,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 		public static int SECURED_TIMESPAN = 900; //900; // 15 min secured
 		public static int GUARDSPAWN_DELAY = 60; //60; // 1 min delayed
 
-		private volatile bool _Guards_Spawned = false;
-
 		private int _stopWatch_Mode = 0;
 		private Stopwatch _stopWatch = null;
+		private Stopwatch _guardWatch = null;
 
 		private volatile bool _captureInProgress = false;
 
@@ -213,7 +212,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			{
 				foreach (BattleFront_Guard Guard in objective.Guards)
 				{
-					Guards.Add(new FlagGuard(region, objective.ZoneId, Guard.OrderId, Guard.DestroId, Guard.X, Guard.Y, Guard.Z, Guard.O));
+					Guards.Add(new FlagGuard(this, region, objective.ZoneId, Guard.OrderId, Guard.DestroId, Guard.X, Guard.Y, Guard.Z, Guard.O));
 				}
 			}
 		}
@@ -555,6 +554,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			_stopWatch = new Stopwatch();
 			_stopWatch.Reset();
 			_stopWatch.Start();
+
+			_guardWatch = new Stopwatch();
+			_guardWatch.Reset();
+			_guardWatch.Start();
 		}
 
 		/// <summary>
@@ -710,7 +713,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 						_stopWatch.Stop();
 						State = StateFlags.Secure;
 						GrantCaptureRewards(OwningRealm);
-						_Guards_Spawned = DespawnAllGuards();
+						DespawnAllGuards();
 						BroadcastFlagInfo(true);
 
 						_displayedTimer = Convert.ToInt16(SECURED_TIMESPAN);
@@ -718,10 +721,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 						_stopWatch_Mode = 1;
 						_stopWatch.Start();
 					}
-					else if (_stopWatch?.Elapsed.TotalSeconds >= GUARDSPAWN_DELAY && _stopWatch?.Elapsed.TotalSeconds < CONTESTED_TIMESPAN)
+
+					if (_guardWatch?.Elapsed.TotalSeconds >= GUARDSPAWN_DELAY)
 					{
-						if (!_Guards_Spawned)
-							_Guards_Spawned = SpawnAllGuards(OwningRealm);
+						SpawnAllGuards(OwningRealm);
+						_guardWatch.Reset();
 					}
 
 					SendState(GetPlayer(), true, true);
