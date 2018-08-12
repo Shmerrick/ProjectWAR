@@ -30,6 +30,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 		public static int CONTESTED_TIMESPAN = 300; //300; // 5 min contested
 		public static int SECURED_TIMESPAN = 900; //900; // 15 min secured
+		public static int GUARDSPAWN_DELAY = 60; //60; // 1 min delayed
+
+		private volatile bool _Guards_Spawned = false;
 
 		private int _stopWatch_Mode = 0;
 		private Stopwatch _stopWatch = null;
@@ -279,21 +282,24 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return false;
         }
 
-		private void SpawnAllGuards(Realms owner)
+		private bool SpawnAllGuards(Realms owner)
 		{
 			if (owner == Realms.REALMS_REALM_DESTRUCTION || owner == Realms.REALMS_REALM_ORDER)
 			{
 				if (Guards != null)
 					foreach (FlagGuard guard in Guards)
 						guard.SpawnGuard((int)owner);
+				return true;
 			}
+			return false;
 		}
 
-		private void DespawnAllGuards()
+		private bool DespawnAllGuards()
 		{
 			if (Guards != null)
 				foreach (FlagGuard guard in Guards)
 					guard.DespawnGuard();
+			return false;
 		}
 
         /// <summary>
@@ -543,7 +549,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			SendState(CapturingPlayer, true, true);
 			
 			_displayedTimer = Convert.ToInt16(CONTESTED_TIMESPAN);
-			SpawnAllGuards(OwningRealm);
 			BroadcastFlagInfo(true);
 			GrantCaptureRewards(OwningRealm);
 			_stopWatch_Mode = 0;
@@ -699,19 +704,24 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				if (_stopWatch_Mode == 0)
 				{
 					_displayedTimer = Convert.ToInt16(CONTESTED_TIMESPAN - (int)_stopWatch.Elapsed.TotalSeconds);
-
+					
 					if (_stopWatch?.Elapsed.TotalSeconds >= CONTESTED_TIMESPAN)
 					{
 						_stopWatch.Stop();
 						State = StateFlags.Secure;
 						GrantCaptureRewards(OwningRealm);
-						DespawnAllGuards();
+						_Guards_Spawned = DespawnAllGuards();
 						BroadcastFlagInfo(true);
 
 						_displayedTimer = Convert.ToInt16(SECURED_TIMESPAN);
 						_stopWatch.Reset();
 						_stopWatch_Mode = 1;
 						_stopWatch.Start();
+					}
+					else if (_stopWatch?.Elapsed.TotalSeconds >= GUARDSPAWN_DELAY && _stopWatch?.Elapsed.TotalSeconds < CONTESTED_TIMESPAN)
+					{
+						if (!_Guards_Spawned)
+							_Guards_Spawned = SpawnAllGuards(OwningRealm);
 					}
 
 					SendState(GetPlayer(), true, true);
@@ -720,7 +730,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				{
 					_displayedTimer = Convert.ToInt16(SECURED_TIMESPAN - (int)_stopWatch.Elapsed.TotalSeconds);
 
-					if (_stopWatch?.Elapsed.TotalSeconds >= CONTESTED_TIMESPAN)
+					if (_stopWatch?.Elapsed.TotalSeconds >= SECURED_TIMESPAN)
 					{
 						_stopWatch.Stop();
 						State = StateFlags.Locked;
