@@ -758,6 +758,10 @@ namespace WorldServer
 
         public bool RemoveObject(Object obj)
         {
+			// nothing to remove here
+			if (obj == null)
+				return true;
+
             //if (Obj.IsPlayer())
             //    Log.Success("RemoveObject", Obj.Name);
 

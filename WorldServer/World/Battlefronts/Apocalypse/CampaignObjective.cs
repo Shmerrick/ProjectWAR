@@ -296,8 +296,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 		private bool DespawnAllGuards()
 		{
 			if (Guards != null)
+			{
 				foreach (FlagGuard guard in Guards)
+				{
 					guard.DespawnGuard();
+					if (guard.Creature != null)
+					{
+						guard.Creature = null;
+					}
+				}
+				return true;
+			}
 			return false;
 		}
 
@@ -744,6 +753,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 						State = StateFlags.Unsecure;
 						OwningRealm = Realms.REALMS_REALM_NEUTRAL;
 						BroadcastFlagInfo(true);
+						DespawnAllGuards();
 
 						_displayedTimer = 0;
 						_stopWatch.Reset();
