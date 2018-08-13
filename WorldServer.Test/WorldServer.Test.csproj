@@ -55,7 +55,6 @@
     <Compile Include="LootBagTypeDefinitionTest.cs" />
     <Compile Include="UpperTierBattlefrontManagerTest.cs" />
     <Compile Include="CommandTest.cs" />
-    <Compile Include="LootTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

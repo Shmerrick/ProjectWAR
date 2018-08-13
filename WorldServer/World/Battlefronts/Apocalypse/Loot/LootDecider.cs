@@ -23,11 +23,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// Given a lootbag assigned to a player, their class, RR Band and existing items, select a reward for them
         /// </summary>
         /// <param name="lootBag"></param>
-        /// <param name="platerRRBand"></param>
+        /// <param name="playerRRBand"></param>
         /// <param name="playerClass"></param>
         /// <param name="playerItems"></param>
+        /// <param name="platerRRBand"></param>
         /// <returns></returns>
-        public LootBagTypeDefinition DetermineRVRZoneReward(LootBagTypeDefinition lootBag, byte playerRRBand, int playerClass, List<Item_Info> playerItems)
+        public LootBagTypeDefinition DetermineRVRZoneReward(LootBagTypeDefinition lootBag, byte playerRRBand, int playerClass, List<Item> playerItems)
         {
             // get a closer list of matching items.
             var matchingRewards = RVRZoneRewards.Where(x => x.Class == playerClass && x.RRBand == playerRRBand && lootBag.BagRarity == (LootBagRarity) x.Rarity);
@@ -39,7 +40,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             foreach (var matchingReward in matchingRewards)
             {
                 // Does this matching reward exist in player's items? And we cannot duplicate move on.
-                if (playerItems.Exists(x => x.Entry == matchingReward.ItemId || matchingReward.CanAwardDuplicate == 0))
+                if (playerItems.Exists(x => x.Info.Entry == matchingReward.ItemId || matchingReward.CanAwardDuplicate == 0))
                 {
                     continue;
                 }

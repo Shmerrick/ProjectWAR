@@ -9,16 +9,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
     public class RewardAssigner : IRewardAssigner
     {
         public IRandomGenerator RandomGenerator { get; set; }
-        public ILootDecider LootDecider { get; set; }
 
 
-        public RewardAssigner(IRandomGenerator randomGenerator, ILootDecider lootDecider)
+        public RewardAssigner(IRandomGenerator randomGenerator)
         {
             RandomGenerator = randomGenerator;
-            LootDecider = lootDecider;
         }
 
-        public void AssignLootToPlayer(List<uint> eligiblePlayers)
+        /// <summary>
+        /// For a list of player Ids, select those getting a reward, and assign a colored loot bag (reward) to them.
+        /// </summary>
+        /// <param name="eligiblePlayers"></param>
+        /// <returns></returns>
+        public List<LootBagTypeDefinition> AssignLootToPlayers(List<uint> eligiblePlayers)
         {
             var rewardSelector = new RewardSelector(RandomGenerator);
             // Randomise the players
@@ -35,6 +38,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                     lootBagTypeDefinition.Assignee = player;
                 }
             }
+            return lootBagDefinitions;
         }
     }
 }

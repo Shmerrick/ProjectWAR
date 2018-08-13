@@ -5,9 +5,9 @@ namespace Common.Database.World.Battlefront
 {
 
     // Fixed value of a character 
-    [DataTable(PreCache = false, TableName = "rvr_zone_rewards", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
+    [DataTable(PreCache = false, TableName = "rvr_zone_lock_reward", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
-    public class RVRZoneReward : DataObject
+    public class RVRZoneLockReward : DataObject
     {
         [PrimaryKey(AutoIncrement = true)]
         public int RewardId { get; set; }

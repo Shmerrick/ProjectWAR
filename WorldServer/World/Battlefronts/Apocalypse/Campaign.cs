@@ -8,6 +8,7 @@ using FrameWork;
 using GameData;
 using NLog;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.BattleFronts;
 using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.BattleFronts.Objectives;
@@ -535,58 +536,77 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var activeBattleFrontId = BattleFrontManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
 
+            // Select eligible players (shortlist) to have a chance to receive a reward
 
-            var eligiblePlayers = new List<KeyValuePair<uint, PlayerRewardOptions>>();
+            var eligiblePlayers = new List<uint>();
 
             foreach (var playerKillContribution in activeBattleFrontStatus.KillContributionSet)
             {
-                var player = Player.GetPlayer(playerKillContribution);
-                var playerItemList = player.ItmInterface.Items;
-                var playerRenown = player.CurrentRenown.Level;
-
-                var rewardOptions = new PlayerRewardOptions
-                {
-                    CharacterId = playerKillContribution,
-                    CharacterName = player.Name,
-                    ItemList = playerItemList,
-                    RenownLevel = playerRenown,
-                    RenownBand = _rewardManager.CalculateRenownBand(playerRenown)
-                };
-
-                eligiblePlayers.Add(new KeyValuePair<uint, PlayerRewardOptions>(playerKillContribution, rewardOptions));
+                eligiblePlayers.Add(playerKillContribution);
             }
 
             foreach (var campaignObjective in Objectives)
             {
                 var contributionList = campaignObjective.CampaignObjectiveContributions;
-                foreach (var contribution in contributionList)
+                foreach (var playerObjectiveContribution in contributionList)
                 {
-                    var player = Player.GetPlayer(contribution.Key);
-                    var playerItemList = player.ItmInterface.Items;
-                    var playerRenown = player.CurrentRenown.Level;
-
-                    var rewardOptions = new PlayerRewardOptions
-                    {
-                        CharacterId = contribution.Key,
-                        CharacterName = player.Name,
-                        CharacterRealm = player.Realm,
-                        ItemList = playerItemList,
-                        RenownLevel = playerRenown,
-                        RenownBand = _rewardManager.CalculateRenownBand(playerRenown)
-                    };
-
-                    eligiblePlayers.Add(new KeyValuePair<uint, PlayerRewardOptions>(contribution.Key, rewardOptions));
+                    eligiblePlayers.Add(playerObjectiveContribution.Key);
                 }
             }
 
-            var lootBagBuilder = new LootBagBuilder(eligiblePlayers, null, new RandomGenerator());
+            // Select players from the shortlist to actually assign a reward to. 
+            var rewardAssignments = new RewardAssigner(new RandomGenerator()).AssignLootToPlayers(eligiblePlayers);
+            var lootDecider = new LootDecider(RVRZoneRewardService.RVRZoneRewards, new RandomGenerator());
+
+            foreach (var lootBagTypeDefinition in rewardAssignments)
+            {
+
+                if (lootBagTypeDefinition.Assignee != 0)
+                {
+                    var player = Player.GetPlayer(lootBagTypeDefinition.Assignee);
+                    var playerItemList = player.ItmInterface.Items.ToList();
+                    var playerRenown = player.CurrentRenown.Level;
+                    var playerClass = player.Info.Career;
+                    var playerRenownBand = _rewardManager.CalculateRenownBand(playerRenown);
+                    var playerRealm = player.Realm;
+
+                  
+                    var lootDefinition = lootDecider.DetermineRVRZoneReward(lootBagTypeDefinition, playerRenownBand, playerClass,
+                        playerItemList);
+
+                    BattlefrontLogger.Trace($"{player.Info.Name}...");
+
+                    var lootBag = lootDistributor(lootDefinition);
+                    player.
+                }
+            }
+
+            // foreach (var contribution in contributionList)
+            //{
+            //    var player = Player.GetPlayer(contribution.Key);
+            //    var playerItemList = player.ItmInterface.Items;
+            //    var playerRenown = player.CurrentRenown.Level;
+
+            //    var rewardOptions = new PlayerRewardOptions
+            //    {
+            //        CharacterId = contribution.Key,
+            //        CharacterName = player.Name,
+            //        CharacterRealm = player.Realm,
+            //        ItemList = playerItemList,
+            //        RenownLevel = playerRenown,
+            //        RenownBand = _rewardManager.CalculateRenownBand(playerRenown)
+            //    };
+
+            //    eligiblePlayers.Add(new KeyValuePair<uint, PlayerRewardOptions>(contribution.Key, rewardOptions));
+            //}
+
+           // var lootBagBuilder = new LootBagBuilder(eligiblePlayers, null, new RandomGenerator());
 
             // Need to rebuild this piece as well.
-            foreach (var player in eligiblePlayers)
-            {
-                BattlefrontLogger.Trace($"{player.Value.CharacterName}...");
-                _rewardManager.GenerateLockReward(Player.GetPlayer(player.Key), realm);
-            }
+            //foreach (var player in eligiblePlayers)
+            //{
+               
+            //}
 
             #endregion
         }

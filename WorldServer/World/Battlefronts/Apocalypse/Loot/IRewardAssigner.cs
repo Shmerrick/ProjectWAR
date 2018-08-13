@@ -4,6 +4,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
     public interface IRewardAssigner
     {
-        void AssignLootToPlayer(List<uint> eligiblePlayers);
+        List<LootBagTypeDefinition> AssignLootToPlayers(List<uint> eligiblePlayers);
     }
 }
