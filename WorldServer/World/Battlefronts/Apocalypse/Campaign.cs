@@ -555,8 +555,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
 
             // Select players from the shortlist to actually assign a reward to. 
-            var rewardAssignments = new RewardAssigner(new RandomGenerator()).AssignLootToPlayers(eligiblePlayers);
-            var lootDecider = new LootDecider(RVRZoneRewardService.RVRZoneRewards, new RandomGenerator());
+            var rewardAssignments =
+                new RewardAssigner(new RandomGenerator(), new RewardSelector(new RandomGenerator())).AssignLootToPlayers(eligiblePlayers);
+            var lootDecider = new LootDecider(RVRZoneRewardService.RVRZoneLockItemOptions, new RandomGenerator());
 
             foreach (var lootBagTypeDefinition in rewardAssignments)
             {
@@ -576,8 +577,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                     BattlefrontLogger.Trace($"{player.Info.Name}...");
 
-                    var lootBag = lootDistributor(lootDefinition);
-                    player.
+                    WorldMgr.RewardDistributor.Distribute(lootDefinition);
+                    
                 }
             }
 

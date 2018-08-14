@@ -10,6 +10,7 @@ using Common;
 using FrameWork;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Battlefronts.Apocalypse.Loot;
 
 namespace WorldServer
 {
@@ -156,6 +157,7 @@ namespace WorldServer
 
             WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
 
+            WorldMgr.RewardDistributor = new RewardDistributor(RVRZoneRewardService.RVRZoneRewards);
 
             if (!TCPManager.Listen<TCPServer>(Rm.Port, "World"))
                 ConsoleMgr.WaitAndExit(2000);

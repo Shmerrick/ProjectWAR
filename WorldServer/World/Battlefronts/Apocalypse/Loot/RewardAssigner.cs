@@ -9,11 +9,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
     public class RewardAssigner : IRewardAssigner
     {
         public IRandomGenerator RandomGenerator { get; set; }
+        public IRewardSelector RewardSelector { get; }
 
 
-        public RewardAssigner(IRandomGenerator randomGenerator)
+        public RewardAssigner(IRandomGenerator randomGenerator, IRewardSelector rewardSelector)
         {
             RandomGenerator = randomGenerator;
+            RewardSelector = rewardSelector;
         }
 
         /// <summary>
@@ -23,11 +25,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// <returns></returns>
         public List<LootBagTypeDefinition> AssignLootToPlayers(List<uint> eligiblePlayers)
         {
-            var rewardSelector = new RewardSelector(RandomGenerator);
             // Randomise the players
-            var randomisedPlayerList = rewardSelector.RandomisePlayerList(eligiblePlayers);
+            var randomisedPlayerList = RewardSelector.RandomisePlayerList(eligiblePlayers);
             // Determine the number of awards to give
-            var numberLootBags = rewardSelector.DetermineNumberOfAwards((uint) randomisedPlayerList.Count());
+            var numberLootBags = RewardSelector.DetermineNumberOfAwards((uint) randomisedPlayerList.Count());
             // Define the types of awards to give
             var lootBagDefinitions = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(numberLootBags);
 
