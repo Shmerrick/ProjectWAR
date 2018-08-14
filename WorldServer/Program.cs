@@ -157,7 +157,7 @@ namespace WorldServer
 
             WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
 
-            WorldMgr.RewardDistributor = new RewardDistributor(RVRZoneRewardService.RVRZoneRewards);
+            WorldMgr.RewardDistributor = new RewardDistributor(RVRZoneRewardService.RVRZoneRewards, new RandomGenerator());
 
             if (!TCPManager.Listen<TCPServer>(Rm.Port, "World"))
                 ConsoleMgr.WaitAndExit(2000);

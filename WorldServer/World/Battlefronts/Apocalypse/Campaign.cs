@@ -546,8 +546,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     eligiblePlayers.Add(playerObjectiveContribution.Key);
                 }
+                BattlefrontLogger.Debug($"{string.Join(",", eligiblePlayers.ToArray())}");
             }
-            BattlefrontLogger.Debug($"{string.Join(",", eligiblePlayers.ToArray())}");
+            BattlefrontLogger.Debug($"All Eligible Players : {string.Join(",", eligiblePlayers.ToArray())}");
 
 
             // Select players from the shortlist to actually assign a reward to. 
