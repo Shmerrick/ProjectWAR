@@ -991,8 +991,8 @@ namespace WorldServer
         {
             AbilityCommandInfo cmd = abInfo.CommandInfo[myEffect.TargetCommandID].GetSubcommand(myEffect.TargetCommandSequence);
 
-            cmd.EffectRadius = 100;
-            cmd.TargetType = CommandTargetTypes.Groupmates;
+            cmd.EffectRadius = 150;
+            cmd.TargetType = CommandTargetTypes.Group;
             cmd.AoESource = CommandTargetTypes.Caster;
             cmd.CommandName = "CleanseDebuffType";
         }
