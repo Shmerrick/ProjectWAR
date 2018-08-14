@@ -30,6 +30,8 @@ namespace Common.Database.World.Battlefront
         [DataElement(AllowDbNull = false)]
         public int RRBand { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public int Money { get; set; }
 
 
 
