@@ -131,7 +131,8 @@
     <Compile Include="Database\World\Battlefront\Keep_Info.cs" />
     <Compile Include="Database\World\Battlefront\RVRPairing.cs" />
     <Compile Include="Database\World\Battlefront\RVRProgression.cs" />
-    <Compile Include="Database\World\Battlefront\RVRZoneReward.cs" />
+    <Compile Include="Database\World\Battlefront\RVRZoneLockReward.cs" />
+    <Compile Include="Database\World\Battlefront\RVRZoneLockItemOptionReward.cs" />
     <Compile Include="Database\World\Chapters\Chapter_Info.cs" />
     <Compile Include="Database\World\Chapters\Chapter_Reward.cs" />
     <Compile Include="Database\World\Characters\CharacterInfo.cs" />

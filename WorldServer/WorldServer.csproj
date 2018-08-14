@@ -267,6 +267,7 @@
     <Compile Include="World\Battlefronts\Apocalypse\Loot\LootOption.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\RandomGenerator.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardAssigner.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardDistributor.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardSelector.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\SimpleContribution.cs" />
     <Compile Include="World\Battlefronts\ContributionTracker.cs" />
