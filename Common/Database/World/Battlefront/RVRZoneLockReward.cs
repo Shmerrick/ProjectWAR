@@ -13,13 +13,13 @@ namespace Common.Database.World.Battlefront
         public int RewardId { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public int Rarity { get; set; }
+        public int Renown { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public int RRBand { get; set; }
+        public int XP { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public int Class { get; set; }
+        public int Influence { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public int ItemId { get; set; }
@@ -28,9 +28,11 @@ namespace Common.Database.World.Battlefront
         public int ItemCount { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public byte CanAwardDuplicate { get; set; }
+        public int RRBand { get; set; }
 
-        
+
+
+
     }
 
 

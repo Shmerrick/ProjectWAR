@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,9 +23,25 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             ItemCount = 0;
         }
 
+        public override string ToString()
+        {
+            return $"Bag#:{LootBagNumber} Assignee:{Assignee} Rarity:{BagRarity} ItemId:{ItemId} ItemCount:{ItemCount} RenownBand:{RenownBand}";
+        }
+
         public bool IsValid()
         {
             return Assignee != 0 && ItemId != 0 && ItemCount != 0;
+        }
+
+        public static string GetDescription(Enum value)
+        {
+            return
+                value
+                    .GetType()
+                    .GetMember(value.ToString())
+                    .FirstOrDefault()
+                    ?.GetCustomAttribute<DescriptionAttribute>()
+                    ?.Description;
         }
 
         public List<LootBagTypeDefinition> BuildLootBagTypeDefinitions(byte numberLootBags)
@@ -60,6 +78,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 result.Add(new LootBagTypeDefinition { LootBagNumber = lootBagNumber++, Assignee = 0, BagRarity = LootBagRarity.Green });
             }
             return result;
+        }
+
+        public string FormattedString()
+        {
+            var bagTypeName = Enum.GetName(typeof(LootBagRarity), BagRarity);
+            return $"a {bagTypeName} bag";
         }
     }
 }

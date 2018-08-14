@@ -511,20 +511,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="realm"></param>
         public void LockBattleFront(Realms realm)
         {
+            BattlefrontLogger.Info($"*************************BATTLEFRONT LOCK*************************");
             BattlefrontLogger.Info($"Locking Battlefront {this.CampaignName} to {realm.ToString()}...");
-
-
-            //this.VictoryPointProgress.Lock(realm);
-
-            //LockingRealm = realm;
-
-            //CommunicationsEngine.SendCampaignStatus(null, VictoryPointProgress, realm);
-            //CommunicationsEngine.
 
             string message = string.Concat(Region.ZonesInfo[0].Name, " and ", Region.ZonesInfo[1].Name, " have been locked by ", (realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"), "!");
 
             BattlefrontLogger.Debug(message);
-
 
             // Generate RP and rewards
             //_contributionTracker.CreateGoldChest(realm);
@@ -539,24 +531,34 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Select eligible players (shortlist) to have a chance to receive a reward
 
             var eligiblePlayers = new List<uint>();
-
+            BattlefrontLogger.Debug($"** Kill Contribution players **");
             foreach (var playerKillContribution in activeBattleFrontStatus.KillContributionSet)
             {
                 eligiblePlayers.Add(playerKillContribution);
             }
-
+            BattlefrontLogger.Debug($"{string.Join(",", eligiblePlayers.ToArray())}");
+            BattlefrontLogger.Debug($"** Objective Contribution players **");
             foreach (var campaignObjective in Objectives)
             {
+                BattlefrontLogger.Debug($"** Objective Contribution for {campaignObjective.Name} **");
                 var contributionList = campaignObjective.CampaignObjectiveContributions;
                 foreach (var playerObjectiveContribution in contributionList)
                 {
                     eligiblePlayers.Add(playerObjectiveContribution.Key);
                 }
             }
+            BattlefrontLogger.Debug($"{string.Join(",", eligiblePlayers.ToArray())}");
+
 
             // Select players from the shortlist to actually assign a reward to. 
             var rewardAssignments =
                 new RewardAssigner(new RandomGenerator(), new RewardSelector(new RandomGenerator())).AssignLootToPlayers(eligiblePlayers);
+
+            foreach (var lootBagTypeDefinition in rewardAssignments)
+            {
+                BattlefrontLogger.Debug($"{lootBagTypeDefinition.ToString()}");
+            }
+
             var lootDecider = new LootDecider(RVRZoneRewardService.RVRZoneLockItemOptions, new RandomGenerator());
 
             foreach (var lootBagTypeDefinition in rewardAssignments)
@@ -571,42 +573,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     var playerRenownBand = _rewardManager.CalculateRenownBand(playerRenown);
                     var playerRealm = player.Realm;
 
-                  
                     var lootDefinition = lootDecider.DetermineRVRZoneReward(lootBagTypeDefinition, playerRenownBand, playerClass, playerItemList.ToList());
 
-                    BattlefrontLogger.Trace($"{player.Info.Name}...");
+                    BattlefrontLogger.Trace($"{player.Info.Name} has received {lootDefinition.FormattedString()}");
 
-                    WorldMgr.RewardDistributor.Distribute(lootDefinition);
+                    BattlefrontLogger.Debug($"{lootDefinition.ToString()}");
+
+                    WorldMgr.RewardDistributor.Distribute(lootDefinition, player);
                     
                 }
             }
-
-            // foreach (var contribution in contributionList)
-            //{
-            //    var player = Player.GetPlayer(contribution.Key);
-            //    var playerItemList = player.ItmInterface.Items;
-            //    var playerRenown = player.CurrentRenown.Level;
-
-            //    var rewardOptions = new PlayerRewardOptions
-            //    {
-            //        CharacterId = contribution.Key,
-            //        CharacterName = player.Name,
-            //        CharacterRealm = player.Realm,
-            //        ItemList = playerItemList,
-            //        RenownLevel = playerRenown,
-            //        RenownBand = _rewardManager.CalculateRenownBand(playerRenown)
-            //    };
-
-            //    eligiblePlayers.Add(new KeyValuePair<uint, PlayerRewardOptions>(contribution.Key, rewardOptions));
-            //}
-
-           // var lootBagBuilder = new LootBagBuilder(eligiblePlayers, null, new RandomGenerator());
-
-            // Need to rebuild this piece as well.
-            //foreach (var player in eligiblePlayers)
-            //{
-               
-            //}
 
             #endregion
         }
