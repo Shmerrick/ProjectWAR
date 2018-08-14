@@ -48,6 +48,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="LootDeciderTests.cs" />
     <Compile Include="LowerTierBattlefrontManagerTest.cs" />
     <Compile Include="CalculateObjectiveRewardScaleTest.cs" />
     <Compile Include="RewardSelectorTest.cs" />

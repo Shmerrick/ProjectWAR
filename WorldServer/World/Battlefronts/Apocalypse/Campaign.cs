@@ -565,15 +565,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 if (lootBagTypeDefinition.Assignee != 0)
                 {
                     var player = Player.GetPlayer(lootBagTypeDefinition.Assignee);
-                    var playerItemList = player.ItmInterface.Items.ToList();
+                    var playerItemList = player.ItmInterface.Items.Select(x => x.Info.Entry);
                     var playerRenown = player.CurrentRenown.Level;
                     var playerClass = player.Info.Career;
                     var playerRenownBand = _rewardManager.CalculateRenownBand(playerRenown);
                     var playerRealm = player.Realm;
 
                   
-                    var lootDefinition = lootDecider.DetermineRVRZoneReward(lootBagTypeDefinition, playerRenownBand, playerClass,
-                        playerItemList);
+                    var lootDefinition = lootDecider.DetermineRVRZoneReward(lootBagTypeDefinition, playerRenownBand, playerClass, playerItemList.ToList());
 
                     BattlefrontLogger.Trace($"{player.Info.Name}...");
 

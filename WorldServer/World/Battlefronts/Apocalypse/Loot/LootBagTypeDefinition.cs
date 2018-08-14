@@ -21,6 +21,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             ItemCount = 0;
         }
 
+        public bool IsValid()
+        {
+            return Assignee != 0 && ItemId != 0 && ItemCount != 0;
+        }
+
         public List<LootBagTypeDefinition> BuildLootBagTypeDefinitions(byte numberLootBags)
         {
             var result = new List<LootBagTypeDefinition>();

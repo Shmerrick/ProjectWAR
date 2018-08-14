@@ -26,21 +26,26 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// <param name="playerRRBand"></param>
         /// <param name="playerClass"></param>
         /// <param name="playerItems"></param>
+        /// <param name="shuffleRewards"></param>
         /// <param name="platerRRBand"></param>
         /// <returns></returns>
-        public LootBagTypeDefinition DetermineRVRZoneReward(LootBagTypeDefinition lootBag, byte playerRRBand, int playerClass, List<Item> playerItems)
+        public LootBagTypeDefinition DetermineRVRZoneReward(LootBagTypeDefinition lootBag, byte playerRRBand, int playerClass, List<uint> playerItems, bool shuffleRewards = true)
         {
             // get a closer list of matching items.
             var matchingRewards = RVRZoneRewards.Where(x => x.Class == playerClass && x.RRBand == playerRRBand && lootBag.BagRarity == (LootBagRarity) x.Rarity);
             if (matchingRewards == null)
                 return lootBag;
-            
-            Shuffle(matchingRewards.ToList());
+
+            if (matchingRewards.Count() == 0)
+                return lootBag;
+
+            if (shuffleRewards)
+                Shuffle(matchingRewards.ToList());
 
             foreach (var matchingReward in matchingRewards)
             {
                 // Does this matching reward exist in player's items? And we cannot duplicate move on.
-                if (playerItems.Exists(x => x.Info.Entry == matchingReward.ItemId || matchingReward.CanAwardDuplicate == 0))
+                if (playerItems.Count(x => x == matchingReward.ItemId) > 0 && matchingReward.CanAwardDuplicate == 0)
                 {
                     continue;
                 }
