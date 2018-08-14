@@ -25,10 +25,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             RandomGenerator = randomGenerator;
         }
 
-        public void Distribute(LootBagTypeDefinition lootBag, Player player)
+        public void Distribute(LootBagTypeDefinition lootBag, Player player, byte playerRenownBand)
         {
             // Combine the lootBag reward
-            var lockReward = ZoneLockRewards.Single(x => x.RRBand == lootBag.RenownBand);
+            var lockReward = ZoneLockRewards.SingleOrDefault(x => x.RRBand == playerRenownBand);
 
             var randomMultiplier = RandomGenerator.Generate(25);
             player.AddXp((uint)(lockReward.XP * (1 + (randomMultiplier / 100))), false, false);

@@ -546,14 +546,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     eligiblePlayers.Add(playerObjectiveContribution.Key);
                 }
-                BattlefrontLogger.Debug($"{string.Join(",", eligiblePlayers.ToArray())}");
+                BattlefrontLogger.Debug($"{string.Join(",", contributionList.ToArray())}");
             }
             BattlefrontLogger.Debug($"All Eligible Players : {string.Join(",", eligiblePlayers.ToArray())}");
 
 
             // Select players from the shortlist to actually assign a reward to. 
-            var rewardAssignments =
-                new RewardAssigner(new RandomGenerator(), new RewardSelector(new RandomGenerator())).AssignLootToPlayers(eligiblePlayers);
+            var rewardSelector = new RewardSelector(new RandomGenerator());
+            var rewardAssignments =new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(eligiblePlayers);
 
             foreach (var lootBagTypeDefinition in rewardAssignments)
             {
@@ -568,19 +568,28 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 if (lootBagTypeDefinition.Assignee != 0)
                 {
                     var player = Player.GetPlayer(lootBagTypeDefinition.Assignee);
-                    var playerItemList = player.ItmInterface.Items.Select(x => x.Info.Entry);
+
+                    var playerItemList = (from item in player.ItmInterface.Items where item != null select item.Info.Entry).ToList();
+
+                
                     var playerRenown = player.CurrentRenown.Level;
                     var playerClass = player.Info.Career;
                     var playerRenownBand = _rewardManager.CalculateRenownBand(playerRenown);
                     var playerRealm = player.Realm;
 
                     var lootDefinition = lootDecider.DetermineRVRZoneReward(lootBagTypeDefinition, playerRenownBand, playerClass, playerItemList.ToList());
+                    if (lootDefinition.IsValid())
+                    {
+                        BattlefrontLogger.Trace($"{player.Info.Name} has received {lootDefinition.FormattedString()}");
 
-                    BattlefrontLogger.Trace($"{player.Info.Name} has received {lootDefinition.FormattedString()}");
+                        BattlefrontLogger.Debug($"{lootDefinition.ToString()}");
+                    }
+                    else
+                    {
+                        BattlefrontLogger.Trace($"{player.Info.Name} has received [INVALID for Player] {lootDefinition.FormattedString()}");
+                    }
 
-                    BattlefrontLogger.Debug($"{lootDefinition.ToString()}");
-
-                    WorldMgr.RewardDistributor.Distribute(lootDefinition, player);
+                    WorldMgr.RewardDistributor.Distribute(lootDefinition, player, playerRenownBand);
                     
                 }
             }
