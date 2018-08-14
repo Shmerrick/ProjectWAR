@@ -140,6 +140,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             CommsEngine = new ApocCommunications();
             ProximityEngine = new ProximityEngine();
             RewardManager = new RVRRewardManager();
+            CampaignObjectiveContributions = new ConcurrentDictionary<uint, uint>();
         }
 
         /// <summary>
@@ -158,6 +159,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             RegionId = (ushort)regionId;
             Tier = (byte)tier;
             State = StateFlags.ZoneLocked;
+
+            CampaignObjectiveContributions = new ConcurrentDictionary<uint, uint>();
         }
 
         /// <summary>
@@ -192,6 +195,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             ProximityEngine = new ProximityEngine();
 
             RewardManager = new RVRRewardManager();
+
+            CampaignObjectiveContributions = new ConcurrentDictionary<uint, uint>();
         }
 
         public override void OnLoad()

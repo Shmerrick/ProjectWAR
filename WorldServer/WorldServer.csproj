@@ -260,11 +260,9 @@
     <Compile Include="World\Battlefronts\Apocalypse\Loot\IRandomGenerator.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\IRewardAssigner.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\IRewardSelector.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\Loot\LootBagBuilder.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\LootBagRarity.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\LootBagTypeDefinition.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\LootDecider.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\Loot\LootOption.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\RandomGenerator.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardAssigner.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardDistributor.cs" />

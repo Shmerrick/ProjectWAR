@@ -50,7 +50,6 @@
   <ItemGroup>
     <Compile Include="LowerTierBattlefrontManagerTest.cs" />
     <Compile Include="CalculateObjectiveRewardScaleTest.cs" />
-    <Compile Include="LootBagBuilderTests.cs" />
     <Compile Include="RewardSelectorTest.cs" />
     <Compile Include="LootBagTypeDefinitionTest.cs" />
     <Compile Include="UpperTierBattlefrontManagerTest.cs" />
