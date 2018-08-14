@@ -4,15 +4,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
     public enum LootBagRarity
     {
-        [Description("value 1")]
+        [Description("9980")]
         Gold,
-        [Description("value 2")]
+        [Description("9943")]
         Purple,
-        [Description("value 3")]
+        [Description("9942")]
         Blue,
-        [Description("value 4")]
-        Green
-        
+        [Description("9941")]
+        Green,
+        [Description("9940")]
+        White
+
+
+
     }
 
 

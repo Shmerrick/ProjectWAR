@@ -583,6 +583,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         BattlefrontLogger.Trace($"{player.Info.Name} has received {lootDefinition.FormattedString()}");
 
                         BattlefrontLogger.Debug($"{lootDefinition.ToString()}");
+
+                        player.SendClientMessage($"You have won {lootDefinition.FormattedString()}!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     }
                     else
                     {

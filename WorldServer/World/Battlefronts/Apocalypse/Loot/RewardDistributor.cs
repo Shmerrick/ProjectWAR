@@ -25,14 +25,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             RandomGenerator = randomGenerator;
         }
 
-        public void Distribute(LootBagTypeDefinition lootBag, Player player, byte playerRenownBand)
+        public string Distribute(LootBagTypeDefinition lootBag, Player player, byte playerRenownBand)
         {
             // Combine the lootBag reward
             var lockReward = ZoneLockRewards.SingleOrDefault(x => x.RRBand == playerRenownBand);
 
-            var randomMultiplier = RandomGenerator.Generate(25);
-            player.AddXp((uint)(lockReward.XP * (1 + (randomMultiplier / 100))), false, false);
-            player.AddRenown((uint)(lockReward.Renown * (1 + (randomMultiplier / 100))), false, RewardType.ZoneKeepCapture, "Zone Capture");
+          
+            player.AddXp((uint) lockReward.XP, false, false);
+            player.AddRenown((uint) lockReward.Renown, false, RewardType.ZoneKeepCapture, "Zone Capture");
 
             player.ItmInterface.CreateItem((uint)lockReward.ItemId, (ushort)lockReward.ItemCount);
 
@@ -43,6 +43,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             var result = player.ItmInterface.CreateItem(lootBagItem, 1, tl, 0, 0, false, 0, false);
             _logger.Info($"Distributing reward to {player.Name}. Result = {result}");
 
+            var lootRewardDescription = string.Empty;
+            if ((lockReward.ItemCount != 0) && (lockReward.ItemId != 0))
+            {
+                var lockItem = ItemService.GetItem_Info((uint) lockReward.ItemId);
+                if (lockItem != null)
+                {
+                    lootRewardDescription += $"You have been awarded {lockReward.ItemCount} {lockItem.Name} ";
+                }
+            }
+
+            lootRewardDescription += $"For your valiant efforts you have also won {lootBag.FormattedString()}! ";
+            return lootRewardDescription;
         }
     }
 }
