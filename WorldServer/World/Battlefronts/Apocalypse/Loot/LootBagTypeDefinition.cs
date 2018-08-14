@@ -13,6 +13,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         public LootBagRarity BagRarity { get; set; }
         public uint ItemId { get; set; }
         public uint ItemCount { get; set; }
+        public byte RenownBand { get; set; }
 
         public LootBagTypeDefinition()
         {

@@ -48,6 +48,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 {
                     lootBag.ItemCount = (uint) matchingReward.ItemCount;
                     lootBag.ItemId = (uint) matchingReward.ItemId;
+                    lootBag.RenownBand = playerRRBand;
                     break;
                 }
             }

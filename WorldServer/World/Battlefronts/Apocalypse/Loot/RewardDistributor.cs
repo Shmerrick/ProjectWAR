@@ -21,7 +21,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
         public void Distribute(LootBagTypeDefinition lootBag)
         {
-            
+            // Combine the lootBag reward
+            var lockReward = ZoneLockRewards.Select(x => x.RRBand == lootBag.RenownBand);
+
         }
     }
 }
