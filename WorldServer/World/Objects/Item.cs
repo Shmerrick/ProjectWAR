@@ -212,7 +212,7 @@ namespace WorldServer
             if (info.Type != 23)
                 return false;
 
-            if (Info.MinRank < info.MinRank)
+            if (Info.ObjectLevel < info.MinRank)
                 return false;
 
             foreach (Talisman tali in CharSaveInfo._Talismans)
