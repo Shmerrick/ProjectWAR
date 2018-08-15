@@ -583,16 +583,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         BattlefrontLogger.Trace($"{player.Info.Name} has received {lootDefinition.FormattedString()}");
 
                         BattlefrontLogger.Debug($"{lootDefinition.ToString()}");
-
-                        player.SendClientMessage($"You have won {lootDefinition.FormattedString()}!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     }
                     else
                     {
                         BattlefrontLogger.Trace($"{player.Info.Name} has received [INVALID for Player] {lootDefinition.FormattedString()}");
                     }
 
-                    WorldMgr.RewardDistributor.Distribute(lootDefinition, player, playerRenownBand);
-                    
+                    var rewardDescription = WorldMgr.RewardDistributor.Distribute(lootDefinition, player, playerRenownBand);
+                    player.SendClientMessage($"{rewardDescription}", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+
                 }
             }
 

@@ -32,8 +32,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
           
             player.AddXp((uint) lockReward.XP, false, false);
-            player.AddRenown((uint) lockReward.Renown, false, RewardType.ZoneKeepCapture, "Zone Capture");
-
+            player.AddRenown((uint) lockReward.Renown, false, RewardType.ZoneKeepCapture, "");
+            player.AddMoney((uint) lockReward.Money);
             player.ItmInterface.CreateItem((uint)lockReward.ItemId, (ushort)lockReward.ItemCount);
 
             var lootBagItemId = Convert.ToInt32(LootBagTypeDefinition.GetDescription(lootBag.BagRarity));
@@ -49,7 +49,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 var lockItem = ItemService.GetItem_Info((uint) lockReward.ItemId);
                 if (lockItem != null)
                 {
-                    lootRewardDescription += $"You have been awarded {lockReward.ItemCount} {lockItem.Name} ";
+                    lootRewardDescription += $"You have been awarded {lockReward.ItemCount} {lockItem.Name}. ";
                 }
             }
 
