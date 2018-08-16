@@ -28,9 +28,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 		/// <summary>
 		public static int MAX_CONTROL_GAUGE = MAX_SECURE_PROGRESS * 200;
 
-		public static int CONTESTED_TIMESPAN = 300; //300; // 5 min contested
-		public static int SECURED_TIMESPAN = 900; //900; // 15 min secured
-		public static int GUARDSPAWN_DELAY = 60; //60; // 1 min delayed
+		public static int CONTESTED_TIMESPAN = 30; //300; // 5 min contested
+		public static int SECURED_TIMESPAN = 40; //900; // 15 min secured
+		public static int GUARDSPAWN_DELAY = 5; //60; // 1 min delayed
 
 		private int _stopWatch_Mode = 0;
 		private Stopwatch _stopWatch = null;
@@ -713,8 +713,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			if (State == StateFlags.ZoneLocked)
 				return;
 
+			var frnt = BattleFront;
+			if (frnt != null && frnt.IsBattleFrontLocked())
+				return;
+
 			if (_stopWatch != null)
 			{
+				// mode 0: 
 				if (_stopWatch_Mode == 0)
 				{
 					_displayedTimer = Convert.ToInt16(CONTESTED_TIMESPAN - (int)_stopWatch.Elapsed.TotalSeconds);
@@ -747,20 +752,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 					if (_stopWatch?.Elapsed.TotalSeconds >= SECURED_TIMESPAN)
 					{
-						_stopWatch.Stop();
-						State = StateFlags.Locked;
-						GrantCaptureRewards(OwningRealm);
-						State = StateFlags.Unsecure;
-						OwningRealm = Realms.REALMS_REALM_NEUTRAL;
-						BroadcastFlagInfo(true);
-						DespawnAllGuards();
-
-						_displayedTimer = 0;
-						_stopWatch.Reset();
-						_stopWatch_Mode = -1;
+						UnlockObjective();
 					}
-
-					SendState(GetPlayer(), true, true);
+					else
+					{
+						SendState(GetPlayer(), true, true);
+					}
 				}
 			}
 		}
@@ -771,9 +768,22 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void UnlockObjective()
         {
             BattlefrontLogger.Debug($"Unlocking objective {this.Name}");
-            State = StateFlags.Unsecure;
-            OwningRealm = Realms.REALMS_REALM_NEUTRAL;
-            BroadcastFlagInfo(true);
+			// stop bo stopwatch
+			_stopWatch?.Stop();
+			_stopWatch?.Reset();
+			// stop guard stopwatch
+			_guardWatch?.Stop();
+			_guardWatch?.Reset();
+			// handle timer related stuff
+			_displayedTimer = 0;
+			_stopWatch_Mode = -1;
+			// despawn all guards
+			DespawnAllGuards();
+			
+			// state change and send state
+			State = StateFlags.Unsecure;
+			OwningRealm = Realms.REALMS_REALM_NEUTRAL;
+			BroadcastFlagInfo(true);
             SendState(GetPlayer(), false, true);
         }
 

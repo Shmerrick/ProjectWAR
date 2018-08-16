@@ -179,27 +179,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     }
                 }
 
-                ProgressionLogger.Info($"Unlocking objectives {activeRegion.RegionName} BF Id : {this.ActiveBattleFront.BattleFrontId} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
-
                 if (activeRegion.Campaign == null)
                 {
                     ProgressionLogger.Info($"activeRegion.Campaign is null");
                     return this.ActiveBattleFront;
                 }
+				
+				ProgressionLogger.Info($"Unlocking objectives {activeRegion.RegionName} BF Id : {this.ActiveBattleFront.BattleFrontId} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
 
-                if (activeRegion.Campaign.Objectives == null)
-                {
-                    ProgressionLogger.Warn($"activeRegion.Campaign (objectives) is null");
-                    return this.ActiveBattleFront;
-                }
-                if (activeRegion.Campaign.Keeps == null)
-                {
-                    ProgressionLogger.Warn($"activeRegion.Campaign (keeps) is null");
-                    return this.ActiveBattleFront;
-                }
+				if (activeRegion.Campaign.Objectives == null)
+				{
+					ProgressionLogger.Warn($"activeRegion.Campaign (objectives) is null");
+					return this.ActiveBattleFront;
+				}
 
-
-                foreach (var flag in activeRegion.Campaign.Objectives)
+				foreach (var flag in activeRegion.Campaign.Objectives)
                 {
                     if (this.ActiveBattleFront.ZoneId == flag.ZoneId)
                         flag.UnlockObjective();
@@ -207,7 +201,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 ProgressionLogger.Info($"Unlocking keeps {activeRegion.RegionName} BF Id : {this.ActiveBattleFront.BattleFrontId} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
 
-                foreach (Keep keep in activeRegion.Campaign.Keeps)
+				if (activeRegion.Campaign.Keeps == null)
+				{
+					ProgressionLogger.Warn($"activeRegion.Campaign (keeps) is null");
+					return this.ActiveBattleFront;
+				}
+
+				foreach (Keep keep in activeRegion.Campaign.Keeps)
                 {
                     if (this.ActiveBattleFront.ZoneId == keep.ZoneId)
                         keep.NotifyPairingUnlocked();
