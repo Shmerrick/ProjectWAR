@@ -91,7 +91,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         /// Log the status of all battlefronts 
         /// </summary>
-        public void LockBattleFrontsAllRegions(int tier)
+        public void LockBattleFrontsAllRegions(int tier, CampaignRerollMode rerollMode = CampaignRerollMode.NONE)
         {
             foreach (var regionMgr in RegionMgrs)
             {
@@ -169,7 +169,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return this.ActiveBattleFront;
         }
 
-        public RVRProgression OpenActiveBattlefront()
+		public RVRProgression OpenActiveBattlefront(CampaignRerollMode rerollMode = CampaignRerollMode.NONE)
         {
             var activeRegion = RegionMgrs.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
             ProgressionLogger.Info($" Opening battlefront in {activeRegion.RegionName}");
@@ -200,7 +200,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         /// Set the Active Pairing to be null. Not expected to be needed.
         /// </summary>
-        public RVRProgression ResetBattleFrontProgression()
+        public RVRProgression ResetBattleFrontProgression(CampaignRerollMode rerollMode = CampaignRerollMode.NONE)
         {
             ProgressionLogger.Info($" Resetting battlefront...");
             // HACK
@@ -227,22 +227,25 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         /// <summary>
         /// </summary>
-        public RVRProgression AdvanceBattleFront(Realms lockingRealm)
+        public RVRProgression AdvanceBattleFront(Realms lockingRealm, out CampaignRerollMode rerollMode)
         {
             if (lockingRealm == Realms.REALMS_REALM_ORDER)
             {
                 var newBattleFront = GetBattleFrontByBattleFrontId(ActiveBattleFront.OrderWinProgression);
                 ProgressionLogger.Info($"Order Win : Advancing Battlefront from {this.ActiveBattleFrontName} to {newBattleFront.Description}");
-                return ActiveBattleFront = newBattleFront;
+				rerollMode = CampaignRerollMode.NONE;
+				return ActiveBattleFront = newBattleFront;
             }
 
             if (lockingRealm == Realms.REALMS_REALM_DESTRUCTION)
             {
                 var newBattleFront = GetBattleFrontByBattleFrontId(ActiveBattleFront.DestWinProgression);
                 ProgressionLogger.Info($"Destruction Win : Advancing Battlefront from {this.ActiveBattleFrontName} to {newBattleFront.Description}");
-                return ActiveBattleFront = newBattleFront;
+				rerollMode = CampaignRerollMode.NONE;
+				return ActiveBattleFront = newBattleFront;
             }
-            return ResetBattleFrontProgression();
+			rerollMode = CampaignRerollMode.REROLL;
+			return ResetBattleFrontProgression(rerollMode);
         }
 
     }

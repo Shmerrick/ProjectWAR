@@ -3,7 +3,6 @@ using FrameWork;
 
 namespace Common.Database.World.Battlefront
 {
-
     // Fixed value of a character 
     [DataTable(PreCache = false, TableName = "rvr_progression", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
@@ -50,8 +49,17 @@ namespace Common.Database.World.Battlefront
 
         [DataElement(AllowDbNull = false)]
         public int ResetProgressionOnEntry { get; set; }
-        
-    }
 
+		[DataElement(AllowDbNull = false)]
+		public int LastOwningRealm { get; set; }
 
+		[DataElement(AllowDbNull = false)]
+		public int LastOpenedZone { get; set; }
+
+		[DataElement(AllowDbNull = false)]
+		public int OrderVP { get; set; }
+
+		[DataElement(AllowDbNull = false)]
+		public int DestroVP { get; set; }
+	}
 }

@@ -15,6 +15,13 @@ using WorldServer.World.Objects.PublicQuests;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
+	public enum CampaignRerollMode
+	{
+		NONE = 0,
+		INIT = 1,
+		REROLL = 2
+	}
+
     /// <summary>
     /// Represents an open RVR front in a given Region (1 Region -> n Zones) Eg Region 14 (T2 Emp -> Zone 101 Troll Country & Zone 107 Ostland
     /// </summary>
@@ -217,7 +224,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     plr.SendClientMessage($"RvR Status : {this.BattleFrontManager.GetActiveCampaign().GetBattleFrontStatus()}", ChatLogFilters.CHATLOGFILTERS_RVR);
                 }
             }
-        }
+
+			WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
+		}
 
         /// <summary>
         /// Loads Campaign objectives.
@@ -511,8 +520,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void LockBattleFront(Realms realm)
         {
             BattlefrontLogger.Info($"Locking Battlefront {this.CampaignName} to {realm.ToString()}...");
-
-
+			
             //this.VictoryPointProgress.Lock(realm);
 
             //LockingRealm = realm;
@@ -701,12 +709,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (VictoryPointProgress.OrderVictoryPoints >= BattleFrontConstants.LOCK_VICTORY_POINTS)
             {
                 BattleFrontManager.LockActiveBattleFront(Realms.REALMS_REALM_ORDER);
-                // Select the next Progression
-                 var nextBattleFront = BattleFrontManager.AdvanceBattleFront(Realms.REALMS_REALM_ORDER);
-                // Tell the players
-                SendCampaignMovementMessage(nextBattleFront);
+				// Select the next Progression
+				var nextBattleFront = BattleFrontManager.AdvanceBattleFront(Realms.REALMS_REALM_ORDER, out CampaignRerollMode rerollMode);
+				// Tell the players
+				SendCampaignMovementMessage(nextBattleFront);
                 // Unlock the next Progression
-                BattleFrontManager.OpenActiveBattlefront();
+                BattleFrontManager.OpenActiveBattlefront(rerollMode);
                 // This is kind of nasty, should use an event to signal the WorldMgr
                 // Tell the server that the RVR status has changed.
                 WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
@@ -719,11 +727,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 BattleFrontManager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
                 // Select the next Progression
-                var nextBattleFront = BattleFrontManager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+                var nextBattleFront = BattleFrontManager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out CampaignRerollMode rerollMode);
                 // Tell the players
                 SendCampaignMovementMessage(nextBattleFront);
                 // Unlock the next Progression
-                BattleFrontManager.OpenActiveBattlefront();
+                BattleFrontManager.OpenActiveBattlefront(rerollMode);
                 // This is kind of nasty, should use an event to signal the WorldMgr
                 // Tell the server that the RVR status has changed.
                 WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
