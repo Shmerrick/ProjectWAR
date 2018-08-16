@@ -1193,7 +1193,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             BattlefrontLogger.Debug($"Locking Objective {Name} for {lockingRealm.ToString()}");
 
-            OwningRealm = lockingRealm;
+			// stop bo stopwatch
+			_stopWatch?.Stop();
+			_stopWatch?.Reset();
+			// stop guard stopwatch
+			_guardWatch?.Stop();
+			_guardWatch?.Reset();
+			// handle timer related stuff
+			_displayedTimer = 0;
+			_stopWatch_Mode = -1;
+			// despawn all guards
+			DespawnAllGuards();
+			
+			OwningRealm = lockingRealm;
             AssaultingRealm = Realms.REALMS_REALM_NEUTRAL;
             State = StateFlags.ZoneLocked;
             _nextTransitionTimestamp = 0;
