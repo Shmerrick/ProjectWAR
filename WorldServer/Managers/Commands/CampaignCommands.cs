@@ -128,8 +128,9 @@ namespace WorldServer.Managers.Commands
         {
 
             if (tier == 1)
-            {
-                var progression = WorldMgr.LowerTierCampaignManager.AdvanceBattleFront(realm, out CampaignRerollMode rerollMode);
+			{
+				CampaignRerollMode rerollMode;
+				var progression = WorldMgr.LowerTierCampaignManager.AdvanceBattleFront(realm, out rerollMode);
                 WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront(rerollMode);
                 WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
                 plr.SendClientMessage(realm == Realms.REALMS_REALM_DESTRUCTION
@@ -137,8 +138,9 @@ namespace WorldServer.Managers.Commands
                     : $"Order conquers Destruction, the campaign moves to {progression.Description}");
             }
             else
-            {
-                var progression = WorldMgr.UpperTierCampaignManager.AdvanceBattleFront(realm, out CampaignRerollMode rerollMode);
+			{
+				CampaignRerollMode rerollMode;
+				var progression = WorldMgr.UpperTierCampaignManager.AdvanceBattleFront(realm, out rerollMode);
                 WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront(rerollMode);
                 WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
                 plr.SendClientMessage(realm == Realms.REALMS_REALM_DESTRUCTION

@@ -719,7 +719,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 BattleFrontManager.LockActiveBattleFront(Realms.REALMS_REALM_ORDER);
 				// Select the next Progression
-				var nextBattleFront = BattleFrontManager.AdvanceBattleFront(Realms.REALMS_REALM_ORDER, out CampaignRerollMode rerollMode);
+				CampaignRerollMode rerollMode;
+				var nextBattleFront = BattleFrontManager.AdvanceBattleFront(Realms.REALMS_REALM_ORDER, out rerollMode);
 				// Tell the players
 				SendCampaignMovementMessage(nextBattleFront);
                 // Unlock the next Progression
@@ -735,8 +736,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                      BattleFrontConstants.LOCK_VICTORY_POINTS)
             {
                 BattleFrontManager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
-                // Select the next Progression
-                var nextBattleFront = BattleFrontManager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out CampaignRerollMode rerollMode);
+				// Select the next Progression
+				CampaignRerollMode rerollMode;
+				var nextBattleFront = BattleFrontManager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
                 // Tell the players
                 SendCampaignMovementMessage(nextBattleFront);
                 // Unlock the next Progression

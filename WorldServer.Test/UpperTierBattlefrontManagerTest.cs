@@ -181,7 +181,8 @@ namespace WorldServer.Test
 
             Assert.IsTrue(bf.DestWinProgression == 2);
 
-            bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out CampaignRerollMode rerollMode);
+			CampaignRerollMode rerollMode;
+			bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
 			Assert.IsTrue(bf.BattleFrontId == 2);
             Assert.IsTrue(bf.DestWinProgression == 6);
             Assert.IsTrue(bf.OrderWinProgression == 7);
@@ -302,8 +303,9 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).FinalVictoryPoint.DestructionVictoryPoints == 5000f);
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).FinalVictoryPoint.OrderVictoryPoints == 1000f);
 
-            // Advance Destro
-            var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out CampaignRerollMode rerollMode);
+			// Advance Destro
+			CampaignRerollMode rerollMode;
+			var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
 			Assert.IsTrue(progression.BattleFrontId == 2);
             Assert.IsTrue(progression.ZoneId == 201);
 
@@ -385,8 +387,9 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).FinalVictoryPoint.OrderVictoryPoints == 1000f);
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).RegionId ==1);
 
-            // Advance Destro
-            var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out CampaignRerollMode rerollMode);
+			// Advance Destro
+			CampaignRerollMode rerollMode;
+			var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
 			Assert.IsTrue(progression.BattleFrontId == 2);
             Assert.IsTrue(progression.ZoneId == 201);
 
@@ -520,8 +523,9 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).FinalVictoryPoint.OrderVictoryPoints == 1000f);
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).RegionId == 1);
 
-            // Advance Destro
-            var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out CampaignRerollMode rerollMode);
+			// Advance Destro
+			CampaignRerollMode rerollMode;
+			var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
 			Assert.IsTrue(progression.BattleFrontId == 2);
             Assert.IsTrue(progression.ZoneId == 201);
             manager.OpenActiveBattlefront();
