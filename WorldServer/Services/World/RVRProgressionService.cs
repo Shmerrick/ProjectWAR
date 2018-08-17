@@ -30,5 +30,15 @@ namespace WorldServer.Services.World
             _RVRPairings = Database.SelectAllObjects<RVRPairing>() as List<RVRPairing>;
             Log.Success("RVRProgression", "Loaded " + _RVRProgressions.Count + " Pairings");
         }
+		
+		//public static void SaveRVRProgression()
+		//{
+		//	Log.Debug("WorldMgr", "Saving RVR Progression ...");
+			
+		//	Database.SaveObject();
+
+
+		//	Log.Success("RVRProgression", "Saved RVR Progression");
+		//}
     }
 }
