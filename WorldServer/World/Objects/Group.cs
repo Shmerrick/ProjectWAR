@@ -1873,9 +1873,6 @@ namespace WorldServer
                 uint renownShare = (uint)(renown / members.Count);
                 try
                 {
-
-
-
                     RewardLogger.Debug($"Cur player {curPlayer.Name} XP Share {xpShare} RP Share {renownShare}");
 
                     if (curPlayer.ScnInterface.Scenario == null || !curPlayer.ScnInterface.Scenario.DeferKillReward(curPlayer, xpShare, renownShare))
@@ -1894,7 +1891,10 @@ namespace WorldServer
                         }
                     }
                     if (influenceId != 0)
-                        curPlayer.AddInfluence(influenceId, (ushort)(influence / members.Count));
+					{
+						// ZARU: multiplied infl with 3
+						curPlayer.AddInfluence(influenceId, (ushort)((influence * 3) / members.Count));
+					}
 
                     if (closestFlag != null && closestFlag.State != StateFlags.ZoneLocked)
                     {

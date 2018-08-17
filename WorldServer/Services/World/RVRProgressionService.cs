@@ -30,5 +30,25 @@ namespace WorldServer.Services.World
             _RVRPairings = Database.SelectAllObjects<RVRPairing>() as List<RVRPairing>;
             Log.Success("RVRProgression", "Loaded " + _RVRProgressions.Count + " Pairings");
         }
-    }
+		
+		public static void SaveRVRProgression(List<RVRProgression> rvrProg)
+		{
+			if (rvrProg == null || rvrProg.Count <= 0)
+				return;
+
+			Log.Debug("WorldMgr", "Saving RVR progression ...");
+
+			foreach (var item in rvrProg)
+			{
+				item.Dirty = true;
+				item.IsValid = true;
+				Database.SaveObject(item);
+				item.Dirty = false;
+			}
+
+			Database.ForceSave();
+			
+			Log.Success("RVRProgression", $"Saved RVR progression in tier {rvrProg.FirstOrDefault().Tier}");
+		}
+	}
 }

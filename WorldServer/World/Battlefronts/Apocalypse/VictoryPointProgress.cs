@@ -51,6 +51,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             DestructionVictoryPoints = 0;
         }
 
+		public VictoryPointProgress(float orderVP, float destroVP)
+		{
+			OrderVictoryPoints = orderVP;
+			DestructionVictoryPoints = destroVP;
+		}
+
         public float DestructionVictoryPointPercentage
         {
             get { return DestructionVictoryPoints * 100 / BattleFrontConstants.LOCK_VICTORY_POINTS; }
@@ -94,7 +100,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void Reset(Campaign BattleFront)
         {
             _logger.Debug($"Resetting Campaign VP {BattleFront.CampaignName} to Neutral");
-            OrderVictoryPoints = 0;
+			OrderVictoryPoints = 0;
             DestructionVictoryPoints = 0;
         }
     }

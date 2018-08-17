@@ -129,8 +129,8 @@ namespace WorldServer.Managers.Commands
 
             if (tier == 1)
             {
-                var progression = WorldMgr.LowerTierCampaignManager.AdvanceBattleFront(realm);
-                WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront();
+                var progression = WorldMgr.LowerTierCampaignManager.AdvanceBattleFront(realm, out CampaignRerollMode rerollMode);
+                WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront(rerollMode);
                 WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
                 plr.SendClientMessage(realm == Realms.REALMS_REALM_DESTRUCTION
                     ? $"Destruction vanquishes Order, the campaign moves to {progression.Description}"
@@ -138,8 +138,8 @@ namespace WorldServer.Managers.Commands
             }
             else
             {
-                var progression = WorldMgr.UpperTierCampaignManager.AdvanceBattleFront(realm);
-                WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront();
+                var progression = WorldMgr.UpperTierCampaignManager.AdvanceBattleFront(realm, out CampaignRerollMode rerollMode);
+                WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront(rerollMode);
                 WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
                 plr.SendClientMessage(realm == Realms.REALMS_REALM_DESTRUCTION
                     ? $"Destruction vanquishes Order, the campaign moves to {progression.Description}"
@@ -153,7 +153,7 @@ namespace WorldServer.Managers.Commands
             WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
         }
 
-        //.campaign SetRegionCaptureStatus 111111110 7    -- lock all to order except Eataine. Make it the active BF
+        //.campaign SetRegionCaptureStatus 111111110 9    -- lock all to order except Caledor. Make it the active BF
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Force lock and advance on all progressions. Params : T4progression string, activeBattlefrontId")]
         public static void SetRegionCaptureStatus(Player plr, string T4Progression, int activeBattleFrontId)
         {
