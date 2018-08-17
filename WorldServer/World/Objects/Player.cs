@@ -1316,7 +1316,7 @@ namespace WorldServer
         private bool _pendingPingRequest, _pingInit;
         private byte _pingSampleCount;
 
-        private void UpdatePing()
+        public void UpdatePing()
         {
             if (_pendingPingRequest)
                 return;
