@@ -116,7 +116,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     else
                         influenceId = (ushort) player.CurrentArea.DestroInfluenceId;
 					
-                    player.AddInfluence(influenceId, Math.Max((ushort)baseInf, (ushort)1));
+					if (boRewardType == BORewardType.SMALL_CONTESTED || boRewardType == BORewardType.SMALL_LOCKED)
+						player.AddInfluence(influenceId, Math.Max((ushort)200f, (ushort)1));
+					else if (boRewardType == BORewardType.BIG)
+						player.AddInfluence(influenceId, Math.Max((ushort)400f, (ushort)1));
+					else
+						player.AddInfluence(influenceId, Math.Max((ushort)baseInf, (ushort)1));
 				}
 
                 Random rnd = new Random();
