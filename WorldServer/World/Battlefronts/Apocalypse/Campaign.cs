@@ -228,14 +228,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
 
 			// also save into db
-			foreach (RVRProgression prog in WorldMgr.LowerTierCampaignManager.BattleFrontProgressions)
-			{
-				RVRProgressionService.SaveRVRProgression(prog);
-			}
-			foreach (RVRProgression prog in WorldMgr.UpperTierCampaignManager.BattleFrontProgressions)
-			{
-				RVRProgressionService.SaveRVRProgression(prog);
-			}
+			RVRProgressionService.SaveRVRProgression(WorldMgr.LowerTierCampaignManager.BattleFrontProgressions);
+			RVRProgressionService.SaveRVRProgression(WorldMgr.UpperTierCampaignManager.BattleFrontProgressions);
 		}
 
         /// <summary>
@@ -713,10 +707,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Victory points update
             VictoryPointProgress.OrderVictoryPoints = Math.Min(BattleFrontConstants.LOCK_VICTORY_POINTS, orderVictoryPoints);
             VictoryPointProgress.DestructionVictoryPoints = Math.Min(BattleFrontConstants.LOCK_VICTORY_POINTS, destroVictoryPoints);
-            ///
-            /// Check to Lock and Advance the Battlefront
-            /// 
-            if (VictoryPointProgress.OrderVictoryPoints >= BattleFrontConstants.LOCK_VICTORY_POINTS)
+
+			// update also rvr progression
+			BattleFrontManager.ActiveBattleFront.OrderVP = (int)Math.Round(VictoryPointProgress.OrderVictoryPoints);
+			BattleFrontManager.ActiveBattleFront.DestroVP = (int)Math.Round(VictoryPointProgress.DestructionVictoryPoints);
+			
+			///
+			/// Check to Lock and Advance the Battlefront
+			/// 
+			if (VictoryPointProgress.OrderVictoryPoints >= BattleFrontConstants.LOCK_VICTORY_POINTS)
             {
                 BattleFrontManager.LockActiveBattleFront(Realms.REALMS_REALM_ORDER);
 				// Select the next Progression

@@ -372,10 +372,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 var newBattleFront = GetBattleFrontByBattleFrontId(ActiveBattleFront.OrderWinProgression);
                 ProgressionLogger.Debug($"Order Win : Advancing Battlefront from {this.ActiveBattleFrontName} to {newBattleFront.Description}");
+
 				if (newBattleFront.ResetProgressionOnEntry == 1 && ActiveBattleFront.RegionId != newBattleFront.RegionId)
 					rerollMode = CampaignRerollMode.REROLL;
 				else
 					rerollMode = CampaignRerollMode.NONE;
+
+				UpdateRVRPRogression(lockingRealm, ActiveBattleFront, newBattleFront);
+
 				return ActiveBattleFront = newBattleFront;
             }
 
@@ -383,15 +387,29 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 var newBattleFront = GetBattleFrontByBattleFrontId(ActiveBattleFront.DestWinProgression);
                 ProgressionLogger.Debug($"Destruction Win : Advancing Battlefront from {this.ActiveBattleFrontName} to {newBattleFront.Description}");
+
 				if (newBattleFront.ResetProgressionOnEntry == 1 && ActiveBattleFront.RegionId != newBattleFront.RegionId)
 					rerollMode = CampaignRerollMode.REROLL;
 				else
 					rerollMode = CampaignRerollMode.NONE;
+
+				UpdateRVRPRogression(lockingRealm, ActiveBattleFront, newBattleFront);
+
 				return ActiveBattleFront = newBattleFront;
             }
 
 			rerollMode = CampaignRerollMode.REROLL;
 			return ResetBattleFrontProgression(rerollMode);
         }
+
+		private void UpdateRVRPRogression(Realms lockingRealm, RVRProgression oldProg, RVRProgression newProg)
+		{
+			oldProg.DestroVP = oldProg.OrderVP = 0;
+			oldProg.LastOpenedZone = 0;
+			oldProg.LastOwningRealm = (byte)lockingRealm;
+
+			newProg.LastOwningRealm = 0;
+			newProg.LastOpenedZone = 1;
+		}
     }
 }
