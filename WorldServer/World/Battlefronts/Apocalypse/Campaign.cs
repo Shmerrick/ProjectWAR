@@ -12,6 +12,7 @@ using WorldServer.World.BattleFronts;
 using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.World.Objects.PublicQuests;
+using System.Diagnostics;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -36,7 +37,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public RegionMgr Region { get; set; }
         public IBattleFrontManager BattleFrontManager { get; set; }
         public IApocCommunications CommunicationsEngine { get; }
-
+		
         // List of battlefront statuses for this Campaign
         public List<BattleFrontStatus> ApocBattleFrontStatuses => GetBattleFrontStatuses(this.Region.RegionId);
         
@@ -124,7 +125,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(UpdateAAOBuffs, 60000, 0);
             // Recalculate AAO
             _EvtInterface.AddEvent(RecordMetrics, 30000, 0);
-
         }
 
         private void BuildPopulationList()
@@ -226,6 +226,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
 
 			WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
+
+			// also save into db
+			foreach (RVRProgression prog in WorldMgr.LowerTierCampaignManager.BattleFrontProgressions)
+			{
+				RVRProgressionService.SaveRVRProgression(prog);
+			}
+			foreach (RVRProgression prog in WorldMgr.UpperTierCampaignManager.BattleFrontProgressions)
+			{
+				RVRProgressionService.SaveRVRProgression(prog);
+			}
 		}
 
         /// <summary>
