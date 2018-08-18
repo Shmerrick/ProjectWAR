@@ -112,16 +112,16 @@ namespace WorldServer
                 #region Parry, Dodge, Disrupt                
 
                 //Parry/Dodge/Disrupt chance from tooltip
-                double secondaryDefense = (((defensiveStat) * 100) / ((target.EffectiveLevel * 7.5 + 50) * 7.5));
+                double secondaryDefense = (int)((((double)defensiveStat / offensiveStat * 0.075) * 100));
                 //Contestion based on offensive stat. This gets added to make it harder to actually do a defensive event, without actually contesting it directly above.
                 //This should mimic the live formula.
                 double removedDefense = (((offensiveStat) * 100) / (((caster.EffectiveLevel * 7.5) + 50) * 7.5));
 
-                /*There is no cap on parry from stats. There is, however a max defensible amount of 0.75 similar to armor to the final roll.
-                 * 
+                //*There is no cap on parry from stats. There is, however a max defensible amount of 0.75 similar to armor to the final roll.
+                 
                     if (secondaryDefense > 25)
                     secondaryDefense = 25;
-                 */
+                 
                 double baseRoll = 0d;
                 baseRoll += removedDefense;
 
@@ -133,10 +133,8 @@ namespace WorldServer
                     case 1: // Parry
                     {
                             secondaryDefense += target.StsInterface.GetTotalStat(Stats.Parry) - caster.StsInterface.GetStatLinearModifier(Stats.ParryStrikethrough);
-                            secondaryDefense = (secondaryDefense * caster.StsInterface.GetStatPercentageModifier(Stats.ParryStrikethrough));
-                            double finalRoll = (StaticRandom.Instance.NextDouble() * (100d + baseRoll));
 
-                            if (secondaryDefense >= finalRoll)
+                            if (StaticRandom.Instance.Next(100) <= secondaryDefense)
                             {
                                 target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_PARRY);
                                 caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_PARRY);
@@ -146,10 +144,9 @@ namespace WorldServer
                     case 8: // Evade
                     {
                             secondaryDefense += target.StsInterface.GetTotalStat(Stats.Evade) - caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough);
-                            secondaryDefense = (secondaryDefense * caster.StsInterface.GetStatPercentageModifier(Stats.EvadeStrikethrough));
-                            double finalRoll = (StaticRandom.Instance.NextDouble() * (100d + baseRoll));
 
-                            if (secondaryDefense >= finalRoll)
+
+                            if (StaticRandom.Instance.Next(100) <= secondaryDefense)
                             {
                                 target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_EVADE);
                                 caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_EVADE);
@@ -159,10 +156,8 @@ namespace WorldServer
                     case 9: // Disrupt
                     {
                             secondaryDefense += target.StsInterface.GetTotalStat(Stats.Disrupt) - caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough);
-                            secondaryDefense = secondaryDefense * caster.StsInterface.GetStatPercentageModifier(Stats.DisruptStrikethrough);
-                            double finalRoll = (StaticRandom.Instance.NextDouble() * (100d + baseRoll));
 
-                            if (secondaryDefense >= finalRoll) // Disrupt
+                            if (StaticRandom.Instance.Next(100) <= secondaryDefense) // Disrupt
                             {
                                 target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_DISRUPT);
                                 caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_DISRUPT);
