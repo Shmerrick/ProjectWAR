@@ -282,7 +282,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 if (this.ActiveBattleFront.ZoneId == keep.ZoneId)
                     keep.LockKeep(realm, true, true);
             }
-
+            
             activeRegion.Campaign.LockBattleFront(realm);
 
             // Use Locking Realm in the BFM, not the BF (BF applies to region)
@@ -292,6 +292,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void LockBattleFrontStatus(int battleFrontId, Realms lockingRealm, VictoryPointProgress vpp)
         {
             var activeStatus = BattleFrontStatuses.Single(x => x.BattleFrontId == battleFrontId);
+
+            if (activeStatus == null)
+                ProgressionLogger.Warn($"Could not locate Active Status for battlefront Id {battleFrontId}");
 
             activeStatus.Locked = true;
             activeStatus.LockingRealm = lockingRealm;
