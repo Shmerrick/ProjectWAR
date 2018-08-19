@@ -108,7 +108,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             LoadKeeps();
             
-          
             _contributionTracker = new ContributionTracker(Tier, regionMgr);
             _aaoTracker = new AAOTracker();
             _rewardManager = new RVRRewardManager();
@@ -133,7 +132,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 this.OrderPlayerPopulationList.Clear();
                 this.DestructionPlayerPopulationList.Clear();
-                foreach (var status in ApocBattleFrontStatuses)
+                foreach (var status in BattleFrontManager.GetBattleFrontStatusList())
                 {
                     this.OrderPlayerPopulationList.Add(status.BattleFrontId, 0);
                     this.DestructionPlayerPopulationList.Add(status.BattleFrontId, 0);
@@ -152,31 +151,29 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     var groupId = Guid.NewGuid().ToString();
                     BattlefrontLogger.Debug($"Recording metrics for Campaign {this.CampaignName}");
-                    foreach (var apocBattleFrontStatus in ApocBattleFrontStatuses)
+                    foreach (var status in BattleFrontManager.GetBattleFrontStatusList())
                     {
                         var metrics = new RVRMetrics
                         {
-                            BattlefrontId = apocBattleFrontStatus.BattleFrontId,
-                            BattlefrontName = apocBattleFrontStatus.Description,
+                            BattlefrontId = status.BattleFrontId,
+                            BattlefrontName = status.Description,
                             DestructionVictoryPoints = (int) this.VictoryPointProgress.DestructionVictoryPoints,
                             OrderVictoryPoints = (int) this.VictoryPointProgress.OrderVictoryPoints,
-                            Locked = apocBattleFrontStatus.LockStatus,
-                            OrderPlayersInLake = this.OrderPlayerPopulationList[apocBattleFrontStatus.BattleFrontId],
-                            DestructionPlayersInLake = this.DestructionPlayerPopulationList[apocBattleFrontStatus.BattleFrontId],
+                            Locked = status.LockStatus,
+                            OrderPlayersInLake = this.OrderPlayerPopulationList[status.BattleFrontId],
+                            DestructionPlayersInLake = this.DestructionPlayerPopulationList[status.BattleFrontId],
                             Tier = this.Tier,
                             Timestamp = DateTime.UtcNow,
                             GroupId = groupId
                         };
 
                         WorldMgr.Database.AddObject(metrics);
-
                     }
                 }
             }
             catch (Exception e)
             {
                 BattlefrontLogger.Error($"Could not write rvr metrics..continuing. {e.Message}");
-                
             }
         }
 
@@ -415,8 +412,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // If the system has defined the population (by battlefront) structures
             if ((OrderPlayerPopulationList.Count == 0) || (DestructionPlayerPopulationList.Count == 0))
                 BuildPopulationList();
-
-
+			
             // Player list tracking
             lock (PlayersInLakeSet)
             {
@@ -440,6 +436,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             // Buffs
             plr.BuffInterface.QueueBuff(new BuffQueueInfo(plr, plr.Level, AbilityMgr.GetBuffInfo((ushort)GameBuffs.FieldOfGlory), FogAssigned));
+
+			// AAO
+			_aaoTracker.NotifyEnteredLake(plr);
         }
 
         /// <summary>
@@ -491,6 +490,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             // Buffs
             plr.BuffInterface.RemoveBuffByEntry((ushort)GameBuffs.FieldOfGlory);
+
+			// AAO
+			_aaoTracker.NotifyLeftLake(plr);
         }
 
         public void LockBattleObjectivesByZone(int zoneId, Realms realm)

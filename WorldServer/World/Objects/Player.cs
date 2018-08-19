@@ -3094,14 +3094,14 @@ namespace WorldServer
         {
             if (renown == 0)
                 return;
-
-
+			
             int aaoMult = 0;
             Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
             if (Region != null && Region.Campaign != null)
             {
                 if (Region.Campaign != null)
                 {
+					// aaoMult: -20 (400% order) to +20 (400% destro)
                     aaoMult = Math.Abs(Region.Campaign.AgainstAllOddsMult);
                     if (aaoMult != 0)
                         aaoRealm = Region.Campaign.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
@@ -3115,16 +3115,12 @@ namespace WorldServer
             if (Program.Config.RenownRate > 0)
                 renown *= (uint)Program.Config.RenownRate;
 
-			// ZARU: deactivated due to intention on no cap on renown
-            //if (aaoMult != 0 && aaoRealm != Realms.REALMS_REALM_NEUTRAL && Realm != aaoRealm)
-            //{
-            //    renown = Math.Max(1, renown);
-            //}
-            //else
-            //{
-            //    renown = Math.Max(20, renown);
-            //}
-            RewardLogger.Trace($"{renown} RP awarded to {this.Name} for {rewardString} ");
+			if (aaoMult != 0 && aaoRealm != Realms.REALMS_REALM_NEUTRAL && Realm != aaoRealm)
+			{
+				renown = Convert.ToUInt32(Math.Round(this.AAOBonus * renown, 0));
+			}
+
+			RewardLogger.Trace($"{renown} RP awarded to {this.Name} for {rewardString} ");
             InternalAddRenown(renown, shouldPool, type, rewardString);
         }
 
@@ -6341,8 +6337,9 @@ namespace WorldServer
             //    SendClientMessage("Current Area: " + (CurrentArea?.ToString() ?? "None") + " New Area:" + (newArea?.ToString() ?? "None"));
             //Log.Info("newArea", "  " + newArea);
             bool bWasNewArea = false;
-            if (newArea != CurrentArea)
-            {
+			//if ((newArea == null && CurrentArea == null) || newArea != CurrentArea)
+			if (newArea != CurrentArea)
+			{
 
                 bWasNewArea = true;
                 if (newArea != null)
