@@ -543,10 +543,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             //_contributionTracker.CreateGoldChest(realm);
             //_contributionTracker.HandleLockReward(realm, 1, message, 0, Tier);
 
-            BattlefrontLogger.Debug($"Generating Lock Rewards..");
+            BattlefrontLogger.Info($"Generating Lock Rewards..");
+            if (PlayersInLakeSet == null)
+                BattlefrontLogger.Warn($"No players in the Lake!!");
+            if (_rewardManager == null)
+                BattlefrontLogger.Warn($"_rewardManager is null!!");
+
             foreach (var player in PlayersInLakeSet)
             {
-                BattlefrontLogger.Trace($"{player.Name}...");
+                BattlefrontLogger.Debug($"{player.Name}...");
                 _rewardManager.GenerateLockReward(player, realm);
             }
         }
