@@ -415,8 +415,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // If the system has defined the population (by battlefront) structures
             if ((OrderPlayerPopulationList.Count == 0) || (DestructionPlayerPopulationList.Count == 0))
                 BuildPopulationList();
-
-
+			
             // Player list tracking
             lock (PlayersInLakeSet)
             {
@@ -424,17 +423,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     // Which battlefrontId?
                     var battleFrontId = this.BattleFrontManager.ActiveBattleFront.BattleFrontId;
-                    
-                    if (plr.Realm == Realms.REALMS_REALM_ORDER)
-                    {
-                        this.OrderPlayerPopulationList[battleFrontId] += 1;
-                        _orderCount++;
-                    }
-                    else
-                    {
-                        this.DestructionPlayerPopulationList[battleFrontId] += 1;
-                        _destroCount++;
-                    }
+
+					try
+					{
+						if (plr.Realm == Realms.REALMS_REALM_ORDER)
+						{
+							this.OrderPlayerPopulationList[battleFrontId] += 1;
+							_orderCount++;
+						}
+						else
+						{
+							this.DestructionPlayerPopulationList[battleFrontId] += 1;
+							_destroCount++;
+						}
+					}
+					catch { }
                 }
             }
 
@@ -476,16 +479,20 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     // Which battlefrontId?
                     var battleFrontId = this.BattleFrontManager.ActiveBattleFront.BattleFrontId;
 
-                    if (plr.Realm == Realms.REALMS_REALM_ORDER)
-                    {
-                        this.OrderPlayerPopulationList[battleFrontId] -= 1;
-                        _orderCount--;
-                    }
-                    else
-                    {
-                        this.DestructionPlayerPopulationList[battleFrontId] -= 1;
-                        _destroCount--;
-                    }
+					try
+					{
+						if (plr.Realm == Realms.REALMS_REALM_ORDER)
+						{
+							this.OrderPlayerPopulationList[battleFrontId] -= 1;
+							_orderCount--;
+						}
+						else
+						{
+							this.DestructionPlayerPopulationList[battleFrontId] -= 1;
+							_destroCount--;
+						}
+					}
+					catch { }
                 }
             }
 
