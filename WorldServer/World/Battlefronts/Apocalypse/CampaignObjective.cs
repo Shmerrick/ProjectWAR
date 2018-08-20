@@ -29,7 +29,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 		public static int MAX_CONTROL_GAUGE = MAX_SECURE_PROGRESS * 200;
 
 		public static int CONTESTED_TIMESPAN = 300; //300; // 5 min contested
-		public static int SECURED_TIMESPAN = 900; //900; // 15 min secured
+		public static int SECURED_TIMESPAN = 300; //900; // 5 min secured
 		public static int GUARDSPAWN_DELAY = 60; //60; // 1 min delayed
 
 		private int _stopWatch_Mode = 0;
@@ -736,15 +736,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 						_stopWatch.Reset();
 						_stopWatch_Mode = 1;
 						_stopWatch.Start();
+
+						SendState(GetPlayer(), true, true);
 					}
+					else
+						SendState(GetPlayer(), false, true);
 
 					if (_guardWatch?.Elapsed.TotalSeconds >= GUARDSPAWN_DELAY)
 					{
 						SpawnAllGuards(OwningRealm);
 						_guardWatch.Reset();
 					}
-
-					SendState(GetPlayer(), true, true);
 				}
 				else if (_stopWatch_Mode == 1)
 				{
@@ -753,11 +755,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 					if (_stopWatch?.Elapsed.TotalSeconds >= SECURED_TIMESPAN)
 					{
 						UnlockObjective();
-					}
-					else
-					{
+
 						SendState(GetPlayer(), true, true);
 					}
+					else
+						SendState(GetPlayer(), false, true);
 				}
 			}
 		}
