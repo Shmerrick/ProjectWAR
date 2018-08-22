@@ -3776,6 +3776,29 @@ namespace WorldServer.Managers.Commands
         #endregion
 
         #region Events
+
+
+        public static bool Morph(Player plr, ref List<string> values)
+        {
+            ushort modelID = Convert.ToUInt16(values[0]);
+
+            plr.ImageNum = (ushort)modelID;
+
+            
+            var Out = new PacketOut((byte)Opcodes.F_PLAYER_IMAGENUM); //F_PLAYER_INVENTORY
+            Out.WriteUInt16(plr.Oid);
+            Out.WriteUInt16((ushort)modelID);
+            Out.Fill(0, 18);
+            plr.DispatchPacket(Out, true);
+
+            plr.SendClientMessage("Morphing!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+
+            values = (List<string>) values.Skip(1);
+            SetEffectStateSelf(plr,  ref values);
+            
+            return true;
+        }
+
         public static bool Spooky(Player plr, ref List<string> values)
         {
             /*if (!plr.Spooky)

@@ -328,7 +328,7 @@ namespace WorldServer.Managers.Commands
             // Halloween event stuff
             new GmCommandHandler("spooky", Spooky, null, 0, 0, "This command will make you spooky..."),
             new GmCommandHandler("notspooky", NotSpooky, null, 0, 0, "You don't want to be spooky :(... You need to run this command upon logging on server, it do not disable spookieness if you are already spooky."),
-
+            new GmCommandHandler("morph", Morph, null, 0, 0, "This command will make you morph..."),
             // All staff
             #if (DEBUG)
             new GmCommandHandler("debugmode", SetDebugMode, null, 0, 0, "Enables debugging messages (byte enableDebug)"),
