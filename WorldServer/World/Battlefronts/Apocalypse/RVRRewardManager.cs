@@ -105,7 +105,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             foreach (var player in playersWithinRange)
             {
-                if (player.Realm != owningRealm || player.CbtInterface.IsInCombat || player.IsAFK || player.IsAutoAFK)
+                if (player.Realm != owningRealm || player.IsAFK || player.IsAutoAFK)
                     continue;
 
                 // Bad dirty hak by Hargrim to fix Area Influence bug
