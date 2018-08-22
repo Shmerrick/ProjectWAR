@@ -62,8 +62,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 UpdateAAOBuffs(newRealm, newMult); // The realm already has AAO. Update it.
             }
-
-
+			
             AgainstAllOddsMult = newMult;
         }
 
