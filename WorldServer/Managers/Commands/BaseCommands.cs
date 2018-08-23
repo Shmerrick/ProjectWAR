@@ -9,6 +9,7 @@ using WorldServer.Scenarios;
 using static System.UInt16;
 using static WorldServer.Managers.Commands.GMUtils;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.BattleFronts;
 
 namespace WorldServer.Managers.Commands
@@ -2232,6 +2233,17 @@ namespace WorldServer.Managers.Commands
         {
             if (WorldMgr.ServerMode != "DEV")
                 return false;
+
+            var rarity = Convert.ToUInt16(values[0]);
+            var item1 = Convert.ToUInt16(values[1]);
+            var r = (LootBagRarity) rarity;
+            var lootBagItem = ItemService.GetItem_Info((uint) Convert.ToInt32(LootBagTypeDefinition.GetDescription(r)));
+
+            var tl = new List<Talisman> { new Talisman(item1, 1, 0, 0) };
+
+            var result = plr.ItmInterface.CreateItem(lootBagItem, 1, tl, 0, 0, false, 0, false);
+
+
             return true;
 
         }
