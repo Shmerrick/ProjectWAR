@@ -2235,7 +2235,7 @@ namespace WorldServer.Managers.Commands
                 return false;
 
             var rarity = Convert.ToUInt16(values[0]);
-            var item1 = Convert.ToUInt16(values[1]);
+            var item1 = Convert.ToUInt32(values[1]);
             var r = (LootBagRarity) rarity;
             var lootBagItem = ItemService.GetItem_Info((uint) Convert.ToInt32(LootBagTypeDefinition.GetDescription(r)));
 

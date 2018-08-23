@@ -1264,7 +1264,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 				case StateFlags.Secure: // big tick
 					VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.BIG);
-					break;
+                    // Make players close to the capture get eligibility for a zonelock reward
+				    foreach (var closePlayer in _closePlayers)
+				    {
+				        this.CampaignObjectiveContributions.TryAdd(closePlayer.CharacterId, (uint)this.Id);
+				    }
+                    break;
 
 				case StateFlags.Locked: // small tick
 					VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_LOCKED);

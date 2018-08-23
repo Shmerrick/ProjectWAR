@@ -36,11 +36,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             player.AddMoney((uint) lockReward.Money);
             player.ItmInterface.CreateItem((uint)lockReward.ItemId, (ushort)lockReward.ItemCount);
 
+        
             var lootBagItemId = Convert.ToInt32(LootBagTypeDefinition.GetDescription(lootBag.BagRarity));
             var lootBagItem = ItemService.GetItem_Info((uint)lootBagItemId);
             var tl = new List<Talisman> { new Talisman(lootBag.ItemId, 1, 0, 0) };
-
             var result = player.ItmInterface.CreateItem(lootBagItem, 1, tl, 0, 0, false, 0, false);
+
             _logger.Info($"Distributing reward to {player.Name}. Result = {result}");
 
             var lootRewardDescription = string.Empty;
