@@ -29,7 +29,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         {
             // Combine the lootBag reward
             var lockReward = ZoneLockRewards.SingleOrDefault(x => x.RRBand == playerRenownBand);
-
+            if (lockReward == null)
+                return "";
           
             player.AddXp((uint) lockReward.XP, false, false);
             player.AddRenown((uint) lockReward.Renown, false, RewardType.ZoneKeepCapture, "");
