@@ -3094,14 +3094,14 @@ namespace WorldServer
         {
             if (renown == 0)
                 return;
-
-
+			
             int aaoMult = 0;
             Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
             if (Region != null && Region.Campaign != null)
             {
                 if (Region.Campaign != null)
                 {
+					// aaoMult: -20 (400% order) to +20 (400% destro)
                     aaoMult = Math.Abs(Region.Campaign.AgainstAllOddsMult);
                     if (aaoMult != 0)
                         aaoRealm = Region.Campaign.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
@@ -3115,15 +3115,12 @@ namespace WorldServer
             if (Program.Config.RenownRate > 0)
                 renown *= (uint)Program.Config.RenownRate;
 
-            if (aaoMult != 0 && aaoRealm != Realms.REALMS_REALM_NEUTRAL && Realm != aaoRealm)
-            {
-                renown = Math.Max(1, renown);
-            }
-            else
-            {
-                renown = Math.Max(20, renown);
-            }
-            RewardLogger.Trace($"{renown} RP awarded to {this.Name} for {rewardString} ");
+			if (aaoMult != 0 && aaoRealm != Realms.REALMS_REALM_NEUTRAL && Realm != aaoRealm)
+			{
+				renown = Convert.ToUInt32(Math.Round(this.AAOBonus * renown, 0));
+			}
+
+			RewardLogger.Trace($"{renown} RP awarded to {this.Name} for {rewardString} ");
             InternalAddRenown(renown, shouldPool, type, rewardString);
         }
 
@@ -3966,11 +3963,11 @@ namespace WorldServer
                 // +1 VP for a kill
                 if (killer.Realm == Realms.REALMS_REALM_DESTRUCTION)
                 {
-                    killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints++;
+                    killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints= killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints+3;
                 }
                 else
                 {
-                    killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints++;
+                    killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints= killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints+3;
                 }
 
 				killer.SendClientMessage($"+1 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
@@ -4525,7 +4522,7 @@ namespace WorldServer
 
         public void UpdateActionPoints(long tick)
         {
-            if (!AbtInterface.IsCasting() && !AbtInterface.IsOnGlobalCooldown())
+            if (!AbtInterface.IsCasting())
             {
                 _actionPointTimer += (ushort)((tick - _lastAPCheck) * StsInterface.GetStatPercentageModifier(Stats.ActionPointRegen));
 
@@ -6348,8 +6345,9 @@ namespace WorldServer
             //    SendClientMessage("Current Area: " + (CurrentArea?.ToString() ?? "None") + " New Area:" + (newArea?.ToString() ?? "None"));
             //Log.Info("newArea", "  " + newArea);
             bool bWasNewArea = false;
-            if (newArea != CurrentArea)
-            {
+			//if ((newArea == null && CurrentArea == null) || newArea != CurrentArea)
+			if (newArea != CurrentArea)
+			{
 
                 bWasNewArea = true;
                 if (newArea != null)

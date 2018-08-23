@@ -1454,8 +1454,8 @@ namespace WorldServer
             _logger.Debug($"Region = {regionMgr.RegionId} ObjectiveCount = {objectives.Count}");
             foreach (BattleFront_Objective obj in objectives)
             {
-                CampaignObjective flag = new CampaignObjective(obj, regionMgr.GetTier());
-                resultList.Add(flag);
+                CampaignObjective flag = new CampaignObjective(regionMgr, obj);
+				resultList.Add(flag);
             }
 
             return resultList;
