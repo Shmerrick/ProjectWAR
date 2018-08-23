@@ -136,7 +136,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public ConcurrentDictionary<uint, uint> CampaignObjectiveContributions { get; set; }
 
-        #region Helpers
+        
 		private List<FlagGuard> Guards = new List<FlagGuard>();
 
 		private static bool _allowLockTimer = true;
@@ -216,7 +216,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             RewardManager = new RVRRewardManager();
 
             CampaignObjectiveContributions = new ConcurrentDictionary<uint, uint>();
-        }
+        
 
 			if (objective.Guards != null)
 			{

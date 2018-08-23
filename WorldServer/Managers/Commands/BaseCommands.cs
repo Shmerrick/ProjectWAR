@@ -2228,7 +2228,13 @@ namespace WorldServer.Managers.Commands
         }
 
 
+        public static bool GiveBag(Player plr, ref List<string> values)
+        {
+            if (WorldMgr.ServerMode != "DEV")
+                return false;
+            return true;
 
+        }
 
         public static bool GearTester(Player plr, ref List<string> values)
         {

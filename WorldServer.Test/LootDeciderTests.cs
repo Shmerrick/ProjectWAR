@@ -172,10 +172,10 @@ namespace WorldServer.Test
             var bag = new LootBagTypeDefinition { BagRarity = LootBagRarity.Blue, Assignee = 1, LootBagNumber = 1 };
 
             // SHould match 1 record
-            var result = lootDecider.DetermineRVRZoneReward(bag, 20, 64, new List<uint>());
+            var result = lootDecider.DetermineRVRZoneReward(bag, 20, 64, new List<uint>(), false);
             Assert.IsTrue(result.IsValid());
             Assert.IsTrue(result.RenownBand == 20);
-            Assert.IsTrue(result.ItemId == 300);
+            Assert.IsTrue(result.ItemId == 601);
         }
 
         [TestMethod]
@@ -185,10 +185,10 @@ namespace WorldServer.Test
             var bag = new LootBagTypeDefinition { BagRarity = LootBagRarity.Blue, Assignee = 1, LootBagNumber = 1 };
 
             // SHould match 1 record
-            var result = lootDecider.DetermineRVRZoneReward(bag, 20, 64, SamplePlayerItems);
+            var result = lootDecider.DetermineRVRZoneReward(bag, 20, 64, SamplePlayerItems, false);
             Assert.IsTrue(result.IsValid());
             Assert.IsTrue(result.RenownBand == 20);
-            Assert.IsTrue(result.ItemId == 300);
+            Assert.IsTrue(result.ItemId == 601);
         }
 
         [TestMethod]
