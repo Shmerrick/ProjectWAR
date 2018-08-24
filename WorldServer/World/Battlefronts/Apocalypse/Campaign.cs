@@ -164,7 +164,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             DestructionPlayersInLake = this.DestructionPlayerPopulationList[status.BattleFrontId],
                             Tier = this.Tier,
                             Timestamp = DateTime.UtcNow,
-                            GroupId = groupId
+                            GroupId = groupId,
+                            TotalPlayerCountInRegion = GetTotalPlayerCount(status.RegionId),
+                            TotalDestPlayerCountInRegion = GetTotalDestPlayerCountInRegion(status.RegionId),
+                            TotalOrderPlayerCountInRegion = GetTotalOrderPlayerCountInRegion(status.RegionId)
                         };
 
                         WorldMgr.Database.AddObject(metrics);
@@ -174,6 +177,30 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             catch (Exception e)
             {
                 BattlefrontLogger.Error($"Could not write rvr metrics..continuing. {e.Message}");
+            }
+        }
+
+        private int GetTotalPlayerCount(int regionId)
+        {
+            lock (Player._Players)
+            {
+                return Player._Players.Count(x => !x.IsDisposed && x.IsInWorld() && x != null && x.Region.RegionId == regionId);
+            }
+        }
+
+        private int GetTotalDestPlayerCountInRegion(int regionId)
+        {
+            lock (Player._Players)
+            {
+                return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && x != null && x.Region.RegionId == regionId);
+            }
+        }
+
+        private int GetTotalOrderPlayerCountInRegion(int regionId)
+        {
+            lock (Player._Players)
+            {
+                return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_ORDER && !x.IsDisposed && x.IsInWorld() && x != null && x.Region.RegionId == regionId);
             }
         }
 
