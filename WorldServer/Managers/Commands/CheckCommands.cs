@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using static WorldServer.Managers.Commands.GMUtils;
 using System.Text;
+using GameData;
 using WorldServer.Services.World;
 
 namespace WorldServer.Managers.Commands
@@ -50,23 +52,28 @@ namespace WorldServer.Managers.Commands
 
         public static bool GetServerPopulation(Player plr, ref List<string> values)
         {
-            plr.SendClientMessage($"Server Population " +
-                                  $"Online players : {Program.Rm.OnlinePlayers} " +
-                                  $"Order : {Program.Rm.OrderCount} " +
-                                  $"Destro : {Program.Rm.DestructionCount}");
-
-            var message = String.Empty;
-
-            foreach (var regionMgr in WorldMgr._Regions)
+            lock (Player._Players)
             {
-                message += $"{regionMgr.RegionName} " +
-                           $"Total : {regionMgr.Players.Count} " +
-                           $"Order : {regionMgr.OrderPlayers} " +
-                           $"Dest : {regionMgr.DestPlayers} \n";
+                plr.SendClientMessage($"Server Population " +
+                                      $"Online players : {Player._Players.Count} " +
+                                      $"Order : {Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_ORDER && !x.IsDisposed && x.IsInWorld() && x != null)} " +
+                                      $"Destro : {Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && x != null)}");
+
+                plr.SendClientMessage("------------------------------------");
+                var message = String.Empty;
+
+                foreach (var regionMgr in WorldMgr._Regions)
+                {
+                    if (regionMgr.Players.Count > 0)
+                    {
+                        message += $"Region {regionMgr.RegionId} : " +
+                                   $"Total : {Player._Players.Count(x => !x.IsDisposed && x.IsInWorld() && x != null &&x.Region.RegionId == regionMgr.RegionId)} " +
+                                   $"Order : {Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_ORDER && !x.IsDisposed && x.IsInWorld() && x != null && x.Region.RegionId == regionMgr.RegionId)} " +
+                                   $"Dest : {Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && x != null && x.Region.RegionId == regionMgr.RegionId)} ";
+                    }
+                }
+                plr.SendClientMessage(message);
             }
-            plr.SendClientMessage(message);
-
-
             return true;
         }
 

@@ -94,7 +94,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("logpackets", LogPackets, null, EGmLevel.SourceDev, 0, "Toggles logging outgoing packet volume."),
             new GmCommandHandler("readpackets", ReadPackets, null, EGmLevel.SourceDev, 0, "Displays the volume of outgoing packets over the defined period."),
             new GmCommandHandler("los", StartStopLosMonitor, null, EGmLevel.AllStaff, 0, "Starts/Stops line of sight monitoring for selected target."),
-            new GmCommandHandler("population", GetServerPopulation, null, EGmLevel.SourceDev, 0, "Finds all players in the game."),
+            new GmCommandHandler("population", GetServerPopulation, null, EGmLevel.AnyGM, 0, "Finds all players in the game."),
         };
 
         /// <summary>Database commands under .database</summary>
@@ -288,7 +288,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("add",null, AddCommands, EGmLevel.TrustedStaff, 0, "Addition commands."),
             new GmCommandHandler("campaign",null, CampaignCommands, EGmLevel.GM, 0, "RvR campaign commmands."),
             new GmCommandHandler("chapter",null, ChapterCommands, EGmLevel.DatabaseDev, 0, "Chapter modification commands."),
-            new GmCommandHandler("check",null, CheckCommands, EGmLevel.DatabaseDev, 0, "Debugging commands."),
+            new GmCommandHandler("check",null, CheckCommands, EGmLevel.GM, 0, "Debugging commands."),
             new GmCommandHandler("database", null, DatabaseCommands, EGmLevel.DatabaseDev, 0, "Database commands."),
             new GmCommandHandler("equip", null, EquipCommands, EGmLevel.DatabaseDev, 0, "Creature equipment modification commands."),
             new GmCommandHandler("go",null, GoCommands, EGmLevel.DatabaseDev, 0, "Game object commands."),

@@ -218,6 +218,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 							apocBattleFrontStatus.FinalVictoryPoint = new VictoryPointProgress();
 						}
 						apocBattleFrontStatus.LockTimeStamp = 0;
+
+                        // Reset the population for the battle front status
+                        ProgressionLogger.Info($"InitializePopulationList {activeRegion.RegionName} BF Id : {this.ActiveBattleFront.BattleFrontId} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
+                        this.GetActiveCampaign().InitializePopulationList(this.ActiveBattleFront.BattleFrontId);
                     }
                 }
 

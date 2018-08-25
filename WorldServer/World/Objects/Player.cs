@@ -6424,8 +6424,8 @@ namespace WorldServer
                 CurrentArea = newArea;
                 SendChapterBar();
             }
-            //else if (DebugMode)
-            //    DebugMessage("Same Area");
+       //     else 
+			    //SendClientMessage("Same Area");
         }
 
         public string GetAreaName()
