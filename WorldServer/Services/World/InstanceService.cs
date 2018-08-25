@@ -64,7 +64,7 @@ namespace WorldServer.Services.World
 
             foreach(Instance_Info II in InstanceInfo)
             {
-                _InstanceInfo.Add(II.ZoneID,II);
+                _InstanceInfo.Add(II.ZoneID, II);
 
             }
             Log.Success("WorldMgr", "Loaded " + _InstanceInfo.Count + "Instance_Info");

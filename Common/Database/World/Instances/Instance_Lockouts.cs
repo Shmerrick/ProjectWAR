@@ -15,10 +15,5 @@ namespace Common
 
         [DataElement]
         public string Bosseskilled { get; set; }
-
-
-
-
-
     }
 }

@@ -8,8 +8,8 @@ using WorldServer.Services.World;
 
 namespace WorldServer
 {
-    public class InstanceObject:Object 
-    {
+    public class InstanceObject : GameObject
+	{
         public readonly Instance_Object Info;
         protected readonly Instance Instance;
 

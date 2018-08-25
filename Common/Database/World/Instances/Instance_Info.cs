@@ -30,9 +30,7 @@ namespace Common
 
         [DataElement]
         public uint exitzonejup { get; set; }
-
-
-
+		
         public List<Instance_Script> Scripts = new List<Instance_Script>();
         public List<Instance_Attribute> Attributes = new List<Instance_Attribute>();
         public List<Instance_Encounter> Encounters = new List<Instance_Encounter>();

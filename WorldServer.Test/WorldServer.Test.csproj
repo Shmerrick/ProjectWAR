@@ -49,6 +49,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CampaignObjectiveTest.cs" />
+    <Compile Include="LockoutTest.cs" />
     <Compile Include="LowerTierBattlefrontManagerTest.cs" />
     <Compile Include="CalculateObjectiveRewardScaleTest.cs" />
     <Compile Include="UpperTierBattlefrontManagerTest.cs" />

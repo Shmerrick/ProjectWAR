@@ -28,7 +28,7 @@ namespace WorldServer
         public ushort ID { get; set; }
         public Instance_Info Info;
         public RegionMgr Region;
-        public List<String> _Players = new List<String>();
+        public List<string> _Players = new List<string>();
         private List<GameObject> _Objects = new List<GameObject>();
         private Dictionary<uint,List<InstanceSpawn>> _Spawns = new Dictionary<uint, List<InstanceSpawn>>();
         private Dictionary<uint, List<InstanceBossSpawn>> _BossSpawns = new Dictionary<uint, List<InstanceBossSpawn>>();
@@ -42,7 +42,7 @@ namespace WorldServer
         private int closetime;
         public byte state;
         public byte updatestate;
-        public Boolean Encounterinprogress = false;
+        public bool Encounterinprogress = false;
 
         public Instance(ushort zoneid, ushort id, byte realm, Instance_Lockouts lockouts)
         {
@@ -58,9 +58,7 @@ namespace WorldServer
             _evtInterface = new EventInterface();
             closetime = (TCPManager.GetTimeStamp() + 7200);
             new Thread(Update).Start();
-
-            
-
+			
             Log.Success("Opening Instance","Instance ID "+ID+"  Map: "+Info.Name);
             if (zoneid == 179)
             {
@@ -88,11 +86,11 @@ namespace WorldServer
 
             if (updatestate == 0)
                 updatestate = 1;
-            Log.Success("updatestate","  "+updatestate);
+            Log.Success("updatestate", "  " + updatestate);
             if (updatestate % 4 != 0)
                 return;
 
-            Log.Info("update oendulum"," "+state);
+            Log.Info("update pendulum", " " + state);
             foreach (var p in _Objects.Where(e => e.Name == "Pendulum").ToList())
             {
                 p.UpdateVfxState((byte)state);
@@ -107,7 +105,6 @@ namespace WorldServer
         {
             while (_running)
             {
-
                 checkcombatgroups();
                 checkrespawns();
                 checkinstanceempty();
@@ -119,9 +116,8 @@ namespace WorldServer
         private void checkinstanceempty()
         {
             if (Region.Players.Count > 0)
-                closetime = ((TCPManager.GetTimeStamp()) + 7200);
-
-
+                closetime = TCPManager.GetTimeStamp() + (int)Info.LockoutTimer * 60;
+			
             if (closetime < TCPManager.GetTimeStamp())
             {
                 Log.Success("Closing Instance", "Instance ID " + ID + "  Map: " + Info.Name);
@@ -170,13 +166,14 @@ namespace WorldServer
                     }
                     if (death == sp.Count)
                     {
-                        Respawns.Add(new Respawn(TCPManager.GetTimeStampMS()+ (Info.TrashRespawnTimer *1000), GroupsinCombat[i]));
+                        Respawns.Add(new Respawn(TCPManager.GetTimeStampMS() + (Info.TrashRespawnTimer * 1000), GroupsinCombat[i]));
                         GroupsinCombat.Remove(GroupsinCombat[i]);
                         i--;
                     }
                 }
             }
         }
+
         public void AddPlayer(Player player)
         {
             lock (_Players)
@@ -194,8 +191,7 @@ namespace WorldServer
 
             Region.AddObject(player, ZoneID, true);
         }
-
-
+		
         public void AddPlayer(Player player, Zone_jump jump)
         {
             lock (_Players)
@@ -208,86 +204,60 @@ namespace WorldServer
 
             player.InstanceID = ID;
 
-            /*
-            Thread thread = new Thread(delegate ()
-            {
-                Thread.Sleep(5000);
-                */
-                if (jump != null)
-                {
-                    player.Teleport(Region, jump.ZoneID, jump.WorldX, jump.WorldY, jump.WorldZ, jump.WorldO);
-                }
-                else
-                {
-                    player.Teleport(Region, player._Value.ZoneId, (uint)player._Value.WorldX, (uint)player._Value.WorldY, (ushort)player._Value.WorldZ, (ushort)player._Value.WorldO);
-                }
-            //});
-          //  thread.Start();
-        }
+			if (jump != null)
+			{
+				player.Teleport(Region, jump.ZoneID, jump.WorldX, jump.WorldY, jump.WorldZ, jump.WorldO);
+			}
+			else
+			{
+				player.Teleport(Region, player._Value.ZoneId, (uint)player._Value.WorldX, (uint)player._Value.WorldY, (ushort)player._Value.WorldZ, (ushort)player._Value.WorldO);
+			}
+		}
 
         private void LoadObjects()
         {
             foreach (var obj in Info.Objects)
             {
-                /*
-                InstanceObject o = null;
-                if (obj.DoorID != 0)
-                    o = new InstanceDoor(this, obj);
-                else
-                    o = new InstanceObject(this, obj);
-                    */
-                //Region.AddObject(o, Info.ZoneID, true);
-                //o.SetZone(Region.GetZoneMgr(Info.ZoneID));
-                //Region.CheckZone(o);
-//                _Objects.Add(o);
-            }
+				InstanceObject o = null;
+				if (obj.DoorID != 0)
+					o = new InstanceDoor(this, obj);
+				else
+					o = new InstanceObject(this, obj);
+
+				Region.AddObject(o, Info.ZoneID, true);
+				o.SetZone(Region.GetZoneMgr(Info.ZoneID));
+				Region.CheckZone(o);
+				_Objects.Add(o);
+			}
         }
 
-        public void OnBossDeath(uint GroupID)
+        public void OnBossDeath(uint GroupID, InstanceBossSpawn boss)
         {
-            List<InstanceBossSpawn> spawns;
+			if (Lockout == null) // instance hasn't got any lockouts
+			{
+				Lockout = new Instance_Lockouts
+				{
+					InstanceID = "~" + boss.InstanceID + ":" + (TCPManager.GetTimeStamp() + Info.LockoutTimer * 60),
+					Bosseskilled = boss.BossID.ToString()
+				};
+				InstanceService._InstanceLockouts.Add(Lockout.InstanceID, Lockout);
+				Lockout.Dirty = true;
+				WorldMgr.Database.AddObject(Lockout);
+			}
+			else // instance has got already lockouts
+			{
+				Lockout.Bosseskilled += ":" + boss.BossID;
+				Lockout.Dirty = true;
+				WorldMgr.Database.SaveObject(Lockout);
+			}
 
-            Boolean allbossesdead = true;
-
-            InstanceBossSpawn boss=null;
-
-                _BossSpawns.TryGetValue(GroupID, out spawns);
-                for (int i = 0; i < spawns.Count; i++)
-                {
-                boss = spawns[i].GetInstanceBossSpawn();
-                    if (!spawns[i].IsDead)
-                    {
-                        allbossesdead = false;
-                    }
-                }
-            if(allbossesdead)
-            {
-                if(Lockout == null)
-                {
-                    Lockout = new Instance_Lockouts();
-                    Lockout.InstanceID=boss.InstanceID + ":" + (TCPManager.GetTimeStamp() + Info.LockoutTimer*60);
-                    Lockout.Bosseskilled = boss.ZoneId + ":" + boss.BossID;
-                    InstanceService._InstanceLockouts.Add(Lockout.InstanceID, Lockout);
-                    Lockout.Dirty = true;
-                    WorldMgr.Database.AddObject(Lockout);
-                }
-                else
-                { 
-                    
-                    Lockout.Bosseskilled += ";"+boss.ZoneId+":"+ boss.BossID;
-                    //InstanceService._InstanceLockouts.Add(Lockout.InstanceID,Lockout);
-                    Lockout.Dirty = true;
-                    WorldMgr.Database.SaveObject(Lockout);
-                }
-                
-                foreach(Player pl in Region.Players)
-                {
-                    pl._Value.AddLogout(Lockout.InstanceID);
-                    pl.SendLockouts();
-                }
-                Encounterinprogress = false;
-            }
-        }
+			foreach (Player pl in Region.Players)
+			{
+				pl._Value.AddLockout(Lockout);
+				pl.SendLockouts();
+			}
+			Encounterinprogress = false;
+		}
 
         private void LoadBossSpawns()
         {
@@ -295,16 +265,14 @@ namespace WorldServer
 
             List<uint> deadbossids = new List<uint>();
 
-            if(Lockout != null)
-            for (int i = 0; i < Lockout.Bosseskilled.Split(';').Count();i++)
-            {
-                deadbossids.Add(UInt16.Parse(Lockout.Bosseskilled.Split(';')[i].Split(':')[1]));
-            }
-
-
+            if (Lockout != null)
+				for (int i = 0; i < Lockout.Bosseskilled.Split(';').Count();i++)
+				{
+					deadbossids.Add(uint.Parse(Lockout.Bosseskilled.Split(';')[i].Split(':')[1]));
+				}
+			
             InstanceService._InstanceBossSpawns.TryGetValue(Info.Entry, out Obj);
-
-
+			
             if (Obj == null)
                 return;
 
@@ -312,14 +280,12 @@ namespace WorldServer
             {
                 if (obj.Realm == 0 || obj.Realm == this.Realm)
                 {
-
                     if (deadbossids.Contains(obj.BossID))
                         continue;
 
                     if (obj.ZoneID != ZoneID)
                         continue;
-
-
+					
                     Creature_spawn spawn = new Creature_spawn();
                     spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
                     spawn.BuildFromProto(CreatureService.GetCreatureProto((uint)obj.Entry));
@@ -329,9 +295,8 @@ namespace WorldServer
                     spawn.WorldX = obj.WorldX;
                     spawn.ZoneId = obj.ZoneID;
                     spawn.Enabled = 1;
-
-
-                    InstanceBossSpawn IS = new InstanceBossSpawn(spawn, obj.SpawnGroupID,obj.BossID ,obj.InstanceID, this);
+					
+                    InstanceBossSpawn IS = new InstanceBossSpawn(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
 
                     if (obj.SpawnGroupID > 0)
                     {
@@ -347,22 +312,19 @@ namespace WorldServer
                     Region.AddObject(IS, obj.ZoneID);
                 }
             }
-
         }
 
         private void LoadSpawns()
         {
-
             List<Instance_Spawn> Obj;
            
-
             InstanceService._InstanceSpawns.TryGetValue(ZoneID, out Obj);
 
             List<uint> deadbossids = new List<uint>();
             if (Lockout != null)
                 for (int i = 0; i < Lockout.Bosseskilled.Split(';').Count(); i++)
                 {
-                    deadbossids.Add(UInt16.Parse(Lockout.Bosseskilled.Split(';')[i].Split(':')[1]));
+                    deadbossids.Add(uint.Parse(Lockout.Bosseskilled.Split(';')[i].Split(':')[1]));
                 }
 
             if (Obj == null)
@@ -372,11 +334,9 @@ namespace WorldServer
             {
                 if (deadbossids.Contains(obj.ConnectedBossID))
                     continue;
-
-
+				
                 if (obj.Realm == 0 || obj.Realm == this.Realm)
                 {
-
                     Creature_spawn spawn = new Creature_spawn();
                     spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
                     spawn.BuildFromProto(CreatureService.GetCreatureProto((uint)obj.Entry));
@@ -392,8 +352,7 @@ namespace WorldServer
                     spawn.WorldX = obj.WorldX;
                     spawn.ZoneId = obj.ZoneID;
                     spawn.Enabled = 1;
-
-
+					
                     InstanceSpawn IS = new InstanceSpawn(spawn, obj.SpawnGroupID, obj.ConnectedBossID,this);
 
                     if (obj.SpawnGroupID > 0)
@@ -417,9 +376,9 @@ namespace WorldServer
             if (Target == null)
                 return;
 
-            lock(GroupsinCombat)
+            lock (GroupsinCombat)
             {
-                if(!GroupsinCombat.Contains(GroupID))
+                if (!GroupsinCombat.Contains(GroupID))
                 {
                     GroupsinCombat.Add(GroupID);
                     List<InstanceSpawn> spawns = new List<InstanceSpawn>();
@@ -464,7 +423,7 @@ namespace WorldServer
                     if(spawns[i].IsDead)
                     {
                         InstanceSpawn IS = spawns[i].RezInstanceSpawn();
-                        spawns[i]=(IS);
+                        spawns[i] = IS;
                     }
                 }
                 _Spawns[GroupID] = spawns;
@@ -486,7 +445,7 @@ namespace WorldServer
                     if (spawns[i].IsDead)
                     {
                         InstanceBossSpawn IS = spawns[i].RezInstanceSpawn();
-                        spawns[i] = (IS);
+                        spawns[i] = IS;
                     }
                 }
                 _BossSpawns[GroupID] = spawns;
@@ -496,10 +455,12 @@ namespace WorldServer
 
         public void DoorOpenned(InstanceDoor door)
         {
+
         }
 
         public void DoorClosed(InstanceDoor door)
         {
+
         }
     }
 }

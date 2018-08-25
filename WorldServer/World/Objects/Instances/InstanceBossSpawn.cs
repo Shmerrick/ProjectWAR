@@ -53,7 +53,7 @@ namespace WorldServer
 
         protected override void SetDeath(Unit killer)
         {
-            Instance.OnBossDeath(InstanceGroupSpawnID);
+            Instance.OnBossDeath(InstanceGroupSpawnID, this);
             base.SetDeath(killer);
         }
 

@@ -1825,7 +1825,7 @@ namespace WorldServer
 
         public void SendLockouts()
         {
-            List<String> lockouts = _Value.GetAllLockouts();
+            List<string> lockouts = _Value.GetAllLockouts();
 
             if (lockouts.Count == 0)
                 return;
@@ -1858,27 +1858,24 @@ namespace WorldServer
             Out.Fill(0, 2);
             Out.WriteByte((byte)lockouts.Count);
             Out.Fill(0, 8);
-            foreach (String s in lockouts)
+            foreach (string s in lockouts)
             {
                 Out.WriteUInt32(Convert.ToUInt32((Convert.ToInt64(s.Split(':')[1]) - TCPManager.GetTimeStamp()) / 60));
                 Out.Fill(0, 2);
                 Instance_Info info;
-                InstanceService._InstanceInfo.TryGetValue(UInt32.Parse(s.Split(':')[0]), out info);
+                InstanceService._InstanceInfo.TryGetValue(uint.Parse(s.Split(':')[0]), out info);
                 Out.WritePascalString(info.Name);
                 Instance_Lockouts Deadbosses;
 
                 InstanceService._InstanceLockouts.TryGetValue(s, out Deadbosses);
 
                 List<Instance_Boss_Spawn> bosses;
-
-
-
-
+				
                 for (int i = 0; i < 16; i++)
                 {
                     if (i < Deadbosses.Bosseskilled.Split(';').Count())
                     {
-                        InstanceService._InstanceBossSpawns.TryGetValue(UInt32.Parse(Deadbosses.InstanceID.Split(':')[0]), out bosses);
+                        InstanceService._InstanceBossSpawns.TryGetValue(uint.Parse(Deadbosses.InstanceID.Split(':')[0]), out bosses);
                         uint Bossentry = 0;
 
                         foreach (Instance_Boss_Spawn bs in bosses)

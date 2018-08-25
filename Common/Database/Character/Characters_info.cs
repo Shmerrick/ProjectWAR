@@ -47,7 +47,7 @@ namespace Common
         private uint _rvrkills;
         private uint _rvrdeaths;
 
-        private string _lockouts ="";
+        private string _lockouts = string.Empty;
         private int _disconecttime;
 
         [PrimaryKey]
@@ -413,67 +413,97 @@ namespace Common
             set { _disconecttime = value; Dirty = true; }
         }
 
-        public List<String> GetAllLockouts()
+        public List<string> GetAllLockouts()
         {
-            List<String> lockouts = new List<string>();
+            List<string> lockouts = new List<string>();
 
             if (_lockouts == null ||_lockouts.Length == 0)
                 return lockouts;
-
-
-            for (int i = 0; i < _lockouts.Split(';').Length; i++)
-                lockouts.Add(_lockouts.Split(';')[i]);
+			
+            for (int i = 1; i < _lockouts.Split('~').Length; i++)
+			{
+				lockouts.Add("~" + _lockouts.Split('~')[i]);
+			}
+                
             return lockouts;
         }
 
-        public String GetLockout(ushort zone)
+        public string GetLockout(ushort zone)
         {
             if (_lockouts == null)
                 return null;
-            for (int i = 0; i < _lockouts.Split(';').Length; i++)
-                if(_lockouts.Split(';')[i].Split(':')[0] == ""+zone)
-            return _lockouts.Split(';')[i];
+            for (int i = 0; i < _lockouts.Split('~').Length; i++)
+                if(_lockouts.Split('~')[i].Split(':')[0] == "" + zone)
+				{
+					string ret = _lockouts.Split('~')[i];
+					if (!ret.StartsWith("~"))
+						ret = "~" + ret;
+					return ret;
+				}
 
             return null;
         }
 
-        public void RemoveLockout(String Lockout)
+        public void RemoveLockout(string Lockout)
         {
-            String logoutnew ="";
-            for (int i = 0; i < _lockouts.Split(';').Length; i++)
+            string newLockout = string.Empty;
+            for (int i = 0; i < _lockouts.Split('~').Length; i++)
             {
-                if (_lockouts.Split(';')[i].Split(':')[0] == Lockout.Split(':')[0])
+                if (_lockouts.Split('~')[i].Split(':')[0] == Lockout.Split('~')[1].Split(':')[0])
                     continue;
                 else
                 {
                     if (i > 0)
-                        logoutnew += ";";
-                    logoutnew += _lockouts.Split(';')[i];
+						newLockout += "~";
+					newLockout += _lockouts.Split('~')[i];
                 }
             }
-            Lockouts = logoutnew;
+            Lockouts = newLockout;
         }
-        public void AddLogout(String Lockout)
-        {
-            String logoutnew = "";
-            for (int i = 0; i < _lockouts.Split(';').Length; i++)
-            {
-                if (_lockouts.Split(';')[i].Split(':')[0] == Lockout.Split(':')[0])
-                {
-                    if (i > 0)
-                        logoutnew += ";";
-                        logoutnew += Lockout;
-                }
-                else
-                {
-                    if (i > 0)
-                        logoutnew += ";";
-                    logoutnew += Lockout;
-                }
-            }
-            Lockouts = logoutnew;
 
-            
+        public void AddLockout(Instance_Lockouts Lockout)
+		{
+			// ~zoneID:timestamp:bossID:...~zoneID:timestamp:bossID:...~zoneID:timestamp:bossID:...
+			string newLockout = string.Empty;
+			
+			for (int i = 0; i < _lockouts.Split('~').Length; i++)
+            {
+				string currLockout = _lockouts.Split('~')[i];
+				// check zone id
+				if (currLockout.Split(':')[0] == Lockout.InstanceID.Replace("~", "").Split(':')[0])
+				{
+					// zoneID equal - lockout already existing
+					if (!newLockout.StartsWith("~"))
+						newLockout += "~";
+					newLockout += currLockout.Split(':')[0] + ":" + Lockout.InstanceID.Replace("~", "").Split(':')[1];
+					List<string> bossIDList = new List<string>();
+					for (int j = 2; j < currLockout.Split(':').Length; j++)
+						bossIDList.Add(currLockout.Split(':')[j]);
+					for (int j = 0; j < Lockout.Bosseskilled.Split(':').Length; j++)
+						bossIDList.Add(Lockout.Bosseskilled.Split(':')[j]);
+					bossIDList.Sort();
+					foreach (string bossID in bossIDList)
+					{
+						newLockout += ":" + bossID;
+					}
+				}
+				else
+				{
+					if (!currLockout.StartsWith("~") && !newLockout.EndsWith("~"))
+						currLockout = "~" + currLockout;
+					newLockout += currLockout;
+				}
+            }
+			
+			if (!_lockouts.Contains(Lockout.InstanceID.Replace("~", "").Split(':')[0]))
+			{
+				if (newLockout.EndsWith("~") && Lockout.InstanceID.StartsWith("~"))
+					newLockout += Lockout.InstanceID.Replace("~","") + ":" + Lockout.Bosseskilled;
+				else
+					newLockout += Lockout.InstanceID + ":" + Lockout.Bosseskilled;
+			}
+
+			Lockouts = newLockout;
         }
     }
 }
