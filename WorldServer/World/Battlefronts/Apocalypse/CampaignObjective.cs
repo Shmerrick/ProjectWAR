@@ -1291,6 +1291,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			if (BattleFront.VictoryPointProgress.DestructionVictoryPoints <= 0)
 				BattleFront.VictoryPointProgress.DestructionVictoryPoints = 0;
 			
+			// Record the character received a tick at this BO (proxy for contribution).
+			foreach (var closePlayer in _closePlayers)
+			{
+				this.CampaignObjectiveContributions.TryAdd(closePlayer.CharacterId, (uint)this.Id);
+			}
+
 			BattlefrontLogger.Trace($"{Name} Order VP:{BattleFront.VictoryPointProgress.OrderVictoryPoints} Dest VP:{BattleFront.VictoryPointProgress.DestructionVictoryPoints}");
 		}
 
