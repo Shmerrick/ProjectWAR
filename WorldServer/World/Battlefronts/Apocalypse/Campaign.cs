@@ -161,24 +161,26 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     BattlefrontLogger.Debug($"Recording metrics for Campaign {this.CampaignName}");
                     foreach (var status in BattleFrontManager.GetBattleFrontStatusList())
                     {
-                        var metrics = new RVRMetrics
+                        if ((DestructionPlayerPopulationList.ContainsKey(status.BattleFrontId)) && (OrderPlayerPopulationList.ContainsKey(status.BattleFrontId)))
                         {
-                            BattlefrontId = status.BattleFrontId,
-                            BattlefrontName = status.Description,
-                            DestructionVictoryPoints = (int)this.VictoryPointProgress.DestructionVictoryPoints,
-                            OrderVictoryPoints = (int)this.VictoryPointProgress.OrderVictoryPoints,
-                            Locked = status.LockStatus,
-                            OrderPlayersInLake = this.OrderPlayerPopulationList[status.BattleFrontId],
-                            DestructionPlayersInLake = this.DestructionPlayerPopulationList[status.BattleFrontId],
-                            Tier = this.Tier,
-                            Timestamp = DateTime.UtcNow,
-                            GroupId = groupId,
-                            TotalPlayerCountInRegion = GetTotalPlayerCount(status.RegionId),
-                            TotalDestPlayerCountInRegion = GetTotalDestPlayerCountInRegion(status.RegionId),
-                            TotalOrderPlayerCountInRegion = GetTotalOrderPlayerCountInRegion(status.RegionId)
-                        };
-
-                        WorldMgr.Database.AddObject(metrics);
+                            var metrics = new RVRMetrics
+                            {
+                                BattlefrontId = status.BattleFrontId,
+                                BattlefrontName = status.Description,
+                                DestructionVictoryPoints = (int) this.VictoryPointProgress.DestructionVictoryPoints,
+                                OrderVictoryPoints = (int) this.VictoryPointProgress.OrderVictoryPoints,
+                                Locked = status.LockStatus,
+                                OrderPlayersInLake = this.OrderPlayerPopulationList[status.BattleFrontId],
+                                DestructionPlayersInLake = this.DestructionPlayerPopulationList[status.BattleFrontId],
+                                Tier = this.Tier,
+                                Timestamp = DateTime.UtcNow,
+                                GroupId = groupId,
+                                TotalPlayerCountInRegion = GetTotalPlayerCount(status.RegionId),
+                                TotalDestPlayerCountInRegion = GetTotalDestPlayerCountInRegion(status.RegionId),
+                                TotalOrderPlayerCountInRegion = GetTotalOrderPlayerCountInRegion(status.RegionId)
+                            };
+                            WorldMgr.Database.AddObject(metrics);
+                        }
                     }
                 }
             }
