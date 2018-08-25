@@ -1119,11 +1119,11 @@ namespace WorldServer
             if (!target.IsDead)
             {
                 // Damage cap
-                if (caster is Player)
-                {
-                    int damageCap = Point2D.Lerp(550, 4000, caster.EffectiveLevel / 40f);
-                    damageInfo.Damage = Math.Min(damageCap, damageInfo.Damage);
-                }
+              //  if (caster is Player)
+              //  {
+              //      int damageCap = Point2D.Lerp(550, 4000, caster.EffectiveLevel / 40f);
+              //      damageInfo.Damage = Math.Min(damageCap, damageInfo.Damage);
+              //  }
 
                 PacketOut damageOut = new PacketOut((byte) Opcodes.F_CAST_PLAYER_EFFECT, 24);
 
