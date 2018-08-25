@@ -79,23 +79,27 @@ namespace WorldServer
 
                 if (target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND) != null && target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info?.Type == 5)
                 {
-                    //Block is [Block Rating of Shield / (Level * 7.5 + 50)] * 20
-                    double block = (target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info.Armor / (target.EffectiveLevel * 7.5 + 50) * 20);
-                    //Contestion based on offensive stat. This gets added to make it harder to actually do a defensive event, without actually contesting it directly above.
-                    //This should mimic the live formula.
-                    double removedDefense = (((offensiveStat) * 100) / (((caster.EffectiveLevel * 7.5) + 50) * 7.5));
+					//Block is [Block Rating of Shield / (Level * 7.5 + 50)] * 20
+					//double block = (target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info.Armor / (target.EffectiveLevel * 7.5 + 50) * 20);
+					//Contestion based on offensive stat. This gets added to make it harder to actually do a defensive event, without actually contesting it directly above.
+					//This should mimic the live formula.
+					//double removedDefense = (((offensiveStat) * 100) / (((caster.EffectiveLevel * 7.5) + 50) * 7.5));
 
-                    double baseRoll = 0d;
-                    baseRoll += removedDefense;
+					//double baseRoll = 0d;
+					//baseRoll += removedDefense;
+					
+					double block = (int)(((target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info.Armor / offensiveStat) * 0.2) * 100);
+					if (block > 50)
+						block = 50;
 
-                    if (cmdInfo.DamageInfo != null)
+					if (cmdInfo.DamageInfo != null)
                         block += cmdInfo.DamageInfo.Defensibility;
 
                     block += target.StsInterface.GetTotalStat(Stats.Block) - caster.StsInterface.GetStatLinearModifier(Stats.BlockStrikethrough);
-                    block = (int)(block * caster.StsInterface.GetStatPercentageModifier(Stats.BlockStrikethrough));
-                    double finalRoll = (StaticRandom.Instance.NextDouble() * (100d + baseRoll));
+                    //block = (int)(block * caster.StsInterface.GetStatPercentageModifier(Stats.BlockStrikethrough));
+                    //double finalRoll = (StaticRandom.Instance.NextDouble() * (100d + baseRoll));
 
-                    if (block >= finalRoll)
+                    if (StaticRandom.Instance.Next(100) <= block)
                     {
                         target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_BLOCK);
                         caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_BLOCK);
@@ -115,15 +119,14 @@ namespace WorldServer
                 double secondaryDefense = (int)((((double)defensiveStat / offensiveStat * 0.075) * 100));
                 //Contestion based on offensive stat. This gets added to make it harder to actually do a defensive event, without actually contesting it directly above.
                 //This should mimic the live formula.
-                double removedDefense = (((offensiveStat) * 100) / (((caster.EffectiveLevel * 7.5) + 50) * 7.5));
+                //double removedDefense = (((offensiveStat) * 100) / (((caster.EffectiveLevel * 7.5) + 50) * 7.5));
 
-                //*There is no cap on parry from stats. There is, however a max defensible amount of 0.75 similar to armor to the final roll.
-                 
-                    if (secondaryDefense > 25)
+                // There is no cap on parry from stats. There is, however a max defensible amount of 0.75 similar to armor to the final roll.
+                if (secondaryDefense > 25)
                     secondaryDefense = 25;
-                 
-                double baseRoll = 0d;
-                baseRoll += removedDefense;
+                
+                //double baseRoll = 0d;
+                //baseRoll += removedDefense;
 
                 if (cmdInfo.DamageInfo != null)
                     secondaryDefense += cmdInfo.DamageInfo.Defensibility;
