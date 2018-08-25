@@ -7,7 +7,7 @@ using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer
 {
-    static class CombatManager
+    public static class CombatManager
     {
         #region Defense
         public static bool CheckDefense(AbilityCommandInfo cmdInfo, Unit caster, Unit target, bool isAoE)
@@ -87,15 +87,8 @@ namespace WorldServer
 
 					//double baseRoll = 0d;
 					//baseRoll += removedDefense;
-					
-					double block = (int)(((target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info.Armor / offensiveStat) * 0.2) * 100);
-					if (block > 50)
-						block = 50;
 
-					if (cmdInfo.DamageInfo != null)
-                        block += cmdInfo.DamageInfo.Defensibility;
-
-                    block += target.StsInterface.GetTotalStat(Stats.Block) - caster.StsInterface.GetStatLinearModifier(Stats.BlockStrikethrough);
+					double block = CalculateBlockRoll(target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info.Armor, offensiveStat, cmdInfo.DamageInfo, target.StsInterface.GetTotalStat(Stats.Block), caster.StsInterface.GetStatLinearModifier(Stats.BlockStrikethrough));
                     //block = (int)(block * caster.StsInterface.GetStatPercentageModifier(Stats.BlockStrikethrough));
                     //double finalRoll = (StaticRandom.Instance.NextDouble() * (100d + baseRoll));
 
@@ -113,31 +106,33 @@ namespace WorldServer
 
             if (defenseEvent == 0)
             {
-                #region Parry, Dodge, Disrupt                
+				#region Parry, Dodge, Disrupt                
 
-                //Parry/Dodge/Disrupt chance from tooltip
-                double secondaryDefense = (int)((((double)defensiveStat / offensiveStat * 0.075) * 100));
-                //Contestion based on offensive stat. This gets added to make it harder to actually do a defensive event, without actually contesting it directly above.
-                //This should mimic the live formula.
-                //double removedDefense = (((offensiveStat) * 100) / (((caster.EffectiveLevel * 7.5) + 50) * 7.5));
+				////Parry/Dodge/Disrupt chance from tooltip
+				//double secondaryDefense = (int)((((double)defensiveStat / offensiveStat * 0.075) * 100));
+				////Contestion based on offensive stat. This gets added to make it harder to actually do a defensive event, without actually contesting it directly above.
+				////This should mimic the live formula.
+				////double removedDefense = (((offensiveStat) * 100) / (((caster.EffectiveLevel * 7.5) + 50) * 7.5));
 
-                // There is no cap on parry from stats. There is, however a max defensible amount of 0.75 similar to armor to the final roll.
-                if (secondaryDefense > 25)
-                    secondaryDefense = 25;
-                
-                //double baseRoll = 0d;
-                //baseRoll += removedDefense;
+				//// There is no cap on parry from stats. There is, however a max defensible amount of 0.75 similar to armor to the final roll.
+				//if (secondaryDefense > 25)
+				//    secondaryDefense = 25;
 
-                if (cmdInfo.DamageInfo != null)
-                    secondaryDefense += cmdInfo.DamageInfo.Defensibility;
+				////double baseRoll = 0d;
+				////baseRoll += removedDefense;
 
+				//if (cmdInfo.DamageInfo != null)
+				//    secondaryDefense += cmdInfo.DamageInfo.Defensibility;
+
+				double secondaryDefense = 0.0;
                 switch (cmdInfo.AttackingStat)
                 {
                     case 1: // Parry
                     {
-                            secondaryDefense += target.StsInterface.GetTotalStat(Stats.Parry) - caster.StsInterface.GetStatLinearModifier(Stats.ParryStrikethrough);
+							//secondaryDefense += target.StsInterface.GetTotalStat(Stats.Parry) - caster.StsInterface.GetStatLinearModifier(Stats.ParryStrikethrough);
+							secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, cmdInfo.DamageInfo, target.StsInterface.GetTotalStat(Stats.Parry), caster.StsInterface.GetStatLinearModifier(Stats.ParryStrikethrough));
 
-                            if (StaticRandom.Instance.Next(100) <= secondaryDefense)
+							if (StaticRandom.Instance.Next(100) <= secondaryDefense)
                             {
                                 target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_PARRY);
                                 caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_PARRY);
@@ -146,10 +141,10 @@ namespace WorldServer
                         } break;
                     case 8: // Evade
                     {
-                            secondaryDefense += target.StsInterface.GetTotalStat(Stats.Evade) - caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough);
+							//secondaryDefense += target.StsInterface.GetTotalStat(Stats.Evade) - caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough);
+							secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, cmdInfo.DamageInfo, target.StsInterface.GetTotalStat(Stats.Evade), caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough));
 
-
-                            if (StaticRandom.Instance.Next(100) <= secondaryDefense)
+							if (StaticRandom.Instance.Next(100) <= secondaryDefense)
                             {
                                 target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_EVADE);
                                 caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_EVADE);
@@ -158,9 +153,10 @@ namespace WorldServer
                         } break;
                     case 9: // Disrupt
                     {
-                            secondaryDefense += target.StsInterface.GetTotalStat(Stats.Disrupt) - caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough);
+                            //secondaryDefense += target.StsInterface.GetTotalStat(Stats.Disrupt) - caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough);
+							secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, cmdInfo.DamageInfo, target.StsInterface.GetTotalStat(Stats.Disrupt), caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough));
 
-                            if (StaticRandom.Instance.Next(100) <= secondaryDefense) // Disrupt
+							if (StaticRandom.Instance.Next(100) <= secondaryDefense) // Disrupt
                             {
                                 target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_DISRUPT);
                                 caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_DISRUPT);
@@ -199,13 +195,39 @@ namespace WorldServer
                 DamageEvent = defenseEvent,
                 IsAoE = isAoE
             };
-
-
+			
             caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.WasDefended, tempDmg, target);
             target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DefendedAgainst, tempDmg, caster);
 
             return true;
         }
+
+		public static double CalculateBlockRoll(ushort blockRatingOffhand, int offensiveStat, AbilityDamageInfo damageInfo, short targetBlock, int casterBlockStrikeThrough)
+		{
+			double block = (((double)blockRatingOffhand / offensiveStat) * 0.2) * 100;
+			if (block > 50)
+				block = 50;
+
+			if (damageInfo != null)
+				block += damageInfo.Defensibility;
+
+			block += targetBlock - casterBlockStrikeThrough;
+			return block;
+		}
+
+		public static double CalculatePDDRoll(int defensiveStat, int offensiveStat, AbilityDamageInfo damageInfo, short targetDef, int casterDefStrikeThrough)
+		{
+			double secondaryDefense = ((double)defensiveStat / offensiveStat * 0.075) * 100;
+			if (secondaryDefense > 25)
+				secondaryDefense = 25;
+
+			if (damageInfo != null)
+				secondaryDefense += damageInfo.Defensibility;
+
+			secondaryDefense += targetDef - casterDefStrikeThrough;
+
+			return secondaryDefense;
+		}
 
         // Awful, but it's not worth implementing defense handling for buff commands for one ability.
         public static bool CheckMagnetDefense(ushort entry, Unit caster, Unit target, bool isAoE)
