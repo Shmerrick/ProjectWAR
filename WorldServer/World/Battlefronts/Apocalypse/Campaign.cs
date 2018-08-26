@@ -258,7 +258,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void UpdateAAOBuffs()
         {
-        
             var orderPlayersInZone = GetOrderPlayersInZone(this.BattleFrontManager.ActiveBattleFront.ZoneId);
             var destPlayersInZone = GetDestPlayersInZone(this.BattleFrontManager.ActiveBattleFront.ZoneId);
 
