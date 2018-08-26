@@ -115,8 +115,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _rewardManager = new RVRRewardManager();
             //OrderBattleFrontPlayerDictionary = new Dictionary<Player, int>();
             //DestructionBattleFrontPlayerDictionary = new Dictionary<int, int>();
-
-            _EvtInterface.AddEvent(UpdateBattleFrontScalers, 12000, 0); // 120000
+			
+			_EvtInterface.AddEvent(UpdateBattleFrontScalers, 12000, 0); // 120000
             _EvtInterface.AddEvent(UpdateVictoryPoints, 6000, 0);
 
             _EvtInterface.AddEvent(UpdateBOs, 5000, 0);
@@ -214,12 +214,28 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        /// <summary>
-        /// Return the list of Battlefront statuses for a give region.
-        /// </summary>
-        /// <param name="regionId"></param>
-        /// <returns></returns>
-        public List<BattleFrontStatus> GetBattleFrontStatuses(int regionId)
+		private int GetTotalDestPlayerCountInZone(int zoneID)
+		{
+			lock (Player._Players)
+			{
+				return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && !x.IsAFK && !x.IsAutoAFK && x != null && x.ZoneId == zoneID);
+			}
+		}
+
+		private int GetTotalOrderPlayerCountInZone(int zoneID)
+		{
+			lock (Player._Players)
+			{
+				return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_ORDER && !x.IsDisposed && x.IsInWorld() && !x.IsAFK && !x.IsAutoAFK && x != null && x.ZoneId == zoneID);
+			}
+		}
+
+		/// <summary>
+		/// Return the list of Battlefront statuses for a give region.
+		/// </summary>
+		/// <param name="regionId"></param>
+		/// <returns></returns>
+		public List<BattleFrontStatus> GetBattleFrontStatuses(int regionId)
         {
             return this.BattleFrontManager.GetBattleFrontStatusList().Where(x => x.RegionId == regionId).ToList();
         }
