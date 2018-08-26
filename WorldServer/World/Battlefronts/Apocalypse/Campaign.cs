@@ -161,7 +161,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     BattlefrontLogger.Debug($"Recording metrics for Campaign {this.CampaignName}");
                     foreach (var status in BattleFrontManager.GetBattleFrontStatusList())
                     {
-                        if ((DestructionPlayerPopulationList.ContainsKey(status.BattleFrontId)) && (OrderPlayerPopulationList.ContainsKey(status.BattleFrontId)))
+                        if (!status.Locked)
                         {
                             var metrics = new RVRMetrics
                             {
@@ -170,8 +170,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                 DestructionVictoryPoints = (int) this.VictoryPointProgress.DestructionVictoryPoints,
                                 OrderVictoryPoints = (int) this.VictoryPointProgress.OrderVictoryPoints,
                                 Locked = status.LockStatus,
-                                OrderPlayersInLake = this.OrderPlayerPopulationList[status.BattleFrontId],
-                                DestructionPlayersInLake = this.DestructionPlayerPopulationList[status.BattleFrontId],
+                                OrderPlayersInLake = GetTotalOrderPlayerCountInZone(this.BattleFrontManager.ActiveBattleFront.ZoneId),
+                                DestructionPlayersInLake = GetTotalDestPlayerCountInZone(this.BattleFrontManager.ActiveBattleFront.ZoneId),
                                 Tier = this.Tier,
                                 Timestamp = DateTime.UtcNow,
                                 GroupId = groupId,
@@ -257,7 +257,33 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void UpdateAAOBuffs()
         {
-            _aaoTracker.RecalculateAAO(Region.Players, _orderCount, _destroCount);
+        
+            var orderPlayersInZone = GetOrderPlayersInZone(this.BattleFrontManager.ActiveBattleFront.ZoneId);
+            var destPlayersInZone = GetDestPlayersInZone(this.BattleFrontManager.ActiveBattleFront.ZoneId);
+
+            var allPlayersInZone = new List<Player>();
+            allPlayersInZone.AddRange(destPlayersInZone);
+            allPlayersInZone.AddRange(orderPlayersInZone);
+
+            BattlefrontLogger.Debug($"Calculating AAO. Order players : {orderPlayersInZone.Count} Dest players : {destPlayersInZone.Count}");
+
+            _aaoTracker.RecalculateAAO(allPlayersInZone, orderPlayersInZone.Count, destPlayersInZone.Count);
+        }
+
+        private List<Player> GetOrderPlayersInZone(int zoneId)
+        {
+            lock (Player._Players)
+            {
+                return Player._Players.Where(x => x.Realm == Realms.REALMS_REALM_ORDER && !x.IsDisposed && x.IsInWorld() && !x.IsAFK && !x.IsAutoAFK && x != null && x.ZoneId == zoneId).ToList();
+            }
+        }
+
+        private List<Player> GetDestPlayersInZone(int zoneId)
+        {
+            lock (Player._Players)
+            {
+                return Player._Players.Where(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && !x.IsAFK && !x.IsAutoAFK && x != null && x.ZoneId == zoneId).ToList();
+            }
         }
 
         private void UpdateRVRStatus()
