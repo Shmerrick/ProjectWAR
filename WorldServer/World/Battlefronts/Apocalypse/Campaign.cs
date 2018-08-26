@@ -198,7 +198,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        private int GetTotalDestPlayerCountInRegion(int regionId)
+		private List<Player> GetAllPlayersInZone(int zoneID)
+		{
+			lock (Player._Players)
+			{
+				return Player._Players.Select(x => x).Where(x => !x.IsDisposed && x.IsInWorld() && x != null && x.ZoneId == zoneID).ToList();
+			}
+		}
+
+		private int GetTotalDestPlayerCountInRegion(int regionId)
         {
             lock (Player._Players)
             {
@@ -257,10 +265,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void UpdateAAOBuffs()
         {
-            _aaoTracker.RecalculateAAO(Region.Players, _orderCount, _destroCount);
-        }
+			//_aaoTracker.RecalculateAAO(Region.Players, _orderCount, _destroCount);
+			// ZARU: use another base count
+			int zoneId = BattleFrontManager.ActiveBattleFront.ZoneId;
+			_aaoTracker.RecalculateAAO(GetAllPlayersInZone(zoneId), GetTotalOrderPlayerCountInZone(zoneId), GetTotalDestPlayerCountInZone(zoneId));
+		}
 
-        private void UpdateRVRStatus()
+		private void UpdateRVRStatus()
         {
             // Update players with status of campaign
             foreach (Player plr in Region.Players)
