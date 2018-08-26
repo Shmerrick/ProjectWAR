@@ -475,7 +475,7 @@ namespace Common
 					// zoneID equal - lockout already existing
 					if (!newLockout.StartsWith("~"))
 						newLockout += "~";
-					newLockout += currLockout.Split(':')[0] + ":" + Lockout.InstanceID.Replace("~", "").Split(':')[1];
+					newLockout += currLockout.Split(':')[0] + ":" + currLockout.Split(':')[1];
 					List<string> bossIDList = new List<string>();
 					for (int j = 2; j < currLockout.Split(':').Length; j++)
 						bossIDList.Add(currLockout.Split(':')[j]);
@@ -495,7 +495,7 @@ namespace Common
 				}
             }
 			
-			if (!_lockouts.Contains(Lockout.InstanceID.Replace("~", "").Split(':')[0]))
+			if (!_lockouts.Contains(Lockout.InstanceID.Split(':')[0] + ":" + Lockout.InstanceID.Split(':')[1]))
 			{
 				if (newLockout.EndsWith("~") && Lockout.InstanceID.StartsWith("~"))
 					newLockout += Lockout.InstanceID.Replace("~","") + ":" + Lockout.Bosseskilled;

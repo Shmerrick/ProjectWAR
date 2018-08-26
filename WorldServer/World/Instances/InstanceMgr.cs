@@ -35,27 +35,41 @@ namespace WorldServer
 			if (instancetyp == 5)
 				maxplayers = 24;
 
-			// find instance ID
-			if (player.PriorityGroup != null && player.PriorityGroup.GetLeader() != player)
+			// check if player is not in group
+			if (instanceid == 0 && player.PriorityGroup == null)
 			{
-				instanceid = Find_OpenInstanceoftheplayer(player.PriorityGroup.GetLeader(), zoneID);
+				player.SendClientMessage("You have to be in group for entering a dungeon!", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+				return false;
 			}
-			else
-				instanceid = Find_OpenInstanceoftheplayer(player, zoneID);
+
+			// find instance ID of player with the most lockouts
+			if (player.PriorityGroup != null)
+			{
+				Player plr = null;
+				foreach(Player p in player.PriorityGroup.GetPlayerList())
+				{
+					if (plr == null)
+					{
+						plr = p;
+						continue;
+					}
+					plr = CompareBossesKilledInLockout(zoneID, p, plr);
+				}
+				
+				if (plr != null)
+					instanceid = Find_OpenInstanceoftheplayer(plr, zoneID);
+			}
 
 			if (instanceid == 0 && Jump == null)
 				return false;
 
 			// create new instance
 			if (instanceid == 0)
-				instanceid = Create_new_instance(player, Jump);
-			// ZARU: Commented out groupleader check
-			//if (instanceid == 0 && (player.PriorityGroup == null || player.PriorityGroup.GetLeader() == player))
-			//	instanceid = Create_new_instance(player, Jump);
+				instanceid = Create_new_instance(player.PriorityGroup.GetLeader(), Jump);
 			
 			//if (instanceid == 0)
 			//{
-			//	player.SendClientMessage("Your Groupleader needs to enter first", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+			//	player.SendClientMessage("Your Groupleader needs to enter first!", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
 			//	return false;
 			//}
 
@@ -63,6 +77,22 @@ namespace WorldServer
 				return false;
 
 			return true;
+		}
+
+		private Player CompareBossesKilledInLockout(ushort zoneID, Player plrA, Player plrB)
+		{
+			// ~zoneID:timestamp:bossID_1:bossID_2:bossID_3:... - this is sorted by bossID
+			string lockout = plrA._Value.GetLockout(zoneID);
+			List<string> bossListA = new List<string>();
+			for (int j = 2; j < lockout.Split(':').Length; j++)
+				bossListA.Add(lockout.Split(':')[j]);
+
+			lockout = plrB._Value.GetLockout(zoneID);
+			List<string> bossListB = new List<string>();
+			for (int j = 2; j < lockout.Split(':').Length; j++)
+				bossListB.Add(lockout.Split(':')[j]);
+
+			return bossListA.Count >= bossListB.Count ? plrA : plrB;
 		}
 
 		private ushort Find_OpenInstanceoftheplayer(Player player, ushort ZoneID)
