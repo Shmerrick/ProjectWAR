@@ -625,20 +625,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         /// Lock, Advance and handle rewards for Lock of Battlefront
         /// </summary>
-        /// <param name="realm"></param>
-        public void LockBattleFront(Realms realm)
+        /// <param name="lockingRealm"></param>
+        public void LockBattleFront(Realms lockingRealm)
         {
+            var awardablePlayers = new List<Player>();
             BattlefrontLogger.Info($"*************************BATTLEFRONT LOCK*************************");
-            BattlefrontLogger.Info($"Locking Battlefront {this.CampaignName} to {realm.ToString()}...");
+            BattlefrontLogger.Info($"Locking Battlefront {this.CampaignName} to {lockingRealm.ToString()}...");
 
-            string message = string.Concat(Region.ZonesInfo[0].Name, " and ", Region.ZonesInfo[1].Name, " have been locked by ", (realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"), "!");
+            string message = string.Concat(Region.ZonesInfo[0].Name, " and ", Region.ZonesInfo[1].Name, " have been locked by ", (lockingRealm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"), "!");
 
             BattlefrontLogger.Debug(message);
 
 
             // Generate RP and rewards
-            //_contributionTracker.CreateGoldChest(realm);
-            //_contributionTracker.HandleLockReward(realm, 1, message, 0, Tier);
+            //_contributionTracker.CreateGoldChest(lockingRealm);
+            //_contributionTracker.HandleLockReward(lockingRealm, 1, message, 0, Tier);
 
             if (PlayersInLakeSet == null)
                 BattlefrontLogger.Warn($"No players in the Lake!!");
@@ -647,6 +648,67 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             #region Generate Zone Lock Rewards
             var activeBattleFrontId = BattleFrontManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
+
+            var eligiblePlayers = GetEligiblePlayers(activeBattleFrontStatus);
+           
+            // Remove eligible players from losing realm
+            foreach (var eligiblePlayer in eligiblePlayers)
+            {
+                var player = Player.GetPlayer(eligiblePlayer);
+                if (player.Realm == lockingRealm)
+                    awardablePlayers.Add(player);
+            }
+
+
+            // Select players from the shortlist to actually assign a reward to. 
+            var rewardSelector = new RewardSelector(new RandomGenerator());
+            var rewardAssignments =new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(eligiblePlayers);
+
+            foreach (var lootBagTypeDefinition in rewardAssignments)
+            {
+                BattlefrontLogger.Debug($"{lootBagTypeDefinition.ToString()}");
+            }
+
+            var lootDecider = new LootDecider(RVRZoneRewardService.RVRZoneLockItemOptions, new RandomGenerator());
+
+            foreach (var lootBagTypeDefinition in rewardAssignments)
+            {
+
+                if (lootBagTypeDefinition.Assignee != 0)
+                {
+                    var player = awardablePlayers.Single(x=>x.CharacterId == lootBagTypeDefinition.Assignee);
+
+                    var playerItemList = (from item in player.ItmInterface.Items where item != null select item.Info.Entry).ToList();
+                    
+                    var playerRenown = player.CurrentRenown.Level;
+                    var playerClass = player.Info.Career;
+                    var playerRenownBand = _rewardManager.CalculateRenownBand(playerRenown);
+
+                    var lootDefinition = lootDecider.DetermineRVRZoneReward(lootBagTypeDefinition, playerRenownBand, playerClass, playerItemList.ToList());
+                    if (lootDefinition.IsValid())
+                    {
+                        BattlefrontLogger.Trace($"{player.Info.Name} has received {lootDefinition.FormattedString()}");
+
+                        BattlefrontLogger.Debug($"{lootDefinition.ToString()}");
+                    }
+                    else
+                    {
+                        BattlefrontLogger.Trace($"{player.Info.Name} has received [INVALID for Player] {lootDefinition.FormattedString()}");
+                    }
+
+                    var rewardDescription = WorldMgr.RewardDistributor.Distribute(lootDefinition, player, playerRenownBand);
+                    player.SendClientMessage($"{rewardDescription}", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+
+                }
+            }
+            // Remove eligible players.
+            ClearEligiblePlayers(activeBattleFrontStatus);
+
+            #endregion
+        }
+
+        public List<uint> GetEligiblePlayers(BattleFrontStatus activeBattleFrontStatus)
+        {
             var eligiblePlayers = new List<uint>();
             BattlefrontLogger.Debug($"** Kill Contribution players **");
             foreach (var playerKillContribution in activeBattleFrontStatus.KillContributionSet)
@@ -667,52 +729,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
             BattlefrontLogger.Debug($"All Eligible Players : {string.Join(",", eligiblePlayers.ToArray())}");
 
+            return eligiblePlayers;
+        }
 
-            // Select players from the shortlist to actually assign a reward to. 
-            var rewardSelector = new RewardSelector(new RandomGenerator());
-            var rewardAssignments =new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(eligiblePlayers);
 
-            foreach (var lootBagTypeDefinition in rewardAssignments)
+        public void ClearEligiblePlayers(BattleFrontStatus activeBattleFrontStatus)
+        {
+            activeBattleFrontStatus.KillContributionSet.Clear();
+            foreach (var campaignObjective in Objectives)
             {
-                BattlefrontLogger.Debug($"{lootBagTypeDefinition.ToString()}");
+                campaignObjective.CampaignObjectiveContributions.Clear();
             }
-
-            var lootDecider = new LootDecider(RVRZoneRewardService.RVRZoneLockItemOptions, new RandomGenerator());
-
-            foreach (var lootBagTypeDefinition in rewardAssignments)
-            {
-
-                if (lootBagTypeDefinition.Assignee != 0)
-                {
-                    var player = Player.GetPlayer(lootBagTypeDefinition.Assignee);
-
-                    var playerItemList = (from item in player.ItmInterface.Items where item != null select item.Info.Entry).ToList();
-
-                
-                    var playerRenown = player.CurrentRenown.Level;
-                    var playerClass = player.Info.Career;
-                    var playerRenownBand = _rewardManager.CalculateRenownBand(playerRenown);
-                    var playerRealm = player.Realm;
-
-                    var lootDefinition = lootDecider.DetermineRVRZoneReward(lootBagTypeDefinition, playerRenownBand, playerClass, playerItemList.ToList());
-                    if (lootDefinition.IsValid())
-                    {
-                        BattlefrontLogger.Trace($"{player.Info.Name} has received {lootDefinition.FormattedString()}");
-
-                        BattlefrontLogger.Debug($"{lootDefinition.ToString()}");
-                    }
-                    else
-                    {
-                        BattlefrontLogger.Trace($"{player.Info.Name} has received [INVALID for Player] {lootDefinition.FormattedString()}");
-                    }
-
-                    var rewardDescription = WorldMgr.RewardDistributor.Distribute(lootDefinition, player, playerRenownBand);
-                    player.SendClientMessage($"{rewardDescription}", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-
-                }
-            }
-
-            #endregion
+            BattlefrontLogger.Debug($"Eligible Players cleared");
         }
 
         /// <summary>
@@ -735,7 +763,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private float _relativePopulationFactor;
 
         /// <summary>
-        /// Returns the enemy realm's population divided by the input realm's population.
+        /// Returns the enemy lockingRealm's population divided by the input lockingRealm's population.
         /// </summary>
         private float GetRelativePopFactor(Realms realm)
         {
@@ -751,7 +779,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <para>- The internal AAO</para>
         /// <para>- The relative activity in this Campaign compared to others in its tier</para>
         /// <para>- The total number of people fighting</para>
-        /// <para>- The capturing realm's population at this objective.</para>
+        /// <para>- The capturing lockingRealm's population at this objective.</para>
         /// </summary>
         //public float GetObjectiveRewardScaler(Realms capturingRealm, int playerCount)
         //{
@@ -822,7 +850,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
         /// <summary>
-        ///  Updates the victory points per realm and fires lock when necessary.
+        ///  Updates the victory points per lockingRealm and fires lock when necessary.
         /// </summary>
         private void UpdateVictoryPoints()
         {
@@ -1030,13 +1058,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
 
-        // Higher if enemy realm's population is lower.
+        // Higher if enemy lockingRealm's population is lower.
         public float GetLockPopulationScaler(Realms realm)
         {
             if (realm == Realms.REALMS_REALM_NEUTRAL)
                 return 1f;
 
-            // Factor for how much this realm outnumbers the enemy.
+            // Factor for how much this lockingRealm outnumbers the enemy.
             float popFactor = Point2D.Clamp((realm == Realms.REALMS_REALM_ORDER ? _relativePopulationFactor : 1f / _relativePopulationFactor), 0.33f, 3f);
 
             if (popFactor > 1f)

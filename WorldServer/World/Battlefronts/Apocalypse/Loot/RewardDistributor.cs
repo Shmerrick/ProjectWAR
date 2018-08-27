@@ -31,13 +31,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             var lockReward = ZoneLockRewards.SingleOrDefault(x => x.RRBand == playerRenownBand);
             if (lockReward == null)
                 return "";
-          
-            player.AddXp((uint) lockReward.XP, false, false);
-            player.AddRenown((uint) lockReward.Renown, false, RewardType.ZoneKeepCapture, "");
-            player.AddMoney((uint) lockReward.Money);
+
+            player.AddXp((uint)lockReward.XP, false, false);
+            player.AddRenown((uint)lockReward.Renown, false, RewardType.ZoneKeepCapture, "");
+            player.AddMoney((uint)lockReward.Money);
             player.ItmInterface.CreateItem((uint)lockReward.ItemId, (ushort)lockReward.ItemCount);
 
-        
+
+            var influenceId = (ushort)player.CurrentArea.OrderInfluenceId;
+            player.AddInfluence(influenceId, (ushort) lockReward.Influence);
+
+
             var lootBagItemId = Convert.ToInt32(LootBagTypeDefinition.GetDescription(lootBag.BagRarity));
             var lootBagItem = ItemService.GetItem_Info((uint)lootBagItemId);
             var tl = new List<Talisman> { new Talisman(lootBag.ItemId, 1, 0, 0) };
@@ -48,7 +52,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             var lootRewardDescription = string.Empty;
             if ((lockReward.ItemCount != 0) && (lockReward.ItemId != 0))
             {
-                var lockItem = ItemService.GetItem_Info((uint) lockReward.ItemId);
+                var lockItem = ItemService.GetItem_Info((uint)lockReward.ItemId);
                 if (lockItem != null)
                 {
                     lootRewardDescription += $"You have been awarded {lockReward.ItemCount} {lockItem.Name}. ";
