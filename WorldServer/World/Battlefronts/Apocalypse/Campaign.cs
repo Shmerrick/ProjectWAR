@@ -682,7 +682,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     var playerItemList = (from item in player.ItmInterface.Items where item != null select item.Info.Entry).ToList();
                     
                     var playerRenown = player.CurrentRenown.Level;
-                    var playerClass = player.Info.Career;
+                    var playerClass = player.Info.CareerLine;
                     var playerRenownBand = _rewardManager.CalculateRenownBand(playerRenown);
 
                     var lootDefinition = lootDecider.DetermineRVRZoneReward(lootBagTypeDefinition, playerRenownBand, playerClass, playerItemList.ToList());
