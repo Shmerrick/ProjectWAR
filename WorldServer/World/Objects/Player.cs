@@ -3094,32 +3094,14 @@ namespace WorldServer
         {
             if (renown == 0)
                 return;
-			
-            int aaoMult = 0;
-            Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
-            if (Region != null && Region.Campaign != null)
-            {
-                if (Region.Campaign != null)
-                {
-					// aaoMult: -20 (400% order) to +20 (400% destro)
-                    aaoMult = Math.Abs(Region.Campaign.AgainstAllOddsMult);
-                    if (aaoMult != 0)
-                        aaoRealm = Region.Campaign.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
-                }
-                if (aaoMult > 2)
-                    aaoMult = 2;
-                if (aaoMult != 0 && aaoRealm != Realms.REALMS_REALM_NEUTRAL && Realm != aaoRealm)
-                    renown = Math.Max(1, renown);
-            }
 
-            if (Program.Config.RenownRate > 0)
+			// apply renown rate from server
+			if (Program.Config.RenownRate > 0)
                 renown *= (uint)Program.Config.RenownRate;
 
-			if (aaoMult != 0 && aaoRealm != Realms.REALMS_REALM_NEUTRAL && Realm != aaoRealm)
-			{
-				renown = Convert.ToUInt32(Math.Round(this.AAOBonus * renown, 0));
-			}
-
+			// apply aao bonus
+			renown = Convert.ToUInt32(Math.Round((1f + this.AAOBonus) * renown, 0));
+			
 			RewardLogger.Trace($"{renown} RP awarded to {this.Name} for {rewardString} ");
             InternalAddRenown(renown, shouldPool, type, rewardString);
         }
@@ -3949,8 +3931,7 @@ namespace WorldServer
                 // Maximum 25% bonus if this dead player had groupmates within range.
                 if (WorldGroup != null)
                     rewardScale += 0.25f * (WorldGroup.GetPlayerCountWithinDist(this, 200) / 5f);
-
-
+				
                 // Throttle any kill that could have been the result of farming or soloing.
                 if (rewardScale < 1.1f)
                 {
@@ -4011,8 +3992,11 @@ namespace WorldServer
 			
             _lastPvPDeathSeconds = TCPManager.GetTimeStamp();
 
-            uint totalXP = (uint)(WorldMgr.GenerateXPCount(killer, this) * (1f + killer.AAOBonus * deathRewardScaler));
-			uint totalRenown = (uint)(WorldMgr.GenerateRenownCount(killer, this) * (1f + killer.AAOBonus) * deathRewardScaler);
+			if (bonusMod == 0)
+				bonusMod = 1;
+
+            uint totalXP = (uint)(WorldMgr.GenerateXPCount(killer, this) * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
+			uint totalRenown = (uint)(WorldMgr.GenerateRenownCount(killer, this) * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
 
 			if (Constants.DoomsdaySwitch > 0 && totalRenown < 100)
                 totalRenown = 100;

@@ -31,6 +31,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     /// </summary>
     public class Campaign
     {
+        public static int POPULATION_BROADCAST_CHANCE = 90;
         public static IObjectDatabase Database = null;
         static readonly object LockObject = new object();
 
@@ -116,8 +117,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _rewardManager = new RVRRewardManager();
             //OrderBattleFrontPlayerDictionary = new Dictionary<Player, int>();
             //DestructionBattleFrontPlayerDictionary = new Dictionary<int, int>();
-
-            _EvtInterface.AddEvent(UpdateBattleFrontScalers, 12000, 0); // 120000
+			
+			_EvtInterface.AddEvent(UpdateBattleFrontScalers, 12000, 0); // 120000
             _EvtInterface.AddEvent(UpdateVictoryPoints, 6000, 0);
 
             _EvtInterface.AddEvent(UpdateBOs, 5000, 0);
@@ -162,7 +163,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     BattlefrontLogger.Debug($"Recording metrics for Campaign {this.CampaignName}");
                     foreach (var status in BattleFrontManager.GetBattleFrontStatusList())
                     {
-                        if ((DestructionPlayerPopulationList.ContainsKey(status.BattleFrontId)) && (OrderPlayerPopulationList.ContainsKey(status.BattleFrontId)))
+                        if (!status.Locked)
                         {
                             var metrics = new RVRMetrics
                             {
@@ -171,14 +172,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                 DestructionVictoryPoints = (int) this.VictoryPointProgress.DestructionVictoryPoints,
                                 OrderVictoryPoints = (int) this.VictoryPointProgress.OrderVictoryPoints,
                                 Locked = status.LockStatus,
-                                OrderPlayersInLake = this.OrderPlayerPopulationList[status.BattleFrontId],
-                                DestructionPlayersInLake = this.DestructionPlayerPopulationList[status.BattleFrontId],
+                                OrderPlayersInLake = GetTotalOrderPVPPlayerCountInZone(this.BattleFrontManager.ActiveBattleFront.ZoneId),
+                                DestructionPlayersInLake = GetTotalDestPVPPlayerCountInZone(this.BattleFrontManager.ActiveBattleFront.ZoneId),
                                 Tier = this.Tier,
                                 Timestamp = DateTime.UtcNow,
                                 GroupId = groupId,
-                                TotalPlayerCountInRegion = GetTotalPlayerCount(status.RegionId),
-                                TotalDestPlayerCountInRegion = GetTotalDestPlayerCountInRegion(status.RegionId),
-                                TotalOrderPlayerCountInRegion = GetTotalOrderPlayerCountInRegion(status.RegionId)
+                                TotalPlayerCountInRegion = GetTotalPVPPlayerCountInRegion(status.RegionId),
+                                TotalDestPlayerCountInRegion = GetTotalDestPVPPlayerCountInRegion(status.RegionId),
+                                TotalOrderPlayerCountInRegion = GetTotalOrderPVPPlayerCountInRegion(status.RegionId)
                             };
                             WorldMgr.Database.AddObject(metrics);
                         }
@@ -191,36 +192,52 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        private int GetTotalPlayerCount(int regionId)
+        private int GetTotalPVPPlayerCountInRegion(int regionId)
         {
             lock (Player._Players)
             {
-                return Player._Players.Count(x => !x.IsDisposed && x.IsInWorld() && x != null && x.Region.RegionId == regionId);
+                return Player._Players.Count(x => !x.IsDisposed && x.IsInWorld() && x != null && x.Region.RegionId == regionId && x.CbtInterface.IsPvp);
             }
         }
 
-        private int GetTotalDestPlayerCountInRegion(int regionId)
+        private int GetTotalDestPVPPlayerCountInRegion(int regionId)
+		{
+            lock (Player._Players)
+            {
+                return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && x != null && x.Region.RegionId == regionId && x.CbtInterface.IsPvp);
+            }
+        }
+
+        private int GetTotalOrderPVPPlayerCountInRegion(int regionId)
         {
             lock (Player._Players)
             {
-                return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && x != null && x.Region.RegionId == regionId);
+                return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_ORDER && !x.IsDisposed && x.IsInWorld() && x != null && x.Region.RegionId == regionId && x.CbtInterface.IsPvp);
             }
         }
 
-        private int GetTotalOrderPlayerCountInRegion(int regionId)
-        {
-            lock (Player._Players)
-            {
-                return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_ORDER && !x.IsDisposed && x.IsInWorld() && x != null && x.Region.RegionId == regionId);
-            }
-        }
+		private int GetTotalDestPVPPlayerCountInZone(int zoneID)
+		{
+			lock (Player._Players)
+			{
+				return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && !x.IsAFK && !x.IsAutoAFK && x != null && x.ZoneId == zoneID && x.CbtInterface.IsPvp);
+			}
+		}
 
-        /// <summary>
-        /// Return the list of Battlefront statuses for a give region.
-        /// </summary>
-        /// <param name="regionId"></param>
-        /// <returns></returns>
-        public List<BattleFrontStatus> GetBattleFrontStatuses(int regionId)
+		private int GetTotalOrderPVPPlayerCountInZone(int zoneID)
+		{
+			lock (Player._Players)
+			{
+				return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_ORDER && !x.IsDisposed && x.IsInWorld() && !x.IsAFK && !x.IsAutoAFK && x != null && x.ZoneId == zoneID && x.CbtInterface.IsPvp);
+			}
+		}
+
+		/// <summary>
+		/// Return the list of Battlefront statuses for a give region.
+		/// </summary>
+		/// <param name="regionId"></param>
+		/// <returns></returns>
+		public List<BattleFrontStatus> GetBattleFrontStatuses(int regionId)
         {
             return this.BattleFrontManager.GetBattleFrontStatusList().Where(x => x.RegionId == regionId).ToList();
         }
@@ -243,10 +260,53 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void UpdateAAOBuffs()
         {
-            _aaoTracker.RecalculateAAO(Region.Players, _orderCount, _destroCount);
+            var orderPlayersInZone = GetOrderPlayersInZone(this.BattleFrontManager.ActiveBattleFront.ZoneId);
+            var destPlayersInZone = GetDestPlayersInZone(this.BattleFrontManager.ActiveBattleFront.ZoneId);
+
+            var allPlayersInZone = new List<Player>();
+            allPlayersInZone.AddRange(destPlayersInZone);
+            allPlayersInZone.AddRange(orderPlayersInZone);
+
+            BattlefrontLogger.Debug($"Calculating AAO. Order players : {orderPlayersInZone.Count} Dest players : {destPlayersInZone.Count}");
+
+            // Randomly let players know the population
+            if (StaticRandom.Instance.Next(100) > POPULATION_BROADCAST_CHANCE)
+            {
+                foreach (var player in allPlayersInZone)
+                {
+                    if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                    {
+                        player.SendMessage($"Messengers report {orderPlayersInZone.Count} Order players in the zone.",
+                            ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE);
+                    }
+                    else
+                    {
+                        player.SendMessage($"Messengers report {destPlayersInZone.Count} Destruction players in the zone.",
+                            ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE);
+                    }
+                }
+            }
+
+            _aaoTracker.RecalculateAAO(allPlayersInZone, orderPlayersInZone.Count, destPlayersInZone.Count);
         }
 
-        private void UpdateRVRStatus()
+        private List<Player> GetOrderPlayersInZone(int zoneId)
+        {
+            lock (Player._Players)
+            {
+                return Player._Players.Where(x => x.Realm == Realms.REALMS_REALM_ORDER && !x.IsDisposed && x.IsInWorld() && !x.IsAFK && !x.IsAutoAFK && x != null && x.ZoneId == zoneId && x.CbtInterface.IsPvp).ToList();
+            }
+        }
+
+        private List<Player> GetDestPlayersInZone(int zoneId)
+        {
+            lock (Player._Players)
+            {
+                return Player._Players.Where(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && !x.IsAFK && !x.IsAutoAFK && x != null && x.ZoneId == zoneId && x.CbtInterface.IsPvp).ToList();
+            }
+        }
+
+		private void UpdateRVRStatus()
         {
             // Update players with status of campaign
             foreach (Player plr in Region.Players)
