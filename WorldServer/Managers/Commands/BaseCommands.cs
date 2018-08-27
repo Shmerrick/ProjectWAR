@@ -588,7 +588,7 @@ namespace WorldServer.Managers.Commands
                     break;
             }
 
-           
+
 
             return true;
         }
@@ -2236,13 +2236,14 @@ namespace WorldServer.Managers.Commands
 
             var rarity = Convert.ToUInt16(values[0]);
             var item1 = Convert.ToUInt32(values[1]);
-            var r = (LootBagRarity) rarity;
-            var lootBagItem = ItemService.GetItem_Info((uint) Convert.ToInt32(LootBagTypeDefinition.GetDescription(r)));
+            var itemCount = Convert.ToUInt32(values[2]);
+            var r = (LootBagRarity)rarity;
+            var lootBagItem = ItemService.GetItem_Info((uint)Convert.ToInt32(LootBagTypeDefinition.GetDescription(r)));
 
-            var tl = new List<Talisman> { new Talisman(item1, 1, 0, 0) };
-
-            var result = plr.ItmInterface.CreateItem(lootBagItem, 1, tl, 0, 0, false, 0, false);
-
+            var internalBagContainer = new List<Talisman>();
+            // Create a 'talisman' from the reward Item
+            internalBagContainer.Add(new Talisman(item1, (byte)itemCount, 0, 0));
+            var result = plr.ItmInterface.CreateItem(lootBagItem, 1, internalBagContainer, 0, 0, false, 0, false);
 
             return true;
 
@@ -2250,7 +2251,9 @@ namespace WorldServer.Managers.Commands
 
         public static bool GearTester(Player plr, ref List<string> values)
         {
-         
+            // Removing this code as some people cannot be trusted to call this command even if protected by a fail safe!!
+            plr.SendClientMessage($"Gear tester has been turned off (glares at Brig)... Ikthaleon.", ChatLogFilters.CHATLOGFILTERS_SAY);
+            return false;
             // Ensure this code is only ever called IN DEV!!
             if (WorldMgr.ServerMode != "DEV")
                 return false;
@@ -3802,7 +3805,7 @@ namespace WorldServer.Managers.Commands
 
             plr.ImageNum = (ushort)modelID;
 
-            
+
             var Out = new PacketOut((byte)Opcodes.F_PLAYER_IMAGENUM); //F_PLAYER_INVENTORY
             Out.WriteUInt16(plr.Oid);
             Out.WriteUInt16((ushort)modelID);
@@ -3811,9 +3814,9 @@ namespace WorldServer.Managers.Commands
 
             plr.SendClientMessage("Morphing!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
-            values = (List<string>) values.Skip(1);
-            SetEffectStateSelf(plr,  ref values);
-            
+            values = (List<string>)values.Skip(1);
+            SetEffectStateSelf(plr, ref values);
+
             return true;
         }
 

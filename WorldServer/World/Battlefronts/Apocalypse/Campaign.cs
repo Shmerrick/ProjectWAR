@@ -626,10 +626,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// Lock, Advance and handle rewards for Lock of Battlefront
         /// </summary>
         /// <param name="lockingRealm"></param>
-        public void LockBattleFront(Realms lockingRealm)
+        public void LockBattleFront(Realms lockingRealm, int forceNumberBags = 0)
         {
             var awardablePlayers = new List<Player>();
             BattlefrontLogger.Info($"*************************BATTLEFRONT LOCK*************************");
+            BattlefrontLogger.Info($"forceNumberBags = {forceNumberBags}");
             BattlefrontLogger.Info($"Locking Battlefront {this.CampaignName} to {lockingRealm.ToString()}...");
 
             string message = string.Concat(Region.ZonesInfo[0].Name, " and ", Region.ZonesInfo[1].Name, " have been locked by ", (lockingRealm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"), "!");
@@ -911,7 +912,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             /// 
             if (VictoryPointProgress.OrderVictoryPoints >= BattleFrontConstants.LOCK_VICTORY_POINTS)
             {
-                BattleFrontManager.LockActiveBattleFront(Realms.REALMS_REALM_ORDER);
+                BattleFrontManager.LockActiveBattleFront(Realms.REALMS_REALM_ORDER, 0);
                 // Select the next Progression
                 CampaignRerollMode rerollMode;
                 var nextBattleFront = BattleFrontManager.AdvanceBattleFront(Realms.REALMS_REALM_ORDER, out rerollMode);
@@ -929,7 +930,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             else if (VictoryPointProgress.DestructionVictoryPoints >=
                      BattleFrontConstants.LOCK_VICTORY_POINTS)
             {
-                BattleFrontManager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+                BattleFrontManager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION, 0);
                 // Select the next Progression
                 CampaignRerollMode rerollMode;
                 var nextBattleFront = BattleFrontManager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);

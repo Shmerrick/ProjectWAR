@@ -15,7 +15,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
     public class RewardDistributor
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
         public List<RVRZoneLockReward> ZoneLockRewards { get; private set; }
         public IRandomGenerator RandomGenerator { get; }
 
@@ -38,16 +38,22 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             player.ItmInterface.CreateItem((uint)lockReward.ItemId, (ushort)lockReward.ItemCount);
 
 
+
             var influenceId = (ushort)player.CurrentArea.OrderInfluenceId;
-            player.AddInfluence(influenceId, (ushort) lockReward.Influence);
+            player.AddInfluence(influenceId, (ushort)lockReward.Influence);
 
+            RewardLogger.Info($"RR {lockReward.Renown} Money {lockReward.Money} INF {lockReward.Influence} Crests {(uint)lockReward.ItemId} ({(ushort)lockReward.ItemCount}) to {player.Name}.");
 
+            // Get the bag item id
             var lootBagItemId = Convert.ToInt32(LootBagTypeDefinition.GetDescription(lootBag.BagRarity));
+            // Get the bag item object
             var lootBagItem = ItemService.GetItem_Info((uint)lootBagItemId);
-            var tl = new List<Talisman> { new Talisman(lootBag.ItemId, 1, 0, 0) };
-            var result = player.ItmInterface.CreateItem(lootBagItem, 1, tl, 0, 0, false, 0, false);
+            var internalBagContainer = new List<Talisman>();
+            // Create a 'talisman' from the reward Item
+            internalBagContainer.Add(new Talisman(lootBag.ItemId, (byte)lootBag.ItemCount, 0, 0));
+            var result = player.ItmInterface.CreateItem(lootBagItem, 1, internalBagContainer, 0, 0, false, 0, false);
 
-            _logger.Info($"Distributing reward to {player.Name}. Result = {result}");
+            RewardLogger.Info($"Distributing reward of {lootBagItem.Name}, containing {lootBag.ItemId} ({lootBag.ItemCount}) to {player.Name}. Result = {result}");
 
             var lootRewardDescription = string.Empty;
             if ((lockReward.ItemCount != 0) && (lockReward.ItemId != 0))

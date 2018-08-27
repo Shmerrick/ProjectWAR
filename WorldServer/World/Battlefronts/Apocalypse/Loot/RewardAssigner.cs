@@ -22,13 +22,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// For a list of player Ids, select those getting a reward, and assign a colored loot bag (reward) to them.
         /// </summary>
         /// <param name="eligiblePlayers"></param>
+        /// <param name="forceNumberRewards"></param>
         /// <returns></returns>
-        public List<LootBagTypeDefinition> AssignLootToPlayers(List<uint> eligiblePlayers)
+        public List<LootBagTypeDefinition> AssignLootToPlayers(List<uint> eligiblePlayers, byte forceNumberRewards = 0)
         {
             // Randomise the players
             var randomisedPlayerList = RewardSelector.RandomisePlayerList(eligiblePlayers);
+            byte numberLootBags = 0;
             // Determine the number of awards to give
-            var numberLootBags = RewardSelector.DetermineNumberOfAwards((uint) randomisedPlayerList.Count());
+            numberLootBags = forceNumberRewards == 0 ? RewardSelector.DetermineNumberOfAwards((uint) randomisedPlayerList.Count()) : forceNumberRewards;
             // Define the types of awards to give
             var lootBagDefinitions = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(numberLootBags);
 

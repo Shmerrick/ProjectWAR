@@ -106,21 +106,14 @@ namespace WorldServer.Managers.Commands
                 SendCsr(plr, "Please enter a valid constant name");
         }
 
-      
 
 
-        [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks the pairing the player is in for the given realm (1 - Order, 2 - Dest). 0 - no reward, 1 - reward")]
-        public static void LockPairing(Player plr, Realms realm, string noReward)
+
+        [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks the pairing the player is in for the given realm (1 - Order, 2 - Dest). forceNumberOfBags = 0 for default.")]
+        public static void LockPairing(Player plr, Realms realm, int forceNumberOfBags=0)
         {
-            if (noReward == "0" || noReward == "1")
-            {
-                plr.SendClientMessage($"Attempting to lock the {plr.Region.Campaign.CampaignName} campaign... (call AdvancePairing to move ahead)");
-
-                WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign.BattleFrontManager.LockActiveBattleFront(realm);
-                
-            }
-            else
-                plr.SendClientMessage("Second parameter must be 0 or 1 - 0 no rewards, 1 grants rewards.");
+            plr.SendClientMessage($"Attempting to lock the {plr.Region.Campaign.CampaignName} campaign... (call AdvancePairing <realm> <tier> to move ahead)");
+            WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign.BattleFrontManager.LockActiveBattleFront(realm, forceNumberOfBags);
         }
 
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Advances the pairing the player is in ")]
@@ -128,9 +121,9 @@ namespace WorldServer.Managers.Commands
         {
 
             if (tier == 1)
-			{
-				CampaignRerollMode rerollMode;
-				var progression = WorldMgr.LowerTierCampaignManager.AdvanceBattleFront(realm, out rerollMode);
+            {
+                CampaignRerollMode rerollMode;
+                var progression = WorldMgr.LowerTierCampaignManager.AdvanceBattleFront(realm, out rerollMode);
                 WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront(rerollMode);
                 WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
                 plr.SendClientMessage(realm == Realms.REALMS_REALM_DESTRUCTION
@@ -138,9 +131,9 @@ namespace WorldServer.Managers.Commands
                     : $"Order conquers Destruction, the campaign moves to {progression.Description}");
             }
             else
-			{
-				CampaignRerollMode rerollMode;
-				var progression = WorldMgr.UpperTierCampaignManager.AdvanceBattleFront(realm, out rerollMode);
+            {
+                CampaignRerollMode rerollMode;
+                var progression = WorldMgr.UpperTierCampaignManager.AdvanceBattleFront(realm, out rerollMode);
                 WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront(rerollMode);
                 WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
                 plr.SendClientMessage(realm == Realms.REALMS_REALM_DESTRUCTION
@@ -162,7 +155,7 @@ namespace WorldServer.Managers.Commands
             var lockingRealm = Realms.REALMS_REALM_NEUTRAL;
             foreach (var status in WorldMgr.UpperTierCampaignManager.BattleFrontStatuses)
             {
-                
+
                 if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY)
                 {
                     lockingRealm = GetLockRealmFromT4Progression(T4Progression[0].ToString());
@@ -223,7 +216,7 @@ namespace WorldServer.Managers.Commands
             switch (str)
             {
                 case "1":
-                    return  Realms.REALMS_REALM_ORDER;
+                    return Realms.REALMS_REALM_ORDER;
                 case "0":
                     return Realms.REALMS_REALM_NEUTRAL;
                 case "2":
@@ -251,14 +244,14 @@ namespace WorldServer.Managers.Commands
                 else
                     lockingRealm = Realms.REALMS_REALM_NEUTRAL;
             }
-            
+
             new ApocCommunications().ResetProgressionCommunications(player, lockingRealm, vpp, forceT4);
 
-           // new ApocCommunications().SendCampaignStatus(player, vpp, lockingRealm);
+            // new ApocCommunications().SendCampaignStatus(player, vpp, lockingRealm);
         }
 
-        
-        
+
+
 
         [CommandAttribute(EGmLevel.SourceDev, "Report on the status of the t4 progression")]
         public static void ProgressionStatus(Player plr)
@@ -289,7 +282,7 @@ namespace WorldServer.Managers.Commands
         }
 
 
-       
+
 
 
 
@@ -383,7 +376,7 @@ namespace WorldServer.Managers.Commands
         //    closestKeep.CreateSupplyDrops();
         //}
 
-   
+
 
         [CommandAttribute(EGmLevel.DatabaseDev, "Sets the number of VP for a realm")]
         public static void SetVictoryPoints(Player plr, Realms realm, int points)
@@ -424,7 +417,7 @@ namespace WorldServer.Managers.Commands
                 plr.SendClientMessage($"{flag.ToString()}");
         }
 
-  
+
         [CommandAttribute(EGmLevel.DatabaseDev, "Get or sets warcamp entrance, use realm parameter order|destruction or 1|2 to update entrabce coordinate")]
         public static void Warcamp(Player plr, string realm = "")
         {
@@ -469,7 +462,7 @@ namespace WorldServer.Managers.Commands
             SendCsr(plr, $"CAMPAIGN WARCAMP: {(newRealm == Realms.REALMS_REALM_ORDER ? "order" : "destruction")} warcamp is set");
         }
 
-   
+
 
         /// <summary>
         /// Computes distance of player to warcamp of given realm.
