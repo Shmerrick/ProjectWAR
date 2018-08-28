@@ -661,7 +661,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var winningRealmPlayers = new List<Player>();
             var losingRealmPlayers = new List<Player>();
 
-            #region Generate Zone Lock Rewards
             var activeBattleFrontId = BattleFrontManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
 
@@ -679,36 +678,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 }
             }
 
-            // Distribute rewards to losing players with eligibility - halve rewards.
-            foreach (var losingRealmPlayer in losingRealmPlayers)
-            {
-                WorldMgr.RewardDistributor.DistributeNonBagAwards(losingRealmPlayer, _rewardManager.CalculateRenownBand(losingRealmPlayer.RenownRank), 0.5);
-            }
-
-            // Get All players in the zone and if they are not in the eligible list, they receive minor awards
-            var allPlayersInZone = GetAllFlaggedPlayersInZone(BattleFrontManager.ActiveBattleFront.ZoneId);
-            foreach (var player in allPlayersInZone)
-            {
-
-                if (player.Realm == lockingRealm)
-                {
-                    // Ensure player is not in the eligible list.
-                    if (!winningRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
-                    {
-                        // Give player no bag, but half rewards
-                        WorldMgr.RewardDistributor.DistributeNonBagAwards(player, _rewardManager.CalculateRenownBand(player.RenownRank), 0.5);
-                    }
-                }
-                else
-                {
-                    // Ensure player is not in the eligible list.
-                    if (!losingRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
-                    {
-                        // Give player no bag, but quarter rewards
-                        WorldMgr.RewardDistributor.DistributeNonBagAwards(player, _rewardManager.CalculateRenownBand(player.RenownRank), 0.25);
-                    }
-                }
-            }
+            DistributeBaseRewards(losingRealmPlayers, winningRealmPlayers, lockingRealm);
 
             // Select players from the shortlist to actually assign a reward to. (Eligible and winning realm)
             var rewardSelector = new RewardSelector(new RandomGenerator());
@@ -722,7 +692,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 foreach (var lootBagTypeDefinition in rewardAssignments)
                 {
-                    BattlefrontLogger.Debug($"{lootBagTypeDefinition.ToString()}");
+                    BattlefrontLogger.Debug($"Award to be handed out : {lootBagTypeDefinition.ToString()}");
                 }
 
                 var lootDecider = new LootDecider(RVRZoneRewardService.RVRZoneLockItemOptions, new RandomGenerator());
@@ -751,7 +721,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         {
                             BattlefrontLogger.Trace($"{player.Info.Name} has received [INVALID for Player] {lootDefinition.FormattedString()}");
                         }
-
                         var rewardDescription = WorldMgr.RewardDistributor.DistributeWinningRealm(lootDefinition, player, playerRenownBand);
                         player.SendClientMessage($"{rewardDescription}", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
@@ -762,7 +731,46 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Remove eligible players.
             ClearEligiblePlayers(activeBattleFrontStatus);
 
-            #endregion
+        }
+
+        private void DistributeBaseRewards(List<Player> losingRealmPlayers, List<Player> winningRealmPlayers, Realms lockingRealm)
+        {
+            // Distribute rewards to losing players with eligibility - halve rewards.
+            foreach (var losingRealmPlayer in losingRealmPlayers)
+            {
+                WorldMgr.RewardDistributor.DistributeNonBagAwards(losingRealmPlayer, _rewardManager.CalculateRenownBand(losingRealmPlayer.RenownRank), 0.75);
+            }
+
+            // Distribute rewards to winning players with eligibility - full rewards.
+            foreach (var winningRealmPlayer in winningRealmPlayers)
+            {
+                WorldMgr.RewardDistributor.DistributeNonBagAwards(winningRealmPlayer, _rewardManager.CalculateRenownBand(winningRealmPlayer.RenownRank), 1);
+            }
+
+            // Get All players in the zone and if they are not in the eligible list, they receive minor awards
+            var allPlayersInZone = GetAllFlaggedPlayersInZone(BattleFrontManager.ActiveBattleFront.ZoneId);
+            foreach (var player in allPlayersInZone)
+            {
+
+                if (player.Realm == lockingRealm)
+                {
+                    // Ensure player is not in the eligible list.
+                    if (!winningRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
+                    {
+                        // Give player no bag, but half rewards
+                        WorldMgr.RewardDistributor.DistributeNonBagAwards(player, _rewardManager.CalculateRenownBand(player.RenownRank), 0.5);
+                    }
+                }
+                else
+                {
+                    // Ensure player is not in the eligible list.
+                    if (!losingRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
+                    {
+                        // Give player no bag, but quarter rewards
+                        WorldMgr.RewardDistributor.DistributeNonBagAwards(player, _rewardManager.CalculateRenownBand(player.RenownRank), 0.25);
+                    }
+                }
+            }
         }
 
         public List<uint> GetEligiblePlayers(BattleFrontStatus activeBattleFrontStatus)
