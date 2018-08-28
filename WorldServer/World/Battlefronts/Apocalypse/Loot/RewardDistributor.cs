@@ -17,6 +17,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
     {
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
         public List<RVRZoneLockReward> ZoneLockRewards { get; private set; }
+
+
         public IRandomGenerator RandomGenerator { get; }
 
         public RewardDistributor(List<RVRZoneLockReward> zoneLockRewards, IRandomGenerator randomGenerator)
@@ -25,24 +27,48 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             RandomGenerator = randomGenerator;
         }
 
-        public string Distribute(LootBagTypeDefinition lootBag, Player player, byte playerRenownBand)
+        public void DistributeNonBagAwards(Player player, byte playerRenownBand, double modifier)
+        {
+            var lockReward = ZoneLockRewards.SingleOrDefault(x => x.RRBand == playerRenownBand);
+
+            if (lockReward == null)
+            {
+                RewardLogger.Warn($"Could not find renownBand for player : {player.Name}.");
+                return;
+            }
+
+            var xp = (uint)lockReward.XP * modifier;
+            var rr = (uint)lockReward.Renown * modifier;
+            var money = (uint)lockReward.Money * modifier;
+            var influence = (ushort)lockReward.Influence * modifier;
+            var crestCount = (ushort)lockReward.ItemCount * modifier;
+
+            player.AddXp((uint)(xp * modifier), false, false);
+            player.AddNonScalingRenown((uint)rr, false, RewardType.ZoneKeepCapture, "");
+            player.AddMoney((uint)money);
+            var influenceId = (ushort)player.CurrentArea.OrderInfluenceId;
+            player.AddInfluence(influenceId, (ushort)influence);
+
+            player.ItmInterface.CreateItem((uint)lockReward.ItemId, (ushort)crestCount);
+
+            player.SendClientMessage($"You have been awarded {(ushort)crestCount} war crests.");
+
+            RewardLogger.Info($"RR {rr} Money {money} INF {influence} Crests {(uint)lockReward.ItemId} ({(ushort)crestCount}) to {player.Name}.");
+        }
+
+        public string DistributeWinningRealm(LootBagTypeDefinition lootBag, Player player, byte playerRenownBand)
         {
             // Combine the lootBag reward
             var lockReward = ZoneLockRewards.SingleOrDefault(x => x.RRBand == playerRenownBand);
+
             if (lockReward == null)
+            {
+                RewardLogger.Warn($"Could not find renownBand for player : {player.Name}.");
                 return "";
+            }
 
-            player.AddXp((uint)lockReward.XP, false, false);
-            player.AddRenown((uint)lockReward.Renown, false, RewardType.ZoneKeepCapture, "");
-            player.AddMoney((uint)lockReward.Money);
-            player.ItmInterface.CreateItem((uint)lockReward.ItemId, (ushort)lockReward.ItemCount);
+            var lootRewardDescription = string.Empty;
 
-
-
-            var influenceId = (ushort)player.CurrentArea.OrderInfluenceId;
-            player.AddInfluence(influenceId, (ushort)lockReward.Influence);
-
-            RewardLogger.Info($"RR {lockReward.Renown} Money {lockReward.Money} INF {lockReward.Influence} Crests {(uint)lockReward.ItemId} ({(ushort)lockReward.ItemCount}) to {player.Name}.");
 
             // Get the bag item id
             var lootBagItemId = Convert.ToInt32(LootBagTypeDefinition.GetDescription(lootBag.BagRarity));
@@ -54,8 +80,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             var result = player.ItmInterface.CreateItem(lootBagItem, 1, internalBagContainer, 0, 0, false, 0, false);
 
             RewardLogger.Info($"Distributing reward of {lootBagItem.Name}, containing {lootBag.ItemId} ({lootBag.ItemCount}) to {player.Name}. Result = {result}");
-
-            var lootRewardDescription = string.Empty;
+            
             if ((lockReward.ItemCount != 0) && (lockReward.ItemId != 0))
             {
                 var lockItem = ItemService.GetItem_Info((uint)lockReward.ItemId);
@@ -66,6 +91,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             }
 
             lootRewardDescription += $"For your valiant efforts you have also won {lootBag.FormattedString()}! ";
+
             return lootRewardDescription;
         }
     }

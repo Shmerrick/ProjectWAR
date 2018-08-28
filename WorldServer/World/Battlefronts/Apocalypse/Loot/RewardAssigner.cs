@@ -26,6 +26,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// <returns></returns>
         public List<LootBagTypeDefinition> AssignLootToPlayers(List<uint> eligiblePlayers, byte forceNumberRewards = 0)
         {
+            if (eligiblePlayers.Count == 0)
+                return null;
+
             // Randomise the players
             var randomisedPlayerList = RewardSelector.RandomisePlayerList(eligiblePlayers);
             byte numberLootBags = 0;

@@ -15,7 +15,7 @@ using WorldServer.World.BattleFronts;
 using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.World.Objects.PublicQuests;
-using System.Diagnostics;
+
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -306,7 +306,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-		private void UpdateRVRStatus()
+        private List<Player> GetAllFlaggedPlayersInZone(int zoneId)
+        {
+            lock (Player._Players)
+            {
+                return Player._Players.Where(x => !x.IsDisposed && x.IsInWorld() && !x.IsAFK && !x.IsAutoAFK && x != null && x.ZoneId == zoneId && x.CbtInterface.IsPvp).ToList();
+            }
+        }
+
+        private void UpdateRVRStatus()
         {
             // Update players with status of campaign
             foreach (Player plr in Region.Players)
@@ -626,10 +634,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// Lock, Advance and handle rewards for Lock of Battlefront
         /// </summary>
         /// <param name="lockingRealm"></param>
-        public void LockBattleFront(Realms lockingRealm, int forceNumberBags = 0)
+        public void LockBattleFront(Realms lockingRealm, byte forceNumberBags = 0)
         {
-            var awardablePlayers = new List<Player>();
-            BattlefrontLogger.Info($"*************************BATTLEFRONT LOCK*************************");
+          
+            BattlefrontLogger.Info($"*************************BATTLEFRONT LOCK-START*******************");
             BattlefrontLogger.Info($"forceNumberBags = {forceNumberBags}");
             BattlefrontLogger.Info($"Locking Battlefront {this.CampaignName} to {lockingRealm.ToString()}...");
 
@@ -637,71 +645,120 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             BattlefrontLogger.Debug(message);
 
-
-            // Generate RP and rewards
-            //_contributionTracker.CreateGoldChest(lockingRealm);
-            //_contributionTracker.HandleLockReward(lockingRealm, 1, message, 0, Tier);
-
             if (PlayersInLakeSet == null)
                 BattlefrontLogger.Warn($"No players in the Lake!!");
             if (_rewardManager == null)
                 BattlefrontLogger.Warn($"_rewardManager is null!!");
+
+            BattlefrontLogger.Info($"*************************BATTLEFRONT GENERATING REWARDS***********");
+            GenerateZoneLockRewards(lockingRealm, forceNumberBags);
+            BattlefrontLogger.Info($"*************************BATTLEFRONT LOCK-END*********************");
+
+        }
+
+        private void GenerateZoneLockRewards(Realms lockingRealm, byte forceNumberBags = 0)
+        {
+            var winningRealmPlayers = new List<Player>();
+            var losingRealmPlayers = new List<Player>();
+
             #region Generate Zone Lock Rewards
             var activeBattleFrontId = BattleFrontManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
 
             var eligiblePlayers = GetEligiblePlayers(activeBattleFrontStatus);
-           
+
             // Remove eligible players from losing realm
             foreach (var eligiblePlayer in eligiblePlayers)
             {
                 var player = Player.GetPlayer(eligiblePlayer);
                 if (player.Realm == lockingRealm)
-                    awardablePlayers.Add(player);
-            }
-
-
-            // Select players from the shortlist to actually assign a reward to. 
-            var rewardSelector = new RewardSelector(new RandomGenerator());
-            var rewardAssignments =new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(eligiblePlayers);
-
-            foreach (var lootBagTypeDefinition in rewardAssignments)
-            {
-                BattlefrontLogger.Debug($"{lootBagTypeDefinition.ToString()}");
-            }
-
-            var lootDecider = new LootDecider(RVRZoneRewardService.RVRZoneLockItemOptions, new RandomGenerator());
-
-            foreach (var lootBagTypeDefinition in rewardAssignments)
-            {
-
-                if (lootBagTypeDefinition.Assignee != 0)
+                    winningRealmPlayers.Add(player);
+                else
                 {
-                    var player = awardablePlayers.Single(x=>x.CharacterId == lootBagTypeDefinition.Assignee);
-
-                    var playerItemList = (from item in player.ItmInterface.Items where item != null select item.Info.Entry).ToList();
-                    
-                    var playerRenown = player.CurrentRenown.Level;
-                    var playerClass = player.Info.CareerLine;
-                    var playerRenownBand = _rewardManager.CalculateRenownBand(playerRenown);
-
-                    var lootDefinition = lootDecider.DetermineRVRZoneReward(lootBagTypeDefinition, playerRenownBand, playerClass, playerItemList.ToList());
-                    if (lootDefinition.IsValid())
-                    {
-                        BattlefrontLogger.Trace($"{player.Info.Name} has received {lootDefinition.FormattedString()}");
-
-                        BattlefrontLogger.Debug($"{lootDefinition.ToString()}");
-                    }
-                    else
-                    {
-                        BattlefrontLogger.Trace($"{player.Info.Name} has received [INVALID for Player] {lootDefinition.FormattedString()}");
-                    }
-
-                    var rewardDescription = WorldMgr.RewardDistributor.Distribute(lootDefinition, player, playerRenownBand);
-                    player.SendClientMessage($"{rewardDescription}", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-
+                    losingRealmPlayers.Add(player);
                 }
             }
+
+            // Distribute rewards to losing players with eligibility - halve rewards.
+            foreach (var losingRealmPlayer in losingRealmPlayers)
+            {
+                WorldMgr.RewardDistributor.DistributeNonBagAwards(losingRealmPlayer, _rewardManager.CalculateRenownBand(losingRealmPlayer.RenownRank), 0.5);
+            }
+
+            // Get All players in the zone and if they are not in the eligible list, they receive minor awards
+            var allPlayersInZone = GetAllFlaggedPlayersInZone(BattleFrontManager.ActiveBattleFront.ZoneId);
+            foreach (var player in allPlayersInZone)
+            {
+
+                if (player.Realm == lockingRealm)
+                {
+                    // Ensure player is not in the eligible list.
+                    if (!winningRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
+                    {
+                        // Give player no bag, but half rewards
+                        WorldMgr.RewardDistributor.DistributeNonBagAwards(player, _rewardManager.CalculateRenownBand(player.RenownRank), 0.5);
+                    }
+                }
+                else
+                {
+                    // Ensure player is not in the eligible list.
+                    if (!losingRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
+                    {
+                        // Give player no bag, but quarter rewards
+                        WorldMgr.RewardDistributor.DistributeNonBagAwards(player, _rewardManager.CalculateRenownBand(player.RenownRank), 0.25);
+                    }
+                }
+            }
+
+            // Select players from the shortlist to actually assign a reward to. (Eligible and winning realm)
+            var rewardSelector = new RewardSelector(new RandomGenerator());
+            var rewardAssignments = new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(winningRealmPlayers.Select(x => x.CharacterId).ToList(), forceNumberBags);
+
+            if (rewardAssignments == null)
+            {
+                BattlefrontLogger.Warn($"No reward assignments found.");
+            }
+            else
+            {
+                foreach (var lootBagTypeDefinition in rewardAssignments)
+                {
+                    BattlefrontLogger.Debug($"{lootBagTypeDefinition.ToString()}");
+                }
+
+                var lootDecider = new LootDecider(RVRZoneRewardService.RVRZoneLockItemOptions, new RandomGenerator());
+
+                foreach (var lootBagTypeDefinition in rewardAssignments)
+                {
+
+                    if (lootBagTypeDefinition.Assignee != 0)
+                    {
+                        var player = winningRealmPlayers.Single(x => x.CharacterId == lootBagTypeDefinition.Assignee);
+
+                        var playerItemList = (from item in player.ItmInterface.Items where item != null select item.Info.Entry).ToList();
+
+                        var playerRenown = player.CurrentRenown.Level;
+                        var playerClass = player.Info.CareerLine;
+                        var playerRenownBand = _rewardManager.CalculateRenownBand(playerRenown);
+
+                        var lootDefinition = lootDecider.DetermineRVRZoneReward(lootBagTypeDefinition, playerRenownBand, playerClass, playerItemList.ToList());
+                        if (lootDefinition.IsValid())
+                        {
+                            BattlefrontLogger.Trace($"{player.Info.Name} has received {lootDefinition.FormattedString()}");
+
+                            BattlefrontLogger.Debug($"{lootDefinition.ToString()}");
+                        }
+                        else
+                        {
+                            BattlefrontLogger.Trace($"{player.Info.Name} has received [INVALID for Player] {lootDefinition.FormattedString()}");
+                        }
+
+                        var rewardDescription = WorldMgr.RewardDistributor.DistributeWinningRealm(lootDefinition, player, playerRenownBand);
+                        player.SendClientMessage($"{rewardDescription}", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+
+                    }
+                }
+            }
+
             // Remove eligible players.
             ClearEligiblePlayers(activeBattleFrontStatus);
 

@@ -113,7 +113,7 @@ namespace WorldServer.Managers.Commands
         public static void LockPairing(Player plr, Realms realm, int forceNumberOfBags=0)
         {
             plr.SendClientMessage($"Attempting to lock the {plr.Region.Campaign.CampaignName} campaign... (call AdvancePairing <realm> <tier> to move ahead)");
-            WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign.BattleFrontManager.LockActiveBattleFront(realm, forceNumberOfBags);
+            WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign.BattleFrontManager.LockActiveBattleFront(realm, (byte) forceNumberOfBags);
         }
 
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Advances the pairing the player is in ")]
