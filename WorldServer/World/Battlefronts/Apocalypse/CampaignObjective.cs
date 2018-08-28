@@ -1285,17 +1285,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (AccumulatedKills < 3)
                     {
                         plr.SendLocalizeString("Defending this objective was a noble duty. You have received a small reward for your service.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                        plr.ItmInterface.CreateItem((uint)208399 + Tier, 1);
+                        plr.ItmInterface.CreateItem((uint)208470, 1);
                     }
                     else if (AccumulatedKills <= 6)
                     {
                         plr.SendLocalizeString("Your defense of this objective has been noteworthy! You have received a moderate reward.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                        plr.ItmInterface.CreateItem((uint)208399 + Tier, 2);
+                        plr.ItmInterface.CreateItem((uint)208470, 2);
                     }
                     else if (AccumulatedKills > 6)
                     {
                         plr.SendLocalizeString("Your defense of this objective has been heroic! You have received a respectable reward.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                        plr.ItmInterface.CreateItem((uint)208399 + Tier, 3);
+                        plr.ItmInterface.CreateItem((uint)208470, 3);
                     }
                 }
             }

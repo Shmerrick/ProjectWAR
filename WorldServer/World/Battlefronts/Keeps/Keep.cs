@@ -477,6 +477,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public void DistributeRewards()
         {
             Log.Info("Keep", "Locking " + Zone.Info.Name);
+            _logger.Debug($"Distributing rewards for Keep {this.Name}");
             uint influenceId = 0;
 
             byte objCount = 0;
@@ -494,14 +495,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
 
             int totalXp = (800*Tier) + (200*Tier*objCount) + (_playersKilledInRange*Tier*30); // Field of Glory, reduced
-            int totalRenown = (120*Tier) + (60*Tier*objCount) + (_playersKilledInRange*Tier*12); // 480 + 960 = 1440 for base in T4, 32 * 50 = 1600 for 50 players killed in range?
+            int totalRenown = (250*Tier) + (120*Tier*objCount) + (_playersKilledInRange*200);   // Ik : Increased values here.
             int totalInfluence = (40*Tier) + (20*Tier*objCount) + (_playersKilledInRange*Tier*6);
-
-            float rewardScaler = Region.Campaign.RelativeActivityFactor;
-
-            totalXp = (int) (totalXp*rewardScaler);
-            totalRenown = (int) (totalRenown*rewardScaler);
-            totalInfluence = (int) (totalInfluence*rewardScaler);
 
             if (_playersKilledInRange < (4*Tier))
             {
@@ -513,24 +508,24 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
 
             Log.Info("Keep", $"Lock XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
-
+            // Dont believe contribution is being triggered.
             Dictionary<uint, ContributionInfo> contributors = Region.Campaign.GetContributorsFromRealm(Realm);
 
-            if (contributors.Count == 0)
-            {
-                _playersKilledInRange = 0;
-                return;
-            }
+            //if (contributors.Count == 0)
+            //{
+            //    _playersKilledInRange = 0;
+            //    return;
+            //}
 
-            uint maxContribution = contributors.Values.Max(x => x.BaseContribution);
+            //uint maxContribution = contributors.Values.Max(x => x.BaseContribution);
 
-            Log.Info("Keep", $"Contributor count : {contributors.Count} Max contribution: {maxContribution}");
+            //Log.Info("Keep", $"Contributor count : {contributors.Count} Max contribution: {maxContribution}");
 
-            if (maxContribution == 0)
-            {
-                _playersKilledInRange = 0;
-                return;
-            }
+            //if (maxContribution == 0)
+            //{
+            //    _playersKilledInRange = 0;
+            //    return;
+            //}
 
             foreach (Player player in Region.Players)
             {
@@ -544,51 +539,45 @@ namespace WorldServer.World.BattleFronts.Keeps
                     continue;
                 }
 
-                ContributionInfo contrib = contributors[player.CharacterId];
+                //ContributionInfo contrib = contributors[player.CharacterId];
 
                 if (player.ValidInTier(Tier, true))
                     player.QtsInterface.HandleEvent(Objective_Type.QUEST_CAPTURE_KEEP, Info.KeepId, 1);
 
-                /*if (plr.DebugMode)
-                {
-                    plr.DebugMessage("[Keep Lock Breakdown]");
-                    plr.DebugMessage("Tier Renown: " + 400 * Tier);
-                    plr.DebugMessage("Objective Renown: " + 200 * Tier * objCount + " Objective count: "+objCount);
-                    plr.DebugMessage("Player Renown: " + _playersKilledInRange * Tier * 10 + " Players killed in range: "+ _playersKilledInRange);
-                    plr.DebugMessage("Total Renown: " + totalRenown);
-                }*/
-
+             
                 if (HasInRange(player))
                     SendKeepInfo(player);
 
-                float scaleFactor = Math.Min(1f, contrib.BaseContribution/(maxContribution*0.7f));
+               // float scaleFactor = Math.Min(1f, contrib.BaseContribution/(maxContribution*0.7f));
 
                 //Log.Info("Keep", $"Rewarding {player.Name} with scale factor {scaleFactor} ({contrib.BaseContribution} / {maxContribution})");
 
-                string contributionDesc;
+                //string contributionDesc;
 
-                if (scaleFactor > 0.75f)
-                    contributionDesc = "valiant";
-                else if (scaleFactor > 0.5f)
-                    contributionDesc = "stalwart";
-                else if (scaleFactor > 0.25f)
-                    contributionDesc = "modest";
-                else
-                    contributionDesc = "small";
+                //if (scaleFactor > 0.75f)
+                //    contributionDesc = "valiant";
+                //else if (scaleFactor > 0.5f)
+                //    contributionDesc = "stalwart";
+                //else if (scaleFactor > 0.25f)
+                //    contributionDesc = "modest";
+                //else
+                //    contributionDesc = "small";
 
-                player.SendClientMessage($"You've received a reward for your {contributionDesc} contribution to the capture of {Info.Name}!", ChatLogFilters.CHATLOGFILTERS_RVR);
+                //player.SendClientMessage($"You've received a reward for your {contributionDesc} contribution to the capture of {Info.Name}!", ChatLogFilters.CHATLOGFILTERS_RVR);
 
                 if (influenceId == 0)
                     influenceId = (player.Realm == Realms.REALMS_REALM_DESTRUCTION) ? player.CurrentArea.DestroInfluenceId : player.CurrentArea.OrderInfluenceId;
 
-                player.AddXp((uint) (Math.Max(2000*Tier, totalXp)*scaleFactor), false, false);
-                player.AddRenown((uint) (Math.Max(500*Math.Pow(2, Tier - 1), totalRenown)*scaleFactor), false, RewardType.ZoneKeepCapture, Info.Name);
-                player.AddInfluence((ushort) influenceId, (ushort) (Math.Max(300*Tier, totalInfluence)*scaleFactor));
+                player.AddXp((uint) totalXp, false, false);
+                // New method- non scaling renown. RP not effected by AAO and similar things.
+                player.AddNonScalingRenown((uint) totalRenown, false, RewardType.ZoneKeepCapture, Info.Name);
+                player.AddInfluence((ushort) influenceId, (ushort) totalInfluence);
 
                 if (battlePenalty)
                     player.SendClientMessage("This keep was taken with little to no resistance. The rewards have therefore been reduced.");
                 else
-                    player.ItmInterface.CreateItem((uint) (208399 + Tier), (ushort) Math.Floor((_playersKilledInRange/40f)*scaleFactor*rewardScaler));
+                    // Invader crests
+                    player.ItmInterface.CreateItem((uint) (208429), (ushort)5);
             }
 
             _playersKilledInRange = 0;
