@@ -18,7 +18,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         RVRProgression AdvanceBattleFront(Realms lockingRealm, out CampaignRerollMode rerollMode);
 		RVRProgression OpenActiveBattlefront(CampaignRerollMode rerollMode = CampaignRerollMode.NONE);
-        RVRProgression LockActiveBattleFront(Realms realm, byte forceNumberOfBags = 0);
+        RVRProgression LockActiveBattleFront(Realms realm, int forceNumberOfBags = 0);
 
         List<BattleFrontStatus> GetBattleFrontStatusList();
         bool IsBattleFrontLocked(int battleFrontId);

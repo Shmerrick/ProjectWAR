@@ -44,7 +44,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                     ?.Description;
         }
 
-        public List<LootBagTypeDefinition> BuildLootBagTypeDefinitions(byte numberLootBags)
+        public List<LootBagTypeDefinition> BuildLootBagTypeDefinitions(int numberLootBags)
         {
             var result = new List<LootBagTypeDefinition>();
 

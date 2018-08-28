@@ -24,14 +24,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// <param name="eligiblePlayers"></param>
         /// <param name="forceNumberRewards"></param>
         /// <returns></returns>
-        public List<LootBagTypeDefinition> AssignLootToPlayers(List<uint> eligiblePlayers, byte forceNumberRewards = 0)
+        public List<LootBagTypeDefinition> AssignLootToPlayers(List<uint> eligiblePlayers, int forceNumberRewards = 0)
         {
             if (eligiblePlayers.Count == 0)
                 return null;
 
             // Randomise the players
             var randomisedPlayerList = RewardSelector.RandomisePlayerList(eligiblePlayers);
-            byte numberLootBags = 0;
+            int numberLootBags = 0;
             // Determine the number of awards to give
             numberLootBags = forceNumberRewards == 0 ? RewardSelector.DetermineNumberOfAwards((uint) randomisedPlayerList.Count()) : forceNumberRewards;
             // Define the types of awards to give
