@@ -3100,7 +3100,8 @@ namespace WorldServer
                 renown *= (uint)Program.Config.RenownRate;
 
 			// apply aao bonus
-			renown = Convert.ToUInt32(Math.Round((1f + this.AAOBonus) * renown, 0));
+			if (this.ScnInterface == null || this.ScnInterface.Scenario == null || type != RewardType.ScenarioWin)
+				renown = Convert.ToUInt32(Math.Round((1f + this.AAOBonus) * renown, 0));
 			
 			RewardLogger.Trace($"{renown} RP awarded to {this.Name} for {rewardString} ");
             InternalAddRenown(renown, shouldPool, type, rewardString);
