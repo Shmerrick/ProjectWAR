@@ -10,6 +10,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
     public class LootDecider : ILootDecider
     {
+
+
         public List<RVRZoneLockItemOptionReward> RVRZoneRewards { get; private set; }
         public IRandomGenerator RandomGenerator { get; set; }
 

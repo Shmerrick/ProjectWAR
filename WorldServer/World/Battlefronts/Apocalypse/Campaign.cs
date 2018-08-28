@@ -201,7 +201,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
         private int GetTotalDestPVPPlayerCountInRegion(int regionId)
-		{
+        {
             lock (Player._Players)
             {
                 return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && x != null && x.Region.RegionId == regionId && x.CbtInterface.IsPvp);
@@ -218,7 +218,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 		private int GetTotalDestPVPPlayerCountInZone(int zoneID)
 		{
-			lock (Player._Players)
+            lock (Player._Players)
 			{
 				return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && !x.IsAFK && !x.IsAutoAFK && x != null && x.ZoneId == zoneID && x.CbtInterface.IsPvp);
 			}
@@ -226,7 +226,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 		private int GetTotalOrderPVPPlayerCountInZone(int zoneID)
 		{
-			lock (Player._Players)
+            lock (Player._Players)
 			{
 				return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_ORDER && !x.IsDisposed && x.IsInWorld() && !x.IsAFK && !x.IsAutoAFK && x != null && x.ZoneId == zoneID && x.CbtInterface.IsPvp);
 			}
@@ -634,7 +634,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// Lock, Advance and handle rewards for Lock of Battlefront
         /// </summary>
         /// <param name="lockingRealm"></param>
-        public void LockBattleFront(Realms lockingRealm, byte forceNumberBags = 0)
+        public void LockBattleFront(Realms lockingRealm, int forceNumberBags = 0)
         {
           
             BattlefrontLogger.Info($"*************************BATTLEFRONT LOCK-START*******************");
@@ -656,10 +656,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         }
 
-        private void GenerateZoneLockRewards(Realms lockingRealm, byte forceNumberBags = 0)
+        /// <summary>
+        /// Generate zone lock rewards. 
+        /// </summary>
+        /// <param name="lockingRealm"></param>
+        /// <param name="forceNumberBags">By default 0 allows the system to decide the number of bags, setting to -1 forces no rewards.</param>
+        private void GenerateZoneLockRewards(Realms lockingRealm, int forceNumberBags = 0)
         {
             var winningRealmPlayers = new List<Player>();
             var losingRealmPlayers = new List<Player>();
+
+            // Calculate no rewards
+            if (forceNumberBags == -1)
+                return;
 
             var activeBattleFrontId = BattleFrontManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
@@ -749,25 +758,28 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             // Get All players in the zone and if they are not in the eligible list, they receive minor awards
             var allPlayersInZone = GetAllFlaggedPlayersInZone(BattleFrontManager.ActiveBattleFront.ZoneId);
-            foreach (var player in allPlayersInZone)
+            if (allPlayersInZone != null)
             {
+                foreach (var player in allPlayersInZone)
+                {
 
-                if (player.Realm == lockingRealm)
-                {
-                    // Ensure player is not in the eligible list.
-                    if (!winningRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
+                    if (player.Realm == lockingRealm)
                     {
-                        // Give player no bag, but half rewards
-                        WorldMgr.RewardDistributor.DistributeNonBagAwards(player, _rewardManager.CalculateRenownBand(player.RenownRank), 0.5);
+                        // Ensure player is not in the eligible list.
+                        if (!winningRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
+                        {
+                            // Give player no bag, but half rewards
+                            WorldMgr.RewardDistributor.DistributeNonBagAwards(player, _rewardManager.CalculateRenownBand(player.RenownRank), 0.5);
+                        }
                     }
-                }
-                else
-                {
-                    // Ensure player is not in the eligible list.
-                    if (!losingRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
+                    else
                     {
-                        // Give player no bag, but quarter rewards
-                        WorldMgr.RewardDistributor.DistributeNonBagAwards(player, _rewardManager.CalculateRenownBand(player.RenownRank), 0.25);
+                        // Ensure player is not in the eligible list.
+                        if (!losingRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
+                        {
+                            // Give player no bag, but quarter rewards
+                            WorldMgr.RewardDistributor.DistributeNonBagAwards(player, _rewardManager.CalculateRenownBand(player.RenownRank), 0.25);
+                        }
                     }
                 }
             }

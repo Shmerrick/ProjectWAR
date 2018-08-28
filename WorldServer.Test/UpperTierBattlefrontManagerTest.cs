@@ -259,7 +259,7 @@ namespace WorldServer.Test
             // Locking Region1.Campaign
             Region1.Campaign.VictoryPointProgress.DestructionVictoryPoints = 5000f;
             Region1.Campaign.VictoryPointProgress.OrderVictoryPoints = 1000f;
-            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION, -1);
 
             // Ensure battlefront 1 is locked and to Destro
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).LockingRealm == Realms.REALMS_REALM_DESTRUCTION);
@@ -295,7 +295,7 @@ namespace WorldServer.Test
             // Locking Region1.Campaign
             Region1.Campaign.VictoryPointProgress.DestructionVictoryPoints = 5000f;
             Region1.Campaign.VictoryPointProgress.OrderVictoryPoints = 1000f;
-            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION, -1);
 
             // Ensure battlefront 1 is locked and to Destro
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).LockingRealm == Realms.REALMS_REALM_DESTRUCTION);
@@ -335,7 +335,7 @@ namespace WorldServer.Test
             Region1.Campaign.VictoryPointProgress.OrderVictoryPoints = 2200f;
 
             // Lock Destro again
-            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION, -1);
 
             // Ensure battlefront 2 is locked and to Destro
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).LockingRealm == Realms.REALMS_REALM_DESTRUCTION);
@@ -378,7 +378,7 @@ namespace WorldServer.Test
             // Locking Region1.Campaign
             Region1.Campaign.VictoryPointProgress.DestructionVictoryPoints = 5000f;
             Region1.Campaign.VictoryPointProgress.OrderVictoryPoints = 1000f;
-            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION, -1);
 
             // Ensure battlefront 1 is locked and to Destro
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).LockingRealm == Realms.REALMS_REALM_DESTRUCTION);
@@ -405,7 +405,7 @@ namespace WorldServer.Test
             Assert.IsTrue(activeCampaign.VictoryPointProgress.OrderVictoryPoints == 2200f);
 
             // Lock Destro again
-            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION, -1);
             
             // Ensure battlefront is locked and to Destro
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).LockingRealm == Realms.REALMS_REALM_DESTRUCTION);
@@ -445,7 +445,7 @@ namespace WorldServer.Test
             Region3.Campaign.VictoryPointProgress.OrderVictoryPoints = 5000f;
 
             // Lock Destro again
-            manager.LockActiveBattleFront(Realms.REALMS_REALM_ORDER);
+            manager.LockActiveBattleFront(Realms.REALMS_REALM_ORDER,-1);
 
             // Ensure battlefront is locked and to Destro
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).LockingRealm == Realms.REALMS_REALM_ORDER);
@@ -514,7 +514,8 @@ namespace WorldServer.Test
             // Locking Region1.Campaign
             Region1.Campaign.VictoryPointProgress.DestructionVictoryPoints = 5000f;
             Region1.Campaign.VictoryPointProgress.OrderVictoryPoints = 1000f;
-            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            
+            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION, -1);
 
             // Ensure battlefront 1 is locked and to Destro
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).LockingRealm == Realms.REALMS_REALM_DESTRUCTION);
@@ -539,7 +540,7 @@ namespace WorldServer.Test
             Assert.IsTrue(activeCampaign.VictoryPointProgress.OrderVictoryPoints == 2200f);
 
             // Lock Destro again
-            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION,-1);
 
             // Ensure battlefront is locked and to Destro
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).LockingRealm == Realms.REALMS_REALM_DESTRUCTION);
@@ -551,14 +552,14 @@ namespace WorldServer.Test
             Assert.IsTrue(progression2.ZoneId == 400);
 
             // KV
-            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION, -1);
             var progression3 = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
 			manager.OpenActiveBattlefront();
             Assert.IsTrue(progression3.BattleFrontId == 7);
             Assert.IsTrue(progression3.ZoneId == 401);
 
             //Back to Emp
-            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION);
+            manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION, -1);
             var progression4 = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
 			manager.OpenActiveBattlefront();
             Assert.IsTrue(progression4.BattleFrontId == 1);
