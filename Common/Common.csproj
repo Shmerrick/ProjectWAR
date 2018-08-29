@@ -118,6 +118,7 @@
     <Compile Include="Database\World\Ability\DB_BuffInfo.cs" />
     <Compile Include="Database\World\Ability\BuffCommands.cs" />
     <Compile Include="Database\World\Ability\DBAbilityInfo.cs" />
+    <Compile Include="Database\World\Battlefront\KillTracking.cs" />
     <Compile Include="Database\World\Battlefront\BattlefrontObject.cs" />
     <Compile Include="Database\World\Battlefront\BattlefrontObjectType.cs" />
     <Compile Include="Database\World\Battlefront\BattlefrontResourceSpawn.cs" />
