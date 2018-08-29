@@ -83,6 +83,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             
             if ((lockReward.ItemCount != 0) && (lockReward.ItemId != 0))
             {
+                //crests etc
                 var lockItem = ItemService.GetItem_Info((uint)lockReward.ItemId);
                 if (lockItem != null)
                 {

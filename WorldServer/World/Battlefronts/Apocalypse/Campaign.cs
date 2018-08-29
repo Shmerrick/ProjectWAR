@@ -719,7 +719,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         var playerClass = player.Info.CareerLine;
                         var playerRenownBand = _rewardManager.CalculateRenownBand(playerRenown);
 
-                        var lootDefinition = lootDecider.DetermineRVRZoneReward(lootBagTypeDefinition, playerRenownBand, playerClass, playerItemList.ToList());
+                        var lootDefinition = lootDecider.DetermineRVRZoneReward(lootBagTypeDefinition, playerRenownBand, playerClass, playerItemList.ToList(), true);
                         if (lootDefinition.IsValid())
                         {
                             BattlefrontLogger.Trace($"{player.Info.Name} has received {lootDefinition.FormattedString()}");

@@ -42,7 +42,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 return lootBag;
 
             if (shuffleRewards)
-                matchingRewards = Shuffle(matchingRewards.ToList());
+                matchingRewards = matchingRewards.OrderBy(a => Guid.NewGuid()).ToList();
+            //matchingRewards = Shuffle(matchingRewards.ToList());
+
+
 
             foreach (var matchingReward in matchingRewards)
             {

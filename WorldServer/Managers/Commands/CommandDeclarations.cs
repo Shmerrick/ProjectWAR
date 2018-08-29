@@ -67,8 +67,11 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("renown",AddRenown, null, EGmLevel.TrustedStaff, 1, "Add renown to player"),
             new GmCommandHandler("influence",AddInf, null, EGmLevel.TrustedStaff, 1, "Add Influence to player"),
             new GmCommandHandler("xp",AddXp, null, EGmLevel.TrustedStaff, 1, "Add xp to player"),
-            new GmCommandHandler("contribution",AddContrib, null, EGmLevel.TrustedStaff, 1, "Add contribution to player")
+            new GmCommandHandler("contribution",AddContrib, null, EGmLevel.TrustedStaff, 1, "Add contribution to player"),
+            new GmCommandHandler("eligibility", AddRewardEligibility, null, EGmLevel.TrustedStaff, 0, "Reports on players eligibility"),
         };
+
+       
 
         /// <summary>RvR campaign commmands under .campaign</summary>
         public static List<GmCommandHandler> CampaignCommands = CommandsBuilder.BuildCommands(typeof(CampaignCommands));
