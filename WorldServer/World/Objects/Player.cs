@@ -8,6 +8,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using SystemData;
 using Common;
+using Common.Database.World.BattleFront;
 using FrameWork;
 using GameData;
 using WorldServer.World.BattleFronts;
@@ -3772,6 +3773,8 @@ namespace WorldServer
             {
                 _Value.RVRDeaths++;
 
+                RecordKillTracking(this, playerKiller, deathTime);
+
                 byte subtype = 0;
 
                 switch (Info.CareerLine)
@@ -3881,6 +3884,25 @@ namespace WorldServer
 
             // Clearing heal aggro...
             HealAggros = new Dictionary<ushort, AggroInfo>();
+        }
+
+        private void RecordKillTracking(Player victim, Player killer, long timestamp)
+        {
+            var tracker = new KillTracker
+            {
+                Timestamp = timestamp,
+                KillerAccountId = killer.Info.AccountId,
+                KillerCharacterId = (ushort) killer.Info.CharacterId,
+                VictimAccountId = victim.Info.AccountId,
+                VictimCharacterId = (int) victim.Info.CharacterId,
+                RegionId = victim.Region.RegionId,
+                ZoneId = victim.CurrentArea.ZoneId
+            };
+
+            if (killer.GldInterface.IsInGuild())
+                tracker.KillerGuildId = (int) killer.GldInterface.Guild.Info.GuildId;
+
+            WorldMgr.Database.AddObject(tracker);
         }
 
         #endregion

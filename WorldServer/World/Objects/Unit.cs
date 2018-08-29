@@ -608,6 +608,7 @@ namespace WorldServer
 
                 if (credited != null && credited.Zone != null && !credited.PendingDisposal)
                     HandleDeathRewards(credited);
+                
 
                 DeathLogger.Trace($"Clearing {killer.Name}");
 
