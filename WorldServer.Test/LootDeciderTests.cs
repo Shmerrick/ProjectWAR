@@ -207,6 +207,17 @@ namespace WorldServer.Test
         }
 
         [TestMethod]
+        public void DetermineRVRZoneReward_ManualTest_ValidBag()
+        {
+            var lootDecider = new LootDecider(this.SampleZoneItemOptions, new RandomGenerator());
+            var bag = new LootBagTypeDefinition { BagRarity = LootBagRarity.Blue, Assignee = 1, LootBagNumber = 1 };
+
+            // SHould match 3 record
+            var result = lootDecider.DetermineRVRZoneReward(bag, 10, 64, new List<uint>(), true);
+            Assert.IsTrue(1==1);
+        }
+
+        [TestMethod]
         public void DetermineRVRZoneReward_NMatches_ValidBag_PlayerItemsNoMatch()
         {
             var lootDecider = new LootDecider(this.SampleZoneItemOptions, new LockedRandomNumberGenerator(10));

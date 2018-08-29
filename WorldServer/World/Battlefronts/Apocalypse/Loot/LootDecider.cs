@@ -42,7 +42,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 return lootBag;
 
             if (shuffleRewards)
-                Shuffle(matchingRewards.ToList());
+                matchingRewards = Shuffle(matchingRewards.ToList());
 
             foreach (var matchingReward in matchingRewards)
             {
@@ -63,7 +63,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             return lootBag;
         }
 
-        public void Shuffle<T>(IList<T> list)
+        public IList<T> Shuffle<T>(IList<T> list)
         {
             int n = list.Count;
             while (n > 1)
@@ -74,6 +74,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 list[k] = list[n];
                 list[n] = value;
             }
+            return list;
         }
     }
 }
