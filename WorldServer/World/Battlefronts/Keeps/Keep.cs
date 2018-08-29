@@ -577,7 +577,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                 player.AddXp((uint) totalXp, false, false);
                 // New method- non scaling renown. RP not effected by AAO and similar things.
-                player.AddNonScalingRenown((uint) totalRenown, false, RewardType.ZoneKeepCapture, Info.Name);
+                player.AddRenown((uint) totalRenown, false, RewardType.ZoneKeepCapture, Info.Name);
                 player.AddInfluence((ushort) influenceId, (ushort) totalInfluence);
 
                 if (battlePenalty)
