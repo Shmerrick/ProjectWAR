@@ -3116,13 +3116,7 @@ namespace WorldServer
             InternalAddRenown(renown, shouldPool, type, rewardString);
         }
 
-        public void AddNonScalingRenown(uint renown, bool shouldPool, RewardType type = RewardType.None, string rewardString = null)
-        {
-            if (renown == 0)
-                return;
-            RewardLogger.Trace($"{renown} RP (non-scaling) awarded to {this.Name} for {rewardString} ");
-            InternalAddRenown(renown, shouldPool, type, rewardString);
-        }
+     
 
 
         private void InternalAddRenown(uint renown, bool shouldPool, RewardType type = RewardType.None, string rewardString = null)
