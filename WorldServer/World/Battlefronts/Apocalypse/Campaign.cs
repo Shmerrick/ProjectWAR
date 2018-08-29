@@ -736,9 +736,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     }
                 }
             }
-
             // Remove eligible players.
-            ClearEligiblePlayers(activeBattleFrontStatus);
+            ClearEligiblePlayers(activeBattleFrontStatus, eligiblePlayers);
 
         }
 
@@ -747,7 +746,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Distribute rewards to losing players with eligibility - halve rewards.
             foreach (var losingRealmPlayer in losingRealmPlayers)
             {
-                WorldMgr.RewardDistributor.DistributeNonBagAwards(losingRealmPlayer, _rewardManager.CalculateRenownBand(losingRealmPlayer.RenownRank), 0.75);
+                WorldMgr.RewardDistributor.DistributeNonBagAwards(losingRealmPlayer, _rewardManager.CalculateRenownBand(losingRealmPlayer.RenownRank), 0.5);
             }
 
             // Distribute rewards to winning players with eligibility - full rewards.
@@ -785,9 +784,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public List<uint> GetEligiblePlayers(BattleFrontStatus activeBattleFrontStatus)
+        public HashSet<uint> GetEligiblePlayers(BattleFrontStatus activeBattleFrontStatus)
         {
-            var eligiblePlayers = new List<uint>();
+            var eligiblePlayers = new HashSet<uint>();
             BattlefrontLogger.Debug($"** Kill Contribution players **");
             foreach (var playerKillContribution in activeBattleFrontStatus.KillContributionSet)
             {
@@ -811,8 +810,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
 
-        public void ClearEligiblePlayers(BattleFrontStatus activeBattleFrontStatus)
+        public void ClearEligiblePlayers(BattleFrontStatus activeBattleFrontStatus, HashSet<uint> eligiblePlayers)
         {
+            eligiblePlayers.Clear();
             activeBattleFrontStatus.KillContributionSet.Clear();
             foreach (var campaignObjective in Objectives)
             {

@@ -495,7 +495,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
 
             int totalXp = (800*Tier) + (200*Tier*objCount) + (_playersKilledInRange*Tier*30); // Field of Glory, reduced
-            int totalRenown = (250*Tier) + (120*Tier*objCount) + (_playersKilledInRange*200);   // Ik : Increased values here.
+            int totalRenown = (250*Tier) + (120*Tier*objCount) + (_playersKilledInRange*100);   // Ik : Increased values here.
             int totalInfluence = (40*Tier) + (20*Tier*objCount) + (_playersKilledInRange*Tier*6);
 
             if (_playersKilledInRange < (4*Tier))
@@ -532,23 +532,30 @@ namespace WorldServer.World.BattleFronts.Keeps
                 if (!player.Initialized)
                     continue;
 
-                if (!contributors.ContainsKey(player.CharacterId))
-                {
-                    if (player.CurrentArea != null && player.CurrentArea.IsRvR)
-                        player.SendClientMessage($"As you did not contribute to the capture of {Info.Name}, you did not receive a reward.", ChatLogFilters.CHATLOGFILTERS_RVR);
-                    continue;
-                }
+                //if (!contributors.ContainsKey(player.CharacterId))
+                //{
+                //    if (player.CurrentArea != null && player.CurrentArea.IsRvR)
+                //        player.SendClientMessage($"As you did not contribute to the capture of {Info.Name}, you did not receive a reward.", ChatLogFilters.CHATLOGFILTERS_RVR);
+                //    continue;
+                //}
 
                 //ContributionInfo contrib = contributors[player.CharacterId];
 
                 if (player.ValidInTier(Tier, true))
                     player.QtsInterface.HandleEvent(Objective_Type.QUEST_CAPTURE_KEEP, Info.KeepId, 1);
 
-             
-                if (HasInRange(player))
-                    SendKeepInfo(player);
 
-               // float scaleFactor = Math.Min(1f, contrib.BaseContribution/(maxContribution*0.7f));
+                if (HasInRange(player))
+                {
+                    SendKeepInfo(player);
+                }
+                else
+                {
+                    player.SendClientMessage("The keep was taken, but you were too far away!");
+                    return;
+                }
+
+                // float scaleFactor = Math.Min(1f, contrib.BaseContribution/(maxContribution*0.7f));
 
                 //Log.Info("Keep", $"Rewarding {player.Name} with scale factor {scaleFactor} ({contrib.BaseContribution} / {maxContribution})");
 
@@ -578,6 +585,8 @@ namespace WorldServer.World.BattleFronts.Keeps
                 else
                     // Invader crests
                     player.ItmInterface.CreateItem((uint) (208429), (ushort)5);
+
+                _logger.Info($"Distributing rewards for Keep {this.Name} to {player.Name} RR:{totalRenown} INF:{totalInfluence}");
             }
 
             _playersKilledInRange = 0;
