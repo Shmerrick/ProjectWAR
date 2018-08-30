@@ -153,8 +153,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             try
             {
-                if ((OrderPlayerPopulationList.Count == 0) || (DestructionPlayerPopulationList.Count == 0))
-                    return;
+              
 
                 lock (LockObject)
                 {
@@ -178,7 +177,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                 GroupId = groupId,
                                 TotalPlayerCountInRegion = GetTotalPVPPlayerCountInRegion(status.RegionId),
                                 TotalDestPlayerCountInRegion = GetTotalDestPVPPlayerCountInRegion(status.RegionId),
-                                TotalOrderPlayerCountInRegion = GetTotalOrderPVPPlayerCountInRegion(status.RegionId)
+                                TotalOrderPlayerCountInRegion = GetTotalOrderPVPPlayerCountInRegion(status.RegionId),
+                                TotalPlayerCount = Player._Players.Count(x => !x.IsDisposed && x.IsInWorld() && x != null),
+                                TotalFlaggedPlayerCount = Player._Players.Count(x => !x.IsDisposed && x.IsInWorld() && x != null && x.CbtInterface.IsPvp)
                             };
                             WorldMgr.Database.AddObject(metrics);
                         }
