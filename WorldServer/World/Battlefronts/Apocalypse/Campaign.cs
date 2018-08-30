@@ -153,12 +153,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             try
             {
-              
-
                 lock (LockObject)
                 {
                     var groupId = Guid.NewGuid().ToString();
                     BattlefrontLogger.Debug($"Recording metrics for Campaign {this.CampaignName}");
+                    BattlefrontLogger.Info($"There are {BattleFrontManager.GetBattleFrontStatusList().Count} battlefront statuses.");
                     foreach (var status in BattleFrontManager.GetBattleFrontStatusList())
                     {
                         if (!status.Locked)
