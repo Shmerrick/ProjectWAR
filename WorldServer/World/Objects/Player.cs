@@ -4512,7 +4512,7 @@ namespace WorldServer
 
                 if (count > 0 && ActionPoints < MaxActionPoints)
                 {
-                    ActionPoints += (ushort)(count * (25 + StsInterface.GetBonusStat(Stats.ActionPointRegen)));
+                    ActionPoints += (ushort)(count * (20 + StsInterface.GetBonusStat(Stats.ActionPointRegen)));
 
                     if (ActionPoints > MaxActionPoints)
                         ActionPoints = MaxActionPoints;
