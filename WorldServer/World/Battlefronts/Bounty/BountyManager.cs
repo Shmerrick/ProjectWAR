@@ -18,26 +18,31 @@ namespace WorldServer.World.Battlefronts.Bounty
             BountyDictionary = new ConcurrentDictionary<uint, CharacterBounty>();
         }
 
-        public CharacterBounty UpdateCharacterBounty(uint targetCharacterId, CharacterBounty characterBounty)
+        /// <summary>
+        /// Reset the characters bounty value (typically as they have died)
+        /// </summary>
+        /// <param name="targetCharacterId"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public bool ResetCharacterBounty(uint targetCharacterId, Player player)
         {
-            return this.BountyDictionary.AddOrUpdate(
-                targetCharacterId, 
-                characterBounty, 
-                (key, existingCharacterBounty) => characterBounty);
+            RemoveCharacter(targetCharacterId);
+            return this.BountyDictionary.TryAdd(targetCharacterId,new CharacterBounty(player));
         }
 
-     
-
-        /// <summary>
-        /// Add Character to Bounty Dictionary
-        /// </summary>
-        /// <param name="characterId"></param>
-        /// <param name="characterLevel"></param>
-        /// <param name="renownLevel"></param>
-        public void AddCharacter(uint characterId, int characterLevel, int renownLevel)
+        public bool AddCharacterBounty(uint targetCharacterId, int additionalContribution)
         {
-            var characterBounty = new CharacterBounty().AddCharacter(characterId, characterLevel, renownLevel);
-            UpdateCharacterBounty(characterId, characterBounty);
+            var bounty = GetBounty(targetCharacterId);
+            if (bounty != null)
+            {
+                bounty.ContributedBountyValue += additionalContribution;
+                return this.BountyDictionary.TryUpdate(targetCharacterId, bounty, bounty);
+            }
+            else
+            {
+                // Something is wrong.
+                return false;
+            }
         }
 
         /// <summary>
@@ -50,12 +55,17 @@ namespace WorldServer.World.Battlefronts.Bounty
             this.BountyDictionary.TryRemove(characterId, out characterBounty);
         }
 
+        /// <summary>
+        /// Get the Bounty value for this character
+        /// </summary>
+        /// <param name="targetCharacterId"></param>
+        /// <returns></returns>
         public CharacterBounty GetBounty(uint targetCharacterId)
         {
             if (this.BountyDictionary.ContainsKey(targetCharacterId))
                 return this.BountyDictionary[targetCharacterId];
             else
-                throw new BountyException($"Could not locate target character {targetCharacterId} for bounty calculation");
+                return null;
         }
     }
 }

@@ -63,7 +63,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             RewardLogger.Info($"Calculating Reward for impacting {targetCharacterId}");
             RewardLogger.Debug($"Character Bounty : {characterBounty.ToString()}");
-            RewardLogger.Debug($"Contribution : {contributionValue}");
+            RewardLogger.Debug($"ContributionManagerInstance : {contributionValue}");
             RewardLogger.Debug($"Impacts : {String.Join(",", impacts)}");
 
      
@@ -75,6 +75,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             foreach (var playerImpact in impacts)
             {
                 var impactFraction = CalculateImpactFraction(playerImpact.ImpactValue, totalImpact);
+                //TODO - need to rethink this calculation.
                 var modifiedEffectiveLevel = CalculateModifiedEffectiveLevel(characterBounty, contributionValue);
 
                 int insigniaCount = 0;

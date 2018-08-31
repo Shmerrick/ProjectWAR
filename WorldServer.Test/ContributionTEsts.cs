@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.Remoting;
+using Common.Database.World.Battlefront;
 using WorldServer.World.Battlefronts.Bounty;
 
 namespace WorldServer.Test
@@ -10,29 +11,29 @@ namespace WorldServer.Test
     [TestClass]
     public class ContributionTests
     {
-        public List<ContributionFactor> ContributionFactorReferenceList { get; set; }
+        public List<ContributionDefinition> ContributionFactorReferenceList { get; set; }
 
         [TestInitialize]
         public void Init()
         {
-            ContributionFactorReferenceList = new List<ContributionFactor>
+            ContributionFactorReferenceList = new List<ContributionDefinition>
             {
                 // Special contribution factor.
-                new ContributionFactor
+                new ContributionDefinition
                 {
                     ContributionId = 0,
                     ContributionDescription = "Initial",
                     ContributionValue = 0,
                     MaxContributionCount = 1
                 },
-                new ContributionFactor
+                new ContributionDefinition
                 {
                     ContributionId = 1,
                     ContributionDescription = "PVP Kill",
                     ContributionValue = 1,
                     MaxContributionCount = 10
                 },
-                new ContributionFactor
+                new ContributionDefinition
                 {
                     ContributionId = 2,
                     ContributionDescription = "BO Capture",

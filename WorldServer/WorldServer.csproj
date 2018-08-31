@@ -166,6 +166,7 @@
     <Compile Include="Services\World\QuestService.cs" />
     <Compile Include="Services\World\RallyPointService.cs" />
     <Compile Include="Services\World\RewardService.cs" />
+    <Compile Include="Services\World\BountyService.cs" />
     <Compile Include="Services\World\RVRProgressionService.cs" />
     <Compile Include="Services\World\ScenarioService.cs" />
     <Compile Include="Services\World\TokService.cs" />
@@ -255,7 +256,6 @@
     <Compile Include="World\Battlefronts\AAOTracker.cs" />
     <Compile Include="World\Battlefronts\Bounty\BountyException.cs" />
     <Compile Include="World\Battlefronts\Bounty\CharacterBounty.cs" />
-    <Compile Include="World\Battlefronts\Bounty\ContributionFactor.cs" />
     <Compile Include="World\Battlefronts\Bounty\ContributionManager.cs" />
     <Compile Include="World\Battlefronts\Bounty\BountyManager.cs" />
     <Compile Include="World\Battlefronts\Bounty\ContributionStage.cs" />

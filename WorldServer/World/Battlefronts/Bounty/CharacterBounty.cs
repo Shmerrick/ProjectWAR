@@ -10,32 +10,28 @@ namespace WorldServer.World.Battlefronts.Bounty
         public int LastDeath { get; set; }
         public int CharacterLevel { get; set; }
         public int RenownLevel { get; set; }
+        // The base bounty level of this character.
+        public int BaseBountyValue { get; set; }
+        // The contribution bounty level of this character (added as the character performs actions to gain contribution). Lock contribution is derived from the ContributionManager.
+        public int ContributedBountyValue { get; set; }
 
-        public CharacterBounty SetBounty(int effectiveLevel, int lastDeath, int characterLevel, int renownLevel)
+        public CharacterBounty()
         {
-            EffectiveLevel = effectiveLevel;
-            LastDeath = lastDeath;
-            CharacterLevel = characterLevel;
-            RenownLevel = renownLevel;
+            
+        }
 
-            return this;
+        public CharacterBounty(Player player)
+        {
+            EffectiveLevel = player.EffectiveLevel;
+            CharacterLevel = player.Level;
+            RenownLevel = player.RenownRank;
+            BaseBountyValue = (int) (CharacterLevel + (RenownLevel * 1.5));
+            ContributedBountyValue = 0;
         }
         
-        public CharacterBounty AddCharacter(uint characterId, int characterLevel, int renownLevel)
-        {
-            var characterBounty = new CharacterBounty
-            {
-                EffectiveLevel = (2 * characterLevel + renownLevel),
-                CharacterLevel = characterLevel,
-                RenownLevel = renownLevel,
-                LastDeath = 0
-            };
-            return characterBounty;
-        }
-
         public override string ToString()
         {
-            return $"EffectiveLevel {EffectiveLevel}, Last Death {LastDeath} Character Level {CharacterLevel}/{RenownLevel}";
+            return $"EffectiveLevel {EffectiveLevel}, Last Death {LastDeath} Character Level {CharacterLevel}/{RenownLevel}, BaseBounty {BaseBountyValue} Contributed {ContributedBountyValue}";
         }
     }
 }

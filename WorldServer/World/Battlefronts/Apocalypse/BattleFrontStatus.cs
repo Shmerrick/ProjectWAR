@@ -1,4 +1,9 @@
-﻿using GameData;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
+using GameData;
+using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Bounty;
+using WorldServer.World.Battlefronts.NewDawn.Rewards;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -12,6 +17,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public bool Locked { get; set; }
         public int RegionId { get; set; }
         public string Description { get; set; }
+        public ContributionManager ContributionManagerInstance { get; set; }
+        public BountyManager BountyManagerInstance { get; set; }
+        public RewardManager RewardManagerInstance { get; set; }
+        public ImpactMatrixManager ImpactMatrixManagerInstance { get; set; }
 
         public float DestructionVictoryPointPercentage
         {
@@ -39,6 +48,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 }
                 return BattleFrontConstants.ZONE_STATUS_CONTESTED;
             }
+        }
+
+        public BattleFrontStatus()
+        {
+            ContributionManagerInstance = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), BountyService._ContributionDefinitions);
+            BountyManagerInstance = new BountyManager();
+            ImpactMatrixManagerInstance = new ImpactMatrixManager();
+            RewardManagerInstance = new RewardManager(BountyManagerInstance, ContributionManagerInstance, ImpactMatrixManagerInstance, new StaticWrapper(), RewardService._RewardBandRewards);
         }
     }
 }

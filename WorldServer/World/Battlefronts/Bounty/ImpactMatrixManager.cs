@@ -24,7 +24,18 @@ namespace WorldServer.World.Battlefronts.Bounty
             ImpactMatrix = new ConcurrentDictionary<uint, List<PlayerImpact>>();
         }
 
-      
+        public string ToString(uint characterId)
+        {
+            var result = string.Empty;
+
+            var killImpacts = GetKillImpacts(characterId);
+            foreach (var playerImpact in killImpacts)
+            {
+                result += $"{playerImpact.CharacterId} {playerImpact.ImpactValue} {playerImpact.ModificationValue} {playerImpact.ExpiryTimestamp}";
+            }
+            return result;
+        }
+
         /// <summary>
         /// Update the Impact matrix with a PlayerImpact object. (Create new if required)
         /// </summary>

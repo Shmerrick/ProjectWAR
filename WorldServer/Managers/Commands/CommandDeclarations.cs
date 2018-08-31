@@ -95,6 +95,8 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("readpackets", ReadPackets, null, EGmLevel.SourceDev, 0, "Displays the volume of outgoing packets over the defined period."),
             new GmCommandHandler("los", StartStopLosMonitor, null, EGmLevel.AllStaff, 0, "Starts/Stops line of sight monitoring for selected target."),
             new GmCommandHandler("population", GetServerPopulation, null, EGmLevel.AnyGM, 0, "Finds all players in the game."),
+            new GmCommandHandler("contribution", GetPlayerContribution, null, EGmLevel.AnyGM, 0, "Gets the contribution of the player."),
+            new GmCommandHandler("bounty", GetPlayerBounty, null, EGmLevel.AnyGM, 0, "Gets the bounty of the player."),
         };
 
         /// <summary>Database commands under .database</summary>

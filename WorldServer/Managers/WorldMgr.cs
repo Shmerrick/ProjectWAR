@@ -23,6 +23,7 @@ namespace WorldServer
     [Service(
         typeof(AnnounceService),
         typeof(BattleFrontService),
+        typeof(BountyService),
         typeof(CellSpawnService),
         typeof(ChapterService),
         typeof(CreatureService),

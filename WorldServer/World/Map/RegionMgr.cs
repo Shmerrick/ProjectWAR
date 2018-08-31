@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Common;
+using Common.Database.World.Battlefront;
 using FrameWork;
 using WorldServer.World.BattleFronts;
 using GameData;
@@ -67,16 +68,16 @@ namespace WorldServer
             /*
              * Using Region as a proxy for Campaign in T4. ContributionFactorReferenceList is used as a proxy from the DB managing this.
              */
-            var contributionFactorReferenceList = new List<ContributionFactor>
+            var contributionFactorReferenceList = new List<ContributionDefinition>
             {
-                new ContributionFactor
+                new ContributionDefinition
                 {
                     ContributionId = 1,
                     ContributionDescription = "PVP Kill",
                     ContributionValue = 1,
                     MaxContributionCount = 10
                 },
-                new ContributionFactor
+                new ContributionDefinition
                 {
                     ContributionId = 2,
                     ContributionDescription = "BO Capture",

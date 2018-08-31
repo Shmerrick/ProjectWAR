@@ -124,6 +124,7 @@
     <Compile Include="Database\World\Battlefront\BattlefrontStatus.cs" />
     <Compile Include="Database\World\Battlefront\Battlefront_Guard.cs" />
     <Compile Include="Database\World\Battlefront\Battlefront_Objective.cs" />
+    <Compile Include="Database\World\Battlefront\ContributionDefinition.cs" />
     <Compile Include="Database\World\Battlefront\RVRMetrics.cs" />
     <Compile Include="Database\World\Battlefront\RvRObjectInfo.cs" />
     <Compile Include="Database\World\Battlefront\Keep_Creature.cs" />

@@ -3627,4 +3627,14 @@ namespace GameData
         Flag9 = 9,
         Flag10 = 10,
     }
+
+    public enum ContributionDefinitions
+    {
+        BO_TAKE_BIG_TICK,
+        BO_TAKE_SMALL_TICK,
+        BO_TAKE_UNLOCK_TICK,
+        PLAYER_KILL_DEATHBLOW,
+        PLAYER_KILL_ON_BO,
+        PLAYER_KILL_ASSIST
+    }
 }

@@ -854,7 +854,7 @@ namespace WorldServer.World.Objects.PublicQuests
             player.SendPacket(Out);
         }
 
-#region Contribution
+#region ContributionManagerInstance
 
         /// <summary>
         /// Contains information about the players who healed damage dealt by mobs in this PQ. Indices: mob OID, CharacterID, player healing

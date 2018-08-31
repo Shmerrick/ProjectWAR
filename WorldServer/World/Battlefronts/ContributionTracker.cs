@@ -196,7 +196,7 @@ namespace WorldServer.World.BattleFronts
         /// <summary>
         /// Gets a ream players contribution.
         /// </summary>
-        /// <returns>Contribution infos indexed by character id</returns>
+        /// <returns>ContributionManagerInstance infos indexed by character id</returns>
         public Dictionary<uint, ContributionInfo> GetContributorsFromRealm(Realms realm)
         {
             Dictionary<uint, ContributionInfo> newDic = new Dictionary<uint, ContributionInfo>();
@@ -597,7 +597,7 @@ namespace WorldServer.World.BattleFronts
         /// <summary>
         /// Utility method returning maximum contribution in a contriution map.
         /// </summary>
-        /// <param name="contribs">Contribution infos indexed by character id</param>
+        /// <param name="contribs">ContributionManagerInstance infos indexed by character id</param>
         /// <returns>Maximum contribution or 1</returns>
         private uint GetMaxContribution(Dictionary<uint, ContributionInfo> contribs)
         {

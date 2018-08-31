@@ -160,7 +160,7 @@ namespace WorldServer.Managers.Commands
         }
 
         /// <summary>
-        /// Add Contribution to player FOR TESTING ONLY
+        /// Add ContributionManagerInstance to player FOR TESTING ONLY
         /// </summary>
         /// <param name="plr">Player that initiated the command</param>
         /// <param name="values">List of command arguments (after command name)</param>

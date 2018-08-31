@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common.Database.World.Battlefront;
 using NLog;
 
 namespace WorldServer.World.Battlefronts.Bounty
@@ -12,9 +13,7 @@ namespace WorldServer.World.Battlefronts.Bounty
     /// <summary>
     /// Each character (player) holds a list of contributions that they have earnt in a specific battlefront.
     /// </summary>
-
-
-    //TODO : Attach this to BattlefrontStatus object. (Which we probably want to persist).
+    
     public class ContributionManager : IContributionManager
     {
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
@@ -22,11 +21,11 @@ namespace WorldServer.World.Battlefronts.Bounty
         // Holds the characterId, and the list of contributions the player has added in the current battlefront.
         public ConcurrentDictionary<uint, List<PlayerContribution>> ContributionDictionary { get; set; }
         // Reference contribution factors
-        public List<ContributionFactor> ContributionFactors { get; }
+        public List<ContributionDefinition> ContributionFactors { get; }
 
         public const short MAXIMUM_CONTRIBUTION = 100;
 
-        public ContributionManager(ConcurrentDictionary<uint, List<PlayerContribution>> contributionDictionary, List<ContributionFactor> contributionFactors)
+        public ContributionManager(ConcurrentDictionary<uint, List<PlayerContribution>> contributionDictionary, List<ContributionDefinition> contributionFactors)
         {
             ContributionDictionary = contributionDictionary;
             ContributionFactors = contributionFactors;
@@ -106,13 +105,13 @@ namespace WorldServer.World.Battlefronts.Bounty
             // double check something is not right.
             if (contributionValue > short.MaxValue)
             {
-                RewardLogger.Debug($"Contribution exceeds max (over short.maxvalue) for Character {targetCharacterId}. {contributionList.Count} contribution records.");
+                RewardLogger.Error($"ContributionManagerInstance exceeds max (over short.maxvalue) for Character {targetCharacterId}. {contributionList.Count} contribution records.");
                 contributionValue = short.MaxValue;
             }
 
             if (contributionValue > MAXIMUM_CONTRIBUTION)
             {
-                RewardLogger.Debug($"Contribution exceeds max ({MAXIMUM_CONTRIBUTION}) for Character {targetCharacterId}. {contributionList.Count} contribution records.");
+                RewardLogger.Error($"ContributionManagerInstance exceeds max ({MAXIMUM_CONTRIBUTION}) for Character {targetCharacterId}. {contributionList.Count} contribution records.");
                 contributionValue = MAXIMUM_CONTRIBUTION;
 
             }
@@ -128,7 +127,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <param name="contributionList"></param>
         /// <param name="contributionFactors"></param>
         /// <returns></returns>
-        public ConcurrentDictionary<short, ContributionStage> GetContributionStageDictionary(List<PlayerContribution> contributionList, List<ContributionFactor> contributionFactors)
+        public ConcurrentDictionary<short, ContributionStage> GetContributionStageDictionary(List<PlayerContribution> contributionList, List<ContributionDefinition> contributionFactors)
         {
             var result = new ConcurrentDictionary<short, ContributionStage>();
             // For each reference contribution type, prepare a dictionary.
@@ -178,6 +177,13 @@ namespace WorldServer.World.Battlefronts.Bounty
                     }
                 }
             }
+
+            foreach (var contributionStage in result)
+            {
+                RewardLogger.Debug($"{contributionStage.Key} {contributionStage.Value.ToString()}");
+            }
+            
+
             return result;
 
         }
@@ -185,7 +191,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
 
         /// <summary>
-        /// Add Character to Contribution Dictionary
+        /// Add Character to ContributionManagerInstance Dictionary
         /// </summary>
         public void AddCharacter(uint characterId)
         {
@@ -193,7 +199,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         }
 
         /// <summary>
-        /// Remove Character from Contribution Dict
+        /// Remove Character from ContributionManagerInstance Dict
         /// </summary>
         /// <param name="characterId"></param>
         public bool RemoveCharacter(uint characterId)

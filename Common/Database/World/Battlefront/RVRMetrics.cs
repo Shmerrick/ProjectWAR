@@ -7,7 +7,7 @@ using FrameWork;
 
 namespace Common.Database.World.Battlefront
 {
-    
+
     [DataTable(PreCache = false, TableName = "rvr_metrics", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class RVRMetrics : DataObject

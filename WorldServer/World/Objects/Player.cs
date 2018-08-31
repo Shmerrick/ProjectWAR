@@ -20,6 +20,7 @@ using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.Services.World;
 using NLog;
 using WorldServer.World.Battlefronts.Apocalypse;
+using BattleFrontStatus = WorldServer.World.Battlefronts.Apocalypse.BattleFrontStatus;
 
 namespace WorldServer
 {
@@ -247,6 +248,14 @@ namespace WorldServer
         public bool Spooky = false;
         public long deathTime = 0;
 
+        public BattleFrontStatus ActiveBattleFrontStatus
+        {
+            get
+            {
+                return this.Region?.Campaign?.GetActiveBattleFrontStatus();
+            }
+        }
+
         public void SpreadSpooky(object list)
         {
             var Params = (List<object>)list;
@@ -465,9 +474,9 @@ namespace WorldServer
         public uint CharacterId => Info?.CharacterId ?? 0;
         public int GmLevel => Client?._Account.GmLevel ?? 0;
 
-		private bool _initInProgress = false;
+        private bool _initInProgress = false;
 
-		private bool _initialized = false;
+        private bool _initialized = false;
         public bool Initialized => _initialized;
 
         public int noSurname => Client?._Account.noSurname ?? 0;
@@ -652,17 +661,17 @@ namespace WorldServer
 
             base.OnLoad();
 
-			if (!_initialized && !_initInProgress)
+            if (!_initialized && !_initInProgress)
             {
-				_initInProgress = true;
+                _initInProgress = true;
 
-				// _initialized is being set in StartInit()
-				StartInit();
-				_initInProgress = false;
-			}
+                // _initialized is being set in StartInit()
+                StartInit();
+                _initInProgress = false;
+            }
 
-			// this is to check if the talisman window was still open if yes move all items back to the inventory
-			ItmInterface.TalismanCheck();
+            // this is to check if the talisman window was still open if yes move all items back to the inventory
+            ItmInterface.TalismanCheck();
 
             // Check for presence in illegal zone or Dangerous Territory
             //CheckZoneValidity();
@@ -714,135 +723,135 @@ namespace WorldServer
 
         public void StartInit()
         {
-			// Zaru: checking here a try block so that init is able to fail
-			try
-			{
-				RemovePlayer(this);
-				Client.State = (int)eClientState.WorldEnter;
+            // Zaru: checking here a try block so that init is able to fail
+            try
+            {
+                RemovePlayer(this);
+                Client.State = (int)eClientState.WorldEnter;
 
-				_isCriticallyWounded = false;
-				// Block 1
-				SendMoney();
-				SocInterface.SendSocialLists();
-				SendSpeed(Speed);
-				StsInterface.SendRenownStats();
-				SendRealmBonus();
-				SendInited();
-				TacInterface.HandleTactics(_Value.GetTactics());
-				TacInterface.SendTactics();
+                _isCriticallyWounded = false;
+                // Block 1
+                SendMoney();
+                SocInterface.SendSocialLists();
+                SendSpeed(Speed);
+                StsInterface.SendRenownStats();
+                SendRealmBonus();
+                SendInited();
+                TacInterface.HandleTactics(_Value.GetTactics());
+                TacInterface.SendTactics();
 
-				// Block 2
-				QtsInterface.SendQuests();
-				SendXpTable();
-				if (GldInterface.IsInGuild())
-					GldInterface.Guild.SendGuildInfo(this);
+                // Block 2
+                QtsInterface.SendQuests();
+                SendXpTable();
+                if (GldInterface.IsInGuild())
+                    GldInterface.Guild.SendGuildInfo(this);
 
-				WorldMgr.GeneralScripts.OnWorldPlayerEvent("SEND_PACKAGES", this, null);
+                WorldMgr.GeneralScripts.OnWorldPlayerEvent("SEND_PACKAGES", this, null);
 
-				// Zaru: here it is always: initialized = false
-				//if (!_initialized)
-				{
-					SendXp();
-					SendRenown();
-					SendStats();
+                // Zaru: here it is always: initialized = false
+                //if (!_initialized)
+                {
+                    SendXp();
+                    SendRenown();
+                    SendStats();
 
-					if (GmLevel > 0)
-					{
-						//if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
-						if (!Utils.HasFlag(GmLevel, (int)EGmLevel.DatabaseDev) && Utils.HasFlag(GmLevel, (int)EGmLevel.AnyGM) && !GmMgr.GmList.Contains(this))
-							GmMgr.NotifyGMOnline(this);
+                    if (GmLevel > 0)
+                    {
+                        //if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
+                        if (!Utils.HasFlag(GmLevel, (int)EGmLevel.DatabaseDev) && Utils.HasFlag(GmLevel, (int)EGmLevel.AnyGM) && !GmMgr.GmList.Contains(this))
+                            GmMgr.NotifyGMOnline(this);
 
-					}
-				}
-				//if gm toggled invincibility and switched zone then it should still be active.
-				if (IsInvulnerable && GmLevel > 1)
-				{
-					string temp = "3";
-					List<string> paramValue = temp.Split(' ').ToList();
-					BaseCommands.SetEffectState(this, ref paramValue);
-				}
-				TokInterface.SendAllToks();
-				SendRankUpdate(this);
-				SendSkills();
-				SendBestiary();
-				SendPlayedTime();
-				ItmInterface.SendAllItems(this);
+                    }
+                }
+                //if gm toggled invincibility and switched zone then it should still be active.
+                if (IsInvulnerable && GmLevel > 1)
+                {
+                    string temp = "3";
+                    List<string> paramValue = temp.Split(' ').ToList();
+                    BaseCommands.SetEffectState(this, ref paramValue);
+                }
+                TokInterface.SendAllToks();
+                SendRankUpdate(this);
+                SendSkills();
+                SendBestiary();
+                SendPlayedTime();
+                ItmInterface.SendAllItems(this);
 
-				Health = TotalHealth;
+                Health = TotalHealth;
 
-				if (PriorityGroup == null)
-					Group.SendNullGroup(this);
-				else if (WorldGroup != null && ScnInterface.Scenario == null)
-					WorldGroup.NotifyMemberLoaded();
+                if (PriorityGroup == null)
+                    Group.SendNullGroup(this);
+                else if (WorldGroup != null && ScnInterface.Scenario == null)
+                    WorldGroup.NotifyMemberLoaded();
 
-				SendHealth();
+                SendHealth();
 
-				PacketOut Outl = new PacketOut((byte)Opcodes.S_PLAYER_LOADED, 2);
-				Outl.WriteUInt16(0);
-				SendPacket(Outl);
+                PacketOut Outl = new PacketOut((byte)Opcodes.S_PLAYER_LOADED, 2);
+                Outl.WriteUInt16(0);
+                SendPacket(Outl);
 
-				SendSpeed(Speed);
+                SendSpeed(Speed);
 
-				//if (_Value.Tactic1 != 0)
-				//    TacInterface.HandleTactics(_Value.GetTactics());
+                //if (_Value.Tactic1 != 0)
+                //    TacInterface.HandleTactics(_Value.GetTactics());
 
-				SendMoraleAbilities();
+                SendMoraleAbilities();
 
-				SendStats();
+                SendStats();
 
-				AbtInterface.SendAbilityLevels();
-				AbtInterface.ReloadMastery();
-				AbtInterface.SendMasteryPointsUpdate();
+                AbtInterface.SendAbilityLevels();
+                AbtInterface.ReloadMastery();
+                AbtInterface.SendMasteryPointsUpdate();
 
-				SendClientData();
+                SendClientData();
 
 
-				/*{
+                /*{
 					PacketOut Out = new PacketOut((byte)Opcodes.F_INFLUENCE_INFO);
 					Out.WriteHexStringBytes("00000000");
 					SendPacket(Out);
 				}*/
 
-				ScnInterface.Scenario?.OnPlayerPushed(this);
+                ScnInterface.Scenario?.OnPlayerPushed(this);
 
-				OSInterface.SendObjectStates(this);
+                OSInterface.SendObjectStates(this);
 
-				// Incorrect sending follows.
-				DispatchUpdateState((byte)StateOpcode.RenownTitle, _Value.RenownRank);
-				DispatchUpdateState((byte)StateOpcode.ToKTitle, _Value.TitleId);
-				SendHelmCloakShowing();
+                // Incorrect sending follows.
+                DispatchUpdateState((byte)StateOpcode.RenownTitle, _Value.RenownRank);
+                DispatchUpdateState((byte)StateOpcode.ToKTitle, _Value.TitleId);
+                SendHelmCloakShowing();
 
-				if (MountID != 0)
-					SendMount(this);
+                if (MountID != 0)
+                    SendMount(this);
 
-				if (Info.CareerLine == (byte)CareerLine.CAREERLINE_MAGUS)
-					SendDisc(this);
+                if (Info.CareerLine == (byte)CareerLine.CAREERLINE_MAGUS)
+                    SendDisc(this);
 
-				LoadChannels();
+                LoadChannels();
 
-				SendInitComplete();
+                SendInitComplete();
 
-				if (ImageNum != 0)
-					EvtInterface.AddEvent(SendImageNum, 15000, 1);
+                if (ImageNum != 0)
+                    EvtInterface.AddEvent(SendImageNum, 15000, 1);
 
 
-				WorldMgr.SendZoneFightLevel(this);
+                WorldMgr.SendZoneFightLevel(this);
 
-				// Zaru: here it is always: initialized = false
-				//if (!_initialized)
-				CrrInterface.NotifyInitialized();
+                // Zaru: here it is always: initialized = false
+                //if (!_initialized)
+                CrrInterface.NotifyInitialized();
 
-				// Same as before.
-				//AbtInterface.ReloadMastery();
+                // Same as before.
+                //AbtInterface.ReloadMastery();
 
-				//Log.info(Name, "EndInit: Oid " + Oid);
-				_initialized = true;
-			}
-			catch
-			{
-				// init failed!
-				_initialized = false;
-			}
+                //Log.info(Name, "EndInit: Oid " + Oid);
+                _initialized = true;
+            }
+            catch
+            {
+                // init failed!
+                _initialized = false;
+            }
         }
 
         public void OnClientLoaded()
@@ -2943,7 +2952,7 @@ namespace WorldServer
 
             var statScaleFactor = StsInterface.GetTotalStat(Stats.XpReceived);
             // Instructions Boon
-            if (statScaleFactor <= 0 )
+            if (statScaleFactor <= 0)
                 scaleFactor = 0;
 
             scaleFactor += statScaleFactor * 0.01f;
@@ -3097,15 +3106,15 @@ namespace WorldServer
             if (renown == 0)
                 return;
 
-			// apply renown rate from server
-			if (Program.Config.RenownRate > 0)
+            // apply renown rate from server
+            if (Program.Config.RenownRate > 0)
                 renown *= (uint)Program.Config.RenownRate;
 
-			// apply aao bonus
-			if (this.ScnInterface == null || this.ScnInterface.Scenario == null || type != RewardType.ScenarioWin)
-				renown = Convert.ToUInt32(Math.Round((1f + this.AAOBonus) * renown, 0));
-			
-			RewardLogger.Trace($"{renown} RP awarded to {this.Name} for {rewardString} ");
+            // apply aao bonus
+            if (this.ScnInterface == null || this.ScnInterface.Scenario == null || type != RewardType.ScenarioWin)
+                renown = Convert.ToUInt32(Math.Round((1f + this.AAOBonus) * renown, 0));
+
+            RewardLogger.Trace($"{renown} RP awarded to {this.Name} for {rewardString} ");
             InternalAddRenown(renown, shouldPool, type, rewardString);
         }
 
@@ -3168,19 +3177,19 @@ namespace WorldServer
 
             scaleFactor += StsInterface.GetTotalStat(Stats.RenownReceived) * 0.01f;
 
-			var bonus = (scaleFactor - 1) >= 0 ? (uint)(renown * (scaleFactor - 1)) : 0;
+            var bonus = (scaleFactor - 1) >= 0 ? (uint)(renown * (scaleFactor - 1)) : 0;
 
-			if (bonus > 0)
-				killer.SendClientMessage($"You gain {bonus} Renown points for fighting near a Battlefield Objective!");
+            if (bonus > 0)
+                killer.SendClientMessage($"You gain {bonus} Renown points for fighting near a Battlefield Objective!");
 
-			renown = (uint)(renown * scaleFactor);
+            renown = (uint)(renown * scaleFactor);
             AddKillRenown(renown, killer, victim, participants);
         }
 
         public void AddKillRenown(uint renown, Player killer, Player victim, int participants = 1)
         {
 
-            
+
             int aaoMult = 0;
             Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
             if (Region != null && Region.Campaign != null)
@@ -3851,9 +3860,9 @@ namespace WorldServer
                         DeathLogger.Trace($"Victim : {this.Name} Group Member : {pg.Name} ");
                     }
                 }
-                
 
-               
+
+
 
                 if (playerKiller.PriorityGroup != null)
                 {
@@ -3866,7 +3875,7 @@ namespace WorldServer
                             subPlayer.TokInterface.AddKill(subtype);
                         }
                     }
-                    
+
                 }
                 else
                     playerKiller.TokInterface.AddKill(subtype);
@@ -3874,6 +3883,8 @@ namespace WorldServer
 
             // Clearing heal aggro...
             HealAggros = new Dictionary<ushort, AggroInfo>();
+            // Reset this characters bounty to their base bounty.
+            ActiveBattleFrontStatus.BountyManagerInstance.ResetCharacterBounty(this.CharacterId, this);
         }
 
         #endregion
@@ -3920,16 +3931,16 @@ namespace WorldServer
 
                 if (Region.Campaign.PreventKillReward() || (killer.Client?._Account != null && CheckKillFarm(killer)))
                     return;
-				
+
                 if (CurrentKeep != null)
                     CurrentKeep.CheckKillValid(this);
                 else if (CurrentObjectiveFlag != null)
-					CurrentObjectiveFlag.CheckKillValid(this);
+                    CurrentObjectiveFlag.CheckKillValid(this);
 
                 var influenceId = 0;
                 if (killer.CurrentArea != null && killer.CurrentArea.IsRvR)
                 {
-                    influenceId = (killer.Realm == Realms.REALMS_REALM_DESTRUCTION) ? (ushort) killer.CurrentArea.DestroInfluenceId : (ushort) killer.CurrentArea.OrderInfluenceId;
+                    influenceId = (killer.Realm == Realms.REALMS_REALM_DESTRUCTION) ? (ushort)killer.CurrentArea.DestroInfluenceId : (ushort)killer.CurrentArea.OrderInfluenceId;
                 }
 
                 float rewardScale = Region.Campaign.ModifyKill(killer, this);
@@ -3940,7 +3951,7 @@ namespace WorldServer
                 // Maximum 25% bonus if this dead player had groupmates within range.
                 if (WorldGroup != null)
                     rewardScale += 0.25f * (WorldGroup.GetPlayerCountWithinDist(this, 200) / 5f);
-				
+
                 // Throttle any kill that could have been the result of farming or soloing.
                 if (rewardScale < 1.1f)
                 {
@@ -3949,48 +3960,71 @@ namespace WorldServer
                     else _recentLooters[killer.CharacterId] = TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL;
                 }
 
-                var rewardDictionary = Region.RewardManager.GenerateBaseReward((this).Info.CharacterId, StaticRandom.Instance.Next(1, 100));
-                
-                foreach (var reward in rewardDictionary)
+                if (this.Region.Campaign.GetActiveBattleFrontStatus() != null)
                 {
-                    if (PlayersByCharId.ContainsKey(reward.Key))
+                    // List of players involved in the kill
+                    var rewardDictionary = ActiveBattleFrontStatus.RewardManagerInstance.GenerateBaseReward((this).Info.CharacterId, StaticRandom.Instance.Next(1, 100));
+
+                    foreach (var reward in rewardDictionary)
                     {
-                        var player = PlayersByCharId[reward.Key];
-                        player.InternalAddXp((uint) reward.Value.BaseXP, true, true);
-                        player.InternalAddRenown((uint)reward.Value.BaseRP, true, RewardType.Kill, $"{Info.Name} assisted in the killing of {player.Name}");
-                        player.AddInfluence((ushort) influenceId, (ushort) reward.Value.BaseInf);
-                        player.AddMoney((uint) reward.Value.BaseMoney);
-
-                        if (lootContainer == null)
-                            lootContainer = new LootContainer();
-
-                        for (int i = 0; i < reward.Value.InsigniaCount; i++)
+                        if (PlayersByCharId.ContainsKey(reward.Key))
                         {
-                            var li = new LootInfo(ItemService.GetItem_Info((uint) reward.Value.InsigniaItemId));
-                            lootContainer.LootInfo.Add(li);
+                            var player = PlayersByCharId[reward.Key];
+                            player.InternalAddXp((uint)reward.Value.BaseXP, true, true);
+                            player.InternalAddRenown((uint)reward.Value.BaseRP, true, RewardType.Kill, $"{Info.Name} assisted in the killing of {player.Name}");
+                            player.AddInfluence((ushort)influenceId, (ushort)reward.Value.BaseInf);
+                            player.AddMoney((uint)reward.Value.BaseMoney);
+
+                            //if (lootContainer == null)
+                            //    lootContainer = new LootContainer();
+
+                            //for (int i = 0; i < reward.Value.InsigniaCount; i++)
+                            //{
+                            //    var li = new LootInfo(ItemService.GetItem_Info((uint)reward.Value.InsigniaItemId));
+                            //    lootContainer.LootInfo.Add(li);
+                            //}
+                            //lootContainer.TakeAll(player, true);
+                            //SetLootable(false, player);
+                            if (reward.Value.InsigniaCount > 0)
+                            {
+                                player.ItmInterface.CreateItem(ItemService.GetItem_Info((uint) reward.Value.InsigniaItemId), (ushort) reward.Value.InsigniaCount);
+                                player.SendClientMessage($"You have been awarded {reward.Value.InsigniaCount} for assisting in killing {this.Name}");
+                            }
+
+                            RewardLogger.Debug($"Total XP : {reward.Value.BaseXP} RP : {reward.Value.BaseRP} INF : {reward.Value.BaseInf}");
+                            // Add contribution for kill assist.
+                            ActiveBattleFrontStatus.ContributionManagerInstance
+                                .UpdateContribution(player.CharacterId, (byte) ContributionDefinitions.PLAYER_KILL_ASSIST);
+                            // Add bounty contribution to the assisting killer
+                            var contributionAssistDefinition = BountyService._ContributionDefinitions.Single(x => x.ContributionId == (int) ContributionDefinitions.PLAYER_KILL_ASSIST);
+                            ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionAssistDefinition.ContributionValue);
                         }
-                        lootContainer.TakeAll(player, true);
-                        SetLootable(false, player);
-
-                        RewardLogger.Debug($"Total XP : {reward.Value.BaseXP} RP : {reward.Value.BaseRP} INF : {reward.Value.BaseInf}");
+                      
                     }
-                }
+                    // Add contribution for this kill to the killer.
+                    ActiveBattleFrontStatus.ContributionManagerInstance
+                        .UpdateContribution(killer.CharacterId, (byte) ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
 
+                    // Add bounty contribution to the assisting killer
+                    var contributionDeathBlowDefinition = BountyService._ContributionDefinitions.Single(x => x.ContributionId == (int)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+                    ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(killer.CharacterId, contributionDeathBlowDefinition.ContributionValue);
+
+                }
                 //HandleXPRenown(killer, rewardScale);
                 //GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
                 if (killer.Realm == Realms.REALMS_REALM_DESTRUCTION)
                 {
-                    killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints= killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints+3;
+                    killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints = killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints + 3;
                 }
                 else
                 {
-                    killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints= killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints+3;
+                    killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints = killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints + 3;
                 }
 
-				killer.SendClientMessage($"+1 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
+                killer.SendClientMessage($"+1 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
 
-				HandleXPRenown(killer, rewardScale);
-                GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
+                //HandleXPRenown(killer, rewardScale);
+                //GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
             }
 
             #endregion
@@ -3998,12 +4032,12 @@ namespace WorldServer
 
         public float AAOBonus { get; set; }
 
-		/// <summary>
-		/// Grants XP, Renown, Influence, ToK kill incrementation and kill contribution credit to all players inflicting damage.
-		/// </summary>
-		/// <param name="killer"></param>
-		/// <param name="bonusMod"> x >= 1.0f </param>
-		private void HandleXPRenown(Player killer, float bonusMod)
+        /// <summary>
+        /// Grants XP, Renown, Influence, ToK kill incrementation and kill contribution credit to all players inflicting damage.
+        /// </summary>
+        /// <param name="killer"></param>
+        /// <param name="bonusMod"> x >= 1.0f </param>
+        private void HandleXPRenown(Player killer, float bonusMod)
         {
             Dictionary<Group, XpRenown> groupXPRenown = new Dictionary<Group, XpRenown>();
             List<Player> damageSourceRemovals = new List<Player>();
@@ -4022,16 +4056,16 @@ namespace WorldServer
 
             if (_lastPvPDeathSeconds > 0)
                 deathRewardScaler = Math.Min(1f, (TCPManager.GetTimeStamp() - _lastPvPDeathSeconds) / (ScnInterface.Scenario == null ? 300f : 60f));
-			
+
             _lastPvPDeathSeconds = TCPManager.GetTimeStamp();
 
-			if (bonusMod == 0)
-				bonusMod = 1;
+            if (bonusMod == 0)
+                bonusMod = 1;
 
             uint totalXP = (uint)(WorldMgr.GenerateXPCount(killer, this) * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
-			uint totalRenown = (uint)(WorldMgr.GenerateRenownCount(killer, this) * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
+            uint totalRenown = (uint)(WorldMgr.GenerateRenownCount(killer, this) * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
 
-			if (Constants.DoomsdaySwitch > 0 && totalRenown < 100)
+            if (Constants.DoomsdaySwitch > 0 && totalRenown < 100)
                 totalRenown = 100;
 
             ushort influenceId = 0;
@@ -4179,7 +4213,7 @@ namespace WorldServer
                         var rnd = StaticRandom.Instance.Next(100);
                         if (rnd <= 20)
                         {
-                            player.SendClientMessage("Awarded 1 Crest to "+ player.Name +" for Group Kill");
+                            player.SendClientMessage("Awarded 1 Crest to " + player.Name + " for Group Kill");
                             RewardLogger.Trace($"Awarded 1 Crest to {player.Name} for Group Kill");
                             player.ItmInterface.CreateItem(208470, 1);
                         }
@@ -6358,9 +6392,9 @@ namespace WorldServer
             //    SendClientMessage("Current Area: " + (CurrentArea?.ToString() ?? "None") + " New Area:" + (newArea?.ToString() ?? "None"));
             //Log.Info("newArea", "  " + newArea);
             bool bWasNewArea = false;
-			//if ((newArea == null && CurrentArea == null) || newArea != CurrentArea)
-			if (newArea != CurrentArea)
-			{
+            //if ((newArea == null && CurrentArea == null) || newArea != CurrentArea)
+            if (newArea != CurrentArea)
+            {
 
                 bWasNewArea = true;
                 if (newArea != null)
@@ -6394,7 +6428,7 @@ namespace WorldServer
                                 // NEWDAWN
                                 if (Region.Campaign != null)
                                     Region.Campaign.NotifyEnteredLake(this);
-                                
+
                             }
                         }
                     }
@@ -6437,8 +6471,8 @@ namespace WorldServer
                 CurrentArea = newArea;
                 SendChapterBar();
             }
-       //     else 
-			    //SendClientMessage("Same Area");
+            //     else 
+            //SendClientMessage("Same Area");
         }
 
         public string GetAreaName()
@@ -6864,3 +6898,4 @@ namespace WorldServer
         public bool PendingDumpStatic;
     }
 }
+

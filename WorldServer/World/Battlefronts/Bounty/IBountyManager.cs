@@ -2,8 +2,7 @@
 {
     public interface IBountyManager
     {
-        CharacterBounty UpdateCharacterBounty(uint targetCharacterId, CharacterBounty characterBounty);
-        void AddCharacter(uint characterId, int characterLevel, int renownLevel);
+        bool ResetCharacterBounty(uint targetCharacterId, Player player);
         void RemoveCharacter(uint characterId);
         CharacterBounty GetBounty(uint targetCharacterId);
     }

@@ -5,6 +5,7 @@ using static WorldServer.Managers.Commands.GMUtils;
 using System.Text;
 using GameData;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer.Managers.Commands
 {
@@ -50,6 +51,41 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        public static bool GetPlayerContribution(Player plr, ref List<string> values)
+        {
+            var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
+            var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(activeBattleFrontId);
+
+            var playerContribution = activeBattleFrontStatus.ContributionManagerInstance.GetContribution(plr.CharacterId);
+
+            plr.SendClientMessage(playerContribution.ToString());
+
+            return true;
+        }
+
+        public static bool GetPlayerBounty(Player plr, ref List<string> values)
+        {
+            var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
+            var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(activeBattleFrontId);
+
+            var playerBounty = activeBattleFrontStatus.BountyManagerInstance.GetBounty(plr.CharacterId);
+            plr.SendClientMessage(playerBounty.ToString());
+
+            return true;
+        }
+
+        public static bool GetPlayerImpactMatrix(Player plr, ref List<string> values)
+        {
+            var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
+            var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(activeBattleFrontId);
+
+            var killImpacts = activeBattleFrontStatus.ImpactMatrixManagerInstance.GetKillImpacts(plr.CharacterId);
+            plr.SendClientMessage(killImpacts.ToString());
+
+            return true;
+        }
+
+
         public static bool GetServerPopulation(Player plr, ref List<string> values)
         {
             lock (Player._Players)
@@ -67,7 +103,7 @@ namespace WorldServer.Managers.Commands
                     if (regionMgr.Players.Count > 0)
                     {
                         message += $"Region {regionMgr.RegionId} : " +
-                                   $"Total : {Player._Players.Count(x => !x.IsDisposed && x.IsInWorld() && x != null &&x.Region.RegionId == regionMgr.RegionId)} " +
+                                   $"Total : {Player._Players.Count(x => !x.IsDisposed && x.IsInWorld() && x != null && x.Region.RegionId == regionMgr.RegionId)} " +
                                    $"Order : {Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_ORDER && !x.IsDisposed && x.IsInWorld() && x != null && x.Region.RegionId == regionMgr.RegionId)} " +
                                    $"Dest : {Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && x != null && x.Region.RegionId == regionMgr.RegionId)} ";
                     }

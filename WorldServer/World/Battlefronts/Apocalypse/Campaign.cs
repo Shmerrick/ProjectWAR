@@ -127,6 +127,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(UpdateAAOBuffs, 60000, 0);
             // Recalculate AAO
             _EvtInterface.AddEvent(RecordMetrics, 30000, 0);
+
+            _EvtInterface.AddEvent(DecayImpactMatrix, 60000, 0);
+        }
+
+        private void DecayImpactMatrix()
+        {
+            this.GetActiveBattleFrontStatus().ImpactMatrixManagerInstance.ExpireImpacts(FrameWork.TCPManager.GetTimeStamp());
         }
 
         public void InitializePopulationList(int battlefrontId)
@@ -148,6 +155,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 this.DestructionPlayerPopulationList.TryAdd(battlefrontId, 0);
             }
         }
+
+        public BattleFrontStatus GetActiveBattleFrontStatus()
+        {
+            return ApocBattleFrontStatuses.Single(x => x.Locked == false);
+        }
+
 
         private void RecordMetrics()
         {
@@ -914,7 +927,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         /// Gets a ream players contribution.
         /// </summary>
-        /// <returns>Contribution infos indexed by character id</returns>
+        /// <returns>ContributionManagerInstance infos indexed by character id</returns>
         public Dictionary<uint, ContributionInfo> GetContributorsFromRealm(Realms realm)
         {
             return _contributionTracker.GetContributorsFromRealm(realm);
@@ -928,7 +941,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <para>- Destroying siege weapons.</para>
         /// </summary>
         /// <param name="plr">Player to give contribution to</param>
-        /// <param name="contribution">Contribution value, will be scaled to compute rewards</param>
+        /// <param name="contribution">ContributionManagerInstance value, will be scaled to compute rewards</param>
         public void AddContribution(Player plr, uint contribution)
         {
             _contributionTracker.AddContribution(plr, contribution);

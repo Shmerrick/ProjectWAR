@@ -1248,7 +1248,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 				case StateFlags.Secure: // big tick
 					VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.BIG);
-					break;
+				    lock (_closePlayers)
+				    {
+				        foreach (var closePlayer in _closePlayers)
+				        {
+				            this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte) ContributionDefinitions.BO_TAKE_BIG_TICK);
+				        }
+				    }
+				    break;
 
 				case StateFlags.Locked: // small tick
 					VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_LOCKED);
