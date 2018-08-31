@@ -4,6 +4,7 @@ using Common;
 using FrameWork;
 using GameData;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer.Scenarios.Objects
 {
@@ -18,11 +19,18 @@ namespace WorldServer.Scenarios.Objects
 
         public override void RezUnit()
         {
-            FlagGrd.Creature = new GuardCreature(Spawn, FlagGrd);
+			FlagGrd.UpdateFlagOwningRealm();
+
+			FlagGrd.Creature = new GuardCreature(Spawn, FlagGrd);
             Region.AddObject(FlagGrd.Creature, Spawn.ZoneId);
             Destroy();
         }
-    }
+
+		public override void OnLoad()
+		{
+			base.OnLoad();
+		}
+	}
 
     public class FlagGuard
     {
@@ -35,8 +43,9 @@ namespace WorldServer.Scenarios.Objects
         ushort ZoneId;
         RegionMgr Region;
         public GuardCreature Creature;
+		int team;
 
-        public FlagGuard(RegionMgr Region, ushort ZoneId, uint OrderId, uint DestroId, int x, int y, int z, int o)
+        public FlagGuard(CampaignObjective flag, RegionMgr Region, ushort ZoneId, uint OrderId, uint DestroId, int x, int y, int z, int o)
         {
             this.Region = Region;
             this.ZoneId = ZoneId;
@@ -52,6 +61,7 @@ namespace WorldServer.Scenarios.Objects
         {
             if (Creature != null)
                 Creature.Destroy();
+			this.team = team;
 
             Creature_proto Proto = CreatureService.GetCreatureProto(team == 1 ? OrderId : DestroId);
             if (Proto == null)
@@ -67,10 +77,35 @@ namespace WorldServer.Scenarios.Objects
             Spawn.WorldZ = z;
             Spawn.WorldX = x;
             Spawn.ZoneId = ZoneId;
+			Spawn.RespawnMinutes = 3;
 
-            Creature = new GuardCreature(Spawn, this);
-            Region.AddObject(Creature, Spawn.ZoneId);
+			Creature = new GuardCreature(Spawn, this);
+			Region.AddObject(Creature, Spawn.ZoneId);
         }
+
+		public void DespawnGuard()
+		{
+			Region.RemoveObject(Creature);
+		}
+
+		public void UpdateFlagOwningRealm()
+		{
+			Creature_proto Proto = CreatureService.GetCreatureProto(team == 1 ? OrderId : DestroId);
+			if (Proto == null)
+			{
+				Log.Error("FlagGuard", "No FlagGuard Proto");
+				return;
+			}
+
+			Creature.Spawn = new Creature_spawn();
+			Creature.Spawn.BuildFromProto(Proto);
+			Creature.Spawn.WorldO = o;
+			Creature.Spawn.WorldY = y;
+			Creature.Spawn.WorldZ = z;
+			Creature.Spawn.WorldX = x;
+			Creature.Spawn.ZoneId = ZoneId;
+			Creature.Spawn.RespawnMinutes = 3;
+		}
     }
 
     public class ProximityFlag : Object

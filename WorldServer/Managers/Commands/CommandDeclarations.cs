@@ -94,7 +94,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("logpackets", LogPackets, null, EGmLevel.SourceDev, 0, "Toggles logging outgoing packet volume."),
             new GmCommandHandler("readpackets", ReadPackets, null, EGmLevel.SourceDev, 0, "Displays the volume of outgoing packets over the defined period."),
             new GmCommandHandler("los", StartStopLosMonitor, null, EGmLevel.AllStaff, 0, "Starts/Stops line of sight monitoring for selected target."),
-            new GmCommandHandler("population", GetServerPopulation, null, EGmLevel.SourceDev, 0, "Finds all players in the game."),
+            new GmCommandHandler("population", GetServerPopulation, null, EGmLevel.AnyGM, 0, "Finds all players in the game."),
         };
 
         /// <summary>Database commands under .database</summary>
@@ -221,7 +221,6 @@ namespace WorldServer.Managers.Commands
         /// <summary>Scenario commands under .scenario</summary>
         public static List<GmCommandHandler> ScenarioCommands = new List<GmCommandHandler>
         {
-            new GmCommandHandler("status",ScenarioStatus, null, EGmLevel.AllStaff, 0, "Shows player count and score of all running scenarios."),
             new GmCommandHandler("balance", CheckBalance, null, EGmLevel.SourceDev, 0, "Checks the current scenario's balance internals."),
             new GmCommandHandler("domination", CheckDomination, null, EGmLevel.SourceDev, 0, "Checks the current scenario's domination internals."),
             new GmCommandHandler("score", GetScenarioScore, null, 0, 0, "Returns targets scenario scores."),
@@ -289,7 +288,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("add",null, AddCommands, EGmLevel.TrustedStaff, 0, "Addition commands."),
             new GmCommandHandler("campaign",null, CampaignCommands, EGmLevel.GM, 0, "RvR campaign commmands."),
             new GmCommandHandler("chapter",null, ChapterCommands, EGmLevel.DatabaseDev, 0, "Chapter modification commands."),
-            new GmCommandHandler("check",null, CheckCommands, EGmLevel.DatabaseDev, 0, "Debugging commands."),
+            new GmCommandHandler("check",null, CheckCommands, EGmLevel.GM, 0, "Debugging commands."),
             new GmCommandHandler("database", null, DatabaseCommands, EGmLevel.DatabaseDev, 0, "Database commands."),
             new GmCommandHandler("equip", null, EquipCommands, EGmLevel.DatabaseDev, 0, "Creature equipment modification commands."),
             new GmCommandHandler("go",null, GoCommands, EGmLevel.DatabaseDev, 0, "Game object commands."),
@@ -312,6 +311,7 @@ namespace WorldServer.Managers.Commands
 
 #region Standalone Commands
             // User commands
+            new GmCommandHandler("scenariostatus",ScenarioStatus, null, 0, 0, "Shows player count and score of all running scenarios."),
             new GmCommandHandler("gmlist", GmMgr.ListGameMasters, null, 0, 0, "Lists available GMs."),
             new GmCommandHandler("rules", SendRules, null, 0, 0, "Sends a condensed list of in-game rules."),
             new GmCommandHandler("assist", Assist, null, 0, 1, "Switches to friendly target's target"),
@@ -328,7 +328,7 @@ namespace WorldServer.Managers.Commands
             // Halloween event stuff
             new GmCommandHandler("spooky", Spooky, null, 0, 0, "This command will make you spooky..."),
             new GmCommandHandler("notspooky", NotSpooky, null, 0, 0, "You don't want to be spooky :(... You need to run this command upon logging on server, it do not disable spookieness if you are already spooky."),
-
+            new GmCommandHandler("morph", Morph, null, EGmLevel.GM, 0, "This command will make you morph..."),
             // All staff
             #if (DEBUG)
             new GmCommandHandler("debugmode", SetDebugMode, null, 0, 0, "Enables debugging messages (byte enableDebug)"),

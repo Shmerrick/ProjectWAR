@@ -3097,35 +3097,15 @@ namespace WorldServer
             if (renown == 0)
                 return;
 
-
-            int aaoMult = 0;
-            Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
-            if (Region != null && Region.Campaign != null)
-            {
-                if (Region.Campaign != null)
-                {
-                    aaoMult = Math.Abs(Region.Campaign.AgainstAllOddsMult);
-                    if (aaoMult != 0)
-                        aaoRealm = Region.Campaign.AgainstAllOddsMult > 0 ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
-                }
-                if (aaoMult > 2)
-                    aaoMult = 2;
-                if (aaoMult != 0 && aaoRealm != Realms.REALMS_REALM_NEUTRAL && Realm != aaoRealm)
-                    renown = Math.Max(1, renown);
-            }
-
-            if (Program.Config.RenownRate > 0)
+			// apply renown rate from server
+			if (Program.Config.RenownRate > 0)
                 renown *= (uint)Program.Config.RenownRate;
 
-            if (aaoMult != 0 && aaoRealm != Realms.REALMS_REALM_NEUTRAL && Realm != aaoRealm)
-            {
-                renown = Math.Max(1, renown);
-            }
-            else
-            {
-                renown = Math.Max(20, renown);
-            }
-            RewardLogger.Trace($"{renown} RP awarded to {this.Name} for {rewardString} ");
+			// apply aao bonus
+			if (this.ScnInterface == null || this.ScnInterface.Scenario == null || type != RewardType.ScenarioWin)
+				renown = Convert.ToUInt32(Math.Round((1f + this.AAOBonus) * renown, 0));
+			
+			RewardLogger.Trace($"{renown} RP awarded to {this.Name} for {rewardString} ");
             InternalAddRenown(renown, shouldPool, type, rewardString);
         }
 
@@ -3960,8 +3940,7 @@ namespace WorldServer
                 // Maximum 25% bonus if this dead player had groupmates within range.
                 if (WorldGroup != null)
                     rewardScale += 0.25f * (WorldGroup.GetPlayerCountWithinDist(this, 200) / 5f);
-
-
+				
                 // Throttle any kill that could have been the result of farming or soloing.
                 if (rewardScale < 1.1f)
                 {
@@ -4001,11 +3980,11 @@ namespace WorldServer
                 //GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
                 if (killer.Realm == Realms.REALMS_REALM_DESTRUCTION)
                 {
-                    killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints++;
+                    killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints= killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints+3;
                 }
                 else
                 {
-                    killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints++;
+                    killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints= killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints+3;
                 }
 
 				killer.SendClientMessage($"+1 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
@@ -4046,8 +4025,11 @@ namespace WorldServer
 			
             _lastPvPDeathSeconds = TCPManager.GetTimeStamp();
 
-            uint totalXP = (uint)(WorldMgr.GenerateXPCount(killer, this) * (1f + killer.AAOBonus * deathRewardScaler));
-			uint totalRenown = (uint)(WorldMgr.GenerateRenownCount(killer, this) * (1f + killer.AAOBonus) * deathRewardScaler);
+			if (bonusMod == 0)
+				bonusMod = 1;
+
+            uint totalXP = (uint)(WorldMgr.GenerateXPCount(killer, this) * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
+			uint totalRenown = (uint)(WorldMgr.GenerateRenownCount(killer, this) * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
 
 			if (Constants.DoomsdaySwitch > 0 && totalRenown < 100)
                 totalRenown = 100;
@@ -4553,7 +4535,7 @@ namespace WorldServer
 
         public void UpdateActionPoints(long tick)
         {
-            if (!AbtInterface.IsCasting() && !AbtInterface.IsOnGlobalCooldown())
+            if (!AbtInterface.IsCasting())
             {
                 _actionPointTimer += (ushort)((tick - _lastAPCheck) * StsInterface.GetStatPercentageModifier(Stats.ActionPointRegen));
 
@@ -4566,7 +4548,7 @@ namespace WorldServer
 
                 if (count > 0 && ActionPoints < MaxActionPoints)
                 {
-                    ActionPoints += (ushort)(count * (25 + StsInterface.GetBonusStat(Stats.ActionPointRegen)));
+                    ActionPoints += (ushort)(count * (20 + StsInterface.GetBonusStat(Stats.ActionPointRegen)));
 
                     if (ActionPoints > MaxActionPoints)
                         ActionPoints = MaxActionPoints;
@@ -6376,8 +6358,9 @@ namespace WorldServer
             //    SendClientMessage("Current Area: " + (CurrentArea?.ToString() ?? "None") + " New Area:" + (newArea?.ToString() ?? "None"));
             //Log.Info("newArea", "  " + newArea);
             bool bWasNewArea = false;
-            if (newArea != CurrentArea)
-            {
+			//if ((newArea == null && CurrentArea == null) || newArea != CurrentArea)
+			if (newArea != CurrentArea)
+			{
 
                 bWasNewArea = true;
                 if (newArea != null)
@@ -6454,8 +6437,8 @@ namespace WorldServer
                 CurrentArea = newArea;
                 SendChapterBar();
             }
-            //else if (DebugMode)
-            //    DebugMessage("Same Area");
+       //     else 
+			    //SendClientMessage("Same Area");
         }
 
         public string GetAreaName()

@@ -66,6 +66,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ImpactMatrixTests.cs" />
+    <Compile Include="CampaignObjectiveTest.cs" />
+    <Compile Include="CombatManagerTest.cs" />
     <Compile Include="LowerTierBattlefrontManagerTest.cs" />
     <Compile Include="CalculateObjectiveRewardScaleTest.cs" />
     <Compile Include="RewardTests.cs" />

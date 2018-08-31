@@ -608,7 +608,7 @@ namespace WorldServer.Scenarios
                 byte realmIndex = (byte)(plr.Realm == Realms.REALMS_REALM_DESTRUCTION ? 1 : 0);
 
                 plr.AddXp(endingXp[realmIndex], false, false);
-                plr.AddRenown(endingRenown[realmIndex], false);
+                plr.AddRenown(endingRenown[realmIndex], false, RewardType.ScenarioWin);
 
                 PlayerScoreboard[plr].EndXP = endingXp[realmIndex];
                 PlayerScoreboard[plr].EndRenown = endingRenown[realmIndex];
@@ -708,7 +708,7 @@ namespace WorldServer.Scenarios
                 player.SendClientMessage($"Adding {curRenown} renown from estimated kills.", ChatLogFilters.CHATLOGFILTERS_RENOWN);
 
                 player.AddXp(curXp, false, true);
-                player.AddRenown(curRenown, false);
+                player.AddRenown(curRenown, false, RewardType.ScenarioWin);
             }
 
             foreach (Player player in Players[1])
@@ -741,7 +741,7 @@ namespace WorldServer.Scenarios
                 player.SendClientMessage($"Adding {curRenown} renown from estimated kills.", ChatLogFilters.CHATLOGFILTERS_RENOWN);
 
                 player.AddXp(curXp, false, true);
-                player.AddRenown(curRenown, false);
+                player.AddRenown(curRenown, false, RewardType.ScenarioWin);
             }
         }
 
