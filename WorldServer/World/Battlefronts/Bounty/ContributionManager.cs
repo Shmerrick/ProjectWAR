@@ -24,40 +24,51 @@ namespace WorldServer.World.Battlefronts.Bounty
         // Reference contribution factors
         public List<ContributionFactor> ContributionFactors { get; }
 
+        public const short MAXIMUM_CONTRIBUTION = 100;
+
         public ContributionManager(ConcurrentDictionary<uint, List<PlayerContribution>> contributionDictionary, List<ContributionFactor> contributionFactors)
         {
             ContributionDictionary = contributionDictionary;
             ContributionFactors = contributionFactors;
         }
 
+        /// <summary>
+        /// Update the dictionary of contribution held by the server for the character. Can hold unlimited numbers
+        /// of contributions, these will be culled in a later stage of the process.
+        /// </summary>
+        /// <param name="targetCharacterId">The character receiving the contribution</param>
+        /// <param name="contibutionId">Reference contribution Id</param>
+        /// <returns></returns>
         public List<PlayerContribution> UpdateContribution(uint targetCharacterId, byte contibutionId)
         {
+            //TODO : remove - for development only.
+            var item = GetContribution(targetCharacterId);
 
-            lock (_lockObject)
-            {
-                var item = GetContribution(targetCharacterId);
-
-                //filteredResults.AddOrUpdate(unfilteredResult.Key, new List<int> { number }, (k, v) => v.Add(number));
-                return this.ContributionDictionary.AddOrUpdate(targetCharacterId,
-                     new List<PlayerContribution>
-                     {
+            //filteredResults.AddOrUpdate(unfilteredResult.Key, new List<int> { number }, (k, v) => v.Add(number));
+            return this.ContributionDictionary.AddOrUpdate(targetCharacterId,
+                 new List<PlayerContribution>
+                 {
                         new PlayerContribution
                         {
                             ContributionId = contibutionId,
                             Timestamp = FrameWork.TCPManager.GetTimeStamp()
                         }
-                     }, (k, v) =>
+                 }, (k, v) =>
+                 {
+                     v.Add(new PlayerContribution
                      {
-                         v.Add(new PlayerContribution
-                         {
-                             ContributionId = contibutionId,
-                             Timestamp = FrameWork.TCPManager.GetTimeStamp()
-                         });
-                         return v;
+                         ContributionId = contibutionId,
+                         Timestamp = FrameWork.TCPManager.GetTimeStamp()
                      });
-            }
+                     return v;
+                 });
         }
 
+        /// <summary>
+        /// Get the list of playercontributions 
+        /// </summary>
+        /// <param name="targetCharacterId"></param>
+        /// <returns></returns>
         public List<PlayerContribution> GetContribution(uint targetCharacterId)
         {
             List<PlayerContribution> contributionList;
@@ -66,7 +77,11 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             return contributionList;
         }
-
+        /// <summary>
+        /// Get the total contribution value for the character.
+        /// </summary>
+        /// <param name="targetCharacterId"></param>
+        /// <returns></returns>
         public short GetContributionValue(uint targetCharacterId)
         {
             List<PlayerContribution> contributionList;
@@ -81,37 +96,54 @@ namespace WorldServer.World.Battlefronts.Bounty
             if (ContributionFactors == null)
                 return contributionValue;
 
-            var response = ConvertContributionListToContributionStages(contributionList, this.ContributionFactors);
+            var stagedContribution = GetContributionStageDictionary(contributionList, this.ContributionFactors);
 
-            foreach (var contributionStage in response)
+            foreach (var contributionStage in stagedContribution)
             {
                 contributionValue += contributionStage.Value.ContributionStageSum;
             }
 
+            // double check something is not right.
             if (contributionValue > short.MaxValue)
             {
-                RewardLogger.Debug($"Contribution exceeds max for Character {targetCharacterId}. {contributionList.Count} contribution records.");
+                RewardLogger.Debug($"Contribution exceeds max (over short.maxvalue) for Character {targetCharacterId}. {contributionList.Count} contribution records.");
                 contributionValue = short.MaxValue;
+            }
+
+            if (contributionValue > MAXIMUM_CONTRIBUTION)
+            {
+                RewardLogger.Debug($"Contribution exceeds max ({MAXIMUM_CONTRIBUTION}) for Character {targetCharacterId}. {contributionList.Count} contribution records.");
+                contributionValue = MAXIMUM_CONTRIBUTION;
+
             }
 
             return contributionValue;
         }
 
-        public ConcurrentDictionary<short, ContributionStage> ConvertContributionListToContributionStages(List<PlayerContribution> contributionList, List<ContributionFactor> contributionFactors)
+        /// <summary>
+        /// Converrt list of player contributions (which are unlimited in number) into a 'staged' dictionary per reference contribution type.
+        /// Limit the number of attained contributions to the maximum number defined in the reference contribution type.
+        /// 
+        /// </summary>
+        /// <param name="contributionList"></param>
+        /// <param name="contributionFactors"></param>
+        /// <returns></returns>
+        public ConcurrentDictionary<short, ContributionStage> GetContributionStageDictionary(List<PlayerContribution> contributionList, List<ContributionFactor> contributionFactors)
         {
             var result = new ConcurrentDictionary<short, ContributionStage>();
-            // Prepare the stages
-            foreach (var contributionFactor in contributionFactors)
+            // For each reference contribution type, prepare a dictionary.
+            foreach (var referenceContribution in contributionFactors)
             {
-                if (contributionFactor.MaxContributionCount > 0)
+                // Dont worry about max contribution count == 0, these are effectively disabled.
+                if (referenceContribution.MaxContributionCount > 0)
                 {
-                    result.TryAdd(contributionFactor.ContributionId,
+                    result.TryAdd(referenceContribution.ContributionId,
                         new ContributionStage
                         {
-                            Description = contributionFactor.ContributionDescription,
+                            Description = referenceContribution.ContributionDescription,
                             ContributionStageCount = 0,
                             ContributionStageSum = 0,
-                            ContributionStageMax = contributionFactor.MaxContributionCount
+                            ContributionStageMax = referenceContribution.MaxContributionCount
                         });
                 }
             }
@@ -122,7 +154,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 {
                     if (playerContribution.ContributionId == contributionFactor.ContributionId)
                     {
-                        // If we need to add something is wrong, dont add it.
+                        // If we need to add something is wrong, dont add it - return a new structure.
                         result.AddOrUpdate(contributionFactor.ContributionId,
                             new ContributionStage
                             {
@@ -170,6 +202,9 @@ namespace WorldServer.World.Battlefronts.Bounty
             return this.ContributionDictionary.TryRemove(characterId, out contribution);
         }
 
+        /// <summary>
+        /// Clear the contribution dictionary
+        /// </summary>
         public void Clear()
         {
             this.ContributionDictionary.Clear();

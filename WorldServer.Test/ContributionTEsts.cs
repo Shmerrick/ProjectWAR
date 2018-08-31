@@ -354,7 +354,7 @@ namespace WorldServer.Test
             var contributionList = new List<PlayerContribution>();
             var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), ContributionFactorReferenceList);
 
-            var result = contributionManager.ConvertContributionListToContributionStages(contributionList, ContributionFactorReferenceList);
+            var result = contributionManager.GetContributionStageDictionary(contributionList, ContributionFactorReferenceList);
 
             Assert.IsTrue(result.Count == ContributionFactorReferenceList.Count);
             Assert.IsTrue(result[0].ContributionStageSum == 0);
@@ -379,7 +379,7 @@ namespace WorldServer.Test
 
             contributionList.Add(new PlayerContribution {ContributionId = 1, Timestamp = 1111} );
 
-            var response = contributionManager.ConvertContributionListToContributionStages(contributionList, ContributionFactorReferenceList);
+            var response = contributionManager.GetContributionStageDictionary(contributionList, ContributionFactorReferenceList);
 
             Assert.IsTrue(response[1].ContributionStageCount == 1);
             Assert.IsTrue(response[0].ContributionStageCount == 0);
@@ -409,7 +409,7 @@ namespace WorldServer.Test
             contributionList.Add(new PlayerContribution { ContributionId = 2, Timestamp = 1111 });
             contributionList.Add(new PlayerContribution { ContributionId = 2, Timestamp = 1111 });
 
-            var response = contributionManager.ConvertContributionListToContributionStages(contributionList, ContributionFactorReferenceList);
+            var response = contributionManager.GetContributionStageDictionary(contributionList, ContributionFactorReferenceList);
 
             Assert.IsTrue(response[1].ContributionStageCount == 7);
             Assert.IsTrue(response[0].ContributionStageCount == 0);
@@ -447,7 +447,7 @@ namespace WorldServer.Test
             contributionList.Add(new PlayerContribution { ContributionId = 2, Timestamp = 1111 });
             contributionList.Add(new PlayerContribution { ContributionId = 2, Timestamp = 1111 });
 
-            var response = contributionManager.ConvertContributionListToContributionStages(contributionList, ContributionFactorReferenceList);
+            var response = contributionManager.GetContributionStageDictionary(contributionList, ContributionFactorReferenceList);
 
             // maxes out at 10 count
             Assert.IsTrue(response[1].ContributionStageCount == 10);
