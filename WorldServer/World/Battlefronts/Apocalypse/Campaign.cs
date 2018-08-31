@@ -741,16 +741,22 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         }
 
-        private void DistributeBaseRewards(List<Player> losingRealmPlayers, List<Player> winningRealmPlayers, Realms lockingRealm)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eligibleLosingRealmPlayers">Eligible losing realm players</param>
+        /// <param name="eligibleWinningRealmPlayers">Eligible winning realm playes</param>
+        /// <param name="lockingRealm"></param>
+        private void DistributeBaseRewards(List<Player> eligibleLosingRealmPlayers, List<Player> eligibleWinningRealmPlayers, Realms lockingRealm)
         {
             // Distribute rewards to losing players with eligibility - halve rewards.
-            foreach (var losingRealmPlayer in losingRealmPlayers)
+            foreach (var losingRealmPlayer in eligibleLosingRealmPlayers)
             {
                 WorldMgr.RewardDistributor.DistributeNonBagAwards(losingRealmPlayer, _rewardManager.CalculateRenownBand(losingRealmPlayer.RenownRank), 0.5);
             }
 
             // Distribute rewards to winning players with eligibility - full rewards.
-            foreach (var winningRealmPlayer in winningRealmPlayers)
+            foreach (var winningRealmPlayer in eligibleWinningRealmPlayers)
             {
                 WorldMgr.RewardDistributor.DistributeNonBagAwards(winningRealmPlayer, _rewardManager.CalculateRenownBand(winningRealmPlayer.RenownRank), 1);
             }
@@ -765,7 +771,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (player.Realm == lockingRealm)
                     {
                         // Ensure player is not in the eligible list.
-                        if (!winningRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
+                        if (!eligibleWinningRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
                         {
                             // Give player no bag, but half rewards
                             WorldMgr.RewardDistributor.DistributeNonBagAwards(player, _rewardManager.CalculateRenownBand(player.RenownRank), 0.5);
@@ -774,7 +780,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     else
                     {
                         // Ensure player is not in the eligible list.
-                        if (!losingRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
+                        if (!eligibleLosingRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
                         {
                             // Give player no bag, but quarter rewards
                             WorldMgr.RewardDistributor.DistributeNonBagAwards(player, _rewardManager.CalculateRenownBand(player.RenownRank), 0.25);
