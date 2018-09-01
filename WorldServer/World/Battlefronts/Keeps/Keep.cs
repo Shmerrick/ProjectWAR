@@ -77,7 +77,12 @@ namespace WorldServer.World.BattleFronts.Keeps
         /// </summary>
         private readonly List<Hardpoint> _hardpoints = new List<Hardpoint>();
 
-        public byte Tier;
+		// keep safe timer variables
+		private int _safeKeepTimer = 0;
+		private const int TIMESPAN_SAFEKEEP = 15 * 60;
+
+		// public variables
+		public byte Tier;
         public bool InformRankOne = false;
         public int _OrderCount = 0;
         public int _DestroCount = 0;
@@ -88,8 +93,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public bool Ruin = false;
         public RegionMgr Region;
 
-
-        public List<KeepNpcCreature> Creatures = new List<KeepNpcCreature>();
+		public List<KeepNpcCreature> Creatures = new List<KeepNpcCreature>();
         public List<KeepDoor> Doors = new List<KeepDoor>();
         public List<KeepDoor.KeepGameObject> KeepGOs = new List<KeepDoor.KeepGameObject>();
 
@@ -494,17 +498,17 @@ namespace WorldServer.World.BattleFronts.Keeps
                 }
             }
 
-            int totalXp = (800*Tier) + (200*Tier*objCount) + (_playersKilledInRange*Tier*30); // Field of Glory, reduced
-            int totalRenown = (250*Tier) + (120*Tier*objCount) + (_playersKilledInRange*100);   // Ik : Increased values here.
-            int totalInfluence = (40*Tier) + (20*Tier*objCount) + (_playersKilledInRange*Tier*6);
+            int totalXp = (800 * Tier) + (200 * Tier * objCount) + (_playersKilledInRange * Tier * 30); // Field of Glory, reduced
+            int totalRenown = (250 * Tier) + (120 * Tier * objCount) + (_playersKilledInRange * 100);   // Ik : Increased values here.
+            int totalInfluence = (40 * Tier) + (20 * Tier * objCount) + (_playersKilledInRange * Tier * 6);
 
-            if (_playersKilledInRange < (4*Tier))
+            if (_playersKilledInRange < (4 * Tier))
             {
                 battlePenalty = true;
 
-                totalXp = (int) (totalXp*(0.25 + (_playersKilledInRange/40f)*0.75));
-                totalRenown = (int) (totalRenown*(0.25 + (_playersKilledInRange/40f)*0.75));
-                totalInfluence = (int) (totalInfluence*(0.25 + (_playersKilledInRange/40f)*0.75));
+                totalXp = (int) (totalXp * (0.25 + (_playersKilledInRange / 40f) * 0.75));
+                totalRenown = (int) (totalRenown * (0.25 + (_playersKilledInRange / 40f) * 0.75));
+                totalInfluence = (int) (totalInfluence * (0.25 + (_playersKilledInRange / 40f) * 0.75));
             }
 
             Log.Info("Keep", $"Lock XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
@@ -592,13 +596,11 @@ namespace WorldServer.World.BattleFronts.Keeps
             _playersKilledInRange = 0;
         }
 
-        private int _safeKeepTimer = 0;
-
         public void ResetSafeTimer()
         {
             if (KeepStatus != KeepStatus.KEEPSTATUS_SAFE && KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
             {
-                _safeKeepTimer = TCPManager.GetTimeStamp() + 15 * 60;
+                _safeKeepTimer = TCPManager.GetTimeStamp() + TIMESPAN_SAFEKEEP;
             }
         }
 
@@ -616,14 +618,27 @@ namespace WorldServer.World.BattleFronts.Keeps
                     if (influenceId == 0)
                         influenceId = (plr.Realm == Realms.REALMS_REALM_DESTRUCTION) ? plr.CurrentArea.DestroInfluenceId : plr.CurrentArea.OrderInfluenceId;
 
-                    plr.SendClientMessage($"You've received a reward for your contribution to the holding of {Info.Name}.", ChatLogFilters.CHATLOGFILTERS_RVR);
+					int totalXp = 2000 * Tier;
+					int totalRenown = 300 * Tier;
+					int totalInfluence = 100 * Tier;
 
-                    plr.AddXp((uint) (2000*Tier), false, false);
-                    plr.AddRenown((uint) (300*Tier), false, RewardType.ObjectiveDefense, Info.Name);
-                    plr.AddInfluence((ushort) influenceId, (ushort) (100*Tier));
-                }
+					if (_playersKilledInRange < (4 * Tier))
+					{
+						totalXp += (int)(totalXp * (0.25 + (_playersKilledInRange / 40f) * 0.75));
+						totalRenown += (int)(totalRenown * (0.25 + (_playersKilledInRange / 40f) * 0.75));
+						totalInfluence += (int)(totalInfluence * (0.25 + (_playersKilledInRange / 40f) * 0.75));
+					}
 
-                SendKeepInfo(plr);
+					plr.AddXp((uint)totalXp, false, false);
+					plr.AddRenown((uint)totalRenown, false, RewardType.ObjectiveDefense, Info.Name);
+					plr.AddInfluence((ushort)influenceId, (ushort)totalInfluence);
+					
+					plr.SendClientMessage($"You've received a reward for your contribution to the holding of {Info.Name}.", ChatLogFilters.CHATLOGFILTERS_RVR);
+
+					Log.Info("Keep", $"Keep Defence XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
+				}
+
+				SendKeepInfo(plr);
             }
 
             foreach (KeepNpcCreature crea in Creatures)
@@ -637,7 +652,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 door.Spawn();
             }
 
-            Log.Info("SafeKeep", "Players Killed: " + _playersInRange);
+            Log.Info("SafeKeep", "Players Killed: " + _playersKilledInRange);
 
             if ((LastMessage >= KeepMessage.Outer0 && Tier > 2) || (Tier == 2 && LastMessage >= KeepMessage.Inner0))
             {
@@ -655,7 +670,8 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             _OrderCount = 0;
             _DestroCount = 0;
-        }
+			_playersKilledInRange = 0;
+		}
 
         private void UpdateKeepStatus(KeepStatus newStatus)
         {
@@ -1259,7 +1275,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                         }
                     }
                 }
-
                 else
                 {
                     _currentResource -= doorReplacementCost;
@@ -1277,7 +1292,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                     _safeKeepTimer = 0;
                 }
             }
-
             else
             {
                 SafeKeep();
