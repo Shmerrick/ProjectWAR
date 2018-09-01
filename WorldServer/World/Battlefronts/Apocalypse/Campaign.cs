@@ -322,8 +322,39 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (!door.GameObject.IsDead)
                     {
                         var curPctHealth = door.GameObject.PctHealth;
+                        double tH = (double)door.GameObject.TotalHealth;
+                        switch (oVp)
+                        {
+                            case 0:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH * 3));
+                                break;
+                            case 500:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH * 2.8));
+                                break;
+                            case 1000:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH * 2.6));
+                                break;
+                            case 1500:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH * 2.4));
+                                break;
+                            case 2000:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH * 2.2));
+                                break;
+                            case 2500:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH * 2));
+                                break;
+                            case 3000:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH * 1.75));
+                                break;
+                            case 3500:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH * 1.5));
+                                break;
+                            case 4000:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH));
+                                break;
 
-                        
+                        }
+
                     }
                 }
             }
@@ -336,16 +367,36 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (!door.GameObject.IsDead)
                     {
                         var curPctHealth = door.GameObject.PctHealth;
-                        switch (oVp)
+                        double tH = (double)door.GameObject.TotalHealth;
+                        switch (dVp)
                         {
                             case 0:
-                                door.GameObject.Health = 1000;
+                                door.GameObject.Health = (uint)(curPctHealth * (tH * 3));
+                                break;
+                            case 500:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH*2.8));
+                                break;
+                            case 1000:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH * 2.6));
+                                break;
+                            case 1500:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH * 2.4));
+                                break;
+                            case 2000:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH * 2.2));
                                 break;
                             case 2500:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH*2));
+                                break;
+                            case 3000:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH * 1.75));
+                                break;
+                            case 3500:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH * 1.5));
                                 break;
                             case 4000:
+                                door.GameObject.Health = (uint)(curPctHealth * (tH));
                                 break;
-
                         }
                     }
                 }
