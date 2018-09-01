@@ -281,7 +281,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 plr.AddRenown((uint)(2000 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
                 plr.AddInfluence((ushort) influenceId, 500);
 
-                var mailItem3 = new MailItem(208470, 10);
+                var mailItem3 = new MailItem(208470, 15);
                 Character_mail mail = new Character_mail
                 {
                     Guid = CharMgr.GenerateMailGuid(),

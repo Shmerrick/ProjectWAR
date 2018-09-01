@@ -2232,7 +2232,7 @@ namespace WorldServer.Managers.Commands
 
         public static bool GearTester(Player plr, ref List<string> values)
         {
-         
+            return false;
             // Ensure this code is only ever called IN DEV!!
             if (WorldMgr.ServerMode != "DEV")
                 return false;
