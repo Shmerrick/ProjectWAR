@@ -1309,21 +1309,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {
                         plr.SendLocalizeString("Defending this objective was a noble duty. You have received a small reward for your service.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
                         plr.ItmInterface.CreateItem((uint)208470, 2);
-                        plr.ItmInterface.CreateItem((uint)(208429), (ushort)2);
                         plr.AddNonScalingRenown((uint)500, false, RewardType.ZoneKeepCapture, "");
                     }
                     else if (AccumulatedKills <= 6)
                     {
                         plr.SendLocalizeString("Your defense of this objective has been noteworthy! You have received a moderate reward.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
                         plr.ItmInterface.CreateItem((uint)208470, 5);
-                        plr.ItmInterface.CreateItem((uint)(208429), (ushort)5);
                         plr.AddNonScalingRenown((uint)2000, false, RewardType.ZoneKeepCapture, "");
                     }
                     else if (AccumulatedKills > 6)
                     {
                         plr.SendLocalizeString("Your defense of this objective has been heroic! You have received a respectable reward.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
                         plr.ItmInterface.CreateItem((uint)208470, 10);
-                        plr.ItmInterface.CreateItem((uint)(208429), (ushort)10);
                         plr.AddNonScalingRenown((uint)4000, false, RewardType.ZoneKeepCapture, "");
                     }
                 }
