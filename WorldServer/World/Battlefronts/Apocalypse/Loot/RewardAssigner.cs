@@ -30,10 +30,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 return null;
 
             // Randomise the players
-            var randomisedPlayerList = RewardSelector.RandomisePlayerList(eligiblePlayers);
+            var randomisedPlayerList = eligiblePlayers.OrderBy(a => Guid.NewGuid()).ToList();
+            //var randomisedPlayerList = RewardSelector.RandomisePlayerList(eligiblePlayers);
             int numberLootBags = 0;
             // Determine the number of awards to give
             numberLootBags = forceNumberRewards == 0 ? RewardSelector.DetermineNumberOfAwards((uint) randomisedPlayerList.Count()) : forceNumberRewards;
+            
             // Define the types of awards to give
             var lootBagDefinitions = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(numberLootBags);
 

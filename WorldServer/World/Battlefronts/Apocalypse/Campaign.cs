@@ -722,16 +722,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         var lootDefinition = lootDecider.DetermineRVRZoneReward(lootBagTypeDefinition, playerRenownBand, playerClass, playerItemList.ToList(), true);
                         if (lootDefinition.IsValid())
                         {
-                            BattlefrontLogger.Trace($"{player.Info.Name} has received {lootDefinition.FormattedString()}");
-
+                            BattlefrontLogger.Debug($"{player.Info.Name} has received {lootDefinition.FormattedString()}");
                             BattlefrontLogger.Debug($"{lootDefinition.ToString()}");
+                            // Only distribute if loot is valid
+                            var rewardDescription = WorldMgr.RewardDistributor.DistributeWinningRealm(lootDefinition, player, playerRenownBand);
+                            player.SendClientMessage($"{rewardDescription}", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+
                         }
                         else
                         {
-                            BattlefrontLogger.Trace($"{player.Info.Name} has received [INVALID for Player] {lootDefinition.FormattedString()}");
+                            BattlefrontLogger.Debug($"{player.Info.Name} has received [INVALID for Player] {lootDefinition.FormattedString()}");
                         }
-                        var rewardDescription = WorldMgr.RewardDistributor.DistributeWinningRealm(lootDefinition, player, playerRenownBand);
-                        player.SendClientMessage($"{rewardDescription}", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
                     }
                 }
