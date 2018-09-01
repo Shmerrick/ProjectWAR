@@ -76,7 +76,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                 _enterExitPoints[1] = new Point3D(_keepDoor.Info.TeleportX2, _keepDoor.Info.TeleportY2, _keepDoor.Info.TeleportZ2);
 
                 EvtInterface.AddEventNotify(EventName.OnReceiveDamage, OnReceiveDamage);
-                EvtInterface.AddEvent(UpdateDoorsFromVP,1,0);
             }
 
             // RB   5/20/2016   Keep doors should not regenerate naturally.
@@ -159,22 +158,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                 return false;
             }
-            public void UpdateDoorsFromVP()
-            {
-                //get order/destro vp's
-                var oVp = this.Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
-                var dVp = this.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints;
-
-                //get order/destro keeps
-                var oKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_ORDER);
-                var dKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION);
-
-                //update keep door health
-                foreach (var door in oKeep.Doors)
-                {
-                    
-                }
-            }
+           
             /*
             // Keep doors block all hits that are not from ST siege
             public override void ModifyDamageIn(AbilityDamageInfo damageInfo)

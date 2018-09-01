@@ -116,8 +116,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _rewardManager = new RVRRewardManager();
             //OrderBattleFrontPlayerDictionary = new Dictionary<Player, int>();
             //DestructionBattleFrontPlayerDictionary = new Dictionary<int, int>();
-			
-			_EvtInterface.AddEvent(UpdateBattleFrontScalers, 12000, 0); // 120000
+
+            _EvtInterface.AddEvent(UpdateBattleFrontScalers, 12000, 0); // 120000
             _EvtInterface.AddEvent(UpdateVictoryPoints, 6000, 0);
 
             _EvtInterface.AddEvent(UpdateBOs, 5000, 0);
@@ -127,6 +127,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(UpdateAAOBuffs, 60000, 0);
             // Recalculate AAO
             _EvtInterface.AddEvent(RecordMetrics, 30000, 0);
+
+            //getdoorhealth
+            _EvtInterface.AddEvent(UpdateRVRStatusDoor, 5000, 0);
+
+
+            if (Tier == 4)
+            {
+                _EvtInterface.AddEvent(UpdateDoorsFromVP, 1, 0);
+            }
+
         }
 
         public void InitializePopulationList(int battlefrontId)
@@ -166,8 +176,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             {
                                 BattlefrontId = status.BattleFrontId,
                                 BattlefrontName = status.Description,
-                                DestructionVictoryPoints = (int) this.VictoryPointProgress.DestructionVictoryPoints,
-                                OrderVictoryPoints = (int) this.VictoryPointProgress.OrderVictoryPoints,
+                                DestructionVictoryPoints = (int)this.VictoryPointProgress.DestructionVictoryPoints,
+                                OrderVictoryPoints = (int)this.VictoryPointProgress.OrderVictoryPoints,
                                 Locked = status.LockStatus,
                                 OrderPlayersInLake = GetTotalOrderPVPPlayerCountInZone(this.BattleFrontManager.ActiveBattleFront.ZoneId),
                                 DestructionPlayersInLake = GetTotalDestPVPPlayerCountInZone(this.BattleFrontManager.ActiveBattleFront.ZoneId),
@@ -200,7 +210,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
         private int GetTotalDestPVPPlayerCountInRegion(int regionId)
-		{
+        {
             lock (Player._Players)
             {
                 return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && x != null && x.Region.RegionId == regionId && x.CbtInterface.IsPvp);
@@ -215,28 +225,28 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-		private int GetTotalDestPVPPlayerCountInZone(int zoneID)
-		{
-			lock (Player._Players)
-			{
-				return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && !x.IsAFK && !x.IsAutoAFK && x != null && x.ZoneId == zoneID && x.CbtInterface.IsPvp);
-			}
-		}
+        private int GetTotalDestPVPPlayerCountInZone(int zoneID)
+        {
+            lock (Player._Players)
+            {
+                return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && !x.IsAFK && !x.IsAutoAFK && x != null && x.ZoneId == zoneID && x.CbtInterface.IsPvp);
+            }
+        }
 
-		private int GetTotalOrderPVPPlayerCountInZone(int zoneID)
-		{
-			lock (Player._Players)
-			{
-				return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_ORDER && !x.IsDisposed && x.IsInWorld() && !x.IsAFK && !x.IsAutoAFK && x != null && x.ZoneId == zoneID && x.CbtInterface.IsPvp);
-			}
-		}
+        private int GetTotalOrderPVPPlayerCountInZone(int zoneID)
+        {
+            lock (Player._Players)
+            {
+                return Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_ORDER && !x.IsDisposed && x.IsInWorld() && !x.IsAFK && !x.IsAutoAFK && x != null && x.ZoneId == zoneID && x.CbtInterface.IsPvp);
+            }
+        }
 
-		/// <summary>
-		/// Return the list of Battlefront statuses for a give region.
-		/// </summary>
-		/// <param name="regionId"></param>
-		/// <returns></returns>
-		public List<BattleFrontStatus> GetBattleFrontStatuses(int regionId)
+        /// <summary>
+        /// Return the list of Battlefront statuses for a give region.
+        /// </summary>
+        /// <param name="regionId"></param>
+        /// <returns></returns>
+        public List<BattleFrontStatus> GetBattleFrontStatuses(int regionId)
         {
             return this.BattleFrontManager.GetBattleFrontStatusList().Where(x => x.RegionId == regionId).ToList();
         }
@@ -294,6 +304,55 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _aaoTracker.RecalculateAAO(allPlayersInZone, orderPlayersInZone.Count, destPlayersInZone.Count);
         }
 
+        public void UpdateDoorsFromVP()
+        {
+            //get order/destro vp's
+            var oVp = this.Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
+            var dVp = this.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints;
+
+            //get order/destro keeps
+            var oKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_ORDER);
+            var dKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION);
+
+            if (oKeep != null)
+            {
+                //update keep door health
+                foreach (var door in oKeep.Doors)
+                {
+                    if (!door.GameObject.IsDead)
+                    {
+                        var curPctHealth = door.GameObject.PctHealth;
+
+                        
+                    }
+                }
+            }
+
+            if (dKeep != null)
+            {
+                //update keep door health
+                foreach (var door in dKeep.Doors)
+                {
+                    if (!door.GameObject.IsDead)
+                    {
+                        var curPctHealth = door.GameObject.PctHealth;
+                        switch (oVp)
+                        {
+                            case 0:
+                                door.GameObject.Health = 1000;
+                                break;
+                            case 2500:
+                                break;
+                            case 4000:
+                                break;
+
+                        }
+                    }
+                }
+            }
+
+        }
+
         private List<Player> GetOrderPlayersInZone(int zoneId)
         {
             lock (Player._Players)
@@ -310,7 +369,46 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-		private void UpdateRVRStatus()
+        private void UpdateRVRStatusDoor()
+        {
+            //get order/destro vp's
+            var oVp = this.Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
+            var dVp = this.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints;
+
+            //get order/destro keeps
+            var oKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_ORDER);
+            var dKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION);
+
+            if (oKeep != null)
+            {
+                //update keep door health
+                foreach (var door in oKeep.Doors)
+                {
+                    // Update players with status of campaign
+                    foreach (Player plr in Region.Players)
+                    {
+
+                        plr.SendClientMessage($"Door Status: REALM: ORDER | Door Health: " + door.GameObject.Health, ChatLogFilters.CHATLOGFILTERS_RVR);
+                    }
+                }
+            }
+
+            if (dKeep != null)
+            {
+                //update keep door health
+                foreach (var door in dKeep.Doors)
+                {
+                    // Update players with status of campaign
+                    foreach (Player plr in Region.Players)
+                    {
+                        plr.SendClientMessage($"Door Status: REALM: DESTRO | Door Health: " + door.GameObject.Health, ChatLogFilters.CHATLOGFILTERS_RVR);
+                    }
+                }
+            }
+        }
+
+
+        private void UpdateRVRStatus()
         {
             // Update players with status of campaign
             foreach (Player plr in Region.Players)
