@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FrameWork;
+using NLog;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
@@ -11,7 +13,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         public IRandomGenerator RandomGenerator { get; set; }
         public IRewardSelector RewardSelector { get; }
 
-
+        private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
         public RewardAssigner(IRandomGenerator randomGenerator, IRewardSelector rewardSelector)
         {
             RandomGenerator = randomGenerator;
@@ -38,17 +40,20 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
             // Define the types of awards to give
             var lootBagDefinitions = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(numberLootBags);
-
+            RewardLogger.Debug($"Number loot bags {lootBagDefinitions.Count}");
             foreach (var lootBagTypeDefinition in lootBagDefinitions)
             {
                 try
                 {
-                    var selectedPlayer = eligiblePlayers[this.RandomGenerator.Generate(eligiblePlayers.Count)];
+                    var selectedPlayer = eligiblePlayers[StaticRandom.Instance.Next((eligiblePlayers.Count))];
+
+                    RewardLogger.Debug($"Selected player {selectedPlayer} {eligiblePlayers.Count} for reward");
+
                     lootBagTypeDefinition.Assignee = selectedPlayer;
                 }
                 catch (Exception e)
                 {
-                    // Skip;
+                    RewardLogger.Warn($"{e.Message}");
                 }
             }
             return lootBagDefinitions;
