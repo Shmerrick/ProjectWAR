@@ -697,7 +697,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             // Select players from the shortlist to actually assign a reward to. (Eligible and winning realm)
             var rewardSelector = new RewardSelector(new RandomGenerator());
-            var rewardAssignments = new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(winningRealmPlayers.Select(x => x.CharacterId).ToList(), forceNumberBags);
+            var winningRealmCharacterIdList = winningRealmPlayers.Select(x => x.CharacterId).ToList();
+            var rewardAssignments = new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(winningRealmCharacterIdList, forceNumberBags);
 
             if (rewardAssignments == null)
             {
