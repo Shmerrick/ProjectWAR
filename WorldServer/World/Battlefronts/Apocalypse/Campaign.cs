@@ -154,13 +154,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             try
             {
-                if ((OrderPlayerPopulationList.Count == 0) || (DestructionPlayerPopulationList.Count == 0))
-                    return;
-
                 lock (LockObject)
                 {
                     var groupId = Guid.NewGuid().ToString();
                     BattlefrontLogger.Debug($"Recording metrics for Campaign {this.CampaignName}");
+                    BattlefrontLogger.Info($"There are {BattleFrontManager.GetBattleFrontStatusList().Count} battlefront statuses.");
                     foreach (var status in BattleFrontManager.GetBattleFrontStatusList())
                     {
                         if (!status.Locked)
@@ -179,7 +177,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                 GroupId = groupId,
                                 TotalPlayerCountInRegion = GetTotalPVPPlayerCountInRegion(status.RegionId),
                                 TotalDestPlayerCountInRegion = GetTotalDestPVPPlayerCountInRegion(status.RegionId),
-                                TotalOrderPlayerCountInRegion = GetTotalOrderPVPPlayerCountInRegion(status.RegionId)
+                                TotalOrderPlayerCountInRegion = GetTotalOrderPVPPlayerCountInRegion(status.RegionId),
+                                TotalPlayerCount = Player._Players.Count(x => !x.IsDisposed && x.IsInWorld() && x != null),
+                                TotalFlaggedPlayerCount = Player._Players.Count(x => !x.IsDisposed && x.IsInWorld() && x != null && x.CbtInterface.IsPvp)
                             };
                             WorldMgr.Database.AddObject(metrics);
                         }
@@ -269,20 +269,26 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             BattlefrontLogger.Debug($"Calculating AAO. Order players : {orderPlayersInZone.Count} Dest players : {destPlayersInZone.Count}");
 
-            // Randomly let players know the population
-            if (StaticRandom.Instance.Next(100) > POPULATION_BROADCAST_CHANCE)
+            foreach (var status in BattleFrontManager.GetBattleFrontStatusList())
             {
-                foreach (var player in allPlayersInZone)
+                if (!status.Locked)
                 {
-                    if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                    // Randomly let players know the population
+                    if (StaticRandom.Instance.Next(100) > POPULATION_BROADCAST_CHANCE)
                     {
-                        player.SendMessage($"Messengers report {orderPlayersInZone.Count} Order players in the zone.",
-                            ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE);
-                    }
-                    else
-                    {
-                        player.SendMessage($"Messengers report {destPlayersInZone.Count} Destruction players in the zone.",
-                            ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE);
+                        foreach (var player in allPlayersInZone)
+                        {
+                            if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                            {
+                                player.SendMessage($"Messengers report {orderPlayersInZone.Count} Order players in the zone.",
+                                    ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE);
+                            }
+                            else
+                            {
+                                player.SendMessage($"Messengers report {destPlayersInZone.Count} Destruction players in the zone.",
+                                    ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE);
+                            }
+                        }
                     }
                 }
             }
