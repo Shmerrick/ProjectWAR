@@ -619,13 +619,13 @@ namespace WorldServer.Scenarios
                     // Lower reward for domination
                     if (_dominatingRealm != Realms.REALMS_REALM_NEUTRAL)
                     {
-                        plr.ItmInterface.CreateItem(desiredItem, 5);
+                        plr.ItmInterface.CreateItem(desiredItem, 4);
                         plr.SendLocalizeString(new[] { desiredItem.Name, "1" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
                             Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
                     }
                     else
                     {
-                        plr.ItmInterface.CreateItem(desiredItem, 8);
+                        plr.ItmInterface.CreateItem(desiredItem, 6);
                         plr.SendLocalizeString(new[] { desiredItem.Name, "3" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
                             Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
                     }
