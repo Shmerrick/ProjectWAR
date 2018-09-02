@@ -499,7 +499,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
 
             int totalXp = (800 * Tier) + (200 * Tier * objCount) + (_playersKilledInRange * Tier * 30); // Field of Glory, reduced
-            int totalRenown = (250 * Tier) + (120 * Tier * objCount) + (_playersKilledInRange * 100);   // Ik : Increased values here.
+            int totalRenown = (250 * Tier) + (120 * Tier * objCount) + (_playersKilledInRange * 75);   // Ik : Increased values here.
             int totalInfluence = (40 * Tier) + (20 * Tier * objCount) + (_playersKilledInRange * Tier * 6);
 
             if (_playersKilledInRange < (4 * Tier))
