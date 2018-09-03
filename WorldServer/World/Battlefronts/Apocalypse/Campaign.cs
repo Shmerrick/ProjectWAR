@@ -321,43 +321,44 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     if (!door.GameObject.IsDead)
                     {
-                        var curPctHealth = door.GameObject.PctHealth;
-                        double tH = (double)door.GameObject.TotalHealth;
+                        var tH = door.GameObject.TotalHealth;
+                        uint tHBuffed = 0;
+                        bool is100wobuff = false;
                         switch (oVp)
                         {
                             case 0:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH * 3));
+
+                                //200% buff(totalhealth * 3)
+                                tHBuffed = (tH * 3);
+                                is100wobuff = (door.GameObject.Health == tH) ? true : false;
+                                if (is100wobuff)
+                                {
+                                    door.GameObject.Health = tHBuffed;
+                                }
                                 break;
-                            case 500:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH * 2.8));
-                                break;
-                            case 1000:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH * 2.6));
-                                break;
-                            case 1500:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH * 2.4));
-                                break;
-                            case 2000:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH * 2.2));
-                                break;
+
                             case 2500:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH * 2));
+                                tHBuffed = (tH * 2);
+                                is100wobuff = (door.GameObject.Health == tH * 3 || door.GameObject.Health > tHBuffed) ? true : false;
+                                if (is100wobuff)
+                                {
+                                    door.GameObject.Health = tHBuffed;
+                                }
                                 break;
-                            case 3000:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH * 1.75));
-                                break;
-                            case 3500:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH * 1.5));
-                                break;
+
                             case 4000:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH));
+                                tHBuffed = (tH);
+                                is100wobuff = (door.GameObject.Health == tH * 2 || door.GameObject.Health > tHBuffed) ? true : false;
+                                if (is100wobuff)
+                                {
+                                    door.GameObject.Health = tHBuffed;
+                                }
                                 break;
-
                         }
-
                     }
                 }
             }
+
 
             if (dKeep != null)
             {
@@ -366,43 +367,45 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     if (!door.GameObject.IsDead)
                     {
-                        var curPctHealth = door.GameObject.PctHealth;
-                        double tH = (double)door.GameObject.TotalHealth;
-                        switch (dVp)
+                        var tH = door.GameObject.TotalHealth;
+                        uint tHBuffed = 0;
+                        bool is100wobuff = false;
+                        switch (oVp)
                         {
                             case 0:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH * 3));
+
+                                //200% buff(totalhealth * 3)
+                                tHBuffed = (tH * 3);
+                                is100wobuff = (door.GameObject.Health == tH) ? true : false;
+                                if (is100wobuff)
+                                {
+                                    door.GameObject.Health = tHBuffed;
+                                }
                                 break;
-                            case 500:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH*2.8));
-                                break;
-                            case 1000:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH * 2.6));
-                                break;
-                            case 1500:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH * 2.4));
-                                break;
-                            case 2000:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH * 2.2));
-                                break;
+
                             case 2500:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH*2));
+                                tHBuffed = (tH * 2);
+                                is100wobuff = (door.GameObject.Health == tH * 3 || door.GameObject.Health > tHBuffed) ? true : false;
+                                if (is100wobuff)
+                                {
+                                    door.GameObject.Health = tHBuffed;
+                                }
                                 break;
-                            case 3000:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH * 1.75));
-                                break;
-                            case 3500:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH * 1.5));
-                                break;
+
                             case 4000:
-                                door.GameObject.Health = (uint)(curPctHealth * (tH));
+                                tHBuffed = (tH);
+                                is100wobuff = (door.GameObject.Health == tH * 2 || door.GameObject.Health > tHBuffed) ? true : false;
+                                if (is100wobuff)
+                                {
+                                    door.GameObject.Health = tHBuffed;
+                                }
                                 break;
                         }
                     }
                 }
-            }
+                //}
 
-        }
+            }
 
         private List<Player> GetOrderPlayersInZone(int zoneId)
         {
@@ -438,24 +441,23 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     // Update players with status of campaign
                     foreach (Player plr in Region.Players)
                     {
-
-                        plr.SendClientMessage($"Door Status: REALM: ORDER | Door Health: " + door.GameObject.Health, ChatLogFilters.CHATLOGFILTERS_RVR);
+                        plr.SendClientMessage($"Door Status: REALM: ORDER | Door Health: " + door.GameObject.Health + " | Total Health: " + door.GameObject.TotalHealth, ChatLogFilters.CHATLOGFILTERS_RVR);
                     }
                 }
             }
 
-            if (dKeep != null)
-            {
-                //update keep door health
-                foreach (var door in dKeep.Doors)
-                {
-                    // Update players with status of campaign
-                    foreach (Player plr in Region.Players)
-                    {
-                        plr.SendClientMessage($"Door Status: REALM: DESTRO | Door Health: " + door.GameObject.Health, ChatLogFilters.CHATLOGFILTERS_RVR);
-                    }
-                }
-            }
+            //if (dKeep != null)
+            //{
+            //    //update keep door health
+            //    foreach (var door in dKeep.Doors)
+            //    {
+            //        // Update players with status of campaign
+            //        foreach (Player plr in Region.Players)
+            //        {
+            //            plr.SendClientMessage($"Door Status: REALM: DESTRO | Door Health: " + door.GameObject.Health + " | Total Health: " + door.GameObject.TotalHealth, ChatLogFilters.CHATLOGFILTERS_RVR);
+            //        }
+            //    }
+            //}
         }
 
 
