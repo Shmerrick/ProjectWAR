@@ -4008,12 +4008,13 @@ namespace WorldServer
 
         public float AAOBonus { get; set; }
 
-		/// <summary>
-		/// Grants XP, Renown, Influence, ToK kill incrementation and kill contribution credit to all players inflicting damage.
-		/// </summary>
-		/// <param name="killer"></param>
-		/// <param name="bonusMod"> x >= 1.0f </param>
-		private void HandleXPRenown(Player killer, float bonusMod, World.Battlefronts.Apocalypse.BattleFrontStatus activeBattleFrontStatus =null)
+        /// <summary>
+        /// Grants XP, Renown, Influence, ToK kill incrementation and kill contribution credit to all players inflicting damage.
+        /// </summary>
+        /// <param name="killer"></param>
+        /// <param name="bonusMod"> x >= 1.0f </param>
+        /// <param name="activeBattleFrontStatus"></param>
+        private void HandleXPRenown(Player killer, float bonusMod, World.Battlefronts.Apocalypse.BattleFrontStatus activeBattleFrontStatus =null)
         {
             Dictionary<Group, XpRenown> groupXPRenown = new Dictionary<Group, XpRenown>();
             List<Player> damageSourceRemovals = new List<Player>();
