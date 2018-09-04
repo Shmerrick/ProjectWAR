@@ -3979,16 +3979,27 @@ namespace WorldServer
                 // +1 VP for a kill
                 if (killer.Realm == Realms.REALMS_REALM_DESTRUCTION)
                 {
-                    killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints= killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints+3;
+                    killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints= killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints+5;
                 }
                 else
                 {
-                    killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints= killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints+3;
+                    killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints= killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints+5;
                 }
 
-				killer.SendClientMessage($"+1 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
+				killer.SendClientMessage($"+5 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
 
-				HandleXPRenown(killer, rewardScale);
+                try
+                {
+                    var activeBattleFrontId = killer.Region.Campaign.BattleFrontManager.ActiveBattleFront.BattleFrontId;
+                    var activeBattleFrontStatus = killer.Region.Campaign.BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
+
+                    HandleXPRenown(killer, rewardScale, activeBattleFrontStatus);
+                }
+                catch (Exception e)
+                {
+                    DeathLogger.Warn($"Could not apply rewards to kill. {e.StackTrace}");
+                    throw;
+                }
                 GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
             }
 
@@ -4002,7 +4013,7 @@ namespace WorldServer
 		/// </summary>
 		/// <param name="killer"></param>
 		/// <param name="bonusMod"> x >= 1.0f </param>
-		private void HandleXPRenown(Player killer, float bonusMod)
+		private void HandleXPRenown(Player killer, float bonusMod, World.Battlefronts.Apocalypse.BattleFrontStatus activeBattleFrontStatus =null)
         {
             Dictionary<Group, XpRenown> groupXPRenown = new Dictionary<Group, XpRenown>();
             List<Player> damageSourceRemovals = new List<Player>();
@@ -4012,8 +4023,7 @@ namespace WorldServer
 
             CampaignObjective closestFlag = null;
 
-            var activeBattleFrontId = killer.Region.Campaign.BattleFrontManager.ActiveBattleFront.BattleFrontId;
-            var activeBattleFrontStatus = killer.Region.Campaign.BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
+         
 
             if (ScnInterface.Scenario == null)
                 closestFlag = Region.Campaign.GetClosestFlag(WorldPosition);
@@ -4127,7 +4137,7 @@ namespace WorldServer
                             RewardLogger.Trace($"Awarded 1 Crest to Killer : {killer.Name} for Solo Kill");
                             curPlayer.ItmInterface.CreateItem(208470, 1);
 
-                            activeBattleFrontStatus.AddKillContribution(curPlayer);
+                            activeBattleFrontStatus?.AddKillContribution(curPlayer);
 
                             if (closestFlag != null && closestFlag.State != StateFlags.ZoneLocked)
                             {
@@ -4188,7 +4198,7 @@ namespace WorldServer
                             player.ItmInterface.CreateItem(208470, 1);
                         }
 
-                        activeBattleFrontStatus.AddKillContribution(player);
+                        activeBattleFrontStatus?.AddKillContribution(player);
                     }
                 }
             }
