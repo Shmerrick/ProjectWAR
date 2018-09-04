@@ -268,7 +268,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public RVRProgression LockActiveBattleFront(Realms realm)
+        public RVRProgression LockActiveBattleFront(Realms realm, int forceNumberBags = 0)
         {
             var activeRegion = RegionMgrs.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
             ProgressionLogger.Info($" Locking battlefront in {activeRegion.RegionName} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
@@ -287,7 +287,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     keep.LockKeep(realm, true, true);
             }
             
-            activeRegion.Campaign.LockBattleFront(realm);
+            activeRegion.Campaign.LockBattleFront(realm, forceNumberBags);
 
             // Use Locking Realm in the BFM, not the BF (BF applies to region)
             return this.ActiveBattleFront;
@@ -305,6 +305,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             activeStatus.FinalVictoryPoint = vpp;
             activeStatus.LockTimeStamp = FrameWork.TCPManager.GetTimeStamp();
 		}
+
+        public BattleFrontStatus GetActiveBattleFrontStatus(int battleFrontId)
+        {
+            return BattleFrontStatuses.Single(x => x.BattleFrontId == battleFrontId);
+        }
+
 
         public List<BattleFrontStatus> GetBattleFrontStatusList()
         {

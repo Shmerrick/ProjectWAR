@@ -252,7 +252,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 plr.AddRenown((uint)(5000 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, "");
                 plr.AddInfluence((ushort)influenceId, 1000);
 
-                var mailItem3 = new MailItem(208470, 25);
+                var mailItem3 = new MailItem(208470, 20);
                 Character_mail mail = new Character_mail
                 {
                     Guid = CharMgr.GenerateMailGuid(),
@@ -303,6 +303,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
 
           
+        }
+
+        public byte CalculateRenownBand(byte playerRenown)
+        {
+            return (byte) (Math.Round((playerRenown / 10.0)) * 10 + 10);
         }
     }
 }

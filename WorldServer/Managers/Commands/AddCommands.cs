@@ -1,6 +1,7 @@
 ﻿using Common;
 using System;
 using System.Collections.Generic;
+using GameData;
 using WorldServer.Services.World;
 using static WorldServer.Managers.Commands.GMUtils;
 
@@ -180,6 +181,20 @@ namespace WorldServer.Managers.Commands
             CharMgr.Database.AddObject(log);
 
             plr.SendClientMessage(value + " contribution added for " + plr.Name);
+            return true;
+        }
+
+        public static bool AddRewardEligibility(Player plr, ref List<string> values)
+        {
+            var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
+            var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
+
+            plr = GetTargetOrMe(plr) as Player;
+
+            activeBattleFrontStatus.KillContributionSet.Add(plr.CharacterId);
+
+            plr.SendClientMessage(plr.Name + " added to Eligibility");
+
             return true;
         }
     }
