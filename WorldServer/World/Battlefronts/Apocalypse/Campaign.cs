@@ -687,7 +687,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var activeBattleFrontId = BattleFrontManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
 
-            var eligiblePlayers = GetEligiblePlayers(activeBattleFrontStatus);
+            var eligiblePlayers = this.BattleFrontManager.GetEligiblePlayers(activeBattleFrontStatus);
 
             // Remove eligible players from losing realm
             foreach (var eligiblePlayer in eligiblePlayers)
@@ -810,30 +810,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public HashSet<uint> GetEligiblePlayers(BattleFrontStatus activeBattleFrontStatus)
-        {
-            var eligiblePlayers = new HashSet<uint>();
-            BattlefrontLogger.Debug($"** Kill Contribution players **");
-            foreach (var playerKillContribution in activeBattleFrontStatus.KillContributionSet)
-            {
-                eligiblePlayers.Add(playerKillContribution);
-            }
-            BattlefrontLogger.Debug($"{string.Join(",", eligiblePlayers.ToArray())}");
-            BattlefrontLogger.Debug($"** Objective Contribution players **");
-            foreach (var campaignObjective in Objectives)
-            {
-                BattlefrontLogger.Debug($"** Objective Contribution for {campaignObjective.Name} **");
-                var contributionList = campaignObjective.CampaignObjectiveContributions;
-                foreach (var playerObjectiveContribution in contributionList)
-                {
-                    eligiblePlayers.Add(playerObjectiveContribution.Key);
-                }
-                BattlefrontLogger.Debug($"{string.Join(",", contributionList.ToArray())}");
-            }
-            BattlefrontLogger.Debug($"All Eligible Players : {string.Join(",", eligiblePlayers.ToArray())}");
-
-            return eligiblePlayers;
-        }
+        
 
 
         public void ClearEligiblePlayers(BattleFrontStatus activeBattleFrontStatus, HashSet<uint> eligiblePlayers)
