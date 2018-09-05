@@ -9,7 +9,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         RVRProgression ResetBattleFrontProgression(CampaignRerollMode rerollMode = CampaignRerollMode.NONE);
         RVRProgression GetBattleFrontByName(string name);
         RVRProgression GetBattleFrontByBattleFrontId(int id);
-        
+
+        HashSet<uint> GetEligiblePlayers(BattleFrontStatus activeBattleFrontStatus);
 
         string ActiveBattleFrontName { get; set; }
         RVRProgression ActiveBattleFront { get; set; }

@@ -1305,6 +1305,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (plr.Realm == this.OwningRealm && plr.ValidInTier(Tier, true))
                 {
+                    BattlefrontLogger.Debug($"Rewarding {plr.Name}");
                     if (AccumulatedKills < 3)
                     {
                         plr.SendLocalizeString("Defending this objective was a noble duty. You have received a small reward for your service.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);

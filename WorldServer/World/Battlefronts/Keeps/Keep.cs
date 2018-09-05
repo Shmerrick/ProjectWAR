@@ -481,20 +481,26 @@ namespace WorldServer.World.BattleFronts.Keeps
         public void DistributeRewards()
         {
             Log.Info("Keep", "Locking " + Zone.Info.Name);
-            _logger.Debug($"Distributing rewards for Keep {this.Name}");
+            _logger.Info("**********************KEEP FLIP******************************");
+            _logger.Info($"Distributing rewards for Keep {this.Name}");
+            _logger.Info("*************************************************************");
             uint influenceId = 0;
 
             byte objCount = 0;
 
             bool battlePenalty = false;
 
+            _logger.Debug($"Keep flip reward for BO hold");
             foreach (var flag in Region.Campaign.Objectives)
             {
                 // RB   5/21/2016   Battlefield Objectives now reward defenders when a keep is captured.
                 if (flag.OwningRealm == Realm)
                 {
-                    ++objCount;
-                    flag.GrantKeepCaptureRewards();
+                    if (flag.ZoneId == this.ZoneId)
+                    {
+                        ++objCount;
+                        flag.GrantKeepCaptureRewards();
+                    }
                 }
             }
 
@@ -512,8 +518,11 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
 
             Log.Info("Keep", $"Lock XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
+
+            _logger.Info($"Lock XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
+
             // Dont believe contribution is being triggered.
-            Dictionary<uint, ContributionInfo> contributors = Region.Campaign.GetContributorsFromRealm(Realm);
+            // Dictionary<uint, ContributionInfo> contributors = Region.Campaign.GetContributorsFromRealm(Realm);
 
             //if (contributors.Count == 0)
             //{
@@ -531,69 +540,64 @@ namespace WorldServer.World.BattleFronts.Keeps
             //    return;
             //}
 
-            foreach (Player player in Region.Players)
+            try
             {
-                if (!player.Initialized)
-                    continue;
+                var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
+                var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
+                var eligiblePlayers = WorldMgr.UpperTierCampaignManager.GetEligiblePlayers(activeBattleFrontStatus);
 
-                //if (!contributors.ContainsKey(player.CharacterId))
-                //{
-                //    if (player.CurrentArea != null && player.CurrentArea.IsRvR)
-                //        player.SendClientMessage($"As you did not contribute to the capture of {Info.Name}, you did not receive a reward.", ChatLogFilters.CHATLOGFILTERS_RVR);
-                //    continue;
-                //}
-
-                //ContributionInfo contrib = contributors[player.CharacterId];
-
-                if (player.ValidInTier(Tier, true))
-                    player.QtsInterface.HandleEvent(Objective_Type.QUEST_CAPTURE_KEEP, Info.KeepId, 1);
-
-
-                if (HasInRange(player))
+                foreach (var characterId in eligiblePlayers)
                 {
-                    SendKeepInfo(player);
+                    var player = Player.GetPlayer(characterId);
+
+                    if (player == null)
+                        continue;
+
+                    if (!player.Initialized)
+                        continue;
+
+                    if (player.ValidInTier(Tier, true))
+                        player.QtsInterface.HandleEvent(Objective_Type.QUEST_CAPTURE_KEEP, Info.KeepId, 1);
+
+
+                    if (HasInRange(player))
+                    {
+                        SendKeepInfo(player);
+                    }
+                    else
+                    {
+                        player.SendClientMessage("The keep was taken, but you were too far away!");
+                        return;
+                    }
+
+                    if (influenceId == 0)
+                        influenceId = (player.Realm == Realms.REALMS_REALM_DESTRUCTION) ? player.CurrentArea.DestroInfluenceId : player.CurrentArea.OrderInfluenceId;
+
+                    player.AddXp((uint)totalXp, false, false);
+                    // New method- non scaling renown. RP not effected by AAO and similar things.
+                    player.AddRenown((uint)totalRenown, false, RewardType.ZoneKeepCapture, Info.Name);
+                    player.AddInfluence((ushort)influenceId, (ushort)totalInfluence);
+
+                    if (battlePenalty)
+                        player.SendClientMessage("This keep was taken with little to no resistance. The rewards have therefore been reduced.");
+                    else
+                        // Invader crests
+                        player.ItmInterface.CreateItem((uint)(208429), (ushort)5);
+
+                    _logger.Info($"Distributing rewards for Keep {this.Name} to {player.Name} RR:{totalRenown} INF:{totalInfluence}");
                 }
-                else
-                {
-                    player.SendClientMessage("The keep was taken, but you were too far away!");
-                    return;
-                }
 
-                // float scaleFactor = Math.Min(1f, contrib.BaseContribution/(maxContribution*0.7f));
-
-                //Log.Info("Keep", $"Rewarding {player.Name} with scale factor {scaleFactor} ({contrib.BaseContribution} / {maxContribution})");
-
-                //string contributionDesc;
-
-                //if (scaleFactor > 0.75f)
-                //    contributionDesc = "valiant";
-                //else if (scaleFactor > 0.5f)
-                //    contributionDesc = "stalwart";
-                //else if (scaleFactor > 0.25f)
-                //    contributionDesc = "modest";
-                //else
-                //    contributionDesc = "small";
-
-                //player.SendClientMessage($"You've received a reward for your {contributionDesc} contribution to the capture of {Info.Name}!", ChatLogFilters.CHATLOGFILTERS_RVR);
-
-                if (influenceId == 0)
-                    influenceId = (player.Realm == Realms.REALMS_REALM_DESTRUCTION) ? player.CurrentArea.DestroInfluenceId : player.CurrentArea.OrderInfluenceId;
-
-                player.AddXp((uint) totalXp, false, false);
-                // New method- non scaling renown. RP not effected by AAO and similar things.
-                player.AddRenown((uint) totalRenown, false, RewardType.ZoneKeepCapture, Info.Name);
-                player.AddInfluence((ushort) influenceId, (ushort) totalInfluence);
-
-                if (battlePenalty)
-                    player.SendClientMessage("This keep was taken with little to no resistance. The rewards have therefore been reduced.");
-                else
-                    // Invader crests
-                    player.ItmInterface.CreateItem((uint) (208429), (ushort)5);
-
-                _logger.Info($"Distributing rewards for Keep {this.Name} to {player.Name} RR:{totalRenown} INF:{totalInfluence}");
+                _playersKilledInRange = 0;
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"Exception distributing rewards for Keep take {e.Message} {e.StackTrace}");
+                throw;
             }
 
-            _playersKilledInRange = 0;
+         
+
+        
         }
 
         public void ResetSafeTimer()

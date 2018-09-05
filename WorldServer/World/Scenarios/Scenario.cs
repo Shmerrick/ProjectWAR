@@ -634,8 +634,8 @@ namespace WorldServer.Scenarios
                 }
                 else
                 {
-                    plr.ItmInterface.CreateItem(desiredItem, 5);
-                    plr.SendLocalizeString(new[] { desiredItem.Name, "5" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
+                    plr.ItmInterface.CreateItem(desiredItem, 4);
+                    plr.SendLocalizeString(new[] { desiredItem.Name, "4" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
                         Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
                 }
 
@@ -648,7 +648,7 @@ namespace WorldServer.Scenarios
                 {
                     _logger.Debug($"Scenario {Info.Name} won by Destruction. {Score[1]} to {Score[0]}");
                     _logger.Debug($"Suggest {Score[1] / 10} additional VP to winner,  {Score[0] / 20} to loser.");
-                    new ApocCommunications().Broadcast("Order has defeated Destruction in a critical battle! Their forces come closer to victory.", Tier);
+                    new ApocCommunications().Broadcast("Destruction has defeated Order in a critical battle! Their forces come closer to victory.", Tier);
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += (Score[1] / 10);
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints += (Score[0] / 20);
                 }
@@ -656,7 +656,7 @@ namespace WorldServer.Scenarios
                 {
                     _logger.Debug($"Scenario {Info.Name} won by Order. {Score[0]} to {Score[1]}");
                     _logger.Debug($"Suggest {Score[0] / 10} additional VP to winner,  {Score[1] / 20} to loser.");
-                    new ApocCommunications().Broadcast("Destruction has defeated Order in a critical battle! Their forces come closer to victory.", Tier);
+                    new ApocCommunications().Broadcast("Order has defeated Destruction in a critical battle! Their forces come closer to victory.", Tier);
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints += (Score[1] / 10);
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += (Score[0] / 20);
 
