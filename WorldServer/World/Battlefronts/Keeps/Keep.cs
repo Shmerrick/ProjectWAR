@@ -690,9 +690,16 @@ namespace WorldServer.World.BattleFronts.Keeps
                     crea.Creature.ScaleLord(enemyPlayercount);
         }
 
-#endregion
+        public void ScaleLordVP(int vp)
+        {
+            foreach (KeepNpcCreature crea in Creatures)
+                if (crea.Creature != null && crea.Info.KeepLord)
+                    crea.Creature.ScaleLordVP(vp);
+        }
 
-#region Range
+        #endregion
+
+        #region Range
 
         private short _playersInRange;
 

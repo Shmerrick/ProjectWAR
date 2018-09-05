@@ -71,7 +71,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 spawn.ZoneId = Info.ZoneId;
 
                 Creature = new KeepCreature(spawn, this, Keep);
-                
+
                 /*if (Info.KeepLord)
                     Log.Info(Keep.Info.Name, (Keep.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction") + " keep lord spawned.");*/
                 Region.AddObject(Creature, spawn.ZoneId);
@@ -85,7 +85,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             /// <summary>Incoming damage scaler from 0.25 to 1<summary>
             private volatile float _damageScaler = 1f;
 
-            public KeepCreature(Creature_spawn spawn, KeepNpcCreature flagGrd, Keep keep) : base (spawn)
+            public KeepCreature(Creature_spawn spawn, KeepNpcCreature flagGrd, Keep keep) : base(spawn)
             {
                 _keep = keep;
                 _flagGrd = flagGrd;
@@ -155,7 +155,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 Health = 0;
 
-                States.Add((byte) CreatureState.Dead);
+                States.Add((byte)CreatureState.Dead);
 
                 PacketOut Out = new PacketOut((byte)Opcodes.F_OBJECT_DEATH, 12);
                 Out.WriteUInt16(Oid);
@@ -207,7 +207,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 if (!_flagGrd.Info.KeepLord)
                 {
-                    if (Spawn.Proto.CreatureType == (int) GameData.CreatureTypes.SIEGE)
+                    if (Spawn.Proto.CreatureType == (int)GameData.CreatureTypes.SIEGE)
                         EvtInterface.AddEvent(RezUnit, (20 - (_keep.Rank * 3)) * 60000, 1); // 5-20 minute respawn period.
                     else
                         EvtInterface.AddEvent(RezUnit, 6 * 60000, 1); // 6 minute resurrection period.
@@ -242,6 +242,51 @@ namespace WorldServer.World.BattleFronts.Keeps
                 else
                     scaler = 1f - (BattleFrontConstants.MAX_LORD_SCALER * playerCount / BattleFrontConstants.MAX_LORD_SCALER_POP);
                 _damageScaler = scaler;
+            }
+
+            public void ScaleLordVP(int vp)
+            {
+                var tH = this.TotalHealth;
+                uint tHBuffed = 0;
+                bool is100wobuff = false;
+                switch (vp)
+                {
+                    case 0:
+
+                        //200% buff(totalhealth * 3)
+                        tHBuffed = (tH * 3);
+                        is100wobuff = (this.Health == tH) ? true : false;
+                        if (is100wobuff)
+                        {
+                            this.Health = tHBuffed;
+                        }
+
+                        break;
+
+                    case 2500:
+                        tHBuffed = (tH * 2);
+                        is100wobuff = (this.Health == tH * 3 || this.Health > tHBuffed)
+                            ? true
+                            : false;
+                        if (is100wobuff)
+                        {
+                            this.Health = tHBuffed;
+                        }
+
+                        break;
+
+                    case 4000:
+                        tHBuffed = (tH);
+                        is100wobuff = (this.Health == tH * 2 || this.Health > tHBuffed)
+                            ? true
+                            : false;
+                        if (is100wobuff)
+                        {
+                            this.Health = tHBuffed;
+                        }
+
+                        break;
+                }
             }
 
             public override void RezUnit()

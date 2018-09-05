@@ -40,7 +40,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 get
                 {
-                    if(_keepDoor != null && _keepDoor.Info != null)
+                    if (_keepDoor != null && _keepDoor.Info != null)
                         return _keepDoor.Info.DoorId;
                     return 0;
                 }
@@ -94,6 +94,51 @@ namespace WorldServer.World.BattleFronts.Keeps
                 Occlusion.SetFixtureVisible(_keepDoor.Info.DoorId, false);
             }
 
+            public void SetDoorHealthFromVP(int vp)
+            {
+                var tH = TotalHealth;
+                uint tHBuffed = 0;
+                bool is100wobuff = false;
+                switch (vp)
+                {
+                    case 0:
+
+                        //200% buff(totalhealth * 3)
+                        tHBuffed = (tH * 3);
+                        is100wobuff = (Health == tH) ? true : false;
+                        if (is100wobuff)
+                        {
+                            Health = tHBuffed;
+                        }
+
+                        break;
+
+                    case 2500:
+                        tHBuffed = (tH * 2);
+                        is100wobuff = (Health == tH * 3 || Health > tHBuffed)
+                            ? true
+                            : false;
+                        if (is100wobuff)
+                        {
+                            Health = tHBuffed;
+                        }
+
+                        break;
+
+                    case 4000:
+                        tHBuffed = (tH);
+                        is100wobuff = (Health == tH * 2 || Health > tHBuffed)
+                            ? true
+                            : false;
+                        if (is100wobuff)
+                        {
+                            Health = tHBuffed;
+                        }
+
+                        break;
+                }
+            }
+
             /// <summary>Inflicts damage upon this unit and returns whether lethal damage was dealt.</summary>
             public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1f, uint mitigation = 0)
             {
@@ -141,7 +186,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                     caster.CbtInterface.OnDealDamage(this, damage);
 
                 LastHitOid = caster.Oid;
-                
+
                 if (wasKilled)
                     SetDeath(caster);
 
@@ -158,7 +203,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                 return false;
             }
-           
+
             /*
             // Keep doors block all hits that are not from ST siege
             public override void ModifyDamageIn(AbilityDamageInfo damageInfo)
@@ -245,7 +290,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 {
                     var d1 = player.GetDistanceToWorldPoint(_enterExitPoints[0]);
                     var d2 = player.GetDistanceToWorldPoint(_enterExitPoints[1]);
-                    if(d1 > d2)
+                    if (d1 > d2)
                         player.IntraRegionTeleport((uint)_enterExitPoints[0].X, (uint)_enterExitPoints[0].Y, (ushort)_enterExitPoints[0].Z, (ushort)_keepDoor.Info.TeleportO1);
                     else
                         player.IntraRegionTeleport((uint)_enterExitPoints[1].X, (uint)_enterExitPoints[1].Y, (ushort)_enterExitPoints[1].Z, (ushort)_keepDoor.Info.TeleportO2);
@@ -349,6 +394,6 @@ namespace WorldServer.World.BattleFronts.Keeps
         }
 
 
-       
+
     }
 }

@@ -129,9 +129,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Recalculate AAO
             _EvtInterface.AddEvent(RecordMetrics, 30000, 0);
 
-            if (Tier == 4)
+            if (new int[] {3,4}.Contains(Tier))
             {
                 _EvtInterface.AddEvent(UpdateDoorsFromVP, 1, 0);
+                _EvtInterface.AddEvent(UpdateLordsFromVP, 1, 0);
             }
 
         }
@@ -303,6 +304,28 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
         /// <summary>
+        /// Buffs all lords in a region depending on VP
+        /// 0VP = 200%
+        /// 2500VP = 100%
+        /// 4000VP = 0%(Regular Health)
+        /// </summary>
+        /// <returns></returns>
+        public void UpdateLordsFromVP()
+        {
+            var oVp = this.Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
+            var dVp = this.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints;
+
+            //get order/destro keeps
+            var oKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_ORDER);
+            var dKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION);
+            
+            //update order
+            oKeep?.ScaleLordVP((int)oVp);
+            dKeep?.ScaleLordVP((int)dVp);
+
+        }
+
+        /// <summary>
         /// Buffs all keep doors in a region depending on VP
         /// 0VP = 200%
         /// 2500VP = 100%
@@ -326,51 +349,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     if (!door.GameObject.IsDead)
                     {
-                        var tH = door.GameObject.TotalHealth;
-                        uint tHBuffed = 0;
-                        bool is100wobuff = false;
-                        switch (oVp)
-                        {
-                            case 0:
-
-                                //200% buff(totalhealth * 3)
-                                tHBuffed = (tH * 3);
-                                is100wobuff = (door.GameObject.Health == tH) ? true : false;
-                                if (is100wobuff)
-                                {
-                                    door.GameObject.Health = tHBuffed;
-                                }
-
-                                break;
-
-                            case 2500:
-                                tHBuffed = (tH * 2);
-                                is100wobuff = (door.GameObject.Health == tH * 3 || door.GameObject.Health > tHBuffed)
-                                    ? true
-                                    : false;
-                                if (is100wobuff)
-                                {
-                                    door.GameObject.Health = tHBuffed;
-                                }
-
-                                break;
-
-                            case 4000:
-                                tHBuffed = (tH);
-                                is100wobuff = (door.GameObject.Health == tH * 2 || door.GameObject.Health > tHBuffed)
-                                    ? true
-                                    : false;
-                                if (is100wobuff)
-                                {
-                                    door.GameObject.Health = tHBuffed;
-                                }
-
-                                break;
-                        }
+                        door.GameObject.SetDoorHealthFromVP((int)oVp);
                     }
                 }
             }
-
 
             if (dKeep != null)
             {
@@ -379,47 +361,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     if (!door.GameObject.IsDead)
                     {
-                        var tH = door.GameObject.TotalHealth;
-                        uint tHBuffed = 0;
-                        bool is100wobuff = false;
-                        switch (oVp)
-                        {
-                            case 0:
-
-                                //200% buff(totalhealth * 3)
-                                tHBuffed = (tH * 3);
-                                is100wobuff = (door.GameObject.Health == tH) ? true : false;
-                                if (is100wobuff)
-                                {
-                                    door.GameObject.Health = tHBuffed;
-                                }
-
-                                break;
-
-                            case 2500:
-                                tHBuffed = (tH * 2);
-                                is100wobuff = (door.GameObject.Health == tH * 3 || door.GameObject.Health > tHBuffed)
-                                    ? true
-                                    : false;
-                                if (is100wobuff)
-                                {
-                                    door.GameObject.Health = tHBuffed;
-                                }
-
-                                break;
-
-                            case 4000:
-                                tHBuffed = (tH);
-                                is100wobuff = (door.GameObject.Health == tH * 2 || door.GameObject.Health > tHBuffed)
-                                    ? true
-                                    : false;
-                                if (is100wobuff)
-                                {
-                                    door.GameObject.Health = tHBuffed;
-                                }
-
-                                break;
-                        }
+                        door.GameObject.SetDoorHealthFromVP((int)dVp);
                     }
                 }
             }
