@@ -156,12 +156,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             try
             {
                 var groupId = Guid.NewGuid().ToString();
-                BattlefrontLogger.Debug($"Recording metrics for Campaign {this.CampaignName}");
+                
                 BattlefrontLogger.Info($"There are {BattleFrontManager.GetBattleFrontStatusList().Count} battlefront statuses ({BattleFrontManager.GetType().ToString()}).");
                 foreach (var status in BattleFrontManager.GetBattleFrontStatusList())
                 {
                     lock (status)
                     {
+                        BattlefrontLogger.Debug($"Recording metrics for BF Status : ({status.BattleFrontId}) {status.Description}");
                         if (!status.Locked)
                         {
                             var metrics = new RVRMetrics
