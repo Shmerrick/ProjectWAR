@@ -387,7 +387,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         var tH = door.GameObject.TotalHealth;
                         uint tHBuffed = 0;
                         bool is100wobuff = false;
-                        switch (oVp)
+                        switch (dVp)
                         {
                             case 0:
 
