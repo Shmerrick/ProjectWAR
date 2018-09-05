@@ -317,8 +317,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void UpdateDoorsFromVP()
         {
             //get order/destro vp's
-            var oVp = this.Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
-            var dVp = this.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints;
+            var oVp = (int) this.Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
+            var dVp = (int) this.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints;
 
             //get order/destro keeps
             var oKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_ORDER);
