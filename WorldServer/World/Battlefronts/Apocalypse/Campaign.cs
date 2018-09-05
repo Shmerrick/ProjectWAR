@@ -693,11 +693,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             foreach (var eligiblePlayer in eligiblePlayers)
             {
                 var player = Player.GetPlayer(eligiblePlayer);
-                if (player.Realm == lockingRealm)
-                    winningRealmPlayers.Add(player);
-                else
+                if (player != null)
                 {
-                    losingRealmPlayers.Add(player);
+                    if (player.Realm == lockingRealm)
+                        winningRealmPlayers.Add(player);
+                    else
+                    {
+                        losingRealmPlayers.Add(player);
+                    }
                 }
             }
 
