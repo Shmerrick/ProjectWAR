@@ -23,5 +23,7 @@ namespace WorldServer.Test
 
             Assert.IsTrue(commandList.Count > 0);
         }
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using GameData;
+﻿using System.Collections.Generic;
+using GameData;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -12,6 +13,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public bool Locked { get; set; }
         public int RegionId { get; set; }
         public string Description { get; set; }
+        public HashSet<uint> KillContributionSet { get; set; }
+
+        public BattleFrontStatus()
+        {
+            KillContributionSet = new HashSet<uint>();
+        }
 
         public float DestructionVictoryPointPercentage
         {
@@ -39,6 +46,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 }
                 return BattleFrontConstants.ZONE_STATUS_CONTESTED;
             }
+        }
+
+        public void AddKillContribution(Player player)
+        {
+            KillContributionSet.Add(player.CharacterId);
         }
     }
 }
