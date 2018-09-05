@@ -3814,9 +3814,16 @@ namespace WorldServer.Managers.Commands
 
             plr.SendClientMessage("Morphing!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
-            values = (List<string>)values.Skip(1);
-            SetEffectStateSelf(plr, ref values);
-
+            if (values.Count > 2)
+            {
+                values = (List<string>) values.Skip(1);
+                SetEffectStateSelf(plr, ref values);
+            }
+            else
+            {
+                values = (List<string>)values;
+                SetEffectStateSelf(plr, ref values);
+            }
             return true;
         }
 
