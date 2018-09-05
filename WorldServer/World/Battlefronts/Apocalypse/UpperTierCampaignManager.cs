@@ -304,6 +304,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             activeStatus.LockingRealm = lockingRealm;
             activeStatus.FinalVictoryPoint = vpp;
             activeStatus.LockTimeStamp = FrameWork.TCPManager.GetTimeStamp();
+
+            ProgressionLogger.Info($"Locking BF Status {activeStatus.Description} to realm:{lockingRealm}");
 		}
 
         public BattleFrontStatus GetActiveBattleFrontStatus(int battleFrontId)
