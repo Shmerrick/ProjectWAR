@@ -496,8 +496,11 @@ namespace WorldServer.World.BattleFronts.Keeps
                 // RB   5/21/2016   Battlefield Objectives now reward defenders when a keep is captured.
                 if (flag.OwningRealm == Realm)
                 {
-                    ++objCount;
-                    flag.GrantKeepCaptureRewards();
+                    if (flag.ZoneId == this.ZoneId)
+                    {
+                        ++objCount;
+                        flag.GrantKeepCaptureRewards();
+                    }
                 }
             }
 
