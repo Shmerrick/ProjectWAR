@@ -302,6 +302,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _aaoTracker.RecalculateAAO(allPlayersInZone, orderPlayersInZone.Count, destPlayersInZone.Count);
         }
 
+        /// <summary>
+        /// Buffs all keep doors in a region depending on VP
+        /// 0VP = 200%
+        /// 2500VP = 100%
+        /// 4000VP = 0%(Regular Health)
+        /// </summary>
+        /// <returns></returns>
         public void UpdateDoorsFromVP()
         {
             //get order/destro vp's
