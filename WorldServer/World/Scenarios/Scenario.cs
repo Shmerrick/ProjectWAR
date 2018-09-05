@@ -634,8 +634,8 @@ namespace WorldServer.Scenarios
                 }
                 else
                 {
-                    plr.ItmInterface.CreateItem(desiredItem, 5);
-                    plr.SendLocalizeString(new[] { desiredItem.Name, "5" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
+                    plr.ItmInterface.CreateItem(desiredItem, 4);
+                    plr.SendLocalizeString(new[] { desiredItem.Name, "4" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
                         Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
                 }
 

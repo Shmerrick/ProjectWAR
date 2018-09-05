@@ -162,28 +162,31 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     lock (status)
                     {
-                        BattlefrontLogger.Debug($"Recording metrics for BF Status : ({status.BattleFrontId}) {status.Description}");
-                        if (!status.Locked)
+                        if (status.RegionId == this.Region.RegionId)
                         {
-                            var metrics = new RVRMetrics
+                            BattlefrontLogger.Debug($"Recording metrics for BF Status : ({status.BattleFrontId}) {status.Description}");
+                            if (!status.Locked)
                             {
-                                BattlefrontId = status.BattleFrontId,
-                                BattlefrontName = status.Description,
-                                DestructionVictoryPoints = (int)this.BattleFrontManager.ActiveBattleFront.DestroVP,
-                                OrderVictoryPoints = (int)this.BattleFrontManager.ActiveBattleFront.OrderVP,
-                                Locked = status.LockStatus,
-                                OrderPlayersInLake = GetTotalOrderPVPPlayerCountInZone(this.BattleFrontManager.ActiveBattleFront.ZoneId),
-                                DestructionPlayersInLake = GetTotalDestPVPPlayerCountInZone(this.BattleFrontManager.ActiveBattleFront.ZoneId),
-                                Tier = this.Tier,
-                                Timestamp = DateTime.UtcNow,
-                                GroupId = groupId,
-                                TotalPlayerCountInRegion = GetTotalPVPPlayerCountInRegion(status.RegionId),
-                                TotalDestPlayerCountInRegion = GetTotalDestPVPPlayerCountInRegion(status.RegionId),
-                                TotalOrderPlayerCountInRegion = GetTotalOrderPVPPlayerCountInRegion(status.RegionId),
-                                TotalPlayerCount = Player._Players.Count(x => !x.IsDisposed && x.IsInWorld() && x != null),
-                                TotalFlaggedPlayerCount = Player._Players.Count(x => !x.IsDisposed && x.IsInWorld() && x != null && x.CbtInterface.IsPvp)
-                            };
-                            WorldMgr.Database.AddObject(metrics);
+                                var metrics = new RVRMetrics
+                                {
+                                    BattlefrontId = status.BattleFrontId,
+                                    BattlefrontName = status.Description,
+                                    DestructionVictoryPoints = (int) this.BattleFrontManager.ActiveBattleFront.DestroVP,
+                                    OrderVictoryPoints = (int) this.BattleFrontManager.ActiveBattleFront.OrderVP,
+                                    Locked = status.LockStatus,
+                                    OrderPlayersInLake = GetTotalOrderPVPPlayerCountInZone(this.BattleFrontManager.ActiveBattleFront.ZoneId),
+                                    DestructionPlayersInLake = GetTotalDestPVPPlayerCountInZone(this.BattleFrontManager.ActiveBattleFront.ZoneId),
+                                    Tier = this.Tier,
+                                    Timestamp = DateTime.UtcNow,
+                                    GroupId = groupId,
+                                    TotalPlayerCountInRegion = GetTotalPVPPlayerCountInRegion(status.RegionId),
+                                    TotalDestPlayerCountInRegion = GetTotalDestPVPPlayerCountInRegion(status.RegionId),
+                                    TotalOrderPlayerCountInRegion = GetTotalOrderPVPPlayerCountInRegion(status.RegionId),
+                                    TotalPlayerCount = Player._Players.Count(x => !x.IsDisposed && x.IsInWorld() && x != null),
+                                    TotalFlaggedPlayerCount = Player._Players.Count(x => !x.IsDisposed && x.IsInWorld() && x != null && x.CbtInterface.IsPvp)
+                                };
+                                WorldMgr.Database.AddObject(metrics);
+                            }
                         }
                     }
                 }
