@@ -354,7 +354,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     if (!door.GameObject.IsDead)
                     {
-                        door.GameObject.SetDoorHealthFromVP((int)oVp);
+                        door.GameObject.SetDoorHealthFromVP((int)dVp);
                     }
                 }
             }
@@ -366,7 +366,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     if (!door.GameObject.IsDead)
                     {
-                        door.GameObject.SetDoorHealthFromVP((int)dVp);
+                        door.GameObject.SetDoorHealthFromVP((int)oVp);
                     }
                 }
             }
