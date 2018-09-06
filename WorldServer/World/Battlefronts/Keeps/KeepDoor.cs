@@ -105,7 +105,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                         //200% buff(totalhealth * 3)
                         tHBuffed = (tH * 3);
-                        is100wobuff = (Health == tH) ? true : false;
+                        is100wobuff = (Health == tH || Health == TotalHealth) ? true : false;
                         if (is100wobuff)
                         {
                             Health = tHBuffed;
