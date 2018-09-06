@@ -190,20 +190,11 @@
     <Content Include="Artwork\final3.png" />
     <Content Include="Artwork\final4.png" />
     <Content Include="Artwork\final5.png" />
+    <None Include="Artwork\logo-2_yellow.png" />
     <Content Include="Artwork\WAR.ico" />
     <Content Include="Artwork\WAR.png" />
+    <None Include="Resources\M55rLv3.jpg" />
     <Content Include="WAR.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="NLog">
-      <Version>4.5.7</Version>
-    </PackageReference>
-    <PackageReference Include="System.Net.Http">
-      <Version>4.3.3</Version>
-    </PackageReference>
-    <PackageReference Include="System.Net.Http.Formatting.Extension">
-      <Version>5.2.3</Version>
-    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
