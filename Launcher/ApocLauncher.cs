@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Launcher
@@ -19,6 +20,7 @@ namespace Launcher
         public static int LocalServerPort = 8000;
         public static int TestServerPort = 8000;
         static HttpClient client = new HttpClient();
+        private Patcher patcher;
 
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -57,6 +59,12 @@ namespace Launcher
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             var attrs = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
             //this.lblVersion.Text = $"{fvi.FileVersion} ({attrs.Single(x => x.Key == "GitHash").Value})";
+
+            patcher = new Patcher(_logger, $"{LocalServerIP}:8080");
+
+            Thread thread = new Thread(() => patcher.Patch().Wait());
+            thread.IsBackground = true;
+            thread.Start();
         }
 
         private void Disconnect(object sender, FormClosedEventArgs e)
@@ -232,6 +240,31 @@ namespace Launcher
             Out.WriteString(encryptedPassword);
 
             Client.SendTCP(Out);
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (patcher.CurrentState == Patcher.State.Downloading)
+            {
+                long percent = 0;
+                if (patcher.TotalDownloadSize > 0)
+                    percent = (patcher.Downloaded * 100) / patcher.TotalDownloadSize;
+
+                lblDownloading.Text = $"Downloading {patcher.CurrentFile} ({percent}%)";
+            }
+            else if (patcher.CurrentState == Patcher.State.RequestManifest)
+            {
+                lblDownloading.Text = $"Requesting manifest";
+            }
+            else if (patcher.CurrentState == Patcher.State.ProcessManifest)
+            {
+                lblDownloading.Text = $"Processing manifest";
+            }
+            else if (patcher.CurrentState == Patcher.State.Done || patcher.CurrentState == Patcher.State.Error)
+            {
+                bnTestServer.Enabled = true;
+                lblDownloading.Text = "";
+            }
         }
     }
 }

@@ -98,6 +98,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -114,6 +115,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HttpUtil.cs" />
     <Compile Include="NetWork\Client.cs" />
     <Compile Include="ApocLauncher.cs">
       <SubType>Form</SubType>
@@ -125,6 +127,7 @@
     <Compile Include="NetWork\Opcodes.cs" />
     <Compile Include="NetWork\PacketIn.cs" />
     <Compile Include="NetWork\PacketOut.cs" />
+    <Compile Include="Patcher.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="ApocLauncher.resx">

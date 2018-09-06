@@ -34,6 +34,7 @@ namespace Launcher
         /// </ summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ApocLauncher));
             this.T_username = new System.Windows.Forms.TextBox();
             this.T_password = new System.Windows.Forms.MaskedTextBox();
@@ -65,6 +66,8 @@ namespace Launcher
             this.buttonPanelCreateAccount = new System.Windows.Forms.Button();
             this.lblVersion = new System.Windows.Forms.Label();
             this.bnConnectLocal = new System.Windows.Forms.Button();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.lblDownloading = new System.Windows.Forms.Label();
             this.panelCreateAccount.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -389,6 +392,24 @@ namespace Launcher
             this.bnConnectLocal.Visible = false;
             this.bnConnectLocal.Click += new System.EventHandler(this.button1_Click);
             // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 25;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+
+            // 
+            // lblDownloading
+            // 
+            this.lblDownloading.BackColor = System.Drawing.Color.Transparent;
+            this.lblDownloading.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDownloading.ForeColor = System.Drawing.Color.DarkOrange;
+            this.lblDownloading.Location = new System.Drawing.Point(27, 624);
+            this.lblDownloading.Name = "lblDownloading";
+            this.lblDownloading.Size = new System.Drawing.Size(1044, 21);
+            this.lblDownloading.TabIndex = 27;
+            this.lblDownloading.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // ApocLauncher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -397,6 +418,7 @@ namespace Launcher
             this.BackgroundImage = global::Launcher.Properties.Resources.final1;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(1280, 720);
+            this.Controls.Add(this.lblDownloading);
             this.Controls.Add(this.bnConnectLocal);
             this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.buttonPanelCreateAccount);
@@ -457,6 +479,8 @@ namespace Launcher
         private System.Windows.Forms.Button bnCreateLocal;
         private System.Windows.Forms.Button buttonAccountClose;
         private Button bnConnectLocal;
+        private Timer timer1;
+        private Label lblDownloading;
     }
 }
 
