@@ -1075,9 +1075,18 @@ namespace WorldServer
         {
             if (!force && !_playerOwner.CrrInterface.ExperimentalMode)
             {
-                if (!_playerOwner.HasMoney((uint)(GetTotalSpent() * 2000)))
-                    return;
-                _playerOwner.RemoveMoney((uint)(GetTotalSpent() * 2000));
+                if (_playerOwner.ItmInterface.HasItemCountInInventory(129841000, 1))
+                {
+                    _playerOwner.ItmInterface.RemoveItems(129841000, 1);
+                    
+                }
+                else
+                {
+                    if (!_playerOwner.HasMoney((uint)(GetTotalSpent() * 2000)))
+                        return;
+                    _playerOwner.RemoveMoney((uint)(GetTotalSpent() * 2000));
+                }
+
             }
 
             _playerOwner.BuffInterface.RemoveCasterBuffs();
