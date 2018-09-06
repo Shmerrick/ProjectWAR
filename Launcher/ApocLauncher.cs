@@ -6,7 +6,9 @@ using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
+using NLog.Internal;
 
 namespace Launcher
 {
@@ -19,6 +21,7 @@ namespace Launcher
         public static int LocalServerPort = 8000;
         public static int TestServerPort = 8000;
         static HttpClient client = new HttpClient();
+        private Patcher patcher;
 
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -56,7 +59,14 @@ namespace Launcher
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             var attrs = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
+            this.lblVersion.Text = fvi.FileVersion;
             //this.lblVersion.Text = $"{fvi.FileVersion} ({attrs.Single(x => x.Key == "GitHash").Value})";
+            _logger.Debug($"Calling Patcher Server on { System.Configuration.ConfigurationManager.AppSettings["ServerPatchIPAddress"]}:{ System.Configuration.ConfigurationManager.AppSettings["ServerPatchPort"]}");
+            patcher = new Patcher(_logger, $"{System.Configuration.ConfigurationManager.AppSettings["ServerPatchIPAddress"]}:{System.Configuration.ConfigurationManager.AppSettings["ServerPatchPort"]}");
+
+            Thread thread = new Thread(() => patcher.Patch().Wait());
+            thread.IsBackground = true;
+            thread.Start();
         }
 
         private void Disconnect(object sender, FormClosedEventArgs e)
@@ -64,29 +74,29 @@ namespace Launcher
             Client.Close();
         }
 
-        private void B_start_Click(object sender, EventArgs e)
-        {
-            Client.Connect(LocalServerIP, LocalServerPort);
+        //private void B_start_Click(object sender, EventArgs e)
+        //{
+        //    Client.Connect(LocalServerIP, LocalServerPort);
 
-            lblConnection.Text = $@"Connecting to : {LocalServerIP}:{LocalServerPort}";
+        //    lblConnection.Text = $@"Connecting to : {LocalServerIP}:{LocalServerPort}";
 
-            string userCode = T_username.Text.ToLower();
-            string userPassword = T_password.Text.ToLower();
+        //    string userCode = T_username.Text.ToLower();
+        //    string userPassword = T_password.Text.ToLower();
 
-            Client.User = userCode;
+        //    Client.User = userCode;
 
-            string encryptedPassword = ConvertSHA256(userCode + ":" + userPassword);
+        //    string encryptedPassword = ConvertSHA256(userCode + ":" + userPassword);
 
-            _logger.Info($@"Connecting to : {LocalServerIP}:{LocalServerPort} as {userCode} [{encryptedPassword}]");
-            _logger.Info($"Sending CL_START to {LocalServerIP}:{LocalServerPort}");
+        //    _logger.Info($@"Connecting to : {LocalServerIP}:{LocalServerPort} as {userCode} [{encryptedPassword}]");
+        //    _logger.Info($"Sending CL_START to {LocalServerIP}:{LocalServerPort}");
 
-            PacketOut Out = new PacketOut((byte)Opcodes.CL_START);
-            Out.WriteString(userCode);
-            Out.WriteString(encryptedPassword);
+        //    PacketOut Out = new PacketOut((byte)Opcodes.CL_START);
+        //    Out.WriteString(userCode);
+        //    Out.WriteString(encryptedPassword);
 
-            Client.SendTCP(Out);
-            //B_start.Enabled = false;
-        }
+        //    Client.SendTCP(Out);
+        //    //B_start.Enabled = false;
+        //}
 
         public static string ConvertSHA256(string value)
         {
@@ -109,7 +119,7 @@ namespace Launcher
         {
         }
 
-        private void bnTestServer_Click(object sender, EventArgs e)
+        private void bnConnectToServer_Click(object sender, EventArgs e)
         {
             Client.Connect(TestServerIP, TestServerPort);
             lblConnection.Text = $@"Connecting to : {TestServerIP}:{TestServerPort}";
@@ -211,7 +221,7 @@ namespace Launcher
 
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private void bnConnectToLocal_Click(object sender, EventArgs e)
         {
             Client.Connect(LocalServerIP, LocalServerPort);
             lblConnection.Text = $@"Connecting to : {LocalServerIP}:{LocalServerPort}";
@@ -232,6 +242,35 @@ namespace Launcher
             Out.WriteString(encryptedPassword);
 
             Client.SendTCP(Out);
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (patcher.CurrentState == Patcher.State.Downloading)
+            {
+                bnConnectToServer.Enabled = false;
+
+                long percent = 0;
+                if (patcher.TotalDownloadSize > 0)
+                    percent = (patcher.Downloaded * 100) / patcher.TotalDownloadSize;
+
+                lblDownloading.Text = $"Downloading {patcher.CurrentFile} ({percent}%)";
+            }
+            else if (patcher.CurrentState == Patcher.State.RequestManifest)
+            {
+                bnConnectToServer.Enabled = false;
+                lblDownloading.Text = $"Requesting manifest...";
+            }
+            else if (patcher.CurrentState == Patcher.State.ProcessManifest)
+            {
+                bnConnectToServer.Enabled = false;
+                lblDownloading.Text = $"Processing manifest...";
+            }
+            else if (patcher.CurrentState == Patcher.State.Done || patcher.CurrentState == Patcher.State.Error)
+            {
+                bnConnectToServer.Enabled = true;
+                lblDownloading.Text = "";
+            }
         }
     }
 }
