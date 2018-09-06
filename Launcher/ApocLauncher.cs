@@ -61,7 +61,7 @@ namespace Launcher
             var attrs = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
             this.lblVersion.Text = fvi.FileVersion;
             //this.lblVersion.Text = $"{fvi.FileVersion} ({attrs.Single(x => x.Key == "GitHash").Value})";
-
+            _logger.Debug($"Calling Patcher Server on { System.Configuration.ConfigurationManager.AppSettings["ServerPatchIPAddress"]}:{ System.Configuration.ConfigurationManager.AppSettings["ServerPatchPort"]}");
             patcher = new Patcher(_logger, $"{System.Configuration.ConfigurationManager.AppSettings["ServerPatchIPAddress"]}:{System.Configuration.ConfigurationManager.AppSettings["ServerPatchPort"]}");
 
             Thread thread = new Thread(() => patcher.Patch().Wait());
@@ -248,6 +248,8 @@ namespace Launcher
         {
             if (patcher.CurrentState == Patcher.State.Downloading)
             {
+                bnConnectToServer.Enabled = false;
+
                 long percent = 0;
                 if (patcher.TotalDownloadSize > 0)
                     percent = (patcher.Downloaded * 100) / patcher.TotalDownloadSize;
@@ -256,10 +258,12 @@ namespace Launcher
             }
             else if (patcher.CurrentState == Patcher.State.RequestManifest)
             {
+                bnConnectToServer.Enabled = false;
                 lblDownloading.Text = $"Requesting manifest...";
             }
             else if (patcher.CurrentState == Patcher.State.ProcessManifest)
             {
+                bnConnectToServer.Enabled = false;
                 lblDownloading.Text = $"Processing manifest...";
             }
             else if (patcher.CurrentState == Patcher.State.Done || patcher.CurrentState == Patcher.State.Error)
