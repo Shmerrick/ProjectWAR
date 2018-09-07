@@ -118,6 +118,7 @@
     <Compile Include="Database\World\Ability\DB_BuffInfo.cs" />
     <Compile Include="Database\World\Ability\BuffCommands.cs" />
     <Compile Include="Database\World\Ability\DBAbilityInfo.cs" />
+    <Compile Include="Database\World\Battlefront\KillTracking.cs" />
     <Compile Include="Database\World\Battlefront\BattlefrontObject.cs" />
     <Compile Include="Database\World\Battlefront\BattlefrontObjectType.cs" />
     <Compile Include="Database\World\Battlefront\BattlefrontResourceSpawn.cs" />
@@ -132,6 +133,8 @@
     <Compile Include="Database\World\Battlefront\Keep_Info.cs" />
     <Compile Include="Database\World\Battlefront\RVRPairing.cs" />
     <Compile Include="Database\World\Battlefront\RVRProgression.cs" />
+    <Compile Include="Database\World\Battlefront\RVRZoneLockReward.cs" />
+    <Compile Include="Database\World\Battlefront\RVRZoneLockItemOptionReward.cs" />
     <Compile Include="Database\World\Chapters\Chapter_Info.cs" />
     <Compile Include="Database\World\Chapters\Chapter_Reward.cs" />
     <Compile Include="Database\World\Characters\CharacterInfo.cs" />

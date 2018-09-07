@@ -65,16 +65,18 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="LootDeciderTests.cs" />
     <Compile Include="ImpactMatrixTests.cs" />
     <Compile Include="CampaignObjectiveTest.cs" />
     <Compile Include="CombatManagerTest.cs" />
     <Compile Include="LowerTierBattlefrontManagerTest.cs" />
     <Compile Include="CalculateObjectiveRewardScaleTest.cs" />
+    <Compile Include="RewardSelectorTest.cs" />
+    <Compile Include="LootBagTypeDefinitionTest.cs" />
     <Compile Include="RewardTests.cs" />
     <Compile Include="ContributionTests.cs" />
     <Compile Include="UpperTierBattlefrontManagerTest.cs" />
     <Compile Include="CommandTest.cs" />
-    <Compile Include="LootTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

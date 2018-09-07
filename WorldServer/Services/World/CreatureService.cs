@@ -544,9 +544,9 @@ namespace WorldServer.Services.World
 
                 int rand = StaticRandom.Instance.Next(100);
 
-                if (rand < unitRank * 3)
+                if (rand < 1 + unitRank * 7)
                     itemId += 3;
-                else if (rand < 2 + unitRank * 10)
+                else if (rand < 2 + unitRank * 21)
                     itemId += 2;
                 else if (rand > 65 - (unitLevel / 2) - (unitRank * 10))
                     itemId += 1;

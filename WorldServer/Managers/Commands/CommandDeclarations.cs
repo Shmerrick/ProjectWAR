@@ -67,8 +67,11 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("renown",AddRenown, null, EGmLevel.TrustedStaff, 1, "Add renown to player"),
             new GmCommandHandler("influence",AddInf, null, EGmLevel.TrustedStaff, 1, "Add Influence to player"),
             new GmCommandHandler("xp",AddXp, null, EGmLevel.TrustedStaff, 1, "Add xp to player"),
-            new GmCommandHandler("contribution",AddContrib, null, EGmLevel.TrustedStaff, 1, "Add contribution to player")
+            new GmCommandHandler("contribution",AddContrib, null, EGmLevel.TrustedStaff, 1, "Add contribution to player"),
+            new GmCommandHandler("eligibility", AddRewardEligibility, null, EGmLevel.TrustedStaff, 0, "Reports on players eligibility"),
         };
+
+       
 
         /// <summary>RvR campaign commmands under .campaign</summary>
         public static List<GmCommandHandler> CampaignCommands = CommandsBuilder.BuildCommands(typeof(CampaignCommands));
@@ -95,6 +98,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("readpackets", ReadPackets, null, EGmLevel.SourceDev, 0, "Displays the volume of outgoing packets over the defined period."),
             new GmCommandHandler("los", StartStopLosMonitor, null, EGmLevel.AllStaff, 0, "Starts/Stops line of sight monitoring for selected target."),
             new GmCommandHandler("population", GetServerPopulation, null, EGmLevel.AnyGM, 0, "Finds all players in the game."),
+            new GmCommandHandler("eligibility", GetRewardEligibility, null, EGmLevel.AnyGM, 0, "Reports on players eligibility"),
             new GmCommandHandler("contribution", GetPlayerContribution, null, EGmLevel.AnyGM, 0, "Gets the contribution of the player."),
             new GmCommandHandler("bounty", GetPlayerBounty, null, EGmLevel.AnyGM, 0, "Gets the bounty of the player."),
         };
@@ -406,6 +410,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("recreateplayer", CreatePlayer, null, EGmLevel.DatabaseDev, 1, "Requests player info is resent"),
             new GmCommandHandler("quest", QuestComplete, null, EGmLevel.DatabaseDev, 2, "Used to debug quests <QuestId> <Operation> Operation 1 - add, 2 - finish quest, 3 - delete quest from player"),
             new GmCommandHandler("geartester", GearTester, null, EGmLevel.SourceDev, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
+            new GmCommandHandler("givebag", GiveBag, null, EGmLevel.SourceDev, 0, "Used to give a character a bag <Rarity><Item1><Item2>.."), // Don't worry, this is only on DEV, dosen't go to Live
             //new GmCommandHandler("gunbad", Gunbad, null, EGmLevel.GM, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
 
             // Source dev commands

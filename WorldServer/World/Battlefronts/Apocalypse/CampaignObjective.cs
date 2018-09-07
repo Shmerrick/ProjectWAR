@@ -3,6 +3,7 @@ using FrameWork;
 using GameData;
 using NLog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using SystemData;
@@ -133,6 +134,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public RVRRewardManager RewardManager { get; set; }
 
+        public ConcurrentDictionary<uint, uint> CampaignObjectiveContributions { get; set; }
+
+        
 		private List<FlagGuard> Guards = new List<FlagGuard>();
 
 		private static bool _allowLockTimer = true;
@@ -154,6 +158,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             CommsEngine = new ApocCommunications();
             ProximityEngine = new ProximityEngine();
             RewardManager = new RVRRewardManager();
+            CampaignObjectiveContributions = new ConcurrentDictionary<uint, uint>();
         }
 
         /// <summary>
@@ -172,6 +177,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             RegionId = (ushort)regionId;
             Tier = (byte)tier;
             State = StateFlags.ZoneLocked;
+
+            CampaignObjectiveContributions = new ConcurrentDictionary<uint, uint>();
         }
 
         /// <summary>
@@ -207,6 +214,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             ProximityEngine = new ProximityEngine();
 
             RewardManager = new RVRRewardManager();
+
+            CampaignObjectiveContributions = new ConcurrentDictionary<uint, uint>();
+        
 
 			if (objective.Guards != null)
 			{
@@ -256,8 +266,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (_closeOrderCount > 0 == _closeDestroCount > 0)
                 return new VictoryPoint(0, 0); // Both sides have players in range, or none of them -> not fully secured
 
-			// Scalers in this model are additive.
-			return this.RewardManager.RewardCaptureTick(_closePlayers,
+            // Record the character received a tick at this BO (proxy for contribution).
+            foreach (var closePlayer in _closePlayers)
+            {
+                this.CampaignObjectiveContributions.TryAdd(closePlayer.CharacterId, (uint)this.Id);
+            }
+            
+            // Scalers in this model are additive.
+            return this.RewardManager.RewardCaptureTick(_closePlayers,
                 OwningRealm,
                 Tier,
                 Name,
@@ -1277,6 +1293,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			if (BattleFront.VictoryPointProgress.DestructionVictoryPoints <= 0)
 				BattleFront.VictoryPointProgress.DestructionVictoryPoints = 0;
 			
+		
+
 			BattlefrontLogger.Trace($"{Name} Order VP:{BattleFront.VictoryPointProgress.OrderVictoryPoints} Dest VP:{BattleFront.VictoryPointProgress.DestructionVictoryPoints}");
 		}
 
@@ -1289,20 +1307,24 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (plr.Realm == this.OwningRealm && plr.ValidInTier(Tier, true))
                 {
+                    BattlefrontLogger.Debug($"Rewarding {plr.Name}");
                     if (AccumulatedKills < 3)
                     {
                         plr.SendLocalizeString("Defending this objective was a noble duty. You have received a small reward for your service.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                        plr.ItmInterface.CreateItem((uint)208399 + Tier, 1);
+                        plr.ItmInterface.CreateItem((uint)208470, 2);
+                        plr.AddNonScalingRenown((uint)500, false, RewardType.ZoneKeepCapture, "");
                     }
                     else if (AccumulatedKills <= 6)
                     {
                         plr.SendLocalizeString("Your defense of this objective has been noteworthy! You have received a moderate reward.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                        plr.ItmInterface.CreateItem((uint)208399 + Tier, 2);
+                        plr.ItmInterface.CreateItem((uint)208470, 5);
+                        plr.AddNonScalingRenown((uint)2000, false, RewardType.ZoneKeepCapture, "");
                     }
                     else if (AccumulatedKills > 6)
                     {
                         plr.SendLocalizeString("Your defense of this objective has been heroic! You have received a respectable reward.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                        plr.ItmInterface.CreateItem((uint)208399 + Tier, 3);
+                        plr.ItmInterface.CreateItem((uint)208470, 10);
+                        plr.AddNonScalingRenown((uint)4000, false, RewardType.ZoneKeepCapture, "");
                     }
                 }
             }

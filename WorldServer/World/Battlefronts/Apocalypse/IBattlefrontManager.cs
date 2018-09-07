@@ -9,7 +9,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         RVRProgression ResetBattleFrontProgression(CampaignRerollMode rerollMode = CampaignRerollMode.NONE);
         RVRProgression GetBattleFrontByName(string name);
         RVRProgression GetBattleFrontByBattleFrontId(int id);
-        
+
+        HashSet<uint> GetEligiblePlayers(BattleFrontStatus activeBattleFrontStatus);
 
         string ActiveBattleFrontName { get; set; }
         RVRProgression ActiveBattleFront { get; set; }
@@ -18,7 +19,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         RVRProgression AdvanceBattleFront(Realms lockingRealm, out CampaignRerollMode rerollMode);
 		RVRProgression OpenActiveBattlefront(CampaignRerollMode rerollMode = CampaignRerollMode.NONE);
-        RVRProgression LockActiveBattleFront(Realms realm);
+        RVRProgression LockActiveBattleFront(Realms realm, int forceNumberOfBags = 0);
 
         List<BattleFrontStatus> GetBattleFrontStatusList();
         bool IsBattleFrontLocked(int battleFrontId);
@@ -28,5 +29,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         BattleFrontStatus GetRegionBattleFrontStatus(int regionId);
 
         Campaign GetActiveCampaign();
+
+        BattleFrontStatus GetActiveBattleFrontStatus(int battleFrontId);
     }
 }

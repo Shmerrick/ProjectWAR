@@ -27,6 +27,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BuildApocBattleFrontStatusList(BattleFrontProgressions);
         }
 
+        public BattleFrontStatus GetActiveBattleFrontStatus(int battleFrontId)
+        {
+            return BattleFrontStatuses.Single(x => x.BattleFrontId == battleFrontId);
+        }
+
         /// <summary>
         /// Sets up the Battlefront status list with default values. 
         /// </summary>
@@ -175,7 +180,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             activeStatus.LockTimeStamp = FrameWork.TCPManager.GetTimeStamp();
         }
 
-        public RVRProgression LockActiveBattleFront(Realms realm)
+        public RVRProgression LockActiveBattleFront(Realms realm, int forceNumberBags = 0)
         {
             var activeRegion = RegionMgrs.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
             ProgressionLogger.Info($" Locking battlefront in {activeRegion.RegionName} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
@@ -358,5 +363,30 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			newProg.LastOwningRealm = 0;
 			newProg.LastOpenedZone = 1;
 		}
-	}
+
+	    public HashSet<uint> GetEligiblePlayers(BattleFrontStatus activeBattleFrontStatus)
+	    {
+	        var eligiblePlayers = new HashSet<uint>();
+	        ProgressionLogger.Debug($"** Kill Contribution players **");
+	        foreach (var playerKillContribution in activeBattleFrontStatus.KillContributionSet)
+	        {
+	            eligiblePlayers.Add(playerKillContribution);
+	        }
+	        ProgressionLogger.Debug($"{string.Join(",", eligiblePlayers.ToArray())}");
+	        ProgressionLogger.Debug($"** Objective Contribution players **");
+	        foreach (var campaignObjective in GetActiveCampaign().Objectives)
+	        {
+	            ProgressionLogger.Debug($"** Objective Contribution for {campaignObjective.Name} **");
+	            var contributionList = campaignObjective.CampaignObjectiveContributions;
+	            foreach (var playerObjectiveContribution in contributionList)
+	            {
+	                eligiblePlayers.Add(playerObjectiveContribution.Key);
+	            }
+	            ProgressionLogger.Debug($"{string.Join(",", contributionList.ToArray())}");
+	        }
+	        ProgressionLogger.Debug($"All Eligible Players : {string.Join(",", eligiblePlayers.ToArray())}");
+
+	        return eligiblePlayers;
+	    }
+    }
 }

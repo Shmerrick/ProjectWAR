@@ -88,13 +88,13 @@ namespace WorldServer
         }
         private void LogGuildBug(Player plr)
         {
-            if (plr.Name.Contains("arena") || plr.Name.Contains("poko") || plr.Name.Contains("bram") || plr.Name.Contains("zaru") || plr.Name.Contains("niffils") ||
-                plr.Name.Contains("ikdorf") || plr.Name.Contains("grimjob"))
-            {
-                var l_CurrentStack = new System.Diagnostics.StackTrace(true);
+            //if (plr.Name.Contains("arena") || plr.Name.Contains("poko") || plr.Name.Contains("bram") || plr.Name.Contains("zaru") || plr.Name.Contains("niffils") ||
+            //    plr.Name.Contains("ikdorf") || plr.Name.Contains("grimjob"))
+            //{
+            //    var l_CurrentStack = new System.Diagnostics.StackTrace(true);
 
-                GuildLogger.Debug($"{plr.Name} {l_CurrentStack.ToString()}");
-            }
+            //    GuildLogger.Debug($"{plr.Name} {l_CurrentStack.ToString()}");
+            //}
 
         }
         public void InviteResponse(Player plr, bool accepted)
@@ -132,8 +132,7 @@ namespace WorldServer
 
         private void CheckInvites()
         {
-            GuildLogger.Debug("...");
-
+           
             foreach (KeyValuePair<Player, bool> invite in _invites)
             {
                 if (invite.Value == false)
@@ -354,8 +353,6 @@ namespace WorldServer
 
         public static void BuildGuild(ref PacketOut Out, Guild guild)
         {
-            GuildLogger.Debug("...");
-
 
             Out.WriteUInt32(guild.Info.GuildId);
             Out.WriteByte(guild.Info.Level); //level
@@ -383,7 +380,6 @@ namespace WorldServer
 
         public static void SendNullGuild(Player plr)
         {
-            GuildLogger.Debug("...");
             PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA, 2);
             Out.WriteUInt16(0);
             plr.SendPacket(Out);
@@ -465,7 +461,6 @@ namespace WorldServer
 
         public Guild(Guild_info info)
         {
-            GuildLogger.Debug("...");
             this.Info = info;
 
             //info.Banner.Split(";")[0];
@@ -846,7 +841,6 @@ namespace WorldServer
 
         public void SendAllianceGuilds(Player Plr)
         {
-            GuildLogger.Debug("...");
             foreach (uint guildid in Alliance.Alliances[Info.AllianceId].Members)
             {
                 List<Guild_member> officers = new List<Guild_member>();
@@ -1240,7 +1234,6 @@ namespace WorldServer
 
         public void SendVaultUpdate()
         {
-            GuildLogger.Debug("...");
             foreach (Player plr in GuildVaultUser)
                 SendVaultUpdate(plr);
         }
@@ -1474,7 +1467,6 @@ namespace WorldServer
 
         public void TrainGuildTactics(byte slot, ushort spell)
         {
-            GuildLogger.Debug("...");
             Info.GuildTacticsPurchased[slot] = spell;
             CharMgr.Database.SaveObject(Info);
             SendGuildTacticsPurchased(null);
@@ -1496,7 +1488,6 @@ namespace WorldServer
 
         public void BuildHeraldry(PacketOut Out)
         {
-            GuildLogger.Debug("...");
             if (Info.Level < 20 && Info.Realm == 1)
                 Out.WriteUInt16(1);  // chaos
             else if (Info.Level < 20 && Info.Realm == 2)
@@ -1682,7 +1673,6 @@ namespace WorldServer
 
         public void SaveBanner(byte banner, byte post, ushort spell1, ushort spell2, ushort spell3)
         {
-            GuildLogger.Debug($"...");
             _banners[banner, 0] = post;
             _banners[banner, 1] = spell1;
             _banners[banner, 2] = spell2;
@@ -2017,15 +2007,15 @@ namespace WorldServer
                 return;
 
 
-            if (plr.Name.Contains("arena") || plr.Name.Contains("poko") || plr.Name.Contains("bram") || plr.Name.Contains("zaru") || plr.Name.Contains("niffils") ||
-                plr.Name.Contains("ikdorf") || plr.Name.Contains("grimjob")
-				|| plr.GldInterface.GetGuildName().Contains("Afk"))
-            {
-                var l_CurrentStack = new System.Diagnostics.StackTrace(true);
+   //         if (plr.Name.Contains("arena") || plr.Name.Contains("poko") || plr.Name.Contains("bram") || plr.Name.Contains("zaru") || plr.Name.Contains("niffils") ||
+   //             plr.Name.Contains("ikdorf") || plr.Name.Contains("grimjob")
+			//	|| plr.GldInterface.GetGuildName().Contains("Afk"))
+   //         {
+   //             var l_CurrentStack = new System.Diagnostics.StackTrace(true);
 
-                GuildLogger.Debug($"{plr.Name} {l_CurrentStack.ToString()}");
-				GuildLogger.Debug($"{plr.Name} Initialized= {plr.Initialized.ToString()}");
-			}
+   //             GuildLogger.Debug($"{plr.Name} {l_CurrentStack.ToString()}");
+			//	GuildLogger.Debug($"{plr.Name} Initialized= {plr.Initialized.ToString()}");
+			//}
 
         }
 
@@ -2279,7 +2269,6 @@ namespace WorldServer
 
         public Player GetGuildPlayer(uint id)
         {
-            GuildLogger.Debug($"...");
             foreach (Player plr in OnlineMembers)
             {
                 if (plr.Info.CharacterId == id)
@@ -2291,7 +2280,6 @@ namespace WorldServer
 
         public void SendToGuild(PacketOut Out)
         {
-            GuildLogger.Debug($"...");
             foreach (Player plr in OnlineMembers)
             {
                 plr.SendCopy(Out);

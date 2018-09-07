@@ -8,6 +8,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using SystemData;
 using Common;
+using Common.Database.World.BattleFront;
 using FrameWork;
 using GameData;
 using WorldServer.World.BattleFronts;
@@ -3101,6 +3102,14 @@ namespace WorldServer
             AddRenown(renown, shouldPool);
         }
 
+        public void AddNonScalingRenown(uint renown, bool shouldPool, RewardType type = RewardType.None, string rewardString = null)
+        {
+            if (renown == 0)
+                return;
+            RewardLogger.Trace($"{renown} RP (non-scaling) awarded to {this.Name} for {rewardString} ");
+            InternalAddRenown(renown, shouldPool, type, rewardString);
+        }
+
         public void AddRenown(uint renown, bool shouldPool, RewardType type = RewardType.None, string rewardString = null)
         {
             if (renown == 0)
@@ -3110,11 +3119,15 @@ namespace WorldServer
             if (Program.Config.RenownRate > 0)
                 renown *= (uint)Program.Config.RenownRate;
 
-            // apply aao bonus
-            if (this.ScnInterface == null || this.ScnInterface.Scenario == null || type != RewardType.ScenarioWin)
-                renown = Convert.ToUInt32(Math.Round((1f + this.AAOBonus) * renown, 0));
-
-            RewardLogger.Trace($"{renown} RP awarded to {this.Name} for {rewardString} ");
+			// apply aao bonus
+			if (this.ScnInterface == null
+				|| this.ScnInterface.Scenario == null
+				|| type == RewardType.None
+				|| type == RewardType.Kill
+				|| type == RewardType.Assist)
+				renown = Convert.ToUInt32(Math.Round((1f + this.AAOBonus) * renown, 0));
+			
+			RewardLogger.Trace($"{renown} RP awarded to {this.Name} for {rewardString} ");
             InternalAddRenown(renown, shouldPool, type, rewardString);
         }
 
@@ -3774,6 +3787,8 @@ namespace WorldServer
             {
                 _Value.RVRDeaths++;
 
+                RecordKillTracking(this, playerKiller, deathTime);
+
                 byte subtype = 0;
 
                 switch (Info.CareerLine)
@@ -3885,6 +3900,25 @@ namespace WorldServer
             HealAggros = new Dictionary<ushort, AggroInfo>();
             // Reset this characters bounty to their base bounty.
             ActiveBattleFrontStatus.BountyManagerInstance.ResetCharacterBounty(this.CharacterId, this);
+        }
+
+        private void RecordKillTracking(Player victim, Player killer, long timestamp)
+        {
+            var tracker = new KillTracker
+            {
+                Timestamp = timestamp,
+                KillerAccountId = killer.Info.AccountId,
+                KillerCharacterId = (ushort) killer.Info.CharacterId,
+                VictimAccountId = victim.Info.AccountId,
+                VictimCharacterId = (int) victim.Info.CharacterId,
+                RegionId = victim.Region.RegionId,
+                ZoneId = victim.CurrentArea.ZoneId
+            };
+
+            if (killer.GldInterface.IsInGuild())
+                tracker.KillerGuildId = (int) killer.GldInterface.Guild.Info.GuildId;
+
+            WorldMgr.Database.AddObject(tracker);
         }
 
         #endregion
@@ -4014,17 +4048,28 @@ namespace WorldServer
                 //GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
                 if (killer.Realm == Realms.REALMS_REALM_DESTRUCTION)
                 {
-                    killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints = killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints + 3;
+                    killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints= killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints+5;
                 }
                 else
                 {
-                    killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints = killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints + 3;
+                    killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints= killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints+5;
                 }
 
-                killer.SendClientMessage($"+1 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
+				killer.SendClientMessage($"+5 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
 
-                //HandleXPRenown(killer, rewardScale);
-                //GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
+                try
+                {
+                    var activeBattleFrontId = killer.Region.Campaign.BattleFrontManager.ActiveBattleFront.BattleFrontId;
+                    var activeBattleFrontStatus = killer.Region.Campaign.BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
+
+                    HandleXPRenown(killer, rewardScale, activeBattleFrontStatus);
+                }
+                catch (Exception e)
+                {
+                    DeathLogger.Warn($"Could not apply rewards to kill. {e.StackTrace}");
+                    throw;
+                }
+                GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
             }
 
             #endregion
@@ -4037,7 +4082,8 @@ namespace WorldServer
         /// </summary>
         /// <param name="killer"></param>
         /// <param name="bonusMod"> x >= 1.0f </param>
-        private void HandleXPRenown(Player killer, float bonusMod)
+        /// <param name="activeBattleFrontStatus"></param>
+        private void HandleXPRenown(Player killer, float bonusMod, World.Battlefronts.Apocalypse.BattleFrontStatus activeBattleFrontStatus =null)
         {
             Dictionary<Group, XpRenown> groupXPRenown = new Dictionary<Group, XpRenown>();
             List<Player> damageSourceRemovals = new List<Player>();
@@ -4046,6 +4092,8 @@ namespace WorldServer
             float transferenceFactor = 2.5f - bonusMod;
 
             CampaignObjective closestFlag = null;
+
+         
 
             if (ScnInterface.Scenario == null)
                 closestFlag = Region.Campaign.GetClosestFlag(WorldPosition);
@@ -4159,6 +4207,8 @@ namespace WorldServer
                             RewardLogger.Trace($"Awarded 1 Crest to Killer : {killer.Name} for Solo Kill");
                             curPlayer.ItmInterface.CreateItem(208470, 1);
 
+                            activeBattleFrontStatus?.AddKillContribution(curPlayer);
+
                             if (closestFlag != null && closestFlag.State != StateFlags.ZoneLocked)
                             {
                                 RewardLogger.Trace($"Delayed Rewards RP: {renownShare} BonusMod : {bonusMod} Killer : {killer.Name} This : {this.Name}");
@@ -4217,6 +4267,8 @@ namespace WorldServer
                             RewardLogger.Trace($"Awarded 1 Crest to {player.Name} for Group Kill");
                             player.ItmInterface.CreateItem(208470, 1);
                         }
+
+                        activeBattleFrontStatus?.AddKillContribution(player);
                     }
                 }
             }

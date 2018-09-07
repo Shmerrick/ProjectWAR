@@ -77,7 +77,12 @@ namespace WorldServer.World.BattleFronts.Keeps
         /// </summary>
         private readonly List<Hardpoint> _hardpoints = new List<Hardpoint>();
 
-        public byte Tier;
+		// keep safe timer variables
+		private int _safeKeepTimer = 0;
+		private const int TIMESPAN_SAFEKEEP = 15 * 60;
+
+		// public variables
+		public byte Tier;
         public bool InformRankOne = false;
         public int _OrderCount = 0;
         public int _DestroCount = 0;
@@ -88,8 +93,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public bool Ruin = false;
         public RegionMgr Region;
 
-
-        public List<KeepNpcCreature> Creatures = new List<KeepNpcCreature>();
+		public List<KeepNpcCreature> Creatures = new List<KeepNpcCreature>();
         public List<KeepDoor> Doors = new List<KeepDoor>();
         public List<KeepDoor.KeepGameObject> KeepGOs = new List<KeepDoor.KeepGameObject>();
 
@@ -477,130 +481,130 @@ namespace WorldServer.World.BattleFronts.Keeps
         public void DistributeRewards()
         {
             Log.Info("Keep", "Locking " + Zone.Info.Name);
+            _logger.Info("**********************KEEP FLIP******************************");
+            _logger.Info($"Distributing rewards for Keep {this.Name}");
+            _logger.Info("*************************************************************");
             uint influenceId = 0;
 
             byte objCount = 0;
 
             bool battlePenalty = false;
 
+            _logger.Debug($"Keep flip reward for BO hold");
             foreach (var flag in Region.Campaign.Objectives)
             {
                 // RB   5/21/2016   Battlefield Objectives now reward defenders when a keep is captured.
                 if (flag.OwningRealm == Realm)
                 {
-                    ++objCount;
-                    flag.GrantKeepCaptureRewards();
+                    if (flag.ZoneId == this.ZoneId)
+                    {
+                        ++objCount;
+                        flag.GrantKeepCaptureRewards();
+                    }
                 }
             }
 
-            int totalXp = (800*Tier) + (200*Tier*objCount) + (_playersKilledInRange*Tier*30); // Field of Glory, reduced
-            int totalRenown = (120*Tier) + (60*Tier*objCount) + (_playersKilledInRange*Tier*12); // 480 + 960 = 1440 for base in T4, 32 * 50 = 1600 for 50 players killed in range?
-            int totalInfluence = (40*Tier) + (20*Tier*objCount) + (_playersKilledInRange*Tier*6);
+            int totalXp = (800 * Tier) + (200 * Tier * objCount) + (_playersKilledInRange * Tier * 30); // Field of Glory, reduced
+            int totalRenown = (250 * Tier) + (120 * Tier * objCount) + (_playersKilledInRange * 75);   // Ik : Increased values here.
+            int totalInfluence = (40 * Tier) + (20 * Tier * objCount) + (_playersKilledInRange * Tier * 6);
 
-            float rewardScaler = Region.Campaign.RelativeActivityFactor;
-
-            totalXp = (int) (totalXp*rewardScaler);
-            totalRenown = (int) (totalRenown*rewardScaler);
-            totalInfluence = (int) (totalInfluence*rewardScaler);
-
-            if (_playersKilledInRange < (4*Tier))
+            if (_playersKilledInRange < (4 * Tier))
             {
                 battlePenalty = true;
 
-                totalXp = (int) (totalXp*(0.25 + (_playersKilledInRange/40f)*0.75));
-                totalRenown = (int) (totalRenown*(0.25 + (_playersKilledInRange/40f)*0.75));
-                totalInfluence = (int) (totalInfluence*(0.25 + (_playersKilledInRange/40f)*0.75));
+                totalXp = (int) (totalXp * (0.25 + (_playersKilledInRange / 40f) * 0.75));
+                totalRenown = (int) (totalRenown * (0.25 + (_playersKilledInRange / 40f) * 0.75));
+                totalInfluence = (int) (totalInfluence * (0.25 + (_playersKilledInRange / 40f) * 0.75));
             }
 
             Log.Info("Keep", $"Lock XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
 
-            Dictionary<uint, ContributionInfo> contributors = Region.Campaign.GetContributorsFromRealm(Realm);
+            _logger.Info($"Lock XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
 
-            if (contributors.Count == 0)
+            // Dont believe contribution is being triggered.
+            // Dictionary<uint, ContributionInfo> contributors = Region.Campaign.GetContributorsFromRealm(Realm);
+
+            //if (contributors.Count == 0)
+            //{
+            //    _playersKilledInRange = 0;
+            //    return;
+            //}
+
+            //uint maxContribution = contributors.Values.Max(x => x.BaseContribution);
+
+            //Log.Info("Keep", $"Contributor count : {contributors.Count} Max contribution: {maxContribution}");
+
+            //if (maxContribution == 0)
+            //{
+            //    _playersKilledInRange = 0;
+            //    return;
+            //}
+
+            try
             {
-                _playersKilledInRange = 0;
-                return;
-            }
+                var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
+                var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
+                var eligiblePlayers = WorldMgr.UpperTierCampaignManager.GetEligiblePlayers(activeBattleFrontStatus);
 
-            uint maxContribution = contributors.Values.Max(x => x.BaseContribution);
-
-            Log.Info("Keep", $"Contributor count : {contributors.Count} Max contribution: {maxContribution}");
-
-            if (maxContribution == 0)
-            {
-                _playersKilledInRange = 0;
-                return;
-            }
-
-            foreach (Player player in Region.Players)
-            {
-                if (!player.Initialized)
-                    continue;
-
-                if (!contributors.ContainsKey(player.CharacterId))
+                foreach (var characterId in eligiblePlayers)
                 {
-                    if (player.CurrentArea != null && player.CurrentArea.IsRvR)
-                        player.SendClientMessage($"As you did not contribute to the capture of {Info.Name}, you did not receive a reward.", ChatLogFilters.CHATLOGFILTERS_RVR);
-                    continue;
+                    var player = Player.GetPlayer(characterId);
+
+                    if (player == null)
+                        continue;
+
+                    if (!player.Initialized)
+                        continue;
+
+                    if (player.ValidInTier(Tier, true))
+                        player.QtsInterface.HandleEvent(Objective_Type.QUEST_CAPTURE_KEEP, Info.KeepId, 1);
+
+
+                    if (HasInRange(player))
+                    {
+                        SendKeepInfo(player);
+                    }
+                    else
+                    {
+                        player.SendClientMessage("The keep was taken, but you were too far away!");
+                        return;
+                    }
+
+                    if (influenceId == 0)
+                        influenceId = (player.Realm == Realms.REALMS_REALM_DESTRUCTION) ? player.CurrentArea.DestroInfluenceId : player.CurrentArea.OrderInfluenceId;
+
+                    player.AddXp((uint)totalXp, false, false);
+                    // New method- non scaling renown. RP not effected by AAO and similar things.
+                    player.AddRenown((uint)totalRenown, false, RewardType.ZoneKeepCapture, Info.Name);
+                    player.AddInfluence((ushort)influenceId, (ushort)totalInfluence);
+
+                    if (battlePenalty)
+                        player.SendClientMessage("This keep was taken with little to no resistance. The rewards have therefore been reduced.");
+                    else
+                        // Invader crests
+                        player.ItmInterface.CreateItem((uint)(208429), (ushort)5);
+
+                    _logger.Info($"Distributing rewards for Keep {this.Name} to {player.Name} RR:{totalRenown} INF:{totalInfluence}");
                 }
 
-                ContributionInfo contrib = contributors[player.CharacterId];
-
-                if (player.ValidInTier(Tier, true))
-                    player.QtsInterface.HandleEvent(Objective_Type.QUEST_CAPTURE_KEEP, Info.KeepId, 1);
-
-                /*if (plr.DebugMode)
-                {
-                    plr.DebugMessage("[Keep Lock Breakdown]");
-                    plr.DebugMessage("Tier Renown: " + 400 * Tier);
-                    plr.DebugMessage("Objective Renown: " + 200 * Tier * objCount + " Objective count: "+objCount);
-                    plr.DebugMessage("Player Renown: " + _playersKilledInRange * Tier * 10 + " Players killed in range: "+ _playersKilledInRange);
-                    plr.DebugMessage("Total Renown: " + totalRenown);
-                }*/
-
-                if (HasInRange(player))
-                    SendKeepInfo(player);
-
-                float scaleFactor = Math.Min(1f, contrib.BaseContribution/(maxContribution*0.7f));
-
-                //Log.Info("Keep", $"Rewarding {player.Name} with scale factor {scaleFactor} ({contrib.BaseContribution} / {maxContribution})");
-
-                string contributionDesc;
-
-                if (scaleFactor > 0.75f)
-                    contributionDesc = "valiant";
-                else if (scaleFactor > 0.5f)
-                    contributionDesc = "stalwart";
-                else if (scaleFactor > 0.25f)
-                    contributionDesc = "modest";
-                else
-                    contributionDesc = "small";
-
-                player.SendClientMessage($"You've received a reward for your {contributionDesc} contribution to the capture of {Info.Name}!", ChatLogFilters.CHATLOGFILTERS_RVR);
-
-                if (influenceId == 0)
-                    influenceId = (player.Realm == Realms.REALMS_REALM_DESTRUCTION) ? player.CurrentArea.DestroInfluenceId : player.CurrentArea.OrderInfluenceId;
-
-                player.AddXp((uint) (Math.Max(2000*Tier, totalXp)*scaleFactor), false, false);
-                player.AddRenown((uint) (Math.Max(500*Math.Pow(2, Tier - 1), totalRenown)*scaleFactor), false, RewardType.ZoneKeepCapture, Info.Name);
-                player.AddInfluence((ushort) influenceId, (ushort) (Math.Max(300*Tier, totalInfluence)*scaleFactor));
-
-                if (battlePenalty)
-                    player.SendClientMessage("This keep was taken with little to no resistance. The rewards have therefore been reduced.");
-                else
-                    player.ItmInterface.CreateItem((uint) (208399 + Tier), (ushort) Math.Floor((_playersKilledInRange/40f)*scaleFactor*rewardScaler));
+                _playersKilledInRange = 0;
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"Exception distributing rewards for Keep take {e.Message} {e.StackTrace}");
+                throw;
             }
 
-            _playersKilledInRange = 0;
-        }
+         
 
-        private int _safeKeepTimer = 0;
+        
+        }
 
         public void ResetSafeTimer()
         {
             if (KeepStatus != KeepStatus.KEEPSTATUS_SAFE && KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
             {
-                _safeKeepTimer = TCPManager.GetTimeStamp() + 15 * 60;
+                _safeKeepTimer = TCPManager.GetTimeStamp() + TIMESPAN_SAFEKEEP;
             }
         }
 
@@ -618,14 +622,27 @@ namespace WorldServer.World.BattleFronts.Keeps
                     if (influenceId == 0)
                         influenceId = (plr.Realm == Realms.REALMS_REALM_DESTRUCTION) ? plr.CurrentArea.DestroInfluenceId : plr.CurrentArea.OrderInfluenceId;
 
-                    plr.SendClientMessage($"You've received a reward for your contribution to the holding of {Info.Name}.", ChatLogFilters.CHATLOGFILTERS_RVR);
+					int totalXp = 2000 * Tier;
+					int totalRenown = 300 * Tier;
+					int totalInfluence = 100 * Tier;
 
-                    plr.AddXp((uint) (2000*Tier), false, false);
-                    plr.AddRenown((uint) (300*Tier), false, RewardType.ObjectiveDefense, Info.Name);
-                    plr.AddInfluence((ushort) influenceId, (ushort) (100*Tier));
-                }
+					if (_playersKilledInRange < (4 * Tier))
+					{
+						totalXp += (int)(totalXp * (0.25 + (_playersKilledInRange / 40f) * 0.75));
+						totalRenown += (int)(totalRenown * (0.25 + (_playersKilledInRange / 40f) * 0.75));
+						totalInfluence += (int)(totalInfluence * (0.25 + (_playersKilledInRange / 40f) * 0.75));
+					}
 
-                SendKeepInfo(plr);
+					plr.AddXp((uint)totalXp, false, false);
+					plr.AddRenown((uint)totalRenown, false, RewardType.ObjectiveDefense, Info.Name);
+					plr.AddInfluence((ushort)influenceId, (ushort)totalInfluence);
+					
+					plr.SendClientMessage($"You've received a reward for your contribution to the holding of {Info.Name}.", ChatLogFilters.CHATLOGFILTERS_RVR);
+
+					Log.Info("Keep", $"Keep Defence XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
+				}
+
+				SendKeepInfo(plr);
             }
 
             foreach (KeepNpcCreature crea in Creatures)
@@ -639,7 +656,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 door.Spawn();
             }
 
-            Log.Info("SafeKeep", "Players Killed: " + _playersInRange);
+            Log.Info("SafeKeep", "Players Killed: " + _playersKilledInRange);
 
             if ((LastMessage >= KeepMessage.Outer0 && Tier > 2) || (Tier == 2 && LastMessage >= KeepMessage.Inner0))
             {
@@ -657,7 +674,8 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             _OrderCount = 0;
             _DestroCount = 0;
-        }
+			_playersKilledInRange = 0;
+		}
 
         private void UpdateKeepStatus(KeepStatus newStatus)
         {
@@ -1261,7 +1279,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                         }
                     }
                 }
-
                 else
                 {
                     _currentResource -= doorReplacementCost;
@@ -1279,7 +1296,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                     _safeKeepTimer = 0;
                 }
             }
-
             else
             {
                 SafeKeep();

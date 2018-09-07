@@ -1,9 +1,5 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GameData;
-using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.Bounty;
-using WorldServer.World.Battlefronts.NewDawn.Rewards;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -21,6 +17,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public BountyManager BountyManagerInstance { get; set; }
         public RewardManager RewardManagerInstance { get; set; }
         public ImpactMatrixManager ImpactMatrixManagerInstance { get; set; }
+        public HashSet<uint> KillContributionSet { get; set; }
+
+        public BattleFrontStatus()
+        {
+            KillContributionSet = new HashSet<uint>();
+        }
 
         public float DestructionVictoryPointPercentage
         {
@@ -48,6 +50,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 }
                 return BattleFrontConstants.ZONE_STATUS_CONTESTED;
             }
+        }
+
+        public void AddKillContribution(Player player)
+        {
+            KillContributionSet.Add(player.CharacterId);
         }
 
         public BattleFrontStatus()

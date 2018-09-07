@@ -113,6 +113,32 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        public static bool GetRewardEligibility(Player plr, ref List<string> values)
+        {
+            var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
+            var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
+
+            var players = WorldMgr.UpperTierCampaignManager.GetEligiblePlayers(activeBattleFrontStatus);
+
+            plr.SendClientMessage($"Eligible players ({players.Count}):");
+
+            foreach (var player in players)
+            {
+                var playerObject = Player.GetPlayer(player);
+
+                if (playerObject.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                    plr.SendClientMessage($"{playerObject.Name} (D)");
+                else
+                {
+                    plr.SendClientMessage($"{playerObject.Name} (O)");
+                }
+            }
+
+            return true;
+        }
+
+        
+
         /// <summary>
         /// Finds all players currently in range.
         /// </summary>

@@ -168,6 +168,7 @@
     <Compile Include="Services\World\RewardService.cs" />
     <Compile Include="Services\World\BountyService.cs" />
     <Compile Include="Services\World\RVRProgressionService.cs" />
+    <Compile Include="Services\World\RVRZoneRewardService.cs" />
     <Compile Include="Services\World\ScenarioService.cs" />
     <Compile Include="Services\World\TokService.cs" />
     <Compile Include="Services\World\VendorService.cs" />
@@ -273,6 +274,19 @@
     <Compile Include="World\Battlefronts\Bounty\StaticWrapper.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\BattleFrontStatus.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\IApocCommunications.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\ILootBagBuilder.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\ILootDecider.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\IRandomGenerator.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\IRewardAssigner.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\IRewardSelector.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\LootBagRarity.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\LootBagTypeDefinition.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\LootDecider.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\RandomGenerator.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardAssigner.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardDistributor.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardSelector.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\SimpleContribution.cs" />
     <Compile Include="World\Battlefronts\ContributionTracker.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\AAOTracker.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\BattlefrontConstants.cs" />
