@@ -1,5 +1,6 @@
 ﻿using NLog;
 using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -8,7 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using NLog.Internal;
+using ConfigurationManager = NLog.Internal.ConfigurationManager;
 
 namespace Launcher
 {
@@ -67,6 +68,8 @@ namespace Launcher
             Thread thread = new Thread(() => patcher.Patch().Wait());
             thread.IsBackground = true;
             thread.Start();
+
+            this.T_username.Text = System.Configuration.ConfigurationManager.AppSettings["LastUserCode"];
         }
 
         private void Disconnect(object sender, FormClosedEventArgs e)
@@ -140,6 +143,10 @@ namespace Launcher
             Out.WriteString(encryptedPassword);
 
             Client.SendTCP(Out);
+
+            Configuration config = System.Configuration.ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
+            config.AppSettings.Settings.Add("LastUserCode", T_username.Text);
+            config.Save(ConfigurationSaveMode.Minimal);
         }
 
         private void bnClose_Click(object sender, EventArgs e)
@@ -270,6 +277,22 @@ namespace Launcher
             {
                 bnConnectToServer.Enabled = true;
                 lblDownloading.Text = "";
+            }
+        }
+
+        private void T_username_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                this.bnConnectToServer_Click(this, new EventArgs());
+            }
+        }
+
+        private void T_password_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                this.bnConnectToServer_Click(this, new EventArgs());
             }
         }
     }

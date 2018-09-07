@@ -89,6 +89,7 @@ namespace Launcher
             this.T_username.Name = "T_username";
             this.T_username.Size = new System.Drawing.Size(303, 44);
             this.T_username.TabIndex = 0;
+            this.T_username.KeyDown += new System.Windows.Forms.KeyEventHandler(this.T_username_KeyDown);
             // 
             // T_password
             // 
@@ -103,6 +104,7 @@ namespace Launcher
             this.T_password.Size = new System.Drawing.Size(303, 44);
             this.T_password.TabIndex = 1;
             this.T_password.UseSystemPasswordChar = true;
+            this.T_password.KeyDown += new System.Windows.Forms.KeyEventHandler(this.T_password_KeyDown);
             // 
             // RealmName
             // 
