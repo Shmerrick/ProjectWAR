@@ -144,9 +144,23 @@ namespace Launcher
 
             Client.SendTCP(Out);
 
-            Configuration config = System.Configuration.ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
-            config.AppSettings.Settings.Add("LastUserCode", T_username.Text);
-            config.Save(ConfigurationSaveMode.Minimal);
+            Configuration configuration = System.Configuration.ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+            if (configuration.AppSettings.Settings["LastUSerCode"] == null)
+            {
+                configuration.AppSettings.Settings.Add("LastUserCode", T_username.Text);
+            }
+            else
+            {
+                configuration.AppSettings.Settings["LastUserCode"].Value = T_username.Text;
+            }
+            configuration.Save();
+
+            System.Configuration.ConfigurationManager.RefreshSection("appSettings");
+
+         
+
+            
         }
 
         private void bnClose_Click(object sender, EventArgs e)
