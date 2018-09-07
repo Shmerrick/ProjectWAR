@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using GameData;
+using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Bounty;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -21,7 +24,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public BattleFrontStatus()
         {
-            KillContributionSet = new HashSet<uint>();
+            ContributionManagerInstance = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), BountyService._ContributionDefinitions);
+            BountyManagerInstance = new BountyManager();
+            ImpactMatrixManagerInstance = new ImpactMatrixManager();
+            RewardManagerInstance = new RewardManager(BountyManagerInstance, ContributionManagerInstance, ImpactMatrixManagerInstance, new StaticWrapper(), RewardService._RewardBandRewards);
         }
 
         public float DestructionVictoryPointPercentage
@@ -57,12 +63,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             KillContributionSet.Add(player.CharacterId);
         }
 
-        public BattleFrontStatus()
-        {
-            ContributionManagerInstance = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), BountyService._ContributionDefinitions);
-            BountyManagerInstance = new BountyManager();
-            ImpactMatrixManagerInstance = new ImpactMatrixManager();
-            RewardManagerInstance = new RewardManager(BountyManagerInstance, ContributionManagerInstance, ImpactMatrixManagerInstance, new StaticWrapper(), RewardService._RewardBandRewards);
-        }
+       
     }
 }

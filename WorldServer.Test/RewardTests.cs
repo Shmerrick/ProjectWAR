@@ -74,7 +74,7 @@ namespace WorldServer.Test
         }
 
 
-        [TestMethod]
+        [TestMethod, Ignore]
         public void Replicate_Excel_TestCaseCEKillsTom()
         {
             var fakeBountyManager = A.Fake<IBountyManager>();
