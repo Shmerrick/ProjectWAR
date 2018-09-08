@@ -9,7 +9,7 @@ namespace Common
 {
     [DataTable(PreCache = false, TableName = "keep_creatures", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
-    public class Keep_Creature : DataObject
+    public class Keep_Creature : DataObject, IComparable<Keep_Creature>
     {
         [DataElement(AllowDbNull = false)]
         public int KeepId { get; set; }
@@ -37,5 +37,17 @@ namespace Common
 
         [DataElement(AllowDbNull = false)]
         public bool KeepLord { get; set; }
-    }
+
+		[DataElement(AllowDbNull = false)]
+		public bool IsPatrol { get; set; }
+
+		[DataElement(AllowDbNull = false)]
+		public int WaypointGUID { get; set; }
+
+		public int CompareTo(Keep_Creature other)
+		{
+			if (other == null) return 1;
+			return WaypointGUID.CompareTo(other.WaypointGUID);
+		}
+	}
 }

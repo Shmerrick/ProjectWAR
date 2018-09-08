@@ -1191,6 +1191,10 @@ namespace WorldServer
 
         public bool IsKeepLord = false;
 
+		public bool IsPatrol = false;
+
+		public uint WaypointGUID { get; set; } = 0;
+
         public void AddCrowdControlImmunity(int flags)
         {
             byte count = 0;

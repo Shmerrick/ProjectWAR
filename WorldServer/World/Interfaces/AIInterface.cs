@@ -78,13 +78,11 @@ namespace WorldServer
 
         public override void Update(long tick)
         {
-            #if USE_WAYPOINTS
-            if (_Owner.IsUnit())
+            if (_Owner.IsUnit() && Waypoints != null && Waypoints.Count > 0)
             {
                 if (!_unit.IsDead)
                     UpdateWaypoints(tick);
             }
-            #endif
 
             if (tick > _nextThinkTime)
             {
@@ -514,7 +512,17 @@ namespace WorldServer
 
         #region Waypoints
 
-        public List<Waypoint> Waypoints = new List<Waypoint>();
+		private List<Waypoint> _Waypoints = new List<Waypoint>();
+		public List<Waypoint> Waypoints
+		{
+			get { return _Waypoints; }
+			set
+			{
+				_Waypoints = value;
+				VerifyAllWaypoints();
+			}
+		}
+
         public Waypoint CurrentWaypoint;
         public byte CurrentWaypointType = Waypoint.Loop;
         public bool IsWalkingBack; // False : Running on waypooints Start to End
@@ -572,7 +580,17 @@ namespace WorldServer
             WaypointService.DatabaseSaveWaypoint(SaveWp);
         }
 
-        public void RemoveWaypoint(Waypoint RemoveWp)
+		private void VerifyAllWaypoints()
+		{
+			for (int i = 0; i < _Waypoints.Count; i++)
+			{
+				int calcedZ = ClientFileMgr.GetHeight((int)_unit.ZoneId, (int)_Waypoints[i].X, (int)_Waypoints[i].Y);
+				if (_Waypoints[i].Z != calcedZ)
+					_Waypoints[i].Z = Convert.ToUInt32(Math.Abs(calcedZ));
+			}
+		}
+		
+		public void RemoveWaypoint(Waypoint RemoveWp)
         {
             switch (Waypoints.Count)
             {
@@ -681,10 +699,10 @@ namespace WorldServer
 
         public bool IsAtWaypointEnd()
         {
-            if (_Owner.GetDistanceTo(CurrentWaypoint.X, CurrentWaypoint.Y, CurrentWaypoint.Z) < 3)
+            if (_Owner.Get2DDistanceToWorldPoint(new Point3D((int)CurrentWaypoint.X, (int)CurrentWaypoint.Y, (int)CurrentWaypoint.Z)) < 3)
                 return true;
-
-            return true;
+			else
+				return false;
         }
 
         public bool CanStartNextWaypoint(long Tick)
@@ -738,7 +756,9 @@ namespace WorldServer
             //Log.Info("Waypoints", "Starting Waypoint");
 
             State = AiState.MOVING;
-            _unit.MvtInterface.Move(new Point3D(CurrentWaypoint.X, CurrentWaypoint.Y, CurrentWaypoint.Z));
+			_unit.Speed = CurrentWaypoint.Speed;
+			_unit.UpdateSpeed();
+            _unit.MvtInterface.Move(new Point3D(Convert.ToInt32(CurrentWaypoint.X), Convert.ToInt32(CurrentWaypoint.Y), Convert.ToInt32(CurrentWaypoint.Z)));
             if (!Started)
             {
                 // TODO : Messages,Emotes, etc

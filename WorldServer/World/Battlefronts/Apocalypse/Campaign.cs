@@ -294,6 +294,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
 
             _aaoTracker.RecalculateAAO(allPlayersInZone, orderPlayersInZone.Count, destPlayersInZone.Count);
+
+			foreach (var keep in Keeps)
+			{
+				//keep.UpdateCurrentAAO(_aaoTracker.AgainstAllOddsMult);
+			}
         }
 
         private List<Player> GetOrderPlayersInZone(int zoneId)
@@ -392,7 +397,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     BattlefrontLogger.Debug($"Adding {info.Creatures.Count} mobs for Keep {info.KeepId}");
                     foreach (Keep_Creature crea in info.Creatures)
-                        keep.Creatures.Add(new KeepNpcCreature(Region, crea, keep));
+					{
+						if (!crea.IsPatrol)
+							keep.Creatures.Add(new KeepNpcCreature(Region, crea, keep));
+					}
                 }
 
                 if (info.Doors != null)
