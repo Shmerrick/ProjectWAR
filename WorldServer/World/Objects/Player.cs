@@ -4027,7 +4027,7 @@ namespace WorldServer
                                 ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(killer.CharacterId, (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
 
                                 // Add bounty to the death blow killer  --(byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW
-                                var contributionDeathBlowDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW));
+                                var contributionDeathBlowDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
                                 ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(killer.CharacterId, contributionDeathBlowDefinition.ContributionValue);
                             }
                             else

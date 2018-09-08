@@ -12,9 +12,8 @@ namespace Common.Database.World.Battlefront
     [Serializable]
     public class ContributionDefinition : DataObject
     {
-        [PrimaryKey(AutoIncrement = true)]
-        public byte ContributionId { get; set; }
-
+        [PrimaryKey]
+        public int ContributionId { get; set; }
         [DataElement(AllowDbNull = false)]
         public string ContributionDescription { get; set; }
         [DataElement(AllowDbNull = false)]

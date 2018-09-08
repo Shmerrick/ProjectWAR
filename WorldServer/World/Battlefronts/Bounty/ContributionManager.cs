@@ -140,7 +140,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 // Dont worry about max contribution count == 0, these are effectively disabled.
                 if (referenceContribution.MaxContributionCount > 0)
                 {
-                    result.TryAdd(referenceContribution.ContributionId,
+                    result.TryAdd((short) referenceContribution.ContributionId,
                         new ContributionStage
                         {
                             Description = referenceContribution.ContributionDescription,
@@ -158,7 +158,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                     if (playerContribution.ContributionId == contributionFactor.ContributionId)
                     {
                         // If we need to add something is wrong, dont add it - return a new structure.
-                        result.AddOrUpdate(contributionFactor.ContributionId,
+                        result.AddOrUpdate((short) contributionFactor.ContributionId,
                             new ContributionStage
                             {
                                 Description = contributionFactor.ContributionDescription,
