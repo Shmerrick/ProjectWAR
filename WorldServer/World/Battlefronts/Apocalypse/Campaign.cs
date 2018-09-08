@@ -129,13 +129,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Recalculate AAO
             _EvtInterface.AddEvent(RecordMetrics, 30000, 0);
 
-            _EvtInterface.AddEvent(DecayImpactMatrix, 60000, 0);
+            
         }
 
-        private void DecayImpactMatrix()
-        {
-            this.GetActiveBattleFrontStatus().ImpactMatrixManagerInstance.ExpireImpacts(FrameWork.TCPManager.GetTimeStamp());
-        }
+      
 
         public void InitializePopulationList(int battlefrontId)
         {
@@ -159,7 +156,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public BattleFrontStatus GetActiveBattleFrontStatus()
         {
+            if (ApocBattleFrontStatuses.Count == 0)
+            {
+                BattlefrontLogger.Error("No BattlefrontStatuses have been created!");
+                throw new Exception("No BattlefrontStatuses have been created!");
+            }
             return ApocBattleFrontStatuses.Single(x => x.Locked == false);
+
         }
 
 

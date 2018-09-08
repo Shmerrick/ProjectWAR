@@ -22,10 +22,10 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         public CharacterBounty(Player player)
         {
-            EffectiveLevel = player.EffectiveLevel;
             CharacterLevel = player.Level;
             RenownLevel = player.RenownRank;
-            BaseBountyValue = (int) (CharacterLevel + (RenownLevel * 1.5));
+            BaseBountyValue = (int) (CharacterLevel + (RenownLevel * 2));
+            EffectiveLevel = CharacterLevel+ (RenownLevel * 2);
             ContributedBountyValue = 0;
         }
         

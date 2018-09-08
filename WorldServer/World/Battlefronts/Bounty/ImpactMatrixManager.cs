@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
@@ -11,17 +12,26 @@ namespace WorldServer.World.Battlefronts.Bounty
     public class ImpactMatrixManager : IImpactMatrixManager
     {
         public ConcurrentDictionary<uint, List<PlayerImpact>> ImpactMatrix { get; set; }
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         // Number of seconds until the impact is removed from the ImpactMatrix.
         public const int IMPACT_EXPIRY_TIME = 60;
         // Maximum number of PlayerImpacts to return when calculating a kill
         public const int MAX_REWARD_IMPACT_COUNT = 20;
         // Minimum impact value for the record to be stored in the Impact Matrix
         public const int MIN_IMPACT_VALIDITY = 50;
-
+        protected readonly EventInterface _EvtInterface = new EventInterface();
 
         public ImpactMatrixManager()
         {
             ImpactMatrix = new ConcurrentDictionary<uint, List<PlayerImpact>>();
+            _EvtInterface.AddEvent(DecayImpactMatrix, 60000, 0);
+        }
+
+        private void DecayImpactMatrix()
+        {
+            _logger.Debug("Attempting to decay impact matrix");
+            this.ExpireImpacts(FrameWork.TCPManager.GetTimeStamp());
+            _logger.Debug("Done decaying impact matrix");
         }
 
         public string ToString(uint characterId)
@@ -44,34 +54,42 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <returns></returns>
         public PlayerImpact UpdateMatrix(uint targetCharacterId, PlayerImpact playerImpact)
         {
+            bool attackerFound = false;
+            
             // Only add if minimum value passed.
             if (playerImpact.ImpactValue < MIN_IMPACT_VALIDITY)
                 return playerImpact;
 
-            if (this.ImpactMatrix.ContainsKey(targetCharacterId))
+            lock (ImpactMatrix)
             {
-                var targetPlayerImpactList = ImpactMatrix[targetCharacterId];
-                // Look for player in playerimpact
-                foreach (var impact in targetPlayerImpactList)
+
+                if (this.ImpactMatrix.ContainsKey(targetCharacterId))
                 {
-                    if (impact.CharacterId == playerImpact.CharacterId)
+                    var targetPlayerImpactList = ImpactMatrix[targetCharacterId];
+                    // Look for player in playerimpact
+                    foreach (var impact in targetPlayerImpactList)
                     {
-                        // Found the attacker, updating.
-                        return  impact.SetImpact(
-                            impact.ImpactValue + playerImpact.ImpactValue,
-                            playerImpact.ExpiryTimestamp + IMPACT_EXPIRY_TIME,
-                            playerImpact.ModificationValue,
-                            playerImpact.CharacterId);
+                        if (impact.CharacterId == playerImpact.CharacterId)
+                        {
+                            // Found the attacker, updating.
+                            return impact.SetImpact(
+                                impact.ImpactValue + playerImpact.ImpactValue,
+                                playerImpact.ExpiryTimestamp + IMPACT_EXPIRY_TIME,
+                                playerImpact.ModificationValue,
+                                playerImpact.CharacterId);
+
+                        }
                     }
+                    // Couldnt find the player in playerimpact, add.
+                    targetPlayerImpactList.Add(playerImpact);
+                    return playerImpact;
                 }
-                // Couldnt find the player in playerimpact, add.
-                targetPlayerImpactList.Add(playerImpact);
-            }
-            else
-            {
-                // No dictionary entry
-                this.ImpactMatrix.TryAdd(targetCharacterId, new List<PlayerImpact> {playerImpact});
-                return playerImpact;
+                else
+                {
+                    // No dictionary entry
+                    this.ImpactMatrix.TryAdd(targetCharacterId, new List<PlayerImpact> {playerImpact});
+                    return playerImpact;
+                }
             }
             return null;
         }
@@ -90,6 +108,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
                 foreach (var playerImpact in entry.Value)
                 {
+                    _logger.Debug($"Checking for decay : {playerImpact.CharacterId} {playerImpact.ImpactValue} {playerImpact.ExpiryTimestamp}");
                     if (playerImpact.ExpiryTimestamp < expiryTime)
                     {
                         if (this.ImpactMatrix.TryRemove(entry.Key, out removedPlayerImpactList))
@@ -97,6 +116,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                     }
                 }
             }
+            _logger.Debug($"Removed {removedCount} impacts");
             return removedCount;
         }
 

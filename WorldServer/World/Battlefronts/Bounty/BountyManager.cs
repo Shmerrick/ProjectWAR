@@ -60,12 +60,35 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// </summary>
         /// <param name="targetCharacterId"></param>
         /// <returns></returns>
-        public CharacterBounty GetBounty(uint targetCharacterId)
+        public CharacterBounty GetBounty(uint targetCharacterId, bool createIfNotExists = true)
         {
             if (this.BountyDictionary.ContainsKey(targetCharacterId))
                 return this.BountyDictionary[targetCharacterId];
             else
-                return null;
+            {
+                // If the bounty for this player doesnt exist, create it. All players must have a bounty value.
+                if (createIfNotExists)
+                {
+                    var player = Player.GetPlayer(targetCharacterId);
+                    // player can sometimes be null - this is really unlikely here, but just incase.
+                    if (player == null)
+                    {
+                        BountyLogger.Warn($"Player not found in BountyDictionary, tried to create, but got nothing. Character : {targetCharacterId}");
+                        return new CharacterBounty();
+                    }
+                    if (this.BountyDictionary.TryAdd(targetCharacterId, new CharacterBounty(player)))
+                    {
+                        return this.BountyDictionary[targetCharacterId];
+                    }
+                    else
+                    {
+                        BountyLogger.Warn($"Player not found in BountyDictionary, tried to create, but adding failed. Character : {targetCharacterId}");
+                        return new CharacterBounty();
+                    }
+                }
+                return new CharacterBounty();
+            }
+            return new CharacterBounty();
         }
     }
 }

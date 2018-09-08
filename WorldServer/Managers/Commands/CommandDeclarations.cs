@@ -101,6 +101,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("eligibility", GetRewardEligibility, null, EGmLevel.AnyGM, 0, "Reports on players eligibility"),
             new GmCommandHandler("contribution", GetPlayerContribution, null, EGmLevel.AnyGM, 0, "Gets the contribution of the player."),
             new GmCommandHandler("bounty", GetPlayerBounty, null, EGmLevel.AnyGM, 0, "Gets the bounty of the player."),
+            new GmCommandHandler("impacts", GetPlayerImpactMatrix, null, EGmLevel.AnyGM, 0, "Gets the bounty of the player."),
         };
 
         /// <summary>Database commands under .database</summary>

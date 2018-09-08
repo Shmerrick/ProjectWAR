@@ -538,14 +538,17 @@ namespace WorldServer
 
             var modificationValue = (float) Math.Log(((float)caster.EffectiveBountyLevel / (float)(this as Player).EffectiveBountyLevel + 1), 2);
             // Added impact to ImpactMatrix
-            this.Region.ImpactMatrix.UpdateMatrix((this as Player).CharacterId,
-                new PlayerImpact
-                {
-                    CharacterId = caster.Info.CharacterId,
-                    ExpiryTimestamp = FrameWork.TCPManager.GetTimeStamp() + ImpactMatrixManager.IMPACT_EXPIRY_TIME,
-                    ImpactValue = (int) damage,
-                    ModificationValue = modificationValue
-                });
+            if (this.CbtInterface.IsPvp)
+            {
+                this.Region.Campaign.GetActiveBattleFrontStatus().ImpactMatrixManagerInstance.UpdateMatrix((this as Player).CharacterId,
+                    new PlayerImpact
+                    {
+                        CharacterId = caster.Info.CharacterId,
+                        ExpiryTimestamp = FrameWork.TCPManager.GetTimeStamp() + ImpactMatrixManager.IMPACT_EXPIRY_TIME,
+                        ImpactValue = (int) damage,
+                        ModificationValue = modificationValue
+                    });
+            }
         }
 
         public void ClearTrackedDamage()

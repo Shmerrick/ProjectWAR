@@ -56,9 +56,25 @@ namespace WorldServer.Managers.Commands
             var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(activeBattleFrontId);
 
-            var playerContribution = activeBattleFrontStatus.ContributionManagerInstance.GetContribution(plr.CharacterId);
+            var target = (Player)plr.CbtInterface.GetCurrentTarget();
+            if (target != null)
+            {
+                var playerContribution = activeBattleFrontStatus.ContributionManagerInstance.GetContribution(target.CharacterId);
 
-            plr.SendClientMessage(playerContribution.ToString());
+                if (playerContribution == null)
+                {
+                    plr.SendClientMessage("Player has no contribution");
+                }
+                else
+                {
+                    foreach (var contribution in playerContribution)
+                    {
+                        plr.SendClientMessage(contribution.ToString());
+                    }
+
+                }
+            }
+
 
             return true;
         }
@@ -68,8 +84,12 @@ namespace WorldServer.Managers.Commands
             var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(activeBattleFrontId);
 
-            var playerBounty = activeBattleFrontStatus.BountyManagerInstance.GetBounty(plr.CharacterId);
-            plr.SendClientMessage(playerBounty.ToString());
+            var target = (Player)plr.CbtInterface.GetCurrentTarget();
+            if (target != null)
+            {
+                var playerBounty = activeBattleFrontStatus.BountyManagerInstance.GetBounty(target.CharacterId);
+                plr.SendClientMessage(playerBounty.ToString());
+            }
 
             return true;
         }
@@ -79,9 +99,19 @@ namespace WorldServer.Managers.Commands
             var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(activeBattleFrontId);
 
-            var killImpacts = activeBattleFrontStatus.ImpactMatrixManagerInstance.GetKillImpacts(plr.CharacterId);
-            plr.SendClientMessage(killImpacts.ToString());
-
+            var target = (Player)plr.CbtInterface.GetCurrentTarget();
+            if (target != null)
+            {
+                var killImpacts = activeBattleFrontStatus.ImpactMatrixManagerInstance.GetKillImpacts(target.CharacterId);
+                if (killImpacts == null)
+                {
+                    plr.SendClientMessage($"{target.Name} has no impacts");
+                }
+                foreach (var impact in killImpacts)
+                {
+                    plr.SendClientMessage($"{target.Name} {impact.ToString()}");
+                }
+            }
             return true;
         }
 

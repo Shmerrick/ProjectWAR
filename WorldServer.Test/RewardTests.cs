@@ -46,7 +46,7 @@ namespace WorldServer.Test
                 new PlayerImpact {CharacterId = 1001, ExpiryTimestamp = 0, ImpactValue = 600, ModificationValue = 2.69f}
             };
 
-            A.CallTo(() => fakeBountyManager.GetBounty(123)).Returns(charBounty);
+            A.CallTo(() => fakeBountyManager.GetBounty(123, true)).Returns(charBounty);
             A.CallTo(() => fakeContributionManager.GetContributionValue(123)).Returns<short>(100);
             A.CallTo(() => fakeImpactMatrixManager.GetKillImpacts(123)).Returns(fakeImpacts);
             A.CallTo(() => fakeImpactMatrixManager.GetTotalImpact(123)).Returns(3350);
@@ -105,7 +105,7 @@ namespace WorldServer.Test
 
             };
 
-            A.CallTo(() => fakeBountyManager.GetBounty(123)).Returns(charBounty);
+            A.CallTo(() => fakeBountyManager.GetBounty(123, true)).Returns(charBounty);
             A.CallTo(() => fakeContributionManager.GetContributionValue(123)).Returns<short>(10);
             A.CallTo(() => fakeImpactMatrixManager.GetKillImpacts(123)).Returns(fakeImpacts);
             A.CallTo(() => fakeImpactMatrixManager.GetTotalImpact(123)).Returns(3350);
