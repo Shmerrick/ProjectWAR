@@ -120,10 +120,10 @@ namespace WorldServer.Managers.Commands
         {
             lock (Player._Players)
             {
-                plr.SendClientMessage($"Server Population " +
-                                      $"Online players : {Player._Players.Count} " +
-                                      $"Order : {Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_ORDER && !x.IsDisposed && x.IsInWorld() && x != null)} " +
-                                      $"Destro : {Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && x != null)}");
+                plr.SendClientMessage($"Server Population ");
+                plr.SendClientMessage($"Online players : {Player._Players.Count} ");
+                plr.SendClientMessage($"Order : {Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_ORDER && !x.IsDisposed && x.IsInWorld() && x != null)} ");
+                plr.SendClientMessage($"Destro : {Player._Players.Count(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION && !x.IsDisposed && x.IsInWorld() && x != null)}");
 
                 plr.SendClientMessage("------------------------------------");
                 var message = String.Empty;
@@ -167,7 +167,7 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        
+
 
         /// <summary>
         /// Finds all players currently in range.

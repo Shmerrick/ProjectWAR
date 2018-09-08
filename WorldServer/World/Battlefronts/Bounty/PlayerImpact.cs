@@ -19,7 +19,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         public override string ToString()
         {
-            return $"ImpactValue {ImpactValue}, Expiry {ExpiryTimestamp} Modification {ModificationValue} Character Id {CharacterId}";
+            return $" Character Id {CharacterId} ImpactValue {ImpactValue}, Expiry {ExpiryTimestamp} Modification {ModificationValue} ";
         }
 
         /// <summary>

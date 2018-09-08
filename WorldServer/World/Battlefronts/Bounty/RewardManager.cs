@@ -61,10 +61,10 @@ namespace WorldServer.World.Battlefronts.Bounty
             var impacts = ImpactMatrixManager.GetKillImpacts(targetCharacterId);
             var totalImpact = ImpactMatrixManager.GetTotalImpact(targetCharacterId);
 
-            RewardLogger.Info($"Calculating Reward for impacting {targetCharacterId}");
-            RewardLogger.Debug($"Character Bounty : {characterBounty.ToString()}");
-            RewardLogger.Debug($"ContributionManagerInstance : {contributionValue}");
-            RewardLogger.Debug($"Impacts : {String.Join(",", impacts)}");
+            RewardLogger.Info($"Calculating Reward for impacting {targetCharacterId} (the target)");
+            RewardLogger.Debug($"Target Character Bounty : {characterBounty.ToString()}");
+            RewardLogger.Debug($"Target Character Contribution : {contributionValue}");
+            RewardLogger.Debug($"Impacts upon Target Character : {String.Join(",", impacts)}");
 
      
             if (totalImpact == 0)
@@ -72,11 +72,13 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             var rewardDictionary = new ConcurrentDictionary<uint, Reward>();
 
+            // return the bounty of the killed player. 
+            var modifiedBountyValue = CalculateModifiedBountyValue(characterBounty, contributionValue);
+            RewardLogger.Debug($"Target Modified Bounty Value : {modifiedBountyValue}");
+
             foreach (var playerImpact in impacts)
             {
                 var impactFraction = CalculateImpactFraction(playerImpact.ImpactValue, totalImpact);
-                //TODO - need to rethink this calculation.
-                var modifiedEffectiveLevel = CalculateModifiedEffectiveLevel(characterBounty, contributionValue);
 
                 int insigniaCount = 0;
                 int insigniaItemId = 0;
@@ -114,9 +116,9 @@ namespace WorldServer.World.Battlefronts.Bounty
             return impactValue / totalImpact;
         }
 
-        private float CalculateModifiedEffectiveLevel(CharacterBounty characterBounty, short contributionValue)
+        private float CalculateModifiedBountyValue(CharacterBounty characterBounty, short contributionValue)
         {
-            return characterBounty.EffectiveLevel + contributionValue;
+            return characterBounty.BaseBountyValue + contributionValue;
         }
     }
 
