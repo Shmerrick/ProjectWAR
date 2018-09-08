@@ -21,5 +21,15 @@ namespace WorldServer.Services.World
             _ContributionDefinitions = Database.SelectAllObjects<ContributionDefinition>() as List<ContributionDefinition>;
             Log.Success("ContributionDefinition", "Loaded " + _ContributionDefinitions.Count + " ContributionDefinitions");
         }
-	}
+
+        public static  ContributionDefinition GetDefinition(byte value)
+        {
+            foreach (var contributionDefinition in _ContributionDefinitions)
+            {
+                if (contributionDefinition.ContributionId == value)
+                    return contributionDefinition;
+            }
+            return null;
+        }
+    }
 }

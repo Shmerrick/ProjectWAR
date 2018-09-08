@@ -83,7 +83,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 int insigniaCount = 0;
                 int insigniaItemId = 0;
 
-                // Select type of insignia
+                // Select type of insignia (should it be based on the victims RR??)
                 var renownBand = Reward.DetermineRenownBand(characterBounty.RenownLevel);
                 var playerKillReward = PlayerKillRewardBand.Single(x => x.RenownBand == renownBand);
 

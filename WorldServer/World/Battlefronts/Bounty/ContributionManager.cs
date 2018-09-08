@@ -43,7 +43,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             //TODO : remove - for development only.
             var item = GetContribution(targetCharacterId);
 
-            RewardLogger.Debug($"Assigning {contibutionId} to {targetCharacterId}");
+            RewardLogger.Debug($"Assigning contibution Id {contibutionId} to {targetCharacterId}");
 
             //filteredResults.AddOrUpdate(unfilteredResult.Key, new List<int> { number }, (k, v) => v.Add(number));
             return this.ContributionDictionary.AddOrUpdate(targetCharacterId,
