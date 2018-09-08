@@ -43,6 +43,8 @@ namespace WorldServer.World.Battlefronts.Bounty
             //TODO : remove - for development only.
             var item = GetContribution(targetCharacterId);
 
+            RewardLogger.Debug($"Assigning {contibutionId} to {targetCharacterId}");
+
             //filteredResults.AddOrUpdate(unfilteredResult.Key, new List<int> { number }, (k, v) => v.Add(number));
             return this.ContributionDictionary.AddOrUpdate(targetCharacterId,
                  new List<PlayerContribution>
@@ -115,6 +117,8 @@ namespace WorldServer.World.Battlefronts.Bounty
                 contributionValue = MAXIMUM_CONTRIBUTION;
 
             }
+
+            RewardLogger.Debug($"Returning contributionValue of {contributionValue} for {targetCharacterId} ");
 
             return contributionValue;
         }

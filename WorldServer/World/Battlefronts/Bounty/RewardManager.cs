@@ -95,9 +95,9 @@ namespace WorldServer.World.Battlefronts.Bounty
                 var reward = new Reward
                 {
                     Description = $"Player {playerImpact.CharacterId} Kills {targetCharacterId} ",
-                    BaseInf = (int) (BOUNTY_BASE_INF_MODIFIER * modifiedEffectiveLevel * impactFraction * playerImpact.ModificationValue),
-                    BaseXP = (int) (BOUNTY_BASE_XP_MODIFIER * modifiedEffectiveLevel * impactFraction * playerImpact.ModificationValue),
-                    BaseRP = (int) (BOUNTY_BASE_RP_MODIFIER * modifiedEffectiveLevel * impactFraction * playerImpact.ModificationValue),
+                    BaseInf = (int) (BOUNTY_BASE_INF_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue),
+                    BaseXP = (int) (BOUNTY_BASE_XP_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue),
+                    BaseRP = (int) (BOUNTY_BASE_RP_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue),
                     InsigniaCount = insigniaCount,
                     InsigniaItemId = insigniaItemId,
                     BaseMoney = (int) (GetRenownBandMoneyBase(renownBand) * impactFraction),
