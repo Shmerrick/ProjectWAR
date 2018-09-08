@@ -167,6 +167,12 @@ namespace WorldServer.World.BattleFronts.Keeps
 				if (WaypointGUID > 0)
 				{
 					AiInterface.Waypoints = WaypointService.GetNpcWaypoints(WaypointGUID);
+					foreach (var wp in AiInterface.Waypoints)
+					{
+						wp.X = Convert.ToUInt32(wp.X + WaypointService.ShuffleWaypointOffset(5, 15));
+						wp.X = Convert.ToUInt32(wp.X + WaypointService.ShuffleWaypointOffset(5, 15));
+						wp.Z = (ushort)ClientFileMgr.GetHeight((int)ZoneId, (int)wp.X, (int)wp.Y);
+					}
 				}
 
 				if (NearAiInterface != null)
@@ -175,7 +181,6 @@ namespace WorldServer.World.BattleFronts.Keeps
 					AiInterface.NextAllowedMovementTime = NearAiInterface.NextAllowedMovementTime;
 					AiInterface.Ended = NearAiInterface.Ended;
 					AiInterface.Started = NearAiInterface.Started;
-					//AiInterface.Update(TCPManager.GetTimeStampMS());
 
 					if (NearAiInterface.State == AiState.MOVING)
 					{

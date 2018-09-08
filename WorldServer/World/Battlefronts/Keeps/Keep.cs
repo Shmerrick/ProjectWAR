@@ -220,7 +220,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 				if (Realm == Realms.REALMS_REALM_ORDER && aaoMultiplier < 0 // keep is order and aao is on destro
 					|| Realm == Realms.REALMS_REALM_DESTRUCTION && aaoMultiplier > 0) // keep is destro and aao is on order
 				{
-					size = (int)Math.Ceiling((double)Math.Abs(aaoMultiplier) / 4);
+					size = (int)Math.Round((double)Math.Abs(aaoMultiplier) / 4);
 				}
 
 				var patrols = Creatures.Select(x => x).Where(x => x.Info.IsPatrol && x.Creature != null).ToList();
@@ -241,14 +241,17 @@ namespace WorldServer.World.BattleFronts.Keeps
 				{
 					for (int i = 0; i < size - patrols.Count; i++)
 					{
-						var allUsedCreatures = Creatures.Select(y => y).Where(y => y.Creature != null).Select(x => x.Info).ToList();
-						var list = Info.Creatures.Select(x => x).Where(x => x.IsPatrol && !allUsedCreatures.Contains(x)).ToList();
-						list.Sort();
-						Keep_Creature keep_Creature = list.FirstOrDefault();
-						if (keep_Creature != null)
+						Keep_Creature captain = Info.Creatures.Select(x => x).Where(x => x.IsPatrol).FirstOrDefault();
+						if (captain != null)
 						{
-							var creature = new KeepNpcCreature(Region, keep_Creature, this);
-							Creatures.Add(creature);
+							var allUsedCreatures = Creatures.Select(y => y).Where(y => y.Creature != null).Select(x => x.Info).ToList();
+							if (allUsedCreatures.Contains(captain))
+							{
+								Keep_Creature add = captain.CreateDeepCopy();
+								Creatures.Add(new KeepNpcCreature(Region, add, this));
+							}
+							else
+								Creatures.Add(new KeepNpcCreature(Region, captain, this));
 						}
 					}
 				}
