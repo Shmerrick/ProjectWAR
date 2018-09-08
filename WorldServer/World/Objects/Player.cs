@@ -3997,10 +3997,11 @@ namespace WorldServer
                 if (this.Region.Campaign.GetActiveBattleFrontStatus() != null)
                 {
                     // List of players involved in the kill
-                    var rewardDictionary = ActiveBattleFrontStatus.RewardManagerInstance.GenerateBaseReward((this).Info.CharacterId, StaticRandom.Instance.Next(1, 100));
+                    var rewardDictionary = ActiveBattleFrontStatus.RewardManagerInstance.GenerateBaseRewardForKill((this).Info.CharacterId, StaticRandom.Instance.Next(1, 100));
 
                     foreach (var reward in rewardDictionary)
                     {
+
                         if (PlayersByCharId.ContainsKey(reward.Key))
                         {
                             var player = PlayersByCharId[reward.Key];
@@ -4009,16 +4010,6 @@ namespace WorldServer
                             player.AddInfluence((ushort)influenceId, (ushort)reward.Value.BaseInf);
                             player.AddMoney((uint)reward.Value.BaseMoney);
 
-                            //if (lootContainer == null)
-                            //    lootContainer = new LootContainer();
-
-                            //for (int i = 0; i < reward.Value.InsigniaCount; i++)
-                            //{
-                            //    var li = new LootInfo(ItemService.GetItem_Info((uint)reward.Value.InsigniaItemId));
-                            //    lootContainer.LootInfo.Add(li);
-                            //}
-                            //lootContainer.TakeAll(player, true);
-                            //SetLootable(false, player);
                             if (reward.Value.InsigniaCount > 0)
                             {
                                 player.ItmInterface.CreateItem(ItemService.GetItem_Info((uint) reward.Value.InsigniaItemId), (ushort) reward.Value.InsigniaCount);
@@ -4026,23 +4017,28 @@ namespace WorldServer
                             }
 
                             RewardLogger.Debug($"Total XP : {reward.Value.BaseXP} RP : {reward.Value.BaseRP} INF : {reward.Value.BaseInf}");
-                            // Add contribution for kill assist.
-                            ActiveBattleFrontStatus.ContributionManagerInstance
-                                .UpdateContribution(player.CharacterId, (byte) ContributionDefinitions.PLAYER_KILL_ASSIST);
-                            // Add bounty contribution to the assisting killer
-                            var contributionAssistDefinition = BountyService._ContributionDefinitions.Single(x => x.ContributionId == (int) ContributionDefinitions.PLAYER_KILL_ASSIST);
-                            ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionAssistDefinition.ContributionValue);
+
+                            // If this player is the killer (ie Deathblow), give them a different contribution.
+                            if (reward.Key == killer.CharacterId)
+                            {
+                                // Add contribution for this kill to the killer.
+                                ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(killer.CharacterId, (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+
+                                // Add bounty to the death blow killer
+                                var contributionDeathBlowDefinition = BountyService._ContributionDefinitions.Single(x => x.ContributionId == (int)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+                                ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(killer.CharacterId, contributionDeathBlowDefinition.ContributionValue);
+                            }
+                            else
+                            {
+                                // Add contribution for kill assist.
+                                ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.PLAYER_KILL_ASSIST);
+                                // Add bounty contribution to the assisting killer
+                                var contributionAssistDefinition = BountyService._ContributionDefinitions.Single(x => x.ContributionId == (int)ContributionDefinitions.PLAYER_KILL_ASSIST);
+                                ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionAssistDefinition.ContributionValue);
+                            }
                         }
                       
                     }
-                    // Add contribution for this kill to the killer.
-                    ActiveBattleFrontStatus.ContributionManagerInstance
-                        .UpdateContribution(killer.CharacterId, (byte) ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
-
-                    // Add bounty contribution to the assisting killer
-                    var contributionDeathBlowDefinition = BountyService._ContributionDefinitions.Single(x => x.ContributionId == (int)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
-                    ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(killer.CharacterId, contributionDeathBlowDefinition.ContributionValue);
-
                 }
                 //HandleXPRenown(killer, rewardScale);
                 //GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
@@ -4057,19 +4053,19 @@ namespace WorldServer
 
 				killer.SendClientMessage($"+5 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
 
-                try
-                {
-                    var activeBattleFrontId = killer.Region.Campaign.BattleFrontManager.ActiveBattleFront.BattleFrontId;
-                    var activeBattleFrontStatus = killer.Region.Campaign.BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
+                //try
+                //{
+                //    var activeBattleFrontId = killer.Region.Campaign.BattleFrontManager.ActiveBattleFront.BattleFrontId;
+                //    var activeBattleFrontStatus = killer.Region.Campaign.BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
 
-                    HandleXPRenown(killer, rewardScale, activeBattleFrontStatus);
-                }
-                catch (Exception e)
-                {
-                    DeathLogger.Warn($"Could not apply rewards to kill. {e.StackTrace}");
-                    throw;
-                }
-                GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
+                //    HandleXPRenown(killer, rewardScale, activeBattleFrontStatus);
+                //}
+                //catch (Exception e)
+                //{
+                //    DeathLogger.Warn($"Could not apply rewards to kill. {e.StackTrace}");
+                //    throw;
+                //}
+                //GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
             }
 
             #endregion

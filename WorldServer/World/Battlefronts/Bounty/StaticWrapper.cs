@@ -10,14 +10,14 @@ namespace WorldServer.World.Battlefronts.Bounty
 {
     public interface IStaticWrapper
     {
-        RenownBandReward GetRenownBandReward(int renownBand);
+        RewardPlayerKill GetRenownBandReward(int renownBand);
     }
 
     public class StaticWrapper : IStaticWrapper
     {
-        public RenownBandReward GetRenownBandReward(int renownBand)
+        public RewardPlayerKill GetRenownBandReward(int renownBand)
         {
-            return RewardService.GetRenownBandReward(renownBand);
+            return RewardService.GetPlayerKillReward(renownBand);
         }
     }
 }

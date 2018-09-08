@@ -24,7 +24,7 @@ namespace WorldServer.Test
             var fakeRewardManager = A.Fake<RewardManager>();
             var fakeStaticWrapper = A.Fake<IStaticWrapper>();
 
-            var sampleRenownBandReward = new RenownBandReward
+            var sampleRenownBandReward = new RewardPlayerKill
             {
                 CrestCount = 1,
                 CrestId = 208431,
@@ -57,13 +57,13 @@ namespace WorldServer.Test
                 fakeBountyManager,
                 fakeContributionManager,
                 fakeImpactMatrixManager,
-                fakeStaticWrapper, new List<RenownBandReward>
+                fakeStaticWrapper, new List<RewardPlayerKill>
                 {
                     sampleRenownBandReward
                 });
 
             // Pass in random number to ensure we effect as expected. StaticRandom.Instance.Next(1, 100)
-            var result = rm.GenerateBaseReward(123, 99);
+            var result = rm.GenerateBaseRewardForKill(123, 99);
 
             Assert.IsTrue(result.Count == 3);
             Assert.IsTrue(result[999].RenownBand == 30);
@@ -83,7 +83,7 @@ namespace WorldServer.Test
             var fakeRewardManager = A.Fake<RewardManager>();
             var fakeStaticWrapper = A.Fake<IStaticWrapper>();
 
-            var sampleRenownBandReward = new RenownBandReward
+            var sampleRenownBandReward = new RewardPlayerKill
             {
                 CrestCount = 1,
                 CrestId = 208431,
@@ -116,13 +116,13 @@ namespace WorldServer.Test
                 fakeBountyManager,
                 fakeContributionManager,
                 fakeImpactMatrixManager,
-                fakeStaticWrapper, new List<RenownBandReward>
+                fakeStaticWrapper, new List<RewardPlayerKill>
                 {
                     sampleRenownBandReward
                 });
 
             // Pass in random number to ensure we effect as expected. StaticRandom.Instance.Next(1, 100)
-            var result = rm.GenerateBaseReward(123, 99);
+            var result = rm.GenerateBaseRewardForKill(123, 99);
 
             Assert.IsTrue(result.Count == 2);
             Assert.IsTrue(result[999].RenownBand == 1);

@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FrameWork;
 
-namespace WorldServer.World.Battlefronts.NewDawn.Rewards
+namespace WorldServer.World.Battlefronts.Bounty
 {
     /// <summary>
     /// Represents the rewards that are added per renown band (allows higher RR players to get slightly better and more appropriate rewards).
     /// </summary>
 
-    [DataTable(PreCache = false, TableName = "renown_band_rewards", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
+    [DataTable(PreCache = false, TableName = "rvr_reward_player_kill", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
-    public class RenownBandReward : DataObject
+    public class RewardPlayerKill : DataObject
     {
         [PrimaryKey]
         public int RenownBand { get; set; }
@@ -32,7 +28,7 @@ namespace WorldServer.World.Battlefronts.NewDawn.Rewards
 
         public override string ToString()
         {
-            return $"Renown Band Reward {RenownBand}. {CrestCount}x{CrestId}, {Money}, {BaseRP}, {BaseXP}, {BaseInf} ";
+            return $"RewardPlayerKill {RenownBand}. {CrestCount}x{CrestId}, {Money}, {BaseRP}, {BaseXP}, {BaseInf} ";
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using WorldServer.World.Battlefronts;
+using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Battlefronts.NewDawn.Rewards;
 
 namespace WorldServer.Services.World
@@ -16,7 +17,7 @@ namespace WorldServer.Services.World
 
         public static List<RenownBandRVRObjectiveTick> _RewardObjectiveTicks;
         public static List<RenownBandRVRZoneLock> _RewardZoneLocks;
-        public static List<RenownBandReward> _RewardBandRewards;
+        public static List<RewardPlayerKill> _RewardPlayerKills;
 
         [LoadingFunction(true)]
         public static void LoadRenownBandRewards()
@@ -29,14 +30,14 @@ namespace WorldServer.Services.World
             _RewardZoneLocks = Database.SelectAllObjects<RenownBandRVRZoneLock>() as List<RenownBandRVRZoneLock>;
             Log.Success("LoadRenownBandRewards", "Loaded " + _RewardZoneLocks.Count + " rvr_reward_zone_lock");
 
-            Log.Debug("WorldMgr", "Loading Renown Band Rewards...");
-            _RewardBandRewards = Database.SelectAllObjects<RenownBandReward>() as List<RenownBandReward>;
-            Log.Success("LoadRenownBandRewards", "Loaded " + _RewardBandRewards.Count + " renown_band_reward");
+            Log.Debug("WorldMgr", "Loading RVR Player Kill rewards...");
+            _RewardPlayerKills = Database.SelectAllObjects<RewardPlayerKill>() as List<RewardPlayerKill>;
+            Log.Success("LoadRVRPlayerKillRewards", "Loaded " + _RewardPlayerKills.Count + " rvr_reward_player_kill");
         }
 
-        public static RenownBandReward GetRenownBandReward(int renownBand)
+        public static RewardPlayerKill GetPlayerKillReward(int renownBand)
         {
-            return _RewardBandRewards.Single(x=>x.RenownBand == renownBand);
+            return _RewardPlayerKills.Single(x=>x.RenownBand == renownBand);
         }
 
     }

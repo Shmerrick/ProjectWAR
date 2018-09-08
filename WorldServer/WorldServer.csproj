@@ -267,7 +267,7 @@
     <Compile Include="World\Battlefronts\Bounty\PlayerImpact.cs" />
     <Compile Include="World\Battlefronts\Bounty\ImpactMatrixManager.cs" />
     <Compile Include="World\Battlefronts\Bounty\RenownBandRVRObjectiveTick.cs" />
-    <Compile Include="World\Battlefronts\Bounty\RenownBandReward.cs" />
+    <Compile Include="World\Battlefronts\Bounty\RewardPlayerKill.cs" />
     <Compile Include="World\Battlefronts\Bounty\RenownBandRVRPairingLock.cs" />
     <Compile Include="World\Battlefronts\Bounty\RenownBandRVRZoneLock.cs" />
     <Compile Include="World\Battlefronts\Bounty\RewardManager.cs" />

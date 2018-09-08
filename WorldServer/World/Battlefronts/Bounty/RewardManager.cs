@@ -24,25 +24,25 @@ namespace WorldServer.World.Battlefronts.Bounty
         public IContributionManager ContributionManager { get; }
         public IImpactMatrixManager ImpactMatrixManager { get; }
         public IStaticWrapper StaticWrapper { get; }
-        public List<RenownBandReward> RewardBands { get; }
+        public List<RewardPlayerKill> PlayerKillRewardBand { get; }
 
-        public RewardManager(IBountyManager bountyManager, IContributionManager contributionManager, IImpactMatrixManager impactMatrixManager, IStaticWrapper staticWrapper, List<RenownBandReward>  rewardBands)
+        public RewardManager(IBountyManager bountyManager, IContributionManager contributionManager, IImpactMatrixManager impactMatrixManager, IStaticWrapper staticWrapper, List<RewardPlayerKill>  playerKillRewardBand)
         {
             BountyManager = bountyManager;
             ContributionManager = contributionManager;
             ImpactMatrixManager = impactMatrixManager;
             StaticWrapper = staticWrapper;
-            RewardBands = rewardBands;
+            PlayerKillRewardBand = playerKillRewardBand;
         }
 
         public virtual int GetInsigniaItemId(int renownBand)
         {
-            return (int)RewardBands.Single(x => x.RenownBand == renownBand).CrestId;
+            return (int)PlayerKillRewardBand.Single(x => x.RenownBand == renownBand).CrestId;
         }
 
         public virtual int GetInsigniaItemCount(int renownBand)
         {
-            return (int)RewardBands.Single(x => x.RenownBand == renownBand).CrestCount;
+            return (int)PlayerKillRewardBand.Single(x => x.RenownBand == renownBand).CrestCount;
         }
 
         public virtual double GetRenownBandMoneyBase(int renownBand)
@@ -54,7 +54,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// Calculate the base reward for all impacters upon the target.
         /// </summary>
         /// <returns>List of impacter characterId's and their reward.</returns>
-        public ConcurrentDictionary<uint, Reward> GenerateBaseReward(uint targetCharacterId, int randomNumber)
+        public ConcurrentDictionary<uint, Reward> GenerateBaseRewardForKill(uint targetCharacterId, int randomNumber)
         {
             var characterBounty = BountyManager.GetBounty(targetCharacterId);
             var contributionValue = ContributionManager.GetContributionValue(targetCharacterId);
@@ -85,27 +85,28 @@ namespace WorldServer.World.Battlefronts.Bounty
 
                 // Select type of insignia
                 var renownBand = Reward.DetermineRenownBand(characterBounty.RenownLevel);
+                var playerKillReward = PlayerKillRewardBand.Single(x => x.RenownBand == renownBand);
 
                 // Chance of insignia drop is the impact Fraction.
                 if (randomNumber < (impactFraction * 100))
                 {
-                    insigniaCount = StaticRandom.Instance.Next(1, GetInsigniaItemCount(renownBand));
-                    insigniaItemId = GetInsigniaItemId(renownBand);
+                    insigniaCount = StaticRandom.Instance.Next(1, playerKillReward.CrestCount);
+                    insigniaItemId = playerKillReward.CrestId;
                 }
                 var reward = new Reward
                 {
                     Description = $"Player {playerImpact.CharacterId} Kills {targetCharacterId} ",
-                    BaseInf = (int) (BOUNTY_BASE_INF_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue),
-                    BaseXP = (int) (BOUNTY_BASE_XP_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue),
-                    BaseRP = (int) (BOUNTY_BASE_RP_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue),
+                    BaseInf = (int) (BOUNTY_BASE_INF_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue) + playerKillReward.BaseInf,
+                    BaseXP = (int) (BOUNTY_BASE_XP_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue) + playerKillReward.BaseXP,
+                    BaseRP = (int) (BOUNTY_BASE_RP_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue) + playerKillReward.BaseRP,
                     InsigniaCount = insigniaCount,
                     InsigniaItemId = insigniaItemId,
-                    BaseMoney = (int) (GetRenownBandMoneyBase(renownBand) * impactFraction),
+                    BaseMoney = (int) (playerKillReward.Money * impactFraction),
                     RenownBand = renownBand
 
                 };
                 rewardDictionary.TryAdd(playerImpact.CharacterId, reward);
-                RewardLogger.Debug($"Reward : {reward.ToString()}");
+                RewardLogger.Debug($"Reward : {reward.ToString()} applied to {playerImpact.CharacterId}");
             }
 
             return rewardDictionary;
