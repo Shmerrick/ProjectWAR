@@ -309,5 +309,10 @@ namespace Launcher
                 this.bnConnectToServer_Click(this, new EventArgs());
             }
         }
+
+        private void bnMinimise_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
     }
 }

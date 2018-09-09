@@ -71,6 +71,7 @@ namespace Launcher
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.bnMinimise = new System.Windows.Forms.Button();
             this.panelCreateAccount.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -375,7 +376,7 @@ namespace Launcher
             this.buttonPanelCreateAccount.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonPanelCreateAccount.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonPanelCreateAccount.ForeColor = System.Drawing.Color.DarkOrange;
-            this.buttonPanelCreateAccount.Location = new System.Drawing.Point(980, 9);
+            this.buttonPanelCreateAccount.Location = new System.Drawing.Point(922, 9);
             this.buttonPanelCreateAccount.Name = "buttonPanelCreateAccount";
             this.buttonPanelCreateAccount.Size = new System.Drawing.Size(226, 49);
             this.buttonPanelCreateAccount.TabIndex = 21;
@@ -464,6 +465,24 @@ namespace Launcher
             this.label8.TabIndex = 30;
             this.label8.Text = "Password";
             // 
+            // bnMinimise
+            // 
+            this.bnMinimise.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bnMinimise.BackColor = System.Drawing.Color.Transparent;
+            this.bnMinimise.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.bnMinimise.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.bnMinimise.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bnMinimise.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bnMinimise.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.bnMinimise.Location = new System.Drawing.Point(1160, 9);
+            this.bnMinimise.Margin = new System.Windows.Forms.Padding(0);
+            this.bnMinimise.Name = "bnMinimise";
+            this.bnMinimise.Size = new System.Drawing.Size(51, 49);
+            this.bnMinimise.TabIndex = 31;
+            this.bnMinimise.Text = "_";
+            this.bnMinimise.UseVisualStyleBackColor = false;
+            this.bnMinimise.Click += new System.EventHandler(this.bnMinimise_Click);
+            // 
             // ApocLauncher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -472,6 +491,7 @@ namespace Launcher
             this.BackgroundImage = global::Launcher.Properties.Resources.M55rLv3;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(1280, 720);
+            this.Controls.Add(this.bnMinimise);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.pictureBox1);
@@ -543,6 +563,7 @@ namespace Launcher
         private PictureBox pictureBox1;
         private Label label4;
         private Label label8;
+        private Button bnMinimise;
     }
 }
 
