@@ -726,8 +726,10 @@ namespace WorldServer.World.BattleFronts.Keeps
             foreach (KeepNpcCreature crea in Creatures)
             {
                 if (crea.Creature == null && !crea.Info.IsPatrol)
-						crea.SpawnGuard(Realm);
-            }
+					crea.SpawnGuard(Realm);
+				else if (crea.Info.IsPatrol)
+					crea.DespawnGuard();
+			}
 
             foreach (KeepDoor door in Doors)
             {
@@ -1691,9 +1693,11 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             if (KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
             {
-                foreach (KeepNpcCreature crea in Creatures)
+				foreach (KeepNpcCreature crea in Creatures)
 					if (!crea.Info.IsPatrol)
 						crea.SpawnGuard(Realm);
+					else
+						crea.DespawnGuard();
             }
 
             foreach (KeepDoor door in Doors)
