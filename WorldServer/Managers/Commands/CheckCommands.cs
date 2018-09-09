@@ -82,9 +82,7 @@ namespace WorldServer.Managers.Commands
             var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
 
-            var campaign = WorldMgr.UpperTierCampaignManager.GetActiveCampaign();
-
-            var players = campaign.GetEligiblePlayers(activeBattleFrontStatus);
+            var players = WorldMgr.UpperTierCampaignManager.GetEligiblePlayers(activeBattleFrontStatus);
 
             plr.SendClientMessage($"Eligible players ({players.Count}):");
 

@@ -46,9 +46,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             player.AddXp((uint)(xp * modifier), false, false);
             player.AddNonScalingRenown((uint)rr, false, RewardType.ZoneKeepCapture, "");
             player.AddMoney((uint)money);
-            var influenceId = (ushort)player.CurrentArea.OrderInfluenceId;
-            player.AddInfluence(influenceId, (ushort)influence);
 
+			if (player != null && player.CurrentArea != null)
+			{
+				ushort influenceId = 0;
+				if (player.Realm == Realms.REALMS_REALM_ORDER)
+					influenceId = (ushort)player.CurrentArea.OrderInfluenceId;
+				else
+					influenceId = (ushort)player.CurrentArea.DestroInfluenceId;
+				player.AddInfluence(influenceId, (ushort)influence);
+			}
+            
             player.ItmInterface.CreateItem((uint)lockReward.ItemId, (ushort)crestCount);
 
             player.SendClientMessage($"You have been awarded {(ushort)crestCount} war crests.");

@@ -88,13 +88,13 @@ namespace WorldServer
         }
         private void LogGuildBug(Player plr)
         {
-            if (plr.Name.Contains("arena") || plr.Name.Contains("poko") || plr.Name.Contains("bram") || plr.Name.Contains("zaru") || plr.Name.Contains("niffils") ||
-                plr.Name.Contains("ikdorf") || plr.Name.Contains("grimjob"))
-            {
-                var l_CurrentStack = new System.Diagnostics.StackTrace(true);
+            //if (plr.Name.Contains("arena") || plr.Name.Contains("poko") || plr.Name.Contains("bram") || plr.Name.Contains("zaru") || plr.Name.Contains("niffils") ||
+            //    plr.Name.Contains("ikdorf") || plr.Name.Contains("grimjob"))
+            //{
+            //    var l_CurrentStack = new System.Diagnostics.StackTrace(true);
 
-                GuildLogger.Debug($"{plr.Name} {l_CurrentStack.ToString()}");
-            }
+            //    GuildLogger.Debug($"{plr.Name} {l_CurrentStack.ToString()}");
+            //}
 
         }
         public void InviteResponse(Player plr, bool accepted)
@@ -2007,15 +2007,15 @@ namespace WorldServer
                 return;
 
 
-            if (plr.Name.Contains("arena") || plr.Name.Contains("poko") || plr.Name.Contains("bram") || plr.Name.Contains("zaru") || plr.Name.Contains("niffils") ||
-                plr.Name.Contains("ikdorf") || plr.Name.Contains("grimjob")
-				|| plr.GldInterface.GetGuildName().Contains("Afk"))
-            {
-                var l_CurrentStack = new System.Diagnostics.StackTrace(true);
+   //         if (plr.Name.Contains("arena") || plr.Name.Contains("poko") || plr.Name.Contains("bram") || plr.Name.Contains("zaru") || plr.Name.Contains("niffils") ||
+   //             plr.Name.Contains("ikdorf") || plr.Name.Contains("grimjob")
+			//	|| plr.GldInterface.GetGuildName().Contains("Afk"))
+   //         {
+   //             var l_CurrentStack = new System.Diagnostics.StackTrace(true);
 
-                GuildLogger.Debug($"{plr.Name} {l_CurrentStack.ToString()}");
-				GuildLogger.Debug($"{plr.Name} Initialized= {plr.Initialized.ToString()}");
-			}
+   //             GuildLogger.Debug($"{plr.Name} {l_CurrentStack.ToString()}");
+			//	GuildLogger.Debug($"{plr.Name} Initialized= {plr.Initialized.ToString()}");
+			//}
 
         }
 
