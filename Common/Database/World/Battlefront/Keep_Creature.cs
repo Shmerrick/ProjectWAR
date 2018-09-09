@@ -52,12 +52,19 @@ namespace Common
 
 		public Keep_Creature CreateDeepCopy()
 		{
+			uint orderId = 0;
+			if (OrderId == 1000060)
+			{
+				uint off = ShuffleCreatureIdOffset(2);
+				if (off == 0)
+					orderId = 778172;
+			}
 			return new Keep_Creature()
 			{
 				KeepId = KeepId,
 				ZoneId = ZoneId,
-				OrderId = OrderId + ShuffleCreatureIdOffset(3),
-				DestroId = DestroId + ShuffleCreatureIdOffset(3),
+				OrderId = (orderId == 0) ? OrderId + ShuffleCreatureIdOffset(2) : orderId,
+				DestroId = DestroId + ShuffleCreatureIdOffset(2),
 				X = X + ShuffleWorldCoordinateOffset(10, 100),
 				Y = Y + ShuffleWorldCoordinateOffset(10, 100),
 				Z = Z + ShuffleWorldCoordinateOffset(10, 100),
@@ -91,7 +98,7 @@ namespace Common
 		public static uint ShuffleCreatureIdOffset(int max)
 		{
 			Random rnd = new Random();
-			return Convert.ToUInt32(Math.Floor(rnd.NextDouble() * 3));
+			return Convert.ToUInt32(Math.Round(rnd.NextDouble() * max));
 		}
 	}
 }
