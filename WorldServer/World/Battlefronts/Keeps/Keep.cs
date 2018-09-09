@@ -169,35 +169,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 CreateSupplyDrops();
             }
-
-			// ZARU: TEST AREA
-			if (Info.KeepId == 26)
-				new Thread(new ThreadStart(() =>
-				{
-					Thread.Sleep(140000);
-					UpdateCurrentAAO(0);
-
-					while (true)
-					{
-						Thread.Sleep(10000);
-						UpdateCurrentAAO(5);
-
-						Thread.Sleep(10000);
-						UpdateCurrentAAO(10);
-
-						Thread.Sleep(10000);
-						UpdateCurrentAAO(15);
-
-						Thread.Sleep(10000);
-						UpdateCurrentAAO(20);
-
-						Thread.Sleep(10000);
-						UpdateCurrentAAO(15);
-
-						Thread.Sleep(10000);
-						UpdateCurrentAAO(10);
-					}
-				})).Start();
         }
 
 		#region Update AAO multiplier

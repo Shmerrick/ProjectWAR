@@ -52,19 +52,91 @@ namespace Common
 
 		public Keep_Creature CreateDeepCopy()
 		{
-			uint orderId = 0;
-			if (OrderId == 1000060)
+			#region customValues for keeps
+
+			uint orderId = 0, destroId = 0;
+			bool customValues = false;
+			if (KeepId == 30)
 			{
 				uint off = ShuffleCreatureIdOffset(2);
 				if (off == 0)
+				{
 					orderId = 778172;
+					destroId = 1000064;
+				}
+				else
+				{
+					orderId = OrderId + off;
+					destroId = DestroId + off;
+				}
+				customValues = true;
 			}
+			else if (KeepId == 16 || KeepId == 15 || KeepId == 17 || KeepId == 18 || KeepId == 6)
+			{
+				uint off = ShuffleCreatureIdOffset(2);
+
+				orderId = OrderId + off * 2;
+				destroId = DestroId + off * 2;
+				customValues = true;
+			}
+			else if (KeepId == 19)
+			{
+				uint off = ShuffleCreatureIdOffset(2);
+				if (off == 2)
+				{
+					orderId = 777948;
+					destroId = 777947;
+				}
+				else
+				{
+					orderId = OrderId + off;
+					destroId = DestroId + off;
+				}
+				customValues = true;
+			}
+			else if (KeepId == 20)
+			{
+				uint off = ShuffleCreatureIdOffset(2);
+				if (off == 2)
+				{
+					orderId = OrderId + 3;
+					destroId = DestroId + 3;
+				}
+				else
+				{
+					orderId = OrderId + off;
+					destroId = DestroId + off;
+				}
+				customValues = true;
+			}
+			else if (KeepId == 8)
+			{
+				uint off = ShuffleCreatureIdOffset(2);
+				if (off == 2)
+				{
+					orderId = OrderId + off;
+					destroId = DestroId + 3;
+				}
+				else if (off == 1)
+				{
+					orderId = OrderId + off;
+					destroId = DestroId + 2;
+				}
+				else
+				{
+					orderId = OrderId + off;
+					destroId = DestroId + off;
+				}
+				customValues = true;
+			}
+			#endregion
+
 			return new Keep_Creature()
 			{
 				KeepId = KeepId,
 				ZoneId = ZoneId,
-				OrderId = (orderId == 0) ? OrderId + ShuffleCreatureIdOffset(2) : orderId,
-				DestroId = DestroId + ShuffleCreatureIdOffset(2),
+				OrderId = customValues ? orderId : OrderId + ShuffleCreatureIdOffset(2),
+				DestroId = customValues ? destroId : DestroId + ShuffleCreatureIdOffset(2),
 				X = X + ShuffleWorldCoordinateOffset(10, 100),
 				Y = Y + ShuffleWorldCoordinateOffset(10, 100),
 				Z = Z + ShuffleWorldCoordinateOffset(10, 100),

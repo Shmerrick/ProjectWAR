@@ -297,7 +297,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 			foreach (var keep in Keeps)
 			{
-				//keep.UpdateCurrentAAO(_aaoTracker.AgainstAllOddsMult);
+				keep.UpdateCurrentAAO(_aaoTracker.AgainstAllOddsMult);
 			}
         }
 
