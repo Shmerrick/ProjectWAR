@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using SystemData;
 using Common;
+using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
 using NLog;
@@ -560,6 +561,8 @@ namespace WorldServer.Scenarios
                 return;
             }
 
+            var contributionDefinition = new ContributionDefinition();
+
             _rewardsDealt = true;
 
             uint[] endingXp = new uint[2];
@@ -613,6 +616,10 @@ namespace WorldServer.Scenarios
                 PlayerScoreboard[plr].EndXP = endingXp[realmIndex];
                 PlayerScoreboard[plr].EndRenown = endingRenown[realmIndex];
 
+                // Add Contribution
+                WorldMgr.UpperTierCampaignManager.GetActiveCampaign().GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.PLAY_SCENARIO);
+                contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.PLAY_SCENARIO);
+                WorldMgr.UpperTierCampaignManager.GetActiveCampaign().GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
 
                 if (realmIndex == winningTeam)
                 {
@@ -628,6 +635,12 @@ namespace WorldServer.Scenarios
                         plr.ItmInterface.CreateItem(desiredItem, 6);
                         plr.SendLocalizeString(new[] { desiredItem.Name, "6" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
                             Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
+
+                        // Add Contribution
+                        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.WIN_SCENARIO);
+                        contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.WIN_SCENARIO);
+                        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
+
                     }
 
                     plr.QtsInterface.HandleEvent(Objective_Type.QUEST_WIN_SCENARIO, Info.ScenarioId, 1);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SystemData;
 using Common;
+using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
 using NLog;
@@ -311,6 +312,11 @@ namespace WorldServer.World.BattleFronts.Keeps
                             int random = rnd.Next(1, 25);
                             player.AddXp((uint)(1500 * (1 + (random / 100))), false, false);
                             player.AddRenown((uint)(400 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, Info.Name);
+
+                            // Add contribution
+                            this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_INNER_DOOR);
+                            var contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.DESTROY_INNER_DOOR);
+                            this.Region.Campaign.GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionDefinition.ContributionValue);
                         }
 
                         if (realm == Realms.REALMS_REALM_DESTRUCTION)
@@ -341,6 +347,13 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                             player.AddXp((uint) (1000 * (1+(random/100))), false, false);
                             player.AddRenown((uint) (200 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, Info.Name);
+
+                            // Add contribution
+                            this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
+                            var contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
+                            this.Region.Campaign.GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionDefinition.ContributionValue);
+
+
                         }
 
                         foreach (Hardpoint h in _hardpoints)
@@ -408,6 +421,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             // if (KeepStatus == KeepStatus.KEEPSTATUS_LOCKED)
             //     return;
 
+            var contributionDefinition = new ContributionDefinition();
+
             foreach (Hardpoint h in _hardpoints)
                 h.CurrentWeapon?.Destroy();
 
@@ -429,7 +444,20 @@ namespace WorldServer.World.BattleFronts.Keeps
             Realm = ((Realm == Realms.REALMS_REALM_ORDER) ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER);
 
             foreach (Player plr in PlayersInRange)
+            {
                 SendKeepInfo(plr);
+                // Add contribution for being in range
+                this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.KILL_KEEP_LORD);
+                contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.KILL_KEEP_LORD);
+                this.Region.Campaign.GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
+
+                if (plr.PriorityGroup.GetLeader() == plr)
+                {
+                    this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
+                    contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
+                    this.Region.Campaign.GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
+                }
+            }
 
             if (LastMessage < KeepMessage.Fallen)
             {

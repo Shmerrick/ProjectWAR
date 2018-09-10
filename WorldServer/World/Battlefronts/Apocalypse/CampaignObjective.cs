@@ -7,7 +7,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using SystemData;
+using Common.Database.World.Battlefront;
 using WorldServer.Scenarios.Objects;
+using WorldServer.Services.World;
 using WorldServer.World.BattleFronts.Objectives;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
@@ -1255,7 +1257,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			if (State == StateFlags.ZoneLocked)
 				return;
 
-			VictoryPoint VP = new VictoryPoint(0,0);
+            var contributionDefinition = new ContributionDefinition();
+		    var activeBattleFrontStatus = this.Region.Campaign.GetActiveBattleFrontStatus();
+
+            VictoryPoint VP = new VictoryPoint(0,0);
 			switch (State)
 			{
 				case StateFlags.Contested: // small tick
@@ -1264,9 +1269,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				    {
 				        foreach (var closePlayer in _closePlayers)
 				        {
-				            this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte)ContributionDefinitions.BO_TAKE_SMALL_TICK);
-				        }
-				    }
+				            activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte)ContributionDefinitions.BO_TAKE_SMALL_TICK);
+				            contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.BO_TAKE_SMALL_TICK);
+				            activeBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(closePlayer.CharacterId, contributionDefinition.ContributionValue);
+                        }
+                    }
                     break;
 
 				case StateFlags.Secure: // big tick
@@ -1276,8 +1283,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				        foreach (var closePlayer in _closePlayers)
 				        {
 				            this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte) ContributionDefinitions.BO_TAKE_BIG_TICK);
-				        }
-				    }
+				            contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
+				            activeBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(closePlayer.CharacterId, contributionDefinition.ContributionValue);
+
+                            // is this player the group leader?
+                            if (closePlayer.PriorityGroup.GetLeader() == closePlayer)
+				            {
+				                activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte) ContributionDefinitions.GROUP_LEADER_BO_BIG_TICK);
+				                contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.GROUP_LEADER_BO_BIG_TICK);
+				                activeBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(closePlayer.CharacterId, contributionDefinition.ContributionValue);
+                            }
+                        }
+                    }
 				    break;
 
 				case StateFlags.Locked: // small tick
@@ -1286,8 +1303,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				    {
 				        foreach (var closePlayer in _closePlayers)
 				        {
-				            this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte)ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
-				        }
+                            // ContributionManagerInstance holds the long term values of contribution for a player.
+				            activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte)ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
+				            contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
+				            activeBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(closePlayer.CharacterId, contributionDefinition.ContributionValue);
+                        }
 				    }
 
                     break;
@@ -1308,8 +1328,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			if (BattleFront.VictoryPointProgress.DestructionVictoryPoints <= 0)
 				BattleFront.VictoryPointProgress.DestructionVictoryPoints = 0;
 			
-		
-
 			BattlefrontLogger.Trace($"{Name} Order VP:{BattleFront.VictoryPointProgress.OrderVictoryPoints} Dest VP:{BattleFront.VictoryPointProgress.DestructionVictoryPoints}");
 		}
 

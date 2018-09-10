@@ -4029,6 +4029,12 @@ namespace WorldServer
                                 // Add bounty to the death blow killer  --(byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW
                                 var contributionDeathBlowDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
                                 ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(killer.CharacterId, contributionDeathBlowDefinition.ContributionValue);
+
+                                if (player.AAOBonus > 0)
+                                {
+                                    var contributionDeathBlowDefinitionUnderAAO = BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW_UNDER_AAO);
+                                    ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(killer.CharacterId, contributionDeathBlowDefinitionUnderAAO.ContributionValue);
+                                }
                             }
                             else
                             {
@@ -4043,6 +4049,13 @@ namespace WorldServer
                                 // Add bounty contribution to the assisting killer
                                 var contributionAssistDefinition = BountyService._ContributionDefinitions.Single(x => x.ContributionId == (int)ContributionDefinitions.PLAYER_KILL_ASSIST);
                                 ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionAssistDefinition.ContributionValue);
+
+                                if (player.AAOBonus > 0)
+                                {
+                                    var contributionAssistDefinitionUnderAAO = BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_ASSIST_UNDER_AAO);
+                                    ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(killer.CharacterId, contributionAssistDefinitionUnderAAO.ContributionValue);
+                                }
+
                             }
                         }
                       
