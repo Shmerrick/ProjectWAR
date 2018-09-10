@@ -164,7 +164,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 var groupId = Guid.NewGuid().ToString();
                 
-                BattlefrontLogger.Info($"There are {BattleFrontManager.GetBattleFrontStatusList().Count} battlefront statuses ({BattleFrontManager.GetType().ToString()}).");
+                BattlefrontLogger.Trace($"There are {BattleFrontManager.GetBattleFrontStatusList().Count} battlefront statuses ({BattleFrontManager.GetType().ToString()}).");
                 foreach (var status in BattleFrontManager.GetBattleFrontStatusList())
                 {
                     lock (status)
