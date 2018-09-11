@@ -6,12 +6,12 @@ namespace WorldServer.World.Battlefronts.Bounty
     {
         private static readonly DateTime EpochDateTime = new DateTime(1970, 1, 1);
 
-        public int EffectiveLevel { get; set; }
+        public int EffectiveLevel { get; private set; }
         public int LastDeath { get; set; }
         public int CharacterLevel { get; set; }
         public int RenownLevel { get; set; }
         // The base bounty level of this character.
-        public int BaseBountyValue { get; set; }
+        public int BaseBountyValue { get; private set; }
         // The contribution bounty level of this character (added as the character performs actions to gain contribution). Lock contribution is derived from the ContributionManager.
         public int ContributedBountyValue { get; set; }
 

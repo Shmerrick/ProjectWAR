@@ -3,9 +3,8 @@ using Common;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
-    public interface ILootDecider
+    public interface IBagContentSelector
     {
-        LootBagTypeDefinition DetermineRVRZoneReward(LootBagTypeDefinition lootBag, byte playerRRBand, int playerClass, List<uint> playerItems, bool shuffleRewards = true);
-        IList<T> Shuffle<T>(IList<T> list);
+        LootBagTypeDefinition SelectBagContentForPlayer(LootBagTypeDefinition lootBag, byte playerRRBand, int playerClass, List<uint> playerItems, bool shuffleRewards = true);
     }
 }

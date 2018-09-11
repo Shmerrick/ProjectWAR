@@ -549,25 +549,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             _logger.Info($"Lock XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
 
-            // Dont believe contribution is being triggered.
-            // Dictionary<uint, ContributionInfo> contributors = Region.Campaign.GetContributorsFromRealm(Realm);
-
-            //if (contributors.Count == 0)
-            //{
-            //    _playersKilledInRange = 0;
-            //    return;
-            //}
-
-            //uint maxContribution = contributors.Values.Max(x => x.BaseContribution);
-
-            //Log.Info("Keep", $"Contributor count : {contributors.Count} Max contribution: {maxContribution}");
-
-            //if (maxContribution == 0)
-            //{
-            //    _playersKilledInRange = 0;
-            //    return;
-            //}
-
+           
             try
             {
                 var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
@@ -576,7 +558,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                 foreach (var characterId in eligiblePlayers)
                 {
-                    var player = Player.GetPlayer(characterId);
+                    var player = Player.GetPlayer(characterId.Key);
 
                     if (player == null)
                         continue;

@@ -8,55 +8,89 @@ using NLog;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
+    /// <summary>
+    /// Responsibility : To calculate the number of rewards, select players and assign 
+    /// </summary>
     public class RewardAssigner : IRewardAssigner
     {
-        public IRandomGenerator RandomGenerator { get; set; }
-        public IRewardSelector RewardSelector { get; }
+        public Random RandomGenerator { get; set; }
 
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
-        public RewardAssigner(IRandomGenerator randomGenerator, IRewardSelector rewardSelector)
+        public RewardAssigner(Random randomGenerator)
         {
             RandomGenerator = randomGenerator;
-            RewardSelector = rewardSelector;
+        }
+
+        /// <summary>
+        /// Increase the number of possible awards based upon the number of eligible Players.
+        /// </summary>
+        /// <param name="eligiblePlayers"></param>
+        /// <returns></returns>
+        public byte DetermineNumberOfAwards(int eligiblePlayers)
+        {
+            byte numberOfAwards = 0;
+            // Simple set for low pop for now. TODO base this upon population sizes and % chance to win a bag per flip.
+            if (eligiblePlayers == 0)
+                numberOfAwards = 0;
+            else
+            {
+                if (eligiblePlayers < 10)
+                    numberOfAwards = 4;
+                else
+                {
+                    if (eligiblePlayers < 20)
+                        numberOfAwards = 6;
+                    else
+                    {
+                        numberOfAwards = (byte)(eligiblePlayers < 40 ? 12 : 20);
+                    }
+                }
+            }
+            if (eligiblePlayers < numberOfAwards)
+                numberOfAwards = (byte)eligiblePlayers;
+
+            return numberOfAwards;
+        }
+
+
+        public List<LootBagTypeDefinition> DetermineBagTypes(int numberOfBags, int forceNumberRewards = 0)
+        {
+            int numberLootBags = 0;
+            // Determine the number of awards to give - allowing for overrides.
+            numberLootBags = forceNumberRewards == 0 ? numberOfBags : forceNumberRewards;
+
+            // Define the types of bags to give
+            var lootBagDefinitions = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(numberLootBags);
+            RewardLogger.Debug($"Number loot bags {lootBagDefinitions.Count} to award.");
+
+            return lootBagDefinitions;
         }
 
         /// <summary>
         /// For a list of player Ids, select those getting a reward, and assign a colored loot bag (reward) to them.
         /// </summary>
         /// <param name="eligiblePlayers"></param>
-        /// <param name="forceNumberRewards"></param>
+        /// <param name="bagDefinitions"></param>
         /// <returns></returns>
-        public List<LootBagTypeDefinition> AssignLootToPlayers(List<uint> eligiblePlayers, int forceNumberRewards = 0)
+        public List<LootBagTypeDefinition> AssignLootToPlayers(List<uint> eligiblePlayers, List<LootBagTypeDefinition> bagDefinitions)
         {
             if (eligiblePlayers.Count == 0)
                 return null;
 
-            // Randomise the players
-            // var randomisedPlayerList = eligiblePlayers.OrderBy(a => Guid.NewGuid()).ToList();
-            //var randomisedPlayerList = RewardSelector.RandomisePlayerList(eligiblePlayers);
-            int numberLootBags = 0;
-            // Determine the number of awards to give
-            numberLootBags = forceNumberRewards == 0 ? RewardSelector.DetermineNumberOfAwards((int)eligiblePlayers.Count()) : forceNumberRewards;
-
-            // Define the types of awards to give
-            var lootBagDefinitions = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(numberLootBags);
-            RewardLogger.Debug($"Number loot bags {lootBagDefinitions.Count}");
-            foreach (var lootBagTypeDefinition in lootBagDefinitions)
+            foreach (var lootBagTypeDefinition in bagDefinitions)
             {
                 try
                 {
-                    var selectedPlayer = eligiblePlayers[StaticRandom.Instance.Next((eligiblePlayers.Count))];
-
-                    RewardLogger.Debug($"Selected player {selectedPlayer} {eligiblePlayers.Count} for reward");
-
+                    var selectedPlayer = eligiblePlayers[RandomGenerator.Next((eligiblePlayers.Count))];
                     lootBagTypeDefinition.Assignee = selectedPlayer;
+                    RewardLogger.Debug($"Selected player {selectedPlayer} {eligiblePlayers.Count} for reward");
                 }
                 catch (Exception e)
                 {
                     RewardLogger.Warn($"{e.Message}");
                 }
             }
-            return lootBagDefinitions;
+            return bagDefinitions;
         }
     }
 }

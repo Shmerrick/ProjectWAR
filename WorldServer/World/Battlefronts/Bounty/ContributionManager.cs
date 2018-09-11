@@ -20,6 +20,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         private readonly Object _lockObject = new Object();
         // Holds the characterId, and the list of contributions the player has added in the current battlefront.
         public ConcurrentDictionary<uint, List<PlayerContribution>> ContributionDictionary { get; set; }
+
         // Reference contribution factors
         public List<ContributionDefinition> ContributionFactors { get; }
 
@@ -245,11 +246,11 @@ namespace WorldServer.World.Battlefronts.Bounty
 
    
         /// <summary>
-        /// Return list of eligible players based on the highest contribution
+        /// Return an ordered list of eligible players based on the highest contribution
         /// </summary>
-        /// <param name="numberOfAwards"></param>
+        /// <param name="numberOfBags"></param>
         /// <returns></returns>
-        public HashSet<uint> GetEligiblePlayers(int numberOfAwards)
+        public IOrderedEnumerable<KeyValuePair<uint, int>> GetEligiblePlayers(int numberOfBags)
         {
             var summationDictionary = new ConcurrentDictionary<uint, int>();
 
@@ -260,13 +261,13 @@ namespace WorldServer.World.Battlefronts.Bounty
                 summationDictionary.TryAdd(dictionaryItem.Key, contributionValue);
             }
             // Number of awards = 0 -> return all.
-            if (numberOfAwards == 0)
+            if (numberOfBags == 0)
             {
-                return (HashSet<uint>) summationDictionary.OrderBy(x => x.Value).Select(x => x.Key);
+                return summationDictionary.OrderBy(x => x.Value);
             }
             else
             {
-                return (HashSet<uint>)summationDictionary.OrderBy(x => x.Value).Select(x => x.Key).Take(numberOfAwards);
+                return (IOrderedEnumerable<KeyValuePair<uint, int>>) summationDictionary.OrderBy(x => x.Value).Take(numberOfBags);
             }
         }
     }

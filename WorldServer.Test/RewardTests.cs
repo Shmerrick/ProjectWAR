@@ -28,12 +28,15 @@ namespace WorldServer.Test
             {
                 CrestCount = 1,
                 CrestId = 208431,
-                Money = 1500
+                Money = 1500,
+                RenownBand = 30,
+                BaseRP = 300,
+                BaseInf = 100,
+                BaseXP = 3000
             };
             // Bounty for the character being killed.
             var charBounty = new CharacterBounty
             {
-                EffectiveLevel = 60,
                 CharacterLevel = 15,
                 RenownLevel = 30,
                 LastDeath = 0
@@ -92,7 +95,6 @@ namespace WorldServer.Test
             // Bounty for the character being killed.
             var charBounty = new CharacterBounty
             {
-                EffectiveLevel = 3,
                 CharacterLevel = 1,
                 RenownLevel = 1,
                 LastDeath = 0

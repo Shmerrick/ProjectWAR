@@ -278,14 +278,12 @@
     <Compile Include="World\Battlefronts\Apocalypse\Loot\ILootDecider.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\IRandomGenerator.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\IRewardAssigner.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\Loot\IRewardSelector.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\LootBagRarity.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\LootBagTypeDefinition.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\Loot\LootDecider.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\BagContentSelector.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\RandomGenerator.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardAssigner.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardDistributor.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardSelector.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\SimpleContribution.cs" />
     <Compile Include="World\Battlefronts\ContributionTracker.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\AAOTracker.cs" />

@@ -159,11 +159,11 @@ namespace WorldServer.Managers.Commands
 
             var players = activeBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
 
-            plr.SendClientMessage($"Eligible players ({players.Count}):");
+            plr.SendClientMessage($"Eligible players ({players.Count()}):");
 
             foreach (var player in players)
             {
-                var playerObject = Player.GetPlayer(player);
+                var playerObject = Player.GetPlayer(player.Key);
 
                 if (playerObject.Realm == Realms.REALMS_REALM_DESTRUCTION)
                     plr.SendClientMessage($"{playerObject.Name} (D)");
