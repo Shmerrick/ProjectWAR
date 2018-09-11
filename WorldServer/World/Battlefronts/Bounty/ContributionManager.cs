@@ -124,7 +124,30 @@ namespace WorldServer.World.Battlefronts.Bounty
         }
 
         /// <summary>
-        /// Converrt list of player contributions (which are unlimited in number) into a 'staged' dictionary per reference contribution type.
+        /// Get the contribution dictionary for the character.
+        /// </summary>
+        /// <param name="targetCharacterId"></param>
+        /// <returns></returns>
+        public ConcurrentDictionary<short, ContributionStage> GetContributionStageList(uint targetCharacterId)
+        {
+            List<PlayerContribution> contributionList;
+
+            this.ContributionDictionary.TryGetValue(targetCharacterId, out contributionList);
+
+            short contributionValue = 0;
+
+            if (contributionList == null)
+                return null;
+
+            if (ContributionFactors == null)
+                return null;
+
+           return GetContributionStageDictionary(contributionList, this.ContributionFactors);
+            
+        }
+
+        /// <summary>
+        /// Convert list of player contributions (which are unlimited in number) into a 'staged' dictionary per reference contribution type.
         /// Limit the number of attained contributions to the maximum number defined in the reference contribution type.
         /// 
         /// </summary>
@@ -218,6 +241,33 @@ namespace WorldServer.World.Battlefronts.Bounty
         public void Clear()
         {
             this.ContributionDictionary.Clear();
+        }
+
+   
+        /// <summary>
+        /// Return list of eligible players based on the highest contribution
+        /// </summary>
+        /// <param name="numberOfAwards"></param>
+        /// <returns></returns>
+        public HashSet<uint> GetEligiblePlayers(int numberOfAwards)
+        {
+            var summationDictionary = new ConcurrentDictionary<uint, int>();
+
+            //Flatten out the characterId and contribution value.
+            foreach (var dictionaryItem in ContributionDictionary)
+            {
+                var contributionValue = GetContributionValue(dictionaryItem.Key);
+                summationDictionary.TryAdd(dictionaryItem.Key, contributionValue);
+            }
+            // Number of awards = 0 -> return all.
+            if (numberOfAwards == 0)
+            {
+                return (HashSet<uint>) summationDictionary.OrderBy(x => x.Value).Select(x => x.Key);
+            }
+            else
+            {
+                return (HashSet<uint>)summationDictionary.OrderBy(x => x.Value).Select(x => x.Key).Take(numberOfAwards);
+            }
         }
     }
 }

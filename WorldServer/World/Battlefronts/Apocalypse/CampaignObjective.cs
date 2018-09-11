@@ -1258,7 +1258,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				return;
 
             var contributionDefinition = new ContributionDefinition();
-		    var activeBattleFrontStatus = this.Region.Campaign.GetActiveBattleFrontStatus();
+		    var activeBattleFrontStatus = BattleFront.GetActiveBattleFrontStatus();
 
             VictoryPoint VP = new VictoryPoint(0,0);
 			switch (State)
@@ -1282,12 +1282,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				    {
 				        foreach (var closePlayer in _closePlayers)
 				        {
-				            this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte) ContributionDefinitions.BO_TAKE_BIG_TICK);
+				            BattleFront.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte) ContributionDefinitions.BO_TAKE_BIG_TICK);
 				            contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
 				            activeBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(closePlayer.CharacterId, contributionDefinition.ContributionValue);
 
                             // is this player the group leader?
-                            if (closePlayer.PriorityGroup.GetLeader() == closePlayer)
+                            if (closePlayer.PriorityGroup?.GetLeader() == closePlayer)
 				            {
 				                activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte) ContributionDefinitions.GROUP_LEADER_BO_BIG_TICK);
 				                contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.GROUP_LEADER_BO_BIG_TICK);

@@ -451,7 +451,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.KILL_KEEP_LORD);
                 this.Region.Campaign.GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
 
-                if (plr.PriorityGroup.GetLeader() == plr)
+                if (plr.PriorityGroup?.GetLeader() == plr)
                 {
                     this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
                     contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
@@ -572,7 +572,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
                 var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
-                var eligiblePlayers = WorldMgr.UpperTierCampaignManager.GetEligiblePlayers(activeBattleFrontStatus);
+                var eligiblePlayers = activeBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
 
                 foreach (var characterId in eligiblePlayers)
                 {

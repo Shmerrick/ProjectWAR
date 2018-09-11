@@ -23,7 +23,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// </summary>
         /// <param name="eligiblePlayers"></param>
         /// <returns></returns>
-        public byte DetermineNumberOfAwards(uint eligiblePlayers)
+        public byte DetermineNumberOfAwards(int eligiblePlayers)
         {
             byte numberOfAwards = 0;
             // Simple set for low pop for now. TODO base this upon population sizes and % chance to win a bag per flip.

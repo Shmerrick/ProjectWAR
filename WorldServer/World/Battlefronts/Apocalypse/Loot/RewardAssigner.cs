@@ -36,7 +36,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             //var randomisedPlayerList = RewardSelector.RandomisePlayerList(eligiblePlayers);
             int numberLootBags = 0;
             // Determine the number of awards to give
-            numberLootBags = forceNumberRewards == 0 ? RewardSelector.DetermineNumberOfAwards((uint)eligiblePlayers.Count()) : forceNumberRewards;
+            numberLootBags = forceNumberRewards == 0 ? RewardSelector.DetermineNumberOfAwards((int)eligiblePlayers.Count()) : forceNumberRewards;
 
             // Define the types of awards to give
             var lootBagDefinitions = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(numberLootBags);

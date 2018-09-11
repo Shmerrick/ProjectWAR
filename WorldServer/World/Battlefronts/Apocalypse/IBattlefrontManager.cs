@@ -10,7 +10,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         RVRProgression GetBattleFrontByName(string name);
         RVRProgression GetBattleFrontByBattleFrontId(int id);
 
-        HashSet<uint> GetEligiblePlayers(BattleFrontStatus activeBattleFrontStatus);
+        
 
         string ActiveBattleFrontName { get; set; }
         RVRProgression ActiveBattleFront { get; set; }

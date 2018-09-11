@@ -73,8 +73,17 @@ namespace WorldServer.Managers.Commands
                     }
 
                 }
+
+                var stageDictionary = activeBattleFrontStatus.ContributionManagerInstance.GetContributionStageList(target.CharacterId);
+
+                foreach (var contributionStage in stageDictionary)
+                {
+                    plr.SendClientMessage(contributionStage.ToString());
+                }
+
             }
 
+            
 
             return true;
         }
@@ -148,7 +157,7 @@ namespace WorldServer.Managers.Commands
             var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
 
-            var players = WorldMgr.UpperTierCampaignManager.GetEligiblePlayers(activeBattleFrontStatus);
+            var players = activeBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
 
             plr.SendClientMessage($"Eligible players ({players.Count}):");
 

@@ -703,8 +703,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var activeBattleFrontId = BattleFrontManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
 
-            var eligiblePlayers = this.BattleFrontManager.GetEligiblePlayers(activeBattleFrontStatus);
+              // Select players from the shortlist to actually assign a reward to. (Eligible and winning realm)
+            var rewardSelector = new RewardSelector(new RandomGenerator());
 
+            
+            var numberOfAwards = (int) rewardSelector.DetermineNumberOfAwards(activeBattleFrontStatus.ContributionManagerInstance.ContributionDictionary.Count());
+            // Determine the number of eligible Players.
+            var eligiblePlayers = activeBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(numberOfAwards);
+
+            
             // Remove eligible players from losing realm
             foreach (var eligiblePlayer in eligiblePlayers)
             {
@@ -722,8 +729,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             DistributeBaseRewards(losingRealmPlayers, winningRealmPlayers, lockingRealm);
 
-            // Select players from the shortlist to actually assign a reward to. (Eligible and winning realm)
-            var rewardSelector = new RewardSelector(new RandomGenerator());
+          
             // Get the character Ids of the winningRealm characters
             var winningRealmCharacterIdList = winningRealmPlayers.Select(x => x.CharacterId).ToList();
             var rewardAssignments = new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(winningRealmCharacterIdList, forceNumberBags);
