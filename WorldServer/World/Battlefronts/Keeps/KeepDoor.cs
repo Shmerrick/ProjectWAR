@@ -94,50 +94,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 Occlusion.SetFixtureVisible(_keepDoor.Info.DoorId, false);
             }
 
-            public void SetDoorHealthFromVP(int vp)
-            {
-                var tH = TotalHealth;
-                uint tHBuffed = 0;
-                bool is100wobuff = false;
-                switch (vp)
-                {
-                    case 0:
 
-                        //200% buff(totalhealth * 3)
-                        tHBuffed = (tH * 3);
-                        is100wobuff = (Health == tH || Health == TotalHealth) ? true : false;
-                        if (is100wobuff)
-                        {
-                            Health = tHBuffed;
-                        }
-
-                        break;
-
-                    case 2500:
-                        tHBuffed = (tH * 2);
-                        is100wobuff = (Health == tH * 3 || Health > tHBuffed)
-                            ? true
-                            : false;
-                        if (is100wobuff)
-                        {
-                            Health = tHBuffed;
-                        }
-
-                        break;
-
-                    case 4000:
-                        tHBuffed = (tH);
-                        is100wobuff = (Health == tH * 2 || Health > tHBuffed)
-                            ? true
-                            : false;
-                        if (is100wobuff)
-                        {
-                            Health = tHBuffed;
-                        }
-
-                        break;
-                }
-            }
 
             /// <summary>Inflicts damage upon this unit and returns whether lethal damage was dealt.</summary>
             public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1f, uint mitigation = 0)
@@ -150,6 +107,22 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                 if (IsDead || PendingDisposal || IsInvulnerable)
                     return false;
+
+                //debuff damage on door
+                var vp = (Realm == Realms.REALMS_REALM_ORDER)
+                    ? (uint)Region.Campaign.VictoryPointProgress.DestructionVictoryPoints
+                    : (uint)Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
+
+                if (vp >= 0 && vp < 2500)
+                {
+                    var newDmg = damage * 25 / 100;
+                    damage = newDmg;
+                }
+                else if (vp >= 2500 && vp < 4000)
+                {
+                    var newDmg = damage * 75 / 100;
+                    damage = newDmg;
+                }
 
                 lock (DamageApplicationLock)
                 {

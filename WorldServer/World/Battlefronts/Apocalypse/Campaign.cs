@@ -129,10 +129,50 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Recalculate AAO
             _EvtInterface.AddEvent(RecordMetrics, 30000, 0);
 
-            if (new int[] {3,4}.Contains(Tier))
+            //if (Tier == 4)
+            //{
+            //    _EvtInterface.AddEvent(UpdateDoorMsg, 5000, 0);
+            //}
+
+            //if (new int[] {3,4}.Contains(Tier))
+            //{
+            //    _EvtInterface.AddEvent(UpdateDoorsFromVP, 1, 0);
+            //    _EvtInterface.AddEvent(UpdateLordsFromVP, 1, 0);
+            //}
+
+        }
+
+        public void UpdateDoorMsg()
+        {
+            var oVp = this.Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
+            var dVp = this.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints;
+
+            //get order/destro keeps
+            var oKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_ORDER);
+            var dKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION);
+
+            if (oKeep != null)
             {
-                _EvtInterface.AddEvent(UpdateDoorsFromVP, 1, 0);
-                _EvtInterface.AddEvent(UpdateLordsFromVP, 1, 0);
+                //update keep door health
+                foreach (var door in oKeep.Doors)
+                {
+                    if (!door.GameObject.IsDead)
+                    {
+                        BattlefrontLogger.Debug("ORDER " + Region.RegionName + " | Door " + door.Info.Number + " Health: " + door.GameObject.Health);
+                    }
+                }
+            }
+
+            if (dKeep != null)
+            {
+                //update keep door health
+                foreach (var door in dKeep.Doors)
+                {
+                    if (!door.GameObject.IsDead)
+                    {
+                        BattlefrontLogger.Debug("DESTRO" + Region.RegionName + " | Door " + door.Info.Number + " Health: " + door.GameObject.Health);
+                    }
+                }
             }
 
         }
@@ -325,8 +365,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var dKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION);
             
             //update order
-            oKeep?.ScaleLordVP((int)oVp);
-            dKeep?.ScaleLordVP((int)dVp);
+            //oKeep?.ScaleLordVP((int)oVp);
+            //dKeep?.ScaleLordVP((int)dVp);
 
         }
 
@@ -337,40 +377,39 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// 4000VP = 0%(Regular Health)
         /// </summary>
         /// <returns></returns>
-        public void UpdateDoorsFromVP()
-        {
-            //get order/destro vp's
-            var oVp = (int) this.Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
-            var dVp = (int) this.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints;
+        //public void UpdateDoorsFromVP()
+        //{
+        //    //get order/destro vp's
+        //    var oVp = (int) this.Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
+        //    var dVp = (int) this.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints;
 
-            //get order/destro keeps
-            var oKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_ORDER);
-            var dKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION);
+        //    //get order/destro keeps
+        //    var oKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_ORDER);
+        //    var dKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION);
 
-            if (oKeep != null)
-            {
-                //update keep door health
-                foreach (var door in oKeep.Doors)
-                {
-                    if (!door.GameObject.IsDead)
-                    {
-                        door.GameObject.SetDoorHealthFromVP((int)dVp);
-                    }
-                }
-            }
+        //    if (oKeep != null)
+        //    {
+        //        //update keep door health
+        //        foreach (var door in oKeep.Doors)
+        //        {
+        //            if (!door.GameObject.IsDead)
+        //            {
+        //            }
+        //        }
+        //    }
 
-            if (dKeep != null)
-            {
-                //update keep door health
-                foreach (var door in dKeep.Doors)
-                {
-                    if (!door.GameObject.IsDead)
-                    {
-                        door.GameObject.SetDoorHealthFromVP((int)oVp);
-                    }
-                }
-            }
-        }
+        //    if (dKeep != null)
+        //    {
+        //        //update keep door health
+        //        foreach (var door in dKeep.Doors)
+        //        {
+        //            if (!door.GameObject.IsDead)
+        //            {
+        //                door.GameObject.SetDoorHealthFromVP((int)oVp);
+        //            }
+        //        }
+        //    }
+        //}
 
         private List<Player> GetOrderPlayersInZone(int zoneId)
         {

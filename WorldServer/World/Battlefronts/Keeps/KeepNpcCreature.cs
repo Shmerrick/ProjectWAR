@@ -113,6 +113,22 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                 if (_flagGrd.Info.KeepLord)
                 {
+                    //debuff damage on door
+                    var vp = (Realm == Realms.REALMS_REALM_ORDER)
+                        ? (uint)Region.Campaign.VictoryPointProgress.DestructionVictoryPoints
+                        : (uint)Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
+
+                    if (vp >= 0 && vp < 2500)
+                    {
+                        var newDmg = damage * 25 / 100;
+                        damage = newDmg;
+                    }
+                    else if (vp >= 2500 && vp < 4000)
+                    {
+                        var newDmg = damage * 75 / 100;
+                        damage = newDmg;
+                    }
+
                     if (_keep.LastMessage < Keep.KeepMessage.Inner0)
                         return false;
                     damage = (uint)(damage * _damageScaler);
@@ -130,6 +146,22 @@ namespace WorldServer.World.BattleFronts.Keeps
                 {
                     if (_keep.LastMessage < Keep.KeepMessage.Inner0)
                         return false;
+
+                    //debuff damage on door
+                    var vp = (Realm == Realms.REALMS_REALM_ORDER)
+                        ? (uint)Region.Campaign.VictoryPointProgress.DestructionVictoryPoints
+                        : (uint)Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
+
+                    if (vp >= 0 && vp < 2500)
+                    {
+                        var newDmg = damageInfo.Damage * 25 / 100;
+                        damageInfo.Damage = newDmg;
+                    }
+                    else if (vp >= 2500 && vp < 4000)
+                    {
+                        var newDmg = damageInfo.Damage * 75 / 100;
+                        damageInfo.Damage = newDmg;
+                    }
 
                     damageInfo.Mitigation += damageInfo.Damage * (1 - _damageScaler);
                     damageInfo.Damage *= _damageScaler;
@@ -244,50 +276,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 _damageScaler = scaler;
             }
 
-            public void ScaleLordVP(int vp)
-            {
-                var tH = this.TotalHealth;
-                uint tHBuffed = 0;
-                bool is100wobuff = false;
-                switch (vp)
-                {
-                    case 0:
-
-                        //200% buff(totalhealth * 3)
-                        tHBuffed = (tH * 3);
-                        is100wobuff = (this.Health == tH || Health == TotalHealth) ? true : false;
-                        if (is100wobuff)
-                        {
-                            this.Health = tHBuffed;
-                        }
-
-                        break;
-
-                    case 2500:
-                        tHBuffed = (tH * 2);
-                        is100wobuff = (this.Health == tH * 3 || this.Health > tHBuffed)
-                            ? true
-                            : false;
-                        if (is100wobuff)
-                        {
-                            this.Health = tHBuffed;
-                        }
-
-                        break;
-
-                    case 4000:
-                        tHBuffed = (tH);
-                        is100wobuff = (this.Health == tH * 2 || this.Health > tHBuffed)
-                            ? true
-                            : false;
-                        if (is100wobuff)
-                        {
-                            this.Health = tHBuffed;
-                        }
-
-                        break;
-                }
-            }
+           
 
             public override void RezUnit()
             {
