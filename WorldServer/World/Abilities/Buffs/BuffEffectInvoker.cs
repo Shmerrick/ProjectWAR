@@ -1796,14 +1796,6 @@ namespace WorldServer
                     case BUFF_START:
                         cmd.CommandResult = (short)(cmd.SecondaryValue * hostBuff.StackLevel);
 
-                        if (cmd.Entry == 649)
-                        {
-                            Player player = hostBuff.Caster as Player;
-
-                            if (player != null && player.Info.CareerLine == (byte)CareerLine.CAREERLINE_ENGINEER)
-                                cmd.CommandResult = (short)(cmd.CommandResult * 0.75f);
-                        }
-
                         if (cmd.CommandResult < 0)
                             target.StsInterface.AddReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
                         else

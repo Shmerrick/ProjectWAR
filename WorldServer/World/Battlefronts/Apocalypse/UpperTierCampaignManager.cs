@@ -218,6 +218,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 							apocBattleFrontStatus.FinalVictoryPoint = new VictoryPointProgress();
 						}
 						apocBattleFrontStatus.LockTimeStamp = 0;
+
+                        // Reset the population for the battle front status
+                        ProgressionLogger.Info($"InitializePopulationList {activeRegion.RegionName} BF Id : {this.ActiveBattleFront.BattleFrontId} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
+                        this.GetActiveCampaign().InitializePopulationList(this.ActiveBattleFront.BattleFrontId);
                     }
                 }
 
@@ -264,7 +268,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public RVRProgression LockActiveBattleFront(Realms realm)
+        public RVRProgression LockActiveBattleFront(Realms realm, int forceNumberBags = 0)
         {
             var activeRegion = RegionMgrs.Single(x => x.RegionId == this.ActiveBattleFront.RegionId);
             ProgressionLogger.Info($" Locking battlefront in {activeRegion.RegionName} Zone : {this.ActiveBattleFront.ZoneId} {this.ActiveBattleFrontName}");
@@ -283,7 +287,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     keep.LockKeep(realm, true, true);
             }
             
-            activeRegion.Campaign.LockBattleFront(realm);
+            activeRegion.Campaign.LockBattleFront(realm, forceNumberBags);
 
             // Use Locking Realm in the BFM, not the BF (BF applies to region)
             return this.ActiveBattleFront;
@@ -300,7 +304,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             activeStatus.LockingRealm = lockingRealm;
             activeStatus.FinalVictoryPoint = vpp;
             activeStatus.LockTimeStamp = FrameWork.TCPManager.GetTimeStamp();
+
+            ProgressionLogger.Info($"Locking BF Status {activeStatus.Description} to realm:{lockingRealm}");
 		}
+
+        public BattleFrontStatus GetActiveBattleFrontStatus(int battleFrontId)
+        {
+            return BattleFrontStatuses.Single(x => x.BattleFrontId == battleFrontId);
+        }
+
 
         public List<BattleFrontStatus> GetBattleFrontStatusList()
         {
@@ -414,5 +426,30 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			newProg.LastOwningRealm = 0;
 			newProg.LastOpenedZone = 1;
 		}
+
+        public HashSet<uint> GetEligiblePlayers(BattleFrontStatus activeBattleFrontStatus)
+        {
+            var eligiblePlayers = new HashSet<uint>();
+            ProgressionLogger.Debug($"** Kill Contribution players **");
+            foreach (var playerKillContribution in activeBattleFrontStatus.KillContributionSet)
+            {
+                eligiblePlayers.Add(playerKillContribution);
+            }
+            ProgressionLogger.Debug($"{string.Join(",", eligiblePlayers.ToArray())}");
+            ProgressionLogger.Debug($"** Objective Contribution players **");
+            foreach (var campaignObjective in GetActiveCampaign().Objectives)
+            {
+                ProgressionLogger.Debug($"** Objective Contribution for {campaignObjective.Name} **");
+                var contributionList = campaignObjective.CampaignObjectiveContributions;
+                foreach (var playerObjectiveContribution in contributionList)
+                {
+                    eligiblePlayers.Add(playerObjectiveContribution.Key);
+                }
+                ProgressionLogger.Debug($"{string.Join(",", contributionList.ToArray())}");
+            }
+            ProgressionLogger.Debug($"All Eligible Players : {string.Join(",", eligiblePlayers.ToArray())}");
+
+            return eligiblePlayers;
+        }
     }
 }

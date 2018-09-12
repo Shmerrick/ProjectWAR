@@ -608,6 +608,7 @@ namespace WorldServer
 
                 if (credited != null && credited.Zone != null && !credited.PendingDisposal)
                     HandleDeathRewards(credited);
+                
 
                 DeathLogger.Trace($"Clearing {killer.Name}");
 
@@ -1189,6 +1190,10 @@ namespace WorldServer
         public bool IsPolymorphed;
 
         public bool IsKeepLord = false;
+
+		public bool IsPatrol = false;
+
+		public uint WaypointGUID { get; set; } = 0;
 
         public void AddCrowdControlImmunity(int flags)
         {

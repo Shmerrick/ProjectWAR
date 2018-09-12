@@ -17,6 +17,8 @@ namespace WorldServer
         public static int BrainThinkTime = 3000; // Update think every 3sec
         public static int MaxAggroRange = 15; // Max Range To Aggro
 
+		private bool _StopWaypoints = false;
+
         private Unit _unit;
         public Player Debugger { get; set; }
 
@@ -78,13 +80,11 @@ namespace WorldServer
 
         public override void Update(long tick)
         {
-            #if USE_WAYPOINTS
-            if (_Owner.IsUnit())
+            if (_Owner.IsUnit() && Waypoints != null && Waypoints.Count > 0)
             {
-                if (!_unit.IsDead)
+                if (!_unit.IsDead && !_StopWaypoints)
                     UpdateWaypoints(tick);
             }
-            #endif
 
             if (tick > _nextThinkTime)
             {
@@ -169,9 +169,8 @@ namespace WorldServer
 
             if (_unit != null)
             {
-                if (_unit is KeepNpcCreature.KeepCreature)
+                if (_unit is KeepNpcCreature.KeepCreature npc && !npc.IsPatrol)
                 {
-                    KeepNpcCreature.KeepCreature npc = _unit as KeepNpcCreature.KeepCreature;
                     if (((npc.Z - npc.SpawnPoint.Z > 120 || npc.SpawnPoint.Z - npc.Z > 30)) || !npc.PointWithinRadiusFeet(npc.WorldSpawnPoint, 200))
                     {
                         ProcessCombatEnd();
@@ -192,9 +191,20 @@ namespace WorldServer
             if (creature == null || creature is Pet)
                 return;
 
-            if (!creature.PointWithinRadiusFeet(creature.WorldSpawnPoint, 200))
-                ProcessCombatEnd();
-
+			if (_unit is KeepNpcCreature.KeepCreature patrol && patrol.IsPatrol)
+			{
+				if (!patrol.PointWithinRadiusFeet(new Point3D((int)patrol.AiInterface.CurrentWaypoint.X, (int)patrol.AiInterface.CurrentWaypoint.Y, (int)patrol.AiInterface.CurrentWaypoint.Z), 200))
+				{
+					ProcessCombatEnd();
+				}
+			}
+			else
+			{
+				if (!creature.PointWithinRadiusFeet(creature.WorldSpawnPoint, 200))
+				{
+					ProcessCombatEnd();
+				}
+			}
         }
 
  #region Combat Events
@@ -216,10 +226,12 @@ namespace WorldServer
                 return;
             }
 
-            if (!CurrentBrain.StartCombat(target))
+			if (!CurrentBrain.StartCombat(target))
                 return;
 
-            if (!(_unit is KeepNpcCreature.KeepCreature))
+			_StopWaypoints = true;
+			
+			if (!(_unit is KeepNpcCreature.KeepCreature))
                 _thinkInterval = 650;
 
             bool processLink = State != AiState.FIGHTING && target is Player && _unit.Aggressive;
@@ -304,7 +316,8 @@ namespace WorldServer
             {
                 ResetThinkInterval();
                 State = AiState.STANDING;
-            }
+				_StopWaypoints = false;
+			}
         }
 
         public void ProcessAttacked(Unit attacker)
@@ -455,10 +468,9 @@ namespace WorldServer
 
                     if (unitOwner != null)
                     {
-                        if (unitOwner is KeepNpcCreature.KeepCreature)
+                        if (unitOwner is KeepNpcCreature.KeepCreature npc && !npc.IsPatrol)
                         {
-                            KeepNpcCreature.KeepCreature npc = unitOwner as KeepNpcCreature.KeepCreature;
-                            //Keep NPCs have additional hardening. If their target goes outside the keep, instantly reset.
+                            // Keep NPCs have additional hardening. If their target goes outside the keep, instantly reset.
                             if (enemy.Z - npc.SpawnPoint.Z > 120 || npc.SpawnPoint.Z - enemy.Z > 30 || !enemy.PointWithinRadiusFeet(npc.WorldSpawnPoint, 200) || !npc.PointWithinRadiusFeet(npc.WorldSpawnPoint, 200))
                             {
                                 continue;
@@ -468,38 +480,32 @@ namespace WorldServer
                                 continue;
                             }
                         }
-                        else if (unitOwner is Creature)
+                        else if (unitOwner is Creature creature)
                         {
-                            Creature creature = unitOwner as Creature;
-                            if (creature is Pet)
+                            if (creature is Pet pet)
                             {
-                                Pet pet = creature as Pet;
-                               
                                 if (pet == null || pet.Owner == null)
                                     continue;
-                                //Only aggro if we have LOS to the owner.
+
+                                // Only aggro if we have LOS to the owner.
                                 if (!enemy.LOSHit(pet.Owner))
                                 {
                                     continue;
                                 }
-
                             }
                             else
                             {
-                                //Standard NPC checks.
+                                // Standard NPC checks.
                                 if (!creature.PointWithinRadiusFeet(creature.WorldSpawnPoint, 200))
                                 {
                                     continue;
                                 }
+
                                 if (!enemy.LOSHit(creature))
                                 {
                                     continue;
                                 }
                             }
-                        }
-                        else
-                        {
-
                         }
                     }
 
@@ -514,7 +520,16 @@ namespace WorldServer
 
         #region Waypoints
 
-        public List<Waypoint> Waypoints = new List<Waypoint>();
+		private List<Waypoint> _Waypoints = new List<Waypoint>();
+		public List<Waypoint> Waypoints
+		{
+			get { return _Waypoints; }
+			set
+			{
+				_Waypoints = value;
+			}
+		}
+
         public Waypoint CurrentWaypoint;
         public byte CurrentWaypointType = Waypoint.Loop;
         public bool IsWalkingBack; // False : Running on waypooints Start to End
@@ -571,8 +586,8 @@ namespace WorldServer
         {
             WaypointService.DatabaseSaveWaypoint(SaveWp);
         }
-
-        public void RemoveWaypoint(Waypoint RemoveWp)
+		
+		public void RemoveWaypoint(Waypoint RemoveWp)
         {
             switch (Waypoints.Count)
             {
@@ -681,10 +696,10 @@ namespace WorldServer
 
         public bool IsAtWaypointEnd()
         {
-            if (_Owner.GetDistanceTo(CurrentWaypoint.X, CurrentWaypoint.Y, CurrentWaypoint.Z) < 3)
+            if (_Owner.Get2DDistanceToWorldPoint(new Point3D((int)CurrentWaypoint.X, (int)CurrentWaypoint.Y, (int)CurrentWaypoint.Z)) < 3)
                 return true;
-
-            return true;
+			else
+				return false;
         }
 
         public bool CanStartNextWaypoint(long Tick)
@@ -738,7 +753,9 @@ namespace WorldServer
             //Log.Info("Waypoints", "Starting Waypoint");
 
             State = AiState.MOVING;
-            _unit.MvtInterface.Move(new Point3D(CurrentWaypoint.X, CurrentWaypoint.Y, CurrentWaypoint.Z));
+			_unit.Speed = CurrentWaypoint.Speed;
+			_unit.UpdateSpeed();
+            _unit.MvtInterface.Move(new Point3D(Convert.ToInt32(CurrentWaypoint.X), Convert.ToInt32(CurrentWaypoint.Y), Convert.ToInt32(CurrentWaypoint.Z)));
             if (!Started)
             {
                 // TODO : Messages,Emotes, etc

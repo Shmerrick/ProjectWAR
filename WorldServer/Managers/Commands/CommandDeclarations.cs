@@ -61,14 +61,17 @@ namespace WorldServer.Managers.Commands
         /// <summary>Addition commands under .add</summary>
         public static List<GmCommandHandler> AddCommands = new List<GmCommandHandler>
         {
-            new GmCommandHandler("item",AddItem, null, EGmLevel.TrustedStaff, 1, "Add item to player"),
+            new GmCommandHandler("item",AddItem, null, EGmLevel.AnyGM, 1, "Add item to player"),
             new GmCommandHandler("money",AddMoney, null, EGmLevel.DatabaseDev, 1, "Add money to player"),
             new GmCommandHandler("tok",AddTok, null, EGmLevel.DatabaseDev, 1, "Add tok to player"),
             new GmCommandHandler("renown",AddRenown, null, EGmLevel.TrustedStaff, 1, "Add renown to player"),
             new GmCommandHandler("influence",AddInf, null, EGmLevel.TrustedStaff, 1, "Add Influence to player"),
             new GmCommandHandler("xp",AddXp, null, EGmLevel.TrustedStaff, 1, "Add xp to player"),
-            new GmCommandHandler("contribution",AddContrib, null, EGmLevel.TrustedStaff, 1, "Add contribution to player")
+            new GmCommandHandler("contribution",AddContrib, null, EGmLevel.TrustedStaff, 1, "Add contribution to player"),
+            new GmCommandHandler("eligibility", AddRewardEligibility, null, EGmLevel.TrustedStaff, 0, "Reports on players eligibility"),
         };
+
+       
 
         /// <summary>RvR campaign commmands under .campaign</summary>
         public static List<GmCommandHandler> CampaignCommands = CommandsBuilder.BuildCommands(typeof(CampaignCommands));
@@ -94,7 +97,8 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("logpackets", LogPackets, null, EGmLevel.SourceDev, 0, "Toggles logging outgoing packet volume."),
             new GmCommandHandler("readpackets", ReadPackets, null, EGmLevel.SourceDev, 0, "Displays the volume of outgoing packets over the defined period."),
             new GmCommandHandler("los", StartStopLosMonitor, null, EGmLevel.AllStaff, 0, "Starts/Stops line of sight monitoring for selected target."),
-            new GmCommandHandler("population", GetServerPopulation, null, EGmLevel.SourceDev, 0, "Finds all players in the game."),
+            new GmCommandHandler("population", GetServerPopulation, null, EGmLevel.AnyGM, 0, "Finds all players in the game."),
+            new GmCommandHandler("eligibility", GetRewardEligibility, null, EGmLevel.AnyGM, 0, "Reports on players eligibility"),
         };
 
         /// <summary>Database commands under .database</summary>
@@ -285,10 +289,10 @@ namespace WorldServer.Managers.Commands
         {
 #region Command Group Handlers
             new GmCommandHandler("ability",null, AbilityCommands, 0, 0, "Ability commands."),
-            new GmCommandHandler("add",null, AddCommands, EGmLevel.TrustedStaff, 0, "Addition commands."),
+            new GmCommandHandler("add",null, AddCommands, EGmLevel.AnyGM, 0, "Addition commands."),
             new GmCommandHandler("campaign",null, CampaignCommands, EGmLevel.GM, 0, "RvR campaign commmands."),
             new GmCommandHandler("chapter",null, ChapterCommands, EGmLevel.DatabaseDev, 0, "Chapter modification commands."),
-            new GmCommandHandler("check",null, CheckCommands, EGmLevel.DatabaseDev, 0, "Debugging commands."),
+            new GmCommandHandler("check",null, CheckCommands, EGmLevel.GM, 0, "Debugging commands."),
             new GmCommandHandler("database", null, DatabaseCommands, EGmLevel.DatabaseDev, 0, "Database commands."),
             new GmCommandHandler("equip", null, EquipCommands, EGmLevel.DatabaseDev, 0, "Creature equipment modification commands."),
             new GmCommandHandler("go",null, GoCommands, EGmLevel.DatabaseDev, 0, "Game object commands."),
@@ -328,7 +332,7 @@ namespace WorldServer.Managers.Commands
             // Halloween event stuff
             new GmCommandHandler("spooky", Spooky, null, 0, 0, "This command will make you spooky..."),
             new GmCommandHandler("notspooky", NotSpooky, null, 0, 0, "You don't want to be spooky :(... You need to run this command upon logging on server, it do not disable spookieness if you are already spooky."),
-            new GmCommandHandler("morph", Morph, null, 0, 0, "This command will make you morph..."),
+            new GmCommandHandler("morph", Morph, null, EGmLevel.GM, 0, "This command will make you morph..."),
             // All staff
             #if (DEBUG)
             new GmCommandHandler("debugmode", SetDebugMode, null, 0, 0, "Enables debugging messages (byte enableDebug)"),
@@ -404,6 +408,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("recreateplayer", CreatePlayer, null, EGmLevel.DatabaseDev, 1, "Requests player info is resent"),
             new GmCommandHandler("quest", QuestComplete, null, EGmLevel.DatabaseDev, 2, "Used to debug quests <QuestId> <Operation> Operation 1 - add, 2 - finish quest, 3 - delete quest from player"),
             new GmCommandHandler("geartester", GearTester, null, EGmLevel.SourceDev, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
+            new GmCommandHandler("givebag", GiveBag, null, EGmLevel.SourceDev, 0, "Used to give a character a bag <Rarity><Item1><Item2>.."), // Don't worry, this is only on DEV, dosen't go to Live
             //new GmCommandHandler("gunbad", Gunbad, null, EGmLevel.GM, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
 
             // Source dev commands

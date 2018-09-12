@@ -216,10 +216,24 @@ namespace WorldServer.Services.World
                     return Kp.Value;
             return null;
         }
-        #endregion
+		#endregion
 
-        #region Creature spawn
-        public static Dictionary<uint, Creature_spawn> CreatureSpawns;
+		//#region patrol calculations
+		
+		//public static Point3D GetNewRandomGuardPosition(uint zoneId, Point3D mid)
+		//{
+		//	Random random = new Random();
+		//	int x = mid.X + 250 - (50 * random.Next(1, 11));
+		//	int y = mid.Y + 250 - (50 * random.Next(1, 11));
+		//	int z = ClientFileMgr.GetHeight((int)zoneId, x, y);
+
+		//	return new Point3D(x, y, z);
+		//}
+
+		//#endregion
+
+		#region Creature spawn
+		public static Dictionary<uint, Creature_spawn> CreatureSpawns;
         public static int MaxCreatureGUID;
 
         public static int GenerateCreatureSpawnGUID()
@@ -544,9 +558,9 @@ namespace WorldServer.Services.World
 
                 int rand = StaticRandom.Instance.Next(100);
 
-                if (rand < unitRank * 3)
+                if (rand < 1 + unitRank * 7)
                     itemId += 3;
-                else if (rand < 2 + unitRank * 10)
+                else if (rand < 2 + unitRank * 21)
                     itemId += 2;
                 else if (rand > 65 - (unitLevel / 2) - (unitRank * 10))
                     itemId += 1;

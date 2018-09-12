@@ -1,5 +1,6 @@
 ﻿using Common;
 using FrameWork;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -43,5 +44,19 @@ namespace WorldServer.Services.World
             Database.DeleteObject(DeleteWp);
         }
 
-    }
+		/// <summary>
+		/// calculates waypoint offset in range of from to to
+		/// </summary>
+		/// <param name="from"></param>
+		/// <param name="to"></param>
+		/// <returns></returns>
+		public static int ShuffleWaypointOffset(int from, int to)
+		{
+			Random rnd = new Random();
+			bool sign = rnd.NextDouble() > 0.5;
+			int offset = Convert.ToInt32(from + rnd.NextDouble() * 100);
+			if (offset > to) offset = to;
+			return sign ? offset : -offset;
+		}
+	}
 }

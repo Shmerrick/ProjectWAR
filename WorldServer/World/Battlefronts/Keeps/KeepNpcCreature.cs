@@ -6,11 +6,14 @@ using GameData;
 using WorldServer.World.BattleFronts;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
+using System.Threading;
+using NLog;
 
 namespace WorldServer.World.BattleFronts.Keeps
 {
-    public class KeepNpcCreature
+    public class KeepNpcCreature : IComparable<KeepNpcCreature>
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public RegionMgr Region;
         public KeepCreature Creature;
         public Keep_Creature Info;
@@ -21,9 +24,15 @@ namespace WorldServer.World.BattleFronts.Keeps
             Region = region;
             Info = info;
             Keep = keep;
-        }
+		}
 
-        public void SpawnGuard(Realms realm)
+		public int CompareTo(KeepNpcCreature other)
+		{
+			if (other == null) return 1;
+			return Info.WaypointGUID.CompareTo(other.Info.WaypointGUID);
+		}
+
+		public void SpawnGuard(Realms realm)
         {
             if (Creature != null)
             {
@@ -37,6 +46,9 @@ namespace WorldServer.World.BattleFronts.Keeps
             if (realm != Realms.REALMS_REALM_NEUTRAL)
             {
                 Creature_proto proto = CreatureService.GetCreatureProto(realm == Realms.REALMS_REALM_ORDER ? Info.OrderId : Info.DestroId);
+
+                _logger.Debug($"Spawning Guard {proto.Name} ({proto.Entry})");
+
                 if (proto == null)
                 {
                     Log.Error("KeepNPC", "No FlagGuard Proto");
@@ -65,31 +77,88 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                     Info = newInfo;
                 }*/
-                spawn.WorldY = Info.Y;
-                spawn.WorldZ = Info.Z;
-                spawn.WorldX = Info.X;
-                spawn.ZoneId = Info.ZoneId;
+				spawn.WorldX = Info.X;
+				spawn.WorldY = Info.Y;
+				spawn.WorldZ = Info.Z;
+				spawn.ZoneId = Info.ZoneId;
 
-                Creature = new KeepCreature(spawn, this, Keep);
-                
-                /*if (Info.KeepLord)
+				Creature = new KeepCreature(spawn, this, Keep)
+				{
+					WaypointGUID = Convert.ToUInt32(Info.WaypointGUID)
+				};
+
+				/*if (Info.KeepLord)
                     Log.Info(Keep.Info.Name, (Keep.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction") + " keep lord spawned.");*/
-                Region.AddObject(Creature, spawn.ZoneId);
+                
+
+
+				Region.AddObject(Creature, spawn.ZoneId);
             }
         }
 
-        public class KeepCreature : Creature
+		public void SpawnGuardNear(Realms realm, KeepNpcCreature nearPatrol)
+		{
+			if (Creature != null)
+			{
+				Creature.Destroy();
+				Creature = null;
+			}
+
+			if (realm != Realms.REALMS_REALM_NEUTRAL)
+			{
+				Creature_proto proto = CreatureService.GetCreatureProto(realm == Realms.REALMS_REALM_ORDER ? Info.OrderId : Info.DestroId);
+
+			    _logger.Debug($"Spawning Guard Near {proto.Name} ({proto.Entry})");
+
+                if (proto == null)
+				{
+					Log.Error("KeepNPC", "No FlagGuard Proto");
+					return;
+				}
+
+				Creature_spawn spawn = new Creature_spawn();
+				spawn.BuildFromProto(proto);
+				spawn.WorldO = nearPatrol.Info.O;
+				spawn.WorldX = nearPatrol.Creature.WorldPosition.X + (nearPatrol.Info.X - Info.X);
+				spawn.WorldY = nearPatrol.Creature.WorldPosition.Y + (nearPatrol.Info.Y - Info.Y);
+				//ushort height = (ushort)ClientFileMgr.GetHeight(nearPatrol.Info.ZoneId, spawn.WorldX, spawn.WorldY);
+				//spawn.WorldZ = Info.IsPatrol ? ((height <= 0) ? Info.Z : height) : Info.Z;
+				spawn.WorldZ = nearPatrol.Creature.WorldPosition.Z;
+				spawn.ZoneId = nearPatrol.Info.ZoneId;
+
+				Creature = new KeepCreature(spawn, this, Keep)
+				{
+					WaypointGUID = Convert.ToUInt32(Info.WaypointGUID),
+					NearAiInterface = nearPatrol.Creature.AiInterface
+				};
+				
+				Region.AddObject(Creature, spawn.ZoneId);
+			}
+		}
+
+		public void DespawnGuard()
+		{
+			if (Creature != null)
+			{
+				Creature.Destroy();
+				Creature = null;
+			}
+		}
+
+		public class KeepCreature : Creature
         {
             private readonly KeepNpcCreature _flagGrd;
             private readonly Keep _keep;
             /// <summary>Incoming damage scaler from 0.25 to 1<summary>
             private volatile float _damageScaler = 1f;
+			public AIInterface NearAiInterface = null;
 
             public KeepCreature(Creature_spawn spawn, KeepNpcCreature flagGrd, Keep keep) : base (spawn)
             {
                 _keep = keep;
                 _flagGrd = flagGrd;
                 IsKeepLord = flagGrd.Info.KeepLord;
+				IsPatrol = flagGrd.Info.IsPatrol;
 
                 EvtInterface.AddEventNotify(EventName.OnReceiveDamage, OnReceiveDamage);
             }
@@ -104,9 +173,55 @@ namespace WorldServer.World.BattleFronts.Keeps
                 base.OnLoad();
 
                 ScaleLord(_keep.Rank);
-            }
+				// buff lord with multipler 3 //TODO: rework needed (morale abilities does dmg through the scaler etc)
+				if (IsKeepLord)
+					Health *= 3;
+				
+				if (WaypointGUID > 0)
+				{
+					AiInterface.Waypoints = WaypointService.GetNpcWaypoints(WaypointGUID);
+					foreach (var wp in AiInterface.Waypoints)
+					{
+						wp.X = Convert.ToUInt32(wp.X + WaypointService.ShuffleWaypointOffset(5, 15));
+						wp.X = Convert.ToUInt32(wp.X + WaypointService.ShuffleWaypointOffset(5, 15));
+					}
+				}
 
-            public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1f, uint mitigation = 0)
+				if (NearAiInterface != null)
+				{
+					AiInterface.IsWalkingBack = NearAiInterface.IsWalkingBack;
+					AiInterface.NextAllowedMovementTime = NearAiInterface.NextAllowedMovementTime;
+					AiInterface.Ended = NearAiInterface.Ended;
+					AiInterface.Started = NearAiInterface.Started;
+
+					if (NearAiInterface.State == AiState.MOVING)
+					{
+						if (!AiInterface.IsWalkingBack)
+							AiInterface.CurrentWaypointID = NearAiInterface.CurrentWaypointID - 1;
+						else
+							AiInterface.CurrentWaypointID = NearAiInterface.CurrentWaypointID + 1;
+					}
+					else
+					{
+						AiInterface.CurrentWaypointID = NearAiInterface.CurrentWaypointID;
+						AiInterface.SetNextWaypoint(TCPManager.GetTimeStampMS());
+					}
+
+					NearAiInterface = null;
+				}
+			}
+
+			public override void Update(long tick)
+			{
+				base.Update(tick);
+
+				if (WaypointGUID > 0 && AiInterface != null && AiInterface.Waypoints != null && AiInterface.Waypoints.Count > 0)
+				{
+					AiInterface.Update(tick);
+				}
+			}
+
+			public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1f, uint mitigation = 0)
             {
                 if (_keep.KeepStatus == KeepStatus.KEEPSTATUS_LOCKED)
                     return false;

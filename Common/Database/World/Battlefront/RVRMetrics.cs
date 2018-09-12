@@ -45,6 +45,21 @@ namespace Common.Database.World.Battlefront
         [DataElement(AllowDbNull = false)]
         public string GroupId { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public int TotalPlayerCountInRegion { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public int TotalOrderPlayerCountInRegion { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int TotalDestPlayerCountInRegion { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int TotalPlayerCount { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int TotalFlaggedPlayerCount { get; set; }
+
+        
     }
 }

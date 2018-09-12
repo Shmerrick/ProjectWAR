@@ -31,6 +31,9 @@ namespace Common
         private string _oldName;
         private string _petName;
         private ushort _petModel;
+        private ushort _honorPoints;
+        private ushort _honorRank;
+
 
         public uint CareerFlags => CareerLine != 0 ? (uint)1 << (_careerLine - 1) : 0;
 
@@ -174,6 +177,20 @@ namespace Common
         {
             get { return _petModel; }
             set { _petModel = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public ushort HonorPoints
+        {
+            get { return _honorPoints; }
+            set { _honorPoints = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public ushort HonorRank
+        {
+            get { return _honorRank; }
+            set { _honorRank = value; Dirty = true; }
         }
 
         public Character_value Value;

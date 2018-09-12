@@ -608,7 +608,7 @@ namespace WorldServer.Scenarios
                 byte realmIndex = (byte)(plr.Realm == Realms.REALMS_REALM_DESTRUCTION ? 1 : 0);
 
                 plr.AddXp(endingXp[realmIndex], false, false);
-                plr.AddRenown(endingRenown[realmIndex], false);
+                plr.AddRenown(endingRenown[realmIndex], false, RewardType.ScenarioWin);
 
                 PlayerScoreboard[plr].EndXP = endingXp[realmIndex];
                 PlayerScoreboard[plr].EndRenown = endingRenown[realmIndex];
@@ -619,14 +619,14 @@ namespace WorldServer.Scenarios
                     // Lower reward for domination
                     if (_dominatingRealm != Realms.REALMS_REALM_NEUTRAL)
                     {
-                        plr.ItmInterface.CreateItem(desiredItem, 1);
-                        plr.SendLocalizeString(new[] { desiredItem.Name, "1" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
+                        plr.ItmInterface.CreateItem(desiredItem, 3);
+                        plr.SendLocalizeString(new[] { desiredItem.Name, "3" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
                             Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
                     }
                     else
                     {
-                        plr.ItmInterface.CreateItem(desiredItem, 3);
-                        plr.SendLocalizeString(new[] { desiredItem.Name, "3" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
+                        plr.ItmInterface.CreateItem(desiredItem, 6);
+                        plr.SendLocalizeString(new[] { desiredItem.Name, "6" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
                             Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
                     }
 
@@ -634,8 +634,8 @@ namespace WorldServer.Scenarios
                 }
                 else
                 {
-                    plr.ItmInterface.CreateItem(desiredItem, 1);
-                    plr.SendLocalizeString(new[] { desiredItem.Name, "1" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
+                    plr.ItmInterface.CreateItem(desiredItem, 4);
+                    plr.SendLocalizeString(new[] { desiredItem.Name, "4" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
                         Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
                 }
 
@@ -648,7 +648,7 @@ namespace WorldServer.Scenarios
                 {
                     _logger.Debug($"Scenario {Info.Name} won by Destruction. {Score[1]} to {Score[0]}");
                     _logger.Debug($"Suggest {Score[1] / 10} additional VP to winner,  {Score[0] / 20} to loser.");
-                    new ApocCommunications().Broadcast("Order has defeated Destruction in a critical battle! Their forces come closer to victory.", Tier);
+                    new ApocCommunications().Broadcast("Destruction has defeated Order in a critical battle! Their forces come closer to victory.", Tier);
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += (Score[1] / 10);
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints += (Score[0] / 20);
                 }
@@ -656,7 +656,7 @@ namespace WorldServer.Scenarios
                 {
                     _logger.Debug($"Scenario {Info.Name} won by Order. {Score[0]} to {Score[1]}");
                     _logger.Debug($"Suggest {Score[0] / 10} additional VP to winner,  {Score[1] / 20} to loser.");
-                    new ApocCommunications().Broadcast("Destruction has defeated Order in a critical battle! Their forces come closer to victory.", Tier);
+                    new ApocCommunications().Broadcast("Order has defeated Destruction in a critical battle! Their forces come closer to victory.", Tier);
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints += (Score[1] / 10);
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += (Score[0] / 20);
 
@@ -708,7 +708,7 @@ namespace WorldServer.Scenarios
                 player.SendClientMessage($"Adding {curRenown} renown from estimated kills.", ChatLogFilters.CHATLOGFILTERS_RENOWN);
 
                 player.AddXp(curXp, false, true);
-                player.AddRenown(curRenown, false);
+                player.AddRenown(curRenown, false, RewardType.ScenarioWin);
             }
 
             foreach (Player player in Players[1])
@@ -741,7 +741,7 @@ namespace WorldServer.Scenarios
                 player.SendClientMessage($"Adding {curRenown} renown from estimated kills.", ChatLogFilters.CHATLOGFILTERS_RENOWN);
 
                 player.AddXp(curXp, false, true);
-                player.AddRenown(curRenown, false);
+                player.AddRenown(curRenown, false, RewardType.ScenarioWin);
             }
         }
 
