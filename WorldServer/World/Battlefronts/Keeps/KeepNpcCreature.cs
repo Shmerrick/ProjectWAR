@@ -72,10 +72,10 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                     Info = newInfo;
                 }*/
-                spawn.WorldY = Info.Y;
-				spawn.WorldZ = Info.IsPatrol ? (ushort)ClientFileMgr.GetHeight((int)Info.ZoneId, (int)Info.X, (int)Info.Y) :  Info.Z;
 				spawn.WorldX = Info.X;
-                spawn.ZoneId = Info.ZoneId;
+				spawn.WorldY = Info.Y;
+				spawn.WorldZ = Info.Z;
+				spawn.ZoneId = Info.ZoneId;
 
 				Creature = new KeepCreature(spawn, this, Keep)
 				{
@@ -110,8 +110,9 @@ namespace WorldServer.World.BattleFronts.Keeps
 				spawn.WorldO = nearPatrol.Info.O;
 				spawn.WorldX = nearPatrol.Creature.WorldPosition.X + (nearPatrol.Info.X - Info.X);
 				spawn.WorldY = nearPatrol.Creature.WorldPosition.Y + (nearPatrol.Info.Y - Info.Y);
-				ushort height = (ushort)ClientFileMgr.GetHeight(nearPatrol.Info.ZoneId, spawn.WorldX, spawn.WorldY);
-				spawn.WorldZ = Info.IsPatrol ? ((height <= 0) ? Info.Z : height) : Info.Z;
+				//ushort height = (ushort)ClientFileMgr.GetHeight(nearPatrol.Info.ZoneId, spawn.WorldX, spawn.WorldY);
+				//spawn.WorldZ = Info.IsPatrol ? ((height <= 0) ? Info.Z : height) : Info.Z;
+				spawn.WorldZ = nearPatrol.Creature.WorldPosition.Z;
 				spawn.ZoneId = nearPatrol.Info.ZoneId;
 
 				Creature = new KeepCreature(spawn, this, Keep)
@@ -172,7 +173,6 @@ namespace WorldServer.World.BattleFronts.Keeps
 					{
 						wp.X = Convert.ToUInt32(wp.X + WaypointService.ShuffleWaypointOffset(5, 15));
 						wp.X = Convert.ToUInt32(wp.X + WaypointService.ShuffleWaypointOffset(5, 15));
-						wp.Z = (ushort)ClientFileMgr.GetHeight((int)ZoneId, (int)wp.X, (int)wp.Y);
 					}
 				}
 

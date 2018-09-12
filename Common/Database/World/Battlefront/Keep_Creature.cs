@@ -139,7 +139,7 @@ namespace Common
 				DestroId = customValues ? destroId : DestroId + ShuffleCreatureIdOffset(2),
 				X = X + ShuffleWorldCoordinateOffset(10, 100),
 				Y = Y + ShuffleWorldCoordinateOffset(10, 100),
-				Z = Z + ShuffleWorldCoordinateOffset(10, 100),
+				Z = Z,
 				O = O,
 				KeepLord = KeepLord,
 				IsPatrol = IsPatrol,
