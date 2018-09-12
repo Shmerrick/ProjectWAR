@@ -42,8 +42,17 @@ namespace WorldServer
 				return false;
 			}
 
-			// find instance ID of player with the most lockouts
+			// find first instance of leader
 			if (player.PriorityGroup != null)
+			{
+				if (player.PriorityGroup.GetLeader() != null)
+				{
+					instanceid = Find_OpenInstanceoftheplayer(player.PriorityGroup.GetLeader(), zoneID);
+				}
+			}
+
+			// find instance ID of player with the most lockouts
+			if (player.PriorityGroup != null && instanceid == 0)
 			{
 				Player plr = null;
 				foreach(Player p in player.PriorityGroup.GetPlayerList())
@@ -84,14 +93,20 @@ namespace WorldServer
 			// ~zoneID:timestamp:bossID_1:bossID_2:bossID_3:... - this is sorted by bossID
 			string lockout = plrA._Value.GetLockout(zoneID);
 			List<string> bossListA = new List<string>();
-			for (int j = 2; j < lockout.Split(':').Length; j++)
-				bossListA.Add(lockout.Split(':')[j]);
+			if (lockout != null)
+			{
+				for (int j = 2; j < lockout.Split(':').Length; j++)
+					bossListA.Add(lockout.Split(':')[j]);
+			}
 
 			lockout = plrB._Value.GetLockout(zoneID);
 			List<string> bossListB = new List<string>();
-			for (int j = 2; j < lockout.Split(':').Length; j++)
-				bossListB.Add(lockout.Split(':')[j]);
-
+			if (lockout != null)
+			{
+				for (int j = 2; j < lockout.Split(':').Length; j++)
+					bossListB.Add(lockout.Split(':')[j]);
+			}
+			
 			return bossListA.Count >= bossListB.Count ? plrA : plrB;
 		}
 
