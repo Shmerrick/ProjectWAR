@@ -71,13 +71,14 @@ namespace Launcher
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.bnMinimise = new System.Windows.Forms.Button();
             this.panelCreateAccount.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // T_username
             // 
-            this.T_username.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.T_username.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.T_username.BackColor = System.Drawing.Color.Black;
             this.T_username.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.T_username.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -93,7 +94,7 @@ namespace Launcher
             // 
             // T_password
             // 
-            this.T_password.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.T_password.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.T_password.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.T_password.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.T_password.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -136,6 +137,7 @@ namespace Launcher
             // 
             // bnConnectToServer
             // 
+            this.bnConnectToServer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bnConnectToServer.BackColor = System.Drawing.Color.Transparent;
             this.bnConnectToServer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.bnConnectToServer.Cursor = System.Windows.Forms.Cursors.Arrow;
@@ -208,6 +210,7 @@ namespace Launcher
             // 
             // lblConnection
             // 
+            this.lblConnection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblConnection.BackColor = System.Drawing.Color.Transparent;
             this.lblConnection.Font = new System.Drawing.Font("Ubuntu", 9.749999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblConnection.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
@@ -219,6 +222,7 @@ namespace Launcher
             // 
             // bnClose
             // 
+            this.bnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bnClose.BackColor = System.Drawing.Color.Transparent;
             this.bnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.bnClose.Cursor = System.Windows.Forms.Cursors.Arrow;
@@ -236,6 +240,7 @@ namespace Launcher
             // 
             // panelCreateAccount
             // 
+            this.panelCreateAccount.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.panelCreateAccount.BackColor = System.Drawing.Color.Transparent;
             this.panelCreateAccount.BackgroundImage = global::Launcher.Properties.Resources.background;
             this.panelCreateAccount.Controls.Add(this.bnCreateLocal);
@@ -286,39 +291,39 @@ namespace Launcher
             // buttonCreate
             // 
             this.buttonCreate.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.buttonCreate.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonCreate.Font = new System.Drawing.Font("Ubuntu", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonCreate.ForeColor = System.Drawing.Color.DarkOrange;
             this.buttonCreate.Location = new System.Drawing.Point(30, 237);
             this.buttonCreate.Name = "buttonCreate";
             this.buttonCreate.Size = new System.Drawing.Size(531, 51);
             this.buttonCreate.TabIndex = 16;
-            this.buttonCreate.Text = "CREATE";
+            this.buttonCreate.Text = "Create";
             this.buttonCreate.UseVisualStyleBackColor = true;
             this.buttonCreate.Click += new System.EventHandler(this.buttonCreate_Click);
             // 
             // label3
             // 
             this.label3.BackColor = System.Drawing.Color.Transparent;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Font = new System.Drawing.Font("Ubuntu", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.DarkOrange;
             this.label3.Location = new System.Drawing.Point(3, 153);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(272, 53);
             this.label3.TabIndex = 20;
-            this.label3.Text = "PASSWORD";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label3.Text = "Password";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label2
             // 
             this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Font = new System.Drawing.Font("Ubuntu", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.DarkOrange;
             this.label2.Location = new System.Drawing.Point(3, 78);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(272, 53);
             this.label2.TabIndex = 19;
-            this.label2.Text = "USERNAME";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label2.Text = "Login";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // textBoxPassword
             // 
@@ -355,22 +360,23 @@ namespace Launcher
             // 
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Font = new System.Drawing.Font("Ubuntu", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.DarkOrange;
             this.label1.Location = new System.Drawing.Point(3, 2);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(587, 49);
             this.label1.TabIndex = 18;
-            this.label1.Text = "CREATE ACCOUNT";
+            this.label1.Text = "Create Account";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // buttonPanelCreateAccount
             // 
+            this.buttonPanelCreateAccount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonPanelCreateAccount.BackColor = System.Drawing.Color.Transparent;
             this.buttonPanelCreateAccount.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonPanelCreateAccount.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonPanelCreateAccount.ForeColor = System.Drawing.Color.DarkOrange;
-            this.buttonPanelCreateAccount.Location = new System.Drawing.Point(980, 9);
+            this.buttonPanelCreateAccount.Location = new System.Drawing.Point(922, 9);
             this.buttonPanelCreateAccount.Name = "buttonPanelCreateAccount";
             this.buttonPanelCreateAccount.Size = new System.Drawing.Size(226, 49);
             this.buttonPanelCreateAccount.TabIndex = 21;
@@ -380,6 +386,7 @@ namespace Launcher
             // 
             // lblVersion
             // 
+            this.lblVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVersion.AutoSize = true;
             this.lblVersion.BackColor = System.Drawing.Color.Transparent;
             this.lblVersion.ForeColor = System.Drawing.Color.DarkOrange;
@@ -390,6 +397,7 @@ namespace Launcher
             // 
             // bnConnectLocal
             // 
+            this.bnConnectLocal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bnConnectLocal.BackColor = System.Drawing.Color.Transparent;
             this.bnConnectLocal.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.bnConnectLocal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
@@ -410,6 +418,7 @@ namespace Launcher
             // 
             // lblDownloading
             // 
+            this.lblDownloading.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblDownloading.BackColor = System.Drawing.Color.Transparent;
             this.lblDownloading.Font = new System.Drawing.Font("Ubuntu", 9.749999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDownloading.ForeColor = System.Drawing.Color.DarkOrange;
@@ -432,6 +441,7 @@ namespace Launcher
             // 
             // label4
             // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Font = new System.Drawing.Font("Ubuntu", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -444,6 +454,7 @@ namespace Launcher
             // 
             // label8
             // 
+            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label8.AutoSize = true;
             this.label8.BackColor = System.Drawing.Color.Transparent;
             this.label8.Font = new System.Drawing.Font("Ubuntu", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -454,6 +465,24 @@ namespace Launcher
             this.label8.TabIndex = 30;
             this.label8.Text = "Password";
             // 
+            // bnMinimise
+            // 
+            this.bnMinimise.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bnMinimise.BackColor = System.Drawing.Color.Transparent;
+            this.bnMinimise.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.bnMinimise.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.bnMinimise.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bnMinimise.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bnMinimise.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.bnMinimise.Location = new System.Drawing.Point(1160, 9);
+            this.bnMinimise.Margin = new System.Windows.Forms.Padding(0);
+            this.bnMinimise.Name = "bnMinimise";
+            this.bnMinimise.Size = new System.Drawing.Size(51, 49);
+            this.bnMinimise.TabIndex = 31;
+            this.bnMinimise.Text = "_";
+            this.bnMinimise.UseVisualStyleBackColor = false;
+            this.bnMinimise.Click += new System.EventHandler(this.bnMinimise_Click);
+            // 
             // ApocLauncher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -462,6 +491,7 @@ namespace Launcher
             this.BackgroundImage = global::Launcher.Properties.Resources.M55rLv3;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(1280, 720);
+            this.Controls.Add(this.bnMinimise);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.pictureBox1);
@@ -484,6 +514,7 @@ namespace Launcher
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "WAR: APOCALYPSE";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Disconnect);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panelCreateAccount.ResumeLayout(false);
@@ -532,6 +563,7 @@ namespace Launcher
         private PictureBox pictureBox1;
         private Label label4;
         private Label label8;
+        private Button bnMinimise;
     }
 }
 

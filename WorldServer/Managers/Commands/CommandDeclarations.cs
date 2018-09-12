@@ -61,7 +61,7 @@ namespace WorldServer.Managers.Commands
         /// <summary>Addition commands under .add</summary>
         public static List<GmCommandHandler> AddCommands = new List<GmCommandHandler>
         {
-            new GmCommandHandler("item",AddItem, null, EGmLevel.TrustedStaff, 1, "Add item to player"),
+            new GmCommandHandler("item",AddItem, null, EGmLevel.AnyGM, 1, "Add item to player"),
             new GmCommandHandler("money",AddMoney, null, EGmLevel.DatabaseDev, 1, "Add money to player"),
             new GmCommandHandler("tok",AddTok, null, EGmLevel.DatabaseDev, 1, "Add tok to player"),
             new GmCommandHandler("renown",AddRenown, null, EGmLevel.TrustedStaff, 1, "Add renown to player"),
@@ -289,7 +289,7 @@ namespace WorldServer.Managers.Commands
         {
 #region Command Group Handlers
             new GmCommandHandler("ability",null, AbilityCommands, 0, 0, "Ability commands."),
-            new GmCommandHandler("add",null, AddCommands, EGmLevel.TrustedStaff, 0, "Addition commands."),
+            new GmCommandHandler("add",null, AddCommands, EGmLevel.AnyGM, 0, "Addition commands."),
             new GmCommandHandler("campaign",null, CampaignCommands, EGmLevel.GM, 0, "RvR campaign commmands."),
             new GmCommandHandler("chapter",null, ChapterCommands, EGmLevel.DatabaseDev, 0, "Chapter modification commands."),
             new GmCommandHandler("check",null, CheckCommands, EGmLevel.GM, 0, "Debugging commands."),

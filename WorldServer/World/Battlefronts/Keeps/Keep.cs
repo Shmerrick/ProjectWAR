@@ -583,7 +583,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
 
             int totalXp = (800 * Tier) + (200 * Tier * objCount) + (_playersKilledInRange * Tier * 30); // Field of Glory, reduced
-            int totalRenown = (250 * Tier) + (120 * Tier * objCount) + (_playersKilledInRange * 75);   // Ik : Increased values here.
+            int totalRenown = (250 * Tier) + (120 * Tier * objCount) + (_playersKilledInRange * 50);   // Ik : Increased values here.
             int totalInfluence = (40 * Tier) + (20 * Tier * objCount) + (_playersKilledInRange * Tier * 6);
 
             if (_playersKilledInRange < (4 * Tier))
@@ -659,8 +659,8 @@ namespace WorldServer.World.BattleFronts.Keeps
                     if (battlePenalty)
                         player.SendClientMessage("This keep was taken with little to no resistance. The rewards have therefore been reduced.");
                     else
-                        // Invader crests
-                        player.ItmInterface.CreateItem((uint)(208429), (ushort)5);
+                        //// Invader crests
+                        //player.ItmInterface.CreateItem((uint)(208429), (ushort)5);
 
                     _logger.Info($"Distributing rewards for Keep {this.Name} to {player.Name} RR:{totalRenown} INF:{totalInfluence}");
                 }
