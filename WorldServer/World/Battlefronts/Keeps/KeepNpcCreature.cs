@@ -7,11 +7,13 @@ using WorldServer.World.BattleFronts;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using System.Threading;
+using NLog;
 
 namespace WorldServer.World.BattleFronts.Keeps
 {
     public class KeepNpcCreature : IComparable<KeepNpcCreature>
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public RegionMgr Region;
         public KeepCreature Creature;
         public Keep_Creature Info;
@@ -44,6 +46,9 @@ namespace WorldServer.World.BattleFronts.Keeps
             if (realm != Realms.REALMS_REALM_NEUTRAL)
             {
                 Creature_proto proto = CreatureService.GetCreatureProto(realm == Realms.REALMS_REALM_ORDER ? Info.OrderId : Info.DestroId);
+
+                _logger.Debug($"Spawning Guard {proto.Name} ({proto.Entry})");
+
                 if (proto == null)
                 {
                     Log.Error("KeepNPC", "No FlagGuard Proto");
@@ -84,6 +89,9 @@ namespace WorldServer.World.BattleFronts.Keeps
 
 				/*if (Info.KeepLord)
                     Log.Info(Keep.Info.Name, (Keep.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction") + " keep lord spawned.");*/
+                
+
+
 				Region.AddObject(Creature, spawn.ZoneId);
             }
         }
@@ -99,7 +107,10 @@ namespace WorldServer.World.BattleFronts.Keeps
 			if (realm != Realms.REALMS_REALM_NEUTRAL)
 			{
 				Creature_proto proto = CreatureService.GetCreatureProto(realm == Realms.REALMS_REALM_ORDER ? Info.OrderId : Info.DestroId);
-				if (proto == null)
+
+			    _logger.Debug($"Spawning Guard Near {proto.Name} ({proto.Entry})");
+
+                if (proto == null)
 				{
 					Log.Error("KeepNPC", "No FlagGuard Proto");
 					return;
