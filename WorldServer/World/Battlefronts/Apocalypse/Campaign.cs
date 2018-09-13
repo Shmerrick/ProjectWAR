@@ -211,7 +211,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {
                         if (status.RegionId == this.Region.RegionId)
                         {
-                            BattlefrontLogger.Debug($"Recording metrics for BF Status : ({status.BattleFrontId}) {status.Description}");
+                            BattlefrontLogger.Trace($"Recording metrics for BF Status : ({status.BattleFrontId}) {status.Description}");
                             if (!status.Locked)
                             {
                                 var metrics = new RVRMetrics
@@ -346,6 +346,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
 
             _aaoTracker.RecalculateAAO(allPlayersInZone, orderPlayersInZone.Count, destPlayersInZone.Count);
+
+			foreach (var keep in Keeps)
+			{
+				keep.UpdateCurrentAAO(_aaoTracker.AgainstAllOddsMult);
+			}
         }
 
         /// <summary>
@@ -507,7 +512,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     BattlefrontLogger.Debug($"Adding {info.Creatures.Count} mobs for Keep {info.KeepId}");
                     foreach (Keep_Creature crea in info.Creatures)
-                        keep.Creatures.Add(new KeepNpcCreature(Region, crea, keep));
+					{
+						if (!crea.IsPatrol)
+							keep.Creatures.Add(new KeepNpcCreature(Region, crea, keep));
+					}
                 }
 
                 if (info.Doors != null)

@@ -671,7 +671,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 var distance = GetDistanceToObject(player);
                 var heightDiff = Math.Abs(Z - player.Z);
-                if (distance < 70 && heightDiff < closeHeight)
+                if (distance < 200 && heightDiff < closeHeight)
                 {
                     if (player.Realm == Realms.REALMS_REALM_ORDER)
                         orderCount++;
@@ -1209,7 +1209,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         public void LockObjective(Realms lockingRealm, bool announce)
         {
-            BattlefrontLogger.Debug($"Locking Objective {Name} for {lockingRealm.ToString()}");
+            BattlefrontLogger.Trace($"Locking Objective {Name} for {lockingRealm.ToString()}");
 
 			// stop bo stopwatch
 			_stopWatch?.Stop();
