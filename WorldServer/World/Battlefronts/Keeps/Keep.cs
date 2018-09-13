@@ -191,7 +191,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 				if (Realm == Realms.REALMS_REALM_ORDER && aaoMultiplier < 0 // keep is order and aao is on destro
 					|| Realm == Realms.REALMS_REALM_DESTRUCTION && aaoMultiplier > 0) // keep is destro and aao is on order
 				{
-					size = (int)Math.Round((double)Math.Abs(aaoMultiplier) / 4);
+					size = (int)Math.Round((double)Math.Abs(aaoMultiplier) / 2.5); // 20 / 2.5 = 8 -> 8 is max guard size
 				}
 
 				var patrols = Creatures.Select(x => x).Where(x => x.Info.IsPatrol && x.Creature != null).ToList();

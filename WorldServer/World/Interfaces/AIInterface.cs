@@ -191,7 +191,7 @@ namespace WorldServer
             if (creature == null || creature is Pet)
                 return;
 
-			if (_unit is KeepNpcCreature.KeepCreature patrol && patrol.IsPatrol)
+			if (_unit is KeepNpcCreature.KeepCreature patrol && patrol.IsPatrol && patrol.AiInterface != null && patrol.AiInterface.CurrentWaypoint != null)
 			{
 				if (!patrol.PointWithinRadiusFeet(new Point3D((int)patrol.AiInterface.CurrentWaypoint.X, (int)patrol.AiInterface.CurrentWaypoint.Y, (int)patrol.AiInterface.CurrentWaypoint.Z), 200))
 				{
