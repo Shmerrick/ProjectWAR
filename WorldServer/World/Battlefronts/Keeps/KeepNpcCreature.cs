@@ -104,6 +104,10 @@ namespace WorldServer.World.BattleFronts.Keeps
                 base.OnLoad();
 
                 ScaleLord(_keep.Rank);
+
+                // buff lord with multipler 3 //TODO: rework needed (morale abilities does dmg through the scaler etc)
+                if (IsKeepLord)
+                    Health *= 3;
             }
 
             public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1f, uint mitigation = 0)
