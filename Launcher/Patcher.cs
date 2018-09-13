@@ -36,6 +36,8 @@ namespace Launcher
             {
                 TotalDownloadSize = 0;
                 Downloaded = 0;
+
+
                 CurrentState = State.RequestManifest;
 
                 _logger.Info($"Requesting manifest from {_address}");
@@ -57,7 +59,7 @@ namespace Launcher
 
                     foreach (var file in manifest.Files)
                     {
-                        string path = Path.Combine(Application.StartupPath, file.Name);
+                        string path = Path.Combine(Program.WarFolder, file.Name);
                         if (File.Exists(path))
                         {
 
@@ -88,7 +90,7 @@ namespace Launcher
                 {
                     CurrentState = State.Downloading;
 
-                    string path = Path.Combine(Application.StartupPath, file.Name);
+                    string path = Path.Combine(Program.WarFolder, file.Name);
                     if (File.Exists(path))
                         File.Delete(path);
 
@@ -172,6 +174,7 @@ namespace Launcher
             Downloading,
             Done,
             Error,
+            ServerOffline,
         }
     }
 }

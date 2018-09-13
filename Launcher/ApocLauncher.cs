@@ -254,7 +254,7 @@ namespace Launcher
             }
             else if (patcher.CurrentState == Patcher.State.RequestManifest)
             {
-                lblDownloading.Text = $"Requesting manifest";
+                lblDownloading.Text = $"";
             }
             else if (patcher.CurrentState == Patcher.State.ProcessManifest)
             {
