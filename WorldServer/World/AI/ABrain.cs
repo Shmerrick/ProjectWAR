@@ -301,7 +301,8 @@ namespace WorldServer
                 npc.BuffInterface.RemoveAllBuffs();
                 npc.ReceiveHeal(null, npc.MaxHealth);
                 
-				if (_unit is World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature keepGuard && keepGuard.IsPatrol)
+				if (_unit is World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature keepGuard && keepGuard.IsPatrol
+					&& keepGuard.AiInterface != null && keepGuard.AiInterface.CurrentWaypoint != null)
 				{
 					keepGuard.AiInterface.State = AiState.MOVING;
 					keepGuard.MvtInterface.Move(new Point3D((ushort)keepGuard.AiInterface.CurrentWaypoint.X, (ushort)keepGuard.AiInterface.CurrentWaypoint.Y, (ushort)keepGuard.AiInterface.CurrentWaypoint.Z));
