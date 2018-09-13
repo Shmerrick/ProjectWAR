@@ -443,42 +443,42 @@ namespace Launcher
                     {
                         authToken = packet.GetString();
                         _logger.Info($"Authentication Token Received : {authToken}");
-                        
+
 
                         //ApocLauncher.Acc.lblConnection.Text = $@"Starting Client..";
                         try
                         {
-                            
-                            var warDirectory = Program.WarFolder;
+
+                            var warDirectory = Directory.GetParent(Application.StartupPath);
                             ApocLauncher.Acc.sendUI("Patching..");
                             patchExe();
                             UpdateWarData();
                             ApocLauncher.Acc.sendUI("Patched. Starting WAR.exe");
 
                             _logger.Info($"Double checking mythlogin file exists.");
-                            if (!File.Exists(Program.WarFolder + "\\mythloginserviceconfig.xml"))
+                            if (!File.Exists(Application.StartupPath + "\\mythloginserviceconfig.xml"))
                             {
-                                _logger.Warn($"{Program.WarFolder + "\\mythloginserviceconfig.xml"} does not exist.");
+                                _logger.Warn($"{Application.StartupPath + "\\mythloginserviceconfig.xml"} does not exist.");
                                 ApocLauncher.Acc.sendUI("Cannot locate mythloginserviceconfig.xml");
                                 return;
                             }
                             // Use world.myp to determine whether we are in the correct directory.
-                            if (!File.Exists(warDirectory + "\\world.myp"))
+                            if (!File.Exists(warDirectory.FullName + "\\world.myp"))
                             {
-                                _logger.Warn($"{warDirectory + "\\world.myp"} does not exist.");
+                                _logger.Warn($"{warDirectory.FullName + "\\world.myp"} does not exist.");
                                 ApocLauncher.Acc.sendUI("Is your launcher in the Launcher folder?");
                                 return;
                             }
 
-                            _logger.Info($"Starting Client {warDirectory}\\WAR.exe");
-                            Directory.SetCurrentDirectory(Program.WarFolder);
+                            _logger.Info($"Starting Client {warDirectory.FullName}\\WAR.exe");
+
                             Process process = new Process();
-                            process.StartInfo.WorkingDirectory = warDirectory;
+                            process.StartInfo.WorkingDirectory = warDirectory.FullName;
                             process.StartInfo.FileName = "WAR.exe";
                             process.StartInfo.Arguments = " --acctname=" + Convert.ToBase64String(Encoding.ASCII.GetBytes(User)) + " --sesstoken=" + Convert.ToBase64String(Encoding.ASCII.GetBytes(authToken));
                             _logger.Info($"Starting process WAR.exe (in {warDirectory})");
                             process.Start();
-                            Directory.SetCurrentDirectory(warDirectory);
+                            Directory.SetCurrentDirectory(warDirectory.FullName);
                         }
                         catch (Exception e)
                         {
@@ -606,9 +606,9 @@ namespace Launcher
             try
             {
                 _logger.Info("Updating mythloginserviceconfig.xml and data.myp");
-                FileStream fs = new FileStream(Program.WarFolder + "\\mythloginserviceconfig.xml", FileMode.Open, FileAccess.Read);
+                FileStream fs = new FileStream(Application.StartupPath + "\\mythloginserviceconfig.xml", FileMode.Open, FileAccess.Read);
 
-                Directory.SetCurrentDirectory(Program.WarFolder);
+                Directory.SetCurrentDirectory(Directory.GetCurrentDirectory() + "\\..\\");
 
                 HashDictionary hashDictionary = new HashDictionary();
                 hashDictionary.AddHash(0x3FE03665, 0x349E2A8C, "mythloginserviceconfig.xml", 0);
@@ -623,7 +623,7 @@ namespace Launcher
                     return;
                 }
 
-                if (File.Exists(Program.WarFolder + "\\mythloginserviceconfig.xml") == false)
+                if (File.Exists(Application.StartupPath + "\\mythloginserviceconfig.xml") == false)
                 {
                     _logger.Error("Missing file : mythloginserviceconfig.xml");
                     return;

@@ -59,7 +59,7 @@ namespace Launcher
 
                     foreach (var file in manifest.Files)
                     {
-                        string path = Path.Combine(Program.WarFolder, file.Name);
+                        string path = Path.Combine(Application.StartupPath, file.Name);
                         if (File.Exists(path))
                         {
 
@@ -90,7 +90,7 @@ namespace Launcher
                 {
                     CurrentState = State.Downloading;
 
-                    string path = Path.Combine(Program.WarFolder, file.Name);
+                    string path = Path.Combine(Application.StartupPath, file.Name);
                     if (File.Exists(path))
                         File.Delete(path);
 
