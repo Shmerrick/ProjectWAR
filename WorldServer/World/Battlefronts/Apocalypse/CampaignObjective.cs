@@ -671,7 +671,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 var distance = GetDistanceToObject(player);
                 var heightDiff = Math.Abs(Z - player.Z);
-                if (distance < 100 && heightDiff < closeHeight)
+                if (distance < 200 && heightDiff < closeHeight)
                 {
                     if (player.Realm == Realms.REALMS_REALM_ORDER)
                         orderCount++;
