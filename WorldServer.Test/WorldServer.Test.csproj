@@ -48,7 +48,6 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="InstanceHandlingTest.cs" />
     <Compile Include="LootDeciderTests.cs" />
     <Compile Include="CampaignObjectiveTest.cs" />
     <Compile Include="CombatManagerTest.cs" />
