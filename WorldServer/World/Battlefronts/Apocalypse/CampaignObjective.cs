@@ -1209,7 +1209,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         public void LockObjective(Realms lockingRealm, bool announce)
         {
-            BattlefrontLogger.Debug($"Locking Objective {Name} for {lockingRealm.ToString()}");
+            BattlefrontLogger.Trace($"Locking Objective {Name} for {lockingRealm.ToString()}");
 
 			// stop bo stopwatch
 			_stopWatch?.Stop();
