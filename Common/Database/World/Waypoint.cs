@@ -19,10 +19,10 @@ namespace Common
         private uint _GUID;
         private uint _CreatureSpawnGUID;
         private uint _GameObjectSpawnGUID;
-        private ushort _X;
-        private ushort _Y;
-        private ushort _Z;
-        private ushort _O;
+        private uint _X;
+        private uint _Y;
+        private uint _Z;
+        private uint _O;
         private ushort _Speed = 100;
         private byte _EmoteOnStart;
         private byte _EmoteOnEnd;
@@ -55,28 +55,28 @@ namespace Common
         }
 
         [DataElement(AllowDbNull = false)]
-        public ushort X
+        public uint X
         {
             get { return _X; }
             set { _X = value; Dirty = true; }
         }
 
         [DataElement(AllowDbNull = false)]
-        public ushort Y
+        public uint Y
         {
             get { return _Y; }
             set { _Y = value; Dirty = true; }
         }
 
         [DataElement(AllowDbNull = false)]
-        public ushort Z
+        public uint Z
         {
             get { return _Z; }
             set { _Z = value; Dirty = true; }
         }
 
         [DataElement(AllowDbNull = true)]
-        public ushort O
+        public uint O
         {
             get { return _O; }
             set { _O = value; Dirty = true; }
