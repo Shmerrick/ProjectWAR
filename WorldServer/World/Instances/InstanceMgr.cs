@@ -62,7 +62,7 @@ namespace WorldServer
 						plr = p;
 						continue;
 					}
-					plr = CompareBossesKilledInLockout(zoneID, p, plr);
+					plr = CompareBossesKilledInLockout(zoneID, plr, p);
 				}
 				
 				if (plr != null)
