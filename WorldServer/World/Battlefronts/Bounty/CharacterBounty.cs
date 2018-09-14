@@ -6,7 +6,6 @@ namespace WorldServer.World.Battlefronts.Bounty
     {
         private static readonly DateTime EpochDateTime = new DateTime(1970, 1, 1);
 
-        public int EffectiveLevel { get; private set; }
         public int LastDeath { get; set; }
         public int CharacterLevel { get; set; }
         public int RenownLevel { get; set; }
@@ -24,14 +23,13 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             CharacterLevel = player.Level;
             RenownLevel = player.RenownRank;
-            BaseBountyValue = (int) (CharacterLevel + (RenownLevel * 2));
-            EffectiveLevel = CharacterLevel+ (RenownLevel * 2);
+            BaseBountyValue = player.BaseBountyValue;
             ContributedBountyValue = 0;
         }
         
         public override string ToString()
         {
-            return $"EffectiveLevel {EffectiveLevel}, Last Death {LastDeath} Character Level {CharacterLevel}/{RenownLevel}, BaseBounty {BaseBountyValue} Contributed {ContributedBountyValue}";
+            return $"Last Death {LastDeath} Character Level {CharacterLevel}/{RenownLevel}, BaseBounty {BaseBountyValue} Contributed {ContributedBountyValue}";
         }
     }
 }

@@ -536,11 +536,17 @@ namespace WorldServer
                 DamageSources[caster] += damage;
             else DamageSources.Add(caster, damage);
 
-            var modificationValue = (float) Math.Log(((float)caster.EffectiveBountyLevel / (float)(this as Player).EffectiveBountyLevel + 1), 2);
+            var modificationValue = (float) Math.Log((float)(this as Player).BaseBountyValue / ((float)caster.BaseBountyValue) + 1, 2);
             // Added impact to ImpactMatrix
             if (this.CbtInterface.IsPvp)
             {
-                this.Region.Campaign.GetActiveBattleFrontStatus().ImpactMatrixManagerInstance.UpdateMatrix((this as Player).CharacterId,
+
+                if (Region == null)
+                    DeathLogger.Debug($"Region is null for caster {caster.Name}");
+                if (Region?.Campaign == null)
+                    DeathLogger.Debug($"Region.Campaign is null for caster {caster.Name}");
+
+                this.Region?.Campaign?.GetActiveBattleFrontStatus().ImpactMatrixManagerInstance.UpdateMatrix((this as Player).CharacterId,
                     new PlayerImpact
                     {
                         CharacterId = caster.Info.CharacterId,

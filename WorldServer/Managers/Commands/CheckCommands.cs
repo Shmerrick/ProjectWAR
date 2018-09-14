@@ -71,15 +71,16 @@ namespace WorldServer.Managers.Commands
                     {
                         plr.SendClientMessage(contribution.ToString());
                     }
+                    var stageDictionary = activeBattleFrontStatus.ContributionManagerInstance.GetContributionStageList(target.CharacterId);
 
+                    foreach (var contributionStage in stageDictionary)
+                    {
+                        plr.SendClientMessage(contributionStage.ToString());
+                    }
                 }
 
-                var stageDictionary = activeBattleFrontStatus.ContributionManagerInstance.GetContributionStageList(target.CharacterId);
-
-                foreach (var contributionStage in stageDictionary)
-                {
-                    plr.SendClientMessage(contributionStage.ToString());
-                }
+                
+              
 
             }
 

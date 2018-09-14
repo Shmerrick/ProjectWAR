@@ -72,7 +72,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             var rewardDictionary = new ConcurrentDictionary<uint, Reward>();
 
-            // return the bounty of the killed player. 
+            // return the bounty of the killed player (the base bounty + their contribution)
             var modifiedBountyValue = CalculateModifiedBountyValue(characterBounty, contributionValue);
             RewardLogger.Debug($"Target Modified Bounty Value : {modifiedBountyValue}");
 

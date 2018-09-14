@@ -8,9 +8,12 @@ using NLog;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
-
+    
     public class ImpactMatrixManager : IImpactMatrixManager
     {
+        /// <summary>
+        /// The ImpactMatrix records the list of impacts upon a character (the Key) by an attacker (represented by the Value). 
+        /// </summary>
         public ConcurrentDictionary<uint, List<PlayerImpact>> ImpactMatrix { get; set; }
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         // Number of seconds until the impact is removed from the ImpactMatrix.
