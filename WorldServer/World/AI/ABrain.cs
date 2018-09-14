@@ -90,8 +90,15 @@ namespace WorldServer
 
             if (!RangeOverride)
                 NewRange = crea.Ranged;
+			
+			// set speed to 100 when combat starts for keep patrol guard
+			if (_unit is World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature keepGuard && keepGuard.IsPatrol)
+			{
+				keepGuard.Speed = 100;
+				keepGuard.UpdateSpeed();
+			}
 
-            if (crea == null)
+			if (crea == null)
                 _unit.MvtInterface?.Follow(fighter, 5, 6, false, ForceMove);
             else if (NewRange == 0)
                 _unit.MvtInterface?.Follow(fighter, (int)crea.BaseRadius, (int)crea.BaseRadius + 1, false, ForceMove);
@@ -250,7 +257,7 @@ namespace WorldServer
             Combat.SetTarget(null, TargetTypes.TARGETTYPES_TARGET_ENEMY);
 
             _unit.MvtInterface.StopMove();
-
+			
             Aggros = new Dictionary<ushort, AggroInfo>();
 
             if (_pet == null)
@@ -293,9 +300,20 @@ namespace WorldServer
                 Creature npc = (Creature)_unit;
                 npc.BuffInterface.RemoveAllBuffs();
                 npc.ReceiveHeal(null, npc.MaxHealth);
-                npc.SetPosition((ushort)npc.SpawnPoint.X, (ushort)npc.SpawnPoint.Y, (ushort)npc.SpawnPoint.Z, npc.SpawnHeading, npc.Spawn.ZoneId, true);
-            }
+                
+				if (_unit is World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature keepGuard && keepGuard.IsPatrol
+					&& keepGuard.AiInterface != null && keepGuard.AiInterface.CurrentWaypoint != null)
+				{
+					keepGuard.AiInterface.State = AiState.MOVING;
+					keepGuard.MvtInterface.Move(new Point3D((ushort)keepGuard.AiInterface.CurrentWaypoint.X, (ushort)keepGuard.AiInterface.CurrentWaypoint.Y, (ushort)keepGuard.AiInterface.CurrentWaypoint.Z));
+				}
+				else
+				{
+					npc.SetPosition((ushort)npc.SpawnPoint.X, (ushort)npc.SpawnPoint.Y, (ushort)npc.SpawnPoint.Z, npc.SpawnHeading, npc.Spawn.ZoneId, true);
+				}
+			}
         }
+
         #endregion
 
         #region Ability Usage

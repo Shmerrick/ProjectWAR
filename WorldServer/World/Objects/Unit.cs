@@ -65,7 +65,7 @@ namespace WorldServer
         #region Static
 
         public static int HEALTH_REGEN_TIME = 4000; // 4secondes
-        public static int ACTION_REGEN_TIME = 1000; // 1seconde
+        public static int ACTION_REGEN_TIME = 500; // .5 seconds
         public static int CR_REGEN_TIME = 1000;
 
         private static readonly Logger DeathLogger = LogManager.GetLogger("DeathLogger");
@@ -1205,6 +1205,10 @@ namespace WorldServer
         public bool IsPolymorphed;
 
         public bool IsKeepLord = false;
+
+		public bool IsPatrol = false;
+
+		public uint WaypointGUID { get; set; } = 0;
 
         public void AddCrowdControlImmunity(int flags)
         {

@@ -15,6 +15,7 @@ namespace Launcher
 {
     public partial class ApocLauncher : Form
     {
+        public bool AllowPatch { get; }
         public static ApocLauncher Acc;
 
         public static string LocalServerIP = "127.0.0.1";
@@ -26,8 +27,9 @@ namespace Launcher
 
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ApocLauncher(bool allowLocal)
+        public ApocLauncher(bool allowLocal, bool allowPatch)
         {
+            AllowPatch = allowPatch;
             InitializeComponent();
             Acc = this;
 
@@ -62,12 +64,20 @@ namespace Launcher
             var attrs = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
             this.lblVersion.Text = fvi.FileVersion;
             //this.lblVersion.Text = $"{fvi.FileVersion} ({attrs.Single(x => x.Key == "GitHash").Value})";
-            _logger.Debug($"Calling Patcher Server on { System.Configuration.ConfigurationManager.AppSettings["ServerPatchIPAddress"]}:{ System.Configuration.ConfigurationManager.AppSettings["ServerPatchPort"]}");
-            patcher = new Patcher(_logger, $"{System.Configuration.ConfigurationManager.AppSettings["ServerPatchIPAddress"]}:{System.Configuration.ConfigurationManager.AppSettings["ServerPatchPort"]}");
 
-            Thread thread = new Thread(() => patcher.Patch().Wait());
-            thread.IsBackground = true;
-            thread.Start();
+            
+            this.lblDownloading.Visible = false;
+            if (this.AllowPatch)
+            {
+                _logger.Debug($"Calling Patcher Server on { System.Configuration.ConfigurationManager.AppSettings["ServerPatchIPAddress"]}:{ System.Configuration.ConfigurationManager.AppSettings["ServerPatchPort"]}");
+                patcher = new Patcher(_logger,
+                    $"{System.Configuration.ConfigurationManager.AppSettings["ServerPatchIPAddress"]}:{System.Configuration.ConfigurationManager.AppSettings["ServerPatchPort"]}");
+
+                this.lblDownloading.Visible = true;
+
+                Thread thread = new Thread(() => patcher.Patch().Wait()) {IsBackground = true};
+                thread.Start();
+            }
 
             this.T_username.Text = System.Configuration.ConfigurationManager.AppSettings["LastUserCode"];
         }
@@ -267,30 +277,33 @@ namespace Launcher
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (patcher.CurrentState == Patcher.State.Downloading)
+            if (this.AllowPatch)
             {
-                bnConnectToServer.Enabled = false;
+                if (patcher.CurrentState == Patcher.State.Downloading)
+                {
+                    bnConnectToServer.Enabled = false;
 
-                long percent = 0;
-                if (patcher.TotalDownloadSize > 0)
-                    percent = (patcher.Downloaded * 100) / patcher.TotalDownloadSize;
+                    long percent = 0;
+                    if (patcher.TotalDownloadSize > 0)
+                        percent = (patcher.Downloaded * 100) / patcher.TotalDownloadSize;
 
-                lblDownloading.Text = $"Downloading {patcher.CurrentFile} ({percent}%)";
-            }
-            else if (patcher.CurrentState == Patcher.State.RequestManifest)
-            {
-                bnConnectToServer.Enabled = false;
-                lblDownloading.Text = $"Requesting manifest...";
-            }
-            else if (patcher.CurrentState == Patcher.State.ProcessManifest)
-            {
-                bnConnectToServer.Enabled = false;
-                lblDownloading.Text = $"Processing manifest...";
-            }
-            else if (patcher.CurrentState == Patcher.State.Done || patcher.CurrentState == Patcher.State.Error)
-            {
-                bnConnectToServer.Enabled = true;
-                lblDownloading.Text = "";
+                    lblDownloading.Text = $"Downloading {patcher.CurrentFile} ({percent}%)";
+                }
+                else if (patcher.CurrentState == Patcher.State.RequestManifest)
+                {
+                    bnConnectToServer.Enabled = false;
+                    lblDownloading.Text = $"Looking for updates..";
+                }
+                else if (patcher.CurrentState == Patcher.State.ProcessManifest)
+                {
+                    bnConnectToServer.Enabled = false;
+                    lblDownloading.Text = $"Processing updates..";
+                }
+                else if (patcher.CurrentState == Patcher.State.Done || patcher.CurrentState == Patcher.State.Error)
+                {
+                    bnConnectToServer.Enabled = true;
+                    lblDownloading.Text = "";
+                }
             }
         }
 
@@ -308,6 +321,11 @@ namespace Launcher
             {
                 this.bnConnectToServer_Click(this, new EventArgs());
             }
+        }
+
+        private void bnMinimise_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
         }
     }
 }

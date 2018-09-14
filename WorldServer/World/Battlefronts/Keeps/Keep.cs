@@ -11,6 +11,7 @@ using CreatureSubTypes = GameData.CreatureSubTypes;
 using WorldServer.World.Objects.PublicQuests;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Services.World;
+using System.Threading;
 
 namespace WorldServer.World.BattleFronts.Keeps
 {
@@ -144,7 +145,8 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             foreach (KeepNpcCreature crea in Creatures)
             {
-                crea.SpawnGuard(Realm);
+				if (!crea.Info.IsPatrol)
+					crea.SpawnGuard(Realm);
             }
 
             foreach (KeepDoor door in Doors)
@@ -170,9 +172,84 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
         }
 
-        #region Keep Progression
+		#region Update AAO multiplier
 
-        public KeepStatus KeepStatus = KeepStatus.KEEPSTATUS_SAFE;
+		private static object _lockObjUpdateCurrentAAO = new object();
+
+		/// <summary>
+		/// updates mechanics according to aao multiplier
+		/// </summary>
+		/// <param name="aaoMultiplier">AAO multiplier, -20 if order has 400 aao, +20 if destro has 400 aao</param>
+		public void UpdateCurrentAAO(int aaoMultiplier)
+		{
+			lock (_lockObjUpdateCurrentAAO)
+			{
+				if (KeepStatus == KeepStatus.KEEPSTATUS_LOCKED || KeepStatus == KeepStatus.KEEPSTATUS_SEIZED)
+					return;
+
+				// calc patrol size (max 5 patrols, including mid)
+				int size = 1;
+				if (Realm == Realms.REALMS_REALM_ORDER && aaoMultiplier < 0 // keep is order and aao is on destro
+					|| Realm == Realms.REALMS_REALM_DESTRUCTION && aaoMultiplier > 0) // keep is destro and aao is on order
+				{
+					size = (int)Math.Round((double)Math.Abs(aaoMultiplier) / 2.5); // 20 / 2.5 = 8 -> 8 is max guard size
+				}
+
+				var patrols = Creatures.Select(x => x).Where(x => x.Info.IsPatrol && x.Creature != null).ToList();
+				if (patrols.Count > size) // remove overflow patrols
+				{
+					var toRemove = patrols.GetRange(size, patrols.Count - size);
+
+					foreach (var crea in toRemove)
+					{
+						crea.DespawnGuard();
+					}
+					for (int i = 0; i < toRemove.Count; i++)
+					{
+						Creatures.Remove(toRemove[i]);
+					}
+				}
+				else if (patrols.Count < size) // add new patrols
+				{
+					for (int i = 0; i < size - patrols.Count; i++)
+					{
+						Keep_Creature captain = Info.Creatures.Select(x => x).Where(x => x.IsPatrol).FirstOrDefault();
+						if (captain != null)
+						{
+							var allUsedCreatures = Creatures.Select(y => y).Where(y => y.Creature != null).Select(x => x.Info).ToList();
+							if (allUsedCreatures.Contains(captain))
+							{
+								Keep_Creature add = captain.CreateDeepCopy();
+								Creatures.Add(new KeepNpcCreature(Region, add, this));
+							}
+							else
+								Creatures.Add(new KeepNpcCreature(Region, captain, this));
+						}
+					}
+				}
+				
+				// spawn all not yet spawned patrols
+				foreach (var patrol in Creatures.Select(x => x).Where(x => x.Info.IsPatrol))
+				{
+					if (patrol.Creature == null)
+					{
+						List<KeepNpcCreature> list  = Creatures.Select(x => x).Where(x => x.Info.IsPatrol && x.Creature != null).ToList();
+						list.Sort();
+						KeepNpcCreature curr = list.FirstOrDefault();
+						if (curr != null)
+							patrol.SpawnGuardNear(Realm, curr);
+						else
+							patrol.SpawnGuard(Realm);
+					}
+				}
+			}
+		}
+
+		#endregion
+
+		#region Keep Progression
+
+		public KeepStatus KeepStatus = KeepStatus.KEEPSTATUS_SAFE;
         public KeepMessage LastMessage;
 
         public void OnKeepDoorAttacked(byte number, byte pctHealth)
@@ -433,8 +510,9 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             // Despawn Keep Creatures
             foreach (KeepNpcCreature crea in Creatures)
-            {
-                crea.SpawnGuard(0);
+			{
+				if (!crea.Info.IsPatrol)
+					crea.SpawnGuard(0);
                 // This is spawning new ProximityFlag inside keep
                 // We are also moving keep rank from keep level to realm level
                 if (crea.Info.KeepLord)
@@ -533,7 +611,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
 
             int totalXp = (800 * Tier) + (200 * Tier * objCount) + (_playersKilledInRange * Tier * 30); // Field of Glory, reduced
-            int totalRenown = (250 * Tier) + (120 * Tier * objCount) + (_playersKilledInRange * 75);   // Ik : Increased values here.
+            int totalRenown = (250 * Tier) + (120 * Tier * objCount) + (_playersKilledInRange * 50);   // Ik : Increased values here.
             int totalInfluence = (40 * Tier) + (20 * Tier * objCount) + (_playersKilledInRange * Tier * 6);
 
             if (_playersKilledInRange < (4 * Tier))
@@ -591,8 +669,8 @@ namespace WorldServer.World.BattleFronts.Keeps
                     if (battlePenalty)
                         player.SendClientMessage("This keep was taken with little to no resistance. The rewards have therefore been reduced.");
                     else
-                        // Invader crests
-                        player.ItmInterface.CreateItem((uint)(208429), (ushort)5);
+                        //// Invader crests
+                        //player.ItmInterface.CreateItem((uint)(208429), (ushort)5);
 
                     _logger.Info($"Distributing rewards for Keep {this.Name} to {player.Name} RR:{totalRenown} INF:{totalInfluence}");
                 }
@@ -657,9 +735,11 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             foreach (KeepNpcCreature crea in Creatures)
             {
-                if (crea.Creature == null)
-                    crea.SpawnGuard(Realm);
-            }
+                if (crea.Creature == null && !crea.Info.IsPatrol)
+					crea.SpawnGuard(Realm);
+				else if (crea.Info.IsPatrol)
+					crea.DespawnGuard();
+			}
 
             foreach (KeepDoor door in Doors)
             {
@@ -1321,7 +1401,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             Realm = (Realms) Info.Realm;
 
             foreach (KeepNpcCreature crea in Creatures)
-                crea.SpawnGuard(Realm);
+				if (!crea.Info.IsPatrol)
+					crea.SpawnGuard(Realm);
 
             foreach (KeepDoor door in Doors)
                 door.Spawn();
@@ -1622,8 +1703,11 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             if (KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
             {
-                foreach (KeepNpcCreature crea in Creatures)
-                    crea.SpawnGuard(Realm);
+				foreach (KeepNpcCreature crea in Creatures)
+					if (!crea.Info.IsPatrol)
+						crea.SpawnGuard(Realm);
+					else
+						crea.DespawnGuard();
             }
 
             foreach (KeepDoor door in Doors)
@@ -1652,9 +1736,10 @@ namespace WorldServer.World.BattleFronts.Keeps
                 Realm = unlockedRealm;
 
                 foreach (KeepNpcCreature crea in Creatures)
-                    crea.SpawnGuard(Realm);
+					if (!crea.Info.IsPatrol)
+						crea.SpawnGuard(Realm);
 
-                foreach (KeepDoor door in Doors)
+				foreach (KeepDoor door in Doors)
                     door.Spawn();
             }
 
