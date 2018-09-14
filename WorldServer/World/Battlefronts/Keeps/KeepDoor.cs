@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Common;
 using FrameWork;
 using GameData;
@@ -39,7 +40,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 get
                 {
-                    if(_keepDoor != null && _keepDoor.Info != null)
+                    if (_keepDoor != null && _keepDoor.Info != null)
                         return _keepDoor.Info.DoorId;
                     return 0;
                 }
@@ -75,7 +76,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                 _enterExitPoints[1] = new Point3D(_keepDoor.Info.TeleportX2, _keepDoor.Info.TeleportY2, _keepDoor.Info.TeleportZ2);
 
                 EvtInterface.AddEventNotify(EventName.OnReceiveDamage, OnReceiveDamage);
-                
             }
 
             // RB   5/20/2016   Keep doors should not regenerate naturally.
@@ -94,6 +94,8 @@ namespace WorldServer.World.BattleFronts.Keeps
                 Occlusion.SetFixtureVisible(_keepDoor.Info.DoorId, false);
             }
 
+
+
             /// <summary>Inflicts damage upon this unit and returns whether lethal damage was dealt.</summary>
             public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1f, uint mitigation = 0)
             {
@@ -105,6 +107,27 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                 if (IsDead || PendingDisposal || IsInvulnerable)
                     return false;
+
+                //debuff damage on door
+                var vp = (Realm == Realms.REALMS_REALM_ORDER)
+                    ? (uint)Region.Campaign.VictoryPointProgress.DestructionVictoryPoints
+                    : (uint)Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
+
+                if (vp >= 0 && vp < 2500)
+                {
+                    Log.Debug("DOOR BEFORE BUFF", damage.ToString());
+                    var newDmg = damage * 25 / 100;
+                    damage = newDmg;
+                    Log.Debug("DOOR AFTER BUFF", damage.ToString());
+
+                }
+                else if (vp >= 2500 && vp < 4000)
+                {
+                    Log.Debug("DOOR BEFORE BUFF", damage.ToString());
+                    var newDmg = damage * 75 / 100;
+                    damage = newDmg;
+                    Log.Debug("DOOR AFTER BUFF", damage.ToString());
+                }
 
                 lock (DamageApplicationLock)
                 {
@@ -141,7 +164,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                     caster.CbtInterface.OnDealDamage(this, damage);
 
                 LastHitOid = caster.Oid;
-                
+
                 if (wasKilled)
                     SetDeath(caster);
 
@@ -245,7 +268,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 {
                     var d1 = player.GetDistanceToWorldPoint(_enterExitPoints[0]);
                     var d2 = player.GetDistanceToWorldPoint(_enterExitPoints[1]);
-                    if(d1 > d2)
+                    if (d1 > d2)
                         player.IntraRegionTeleport((uint)_enterExitPoints[0].X, (uint)_enterExitPoints[0].Y, (ushort)_enterExitPoints[0].Z, (ushort)_keepDoor.Info.TeleportO1);
                     else
                         player.IntraRegionTeleport((uint)_enterExitPoints[1].X, (uint)_enterExitPoints[1].Y, (ushort)_enterExitPoints[1].Z, (ushort)_keepDoor.Info.TeleportO2);
@@ -349,6 +372,6 @@ namespace WorldServer.World.BattleFronts.Keeps
         }
 
 
-       
+
     }
 }
