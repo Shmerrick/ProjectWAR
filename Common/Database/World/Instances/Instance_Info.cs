@@ -29,9 +29,12 @@ namespace Common
         public byte WardsNeeded { get; set; }
 
         [DataElement]
-        public uint exitzonejup { get; set; }
-		
-        public List<Instance_Script> Scripts = new List<Instance_Script>();
+        public uint OrderExitZoneJumpID { get; set; }
+
+		[DataElement]
+		public uint DestrExitZoneJumpID { get; set; }
+
+		public List<Instance_Script> Scripts = new List<Instance_Script>();
         public List<Instance_Attribute> Attributes = new List<Instance_Attribute>();
         public List<Instance_Encounter> Encounters = new List<Instance_Encounter>();
         public List<Instance_Spawn> Monsters = new List<Instance_Spawn>();

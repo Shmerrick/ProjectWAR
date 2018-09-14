@@ -239,6 +239,8 @@ namespace WorldServer
         public GameClient Client { get; set; }
         public string GenderedName { get; }
 
+		public MovementHandlers.GROUNDTYPE GroundType { get; set;}
+
         public bool IsAFK = false;
         public bool IsAutoAFK = false;
         public string AFKMessage = "";

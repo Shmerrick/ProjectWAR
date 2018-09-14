@@ -27,7 +27,20 @@ namespace WorldServer
             InCombat = 95        // 001011111, 0x5F
         }
 
-        enum MovementTypes
+		public enum GROUNDTYPE
+		{
+			Solid = 0,
+			ShallowWater = 1,
+			ShallowSludge = 7,
+			DeepWater = 17,
+			DeepSludge = 23,
+			DeepLava = 3,
+			DeepLava2 = 19,
+			LOTDShallowWater = 5,
+			LOTDDeepWater = 21
+		}
+		
+		enum MovementTypes
         {
             GroundForward = 0xC0,
             GroundBackward = 0x54,
@@ -53,6 +66,7 @@ namespace WorldServer
             jumpright = 0x44,
             jumpleft = 0x24
         }
+
         private static long _lavatimer = 0;
         private static readonly Dictionary<Unit, NewBuff> _lavaBuffs = new Dictionary<Unit, NewBuff>();
 
@@ -311,6 +325,8 @@ namespace WorldServer
                     direction = currentHeading;
 
                 player.SetPosition(x, y, z, direction, zoneID);
+
+				player.GroundType = (GROUNDTYPE) groundtype;
 
                 //solid, exclude any zones that has to use a hardcode lava to not disable the damage instantly
                 if (groundtype == 0)
@@ -718,8 +734,14 @@ namespace WorldServer
                     {
                         Instance_Info II;
                         InstanceService._InstanceInfo.TryGetValue(zoneId, out II);
-                        Zone_jump ExitJump = ZoneService.GetZoneJump(II.exitzonejup);
-                        if (ExitJump == null)
+
+						Zone_jump ExitJump = null;
+						if (Plr.Realm == Realms.REALMS_REALM_ORDER)
+							ExitJump = ZoneService.GetZoneJump(II.OrderExitZoneJumpID);
+						else if (Plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
+							ExitJump = ZoneService.GetZoneJump(II.DestrExitZoneJumpID);
+
+						if (ExitJump == null)
                             Log.Error("Exit Jump in Instance"," "+ zoneId + " missing!");
                         else
                         {
