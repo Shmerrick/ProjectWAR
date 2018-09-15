@@ -1989,7 +1989,7 @@ namespace WorldServer
                                 }
 
                                 BuffInfo immunityInfo = AbilityMgr.GetBuffInfo((ushort)GameBuffs.Unstoppable);
-                        if (cmd.PrimaryValue == 32 && cmd.SecondaryValue == 1)
+                        if (cmd.PrimaryValue == 16 && cmd.SecondaryValue == 1)
                         {
                             break;
                         }
