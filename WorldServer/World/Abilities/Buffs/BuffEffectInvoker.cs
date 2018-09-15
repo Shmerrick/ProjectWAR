@@ -1997,15 +1997,13 @@ namespace WorldServer
                                 }
 
                                 BuffInfo immunityInfo = AbilityMgr.GetBuffInfo((ushort)GameBuffs.Unstoppable);
-                        if (cmd.PrimaryValue == 16 && cmd.SecondaryValue == 1)
-                        {
-                            break;
-                        }
                                 if (cmd.TertiaryValue > 0)
                                     immunityInfo.Duration = (ushort)cmd.TertiaryValue;
-                                else
-                                    immunityInfo.Duration = (cmd.PrimaryValue == 32? (ushort)30 : (ushort) (hostBuff.Duration*10));
-                                target.BuffInterface.InsertUnstoppable(new BuffQueueInfo(target, target.EffectiveLevel, immunityInfo));
+                        if (cmd.Entry != 4998) //Crown of fire stun
+                        {
+                            immunityInfo.Duration = (cmd.PrimaryValue == 32 ? (ushort)30 : (ushort)(hostBuff.Duration * 10));
+                            target.BuffInterface.InsertUnstoppable(new BuffQueueInfo(target, target.EffectiveLevel, immunityInfo));
+                        }
                             //}
 
                             target.CrowdControlType = (byte)cmd.PrimaryValue;
