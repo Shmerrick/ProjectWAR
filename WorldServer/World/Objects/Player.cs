@@ -1034,7 +1034,7 @@ namespace WorldServer
 
             else
             {
-                if (GmLevel == 0)
+                if (GmLevel == 1)
                 {
                     _stuckClearTime = TCPManager.GetTimeStampMS() + 5000;
                     SendClientMessage("You will be transported to your binding point upon logout.\nTo use the old handling of /stuck instead and warp to Nordland or Norsca, enter the /stuck command again within 5 seconds.");
