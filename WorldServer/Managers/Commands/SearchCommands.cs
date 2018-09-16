@@ -1,5 +1,6 @@
 ﻿using Common;
 using System.Collections.Generic;
+using System.Linq;
 using SystemData;
 using static WorldServer.Managers.Commands.GMUtils;
 using WorldServer.Services.World;
@@ -142,15 +143,15 @@ namespace WorldServer.Managers.Commands
 
             foreach (CharacterItem itm in Items)
             {
-                EntryList.Add(itm.Entry);
+                if (itm != null)
+                    ItemList.Add(ItemService.GetItem_Info(itm.Entry));
             }
-            foreach (uint entry in EntryList)
-            {
-                ItemList.Add(ItemService.GetItem_Info(entry));
-            }
+
+            ItemList.OrderBy(x=>x.Name);
+
             foreach (Item_Info proto in ItemList)
             {
-                plr.SendMessage(0, "", "Name: " + proto.Name + "[" + proto.Entry + "]", ChatLogFilters.CHATLOGFILTERS_EMOTE);
+                plr.SendMessage(0, "", $"[{proto.Entry}] {proto.Name} ", ChatLogFilters.CHATLOGFILTERS_EMOTE);
             }
 
             return true;
