@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SystemData;
 using static WorldServer.Managers.Commands.GMUtils;
+using WorldServer.Services.World;
 
 namespace WorldServer.Managers.Commands
 {
@@ -118,6 +119,41 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
+        /// <summary>
+        /// Seach a player's inventory by name <name>
+        /// </summary>
+        /// <param name="plr">Player that initiated the command</param>
+        /// <param name="values">List of command arguments (after command name)</param>
+        /// <returns>True if command was correctly handled, false if operation was canceled</returns>
+        public static bool SearchInventory(Player plr, ref List<string> values)
+        {
+            string str = GetTotalString(ref values);
+            Character chara = CharMgr.GetCharacter(str, false);
 
+            if (chara == null)
+            {
+                plr.SendClientMessage($"SEARCH INVENTORY: The player {str} in question does not exist.");
+                return true;
+            }
+
+            List<CharacterItem> Items = CharMgr.GetItemsForCharacter(chara);
+            List<uint> EntryList = new List<uint>();
+            List<Item_Info> ItemList = new List<Item_Info>();
+
+            foreach (CharacterItem itm in Items)
+            {
+                EntryList.Add(itm.Entry);
+            }
+            foreach (uint entry in EntryList)
+            {
+                ItemList.Add(ItemService.GetItem_Info(entry));
+            }
+            foreach (Item_Info proto in ItemList)
+            {
+                plr.SendMessage(0, "", "Name: " + proto.Name + "[" + proto.Entry + "]", ChatLogFilters.CHATLOGFILTERS_EMOTE);
+            }
+
+            return true;
+        }
     }
 }
