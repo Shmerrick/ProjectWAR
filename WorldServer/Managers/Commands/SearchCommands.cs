@@ -1,9 +1,10 @@
-﻿using Common;
+﻿using System;
+using Common;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using static WorldServer.Managers.Commands.GMUtils;
 using WorldServer.Services.World;
+using static WorldServer.Managers.Commands.GMUtils;
 
 namespace WorldServer.Managers.Commands
 {
@@ -128,31 +129,55 @@ namespace WorldServer.Managers.Commands
         /// <returns>True if command was correctly handled, false if operation was canceled</returns>
         public static bool SearchInventory(Player plr, ref List<string> values)
         {
-            string str = GetTotalString(ref values);
-            Character chara = CharMgr.GetCharacter(str, false);
+            var target = plr.CbtInterface.GetCurrentTarget();
+            var filter = String.Empty;
 
-            if (chara == null)
+            if (target == null)
             {
-                plr.SendClientMessage($"SEARCH INVENTORY: The player {str} in question does not exist.");
-                return true;
+                plr.SendClientMessage($"SEARCH INVENTORY: No target selected.");
+            }
+            else
+            {
+                var character = CharMgr.GetCharacter((target as Player).CharacterId, false);
+                if (character == null)
+                {
+                    plr.SendClientMessage($"SEARCH INVENTORY: The player {(target as Player).Name} in question does not exist.");
+                    return true;
+                }
+                var characterItemList = CharMgr.GetItemsForCharacter(character);
+                var itemList = new List<Item_Info>();
+
+                if (values.Count > 0)
+                {
+                    // First argument is a wildcard filter.
+                    filter = values[0];
+                }
+
+                foreach (CharacterItem itm in characterItemList)
+                {
+                    if (itm != null)
+                        itemList.Add(ItemService.GetItem_Info(itm.Entry));
+                }
+
+                itemList.OrderBy(x => x.Name);
+
+                foreach (Item_Info proto in itemList)
+                {
+                    if (!String.IsNullOrEmpty(filter))
+                    {
+                        if (proto.Name.Contains(filter))
+                        {
+                            plr.SendMessage(0, "", $"[{proto.Entry}] {proto.Name} ", ChatLogFilters.CHATLOGFILTERS_EMOTE);
+                        }
+                    }
+                    else
+                    {
+                        plr.SendMessage(0, "", $"[{proto.Entry}] {proto.Name} ", ChatLogFilters.CHATLOGFILTERS_EMOTE);
+                    }
+                }
             }
 
-            List<CharacterItem> Items = CharMgr.GetItemsForCharacter(chara);
-            List<uint> EntryList = new List<uint>();
-            List<Item_Info> ItemList = new List<Item_Info>();
 
-            foreach (CharacterItem itm in Items)
-            {
-                if (itm != null)
-                    ItemList.Add(ItemService.GetItem_Info(itm.Entry));
-            }
-
-            ItemList.OrderBy(x=>x.Name);
-
-            foreach (Item_Info proto in ItemList)
-            {
-                plr.SendMessage(0, "", $"[{proto.Entry}] {proto.Name} ", ChatLogFilters.CHATLOGFILTERS_EMOTE);
-            }
 
             return true;
         }
