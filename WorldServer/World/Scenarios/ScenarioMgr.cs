@@ -1920,7 +1920,7 @@ namespace WorldServer.Scenarios
 
         public static void UpdateQuitter(Player plr)
         {
-            if (plr.GmLevel > 0)
+            if (plr.GmLevel > 1)
                 return;
 
             lock (_quitterDurations)

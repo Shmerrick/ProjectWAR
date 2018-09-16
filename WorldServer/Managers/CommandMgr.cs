@@ -336,7 +336,7 @@ namespace WorldServer
 
             Player receiver = Player.GetPlayer(receiverName);
 
-            if (receiver == null || !receiver.IsInWorld() || (plr.GmLevel == 0 && receiver.GmLevel == 0 && !Program.Config.ChatBetweenRealms && plr.Realm != receiver.Realm))
+            if (receiver == null || !receiver.IsInWorld() || (plr.GmLevel == 1 && receiver.GmLevel == 1 && !Program.Config.ChatBetweenRealms && plr.Realm != receiver.Realm))
                 plr.SendLocalizeString(receiverName, ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_SN_LISTS_ERR_PLAYER_NOT_FOUND);
             else if (receiver == plr)
                 plr.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_TELL_ERR_TO_SELF);
@@ -344,11 +344,11 @@ namespace WorldServer
                 plr.SendClientMessage("You get the feeling that trying to talk to "+receiver.Name+" wouldn't be a good use of your time.", ChatLogFilters.CHATLOGFILTERS_EMOTE);
             else
             {
-                if (plr.GmLevel == 0 && receiver.SocInterface.HasIgnore(plr.CharacterId))
+                if (plr.GmLevel == 1 && receiver.SocInterface.HasIgnore(plr.CharacterId))
                 {
                     plr.SendLocalizeString(receiverName, ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_SN_IGNORED_WARNING);
                 }
-                else if (receiver.SocInterface.blocksTells && plr.GmLevel == 0 && (plr.GldInterface.Guild == null || receiver.GldInterface.Guild == null || plr.GldInterface.Guild != receiver.GldInterface.Guild))
+                else if (receiver.SocInterface.blocksTells && plr.GmLevel == 1 && (plr.GldInterface.Guild == null || receiver.GldInterface.Guild == null || plr.GldInterface.Guild != receiver.GldInterface.Guild))
                 {
                     if (receiver.GmLevel > 1)
                     {
@@ -395,7 +395,7 @@ namespace WorldServer
 
             string lowerString = messageString.ToLower();
 
-            if (sender.GmLevel == 0)
+            if (sender.GmLevel == 1)
                 foreach (string banned in _forbiddenLinks)
                 {
                     if (lowerString.IndexOf(banned, StringComparison.OrdinalIgnoreCase) != -1)
@@ -406,7 +406,7 @@ namespace WorldServer
                 }
 
             // Catch common abuses
-            if (sender.GmLevel == 0)
+            if (sender.GmLevel == 1)
             {
                 if (lowerString.StartsWith("gm on") || lowerString.StartsWith("any gm") || lowerString.StartsWith("any gamemaster") || lowerString.StartsWith("any game master") || lowerString.StartsWith("any g m"))
                 {
@@ -482,7 +482,7 @@ namespace WorldServer
 
                 messageString = messageString.Remove(0, index + 1);
 
-                if (sender.GmLevel == 0)
+                if (sender.GmLevel == 1)
                     foreach (string banned in _forbiddenLinks)
                     {
                         if (messageString.IndexOf(banned, StringComparison.OrdinalIgnoreCase) != -1)

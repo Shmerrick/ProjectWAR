@@ -196,7 +196,7 @@ namespace WorldServer
                     if (curPlayer == null || curPlayer.IsDisposed || !curPlayer.IsInWorld())
                         continue;
 
-                    if (curPlayer.SocInterface.Hide && caller != null && caller.GmLevel == 0)
+                    if (curPlayer.SocInterface.Hide && caller != null && caller.GmLevel == 1)
                         continue;
 
                     if ((name.Length > 0 && !curPlayer.Name.StartsWith(name, StringComparison.OrdinalIgnoreCase))
@@ -399,7 +399,7 @@ namespace WorldServer
         {
             get
             {
-                if (GmLevel == 0 || !BroadcastRank)
+                if (GmLevel == 1 || !BroadcastRank)
                     return Name;
 
                 if (Utils.HasFlag(GmLevel, (int)EGmLevel.Management))
@@ -745,7 +745,7 @@ namespace WorldServer
 					SendRenown();
 					SendStats();
 
-					if (GmLevel > 0)
+					if (GmLevel >1)
 					{
 						//if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
 						if (!Utils.HasFlag(GmLevel, (int)EGmLevel.DatabaseDev) && Utils.HasFlag(GmLevel, (int)EGmLevel.AnyGM) && !GmMgr.GmList.Contains(this))
@@ -1258,7 +1258,7 @@ namespace WorldServer
         public bool BlocksChatFrom(Player sender)
         {
             // Can't block incoming GM messages.
-            if (sender.GmLevel > 0)
+            if (sender.GmLevel > 1)
                 return false;
 
             // Exiled players reject all chat.
@@ -1270,7 +1270,7 @@ namespace WorldServer
                 return true;
 
             // GMs are not allowed to use Ignore.
-            if (GmLevel > 0)
+            if (GmLevel > 1)
                 return false;
 
             if (SocInterface.HasIgnore(sender.CharacterId))
@@ -2263,7 +2263,7 @@ namespace WorldServer
                 if (receiver.BlocksChatFrom(this))
                     continue;
 
-                if (receiver.Realm == Realm || receiver.GmLevel > 0 || GmLevel > 0 || (Program.Config.ChatBetweenRealms && chatFilter != ChatLogFilters.CHATLOGFILTERS_SHOUT))
+                if (receiver.Realm == Realm || receiver.GmLevel > 1 || GmLevel > 1 || (Program.Config.ChatBetweenRealms && chatFilter != ChatLogFilters.CHATLOGFILTERS_SHOUT))
                     receiver.SendMessage(this, message, chatFilter);
                 else
                     receiver.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_REALM_RESTRICTED_SAY);
@@ -5112,7 +5112,7 @@ namespace WorldServer
 
         public bool ShouldChicken(int tier, bool sendMessage)
         {
-            if (GmLevel > 0 && BroadcastRank)
+            if (GmLevel > 1 && BroadcastRank)
                 return false;
 
             // Can't chicken within scenarios atm

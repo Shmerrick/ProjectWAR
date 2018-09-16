@@ -355,7 +355,7 @@ namespace WorldServer.Managers.Commands
                     return true;
                 }
 
-                if (plr.GmLevel == 0)
+                if (plr.GmLevel == 1)
                 {
                     plr.SendClientMessage("Use of the PlayEffect is not allowed for non-GM characters.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                     return true;
@@ -523,7 +523,7 @@ namespace WorldServer.Managers.Commands
 
                 var playerName = GetString(ref values);
 
-                if (plr.GmLevel == 0)
+                if (plr.GmLevel == 1)
                 {
                     plr.SendClientMessage("Use of the RemoveEffect is not allowed for non-GM characters.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                     return true;
@@ -605,7 +605,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            if (playerTarget != plr && plr.GmLevel == 0)
+            if (playerTarget != plr && plr.GmLevel == 1)
             {
                 if ((playerTarget != null && playerTarget is Pet && ((Pet)playerTarget).Owner == plr) && WorldMgr.WorldSettingsMgr.GetGenericSetting(20) == 0)
                 {
@@ -619,7 +619,7 @@ namespace WorldServer.Managers.Commands
             }
 
             plr.SendClientMessage("[Stats for " + playerTarget.Name + "]\n", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
-            if (playerTarget is Creature && plr.GmLevel > 0)
+            if (playerTarget is Creature && plr.GmLevel > 1)
             {
                 Creature c = playerTarget as Creature;
                 plr.SendClientMessage("Creature Career: " + c.Spawn.Proto.Career, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
@@ -638,7 +638,7 @@ namespace WorldServer.Managers.Commands
             plr.SendClientMessage("Speed: " + playerTarget.Speed, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
             plr.SendClientMessage("Stats Speed: " + playerTarget.StsInterface.Speed, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
 
-            if (playerTarget is Player && plr.GmLevel > 0)
+            if (playerTarget is Player && plr.GmLevel > 1)
             {
                 Player p = playerTarget as Player;
                 plr.SendClientMessage("Current heal aggro: " + p.GetHealAggro(p.Oid).HealingReceived, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
@@ -774,7 +774,7 @@ namespace WorldServer.Managers.Commands
             {
                 player.ForceSave();
                 player.SendClientMessage("Server is being restarted right now...");
-                if (player.GmLevel == 0)
+                if (player.GmLevel == 1)
                 {
                     Object target = player;
                     player.EvtInterface.AddEvent(Kick, 2000, 1, target);
@@ -2884,7 +2884,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            if (target.GmLevel > 0)
+            if (target.GmLevel > 1)
             {
                 plr.SendClientMessage("BLOCKADVICE: " + playerName + " is a staff member.");
                 return true;
@@ -3060,7 +3060,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            if (target.GmLevel > 0 && !Utils.HasFlag(plr.GmLevel, (int)EGmLevel.SourceDev))
+            if (target.GmLevel > 1 && !Utils.HasFlag(plr.GmLevel, (int)EGmLevel.SourceDev))
             {
                 plr.SendClientMessage("EJECT: " + playerName + " is a staff member.");
                 return true;
@@ -3104,7 +3104,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            if (target.GmLevel > 0 && !Utils.HasFlag(plr.GmLevel, (int)EGmLevel.SourceDev))
+            if (target.GmLevel > 1 && !Utils.HasFlag(plr.GmLevel, (int)EGmLevel.SourceDev))
             {
                 plr.SendClientMessage("SEVER: " + playerName + " is a staff member.");
                 return true;
@@ -3424,7 +3424,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            if (account.GmLevel == 0 && account.Banned != 1)
+            if (account.GmLevel == 1 && account.Banned != 1)
             {
                 developer.SendClientMessage("ANNIHILATE: You cannot wipe an active account. Ban it first.");
                 return true;
