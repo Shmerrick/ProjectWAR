@@ -165,7 +165,7 @@ namespace WorldServer.Managers.Commands
                 {
                     if (!String.IsNullOrEmpty(filter))
                     {
-                        if (proto.Name.Contains(filter))
+                        if (proto.Name.ToLower().Contains(filter.ToLower()))
                         {
                             plr.SendMessage(0, "", $"[{proto.Entry}] {proto.Name} ", ChatLogFilters.CHATLOGFILTERS_EMOTE);
                         }
