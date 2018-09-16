@@ -236,7 +236,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("gameobject",SearchGameObject, null, EGmLevel.DatabaseDev, 1, "Seach an gameobject by name <name>"),
             new GmCommandHandler("quest",SearchQuest, null, EGmLevel.DatabaseDev, 1, "Seach an quest by name <name>"),
             new GmCommandHandler("zone",SearchZone, null, EGmLevel.DatabaseDev, 1, "Seach an zone by name <name>"),
-            new GmCommandHandler("inventory",SearchInventory, null, EGmLevel.DatabaseDev, 1, "Search player inventory by character name <name>")
+            new GmCommandHandler("inventory",SearchInventory, null, EGmLevel.DatabaseDev, 0, "Search player inventory by character name <name>")
         };
 
         /// <summary>State modification commands under .state</summary>
