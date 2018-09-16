@@ -443,12 +443,12 @@ namespace Launcher
                     {
                         authToken = packet.GetString();
                         _logger.Info($"Authentication Token Received : {authToken}");
-                        
+
 
                         //ApocLauncher.Acc.lblConnection.Text = $@"Starting Client..";
                         try
                         {
-                            
+
                             var warDirectory = Directory.GetParent(Application.StartupPath);
                             ApocLauncher.Acc.sendUI("Patching..");
                             patchExe();

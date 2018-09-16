@@ -36,6 +36,8 @@ namespace Launcher
             {
                 TotalDownloadSize = 0;
                 Downloaded = 0;
+
+
                 CurrentState = State.RequestManifest;
 
                 _logger.Info($"Requesting manifest from {_address}");
@@ -172,6 +174,7 @@ namespace Launcher
             Downloading,
             Done,
             Error,
+            ServerOffline,
         }
     }
 }
