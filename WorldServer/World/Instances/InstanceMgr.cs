@@ -139,7 +139,7 @@ namespace WorldServer
 		{
 			string lockout = plr._Value.GetLockout(zoneID);
 			if (lockout == null)
-				return new TimeSpan(0, 0, 0);
+				return new TimeSpan(0);
 			else
 			{
 				return new TimeSpan(Math.Abs(int.Parse(lockout.Split(':')[1]) - TCPManager.GetTimeStampMS()));

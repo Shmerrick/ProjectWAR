@@ -1,6 +1,7 @@
 ﻿using Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -12,8 +13,9 @@ namespace WorldServer
         public uint BossID;
         public ushort InstanceID;
         Instance Instance;
-        
-        public InstanceBossSpawn(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn)
+		public Stopwatch BossTimer { get; set; } = null;
+
+		public InstanceBossSpawn(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn)
         {
             InstanceGroupSpawnID = instancegroupspawnid;
             BossID = bossid;
@@ -31,8 +33,12 @@ namespace WorldServer
             if(InstanceGroupSpawnID > 0)
             {
                 Instance.BossAttackTarget(InstanceGroupSpawnID, Attacker);
-            }
-            return false;
+			}
+
+			BossTimer = new Stopwatch();
+			BossTimer.Start();
+
+			return false;
         }
 
         public bool OnLeaveCombat(Object mob, object args)
@@ -42,7 +48,11 @@ namespace WorldServer
             {
                 Instance.BossRespawnInstanceGroup(InstanceGroupSpawnID);
             }
-            return false;
+			
+			BossTimer.Reset();
+			BossTimer = null;
+
+			return false;
         }
 
         protected override void SetRespawnTimer()

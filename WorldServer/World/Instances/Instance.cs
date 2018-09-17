@@ -8,6 +8,7 @@ using System.Threading;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Objects;
+using WorldServer.World.Objects.Instances;
 
 namespace WorldServer
 {
@@ -301,8 +302,21 @@ namespace WorldServer
                     spawn.WorldX = obj.WorldX;
                     spawn.ZoneId = obj.ZoneID;
                     spawn.Enabled = 1;
-					
-                    InstanceBossSpawn IS = new InstanceBossSpawn(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
+
+					InstanceBossSpawn IS = null;
+
+					switch ((uint)obj.Entry)
+					{
+						case 59211: // Ahzranok
+							IS = new SimpleAhzranok(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
+							break;
+						default:
+							IS = new InstanceBossSpawn(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
+							break;
+					}
+
+					if (IS == null)
+						return;
 
                     if (obj.SpawnGroupID > 0)
                     {
