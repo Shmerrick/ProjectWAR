@@ -79,7 +79,9 @@ namespace Launcher
 
                 this.lblDownloading.Visible = true;
 
-                Thread thread = new Thread(() => patcher.Patch().Wait()) {IsBackground = true};
+                var patchDirectory = System.Configuration.ConfigurationManager.AppSettings["PatchDirectory"];
+
+                Thread thread = new Thread(() => patcher.Patch(patchDirectory).Wait()) {IsBackground = true};
                 thread.Start();
             }
 
