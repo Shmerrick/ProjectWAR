@@ -59,10 +59,10 @@ namespace WorldServer
         public byte Active;
         public byte ActivateOnCombatStart;
         public byte RandomTarget;
+		public byte TargetFocus;
+		public long CooldownEnd;
 
-        public long CooldownEnd;
-
-        public NPCAbility(ushort entry, ushort range, ushort cooldown, bool autoUse, string text, uint timestart = 0, byte percent = 0, byte abilitycycle = 1, byte active = 1, byte activateoncombatstart = 0, byte randomtarget = 0,  byte disablepercent = 0, byte minrange = 0)
+        public NPCAbility (ushort entry, ushort range, ushort cooldown, bool autoUse, string text, uint timestart = 0, byte percent = 0, byte abilitycycle = 1, byte active = 1, byte activateoncombatstart = 0, byte randomtarget = 0, byte targetFocus = 0, byte disablepercent = 0, byte minrange = 0)
         {
             Entry = entry;
             MinRange = minrange;
@@ -78,7 +78,8 @@ namespace WorldServer
             Active = active;
             ActivateOnCombatStart = activateoncombatstart;
             RandomTarget = randomtarget;
-        }
+			TargetFocus = targetFocus;
+		}
     }
 
     public class Creature : Unit
