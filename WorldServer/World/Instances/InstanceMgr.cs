@@ -137,16 +137,13 @@ namespace WorldServer
 
 		private TimeSpan GetLockoutTimer(Player plr, ushort zoneID)
 		{
-			TimeSpan time = new TimeSpan();
 			string lockout = plr._Value.GetLockout(zoneID);
 			if (lockout == null)
-				time = new TimeSpan(0, 0, 0);
+				return new TimeSpan(0, 0, 0);
 			else
 			{
-				ushort ii = Find_OpenInstanceoftheplayer(plr, zoneID);
-				time = _instances[ii].GetRemainingLocktimer();
+				return new TimeSpan(Math.Abs(int.Parse(lockout.Split(':')[1]) - TCPManager.GetTimeStampMS()));
 			}
-			return time;
 		}
 
 		private ushort Find_OpenInstanceoftheplayer(Player player, ushort ZoneID)

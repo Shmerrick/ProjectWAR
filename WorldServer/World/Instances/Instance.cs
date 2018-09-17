@@ -57,7 +57,8 @@ namespace WorldServer
             _running = true;
             _evtInterface = new EventInterface();
             closetime = (TCPManager.GetTimeStamp() + 7200);
-            new Thread(Update).Start();
+
+			new Thread(Update).Start();
 			
             Log.Success("Opening Instance","Instance ID "+ID+"  Map: "+Info.Name);
             if (zoneid == 179)
@@ -173,11 +174,6 @@ namespace WorldServer
                 }
             }
         }
-
-		public TimeSpan GetRemainingLocktimer()
-		{
-			return new TimeSpan(closetime);
-		}
 
 		public int GetBossCount()
 		{
