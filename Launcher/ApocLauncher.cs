@@ -19,7 +19,7 @@ namespace Launcher
         public static ApocLauncher Acc;
 
         public static string LocalServerIP = "127.0.0.1";
-        public static string TestServerIP = "63.209.33.116";
+        public static string TestServerIP = "147.75.89.194";
         public static int LocalServerPort = 8000;
         public static int TestServerPort = 8000;
         static HttpClient client = new HttpClient();
@@ -30,6 +30,10 @@ namespace Launcher
         public ApocLauncher(bool allowLocal, bool allowPatch)
         {
             AllowPatch = allowPatch;
+
+            // HACK : Force Patcher to run.
+            AllowPatch = true;
+
             InitializeComponent();
             Acc = this;
 
