@@ -71,17 +71,21 @@ namespace WorldServer
 
 			if (instanceid == 0 && Jump == null)
 				return false;
+			
+			// check lockout of distinct player
+			if (CheckLockout(player, zoneID, instanceid))
+			{
+				TimeSpan lockout = GetLockoutTimer(player, zoneID);
+				player.SendClientMessage("You have already killed all of the bosses in this dungeon!\nRemaining time (hh,mm,ss): "
+					 + lockout.Hours + "," + lockout.Minutes + "," + lockout.Seconds,
+					 ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+				return false;
+			}
 
 			// create new instance
 			if (instanceid == 0)
 				instanceid = Create_new_instance(player.PriorityGroup.GetLeader(), Jump);
 			
-			//if (instanceid == 0)
-			//{
-			//	player.SendClientMessage("Your Groupleader needs to enter first!", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-			//	return false;
-			//}
-
 			if (!Join_Instance(player, instanceid, Jump, maxplayers, InstanceMainID))
 				return false;
 
@@ -108,6 +112,41 @@ namespace WorldServer
 			}
 			
 			return bossListA.Count >= bossListB.Count ? plrA : plrB;
+		}
+
+		private bool CheckLockout(Player plr, ushort zoneID, ushort ii)
+		{
+			string lockout = plr._Value.GetLockout(zoneID);
+			if (lockout != null)
+				return false;
+			else
+			{
+				List<string> bossList = new List<string>();
+				if (lockout != null)
+				{
+					for (int j = 2; j < lockout.Split(':').Length; j++)
+						bossList.Add(lockout.Split(':')[j]);
+				}
+
+				if (bossList.Count == _instances[ii].GetBossCount())
+					return true;
+				else
+					return false;
+			}
+		}
+
+		private TimeSpan GetLockoutTimer(Player plr, ushort zoneID)
+		{
+			TimeSpan time = new TimeSpan();
+			string lockout = plr._Value.GetLockout(zoneID);
+			if (lockout == null)
+				time = new TimeSpan(0, 0, 0);
+			else
+			{
+				ushort ii = Find_OpenInstanceoftheplayer(plr, zoneID);
+				time = _instances[ii].GetRemainingLocktimer();
+			}
+			return time;
 		}
 
 		private ushort Find_OpenInstanceoftheplayer(Player player, ushort ZoneID)

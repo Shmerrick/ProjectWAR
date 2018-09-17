@@ -174,6 +174,16 @@ namespace WorldServer
             }
         }
 
+		public TimeSpan GetRemainingLocktimer()
+		{
+			return new TimeSpan(closetime);
+		}
+
+		public int GetBossCount()
+		{
+			return _BossSpawns.Count;
+		}
+
         public void AddPlayer(Player player)
         {
             lock (_Players)

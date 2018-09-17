@@ -6,14 +6,14 @@ using System.Text;
 
 namespace WorldServer
 {
-    public class InstanceBossSpawn:Creature
+    public class InstanceBossSpawn : Creature
     {
         uint InstanceGroupSpawnID;
         public uint BossID;
         public ushort InstanceID;
         Instance Instance;
         
-        public InstanceBossSpawn(Creature_spawn spawn, uint instancegroupspawnid, uint bossid,ushort Instanceid,Instance instance):base(spawn)
+        public InstanceBossSpawn(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn)
         {
             InstanceGroupSpawnID = instancegroupspawnid;
             BossID = bossid;
@@ -22,8 +22,7 @@ namespace WorldServer
             EvtInterface.AddEventNotify(EventName.OnEnterCombat, OnEnterCombat);
             EvtInterface.AddEventNotify(EventName.OnLeaveCombat, OnLeaveCombat);
         }
-
-
+		
         public bool OnEnterCombat(Object mob, object args)
         {
             Instance.Encounterinprogress = true;
@@ -64,9 +63,7 @@ namespace WorldServer
             Destroy();
             return newCreature;
         }
-
-
-
+		
         public override string ToString()
         {
             return "SpawnId=" + Spawn.Guid + ",Entry=" + Spawn.Entry + ",Spawngroup=" + InstanceGroupSpawnID + ",BossID=" + BossID + ",Name=" + Name + ",Level=" + Level + ",Rank=" + Rank + ",Max Health=" + MaxHealth + ",Faction=" + Faction + ",Emote=" + Spawn.Emote + "AI:" + AiInterface.State + ",Position :" + base.ToString();
