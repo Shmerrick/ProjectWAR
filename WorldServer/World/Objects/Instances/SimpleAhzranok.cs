@@ -37,7 +37,37 @@ namespace WorldServer.World.Objects.Instances
 			{
 				// rage timer maximum reached
 				// nuke all players
-				PlayersInRange.ForEach(plr => plr.Terminate());
+				GetPlayersInRange(300, false).ForEach(plr => plr.Terminate());
+			}
+
+			// check players groundtype
+			foreach(Player plr in GetPlayersInRange(300, false))
+			{
+				switch (plr.GroundType)
+				{
+					// water groundtype
+					case MovementHandlers.GROUNDTYPE.ShallowWater:
+					case MovementHandlers.GROUNDTYPE.DeepWater:
+						// wash away the sand effect
+
+						break;
+
+					// other groundtype (e.g. sand)
+					case MovementHandlers.GROUNDTYPE.Solid:
+					default:
+						// apply sand effect
+
+						break;
+				}
+			}
+
+			// apply incoming dmg increase on players
+			if (BossTimer != null && (BossTimer.ElapsedMilliseconds * 1000) % 60 == 0)
+			{
+				foreach (Player plr in GetPlayersInRange(300, false))
+				{
+					//plr.BuffInterface.QueueBuff(new BuffQueueInfo(this, Level, AbilityMgr.GetBuffInfo((ushort)GameBuffs.Chicken), AssignChickenBuff));
+				}
 			}
 		}
 
@@ -86,6 +116,8 @@ namespace WorldServer.World.Objects.Instances
 		protected override void SetDeath(Unit killer)
 		{
 			base.SetDeath(killer);
+			
+			// TODO: remove barriages from this instance
 		}
 
 		#endregion Overrides
