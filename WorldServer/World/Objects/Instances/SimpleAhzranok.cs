@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
+using WorldServer.World.AI;
 
 namespace WorldServer.World.Objects.Instances
 {
@@ -40,6 +41,13 @@ namespace WorldServer.World.Objects.Instances
 			}
 		}
 
+		public override void OnLoad()
+		{
+			base.OnLoad();
+
+			AiInterface.SetBrain(new InstanceBossBrain(this));
+		}
+
 		public override void ModifyDamageIn(AbilityDamageInfo damage)
 		{
 			base.ModifyDamageIn(damage);
@@ -48,11 +56,6 @@ namespace WorldServer.World.Objects.Instances
 		public override void ModifyDamageOut(AbilityDamageInfo outDamage)
 		{
 			base.ModifyDamageOut(outDamage);
-		}
-
-		public override void OnLoad()
-		{
-			base.OnLoad();
 		}
 
 		public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1, uint mitigation = 0)

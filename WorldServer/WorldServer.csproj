@@ -250,6 +250,7 @@
     <Compile Include="World\AI\AgressiveBrain.cs" />
     <Compile Include="World\AI\DummyBrain.cs" />
     <Compile Include="World\AI\GuardBrain.cs" />
+    <Compile Include="World\AI\InstanceBossBrain.cs" />
     <Compile Include="World\AI\PassiveBrain.cs" />
     <Compile Include="World\Auction\AuctionHouse.cs" />
     <Compile Include="World\Battlefronts\AAOTracker.cs" />
