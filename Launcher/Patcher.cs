@@ -40,13 +40,13 @@ namespace Launcher
 
                 CurrentState = State.RequestManifest;
 
-                _logger.Info($"Requesting manifest from {_address}");
+                _logger.Info($"Requesting files to update from {_address}");
                 var manifest = await HttpUtil.Request<FileManifest>(_address, "REQUEST_FILE_MANIFEST");
 
                 CurrentState = State.ProcessManifest;
                 if (manifest == null || manifest.Files == null)
                 {
-                    _logger.Info($"Invalid manifest");
+                    _logger.Info($"Invalid file update list");
 
                     CurrentState = State.Error;
                     return;
@@ -55,7 +55,7 @@ namespace Launcher
 
                 lock (_neededAssets)
                 {
-                    _logger.Info($"Processing manifest. {manifest.Files.Count} files");
+                    _logger.Info($"Processing update files. {manifest.Files.Count} files");
 
                     foreach (var file in manifest.Files)
                     {

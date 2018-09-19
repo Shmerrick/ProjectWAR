@@ -19,7 +19,7 @@ namespace Launcher
         public static ApocLauncher Acc;
 
         public static string LocalServerIP = "127.0.0.1";
-        public static string TestServerIP = "147.75.89.194";
+        public static string TestServerIP = "game.warapoc.com";
         public static int LocalServerPort = 8000;
         public static int TestServerPort = 8000;
         static HttpClient client = new HttpClient();
