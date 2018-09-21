@@ -34,21 +34,20 @@ namespace WorldServer
 			// Group Raid Instance
 			if (instancetyp == 5)
 				maxplayers = 24;
-
+			
 			// check if player is not in group
-			if (instanceid == 0 && player.PriorityGroup == null)
-			{
-				player.SendClientMessage("You have to be in group for entering a dungeon!", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-				return false;
-			}
-
-			// find first instance of leader
 			if (player.PriorityGroup != null)
 			{
+				// find first instance of leader
 				if (player.PriorityGroup.GetLeader() != null)
 				{
 					instanceid = Find_OpenInstanceoftheplayer(player.PriorityGroup.GetLeader(), zoneID);
 				}
+			}
+			else
+			{
+				// get the last instance of the player - he is joining solo
+				instanceid = Find_OpenInstanceoftheplayer(player, zoneID);
 			}
 
 			// find instance ID of player with the most lockouts
