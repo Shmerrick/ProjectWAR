@@ -49,8 +49,11 @@ namespace WorldServer
                 Instance.BossRespawnInstanceGroup(InstanceGroupSpawnID);
             }
 			
-			BossTimer.Reset();
-			BossTimer = null;
+			if (BossTimer != null)
+			{
+				BossTimer.Reset();
+				BossTimer = null;
+			}
 
 			return false;
         }

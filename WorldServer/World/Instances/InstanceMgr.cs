@@ -83,7 +83,12 @@ namespace WorldServer
 
 			// create new instance
 			if (instanceid == 0)
-				instanceid = Create_new_instance(player.PriorityGroup.GetLeader(), Jump);
+			{
+				if (player.PriorityGroup != null)
+					instanceid = Create_new_instance(player.PriorityGroup.GetLeader(), Jump);
+				else
+					instanceid = Create_new_instance(player, Jump);
+			}
 			
 			if (!Join_Instance(player, instanceid, Jump, maxplayers, InstanceMainID))
 				return false;
@@ -115,6 +120,9 @@ namespace WorldServer
 
 		private bool CheckLockout(Player plr, ushort zoneID, ushort ii)
 		{
+			if (!_instances.ContainsKey(ii))
+				return false;
+
 			string lockout = plr._Value.GetLockout(zoneID);
 			if (lockout != null)
 				return false;

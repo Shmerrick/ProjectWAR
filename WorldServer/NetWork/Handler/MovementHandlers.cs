@@ -109,7 +109,25 @@ namespace WorldServer
                 return;
             }
 
-            Zone_jump Jump = ZoneService.GetZoneJump(destinationId);
+			Zone_jump Jump = null;
+
+			// ZARU: zone jump out hackaround for LV leave
+			if (destinationId == 272804328)
+			{
+				Instance_Info II;
+				InstanceService._InstanceInfo.TryGetValue(260, out II);
+				
+				if (cclient.Plr.Realm == Realms.REALMS_REALM_ORDER)
+					Jump = ZoneService.GetZoneJump(II.OrderExitZoneJumpID);
+				else if (cclient.Plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
+					Jump = ZoneService.GetZoneJump(II.DestrExitZoneJumpID);
+
+				if (Jump == null)
+					Jump = ZoneService.GetZoneJump(destinationId);
+			}
+			else
+				Jump = ZoneService.GetZoneJump(destinationId);
+
             if (Jump == null)
             {
                 cclient.Plr.SendClientMessage("This portal's jump destination (" + destinationId + ") does not exist.");
