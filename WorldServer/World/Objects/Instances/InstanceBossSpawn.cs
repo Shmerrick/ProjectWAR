@@ -12,7 +12,7 @@ namespace WorldServer
         uint InstanceGroupSpawnID;
         public uint BossID;
         public ushort InstanceID;
-        Instance Instance;
+		public Instance Instance { get; set; } = null;
 		public Stopwatch BossTimer { get; set; } = null;
 
 		public InstanceBossSpawn(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn)
@@ -67,7 +67,10 @@ namespace WorldServer
         {
             Instance.OnBossDeath(InstanceGroupSpawnID, this);
             base.SetDeath(killer);
-        }
+			
+			// remove barriages from this instance
+			Instance.RemoveInstanceObjectOnBossDeath(BossID);
+		}
 
         public InstanceBossSpawn RezInstanceSpawn()
         {

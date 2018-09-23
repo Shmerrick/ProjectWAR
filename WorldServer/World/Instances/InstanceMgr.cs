@@ -35,7 +35,7 @@ namespace WorldServer
 			if (instancetyp == 5)
 				maxplayers = 24;
 			
-			// check if player is not in group
+			// check if player is in group
 			if (player.PriorityGroup != null)
 			{
 				// find first instance of leader
@@ -50,43 +50,35 @@ namespace WorldServer
 				instanceid = Find_OpenInstanceoftheplayer(player, zoneID);
 			}
 
-			// find instance ID of player with the most lockouts
-			if (player.PriorityGroup != null && instanceid == 0)
-			{
-				Player plr = null;
-				foreach(Player p in player.PriorityGroup.GetPlayerList())
-				{
-					if (plr == null)
-					{
-						plr = p;
-						continue;
-					}
-					plr = CompareBossesKilledInLockout(zoneID, plr, p);
-				}
+			//// find instance ID of player with the most lockouts
+			//if (player.PriorityGroup != null && instanceid == 0)
+			//{
+			//	Player plr = null;
+			//	foreach(Player p in player.PriorityGroup.GetPlayerList())
+			//	{
+			//		if (plr == null)
+			//		{
+			//			plr = p;
+			//			continue;
+			//		}
+			//		plr = CompareBossesKilledInLockout(zoneID, plr, p);
+			//	}
 				
-				if (plr != null)
-					instanceid = Find_OpenInstanceoftheplayer(plr, zoneID);
-			}
+			//	if (plr != null)
+			//		instanceid = Find_OpenInstanceoftheplayer(plr, zoneID);
+			//}
 
 			if (instanceid == 0 && Jump == null)
 				return false;
-			
-			// check lockout of distinct player
-			if (CheckLockout(player, zoneID, instanceid))
-			{
-				TimeSpan lockout = GetLockoutTimer(player, zoneID);
-				player.SendClientMessage("You have already killed all of the bosses in this dungeon!\nRemaining time (hh,mm,ss): "
-					 + lockout.Hours + "," + lockout.Minutes + "," + lockout.Seconds,
-					 ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-				return false;
-			}
 
 			// create new instance
 			if (instanceid == 0)
 			{
-				if (player.PriorityGroup != null)
-					instanceid = Create_new_instance(player.PriorityGroup.GetLeader(), Jump);
-				else
+				instanceid = Create_new_instance(player, Jump);
+			}
+			else
+			{
+				if (player.PriorityGroup == null)
 					instanceid = Create_new_instance(player, Jump);
 			}
 			

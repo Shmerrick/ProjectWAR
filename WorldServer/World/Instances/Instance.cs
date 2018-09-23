@@ -76,7 +76,7 @@ namespace WorldServer
                     }
                 }
 
-                if (_Objects.Count > 0)
+                if (Info != null &&  Info.Objects.Count > 0)
                     LoadObjects();
                 _evtInterface.AddEvent(UpdatePendulums, 7000, 0);
             }
@@ -273,9 +273,9 @@ namespace WorldServer
             List<uint> deadbossids = new List<uint>();
 
             if (Lockout != null)
-				for (int i = 0; i < Lockout.Bosseskilled.Split(';').Count();i++)
+				for (int i = 0; i < Lockout.Bosseskilled.Split(':').Count();i++)
 				{
-					deadbossids.Add(uint.Parse(Lockout.Bosseskilled.Split(';')[i].Split(':')[1]));
+					deadbossids.Add(uint.Parse(Lockout.Bosseskilled.Split(':')[i]));
 				}
 			
             InstanceService._InstanceBossSpawns.TryGetValue(Info.Entry, out Obj);
@@ -482,5 +482,14 @@ namespace WorldServer
         {
 
         }
+
+		public void RemoveInstanceObjectOnBossDeath(uint bossId)
+		{
+			var list = _Objects.Where(x => (x as InstanceObject).Info.EncounterID == bossId).ToList();
+			if (list != null && list.Count > 0)
+			{
+				list.ForEach(x => x.RemoveFromWorld());
+			}
+		}
     }
 }

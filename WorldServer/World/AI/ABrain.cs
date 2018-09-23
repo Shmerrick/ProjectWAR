@@ -473,7 +473,7 @@ namespace WorldServer
             }
         }
 
-        public void SetRandomTarget()
+        public Player SetRandomTarget()
         {
             AggroInfo maxAggro = null;
             Player plr = null;
@@ -510,6 +510,8 @@ namespace WorldServer
             {
                 plr.EvtInterface.AddEvent(DelayedAggroRemoval, 1000, 1, delayedAggroRemoval);
             }
+
+			return plr;
         }
 
         private void DelayedAggroRemoval(object creature)

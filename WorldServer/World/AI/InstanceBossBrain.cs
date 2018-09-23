@@ -105,7 +105,7 @@ namespace WorldServer.World.AI
 					// If target is below MinRange that is set in creature_abilities we don't want to run this particular skill
 					if (ability.MinRange != 0 && _unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < ability.MinRange)
 						continue;
-
+					
 					if (ability.DisableAtHealthPercent != 0)
 					{
 						if (_unit.Health + 1 < (_unit.TotalHealth * ability.DisableAtHealthPercent) / 100)
@@ -125,6 +125,7 @@ namespace WorldServer.World.AI
 						// This will play ability after NPC is wounded below X %
 						if (ability.AbilityCycle == 0 && ability.AbilityUsed == 0 && (_unit.Health < (_unit.TotalHealth * ability.ActivateAtHealthPercent) / 100) && OneshotPercentCast < curTimeMs)
 						{
+							List<Player> plrSubSet = null;
 							// This set random target if needed
 							if (ability.RandomTarget == 1)
 								SetRandomTarget();
@@ -134,7 +135,6 @@ namespace WorldServer.World.AI
 								//  0 = none, 1 = tank, 2 = dps, 3 = healer
 								// 4 = tanks + dps, 5 = tanks + healers
 								// 6 = dps + healers, 7 = ALL
-								IEnumerable<Player> plrSubSet = null;
 								switch (ability.TargetFocus)
 								{
 									case 7:
@@ -144,34 +144,34 @@ namespace WorldServer.World.AI
 									case 6:
 										plrSubSet = _unit.GetPlayersInRange(300, false)
 											.Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_DPS
-											|| plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Healer);
+											|| plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Healer).ToList();
 										break;
 
 									case 5:
 										plrSubSet = _unit.GetPlayersInRange(300, false)
 											.Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Healer
-											|| plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank);
+											|| plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank).ToList();
 										break;
 
 									case 4:
 										plrSubSet = _unit.GetPlayersInRange(300, false)
 											.Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_DPS 
-											|| plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank);
+											|| plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank).ToList();
 										break;
 
 									case 3:
 										plrSubSet = _unit.GetPlayersInRange(300, false)
-											.Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Healer);
+											.Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Healer).ToList();
 										break;
 
 									case 2:
 										plrSubSet = _unit.GetPlayersInRange(300, false)
-											.Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_DPS);
+											.Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_DPS).ToList();
 										break;
 
 									case 1:
 										plrSubSet = _unit.GetPlayersInRange(300, false)
-											.Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank);
+											.Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank).ToList();
 										break;
 
 									case 0:
@@ -187,8 +187,15 @@ namespace WorldServer.World.AI
 									_unit.CbtInterface.SetTarget(plrSubSet.ToList()[idx].Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
 								}
 								else
-									SetRandomTarget();
+								{
+									Player plr = SetRandomTarget();
+									if (plr != null)
+										plrSubSet.Add(plr);
+								}
 							}
+							
+							// handle indiviual abilities for individual bosses
+							HandleIndividualAbility(ability, ref plrSubSet);
 
 							// This list of parameters is passed to the function that delays the cast by 1000 ms
 							var prms = new List<object>() { _unit, ability.Entry, ability.RandomTarget };
@@ -244,6 +251,32 @@ namespace WorldServer.World.AI
 		#endregion Overrides
 
 		#region Methods
+
+		private void HandleIndividualAbility(NPCAbility ability, ref List<Player> plrSubset)
+		{
+			if (plrSubset == null)
+				return;
+
+			switch (ability.Entry)
+			{
+				// crippling sands
+				case 10801:
+					if (_unit is Objects.Instances.SimpleAhzranok ahzranok)
+					{
+						// check players groundtype
+						for (int i = 0; i < plrSubset.ToList().Count; i++)
+						{
+							// apply sand effect
+							if (plrSubset[i].GroundType != MovementHandlers.GROUNDTYPE.Solid)
+								plrSubset.RemoveAt(i);
+						}
+					}
+					break;
+
+				default:
+					return;
+			}
+		}
 
 		#endregion Methods
 	}

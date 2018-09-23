@@ -289,7 +289,6 @@ namespace WorldServer
         /// <returns>Archetype enum value</returns>
         public virtual EArchetype GetArchetype()
         {
-			// TODO: receive the correct archetypes!!
             return EArchetype.ARCHETYPE_Tank;
         }
 
