@@ -72,23 +72,24 @@ namespace WorldServer
 			Instance.RemoveInstanceObjectOnBossDeath(BossID);
 		}
 
-		protected override void HandleDeathRewards(Player killer)
-		{
-			base.HandleDeathRewards(killer);
-		}
-
-		public override void GenerateLoot(Player looter, float dropMod)
-		{
-			base.GenerateLoot(looter, dropMod);
-		}
-
 		public override void TryLoot(Player player, InteractMenu menu)
 		{
 			if (lootContainer != null && lootContainer.IsLootable())
 			{
-				player.PriorityGroup?.GroupLoot(player, lootContainer);
+				List<Player> subGroup = new List<Player>();
 
-				lootContainer.SendInteract(player, menu);
+				foreach (Player member in player.PriorityGroup.Members)
+				{
+					if (!member.HasLockout((ushort)ZoneId, BossID))
+						subGroup.Add(member);
+				}
+
+				player.PriorityGroup?.SubGroupLoot(player, lootContainer, subGroup);
+
+				if (player.HasLockout((ushort)ZoneId, BossID))
+					lootContainer.SendInteract(player.PriorityGroup?.GetLeader(), menu);
+				else
+					lootContainer.SendInteract(player, menu);
 
 				if (!lootContainer.IsLootable())
 					SetLootable(false, player);

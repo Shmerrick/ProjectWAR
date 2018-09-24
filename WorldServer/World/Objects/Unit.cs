@@ -872,8 +872,8 @@ namespace WorldServer
             if (lootContainer != null)
                 SetLootable(true, looter);          
         }
-
-        public void SetLootable(bool value, Player looter)
+		
+		public void SetLootable(bool value, Player looter)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
             Out.WriteUInt16(Oid);

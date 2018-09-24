@@ -726,6 +726,31 @@ namespace WorldServer
             }
         }
 
+		public void SubGroupLoot(Player looter, LootContainer lootContainer, List<Player> subGroup)
+        {
+            for (byte i = 0; i < lootContainer.LootInfo.Count; ++i)
+            {
+                if (lootContainer.LootInfo[i] == null)
+                    continue;
+                if (lootContainer.LootInfo[i].Item.Rarity >= _lootThreshold)
+                {
+                    _activeLootRolls.Add(new LootRoll(++_lootId, lootContainer.LootInfo[i].Item));
+
+                    PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE);
+                    Out.WriteByte(0x07);
+                    Out.WriteByte(0x10);
+                    Out.WriteByte(0x6F);
+                    Out.WriteByte(_lootId);
+                    Out.WriteByte(0x00);
+                    Item.BuildItem(ref Out, null, lootContainer.LootInfo[i].Item, null, 0, 0);
+					SendToSubGroup(Out, subGroup, true);
+
+                    lootContainer.LootInfo.RemoveAt(i);
+                    --i;
+                }
+            }
+        }
+
         public void LootVote(Player voter, ushort itemId, ushort vote)
         {
             foreach (LootRoll lr in _activeLootRolls)
@@ -1523,7 +1548,27 @@ namespace WorldServer
             }
         }
 
-        public void SendExitingGroup(Player player)
+		public void SendToSubGroup(PacketOut Out, List<Player> subGroup, bool shouldLock = false)
+		{
+			if (shouldLock)
+			{
+				_memberRWLock.EnterReadLock();
+				try
+				{
+					foreach (Player player in subGroup)
+						player.SendCopy(Out);
+				}
+				finally { _memberRWLock.ExitReadLock(); }
+			}
+
+			else
+			{
+				foreach (Player player in subGroup)
+					player.SendCopy(Out);
+			}
+		}
+		
+		public void SendExitingGroup(Player player)
         {
             if (player == null)
                 return;

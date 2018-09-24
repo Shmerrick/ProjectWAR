@@ -536,7 +536,7 @@ namespace WorldServer
             return null;
         }
 
-        public static LootContainer GetScenarioLoot(Player player, int scenTier, ZoneMgr zone)
+		public static LootContainer GetScenarioLoot(Player player, int scenTier, ZoneMgr zone)
         {
             List<LootInfo> lootList = new List<LootInfo>();
 

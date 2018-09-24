@@ -6878,5 +6878,23 @@ namespace WorldServer
 
         public Pet Companion { get; set; }
         public bool PendingDumpStatic;
-    }
+
+		#region Lockouts
+
+		public bool HasLockout(ushort zoneId, uint bossID)
+		{
+			string lockout = _Value.GetLockout(zoneId);
+
+			var split = lockout.Split(':');
+			foreach (var str in split)
+			{
+				if (uint.Parse(str).Equals(bossID))
+					return true;
+			}
+
+			return false;
+		}
+
+		#endregion
+	}
 }
