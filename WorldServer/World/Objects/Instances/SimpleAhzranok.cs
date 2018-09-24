@@ -15,8 +15,7 @@ namespace WorldServer.World.Objects.Instances
 
 		public SimpleAhzranok(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base (spawn, instancegroupspawnid, bossid, Instanceid, instance)
 		{
-			EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
-			EvtInterface.AddEvent(ApplyIncomingDmgIncreaseOnPlayers, 1000, 0);
+
 		}
 
 		#endregion Constructors
@@ -40,28 +39,28 @@ namespace WorldServer.World.Objects.Instances
 
 		#region Methods
 
-		private void CheckBossRageTimer()
-		{
-			// check rage timer
-			if (BossTimer != null && BossTimer.ElapsedMilliseconds / 1000 >= TIMER_RAGE_MAX)
-			{
-				// rage timer maximum reached
-				// nuke all players
-				GetPlayersInRange(300, false).ForEach(plr => plr.Terminate());
-			}
-		}
+		//private void CheckBossRageTimer()
+		//{
+		//	// check rage timer
+		//	if (BossTimer != null && BossTimer.ElapsedMilliseconds / 1000 >= TIMER_RAGE_MAX)
+		//	{
+		//		// rage timer maximum reached
+		//		// nuke all players
+		//		GetPlayersInRange(300, false).ForEach(plr => plr.Terminate());
+		//	}
+		//}
 
-		private void ApplyIncomingDmgIncreaseOnPlayers()
-		{
-			// apply incoming dmg increase on players
-			if (BossTimer != null && (BossTimer.ElapsedMilliseconds * 1000) % 60 == 0)
-			{
-				foreach (Player plr in GetPlayersInRange(300, false))
-				{
-					//plr.BuffInterface.QueueBuff(new BuffQueueInfo(this, Level, AbilityMgr.GetBuffInfo((ushort)GameBuffs.Chicken), AssignChickenBuff));
-				}
-			}
-		}
+		//private void ApplyIncomingDmgIncreaseOnPlayers()
+		//{
+		//	// apply incoming dmg increase on players
+		//	if (BossTimer != null && (BossTimer.ElapsedMilliseconds / 1000) % 60 == 0)
+		//	{
+		//		foreach (Player plr in GetPlayersInRange(300, false))
+		//		{
+		//			//plr.BuffInterface.QueueBuff(new BuffQueueInfo(this, Level, AbilityMgr.GetBuffInfo((ushort)GameBuffs.Chicken), AssignChickenBuff));
+		//		}
+		//	}
+		//}
 
 		#endregion Methods
 	}
