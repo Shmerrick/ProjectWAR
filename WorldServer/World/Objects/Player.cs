@@ -4551,7 +4551,7 @@ namespace WorldServer
 
         public void UpdateActionPoints(long tick)
         {
-            if (!AbtInterface.IsCasting())
+            if (!AbtInterface.IsCasting() && !AbtInterface.IsOnGlobalCooldown())
             {
                 _actionPointTimer += (ushort)((tick - _lastAPCheck) * StsInterface.GetStatPercentageModifier(Stats.ActionPointRegen));
 
@@ -4564,7 +4564,7 @@ namespace WorldServer
 
                 if (count > 0 && ActionPoints < MaxActionPoints)
                 {
-                    ActionPoints += (ushort)(count * (20 + StsInterface.GetBonusStat(Stats.ActionPointRegen)));
+                    ActionPoints += (ushort)(count * ((25 + StsInterface.GetBonusStat(Stats.ActionPointRegen)) / 2));
 
                     if (ActionPoints > MaxActionPoints)
                         ActionPoints = MaxActionPoints;

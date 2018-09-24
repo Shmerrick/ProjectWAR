@@ -164,7 +164,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {
                         if (status.RegionId == this.Region.RegionId)
                         {
-                            BattlefrontLogger.Debug($"Recording metrics for BF Status : ({status.BattleFrontId}) {status.Description}");
+                            BattlefrontLogger.Trace($"Recording metrics for BF Status : ({status.BattleFrontId}) {status.Description}");
                             if (!status.Locked)
                             {
                                 var metrics = new RVRMetrics
