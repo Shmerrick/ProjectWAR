@@ -72,7 +72,30 @@ namespace WorldServer
 			Instance.RemoveInstanceObjectOnBossDeath(BossID);
 		}
 
-        public InstanceBossSpawn RezInstanceSpawn()
+		protected override void HandleDeathRewards(Player killer)
+		{
+			base.HandleDeathRewards(killer);
+		}
+
+		public override void GenerateLoot(Player looter, float dropMod)
+		{
+			base.GenerateLoot(looter, dropMod);
+		}
+
+		public override void TryLoot(Player player, InteractMenu menu)
+		{
+			if (lootContainer != null && lootContainer.IsLootable())
+			{
+				player.PriorityGroup?.GroupLoot(player, lootContainer);
+
+				lootContainer.SendInteract(player, menu);
+
+				if (!lootContainer.IsLootable())
+					SetLootable(false, player);
+			}
+		}
+
+		public InstanceBossSpawn RezInstanceSpawn()
         {
             InstanceBossSpawn newCreature = new InstanceBossSpawn(Spawn, InstanceGroupSpawnID, BossID, InstanceID,Instance);
             Region.AddObject(newCreature, Spawn.ZoneId);
