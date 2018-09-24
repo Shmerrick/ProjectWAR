@@ -15,7 +15,9 @@ namespace WorldServer.World.Objects.Instances
 
 		public SimpleAhzranok(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base (spawn, instancegroupspawnid, bossid, Instanceid, instance)
 		{
-
+			EvtInterface.AddEvent(CheckCleanBoilingWatersDebuff, 500, 0);
+			//EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
+			//EvtInterface.AddEvent(ApplyIncomingDmgIncreaseOnPlayers, 1000, 0);
 		}
 
 		#endregion Constructors
@@ -38,6 +40,15 @@ namespace WorldServer.World.Objects.Instances
 		#endregion Overrides
 
 		#region Methods
+		
+		private void CheckCleanBoilingWatersDebuff()
+		{
+			foreach (Player plr in GetPlayersInRange(300, false))
+			{
+				if (plr.Health >= plr.MaxHealth)
+					plr.BuffInterface.RemoveBuffByEntry(10802);
+			}
+		}
 
 		//private void CheckBossRageTimer()
 		//{
