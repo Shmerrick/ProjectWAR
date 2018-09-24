@@ -257,24 +257,35 @@ namespace WorldServer.World.AI
 			if (plrSubset == null)
 				return;
 
-			switch (ability.Entry)
+			if (_unit is Objects.Instances.SimpleAhzranok ahzranok)
 			{
-				// crippling sands
-				case 10801:
-					if (_unit is Objects.Instances.SimpleAhzranok ahzranok)
-					{
+				switch (ability.Entry)
+				{
+					// crippling sands
+					case 10801:
 						// check players groundtype
 						for (int i = 0; i < plrSubset.ToList().Count; i++)
 						{
-							// apply sand effect
-							if (plrSubset[i].GroundType != MovementHandlers.GROUNDTYPE.Solid)
+							if (plrSubset[i].GroundType == MovementHandlers.GROUNDTYPE.ShallowWater ||
+									plrSubset[i].GroundType == MovementHandlers.GROUNDTYPE.DeepWater)
 								plrSubset.RemoveAt(i);
 						}
-					}
-					break;
+						break;
 
-				default:
-					return;
+					// boiling waters
+					case 10802:
+						// check players groundtype
+						for (int i = 0; i < plrSubset.ToList().Count; i++)
+						{
+							if (plrSubset[i].GroundType != MovementHandlers.GROUNDTYPE.ShallowWater &&
+									plrSubset[i].GroundType != MovementHandlers.GROUNDTYPE.DeepWater)
+								plrSubset.RemoveAt(i);
+						}
+						break;
+
+					default:
+						return;
+				}
 			}
 		}
 
