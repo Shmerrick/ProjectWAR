@@ -887,16 +887,25 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="lockingRealm"></param>
         private void DistributeBaseRewards(List<Player> eligibleLosingRealmPlayers, List<Player> eligibleWinningRealmPlayers, Realms lockingRealm)
         {
+            
+            var tierRewardScale = Tier == 1 ? 0.5f : 1f;
+
             // Distribute rewards to losing players with eligibility - halve rewards.
             foreach (var losingRealmPlayer in eligibleLosingRealmPlayers)
             {
-                WorldMgr.RewardDistributor.DistributeNonBagAwards(losingRealmPlayer, _rewardManager.CalculateRenownBand(losingRealmPlayer.RenownRank), 0.5);
+                WorldMgr.RewardDistributor.DistributeNonBagAwards(
+                    losingRealmPlayer, 
+                    _rewardManager.CalculateRenownBand(losingRealmPlayer.RenownRank), 
+                    0.5 * tierRewardScale);
             }
 
             // Distribute rewards to winning players with eligibility - full rewards.
             foreach (var winningRealmPlayer in eligibleWinningRealmPlayers)
             {
-                WorldMgr.RewardDistributor.DistributeNonBagAwards(winningRealmPlayer, _rewardManager.CalculateRenownBand(winningRealmPlayer.RenownRank), 1);
+                WorldMgr.RewardDistributor.DistributeNonBagAwards(
+                    winningRealmPlayer, 
+                    _rewardManager.CalculateRenownBand(winningRealmPlayer.RenownRank), 
+                    1 * tierRewardScale);
             }
 
             // Get All players in the zone and if they are not in the eligible list, they receive minor awards
@@ -912,7 +921,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         if (!eligibleWinningRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
                         {
                             // Give player no bag, but half rewards
-                            WorldMgr.RewardDistributor.DistributeNonBagAwards(player, _rewardManager.CalculateRenownBand(player.RenownRank), 0.5);
+                            WorldMgr.RewardDistributor.DistributeNonBagAwards(
+                                player, 
+                                _rewardManager.CalculateRenownBand(player.RenownRank), 
+                                0.5 * tierRewardScale);
                         }
                     }
                     else
@@ -921,7 +933,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         if (!eligibleLosingRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
                         {
                             // Give player no bag, but quarter rewards
-                            WorldMgr.RewardDistributor.DistributeNonBagAwards(player, _rewardManager.CalculateRenownBand(player.RenownRank), 0.25);
+                            WorldMgr.RewardDistributor.DistributeNonBagAwards(
+                                player, 
+                                _rewardManager.CalculateRenownBand(player.RenownRank), 
+                                0.25 * tierRewardScale);
                         }
                     }
                 }
