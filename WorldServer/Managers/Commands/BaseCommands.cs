@@ -3775,6 +3775,15 @@ namespace WorldServer.Managers.Commands
             {
                 CharMgr.RemoveQuestsFromCharacter(chara);
                 plr.SendClientMessage("Removed all quests from character: " + playerName);
+
+                GMCommandLog log = new GMCommandLog
+                {
+                    PlayerName = plr.Name,
+                    AccountId = (uint)plr.Client._Account.AccountId,
+                    Command = "Removed all quests from character: " + playerName,
+                    Date = DateTime.Now
+                };
+
                 return true;
             }
 
