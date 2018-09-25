@@ -727,7 +727,13 @@ namespace WorldServer.World.BattleFronts.Keeps
 					
 					plr.SendClientMessage($"You've received a reward for your contribution to the holding of {Info.Name}.", ChatLogFilters.CHATLOGFILTERS_RVR);
 
-					Log.Info("Keep", $"Keep Defence XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
+                    // Add Contribution for Keep Defence Tick
+                    var contributionForKeepDefence = BountyService.GetDefinition((byte)ContributionDefinitions.KEEP_DEFENCE_TICK);
+                    var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
+                    var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
+                    activeBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionForKeepDefence.ContributionValue);
+
+                    Log.Info("Keep", $"Keep Defence XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
 				}
 
 				SendKeepInfo(plr);

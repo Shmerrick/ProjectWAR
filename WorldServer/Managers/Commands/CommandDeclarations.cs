@@ -330,6 +330,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("standard",AssignStandard, null, 0, 0, "Assigns Standard Bearer Titel to the Player."),
             new GmCommandHandler("ror", RoRFeatures, null, 0, 0, "Help Files for RoR-specific features."),
             new GmCommandHandler("changename", RequestNameChange, null, 0, 1, "Requests a name change, one per account per month (string newName)"),
+            new GmCommandHandler("ping", GetPing, null, 0, 0, "Returns an avg of 10 latency packets"),
             new GmCommandHandler("sorenable", SoREnable, null, 0, 0, "Enables SoR addon."), 
             // new GmCommandHandler("pug", PugScenario, null, 0, 0, "Displays current PUG scenario."),
             new GmCommandHandler("sorenable", SoREnable, null, 0, 0, "Enables SoR addon."),
@@ -351,6 +352,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("prevpos", PreviousPosition, null, EGmLevel.AllStaff, 1, "Creates an object at the position which a player held a certain time ago (int millisecondDelta)"),
             new GmCommandHandler("latency", OverrideLatency, null, EGmLevel.AllStaff, 1, "Overrides the server's opinion of your latency (int latency)"),
             new GmCommandHandler("getguildlead", GetGuildLead, null, EGmLevel.AllStaff, 1, "Returns the guild leader of the guild specified (string guildname)"),
+            
 
             // All empowered staff
             new GmCommandHandler("kill", Kill, null, EGmLevel.GM, 0, "Slays the targeted Unit."),

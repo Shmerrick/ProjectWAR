@@ -3189,8 +3189,10 @@ namespace WorldServer
 
             var bonus = (scaleFactor - 1) >= 0 ? (uint)(renown * (scaleFactor - 1)) : 0;
 
-            if (bonus > 0)
-                killer.SendClientMessage($"You gain {bonus} Renown points for fighting near a Battlefield Objective!");
+            //if (bonus > 0)
+            //    killer.SendClientMessage($"You gain {bonus} Renown points for fighting near a Battlefield Objective!");
+
+
 
             renown = (uint)(renown * scaleFactor);
             AddKillRenown(renown, killer, victim, participants);
@@ -3995,6 +3997,7 @@ namespace WorldServer
                     // List of players involved in the kill
                     var rewardDictionary = ActiveBattleFrontStatus.RewardManagerInstance.GenerateBaseRewardForKill((this).Info.CharacterId, StaticRandom.Instance.Next(1, 100));
 
+
                     foreach (var reward in rewardDictionary)
                     {
 
@@ -4031,8 +4034,16 @@ namespace WorldServer
                                     var contributionDeathBlowDefinitionUnderAAO = BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW_UNDER_AAO);
                                     ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(killer.CharacterId, contributionDeathBlowDefinitionUnderAAO.ContributionValue);
                                 }
+
+                                // If the deathblow comes while the target is near a BO
+                                if (this.CurrentObjectiveFlag != null)
+                                {
+                                    var contributionDeathBlowDefinitionOnBO = BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_ON_BO);
+                                    ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(killer.CharacterId, contributionDeathBlowDefinitionOnBO.ContributionValue);
+                                }
+
                             }
-                            else
+                            else // An assist
                             {
                                 if (reward.Value.InsigniaCount > 0)
                                 {
@@ -4050,6 +4061,12 @@ namespace WorldServer
                                 {
                                     var contributionAssistDefinitionUnderAAO = BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_ASSIST_UNDER_AAO);
                                     ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(killer.CharacterId, contributionAssistDefinitionUnderAAO.ContributionValue);
+                                }
+                                // If the kill is an assist comes while the target is near a BO
+                                if (this.CurrentObjectiveFlag != null)
+                                {
+                                    var contributionDeathBlowDefinitionOnBO = BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_ON_BO);
+                                    ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(killer.CharacterId, contributionDeathBlowDefinitionOnBO.ContributionValue);
                                 }
 
                             }

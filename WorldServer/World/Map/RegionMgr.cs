@@ -310,6 +310,8 @@ namespace WorldServer
 
                     //Bttlfront?.Update(start);
                     Campaign?.Update(start);
+
+                    Campaign?.ActiveBattleFrontStatus?.ImpactMatrixManagerInstance?.Update(start);
                 }
 
                 catch (Exception e)

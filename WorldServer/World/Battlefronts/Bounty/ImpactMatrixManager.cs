@@ -37,6 +37,12 @@ namespace WorldServer.World.Battlefronts.Bounty
             _logger.Debug("Done decaying impact matrix");
         }
 
+        public void Update(long tick)
+        {
+            _EvtInterface.Update(tick);
+        }
+
+
         public string ToString(uint characterId)
         {
             var result = string.Empty;
