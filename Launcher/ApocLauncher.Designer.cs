@@ -214,11 +214,11 @@ namespace Launcher
             this.lblConnection.BackColor = System.Drawing.Color.Transparent;
             this.lblConnection.Font = new System.Drawing.Font("Ubuntu", 9.749999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblConnection.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.lblConnection.Location = new System.Drawing.Point(12, 647);
+            this.lblConnection.Location = new System.Drawing.Point(691, 540);
             this.lblConnection.Name = "lblConnection";
             this.lblConnection.Size = new System.Drawing.Size(577, 24);
             this.lblConnection.TabIndex = 13;
-            this.lblConnection.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblConnection.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // bnClose
             // 
@@ -401,9 +401,9 @@ namespace Launcher
             this.bnConnectLocal.BackColor = System.Drawing.Color.Transparent;
             this.bnConnectLocal.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.bnConnectLocal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.bnConnectLocal.Location = new System.Drawing.Point(1099, 568);
+            this.bnConnectLocal.Location = new System.Drawing.Point(1183, 700);
             this.bnConnectLocal.Name = "bnConnectLocal";
-            this.bnConnectLocal.Size = new System.Drawing.Size(176, 21);
+            this.bnConnectLocal.Size = new System.Drawing.Size(88, 20);
             this.bnConnectLocal.TabIndex = 25;
             this.bnConnectLocal.Text = "LOCAL";
             this.bnConnectLocal.UseVisualStyleBackColor = false;
@@ -422,11 +422,11 @@ namespace Launcher
             this.lblDownloading.BackColor = System.Drawing.Color.Transparent;
             this.lblDownloading.Font = new System.Drawing.Font("Ubuntu", 9.749999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDownloading.ForeColor = System.Drawing.Color.DarkOrange;
-            this.lblDownloading.Location = new System.Drawing.Point(12, 677);
+            this.lblDownloading.Location = new System.Drawing.Point(700, 576);
             this.lblDownloading.Name = "lblDownloading";
             this.lblDownloading.Size = new System.Drawing.Size(568, 21);
             this.lblDownloading.TabIndex = 27;
-            this.lblDownloading.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblDownloading.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // pictureBox1
             // 
@@ -514,7 +514,6 @@ namespace Launcher
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "WAR: APOCALYPSE";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Disconnect);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panelCreateAccount.ResumeLayout(false);

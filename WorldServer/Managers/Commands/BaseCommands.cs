@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using GameData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common;
-using FrameWork;
-using GameData;
+using NLog;
 using WorldServer.Scenarios;
-using static System.UInt16;
-using static WorldServer.Managers.Commands.GMUtils;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
-using WorldServer.World.BattleFronts;
+using static System.UInt16;
+using static WorldServer.Managers.Commands.GMUtils;
 
 namespace WorldServer.Managers.Commands
 {
@@ -19,6 +19,8 @@ namespace WorldServer.Managers.Commands
     /// </summary>
     internal static class BaseCommands
     {
+
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         #region Functions
         public static bool HandleCommand(Player plr, string command, string text)
@@ -353,7 +355,7 @@ namespace WorldServer.Managers.Commands
                     return true;
                 }
 
-                if (plr.GmLevel == 0)
+                if (plr.GmLevel == 1)
                 {
                     plr.SendClientMessage("Use of the PlayEffect is not allowed for non-GM characters.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                     return true;
@@ -421,7 +423,7 @@ namespace WorldServer.Managers.Commands
                                 if (inrange != null && inrange.Count > 0)
                                     players.AddRange(inrange);
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
                             }
                         }
@@ -521,7 +523,7 @@ namespace WorldServer.Managers.Commands
 
                 var playerName = GetString(ref values);
 
-                if (plr.GmLevel == 0)
+                if (plr.GmLevel == 1)
                 {
                     plr.SendClientMessage("Use of the RemoveEffect is not allowed for non-GM characters.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                     return true;
@@ -603,21 +605,21 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            if (playerTarget != plr && plr.GmLevel == 0)
+            if (playerTarget != plr && plr.GmLevel == 1)
             {
                 if ((playerTarget != null && playerTarget is Pet && ((Pet)playerTarget).Owner == plr) && WorldMgr.WorldSettingsMgr.GetGenericSetting(20) == 0)
                 {
                     plr.SendClientMessage("[Your Pet]\n", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
                 }
-                else
-                {
-                    plr.SendClientMessage("Use of the GetStats command against other players is not allowed for non-GM characters.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-                    return true;
-                }
+                //else
+                //{
+                //    plr.SendClientMessage("Use of the GetStats command against other players is not allowed for non-GM characters.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                //    return true;
+                //}
             }
 
             plr.SendClientMessage("[Stats for " + playerTarget.Name + "]\n", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
-            if (playerTarget is Creature && plr.GmLevel > 0)
+            if (playerTarget is Creature && plr.GmLevel >= 1)
             {
                 Creature c = playerTarget as Creature;
                 plr.SendClientMessage("Creature Career: " + c.Spawn.Proto.Career, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
@@ -636,7 +638,7 @@ namespace WorldServer.Managers.Commands
             plr.SendClientMessage("Speed: " + playerTarget.Speed, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
             plr.SendClientMessage("Stats Speed: " + playerTarget.StsInterface.Speed, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
 
-            if (playerTarget is Player && plr.GmLevel > 0)
+            if (playerTarget is Player && plr.GmLevel > 1)
             {
                 Player p = playerTarget as Player;
                 plr.SendClientMessage("Current heal aggro: " + p.GetHealAggro(p.Oid).HealingReceived, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
@@ -772,7 +774,7 @@ namespace WorldServer.Managers.Commands
             {
                 player.ForceSave();
                 player.SendClientMessage("Server is being restarted right now...");
-                if (player.GmLevel == 0)
+                if (player.GmLevel == 1)
                 {
                     Object target = player;
                     player.EvtInterface.AddEvent(Kick, 2000, 1, target);
@@ -2882,7 +2884,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            if (target.GmLevel > 0)
+            if (target.GmLevel > 1)
             {
                 plr.SendClientMessage("BLOCKADVICE: " + playerName + " is a staff member.");
                 return true;
@@ -3058,7 +3060,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            if (target.GmLevel > 0 && !Utils.HasFlag(plr.GmLevel, (int)EGmLevel.SourceDev))
+            if (target.GmLevel > 1 && !Utils.HasFlag(plr.GmLevel, (int)EGmLevel.SourceDev))
             {
                 plr.SendClientMessage("EJECT: " + playerName + " is a staff member.");
                 return true;
@@ -3102,7 +3104,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            if (target.GmLevel > 0 && !Utils.HasFlag(plr.GmLevel, (int)EGmLevel.SourceDev))
+            if (target.GmLevel > 1 && !Utils.HasFlag(plr.GmLevel, (int)EGmLevel.SourceDev))
             {
                 plr.SendClientMessage("SEVER: " + playerName + " is a staff member.");
                 return true;
@@ -3190,125 +3192,136 @@ namespace WorldServer.Managers.Commands
 
         public static bool Exile(Player plr, ref List<string> values)
         {
-            string playerName = GetString(ref values);
-
-            Player target = Player.GetPlayer(playerName);
-
-            Account account = GetAccountForPlayer(playerName);
-
-            if (account == null)
+            try
             {
-                plr.SendClientMessage("EXILE: The specified player does not exist.");
-                return true;
-            }
 
-            if (account.GmLevel > 1 && !Utils.HasFlag(plr.GmLevel, (int)EGmLevel.SourceDev))
-            {
-                plr.SendClientMessage("EXILE: " + playerName + " is a staff member.");
-                return true;
-            }
 
-            int duration = GetInt(ref values);
+                string playerName = GetString(ref values);
 
-            if (duration <= 0)
-            {
-                plr.SendClientMessage("EXILE: A nonzero positive duration is required.");
-                return true;
-            }
+                Player target = Player.GetPlayer(playerName);
 
-            int durationMult;
+                Account account = GetAccountForPlayer(playerName);
 
-            string lengthTypeString = GetString(ref values).ToLower();
-
-            if (lengthTypeString == "")
-            {
-                plr.SendClientMessage("EXILE: Requires a length modifier (string: months, days, hours, minutes, seconds)");
-                return true;
-            }
-
-            switch (lengthTypeString)
-            {
-                case "months":
-                case "month":
-                    durationMult = 86400 * 30;
-                    break;
-                case "days":
-                case "day":
-                    durationMult = 86400;
-                    break;
-                case "hours":
-                case "hour":
-                    durationMult = 3600;
-                    break;
-                case "minutes":
-                case "minute":
-                    durationMult = 60;
-                    break;
-                case "seconds":
-                case "second":
-                    durationMult = 1;
-                    break;
-                default:
-                    plr.SendClientMessage("Specified duration modifier is invalid.");
-                    return true;
-            }
-
-            string reasonString = GetTotalString(ref values);
-
-            if (reasonString == "")
-            {
-                plr.SendClientMessage("EXILE: Requires a reason.");
-                return true;
-            }
-
-            account.Banned = Math.Max(account.Banned, TCPManager.GetTimeStamp() + duration * durationMult);
-            account.BanReason = reasonString;
-            Program.AcctMgr.UpdateAccount(account);
-
-            LogSanction(account.AccountId, plr, "Exile", duration + " " + lengthTypeString, reasonString);
-
-            Group worldGroup = target.WorldGroup;
-            uint groupId = 0;
-            if (worldGroup != null)
-            {
-                lock (worldGroup)
+                if (account == null)
                 {
-                    if (worldGroup != null)
+                    plr.SendClientMessage("EXILE: The specified player does not exist.");
+                    return true;
+                }
+
+                if (account.GmLevel > 1 && !Utils.HasFlag(plr.GmLevel, (int)EGmLevel.SourceDev))
+                {
+                    plr.SendClientMessage("EXILE: " + playerName + " is a staff member.");
+                    return true;
+                }
+
+                int duration = GetInt(ref values);
+
+                if (duration <= 0)
+                {
+                    plr.SendClientMessage("EXILE: A nonzero positive duration is required.");
+                    return true;
+                }
+
+                int durationMult;
+
+                string lengthTypeString = GetString(ref values).ToLower();
+
+                if (lengthTypeString == "")
+                {
+                    plr.SendClientMessage("EXILE: Requires a length modifier (string: months, days, hours, minutes, seconds)");
+                    return true;
+                }
+
+                switch (lengthTypeString)
+                {
+                    case "months":
+                    case "month":
+                        durationMult = 86400 * 30;
+                        break;
+                    case "days":
+                    case "day":
+                        durationMult = 86400;
+                        break;
+                    case "hours":
+                    case "hour":
+                        durationMult = 3600;
+                        break;
+                    case "minutes":
+                    case "minute":
+                        durationMult = 60;
+                        break;
+                    case "seconds":
+                    case "second":
+                        durationMult = 1;
+                        break;
+                    default:
+                        plr.SendClientMessage("Specified duration modifier is invalid.");
+                        return true;
+                }
+
+                string reasonString = GetTotalString(ref values);
+
+                if (reasonString == "")
+                {
+                    plr.SendClientMessage("EXILE: Requires a reason.");
+                    return true;
+                }
+
+                account.Banned = Math.Max(account.Banned, TCPManager.GetTimeStamp() + duration * durationMult);
+                account.BanReason = reasonString;
+                Program.AcctMgr.UpdateAccount(account);
+
+                LogSanction(account.AccountId, plr, "Exile", duration + " " + lengthTypeString, reasonString);
+
+                Group worldGroup = target.WorldGroup;
+                uint groupId = 0;
+                if (worldGroup != null)
+                {
+                    lock (worldGroup)
                     {
-                        if (worldGroup._warbandHandler != null)
+                        if (worldGroup != null)
                         {
-                            lock (worldGroup._warbandHandler)
+                            if (worldGroup._warbandHandler != null)
                             {
-                                if (worldGroup._warbandHandler != null)
+                                lock (worldGroup._warbandHandler)
                                 {
-                                    groupId = worldGroup._warbandHandler.ZeroIndexGroupId;
+                                    if (worldGroup._warbandHandler != null)
+                                    {
+                                        groupId = worldGroup._warbandHandler.ZeroIndexGroupId;
+                                    }
                                 }
                             }
-                        }
-                        else
-                        {
-                            groupId = worldGroup.GroupId;
+                            else
+                            {
+                                groupId = worldGroup.GroupId;
+                            }
                         }
                     }
                 }
+                if (groupId != 0)
+                    Group.EnqueueGroupAction(groupId, new GroupAction(EGroupAction.PlayerLeave, target));
+
+                target?.Teleport(175, 1530613, 106135, 4297, 1700);
+
+                plr.SendClientMessage("You exiled " + playerName + " for " + duration + " " + lengthTypeString + " (expires at time: " + account.Banned + ")");
+
+                target?.SendClientMessage("Your account has been exiled for " + duration + " " + lengthTypeString + " by " + plr.Client._Account.Username + " for the following reason:\n" + reasonString + "\nThis timer will continue to run even if you are offline.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+
+                GMCommandLog log = new GMCommandLog
+                {
+                    PlayerName = plr.Name,
+                    AccountId = (uint)plr.Client._Account.AccountId,
+                    Command = "EXILE PLAYER " + playerName,
+                    Date = DateTime.UtcNow
+                };
+                CharMgr.Database.AddObject(log);
+
             }
-            if (groupId != 0)
-                Group.EnqueueGroupAction(groupId, new GroupAction(EGroupAction.PlayerLeave, target));
-
-            target?.Teleport(175, 1530613, 106135, 4297, 1700);
-
-            plr.SendClientMessage("You exiled " + playerName + " for " + duration + " " + lengthTypeString + " (expires at time: " + account.Banned + ")");
-
-            target?.SendClientMessage("Your account has been exiled for " + duration + " " + lengthTypeString + " by " + plr.Client._Account.Username + " for the following reason:\n" + reasonString + "\nThis timer will continue to run even if you are offline.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-
-            GMCommandLog log = new GMCommandLog
+            catch (Exception ex)
             {
-                PlayerName = plr.Name,
-                AccountId = (uint)plr.Client._Account.AccountId,
-                Command = "EXILE PLAYER " + playerName,
-                Date = DateTime.UtcNow
-            };
-            CharMgr.Database.AddObject(log);
+                _logger.Warn($"Attempt to exile failed : {ex.Message} {ex.StackTrace}");
+                plr.SendClientMessage("Attempt to Exile FAILED");
+            }
 
             return true;
         }
@@ -3411,7 +3424,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            if (account.GmLevel == 0 && account.Banned != 1)
+            if (account.GmLevel == 1 && account.Banned != 1)
             {
                 developer.SendClientMessage("ANNIHILATE: You cannot wipe an active account. Ban it first.");
                 return true;
@@ -3816,7 +3829,7 @@ namespace WorldServer.Managers.Commands
 
             if (values.Count > 2)
             {
-                values = (List<string>) values.Skip(1);
+                values = (List<string>)values.Skip(1);
                 SetEffectStateSelf(plr, ref values);
             }
             else

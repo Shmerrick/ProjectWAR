@@ -28,7 +28,7 @@ namespace Launcher
             _logger = logger;
         }
 
-        public async Task Patch()
+        public async Task Patch(string patchDirectory)
         {
             string tempFile = "";
 
@@ -36,15 +36,17 @@ namespace Launcher
             {
                 TotalDownloadSize = 0;
                 Downloaded = 0;
+
+
                 CurrentState = State.RequestManifest;
 
-                _logger.Info($"Requesting manifest from {_address}");
+                _logger.Info($"Requesting files to update from {_address}");
                 var manifest = await HttpUtil.Request<FileManifest>(_address, "REQUEST_FILE_MANIFEST");
 
                 CurrentState = State.ProcessManifest;
                 if (manifest == null || manifest.Files == null)
                 {
-                    _logger.Info($"Invalid manifest");
+                    _logger.Info($"Invalid file update list");
 
                     CurrentState = State.Error;
                     return;
@@ -53,11 +55,11 @@ namespace Launcher
 
                 lock (_neededAssets)
                 {
-                    _logger.Info($"Processing manifest. {manifest.Files.Count} files");
+                    _logger.Info($"Processing update files. {manifest.Files.Count} files");
 
                     foreach (var file in manifest.Files)
                     {
-                        string path = Path.Combine(Application.StartupPath, file.Name);
+                        string path = Path.Combine(Application.StartupPath+ patchDirectory, file.Name);
                         if (File.Exists(path))
                         {
 
@@ -88,7 +90,7 @@ namespace Launcher
                 {
                     CurrentState = State.Downloading;
 
-                    string path = Path.Combine(Application.StartupPath, file.Name);
+                    string path = Path.Combine(Application.StartupPath+ patchDirectory, file.Name);
                     if (File.Exists(path))
                         File.Delete(path);
 
@@ -172,6 +174,7 @@ namespace Launcher
             Downloading,
             Done,
             Error,
+            ServerOffline,
         }
     }
 }

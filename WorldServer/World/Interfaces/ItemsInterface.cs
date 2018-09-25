@@ -113,7 +113,7 @@ namespace WorldServer
                     }
 
                     // Because item restrictions can change in patches
-                    if (IsEquipmentSlot(itm.SlotId) && (!CanUse(itm.Info, _playerOwner, false, false) /*|| (itm.Info.UniqueEquiped == 1 && _uniqueEquipped.Contains(item.Entry))*/ || (EquipSlot)itm.SlotId == EquipSlot.OFF_HAND && itm.Info.TwoHanded) && _playerOwner.GmLevel < 1)
+                    if (IsEquipmentSlot(itm.SlotId) && (!CanUse(itm.Info, _playerOwner, false, false) /*|| (itm.Info.UniqueEquiped == 1 && _uniqueEquipped.Contains(item.Entry))*/ || (EquipSlot)itm.SlotId == EquipSlot.OFF_HAND && itm.Info.TwoHanded) && _playerOwner.GmLevel == 1)
                         SlotCollidingItems.Add(itm);
 
                     else if (Items[itm.SlotId] == null)

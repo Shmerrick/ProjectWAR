@@ -196,6 +196,16 @@
     <None Include="Resources\M55rLv3.jpg" />
     <Content Include="WAR.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="fody">
+      <Version>3.2.3</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="nlog">
+      <Version>4.5.10</Version>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

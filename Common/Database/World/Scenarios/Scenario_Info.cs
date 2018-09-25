@@ -40,6 +40,9 @@ namespace Common
         [DataElement(AllowDbNull = false)]
         public ushort MapId { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public ushort RegionId { get; set; }
+
         [DataElement]
         public byte KillPointScore { get; set; }
 

@@ -238,11 +238,12 @@ namespace WorldServer.Managers.Commands
         /// <summary>Search commands under .search</summary>
         public static List<GmCommandHandler> SearchCommands = new List<GmCommandHandler>
         {
-            new GmCommandHandler("item",SearchItem, null, EGmLevel.DatabaseDev, 1, "Search an item by name <name>"),
+            new GmCommandHandler("item",SearchItem, null, EGmLevel.AnyGM, 1, "Search an item by name <name>"),
             new GmCommandHandler("npc",SearchNpc, null, EGmLevel.DatabaseDev, 1, "Seach an npc by name <name>"),
             new GmCommandHandler("gameobject",SearchGameObject, null, EGmLevel.DatabaseDev, 1, "Seach an gameobject by name <name>"),
             new GmCommandHandler("quest",SearchQuest, null, EGmLevel.DatabaseDev, 1, "Seach an quest by name <name>"),
-            new GmCommandHandler("zone",SearchZone, null, EGmLevel.DatabaseDev, 1, "Seach an zone by name <name>")
+            new GmCommandHandler("zone",SearchZone, null, EGmLevel.DatabaseDev, 1, "Seach an zone by name <name>"),
+            new GmCommandHandler("inventory",SearchInventory, null, EGmLevel.AnyGM, 0, "Search inventory of selected target. 1st param : <filter>")
         };
 
         /// <summary>State modification commands under .state</summary>
@@ -307,7 +308,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("respawn",null, RespawnCommands, EGmLevel.DatabaseDev, 0, "Respawn modification commands."),
             new GmCommandHandler("respec",null, RespecCommands, 0, 0, "Respecialization commands."),
             new GmCommandHandler("scenario", null, ScenarioCommands, EGmLevel.AllStaff, 0, "Scenario commands."),
-            new GmCommandHandler("search",null, SearchCommands, EGmLevel.DatabaseDev, 0, "Search commands."),
+            new GmCommandHandler("search",null, SearchCommands, EGmLevel.AnyGM, 0, "Search commands."),
             new GmCommandHandler("states",null, StatesCommand, EGmLevel.DatabaseDev, 0, "State modification commands."),
             new GmCommandHandler("teleport",null, TeleportCommands, EGmLevel.GM, 0, "Contains the list of teleportation commands."),
             new GmCommandHandler("ticket", null, TicketCommands, EGmLevel.GM, 0, "Contains the list of ticket commands"),

@@ -263,7 +263,7 @@ namespace WorldServer
                 return;
             }
 
-            if (Program.Rm.OnlinePlayers >= Program.Rm.MaxPlayers && cclient._Account.GmLevel < 1)
+            if (Program.Rm.OnlinePlayers >= Program.Rm.MaxPlayers && cclient._Account.GmLevel == 1)
             {
                 PacketOut Out = new PacketOut((byte)Opcodes.F_LOGINQUEUE);
                 client.SendPacket(Out);
@@ -358,7 +358,7 @@ namespace WorldServer
                 Out.WriteUInt32(0); //RemainingLockoutTime
                 Out.WriteByte(0);
 
-                if (cclient._Account.GmLevel == 0 && !Program.Config.CreateBothRealms)
+                if (cclient._Account.GmLevel == 1 && !Program.Config.CreateBothRealms)
                     Out.WriteByte((byte)CharMgr.GetAccountRealm(cclient._Account.AccountId));
                 else
                     Out.WriteByte(0);

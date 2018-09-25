@@ -132,11 +132,42 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(UpdateAAOBuffs, 60000, 0);
             // Recalculate AAO
             _EvtInterface.AddEvent(RecordMetrics, 30000, 0);
-
-
         }
 
+        public void UpdateDoorMsg()
+        {
+            var oVp = this.Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
+            var dVp = this.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints;
 
+            //get order/destro keeps
+            var oKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_ORDER);
+            var dKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION);
+
+            if (oKeep != null)
+            {
+                //update keep door health
+                foreach (var door in oKeep.Doors)
+                {
+                    if (!door.GameObject.IsDead)
+                    {
+                        BattlefrontLogger.Debug("ORDER " + Region.RegionName + " | Door " + door.Info.Number + " Health: " + door.GameObject.Health);
+                    }
+                }
+            }
+
+            if (dKeep != null)
+            {
+                //update keep door health
+                foreach (var door in dKeep.Doors)
+                {
+                    if (!door.GameObject.IsDead)
+                    {
+                        BattlefrontLogger.Debug("DESTRO" + Region.RegionName + " | Door " + door.Info.Number + " Health: " + door.GameObject.Health);
+                    }
+                }
+            }
+
+        }
 
         public void InitializePopulationList(int battlefrontId)
         {
@@ -325,6 +356,69 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				keep.UpdateCurrentAAO(_aaoTracker.AgainstAllOddsMult);
 			}
         }
+
+        /// <summary>
+        /// Buffs all lords in a region depending on VP
+        /// 0VP = 200%
+        /// 2500VP = 100%
+        /// 4000VP = 0%(Regular Health)
+        /// </summary>
+        /// <returns></returns>
+        public void UpdateLordsFromVP()
+        {
+            var oVp = this.Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
+            var dVp = this.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints;
+
+            //get order/destro keeps
+            var oKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_ORDER);
+            var dKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION);
+            
+            //update order
+            //oKeep?.ScaleLordVP((int)oVp);
+            //dKeep?.ScaleLordVP((int)dVp);
+
+        }
+
+        /// <summary>
+        /// Buffs all keep doors in a region depending on VP
+        /// 0VP = 200%
+        /// 2500VP = 100%
+        /// 4000VP = 0%(Regular Health)
+        /// </summary>
+        /// <returns></returns>
+        //public void UpdateDoorsFromVP()
+        //{
+        //    //get order/destro vp's
+        //    var oVp = (int) this.Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
+        //    var dVp = (int) this.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints;
+
+        //    //get order/destro keeps
+        //    var oKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_ORDER);
+        //    var dKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION);
+
+        //    if (oKeep != null)
+        //    {
+        //        //update keep door health
+        //        foreach (var door in oKeep.Doors)
+        //        {
+        //            if (!door.GameObject.IsDead)
+        //            {
+        //            }
+        //        }
+        //    }
+
+        //    if (dKeep != null)
+        //    {
+        //        //update keep door health
+        //        foreach (var door in dKeep.Doors)
+        //        {
+        //            if (!door.GameObject.IsDead)
+        //            {
+        //                door.GameObject.SetDoorHealthFromVP((int)oVp);
+        //            }
+        //        }
+        //    }
+        //}
 
         private List<Player> GetOrderPlayersInZone(int zoneId)
         {

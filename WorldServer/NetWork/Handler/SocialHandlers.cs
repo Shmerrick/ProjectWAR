@@ -61,7 +61,7 @@ namespace WorldServer
                         Player Target = Plr.CbtInterface.GetTarget(GameData.TargetTypes.TARGETTYPES_TARGET_ALLY) as Player;
                         if (Target == null)
                             Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, GameData.Localized_text.TEXT_SN_LISTS_ERR_PLAYER_NOT_FOUND);
-                        else if(!Target.Info.Anonymous || Plr.GmLevel > 0) //do not allow inspect of anonymous players, unless by gm
+                        else if(!Target.Info.Anonymous || Plr.GmLevel > 1) //do not allow inspect of anonymous players, unless by gm
                             Target.ItmInterface.SendInspect(Plr);
                         else
                             Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, GameData.Localized_text.TEXT_UNABLE_TO_INSPECT_PLAYER_EQUIP);

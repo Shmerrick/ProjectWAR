@@ -53,7 +53,7 @@ namespace WorldServer
                     }
                 }
 
-                if (Plr.Info.FirstConnect && Plr.GmLevel == 0)
+                if (Plr.Info.FirstConnect && Plr.GmLevel == 1)
                 {
                     Plr.Info.FirstConnect = false;
                     if (!Plr.IsBanned)
