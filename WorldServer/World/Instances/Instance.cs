@@ -240,6 +240,11 @@ namespace WorldServer
 
         public void OnBossDeath(uint GroupID, InstanceBossSpawn boss)
         {
+			Encounterinprogress = false;
+		}
+
+		public void ApplyLockout(List<Player> subGroup, uint GroupID, InstanceBossSpawn boss)
+		{
 			if (Lockout == null) // instance hasn't got any lockouts
 			{
 				Lockout = new Instance_Lockouts
@@ -258,15 +263,14 @@ namespace WorldServer
 				WorldMgr.Database.SaveObject(Lockout);
 			}
 
-			foreach (Player pl in Region.Players)
+			foreach (Player pl in subGroup)
 			{
 				pl._Value.AddLockout(Lockout);
 				pl.SendLockouts();
 			}
-			Encounterinprogress = false;
 		}
-
-        private void LoadBossSpawns()
+		
+		private void LoadBossSpawns()
         {
             List<Instance_Boss_Spawn> Obj;
 

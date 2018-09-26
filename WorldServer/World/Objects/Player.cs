@@ -6884,11 +6884,13 @@ namespace WorldServer
 		public bool HasLockout(ushort zoneId, uint bossID)
 		{
 			string lockout = _Value.GetLockout(zoneId);
+			if (lockout == null)
+				return false;
 
 			var split = lockout.Split(':');
-			foreach (var str in split)
+			for (int i = 2; i < split.Length; i++)
 			{
-				if (uint.Parse(str).Equals(bossID))
+				if (uint.Parse(split[i]).Equals(bossID))
 					return true;
 			}
 

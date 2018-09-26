@@ -65,9 +65,9 @@ namespace WorldServer
 
         protected override void SetDeath(Unit killer)
         {
-            Instance.OnBossDeath(InstanceGroupSpawnID, this);
             base.SetDeath(killer);
-			
+			Instance.OnBossDeath(InstanceGroupSpawnID, this);
+
 			// remove barriages from this instance
 			Instance.RemoveInstanceObjectOnBossDeath(BossID);
 		}
@@ -78,21 +78,37 @@ namespace WorldServer
 			{
 				List<Player> subGroup = new List<Player>();
 
-				foreach (Player member in player.PriorityGroup.Members)
+				if (player.PriorityGroup != null)
 				{
-					if (!member.HasLockout((ushort)ZoneId, BossID))
-						subGroup.Add(member);
+					foreach (Player member in player.PriorityGroup.Members)
+					{
+						if (!member.HasLockout((ushort)ZoneId, BossID))
+							subGroup.Add(member);
+					}
+					player.PriorityGroup.SubGroupLoot(player, lootContainer, subGroup);
+				}
+				
+				if (player.HasLockout((ushort)ZoneId, BossID))
+				{
+					if (player.PriorityGroup != null)
+					{
+						// find a player without lockout
+						Player eligablePlayer = player.PriorityGroup.Members.Where(x => !x.HasLockout((ushort)ZoneId, BossID)).FirstOrDefault();
+						if (eligablePlayer != null)
+							lootContainer.SendInteract(eligablePlayer, menu);
+					}
+				}
+				else
+				{
+					lootContainer.SendInteract(player, menu);
 				}
 
-				player.PriorityGroup?.SubGroupLoot(player, lootContainer, subGroup);
-
-				if (player.HasLockout((ushort)ZoneId, BossID))
-					lootContainer.SendInteract(player.PriorityGroup?.GetLeader(), menu);
-				else
-					lootContainer.SendInteract(player, menu);
-
 				if (!lootContainer.IsLootable())
+				{
 					SetLootable(false, player);
+
+					Instance.ApplyLockout(subGroup, InstanceGroupSpawnID, this);
+				}
 			}
 		}
 
