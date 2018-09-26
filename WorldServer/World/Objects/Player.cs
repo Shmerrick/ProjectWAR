@@ -15,6 +15,7 @@ using WorldServer.Scenarios;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.World.Objects.PublicQuests;
@@ -3968,11 +3969,7 @@ namespace WorldServer
                 else if (CurrentObjectiveFlag != null)
                     CurrentObjectiveFlag.CheckKillValid(this);
 
-                var influenceId = 0;
-                if (killer.CurrentArea != null && killer.CurrentArea.IsRvR)
-                {
-                    influenceId = (killer.Realm == Realms.REALMS_REALM_DESTRUCTION) ? (ushort)killer.CurrentArea.DestroInfluenceId : (ushort)killer.CurrentArea.OrderInfluenceId;
-                }
+                var influenceId = GetKillerInfluenceId(killer);
 
                 float rewardScale = Region.Campaign.ModifyKill(killer, this);
 
@@ -3996,80 +3993,122 @@ namespace WorldServer
                     // TODO : Ensure the player is actually in the active battlefront.
                     // List of players involved in the kill
                     var rewardDictionary = ActiveBattleFrontStatus.RewardManagerInstance.GenerateBaseRewardForKill((this).Info.CharacterId, StaticRandom.Instance.Next(1, 100));
-
-
+                    
                     foreach (var reward in rewardDictionary)
                     {
-
+                        // reward key is the characterId
                         if (PlayersByCharId.ContainsKey(reward.Key))
                         {
                             var player = PlayersByCharId[reward.Key];
-                            player.InternalAddXp((uint)reward.Value.BaseXP, true, true);
-                            player.InternalAddRenown((uint)reward.Value.BaseRP, true, RewardType.Kill, "");
-                            player.AddInfluence((ushort)influenceId, (ushort)reward.Value.BaseInf);
-                            player.AddMoney((uint)reward.Value.BaseMoney);
 
-                            var insigniaName = ItemService.GetItem_Info((uint)reward.Value.InsigniaItemId).Name;
+                            // Assign shares to player's group.
+                            if (player.PriorityGroup != null)
+                            {
+                                var shares = player.PriorityGroup.Members.Count;
 
-                            RewardLogger.Debug($"Total XP : {reward.Value.BaseXP} RP : {reward.Value.BaseRP} INF : {reward.Value.BaseInf}");
+                                foreach (var groupMember in player.PriorityGroup.Members)
+                                {
+                                    DistributeBaseRewardsForPlayerKill(reward, groupMember, (1 / shares), influenceId);
 
+                                    // Give the player that is part of a party that gives a kill assist
+                                    ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(
+                                        player.CharacterId,
+                                        (byte)ContributionDefinitions.PARTY_KILL_ASSIST);
+                                    
+                                    ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(
+                                        killer.CharacterId, BountyService.GetDefinition((byte)ContributionDefinitions.PARTY_KILL_ASSIST).ContributionValue);
+                                }
+                            }
+                            else  // No group
+                            {
+                                DistributeBaseRewardsForPlayerKill(reward, player, 1, influenceId);
+                            }
+
+                            
                             // If this player is the killer (ie Deathblow), give them a different contribution.
                             if (reward.Key == killer.CharacterId)
                             {
-                                if (reward.Value.InsigniaCount > 0)
-                                {
-                                    player.ItmInterface.CreateItem(ItemService.GetItem_Info((uint)reward.Value.InsigniaItemId), (ushort)reward.Value.InsigniaCount);
-                                    player.SendClientMessage($"You have been awarded {reward.Value.InsigniaCount} {insigniaName} for killing {Name}");
-                                }
+                                DistributeInsigniaRewardForPlayerKill(reward, killer);
 
                                 // Add contribution for this kill to the killer.
-                                ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(killer.CharacterId, (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+                                ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(
+                                    killer.CharacterId, 
+                                    (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
 
                                 // Add bounty to the death blow killer  --(byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW
-                                var contributionDeathBlowDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
-                                ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(killer.CharacterId, contributionDeathBlowDefinition.ContributionValue);
+                                ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(
+                                    killer.CharacterId,
+                                    BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW).ContributionValue);
 
                                 if (player.AAOBonus > 0)
                                 {
-                                    var contributionDeathBlowDefinitionUnderAAO = BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW_UNDER_AAO);
-                                    ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(killer.CharacterId, contributionDeathBlowDefinitionUnderAAO.ContributionValue);
+
+                                    // Add contribution for this kill under AAO to the killer.
+                                    ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(
+                                        killer.CharacterId,
+                                        (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW_UNDER_AAO);
+
+
+                                    ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(
+                                        killer.CharacterId, 
+                                        BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW_UNDER_AAO).ContributionValue);
                                 }
 
                                 // If the deathblow comes while the target is near a BO
                                 if (this.CurrentObjectiveFlag != null)
                                 {
-                                    var contributionDeathBlowDefinitionOnBO = BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_ON_BO);
-                                    ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(killer.CharacterId, contributionDeathBlowDefinitionOnBO.ContributionValue);
+
+                                    // Add contribution for this kill under BO to the killer.
+                                    ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(
+                                        killer.CharacterId,
+                                        (byte)ContributionDefinitions.PLAYER_KILL_ON_BO);
+
+                                    ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(
+                                        killer.CharacterId, 
+                                        BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_ON_BO).ContributionValue);
                                 }
 
                             }
                             else // An assist
                             {
-                                if (reward.Value.InsigniaCount > 0)
-                                {
-                                    player.ItmInterface.CreateItem(ItemService.GetItem_Info((uint)reward.Value.InsigniaItemId), (ushort)reward.Value.InsigniaCount);
-                                    player.SendClientMessage($"You have been awarded {reward.Value.InsigniaCount} for assisting in killing {Name}");
-                                }
+                                DistributeInsigniaRewardForPlayerKillAssist(reward, killer);
 
                                 // Add contribution for kill assist.
-                                ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.PLAYER_KILL_ASSIST);
+                                ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(
+                                    player.CharacterId, 
+                                    (byte)ContributionDefinitions.PLAYER_KILL_ASSIST);
+
                                 // Add bounty contribution to the assisting killer
-                                var contributionAssistDefinition = BountyService._ContributionDefinitions.Single(x => x.ContributionId == (int)ContributionDefinitions.PLAYER_KILL_ASSIST);
-                                ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionAssistDefinition.ContributionValue);
+                                ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(
+                                    player.CharacterId, BountyService._ContributionDefinitions.Single(x => x.ContributionId == (int)ContributionDefinitions.PLAYER_KILL_ASSIST).ContributionValue);
 
                                 if (player.AAOBonus > 0)
                                 {
-                                    var contributionAssistDefinitionUnderAAO = BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_ASSIST_UNDER_AAO);
-                                    ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(killer.CharacterId, contributionAssistDefinitionUnderAAO.ContributionValue);
+                                    ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(
+                                        player.CharacterId,
+                                        (byte)ContributionDefinitions.PLAYER_KILL_ASSIST_UNDER_AAO);
+
+
+                                    ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(
+                                        killer.CharacterId, 
+                                        BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_ASSIST_UNDER_AAO).ContributionValue);
                                 }
                                 // If the kill is an assist comes while the target is near a BO
                                 if (this.CurrentObjectiveFlag != null)
                                 {
-                                    var contributionDeathBlowDefinitionOnBO = BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_ON_BO);
-                                    ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(killer.CharacterId, contributionDeathBlowDefinitionOnBO.ContributionValue);
+                                    ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(
+                                        player.CharacterId,
+                                        (byte)ContributionDefinitions.PLAYER_KILL_ON_BO);
+
+
+                                    ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(
+                                        killer.CharacterId, BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_ON_BO).ContributionValue);
                                 }
 
                             }
+
+                            // If the player that has received the reward is part of a group, share the rewards.
+
                         }
 
                     }
@@ -4087,22 +4126,62 @@ namespace WorldServer
 
                 killer.SendClientMessage($"+5 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
 
-                //try
-                //{
-                //    var activeBattleFrontId = killer.Region.Campaign.BattleFrontManager.ActiveBattleFront.BattleFrontId;
-                //    var activeBattleFrontStatus = killer.Region.Campaign.BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
-
-                //    HandleXPRenown(killer, rewardScale, activeBattleFrontStatus);
-                //}
-                //catch (Exception e)
-                //{
-                //    DeathLogger.Warn($"Could not apply rewards to kill. {e.StackTrace}");
-                //    throw;
-                //}
-                //GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
+              
             }
 
             #endregion
+        }
+
+        private void DistributeInsigniaRewardForPlayerKill(KeyValuePair<uint, Reward> reward, Player killer)
+        {
+            if (reward.Value.InsigniaCount > 0)
+            {
+                var insigniaName = ItemService.GetItem_Info((uint)reward.Value.InsigniaItemId).Name;
+                killer.ItmInterface.CreateItem(ItemService.GetItem_Info((uint)reward.Value.InsigniaItemId), (ushort)reward.Value.InsigniaCount);
+                killer.SendClientMessage($"You have been awarded {reward.Value.InsigniaCount} {insigniaName} for killing {Name}");
+
+                RewardLogger.Debug($"{killer.Name} has been awarded {reward.Value.InsigniaCount} {insigniaName} for killing {Name}");
+            }
+        }
+
+        private void DistributeInsigniaRewardForPlayerKillAssist(KeyValuePair<uint, Reward> reward, Player killer)
+        {
+            if (reward.Value.InsigniaCount > 0)
+            {
+                // 15% chance of an assist giving a WC
+                if (StaticRandom.Instance.Next(100) < 15)
+                {
+                    var insigniaName = ItemService.GetItem_Info((uint) reward.Value.InsigniaItemId).Name;
+                    killer.ItmInterface.CreateItem(ItemService.GetItem_Info((uint) reward.Value.InsigniaItemId),
+                        (ushort) reward.Value.InsigniaCount);
+                    killer.SendClientMessage(
+                        $"You have been awarded {reward.Value.InsigniaCount} {insigniaName} for assisting in killing {Name}");
+
+                    RewardLogger.Debug(
+                        $"{killer.Name} has been awarded {reward.Value.InsigniaCount} {insigniaName} for assisting in killing {Name}");
+                }
+            }
+        }
+
+        private void DistributeBaseRewardsForPlayerKill(KeyValuePair<uint, Reward> reward, Player player, int rewardscale, ushort influenceId)
+        {
+            player.InternalAddXp((uint)reward.Value.BaseXP, true, true);
+            player.InternalAddRenown((uint)reward.Value.BaseRP, true, RewardType.Kill, "");
+            player.AddInfluence((ushort)influenceId, (ushort)reward.Value.BaseInf);
+            player.AddMoney((uint)reward.Value.BaseMoney);
+
+            RewardLogger.Debug($"Total XP : {reward.Value.BaseXP} RP : {reward.Value.BaseRP} INF : {reward.Value.BaseInf}");
+        }
+
+       
+
+        private ushort GetKillerInfluenceId(Player killer)
+        {
+            if (killer.CurrentArea != null && killer.CurrentArea.IsRvR)
+            {
+                return (killer.Realm == Realms.REALMS_REALM_DESTRUCTION) ? (ushort)killer.CurrentArea.DestroInfluenceId : (ushort)killer.CurrentArea.OrderInfluenceId;
+            }
+            return 0;
         }
 
         public float AAOBonus { get; set; }
