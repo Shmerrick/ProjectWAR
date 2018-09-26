@@ -80,12 +80,13 @@ namespace WorldServer
 
 				if (player.PriorityGroup != null)
 				{
-					foreach (Player member in player.PriorityGroup.Members)
-					{
-						if (!member.HasLockout((ushort)ZoneId, BossID))
-							subGroup.Add(member);
-					}
-					player.PriorityGroup.SubGroupLoot(player, lootContainer, subGroup);
+					player.PriorityGroup.GroupLoot(player, lootContainer);
+					//foreach (Player member in player.PriorityGroup.Members)
+					//{
+					//	if (!member.HasLockout((ushort)ZoneId, BossID))
+					//		subGroup.Add(member);
+					//}
+					//player.PriorityGroup.SubGroupLoot(player, lootContainer, subGroup);
 				}
 				
 				if (player.HasLockout((ushort)ZoneId, BossID))
