@@ -29,6 +29,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
         public void DistributeNonBagAwards(Player player, byte playerRenownBand, double modifier)
         {
+            if (player == null)
+                return;
+
             var lockReward = ZoneLockRewards.SingleOrDefault(x => x.RRBand == playerRenownBand);
 
             if (lockReward == null)
@@ -44,10 +47,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             var crestCount = (ushort)lockReward.ItemCount * modifier;
 
             player.AddXp((uint)(xp * modifier), false, false);
-            player.AddNonScalingRenown((uint)rr, false, RewardType.ZoneKeepCapture, "");
+            player.AddRenown((uint)rr, false, RewardType.ZoneKeepCapture, "");
             player.AddMoney((uint)money);
 
-			if (player != null && player.CurrentArea != null)
+			if (player.CurrentArea != null)
 			{
 				ushort influenceId = 0;
 				if (player.Realm == Realms.REALMS_REALM_ORDER)
