@@ -452,7 +452,14 @@ namespace WorldServer
 
                 AbilityInfo abInfo = GetAbilityInfo(cAb.AbilityId);
                 if (abInfo != null)
+                {
                     temp[cAb.ProtoEntry].Add(new NPCAbility(cAb.AbilityId, abInfo.ConstantInfo.AIRange, Math.Max(abInfo.Cooldown, cAb.Cooldown), true, cAb.Text, cAb.TimeStart, cAb.ActivateAtHealthPercent, cAb.AbilityCycle, cAb.Active, cAb.ActivateOnCombatStart, cAb.RandomTarget, cAb.TargetFocus, cAb.DisableAtHealthPercent, cAb.MinRange));
+                    Log.Info("Entry: " + cAb.ProtoEntry, cAb.AbilityId + " " + abInfo.Name + "Loaded");
+                }
+                else
+                {
+                    Log.Info("Entry: " + cAb.ProtoEntry, cAb.AbilityId + " " + abInfo.Name + "Failed loading");
+                }
             }
 
             foreach (uint key in temp.Keys)

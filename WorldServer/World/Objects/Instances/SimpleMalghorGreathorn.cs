@@ -44,27 +44,27 @@ namespace WorldServer.World.Objects.Instances
 			Player plr = subset[idx];
 			if (plr != null && !plr.IsDead && !plr.IsInvulnerable)
 			{
-				Say(plr.Name + ": Die!");
+				Say(plr.Name + ": Die by the hand of chaos!");
 				MvtInterface.TurnTo(plr);
 				MvtInterface.Follow(plr, 5, 10);
 
+                NPCAbility ability = null;
+
 				if (plr.BuffInterface.HasGuard())
 				{
-					var knockback = AbtInterface.NPCAbilities.Where(x => x.Entry == 0).FirstOrDefault();
-					if (knockback != null)
-					{
-
-					}
+					ability = AbtInterface.NPCAbilities.Where(x => x.Entry == 0).FirstOrDefault();
 				}
 				else
 				{
-					var oneshot = AbtInterface.NPCAbilities.Where(x => x.Entry == 1).FirstOrDefault();
-					if (oneshot != null)
-					{
-
-					}
+                    ability = AbtInterface.NPCAbilities.Where(x => x.Entry == 1).FirstOrDefault();
 				}
-			}
+                if (ability != null)
+                {
+                    //EvtInterface.AddEvent(StartDelayedCast, 1000, 1, prms);
+                    //OneshotPercentCast = TCPManager.GetTimeStampMS() + ability.Cooldown * 1000;
+                    //ability.AbilityUsed = 1;
+                }
+            }
 		}
 
 		#endregion Methods

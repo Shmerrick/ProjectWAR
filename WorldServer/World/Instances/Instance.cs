@@ -310,11 +310,32 @@ namespace WorldServer
 					InstanceBossSpawn IS = null;
 
 					switch ((uint)obj.Entry)
-					{
-						case 59211: // Ahzranok
+                    {
+                        case 4276:
+                            IS = new SimpleTheDeamonicBeast(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
+                            break;
+
+                        case 59211:
 							IS = new SimpleAhzranok(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
 							break;
-						default:
+
+                        case 6821:
+                            IS = new SimpleMalghorGreathorn(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
+                            break;
+
+                        case 2000899:
+                            IS = new SimpleFulgurThunderborn(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
+                            break;
+
+                        case 2000901:
+                            IS = new SimpleTonragThunderborn(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
+                            break;
+
+                        case 6843:
+                            IS = new SimpleDralel(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
+                            break;
+
+                        default:
 							IS = new InstanceBossSpawn(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
 							break;
 					}
