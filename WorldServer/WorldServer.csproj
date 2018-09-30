@@ -296,6 +296,7 @@
     <Compile Include="World\Instances\TOTVL.cs" />
     <Compile Include="World\Map\Occlusion.cs" />
     <Compile Include="World\Objects\Instances\SimpleAhzranok.cs" />
+    <Compile Include="World\Objects\Instances\SimpleMalghorGreathorn.cs" />
     <Compile Include="World\Scripting\BasicScript.cs" />
     <Compile Include="World\Scripting\BehaviorLib.cs" />
     <Compile Include="World\Scripting\Dungeons\AltdorfSewers\AltdorfSewersWingIII.cs" />

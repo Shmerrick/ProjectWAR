@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common;
+﻿using Common;
 using WorldServer.World.AI;
 
 namespace WorldServer.World.Objects.Instances
@@ -23,9 +17,7 @@ namespace WorldServer.World.Objects.Instances
 		#endregion Constructors
 
 		#region Attributes
-
-		public static uint TIMER_RAGE_MAX = 1200; // 20 min = 1200 sec
-
+		
 		#endregion Attributes
 
 		#region Overrides
