@@ -458,7 +458,7 @@ namespace WorldServer
                 }
                 else
                 {
-                    Log.Info("Entry: " + cAb.ProtoEntry, cAb.AbilityId + " " + abInfo.Name + "Failed loading");
+                    Log.Info("Entry: " + cAb.ProtoEntry, cAb.AbilityId + "Failed loading");
                 }
             }
 
