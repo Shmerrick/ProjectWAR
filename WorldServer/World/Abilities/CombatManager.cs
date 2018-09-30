@@ -981,14 +981,6 @@ namespace WorldServer
                 creature.CheckDamageCaster(caster, damageInfo);
             }
 
-            if (damageInfo.IsAoE && target is Pet)
-            {
-                Pet pet = target as Pet;
-
-                if (pet != null && pet.Owner != null && (pet.Owner.Info.CareerLine == (int)CareerLine.CAREERLINE_WHITELION) && WorldMgr.WorldSettingsMgr.GetGenericSetting(18) == 0)
-                    damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_BLOCK;
-            }
-
             if (damageInfo.DamageEvent > 0 || damageInfo.DamageType != DamageTypes.RawDamage)
             {
                 #region Defense
