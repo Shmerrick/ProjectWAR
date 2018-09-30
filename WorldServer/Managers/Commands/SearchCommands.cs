@@ -1,6 +1,9 @@
-﻿using Common;
+﻿using System;
+using Common;
 using System.Collections.Generic;
+using System.Linq;
 using SystemData;
+using WorldServer.Services.World;
 using static WorldServer.Managers.Commands.GMUtils;
 
 namespace WorldServer.Managers.Commands
@@ -118,6 +121,65 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
+        /// <summary>
+        /// Seach a player's inventory by name <name>
+        /// </summary>
+        /// <param name="plr">Player that initiated the command</param>
+        /// <param name="values">List of command arguments (after command name)</param>
+        /// <returns>True if command was correctly handled, false if operation was canceled</returns>
+        public static bool SearchInventory(Player plr, ref List<string> values)
+        {
+            var target = plr.CbtInterface.GetCurrentTarget();
+            var filter = String.Empty;
 
+            if (target == null)
+            {
+                plr.SendClientMessage($"SEARCH INVENTORY: No target selected.");
+            }
+            else
+            {
+                var character = CharMgr.GetCharacter((target as Player).CharacterId, false);
+                if (character == null)
+                {
+                    plr.SendClientMessage($"SEARCH INVENTORY: The player {(target as Player).Name} in question does not exist.");
+                    return true;
+                }
+                var characterItemList = CharMgr.GetItemsForCharacter(character);
+                var itemList = new List<Item_Info>();
+
+                if (values.Count > 0)
+                {
+                    // First argument is a wildcard filter.
+                    filter = values[0];
+                }
+
+                foreach (CharacterItem itm in characterItemList)
+                {
+                    if (itm != null)
+                        itemList.Add(ItemService.GetItem_Info(itm.Entry));
+                }
+
+                itemList.OrderBy(x => x.Name);
+
+                foreach (Item_Info proto in itemList)
+                {
+                    if (!String.IsNullOrEmpty(filter))
+                    {
+                        if (proto.Name.ToLower().Contains(filter.ToLower()))
+                        {
+                            plr.SendMessage(0, "", $"[{proto.Entry}] {proto.Name} ", ChatLogFilters.CHATLOGFILTERS_EMOTE);
+                        }
+                    }
+                    else
+                    {
+                        plr.SendMessage(0, "", $"[{proto.Entry}] {proto.Name} ", ChatLogFilters.CHATLOGFILTERS_EMOTE);
+                    }
+                }
+            }
+
+
+
+            return true;
+        }
     }
 }

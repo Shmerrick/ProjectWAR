@@ -151,7 +151,7 @@ namespace WorldServer
             foreach (var friend in players)
             {
                 if(friend != _player)
-                    if (friend.SocInterface.HasFriend(_player.CharacterId) && (!HasIgnore(friend.CharacterId) || friend.GmLevel != 0)) //notify people who have this char as friend, except ones ignored.
+                    if (friend.SocInterface.HasFriend(_player.CharacterId) && (!HasIgnore(friend.CharacterId) || friend.GmLevel != 1)) //notify people who have this char as friend, except ones ignored.
                     {
                         if(sendOnlineText)
                             friend.SendLocalizeString(_player.Name, ChatLogFilters.CHATLOGFILTERS_SHOUT, Localized_text.TEXT_SN_FRIEND_LOGON);
@@ -226,7 +226,7 @@ namespace WorldServer
             // Players may not add a GM as a friend unless the GM friended them first
             Character charInfo = CharMgr.GetCharacter(characterId, false);
 
-            if (charInfo != null && _player.GmLevel == 0)
+            if (charInfo != null && _player.GmLevel == 1)
             {
                 Account acct = Program.AcctMgr.GetAccountById(charInfo.AccountId);
 

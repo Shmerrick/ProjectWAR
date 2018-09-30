@@ -196,6 +196,11 @@
     <None Include="Resources\M55rLv3.jpg" />
     <Content Include="WAR.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="nlog">
+      <Version>4.5.10</Version>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -165,7 +165,7 @@ namespace WorldServer.Scenarios
                 RespawnHeadings[i] = respawn.WorldO;
             }
 
-            Region = new RegionMgr(Info.MapId, ZoneService.GetZoneRegion(Info.MapId), info.Name, new ApocCommunications()) { Scenario = this };
+            Region = new RegionMgr(Info.MapId, ZoneService.GetZoneRegion(Info.RegionId), info.Name, new ApocCommunications()) { Scenario = this };
 
             /* create groups */
             for (int i = 0; i < 2; ++i)
@@ -1174,6 +1174,9 @@ namespace WorldServer.Scenarios
 
         public void CheckPopulation()
         {
+            if (Info.MinPlayers == 1)
+                return;
+
             float popFactor;
 
             if (Players[0].Count == 0 || Players[1].Count == 0)

@@ -128,6 +128,53 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(UpdateAAOBuffs, 60000, 0);
             // Recalculate AAO
             _EvtInterface.AddEvent(RecordMetrics, 30000, 0);
+
+            //if (Tier == 4)
+            //{
+            //    _EvtInterface.AddEvent(UpdateDoorMsg, 5000, 0);
+            //}
+
+            //if (new int[] {3,4}.Contains(Tier))
+            //{
+            //    _EvtInterface.AddEvent(UpdateDoorsFromVP, 1, 0);
+            //    _EvtInterface.AddEvent(UpdateLordsFromVP, 1, 0);
+            //}
+
+        }
+
+        public void UpdateDoorMsg()
+        {
+            var oVp = this.Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
+            var dVp = this.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints;
+
+            //get order/destro keeps
+            var oKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_ORDER);
+            var dKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION);
+
+            if (oKeep != null)
+            {
+                //update keep door health
+                foreach (var door in oKeep.Doors)
+                {
+                    if (!door.GameObject.IsDead)
+                    {
+                        BattlefrontLogger.Debug("ORDER " + Region.RegionName + " | Door " + door.Info.Number + " Health: " + door.GameObject.Health);
+                    }
+                }
+            }
+
+            if (dKeep != null)
+            {
+                //update keep door health
+                foreach (var door in dKeep.Doors)
+                {
+                    if (!door.GameObject.IsDead)
+                    {
+                        BattlefrontLogger.Debug("DESTRO" + Region.RegionName + " | Door " + door.Info.Number + " Health: " + door.GameObject.Health);
+                    }
+                }
+            }
+
         }
 
         public void InitializePopulationList(int battlefrontId)
@@ -305,6 +352,69 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				keep.UpdateCurrentAAO(_aaoTracker.AgainstAllOddsMult);
 			}
         }
+
+        /// <summary>
+        /// Buffs all lords in a region depending on VP
+        /// 0VP = 200%
+        /// 2500VP = 100%
+        /// 4000VP = 0%(Regular Health)
+        /// </summary>
+        /// <returns></returns>
+        public void UpdateLordsFromVP()
+        {
+            var oVp = this.Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
+            var dVp = this.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints;
+
+            //get order/destro keeps
+            var oKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_ORDER);
+            var dKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION);
+            
+            //update order
+            //oKeep?.ScaleLordVP((int)oVp);
+            //dKeep?.ScaleLordVP((int)dVp);
+
+        }
+
+        /// <summary>
+        /// Buffs all keep doors in a region depending on VP
+        /// 0VP = 200%
+        /// 2500VP = 100%
+        /// 4000VP = 0%(Regular Health)
+        /// </summary>
+        /// <returns></returns>
+        //public void UpdateDoorsFromVP()
+        //{
+        //    //get order/destro vp's
+        //    var oVp = (int) this.Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
+        //    var dVp = (int) this.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints;
+
+        //    //get order/destro keeps
+        //    var oKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_ORDER);
+        //    var dKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION);
+
+        //    if (oKeep != null)
+        //    {
+        //        //update keep door health
+        //        foreach (var door in oKeep.Doors)
+        //        {
+        //            if (!door.GameObject.IsDead)
+        //            {
+        //            }
+        //        }
+        //    }
+
+        //    if (dKeep != null)
+        //    {
+        //        //update keep door health
+        //        foreach (var door in dKeep.Doors)
+        //        {
+        //            if (!door.GameObject.IsDead)
+        //            {
+        //                door.GameObject.SetDoorHealthFromVP((int)oVp);
+        //            }
+        //        }
+        //    }
+        //}
 
         private List<Player> GetOrderPlayersInZone(int zoneId)
         {
@@ -777,16 +887,25 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="lockingRealm"></param>
         private void DistributeBaseRewards(List<Player> eligibleLosingRealmPlayers, List<Player> eligibleWinningRealmPlayers, Realms lockingRealm)
         {
+            
+            var tierRewardScale = Tier == 1 ? 0.5f : 1f;
+
             // Distribute rewards to losing players with eligibility - halve rewards.
             foreach (var losingRealmPlayer in eligibleLosingRealmPlayers)
             {
-                WorldMgr.RewardDistributor.DistributeNonBagAwards(losingRealmPlayer, _rewardManager.CalculateRenownBand(losingRealmPlayer.RenownRank), 0.5);
+                WorldMgr.RewardDistributor.DistributeNonBagAwards(
+                    losingRealmPlayer, 
+                    _rewardManager.CalculateRenownBand(losingRealmPlayer.RenownRank), 
+                    0.5 * tierRewardScale);
             }
 
             // Distribute rewards to winning players with eligibility - full rewards.
             foreach (var winningRealmPlayer in eligibleWinningRealmPlayers)
             {
-                WorldMgr.RewardDistributor.DistributeNonBagAwards(winningRealmPlayer, _rewardManager.CalculateRenownBand(winningRealmPlayer.RenownRank), 1);
+                WorldMgr.RewardDistributor.DistributeNonBagAwards(
+                    winningRealmPlayer, 
+                    _rewardManager.CalculateRenownBand(winningRealmPlayer.RenownRank), 
+                    1 * tierRewardScale);
             }
 
             // Get All players in the zone and if they are not in the eligible list, they receive minor awards
@@ -802,7 +921,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         if (!eligibleWinningRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
                         {
                             // Give player no bag, but half rewards
-                            WorldMgr.RewardDistributor.DistributeNonBagAwards(player, _rewardManager.CalculateRenownBand(player.RenownRank), 0.5);
+                            WorldMgr.RewardDistributor.DistributeNonBagAwards(
+                                player, 
+                                _rewardManager.CalculateRenownBand(player.RenownRank), 
+                                0.5 * tierRewardScale);
                         }
                     }
                     else
@@ -811,7 +933,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         if (!eligibleLosingRealmPlayers.Any(x => x.CharacterId == player.CharacterId))
                         {
                             // Give player no bag, but quarter rewards
-                            WorldMgr.RewardDistributor.DistributeNonBagAwards(player, _rewardManager.CalculateRenownBand(player.RenownRank), 0.25);
+                            WorldMgr.RewardDistributor.DistributeNonBagAwards(
+                                player, 
+                                _rewardManager.CalculateRenownBand(player.RenownRank), 
+                                0.25 * tierRewardScale);
                         }
                     }
                 }
