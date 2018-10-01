@@ -1,4 +1,5 @@
 ﻿using Common;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,8 +15,9 @@ namespace WorldServer
         public ushort InstanceID;
 		public Instance Instance { get; set; } = null;
 		public Stopwatch BossTimer { get; set; } = null;
+        public static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-		public InstanceBossSpawn(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn)
+        public InstanceBossSpawn(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn)
         {
             InstanceGroupSpawnID = instancegroupspawnid;
             BossID = bossid;
@@ -25,7 +27,7 @@ namespace WorldServer
             EvtInterface.AddEventNotify(EventName.OnLeaveCombat, OnLeaveCombat);
         }
 		
-        public bool OnEnterCombat(Object mob, object args)
+        public virtual bool OnEnterCombat(Object mob, object args)
         {
             Instance.Encounterinprogress = true;
             Unit Attacker = mob.GetCreature().CbtInterface.GetTarget(GameData.TargetTypes.TARGETTYPES_TARGET_ENEMY);
@@ -41,7 +43,7 @@ namespace WorldServer
 			return false;
         }
 
-        public bool OnLeaveCombat(Object mob, object args)
+        public virtual bool OnLeaveCombat(Object mob, object args)
         {
             
             if (!mob.GetInstanceBossSpawn().IsDead && InstanceGroupSpawnID > 0)
