@@ -1926,7 +1926,7 @@ namespace WorldServer.Scenarios
             lock (_quitterDurations)
                 _quitterDurations[plr.Info.AccountId] = TCPManager.GetTimeStamp() + 600;
 
-            plr.BuffInterface.QueueBuff(new BuffQueueInfo(plr, 1, AbilityMgr.GetBuffInfo((ushort)GameBuffs.Quitter)));
+            //plr.BuffInterface.QueueBuff(new BuffQueueInfo(plr, 1, AbilityMgr.GetBuffInfo((ushort)GameBuffs.Quitter)));
         }
 
         #endregion
