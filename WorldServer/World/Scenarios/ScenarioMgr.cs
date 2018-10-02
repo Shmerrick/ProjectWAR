@@ -1910,12 +1910,12 @@ namespace WorldServer.Scenarios
                     }
                 }
 
-            if (quitTimeEnd > 0)
-            {
-                BuffInfo info = AbilityMgr.GetBuffInfo((ushort) GameBuffs.Quitter);
-                info.Duration = (ushort)(quitTimeEnd - TCPManager.GetTimeStamp());
-                plr.BuffInterface.QueueBuff(new BuffQueueInfo(plr, 1, info));
-            }
+            //if (quitTimeEnd > 0)
+            //{
+            //    BuffInfo info = AbilityMgr.GetBuffInfo((ushort) GameBuffs.Quitter);
+            //    info.Duration = (ushort)(quitTimeEnd - TCPManager.GetTimeStamp());
+            //    plr.BuffInterface.QueueBuff(new BuffQueueInfo(plr, 1, info));
+            //}
         }
 
         public static void UpdateQuitter(Player plr)
