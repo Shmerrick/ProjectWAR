@@ -1,5 +1,6 @@
 ﻿using Common;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using WorldServer.World.AI;
 
@@ -14,10 +15,20 @@ namespace WorldServer.World.Objects.Instances
 			
 		}
 
-		#endregion Constructors
+        #endregion Constructors
 
-		#region Attributes
-		
+        #region Attributes
+
+        private List<List<object>> _AddSpawns = new List<List<object>>()
+        {
+            // shaman: 6861, rager: 6828, crusher: 6836
+            new List<object> { new List<uint> { 6861, 6828, 6836 }, 1399748, 1582516, 7849, 3362 },
+            new List<object> { new List<uint> { 6861, 6828, 6836 }, 1400719, 1582162, 8019, 88 },
+            new List<object> { new List<uint> { 6861, 6828, 6836 }, 1401783, 1581864, 8140, 580 },
+            new List<object> { new List<uint> { 6861, 6828, 6836 }, 1402250, 1582949, 8019, 1066 },
+            new List<object> { new List<uint> { 6861, 6828, 6836 }, 1401582, 1583676, 7891, 1212 }
+        };
+
 		#endregion Attributes
 
 		#region Overrides
@@ -32,14 +43,14 @@ namespace WorldServer.World.Objects.Instances
         public override bool OnEnterCombat(Object mob, object args)
         {
             bool res = base.OnEnterCombat(mob, args);
-            EvtInterface.AddEvent(ChargeRandomNonTankPlayer, 15000, 0);
+            EvtInterface.AddEvent(SpawnAdds, 30 * 1000, 0);
             return res;
         }
 
         public override bool OnLeaveCombat(Object mob, object args)
         {
             bool res = base.OnLeaveCombat(mob, args);
-            EvtInterface.RemoveEvent(ChargeRandomNonTankPlayer);
+            EvtInterface.RemoveEvent(SpawnAdds);
             return res;
         }
 
@@ -47,49 +58,20 @@ namespace WorldServer.World.Objects.Instances
 
         #region Methods
 
-        private void ChargeRandomNonTankPlayer()
-		{
+        private void SpawnAdds()
+        {
             try
             {
-                var subset = GetPlayersInRange(300, false).Where(x => x.CrrInterface.GetArchetype() != EArchetype.ARCHETYPE_Tank).ToList();
-                if (subset == null || subset.Count == 0)
-                    return;
-                Random rnd = new Random();
-                int idx = (int)Math.Round(rnd.NextDouble() * subset.Count, 0);
-
-                Player plr = subset[idx];
-                if (plr != null && !plr.IsDead && !plr.IsInvulnerable)
-                {
-                    Say(plr.Name + ": Die by the hand of chaos!");
-                    MvtInterface.TurnTo(plr);
-                    MvtInterface.Follow(plr, 5, 10);
-
-                    NPCAbility ability = null;
-
-                    if (plr.BuffInterface.HasGuard())
-                    {
-                        //ability = AbtInterface.NPCAbilities.Where(x => x.Entry == 0).FirstOrDefault();
-                    }
-                    else
-                    {
-                        //ability = AbtInterface.NPCAbilities.Where(x => x.Entry == 1).FirstOrDefault();
-                    }
-                    if (ability != null)
-                    {
-                        //EvtInterface.AddEvent(StartDelayedCast, 1000, 1, prms);
-                        //OneshotPercentCast = TCPManager.GetTimeStampMS() + ability.Cooldown * 1000;
-                        //ability.AbilityUsed = 1;
-                    }
-                }
+                SpawnAdds(_AddSpawns);
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message + "\r\n" + ex.StackTrace);
-                EvtInterface.RemoveEvent(ChargeRandomNonTankPlayer);
+                EvtInterface.RemoveEvent(SpawnAdds);
                 return;
             }
-		}
+        }
 
-		#endregion Methods
-	}
+        #endregion Methods
+    }
 }

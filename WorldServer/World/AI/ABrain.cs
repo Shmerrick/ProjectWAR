@@ -16,7 +16,7 @@ namespace WorldServer
         protected Pet _pet;
         protected CombatInterface_Npc Combat;
         protected AIInterface AI;
-
+        
         protected ABrain(Unit unit)
         {
             _unit = unit;

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using WorldServer.Services.World;
+using WorldServer.World.AI;
 
 namespace WorldServer
 {
@@ -16,6 +18,7 @@ namespace WorldServer
 		public Instance Instance { get; set; } = null;
 		public Stopwatch BossTimer { get; set; } = null;
         public static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        public List<Creature> AddList = new List<Creature>();
 
         public InstanceBossSpawn(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn)
         {
@@ -67,6 +70,7 @@ namespace WorldServer
 
         protected override void SetDeath(Unit killer)
         {
+            AddList = new List<Creature>();
             base.SetDeath(killer);
 			Instance.OnBossDeath(InstanceGroupSpawnID, this);
 
@@ -122,7 +126,117 @@ namespace WorldServer
             Destroy();
             return newCreature;
         }
-		
+
+        public virtual void SpawnAdds(List<List<object>> listOfSpawnAdds)
+        {
+            List<object> Params = GetRandomSpawnParams(listOfSpawnAdds);
+
+            List<uint> Entries = (List<uint>)Params[0];
+            int X = (int)Params[1];
+            int Y = (int)Params[2];
+            int Z = (int)Params[3];
+            ushort O = Convert.ToUInt16(Params[4]);
+            
+            foreach(var entry in Entries)
+            {
+                Creature_proto Proto = CreatureService.GetCreatureProto(entry);
+
+                Creature_spawn Spawn = new Creature_spawn
+                {
+                    Guid = (uint)CreatureService.GenerateCreatureSpawnGUID()
+                };
+                Spawn.BuildFromProto(Proto);
+                Spawn.WorldO = O;
+                Spawn.WorldX = X + ShuffleWorldCoordinateOffset(20, 100);
+                Spawn.WorldY = Y + ShuffleWorldCoordinateOffset(20, 100);
+                Spawn.WorldZ = Z;
+                Spawn.ZoneId = (ushort)ZoneId;
+
+                Creature c = Region.CreateCreature(Spawn);
+                c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds); // We are removing spawns from server when adds die
+
+                // brain distribution
+                switch (entry)
+                {
+                    //case 6861: // healerbrain for shamans
+                    //    c.AiInterface.SetBrain(new SimpleLVHealerBrain(c));
+                    //    GoToMommy(c);
+                    //    break;
+
+                    default:
+                        SetRandomTarget(c);
+                        break;
+                }
+                AddList.Add(c); // Adding adds to the list for easy removal
+            }
+        }
+
+        private List<object> GetRandomSpawnParams(List<List<object>> list)
+        {
+            Random rnd = new Random();
+            int idx = rnd.Next(1, list.Count);
+            return list[idx - 1];
+        }
+        
+        public bool RemoveAdds(Object npc = null, object instigator = null)
+        {
+            Creature c = npc as Creature;
+            c.EvtInterface.AddEvent(c.Destroy, 10 * 1000, 1);
+            return false;
+        }
+
+        public virtual void SetRandomTarget(Creature c)
+        {
+            if (c != null)
+            {
+                if (c.PlayersInRange.Count > 0)
+                {
+                    bool haveTarget = false;
+                    int playersInRange = c.PlayersInRange.Count();
+                    Player player;
+                    while (!haveTarget)
+                    {
+                        Random random = new Random();
+                        int rndmPlr = random.Next(1, playersInRange + 1);
+                        Object obj = c.PlayersInRange.ElementAt(rndmPlr - 1);
+                        player = obj as Player;
+                        if (player != null && !player.IsDead && !player.IsInvulnerable)
+                        {
+                            c.MvtInterface.TurnTo(player);
+                            c.MvtInterface.SetBaseSpeed(400);
+                            c.MvtInterface.Follow(player, 5, 10);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        public virtual void GoToMommy(Creature c)
+        {
+            if (c != null)
+            {
+                c.MvtInterface.TurnTo(this);
+                c.MvtInterface.SetBaseSpeed(400);
+                c.MvtInterface.Follow(this, 5, 10);
+            }
+        }
+
+        /// <summary>
+		/// calculates random offset in range of from to to
+		/// </summary>
+		/// <param name="from"></param>
+		/// <param name="to"></param>
+		/// <returns></returns>
+		public static int ShuffleWorldCoordinateOffset(int from, int to)
+        {
+            Random rnd = new Random();
+            bool sign = rnd.NextDouble() > 0.5;
+            int offset = Convert.ToInt32(from + rnd.NextDouble() * 100);
+            if (offset > to) offset = to;
+            return sign ? offset : -offset;
+        }
+
         public override string ToString()
         {
             return "SpawnId=" + Spawn.Guid + ",Entry=" + Spawn.Entry + ",Spawngroup=" + InstanceGroupSpawnID + ",BossID=" + BossID + ",Name=" + Name + ",Level=" + Level + ",Rank=" + Rank + ",Max Health=" + MaxHealth + ",Faction=" + Faction + ",Emote=" + Spawn.Emote + "AI:" + AiInterface.State + ",Position :" + base.ToString();
