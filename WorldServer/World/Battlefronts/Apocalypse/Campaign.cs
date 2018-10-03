@@ -894,17 +894,56 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private void DistributeBaseRewards(ConcurrentDictionary<Player, int> eligibleLosingRealmPlayers, ConcurrentDictionary<Player, int> eligibleWinningRealmPlayers, Realms lockingRealm, int maximumContribution)
         {
             // Distribute rewards to losing players with eligibility - lesser rewards.
+            
+            var tierRewardScale = Tier == 1 ? 0.5f : 1f;
+
+            // Distribute rewards to losing players with eligibility - halve rewards.
             foreach (var losingRealmPlayer in eligibleLosingRealmPlayers)
             {
+                // Scale of player contribution against the highest contributor
                 var contributionScale = CalculateContributonScale(losingRealmPlayer.Value, maximumContribution);
-                WorldMgr.RewardDistributor.DistributeNonBagAwards(losingRealmPlayer.Key, _rewardManager.CalculateRenownBand(losingRealmPlayer.Key.RenownRank), 1 * contributionScale);
+                WorldMgr.RewardDistributor.DistributeNonBagAwards(losingRealmPlayer.Key, _rewardManager.CalculateRenownBand(losingRealmPlayer.Key.RenownRank), 1 * contributionScale * tierRewardScale);
             }
 
             // Distribute rewards to winning players with eligibility - full rewards.
             foreach (var winningRealmPlayer in eligibleWinningRealmPlayers)
             {
                 var contributionScale = CalculateContributonScale(winningRealmPlayer.Value, maximumContribution);
-                WorldMgr.RewardDistributor.DistributeNonBagAwards(winningRealmPlayer.Key, _rewardManager.CalculateRenownBand(winningRealmPlayer.Key.RenownRank), 1.5 * contributionScale);
+                WorldMgr.RewardDistributor.DistributeNonBagAwards(winningRealmPlayer.Key, _rewardManager.CalculateRenownBand(winningRealmPlayer.Key.RenownRank), 1.5 * contributionScale* tierRewardScale);
+            }
+            
+            // Get All players in the zone and if they are not in the eligible list, they receive minor awards
+            var allPlayersInZone = GetAllFlaggedPlayersInZone(BattleFrontManager.ActiveBattleFront.ZoneId);
+            if (allPlayersInZone != null)
+            {
+                foreach (var player in allPlayersInZone)
+                {
+
+                    if (player.Realm == lockingRealm)
+                    {
+                        // Ensure player is not in the eligible list.
+                        if (!eligibleWinningRealmPlayers.Any(x => x.Key.CharacterId == player.CharacterId))
+                        {
+                            // Give player no bag, but half rewards
+                            WorldMgr.RewardDistributor.DistributeNonBagAwards(
+                                player, 
+                                _rewardManager.CalculateRenownBand(player.RenownRank), 
+                                0.5 * tierRewardScale);
+                        }
+                    }
+                    else
+                    {
+                        // Ensure player is not in the eligible list.
+                        if (!eligibleLosingRealmPlayers.Any(x => x.Key.CharacterId == player.CharacterId))
+                        {
+                            // Give player no bag, but quarter rewards
+                            WorldMgr.RewardDistributor.DistributeNonBagAwards(
+                                player, 
+                                _rewardManager.CalculateRenownBand(player.RenownRank), 
+                                0.25 * tierRewardScale);
+                        }
+                    }
+                }
             }
         }
 

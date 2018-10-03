@@ -1910,12 +1910,12 @@ namespace WorldServer.Scenarios
                     }
                 }
 
-            if (quitTimeEnd > 0)
-            {
-                BuffInfo info = AbilityMgr.GetBuffInfo((ushort) GameBuffs.Quitter);
-                info.Duration = (ushort)(quitTimeEnd - TCPManager.GetTimeStamp());
-                plr.BuffInterface.QueueBuff(new BuffQueueInfo(plr, 1, info));
-            }
+            //if (quitTimeEnd > 0)
+            //{
+            //    BuffInfo info = AbilityMgr.GetBuffInfo((ushort) GameBuffs.Quitter);
+            //    info.Duration = (ushort)(quitTimeEnd - TCPManager.GetTimeStamp());
+            //    plr.BuffInterface.QueueBuff(new BuffQueueInfo(plr, 1, info));
+            //}
         }
 
         public static void UpdateQuitter(Player plr)
@@ -1926,7 +1926,7 @@ namespace WorldServer.Scenarios
             lock (_quitterDurations)
                 _quitterDurations[plr.Info.AccountId] = TCPManager.GetTimeStamp() + 600;
 
-            plr.BuffInterface.QueueBuff(new BuffQueueInfo(plr, 1, AbilityMgr.GetBuffInfo((ushort)GameBuffs.Quitter)));
+            //plr.BuffInterface.QueueBuff(new BuffQueueInfo(plr, 1, AbilityMgr.GetBuffInfo((ushort)GameBuffs.Quitter)));
         }
 
         #endregion

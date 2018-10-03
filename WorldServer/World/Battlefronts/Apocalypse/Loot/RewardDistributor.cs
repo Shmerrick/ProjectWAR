@@ -59,10 +59,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 					influenceId = (ushort)player.CurrentArea.DestroInfluenceId;
 				player.AddInfluence(influenceId, (ushort)influence);
 			}
-            
-            player.ItmInterface.CreateItem((uint)lockReward.ItemId, (ushort)crestCount);
 
-            player.SendClientMessage($"You have been awarded {(ushort)crestCount} war crests.");
+            if ((ushort) crestCount > 0)
+            {
+                player.ItmInterface.CreateItem((uint) lockReward.ItemId, (ushort) crestCount);
+                player.SendClientMessage($"You have been awarded {(ushort) crestCount} war crests.");
+            }
 
             RewardLogger.Info($"RR {rr} Money {money} INF {influence} Crests {(uint)lockReward.ItemId} ({(ushort)crestCount}) to {player.Name}.");
         }
