@@ -44,7 +44,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             var rr = (uint)lockReward.Renown * modifier;
             var money = (uint)lockReward.Money * modifier;
             var influence = (ushort)lockReward.Influence * modifier;
-            var crestCount = (ushort)lockReward.ItemCount * modifier;
+
+            ushort crestCount = 0;
+
+            if ((ushort) lockReward.ItemCount > 0)
+                crestCount = (ushort) (((ushort) lockReward.ItemCount * modifier) + 1);
 
             player.AddXp((uint)(xp * modifier), false, false);
             player.AddRenown((uint)rr, false, RewardType.ZoneKeepCapture, "");

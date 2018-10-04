@@ -890,26 +890,31 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="eligibleLosingRealmPlayers">non-zero contribution losing realm players</param>
         /// <param name="eligibleWinningRealmPlayers">non-zero contribution winning realm playes</param>
         /// <param name="lockingRealm"></param>
-        /// <param name="maximumContribution"></param>
-        private void DistributeBaseRewards(ConcurrentDictionary<Player, int> eligibleLosingRealmPlayers, ConcurrentDictionary<Player, int> eligibleWinningRealmPlayers, Realms lockingRealm, int maximumContribution)
+        /// <param name="baselineContribution">The baseline expected of an 'average' player. If player is below this amount, lower reward, above, increase.</param>
+        private void DistributeBaseRewards(ConcurrentDictionary<Player, int> eligibleLosingRealmPlayers, ConcurrentDictionary<Player, int> eligibleWinningRealmPlayers, Realms lockingRealm, int baselineContribution)
         {
-            // Distribute rewards to losing players with eligibility - lesser rewards.
-            
+            // Ensure that tier 1 gets half rewards.
             var tierRewardScale = Tier == 1 ? 0.5f : 1f;
 
             // Distribute rewards to losing players with eligibility - halve rewards.
             foreach (var losingRealmPlayer in eligibleLosingRealmPlayers)
             {
                 // Scale of player contribution against the highest contributor
-                var contributionScale = CalculateContributonScale(losingRealmPlayer.Value, maximumContribution);
-                WorldMgr.RewardDistributor.DistributeNonBagAwards(losingRealmPlayer.Key, _rewardManager.CalculateRenownBand(losingRealmPlayer.Key.RenownRank), 1 * contributionScale * tierRewardScale);
+                double contributionScale = CalculateContributonScale(losingRealmPlayer.Value, baselineContribution);
+                WorldMgr.RewardDistributor.DistributeNonBagAwards(
+                    losingRealmPlayer.Key, 
+                    _rewardManager.CalculateRenownBand(losingRealmPlayer.Key.RenownRank), 
+                    (1f + contributionScale) * tierRewardScale);
             }
 
             // Distribute rewards to winning players with eligibility - full rewards.
             foreach (var winningRealmPlayer in eligibleWinningRealmPlayers)
             {
-                var contributionScale = CalculateContributonScale(winningRealmPlayer.Value, maximumContribution);
-                WorldMgr.RewardDistributor.DistributeNonBagAwards(winningRealmPlayer.Key, _rewardManager.CalculateRenownBand(winningRealmPlayer.Key.RenownRank), 1.5 * contributionScale* tierRewardScale);
+                double contributionScale = CalculateContributonScale(winningRealmPlayer.Value, baselineContribution);
+                WorldMgr.RewardDistributor.DistributeNonBagAwards(
+                    winningRealmPlayer.Key, 
+                    _rewardManager.CalculateRenownBand(winningRealmPlayer.Key.RenownRank), 
+                    (1.5f + contributionScale) * tierRewardScale);
             }
             
             // Get All players in the zone and if they are not in the eligible list, they receive minor awards
@@ -922,7 +927,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (player.Realm == lockingRealm)
                     {
                         // Ensure player is not in the eligible list.
-                        if (!eligibleWinningRealmPlayers.Any(x => x.Key.CharacterId == player.CharacterId))
+                        if (eligibleWinningRealmPlayers.All(x => x.Key.CharacterId != player.CharacterId))
                         {
                             // Give player no bag, but half rewards
                             WorldMgr.RewardDistributor.DistributeNonBagAwards(
@@ -934,7 +939,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     else
                     {
                         // Ensure player is not in the eligible list.
-                        if (!eligibleLosingRealmPlayers.Any(x => x.Key.CharacterId == player.CharacterId))
+                        if (eligibleLosingRealmPlayers.All(x => x.Key.CharacterId != player.CharacterId))
                         {
                             // Give player no bag, but quarter rewards
                             WorldMgr.RewardDistributor.DistributeNonBagAwards(
@@ -956,7 +961,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <returns></returns>
         private double CalculateContributonScale(int value, int maximumContribution)
         {
-            return value / maximumContribution;
+            if (maximumContribution == 0)
+                return 0;
+            return (double)value / (double)maximumContribution;
         }
 
 

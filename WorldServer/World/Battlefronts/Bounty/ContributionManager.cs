@@ -250,7 +250,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// </summary>
         /// <param name="numberOfBags"></param>
         /// <returns></returns>
-        public IOrderedEnumerable<KeyValuePair<uint, int>> GetEligiblePlayers(int numberOfBags)
+        public IEnumerable<KeyValuePair<uint, int>> GetEligiblePlayers(int numberOfBags)
         {
             var summationDictionary = new ConcurrentDictionary<uint, int>();
 
@@ -267,7 +267,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             }
             else
             {
-                return (IOrderedEnumerable<KeyValuePair<uint, int>>) summationDictionary.OrderBy(x => x.Value).Take(numberOfBags);
+                return summationDictionary.OrderBy(x => x.Value).Take(numberOfBags);
             }
         }
     }

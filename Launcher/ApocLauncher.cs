@@ -20,7 +20,7 @@ namespace Launcher
 
         public static string LocalServerIP = "127.0.0.1";
         public static string TestServerIP = "game.warapoc.com";
-        public static int LocalServerPort = 8000;
+        public static int LocalServerPort = 8047;
         public static int TestServerPort = 8000;
         static HttpClient client = new HttpClient();
         private Patcher patcher;
