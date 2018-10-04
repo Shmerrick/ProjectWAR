@@ -32,6 +32,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             ContributionDictionary = contributionDictionary;
             ContributionFactors = contributionFactors;
+            
         }
 
         /// <summary>
@@ -39,14 +40,14 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// of contributions, these will be culled in a later stage of the process.
         /// </summary>
         /// <param name="targetCharacterId">The character receiving the contribution</param>
-        /// <param name="contibutionId">Reference contribution Id</param>
+        /// <param name="contributionId">Reference contribution Id</param>
         /// <returns></returns>
-        public List<PlayerContribution> UpdateContribution(uint targetCharacterId, byte contibutionId)
+        public List<PlayerContribution> UpdateContribution(uint targetCharacterId, byte contributionId)
         {
             //TODO : Remove - dev obnly
-            var description = BountyService.GetDefinition((byte) ContributionDefinitions.PLAYER_KILL_ON_BO).ContributionDescription;
+            var description = BountyService.GetDefinition(contributionId).ContributionDescription;
 
-            RewardLogger.Debug($"Assigning contibution Id {contibutionId} ({description}) to {targetCharacterId}");
+            RewardLogger.Debug($"Assigning contibution Id {contributionId} ({description}) to {targetCharacterId}");
 
 
             //filteredResults.AddOrUpdate(unfilteredResult.Key, new List<int> { number }, (k, v) => v.Add(number));
@@ -55,14 +56,14 @@ namespace WorldServer.World.Battlefronts.Bounty
                  {
                         new PlayerContribution
                         {
-                            ContributionId = contibutionId,
+                            ContributionId = contributionId,
                             Timestamp = FrameWork.TCPManager.GetTimeStamp()
                         }
                  }, (k, v) =>
                  {
                      v.Add(new PlayerContribution
                      {
-                         ContributionId = contibutionId,
+                         ContributionId = contributionId,
                          Timestamp = FrameWork.TCPManager.GetTimeStamp()
                      });
                      return v;

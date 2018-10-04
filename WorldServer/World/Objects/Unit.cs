@@ -536,7 +536,14 @@ namespace WorldServer
                 DamageSources[caster] += damage;
             else DamageSources.Add(caster, damage);
 
-            var modificationValue = (float) Math.Log((float)(this as Player).BaseBountyValue / ((float)caster.BaseBountyValue) + 1, 2);
+            var modificationValue = 1.0f;
+
+            if (this is Player)
+            {
+                modificationValue = (float)Math.Log((float)(this as Player).BaseBountyValue / ((float)caster.BaseBountyValue) + 1, 2);
+            }
+
+            
             // Added impact to ImpactMatrix
             if (this.CbtInterface.IsPvp)
             {

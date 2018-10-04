@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.Remoting;
 using Common.Database.World.Battlefront;
+using FakeItEasy;
 using WorldServer.World.Battlefronts.Bounty;
 
 namespace WorldServer.Test
@@ -199,6 +200,10 @@ namespace WorldServer.Test
         [TestMethod]
         public void AddMultipleCharactersThenClear()
         {
+            var fakeStaticWrapper = A.Fake<IStaticWrapper>();
+            A.CallTo(fakeStaticWrapper).WithReturnType<ContributionDefinition>()
+                .Returns(new ContributionDefinition {ContributionValue = 1, ContributionId = 1});
+            
             var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), ContributionFactorReferenceList);
 
             contributionManager.UpdateContribution(100, 1);
