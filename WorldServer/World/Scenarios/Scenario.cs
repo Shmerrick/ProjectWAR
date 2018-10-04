@@ -884,7 +884,7 @@ namespace WorldServer.Scenarios
 
         public void IncrementPlayers(Player player)
         {
-            if (player.AAOBonus >= 0.0f)
+            if (player.AAOBonus > 0.0f)
             {
                 player.AAOBonus = 0.0f;
             }
