@@ -3946,6 +3946,7 @@ namespace WorldServer
 
             Scenario currentScenario = killer.ScnInterface.Scenario;
 
+            // Manage player deaths in a scenario
             if (currentScenario != null)
             {
                 HandleXPRenown(killer, 1f);
@@ -3992,14 +3993,17 @@ namespace WorldServer
                 {
                     // TODO : Ensure the player is actually in the active battlefront.
                     // List of players involved in the kill
-                    var rewardDictionary = ActiveBattleFrontStatus.RewardManagerInstance.GenerateBaseRewardForKill((this).Info.CharacterId, StaticRandom.Instance.Next(1, 100));
+                    var playersToReward = ActiveBattleFrontStatus.RewardManagerInstance.GenerateBaseRewardForKill(
+                        (this).Info.CharacterId, 
+                        StaticRandom.Instance.Next(1, 100),
+                        AAOBonus);
                     
-                    foreach (var reward in rewardDictionary)
+                    foreach (var playerReward in playersToReward)
                     {
                         // reward key is the characterId
-                        if (PlayersByCharId.ContainsKey(reward.Key))
+                        if (PlayersByCharId.ContainsKey(playerReward.Key))
                         {
-                            var player = PlayersByCharId[reward.Key];
+                            var player = PlayersByCharId[playerReward.Key];
 
                             // Assign shares to player's group.
                             if (player.PriorityGroup != null)
@@ -4010,7 +4014,7 @@ namespace WorldServer
                                 {
                                     groupMember.SendClientMessage($"CONTRIB:Giving assist rewards to {groupMember.Name}");
 
-                                    DistributeBaseRewardsForPlayerKill(reward, groupMember, (1 / shares), influenceId);
+                                    DistributeBaseRewardsForPlayerKill(playerReward, groupMember, (1 / shares), influenceId);
 
                                     // Give the player that is part of a party that gives a kill assist
                                     ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(
@@ -4024,16 +4028,16 @@ namespace WorldServer
                             else  // No group
                             {
                                 player.SendClientMessage($"CONTRIB:Giving non-group assist rewards to {player.Name}");
-                                DistributeBaseRewardsForPlayerKill(reward, player, 1, influenceId);
+                                DistributeBaseRewardsForPlayerKill(playerReward, player, 1, influenceId);
                             }
 
                             
                             // If this player is the killer (ie Deathblow), give them a different contribution.
-                            if (reward.Key == killer.CharacterId)
+                            if (playerReward.Key == killer.CharacterId)
                             {
                                 killer.SendClientMessage($"CONTRIB:Giving DB rewards to {killer.Name}");
 
-                                DistributeInsigniaRewardForPlayerKill(reward, killer);
+                                DistributeInsigniaRewardForPlayerKill(playerReward, killer);
 
                                 // Add contribution for this kill to the killer.
                                 ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(
@@ -4077,7 +4081,7 @@ namespace WorldServer
                             else // An assist
                             {
                                 player.SendClientMessage($"CONTRIB:Giving PLAYER_KILL_ASSIST to {player.Name}");
-                                DistributeInsigniaRewardForPlayerKillAssist(reward, player);
+                                DistributeInsigniaRewardForPlayerKillAssist(playerReward, player);
 
                                 // Add contribution for kill assist.
                                 ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(
@@ -4171,12 +4175,12 @@ namespace WorldServer
             }
         }
 
-        private void DistributeBaseRewardsForPlayerKill(KeyValuePair<uint, Reward> reward, Player player, int rewardscale, ushort influenceId)
+        private void DistributeBaseRewardsForPlayerKill(KeyValuePair<uint, Reward> reward, Player player, float shareRewardScale, ushort influenceId)
         {
-            player.InternalAddXp((uint)reward.Value.BaseXP, true, true);
-            player.InternalAddRenown((uint)reward.Value.BaseRP, true, RewardType.Kill, "");
-            player.AddInfluence((ushort)influenceId, (ushort)reward.Value.BaseInf);
-            player.AddMoney((uint)reward.Value.BaseMoney);
+            player.InternalAddXp((uint) ((uint)reward.Value.BaseXP* shareRewardScale), true, true);
+            player.InternalAddRenown((uint) ((uint)reward.Value.BaseRP* shareRewardScale), true, RewardType.Kill, "");
+            player.AddInfluence((ushort)influenceId, (ushort) ((ushort)reward.Value.BaseInf* shareRewardScale));
+            player.AddMoney((uint) ((uint)reward.Value.BaseMoney* shareRewardScale));
 
             RewardLogger.Debug($"Total XP : {reward.Value.BaseXP} RP : {reward.Value.BaseRP} INF : {reward.Value.BaseInf}");
         }

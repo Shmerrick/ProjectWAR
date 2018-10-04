@@ -54,7 +54,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// Calculate the base reward for all impacters upon the target.
         /// </summary>
         /// <returns>List of impacter characterId's and their reward.</returns>
-        public ConcurrentDictionary<uint, Reward> GenerateBaseRewardForKill(uint targetCharacterId, int randomNumber)
+        public ConcurrentDictionary<uint, Reward> GenerateBaseRewardForKill(uint targetCharacterId, int randomNumber, float aaoBonus)
         {
             var characterBounty = BountyManager.GetBounty(targetCharacterId);
             var contributionValue = ContributionManager.GetContributionValue(targetCharacterId);
@@ -96,9 +96,9 @@ namespace WorldServer.World.Battlefronts.Bounty
                 var reward = new Reward
                 {
                     Description = $"Player {playerImpact.CharacterId} Kills {targetCharacterId} ",
-                    BaseInf = (int) (BOUNTY_BASE_INF_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue) + playerKillReward.BaseInf,
-                    BaseXP = (int) (BOUNTY_BASE_XP_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue) + playerKillReward.BaseXP,
-                    BaseRP = (int) (BOUNTY_BASE_RP_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue) + playerKillReward.BaseRP,
+                    BaseInf = (int) (BOUNTY_BASE_INF_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue * aaoBonus) + playerKillReward.BaseInf,
+                    BaseXP = (int) (BOUNTY_BASE_XP_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue * aaoBonus) + playerKillReward.BaseXP,
+                    BaseRP = (int) (BOUNTY_BASE_RP_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue * aaoBonus) + playerKillReward.BaseRP,
                     InsigniaCount = insigniaCount,
                     InsigniaItemId = insigniaItemId,
                     BaseMoney = (int) (playerKillReward.Money * impactFraction),
