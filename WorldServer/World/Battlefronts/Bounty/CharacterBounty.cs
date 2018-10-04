@@ -29,7 +29,11 @@ namespace WorldServer.World.Battlefronts.Bounty
         
         public override string ToString()
         {
-            return $"Last Death {LastDeath} Character Level {CharacterLevel}/{RenownLevel}, BaseBounty {BaseBountyValue} Contributed {ContributedBountyValue}";
+            return $"Last Death {LastDeath} " +
+                   $"Character Level {CharacterLevel}/{RenownLevel}, " +
+                   $"BaseBounty {BaseBountyValue} " +
+                   $"Contributed {ContributedBountyValue}. " +
+                   $"Modified Bounty Value = {BaseBountyValue+ContributedBountyValue}";
         }
     }
 }

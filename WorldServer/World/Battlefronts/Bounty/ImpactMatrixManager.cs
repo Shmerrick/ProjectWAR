@@ -165,7 +165,13 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <returns></returns>
         public int GetTotalImpact(uint targetCharacterId)
         {
-            return GetKillImpacts(targetCharacterId).Sum(x => x.ImpactValue);
+            var killImpacts = GetKillImpacts(targetCharacterId);
+            if (killImpacts == null) 
+                return 0;
+            else
+            {
+                return killImpacts.Sum(x => x.ImpactValue);
+            }
         }
 
 

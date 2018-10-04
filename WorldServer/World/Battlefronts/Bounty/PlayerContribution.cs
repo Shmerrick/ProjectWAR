@@ -1,4 +1,5 @@
 ﻿using System;
+using GameData;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
@@ -12,7 +13,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         public override string ToString()
         {
-            return $"{ContributionId} ({FrameWork.TCPManager.GetTimeStamp() - Timestamp} sec ago)";
+            return $"{ContributionId} {(ContributionDefinitions)ContributionId} ({FrameWork.TCPManager.GetTimeStamp() - Timestamp} sec ago)";
         }
     }
 }

@@ -78,14 +78,7 @@ namespace WorldServer.Managers.Commands
                         plr.SendClientMessage(contributionStage.ToString());
                     }
                 }
-
-                
-              
-
             }
-
-            
-
             return true;
         }
 

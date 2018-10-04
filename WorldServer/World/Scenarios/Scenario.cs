@@ -621,6 +621,10 @@ namespace WorldServer.Scenarios
                 contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.PLAY_SCENARIO);
                 WorldMgr.UpperTierCampaignManager.GetActiveCampaign().GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
 
+                plr.SendClientMessage("Giving PLAY_SCEN contribution");
+                _logger.Debug($"Giving PLAY_SCEN contribution to {plr.Name}");
+
+
                 if (realmIndex == winningTeam)
                 {
                     // Lower reward for domination
@@ -636,10 +640,15 @@ namespace WorldServer.Scenarios
                         plr.SendLocalizeString(new[] { desiredItem.Name, "6" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
                             Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
 
+                        _logger.Debug($"Giving WIN_SCEN contribution to {plr.Name}");
+
                         // Add Contribution
                         WorldMgr.UpperTierCampaignManager.GetActiveCampaign().GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.WIN_SCENARIO);
                         contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.WIN_SCENARIO);
                         WorldMgr.UpperTierCampaignManager.GetActiveCampaign().GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
+
+                        plr.SendClientMessage("Giving WIN_SCEN contribution");
+
 
                     }
 

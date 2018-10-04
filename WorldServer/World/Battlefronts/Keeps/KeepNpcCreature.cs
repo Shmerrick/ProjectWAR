@@ -47,7 +47,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 Creature_proto proto = CreatureService.GetCreatureProto(realm == Realms.REALMS_REALM_ORDER ? Info.OrderId : Info.DestroId);
 
-                _logger.Debug($"Spawning Guard {proto.Name} ({proto.Entry})");
+                _logger.Trace($"Spawning Guard {proto.Name} ({proto.Entry})");
 
                 if (proto == null)
                 {
@@ -109,7 +109,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 Creature_proto proto = CreatureService.GetCreatureProto(realm == Realms.REALMS_REALM_ORDER ? Info.OrderId : Info.DestroId);
 
-                _logger.Debug($"Spawning Guard Near {proto.Name} ({proto.Entry})");
+                _logger.Trace($"Spawning Guard Near {proto.Name} ({proto.Entry})");
 
                 if (proto == null)
                 {

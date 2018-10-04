@@ -323,7 +323,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             allPlayersInZone.AddRange(destPlayersInZone);
             allPlayersInZone.AddRange(orderPlayersInZone);
 
-            BattlefrontLogger.Debug($"Calculating AAO. Order players : {orderPlayersInZone.Count} Dest players : {destPlayersInZone.Count}");
+            BattlefrontLogger.Trace($"Calculating AAO. Order players : {orderPlayersInZone.Count} Dest players : {destPlayersInZone.Count}");
 
             foreach (var status in BattleFrontManager.GetBattleFrontStatusList())
             {

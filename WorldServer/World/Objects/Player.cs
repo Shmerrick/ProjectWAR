@@ -3753,7 +3753,7 @@ namespace WorldServer
 
         protected override void SetDeath(Unit killer)
         {
-            DeathLogger.Debug($"Victim : {Name} killed by {killer.Name}");
+            DeathLogger.Debug($"Victim : {Name} killed by {killer.Name} in {killer.Region?.RegionName}");
             base.SetDeath(killer);
 
             if (WeaponStance == WeaponStance.Standard)
@@ -4008,6 +4008,8 @@ namespace WorldServer
 
                                 foreach (var groupMember in player.PriorityGroup.Members)
                                 {
+                                    groupMember.SendClientMessage($"CONTRIB:Giving assist rewards to {groupMember.Name}");
+
                                     DistributeBaseRewardsForPlayerKill(reward, groupMember, (1 / shares), influenceId);
 
                                     // Give the player that is part of a party that gives a kill assist
@@ -4021,6 +4023,7 @@ namespace WorldServer
                             }
                             else  // No group
                             {
+                                player.SendClientMessage($"CONTRIB:Giving non-group assist rewards to {player.Name}");
                                 DistributeBaseRewardsForPlayerKill(reward, player, 1, influenceId);
                             }
 
@@ -4028,6 +4031,8 @@ namespace WorldServer
                             // If this player is the killer (ie Deathblow), give them a different contribution.
                             if (reward.Key == killer.CharacterId)
                             {
+                                killer.SendClientMessage($"CONTRIB:Giving DB rewards to {killer.Name}");
+
                                 DistributeInsigniaRewardForPlayerKill(reward, killer);
 
                                 // Add contribution for this kill to the killer.
@@ -4040,9 +4045,9 @@ namespace WorldServer
                                     killer.CharacterId,
                                     BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW).ContributionValue);
 
-                                if (player.AAOBonus > 0)
+                                if (killer.AAOBonus > 0)
                                 {
-
+                                    killer.SendClientMessage($"CONTRIB:Giving DB rewards under AAO to {killer.Name}");
                                     // Add contribution for this kill under AAO to the killer.
                                     ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(
                                         killer.CharacterId,
@@ -4057,7 +4062,7 @@ namespace WorldServer
                                 // If the deathblow comes while the target is near a BO
                                 if (this.CurrentObjectiveFlag != null)
                                 {
-
+                                    killer.SendClientMessage($"CONTRIB:Giving PLAYER_KILL_ON_BO to {killer.Name}");
                                     // Add contribution for this kill under BO to the killer.
                                     ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(
                                         killer.CharacterId,
@@ -4071,7 +4076,8 @@ namespace WorldServer
                             }
                             else // An assist
                             {
-                                DistributeInsigniaRewardForPlayerKillAssist(reward, killer);
+                                player.SendClientMessage($"CONTRIB:Giving PLAYER_KILL_ASSIST to {player.Name}");
+                                DistributeInsigniaRewardForPlayerKillAssist(reward, player);
 
                                 // Add contribution for kill assist.
                                 ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(
@@ -4084,25 +4090,27 @@ namespace WorldServer
 
                                 if (player.AAOBonus > 0)
                                 {
+                                    player.SendClientMessage($"CONTRIB:Giving PLAYER_KILL_ASSIST_UNDER_AAO to {player.Name}");
                                     ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(
                                         player.CharacterId,
                                         (byte)ContributionDefinitions.PLAYER_KILL_ASSIST_UNDER_AAO);
 
 
                                     ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(
-                                        killer.CharacterId, 
+                                        player.CharacterId, 
                                         BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_ASSIST_UNDER_AAO).ContributionValue);
                                 }
                                 // If the kill is an assist comes while the target is near a BO
                                 if (this.CurrentObjectiveFlag != null)
                                 {
+                                    player.SendClientMessage($"CONTRIB:Giving PLAYER_KILL_ON_BO to {player.Name}");
                                     ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(
                                         player.CharacterId,
                                         (byte)ContributionDefinitions.PLAYER_KILL_ON_BO);
 
 
                                     ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(
-                                        killer.CharacterId, BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_ON_BO).ContributionValue);
+                                        player.CharacterId, BountyService.GetDefinition((byte)ContributionDefinitions.PLAYER_KILL_ON_BO).ContributionValue);
                                 }
 
                             }

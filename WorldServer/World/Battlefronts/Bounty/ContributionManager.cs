@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common.Database.World.Battlefront;
+using GameData;
 using NLog;
+using WorldServer.Services.World;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
@@ -41,10 +43,11 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <returns></returns>
         public List<PlayerContribution> UpdateContribution(uint targetCharacterId, byte contibutionId)
         {
-            //TODO : remove - for development only.
-            var item = GetContribution(targetCharacterId);
+            //TODO : Remove - dev obnly
+            var description = BountyService.GetDefinition((byte) ContributionDefinitions.PLAYER_KILL_ON_BO).ContributionDescription;
 
-            RewardLogger.Debug($"Assigning contibution Id {contibutionId} to {targetCharacterId}");
+            RewardLogger.Debug($"Assigning contibution Id {contibutionId} ({description}) to {targetCharacterId}");
+
 
             //filteredResults.AddOrUpdate(unfilteredResult.Key, new List<int> { number }, (k, v) => v.Add(number));
             return this.ContributionDictionary.AddOrUpdate(targetCharacterId,
@@ -170,6 +173,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                             Description = referenceContribution.ContributionDescription,
                             ContributionStageCount = 0,
                             ContributionStageSum = 0,
+                            ContributionStageValue = 0,
                             ContributionStageMax = referenceContribution.MaxContributionCount
                         });
                 }
@@ -188,7 +192,8 @@ namespace WorldServer.World.Battlefronts.Bounty
                                 Description = contributionFactor.ContributionDescription,
                                 ContributionStageCount = 1,
                                 ContributionStageSum = contributionFactor.ContributionValue,
-                                ContributionStageMax = contributionFactor.MaxContributionCount
+                                ContributionStageMax = contributionFactor.MaxContributionCount,
+                                ContributionStageValue = contributionFactor.ContributionValue
                             },
                             (k, v) =>
                         {
@@ -197,6 +202,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                             {
                                 v.ContributionStageCount = (short)(v.ContributionStageCount + 1);
                                 v.ContributionStageSum += contributionFactor.ContributionValue;
+                                v.ContributionStageValue = contributionFactor.ContributionValue;
                             }
 
                             return v;
@@ -208,7 +214,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             foreach (var contributionStage in result)
             {
-                RewardLogger.Debug($"{contributionStage.Key} {contributionStage.Value.ToString()}");
+                RewardLogger.Debug($"Id:{contributionStage.Key} {contributionStage.Value.ToString()}");
             }
             
 
