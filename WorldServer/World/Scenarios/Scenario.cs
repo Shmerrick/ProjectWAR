@@ -884,6 +884,11 @@ namespace WorldServer.Scenarios
 
         public void IncrementPlayers(Player player)
         {
+            if (player.AAOBonus >= 0.0f)
+            {
+                player.AAOBonus = 0.0f;
+            }
+
             Interlocked.Increment(ref _activePlayers[(int)(player.Realm - 1)]);
         }
 
