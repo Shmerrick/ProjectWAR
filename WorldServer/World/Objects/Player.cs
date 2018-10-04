@@ -3210,9 +3210,6 @@ namespace WorldServer
             if (Program.Config.RenownRate > 0)
                 renown *= (uint)Program.Config.RenownRate;
 
-            if (_Value.RenownRank >= 40)
-                renown /= 2;
-
             renown = (uint)(renown * GetKillRewardScaler(victim));
 
             if (Constants.DoomsdaySwitch > 0 && renown < 20)
