@@ -1373,9 +1373,9 @@ namespace WorldServer
                         return CharItems[chara.CharacterId];
                     }
                 }
-
+                _logger.Debug($"Getting CharacterInfoItem for {chara.Name} career {chara.CareerLine}");
                 List<CharacterInfo_item> Items = GetCharacterInfoItem(chara.CareerLine);
-
+                _logger.Debug($"Found CharacterInfoItem Count={Items.Count} for {chara.Name}");
                 foreach (CharacterInfo_item Itm in Items)
                 {
                     if (Itm == null)
