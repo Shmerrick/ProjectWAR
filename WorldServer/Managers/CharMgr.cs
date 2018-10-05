@@ -1353,7 +1353,7 @@ namespace WorldServer
         {
             try
             {
-
+                _logger.Debug($"GetItemsForCharacter ==> {chara.Name}");
                 lock (CharItems)
                 {
                     if (CharItems.ContainsKey(chara.CharacterId))
@@ -1361,6 +1361,7 @@ namespace WorldServer
                 }
 
                 Log.Info("GetItemsForChar", "Loading items for CharacterId: " + chara.CharacterId);
+                _logger.Debug($"Loading items for CharacterId ==> {chara.Name}");
 
                 List<CharacterItem> myItems = (List<CharacterItem>)Database.SelectObjects<CharacterItem>("CharacterId='" + chara.CharacterId + "'");
 
@@ -1369,7 +1370,11 @@ namespace WorldServer
                     lock (CharItems)
                     {
                         if (!CharItems.ContainsKey(chara.CharacterId))
+                        {
+                            _logger.Debug($"Adding items for CharacterId ==> {chara.Name}");
                             CharItems.Add(chara.CharacterId, myItems);
+                        }
+                        _logger.Debug($"Returning items for CharacterId ==> {chara.Name}");
                         return CharItems[chara.CharacterId];
                     }
                 }

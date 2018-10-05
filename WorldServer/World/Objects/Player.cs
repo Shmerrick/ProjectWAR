@@ -917,7 +917,7 @@ namespace WorldServer
                 Dispose();
                 return;
             }
-#if !DEBUG
+
             if (LastKeepAliveTime != 0 && LastKeepAliveTime + PING_TIMEOUT < tick)
             {
                 Client.Disconnect("Ping timeout");
@@ -938,7 +938,6 @@ namespace WorldServer
                 Dispose();
                 return;
             }
-#endif
 
             UpdateMorale(tick);
 
