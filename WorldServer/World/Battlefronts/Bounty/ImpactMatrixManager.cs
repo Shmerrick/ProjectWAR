@@ -43,6 +43,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         }
 
 
+
         public string ToString(uint characterId)
         {
             var result = string.Empty;
@@ -101,6 +102,18 @@ namespace WorldServer.World.Battlefronts.Bounty
                 }
             }
             return null;
+        }
+
+        /// <summary>
+        /// Clear the impacts upon the character
+        /// </summary>
+        /// <param name="targetCharacterId"></param>
+        public void ClearImpacts(uint targetCharacterId)
+        {
+            if (this.ImpactMatrix.ContainsKey(targetCharacterId))
+            {
+                ImpactMatrix[targetCharacterId].Clear();
+            }
         }
 
         /// <summary>

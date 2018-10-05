@@ -3898,6 +3898,8 @@ namespace WorldServer
             HealAggros = new Dictionary<ushort, AggroInfo>();
             // Reset this characters bounty to their base bounty.
             ActiveBattleFrontStatus.BountyManagerInstance.ResetCharacterBounty(CharacterId, this);
+            // Reset the impacts on this character.
+            ActiveBattleFrontStatus.ImpactMatrixManagerInstance.ClearImpacts(CharacterId);
         }
 
         private void RecordKillTracking(Player victim, Player killer, long timestamp)

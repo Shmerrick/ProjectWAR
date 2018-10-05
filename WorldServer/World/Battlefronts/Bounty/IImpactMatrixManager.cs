@@ -12,5 +12,6 @@ namespace WorldServer.World.Battlefronts.Bounty
         List<PlayerImpact> GetKillImpacts(uint targetCharacterId);
         int GetTotalImpact(uint targetCharacterId);
         PlayerImpact UpdateMatrix(uint targetCharacterId, PlayerImpact playerImpact);
+        void ClearImpacts(uint targetCharacterId);
     }
 }
