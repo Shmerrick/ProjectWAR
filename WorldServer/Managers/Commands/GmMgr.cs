@@ -13,6 +13,7 @@ namespace WorldServer.Managers.Commands
 
         public static void NotifyGMOnline(Player gameMaster)
         {
+            gameMaster.SendClientMessage($"Hi - I've added you to the GM List");
             lock (GmList)
             {
                 if (!GmList.Contains(gameMaster))

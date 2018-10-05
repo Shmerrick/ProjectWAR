@@ -680,10 +680,14 @@ namespace WorldServer
 
             if (GmLevel > 1)
             {
-
+                SendClientMessage("I'm seeing if you can be added to the GM List");
                 //if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
-                if (!Utils.HasFlag(GmLevel, (int)EGmLevel.DatabaseDev) && Utils.HasFlag(GmLevel, (int)EGmLevel.AnyGM) && !GmMgr.GmList.Contains(this))
+                if (GmLevel >= (int)EGmLevel.AnyGM && !GmMgr.GmList.Contains(this))
+                {
+                    SendClientMessage("... I think you can");
                     GmMgr.NotifyGMOnline(this);
+                }
+                SendClientMessage($"Nope! Your GM Level is {GmLevel}");
 
             }
 
@@ -745,14 +749,15 @@ namespace WorldServer
 					SendRenown();
 					SendStats();
 
-					if (GmLevel >1)
-					{
-						//if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
-						if (!Utils.HasFlag(GmLevel, (int)EGmLevel.DatabaseDev) && Utils.HasFlag(GmLevel, (int)EGmLevel.AnyGM) && !GmMgr.GmList.Contains(this))
-							GmMgr.NotifyGMOnline(this);
-
-					}
-				}
+				    SendClientMessage("I'm seeing if you can be added to the GM List");
+				    //if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
+				    if (GmLevel >= (int)EGmLevel.AnyGM && !GmMgr.GmList.Contains(this))
+				    {
+				        SendClientMessage("... I think you can");
+				        GmMgr.NotifyGMOnline(this);
+				    }
+				    SendClientMessage($"Nope! Your GM Level is {GmLevel}");
+                }
 				//if gm toggled invincibility and switched zone then it should still be active.
 				if (IsInvulnerable && GmLevel > 1)
 				{

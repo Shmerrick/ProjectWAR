@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using GameData;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using SystemData;
-using Common;
-using FrameWork;
-using GameData;
 using WorldServer.Services.World;
 
 namespace WorldServer
@@ -55,7 +56,7 @@ namespace WorldServer
             Chars[slot] = null;
             Realm = Realms.REALMS_REALM_NEUTRAL;
 
-            foreach(Character Char in Chars)
+            foreach (Character Char in Chars)
                 if (Char != null)
                 {
                     Realm = (Realms)Char.Realm;
@@ -81,12 +82,14 @@ namespace WorldServer
     public static class CharMgr
     {
         public static IObjectDatabase Database = null;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
 
         #region CharacterInfo
 
         public static Dictionary<byte, CharacterInfo> CharacterInfos = new Dictionary<byte, CharacterInfo>();
         public static Dictionary<byte, List<CharacterInfo_item>> CharacterStartingItems = new Dictionary<byte, List<CharacterInfo_item>>();
-        public static Dictionary<byte,List<CharacterInfoRenown>> RenownAbilityInfo = new Dictionary<byte,List<CharacterInfoRenown>>();
+        public static Dictionary<byte, List<CharacterInfoRenown>> RenownAbilityInfo = new Dictionary<byte, List<CharacterInfoRenown>>();
         public static Dictionary<byte, List<CharacterInfo_stats>> CharacterBaseStats = new Dictionary<byte, List<CharacterInfo_stats>>();
         public static Dictionary<byte, List<PetStatOverride>> PetOverrideStats = new Dictionary<byte, List<PetStatOverride>>();
         public static Dictionary<byte, List<PetMasteryModifiers>> PetMasteryMods = new Dictionary<byte, List<PetMasteryModifiers>>();
@@ -111,14 +114,14 @@ namespace WorldServer
             IList<CharacterInfo_item> chars = WorldMgr.Database.SelectAllObjects<CharacterInfo_item>();
 
             if (chars != null)
-            foreach (CharacterInfo_item info in chars)
-                if (!CharacterStartingItems.ContainsKey(info.CareerLine))
-                {
-                    List<CharacterInfo_item> items = new List<CharacterInfo_item>(1);
-                    items.Add(info);
-                    CharacterStartingItems.Add(info.CareerLine, items);
-                }
-                else CharacterStartingItems[info.CareerLine].Add(info);
+                foreach (CharacterInfo_item info in chars)
+                    if (!CharacterStartingItems.ContainsKey(info.CareerLine))
+                    {
+                        List<CharacterInfo_item> items = new List<CharacterInfo_item>(1);
+                        items.Add(info);
+                        CharacterStartingItems.Add(info.CareerLine, items);
+                    }
+                    else CharacterStartingItems[info.CareerLine].Add(info);
 
             Log.Success("CharacterMgr", "Loaded " + CharacterStartingItems.Count + " CharacterInfo_Item");
         }
@@ -126,12 +129,12 @@ namespace WorldServer
         [LoadingFunction(true)]
         public static void LoadCharacterRenownInfo()
         {
-            IList<CharacterInfoRenown> characterRenownInfo = WorldMgr.Database.SelectAllObjects<CharacterInfoRenown>().OrderBy(x => x.ID).ToList(); 
+            IList<CharacterInfoRenown> characterRenownInfo = WorldMgr.Database.SelectAllObjects<CharacterInfoRenown>().OrderBy(x => x.ID).ToList();
 
             foreach (CharacterInfoRenown renInfo in characterRenownInfo)
                 if (!RenownAbilityInfo.ContainsKey(renInfo.Tree))
                 {
-                    List<CharacterInfoRenown> items = new List<CharacterInfoRenown>(1) {renInfo};
+                    List<CharacterInfoRenown> items = new List<CharacterInfoRenown>(1) { renInfo };
                     RenownAbilityInfo.Add(renInfo.Tree, items);
                 }
                 else RenownAbilityInfo[renInfo.Tree].Add(renInfo);
@@ -147,7 +150,7 @@ namespace WorldServer
             {
                 if (!CharacterBaseStats.ContainsKey(statInfo.CareerLine))
                 {
-                    List<CharacterInfo_stats> stats = new List<CharacterInfo_stats>(1) {statInfo};
+                    List<CharacterInfo_stats> stats = new List<CharacterInfo_stats>(1) { statInfo };
                     CharacterBaseStats.Add(statInfo.CareerLine, stats);
                 }
                 else CharacterBaseStats[statInfo.CareerLine].Add(statInfo);
@@ -177,7 +180,7 @@ namespace WorldServer
                 List<CharacterInfo_stats> infoStats;
                 if (CharacterBaseStats.TryGetValue(careerLine, out infoStats))
                 {
-                    foreach(CharacterInfo_stats stat in infoStats)
+                    foreach (CharacterInfo_stats stat in infoStats)
                         if (stat.CareerLine == careerLine && stat.Level == level)
                             stats.Add(stat);
 
@@ -218,7 +221,7 @@ namespace WorldServer
         public static List<PetStatOverride> GetPetStatOverride(byte careerLine)
         {
             List<PetStatOverride> overrides = new List<PetStatOverride>();
-            
+
             // if (!PetOverriddenStats.TryGetValue((ushort)(careerLine << 8), out overrides))
             // {
             overrides = new List<PetStatOverride>();
@@ -259,7 +262,7 @@ namespace WorldServer
         public static List<PetMasteryModifiers> GetPetMasteryModifiers(byte careerLine)
         {
             List<PetMasteryModifiers> modifiers = new List<PetMasteryModifiers>();
-            
+
             modifiers = new List<PetMasteryModifiers>();
 
             List<PetMasteryModifiers> infoModifiers;
@@ -279,10 +282,10 @@ namespace WorldServer
         public static List<CharacterInfo_item> GetCharacterInfoItem(byte careerLine)
         {
             List<CharacterInfo_item> items;
-            if(!CharacterStartingItems.TryGetValue(careerLine,out items))
+            if (!CharacterStartingItems.TryGetValue(careerLine, out items))
             {
                 items = new List<CharacterInfo_item>();
-                CharacterStartingItems.Add(careerLine,items);
+                CharacterStartingItems.Add(careerLine, items);
             }
             return items;
         }
@@ -292,32 +295,32 @@ namespace WorldServer
             return RandomNameList;
         }
 
-#endregion
+        #endregion
 
-#region Characters
+        #region Characters
 
         // Only 20 will work
         public static byte MaxSlot = 20;
         private static long _maxCharGuid = 1;
         public static Dictionary<uint, Character> Chars = new Dictionary<uint, Character>();
-        public static Dictionary<string, uint> CharIdLookup = new Dictionary<string, uint>(); 
+        public static Dictionary<string, uint> CharIdLookup = new Dictionary<string, uint>();
         public static Dictionary<int, AccountChars> AcctChars = new Dictionary<int, AccountChars>();
 
-        public static long RecentHistoryTime = (TCPManager.GetTimeStamp() - ((60*60*24*7*4*2)));
+        public static long RecentHistoryTime = (TCPManager.GetTimeStamp() - ((60 * 60 * 24 * 7 * 4 * 2)));
 
         [LoadingFunction(true)]
         public static void LoadCharacters()
         {
             if (Program.Config.PreloadAllCharacters)
             {
-                List<Character> chars = (List<Character>) Database.SelectAllObjects<Character>();
+                List<Character> chars = (List<Character>)Database.SelectAllObjects<Character>();
                 Dictionary<uint, Character_value> charValues = Database.SelectAllObjects<Character_value>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.FirstOrDefault());
                 Dictionary<uint, CharacterClientData> charClientData = Database.SelectAllObjects<CharacterClientData>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.FirstOrDefault());
                 Dictionary<uint, List<Character_social>> charSocials = Database.SelectAllObjects<Character_social>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
                 Dictionary<uint, List<Character_tok>> charToks = Database.SelectAllObjects<Character_tok>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
                 Dictionary<uint, List<Character_tok_kills>> charToksKills = Database.SelectAllObjects<Character_tok_kills>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
                 Dictionary<uint, List<Character_quest>> charQuests = Database.SelectAllObjects<Character_quest>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
-                Dictionary<uint, List<Characters_influence>> charInfluences = Database.SelectAllObjects<Characters_influence>().GroupBy(v => v.CharacterId).ToDictionary(g => (uint) g.Key, g => g.ToList());
+                Dictionary<uint, List<Characters_influence>> charInfluences = Database.SelectAllObjects<Characters_influence>().GroupBy(v => v.CharacterId).ToDictionary(g => (uint)g.Key, g => g.ToList());
                 Dictionary<uint, List<Characters_bag_pools>> charBagPools = Database.SelectAllObjects<Characters_bag_pools>().GroupBy(v => v.CharacterId).ToDictionary(g => (uint)g.Key, g => g.ToList());
                 Dictionary<uint, List<Character_mail>> charMail = Database.SelectAllObjects<Character_mail>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
                 Dictionary<uint, List<CharacterSavedBuff>> charBuffs = Database.SelectAllObjects<CharacterSavedBuff>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
@@ -398,7 +401,7 @@ namespace WorldServer
                     AddChar(Char);
                     if (Char.Value != null)
                         GetAccountChar(Char.AccountId).Loaded = true;
-                    
+
                     ++count;
                 }
 
@@ -410,12 +413,12 @@ namespace WorldServer
         }
 
         public static Character LoadCharacterInfo(string name, bool fullLoad)
-         {
+        {
             Character Char = Database.SelectObject<Character>("Name='" + Database.Escape(name) + "'");
             if (Char != null)
             {
                 if (Char.Value == null)
-                	Char.Value = Database.SelectObject<Character_value>("CharacterId=" + Char.CharacterId);
+                    Char.Value = Database.SelectObject<Character_value>("CharacterId=" + Char.CharacterId);
                 if (Char.ClientData == null)
                     Char.ClientData = Database.SelectObject<CharacterClientData>("CharacterId=" + Char.CharacterId);
                 if (fullLoad)
@@ -427,7 +430,7 @@ namespace WorldServer
 
             return Char;
 
-         }
+        }
         public static Character LoadCharacterInfo(uint id, bool fullLoad)
         {
             Character Char = Database.SelectObject<Character>("CharacterId='" + id + "'");
@@ -459,7 +462,7 @@ namespace WorldServer
             Char.Buffs = (List<CharacterSavedBuff>)Database.SelectObjects<CharacterSavedBuff>("CharacterId=" + Char.CharacterId);
 
             if (Char.Mails == null)
-            Char.Mails = (List<Character_mail>)Database.SelectObjects<Character_mail>("CharacterId=" + Char.CharacterId);
+                Char.Mails = (List<Character_mail>)Database.SelectObjects<Character_mail>("CharacterId=" + Char.CharacterId);
         }
 
         public static uint GenerateMaxCharId()
@@ -534,7 +537,7 @@ namespace WorldServer
                 Database.SaveObject(chara);
                 Database.ForceSave();
             }
-            
+
         }
 
         public static Character GetCharacter(string name, bool fullLoad)
@@ -596,7 +599,7 @@ namespace WorldServer
                         CharacterID = characterId,
                         CharacterName = Chars[characterId].Name,
                         DeletionTimeSeconds = TCPManager.GetTimeStamp()
-        
+
                     };
 
                     Database.AddObject(record);
@@ -652,15 +655,15 @@ namespace WorldServer
                 foreach (Character_social obj in Char.Socials)
                     Database.DeleteObject(obj);
 
-            if(Char.Toks != null)
+            if (Char.Toks != null)
                 foreach (Character_tok obj in Char.Toks)
                     Database.DeleteObject(obj);
 
-            if(Char.Quests != null)
+            if (Char.Quests != null)
                 foreach (Character_quest obj in Char.Quests)
                     Database.DeleteObject(obj);
 
-            if(Char.Influences != null)
+            if (Char.Influences != null)
                 foreach (Characters_influence obj in Char.Influences)
                     Database.DeleteObject(obj);
             if (Char.Bag_Pools != null)
@@ -809,9 +812,9 @@ namespace WorldServer
 
             Log.Info("LoadCharacters", "Forced to load from connection thread for account ID " + accountId);
 
-            List<Character_tok> charactersTok = (List<Character_tok>) Database.SelectObjects<Character_tok>(whereString);
-            List<Character_quest> charactersQuest = (List<Character_quest>) Database.SelectObjects<Character_quest>(whereString);
-            List<Characters_influence> charactersInf = (List<Characters_influence>) Database.SelectObjects<Characters_influence>(whereString);
+            List<Character_tok> charactersTok = (List<Character_tok>)Database.SelectObjects<Character_tok>(whereString);
+            List<Character_quest> charactersQuest = (List<Character_quest>)Database.SelectObjects<Character_quest>(whereString);
+            List<Characters_influence> charactersInf = (List<Characters_influence>)Database.SelectObjects<Characters_influence>(whereString);
             List<Characters_bag_pools> charactersBgPls = (List<Characters_bag_pools>)Database.SelectObjects<Characters_bag_pools>(whereString);
             List<CharacterItem> charactersItems = (List<CharacterItem>)Database.SelectObjects<CharacterItem>(whereString);
             List<Character_tok_kills> charToksKills = (List<Character_tok_kills>)Database.SelectObjects<Character_tok_kills>(whereString);
@@ -820,7 +823,7 @@ namespace WorldServer
 
             CharLoadSemaphore.Release();
 
-            for (int i=0; i < accountChars.Chars.Length; ++i)
+            for (int i = 0; i < accountChars.Chars.Length; ++i)
             {
                 Character character = accountChars.Chars[i];
                 if (character == null)
@@ -864,8 +867,8 @@ namespace WorldServer
             Log.Debug("BuildCharacters", "AccountId = " + accountId);
 
             Character[] chars = GetAccountChar(accountId).Chars;
-            
-            PacketOut Out = new PacketOut(0) {Position = 0};
+
+            PacketOut Out = new PacketOut(0) { Position = 0 };
 
             Out.WriteByte(0x00); // in packetlogs this is 0
 
@@ -878,7 +881,7 @@ namespace WorldServer
                 else
                 {
                     if (Char.Value == null)
-                        throw new NullReferenceException("Character "+Char.Name+" with ID "+Char.CharacterId+" is missing its character values!");
+                        throw new NullReferenceException("Character " + Char.Name + " with ID " + Char.CharacterId + " is missing its character values!");
 
                     List<CharacterItem> items;
 
@@ -919,7 +922,7 @@ namespace WorldServer
                             else
                                 Out.WriteUInt32R(Item.ModelId); // ModelId
 
-                            if(Item.PrimaryDye == 0)
+                            if (Item.PrimaryDye == 0)
                                 Out.WriteUInt16R(ItemService.GetItem_Info(Item.Entry).BaseColor1); // PrimaryDye
                             else
                                 Out.WriteUInt16R(Item.PrimaryDye); // PrimaryDye
@@ -944,10 +947,11 @@ namespace WorldServer
                     }
 
                     Out.WriteHexStringBytes("0000000000000000010000"); // 05 || 0000 || 0B07000A03000602 || 00 00 00 00 00 00 00 || 00 00 00 00 00 00 00
-                    /*Out.Fill(0, 10);
-                    Out.WriteUInt16(0xFF00);
-                    Out.WriteByte(0);
-                    */Out.WriteByte(Char.Race);
+                                                                       /*Out.Fill(0, 10);
+                                                                       Out.WriteUInt16(0xFF00);
+                                                                       Out.WriteByte(0);
+                                                                       */
+                    Out.WriteByte(Char.Race);
                     Out.WriteUInt16(0); // (Char.Value.TitleId); // title canot be seen in char selection this cause crashes
                     Out.Write(Char.bTraits, 0, Char.bTraits.Length);
                     Out.Fill(0, 14);// 272*/
@@ -958,9 +962,9 @@ namespace WorldServer
 
         public static Realms GetAccountRealm(int accountId) => GetAccountChar(accountId).Realm;
 
-#endregion
+        #endregion
 
-#region Name filtering
+        #region Name filtering
 
         private static List<BannedNameRecord> BannedNameRecords;
 
@@ -983,7 +987,7 @@ namespace WorldServer
                         return false;
                 }
 
-                BannedNameRecord newRecord = new BannedNameRecord {NameString = name, FilterType = filtertype};
+                BannedNameRecord newRecord = new BannedNameRecord { NameString = name, FilterType = filtertype };
                 Database.AddObject(newRecord);
                 BannedNameRecords.Add(newRecord);
             }
@@ -1076,14 +1080,14 @@ namespace WorldServer
             return true;
         }
 
-#endregion
+        #endregion
 
-#region Guilds
+        #region Guilds
 
         public static void LoadAlliances()
         {
             Log.Info("LoadGuildAllianes", "Loading guild Allianes...");
-            
+
             if (Program.Config.PreloadAllCharacters)
             {
                 List<Guild_Alliance_info> Alliances = (List<Guild_Alliance_info>)Database.SelectAllObjects<Guild_Alliance_info>();
@@ -1100,14 +1104,14 @@ namespace WorldServer
         public static void LoadGuilds()
         {
             Log.Info("LoadGuilds", "Loading guilds...");
-            List<Guild_info> guilds = (List<Guild_info>) Database.SelectAllObjects<Guild_info>();
-            List<Guild_member> guildMembers = (List<Guild_member>) Database.SelectAllObjects<Guild_member>();
-            List<Guild_rank> guildRanks = (List<Guild_rank>) Database.SelectAllObjects<Guild_rank>();
-            List<Guild_log> guildLogs = (List<Guild_log>) Database.SelectAllObjects<Guild_log>();
+            List<Guild_info> guilds = (List<Guild_info>)Database.SelectAllObjects<Guild_info>();
+            List<Guild_member> guildMembers = (List<Guild_member>)Database.SelectAllObjects<Guild_member>();
+            List<Guild_rank> guildRanks = (List<Guild_rank>)Database.SelectAllObjects<Guild_rank>();
+            List<Guild_log> guildLogs = (List<Guild_log>)Database.SelectAllObjects<Guild_log>();
             List<Guild_event> guildEvents = (List<Guild_event>)Database.SelectAllObjects<Guild_event>();
             List<GuildVaultItem> guildVault = (List<GuildVaultItem>)Database.SelectAllObjects<GuildVaultItem>();
 
-          
+
             if (Program.Config.PreloadAllCharacters)
             {
                 List<Guild_member> toRemove = new List<Guild_member>();
@@ -1129,7 +1133,7 @@ namespace WorldServer
 
                 foreach (Guild_info guild in guilds)
                 {
-                    if(guild.AllianceId > 0)
+                    if (guild.AllianceId > 0)
                     {
                         if (Alliance.Alliances.ContainsKey(guild.AllianceId))
                             Alliance.Alliances[guild.AllianceId].Members.Add(guild.GuildId);
@@ -1151,7 +1155,7 @@ namespace WorldServer
 
                     catch (Exception)
                     {
-                        Log.Error("LoadGuilds", "Failed load of guild: "+guild.Name);
+                        Log.Error("LoadGuilds", "Failed load of guild: " + guild.Name);
                     }
 
                     guild.Vaults[0] = guildVault.FindAll(info => info.GuildId == guild.GuildId && info.VaultId == 1).OrderBy(info => info.SlotId).ToDictionary(x => x.SlotId, x => x);
@@ -1159,7 +1163,7 @@ namespace WorldServer
                     guild.Vaults[2] = guildVault.FindAll(info => info.GuildId == guild.GuildId && info.VaultId == 3).OrderBy(info => info.SlotId).ToDictionary(x => x.SlotId, x => x);
                     guild.Vaults[3] = guildVault.FindAll(info => info.GuildId == guild.GuildId && info.VaultId == 4).OrderBy(info => info.SlotId).ToDictionary(x => x.SlotId, x => x);
                     guild.Vaults[4] = guildVault.FindAll(info => info.GuildId == guild.GuildId && info.VaultId == 5).OrderBy(info => info.SlotId).ToDictionary(x => x.SlotId, x => x);
-                   
+
                     Guild.Guilds.Add(new Guild(guild));
 
                     List<Guild_member> members = guild.Members.Values.OrderByDescending(x => x.RankId).ToList();
@@ -1176,7 +1180,7 @@ namespace WorldServer
                             break;
                     }
 
-                    if(rank9count > 1)
+                    if (rank9count > 1)
                     {
                         Log.Info("LoadGuilds", guild.Name + "More then 1 guildleader found removeing all rank 9 players");
                         for (int x = 0; x < members.Count; x++)
@@ -1193,8 +1197,8 @@ namespace WorldServer
 
                         if (guild.Members.ContainsKey(guild.LeaderId))
                         {
-                            Guild_member mem; 
-                            guild.Members.TryGetValue(guild.LeaderId,out mem);
+                            Guild_member mem;
+                            guild.Members.TryGetValue(guild.LeaderId, out mem);
                             mem.RankId = 9;
                             Database.SaveObject(mem);
                         }
@@ -1204,11 +1208,11 @@ namespace WorldServer
 
 
 
-                        //checks for guild leader id player not found guildleader banned or guild leader inactive is so tryes to set a new guild leader if no guildleader can be found guild is set to inactive
+                    //checks for guild leader id player not found guildleader banned or guild leader inactive is so tryes to set a new guild leader if no guildleader can be found guild is set to inactive
 
-                        if (!guild.Members.ContainsKey(guild.LeaderId) || guild.Members[guild.LeaderId].RankId != 9 || Program.AcctMgr.GetAccountById(CharMgr.GetCharacter(guild.LeaderId, true).AccountId).Banned == 1 || Program.AcctMgr.GetAccountById(CharMgr.GetCharacter(guild.LeaderId, true).AccountId).GmLevel == -1 || CharMgr.GetCharacter(guild.LeaderId, true).Value.LastSeen + 2246400 < TCPManager.GetTimeStamp())
+                    if (!guild.Members.ContainsKey(guild.LeaderId) || guild.Members[guild.LeaderId].RankId != 9 || Program.AcctMgr.GetAccountById(CharMgr.GetCharacter(guild.LeaderId, true).AccountId).Banned == 1 || Program.AcctMgr.GetAccountById(CharMgr.GetCharacter(guild.LeaderId, true).AccountId).GmLevel == -1 || CharMgr.GetCharacter(guild.LeaderId, true).Value.LastSeen + 2246400 < TCPManager.GetTimeStamp())
                     {
-                      
+
 
                         bool newleaderfound = false;
 
@@ -1292,9 +1296,9 @@ namespace WorldServer
 
             return true;
         }
-#endregion
+        #endregion
 
-#region CharacterItems
+        #region CharacterItems
 
         public static Dictionary<uint, List<CharacterItem>> CharItems = new Dictionary<uint, List<CharacterItem>>();
 
@@ -1326,7 +1330,7 @@ namespace WorldServer
                     LoadItem(itm);
 
 
-           Log.Success("LoadItems", $"{myCount} inventory items {(Program.Config.PreloadAllCharacters ? "loaded" : "precached")}.");
+            Log.Success("LoadItems", $"{myCount} inventory items {(Program.Config.PreloadAllCharacters ? "loaded" : "precached")}.");
         }
 
         public static void CreateItem(CharacterItem item)
@@ -1347,52 +1351,68 @@ namespace WorldServer
 
         public static List<CharacterItem> GetItemsForCharacter(Character chara)
         {
-            lock (CharItems)
+            try
             {
-                if (CharItems.ContainsKey(chara.CharacterId))
-                    return CharItems[chara.CharacterId];
-            }
 
-            Log.Info("GetItemsForChar", "Loading items for CharacterId: "+chara.CharacterId);
-
-            List<CharacterItem> myItems = (List<CharacterItem>)Database.SelectObjects<CharacterItem>("CharacterId='" + chara.CharacterId + "'");
-
-            if (myItems != null && myItems.Count > 0)
-            {
                 lock (CharItems)
                 {
-                    if (!CharItems.ContainsKey(chara.CharacterId))
-                        CharItems.Add(chara.CharacterId, myItems);
-                    return CharItems[chara.CharacterId];
+                    if (CharItems.ContainsKey(chara.CharacterId))
+                        return CharItems[chara.CharacterId];
+                }
+
+                Log.Info("GetItemsForChar", "Loading items for CharacterId: " + chara.CharacterId);
+
+                List<CharacterItem> myItems = (List<CharacterItem>)Database.SelectObjects<CharacterItem>("CharacterId='" + chara.CharacterId + "'");
+
+                if (myItems != null && myItems.Count > 0)
+                {
+                    lock (CharItems)
+                    {
+                        if (!CharItems.ContainsKey(chara.CharacterId))
+                            CharItems.Add(chara.CharacterId, myItems);
+                        return CharItems[chara.CharacterId];
+                    }
+                }
+
+                List<CharacterInfo_item> Items = GetCharacterInfoItem(chara.CareerLine);
+
+                foreach (CharacterInfo_item Itm in Items)
+                {
+                    if (Itm == null)
+                        continue;
+
+                    _logger.Debug($"Adding item {Itm.Entry} to character {chara.Name}");
+
+                    CharacterItem Citm = new CharacterItem
+                    {
+                        Counts = Itm.Count,
+                        CharacterId = chara.CharacterId,
+                        Entry = Itm.Entry,
+                        ModelId = Itm.ModelId,
+                        SlotId = Itm.SlotId,
+                        PrimaryDye = 0,
+                        SecondaryDye = 0
+                    };
+                    CreateItem(Citm);
+                }
+
+                lock (CharItems)
+                {
+                    if (CharItems.ContainsKey(chara.CharacterId))
+                        return CharItems[chara.CharacterId];
+                    else
+                    {
+                        _logger.Warn($"Returning empty char item list for character {chara.Name}");
+                        return new List<CharacterItem>();
+                    }
                 }
             }
-
-            List<CharacterInfo_item> Items = GetCharacterInfoItem(chara.CareerLine);
-
-            foreach (CharacterInfo_item Itm in Items)
+            catch (Exception e)
             {
-                if (Itm == null)
-                    continue;
-
-                CharacterItem Citm = new CharacterItem
-                {
-                    Counts = Itm.Count,
-                    CharacterId = chara.CharacterId,
-                    Entry = Itm.Entry,
-                    ModelId = Itm.ModelId,
-                    SlotId = Itm.SlotId,
-                    PrimaryDye = 0,
-                    SecondaryDye = 0
-                };
-                CreateItem(Citm);
+                _logger.Debug($"Exception creating items for character {e.Message} {e.StackTrace}");
+                throw;
             }
 
-            lock (CharItems)
-            {
-                if (CharItems.ContainsKey(chara.CharacterId))
-                    return CharItems[chara.CharacterId];
-                return new List<CharacterItem>();
-            }
         }
 
         public static void SaveItems(uint characterId, List<Item> oldItems)
@@ -1451,9 +1471,9 @@ namespace WorldServer
             }
         }
 
-#endregion
+        #endregion
 
-#region CharacterMail
+        #region CharacterMail
         private static int _maxMailGuid = 1;
 
         public static int GenerateMailGuid()
@@ -1465,7 +1485,7 @@ namespace WorldServer
         public static void LoadMailCount()
         {
             if (Program.Config.PreloadAllCharacters)
-            { 
+            {
                 Log.Debug("WorldMgr", "Loading Character_mails...");
 
                 List<Character_mail> mails = (List<Character_mail>)Database.SelectAllObjects<Character_mail>();
@@ -1542,9 +1562,9 @@ namespace WorldServer
 
             chara.Mails.Clear();
         }
-#endregion
+        #endregion
 
-#region Support Tickets
+        #region Support Tickets
 
         public static List<Bug_report> _report = new List<Bug_report>();
 
@@ -1569,7 +1589,7 @@ namespace WorldServer
             return ticket;
         }
 
-#endregion
+        #endregion
 
         public static void RemoveQuestsFromCharacter(Character chara)
         {
