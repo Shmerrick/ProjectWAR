@@ -188,6 +188,10 @@ namespace WorldServer.World.Battlefronts.Bounty
         }
 
 
+        public float CalculateModificationValue(float targetBaseBounty, float killerBaseBounty)
+        {
+            return (float)Math.Log((float)targetBaseBounty / ((float)killerBaseBounty) + 1, 2);
+        }
     }
 
 

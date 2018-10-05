@@ -1576,7 +1576,7 @@ namespace WorldServer
 
 
             byte[] buffer = Out.ToArray();
-            _logger.Debug("WorldMgr : " + lockStr);
+            _logger.Trace("WorldMgr : " + lockStr);
 
             lock (Player._Players)
             {

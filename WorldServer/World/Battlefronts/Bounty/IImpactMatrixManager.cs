@@ -13,5 +13,6 @@ namespace WorldServer.World.Battlefronts.Bounty
         int GetTotalImpact(uint targetCharacterId);
         PlayerImpact UpdateMatrix(uint targetCharacterId, PlayerImpact playerImpact);
         void ClearImpacts(uint targetCharacterId);
+        float CalculateModificationValue(float targetBaseBounty, float killerBaseBounty);
     }
 }

@@ -106,7 +106,7 @@ namespace WorldServer.Managers.Commands
             if (target != null)
             {
                 var killImpacts = activeBattleFrontStatus.ImpactMatrixManagerInstance.GetKillImpacts(target.CharacterId);
-                if (killImpacts == null)
+                if ((killImpacts == null) || (killImpacts.Count == 0))
                 {
                     plr.SendClientMessage($"{target.Name} has no impacts");
                 }

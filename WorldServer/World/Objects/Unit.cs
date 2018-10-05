@@ -540,7 +540,10 @@ namespace WorldServer
 
             if (this is Player)
             {
-                modificationValue = (float)Math.Log((float)(this as Player).BaseBountyValue / ((float)caster.BaseBountyValue) + 1, 2);
+
+                modificationValue = (float) this.Region?.Campaign?.GetActiveBattleFrontStatus().ImpactMatrixManagerInstance
+                    .CalculateModificationValue((float)(this as Player).BaseBountyValue, (float)caster.BaseBountyValue);
+
             }
 
             

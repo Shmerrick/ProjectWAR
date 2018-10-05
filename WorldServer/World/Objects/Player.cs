@@ -4033,7 +4033,7 @@ namespace WorldServer
 
             // Add bounty to the death blow killer  
             ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(this.CharacterId, definition.ContributionValue);
-
+            this.SendClientMessage($"[Contrib]:+{definition.ContributionValue} {definition.ContributionDescription}");
             RewardLogger.Info($"Update player Bounty character Id : {this.CharacterId} Contribution Def : {contributionDefinitionId}");
         }
 
@@ -4269,6 +4269,9 @@ namespace WorldServer
         private bool CheckKillFarm(Player killer)
         {
             int killerAccountId = killer.Client._Account.AccountId;
+
+            if (killer.Client._Account.GmLevel > 1)
+                return false;
 
             if (_lastKillerAccountId == killerAccountId)
             {

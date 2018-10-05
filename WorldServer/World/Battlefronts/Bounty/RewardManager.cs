@@ -1,15 +1,11 @@
-﻿using System;
+﻿using FrameWork;
+using GameData;
+using NLog;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common;
-using FrameWork;
-using GameData;
-using NLog;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.NewDawn.Rewards;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
@@ -28,7 +24,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         public IStaticWrapper StaticWrapper { get; }
         public List<RewardPlayerKill> PlayerKillRewardBand { get; }
 
-        public RewardManager(IBountyManager bountyManager, IContributionManager contributionManager, IImpactMatrixManager impactMatrixManager, IStaticWrapper staticWrapper, List<RewardPlayerKill>  playerKillRewardBand)
+        public RewardManager(IBountyManager bountyManager, IContributionManager contributionManager, IImpactMatrixManager impactMatrixManager, IStaticWrapper staticWrapper, List<RewardPlayerKill> playerKillRewardBand)
         {
             BountyManager = bountyManager;
             ContributionManager = contributionManager;
@@ -56,19 +52,24 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// Calculate the base reward for all impacters upon the target.
         /// </summary>
         /// <returns>List of impacter characterId's and their reward.</returns>
-        public ConcurrentDictionary<uint, Reward> GenerateBaseRewardForKill(uint targetCharacterId, int randomNumber, float aaoBonus)
+        public ConcurrentDictionary<uint, Reward> GenerateBaseRewardForKill(uint targetCharacterId, int randomNumber, Dictionary<uint, Player> playerDictionary)
         {
             var characterBounty = BountyManager.GetBounty(targetCharacterId);
             var contributionValue = ContributionManager.GetContributionValue(targetCharacterId);
             var impacts = ImpactMatrixManager.GetKillImpacts(targetCharacterId);
             var totalImpact = ImpactMatrixManager.GetTotalImpact(targetCharacterId);
 
-            RewardLogger.Info($"Calculating Reward for impacting {targetCharacterId} (the target)");
+            RewardLogger.Info($"Calculating Reward for killing the target {playerDictionary[targetCharacterId].Name} ({playerDictionary[targetCharacterId].CharacterId})");
             RewardLogger.Debug($"Target Character Bounty : {characterBounty.ToString()}");
             RewardLogger.Debug($"Target Character Contribution : {contributionValue}");
-            RewardLogger.Debug($"Impacts upon Target Character : {String.Join(",", impacts)}");
+            RewardLogger.Debug($"Impacts upon victim :");
+            foreach (var impact in impacts)
+            {
+                RewardLogger.Debug($"++{impact.ToString()}");
+            }
+            
 
-     
+
             if (totalImpact == 0)
                 throw new BountyException("Total Impact == 0");
 
@@ -76,7 +77,6 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             // return the bounty of the killed player (the base bounty + their contribution)
             var modifiedBountyValue = CalculateModifiedBountyValue(characterBounty, contributionValue);
-            RewardLogger.Debug($"Target Modified Bounty Value : {modifiedBountyValue}");
 
             foreach (var playerImpact in impacts)
             {
@@ -97,18 +97,23 @@ namespace WorldServer.World.Battlefronts.Bounty
                 }
                 var reward = new Reward
                 {
-                    Description = $"Player {playerImpact.CharacterId} Kills {targetCharacterId} ",
-                    BaseInf = (int) (BOUNTY_BASE_INF_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue * aaoBonus) + playerKillReward.BaseInf,
-                    BaseXP = (int) (BOUNTY_BASE_XP_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue * aaoBonus) + playerKillReward.BaseXP,
-                    BaseRP = (int) (BOUNTY_BASE_RP_MODIFIER * modifiedBountyValue * impactFraction * playerImpact.ModificationValue * aaoBonus) + playerKillReward.BaseRP,
+                    Description = $"Player {playerDictionary[playerImpact.CharacterId].Name} ({playerDictionary[playerImpact.CharacterId].CharacterId}) impacts {playerDictionary[targetCharacterId].Name} ({playerDictionary[targetCharacterId].CharacterId}) ",
+                    BaseInf = (int)(BOUNTY_BASE_INF_MODIFIER * modifiedBountyValue * impactFraction ) + playerKillReward.BaseInf,
+                    BaseXP = (int)(BOUNTY_BASE_XP_MODIFIER * modifiedBountyValue * impactFraction ) + playerKillReward.BaseXP,
+                    BaseRP = (int)(BOUNTY_BASE_RP_MODIFIER * modifiedBountyValue * impactFraction ) + playerKillReward.BaseRP,
                     InsigniaCount = insigniaCount,
                     InsigniaItemId = insigniaItemId,
-                    BaseMoney = (int) (playerKillReward.Money * impactFraction),
+                    BaseMoney = (int)(playerKillReward.Money * impactFraction),
                     RenownBand = renownBand
 
                 };
-                rewardDictionary.TryAdd(playerImpact.CharacterId, reward);
-                RewardLogger.Debug($"Reward : {reward.ToString()} applied to {playerImpact.CharacterId}");
+
+                if (!rewardDictionary.TryAdd(playerImpact.CharacterId, reward))
+                {
+                    RewardLogger.Error($"Could not add reward to rewardDictionary");
+                }
+
+                RewardLogger.Debug($"Reward : [{reward.ToString()}] awarded to {playerDictionary[playerImpact.CharacterId].Name} ({playerDictionary[playerImpact.CharacterId].CharacterId})");
             }
 
             return rewardDictionary;
@@ -126,12 +131,10 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         public void DistributePlayerKillRewards(Player victim, Player killer, float aaoBonus, ushort influenceId, Dictionary<uint, Player> playerDictionary)
         {
+            RewardLogger.Debug($"*********** {victim.Name} killed by {killer.Name}. AAO = {aaoBonus} *******************");
             // TODO : Ensure the player is actually in the active battlefront.
             // List of players involved in the kill
-            var playersToReward = GenerateBaseRewardForKill(
-                victim.CharacterId,
-                StaticRandom.Instance.Next(1, 100),
-                aaoBonus);
+            var playersToReward = GenerateBaseRewardForKill(victim.CharacterId, StaticRandom.Instance.Next(1, 100), playerDictionary);
 
             foreach (var playerReward in playersToReward)
             {
@@ -140,10 +143,17 @@ namespace WorldServer.World.Battlefronts.Bounty
                 {
                     var playerToBeRewarded = playerDictionary[playerReward.Key];
 
+                    RewardLogger.Info($"Assessing rewards for {playerDictionary[playerToBeRewarded.CharacterId].Name}");
+
                     // Assign non-contrib/insignia rewards to player involved in the death of the victim
                     if (playerToBeRewarded.PriorityGroup != null)
                     {
-                        DistributeGroupSharedRewards(playerToBeRewarded.PriorityGroup.Members, playerReward.Value, influenceId, $"Assisting {killer.Name} in killing {victim.Name}");
+                        DistributeGroupSharedRewards(
+                             victim,
+                            playerToBeRewarded.PriorityGroup.Members, 
+                            playerReward.Value, 
+                            influenceId, 
+                            $"Assisting {killer.Name} in killing {victim.Name}");
                     }
                     else  // No group
                     {
@@ -181,7 +191,6 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             if (killer.AAOBonus > 0)
             {
-                killer.SendClientMessage($"CONTRIB:Giving DB rewards under AAO to {killer.Name}");
                 // Add contribution for this kill under AAO to the killer.
                 killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW_UNDER_AAO);
             }
@@ -189,14 +198,12 @@ namespace WorldServer.World.Battlefronts.Bounty
             // If the deathblow comes while the target is near a BO
             if (killer.CurrentObjectiveFlag != null)
             {
-                killer.SendClientMessage($"CONTRIB:Giving PLAYER_KILL_ON_BO to {killer.Name}");
-
                 killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PLAYER_KILL_ON_BO);
             }
         }
 
 
-       
+
 
         /// <summary>
         /// Distribute rewards for a group involved in a player kill
@@ -204,17 +211,18 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <param name="groupMembers"></param>
         /// <param name="reward"></param>
         /// <param name="influenceId"></param>
-        private void DistributeGroupSharedRewards(List<Player> groupMembers, Reward reward, ushort influenceId, string description)
+        private void DistributeGroupSharedRewards(Player victim, List<Player> groupMembers, Reward reward, ushort influenceId, string description)
         {
             float shares = groupMembers.Count;
 
             foreach (var groupMember in groupMembers)
             {
-                groupMember.SendClientMessage($"CONTRIB:Giving assist rewards to {groupMember.Name}");
-                RewardLogger.Info($"Group Member {groupMember.Name} ({groupMember.CharacterId}) group assist reward");
-
-                DistributeBaseRewardsForPlayerKill(reward, groupMember, (1f / shares), influenceId, description);
-
+                // As we are giving rewards for groupmembers, these rewards should be modified by the differences between their basebounty level and that of the victims
+                var modificationValue =
+                    ImpactMatrixManager.CalculateModificationValue(victim.BaseBountyValue, groupMember.BaseBountyValue);
+                
+                RewardLogger.Info($"Awarding group member {groupMember.Name} ({groupMember.CharacterId}) group assist reward. ModificationValue= {modificationValue}");
+                DistributeBaseRewardsForPlayerKill(reward, groupMember, (1f / shares)* modificationValue, influenceId, description);
                 groupMember.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PARTY_KILL_ASSIST);
             }
         }
@@ -247,7 +255,6 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             if (killer.AAOBonus > 0)
             {
-                killer.SendClientMessage($"CONTRIB:Giving assist rewards under AAO to {killer.Name}");
                 // Add contribution for this kill under AAO to the killer.
                 killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PLAYER_KILL_ASSIST_UNDER_AAO);
             }
@@ -255,19 +262,20 @@ namespace WorldServer.World.Battlefronts.Bounty
             // If the deathblow comes while the target is near a BO
             if (killer.CurrentObjectiveFlag != null)
             {
-                killer.SendClientMessage($"CONTRIB:Giving PLAYER_KILL_ON_BO to {killer.Name}");
                 killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PLAYER_KILL_ON_BO);
             }
         }
 
         private void DistributeBaseRewardsForPlayerKill(Reward reward, Player player, float shareRewardScale, ushort influenceId, string description)
         {
+
             player.AddXp((uint)((uint)reward.BaseXP * shareRewardScale), true, true);
-            player.AddRenown((uint)((uint)reward.BaseRP * shareRewardScale), true, RewardType.Kill, description);
+            player.AddRenown((uint)((uint)reward.BaseRP * shareRewardScale), true, RewardType.None, description);
             player.AddInfluence((ushort)influenceId, (ushort)((ushort)reward.BaseInf * shareRewardScale));
             player.AddMoney((uint)((uint)reward.BaseMoney * shareRewardScale));
 
-            RewardLogger.Debug($"PlayerKill Base Reward Share Scale : {shareRewardScale} " +
+            RewardLogger.Debug($"PlayerKill Base Reward (player:{player.Name} ({player.CharacterId})) ## {description} ## " +
+                               $"Share Scale : {shareRewardScale} " +
                                $"XP : {reward.BaseXP}*{shareRewardScale}={reward.BaseXP * shareRewardScale} " +
                                $"RP : {reward.BaseRP}*{shareRewardScale}={reward.BaseRP * shareRewardScale} " +
                                $"INF : {reward.BaseInf}*{shareRewardScale}={reward.BaseInf * shareRewardScale} ");
@@ -288,7 +296,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         public override string ToString()
         {
-            return $"Reward {RenownBand}. {InsigniaCount}x{InsigniaItemId}, {BaseMoney}, {BaseRP}, {BaseXP}, {BaseInf} for {Description}";
+            return $"Reward RRBand : {RenownBand}. {InsigniaCount}x{InsigniaItemId}, Money:{BaseMoney}, RP:{BaseRP}, XP:{BaseXP}, Inf:{BaseInf} for {Description}";
         }
 
         public static int DetermineRenownBand(int playerRenownLevel)
@@ -304,5 +312,5 @@ namespace WorldServer.World.Battlefronts.Bounty
         }
     }
 
-    
+
 }

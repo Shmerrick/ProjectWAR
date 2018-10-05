@@ -66,7 +66,7 @@ namespace WorldServer.Test
                 });
 
             // Pass in random number to ensure we effect as expected. StaticRandom.Instance.Next(1, 100)
-            var result = rm.GenerateBaseRewardForKill(123, 99, 1);
+            var result = rm.GenerateBaseRewardForKill(123, 99, new Dictionary<uint, Player>());
 
             Assert.IsTrue(result.Count == 3);
             Assert.IsTrue(result[999].RenownBand == 30);
@@ -124,7 +124,7 @@ namespace WorldServer.Test
                 });
 
             // Pass in random number to ensure we effect as expected. StaticRandom.Instance.Next(1, 100)
-            var result = rm.GenerateBaseRewardForKill(123, 99, 1);
+            var result = rm.GenerateBaseRewardForKill(123, 99, new Dictionary<uint, Player>());
 
             Assert.IsTrue(result.Count == 2);
             Assert.IsTrue(result[999].RenownBand == 1);
