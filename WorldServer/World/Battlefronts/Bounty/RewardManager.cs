@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common;
 using FrameWork;
+using GameData;
 using NLog;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.NewDawn.Rewards;
@@ -121,6 +123,156 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             return characterBounty.BaseBountyValue + contributionValue;
         }
+
+        public void DistributePlayerKillRewards(Player victim, Player killer, float aaoBonus, ushort influenceId, Dictionary<uint, Player> playerDictionary)
+        {
+            // TODO : Ensure the player is actually in the active battlefront.
+            // List of players involved in the kill
+            var playersToReward = GenerateBaseRewardForKill(
+                victim.CharacterId,
+                StaticRandom.Instance.Next(1, 100),
+                aaoBonus);
+
+            foreach (var playerReward in playersToReward)
+            {
+                // reward key is the characterId
+                if (playerDictionary.ContainsKey(playerReward.Key))
+                {
+                    var playerToBeRewarded = playerDictionary[playerReward.Key];
+
+                    // Assign non-contrib/insignia rewards to player involved in the death of the victim
+                    if (playerToBeRewarded.PriorityGroup != null)
+                    {
+                        DistributeGroupSharedRewards(playerToBeRewarded.PriorityGroup.Members, playerReward.Value, influenceId, $"Assisting {killer.Name} in killing {victim.Name}");
+                    }
+                    else  // No group
+                    {
+                        DistributeBaseRewardsForPlayerKill(playerReward.Value, playerToBeRewarded, 1, influenceId, $"Deathblow to {victim.Name}");
+                    }
+
+                    // If this player is the killer (ie Deathblow), give them a different contribution.
+                    if (playerReward.Key == killer.CharacterId)
+                    {
+                        // Give the insignia and contrib rewards to the killer.
+                        DistributeDeathBlowRewardsForPlayerKill(playerReward.Value, killer, victim.Name);
+                    }
+                    else // An assist
+                    {
+                        DistributKillAssistRewardsForPlayerKill(playerReward.Value, playerToBeRewarded, victim.Name);
+                    }
+                }
+
+            }
+
+        }
+
+        /// <summary>
+        /// The killer is the player that performed the deathblow. 
+        /// </summary>
+        /// <param name="reward"></param>
+        /// <param name="killer"></param>
+        private void DistributeDeathBlowRewardsForPlayerKill(Reward reward, Player killer, string victimName)
+        {
+
+            RewardLogger.Info($"Death Blow rewards given to {killer.Name} ({killer.CharacterId})");
+            DistributeInsigniaRewardForPlayerKill(reward, killer, victimName);
+
+            killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+
+            if (killer.AAOBonus > 0)
+            {
+                killer.SendClientMessage($"CONTRIB:Giving DB rewards under AAO to {killer.Name}");
+                // Add contribution for this kill under AAO to the killer.
+                killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW_UNDER_AAO);
+            }
+
+            // If the deathblow comes while the target is near a BO
+            if (killer.CurrentObjectiveFlag != null)
+            {
+                killer.SendClientMessage($"CONTRIB:Giving PLAYER_KILL_ON_BO to {killer.Name}");
+
+                killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PLAYER_KILL_ON_BO);
+            }
+        }
+
+
+       
+
+        /// <summary>
+        /// Distribute rewards for a group involved in a player kill
+        /// </summary>
+        /// <param name="groupMembers"></param>
+        /// <param name="reward"></param>
+        /// <param name="influenceId"></param>
+        private void DistributeGroupSharedRewards(List<Player> groupMembers, Reward reward, ushort influenceId, string description)
+        {
+            float shares = groupMembers.Count;
+
+            foreach (var groupMember in groupMembers)
+            {
+                groupMember.SendClientMessage($"CONTRIB:Giving assist rewards to {groupMember.Name}");
+                RewardLogger.Info($"Group Member {groupMember.Name} ({groupMember.CharacterId}) group assist reward");
+
+                DistributeBaseRewardsForPlayerKill(reward, groupMember, (1f / shares), influenceId, description);
+
+                groupMember.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PARTY_KILL_ASSIST);
+            }
+        }
+
+        private void DistributeInsigniaRewardForPlayerKill(Reward reward, Player killer, string victimName)
+        {
+            if (reward.InsigniaCount > 0)
+            {
+                var insigniaName = ItemService.GetItem_Info((uint)reward.InsigniaItemId).Name;
+                killer.ItmInterface.CreateItem(ItemService.GetItem_Info((uint)reward.InsigniaItemId), (ushort)reward.InsigniaCount);
+                killer.SendClientMessage($"You have been awarded {reward.InsigniaCount} {insigniaName} for killing {victimName}");
+                RewardLogger.Debug($"{killer.Name} has been awarded {reward.InsigniaCount} {insigniaName} for killing {victimName}");
+            }
+        }
+
+        private void DistributKillAssistRewardsForPlayerKill(Reward reward, Player killer, string victimName)
+        {
+            if (reward.InsigniaCount > 0)
+            {
+                // 15% chance of an assist giving a WC
+                if (StaticRandom.Instance.Next(100) < 15)
+                {
+                    var insigniaName = ItemService.GetItem_Info((uint)reward.InsigniaItemId).Name;
+                    killer.ItmInterface.CreateItem(ItemService.GetItem_Info((uint)reward.InsigniaItemId), (ushort)reward.InsigniaCount);
+                    killer.SendClientMessage($"You have been awarded {reward.InsigniaCount} {insigniaName} for assisting in killing {victimName}");
+                    RewardLogger.Debug($"{killer.Name} has been awarded {reward.InsigniaCount} {insigniaName} for assisting in killing {victimName}");
+                }
+            }
+
+
+            if (killer.AAOBonus > 0)
+            {
+                killer.SendClientMessage($"CONTRIB:Giving assist rewards under AAO to {killer.Name}");
+                // Add contribution for this kill under AAO to the killer.
+                killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PLAYER_KILL_ASSIST_UNDER_AAO);
+            }
+
+            // If the deathblow comes while the target is near a BO
+            if (killer.CurrentObjectiveFlag != null)
+            {
+                killer.SendClientMessage($"CONTRIB:Giving PLAYER_KILL_ON_BO to {killer.Name}");
+                killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PLAYER_KILL_ON_BO);
+            }
+        }
+
+        private void DistributeBaseRewardsForPlayerKill(Reward reward, Player player, float shareRewardScale, ushort influenceId, string description)
+        {
+            player.AddXp((uint)((uint)reward.BaseXP * shareRewardScale), true, true);
+            player.AddRenown((uint)((uint)reward.BaseRP * shareRewardScale), true, RewardType.Kill, description);
+            player.AddInfluence((ushort)influenceId, (ushort)((ushort)reward.BaseInf * shareRewardScale));
+            player.AddMoney((uint)((uint)reward.BaseMoney * shareRewardScale));
+
+            RewardLogger.Debug($"PlayerKill Base Reward Share Scale : {shareRewardScale} " +
+                               $"XP : {reward.BaseXP}*{shareRewardScale}={reward.BaseXP * shareRewardScale} " +
+                               $"RP : {reward.BaseRP}*{shareRewardScale}={reward.BaseRP * shareRewardScale} " +
+                               $"INF : {reward.BaseInf}*{shareRewardScale}={reward.BaseInf * shareRewardScale} ");
+        }
+
     }
 
     public class Reward
