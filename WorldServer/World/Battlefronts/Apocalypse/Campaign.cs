@@ -123,11 +123,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             _EvtInterface.AddEvent(UpdateBOs, 5000, 0);
             // Tell each player the RVR status
-            _EvtInterface.AddEvent(UpdateRVRStatus, 60000, 0);
+            _EvtInterface.AddEvent(UpdateRVRStatus, 30000, 0);
             // Recalculate AAO
-            _EvtInterface.AddEvent(UpdateAAOBuffs, 60000, 0);
-            // Recalculate AAO
-            _EvtInterface.AddEvent(RecordMetrics, 30000, 0);
+            _EvtInterface.AddEvent(UpdateAAOBuffs, 1000, 0);
+            // record metrics
+            _EvtInterface.AddEvent(RecordMetrics, 15000, 0);
 
             //if (Tier == 4)
             //{
