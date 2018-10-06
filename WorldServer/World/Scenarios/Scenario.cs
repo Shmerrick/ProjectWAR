@@ -885,7 +885,7 @@ namespace WorldServer.Scenarios
         public void IncrementPlayers(Player player)
         {
             // If AAO is not zero, make it zero. (AAO can be -20 to +20)
-            if (Math.Abs(player.AAOBonus) > 0.01f)
+            if (Math.Abs(player.AAOBonus) != 0.00f)
             {
                 player.AAOBonus = 0.0f;
             }

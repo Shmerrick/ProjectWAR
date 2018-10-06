@@ -3111,14 +3111,13 @@ namespace WorldServer
                 renown *= (uint)Program.Config.RenownRate;
 
 			// apply aao bonus
-			if (this.ScnInterface == null
-				|| this.ScnInterface.Scenario == null
-				|| type == RewardType.None
-				|| type == RewardType.Kill
-				|| type == RewardType.Assist)
-				renown = Convert.ToUInt32(Math.Round((1f + this.AAOBonus) * renown, 0));
+            if ((ScnInterface == null || ScnInterface.Scenario == null)
+                && (type == RewardType.None || type == RewardType.Kill || type == RewardType.Assist))
+            {
+                renown = Convert.ToUInt32(Math.Round((1f + AAOBonus) * renown, 0));
+            }
 			
-			RewardLogger.Trace($"{renown} RP awarded to {this.Name} for {rewardString} ");
+			RewardLogger.Trace($"{renown} RP awarded to {Name} for {rewardString} ");
             InternalAddRenown(renown, shouldPool, type, rewardString);
         }
 
