@@ -326,7 +326,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 if (!status.Locked)
                 {
                     // Randomly let players know the population
-                    if (StaticRandom.Instance.Next(100) > POPULATION_BROADCAST_CHANCE)
+                    if (StaticRandom.Instance.Next(100) <= POPULATION_BROADCAST_CHANCE)
                     {
                         foreach (var player in allPlayersInZone)
                         {
