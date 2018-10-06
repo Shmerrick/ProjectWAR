@@ -58,6 +58,8 @@ namespace WorldServer
                     Plr.Info.FirstConnect = false;
                     if (!Plr.IsBanned)
                     {
+                        if (Intros.Count == 0)
+                            return;
                         PacketInfo Packet = Intros[Plr.Info.Career];
                         PacketOut Out = new PacketOut(Packet.Opcode);
                         Out.Write(Packet.Data, 3, Packet.Data.Length - 3);

@@ -73,6 +73,7 @@
     <Compile Include="CalculateObjectiveRewardScaleTest.cs" />
     <Compile Include="RewardSelectorTest.cs" />
     <Compile Include="LootBagTypeDefinitionTest.cs" />
+    <Compile Include="HonorCalculationTest.cs" />
     <Compile Include="RewardTests.cs" />
     <Compile Include="ContributionTests.cs" />
     <Compile Include="UpperTierBattlefrontManagerTest.cs" />
