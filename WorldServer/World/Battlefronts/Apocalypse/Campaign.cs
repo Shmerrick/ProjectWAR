@@ -31,7 +31,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     /// </summary>
     public class Campaign
     {
-        public static int POPULATION_BROADCAST_CHANCE = 90;
+        public static int POPULATION_BROADCAST_CHANCE = 1;
         public static IObjectDatabase Database = null;
         static readonly object LockObject = new object();
 
