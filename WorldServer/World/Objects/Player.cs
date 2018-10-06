@@ -680,11 +680,14 @@ namespace WorldServer
 
             if (GmLevel > 1)
             {
-
+                
                 //if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
-                if (!Utils.HasFlag(GmLevel, (int)EGmLevel.DatabaseDev) && Utils.HasFlag(GmLevel, (int)EGmLevel.AnyGM) && !GmMgr.GmList.Contains(this))
+                if (GmLevel >= (int) EGmLevel.AnyGM && !GmMgr.GmList.Contains(this))
+                {
+                    SendClientMessage("You have been added to the GM Account List");
                     GmMgr.NotifyGMOnline(this);
-
+                }
+                
             }
 
             // This is Terror debuff - with this you cannot be ressurected
@@ -745,13 +748,13 @@ namespace WorldServer
 					SendRenown();
 					SendStats();
 
-					if (GmLevel >1)
-					{
-						//if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
-						if (!Utils.HasFlag(GmLevel, (int)EGmLevel.DatabaseDev) && Utils.HasFlag(GmLevel, (int)EGmLevel.AnyGM) && !GmMgr.GmList.Contains(this))
-							GmMgr.NotifyGMOnline(this);
-
-					}
+				    
+				    //if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
+				    if (GmLevel >= (int) EGmLevel.AnyGM && !GmMgr.GmList.Contains(this))
+				    {
+				        SendClientMessage("You have been added to the GM Account List");
+                        GmMgr.NotifyGMOnline(this);
+				    }
 				}
 				//if gm toggled invincibility and switched zone then it should still be active.
 				if (IsInvulnerable && GmLevel > 1)
@@ -914,7 +917,7 @@ namespace WorldServer
                 Dispose();
                 return;
             }
-#if !DEBUG
+
             if (LastKeepAliveTime != 0 && LastKeepAliveTime + PING_TIMEOUT < tick)
             {
                 Client.Disconnect("Ping timeout");
@@ -935,7 +938,6 @@ namespace WorldServer
                 Dispose();
                 return;
             }
-#endif
 
             UpdateMorale(tick);
 
