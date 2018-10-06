@@ -31,7 +31,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     /// </summary>
     public class Campaign
     {
-        public static int POPULATION_BROADCAST_CHANCE = 90;
+        public static int POPULATION_BROADCAST_CHANCE = 1;
         public static IObjectDatabase Database = null;
         static readonly object LockObject = new object();
 
@@ -126,9 +126,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             _EvtInterface.AddEvent(UpdateBOs, 5000, 0);
             // Tell each player the RVR status
-            _EvtInterface.AddEvent(UpdateRVRStatus, 30000, 0);
+            _EvtInterface.AddEvent(UpdateRVRStatus, 60000, 0);
             // Recalculate AAO
-            _EvtInterface.AddEvent(UpdateAAOBuffs, 1000, 0);
+            _EvtInterface.AddEvent(UpdateAAOBuffs, 10000, 0);
             // record metrics
             _EvtInterface.AddEvent(RecordMetrics, 15000, 0);
 
@@ -341,7 +341,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 if (!status.Locked)
                 {
                     // Randomly let players know the population
-                    if (StaticRandom.Instance.Next(100) > POPULATION_BROADCAST_CHANCE)
+                    if (StaticRandom.Instance.Next(100) <= POPULATION_BROADCAST_CHANCE)
                     {
                         foreach (var player in allPlayersInZone)
                         {
