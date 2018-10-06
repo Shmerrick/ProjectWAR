@@ -3,6 +3,7 @@ using FrameWork;
 using GameData;
 using NLog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -88,7 +89,7 @@ namespace WorldServer
         #region CharacterInfo
 
         public static Dictionary<byte, CharacterInfo> CharacterInfos = new Dictionary<byte, CharacterInfo>();
-        public static Dictionary<byte, List<CharacterInfo_item>> CharacterStartingItems = new Dictionary<byte, List<CharacterInfo_item>>();
+        public static ConcurrentDictionary<byte, List<CharacterInfo_item>> CharacterStartingItems = new ConcurrentDictionary<byte, List<CharacterInfo_item>>();
         public static Dictionary<byte, List<CharacterInfoRenown>> RenownAbilityInfo = new Dictionary<byte, List<CharacterInfoRenown>>();
         public static Dictionary<byte, List<CharacterInfo_stats>> CharacterBaseStats = new Dictionary<byte, List<CharacterInfo_stats>>();
         public static Dictionary<byte, List<PetStatOverride>> PetOverrideStats = new Dictionary<byte, List<PetStatOverride>>();
@@ -111,17 +112,30 @@ namespace WorldServer
         [LoadingFunction(true)]
         public static void LoadDefaultCharacterItems()
         {
-            IList<CharacterInfo_item> chars = WorldMgr.Database.SelectAllObjects<CharacterInfo_item>();
+            IList<CharacterInfo_item> referenceListStartingItems = WorldMgr.Database.SelectAllObjects<CharacterInfo_item>();
 
-            if (chars != null)
-                foreach (CharacterInfo_item info in chars)
-                    if (!CharacterStartingItems.ContainsKey(info.CareerLine))
-                    {
-                        List<CharacterInfo_item> items = new List<CharacterInfo_item>(1);
-                        items.Add(info);
-                        CharacterStartingItems.Add(info.CareerLine, items);
-                    }
-                    else CharacterStartingItems[info.CareerLine].Add(info);
+
+            if (referenceListStartingItems != null)
+            {
+                foreach (CharacterInfo_item item in referenceListStartingItems)
+                {
+                    CharacterStartingItems.AddOrUpdate(
+                        item.CareerLine, new List<CharacterInfo_item>{item}, 
+                        (k, v) =>
+                        {
+                            v.Add(item);
+                            return v;
+                        });
+                }
+            }
+
+            //if (!CharacterStartingItems.ContainsKey(info.CareerLine))
+            //{
+            //    List<CharacterInfo_item> items = new List<CharacterInfo_item>(1);
+            //    items.Add(info);
+            //    CharacterStartingItems.Add(info.CareerLine, items);
+            //}
+            //else CharacterStartingItems[info.CareerLine].Add(info);
 
             Log.Success("CharacterMgr", "Loaded " + CharacterStartingItems.Count + " CharacterInfo_Item");
         }
@@ -285,7 +299,7 @@ namespace WorldServer
             if (!CharacterStartingItems.TryGetValue(careerLine, out items))
             {
                 items = new List<CharacterInfo_item>();
-                CharacterStartingItems.Add(careerLine, items);
+                CharacterStartingItems.TryAdd(careerLine, items);
             }
             return items;
         }
@@ -1337,6 +1351,8 @@ namespace WorldServer
         {
             LoadItem(item);
             Database.AddObject(item);
+            Database.ForceSave();
+
         }
         public static void LoadItem(CharacterItem charItem)
         {
