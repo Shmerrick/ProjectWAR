@@ -110,9 +110,12 @@ namespace WorldServer.Managers.Commands
                 {
                     plr.SendClientMessage($"{target.Name} has no impacts");
                 }
-                foreach (var impact in killImpacts)
+                else
                 {
-                    plr.SendClientMessage($"{target.Name} {impact.ToString()}");
+                    foreach (var impact in killImpacts)
+                    {
+                        plr.SendClientMessage($"{target.Name} {impact.ToString()}");
+                    }
                 }
             }
             return true;

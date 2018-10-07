@@ -32,7 +32,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     public class Campaign
     {
         public static int POPULATION_BROADCAST_CHANCE = 1;
-        public static IObjectDatabase Database = null;
         static readonly object LockObject = new object();
 
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
@@ -825,7 +824,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     // Update the Honor Points of the Contributing Players
                     player.Info.HonorPoints += (ushort)contributingPlayer.Value;
-                    Database.SaveObject(player.Info);
+                    WorldMgr.Database.SaveObject(player.Info);
 
 
                     if (player.Realm == lockingRealm)

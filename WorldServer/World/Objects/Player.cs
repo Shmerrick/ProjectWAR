@@ -20,6 +20,7 @@ using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.World.Objects.PublicQuests;
 using BattleFrontStatus = WorldServer.World.Battlefronts.Apocalypse.BattleFrontStatus;
+using Exception = System.Exception;
 
 namespace WorldServer
 {
@@ -849,8 +850,9 @@ namespace WorldServer
                 //Log.info(Name, "EndInit: Oid " + Oid);
                 _initialized = true;
             }
-            catch
+            catch (Exception ex)
             {
+               _logger.Error($"Could not initialise player : {this.Name} {ex.Message} {ex.StackTrace}");
                 // init failed!
                 _initialized = false;
             }
