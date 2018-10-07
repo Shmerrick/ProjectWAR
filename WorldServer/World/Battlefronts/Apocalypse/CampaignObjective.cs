@@ -1270,7 +1270,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				        foreach (var closePlayer in _closePlayers)
 				        {
 				            activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte)ContributionDefinitions.BO_TAKE_SMALL_TICK);
-				            contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.BO_TAKE_SMALL_TICK);
+				            contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.BO_TAKE_SMALL_TICK);
 				            activeBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(closePlayer.CharacterId, contributionDefinition.ContributionValue);
                         }
                     }
@@ -1283,14 +1283,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				        foreach (var closePlayer in _closePlayers)
 				        {
 				            BattleFront.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte) ContributionDefinitions.BO_TAKE_BIG_TICK);
-				            contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
+				            contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
 				            activeBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(closePlayer.CharacterId, contributionDefinition.ContributionValue);
 
                             // is this player the group leader?
                             if (closePlayer.PriorityGroup?.GetLeader() == closePlayer)
 				            {
 				                activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte) ContributionDefinitions.GROUP_LEADER_BO_BIG_TICK);
-				                contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.GROUP_LEADER_BO_BIG_TICK);
+				                contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.GROUP_LEADER_BO_BIG_TICK);
 				                activeBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(closePlayer.CharacterId, contributionDefinition.ContributionValue);
                             }
                         }
@@ -1305,7 +1305,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				        {
                             // ContributionManagerInstance holds the long term values of contribution for a player.
 				            activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte)ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
-				            contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
+				            contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
 				            activeBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(closePlayer.CharacterId, contributionDefinition.ContributionValue);
                         }
 				    }

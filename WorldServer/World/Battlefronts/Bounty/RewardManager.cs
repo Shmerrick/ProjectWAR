@@ -13,10 +13,11 @@ namespace WorldServer.World.Battlefronts.Bounty
     {
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
 
-        public const float BOUNTY_BASE_RP_MODIFIER = 2.5f;
+        public const float BOUNTY_BASE_RP_MODIFIER = 200f;
         public const float BOUNTY_BASE_XP_MODIFIER = 5.5f;
         public const float BOUNTY_BASE_INF_MODIFIER = 0.4f;
         public const float BOUNTY_BASE_MONEY_MODIFIER = 10f;
+        public const float BASE_RP_CEILING = 800f;
 
         public IBountyManager BountyManager { get; }
         public IContributionManager ContributionManager { get; }
@@ -48,57 +49,109 @@ namespace WorldServer.World.Battlefronts.Bounty
             return StaticWrapper.GetRenownBandReward(renownBand).Money;
         }
 
+
+       /// <summary>
+       /// Determine which players should get insignias for impact.
+       /// </summary>
+       /// <param name="impacts"></param>
+       /// <param name="rewardBand"></param>
+       /// <param name="totalImpact"></param>
+       /// <param name="insigniaChance"></param>
+       /// <returns></returns>
+        public ConcurrentDictionary<uint, int> GetInsigniaRewards(List<PlayerImpact> impacts, RewardPlayerKill rewardBand, int totalImpact, int insigniaChance)
+        {
+            var resultDictionary = new ConcurrentDictionary<uint, int>();
+            foreach (var playerImpact in impacts)
+            {
+                var impactFraction = CalculateImpactFraction(playerImpact.ImpactValue, totalImpact);
+
+                // Chance of insignia drop is the impact Fraction.
+                if (insigniaChance < (impactFraction * 100))
+                {
+                    resultDictionary.TryAdd(playerImpact.CharacterId, rewardBand.CrestId);
+                }
+            }
+            return resultDictionary;
+        }
+
         /// <summary>
         /// Calculate the base reward for all impacters upon the target. Doesnt include player modification value.
         /// </summary>
         /// <returns>List of impacter characterId's and their reward.</returns>
-        public ConcurrentDictionary<uint, Reward> GenerateBaseRewardForKill(uint targetCharacterId, int randomNumber, Dictionary<uint, Player> playerDictionary)
+        public ConcurrentDictionary<uint, Reward> GenerateBaseRewardForKill(Player victim, Player killer, int randomNumber, Dictionary<uint, Player> playerDictionary)
         {
-            var characterBounty = BountyManager.GetBounty(targetCharacterId);
-            var contributionValue = ContributionManager.GetContributionValue(targetCharacterId);
-            var impacts = ImpactMatrixManager.GetKillImpacts(targetCharacterId);
-            var totalImpact = ImpactMatrixManager.GetTotalImpact(targetCharacterId);
+            var characterBounty = BountyManager.GetBounty(victim.CharacterId);
+            var victimContributionValue = ContributionManager.GetContributionValue(victim.CharacterId);
+            var killerContributionValue = ContributionManager.GetContributionValue(killer.CharacterId);
+            var impacts = ImpactMatrixManager.GetKillImpacts(victim.CharacterId);
+            var totalImpact = ImpactMatrixManager.GetTotalImpact(victim.CharacterId);
 
-            RewardLogger.Info($"Calculating Reward for killing the target {playerDictionary[targetCharacterId].Name} ({playerDictionary[targetCharacterId].CharacterId})");
+            RewardLogger.Info($"Calculating Reward for killing the target {victim.Name} ({victim.CharacterId}) by {killer.Name}");
             RewardLogger.Debug($"Target Character Bounty : {characterBounty.ToString()}");
-            RewardLogger.Debug($"Target Character Contribution : {contributionValue}");
+            RewardLogger.Debug($"Target Character Contribution : {victimContributionValue}");
             RewardLogger.Debug($"Impacts upon victim :");
             foreach (var impact in impacts)
             {
                 RewardLogger.Debug($"++{impact.ToString()}");
             }
             
-
-
             if (totalImpact == 0)
                 throw new BountyException("Total Impact == 0");
 
             var rewardDictionary = new ConcurrentDictionary<uint, Reward>();
 
+            var renownBand = Reward.DetermineRenownBand(characterBounty.RenownLevel);
+            var playerKillReward = PlayerKillRewardBand.Single(x => x.RenownBand == renownBand);
+
+            // Determine who gets insignias
+            var insigniaDictionary = GetInsigniaRewards(impacts, playerKillReward, totalImpact, StaticRandom.Instance.Next(100));
 
             foreach (var playerImpact in impacts)
             {
                 var impactFraction = CalculateImpactFraction(playerImpact.ImpactValue, totalImpact);
 
-                int insigniaCount = 0;
-                int insigniaItemId = 0;
+                //int insigniaCount = 0;
+                //int insigniaItemId = 0;
 
-                // Select type of insignia (should it be based on the victims RR??)
-                var renownBand = Reward.DetermineRenownBand(characterBounty.RenownLevel);
-                var playerKillReward = PlayerKillRewardBand.Single(x => x.RenownBand == renownBand);
+                //// Select type of insignia (should it be based on the victims RR??)
+                //var renownBand = Reward.DetermineRenownBand(characterBounty.RenownLevel);
+                //var playerKillReward = PlayerKillRewardBand.Single(x => x.RenownBand == renownBand);
 
-                // Chance of insignia drop is the impact Fraction.
-                if (randomNumber < (impactFraction * 100))
-                {
-                    insigniaCount = StaticRandom.Instance.Next(1, playerKillReward.CrestCount);
-                    insigniaItemId = playerKillReward.CrestId;
-                }
+                //// Chance of insignia drop is the impact Fraction.
+                //if (randomNumber < (impactFraction * 100))
+                //{
+                //    insigniaCount = StaticRandom.Instance.Next(1, playerKillReward.CrestCount);
+                //    insigniaItemId = playerKillReward.CrestId;
+                //}
+
+                
+
+                // Add 0-50% Money to the base amount
+                var moneyRandom = StaticRandom.Instance.Next(50);
+                if (moneyRandom != 0)
+                    playerKillReward.Money = (int) (playerKillReward.Money * (moneyRandom / 100));
+
+                var baseRP = BASE_RP_CEILING - CalculateModifiedBountyValue(victim.BaseBountyValue, victimContributionValue) +
+                             CalculateModifiedBountyValue(killer.BaseBountyValue, killerContributionValue);
+
+                // Add 0-25% Influence to the base amount
+                var influenceRandom = StaticRandom.Instance.Next(25);
+                var baseInfluence = 0;
+                if (influenceRandom != 0)
+                    baseInfluence = (int) (baseRP * BOUNTY_BASE_INF_MODIFIER * (moneyRandom / 100));
+                else
+                    baseInfluence = 0;
+
+                var insigniaCount = 0;
+                if (insigniaDictionary.TryGetValue(playerImpact.CharacterId, out var insigniaItemId))
+                    insigniaCount = 1;
+
                 var reward = new Reward
                 {
-                    Description = $"Player {playerDictionary[playerImpact.CharacterId].Name} ({playerDictionary[playerImpact.CharacterId].CharacterId}) impacts {playerDictionary[targetCharacterId].Name} ({playerDictionary[targetCharacterId].CharacterId}) ",
-                    BaseInf = (int)(BOUNTY_BASE_INF_MODIFIER * impactFraction ) + playerKillReward.BaseInf,
+                    Description = $"Player {victim.Name} ({victim.CharacterId}) impacts {killer.Name} ",
+                    BaseInf = (int)impactFraction + baseInfluence,
                     BaseXP = (int)(BOUNTY_BASE_XP_MODIFIER * impactFraction ) + playerKillReward.BaseXP,
-                    BaseRP = (int)(BOUNTY_BASE_RP_MODIFIER * impactFraction ) + playerKillReward.BaseRP,
+                    BaseRP = (int)(BOUNTY_BASE_RP_MODIFIER * impactFraction ) + (int)baseRP,
                     InsigniaCount = insigniaCount,
                     InsigniaItemId = insigniaItemId,
                     BaseMoney = (int)(playerKillReward.Money * impactFraction),
@@ -124,15 +177,22 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         private float CalculateModifiedBountyValue(CharacterBounty characterBounty, short contributionValue)
         {
-            return characterBounty.BaseBountyValue + contributionValue;
+            return CalculateImpactFraction(characterBounty.BaseBountyValue,contributionValue);
+        }
+
+        private float CalculateModifiedBountyValue(int baseBounty, short contributionValue)
+        {
+            return baseBounty + contributionValue;
         }
 
         public void DistributePlayerKillRewards(Player victim, Player killer, float aaoBonus, ushort influenceId, Dictionary<uint, Player> playerDictionary)
         {
             RewardLogger.Debug($"*********** {victim.Name} killed by {killer.Name}. AAO = {aaoBonus} *******************");
+            
+
             // TODO : Ensure the player is actually in the active battlefront.
             // List of players involved in the kill
-            var playersToReward = GenerateBaseRewardForKill(victim.CharacterId, StaticRandom.Instance.Next(1, 100), playerDictionary);
+            var playersToReward = GenerateBaseRewardForKill(victim, killer, StaticRandom.Instance.Next(1, 100), playerDictionary);
 
             foreach (var playerReward in playersToReward)
             {

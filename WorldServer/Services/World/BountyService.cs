@@ -22,7 +22,7 @@ namespace WorldServer.Services.World
             Log.Success("ContributionDefinition", "Loaded " + _ContributionDefinitions.Count + " ContributionDefinitions");
         }
 
-        public static ContributionDefinition GetDefinition(byte value)
+        public ContributionDefinition GetDefinition(byte value)
         {
             foreach (var contributionDefinition in _ContributionDefinitions)
             {

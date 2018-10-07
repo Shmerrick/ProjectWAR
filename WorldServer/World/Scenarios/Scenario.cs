@@ -618,7 +618,7 @@ namespace WorldServer.Scenarios
 
                 // Add Contribution
                 WorldMgr.UpperTierCampaignManager.GetActiveCampaign().GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.PLAY_SCENARIO);
-                contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.PLAY_SCENARIO);
+                contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.PLAY_SCENARIO);
                 WorldMgr.UpperTierCampaignManager.GetActiveCampaign().GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
 
                 plr.SendClientMessage("Giving PLAY_SCEN contribution");
@@ -644,7 +644,7 @@ namespace WorldServer.Scenarios
 
                         // Add Contribution
                         WorldMgr.UpperTierCampaignManager.GetActiveCampaign().GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.WIN_SCENARIO);
-                        contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.WIN_SCENARIO);
+                        contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.WIN_SCENARIO);
                         WorldMgr.UpperTierCampaignManager.GetActiveCampaign().GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
 
                         plr.SendClientMessage("Giving WIN_SCEN contribution");

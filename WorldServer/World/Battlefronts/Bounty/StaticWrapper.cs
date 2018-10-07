@@ -12,7 +12,6 @@ namespace WorldServer.World.Battlefronts.Bounty
     public interface IStaticWrapper
     {
         RewardPlayerKill GetRenownBandReward(int renownBand);
-        ContributionDefinition GetDefinition(byte value);
     }
 
     public class StaticWrapper : IStaticWrapper
@@ -22,9 +21,5 @@ namespace WorldServer.World.Battlefronts.Bounty
             return RewardService.GetPlayerKillReward(renownBand);
         }
 
-        public ContributionDefinition GetDefinition(byte value)
-        {
-            return BountyService.GetDefinition(value);
-        }
     }
 }

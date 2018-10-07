@@ -26,6 +26,8 @@ namespace WorldServer.World.Battlefronts.Bounty
         // Reference contribution factors
         public List<ContributionDefinition> ContributionFactors { get; }
 
+        public BountyService BountyService { get; }
+
         public const short MAXIMUM_CONTRIBUTION = 100;
 
         public ContributionManager(ConcurrentDictionary<uint, List<PlayerContribution>> contributionDictionary, List<ContributionDefinition> contributionFactors)
@@ -45,7 +47,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         public List<PlayerContribution> UpdateContribution(uint targetCharacterId, byte contributionId)
         {
             //TODO : Remove - dev obnly
-            var description = BountyService.GetDefinition(contributionId).ContributionDescription;
+            var description = ContributionFactors.Single(x => x.ContributionId == contributionId);
 
             RewardLogger.Debug($"Assigning contibution Id {contributionId} ({description}) to {targetCharacterId}");
 

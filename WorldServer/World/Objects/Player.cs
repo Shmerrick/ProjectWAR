@@ -4029,7 +4029,7 @@ namespace WorldServer
             // Add contribution for this kill to the killer.
             ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(this.CharacterId, contributionDefinitionId);
 
-            var definition = BountyService.GetDefinition(contributionDefinitionId);
+            var definition = new BountyService().GetDefinition(contributionDefinitionId);
 
             // Add bounty to the death blow killer  
             ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(this.CharacterId, definition.ContributionValue);

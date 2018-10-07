@@ -392,7 +392,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                             // Add contribution
                             this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_INNER_DOOR);
-                            var contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.DESTROY_INNER_DOOR);
+                            var contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.DESTROY_INNER_DOOR);
                             this.Region.Campaign.GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionDefinition.ContributionValue);
                         }
 
@@ -427,7 +427,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                             // Add contribution
                             this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
-                            var contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
+                            var contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
                             this.Region.Campaign.GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionDefinition.ContributionValue);
 
 
@@ -526,13 +526,13 @@ namespace WorldServer.World.BattleFronts.Keeps
                 SendKeepInfo(plr);
                 // Add contribution for being in range
                 this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.KILL_KEEP_LORD);
-                contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.KILL_KEEP_LORD);
+                contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.KILL_KEEP_LORD);
                 this.Region.Campaign.GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
 
                 if (plr.PriorityGroup?.GetLeader() == plr)
                 {
                     this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
-                    contributionDefinition = BountyService.GetDefinition((byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
+                    contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
                     this.Region.Campaign.GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
                 }
             }
@@ -728,7 +728,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 					plr.SendClientMessage($"You've received a reward for your contribution to the holding of {Info.Name}.", ChatLogFilters.CHATLOGFILTERS_RVR);
 
                     // Add Contribution for Keep Defence Tick
-                    var contributionForKeepDefence = BountyService.GetDefinition((byte)ContributionDefinitions.KEEP_DEFENCE_TICK);
+                    var contributionForKeepDefence = new BountyService().GetDefinition((byte)ContributionDefinitions.KEEP_DEFENCE_TICK);
                     var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
                     var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
                     activeBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionForKeepDefence.ContributionValue);

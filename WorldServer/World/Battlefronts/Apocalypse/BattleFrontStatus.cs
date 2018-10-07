@@ -24,7 +24,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public BattleFrontStatus()
         {
-            ContributionManagerInstance = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), BountyService._ContributionDefinitions);
+            ContributionManagerInstance = new ContributionManager(
+                new ConcurrentDictionary<uint, List<PlayerContribution>>(), 
+                BountyService._ContributionDefinitions);
             BountyManagerInstance = new BountyManager();
             ImpactMatrixManagerInstance = new ImpactMatrixManager();
             RewardManagerInstance = new RewardManager(BountyManagerInstance, ContributionManagerInstance, ImpactMatrixManagerInstance, new StaticWrapper(), RewardService._RewardPlayerKills);

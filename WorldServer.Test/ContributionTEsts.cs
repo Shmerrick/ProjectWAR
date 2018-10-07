@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Runtime.Remoting;
 using Common.Database.World.Battlefront;
 using FakeItEasy;
+using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Bounty;
 
 namespace WorldServer.Test
@@ -182,7 +183,9 @@ namespace WorldServer.Test
         [TestMethod]
         public void UpdateCharacterThenRemoveThenAdd()
         {
-            var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), ContributionFactorReferenceList);
+            var contributionManager = new ContributionManager(
+                new ConcurrentDictionary<uint, List<PlayerContribution>>(), 
+                ContributionFactorReferenceList);
 
             contributionManager.UpdateContribution(100, 1);
             contributionManager.UpdateContribution(100, 2);
@@ -204,7 +207,9 @@ namespace WorldServer.Test
             A.CallTo(fakeStaticWrapper).WithReturnType<ContributionDefinition>()
                 .Returns(new ContributionDefinition {ContributionValue = 1, ContributionId = 1});
             
-            var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), ContributionFactorReferenceList);
+            var contributionManager = new ContributionManager(
+                new ConcurrentDictionary<uint, List<PlayerContribution>>(), 
+                ContributionFactorReferenceList);
 
             contributionManager.UpdateContribution(100, 1);
             contributionManager.UpdateContribution(102, 2);
@@ -223,7 +228,7 @@ namespace WorldServer.Test
 
         }
 
-        [TestMethod]
+        [TestMethod, Ignore]
         public void TimingOnLargeSetUpdates()
         {
             var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), ContributionFactorReferenceList);
