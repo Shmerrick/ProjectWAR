@@ -49,7 +49,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         }
 
         /// <summary>
-        /// Calculate the base reward for all impacters upon the target.
+        /// Calculate the base reward for all impacters upon the target. Doesnt include player modification value.
         /// </summary>
         /// <returns>List of impacter characterId's and their reward.</returns>
         public ConcurrentDictionary<uint, Reward> GenerateBaseRewardForKill(uint targetCharacterId, int randomNumber, Dictionary<uint, Player> playerDictionary)
@@ -75,8 +75,6 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             var rewardDictionary = new ConcurrentDictionary<uint, Reward>();
 
-            // return the bounty of the killed player (the base bounty + their contribution)
-            var modifiedBountyValue = CalculateModifiedBountyValue(characterBounty, contributionValue);
 
             foreach (var playerImpact in impacts)
             {
@@ -98,9 +96,9 @@ namespace WorldServer.World.Battlefronts.Bounty
                 var reward = new Reward
                 {
                     Description = $"Player {playerDictionary[playerImpact.CharacterId].Name} ({playerDictionary[playerImpact.CharacterId].CharacterId}) impacts {playerDictionary[targetCharacterId].Name} ({playerDictionary[targetCharacterId].CharacterId}) ",
-                    BaseInf = (int)(BOUNTY_BASE_INF_MODIFIER * modifiedBountyValue * impactFraction ) + playerKillReward.BaseInf,
-                    BaseXP = (int)(BOUNTY_BASE_XP_MODIFIER * modifiedBountyValue * impactFraction ) + playerKillReward.BaseXP,
-                    BaseRP = (int)(BOUNTY_BASE_RP_MODIFIER * modifiedBountyValue * impactFraction ) + playerKillReward.BaseRP,
+                    BaseInf = (int)(BOUNTY_BASE_INF_MODIFIER * impactFraction ) + playerKillReward.BaseInf,
+                    BaseXP = (int)(BOUNTY_BASE_XP_MODIFIER * impactFraction ) + playerKillReward.BaseXP,
+                    BaseRP = (int)(BOUNTY_BASE_RP_MODIFIER * impactFraction ) + playerKillReward.BaseRP,
                     InsigniaCount = insigniaCount,
                     InsigniaItemId = insigniaItemId,
                     BaseMoney = (int)(playerKillReward.Money * impactFraction),
@@ -157,7 +155,12 @@ namespace WorldServer.World.Battlefronts.Bounty
                     }
                     else  // No group
                     {
-                        DistributeBaseRewardsForPlayerKill(playerReward.Value, playerToBeRewarded, 1, influenceId, $"Deathblow to {victim.Name}");
+
+                        // Get the modification value (multiplier for victim vs target)
+                        var modificationValue =
+                            ImpactMatrixManager.CalculateModificationValue(victim.BaseBountyValue, killer.BaseBountyValue);
+
+                        DistributeBaseRewardsForPlayerKill(playerReward.Value, playerToBeRewarded, 1* modificationValue, influenceId, $"Deathblow to {victim.Name}");
                     }
 
                     // If this player is the killer (ie Deathblow), give them a different contribution.
@@ -266,15 +269,15 @@ namespace WorldServer.World.Battlefronts.Bounty
             }
         }
 
-        private void DistributeBaseRewardsForPlayerKill(Reward reward, Player player, float shareRewardScale, ushort influenceId, string description)
+        private void DistributeBaseRewardsForPlayerKill(Reward reward, Player killer, float shareRewardScale, ushort influenceId, string description)
         {
 
-            player.AddXp((uint)((uint)reward.BaseXP * shareRewardScale), true, true);
-            player.AddRenown((uint)((uint)reward.BaseRP * shareRewardScale), true, RewardType.None, description);
-            player.AddInfluence((ushort)influenceId, (ushort)((ushort)reward.BaseInf * shareRewardScale));
-            player.AddMoney((uint)((uint)reward.BaseMoney * shareRewardScale));
+            killer.AddXp((uint)((uint)reward.BaseXP * shareRewardScale), true, true);
+            killer.AddRenown((uint)((uint)reward.BaseRP * shareRewardScale), true, RewardType.None, description);
+            killer.AddInfluence((ushort)influenceId, (ushort)((ushort)reward.BaseInf * shareRewardScale));
+            killer.AddMoney((uint)((uint)reward.BaseMoney * shareRewardScale));
 
-            RewardLogger.Debug($"PlayerKill Base Reward (player:{player.Name} ({player.CharacterId})) ## {description} ## " +
+            RewardLogger.Debug($"PlayerKill Base Reward (player:{killer.Name} ({killer.CharacterId})) ## {description} ## " +
                                $"Share Scale : {shareRewardScale} " +
                                $"XP : {reward.BaseXP}*{shareRewardScale}={reward.BaseXP * shareRewardScale} " +
                                $"RP : {reward.BaseRP}*{shareRewardScale}={reward.BaseRP * shareRewardScale} " +

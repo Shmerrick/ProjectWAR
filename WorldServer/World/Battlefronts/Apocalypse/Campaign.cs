@@ -807,8 +807,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Calculate no rewards
             if (forceNumberBags == -1)
                 return;
-
-
+            
             var rewardAssigner = new RewardAssigner(StaticRandom.Instance);
 
             // Determine the number of Bags to be handed out.
