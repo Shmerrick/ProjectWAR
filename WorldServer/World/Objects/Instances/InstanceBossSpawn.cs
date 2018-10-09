@@ -158,10 +158,11 @@ namespace WorldServer
                 // brain distribution
                 switch (entry)
                 {
-                    //case 6861: // healerbrain for shamans
-                    //    c.AiInterface.SetBrain(new SimpleLVHealerBrain(c));
-                    //    GoToMommy(c);
-                    //    break;
+                    case 6861: // healerbrain for shamans
+                        c.AiInterface.SetBrain(new SimpleLVHealerBrain(c));
+                        //GoToMommy(c);
+                        SetRandomTarget(c);
+                        break;
 
                     default:
                         SetRandomTarget(c);

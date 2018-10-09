@@ -11,7 +11,8 @@ namespace WorldServer.World.AI
         {
             _unit.AbtInterface.NPCAbilities = new List<NPCAbility>()
             {
-                new NPCAbility(13682, 60, 0, true, "<character name>, be restored by our chaos gods!", 0, 100, 1, 1, 1, 0, 0, 0, 0)
+                //new NPCAbility(13682, 60, 0, true, "<character name>, be restored by our chaos gods!", 0, 100, 1, 1, 1, 0, 0, 0, 0)
+                new NPCAbility(1904, 150, 0, true, "<character name>, be restored by our chaos gods!", 0, 100, 1, 1, 1, 0, 0, 0, 0)
             };
         }
 
