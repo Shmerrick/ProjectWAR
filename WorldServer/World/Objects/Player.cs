@@ -3134,9 +3134,9 @@ namespace WorldServer
             if (value == null)
                 throw new NullReferenceException("NULL Character_value for " + Name);
 
-            if (renown > 300000)
+            if (renown > 500000)
             {
-                renown = 300000;
+                renown = 500000;
                 Log.Error("AddKillRenown (mult)", "Player received outrageous renown level (" + renown + ") - " + "(" + type.ToString() + ") - " + "(" + shouldPool.ToString() + ") - " + Environment.StackTrace);
                 SendClientMessage("You somehow gained an amount of renown larger than the system allows (" + renown + "). You have been given the cap.");
                 return;
