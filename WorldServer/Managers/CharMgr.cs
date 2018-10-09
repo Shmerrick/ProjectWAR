@@ -1224,7 +1224,11 @@ namespace WorldServer
 
                     //checks for guild leader id player not found guildleader banned or guild leader inactive is so tryes to set a new guild leader if no guildleader can be found guild is set to inactive
 
-                    if (!guild.Members.ContainsKey(guild.LeaderId) || guild.Members[guild.LeaderId].RankId != 9 || Program.AcctMgr.GetAccountById(CharMgr.GetCharacter(guild.LeaderId, true).AccountId).Banned == 1 || Program.AcctMgr.GetAccountById(CharMgr.GetCharacter(guild.LeaderId, true).AccountId).GmLevel == -1 || CharMgr.GetCharacter(guild.LeaderId, true).Value.LastSeen + 2246400 < TCPManager.GetTimeStamp())
+                    // Guild Leader Account not found.
+                    var character = CharMgr.GetCharacter(guild.LeaderId, true);
+                    var guildLeaderAccount = Program.AcctMgr.GetAccountById(character?.AccountId);
+                    
+                    if ((guildLeaderAccount == null)||(!guild.Members.ContainsKey(guild.LeaderId) || guild.Members[guild.LeaderId].RankId != 9 || guildLeaderAccount.Banned == 1 || Program.AcctMgr.GetAccountById(CharMgr.GetCharacter(guild.LeaderId, true).AccountId).GmLevel == -1 || CharMgr.GetCharacter(guild.LeaderId, true).Value.LastSeen + 2246400 < TCPManager.GetTimeStamp()))
                     {
 
 
@@ -1239,7 +1243,7 @@ namespace WorldServer
                                 members[i].RankId = 9;
                                 CharMgr.Database.SaveObject(members[i]);
                                 Database.SaveObject(guild);
-                                Log.Info("LoadGuilds", guild.Name + " Leader not found banned or not loged in for 26 days, set to new leader " + members[i].CharacterId);
+                                Log.Info("LoadGuilds", guild.Name + " Leader not found banned or not logged in for 26 days, set to new leader " + members[i].CharacterId);
                                 break;
                             }
                         }

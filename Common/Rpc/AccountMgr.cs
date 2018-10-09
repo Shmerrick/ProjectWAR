@@ -106,7 +106,7 @@ namespace Common {
             }
         }
 
-        public Account GetAccountById(int ID) {
+        public Account GetAccountById(int? ID) {
             Account acct;
 
             lock (_accounts)
