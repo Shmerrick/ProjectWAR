@@ -47,9 +47,9 @@ namespace WorldServer.World.Battlefronts.Bounty
         public List<PlayerContribution> UpdateContribution(uint targetCharacterId, byte contributionId)
         {
             //TODO : Remove - dev obnly
-            var description = ContributionFactors.Single(x => x.ContributionId == contributionId);
+            var contributionDefinition = ContributionFactors.Single(x => x.ContributionId == contributionId);
 
-            RewardLogger.Debug($"Assigning contibution Id {contributionId} ({description}) to {targetCharacterId}");
+            RewardLogger.Debug($"Assigning contibution Id {contributionId} ({contributionDefinition.ContributionDescription}) to {targetCharacterId}");
 
 
             //filteredResults.AddOrUpdate(unfilteredResult.Key, new List<int> { number }, (k, v) => v.Add(number));
@@ -278,6 +278,49 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
                 return summationDictionary.OrderBy(x => x.Value).Take(numberOfBags);
             }
+        }
+
+        public List<Player> GetHigestContributors(int minimumContribution, IEnumerable<Player> players)
+        {
+            Player destructionRealmCaptain = null;
+            Player orderRealmCaptain = null;
+            var returnList = new List<Player>();
+            // Return ordered (contrib descending) list of Eligible Players
+            var eligiblePlayers = GetEligiblePlayers(0);
+            foreach (var eligiblePlayer in eligiblePlayers)
+            {
+                if (eligiblePlayer.Value < minimumContribution)
+                    continue;
+                
+                // If the player is found in the list.
+                var player = players.SingleOrDefault(x => x.CharacterId == eligiblePlayer.Key);
+                if (player != null)
+                {
+                    if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                    {
+                        if (destructionRealmCaptain == null)
+                        {
+                            destructionRealmCaptain = player;
+                            returnList.Add(destructionRealmCaptain);
+
+                            RewardLogger.Info($"Assigning {destructionRealmCaptain.Name} as RealmCaptain");
+                        }
+                    }
+                    else
+                    {
+                        if (orderRealmCaptain == null)
+                        {
+                            orderRealmCaptain = player;
+                            returnList.Add(orderRealmCaptain);
+
+                            RewardLogger.Info($"Assigning {orderRealmCaptain.Name} as RealmCaptain");
+                        }
+                    }
+                }
+                if ((orderRealmCaptain != null) && (destructionRealmCaptain != null))
+                    return returnList;
+            }
+            return returnList;
         }
     }
 }

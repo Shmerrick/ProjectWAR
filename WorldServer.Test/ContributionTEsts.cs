@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -43,6 +44,18 @@ namespace WorldServer.Test
                     MaxContributionCount = 4
                 }
             };
+        }
+
+        [TestMethod]
+        public void TestModificationValue()
+        {
+
+            var im = new ImpactMatrixManager();
+            Assert.IsTrue(Math.Abs(im.CalculateModificationValue(40, 160) - 0.9657842847f) < 0.01);
+            Assert.IsTrue(Math.Abs(im.CalculateModificationValue(40, 180) - 0.8685198516) < 0.01);
+            Assert.IsTrue(Math.Abs(im.CalculateModificationValue(40, 40) - 3) < 0.01);
+            Assert.IsTrue(Math.Abs(im.CalculateModificationValue(360, 40) - 9.965784285) < 0.01);
+            Assert.IsTrue(Math.Abs(im.CalculateModificationValue(300, 200) - 3.965784285) < 0.01);
         }
 
         [TestMethod]

@@ -690,14 +690,14 @@ namespace WorldServer
 
             if (GmLevel > 1)
             {
-                
+
                 //if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
-                if (GmLevel >= (int) EGmLevel.AnyGM && !GmMgr.GmList.Contains(this))
+                if (GmLevel >= (int)EGmLevel.AnyGM && !GmMgr.GmList.Contains(this))
                 {
                     SendClientMessage("You have been added to the GM Account List");
                     GmMgr.NotifyGMOnline(this);
                 }
-                
+
             }
 
             // This is Terror debuff - with this you cannot be ressurected
@@ -758,27 +758,27 @@ namespace WorldServer
                     SendRenown();
                     SendStats();
 
-				    
-				    //if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
-				    if (GmLevel >= (int) EGmLevel.AnyGM && !GmMgr.GmList.Contains(this))
-				    {
-				        SendClientMessage("You have been added to the GM Account List");
+
+                    //if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
+                    if (GmLevel >= (int)EGmLevel.AnyGM && !GmMgr.GmList.Contains(this))
+                    {
+                        SendClientMessage("You have been added to the GM Account List");
                         GmMgr.NotifyGMOnline(this);
-				    }
-				}
-				//if gm toggled invincibility and switched zone then it should still be active.
-				if (IsInvulnerable && GmLevel > 1)
-				{
-					string temp = "3";
-					List<string> paramValue = temp.Split(' ').ToList();
-					BaseCommands.SetEffectState(this, ref paramValue);
-				}
-				TokInterface.SendAllToks();
-				SendRankUpdate(this);
-				SendSkills();
-				SendBestiary();
-				SendPlayedTime();
-				ItmInterface.SendAllItems(this);
+                    }
+                }
+                //if gm toggled invincibility and switched zone then it should still be active.
+                if (IsInvulnerable && GmLevel > 1)
+                {
+                    string temp = "3";
+                    List<string> paramValue = temp.Split(' ').ToList();
+                    BaseCommands.SetEffectState(this, ref paramValue);
+                }
+                TokInterface.SendAllToks();
+                SendRankUpdate(this);
+                SendSkills();
+                SendBestiary();
+                SendPlayedTime();
+                ItmInterface.SendAllItems(this);
 
                 Health = TotalHealth;
 
@@ -852,7 +852,7 @@ namespace WorldServer
             }
             catch (Exception ex)
             {
-               _logger.Error($"Could not initialise player : {this.Name} {ex.Message} {ex.StackTrace}");
+                _logger.Error($"Could not initialise player : {Name} {ex.Message} {ex.StackTrace}");
                 // init failed!
                 _initialized = false;
             }
@@ -934,8 +934,8 @@ namespace WorldServer
                 Client.Disconnect("Ping timeout");
                 if (!IsDisposed && CbtInterface.IsInCombat && CbtInterface.IsPvp)
                 {
-                if (DamageSources.Count > 0)
-                         SetDeath(DamageSources.Keys.First());
+                    if (DamageSources.Count > 0)
+                        SetDeath(DamageSources.Keys.First());
 
                     lock (PlayersInRange)
                     {
@@ -3121,14 +3121,14 @@ namespace WorldServer
             if (Program.Config.RenownRate > 0)
                 renown *= (uint)Program.Config.RenownRate;
 
-			// apply aao bonus
+            // apply aao bonus
             if ((ScnInterface == null || ScnInterface.Scenario == null)
                 && (type == RewardType.None || type == RewardType.Kill || type == RewardType.Assist))
             {
                 renown = Convert.ToUInt32(Math.Round((1f + AAOBonus) * renown, 0));
             }
-			
-			RewardLogger.Trace($"{renown} RP awarded to {Name} for {rewardString} ");
+
+            RewardLogger.Trace($"{renown} RP awarded to {Name} for {rewardString} ");
             InternalAddRenown(renown, shouldPool, type, rewardString);
         }
 
@@ -3925,7 +3925,7 @@ namespace WorldServer
 
         #region Rewards
 
-        private readonly Dictionary<uint, long> _recentLooters = new Dictionary<uint, long>();
+        internal readonly Dictionary<uint, long> _recentLooters = new Dictionary<uint, long>();
         private int _lastKillerAccountId;
         private int _lastKillerKillCount;
 
@@ -3961,8 +3961,6 @@ namespace WorldServer
 
             else
             {
-                if (_recentLooters.ContainsKey(killer.CharacterId) && _recentLooters[killer.CharacterId] > TCPManager.GetTimeStampMS())
-                    return;
 
                 if (Region.Campaign.PreventKillReward() || (killer.Client?._Account != null && CheckKillFarm(killer)))
                     return;
@@ -3972,7 +3970,7 @@ namespace WorldServer
                 else if (CurrentObjectiveFlag != null)
                     CurrentObjectiveFlag.CheckKillValid(this);
 
-                
+
 
                 float rewardScale = Region.Campaign.ModifyKill(killer, this);
 
@@ -3983,13 +3981,10 @@ namespace WorldServer
                 if (WorldGroup != null)
                     rewardScale += 0.25f * (WorldGroup.GetPlayerCountWithinDist(this, 200) / 5f);
 
-                // Throttle any kill that could have been the result of farming or soloing.
-                if (rewardScale < 1.1f)
-                {
-                    if (!_recentLooters.ContainsKey(killer.CharacterId))
-                        _recentLooters.Add(killer.CharacterId, TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL);
-                    else _recentLooters[killer.CharacterId] = TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL;
-                }
+                // Record the recent killers of this toon.
+                if (!_recentLooters.ContainsKey(killer.CharacterId))
+                    _recentLooters.Add(killer.CharacterId, TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL);
+                else _recentLooters[killer.CharacterId] = TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL;
 
                 // Distribute Player Kill Rewards
                 if (ActiveBattleFrontStatus != null)
@@ -3997,19 +3992,22 @@ namespace WorldServer
                     var influenceId = GetKillerInfluenceId(killer);
                     ActiveBattleFrontStatus.RewardManagerInstance.DistributePlayerKillRewards(this, killer, AAOBonus, influenceId, PlayersByCharId);
                 }
-                
+
                 //HandleXPRenown(killer, rewardScale);
                 //GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
+                var bonusVP = Math.Floor(this.BaseBountyValue / 10f);
+
                 if (killer.Realm == Realms.REALMS_REALM_DESTRUCTION)
                 {
-                    killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints = killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints + 5;
+                    
+                    killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints = (float) (killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints + 10 + bonusVP);
                 }
                 else
                 {
-                    killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints = killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints + 5;
+                    killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints = (float) (killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints + 10 + bonusVP);
                 }
 
-                killer.SendClientMessage($"+5 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
+                killer.SendClientMessage($"+{10+ bonusVP} VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
 
 
             }
@@ -4027,14 +4025,14 @@ namespace WorldServer
         public void UpdatePlayerBountyEvent(byte contributionDefinitionId)
         {
             // Add contribution for this kill to the killer.
-            ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(this.CharacterId, contributionDefinitionId);
+            ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(CharacterId, contributionDefinitionId);
 
             var definition = new BountyService().GetDefinition(contributionDefinitionId);
 
             // Add bounty to the death blow killer  
-            ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(this.CharacterId, definition.ContributionValue);
-            this.SendClientMessage($"[Contrib]:+{definition.ContributionValue} {definition.ContributionDescription}");
-            RewardLogger.Info($"Update player Bounty character Id : {this.CharacterId} Contribution Def : {contributionDefinitionId}");
+            ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(CharacterId, definition.ContributionValue);
+            SendClientMessage($"[Contrib]:+{definition.ContributionValue} {definition.ContributionDescription}");
+            RewardLogger.Info($"Update player Bounty character Id : {CharacterId} Contribution Def : {contributionDefinitionId}");
         }
 
         private ushort GetKillerInfluenceId(Player killer)
@@ -6915,6 +6913,8 @@ namespace WorldServer
 
         public Pet Companion { get; set; }
         public bool PendingDumpStatic;
+
+      
     }
 }
 

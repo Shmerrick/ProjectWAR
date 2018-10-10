@@ -22,6 +22,8 @@ namespace WorldServer.World.Battlefronts.Bounty
         public const int MAX_REWARD_IMPACT_COUNT = 20;
         // Minimum impact value for the record to be stored in the Impact Matrix
         public const int MIN_IMPACT_VALIDITY = 50;
+        // The multiplier in the log curve for the impact of the bounty differences. Make this higher to see more pronounced effects between RR differences
+        public const float MODIFICATION_VALUE_MULTIPLIER = 3f;
         protected readonly EventInterface _EvtInterface = new EventInterface();
 
         public ImpactMatrixManager()
@@ -190,9 +192,11 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         public float CalculateModificationValue(float targetBaseBounty, float killerBaseBounty)
         {
-            return (float)Math.Log((float)targetBaseBounty / ((float)killerBaseBounty) + 1, 2);
+            var result =  (float)Math.Log((targetBaseBounty / (killerBaseBounty) + 1), 2) * MODIFICATION_VALUE_MULTIPLIER;
+
+            return result;
         }
-    }
+    }   
 
 
 }

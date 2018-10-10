@@ -78,7 +78,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// Calculate the base reward for all impacters upon the target. Doesnt include player modification value.
         /// </summary>
         /// <returns>List of impacter characterId's and their reward.</returns>
-        public ConcurrentDictionary<uint, Reward> GenerateBaseRewardForKill(Player victim, Player killer, int randomNumber, Dictionary<uint, Player> playerDictionary)
+        public ConcurrentDictionary<uint, Reward> GenerateBaseRewardForKill(Player victim, Player killer, int randomNumber, Dictionary<uint, Player> playerDictionary, float repeatKillReward)
         {
             var characterBounty = BountyManager.GetBounty(victim.CharacterId);
             var victimContributionValue = ContributionManager.GetContributionValue(victim.CharacterId);
@@ -110,35 +110,25 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
                 var impactFraction = CalculateImpactFraction(playerImpact.ImpactValue, totalImpact);
 
-                //int insigniaCount = 0;
-                //int insigniaItemId = 0;
-
-                //// Select type of insignia (should it be based on the victims RR??)
-                //var renownBand = Reward.DetermineRenownBand(characterBounty.RenownLevel);
-                //var playerKillReward = PlayerKillRewardBand.Single(x => x.RenownBand == renownBand);
-
-                //// Chance of insignia drop is the impact Fraction.
-                //if (randomNumber < (impactFraction * 100))
-                //{
-                //    insigniaCount = StaticRandom.Instance.Next(1, playerKillReward.CrestCount);
-                //    insigniaItemId = playerKillReward.CrestId;
-                //}
-
-                
-
                 // Add 0-50% Money to the base amount
                 var moneyRandom = StaticRandom.Instance.Next(50);
                 if (moneyRandom != 0)
-                    playerKillReward.Money = (int) (playerKillReward.Money * (moneyRandom / 100));
+                {
+                    var moneyMultipler = (moneyRandom / 100f) + 1f;
+                    playerKillReward.Money = (int) Math.Floor(playerKillReward.Money * moneyMultipler);
+                }
 
-                var baseRP = BASE_RP_CEILING - CalculateModifiedBountyValue(victim.BaseBountyValue, victimContributionValue) +
-                             CalculateModifiedBountyValue(killer.BaseBountyValue, killerContributionValue);
+                var baseRP = BASE_RP_CEILING - (CalculateModifiedBountyValue(victim.BaseBountyValue, victimContributionValue) +
+                             CalculateModifiedBountyValue(killer.BaseBountyValue, killerContributionValue));
 
                 // Add 0-25% Influence to the base amount
                 var influenceRandom = StaticRandom.Instance.Next(25);
                 var baseInfluence = 0;
                 if (influenceRandom != 0)
-                    baseInfluence = (int) (baseRP * BOUNTY_BASE_INF_MODIFIER * (moneyRandom / 100));
+                {
+                    var influenceModifier = (influenceRandom / 100f) + 1f;
+                    baseInfluence = (int) ((int)Math.Floor(baseRP * BOUNTY_BASE_INF_MODIFIER) * influenceModifier);
+                }
                 else
                     baseInfluence = 0;
 
@@ -149,12 +139,12 @@ namespace WorldServer.World.Battlefronts.Bounty
                 var reward = new Reward
                 {
                     Description = $"Player {victim.Name} ({victim.CharacterId}) impacts {killer.Name} ",
-                    BaseInf = (int)impactFraction + baseInfluence,
-                    BaseXP = (int)(BOUNTY_BASE_XP_MODIFIER * impactFraction ) + playerKillReward.BaseXP,
-                    BaseRP = (int)(BOUNTY_BASE_RP_MODIFIER * impactFraction ) + (int)baseRP,
+                    BaseInf = (int) ((int)impactFraction * baseInfluence * repeatKillReward),
+                    BaseXP = (int)(BOUNTY_BASE_XP_MODIFIER * impactFraction * repeatKillReward) + playerKillReward.BaseXP,
+                    BaseRP = (int)(BOUNTY_BASE_RP_MODIFIER * impactFraction * repeatKillReward) + (int)baseRP,
                     InsigniaCount = insigniaCount,
                     InsigniaItemId = insigniaItemId,
-                    BaseMoney = (int)(playerKillReward.Money * impactFraction),
+                    BaseMoney = (int)(playerKillReward.Money * impactFraction * repeatKillReward),
                     RenownBand = renownBand
 
                 };
@@ -164,7 +154,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                     RewardLogger.Error($"Could not add reward to rewardDictionary");
                 }
 
-                RewardLogger.Debug($"Reward : [{reward.ToString()}] awarded to {playerDictionary[playerImpact.CharacterId].Name} ({playerDictionary[playerImpact.CharacterId].CharacterId})");
+                RewardLogger.Debug($"Reward : [{reward.ToString()}] awarded to {playerDictionary[playerImpact.CharacterId].Name} ({playerDictionary[playerImpact.CharacterId].CharacterId}) (repeatKill : {repeatKillReward})");
             }
 
             return rewardDictionary;
@@ -188,11 +178,21 @@ namespace WorldServer.World.Battlefronts.Bounty
         public void DistributePlayerKillRewards(Player victim, Player killer, float aaoBonus, ushort influenceId, Dictionary<uint, Player> playerDictionary)
         {
             RewardLogger.Debug($"*********** {victim.Name} killed by {killer.Name}. AAO = {aaoBonus} *******************");
-            
+
+            var repeatKillReward = 1.0f;
+
+            // If the same player kills the same victim within a short period, ignore.
+            if (victim._recentLooters.ContainsKey(killer.CharacterId) && victim._recentLooters[killer.CharacterId] > TCPManager.GetTimeStampMS())
+            {
+                // Lowering rewards for repeat kills
+                repeatKillReward = 0.5f;
+                return;
+            }
+       
 
             // TODO : Ensure the player is actually in the active battlefront.
             // List of players involved in the kill
-            var playersToReward = GenerateBaseRewardForKill(victim, killer, StaticRandom.Instance.Next(1, 100), playerDictionary);
+            var playersToReward = GenerateBaseRewardForKill(victim, killer, StaticRandom.Instance.Next(1, 100), playerDictionary, repeatKillReward);
 
             foreach (var playerReward in playersToReward)
             {
@@ -236,6 +236,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 }
 
             }
+
 
         }
 

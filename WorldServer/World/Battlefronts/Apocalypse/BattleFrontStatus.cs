@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using GameData;
+using NLog;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Bounty;
 
@@ -8,6 +9,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public class BattleFrontStatus
     {
+        private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
+
         public int BattleFrontId { get; set; }
         public Realms LockingRealm { get; set; }
         public VictoryPointProgress FinalVictoryPoint { get; set; }
@@ -21,6 +24,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public RewardManager RewardManagerInstance { get; set; }
         public ImpactMatrixManager ImpactMatrixManagerInstance { get; set; }
         public HashSet<uint> KillContributionSet { get; set; }
+        public List<Player> RealmCaptains { get; set; }
 
         public BattleFrontStatus()
         {
@@ -30,6 +34,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             BountyManagerInstance = new BountyManager();
             ImpactMatrixManagerInstance = new ImpactMatrixManager();
             RewardManagerInstance = new RewardManager(BountyManagerInstance, ContributionManagerInstance, ImpactMatrixManagerInstance, new StaticWrapper(), RewardService._RewardPlayerKills);
+            RealmCaptains = new List<Player>();
         }
 
         public float DestructionVictoryPointPercentage
@@ -65,6 +70,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             KillContributionSet.Add(player.CharacterId);
         }
 
-       
+
+        public void RemoveAsRealmCaptain(Player realmCaptain)
+        {
+            BattlefrontLogger.Info($"Removing player {realmCaptain.Name} as Captain");
+            this.RealmCaptains.Remove(realmCaptain);
+        }
+
+        public void SetAsRealmCaptain(Player realmCaptain)
+        {
+            BattlefrontLogger.Info($"Adding player {realmCaptain.Name} as Captain");
+            this.RealmCaptains.Add(realmCaptain);
+
+        }
     }
 }

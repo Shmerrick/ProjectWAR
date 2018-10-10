@@ -32,6 +32,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     public class Campaign
     {
         public static int POPULATION_BROADCAST_CHANCE = 1;
+        // Minimum contribution to be considered a realm captain
+        public static int REALM_CAPTAIN_MINIMUM_CONTRIBUTION = 50;
         static readonly object LockObject = new object();
 
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
@@ -65,6 +67,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         //public Realms LockingRealm { get; set; } = Realms.REALMS_REALM_NEUTRAL;
         private volatile int _orderCount = 0;
         private volatile int _destroCount = 0;
+
+        
 
         #region Against All Odds
 
@@ -108,6 +112,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Objectives = objectives;
             BattleFrontManager = bfm;
             CommunicationsEngine = communicationsEngine;
+            
 
             Tier = (byte)Region.GetTier();
             PlaceObjectives();
@@ -128,8 +133,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(UpdateRVRStatus, 60000, 0);
             // Recalculate AAO
             _EvtInterface.AddEvent(UpdateAAOBuffs, 10000, 0);
+            // Check RVR zone for highest contributors (Captains)
+            _EvtInterface.AddEvent(DetermineCaptains, 60000, 0);
             // record metrics
-            _EvtInterface.AddEvent(RecordMetrics, 15000, 0);
+            _EvtInterface.AddEvent(RecordMetrics, 60000, 0);
 
             //if (Tier == 4)
             //{
@@ -142,6 +149,62 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             //    _EvtInterface.AddEvent(UpdateLordsFromVP, 1, 0);
             //}
 
+        }
+
+        private void DetermineCaptains()
+        {
+            foreach (var status in BattleFrontManager.GetBattleFrontStatusList())
+            {
+                lock (status)
+                {
+                    if (status.RegionId == Region.RegionId)
+                    {
+                        foreach (var realmCaptain in status.RealmCaptains)
+                        {
+                            status.RemoveAsRealmCaptain(realmCaptain);
+                        }
+
+                        status.RealmCaptains = ActiveBattleFrontStatus.ContributionManagerInstance.GetHigestContributors(
+                            REALM_CAPTAIN_MINIMUM_CONTRIBUTION,
+                            Player._Players.Where(x => !x.IsDisposed 
+                            && x.IsInWorld() 
+                            && x != null 
+                            && x.CbtInterface.IsPvp 
+                            && x.ScnInterface != null 
+                            && x.Region.RegionId == status.RegionId));
+
+                        foreach (var realmCaptain in status.RealmCaptains)
+                        {
+                            status.SetAsRealmCaptain(realmCaptain);
+                            
+                            foreach (var playerToAnnounce in Player._Players.Where(x => !x.IsDisposed
+                                                                                        && x.IsInWorld()
+                                                                                        && x != null
+                                                                                        && x.CbtInterface.IsPvp
+                                                                                        && x.ScnInterface != null
+                                                                                        && x.Region.RegionId == status.RegionId))
+                            {
+                                if (playerToAnnounce.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                                {
+                                    if (realmCaptain.Realm == Realms.REALMS_REALM_ORDER)
+                                    {
+                                        playerToAnnounce.SendClientMessage($"A captain has emerged from the ranks of the enemy. Take the head of {realmCaptain.Name}!");
+                                    }
+                                }
+                                if (playerToAnnounce.Realm == Realms.REALMS_REALM_ORDER)
+                                {
+                                    if (realmCaptain.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                                    {
+                                        playerToAnnounce.SendClientMessage($"A captain has emerged from the ranks of the enemy. Take the head of {realmCaptain.Name}!");
+                                    }
+                                }
+
+                            }
+                        }
+
+                    }
+                }
+            }
         }
 
         public void UpdateDoorMsg()
