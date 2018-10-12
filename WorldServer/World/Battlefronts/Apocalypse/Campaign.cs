@@ -181,7 +181,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                                                                         && x.IsInWorld()
                                                                                         && x != null
                                                                                         && x.CbtInterface.IsPvp
-                                                                                        && x.ScnInterface != null
+                                                                                        && x.ScnInterface == null
                                                                                         && x.Region.RegionId == status.RegionId))
                             {
                                 if (playerToAnnounce.Realm == Realms.REALMS_REALM_DESTRUCTION)

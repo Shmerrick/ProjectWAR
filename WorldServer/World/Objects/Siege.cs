@@ -355,7 +355,11 @@ namespace WorldServer
             Player credited = (pet != null) ? pet.Owner : (killer as Player);
 
             if (credited != null)
+            {
+                // Contribution for Siege kill
+                credited.UpdatePlayerBountyEvent((byte) ContributionDefinitions.DESTROY_SIEGE);
                 HandleXPRenown(credited);
+            }
 
             SiegeInterface.RemoveAllPlayers();
 

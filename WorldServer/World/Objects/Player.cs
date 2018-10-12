@@ -3990,6 +3990,12 @@ namespace WorldServer
                 if (ActiveBattleFrontStatus != null)
                 {
                     var influenceId = GetKillerInfluenceId(killer);
+
+                    // If the victim was a realm captain, give extra rewards
+                    if (ActiveBattleFrontStatus.RealmCaptains.Exists(x => x.CharacterId == this.CharacterId))
+                    {
+                        ActiveBattleFrontStatus.RewardManagerInstance.RealmCaptainKill(this, killer, influenceId, PlayersByCharId);
+                    }
                     ActiveBattleFrontStatus.RewardManagerInstance.DistributePlayerKillRewards(this, killer, AAOBonus, influenceId, PlayersByCharId);
                 }
 
@@ -3999,7 +4005,6 @@ namespace WorldServer
 
                 if (killer.Realm == Realms.REALMS_REALM_DESTRUCTION)
                 {
-                    
                     killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints = (float) (killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints + 10 + bonusVP);
                 }
                 else
@@ -4008,8 +4013,6 @@ namespace WorldServer
                 }
 
                 killer.SendClientMessage($"+{10+ bonusVP} VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
-
-
             }
 
             #endregion
@@ -4024,15 +4027,22 @@ namespace WorldServer
 
         public void UpdatePlayerBountyEvent(byte contributionDefinitionId)
         {
-            // Add contribution for this kill to the killer.
-            ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(CharacterId, contributionDefinitionId);
+            if (ActiveBattleFrontStatus != null)
+            {
+                // Add contribution for this kill to the killer.
+                ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(CharacterId, contributionDefinitionId);
 
-            var definition = new BountyService().GetDefinition(contributionDefinitionId);
+                var definition = new BountyService().GetDefinition(contributionDefinitionId);
 
-            // Add bounty to the death blow killer  
-            ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(CharacterId, definition.ContributionValue);
-            SendClientMessage($"[Contrib]:+{definition.ContributionValue} {definition.ContributionDescription}");
-            RewardLogger.Info($"Update player Bounty character Id : {CharacterId} Contribution Def : {contributionDefinitionId}");
+                // Add bounty to the death blow killer  
+                ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(CharacterId, definition.ContributionValue);
+                SendClientMessage($"[Contrib]:+{definition.ContributionValue} {definition.ContributionDescription}");
+                RewardLogger.Info($"Update player Bounty character Id : {CharacterId} Contribution Def : {contributionDefinitionId}");
+            }
+            else
+            {
+                RewardLogger.Error($"ActiveBattlefrontStatus is null");
+            }
         }
 
         private ushort GetKillerInfluenceId(Player killer)
