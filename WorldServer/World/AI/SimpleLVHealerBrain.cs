@@ -9,11 +9,7 @@ namespace WorldServer.World.AI
 
         public SimpleLVHealerBrain(Unit unit) : base(unit)
         {
-            _unit.AbtInterface.NPCAbilities = new List<NPCAbility>()
-            {
-                //new NPCAbility(13682, 60, 0, true, "<character name>, be restored by our chaos gods!", 0, 100, 1, 1, 1, 0, 0, 0, 0)
-                new NPCAbility(1904, 150, 0, true, "<character name>, be restored by our chaos gods!", 0, 100, 1, 1, 1, 0, 0, 0, 0)
-            };
+            BuildupNPCAbilities();
         }
 
         #endregion Constructors
@@ -33,9 +29,12 @@ namespace WorldServer.World.AI
         {
             base.Think();
         }
-
+        
         public override void TryUseAbilities()
         {
+            //if (_unit.AbtInterface.NPCAbilities == null)
+            //    BuildupNPCAbilities();
+
             base.TryUseAbilities();
 
             //Unit boss = (Unit)_unit.ObjectsInRange.Where(x => x is InstanceBossSpawn).FirstOrDefault();
@@ -51,6 +50,20 @@ namespace WorldServer.World.AI
             //    _unit.EvtInterface.AddEvent(StartDelayedCast, 1000, 1, prms);
             //    ability.AbilityUsed = 1;
             //}
+        }
+
+        private void BuildupNPCAbilities()
+        {
+            _unit.AbtInterface.NPCAbilities = new List<NPCAbility>()
+            {
+
+                //new NPCAbility(13682, 150, 0, true, "<character name>, be restored by our chaos gods!", 0, 100, 1, 1, 1, 0, 0, 0, 0)
+                //new NPCAbility(1904, 150, 0, true, "<character name>, be restored by our chaos gods!", 0, 100, 1, 1, 1, 0, 0, 0, 0)
+            };
+
+            AbilityInfo abInfo = AbilityMgr.GetAbilityInfo(13682);
+            NPCAbility npcAbility = new NPCAbility(abInfo.Entry, abInfo.ConstantInfo.AIRange, (byte)abInfo.Cooldown, true, "<character name>, be restored by our chaos gods!");
+            _unit.AbtInterface.NPCAbilities.Add(npcAbility);
         }
 
         #endregion Methods

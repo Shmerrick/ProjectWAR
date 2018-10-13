@@ -60,7 +60,7 @@ namespace WorldServer
 
             Creature creature = _Owner as Creature;
 
-            if (creature != null && !(_Owner is Pet))
+            if (creature != null && !(_Owner is Pet) && NPCAbilities != null)
                 NPCAbilities = AbilityMgr.GetCreatureAbilities(creature.Spawn.Proto.Entry);
 
             _Owner.EvtInterface.AddEventNotify(EventName.OnMove, OnPlayerMoved);

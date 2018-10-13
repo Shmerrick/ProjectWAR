@@ -219,6 +219,8 @@ namespace WorldServer
 			{
 				player.Teleport(Region, player._Value.ZoneId, (uint)player._Value.WorldX, (uint)player._Value.WorldY, (ushort)player._Value.WorldZ, (ushort)player._Value.WorldO);
 			}
+
+            Region.CheckZone(player);
 		}
 
         private void LoadObjects()

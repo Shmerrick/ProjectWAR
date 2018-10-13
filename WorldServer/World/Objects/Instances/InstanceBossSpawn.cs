@@ -29,7 +29,19 @@ namespace WorldServer
             EvtInterface.AddEventNotify(EventName.OnEnterCombat, OnEnterCombat);
             EvtInterface.AddEventNotify(EventName.OnLeaveCombat, OnLeaveCombat);
         }
-		
+
+        public override void Update(long tick)
+        {
+            base.Update(tick);
+
+            //GetPlayersInRange(300, false);
+        }
+
+        public override void ApplyKnockback(Unit caster, AbilityKnockbackInfo kbInfo)
+        {
+            // no knockdown Mob on bosses ...
+        }
+
         public virtual bool OnEnterCombat(Object mob, object args)
         {
             Instance.Encounterinprogress = true;
@@ -53,14 +65,32 @@ namespace WorldServer
             {
                 Instance.BossRespawnInstanceGroup(InstanceGroupSpawnID);
             }
-			
-			if (BossTimer != null)
+
+            // reset add list
+            AddList = new List<Creature>();
+
+            if (BossTimer != null)
 			{
 				BossTimer.Reset();
 				BossTimer = null;
 			}
 
 			return false;
+        }
+
+        public override bool ReceiveDamage(Unit caster, AbilityDamageInfo damageInfo)
+        {
+            return base.ReceiveDamage(caster, damageInfo);
+        }
+
+        public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1, uint mitigation = 0)
+        {
+            return base.ReceiveDamage(caster, damage, hatredScale, mitigation);
+        }
+
+        public override int ReceiveHeal(Unit caster, uint healAmount, float healHatredScale = 1)
+        {
+            return base.ReceiveHeal(caster, healAmount, healHatredScale);
         }
 
         protected override void SetRespawnTimer()
@@ -70,9 +100,12 @@ namespace WorldServer
 
         protected override void SetDeath(Unit killer)
         {
+            // reset add list
             AddList = new List<Creature>();
+
             base.SetDeath(killer);
-			Instance.OnBossDeath(InstanceGroupSpawnID, this);
+
+            Instance.OnBossDeath(InstanceGroupSpawnID, this);
 
 			// remove barriages from this instance
 			Instance.RemoveInstanceObjectOnBossDeath(BossID);
@@ -154,7 +187,7 @@ namespace WorldServer
 
                 Creature c = Region.CreateCreature(Spawn);
                 c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds); // We are removing spawns from server when adds die
-
+                c.PlayersInRange = PlayersInRange;
                 // brain distribution
                 switch (entry)
                 {
