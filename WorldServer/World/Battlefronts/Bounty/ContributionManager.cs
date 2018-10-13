@@ -217,7 +217,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             foreach (var contributionStage in result)
             {
-                RewardLogger.Debug($"Id:{contributionStage.Key} {contributionStage.Value.ToString()}");
+                RewardLogger.Trace($"Id:{contributionStage.Key} {contributionStage.Value.ToString()}");
             }
             
 

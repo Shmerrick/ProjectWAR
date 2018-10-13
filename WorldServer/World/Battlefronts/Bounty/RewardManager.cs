@@ -19,7 +19,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         public const float BOUNTY_BASE_INF_MODIFIER = 0.4f;
         public const float BOUNTY_BASE_MONEY_MODIFIER = 10f;
         public const float BASE_RP_CEILING = 800f;
-        public const int BASE_MONEY_REWARD = 10000;
+        public const int BASE_MONEY_REWARD = 1000;
         public const int BASE_INFLUENCE_REWARD = 200;
         public const int BASE_XP_REWARD = 2000;
         public const int REALM_CAPTAIN_INFLUENCE_KILL = 500;
@@ -233,45 +233,32 @@ namespace WorldServer.World.Battlefronts.Bounty
                             var influence = CalculateInfluenceReward(playerReward.Value, modificationValue * repeatKillReward * racialInfluenceModifier);
                             DistributeBaseRewardsForPlayerKill(member, money, scaledRenownPoints, baseRenownPoints, influence, $"Party assist {killer.Name} in killing {victim.Name}", xp, influenceId);
 
-
-                            var hasInsigniaReward = GetInsigniaRewards(100 * modificationValue * repeatKillReward);
-                            var insigniaName = ItemService.GetItem_Info((uint)INSIGNIA_ITEM_ID).Name;
-                            if (hasInsigniaReward)
-                            {
-                                DistributeInsigniaReward(member, $"You have been awarded 1 {insigniaName} for a party kill assist on {victim.Name}", 1);
-                            }
-                            RewardLogger.Info($"++++ XP:{xp}, ScaledRP:{scaledRenownPoints} BaseRP:{baseRenownPoints} Inf:{influence} Money:{money} Insignia:{INSIGNIA_ITEM_ID}x1 RacialInfluence:{racialInfluenceModifier}");
-                            DistributKillAssistContributionForPlayerKill(killer);
+                            RewardLogger.Info($"++++ XP:{xp}, ScaledRP:{scaledRenownPoints} BaseRP:{baseRenownPoints} Inf:{influence} Money:{money}  RacialInfluence:{racialInfluenceModifier}");
 
                         }
                     }
                     else // No group
                     {
-                        var modificationValue = ImpactMatrixManager.CalculateModificationValue(victim.BaseBountyValue, killer.BaseBountyValue);
+                            var modificationValue = ImpactMatrixManager.CalculateModificationValue(victim.BaseBountyValue, killer.BaseBountyValue);
 
-                        RewardLogger.Debug($"Modification Value {modificationValue}");
-                        RewardLogger.Info($"++++ Assessing rewards for {playerToBeRewarded.Name} ({playerToBeRewarded.CharacterId})");
+                            RewardLogger.Debug($"Modification Value {modificationValue}");
+                            RewardLogger.Info($"++++ Assessing rewards for {playerToBeRewarded.Name} ({playerToBeRewarded.CharacterId}) modvalue:{modificationValue} repeatkill:{repeatKillReward}");
 
-                        var xp = CalculateXpReward(playerReward.Value, modificationValue * repeatKillReward);
-                        var money = CalculateMoneyReward(playerReward.Value, modificationValue * repeatKillReward);
-                        var racialInfluenceModifier = CalculateRacialInfluenceModifier(playerToBeRewarded, victim);
-                        var scaledRenownPoints = (int)CalculateScaledRenownPoints(modificationValue * repeatKillReward);
-                        var baseRenownPoints = (int)CalculateBaseRenownPoints(playerToBeRewarded, victim);
-                        var influence = CalculateInfluenceReward(playerReward.Value, modificationValue * repeatKillReward * racialInfluenceModifier);
+                            var xp = CalculateXpReward(playerReward.Value, modificationValue * repeatKillReward);
+                            var money = CalculateMoneyReward(playerReward.Value, modificationValue * repeatKillReward);
+                            var racialInfluenceModifier = CalculateRacialInfluenceModifier(playerToBeRewarded, victim);
+                            var scaledRenownPoints = (int) CalculateScaledRenownPoints(modificationValue * repeatKillReward);
+                            var baseRenownPoints = (int) CalculateBaseRenownPoints(playerToBeRewarded, victim);
+                            var influence = CalculateInfluenceReward(playerReward.Value, modificationValue * repeatKillReward * racialInfluenceModifier);
 
-                        // Get the modification value (multiplier for victim vs target)
-                        DistributeBaseRewardsForPlayerKill(playerToBeRewarded, money, scaledRenownPoints, baseRenownPoints, influence, $"Deathblow to {victim.Name}", xp, influenceId);
+                            // Get the modification value (multiplier for victim vs target)
+                            DistributeBaseRewardsForPlayerKill(playerToBeRewarded, money, scaledRenownPoints, baseRenownPoints, influence, $"Assist in killing {victim.Name}", xp,
+                                influenceId);
 
-                        var hasInsigniaReward = GetInsigniaRewards(100 * repeatKillReward);
-                        var insigniaName = ItemService.GetItem_Info((uint)INSIGNIA_ITEM_ID).Name;
-
-                        if (hasInsigniaReward)
-                        {
-                            DistributeInsigniaReward(playerToBeRewarded, $"You have been awarded 1 {insigniaName} for a party kill assist on {victim.Name}", 1);
-                        }
-
-                        RewardLogger.Info($"++++ XP:{xp}, ScaledRP:{scaledRenownPoints} BaseRP:{baseRenownPoints} Inf:{influence} Money:{money} Insignia:{INSIGNIA_ITEM_ID} RacialInfluence:{racialInfluenceModifier}");
-                        DistributKillAssistContributionForPlayerKill(killer);
+                            RewardLogger.Info(
+                                $"++++ XP:{xp}, ScaledRP:{scaledRenownPoints} + BaseRP:{baseRenownPoints} = {(uint)baseRenownPoints + scaledRenownPoints} Inf:{influence} Money:{money} RacialInfluence:{racialInfluenceModifier} modvalue:{modificationValue} repeatkill:{repeatKillReward}");
+                            
+                        
                     }
 
                     // If this player is the killer (ie Deathblow), give them a different contribution.
@@ -279,46 +266,39 @@ namespace WorldServer.World.Battlefronts.Bounty
                     {
                         var modificationValue = ImpactMatrixManager.CalculateModificationValue(victim.BaseBountyValue, killer.BaseBountyValue);
 
-                        RewardLogger.Debug($"Modification Value {modificationValue}");
-                        RewardLogger.Info($"++++ Assessing rewards for {playerToBeRewarded.Name} ({playerToBeRewarded.CharacterId})");
+                        //var xp = CalculateXpReward(playerReward.Value, modificationValue * repeatKillReward);
+                        //var money = CalculateMoneyReward(playerReward.Value, modificationValue * repeatKillReward);
+                        //var racialInfluenceModifier = CalculateRacialInfluenceModifier(playerToBeRewarded, victim);
+                        //var scaledRenownPoints = (int)CalculateScaledRenownPoints(modificationValue * repeatKillReward);
+                        //var baseRenownPoints = (int)CalculateBaseRenownPoints(playerToBeRewarded, victim);
+                        //var influence = CalculateInfluenceReward(playerReward.Value, modificationValue * repeatKillReward * racialInfluenceModifier);
 
-                        var xp = CalculateXpReward(playerReward.Value, modificationValue * repeatKillReward);
-                        var money = CalculateMoneyReward(playerReward.Value, modificationValue * repeatKillReward);
-                        var racialInfluenceModifier = CalculateRacialInfluenceModifier(playerToBeRewarded, victim);
-                        var scaledRenownPoints = (int)CalculateScaledRenownPoints(modificationValue * repeatKillReward);
-                        var baseRenownPoints = (int)CalculateBaseRenownPoints(playerToBeRewarded, victim);
-                        var influence = CalculateInfluenceReward(playerReward.Value, modificationValue * repeatKillReward * racialInfluenceModifier);
-
-                        // Get the modification value (multiplier for victim vs target)
-                        DistributeBaseRewardsForPlayerKill(playerToBeRewarded, money, scaledRenownPoints, baseRenownPoints, influence, $"Deathblow to {victim.Name}", xp, influenceId);
+                        //// Get the modification value (multiplier for victim vs target)
+                        //DistributeBaseRewardsForPlayerKill(playerToBeRewarded, money, scaledRenownPoints, baseRenownPoints, influence, $"Deathblow to {victim.Name}", xp, influenceId);
 
                         var hasInsigniaReward = GetInsigniaRewards(100 * repeatKillReward);
                         var insigniaName = ItemService.GetItem_Info((uint)INSIGNIA_ITEM_ID).Name;
 
                         if (hasInsigniaReward)
                         {
-                            DistributeInsigniaReward(playerToBeRewarded, $"You have been awarded 1 {insigniaName} for a party kill assist on {victim.Name}", 1);
+                            DistributeInsigniaReward(playerToBeRewarded, $"You have been awarded 1 {insigniaName} for a deathblow on {victim.Name}", 1);
                         }
 
-                        RewardLogger.Info($"++++ XP:{xp}, ScaledRP:{scaledRenownPoints} BaseRP:{baseRenownPoints} Inf:{influence} Money:{money} Insignia:{INSIGNIA_ITEM_ID} RacialInfluence:{racialInfluenceModifier}");
                         DistributeDeathBlowContributionForPlayerKill(killer, victim.Name);
                     }
                     else // An assist only.
                     {
-                        var modificationValue = ImpactMatrixManager.CalculateModificationValue(victim.BaseBountyValue, killer.BaseBountyValue);
+                        // var modificationValue = ImpactMatrixManager.CalculateModificationValue(victim.BaseBountyValue, killer.BaseBountyValue);
 
-                        RewardLogger.Debug($"Modification Value {modificationValue}");
-                        RewardLogger.Info($"++++ Assessing rewards for {playerToBeRewarded.Name} ({playerToBeRewarded.CharacterId})");
+                        //var xp = CalculateXpReward(playerReward.Value, modificationValue * repeatKillReward);
+                        //var money = CalculateMoneyReward(playerReward.Value, modificationValue * repeatKillReward);
+                        //var racialInfluenceModifier = CalculateRacialInfluenceModifier(playerToBeRewarded, victim);
+                        //var scaledRenownPoints = (int)CalculateScaledRenownPoints(modificationValue * repeatKillReward);
+                        //var baseRenownPoints = (int)CalculateBaseRenownPoints(playerToBeRewarded, victim);
+                        //var influence = CalculateInfluenceReward(playerReward.Value, modificationValue * repeatKillReward * racialInfluenceModifier);
 
-                        var xp = CalculateXpReward(playerReward.Value, modificationValue * repeatKillReward);
-                        var money = CalculateMoneyReward(playerReward.Value, modificationValue * repeatKillReward);
-                        var racialInfluenceModifier = CalculateRacialInfluenceModifier(playerToBeRewarded, victim);
-                        var scaledRenownPoints = (int)CalculateScaledRenownPoints(modificationValue * repeatKillReward);
-                        var baseRenownPoints = (int)CalculateBaseRenownPoints(playerToBeRewarded, victim);
-                        var influence = CalculateInfluenceReward(playerReward.Value, modificationValue * repeatKillReward * racialInfluenceModifier);
-
-                        // Get the modification value (multiplier for victim vs target)
-                        DistributeBaseRewardsForPlayerKill(playerToBeRewarded, money, scaledRenownPoints, baseRenownPoints, influence, $"Deathblow to {victim.Name}", xp, influenceId);
+                        //// Get the modification value (multiplier for victim vs target)
+                        //DistributeBaseRewardsForPlayerKill(playerToBeRewarded, money, scaledRenownPoints, baseRenownPoints, influence, $"Deathblow to {victim.Name}", xp, influenceId);
 
                         var hasInsigniaReward = GetInsigniaRewards(15 * repeatKillReward);
                         var insigniaName = ItemService.GetItem_Info((uint)INSIGNIA_ITEM_ID).Name;
@@ -328,7 +308,6 @@ namespace WorldServer.World.Battlefronts.Bounty
                             DistributeInsigniaReward(playerToBeRewarded, $"You have been awarded 1 {insigniaName} for a kill assist on {victim.Name}", 1);
                         }
 
-                        RewardLogger.Info($"++++ XP:{xp}, ScaledRP:{scaledRenownPoints} BaseRP:{baseRenownPoints} Inf:{influence} Money:{money} Insignia:{INSIGNIA_ITEM_ID} RacialInfluence:{racialInfluenceModifier}");
                         DistributKillAssistContributionForPlayerKill(killer);
                     }
                 }
@@ -422,12 +401,13 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             var repeatKillReward = 1.0f;
 
-            // If the same player kills the same victim within a short period, ignore.
-            if (victim._recentLooters.ContainsKey(killer.CharacterId) && victim._recentLooters[killer.CharacterId] > TCPManager.GetTimeStampMS())
-            {
-                // Lowering rewards for repeat kills
-                repeatKillReward = 0.5f;
-            }
+            // TODO - replace with something smarter than this.
+            //// If the same player kills the same victim within a short period, ignore.
+            //if (victim._recentLooters.ContainsKey(killer.CharacterId) && victim._recentLooters[killer.CharacterId] > TCPManager.GetTimeStampMS())
+            //{
+            //    // Lowering rewards for repeat kills
+            //    repeatKillReward = 0.5f;
+            //}
 
             return repeatKillReward;
         }

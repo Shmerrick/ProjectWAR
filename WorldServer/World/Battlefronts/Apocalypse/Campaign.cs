@@ -170,7 +170,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             && x.IsInWorld() 
                             && x != null 
                             && x.CbtInterface.IsPvp 
-                            && x.ScnInterface == null 
+                            && x.ScnInterface.Scenario != null 
                             && x.Region.RegionId == status.RegionId));
 
                         foreach (var realmCaptain in status.RealmCaptains)
@@ -181,7 +181,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                                                                         && x.IsInWorld()
                                                                                         && x != null
                                                                                         && x.CbtInterface.IsPvp
-                                                                                        && x.ScnInterface == null
+                                                                                        && x.ScnInterface.Scenario != null
                                                                                         && x.Region.RegionId == status.RegionId))
                             {
                                 if (playerToAnnounce.Realm == Realms.REALMS_REALM_DESTRUCTION)
