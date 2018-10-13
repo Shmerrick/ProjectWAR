@@ -102,6 +102,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("contribution", GetPlayerContribution, null, EGmLevel.AnyGM, 0, "Gets the contribution of the player."),
             new GmCommandHandler("bounty", GetPlayerBounty, null, EGmLevel.AnyGM, 0, "Gets the bounty of the player."),
             new GmCommandHandler("impacts", GetPlayerImpactMatrix, null, EGmLevel.AnyGM, 0, "Gets the bounty of the player."),
+            new GmCommandHandler("allcontribution", GetBattleFrontContribution, null, EGmLevel.AnyGM, 0, "Gets the contribution of all players in the battlefront."),
         };
 
         /// <summary>Database commands under .database</summary>

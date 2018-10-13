@@ -3650,6 +3650,7 @@ namespace GameData
         RESURRECT_PLAYER,
         OUT_OF_GROUP_HEALING,
         PARTY_KILL_ASSIST,
-        REALM_CAPTAIN_KILL
+        REALM_CAPTAIN_KILL,
+        PLAYER_KILL_ASSIST_ON_BO
     }
 }

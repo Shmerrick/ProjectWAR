@@ -119,32 +119,10 @@ namespace WorldServer.Test
                     sampleRenownBandReward
                 });
 
-            var insigniaRewards = rm.GetInsigniaRewards(fakeImpacts, sampleRenownBandReward, 5500, 100);
-            Assert.IsTrue(insigniaRewards.Count == 0);
+            var insigniaRewards = rm.GetInsigniaRewards(100);
+            Assert.IsTrue(insigniaRewards);
 
-            var insigniaRewards2 = rm.GetInsigniaRewards(fakeImpacts, sampleRenownBandReward, 5500, 1);
-            Assert.IsTrue(insigniaRewards2.Count == 2);
-            insigniaRewards2.TryGetValue(999, out var insigniaValue);
-            Assert.IsTrue(insigniaValue == 208431);
-            insigniaRewards2.TryGetValue(1000, out var insigniaValue2);
-            Assert.IsTrue(insigniaValue2 == 208431);
-
-            // Less than 90% chance (500/5000)*100
-            var insigniaRewards3 = rm.GetInsigniaRewards(fakeImpacts, sampleRenownBandReward, 5500, 8);
-            Assert.IsTrue(insigniaRewards3.Count == 2);
-            insigniaRewards3.TryGetValue(999, out var insigniaValue3);
-            Assert.IsTrue(insigniaValue3 == 208431);
-            insigniaRewards3.TryGetValue(1000, out var insigniaValue4);
-            Assert.IsTrue(insigniaValue4 == 208431);
-
-            // More than 90% chance (500/5000)
-            var insigniaRewards4 = rm.GetInsigniaRewards(fakeImpacts, sampleRenownBandReward, 5500, 28);
-            Assert.IsTrue(insigniaRewards4.Count == 1);
-            insigniaRewards4.TryGetValue(999, out var insigniaValue6);
-            Assert.IsTrue(insigniaValue6 == 0);
-            insigniaRewards4.TryGetValue(1000, out var insigniaValue7);
-            Assert.IsTrue(insigniaValue7 == 208431);
-
+          
         }
 
 

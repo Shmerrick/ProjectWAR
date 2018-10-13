@@ -82,6 +82,27 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        public static bool GetBattleFrontContribution(Player plr, ref List<string> values)
+        {
+            var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
+            var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(activeBattleFrontId);
+
+            var eligiblePlayers = activeBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
+
+            if (eligiblePlayers.Count() == 0)
+                plr.SendClientMessage("No eligible players");
+
+            foreach (var eligiblePlayer in eligiblePlayers)
+            {
+                var player = Player._Players.SingleOrDefault(x => x.CharacterId == eligiblePlayer.Key);
+                if (player != null)
+                {
+                    plr.SendClientMessage($"{player.Name}({eligiblePlayer.Key}):{eligiblePlayer.Value}");
+                }
+            }
+            return true;
+        }
+
         public static bool GetPlayerBounty(Player plr, ref List<string> values)
         {
             var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;

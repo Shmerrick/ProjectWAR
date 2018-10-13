@@ -3995,6 +3995,7 @@ namespace WorldServer
                     if (ActiveBattleFrontStatus.RealmCaptains.Exists(x => x.CharacterId == this.CharacterId))
                     {
                         ActiveBattleFrontStatus.RewardManagerInstance.RealmCaptainKill(this, killer, influenceId, PlayersByCharId);
+                        ActiveBattleFrontStatus.RemoveAsRealmCaptain(this);
                     }
                     ActiveBattleFrontStatus.RewardManagerInstance.DistributePlayerKillRewards(this, killer, AAOBonus, influenceId, PlayersByCharId);
                 }
