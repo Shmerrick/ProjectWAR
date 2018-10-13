@@ -975,14 +975,15 @@ namespace WorldServer
                         AddXp(_pendingXP, false, false);
                     _pendingXP = 0;
                 }
-                if (_pendingRenown > 0)
-                {
-                    if (PriorityGroup != null)
-                        PriorityGroup.AddPendingRenown(this, _pendingRenown);
-                    else
-                        AddRenown(_pendingRenown, false);
-                    _pendingRenown = 0;
-                }
+                // Removed for bounty system
+                //if (_pendingRenown > 0)
+                //{
+                //    if (PriorityGroup != null)
+                //        PriorityGroup.AddPendingRenown(this, _pendingRenown);
+                //    else
+                //        AddRenown(_pendingRenown, false);
+                //    _pendingRenown = 0;
+                //}
 
                 _lastLevelResourceAdd = tick + RENOWN_UPDATE_INTERVAL;
 
@@ -3128,7 +3129,7 @@ namespace WorldServer
                 renown = Convert.ToUInt32(Math.Round((1f + AAOBonus) * renown, 0));
             }
 
-            RewardLogger.Trace($"{renown} RP awarded to {Name} for {rewardString} ");
+            RewardLogger.Trace($"{renown} RP awarded to {Name} for {rewardString} [AAO:{Convert.ToUInt32(Math.Round((1f + AAOBonus)))}]");
             InternalAddRenown(renown, shouldPool, type, rewardString);
         }
 
@@ -3204,7 +3205,8 @@ namespace WorldServer
 
         public void AddKillRenown(uint renown, Player killer, Player victim, int participants = 1)
         {
-
+            // removed as not required in bounty system.
+            return;
 
             int aaoMult = 0;
             Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;

@@ -233,7 +233,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                             var influence = CalculateInfluenceReward(playerReward.Value, modificationValue * repeatKillReward * racialInfluenceModifier);
                             DistributeBaseRewardsForPlayerKill(member, money, scaledRenownPoints, baseRenownPoints, influence, $"Party assist {killer.Name} in killing {victim.Name}", xp, influenceId);
 
-                            RewardLogger.Info($"++++ XP:{xp}, ScaledRP:{scaledRenownPoints} BaseRP:{baseRenownPoints} Inf:{influence} Money:{money}  RacialInfluence:{racialInfluenceModifier}");
+                            RewardLogger.Info($"++++ XP:{xp}, ScaledRP:{scaledRenownPoints} BaseRP:{baseRenownPoints} Inf:{influence} Money:{money}  RacialInfluence:{racialInfluenceModifier} AAO:{aaoBonus}" );
 
                         }
                     }
@@ -256,7 +256,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                                 influenceId);
 
                             RewardLogger.Info(
-                                $"++++ XP:{xp}, ScaledRP:{scaledRenownPoints} + BaseRP:{baseRenownPoints} = {(uint)baseRenownPoints + scaledRenownPoints} Inf:{influence} Money:{money} RacialInfluence:{racialInfluenceModifier} modvalue:{modificationValue} repeatkill:{repeatKillReward}");
+                                $"++++ XP:{xp}, ScaledRP:{scaledRenownPoints} + BaseRP:{baseRenownPoints} = {(uint)baseRenownPoints + scaledRenownPoints} Inf:{influence} Money:{money} RacialInfluence:{racialInfluenceModifier} modvalue:{modificationValue} repeatkill:{repeatKillReward} AAO:{aaoBonus}");
                             
                         
                     }
@@ -485,7 +485,8 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
 
             killer.AddXp((uint)((uint)xp), true, true);
-            killer.AddRenown((uint)((uint)baseRenownPoints + scaledRenownPoints), true, RewardType.None, description);
+            // AAO is applied within this method
+            killer.AddRenown((uint)baseRenownPoints + (uint)scaledRenownPoints, true, RewardType.None, description);
             killer.AddInfluence((ushort)influenceId, (ushort)(influence));
             killer.AddMoney((uint)((uint)money));
 

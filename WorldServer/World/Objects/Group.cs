@@ -1805,40 +1805,40 @@ namespace WorldServer
                 }
         }
 
-        public void AddRenownFromKill(Player killer, Player victim, float bonusMod)
-        {
-            List<Player> members = GetPlayersCloseTo(killer, MAX_SHARE_DIST);
-            long curTime = TCPManager.GetTimeStampMS();
+        //public void AddRenownFromKill(Player killer, Player victim, float bonusMod)
+        //{
+        //    List<Player> members = GetPlayersCloseTo(killer, MAX_SHARE_DIST);
+        //    long curTime = TCPManager.GetTimeStampMS();
 
-            if (members.Count == 0)
-            {
-                killer.AddKillRenown((uint)(WorldMgr.GenerateRenownCount(killer, victim) * bonusMod), killer, victim);
-                return;
-            }
+        //    if (members.Count == 0)
+        //    {
+        //        killer.AddKillRenown((uint)(WorldMgr.GenerateRenownCount(killer, victim) * bonusMod), killer, victim);
+        //        return;
+        //    }
 
-            _logger.Trace($"Killer : {killer.Name} Victim : {victim.Name} bonus : {bonusMod} members : {members.Count}");
+        //    _logger.Trace($"Killer : {killer.Name} Victim : {victim.Name} bonus : {bonusMod} members : {members.Count}");
 
-            foreach (Player plr in members)
-                if (!plr.IsDead || (plr.IsDead && curTime - plr.deathTime < 120000))
-                {
-                    _logger.Trace($"Group RP : Player : {plr.Name} Victim {victim.Name} members: {members.Count} ");
-                    plr.AddKillRenown((uint)((WorldMgr.GenerateRenownCount(plr, victim) * bonusMod) / members.Count), killer, victim);
-                }
-        }
+        //    foreach (Player plr in members)
+        //        if (!plr.IsDead || (plr.IsDead && curTime - plr.deathTime < 120000))
+        //        {
+        //            _logger.Trace($"Group RP : Player : {plr.Name} Victim {victim.Name} members: {members.Count} ");
+        //            plr.AddKillRenown((uint)((WorldMgr.GenerateRenownCount(plr, victim) * bonusMod) / members.Count), killer, victim);
+        //        }
+        //}
 
-        public void AddPendingRenown(Player contributor, uint rCount)
-        {
-            List<Player> members = GetPlayersCloseTo(contributor, MAX_SHARE_DIST);
+        //public void AddPendingRenown(Player contributor, uint rCount)
+        //{
+        //    List<Player> members = GetPlayersCloseTo(contributor, MAX_SHARE_DIST);
 
-            if (members.Count == 0)
-            {
-                contributor.AddRenown(rCount, false);
-                return;
-            }
+        //    if (members.Count == 0)
+        //    {
+        //        contributor.AddRenown(rCount, false);
+        //        return;
+        //    }
 
-            foreach (Player plr in members)
-                plr.AddRenown((uint)(rCount / members.Count), false);
-        }
+        //    foreach (Player plr in members)
+        //        plr.AddRenown((uint)(rCount / members.Count), false);
+        //}
 
         public void AddMoney(Player looter, uint money)
         {

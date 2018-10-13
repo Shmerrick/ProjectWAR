@@ -125,7 +125,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             }
 
-            RewardLogger.Debug($"Returning contributionValue of {contributionValue} for {targetCharacterId} ");
+            RewardLogger.Trace($"Returning contributionValue of {contributionValue} for {targetCharacterId} ");
 
             return contributionValue;
         }
