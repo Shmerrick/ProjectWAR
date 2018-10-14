@@ -3523,6 +3523,7 @@ namespace WorldServer
         // Combat
 
         #region Health/Damage
+
         /// <summary>
         /// Provides an opportunity for this unit to modify incoming ability damage from enemies.
         /// </summary>
@@ -3562,6 +3563,22 @@ namespace WorldServer
         /// <summary>Scaler applied to damage received or dealed when farming warcamps</summary>
         /// <remarks>The scaler is hidden to player, lower than 1 if debuffed (intended feature)</remarks>
         public volatile float WarcampFarmScaler = 1f;
+
+        /// <summary>
+        /// Provides an opportunity for this unit to modify incoming ability damage from enemies.
+        /// </summary>
+        public override void ModifyHealIn(AbilityDamageInfo incHeal)
+        {
+            base.ModifyHealIn(incHeal);
+        }
+
+        /// <summary>
+        /// Provides an opportunity for this unit to modify outgoing ability damage it deals.
+        /// </summary>
+        public override void ModifyHealOut(AbilityDamageInfo outHeal)
+        {
+            base.ModifyHealOut(outHeal);
+        }
 
         /// <summary>
         /// 

@@ -196,6 +196,11 @@ namespace WorldServer
         public ushort MountArmor { get; protected set; }
 
         public bool CanMount { get; set; } = true;
+        
+        /// <summary>
+        /// Scaler applied to damage/heal received or dealed in instance boss fights.
+        /// </summary>
+        public volatile float ModifyDmgHealScaler = 1f;
 
         public Unit()
         {
@@ -676,6 +681,42 @@ namespace WorldServer
         public virtual void ModifyDamageOut(AbilityDamageInfo outDamage)
         {
             
+        }
+
+        /// <summary>
+        /// Provides an opportunity for this unit to modify incoming ability heal from enemies.
+        /// </summary>
+        public virtual void ModifyHealIn(AbilityDamageInfo incHeal)
+        {
+            if (!incHeal.IsHeal)
+                return;
+
+            if (incHeal.Damage > 0) // direct heal
+            {
+                incHeal.Damage *= ModifyDmgHealScaler;
+            }
+            else // hot
+            {
+                incHeal.DamageBonus *= ModifyDmgHealScaler;
+            }
+        }
+
+        /// <summary>
+        /// Provides an opportunity for this unit to modify outgoing ability heal it deals.
+        /// </summary>
+        public virtual void ModifyHealOut(AbilityDamageInfo outHeal)
+        {
+            if (!outHeal.IsHeal)
+                return;
+
+            if (outHeal.Damage > 0) // direct heal
+            {
+                outHeal.Damage *= ModifyDmgHealScaler;
+            }
+            else // hot
+            {
+                outHeal.DamageBonus *= ModifyDmgHealScaler;
+            }
         }
 
         /// <summary>

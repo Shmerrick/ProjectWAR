@@ -69,6 +69,14 @@ namespace WorldServer
             // reset add list
             AddList = new List<Creature>();
 
+            // reset all Modify Scalers
+            ModifyDmgHealScaler = 1f;
+            List<Player> plrs = GetPlayersInRange(300, false);
+            foreach (Player plr in plrs)
+            {
+                plr.ModifyDmgHealScaler = 1f;
+            }
+
             if (BossTimer != null)
 			{
 				BossTimer.Reset();
@@ -87,7 +95,7 @@ namespace WorldServer
         {
             return base.ReceiveDamage(caster, damage, hatredScale, mitigation);
         }
-
+        
         public override int ReceiveHeal(Unit caster, uint healAmount, float healHatredScale = 1)
         {
             return base.ReceiveHeal(caster, healAmount, healHatredScale);

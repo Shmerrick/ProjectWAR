@@ -1,4 +1,5 @@
 ﻿using Common;
+using System.Collections.Generic;
 using WorldServer.World.AI;
 
 namespace WorldServer.World.Objects.Instances
@@ -15,7 +16,7 @@ namespace WorldServer.World.Objects.Instances
         #endregion Constructors
 
         #region Attributes
-
+        
         #endregion Attributes
 
         #region Overrides

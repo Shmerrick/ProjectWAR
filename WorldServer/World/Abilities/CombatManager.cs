@@ -543,6 +543,9 @@ namespace WorldServer
 
             damageInfo.PrecalcDamage = damageInfo.GetDamageForLevel(level);
 
+            target.ModifyHealOut(damageInfo);
+            target.ModifyHealIn(damageInfo);
+
             if (damageInfo.DamageType != DamageTypes.RawHealing)
             {
                 // Neutralize some effects of AM/Shaman mechanic bonuses if self-cast
@@ -881,6 +884,8 @@ namespace WorldServer
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
 
             #endregion
+            
+            target.ModifyHealIn(damageInfo);
 
             AddOffensiveStats(caster, damageInfo, 0.2f, false);
 
@@ -1718,6 +1723,9 @@ namespace WorldServer
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
 
             #endregion
+            
+            target.ModifyHealOut(damageInfo);
+            target.ModifyHealIn(damageInfo);
 
             if (damageInfo.DamageType != DamageTypes.RawHealing)
             {
