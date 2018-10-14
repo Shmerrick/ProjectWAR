@@ -805,10 +805,29 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var activeBattleFrontId = BattleFrontManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
 
+            var keepId = 0;
+
+            keepId = lockingRealm == Realms.REALMS_REALM_DESTRUCTION ? BattleFrontManager.ActiveBattleFront.OrderKeepId : BattleFrontManager.ActiveBattleFront.DestroKeepId;
+
+            if (keepId == 0)
+                BattlefrontLogger.Error("Could not find the closest keep");
+
+            var takenKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Info.KeepId == keepId);
+
             var eligiblePlayers = this.BattleFrontManager.GetEligiblePlayers(activeBattleFrontStatus);
+            var eligiblePlayersWithinRange = new List<uint>();
+
+            // Only include players that were tagged within range of the keep when taken.
+            foreach (var eligiblePlayer in eligiblePlayers)
+            {
+                if (takenKeep.PlayersInRangeOnTake.Contains(eligiblePlayer))
+                {
+                    eligiblePlayersWithinRange.Add(eligiblePlayer);
+                }
+            }
 
             // Remove eligible players from losing realm
-            foreach (var eligiblePlayer in eligiblePlayers)
+            foreach (var eligiblePlayer in eligiblePlayersWithinRange)
             {
                 var player = Player.GetPlayer(eligiblePlayer);
                 if (player != null)
@@ -842,6 +861,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (rewardLossAssignments != null)
                 rewardAssignments.AddRange(rewardLossAssignments.Take(rewardLossAssignments.Count / 2));
 
+          
             if (rewardAssignments.Count == 0)
             {
                 BattlefrontLogger.Warn($"No reward assignments found.");

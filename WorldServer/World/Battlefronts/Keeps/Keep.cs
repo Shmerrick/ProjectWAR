@@ -38,6 +38,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public const int KEEP_INNER_DOOR_VICTORYPOINTS = 500;
         public const int KEEP_OUTER_DOOR_VICTORYPOINTS = 250;
+        public HashSet<uint> PlayersInRangeOnTake { get; set; }
 
         public enum KeepMessage
         {
@@ -124,6 +125,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             //SetSupplyRequirement();
 
             EvtInterface.AddEvent(UpdateResources, 60000, 0);
+
+            PlayersInRangeOnTake = new HashSet<uint>();
         }
 
         public override void OnLoad()
@@ -260,7 +263,10 @@ namespace WorldServer.World.BattleFronts.Keeps
                     UpdateKeepStatus(KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK);
                     SendRegionMessage(Info.Name + "'s outer door is under attack!");
                     foreach (Player plr in PlayersInRange)
+                    {
                         SendKeepInfo(plr);
+                        PlayersInRangeOnTake.Add(plr.CharacterId);
+                    }
                     EvtInterface.AddEvent(UpdateStateOfTheRealmKeep,100,1);
                 }
 
@@ -297,7 +303,11 @@ namespace WorldServer.World.BattleFronts.Keeps
                     UpdateKeepStatus(KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK);
                     SendRegionMessage(Info.Name + "'s inner sanctum door is under attack!");
                     foreach (Player plr in PlayersInRange)
+                    {
                         SendKeepInfo(plr);
+                        
+                        PlayersInRangeOnTake.Add(plr.CharacterId);
+                    }
                     EvtInterface.AddEvent(UpdateStateOfTheRealmKeep,100,1);
                 }
 
@@ -456,7 +466,10 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 UpdateKeepStatus(KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK);
                 foreach (Player plr in PlayersInRange)
+                {
                     SendKeepInfo(plr);
+                    PlayersInRangeOnTake.Add(plr.CharacterId);
+                }
                 EvtInterface.AddEvent(UpdateStateOfTheRealmKeep,100,1);
             }
 
@@ -507,7 +520,10 @@ namespace WorldServer.World.BattleFronts.Keeps
             Realm = ((Realm == Realms.REALMS_REALM_ORDER) ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER);
 
             foreach (Player plr in PlayersInRange)
+            {
                 SendKeepInfo(plr);
+                PlayersInRangeOnTake.Add(plr.CharacterId);
+            }
 
             if (LastMessage < KeepMessage.Fallen)
             {
@@ -583,7 +599,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
 
             int totalXp = (800 * Tier) + (200 * Tier * objCount) + (_playersKilledInRange * Tier * 30); // Field of Glory, reduced
-            int totalRenown = (250 * Tier) + (120 * Tier * objCount) + (_playersKilledInRange * 50);   // Ik : Increased values here.
+            int totalRenown = (150 * Tier) + (80 * Tier * objCount) + (_playersKilledInRange * 80);   // Ik : Increased values here.
             int totalInfluence = (40 * Tier) + (20 * Tier * objCount) + (_playersKilledInRange * Tier * 6);
 
             if (_playersKilledInRange < (4 * Tier))
@@ -641,6 +657,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                     if (HasInRange(player))
                     {
                         SendKeepInfo(player);
+                        PlayersInRangeOnTake.Add(player.CharacterId);
                     }
                     else
                     {
