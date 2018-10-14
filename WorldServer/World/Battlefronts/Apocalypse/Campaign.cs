@@ -828,9 +828,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var rewardSelector = new RewardSelector(new RandomGenerator());
             // Get the character Ids of the winningRealm characters
             var winningRealmCharacterIdList = winningRealmPlayers.Select(x => x.CharacterId).ToList();
-            var rewardAssignments = new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(winningRealmCharacterIdList, forceNumberBags);
+            var rewardWinAssignments = new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(winningRealmCharacterIdList, forceNumberBags);
 
-            if (rewardAssignments == null)
+            // Get the character Ids of the winningRealm characters
+            var losingRealmCharacterIdList = losingRealmPlayers.Select(x => x.CharacterId).ToList();
+            var rewardLossAssignments = new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(losingRealmCharacterIdList, forceNumberBags);
+
+            // Build the rewardAssignments structure based on the winners, and half of the losing team.
+
+            List<LootBagTypeDefinition> rewardAssignments = new List<LootBagTypeDefinition>();
+            rewardAssignments.AddRange(rewardWinAssignments);
+            rewardAssignments.AddRange(rewardLossAssignments.Take(rewardLossAssignments.Count / 2));
+
+            if (rewardAssignments.Count == 0)
             {
                 BattlefrontLogger.Warn($"No reward assignments found.");
             }
