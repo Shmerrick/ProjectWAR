@@ -183,12 +183,13 @@ namespace WorldServer.World.AI
 								{
 									Random rnd = new Random();
 									int idx = (int)Math.Round(rnd.NextDouble() * plrSubSet.ToList().Count, 0);
-									_unit.AiInterface.CurrentBrain.AddHatred(plrSubSet.ToList()[idx], false, 5000);
+									_unit.AiInterface.CurrentBrain.AddHatred(plrSubSet[idx], false, 5000);
 									_unit.CbtInterface.SetTarget(plrSubSet.ToList()[idx].Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
 								}
 								else
 								{
-									Player plr = SetRandomTarget();
+                                    plrSubSet = new List<Player>();
+                                    Player plr = SetRandomTarget();
 									if (plr != null)
 										plrSubSet.Add(plr);
 								}
