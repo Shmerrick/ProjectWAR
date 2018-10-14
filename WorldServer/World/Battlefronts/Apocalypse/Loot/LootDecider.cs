@@ -34,20 +34,28 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         public LootBagTypeDefinition DetermineRVRZoneReward(LootBagTypeDefinition lootBag, byte playerRRBand, int playerClass, List<uint> playerItems, bool shuffleRewards = true)
         {
             // get a closer list of matching items.
-            var matchingRewards = RVRZoneRewards.Where(x => x.Class == playerClass && x.RRBand == playerRRBand && lootBag.BagRarity == (LootBagRarity) x.Rarity);
+            var matchingRewards = RVRZoneRewards.Where(x => lootBag.BagRarity == (LootBagRarity) x.Rarity);
             if (matchingRewards == null)
                 return lootBag;
 
-            if (matchingRewards.Count() == 0)
+            // Select rewards that match the player RR Band or 0 (all)
+            var rewardList = from y in matchingRewards
+                where
+                    ((y.RRBand == playerRRBand && y.Class == playerClass)  ||
+                    (y.RRBand== playerRRBand && y.Class == 0) ||
+                    (y.Class == playerClass && y.RRBand == 0) ||
+                    (y.Class == 0 && y.RRBand == 0))
+                   
+                select y;
+
+            if (rewardList.Count() == 0)
                 return lootBag;
 
             if (shuffleRewards)
-                matchingRewards = matchingRewards.OrderBy(a => Guid.NewGuid()).ToList();
-            //matchingRewards = Shuffle(matchingRewards.ToList());
-
-
-
-            foreach (var matchingReward in matchingRewards)
+                rewardList = rewardList.OrderBy(a => Guid.NewGuid()).ToList();
+            
+            
+            foreach (var matchingReward in rewardList)
             {
                 // Does this matching reward exist in player's items? And we cannot duplicate move on.
                 if (playerItems.Count(x => x == matchingReward.ItemId) > 0 && matchingReward.CanAwardDuplicate == 0)
