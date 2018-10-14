@@ -837,8 +837,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Build the rewardAssignments structure based on the winners, and half of the losing team.
 
             List<LootBagTypeDefinition> rewardAssignments = new List<LootBagTypeDefinition>();
-            rewardAssignments.AddRange(rewardWinAssignments);
-            rewardAssignments.AddRange(rewardLossAssignments.Take(rewardLossAssignments.Count / 2));
+            if (rewardWinAssignments != null)
+                rewardAssignments.AddRange(rewardWinAssignments);
+            if (rewardLossAssignments != null)
+                rewardAssignments.AddRange(rewardLossAssignments.Take(rewardLossAssignments.Count / 2));
 
             if (rewardAssignments.Count == 0)
             {
@@ -858,7 +860,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                     if (lootBagTypeDefinition.Assignee != 0)
                     {
-                        var player = winningRealmPlayers.Single(x => x.CharacterId == lootBagTypeDefinition.Assignee);
+                        var player = Player._Players.Single(x => x.CharacterId == lootBagTypeDefinition.Assignee);
 
                         var playerItemList = (from item in player.ItmInterface.Items where item != null select item.Info.Entry).ToList();
 
