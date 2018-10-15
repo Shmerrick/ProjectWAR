@@ -826,7 +826,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 }
             }
 
-            // Remove eligible players from losing realm
+            
             foreach (var eligiblePlayer in eligiblePlayersWithinRange)
             {
                 var player = Player.GetPlayer(eligiblePlayer);
