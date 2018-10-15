@@ -8,7 +8,7 @@ using System.Text;
 using WorldServer.Services.World;
 using WorldServer.World.AI;
 
-namespace WorldServer
+namespace WorldServer.World.Objects.Instances
 {
     public class InstanceBossSpawn : Creature
     {

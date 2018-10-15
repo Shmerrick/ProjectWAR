@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using WorldServer.World.Objects.Instances;
 
 namespace WorldServer.World.AI
 {
