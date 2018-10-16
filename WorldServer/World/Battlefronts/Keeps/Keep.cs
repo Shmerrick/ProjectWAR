@@ -427,7 +427,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                             int random = rnd.Next(1, 25);
 
                             player.AddXp((uint) (1000 * (1+(random/100))), false, false);
-                            player.AddRenown((uint) (200 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, Info.Name);
+                            player.AddRenown((uint) (400 * (1 + (random / 100))), false, RewardType.ObjectiveCapture, Info.Name);
                         }
 
                         foreach (Hardpoint h in _hardpoints)
@@ -599,7 +599,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
 
             int totalXp = (800 * Tier) + (200 * Tier * objCount) + (_playersKilledInRange * Tier * 30); // Field of Glory, reduced
-            int totalRenown = (150 * Tier) + (80 * Tier * objCount) + (_playersKilledInRange * 80);   // Ik : Increased values here.
+            int totalRenown = (250 * Tier) + (80 * Tier * objCount) + (_playersKilledInRange * 80);   // Ik : Increased values here.
             int totalInfluence = (40 * Tier) + (20 * Tier * objCount) + (_playersKilledInRange * Tier * 6);
 
             if (_playersKilledInRange < (4 * Tier))
