@@ -805,29 +805,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var activeBattleFrontId = BattleFrontManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
 
-            var keepId = 0;
-
-            keepId = lockingRealm == Realms.REALMS_REALM_DESTRUCTION ? BattleFrontManager.ActiveBattleFront.OrderKeepId : BattleFrontManager.ActiveBattleFront.DestroKeepId;
-
-            if (keepId == 0)
-                BattlefrontLogger.Error("Could not find the closest keep");
-
-            var takenKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Info.KeepId == keepId);
-
+            /*
+             * Distribute base rewards to eligible players
+             */
             var eligiblePlayers = this.BattleFrontManager.GetEligiblePlayers(activeBattleFrontStatus);
-            var eligiblePlayersWithinRange = new List<uint>();
 
-            // Only include players that were tagged within range of the keep when taken.
             foreach (var eligiblePlayer in eligiblePlayers)
-            {
-                if (takenKeep.PlayersInRangeOnTake.Contains(eligiblePlayer))
-                {
-                    eligiblePlayersWithinRange.Add(eligiblePlayer);
-                }
-            }
-
-            
-            foreach (var eligiblePlayer in eligiblePlayersWithinRange)
             {
                 var player = Player.GetPlayer(eligiblePlayer);
                 if (player != null)
@@ -842,26 +825,54 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
 
             DistributeBaseRewards(losingRealmPlayers, winningRealmPlayers, lockingRealm);
+            
+            var keepId = 0;
+
+            keepId = lockingRealm == Realms.REALMS_REALM_DESTRUCTION ? BattleFrontManager.ActiveBattleFront.OrderKeepId : BattleFrontManager.ActiveBattleFront.DestroKeepId;
+
+            if (keepId == 0)
+            {
+                BattlefrontLogger.Error("Could not find the closest keep");
+                return;
+            }
+
+            var takenKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Info.KeepId == keepId);
+            if (takenKeep == null)
+            {
+                BattlefrontLogger.Error("Could not find the closest keep (null)");
+                return;
+            }
+            
+            // Only include players that were tagged within range of the keep when taken.
+            var eligiblePlayersWithinRange = new List<uint>();
+            foreach (var eligiblePlayer in winningRealmPlayers)
+            {
+                if (takenKeep.PlayersInRangeOnTake.Contains(eligiblePlayer.CharacterId))
+                {
+                    eligiblePlayersWithinRange.Add(eligiblePlayer.CharacterId);
+                }
+            }
+
+            foreach (var eligiblePlayer in losingRealmPlayers)
+            {
+                if (takenKeep.PlayersInRangeOnTake.Contains(eligiblePlayer.CharacterId))
+                {
+                    if (StaticRandom.Instance.Next(100) <= 50)
+                        eligiblePlayersWithinRange.Add(eligiblePlayer.CharacterId);
+                }
+            }
 
             // Select players from the shortlist to actually assign a reward to. (Eligible and winning realm)
             var rewardSelector = new RewardSelector(new RandomGenerator());
-            // Get the character Ids of the winningRealm characters
-            var winningRealmCharacterIdList = winningRealmPlayers.Select(x => x.CharacterId).ToList();
-            var rewardWinAssignments = new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(winningRealmCharacterIdList, forceNumberBags);
 
-            // Get the character Ids of the winningRealm characters
-            var losingRealmCharacterIdList = losingRealmPlayers.Select(x => x.CharacterId).ToList();
-            var rewardLossAssignments = new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(losingRealmCharacterIdList, forceNumberBags);
+            var rewardAssignments = new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(eligiblePlayersWithinRange, forceNumberBags);
 
-            // Build the rewardAssignments structure based on the winners, and half of the losing team.
+            if (rewardAssignments == null)
+            {
+                BattlefrontLogger.Warn($"No reward assignments found (null).");
+                return;
+            }
 
-            List<LootBagTypeDefinition> rewardAssignments = new List<LootBagTypeDefinition>();
-            if (rewardWinAssignments != null)
-                rewardAssignments.AddRange(rewardWinAssignments);
-            if (rewardLossAssignments != null)
-                rewardAssignments.AddRange(rewardLossAssignments.Take(rewardLossAssignments.Count / 2));
-
-          
             if (rewardAssignments.Count == 0)
             {
                 BattlefrontLogger.Warn($"No reward assignments found.");
