@@ -32,7 +32,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 return null;
 
             // Randomise the players
-            // var randomisedPlayerList = eligiblePlayers.OrderBy(a => Guid.NewGuid()).ToList();
+            var randomisedPlayerList = eligiblePlayers.OrderBy(a => Guid.NewGuid()).ToList();
             //var randomisedPlayerList = RewardSelector.RandomisePlayerList(eligiblePlayers);
             int numberLootBags = 0;
             // Determine the number of awards to give
@@ -45,7 +45,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             {
                 try
                 {
-                    var selectedPlayer = eligiblePlayers[StaticRandom.Instance.Next((eligiblePlayers.Count))];
+                    var selectedPlayer = randomisedPlayerList[StaticRandom.Instance.Next((eligiblePlayers.Count))];
 
                     RewardLogger.Debug($"Selected player {selectedPlayer} {eligiblePlayers.Count} for reward");
 
