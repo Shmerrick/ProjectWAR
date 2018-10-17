@@ -17,6 +17,7 @@ namespace WorldServer.World.BattleFronts.Keeps
     public class Keep : BattleFrontObjective
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
 
 
         /*  public enum KeepMessage
@@ -578,6 +579,11 @@ namespace WorldServer.World.BattleFronts.Keeps
             _logger.Info("**********************KEEP FLIP******************************");
             _logger.Info($"Distributing rewards for Keep {this.Name}");
             _logger.Info("*************************************************************");
+
+            RewardLogger.Info("**********************KEEP FLIP******************************");
+            RewardLogger.Info($"Distributing rewards for Keep {this.Name}");
+            RewardLogger.Info("*************************************************************");
+
             uint influenceId = 0;
 
             byte objCount = 0;
@@ -614,31 +620,15 @@ namespace WorldServer.World.BattleFronts.Keeps
             Log.Info("Keep", $"Lock XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
 
             _logger.Info($"Lock XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
-
-            // Dont believe contribution is being triggered.
-            // Dictionary<uint, ContributionInfo> contributors = Region.Campaign.GetContributorsFromRealm(Realm);
-
-            //if (contributors.Count == 0)
-            //{
-            //    _playersKilledInRange = 0;
-            //    return;
-            //}
-
-            //uint maxContribution = contributors.Values.Max(x => x.BaseContribution);
-
-            //Log.Info("Keep", $"Contributor count : {contributors.Count} Max contribution: {maxContribution}");
-
-            //if (maxContribution == 0)
-            //{
-            //    _playersKilledInRange = 0;
-            //    return;
-            //}
+            RewardLogger.Info($"Lock XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
 
             try
             {
                 var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
                 var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
                 var eligiblePlayers = WorldMgr.UpperTierCampaignManager.GetEligiblePlayers(activeBattleFrontStatus);
+
+                RewardLogger.Info($"Processing {eligiblePlayers.Count} players for Keep lock rewards");
 
                 foreach (var characterId in eligiblePlayers)
                 {
@@ -653,6 +643,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                     if (player.ValidInTier(Tier, true))
                         player.QtsInterface.HandleEvent(Objective_Type.QUEST_CAPTURE_KEEP, Info.KeepId, 1);
 
+                    RewardLogger.Debug($"Player {player.Name} is valid");
 
                     if (HasInRange(player))
                     {
@@ -662,7 +653,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                     else
                     {
                         player.SendClientMessage("The keep was taken, but you were too far away!");
-                        return;
+                        continue;
                     }
 
                     if (influenceId == 0)
@@ -675,11 +666,9 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                     if (battlePenalty)
                         player.SendClientMessage("This keep was taken with little to no resistance. The rewards have therefore been reduced.");
-                    else
-                        //// Invader crests
-                        //player.ItmInterface.CreateItem((uint)(208429), (ushort)5);
 
                     _logger.Info($"Distributing rewards for Keep {this.Name} to {player.Name} RR:{totalRenown} INF:{totalInfluence}");
+                    RewardLogger.Info($"Distributing rewards for Keep {this.Name} to {player.Name} RR:{totalRenown} INF:{totalInfluence}");
                 }
 
                 _playersKilledInRange = 0;
