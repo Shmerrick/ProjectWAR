@@ -862,6 +862,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 }
             }
 
+            
             // Select players from the shortlist to actually assign a reward to. (Eligible and winning realm)
             var rewardSelector = new RewardSelector(new RandomGenerator());
 
