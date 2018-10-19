@@ -15,6 +15,7 @@ namespace WorldServer
 
         // Damage
         public ushort BaseDamage;
+        public ushort Multiplier;
         public ushort DamageVariance;
         public float PrecalcDamage;
         public float Damage;
@@ -191,7 +192,8 @@ namespace WorldServer
         const float DamageConstant = 0.166667f;
         public uint GetDamageForLevel(byte level)
         {
-            uint damage = (uint)((((level - 1) * (DamageConstant) * BaseDamage) + BaseDamage));
+            ushort Multiplier = 100;
+            uint damage = (uint)((((level - 1) * (DamageConstant) * BaseDamage) + BaseDamage) * (Multiplier / 100));
             if (DamageVariance == 0)
                 return damage;
             float percentageModifier = (StaticRandom.Instance.Next(DamageVariance * 2) - DamageVariance) * 0.01f;
