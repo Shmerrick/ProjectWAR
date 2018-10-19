@@ -841,8 +841,8 @@ namespace WorldServer
 
             if (cmd != null)
             {
-                cmd.DamageInfo.MinDamage = (ushort)myEffect.PrimaryValue;
-                cmd.DamageInfo.MaxDamage = (ushort)myEffect.SecondaryValue;
+                cmd.DamageInfo.BaseDamage = (ushort)myEffect.PrimaryValue;
+                cmd.DamageInfo.BaseDamage = (ushort)myEffect.SecondaryValue;
             }
         }
 
@@ -1127,8 +1127,8 @@ namespace WorldServer
                                     // ITT and BE gain base healing of 250% of their base damage plus Willpower bonus
                                     if (abInfo.Entry == 1930 || abInfo.Entry == 9257)
                                     {
-                                        cmd.DamageInfo.MinDamage = (ushort) (cmd.LastCommand.DamageInfo.MinDamage*2.5);
-                                        cmd.DamageInfo.MaxDamage = (ushort) (cmd.LastCommand.DamageInfo.MaxDamage*2.5);
+                                        cmd.DamageInfo.BaseDamage = (ushort) (cmd.LastCommand.DamageInfo.BaseDamage*2.5);
+                                        cmd.DamageInfo.BaseDamage = (ushort) (cmd.LastCommand.DamageInfo.BaseDamage*2.5);
                                         cmd.DamageInfo.StatUsed = 3;
                                         cmd.DamageInfo.StatDamageScale = 2;
                                     }
@@ -1136,8 +1136,8 @@ namespace WorldServer
                                     // Fury of Da Green and Energy of Vaul heal for their base damage per target struck
                                     else
                                     {
-                                        cmd.DamageInfo.MinDamage = 40;
-                                        cmd.DamageInfo.MaxDamage = 300;
+                                        cmd.DamageInfo.BaseDamage = 40;
+                                        cmd.DamageInfo.BaseDamage = 300;
                                     }
                                 }
 
@@ -1217,8 +1217,8 @@ namespace WorldServer
                                         // ITT and BE gain base healing of 250% of their base damage plus Willpower bonus
                                         if (abInfo.Entry == 1930 || abInfo.Entry == 9257)
                                         {
-                                            cmd.DamageInfo.MinDamage = (ushort)(cmd.LastCommand.DamageInfo.MinDamage * 2.5);
-                                            cmd.DamageInfo.MaxDamage = (ushort)(cmd.LastCommand.DamageInfo.MaxDamage * 2.5);
+                                            cmd.DamageInfo.BaseDamage = (ushort)(cmd.LastCommand.DamageInfo.BaseDamage * 2.5);
+                                            cmd.DamageInfo.BaseDamage = (ushort)(cmd.LastCommand.DamageInfo.BaseDamage * 2.5);
                                             cmd.DamageInfo.StatUsed = 3;
                                             cmd.DamageInfo.StatDamageScale = 2;
                                         }
@@ -1226,8 +1226,8 @@ namespace WorldServer
                                         // Fury of Da Green and Energy of Vaul heal for their base damage per target struck
                                         else
                                         {
-                                            cmd.DamageInfo.MinDamage = 40;
-                                            cmd.DamageInfo.MaxDamage = 300;
+                                            cmd.DamageInfo.BaseDamage = 40;
+                                            cmd.DamageInfo.BaseDamage = 300;
                                         }
                                     }
 
@@ -1423,8 +1423,8 @@ namespace WorldServer
 
             if (cmd != null)
             {
-                cmd.DamageInfo.MinDamage = (ushort)myEffect.PrimaryValue;
-                cmd.DamageInfo.MaxDamage = (ushort)myEffect.SecondaryValue;
+                cmd.DamageInfo.BaseDamage = (ushort)myEffect.PrimaryValue;
+                cmd.DamageInfo.BaseDamage = (ushort)myEffect.SecondaryValue;
             }
         }
 

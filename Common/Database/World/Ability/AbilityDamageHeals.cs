@@ -32,10 +32,7 @@ namespace Common
         public byte ParentCommandSequence { get; set; }
 
         [DataElement]
-        public ushort MinDamage { get; set; }
-
-        [DataElement]
-        public ushort MaxDamage { get; set; }
+        public ushort BaseDamage { get; set; }
 
         [DataElement(Varchar = 16)]
         public string DamageType { get; set; }

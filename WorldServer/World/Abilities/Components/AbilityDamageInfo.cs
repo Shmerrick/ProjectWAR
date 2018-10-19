@@ -14,8 +14,7 @@ namespace WorldServer
         public byte Index;
 
         // Damage
-        public ushort MinDamage;
-        public ushort MaxDamage;
+        public ushort BaseDamage;
         public ushort DamageVariance;
         public float PrecalcDamage;
         public float Damage;
@@ -117,8 +116,7 @@ namespace WorldServer
             Index = dbObj.Index;
             ParentCommandID = dbObj.ParentCommandID;
             ParentCommandSequence = dbObj.ParentCommandSequence;
-            MinDamage = dbObj.MinDamage;
-            MaxDamage = dbObj.MaxDamage;
+            BaseDamage = dbObj.BaseDamage;
             if (!string.IsNullOrEmpty(dbObj.DamageType))
                 DamageType = (DamageTypes)Enum.Parse(typeof(DamageTypes), dbObj.DamageType);
             DamageVariance = dbObj.DamageVariance;
@@ -187,15 +185,12 @@ namespace WorldServer
          * 
          * (((((39) * (0.166667)) * (20)) + 20) * (1) = 150
          * 
-         * Values[0] = MinDamage
+         * Values[0] = BaseDamage
          *
         */
         public uint GetDamageForLevel(byte level)
         {
-            /*
-            uint damage = (uint)(MinDamage + (MaxDamage - MinDamage) * ((level - 1) / 39.0f));
-            */
-            uint damage = (uint)((((level - 1) * (0.16667) * MinDamage) + MinDamage));
+            uint damage = (uint)((((level - 1) * (0.16667) * BaseDamage) + BaseDamage));
             if (DamageVariance == 0)
                 return damage;
             float percentageModifier = (StaticRandom.Instance.Next(DamageVariance * 2) - DamageVariance) * 0.01f;

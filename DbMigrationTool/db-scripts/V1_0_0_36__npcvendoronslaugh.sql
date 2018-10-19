@@ -1,3 +1,0 @@
-insert into war_world.creature_spawns (Guid, Entry, ZoneId, WorldX, WorldY, WorldZ, WorldO, Icone, Faction, Level, Oid, RespawnMinutes) values ('1187894', '2000888', '161', '1441606', '150851', '17385', '1830', '18', '0', '40', '0', '1');
-
-insert into war_world.creature_spawns (Guid, Entry, ZoneId, WorldX, WorldY, WorldZ, WorldO, Icone, Faction, Level, Oid, RespawnMinutes) values ('1187893', '2000889', '162', '118494', '146218', '13482', '594', '18', '0', '40', '0', '1');
