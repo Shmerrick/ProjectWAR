@@ -34,6 +34,9 @@ namespace Common
         [DataElement]
         public ushort BaseDamage { get; set; }
 
+        [DataElement]
+        public ushort Multiplier { get; set; }
+
         [DataElement(Varchar = 16)]
         public string DamageType { get; set; }
 

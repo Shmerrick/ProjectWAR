@@ -136,6 +136,7 @@ namespace WorldServer
             ResourceBuild = dbObj.ResourceBuild;
             CastPlayerSubID = dbObj.CastPlayerSubID;
             PriStatMultiplier = dbObj.PriStatMultiplier;
+            Multiplier = dbObj.Multiplier;
         }
 
         public static List<AbilityDamageInfo> Convert(List<DBAbilityDamageInfo> dbObjs)
@@ -192,7 +193,6 @@ namespace WorldServer
         const float DamageConstant = 0.166667f;
         public uint GetDamageForLevel(byte level)
         {
-            ushort Multiplier = 100;
             uint damage = (uint)((((level - 1) * (DamageConstant) * BaseDamage) + BaseDamage) * (Multiplier / 100));
             if (DamageVariance == 0)
                 return damage;
