@@ -502,7 +502,7 @@ namespace WorldServer
                 return;
             if (damageInfo.PriStatMultiplier > 0.0f)
             {
-                damageInfo.PrecalcDamage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod) * damageInfo.PriStatMultiplier;
+                damageInfo.PrecalcDamage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod);
             }
             else
             {
@@ -1016,7 +1016,7 @@ namespace WorldServer
 
                 if (damageInfo.PriStatMultiplier > 0.0f)
                 {
-                    damageInfo.Damage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod) * damageInfo.PriStatMultiplier;
+                    damageInfo.Damage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod);
                 }
                 else
                 {
@@ -1209,7 +1209,7 @@ namespace WorldServer
 
                 if (damageInfo.PriStatMultiplier > 0.0f)
                 {
-                    damageInfo.Damage = (caster.ItmInterface.GetWeaponDamage(slot)) * damageInfo.PriStatMultiplier;
+                    damageInfo.Damage = (caster.ItmInterface.GetWeaponDamage(slot));
                 }
                 else
                 {
@@ -2057,9 +2057,9 @@ namespace WorldServer
             if (damageInfo.PriStatMultiplier > 0.0f)
             {
                 if (toPrecalc)
-                    damageInfo.PrecalcDamage += (stat / 5) * damageInfo.PriStatMultiplier;
+                    damageInfo.PrecalcDamage += (stat / 5);
                 else
-                    damageInfo.Damage += (stat / 5) * damageInfo.PriStatMultiplier;
+                    damageInfo.Damage += (stat / 5);
             }
             else
             {
@@ -2086,7 +2086,7 @@ namespace WorldServer
             {
                 if (toPrecalc)
                 {
-                    damageInfo.PrecalcMitigation = (stat / 5) * damageInfo.PriStatMultiplier;
+                    damageInfo.PrecalcMitigation = (stat / 5);
                     if (damageInfo.PrecalcMitigation >= damageInfo.PrecalcDamage)
                     {
                         damageInfo.PrecalcMitigation = damageInfo.PrecalcDamage - 1;
@@ -2097,7 +2097,7 @@ namespace WorldServer
                 }
                 else
                 {
-                    damageInfo.Mitigation = (stat / 5) * damageInfo.PriStatMultiplier;
+                    damageInfo.Mitigation = (stat / 5);
 
                     if (damageInfo.Mitigation >= damageInfo.Damage)
                     {
