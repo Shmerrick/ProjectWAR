@@ -2009,9 +2009,9 @@ namespace WorldServer
              * 
             */
 
-            damageInfo.PrecalcDamage += (stat / 5) * damageInfo.StatDamageScale;
+            damageInfo.PrecalcDamage += ((stat / 5) * damageInfo.StatDamageScale);
 
-            damageInfo.Damage += (stat / 5) * damageInfo.StatDamageScale;
+            damageInfo.Damage += ((stat / 5) * damageInfo.StatDamageScale);
         }
 
         private static void AddLinearMitigation(Unit target, AbilityDamageInfo damageInfo, float coefficient, bool toPrecalc)
