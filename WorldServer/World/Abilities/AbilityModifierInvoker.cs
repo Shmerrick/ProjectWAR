@@ -1106,59 +1106,6 @@ namespace WorldServer
 
             if (plr == null)
                 return;
-
-            /*
-            if (plr.CrrInterface.ExperimentalMode && myEffect.PrimaryValue == 1 && myEffect.PreOrPost == 1)
-            {
-                // Check for lifesteal abilities.
-                // These abilities, have reduced damage but significantly better health stealing.
-                switch (abInfo.Entry)
-                {
-                    case 1930: // I'll Take That!
-                    case 1935: // Fury of Da Green
-                    case 9257: // Balance Essence
-                    case 9274: // Energy of Vaul
-                        foreach (var cmdinfo in abInfo.CommandInfo)
-                        {
-                            for (var cmd = cmdinfo; cmd != null; cmd = cmd.NextCommand)
-                            {
-                                if (cmd.CommandName == "StealLife")
-                                {
-                                    // ITT and BE gain base healing of 250% of their base damage plus Willpower bonus
-                                    if (abInfo.Entry == 1930 || abInfo.Entry == 9257)
-                                    {
-                                        cmd.DamageInfo.BaseDamage = (ushort) (cmd.LastCommand.DamageInfo.BaseDamage*2.5);
-                                        cmd.DamageInfo.BaseDamage = (ushort) (cmd.LastCommand.DamageInfo.BaseDamage*2.5);
-                                        cmd.DamageInfo.StatUsed = 3;
-                                        cmd.DamageInfo.StatDamageScale = 2;
-                                    }
-
-                                    // Fury of Da Green and Energy of Vaul heal for their base damage per target struck
-                                    else
-                                    {
-                                        cmd.DamageInfo.BaseDamage = 40;
-                                        cmd.DamageInfo.BaseDamage = 300;
-                                    }
-                                }
-
-                                if (cmd.DamageInfo == null)
-                                    continue;
-
-                                cmd.DamageInfo.Defensibility -= 20;
-
-                                if (cmd.CommandName != "StealLife")
-                                {
-                                    cmd.DamageInfo.NoCrits = true;
-                                    cmd.DamageInfo.StatDamageScale = 0f;
-                                }
-                                else if (abInfo.Entry == 1930 || abInfo.Entry == 9257)
-                                    cmd.DamageInfo.DamageType = DamageTypes.Healing;
-                            }
-                        }
-                        break;
-                }
-            }
-            */
             
             byte myResource = plr.CrrInterface.CareerResource;
 

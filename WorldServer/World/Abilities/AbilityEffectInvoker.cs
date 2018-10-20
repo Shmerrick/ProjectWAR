@@ -597,28 +597,6 @@ namespace WorldServer
                         CombatManager.HealTarget(damageThisPass, level, _instigator, target);
                     else
                     {
-                        /*
-                        Player player = _caster as Player;
-
-                        if (player != null && (cmd.MaxTargets == 0 || cmd.MaxTargets >= 9) && (_alliesFound > 0 || _targetsFound > 6))
-                        {
-                            // Scale damage output based on allies and targets hit
-                            float aoeScale = 1f - (_alliesFound * 0.2f);
-
-                            if (_targetsFound > 6)
-                                aoeScale += 0.3f * (_targetsFound - 6);
-
-                            if (player.DebugMode)
-                                player.SendClientMessage("AoE damage mod: "+aoeScale+" ("+_alliesFound+" allies, "+_targetsFound+" enemies)");
-
-                            if (aoeScale < 1f)
-                                damageThisPass.DamageReduction = Math.Max(0.2f, aoeScale);
-                            // Only melee abilities should receive damage bonuses
-                            else if (damageThisPass.StatUsed == 1)
-                                damageThisPass.DamageBonus = Math.Min(5f, aoeScale);
-                        }
-                        */
-
                         CombatManager.InflictDamage(damageThisPass, level, _instigator, target);
                     }
                     cmd.CommandResult += (short)damageThisPass.Damage;

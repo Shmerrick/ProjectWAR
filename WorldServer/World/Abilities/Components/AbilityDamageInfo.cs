@@ -149,52 +149,61 @@ namespace WorldServer
         #endregion
 
         #region Interface
-         /* Ability Use Example [SIMPLE!!] - The following are from the client and do not represent WarEmu integration.
-         *  ID                  = 8323
-         *  AbilityName         = Ravage
-         *  AbilityDesc         = You channel the fell powers of the warp into your blade unleashing a devastating strike that does {COM_0_VAL0} Spiritual damage.
-         *  ScaleStatMult       = 1.5
-         *  ComponentID         = 147
-         *  ComponentDesc       = 
-         *  ComponentIndex      = 0
-         *  Operation           = DAMAGE
-         *  ActivationDelay     = 0
-         *  Radius              = 0
-         *  ComponentDuration   = 0
-         *  FlightSpeed         = 0
-         *  Trigger             = 1
-         *  VfxID               = 0
-         *  Values              = 20,0,6,7,0,0,0,0
-         *  Values              = [0], [1], etc
-         *  Multipliers         = 100,100,68,150,100,100,100,100
-         *  Multipliers         = [0], [1], etc
-         *  
-         *  DAMAGE VALUE CONSTANT (increasePerLevel) = .166667
-         *  HEAL VALUE CONSTANT (increasePerLevel) = 1.0 [NOT CONFIRMED]
-         *  
-         * ((((abilityLevel - 1) * increasePerLevel) * baseValue) + Values[0]) * (Multipliers[0] / 100)
-         * AbilityLevel  = Player.Level + Buff.SUM(Ability.Specilization)
-         * If Player.Level > 25, then Player.Level = 25
-         * 
-         * Level 1 Chosen
-         * (((((1) - 1) * (0.166667)) * (20)) + 20) * ((100) / 100 ) = 20
-         * 
-         * Level 40 Chosen
-         * (((((40) - 1) * (0.166667)) * (20)) + 20) * ((100) / 100 ) = 150
-         * 
-         * (((((39) * (0.166667)) * (20)) + 20) * (1) = 150
-         * 
-         * Values[0] = BaseDamage
-         *
-        */
-        const float DamageConstant = 0.166667f;
+        /* Ability Use Example [SIMPLE!!] - The following are from the client and do not represent WarEmu integration.
+        *  ID                  = 8323
+        *  AbilityName         = Ravage
+        *  AbilityDesc         = You channel the fell powers of the warp into your blade unleashing a devastating strike that does {COM_0_VAL0} Spiritual damage.
+        *  ScaleStatMult       = 1.5
+        *  ComponentID         = 147
+        *  ComponentDesc       = 
+        *  ComponentIndex      = 0
+        *  Operation           = DAMAGE
+        *  ActivationDelay     = 0
+        *  Radius              = 0
+        *  ComponentDuration   = 0
+        *  FlightSpeed         = 0
+        *  Trigger             = 1
+        *  VfxID               = 0
+        *  Values              = 20,0,6,7,0,0,0,0
+        *  Values              = [0], [1], etc
+        *  Multipliers         = 100,100,68,150,100,100,100,100
+        *  Multipliers         = [0], [1], etc
+        *  
+        *  DAMAGE VALUE CONSTANT    (increasePerLevel) = 0.16666666666666666666666666666667
+        *  HEAL VALUE CONSTANT      (increasePerLevel) = 1.0 [NOT CONFIRMED]
+        *  MORALE VALUE CONSTANT    (increasePerLevel) = 0.55128205128205128205128205128205
+        *  
+        * ((((abilityLevel - 1) * increasePerLevel) * baseValue) + Values[0]) * (Multipliers[0] / 100)
+        * AbilityLevel  = Player.Level + Buff.SUM(Ability.Specilization)
+        * If Player.Level > 25, then Player.Level = 25
+        * 
+        * Level 1 Chosen
+        * (((((1) - 1) * (0.166667)) * (20)) + 20) * ((100) / 100 ) = 20
+        * 
+        * Level 40 Chosen
+        * (((((40) - 1) * (0.166667)) * (20)) + 20) * ((100) / 100 ) = 150
+        * 
+        * (((((39) * (0.166667)) * (20)) + 20) * (1) = 150
+        * 
+        * Values[0] = BaseDamage
+        *
+       */
+
+        /*
+         public float DamageConstantDef(float DamageConstant)
+         {
+             if (damageInfo.DamageType == DamageTypes.RawDamage)
+                 DamageConstant = 0.55128205128205128205128205128205f;
+             else
+                 DamageConstant = 0.16666666666666666666666666666667f;
+         }
+         */
+
+        const float DamageConstant = 0.16666666666666666666666666666667f;
         public uint GetDamageForLevel(byte level)
         {
-            uint damage = (uint)((((level - 1) * (DamageConstant) * BaseDamage) + BaseDamage) * (Multiplier / 100));
-            if (DamageVariance == 0)
+            uint damage = (uint)((((level - 1) * (/*DamageConstantDef.DamageConstant*/DamageConstant) * BaseDamage) + BaseDamage) * (Multiplier / 100));
                 return damage;
-            float percentageModifier = (StaticRandom.Instance.Next(DamageVariance * 2) - DamageVariance) * 0.01f;
-            return (uint)(damage * (1f + percentageModifier));
         }
 
         public ushort GetArmorPenetrationForLevel(byte level)

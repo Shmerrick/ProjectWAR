@@ -497,6 +497,7 @@ namespace WorldServer
 
             if (damageInfo.DamageType == DamageTypes.RawDamage)
                 return;
+
             if (damageInfo.PriStatMultiplier > 0.0f)
             {
                 damageInfo.PrecalcDamage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod);
@@ -560,7 +561,7 @@ namespace WorldServer
 
         public static void InflictPrecalculatedDamage(AbilityDamageInfo damageInfo, Unit caster, Unit target, float multiplier, bool bFinalize)
         {
-            damageInfo.Damage = damageInfo.PrecalcDamage * multiplier;
+            damageInfo.Damage = damageInfo.PrecalcDamage;
             damageInfo.Mitigation = damageInfo.PrecalcMitigation * multiplier;
             damageInfo.Absorption = 0;
             damageInfo.TransferFactor = 1;
@@ -1183,15 +1184,7 @@ namespace WorldServer
 
             else
             {
-
-                if (damageInfo.PriStatMultiplier > 0.0f)
-                {
-                    damageInfo.Damage = (caster.ItmInterface.GetWeaponDamage(slot));
-                }
-                else
-                {
-                    damageInfo.Damage = (caster.ItmInterface.GetWeaponDamage(slot));
-                }
+                damageInfo.Damage = (caster.ItmInterface.GetWeaponDamage(slot));
 
                 if (damageInfo.StatUsed > 0)
                 {
@@ -2000,11 +1993,6 @@ namespace WorldServer
             if (damageInfo.UseItemStatTotal)
                 stat = Math.Max(stat, caster.StsInterface.GetBaseStat(damageInfo.StatUsed) + (caster.StsInterface.ItemStatTotal*0.7f) - caster.StsInterface.GetReducedStat((Stats)damageInfo.StatUsed));
 
-            #if DEBUG
-            if (caster is Player && damageInfo.UseItemStatTotal)
-                ((Player) caster).SendClientMessage($"Using total item stat factor contribution of {caster.StsInterface.GetBaseStat(damageInfo.StatUsed) + (caster.StsInterface.ItemStatTotal*0.7f)} instead of {(damageInfo.StatUsed == 3 ? "Willpower" : "Intelligence")} contribution of {caster.StsInterface.GetTotalStat((Stats)damageInfo.StatUsed)}.");
-            #endif
-
             if (stat > hardcap)
                 stat = hardcap;
 
@@ -2028,20 +2016,16 @@ namespace WorldServer
                     break;
             }
 
-            if (damageInfo.PriStatMultiplier > 0.0f)
-            {
-                if (toPrecalc)
-                    damageInfo.PrecalcDamage += (stat / 5);
-                else
-                    damageInfo.Damage += (stat / 5);
-            }
-            else
-            {
-                if (toPrecalc)
-                    damageInfo.PrecalcDamage += stat * coefficient * damageInfo.StatDamageScale;
-                else
-                    damageInfo.Damage += stat * coefficient * damageInfo.StatDamageScale;
-            }
+            /*
+             * Ability damage as defined by AbilityDamageInf.cs GetDamageForLevel.damage LINE 203
+             * 
+             * Ability damage + the sum of weapon dps + (stats + power) = output damage
+             * 
+            */
+
+            damageInfo.PrecalcDamage += (stat / 5) * damageInfo.StatDamageScale;
+
+            damageInfo.Damage += (stat / 5) * damageInfo.StatDamageScale;
         }
 
         private static void AddLinearMitigation(Unit target, AbilityDamageInfo damageInfo, float coefficient, bool toPrecalc)
@@ -2056,6 +2040,7 @@ namespace WorldServer
 
             else if (stat > softcap)
                 stat = softcap + (stat - softcap) / 3;
+
             if (damageInfo.PriStatMultiplier > 0.0f)
             {
                 if (toPrecalc)
