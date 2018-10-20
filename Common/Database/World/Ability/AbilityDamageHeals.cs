@@ -87,9 +87,6 @@ namespace Common
         [DataElement]
         public byte CastPlayerSubID { get; set; }
 
-        [DataElement]
-        public float PriStatMultiplier { get; set; }
-
         #endregion
     }
 }

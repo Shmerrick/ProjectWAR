@@ -498,14 +498,7 @@ namespace WorldServer
             if (damageInfo.DamageType == DamageTypes.RawDamage)
                 return;
 
-            if (damageInfo.PriStatMultiplier > 0.0f)
-            {
-                damageInfo.PrecalcDamage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod);
-            }
-            else
-            {
-                damageInfo.PrecalcDamage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod) * damageInfo.WeaponDamageScale;
-            }
+            damageInfo.PrecalcDamage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod) * damageInfo.WeaponDamageScale;
 
             if (damageInfo.StatUsed > 0)
             {
@@ -994,14 +987,7 @@ namespace WorldServer
 
                 #endregion
 
-                if (damageInfo.PriStatMultiplier > 0.0f)
-                {
-                    damageInfo.Damage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod);
-                }
-                else
-                {
-                    damageInfo.Damage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod) * damageInfo.WeaponDamageScale;
-                }
+                damageInfo.Damage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod) * damageInfo.WeaponDamageScale;
 
                 if (damageInfo.StatUsed > 0)
                 {
@@ -2041,34 +2027,7 @@ namespace WorldServer
             else if (stat > softcap)
                 stat = softcap + (stat - softcap) / 3;
 
-            if (damageInfo.PriStatMultiplier > 0.0f)
-            {
-                if (toPrecalc)
-                {
-                    damageInfo.PrecalcMitigation = (stat / 5);
-                    if (damageInfo.PrecalcMitigation >= damageInfo.PrecalcDamage)
-                    {
-                        damageInfo.PrecalcMitigation = damageInfo.PrecalcDamage - 1;
-                        damageInfo.PrecalcDamage = 1;
-                    }
-                    else
-                        damageInfo.PrecalcDamage -= damageInfo.PrecalcMitigation;
-                }
-                else
-                {
-                    damageInfo.Mitigation = (stat / 5);
 
-                    if (damageInfo.Mitigation >= damageInfo.Damage)
-                    {
-                        damageInfo.Mitigation = damageInfo.Damage - 1;
-                        damageInfo.Damage = 1;
-                    }
-                    else
-                        damageInfo.Damage -= damageInfo.Mitigation;
-                }
-            }
-            else
-            {
                 if (toPrecalc)
                 {
                     damageInfo.PrecalcMitigation = stat * coefficient * damageInfo.StatDamageScale;
@@ -2081,7 +2040,6 @@ namespace WorldServer
                     else
                         damageInfo.PrecalcDamage -= damageInfo.PrecalcMitigation;
                 }
-
                 else
                 {
                     damageInfo.Mitigation = stat * coefficient * damageInfo.StatDamageScale;
@@ -2094,7 +2052,6 @@ namespace WorldServer
                     else
                         damageInfo.Damage -= damageInfo.Mitigation;
                 }
-            }
         }
 
         private static void CheckCriticalHit(Unit caster, Unit target, AbilityDamageInfo damageInfo)

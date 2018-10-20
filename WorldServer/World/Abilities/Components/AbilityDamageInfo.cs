@@ -97,10 +97,6 @@ namespace WorldServer
         // Set if this damage should use a fraction of the Item Stat Total for its stat contribution.
         public bool UseItemStatTotal;
 
-        //If defined, use the Primary Stat defined as a multiplier and override the weapon value to also use this statistic by calculating the DPS value of the primary stat plus the DPS value of the weapons used in conjunction with the base value for the skill.
-        //
-        public float PriStatMultiplier;
-
         #region Load
 
         public AbilityDamageInfo()
@@ -132,7 +128,6 @@ namespace WorldServer
             HealHatredScale = dbObj.HealHatredScale;
             ResourceBuild = dbObj.ResourceBuild;
             CastPlayerSubID = dbObj.CastPlayerSubID;
-            PriStatMultiplier = dbObj.PriStatMultiplier;
             Multiplier = dbObj.Multiplier;
         }
 
