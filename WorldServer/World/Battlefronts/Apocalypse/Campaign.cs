@@ -842,27 +842,37 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattlefrontLogger.Error("Could not find the closest keep (null)");
                 return;
             }
-            
             // Only include players that were tagged within range of the keep when taken.
             var eligiblePlayersWithinRange = new List<uint>();
-            foreach (var eligiblePlayer in winningRealmPlayers)
-            {
-                if (takenKeep.PlayersInRangeOnTake.Contains(eligiblePlayer.CharacterId))
-                {
-                    eligiblePlayersWithinRange.Add(eligiblePlayer.CharacterId);
-                }
-            }
 
-            foreach (var eligiblePlayer in losingRealmPlayers)
+            if (takenKeep.PlayersInRangeOnTake == null)
+                BattlefrontLogger.Error("takenKeep.PlayersInRangeOnTake is null");
+            try
             {
-                if (takenKeep.PlayersInRangeOnTake.Contains(eligiblePlayer.CharacterId))
+              
+                foreach (var eligiblePlayer in winningRealmPlayers)
                 {
-                    if (StaticRandom.Instance.Next(100) <= 50)
+                    if (takenKeep.PlayersInRangeOnTake.Contains(eligiblePlayer.CharacterId))
+                    {
                         eligiblePlayersWithinRange.Add(eligiblePlayer.CharacterId);
+                    }
+                }
+
+                foreach (var eligiblePlayer in losingRealmPlayers)
+                {
+                    if (takenKeep.PlayersInRangeOnTake.Contains(eligiblePlayer.CharacterId))
+                    {
+                        if (StaticRandom.Instance.Next(100) <= 50)
+                            eligiblePlayersWithinRange.Add(eligiblePlayer.CharacterId);
+                    }
                 }
             }
-
-            takenKeep.PlayersInRangeOnTake = null;
+            catch (Exception ex)
+            {
+                BattlefrontLogger.Error(ex.Message);
+            }
+           
+            takenKeep.PlayersInRangeOnTake = new HashSet<uint>();
 
             // Select players from the shortlist to actually assign a reward to. (Eligible and winning realm)
             var rewardSelector = new RewardSelector(new RandomGenerator());
