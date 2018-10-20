@@ -245,6 +245,17 @@ namespace WorldServer
             if (item.Info.MaxStack > 1)
                 Plr.ItmInterface.DeleteItem(slot, 1);
 
+            if (item.Info.IsSiege)
+            {
+                if ((item.Owner as Player).CharacterId == Plr.CharacterId)
+                {
+                    if (item.Info.IsValid)
+                    {
+                        Plr.ItmInterface.DeleteItem(slot, 1);
+                    }
+                }
+            }
+
             WorldMgr.GeneralScripts.OnWorldPlayerEvent("USE_ITEM", Plr, item);
 
             #endregion

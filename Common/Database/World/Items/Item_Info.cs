@@ -316,5 +316,8 @@ namespace Common
         [DataElement(AllowDbNull = false)]
         public ushort TokUnlock2 { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public bool IsSiege { get; set; }
+
     }
 }
