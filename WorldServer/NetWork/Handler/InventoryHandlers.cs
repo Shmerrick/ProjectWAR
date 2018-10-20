@@ -1,12 +1,6 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SystemData;
-using Common;
-using FrameWork;
+﻿using FrameWork;
 using GameData;
+using SystemData;
 using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer
@@ -22,7 +16,7 @@ namespace WorldServer
                 return;
 
             byte Type = packet.GetUint8();
-            
+
             Player Plr = cclient.Plr;
 
             switch (Type)
@@ -45,7 +39,8 @@ namespace WorldServer
                                 }
                             }
                         }
-                    } break;
+                    }
+                    break;
 
                 case 17: // Buy more bank space
                     {
@@ -61,14 +56,15 @@ namespace WorldServer
                                 }
                             }
                         }
-                    } break;
+                    }
+                    break;
                 case 18: // Alternate Appereance
                     {
                         byte Slot = packet.GetUint8();
                         packet.Skip(2);
                         ushort SlotItem = packet.GetUint16();
 
-                        Plr.ItmInterface.HandleAltAppearance(Slot,SlotItem);
+                        Plr.ItmInterface.HandleAltAppearance(Slot, SlotItem);
                     }
                     break;
 
@@ -101,7 +97,7 @@ namespace WorldServer
             ushort From = packet.GetUint16();
             ushort Count = packet.GetUint16();
 
-           // Log.Info("","move item " + cclient.Plr.ItmInterface.GetItemInSlot(From).Info.Entry + " slot " + From + " count "+Count+"    to slot  " + To +" item "+cclient.Plr.ItmInterface.GetItemInSlot(To).Info.Entry);
+            // Log.Info("","move item " + cclient.Plr.ItmInterface.GetItemInSlot(From).Info.Entry + " slot " + From + " count "+Count+"    to slot  " + To +" item "+cclient.Plr.ItmInterface.GetItemInSlot(To).Info.Entry);
             cclient.Plr.ItmInterface.MoveSlot(From, To, Count);
         }
 
@@ -125,7 +121,7 @@ namespace WorldServer
             byte Trophyslot = packet.GetUint8();
             ushort value = packet.GetUint16();
 
-            cclient.Plr.ItmInterface.AssignTrophy(Trophyslot,value);
+            cclient.Plr.ItmInterface.AssignTrophy(Trophyslot, value);
         }
 
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_USE_ITEM, (int)eClientState.Playing, "onUseItem")]
@@ -173,7 +169,7 @@ namespace WorldServer
             }
 
             if (item.ModelId == 1566 || item.ModelId == 3850)  // currency conversion boxes
-                Plr.ItmInterface.OpenBox(slot,item);
+                Plr.ItmInterface.OpenBox(slot, item);
 
             #region Loot bags
 
@@ -185,7 +181,7 @@ namespace WorldServer
                 if (mode == 0)
                     Plr.ItmInterface.SendMysteryBag(slot);
                 else
-                    Plr.ItmInterface.GetItemfromMysterybag(slot,mode);
+                    Plr.ItmInterface.GetItemfromMysterybag(slot, mode);
             }
 
             #endregion
@@ -195,13 +191,13 @@ namespace WorldServer
                 Plr.Standard(item.Info.SpellId);
 
             if (item.Info.Crafts.Length > 0 && CraftingApoInterface.GetCraft(5, item.Info.Crafts) == 4 && (CraftingApoInterface.GetCraft(8, item.Info.Crafts) < 5 || CraftingApoInterface.GetCraft(8, item.Info.Crafts) == 18))
-                CultivationInterface.ReapResin(Plr,slot);
+                CultivationInterface.ReapResin(Plr, slot);
 
             #region Dye
-            if(item.Info.Type == 27)
+            if (item.Info.Type == 27)
             {
                 Item dye = Plr.ItmInterface.GetItemInSlot(slot);
-                if (dye == null) 
+                if (dye == null)
                     return;
 
                 byte prisek = packet.GetUint8();
@@ -213,7 +209,7 @@ namespace WorldServer
 
                 if (dye.Info.BaseColor1 == 0)
                 {
-                    Plr.ItmInterface.RemoveDye(itemtodye, prisek == 1,  prisek == 2);
+                    Plr.ItmInterface.RemoveDye(itemtodye, prisek == 1, prisek == 2);
 
                 }
                 else
@@ -231,6 +227,19 @@ namespace WorldServer
             if (item.Info.SpellId == 0)
                 return;
 
+            var ramDeployedBeforeCast = false;
+            var ramDeployedAfterCast = false;
+            if (item.Info.IsSiege)
+            {
+                // Get the closest, friendly keep
+                var closestFriendlyKeep = Plr.Region.Campaign.GetClosestFriendlyKeep(Plr.WorldPosition, Plr.Realm);
+                if (closestFriendlyKeep != null)
+                {
+                    ramDeployedBeforeCast = closestFriendlyKeep.IsRamDeployed();
+                }
+            }
+
+
             #region Ability Cast
 
             if (!Plr.AbtInterface.CanCastCooldown(item.Info.SpellId))
@@ -245,13 +254,25 @@ namespace WorldServer
             if (item.Info.MaxStack > 1)
                 Plr.ItmInterface.DeleteItem(slot, 1);
 
+            // Determine whether to remove the siege item from inventory.
             if (item.Info.IsSiege)
             {
+                // Get the closest, friendly keep - tested again to lower calculation impact for all F_USE_ITEM calls.
+                var closestFriendlyKeep = Plr.Region.Campaign.GetClosestFriendlyKeep(Plr.WorldPosition, Plr.Realm);
+                if (closestFriendlyKeep != null)
+                {
+                    ramDeployedAfterCast = closestFriendlyKeep.IsRamDeployed();
+                }
+
                 if ((item.Owner as Player).CharacterId == Plr.CharacterId)
                 {
                     if (item.Info.IsValid)
                     {
-                        Plr.ItmInterface.DeleteItem(slot, 1);
+                        // If there is a Ram now, but there wasnt one before, remove it from inventory
+                        if (ramDeployedAfterCast && !ramDeployedBeforeCast)
+                        {
+                            Plr.ItmInterface.DeleteItem(slot, 1);
+                        }
                     }
                 }
             }

@@ -2235,6 +2235,10 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
         }
 
- 
+
+        public bool IsRamDeployed()
+        {
+            return _activeMateriel[(int)MaterielType.Ram].Count > 0;
+        }
     }
 }
