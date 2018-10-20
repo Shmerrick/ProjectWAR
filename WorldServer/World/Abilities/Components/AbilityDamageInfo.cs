@@ -27,8 +27,6 @@ namespace WorldServer
 
         public byte ParentCommandID, ParentCommandSequence;
 
-        public float CastTimeDamageMult;
-
         public WeaponDamageContribution WeaponMod;
         public float WeaponDamageScale;
 
@@ -121,8 +119,7 @@ namespace WorldServer
             if (!string.IsNullOrEmpty(dbObj.DamageType))
                 DamageType = (DamageTypes)Enum.Parse(typeof(DamageTypes), dbObj.DamageType);
             DamageVariance = dbObj.DamageVariance;
-            CastTimeDamageMult = dbObj.CastTimeDamageMult;
-            if (!string.IsNullOrEmpty(dbObj.WeaponDamageFrom))
+             if (!string.IsNullOrEmpty(dbObj.WeaponDamageFrom))
                 WeaponMod = (WeaponDamageContribution)Enum.Parse(typeof(WeaponDamageContribution), dbObj.WeaponDamageFrom);
             WeaponDamageScale = dbObj.WeaponDamageScale;
             Undefendable = dbObj.Undefendable;

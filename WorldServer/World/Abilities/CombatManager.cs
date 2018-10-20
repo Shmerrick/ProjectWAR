@@ -482,9 +482,6 @@ namespace WorldServer
 
             #region Base Damage
 
-            if (damageInfo.CastTimeDamageMult == 0)
-                damageInfo.CastTimeDamageMult = 1.5f;
-
             damageInfo.PrecalcDamage = damageInfo.GetDamageForLevel(level);
 
             #endregion
@@ -506,7 +503,7 @@ namespace WorldServer
             }
             else
             {
-                damageInfo.PrecalcDamage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod) * damageInfo.WeaponDamageScale * damageInfo.CastTimeDamageMult;
+                damageInfo.PrecalcDamage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod) * damageInfo.WeaponDamageScale;
             }
 
             if (damageInfo.StatUsed > 0)
@@ -538,9 +535,6 @@ namespace WorldServer
 
         public static void SetHealAmount(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target)
         {
-            if (damageInfo.CastTimeDamageMult == 0)
-                damageInfo.CastTimeDamageMult = 1.5f;
-
             damageInfo.PrecalcDamage = damageInfo.GetDamageForLevel(level);
 
             target.ModifyHealOut(damageInfo);
@@ -746,9 +740,6 @@ namespace WorldServer
 
             #region Base Damage
 
-            if (damageInfo.CastTimeDamageMult == 0)
-                damageInfo.CastTimeDamageMult = 1.5f;
-
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
 
             #endregion
@@ -763,12 +754,6 @@ namespace WorldServer
 
             if (damageInfo.DamageType != DamageTypes.RawDamage)
             {
-                #region Weapon DPS
-               // Procs SHOULD NOT add damage from weapons.
-               // damageInfo.Damage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod)*damageInfo.WeaponDamageScale*damageInfo.CastTimeDamageMult;
-
-                #endregion
-
                 if (damageInfo.StatUsed > 0)
                 {
                     AddOffensiveStats(caster, damageInfo, 0.2f, false);
@@ -878,9 +863,6 @@ namespace WorldServer
         {
             #region Base Damage
 
-            if (damageInfo.CastTimeDamageMult == 0)
-                damageInfo.CastTimeDamageMult = 1.5f;
-
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
 
             #endregion
@@ -970,9 +952,6 @@ namespace WorldServer
 
             #region Base Damage
 
-            if (damageInfo.CastTimeDamageMult == 0)
-                damageInfo.CastTimeDamageMult = 1.5f;
-
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
 
             #endregion
@@ -1020,7 +999,7 @@ namespace WorldServer
                 }
                 else
                 {
-                    damageInfo.Damage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod) * damageInfo.WeaponDamageScale * damageInfo.CastTimeDamageMult;
+                    damageInfo.Damage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod) * damageInfo.WeaponDamageScale;
                 }
 
                 if (damageInfo.StatUsed > 0)
@@ -1170,8 +1149,6 @@ namespace WorldServer
                 damageInfo.DamageType = DamageTypes.Elemental;
             }
 
-            damageInfo.CastTimeDamageMult = caster.ItmInterface.GetAttackTime(slot) / 100f;
-
             target.ModifyDamageIn(damageInfo);
 
             Creature creature = target.GetCreature();
@@ -1213,7 +1190,7 @@ namespace WorldServer
                 }
                 else
                 {
-                    damageInfo.Damage = (caster.ItmInterface.GetWeaponDamage(slot)) * damageInfo.CastTimeDamageMult;
+                    damageInfo.Damage = (caster.ItmInterface.GetWeaponDamage(slot));
                 }
 
                 if (damageInfo.StatUsed > 0)
@@ -1717,9 +1694,6 @@ namespace WorldServer
         {
             #region Base Damage
 
-            if (damageInfo.CastTimeDamageMult == 0)
-                damageInfo.CastTimeDamageMult = 1.5f;
-
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
 
             #endregion
@@ -2064,9 +2038,9 @@ namespace WorldServer
             else
             {
                 if (toPrecalc)
-                    damageInfo.PrecalcDamage += stat * coefficient * damageInfo.StatDamageScale * damageInfo.CastTimeDamageMult;
+                    damageInfo.PrecalcDamage += stat * coefficient * damageInfo.StatDamageScale;
                 else
-                    damageInfo.Damage += stat * coefficient * damageInfo.StatDamageScale * damageInfo.CastTimeDamageMult;
+                    damageInfo.Damage += stat * coefficient * damageInfo.StatDamageScale;
             }
         }
 
@@ -2112,7 +2086,7 @@ namespace WorldServer
             {
                 if (toPrecalc)
                 {
-                    damageInfo.PrecalcMitigation = stat * coefficient * damageInfo.StatDamageScale * damageInfo.CastTimeDamageMult;
+                    damageInfo.PrecalcMitigation = stat * coefficient * damageInfo.StatDamageScale;
 
                     if (damageInfo.PrecalcMitigation >= damageInfo.PrecalcDamage)
                     {
@@ -2125,7 +2099,7 @@ namespace WorldServer
 
                 else
                 {
-                    damageInfo.Mitigation = stat * coefficient * damageInfo.StatDamageScale * damageInfo.CastTimeDamageMult;
+                    damageInfo.Mitigation = stat * coefficient * damageInfo.StatDamageScale;
 
                     if (damageInfo.Mitigation >= damageInfo.Damage)
                     {

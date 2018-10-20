@@ -44,9 +44,6 @@ namespace Common
         [DataElement]
         public ushort DamageVariance { get; set; }
 
-        [DataElement]
-        public float CastTimeDamageMult { get; set; }
-
         [DataElement(Varchar=16)]
         public string WeaponDamageFrom { get; set; }
 
