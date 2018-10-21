@@ -48,9 +48,6 @@ namespace Common
         public string WeaponDamageFrom { get; set; }
 
         [DataElement]
-        public float WeaponDamageScale { get; set; }
-
-        [DataElement]
         public bool NoCrits { get; set; }
 
         [DataElement]

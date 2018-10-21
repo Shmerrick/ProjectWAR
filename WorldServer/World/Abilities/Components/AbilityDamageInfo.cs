@@ -28,7 +28,6 @@ namespace WorldServer
         public byte ParentCommandID, ParentCommandSequence;
 
         public WeaponDamageContribution WeaponMod;
-        public float WeaponDamageScale;
 
         public byte StatUsed;
         public float StatDamageScale;
@@ -117,7 +116,6 @@ namespace WorldServer
             DamageVariance = dbObj.DamageVariance;
              if (!string.IsNullOrEmpty(dbObj.WeaponDamageFrom))
                 WeaponMod = (WeaponDamageContribution)Enum.Parse(typeof(WeaponDamageContribution), dbObj.WeaponDamageFrom);
-            WeaponDamageScale = dbObj.WeaponDamageScale;
             Undefendable = dbObj.Undefendable;
             NoCrits = dbObj.NoCrits;
             OverrideDefenseEvent = dbObj.OverrideDefenseEvent;

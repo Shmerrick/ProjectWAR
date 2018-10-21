@@ -480,11 +480,12 @@ namespace WorldServer
             caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.AttackedTarget, damageInfo, target);
             target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.WasAttacked, damageInfo, caster);
 
-            #region Base Damage
-
+            // Tooltip Damage
+            // 
+            // Tooltip set for the players level + players specification level. This is an abilities base damage.
             damageInfo.PrecalcDamage = damageInfo.GetDamageForLevel(level);
-
-            #endregion
+            // Ability base damage + damage associated with weapon DPS
+            damageInfo.PrecalcDamage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod);
 
             caster.ModifyDamageOut(damageInfo);
             target.ModifyDamageIn(damageInfo);
@@ -498,12 +499,10 @@ namespace WorldServer
             if (damageInfo.DamageType == DamageTypes.RawDamage)
                 return;
 
-            damageInfo.PrecalcDamage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod) * damageInfo.WeaponDamageScale;
-
             if (damageInfo.StatUsed > 0)
             {
-                AddOffensiveStats(caster, damageInfo, 0.2f, true);
-                AddLinearMitigation(target, damageInfo, 0.2f, true);
+                AddOffensiveStats(caster, damageInfo, true);
+                AddLinearMitigation(target, damageInfo, true);
             }
 
             if (damageInfo.DamageType == DamageTypes.Physical)
@@ -529,6 +528,7 @@ namespace WorldServer
 
         public static void SetHealAmount(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target)
         {
+            // Healing Tooltip
             damageInfo.PrecalcDamage = damageInfo.GetDamageForLevel(level);
 
             target.ModifyHealOut(damageInfo);
@@ -544,7 +544,7 @@ namespace WorldServer
                     damageInfo.UseItemStatTotal = false;
                 }
 
-                AddOffensiveStats(caster, damageInfo, 0.2f, true);
+                AddOffensiveStats(caster, damageInfo, true);
 
                 damageInfo.ApplyDamageModifiers(true);
             }
@@ -555,7 +555,7 @@ namespace WorldServer
         public static void InflictPrecalculatedDamage(AbilityDamageInfo damageInfo, Unit caster, Unit target, float multiplier, bool bFinalize)
         {
             damageInfo.Damage = damageInfo.PrecalcDamage;
-            damageInfo.Mitigation = damageInfo.PrecalcMitigation * multiplier;
+            damageInfo.Mitigation = damageInfo.PrecalcMitigation;
             damageInfo.Absorption = 0;
             damageInfo.TransferFactor = 1;
 
@@ -750,8 +750,8 @@ namespace WorldServer
             {
                 if (damageInfo.StatUsed > 0)
                 {
-                    AddOffensiveStats(caster, damageInfo, 0.2f, false);
-                    AddLinearMitigation(target, damageInfo, 0.2f, false);
+                    AddOffensiveStats(caster, damageInfo, false);
+                    AddLinearMitigation(target, damageInfo, false);
                 }
 
                 caster.BuffInterface.NotifyCombatEvent((byte) BuffCombatEvents.DealingDamage, damageInfo, target);
@@ -863,7 +863,7 @@ namespace WorldServer
             
             target.ModifyHealIn(damageInfo);
 
-            AddOffensiveStats(caster, damageInfo, 0.2f, false);
+            AddOffensiveStats(caster, damageInfo, false);
 
             if (damageInfo.DamageType != DamageTypes.RawHealing)
             {
@@ -944,11 +944,8 @@ namespace WorldServer
             caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.AttackedTarget, damageInfo, target);
             target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.WasAttacked, damageInfo, caster);
 
-            #region Base Damage
-
+            // Base damage delt given a players level and specification
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
-
-            #endregion
 
             caster.ModifyDamageOut(damageInfo);
             target.ModifyDamageIn(damageInfo);
@@ -987,12 +984,13 @@ namespace WorldServer
 
                 #endregion
 
-                damageInfo.Damage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod) * damageInfo.WeaponDamageScale;
+                // Ability base damage + weapon dps
+                damageInfo.Damage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod);
 
                 if (damageInfo.StatUsed > 0)
                 {
-                    AddOffensiveStats(caster, damageInfo, 0.2f, false);
-                    AddLinearMitigation(target, damageInfo, 0.2f, false);
+                    AddOffensiveStats(caster, damageInfo, false);
+                    AddLinearMitigation(target, damageInfo, false);
                 }
 
                 #region Dealing/Receiving Event
@@ -1038,23 +1036,10 @@ namespace WorldServer
                 target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivedDamage, damageInfo, caster);
             }
 
-            if (damageInfo.IsAoE && target is Pet)
-            {
-                damageInfo.Damage *= 0.5f;
-                damageInfo.Mitigation *= 0.5f;
-            }
-
             #region Application
 
             if (!target.IsDead)
             {
-                // Damage cap
-              //  if (caster is Player)
-              //  {
-              //      int damageCap = Point2D.Lerp(550, 4000, caster.EffectiveLevel / 40f);
-              //      damageInfo.Damage = Math.Min(damageCap, damageInfo.Damage);
-              //  }
-
                 PacketOut damageOut = new PacketOut((byte) Opcodes.F_CAST_PLAYER_EFFECT, 24);
 
                 damageOut.WriteUInt16(caster.Oid);
@@ -1174,8 +1159,8 @@ namespace WorldServer
 
                 if (damageInfo.StatUsed > 0)
                 {
-                    AddOffensiveStats(caster, damageInfo, 0.1f, false, true);
-                    AddLinearMitigation(target, damageInfo, 0.1f, false);
+                    AddOffensiveStats(caster, damageInfo, false, true);
+                    AddLinearMitigation(target, damageInfo, false);
                 }
 
                 #region Dealing/Receiving Event
@@ -1358,7 +1343,7 @@ namespace WorldServer
                 stat = hardcap;
 
             else if (stat > softcap)
-                stat = softcap + ((stat - softcap) / 3);
+                stat = softcap + ((stat - softcap) / 2);
             // End
 
             damageInfo.Damage += wSpeed * stat * OFFHAND_STAT_COEFF * OFFHAND_DAMAGE_PEN; 
@@ -1377,7 +1362,7 @@ namespace WorldServer
                 stat = hardcap;
 
             else if (stat > softcap)
-                stat = softcap + ((stat - softcap) / 3);
+                stat = softcap + ((stat - softcap) / 2);
 
             damageInfo.Mitigation = wSpeed * stat * OFFHAND_STAT_COEFF * OFFHAND_DAMAGE_PEN;
 
@@ -1696,7 +1681,7 @@ namespace WorldServer
                         damageInfo.DamageReduction *= 0.6f; // to counteract 60% faster cast, removed risk penalty*/
                 }
 
-                AddOffensiveStats(caster, damageInfo, 0.2f, false);
+                AddOffensiveStats(caster, damageInfo, false);
 
                 #region CriticalHeal
 
@@ -1767,7 +1752,7 @@ namespace WorldServer
 
         public static void LifeSteal(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target)
         {
-            AddOffensiveStats(caster, damageInfo, 0.2f, false);
+            AddOffensiveStats(caster, damageInfo, false);
 
             #region CriticalHeal
 
@@ -1969,7 +1954,7 @@ namespace WorldServer
 
         #region Calculations
 
-        private static void AddOffensiveStats(Unit caster, AbilityDamageInfo damageInfo, float coefficient, bool toPrecalc, bool bIsAutoAttack = false)
+        private static void AddOffensiveStats(Unit caster, AbilityDamageInfo damageInfo, bool toPrecalc, bool bIsAutoAttack = false)
         {
             uint softcap = (uint) (50 + 25*caster.EffectiveLevel);
             uint hardcap = (uint) (50 + 55*caster.EffectiveLevel);
@@ -1983,7 +1968,7 @@ namespace WorldServer
                 stat = hardcap;
 
             else if (stat > softcap)
-                stat = softcap + ((stat - softcap) / 3);
+                stat = softcap + ((stat - softcap) / 2);
 
             // Power stats bypass the caps - 1 power = 1 stat
             switch (damageInfo.StatUsed)
@@ -2014,7 +1999,7 @@ namespace WorldServer
             damageInfo.Damage += ((stat / 5) * damageInfo.StatDamageScale);
         }
 
-        private static void AddLinearMitigation(Unit target, AbilityDamageInfo damageInfo, float coefficient, bool toPrecalc)
+        private static void AddLinearMitigation(Unit target, AbilityDamageInfo damageInfo, bool toPrecalc)
         {
             uint softcap = (uint)(50 + 25 * target.EffectiveLevel);
             uint hardcap = (uint)(50 + 55 * target.EffectiveLevel);
@@ -2025,12 +2010,12 @@ namespace WorldServer
                 stat = hardcap;
 
             else if (stat > softcap)
-                stat = softcap + (stat - softcap) / 3;
-
+                stat = softcap + (stat - softcap) / 2;
 
                 if (toPrecalc)
                 {
-                    damageInfo.PrecalcMitigation = stat * coefficient * damageInfo.StatDamageScale;
+                    // Precalc toughness tooltip
+                    damageInfo.PrecalcMitigation = ((stat / 5)* damageInfo.StatDamageScale);
 
                     if (damageInfo.PrecalcMitigation >= damageInfo.PrecalcDamage)
                     {
@@ -2042,7 +2027,8 @@ namespace WorldServer
                 }
                 else
                 {
-                    damageInfo.Mitigation = stat * coefficient * damageInfo.StatDamageScale;
+                    // Actual toughness mitigation
+                    damageInfo.Mitigation = ((stat / 5)* damageInfo.StatDamageScale);
 
                     if (damageInfo.Mitigation >= damageInfo.Damage)
                     {
