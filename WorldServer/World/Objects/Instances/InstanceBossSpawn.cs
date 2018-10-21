@@ -127,14 +127,15 @@ namespace WorldServer.World.Objects.Instances
 
 				if (player.PriorityGroup != null)
 				{
-					player.PriorityGroup.GroupLoot(player, lootContainer);
-					//foreach (Player member in player.PriorityGroup.Members)
-					//{
-					//	if (!member.HasLockout((ushort)ZoneId, BossID))
-					//		subGroup.Add(member);
-					//}
-					//player.PriorityGroup.SubGroupLoot(player, lootContainer, subGroup);
-				}
+                    foreach (Player member in player.PriorityGroup.Members)
+                    {
+                        if (!member.HasLockout((ushort)ZoneId, BossID))
+                            subGroup.Add(member);
+                    }
+                    // used to only have items of careers in group in the lootcontainer
+                    //player.PriorityGroup.SubGroupLoot(player, lootContainer, subGroup);
+                    player.PriorityGroup.GroupLoot(player, lootContainer);
+                }
 				
 				if (player.HasLockout((ushort)ZoneId, BossID))
 				{
@@ -148,7 +149,10 @@ namespace WorldServer.World.Objects.Instances
 				}
 				else
 				{
-					lootContainer.SendInteract(player, menu);
+                    if (!subGroup.Contains(player))
+                        subGroup.Add(player);
+
+                    lootContainer.SendInteract(player, menu);
 				}
 
 				if (!lootContainer.IsLootable())
