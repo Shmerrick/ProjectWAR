@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GameData;
 using NLog;
 
@@ -157,18 +158,32 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             float aaoBonus = Math.Abs(newMult) * 0.2f;
             lock (buffs)
             {
-                foreach (NewBuff aaoBuff in buffs)
+                for (int i = 0; i < buffs.Count; i++)
                 {
-                    aaoBuff.DeleteBuffParameter(1);
-                    aaoBuff.DeleteBuffParameter(2);
-                    aaoBuff.DeleteBuffParameter(3);
-                    aaoBuff.DeleteBuffParameter(4);
-                    aaoBuff.AddBuffParameter(1, 1);
-                    aaoBuff.AddBuffParameter(2, aaoValue);
-                    aaoBuff.AddBuffParameter(3, aaoValue);
-                    aaoBuff.AddBuffParameter(4, aaoValue);
-                    ((Player)aaoBuff.Caster).AAOBonus = aaoBonus;
-                    aaoBuff.SoftRefresh();
+                    NewBuff aaoBuff = buffs[i];
+                    if (((Player)aaoBuff.Caster).Realm != realm)
+                    {
+                        aaoBuff.DeleteBuffParameter(1);
+                        aaoBuff.DeleteBuffParameter(2);
+                        aaoBuff.DeleteBuffParameter(3);
+                        aaoBuff.DeleteBuffParameter(4);
+                        aaoBuff.BuffHasExpired = true;
+                        ((Player)aaoBuff.Caster).AAOBonus = 0.0f;
+                        buffs.RemoveAt(i);
+                    }
+                    else
+                    {
+                        aaoBuff.DeleteBuffParameter(1);
+                        aaoBuff.DeleteBuffParameter(2);
+                        aaoBuff.DeleteBuffParameter(3);
+                        aaoBuff.DeleteBuffParameter(4);
+                        aaoBuff.AddBuffParameter(1, 1);
+                        aaoBuff.AddBuffParameter(2, aaoValue);
+                        aaoBuff.AddBuffParameter(3, aaoValue);
+                        aaoBuff.AddBuffParameter(4, aaoValue);
+                        ((Player)aaoBuff.Caster).AAOBonus = aaoBonus;
+                        aaoBuff.SoftRefresh();
+                    }
                 }
             }
         }

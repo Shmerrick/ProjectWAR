@@ -116,7 +116,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 if (vp >= 0 && vp < 2500)
                 {
                     Log.Debug("DOOR BEFORE BUFF", damage.ToString());
-                    var newDmg = damage * 40 / 100;
+                    var newDmg = damage * 80 / 100;
                     damage = newDmg;
                     Log.Debug("DOOR AFTER BUFF", damage.ToString());
 
@@ -124,7 +124,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 else if (vp >= 2500 && vp < 4000)
                 {
                     Log.Debug("DOOR BEFORE BUFF", damage.ToString());
-                    var newDmg = damage * 75 / 100;
+                    var newDmg = damage * 90 / 100;
                     damage = newDmg;
                     Log.Debug("DOOR AFTER BUFF", damage.ToString());
                 }

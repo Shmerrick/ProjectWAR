@@ -682,11 +682,14 @@ namespace WorldServer
 
             if (GmLevel > 1)
             {
-
+                
                 //if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
-                if (!Utils.HasFlag(GmLevel, (int)EGmLevel.DatabaseDev) && Utils.HasFlag(GmLevel, (int)EGmLevel.AnyGM) && !GmMgr.GmList.Contains(this))
+                if (GmLevel >= (int) EGmLevel.AnyGM && !GmMgr.GmList.Contains(this))
+                {
+                    SendClientMessage("You have been added to the GM Account List");
                     GmMgr.NotifyGMOnline(this);
-
+                }
+                
             }
 
             // This is Terror debuff - with this you cannot be ressurected
@@ -747,13 +750,13 @@ namespace WorldServer
 					SendRenown();
 					SendStats();
 
-					if (GmLevel >1)
-					{
-						//if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
-						if (!Utils.HasFlag(GmLevel, (int)EGmLevel.DatabaseDev) && Utils.HasFlag(GmLevel, (int)EGmLevel.AnyGM) && !GmMgr.GmList.Contains(this))
-							GmMgr.NotifyGMOnline(this);
-
-					}
+				    
+				    //if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
+				    if (GmLevel >= (int) EGmLevel.AnyGM && !GmMgr.GmList.Contains(this))
+				    {
+				        SendClientMessage("You have been added to the GM Account List");
+                        GmMgr.NotifyGMOnline(this);
+				    }
 				}
 				//if gm toggled invincibility and switched zone then it should still be active.
 				if (IsInvulnerable && GmLevel > 1)
@@ -916,7 +919,7 @@ namespace WorldServer
                 Dispose();
                 return;
             }
-#if !DEBUG
+
             if (LastKeepAliveTime != 0 && LastKeepAliveTime + PING_TIMEOUT < tick)
             {
                 Client.Disconnect("Ping timeout");
@@ -937,7 +940,6 @@ namespace WorldServer
                 Dispose();
                 return;
             }
-#endif
 
             UpdateMorale(tick);
 
@@ -3108,14 +3110,13 @@ namespace WorldServer
                 renown *= (uint)Program.Config.RenownRate;
 
 			// apply aao bonus
-			if (this.ScnInterface == null
-				|| this.ScnInterface.Scenario == null
-				|| type == RewardType.None
-				|| type == RewardType.Kill
-				|| type == RewardType.Assist)
-				renown = Convert.ToUInt32(Math.Round((1f + this.AAOBonus) * renown, 0));
+            if ((ScnInterface == null || ScnInterface.Scenario == null)
+                && (type == RewardType.None || type == RewardType.Kill || type == RewardType.Assist))
+            {
+                renown = Convert.ToUInt32(Math.Round((1f + AAOBonus) * renown, 0));
+            }
 			
-			RewardLogger.Trace($"{renown} RP awarded to {this.Name} for {rewardString} ");
+			RewardLogger.Trace($"{renown} RP awarded to {Name} for {rewardString} ");
             InternalAddRenown(renown, shouldPool, type, rewardString);
         }
 
@@ -3132,9 +3133,9 @@ namespace WorldServer
             if (value == null)
                 throw new NullReferenceException("NULL Character_value for " + Name);
 
-            if (renown > 100000)
+            if (renown > 500000)
             {
-                renown = 100000;
+                renown = 500000;
                 Log.Error("AddKillRenown (mult)", "Player received outrageous renown level (" + renown + ") - " + "(" + type.ToString() + ") - " + "(" + shouldPool.ToString() + ") - " + Environment.StackTrace);
                 SendClientMessage("You somehow gained an amount of renown larger than the system allows (" + renown + "). You have been given the cap.");
                 return;
@@ -3208,9 +3209,6 @@ namespace WorldServer
 
             if (Program.Config.RenownRate > 0)
                 renown *= (uint)Program.Config.RenownRate;
-
-            if (_Value.RenownRank >= 40)
-                renown /= 2;
 
             renown = (uint)(renown * GetKillRewardScaler(victim));
 

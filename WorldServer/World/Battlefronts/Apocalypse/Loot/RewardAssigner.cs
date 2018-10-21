@@ -1,10 +1,7 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FrameWork;
-using NLog;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
@@ -32,7 +29,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 return null;
 
             // Randomise the players
-            // var randomisedPlayerList = eligiblePlayers.OrderBy(a => Guid.NewGuid()).ToList();
+            var randomisedPlayerList = eligiblePlayers.OrderBy(a => Guid.NewGuid()).ToList();
             //var randomisedPlayerList = RewardSelector.RandomisePlayerList(eligiblePlayers);
             int numberLootBags = 0;
             // Determine the number of awards to give
@@ -40,23 +37,33 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
             // Define the types of awards to give
             var lootBagDefinitions = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(numberLootBags);
-            RewardLogger.Debug($"Number loot bags {lootBagDefinitions.Count}");
+            RewardLogger.Info($"Number loot bags {lootBagDefinitions.Count}");
+
+            var i = 0;
+
             foreach (var lootBagTypeDefinition in lootBagDefinitions)
             {
+                // If we run out of players break the loop
+                if (i >= randomisedPlayerList.Count)
+                    break;
+                var selectedPlayer = randomisedPlayerList[i];
+
                 try
                 {
-                    var selectedPlayer = eligiblePlayers[StaticRandom.Instance.Next((eligiblePlayers.Count))];
-
                     RewardLogger.Debug($"Selected player {selectedPlayer} {eligiblePlayers.Count} for reward");
-
                     lootBagTypeDefinition.Assignee = selectedPlayer;
                 }
                 catch (Exception e)
                 {
                     RewardLogger.Warn($"{e.Message}");
                 }
+                
+                i++;
             }
+            //var selectedPlayer = randomisedPlayerList[StaticRandom.Instance.Next((eligiblePlayers.Count))];
+            //RewardLogger.Debug($"Selected player {selectedPlayer} {eligiblePlayers.Count} for reward");
+            //lootBagTypeDefinition.Assignee = selectedPlayer;
             return lootBagDefinitions;
         }
-    }
+}
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using GameData;
+using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -14,6 +15,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public int RegionId { get; set; }
         public string Description { get; set; }
         public HashSet<uint> KillContributionSet { get; set; }
+        
 
         public BattleFrontStatus()
         {

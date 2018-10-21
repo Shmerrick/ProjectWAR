@@ -478,10 +478,10 @@
     <Content Include="Configs\LocalDevelopment\Launcher.xml" />
     <Content Include="Configs\LocalDevelopment\Lobby.xml" />
     <Content Include="Configs\LocalDevelopment\World.xml" />
+    <Content Include="world.ico" />
     <Content Include="WarZone64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="world.ico" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

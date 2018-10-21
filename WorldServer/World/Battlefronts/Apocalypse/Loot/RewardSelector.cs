@@ -27,8 +27,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         {
             byte numberOfAwards = 0;
             // Simple set for low pop for now. TODO base this upon population sizes and % chance to win a bag per flip.
-            if (eligiblePlayers == 0)
-                numberOfAwards= 0;
+            if (eligiblePlayers <= 4)
+                numberOfAwards = (byte) eligiblePlayers;
             else
             {
                 if (eligiblePlayers < 10)

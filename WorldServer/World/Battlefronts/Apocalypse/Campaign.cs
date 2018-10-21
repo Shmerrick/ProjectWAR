@@ -31,7 +31,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     /// </summary>
     public class Campaign
     {
-        public static int POPULATION_BROADCAST_CHANCE = 90;
+        public static int POPULATION_BROADCAST_CHANCE = 1;
         public static IObjectDatabase Database = null;
         static readonly object LockObject = new object();
 
@@ -123,11 +123,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             _EvtInterface.AddEvent(UpdateBOs, 5000, 0);
             // Tell each player the RVR status
-            _EvtInterface.AddEvent(UpdateRVRStatus, 60000, 0);
+            _EvtInterface.AddEvent(UpdateRVRStatus, 30000, 0);
             // Recalculate AAO
-            _EvtInterface.AddEvent(UpdateAAOBuffs, 60000, 0);
-            // Recalculate AAO
-            _EvtInterface.AddEvent(RecordMetrics, 30000, 0);
+            _EvtInterface.AddEvent(UpdateAAOBuffs, 10000, 0);
+            // record metrics
+            _EvtInterface.AddEvent(RecordMetrics, 15000, 0);
 
             //if (Tier == 4)
             //{
@@ -319,14 +319,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             allPlayersInZone.AddRange(destPlayersInZone);
             allPlayersInZone.AddRange(orderPlayersInZone);
 
-            BattlefrontLogger.Debug($"Calculating AAO. Order players : {orderPlayersInZone.Count} Dest players : {destPlayersInZone.Count}");
+            BattlefrontLogger.Trace($"Calculating AAO. Order players : {orderPlayersInZone.Count} Dest players : {destPlayersInZone.Count}");
 
             foreach (var status in BattleFrontManager.GetBattleFrontStatusList())
             {
                 if (!status.Locked)
                 {
                     // Randomly let players know the population
-                    if (StaticRandom.Instance.Next(100) > POPULATION_BROADCAST_CHANCE)
+                    if (StaticRandom.Instance.Next(100) <= POPULATION_BROADCAST_CHANCE)
                     {
                         foreach (var player in allPlayersInZone)
                         {
@@ -805,9 +805,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var activeBattleFrontId = BattleFrontManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = BattleFrontManager.GetActiveBattleFrontStatus(activeBattleFrontId);
 
+            /*
+             * Distribute base rewards to eligible players
+             */
             var eligiblePlayers = this.BattleFrontManager.GetEligiblePlayers(activeBattleFrontStatus);
 
-            // Remove eligible players from losing realm
             foreach (var eligiblePlayer in eligiblePlayers)
             {
                 var player = Player.GetPlayer(eligiblePlayer);
@@ -823,14 +825,67 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
 
             DistributeBaseRewards(losingRealmPlayers, winningRealmPlayers, lockingRealm);
+            
+            var keepId = 0;
+
+            keepId = lockingRealm == Realms.REALMS_REALM_DESTRUCTION ? BattleFrontManager.ActiveBattleFront.OrderKeepId : BattleFrontManager.ActiveBattleFront.DestroKeepId;
+
+            if (keepId == 0)
+            {
+                BattlefrontLogger.Error("Could not find the closest keep");
+                return;
+            }
+
+            var takenKeep = this.Region.Campaign.Keeps.FirstOrDefault(x => x.Info.KeepId == keepId);
+            if (takenKeep == null)
+            {
+                BattlefrontLogger.Error("Could not find the closest keep (null)");
+                return;
+            }
+            // Only include players that were tagged within range of the keep when taken.
+            var eligiblePlayersWithinRange = new List<uint>();
+
+            if (takenKeep.PlayersInRangeOnTake == null)
+                BattlefrontLogger.Error("takenKeep.PlayersInRangeOnTake is null");
+            try
+            {
+              
+                foreach (var eligiblePlayer in winningRealmPlayers)
+                {
+                    if (takenKeep.PlayersInRangeOnTake.Contains(eligiblePlayer.CharacterId))
+                    {
+                        eligiblePlayersWithinRange.Add(eligiblePlayer.CharacterId);
+                    }
+                }
+
+                foreach (var eligiblePlayer in losingRealmPlayers)
+                {
+                    if (takenKeep.PlayersInRangeOnTake.Contains(eligiblePlayer.CharacterId))
+                    {
+                        if (StaticRandom.Instance.Next(100) <= 50)
+                            eligiblePlayersWithinRange.Add(eligiblePlayer.CharacterId);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                BattlefrontLogger.Error(ex.Message);
+            }
+           
+            takenKeep.PlayersInRangeOnTake = new HashSet<uint>();
 
             // Select players from the shortlist to actually assign a reward to. (Eligible and winning realm)
             var rewardSelector = new RewardSelector(new RandomGenerator());
-            // Get the character Ids of the winningRealm characters
-            var winningRealmCharacterIdList = winningRealmPlayers.Select(x => x.CharacterId).ToList();
-            var rewardAssignments = new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(winningRealmCharacterIdList, forceNumberBags);
+
+            var rewardAssignments = new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(eligiblePlayersWithinRange, forceNumberBags);
 
             if (rewardAssignments == null)
+            {
+                BattlefrontLogger.Warn($"No reward assignments found (null).");
+                return;
+            }
+
+            if (rewardAssignments.Count == 0)
             {
                 BattlefrontLogger.Warn($"No reward assignments found.");
             }
@@ -848,7 +903,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                     if (lootBagTypeDefinition.Assignee != 0)
                     {
-                        var player = winningRealmPlayers.Single(x => x.CharacterId == lootBagTypeDefinition.Assignee);
+                        var player = Player._Players.Single(x => x.CharacterId == lootBagTypeDefinition.Assignee);
 
                         var playerItemList = (from item in player.ItmInterface.Items where item != null select item.Info.Entry).ToList();
 
