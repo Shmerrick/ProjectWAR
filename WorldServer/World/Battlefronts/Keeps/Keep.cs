@@ -1945,12 +1945,23 @@ namespace WorldServer.World.BattleFronts.Keeps
                     break;
                 case CreatureSubTypes.SIEGE_RAM:
                     type = (int) MaterielType.Ram;
-                    /*if (KeepStatus != KeepStatus.KEEPSTATUS_SAFE)
+                    foreach (Hardpoint h in _hardpoints)
+                    {
+                        if (h.SiegeType == SiegeType.OIL)
+                        {
+                            player.SendClientMessage("Keep under attack", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                            player.SendClientMessage("You cannot deploy a ram at a keep that is defending itself.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                            return false;
+                        }
+                    }
+
+
+                    if (KeepStatus != KeepStatus.KEEPSTATUS_SAFE)
                     {
                         player.SendClientMessage("Unsafe keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
                         player.SendClientMessage("You cannot deploy a ram at a keep that is unsafe.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                         return false;
-                    }*/
+                    }
 
                     // If the number of spawned siege items > cap per keep level, dont allow.
                     if (_activeMateriel[type].Count >= _materielCaps[type][Rank])
