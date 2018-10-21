@@ -480,6 +480,7 @@ namespace WorldServer
             caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.AttackedTarget, damageInfo, target);
             target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.WasAttacked, damageInfo, caster);
 
+            level = caster.AbtInterface.GetMasteryLevelFor(damageInfo.MasteryTree);
             // Tooltip Damage
             // 
             // Tooltip set for the players level + players specification level. This is an abilities base damage.
@@ -528,6 +529,7 @@ namespace WorldServer
 
         public static void SetHealAmount(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target)
         {
+            level = caster.AbtInterface.GetMasteryLevelFor(damageInfo.MasteryTree);
             // Healing Tooltip
             damageInfo.PrecalcDamage = damageInfo.GetDamageForLevel(level);
 
@@ -732,8 +734,9 @@ namespace WorldServer
             target.CbtInterface.RefreshCombatTimer();
             caster.CbtInterface.RefreshCombatTimer();
 
+            level = caster.AbtInterface.GetMasteryLevelFor(damageInfo.MasteryTree);
             #region Base Damage
-
+            // Actual damage delt
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
 
             #endregion
@@ -855,8 +858,9 @@ namespace WorldServer
 
         public static void ProcHealTarget(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target)
         {
+            level = caster.AbtInterface.GetMasteryLevelFor(damageInfo.MasteryTree);
             #region Base Damage
-
+            // Actual damage delt
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
 
             #endregion
@@ -944,6 +948,7 @@ namespace WorldServer
             caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.AttackedTarget, damageInfo, target);
             target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.WasAttacked, damageInfo, caster);
 
+            level = caster.AbtInterface.GetMasteryLevelFor(damageInfo.MasteryTree);
             // Base damage delt given a players level and specification
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
 
@@ -1656,8 +1661,9 @@ namespace WorldServer
 
         public static void HealTarget(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target)
         {
+            level = caster.AbtInterface.GetMasteryLevelFor(damageInfo.MasteryTree);
             #region Base Damage
-
+            // Actual Damage delt
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
 
             #endregion
@@ -1752,6 +1758,7 @@ namespace WorldServer
 
         public static void LifeSteal(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target)
         {
+            level = caster.AbtInterface.GetMasteryLevelFor(damageInfo.MasteryTree);
             AddOffensiveStats(caster, damageInfo, false);
 
             #region CriticalHeal
