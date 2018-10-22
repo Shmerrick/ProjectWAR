@@ -40,10 +40,6 @@ namespace Common
         [DataElement(Varchar = 16)]
         public string DamageType { get; set; }
 
-        // Flurry, etc
-        [DataElement]
-        public ushort DamageVariance { get; set; }
-
         [DataElement(Varchar=16)]
         public string WeaponDamageFrom { get; set; }
 

@@ -16,7 +16,6 @@ namespace WorldServer
         // Damage
         public ushort BaseDamage;
         public ushort Multiplier;
-        public ushort DamageVariance;
         public float PrecalcDamage;
         public float Damage;
         public float PrecalcMitigation;
@@ -113,8 +112,7 @@ namespace WorldServer
             BaseDamage = dbObj.BaseDamage;
             if (!string.IsNullOrEmpty(dbObj.DamageType))
                 DamageType = (DamageTypes)Enum.Parse(typeof(DamageTypes), dbObj.DamageType);
-            DamageVariance = dbObj.DamageVariance;
-             if (!string.IsNullOrEmpty(dbObj.WeaponDamageFrom))
+            if (!string.IsNullOrEmpty(dbObj.WeaponDamageFrom))
                 WeaponMod = (WeaponDamageContribution)Enum.Parse(typeof(WeaponDamageContribution), dbObj.WeaponDamageFrom);
             Undefendable = dbObj.Undefendable;
             NoCrits = dbObj.NoCrits;
