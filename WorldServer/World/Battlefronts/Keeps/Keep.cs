@@ -1246,8 +1246,8 @@ namespace WorldServer.World.BattleFronts.Keeps
         private readonly int[][] _materielCaps =
         {
             new[] { 0, 2, 4, 6, 8, 10 }, // barricades
-            new[] { 1, 2, 3, 4, 5, 6 }, // artillery
-            new[] { 1, 2, 3, 5, 6, 8 }, // cannon
+            new[] { 4, 2, 3, 4, 5, 6 }, // artillery
+            new[] { 4, 2, 3, 5, 6, 8 }, // cannon
             new[] { 1, 1, 1, 1, 2, 3 } // ram
         };
 
