@@ -238,7 +238,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             SetOffset((ushort)(_x >> 12), (ushort)(_y >> 12));
 
             // Events
-            EvtInterface.AddEvent(CheckPlayersInCloseRange, 5000, 0);
+            EvtInterface.AddEvent(CheckPlayersInCloseRange, 1000, 0);
 
             // Initial state
             IsActive = true;
