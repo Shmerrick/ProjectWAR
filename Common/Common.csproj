@@ -134,7 +134,6 @@
     <Compile Include="Database\World\Battlefront\Keep_Door.cs" />
     <Compile Include="Database\World\Battlefront\Keep_Info.cs" />
     <Compile Include="Database\World\Battlefront\RVRPairing.cs" />
-    <Compile Include="Database\World\Battlefront\ZoneLockRewards.cs" />
     <Compile Include="Database\World\Battlefront\ZoneLockSummary.cs" />
     <Compile Include="Database\World\Battlefront\RVRProgression.cs" />
     <Compile Include="Database\World\Battlefront\RVRZoneLockReward.cs" />

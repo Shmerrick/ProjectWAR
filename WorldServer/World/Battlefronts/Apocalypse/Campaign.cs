@@ -1009,7 +1009,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 WorldMgr.RewardDistributor.DistributeNonBagAwards(
                     losingRealmPlayer.Key,
                     _rewardManager.CalculateRenownBand(losingRealmPlayer.Key.RenownRank),
-                    (1f + contributionScale) * tierRewardScale, lockId);
+                    (1f + contributionScale) * tierRewardScale);
 
            
             }

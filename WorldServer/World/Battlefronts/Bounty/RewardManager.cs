@@ -563,4 +563,12 @@ namespace WorldServer.World.Battlefronts.Bounty
         }
     }
 
+    public enum CharacterRewardStatus
+    {
+        WINNING_ELIGIBLE,
+        WINNING_NON_ELIGIBLE,
+        LOSING_ELIGIBLE,
+        LOSING_NON_ELIGIBLE
+    }
+
 }
