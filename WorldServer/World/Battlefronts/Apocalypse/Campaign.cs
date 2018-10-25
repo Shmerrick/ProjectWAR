@@ -851,9 +851,40 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (_rewardManager == null)
                 BattlefrontLogger.Warn($"_rewardManager is null!!");
 
+            GenerateZoneLockSummary(lockingRealm);
+
+
+
             BattlefrontLogger.Info($"*************************BATTLEFRONT GENERATING REWARDS***********");
             GenerateZoneLockRewards(lockingRealm, forceNumberBags);
             BattlefrontLogger.Info($"*************************BATTLEFRONT LOCK-END*********************");
+
+        }
+
+        private void GenerateZoneLockSummary(Realms lockingRealm)
+        {
+            try
+            {
+                var zonelockSummary = new ZoneLockSummary
+                {
+                    Description = $"Locking Battlefront {CampaignName} to {lockingRealm.ToString()}...",
+                    DestroVP = (int)ActiveBattleFrontStatus.DestructionVictoryPointPercentage,
+                    OrderVP = (int)ActiveBattleFrontStatus.OrderVictoryPointPercentage,
+                    LockingRealm = (int)lockingRealm,
+                    RegionId = ActiveBattleFrontStatus.RegionId,
+                    Timestamp = DateTime.Now,
+                    TotalPlayersAtLock = GetAllFlaggedPlayersInZone(BattleFrontManager.ActiveBattleFront.ZoneId).Count(),
+                    EligiblePlayersAtLock = ActiveBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0).Count()
+                };
+
+                WorldMgr.Database.AddObject(zonelockSummary);
+                BattlefrontLogger.Info($"Writing ZoneLockSummary...");
+            }
+            catch (Exception ex)
+            {
+                BattlefrontLogger.Error($"Could not write ZoneLockSummary {ex.Message} {ex.StackTrace}");
+            }
+          
 
         }
 

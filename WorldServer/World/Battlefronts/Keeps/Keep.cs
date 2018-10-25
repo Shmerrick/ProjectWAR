@@ -634,6 +634,8 @@ namespace WorldServer.World.BattleFronts.Keeps
                 var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
                 var eligiblePlayers = activeBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
 
+                _logger.Info($"Processing {eligiblePlayers.Count()} players for Keep lock rewards");
+
                 foreach (var characterId in eligiblePlayers)
                 {
                     var player = Player.GetPlayer(characterId.Key);
@@ -668,9 +670,6 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                     if (battlePenalty)
                         player.SendClientMessage("This keep was taken with little to no resistance. The rewards have therefore been reduced.");
-                    else
-                        //// Invader crests
-                        //player.ItmInterface.CreateItem((uint)(208429), (ushort)5);
 
                     _logger.Info($"Distributing rewards for Keep {this.Name} to {player.Name} RR:{totalRenown} INF:{totalInfluence}");
                 }

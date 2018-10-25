@@ -77,13 +77,30 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             if (eligiblePlayers.Count == 0)
                 return null;
 
-            foreach (var lootBagTypeDefinition in bagDefinitions)
+            if (bagDefinitions == null)
             {
+                RewardLogger.Warn("BagDefinitions is null");
+                return null;
+            }
+
+            RewardLogger.Info($"Assigning loot. Number of Bags : {bagDefinitions.Count} Number of players : {eligiblePlayers.Count}");
+
+            var bagIndex = 0;
+            foreach (var selectedPlayer in eligiblePlayers)
+            {
+                var lootBagTypeDefinition = bagDefinitions[bagIndex];
+                if (lootBagTypeDefinition == null)
+                {
+                    RewardLogger.Warn($"lootBagTypeDefinition (index = {bagIndex}) is null");
+                    continue;
+                }
+
                 try
                 {
-                    var selectedPlayer = eligiblePlayers[RandomGenerator.Next((eligiblePlayers.Count))];
                     lootBagTypeDefinition.Assignee = selectedPlayer;
-                    RewardLogger.Debug($"Selected player {selectedPlayer} {eligiblePlayers.Count} for reward");
+                    RewardLogger.Debug($"Selected player {selectedPlayer} selected for reward. LootBag Id : {lootBagTypeDefinition.LootBagNumber} ({lootBagTypeDefinition.BagRarity}). Index = {bagIndex}");
+                    // player assigned, go to next bag
+                    bagIndex++;
                 }
                 catch (Exception e)
                 {
