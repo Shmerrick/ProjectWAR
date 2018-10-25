@@ -10,6 +10,7 @@ using FrameWork;
 using GameData;
 using NLog;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Bounty;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
@@ -72,6 +73,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
             RewardLogger.Info($"RR {rr} Money {money} INF {influence} Crests {(uint)lockReward.ItemId} ({(ushort)crestCount}) to {player.Name}. Modifier = {modifier}");
         }
+
+        
 
         public string DistributeWinningRealm(LootBagTypeDefinition lootBag, Player player, byte playerRenownBand)
         {

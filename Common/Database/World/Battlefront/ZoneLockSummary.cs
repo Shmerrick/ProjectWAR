@@ -8,8 +8,8 @@ namespace Common.Database.World.Battlefront
     [Serializable]
     public class ZoneLockSummary : DataObject
     {
-        [PrimaryKey(AutoIncrement = true)]
-        public int LockId { get; set; }
+        [PrimaryKey]
+        public long LockId { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public DateTime Timestamp { get; set; }

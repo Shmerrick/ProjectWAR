@@ -837,8 +837,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="lockingRealm"></param>
         public void LockBattleFront(Realms lockingRealm, int forceNumberBags = 0)
         {
+            var lockId = WriteZoneLockSummary(lockingRealm);
 
-            BattlefrontLogger.Info($"*************************BATTLEFRONT LOCK-START*******************");
+            BattlefrontLogger.Info($"*************************BATTLEFRONT LOCK-START [LockId:{lockId}]*******************");
             BattlefrontLogger.Info($"forceNumberBags = {forceNumberBags}");
             BattlefrontLogger.Info($"Locking Battlefront {CampaignName} to {lockingRealm.ToString()}...");
 
@@ -850,23 +851,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattlefrontLogger.Warn($"No players in the Lake!!");
             if (_rewardManager == null)
                 BattlefrontLogger.Warn($"_rewardManager is null!!");
-
-            GenerateZoneLockSummary(lockingRealm);
-
-
-
+            
             BattlefrontLogger.Info($"*************************BATTLEFRONT GENERATING REWARDS***********");
             GenerateZoneLockRewards(lockingRealm, forceNumberBags);
-            BattlefrontLogger.Info($"*************************BATTLEFRONT LOCK-END*********************");
+            BattlefrontLogger.Info($"*************************BATTLEFRONT LOCK-END [LockId:{lockId}] *********************");
 
         }
 
-        private void GenerateZoneLockSummary(Realms lockingRealm)
+        private long WriteZoneLockSummary(Realms lockingRealm)
         {
+            var lockId = Convert.ToInt64(DateTime.Now.ToString("YYYYMMddHHnn"));
             try
             {
                 var zonelockSummary = new ZoneLockSummary
                 {
+                    LockId = lockId,
                     Description = $"Locking Battlefront {CampaignName} to {lockingRealm.ToString()}...",
                     DestroVP = (int)ActiveBattleFrontStatus.DestructionVictoryPointPercentage,
                     OrderVP = (int)ActiveBattleFrontStatus.OrderVictoryPointPercentage,
@@ -878,11 +877,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 };
 
                 WorldMgr.Database.AddObject(zonelockSummary);
-                BattlefrontLogger.Info($"Writing ZoneLockSummary...");
+                BattlefrontLogger.Info($"Writing ZoneLockSummary. Lockid = {lockId}...");
+
+                return lockId;
             }
             catch (Exception ex)
             {
                 BattlefrontLogger.Error($"Could not write ZoneLockSummary {ex.Message} {ex.StackTrace}");
+                return lockId;
             }
           
 
@@ -1007,7 +1009,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 WorldMgr.RewardDistributor.DistributeNonBagAwards(
                     losingRealmPlayer.Key,
                     _rewardManager.CalculateRenownBand(losingRealmPlayer.Key.RenownRank),
-                    (1f + contributionScale) * tierRewardScale);
+                    (1f + contributionScale) * tierRewardScale, lockId);
+
+           
             }
 
             // Distribute rewards to winning players with eligibility - full rewards.
