@@ -299,6 +299,7 @@
     <Compile Include="World\Objects\Instances\SimpleAhzranok.cs" />
     <Compile Include="World\Objects\Instances\SimpleDralel.cs" />
     <Compile Include="World\Objects\Instances\SimpleFulgurThunderborn.cs" />
+    <Compile Include="World\Objects\Instances\SimpleHorgulul.cs" />
     <Compile Include="World\Objects\Instances\SimpleMalghorGreathorn.cs" />
     <Compile Include="World\Objects\Instances\SimpleTheDeamonicBeast.cs" />
     <Compile Include="World\Objects\Instances\SimpleTonragThunderborn.cs" />

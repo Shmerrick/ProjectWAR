@@ -325,17 +325,21 @@ namespace WorldServer
                             IS = new SimpleMalghorGreathorn(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
                             break;
 
-                        case 2000899:
-                            IS = new SimpleFulgurThunderborn(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
-                            break;
-
-                        case 2000901:
-                            IS = new SimpleTonragThunderborn(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
+                        case 6841:
+                            IS = new SimpleHorgulul(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
                             break;
 
                         case 6843:
                             IS = new SimpleDralel(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
                             break;
+                            
+                        //case 2000899:
+                        //    IS = new SimpleFulgurThunderborn(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
+                        //    break;
+
+                        //case 2000901:
+                        //    IS = new SimpleTonragThunderborn(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
+                        //    break;
 
                         default:
 							IS = new InstanceBossSpawn(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
