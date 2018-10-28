@@ -284,7 +284,8 @@ namespace WorldServer.Scenarios
                 Entry = 14050,
                 DisplayEntry = 0,
                 DamageType = DamageTypes.RawDamage,
-                BaseDamage = (ushort)(30000),
+                MinDamage = (ushort)(30000),
+                MaxDamage = (ushort)(30000),
                 CastPlayerSubID = 0
             };
 
@@ -321,7 +322,8 @@ namespace WorldServer.Scenarios
                         Entry = 14050,
                         DisplayEntry = 0,
                         DamageType = DamageTypes.RawDamage,
-                        BaseDamage = (ushort)(val),
+                        MinDamage = (ushort)(val),
+                        MaxDamage = (ushort)(val),
                         CastPlayerSubID = 0
                     }, player.Level, player, player);
 

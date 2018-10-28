@@ -32,16 +32,26 @@ namespace Common
         public byte ParentCommandSequence { get; set; }
 
         [DataElement]
-        public ushort BaseDamage { get; set; }
+        public ushort MinDamage { get; set; }
 
         [DataElement]
-        public ushort Multiplier { get; set; }
+        public ushort MaxDamage { get; set; }
 
         [DataElement(Varchar = 16)]
         public string DamageType { get; set; }
 
-        [DataElement(Varchar=16)]
+        // Flurry, etc
+        [DataElement]
+        public ushort DamageVariance { get; set; }
+
+        [DataElement]
+        public float CastTimeDamageMult { get; set; }
+
+        [DataElement(Varchar = 16)]
         public string WeaponDamageFrom { get; set; }
+
+        [DataElement]
+        public float WeaponDamageScale { get; set; }
 
         [DataElement]
         public bool NoCrits { get; set; }
@@ -72,13 +82,16 @@ namespace Common
         public float HatredScale { get; set; } = 1.0f;
 
         [DataElement]
-        public float HealHatredScale { get; set; } = 1.0f; 
+        public float HealHatredScale { get; set; } = 1.0f;
 
         [DataElement]
         public short ResourceBuild { get; set; }
 
         [DataElement]
         public byte CastPlayerSubID { get; set; }
+
+        [DataElement]
+        public float PriStatMultiplier { get; set; }
 
         #endregion
     }

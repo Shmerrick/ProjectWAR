@@ -140,7 +140,7 @@ namespace WorldServer
             ModifierList.Add("AddCooldownMS", AddCooldownMS);
             ModifierList.Add("SetCooldown", SetCooldown);
             ModifierList.Add("MultiplyCooldown", MultiplyCooldown);
-            ModifierList.Add("MultiplyCooldownGreatweapon", MultiplyCooldownGreatweapon); 
+            ModifierList.Add("MultiplyCooldownGreatweapon", MultiplyCooldownGreatweapon);
             ModifierList.Add("ModifySpecialCost", ModifySpecialCost);
             ModifierList.Add("ModifyDamageBonus", ModifyDamageBonus);
             ModifierList.Add("ModifyDamageType", ModifyDamageType);
@@ -227,17 +227,17 @@ namespace WorldServer
                 {
                     if (CheckList[myCheck.CommandName](caster, target, abInfo, myCheck))
                     {
-                        #if MODIFIER_DEBUG
+#if MODIFIER_DEBUG
                         if (abInfo != null)
                             ((Player)caster).SendClientMessage($"[X] [{myCheck.PreOrPost}][{myCheck.ID},{myCheck.Sequence}] {myCheck.CommandName} - {abInfo.Name}");
-                        #endif
+#endif
                         break;
                     }
 
-                    #if MODIFIER_DEBUG
+#if MODIFIER_DEBUG
                     if (abInfo != null)
                         ((Player)caster).SendClientMessage($"[  ] [{myCheck.PreOrPost}][{myCheck.ID},{myCheck.Sequence}] {myCheck.CommandName} - {abInfo.Name}");
-                    #endif
+#endif
 
                     if (myCheck.nextCheck == null)
                         return new Tuple<bool, byte>(false, myCheck.FailCode);
@@ -283,332 +283,332 @@ namespace WorldServer
 
         #region Checks
 
-            #region Positions
+        #region Positions
 
-            /// <summary>
-            /// Returns whether the caster is behind the target.
-            /// Primary value is the angle of the back arc.
-            /// </summary>
-            private static bool IsBehind(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        /// <summary>
+        /// Returns whether the caster is behind the target.
+        /// Primary value is the angle of the back arc.
+        /// </summary>
+        private static bool IsBehind(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            return !target.IsObjectInFront(caster, 360 - myCheck.PrimaryValue);
+        }
+
+        private static bool IsFlanking(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            return !target.IsObjectInFront(caster, 90);
+        }
+
+        private static bool WithinJumpZ(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            return caster.Z > target.Z || target.Z - caster.Z < myCheck.PrimaryValue * 12;
+        }
+
+        #endregion
+
+        #region Health
+        private static bool HasCriticalBackstab(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            return !target.IsObjectInFront(caster, 180) && target.PctHealth < 11;
+        }
+
+        private static bool TargetHPBelow(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            return target.PctHealth < myCheck.PrimaryValue;
+        }
+        #endregion
+
+        #region Crowd Control
+        private static bool IsCCed(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            return target.CrowdControlType != 0 || target.StsInterface.IsImpeded();
+        }
+
+        private static bool IsImpeded(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            return target.StsInterface.IsImpeded();
+        }
+
+        private static bool CanMove(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            /*if (caster is Player && ((Player) caster).FallGuard)
+                return false;*/
+            return !caster.StsInterface.IsRooted();
+        }
+        #endregion
+
+        #region Resources
+        private static bool HasResource(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            Player plr = caster as Player;
+
+            if (myCheck.SecondaryValue == 0)
+                return plr.CrrInterface.CareerResource == myCheck.PrimaryValue;
+            return plr.CrrInterface.HasResourceRange(myCheck.PrimaryValue, myCheck.SecondaryValue);
+        }
+
+        private static bool RequiresResource(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            return abInfo.SpecialCost > 0;
+        }
+
+        private static bool ForTheHagQueen(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            return StaticRandom.Instance.Next(100) < ((Player)caster).CrrInterface.CareerResource * 10;
+        }
+        #endregion
+
+        #region Buff Management
+        private static bool HasBuff(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            NewBuff buff = caster.BuffInterface.GetBuff((ushort)myCheck.PrimaryValue, null);
+
+            return buff != null && !buff.BuffHasExpired;
+        }
+
+        private static bool MissingBuff(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            NewBuff buff = caster.BuffInterface.GetBuff((ushort)myCheck.PrimaryValue, null);
+            if (buff != null && !buff.BuffHasExpired)
             {
-                return !target.IsObjectInFront(caster, 360 - myCheck.PrimaryValue);
+                return false;
+            }
+            else
+            {
+                return true;
             }
 
-            private static bool IsFlanking(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        }
+
+        private static bool TargetHasBuff(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            NewBuff buff = target.BuffInterface.GetBuff((ushort)myCheck.PrimaryValue, null);
+
+            return buff != null && !buff.BuffHasExpired;
+        }
+
+        private static bool HasCareerBuff(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            NewBuff buff = caster.BuffInterface.GetCareerBuff(myCheck.SecondaryValue);
+
+            return buff != null && buff.Entry == myCheck.PrimaryValue;
+        }
+
+        private static bool HasBuffOfType(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            return target.BuffInterface.HasBuffOfType((byte)myCheck.PrimaryValue);
+        }
+
+        private static bool NotImmovable(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            if (target.IsImmovable)
+                return false;
+
+            Player plrTarget = target as Player;
+
+            if (plrTarget == null)
+                return true;
+
+            return !plrTarget.ImmuneToCC((byte)CrowdControlTypes.Root, null, 0);
+        }
+
+        #endregion
+
+        #region Combat
+
+        private static bool OutOfCombat(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            return !caster.CbtInterface.IsInCombat;
+        }
+
+        private static bool OutOfRvR(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            Player plr = (Player)caster;
+
+            return plr.ScnInterface.Scenario == null && (plr.CurrentArea == null || !plr.CurrentArea.IsRvR);
+        }
+
+        private static bool HasDefended(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            return caster.CbtInterface.HasDefended(myCheck.PrimaryValue);
+        }
+
+        private static bool IsGrounded(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            Player plr = (Player)caster;
+            return plr.WasGrounded;
+        }
+
+        private static bool TargetDefended(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            return caster.CbtInterface.WasDefendedAgainst(myCheck.PrimaryValue);
+        }
+
+        private static bool TargetIsCasting(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            return target is Player && target.AbtInterface.IsCasting();
+        }
+
+        private static bool OffensiveDamaging(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            return abInfo.TargetType == CommandTargetTypes.Enemy && abInfo.ConstantInfo.IsDamaging;
+        }
+        #endregion
+
+        #region Relations to Target
+        private static bool CasterTargetRelation(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            if (myCheck.PrimaryValue == 0)
+                return caster != target;
+            return caster == target;
+        }
+
+        private static bool CasterTargetSameRealm(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            if (myCheck.PrimaryValue == 0)
+                return caster.Faction == 64 || caster.Realm != target.Realm;
+            return caster.Realm == target.Realm && caster.Faction != 64;
+        }
+
+        private static bool TargetWithinRange(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+
+            return target != null && caster.ObjectWithinRadiusFeet(target, myCheck.PrimaryValue);
+        }
+
+        private static bool HostileWithinRange(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            Unit realTarget = caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY);
+            return realTarget != null && !realTarget.IsDead && caster.ObjectWithinRadiusFeet(realTarget, myCheck.PrimaryValue);
+        }
+
+        private static bool TargetWithinRangeOfPet(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            Pet myPet = ((Player)caster).CrrInterface.GetTargetOfInterest() as Pet;
+
+            if (myPet == null)
+                return false;
+
+            return myPet.IsInCastRange(target, (uint)myCheck.PrimaryValue);
+        }
+
+        private static bool TOIWithinRange(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            Player plr = caster as Player;
+
+            if (plr == null)
+                return false;
+
+            Unit careerTarget = plr.CrrInterface.GetTargetOfInterest();
+
+            return careerTarget != null && !careerTarget.IsDead && (myCheck.PrimaryValue == 0 || caster.ObjectWithinRadiusFeet(careerTarget, myCheck.PrimaryValue));
+        }
+
+        private static bool TargetIsPlayer(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            if (myCheck.PrimaryValue == 0)
+                return !(target is Player);
+            return target is Player;
+        }
+
+        private static bool TargetIsOrganic(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            if (myCheck.PrimaryValue == 0)
+                return !(target is Player || target is Creature);
+            return target is Player || target is Creature;
+        }
+
+        private static bool IsPrincipalTarget(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            return target == caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY);
+        }
+        #endregion
+
+        #region RvR
+
+        private static bool CanDeploySiege(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            Player player = caster as Player;
+
+            if (player == null)
+                return false;
+
+            /*if (BattleFrontService.GetWarcampEntrance((ushort)player.ZoneId, player.Realm).IsWithinRadiusFeet(player, 100))
             {
-                return !target.IsObjectInFront(caster, 90);
+                ProximityBattleFront front = player.Region.Bttlfront as ProximityBattleFront;
+                if (front != null && front.RealmLostKeep[(int)player.Realm-1])
+                    return front.CanDeploySiegeAtWarcamp(player, abInfo.Level, (uint)abInfo.CommandInfo[0].PrimaryValue);
             }
 
-            private static bool WithinJumpZ(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+            if (player.CurrentKeep != null && player.CurrentKeep.Ruin)
             {
-                return caster.Z > target.Z || target.Z - caster.Z < myCheck.PrimaryValue * 12;
+                player.SendClientMessage("Cannot deploy siege at ruined keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                return false;
+            }*/
+
+            if (player.CurrentKeep == null)
+            {
+                player.SendClientMessage("Must deploy siege at friendly keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                return false;
             }
-
-            #endregion
-
-            #region Health
-            private static bool HasCriticalBackstab(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                return !target.IsObjectInFront(caster, 180) && target.PctHealth < 11;
-            }
-
-            private static bool TargetHPBelow(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                return target.PctHealth < myCheck.PrimaryValue;
-            }
-            #endregion
-
-            #region Crowd Control
-            private static bool IsCCed(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                return target.CrowdControlType != 0 || target.StsInterface.IsImpeded();
-            }
-
-            private static bool IsImpeded(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                return target.StsInterface.IsImpeded();
-            }
-
-            private static bool CanMove(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                /*if (caster is Player && ((Player) caster).FallGuard)
-                    return false;*/
-                return !caster.StsInterface.IsRooted();
-            }
-            #endregion
-
-            #region Resources
-            private static bool HasResource(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                Player plr = caster as Player;
-
-                if (myCheck.SecondaryValue == 0)
-                    return plr.CrrInterface.CareerResource == myCheck.PrimaryValue;
-                return plr.CrrInterface.HasResourceRange(myCheck.PrimaryValue, myCheck.SecondaryValue);
-            }
-
-            private static bool RequiresResource(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                return abInfo.SpecialCost > 0;
-            }
-
-            private static bool ForTheHagQueen(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                return StaticRandom.Instance.Next(100) < ((Player) caster).CrrInterface.CareerResource * 10;
-            }
-            #endregion
-
-            #region Buff Management
-            private static bool HasBuff(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                NewBuff buff = caster.BuffInterface.GetBuff((ushort)myCheck.PrimaryValue, null);
-
-                return buff != null && !buff.BuffHasExpired;
-            }
-
-            private static bool MissingBuff(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                NewBuff buff = caster.BuffInterface.GetBuff((ushort)myCheck.PrimaryValue, null);
-                if (buff != null && !buff.BuffHasExpired)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-                
-            }
-
-            private static bool TargetHasBuff(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                NewBuff buff = target.BuffInterface.GetBuff((ushort) myCheck.PrimaryValue, null);
-
-                return buff != null && !buff.BuffHasExpired;
-            }
-
-            private static bool HasCareerBuff(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                NewBuff buff = caster.BuffInterface.GetCareerBuff(myCheck.SecondaryValue);
-
-                return buff != null && buff.Entry == myCheck.PrimaryValue;
-            }
-
-            private static bool HasBuffOfType(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                return target.BuffInterface.HasBuffOfType((byte)myCheck.PrimaryValue);
-            }
-
-            private static bool NotImmovable(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                if (target.IsImmovable)
-                    return false;
-
-                Player plrTarget = target as Player;
-
-                if (plrTarget == null)
-                    return true;
-
-                return !plrTarget.ImmuneToCC((byte)CrowdControlTypes.Root, null, 0);
-            }
-
-            #endregion
-
-            #region Combat
-
-            private static bool OutOfCombat(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                return !caster.CbtInterface.IsInCombat;
-            }
-
-            private static bool OutOfRvR(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                Player plr = (Player) caster;
-
-                return plr.ScnInterface.Scenario == null && (plr.CurrentArea == null || !plr.CurrentArea.IsRvR);
-            }
-
-            private static bool HasDefended(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                return caster.CbtInterface.HasDefended(myCheck.PrimaryValue);
-            }
-
-            private static bool IsGrounded(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                Player plr = (Player)caster;
-                return plr.WasGrounded;
-            }
-
-            private static bool TargetDefended(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                return caster.CbtInterface.WasDefendedAgainst(myCheck.PrimaryValue);
-            }
-
-            private static bool TargetIsCasting(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                return target is Player && target.AbtInterface.IsCasting();
-            }
-
-            private static bool OffensiveDamaging(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                return abInfo.TargetType == CommandTargetTypes.Enemy && abInfo.ConstantInfo.IsDamaging;
-            }
-            #endregion
-
-            #region Relations to Target
-            private static bool CasterTargetRelation(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                if (myCheck.PrimaryValue == 0)
-                    return caster != target;
-                return caster == target;
-            }
-
-            private static bool CasterTargetSameRealm(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                if (myCheck.PrimaryValue == 0)
-                    return caster.Faction == 64 || caster.Realm != target.Realm;
-                return caster.Realm == target.Realm && caster.Faction != 64;
-            }
-
-            private static bool TargetWithinRange(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                
-                return target != null && caster.ObjectWithinRadiusFeet(target, myCheck.PrimaryValue);
-            }
-
-            private static bool HostileWithinRange(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                Unit realTarget = caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY);
-                return realTarget != null && !realTarget.IsDead && caster.ObjectWithinRadiusFeet(realTarget, myCheck.PrimaryValue);
-            }
-
-            private static bool TargetWithinRangeOfPet(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                Pet myPet = ((Player)caster).CrrInterface.GetTargetOfInterest() as Pet;
-
-                if (myPet == null)
-                    return false;
-
-                return myPet.IsInCastRange(target, (uint)myCheck.PrimaryValue);
-            }
-
-            private static bool TOIWithinRange(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                Player plr = caster as Player;
-
-                if (plr == null)
-                    return false;
-
-                Unit careerTarget = plr.CrrInterface.GetTargetOfInterest();
-
-                return careerTarget != null && !careerTarget.IsDead && (myCheck.PrimaryValue == 0 || caster.ObjectWithinRadiusFeet(careerTarget, myCheck.PrimaryValue));
-            }
-
-            private static bool TargetIsPlayer(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                if (myCheck.PrimaryValue == 0)
-                    return !(target is Player);
-                return target is Player;
-            }
-
-            private static bool TargetIsOrganic(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                if (myCheck.PrimaryValue == 0)
-                    return !(target is Player || target is Creature);
-                return target is Player || target is Creature;
-            }
-
-            private static bool IsPrincipalTarget(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                return target == caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY);
-            }
-            #endregion
-
-            #region RvR
-
-            private static bool CanDeploySiege(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                Player player = caster as Player;
-
-                if (player == null)
-                    return false;
-
-                /*if (BattleFrontService.GetWarcampEntrance((ushort)player.ZoneId, player.Realm).IsWithinRadiusFeet(player, 100))
-                {
-                    ProximityBattleFront front = player.Region.Bttlfront as ProximityBattleFront;
-                    if (front != null && front.RealmLostKeep[(int)player.Realm-1])
-                        return front.CanDeploySiegeAtWarcamp(player, abInfo.Level, (uint)abInfo.CommandInfo[0].PrimaryValue);
-                }
-
-                if (player.CurrentKeep != null && player.CurrentKeep.Ruin)
-                {
-                    player.SendClientMessage("Cannot deploy siege at ruined keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                    return false;
-                }*/
-
-                if (player.CurrentKeep == null)
-                {
-                    player.SendClientMessage("Must deploy siege at friendly keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                    return false;
-                }
-                #if !DEBUG
+#if !DEBUG
                 if (player.CurrentKeep == null || player.CurrentKeep.Realm != player.Realm)
                 {
                     player.SendClientMessage("Must deploy siege at friendly keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
                     return false;
                 }
-            	#endif
+#endif
 
-            	return player.CurrentKeep.CanDeploySiege(player, abInfo.Level, (uint)abInfo.CommandInfo[0].PrimaryValue);
-            }
-            #endregion
+            return player.CurrentKeep.CanDeploySiege(player, abInfo.Level, (uint)abInfo.CommandInfo[0].PrimaryValue);
+        }
+        #endregion
 
-            private static bool IsOffensive(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        private static bool IsOffensive(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            Item offHand = caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND);
+
+            if (offHand?.Info != null)
+                return offHand.Info.Type != (int)ItemTypes.ITEMTYPES_CHARM && offHand.Info.Type != (int)ItemTypes.ITEMTYPES_SHIELD;
+
+            Item mainHand = caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.MAIN_HAND);
+
+            return mainHand?.Info != null && mainHand.Info.TwoHanded;
+        }
+
+        private static bool ExperimentalMode(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            Player player = caster as Player;
+
+            return player == null || player.CrrInterface.ExperimentalModeCheckAbility(abInfo);
+        }
+
+        private static bool CanMount(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+        {
+            Player player = caster as Player;
+
+            if (player == null || (player.HeldObject != null && player.HeldObject.PreventsRide) || !player.CanMount)
             {
-                Item offHand = caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND);
-
-                if (offHand?.Info != null)
-                    return offHand.Info.Type != (int)ItemTypes.ITEMTYPES_CHARM && offHand.Info.Type != (int)ItemTypes.ITEMTYPES_SHIELD;
-
-                Item mainHand = caster.ItmInterface.GetItemInSlot((ushort) EquipSlot.MAIN_HAND);
-
-                return mainHand?.Info != null && mainHand.Info.TwoHanded;
+                player?.SendClientMessage("You can't perform that action while carrying an object", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                return false;
             }
 
-            private static bool ExperimentalMode(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
+            // Block Squig Armor
+            if (player.Info.CareerLine == 8 && player.CrrInterface.CareerResource == 1)
             {
-                Player player = caster as Player;
-
-                return player == null || player.CrrInterface.ExperimentalModeCheckAbility(abInfo);
+                player.SendClientMessage("You can't perform that action while in Squig Armor", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                return false;
             }
+            return true;
+        }
 
-            private static bool CanMount(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
-            {
-                Player player = caster as Player;
-
-                if (player == null || (player.HeldObject != null && player.HeldObject.PreventsRide) || !player.CanMount)
-                {
-                    player?.SendClientMessage("You can't perform that action while carrying an object", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                    return false;
-                }
-
-                // Block Squig Armor
-                if (player.Info.CareerLine == 8 && player.CrrInterface.CareerResource == 1)
-                {
-                    player.SendClientMessage("You can't perform that action while in Squig Armor", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                    return false;
-                }
+        private static bool ItemInSlot(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck mycheck)
+        {
+            Player plr = caster as Player;
+            if (plr.ItmInterface.GetItemInSlot((ushort)mycheck.PrimaryValue) == null)
+                return false;
+            else
                 return true;
-            }
-
-            private static bool ItemInSlot(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck mycheck)
-            {
-                Player plr = caster as Player;
-                if (plr.ItmInterface.GetItemInSlot((ushort)mycheck.PrimaryValue) == null)
-                    return false;
-                else
-                    return true;
-            }
+        }
 
         #endregion
 
@@ -660,8 +660,8 @@ namespace WorldServer
                 // Subtractive cast time.
                 if (myEffect.PrimaryValue < 0)
                 {
-                    if (abInfo.CastTime > (myEffect.PrimaryValue*-1))
-                        abInfo.CastTime += (ushort) myEffect.PrimaryValue;
+                    if (abInfo.CastTime > (myEffect.PrimaryValue * -1))
+                        abInfo.CastTime += (ushort)myEffect.PrimaryValue;
                     else abInfo.CastTime = 0;
                 }
 
@@ -681,10 +681,10 @@ namespace WorldServer
                 return;
             byte myResource = plr.CrrInterface.GetCurrentResourceLevel(1);
 
-            if (abInfo.ApCost + myEffect.PrimaryValue*myResource < 0)
+            if (abInfo.ApCost + myEffect.PrimaryValue * myResource < 0)
                 abInfo.ApCost = 0;
             else
-                abInfo.ApCost = (byte)(abInfo.ApCost +  myEffect.PrimaryValue * myResource);
+                abInfo.ApCost = (byte)(abInfo.ApCost + myEffect.PrimaryValue * myResource);
         }
 
         private static void ModifySpecialCost(Unit caster, AbilityInfo abInfo, AbilityModifierEffect myEffect)
@@ -697,7 +697,7 @@ namespace WorldServer
         {
             if (abInfo.Cooldown * 1000 < -myEffect.PrimaryValue)
                 abInfo.Cooldown = 0;
-            else abInfo.Cooldown += (ushort) (myEffect.PrimaryValue*0.001f);
+            else abInfo.Cooldown += (ushort)(myEffect.PrimaryValue * 0.001f);
         }
 
         private static void MultiplyCooldown(Unit caster, AbilityInfo abInfo, AbilityModifierEffect myEffect)
@@ -748,8 +748,8 @@ namespace WorldServer
                         continue;
 
                     if (myEffect.PrimaryValue > 0)
-                        cmd.DamageInfo.DamageBonus += myEffect.PrimaryValue*0.01f;
-                    else cmd.DamageInfo.DamageReduction *= (100 + myEffect.PrimaryValue)*0.01f;
+                        cmd.DamageInfo.DamageBonus += myEffect.PrimaryValue * 0.01f;
+                    else cmd.DamageInfo.DamageReduction *= (100 + myEffect.PrimaryValue) * 0.01f;
                 }
             }
         }
@@ -784,7 +784,7 @@ namespace WorldServer
         }
 
         private static void ModifyCriticalHitRate(Unit caster, AbilityInfo abInfo, AbilityModifierEffect myEffect)
-        { 
+        {
             foreach (var cmdinfo in abInfo.CommandInfo)
             {
                 for (var cmd = cmdinfo; cmd != null; cmd = cmd.NextCommand)
@@ -841,8 +841,8 @@ namespace WorldServer
 
             if (cmd != null)
             {
-                cmd.DamageInfo.BaseDamage = (ushort)myEffect.PrimaryValue;
-                cmd.DamageInfo.BaseDamage = (ushort)myEffect.SecondaryValue;
+                cmd.DamageInfo.MinDamage = (ushort)myEffect.PrimaryValue;
+                cmd.DamageInfo.MaxDamage = (ushort)myEffect.SecondaryValue;
             }
         }
 
@@ -901,7 +901,7 @@ namespace WorldServer
 
         private static void DragonGunRange(Unit caster, AbilityInfo abInfo, AbilityModifierEffect myEffect)
         {
-            byte myRes = ((Player) caster).CrrInterface.CareerResource;
+            byte myRes = ((Player)caster).CrrInterface.CareerResource;
 
             AbilityCommandInfo cmd = abInfo.CommandInfo[myEffect.TargetCommandID].GetSubcommand(myEffect.TargetCommandSequence);
 
@@ -952,12 +952,12 @@ namespace WorldServer
             AbilityCommandInfo cmd = abInfo.CommandInfo[myEffect.TargetCommandID].GetSubcommand(myEffect.TargetCommandSequence);
 
             if (cmd != null)
-                cmd.EffectRadius = (byte)(cmd.EffectRadius*(100 + (ushort) myEffect.PrimaryValue)*0.01f);
+                cmd.EffectRadius = (byte)(cmd.EffectRadius * (100 + (ushort)myEffect.PrimaryValue) * 0.01f);
         }
 
         private static void ModifyAPCostByCareerResource(Unit caster, AbilityInfo abInfo, AbilityModifierEffect myEffect)
         {
-            abInfo.ApCost = (byte)(abInfo.ApCost *  (1f - myEffect.PrimaryValue * 0.01f * ((Player)caster).CrrInterface.CareerResource));
+            abInfo.ApCost = (byte)(abInfo.ApCost * (1f - myEffect.PrimaryValue * 0.01f * ((Player)caster).CrrInterface.CareerResource));
         }
 
         private static void SwitchCommandParams(Unit caster, AbilityInfo abInfo, AbilityModifierEffect myEffect)
@@ -1003,7 +1003,7 @@ namespace WorldServer
         /// <para>Reduces the cast time of spells empowered by the healer shifter mechanic of Archmage and Shaman.</para>
         /// <para>In experimental mode, also improves the output of those spells.</para>
         /// </summary>
-        
+
         private static void ShifterCastTimeBonus(Unit caster, AbilityInfo abInfo, AbilityModifierEffect myEffect)
         {
             Player plr = caster as Player;
@@ -1021,10 +1021,10 @@ namespace WorldServer
                 if (myResource > 5)
                     return;
 
-                
-                abInfo.CastTime = (ushort) (abInfo.CastTime*0.60f);
+
+                abInfo.CastTime = (ushort)(abInfo.CastTime * 0.60f);
                 //abInfo.ApCost = (byte) (abInfo.ApCost*0.60f);
-                
+
             }
 
             // Tranquility bonus - Force casts faster
@@ -1048,14 +1048,14 @@ namespace WorldServer
                         abInfo.CanCastWhileMoving = true;
                         break;
 
-                    // Damaging abilities scale AP cost instead
-                    /*
-                    default:
-                        abInfo.ApCost = (byte)(abInfo.ApCost * 0.60f);
-                        break;
-                    */
+                        // Damaging abilities scale AP cost instead
+                        /*
+                        default:
+                            abInfo.ApCost = (byte)(abInfo.ApCost * 0.60f);
+                            break;
+                        */
                 }
-                
+
             }
 
             if (abInfo.CastTime == 0)
@@ -1083,7 +1083,7 @@ namespace WorldServer
                     return;
 
                 if (plr.CrrInterface.ExperimentalMode)
-                    abInfo.Cooldown = (ushort)(abInfo.Cooldown*0.6f);
+                    abInfo.Cooldown = (ushort)(abInfo.Cooldown * 0.6f);
             }
 
             // Tranquility bonus - Force cools down faster
@@ -1106,7 +1106,60 @@ namespace WorldServer
 
             if (plr == null)
                 return;
-            
+
+            /*
+            if (plr.CrrInterface.ExperimentalMode && myEffect.PrimaryValue == 1 && myEffect.PreOrPost == 1)
+            {
+                // Check for lifesteal abilities.
+                // These abilities, have reduced damage but significantly better health stealing.
+                switch (abInfo.Entry)
+                {
+                    case 1930: // I'll Take That!
+                    case 1935: // Fury of Da Green
+                    case 9257: // Balance Essence
+                    case 9274: // Energy of Vaul
+                        foreach (var cmdinfo in abInfo.CommandInfo)
+                        {
+                            for (var cmd = cmdinfo; cmd != null; cmd = cmd.NextCommand)
+                            {
+                                if (cmd.CommandName == "StealLife")
+                                {
+                                    // ITT and BE gain base healing of 250% of their base damage plus Willpower bonus
+                                    if (abInfo.Entry == 1930 || abInfo.Entry == 9257)
+                                    {
+                                        cmd.DamageInfo.MinDamage = (ushort) (cmd.LastCommand.DamageInfo.MinDamage*2.5);
+                                        cmd.DamageInfo.MaxDamage = (ushort) (cmd.LastCommand.DamageInfo.MaxDamage*2.5);
+                                        cmd.DamageInfo.StatUsed = 3;
+                                        cmd.DamageInfo.StatDamageScale = 2;
+                                    }
+
+                                    // Fury of Da Green and Energy of Vaul heal for their base damage per target struck
+                                    else
+                                    {
+                                        cmd.DamageInfo.MinDamage = 40;
+                                        cmd.DamageInfo.MaxDamage = 300;
+                                    }
+                                }
+
+                                if (cmd.DamageInfo == null)
+                                    continue;
+
+                                cmd.DamageInfo.Defensibility -= 20;
+
+                                if (cmd.CommandName != "StealLife")
+                                {
+                                    cmd.DamageInfo.NoCrits = true;
+                                    cmd.DamageInfo.StatDamageScale = 0f;
+                                }
+                                else if (abInfo.Entry == 1930 || abInfo.Entry == 9257)
+                                    cmd.DamageInfo.DamageType = DamageTypes.Healing;
+                            }
+                        }
+                        break;
+                }
+            }
+            */
+
             byte myResource = plr.CrrInterface.CareerResource;
 
             if (myResource == 0)
@@ -1164,8 +1217,8 @@ namespace WorldServer
                                         // ITT and BE gain base healing of 250% of their base damage plus Willpower bonus
                                         if (abInfo.Entry == 1930 || abInfo.Entry == 9257)
                                         {
-                                            cmd.DamageInfo.BaseDamage = (ushort)(cmd.LastCommand.DamageInfo.BaseDamage * 2.5);
-                                            cmd.DamageInfo.BaseDamage = (ushort)(cmd.LastCommand.DamageInfo.BaseDamage * 2.5);
+                                            cmd.DamageInfo.MinDamage = (ushort)(cmd.LastCommand.DamageInfo.MinDamage * 2.5);
+                                            cmd.DamageInfo.MaxDamage = (ushort)(cmd.LastCommand.DamageInfo.MaxDamage * 2.5);
                                             cmd.DamageInfo.StatUsed = 3;
                                             cmd.DamageInfo.StatDamageScale = 2;
                                         }
@@ -1173,8 +1226,8 @@ namespace WorldServer
                                         // Fury of Da Green and Energy of Vaul heal for their base damage per target struck
                                         else
                                         {
-                                            cmd.DamageInfo.BaseDamage = 40;
-                                            cmd.DamageInfo.BaseDamage = 300;
+                                            cmd.DamageInfo.MinDamage = 40;
+                                            cmd.DamageInfo.MaxDamage = 300;
                                         }
                                     }
 
@@ -1262,7 +1315,7 @@ namespace WorldServer
                     cmd.DamageInfo.DamageBonus += 0.05f * (myResource - 5);
             }
         }
-        
+
         #endregion
 
         #region Add/Remove
@@ -1355,8 +1408,8 @@ namespace WorldServer
 
             if (cmd != null)
             {
-                cmd.TargetType = (CommandTargetTypes) myEffect.PrimaryValue;
-                cmd.EffectRadius = (byte) myEffect.SecondaryValue;
+                cmd.TargetType = (CommandTargetTypes)myEffect.PrimaryValue;
+                cmd.EffectRadius = (byte)myEffect.SecondaryValue;
             }
         }
 
@@ -1370,8 +1423,8 @@ namespace WorldServer
 
             if (cmd != null)
             {
-                cmd.DamageInfo.BaseDamage = (ushort)myEffect.PrimaryValue;
-                cmd.DamageInfo.BaseDamage = (ushort)myEffect.SecondaryValue;
+                cmd.DamageInfo.MinDamage = (ushort)myEffect.PrimaryValue;
+                cmd.DamageInfo.MaxDamage = (ushort)myEffect.SecondaryValue;
             }
         }
 
@@ -1428,7 +1481,7 @@ namespace WorldServer
                     if (cmd.DamageInfo == null)
                         continue;
 
-                        cmd.DamageInfo.CriticalHitRate += (byte)myEffect.PrimaryValue;
+                    cmd.DamageInfo.CriticalHitRate += (byte)myEffect.PrimaryValue;
                 }
             }
         }
@@ -1515,7 +1568,7 @@ namespace WorldServer
         {
             BuffCommandInfo cmd = buffInfo.CommandInfo[myEffect.TargetCommandID].GetSubcommand(myEffect.TargetCommandSequence);
 
-            cmd.DamageInfo.CriticalHitRate += (byte) (5*((Player) caster).CrrInterface.GetCurrentResourceLevel((byte) myEffect.SecondaryValue));
+            cmd.DamageInfo.CriticalHitRate += (byte)(5 * ((Player)caster).CrrInterface.GetCurrentResourceLevel((byte)myEffect.SecondaryValue));
         }
 
         private static void SetEventChance(Unit caster, BuffInfo buffInfo, AbilityModifierEffect myEffect)
@@ -1571,7 +1624,7 @@ namespace WorldServer
 
         private static void ModifyStacksByCareerResource(Unit caster, BuffInfo buffInfo, AbilityModifierEffect myEffect)
         {
-            buffInfo.InitialStacks += ((Player) caster).CrrInterface.CareerResource;
+            buffInfo.InitialStacks += ((Player)caster).CrrInterface.CareerResource;
             buffInfo.MaxStack = (byte)buffInfo.InitialStacks;
         }
 
@@ -1731,11 +1784,11 @@ namespace WorldServer
 
             if (player == null || !player.CrrInterface.HasResource(2))
                 return;
-            
-            float scaleFactor = 1f - (myEffect.PrimaryValue * 0.01f * 0.125f * ((Player) caster).CrrInterface.GetCurrentResourceLevel(0));
 
-            buffInfo.Duration = (ushort)(buffInfo.Duration*scaleFactor);
-            buffInfo.Interval = (ushort) (buffInfo.Interval*scaleFactor);
+            float scaleFactor = 1f - (myEffect.PrimaryValue * 0.01f * 0.125f * ((Player)caster).CrrInterface.GetCurrentResourceLevel(0));
+
+            buffInfo.Duration = (ushort)(buffInfo.Duration * scaleFactor);
+            buffInfo.Interval = (ushort)(buffInfo.Interval * scaleFactor);
         }
 
         #endregion

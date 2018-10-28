@@ -14,8 +14,9 @@ namespace WorldServer
         public byte Index;
 
         // Damage
-        public ushort BaseDamage;
-        public ushort Multiplier;
+        public ushort MinDamage;
+        public ushort MaxDamage;
+        public ushort DamageVariance;
         public float PrecalcDamage;
         public float Damage;
         public float PrecalcMitigation;
@@ -26,7 +27,10 @@ namespace WorldServer
 
         public byte ParentCommandID, ParentCommandSequence;
 
+        public float CastTimeDamageMult;
+
         public WeaponDamageContribution WeaponMod;
+        public float WeaponDamageScale;
 
         public byte StatUsed;
         public float StatDamageScale;
@@ -95,11 +99,15 @@ namespace WorldServer
         // Set if this damage should use a fraction of the Item Stat Total for its stat contribution.
         public bool UseItemStatTotal;
 
+        //If defined, use the Primary Stat defined as a multiplier and override the weapon value to also use this statistic by calculating the DPS value of the primary stat plus the DPS value of the weapons used in conjunction with the base value for the skill.
+        //
+        public float PriStatMultiplier;
+
         #region Load
 
         public AbilityDamageInfo()
         {
-            
+
         }
 
         public AbilityDamageInfo(DBAbilityDamageInfo dbObj)
@@ -109,11 +117,15 @@ namespace WorldServer
             Index = dbObj.Index;
             ParentCommandID = dbObj.ParentCommandID;
             ParentCommandSequence = dbObj.ParentCommandSequence;
-            BaseDamage = dbObj.BaseDamage;
+            MinDamage = dbObj.MinDamage;
+            MaxDamage = dbObj.MaxDamage;
             if (!string.IsNullOrEmpty(dbObj.DamageType))
                 DamageType = (DamageTypes)Enum.Parse(typeof(DamageTypes), dbObj.DamageType);
+            DamageVariance = dbObj.DamageVariance;
+            CastTimeDamageMult = dbObj.CastTimeDamageMult;
             if (!string.IsNullOrEmpty(dbObj.WeaponDamageFrom))
                 WeaponMod = (WeaponDamageContribution)Enum.Parse(typeof(WeaponDamageContribution), dbObj.WeaponDamageFrom);
+            WeaponDamageScale = dbObj.WeaponDamageScale;
             Undefendable = dbObj.Undefendable;
             NoCrits = dbObj.NoCrits;
             OverrideDefenseEvent = dbObj.OverrideDefenseEvent;
@@ -124,7 +136,7 @@ namespace WorldServer
             HealHatredScale = dbObj.HealHatredScale;
             ResourceBuild = dbObj.ResourceBuild;
             CastPlayerSubID = dbObj.CastPlayerSubID;
-            Multiplier = dbObj.Multiplier;
+            PriStatMultiplier = dbObj.PriStatMultiplier;
         }
 
         public static List<AbilityDamageInfo> Convert(List<DBAbilityDamageInfo> dbObjs)
@@ -140,61 +152,15 @@ namespace WorldServer
         #endregion
 
         #region Interface
-        /* Ability Use Example [SIMPLE!!] - The following are from the client and do not represent WarEmu integration.
-        *  ID                  = 8323
-        *  AbilityName         = Ravage
-        *  AbilityDesc         = You channel the fell powers of the warp into your blade unleashing a devastating strike that does {COM_0_VAL0} Spiritual damage.
-        *  ScaleStatMult       = 1.5
-        *  ComponentID         = 147
-        *  ComponentDesc       = 
-        *  ComponentIndex      = 0
-        *  Operation           = DAMAGE
-        *  ActivationDelay     = 0
-        *  Radius              = 0
-        *  ComponentDuration   = 0
-        *  FlightSpeed         = 0
-        *  Trigger             = 1
-        *  VfxID               = 0
-        *  Values              = 20,0,6,7,0,0,0,0
-        *  Values              = [0], [1], etc
-        *  Multipliers         = 100,100,68,150,100,100,100,100
-        *  Multipliers         = [0], [1], etc
-        *  
-        *  DAMAGE VALUE CONSTANT    (increasePerLevel) = 0.16666666666666666666666666666667
-        *  HEAL VALUE CONSTANT      (increasePerLevel) = 1.0 [NOT CONFIRMED]
-        *  MORALE VALUE CONSTANT    (increasePerLevel) = 0.55128205128205128205128205128205
-        *  
-        * ((((abilityLevel - 1) * increasePerLevel) * baseValue) + Values[0]) * (Multipliers[0] / 100)
-        * AbilityLevel  = Player.Level + Buff.SUM(Ability.Specilization)
-        * If Player.Level > 25, then Player.Level = 25
-        * 
-        * Level 1 Chosen
-        * (((((1) - 1) * (0.166667)) * (20)) + 20) * ((100) / 100 ) = 20
-        * 
-        * Level 40 Chosen
-        * (((((40) - 1) * (0.166667)) * (20)) + 20) * ((100) / 100 ) = 150
-        * 
-        * (((((39) * (0.166667)) * (20)) + 20) * (1) = 150
-        * 
-        * Values[0] = BaseDamage
-        *
-       */
 
-        /*
-         public float DamageConstantDef(float DamageConstant)
-         {
-             if (damageInfo.DamageType == DamageTypes.RawDamage)
-                 DamageConstant = 0.55128205128205128205128205128205f;
-             else
-                 DamageConstant = 0.16666666666666666666666666666667f;
-         }
-         */
-
-        const float DamageConstant = 0.16666666666666666666666666666667f;
         public uint GetDamageForLevel(byte level)
         {
-            uint damage = (uint)((((level - 1) * (/*DamageConstantDef.DamageConstant*/DamageConstant) * BaseDamage) + BaseDamage) * (Multiplier / 100));
+            uint damage = (uint)(MinDamage + (MaxDamage - MinDamage) * ((level - 1) / 39.0f));
+            if (DamageVariance == 0)
                 return damage;
+
+            float percentageModifier = (StaticRandom.Instance.Next(DamageVariance * 2) - DamageVariance) * 0.01f;
+            return (uint)(damage * (1f + percentageModifier));
         }
 
         public ushort GetArmorPenetrationForLevel(byte level)
