@@ -30,6 +30,13 @@ namespace WorldServer.World.Objects.Instances
             EvtInterface.AddEventNotify(EventName.OnLeaveCombat, OnLeaveCombat);
         }
 
+        public override void OnLoad()
+        {
+            base.OnLoad();
+            
+            AddCrowdControlImmunity((int)GameData.CrowdControlTypes.All);
+        }
+
         public override void Update(long tick)
         {
             base.Update(tick);
@@ -198,6 +205,7 @@ namespace WorldServer.World.Objects.Instances
                 Spawn.ZoneId = (ushort)ZoneId;
 
                 Creature c = Region.CreateCreature(Spawn);
+                c.SetZone(Region.GetZoneMgr((ushort)ZoneId));
                 c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds); // We are removing spawns from server when adds die
                 c.PlayersInRange = PlayersInRange;
                 // brain distribution

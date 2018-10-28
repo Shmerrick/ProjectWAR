@@ -1,4 +1,6 @@
 ﻿using Common;
+using System;
+using System.Collections.Generic;
 using WorldServer.World.AI;
 
 namespace WorldServer.World.Objects.Instances
@@ -9,62 +11,105 @@ namespace WorldServer.World.Objects.Instances
 
 		public SimpleAhzranok(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base (spawn, instancegroupspawnid, bossid, Instanceid, instance)
 		{
-			EvtInterface.AddEvent(CheckCleanBoilingWatersDebuff, 500, 0);
+			//EvtInterface.AddEvent(CheckCleanBoilingWatersDebuff, 500, 0);
 			//EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
 			//EvtInterface.AddEvent(ApplyIncomingDmgIncreaseOnPlayers, 1000, 0);
 		}
 
-		#endregion Constructors
+        #endregion Constructors
 
-		#region Attributes
-		
-		#endregion Attributes
+        #region Attributes
 
-		#region Overrides
-		
-		public override void OnLoad()
+        private List<List<object>> _AddSpawns = new List<List<object>>();
+
+        #endregion Attributes
+
+        #region Overrides
+
+        public override void OnLoad()
 		{
 			base.OnLoad();
 
 			AiInterface.SetBrain(new InstanceBossBrain(this));
 		}
 
-		#endregion Overrides
+        public override bool OnEnterCombat(Object mob, object args)
+        {
+            bool res = base.OnEnterCombat(mob, args);
+            EvtInterface.AddEvent(SpawnAdds, 1000, 0);
+            return res;
+        }
 
-		#region Methods
-		
-		private void CheckCleanBoilingWatersDebuff()
-		{
-			foreach (Player plr in GetPlayersInRange(300, false))
-			{
-				if (plr.Health >= plr.MaxHealth)
-					plr.BuffInterface.RemoveBuffByEntry(10802);
-			}
-		}
+        public override bool OnLeaveCombat(Object mob, object args)
+        {
+            bool res = base.OnLeaveCombat(mob, args);
+            EvtInterface.RemoveEvent(SpawnAdds);
+            return res;
+        }
 
-		//private void CheckBossRageTimer()
-		//{
-		//	// check rage timer
-		//	if (BossTimer != null && BossTimer.ElapsedMilliseconds / 1000 >= TIMER_RAGE_MAX)
-		//	{
-		//		// rage timer maximum reached
-		//		// nuke all players
-		//		GetPlayersInRange(300, false).ForEach(plr => plr.Terminate());
-		//	}
-		//}
+        #endregion Overrides
 
-		//private void ApplyIncomingDmgIncreaseOnPlayers()
-		//{
-		//	// apply incoming dmg increase on players
-		//	if (BossTimer != null && (BossTimer.ElapsedMilliseconds / 1000) % 60 == 0)
-		//	{
-		//		foreach (Player plr in GetPlayersInRange(300, false))
-		//		{
-		//			//plr.BuffInterface.QueueBuff(new BuffQueueInfo(this, Level, AbilityMgr.GetBuffInfo((ushort)GameBuffs.Chicken), AssignChickenBuff));
-		//		}
-		//	}
-		//}
+        #region Methods
 
-		#endregion Methods
-	}
+        private void SpawnAdds()
+        {
+            try
+            {
+                // first check if boss health is under 20%
+                if (Health > MaxHealth * 0.2)
+                    return;
+
+                _AddSpawns = new List<List<object>>()
+                {
+                    // spawn of ahzranok: 6830, 10 mobs
+                    //new List<object> { new List<uint> { 6830, 6830, 6830, 6830, 6830, 6830, 6830, 6830, 6830, 6830 }, X, Y, Z, Heading }
+                    new List<object> { new List<uint> { 6830, 6830, 6830 }, 1394494, 1583074, 5860, 2844 }
+                };
+
+                SpawnAdds(_AddSpawns);
+
+                EvtInterface.RemoveEvent(SpawnAdds);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message + "\r\n" + ex.StackTrace);
+                EvtInterface.RemoveEvent(SpawnAdds);
+                return;
+            }
+        }
+
+        //private void CheckCleanBoilingWatersDebuff()
+        //{
+        //	foreach (Player plr in GetPlayersInRange(300, false))
+        //	{
+        //		if (plr.Health >= plr.MaxHealth)
+        //			plr.BuffInterface.RemoveBuffByEntry(10802);
+        //	}
+        //}
+
+        //private void CheckBossRageTimer()
+        //{
+        //	// check rage timer
+        //	if (BossTimer != null && BossTimer.ElapsedMilliseconds / 1000 >= TIMER_RAGE_MAX)
+        //	{
+        //		// rage timer maximum reached
+        //		// nuke all players
+        //		GetPlayersInRange(300, false).ForEach(plr => plr.Terminate());
+        //	}
+        //}
+
+        //private void ApplyIncomingDmgIncreaseOnPlayers()
+        //{
+        //	// apply incoming dmg increase on players
+        //	if (BossTimer != null && (BossTimer.ElapsedMilliseconds / 1000) % 60 == 0)
+        //	{
+        //		foreach (Player plr in GetPlayersInRange(300, false))
+        //		{
+        //			//plr.BuffInterface.QueueBuff(new BuffQueueInfo(this, Level, AbilityMgr.GetBuffInfo((ushort)GameBuffs.Chicken), AssignChickenBuff));
+        //		}
+        //	}
+        //}
+
+        #endregion Methods
+    }
 }
