@@ -2419,12 +2419,12 @@ namespace WorldServer
             Out.WriteByte(_Value.Level);
             Out.WriteByte(StsInterface.BolsterLevel); // Effective level
 
-            int showHerlad = _Value.GearShow;
+            int showHerald = _Value.GearShow;
 
-            if ((showHerlad & 4) > 0) //FIX: 4 turns on radar around player, not herlady, herlady visiblity is handled in F_UPDATE_STATE AND F_PLAYER_INVENTORY
-                showHerlad &= ~(4);
+            if ((showHerald & 4) > 0) //FIX: 4 turns on radar around player, not heraldry, heraldry visiblity is handled in F_UPDATE_STATE AND F_PLAYER_INVENTORY
+                showHerald &= ~(4);
 
-            Out.WriteByte((byte)showHerlad); // Can also control collision detection
+            Out.WriteByte((byte)showHerald); // Can also control collision detection
 
             Out.WriteByte((byte)(Faction + (IsDead ? 1 : 0))); // Faction
             Out.WriteUInt16(_Value.TitleId); // Player Title ID
