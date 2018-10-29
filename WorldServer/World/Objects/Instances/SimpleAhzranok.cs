@@ -42,14 +42,14 @@ namespace WorldServer.World.Objects.Instances
         public override bool OnEnterCombat(Object mob, object args)
         {
             bool res = base.OnEnterCombat(mob, args);
-            EvtInterface.AddEvent(SpawnAdds, 1000, 0);
+            //EvtInterface.AddEvent(SpawnAdds, 1000, 0);
             return res;
         }
 
         public override bool OnLeaveCombat(Object mob, object args)
         {
             bool res = base.OnLeaveCombat(mob, args);
-            EvtInterface.RemoveEvent(SpawnAdds);
+            //EvtInterface.RemoveEvent(SpawnAdds);
             return res;
         }
 

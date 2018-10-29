@@ -259,7 +259,7 @@ namespace WorldServer.World.Objects.Instances
                         if (player != null && !player.IsDead && !player.IsInvulnerable)
                         {
                             c.MvtInterface.TurnTo(player);
-                            c.MvtInterface.SetBaseSpeed(400);
+                            c.MvtInterface.SetBaseSpeed(100);
                             c.MvtInterface.Follow(player, 5, 10);
                             break;
                         }
