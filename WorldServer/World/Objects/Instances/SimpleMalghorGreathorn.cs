@@ -29,11 +29,11 @@ namespace WorldServer.World.Objects.Instances
         //    new List<object> { new List<uint> { 6861, 6828, 6836 }, 1401582, 1583676, 7891, 1212 }
         //};
 
-		#endregion Attributes
-        
-		#region Overrides
-        
-		public override void OnLoad()
+        #endregion Attributes
+
+        #region Overrides
+
+        public override void OnLoad()
 		{
 			base.OnLoad();
 
@@ -43,7 +43,7 @@ namespace WorldServer.World.Objects.Instances
         //public override bool OnEnterCombat(Object mob, object args)
         //{
         //    bool res = base.OnEnterCombat(mob, args);
-        //    EvtInterface.AddEvent(SpawnAdds, 30 * 1000, 0);
+        //    EvtInterface.AddEvent(SpawnAdds, 10 * 1000, 0);
         //    return res;
         //}
 

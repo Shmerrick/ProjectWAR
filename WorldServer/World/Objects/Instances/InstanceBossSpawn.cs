@@ -124,9 +124,9 @@ namespace WorldServer.World.Objects.Instances
 
 			// remove barriages from this instance
 			Instance.RemoveInstanceObjectOnBossDeath(BossID);
-		}
+        }
 
-		public override void TryLoot(Player player, InteractMenu menu)
+        public override void TryLoot(Player player, InteractMenu menu)
 		{
 			if (lootContainer != null && lootContainer.IsLootable())
 			{
@@ -205,22 +205,24 @@ namespace WorldServer.World.Objects.Instances
                 Spawn.ZoneId = (ushort)ZoneId;
 
                 Creature c = Region.CreateCreature(Spawn);
-                c.SetZone(Region.GetZoneMgr((ushort)ZoneId));
+                //c.SetZone(Region.GetZoneMgr((ushort)ZoneId));
                 c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds); // We are removing spawns from server when adds die
                 c.PlayersInRange = PlayersInRange;
+
                 // brain distribution
                 switch (entry)
                 {
-                    case 6861: // healerbrain for shamans
-                        c.AiInterface.SetBrain(new SimpleLVHealerBrain(c));
-                        //GoToMommy(c);
-                        SetRandomTarget(c);
-                        break;
+                    //case 6861: // healerbrain for shamans
+                    //    c.AiInterface.SetBrain(new SimpleLVHealerBrain(c));
+                    //    //GoToMommy(c);
+                    //    SetRandomTarget(c);
+                    //    break;
 
                     default:
                         SetRandomTarget(c);
                         break;
                 }
+
                 AddList.Add(c); // Adding adds to the list for easy removal
             }
         }
@@ -235,7 +237,7 @@ namespace WorldServer.World.Objects.Instances
         public bool RemoveAdds(Object npc = null, object instigator = null)
         {
             Creature c = npc as Creature;
-            c.EvtInterface.AddEvent(c.Destroy, 10 * 1000, 1);
+            c.EvtInterface.AddEvent(c.Destroy, 5 * 1000, 1);
             return false;
         }
 

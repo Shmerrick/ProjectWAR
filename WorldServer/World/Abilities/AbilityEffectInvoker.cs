@@ -1098,6 +1098,10 @@ namespace WorldServer
 
             private static bool CleanseCc(AbilityCommandInfo cmd, byte level, Unit target)
             {
+                // use of 11435 Torch of Lileath out of ZoneId=260 (Lost Vale)
+                if (cmd.Entry == 11435 && target.ZoneId != 260)
+                    return false;
+
                 return target.BuffInterface.CleanseCC((byte)cmd.PrimaryValue);
             }
 

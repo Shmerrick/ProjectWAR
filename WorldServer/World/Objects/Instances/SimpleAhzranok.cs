@@ -20,7 +20,13 @@ namespace WorldServer.World.Objects.Instances
 
         #region Attributes
 
-        private List<List<object>> _AddSpawns = new List<List<object>>();
+        private List<List<object>> _AddSpawns = new List<List<object>>()
+        {
+            // spawn of ahzranok: 6830, 10 mobs
+            new List<object> { new List<uint> { 6830, 6830, 6830, 6830, 6830, 6830, 6830, 6830, 6830, 6830 }, 1393515, 1583017, 5833, 2093 },
+            new List<object> { new List<uint> { 6830, 6830, 6830, 6830, 6830, 6830, 6830, 6830, 6830, 6830 }, 1394289, 1582725, 5833, 2321 },
+            new List<object> { new List<uint> { 6830, 6830, 6830, 6830, 6830, 6830, 6830, 6830, 6830, 6830 }, 1394693, 1582940, 5833, 466 }
+        };
 
         #endregion Attributes
 
@@ -58,13 +64,6 @@ namespace WorldServer.World.Objects.Instances
                 // first check if boss health is under 20%
                 if (Health > MaxHealth * 0.2)
                     return;
-
-                _AddSpawns = new List<List<object>>()
-                {
-                    // spawn of ahzranok: 6830, 10 mobs
-                    //new List<object> { new List<uint> { 6830, 6830, 6830, 6830, 6830, 6830, 6830, 6830, 6830, 6830 }, X, Y, Z, Heading }
-                    new List<object> { new List<uint> { 6830, 6830, 6830 }, 1394494, 1583074, 5860, 2844 }
-                };
 
                 SpawnAdds(_AddSpawns);
 
