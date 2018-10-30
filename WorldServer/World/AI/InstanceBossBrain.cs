@@ -194,11 +194,7 @@ namespace WorldServer.World.AI
 										plrSubSet.Add(plr);
 								}
 							}
-
-                            // handle indiviual abilities for individual bosses
-                            if (!HandleIndividualAbility(ability, ref plrSubSet))
-                                return;
-
+                            
 							// This list of parameters is passed to the function that delays the cast by 1000 ms
 							var prms = new List<object>() { _unit, ability.Entry, ability.RandomTarget };
 
@@ -253,68 +249,7 @@ namespace WorldServer.World.AI
 		#endregion Overrides
 
 		#region Methods
-
-		private bool HandleIndividualAbility(NPCAbility ability, ref List<Player> plrSubset)
-		{
-			if (plrSubset == null)
-				return false;
-
-			if (_unit is Objects.Instances.SimpleAhzranok ahzranok)
-			{
-				switch (ability.Entry)
-				{
-					// crippling sands
-					case 10801:
-						// check players groundtype
-						for (int i = 0; i < plrSubset.ToList().Count; i++)
-						{
-							if (plrSubset[i].GroundType == MovementHandlers.GROUNDTYPE.ShallowWater ||
-									plrSubset[i].GroundType == MovementHandlers.GROUNDTYPE.DeepWater)
-								plrSubset.RemoveAt(i);
-						}
-						break;
-
-					// boiling waters
-					case 10802:
-						// check players groundtype
-						for (int i = 0; i < plrSubset.ToList().Count; i++)
-						{
-							if (plrSubset[i].GroundType != MovementHandlers.GROUNDTYPE.ShallowWater &&
-									plrSubset[i].GroundType != MovementHandlers.GROUNDTYPE.DeepWater)
-								plrSubset.RemoveAt(i);
-						}
-						break;
-
-					default:
-						return true;
-				}
-			}
-            else if (_unit is Objects.Instances.SimpleMalghorGreathorn malghor)
-            {
-                switch (ability.Entry)
-                {
-                    // charging strike
-                    case 10812:
-                        var player = plrSubset.Where(x => x.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_DPS || x.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank).RandomElement();
-                        if (player.BuffInterface.HasGuard())
-                        {
-                            // invoke debuffs
-                            // 10812 = 
-                            player.BuffInterface.QueueBuff(new BuffQueueInfo(_unit, _unit.EffectiveLevel, AbilityMgr.GetBuffInfo(10812)));
-                            return false;
-                        }
-                        plrSubset.Clear();
-                        plrSubset.Add(player);
-                        break;
-
-                    default:
-                        return true;
-                }
-            }
-
-            return true;
-		}
-
+        
 		#endregion Methods
 	}
 }

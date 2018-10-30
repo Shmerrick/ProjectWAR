@@ -1470,24 +1470,31 @@ namespace WorldServer
 
         private static bool StealAp(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
-            Player plrTarget = target as Player;
-
-            switch (hostBuff.BuffState)
+            if (target is Player plrTarget)
             {
-                case BUFF_START:
-                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue); break;
-                case BUFF_TICK:
-                    goto case 4;
-                case BUFF_END:
-                    if (plrTarget != null)
-                    {
-                        int deltaAp = plrTarget.ModifyActionPoints((short)-cmd.PrimaryValue);
-                        ((Player)hostBuff.Caster).ModifyActionPoints(-deltaAp);
-                    }
+                switch (hostBuff.BuffState)
+                {
+                    case BUFF_START:
+                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue);
+                        break;
 
-                    else ((Player)hostBuff.Caster).ModifyActionPoints((short)cmd.PrimaryValue);
-                    break;
+                    case BUFF_TICK:
+                        goto case 4;
+                        
+                    case BUFF_END:
+                        if (plrTarget != null)
+                        {
+                            int deltaAp = plrTarget.ModifyActionPoints((short)-cmd.PrimaryValue);
+                            if (hostBuff.Caster is Player plrCaster)
+                                plrCaster.ModifyActionPoints(-deltaAp);
+                        }
+                        else
+                            if (hostBuff.Caster is Player plrCaster)
+                                plrCaster.ModifyActionPoints((short)cmd.PrimaryValue);
+                        break;
+                }
             }
+            
             return true;
         }
 
@@ -1497,10 +1504,7 @@ namespace WorldServer
 
             if (plrTarget == null)
                 return false;
-
-
-
-
+            
             switch (hostBuff.BuffState)
             {
                 case BUFF_START:

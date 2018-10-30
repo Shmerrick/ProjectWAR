@@ -830,491 +830,494 @@ namespace WorldServer
 
         #region Transitions
         private bool PuntEnemy(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            target.ApplyKnockback(_caster, AbilityMgr.GetKnockbackInfo(cmd.Entry, cmd.PrimaryValue));
+            return true;
+        }
+
+        private bool PuntSelf(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            Player plr = _caster as Player;
+
+            if (plr == null)
+                return false;
+
+            if (target.StsInterface.IsRooted())
+                return false;
+
+            if (target == plr)
+                plr.ApplySelfKnockback(AbilityMgr.GetKnockbackInfo(cmd.Entry, cmd.PrimaryValue));
+            else _caster.ApplyKnockback(target, AbilityMgr.GetKnockbackInfo(cmd.Entry, cmd.PrimaryValue));
+            return true;
+        }
+
+        private bool JumpTo(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            if (_caster == target || !_caster.LOSHit(target))
             {
-                target.ApplyKnockback(_caster, AbilityMgr.GetKnockbackInfo(cmd.Entry, cmd.PrimaryValue));
+                _caster.AbtInterface.SetCooldown(cmd.Entry, -1);
                 return true;
             }
 
-            private bool PuntSelf(AbilityCommandInfo cmd, byte level, Unit target)
+
+            PacketOut Out = new PacketOut((byte)Opcodes.F_CATAPULT, 30);
+            Out.WriteUInt16(_caster.Oid);
+            Out.WriteUInt16(_caster.Zone.ZoneId);
+            Out.WriteUInt16((ushort)_caster.X); // Start X
+            Out.WriteUInt16((ushort)_caster.Y); // Start Y
+            Out.WriteUInt16((ushort)_caster.Z); // Start Z
+            Out.WriteUInt16(target.Zone.ZoneId);
+
+            if (target.IsGameObject())
             {
-                Player plr = _caster as Player;
-
-                if (plr == null)
-                    return false;
-
-                if (target.StsInterface.IsRooted())
-                    return false;
-
-                if (target == plr)
-                    plr.ApplySelfKnockback(AbilityMgr.GetKnockbackInfo(cmd.Entry, cmd.PrimaryValue));
-                else _caster.ApplyKnockback(target, AbilityMgr.GetKnockbackInfo(cmd.Entry, cmd.PrimaryValue));
-                return true;
-            }
-
-            private bool JumpTo(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                if (_caster == target || !_caster.LOSHit(target))
-                {
-                    _caster.AbtInterface.SetCooldown(cmd.Entry, -1);
-                    return true;
-                }
-
-
-                PacketOut Out = new PacketOut((byte)Opcodes.F_CATAPULT, 30);
-                Out.WriteUInt16(_caster.Oid);
-                Out.WriteUInt16(_caster.Zone.ZoneId);
-                Out.WriteUInt16((ushort)_caster.X); // Start X
-                Out.WriteUInt16((ushort)_caster.Y); // Start Y
-                Out.WriteUInt16((ushort)_caster.Z); // Start Z
-                Out.WriteUInt16(target.Zone.ZoneId);
-
-                if (target.IsGameObject())
-                {
-                    // Generate a vector that points from the GO to the caster and is 5 feet in length.
-                    Vector2 normalToCaster = new Vector2(_caster.X - target.X, _caster.Y - target.Y);
-                    normalToCaster.Normalize();
-                    normalToCaster.Multiply(60);
-
-                    Out.WriteUInt16((ushort)(target.X + normalToCaster.X)); // Destination X
-                    Out.WriteUInt16((ushort)(target.Y + normalToCaster.Y)); // Destination Y
-                    Out.WriteUInt16((ushort)target.Z); // Destination Z
-                }
-
-                else
-                {
-                    Out.WriteUInt16((ushort)target.X); // Destination X
-                    Out.WriteUInt16((ushort)target.Y); // Destination Y
-                    Out.WriteUInt16((ushort)target.Z); // Destination Z
-                }
-
-                Out.WriteUInt16(0x010F);    //arc height
-                //Out.WriteUInt16(0x012C); 
-                //Out.WriteUInt16(0x592c);  
-                Out.WriteByte(1);   //flight time in sec, can also use UInt16R or UInt32R but 1 seems to be the lowest time you can set
-                Out.Fill(0, 19);     
-                _caster.DispatchPacket(Out, true);
-
-                return true;
-            }
-
-            private bool Pull(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                if (!target.IsPlayer())
-                    target.ApplyKnockback(_caster, null);
-
-                else
-                    ((Player) target).PulledBy(_caster, (ushort)cmd.PrimaryValue, (ushort)cmd.SecondaryValue);
-
-                return true;
-            }
-
-            #endregion
-
-            private static bool Interrupt(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                Creature crea = target as Creature;
-
-                if (crea != null && crea.Spawn.Proto.CreatureType == (byte)GameData.CreatureTypes.SIEGE)
-                    return true;
-                
-                if (target.AbtInterface.IsCasting())
-                    target.AbtInterface.Cancel(false);
-
-                return true;
-            }
-
-            #region Buff Management
-
-            /// <summary>
-            /// <para>Creates a buff on the target.</para>
-            /// <para>Primary value is the buff's ID.</para>
-            /// <para>If secondary value is not 0, it will be the proc chance of the buff.</para>
-            /// </summary>
-            private bool InvokeBuff(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                if (cmd.SecondaryValue != 0 && StaticRandom.Instance.Next(100) > cmd.SecondaryValue)
-                    return false;
-
-                BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, _caster, target);
-
-                if (cmd.EffectRadius > 0 || cmd.FromAllTargets)
-                    buffInfo.IsAoE = true;
-
-                if (cmd.TargetType.HasFlag(CommandTargetTypes.Groupmates))
-                    buffInfo.IsGroupBuff = true;
-
-                if (cmd.AoESource == CommandTargetTypes.CareerTarget && cmd.EffectRadius > 0)
-                {
-                    Unit careerTarget = ((Player) _caster).CrrInterface.GetTargetOfInterest();
-
-                    if (careerTarget is Pet)
-                    {
-                        target.BuffInterface.QueueBuff(new BuffQueueInfo(careerTarget, level, buffInfo));
-                        return true;
-                    }
-                }
-                    
-                target.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, buffInfo));
-
-                return true;
-            }
-
-            private bool InvokeBuffWithDuration(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, _caster, target);
-
-                if (cmd.EffectRadius > 0 || cmd.FromAllTargets)
-                    buffInfo.IsAoE = true;
-
-                if (cmd.TargetType.HasFlag(CommandTargetTypes.Groupmates))
-                    buffInfo.IsGroupBuff = true;
-
-                buffInfo.Duration = (ushort)cmd.SecondaryValue;
-
-                target.BuffInterface.QueueBuff(new BuffQueueInfo(cmd.TargetType == CommandTargetTypes.CareerTarget && cmd.EffectRadius != 0 ? ((Player)_caster).CrrInterface.GetTargetOfInterest() : _caster, level, buffInfo));
-
-                return true;
-            }
-
-            private bool InvokeAura(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, _caster, target);
-
-                target.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, buffInfo, BuffEffectInvoker.CreateAura));
-
-                return true;
-            }
-
-            private bool InvokeOnYourGuard(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, _caster, target);
-
-                target.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, buffInfo, BuffEffectInvoker.CreateOygAuraBuff));
-
-                return true;
-            }
-
-            private bool SetPetBuff(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                Player plr = _caster as Player;
-                Pet _pet = (Pet)plr.CrrInterface.GetTargetOfInterest();
-
-                if (_pet != null && !_pet.IsDead)
-                    _pet.BuffInterface.QueueBuff(new BuffQueueInfo(plr, plr.EffectiveLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, plr, _pet)));
-                    
-                return true;
-            }
-
-            private bool InvokeLinkedBuff(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                LinkedBuffInteraction lbi = new LinkedBuffInteraction((ushort)cmd.PrimaryValue, _caster, target);
-                lbi.Initialize();
-                return true;
-            }
-
-            private bool InvokeBouncingBuff(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, _caster, target);
-
-                target.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, buffInfo));
-
-                List<Player> targets = new List<Player>();
-
-                Unit lastTarget = target;
-
-                for (int i = 0; i < cmd.MaxTargets - 1; ++i)
-                {
-                    foreach (Player player in lastTarget.PlayersInRange)
-                    {
-                        if ((cmd.TargetType == CommandTargetTypes.Enemy) ^ CombatInterface.IsEnemy(_caster, player))
-                            continue;
-
-                        if (lastTarget.GetDistanceTo(player) > 30)
-                            continue;
-
-                        if (targets.Contains(player))
-                            continue;
-
-                        targets.Add(player);
-                        break;
-                    }
-
-                    if (targets.Count == 0 || targets[targets.Count - 1] == lastTarget)
-                        break;
-
-                    lastTarget = targets[targets.Count - 1];
-                }
-
-                foreach (Player plr in targets)
-                    plr.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, buffInfo));
-
-                return true;
-            }
-
-            private bool StackBuffByNearbyFoes(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                // Application threshold
-                if (_targetsFound <= cmd.SecondaryValue)
-                    return false;
-
-                BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, _caster, target);
-
-                if (cmd.EffectRadius > 0 || cmd.FromAllTargets)
-                    buffInfo.IsAoE = true;
-
-                buffInfo.InitialStacks = Math.Min(buffInfo.MaxStack, _targetsFound - cmd.SecondaryValue);
-
-                target.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, buffInfo));
-
-                return true;
-            }
-
-            private bool InvokeGuard(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                LinkedBuffInteraction lbi = new LinkedBuffInteraction((ushort)cmd.PrimaryValue, _caster, target, BuffEffectInvoker.CreateGuardBuff);
-                lbi.Initialize();
-                return true;
-            }
-
-            private bool InvokeOathFriend(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                Player plr = _caster as Player;
-
-                if (plr == null)
-                    return false;
-
-                if (plr.Info.CareerLine == 1)
-                {
-                    LinkedBuffInteraction lbi = new LinkedBuffInteraction((ushort)cmd.PrimaryValue, _caster, target, BuffEffectInvoker.CreateOathFriendBuff);
-                    lbi.Initialize();
-                }
-                else
-                {
-                    LinkedBuffInteraction lbi = new LinkedBuffInteraction((ushort)cmd.PrimaryValue, _caster, target, BuffEffectInvoker.CreateDarkProtectorBuff);
-                    lbi.Initialize();
-                }
-                return true;
-            }
-
-            private static bool CleanseCc(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                // use of 11435 Torch of Lileath out of ZoneId=260 (Lost Vale)
-                if (cmd.Entry == 11435 && target.ZoneId != 260)
-                    return false;
-
-                return target.BuffInterface.CleanseCC((byte)cmd.PrimaryValue);
-            }
-
-            private static bool CleanseDebuffType(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                cmd.CommandResult = target.BuffInterface.CleanseDebuffType((byte)cmd.PrimaryValue, (byte)cmd.SecondaryValue);
-
-                return cmd.CommandResult > 0;
-            }
-
-            private bool ExclusiveCleanseDebuffType(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                // Prevent DoK double cleanse
-                if (target == _target)
-                    return false;
-
-                cmd.CommandResult = target.BuffInterface.CleanseDebuffType((byte)cmd.PrimaryValue, (byte)cmd.SecondaryValue);
-
-                return cmd.CommandResult > 0;
-            }
-
-            private bool CleanseBuff(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                NewBuff buff = target.BuffInterface.GetBuff((ushort)cmd.PrimaryValue, _caster);
-
-                if (buff != null)
-                    buff.BuffHasExpired = true;
-
-                return true;
-            }
-
-            #endregion
-
-            #region Resource Management
-
-            private bool SetCareerRes(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                Player plr = _caster as Player;
-
-                plr?.CrrInterface.SetResource((byte)cmd.PrimaryValue, false);
-                return true;
-            }
-
-            private bool ModifyCareerRes(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                Player plr = _caster as Player;
-
-                if (plr != null)
-                {
-                    if ((cmd.Entry == 1906 || cmd.Entry == 9244) && !plr.CrrInterface.ExperimentalMode)
-                        return true;
-                    if (cmd.PrimaryValue == 255)
-                        plr.CrrInterface.AddResource((byte)Math.Abs(cmd.LastCommand.PrimaryValue), cmd.SecondaryValue == 1);
-                    else if (cmd.PrimaryValue < 0)
-                        plr.CrrInterface.ConsumeResource((byte)-cmd.PrimaryValue, cmd.SecondaryValue == 1);
-                    else
-                        plr.CrrInterface.AddResource((byte)cmd.PrimaryValue, cmd.SecondaryValue == 1);
-                }
-                return true;
-            }
-
-            private static bool ModifyMorale(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                Player plrTarget = target as Player;
-
-                if (plrTarget == null)
-                    return true;
-
-
-                if (cmd.PrimaryValue < 0)
-                    plrTarget.ConsumeMorale(-cmd.PrimaryValue);
-                else
-                    plrTarget.AddMorale(cmd.PrimaryValue);
-
-                return true;
-            }
-
-            private static bool ModifyAp(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                int value = cmd.SecondaryValue == 0 ? cmd.PrimaryValue : Point2D.Lerp(cmd.PrimaryValue, cmd.SecondaryValue, level - 1/39f);
-             
-                Player plrTarget = target as Player;
-
-                if (plrTarget != null)
-                    cmd.CommandResult += (short)plrTarget.ModifyActionPoints(value);
-                else cmd.CommandResult += (short)value;
-                return true;
-            }
-
-            private bool ResourceToAP(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                Player plrCaster = (Player)_caster;
-                plrCaster.ModifyActionPoints(plrCaster.CrrInterface.CareerResource);
-
-                return true;
-            }
-
-            private bool StealAp(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                Player plrTarget = target as Player;
-
-                if (plrTarget == null)
-                    return false;
-
-                if (cmd.PrimaryValue != 0)
-                {
-                    int deltaAp = plrTarget.ModifyActionPoints((short) -cmd.PrimaryValue);
-                    ((Player) _caster).ModifyActionPoints(-deltaAp);
-                }
-
-                else
-                    ((Player)_caster).ModifyActionPoints(Math.Abs(cmd.LastCommand.CommandResult));
-
-                return true;
-            }
-
-            #endregion
-
-            #region Pet
-
-            private bool SummonPet(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                Player plr = _caster as Player;
-                if (plr == null || plr.CrrInterface == null)
-                    return false;
-                IPetCareerInterface petInterface = plr.CrrInterface as IPetCareerInterface;
-
-                if (petInterface == null)
-                    return false;
-
-                petInterface.SummonPet(cmd.Entry);
-                return true;
-            }
-
-            private bool MovePet(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                Player plr = _caster as Player;
-                if (plr == null || plr.CrrInterface == null)
-                    return false;
-
-                if (plr.CrrInterface.GetTargetOfInterest() != null)
-                    plr.CrrInterface.GetTargetOfInterest().MvtInterface.Teleport(_caster.WorldPosition);
-
-                return true;
-            }
-
-            private bool PetCast(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                var player = _caster as Player;
-                if (player == null)
-                    return true;
-                var pet = player.CrrInterface.GetTargetOfInterest();
-                    pet?.AbtInterface.StartCast(pet, (ushort)cmd.PrimaryValue, 0, 0, level);
-
-                return true;
-            }
-
-            private bool TeleportToTarget(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-
-                PacketOut Out = new PacketOut((byte)Opcodes.F_CATAPULT, 30);
-                Out.WriteUInt16(_caster.Oid);
-                Out.WriteUInt16(_caster.Zone.ZoneId);
-                Out.WriteUInt16((ushort)_caster.X); // Start X
-                Out.WriteUInt16((ushort)_caster.Y); // Start Y
-                Out.WriteUInt16((ushort)_caster.Z); // Start Z
-                Out.WriteUInt16(target.Zone.ZoneId);
-
                 // Generate a vector that points from the GO to the caster and is 5 feet in length.
                 Vector2 normalToCaster = new Vector2(_caster.X - target.X, _caster.Y - target.Y);
                 normalToCaster.Normalize();
                 normalToCaster.Multiply(60);
 
-                Out.WriteUInt16((ushort)(target.X + (uint)normalToCaster.X)); // Destination X
-                Out.WriteUInt16((ushort)(target.Y + (uint)normalToCaster.Y)); // Destination Y
+                Out.WriteUInt16((ushort)(target.X + normalToCaster.X)); // Destination X
+                Out.WriteUInt16((ushort)(target.Y + normalToCaster.Y)); // Destination Y
                 Out.WriteUInt16((ushort)target.Z); // Destination Z
-                Out.WriteUInt16(0x0100);    //arc height
-                Out.WriteUInt32R(1);    //animation time, cant seem to get it faster then 1 sec, will come back to this later.
-                Out.Fill(0, 19);
-                _caster.DispatchPacket(Out, true);
+            }
+
+            else
+            {
+                Out.WriteUInt16((ushort)target.X); // Destination X
+                Out.WriteUInt16((ushort)target.Y); // Destination Y
+                Out.WriteUInt16((ushort)target.Z); // Destination Z
+            }
+
+            Out.WriteUInt16(0x010F);    //arc height
+            //Out.WriteUInt16(0x012C); 
+            //Out.WriteUInt16(0x592c);  
+            Out.WriteByte(1);   //flight time in sec, can also use UInt16R or UInt32R but 1 seems to be the lowest time you can set
+            Out.Fill(0, 19);     
+            _caster.DispatchPacket(Out, true);
 
             return true;
-            }
-            /// <summary>
-            /// so abilities can call specific effects similar to how .playeffect works
-            /// </summary>
-            /// <param name="cmd"></param>
-            /// <param name="level"></param>
-            /// <param name="target"></param>
-            /// <returns></returns>
-            private bool PlayEffect(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                //need to find a way to toggle it off again if its a persistant VFX.
-                target.PlayEffect((ushort)cmd.PrimaryValue);
-                return true;
-            }
-            /// <summary>
-            /// to play a effect from a location, similar to the command .playeffect but instead of on a person, place it on the floor at the target location
-            /// </summary>
-            /// <param name="cmd"></param>
-            /// <param name="level"></param>
-            /// <param name="target"></param>
-            /// <returns></returns>
-            private bool PlayGroundEffect(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                //still need a way to turn the effect off. Initially I had a groundtarget that disappeared after a while aking to groundattack but I could not apply effect to it.
-                target.PlayEffect((ushort)cmd.PrimaryValue, target.WorldPosition);    
+        }
 
+        private bool Pull(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            if (!target.IsPlayer())
+                target.ApplyKnockback(_caster, null);
 
-                return true;
-            }
+            else
+                ((Player) target).PulledBy(_caster, (ushort)cmd.PrimaryValue, (ushort)cmd.SecondaryValue);
+
+            return true;
+        }
 
         #endregion
+
+        private static bool Interrupt(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            Creature crea = target as Creature;
+
+            if (crea != null && crea.Spawn.Proto.CreatureType == (byte)GameData.CreatureTypes.SIEGE)
+                return true;
+                
+            if (target.AbtInterface.IsCasting())
+                target.AbtInterface.Cancel(false);
+
+            return true;
+        }
+
+        #region Buff Management
+
+        /// <summary>
+        /// <para>Creates a buff on the target.</para>
+        /// <para>Primary value is the buff's ID.</para>
+        /// <para>If secondary value is not 0, it will be the proc chance of the buff.</para>
+        /// </summary>
+        private bool InvokeBuff(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            if (cmd.SecondaryValue != 0 && StaticRandom.Instance.Next(100) > cmd.SecondaryValue)
+                return false;
+
+            BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, _caster, target);
+
+            if (cmd.EffectRadius > 0 || cmd.FromAllTargets)
+                buffInfo.IsAoE = true;
+
+            if (cmd.TargetType.HasFlag(CommandTargetTypes.Groupmates))
+                buffInfo.IsGroupBuff = true;
+
+            if (cmd.AoESource == CommandTargetTypes.CareerTarget && cmd.EffectRadius > 0)
+            {
+                Unit careerTarget = ((Player) _caster).CrrInterface.GetTargetOfInterest();
+
+                if (careerTarget is Pet)
+                {
+                    target.BuffInterface.QueueBuff(new BuffQueueInfo(careerTarget, level, buffInfo));
+                    return true;
+                }
+            }
+                    
+            target.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, buffInfo));
+
+            return true;
+        }
+
+        private bool InvokeBuffWithDuration(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, _caster, target);
+
+            if (cmd.EffectRadius > 0 || cmd.FromAllTargets)
+                buffInfo.IsAoE = true;
+
+            if (cmd.TargetType.HasFlag(CommandTargetTypes.Groupmates))
+                buffInfo.IsGroupBuff = true;
+
+            buffInfo.Duration = (ushort)cmd.SecondaryValue;
+
+            target.BuffInterface.QueueBuff(new BuffQueueInfo(cmd.TargetType == CommandTargetTypes.CareerTarget && cmd.EffectRadius != 0 ? ((Player)_caster).CrrInterface.GetTargetOfInterest() : _caster, level, buffInfo));
+
+            return true;
+        }
+
+        private bool InvokeAura(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, _caster, target);
+
+            target.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, buffInfo, BuffEffectInvoker.CreateAura));
+
+            return true;
+        }
+
+        private bool InvokeOnYourGuard(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, _caster, target);
+
+            target.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, buffInfo, BuffEffectInvoker.CreateOygAuraBuff));
+
+            return true;
+        }
+
+        private bool SetPetBuff(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            Player plr = _caster as Player;
+            Pet _pet = (Pet)plr.CrrInterface.GetTargetOfInterest();
+
+            if (_pet != null && !_pet.IsDead)
+                _pet.BuffInterface.QueueBuff(new BuffQueueInfo(plr, plr.EffectiveLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, plr, _pet)));
+                    
+            return true;
+        }
+
+        private bool InvokeLinkedBuff(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            LinkedBuffInteraction lbi = new LinkedBuffInteraction((ushort)cmd.PrimaryValue, _caster, target);
+            lbi.Initialize();
+            return true;
+        }
+
+        private bool InvokeBouncingBuff(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, _caster, target);
+
+            target.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, buffInfo));
+
+            List<Player> targets = new List<Player>();
+
+            Unit lastTarget = target;
+
+            for (int i = 0; i < cmd.MaxTargets - 1; ++i)
+            {
+                foreach (Player player in lastTarget.PlayersInRange)
+                {
+                    if ((cmd.TargetType == CommandTargetTypes.Enemy) ^ CombatInterface.IsEnemy(_caster, player))
+                        continue;
+
+                    if (lastTarget.GetDistanceTo(player) > 30)
+                        continue;
+
+                    if (targets.Contains(player))
+                        continue;
+
+                    targets.Add(player);
+                    break;
+                }
+
+                if (targets.Count == 0 || targets[targets.Count - 1] == lastTarget)
+                    break;
+
+                lastTarget = targets[targets.Count - 1];
+            }
+
+            foreach (Player plr in targets)
+                plr.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, buffInfo));
+
+            return true;
+        }
+
+        private bool StackBuffByNearbyFoes(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            // Application threshold
+            if (_targetsFound <= cmd.SecondaryValue)
+                return false;
+
+            BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, _caster, target);
+
+            if (cmd.EffectRadius > 0 || cmd.FromAllTargets)
+                buffInfo.IsAoE = true;
+
+            buffInfo.InitialStacks = Math.Min(buffInfo.MaxStack, _targetsFound - cmd.SecondaryValue);
+
+            target.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, buffInfo));
+
+            return true;
+        }
+
+        private bool InvokeGuard(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            LinkedBuffInteraction lbi = new LinkedBuffInteraction((ushort)cmd.PrimaryValue, _caster, target, BuffEffectInvoker.CreateGuardBuff);
+            lbi.Initialize();
+            return true;
+        }
+
+        private bool InvokeOathFriend(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            Player plr = _caster as Player;
+
+            if (plr == null)
+                return false;
+
+            if (plr.Info.CareerLine == 1)
+            {
+                LinkedBuffInteraction lbi = new LinkedBuffInteraction((ushort)cmd.PrimaryValue, _caster, target, BuffEffectInvoker.CreateOathFriendBuff);
+                lbi.Initialize();
+            }
+            else
+            {
+                LinkedBuffInteraction lbi = new LinkedBuffInteraction((ushort)cmd.PrimaryValue, _caster, target, BuffEffectInvoker.CreateDarkProtectorBuff);
+                lbi.Initialize();
+            }
+            return true;
+        }
+
+        private static bool CleanseCc(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            // use of 11435 Torch of Lileath out of ZoneId=260 (Lost Vale)
+            if (cmd.Entry == 11435 && target.ZoneId != 260)
+                return false;
+
+            return target.BuffInterface.CleanseCC((byte)cmd.PrimaryValue);
+        }
+
+        private static bool CleanseDebuffType(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            cmd.CommandResult = target.BuffInterface.CleanseDebuffType((byte)cmd.PrimaryValue, (byte)cmd.SecondaryValue);
+
+            return cmd.CommandResult > 0;
+        }
+
+        private bool ExclusiveCleanseDebuffType(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            // Prevent DoK double cleanse
+            if (target == _target)
+                return false;
+
+            cmd.CommandResult = target.BuffInterface.CleanseDebuffType((byte)cmd.PrimaryValue, (byte)cmd.SecondaryValue);
+
+            return cmd.CommandResult > 0;
+        }
+
+        private bool CleanseBuff(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            NewBuff buff = target.BuffInterface.GetBuff((ushort)cmd.PrimaryValue, _caster);
+
+            if (buff != null)
+                buff.BuffHasExpired = true;
+
+            return true;
+        }
+
+        #endregion
+
+        #region Resource Management
+
+        private bool SetCareerRes(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            Player plr = _caster as Player;
+
+            plr?.CrrInterface.SetResource((byte)cmd.PrimaryValue, false);
+            return true;
+        }
+
+        private bool ModifyCareerRes(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            Player plr = _caster as Player;
+
+            if (plr != null)
+            {
+                if ((cmd.Entry == 1906 || cmd.Entry == 9244) && !plr.CrrInterface.ExperimentalMode)
+                    return true;
+                if (cmd.PrimaryValue == 255)
+                    plr.CrrInterface.AddResource((byte)Math.Abs(cmd.LastCommand.PrimaryValue), cmd.SecondaryValue == 1);
+                else if (cmd.PrimaryValue < 0)
+                    plr.CrrInterface.ConsumeResource((byte)-cmd.PrimaryValue, cmd.SecondaryValue == 1);
+                else
+                    plr.CrrInterface.AddResource((byte)cmd.PrimaryValue, cmd.SecondaryValue == 1);
+            }
+            return true;
+        }
+
+        private static bool ModifyMorale(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            Player plrTarget = target as Player;
+
+            if (plrTarget == null)
+                return true;
+
+
+            if (cmd.PrimaryValue < 0)
+                plrTarget.ConsumeMorale(-cmd.PrimaryValue);
+            else
+                plrTarget.AddMorale(cmd.PrimaryValue);
+
+            return true;
+        }
+
+        private static bool ModifyAp(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            int value = cmd.SecondaryValue == 0 ? cmd.PrimaryValue : Point2D.Lerp(cmd.PrimaryValue, cmd.SecondaryValue, level - 1/39f);
+             
+            Player plrTarget = target as Player;
+
+            if (plrTarget != null)
+                cmd.CommandResult += (short)plrTarget.ModifyActionPoints(value);
+            else cmd.CommandResult += (short)value;
+            return true;
+        }
+
+        private bool ResourceToAP(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            Player plrCaster = (Player)_caster;
+            plrCaster.ModifyActionPoints(plrCaster.CrrInterface.CareerResource);
+
+            return true;
+        }
+
+        private bool StealAp(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            if (target is Player plrTarget)
+            {
+                if (plrTarget == null)
+                    return false;
+
+                if (cmd.PrimaryValue != 0)
+                {
+                    int deltaAp = plrTarget.ModifyActionPoints((short)-cmd.PrimaryValue);
+                    if (_caster is Player _plrCaster)
+                        (_plrCaster).ModifyActionPoints(-deltaAp);
+                }
+
+                else
+                    if (_caster is Player _plrCaster)
+                        (_plrCaster).ModifyActionPoints(Math.Abs(cmd.LastCommand.CommandResult));
+            }
+
+            return true;
+        }
+            
+        #endregion
+
+        #region Pet
+
+        private bool SummonPet(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            Player plr = _caster as Player;
+            if (plr == null || plr.CrrInterface == null)
+                return false;
+            IPetCareerInterface petInterface = plr.CrrInterface as IPetCareerInterface;
+
+            if (petInterface == null)
+                return false;
+
+            petInterface.SummonPet(cmd.Entry);
+            return true;
+        }
+
+        private bool MovePet(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            Player plr = _caster as Player;
+            if (plr == null || plr.CrrInterface == null)
+                return false;
+
+            if (plr.CrrInterface.GetTargetOfInterest() != null)
+                plr.CrrInterface.GetTargetOfInterest().MvtInterface.Teleport(_caster.WorldPosition);
+
+            return true;
+        }
+
+        private bool PetCast(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            var player = _caster as Player;
+            if (player == null)
+                return true;
+            var pet = player.CrrInterface.GetTargetOfInterest();
+                pet?.AbtInterface.StartCast(pet, (ushort)cmd.PrimaryValue, 0, 0, level);
+
+            return true;
+        }
+
+        private bool TeleportToTarget(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+
+            PacketOut Out = new PacketOut((byte)Opcodes.F_CATAPULT, 30);
+            Out.WriteUInt16(_caster.Oid);
+            Out.WriteUInt16(_caster.Zone.ZoneId);
+            Out.WriteUInt16((ushort)_caster.X); // Start X
+            Out.WriteUInt16((ushort)_caster.Y); // Start Y
+            Out.WriteUInt16((ushort)_caster.Z); // Start Z
+            Out.WriteUInt16(target.Zone.ZoneId);
+
+            // Generate a vector that points from the GO to the caster and is 5 feet in length.
+            Vector2 normalToCaster = new Vector2(_caster.X - target.X, _caster.Y - target.Y);
+            normalToCaster.Normalize();
+            normalToCaster.Multiply(60);
+
+            Out.WriteUInt16((ushort)(target.X + (uint)normalToCaster.X)); // Destination X
+            Out.WriteUInt16((ushort)(target.Y + (uint)normalToCaster.Y)); // Destination Y
+            Out.WriteUInt16((ushort)target.Z); // Destination Z
+            Out.WriteUInt16(0x0100);    //arc height
+            Out.WriteUInt32R(1);    //animation time, cant seem to get it faster then 1 sec, will come back to this later.
+            Out.Fill(0, 19);
+            _caster.DispatchPacket(Out, true);
+
+        return true;
+        }
+        /// <summary>
+        /// so abilities can call specific effects similar to how .playeffect works
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <param name="level"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        private bool PlayEffect(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            //need to find a way to toggle it off again if its a persistant VFX.
+            target.PlayEffect((ushort)cmd.PrimaryValue);
+            return true;
+        }
+        /// <summary>
+        /// to play a effect from a location, similar to the command .playeffect but instead of on a person, place it on the floor at the target location
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <param name="level"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        private bool PlayGroundEffect(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            //still need a way to turn the effect off. Initially I had a groundtarget that disappeared after a while aking to groundattack but I could not apply effect to it.
+            target.PlayEffect((ushort)cmd.PrimaryValue, target.WorldPosition);    
+
+
+            return true;
+        }
+
+    #endregion
 
         private bool CastPlayerEffect(AbilityCommandInfo cmd, byte level, Unit target)
             {
