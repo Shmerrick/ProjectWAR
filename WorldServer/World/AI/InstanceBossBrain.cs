@@ -188,9 +188,9 @@ namespace WorldServer.World.AI
                                 }
 
                                 Random rnd = new Random();
-                                int idx = (int)Math.Round(rnd.NextDouble() * plrSubSet.Count, 0);
-                                _unit.AiInterface.CurrentBrain.AddHatred(plrSubSet[idx], false, 5000);
-                                _unit.CbtInterface.SetTarget(plrSubSet.ToList()[idx].Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
+                                int idx = rnd.Next(1, plrSubSet.Count + 1);
+                                _unit.AiInterface.CurrentBrain.AddHatred(plrSubSet.ElementAt(idx - 1), false, 5000);
+                                _unit.CbtInterface.SetTarget(plrSubSet.ElementAt(idx - 1).Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
                             }
                             
 							// This list of parameters is passed to the function that delays the cast by 1000 ms
@@ -281,9 +281,9 @@ namespace WorldServer.World.AI
                                         }
 
                                         Random rnd = new Random();
-                                        int idx = (int)Math.Round(rnd.NextDouble() * plrSubSet.Count, 0);
-                                        _unit.AiInterface.CurrentBrain.AddHatred(plrSubSet[idx], false, 5000);
-                                        _unit.CbtInterface.SetTarget(plrSubSet.ToList()[idx].Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
+                                        int idx = rnd.Next(1, plrSubSet.Count + 1);
+                                        _unit.AiInterface.CurrentBrain.AddHatred(plrSubSet.ElementAt(idx - 1), false, 5000);
+                                        _unit.CbtInterface.SetTarget(plrSubSet.ElementAt(idx - 1).Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
                                     }
 
                                     // This list of parameters is passed to the function that delays the cast by 1000 ms
