@@ -1474,24 +1474,15 @@ namespace WorldServer
             Player plr = (Player)_caster;
             Zone_jump zoneJump = null;
 
-            switch ((uint)cmd.PrimaryValue)
+            if (plr.Realm == Realms.REALMS_REALM_ORDER)
             {
-                case 260:
-                    if (plr.Realm == Realms.REALMS_REALM_ORDER)
-                    {
-                        zoneJump = ZoneService.GetZoneJump((uint)cmd.PrimaryValue);
-                    }
-                    else
-                    {
-                        zoneJump = ZoneService.GetZoneJump((uint)cmd.SecondaryValue);
-                    }
-                    break;
-
-                default:
-                    zoneJump = ZoneService.GetZoneJump((uint)cmd.PrimaryValue);
-                    break;
+                zoneJump = ZoneService.GetZoneJump((uint)cmd.PrimaryValue);
             }
-            
+            else
+            {
+                zoneJump = ZoneService.GetZoneJump((uint)cmd.SecondaryValue);
+            }
+
             if (zoneJump != null)
                 plr.Teleport(zoneJump.ZoneID, zoneJump.WorldX, zoneJump.WorldY, zoneJump.WorldZ, zoneJump.WorldO);
 
