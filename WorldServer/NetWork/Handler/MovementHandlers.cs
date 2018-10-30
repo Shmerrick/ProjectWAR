@@ -365,14 +365,14 @@ namespace WorldServer
                 }*/
                 
                 //deep water 17 in current implementation should be 2 by londos decode, deep sludge 23
-                if (groundtype == 17 || groundtype == 23)
-                {
-                    player.Dismount();
-                }
+                //if (groundtype == 17 || groundtype == 23)
+                //{
+                //    player.Dismount();
+                //}
 
-                //lava
+                //lava and deep water/sludge, ref: ZARU
                 long Now = TCPManager.GetTimeStampMS();
-                if (groundtype == 3 || groundtype == 19) //19 is deep lava
+                if (groundtype == 3 || groundtype == 19 || groundtype == 17 || groundtype == 23) //19 is deep lava, 17 is deep water, 23 is deep sludge
                 {
                     player.Dismount();
                     if (!player.IsDead )

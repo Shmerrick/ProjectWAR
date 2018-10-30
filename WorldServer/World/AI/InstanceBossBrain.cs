@@ -178,22 +178,20 @@ namespace WorldServer.World.AI
 									default:
 										break;
 								}
-
-								if (plrSubSet != null)
-								{
-									Random rnd = new Random();
-									int idx = (int)Math.Round(rnd.NextDouble() * plrSubSet.ToList().Count, 0);
-									_unit.AiInterface.CurrentBrain.AddHatred(plrSubSet[idx], false, 5000);
-									_unit.CbtInterface.SetTarget(plrSubSet.ToList()[idx].Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
-								}
-								else
-								{
+                                
+                                if (plrSubSet == null || plrSubSet.Count == 0)
+                                {
                                     plrSubSet = new List<Player>();
                                     Player plr = SetRandomTarget();
-									if (plr != null)
-										plrSubSet.Add(plr);
-								}
-							}
+                                    if (plr != null)
+                                        plrSubSet.Add(plr);
+                                }
+
+                                Random rnd = new Random();
+                                int idx = (int)Math.Round(rnd.NextDouble() * plrSubSet.Count, 0);
+                                _unit.AiInterface.CurrentBrain.AddHatred(plrSubSet[idx], false, 5000);
+                                _unit.CbtInterface.SetTarget(plrSubSet.ToList()[idx].Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
+                            }
                             
 							// This list of parameters is passed to the function that delays the cast by 1000 ms
 							var prms = new List<object>() { _unit, ability.Entry, ability.RandomTarget };
@@ -219,13 +217,77 @@ namespace WorldServer.World.AI
 								if (!_unit.LOSHit(Combat.CurrentTarget))
 									NextTryCastTime = TCPManager.GetTimeStampMS() + 1000;
 								else
-								{
-									// This set random target if needed
-									if (ability.RandomTarget == 1)
+                                {
+                                    List<Player> plrSubSet = null;
+                                    // This set random target if needed
+                                    if (ability.RandomTarget == 1)
 										SetRandomTarget();
+                                    else
+                                    {
+                                        // so set a focus on following target:
+                                        //  0 = none, 1 = tank, 2 = dps, 3 = healer
+                                        // 4 = tanks + dps, 5 = tanks + healers
+                                        // 6 = dps + healers, 7 = ALL
+                                        switch (ability.TargetFocus)
+                                        {
+                                            case 7:
+                                                plrSubSet = _unit.GetPlayersInRange(300, false);
+                                                break;
 
-									// This list of parameters is passed to the function that delays the cast by 1000 ms
-									var prms = new List<object>() { _unit, ability.Entry, ability.RandomTarget };
+                                            case 6:
+                                                plrSubSet = _unit.GetPlayersInRange(300, false)
+                                                    .Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_DPS
+                                                    || plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Healer).ToList();
+                                                break;
+
+                                            case 5:
+                                                plrSubSet = _unit.GetPlayersInRange(300, false)
+                                                    .Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Healer
+                                                    || plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank).ToList();
+                                                break;
+
+                                            case 4:
+                                                plrSubSet = _unit.GetPlayersInRange(300, false)
+                                                    .Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_DPS
+                                                    || plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank).ToList();
+                                                break;
+
+                                            case 3:
+                                                plrSubSet = _unit.GetPlayersInRange(300, false)
+                                                    .Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Healer).ToList();
+                                                break;
+
+                                            case 2:
+                                                plrSubSet = _unit.GetPlayersInRange(300, false)
+                                                    .Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_DPS).ToList();
+                                                break;
+
+                                            case 1:
+                                                plrSubSet = _unit.GetPlayersInRange(300, false)
+                                                    .Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank).ToList();
+                                                break;
+
+                                            case 0:
+                                            default:
+                                                break;
+                                        }
+
+                                        if (plrSubSet == null || plrSubSet.Count == 0)
+                                        {
+                                            plrSubSet = new List<Player>();
+                                            Player plr = SetRandomTarget();
+                                            if (plr != null)
+                                                plrSubSet.Add(plr);
+                                        }
+
+                                        Random rnd = new Random();
+                                        int idx = (int)Math.Round(rnd.NextDouble() * plrSubSet.Count, 0);
+                                        _unit.AiInterface.CurrentBrain.AddHatred(plrSubSet[idx], false, 5000);
+                                        _unit.CbtInterface.SetTarget(plrSubSet.ToList()[idx].Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
+                                    }
+
+                                    // This list of parameters is passed to the function that delays the cast by 1000 ms
+                                    var prms = new List<object>() { _unit, ability.Entry, ability.RandomTarget };
 
 									if (ability.Text != "") _unit.Say(ability.Text.Replace("<character name>", _unit.CbtInterface.GetCurrentTarget().Name), ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
 									_unit.EvtInterface.AddEvent(StartDelayedCast, 1000, 1, prms);
