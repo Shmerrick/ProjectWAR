@@ -9,7 +9,7 @@ namespace WorldServer.World.Objects.Instances
 
         public SimpleDralel(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
         {
-            //EvtInterface.AddEvent(ChargeRandomNonTankPlayer, 15000, 0);
+
         }
 
         #endregion Constructors
@@ -26,44 +26,58 @@ namespace WorldServer.World.Objects.Instances
 
             AiInterface.SetBrain(new InstanceBossBrain(this));
         }
+        
+        public override bool OnEnterCombat(Object mob, object args)
+        {
+            bool res = base.OnEnterCombat(mob, args);
+            EvtInterface.AddEvent(RemoveAllCCImmunitiesFromTanks, 1000, 0);
+            return res;
+        }
+
+        public override bool OnLeaveCombat(Object mob, object args)
+        {
+            bool res = base.OnLeaveCombat(mob, args);
+            EvtInterface.RemoveEvent(RemoveAllCCImmunitiesFromTanks);
+            return res;
+        }
 
         #endregion Overrides
 
         #region Methods
+        
+        /// <summary>
+        /// 402, 403 = Unstoppable
+        /// 408 = Immovable
+        /// </summary>
+        private void RemoveAllCCImmunitiesFromTanks()
+        {
+            foreach (var plr in PlayersInRange)
+            {
+                // only clean from tanks
+                if (plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank)
+                {
+                    plr.BuffInterface.RemoveBuffByEntry(408); // Removing Immunity
+                    NewBuff newBuff = plr.BuffInterface.GetBuff(408, null);
+                    if (newBuff != null)
+                        newBuff.RemoveBuff(true);
 
-        //private void ChargeRandomNonTankPlayer()
-        //{
-        //    var subset = GetPlayersInRange(300, false).Where(x => x.CrrInterface.GetArchetype() != EArchetype.ARCHETYPE_Tank).ToList();
-        //    if (subset == null || subset.Count == 0)
-        //        return;
-        //    Random rnd = new Random();
-        //    int idx = (int)Math.Round(rnd.NextDouble() * subset.Count, 0);
+                    plr.BuffInterface.RemoveBuffByEntry(402); // Removing Immunity
+                    newBuff = plr.BuffInterface.GetBuff(402, null);
+                    if (newBuff != null)
+                        newBuff.RemoveBuff(true);
 
-        //    Player plr = subset[idx];
-        //    if (plr != null && !plr.IsDead && !plr.IsInvulnerable)
-        //    {
-        //        Say(plr.Name + ": Die by the hand of chaos!");
-        //        MvtInterface.TurnTo(plr);
-        //        MvtInterface.Follow(plr, 5, 10);
+                    plr.BuffInterface.RemoveBuffByEntry(403); // Removing Immunity
+                    newBuff = plr.BuffInterface.GetBuff(403, null);
+                    if (newBuff != null)
+                        newBuff.RemoveBuff(true);
 
-        //        NPCAbility ability = null;
-
-        //        if (plr.BuffInterface.HasGuard())
-        //        {
-        //            ability = AbtInterface.NPCAbilities.Where(x => x.Entry == 0).FirstOrDefault();
-        //        }
-        //        else
-        //        {
-        //            ability = AbtInterface.NPCAbilities.Where(x => x.Entry == 1).FirstOrDefault();
-        //        }
-        //        if (ability != null)
-        //        {
-        //            //EvtInterface.AddEvent(StartDelayedCast, 1000, 1, prms);
-        //            //OneshotPercentCast = TCPManager.GetTimeStampMS() + ability.Cooldown * 1000;
-        //            //ability.AbilityUsed = 1;
-        //        }
-        //    }
-        //}
+                    plr.BuffInterface.RemoveBuffByEntry(4384); // Removing Whitefire Webbing
+                    newBuff = plr.BuffInterface.GetBuff(4384, null);
+                    if (newBuff != null)
+                        newBuff.RemoveBuff(true);
+                }
+            }
+        }
 
         #endregion Methods
     }

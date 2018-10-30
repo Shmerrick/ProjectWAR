@@ -186,7 +186,6 @@ namespace WorldServer.World.AI
                                     if (plr != null)
                                         plrSubSet.Add(plr);
                                 }
-
                                 Random rnd = new Random();
                                 int idx = rnd.Next(1, plrSubSet.Count + 1);
                                 _unit.AiInterface.CurrentBrain.AddHatred(plrSubSet.ElementAt(idx - 1), false, 5000);
@@ -279,7 +278,7 @@ namespace WorldServer.World.AI
                                             if (plr != null)
                                                 plrSubSet.Add(plr);
                                         }
-
+                                        
                                         Random rnd = new Random();
                                         int idx = rnd.Next(1, plrSubSet.Count + 1);
                                         _unit.AiInterface.CurrentBrain.AddHatred(plrSubSet.ElementAt(idx - 1), false, 5000);
