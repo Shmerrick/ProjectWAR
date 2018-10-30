@@ -1156,29 +1156,40 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         }
                     }
                     break;
-            }
 
-            if (plr != null)
+                default:
+                    message = string.Empty;
+                    break;
+            }
+            try
             {
-                plr.SendPacket(Out);
-                BattlefrontLogger.Debug("Sending State to Player", "Player: " + plr.Name + ", BO: " + this.Name);
-            }
-            else
-                foreach (var player in Region.Players)
+                if (plr != null)
                 {
-                    player.SendPacket(Out); // Objective's state
-                    BattlefrontLogger.Debug("Sending State to Player", "Player: " + player.Name + ", BO: " + this.Name);
-
-                    if (string.IsNullOrEmpty(message) || !player.CbtInterface.IsPvp)
-                        continue;
-
-                    // Notify RvR flagged players of activity
-                    player.SendLocalizeString(message, ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                    player.SendLocalizeString(message, largeFilter, Localized_text.CHAT_TAG_DEFAULT);
-                    BattlefrontLogger.Debug("Sending Activity to RVR-Player", "Player: " + plr.Name + ", BO: " + this.Name + "Message: " + message);
-                    if (snd != null)
-                        player.SendPacket(snd);
+                    plr.SendPacket(Out);
+                    BattlefrontLogger.Debug("Sending State to Player", "Player: " + plr.Name + ", BO: " + this.Name);
                 }
+                else
+                    foreach (var player in Region.Players)
+                    {
+                        player.SendPacket(Out); // Objective's state
+                        BattlefrontLogger.Debug("Sending State to Player", "Player: " + player.Name + ", BO: " + this.Name);
+
+                        if (string.IsNullOrEmpty(message) || !player.CbtInterface.IsPvp)
+                            continue;
+
+                        // Notify RvR flagged players of activity
+                        player.SendLocalizeString(message, ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
+                        player.SendLocalizeString(message, largeFilter, Localized_text.CHAT_TAG_DEFAULT);
+                        BattlefrontLogger.Debug("Sending Activity to RVR-Player", "Player: " + plr.Name + ", BO: " + this.Name + "Message: " + message);
+                        if (snd != null)
+                            player.SendPacket(snd);
+                    }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Exception", e.Message + "\r\b" + e.StackTrace);
+                return;
+            }
         }
 
         /// <summary>Computes a string for a realm.</summary>
