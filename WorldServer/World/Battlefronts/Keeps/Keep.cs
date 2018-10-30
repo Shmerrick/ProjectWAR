@@ -1970,14 +1970,13 @@ namespace WorldServer.World.BattleFronts.Keeps
                         player.SendClientMessage("Your supply lines cannot support any more rams.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                         return false;
                     }
-#if !DEBUG
-                    if (player.GldInterface.Guild == null || (Tier == 4 && player.GldInterface.Guild.Info.Level < 20))
-                    {
-                        player.SendClientMessage(Tier == 4 ? "Must be in guild of rank 20" : "Must be in guild", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                        player.SendClientMessage($"In order to deploy a ram, you must be in a { (Tier == 4 ? "reputable guild of rank 20 or higher." : "guild.") }", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-                        return false;
-                    }
-#endif
+
+                    //if (player.GldInterface.Guild == null || (Tier == 4 && player.GldInterface.Guild.Info.Level < 20))
+                    //{
+                    //    player.SendClientMessage(Tier == 4 ? "Must be in guild of rank 20" : "Must be in guild", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                    //    player.SendClientMessage($"In order to deploy a ram, you must be in a { (Tier == 4 ? "reputable guild of rank 20 or higher." : "guild.") }", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    //    return false;
+                    //}
                     break;
                 default:
                     return true;
