@@ -108,6 +108,7 @@ namespace WorldServer
             // Item
             _commandList.Add("WarpToBindPoint", WarpToBindPoint);
             _commandList.Add("WarpToZoneJump", WarpToZoneJump);
+            _commandList.Add("WarpToDungeon", WarpToDungeon);
             _commandList.Add("SummonSiegeWeapon", SummonSiegeWeapon);
             // Career
             _commandList.Add("AvengingTheDebt", AvengingTheDebt);
@@ -1462,6 +1463,35 @@ namespace WorldServer
 
             Zone_jump zoneJump = ZoneService.GetZoneJump((uint)cmd.PrimaryValue);
 
+            if (zoneJump != null)
+                plr.Teleport(zoneJump.ZoneID, zoneJump.WorldX, zoneJump.WorldY, zoneJump.WorldZ, zoneJump.WorldO);
+
+            return true;
+        }
+
+        private bool WarpToDungeon(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            Player plr = (Player)_caster;
+            Zone_jump zoneJump = null;
+
+            switch ((uint)cmd.PrimaryValue)
+            {
+                case 260:
+                    if (plr.Realm == Realms.REALMS_REALM_ORDER)
+                    {
+                        zoneJump = ZoneService.GetZoneJump((uint)cmd.PrimaryValue);
+                    }
+                    else
+                    {
+                        zoneJump = ZoneService.GetZoneJump((uint)cmd.SecondaryValue);
+                    }
+                    break;
+
+                default:
+                    zoneJump = ZoneService.GetZoneJump((uint)cmd.PrimaryValue);
+                    break;
+            }
+            
             if (zoneJump != null)
                 plr.Teleport(zoneJump.ZoneID, zoneJump.WorldX, zoneJump.WorldY, zoneJump.WorldZ, zoneJump.WorldO);
 
