@@ -228,7 +228,7 @@ namespace WorldServer
 
         private void RemoveBonuses()
         {
-            myPlayer.StsInterface.RemoveBonusMultiplier(Stats.OutgoingDamagePercent, _powerBonus * 0.01f * _boostStacks, BuffClass.Morale);
+            myPlayer.StsInterface.RemoveBonusMultiplier(Stats.OutgoingDamagePercent, _powerBonus * 0.01f * _boostStacks, BuffClass.Career);
 
             switch (_careerResource)
             {
@@ -265,7 +265,7 @@ namespace WorldServer
 
         private void AddBonuses()
         {
-            myPlayer.StsInterface.AddBonusMultiplier(Stats.OutgoingDamagePercent, _powerBonus * 0.01f * _boostStacks, BuffClass.Morale);
+            myPlayer.StsInterface.AddBonusMultiplier(Stats.OutgoingDamagePercent, _powerBonus * 0.01f * _boostStacks, BuffClass.Career);
             
             switch (_careerResource)
             {
