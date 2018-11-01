@@ -19,6 +19,7 @@ namespace WorldServer.World.Objects.Instances
 		public Stopwatch BossTimer { get; set; } = null;
         public static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public List<Creature> AddList = new List<Creature>();
+        public int PlayerDeathsCount { get; set; } = 0;
 
         public InstanceBossSpawn(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn)
         {
@@ -40,8 +41,6 @@ namespace WorldServer.World.Objects.Instances
         public override void Update(long tick)
         {
             base.Update(tick);
-
-            //GetPlayersInRange(300, false);
         }
 
         public override void ApplyKnockback(Unit caster, AbilityKnockbackInfo kbInfo)
@@ -67,12 +66,24 @@ namespace WorldServer.World.Objects.Instances
 
         public virtual bool OnLeaveCombat(Object mob, object args)
         {
+            // save statistics
+            InstanceService.SaveDeathCountPerBoss(Instance.ZoneID + ":" + Instance.ID, mob.GetInstanceBossSpawn(), PlayerDeathsCount);
             
-            if (!mob.GetInstanceBossSpawn().IsDead && InstanceGroupSpawnID > 0)
+            if (!mob.GetInstanceBossSpawn().IsDead)
             {
-                Instance.BossRespawnInstanceGroup(InstanceGroupSpawnID);
-            }
+                // save statistics
+                InstanceService.SaveAttemptsPerBoss(Instance.ZoneID + ":" + Instance.ID, this, 1);
 
+                if (InstanceGroupSpawnID > 0)
+                    Instance.BossRespawnInstanceGroup(InstanceGroupSpawnID);
+            }
+            else
+            {
+                PlayerDeathsCount = 0;
+
+                // save statistics
+                InstanceService.SaveTtkPerBoss(Instance.ZoneID + ":" + Instance.ID, this, BossTimer.Elapsed);
+            }
             // reset add list
             AddList = new List<Creature>();
 
@@ -87,7 +98,6 @@ namespace WorldServer.World.Objects.Instances
             if (BossTimer != null)
 			{
 				BossTimer.Reset();
-				BossTimer = null;
 			}
 
 			return false;
@@ -124,6 +134,19 @@ namespace WorldServer.World.Objects.Instances
 
 			// remove barriages from this instance
 			Instance.RemoveInstanceObjectOnBossDeath(BossID);
+
+            // handle torch of lileath on horgulul death
+            if (this is SimpleHorgulul horgulul)
+            {
+                foreach (Player plr in horgulul.GetPlayersInRange(300, false))
+                {
+                    var character = CharMgr.GetCharacter(plr.CharacterId, false);
+                    if (character == null)
+                        continue;
+                    if (!CharMgr.GetItemsForCharacter(character).Any(x => x.Entry == 11435))
+                        plr.ItmInterface.CreateItem(11435, 1);
+                }
+            }
         }
 
         public override void TryLoot(Player player, InteractMenu menu)

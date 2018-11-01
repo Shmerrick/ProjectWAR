@@ -125,82 +125,19 @@ namespace WorldServer.World.AI
 						// This will play ability after NPC is wounded below X %
 						if (ability.AbilityCycle == 0 && ability.AbilityUsed == 0 && (_unit.Health < (_unit.TotalHealth * ability.ActivateAtHealthPercent) / 100) && OneshotPercentCast < curTimeMs)
 						{
-							List<Player> plrSubSet = null;
-							// This set random target if needed
-							if (ability.RandomTarget == 1)
-								SetRandomTarget();
-							else
-							{
-								// so set a focus on following target:
-								//  0 = none, 1 = tank, 2 = dps, 3 = healer
-								// 4 = tanks + dps, 5 = tanks + healers
-								// 6 = dps + healers, 7 = ALL
-								switch (ability.TargetFocus)
-								{
-									case 7:
-										plrSubSet = _unit.GetPlayersInRange(300, false);
-										break;
+                            // This set random target if needed
+                            if (ability.RandomTarget == 1)
+                                SetRandomTarget();
 
-									case 6:
-										plrSubSet = _unit.GetPlayersInRange(300, false)
-											.Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_DPS
-											|| plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Healer).ToList();
-										break;
+                            // This list of parameters is passed to the function that delays the cast by 1000 ms
+                            var prms = new List<object>() { _unit, ability.Entry, ability.RandomTarget };
 
-									case 5:
-										plrSubSet = _unit.GetPlayersInRange(300, false)
-											.Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Healer
-											|| plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank).ToList();
-										break;
-
-									case 4:
-										plrSubSet = _unit.GetPlayersInRange(300, false)
-											.Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_DPS 
-											|| plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank).ToList();
-										break;
-
-									case 3:
-										plrSubSet = _unit.GetPlayersInRange(300, false)
-											.Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Healer).ToList();
-										break;
-
-									case 2:
-										plrSubSet = _unit.GetPlayersInRange(300, false)
-											.Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_DPS).ToList();
-										break;
-
-									case 1:
-										plrSubSet = _unit.GetPlayersInRange(300, false)
-											.Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank).ToList();
-										break;
-
-									case 0:
-									default:
-										break;
-								}
-                                
-                                if (plrSubSet == null || plrSubSet.Count == 0)
-                                {
-                                    plrSubSet = new List<Player>();
-                                    Player plr = SetRandomTarget();
-                                    if (plr != null)
-                                        plrSubSet.Add(plr);
-                                }
-                                Random rnd = new Random();
-                                int idx = rnd.Next(1, plrSubSet.Count + 1);
-                                _unit.AiInterface.CurrentBrain.AddHatred(plrSubSet.ElementAt(idx - 1), false, 5000);
-                                _unit.CbtInterface.SetTarget(plrSubSet.ElementAt(idx - 1).Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
-                            }
-                            
-							// This list of parameters is passed to the function that delays the cast by 1000 ms
-							var prms = new List<object>() { _unit, ability.Entry, ability.RandomTarget };
-
-							if (ability.Text != "") _unit.Say(ability.Text.Replace("<character name>", _unit.CbtInterface.GetCurrentTarget().Name));
-							_unit.EvtInterface.AddEvent(StartDelayedCast, 1000, 1, prms);
-							OneshotPercentCast = TCPManager.GetTimeStampMS() + ability.Cooldown * 1000;
-							ability.AbilityUsed = 1;
-							continue;
-						}
+                            if (ability.Text != "") _unit.Say(ability.Text.Replace("<character name>", _unit.CbtInterface.GetCurrentTarget().Name));
+                            _unit.EvtInterface.AddEvent(StartDelayedCast, 1000, 1, prms);
+                            OneshotPercentCast = TCPManager.GetTimeStampMS() + ability.Cooldown * 1000;
+                            ability.AbilityUsed = 1;
+                            continue;
+                        }
 					}
 
 					if (ability.AutoUse && !_unit.AbtInterface.IsCasting() && ability.CooldownEnd < curTimeMs && _unit.AbtInterface.CanCastCooldown(ability.Entry) && curTimeMs > CombatStart + ability.TimeStart * 1000)
@@ -217,73 +154,9 @@ namespace WorldServer.World.AI
 									NextTryCastTime = TCPManager.GetTimeStampMS() + 1000;
 								else
                                 {
-                                    List<Player> plrSubSet = null;
                                     // This set random target if needed
                                     if (ability.RandomTarget == 1)
-										SetRandomTarget();
-                                    else
-                                    {
-                                        // so set a focus on following target:
-                                        //  0 = none, 1 = tank, 2 = dps, 3 = healer
-                                        // 4 = tanks + dps, 5 = tanks + healers
-                                        // 6 = dps + healers, 7 = ALL
-                                        switch (ability.TargetFocus)
-                                        {
-                                            case 7:
-                                                plrSubSet = _unit.GetPlayersInRange(300, false);
-                                                break;
-
-                                            case 6:
-                                                plrSubSet = _unit.GetPlayersInRange(300, false)
-                                                    .Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_DPS
-                                                    || plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Healer).ToList();
-                                                break;
-
-                                            case 5:
-                                                plrSubSet = _unit.GetPlayersInRange(300, false)
-                                                    .Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Healer
-                                                    || plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank).ToList();
-                                                break;
-
-                                            case 4:
-                                                plrSubSet = _unit.GetPlayersInRange(300, false)
-                                                    .Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_DPS
-                                                    || plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank).ToList();
-                                                break;
-
-                                            case 3:
-                                                plrSubSet = _unit.GetPlayersInRange(300, false)
-                                                    .Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Healer).ToList();
-                                                break;
-
-                                            case 2:
-                                                plrSubSet = _unit.GetPlayersInRange(300, false)
-                                                    .Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_DPS).ToList();
-                                                break;
-
-                                            case 1:
-                                                plrSubSet = _unit.GetPlayersInRange(300, false)
-                                                    .Where(plr => plr.CrrInterface.GetArchetype() == EArchetype.ARCHETYPE_Tank).ToList();
-                                                break;
-
-                                            case 0:
-                                            default:
-                                                break;
-                                        }
-
-                                        if (plrSubSet == null || plrSubSet.Count == 0)
-                                        {
-                                            plrSubSet = new List<Player>();
-                                            Player plr = SetRandomTarget();
-                                            if (plr != null)
-                                                plrSubSet.Add(plr);
-                                        }
-                                        
-                                        Random rnd = new Random();
-                                        int idx = rnd.Next(1, plrSubSet.Count + 1);
-                                        _unit.AiInterface.CurrentBrain.AddHatred(plrSubSet.ElementAt(idx - 1), false, 5000);
-                                        _unit.CbtInterface.SetTarget(plrSubSet.ElementAt(idx - 1).Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
-                                    }
+                                        SetRandomTarget();
 
                                     // This list of parameters is passed to the function that delays the cast by 1000 ms
                                     var prms = new List<object>() { _unit, ability.Entry, ability.RandomTarget };

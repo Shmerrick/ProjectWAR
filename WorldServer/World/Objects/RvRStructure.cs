@@ -504,6 +504,7 @@ namespace WorldServer
 
         public override void UpdateHealth(long tick)
         {
+
         }
 
         public override void ModifyDamageIn(AbilityDamageInfo incDamage)

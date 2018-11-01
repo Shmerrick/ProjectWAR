@@ -57,6 +57,8 @@ namespace WorldServer
         public static uint OrderCount;
         public static uint DestruCount;
 
+        public string InstanceID { get; set; } = string.Empty;
+
         public static void AddPlayer(Player newPlayer)
         {
             bool Found = false;
@@ -394,8 +396,6 @@ namespace WorldServer
         }
 
         // End of Halloween stuff
-
-        public ushort InstanceID;
 
         public string ChatName
         {
@@ -3879,9 +3879,6 @@ namespace WorldServer
                     }
                 }
                 
-
-               
-
                 if (playerKiller.PriorityGroup != null)
                 {
                     List<Player> curMembers = playerKiller.PriorityGroup.GetPlayersCloseTo(playerKiller, 150);
@@ -3901,6 +3898,12 @@ namespace WorldServer
 
             // Clearing heal aggro...
             HealAggros = new Dictionary<ushort, AggroInfo>();
+            
+            // inform instance that the player was killed
+            if (!string.IsNullOrEmpty(InstanceID))
+            {
+                WorldMgr.InstanceMgr?.HandlePlayerSetDeath(this, killer);
+            }
         }
 
         private void RecordKillTracking(Player victim, Player killer, long timestamp)

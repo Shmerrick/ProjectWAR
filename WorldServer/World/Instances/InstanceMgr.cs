@@ -21,7 +21,9 @@ namespace WorldServer
             ushort zoneID;
 
             if (Jump == null)
+            {
                 zoneID = player.Info.Value.ZoneId;
+            }
             else
                 zoneID = Jump.ZoneID;
 
@@ -271,6 +273,12 @@ namespace WorldServer
                 }
                 plr.SendClientMessage("Players: " + players, ChatLogFilters.CHATLOGFILTERS_SAY);
             }
+        }
+
+        public void HandlePlayerSetDeath(Player plr, Unit killer)
+        {
+            if (killer is World.Objects.Instances.InstanceBossSpawn boss)
+                boss.PlayerDeathsCount++;
         }
     }
 }

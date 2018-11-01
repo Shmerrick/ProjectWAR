@@ -59,7 +59,10 @@ namespace WorldServer
             _evtInterface = new EventInterface();
             closetime = (TCPManager.GetTimeStamp() + 7200);
 
-			new Thread(Update).Start();
+            // instancing stuff
+            InstanceService.SaveLockoutInstanceID(ZoneID + ":" + ID, Lockout);
+
+            new Thread(Update).Start();
 			
             Log.Success("Opening Instance","Instance ID "+ID+"  Map: "+Info.Name);
             if (zoneid == 179)
@@ -124,7 +127,7 @@ namespace WorldServer
             {
                 Log.Success("Closing Instance", "Instance ID " + ID + "  Map: " + Info.Name);
                 Region.Stop();
-                WorldMgr.InstanceMgr.closeInstance(this,ID);
+                WorldMgr.InstanceMgr.closeInstance(this, ID);
                 _running = false;
             }
         }
@@ -191,12 +194,10 @@ namespace WorldServer
                 }
             }
 
-            player.InstanceID = ID;
-
-            // player._Value.AddLogout("60;"+(TCPManager.GetTimeStamp()+34000)+";1;4");
-            // player.SendLockouts();
-
+            player.InstanceID = ZoneID + ":" + ID;
             Region.AddObject(player, ZoneID, true);
+
+            InstanceService.SavePlayerIDs(ZoneID + ":" + ID, new List<Player>() { player });
         }
 		
         public void AddPlayer(Player player, Zone_jump jump)
@@ -209,7 +210,7 @@ namespace WorldServer
                 }
             }
 
-            player.InstanceID = ID;
+            player.InstanceID = ZoneID + ":" + ID;
 
 			if (jump != null)
 			{
@@ -221,7 +222,9 @@ namespace WorldServer
 			}
 
             Region.CheckZone(player);
-		}
+
+            InstanceService.SavePlayerIDs(ZoneID + ":" + ID, new List<Player>() { player });
+        }
 
         private void LoadObjects()
         {
@@ -257,6 +260,7 @@ namespace WorldServer
 				InstanceService._InstanceLockouts.Add(Lockout.InstanceID, Lockout);
 				Lockout.Dirty = true;
 				WorldMgr.Database.AddObject(Lockout);
+                InstanceService.SaveLockoutInstanceID(ZoneID + ":" + ID, Lockout);
 			}
 			else // instance has got already lockouts
 			{

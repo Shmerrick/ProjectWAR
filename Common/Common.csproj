@@ -158,6 +158,7 @@
     <Compile Include="Database\World\GameObjects\GameObject_proto.cs" />
     <Compile Include="Database\World\GameObjects\GameObject_spawn.cs" />
     <Compile Include="Database\World\Instances\InstanceAttribute.cs" />
+    <Compile Include="Database\World\Instances\Instances_Statistics.cs" />
     <Compile Include="Database\World\Instances\Instance_Encounter.cs" />
     <Compile Include="Database\World\Instances\Instance_Event.cs" />
     <Compile Include="Database\World\Instances\Instance_Event_Command.cs" />

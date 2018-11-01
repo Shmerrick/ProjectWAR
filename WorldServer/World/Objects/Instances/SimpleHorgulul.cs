@@ -50,7 +50,7 @@ namespace WorldServer.World.Objects.Instances
             EvtInterface.RemoveEvent(RemoveAllCCImmunitiesFromPlayers);
             return res;
         }
-
+        
         #endregion Overrides
 
         #region Methods

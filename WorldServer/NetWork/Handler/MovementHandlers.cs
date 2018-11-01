@@ -748,31 +748,30 @@ namespace WorldServer
                 }
                 else if(info?.Type == 4 || info?.Type == 5|| info?.Type == 6)  // login into a instance
                 {
-                    if (!WorldMgr.InstanceMgr.ZoneIn(Plr, (byte)info?.Type)) // cant login into the instace port to exit
+                    if (InstanceService._InstanceInfo.TryGetValue(zoneId, out Instance_Info II))
                     {
-                        Instance_Info II;
-                        InstanceService._InstanceInfo.TryGetValue(zoneId, out II);
-
-						Zone_jump ExitJump = null;
-						if (Plr.Realm == Realms.REALMS_REALM_ORDER)
-							ExitJump = ZoneService.GetZoneJump(II.OrderExitZoneJumpID);
-						else if (Plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
-							ExitJump = ZoneService.GetZoneJump(II.DestrExitZoneJumpID);
-
-						if (ExitJump == null)
-                            Log.Error("Exit Jump in Instance"," "+ zoneId + " missing!");
-                        else
+                        if (!WorldMgr.InstanceMgr.ZoneIn(Plr, (byte)info?.Type, ZoneService.GetZoneJumpByInstanceId(zoneId))) // cant login into the instance port to exit
                         {
-                            if (ExitJump.Type == 4)
-                            {
-                                WorldMgr.InstanceMgr.ZoneIn(Plr,4,ExitJump);
-                            }
+                            Zone_jump ExitJump = null;
+                            if (Plr.Realm == Realms.REALMS_REALM_ORDER)
+                                ExitJump = ZoneService.GetZoneJump(II.OrderExitZoneJumpID);
+                            else if (Plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                                ExitJump = ZoneService.GetZoneJump(II.DestrExitZoneJumpID);
+
+                            if (ExitJump == null)
+                                Log.Error("Exit Jump in Instance", " " + zoneId + " missing!");
                             else
                             {
-                                Plr.Teleport(ExitJump.ZoneID, ExitJump.WorldX, ExitJump.WorldY, ExitJump.WorldZ, ExitJump.WorldO);
+                                if (ExitJump.Type == 4)
+                                {
+                                    WorldMgr.InstanceMgr.ZoneIn(Plr, 4, ExitJump);
+                                }
+                                else
+                                {
+                                    Plr.Teleport(ExitJump.ZoneID, ExitJump.WorldX, ExitJump.WorldY, ExitJump.WorldZ, ExitJump.WorldO);
+                                }
                             }
                         }
-                        
                     }
                     return;
                 }
