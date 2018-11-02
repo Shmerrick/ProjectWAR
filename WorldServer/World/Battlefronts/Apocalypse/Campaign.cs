@@ -546,6 +546,28 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return bestKeep;
         }
 
+        public Keep GetClosestFriendlyKeep(Point3D destPos, Realms myRealm)
+        {
+            Keep bestKeep = null;
+            ulong bestDist = 0;
+
+            foreach (Keep keep in Keeps)
+            {
+                if (keep.Realm == myRealm)
+                {
+                    ulong curDist = keep.GetDistanceSquare(destPos);
+
+                    if (bestKeep == null || curDist < bestDist)
+                    {
+                        bestKeep = keep;
+                        bestDist = keep.GetDistanceSquare(destPos);
+                    }
+                }
+            }
+
+            return bestKeep;
+        }
+
         public Keep GetZoneKeep(ushort zoneId, int realm)
         {
             foreach (Keep keep in Keeps)

@@ -546,18 +546,18 @@ namespace WorldServer
                 return false;
             }*/
 
-            if (player.CurrentKeep == null)
-            {
-                player.SendClientMessage("Must deploy siege at friendly keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                return false;
-            }
-#if !DEBUG
+                if (player.CurrentKeep == null)
+                {
+                    player.SendClientMessage("Must deploy siege at friendly keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                    return false;
+                }
+               
                 if (player.CurrentKeep == null || player.CurrentKeep.Realm != player.Realm)
                 {
                     player.SendClientMessage("Must deploy siege at friendly keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
                     return false;
                 }
-#endif
+            	
 
             return player.CurrentKeep.CanDeploySiege(player, abInfo.Level, (uint)abInfo.CommandInfo[0].PrimaryValue);
         }

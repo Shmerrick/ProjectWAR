@@ -1246,9 +1246,9 @@ namespace WorldServer.World.BattleFronts.Keeps
         private readonly int[][] _materielCaps =
         {
             new[] { 0, 2, 4, 6, 8, 10 }, // barricades
-            new[] { 1, 2, 3, 4, 5, 6 }, // artillery
-            new[] { 0, 2, 3, 5, 6, 8 }, // cannon
-            new[] { 0, 1, 1, 1, 2, 3 } // ram
+            new[] { 2, 2, 3, 4, 5, 6 }, // artillery
+            new[] { 2, 2, 3, 5, 6, 8 }, // cannon
+            new[] { 1, 1, 1, 1, 2, 3 } // ram
         };
 
         private readonly int[][] _materielRegenTime =
@@ -1898,9 +1898,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public bool CanDeploySiege(Player player, int level, uint protoEntry)
         {
-#if DEBUG
-            return true;
-#endif
+
             if (Constants.DoomsdaySwitch == 0)
             { 
                 if (level / 10 != Tier)
@@ -1947,14 +1945,27 @@ namespace WorldServer.World.BattleFronts.Keeps
                     break;
                 case CreatureSubTypes.SIEGE_RAM:
                     type = (int) MaterielType.Ram;
-                    /*if (KeepStatus != KeepStatus.KEEPSTATUS_SAFE)
-                    {
-                        player.SendClientMessage("Unsafe keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                        player.SendClientMessage("You cannot deploy a ram at a keep that is unsafe.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-                        return false;
-                    }*/
-                    if ((int)_materielSupply[type] < 1f || _activeMateriel[type].Count >= _materielCaps[type][Rank])
-                    {
+                    //foreach (Hardpoint h in _hardpoints)
+                    //{
+                    //    if (h.SiegeType == SiegeType.OIL)
+                    //    {
+                    //        player.SendClientMessage("Keep under attack", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                    //        player.SendClientMessage("You cannot deploy a ram at a keep that is defending itself.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    //        return false;
+                    //    }
+                    //}
+
+
+                    //if (KeepStatus != KeepStatus.KEEPSTATUS_SAFE)
+                    //{
+                    //    player.SendClientMessage("Unsafe keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                    //    player.SendClientMessage("You cannot deploy a ram at a keep that is unsafe.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    //    return false;
+                    //}
+
+                    // If the number of spawned siege items > cap per keep level, dont allow.
+                    if (_activeMateriel[type].Count >= _materielCaps[type][Rank])
+                    { 
                         player.SendClientMessage("No rams available", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
                         player.SendClientMessage("Your supply lines cannot support any more rams.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                         return false;
@@ -2020,6 +2031,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             _activeMateriel[type].Add(siege);
             Region.AddObject(siege, Info.ZoneId);
             _materielSupply[type] -= 1f;
+
+            
         }
 
         public void RemoveKeepSiege(Siege weapon)
@@ -2233,6 +2246,10 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
         }
 
- 
+
+        public bool IsRamDeployed()
+        {
+            return _activeMateriel[(int)MaterielType.Ram].Count > 0;
+        }
     }
 }
