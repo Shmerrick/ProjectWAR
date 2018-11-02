@@ -996,14 +996,11 @@ namespace WorldServer
             byte curLevel = _unitOwner.Level;
             if (_unitOwner.AdjustedLevel < curLevel)
                 curLevel = _unitOwner.AdjustedLevel;
-
-            /*
-             * OLD
-             * return (byte)(10 + ((curLevel - 10) >> 1) + (_unitOwner.EffectiveLevel - curLevel) + _pointsInTree[masteryTree - 1]);
-             */
-
-            // The following correctly displays tooltip information.
-            return (byte)(curLevel + (_pointsInTree[masteryTree - 1] * 2));
+            
+            return (byte)(10 + ((curLevel - 10) >> 1) + (_unitOwner.EffectiveLevel - curLevel) + _pointsInTree[masteryTree - 1]);
+            
+            //// The following correctly displays tooltip information.
+            //return (byte)(curLevel + (_pointsInTree[masteryTree - 1] * 2));
         }
 
         #region Mastery Purchasing
