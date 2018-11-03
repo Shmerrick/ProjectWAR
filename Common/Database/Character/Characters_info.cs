@@ -446,19 +446,7 @@ namespace Common
 
         public void RemoveLockout(string Lockout)
         {
-            string newLockout = string.Empty;
-            for (int i = 0; i < _lockouts.Split('~').Length; i++)
-            {
-                if (_lockouts.Split('~')[i].Split(':')[0] == Lockout.Split('~')[1].Split(':')[0])
-                    continue;
-                else
-                {
-                    if (i > 0)
-						newLockout += "~";
-					newLockout += _lockouts.Split('~')[i];
-                }
-            }
-            Lockouts = newLockout;
+            Lockouts = Lockouts.Replace(Lockout, string.Empty);
         }
 
         public void AddLockout(Instance_Lockouts Lockout)
