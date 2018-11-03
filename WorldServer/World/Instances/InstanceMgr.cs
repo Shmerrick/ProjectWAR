@@ -13,7 +13,12 @@ namespace WorldServer
     {
         private Dictionary<ushort, Instance> _instances = new Dictionary<ushort, Instance>();
 
-        public InstanceMgr() { }
+        public InstanceMgr()
+        {
+            _MinInstanceCounter = InstanceService._InstanceStatistics.Count;
+        }
+
+        private int _MinInstanceCounter = 0;
 		
         public bool ZoneIn(Player player, byte instancetyp, Zone_jump Jump = null)
         {
@@ -30,7 +35,7 @@ namespace WorldServer
             Instance_Info II;
             InstanceService._InstanceInfo.TryGetValue(zoneID, out II);
             ushort InstanceMainID = II.Entry;
-            ushort instanceid = 0;
+            ushort instanceid = (ushort)_MinInstanceCounter;
             byte maxplayers = 6;
 			
 			// Group Raid Instance
@@ -70,11 +75,11 @@ namespace WorldServer
 			//		instanceid = Find_OpenInstanceoftheplayer(plr, zoneID);
 			//}
 
-			if (instanceid == 0 && Jump == null)
+			if (instanceid == (ushort)_MinInstanceCounter && Jump == null)
 				return false;
 
 			// create new instance
-			if (instanceid == 0)
+			if (instanceid == (ushort)_MinInstanceCounter)
 			{
 				instanceid = Create_new_instance(player, Jump);
 			}
