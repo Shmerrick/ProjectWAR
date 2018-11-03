@@ -18,6 +18,8 @@ namespace WorldServer
 
         }
 		
+        private ushort _minInstanceNumber = 0;
+
         public bool ZoneIn(Player player, byte instancetyp, Zone_jump Jump = null)
         {
             // jump type 4 = realm 5 = raid 6 = group instances
@@ -33,8 +35,7 @@ namespace WorldServer
             Instance_Info II;
             InstanceService._InstanceInfo.TryGetValue(zoneID, out II);
             ushort InstanceMainID = II.Entry;
-
-            ushort _minInstanceNumber = 0;
+            
             for (int i = 0; i < InstanceService._InstanceStatistics.Values.Count; i++)
             {
                 int dis = int.Parse(InstanceService._InstanceStatistics.Values.ElementAt(i).InstanceID.Replace(zoneID + ":", ""));
@@ -178,7 +179,7 @@ namespace WorldServer
         {
             lock (_instances)
             {
-                for (ushort i = 1; i < ushort.MaxValue ; i++)
+                for (ushort i = _minInstanceNumber; i < ushort.MaxValue ; i++)
                 {
                     if (!_instances.ContainsKey(i))
                     {
