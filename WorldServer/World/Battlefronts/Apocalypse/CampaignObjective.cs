@@ -1180,7 +1180,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         // Notify RvR flagged players of activity
                         player.SendLocalizeString(message, ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
                         player.SendLocalizeString(message, largeFilter, Localized_text.CHAT_TAG_DEFAULT);
-                        BattlefrontLogger.Debug("Sending Activity to RVR-Player", "Player: " + plr.Name + ", BO: " + this.Name + "Message: " + message);
+                        BattlefrontLogger.Debug("Sending Activity to RVR-Player", "Player: " + player.Name + ", BO: " + this.Name + "Message: " + message);
                         if (snd != null)
                             player.SendPacket(snd);
                     }
