@@ -95,6 +95,10 @@ namespace WorldServer.World.Objects.Instances
                 plr.ModifyDmgHealScaler = 1f;
             }
 
+            // reset enrage dmg buff on boss
+            ModifyDmgHealScaler = 1.0f;
+            StsInterface.RemoveBonusMultiplier(GameData.Stats.OutgoingDamagePercent, 1.0f, BuffClass.Standard);
+
             if (BossTimer != null)
 			{
 				BossTimer.Reset();
