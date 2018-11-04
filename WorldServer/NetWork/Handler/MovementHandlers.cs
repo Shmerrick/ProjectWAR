@@ -372,7 +372,7 @@ namespace WorldServer
 
                 //lava and deep water/sludge, ref: ZARU
                 long Now = TCPManager.GetTimeStampMS();
-                if (groundtype == 3 || groundtype == 19 || groundtype == 17 || groundtype == 23) //19 is deep lava, 17 is deep water, 23 is deep sludge
+                if (groundtype == 3 || groundtype == 19 || (player.Zone.ZoneId == 260 && groundtype == 17 || groundtype == 23)) //19 is deep lava, 17 is deep water, 23 is deep sludge
                 {
                     player.Dismount();
                     if (!player.IsDead )
