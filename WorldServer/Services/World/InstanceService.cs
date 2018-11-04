@@ -165,7 +165,7 @@ namespace WorldServer.Services.World
             Database.ForceSave();
         }
 
-        public static void SavePlayerIDs(string instanceID, List<Player> plrs)
+        public static void SavePlayerIDs(string instanceID, List<string> plrs)
         {
             if (string.IsNullOrEmpty(instanceID) || plrs == null || plrs.Count == 0)
                 return;
@@ -175,31 +175,13 @@ namespace WorldServer.Services.World
 
             if (!_InstanceStatistics.TryGetValue(instanceID, out Instances_Statistics stat))
                 stat = AddNewInstanceStatisticsEntry(instanceID);
-            
-            string[] split = stat.playerIDs.Split(';');
+
             string newStr = string.Empty;
-            int idx = -1;
-
-            foreach (Player plr in plrs)
+            foreach (string plr in plrs)
             {
-                idx = -1;
-                foreach (var s in split)
-                {
-                    if (s.Equals(plr.CharacterId.ToString()))
-                        idx = split.ToList().IndexOf(s);
-                }
-
-                if (idx == -1) // nothing found
-                {
-                    stat.playerIDs += plr.CharacterId + ";";
-                }
-                else
-                {
-                    string[] spl = split[idx].Split(':');
-                    newStr += plr.CharacterId;
-                    stat.playerIDs = stat.playerIDs.Replace(split[idx], newStr);
-                }
+                newStr += plr + ";";
             }
+            stat.playerIDs = newStr;
             
             stat.Dirty = true;
             Database.SaveObject(stat);

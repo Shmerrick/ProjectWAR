@@ -12,7 +12,7 @@ namespace WorldServer.World.Objects.Instances
 {
     public class InstanceBossSpawn : Creature
     {
-        uint InstanceGroupSpawnID;
+        public uint InstanceGroupSpawnID;
         public uint BossID;
         public ushort InstanceID;
 		public Instance Instance { get; set; } = null;
@@ -51,6 +51,8 @@ namespace WorldServer.World.Objects.Instances
         public virtual bool OnEnterCombat(Object mob, object args)
         {
             Instance.Encounterinprogress = true;
+            Instance.CurrentBossId = BossID;
+
             Unit Attacker = mob.GetCreature().CbtInterface.GetTarget(GameData.TargetTypes.TARGETTYPES_TARGET_ENEMY);
 
             if(InstanceGroupSpawnID > 0)
@@ -94,11 +96,7 @@ namespace WorldServer.World.Objects.Instances
             {
                 plr.ModifyDmgHealScaler = 1f;
             }
-
-            // reset enrage dmg buff on boss
-            ModifyDmgHealScaler = 1.0f;
-            StsInterface.RemoveBonusMultiplier(GameData.Stats.OutgoingDamagePercent, 1.0f, BuffClass.Standard);
-
+            
             if (BossTimer != null)
 			{
 				BossTimer.Reset();
@@ -152,7 +150,7 @@ namespace WorldServer.World.Objects.Instances
                 }
             }
         }
-
+        
         public override void TryLoot(Player player, InteractMenu menu)
 		{
 			if (lootContainer != null && lootContainer.IsLootable())
@@ -170,31 +168,16 @@ namespace WorldServer.World.Objects.Instances
                     //player.PriorityGroup.SubGroupLoot(player, lootContainer, subGroup);
                     player.PriorityGroup.GroupLoot(player, lootContainer);
                 }
-				
-				if (player.HasLockout((ushort)ZoneId, BossID))
-				{
-					if (player.PriorityGroup != null)
-					{
-						// find a player without lockout
-						Player eligablePlayer = player.PriorityGroup.Members.Where(x => !x.HasLockout((ushort)ZoneId, BossID)).FirstOrDefault();
-						if (eligablePlayer != null)
-							lootContainer.SendInteract(eligablePlayer, menu);
-					}
-				}
-				else
-				{
-                    if (!subGroup.Contains(player))
-                        subGroup.Add(player);
 
-                    lootContainer.SendInteract(player, menu);
-				}
+                lootContainer.SendInteract(player, menu);
 
-				if (!lootContainer.IsLootable())
+                if (!lootContainer.IsLootable())
 				{
 					SetLootable(false, player);
 
-					Instance.ApplyLockout(subGroup, InstanceGroupSpawnID, this);
-				}
+                    if (player.PriorityGroup == null)
+                        Instance.ApplyLockout(new List<Player> { player });
+                }
 			}
 		}
 

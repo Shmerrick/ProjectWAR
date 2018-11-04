@@ -19,6 +19,7 @@ namespace WorldServer
         }
 		
         private ushort _minInstanceNumber = 0;
+        private byte _maxplayers = 6;
 
         public bool ZoneIn(Player player, byte instancetyp, Zone_jump Jump = null)
         {
@@ -44,11 +45,10 @@ namespace WorldServer
             }
             
             ushort instanceid = _minInstanceNumber;
-            byte maxplayers = 6;
 			
 			// Group Raid Instance
 			if (instancetyp == 5)
-				maxplayers = 24;
+                _maxplayers = 24;
 			
 			// check if player is in group
 			if (player.PriorityGroup != null)
@@ -65,24 +65,6 @@ namespace WorldServer
 				instanceid = Find_OpenInstanceoftheplayer(player, zoneID);
 			}
 
-			//// find instance ID of player with the most lockouts
-			//if (player.PriorityGroup != null && instanceid == 0)
-			//{
-			//	Player plr = null;
-			//	foreach(Player p in player.PriorityGroup.GetPlayerList())
-			//	{
-			//		if (plr == null)
-			//		{
-			//			plr = p;
-			//			continue;
-			//		}
-			//		plr = CompareBossesKilledInLockout(zoneID, plr, p);
-			//	}
-				
-			//	if (plr != null)
-			//		instanceid = Find_OpenInstanceoftheplayer(plr, zoneID);
-			//}
-
 			if (instanceid == _minInstanceNumber && Jump == null)
 				return false;
 
@@ -96,8 +78,8 @@ namespace WorldServer
 				if (player.PriorityGroup == null)
 					instanceid = Create_new_instance(player, Jump);
 			}
-			
-			if (!Join_Instance(player, instanceid, Jump, maxplayers, InstanceMainID))
+            
+            if (!Join_Instance(player, instanceid, Jump, _maxplayers, InstanceMainID))
 				return false;
 
 			return true;
@@ -168,18 +150,26 @@ namespace WorldServer
                 {
                     if (ii.Value.ZoneID == ZoneID && ii.Value._Players.Contains(player.Name))
                     {
-                        return ii.Key;
+                        if (player.PriorityGroup == null)
+                            return ii.Key;
+                        else if (ii.Value._Players.Count < _maxplayers)
+                        {
+                            // check if instance players are all group players
+                            bool any = ii.Value._Players.Any(x => !player.PriorityGroup.Members.Select(y => y.Name).Contains(x));
+                            if (!any)
+                                return ii.Key;
+                        }
                     }
                 }
             }
-            return 0;
+            return _minInstanceNumber;
         }
 
         private ushort Create_new_instance(Player player, Zone_jump Jump)
         {
             lock (_instances)
             {
-                for (ushort i = _minInstanceNumber; i < ushort.MaxValue ; i++)
+                for (ushort i = 0; i < ushort.MaxValue ; i++)
                 {
                     if (!_instances.ContainsKey(i))
                     {
@@ -206,8 +196,8 @@ namespace WorldServer
 							{	
 								if (player.PriorityGroup == null) // solo player gets his own lockouts
 									InstanceService._InstanceLockouts.TryGetValue(player._Value.GetLockout(Jump.InstanceID), out deadbosses);
-								else // group players gets the lockout of the leader
-									InstanceService._InstanceLockouts.TryGetValue(player.PriorityGroup.GetLeader()._Value.GetLockout(Jump.InstanceID), out deadbosses);
+								else if (player.PriorityGroup.GetLeader()._Value.GetLockout(Jump.InstanceID) != null) // group players gets the lockout of the leader
+                                    InstanceService._InstanceLockouts.TryGetValue(player.PriorityGroup.GetLeader()._Value.GetLockout(Jump.InstanceID), out deadbosses);
 							}
                             ints = new Instance(Jump.ZoneID, i, 0, deadbosses);
                             _instances.Add(i, ints);
@@ -232,7 +222,7 @@ namespace WorldServer
                     return false;
                 }
 
-                if (maxplayers == 0 || inst.Region.Players.Count <= maxplayers)
+                if (maxplayers == 0 || inst._Players.Count < maxplayers)
                 {
                     if (Jump != null && Jump.ZoneID == 179)
                         ((TOTVL)inst).AddPlayer(player, Jump);
@@ -292,6 +282,15 @@ namespace WorldServer
         {
             if (killer is World.Objects.Instances.InstanceBossSpawn boss)
                 boss.PlayerDeathsCount++;
+        }
+
+        public void ApplyLockout(string instanceId, List<Player> players)
+        {
+            if (_instances == null)
+                return;
+
+            _instances.TryGetValue(ushort.Parse(instanceId.Split(':')[1]), out Instance inst);
+            inst?.ApplyLockout(players.Where(x => !x.HasLockout(ushort.Parse(instanceId.Split(':')[1]), inst.CurrentBossId)).ToList());
         }
     }
 }

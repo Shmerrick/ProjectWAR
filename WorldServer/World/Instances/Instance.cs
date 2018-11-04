@@ -45,6 +45,8 @@ namespace WorldServer
         public byte updatestate;
         public bool Encounterinprogress = false;
 
+        public uint CurrentBossId { get; set; } = 0;
+
         public Instance(ushort zoneid, ushort id, byte realm, Instance_Lockouts lockouts)
         {
             Lockout = lockouts;
@@ -183,22 +185,6 @@ namespace WorldServer
 		{
 			return _BossSpawns.Count;
 		}
-
-        public void AddPlayer(Player player)
-        {
-            lock (_Players)
-            {
-                if (!_Players.Contains(player.Name))
-                {
-                    _Players.Add(player.Name);
-                }
-            }
-
-            player.InstanceID = ZoneID + ":" + ID;
-            Region.AddObject(player, ZoneID, true);
-
-            InstanceService.SavePlayerIDs(ZoneID + ":" + ID, new List<Player>() { player });
-        }
 		
         public void AddPlayer(Player player, Zone_jump jump)
         {
@@ -207,6 +193,12 @@ namespace WorldServer
                 if (!_Players.Contains(player.Name))
                 {
                     _Players.Add(player.Name);
+                }
+
+                // also add group leader
+                if (player.PriorityGroup != null && !_Players.Contains(player.PriorityGroup.GetLeader().Name))
+                {
+                    _Players.Add(player.PriorityGroup.GetLeader().Name);
                 }
             }
 
@@ -223,7 +215,9 @@ namespace WorldServer
 
             Region.CheckZone(player);
 
-            InstanceService.SavePlayerIDs(ZoneID + ":" + ID, new List<Player>() { player });
+            InstanceService.SavePlayerIDs(ZoneID + ":" + ID, _Players);
+
+            player.SendClientMessage("Instance ID: " + ID, SystemData.ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
         }
 
         private void LoadObjects()
@@ -248,14 +242,14 @@ namespace WorldServer
 			Encounterinprogress = false;
 		}
 
-		public void ApplyLockout(List<Player> subGroup, uint GroupID, InstanceBossSpawn boss)
+		public void ApplyLockout(List<Player> subGroup)
 		{
-			if (Lockout == null) // instance hasn't got any lockouts
+            if (Lockout == null) // instance hasn't got any lockouts
 			{
 				Lockout = new Instance_Lockouts
 				{
-					InstanceID = "~" + boss.InstanceID + ":" + (TCPManager.GetTimeStamp() + Info.LockoutTimer * 60),
-					Bosseskilled = boss.BossID.ToString()
+					InstanceID = "~" + ZoneID + ":" + (TCPManager.GetTimeStamp() + Info.LockoutTimer * 60),
+					Bosseskilled = CurrentBossId.ToString()
 				};
 				InstanceService._InstanceLockouts.Add(Lockout.InstanceID, Lockout);
 				Lockout.Dirty = true;
@@ -264,7 +258,7 @@ namespace WorldServer
 			}
 			else // instance has got already lockouts
 			{
-				Lockout.Bosseskilled += ":" + boss.BossID;
+				Lockout.Bosseskilled += ":" + CurrentBossId;
 				Lockout.Dirty = true;
 				WorldMgr.Database.SaveObject(Lockout);
 			}

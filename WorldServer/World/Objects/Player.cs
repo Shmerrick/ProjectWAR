@@ -6904,12 +6904,15 @@ namespace WorldServer
 			if (lockout == null)
 				return false;
 
-			var split = lockout.Split(':');
-			for (int i = 2; i < split.Length; i++)
-			{
-				if (uint.Parse(split[i]).Equals(bossID))
-					return true;
-			}
+            if (lockout.Contains(bossID.ToString()))
+                return true;
+
+			//var split = lockout.Split(':');
+			//for (int i = 2; i < split.Length; i++)
+			//{
+			//	if (uint.Parse(split[i]).Equals(bossID))
+			//		return true;
+			//}
 
 			return false;
 		}
