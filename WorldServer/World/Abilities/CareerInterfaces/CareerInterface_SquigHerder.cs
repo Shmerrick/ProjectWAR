@@ -78,7 +78,7 @@ namespace WorldServer
                     case 1844:
                         Proto.Name = myPlayer.Name + "'s Spiked Squig";
                         Proto.Model1 = 138;
-                        Proto.Ranged = 80;
+                        Proto.Ranged = 100;
                         break;
                     case 1845:
                         Proto.Name = myPlayer.Name + "'s Battle Squig";
