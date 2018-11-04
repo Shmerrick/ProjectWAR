@@ -57,6 +57,8 @@ namespace WorldServer
         public static uint OrderCount;
         public static uint DestruCount;
 
+        public string InstanceID { get; set; } = string.Empty;
+
         public static void AddPlayer(Player newPlayer)
         {
             bool Found = false;
@@ -239,6 +241,8 @@ namespace WorldServer
         public GameClient Client { get; set; }
         public string GenderedName { get; }
 
+		public MovementHandlers.GROUNDTYPE GroundType { get; set;}
+
         public bool IsAFK = false;
         public bool IsAutoAFK = false;
         public string AFKMessage = "";
@@ -392,8 +396,6 @@ namespace WorldServer
         }
 
         // End of Halloween stuff
-
-        public ushort InstanceID;
 
         public string ChatName
         {
@@ -1828,7 +1830,7 @@ namespace WorldServer
 
         public void SendLockouts()
         {
-            List<String> lockouts = _Value.GetAllLockouts();
+            List<string> lockouts = _Value.GetAllLockouts();
 
             if (lockouts.Count == 0)
                 return;
@@ -1861,32 +1863,29 @@ namespace WorldServer
             Out.Fill(0, 2);
             Out.WriteByte((byte)lockouts.Count);
             Out.Fill(0, 8);
-            foreach (String s in lockouts)
+            foreach (string s in lockouts)
             {
                 Out.WriteUInt32(Convert.ToUInt32((Convert.ToInt64(s.Split(':')[1]) - TCPManager.GetTimeStamp()) / 60));
                 Out.Fill(0, 2);
                 Instance_Info info;
-                InstanceService._InstanceInfo.TryGetValue(UInt32.Parse(s.Split(':')[0]), out info);
+                InstanceService._InstanceInfo.TryGetValue(uint.Parse(s.Split(':')[0].Replace("~","")), out info);
                 Out.WritePascalString(info.Name);
                 Instance_Lockouts Deadbosses;
 
-                InstanceService._InstanceLockouts.TryGetValue(s, out Deadbosses);
+                InstanceService._InstanceLockouts.TryGetValue(s.Split(':')[0] + ":" + s.Split(':')[1], out Deadbosses);
 
                 List<Instance_Boss_Spawn> bosses;
-
-
-
-
+				
                 for (int i = 0; i < 16; i++)
                 {
-                    if (i < Deadbosses.Bosseskilled.Split(';').Count())
+                    if (Deadbosses != null && i < Deadbosses.Bosseskilled.Split(':').Count())
                     {
-                        InstanceService._InstanceBossSpawns.TryGetValue(UInt32.Parse(Deadbosses.InstanceID.Split(':')[0]), out bosses);
+                        InstanceService._InstanceBossSpawns.TryGetValue(uint.Parse(Deadbosses.InstanceID.Split(':')[0].Replace("~", "")), out bosses);
                         uint Bossentry = 0;
 
                         foreach (Instance_Boss_Spawn bs in bosses)
                         {
-                            if ("" + bs.BossID == Deadbosses.Bosseskilled.Split(';')[i].Split(':')[1])
+                            if (bs.BossID.ToString() == Deadbosses.Bosseskilled.Split(':')[i])
                                 Bossentry = bs.Entry;
                         }
 
@@ -3522,6 +3521,7 @@ namespace WorldServer
         // Combat
 
         #region Health/Damage
+
         /// <summary>
         /// Provides an opportunity for this unit to modify incoming ability damage from enemies.
         /// </summary>
@@ -3561,6 +3561,22 @@ namespace WorldServer
         /// <summary>Scaler applied to damage received or dealed when farming warcamps</summary>
         /// <remarks>The scaler is hidden to player, lower than 1 if debuffed (intended feature)</remarks>
         public volatile float WarcampFarmScaler = 1f;
+
+        /// <summary>
+        /// Provides an opportunity for this unit to modify incoming ability damage from enemies.
+        /// </summary>
+        public override void ModifyHealIn(AbilityDamageInfo incHeal)
+        {
+            base.ModifyHealIn(incHeal);
+        }
+
+        /// <summary>
+        /// Provides an opportunity for this unit to modify outgoing ability damage it deals.
+        /// </summary>
+        public override void ModifyHealOut(AbilityDamageInfo outHeal)
+        {
+            base.ModifyHealOut(outHeal);
+        }
 
         /// <summary>
         /// 
@@ -3863,9 +3879,6 @@ namespace WorldServer
                     }
                 }
                 
-
-               
-
                 if (playerKiller.PriorityGroup != null)
                 {
                     List<Player> curMembers = playerKiller.PriorityGroup.GetPlayersCloseTo(playerKiller, 150);
@@ -3885,6 +3898,12 @@ namespace WorldServer
 
             // Clearing heal aggro...
             HealAggros = new Dictionary<ushort, AggroInfo>();
+            
+            // inform instance that the player was killed
+            if (!string.IsNullOrEmpty(InstanceID))
+            {
+                WorldMgr.InstanceMgr?.HandlePlayerSetDeath(this, killer);
+            }
         }
 
         private void RecordKillTracking(Player victim, Player killer, long timestamp)
@@ -6876,5 +6895,28 @@ namespace WorldServer
 
         public Pet Companion { get; set; }
         public bool PendingDumpStatic;
-    }
+
+		#region Lockouts
+
+		public bool HasLockout(ushort zoneId, uint bossID)
+		{
+			string lockout = _Value.GetLockout(zoneId);
+			if (lockout == null)
+				return false;
+
+            if (lockout.Contains(bossID.ToString()))
+                return true;
+
+			//var split = lockout.Split(':');
+			//for (int i = 2; i < split.Length; i++)
+			//{
+			//	if (uint.Parse(split[i]).Equals(bossID))
+			//		return true;
+			//}
+
+			return false;
+		}
+
+		#endregion
+	}
 }

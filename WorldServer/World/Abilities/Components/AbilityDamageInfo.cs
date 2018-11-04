@@ -107,7 +107,7 @@ namespace WorldServer
 
         public AbilityDamageInfo()
         {
-            
+
         }
 
         public AbilityDamageInfo(DBAbilityDamageInfo dbObj)

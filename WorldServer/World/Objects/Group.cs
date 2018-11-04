@@ -23,7 +23,7 @@ namespace WorldServer
         private readonly List<Player> _playersGreeding = new List<Player>();
         private readonly List<Player> _playersNeeding = new List<Player>();
         private readonly List<Player> _playersPassing = new List<Player>();
-
+        
         public LootRoll(byte lootID, Item_Info item)
         {
             LootID = lootID;
@@ -39,6 +39,14 @@ namespace WorldServer
                 return -1;
             }
 
+            // on lockout automatically pass
+            if (WorldMgr.InstanceMgr.HasLockoutFromCurrentBoss(voter))
+            {
+                _playersPassing.Add(voter);
+                voter.SendClientMessage("You've got already lockout on loot from this boss.", ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL);
+                return 2;
+            }
+            
             switch (vote)
             {
                 case 0:
@@ -697,6 +705,12 @@ namespace WorldServer
 
                 _activeLootRolls.RemoveAll(lootRollers => lootRollers.Completed);
 
+                if (_activeLootRolls.Count == 0)
+                {
+                    List<Player> subGroup = Members.Where(x => !string.IsNullOrEmpty(x.InstanceID) && x.InstanceID == GetLeader().InstanceID).ToList();
+                    WorldMgr.InstanceMgr.ApplyLockout(GetLeader().InstanceID, subGroup);
+                }
+
                 _nextTick = tick + 1000;
             }
         }
@@ -719,6 +733,31 @@ namespace WorldServer
                     Out.WriteByte(0x00);
                     Item.BuildItem(ref Out, null, lootContainer.LootInfo[i].Item, null, 0, 0);
                     SendToGroup(Out, true);
+
+                    lootContainer.LootInfo.RemoveAt(i);
+                    --i;
+                }
+            }
+        }
+
+		public void SubGroupLoot(Player looter, LootContainer lootContainer, List<Player> subGroup)
+        {
+            for (byte i = 0; i < lootContainer.LootInfo.Count; ++i)
+            {
+                if (lootContainer.LootInfo[i] == null)
+                    continue;
+                if (lootContainer.LootInfo[i].Item.Rarity >= _lootThreshold)
+                {
+                    _activeLootRolls.Add(new LootRoll(++_lootId, lootContainer.LootInfo[i].Item));
+
+                    PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE);
+                    Out.WriteByte(0x07);
+                    Out.WriteByte(0x10);
+                    Out.WriteByte(0x6F);
+                    Out.WriteByte(_lootId);
+                    Out.WriteByte(0x00);
+                    Item.BuildItem(ref Out, null, lootContainer.LootInfo[i].Item, null, 0, 0);
+					SendToSubGroup(Out, subGroup, true);
 
                     lootContainer.LootInfo.RemoveAt(i);
                     --i;
@@ -1523,7 +1562,27 @@ namespace WorldServer
             }
         }
 
-        public void SendExitingGroup(Player player)
+		public void SendToSubGroup(PacketOut Out, List<Player> subGroup, bool shouldLock = false)
+		{
+			if (shouldLock)
+			{
+				_memberRWLock.EnterReadLock();
+				try
+				{
+					foreach (Player player in subGroup)
+						player.SendCopy(Out);
+				}
+				finally { _memberRWLock.ExitReadLock(); }
+			}
+
+			else
+			{
+				foreach (Player player in subGroup)
+					player.SendCopy(Out);
+			}
+		}
+		
+		public void SendExitingGroup(Player player)
         {
             if (player == null)
                 return;

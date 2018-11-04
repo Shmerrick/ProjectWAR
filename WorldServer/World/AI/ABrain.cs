@@ -16,7 +16,7 @@ namespace WorldServer
         protected Pet _pet;
         protected CombatInterface_Npc Combat;
         protected AIInterface AI;
-
+        
         protected ABrain(Unit unit)
         {
             _unit = unit;
@@ -51,11 +51,17 @@ namespace WorldServer
 
         private long _nextDistanceCheckTime;
 
-        #region Combat
-        /// <summary> Causes the NPC to begin attacking the specified unit. </summary>
-        /// <notes>Only needs to be overridden for pets.</notes>
+		#region Combat
+		/// <summary> Causes the NPC to begin attacking the specified unit. </summary>
+		/// <notes>Only needs to be overridden for pets.</notes>
 
-        private long _combatStart;
+		private readonly object _combatStart_LockObj = new object();
+		private long _combatStart;
+		public long CombatStart
+		{
+			get { lock (_combatStart_LockObj) { return _combatStart; } }
+			set { lock (_combatStart_LockObj) { _combatStart = value; } }
+		}
 
         public virtual bool StartCombat(Unit fighter)
         {
@@ -65,11 +71,11 @@ namespace WorldServer
             // We try to buff NPC here
             BuffAtCombatStart();
 
-            _combatStart = TCPManager.GetTimeStampMS();
+			CombatStart = TCPManager.GetTimeStampMS();
 
             GetAggro(fighter.Oid).DamageReceived += 100;
 
-            AI.Debugger?.SendClientMessage("[MR]: Started combat with "+fighter.Name+".");
+            AI.Debugger?.SendClientMessage("[MR]: Started combat with " + fighter.Name + ".");
 
             Combat.SetTarget(fighter, TargetTypes.TARGETTYPES_TARGET_ENEMY);
 
@@ -211,7 +217,7 @@ namespace WorldServer
                                 {
                                     foreach (KeyValuePair<ushort, AggroInfo> aggro in Aggros)
                                     {
-                                        if (!(_unit is Pet) && healAggro.Key == aggro.Key && _combatStart < healAggro.Value.HealingReceivedTime && aggro.Value.HealingReceivedTime != healAggro.Value.HealingReceivedTime)
+                                        if (!(_unit is Pet) && healAggro.Key == aggro.Key && CombatStart < healAggro.Value.HealingReceivedTime && aggro.Value.HealingReceivedTime != healAggro.Value.HealingReceivedTime)
                                         {
                                             aggro.Value.Hatred += (ulong)((healAggro.Value.HealingReceived) * GetDetaunt(healAggro.Key));
                                             healAggro.Value.HealingReceivedTime = aggro.Value.HealingReceivedTime;
@@ -314,14 +320,27 @@ namespace WorldServer
 			}
         }
 
-        #endregion
+		#endregion
 
-        #region Ability Usage
+		#region Ability Usage
 
-        private long _nextTryCastTime;
-        private long _oneshotPercentCast = 0;
+		private readonly object _nextTryCastTime_LockObj = new object();
+		private long _nextTryCastTime;
+		public long NextTryCastTime
+		{
+			get { lock(_nextTryCastTime_LockObj) { return _nextTryCastTime; } }
+			set { lock (_nextTryCastTime_LockObj) { _nextTryCastTime = value; } }
+		}
 
-        protected void BuffAtCombatStart()
+		private readonly object _oneshotPercentCast_LockObj = new object();
+		private long _oneshotPercentCast = 0;
+		public long OneshotPercentCast
+		{
+			get { lock (_oneshotPercentCast_LockObj) { return _oneshotPercentCast; } }
+			set { lock (_oneshotPercentCast_LockObj) { _oneshotPercentCast = value; } }
+		}
+
+		protected void BuffAtCombatStart()
         {
             if (_unit.AbtInterface.NPCAbilities == null)
                 return;
@@ -342,12 +361,12 @@ namespace WorldServer
             Combat.SetTarget(GetNextTarget(), TargetTypes.TARGETTYPES_TARGET_ENEMY);
         }
 
-        protected void TryUseAbilities()
+        public virtual void TryUseAbilities()
         {
             if (_unit.AbtInterface.NPCAbilities == null)
                 return;
 
-            if (Combat.IsFighting && Combat.CurrentTarget != null && _unit.AbtInterface.CanCastCooldown(0) && TCPManager.GetTimeStampMS() > _nextTryCastTime)
+            if (Combat.IsFighting && Combat.CurrentTarget != null && _unit.AbtInterface.CanCastCooldown(0) && TCPManager.GetTimeStampMS() > NextTryCastTime)
             {
                 long curTimeMs = TCPManager.GetTimeStampMS();
 
@@ -390,11 +409,11 @@ namespace WorldServer
                             AllowPercentAbilityCycle = 1;
 
                         // This checks if we can reset the ability if NPC healed - if it's still on cooldwon, we do not refresh it
-                        if (ability.AbilityCycle == 0 && ability.AbilityUsed == 1 && (_unit.Health > (_unit.TotalHealth * ability.ActivateAtHealthPercent) / 100) && _oneshotPercentCast < curTimeMs)
+                        if (ability.AbilityCycle == 0 && ability.AbilityUsed == 1 && (_unit.Health > (_unit.TotalHealth * ability.ActivateAtHealthPercent) / 100) && OneshotPercentCast < curTimeMs)
                             ability.AbilityUsed = 0;
                         
                         // This will play ability after NPC is wounded below X %
-                        if (ability.AbilityCycle == 0 && ability.AbilityUsed == 0 && (_unit.Health < (_unit.TotalHealth * ability.ActivateAtHealthPercent) / 100) && _oneshotPercentCast < curTimeMs)
+                        if (ability.AbilityCycle == 0 && ability.AbilityUsed == 0 && (_unit.Health < (_unit.TotalHealth * ability.ActivateAtHealthPercent) / 100) && OneshotPercentCast < curTimeMs)
                         {
                             // This set random target if needed
                             if (ability.RandomTarget == 1)
@@ -405,13 +424,13 @@ namespace WorldServer
 
                             if (ability.Text != "") _unit.Say(ability.Text.Replace("<character name>", _unit.CbtInterface.GetCurrentTarget().Name));
                             _unit.EvtInterface.AddEvent(StartDelayedCast, 1000, 1, prms);
-                            _oneshotPercentCast = TCPManager.GetTimeStampMS() + ability.Cooldown * 1000;
+							OneshotPercentCast = TCPManager.GetTimeStampMS() + ability.Cooldown * 1000;
                             ability.AbilityUsed = 1;
                             continue;
                         }
                     }
 
-                    if (ability.AutoUse && !_unit.AbtInterface.IsCasting() && ability.CooldownEnd < curTimeMs && _unit.AbtInterface.CanCastCooldown(ability.Entry) && curTimeMs > _combatStart + ability.TimeStart * 1000) 
+                    if (ability.AutoUse && !_unit.AbtInterface.IsCasting() && ability.CooldownEnd < curTimeMs && _unit.AbtInterface.CanCastCooldown(ability.Entry) && curTimeMs > CombatStart + ability.TimeStart * 1000) 
                     {
                         uint ExtraRange = 0;
                         if (Combat != null && Combat.CurrentTarget != null && Combat.CurrentTarget.IsMoving)
@@ -423,7 +442,7 @@ namespace WorldServer
                             if (ability.ActivateAtHealthPercent == 0 || AllowPercentAbilityCycle == 1)
                             {
                                 if (!_unit.LOSHit(Combat.CurrentTarget))
-                                    _nextTryCastTime = TCPManager.GetTimeStampMS() + 1000;
+									NextTryCastTime = TCPManager.GetTimeStampMS() + 1000;
                                 else
                                 {
                                     // This set random target if needed
@@ -454,7 +473,7 @@ namespace WorldServer
             }
         }
 
-        private void SetRandomTarget()
+        public Player SetRandomTarget()
         {
             AggroInfo maxAggro = null;
             Player plr = null;
@@ -491,6 +510,8 @@ namespace WorldServer
             {
                 plr.EvtInterface.AddEvent(DelayedAggroRemoval, 1000, 1, delayedAggroRemoval);
             }
+
+			return plr;
         }
 
         private void DelayedAggroRemoval(object creature)
@@ -508,9 +529,9 @@ namespace WorldServer
         }
 
         Random random = new Random();
-        Unit CurTarget;
+        public Unit CurTarget;
 
-        private void StartDelayedCast(object creature)
+        public void StartDelayedCast(object creature)
         {
             var Params = (List<object>)creature;
 

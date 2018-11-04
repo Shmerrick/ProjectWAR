@@ -6,7 +6,7 @@ using System.Text;
 
 namespace WorldServer
 {
-    public class InstanceDoor:InstanceObject 
+    public class InstanceDoor : InstanceObject 
     {
         public bool IsOpen
         {
@@ -26,8 +26,10 @@ namespace WorldServer
 
             }
         }
+
         public InstanceDoor(Instance instance, Instance_Object info) : base(instance, info)
         {
+
         }
     }
 }

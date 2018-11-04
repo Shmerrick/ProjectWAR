@@ -243,6 +243,26 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-       
-    }
+		/// <summary>
+		/// Gets the complete ability list of target (creature).
+		/// </summary>
+		/// <param name="plr">Player that initiated the command</param>
+		/// <param name="values">NPCAbility list of target</param>
+		/// <returns></returns>
+		public static bool GetAbilityList(Player plr, ref List<string> values)
+		{
+			Creature obj = GetObjectTarget(plr) as Creature;
+			if (obj == null)
+				return false;
+
+			plr.SendClientMessage("All loaded abilities of target <Entry, Name>:");
+
+			foreach (NPCAbility ab in obj.AbtInterface.NPCAbilities)
+			{
+				plr.SendClientMessage("<" + ab.Entry + ", " + AbilityMgr.GetAbilityInfo(ab.Entry).Name + ">");
+			}
+
+			return true;
+		}
+	}
 }
