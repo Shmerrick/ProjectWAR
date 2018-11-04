@@ -23,8 +23,6 @@ namespace WorldServer
         private readonly List<Player> _playersGreeding = new List<Player>();
         private readonly List<Player> _playersNeeding = new List<Player>();
         private readonly List<Player> _playersPassing = new List<Player>();
-
-        private uint _CurrentBossId = 0;
         
         public LootRoll(byte lootID, Item_Info item)
         {
@@ -33,7 +31,7 @@ namespace WorldServer
             StartTime = TCPManager.GetTimeStampMS();
         }
 
-        public int ProcessVote(Player voter, ushort vote, uint bossId = 0)
+        public int ProcessVote(Player voter, ushort vote)
         {
             if (_playersNeeding.Contains(voter) || _playersGreeding.Contains(voter))
             {
@@ -42,7 +40,7 @@ namespace WorldServer
             }
 
             // on lockout automatically pass
-            if (voter.HasLockout(voter.Zone.ZoneId, bossId))
+            if (WorldMgr.InstanceMgr.HasLockoutFromCurrentBoss(voter))
             {
                 _playersPassing.Add(voter);
                 voter.SendClientMessage("You've got already lockout on loot from this boss.", ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL);
