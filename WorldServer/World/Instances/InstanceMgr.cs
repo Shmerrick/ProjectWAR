@@ -288,18 +288,32 @@ namespace WorldServer
         {
             if (_instances == null)
                 return;
-
-            _instances.TryGetValue(ushort.Parse(instanceId.Split(':')[1]), out Instance inst);
-            inst?.ApplyLockout(players.Where(x => !x.HasLockout(ushort.Parse(instanceId.Split(':')[1]), inst.CurrentBossId)).ToList());
+            try
+            {
+                _instances.TryGetValue(ushort.Parse(instanceId.Split(':')[1]), out Instance inst);
+                inst?.ApplyLockout(players.Where(x => !x.HasLockout(ushort.Parse(instanceId.Split(':')[1]), inst.CurrentBossId)).ToList());
+            }
+            catch (Exception e)
+            {
+                Log.Error("Exception", e.Message + "\r\n" + e.StackTrace);
+            }
         }
 
         public bool HasLockoutFromCurrentBoss(Player plr)
         {
             if (_instances == null)
-                return true;
+                return false;
 
-            _instances.TryGetValue(ushort.Parse(plr.InstanceID.Split(':')[1]), out Instance inst);
-            return plr.HasLockout(plr.Zone.ZoneId, inst.CurrentBossId);
+            try
+            {
+                _instances.TryGetValue(ushort.Parse(plr.InstanceID.Split(':')[1]), out Instance inst);
+                return plr.HasLockout(plr.Zone.ZoneId, inst.CurrentBossId);
+            }
+            catch (Exception e)
+            {
+                Log.Error("Exception", e.Message + "\r\n" + e.StackTrace);
+            }
+            return false;
         }
     }
 }

@@ -40,7 +40,7 @@ namespace WorldServer
             }
 
             // on lockout automatically pass
-            if (WorldMgr.InstanceMgr.HasLockoutFromCurrentBoss(voter))
+            if (voter.Zone.ZoneId == 260 && WorldMgr.InstanceMgr.HasLockoutFromCurrentBoss(voter))
             {
                 _playersPassing.Add(voter);
                 voter.SendClientMessage("You've got already lockout on loot from this boss.", ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL);
@@ -697,6 +697,7 @@ namespace WorldServer
         {
             if (_nextTick < tick && _activeLootRolls.Count > 0)
             {
+                long startTime = _activeLootRolls.FirstOrDefault().StartTime;
                 foreach (LootRoll Lr in _activeLootRolls)
                 {
                     if (Lr.GetVoteCount() >= Members.Count || Lr.StartTime + 61000 < tick)
@@ -705,7 +706,8 @@ namespace WorldServer
 
                 _activeLootRolls.RemoveAll(lootRollers => lootRollers.Completed);
 
-                if (_activeLootRolls.Count == 0)
+                // apply lockout
+                if (GetLeader().Zone.ZoneId == 260 && (_activeLootRolls.Count == 0 || startTime + 61000 < tick))
                 {
                     List<Player> subGroup = Members.Where(x => !string.IsNullOrEmpty(x.InstanceID) && x.InstanceID == GetLeader().InstanceID).ToList();
                     WorldMgr.InstanceMgr.ApplyLockout(GetLeader().InstanceID, subGroup);
