@@ -1,4 +1,5 @@
 ﻿using Common;
+using FrameWork;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -96,6 +97,8 @@ namespace WorldServer.World.Objects.Instances
             {
                 plr.ModifyDmgHealScaler = 1f;
             }
+
+            try { StsInterface.RemoveBonusMultiplier(GameData.Stats.OutgoingDamagePercent, 1.0f, BuffClass.Standard); } catch (Exception e) { Log.Error("Exception", e.Message + "\r\n" + e.StackTrace); }
             
             if (BossTimer != null)
 			{

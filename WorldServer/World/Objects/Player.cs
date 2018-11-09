@@ -903,6 +903,8 @@ namespace WorldServer
             {
                 if (DisconnectType == EDisconnectType.Unclean && !IsDisposed && CbtInterface.IsInCombat && CbtInterface.IsPvp)
                 {
+                    InstanceID = string.Empty;
+
                     if (DamageSources.Count > 0)
                         SetDeath(DamageSources.Keys.First());
 
@@ -923,6 +925,7 @@ namespace WorldServer
             if (LastKeepAliveTime != 0 && LastKeepAliveTime + PING_TIMEOUT < tick)
             {
                 Client.Disconnect("Ping timeout");
+                InstanceID = string.Empty;
                 if (!IsDisposed && CbtInterface.IsInCombat && CbtInterface.IsPvp)
                 {
                 if (DamageSources.Count > 0)
@@ -4336,9 +4339,10 @@ namespace WorldServer
             Zone_Respawn respawn = WorldMgr.GetZoneRespawn(Zone.ZoneId, (byte)Realm, this);
             if (respawn != null)
             {
+                InstanceID = string.Empty;
+
                 if (respawn.InZoneID > 0)
                 {
-
                     Point3D world = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)respawn.InZoneID), respawn.PinX, respawn.PinY, respawn.PinZ);
                     Teleport((ushort)respawn.InZoneID, (uint)world.X, (uint)world.Y, (ushort)world.Z, respawn.WorldO);
                 }
@@ -5796,6 +5800,9 @@ namespace WorldServer
                     DisconnectType = EDisconnectType.Clean;
                     if (GmMgr.GmList.Contains(this))
                         GmMgr.NotifyGMOffline(this);
+
+                    InstanceID = string.Empty;
+
                     Destroy();
                 }
             }
@@ -6021,6 +6028,7 @@ namespace WorldServer
             {
                 QtsInterface.PublicQuest?.RemovePlayer(this, true);
                 CurrentKeep?.RemovePlayer(this);
+                WorldMgr.InstanceMgr?.RemovePlayerFromInstances(this);
             }
 
             // Change Region , so change thread and maps
@@ -6068,6 +6076,7 @@ namespace WorldServer
 
             if (Zone != null && zoneID != Zone.ZoneId)
             {
+                InstanceID = string.Empty;
                 QtsInterface.PublicQuest?.RemovePlayer(this, true);
                 CurrentKeep?.RemovePlayer(this);
             }

@@ -165,7 +165,7 @@ namespace WorldServer.Services.World
             Database.ForceSave();
         }
 
-        public static void SavePlayerIDs(string instanceID, List<string> plrs)
+        public static void SavePlayerIDs(string instanceID, List<Player> plrs)
         {
             if (string.IsNullOrEmpty(instanceID) || plrs == null || plrs.Count == 0)
                 return;
@@ -177,9 +177,9 @@ namespace WorldServer.Services.World
                 stat = AddNewInstanceStatisticsEntry(instanceID);
 
             string newStr = string.Empty;
-            foreach (string plr in plrs)
+            foreach (Player plr in plrs)
             {
-                newStr += plr + ";";
+                newStr += plr.CharacterId.ToString() + ":" + plr.Name + ";";
             }
             stat.playerIDs = newStr;
             

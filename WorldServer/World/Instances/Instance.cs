@@ -29,7 +29,7 @@ namespace WorldServer
         public ushort ID { get; set; }
         public Instance_Info Info;
         public RegionMgr Region;
-        public List<string> _Players = new List<string>();
+        public List<Player> Players = new List<Player>();
         private List<GameObject> _Objects = new List<GameObject>();
         private Dictionary<uint,List<InstanceSpawn>> _Spawns = new Dictionary<uint, List<InstanceSpawn>>();
         private Dictionary<uint, List<InstanceBossSpawn>> _BossSpawns = new Dictionary<uint, List<InstanceBossSpawn>>();
@@ -106,8 +106,7 @@ namespace WorldServer
             if (state > 6)
                 state = 4;
         }
-        
- 
+
         public void Update()
         {
             while (_running)
@@ -115,10 +114,28 @@ namespace WorldServer
                 checkcombatgroups();
                 checkrespawns();
                 checkinstanceempty();
+                //CheckPlayerList();
 
                 Thread.Sleep(2000);
             }
         }
+
+        //private void CheckPlayerList()
+        //{
+        //    lock (Players)
+        //    {
+        //        for (int i = 0; i < Players.Count; i++)
+        //        {
+        //            if (Players[i] != null && Players[i].Zone != null)
+        //            {
+        //                if (!Players[i].InstanceID.Equals(ZoneID + ":" + ID.ToString()))
+        //                {
+        //                    Players.RemoveAt(i);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         private void checkinstanceempty()
         {
@@ -188,36 +205,36 @@ namespace WorldServer
 		
         public void AddPlayer(Player player, Zone_jump jump)
         {
-            lock (_Players)
+            lock (Players)
             {
-                if (!_Players.Contains(player.Name))
+                if (!Players.Contains(player))
                 {
-                    _Players.Add(player.Name);
+                    Players.Add(player);
                 }
 
                 // also add group leader
-                if (player.PriorityGroup != null && !_Players.Contains(player.PriorityGroup.GetLeader().Name))
+                if (player.PriorityGroup != null && !Players.Contains(player.PriorityGroup.GetLeader()))
                 {
-                    _Players.Add(player.PriorityGroup.GetLeader().Name);
+                    Players.Add(player.PriorityGroup.GetLeader());
                 }
+
+                player.InstanceID = ZoneID + ":" + ID;
+
+                if (jump != null)
+                {
+                    player.Teleport(Region, jump.ZoneID, jump.WorldX, jump.WorldY, jump.WorldZ, jump.WorldO);
+                }
+                else
+                {
+                    player.Teleport(Region, player._Value.ZoneId, (uint)player._Value.WorldX, (uint)player._Value.WorldY, (ushort)player._Value.WorldZ, (ushort)player._Value.WorldO);
+                }
+
+                Region.CheckZone(player);
+
+                InstanceService.SavePlayerIDs(ZoneID + ":" + ID, Players);
+
+                player.SendClientMessage("Instance ID: " + ID, SystemData.ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
             }
-
-            player.InstanceID = ZoneID + ":" + ID;
-
-			if (jump != null)
-			{
-				player.Teleport(Region, jump.ZoneID, jump.WorldX, jump.WorldY, jump.WorldZ, jump.WorldO);
-			}
-			else
-			{
-				player.Teleport(Region, player._Value.ZoneId, (uint)player._Value.WorldX, (uint)player._Value.WorldY, (ushort)player._Value.WorldZ, (ushort)player._Value.WorldO);
-			}
-
-            Region.CheckZone(player);
-
-            InstanceService.SavePlayerIDs(ZoneID + ":" + ID, _Players);
-
-            player.SendClientMessage("Instance ID: " + ID, SystemData.ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
         }
 
         private void LoadObjects()

@@ -148,16 +148,25 @@ namespace WorldServer
             {
                 foreach(KeyValuePair<ushort, Instance> ii in _instances)
                 {
-                    if (ii.Value.ZoneID == ZoneID && ii.Value._Players.Contains(player.Name))
+                    if (ii.Value.ZoneID == ZoneID)
                     {
-                        if (player.PriorityGroup == null)
+                        if (player.PriorityGroup == null && ii.Value.Players.Contains(player))
                             return ii.Key;
-                        else if (ii.Value._Players.Count < _maxplayers)
+                        else if (ii.Value.Players.Count < _maxplayers)
                         {
-                            // check if instance players are all group players
-                            bool any = ii.Value._Players.Any(x => !player.PriorityGroup.Members.Select(y => y.Name).Contains(x));
-                            if (!any)
-                                return ii.Key;
+                            if (ii.Value.Players.Contains(player.PriorityGroup.GetLeader()))
+                            {
+                                if (player != player.PriorityGroup.GetLeader())
+                                    continue;
+                                else
+                                    return ii.Key;
+                            }
+                            else
+                            {
+                                bool any = ii.Value.Players.Any(x => !player.PriorityGroup.Members.Contains(x));
+                                if (!any)
+                                    return ii.Key;
+                            }
                         }
                     }
                 }
@@ -222,7 +231,7 @@ namespace WorldServer
                     return false;
                 }
 
-                if (maxplayers == 0 || inst._Players.Count < maxplayers)
+                if (maxplayers == 0 || inst.Players.Count < maxplayers)
                 {
                     if (Jump != null && Jump.ZoneID == 179)
                         ((TOTVL)inst).AddPlayer(player, Jump);
@@ -240,6 +249,7 @@ namespace WorldServer
 
         public void closeInstance(Instance inst, ushort ID)
         {
+            inst.Players = new List<Player>();
             _instances.TryGetValue(ID, out inst);
             _instances.Remove(ID);
 
@@ -314,6 +324,18 @@ namespace WorldServer
                 Log.Error("Exception", e.Message + "\r\n" + e.StackTrace);
             }
             return false;
+        }
+
+        public void RemovePlayerFromInstances(Player plr)
+        {
+            if (_instances == null)
+                return;
+
+            for (int i = 0; i < _instances.Count; i++)
+            {
+                if (_instances.Values.ElementAt(i).Players.Contains(plr))
+                    _instances.Values.ElementAt(i).Players.Remove(plr);
+            }
         }
     }
 }
