@@ -6452,10 +6452,7 @@ namespace WorldServer
 
                         if (CurrentArea != null && CurrentArea.IsRvR)
                         {
-                            if (Region.Campaign != null)
-                                Region.Campaign.NotifyLeftLake(this);
-                            else
-                                Region.Campaign?.NotifyLeftLake(this);
+                            Region.Campaign?.NotifyLeftLake(this);
                         }
                     }
                 }
@@ -6464,12 +6461,7 @@ namespace WorldServer
                 {
                     if (CurrentArea != null && CurrentArea.IsRvR)
                     {
-                        // NEWDAWN
-                        if (Region.Campaign != null)
-                            Region.Campaign.NotifyLeftLake(this);
-                        else
-                            Region.Campaign.NotifyLeftLake(this);
-
+                        Region.Campaign?.NotifyLeftLake(this);
                     }
 
                     if (CurrentArea != null)
