@@ -62,7 +62,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// </summary>
         public bool GetInsigniaRewards(float insigniaChance)
         {
-            return insigniaChance < StaticRandom.Instance.Next(100);
+            return insigniaChance > StaticRandom.Instance.Next(100);
         }
 
         /// <summary>

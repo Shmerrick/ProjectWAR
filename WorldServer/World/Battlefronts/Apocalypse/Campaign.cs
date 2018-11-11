@@ -882,7 +882,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private long WriteZoneLockSummary(Realms lockingRealm)
         {
-            var lockId = Convert.ToInt64(DateTime.Now.ToString("YYYYMMddHHnn"));
+            var lockId = Convert.ToInt64(DateTime.Now.ToString("yyyyMMddHHmm"));
             try
             {
                 var zonelockSummary = new ZoneLockSummary
