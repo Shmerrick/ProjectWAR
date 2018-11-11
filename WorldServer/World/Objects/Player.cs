@@ -6904,5 +6904,33 @@ namespace WorldServer
 		}
 
 		#endregion
-	}
+
+        public void GroupRefresh()
+        {
+            if (this.PriorityGroup == null)
+                return;
+
+            if (this.PriorityGroup.IsWarband)
+                this.SendClientMessage($"Warband...");
+            else
+            {
+
+                this.SendClientMessage($"Party...");
+            }
+
+            foreach (var member in this.PriorityGroup.Members)
+            {
+                this.SendClientMessage($"Member {member.Name} is in your group.");
+            }
+
+            this.SendClientMessage($"Leader is {this.PriorityGroup.Leader.Name}");
+
+            if (this.WorldGroup.PartyOpen)
+             this.SendClientMessage($"Group is open..");
+            else
+                this.SendClientMessage($"Group is closed..");
+
+
+        }
+    }
 }

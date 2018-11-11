@@ -316,6 +316,8 @@ namespace WorldServer.Managers.Commands
 
 #region Standalone Commands
             // User commands
+            new GmCommandHandler("grouprefresh",GroupRefresh, null, 0, 0, "Tries to rediscover all players within the selected players group."),
+            new GmCommandHandler("ping",GetPing, null, EGmLevel.DatabaseDev, 0, "Shows player ping."),
             new GmCommandHandler("scenariostatus",ScenarioStatus, null, 0, 0, "Shows player count and score of all running scenarios."),
             new GmCommandHandler("scenarioscore", GetScenarioScore, null, 0, 0, "Returns targets scenario scores."),
             new GmCommandHandler("gmlist", GmMgr.ListGameMasters, null, 0, 0, "Lists available GMs."),
@@ -432,5 +434,6 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("setpet", SetPet, null, EGmLevel.SourceDev, 1, "Changes your pet model to number provided.")
 #endregion
         };
+
     }
 }

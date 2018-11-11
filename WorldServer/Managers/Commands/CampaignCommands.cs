@@ -25,7 +25,7 @@ namespace WorldServer.Managers.Commands
         /// <summary>Constant initials extractor<summary>
         private static readonly Regex INITIALS = new Regex(@"([A-Z])[A-Z1-9]*_?");
 
-        [CommandAttribute(EGmLevel.EmpoweredStaff, "Provides campaign diagnostic info. Usage: .campaign diag")]
+        [CommandAttribute(EGmLevel.AnyGM, "Provides campaign diagnostic info. Usage: .campaign diag")]
         public static void Diag(Player plr, string targetString = null)
         {
             if (plr.Zone == null || plr.Region.Campaign == null)
