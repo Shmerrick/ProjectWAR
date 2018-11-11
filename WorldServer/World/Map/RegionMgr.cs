@@ -767,7 +767,7 @@ namespace WorldServer
                 Log.Error("RegionMgr", "AddObject: Unable to add object " + obj.Name + " to invalid Zone with ID : " + zoneId);
                 return false;
             }
-
+            
             ObjectAdd add = new ObjectAdd
             {
                 Obj = obj,

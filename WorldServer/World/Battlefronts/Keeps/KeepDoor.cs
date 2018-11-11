@@ -116,7 +116,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 if (vp >= 0 && vp < 2500)
                 {
                     Log.Debug("DOOR BEFORE BUFF", damage.ToString());
-                    var newDmg = damage * 40 / 100;
+                    var newDmg = damage * 80 / 100;
                     damage = newDmg;
                     Log.Debug("DOOR AFTER BUFF", damage.ToString());
 
@@ -124,7 +124,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 else if (vp >= 2500 && vp < 4000)
                 {
                     Log.Debug("DOOR BEFORE BUFF", damage.ToString());
-                    var newDmg = damage * 75 / 100;
+                    var newDmg = damage * 90 / 100;
                     damage = newDmg;
                     Log.Debug("DOOR AFTER BUFF", damage.ToString());
                 }
@@ -181,48 +181,6 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                 return false;
             }
-
-            /*
-            // Keep doors block all hits that are not from ST siege
-            public override void ModifyDamageIn(AbilityDamageInfo damageInfo)
-            {
-                // T4 doors have 4k hp.
-                // T4 cannons hit for about 2.2k -> 50%
-                switch (damageInfo.SubDamageType)
-                {
-                    case SubDamageTypes.Cannon:
-                        switch (_keep.Rank)
-                        {
-                            case 0:
-                                damageInfo.Mitigation = damageInfo.Damage*0.95f;
-                                damageInfo.Damage *= 0.05f; // 0.25% per full power shot
-                                break;
-                            case 1:
-                                damageInfo.Mitigation = damageInfo.Damage * 0.98f;
-                                damageInfo.Damage *= 0.02f; // 0.1%
-                                break;
-                            case 2:
-                            case 3:
-                            case 4:
-                            case 5:
-                                damageInfo.Mitigation = damageInfo.Damage * 0.99f;
-                                damageInfo.Damage *= 0.01f; // 0.05%
-                                break;
-                        }
-                        break;
-                    // Rams always hit for full damage, knocking 2.5% out of a door
-                    case SubDamageTypes.Ram:
-                        break;
-                    default:
-                        damageInfo.DamageEvent = (byte) CombatEvent.COMBATEVENT_BLOCK;
-                        damageInfo.Mitigation = damageInfo.Damage;
-                        damageInfo.Damage = 0;
-                        damageInfo.PrecalcMitigation = damageInfo.Damage;
-                        damageInfo.PrecalcDamage = 0;
-                        break;
-                }
-            }
-            */
 
             public override bool AllowInteract(Player interactor)
             {

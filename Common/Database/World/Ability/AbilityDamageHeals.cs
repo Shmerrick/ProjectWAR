@@ -47,7 +47,7 @@ namespace Common
         [DataElement]
         public float CastTimeDamageMult { get; set; }
 
-        [DataElement(Varchar=16)]
+        [DataElement(Varchar = 16)]
         public string WeaponDamageFrom { get; set; }
 
         [DataElement]
@@ -82,7 +82,7 @@ namespace Common
         public float HatredScale { get; set; } = 1.0f;
 
         [DataElement]
-        public float HealHatredScale { get; set; } = 1.0f; 
+        public float HealHatredScale { get; set; } = 1.0f;
 
         [DataElement]
         public short ResourceBuild { get; set; }

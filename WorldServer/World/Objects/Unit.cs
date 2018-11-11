@@ -197,6 +197,11 @@ namespace WorldServer
         public ushort MountArmor { get; protected set; }
 
         public bool CanMount { get; set; } = true;
+        
+        /// <summary>
+        /// Scaler applied to damage/heal received or dealed in instance boss fights.
+        /// </summary>
+        public volatile float ModifyDmgHealScaler = 1f;
 
         public Unit()
         {
@@ -710,6 +715,42 @@ namespace WorldServer
         }
 
         /// <summary>
+        /// Provides an opportunity for this unit to modify incoming ability heal from enemies.
+        /// </summary>
+        public virtual void ModifyHealIn(AbilityDamageInfo incHeal)
+        {
+            if (!incHeal.IsHeal)
+                return;
+
+            if (incHeal.Damage > 0) // direct heal
+            {
+                incHeal.Damage *= ModifyDmgHealScaler;
+            }
+            else // hot
+            {
+                incHeal.DamageBonus *= ModifyDmgHealScaler;
+            }
+        }
+
+        /// <summary>
+        /// Provides an opportunity for this unit to modify outgoing ability heal it deals.
+        /// </summary>
+        public virtual void ModifyHealOut(AbilityDamageInfo outHeal)
+        {
+            if (!outHeal.IsHeal)
+                return;
+
+            if (outHeal.Damage > 0) // direct heal
+            {
+                outHeal.Damage *= ModifyDmgHealScaler;
+            }
+            else // hot
+            {
+                outHeal.DamageBonus *= ModifyDmgHealScaler;
+            }
+        }
+
+        /// <summary>
         /// Attempt at detaunts redo
         /// </summary>
         /// <param name="amount"></param>
@@ -903,8 +944,8 @@ namespace WorldServer
             if (lootContainer != null)
                 SetLootable(true, looter);          
         }
-
-        public void SetLootable(bool value, Player looter)
+		
+		public void SetLootable(bool value, Player looter)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
             Out.WriteUInt16(Oid);

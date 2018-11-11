@@ -735,7 +735,7 @@ namespace WorldServer
 
         public void SendMember(Player plr, Guild_member guildPlr)
         {
-            GuildLogger.Debug($"...SendMember");
+            
             if (plr != null)
                 GuildLogger.Debug($"{plr.Name}");
             Player onlinePlr = GetGuildPlayer(guildPlr.CharacterId);

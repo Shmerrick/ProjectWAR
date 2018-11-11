@@ -1,10 +1,7 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FrameWork;
-using NLog;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
@@ -106,8 +103,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 {
                     RewardLogger.Warn($"{e.Message}");
                 }
+                
+                i++;
             }
             return bagDefinitions;
         }
-    }
+}
 }

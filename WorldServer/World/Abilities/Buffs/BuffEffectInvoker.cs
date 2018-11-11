@@ -35,7 +35,7 @@ namespace WorldServer
         private delegate void ResourceEventCommandDelegate(NewBuff hostBuff, BuffCommandInfo cmd, byte oldVal, ref byte change);
         private delegate void ItemEventCommandDelegate(NewBuff hostBuff, BuffCommandInfo cmd, Item_Info itemInfo);
 
-        private static readonly Dictionary<string, BuffEventCheckDelegate> _eventChecks = new Dictionary<string, BuffEventCheckDelegate>(); 
+        private static readonly Dictionary<string, BuffEventCheckDelegate> _eventChecks = new Dictionary<string, BuffEventCheckDelegate>();
 
         private static readonly Dictionary<string, BuffCommandDelegate> _commandList = new Dictionary<string, BuffCommandDelegate>();
         private static readonly Dictionary<string, BuffAbilityUseCommandDelegate> _abUseCommandList = new Dictionary<string, BuffAbilityUseCommandDelegate>();
@@ -163,7 +163,7 @@ namespace WorldServer
             _commandList.Add("DetauntWard", DetauntWard);
             _commandList.Add("CastPlayerEffect", CastPlayerEffect);
             _commandList.Add("ActivationEffect", ActivationEffect);
-            _commandList.Add("Bolster", Bolster); 
+            _commandList.Add("Bolster", Bolster);
             _commandList.Add("InvokeCooldown", InvokeCooldown);
             _commandList.Add("Chickenize", Chickenize);
             _commandList.Add("Hotswap", Hotswap);
@@ -176,7 +176,7 @@ namespace WorldServer
             _commandList.Add("HoldTheLine", HoldTheLine);
             _commandList.Add("TauntDamage", TauntMob);
             _commandList.Add("Challenge", TauntMob);
-            _commandList.Add("MoveAndShoot", MoveAndShoot); 
+            _commandList.Add("MoveAndShoot", MoveAndShoot);
             #endregion
 
             #region Class Specific
@@ -390,7 +390,7 @@ namespace WorldServer
 
                 if (iterations > 50)
                 {
-                    Log.Error("BuffEffectInvoker.InvokeAoEChain", "Potential infinite recursion detected on "+cmd.Entry);
+                    Log.Error("BuffEffectInvoker.InvokeAoEChain", "Potential infinite recursion detected on " + cmd.Entry);
                     return;
                 }
 
@@ -424,7 +424,7 @@ namespace WorldServer
 
         public static void InvokeAbilityUseCommand(NewBuff hostBuff, BuffCommandInfo cmd, AbilityInfo abInfo)
         {
-            _abUseCommandList[cmd.CommandName](hostBuff, cmd, abInfo); 
+            _abUseCommandList[cmd.CommandName](hostBuff, cmd, abInfo);
         }
 
         public static void InvokePetCommand(NewBuff hostBuff, BuffCommandInfo cmd, Pet myPet)
@@ -502,9 +502,9 @@ namespace WorldServer
 
                 if (cmd.EffectRadius > 0)
                 {
-                    List<Unit> aoeTargets = cmd.AoESource == CommandTargetTypes.EventInstigator ? 
-                        GetTargetsFor(hostBuff, cmd, eventInstigator) 
-                        :  GetTargetsFor(hostBuff, cmd, cmd.AoESource > 0 ? GetTargetFor(hostBuff, cmd.AoESource) : hostBuff.Target);
+                    List<Unit> aoeTargets = cmd.AoESource == CommandTargetTypes.EventInstigator ?
+                        GetTargetsFor(hostBuff, cmd, eventInstigator)
+                        : GetTargetsFor(hostBuff, cmd, cmd.AoESource > 0 ? GetTargetFor(hostBuff, cmd.AoESource) : hostBuff.Target);
 
                     foreach (Unit aoeTarget in aoeTargets)
                     {
@@ -561,7 +561,7 @@ namespace WorldServer
                 case CommandTargetTypes.Enemy:
                     return hostBuff.Caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY);
                 case CommandTargetTypes.CareerTarget:
-                    return ((Player) hostBuff.Caster).CrrInterface.GetTargetOfInterest();
+                    return ((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest();
                 case CommandTargetTypes.Host: return hostBuff.Target;
                 case CommandTargetTypes.AllyOrSelf:
                     Unit allyTarget = hostBuff.Caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ALLY);
@@ -590,7 +590,7 @@ namespace WorldServer
         private static List<Unit> GetTargetsFor(NewBuff hostBuff, BuffCommandInfo myCommand, Unit source)
         {
             List<Unit> myTargetList = new List<Unit>();
-            
+
             #region Group
 
             if (myCommand.TargetType.HasFlag(CommandTargetTypes.Groupmates))
@@ -802,362 +802,362 @@ namespace WorldServer
 
         #region Commands
 
-            #region Damage
-            private static bool DealDamage(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        #region Damage
+        private static bool DealDamage(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (hostBuff.BuffState == BUFF_REMOVE && (hostBuff.WasManuallyRemoved || cmd.SecondaryValue == 0))
+                return false;
+
+            if (hostBuff.LastPassTime < TCPManager.GetTimeStampMS() - 100)
             {
-                if (hostBuff.BuffState == BUFF_REMOVE && (hostBuff.WasManuallyRemoved || cmd.SecondaryValue == 0))
-                    return false;
+                hostBuff.LastPassTime = TCPManager.GetTimeStampMS();
+                cmd.CommandResult = 0;
+            }
 
-                if (hostBuff.LastPassTime < TCPManager.GetTimeStampMS() - 100)
+            AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(hostBuff.Caster);
+
+            if (cmd.EffectRadius > 0 || hostBuff.WasCastFromAoE)
+                damageThisPass.IsAoE = true;
+
+            if (cmd.DamageInfo.IsHeal)
+                CombatManager.HealTarget(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
+            else
+            {
+                /*
+                if (cmd.EffectRadius > 0)
                 {
-                    hostBuff.LastPassTime = TCPManager.GetTimeStampMS();
-                    cmd.CommandResult = 0;
+                    if (hostBuff.AoEMod < 1f)
+                        damageThisPass.DamageReduction = hostBuff.AoEMod;
+                    else if (damageThisPass.StatUsed == 1)
+                        damageThisPass.DamageBonus = hostBuff.AoEMod;
                 }
+                */
+                CombatManager.InflictDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
+            }
 
-                AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(hostBuff.Caster);
+            if ((cmd.EffectRadius == 0 || cmd.CommandResult == 0) && hostBuff.BuffState == BUFF_START)
+                hostBuff.AddBuffParameter(cmd.BuffLine, (int)(damageThisPass.Damage + damageThisPass.Mitigation));
 
-                if (cmd.EffectRadius > 0 || hostBuff.WasCastFromAoE)
-                    damageThisPass.IsAoE = true;
+            if (damageThisPass.ResultFromRaw)
+                cmd.CommandResult += (short)((damageThisPass.Damage + damageThisPass.Mitigation/* + damageThisPass.Absorption*/) * damageThisPass.TransferFactor);
+            else
+                cmd.CommandResult += (short)(damageThisPass.Damage * damageThisPass.TransferFactor);
 
-                if (cmd.DamageInfo.IsHeal)
-                    CombatManager.HealTarget(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
-                else
-                {
-                    /*
-                    if (cmd.EffectRadius > 0)
+            return damageThisPass.DamageEvent == 0 || damageThisPass.DamageEvent == 9;
+        }
+
+        private static bool DealProcDamage(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (hostBuff.BuffState == BUFF_REMOVE && hostBuff.WasManuallyRemoved)
+                return false;
+
+            if (cmd.EventChance > 0 && StaticRandom.Instance.Next(100) > cmd.EventChance)
+                return false;
+
+            AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(hostBuff.Caster);
+
+            if (cmd.EffectRadius > 0 || hostBuff.WasCastFromAoE)
+                damageThisPass.IsAoE = true;
+
+            // Oil
+            if (hostBuff.OptionalObject != null)
+            {
+                damageThisPass.SubDamageType = SubDamageTypes.Oil;
+                damageThisPass.ContributoryFactor = 0.1f;
+            }
+
+            if (cmd.DamageInfo.IsHeal)
+                CombatManager.ProcHealTarget(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
+            else CombatManager.InflictProcDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
+
+
+            if ((cmd.EffectRadius == 0 || cmd.CommandResult == 0) && hostBuff.BuffState == BUFF_START)
+                hostBuff.AddBuffParameter(cmd.BuffLine, (int)(damageThisPass.Damage + damageThisPass.Mitigation));
+
+            cmd.CommandResult = (short)damageThisPass.Damage;
+
+            return true;
+        }
+
+        private static bool HealHPBelow(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone();
+
+            if (hostBuff.Target.PctHealth <= cmd.EventCheckParam)
+            {
+                CombatManager.HealTarget(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
+                hostBuff.RemoveStack();
+            }
+
+            hostBuff.AddBuffParameter(cmd.BuffLine, 1);
+
+            return true;
+        }
+
+        private static bool DamageOverTime(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+
+                    if (cmd.EffectRadius > 0 || hostBuff.WasCastFromAoE)
+                        cmd.DamageInfo.IsAoE = true;
+
+                    if (cmd.DamageInfo.IsHeal)
+                        CombatManager.SetHealAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
+                    else
+                        CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
+
+                    cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
+                    cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
+
+                    cmd.CommandResult = (short)(cmd.DamageInfo.PrecalcDamage / hostBuff.BuffIntervals);
+
+                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
+                    break;
+
+                case BUFF_TICK:
+                    if (cmd.DamageInfo.IsHeal)
+                        CombatManager.SetHealAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
+                    else
+                        CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
+
+                    cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
+                    cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
+
+                    cmd.DamageInfo.DamageEvent = 0;
+
+                    if (cmd.DamageInfo.IsHeal)
+                        CombatManager.PrecalculatedHealTarget(cmd.DamageInfo, hostBuff.Caster, target, hostBuff.BuffIntervals, false);
+                    else
+                        CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, target, 1f / hostBuff.BuffIntervals, false);
+
+                    break;
+
+                case BUFF_END:
+                    if (cmd.DamageInfo.IsHeal)
                     {
-                        if (hostBuff.AoEMod < 1f)
-                            damageThisPass.DamageReduction = hostBuff.AoEMod;
-                        else if (damageThisPass.StatUsed == 1)
-                            damageThisPass.DamageBonus = hostBuff.AoEMod;
-                    }
-                    */
-                    CombatManager.InflictDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
-                }
-
-                if ((cmd.EffectRadius == 0 || cmd.CommandResult == 0) && hostBuff.BuffState == BUFF_START)
-                    hostBuff.AddBuffParameter(cmd.BuffLine, (int)(damageThisPass.Damage + damageThisPass.Mitigation));
-
-                if (damageThisPass.ResultFromRaw)
-                    cmd.CommandResult += (short)((damageThisPass.Damage + damageThisPass.Mitigation/* + damageThisPass.Absorption*/) * damageThisPass.TransferFactor);
-                else
-                    cmd.CommandResult += (short)(damageThisPass.Damage * damageThisPass.TransferFactor);
-
-                return damageThisPass.DamageEvent == 0 || damageThisPass.DamageEvent == 9;
-            }
-
-            private static bool DealProcDamage(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                if (hostBuff.BuffState == BUFF_REMOVE && hostBuff.WasManuallyRemoved)
-                    return false;
-
-                if (cmd.EventChance > 0 && StaticRandom.Instance.Next(100) > cmd.EventChance)
-                    return false;
-
-                AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(hostBuff.Caster);
-
-                if (cmd.EffectRadius > 0 || hostBuff.WasCastFromAoE)
-                    damageThisPass.IsAoE = true;
-
-                // Oil
-                if (hostBuff.OptionalObject != null)
-                {
-                    damageThisPass.SubDamageType = SubDamageTypes.Oil;
-                    damageThisPass.ContributoryFactor = 0.1f;
-                }
-
-                if (cmd.DamageInfo.IsHeal)
-                    CombatManager.ProcHealTarget(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
-                else CombatManager.InflictProcDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
-
-
-                if ((cmd.EffectRadius == 0 || cmd.CommandResult == 0) && hostBuff.BuffState == BUFF_START)
-                    hostBuff.AddBuffParameter(cmd.BuffLine, (int)(damageThisPass.Damage + damageThisPass.Mitigation));
-
-                cmd.CommandResult = (short)damageThisPass.Damage;
-
-                return true;
-            }
-
-            private static bool HealHPBelow(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone();
-
-                if (hostBuff.Target.PctHealth <= cmd.EventCheckParam)
-                {
-                    CombatManager.HealTarget(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
-                    hostBuff.RemoveStack();
-                }
-
-                hostBuff.AddBuffParameter(cmd.BuffLine, 1);
-
-                return true;
-            }
-
-            private static bool DamageOverTime(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-
-                        if (cmd.EffectRadius > 0 || hostBuff.WasCastFromAoE)
-                            cmd.DamageInfo.IsAoE = true;
-
-                        if (cmd.DamageInfo.IsHeal)
-                            CombatManager.SetHealAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
-                        else
-                            CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
-
                         cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
                         cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
 
-                        cmd.CommandResult = (short)(cmd.DamageInfo.PrecalcDamage / hostBuff.BuffIntervals);
-
-                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
-                        break;
-
-                    case BUFF_TICK:
-                        if (cmd.DamageInfo.IsHeal)
-                            CombatManager.SetHealAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
+                        cmd.DamageInfo.DamageEvent = 0;
+                        CombatManager.SetHealAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
+                        if ((cmd.InvokeOn & 2) > 0)
+                        {
+                            CombatManager.PrecalculatedHealTarget(cmd.DamageInfo, hostBuff.Caster, target, hostBuff.BuffIntervals, true);
+                            hostBuff.HasSentEnd = true;
+                        }
                         else
-                            CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
-
+                            CombatManager.PrecalculatedHealTarget(cmd.DamageInfo, hostBuff.Caster, target, 1, true);
+                    }
+                    else
+                    {
+                        CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
                         cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
                         cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
 
                         cmd.DamageInfo.DamageEvent = 0;
 
-                        if (cmd.DamageInfo.IsHeal)
-                            CombatManager.PrecalculatedHealTarget(cmd.DamageInfo, hostBuff.Caster, target, hostBuff.BuffIntervals, false);
-                        else
-                            CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, target, 1f / hostBuff.BuffIntervals, false);
-
-                        break;
-
-                    case BUFF_END:
-                        if (cmd.DamageInfo.IsHeal)
+                        if ((cmd.InvokeOn & 2) > 0)
                         {
-                            cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
-                            cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
-
-                            cmd.DamageInfo.DamageEvent = 0;
-                            CombatManager.SetHealAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
-                            if ((cmd.InvokeOn & 2) > 0)
-                            { 
-                                CombatManager.PrecalculatedHealTarget(cmd.DamageInfo, hostBuff.Caster, target, hostBuff.BuffIntervals, true);
-                                hostBuff.HasSentEnd = true;
-                            }
-                            else
-                                CombatManager.PrecalculatedHealTarget(cmd.DamageInfo, hostBuff.Caster, target, 1, true);
+                            CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, target, 1f / hostBuff.BuffIntervals, true);
+                            hostBuff.HasSentEnd = true;
                         }
                         else
-                        {
-                            CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
-                            cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
-                            cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
-
-                            cmd.DamageInfo.DamageEvent = 0;
-
-                            if ((cmd.InvokeOn & 2) > 0)
-                            {
-                                CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, target, 1f / hostBuff.BuffIntervals, true);
-                                hostBuff.HasSentEnd = true;
-                            }
-                            else
-                                CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, target, 1f, true);
+                            CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, target, 1f, true);
                     }
 
                     break;
 
-                    case BUFF_REMOVE:
-                        break;
-                }
-                return true;
+                case BUFF_REMOVE:
+                    break;
+            }
+            return true;
+        }
+
+        private static bool IllegalZone(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+
+            if (hostBuff.BuffState == BUFF_START)
+            {
+                hostBuff.Caster.GetPlayer().SendClientMessage("The gods are angry that you are trying to leave the world, turn back now!", ChatLogFilters.CHATLOGFILTERS_C_ORANGE_L);
             }
 
-            private static bool IllegalZone(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+            if (hostBuff.BuffState == BUFF_END)
             {
 
-                if (hostBuff.BuffState == BUFF_START)
-                {
-                    hostBuff.Caster.GetPlayer().SendClientMessage("The gods are angry that you are trying to leave the world, turn back now!", ChatLogFilters.CHATLOGFILTERS_C_ORANGE_L);
-                }
+                hostBuff.Caster.ReceiveDamage(hostBuff.Caster, int.MaxValue);
 
-                if(hostBuff.BuffState == BUFF_END)
-                {
-                
-                    hostBuff.Caster.ReceiveDamage(hostBuff.Caster, int.MaxValue);
+                PacketOut damageOut = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 24);
 
-                    PacketOut damageOut = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 24);
+                damageOut.WriteUInt16(hostBuff.Caster.Oid);
+                damageOut.WriteUInt16(hostBuff.Caster.Oid);
+                damageOut.WriteUInt16(23584); // Terminate
 
-                    damageOut.WriteUInt16(hostBuff.Caster.Oid);
-                    damageOut.WriteUInt16(hostBuff.Caster.Oid);
-                    damageOut.WriteUInt16(23584); // Terminate
+                damageOut.WriteByte(0);
+                damageOut.WriteByte(0); // DAMAGE EVENT
+                damageOut.WriteByte(7);
 
-                    damageOut.WriteByte(0);
-                    damageOut.WriteByte(0); // DAMAGE EVENT
-                    damageOut.WriteByte(7);
+                damageOut.WriteZigZag(-30000);
+                damageOut.WriteByte(0);
 
-                    damageOut.WriteZigZag(-30000);
-                    damageOut.WriteByte(0);
-
-                    hostBuff.Caster.DispatchPacketUnreliable(damageOut, true, hostBuff.Caster);
-                }
-
-                return true;
+                hostBuff.Caster.DispatchPacketUnreliable(damageOut, true, hostBuff.Caster);
             }
-
-        private static bool InstantTickDoT(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-
-                        if (cmd.EffectRadius > 0 || hostBuff.WasCastFromAoE)
-                            cmd.DamageInfo.IsAoE = true;
-
-                        CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
-
-                        cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
-                        cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
-
-                        cmd.CommandResult = (short)(cmd.DamageInfo.PrecalcDamage / (cmd.InvokeOn == 7 ? (hostBuff.BuffIntervals + 1) : hostBuff.BuffIntervals));
-
-                        CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, target, 1f / (cmd.InvokeOn == 7 ? (hostBuff.BuffIntervals + 1) : hostBuff.BuffIntervals), false);
-
-                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
-                        break;
-
-                    case BUFF_TICK:
-                        CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
-                        cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
-                        cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
-                        cmd.DamageInfo.DamageEvent = 0;
-                        CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, target, 1f / (cmd.InvokeOn == 7 ? (hostBuff.BuffIntervals + 1) : hostBuff.BuffIntervals), false);
-                        break;
-
-                    case BUFF_END:
-                        CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
-                        cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
-                        cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
-                        cmd.DamageInfo.DamageEvent = 0;
-                        CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, target, 1f/ (cmd.InvokeOn == 7 ? (hostBuff.BuffIntervals + 1) : hostBuff.BuffIntervals), true);
-                        hostBuff.HasSentEnd = true;
-                        break;
-
-                    case BUFF_REMOVE:
-                        break;
-                }
-                return true;
-            }
-
-            private static bool RampDamageOverTime(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-                {
-                    switch (hostBuff.BuffState)
-                    {
-                        case BUFF_START:
-                            CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
-
-                            cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
-                            cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
-
-                            cmd.CommandResult = hostBuff.BuffIntervals;
-
-                            hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
-                            break;
-
-                        case BUFF_TICK:
-                            CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
-                            cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
-                            cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
-                            cmd.DamageInfo.DamageEvent = 0;
-                            CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, target, (float)(System.Math.Pow(0.5d, cmd.CommandResult)), false);
-                            cmd.CommandResult--;
-                            break;
-
-                        case BUFF_END:
-                            CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
-                            cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
-                            cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
-                            cmd.DamageInfo.DamageEvent = 0;
-                            CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, target, (float)(System.Math.Pow(0.5d, cmd.CommandResult)), true);
-                            hostBuff.HasSentEnd = true;
-                            break;
-
-                        case BUFF_REMOVE:
-                            break;
-                    }
-                    return true;
-                }
-
-            private static bool DamageWhileMoving(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                if (hostBuff.BuffState == BUFF_START)
-                {
-                    hostBuff.AddBuffParameter(cmd.BuffLine, 1);
-                    target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.WasAttacked, cmd.DamageInfo, hostBuff.Caster);
-                    return true;
-                }
-
-                if (!target.IsMoving)
-                    return false;
-
-                AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(hostBuff.Caster);
-
-                CombatManager.InflictProcDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
-
-                return true;
-            }
-
-            private static bool Slay(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                if (cmd.CommandResult == 1)
-                    return false;
-
-                cmd.CommandResult = 1;
-                target.ReceiveDamage(target, int.MaxValue);
-
-                return true;
-            }
-
-            private static bool DismissPet(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                if (cmd.CommandResult == 1)
-                    return false;
-
-                cmd.CommandResult = 1;
-                if (!target.IsDead)
-                    ((Pet)target).Dismiss(hostBuff.Caster, null);
 
             return true;
-            }
+        }
 
-            private static bool StealLife(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        private static bool InstantTickDoT(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                if ((hostBuff.BuffState & cmd.InvokeOn) == 0)
-                    return true;
+                case BUFF_START:
 
-                ushort toHeal;
+                    if (cmd.EffectRadius > 0 || hostBuff.WasCastFromAoE)
+                        cmd.DamageInfo.IsAoE = true;
 
-                if (cmd.LastCommand.DamageInfo?.PrecalcDamage > 0)
-                    toHeal = (ushort)(cmd.LastCommand.DamageInfo.Damage * cmd.LastCommand.DamageInfo.TransferFactor * (cmd.PrimaryValue / 100f));
-                else toHeal = (ushort)(cmd.LastCommand.CommandResult * (cmd.PrimaryValue / 100f));
+                    CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
 
-                int pointsHealed = CombatManager.RawLifeSteal(toHeal, cmd.DamageInfo?.DisplayEntry ?? cmd.Entry, (byte)cmd.SecondaryValue, hostBuff.Caster, target);
+                    cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
+                    cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
 
-                if (pointsHealed == -1)
-                    return false;
+                    cmd.CommandResult = (short)(cmd.DamageInfo.PrecalcDamage / (cmd.InvokeOn == 7 ? (hostBuff.BuffIntervals + 1) : hostBuff.BuffIntervals));
 
-                cmd.CommandResult = cmd.LastCommand.CommandResult;
+                    CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, target, 1f / (cmd.InvokeOn == 7 ? (hostBuff.BuffIntervals + 1) : hostBuff.BuffIntervals), false);
 
+                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
+                    break;
+
+                case BUFF_TICK:
+                    CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
+                    cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
+                    cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
+                    cmd.DamageInfo.DamageEvent = 0;
+                    CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, target, 1f / (cmd.InvokeOn == 7 ? (hostBuff.BuffIntervals + 1) : hostBuff.BuffIntervals), false);
+                    break;
+
+                case BUFF_END:
+                    CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
+                    cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
+                    cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
+                    cmd.DamageInfo.DamageEvent = 0;
+                    CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, target, 1f / (cmd.InvokeOn == 7 ? (hostBuff.BuffIntervals + 1) : hostBuff.BuffIntervals), true);
+                    hostBuff.HasSentEnd = true;
+                    break;
+
+                case BUFF_REMOVE:
+                    break;
+            }
+            return true;
+        }
+
+        private static bool RampDamageOverTime(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
+
+                    cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
+                    cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
+
+                    cmd.CommandResult = hostBuff.BuffIntervals;
+
+                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
+                    break;
+
+                case BUFF_TICK:
+                    CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
+                    cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
+                    cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
+                    cmd.DamageInfo.DamageEvent = 0;
+                    CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, target, (float)(System.Math.Pow(0.5d, cmd.CommandResult)), false);
+                    cmd.CommandResult--;
+                    break;
+
+                case BUFF_END:
+                    CombatManager.SetDamageAmount(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
+                    cmd.DamageInfo.PrecalcDamage *= hostBuff.StackLevel;
+                    cmd.DamageInfo.Mitigation *= hostBuff.StackLevel;
+                    cmd.DamageInfo.DamageEvent = 0;
+                    CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, target, (float)(System.Math.Pow(0.5d, cmd.CommandResult)), true);
+                    hostBuff.HasSentEnd = true;
+                    break;
+
+                case BUFF_REMOVE:
+                    break;
+            }
+            return true;
+        }
+
+        private static bool DamageWhileMoving(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (hostBuff.BuffState == BUFF_START)
+            {
+                hostBuff.AddBuffParameter(cmd.BuffLine, 1);
+                target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.WasAttacked, cmd.DamageInfo, hostBuff.Caster);
                 return true;
             }
 
-            private static bool Resurrection(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
+            if (!target.IsMoving)
+                return false;
+
+            AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(hostBuff.Caster);
+
+            CombatManager.InflictProcDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
+
+            return true;
+        }
+
+        private static bool Slay(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (cmd.CommandResult == 1)
+                return false;
+
+            cmd.CommandResult = 1;
+            target.ReceiveDamage(target, int.MaxValue);
+
+            return true;
+        }
+
+        private static bool DismissPet(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (cmd.CommandResult == 1)
+                return false;
+
+            cmd.CommandResult = 1;
+            if (!target.IsDead)
+                ((Pet)target).Dismiss(hostBuff.Caster, null);
+
+            return true;
+        }
+
+        private static bool StealLife(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if ((hostBuff.BuffState & cmd.InvokeOn) == 0)
+                return true;
+
+            ushort toHeal;
+
+            if (cmd.LastCommand.DamageInfo?.PrecalcDamage > 0)
+                toHeal = (ushort)(cmd.LastCommand.DamageInfo.Damage * cmd.LastCommand.DamageInfo.TransferFactor * (cmd.PrimaryValue / 100f));
+            else toHeal = (ushort)(cmd.LastCommand.CommandResult * (cmd.PrimaryValue / 100f));
+
+            int pointsHealed = CombatManager.RawLifeSteal(toHeal, cmd.DamageInfo?.DisplayEntry ?? cmd.Entry, (byte)cmd.SecondaryValue, hostBuff.Caster, target);
+
+            if (pointsHealed == -1)
+                return false;
+
+            cmd.CommandResult = cmd.LastCommand.CommandResult;
+
+            return true;
+        }
+
+        private static bool Resurrection(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
             // We are handling terror here
 
-            
+
             Player t = hostBuff.Target as Player;
             Player c = hostBuff.Caster as Player;
 
@@ -1170,360 +1170,364 @@ namespace WorldServer
             }
 
             switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        if (!(hostBuff.Target is Player))
-                        {
-                            hostBuff.BuffHasExpired = true;
-                            return true;
-                        }
-                        hostBuff.OptionalObject = new Point3D(hostBuff.Caster.WorldPosition);
-                        ((Player)hostBuff.Target).SendDialog(Dialog.ResurrectionOffer, hostBuff.Caster.Oid, 60);
-                        hostBuff.AddBuffParameter(cmd.BuffLine, -1);
-                        break;
-                }
-                return true;
-            }
-
-            // Awful, rotten hack for Slayer/Choppa berserk-regen
-            private static bool BerserkerRegen(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
             {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        hostBuff.AddBuffParameter(cmd.BuffLine, 1); break;
-                    case BUFF_TICK:
-                        byte curRes = ((Player) hostBuff.Caster).CrrInterface.GetCurrentResourceLevel(0);
-
-                        if (curRes == 0 || curRes > cmd.PrimaryValue)
-                            return false;
-   
-                        if (cmd.CommandResult != curRes)
-                        {
-                            cmd.DamageInfo = AbilityMgr.GetExtraDamageFor(hostBuff.Entry, 0, (byte)(curRes - 1));
-                            cmd.CommandResult = curRes;
-                        }
-                        CombatManager.ProcHealTarget(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
-                        break;
-                }
-
-                return true;
-            }
-
-            private static bool NapalmGrenade(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                if (hostBuff.BuffState == BUFF_REMOVE && hostBuff.WasManuallyRemoved)
-                    return false;
-
-                if (hostBuff.LastPassTime < TCPManager.GetTimeStampMS() - 100)
-                {
-                    hostBuff.LastPassTime = TCPManager.GetTimeStampMS();
-                    cmd.CommandResult = 0;
-                }
-
-                AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(hostBuff.Caster);
-
-                if (hostBuff.RemainingTimeMs < 10000)
-                {
-                    damageThisPass.MinDamage *= 3;
-                    damageThisPass.MaxDamage *= 3;
-                }
-                else if (hostBuff.RemainingTimeMs < 20000)
-                {
-                    damageThisPass.MinDamage *= 2;
-                    damageThisPass.MaxDamage *= 2;
-                }
-
-                damageThisPass.IsAoE = true;
-
-                CombatManager.InflictDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
-
-                if (hostBuff.BuffState == BUFF_START)
-                    hostBuff.AddBuffParameter(cmd.BuffLine, 1);
-
-                cmd.CommandResult += (short)damageThisPass.Damage;
-
-                return damageThisPass.DamageEvent == 0 || damageThisPass.DamageEvent == 9;
-            }
-
-            private static readonly int[] BrimstoneDamageMultipliers = { 3, 6, 10, 15, 20, 30, 45, 60, 90 };
-
-            private static bool BrimstoneBauble(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                cmd.DamageInfo.PrecalcDamage = cmd.DamageInfo.GetDamageForLevel(hostBuff.BuffLevel) * BrimstoneDamageMultipliers[cmd.CommandResult/3];
-
-                CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, hostBuff.Caster, 1f, false);
-
-                hostBuff.Caster.CbtInterface.RefreshCombatTimer();
-
-                if (cmd.CommandResult < 24)
-                    ++cmd.CommandResult;
-
-                return true;
-            }
-
-            #endregion
-
-            #region Siege
-
-            /// <summary>
-            /// Strikes all targets within the specified command radius. 
-            /// Inflicts damage to each target which is scaled by the number of additional targets present within a certain distance.
-            /// </summary>
-            private static bool ArtilleryStrike(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                if (hostBuff.OptionalObject is Siege || hostBuff.OptionalObject is KeepNpcCreature.KeepCreature)
-                    HandleArtillery(hostBuff, cmd, target);
-                else
-                    HandleAnticampSiege(hostBuff, cmd, target);
-
-                return true;
-            }
-
-            private static void HandleArtillery(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                List<Unit> myTargetList = new List<Unit>();
-                int relevantPlayers = 0;
-
-                Creature weapon = (Creature)hostBuff.OptionalObject;
-                Siege siege = weapon as Siege;
-
-                Campaign front = weapon.Region?.Campaign;
-
-                if (front == null)
-                    return;
-
-                foreach (Object obj in target.ObjectsInRange)
-                {
-                    var curTarget = obj as Unit;
-
-                    if (curTarget == null || !CombatInterface.CanAttack(hostBuff.Caster, curTarget) || !target.WorldPosition.IsWithinRadiusFeet(curTarget.WorldPosition, 60))
-                       continue;
-
-                    ++relevantPlayers;
-   
-                    if (!target.CanHitWithAoE(curTarget, 360, cmd.EffectRadius))
-                        continue;
-
-                    myTargetList.Add(curTarget);
-                }
-
-                relevantPlayers = Math.Min(relevantPlayers, 50);
-
-                float artilleryScale = front.GetArtilleryDamageScale(weapon.Realm);
-
-                if (siege != null)
-                    artilleryScale *= siege.Keep.GetSiegeDamageMod(siege.SiegeInterface.Type);
-
-                int desiredStackLevel = (int)(Point2D.Clamp(relevantPlayers - 20, 0, 30) * 0.1f * artilleryScale);
-
-                artilleryScale *= 1f + (float)Math.Pow(relevantPlayers/30f, 3);
-
-                foreach (Unit foe in myTargetList)
-                {
-                    AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone();
-
-                    // Damage inflicted by an artillery weapon increases for every player within 60ft of the blast zone.
-                    // Maximum of 50 players, +400% damage, exponential.
-                    damageThisPass.MinDamage = (ushort)(damageThisPass.MinDamage * artilleryScale);
-                    damageThisPass.MaxDamage = (ushort)(damageThisPass.MaxDamage * artilleryScale);
-
-                    weapon.ModifyDamageOut(damageThisPass);
-
-                    CombatManager.InflictDamage(damageThisPass, target.Level, hostBuff.Caster, foe);
-
-                    if (desiredStackLevel == 0)
-                        continue;
-
-                    BuffInfo info = AbilityMgr.GetBuffInfo((ushort)cmd.SecondaryValue);
-                    info.InitialStacks = desiredStackLevel;
-                    foe.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, target.Level, info));
-                }
-            }
-
-            private static void HandleAnticampSiege(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                List<Unit> myTargetList = new List<Unit>();
-                List<byte> numStrikes = new List<byte>();
-
-                Creature siege = (Creature)hostBuff.OptionalObject;
-
-                foreach (Object obj in target.ObjectsInRange)
-                {
-                    var curTarget = obj as Unit;
-
-                    if (curTarget == null || !CombatInterface.CanAttack(hostBuff.Caster, curTarget) || !target.CanHitWithAoE(curTarget, 360, cmd.EffectRadius))
-                        continue;
-
-                    if (!(curTarget is Pet))
+                case BUFF_START:
+                    if (!(hostBuff.Target is Player))
                     {
-                        byte curStrikes = 0;
-
-                        for (int i = 0; i < myTargetList.Count; ++i)
-                        {
-                            if (!curTarget.IsInCastRange(myTargetList[i], (uint)(cmd.PrimaryValue - 10)))
-                                continue;
-
-                            ++curStrikes;
-                            ++numStrikes[i];
-                        }
-                        myTargetList.Add(curTarget);
-                        numStrikes.Add(curStrikes);
+                        hostBuff.BuffHasExpired = true;
+                        return true;
                     }
-                }
-
-                for (int i = 0; i < myTargetList.Count; i++)
-                {
-                    AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone();
-
-                    // Maximum +300% damage for hitting same person 6 times with added splash
-                    damageThisPass.MinDamage = (ushort)(damageThisPass.MinDamage * 3 * (1 + Math.Min(numStrikes[i], (byte)6) * 0.5f));
-                    damageThisPass.MaxDamage = (ushort)(damageThisPass.MaxDamage * 3 * (1 + Math.Min(numStrikes[i], (byte)6) * 0.5f));
-
-                    siege.ModifyDamageOut(damageThisPass);
-
-                    CombatManager.InflictDamage(damageThisPass, target.Level, hostBuff.Caster, myTargetList[i]);
-                }
+                    hostBuff.OptionalObject = new Point3D(hostBuff.Caster.WorldPosition);
+                    ((Player)hostBuff.Target).SendDialog(Dialog.ResurrectionOffer, hostBuff.Caster.Oid, 60);
+                    hostBuff.AddBuffParameter(cmd.BuffLine, -1);
+                    break;
             }
+            return true;
+        }
 
-
-            #endregion
-
-            #region Resources
-
-            private static bool SetCareerRes(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        // Awful, rotten hack for Slayer/Choppa berserk-regen
+        private static bool BerserkerRegen(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                ((Player)hostBuff.Caster).CrrInterface.SetResource((byte)cmd.PrimaryValue, false);
-                return true;
+                case BUFF_START:
+                    hostBuff.AddBuffParameter(cmd.BuffLine, 1); break;
+                case BUFF_TICK:
+                    byte curRes = ((Player)hostBuff.Caster).CrrInterface.GetCurrentResourceLevel(0);
+
+                    if (curRes == 0 || curRes > cmd.PrimaryValue)
+                        return false;
+
+                    if (cmd.CommandResult != curRes)
+                    {
+                        cmd.DamageInfo = AbilityMgr.GetExtraDamageFor(hostBuff.Entry, 0, (byte)(curRes - 1));
+                        cmd.CommandResult = curRes;
+                    }
+                    CombatManager.ProcHealTarget(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, target);
+                    break;
             }
 
-            // Value 2 blocks the event from being raised with buffs listening for career resource modification.
-            // Value 3 allows the initial tick to grant resource value if it's not the only one.
-            private static bool ModifyCareerRes(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+            return true;
+        }
+
+        private static bool NapalmGrenade(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (hostBuff.BuffState == BUFF_REMOVE && hostBuff.WasManuallyRemoved)
+                return false;
+
+            if (hostBuff.LastPassTime < TCPManager.GetTimeStampMS() - 100)
+            {
+                hostBuff.LastPassTime = TCPManager.GetTimeStampMS();
+                cmd.CommandResult = 0;
+            }
+
+            AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(hostBuff.Caster);
+
+            if (hostBuff.RemainingTimeMs < 10000)
+            {
+                damageThisPass.MinDamage *= 3;
+                damageThisPass.MaxDamage *= 3;
+            }
+            else if (hostBuff.RemainingTimeMs < 20000)
+            {
+                damageThisPass.MinDamage *= 2;
+                damageThisPass.MaxDamage *= 2;
+            }
+
+            damageThisPass.IsAoE = true;
+
+            CombatManager.InflictDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
+
+            if (hostBuff.BuffState == BUFF_START)
+                hostBuff.AddBuffParameter(cmd.BuffLine, 1);
+
+            cmd.CommandResult += (short)damageThisPass.Damage;
+
+            return damageThisPass.DamageEvent == 0 || damageThisPass.DamageEvent == 9;
+        }
+
+        private static readonly int[] BrimstoneDamageMultipliers = { 3, 6, 10, 15, 20, 30, 45, 60, 90 };
+
+        private static bool BrimstoneBauble(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            cmd.DamageInfo.PrecalcDamage = cmd.DamageInfo.GetDamageForLevel(hostBuff.BuffLevel) * BrimstoneDamageMultipliers[cmd.CommandResult / 3];
+
+            CombatManager.InflictPrecalculatedDamage(cmd.DamageInfo, hostBuff.Caster, hostBuff.Caster, 1f, false);
+
+            hostBuff.Caster.CbtInterface.RefreshCombatTimer();
+
+            if (cmd.CommandResult < 24)
+                ++cmd.CommandResult;
+
+            return true;
+        }
+
+        #endregion
+
+        #region Siege
+
+        /// <summary>
+        /// Strikes all targets within the specified command radius. 
+        /// Inflicts damage to each target which is scaled by the number of additional targets present within a certain distance.
+        /// </summary>
+        private static bool ArtilleryStrike(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (hostBuff.OptionalObject is Siege || hostBuff.OptionalObject is KeepNpcCreature.KeepCreature)
+                HandleArtillery(hostBuff, cmd, target);
+            else
+                HandleAnticampSiege(hostBuff, cmd, target);
+
+            return true;
+        }
+
+        private static void HandleArtillery(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            List<Unit> myTargetList = new List<Unit>();
+            int relevantPlayers = 0;
+
+            Creature weapon = (Creature)hostBuff.OptionalObject;
+            Siege siege = weapon as Siege;
+
+            Campaign front = weapon.Region?.Campaign;
+
+            if (front == null)
+                return;
+
+            foreach (Object obj in target.ObjectsInRange)
+            {
+                var curTarget = obj as Unit;
+
+                if (curTarget == null || !CombatInterface.CanAttack(hostBuff.Caster, curTarget) || !target.WorldPosition.IsWithinRadiusFeet(curTarget.WorldPosition, 60))
+                    continue;
+
+                ++relevantPlayers;
+
+                if (!target.CanHitWithAoE(curTarget, 360, cmd.EffectRadius))
+                    continue;
+
+                myTargetList.Add(curTarget);
+            }
+
+            relevantPlayers = Math.Min(relevantPlayers, 50);
+
+            float artilleryScale = front.GetArtilleryDamageScale(weapon.Realm);
+
+            if (siege != null)
+                artilleryScale *= siege.Keep.GetSiegeDamageMod(siege.SiegeInterface.Type);
+
+            int desiredStackLevel = (int)(Point2D.Clamp(relevantPlayers - 20, 0, 30) * 0.1f * artilleryScale);
+
+            artilleryScale *= 1f + (float)Math.Pow(relevantPlayers / 30f, 3);
+
+            foreach (Unit foe in myTargetList)
+            {
+                AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone();
+
+                // Damage inflicted by an artillery weapon increases for every player within 60ft of the blast zone.
+                // Maximum of 50 players, +400% damage, exponential.
+                damageThisPass.MinDamage = (ushort)(damageThisPass.MinDamage * artilleryScale);
+                damageThisPass.MaxDamage = (ushort)(damageThisPass.MaxDamage * artilleryScale);
+
+                weapon.ModifyDamageOut(damageThisPass);
+
+                CombatManager.InflictDamage(damageThisPass, target.Level, hostBuff.Caster, foe);
+
+                if (desiredStackLevel == 0)
+                    continue;
+
+                BuffInfo info = AbilityMgr.GetBuffInfo((ushort)cmd.SecondaryValue);
+                info.InitialStacks = desiredStackLevel;
+                foe.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, target.Level, info));
+            }
+        }
+
+        private static void HandleAnticampSiege(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            List<Unit> myTargetList = new List<Unit>();
+            List<byte> numStrikes = new List<byte>();
+
+            Creature siege = (Creature)hostBuff.OptionalObject;
+
+            foreach (Object obj in target.ObjectsInRange)
+            {
+                var curTarget = obj as Unit;
+
+                if (curTarget == null || !CombatInterface.CanAttack(hostBuff.Caster, curTarget) || !target.CanHitWithAoE(curTarget, 360, cmd.EffectRadius))
+                    continue;
+
+                if (!(curTarget is Pet))
+                {
+                    byte curStrikes = 0;
+
+                    for (int i = 0; i < myTargetList.Count; ++i)
+                    {
+                        if (!curTarget.IsInCastRange(myTargetList[i], (uint)(cmd.PrimaryValue - 10)))
+                            continue;
+
+                        ++curStrikes;
+                        ++numStrikes[i];
+                    }
+                    myTargetList.Add(curTarget);
+                    numStrikes.Add(curStrikes);
+                }
+            }
+
+            for (int i = 0; i < myTargetList.Count; i++)
+            {
+                AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone();
+
+                // Maximum +300% damage for hitting same person 6 times with added splash
+                damageThisPass.MinDamage = (ushort)(damageThisPass.MinDamage * 3 * (1 + Math.Min(numStrikes[i], (byte)6) * 0.5f));
+                damageThisPass.MaxDamage = (ushort)(damageThisPass.MaxDamage * 3 * (1 + Math.Min(numStrikes[i], (byte)6) * 0.5f));
+
+                siege.ModifyDamageOut(damageThisPass);
+
+                CombatManager.InflictDamage(damageThisPass, target.Level, hostBuff.Caster, myTargetList[i]);
+            }
+        }
+
+
+        #endregion
+
+        #region Resources
+
+        private static bool SetCareerRes(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            ((Player)hostBuff.Caster).CrrInterface.SetResource((byte)cmd.PrimaryValue, false);
+            return true;
+        }
+
+        // Value 2 blocks the event from being raised with buffs listening for career resource modification.
+        // Value 3 allows the initial tick to grant resource value if it's not the only one.
+        private static bool ModifyCareerRes(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue);
+                    if (cmd.InvokeOn == BUFF_START || cmd.TertiaryValue == 1)
+                        goto case BUFF_TICK;
+                    break;
+                case BUFF_TICK:
+                case BUFF_END:
+                    Player player = (Player)hostBuff.Caster;
+#warning EX mode - link offhand regen to battlefield conditions
+                    if (cmd.Entry > 14000 && player.CrrInterface.ExperimentalMode)
+                        player.CrrInterface.AddResource((byte)cmd.PrimaryValue, cmd.SecondaryValue == 1);
+                    else if (cmd.PrimaryValue > 0)
+                        player.CrrInterface.AddResource((byte)cmd.PrimaryValue, cmd.SecondaryValue == 1);
+                    else if (!player.CrrInterface.ConsumeResource((byte)-cmd.PrimaryValue, cmd.SecondaryValue == 1) && cmd.ConsumesStack)
+                    {
+                        hostBuff.RemoveStack();
+                        return false;
+                    }
+                    break;
+            }
+            return true;
+        }
+
+        private static bool SetAp(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            Player plrTarget = target as Player;
+
+            if (plrTarget == null)
+                return false;
+
+            plrTarget.ActionPoints = (ushort)cmd.PrimaryValue;
+
+            return true;
+        }
+
+        private static bool ModifyAp(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            Player plrTarget = target as Player;
+
+            if (plrTarget == null)
+            {
+                hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue);
+                return false;
+            }
+
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    if (cmd.InvokeOn == 1)
+                        plrTarget.ModifyActionPoints((short)cmd.PrimaryValue);
+                    else
+                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue); break;
+                case BUFF_TICK:
+                    goto case 4;
+#warning Intended to cancel self-buffs, non-channeling, which are consuming action points on tick. This needs to be split to another command.
+                case BUFF_END:
+                    if (plrTarget.ModifyActionPoints((short)cmd.PrimaryValue) == 0 && cmd.PrimaryValue < 0 && hostBuff.Caster == hostBuff.Target)
+                        hostBuff.RemoveStack();
+                    break;
+            }
+
+
+            return true;
+        }
+
+        private static bool StealAp(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (target is Player plrTarget)
             {
                 switch (hostBuff.BuffState)
                 {
                     case BUFF_START:
                         hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue);
-                        if (cmd.InvokeOn == BUFF_START || cmd.TertiaryValue == 1)
-                            goto case BUFF_TICK;
                         break;
-                        case BUFF_TICK:
-                        case BUFF_END:
-                            Player player = (Player) hostBuff.Caster;
-                            #warning EX mode - link offhand regen to battlefield conditions
-                            if (cmd.Entry > 14000 && player.CrrInterface.ExperimentalMode)
-                                player.CrrInterface.AddResource((byte)cmd.PrimaryValue, cmd.SecondaryValue == 1);
-                            else if (cmd.PrimaryValue > 0)
-                                player.CrrInterface.AddResource((byte) cmd.PrimaryValue, cmd.SecondaryValue == 1);
-                            else if (!player.CrrInterface.ConsumeResource((byte) -cmd.PrimaryValue, cmd.SecondaryValue == 1) && cmd.ConsumesStack)
-                            {
-                                hostBuff.RemoveStack();
-                                return false;
-                            }
-                        break;
-                }
-                return true;
-            }
 
-            private static bool SetAp(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                Player plrTarget = target as Player;
-
-                if (plrTarget == null)
-                    return false;
-
-                plrTarget.ActionPoints = (ushort)cmd.PrimaryValue;
-
-                return true;
-            }
-
-            private static bool ModifyAp(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                Player plrTarget = target as Player;
-
-                if (plrTarget == null)
-                {
-                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue);
-                    return false;
-                }
-
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        if (cmd.InvokeOn == 1)
-                            plrTarget.ModifyActionPoints((short)cmd.PrimaryValue);
-                        else
-                            hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue); break;
-                    case BUFF_TICK:
-                        goto case 4; 
-                    #warning Intended to cancel self-buffs, non-channeling, which are consuming action points on tick. This needs to be split to another command.
-                    case BUFF_END:
-                        if (plrTarget.ModifyActionPoints((short)cmd.PrimaryValue) == 0 && cmd.PrimaryValue < 0 && hostBuff.Caster == hostBuff.Target)
-                            hostBuff.RemoveStack(); 
-                        break;
-                }
-
-
-                return true;
-            }
-
-            private static bool StealAp(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                Player plrTarget = target as Player;
-
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue); break;
                     case BUFF_TICK:
                         goto case 4;
+                        
                     case BUFF_END:
                         if (plrTarget != null)
                         {
                             int deltaAp = plrTarget.ModifyActionPoints((short)-cmd.PrimaryValue);
-                            ((Player)hostBuff.Caster).ModifyActionPoints(-deltaAp);
+                            if (hostBuff.Caster is Player plrCaster)
+                                plrCaster.ModifyActionPoints(-deltaAp);
                         }
-
-                        else ((Player)hostBuff.Caster).ModifyActionPoints((short)cmd.PrimaryValue);
-                        break;
-                }
-                return true;
-            }
-
-            private static bool ModifyMorale(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                Player plrTarget = target as Player;
-
-                if (plrTarget == null)
-                    return false;
-
-                
-                
-
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue); break;
-                    case BUFF_TICK:
-                        goto case 4;
-                    case BUFF_END:
-                        if (cmd.PrimaryValue < 0)
-                            plrTarget.ConsumeMorale(cmd.PrimaryValue);
                         else
-                            plrTarget.AddMorale(cmd.PrimaryValue);
+                            if (hostBuff.Caster is Player plrCaster)
+                                plrCaster.ModifyActionPoints((short)cmd.PrimaryValue);
                         break;
                 }
+            }
+            
+            return true;
+        }
 
-                return true;
+        private static bool ModifyMorale(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            Player plrTarget = target as Player;
+
+            if (plrTarget == null)
+                return false;
+            
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue); break;
+                case BUFF_TICK:
+                    goto case 4;
+                case BUFF_END:
+                    if (cmd.PrimaryValue < 0)
+                        plrTarget.ConsumeMorale(cmd.PrimaryValue);
+                    else
+                        plrTarget.AddMorale(cmd.PrimaryValue);
+                    break;
             }
 
-            private static bool Panic(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                Player plr = (Player) hostBuff.Target;
+            return true;
+        }
 
-                switch (hostBuff.BuffState)
-                {
+        private static bool Panic(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            Player plr = (Player)hostBuff.Target;
+
+            switch (hostBuff.BuffState)
+            {
                 case BUFF_START:
                     plr.ChangePanicState(true);
                     break;
@@ -1532,799 +1536,799 @@ namespace WorldServer
                     break;
                 case BUFF_REMOVE:
                     goto case BUFF_END;
-                }
-
-                return true;
             }
 
-            #endregion
+            return true;
+        }
 
-            #region Stats
+        #endregion
 
-            /// <summary>
-            /// <para>Modifies player stats.</para>
-            /// <para>PrimaryValue is the stat to modify.</para>
-            /// <para>SecondaryValue is the value to modify the stat by.</para>
-            /// <para>TertiaryValue, if specified, causes the applied value to be Lerp(SecondaryValue, TertiaryValue, PlayerLevel).</para>
-            /// </summary>
-            private static bool ModifyStat(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        #region Stats
+
+        /// <summary>
+        /// <para>Modifies player stats.</para>
+        /// <para>PrimaryValue is the stat to modify.</para>
+        /// <para>SecondaryValue is the value to modify the stat by.</para>
+        /// <para>TertiaryValue, if specified, causes the applied value to be Lerp(SecondaryValue, TertiaryValue, PlayerLevel).</para>
+        /// </summary>
+        private static bool ModifyStat(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        if (cmd.TertiaryValue != 0)
-                            cmd.CommandResult = (short)Point2D.Lerp(cmd.SecondaryValue, cmd.TertiaryValue, (hostBuff.BuffLevel - 1) / 39.0f);
-                        else cmd.CommandResult = (short)cmd.SecondaryValue;
+                case BUFF_START:
+                    if (cmd.TertiaryValue != 0)
+                        cmd.CommandResult = (short)Point2D.Lerp(cmd.SecondaryValue, cmd.TertiaryValue, (hostBuff.BuffLevel - 1) / 39.0f);
+                    else cmd.CommandResult = (short)cmd.SecondaryValue;
 
-                        cmd.CommandResult *= hostBuff.StackLevel;
+                    cmd.CommandResult *= hostBuff.StackLevel;
 
-                        if (cmd.CommandResult < 0)
-                            target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        else
-                            target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-
-                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
-                        break;
-                    case BUFF_TICK:
-                        Log.Error("BuffEffectInvoker", "ModifyStat from "+hostBuff.Entry+" should never tick!");
-                        break;
-                    case BUFF_END:
-                    case BUFF_REMOVE:
-                        if (cmd.CommandResult < 0)
-                            target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        break;
-                }
-
-                return true;
-            }
-
-            private static bool ModifyStatNoStack(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        if (cmd.TertiaryValue != 0)
-                            cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
-                        else cmd.CommandResult = (short)cmd.SecondaryValue;
-
-                        if (cmd.CommandResult < 0)
-                            target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        else
-                            target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-
-                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
-                        break;
-                    case BUFF_TICK:
-                        Log.Error("BuffEffectInvoker", "ModifyStatNoStack from " + hostBuff.Entry + " should never tick!");
-                        break;
-                    case BUFF_END:
-                        if (cmd.CommandResult < 0)
-                            target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        break;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                }
-
-                return true;
-            }
-
-            private static bool ModifyStatByResourceLevel(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        byte resLv = ((Player)hostBuff.Caster).CrrInterface.GetCurrentResourceLevel((byte)cmd.EventCheckParam);
-
-                        if (resLv > 0)
-                        {
-                            if (cmd.TertiaryValue != 0)
-                                cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
-                            else cmd.CommandResult = (short)cmd.SecondaryValue;
-
-                            cmd.CommandResult *= resLv;
-
-                            if (cmd.CommandResult < 0)
-                                target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                            else
-                                target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        }
-
-                        for (byte i=1; i <= ((Player)hostBuff.Caster).CrrInterface.GetResourceLevelMax((byte)cmd.EventCheckParam); ++i)
-                            hostBuff.AddBuffParameter(i, cmd.SecondaryValue * i);
-                        break;
-                    case BUFF_END:
-                        if (cmd.CommandResult < 0)
-                            target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        else if (cmd.CommandResult > 0)
-                            target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        break;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                }
-
-                return true;
-            }
-
-            private static bool ModifyPercentageStatByResourceLevel(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        byte resLv = ((Player)hostBuff.Caster).CrrInterface.GetCurrentResourceLevel((byte)cmd.EventCheckParam);
-
-                        if (resLv > 0)
-                        {
-                            cmd.CommandResult = (short)(cmd.SecondaryValue * hostBuff.StackLevel);
-                            cmd.CommandResult *= resLv;
-
-                            if (cmd.CommandResult < 0)
-                                target.StsInterface.AddReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
-                            else
-                                target.StsInterface.AddBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
-                        }
-
-                        // Thanks, Mythic
-                        if (cmd.CommandResult > 0)
-                            hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
-                        else
-                            hostBuff.AddBuffParameter(cmd.BuffLine, 100 + cmd.CommandResult);
-                        break;
-                    case BUFF_END:
-                        if (cmd.CommandResult < 0)
-                            target.StsInterface.RemoveReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
-                        else target.StsInterface.RemoveBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
-                        break;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                }
-
-                return true;
-            }
-
-            private static bool ModifyStatIfHasResource(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        if (((Player)hostBuff.Caster).CrrInterface.CareerResource > cmd.EventCheckParam)
-                        {
-                            if (cmd.TertiaryValue != 0)
-                                cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
-                            else cmd.CommandResult = (short)cmd.SecondaryValue;
-
-                            if (cmd.CommandResult < 0)
-                                target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                            else
-                                target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        }
-
-                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
-                        break;
-                    case BUFF_END:
-                        if (cmd.CommandResult < 0)
-                            target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-
-                        cmd.CommandResult = 0;
-
-                        break;
-                    case BUFF_REMOVE: goto case 4;
-                }
-
-                return true;
-            }
-
-            private static bool ModifyStatByNearbyFoes(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        if (cmd.TertiaryValue != 0)
-                            cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
-                        else cmd.CommandResult = (short)cmd.SecondaryValue;
-
-                        // Get foes within range
-                        Unit source = hostBuff.Caster;
-                        byte count = 0;
-
-                        foreach (Object obj in source.ObjectsInRange)
-                        {
-                            if (!obj.IsUnit())
-                                continue;
-
-                            Unit curTarget = obj.GetUnit();
-
-                            if (!CombatInterface.CanAttack(source, curTarget))
-                                continue;
-
-                            if (curTarget.ObjectWithinRadiusFeet(source, 20))
-                                count++;
-
-                            if (count == cmd.MaxTargets)
-                                break;
-                        }
-
-                        cmd.CommandResult *= count;
-
-                        if (cmd.CommandResult < 0)
-                            target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        else
-                            target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-
-                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
-                        break;
-                    case BUFF_TICK:
-                        Log.Error("BuffEffectInvoker", "ModifyStat should never tick!");
-                        break;
-                    case BUFF_END:
-                        if (cmd.CommandResult < 0)
-                            target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        break;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                }
-
-                return true;
-            }
-
-            private static bool AddCasterStat(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        Stats sourceStat = cmd.TertiaryValue > 0 ? (Stats) cmd.TertiaryValue : (Stats) cmd.PrimaryValue;
-                        cmd.CommandResult = (short)(hostBuff.Caster.StsInterface.GetCombinationItemStat(sourceStat) * cmd.SecondaryValue * hostBuff.StackLevel * 0.01f);
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    else
                         target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
-                        break;
-                    case BUFF_END:
-                        target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        break;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                }
-                return true;
+
+                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
+                    break;
+                case BUFF_TICK:
+                    Log.Error("BuffEffectInvoker", "ModifyStat from " + hostBuff.Entry + " should never tick!");
+                    break;
+                case BUFF_END:
+                case BUFF_REMOVE:
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    break;
             }
 
-            private static bool ModifyPercentageStat(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+            return true;
+        }
+
+        private static bool ModifyStatNoStack(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        cmd.CommandResult = (short)(cmd.SecondaryValue * hostBuff.StackLevel);
+                case BUFF_START:
+                    if (cmd.TertiaryValue != 0)
+                        cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
+                    else cmd.CommandResult = (short)cmd.SecondaryValue;
 
-                        if (cmd.CommandResult < 0)
-                            target.StsInterface.AddReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
-                        else
-                            target.StsInterface.AddBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    else
+                        target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
 
-                        // Thanks, Mythic
-                        if (cmd.CommandResult > 0 || cmd.TertiaryValue == 0)
-                            hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
-                        else
-                            hostBuff.AddBuffParameter(cmd.BuffLine, 100 + cmd.CommandResult);
-                        break;
-                    case BUFF_END:
-                        if (cmd.CommandResult < 0)
-                            target.StsInterface.RemoveReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
-                        else target.StsInterface.RemoveBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
-                        break;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                    default:
-                        Log.Error("BuffEffectInvoker", "ModifyPercentageStat should never tick!");
-                        break;
-                }
-
-                return true;
+                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
+                    break;
+                case BUFF_TICK:
+                    Log.Error("BuffEffectInvoker", "ModifyStatNoStack from " + hostBuff.Entry + " should never tick!");
+                    break;
+                case BUFF_END:
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    break;
+                case BUFF_REMOVE:
+                    goto case 4;
             }
 
-            private static bool ModifyPercentageStatNoStack(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+            return true;
+        }
+
+        private static bool ModifyStatByResourceLevel(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        cmd.CommandResult = (short)(cmd.SecondaryValue);
-                        if (cmd.CommandResult < 0)
-                            target.StsInterface.AddReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
-                        else
-                            target.StsInterface.AddBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
+                case BUFF_START:
+                    byte resLv = ((Player)hostBuff.Caster).CrrInterface.GetCurrentResourceLevel((byte)cmd.EventCheckParam);
 
-                        // Thanks, Mythic
-                        if (cmd.CommandResult > 0 || cmd.TertiaryValue == 0)
-                            hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
-                        else
-                            hostBuff.AddBuffParameter(cmd.BuffLine, 100 + cmd.CommandResult);
-                        break;
-                    case BUFF_END:
-                        if (cmd.CommandResult < 0)
-                            target.StsInterface.RemoveReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
-                        else target.StsInterface.RemoveBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
-                        break;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                    default:
-                        Log.Error("BuffEffectInvoker", "ModifyPercentageStat should never tick!");
-                        break;
-                }
-
-                return true;
-            }
-
-            // FIXME.
-            private static bool ModifyStatRealmwise(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
+                    if (resLv > 0)
+                    {
                         if (cmd.TertiaryValue != 0)
                             cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
                         else cmd.CommandResult = (short)cmd.SecondaryValue;
 
-                        cmd.CommandResult *= hostBuff.StackLevel;
+                        cmd.CommandResult *= resLv;
 
-                        if (hostBuff.Caster.Realm != target.Realm)
-                        {
-                            target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                            hostBuff.AddBuffParameter(cmd.BuffLine, -cmd.CommandResult);
-                        }
+                        if (cmd.CommandResult < 0)
+                            target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                         else
-                        {
                             target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                            hostBuff.AddBuffParameter((byte)(cmd.BuffLine + 1), cmd.CommandResult);
-                        }
+                    }
 
-                    
-                        break;
-                    case BUFF_TICK:
-                        Log.Error("BuffEffectInvoker", "ModifyStat should never tick!");
-                        break;
-                    case BUFF_END:
-                        if (hostBuff.Caster.Realm != target.Realm)
-                            target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        break;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                }
-
-                return true;
-            }
-
-            private static bool GiftItemStatTo(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        hostBuff.AddBuffParameter(cmd.BuffLine, target.StsInterface.GiftItemStatTo((Stats)cmd.PrimaryValue, (Stats)cmd.SecondaryValue)); return true;
-                    case BUFF_END:
-                        target.StsInterface.RemoveItemStatGift((Stats)cmd.PrimaryValue); return true;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                    default:
-                        return true;
-                }
-            }
-
-            private static bool AddItemStatMultiplier(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        hostBuff.AddBuffParameter(cmd.BuffLine, target.StsInterface.SetItemStatMultiplier((Stats)cmd.PrimaryValue, cmd.SecondaryValue)); return true;
-                    case BUFF_END:
-                        target.StsInterface.SetItemStatMultiplier((Stats)cmd.PrimaryValue, 1); return true;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                    default:
-                        return true;
-                }
-            }
-
-            private static bool ModifySpeed(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch(hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        if (target.StsInterface != null)
-                        {
-                            if (cmd.PrimaryValue < 0 && target.ImmuneToCC((int)CrowdControlTypes.Snare, hostBuff.Caster, hostBuff.Entry))
-                            {
-                                cmd.CommandResult = 1;
-                                return true;
-                            }
-
-                            int speedMod = cmd.PrimaryValue;
-                            if (cmd.SecondaryValue != 0)
-                                speedMod = cmd.PrimaryValue + StaticRandom.Instance.Next(cmd.SecondaryValue - cmd.PrimaryValue);
-
-                            speedMod *= hostBuff.StackLevel;
-
-                            if (speedMod < 0)
-                                hostBuff.CrowdControl = (byte)(hostBuff.CrowdControl | (int)CrowdControlTypes.Snare);
-
-                            target.StsInterface.AddVelocityModifier(hostBuff, 1f + speedMod * 0.01f);
-
-                            hostBuff.AddBuffParameter(cmd.BuffLine, speedMod);
-                        }
+                    for (byte i = 1; i <= ((Player)hostBuff.Caster).CrrInterface.GetResourceLevelMax((byte)cmd.EventCheckParam); ++i)
+                        hostBuff.AddBuffParameter(i, cmd.SecondaryValue * i);
                     break;
-                    case BUFF_TICK: 
-                        Log.Error("BuffEffectInvoker","ModifySpeed from Entry "+ hostBuff.Entry+ " should never tick!");
-                        break;
-                    case BUFF_END:
-                    case BUFF_REMOVE:
-                        if (target.StsInterface != null && cmd.CommandResult == 0)
-                            target.StsInterface.RemoveVelocityModifier(hostBuff);
-                        break;
-                }
-                return true;
+                case BUFF_END:
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    else if (cmd.CommandResult > 0)
+                        target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    break;
+                case BUFF_REMOVE:
+                    goto case 4;
             }
 
-            #endregion
+            return true;
+        }
 
-            #region CC
-            /// <summary>
-            /// <para>Applies any type of hard CC to the target.</para>
-            /// <para>PrimaryValue: The type of CC to apply.</para>
-            /// <para>SecondaryValue: The Cast_Player_Effect effect ID to show knockdown/stun on the client.</para>
-            /// </summary>
-            private static bool ApplyCc(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        private static bool ModifyPercentageStatByResourceLevel(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        hostBuff.CrowdControl = (byte)(hostBuff.CrowdControl | Math.Min(cmd.PrimaryValue, 16));
-                        if (target.StsInterface != null)
-                        {
-                            // Hurried Restore / Dat Makes Me Dizzy 
-                            //if (hostBuff.Caster != hostBuff.Target)
-                            //{
-                                if (target.ImmuneToCC(hostBuff.CrowdControl, hostBuff.Caster, hostBuff.Entry))
-                                {
-                                    cmd.CommandResult = 1;
-                                    return false;
-                                }
+                case BUFF_START:
+                    byte resLv = ((Player)hostBuff.Caster).CrrInterface.GetCurrentResourceLevel((byte)cmd.EventCheckParam);
 
-                                BuffInfo immunityInfo = AbilityMgr.GetBuffInfo((ushort)GameBuffs.Unstoppable);
-                                if (cmd.TertiaryValue > 0)
-                                    immunityInfo.Duration = (ushort)cmd.TertiaryValue;
+                    if (resLv > 0)
+                    {
+                        cmd.CommandResult = (short)(cmd.SecondaryValue * hostBuff.StackLevel);
+                        cmd.CommandResult *= resLv;
+
+                        if (cmd.CommandResult < 0)
+                            target.StsInterface.AddReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
+                        else
+                            target.StsInterface.AddBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
+                    }
+
+                    // Thanks, Mythic
+                    if (cmd.CommandResult > 0)
+                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
+                    else
+                        hostBuff.AddBuffParameter(cmd.BuffLine, 100 + cmd.CommandResult);
+                    break;
+                case BUFF_END:
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.RemoveReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
+                    else target.StsInterface.RemoveBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
+                    break;
+                case BUFF_REMOVE:
+                    goto case 4;
+            }
+
+            return true;
+        }
+
+        private static bool ModifyStatIfHasResource(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    if (((Player)hostBuff.Caster).CrrInterface.CareerResource > cmd.EventCheckParam)
+                    {
+                        if (cmd.TertiaryValue != 0)
+                            cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
+                        else cmd.CommandResult = (short)cmd.SecondaryValue;
+
+                        if (cmd.CommandResult < 0)
+                            target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                        else
+                            target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    }
+
+                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
+                    break;
+                case BUFF_END:
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+
+                    cmd.CommandResult = 0;
+
+                    break;
+                case BUFF_REMOVE: goto case 4;
+            }
+
+            return true;
+        }
+
+        private static bool ModifyStatByNearbyFoes(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    if (cmd.TertiaryValue != 0)
+                        cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
+                    else cmd.CommandResult = (short)cmd.SecondaryValue;
+
+                    // Get foes within range
+                    Unit source = hostBuff.Caster;
+                    byte count = 0;
+
+                    foreach (Object obj in source.ObjectsInRange)
+                    {
+                        if (!obj.IsUnit())
+                            continue;
+
+                        Unit curTarget = obj.GetUnit();
+
+                        if (!CombatInterface.CanAttack(source, curTarget))
+                            continue;
+
+                        if (curTarget.ObjectWithinRadiusFeet(source, 20))
+                            count++;
+
+                        if (count == cmd.MaxTargets)
+                            break;
+                    }
+
+                    cmd.CommandResult *= count;
+
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    else
+                        target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+
+                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
+                    break;
+                case BUFF_TICK:
+                    Log.Error("BuffEffectInvoker", "ModifyStat should never tick!");
+                    break;
+                case BUFF_END:
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    break;
+                case BUFF_REMOVE:
+                    goto case 4;
+            }
+
+            return true;
+        }
+
+        private static bool AddCasterStat(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    Stats sourceStat = cmd.TertiaryValue > 0 ? (Stats)cmd.TertiaryValue : (Stats)cmd.PrimaryValue;
+                    cmd.CommandResult = (short)(hostBuff.Caster.StsInterface.GetCombinationItemStat(sourceStat) * cmd.SecondaryValue * hostBuff.StackLevel * 0.01f);
+                    target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
+                    break;
+                case BUFF_END:
+                    target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    break;
+                case BUFF_REMOVE:
+                    goto case 4;
+            }
+            return true;
+        }
+
+        private static bool ModifyPercentageStat(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    cmd.CommandResult = (short)(cmd.SecondaryValue * hostBuff.StackLevel);
+
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.AddReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
+                    else
+                        target.StsInterface.AddBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
+
+                    // Thanks, Mythic
+                    if (cmd.CommandResult > 0 || cmd.TertiaryValue == 0)
+                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
+                    else
+                        hostBuff.AddBuffParameter(cmd.BuffLine, 100 + cmd.CommandResult);
+                    break;
+                case BUFF_END:
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.RemoveReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
+                    else target.StsInterface.RemoveBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
+                    break;
+                case BUFF_REMOVE:
+                    goto case 4;
+                default:
+                    Log.Error("BuffEffectInvoker", "ModifyPercentageStat should never tick!");
+                    break;
+            }
+
+            return true;
+        }
+
+        private static bool ModifyPercentageStatNoStack(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    cmd.CommandResult = (short)(cmd.SecondaryValue);
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.AddReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
+                    else
+                        target.StsInterface.AddBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
+
+                    // Thanks, Mythic
+                    if (cmd.CommandResult > 0 || cmd.TertiaryValue == 0)
+                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
+                    else
+                        hostBuff.AddBuffParameter(cmd.BuffLine, 100 + cmd.CommandResult);
+                    break;
+                case BUFF_END:
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.RemoveReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
+                    else target.StsInterface.RemoveBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
+                    break;
+                case BUFF_REMOVE:
+                    goto case 4;
+                default:
+                    Log.Error("BuffEffectInvoker", "ModifyPercentageStat should never tick!");
+                    break;
+            }
+
+            return true;
+        }
+
+        // FIXME.
+        private static bool ModifyStatRealmwise(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    if (cmd.TertiaryValue != 0)
+                        cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
+                    else cmd.CommandResult = (short)cmd.SecondaryValue;
+
+                    cmd.CommandResult *= hostBuff.StackLevel;
+
+                    if (hostBuff.Caster.Realm != target.Realm)
+                    {
+                        target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                        hostBuff.AddBuffParameter(cmd.BuffLine, -cmd.CommandResult);
+                    }
+                    else
+                    {
+                        target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                        hostBuff.AddBuffParameter((byte)(cmd.BuffLine + 1), cmd.CommandResult);
+                    }
+
+
+                    break;
+                case BUFF_TICK:
+                    Log.Error("BuffEffectInvoker", "ModifyStat should never tick!");
+                    break;
+                case BUFF_END:
+                    if (hostBuff.Caster.Realm != target.Realm)
+                        target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    break;
+                case BUFF_REMOVE:
+                    goto case 4;
+            }
+
+            return true;
+        }
+
+        private static bool GiftItemStatTo(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    hostBuff.AddBuffParameter(cmd.BuffLine, target.StsInterface.GiftItemStatTo((Stats)cmd.PrimaryValue, (Stats)cmd.SecondaryValue)); return true;
+                case BUFF_END:
+                    target.StsInterface.RemoveItemStatGift((Stats)cmd.PrimaryValue); return true;
+                case BUFF_REMOVE:
+                    goto case 4;
+                default:
+                    return true;
+            }
+        }
+
+        private static bool AddItemStatMultiplier(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    hostBuff.AddBuffParameter(cmd.BuffLine, target.StsInterface.SetItemStatMultiplier((Stats)cmd.PrimaryValue, cmd.SecondaryValue)); return true;
+                case BUFF_END:
+                    target.StsInterface.SetItemStatMultiplier((Stats)cmd.PrimaryValue, 1); return true;
+                case BUFF_REMOVE:
+                    goto case 4;
+                default:
+                    return true;
+            }
+        }
+
+        private static bool ModifySpeed(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    if (target.StsInterface != null)
+                    {
+                        if (cmd.PrimaryValue < 0 && target.ImmuneToCC((int)CrowdControlTypes.Snare, hostBuff.Caster, hostBuff.Entry))
+                        {
+                            cmd.CommandResult = 1;
+                            return true;
+                        }
+
+                        int speedMod = cmd.PrimaryValue;
+                        if (cmd.SecondaryValue != 0)
+                            speedMod = cmd.PrimaryValue + StaticRandom.Instance.Next(cmd.SecondaryValue - cmd.PrimaryValue);
+
+                        speedMod *= hostBuff.StackLevel;
+
+                        if (speedMod < 0)
+                            hostBuff.CrowdControl = (byte)(hostBuff.CrowdControl | (int)CrowdControlTypes.Snare);
+
+                        target.StsInterface.AddVelocityModifier(hostBuff, 1f + speedMod * 0.01f);
+
+                        hostBuff.AddBuffParameter(cmd.BuffLine, speedMod);
+                    }
+                    break;
+                case BUFF_TICK:
+                    Log.Error("BuffEffectInvoker", "ModifySpeed from Entry " + hostBuff.Entry + " should never tick!");
+                    break;
+                case BUFF_END:
+                case BUFF_REMOVE:
+                    if (target.StsInterface != null && cmd.CommandResult == 0)
+                        target.StsInterface.RemoveVelocityModifier(hostBuff);
+                    break;
+            }
+            return true;
+        }
+
+        #endregion
+
+        #region CC
+        /// <summary>
+        /// <para>Applies any type of hard CC to the target.</para>
+        /// <para>PrimaryValue: The type of CC to apply.</para>
+        /// <para>SecondaryValue: The Cast_Player_Effect effect ID to show knockdown/stun on the client.</para>
+        /// </summary>
+        private static bool ApplyCc(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    hostBuff.CrowdControl = (byte)(hostBuff.CrowdControl | Math.Min(cmd.PrimaryValue, 16));
+                    if (target.StsInterface != null)
+                    {
+                        // Hurried Restore / Dat Makes Me Dizzy 
+                        //if (hostBuff.Caster != hostBuff.Target)
+                        //{
+                        if (target.ImmuneToCC(hostBuff.CrowdControl, hostBuff.Caster, hostBuff.Entry))
+                        {
+                            cmd.CommandResult = 1;
+                            return false;
+                        }
+
+                        BuffInfo immunityInfo = AbilityMgr.GetBuffInfo((ushort)GameBuffs.Unstoppable);
+                        if (cmd.TertiaryValue > 0)
+                            immunityInfo.Duration = (ushort)cmd.TertiaryValue;
                         if (cmd.Entry != 4998) //Crown of fire stun
                         {
                             immunityInfo.Duration = (cmd.PrimaryValue == 32 ? (ushort)30 : (ushort)(hostBuff.Duration * 10));
                             target.BuffInterface.InsertUnstoppable(new BuffQueueInfo(target, target.EffectiveLevel, immunityInfo));
                         }
-                            //}
+                        //}
 
-                            target.CrowdControlType = (byte)cmd.PrimaryValue;
-                            target.AbtInterface.OnPlayerCCed();
-                            #region Client Effect
-                            if (cmd.PrimaryValue >= 16)
-                            {
-                                target.StsInterface.AddVelocityModifier(hostBuff, 0);
-
-                                target.DispatchUpdateState((byte)StateOpcode.Stunned, 1);
-
-                                PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
-                                Out.WriteUInt16(hostBuff.Caster.Oid);
-                                Out.WriteUInt16(target.Oid);
-                                Out.WriteUInt16(hostBuff.Entry);
-                                Out.WriteByte((byte)cmd.SecondaryValue);
-                                Out.WriteByte(0);
-                                Out.WriteByte(1);
-                                Out.WriteByte(0);
-                                target.DispatchPacket(Out, true);
-                            }
-                            #endregion
-                            hostBuff.AddBuffParameter(cmd.BuffLine, 0);
-                        }
-                        break;
-
-                    case BUFF_TICK:
-                        if (cmd.CommandResult == 0)
+                        target.CrowdControlType = (byte)cmd.PrimaryValue;
+                        target.AbtInterface.OnPlayerCCed();
+                        #region Client Effect
+                        if (cmd.PrimaryValue >= 16)
                         {
-                            target.CrowdControlType = 0;
+                            target.StsInterface.AddVelocityModifier(hostBuff, 0);
 
-                            #region ClientEffect
-                            if (cmd.PrimaryValue >= 16)
-                                {
-                                    target.StsInterface.RemoveVelocityModifier(hostBuff);
+                            target.DispatchUpdateState((byte)StateOpcode.Stunned, 1);
 
-                                    target.DispatchUpdateState((byte)StateOpcode.Stunned, 0);
-
-                                    PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
-                                    Out.WriteUInt16(hostBuff.Caster.Oid);
-                                    Out.WriteUInt16(target.Oid);
-                                    Out.WriteUInt16(hostBuff.Entry);
-                                    Out.WriteByte((byte)(cmd.SecondaryValue));
-                                    Out.WriteByte(0);
-                                    Out.WriteByte(0);
-                                    Out.WriteByte(0);
-                                    if (target.IsPlayer())
-                                        ((Player)target).DispatchPacket(Out, true);
-                                    else if (hostBuff.Caster.IsPlayer())
-                                        ((Player)hostBuff.Caster).DispatchPacket(Out, true);
-                                }
-                                #endregion
+                            PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
+                            Out.WriteUInt16(hostBuff.Caster.Oid);
+                            Out.WriteUInt16(target.Oid);
+                            Out.WriteUInt16(hostBuff.Entry);
+                            Out.WriteByte((byte)cmd.SecondaryValue);
+                            Out.WriteByte(0);
+                            Out.WriteByte(1);
+                            Out.WriteByte(0);
+                            target.DispatchPacket(Out, true);
                         }
+                        #endregion
+                        hostBuff.AddBuffParameter(cmd.BuffLine, 0);
+                    }
+                    break;
 
-                        hostBuff.DeleteBuffParameter(cmd.BuffLine);
-                        hostBuff.Resend();
-                        break;
-                    case BUFF_END:
-                        if (cmd.CommandResult == 0)
-                        {
-                            target.CrowdControlType = 0;
+                case BUFF_TICK:
+                    if (cmd.CommandResult == 0)
+                    {
+                        target.CrowdControlType = 0;
 
-                            #region ClientEffect
-                            if (cmd.PrimaryValue >= 16)
-                                {
-                                    target.StsInterface.RemoveVelocityModifier(hostBuff);
-
-                                    target.DispatchUpdateState((byte)StateOpcode.Stunned, 0);
-
-                                    PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
-                                    Out.WriteUInt16(hostBuff.Caster.Oid);
-                                    Out.WriteUInt16(target.Oid);
-                                    Out.WriteUInt16(hostBuff.Entry);
-                                    Out.WriteByte((byte)(cmd.SecondaryValue));
-                                    Out.WriteByte(0);
-                                    Out.WriteByte(0);
-                                    Out.WriteByte(0);
-                                    if (target.IsPlayer())
-                                        ((Player)target).DispatchPacket(Out, true);
-                                    else if (hostBuff.Caster.IsPlayer())
-                                        ((Player)hostBuff.Caster).DispatchPacket(Out, true);
-                                }
-                                #endregion
-                        }
-                        break;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                }
-
-                return true;
-            }
-
-            private static bool Root(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        hostBuff.CrowdControl = (byte)(hostBuff.CrowdControl | (int)CrowdControlTypes.Root);
-                        if (target.StsInterface != null)
-                        {
-                            if (cmd.PrimaryValue == 1)
-                                target.StsInterface.AddVelocityModifier(hostBuff, 0);
-
-                            else if (target.ImmuneToCC((int)CrowdControlTypes.Root, hostBuff.Caster, hostBuff.Entry) || !target.TryRoot(hostBuff))
-                            {
-                                cmd.CommandResult = 1;
-                                return false;
-                            }
-
-                            hostBuff.AddBuffParameter(cmd.BuffLine, 0);
-                        }
-
-                        break;
-                    case BUFF_END:
-                        if (cmd.CommandResult == 0)
-                            target.StsInterface?.RemoveVelocityModifier(hostBuff);
-                        break;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                }
-
-                return true;
-            }
-
-            private static bool Grapple(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        if (target.StsInterface != null)
-                        {
-                            hostBuff.CrowdControl = (byte)(hostBuff.CrowdControl | (int)CrowdControlTypes.Grapple);
-
-                            if (target != hostBuff.Caster && (target.ImmuneToCC((int)CrowdControlTypes.Root, hostBuff.Caster, hostBuff.Entry) || target.IsImmovable))
-                            {
-                                cmd.CommandResult = 1;
-                                return false;
-                            }
-                            target.EnterGrapple(hostBuff, target != hostBuff.Caster);
-                            hostBuff.AddBuffParameter(cmd.BuffLine, 0);
-                        }
-                        break;
-                    case BUFF_END:
-                        if (cmd.CommandResult == 0 && target.StsInterface != null)
+                        #region ClientEffect
+                        if (cmd.PrimaryValue >= 16)
                         {
                             target.StsInterface.RemoveVelocityModifier(hostBuff);
-                            target.NoKnockbacks = false;
+
+                            target.DispatchUpdateState((byte)StateOpcode.Stunned, 0);
+
+                            PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
+                            Out.WriteUInt16(hostBuff.Caster.Oid);
+                            Out.WriteUInt16(target.Oid);
+                            Out.WriteUInt16(hostBuff.Entry);
+                            Out.WriteByte((byte)(cmd.SecondaryValue));
+                            Out.WriteByte(0);
+                            Out.WriteByte(0);
+                            Out.WriteByte(0);
+                            if (target.IsPlayer())
+                                ((Player)target).DispatchPacket(Out, true);
+                            else if (hostBuff.Caster.IsPlayer())
+                                ((Player)hostBuff.Caster).DispatchPacket(Out, true);
                         }
-                        break;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                }
+                        #endregion
+                    }
 
-                return true;
-            }
-
-            private static bool SetImmovable(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
-                        if (cmd.PrimaryValue == 1)
-                            target.SetImmovable(true);
-                        break;
-                    case BUFF_END:
-                        target.SetImmovable(false);
-                        break;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                }
-
-                return true;
-            }
-
-            private static bool GitToTheChoppa(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                Unit source = hostBuff.Caster;
-                List<Player> myPlayerList = new List<Player>();
-                byte count = 0;
-
-                foreach (Object obj in source.ObjectsInRange)
-                {
-                    if (!obj.IsUnit())
-                        continue;
-
-                    Unit curTarget = obj.GetUnit();
-
-                    if (!CombatInterface.CanAttack(hostBuff.Caster, curTarget))
-                        continue;
-
-                    if (curTarget.ObjectWithinRadiusFeet(source, 30) && source.LOSHit(curTarget))
+                    hostBuff.DeleteBuffParameter(cmd.BuffLine);
+                    hostBuff.Resend();
+                    break;
+                case BUFF_END:
+                    if (cmd.CommandResult == 0)
                     {
-                        AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(hostBuff.Caster);
-                        CombatManager.InflictDamage(damageThisPass, hostBuff.BuffLevel, source, curTarget);
+                        target.CrowdControlType = 0;
 
-                        if (damageThisPass.DamageEvent != 0 && damageThisPass.DamageEvent != 9)
-                            continue;
-
-                        Player plr = curTarget as Player;
-
-                        if (plr != null && !plr.IsImmovable)
-                            myPlayerList.Add(plr);
-
-                        count++;
-                    }
-
-                    if (count == cmd.MaxTargets)
-                        break;
-                }
-
-                if (myPlayerList.Count > 0)
-                {
-                    Player pulledPlayer = myPlayerList[StaticRandom.Instance.Next(myPlayerList.Count)];
-
-                    pulledPlayer.PulledBy(hostBuff.Caster, 200, 1);
-                }
-
-                if (hostBuff.BuffState == BUFF_START)
-                    hostBuff.AddBuffParameter(cmd.BuffLine, 0);
-
-                return true;
-            }
-
-            private static bool WindsKnockback(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                if (target is Player)
-                    ((Player)target).ApplyWindsKnockback(hostBuff.Caster, AbilityMgr.GetKnockbackInfo(cmd.Entry, cmd.PrimaryValue));
-
-                else
-                    target.ApplyKnockback(hostBuff.Caster, null);
-
-                return true;
-            }
-
-            private static bool Pull(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                if (CombatManager.CheckMagnetDefense(hostBuff.Entry, hostBuff.Caster, target, true))
-                    return false;
-                if (!(target is Player))
-                    target.ApplyKnockback(hostBuff.Caster, null);
-                else
-                    ((Player)target).PulledBy(hostBuff.Caster, (ushort)cmd.PrimaryValue, (ushort)cmd.SecondaryValue);
-                return true;
-            }
-
-            private static bool RiftPull(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                if (CombatManager.CheckRiftDefense(hostBuff.Entry, hostBuff.Caster, target, true))
-                    return false;
-                if (!(target is Player))
-                    target.ApplyKnockback(hostBuff.Caster, null);
-                else
-                    ((Player)target).PulledBy(hostBuff.Caster, (ushort)cmd.PrimaryValue, (ushort)cmd.SecondaryValue);
-                return true;
-            }
-
-            private static bool CCGuard(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        target.AddCrowdControlImmunity(cmd.PrimaryValue);
-
-                        if (cmd.SecondaryValue == 1)
-                            target.BuffInterface.RemoveCCFromPending(cmd.PrimaryValue); // Snare 1, Root 2
-
-                        // THANKS MYTHIC
-                        switch(hostBuff.Entry)
+                        #region ClientEffect
+                        if (cmd.PrimaryValue >= 16)
                         {
-                            case 1445:
-                            case 1757:
-                                hostBuff.AddBuffParameter(1, 2);
-                                hostBuff.AddBuffParameter(4, 2);
-                                break;
-                            case 8095:
-                            case 9395:
-                            hostBuff.AddBuffParameter(1, 2);
-                                hostBuff.AddBuffParameter(4, 2);
-                                break;
-                            case 8408:
-                            case 9173:
-                                hostBuff.AddBuffParameter(4, 2);
-                                hostBuff.AddBuffParameter(5, 2);
-                                hostBuff.AddBuffParameter(6, 2);
-                                break;
-                            default:
-                                hostBuff.AddBuffParameter(cmd.BuffLine, 2);
-                                break;
+                            target.StsInterface.RemoveVelocityModifier(hostBuff);
+
+                            target.DispatchUpdateState((byte)StateOpcode.Stunned, 0);
+
+                            PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
+                            Out.WriteUInt16(hostBuff.Caster.Oid);
+                            Out.WriteUInt16(target.Oid);
+                            Out.WriteUInt16(hostBuff.Entry);
+                            Out.WriteByte((byte)(cmd.SecondaryValue));
+                            Out.WriteByte(0);
+                            Out.WriteByte(0);
+                            Out.WriteByte(0);
+                            if (target.IsPlayer())
+                                ((Player)target).DispatchPacket(Out, true);
+                            else if (hostBuff.Caster.IsPlayer())
+                                ((Player)hostBuff.Caster).DispatchPacket(Out, true);
+                        }
+                        #endregion
                     }
-                        break;
-                    case BUFF_END:
-                        target.RemoveCrowdControlImmunity(cmd.PrimaryValue);
-                        break;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                }
-                return true;
+                    break;
+                case BUFF_REMOVE:
+                    goto case 4;
             }
 
-            #endregion
+            return true;
+        }
 
-            #region DamageMod
-
-            private static bool Shield(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        private static bool Root(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        cmd.CommandResult = (short)(cmd.PrimaryValue + (cmd.SecondaryValue - cmd.PrimaryValue) * (hostBuff.BuffLevel - 1) / 39);
-                        hostBuff.Type = (BuffTypes)((int)hostBuff.Type | 32);
-                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
-                        break;
-                    default:
-                        Log.Error("BuffEffectInvoker", "Shield from entry "+hostBuff.Entry+" invoked in unsupported state!");
-                        break;
-                }
+                case BUFF_START:
+                    hostBuff.CrowdControl = (byte)(hostBuff.CrowdControl | (int)CrowdControlTypes.Root);
+                    if (target.StsInterface != null)
+                    {
+                        if (cmd.PrimaryValue == 1)
+                            target.StsInterface.AddVelocityModifier(hostBuff, 0);
 
-                return true;
+                        else if (target.ImmuneToCC((int)CrowdControlTypes.Root, hostBuff.Caster, hostBuff.Entry) || !target.TryRoot(hostBuff))
+                        {
+                            cmd.CommandResult = 1;
+                            return false;
+                        }
+
+                        hostBuff.AddBuffParameter(cmd.BuffLine, 0);
+                    }
+
+                    break;
+                case BUFF_END:
+                    if (cmd.CommandResult == 0)
+                        target.StsInterface?.RemoveVelocityModifier(hostBuff);
+                    break;
+                case BUFF_REMOVE:
+                    goto case 4;
             }
 
-            private static bool DetauntDamage(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+            return true;
+        }
+
+        private static bool Grapple(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                switch (hostBuff.BuffState)
+                case BUFF_START:
+                    if (target.StsInterface != null)
+                    {
+                        hostBuff.CrowdControl = (byte)(hostBuff.CrowdControl | (int)CrowdControlTypes.Grapple);
+
+                        if (target != hostBuff.Caster && (target.ImmuneToCC((int)CrowdControlTypes.Root, hostBuff.Caster, hostBuff.Entry) || target.IsImmovable))
+                        {
+                            cmd.CommandResult = 1;
+                            return false;
+                        }
+                        target.EnterGrapple(hostBuff, target != hostBuff.Caster);
+                        hostBuff.AddBuffParameter(cmd.BuffLine, 0);
+                    }
+                    break;
+                case BUFF_END:
+                    if (cmd.CommandResult == 0 && target.StsInterface != null)
+                    {
+                        target.StsInterface.RemoveVelocityModifier(hostBuff);
+                        target.NoKnockbacks = false;
+                    }
+                    break;
+                case BUFF_REMOVE:
+                    goto case 4;
+            }
+
+            return true;
+        }
+
+        private static bool SetImmovable(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
+                    if (cmd.PrimaryValue == 1)
+                        target.SetImmovable(true);
+                    break;
+                case BUFF_END:
+                    target.SetImmovable(false);
+                    break;
+                case BUFF_REMOVE:
+                    goto case 4;
+            }
+
+            return true;
+        }
+
+        private static bool GitToTheChoppa(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            Unit source = hostBuff.Caster;
+            List<Player> myPlayerList = new List<Player>();
+            byte count = 0;
+
+            foreach (Object obj in source.ObjectsInRange)
+            {
+                if (!obj.IsUnit())
+                    continue;
+
+                Unit curTarget = obj.GetUnit();
+
+                if (!CombatInterface.CanAttack(hostBuff.Caster, curTarget))
+                    continue;
+
+                if (curTarget.ObjectWithinRadiusFeet(source, 30) && source.LOSHit(curTarget))
                 {
-                    case BUFF_START:
-                        if (hostBuff.Caster.CbtInterface.IsAttacking)
-                            hostBuff.Caster.CbtInterface.IsAttacking = false;
-                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue);
+                    AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(hostBuff.Caster);
+                    CombatManager.InflictDamage(damageThisPass, hostBuff.BuffLevel, source, curTarget);
+
+                    if (damageThisPass.DamageEvent != 0 && damageThisPass.DamageEvent != 9)
+                        continue;
+
+                    Player plr = curTarget as Player;
+
+                    if (plr != null && !plr.IsImmovable)
+                        myPlayerList.Add(plr);
+
+                    count++;
+                }
+
+                if (count == cmd.MaxTargets)
+                    break;
+            }
+
+            if (myPlayerList.Count > 0)
+            {
+                Player pulledPlayer = myPlayerList[StaticRandom.Instance.Next(myPlayerList.Count)];
+
+                pulledPlayer.PulledBy(hostBuff.Caster, 200, 1);
+            }
+
+            if (hostBuff.BuffState == BUFF_START)
+                hostBuff.AddBuffParameter(cmd.BuffLine, 0);
+
+            return true;
+        }
+
+        private static bool WindsKnockback(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (target is Player)
+                ((Player)target).ApplyWindsKnockback(hostBuff.Caster, AbilityMgr.GetKnockbackInfo(cmd.Entry, cmd.PrimaryValue));
+
+            else
+                target.ApplyKnockback(hostBuff.Caster, null);
+
+            return true;
+        }
+
+        private static bool Pull(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (CombatManager.CheckMagnetDefense(hostBuff.Entry, hostBuff.Caster, target, true))
+                return false;
+            if (!(target is Player))
+                target.ApplyKnockback(hostBuff.Caster, null);
+            else
+                ((Player)target).PulledBy(hostBuff.Caster, (ushort)cmd.PrimaryValue, (ushort)cmd.SecondaryValue);
+            return true;
+        }
+
+        private static bool RiftPull(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (CombatManager.CheckRiftDefense(hostBuff.Entry, hostBuff.Caster, target, true))
+                return false;
+            if (!(target is Player))
+                target.ApplyKnockback(hostBuff.Caster, null);
+            else
+                ((Player)target).PulledBy(hostBuff.Caster, (ushort)cmd.PrimaryValue, (ushort)cmd.SecondaryValue);
+            return true;
+        }
+
+        private static bool CCGuard(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    target.AddCrowdControlImmunity(cmd.PrimaryValue);
+
+                    if (cmd.SecondaryValue == 1)
+                        target.BuffInterface.RemoveCCFromPending(cmd.PrimaryValue); // Snare 1, Root 2
+
+                    // THANKS MYTHIC
+                    switch (hostBuff.Entry)
+                    {
+                        case 1445:
+                        case 1757:
+                            hostBuff.AddBuffParameter(1, 2);
+                            hostBuff.AddBuffParameter(4, 2);
+                            break;
+                        case 8095:
+                        case 9395:
+                            hostBuff.AddBuffParameter(1, 2);
+                            hostBuff.AddBuffParameter(4, 2);
+                            break;
+                        case 8408:
+                        case 9173:
+                            hostBuff.AddBuffParameter(4, 2);
+                            hostBuff.AddBuffParameter(5, 2);
+                            hostBuff.AddBuffParameter(6, 2);
+                            break;
+                        default:
+                            hostBuff.AddBuffParameter(cmd.BuffLine, 2);
+                            break;
+                    }
+                    break;
+                case BUFF_END:
+                    target.RemoveCrowdControlImmunity(cmd.PrimaryValue);
+                    break;
+                case BUFF_REMOVE:
+                    goto case 4;
+            }
+            return true;
+        }
+
+        #endregion
+
+        #region DamageMod
+
+        private static bool Shield(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    cmd.CommandResult = (short)(cmd.PrimaryValue + (cmd.SecondaryValue - cmd.PrimaryValue) * (hostBuff.BuffLevel - 1) / 39);
+                    hostBuff.Type = (BuffTypes)((int)hostBuff.Type | 32);
+                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
+                    break;
+                default:
+                    Log.Error("BuffEffectInvoker", "Shield from entry " + hostBuff.Entry + " invoked in unsupported state!");
+                    break;
+            }
+
+            return true;
+        }
+
+        private static bool DetauntDamage(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    if (hostBuff.Caster.CbtInterface.IsAttacking)
+                        hostBuff.Caster.CbtInterface.IsAttacking = false;
+                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue);
 
 #if DEBUG
                     //target.Detaunters.Add(hostBuff.Caster.Oid, cmd.PrimaryValue);
@@ -2345,151 +2349,151 @@ namespace WorldServer
                     }
                 break;*/
                 default:
-                        Log.Error("BuffEffectInvoker", "DetauntDamage from entry " + hostBuff.Entry + " invoked in unsupported state!");
-                        break;
-                }
-
-                return true;
+                    Log.Error("BuffEffectInvoker", "DetauntDamage from entry " + hostBuff.Entry + " invoked in unsupported state!");
+                    break;
             }
-
-            private static bool TauntMob(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue);
-                if (!(target is Creature) || target is Pet)
-                    return true;
-                target.AiInterface.ProcessTaunt(hostBuff.Caster, hostBuff.BuffLevel);
-
-                return true;
-            }
-
-            #endregion
-
-            #region Item
-
-            private static bool GreatweaponMastery(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                Item myItem = hostBuff.Caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.MAIN_HAND);
-
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        if (myItem != null && myItem.Info.TwoHanded)
-                        {
-                            cmd.CommandResult = 1;
-                            hostBuff.Target.StsInterface.AddBonusMultiplier(Stats.OutgoingDamagePercent, 0.1f, hostBuff.GetBuffClass(cmd));
-                            hostBuff.Target.StsInterface.AddBonusStat(Stats.Parry, 5, hostBuff.GetBuffClass(cmd));
-                        }
-
-                        hostBuff.AddBuffParameter(1, 5);
-                        hostBuff.AddBuffParameter(2, 10);
-                        break;
-
-                    case BUFF_END:
-                        if (cmd.CommandResult == 0)
-                            return true;
-                        hostBuff.Target.StsInterface.RemoveBonusMultiplier(Stats.OutgoingDamagePercent, 0.1f, hostBuff.GetBuffClass(cmd));
-                        hostBuff.Target.StsInterface.RemoveBonusStat(Stats.Parry, 5, hostBuff.GetBuffClass(cmd));
-                        break;
-                    case BUFF_REMOVE: goto case 4;
-                }
-
-                return true;
-            }
-
-            private static bool OppressingBlows(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                Item myItem = hostBuff.Caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.MAIN_HAND);
-
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        if (myItem != null && myItem.Info.TwoHanded)
-                        {
-                            cmd.CommandResult = 1;
-                            hostBuff.Target.StsInterface.AddBonusStat(Stats.CriticalHitRate, 15, hostBuff.GetBuffClass(cmd));
-                        }
-
-                        hostBuff.AddBuffParameter(1, 15);
-                        break;
-
-                    case BUFF_END:
-                        if (cmd.CommandResult == 0)
-                            return true;
-                        hostBuff.Target.StsInterface.RemoveBonusStat(Stats.CriticalHitRate, 15, hostBuff.GetBuffClass(cmd));
-                        break;
-                    case BUFF_REMOVE: goto case 4;
-                }
-
-                return true;
-            }
-
-            private static bool ModifyStatIfHasShield(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                Item myItem = hostBuff.Caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND);
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        if (myItem?.Info.Type == 5)
-                        {
-                            if (cmd.TertiaryValue != 0)
-                                cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
-                            else cmd.CommandResult = (short)cmd.SecondaryValue;
-
-                            if (cmd.CommandResult < 0)
-                                target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                            else
-                                target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        }
-
-                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
-                        break;
-                    case BUFF_END:
-                        if (cmd.CommandResult == 0)
-                            break;
-                        if (cmd.CommandResult < 0)
-                            target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        break;
-                    case BUFF_REMOVE: goto case 4;
-                }
-
-                return true;
-            }
-
-            private static bool ModifyPercentageStatIfHasShield(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                Item myItem = hostBuff.Caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND);
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        if (myItem?.Info.Type == 5)
-                        {
-                            if (cmd.TertiaryValue != 0)
-                                cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
-                            else cmd.CommandResult = (short)cmd.SecondaryValue;
-
-                            if (cmd.CommandResult < 0)
-                                target.StsInterface.AddReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
-                            else
-                                target.StsInterface.AddBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
-                        }
-
-                        hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
-                        break;
-                    case BUFF_END:
-                        if (cmd.CommandResult == 0)
-                            break;
-                        if (cmd.CommandResult < 0)
-                            target.StsInterface.RemoveReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
-                        else target.StsInterface.RemoveBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
-                     break;
-                    case BUFF_REMOVE: goto case 4;
-                }
 
             return true;
         }
 
-        public static bool ItemSwap (NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        private static bool TauntMob(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue);
+            if (!(target is Creature) || target is Pet)
+                return true;
+            target.AiInterface.ProcessTaunt(hostBuff.Caster, hostBuff.BuffLevel);
+
+            return true;
+        }
+
+        #endregion
+
+        #region Item
+
+        private static bool GreatweaponMastery(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            Item myItem = hostBuff.Caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.MAIN_HAND);
+
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    if (myItem != null && myItem.Info.TwoHanded)
+                    {
+                        cmd.CommandResult = 1;
+                        hostBuff.Target.StsInterface.AddBonusMultiplier(Stats.OutgoingDamagePercent, 0.1f, hostBuff.GetBuffClass(cmd));
+                        hostBuff.Target.StsInterface.AddBonusStat(Stats.Parry, 5, hostBuff.GetBuffClass(cmd));
+                    }
+
+                    hostBuff.AddBuffParameter(1, 5);
+                    hostBuff.AddBuffParameter(2, 10);
+                    break;
+
+                case BUFF_END:
+                    if (cmd.CommandResult == 0)
+                        return true;
+                    hostBuff.Target.StsInterface.RemoveBonusMultiplier(Stats.OutgoingDamagePercent, 0.1f, hostBuff.GetBuffClass(cmd));
+                    hostBuff.Target.StsInterface.RemoveBonusStat(Stats.Parry, 5, hostBuff.GetBuffClass(cmd));
+                    break;
+                case BUFF_REMOVE: goto case 4;
+            }
+
+            return true;
+        }
+
+        private static bool OppressingBlows(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            Item myItem = hostBuff.Caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.MAIN_HAND);
+
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    if (myItem != null && myItem.Info.TwoHanded)
+                    {
+                        cmd.CommandResult = 1;
+                        hostBuff.Target.StsInterface.AddBonusStat(Stats.CriticalHitRate, 15, hostBuff.GetBuffClass(cmd));
+                    }
+
+                    hostBuff.AddBuffParameter(1, 15);
+                    break;
+
+                case BUFF_END:
+                    if (cmd.CommandResult == 0)
+                        return true;
+                    hostBuff.Target.StsInterface.RemoveBonusStat(Stats.CriticalHitRate, 15, hostBuff.GetBuffClass(cmd));
+                    break;
+                case BUFF_REMOVE: goto case 4;
+            }
+
+            return true;
+        }
+
+        private static bool ModifyStatIfHasShield(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            Item myItem = hostBuff.Caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND);
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    if (myItem?.Info.Type == 5)
+                    {
+                        if (cmd.TertiaryValue != 0)
+                            cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
+                        else cmd.CommandResult = (short)cmd.SecondaryValue;
+
+                        if (cmd.CommandResult < 0)
+                            target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                        else
+                            target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    }
+
+                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
+                    break;
+                case BUFF_END:
+                    if (cmd.CommandResult == 0)
+                        break;
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    break;
+                case BUFF_REMOVE: goto case 4;
+            }
+
+            return true;
+        }
+
+        private static bool ModifyPercentageStatIfHasShield(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            Item myItem = hostBuff.Caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND);
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    if (myItem?.Info.Type == 5)
+                    {
+                        if (cmd.TertiaryValue != 0)
+                            cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
+                        else cmd.CommandResult = (short)cmd.SecondaryValue;
+
+                        if (cmd.CommandResult < 0)
+                            target.StsInterface.AddReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
+                        else
+                            target.StsInterface.AddBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
+                    }
+
+                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
+                    break;
+                case BUFF_END:
+                    if (cmd.CommandResult == 0)
+                        break;
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.RemoveReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
+                    else target.StsInterface.RemoveBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
+                    break;
+                case BUFF_REMOVE: goto case 4;
+            }
+
+            return true;
+        }
+
+        public static bool ItemSwap(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
             Player plr = target as Player;
             //need to look at this later but this is going to break everything if the player does not have a item in the slot at all.
@@ -2554,7 +2558,7 @@ namespace WorldServer
             switch (hostBuff.BuffState)
             {
                 case BUFF_START:
-                    plr.MountFromBuff(hostBuff, (ushort) cmd.PrimaryValue, (ushort)cmd.SecondaryValue, 1f + (cmd.LastCommand.PrimaryValue * 0.01f));
+                    plr.MountFromBuff(hostBuff, (ushort)cmd.PrimaryValue, (ushort)cmd.SecondaryValue, 1f + (cmd.LastCommand.PrimaryValue * 0.01f));
                     break;
                 case BUFF_REMOVE:
                     // Send dismount smoke/effect
@@ -2614,531 +2618,532 @@ namespace WorldServer
         #region Buff
 
         private static bool Chickenize(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        if (hostBuff.Caster.Realm == Realms.REALMS_REALM_ORDER)
-                            target.OSInterface.AddEffect((byte)GameData.ObjectEffectState.OBJECTEFFECTSTATE_ORDER_CHICKEN);
-                        else target.OSInterface.AddEffect((byte)GameData.ObjectEffectState.OBJECTEFFECTSTATE_CHAOS_CHICKEN);
-                        ((Player) hostBuff.Target).IsPolymorphed = true;
+                case BUFF_START:
+                    if (hostBuff.Caster.Realm == Realms.REALMS_REALM_ORDER)
+                        target.OSInterface.AddEffect((byte)GameData.ObjectEffectState.OBJECTEFFECTSTATE_ORDER_CHICKEN);
+                    else target.OSInterface.AddEffect((byte)GameData.ObjectEffectState.OBJECTEFFECTSTATE_CHAOS_CHICKEN);
+                    ((Player)hostBuff.Target).IsPolymorphed = true;
 
-                        for (byte i = 0; i <= (byte) Stats.CorporealResistance; ++i)
-                        {
-                            target.StsInterface.AddReducedMultiplier((Stats)i, i == (byte) Stats.Wounds ? 0.01f : 0.1f, BuffClass.Career);
-                        }
-
-                        target.StsInterface.AddReducedMultiplier(Stats.Armor, 0.1f, BuffClass.Career);
-                        target.StsInterface.AddReducedMultiplier(Stats.Block, 0f, BuffClass.Career);
-                        target.StsInterface.AddReducedMultiplier(Stats.Parry, 0f, BuffClass.Career);
-
-                        target.BuffInterface.RemoveCasterBuffs();
-
-                        Pet pet = ((Player) target).CrrInterface.GetTargetOfInterest() as Pet;
-
-                        pet?.Dismiss(null, null);
-
-                        for (byte i = 0; i < 10; ++i)
-                            hostBuff.AddBuffParameter(i, 1);
-                        break;
-                    case BUFF_END:
-                        if (hostBuff.Caster.Realm == Realms.REALMS_REALM_ORDER)
-                            target.OSInterface.RemoveEffect((byte)GameData.ObjectEffectState.OBJECTEFFECTSTATE_ORDER_CHICKEN);
-                        else target.OSInterface.RemoveEffect((byte)GameData.ObjectEffectState.OBJECTEFFECTSTATE_CHAOS_CHICKEN);
-                        ((Player) hostBuff.Target).IsPolymorphed = false;
-
-                        for (byte i = 0; i <= (int)Stats.CorporealResistance; ++i)
-                            target.StsInterface.RemoveReducedMultiplier((Stats)i, i == (int)Stats.Wounds ? 0.01f : 0.1f, BuffClass.Career);
-                        target.StsInterface.RemoveReducedMultiplier(Stats.Armor, 0.1f, BuffClass.Career);
-                        target.StsInterface.RemoveReducedMultiplier(Stats.Block, 0f, BuffClass.Career);
-                        target.StsInterface.RemoveReducedMultiplier(Stats.Parry, 0f, BuffClass.Career);
-
-
-                        break;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                }
-
-                return true;
-            }
-
-            private static bool HoldTheLine(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        if (hostBuff.Caster == hostBuff.Target)
-                            target.StsInterface.HTLStacks += 3;
-                        else ++target.StsInterface.HTLStacks;
-                        hostBuff.AddBuffParameter(1, hostBuff.Caster == hostBuff.Target ? 45 : 15);
-                        break;
-                    case BUFF_END:
-                    case BUFF_REMOVE:
-                        if (hostBuff.Caster == hostBuff.Target)
-                            target.StsInterface.HTLStacks -= 3;
-                        else --target.StsInterface.HTLStacks;
-                        break;
-
-                }
-                return true;
-            }
-
-            private static bool InvokeBuff(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                if (cmd.SecondaryValue != 0 && StaticRandom.Instance.Next(100) > cmd.SecondaryValue)
-                    return false;
-
-                // Deal with effects which apply when the buff ticks
-                if (hostBuff.BuffState == BUFF_REMOVE && cmd.InvokeOn != 4)
-                    return false;
-
-                BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, hostBuff.Caster, target);
-                if (buffInfo.Entry == hostBuff.Entry)
-                {
-                    if (buffInfo.Duration != 0)
-                        buffInfo.Duration = (ushort)(hostBuff.RemainingTimeMs * 0.001f);
-                }
-                target.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, buffInfo));
-
-                return true;
-            }
-
-            // Because of Pack Hunting being an exception to the general buff design.
-            private static bool InvokeChildBuff(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, hostBuff.Caster, target);
-
-                target.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, buffInfo, hostBuff.SetLinkedBuff));
-
-                return true;
-            }
-
-            private static bool InvokeBuffOnPet(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                Pet myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
-
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        hostBuff.AddBuffParameter(cmd.BuffLine, 1);
-                        myPet?.BuffInterface.QueueBuff(new BuffQueueInfo(myPet, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue)));
-                        break;
-                    case BUFF_REMOVE:
-                        myPet?.BuffInterface.RemoveBuffByEntry((ushort)cmd.PrimaryValue);
-                        break;
-                }
-
-                return true;
-            }
-
-            private static bool InvokeAuraOnPet(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                Pet myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
-
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        hostBuff.AddBuffParameter(cmd.BuffLine, 1);
-                        myPet?.BuffInterface.QueueBuff(new BuffQueueInfo(myPet, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue), CreateAura));
-                        break;
-                    case BUFF_REMOVE:
-                        myPet?.BuffInterface.RemoveBuffByEntry((ushort)cmd.PrimaryValue);
-                        break;
-                }
-
-                return true;
-            }
-
-            private static bool ReapplyBuff(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                if (hostBuff.Caster.BuffInterface.Stopping)
-                    return false;
-                if (cmd.SecondaryValue == 100)
-                {
-                    NewBuff existing = target.BuffInterface.GetBuff((ushort) cmd.PrimaryValue, target);
-                    if (existing != null)
+                    for (byte i = 0; i <= (byte)Stats.CorporealResistance; ++i)
                     {
-                        existing.BuffHasExpired = true;
-                        if (existing is AuraBuff)
-                            target.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, hostBuff.Caster, target), CreateAura));
-                        else
-                            target.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, hostBuff.Caster, target)));
-                    }  
-                }
-                else if (StaticRandom.Instance.Next(100) < cmd.SecondaryValue)
-                    target.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, hostBuff.Caster, target)));
+                        target.StsInterface.AddReducedMultiplier((Stats)i, i == (byte)Stats.Wounds ? 0.01f : 0.1f, BuffClass.Career);
+                    }
 
-                return true;
+                    target.StsInterface.AddReducedMultiplier(Stats.Armor, 0.1f, BuffClass.Career);
+                    target.StsInterface.AddReducedMultiplier(Stats.Block, 0f, BuffClass.Career);
+                    target.StsInterface.AddReducedMultiplier(Stats.Parry, 0f, BuffClass.Career);
+
+                    target.BuffInterface.RemoveCasterBuffs();
+
+                    Pet pet = ((Player)target).CrrInterface.GetTargetOfInterest() as Pet;
+
+                    pet?.Dismiss(null, null);
+
+                    for (byte i = 0; i < 10; ++i)
+                        hostBuff.AddBuffParameter(i, 1);
+                    break;
+                case BUFF_END:
+                    if (hostBuff.Caster.Realm == Realms.REALMS_REALM_ORDER)
+                        target.OSInterface.RemoveEffect((byte)GameData.ObjectEffectState.OBJECTEFFECTSTATE_ORDER_CHICKEN);
+                    else target.OSInterface.RemoveEffect((byte)GameData.ObjectEffectState.OBJECTEFFECTSTATE_CHAOS_CHICKEN);
+                    ((Player)hostBuff.Target).IsPolymorphed = false;
+
+                    for (byte i = 0; i <= (int)Stats.CorporealResistance; ++i)
+                        target.StsInterface.RemoveReducedMultiplier((Stats)i, i == (int)Stats.Wounds ? 0.01f : 0.1f, BuffClass.Career);
+                    target.StsInterface.RemoveReducedMultiplier(Stats.Armor, 0.1f, BuffClass.Career);
+                    target.StsInterface.RemoveReducedMultiplier(Stats.Block, 0f, BuffClass.Career);
+                    target.StsInterface.RemoveReducedMultiplier(Stats.Parry, 0f, BuffClass.Career);
+
+
+                    break;
+                case BUFF_REMOVE:
+                    goto case 4;
             }
 
-            private static bool ReapplyClassBuff(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+            return true;
+        }
+
+        private static bool HoldTheLine(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                if (hostBuff.Caster.BuffInterface.Stopping)
+                case BUFF_START:
+                    if (hostBuff.Caster == hostBuff.Target)
+                        target.StsInterface.HTLStacks += 3;
+                    else ++target.StsInterface.HTLStacks;
+                    hostBuff.AddBuffParameter(1, hostBuff.Caster == hostBuff.Target ? 45 : 15);
+                    break;
+                case BUFF_END:
+                case BUFF_REMOVE:
+                    if (hostBuff.Caster == hostBuff.Target)
+                        target.StsInterface.HTLStacks -= 3;
+                    else --target.StsInterface.HTLStacks;
+                    break;
+
+            }
+            return true;
+        }
+
+        private static bool InvokeBuff(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (cmd.SecondaryValue != 0 && StaticRandom.Instance.Next(100) > cmd.SecondaryValue)
+                return false;
+
+            // Deal with effects which apply when the buff ticks
+            if (hostBuff.BuffState == BUFF_REMOVE && cmd.InvokeOn != 4)
+                return false;
+
+            BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, hostBuff.Caster, target);
+            if (buffInfo.Entry == hostBuff.Entry)
+            {
+                if (buffInfo.Duration != 0)
+                    buffInfo.Duration = (ushort)(hostBuff.RemainingTimeMs * 0.001f);
+            }
+            target.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, buffInfo));
+
+            return true;
+        }
+
+        // Because of Pack Hunting being an exception to the general buff design.
+        private static bool InvokeChildBuff(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, hostBuff.Caster, target);
+
+            target.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, buffInfo, hostBuff.SetLinkedBuff));
+
+            return true;
+        }
+
+        private static bool InvokeBuffOnPet(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            Pet myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
+
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    hostBuff.AddBuffParameter(cmd.BuffLine, 1);
+                    myPet?.BuffInterface.QueueBuff(new BuffQueueInfo(myPet, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue)));
+                    break;
+                case BUFF_REMOVE:
+                    myPet?.BuffInterface.RemoveBuffByEntry((ushort)cmd.PrimaryValue);
+                    break;
+            }
+
+            return true;
+        }
+
+        private static bool InvokeAuraOnPet(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            Pet myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
+
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    hostBuff.AddBuffParameter(cmd.BuffLine, 1);
+                    myPet?.BuffInterface.QueueBuff(new BuffQueueInfo(myPet, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue), CreateAura));
+                    break;
+                case BUFF_REMOVE:
+                    myPet?.BuffInterface.RemoveBuffByEntry((ushort)cmd.PrimaryValue);
+                    break;
+            }
+
+            return true;
+        }
+
+        private static bool ReapplyBuff(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (hostBuff.Caster.BuffInterface.Stopping)
+                return false;
+            if (cmd.SecondaryValue == 100)
+            {
+                NewBuff existing = target.BuffInterface.GetBuff((ushort)cmd.PrimaryValue, target);
+                if (existing != null)
+                {
+                    existing.BuffHasExpired = true;
+                    if (existing is AuraBuff)
+                        target.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, hostBuff.Caster, target), CreateAura));
+                    else
+                        target.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, hostBuff.Caster, target)));
+                }
+            }
+            else if (StaticRandom.Instance.Next(100) < cmd.SecondaryValue)
+                target.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, hostBuff.Caster, target)));
+
+            return true;
+        }
+
+        private static bool ReapplyClassBuff(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (hostBuff.Caster.BuffInterface.Stopping)
+                return false;
+
+            NewBuff crrBuff = target.BuffInterface.GetCareerBuff(cmd.PrimaryValue);
+
+            if (crrBuff == null)
+                return true;
+
+            crrBuff.BuffHasExpired = true;
+            target.BuffInterface.QueueBuff(new BuffQueueInfo(target, crrBuff.BuffLevel, AbilityMgr.GetBuffInfo(crrBuff.Entry, target, target)));
+
+            return true;
+        }
+
+        private static bool ReapplyGroupBuff(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            List<Unit> members = new List<Unit> { hostBuff.Caster };
+
+            Player player = (Player)hostBuff.Caster;
+
+            if (player.WorldGroup != null)
+                members.AddRange(player.WorldGroup.GetPlayerListCopy(player));
+            if (player.ScenarioGroup != null)
+                members.AddRange(player.ScenarioGroup.GetPlayerListCopy(player));
+
+            foreach (Unit member in members)
+            {
+                if (member.BuffInterface.Stopping)
                     return false;
 
-                NewBuff crrBuff = target.BuffInterface.GetCareerBuff(cmd.PrimaryValue);
+                NewBuff targetBuff = member.BuffInterface.GetBuff((ushort)cmd.PrimaryValue, hostBuff.Caster);
 
-                if (crrBuff == null)
+                if (targetBuff == null)
                     return true;
 
-                crrBuff.BuffHasExpired = true;
-                target.BuffInterface.QueueBuff(new BuffQueueInfo(target, crrBuff.BuffLevel, AbilityMgr.GetBuffInfo(crrBuff.Entry, target, target)));
+                targetBuff.BuffHasExpired = true;
 
-                return true;
+                if (!hostBuff.Caster.BuffInterface.Stopping)
+                    member.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, targetBuff.BuffLevel, AbilityMgr.GetBuffInfo(targetBuff.Entry, hostBuff.Caster, member)));
             }
 
-            private static bool ReapplyGroupBuff(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                List<Unit> members = new List<Unit> {hostBuff.Caster};
+            return true;
+        }
 
-                Player player = (Player) hostBuff.Caster;
+        private static bool CleanseDebuffType(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (StaticRandom.Instance.Next(100) < cmd.EventChance)
+                return target.BuffInterface.CleanseDebuffType((byte)cmd.PrimaryValue, (byte)cmd.SecondaryValue) > 0;
+            return false;
+        }
+        private static bool RemoveBuff(NewBuff hostbuff, BuffCommandInfo cmd, Unit target)
+        {
 
-                if (player.WorldGroup != null)
-                    members.AddRange(player.WorldGroup.GetPlayerListCopy(player));
-                if (player.ScenarioGroup != null)
-                    members.AddRange(player.ScenarioGroup.GetPlayerListCopy(player));
-
-                foreach (Unit member in members)
-                {
-                    if (member.BuffInterface.Stopping)
-                        return false;
-
-                    NewBuff targetBuff = member.BuffInterface.GetBuff((ushort)cmd.PrimaryValue, hostBuff.Caster);
-
-                    if (targetBuff == null)
-                        return true;
-
-                    targetBuff.BuffHasExpired = true;
-
-                    if (!hostBuff.Caster.BuffInterface.Stopping)
-                        member.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, targetBuff.BuffLevel, AbilityMgr.GetBuffInfo(targetBuff.Entry, hostBuff.Caster, member)));
-                }
-
-                return true;
-            }
-
-            private static bool CleanseDebuffType(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-                {
-                    if (StaticRandom.Instance.Next(100) < cmd.EventChance)
-                        return target.BuffInterface.CleanseDebuffType((byte)cmd.PrimaryValue, (byte)cmd.SecondaryValue) > 0;
-                    return false;
-                }
-            private static bool RemoveBuff(NewBuff hostbuff, BuffCommandInfo cmd, Unit target)
-            {
-            
 
             target.BuffInterface.RemoveBuffByEntry(Convert.ToUInt16(cmd.PrimaryValue));
 
             return true;
-            }
+        }
 
-            #endregion
+        #endregion
 
-            #region Misc
+        #region Misc
 
-            private static bool RegisterModifiers(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        private static bool RegisterModifiers(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            Player plr = target as Player;
+
+            if (plr == null)
+                return false;
+
+            switch (hostBuff.BuffState)
             {
-                Player plr = target as Player;
-
-                if (plr == null)
-                    return false;
-
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        plr.TacInterface.RegisterGeneralBuff(hostBuff);
-                        break;
-                    case BUFF_END:
-                        plr.TacInterface.UnregisterGeneralBuff(hostBuff);
-                        break;
-                    case BUFF_REMOVE:
-                        goto case BUFF_END;
-                }
-
-                return true;
+                case BUFF_START:
+                    plr.TacInterface.RegisterGeneralBuff(hostBuff);
+                    break;
+                case BUFF_END:
+                    plr.TacInterface.UnregisterGeneralBuff(hostBuff);
+                    break;
+                case BUFF_REMOVE:
+                    goto case BUFF_END;
             }
 
-            private static bool GrantTempAbility(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+            return true;
+        }
+
+        private static bool GrantTempAbility(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START: hostBuff.Target.AbtInterface.GrantAbility((ushort)cmd.PrimaryValue);
-                        break;
-                    case BUFF_END:
-                    case BUFF_REMOVE:
-                        hostBuff.Target.AbtInterface.RemoveGrantedAbility((ushort)cmd.PrimaryValue);
-                        break;
-                }
-
-                return true;
+                case BUFF_START:
+                    hostBuff.Target.AbtInterface.GrantAbility((ushort)cmd.PrimaryValue);
+                    break;
+                case BUFF_END:
+                case BUFF_REMOVE:
+                    hostBuff.Target.AbtInterface.RemoveGrantedAbility((ushort)cmd.PrimaryValue);
+                    break;
             }
 
-            private static bool DetauntWard(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+            return true;
+        }
+
+        private static bool DetauntWard(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        target.BuffInterface.DetauntWard = true;
-                        hostBuff.AddBuffParameter(1, cmd.BuffLine);
-                        break;
-                    case BUFF_END:
-                        target.BuffInterface.DetauntWard = false;
-                        break;
-                    case BUFF_REMOVE: goto case 4;
-                }
-
-                return true;
+                case BUFF_START:
+                    target.BuffInterface.DetauntWard = true;
+                    hostBuff.AddBuffParameter(1, cmd.BuffLine);
+                    break;
+                case BUFF_END:
+                    target.BuffInterface.DetauntWard = false;
+                    break;
+                case BUFF_REMOVE: goto case 4;
             }
 
-            private static bool AddBuffParameter(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {   
-                if (hostBuff.BuffState == BUFF_START)
-                    hostBuff.AddBuffParameter(cmd.BuffLine, (short)cmd.PrimaryValue);
-                return true;
-            }
+            return true;
+        }
 
-            private static bool CastPlayerEffect(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        private static bool AddBuffParameter(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (hostBuff.BuffState == BUFF_START)
+                hostBuff.AddBuffParameter(cmd.BuffLine, (short)cmd.PrimaryValue);
+            return true;
+        }
+
+        private static bool CastPlayerEffect(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
+            Out.WriteUInt16(hostBuff.Caster.Oid);
+            Out.WriteUInt16(target.Oid);
+            Out.WriteUInt16((ushort)cmd.PrimaryValue);
+            Out.WriteByte((byte)cmd.SecondaryValue);
+            Out.WriteByte(0);
+            Out.WriteByte(5);
+            Out.WriteByte(0);
+
+            target.DispatchPacket(Out, true);
+            return true;
+        }
+
+        private static bool ActivationEffect(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (hostBuff.Caster is Player)
             {
+                Player plr = (Player)hostBuff.Caster;
+
                 PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
                 Out.WriteUInt16(hostBuff.Caster.Oid);
                 Out.WriteUInt16(target.Oid);
                 Out.WriteUInt16((ushort)cmd.PrimaryValue);
                 Out.WriteByte((byte)cmd.SecondaryValue);
                 Out.WriteByte(0);
-                Out.WriteByte(5);
+                Out.WriteByte(hostBuff.BuffState == BUFF_START ? (byte)1 : (byte)0);
                 Out.WriteByte(0);
-
-                target.DispatchPacket(Out, true);
-                return true;
+                plr.DispatchPacket(Out, true);
             }
 
-            private static bool ActivationEffect(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+            return true;
+        }
+
+        private static bool Bolster(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                if(hostBuff.Caster is Player)
-                { 
-                    Player plr = (Player)hostBuff.Caster;
-
-                    PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
-                    Out.WriteUInt16(hostBuff.Caster.Oid);
-                    Out.WriteUInt16(target.Oid);
-                    Out.WriteUInt16((ushort)cmd.PrimaryValue);
-                    Out.WriteByte((byte)cmd.SecondaryValue);
-                    Out.WriteByte(0);
-                    Out.WriteByte(hostBuff.BuffState == BUFF_START? (byte)1 : (byte)0);
-                    Out.WriteByte(0);
-                    plr.DispatchPacket(Out, true);
-                }
-
-                return true;
+                case BUFF_START: (hostBuff.Caster as Player).ApplyBolster((byte)cmd.PrimaryValue); hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue); break;
+                case BUFF_REMOVE: (hostBuff.Caster as Player).ApplyBolster(0); break;
             }
 
-            private static bool Bolster(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START: (hostBuff.Caster as Player).ApplyBolster((byte)cmd.PrimaryValue); hostBuff.AddBuffParameter(cmd.BuffLine, cmd.PrimaryValue); break;
-                    case BUFF_REMOVE: (hostBuff.Caster as Player).ApplyBolster(0); break;
-                }
+            return true;
+        }
 
-                return true;
+        private static bool ObjectEffectState(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    target.OSInterface.AddEffect((byte)cmd.PrimaryValue);
+                    hostBuff.AddBuffParameter(cmd.BuffLine, 1);
+                    if (cmd.PrimaryValue == (byte)GameData.ObjectEffectState.OBJECTEFFECTSTATE_STEALTH && hostBuff.Caster is Player)
+                    {
+                        ((Player)hostBuff.Caster).Cloak(1);
+                        hostBuff.Caster.CbtInterface.IsAttacking = false;
+                    }
+                    return true;
+                case BUFF_END:
+                    target.OSInterface.RemoveEffect((byte)cmd.PrimaryValue);
+                    if (cmd.PrimaryValue == (byte)GameData.ObjectEffectState.OBJECTEFFECTSTATE_STEALTH && hostBuff.Caster is Player)
+                        ((Player)hostBuff.Caster).Uncloak();
+                    return true;
+                case BUFF_REMOVE:
+                    goto case 4;
+                default:
+                    return true;
             }
+        }
 
-            private static bool ObjectEffectState(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch(hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        target.OSInterface.AddEffect((byte)cmd.PrimaryValue);
-                        hostBuff.AddBuffParameter(cmd.BuffLine, 1);
-                        if (cmd.PrimaryValue == (byte) GameData.ObjectEffectState.OBJECTEFFECTSTATE_STEALTH && hostBuff.Caster is Player)
-                        {
-                            ((Player) hostBuff.Caster).Cloak(1);
-                            hostBuff.Caster.CbtInterface.IsAttacking = false;
-                        }
-                        return true;
-                    case BUFF_END:
-                        target.OSInterface.RemoveEffect((byte)cmd.PrimaryValue);
-                        if (cmd.PrimaryValue == (byte)GameData.ObjectEffectState.OBJECTEFFECTSTATE_STEALTH && hostBuff.Caster is Player)
-                            ((Player)hostBuff.Caster).Uncloak();
-                        return true;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                    default:
-                        return true;
-                }
-            }
-
-            private static bool RefreshIfMoving(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
+        private static bool RefreshIfMoving(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
             //lets not let a refresh of a buff happen to a keep lord
             WorldServer.World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature Lord = target as WorldServer.World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature;
             if (Lord != null && Lord.returnflag().Info.KeepLord)
                 return true;
 
             if (target.IsMoving)
+            {
+                // Maximum duration of refreshers (GSS) 30 seconds, scaled down to fit more conveniently within short int
+                if (cmd.CommandResult < 3000)
                 {
-                    // Maximum duration of refreshers (GSS) 30 seconds, scaled down to fit more conveniently within short int
-                    if (cmd.CommandResult < 3000)
-                    {
-                        cmd.CommandResult += (short) ((hostBuff.Duration*1000 - hostBuff.RemainingTimeMs)*0.1f);
-                        hostBuff.SoftRefresh();
-                    }
+                    cmd.CommandResult += (short)((hostBuff.Duration * 1000 - hostBuff.RemainingTimeMs) * 0.1f);
+                    hostBuff.SoftRefresh();
                 }
-
-                return true;
             }
 
-            private static bool InvokeCooldown(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        hostBuff.Caster.AbtInterface.SetCooldown(hostBuff.Entry, 120000, true);
-                        break;
-                    case BUFF_END:
-                    case BUFF_REMOVE:
-                        hostBuff.Caster.AbtInterface.SetCooldown(hostBuff.Entry, AbilityMgr.GetCooldownFor(hostBuff.Entry) * 1000);
-                        break;
-                }
-
-                return true;
-            }
-
-            private static bool MoveAndShoot(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START: ((CombatInterface_Player)hostBuff.Caster.CbtInterface).MoveAndShoot = true; hostBuff.AddBuffParameter(cmd.BuffLine, 1); break;
-                    case BUFF_END: ((CombatInterface_Player)hostBuff.Caster.CbtInterface).MoveAndShoot = false; break;
-                    case BUFF_REMOVE: goto case 4;
-                }
-
-                return true;
-            }
-
-            private static bool PokeClassBuff(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                if (hostBuff.BuffState == BUFF_REMOVE)
-                    return false;
-                hostBuff.Caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.Manual, null, target);
-                return true;
-            }
-
-            private static bool BounceBuff(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                if (hostBuff.BuffState != 4)
-                    return false;
-
-                BouncingBuff bBuff = hostBuff as BouncingBuff;
-
-                if (bBuff == null || !bBuff.CanBounce())
-                    return false;
-
-                foreach (var plr in hostBuff.Target.PlayersInRange)
-                {
-                    if (plr.Realm != hostBuff.Target.Realm)
-                        continue;
-                    if (!plr.ObjectWithinRadiusFeet(hostBuff.Target, 30))
-                        continue;
-                    if (bBuff.previousPlayers.Contains(plr))
-                        continue;
-                    plr.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo(hostBuff.Entry, hostBuff.Caster, plr), CreateBouncingBuff, bBuff.PassPreviousBounces));
-                    return true;
-                }
-
-                return false;
+            return true;
         }
 
-            private static bool Hotswap(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        private static bool InvokeCooldown(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        hostBuff.AddBuffParameter(1, 1);
-                        break;
-                    case BUFF_END:
-                        hostBuff.Target.BuffInterface.Hotswap(hostBuff, (ushort) cmd.PrimaryValue);
-                        break;
-                }
+                case BUFF_START:
+                    hostBuff.Caster.AbtInterface.SetCooldown(hostBuff.Entry, 120000, true);
+                    break;
+                case BUFF_END:
+                case BUFF_REMOVE:
+                    hostBuff.Caster.AbtInterface.SetCooldown(hostBuff.Entry, AbilityMgr.GetCooldownFor(hostBuff.Entry) * 1000);
+                    break;
+            }
 
+            return true;
+        }
+
+        private static bool MoveAndShoot(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START: ((CombatInterface_Player)hostBuff.Caster.CbtInterface).MoveAndShoot = true; hostBuff.AddBuffParameter(cmd.BuffLine, 1); break;
+                case BUFF_END: ((CombatInterface_Player)hostBuff.Caster.CbtInterface).MoveAndShoot = false; break;
+                case BUFF_REMOVE: goto case 4;
+            }
+
+            return true;
+        }
+
+        private static bool PokeClassBuff(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (hostBuff.BuffState == BUFF_REMOVE)
+                return false;
+            hostBuff.Caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.Manual, null, target);
+            return true;
+        }
+
+        private static bool BounceBuff(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (hostBuff.BuffState != 4)
+                return false;
+
+            BouncingBuff bBuff = hostBuff as BouncingBuff;
+
+            if (bBuff == null || !bBuff.CanBounce())
+                return false;
+
+            foreach (var plr in hostBuff.Target.PlayersInRange)
+            {
+                if (plr.Realm != hostBuff.Target.Realm)
+                    continue;
+                if (!plr.ObjectWithinRadiusFeet(hostBuff.Target, 30))
+                    continue;
+                if (bBuff.previousPlayers.Contains(plr))
+                    continue;
+                plr.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo(hostBuff.Entry, hostBuff.Caster, plr), CreateBouncingBuff, bBuff.PassPreviousBounces));
                 return true;
             }
 
-            private static bool ResourceHandler(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+            return false;
+        }
+
+        private static bool Hotswap(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                Player player = (Player)hostBuff.Caster;
-
-                if (hostBuff.BuffState == BUFF_START)
-                    cmd.CommandResult = 5;
-                
-                // Check out of PvE area.
-                else if (player.CurrentArea == null || !player.CurrentArea.IsRvR)
-                {
-                    --cmd.CommandResult;
-
-                    if (cmd.CommandResult > 0)
-                    {
-                        player.SendClientMessage("You are carrying a resource out of the RvR area. Holding a resource outside of the RvR area too long will cause it to reset.", ChatLogFilters.CHATLOGFILTERS_RVR);
-                        player.SendClientMessage("Must return to the RvR area when carrying a resource!", player.Realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE);
-                    }
-
-                    else
-                    {
-                        HoldObjectBuff buff = (HoldObjectBuff)hostBuff;
-                        buff.HeldObject.ResetTo(EHeldState.Home);
-                        player.SendClientMessage("You held a resource outside of the RvR area for too long, and it has been reset.", ChatLogFilters.CHATLOGFILTERS_RVR);
-                    }
-                }
-
-                // Recalculate drop chance.
-                cmd.EventChance = 50;
-
-                if (player.WorldGroup != null)
-                {
-                    if (player.BuffInterface.HasGuard())
-                        cmd.EventChance -= 25;
-
-                    List<Player> nearby = player.WorldGroup.GetPlayersCloseTo(player, 50);
-
-                    player.Region.Campaign.AddContribution(player, 5);
-
-                    foreach (Player member in nearby)
-                        player.Region.Campaign.AddContribution(member, 5);
-
-                    cmd.EventChance -= (byte)(nearby.Count * 5);
-                }
-
-                return true;
+                case BUFF_START:
+                    hostBuff.AddBuffParameter(1, 1);
+                    break;
+                case BUFF_END:
+                    hostBuff.Target.BuffInterface.Hotswap(hostBuff, (ushort)cmd.PrimaryValue);
+                    break;
             }
 
-            private static bool GfxMod(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                if (hostBuff.BuffState == 1)
-                {
-                    target.AddGfxMod((ushort)cmd.PrimaryValue, (ushort)cmd.SecondaryValue);
-                    if (cmd.TertiaryValue == 1)
-                        target.EvtInterface.AddEvent(target.SendGfxMods, 1, 1);
-                    hostBuff.AddBuffParameter(cmd.BuffLine, 1);
-                }
-                return true;
-            }
+            return true;
+        }
 
-            private static bool BlockScenarioQueue(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        private static bool ResourceHandler(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            Player player = (Player)hostBuff.Caster;
+
+            if (hostBuff.BuffState == BUFF_START)
+                cmd.CommandResult = 5;
+
+            // Check out of PvE area.
+            else if (player.CurrentArea == null || !player.CurrentArea.IsRvR)
             {
-                switch (hostBuff.BuffState)
+                --cmd.CommandResult;
+
+                if (cmd.CommandResult > 0)
                 {
-                    case BUFF_START:
-                        ((Player) hostBuff.Target).ScnInterface.BlockQueue = true;
-                        hostBuff.AddBuffParameter(cmd.BuffLine, -1);
-                        break;
-                    case BUFF_END:
-                    case BUFF_REMOVE:
-                        ((Player) hostBuff.Target).ScnInterface.BlockQueue = false;
-                        break;
+                    player.SendClientMessage("You are carrying a resource out of the RvR area. Holding a resource outside of the RvR area too long will cause it to reset.", ChatLogFilters.CHATLOGFILTERS_RVR);
+                    player.SendClientMessage("Must return to the RvR area when carrying a resource!", player.Realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE);
                 }
 
-                return true;
+                else
+                {
+                    HoldObjectBuff buff = (HoldObjectBuff)hostBuff;
+                    buff.HeldObject.ResetTo(EHeldState.Home);
+                    player.SendClientMessage("You held a resource outside of the RvR area for too long, and it has been reset.", ChatLogFilters.CHATLOGFILTERS_RVR);
+                }
             }
+
+            // Recalculate drop chance.
+            cmd.EventChance = 50;
+
+            if (player.WorldGroup != null)
+            {
+                if (player.BuffInterface.HasGuard())
+                    cmd.EventChance -= 25;
+
+                List<Player> nearby = player.WorldGroup.GetPlayersCloseTo(player, 50);
+
+                player.Region.Campaign.AddContribution(player, 5);
+
+                foreach (Player member in nearby)
+                    player.Region.Campaign.AddContribution(member, 5);
+
+                cmd.EventChance -= (byte)(nearby.Count * 5);
+            }
+
+            return true;
+        }
+
+        private static bool GfxMod(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (hostBuff.BuffState == 1)
+            {
+                target.AddGfxMod((ushort)cmd.PrimaryValue, (ushort)cmd.SecondaryValue);
+                if (cmd.TertiaryValue == 1)
+                    target.EvtInterface.AddEvent(target.SendGfxMods, 1, 1);
+                hostBuff.AddBuffParameter(cmd.BuffLine, 1);
+            }
+            return true;
+        }
+
+        private static bool BlockScenarioQueue(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    ((Player)hostBuff.Target).ScnInterface.BlockQueue = true;
+                    hostBuff.AddBuffParameter(cmd.BuffLine, -1);
+                    break;
+                case BUFF_END:
+                case BUFF_REMOVE:
+                    ((Player)hostBuff.Target).ScnInterface.BlockQueue = false;
+                    break;
+            }
+
+            return true;
+        }
 
         #endregion
 
@@ -3201,233 +3206,233 @@ namespace WorldServer
         #region Pet
 
         private static bool SummonVanityPet(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            Player myPlayer = (Player)hostBuff.Target;
+
+            switch (hostBuff.BuffState)
             {
-                Player myPlayer = (Player)hostBuff.Target;
+                case BUFF_START:
+                    if (!myPlayer.CbtInterface.IsPvp)
+                    {
+                        Creature_proto proto = CreatureService.GetCreatureProto((uint)cmd.PrimaryValue);
+                        Creature_spawn spawn = new Creature_spawn();
 
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        if (!myPlayer.CbtInterface.IsPvp)
+                        if (proto == null)
                         {
-                            Creature_proto proto = CreatureService.GetCreatureProto((uint)cmd.PrimaryValue);
-                            Creature_spawn spawn = new Creature_spawn();
-
-                            if (proto == null)
-                            {
-                                Log.Error("SummonVanityPet", "No proto at " + cmd.PrimaryValue);
-                                return true;
-                            }
-
-                            proto.MinScale = 50;
-                            proto.MaxScale = 50;
-                            spawn.BuildFromProto(proto);
-                            spawn.WorldO = myPlayer._Value.WorldO;
-                            spawn.WorldY = myPlayer._Value.WorldY;
-                            spawn.WorldZ = myPlayer._Value.WorldZ;
-                            spawn.WorldX = myPlayer._Value.WorldX;
-                            spawn.ZoneId = myPlayer.Zone.ZoneId;
-                            spawn.Icone = 18;
-                            spawn.WaypointType = 0;
-                            spawn.Proto.MinLevel = spawn.Proto.MaxLevel = myPlayer.EffectiveLevel;
-
-                            Pet vanityPet = new Pet(0, spawn, myPlayer, 3, false, false);
-
-                            vanityPet.IsVanity = true;
-                            myPlayer.Region.AddObject(vanityPet, spawn.ZoneId);
-                            myPlayer.Companion = vanityPet;
+                            Log.Error("SummonVanityPet", "No proto at " + cmd.PrimaryValue);
+                            return true;
                         }
-                        else
-                        {
-                            hostBuff.Caster.AbtInterface.Cancel(true);
-                            myPlayer.BuffInterface.RemoveBuffByEntry(hostBuff.Entry);
-                            myPlayer.SendClientMessage("You cannot summon vanity pet when you are flagged for RvR.",ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                        }
-                        return true;
-                    case BUFF_REMOVE:
-                        if (myPlayer.Companion != null && myPlayer.Companion.IsVanity)
-                        {
-                            myPlayer.Companion.RemoveVanityPet();
-                        }
+
+                        proto.MinScale = 50;
+                        proto.MaxScale = 50;
+                        spawn.BuildFromProto(proto);
+                        spawn.WorldO = myPlayer._Value.WorldO;
+                        spawn.WorldY = myPlayer._Value.WorldY;
+                        spawn.WorldZ = myPlayer._Value.WorldZ;
+                        spawn.WorldX = myPlayer._Value.WorldX;
+                        spawn.ZoneId = myPlayer.Zone.ZoneId;
+                        spawn.Icone = 18;
+                        spawn.WaypointType = 0;
+                        spawn.Proto.MinLevel = spawn.Proto.MaxLevel = myPlayer.EffectiveLevel;
+
+                        Pet vanityPet = new Pet(0, spawn, myPlayer, 3, false, false);
+
+                        vanityPet.IsVanity = true;
+                        myPlayer.Region.AddObject(vanityPet, spawn.ZoneId);
+                        myPlayer.Companion = vanityPet;
+                    }
+                    else
+                    {
+                        hostBuff.Caster.AbtInterface.Cancel(true);
+                        myPlayer.BuffInterface.RemoveBuffByEntry(hostBuff.Entry);
+                        myPlayer.SendClientMessage("You cannot summon vanity pet when you are flagged for RvR.", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                    }
                     return true;
-                    default:
-                        return true;
+                case BUFF_REMOVE:
+                    if (myPlayer.Companion != null && myPlayer.Companion.IsVanity)
+                    {
+                        myPlayer.Companion.RemoveVanityPet();
+                    }
+                    return true;
+                default:
+                    return true;
 
-                }
             }
+        }
 
-            private static bool ManagePetAbilities(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        private static bool ManagePetAbilities(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            Pet myPet = target as Pet;
+
+            if (myPet == null)
+                return false;
+
+            switch (hostBuff.BuffState)
             {
-                Pet myPet = target as Pet;
-
-                if (myPet == null)
+                case BUFF_START:
+                    myPet.AddAbilities((ushort)cmd.PrimaryValue, (ushort)cmd.SecondaryValue);
+                    return true;
+                case BUFF_END:
+                    myPet.RemoveAbilities();
+                    return true;
+                case BUFF_REMOVE:
+                    goto case 4;
+                default:
                     return false;
+            }
+        }
 
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        myPet.AddAbilities((ushort)cmd.PrimaryValue, (ushort)cmd.SecondaryValue);
-                        return true;
-                    case BUFF_END:
-                        myPet.RemoveAbilities();
-                        return true;
-                    case BUFF_REMOVE:
-                        goto case 4;
-                    default:
-                        return false;
-                }
+        private static bool ResetAttackTimer(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            target.CbtInterface.ResetAttackTimer();
+
+            return true;
+        }
+
+        // Pack Synergy.
+        private static bool MasterPetModifyStat(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    Pet myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
+
+                    if (PetAlive(myPet))
+                    {
+                        if (cmd.TertiaryValue != 0)
+                            cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
+                        else cmd.CommandResult = (short)cmd.SecondaryValue;
+
+                        hostBuff.Caster.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                        myPet.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    }
+
+                    hostBuff.AddBuffParameter(cmd.BuffLine, (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f)));
+                    break;
+
+
+                case BUFF_REMOVE:
+                    if (cmd.CommandResult > 0)
+                    {
+                        myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
+
+                        myPet?.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                        hostBuff.Caster.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+
+                        cmd.CommandResult = 0;
+                    }
+
+                    break;
             }
 
-            private static bool ResetAttackTimer(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+            return true;
+        }
+
+        private static bool PetModifyStat(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                target.CbtInterface.ResetAttackTimer();
+                case BUFF_START:
+                    Pet myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
 
-                return true;
-            }
+                    if (PetAlive(myPet))
+                    {
+                        if (cmd.TertiaryValue != 0)
+                            cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
+                        else cmd.CommandResult = (short)cmd.SecondaryValue;
 
-            // Pack Synergy.
-            private static bool MasterPetModifyStat(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        Pet myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
-
-                        if (PetAlive(myPet))
-                        {
-                            if (cmd.TertiaryValue != 0)
-                                cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
-                            else cmd.CommandResult = (short)cmd.SecondaryValue;
-
-                            hostBuff.Caster.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                        if (cmd.CommandResult < 0)
+                            myPet.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                        else
                             myPet.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        }
+                    }
+                    break;
+                case BUFF_REMOVE:
+                    myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
 
-                        hostBuff.AddBuffParameter(cmd.BuffLine, (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f)));
-                        break;
-
-
-                    case BUFF_REMOVE:
-                        if (cmd.CommandResult > 0)
-                        {
-                            myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
-
-                            myPet?.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                            hostBuff.Caster.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-
-                            cmd.CommandResult = 0;
-                        }
-
-                        break;
-                }
-
-                return true;
+                    if (PetAlive(myPet))
+                    {
+                        if (cmd.CommandResult < 0)
+                            myPet.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                        else
+                            myPet.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    }
+                    break;
             }
 
-            private static bool PetModifyStat(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+            hostBuff.AddBuffParameter(cmd.BuffLine, 1);
+
+            return true;
+        }
+
+        private static bool MasterModifyPercentageStatReverse(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        Pet myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
+                case BUFF_START:
+                    Pet myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
 
-                        if (PetAlive(myPet))
-                        {
-                            if (cmd.TertiaryValue != 0)
-                                cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
-                            else cmd.CommandResult = (short)cmd.SecondaryValue;
+                    if (!PetAlive(myPet))
+                    {
+                        cmd.CommandResult = (short)cmd.SecondaryValue;
 
-                            if (cmd.CommandResult < 0)
-                                myPet.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                            else
-                                myPet.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        }
-                        break;
-                    case BUFF_REMOVE:
-                        myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
+                        hostBuff.Caster.StsInterface.AddBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
+                    }
+                    break;
 
-                        if (PetAlive(myPet))
-                        {
-                            if (cmd.CommandResult < 0)
-                                myPet.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                            else
-                                myPet.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                        }
-                        break;
-                }
+                case BUFF_REMOVE:
+                    if (cmd.CommandResult > 0)
+                    {
+                        hostBuff.Caster.StsInterface.RemoveBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
 
-                hostBuff.AddBuffParameter(cmd.BuffLine, 1);
+                        cmd.CommandResult = 0;
+                    }
 
-                return true;
+                    break;
             }
 
-            private static bool MasterModifyPercentageStatReverse(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+            hostBuff.AddBuffParameter(cmd.BuffLine, 1);
+
+            return true;
+        }
+
+        private static bool RestoreAPOnDeath(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            if (hostBuff.Target.IsDead)
+                hostBuff.Caster.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo(3071)));
+
+            return true;
+        }
+
+        private static bool PetModifySpeed(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
             {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        Pet myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
-
-                        if (!PetAlive(myPet))
-                        {
-                            cmd.CommandResult = (short)cmd.SecondaryValue;
-
-                            hostBuff.Caster.StsInterface.AddBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
-                        }
-                        break;
-
-                    case BUFF_REMOVE:
-                        if (cmd.CommandResult > 0)
-                        {
-                            hostBuff.Caster.StsInterface.RemoveBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
-
-                            cmd.CommandResult = 0;
-                        }
-
-                        break;
-                }
-
-                hostBuff.AddBuffParameter(cmd.BuffLine, 1);
-
-                return true;
+                case BUFF_START:
+                    Pet myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
+                    if (PetAlive(myPet))
+                        myPet.StsInterface.AddVelocityModifier(hostBuff, cmd.PrimaryValue / 100f);
+                    hostBuff.AddBuffParameter(cmd.BuffLine, 1);
+                    break;
+                case BUFF_REMOVE:
+                    myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
+                    if (PetAlive(myPet))
+                        myPet.StsInterface.RemoveVelocityModifier(hostBuff);
+                    break;
             }
 
-            private static bool RestoreAPOnDeath(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                if (hostBuff.Target.IsDead)
-                    hostBuff.Caster.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo(3071)));
+            return true;
+        }
 
-                return true;
-            }
+        private static bool TickMoraleIfHasPet(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            Pet myPet = ((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet;
+            if (PetAlive(myPet))
+                ((Player)hostBuff.Caster).AddMorale(cmd.PrimaryValue);
 
-            private static bool PetModifySpeed(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                switch (hostBuff.BuffState)
-                {
-                    case BUFF_START:
-                        Pet myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
-                        if (PetAlive(myPet))
-                            myPet.StsInterface.AddVelocityModifier(hostBuff, cmd.PrimaryValue / 100f);
-                        hostBuff.AddBuffParameter(cmd.BuffLine, 1);
-                        break;
-                    case BUFF_REMOVE:
-                        myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
-                        if (PetAlive(myPet))
-                            myPet.StsInterface.RemoveVelocityModifier(hostBuff);
-                        break;
-                }
-
-                return true;
-            }
-
-            private static bool TickMoraleIfHasPet(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-            {
-                Pet myPet = ((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet;
-                if (PetAlive(myPet))
-                    ((Player)hostBuff.Caster).AddMorale(cmd.PrimaryValue);
-
-                return true;
-            }
-            #endregion
+            return true;
+        }
+        #endregion
 
         #endregion
 
@@ -3479,8 +3484,8 @@ namespace WorldServer
             if (PetAlive(myPet))
             {
                 if (cmd.CommandResult > 0)
-                { 
-                    ((Player)hostBuff.Caster).SendClientMessage(hostBuff.BuffName+" attempted to add its effect twice!", ChatLogFilters.CHATLOGFILTERS_SHOUT);
+                {
+                    ((Player)hostBuff.Caster).SendClientMessage(hostBuff.BuffName + " attempted to add its effect twice!", ChatLogFilters.CHATLOGFILTERS_SHOUT);
                     return;
                 }
 
@@ -3495,7 +3500,7 @@ namespace WorldServer
             {
                 if (cmd.CommandResult > 0)
                 {
-                    hostBuff.Caster.StsInterface.RemoveBonusStat((Stats) cmd.PrimaryValue, (ushort) cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    hostBuff.Caster.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     cmd.CommandResult = 0;
                 }
             }
@@ -3578,7 +3583,7 @@ namespace WorldServer
 
         private static void ResEventModifyCareerRes(NewBuff hostBuff, BuffCommandInfo cmd, byte oldVal, ref byte change)
         {
-            change += (byte) cmd.PrimaryValue;
+            change += (byte)cmd.PrimaryValue;
         }
 
         private static void ResEventModifyStatByResourceLevel(NewBuff hostBuff, BuffCommandInfo cmd, byte oldVal, ref byte change)
@@ -3730,13 +3735,13 @@ namespace WorldServer
             if (itemInfo?.Type == 5)
             {
                 if (cmd.TertiaryValue != 0)
-                    cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue)*((hostBuff.BuffLevel - 1)/39.0f));
-                else cmd.CommandResult = (short) cmd.SecondaryValue;
+                    cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
+                else cmd.CommandResult = (short)cmd.SecondaryValue;
 
                 if (cmd.CommandResult < 0)
-                    hostBuff.Target.StsInterface.AddReducedStat((Stats) cmd.PrimaryValue, (ushort) -cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    hostBuff.Target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                 else
-                    hostBuff.Target.StsInterface.AddBonusStat((Stats) cmd.PrimaryValue, (ushort) cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    hostBuff.Target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
             }
 
             else
@@ -3780,595 +3785,595 @@ namespace WorldServer
 
         #region DamageEventCommands
 
-            #region Damage
-            private static bool DealDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        #region Damage
+        private static bool DealDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            if (cmd.TargetType == CommandTargetTypes.EventInstigator)
+                target = eventInstigator;
+
+            AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(hostBuff.Caster);
+
+            if (cmd.EffectRadius > 0)
+                damageThisPass.IsAoE = true;
+
+            if (cmd.DamageInfo.IsHeal)
+                CombatManager.HealTarget(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
+            else CombatManager.InflictDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
+
+            return damageThisPass.DamageEvent == 0 || damageThisPass.DamageEvent == 9;
+        }
+
+        private static bool DealBacklashAoE(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            AbilityDamageInfo damageThisPass = damageInfo.Clone();
+            damageThisPass.PrecalcDamage = damageThisPass.Damage * 0.5f;
+            CombatManager.InflictPrecalculatedDamage(damageThisPass, hostBuff.Caster, target, 1, true);
+
+            return true;
+        }
+
+        private static bool DealProcDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            // Need to clone damage here because we could potentially be hitting more than one person at once with a proc
+            AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(hostBuff.Caster);
+
+            if (cmd.TargetType == CommandTargetTypes.EventInstigator)
+                target = eventInstigator;
+
+            if (cmd.EffectRadius > 0)
+                damageThisPass.IsAoE = true;
+
+            if (cmd.PrimaryValue == 1)
             {
-                if (cmd.TargetType == CommandTargetTypes.EventInstigator)
-                    target = eventInstigator;
-
-                AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(hostBuff.Caster);
-
-                if (cmd.EffectRadius > 0)
-                    damageThisPass.IsAoE = true;
-
                 if (cmd.DamageInfo.IsHeal)
-                    CombatManager.HealTarget(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
-                else CombatManager.InflictDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
-
-                return damageThisPass.DamageEvent == 0 || damageThisPass.DamageEvent == 9;
+                    CombatManager.ProcHealTarget(damageThisPass, hostBuff.BuffLevel, hostBuff.Target, target);
+                else CombatManager.InflictProcDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Target, target);
+            }
+            else
+            {
+                if (cmd.DamageInfo.IsHeal)
+                    CombatManager.ProcHealTarget(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
+                else CombatManager.InflictProcDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
             }
 
-            private static bool DealBacklashAoE(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-            {
-                AbilityDamageInfo damageThisPass = damageInfo.Clone();
-                damageThisPass.PrecalcDamage = damageThisPass.Damage * 0.5f;
-                CombatManager.InflictPrecalculatedDamage(damageThisPass, hostBuff.Caster, target, 1, true);
+            cmd.CommandResult = (short)damageThisPass.Damage;
+            return true;
+        }
 
+        private static bool HealHPBelow(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            return DealDamage(hostBuff, cmd, damageInfo, target, eventInstigator);
+        }
+
+        private static bool EventStealLife(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            ushort toHeal = (ushort)(cmd.LastCommand.CommandResult * (cmd.PrimaryValue / 100f));
+
+            int pointsHealed = CombatManager.RawLifeSteal(toHeal, cmd.DamageInfo?.DisplayEntry ?? cmd.Entry, (byte)cmd.SecondaryValue, hostBuff.Caster, target);
+
+            if (pointsHealed == -1)
+                return false;
+
+            cmd.CommandResult = cmd.LastCommand.CommandResult;
+
+            return true;
+        }
+
+        private static bool EventStealLifeFromDamageInfo(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            if (damageInfo == null)
+                return false;
+
+            if (cmd.DamageInfo == null)
+                throw new NullReferenceException("Missing DamageInfo for StealLifeFromDamageInfo " + cmd.Entry + ", " + cmd.CommandID + ", " + cmd.CommandSequence);
+
+            int pointsHealed = CombatManager.RawLifeSteal((ushort)(damageInfo.Damage * (cmd.PrimaryValue / 100f)), cmd.DamageInfo.DisplayEntry, (byte)cmd.SecondaryValue, hostBuff.Caster, target);
+
+            if (pointsHealed == -1)
+                return false;
+
+            cmd.CommandResult = (short)damageInfo.Damage;
+
+            return true;
+        }
+
+        private static bool EventShield(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            // Can't block Morale damage
+            if (damageInfo.DamageType == DamageTypes.RawDamage)
                 return true;
-            }
 
-            private static bool DealProcDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+            if (cmd.CommandResult > 0)
             {
-                // Need to clone damage here because we could potentially be hitting more than one person at once with a proc
-                AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(hostBuff.Caster);
-
-                if (cmd.TargetType == CommandTargetTypes.EventInstigator)
-                    target = eventInstigator;
-
-                if (cmd.EffectRadius > 0)
-                    damageThisPass.IsAoE = true;
-
-                if (cmd.PrimaryValue == 1)
+                if (damageInfo.Damage >= cmd.CommandResult)
                 {
-                    if (cmd.DamageInfo.IsHeal)
-                        CombatManager.ProcHealTarget(damageThisPass, hostBuff.BuffLevel, hostBuff.Target, target);
-                    else CombatManager.InflictProcDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Target, target);
+                    damageInfo.Damage -= cmd.CommandResult;
+                    damageInfo.Absorption += cmd.CommandResult;
+                    cmd.CommandResult = 0;
+                    hostBuff.BuffHasExpired = true;
                 }
                 else
                 {
-                    if (cmd.DamageInfo.IsHeal)
-                        CombatManager.ProcHealTarget(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
-                    else CombatManager.InflictProcDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
+                    damageInfo.Absorption += damageInfo.Damage;
+                    cmd.CommandResult -= (short)damageInfo.Damage;
+                    damageInfo.Damage = 0;
                 }
-
-                cmd.CommandResult = (short)damageThisPass.Damage;
-                return true;
             }
 
-            private static bool HealHPBelow(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+            return true;
+        }
+
+        private static bool EventResurrection(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            (eventInstigator as Player)?.RezUnit((Point3D)hostBuff.OptionalObject, cmd.DamageInfo.DisplayEntry, hostBuff.Caster, cmd.PrimaryValue, cmd.SecondaryValue == 1, cmd.DamageInfo);
+
+            hostBuff.RemoveStack();
+
+            return true;
+        }
+
+        private static bool ReduceDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            float damageReductionFactor = cmd.PrimaryValue * 0.01f;
+
+            if (damageReductionFactor == 0)
             {
-                return DealDamage(hostBuff, cmd, damageInfo, target, eventInstigator);
+                damageInfo.Damage = 1;
+                damageInfo.Mitigation = 0;
+                damageInfo.Absorption = 0;
             }
 
-            private static bool EventStealLife(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+            else
             {
-                ushort toHeal = (ushort) (cmd.LastCommand.CommandResult*(cmd.PrimaryValue/100f));
-
-                int pointsHealed = CombatManager.RawLifeSteal(toHeal, cmd.DamageInfo?.DisplayEntry ?? cmd.Entry, (byte)cmd.SecondaryValue, hostBuff.Caster, target);
-
-                if (pointsHealed == -1)
-                    return false;
-
-                cmd.CommandResult = cmd.LastCommand.CommandResult;
-
-                return true;
+                damageInfo.Damage *= damageReductionFactor;
+                damageInfo.Mitigation *= damageReductionFactor;
+                damageInfo.Absorption *= damageReductionFactor;
             }
 
-            private static bool EventStealLifeFromDamageInfo(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-            {
-                if (damageInfo == null)
-                    return false;
+            return true;
+        }
 
-                if (cmd.DamageInfo == null)
-                    throw new NullReferenceException("Missing DamageInfo for StealLifeFromDamageInfo " + cmd.Entry + ", " + cmd.CommandID + ", " + cmd.CommandSequence);
+        // For Warrior Priest and DoK experimental mechanics - increase damage dealt by Path of Torture / Path of Wrath skills
+        private static bool DamageByCareerResource(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            Player player = (Player)hostBuff.Target;
+            damageInfo.DamageBonus += player.CrrInterface.GetCurrentResourceLevel(0) * cmd.PrimaryValue * 0.01f;
+            ((CareerInterface_WPDoK)player.CrrInterface).UpdateDrain();
 
-                int pointsHealed = CombatManager.RawLifeSteal((ushort)(damageInfo.Damage * (cmd.PrimaryValue / 100f)), cmd.DamageInfo.DisplayEntry, (byte)cmd.SecondaryValue, hostBuff.Caster, target);
+            return true;
+        }
 
-                if (pointsHealed == -1)
-                    return false;
+        // For Rune of Sanc and Mark of Remaking when player dies - sets buff duration to 10m and sends resurrection prompt
+        private static bool SelfRez(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            hostBuff.UpdateDuration(600);
+            hostBuff.AddBuffParameter(2, -1);
+            hostBuff.SoftRefresh();
+            ((Player)hostBuff.Target).SendDialog(Dialog.ResurrectionOffer, hostBuff.Caster.Oid, 600);
 
-                cmd.CommandResult = (short)damageInfo.Damage;
+            return true;
+        }
 
-                return true;
-            }
+        #endregion
 
-            private static bool EventShield(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-            {
-                // Can't block Morale damage
-                if (damageInfo.DamageType == DamageTypes.RawDamage)
-                    return true;
+        #region Resource
 
-                if (cmd.CommandResult > 0)
-                {
-                    if (damageInfo.Damage >= cmd.CommandResult)
-                    {
-                        damageInfo.Damage -= cmd.CommandResult;
-                        damageInfo.Absorption += cmd.CommandResult;
-                        cmd.CommandResult = 0;
-                        hostBuff.BuffHasExpired = true;
-                    }
-                    else
-                    {
-                        damageInfo.Absorption += damageInfo.Damage;
-                        cmd.CommandResult -= (short)damageInfo.Damage; 
-                        damageInfo.Damage = 0;
-                    }
-                }
+        private static bool EventModifyAp(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            if (cmd.TargetType == CommandTargetTypes.EventInstigator)
+                target = eventInstigator;
 
-                return true;
-            }
+            target.ModifyActionPoints((short)cmd.PrimaryValue);
+            return true;
+        }
 
-            private static bool EventResurrection(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-            {
-                (eventInstigator as Player)?.RezUnit((Point3D)hostBuff.OptionalObject, cmd.DamageInfo.DisplayEntry, hostBuff.Caster, cmd.PrimaryValue, cmd.SecondaryValue == 1, cmd.DamageInfo);
-
-                hostBuff.RemoveStack();
-
-                return true;
-            }
-
-            private static bool ReduceDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-            {
-                float damageReductionFactor = cmd.PrimaryValue * 0.01f;
-
-                if (damageReductionFactor == 0)
-                {
-                    damageInfo.Damage = 1;
-                    damageInfo.Mitigation = 0;
-                    damageInfo.Absorption = 0;
-                }
-
-                else
-                {
-                    damageInfo.Damage *= damageReductionFactor;
-                    damageInfo.Mitigation *= damageReductionFactor;
-                    damageInfo.Absorption *= damageReductionFactor;
-                }
-
-                return true;
-            }
-
-            // For Warrior Priest and DoK experimental mechanics - increase damage dealt by Path of Torture / Path of Wrath skills
-            private static bool DamageByCareerResource(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-            {
-                Player player = (Player) hostBuff.Target;
-                damageInfo.DamageBonus += player.CrrInterface.GetCurrentResourceLevel(0) * cmd.PrimaryValue * 0.01f;
-                ((CareerInterface_WPDoK) player.CrrInterface).UpdateDrain();
-
-                return true;
-            }
-            
-            // For Rune of Sanc and Mark of Remaking when player dies - sets buff duration to 10m and sends resurrection prompt
-            private static bool SelfRez(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-            {
-                hostBuff.UpdateDuration(600);
-                hostBuff.AddBuffParameter(2, -1);
-                hostBuff.SoftRefresh();
-                ((Player)hostBuff.Target).SendDialog(Dialog.ResurrectionOffer, hostBuff.Caster.Oid, 600);
-
-                return true;
-            }
-
-            #endregion
-
-            #region Resource
-
-            private static bool EventModifyAp(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-            {
-                if (cmd.TargetType == CommandTargetTypes.EventInstigator)
-                    target = eventInstigator;
-
-                target.ModifyActionPoints((short)cmd.PrimaryValue);
-                return true;
-            }
-
-            private static bool EventModifyCareerRes(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-            {
-                if (cmd.PrimaryValue > 0)
-                    ((Player)hostBuff.Caster).CrrInterface.AddResource((byte)cmd.PrimaryValue, cmd.SecondaryValue == 1);
-                else if (!((Player)hostBuff.Caster).CrrInterface.ConsumeResource((byte)-cmd.PrimaryValue, cmd.SecondaryValue == 1))
-                {
-                    hostBuff.RemoveStack();
-                    return false;
-                }
-
-                return true;
-            }
-
-            private static bool BuffOverrideModifyCareerRes(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-            {
-                if (cmd.PrimaryValue > 0)
-                {
-                    if (cmd.TertiaryValue != 1)
-                        ((Player)hostBuff.Caster).CrrInterface.AddResourceOverride((byte)cmd.PrimaryValue, cmd.SecondaryValue == 1, false);
-
-                    else
-                        ((Player)hostBuff.Caster).CrrInterface.AddResourceOverride((byte)cmd.PrimaryValue, cmd.SecondaryValue == 1, true);
-            }
-                    
-
-                else if (!((Player)hostBuff.Caster).CrrInterface.ConsumeResource((byte)-cmd.PrimaryValue, cmd.SecondaryValue == 1))
-                {
-                    hostBuff.RemoveStack();
-                    return false;
-                }
-
-                return true;
-            }
-
-            private static bool EventSetCareerRes(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-            {
-                SetCareerRes(hostBuff, cmd, target);
-
-                return true;
-            }
-
-            private static bool EventModifyMorale(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-            {
-                if (cmd.TargetType == CommandTargetTypes.EventInstigator)
-                    target = eventInstigator;
-                Player plrTarget = target as Player;
-
-                if (plrTarget == null)
-                    return true;
-
-                if (cmd.PrimaryValue < 0)
-                    plrTarget.ConsumeMorale(-cmd.PrimaryValue);
-                else
-                    plrTarget.AddMorale(cmd.PrimaryValue);
-                return true;
-            }
-
-            #endregion
-
-            #region Taunt/Detaunt
-
-            private static bool TauntDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-            {
-                if (eventInstigator == hostBuff.Caster)
-                {
-                    int buffClass = (int)hostBuff.GetBuffClass(cmd);
-                    if (damageInfo.ExclusiveBonusApplied[buffClass])
-                        return false;
-                    damageInfo.ExclusiveBonusApplied[buffClass] = true;
-                    damageInfo.DamageBonus += cmd.PrimaryValue*0.01f;
-                }
-
-                return true;
-            }
-
-            private static bool ChallengeDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-            {
-                if (eventInstigator != hostBuff.Caster)
-                {
-                    if (!damageInfo.ExclusiveReductionApplied[2])
-                    {
-                        damageInfo.DamageReduction *= cmd.PrimaryValue * 0.01f;
-                        damageInfo.ExclusiveReductionApplied[2] = true;
-                    }
-                }
-                else
-                    hostBuff.RemoveStack();
-
-                return true;
-            }
-
-            private static bool EventDetauntDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-            {
-                int buffClass = (int)hostBuff.BuffClass;
-                if (damageInfo.ExclusiveReductionApplied[buffClass])
-                    return false;
-                if (eventInstigator == hostBuff.Caster)
-                {
-                    damageInfo.ExclusiveReductionApplied[buffClass] = true;
-                    damageInfo.DamageReduction *= cmd.PrimaryValue / 100f;
-                }
-
-                return true;
-            }
-
-            #endregion
-
-            #region Stack Management
-
-            private static bool RemoveStack(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        private static bool EventModifyCareerRes(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            if (cmd.PrimaryValue > 0)
+                ((Player)hostBuff.Caster).CrrInterface.AddResource((byte)cmd.PrimaryValue, cmd.SecondaryValue == 1);
+            else if (!((Player)hostBuff.Caster).CrrInterface.ConsumeResource((byte)-cmd.PrimaryValue, cmd.SecondaryValue == 1))
             {
                 hostBuff.RemoveStack();
-
-                return true;
+                return false;
             }
-        
-            private static bool TauntRemoveStack(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+
+            return true;
+        }
+
+        private static bool BuffOverrideModifyCareerRes(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            if (cmd.PrimaryValue > 0)
             {
-                if (eventInstigator == hostBuff.Caster)
-                    hostBuff.RemoveStack();
+                if (cmd.TertiaryValue != 1)
+                    ((Player)hostBuff.Caster).CrrInterface.AddResourceOverride((byte)cmd.PrimaryValue, cmd.SecondaryValue == 1, false);
 
-                return true;
+                else
+                    ((Player)hostBuff.Caster).CrrInterface.AddResourceOverride((byte)cmd.PrimaryValue, cmd.SecondaryValue == 1, true);
             }
 
-            #endregion
 
-            #region Buff Spread
-
-            private static bool InvokeBuff(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+            else if (!((Player)hostBuff.Caster).CrrInterface.ConsumeResource((byte)-cmd.PrimaryValue, cmd.SecondaryValue == 1))
             {
-                if (cmd.SecondaryValue == 0)
-                    cmd.CommandResult = (short)cmd.PrimaryValue;
-                else cmd.CommandResult = (short)(cmd.PrimaryValue + StaticRandom.Instance.Next(cmd.SecondaryValue - cmd.PrimaryValue + 1));
-
-                if (cmd.TargetType == CommandTargetTypes.EventInstigator)
-                    target = eventInstigator;
-
-                BuffInfo b = AbilityMgr.GetBuffInfo((ushort) cmd.CommandResult, hostBuff.Caster, target);
-
-                if (damageInfo != null && damageInfo.IsAoE)
-                    b.IsAoE = true;
-
-                target.BuffInterface.QueueBuff(new BuffQueueInfo(cmd.TertiaryValue == 0 ? hostBuff.Caster : hostBuff.Target, hostBuff.BuffLevel, b));
-
-                return true;
+                hostBuff.RemoveStack();
+                return false;
             }
 
+            return true;
+        }
 
-            private static bool RemoveBuff(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        private static bool EventSetCareerRes(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            SetCareerRes(hostBuff, cmd, target);
+
+            return true;
+        }
+
+        private static bool EventModifyMorale(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            if (cmd.TargetType == CommandTargetTypes.EventInstigator)
+                target = eventInstigator;
+            Player plrTarget = target as Player;
+
+            if (plrTarget == null)
+                return true;
+
+            if (cmd.PrimaryValue < 0)
+                plrTarget.ConsumeMorale(-cmd.PrimaryValue);
+            else
+                plrTarget.AddMorale(cmd.PrimaryValue);
+            return true;
+        }
+
+        #endregion
+
+        #region Taunt/Detaunt
+
+        private static bool TauntDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            if (eventInstigator == hostBuff.Caster)
             {
-                if (cmd.TargetType == CommandTargetTypes.EventInstigator)
-                    target = eventInstigator; 
-
-                target.BuffInterface.RemoveBuffByEntry(Convert.ToUInt16(cmd.PrimaryValue));
-                
-                return true;
+                int buffClass = (int)hostBuff.GetBuffClass(cmd);
+                if (damageInfo.ExclusiveBonusApplied[buffClass])
+                    return false;
+                damageInfo.ExclusiveBonusApplied[buffClass] = true;
+                damageInfo.DamageBonus += cmd.PrimaryValue * 0.01f;
             }
+
+            return true;
+        }
+
+        private static bool ChallengeDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            if (eventInstigator != hostBuff.Caster)
+            {
+                if (!damageInfo.ExclusiveReductionApplied[2])
+                {
+                    damageInfo.DamageReduction *= cmd.PrimaryValue * 0.01f;
+                    damageInfo.ExclusiveReductionApplied[2] = true;
+                }
+            }
+            else
+                hostBuff.RemoveStack();
+
+            return true;
+        }
+
+        private static bool EventDetauntDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            int buffClass = (int)hostBuff.BuffClass;
+            if (damageInfo.ExclusiveReductionApplied[buffClass])
+                return false;
+            if (eventInstigator == hostBuff.Caster)
+            {
+                damageInfo.ExclusiveReductionApplied[buffClass] = true;
+                damageInfo.DamageReduction *= cmd.PrimaryValue / 100f;
+            }
+
+            return true;
+        }
+
+        #endregion
+
+        #region Stack Management
+
+        private static bool RemoveStack(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            hostBuff.RemoveStack();
+
+            return true;
+        }
+
+        private static bool TauntRemoveStack(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            if (eventInstigator == hostBuff.Caster)
+                hostBuff.RemoveStack();
+
+            return true;
+        }
+
+        #endregion
+
+        #region Buff Spread
+
+        private static bool InvokeBuff(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            if (cmd.SecondaryValue == 0)
+                cmd.CommandResult = (short)cmd.PrimaryValue;
+            else cmd.CommandResult = (short)(cmd.PrimaryValue + StaticRandom.Instance.Next(cmd.SecondaryValue - cmd.PrimaryValue + 1));
+
+            if (cmd.TargetType == CommandTargetTypes.EventInstigator)
+                target = eventInstigator;
+
+            BuffInfo b = AbilityMgr.GetBuffInfo((ushort)cmd.CommandResult, hostBuff.Caster, target);
+
+            if (damageInfo != null && damageInfo.IsAoE)
+                b.IsAoE = true;
+
+            target.BuffInterface.QueueBuff(new BuffQueueInfo(cmd.TertiaryValue == 0 ? hostBuff.Caster : hostBuff.Target, hostBuff.BuffLevel, b));
+
+            return true;
+        }
+
+
+        private static bool RemoveBuff(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            if (cmd.TargetType == CommandTargetTypes.EventInstigator)
+                target = eventInstigator;
+
+            target.BuffInterface.RemoveBuffByEntry(Convert.ToUInt16(cmd.PrimaryValue));
+
+            return true;
+        }
 
         private static bool InvokeBuffIfResAttack(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-            {
-                if (!AbilityMgr.RequiresResource(damageInfo.Entry))
-                    return false;
+        {
+            if (!AbilityMgr.RequiresResource(damageInfo.Entry))
+                return false;
 
-                if (cmd.TargetType == CommandTargetTypes.EventInstigator)
-                    eventInstigator.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, hostBuff.Caster, eventInstigator)));
-                else
-                    target.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, hostBuff.Caster, target)));
+            if (cmd.TargetType == CommandTargetTypes.EventInstigator)
+                eventInstigator.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, hostBuff.Caster, eventInstigator)));
+            else
+                target.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, hostBuff.Caster, target)));
+
+            return true;
+        }
+
+        private static bool SpreadBuff(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            if (cmd.LastCommand == null)
+            {
+                Log.Error("SpreadBuff", "No last command to pull a buff from!");
+                return false;
+            }
+
+            cmd.CommandResult = cmd.LastCommand.CommandResult;
+
+            if (cmd.LastCommand.CommandResult == 0)
+            {
+                cmd.CommandResult = cmd.LastCommand.LastCommand?.CommandResult ?? 0;
+                if (cmd.CommandResult == 0)
+                    Log.Error("SpreadBuff", "LastCommand result was 0 - this command: " + cmd.Entry + " " + AbilityMgr.GetAbilityNameFor(cmd.Entry) + " last command:" + cmd.LastCommand.Entry + " " + AbilityMgr.GetAbilityNameFor(cmd.LastCommand.Entry) + " " + cmd.LastCommand.CommandName);
+                return true;
+            }
+
+            if (cmd.TargetType == CommandTargetTypes.EventInstigator)
+                eventInstigator.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.CommandResult, hostBuff.Caster, eventInstigator)));
+            else
+                target.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.CommandResult, hostBuff.Caster, target)));
+            return true;
+        }
+
+        #endregion
+
+        #region Special
+
+        // I got nothing :/
+        private static bool EventCastPlayerEffect(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 18);
+            Out.WriteUInt16(hostBuff.Caster.Oid);
+            Out.WriteUInt16(target.Oid);
+            Out.WriteUInt16((ushort)cmd.PrimaryValue);
+            Out.WriteByte((byte)cmd.SecondaryValue);
+            Out.WriteByte(0);
+            Out.WriteByte(5);
+            Out.WriteByte(0);
+
+            Player plr = hostBuff.Caster as Player;
+
+            plr?.DispatchPacket(Out, true);
+            return true;
+        }
+
+        private static bool PuntEnemy(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            if (cmd.TargetType == CommandTargetTypes.EventInstigator)
+                target = eventInstigator;
+
+            target.ApplyKnockback(hostBuff.Caster, AbilityMgr.GetKnockbackInfo(cmd.Entry, cmd.PrimaryValue));
+
+            return true;
+        }
+
+        private static bool SoftRefresh(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            hostBuff.SoftRefresh();
+            return true;
+        }
+
+        private static bool ResourceHandler(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            Player player = (Player)hostBuff.Caster;
+            player.SendClientMessage("You have dropped the supplies!", player.Realm == Realms.REALMS_REALM_DESTRUCTION ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE);
+            lock (player.PlayersInRange)
+                foreach (Player plr in player.PlayersInRange)
+                    plr.SendClientMessage($"{player.Name} has dropped supplies!", player.Realm == Realms.REALMS_REALM_DESTRUCTION ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE);
+
+            hostBuff.BuffHasExpired = true;
+
+            return true;
+        }
+
+        #region MDPS
+        private static bool BroadSwings(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            if (target == eventInstigator)
+                return true;
+            AbilityDamageInfo damageThisPass = new AbilityDamageInfo { Entry = 629, DisplayEntry = 629, DamageType = DamageTypes.RawDamage, MinDamage = (ushort)(damageInfo.Damage), MaxDamage = (ushort)(damageInfo.Damage) };
+
+            CombatManager.InflictProcDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
+
+            return true;
+        }
+
+        #endregion
+
+        #region BO
+        private static bool DaGreenest(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            cmd.CommandResult = damageInfo.DamageType == 0 ? (short)3242 : (short)(3238 + (int)damageInfo.DamageType);
+
+            if (cmd.TargetType == CommandTargetTypes.EventInstigator)
+                eventInstigator.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.CommandResult)));
+            else
+                target.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.CommandResult)));
+
+            return true;
+        }
+        #endregion
+
+        #region WL
+        private static bool AddCriticalChance(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            damageInfo.CriticalHitRate += (byte)cmd.PrimaryValue;
+
+            return true;
+        }
+
+        private static bool AddDamageBonus(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            damageInfo.DamageBonus += cmd.PrimaryValue * 0.01f;
+
+            return true;
+        }
+        #endregion
+
+        #region Slayer
+
+        private static bool IncreaseCritDamageByHPLost(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            damageInfo.CriticalHitDamageBonus += (100 - hostBuff.Target.PctHealth) * 0.01f;
+
+            return true;
+        }
+
+        private static bool AutoLife(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            target.Region.AddObject(new RunicBlessingsHandler((Player)target), target.Zone.ZoneId);
+
+            return true;
+        }
+
+        #endregion
+
+        #region SH
+        private static bool ToiSplitDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            Unit myToi = (hostBuff.Caster as Player).CrrInterface.GetTargetOfInterest();
+
+            if (myToi == null || myToi.IsDead || !hostBuff.Caster.ObjectWithinRadiusFeet(myToi, cmd.PrimaryValue))
+                return false;
+
+            AbilityDamageInfo toiDamage = new AbilityDamageInfo();
+
+            toiDamage.Entry = hostBuff.Entry;
+            toiDamage.PrecalcDamage = damageInfo.Damage * 0.5f;
+
+            CombatManager.InflictPrecalculatedDamage(toiDamage, hostBuff.Caster, myToi, 1, true);
+
+            damageInfo.Damage *= 0.5f;
+            damageInfo.Mitigation *= 0.5f;
+
+            return true;
+        }
+        #endregion
+
+        #region Engi/Magus
+        private static bool EventSlay(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            target.ReceiveDamage(target, int.MaxValue);
+
+            return true;
+        }
+        #endregion
+
+        #region AM/Shaman
+
+        private static bool AmShamanResOnCrit(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            if (damageInfo.ResourceBuild == 0)
+                return false;
+
+            if (damageInfo.ResourceBuild == 1)
+                ((Player)hostBuff.Caster).CrrInterface.AddResource(1, true);
+            else ((Player)hostBuff.Caster).CrrInterface.ConsumeResource(1, true);
+
+            return true;
+        }
+
+        private static bool CleanseDebuffType(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            if (cmd.TargetType == CommandTargetTypes.EventInstigator)
+                target = eventInstigator;
+
+            return target.BuffInterface.CleanseDebuffType((byte)cmd.PrimaryValue, (byte)cmd.SecondaryValue) > 0;
+        }
+
+        private static bool PassItOn(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            foreach (Player plr in eventInstigator.PlayersInRange)
+            {
+                if (plr.Realm != eventInstigator.Realm || plr.IsDead || !eventInstigator.ObjectWithinRadiusFeet(plr, 30))
+                    continue;
+
+                CombatManager.HealTarget(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, plr);
 
                 return true;
             }
 
-            private static bool SpreadBuff(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+            return false;
+        }
+
+        #endregion
+
+        #region Zealot
+        private static bool TransferDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
+        {
+            Unit offTarget;
+
+            switch (cmd.TargetType)
             {
-                if (cmd.LastCommand == null)
-                {
-                    Log.Error("SpreadBuff", "No last command to pull a buff from!");
-                    return false;
-                }
-
-                cmd.CommandResult = cmd.LastCommand.CommandResult;
-
-                if (cmd.LastCommand.CommandResult == 0)
-                {
-                    cmd.CommandResult = cmd.LastCommand.LastCommand?.CommandResult ?? 0;
-                    if (cmd.CommandResult == 0)
-                        Log.Error("SpreadBuff", "LastCommand result was 0 - this command: "+cmd.Entry+" "+AbilityMgr.GetAbilityNameFor(cmd.Entry)+" last command:"+cmd.LastCommand.Entry+" "+AbilityMgr.GetAbilityNameFor(cmd.LastCommand.Entry)+" "+cmd.LastCommand.CommandName);
-                    return true;
-                }
-
-                if (cmd.TargetType == CommandTargetTypes.EventInstigator)
-                    eventInstigator.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.CommandResult, hostBuff.Caster, eventInstigator)));
-                else
-                    target.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.CommandResult, hostBuff.Caster, target)));
-                return true;
+                case CommandTargetTypes.EventInstigator:
+                    offTarget = eventInstigator;
+                    break;
+                case CommandTargetTypes.Enemy:
+                    offTarget = hostBuff.Caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY);
+                    break;
+                default:
+                    offTarget = target;
+                    break;
             }
 
-            #endregion
+            if (offTarget == null)
+                return false;
 
-            #region Special
+            AbilityDamageInfo damageThisPass = new AbilityDamageInfo { Entry = cmd.Entry, DisplayEntry = cmd.Entry, DamageType = (DamageTypes)cmd.SecondaryValue, MinDamage = (ushort)(damageInfo.Damage * cmd.PrimaryValue * 0.01f), MaxDamage = (ushort)(damageInfo.Damage * cmd.PrimaryValue * 0.01f), CastPlayerSubID = (byte)cmd.TertiaryValue };
 
-                // I got nothing :/
-                private static bool EventCastPlayerEffect(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-                {
-                    PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 18);
-                    Out.WriteUInt16(hostBuff.Caster.Oid);
-                    Out.WriteUInt16(target.Oid);
-                    Out.WriteUInt16((ushort)cmd.PrimaryValue);
-                    Out.WriteByte((byte)cmd.SecondaryValue);
-                    Out.WriteByte(0);
-                    Out.WriteByte(5);
-                    Out.WriteByte(0);
+            CombatManager.InflictProcDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, offTarget);
 
-                    Player plr = hostBuff.Caster as Player;
-
-                    plr?.DispatchPacket(Out, true);
-                    return true;
-                }
-
-                private static bool PuntEnemy(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-                {
-                    if (cmd.TargetType == CommandTargetTypes.EventInstigator)
-                        target = eventInstigator;
-
-                    target.ApplyKnockback(hostBuff.Caster, AbilityMgr.GetKnockbackInfo(cmd.Entry, cmd.PrimaryValue));
-
-                    return true;
-                }
-
-                private static bool SoftRefresh(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-                {
-                    hostBuff.SoftRefresh();
-                    return true;
-                }
-
-                private static bool ResourceHandler(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-                {
-                    Player player = (Player)hostBuff.Caster;
-                    player.SendClientMessage("You have dropped the supplies!", player.Realm == Realms.REALMS_REALM_DESTRUCTION ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE);
-                    lock(player.PlayersInRange)
-                        foreach (Player plr in player.PlayersInRange)
-                            plr.SendClientMessage($"{player.Name} has dropped supplies!", player.Realm == Realms.REALMS_REALM_DESTRUCTION ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE);
-
-                    hostBuff.BuffHasExpired = true;
-
-                    return true;
-                }
-
-                #region MDPS
-                private static bool BroadSwings(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-                {
-                    if (target == eventInstigator)
-                        return true;
-                    AbilityDamageInfo damageThisPass = new AbilityDamageInfo { Entry = 629, DisplayEntry = 629, DamageType = DamageTypes.RawDamage, MinDamage = (ushort)(damageInfo.Damage), MaxDamage = (ushort)(damageInfo.Damage) };
-
-                    CombatManager.InflictProcDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
-
-                    return true;
-                }
-
-                #endregion
-                
-                #region BO
-                private static bool DaGreenest(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-                {
-                    cmd.CommandResult = damageInfo.DamageType == 0 ? (short)3242 : (short)(3238 + (int)damageInfo.DamageType);
-
-                    if (cmd.TargetType == CommandTargetTypes.EventInstigator)
-                        eventInstigator.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.CommandResult)));
-                    else
-                        target.BuffInterface.QueueBuff(new BuffQueueInfo(hostBuff.Caster, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.CommandResult)));
-
-                    return true;
-                }
-                #endregion
-                
-                #region WL
-                private static bool AddCriticalChance(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-                {
-                    damageInfo.CriticalHitRate += (byte)cmd.PrimaryValue;
-
-                    return true;
-                }
-
-                private static bool AddDamageBonus(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-                {
-                    damageInfo.DamageBonus += cmd.PrimaryValue * 0.01f;
-
-                    return true;
-                }
-                #endregion
-                
-                #region Slayer
-                
-                private static bool IncreaseCritDamageByHPLost(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-                {
-                    damageInfo.CriticalHitDamageBonus += (100 - hostBuff.Target.PctHealth) * 0.01f;
-
-                    return true;
-                }
-                
-                private static bool AutoLife(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-                {
-                    target.Region.AddObject(new RunicBlessingsHandler((Player)target), target.Zone.ZoneId);
-
-                    return true;
-                }
-
-                #endregion
-
-                #region SH
-                private static bool ToiSplitDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-                {
-                    Unit myToi = (hostBuff.Caster as Player).CrrInterface.GetTargetOfInterest();
-
-                    if (myToi == null || myToi.IsDead || !hostBuff.Caster.ObjectWithinRadiusFeet(myToi, cmd.PrimaryValue))
-                        return false;
-
-                    AbilityDamageInfo toiDamage = new AbilityDamageInfo();
-
-                    toiDamage.Entry = hostBuff.Entry;
-                    toiDamage.PrecalcDamage = damageInfo.Damage * 0.5f;
-
-                    CombatManager.InflictPrecalculatedDamage(toiDamage, hostBuff.Caster, myToi, 1, true);
-
-                    damageInfo.Damage *= 0.5f;
-                    damageInfo.Mitigation *= 0.5f;
-
-                    return true;
-                }
-                #endregion
-
-                #region Engi/Magus
-                private static bool EventSlay(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-                {
-                    target.ReceiveDamage(target, int.MaxValue);
-
-                    return true;
-                }
-                #endregion
-
-                #region AM/Shaman
-
-                private static bool AmShamanResOnCrit(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-                {
-                    if (damageInfo.ResourceBuild == 0)
-                        return false;
-
-                    if (damageInfo.ResourceBuild == 1)
-                        ((Player)hostBuff.Caster).CrrInterface.AddResource(1, true);
-                    else ((Player)hostBuff.Caster).CrrInterface.ConsumeResource(1, true);
-
-                    return true;
-                }
-
-                private static bool CleanseDebuffType(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-                {
-                    if (cmd.TargetType == CommandTargetTypes.EventInstigator)
-                        target = eventInstigator;
-
-                    return target.BuffInterface.CleanseDebuffType((byte)cmd.PrimaryValue, (byte)cmd.SecondaryValue) > 0;
-                }
-
-                private static bool PassItOn(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-                {
-                    foreach (Player plr in eventInstigator.PlayersInRange)
-                    {
-                        if (plr.Realm != eventInstigator.Realm || plr.IsDead || !eventInstigator.ObjectWithinRadiusFeet(plr, 30))
-                            continue;
-                        
-                        CombatManager.HealTarget(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, plr);
-
-                        return true;
-                    }
-
-                    return false;
-                }
-
-                #endregion
-
-                #region Zealot
-                private static bool TransferDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
-                {
-                    Unit offTarget;
-
-                    switch (cmd.TargetType)
-                    {
-                        case CommandTargetTypes.EventInstigator:
-                            offTarget = eventInstigator;
-                            break;
-                        case CommandTargetTypes.Enemy:
-                            offTarget = hostBuff.Caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY);
-                            break;
-                        default:
-                            offTarget = target;
-                            break;
-                    }
-
-                    if (offTarget == null)
-                        return false;
-
-                    AbilityDamageInfo damageThisPass = new AbilityDamageInfo { Entry = cmd.Entry, DisplayEntry = cmd.Entry, DamageType = (DamageTypes)cmd.SecondaryValue, MinDamage = (ushort)(damageInfo.Damage * cmd.PrimaryValue * 0.01f), MaxDamage = (ushort)(damageInfo.Damage * cmd.PrimaryValue * 0.01f), CastPlayerSubID = (byte)cmd.TertiaryValue };
-
-                    CombatManager.InflictProcDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, offTarget);
-
-                    return true;
-                }
-                #endregion
+            return true;
+        }
+        #endregion
 
         #endregion
 
@@ -4385,7 +4390,7 @@ namespace WorldServer
 
         private static bool StealthBreak(NewBuff hostBuff, AbilityDamageInfo damageInfo, uint value, Unit eventInstigator)
         {
-            return !damageInfo.IsAoE && (hostBuff.Duration*1000) - hostBuff.RemainingTimeMs > 2000;
+            return !damageInfo.IsAoE && (hostBuff.Duration * 1000) - hostBuff.RemainingTimeMs > 2000;
         }
 
         private static bool IsSingleTargetDamage(NewBuff hostBuff, AbilityDamageInfo damageInfo, uint value, Unit eventInstigator)
@@ -4395,7 +4400,7 @@ namespace WorldServer
 
         private static bool MutatedCritical(NewBuff hostBuff, AbilityDamageInfo damageInfo, uint value, Unit eventInstigator)
         {
-            return damageInfo.DamageEvent == 9 && ((Player) hostBuff.Caster).CrrInterface.HasResource(7);
+            return damageInfo.DamageEvent == 9 && ((Player)hostBuff.Caster).CrrInterface.HasResource(7);
         }
 
         private static bool TargetNotCaster(NewBuff hostBuff, AbilityDamageInfo damageInfo, uint value, Unit eventInstigator)
@@ -4521,9 +4526,9 @@ namespace WorldServer
 
         private static bool GiftOfKhaine(NewBuff hostBuff, AbilityDamageInfo damageInfo, uint value, Unit eventInstigator)
         {
-            return damageInfo.DamageEvent == 9 
-                && damageInfo.MasteryTree == value 
-                && hostBuff.Caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ALLY) != null 
+            return damageInfo.DamageEvent == 9
+                && damageInfo.MasteryTree == value
+                && hostBuff.Caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ALLY) != null
                 && hostBuff.Caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ALLY) != hostBuff.Caster;
         }
 
@@ -4555,7 +4560,7 @@ namespace WorldServer
         {
             return true;
 
-            Player player = (Player) hostBuff.Caster;
+            Player player = (Player)hostBuff.Caster;
 
             return player.CurrentSiege == null;
         }

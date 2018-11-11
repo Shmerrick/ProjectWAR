@@ -1293,6 +1293,18 @@ namespace WorldServer.Managers.Commands
         #endregion
 
 
+        public static bool GroupRefresh(Player plr, ref List<string> values)
+        {
+            Unit target = plr.CbtInterface.GetCurrentTarget();
+
+            if (target == null)
+                target = plr;
+
+            plr.GroupRefresh();
+            return true;
+        }
+
+
         public static bool GetPing(Player plr, ref List<string> values)
         {
             Unit target = plr.CbtInterface.GetCurrentTarget();

@@ -27,7 +27,20 @@ namespace WorldServer
             InCombat = 95        // 001011111, 0x5F
         }
 
-        enum MovementTypes
+		public enum GROUNDTYPE
+		{
+			Solid = 0,
+			ShallowWater = 1,
+			ShallowSludge = 7,
+			DeepWater = 17,
+			DeepSludge = 23,
+			DeepLava = 3,
+			DeepLava2 = 19,
+			LOTDShallowWater = 5,
+			LOTDDeepWater = 21
+		}
+		
+		enum MovementTypes
         {
             GroundForward = 0xC0,
             GroundBackward = 0x54,
@@ -53,6 +66,7 @@ namespace WorldServer
             jumpright = 0x44,
             jumpleft = 0x24
         }
+
         private static long _lavatimer = 0;
         private static readonly Dictionary<Unit, NewBuff> _lavaBuffs = new Dictionary<Unit, NewBuff>();
 
@@ -95,7 +109,25 @@ namespace WorldServer
                 return;
             }
 
-            Zone_jump Jump = ZoneService.GetZoneJump(destinationId);
+			Zone_jump Jump = null;
+
+			// ZARU: zone jump out hackaround for LV leave
+			if (destinationId == 272804328)
+			{
+				Instance_Info II;
+				InstanceService._InstanceInfo.TryGetValue(260, out II);
+				
+				if (cclient.Plr.Realm == Realms.REALMS_REALM_ORDER)
+					Jump = ZoneService.GetZoneJump(II.OrderExitZoneJumpID);
+				else if (cclient.Plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
+					Jump = ZoneService.GetZoneJump(II.DestrExitZoneJumpID);
+
+				if (Jump == null)
+					Jump = ZoneService.GetZoneJump(destinationId);
+			}
+			else
+				Jump = ZoneService.GetZoneJump(destinationId);
+
             if (Jump == null)
             {
                 cclient.Plr.SendClientMessage("This portal's jump destination (" + destinationId + ") does not exist.");
@@ -312,6 +344,8 @@ namespace WorldServer
 
                 player.SetPosition(x, y, z, direction, zoneID);
 
+				player.GroundType = (GROUNDTYPE) groundtype;
+
                 //solid, exclude any zones that has to use a hardcode lava to not disable the damage instantly
                 if (groundtype == 0)
                 {
@@ -331,14 +365,14 @@ namespace WorldServer
                 }*/
                 
                 //deep water 17 in current implementation should be 2 by londos decode, deep sludge 23
-                if (groundtype == 17 || groundtype == 23)
-                {
-                    player.Dismount();
-                }
+                //if (groundtype == 17 || groundtype == 23)
+                //{
+                //    player.Dismount();
+                //}
 
-                //lava
+                //lava and deep water/sludge, ref: ZARU
                 long Now = TCPManager.GetTimeStampMS();
-                if (groundtype == 3 || groundtype == 19) //19 is deep lava
+                if (groundtype == 3 || groundtype == 19 || (player.Zone.ZoneId == 260 && groundtype == 17 || groundtype == 23)) //19 is deep lava, 17 is deep water, 23 is deep sludge
                 {
                     player.Dismount();
                     if (!player.IsDead )
@@ -714,25 +748,30 @@ namespace WorldServer
                 }
                 else if(info?.Type == 4 || info?.Type == 5|| info?.Type == 6)  // login into a instance
                 {
-                    if (!WorldMgr.InstanceMgr.ZoneIn(Plr, (byte)info?.Type)) // cant login into the instace port to exit
+                    if (InstanceService._InstanceInfo.TryGetValue(zoneId, out Instance_Info II))
                     {
-                        Instance_Info II;
-                        InstanceService._InstanceInfo.TryGetValue(zoneId, out II);
-                        Zone_jump ExitJump = ZoneService.GetZoneJump(II.exitzonejup);
-                        if (ExitJump == null)
-                            Log.Error("Exit Jump in Instance"," "+ zoneId + " missing!");
-                        else
+                        if (!WorldMgr.InstanceMgr.ZoneIn(Plr, (byte)info?.Type, ZoneService.GetZoneJumpByInstanceId(zoneId))) // cant login into the instance port to exit
                         {
-                            if (ExitJump.Type == 4)
-                            {
-                                WorldMgr.InstanceMgr.ZoneIn(Plr,4,ExitJump);
-                            }
+                            Zone_jump ExitJump = null;
+                            if (Plr.Realm == Realms.REALMS_REALM_ORDER)
+                                ExitJump = ZoneService.GetZoneJump(II.OrderExitZoneJumpID);
+                            else if (Plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                                ExitJump = ZoneService.GetZoneJump(II.DestrExitZoneJumpID);
+
+                            if (ExitJump == null)
+                                Log.Error("Exit Jump in Instance", " " + zoneId + " missing!");
                             else
                             {
-                                Plr.Teleport(ExitJump.ZoneID, ExitJump.WorldX, ExitJump.WorldY, ExitJump.WorldZ, ExitJump.WorldO);
+                                if (ExitJump.Type == 4)
+                                {
+                                    WorldMgr.InstanceMgr.ZoneIn(Plr, 4, ExitJump);
+                                }
+                                else
+                                {
+                                    Plr.Teleport(ExitJump.ZoneID, ExitJump.WorldX, ExitJump.WorldY, ExitJump.WorldZ, ExitJump.WorldO);
+                                }
                             }
                         }
-                        
                     }
                     return;
                 }

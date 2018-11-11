@@ -31,8 +31,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     /// </summary>
     public class Campaign
     {
-        public static int POPULATION_BROADCAST_CHANCE = 1;
-        // Minimum contribution to be considered a realm captain
+        public static int POPULATION_BROADCAST_CHANCE = 0;
+        public static IObjectDatabase Database = null;
         public static int REALM_CAPTAIN_MINIMUM_CONTRIBUTION = 50;
         static readonly object LockObject = new object();
 
@@ -620,6 +620,28 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return bestKeep;
         }
 
+        public Keep GetClosestFriendlyKeep(Point3D destPos, Realms myRealm)
+        {
+            Keep bestKeep = null;
+            ulong bestDist = 0;
+
+            foreach (Keep keep in Keeps)
+            {
+                if (keep.Realm == myRealm)
+                {
+                    ulong curDist = keep.GetDistanceSquare(destPos);
+
+                    if (bestKeep == null || curDist < bestDist)
+                    {
+                        bestKeep = keep;
+                        bestDist = keep.GetDistanceSquare(destPos);
+                    }
+                }
+            }
+
+            return bestKeep;
+        }
+
         public Keep GetZoneKeep(ushort zoneId, int realm)
         {
             foreach (Keep keep in Keeps)
@@ -941,7 +963,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Assign eligible players to the bag definitions.
             var rewardAssignments = rewardAssigner.AssignLootToPlayers(eligiblePlayerCharacterIds, bagDefinitions);
 
+            var rewardAssignments = new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(eligiblePlayersWithinRange, forceNumberBags);
+
             if (rewardAssignments == null)
+            {
+                BattlefrontLogger.Warn($"No reward assignments found (null).");
+                return;
+            }
+
+            if (rewardAssignments.Count == 0)
             {
                 BattlefrontLogger.Warn($"No reward assignments found.");
             }

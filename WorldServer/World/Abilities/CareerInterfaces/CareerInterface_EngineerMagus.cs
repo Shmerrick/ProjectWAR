@@ -9,18 +9,18 @@ namespace WorldServer
 {
     class CareerInterface_EngineerMagus : CareerInterface, IPetCareerInterface
     {
-        private byte _powerBonus = 5;
-        private byte _maxStack = 8;
+        private byte _powerBonus = 4;
+        private byte _maxStack = 5;
 
         private int rangeMax = 25;
 
-        private float _rangeBonusPct1 = 5f;
-        private readonly float _rangeBonusPct2Pet = 5f;
-        private readonly float _rangeReductionPct3 = 5f;
+        private float _rangeBonusPct1 = 0f;
+        private readonly float _rangeBonusPct2Pet = 0f;
+        private readonly float _rangeReductionPct3 = 0f;
 
         private readonly float _radiusBonusPctMaster = 50f/8f;
-        private readonly ushort _dodgeDisruptBonus = 4;
-        private readonly ushort _dodgeDisruptBonusPet = 8;
+        private readonly ushort _dodgeDisruptBonus = 0;
+        private readonly ushort _dodgeDisruptBonusPet = 0;
 
         private readonly ushort _resourceID;
 
@@ -228,7 +228,7 @@ namespace WorldServer
 
         private void RemoveBonuses()
         {
-            myPlayer.StsInterface.RemoveBonusMultiplier(Stats.OutgoingDamagePercent, _powerBonus * 0.01f * _boostStacks, BuffClass.Morale);
+            myPlayer.StsInterface.RemoveBonusMultiplier(Stats.OutgoingDamagePercent, _powerBonus * 0.01f * _boostStacks, BuffClass.Career);
 
             switch (_careerResource)
             {
@@ -265,7 +265,7 @@ namespace WorldServer
 
         private void AddBonuses()
         {
-            myPlayer.StsInterface.AddBonusMultiplier(Stats.OutgoingDamagePercent, _powerBonus * 0.01f * _boostStacks, BuffClass.Morale);
+            myPlayer.StsInterface.AddBonusMultiplier(Stats.OutgoingDamagePercent, _powerBonus * 0.01f * _boostStacks, BuffClass.Career);
             
             switch (_careerResource)
             {

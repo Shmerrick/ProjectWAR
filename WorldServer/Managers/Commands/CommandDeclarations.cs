@@ -49,12 +49,12 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("start", SendCastPlayerStart, null, EGmLevel.DatabaseDev, 2, "Sends a buff effect start packet."),
             new GmCommandHandler("end", SendCastPlayerEnd, null, EGmLevel.DatabaseDev, 2, "Send a buff effect end packet."),
             new GmCommandHandler("send", SendTestAbility, null, EGmLevel.DatabaseDev, 1, "Send an ability to the client."),
-            new GmCommandHandler("cast",InvokeAbility, null, EGmLevel.DatabaseDev, 1, "If possible, casts the ability of the specified ID."),
-            new GmCommandHandler("buffcast",InvokeBuff, null, EGmLevel.DatabaseDev, 2, "Invokes the buff of the specified ID."),
-            new GmCommandHandler("zerostats",SendZeroStats, null, EGmLevel.DatabaseDev, 0, "Sends zero stats to the client for debug purposes.")
+            new GmCommandHandler("cast", InvokeAbility, null, EGmLevel.DatabaseDev, 1, "If possible, casts the ability of the specified ID."),
+            new GmCommandHandler("buffcast", InvokeBuff, null, EGmLevel.DatabaseDev, 2, "Invokes the buff of the specified ID."),
+            new GmCommandHandler("zerostats", SendZeroStats, null, EGmLevel.DatabaseDev, 0, "Sends zero stats to the client for debug purposes."),
+			new GmCommandHandler("list", GetAbilityList, null, EGmLevel.DatabaseDev, 0, "Gets the complete ability list of target (creature).")
 
-
-        };
+		};
 
         
 
@@ -320,6 +320,8 @@ namespace WorldServer.Managers.Commands
 
 #region Standalone Commands
             // User commands
+            new GmCommandHandler("grouprefresh",GroupRefresh, null, 0, 0, "Tries to rediscover all players within the selected players group."),
+            new GmCommandHandler("ping",GetPing, null, EGmLevel.DatabaseDev, 0, "Shows player ping."),
             new GmCommandHandler("scenariostatus",ScenarioStatus, null, 0, 0, "Shows player count and score of all running scenarios."),
             new GmCommandHandler("scenarioscore", GetScenarioScore, null, 0, 0, "Returns targets scenario scores."),
             new GmCommandHandler("gmlist", GmMgr.ListGameMasters, null, 0, 0, "Lists available GMs."),
@@ -438,5 +440,6 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("setpet", SetPet, null, EGmLevel.SourceDev, 1, "Changes your pet model to number provided.")
 #endregion
         };
+
     }
 }

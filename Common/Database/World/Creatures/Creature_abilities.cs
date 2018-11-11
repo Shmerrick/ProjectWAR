@@ -41,7 +41,10 @@ namespace Common
         [DataElement]
         public byte RandomTarget { get; set; }
 
-        [DataElement]
+		[DataElement]
+		public byte TargetFocus { get; set; }
+
+		[DataElement]
         public byte MinRange { get; set; }
     }
 }

@@ -78,18 +78,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
         public string DistributeWinningRealm(LootBagTypeDefinition lootBag, Player player, byte playerRenownBand)
         {
-            // Combine the lootBag reward
-            var lockReward = ZoneLockRewards.SingleOrDefault(x => x.RRBand == playerRenownBand);
+            //// Combine the lootBag reward
+            //var lockReward = ZoneLockRewards.SingleOrDefault(x => x.RRBand == playerRenownBand);
 
-            if (lockReward == null)
-            {
-                RewardLogger.Warn($"Could not find renownBand for player : {player.Name}.");
-                return "";
-            }
+            //if (lockReward == null)
+            //{
+            //    RewardLogger.Warn($"Could not find renownBand for player : {player.Name}.");
+            //    return "";
+            //}
 
             var lootRewardDescription = string.Empty;
-
-
             // Get the bag item id
             var lootBagItemId = Convert.ToInt32(LootBagTypeDefinition.GetDescription(lootBag.BagRarity));
             // Get the bag item object
@@ -100,17 +98,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
             RewardLogger.Info($"Distributing reward of {lootBagItem.Name}, containing {lootBag.ItemId} ({lootBag.ItemCount}) to {player.Name}. Result = {result}");
             
-            if ((lockReward.ItemCount != 0) && (lockReward.ItemId != 0))
-            {
-                //crests etc
-                var lockItem = ItemService.GetItem_Info((uint)lockReward.ItemId);
-                if (lockItem != null)
-                {
-                    lootRewardDescription += $"You have been awarded {lockReward.ItemCount} {lockItem.Name}. ";
-                }
-            }
+            //if ((lockReward.ItemCount != 0) && (lockReward.ItemId != 0))
+            //{
+            //    //crests etc
+            //    var lockItem = ItemService.GetItem_Info((uint)lockReward.ItemId);
+            //    if (lockItem != null)
+            //    {
+            //        lootRewardDescription += $"You have been awarded {lockReward.ItemCount} {lockItem.Name}. ";
+            //    }
+            //}
 
-            lootRewardDescription += $"For your valiant efforts you have also won {lootBag.FormattedString()}! ";
+            lootRewardDescription += $"For your efforts you have also won {lootBag.FormattedString()}! ";
 
             return lootRewardDescription;
         }

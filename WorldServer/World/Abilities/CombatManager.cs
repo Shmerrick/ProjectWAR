@@ -50,17 +50,20 @@ namespace WorldServer
                     {
                         offensiveStat = Math.Max(1, (int)caster.StsInterface.GetTotalStat(Stats.Strength));
                         defensiveStat = Math.Max(1, (int)target.StsInterface.GetTotalStat(Stats.WeaponSkill));
-                    } break;
+                    }
+                    break;
                 case 8: // Ballistic and Initiative
                     {
                         offensiveStat = Math.Max(1, (int)caster.StsInterface.GetTotalStat(Stats.BallisticSkill));
                         defensiveStat = Math.Max(1, (int)target.StsInterface.GetTotalStat(Stats.Initiative));
-                    } break;
+                    }
+                    break;
                 case 9: // Intelligence and Willpower
                     {
                         offensiveStat = Math.Max(1, (int)caster.StsInterface.GetTotalStat(Stats.Intelligence));
                         defensiveStat = Math.Max(1, (int)target.StsInterface.GetTotalStat(Stats.Willpower));
-                    } break;
+                    }
+                    break;
                 default:
                     return false;
             }
@@ -79,16 +82,16 @@ namespace WorldServer
 
                 if (target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND) != null && target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info?.Type == 5)
                 {
-					//Block is [Block Rating of Shield / (Level * 7.5 + 50)] * 20
-					//double block = (target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info.Armor / (target.EffectiveLevel * 7.5 + 50) * 20);
-					//Contestion based on offensive stat. This gets added to make it harder to actually do a defensive event, without actually contesting it directly above.
-					//This should mimic the live formula.
-					//double removedDefense = (((offensiveStat) * 100) / (((caster.EffectiveLevel * 7.5) + 50) * 7.5));
+                    //Block is [Block Rating of Shield / (Level * 7.5 + 50)] * 20
+                    //double block = (target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info.Armor / (target.EffectiveLevel * 7.5 + 50) * 20);
+                    //Contestion based on offensive stat. This gets added to make it harder to actually do a defensive event, without actually contesting it directly above.
+                    //This should mimic the live formula.
+                    //double removedDefense = (((offensiveStat) * 100) / (((caster.EffectiveLevel * 7.5) + 50) * 7.5));
 
-					//double baseRoll = 0d;
-					//baseRoll += removedDefense;
+                    //double baseRoll = 0d;
+                    //baseRoll += removedDefense;
 
-					double block = CalculateBlockRoll(target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info.Armor, offensiveStat, cmdInfo.DamageInfo, target.StsInterface.GetTotalStat(Stats.Block), caster.StsInterface.GetStatLinearModifier(Stats.BlockStrikethrough));
+                    double block = CalculateBlockRoll(target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info.Armor, offensiveStat, cmdInfo.DamageInfo, target.StsInterface.GetTotalStat(Stats.Block), caster.StsInterface.GetStatLinearModifier(Stats.BlockStrikethrough));
                     //block = (int)(block * caster.StsInterface.GetStatPercentageModifier(Stats.BlockStrikethrough));
                     //double finalRoll = (StaticRandom.Instance.NextDouble() * (100d + baseRoll));
 
@@ -106,63 +109,66 @@ namespace WorldServer
 
             if (defenseEvent == 0)
             {
-				#region Parry, Dodge, Disrupt                
+                #region Parry, Dodge, Disrupt                
 
-				////Parry/Dodge/Disrupt chance from tooltip
-				//double secondaryDefense = (int)((((double)defensiveStat / offensiveStat * 0.075) * 100));
-				////Contestion based on offensive stat. This gets added to make it harder to actually do a defensive event, without actually contesting it directly above.
-				////This should mimic the live formula.
-				////double removedDefense = (((offensiveStat) * 100) / (((caster.EffectiveLevel * 7.5) + 50) * 7.5));
+                ////Parry/Dodge/Disrupt chance from tooltip
+                //double secondaryDefense = (int)((((double)defensiveStat / offensiveStat * 0.075) * 100));
+                ////Contestion based on offensive stat. This gets added to make it harder to actually do a defensive event, without actually contesting it directly above.
+                ////This should mimic the live formula.
+                ////double removedDefense = (((offensiveStat) * 100) / (((caster.EffectiveLevel * 7.5) + 50) * 7.5));
 
-				//// There is no cap on parry from stats. There is, however a max defensible amount of 0.75 similar to armor to the final roll.
-				//if (secondaryDefense > 25)
-				//    secondaryDefense = 25;
+                //// There is no cap on parry from stats. There is, however a max defensible amount of 0.75 similar to armor to the final roll.
+                //if (secondaryDefense > 25)
+                //    secondaryDefense = 25;
 
-				////double baseRoll = 0d;
-				////baseRoll += removedDefense;
+                ////double baseRoll = 0d;
+                ////baseRoll += removedDefense;
 
-				//if (cmdInfo.DamageInfo != null)
-				//    secondaryDefense += cmdInfo.DamageInfo.Defensibility;
+                //if (cmdInfo.DamageInfo != null)
+                //    secondaryDefense += cmdInfo.DamageInfo.Defensibility;
 
-				double secondaryDefense = 0.0;
+                double secondaryDefense = 0.0;
                 switch (cmdInfo.AttackingStat)
                 {
                     case 1: // Parry
-                    {
-							//secondaryDefense += target.StsInterface.GetTotalStat(Stats.Parry) - caster.StsInterface.GetStatLinearModifier(Stats.ParryStrikethrough);
-							secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, cmdInfo.DamageInfo, target.StsInterface.GetTotalStat(Stats.Parry), caster.StsInterface.GetStatLinearModifier(Stats.ParryStrikethrough));
+                        {
+                            //secondaryDefense += target.StsInterface.GetTotalStat(Stats.Parry) - caster.StsInterface.GetStatLinearModifier(Stats.ParryStrikethrough);
+                            secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, cmdInfo.DamageInfo, target.StsInterface.GetTotalStat(Stats.Parry), caster.StsInterface.GetStatLinearModifier(Stats.ParryStrikethrough));
 
-							if (StaticRandom.Instance.Next(100) <= secondaryDefense)
+                            if (StaticRandom.Instance.Next(100) <= secondaryDefense)
                             {
                                 target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_PARRY); // Parry
-								caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_PARRY);
+                                caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_PARRY);
                                 defenseEvent = (byte)CombatEvent.COMBATEVENT_PARRY;
                             }
-                        } break;
+                        }
+                        break;
                     case 8: // Evade
-                    {
-							//secondaryDefense += target.StsInterface.GetTotalStat(Stats.Evade) - caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough);
-							secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, cmdInfo.DamageInfo, target.StsInterface.GetTotalStat(Stats.Evade), caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough));
+                        {
+                            //secondaryDefense += target.StsInterface.GetTotalStat(Stats.Evade) - caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough);
+                            secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, cmdInfo.DamageInfo, target.StsInterface.GetTotalStat(Stats.Evade), caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough));
 
-							if (StaticRandom.Instance.Next(100) <= secondaryDefense)
+                            if (StaticRandom.Instance.Next(100) <= secondaryDefense)
                             {
                                 target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_EVADE); // Evade
-								caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_EVADE);
+                                caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_EVADE);
                                 defenseEvent = (byte)CombatEvent.COMBATEVENT_EVADE;
                             }
-                        } break;
+                        }
+                        break;
                     case 9: // Disrupt
-                    {
+                        {
                             //secondaryDefense += target.StsInterface.GetTotalStat(Stats.Disrupt) - caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough);
-							secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, cmdInfo.DamageInfo, target.StsInterface.GetTotalStat(Stats.Disrupt), caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough));
+                            secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, cmdInfo.DamageInfo, target.StsInterface.GetTotalStat(Stats.Disrupt), caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough));
 
-							if (StaticRandom.Instance.Next(100) <= secondaryDefense) // Disrupt
+                            if (StaticRandom.Instance.Next(100) <= secondaryDefense) // Disrupt
                             {
                                 target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_DISRUPT);
                                 caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_DISRUPT);
                                 defenseEvent = (byte)CombatEvent.COMBATEVENT_DISRUPT;
                             }
-                        } break;
+                        }
+                        break;
                 }
 
                 #endregion
@@ -195,63 +201,63 @@ namespace WorldServer
                 DamageEvent = defenseEvent,
                 IsAoE = isAoE
             };
-			
+
             caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.WasDefended, tempDmg, target);
             target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DefendedAgainst, tempDmg, caster);
 
             return true;
         }
 
-		public static double CalculateBlockRoll(ushort blockRatingOffhand, int offensiveStat, AbilityDamageInfo damageInfo, short targetBlock, int casterBlockStrikeThrough)
-		{
-			double block = (((double)blockRatingOffhand / offensiveStat) * 0.2) * 100;
-			if (block > 50)
-				block = 50;
+        public static double CalculateBlockRoll(ushort blockRatingOffhand, int offensiveStat, AbilityDamageInfo damageInfo, short targetBlock, int casterBlockStrikeThrough)
+        {
+            double block = (((double)blockRatingOffhand / offensiveStat) * 0.2) * 100;
+            if (block > 50)
+                block = 50;
 
-			if (damageInfo != null)
-				block += damageInfo.Defensibility;
+            if (damageInfo != null)
+                block += damageInfo.Defensibility;
 
-			block += targetBlock - casterBlockStrikeThrough;
-			return block;
-		}
+            block += targetBlock - casterBlockStrikeThrough;
+            return block;
+        }
 
-		public static double CalculatePDDRoll(int defensiveStat, int offensiveStat, AbilityDamageInfo damageInfo, short targetDef, int casterDefStrikeThrough)
-		{
-			double secondaryDefense = ((double)defensiveStat / offensiveStat * 0.075) * 100;
-			if (secondaryDefense > 25)
-				secondaryDefense = 25;
+        public static double CalculatePDDRoll(int defensiveStat, int offensiveStat, AbilityDamageInfo damageInfo, short targetDef, int casterDefStrikeThrough)
+        {
+            double secondaryDefense = ((double)defensiveStat / offensiveStat * 0.075) * 100;
+            if (secondaryDefense > 25)
+                secondaryDefense = 25;
 
-			if (damageInfo != null)
-				secondaryDefense += damageInfo.Defensibility;
+            if (damageInfo != null)
+                secondaryDefense += damageInfo.Defensibility;
 
-			secondaryDefense += targetDef - casterDefStrikeThrough;
+            secondaryDefense += targetDef - casterDefStrikeThrough;
 
-			return secondaryDefense;
-		}
+            return secondaryDefense;
+        }
 
         // Awful, but it's not worth implementing defense handling for buff commands for one ability.
         public static bool CheckMagnetDefense(ushort entry, Unit caster, Unit target, bool isAoE)
         {
-			uint offensiveStat = Math.Max(1, (uint)caster.StsInterface.GetTotalStat(Stats.BallisticSkill));
+            uint offensiveStat = Math.Max(1, (uint)caster.StsInterface.GetTotalStat(Stats.BallisticSkill));
             uint defensiveStat = Math.Max(1, (uint)target.StsInterface.GetTotalStat(Stats.Initiative));
 
             byte defenseEvent = 0;
 
-			AbilityDamageInfo tempDmg = new AbilityDamageInfo
-			{
-				Entry = entry,
-				DamageEvent = defenseEvent,
-				IsAoE = isAoE
-			};
+            AbilityDamageInfo tempDmg = new AbilityDamageInfo
+            {
+                Entry = entry,
+                DamageEvent = defenseEvent,
+                IsAoE = isAoE
+            };
 
-			double secondaryDefense = CalculatePDDRoll((int)defensiveStat, (int)offensiveStat, tempDmg, target.StsInterface.GetTotalStat(Stats.Evade), caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough));
+            double secondaryDefense = CalculatePDDRoll((int)defensiveStat, (int)offensiveStat, tempDmg, target.StsInterface.GetTotalStat(Stats.Evade), caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough));
 
-			if (StaticRandom.Instance.Next(100) <= secondaryDefense) // Evade
-			{
-				target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_EVADE);
-				caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_EVADE);
-				defenseEvent = (byte)CombatEvent.COMBATEVENT_EVADE;
-			}
+            if (StaticRandom.Instance.Next(100) <= secondaryDefense) // Evade
+            {
+                target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_EVADE);
+                caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_EVADE);
+                defenseEvent = (byte)CombatEvent.COMBATEVENT_EVADE;
+            }
 
             if (Math.Abs(caster.Z - target.Z) > 300)
             {
@@ -291,21 +297,21 @@ namespace WorldServer
 
             byte defenseEvent = 0;
 
-			AbilityDamageInfo tempDmg = new AbilityDamageInfo
-			{
-				Entry = entry,
-				DamageEvent = defenseEvent,
-				IsAoE = isAoE
-			};
-			
-			double secondaryDefense = CalculatePDDRoll((int)defensiveStat, (int)offensiveStat, tempDmg, target.StsInterface.GetTotalStat(Stats.Disrupt), caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough));
+            AbilityDamageInfo tempDmg = new AbilityDamageInfo
+            {
+                Entry = entry,
+                DamageEvent = defenseEvent,
+                IsAoE = isAoE
+            };
 
-			if (StaticRandom.Instance.Next(100) <= secondaryDefense) // Disrupt
-			{
-				target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_DISRUPT);
-				caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_DISRUPT);
-				defenseEvent = (byte)CombatEvent.COMBATEVENT_DISRUPT;
-			}
+            double secondaryDefense = CalculatePDDRoll((int)defensiveStat, (int)offensiveStat, tempDmg, target.StsInterface.GetTotalStat(Stats.Disrupt), caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough));
+
+            if (StaticRandom.Instance.Next(100) <= secondaryDefense) // Disrupt
+            {
+                target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_DISRUPT);
+                caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_DISRUPT);
+                defenseEvent = (byte)CombatEvent.COMBATEVENT_DISRUPT;
+            }
 
             if (Math.Abs(caster.Z - target.Z) > 300)
             {
@@ -344,7 +350,7 @@ namespace WorldServer
 
             if (target.ShouldDefend(caster, damageInfo))
             {
-                damageInfo.DamageEvent = (byte) CombatEvent.COMBATEVENT_BLOCK;
+                damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_BLOCK;
                 return true;
             }
 
@@ -390,78 +396,78 @@ namespace WorldServer
                 if (target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND) != null && target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info?.Type == 5)
                 {
 
-					double block = CalculateBlockRoll(target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info.Armor, offensiveStat, damageInfo, target.StsInterface.GetTotalStat(Stats.Block), caster.StsInterface.GetStatLinearModifier(Stats.BlockStrikethrough));
-					if (StaticRandom.Instance.Next(100) <= block)
-					{
-						target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_BLOCK);
-						caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_BLOCK);
+                    double block = CalculateBlockRoll(target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info.Armor, offensiveStat, damageInfo, target.StsInterface.GetTotalStat(Stats.Block), caster.StsInterface.GetStatLinearModifier(Stats.BlockStrikethrough));
+                    if (StaticRandom.Instance.Next(100) <= block)
+                    {
+                        target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_BLOCK);
+                        caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_BLOCK);
 
-						damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_BLOCK;
-						return true;
-					}
+                        damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_BLOCK;
+                        return true;
+                    }
                 }
             }
 
-			#endregion
+            #endregion
 
-			#region Parry, Dodge, Disrupt
+            #region Parry, Dodge, Disrupt
 
 
-			double secondaryDefense = 0.0;
-			switch (damageInfo.StatUsed)
-			{
-				case 1: // Parry
-					{
-						//secondaryDefense += target.StsInterface.GetTotalStat(Stats.Parry) - caster.StsInterface.GetStatLinearModifier(Stats.ParryStrikethrough);
-						secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, damageInfo, target.StsInterface.GetTotalStat(Stats.Parry), caster.StsInterface.GetStatLinearModifier(Stats.ParryStrikethrough));
+            double secondaryDefense = 0.0;
+            switch (damageInfo.StatUsed)
+            {
+                case 1: // Parry
+                    {
+                        //secondaryDefense += target.StsInterface.GetTotalStat(Stats.Parry) - caster.StsInterface.GetStatLinearModifier(Stats.ParryStrikethrough);
+                        secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, damageInfo, target.StsInterface.GetTotalStat(Stats.Parry), caster.StsInterface.GetStatLinearModifier(Stats.ParryStrikethrough));
 
-						if (StaticRandom.Instance.Next(100) <= secondaryDefense)
-						{
-							target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_PARRY);
-							caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_PARRY);
-							damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_PARRY;
-							
-							target.CbtInterface.SetDefenseTimer(damageInfo.DamageEvent);
-							caster.CbtInterface.SetDefendedAgainstTimer(damageInfo.DamageEvent);
-							return true;
-						}
-					}
-					break;
-				case 8: // Evade
-					{
-						//secondaryDefense += target.StsInterface.GetTotalStat(Stats.Evade) - caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough);
-						secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, damageInfo, target.StsInterface.GetTotalStat(Stats.Evade), caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough));
+                        if (StaticRandom.Instance.Next(100) <= secondaryDefense)
+                        {
+                            target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_PARRY);
+                            caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_PARRY);
+                            damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_PARRY;
 
-						if (StaticRandom.Instance.Next(100) <= secondaryDefense)
-						{
-							target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_EVADE);
-							caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_EVADE);
-							damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_EVADE;
+                            target.CbtInterface.SetDefenseTimer(damageInfo.DamageEvent);
+                            caster.CbtInterface.SetDefendedAgainstTimer(damageInfo.DamageEvent);
+                            return true;
+                        }
+                    }
+                    break;
+                case 8: // Evade
+                    {
+                        //secondaryDefense += target.StsInterface.GetTotalStat(Stats.Evade) - caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough);
+                        secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, damageInfo, target.StsInterface.GetTotalStat(Stats.Evade), caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough));
 
-							target.CbtInterface.SetDefenseTimer(damageInfo.DamageEvent);
-							caster.CbtInterface.SetDefendedAgainstTimer(damageInfo.DamageEvent);
-							return true;
-						}
-					}
-					break;
-				case 9: // Disrupt
-					{
-						//secondaryDefense += target.StsInterface.GetTotalStat(Stats.Disrupt) - caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough);
-						secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, damageInfo, target.StsInterface.GetTotalStat(Stats.Disrupt), caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough));
+                        if (StaticRandom.Instance.Next(100) <= secondaryDefense)
+                        {
+                            target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_EVADE);
+                            caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_EVADE);
+                            damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_EVADE;
 
-						if (StaticRandom.Instance.Next(100) <= secondaryDefense) // Disrupt
-						{
-							target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_DISRUPT);
-							caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_DISRUPT);
-							damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_DISRUPT;
+                            target.CbtInterface.SetDefenseTimer(damageInfo.DamageEvent);
+                            caster.CbtInterface.SetDefendedAgainstTimer(damageInfo.DamageEvent);
+                            return true;
+                        }
+                    }
+                    break;
+                case 9: // Disrupt
+                    {
+                        //secondaryDefense += target.StsInterface.GetTotalStat(Stats.Disrupt) - caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough);
+                        secondaryDefense = CalculatePDDRoll(defensiveStat, offensiveStat, damageInfo, target.StsInterface.GetTotalStat(Stats.Disrupt), caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough));
 
-							target.CbtInterface.SetDefenseTimer(damageInfo.DamageEvent);
-							caster.CbtInterface.SetDefendedAgainstTimer(damageInfo.DamageEvent);
-							return true;
-						}
-					}
-					break;
-			}
+                        if (StaticRandom.Instance.Next(100) <= secondaryDefense) // Disrupt
+                        {
+                            target.CbtInterface.SetDefenseTimer((byte)CombatEvent.COMBATEVENT_DISRUPT);
+                            caster.CbtInterface.SetDefendedAgainstTimer((byte)CombatEvent.COMBATEVENT_DISRUPT);
+                            damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_DISRUPT;
+
+                            target.CbtInterface.SetDefenseTimer(damageInfo.DamageEvent);
+                            caster.CbtInterface.SetDefendedAgainstTimer(damageInfo.DamageEvent);
+                            return true;
+                        }
+                    }
+                    break;
+            }
 
             #endregion
 
@@ -543,6 +549,9 @@ namespace WorldServer
 
             damageInfo.PrecalcDamage = damageInfo.GetDamageForLevel(level);
 
+            target.ModifyHealOut(damageInfo);
+            target.ModifyHealIn(damageInfo);
+
             if (damageInfo.DamageType != DamageTypes.RawHealing)
             {
                 // Neutralize some effects of AM/Shaman mechanic bonuses if self-cast
@@ -586,10 +595,10 @@ namespace WorldServer
 
                 return;
             }
-            
+
             if (damageInfo.DamageType != DamageTypes.RawDamage)
             {
-                target.BuffInterface.NotifyCombatEvent((byte) BuffCombatEvents.ShieldPass, damageInfo, caster);
+                target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ShieldPass, damageInfo, caster);
 
                 #region Dealing/Receiving Event
                 caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DealingDamage, damageInfo, target);
@@ -599,15 +608,15 @@ namespace WorldServer
                 CheckCriticalHit(caster, target, damageInfo);
 
                 caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DealtDamage, damageInfo, target);
-                target.BuffInterface.NotifyCombatEvent((byte) BuffCombatEvents.ReceivedDamage, damageInfo, caster);
+                target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivedDamage, damageInfo, caster);
 
                 #region General Multipliers
 
-                damageInfo.DamageBonus += 
-                    caster.StsInterface.GetStatBonusModifier(Stats.OutgoingDamagePercent) 
+                damageInfo.DamageBonus +=
+                    caster.StsInterface.GetStatBonusModifier(Stats.OutgoingDamagePercent)
                     + target.StsInterface.GetStatBonusModifier(Stats.IncomingDamagePercent);
                 damageInfo.DamageReduction *=
-                    target.StsInterface.GetStatReductionModifier(Stats.IncomingDamagePercent) 
+                    target.StsInterface.GetStatReductionModifier(Stats.IncomingDamagePercent)
                     * caster.StsInterface.GetStatReductionModifier(Stats.OutgoingDamagePercent);
 
                 #endregion
@@ -682,12 +691,12 @@ namespace WorldServer
                         int chanceToBeCrit = 10 + damageInfo.CriticalHitRate + caster.StsInterface.GetTotalStat(Stats.CriticalHitRate) + caster.StsInterface.GetTotalStat(Stats.HealCritRate);
                         if (rand <= chanceToBeCrit)
                         {
-                            damageInfo.Damage *= 1.35f + (float) StaticRandom.Instance.NextDouble()*0.2f;
+                            damageInfo.Damage *= 1.35f + (float)StaticRandom.Instance.NextDouble() * 0.2f;
 
-                            damageInfo.DamageEvent = (byte) CombatEvent.COMBATEVENT_ABILITY_CRITICAL;
+                            damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_ABILITY_CRITICAL;
                         }
                         else
-                            damageInfo.DamageEvent = (byte) CombatEvent.COMBATEVENT_HIT;
+                            damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_HIT;
                     }
                     #endregion
                 }
@@ -761,8 +770,8 @@ namespace WorldServer
             if (damageInfo.DamageType != DamageTypes.RawDamage)
             {
                 #region Weapon DPS
-               // Procs SHOULD NOT add damage from weapons.
-               // damageInfo.Damage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod)*damageInfo.WeaponDamageScale*damageInfo.CastTimeDamageMult;
+                // Procs SHOULD NOT add damage from weapons.
+                // damageInfo.Damage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod)*damageInfo.WeaponDamageScale*damageInfo.CastTimeDamageMult;
 
                 #endregion
 
@@ -772,11 +781,11 @@ namespace WorldServer
                     AddLinearMitigation(target, damageInfo, 0.2f, false);
                 }
 
-                caster.BuffInterface.NotifyCombatEvent((byte) BuffCombatEvents.DealingDamage, damageInfo, target);
-                target.BuffInterface.NotifyCombatEvent((byte) BuffCombatEvents.ReceivingDamage, damageInfo, caster);
+                caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DealingDamage, damageInfo, target);
+                target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivingDamage, damageInfo, caster);
             }
 
-            target.BuffInterface.NotifyCombatEvent((byte) BuffCombatEvents.ShieldPass, damageInfo, caster);
+            target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ShieldPass, damageInfo, caster);
 
             if (damageInfo.DamageType != DamageTypes.RawDamage)
             {
@@ -787,7 +796,7 @@ namespace WorldServer
                 if (damageInfo.DamageType == 0) // physical damage
                 {
                     float secondaryStat = caster.StsInterface.GetTotalStat(Stats.WeaponSkill);
-                    float pen = secondaryStat/(7.5f*caster.EffectiveLevel + 50f)*0.25f;
+                    float pen = secondaryStat / (7.5f * caster.EffectiveLevel + 50f) * 0.25f;
 
                     originalResistance = target.StsInterface.GetTotalStat(Stats.Armor);
 
@@ -795,7 +804,7 @@ namespace WorldServer
                         damageTypeResistance = 0;
                     else
                     {
-                        damageTypeResistance = originalResistance/(caster.EffectiveLevel*44f)*0.4f; //this will give you the total mitigation from armour.
+                        damageTypeResistance = originalResistance / (caster.EffectiveLevel * 44f) * 0.4f; //this will give you the total mitigation from armour.
                         damageTypeResistance *= 1f - pen;
                         if (damageTypeResistance > 0.75f) //puts in hard cap for physical mitigation of 75%
                             damageTypeResistance = 0.75f;
@@ -808,20 +817,20 @@ namespace WorldServer
                         damageTypeResistance = 0;
                     else
                     {
-                        damageTypeResistance = (originalResistance/(caster.EffectiveLevel*8.4f))*0.2f;
+                        damageTypeResistance = (originalResistance / (caster.EffectiveLevel * 8.4f)) * 0.2f;
                         if (damageTypeResistance > 0.4)
-                            damageTypeResistance = ((originalResistance/(caster.EffectiveLevel*8.4f))*0.2f - 0.4f)/3.0f + 0.4f;
+                            damageTypeResistance = ((originalResistance / (caster.EffectiveLevel * 8.4f)) * 0.2f - 0.4f) / 3.0f + 0.4f;
                         if (damageTypeResistance > 0.75f)
                             damageTypeResistance = 0.75f;
                     }
                 }
 
-                damageInfo.Mitigation += (ushort) (damageInfo.Damage*damageTypeResistance);
-                damageInfo.Damage -= (ushort) (damageInfo.Damage*damageTypeResistance);
+                damageInfo.Mitigation += (ushort)(damageInfo.Damage * damageTypeResistance);
+                damageInfo.Damage -= (ushort)(damageInfo.Damage * damageTypeResistance);
 
                 #endregion
 
-                target.BuffInterface.NotifyCombatEvent((byte) BuffCombatEvents.ReceivedDamage, damageInfo, caster);
+                target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivedDamage, damageInfo, caster);
 
                 // Guard is separate because it needs to come after shielding
                 target.BuffInterface.CheckGuard(damageInfo, caster);
@@ -881,6 +890,8 @@ namespace WorldServer
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
 
             #endregion
+
+            target.ModifyHealIn(damageInfo);
 
             AddOffensiveStats(caster, damageInfo, 0.2f, false);
 
@@ -1078,13 +1089,13 @@ namespace WorldServer
             if (!target.IsDead)
             {
                 // Damage cap
-              //  if (caster is Player)
-              //  {
-              //      int damageCap = Point2D.Lerp(550, 4000, caster.EffectiveLevel / 40f);
-              //      damageInfo.Damage = Math.Min(damageCap, damageInfo.Damage);
-              //  }
+                //  if (caster is Player)
+                //  {
+                //      int damageCap = Point2D.Lerp(550, 4000, caster.EffectiveLevel / 40f);
+                //      damageInfo.Damage = Math.Min(damageCap, damageInfo.Damage);
+                //  }
 
-                PacketOut damageOut = new PacketOut((byte) Opcodes.F_CAST_PLAYER_EFFECT, 24);
+                PacketOut damageOut = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 24);
 
                 damageOut.WriteUInt16(caster.Oid);
                 damageOut.WriteUInt16(target.Oid);
@@ -1096,11 +1107,11 @@ namespace WorldServer
                     damageOut.WriteByte(42);
                 else damageOut.WriteByte(7);
 
-                damageOut.WriteZigZag(-(ushort) damageInfo.Damage);
+                damageOut.WriteZigZag(-(ushort)damageInfo.Damage);
                 if (damageInfo.Mitigation > 0)
-                    damageOut.WriteZigZag((ushort) damageInfo.Mitigation);
+                    damageOut.WriteZigZag((ushort)damageInfo.Mitigation);
                 if (damageInfo.Absorption > 0)
-                    damageOut.WriteZigZag((ushort) damageInfo.Absorption);
+                    damageOut.WriteZigZag((ushort)damageInfo.Absorption);
                 damageOut.WriteByte(0);
 
                 target.DispatchPacketUnreliable(damageOut, true, caster);
@@ -1129,8 +1140,8 @@ namespace WorldServer
             // 8: OnPostDealt/ReceivedDamage event (Tooth of Tzeentch, Shining Blade, Blurring Shock, Skull Thumper, etc)
             if (damageInfo.DamageType != DamageTypes.RawDamage)
             {
-                caster.BuffInterface.NotifyCombatEvent((byte) BuffCombatEvents.DirectDamageDealt, damageInfo, target);
-                target.BuffInterface.NotifyCombatEvent((byte) BuffCombatEvents.DirectDamageReceived, damageInfo, caster);
+                caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DirectDamageDealt, damageInfo, target);
+                target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DirectDamageReceived, damageInfo, caster);
             }
 
             if (damageInfo.Damage > 0)
@@ -1145,7 +1156,7 @@ namespace WorldServer
             float damageBonus = 0;
             float damageReduction = 1;
 
-            AbilityDamageInfo damageInfo = new AbilityDamageInfo{ StatDamageScale = 1 };
+            AbilityDamageInfo damageInfo = new AbilityDamageInfo { StatDamageScale = 1 };
 
             caster.SendAttackMovement(target);
 
@@ -1267,7 +1278,7 @@ namespace WorldServer
 
                 if (!target.IsDead)
                 {
-                    PacketOut damageOut = new PacketOut((byte) Opcodes.F_CAST_PLAYER_EFFECT, 24);
+                    PacketOut damageOut = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 24);
 
                     damageOut.WriteUInt16(caster.Oid);
                     damageOut.WriteUInt16(target.Oid);
@@ -1279,11 +1290,11 @@ namespace WorldServer
                         damageOut.WriteByte(42);
                     else damageOut.WriteByte(0x13);
 
-                    damageOut.WriteZigZag(-(ushort) damageInfo.Damage);
+                    damageOut.WriteZigZag(-(ushort)damageInfo.Damage);
                     if (damageInfo.Mitigation > 0)
-                        damageOut.WriteZigZag((ushort) damageInfo.Mitigation);
+                        damageOut.WriteZigZag((ushort)damageInfo.Mitigation);
                     if (damageInfo.Absorption > 0)
-                        damageOut.WriteZigZag((ushort) damageInfo.Absorption);
+                        damageOut.WriteZigZag((ushort)damageInfo.Absorption);
                     damageOut.WriteByte(0);
 
                     target.DispatchPacketUnreliable(damageOut, true, caster);
@@ -1299,7 +1310,7 @@ namespace WorldServer
                     if (killer != null && target is Player)
                     {
                         Player victim = (Player)target;
-                        
+
 
                         PacketOut Out = new PacketOut((byte)Opcodes.F_DEATHSPAM, 96);
                         WriteKillerDeathSpamInfo(Out, killer);
@@ -1331,7 +1342,7 @@ namespace WorldServer
 
             if (!(caster is Player))
                 return;
-            
+
             if (slot == EquipSlot.MAIN_HAND && caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND) != null && caster.ItmInterface.GetItemInSlot(11).Info.Type != (byte)ItemTypes.ITEMTYPES_SHIELD && caster.ItmInterface.GetItemInSlot(11).Info.Type != (byte)ItemTypes.ITEMTYPES_CHARM)
             {
                 if (StaticRandom.Instance.Next(1, 100) <= 45 + caster.StsInterface.GetBonusStat(Stats.OffhandProcChance))
@@ -1344,7 +1355,7 @@ namespace WorldServer
             float damageBonus = 0;
             float damageReduction = 1;
 
-            AbilityDamageInfo damageInfo = new AbilityDamageInfo {StatUsed = 1, StatDamageScale = 1};
+            AbilityDamageInfo damageInfo = new AbilityDamageInfo { StatUsed = 1, StatDamageScale = 1 };
 
             target.ModifyDamageIn(damageInfo);
 
@@ -1383,7 +1394,7 @@ namespace WorldServer
             float wSpeed = caster.ItmInterface.GetAttackTime(EquipSlot.MAIN_HAND) * 0.01f;
             float ohWdps = caster.ItmInterface.GetWeaponDamage(EquipSlot.OFF_HAND);
 
-            damageInfo.Damage = wSpeed  * ohWdps * OFFHAND_DAMAGE_PEN;
+            damageInfo.Damage = wSpeed * ohWdps * OFFHAND_DAMAGE_PEN;
 
             #region Offensive Stat
 
@@ -1400,7 +1411,7 @@ namespace WorldServer
                 stat = softcap + ((stat - softcap) / 3);
             // End
 
-            damageInfo.Damage += wSpeed * stat * OFFHAND_STAT_COEFF * OFFHAND_DAMAGE_PEN; 
+            damageInfo.Damage += wSpeed * stat * OFFHAND_STAT_COEFF * OFFHAND_DAMAGE_PEN;
 
             #endregion
 
@@ -1487,7 +1498,7 @@ namespace WorldServer
 
             if (!target.IsDead)
             {
-                PacketOut damageOut = new PacketOut((byte) Opcodes.F_CAST_PLAYER_EFFECT, 24);
+                PacketOut damageOut = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 24);
 
                 damageOut.WriteUInt16(caster.Oid);
                 damageOut.WriteUInt16(target.Oid);
@@ -1499,11 +1510,11 @@ namespace WorldServer
                     damageOut.WriteByte(42);
                 else damageOut.WriteByte(0x13);
 
-                damageOut.WriteZigZag(-(ushort) damageInfo.Damage);
+                damageOut.WriteZigZag(-(ushort)damageInfo.Damage);
                 if (damageInfo.Mitigation > 0)
-                    damageOut.WriteZigZag((ushort) damageInfo.Mitigation);
+                    damageOut.WriteZigZag((ushort)damageInfo.Mitigation);
                 if (damageInfo.Absorption > 0)
-                    damageOut.WriteZigZag((ushort) damageInfo.Absorption);
+                    damageOut.WriteZigZag((ushort)damageInfo.Absorption);
                 damageOut.WriteByte(0);
 
                 target.DispatchPacketUnreliable(damageOut, true, caster);
@@ -1526,7 +1537,7 @@ namespace WorldServer
                     if (pet == null)
                         WriteWeaponDeathSpamInfo(Out, killer, EquipSlot.OFF_HAND);
                     else WritePetDeathSpamInfo(Out, killer);
-                    
+
 
 
                     lock (Player._Players)
@@ -1551,7 +1562,7 @@ namespace WorldServer
 
         public static void InflictGuardDamage(Unit attacker, Player receiver, ushort entry, AbilityDamageInfo originalDamage)
         {
-            AbilityDamageInfo tempDmg = new AbilityDamageInfo {Entry = 0, Damage = originalDamage.Damage};
+            AbilityDamageInfo tempDmg = new AbilityDamageInfo { Entry = 0, Damage = originalDamage.Damage };
             byte defenseEvent = 0;
 
             receiver.CbtInterface.RefreshCombatTimer();
@@ -1632,7 +1643,7 @@ namespace WorldServer
                 {
                     tempDmg.DamageEvent = defenseEvent;
                     receiver.CbtInterface.SetDefenseTimer(defenseEvent);
-                    receiver.BuffInterface.NotifyCombatEvent((byte) BuffCombatEvents.DefendedAgainst, tempDmg, receiver);
+                    receiver.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DefendedAgainst, tempDmg, receiver);
                 }
             }
 
@@ -1704,7 +1715,7 @@ namespace WorldServer
             }
 
             receiver.DispatchPacketUnreliable(outl, true, null);
-            
+
             #endregion
         }
 
@@ -1718,6 +1729,9 @@ namespace WorldServer
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
 
             #endregion
+
+            target.ModifyHealOut(damageInfo);
+            target.ModifyHealIn(damageInfo);
 
             if (damageInfo.DamageType != DamageTypes.RawHealing)
             {
@@ -1799,8 +1813,8 @@ namespace WorldServer
 
             if (damageInfo.DamageType != DamageTypes.RawHealing)
             {
-                caster.BuffInterface.NotifyCombatEvent((byte) BuffCombatEvents.DirectHealDealt, damageInfo, target);
-                target.BuffInterface.NotifyCombatEvent((byte) BuffCombatEvents.DirectHealReceived, damageInfo, caster);
+                caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DirectHealDealt, damageInfo, target);
+                target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DirectHealReceived, damageInfo, caster);
             }
         }
 
@@ -1874,7 +1888,7 @@ namespace WorldServer
 
             if (pointsHealed > -1)
             {
-                PacketOut Out = new PacketOut((byte) Opcodes.F_CAST_PLAYER_EFFECT, 18);
+                PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 18);
                 Out.WriteUInt16(caster.Oid);
                 Out.WriteUInt16(target.Oid);
                 Out.WriteUInt16(entry);
@@ -1970,7 +1984,7 @@ namespace WorldServer
             string name;
             byte type = 0;
 
-            switch ((CareerLine) killer.Info.CareerLine)
+            switch ((CareerLine)killer.Info.CareerLine)
             {
                 case CareerLine.CAREERLINE_ENGINEER:
                     name = "Turret";
@@ -2010,18 +2024,18 @@ namespace WorldServer
 
         private static void AddOffensiveStats(Unit caster, AbilityDamageInfo damageInfo, float coefficient, bool toPrecalc, bool bIsAutoAttack = false)
         {
-            uint softcap = (uint) (50 + 25*caster.EffectiveLevel);
-            uint hardcap = (uint) (50 + 55*caster.EffectiveLevel);
+            uint softcap = (uint)(50 + 25 * caster.EffectiveLevel);
+            uint hardcap = (uint)(50 + 55 * caster.EffectiveLevel);
 
             float stat = caster.StsInterface.GetTotalStat((Stats)damageInfo.StatUsed);
 
             if (damageInfo.UseItemStatTotal)
-                stat = Math.Max(stat, caster.StsInterface.GetBaseStat(damageInfo.StatUsed) + (caster.StsInterface.ItemStatTotal*0.7f) - caster.StsInterface.GetReducedStat((Stats)damageInfo.StatUsed));
+                stat = Math.Max(stat, caster.StsInterface.GetBaseStat(damageInfo.StatUsed) + (caster.StsInterface.ItemStatTotal * 0.7f) - caster.StsInterface.GetReducedStat((Stats)damageInfo.StatUsed));
 
-            #if DEBUG
+#if DEBUG
             if (caster is Player && damageInfo.UseItemStatTotal)
-                ((Player) caster).SendClientMessage($"Using total item stat factor contribution of {caster.StsInterface.GetBaseStat(damageInfo.StatUsed) + (caster.StsInterface.ItemStatTotal*0.7f)} instead of {(damageInfo.StatUsed == 3 ? "Willpower" : "Intelligence")} contribution of {caster.StsInterface.GetTotalStat((Stats)damageInfo.StatUsed)}.");
-            #endif
+                ((Player)caster).SendClientMessage($"Using total item stat factor contribution of {caster.StsInterface.GetBaseStat(damageInfo.StatUsed) + (caster.StsInterface.ItemStatTotal * 0.7f)} instead of {(damageInfo.StatUsed == 3 ? "Willpower" : "Intelligence")} contribution of {caster.StsInterface.GetTotalStat((Stats)damageInfo.StatUsed)}.");
+#endif
 
             if (stat > hardcap)
                 stat = hardcap;
@@ -2169,7 +2183,7 @@ namespace WorldServer
                 float critDmgMult = 1.35f + (float)StaticRandom.Instance.NextDouble() * 0.2f + damageInfo.CriticalHitDamageBonus + (caster.StsInterface.GetTotalStat(Stats.CriticalDamage) * 0.01f) + (target.StsInterface.GetTotalStat(Stats.CriticalDamageTaken) * 0.01f);
 
                 if (critDmgMult > 3.5f)
-                    (caster as Player)?.SendClientMessage("Suspiciously high critical damage multiplier of "+(critDmgMult * 100)+"%.", ChatLogFilters.CHATLOGFILTERS_SHOUT);
+                    (caster as Player)?.SendClientMessage("Suspiciously high critical damage multiplier of " + (critDmgMult * 100) + "%.", ChatLogFilters.CHATLOGFILTERS_SHOUT);
                 damageInfo.Damage *= critDmgMult;
                 damageInfo.Mitigation *= critDmgMult;
 
@@ -2239,17 +2253,17 @@ namespace WorldServer
 
             if (toPrecalc)
             {
-                damageInfo.PrecalcMitigation += (ushort) (damageInfo.PrecalcDamage*damageTypeResistance);
-                damageInfo.PrecalcDamage -= (ushort) (damageInfo.PrecalcDamage*damageTypeResistance);
+                damageInfo.PrecalcMitigation += (ushort)(damageInfo.PrecalcDamage * damageTypeResistance);
+                damageInfo.PrecalcDamage -= (ushort)(damageInfo.PrecalcDamage * damageTypeResistance);
             }
 
             else
             {
-                damageInfo.Mitigation += (ushort) (damageInfo.Damage*damageTypeResistance);
-                damageInfo.Damage -= (ushort) (damageInfo.Damage*damageTypeResistance);
+                damageInfo.Mitigation += (ushort)(damageInfo.Damage * damageTypeResistance);
+                damageInfo.Damage -= (ushort)(damageInfo.Damage * damageTypeResistance);
             }
         }
 
-#endregion
+        #endregion
     }
 }

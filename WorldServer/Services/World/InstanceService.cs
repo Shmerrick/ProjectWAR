@@ -1,6 +1,9 @@
 ﻿using Common;
 using FrameWork;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using WorldServer.World.Objects.Instances;
 
 namespace WorldServer.Services.World
 {
@@ -12,6 +15,9 @@ namespace WorldServer.Services.World
         public static Dictionary<uint, Instance_Info> _InstanceInfo;
         public static Dictionary<uint, List<Instance_Encounter>> _InstanceEncounter;
         public static Dictionary<string, Instance_Lockouts> _InstanceLockouts;
+        public static Dictionary<string, Instances_Statistics> _InstanceStatistics;
+
+        #region loading methods
 
         [LoadingFunction(true)]
         public static void LoadInstance_Creatures()
@@ -64,7 +70,7 @@ namespace WorldServer.Services.World
 
             foreach(Instance_Info II in InstanceInfo)
             {
-                _InstanceInfo.Add(II.ZoneID,II);
+                _InstanceInfo.Add(II.ZoneID, II);
 
             }
             Log.Success("WorldMgr", "Loaded " + _InstanceInfo.Count + "Instance_Info");
@@ -105,16 +111,232 @@ namespace WorldServer.Services.World
             Log.Success("WorldMgr", "Loaded " + _InstanceEncounter.Count + "Instance_Encounters");
         }
 
+        [LoadingFunction(true)]
+        public static void LoadInstances_Statistics()
+        {
+            _InstanceStatistics = new Dictionary<string, Instances_Statistics>();
+
+            IList<Instances_Statistics> InstanceStatistics = Database.SelectAllObjects<Instances_Statistics>();
+
+            foreach (Instances_Statistics Obj in InstanceStatistics)
+            {
+                _InstanceStatistics.Add(Obj.InstanceID, Obj);
+            }
+
+            Log.Success("WorldMgr", "Loaded " + _InstanceStatistics.Count + "Instances_Statistics");
+        }
+
+        #endregion
+
+        #region access methods
+        
+        private static Instances_Statistics AddNewInstanceStatisticsEntry(string instanceID)
+        {
+            Instances_Statistics stat = new Instances_Statistics()
+            {
+                InstanceID = instanceID,
+                lockouts_InstanceID = string.Empty,
+                playerIDs = string.Empty,
+                ttkPerBoss = string.Empty,
+                deathCountPerBoss = string.Empty,
+                attemptsPerBoss = string.Empty
+            };
+            _InstanceStatistics.Add(instanceID, stat);
+
+            stat.Dirty = true;
+            Database.AddObject(stat);
+            return stat;
+        }
+
+        public static void SaveLockoutInstanceID(string instanceID, Instance_Lockouts lockout)
+        {
+            if (lockout == null)
+                return;
+
+            // instanceID:      260:123456;
+
+            if (!_InstanceStatistics.TryGetValue(instanceID, out Instances_Statistics stat))
+                stat = AddNewInstanceStatisticsEntry(instanceID);
+
+            stat.lockouts_InstanceID = lockout.InstanceID;
+
+            stat.Dirty = true;
+            Database.SaveObject(stat);
+            Database.ForceSave();
+        }
+
+        public static void SavePlayerIDs(string instanceID, List<string> plrs)
+        {
+            if (string.IsNullOrEmpty(instanceID) || plrs == null || plrs.Count == 0)
+                return;
+
+            // instanceID:      260:123456;
+            // playerIDs:       123;456;
+
+            if (!_InstanceStatistics.TryGetValue(instanceID, out Instances_Statistics stat))
+                stat = AddNewInstanceStatisticsEntry(instanceID);
+
+            string newStr = string.Empty;
+            foreach (string plr in plrs)
+            {
+                newStr += plr + ";";
+            }
+            stat.playerIDs = newStr;
+            
+            stat.Dirty = true;
+            Database.SaveObject(stat);
+            Database.ForceSave();
+        }
+
+        public static void SaveTtkPerBoss(string instanceID, InstanceBossSpawn boss, TimeSpan time)
+        {
+            if (boss == null || time == null)
+                return;
+
+            // instanceID:      260:123456;
+            // ttkPerBoss:      330:123;331:456;
+
+            if (!_InstanceStatistics.TryGetValue(instanceID, out Instances_Statistics stat))
+                stat = AddNewInstanceStatisticsEntry(instanceID);
+            
+            string[] split = stat.ttkPerBoss.Split(';');
+            int idx = -1;
+            foreach (var s in split)
+            {
+                if (s.Split(':')[0].Equals(boss.BossID.ToString()))
+                {
+                    idx = split.ToList().IndexOf(s);
+                    break;
+                }
+            }
+
+            if (idx == -1) // nothing found
+            {
+                stat.ttkPerBoss += boss.BossID + ":" + Math.Round(time.TotalSeconds, 0) + ";";
+            }
+            else
+            {
+                string[] spl = split[idx].Split(':');
+                try
+                {
+                    string newStr = boss.BossID + ":" + Math.Round(time.TotalSeconds, 0);
+                    stat.ttkPerBoss = stat.ttkPerBoss.Replace(split[idx], newStr);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e.GetType().ToString(), e.Message + "\r\n" + e.StackTrace);
+                    return;
+                }
+            }
+
+            stat.Dirty = true;
+            Database.SaveObject(stat);
+            Database.ForceSave();
+        }
+
+        public static void SaveDeathCountPerBoss(string instanceID, InstanceBossSpawn boss, int deaths)
+        {
+            if (boss == null)
+                return;
+
+            // instanceID:      260:123456;
+            // deathCountPerBoss: 330:2;331:1;
+
+            if (!_InstanceStatistics.TryGetValue(instanceID, out Instances_Statistics stat))
+                stat = AddNewInstanceStatisticsEntry(instanceID);
+
+            string[] split = stat.deathCountPerBoss.Split(';');
+            int idx = -1;
+            foreach (var s in split)
+            {
+                if (s.Split(':')[0].Equals(boss.BossID.ToString()))
+                {
+                    idx = split.ToList().IndexOf(s);
+                    break;
+                }
+            }
+
+            if (idx == -1) // nothing found
+            {
+                stat.deathCountPerBoss += boss.BossID + ":" + deaths + ";";
+            }
+            else
+            {
+                string[] spl = split[idx].Split(':');
+                try
+                {
+                    string newStr = boss.BossID + ":" + (int.Parse(spl[1]) + deaths).ToString();
+                    stat.deathCountPerBoss = stat.deathCountPerBoss.Replace(split[idx], newStr);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e.GetType().ToString(), e.Message + "\r\n" + e.StackTrace);
+                    return;
+                }
+            }
+
+            stat.Dirty = true;
+            Database.SaveObject(stat);
+            Database.ForceSave();
+        }
+
+        public static void SaveAttemptsPerBoss(string instanceID, InstanceBossSpawn boss, int attempts)
+        {
+            if (boss == null)
+                return;
+
+            // instanceID:      260:123456;
+            // attemptsPerBoss: 330:2;331:1;
+
+            if (!_InstanceStatistics.TryGetValue(instanceID, out Instances_Statistics stat))
+                stat = AddNewInstanceStatisticsEntry(instanceID);
+
+            string[] split = stat.attemptsPerBoss.Split(';');
+            int idx = -1;
+            foreach (var s in split)
+            {
+                if (s.Split(':')[0].Equals(boss.BossID.ToString()))
+                {
+                    idx = split.ToList().IndexOf(s);
+                    break;
+                }
+            }
+
+            if (idx == -1) // nothing found
+            {
+                stat.attemptsPerBoss += boss.BossID + ":" + attempts + ";";
+            }
+            else
+            {
+                string[] spl = split[idx].Split(':');
+                try
+                {
+                    string newStr = boss.BossID + ":" + (int.Parse(spl[1]) + attempts).ToString();
+                    stat.attemptsPerBoss = stat.attemptsPerBoss.Replace(split[idx], newStr);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e.GetType().ToString(), e.Message + "\r\n" + e.StackTrace);
+                    return;
+                }
+            }
+
+            stat.Dirty = true;
+            Database.SaveObject(stat);
+            Database.ForceSave();
+        }
+
         public static Instance_Encounter GetInstanceEncounter(uint instanceID,uint BossID)
         {
-            List<Instance_Encounter> bosses;
-            _InstanceEncounter.TryGetValue(instanceID, out bosses);
-            foreach(Instance_Encounter IE in bosses)
+            _InstanceEncounter.TryGetValue(instanceID, out List<Instance_Encounter> bosses);
+            foreach (Instance_Encounter IE in bosses)
             {
                 if (BossID == IE.BossID)
                     return IE;
             }
             return null;
         }
+
+        #endregion
     }
 }

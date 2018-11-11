@@ -61,5 +61,11 @@ namespace Common.Database.World.Battlefront
 
 		[DataElement(AllowDbNull = false)]
 		public int DestroVP { get; set; }
-	}
+
+        [DataElement(AllowDbNull = false)]
+        public int DestroKeepId { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int OrderKeepId { get; set; }
+    }
 }

@@ -14,6 +14,7 @@ using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.BattleFronts.Objectives;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Map;
 using BattleFrontConstants = WorldServer.World.Battlefronts.Apocalypse.BattleFrontConstants;
 
 namespace WorldServer.Managers.Commands
@@ -24,39 +25,34 @@ namespace WorldServer.Managers.Commands
         /// <summary>Constant initials extractor<summary>
         private static readonly Regex INITIALS = new Regex(@"([A-Z])[A-Z1-9]*_?");
 
-        [CommandAttribute(EGmLevel.AnyGM, "Provides campaign diagnostic info. Usage: .campaign diag (zone|region) or .campaign diag")]
+        [CommandAttribute(EGmLevel.AnyGM, "Provides campaign diagnostic info. Usage: .campaign diag")]
         public static void Diag(Player plr, string targetString = null)
         {
-            // Weird algorithm but it's for legacy purpose only
-            bool bLocalZone = true;
-            var BattleFront = plr.Region.Campaign;
-            switch (targetString)
+            if (plr.Zone == null || plr.Region.Campaign == null)
             {
-                case "zone":
-                    bLocalZone = true;
-                    break;
-                case "region":
-                    bLocalZone = false;
-                    break;
-                default:
-                    bLocalZone = false;
-                    ushort regionId;
-                    if (targetString != null && UInt16.TryParse(targetString, out regionId))
-                    {
-                        RegionMgr region = WorldMgr.GetRegion(regionId, false);
-                        if (region == null)
-                        {
-                            SendCsr(plr, "Unkown region : ", regionId.ToString());
-                            return;
-                        }
-                        BattleFront = region.Campaign;
-                    }
-                    else
-                        SendCsr(plr, "Please enter a valid regionID");
-                    break;
+                SendCsr(plr, "Must be in a RvR zone to use this command.");
+                return;
+            }
+            plr.SendClientMessage($"Upper Tier {WorldMgr.UpperTierCampaignManager.ActiveBattleFrontName} is active.");
+            plr.SendClientMessage($"  Campaign Status : \t {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierCampaignManager.ActiveBattleFront.RegionId, false).Campaign.GetBattleFrontStatus()}");
+
+            var destroKeep = plr.Region.Campaign.Keeps.FirstOrDefault(x => x.Info.KeepId == WorldMgr.UpperTierCampaignManager.ActiveBattleFront.DestroKeepId);
+            DisplayKeepStatus(destroKeep, plr);
+            var orderKeep = plr.Region.Campaign.Keeps.FirstOrDefault(x => x.Info.KeepId == WorldMgr.UpperTierCampaignManager.ActiveBattleFront.OrderKeepId);
+            DisplayKeepStatus(orderKeep, plr);
+        }
+
+        private static void DisplayKeepStatus(Keep keep, Player plr)
+        {
+            plr.SendClientMessage($"Keep Status : {keep.KeepStatus}");
+            plr.SendClientMessage($"Ram Deployed : {keep.RamDeployed}");
+            keep.SendDiagnostic(plr);
+            foreach (var door in keep.Doors)
+            {
+                plr.SendClientMessage($"DoorId : {door.Info.DoorId} Interact:{door.GameObject.InteractState} AutoAttack:{door.GameObject.CanAutoAttack}");
+                plr.SendClientMessage("Occlusion_Visible:" + Occlusion.GetFixtureVisible(door.GameObject.DoorId));
             }
 
-            //Campaign.CampaignDiagnostic(plr, bLocalZone);
         }
 
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Updates some constant parameters. Give no arg to list constants.")]
@@ -113,6 +109,13 @@ namespace WorldServer.Managers.Commands
         public static void LockPairing(Player plr, Realms realm, int forceNumberOfBags=0)
         {
             plr.SendClientMessage($"Attempting to lock the {plr.Region.Campaign.CampaignName} campaign... (call AdvancePairing <realm> <tier> to move ahead)");
+
+            if (WorldMgr.GetRegion(plr.Region.RegionId, false) == null)
+                plr.SendClientMessage("Region does not exist.");
+
+            if (WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign == null)
+                plr.SendClientMessage("Region / Campaign does not exist.");
+
             WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign.BattleFrontManager.LockActiveBattleFront(realm, (byte) forceNumberOfBags);
         }
 
@@ -247,7 +250,6 @@ namespace WorldServer.Managers.Commands
 
             new ApocCommunications().ResetProgressionCommunications(player, lockingRealm, vpp, forceT4);
 
-            // new ApocCommunications().SendCampaignStatus(player, vpp, lockingRealm);
         }
 
 

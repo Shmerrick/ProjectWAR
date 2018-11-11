@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using SystemData;
 using FrameWork;
+using WorldServer.World.Objects.Instances;
 
 namespace WorldServer
 {
