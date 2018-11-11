@@ -697,7 +697,7 @@ namespace WorldServer
         private byte _lootThreshold = 2;
         private bool _needOnUse = true;
         private bool _rvrAutoLoot = true;
-        private int _zoneType = 0;
+        private int _zoneType = -1;
 
         private readonly List<LootRoll> _activeLootRolls = new List<LootRoll>();
 
@@ -717,7 +717,7 @@ namespace WorldServer
                 // apply lockout
                 try
                 {
-                    if ((_activeLootRolls.Count == 0 || startTime + 61000 < tick) && (_zoneType == 4 || _zoneType == 5 || _zoneType == 6))
+                    if ((_activeLootRolls.Count == 0 || startTime + 61000 < tick) && _zoneType != -1 && (_zoneType == 4 || _zoneType == 5 || _zoneType == 6))
                     {
                         List<Player> subGroup = Members.Where(x => !string.IsNullOrEmpty(x.InstanceID) && x.InstanceID == GetLeader().InstanceID).ToList();
                         WorldMgr.InstanceMgr.ApplyLockout(GetLeader().InstanceID, subGroup);
@@ -781,6 +781,9 @@ namespace WorldServer
 
         public void LootVote(Player voter, ushort itemId, ushort vote)
         {
+            if (voter.Zone != null && voter.Zone.Info != null)
+                _zoneType = voter.Zone.Info.Type;
+
             foreach (LootRoll lr in _activeLootRolls)
             {
                 if (lr.LootID == itemId)
