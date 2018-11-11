@@ -25,20 +25,17 @@ namespace WorldServer.World.Battlefronts.Bounty
         public const int REALM_CAPTAIN_INFLUENCE_KILL = 500;
         public const int INSIGNIA_ITEM_ID = 208470;
 
-        public IBountyManager BountyManager { get; }
         public IContributionManager ContributionManager { get; }
-        public IImpactMatrixManager ImpactMatrixManager { get; }
         public IStaticWrapper StaticWrapper { get; }
         public List<RewardPlayerKill> PlayerKillRewardBand { get; }
+        public ImpactMatrixManager ImpactMatrixManagerInstance { get; set; }
 
-        public RewardManager(IBountyManager bountyManager, IContributionManager contributionManager, IImpactMatrixManager impactMatrixManager, IStaticWrapper staticWrapper,
-            List<RewardPlayerKill> playerKillRewardBand)
+        public RewardManager(IContributionManager contributionManager, IStaticWrapper staticWrapper, List<RewardPlayerKill> playerKillRewardBand, ImpactMatrixManager impactMatrixManagerInstance)
         {
-            BountyManager = bountyManager;
             ContributionManager = contributionManager;
-            ImpactMatrixManager = impactMatrixManager;
             StaticWrapper = staticWrapper;
             PlayerKillRewardBand = playerKillRewardBand;
+            ImpactMatrixManagerInstance = impactMatrixManagerInstance;
         }
 
         public virtual int GetInsigniaItemId(int renownBand)
@@ -74,8 +71,8 @@ namespace WorldServer.World.Battlefronts.Bounty
         public ConcurrentDictionary<uint, Single> GetImpactFractionsForKill(Player victim, Dictionary<uint, Player> playerDictionary)
         {
             var resultDictionary = new ConcurrentDictionary<uint, Single>();
-            var impacts = ImpactMatrixManager.GetKillImpacts(victim.CharacterId);
-            var totalImpact = ImpactMatrixManager.GetTotalImpact(victim.CharacterId);
+            var impacts = ImpactMatrixManagerInstance.GetKillImpacts(victim.CharacterId);
+            var totalImpact = ImpactMatrixManagerInstance.GetTotalImpact(victim.CharacterId);
             if (totalImpact == 0)
                 throw new BountyException("Total Impact == 0");
 
@@ -217,7 +214,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                         var shares = playerToBeRewarded.PriorityGroup.Members.Count;
                         foreach (var member in playerToBeRewarded.PriorityGroup.Members)
                         {
-                            var modificationValue = ImpactMatrixManager.CalculateModificationValue(victim.BaseBountyValue, member.BaseBountyValue);
+                            var modificationValue = this.ImpactMatrixManagerInstance.CalculateModificationValue(victim.BaseBountyValue, member.BaseBountyValue);
                             var shareModifier = (1f / shares);
                             modificationValue = shareModifier * modificationValue;
 
@@ -239,7 +236,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                     }
                     else // No group
                     {
-                            var modificationValue = ImpactMatrixManager.CalculateModificationValue(victim.BaseBountyValue, killer.BaseBountyValue);
+                            var modificationValue = this.ImpactMatrixManagerInstance.CalculateModificationValue(victim.BaseBountyValue, killer.BaseBountyValue);
 
                             RewardLogger.Debug($"Modification Value {modificationValue}");
                             RewardLogger.Info($"++++ Assessing rewards for {playerToBeRewarded.Name} ({playerToBeRewarded.CharacterId}) modvalue:{modificationValue} repeatkill:{repeatKillReward}");
@@ -264,7 +261,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                     // If this player is the killer (ie Deathblow), give them a different contribution.
                     if (playerReward.Key == killer.CharacterId)
                     {
-                        var modificationValue = ImpactMatrixManager.CalculateModificationValue(victim.BaseBountyValue, killer.BaseBountyValue);
+                        var modificationValue = this.ImpactMatrixManagerInstance.CalculateModificationValue(victim.BaseBountyValue, killer.BaseBountyValue);
 
                         //var xp = CalculateXpReward(playerReward.Value, modificationValue * repeatKillReward);
                         //var money = CalculateMoneyReward(playerReward.Value, modificationValue * repeatKillReward);

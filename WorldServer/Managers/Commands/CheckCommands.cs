@@ -111,7 +111,7 @@ namespace WorldServer.Managers.Commands
             var target = (Player)plr.CbtInterface.GetCurrentTarget();
             if (target != null)
             {
-                var playerBounty = activeBattleFrontStatus.BountyManagerInstance.GetBounty(target.CharacterId);
+                var playerBounty = plr.BountyManagerInstance.GetBounty(target.CharacterId);
                 plr.SendClientMessage(playerBounty.ToString());
             }
 
@@ -126,7 +126,7 @@ namespace WorldServer.Managers.Commands
             var target = (Player)plr.CbtInterface.GetCurrentTarget();
             if (target != null)
             {
-                var killImpacts = activeBattleFrontStatus.ImpactMatrixManagerInstance.GetKillImpacts(target.CharacterId);
+                var killImpacts = plr.ImpactMatrixManager.GetKillImpacts(target.CharacterId);
                 if ((killImpacts == null) || (killImpacts.Count == 0))
                 {
                     plr.SendClientMessage($"{target.Name} has no impacts");
@@ -173,7 +173,7 @@ namespace WorldServer.Managers.Commands
         public static bool GetRewardEligibility(Player plr, ref List<string> values)
         {
             var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
-            var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
+            var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(activeBattleFrontId);
 
             var players = activeBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
 

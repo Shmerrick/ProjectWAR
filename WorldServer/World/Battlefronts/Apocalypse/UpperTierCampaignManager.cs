@@ -5,6 +5,7 @@ using NLog;
 using System.Collections.Generic;
 using System.Linq;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
+using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
@@ -20,12 +21,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public RVRProgression ActiveBattleFront { get; set; }
         public List<BattleFrontStatus> BattleFrontStatuses { get; set; }
+        public ImpactMatrixManager ImpactMatrixManagerInstance { get; set; }
+        public BountyManager BountyManagerInstance { get; set; }
 
         public UpperTierCampaignManager(List<RVRProgression> _RVRT4Progressions, List<RegionMgr> regionMgrs)
         {
             BattleFrontProgressions = _RVRT4Progressions;
             RegionMgrs = regionMgrs;
             BattleFrontStatuses = new List<BattleFrontStatus>();
+            ImpactMatrixManagerInstance = new ImpactMatrixManager();
+            BountyManagerInstance = new BountyManager();
             if (_RVRT4Progressions != null)
                 BuildApocBattleFrontStatusList(BattleFrontProgressions);
         }
@@ -52,7 +57,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         LockTimeStamp = 0,
                         Locked = true,
                         RegionId = battleFrontProgression.RegionId,
-                        Description = battleFrontProgression.Description
+                        Description = battleFrontProgression.Description,
+                        ImpactMatrixManagerInstance = this.ImpactMatrixManagerInstance
                     });
                 }
             }
@@ -309,10 +315,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             ProgressionLogger.Info($"Locking BF Status {activeStatus.Description} to realm:{lockingRealm}");
         }
 
-        public BattleFrontStatus GetActiveBattleFrontStatus(int battleFrontId)
-        {
-            return BattleFrontStatuses.Single(x => x.BattleFrontId == battleFrontId);
-        }
+      
 
 
         public List<BattleFrontStatus> GetBattleFrontStatusList()
@@ -334,7 +337,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public BattleFrontStatus GetBattleFrontStatus(int battleFrontId)
         {
-            return this.BattleFrontStatuses.Single(x => x.BattleFrontId == battleFrontId);
+            try
+            {
+                return BattleFrontStatuses.Single(x => x.BattleFrontId == battleFrontId);
+            }
+            catch (Exception e)
+            {
+                ProgressionLogger.Warn($"Battlefront Id : {battleFrontId} Exception : {e.Message} ");
+                throw;
+            }
         }
 
         /// <summary>

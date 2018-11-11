@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Common.Database.World.Battlefront;
 using GameData;
+using WorldServer.World.Battlefronts.Bounty;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -9,9 +10,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         RVRProgression ResetBattleFrontProgression(CampaignRerollMode rerollMode = CampaignRerollMode.NONE);
         RVRProgression GetBattleFrontByName(string name);
         RVRProgression GetBattleFrontByBattleFrontId(int id);
-
         
-
         string ActiveBattleFrontName { get; set; }
         RVRProgression ActiveBattleFront { get; set; }
         void AuditBattleFronts(int tier);
@@ -29,7 +28,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         BattleFrontStatus GetRegionBattleFrontStatus(int regionId);
 
         Campaign GetActiveCampaign();
-
-        BattleFrontStatus GetActiveBattleFrontStatus(int battleFrontId);
+        ImpactMatrixManager ImpactMatrixManagerInstance { get; set; }
+        BountyManager BountyManagerInstance { get; set; }
     }
 }

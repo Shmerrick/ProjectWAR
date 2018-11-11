@@ -187,7 +187,7 @@ namespace WorldServer.Managers.Commands
         public static bool AddRewardEligibility(Player plr, ref List<string> values)
         {
             var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
-            var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
+            var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(activeBattleFrontId);
 
             plr = GetTargetOrMe(plr) as Player;
 

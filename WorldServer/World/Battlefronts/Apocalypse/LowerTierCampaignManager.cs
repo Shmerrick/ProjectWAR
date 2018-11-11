@@ -4,6 +4,7 @@ using System.Linq;
 using Common.Database.World.Battlefront;
 using GameData;
 using NLog;
+using WorldServer.World.Battlefronts.Bounty;
 
 // ReSharper disable InconsistentNaming
 
@@ -17,12 +18,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private static readonly Logger ProgressionLogger = LogManager.GetLogger("RVRProgressionLogger");
         public RVRProgression ActiveBattleFront { get; set; }
         public List<BattleFrontStatus> BattleFrontStatuses { get; set; }
+	    public ImpactMatrixManager ImpactMatrixManagerInstance { get; set; }
+	    public BountyManager BountyManagerInstance { get; set; }
+
 
         public LowerTierCampaignManager(List<RVRProgression> _RVRT1Progressions, List<RegionMgr> regionMgrs)
         {
             BattleFrontProgressions = _RVRT1Progressions;
             RegionMgrs = regionMgrs;
             BattleFrontStatuses = new List<BattleFrontStatus>();
+            ImpactMatrixManagerInstance = new ImpactMatrixManager();
+            BountyManagerInstance = new BountyManager();
             if (_RVRT1Progressions != null)
                 BuildApocBattleFrontStatusList(BattleFrontProgressions);
         }

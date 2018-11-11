@@ -65,28 +65,8 @@ namespace WorldServer
             ImpactMatrix = new ImpactMatrixManager();
             BountyManager = new BountyManager();
 
-            /*
-             * Using Region as a proxy for Campaign in T4. ContributionFactorReferenceList is used as a proxy from the DB managing this.
-             */
-            var contributionFactorReferenceList = new List<ContributionDefinition>
-            {
-                new ContributionDefinition
-                {
-                    ContributionId = 1,
-                    ContributionDescription = "PVP Kill",
-                    ContributionValue = 1,
-                    MaxContributionCount = 10
-                },
-                new ContributionDefinition
-                {
-                    ContributionId = 2,
-                    ContributionDescription = "BO Capture",
-                    ContributionValue = 1,
-                    MaxContributionCount = 4
-                }
-            };
-            ContributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), contributionFactorReferenceList);
-            RewardManager = new RewardManager(BountyManager, ContributionManager, ImpactMatrix, new StaticWrapper(), RewardService._RewardPlayerKills );
+            //ContributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), contributionFactorReferenceList);
+            //RewardManager = new RewardManager(ContributionManager, new StaticWrapper(), RewardService._RewardPlayerKills );
 
             if (Constants.DoomsdaySwitch == 2)
             {
@@ -311,7 +291,7 @@ namespace WorldServer
                     //Bttlfront?.Update(start);
                     Campaign?.Update(start);
 
-                    Campaign?.ActiveBattleFrontStatus?.ImpactMatrixManagerInstance?.Update(start);
+                    Campaign?.BattleFrontManager?.ImpactMatrixManagerInstance?.Update(start);
                 }
 
                 catch (Exception e)

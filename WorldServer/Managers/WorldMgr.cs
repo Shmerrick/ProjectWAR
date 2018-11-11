@@ -16,7 +16,6 @@ using Common.Database.World.Maps;
 using NLog;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
-using WorldServer.World.BattleFronts;
 using BattleFrontConstants = WorldServer.World.Battlefronts.Apocalypse.BattleFrontConstants;
 
 namespace WorldServer
@@ -57,6 +56,7 @@ namespace WorldServer
         public static LowerTierCampaignManager LowerTierCampaignManager;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public static RewardDistributor RewardDistributor;
+        
 
         //Log.Success("StartingPairing: ", StartingPairing.ToString());
 

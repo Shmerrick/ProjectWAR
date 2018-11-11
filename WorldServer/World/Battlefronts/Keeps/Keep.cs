@@ -404,7 +404,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                             // Add contribution
                             this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_INNER_DOOR);
                             var contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.DESTROY_INNER_DOOR);
-                            this.Region.Campaign.GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionDefinition.ContributionValue);
+                            player.BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionDefinition.ContributionValue);
                         }
 
                         if (realm == Realms.REALMS_REALM_DESTRUCTION)
@@ -439,7 +439,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                             // Add contribution
                             this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
                             var contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
-                            this.Region.Campaign.GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionDefinition.ContributionValue);
+                            player.BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionDefinition.ContributionValue);
 
 
                         }
@@ -541,13 +541,13 @@ namespace WorldServer.World.BattleFronts.Keeps
                 // Add contribution for being in range
                 this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.KILL_KEEP_LORD);
                 contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.KILL_KEEP_LORD);
-                this.Region.Campaign.GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
+                plr.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
 
                 if (plr.PriorityGroup?.GetLeader() == plr)
                 {
                     this.Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
                     contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
-                    this.Region.Campaign.GetActiveBattleFrontStatus().BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
+                    plr.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
                 }
             }
 
@@ -651,7 +651,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             try
             {
                 var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
-                var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
+                var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(activeBattleFrontId);
                 var eligiblePlayers = activeBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
 
                 _logger.Info($"Processing {eligiblePlayers.Count()} players for Keep lock rewards");
@@ -751,9 +751,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                     // Add Contribution for Keep Defence Tick
                     var contributionForKeepDefence = new BountyService().GetDefinition((byte)ContributionDefinitions.KEEP_DEFENCE_TICK);
-                    var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
-                    var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
-                    activeBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionForKeepDefence.ContributionValue);
+                    plr.GetBattlefrontManager(plr.Region.RegionId).BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionForKeepDefence.ContributionValue);
 
                     Log.Info("Keep", $"Keep Defence XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
 				}

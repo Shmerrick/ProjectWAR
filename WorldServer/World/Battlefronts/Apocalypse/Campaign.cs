@@ -46,7 +46,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         // List of battlefront statuses for this Campaign
         public List<BattleFrontStatus> ApocBattleFrontStatuses => GetBattleFrontStatuses(Region.RegionId);
 
-        public BattleFrontStatus ActiveBattleFrontStatus => BattleFrontManager.GetActiveBattleFrontStatus(BattleFrontManager.ActiveBattleFront.BattleFrontId);
+        public BattleFrontStatus ActiveBattleFrontStatus => BattleFrontManager.GetBattleFrontStatus(BattleFrontManager.ActiveBattleFront.BattleFrontId);
 
 
         /// <summary>
@@ -269,7 +269,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattlefrontLogger.Error("No BattlefrontStatuses have been created!");
                 throw new Exception("No BattlefrontStatuses have been created!");
             }
-            return ApocBattleFrontStatuses.Single(x => x.Locked == false);
+            try
+            {
+                return ApocBattleFrontStatuses.Single(x => x.Locked == false);
+            }
+            catch (Exception e)
+            {
+                BattlefrontLogger.Warn($"Exception : {e.Message} {e.StackTrace}");
+                throw;
+            }
+            ;
 
         }
 
@@ -1105,7 +1114,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void ClearDictionaries()
         {
             ActiveBattleFrontStatus.ContributionManagerInstance.ContributionDictionary.Clear();
-            ActiveBattleFrontStatus.BountyManagerInstance.BountyDictionary.Clear();
+            this.BattleFrontManager.BountyManagerInstance.BountyDictionary.Clear();
             BattlefrontLogger.Debug($"Contribution and Bounty Dictionaries cleared");
         }
 

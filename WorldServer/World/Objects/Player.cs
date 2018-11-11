@@ -252,13 +252,9 @@ namespace WorldServer
         public bool Spooky = false;
         public long deathTime = 0;
 
-        public BattleFrontStatus ActiveBattleFrontStatus
-        {
-            get
-            {
-                return Region?.Campaign?.GetActiveBattleFrontStatus();
-            }
-        }
+        public BattleFrontStatus ActiveBattleFrontStatus => this.GetBattlefrontManager(this.Region.RegionId).GetActiveCampaign().GetActiveBattleFrontStatus();
+        public BountyManager BountyManagerInstance => this.GetBattlefrontManager(this.Region.RegionId).BountyManagerInstance;
+        public ImpactMatrixManager ImpactMatrixManager => this.GetBattlefrontManager(this.Region.RegionId).ImpactMatrixManagerInstance;
 
         public void SpreadSpooky(object list)
         {
@@ -3911,16 +3907,36 @@ namespace WorldServer
 
             // Clearing heal aggro...
             HealAggros = new Dictionary<ushort, AggroInfo>();
+            var battleFrontManager = GetBattlefrontManager(this.Region.RegionId);
             // Reset this characters bounty to their base bounty.
-            ActiveBattleFrontStatus.BountyManagerInstance.ResetCharacterBounty(CharacterId, this);
+            battleFrontManager.BountyManagerInstance.ResetCharacterBounty(CharacterId, this);
             // Reset the impacts on this character.
-            ActiveBattleFrontStatus.ImpactMatrixManagerInstance.ClearImpacts(CharacterId);
+            battleFrontManager.ImpactMatrixManagerInstance.ClearImpacts(CharacterId);
             
             // inform instance that the player was killed
             if (!string.IsNullOrEmpty(InstanceID))
             {
                 WorldMgr.InstanceMgr?.HandlePlayerSetDeath(this, killer);
             }
+        }
+
+        // For a given regionId, find the correct battlefront manager
+        public IBattleFrontManager GetBattlefrontManager(ushort regionId)
+        {
+            foreach (var regionMgr in WorldMgr._Regions)
+            {
+                if (regionMgr.RegionId == regionId)
+                {
+                    if (regionMgr.GetTier() == 4)
+                        return WorldMgr.UpperTierCampaignManager;
+                    else
+                    {
+                        return WorldMgr.LowerTierCampaignManager;
+                    }
+                }
+            }
+            DeathLogger.Error($"Could not locate Battlefront Manager for player {this.Name} in region {regionId}");
+            return WorldMgr.UpperTierCampaignManager;
         }
 
         private void RecordKillTracking(Player victim, Player killer, long timestamp)
@@ -4055,9 +4071,9 @@ namespace WorldServer
                 ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(CharacterId, contributionDefinitionId);
 
                 var definition = new BountyService().GetDefinition(contributionDefinitionId);
-
+                
                 // Add bounty to the death blow killer  
-                ActiveBattleFrontStatus.BountyManagerInstance.AddCharacterBounty(CharacterId, definition.ContributionValue);
+                this.BountyManagerInstance.AddCharacterBounty(CharacterId, definition.ContributionValue);
                 SendClientMessage($"[Contrib]:+{definition.ContributionValue} {definition.ContributionDescription}");
                 RewardLogger.Info($"Update player Bounty character Id : {CharacterId} Contribution Def : {contributionDefinitionId}");
             }

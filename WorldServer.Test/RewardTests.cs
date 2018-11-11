@@ -52,13 +52,12 @@ namespace WorldServer.Test
             A.CallTo(() => fakeStaticWrapper.GetRenownBandReward(30)).Returns(sampleRenownBandReward);
 
             var rm = new RewardManager(
-                fakeBountyManager,
                 fakeContributionManager,
-                fakeImpactMatrixManager,
                 fakeStaticWrapper, new List<RewardPlayerKill>
                 {
                     sampleRenownBandReward
-                });
+                },
+                (ImpactMatrixManager) fakeImpactMatrixManager);
 
 
 
@@ -111,13 +110,12 @@ namespace WorldServer.Test
             A.CallTo(() => fakeStaticWrapper.GetRenownBandReward(1)).Returns(sampleRenownBandReward);
 
             var rm = new RewardManager(
-                fakeBountyManager,
                 fakeContributionManager,
-                fakeImpactMatrixManager,
                 fakeStaticWrapper, new List<RewardPlayerKill>
                 {
                     sampleRenownBandReward
-                });
+                },
+                (ImpactMatrixManager) fakeImpactMatrixManager);
 
             var insigniaRewards = rm.GetInsigniaRewards(100);
             Assert.IsTrue(insigniaRewards);
@@ -164,13 +162,12 @@ namespace WorldServer.Test
             A.CallTo(() => fakeStaticWrapper.GetRenownBandReward(1)).Returns(sampleRenownBandReward);
 
             var rm = new RewardManager(
-                fakeBountyManager,
                 fakeContributionManager,
-                fakeImpactMatrixManager,
                 fakeStaticWrapper, new List<RewardPlayerKill>
                 {
                     sampleRenownBandReward
-                });
+                },
+                (ImpactMatrixManager)fakeImpactMatrixManager);
 
             // Pass in random number to ensure we effect as expected. StaticRandom.Instance.Next(1, 100)
             //var result = rm.GenerateBaseRewardForKill(123, 99, new Dictionary<uint, Player>());

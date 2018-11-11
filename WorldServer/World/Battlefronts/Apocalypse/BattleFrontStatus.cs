@@ -20,9 +20,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public int RegionId { get; set; }
         public string Description { get; set; }
         public ContributionManager ContributionManagerInstance { get; set; }
-        public BountyManager BountyManagerInstance { get; set; }
-        public RewardManager RewardManagerInstance { get; set; }
         public ImpactMatrixManager ImpactMatrixManagerInstance { get; set; }
+
+        public RewardManager RewardManagerInstance { get; set; }
+        
         public HashSet<uint> KillContributionSet { get; set; }
         public List<Player> RealmCaptains { get; set; }
 
@@ -31,9 +32,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             ContributionManagerInstance = new ContributionManager(
                 new ConcurrentDictionary<uint, List<PlayerContribution>>(), 
                 BountyService._ContributionDefinitions);
-            BountyManagerInstance = new BountyManager();
-            ImpactMatrixManagerInstance = new ImpactMatrixManager();
-            RewardManagerInstance = new RewardManager(BountyManagerInstance, ContributionManagerInstance, ImpactMatrixManagerInstance, new StaticWrapper(), RewardService._RewardPlayerKills);
+            
+            RewardManagerInstance = new RewardManager(ContributionManagerInstance, new StaticWrapper(), RewardService._RewardPlayerKills, ImpactMatrixManagerInstance);
             RealmCaptains = new List<Player>();
         }
 
@@ -64,6 +64,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 return BattleFrontConstants.ZONE_STATUS_CONTESTED;
             }
         }
+
+        
 
         public void AddKillContribution(Player player)
         {

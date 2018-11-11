@@ -541,34 +541,31 @@ namespace WorldServer
                 DamageSources[caster] += damage;
             else DamageSources.Add(caster, damage);
 
-            var modificationValue = 1.0f;
-
-            if (this is Player)
+            if (this is Player player)
             {
+                DeathLogger.Debug($"Looking for instanceManagerInstance");
+                // find the battlefrontstatus that this player is in.
+                var impactManagerInstance = player.GetBattlefrontManager(player.Region.RegionId).ImpactMatrixManagerInstance;
+                var modificationValue = (float) impactManagerInstance.CalculateModificationValue((float) player.BaseBountyValue, (float) caster.BaseBountyValue);
 
-                modificationValue = (float) this.Region?.Campaign?.GetActiveBattleFrontStatus().ImpactMatrixManagerInstance
-                    .CalculateModificationValue((float)(this as Player).BaseBountyValue, (float)caster.BaseBountyValue);
+                // Added impact to ImpactMatrix
+                if (this.CbtInterface.IsPvp)
+                {
 
-            }
+                    if (Region == null)
+                        DeathLogger.Debug($"Region is null for caster {caster.Name}");
+                    if (Region?.Campaign == null)
+                        DeathLogger.Debug($"Region.Campaign is null for caster {caster.Name}");
 
-            
-            // Added impact to ImpactMatrix
-            if (this.CbtInterface.IsPvp)
-            {
-
-                if (Region == null)
-                    DeathLogger.Debug($"Region is null for caster {caster.Name}");
-                if (Region?.Campaign == null)
-                    DeathLogger.Debug($"Region.Campaign is null for caster {caster.Name}");
-
-                this.Region?.Campaign?.GetActiveBattleFrontStatus().ImpactMatrixManagerInstance.UpdateMatrix((this as Player).CharacterId,
-                    new PlayerImpact
-                    {
-                        CharacterId = caster.Info.CharacterId,
-                        ExpiryTimestamp = FrameWork.TCPManager.GetTimeStamp() + ImpactMatrixManager.IMPACT_EXPIRY_TIME,
-                        ImpactValue = (int) damage,
-                        ModificationValue = modificationValue
-                    });
+                    impactManagerInstance.UpdateMatrix(player.CharacterId,
+                        new PlayerImpact
+                        {
+                            CharacterId = caster.Info.CharacterId,
+                            ExpiryTimestamp = FrameWork.TCPManager.GetTimeStamp() + ImpactMatrixManager.IMPACT_EXPIRY_TIME,
+                            ImpactValue = (int) damage,
+                            ModificationValue = modificationValue
+                        });
+                }
             }
         }
 
