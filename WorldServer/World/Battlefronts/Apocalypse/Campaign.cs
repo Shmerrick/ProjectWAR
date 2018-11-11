@@ -963,8 +963,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Assign eligible players to the bag definitions.
             var rewardAssignments = rewardAssigner.AssignLootToPlayers(eligiblePlayerCharacterIds, bagDefinitions);
 
-            var rewardAssignments = new RewardAssigner(new RandomGenerator(), rewardSelector).AssignLootToPlayers(eligiblePlayersWithinRange, forceNumberBags);
-
             if (rewardAssignments == null)
             {
                 BattlefrontLogger.Warn($"No reward assignments found (null).");

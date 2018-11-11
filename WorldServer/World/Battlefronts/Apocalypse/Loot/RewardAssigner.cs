@@ -104,7 +104,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                     RewardLogger.Warn($"{e.Message}");
                 }
                 
-                i++;
             }
             return bagDefinitions;
         }
