@@ -1,13 +1,10 @@
 ﻿using Common;
 using FrameWork;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.Objects;
 using WorldServer.World.Objects.Instances;
 
 namespace WorldServer
@@ -38,7 +35,7 @@ namespace WorldServer
         private EventInterface _evtInterface;
         private bool _running;
         public ushort ZoneID;
-        byte Realm;
+        readonly byte Realm;
         public Instance_Lockouts Lockout = null;
         private int closetime;
         public byte state;
@@ -54,7 +51,7 @@ namespace WorldServer
             ZoneID = zoneid;
             Realm = realm;
             Region = new RegionMgr(zoneid, ZoneService.GetZoneRegion(zoneid),"", new ApocCommunications());
-            InstanceService._InstanceInfo.TryGetValue(zoneid,out Info);
+            InstanceService._InstanceInfo.TryGetValue(zoneid, out Info);
             LoadBossSpawns();
             LoadSpawns(); // todo get the saved progress from group
             _running = true;
@@ -111,33 +108,29 @@ namespace WorldServer
         {
             while (_running)
             {
-                checkcombatgroups();
-                checkrespawns();
-                checkinstanceempty();
-                //CheckPlayerList();
+                Checkcombatgroups();
+                Checkrespawns();
+                Checkinstanceempty();
+                CheckPlayers();
 
-                Thread.Sleep(2000);
+                Thread.Sleep(500);
             }
         }
 
-        //private void CheckPlayerList()
-        //{
-        //    lock (Players)
-        //    {
-        //        for (int i = 0; i < Players.Count; i++)
-        //        {
-        //            if (Players[i] != null && Players[i].Zone != null)
-        //            {
-        //                if (!Players[i].InstanceID.Equals(ZoneID + ":" + ID.ToString()))
-        //                {
-        //                    Players.RemoveAt(i);
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+        private void CheckPlayers()
+        {
+            lock (Players)
+            {
+                for (int i = 0; i < Players.Count; i++)
+                    if (Players[i].IsDisposed)
+                    {
+                        Players.RemoveAt(i);
+                        InstanceService.SavePlayerIDs(ZoneID + ":" + ID, Players);
+                    }
+            }
+        }
 
-        private void checkinstanceempty()
+        private void Checkinstanceempty()
         {
             if (Region.Players.Count > 0)
                 closetime = TCPManager.GetTimeStamp() + (int)Info.LockoutTimer * 60;
@@ -146,12 +139,12 @@ namespace WorldServer
             {
                 Log.Success("Closing Instance", "Instance ID " + ID + "  Map: " + Info.Name);
                 Region.Stop();
-                WorldMgr.InstanceMgr.closeInstance(this, ID);
+                WorldMgr.InstanceMgr.CloseInstance(this, ID);
                 _running = false;
             }
         }
 
-        private void checkrespawns()
+        private void Checkrespawns()
         {
             lock (Respawns)
             {
@@ -169,7 +162,7 @@ namespace WorldServer
             }
         }
 
-        private void checkcombatgroups()
+        private void Checkcombatgroups()
         {
 
             if (_Spawns == null || _Spawns.Count == 0)
@@ -211,13 +204,7 @@ namespace WorldServer
                 {
                     Players.Add(player);
                 }
-
-                // also add group leader
-                if (player.PriorityGroup != null && !Players.Contains(player.PriorityGroup.GetLeader()))
-                {
-                    Players.Add(player.PriorityGroup.GetLeader());
-                }
-
+                
                 player.InstanceID = ZoneID + ":" + ID;
 
                 if (jump != null)
@@ -234,6 +221,15 @@ namespace WorldServer
                 InstanceService.SavePlayerIDs(ZoneID + ":" + ID, Players);
 
                 player.SendClientMessage("Instance ID: " + ID, SystemData.ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
+
+                string players = string.Empty;
+                foreach (Player plr in Players)
+                    players += plr.Name + ",";
+                if (players.EndsWith(","))
+                    players = players.Substring(0, players.Length - 1);
+
+                player.SendClientMessage("Registered players: " + players, SystemData.ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
+                player.SendClientMessage("Note: Wait for your party leader to get into the instance if you find yourself in another instance ID.", SystemData.ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
             }
         }
 
@@ -275,8 +271,15 @@ namespace WorldServer
 			}
 			else // instance has got already lockouts
 			{
-				Lockout.Bosseskilled += ":" + CurrentBossId;
-				Lockout.Dirty = true;
+                List<string> bossList = Lockout.Bosseskilled.Split(':').Distinct().ToList();
+                if (!bossList.Contains(CurrentBossId.ToString()))
+                    bossList.Add(CurrentBossId.ToString());
+                Lockout.Bosseskilled = string.Empty;
+                foreach (string boss in bossList)
+                    Lockout.Bosseskilled += ":" + boss;
+                if (Lockout.Bosseskilled.StartsWith(":"))
+                    Lockout.Bosseskilled = Lockout.Bosseskilled.Substring(1);
+                Lockout.Dirty = true;
 				WorldMgr.Database.SaveObject(Lockout);
 			}
 
@@ -289,8 +292,6 @@ namespace WorldServer
 		
 		private void LoadBossSpawns()
         {
-            List<Instance_Boss_Spawn> Obj;
-
             List<uint> deadbossids = new List<uint>();
 
             if (Lockout != null)
@@ -299,24 +300,26 @@ namespace WorldServer
 					deadbossids.Add(uint.Parse(Lockout.Bosseskilled.Split(':')[i]));
 				}
 			
-            InstanceService._InstanceBossSpawns.TryGetValue(Info.Entry, out Obj);
+            InstanceService._InstanceBossSpawns.TryGetValue(Info.Entry, out List<Instance_Boss_Spawn> Obj);
 			
             if (Obj == null)
                 return;
 
             foreach (var obj in Obj)
             {
-                if (obj.Realm == 0 || obj.Realm == this.Realm)
+                if (obj.Realm == 0 || obj.Realm == Realm)
                 {
                     if (deadbossids.Contains(obj.BossID))
                         continue;
 
                     if (obj.ZoneID != ZoneID)
                         continue;
-					
-                    Creature_spawn spawn = new Creature_spawn();
-                    spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
-                    spawn.BuildFromProto(CreatureService.GetCreatureProto((uint)obj.Entry));
+
+                    Creature_spawn spawn = new Creature_spawn
+                    {
+                        Guid = (uint)CreatureService.GenerateCreatureSpawnGUID()
+                    };
+                    spawn.BuildFromProto(CreatureService.GetCreatureProto(obj.Entry));
                     spawn.WorldO = (int)obj.WorldO;
                     spawn.WorldY = obj.WorldY;
                     spawn.WorldZ = obj.WorldZ;
@@ -326,7 +329,7 @@ namespace WorldServer
 
 					InstanceBossSpawn IS = null;
 
-					switch ((uint)obj.Entry)
+					switch (obj.Entry)
                     {
                         case 4276:
                             IS = new SimpleTheDeamonicBeast(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
@@ -366,8 +369,7 @@ namespace WorldServer
 
                     if (obj.SpawnGroupID > 0)
                     {
-                        List<InstanceBossSpawn> spawns;
-                        _BossSpawns.TryGetValue(obj.SpawnGroupID, out spawns);
+                        _BossSpawns.TryGetValue(obj.SpawnGroupID, out List<InstanceBossSpawn> spawns);
                         if (spawns == null)
                         {
                             spawns = new List<InstanceBossSpawn>();
@@ -382,9 +384,7 @@ namespace WorldServer
 
         private void LoadSpawns()
         {
-            List<Instance_Spawn> Obj;
-           
-            InstanceService._InstanceSpawns.TryGetValue(ZoneID, out Obj);
+            InstanceService._InstanceSpawns.TryGetValue(ZoneID, out List<Instance_Spawn> Obj);
 
             List<uint> deadbossids = new List<uint>();
             if (Lockout != null)
@@ -401,11 +401,13 @@ namespace WorldServer
                 if (deadbossids.Contains(obj.ConnectedBossID))
                     continue;
 				
-                if (obj.Realm == 0 || obj.Realm == this.Realm)
+                if (obj.Realm == 0 || obj.Realm == Realm)
                 {
-                    Creature_spawn spawn = new Creature_spawn();
-                    spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
-                    spawn.BuildFromProto(CreatureService.GetCreatureProto((uint)obj.Entry));
+                    Creature_spawn spawn = new Creature_spawn
+                    {
+                        Guid = (uint)CreatureService.GenerateCreatureSpawnGUID()
+                    };
+                    spawn.BuildFromProto(CreatureService.GetCreatureProto(obj.Entry));
                     if(spawn.Proto== null)
                     {
                         Log.Error("Creature Proto not found", " " + obj.Entry);
@@ -423,12 +425,9 @@ namespace WorldServer
 
                     if (obj.SpawnGroupID > 0)
                     {
-                        List<InstanceSpawn> spawns;
-                        _Spawns.TryGetValue(obj.SpawnGroupID, out spawns);
+                        _Spawns.TryGetValue(obj.SpawnGroupID, out List<InstanceSpawn> spawns);
                         if (spawns == null)
-                        {
                             spawns = new List<InstanceSpawn>();
-                        }
                         spawns.Add(IS);
                         _Spawns[obj.SpawnGroupID] = spawns;
                     }
@@ -447,9 +446,10 @@ namespace WorldServer
                 if (!GroupsinCombat.Contains(GroupID))
                 {
                     GroupsinCombat.Add(GroupID);
-                    List<InstanceSpawn> spawns = new List<InstanceSpawn>();
-                    _Spawns.TryGetValue(GroupID, out spawns);
-                    foreach(InstanceSpawn sp in spawns )
+                    _Spawns.TryGetValue(GroupID, out List<InstanceSpawn> spawns);
+                    if (spawns == null)
+                        spawns = new List<InstanceSpawn>();
+                    foreach (InstanceSpawn sp in spawns )
                     {
                         sp.AiInterface.ProcessCombatStart(Target);
                     }
@@ -464,8 +464,9 @@ namespace WorldServer
                 if (!GroupsinCombat.Contains(GroupID))
                 {
                     GroupsinCombat.Add(GroupID);
-                    List<InstanceBossSpawn> spawns = new List<InstanceBossSpawn>();
-                    _BossSpawns.TryGetValue(GroupID, out spawns);
+                    _BossSpawns.TryGetValue(GroupID, out List<InstanceBossSpawn> spawns);
+                    if (spawns == null)
+                        spawns = new List<InstanceBossSpawn>();
                     foreach (InstanceBossSpawn sp in spawns)
                     {
                         sp.AiInterface.ProcessCombatStart(Target);
@@ -482,9 +483,10 @@ namespace WorldServer
                     return;
                 GroupsinCombat.Remove(GroupID);
 
-                List<InstanceSpawn> spawns;
-                _Spawns.TryGetValue(GroupID, out spawns);
-                for(int i =0;i < spawns.Count ; i++)
+                _Spawns.TryGetValue(GroupID, out List<InstanceSpawn> spawns);
+                if (spawns == null)
+                    spawns = new List<InstanceSpawn>();
+                for (int i =0;i < spawns.Count ; i++)
                 {
                     if(spawns[i].IsDead)
                     {
@@ -504,8 +506,9 @@ namespace WorldServer
                     return;
                 GroupsinCombat.Remove(GroupID);
 
-                List<InstanceBossSpawn> spawns;
-                _BossSpawns.TryGetValue(GroupID, out spawns);
+                _BossSpawns.TryGetValue(GroupID, out List<InstanceBossSpawn> spawns);
+                if (spawns == null)
+                    spawns = new List<InstanceBossSpawn>();
                 for (int i = 0; i < spawns.Count; i++)
                 {
                     if (spawns[i].IsDead)

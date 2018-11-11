@@ -171,15 +171,16 @@ namespace WorldServer.World.Objects.Instances
                     //player.PriorityGroup.SubGroupLoot(player, lootContainer, subGroup);
                     player.PriorityGroup.GroupLoot(player, lootContainer);
                 }
-
-                lootContainer.SendInteract(player, menu);
-
+                
+                if (!player.HasLockout((ushort)ZoneId, BossID))
+                {
+                    lootContainer.SendInteract(player, menu);
+                    Instance.ApplyLockout(new List<Player> { player });
+                }
+                
                 if (!lootContainer.IsLootable())
 				{
 					SetLootable(false, player);
-
-                    if (player.PriorityGroup == null)
-                        Instance.ApplyLockout(new List<Player> { player });
                 }
 			}
 		}

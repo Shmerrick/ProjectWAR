@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FrameWork;
 
 namespace Common
@@ -444,9 +445,25 @@ namespace Common
             return null;
         }
 
+        public void ClearLockouts(int lockoutTimer)
+        {
+            string newLockouts = string.Empty;
+            List<string> all = GetAllLockouts();
+
+            for (int i = 0; i < all.Count; i++)
+            {
+                if (int.Parse(all[i].Split(':')[1]) + lockoutTimer * 60 >= TCPManager.GetTimeStamp())
+                    newLockouts += all[i];
+            }
+
+            Lockouts = newLockouts;
+            Dirty = true;
+        }
+
         public void RemoveLockout(string Lockout)
         {
             Lockouts = Lockouts.Replace(Lockout, string.Empty);
+            Dirty = true;
         }
 
         public void AddLockout(Instance_Lockouts Lockout)
@@ -454,44 +471,46 @@ namespace Common
 			// ~zoneID:timestamp:bossID:...~zoneID:timestamp:bossID:...~zoneID:timestamp:bossID:...
 			string newLockout = string.Empty;
 			
-			for (int i = 0; i < _lockouts.Split('~').Length; i++)
+            if (string.IsNullOrEmpty(_lockouts))
             {
-				string currLockout = _lockouts.Split('~')[i];
-				// check zone id
-				if (currLockout.Split(':')[0] == Lockout.InstanceID.Replace("~", "").Split(':')[0])
-				{
-					// zoneID equal - lockout already existing
-					if (!newLockout.StartsWith("~"))
-						newLockout += "~";
-					newLockout += currLockout.Split(':')[0] + ":" + currLockout.Split(':')[1];
-					List<string> bossIDList = new List<string>();
-					for (int j = 2; j < currLockout.Split(':').Length; j++)
-						bossIDList.Add(currLockout.Split(':')[j]);
-					for (int j = 0; j < Lockout.Bosseskilled.Split(':').Length; j++)
-						bossIDList.Add(Lockout.Bosseskilled.Split(':')[j]);
-					bossIDList.Sort();
-					foreach (string bossID in bossIDList)
-					{
-						newLockout += ":" + bossID;
-					}
-				}
-				else
-				{
-					if (!currLockout.StartsWith("~") && !newLockout.EndsWith("~"))
-						currLockout = "~" + currLockout;
-					newLockout += currLockout;
-				}
+                newLockout = Lockout.InstanceID + ":" + Lockout.Bosseskilled;
+
+                if (!newLockout.StartsWith("~"))
+                    newLockout += "~";
             }
-			
-			if (!_lockouts.Contains(Lockout.InstanceID.Split(':')[0] + ":" + Lockout.InstanceID.Split(':')[1]))
-			{
-				if (newLockout.EndsWith("~") && Lockout.InstanceID.StartsWith("~"))
-					newLockout += Lockout.InstanceID.Replace("~","") + ":" + Lockout.Bosseskilled;
-				else
-					newLockout += Lockout.InstanceID + ":" + Lockout.Bosseskilled;
-			}
+            else
+            {
+                for (int i = 0; i < _lockouts.Split('~').Length; i++)
+                {
+                    string currLockout = _lockouts.Split('~')[i];
+                    // check zone id
+                    if (currLockout.Split(':')[0] == Lockout.InstanceID.Replace("~", "").Split(':')[0])
+                    {
+                        // zoneID equal - lockout already existing
+                        if (!newLockout.StartsWith("~"))
+                            newLockout += "~"; // ~
+                        newLockout += currLockout.Split(':')[0] + ":" + currLockout.Split(':')[1]; // ~260:12345, keep old timestamp
+                        List<string> bossIDList = new List<string>();
+                        for (int j = 2; j < currLockout.Split(':').Length; j++)
+                            bossIDList.Add(currLockout.Split(':')[j]);
+                        for (int j = 0; j < Lockout.Bosseskilled.Split(':').Length; j++)
+                            bossIDList.Add(Lockout.Bosseskilled.Split(':')[j]);
+                        bossIDList = bossIDList.Distinct().ToList(); // remove multiple bosses
+                        bossIDList.Sort();
+                        foreach (string bossID in bossIDList)
+                            newLockout += ":" + bossID; // build string with bosses: ~260:12345:330:331:.....
+                    }
+                    else
+                    {
+                        if (!currLockout.StartsWith("~") && !newLockout.EndsWith("~"))
+                            currLockout = "~" + currLockout;
+                        newLockout += currLockout;
+                    }
+                }
+            }
 
 			Lockouts = newLockout;
+            Dirty = true;
         }
     }
 }

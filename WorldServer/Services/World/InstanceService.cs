@@ -81,12 +81,13 @@ namespace WorldServer.Services.World
         {
             _InstanceLockouts = new Dictionary<string, Instance_Lockouts>();
 
-            IList<Instance_Lockouts> InstanceSpawns = Database.SelectAllObjects<Instance_Lockouts>();
+            IList<Instance_Lockouts> InstanceLockouts = Database.SelectAllObjects<Instance_Lockouts>();
 
-            foreach (Instance_Lockouts Obj in InstanceSpawns)
+            foreach (Instance_Lockouts Obj in InstanceLockouts)
             {
                 _InstanceLockouts.Add(Obj.InstanceID, Obj);
             }
+
             Log.Success("WorldMgr", "Loaded " + _InstanceLockouts.Count + "Instance_Lockouts");
         }
 
@@ -120,8 +121,11 @@ namespace WorldServer.Services.World
 
             foreach (Instances_Statistics Obj in InstanceStatistics)
             {
-                _InstanceStatistics.Add(Obj.InstanceID, Obj);
+                //_InstanceStatistics.Add(Obj.InstanceID, Obj);
+                Obj.Dirty = true;
+                Database.DeleteObject(Obj);
             }
+            Database.ForceSave();
 
             Log.Success("WorldMgr", "Loaded " + _InstanceStatistics.Count + "Instances_Statistics");
         }
@@ -335,6 +339,20 @@ namespace WorldServer.Services.World
                     return IE;
             }
             return null;
+        }
+
+        public static void ClearLockouts(Player plr)
+        {
+            if (plr._Value.GetAllLockouts().Count == 0 || plr.Zone == null)
+                return;
+
+            _InstanceInfo.TryGetValue(plr.Zone.ZoneId, out Instance_Info Info);
+
+            if (Info == null)
+                return;
+
+            plr._Value.ClearLockouts((int)Info.LockoutTimer);
+            Database.SaveObject(plr._Value);
         }
 
         #endregion
