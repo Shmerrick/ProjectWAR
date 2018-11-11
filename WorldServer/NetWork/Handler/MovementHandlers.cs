@@ -363,12 +363,12 @@ namespace WorldServer
                 {
                     
                 }*/
-                
+
                 //deep water 17 in current implementation should be 2 by londos decode, deep sludge 23
-                //if (groundtype == 17 || groundtype == 23)
-                //{
-                //    player.Dismount();
-                //}
+                if (groundtype == 17 || groundtype == 23)
+                {
+                    player.Dismount();
+                }
 
                 //lava and deep water/sludge, ref: ZARU
                 long Now = TCPManager.GetTimeStampMS();
