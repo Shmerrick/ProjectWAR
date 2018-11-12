@@ -281,14 +281,7 @@ namespace WorldServer
                
 
 #endif
-
-                //stop players from getting stuck below the world like below IC
-                if (player.Z < 150 && !player.IsDead && player.Client.IsPlaying())
-                {
-                    player.SendClientMessage("You have fallen through the floor, instead of falling and getting stuck somewhere you get terminated.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                    player.Terminate();
-                }
-
+                
                 //lets move players instantly, if they are in a void (even staff)
                 if ((zoneID == 0 && player.ZoneId.HasValue) && player.Client.IsPlaying())
                 {
@@ -302,7 +295,13 @@ namespace WorldServer
                         player.Teleport(162, 124084, 130213, 12572, 0);
 
                 }
-
+                
+                //stop players from getting stuck below the world like below IC
+                if (player.Z < 150 && !player.IsDead && player.Client.IsPlaying())
+                {
+                    player.SendClientMessage("You have fallen through the floor, instead of falling and getting stuck somewhere you get terminated.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+                    player.Terminate();
+                }
 
                 //player should not be able to cast while in the air.
                 if (!grounded)
