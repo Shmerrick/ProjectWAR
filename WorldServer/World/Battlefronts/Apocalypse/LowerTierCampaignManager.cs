@@ -49,8 +49,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				this.BattleFrontStatuses.Clear();
 				foreach (var battleFrontProgression in battleFrontProgressions)
 				{
-					this.BattleFrontStatuses.Add(new BattleFrontStatus
-					{
+					this.BattleFrontStatuses.Add(new BattleFrontStatus(this.ImpactMatrixManagerInstance)
+                    {
 						BattleFrontId = battleFrontProgression.BattleFrontId,
 						LockingRealm = (rerollMode == CampaignRerollMode.INIT)
 							? (Realms)BattleFrontProgressions.Single(x => x.BattleFrontId == battleFrontProgression.BattleFrontId).LastOwningRealm

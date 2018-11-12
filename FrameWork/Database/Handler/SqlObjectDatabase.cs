@@ -414,12 +414,13 @@ namespace FrameWork
         /// </summary>
         protected override void SaveObjectImpl(DataObject dataObject)
         {
+            bool hasRelations;
+
+            string sql = FormulateUpdate(dataObject, out hasRelations);
+
             try
             {
-                bool hasRelations;
-
-                string sql = FormulateUpdate(dataObject, out hasRelations);
-
+                
                 Log.Debug("mssqlObject", sql);
 
                 int res = Connection.ExecuteNonQuery(sql);
@@ -441,7 +442,7 @@ namespace FrameWork
             }
             catch (Exception e)
             {
-                Log.Error("mssqlObject", "Modify error : " + dataObject.TableName + " " + dataObject.ObjectId + e);
+                Log.Error("mssqlObject", "Modify error : " + dataObject.TableName + " " + dataObject.ObjectId + e + " SQL:"+ sql);
             }
         }
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 using Common.Database.World.Battlefront;
+using NLog;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
@@ -12,6 +13,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
     {
         public List<RVRZoneLockItemOptionReward> RVRZoneRewards { get; private set; }
         public Random RandomGenerator { get; }
+        private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
 
         public BagContentSelector(List<RVRZoneLockItemOptionReward> rvrZoneRewards, Random randomGenerator)
         {
@@ -31,7 +33,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         public LootBagTypeDefinition SelectBagContentForPlayer(LootBagTypeDefinition lootBag, byte playerRRBand, int playerClass, List<uint> playerItems, bool shuffleRewards = true)
         {
             // get a closer list of matching items.
-            var matchingRewards = RVRZoneRewards.Where(x => x.Class == playerClass && x.RRBand == playerRRBand && lootBag.BagRarity == (LootBagRarity) x.Rarity);
+            var matchingRewards = RVRZoneRewards.Where(x => lootBag.BagRarity == (LootBagRarity) x.Rarity);
+            RewardLogger.Debug($"Matching Rewards = {matchingRewards.Count()}");
             if (matchingRewards == null)
                 return lootBag;
 
@@ -42,14 +45,22 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             {
                 matchingRewards = matchingRewards.OrderBy(a => RandomGenerator.Next()).ToList();
             }
+
+            // Filter rewards to match the player's need
+            var rrBandMatches = matchingRewards.Where(x => x.RRBand == 0 || x.RRBand == playerRRBand);
+            RewardLogger.Debug($"rrBandMatches Rewards = {rrBandMatches.Count()}");
+            var rrClassMatches = rrBandMatches.Where(x => x.Class == 0 || x.Class == playerClass);
+            RewardLogger.Debug($"rrClassMatches Rewards = {rrClassMatches.Count()}");
+
             // Works but not good for unit tests
             //matchingRewards = matchingRewards.OrderBy(a => Guid.NewGuid()).ToList();
 
-            foreach (var matchingReward in matchingRewards)
+            foreach (var matchingReward in rrClassMatches)
             {
                 // Does this matching reward exist in player's items? And we cannot duplicate move on.
                 if (playerItems.Count(x => x == matchingReward.ItemId) > 0 && matchingReward.CanAwardDuplicate == 0)
                 {
+                    RewardLogger.Debug($"Duplicate found...");
                     continue;
                 }
                 else

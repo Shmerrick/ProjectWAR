@@ -46,7 +46,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 this.BattleFrontStatuses.Clear();
                 foreach (var battleFrontProgression in battleFrontProgressions)
                 {
-                    this.BattleFrontStatuses.Add(new BattleFrontStatus
+                    this.BattleFrontStatuses.Add(new BattleFrontStatus(this.ImpactMatrixManagerInstance)
                     {
                         BattleFrontId = battleFrontProgression.BattleFrontId,
                         LockingRealm = (rerollMode == CampaignRerollMode.INIT)
@@ -57,8 +57,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         LockTimeStamp = 0,
                         Locked = true,
                         RegionId = battleFrontProgression.RegionId,
-                        Description = battleFrontProgression.Description,
-                        ImpactMatrixManagerInstance = this.ImpactMatrixManagerInstance
+                        Description = battleFrontProgression.Description
                     });
                 }
             }

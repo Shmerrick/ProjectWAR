@@ -27,8 +27,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public HashSet<uint> KillContributionSet { get; set; }
         public List<Player> RealmCaptains { get; set; }
 
-        public BattleFrontStatus()
+        public BattleFrontStatus(ImpactMatrixManager impactMatrixManager)
         {
+            ImpactMatrixManagerInstance = impactMatrixManager;
             ContributionManagerInstance = new ContributionManager(
                 new ConcurrentDictionary<uint, List<PlayerContribution>>(), 
                 BountyService._ContributionDefinitions);

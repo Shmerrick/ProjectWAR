@@ -6,6 +6,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
     {
         List<LootBagTypeDefinition> AssignLootToPlayers(List<uint> eligiblePlayers, List<LootBagTypeDefinition> bagDefinitions);
         byte DetermineNumberOfAwards(int eligiblePlayers);
-        List<LootBagTypeDefinition> DetermineBagTypes(int numberOfBags, int forceNumberRewards = 0);
+        List<LootBagTypeDefinition> DetermineBagTypes(int numberOfBags);
     }
 }

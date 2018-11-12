@@ -46,7 +46,6 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <returns></returns>
         public List<PlayerContribution> UpdateContribution(uint targetCharacterId, byte contributionId)
         {
-            //TODO : Remove - dev obnly
             var contributionDefinition = ContributionFactors.Single(x => x.ContributionId == contributionId);
 
             RewardLogger.Debug($"Assigning contibution Id {contributionId} ({contributionDefinition.ContributionDescription}) to {targetCharacterId}");

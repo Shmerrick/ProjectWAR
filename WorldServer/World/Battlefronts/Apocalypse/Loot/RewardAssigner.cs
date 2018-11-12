@@ -50,14 +50,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         }
 
 
-        public List<LootBagTypeDefinition> DetermineBagTypes(int numberOfBags, int forceNumberRewards = 0)
+        public List<LootBagTypeDefinition> DetermineBagTypes(int numberOfBags)
         {
-            int numberLootBags = 0;
-            // Determine the number of awards to give - allowing for overrides.
-            numberLootBags = forceNumberRewards == 0 ? numberOfBags : forceNumberRewards;
-
             // Define the types of bags to give
-            var lootBagDefinitions = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(numberLootBags);
+            var lootBagDefinitions = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(numberOfBags);
             RewardLogger.Debug($"Number loot bags {lootBagDefinitions.Count} to award.");
 
             return lootBagDefinitions;
