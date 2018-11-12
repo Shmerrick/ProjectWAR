@@ -18,7 +18,6 @@ namespace WorldServer
 
         }
 		
-        private ushort _minInstanceNumber = 0;
         private byte _maxplayers = 6;
 
         public bool ZoneIn(Player player, byte instancetyp, Zone_jump Jump = null)
@@ -37,98 +36,94 @@ namespace WorldServer
             InstanceService._InstanceInfo.TryGetValue(zoneID, out II);
             ushort InstanceMainID = II.Entry;
             
-            for (int i = 0; i < InstanceService._InstanceStatistics.Values.Count; i++)
-            {
-                int dis = int.Parse(InstanceService._InstanceStatistics.Values.ElementAt(i).InstanceID.Replace(zoneID + ":", ""));
-                if (dis >= _minInstanceNumber)
-                    _minInstanceNumber = (ushort)dis;
-            }
-            
-            ushort instanceid = _minInstanceNumber;
+            ushort instanceid = 0;
 			
 			// Group Raid Instance
 			if (instancetyp == 5)
                 _maxplayers = 24;
-			
-			// check if player is in group
-			if (player.PriorityGroup != null)
-			{
-				// find first instance of leader
-				if (player.PriorityGroup.GetLeader() != null)
-				{
-					instanceid = Find_OpenInstanceoftheplayer(player.PriorityGroup.GetLeader(), zoneID);
-				}
-			}
-			else
-			{
-				// get the last instance of the player - he is joining solo
-				instanceid = Find_OpenInstanceoftheplayer(player, zoneID);
-			}
 
-			if (instanceid == _minInstanceNumber && Jump == null)
+            // instance handling
+            lock (_instances)
+            {
+                foreach (KeyValuePair<ushort, Instance> ii in _instances)
+                {
+                    if (ii.Value.ZoneID == zoneID)
+                    {
+                        // solo
+                        if (player.PriorityGroup == null)
+                            // enter if instance with name found
+                            if (ii.Value.Players.Contains(player))
+                            {
+                                instanceid = ii.Key; // enter
+                                break;
+                            }
+                            else // create new instance if not
+                            {
+                                instanceid = 0; // create new instance
+                                break;
+                            }
+                        else // group
+                        {
+                            // player == leader
+                            if (player == player.PriorityGroup.GetLeader())
+                            {
+                                // instance found with leaders name in it
+                                if (ii.Value.Players.Contains(player.PriorityGroup.GetLeader()))
+                                {
+                                    instanceid = ii.Key; // enter
+                                    break;
+                                }
+                                else // create new instance if not
+                                {
+                                    instanceid = 0; // create new instance
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                // instance found with leaders name in it
+                                if (ii.Value.Players.Contains(player.PriorityGroup.GetLeader()))
+                                {
+                                    if (ii.Value.Players.Contains(player))
+                                    {
+                                        instanceid = ii.Key; // enter
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        if (ii.Value.Players.Count < _maxplayers)
+                                        {
+                                            instanceid = ii.Key; // enter
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            player.SendClientMessage("This instance is already full. Please find another group or switch the group leader to open a new instance.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                                            return false;
+                                        }
+                                    }
+                                }
+                                else
+                                    continue;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (instanceid == 0 && Jump == null)
 				return false;
 
 			// create new instance
-			if (instanceid == _minInstanceNumber)
+			if (instanceid == 0)
 			{
 				instanceid = Create_new_instance(player, Jump);
 			}
-			else
-			{
-				if (player.PriorityGroup == null)
-					instanceid = Create_new_instance(player, Jump);
-			}
             
-            if (!Join_Instance(player, instanceid, Jump, _maxplayers, InstanceMainID))
+            if (!Join_Instance(player, instanceid, Jump, InstanceMainID))
 				return false;
 
 			return true;
-		}
-
-		private Player CompareBossesKilledInLockout(ushort zoneID, Player plrA, Player plrB)
-		{
-			// ~zoneID:timestamp:bossID_1:bossID_2:bossID_3:... - this is sorted by bossID
-			string lockout = plrA._Value.GetLockout(zoneID);
-			List<string> bossListA = new List<string>();
-			if (lockout != null)
-			{
-				for (int j = 2; j < lockout.Split(':').Length; j++)
-					bossListA.Add(lockout.Split(':')[j]);
-			}
-
-			lockout = plrB._Value.GetLockout(zoneID);
-			List<string> bossListB = new List<string>();
-			if (lockout != null)
-			{
-				for (int j = 2; j < lockout.Split(':').Length; j++)
-					bossListB.Add(lockout.Split(':')[j]);
-			}
-			
-			return bossListA.Count >= bossListB.Count ? plrA : plrB;
-		}
-
-		private bool CheckLockout(Player plr, ushort zoneID, ushort ii)
-		{
-			if (!_instances.ContainsKey(ii))
-				return false;
-
-			string lockout = plr._Value.GetLockout(zoneID);
-			if (lockout != null)
-				return false;
-			else
-			{
-				List<string> bossList = new List<string>();
-				if (lockout != null)
-				{
-					for (int j = 2; j < lockout.Split(':').Length; j++)
-						bossList.Add(lockout.Split(':')[j]);
-				}
-
-				if (bossList.Count == _instances[ii].GetBossCount())
-					return true;
-				else
-					return false;
-			}
 		}
 
 		private TimeSpan GetLockoutTimer(Player plr, ushort zoneID)
@@ -142,34 +137,11 @@ namespace WorldServer
 			}
 		}
 
-		private ushort Find_OpenInstanceoftheplayer(Player player, ushort ZoneID)
-        {
-            lock (_instances)
-            {
-                foreach(KeyValuePair<ushort, Instance> ii in _instances)
-                {
-                    if (ii.Value.ZoneID == ZoneID && ii.Value._Players.Contains(player.Name))
-                    {
-                        if (player.PriorityGroup == null)
-                            return ii.Key;
-                        else if (ii.Value._Players.Count < _maxplayers)
-                        {
-                            // check if instance players are all group players
-                            bool any = ii.Value._Players.Any(x => !player.PriorityGroup.Members.Select(y => y.Name).Contains(x));
-                            if (!any)
-                                return ii.Key;
-                        }
-                    }
-                }
-            }
-            return _minInstanceNumber;
-        }
-
         private ushort Create_new_instance(Player player, Zone_jump Jump)
         {
             lock (_instances)
             {
-                for (ushort i = 0; i < ushort.MaxValue ; i++)
+                for (ushort i = 1; i < ushort.MaxValue ; i++)
                 {
                     if (!_instances.ContainsKey(i))
                     {
@@ -209,20 +181,19 @@ namespace WorldServer
             return 0;
         }
 
-        private bool Join_Instance(Player player, ushort Instanceid, Zone_jump Jump, int maxplayers, ushort InstancemainID)
+        private bool Join_Instance(Player player, ushort Instanceid, Zone_jump Jump, ushort InstancemainID)
         {
             lock (_instances)
             {
-                Instance inst;
-                _instances.TryGetValue(Instanceid, out inst);
-				
+                _instances.TryGetValue(Instanceid, out Instance inst);
+
                 if (inst.Encounterinprogress)
                 {
                     player.SendClientMessage("There is an Encounter in progress you cannot enter now", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                     return false;
                 }
 
-                if (maxplayers == 0 || inst._Players.Count < maxplayers)
+                if (_maxplayers == 0 || inst.Players.Count < _maxplayers)
                 {
                     if (Jump != null && Jump.ZoneID == 179)
                         ((TOTVL)inst).AddPlayer(player, Jump);
@@ -231,22 +202,22 @@ namespace WorldServer
                 }
                 else
                 {
-                    player.SendClientMessage("Instance is full", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    player.SendClientMessage("Instance is full.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                     return false;
                 }
             }
             return true;
         }
 
-        public void closeInstance(Instance inst, ushort ID)
+        public void CloseInstance(Instance inst, ushort ID)
         {
+            inst.Players = new List<Player>();
             _instances.TryGetValue(ID, out inst);
             _instances.Remove(ID);
-
             inst = null;
         }
 
-        public void sendInstanceInfo(Player plr, ushort instanceid)
+        public void SendInstanceInfo(Player plr, ushort instanceid)
         {
             if (instanceid == 0)
             {
@@ -261,8 +232,7 @@ namespace WorldServer
             }
             else
             {
-                Instance i;
-                _instances.TryGetValue(instanceid, out i);
+                _instances.TryGetValue(instanceid, out Instance i);
                 if (i == null)
                 {
                     plr.SendClientMessage("Instance id = " + instanceid + "not found", ChatLogFilters.CHATLOGFILTERS_SAY);
@@ -286,20 +256,46 @@ namespace WorldServer
 
         public void ApplyLockout(string instanceId, List<Player> players)
         {
-            if (_instances == null)
+            if (_instances == null && string.IsNullOrEmpty(instanceId))
                 return;
-
-            _instances.TryGetValue(ushort.Parse(instanceId.Split(':')[1]), out Instance inst);
-            inst?.ApplyLockout(players.Where(x => !x.HasLockout(ushort.Parse(instanceId.Split(':')[1]), inst.CurrentBossId)).ToList());
+            try
+            {
+                _instances.TryGetValue(ushort.Parse(instanceId.Split(':')[1]), out Instance inst);
+                inst?.ApplyLockout(players.Where(x => !x.HasLockout(ushort.Parse(instanceId.Split(':')[1]), inst.CurrentBossId)).ToList());
+            }
+            catch (Exception e)
+            {
+                Log.Error("Exception", e.Message + "\r\n" + e.StackTrace);
+            }
         }
 
         public bool HasLockoutFromCurrentBoss(Player plr)
         {
-            if (_instances == null)
-                return true;
+            if (_instances == null && (plr == null || string.IsNullOrEmpty(plr.InstanceID)))
+                return false;
 
-            _instances.TryGetValue(ushort.Parse(plr.InstanceID.Split(':')[1]), out Instance inst);
-            return plr.HasLockout(plr.Zone.ZoneId, inst.CurrentBossId);
+            try
+            {
+                _instances.TryGetValue(ushort.Parse(plr.InstanceID.Split(':')[1]), out Instance inst);
+                return plr.HasLockout(plr.Zone.ZoneId, inst.CurrentBossId);
+            }
+            catch (Exception e)
+            {
+                Log.Error("Exception", e.Message + "\r\n" + e.StackTrace);
+            }
+            return false;
+        }
+
+        public void RemovePlayerFromInstances(Player plr)
+        {
+            if (_instances == null)
+                return;
+
+            for (int i = 0; i < _instances.Count; i++)
+            {
+                if (_instances.Values.ElementAt(i).Players.Contains(plr))
+                    _instances.Values.ElementAt(i).Players.Remove(plr);
+            }
         }
     }
 }

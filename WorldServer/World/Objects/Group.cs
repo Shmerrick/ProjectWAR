@@ -40,12 +40,19 @@ namespace WorldServer
             }
 
             // on lockout automatically pass
-            if (WorldMgr.InstanceMgr.HasLockoutFromCurrentBoss(voter))
+            try
             {
-                _playersPassing.Add(voter);
-                voter.SendClientMessage("You've got already lockout on loot from this boss.", ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL);
-                return 2;
+                if (voter.Zone != null && (voter.Zone.Info.Type == 4 || voter.Zone.Info.Type == 5 || voter.Zone.Info.Type == 6))
+                {
+                    if (WorldMgr.InstanceMgr.HasLockoutFromCurrentBoss(voter))
+                    {
+                        _playersPassing.Add(voter);
+                        voter.SendClientMessage("You've got already lockout on loot from this boss.", ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL);
+                        return 2;
+                    }
+                }
             }
+            catch (Exception e) { Log.Error("Exception", e.Message + "\r\n" + e.StackTrace); }
             
             switch (vote)
             {
@@ -690,6 +697,7 @@ namespace WorldServer
         private byte _lootThreshold = 2;
         private bool _needOnUse = true;
         private bool _rvrAutoLoot = true;
+        private int _zoneType = -1;
 
         private readonly List<LootRoll> _activeLootRolls = new List<LootRoll>();
 
@@ -697,6 +705,7 @@ namespace WorldServer
         {
             if (_nextTick < tick && _activeLootRolls.Count > 0)
             {
+                long startTime = _activeLootRolls.FirstOrDefault().StartTime;
                 foreach (LootRoll Lr in _activeLootRolls)
                 {
                     if (Lr.GetVoteCount() >= Members.Count || Lr.StartTime + 61000 < tick)
@@ -705,12 +714,17 @@ namespace WorldServer
 
                 _activeLootRolls.RemoveAll(lootRollers => lootRollers.Completed);
 
-                if (_activeLootRolls.Count == 0)
+                // apply lockout
+                try
                 {
-                    List<Player> subGroup = Members.Where(x => !string.IsNullOrEmpty(x.InstanceID) && x.InstanceID == GetLeader().InstanceID).ToList();
-                    WorldMgr.InstanceMgr.ApplyLockout(GetLeader().InstanceID, subGroup);
+                    if ((_activeLootRolls.Count == 0 || startTime + 61000 < tick) && _zoneType != -1 && (_zoneType == 4 || _zoneType == 5 || _zoneType == 6))
+                    {
+                        List<Player> subGroup = Members.Where(x => !string.IsNullOrEmpty(x.InstanceID) && x.InstanceID == GetLeader().InstanceID).ToList();
+                        WorldMgr.InstanceMgr.ApplyLockout(GetLeader().InstanceID, subGroup);
+                    }
                 }
-
+                catch (Exception e) { Log.Error("Exception", e.Message + "\r\n" + e.StackTrace); }
+                
                 _nextTick = tick + 1000;
             }
         }
@@ -767,6 +781,9 @@ namespace WorldServer
 
         public void LootVote(Player voter, ushort itemId, ushort vote)
         {
+            if (voter.Zone != null && voter.Zone.Info != null)
+                _zoneType = voter.Zone.Info.Type;
+
             foreach (LootRoll lr in _activeLootRolls)
             {
                 if (lr.LootID == itemId)

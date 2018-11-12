@@ -1842,13 +1842,7 @@ namespace WorldServer
 
             if (lockouts.Count == 0)
                 return;
-
-            /*
-            lockouts.Add("TestDungeon1;" + (TCPManager.GetTimeStamp()+36000) + ";Boss1;Boss2;Boss3;Boss4");
-            lockouts.Add("TestDungeon2;" + (TCPManager.GetTimeStamp()-64000)+";BossA;BossB;BossC");
-            lockouts.Add("TestDungeon3;" + (TCPManager.GetTimeStamp() + 432000) + ";BossX;BossY;BossZ");
-            */
-
+            
             //Check if LockoutTimer Expired and remove the Lockout if needed
             for (int i = 0; i < lockouts.Count; i++)
             {
@@ -1871,29 +1865,29 @@ namespace WorldServer
             Out.Fill(0, 2);
             Out.WriteByte((byte)lockouts.Count);
             Out.Fill(0, 8);
-            foreach (string s in lockouts)
+            foreach (string lockout in lockouts)
             {
-                Out.WriteUInt32(Convert.ToUInt32((Convert.ToInt64(s.Split(':')[1]) - TCPManager.GetTimeStamp()) / 60));
+                Out.WriteUInt32(Convert.ToUInt32((Convert.ToInt64(lockout.Split(':')[1]) - TCPManager.GetTimeStamp()) / 60));
                 Out.Fill(0, 2);
-                Instance_Info info;
-                InstanceService._InstanceInfo.TryGetValue(uint.Parse(s.Split(':')[0].Replace("~","")), out info);
+                InstanceService._InstanceInfo.TryGetValue(uint.Parse(lockout.Split(':')[0].Replace("~","")), out Instance_Info info);
                 Out.WritePascalString(info.Name);
-                Instance_Lockouts Deadbosses;
 
-                InstanceService._InstanceLockouts.TryGetValue(s.Split(':')[0] + ":" + s.Split(':')[1], out Deadbosses);
-
-                List<Instance_Boss_Spawn> bosses;
-				
+                List<string> deadBosses = new List<string>();
+                for (int i = 2; i < lockout.Split(':').Length; i++)
+                {
+                    deadBosses.Add(lockout.Split(':')[i]);
+                }
+                
                 for (int i = 0; i < 16; i++)
                 {
-                    if (Deadbosses != null && i < Deadbosses.Bosseskilled.Split(':').Count())
+                    if (i < deadBosses.Count)
                     {
-                        InstanceService._InstanceBossSpawns.TryGetValue(uint.Parse(Deadbosses.InstanceID.Split(':')[0].Replace("~", "")), out bosses);
+                        InstanceService._InstanceBossSpawns.TryGetValue(uint.Parse(lockout.Split(':')[0].Replace("~", "")), out List<Instance_Boss_Spawn> bosses);
                         uint Bossentry = 0;
 
                         foreach (Instance_Boss_Spawn bs in bosses)
                         {
-                            if (bs.BossID.ToString() == Deadbosses.Bosseskilled.Split(':')[i])
+                            if (bs.BossID.ToString() == deadBosses[i])
                                 Bossentry = bs.Entry;
                         }
 
@@ -4410,7 +4404,6 @@ namespace WorldServer
             {
                 if (respawn.InZoneID > 0)
                 {
-
                     Point3D world = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)respawn.InZoneID), respawn.PinX, respawn.PinY, respawn.PinZ);
                     Teleport((ushort)respawn.InZoneID, (uint)world.X, (uint)world.Y, (ushort)world.Z, respawn.WorldO);
                 }
@@ -5868,6 +5861,7 @@ namespace WorldServer
                     DisconnectType = EDisconnectType.Clean;
                     if (GmMgr.GmList.Contains(this))
                         GmMgr.NotifyGMOffline(this);
+                    
                     Destroy();
                 }
             }
@@ -6093,12 +6087,12 @@ namespace WorldServer
             {
                 QtsInterface.PublicQuest?.RemovePlayer(this, true);
                 CurrentKeep?.RemovePlayer(this);
+                //WorldMgr.InstanceMgr?.RemovePlayerFromInstances(this);
             }
 
             // Change Region , so change thread and maps
             if (Zone == null || Zone.Info.Region != destination.Region)
             {
-
                 if (destination.Type == 4)
                 {
                     Zone_jump jump = new Zone_jump();
@@ -6508,10 +6502,7 @@ namespace WorldServer
 
                         if (CurrentArea != null && CurrentArea.IsRvR)
                         {
-                            if (Region.Campaign != null)
-                                Region.Campaign.NotifyLeftLake(this);
-                            else
-                                Region.Campaign?.NotifyLeftLake(this);
+                            Region.Campaign?.NotifyLeftLake(this);
                         }
                     }
                 }
@@ -6520,12 +6511,7 @@ namespace WorldServer
                 {
                     if (CurrentArea != null && CurrentArea.IsRvR)
                     {
-                        // NEWDAWN
-                        if (Region.Campaign != null)
-                            Region.Campaign.NotifyLeftLake(this);
-                        else
-                            Region.Campaign.NotifyLeftLake(this);
-
+                        Region.Campaign?.NotifyLeftLake(this);
                     }
 
                     if (CurrentArea != null)

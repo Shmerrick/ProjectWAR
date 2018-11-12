@@ -1,4 +1,5 @@
 ﻿using Common;
+using FrameWork;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -96,6 +97,8 @@ namespace WorldServer.World.Objects.Instances
             {
                 plr.ModifyDmgHealScaler = 1f;
             }
+
+            try { StsInterface.RemoveBonusMultiplier(GameData.Stats.OutgoingDamagePercent, 1.0f, BuffClass.Standard); } catch (Exception e) { Log.Error("Exception", e.Message + "\r\n" + e.StackTrace); }
             
             if (BossTimer != null)
 			{
@@ -169,14 +172,26 @@ namespace WorldServer.World.Objects.Instances
                     player.PriorityGroup.GroupLoot(player, lootContainer);
                 }
 
-                lootContainer.SendInteract(player, menu);
-
+                if (menu.Menu == 12 || menu.Menu == 13) // on looting
+                {
+                    if (player.PriorityGroup == null &&
+                        player.Zone != null &&
+                        player.Zone.Info != null &&
+                        (player.Zone.Info.Type == 4 || player.Zone.Info.Type == 5 || player.Zone.Info.Type == 6))
+                    {
+                        if (!player.HasLockout((ushort)ZoneId, BossID))
+                        {
+                            lootContainer.SendInteract(player, menu);
+                            Instance.ApplyLockout(new List<Player> { player });
+                        }
+                    }
+                }
+                else
+                    lootContainer.SendInteract(player, menu);
+                
                 if (!lootContainer.IsLootable())
 				{
 					SetLootable(false, player);
-
-                    if (player.PriorityGroup == null)
-                        Instance.ApplyLockout(new List<Player> { player });
                 }
 			}
 		}

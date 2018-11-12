@@ -44,7 +44,7 @@ namespace WorldServer.Managers.Commands
         {
             ushort InstanceID = (ushort)GetInt(ref values);
 
-            WorldMgr.InstanceMgr.sendInstanceInfo(plr, InstanceID);
+            WorldMgr.InstanceMgr.SendInstanceInfo(plr, InstanceID);
 
             return true;
         }
