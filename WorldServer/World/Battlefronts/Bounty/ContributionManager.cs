@@ -48,9 +48,8 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             var contributionDefinition = ContributionFactors.Single(x => x.ContributionId == contributionId);
 
-            RewardLogger.Debug($"Assigning contibution Id {contributionId} ({contributionDefinition.ContributionDescription}) to {targetCharacterId}");
-
-
+            RewardLogger.Debug($"Assigning contibution Id {contributionId} ({contributionDefinition.ContributionDescription}) value of {contributionDefinition.ContributionValue} to {targetCharacterId}");
+            
             //filteredResults.AddOrUpdate(unfilteredResult.Key, new List<int> { number }, (k, v) => v.Add(number));
             return this.ContributionDictionary.AddOrUpdate(targetCharacterId,
                  new List<PlayerContribution>

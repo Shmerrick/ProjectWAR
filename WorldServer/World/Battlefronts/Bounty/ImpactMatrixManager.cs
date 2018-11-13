@@ -34,9 +34,8 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         private void DecayImpactMatrix()
         {
-            _logger.Debug("Attempting to decay impact matrix");
+            _logger.Trace("Attempting to decay impact matrix");
             this.ExpireImpacts(FrameWork.TCPManager.GetTimeStamp());
-            _logger.Debug("Done decaying impact matrix");
         }
 
         public void Update(long tick)
