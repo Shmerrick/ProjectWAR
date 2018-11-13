@@ -37,9 +37,11 @@ namespace WorldServer.Managers.Commands
             plr.SendClientMessage($"  Campaign Status : \t {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierCampaignManager.ActiveBattleFront.RegionId, false).Campaign.GetBattleFrontStatus()}");
 
             var destroKeep = plr.Region.Campaign.Keeps.FirstOrDefault(x => x.Info.KeepId == WorldMgr.UpperTierCampaignManager.ActiveBattleFront.DestroKeepId);
-            DisplayKeepStatus(destroKeep, plr);
+            if (destroKeep != null)
+                DisplayKeepStatus(destroKeep, plr);
             var orderKeep = plr.Region.Campaign.Keeps.FirstOrDefault(x => x.Info.KeepId == WorldMgr.UpperTierCampaignManager.ActiveBattleFront.OrderKeepId);
-            DisplayKeepStatus(orderKeep, plr);
+            if (orderKeep != null)
+                DisplayKeepStatus(orderKeep, plr);
         }
 
         private static void DisplayKeepStatus(Keep keep, Player plr)

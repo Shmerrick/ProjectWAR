@@ -930,6 +930,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             var winningRealmPlayers = new ConcurrentDictionary<Player, int>();
             var losingRealmPlayers = new ConcurrentDictionary<Player, int>();
+            var allEligiblePlayerDictionary = new ConcurrentDictionary<Player, int>();
 
             // Calculate no rewards
             if (forceNumberBags == -1)
@@ -962,6 +963,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {
                         losingRealmPlayers.TryAdd(player, contributingPlayer.Value);
                     }
+                    allEligiblePlayerDictionary.TryAdd(player, contributingPlayer.Value);
                 }
             }
             BattlefrontLogger.Debug($"winningRealmPlayers Players Count = {winningRealmPlayers.Count()}");
@@ -969,9 +971,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             // Distribute RR, INF, etc to contributing players
             DistributeBaseRewards(losingRealmPlayers, winningRealmPlayers, lockingRealm, ContributionManager.MAXIMUM_CONTRIBUTION);
-            // Select the highest contribution players for bag assignment - those eligible. These are sorted in eligibility order.
+            // Select the highest contribution players for bag assignment - those eligible (either realm). These are sorted in eligibility order.
             var eligiblePlayers = ActiveBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(numberOfBags);
-            BattlefrontLogger.Debug($"AllContributing Players Count (given numberBags ={numberOfBags}) = {eligiblePlayers.Count()}");
+            BattlefrontLogger.Debug($"Eligible Player Count = {eligiblePlayers.Count()} for {numberOfBags} Bags");
             // Get the character Ids of the eligible characters
             var eligiblePlayerCharacterIds = eligiblePlayers.Select(x => x.Key).ToList();
             // Determine and build out the bag types to be assigned
@@ -991,26 +993,32 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
             else
             {
-                foreach (var lootBagTypeDefinition in rewardAssignments)
-                {
-                    BattlefrontLogger.Debug($"Award to be handed out : {lootBagTypeDefinition.ToString()}");
-                }
-
                 var bagContentSelector = new BagContentSelector(RVRZoneRewardService.RVRZoneLockItemOptions, StaticRandom.Instance);
 
                 foreach (var reward in rewardAssignments)
                 {
                     if (reward.Assignee != 0)
                     {
-                        var player = winningRealmPlayers.Single(x => x.Key.CharacterId == reward.Assignee);
-
+                        BattlefrontLogger.Debug($"Assigning reward to {reward.Assignee} {reward.BagRarity}");
+                        KeyValuePair<Player, int> player;
+                        try
+                        {
+                            player = allEligiblePlayerDictionary.Single(x => x.Key.CharacterId == reward.Assignee);
+                        }
+                        catch (Exception e)
+                        {
+                            BattlefrontLogger.Warn($"Could not locate player {reward.Assignee} {e.Message} {e.StackTrace}");
+                            continue;
+                        }
+                       
+                     
                         var playerItemList = (from item in player.Key.ItmInterface.Items where item != null select item.Info.Entry).ToList();
-
                         var playerRenown = player.Key.CurrentRenown.Level;
                         var playerClass = player.Key.Info.CareerLine;
                         var playerRenownBand = _rewardManager.CalculateRenownBand(playerRenown);
 
                         var lootDefinition = bagContentSelector.SelectBagContentForPlayer(reward, playerRenownBand, playerClass, playerItemList.ToList(), true);
+                        BattlefrontLogger.Debug($"Award to be handed out : {lootDefinition.ToString()}");
                         if (lootDefinition.IsValid())
                         {
                             BattlefrontLogger.Debug($"{player.Key.Info.Name} has received {lootDefinition.FormattedString()}");

@@ -32,6 +32,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// <returns></returns>
         public LootBagTypeDefinition SelectBagContentForPlayer(LootBagTypeDefinition lootBag, byte playerRRBand, int playerClass, List<uint> playerItems, bool shuffleRewards = true)
         {
+            RewardLogger.Debug($"SelectBagContentForPlayer. Assignee {lootBag.Assignee} Rarity {lootBag.BagRarity} Player RR Band {playerRRBand} Class {playerClass} Shuffle {shuffleRewards} ");
             // get a closer list of matching items.
             var matchingRewards = RVRZoneRewards.Where(x => lootBag.BagRarity == (LootBagRarity) x.Rarity);
             RewardLogger.Debug($"Matching Rewards = {matchingRewards.Count()}");
