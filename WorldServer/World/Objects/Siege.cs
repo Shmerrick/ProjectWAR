@@ -354,6 +354,8 @@ namespace WorldServer
             Pet pet = killer as Pet;
             Player credited = (pet != null) ? pet.Owner : (killer as Player);
 
+            (killer as  Player).SendClientMessage($"{credited.Name} {(killer as Player).Name} has killed a siege item!!!!!");
+
             if (credited != null)
             {
                 // Contribution for Siege kill

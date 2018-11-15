@@ -4512,6 +4512,10 @@ namespace WorldServer
             BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.OnResurrect, null, instigator);
             deathTime = 0;
 
+
+            if(instigator is Player)
+                (instigator as Player).UpdatePlayerBountyEvent((byte)ContributionDefinitions.RESURRECT_PLAYER);
+
             //_isResurrecting = false;
         }
 
