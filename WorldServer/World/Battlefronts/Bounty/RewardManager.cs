@@ -184,6 +184,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         public void DistributePlayerKillRewards(Player victim, Player killer, float aaoBonus, ushort influenceId, Dictionary<uint, Player> playerDictionary)
         {
+            float ASSIST_CREST_CHANCE = 15f;
             RewardLogger.Info($"=============== START : {victim.Name} killed by {killer.Name}. AAO = {aaoBonus}===============");
             var repeatKillReward = GetRepeatKillModifier(victim, killer);
             RewardLogger.Trace($"+repeatKillReward={repeatKillReward}");
@@ -281,7 +282,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                         {
                             foreach (var member in playerToBeRewarded.PriorityGroup.Members)
                             {
-                                var hasInsigniaReward = GetInsigniaRewards(15 * repeatKillReward);
+                                var hasInsigniaReward = GetInsigniaRewards(ASSIST_CREST_CHANCE * repeatKillReward);
                                 var insigniaName = ItemService.GetItem_Info((uint) INSIGNIA_ITEM_ID).Name;
 
                                 if (hasInsigniaReward)
@@ -296,7 +297,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                         }
                         else // if not...
                         {
-                            var hasInsigniaReward = GetInsigniaRewards(15 * repeatKillReward);
+                            var hasInsigniaReward = GetInsigniaRewards(ASSIST_CREST_CHANCE * repeatKillReward);
                             var insigniaName = ItemService.GetItem_Info((uint)INSIGNIA_ITEM_ID).Name;
 
                             if (hasInsigniaReward)
