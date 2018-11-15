@@ -184,10 +184,10 @@ namespace WorldServer.Managers.Commands
                 var playerObject = Player.GetPlayer(player.Key);
 
                 if (playerObject.Realm == Realms.REALMS_REALM_DESTRUCTION)
-                    plr.SendClientMessage($"{playerObject.Name} (D)");
+                    plr.SendClientMessage($"{playerObject.Name} (D) Contrib:{player.Value}");
                 else
                 {
-                    plr.SendClientMessage($"{playerObject.Name} (O)");
+                    plr.SendClientMessage($"{playerObject.Name} (O) Contrib:{player.Value}");
                 }
             }
 

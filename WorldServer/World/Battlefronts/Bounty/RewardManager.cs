@@ -273,16 +273,19 @@ namespace WorldServer.World.Battlefronts.Bounty
                     }
                     else // An assist only.
                     {
-                        
-                        var hasInsigniaReward = GetInsigniaRewards(15 * repeatKillReward);
-                        var insigniaName = ItemService.GetItem_Info((uint)INSIGNIA_ITEM_ID).Name;
-
-                        if (hasInsigniaReward)
+                        foreach (var member in playerToBeRewarded.PriorityGroup.Members)
                         {
-                            DistributeInsigniaReward(playerToBeRewarded, $"++ You have been awarded 1 {insigniaName} for a kill assist on {victim.Name}", 1);
-                        }
+                            var hasInsigniaReward = GetInsigniaRewards(15 * repeatKillReward);
+                            var insigniaName = ItemService.GetItem_Info((uint) INSIGNIA_ITEM_ID).Name;
 
-                        DistributeKillAssistContributionForPlayerKill(killer);
+                            if (hasInsigniaReward)
+                            {
+                                DistributeInsigniaReward(playerToBeRewarded,
+                                    $"++ You have been awarded 1 {insigniaName} for a kill assist on {victim.Name}", 1);
+                            }
+
+                            DistributeKillAssistContributionForPlayerKill(member);
+                        }
                     }
                 }
 
