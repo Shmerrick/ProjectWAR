@@ -256,6 +256,9 @@ namespace WorldServer.World.Battlefronts.Bounty
                             $"+++ XP:{xp}, ScaledRP:{scaledRenownPoints} + BaseRP:{baseRenownPoints} = {(uint)baseRenownPoints + scaledRenownPoints} Inf:{influence} Money:{money} RacialInfluence:{racialInfluenceModifier} modvalue:{modificationValue} repeatkill:{repeatKillReward} AAO:{aaoBonus}");
                     }
 
+                    /*
+                     * Give players contribution and possibly insignia rewards
+                     */
                     // If this player is the killer (ie Deathblow), give them a different contribution.
                     if (playerReward.Key == killer.CharacterId)
                     {
@@ -273,18 +276,38 @@ namespace WorldServer.World.Battlefronts.Bounty
                     }
                     else // An assist only.
                     {
-                        foreach (var member in playerToBeRewarded.PriorityGroup.Members)
+                        // if you were part of the party
+                        if (playerToBeRewarded.PriorityGroup != null)
+                        {
+                            foreach (var member in playerToBeRewarded.PriorityGroup.Members)
+                            {
+                                var hasInsigniaReward = GetInsigniaRewards(15 * repeatKillReward);
+                                var insigniaName = ItemService.GetItem_Info((uint) INSIGNIA_ITEM_ID).Name;
+
+                                if (hasInsigniaReward)
+                                {
+                                    DistributeInsigniaReward(member,
+                                        $"++ You have been awarded 1 {insigniaName} for a kill assist on {victim.Name}",
+                                        1);
+                                }
+
+                                DistributeKillAssistContributionForPlayerKill(member);
+                            }
+                        }
+                        else // if not...
                         {
                             var hasInsigniaReward = GetInsigniaRewards(15 * repeatKillReward);
-                            var insigniaName = ItemService.GetItem_Info((uint) INSIGNIA_ITEM_ID).Name;
+                            var insigniaName = ItemService.GetItem_Info((uint)INSIGNIA_ITEM_ID).Name;
 
                             if (hasInsigniaReward)
                             {
                                 DistributeInsigniaReward(playerToBeRewarded,
-                                    $"++ You have been awarded 1 {insigniaName} for a kill assist on {victim.Name}", 1);
+                                    $"++ You have been awarded 1 {insigniaName} for a kill assist on {victim.Name}",
+                                    1);
                             }
 
-                            DistributeKillAssistContributionForPlayerKill(member);
+                            DistributeKillAssistContributionForPlayerKill(playerToBeRewarded);
+
                         }
                     }
                 }
