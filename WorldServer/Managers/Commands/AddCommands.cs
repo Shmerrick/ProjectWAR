@@ -1,8 +1,12 @@
 ﻿using Common;
+using FrameWork;
 using System;
 using System.Collections.Generic;
-using GameData;
+using System.Linq;
+using SystemData;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using static WorldServer.Managers.Commands.GMUtils;
 
 namespace WorldServer.Managers.Commands
@@ -196,6 +200,46 @@ namespace WorldServer.Managers.Commands
             plr.SendClientMessage(plr.Name + " added to Eligibility");
 
             return true;
+        }
+
+        public static bool AddZoneLockBags(Player plr, ref List<string> values)
+        {
+
+            plr = GetTargetOrMe(plr) as Player;
+            int numberBags = GetInt(ref values);
+            var _rewardManager = new RVRRewardManager();
+
+            var rewardAssigner = new RewardAssigner(StaticRandom.Instance);
+
+            var bagDefinitions = rewardAssigner.DetermineBagTypes(numberBags);
+            // Assign eligible players to the bag definitions.
+            foreach (var lootBagTypeDefinition in bagDefinitions)
+            {
+                var rewardAssignments = rewardAssigner.AssignLootToPlayers(new List<uint> { plr.CharacterId }, new List<LootBagTypeDefinition> { lootBagTypeDefinition });
+
+                var bagContentSelector = new BagContentSelector(RVRZoneRewardService.RVRZoneLockItemOptions, StaticRandom.Instance);
+
+                foreach (var reward in rewardAssignments)
+                {
+                    if (reward.Assignee != 0)
+                    {
+                        var playerItemList = (from item in plr.ItmInterface.Items where item != null select item.Info.Entry).ToList();
+                        var playerRenown = plr.CurrentRenown.Level;
+                        var playerClass = plr.Info.CareerLine;
+                        var playerRenownBand = _rewardManager.CalculateRenownBand(playerRenown);
+
+                        var lootDefinition = bagContentSelector.SelectBagContentForPlayer(reward, playerRenownBand, playerClass, playerItemList.ToList(), true);
+                        if (lootDefinition.IsValid())
+                        {
+                            // Only distribute if loot is valid
+                            var rewardDescription = WorldMgr.RewardDistributor.DistributeWinningRealm(lootDefinition, plr, playerRenownBand);
+                            plr.SendClientMessage($"{rewardDescription}", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+                        }
+                    }
+                }
+            }
+            return true;
+
         }
     }
 }
