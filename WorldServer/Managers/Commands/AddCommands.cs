@@ -206,6 +206,10 @@ namespace WorldServer.Managers.Commands
         {
 
             plr = GetTargetOrMe(plr) as Player;
+            if (plr == null)
+            {
+                return true;
+            }
             int numberBags = GetInt(ref values);
             var _rewardManager = new RVRRewardManager();
 

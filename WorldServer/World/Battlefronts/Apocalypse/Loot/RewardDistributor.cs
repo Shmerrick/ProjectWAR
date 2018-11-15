@@ -92,7 +92,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             var lootBagItemId = Convert.ToInt32(LootBagTypeDefinition.GetDescription(lootBag.BagRarity));
             // Get the bag item object
             var lootBagItem = ItemService.GetItem_Info((uint)lootBagItemId);
-            var internalBagContainer = new List<Talisman> {new Talisman(lootBag.ItemId, (byte) lootBag.ItemCount, 0, 0)};
+            var internalBagContainer = new List<Talisman>
+            {
+                new Talisman(lootBag.ItemId, (byte) lootBag.ItemCount, 0, 0)
+            };
+
             // Create a 'talisman' from the reward Item
             var result = player.ItmInterface.CreateItem(lootBagItem, 1, internalBagContainer, 0, 0, false, 0, false);
 

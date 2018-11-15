@@ -231,6 +231,19 @@ namespace WorldServer.World.Battlefronts.Bounty
                             DistributeBaseRewardsForPlayerKill(member, money, scaledRenownPoints, baseRenownPoints, influence, $"Party assist {killer.Name} in killing {victim.Name}", xp, influenceId);
 
                             RewardLogger.Info($"+++ XP:{xp}, ScaledRP:{scaledRenownPoints} BaseRP:{baseRenownPoints} Inf:{influence} Money:{money}  RacialInfluence:{racialInfluenceModifier} AAO:{aaoBonus}");
+
+                            // Distribute contribution and possible crest
+                            var hasInsigniaReward = GetInsigniaRewards(ASSIST_CREST_CHANCE * repeatKillReward);
+                            var insigniaName = ItemService.GetItem_Info((uint)INSIGNIA_ITEM_ID).Name;
+
+                            if (hasInsigniaReward)
+                            {
+                                DistributeInsigniaReward(member,
+                                    $"++ You have been awarded 1 {insigniaName} for a kill assist on {victim.Name}",
+                                    1);
+                            }
+
+                            DistributeKillAssistContributionForPlayerKill(member);
                         }
                         RewardLogger.Trace($"++ End Group Rewards");
                     }
@@ -277,39 +290,19 @@ namespace WorldServer.World.Battlefronts.Bounty
                     }
                     else // An assist only.
                     {
-                        // if you were part of the party
-                        if (playerToBeRewarded.PriorityGroup != null)
+
+                        var hasInsigniaReward = GetInsigniaRewards(ASSIST_CREST_CHANCE * repeatKillReward);
+                        var insigniaName = ItemService.GetItem_Info((uint)INSIGNIA_ITEM_ID).Name;
+
+                        if (hasInsigniaReward)
                         {
-                            foreach (var member in playerToBeRewarded.PriorityGroup.Members)
-                            {
-                                var hasInsigniaReward = GetInsigniaRewards(ASSIST_CREST_CHANCE * repeatKillReward);
-                                var insigniaName = ItemService.GetItem_Info((uint) INSIGNIA_ITEM_ID).Name;
-
-                                if (hasInsigniaReward)
-                                {
-                                    DistributeInsigniaReward(member,
-                                        $"++ You have been awarded 1 {insigniaName} for a kill assist on {victim.Name}",
-                                        1);
-                                }
-
-                                DistributeKillAssistContributionForPlayerKill(member);
-                            }
+                            DistributeInsigniaReward(playerToBeRewarded,
+                                $"++ You have been awarded 1 {insigniaName} for a kill assist on {victim.Name}",
+                                1);
                         }
-                        else // if not...
-                        {
-                            var hasInsigniaReward = GetInsigniaRewards(ASSIST_CREST_CHANCE * repeatKillReward);
-                            var insigniaName = ItemService.GetItem_Info((uint)INSIGNIA_ITEM_ID).Name;
 
-                            if (hasInsigniaReward)
-                            {
-                                DistributeInsigniaReward(playerToBeRewarded,
-                                    $"++ You have been awarded 1 {insigniaName} for a kill assist on {victim.Name}",
-                                    1);
-                            }
+                        DistributeKillAssistContributionForPlayerKill(playerToBeRewarded);
 
-                            DistributeKillAssistContributionForPlayerKill(playerToBeRewarded);
-
-                        }
                     }
                 }
 
