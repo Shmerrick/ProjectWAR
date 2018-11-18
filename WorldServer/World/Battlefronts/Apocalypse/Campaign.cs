@@ -1053,6 +1053,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Ensure that tier 1 gets half rewards.
             var tierRewardScale = Tier == 1 ? 0.5f : 1f;
 
+            //TODO - ensure you lower the number of crests in the reward table pre-bounty.
+
             // Distribute rewards to losing players with eligibility - halve rewards.
             foreach (var losingRealmPlayer in eligibleLosingRealmPlayers)
             {
