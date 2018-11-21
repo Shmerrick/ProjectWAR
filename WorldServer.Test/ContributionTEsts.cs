@@ -8,6 +8,7 @@ using Common.Database.World.Battlefront;
 using FakeItEasy;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Bounty;
+using PlayerContribution = WorldServer.World.Battlefronts.Bounty.PlayerContribution;
 
 namespace WorldServer.Test
 {
@@ -61,7 +62,7 @@ namespace WorldServer.Test
         [TestMethod]
         public void GetContributionOnEmptyManager()
         {
-            var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), ContributionFactorReferenceList);
+            var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<World.Battlefronts.Bounty.PlayerContribution>>(), ContributionFactorReferenceList);
             var result = contributionManager.GetContribution(0);
 
             Assert.IsNull(result);
@@ -72,7 +73,7 @@ namespace WorldServer.Test
         [TestMethod]
         public void GetContributionValueOnEmptyManager()
         {
-            var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), ContributionFactorReferenceList);
+            var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<World.Battlefronts.Bounty.PlayerContribution>>(), ContributionFactorReferenceList);
             var result = contributionManager.GetContributionValue(0);
 
             Assert.IsTrue(result == 0);
@@ -375,8 +376,8 @@ namespace WorldServer.Test
         [TestMethod]
         public void NoPlayerContributionReturnsPreparedStructure()
         {
-            var contributionList = new List<PlayerContribution>();
-            var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), ContributionFactorReferenceList);
+            var contributionList = new List<World.Battlefronts.Bounty.PlayerContribution>();
+            var contributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<World.Battlefronts.Bounty.PlayerContribution>>(), ContributionFactorReferenceList);
 
             var result = contributionManager.GetContributionStageDictionary(contributionList, ContributionFactorReferenceList);
 
