@@ -86,5 +86,24 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             this.RealmCaptains.Add(realmCaptain);
 
         }
+
+        public void SavePlayerContribution(int battleFrontId)
+        {
+            foreach (var contribution in this.ContributionManagerInstance.ContributionDictionary)
+            {
+                var characterId = contribution.Key;
+                foreach (var playerContribution in contribution.Value)
+                {
+                    var recordToWrite = new Common.Database.World.Battlefront.PlayerContribution
+                    {
+                        CharacterId = characterId,
+                        BattleFrontId = battleFrontId,
+                        ContributionTypeId = playerContribution.ContributionId
+                    };
+
+                    WorldMgr.Database.AddObject(recordToWrite);
+                }
+            }
+        }
     }
 }

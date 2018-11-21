@@ -119,8 +119,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             LoadKeeps();
             _aaoTracker = new AAOTracker();
             _rewardManager = new RVRRewardManager();
-            //OrderBattleFrontPlayerDictionary = new Dictionary<Player, int>();
-            //DestructionBattleFrontPlayerDictionary = new Dictionary<int, int>();
 
             _EvtInterface.AddEvent(UpdateBattleFrontScalers, 12000, 0); // 120000
             _EvtInterface.AddEvent(UpdateVictoryPoints, 6000, 0);
@@ -134,17 +132,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(DetermineCaptains, 60000, 0);
             // record metrics
             _EvtInterface.AddEvent(RecordMetrics, 60000, 0);
-
-            //if (Tier == 4)
-            //{
-            //    _EvtInterface.AddEvent(UpdateDoorMsg, 5000, 0);
-            //}
-
-            //if (new int[] {3,4}.Contains(Tier))
-            //{
-            //    _EvtInterface.AddEvent(UpdateDoorsFromVP, 1, 0);
-            //    _EvtInterface.AddEvent(UpdateLordsFromVP, 1, 0);
-            //}
 
         }
 
@@ -543,6 +530,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // also save into db
             RVRProgressionService.SaveRVRProgression(WorldMgr.LowerTierCampaignManager.BattleFrontProgressions);
             RVRProgressionService.SaveRVRProgression(WorldMgr.UpperTierCampaignManager.BattleFrontProgressions);
+
+            this.ActiveBattleFrontStatus.SavePlayerContribution(this.ActiveBattleFrontStatus.BattleFrontId);
+
         }
 
         /// <summary>
