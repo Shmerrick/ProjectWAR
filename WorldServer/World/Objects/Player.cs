@@ -4172,118 +4172,120 @@ namespace WorldServer
 
             foreach (KeyValuePair<Player, uint> kvpair in DamageSources)
             {
-                #region Get reward values for this player
+                //#region Get reward values for this player
                 Player curPlayer = kvpair.Key;
 
-                RewardLogger.Trace($"!!Damage Sources included for {curPlayer.Name}");
+                // Prevent farming low levels for kill quests, and also stop throttled kills
+                if (curPlayer.EffectiveLevel <= EffectiveLevel + 10)
+                    curPlayer.QtsInterface.HandleEvent(Objective_Type.QUEST_KILL_PLAYERS, Info.CareerLine, 1);
 
-                float damageFactor = (float)kvpair.Value / TotalDamageTaken;
-
-                uint xpShare = (uint)(totalXP * damageFactor);
-                uint renownShare = (uint)(totalRenown * damageFactor);
-                ushort influenceShare = (ushort)(totalInfluence * damageFactor);
-
-                RewardLogger.Debug($"Shared reward XP : {xpShare} RP : {renownShare} INF : {influenceShare}");
-
-                if (damageFactor >= 2f)
-                {
-                    curPlayer.SendClientMessage("You dealt " + kvpair.Value + " damage to " + Name + ", but they only took " + TotalDamageTaken + " total damage. No rewards have been given.");
-                    continue;
-                }
-
-                #endregion
-
-                if (curPlayer.PriorityGroup == null)
-                {
-                    RewardLogger.Trace($"Solo Reward {curPlayer.Name} - null prioritygroup");
-                    #region Handle solo rewards
-                    if (curPlayer.ScnInterface.Scenario == null || !curPlayer.ScnInterface.Scenario.DeferKillReward(curPlayer, xpShare, renownShare))
-                    {
-                        if (renownShare == 0)
-                            curPlayer.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_PLAYER_WORTH_NO_XPRP);
-                        else
-                        {
-                            if (deathRewardScaler < 1f)
-                                curPlayer.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_PLAYER_REDUCED_XPRP);
-
-                            RewardLogger.Trace($"Awarded XP: {xpShare} BonusMod : {bonusMod} Killer : {killer.Name} This : {Name}");
-                            RewardLogger.Trace($"Awarded RP: {renownShare} BonusMod : {bonusMod} Killer : {killer.Name} This : {Name}");
-
-                            curPlayer.AddXp(xpShare, bonusMod, true, true);
-                            curPlayer.AddKillRenown(renownShare, bonusMod, killer, this);
-                            if (influenceId != 0)
-                                curPlayer.AddInfluence(influenceId, influenceShare);
-
-                            curPlayer.SendClientMessage("Awarded 1 Crest to " + killer.Name + " for Solo Kill");
-                            RewardLogger.Trace($"Awarded 1 Crest to Killer : {killer.Name} for Solo Kill");
-                            curPlayer.ItmInterface.CreateItem(208470, 1);
-
-                            activeBattleFrontStatus?.AddKillContribution(curPlayer);
-
-                            if (closestFlag != null && closestFlag.State != StateFlags.ZoneLocked)
-                            {
-                                RewardLogger.Trace($"Delayed Rewards RP: {renownShare} BonusMod : {bonusMod} Killer : {killer.Name} This : {Name}");
-                                closestFlag.RewardManager.AddDelayedRewardsFrom(curPlayer, this, (uint)(xpShare * transferenceFactor), (uint)(renownShare * transferenceFactor));
-                                Region.Campaign.AddContribution(curPlayer, (uint)(renownShare * bonusMod));
-                            }
-                        }
-                    }
-
-                    // Prevent farming low levels for kill quests, and also stop throttled kills
-                    if (curPlayer.EffectiveLevel <= EffectiveLevel + 10)
-                        curPlayer.QtsInterface.HandleEvent(Objective_Type.QUEST_KILL_PLAYERS, Info.CareerLine, 1);
-
-                    curPlayer.EvtInterface.Notify(EventName.OnKill, killer, null);
-                    curPlayer._Value.RVRKills++;
-                    curPlayer.SendRVRStats();
-                    #endregion
-                }
-
-                else
-                {
-                    #region Collate group rewards
-                    RewardLogger.Trace($"Group Reward for {curPlayer.Name} Awarded XP: {xpShare} BonusMod : {bonusMod} Killer : {killer} ");
-                    if (totalRenown == 0)
-                    {
-                        curPlayer.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_PLAYER_WORTH_NO_XPRP);
-                        continue;
-                    }
-
-                    if (deathRewardScaler < 1f)
-                        curPlayer.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_PLAYER_REDUCED_XPRP);
-
-                    if (groupXPRenown.ContainsKey(kvpair.Key.PriorityGroup))
-                        groupXPRenown[kvpair.Key.PriorityGroup].Add(xpShare, renownShare, influenceShare);
-                    else
-                        groupXPRenown.Add(kvpair.Key.PriorityGroup, new XpRenown(xpShare, renownShare, influenceId, influenceShare, TCPManager.GetTimeStamp()));
-                    #endregion
-                }
+                curPlayer.EvtInterface.Notify(EventName.OnKill, killer, null);
+                curPlayer._Value.RVRKills++;
+                curPlayer.SendRVRStats();
             }
 
-            #region Apply group rewards
-            if (groupXPRenown.Count > 0)
-            {
-                foreach (KeyValuePair<Group, XpRenown> kvpair in groupXPRenown)
-                {
-                    RewardLogger.Trace($"Group Player Rewards: this : {Name} killer : {killer.Name} bonus : {bonusMod} XP {kvpair.Value.XP}, RP {kvpair.Value.Renown}, INF {kvpair.Value.Influence}");
-                    kvpair.Key.HandleKillRewards(this, killer, bonusMod, kvpair.Value.XP, kvpair.Value.Renown, influenceId, kvpair.Value.Influence, transferenceFactor,
-                        closestFlag);
 
-                    foreach (var player in kvpair.Key.Members)
-                    {
-                        var rnd = StaticRandom.Instance.Next(100);
-                        if (rnd <= 20)
-                        {
-                            player.SendClientMessage("Awarded 1 Crest to " + player.Name + " for Group Kill");
-                            RewardLogger.Trace($"Awarded 1 Crest to {player.Name} for Group Kill");
-                            player.ItmInterface.CreateItem(208470, 1);
-                        }
+            //RewardLogger.Trace($"!!Damage Sources included for {curPlayer.Name}");
 
-                        activeBattleFrontStatus?.AddKillContribution(player);
-                    }
-                }
-            }
-            #endregion
+                //float damageFactor = (float)kvpair.Value / TotalDamageTaken;
+
+                //uint xpShare = (uint)(totalXP * damageFactor);
+                //uint renownShare = (uint)(totalRenown * damageFactor);
+                //ushort influenceShare = (ushort)(totalInfluence * damageFactor);
+
+                //RewardLogger.Debug($"Shared reward XP : {xpShare} RP : {renownShare} INF : {influenceShare}");
+
+                //if (damageFactor >= 2f)
+                //{
+                //    curPlayer.SendClientMessage("You dealt " + kvpair.Value + " damage to " + Name + ", but they only took " + TotalDamageTaken + " total damage. No rewards have been given.");
+                //    continue;
+                //}
+
+                //#endregion
+
+                //if (curPlayer.PriorityGroup == null)
+                //{
+                //    RewardLogger.Trace($"Solo Reward {curPlayer.Name} - null prioritygroup");
+                //    #region Handle solo rewards
+                //    if (curPlayer.ScnInterface.Scenario == null || !curPlayer.ScnInterface.Scenario.DeferKillReward(curPlayer, xpShare, renownShare))
+                //    {
+                //        if (renownShare == 0)
+                //            curPlayer.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_PLAYER_WORTH_NO_XPRP);
+                //        else
+                //        {
+                //            if (deathRewardScaler < 1f)
+                //                curPlayer.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_PLAYER_REDUCED_XPRP);
+
+                //            RewardLogger.Trace($"Awarded XP: {xpShare} BonusMod : {bonusMod} Killer : {killer.Name} This : {Name}");
+                //            RewardLogger.Trace($"Awarded RP: {renownShare} BonusMod : {bonusMod} Killer : {killer.Name} This : {Name}");
+
+                //            curPlayer.AddXp(xpShare, bonusMod, true, true);
+                //            curPlayer.AddKillRenown(renownShare, bonusMod, killer, this);
+                //            if (influenceId != 0)
+                //                curPlayer.AddInfluence(influenceId, influenceShare);
+
+                //            curPlayer.SendClientMessage("Awarded 1 Crest to " + killer.Name + " for Solo Kill");
+                //            RewardLogger.Trace($"Awarded 1 Crest to Killer : {killer.Name} for Solo Kill");
+                //            curPlayer.ItmInterface.CreateItem(208470, 1);
+
+                //            activeBattleFrontStatus?.AddKillContribution(curPlayer);
+
+                //            if (closestFlag != null && closestFlag.State != StateFlags.ZoneLocked)
+                //            {
+                //                RewardLogger.Trace($"Delayed Rewards RP: {renownShare} BonusMod : {bonusMod} Killer : {killer.Name} This : {Name}");
+                //                closestFlag.RewardManager.AddDelayedRewardsFrom(curPlayer, this, (uint)(xpShare * transferenceFactor), (uint)(renownShare * transferenceFactor));
+                //            }
+                //        }
+                //    }
+
+                // Prevent farming low levels for kill quests, and also stop throttled kills
+               
+            //    }
+            //    else
+            //    {
+            //        #region Collate group rewards
+            //        RewardLogger.Trace($"Group Reward for {curPlayer.Name} Awarded XP: {xpShare} BonusMod : {bonusMod} Killer : {killer} ");
+            //        if (totalRenown == 0)
+            //        {
+            //            curPlayer.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_PLAYER_WORTH_NO_XPRP);
+            //            continue;
+            //        }
+
+            //        if (deathRewardScaler < 1f)
+            //            curPlayer.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_PLAYER_REDUCED_XPRP);
+
+            //        if (groupXPRenown.ContainsKey(kvpair.Key.PriorityGroup))
+            //            groupXPRenown[kvpair.Key.PriorityGroup].Add(xpShare, renownShare, influenceShare);
+            //        else
+            //            groupXPRenown.Add(kvpair.Key.PriorityGroup, new XpRenown(xpShare, renownShare, influenceId, influenceShare, TCPManager.GetTimeStamp()));
+            //        #endregion
+            //    }
+            //}
+
+            //#region Apply group rewards
+            //if (groupXPRenown.Count > 0)
+            //{
+            //    foreach (KeyValuePair<Group, XpRenown> kvpair in groupXPRenown)
+            //    {
+            //        RewardLogger.Trace($"Group Player Rewards: this : {Name} killer : {killer.Name} bonus : {bonusMod} XP {kvpair.Value.XP}, RP {kvpair.Value.Renown}, INF {kvpair.Value.Influence}");
+            //        kvpair.Key.HandleKillRewards(this, killer, bonusMod, kvpair.Value.XP, kvpair.Value.Renown, influenceId, kvpair.Value.Influence, transferenceFactor,
+            //            closestFlag);
+
+            //        foreach (var player in kvpair.Key.Members)
+            //        {
+            //            var rnd = StaticRandom.Instance.Next(100);
+            //            if (rnd <= 20)
+            //            {
+            //                player.SendClientMessage("Awarded 1 Crest to " + player.Name + " for Group Kill");
+            //                RewardLogger.Trace($"Awarded 1 Crest to {player.Name} for Group Kill");
+            //                player.ItmInterface.CreateItem(208470, 1);
+            //            }
+
+            //            activeBattleFrontStatus?.AddKillContribution(player);
+            //        }
+            //    }
+            //}
+            //#endregion
         }
 
         public override void GenerateLoot(Player looter, float dropMod)

@@ -3105,11 +3105,6 @@ namespace WorldServer
 
                 List<Player> nearby = player.WorldGroup.GetPlayersCloseTo(player, 50);
 
-                player.Region.Campaign.AddContribution(player, 5);
-
-                foreach (Player member in nearby)
-                    player.Region.Campaign.AddContribution(member, 5);
-
                 cmd.EventChance -= (byte)(nearby.Count * 5);
             }
 

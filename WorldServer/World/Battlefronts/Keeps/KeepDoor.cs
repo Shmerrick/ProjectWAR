@@ -157,7 +157,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                     foreach (KeyValuePair<Player, byte> p in siege.SiegeInterface.Players)
                     {
                         p.Key.CbtInterface.OnDealDamage(this, damage);
-                        Region.Campaign.AddContribution(p.Key, 10);
                     }
                 }
                 else

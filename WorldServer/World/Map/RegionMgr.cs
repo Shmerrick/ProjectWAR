@@ -62,7 +62,6 @@ namespace WorldServer
             
             LoadSpawns();
 
-            ImpactMatrix = new ImpactMatrixManager();
             BountyManager = new BountyManager();
 
             //ContributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), contributionFactorReferenceList);

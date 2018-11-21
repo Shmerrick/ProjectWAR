@@ -51,7 +51,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             RewardLogger.Debug($"Assigning contibution Id {contributionId} ({contributionDefinition.ContributionDescription}) value of {contributionDefinition.ContributionValue} to {targetCharacterId}");
             
             //filteredResults.AddOrUpdate(unfilteredResult.Key, new List<int> { number }, (k, v) => v.Add(number));
-            return this.ContributionDictionary.AddOrUpdate(targetCharacterId,
+            var result = ContributionDictionary.AddOrUpdate(targetCharacterId,
                  new List<PlayerContribution>
                  {
                         new PlayerContribution
@@ -68,6 +68,8 @@ namespace WorldServer.World.Battlefronts.Bounty
                      });
                      return v;
                  });
+
+            return result;
         }
 
         /// <summary>

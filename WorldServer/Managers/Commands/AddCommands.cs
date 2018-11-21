@@ -164,30 +164,6 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        /// <summary>
-        /// Add ContributionManagerInstance to player FOR TESTING ONLY
-        /// </summary>
-        /// <param name="plr">Player that initiated the command</param>
-        /// <param name="values">List of command arguments (after command name)</param>
-        /// <returns>True if command was correctly handled, false if operation was canceled</returns>
-        public static bool AddContrib(Player plr, ref List<string> values)
-        {
-            int value = GetInt(ref values);
-
-            plr = GetTargetOrMe(plr) as Player;
-            plr.Region.Campaign.AddContribution(plr, (uint)value);
-
-            GMCommandLog log = new GMCommandLog();
-            log.PlayerName = plr.Name;
-            log.AccountId = (uint)plr.Client._Account.AccountId;
-            log.Command = "ADD Infl TO " + plr.Name + " contribution Value " + value;
-            log.Date = DateTime.Now;
-            CharMgr.Database.AddObject(log);
-
-            plr.SendClientMessage(value + " contribution added for " + plr.Name);
-            return true;
-        }
-
         public static bool AddRewardEligibility(Player plr, ref List<string> values)
         {
             var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;

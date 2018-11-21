@@ -87,7 +87,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 
         private AAOTracker _aaoTracker;
-        private ContributionTracker _contributionTracker;
         private RVRRewardManager _rewardManager;
 
         public string ActiveZoneName { get; }
@@ -118,8 +117,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             PlaceObjectives();
 
             LoadKeeps();
-
-            _contributionTracker = new ContributionTracker(Tier, regionMgr);
             _aaoTracker = new AAOTracker();
             _rewardManager = new RVRRewardManager();
             //OrderBattleFrontPlayerDictionary = new Dictionary<Player, int>();
@@ -1362,29 +1359,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
 
-        /// <summary>
-        /// Gets a ream players contribution.
-        /// </summary>
-        /// <returns>ContributionManagerInstance infos indexed by character id</returns>
-        public Dictionary<uint, ContributionInfo> GetContributorsFromRealm(Realms realm)
-        {
-            return _contributionTracker.GetContributorsFromRealm(realm);
-        }
-
-        /// <summary>
-        /// <para>Adds contribution for a player. This is based on renown earned and comes from 4 sources at the moment:</para>
-        /// <para>- Killing players.</para>
-        /// <para>- Objective personal capture rewards.</para>
-        /// <para>- Objective defense tick rewards.</para>
-        /// <para>- Destroying siege weapons.</para>
-        /// </summary>
-        /// <param name="plr">Player to give contribution to</param>
-        /// <param name="contribution">ContributionManagerInstance value, will be scaled to compute rewards</param>
-        public void AddContribution(Player plr, uint contribution)
-        {
-            _contributionTracker.AddContribution(plr, contribution);
-        }
-
+       
 
         #region Battlefield Objective Lock Mechanics
         /// <summary>List of players in lake accessible through main update thread without locking</summary>
