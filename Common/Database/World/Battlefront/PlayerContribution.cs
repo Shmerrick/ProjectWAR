@@ -7,7 +7,10 @@ namespace Common.Database.World.Battlefront
     [Serializable]
     public class PlayerContribution : DataObject
     {
-        [PrimaryKey]
+        [PrimaryKey(AutoIncrement = true)]
+        public int Id { get; set; }
+
+        [DataElement(AllowDbNull = false)]
         public int BattleFrontId { get; set; }
 
         [DataElement(AllowDbNull = false)]
