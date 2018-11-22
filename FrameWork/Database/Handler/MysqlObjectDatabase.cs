@@ -1681,7 +1681,7 @@ namespace FrameWork
                 int res = Connection.ExecuteNonQuery(rawQuery);
                 if (res == 0)
                 {
-                    Log.Error("MysqlObject", "Execution error : " + rawQuery);
+                    Log.Info("MysqlObject", "Statement : " + rawQuery + " returned 0 results.");
 
                     return false;
                 }
