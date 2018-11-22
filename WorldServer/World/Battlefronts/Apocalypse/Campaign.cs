@@ -7,6 +7,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using SystemData;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
@@ -131,6 +132,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Check RVR zone for highest contributors (Captains)
             _EvtInterface.AddEvent(DetermineCaptains, 60000, 0);
             // record metrics
+            _EvtInterface.AddEvent(SavePlayerContribution, 60000, 0);
             _EvtInterface.AddEvent(RecordMetrics, 60000, 0);
 
         }
@@ -510,6 +512,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
+        private void SavePlayerContribution()
+        {
+            lock (this.ActiveBattleFrontStatus.ContributionManagerInstance)
+            {
+                if (this.ActiveBattleFrontStatus.RegionId == this.Region.RegionId)
+                    this.ActiveBattleFrontStatus.SavePlayerContribution(this.ActiveBattleFrontStatus.BattleFrontId);
+            }
+        }
+
         private void UpdateRVRStatus()
         {
             // Update players with status of campaign
@@ -530,8 +541,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // also save into db
             RVRProgressionService.SaveRVRProgression(WorldMgr.LowerTierCampaignManager.BattleFrontProgressions);
             RVRProgressionService.SaveRVRProgression(WorldMgr.UpperTierCampaignManager.BattleFrontProgressions);
-
-            this.ActiveBattleFrontStatus.SavePlayerContribution(this.ActiveBattleFrontStatus.BattleFrontId);
+            
+            
 
         }
 

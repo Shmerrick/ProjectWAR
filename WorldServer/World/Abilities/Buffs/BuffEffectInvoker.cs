@@ -1180,6 +1180,10 @@ namespace WorldServer
                     hostBuff.OptionalObject = new Point3D(hostBuff.Caster.WorldPosition);
                     ((Player)hostBuff.Target).SendDialog(Dialog.ResurrectionOffer, hostBuff.Caster.Oid, 60);
                     hostBuff.AddBuffParameter(cmd.BuffLine, -1);
+
+                    if (c is Player)
+                        (c as Player).UpdatePlayerBountyEvent((byte)ContributionDefinitions.RESURRECT_PLAYER);
+                    
                     break;
             }
             return true;
@@ -2004,8 +2008,15 @@ namespace WorldServer
 
                         target.CrowdControlType = (byte)cmd.PrimaryValue;
                         target.AbtInterface.OnPlayerCCed();
+
+                        // 
+                        if ((cmd.PrimaryValue == 16) && (cmd.SecondaryValue == 1))
+                        {
+                            (hostBuff.Caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.KNOCK_DOWN);
+                        }
+
                         #region Client Effect
-                        if (cmd.PrimaryValue >= 16)
+                            if (cmd.PrimaryValue >= 16)
                         {
                             target.StsInterface.AddVelocityModifier(hostBuff, 0);
 
@@ -2110,6 +2121,8 @@ namespace WorldServer
                         }
 
                         hostBuff.AddBuffParameter(cmd.BuffLine, 0);
+
+                        (hostBuff.Caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.AOE_ROOT);
                     }
 
                     break;
@@ -2675,6 +2688,10 @@ namespace WorldServer
                         target.StsInterface.HTLStacks += 3;
                     else ++target.StsInterface.HTLStacks;
                     hostBuff.AddBuffParameter(1, hostBuff.Caster == hostBuff.Target ? 45 : 15);
+
+                    // Give contribution for HTL.
+                    (hostBuff.Caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.HOLD_THE_LINE);
+
                     break;
                 case BUFF_END:
                 case BUFF_REMOVE:

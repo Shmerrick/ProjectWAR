@@ -1078,6 +1078,8 @@ namespace WorldServer
         {
             LinkedBuffInteraction lbi = new LinkedBuffInteraction((ushort)cmd.PrimaryValue, _caster, target, BuffEffectInvoker.CreateGuardBuff);
             lbi.Initialize();
+            // Give contribution for guarding.
+            (_caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.TANK_GUARD);
             return true;
         }
 

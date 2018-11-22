@@ -3652,6 +3652,11 @@ namespace GameData
         PARTY_KILL_ASSIST,
         REALM_CAPTAIN_KILL,
         PLAYER_KILL_ASSIST_ON_BO,
-        PUNT_ENEMY
+        PUNT_ENEMY,
+        HOLD_THE_LINE,
+        TANK_GUARD,
+        GENERAL_HEALING,
+        KNOCK_DOWN,
+        AOE_ROOT
     }
 }
