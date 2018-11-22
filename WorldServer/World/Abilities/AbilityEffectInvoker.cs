@@ -833,6 +833,10 @@ namespace WorldServer
         private bool PuntEnemy(AbilityCommandInfo cmd, byte level, Unit target)
         {
             target.ApplyKnockback(_caster, AbilityMgr.GetKnockbackInfo(cmd.Entry, cmd.PrimaryValue));
+
+            // Give contribution for punt.
+            (_caster as Player)?.UpdatePlayerBountyEvent((byte) ContributionDefinitions.PUNT_ENEMY);
+
             return true;
         }
 

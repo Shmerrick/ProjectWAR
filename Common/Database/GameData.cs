@@ -3651,6 +3651,7 @@ namespace GameData
         OUT_OF_GROUP_HEALING,
         PARTY_KILL_ASSIST,
         REALM_CAPTAIN_KILL,
-        PLAYER_KILL_ASSIST_ON_BO
+        PLAYER_KILL_ASSIST_ON_BO,
+        PUNT_ENEMY
     }
 }
