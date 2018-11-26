@@ -81,25 +81,30 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             var bagIndex = 0;
             foreach (var selectedPlayer in eligiblePlayers)
             {
-                var lootBagTypeDefinition = bagDefinitions[bagIndex];
-                if (lootBagTypeDefinition == null)
+                // Bag definition exists.
+                if (bagDefinitions.Count > bagIndex)
                 {
-                    RewardLogger.Warn($"lootBagTypeDefinition (index = {bagIndex}) is null");
-                    continue;
+                    var lootBagTypeDefinition = bagDefinitions[bagIndex];
+                    if (lootBagTypeDefinition == null)
+                    {
+                        RewardLogger.Warn($"lootBagTypeDefinition (index = {bagIndex}) is null");
+                        continue;
+                    }
+
+                    try
+                    {
+                        lootBagTypeDefinition.Assignee = selectedPlayer;
+                        RewardLogger.Debug(
+                            $"Selected player {selectedPlayer} selected for reward. LootBag Id : {lootBagTypeDefinition.LootBagNumber} ({lootBagTypeDefinition.BagRarity}). Index = {bagIndex}");
+                        // player assigned, go to next bag
+                        bagIndex++;
+                    }
+                    catch (Exception e)
+                    {
+                        RewardLogger.Warn($"{e.Message}");
+                    }
                 }
 
-                try
-                {
-                    lootBagTypeDefinition.Assignee = selectedPlayer;
-                    RewardLogger.Debug($"Selected player {selectedPlayer} selected for reward. LootBag Id : {lootBagTypeDefinition.LootBagNumber} ({lootBagTypeDefinition.BagRarity}). Index = {bagIndex}");
-                    // player assigned, go to next bag
-                    bagIndex++;
-                }
-                catch (Exception e)
-                {
-                    RewardLogger.Warn($"{e.Message}");
-                }
-                
             }
             return bagDefinitions;
         }

@@ -969,7 +969,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 DistributeBaseRewards(losingRealmPlayers, winningRealmPlayers, lockingRealm, ContributionManager.MAXIMUM_CONTRIBUTION);
                 // Select the highest contribution players for bag assignment - those eligible (either realm). These are sorted in eligibility order.
                 var eligiblePlayers = ActiveBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(numberOfBags);
-                BattlefrontLogger.Debug($"Eligible Player Count = {eligiblePlayers.Count()} for {numberOfBags} Bags");
+                BattlefrontLogger.Debug($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBags} Bags");
                 // Get the character Ids of the eligible characters
                 var eligiblePlayerCharacterIds = eligiblePlayers.Select(x => x.Key).ToList();
                 // Determine and build out the bag types to be assigned
