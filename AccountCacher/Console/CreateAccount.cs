@@ -32,7 +32,7 @@ namespace AccountCacher {
             var account = Program.AcctMgr.LoadAccount(userName);
             if (account == null)
             {
-                Log.Info("ResetPassword", $"Could not locate {userName} to reset password");
+                Log.Error("ResetPassword", $"Could not locate {userName} to reset password");
                 return false;
             }
             else
@@ -41,6 +41,7 @@ namespace AccountCacher {
                 account.CryptPassword = Account.ConvertSHA256(userName + ":" + password);
                 AccountMgr.Database.SaveObject(account);
                 AccountMgr.Database.ForceSave();
+                Log.Success("ResetPassword", $"Password reset for {userName} to {password}");
             }
            
 
