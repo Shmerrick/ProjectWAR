@@ -144,20 +144,29 @@ namespace WorldServer
                 //}
             }
 
-            switch (ZonesInfo[0].Pairing)
+            try
             {
-                case (byte)Pairing.PAIRING_GREENSKIN_DWARVES:
-                    _races = new Races[] { Races.RACES_DWARF, Races.RACES_GOBLIN };
-                    break;
-                case (byte)Pairing.PAIRING_EMPIRE_CHAOS:
-                    _races = new Races[] { Races.RACES_EMPIRE, Races.RACES_CHAOS };
-                    break;
-                case (byte)Pairing.PAIRING_ELVES_DARKELVES:
-                    _races = new Races[] { Races.RACES_HIGH_ELF, Races.RACES_DARK_ELF };
-                    break;
-                default:
-                    break;
+                switch (ZonesInfo[0].Pairing)
+                {
+                    case (byte)Pairing.PAIRING_GREENSKIN_DWARVES:
+                        _races = new Races[] { Races.RACES_DWARF, Races.RACES_GOBLIN };
+                        break;
+                    case (byte)Pairing.PAIRING_EMPIRE_CHAOS:
+                        _races = new Races[] { Races.RACES_EMPIRE, Races.RACES_CHAOS };
+                        break;
+                    case (byte)Pairing.PAIRING_ELVES_DARKELVES:
+                        _races = new Races[] { Races.RACES_HIGH_ELF, Races.RACES_DARK_ELF };
+                        break;
+                    default:
+                        break;
+                }
             }
+            catch (Exception e)
+            {
+               _logger.Error($"Zone - Pairing {e.Message} {e.StackTrace}");
+                throw;
+            }
+            
 
             _updater = new Thread(Update);
             _updater.Start();
