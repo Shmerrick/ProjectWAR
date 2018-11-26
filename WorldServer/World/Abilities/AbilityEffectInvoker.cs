@@ -833,6 +833,10 @@ namespace WorldServer
         private bool PuntEnemy(AbilityCommandInfo cmd, byte level, Unit target)
         {
             target.ApplyKnockback(_caster, AbilityMgr.GetKnockbackInfo(cmd.Entry, cmd.PrimaryValue));
+
+            // Give contribution for punt.
+            (_caster as Player)?.UpdatePlayerBountyEvent((byte) ContributionDefinitions.PUNT_ENEMY);
+
             return true;
         }
 
@@ -1074,6 +1078,8 @@ namespace WorldServer
         {
             LinkedBuffInteraction lbi = new LinkedBuffInteraction((ushort)cmd.PrimaryValue, _caster, target, BuffEffectInvoker.CreateGuardBuff);
             lbi.Initialize();
+            // Give contribution for guarding.
+            (_caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.TANK_GUARD);
             return true;
         }
 

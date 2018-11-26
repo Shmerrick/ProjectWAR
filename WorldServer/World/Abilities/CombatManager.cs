@@ -9,6 +9,8 @@ namespace WorldServer
 {
     public static class CombatManager
     {
+
+
         #region Defense
         public static bool CheckDefense(AbilityCommandInfo cmdInfo, Unit caster, Unit target, bool isAoE)
         {
@@ -962,6 +964,7 @@ namespace WorldServer
 
         private const float OFFHAND_DAMAGE_PEN = 0.9f;
         private const float OFFHAND_STAT_COEFF = 0.05f;
+        private const int HEAL_CONTRIBUTION_CHANCE = 5;
 
         public static void InflictDamage(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target)
         {
@@ -1788,6 +1791,12 @@ namespace WorldServer
 
             if (pointsHealed == -1)
                 return;
+
+            if (pointsHealed > 0)
+            {
+                if (StaticRandom.Instance.Next(100) < HEAL_CONTRIBUTION_CHANCE)
+                 (caster as Player)?.UpdatePlayerBountyEvent((byte) ContributionDefinitions.GENERAL_HEALING);
+            }
 
             damageInfo.Mitigation = damageInfo.Damage - pointsHealed;
             damageInfo.Damage = pointsHealed;

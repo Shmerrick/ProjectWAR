@@ -543,7 +543,7 @@ namespace WorldServer
 
             if (this is Player player)
             {
-                DeathLogger.Debug($"Looking for instanceManagerInstance");
+                DeathLogger.Trace($"Looking for instanceManagerInstance");
                 // find the battlefrontstatus that this player is in.
                 var impactManagerInstance = player.GetBattlefrontManager(player.Region.RegionId).ImpactMatrixManagerInstance;
                 var modificationValue = (float) impactManagerInstance.CalculateModificationValue((float) player.BaseBountyValue, (float) caster.BaseBountyValue);

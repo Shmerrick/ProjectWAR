@@ -4515,9 +4515,7 @@ namespace WorldServer
             deathTime = 0;
 
 
-            if(instigator is Player)
-                (instigator as Player).UpdatePlayerBountyEvent((byte)ContributionDefinitions.RESURRECT_PLAYER);
-
+          
             //_isResurrecting = false;
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using GameData;
 using NLog;
@@ -89,19 +90,25 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void SavePlayerContribution(int battleFrontId)
         {
-            foreach (var contribution in this.ContributionManagerInstance.ContributionDictionary)
+            if (this.BattleFrontId == battleFrontId)
             {
-                var characterId = contribution.Key;
-                foreach (var playerContribution in contribution.Value)
-                {
-                    var recordToWrite = new Common.Database.World.Battlefront.PlayerContribution
-                    {
-                        CharacterId = characterId,
-                        BattleFrontId = battleFrontId,
-                        ContributionTypeId = playerContribution.ContributionId
-                    };
+                WorldMgr.Database.ExecuteNonQuery($"DELETE FROM rvr_player_contribution Where BattleFrontId={battleFrontId};");
 
-                    WorldMgr.Database.AddObject(recordToWrite);
+                foreach (var contribution in this.ContributionManagerInstance.ContributionDictionary)
+                {
+                    var characterId = contribution.Key;
+                    foreach (var playerContribution in contribution.Value)
+                    {
+                        var recordToWrite = new Common.Database.World.Battlefront.PlayerContribution
+                        {
+                            CharacterId = characterId,
+                            BattleFrontId = battleFrontId,
+                            ContributionTypeId = playerContribution.ContributionId,
+                            Timestamp = DateTime.Now
+                        };
+
+                        WorldMgr.Database.AddObject(recordToWrite);
+                    }
                 }
             }
         }

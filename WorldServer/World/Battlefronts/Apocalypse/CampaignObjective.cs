@@ -1285,9 +1285,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				    {
 				        foreach (var closePlayer in _closePlayers)
 				        {
-				            activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte)ContributionDefinitions.BO_TAKE_SMALL_TICK);
-				            contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.BO_TAKE_SMALL_TICK);
-				            closePlayer.BountyManagerInstance.AddCharacterBounty(closePlayer.CharacterId, contributionDefinition.ContributionValue);
+				            closePlayer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.BO_TAKE_SMALL_TICK);
                         }
                     }
                     break;
@@ -1298,21 +1296,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				    {
 				        foreach (var closePlayer in _closePlayers)
 				        {
-				            BattleFront.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte) ContributionDefinitions.BO_TAKE_BIG_TICK);
-				            contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
-				            closePlayer.BountyManagerInstance.AddCharacterBounty(closePlayer.CharacterId, contributionDefinition.ContributionValue);
+				            closePlayer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
 
                             // is this player the group leader?
                             if (closePlayer.PriorityGroup?.GetLeader() == closePlayer)
 				            {
-				                activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte) ContributionDefinitions.GROUP_LEADER_BO_BIG_TICK);
-				                contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.GROUP_LEADER_BO_BIG_TICK);
-				                closePlayer.BountyManagerInstance.AddCharacterBounty(closePlayer.CharacterId, contributionDefinition.ContributionValue);
+				                closePlayer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.GROUP_LEADER_BO_BIG_TICK);
                             }
                         }
                     }
 				    break;
-
+                    // This case is not called on BO unlock -- Ik
 				case StateFlags.Locked: // small tick
 					VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_LOCKED);
 				    lock (_closePlayers)

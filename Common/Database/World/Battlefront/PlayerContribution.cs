@@ -19,5 +19,8 @@ namespace Common.Database.World.Battlefront
         [DataElement(AllowDbNull = false)]
         public int ContributionTypeId { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public DateTime Timestamp { get; set; }
+
     }
 }
