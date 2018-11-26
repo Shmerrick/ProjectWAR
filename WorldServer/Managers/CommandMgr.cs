@@ -75,8 +75,8 @@ namespace WorldServer
             new CommandHandler("ademote",ADemote , null)
         };
 
-        public static CommandHandler[] Handlers = { 
-	        new CommandHandler("/afk", null, null ),
+        public static CommandHandler[] Handlers = {
+            new CommandHandler("/afk", null, null ),
             new CommandHandler("/alliance", null, AllianceHandler ),
             new CommandHandler("/a", AllianceSay, null ),
             new CommandHandler("/as", AllianceSay, null ),
@@ -195,7 +195,7 @@ namespace WorldServer
             new CommandHandler("/rvr", null, null ),
             new CommandHandler("/pvp", null, null ),
             new CommandHandler("/rvrmap", null, null ),
-	        new CommandHandler("/quit", PlayerQuit, null),
+            new CommandHandler("/quit", PlayerQuit, null),
             new CommandHandler("/exit", PlayerExit, null ),
             new CommandHandler("/q", PlayerQuit, null ),
             new CommandHandler("/say", PlayerSay, null ),
@@ -221,9 +221,9 @@ namespace WorldServer
             new CommandHandler("/social", SocialCommand, null ),
             new CommandHandler("/stuck", PlayerStuck, null ),
             new CommandHandler("/target", Target, null ),
-	        new CommandHandler("/tell", PlayerWisp, null),
+            new CommandHandler("/tell", PlayerWisp, null),
             new CommandHandler("/t", PlayerWisp, null ),
-	        new CommandHandler("/whisper", PlayerWisp, null),
+            new CommandHandler("/whisper", PlayerWisp, null),
             new CommandHandler("/w", PlayerWisp, null ),
             new CommandHandler("/msg", PlayerWisp, null ),
             new CommandHandler("/send", PlayerWisp, null ),
@@ -256,10 +256,10 @@ namespace WorldServer
             if (text[0] != '&' && text[0] != '/')
                 return;
 
-            text = text.Remove(0,1);
-            text = text.Insert(0,"/");
+            text = text.Remove(0, 1);
+            text = text.Insert(0, "/");
 
-            if(WorldMgr.GeneralScripts.OnPlayerCommand(plr, text))
+            if (WorldMgr.GeneralScripts.OnPlayerCommand(plr, text))
                 GetCommand(plr, text, Handlers);
         }
         public static void GetCommand(Player plr, string text, CommandHandler[] handlers)
@@ -304,7 +304,7 @@ namespace WorldServer
 
         #region Functions
 
-        public static void PlayerQuit(Player plr,string text) { if(!plr.Leaving) plr.Quit(true, false); }
+        public static void PlayerQuit(Player plr, string text) { if (!plr.Leaving) plr.Quit(true, false); }
         public static void PlayerExit(Player plr, string text) { plr.DisconnectTime = 0; plr.Quit(); }
         public static void PlayerStuck(Player plr, string text)
         {
@@ -322,13 +322,13 @@ namespace WorldServer
         public static void PlayerWisp(Player plr, string text)
         {
             if (plr.IsBanned)
-            { 
+            {
                 plr.SendClientMessage("You suddenly remember that in space, no one can hear you scream.", ChatLogFilters.CHATLOGFILTERS_EMOTE);
                 return;
             }
 
             int pos = text.IndexOf(' ');
-            if(pos < 0)
+            if (pos < 0)
                 return;
 
             string receiverName = text.Substring(0, pos);
@@ -341,7 +341,7 @@ namespace WorldServer
             else if (receiver == plr)
                 plr.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_TELL_ERR_TO_SELF);
             else if (plr.GmLevel < 1 && receiver.IsBanned)
-                plr.SendClientMessage("You get the feeling that trying to talk to "+receiver.Name+" wouldn't be a good use of your time.", ChatLogFilters.CHATLOGFILTERS_EMOTE);
+                plr.SendClientMessage("You get the feeling that trying to talk to " + receiver.Name + " wouldn't be a good use of your time.", ChatLogFilters.CHATLOGFILTERS_EMOTE);
             else
             {
                 if (plr.GmLevel == 1 && receiver.SocInterface.HasIgnore(plr.CharacterId))
@@ -383,7 +383,7 @@ namespace WorldServer
 
             if (sender.ShouldThrottle())
                 return;
-            
+
             if (sender.AdviceBlocked)
             {
                 sender.SendClientMessage("[System] Due to previous abuse, you're currently blocked from using the Advice channel.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
@@ -443,7 +443,7 @@ namespace WorldServer
             }
         }
 
-        private static string[] _forbiddenLinks = {"http:", "https:", "www.", ".com", ".org", ".net"};
+        private static string[] _forbiddenLinks = { "http:", "https:", "www.", ".com", ".org", ".net" };
 
         public static void PlayerChan(Player sender, string messageString)
         {
@@ -476,7 +476,7 @@ namespace WorldServer
                 }
                 catch (Exception e)
                 {
-                    Log.Info("Channel System", e.GetType() +" with original message of "+ originalMessage);
+                    Log.Info("Channel System", e.GetType() + " with original message of " + originalMessage);
                     return;
                 }
 
@@ -510,7 +510,7 @@ namespace WorldServer
                             return;
 
                         lock (Player._Players)
-                        foreach (Player player in Player._Players)
+                            foreach (Player player in Player._Players)
                             {
                                 if (player.Realm != sender.Realm || player.Region != sender.Region || player.BlocksChatFrom(sender) || player.ScnInterface.Scenario != null)
                                     continue;
@@ -555,12 +555,12 @@ namespace WorldServer
                             return;
 
                         lock (Player._Players)
-                        foreach (Player player in Player._Players)
+                            foreach (Player player in Player._Players)
                             {
-                                #if !DEBUG
+#if !DEBUG
                                 if (player.Realm != sender.Realm || player.BlocksChatFrom(sender))
                                     continue;
-                                #endif
+#endif
                                 player.SendMessage(sender.Oid, sender.ChatName, messageString, ChatLogFilters.CHATLOGFILTERS_CHANNEL_BASE, channelNumber);
                             }
                         break;
@@ -591,12 +591,10 @@ namespace WorldServer
                         bool isAdd = messageString.StartsWith("+");
 
                         lock (Player._Players)
-                        foreach (Player player in Player._Players)
+                            foreach (Player player in Player._Players)
                             {
-                                #if !DEBUG
                                 if (player.Realm != sender.Realm || player.BlocksChatFrom(sender))
                                     continue;
-                                #endif
 
                                 if (!isAdd || player == sender || (player.WorldGroup != null && player.WorldGroup.Leader == player))
                                     player.SendMessage(sender.Oid, sender.ChatName, messageString, ChatLogFilters.CHATLOGFILTERS_CHANNEL_BASE, channelNumber);
@@ -678,7 +676,7 @@ namespace WorldServer
 
         #region Duelling
 
-        public static void DuelChallenge(Player plr, string text) 
+        public static void DuelChallenge(Player plr, string text)
         {
             switch (text)
             {
@@ -871,7 +869,7 @@ namespace WorldServer
             }
 
             if (groupId != 0 && isLeader)
-               Group.EnqueueGroupAction(groupId, new GroupAction(EGroupAction.PlayerKick, plr, text));
+                Group.EnqueueGroupAction(groupId, new GroupAction(EGroupAction.PlayerKick, plr, text));
         }
 
         public static void PartyOpen(Player plr, string text)
@@ -980,7 +978,7 @@ namespace WorldServer
                 }
             }
 
-            if(groupId != 0 && isLeader && emptyGroup)
+            if (groupId != 0 && isLeader && emptyGroup)
                 Group.EnqueueGroupAction(groupId, new GroupAction(EGroupAction.PlayerLeave, plr));
             else if (groupId != 0 && isLeader)
                 Group.EnqueueGroupAction(groupId, new GroupAction(EGroupAction.CloseParty, plr));
@@ -1132,7 +1130,7 @@ namespace WorldServer
                 int pos = text.IndexOf(' ');
                 if (pos > 0)
                 {
-                    text = text.Remove(0, pos+1);
+                    text = text.Remove(0, pos + 1);
 
 
 
@@ -1143,12 +1141,12 @@ namespace WorldServer
             {
                 int pos = text.IndexOf(' ');
                 if (pos > 0)
-				{
-					text = text.Remove(0, pos + 1);
+                {
+                    text = text.Remove(0, pos + 1);
                     Group.EnqueueGroupAction(groupId, new GroupAction(EGroupAction.WarbandSwap, plr, text));
-				}
+                }
             }
-            else if(text.StartsWith("convert 1"))
+            else if (text.StartsWith("convert 1"))
                 PartyOpen(plr, text);
             else if (text.StartsWith("convert 0"))
                 PartyClose(plr, text);
@@ -1240,13 +1238,13 @@ namespace WorldServer
         public static void APromote(Player plr, string text)
         {
             if (plr.GldInterface.IsInGuild() && plr.GldInterface.Guild.Info.LeaderId == plr.CharacterId && plr.GldInterface.Guild.Info.AllianceId > 0)
-                plr.GldInterface.Guild.APromote(plr,text);
+                plr.GldInterface.Guild.APromote(plr, text);
         }
 
         public static void ADemote(Player plr, string text)
         {
             if (plr.GldInterface.IsInGuild() && plr.GldInterface.Guild.Info.LeaderId == plr.CharacterId && plr.GldInterface.Guild.Info.AllianceId > 0)
-                plr.GldInterface.Guild.ADemote(plr,text);
+                plr.GldInterface.Guild.ADemote(plr, text);
         }
 
         public static void AllianceSay(Player plr, string text)
@@ -1337,15 +1335,15 @@ namespace WorldServer
             else
             {
                 Boolean unique = true;
-                foreach (KeyValuePair<uint,Guild_Alliance_info> alli in Alliance.Alliances)
+                foreach (KeyValuePair<uint, Guild_Alliance_info> alli in Alliance.Alliances)
                 {
                     if (alli.Value.Name == alliname)
                         unique = false;
                 }
 
-                if(unique == false)
+                if (unique == false)
                 {
-                   // Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, "Name already taken" );
+                    // Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, "Name already taken" );
                     return;
                 }
 
@@ -1445,7 +1443,7 @@ namespace WorldServer
 
             plr.GldInterface.Guild.PlayerKick(plr, text);
         }
-    
+
         public static void GuildMotd(Player plr, string text)
         {
             if (!plr.GldInterface.IsInGuild())
@@ -1479,7 +1477,7 @@ namespace WorldServer
             string[] strings = text.Split(' ');
 
             plr.GldInterface.Guild.SetPermissions(plr, text);
-            
+
         }
 
         public static void GuildNote(Player plr, string Text)
@@ -1551,7 +1549,7 @@ namespace WorldServer
                 if (i + 1 < tmp.Length)
                     text += " ";
             }
-            plr.GldInterface.Guild.SetRankName(plr, byte.Parse(tmp[0]), text); 
+            plr.GldInterface.Guild.SetRankName(plr, byte.Parse(tmp[0]), text);
         }
         public static void GuildSetTax(Player plr, string text)
         {
@@ -1561,7 +1559,7 @@ namespace WorldServer
                 return;
             }
             string[] strings = text.Split(' ');
-            plr.GldInterface.Guild.SetTax(plr, text); 
+            plr.GldInterface.Guild.SetTax(plr, text);
         }
         public static void GuildSetTithe(Player plr, string text)
         {
@@ -1571,7 +1569,7 @@ namespace WorldServer
                 return;
             }
             string[] strings = text.Split(' ');
-            plr.GldInterface.Guild.SetTithe(plr, text); 
+            plr.GldInterface.Guild.SetTithe(plr, text);
         }
 
         #endregion
@@ -1595,7 +1593,7 @@ namespace WorldServer
         public static void ToggleCloakHeraldry(Player plr, string text)
         {
             if (text.StartsWith("showcloakheraldry"))
-                plr.SetGearShowing(4,(plr._Value.GearShow & 4) <= 0);
+                plr.SetGearShowing(4, (plr._Value.GearShow & 4) <= 0);
         }
 
         #endregion
@@ -1624,7 +1622,7 @@ namespace WorldServer
 
         public static void Time(Player plr, string text)
         {
-            plr.SendClientMessage("The current server time is "+DateTime.Now.ToShortTimeString()+".");
+            plr.SendClientMessage("The current server time is " + DateTime.Now.ToShortTimeString() + ".");
         }
 
         public static void Roll(Player plr, string text)
@@ -1643,7 +1641,7 @@ namespace WorldServer
             lock (plr.PlayersInRange)
             {
                 foreach (Player player in plr.PlayersInRange)
-                    player.SendLocalizeString(new[] {plr.Name, "1", max.ToString(), StaticRandom.Instance.Next(1, max + 1).ToString()}, ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_ROLL_PUBLIC_BEGIN);
+                    player.SendLocalizeString(new[] { plr.Name, "1", max.ToString(), StaticRandom.Instance.Next(1, max + 1).ToString() }, ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_ROLL_PUBLIC_BEGIN);
             }
 
             plr.SendLocalizeString(new[] { plr.Name, "1", max.ToString(), StaticRandom.Instance.Next(1, max + 1).ToString() }, ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_ROLL_PUBLIC_BEGIN);
