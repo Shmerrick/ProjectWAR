@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Common.Database.World.Battlefront;
 using WorldServer.Services.World;
 
 namespace WorldServer.World.Battlefronts.Bounty
@@ -285,8 +286,16 @@ namespace WorldServer.World.Battlefronts.Bounty
                         {
                             DistributeInsigniaReward(playerToBeRewarded, $"++ You have been awarded 1 {insigniaName} for a deathblow on {victim.Name}", 1);
                         }
+                        //var killerBFM = killer.GetBattlefrontManager(killer.Region.RegionId);
+                        //var activeBFId = killerBFM.ActiveBattleFront.ZoneId;
+                        //var killerBFId = killer.ZoneId;
 
-                        DistributeDeathBlowContributionForPlayerKill(killer, victim.Name);
+                        if (killer.GetBattlefrontManager(killer.Region.RegionId).ActiveBattleFront.ZoneId == killer.ZoneId)
+                            DistributeDeathBlowContributionForPlayerKill(killer, victim.Name);
+                        else
+                        {
+                            RewardLogger.Warn($"{killer.Name} performed deathblow not in active BF");
+                        }
                     }
                     else // An assist only.
                     {
@@ -301,7 +310,14 @@ namespace WorldServer.World.Battlefronts.Bounty
                                 1);
                         }
 
-                        DistributeKillAssistContributionForPlayerKill(playerToBeRewarded);
+                        if (killer.GetBattlefrontManager(playerToBeRewarded.Region.RegionId).ActiveBattleFront.ZoneId == playerToBeRewarded.ZoneId)
+                            DistributeKillAssistContributionForPlayerKill(playerToBeRewarded);
+                        else
+                        {
+                            RewardLogger.Warn($"{killer.Name} performed assist not in active BF");
+                        }
+
+                        
 
                     }
                 }

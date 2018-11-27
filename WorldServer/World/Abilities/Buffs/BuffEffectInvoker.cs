@@ -1181,8 +1181,7 @@ namespace WorldServer
                     ((Player)hostBuff.Target).SendDialog(Dialog.ResurrectionOffer, hostBuff.Caster.Oid, 60);
                     hostBuff.AddBuffParameter(cmd.BuffLine, -1);
 
-                    if (c is Player)
-                        (c as Player).UpdatePlayerBountyEvent((byte)ContributionDefinitions.RESURRECT_PLAYER);
+                  
                     
                     break;
             }
