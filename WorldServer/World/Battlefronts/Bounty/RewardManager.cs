@@ -415,12 +415,12 @@ namespace WorldServer.World.Battlefronts.Bounty
             var repeatKillReward = 1.0f;
 
             // TODO - replace with something smarter than this.
-            //// If the same player kills the same victim within a short period, ignore.
-            //if (victim._recentLooters.ContainsKey(killer.CharacterId) && victim._recentLooters[killer.CharacterId] > TCPManager.GetTimeStampMS())
-            //{
-            //    // Lowering rewards for repeat kills
-            //    repeatKillReward = 0.5f;
-            //}
+            // If the same player kills the same victim within a short period, ignore.
+            if (victim._recentLooters.ContainsKey(killer.CharacterId) && victim._recentLooters[killer.CharacterId] > TCPManager.GetTimeStampMS())
+            {
+                // Lowering rewards for repeat kills
+                repeatKillReward = 0.5f;
+            }
 
             return repeatKillReward;
         }
