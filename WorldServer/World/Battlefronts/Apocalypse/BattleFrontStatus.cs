@@ -26,7 +26,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public RewardManager RewardManagerInstance { get; set; }
         
         public HashSet<uint> KillContributionSet { get; set; }
-        public List<Player> RealmCaptains { get; set; }
+        public Player DestructionRealmCaptain { get; set; }
+        public Player OrderRealmCaptain { get; set; }
 
         public BattleFrontStatus(ImpactMatrixManager impactMatrixManager)
         {
@@ -36,7 +37,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BountyService._ContributionDefinitions);
             
             RewardManagerInstance = new RewardManager(ContributionManagerInstance, new StaticWrapper(), RewardService._RewardPlayerKills, ImpactMatrixManagerInstance);
-            RealmCaptains = new List<Player>();
         }
 
         public float DestructionVictoryPointPercentage
@@ -77,14 +77,26 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void RemoveAsRealmCaptain(Player realmCaptain)
         {
+            if (realmCaptain == null)
+                return;
             BattlefrontLogger.Info($"Removing player {realmCaptain.Name} as Captain");
-            this.RealmCaptains.Remove(realmCaptain);
+            if (realmCaptain.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                this.DestructionRealmCaptain = null;
+            if (realmCaptain.Realm == Realms.REALMS_REALM_ORDER)
+                this.OrderRealmCaptain = null;
+
         }
 
         public void SetAsRealmCaptain(Player realmCaptain)
         {
+            if (realmCaptain == null)
+                return;
+
             BattlefrontLogger.Info($"Adding player {realmCaptain.Name} as Captain");
-            this.RealmCaptains.Add(realmCaptain);
+            if (realmCaptain.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                this.DestructionRealmCaptain = realmCaptain;
+            if (realmCaptain.Realm == Realms.REALMS_REALM_ORDER)
+                this.OrderRealmCaptain = realmCaptain;
 
         }
 

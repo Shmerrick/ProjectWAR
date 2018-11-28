@@ -4023,11 +4023,17 @@ namespace WorldServer
                     var influenceId = GetKillerInfluenceId(killer);
 
                     // If the victim was a realm captain, give extra rewards
-                    if (ActiveBattleFrontStatus.RealmCaptains.Exists(x => x.CharacterId == this.CharacterId))
+                    if (ActiveBattleFrontStatus.DestructionRealmCaptain?.CharacterId == this.CharacterId)
                     {
                         ActiveBattleFrontStatus.RewardManagerInstance.RealmCaptainKill(this, killer, influenceId, PlayersByCharId);
                         ActiveBattleFrontStatus.RemoveAsRealmCaptain(this);
                     }
+                    if (ActiveBattleFrontStatus.OrderRealmCaptain?.CharacterId == this.CharacterId)
+                    {
+                        ActiveBattleFrontStatus.RewardManagerInstance.RealmCaptainKill(this, killer, influenceId, PlayersByCharId);
+                        ActiveBattleFrontStatus.RemoveAsRealmCaptain(this);
+                    }
+
                     ActiveBattleFrontStatus.RewardManagerInstance.DistributePlayerKillRewards(this, killer, AAOBonus, influenceId, PlayersByCharId);
                 }
 

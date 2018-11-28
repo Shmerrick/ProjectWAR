@@ -1,12 +1,9 @@
-﻿using System;
+﻿using Common.Database.World.Battlefront;
+using GameData;
+using NLog;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common.Database.World.Battlefront;
-using GameData;
-using NLog;
 using WorldServer.Services.World;
 
 namespace WorldServer.World.Battlefronts.Bounty
@@ -15,11 +12,13 @@ namespace WorldServer.World.Battlefronts.Bounty
     /// <summary>
     /// Each character (player) holds a list of contributions that they have earnt in a specific battlefront.
     /// </summary>
-    
+
     public class ContributionManager : IContributionManager
     {
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
+
         private readonly Object _lockObject = new Object();
+
         // Holds the characterId, and the list of contributions the player has added in the current battlefront.
         public ConcurrentDictionary<uint, List<PlayerContribution>> ContributionDictionary { get; set; }
 
@@ -28,13 +27,13 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         public BountyService BountyService { get; }
 
-        public const short MAXIMUM_CONTRIBUTION = 100;
+        public const short MAXIMUM_CONTRIBUTION = 300;
 
         public ContributionManager(ConcurrentDictionary<uint, List<PlayerContribution>> contributionDictionary, List<ContributionDefinition> contributionFactors)
         {
             ContributionDictionary = contributionDictionary;
             ContributionFactors = contributionFactors;
-            
+
         }
 
         /// <summary>
@@ -48,26 +47,27 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             var contributionDefinition = ContributionFactors.Single(x => x.ContributionId == contributionId);
 
-            RewardLogger.Debug($"Assigning contibution Id {contributionId} ({contributionDefinition.ContributionDescription}) value of {contributionDefinition.ContributionValue} to {targetCharacterId}");
-            
+            RewardLogger.Debug(
+                $"Assigning contibution Id {contributionId} ({contributionDefinition.ContributionDescription}) value of {contributionDefinition.ContributionValue} to {targetCharacterId}");
+
             //filteredResults.AddOrUpdate(unfilteredResult.Key, new List<int> { number }, (k, v) => v.Add(number));
             var result = ContributionDictionary.AddOrUpdate(targetCharacterId,
-                 new List<PlayerContribution>
-                 {
-                        new PlayerContribution
-                        {
-                            ContributionId = contributionId,
-                            Timestamp = FrameWork.TCPManager.GetTimeStamp()
-                        }
-                 }, (k, v) =>
-                 {
-                     v.Add(new PlayerContribution
-                     {
-                         ContributionId = contributionId,
-                         Timestamp = FrameWork.TCPManager.GetTimeStamp()
-                     });
-                     return v;
-                 });
+                new List<PlayerContribution>
+                {
+                    new PlayerContribution
+                    {
+                        ContributionId = contributionId,
+                        Timestamp = FrameWork.TCPManager.GetTimeStamp()
+                    }
+                }, (k, v) =>
+                {
+                    v.Add(new PlayerContribution
+                    {
+                        ContributionId = contributionId,
+                        Timestamp = FrameWork.TCPManager.GetTimeStamp()
+                    });
+                    return v;
+                });
 
             return result;
         }
@@ -81,10 +81,11 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             List<PlayerContribution> contributionList;
 
-            this.ContributionDictionary.TryGetValue(targetCharacterId, out contributionList);
+            ContributionDictionary.TryGetValue(targetCharacterId, out contributionList);
 
             return contributionList;
         }
+
         /// <summary>
         /// Get the total contribution value for the character.
         /// </summary>
@@ -94,7 +95,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             List<PlayerContribution> contributionList;
 
-            this.ContributionDictionary.TryGetValue(targetCharacterId, out contributionList);
+            ContributionDictionary.TryGetValue(targetCharacterId, out contributionList);
 
             short contributionValue = 0;
 
@@ -104,7 +105,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             if (ContributionFactors == null)
                 return contributionValue;
 
-            var stagedContribution = GetContributionStageDictionary(contributionList, this.ContributionFactors);
+            var stagedContribution = GetContributionStageDictionary(contributionList, ContributionFactors);
 
             foreach (var contributionStage in stagedContribution)
             {
@@ -114,13 +115,15 @@ namespace WorldServer.World.Battlefronts.Bounty
             // double check something is not right.
             if (contributionValue > short.MaxValue)
             {
-                RewardLogger.Error($"ContributionManagerInstance exceeds max (over short.maxvalue) for Character {targetCharacterId}. {contributionList.Count} contribution records.");
+                RewardLogger.Error(
+                    $"ContributionManagerInstance exceeds max (over short.maxvalue) for Character {targetCharacterId}. {contributionList.Count} contribution records.");
                 contributionValue = short.MaxValue;
             }
 
             if (contributionValue > MAXIMUM_CONTRIBUTION)
             {
-                RewardLogger.Error($"ContributionManagerInstance exceeds max ({MAXIMUM_CONTRIBUTION}) for Character {targetCharacterId}. {contributionList.Count} contribution records.");
+                RewardLogger.Error(
+                    $"ContributionManagerInstance exceeds max ({MAXIMUM_CONTRIBUTION}) for Character {targetCharacterId}. {contributionList.Count} contribution records.");
                 contributionValue = MAXIMUM_CONTRIBUTION;
 
             }
@@ -139,9 +142,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             List<PlayerContribution> contributionList;
 
-            this.ContributionDictionary.TryGetValue(targetCharacterId, out contributionList);
-
-            short contributionValue = 0;
+            ContributionDictionary.TryGetValue(targetCharacterId, out contributionList);
 
             if (contributionList == null)
                 return null;
@@ -149,8 +150,8 @@ namespace WorldServer.World.Battlefronts.Bounty
             if (ContributionFactors == null)
                 return null;
 
-           return GetContributionStageDictionary(contributionList, this.ContributionFactors);
-            
+            return GetContributionStageDictionary(contributionList, ContributionFactors);
+
         }
 
         /// <summary>
@@ -161,7 +162,8 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <param name="contributionList"></param>
         /// <param name="contributionFactors"></param>
         /// <returns></returns>
-        public ConcurrentDictionary<short, ContributionStage> GetContributionStageDictionary(List<PlayerContribution> contributionList, List<ContributionDefinition> contributionFactors)
+        public ConcurrentDictionary<short, ContributionStage> GetContributionStageDictionary(List<PlayerContribution> contributionList,
+            List<ContributionDefinition> contributionFactors)
         {
             var result = new ConcurrentDictionary<short, ContributionStage>();
             // For each reference contribution type, prepare a dictionary.
@@ -170,7 +172,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 // Dont worry about max contribution count == 0, these are effectively disabled.
                 if (referenceContribution.MaxContributionCount > 0)
                 {
-                    result.TryAdd((short) referenceContribution.ContributionId,
+                    result.TryAdd((short)referenceContribution.ContributionId,
                         new ContributionStage
                         {
                             Description = referenceContribution.ContributionDescription,
@@ -189,7 +191,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                     if (playerContribution.ContributionId == contributionFactor.ContributionId)
                     {
                         // If we need to add something is wrong, dont add it - return a new structure.
-                        result.AddOrUpdate((short) contributionFactor.ContributionId,
+                        result.AddOrUpdate((short)contributionFactor.ContributionId,
                             new ContributionStage
                             {
                                 Description = contributionFactor.ContributionDescription,
@@ -199,17 +201,17 @@ namespace WorldServer.World.Battlefronts.Bounty
                                 ContributionStageValue = contributionFactor.ContributionValue
                             },
                             (k, v) =>
-                        {
-                            // If we have more than we need, skip.
-                            if (v.ContributionStageCount + 1 <= v.ContributionStageMax)
                             {
-                                v.ContributionStageCount = (short)(v.ContributionStageCount + 1);
-                                v.ContributionStageSum += contributionFactor.ContributionValue;
-                                v.ContributionStageValue = contributionFactor.ContributionValue;
-                            }
+                                // If we have more than we need, skip.
+                                if (v.ContributionStageCount + 1 <= v.ContributionStageMax)
+                                {
+                                    v.ContributionStageCount = (short)(v.ContributionStageCount + 1);
+                                    v.ContributionStageSum += contributionFactor.ContributionValue;
+                                    v.ContributionStageValue = contributionFactor.ContributionValue;
+                                }
 
-                            return v;
-                        });
+                                return v;
+                            });
 
                     }
                 }
@@ -219,7 +221,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
                 RewardLogger.Trace($"Id:{contributionStage.Key} {contributionStage.Value.ToString()}");
             }
-            
+
 
             return result;
 
@@ -242,7 +244,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         public bool RemoveCharacter(uint characterId)
         {
             List<PlayerContribution> contribution;
-            return this.ContributionDictionary.TryRemove(characterId, out contribution);
+            return ContributionDictionary.TryRemove(characterId, out contribution);
         }
 
         /// <summary>
@@ -250,10 +252,10 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// </summary>
         public void Clear()
         {
-            this.ContributionDictionary.Clear();
+            ContributionDictionary.Clear();
         }
 
-   
+
         /// <summary>
         /// Return an ordered list of eligible players based on the highest contribution
         /// </summary>
@@ -280,45 +282,68 @@ namespace WorldServer.World.Battlefronts.Bounty
             }
         }
 
-        public List<Player> GetHigestContributors(int minimumContribution, IEnumerable<Player> players)
+        public Player[] GetHigestContributors(int minimumContribution, IEnumerable<Player> players)
         {
+            // 0 : Destro, 1 : Order
+            var returnList = new Player[2];
             Player destructionRealmCaptain = null;
             Player orderRealmCaptain = null;
-            var returnList = new List<Player>();
             // Return ordered (contrib descending) list of Eligible Players
             var eligiblePlayers = GetEligiblePlayers(0);
-            foreach (var eligiblePlayer in eligiblePlayers)
+            lock (eligiblePlayers)
             {
-                if (eligiblePlayer.Value < minimumContribution)
-                    continue;
-                
-                // If the player is found in the list.
-                var player = players.SingleOrDefault(x => x.CharacterId == eligiblePlayer.Key);
-                if (player != null)
+                foreach (var eligiblePlayer in eligiblePlayers)
                 {
-                    if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
-                    {
-                        if (destructionRealmCaptain == null)
-                        {
-                            destructionRealmCaptain = player;
-                            returnList.Add(destructionRealmCaptain);
+                    RewardLogger.Debug($"Testing {eligiblePlayer.Key} ({eligiblePlayer.Value}) as Captain against {minimumContribution}");
 
-                            RewardLogger.Info($"Assigning {destructionRealmCaptain.Name} as RealmCaptain");
+                    if (eligiblePlayer.Value < minimumContribution)
+                        continue;
+
+                    // If the player is found in the list.
+                    var player = players.SingleOrDefault(x => x.CharacterId == eligiblePlayer.Key);
+                    if (player != null)
+                    {
+                        RewardLogger.Debug($"{player.Name} found..");
+                        if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                        {
+                            if (destructionRealmCaptain == null)
+                            {
+                                RewardLogger.Info($"Assigning {player.Name} as RealmCaptain for destro");
+                                destructionRealmCaptain = player;
+                            }
+                        }
+                        else
+                        {
+
+                            if (orderRealmCaptain == null)
+                            {
+                                RewardLogger.Info($"Assigning {player.Name} as RealmCaptain for order");
+                                orderRealmCaptain = player;
+                            }
                         }
                     }
                     else
                     {
-                        if (orderRealmCaptain == null)
-                        {
-                            orderRealmCaptain = player;
-                            returnList.Add(orderRealmCaptain);
-
-                            RewardLogger.Info($"Assigning {orderRealmCaptain.Name} as RealmCaptain");
-                        }
+                        RewardLogger.Debug($"NOT found..");
                     }
+                    // Short cut out if we have captains
+                    if ((orderRealmCaptain != null) && (destructionRealmCaptain != null))
+                    {
+                        returnList[0] = destructionRealmCaptain;
+                        returnList[1] = orderRealmCaptain;
+
+                        return returnList;
+                    }
+
                 }
-                if ((orderRealmCaptain != null) && (destructionRealmCaptain != null))
-                    return returnList;
+            }
+            if (destructionRealmCaptain != null)
+            {
+                returnList[0] = destructionRealmCaptain;
+            }
+            if (orderRealmCaptain != null)
+            {
+                returnList[1] = orderRealmCaptain;
             }
             return returnList;
         }
