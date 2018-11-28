@@ -139,7 +139,8 @@ namespace WorldServer.World.Battlefronts.Bounty
                     }
                 }
             }
-            _logger.Debug($"Removed {removedCount} impacts");
+            if (removedCount != 0)
+                _logger.Debug($"Removed {removedCount} impacts");
             return removedCount;
         }
 

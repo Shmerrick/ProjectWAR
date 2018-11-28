@@ -74,7 +74,10 @@ namespace WorldServer.World.Battlefronts.Bounty
             var impacts = ImpactMatrixManagerInstance.GetKillImpacts(victim.CharacterId);
             var totalImpact = ImpactMatrixManagerInstance.GetTotalImpact(victim.CharacterId);
             if (totalImpact == 0)
-                throw new BountyException("Total Impact == 0");
+            {
+                RewardLogger.Error($"+Total Impact == 0 {victim.Name} ({victim.CharacterId})");
+                return resultDictionary;
+            }
 
             foreach (var playerImpact in impacts)
             {

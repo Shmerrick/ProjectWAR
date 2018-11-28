@@ -1134,6 +1134,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void ClearDictionaries()
         {
             ActiveBattleFrontStatus.ContributionManagerInstance.ContributionDictionary.Clear();
+            ActiveBattleFrontStatus.RealmCaptains.Clear();
             BattleFrontManager.BountyManagerInstance.BountyDictionary.Clear();
             BattlefrontLogger.Debug($"Contribution and Bounty Dictionaries cleared");
         }
