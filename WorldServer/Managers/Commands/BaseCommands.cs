@@ -4034,6 +4034,50 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        public static bool SpawnTest(Player plr, ref List<string> values)
+        {
+            var creatureList = new List<Unit>();
+            List<uint> guardList = new List<uint>();
+            foreach (var value in values)
+            {
+                guardList.Add(Convert.ToUInt32(value));
+            }
+            ushort facing = 2093;
+
+            var X = plr.WorldPosition.X;
+            var Y = plr.WorldPosition.Y;
+            var Z = plr.WorldPosition.Z;
+
+            foreach (var guard in guardList)
+            {
+                Creature_spawn spawn = new Creature_spawn {Guid = (uint) CreatureService.GenerateCreatureSpawnGUID()};
+                spawn.BuildFromProto(CreatureService.GetCreatureProto(guard));
+                if (spawn.Proto == null)
+                    continue;
+
+                spawn.WorldO = facing;
+                spawn.WorldX = X + StaticRandom.Instance.Next(500);
+                spawn.WorldY = Y + StaticRandom.Instance.Next(500);
+                spawn.WorldZ = Z;
+                spawn.ZoneId = (ushort) plr.ZoneId;
+                spawn.Level = 42;
+
+                Creature c = plr.Region.CreateCreature(spawn);
+                c.PlayersInRange = plr.PlayersInRange;
+                c.AiInterface.SetBrain(new AggressiveBrain(c));
+
+                creatureList.Add(c);
+            }
+
+            foreach (var unit in creatureList)
+            {
+                unit.MvtInterface.SetBaseSpeed(100);
+                unit.MvtInterface.Move(plr.WorldPosition.X, plr.WorldPosition.Y, plr.WorldPosition.Z);
+            }
+
+            return true;
+        }
+
         public static bool SetPet(Player plr, ref List<string> values)
         {
             if (plr.Info.CareerLine == 19)
