@@ -30,6 +30,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     public class Campaign
     {
         public static int POPULATION_BROADCAST_CHANCE = 0;
+        public static int REALM_CAPTAIN_TELL_CHANCE = 10;
         public static IObjectDatabase Database = null;
         public static int REALM_CAPTAIN_MINIMUM_CONTRIBUTION = 50;
         static readonly object LockObject = new object();
@@ -163,18 +164,29 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (realmCaptains[0] != null)
                     {
                         status.SetAsRealmCaptain(realmCaptains[0]);
-                        foreach (var player in playersToAnnounceTo.Where(x=>x.Realm == Realms.REALMS_REALM_ORDER))
+                        if (StaticRandom.Instance.Next(100) < REALM_CAPTAIN_TELL_CHANCE)
                         {
-                            player.SendMessage($"A captain has emerged from the ranks of the enemy. Take the head of {realmCaptains[0].Name}!", ChatLogFilters.CHATLOGFILTERS_RVR);
+                            foreach (var player in playersToAnnounceTo.Where(x => x.Realm == Realms.REALMS_REALM_ORDER))
+                            {
+
+                                player.SendMessage(
+                                    $"A captain has emerged from the ranks of the enemy. Take the head of {realmCaptains[0].Name}!",
+                                    ChatLogFilters.CHATLOGFILTERS_TELL_SEND);
+                            }
                         }
                     }
                     // Order
                     if (realmCaptains[1] != null)
                     {
                         status.SetAsRealmCaptain(realmCaptains[1]);
-                        foreach (var player in playersToAnnounceTo.Where(x => x.Realm == Realms.REALMS_REALM_ORDER))
+                        if (StaticRandom.Instance.Next(100) < REALM_CAPTAIN_TELL_CHANCE)
                         {
-                            player.SendMessage($"A captain has emerged from the ranks of the enemy. Take the head of {realmCaptains[1].Name}!", ChatLogFilters.CHATLOGFILTERS_RVR);
+                            foreach (var player in playersToAnnounceTo.Where(x => x.Realm == Realms.REALMS_REALM_ORDER))
+                            {
+                                player.SendMessage(
+                                    $"A captain has emerged from the ranks of the enemy. Take the head of {realmCaptains[1].Name}!",
+                                    ChatLogFilters.CHATLOGFILTERS_TELL_SEND);
+                            }
                         }
                     }
                 }
