@@ -160,6 +160,7 @@ namespace WorldServer
             new CommandHandler("/partyremove", PartyKick, null ),
             new CommandHandler("/partykick", PartyKick, null ),
             new CommandHandler("/partyboot", PartyKick, null ),
+            new CommandHandler("/insult", Insult, null ),
             new CommandHandler("/kick", PartyKick, null ),
             new CommandHandler("/partyleader", PartyChangeLeader, null ),
             new CommandHandler("/makeleader", PartyChangeLeader, null ),
@@ -198,6 +199,7 @@ namespace WorldServer
             new CommandHandler("/quit", PlayerQuit, null),
             new CommandHandler("/exit", PlayerExit, null ),
             new CommandHandler("/q", PlayerQuit, null ),
+            new CommandHandler("/rude", Rude, null ),
             new CommandHandler("/say", PlayerSay, null ),
             new CommandHandler("/s", PlayerSay, null ),
             new CommandHandler("'", null, null ),
@@ -218,6 +220,7 @@ namespace WorldServer
             new CommandHandler("/script", null, null ),
             new CommandHandler("/shout", PlayerShout, null),
             new CommandHandler("/showcloakheraldry", ToggleCloakHeraldry, null),
+            new CommandHandler("/skol", Skol, null),
             new CommandHandler("/social", SocialCommand, null ),
             new CommandHandler("/stuck", PlayerStuck, null ),
             new CommandHandler("/target", Target, null ),
@@ -318,6 +321,25 @@ namespace WorldServer
             if (!plr.IsDead)
                 plr.Say(text);
         }
+
+        public static void Skol(Player plr, string text)
+        {
+            if (!plr.IsDead)
+                plr.Say($"Yardy wants you to buy him another beer. {text}" );
+        }
+
+        public static void Rude(Player plr, string text)
+        {
+            if (!plr.IsDead)
+                plr.Say($"{plr.Name} makes some rude gestures.");
+        }
+
+        public static void Insult(Player plr, string text)
+        {
+            if (!plr.IsDead)
+                plr.Say($"{plr.Name} compares you to something that does not bear repeating.");
+        }
+
 
         public static void PlayerWisp(Player plr, string text)
         {
@@ -1596,6 +1618,7 @@ namespace WorldServer
                 plr.SetGearShowing(4, (plr._Value.GearShow & 4) <= 0);
         }
 
+       
         #endregion
 
         #region Pets
