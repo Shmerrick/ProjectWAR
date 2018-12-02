@@ -447,6 +447,17 @@ namespace WorldServer
                     SpawnPet(proto);
 
                     break;
+
+
+                case 8535:
+                    proto.Name = myPlayer.Name + "'s Firewyrm^N";
+                    proto.Model1 = 144;   // firewyrm  
+                    proto.Faction = 129;  //dest
+                    proto.Ranged = 5;
+                    SwitchPetBonusType(2);
+                    SpawnPet(proto);
+
+                    break;
                 default:
                     throw new Exception("Engineer/Magus: Requested pet ID "+myID+" not found for SummonPet");
             }
