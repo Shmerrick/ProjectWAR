@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Linq;
+﻿using Common;
 using FrameWork;
-using Common;
 using GameData;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using WorldServer.Services.World;
 
 namespace WorldServer
@@ -48,7 +47,7 @@ namespace WorldServer
         private float _alliesFound;
 
         // Holds a list of delayed effects (because of projectile travel, etc)
-        private readonly SortedSet<AbilityInfo> _delayedEffects = new SortedSet<AbilityInfo>(new AbCmdStorageComparer()); 
+        private readonly SortedSet<AbilityInfo> _delayedEffects = new SortedSet<AbilityInfo>(new AbCmdStorageComparer());
 
         public AbilityEffectInvoker(Unit myCaster)
         {
@@ -97,6 +96,7 @@ namespace WorldServer
             // Utility
             _commandList.Add("Interrupt", Interrupt);
             _commandList.Add("SummonPet", SummonPet);
+            _commandList.Add("SpawnMobInstance", SpawnMobInstance);
             _commandList.Add("MovePet", MovePet);
             _commandList.Add("PokeClassBuff", PokeClassBuff);
             _commandList.Add("CastPlayerEffect", CastPlayerEffect);
@@ -263,10 +263,10 @@ namespace WorldServer
                         {
                             cmdLevel = abInfo.BoostLevel;
 
-                            #if DEBUG
+#if DEBUG
                             Player player = _caster as Player;
                             player?.SendClientMessage(abInfo.Name + " casting on " + target.Name + " with boosted level " + cmdLevel);
-                            #endif
+#endif
                         }
 
                         if ((cmdInfo.AttackingStat > 0 && _caster != target && CombatManager.CheckDefense(cmdInfo, _caster, target, true)) || !_commandList[cmdInfo.CommandName](cmdInfo, cmdLevel, target))
@@ -294,10 +294,10 @@ namespace WorldServer
                     {
                         cmdLevel = abInfo.BoostLevel;
 
-                        #if DEBUG
+#if DEBUG
                         Player player = _caster as Player;
                         player?.SendClientMessage(abInfo.Name + " casting on " + currentTarget.Name + " with boosted level " + cmdLevel);
-                        #endif
+#endif
                     }
 
                     if (currentTarget == null || (cmdInfo.AttackingStat > 0 && CombatManager.CheckDefense(cmdInfo, _caster, currentTarget, false)) || !_commandList[cmdInfo.CommandName](cmdInfo, cmdLevel, currentTarget))
@@ -349,7 +349,7 @@ namespace WorldServer
             }
         }
 
-        private readonly List<ulong> _targetRangeList = new List<ulong>(MAX_AOE_TARGETS + 1); 
+        private readonly List<ulong> _targetRangeList = new List<ulong>(MAX_AOE_TARGETS + 1);
 
         /// <summary>
         /// <para>Returns a List of Units which would be affected by this command.</para> 
@@ -367,7 +367,7 @@ namespace WorldServer
             if (cmdInfo.TargetType.HasFlag(CommandTargetTypes.Siege))
             {
                 List<Unit> myTargetList = new List<Unit>(((Creature)_caster).SiegeInterface.CurrentTargetList);
-                ((Creature) _caster).SiegeInterface.CurrentTargetList.Clear();
+                ((Creature)_caster).SiegeInterface.CurrentTargetList.Clear();
                 return myTargetList;
             }
 
@@ -411,7 +411,7 @@ namespace WorldServer
 
                         if (cmdInfo.EffectAngle != 0)
                         {
-                            if (source.CanHitWithAoE(curTarget, cmdInfo.EffectAngle, (uint) radius))
+                            if (source.CanHitWithAoE(curTarget, cmdInfo.EffectAngle, (uint)radius))
                                 ++_alliesFound;
                         }
 
@@ -518,7 +518,7 @@ namespace WorldServer
                 return myTargetList;
             }
 
-            foreach (Unit member in myGroup.GetUnitList((Player) _caster))
+            foreach (Unit member in myGroup.GetUnitList((Player)_caster))
             {
                 if (!cmdInfo.TargetType.HasFlag(CommandTargetTypes.Caster) && member == _caster)
                     continue;
@@ -586,246 +586,246 @@ namespace WorldServer
 
         #region AbilityCommands
 
-            #region Health/Damage
+        #region Health/Damage
 
-            private bool DealDamage(AbilityCommandInfo cmd, byte level, Unit target)
+        private bool DealDamage(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            if (cmd.EffectRadius > 0 || cmd.FromAllTargets)
             {
-                if (cmd.EffectRadius > 0 || cmd.FromAllTargets)
-                {
-                    AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(_caster);
-                    damageThisPass.IsAoE = true;
-                    if (cmd.DamageInfo.IsHeal)
-                        CombatManager.HealTarget(damageThisPass, level, _instigator, target);
-                    else
-                    {
-                        CombatManager.InflictDamage(damageThisPass, level, _instigator, target);
-                    }
-                    cmd.CommandResult += (short)damageThisPass.Damage;
-                    _totalDamage += (int)damageThisPass.Damage;
-                    ++_damagedCount;
-
-                    return damageThisPass.DamageEvent == 0 || damageThisPass.DamageEvent == 9;
-                }
-
+                AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(_caster);
+                damageThisPass.IsAoE = true;
                 if (cmd.DamageInfo.IsHeal)
-                    CombatManager.HealTarget(cmd.DamageInfo, level, _instigator, target);
+                    CombatManager.HealTarget(damageThisPass, level, _instigator, target);
                 else
-                    CombatManager.InflictDamage(cmd.DamageInfo, level, _instigator, target);
-                cmd.CommandResult += (short)(cmd.DamageInfo.Damage * cmd.DamageInfo.TransferFactor);
-
-                if (cmd.DamageInfo.ResultFromRaw)
-                    _totalDamage += (short)((cmd.DamageInfo.Damage + cmd.DamageInfo.Mitigation/* + cmd.DamageInfo.Absorption*/) * cmd.DamageInfo.TransferFactor);
-                else
-                    _totalDamage += (short)(cmd.DamageInfo.Damage * cmd.DamageInfo.TransferFactor);
-
+                {
+                    CombatManager.InflictDamage(damageThisPass, level, _instigator, target);
+                }
+                cmd.CommandResult += (short)damageThisPass.Damage;
+                _totalDamage += (int)damageThisPass.Damage;
                 ++_damagedCount;
 
-                return cmd.DamageInfo.DamageEvent == 0 || cmd.DamageInfo.DamageEvent == 9;
+                return damageThisPass.DamageEvent == 0 || damageThisPass.DamageEvent == 9;
             }
 
-            // Difficult to do with the modifier system
-            private bool FlankingShot(AbilityCommandInfo cmd, byte level, Unit target)
+            if (cmd.DamageInfo.IsHeal)
+                CombatManager.HealTarget(cmd.DamageInfo, level, _instigator, target);
+            else
+                CombatManager.InflictDamage(cmd.DamageInfo, level, _instigator, target);
+            cmd.CommandResult += (short)(cmd.DamageInfo.Damage * cmd.DamageInfo.TransferFactor);
+
+            if (cmd.DamageInfo.ResultFromRaw)
+                _totalDamage += (short)((cmd.DamageInfo.Damage + cmd.DamageInfo.Mitigation/* + cmd.DamageInfo.Absorption*/) * cmd.DamageInfo.TransferFactor);
+            else
+                _totalDamage += (short)(cmd.DamageInfo.Damage * cmd.DamageInfo.TransferFactor);
+
+            ++_damagedCount;
+
+            return cmd.DamageInfo.DamageEvent == 0 || cmd.DamageInfo.DamageEvent == 9;
+        }
+
+        // Difficult to do with the modifier system
+        private bool FlankingShot(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            cmd.DamageInfo.CriticalHitRate += (byte)(100 - target.PctHealth);
+
+            CombatManager.InflictDamage(cmd.DamageInfo, level, _caster, target);
+            cmd.CommandResult += (short)cmd.DamageInfo.Damage;
+
+            return cmd.DamageInfo.DamageEvent == 0 || cmd.DamageInfo.DamageEvent == 9;
+        }
+
+        private bool SwellOfGloom(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            CombatManager.InflictProcDamage(cmd.DamageInfo, level, _caster, target);
+            cmd.CommandResult += (short)cmd.DamageInfo.Damage;
+
+            ((CareerInterface_BWSorc)((Player)_caster).CrrInterface).AutoBacklash = true;
+
+            return cmd.DamageInfo.DamageEvent == 0 || cmd.DamageInfo.DamageEvent == 9;
+        }
+
+        private bool MultipleDealDamage(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            while (cmd.PrimaryValue > 0)
             {
-                cmd.DamageInfo.CriticalHitRate += (byte)(100 - target.PctHealth);
+                AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(_caster);
 
-                CombatManager.InflictDamage(cmd.DamageInfo, level, _caster, target);
-                cmd.CommandResult += (short)cmd.DamageInfo.Damage;
+                CombatManager.InflictDamage(damageThisPass, level, _caster, target);
+                cmd.CommandResult += (short)damageThisPass.Damage;
 
-                return cmd.DamageInfo.DamageEvent == 0 || cmd.DamageInfo.DamageEvent == 9;
+                cmd.PrimaryValue--;
             }
 
-            private bool SwellOfGloom(AbilityCommandInfo cmd, byte level, Unit target)
+            return cmd.CommandResult > 0;
+        }
+
+        private bool BounceDamage(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            List<Unit> targets = new List<Unit>();
+
+            Unit lastTarget = target;
+
+            targets.Add(target);
+
+            for (int i = 0; i < cmd.MaxTargets - 1; ++i)
             {
-                CombatManager.InflictProcDamage(cmd.DamageInfo, level, _caster, target);
-                cmd.CommandResult += (short)cmd.DamageInfo.Damage;
-
-                ((CareerInterface_BWSorc) ((Player) _caster).CrrInterface).AutoBacklash = true;
-
-                return cmd.DamageInfo.DamageEvent == 0 || cmd.DamageInfo.DamageEvent == 9;
-            }
-
-            private bool MultipleDealDamage(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                while (cmd.PrimaryValue > 0)
+                foreach (Object obj in lastTarget.ObjectsInRange)
                 {
-                    AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone(_caster);
+                    Unit unit = obj as Unit;
 
-                    CombatManager.InflictDamage(damageThisPass, level, _caster, target);
-                    cmd.CommandResult += (short)damageThisPass.Damage;
+                    if (unit == null || unit.IsDead || lastTarget.GetDistanceTo(unit) > 20 || targets.Contains(unit))
+                        continue;
 
-                    cmd.PrimaryValue--;
+                    if ((cmd.TargetType == CommandTargetTypes.Enemy) ^ CombatInterface.IsEnemy(_caster, unit))
+                        continue;
+
+                    targets.Add(unit);
+                    break;
                 }
 
-                return cmd.CommandResult > 0;
+                if (targets.Count == 0 || targets[targets.Count - 1] == lastTarget)
+                    break;
+
+                lastTarget = targets[targets.Count - 1];
             }
 
-            private bool BounceDamage(AbilityCommandInfo cmd, byte level, Unit target)
+            foreach (Unit unit in targets)
+                CombatManager.InflictDamage(cmd.DamageInfo.Clone(_caster), level, _caster, unit);
+
+            return true;
+        }
+
+        private static bool Slay(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            target.ReceiveDamage(target, int.MaxValue);
+
+            return true;
+        }
+
+        private bool PetTandemStrikeMain(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            CombatManager.InflictDamage(cmd.DamageInfo.Clone(_caster), level, _caster, target);
+            Player plr = _caster as Player;
+            if (plr != null)
             {
-                List<Unit> targets = new List<Unit>();
-
-                Unit lastTarget = target;
-
-                targets.Add(target);
-
-                for (int i = 0; i < cmd.MaxTargets - 1; ++i)
+                Pet myPet = (Pet)plr.CrrInterface.GetTargetOfInterest();
+                if (myPet != null)
                 {
-                    foreach (Object obj in lastTarget.ObjectsInRange)
-                    {
-                        Unit unit = obj as Unit;
-
-                        if (unit == null || unit.IsDead || lastTarget.GetDistanceTo(unit) > 20 || targets.Contains(unit))
-                            continue;
-
-                        if ((cmd.TargetType == CommandTargetTypes.Enemy) ^ CombatInterface.IsEnemy(_caster, unit))
-                            continue;
-
-                        targets.Add(unit);
-                        break;
-                    }
-
-                    if (targets.Count == 0 || targets[targets.Count - 1] == lastTarget)
-                        break;
-
-                    lastTarget = targets[targets.Count - 1];
+                    Unit myPetTarget = myPet.CbtInterface.GetCurrentTarget();
+                    if (myPetTarget != null && myPet.IsInCastRange(myPetTarget, 5))
+                        CombatManager.InflictDamage(cmd.DamageInfo.Clone(_caster), level, _caster, myPet.CbtInterface.GetCurrentTarget());
                 }
+            }
+            return true;
+        }
 
-                foreach (Unit unit in targets)
-                    CombatManager.InflictDamage(cmd.DamageInfo.Clone(_caster), level, _caster, unit);
+        private bool PetTandemStrikeSub(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            Player plr = _caster as Player;
+            if (plr != null)
+            {
+                Pet myPet = (Pet)plr.CrrInterface.GetTargetOfInterest();
+                if (myPet != null)
+                {
+                    Unit myPetTarget = myPet.CbtInterface.GetCurrentTarget();
+                    if (myPetTarget != null && _caster.IsInCastRange(myPetTarget, (uint)cmd.PrimaryValue))
+                        CombatManager.InflictDamage(cmd.DamageInfo.Clone(_caster), level, myPet, myPet.CbtInterface.GetCurrentTarget());
+                    if (myPet.IsInCastRange(target, (uint)cmd.PrimaryValue))
+                        CombatManager.InflictDamage(cmd.DamageInfo.Clone(_caster), level, myPet, target);
+                }
+            }
+
+            return true;
+        }
+
+        private bool StealLife(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            ushort healValue = (ushort)(_totalDamage * (cmd.PrimaryValue / 100f));
+
+            if (cmd.DamageInfo != null)
+            {
+                if (_damagedCount == 0)
+                    _damagedCount = 1;
+
+                healValue += (ushort)(cmd.DamageInfo.GetDamageForLevel(level) * _damagedCount);
+            }
+
+            if (cmd.DamageInfo != null && cmd.DamageInfo.DamageType == DamageTypes.Healing)
+            {
+                AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone();
+
+                damageThisPass.Damage = healValue;
+                CombatManager.LifeSteal(damageThisPass, level, _caster, target);
 
                 return true;
             }
 
-            private static bool Slay(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                target.ReceiveDamage(target, int.MaxValue);
+            int pointsHealed = CombatManager.RawLifeSteal(healValue, cmd.DamageInfo?.DisplayEntry ?? cmd.Entry, (byte)cmd.SecondaryValue, _caster, target);
 
-                return true;
+            if (pointsHealed == -1)
+                return false;
+
+            cmd.CommandResult = (short)_totalDamage;
+
+            return true;
+        }
+
+        private bool Ram(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            float damageFactor = level / (float)_caster.Level;
+            damageFactor = (float)Math.Pow(damageFactor, 1.4);
+
+#if DEBUG
+            Log.Info("Ram", "Damage scale factor: " + damageFactor);
+#endif
+
+            target.ReceiveDamage(_caster, (uint)(target.MaxHealth * 0.035f * damageFactor));
+
+            return true;
+        }
+
+        private bool GroundEffect(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            GroundTarget gt = new GroundTarget(_instigator, target.WorldPosition, GameObjectService.GetGameObjectProto(23));
+            _caster.Region.AddObject(gt, _caster.Zone.ZoneId);
+
+            BuffInfo bi = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, _instigator, gt);
+
+            if (bi == null)
+            {
+                gt.SetExpiry(TCPManager.GetTimeStampMS() + 1000);
+                return false;
             }
 
-            private bool PetTandemStrikeMain(AbilityCommandInfo cmd, byte level, Unit target)
+            if (string.IsNullOrEmpty(bi.AuraPropagation))
             {
-                CombatManager.InflictDamage(cmd.DamageInfo.Clone(_caster), level, _caster, target);
-                Player plr = _caster as Player;
-                if (plr != null)
-                {
-                    Pet myPet = (Pet)plr.CrrInterface.GetTargetOfInterest();
-                    if (myPet != null)
-                    {
-                        Unit myPetTarget = myPet.CbtInterface.GetCurrentTarget();
-                        if (myPetTarget != null && myPet.IsInCastRange(myPetTarget, 5))
-                            CombatManager.InflictDamage(cmd.DamageInfo.Clone(_caster), level, _caster, myPet.CbtInterface.GetCurrentTarget());
-                    }
-                }
-                return true;
-            }
-
-            private bool PetTandemStrikeSub(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                Player plr = _caster as Player;
-                if (plr != null)
-                {
-                    Pet myPet = (Pet)plr.CrrInterface.GetTargetOfInterest();
-                    if (myPet != null)
-                    {
-                        Unit myPetTarget = myPet.CbtInterface.GetCurrentTarget();
-                        if (myPetTarget != null && _caster.IsInCastRange(myPetTarget, (uint)cmd.PrimaryValue))
-                            CombatManager.InflictDamage(cmd.DamageInfo.Clone(_caster), level, myPet, myPet.CbtInterface.GetCurrentTarget());
-                        if (myPet.IsInCastRange(target, (uint)cmd.PrimaryValue))
-                            CombatManager.InflictDamage(cmd.DamageInfo.Clone(_caster), level, myPet, target);
-                    }
-                }
-
-                return true;
-            }
-
-            private bool StealLife(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                ushort healValue = (ushort)(_totalDamage * (cmd.PrimaryValue / 100f));
-
-                if (cmd.DamageInfo != null)
-                {
-                    if (_damagedCount == 0)
-                        _damagedCount = 1;
-
-                    healValue += (ushort) (cmd.DamageInfo.GetDamageForLevel(level)*_damagedCount);
-                }
-
-                if (cmd.DamageInfo != null && cmd.DamageInfo.DamageType == DamageTypes.Healing)
-                {
-                    AbilityDamageInfo damageThisPass = cmd.DamageInfo.Clone();
-
-                    damageThisPass.Damage = healValue;
-                    CombatManager.LifeSteal(damageThisPass, level, _caster, target);
-
-                    return true;
-                }
-
-                int pointsHealed = CombatManager.RawLifeSteal(healValue, cmd.DamageInfo?.DisplayEntry ?? cmd.Entry, (byte)cmd.SecondaryValue, _caster, target);
-
-                if (pointsHealed == -1)
-                    return false;
-
-                cmd.CommandResult = (short)_totalDamage;
-
-                return true;
-            }
-
-            private bool Ram(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                float damageFactor = level/(float) _caster.Level;
-                damageFactor = (float)Math.Pow(damageFactor, 1.4);
-
-                #if DEBUG
-                Log.Info("Ram", "Damage scale factor: "+damageFactor);
-                #endif
-
-                target.ReceiveDamage(_caster, (uint)(target.MaxHealth*0.035f*damageFactor));
-
-                return true;
-            }
-
-            private bool GroundEffect(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                GroundTarget gt = new GroundTarget(_instigator, target.WorldPosition, GameObjectService.GetGameObjectProto(23));
-                _caster.Region.AddObject(gt, _caster.Zone.ZoneId);
-
-                BuffInfo bi = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, _instigator, gt);
-
-                if (bi == null)
-                {
-                    gt.SetExpiry(TCPManager.GetTimeStampMS() + 1000);
-                    return false;
-                }
-
-                if (string.IsNullOrEmpty(bi.AuraPropagation))
-                {
-                    if (_caster != _instigator)
-                        gt.BuffInterface.QueueBuff(new BuffQueueInfo(_instigator, level, bi, LinkCaster));
-                    else
-                        gt.BuffInterface.QueueBuff(new BuffQueueInfo(_instigator, level, bi));
-                }
+                if (_caster != _instigator)
+                    gt.BuffInterface.QueueBuff(new BuffQueueInfo(_instigator, level, bi, LinkCaster));
                 else
-                    gt.BuffInterface.QueueBuff(new BuffQueueInfo(_instigator, level, bi, BuffEffectInvoker.CreateAura));
-
-                if (cmd.SecondaryValue != 0)
-                {
-                    var prms = new List<object>() { gt, cmd.SecondaryValue };
-                    gt.EvtInterface.AddEvent(LoopVfx, 3000, (int)(bi.Duration / 3), prms);
-                }
-
-                gt.SetExpiry(TCPManager.GetTimeStampMS() + bi.Duration * 1000 + 1000);
-
-                return true;
+                    gt.BuffInterface.QueueBuff(new BuffQueueInfo(_instigator, level, bi));
             }
+            else
+                gt.BuffInterface.QueueBuff(new BuffQueueInfo(_instigator, level, bi, BuffEffectInvoker.CreateAura));
 
-            private void LoopVfx(object parameters)
+            if (cmd.SecondaryValue != 0)
             {
-                var Params = (List<object>)parameters;
-
-                GroundTarget gt = Params[0] as GroundTarget;
-                ushort effectId = (ushort)((int)Params[1]);
-                gt.PlayEffect(effectId);
+                var prms = new List<object>() { gt, cmd.SecondaryValue };
+                gt.EvtInterface.AddEvent(LoopVfx, 3000, (int)(bi.Duration / 3), prms);
             }
+
+            gt.SetExpiry(TCPManager.GetTimeStampMS() + bi.Duration * 1000 + 1000);
+
+            return true;
+        }
+
+        private void LoopVfx(object parameters)
+        {
+            var Params = (List<object>)parameters;
+
+            GroundTarget gt = Params[0] as GroundTarget;
+            ushort effectId = (ushort)((int)Params[1]);
+            gt.PlayEffect(effectId);
+        }
 
         #endregion
 
@@ -892,7 +892,7 @@ namespace WorldServer
             //Out.WriteUInt16(0x012C); 
             //Out.WriteUInt16(0x592c);  
             Out.WriteByte(1);   //flight time in sec, can also use UInt16R or UInt32R but 1 seems to be the lowest time you can set
-            Out.Fill(0, 19);     
+            Out.Fill(0, 19);
             _caster.DispatchPacket(Out, true);
 
             return true;
@@ -904,7 +904,7 @@ namespace WorldServer
                 target.ApplyKnockback(_caster, null);
 
             else
-                ((Player) target).PulledBy(_caster, (ushort)cmd.PrimaryValue, (ushort)cmd.SecondaryValue);
+                ((Player)target).PulledBy(_caster, (ushort)cmd.PrimaryValue, (ushort)cmd.SecondaryValue);
 
             return true;
         }
@@ -917,7 +917,7 @@ namespace WorldServer
 
             if (crea != null && crea.Spawn.Proto.CreatureType == (byte)GameData.CreatureTypes.SIEGE)
                 return true;
-                
+
             if (target.AbtInterface.IsCasting())
                 target.AbtInterface.Cancel(false);
 
@@ -946,7 +946,7 @@ namespace WorldServer
 
             if (cmd.AoESource == CommandTargetTypes.CareerTarget && cmd.EffectRadius > 0)
             {
-                Unit careerTarget = ((Player) _caster).CrrInterface.GetTargetOfInterest();
+                Unit careerTarget = ((Player)_caster).CrrInterface.GetTargetOfInterest();
 
                 if (careerTarget is Pet)
                 {
@@ -954,7 +954,7 @@ namespace WorldServer
                     return true;
                 }
             }
-                    
+
             target.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, buffInfo));
 
             return true;
@@ -1002,7 +1002,7 @@ namespace WorldServer
 
             if (_pet != null && !_pet.IsDead)
                 _pet.BuffInterface.QueueBuff(new BuffQueueInfo(plr, plr.EffectiveLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue, plr, _pet)));
-                    
+
             return true;
         }
 
@@ -1182,8 +1182,8 @@ namespace WorldServer
 
         private static bool ModifyAp(AbilityCommandInfo cmd, byte level, Unit target)
         {
-            int value = cmd.SecondaryValue == 0 ? cmd.PrimaryValue : Point2D.Lerp(cmd.PrimaryValue, cmd.SecondaryValue, level - 1/39f);
-             
+            int value = cmd.SecondaryValue == 0 ? cmd.PrimaryValue : Point2D.Lerp(cmd.PrimaryValue, cmd.SecondaryValue, level - 1 / 39f);
+
             Player plrTarget = target as Player;
 
             if (plrTarget != null)
@@ -1216,12 +1216,12 @@ namespace WorldServer
 
                 else
                     if (_caster is Player _plrCaster)
-                        (_plrCaster).ModifyActionPoints(Math.Abs(cmd.LastCommand.CommandResult));
+                    (_plrCaster).ModifyActionPoints(Math.Abs(cmd.LastCommand.CommandResult));
             }
 
             return true;
         }
-            
+
         #endregion
 
         #region Pet
@@ -1237,6 +1237,37 @@ namespace WorldServer
                 return false;
 
             petInterface.SummonPet(cmd.Entry);
+            return true;
+        }
+
+        private bool SpawnMobInstance(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            Player plr = _caster as Player;
+            if (plr == null || plr.CrrInterface == null)
+                return false;
+
+            ushort facing = 2093;
+
+            var X = plr.WorldPosition.X;
+            var Y = plr.WorldPosition.Y;
+            var Z = plr.WorldPosition.Z;
+
+
+            Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
+            spawn.BuildFromProto(CreatureService.GetCreatureProto(1000155));
+
+            spawn.WorldO = facing;
+            spawn.WorldX = X + StaticRandom.Instance.Next(500);
+            spawn.WorldY = Y + StaticRandom.Instance.Next(500);
+            spawn.WorldZ = Z;
+            spawn.ZoneId = (ushort)plr.ZoneId;
+            spawn.Level = 42;
+
+            Creature c = plr.Region.CreateCreature(spawn);
+            c.PlayersInRange = plr.PlayersInRange;
+            c.AiInterface.SetBrain(new AggressiveBrain(c));
+
+
             return true;
         }
 
@@ -1258,7 +1289,7 @@ namespace WorldServer
             if (player == null)
                 return true;
             var pet = player.CrrInterface.GetTargetOfInterest();
-                pet?.AbtInterface.StartCast(pet, (ushort)cmd.PrimaryValue, 0, 0, level);
+            pet?.AbtInterface.StartCast(pet, (ushort)cmd.PrimaryValue, 0, 0, level);
 
             return true;
         }
@@ -1287,7 +1318,7 @@ namespace WorldServer
             Out.Fill(0, 19);
             _caster.DispatchPacket(Out, true);
 
-        return true;
+            return true;
         }
         /// <summary>
         /// so abilities can call specific effects similar to how .playeffect works
@@ -1312,134 +1343,134 @@ namespace WorldServer
         private bool PlayGroundEffect(AbilityCommandInfo cmd, byte level, Unit target)
         {
             //still need a way to turn the effect off. Initially I had a groundtarget that disappeared after a while aking to groundattack but I could not apply effect to it.
-            target.PlayEffect((ushort)cmd.PrimaryValue, target.WorldPosition);    
+            target.PlayEffect((ushort)cmd.PrimaryValue, target.WorldPosition);
 
 
             return true;
         }
 
-    #endregion
+        #endregion
 
         private bool CastPlayerEffect(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
+            Out.WriteUInt16(_caster.Oid);
+            Out.WriteUInt16(target.Oid);
+            Out.WriteUInt16((ushort)cmd.PrimaryValue);
+            Out.WriteByte((byte)cmd.SecondaryValue);
+            Out.WriteByte(0);
+            Out.WriteByte(5);
+            Out.WriteByte(0);
+
+            Player plr = _caster as Player;
+
+            plr?.DispatchPacket(Out, true);
+            return true;
+        }
+
+        private bool CreateBuffObject(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            BuffInfo bi = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue);
+
+            if (bi == null)
+                return false;
+
+            BuffHostObject bho = new BuffHostObject((Player)_caster, target.WorldPosition, CreatureService.GetCreatureProto((uint)cmd.SecondaryValue), TCPManager.GetTimeStampMS() + (bi.Duration + 3) * 1000);
+            _caster.Region.AddObject(bho, _caster.Zone.ZoneId);
+
+            bho.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, bi));
+
+            return true;
+        }
+
+        // Career-Linked
+
+        private bool PokeClassBuff(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            _caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.Manual, null, target);
+            return true;
+        }
+
+        private bool AvengingTheDebt(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            if (!cmd.LastCommand.DamageInfo.WasLethalDamage)
+                return false;
+
+            CombatManager.HealTarget(cmd.DamageInfo.Clone(), level, _caster, _caster);
+
+            Unit oathFriend = ((Player)_caster).CrrInterface.GetTargetOfInterest();
+
+            if (oathFriend != null)
+                CombatManager.HealTarget(cmd.DamageInfo, level, _caster, oathFriend);
+
+            return true;
+        }
+
+        private bool BanishWeakness(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            Player plrTarget = target as Player;
+
+            plrTarget?.ModifyActionPoints((short)(cmd.PrimaryValue * cmd.LastCommand.CommandResult));
+
+            cmd.DamageInfo.DamageBonus += cmd.LastCommand.CommandResult - 1;
+
+            CombatManager.HealTarget(cmd.DamageInfo, level, _caster, target);
+
+            return true;
+        }
+
+        private bool JumpbackSnare(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            List<Unit> myTargetList = new List<Unit>();
+            byte count = 0;
+            List<Object> sourceObjRanged;
+
+            lock (_caster.ObjectsInRange)
+                sourceObjRanged = new List<Object>(_caster.ObjectsInRange);
+
+            foreach (Object obj in sourceObjRanged)
             {
-                PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
-                Out.WriteUInt16(_caster.Oid);
-                Out.WriteUInt16(target.Oid);
-                Out.WriteUInt16((ushort)cmd.PrimaryValue);
-                Out.WriteByte((byte)cmd.SecondaryValue);
-                Out.WriteByte(0);
-                Out.WriteByte(5);
-                Out.WriteByte(0);
+                Unit curTarget = obj as Unit;
 
-                Player plr = _caster as Player;
+                if (curTarget == null || curTarget == _caster || !CombatInterface.CanAttack(_caster, curTarget))
+                    continue;
 
-                plr?.DispatchPacket(Out, true);
-                return true;
-            }
+                if (curTarget is Player && curTarget.CbtInterface.IsPvp && _caster is Player && !_caster.CbtInterface.IsPvp)
+                    continue;
 
-            private bool CreateBuffObject(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                BuffInfo bi = AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue);
-
-                if (bi == null)
-                    return false;
-
-                BuffHostObject bho = new BuffHostObject((Player)_caster, target.WorldPosition, CreatureService.GetCreatureProto((uint)cmd.SecondaryValue), TCPManager.GetTimeStampMS() + (bi.Duration + 3) * 1000);
-                _caster.Region.AddObject(bho, _caster.Zone.ZoneId);
-
-                bho.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, bi));
-
-                return true;
-            }
-
-            // Career-Linked
-
-            private bool PokeClassBuff(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                _caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.Manual, null, target);
-                return true;
-            }
-
-            private bool AvengingTheDebt(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                if (!cmd.LastCommand.DamageInfo.WasLethalDamage)
-                    return false;
-
-                CombatManager.HealTarget(cmd.DamageInfo.Clone(), level, _caster, _caster);
-
-                Unit oathFriend = ((Player) _caster).CrrInterface.GetTargetOfInterest();
-
-                if (oathFriend != null)
-                    CombatManager.HealTarget(cmd.DamageInfo, level, _caster, oathFriend);
-
-                return true;
-            }
-
-            private bool BanishWeakness(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                Player plrTarget = target as Player;
-
-                plrTarget?.ModifyActionPoints((short)(cmd.PrimaryValue * cmd.LastCommand.CommandResult));
-
-                cmd.DamageInfo.DamageBonus += cmd.LastCommand.CommandResult - 1;
-
-                CombatManager.HealTarget(cmd.DamageInfo, level, _caster, target);
-
-                return true;
-            }
-
-            private bool JumpbackSnare(AbilityCommandInfo cmd, byte level, Unit target)
-            {
-                List<Unit> myTargetList = new List<Unit>();
-                byte count = 0;
-                List<Object> sourceObjRanged;
-
-                lock (_caster.ObjectsInRange)
-                    sourceObjRanged = new List<Object>(_caster.ObjectsInRange);
-
-                foreach (Object obj in sourceObjRanged)
+                if (curTarget.ObjectWithinRadiusFeet(_caster, cmd.PrimaryValue) && _caster.LOSHit(curTarget))
                 {
-                    Unit curTarget = obj as Unit;
-
-                    if (curTarget == null || curTarget == _caster || !CombatInterface.CanAttack(_caster, curTarget))
-                        continue;
-
-                    if (curTarget is Player && curTarget.CbtInterface.IsPvp && _caster is Player && !_caster.CbtInterface.IsPvp)
-                        continue;
-
-                    if (curTarget.ObjectWithinRadiusFeet(_caster, cmd.PrimaryValue) && _caster.LOSHit(curTarget))
-                    {
-                        myTargetList.Add(curTarget);
-                        ++count;
-                    }
-
-                    if (count == MAX_AOE_TARGETS)
-                        break;
-                }
-
-                if (count == 0)
-                    return false;
-
-                count = 0;
-
-                foreach (Unit unit in myTargetList)
-                {
-                    if (unit.ImmuneToCC((byte)CrowdControlTypes.Snare, _caster, cmd.Entry))
-                        continue;
-
+                    myTargetList.Add(curTarget);
                     ++count;
-
-                    unit.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, AbilityMgr.GetBuffInfo(cmd.Entry, _caster, unit)));
                 }
 
-                return count > 0;
+                if (count == MAX_AOE_TARGETS)
+                    break;
             }
 
-            private bool InvokeCooldown(AbilityCommandInfo cmd, byte level, Unit target)
+            if (count == 0)
+                return false;
+
+            count = 0;
+
+            foreach (Unit unit in myTargetList)
             {
-                _caster.AbtInterface.SetCooldown((ushort)cmd.PrimaryValue, AbilityMgr.GetCooldownFor((ushort)cmd.PrimaryValue) * 1000);
-                return true;
+                if (unit.ImmuneToCC((byte)CrowdControlTypes.Snare, _caster, cmd.Entry))
+                    continue;
+
+                ++count;
+
+                unit.BuffInterface.QueueBuff(new BuffQueueInfo(_caster, level, AbilityMgr.GetBuffInfo(cmd.Entry, _caster, unit)));
             }
+
+            return count > 0;
+        }
+
+        private bool InvokeCooldown(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            _caster.AbtInterface.SetCooldown((ushort)cmd.PrimaryValue, AbilityMgr.GetCooldownFor((ushort)cmd.PrimaryValue) * 1000);
+            return true;
+        }
 
         #endregion
 
