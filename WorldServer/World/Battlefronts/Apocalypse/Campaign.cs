@@ -13,6 +13,7 @@ using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.BattleFronts.Objectives;
+using PlayerContribution = WorldServer.World.Battlefronts.Bounty.PlayerContribution;
 
 
 namespace WorldServer.World.Battlefronts.Apocalypse
@@ -963,6 +964,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             losingRealmPlayers.TryAdd(player, contributingPlayer.Value);
                         }
                         allEligiblePlayerDictionary.TryAdd(player, contributingPlayer.Value);
+
+                        // Get the contribution list for this player
+                        //var playerContributionList = ActiveBattleFrontStatus.ContributionManagerInstance.GetContribution(contributingPlayer.Key);
+                        var contributionDictionary = ActiveBattleFrontStatus.ContributionManagerInstance.GetContributionStageDictionary(contributingPlayer.Key);
+                        // Record the contribution types and values for the player for analytics
+                        RecordContributionAnalytics(player, contributionDictionary);
+
                     }
                 }
                 BattlefrontLogger.Debug($"winningRealmPlayers Players Count = {winningRealmPlayers.Count()}");
@@ -1045,6 +1053,35 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 throw;
             }
 
+        }
+
+        private void RecordContributionAnalytics(Player player, ConcurrentDictionary<short, ContributionStage> playerContributionList)
+        {
+
+            var analyticsRecord = new ContributionAnalytics
+            {
+                Timestamp = DateTime.Now,
+                CharacterId = player.CharacterId,
+                RenownRank = player.RenownRank,
+                Name = player.Name,
+                Class = player.Info.CareerLine,
+                AccountId = player.Info.AccountId
+            };
+
+            WorldMgr.Database.AddObject(analyticsRecord);
+
+            foreach (var playerContribution in playerContributionList)
+            {
+                var contributionDetails = new ContributionAnalyticsDetails
+                {
+                    CharacterId = player.CharacterId,
+                    Timestamp = DateTime.Now,
+                    ContributionId = playerContribution.Key,
+                    ContributionSum = playerContribution.Value.ContributionStageSum
+                };
+
+                WorldMgr.Database.AddObject(contributionDetails);
+            }
         }
 
         /// <summary>

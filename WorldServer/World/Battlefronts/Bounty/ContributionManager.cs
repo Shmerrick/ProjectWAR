@@ -227,7 +227,15 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         }
 
+        public ConcurrentDictionary<short, ContributionStage> GetContributionStageDictionary(uint targetCharacterId)
+        {
+            List<PlayerContribution> contributionList;
+            ContributionDictionary.TryGetValue(targetCharacterId, out contributionList);
 
+            short contributionValue = 0;
+
+            return GetContributionStageDictionary(contributionList, ContributionFactors);
+        }
 
         /// <summary>
         /// Add Character to ContributionManagerInstance Dictionary
@@ -346,6 +354,14 @@ namespace WorldServer.World.Battlefronts.Bounty
                 returnList[1] = orderRealmCaptain;
             }
             return returnList;
+        }
+
+        public void RecordContributionAnalytics(Player player, List<PlayerContribution> playerContributionList)
+        {
+            foreach (var playerContribution in playerContributionList)
+            {
+                
+            }
         }
     }
 }
