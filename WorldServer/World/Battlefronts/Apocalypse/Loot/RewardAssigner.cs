@@ -25,6 +25,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// <returns></returns>
         public byte DetermineNumberOfAwards(int eligiblePlayers)
         {
+            RewardLogger.Info($"{eligiblePlayers}");
+
             byte numberOfAwards = 0;
             // Simple set for low pop for now. TODO base this upon population sizes and % chance to win a bag per flip.
             if (eligiblePlayers == 0)
