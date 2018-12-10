@@ -944,7 +944,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 // Determine the number of Bags to be handed out.
                 var numberOfBags = forceNumberBags;
-                if (forceNumberBags != 0)
+                if (forceNumberBags == 0)
                     numberOfBags = (int)rewardAssigner.DetermineNumberOfAwards(allContributingPlayers.Count());
 
                 BattlefrontLogger.Debug($"AllContributing Players Count = {allContributingPlayers.Count()}");
