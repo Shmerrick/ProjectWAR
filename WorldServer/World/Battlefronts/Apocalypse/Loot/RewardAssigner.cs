@@ -46,6 +46,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             if (eligiblePlayers < numberOfAwards)
                 numberOfAwards = (byte)eligiblePlayers;
 
+            RewardLogger.Info($"Number of eligible players {eligiblePlayers}, number of Awards {numberOfAwards}");
+
             return numberOfAwards;
         }
 

@@ -938,13 +938,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var rewardAssigner = new RewardAssigner(StaticRandom.Instance);
             try
             {
-                // Determine the number of Bags to be handed out.
-                var numberOfBags = forceNumberBags;
-                if (forceNumberBags != 0)
-                    numberOfBags = (int)rewardAssigner.DetermineNumberOfAwards(ActiveBattleFrontStatus.ContributionManagerInstance.ContributionDictionary.Count());
 
                 // Get all players with at least some contribution.
                 var allContributingPlayers = ActiveBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
+
+                // Determine the number of Bags to be handed out.
+                var numberOfBags = forceNumberBags;
+                if (forceNumberBags != 0)
+                    numberOfBags = (int)rewardAssigner.DetermineNumberOfAwards(allContributingPlayers.Count());
+
                 BattlefrontLogger.Debug($"AllContributing Players Count = {allContributingPlayers.Count()}");
 
                 // Partition the players by winning realm. 
