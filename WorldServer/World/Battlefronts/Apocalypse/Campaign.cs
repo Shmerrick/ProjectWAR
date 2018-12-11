@@ -141,7 +141,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var status = BattleFrontManager.GetActiveCampaign().ActiveBattleFrontStatus;
             lock (status)
             {
-                BattlefrontLogger.Debug($"Checking for new Realm Captains...");
+                BattlefrontLogger.Trace($"Checking for new Realm Captains...");
                 if (status.RegionId == Region.RegionId)
                 {
                     status.RemoveAsRealmCaptain(status.DestructionRealmCaptain);
