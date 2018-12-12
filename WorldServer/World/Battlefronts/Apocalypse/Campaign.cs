@@ -141,7 +141,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var status = BattleFrontManager.GetActiveCampaign().ActiveBattleFrontStatus;
             lock (status)
             {
-                BattlefrontLogger.Debug($"Checking for new Realm Captains...");
+                BattlefrontLogger.Trace($"Checking for new Realm Captains...");
                 if (status.RegionId == Region.RegionId)
                 {
                     status.RemoveAsRealmCaptain(status.DestructionRealmCaptain);
@@ -942,12 +942,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 // Get all players with at least some contribution.
                 var allContributingPlayers = ActiveBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
 
+                BattlefrontLogger.Debug($"forceNumberBags = {forceNumberBags}");
+
                 // Determine the number of Bags to be handed out.
                 var numberOfBags = forceNumberBags;
                 if (forceNumberBags == 0)
                     numberOfBags = (int)rewardAssigner.DetermineNumberOfAwards(allContributingPlayers.Count());
 
-                BattlefrontLogger.Debug($"AllContributing Players Count = {allContributingPlayers.Count()}");
+                BattlefrontLogger.Debug($"AllContributing Players Count = {allContributingPlayers.Count()}, numberBags = {numberOfBags}");
 
                 // Partition the players by winning realm. 
                 foreach (var contributingPlayer in allContributingPlayers)
