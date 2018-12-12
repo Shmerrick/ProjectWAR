@@ -910,6 +910,8 @@ namespace WorldServer
             {
                 if (DisconnectType == EDisconnectType.Unclean && !IsDisposed && CbtInterface.IsInCombat && CbtInterface.IsPvp)
                 {
+                    DeathLogger.Debug($"Unclean disconnect for {this.Name}. Damage sources = {DamageSources.Count}");
+
                     if (DamageSources.Count > 0)
                         SetDeath(DamageSources.Keys.First());
 
@@ -917,6 +919,8 @@ namespace WorldServer
                     {
                         foreach (Player plr in PlayersInRange)
                         {
+                            DeathLogger.Debug($"In range = {plr.Name}");
+
                             if (plr.Realm != Realm)
                                 plr.SendClientMessage($"{Name} disconnected uncleanly from the server.");
                         }
@@ -932,6 +936,8 @@ namespace WorldServer
                 Client.Disconnect("Ping timeout");
                 if (!IsDisposed && CbtInterface.IsInCombat && CbtInterface.IsPvp)
                 {
+                    DeathLogger.Debug($"Ping timeout for {this.Name}. Damage sources = {DamageSources.Count}");
+                    
                     if (DamageSources.Count > 0)
                         SetDeath(DamageSources.Keys.First());
 
@@ -939,6 +945,8 @@ namespace WorldServer
                     {
                         foreach (Player plr in PlayersInRange)
                         {
+                            DeathLogger.Debug($"In range = {plr.Name}");
+
                             if (plr.Realm != Realm)
                                 plr.SendClientMessage($"{Name} disconnected uncleanly from the server and has been murdered for their cowardice.");
                         }
