@@ -13,7 +13,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     {
 
         public static int POPULATION_BROADCAST_CHANCE = 0;
-        public static int RALLY_CALL_BROADCAST_TIME_LAPSE = 60;
+        public static int RALLY_CALL_BROADCAST_TIME_LAPSE = 600;
         public static int RALLY_CALL_ORDER_BROADCAST_BOUNDARY = -5;
         public static int RALLY_CALL_DEST_BROADCAST_BOUNDARY = 5;
 
