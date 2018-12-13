@@ -17,6 +17,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private static readonly Logger ProgressionLogger = LogManager.GetLogger("RVRProgressionLogger");
         public RVRProgression ActiveBattleFront { get; set; }
         public List<BattleFrontStatus> BattleFrontStatuses { get; set; }
+	    protected readonly EventInterface _EvtInterface = new EventInterface();
 
         public LowerTierCampaignManager(List<RVRProgression> _RVRT1Progressions, List<RegionMgr> regionMgrs)
         {
@@ -59,6 +60,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				}
 			}
 		}
+
+	    public void Update(long tick)
+	    {
+	        _EvtInterface.Update(tick);
+	    }
 
         /// <summary>
         /// Return the first battlefront status for Lower tier (BF crosses regions)
