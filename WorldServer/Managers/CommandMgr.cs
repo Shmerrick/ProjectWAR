@@ -579,10 +579,8 @@ namespace WorldServer
                         lock (Player._Players)
                             foreach (Player player in Player._Players)
                             {
-#if !DEBUG
                                 if (player.Realm != sender.Realm || player.BlocksChatFrom(sender))
                                     continue;
-#endif
                                 player.SendMessage(sender.Oid, sender.ChatName, messageString, ChatLogFilters.CHATLOGFILTERS_CHANNEL_BASE, channelNumber);
                             }
                         break;
