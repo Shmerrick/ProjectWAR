@@ -30,16 +30,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     /// </summary>
     public class Campaign
     {
-        public static int POPULATION_BROADCAST_CHANCE = 0;
-        public static int RALLY_CALL_BROADCAST_TIME_LAPSE = 60000;
-        public static int RALLY_CALL_ORDER_BROADCAST_BOUNDARY = -5;
-        public static int RALLY_CALL_DEST_BROADCAST_BOUNDARY = 5;
 
         public static IObjectDatabase Database = null;
-        static readonly object LockObject = new object();
-
-        public volatile int LastAAORallyCall = 0;
-
+        
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
 
         public VictoryPointProgress VictoryPointProgress { get; set; }
@@ -78,12 +71,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public int _totalMaxDestro = 0;
 
 
-        public int AgainstAllOddsMult => _aaoTracker.AgainstAllOddsMult;
+        public int AgainstAllOddsMult => AgainstAllOddsTracker.AgainstAllOddsMult;
 
         #endregion
 
 
-        private AAOTracker _aaoTracker;
+        public AAOTracker AgainstAllOddsTracker;
         private ContributionTracker _contributionTracker;
         private RVRRewardManager _rewardManager;
 
@@ -116,11 +109,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             LoadKeeps();
 
             _contributionTracker = new ContributionTracker(Tier, regionMgr);
-            _aaoTracker = new AAOTracker();
+            AgainstAllOddsTracker = new AAOTracker();
             _rewardManager = new RVRRewardManager();
-
-            LastAAORallyCall = FrameWork.TCPManager.GetTimeStamp();
-
 
             _EvtInterface.AddEvent(UpdateBattleFrontScalers, 12000, 0); // 120000
             _EvtInterface.AddEvent(UpdateVictoryPoints, 6000, 0);
@@ -307,10 +297,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void UpdateAAOBuffs()
         {
-            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            BattlefrontLogger.Debug($"{this.Region.RegionId} {this.Region.RegionName} ({this.ActiveCampaignName}) : {this.LastAAORallyCall} {epoch.AddSeconds(this.LastAAORallyCall)}");
-
-
             var orderPlayersInZone = GetOrderPlayersInZone(BattleFrontManager.ActiveBattleFront.ZoneId);
             var destPlayersInZone = GetDestPlayersInZone(BattleFrontManager.ActiveBattleFront.ZoneId);
 
@@ -321,75 +307,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             BattlefrontLogger.Trace(
                 $"Calculating AAO. Order players : {orderPlayersInZone.Count} Dest players : {destPlayersInZone.Count}");
 
-            _aaoTracker.RecalculateAAO(allPlayersInZone, orderPlayersInZone.Count, destPlayersInZone.Count);
+            AgainstAllOddsTracker.RecalculateAAO(allPlayersInZone, orderPlayersInZone.Count, destPlayersInZone.Count);
 
             foreach (var keep in Keeps)
             {
-                keep.UpdateCurrentAAO(_aaoTracker.AgainstAllOddsMult);
+                keep.UpdateCurrentAAO(AgainstAllOddsTracker.AgainstAllOddsMult);
             }
 
-            var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
-            var activeBattleFrontStatus =
-                WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
-
-            // Randomly let players know the population
-            if (StaticRandom.Instance.Next(100) <= POPULATION_BROADCAST_CHANCE)
-            {
-                foreach (var player in allPlayersInZone)
-                {
-                    if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
-                    {
-                        player.SendMessage($"Messengers report {orderPlayersInZone.Count()} Order players in the zone.",
-                            ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE);
-                    }
-                    else
-                    {
-                        player.SendMessage(
-                            $"Messengers report {destPlayersInZone.Count()} Destruction players in the zone.",
-                            ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE);
-                    }
-                }
-            }
-
-            lock (LockObject)
-            {
-
-                if (FrameWork.TCPManager.GetTimeStamp() <= RALLY_CALL_BROADCAST_TIME_LAPSE + LastAAORallyCall)
-                {
-                    // _aaoTracker.AgainstAllOddsMult is defined in multiples of 20 (eg 400 AAO is 20). Negative numbers means Order has AAO, Positive numbers means Dest has AAO
-                    if (_aaoTracker.AgainstAllOddsMult <= RALLY_CALL_ORDER_BROADCAST_BOUNDARY)
-                    {
-
-                        foreach (var player in Player._Players)
-                        {
-                            if (player.Realm == Realms.REALMS_REALM_ORDER)
-                            {
-                                player.SendMessage(
-                                    $"Your realm is under serious attack. Proceed with all haste to {activeBattleFrontStatus.Description}.",
-                                    ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE);
-                            }
-                        }
-
-                        LastAAORallyCall = FrameWork.TCPManager.GetTimeStamp();
-                    }
-
-                    if (_aaoTracker.AgainstAllOddsMult >= RALLY_CALL_DEST_BROADCAST_BOUNDARY)
-                    {
-
-                        foreach (var player in Player._Players)
-                        {
-                            if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
-                            {
-                                player.SendMessage(
-                                    $"Your realm is under serious attack. Proceed with all haste to {activeBattleFrontStatus.Description}.",
-                                    ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE);
-                            }
-                        }
-
-                        LastAAORallyCall = FrameWork.TCPManager.GetTimeStamp();
-                    }
-                }
-            }
         }
 
 
@@ -731,7 +655,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             plr.BuffInterface.QueueBuff(new BuffQueueInfo(plr, plr.Level, AbilityMgr.GetBuffInfo((ushort)GameBuffs.FieldOfGlory), FogAssigned));
 
             // AAO
-            _aaoTracker.NotifyEnteredLake(plr);
+            AgainstAllOddsTracker.NotifyEnteredLake(plr);
         }
 
         /// <summary>
@@ -789,7 +713,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             plr.BuffInterface.RemoveBuffByEntry((ushort)GameBuffs.FieldOfGlory);
 
             // AAO
-            _aaoTracker.NotifyLeftLake(plr);
+            AgainstAllOddsTracker.NotifyLeftLake(plr);
         }
 
         public void LockBattleObjectivesByZone(int zoneId, Realms realm)

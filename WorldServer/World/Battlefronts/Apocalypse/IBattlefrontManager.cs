@@ -31,5 +31,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         Campaign GetActiveCampaign();
 
         BattleFrontStatus GetActiveBattleFrontStatus(int battleFrontId);
+
+        void Update(long tick);
     }
 }

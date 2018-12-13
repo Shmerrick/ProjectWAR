@@ -9,7 +9,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     /// <summary>
     /// Object bound to a Campaign responsible of tracking players to compute AAO.
     /// </summary>
-    internal class AAOTracker
+    public class AAOTracker
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly List<NewBuff> _orderAAOBuffs = new List<NewBuff>();

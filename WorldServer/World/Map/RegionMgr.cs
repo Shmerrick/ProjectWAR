@@ -278,6 +278,8 @@ namespace WorldServer
                     //Bttlfront?.Update(start);
                     Campaign?.Update(start);
 
+                    Campaign?.BattleFrontManager.Update(start);
+
                 }
 
                 catch (Exception e)
