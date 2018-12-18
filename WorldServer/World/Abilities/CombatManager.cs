@@ -775,10 +775,22 @@ namespace WorldServer
 
                 #endregion
 
+                bool slayerOilFix = false;
                 if (damageInfo.StatUsed > 0)
                 {
-                    AddOffensiveStats(caster, damageInfo, 0.2f, false);
-                    AddLinearMitigation(target, damageInfo, 0.2f, false);
+                    if(caster is Player)
+                    {
+                        if(((Player) caster).Info.Career == 2 && damageInfo.SubDamageType != SubDamageTypes.Oil)
+                        {
+                            slayerOilFix = true;
+                        }
+                    }
+
+                    if (!slayerOilFix)
+                    {
+                        AddOffensiveStats(caster, damageInfo, 0.2f, false);
+                        AddLinearMitigation(target, damageInfo, 0.2f, false);
+                    }
                 }
 
                 caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DealingDamage, damageInfo, target);
