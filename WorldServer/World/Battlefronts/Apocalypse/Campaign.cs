@@ -35,8 +35,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static int REALM_CAPTAIN_MINIMUM_CONTRIBUTION = 50;
         static readonly object LockObject = new object();
 
-        public static IObjectDatabase Database = null;
-        
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
 
         public VictoryPointProgress VictoryPointProgress { get; set; }
@@ -872,7 +870,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 var zonelockSummary = new ZoneLockSummary
                 {
                     LockId = lockId,
-                    Description = $"Locking Battlefront {CampaignName} to {lockingRealm.ToString()}...",
+                    Description = $"Locking Battlefront {this.ActiveCampaignName} to {lockingRealm.ToString()}...",
                     DestroVP = (int)ActiveBattleFrontStatus.DestructionVictoryPointPercentage,
                     OrderVP = (int)ActiveBattleFrontStatus.OrderVictoryPointPercentage,
                     LockingRealm = (int)lockingRealm,
@@ -1271,7 +1269,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         private void UpdateVictoryPoints()
         {
-            BattlefrontLogger.Trace($"Updating Victory Points for {CampaignName}");
+            BattlefrontLogger.Trace($"Updating Victory Points for {ActiveCampaignName}");
             // Locked by Order/Dest
             if (IsBattleFrontLocked())
                 return; // Nothing to do
