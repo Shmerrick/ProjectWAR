@@ -399,7 +399,7 @@ namespace WorldServer.Test
             Region1.Campaign.VictoryPointProgress.OrderVictoryPoints = 2200f;
 
             var activeCampaign = manager.GetActiveCampaign();
-            Assert.IsTrue(activeCampaign.CampaignName == "Chaos Wastes");
+            Assert.IsTrue(activeCampaign.ActiveCampaignName == "Chaos Wastes");
             Assert.IsTrue(activeCampaign.Region.RegionId == 1);
             Assert.IsTrue(activeCampaign.VictoryPointProgress.DestructionVictoryPoints == 5000f);
             Assert.IsTrue(activeCampaign.VictoryPointProgress.OrderVictoryPoints == 2200f);
@@ -491,7 +491,7 @@ namespace WorldServer.Test
             manager.OpenActiveBattlefront();
 
             var activeCampaign = manager.GetActiveCampaign();
-            Assert.IsTrue(activeCampaign.CampaignName == "Praag");
+            Assert.IsTrue(activeCampaign.ActiveCampaignName == "Praag");
             Assert.IsTrue(activeCampaign.Region.RegionId == 1);
             Assert.IsTrue(activeCampaign.VictoryPointProgress.DestructionVictoryPoints == 0f);
             Assert.IsTrue(activeCampaign.VictoryPointProgress.OrderVictoryPoints == 0f);
@@ -534,7 +534,7 @@ namespace WorldServer.Test
             Region1.Campaign.VictoryPointProgress.OrderVictoryPoints = 2200f;
 
             var activeCampaign = manager.GetActiveCampaign();
-            Assert.IsTrue(activeCampaign.CampaignName == "Chaos Wastes");
+            Assert.IsTrue(activeCampaign.ActiveCampaignName == "Chaos Wastes");
             Assert.IsTrue(activeCampaign.Region.RegionId == 1);
             Assert.IsTrue(activeCampaign.VictoryPointProgress.DestructionVictoryPoints == 5000f);
             Assert.IsTrue(activeCampaign.VictoryPointProgress.OrderVictoryPoints == 2200f);

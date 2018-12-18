@@ -28,6 +28,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         BattleFrontStatus GetRegionBattleFrontStatus(int regionId);
 
         Campaign GetActiveCampaign();
+
+        BattleFrontStatus GetActiveBattleFrontStatus(int battleFrontId);
+
+        void Update(long tick);
         ImpactMatrixManager ImpactMatrixManagerInstance { get; set; }
         BountyManager BountyManagerInstance { get; set; }
     }

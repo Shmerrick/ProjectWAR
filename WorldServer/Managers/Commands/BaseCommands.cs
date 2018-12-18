@@ -1,11 +1,11 @@
 ﻿using Common;
 using FrameWork;
 using GameData;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using NLog;
 using WorldServer.Scenarios;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
@@ -4040,6 +4040,94 @@ namespace WorldServer.Managers.Commands
             {
                 plr.SendClientMessage("You are not White Lion, go away...", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
             }
+            return true;
+        }
+
+        public static bool SpawnTest(Player plr, ref List<string> values)
+        {
+            var creatureList = new List<Unit>();
+            List<uint> guardList = new List<uint>();
+            foreach (var value in values)
+            {
+                guardList.Add(Convert.ToUInt32(value));
+            }
+            ushort facing = 2093;
+
+            var X = plr.WorldPosition.X;
+            var Y = plr.WorldPosition.Y;
+            var Z = plr.WorldPosition.Z;
+
+            foreach (var guard in guardList)
+            {
+                Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
+                spawn.BuildFromProto(CreatureService.GetCreatureProto(guard));
+                if (spawn.Proto == null)
+                    continue;
+
+                spawn.WorldO = facing;
+                spawn.WorldX = X + StaticRandom.Instance.Next(500);
+                spawn.WorldY = Y + StaticRandom.Instance.Next(500);
+                spawn.WorldZ = Z;
+                spawn.ZoneId = (ushort)plr.ZoneId;
+                spawn.Level = 42;
+
+                Creature c = plr.Region.CreateCreature(spawn);
+                c.PlayersInRange = plr.PlayersInRange;
+                c.AiInterface.SetBrain(new AggressiveBrain(c));
+
+                creatureList.Add(c);
+            }
+
+            foreach (var unit in creatureList)
+            {
+                unit.MvtInterface.SetBaseSpeed(100);
+                unit.MvtInterface.Move(plr.WorldPosition.X, plr.WorldPosition.Y, plr.WorldPosition.Z);
+            }
+
+            return true;
+        }
+
+        public static bool SummonPet(Player plr, ref List<string> values)
+        {
+
+            if (plr == null || plr.CrrInterface == null)
+                return false;
+            IPetCareerInterface petInterface = plr.CrrInterface as IPetCareerInterface;
+
+            if (petInterface == null)
+                return false;
+
+            petInterface.SummonPet(Convert.ToUInt16(values[0]));
+            return true;
+        }
+
+        public static bool SpawnMobInstance(Player plr, ref List<string> values)
+        {
+            ushort facing = 2093;
+
+            var X = plr.WorldPosition.X;
+            var Y = plr.WorldPosition.Y;
+            var Z = plr.WorldPosition.Z;
+
+
+            Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
+            var proto = CreatureService.GetCreatureProto(Convert.ToUInt32(values[0]));
+            if (proto == null)
+                return true;
+            spawn.BuildFromProto(proto);
+
+            spawn.WorldO = facing;
+            spawn.WorldX = X + StaticRandom.Instance.Next(500);
+            spawn.WorldY = Y + StaticRandom.Instance.Next(500);
+            spawn.WorldZ = Z;
+            spawn.ZoneId = (ushort)plr.ZoneId;
+            spawn.Level = 42;
+
+            Creature c = plr.Region.CreateCreature(spawn);
+            c.PlayersInRange = plr.PlayersInRange;
+            c.AiInterface.SetBrain(new AggressiveBrain(c));
+
+
             return true;
         }
 

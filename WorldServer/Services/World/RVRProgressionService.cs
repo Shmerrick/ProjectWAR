@@ -48,7 +48,7 @@ namespace WorldServer.Services.World
 
 			Database.ForceSave();
 			
-			Log.Debug("RVRProgression", $"Saved RVR progression in tier {rvrProg.FirstOrDefault().Tier}");
+			Log.Dump("RVRProgression", $"Saved RVR progression in tier {rvrProg.FirstOrDefault().Tier}");
 		}
 	}
 }

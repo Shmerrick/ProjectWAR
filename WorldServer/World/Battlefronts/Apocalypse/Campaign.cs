@@ -30,30 +30,27 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     /// </summary>
     public class Campaign
     {
-        public static int POPULATION_BROADCAST_CHANCE = 0;
         public static int REALM_CAPTAIN_TELL_CHANCE = 10;
         public static IObjectDatabase Database = null;
         public static int REALM_CAPTAIN_MINIMUM_CONTRIBUTION = 50;
         static readonly object LockObject = new object();
 
+        public static IObjectDatabase Database = null;
+        
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
-        public VictoryPointProgress VictoryPointProgress { get; set; }
 
+        public VictoryPointProgress VictoryPointProgress { get; set; }
         public RegionMgr Region { get; set; }
         public IBattleFrontManager BattleFrontManager { get; set; }
         public IApocCommunications CommunicationsEngine { get; }
-
         // List of battlefront statuses for this Campaign
         public List<BattleFrontStatus> ApocBattleFrontStatuses => GetBattleFrontStatuses(Region.RegionId);
-
         public BattleFrontStatus ActiveBattleFrontStatus => BattleFrontManager.GetBattleFrontStatus(BattleFrontManager.ActiveBattleFront.BattleFrontId);
-
-
         /// <summary>
         /// A list of keeps within this Campaign.
         /// </summary>
         public readonly List<Keep> Keeps = new List<Keep>();
-        public string CampaignName => BattleFrontManager.ActiveBattleFrontName;
+        public string ActiveCampaignName => BattleFrontManager.ActiveBattleFrontName;
 
         protected readonly EventInterface _EvtInterface = new EventInterface();
 
@@ -81,12 +78,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public int _totalMaxDestro = 0;
 
 
-        public int AgainstAllOddsMult => _aaoTracker.AgainstAllOddsMult;
+        public int AgainstAllOddsMult => AgainstAllOddsTracker.AgainstAllOddsMult;
 
         #endregion
 
 
-        private AAOTracker _aaoTracker;
+        public AAOTracker AgainstAllOddsTracker;
         private RVRRewardManager _rewardManager;
 
         public string ActiveZoneName { get; }
@@ -117,7 +114,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             PlaceObjectives();
 
             LoadKeeps();
-            _aaoTracker = new AAOTracker();
+            AgainstAllOddsTracker = new AAOTracker();
             _rewardManager = new RVRRewardManager();
 
             _EvtInterface.AddEvent(UpdateBattleFrontScalers, 12000, 0); // 120000
@@ -127,9 +124,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Tell each player the RVR status
             _EvtInterface.AddEvent(UpdateRVRStatus, 60000, 0);
             // Recalculate AAO
-            _EvtInterface.AddEvent(UpdateAAOBuffs, 10000, 0);
-            // Check RVR zone for highest contributors (Captains)
+            _EvtInterface.AddEvent(UpdateAAOBuffs, 30000, 0);
             _EvtInterface.AddEvent(DetermineCaptains, 60000, 0);
+            // Check RVR zone for highest contributors (Captains)
             // record metrics
             _EvtInterface.AddEvent(SavePlayerContribution, 60000, 0);
             _EvtInterface.AddEvent(RecordMetrics, 60000, 0);
@@ -379,7 +376,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public string GetBattleFrontStatus()
         {
-            return $"Victory Points Progress for {CampaignName} : {VictoryPointProgress.ToString()}";
+            return $"Victory Points Progress for {ActiveCampaignName} : {VictoryPointProgress.ToString()}";
         }
 
 
@@ -392,39 +389,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             allPlayersInZone.AddRange(destPlayersInZone);
             allPlayersInZone.AddRange(orderPlayersInZone);
 
-            BattlefrontLogger.Trace($"Calculating AAO. Order players : {orderPlayersInZone.Count} Dest players : {destPlayersInZone.Count}");
+            BattlefrontLogger.Trace(
+                $"Calculating AAO. Order players : {orderPlayersInZone.Count} Dest players : {destPlayersInZone.Count}");
 
-            foreach (var status in BattleFrontManager.GetBattleFrontStatusList())
-            {
-                if (!status.Locked)
-                {
-                    // Randomly let players know the population
-                    if (StaticRandom.Instance.Next(100) <= POPULATION_BROADCAST_CHANCE)
-                    {
-                        foreach (var player in allPlayersInZone)
-                        {
-                            if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
-                            {
-                                player.SendMessage($"Messengers report {orderPlayersInZone.Count} Order players in the zone.",
-                                    ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE);
-                            }
-                            else
-                            {
-                                player.SendMessage($"Messengers report {destPlayersInZone.Count} Destruction players in the zone.",
-                                    ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE);
-                            }
-                        }
-                    }
-                }
-            }
-
-            _aaoTracker.RecalculateAAO(allPlayersInZone, orderPlayersInZone.Count, destPlayersInZone.Count);
+            AgainstAllOddsTracker.RecalculateAAO(allPlayersInZone, orderPlayersInZone.Count, destPlayersInZone.Count);
 
             foreach (var keep in Keeps)
             {
-                keep.UpdateCurrentAAO(_aaoTracker.AgainstAllOddsMult);
+                keep.UpdateCurrentAAO(AgainstAllOddsTracker.AgainstAllOddsMult);
             }
+
         }
+
 
         /// <summary>
         /// Buffs all lords in a region depending on VP
@@ -692,7 +668,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     break;
             }
 
-            BattlefrontLogger.Debug($"{CampaignName} : {(byte)orderPercent} {(byte)destroPercent}");
+            BattlefrontLogger.Debug($"{ActiveCampaignName} : {(byte)orderPercent} {(byte)destroPercent}");
 
             Out.WriteByte((byte)orderPercent);
             Out.WriteByte((byte)destroPercent);
@@ -776,7 +752,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             plr.BuffInterface.QueueBuff(new BuffQueueInfo(plr, plr.Level, AbilityMgr.GetBuffInfo((ushort)GameBuffs.FieldOfGlory), FogAssigned));
 
             // AAO
-            _aaoTracker.NotifyEnteredLake(plr);
+            AgainstAllOddsTracker.NotifyEnteredLake(plr);
         }
 
         /// <summary>
@@ -834,7 +810,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             plr.BuffInterface.RemoveBuffByEntry((ushort)GameBuffs.FieldOfGlory);
 
             // AAO
-            _aaoTracker.NotifyLeftLake(plr);
+            AgainstAllOddsTracker.NotifyLeftLake(plr);
         }
 
         public void LockBattleObjectivesByZone(int zoneId, Realms realm)
@@ -871,7 +847,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             BattlefrontLogger.Info($"*************************BATTLEFRONT LOCK-START [LockId:{lockId}]*******************");
             BattlefrontLogger.Info($"forceNumberBags = {forceNumberBags}");
-            BattlefrontLogger.Info($"Locking Battlefront {CampaignName} to {lockingRealm.ToString()}...");
+            BattlefrontLogger.Info($"Locking Battlefront {ActiveCampaignName} to {lockingRealm.ToString()}...");
 
             string message = string.Concat(ActiveBattleFrontStatus.Description, " locked by ", (lockingRealm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"), "!");
 
@@ -1243,7 +1219,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         ///// 
         //public void ResetBattleFront()
         //{
-        //    BattlefrontLogger.Trace($"Resetting Battlefront...{this.CampaignName}");
+        //    BattlefrontLogger.Trace($"Resetting Battlefront...{this.ActiveCampaignName}");
 
         //    VictoryPointProgress.Reset(this);
         //    LockingRealm = Realms.REALMS_REALM_NEUTRAL;

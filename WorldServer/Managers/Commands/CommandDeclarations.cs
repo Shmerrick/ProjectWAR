@@ -437,9 +437,12 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("playerdrop", ChangePlayerDrop, null, EGmLevel.SourceDev, 1, "Switch that changes how medallions are generated for killed players."),
             
             new GmCommandHandler("beastmaster", Beastmaster, null, EGmLevel.SourceDev, 0, "Changes your whitelion to beastmaster."),
-            new GmCommandHandler("setpet", SetPet, null, EGmLevel.SourceDev, 1, "Changes your pet model to number provided.")
+            new GmCommandHandler("setpet", SetPet, null, EGmLevel.SourceDev, 1, "Changes your pet model to number provided."),
+            new GmCommandHandler("summonpet", SummonPet, null, EGmLevel.SourceDev, 1, "Summons the pet requested."),
+            new GmCommandHandler("spawnmobinstance", SpawnMobInstance, null, EGmLevel.SourceDev, 2, "Spawns one or more mobs (does not save to db)")
 #endregion
         };
 
+        
     }
 }
