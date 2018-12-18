@@ -23,6 +23,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         public const int BASE_INFLUENCE_REWARD = 200;
         public const int BASE_XP_REWARD = 2000;
         public const int REALM_CAPTAIN_INFLUENCE_KILL = 500;
+        public const int REALM_CAPTAIN_RENOWN_KILL = 2000;
         public const int INSIGNIA_ITEM_ID = 208470;
 
         public IContributionManager ContributionManager { get; }
@@ -414,12 +415,19 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             var repeatKillReward = 1.0f;
 
+            foreach (var item in victim._recentLooters)
+            {
+                RewardLogger.Trace($"Repeat Kill {item.Key} {item.Value} ");
+            }
+
             // TODO - replace with something smarter than this.
             // If the same player kills the same victim within a short period, ignore.
-            if (victim._recentLooters.ContainsKey(killer.CharacterId) && victim._recentLooters[killer.CharacterId] > TCPManager.GetTimeStampMS())
+            var currentTime = TCPManager.GetTimeStampMS();
+            if (victim._recentLooters.ContainsKey(killer.CharacterId) && victim._recentLooters[killer.CharacterId] > currentTime)
             {
+                RewardLogger.Trace($"Repeat Kill {victim._recentLooters[killer.CharacterId]} {currentTime} ");
                 // Lowering rewards for repeat kills
-                repeatKillReward = 0.5f;
+                repeatKillReward = 0.25f;
             }
 
             return repeatKillReward;
@@ -528,6 +536,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             RewardLogger.Info($"Death Blow rewards given to {killer.Name} ({killer.CharacterId}) for realm captain kill");
             killer.AddInfluence(influenceId, REALM_CAPTAIN_INFLUENCE_KILL);
+            killer.AddRenown(REALM_CAPTAIN_RENOWN_KILL,1f, false);
             killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.REALM_CAPTAIN_KILL);
 
             ushort crests = (ushort)StaticRandom.Instance.Next(10);

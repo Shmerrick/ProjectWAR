@@ -167,7 +167,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                                 player.SendMessage(
                                     $"A captain has emerged from the ranks of the enemy. Take the head of {realmCaptains[0].Name}!",
-                                    ChatLogFilters.CHATLOGFILTERS_TELL_SEND);
+                                    ChatLogFilters.CHATLOGFILTERS_RVR_KILLS_DESTRUCTION);
                             }
                         }
                     }
@@ -181,7 +181,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             {
                                 player.SendMessage(
                                     $"A captain has emerged from the ranks of the enemy. Take the head of {realmCaptains[1].Name}!",
-                                    ChatLogFilters.CHATLOGFILTERS_TELL_SEND);
+                                    ChatLogFilters.CHATLOGFILTERS_RVR_KILLS_ORDER);
                             }
                         }
                     }
@@ -1074,8 +1074,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Ensure that tier 1 gets half rewards.
             var tierRewardScale = Tier == 1 ? 0.5f : 1f;
 
-            //TODO - ensure you lower the number of crests in the reward table pre-bounty.
-
             // Distribute rewards to losing players with eligibility - halve rewards.
             foreach (var losingRealmPlayer in eligibleLosingRealmPlayers)
             {
@@ -1085,8 +1083,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     losingRealmPlayer.Key,
                     _rewardManager.CalculateRenownBand(losingRealmPlayer.Key.RenownRank),
                     (1f + contributionScale) * tierRewardScale);
-
-
             }
 
             // Distribute rewards to winning players with eligibility - full rewards.

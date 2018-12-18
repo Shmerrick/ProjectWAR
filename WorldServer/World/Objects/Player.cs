@@ -4020,10 +4020,7 @@ namespace WorldServer
                 if (WorldGroup != null)
                     rewardScale += 0.25f * (WorldGroup.GetPlayerCountWithinDist(this, 200) / 5f);
 
-                // Record the recent killers of this toon.
-                if (!_recentLooters.ContainsKey(killer.CharacterId))
-                    _recentLooters.Add(killer.CharacterId, TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL);
-                else _recentLooters[killer.CharacterId] = TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL;
+               
 
                 // Distribute Player Kill Rewards
                 if (ActiveBattleFrontStatus != null)
@@ -4044,6 +4041,11 @@ namespace WorldServer
 
                     ActiveBattleFrontStatus.RewardManagerInstance.DistributePlayerKillRewards(this, killer, AAOBonus, influenceId, PlayersByCharId);
                 }
+
+                // Record the recent killers of this toon.
+                if (!_recentLooters.ContainsKey(killer.CharacterId))
+                    _recentLooters.Add(killer.CharacterId, TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL);
+                else _recentLooters[killer.CharacterId] = TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL;
 
                 //HandleXPRenown(killer, rewardScale);
                 //GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
