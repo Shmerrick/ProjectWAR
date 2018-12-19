@@ -3909,12 +3909,15 @@ namespace WorldServer
 
             // Clearing heal aggro...
             HealAggros = new Dictionary<ushort, AggroInfo>();
-            var battleFrontManager = GetBattlefrontManager(this.Region.RegionId);
-            // Reset this characters bounty to their base bounty.
-            battleFrontManager.BountyManagerInstance.ResetCharacterBounty(CharacterId, this);
-            // Reset the impacts on this character.
-            battleFrontManager.ImpactMatrixManagerInstance.ClearImpacts(CharacterId);
-            
+            // Only do this if not in an SC
+            if (this.ScnInterface != null)
+            {
+                var battleFrontManager = GetBattlefrontManager(this.Region.RegionId);
+                // Reset this characters bounty to their base bounty.
+                battleFrontManager.BountyManagerInstance.ResetCharacterBounty(CharacterId, this);
+                // Reset the impacts on this character.
+                battleFrontManager.ImpactMatrixManagerInstance.ClearImpacts(CharacterId);
+            }
             // inform instance that the player was killed
             if (!string.IsNullOrEmpty(InstanceID))
             {
@@ -3925,6 +3928,10 @@ namespace WorldServer
         // For a given regionId, find the correct battlefront manager
         public IBattleFrontManager GetBattlefrontManager(ushort regionId)
         {
+            // 31 - Mourkain temple - need a impactmatrix at least for each scen... possibly a BF manager
+            //if (regionId == 31)
+                //return 
+
             foreach (var regionMgr in WorldMgr._Regions)
             {
                 if (regionMgr.RegionId == regionId)
@@ -3937,7 +3944,7 @@ namespace WorldServer
                     }
                 }
             }
-            DeathLogger.Error($"Could not locate Battlefront Manager for player {this.Name} in region {regionId}");
+            DeathLogger.Warn($"Could not locate Battlefront Manager for player {this.Name} in region {regionId}");
             return WorldMgr.UpperTierCampaignManager;
         }
 

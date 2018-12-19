@@ -1,8 +1,9 @@
-﻿using System;
+﻿using GameData;
+using Newtonsoft.Json;
+using NLog;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using GameData;
-using NLog;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Bounty;
 
@@ -24,7 +25,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public ImpactMatrixManager ImpactMatrixManagerInstance { get; set; }
 
         public RewardManager RewardManagerInstance { get; set; }
-        
+
         public HashSet<uint> KillContributionSet { get; set; }
         public Player DestructionRealmCaptain { get; set; }
         public Player OrderRealmCaptain { get; set; }
@@ -33,9 +34,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             ImpactMatrixManagerInstance = impactMatrixManager;
             ContributionManagerInstance = new ContributionManager(
-                new ConcurrentDictionary<uint, List<PlayerContribution>>(), 
+                new ConcurrentDictionary<uint, List<PlayerContribution>>(),
                 BountyService._ContributionDefinitions);
-            
+
             RewardManagerInstance = new RewardManager(ContributionManagerInstance, new StaticWrapper(), RewardService._RewardPlayerKills, ImpactMatrixManagerInstance);
         }
 
@@ -67,7 +68,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        
+
 
         public void AddKillContribution(Player player)
         {
@@ -81,9 +82,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 return;
             BattlefrontLogger.Info($"Removing player {realmCaptain.Name} as Captain");
             if (realmCaptain.Realm == Realms.REALMS_REALM_DESTRUCTION)
-                this.DestructionRealmCaptain = null;
+                DestructionRealmCaptain = null;
             if (realmCaptain.Realm == Realms.REALMS_REALM_ORDER)
-                this.OrderRealmCaptain = null;
+                OrderRealmCaptain = null;
 
         }
 
@@ -94,33 +95,31 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             BattlefrontLogger.Info($"Adding player {realmCaptain.Name} as Captain");
             if (realmCaptain.Realm == Realms.REALMS_REALM_DESTRUCTION)
-                this.DestructionRealmCaptain = realmCaptain;
+                DestructionRealmCaptain = realmCaptain;
             if (realmCaptain.Realm == Realms.REALMS_REALM_ORDER)
-                this.OrderRealmCaptain = realmCaptain;
+                OrderRealmCaptain = realmCaptain;
 
         }
 
         public void SavePlayerContribution(int battleFrontId)
         {
-            if (this.BattleFrontId == battleFrontId)
+            if (BattleFrontId == battleFrontId)
             {
                 WorldMgr.Database.ExecuteNonQuery($"DELETE FROM rvr_player_contribution Where BattleFrontId={battleFrontId};");
 
-                foreach (var contribution in this.ContributionManagerInstance.ContributionDictionary)
+                foreach (var contribution in ContributionManagerInstance.ContributionDictionary)
                 {
                     var characterId = contribution.Key;
-                    foreach (var playerContribution in contribution.Value)
+                    var contributionSerialised = JsonConvert.SerializeObject(contribution.Value);
+                    var recordToWrite = new Common.Database.World.Battlefront.PlayerContribution
                     {
-                        var recordToWrite = new Common.Database.World.Battlefront.PlayerContribution
-                        {
-                            CharacterId = characterId,
-                            BattleFrontId = battleFrontId,
-                            ContributionTypeId = playerContribution.ContributionId,
-                            Timestamp = DateTime.Now
-                        };
+                        CharacterId = characterId,
+                        BattleFrontId = battleFrontId,
+                        ContributionSerialised = contributionSerialised,
+                        Timestamp = DateTime.Now
+                    };
 
-                        WorldMgr.Database.AddObject(recordToWrite);
-                    }
+                    WorldMgr.Database.AddObject(recordToWrite);
                 }
             }
         }

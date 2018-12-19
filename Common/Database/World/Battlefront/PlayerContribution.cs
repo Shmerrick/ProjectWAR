@@ -17,7 +17,7 @@ namespace Common.Database.World.Battlefront
         public uint CharacterId { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public int ContributionTypeId { get; set; }
+        public string ContributionSerialised { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public DateTime Timestamp { get; set; }
