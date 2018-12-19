@@ -108,7 +108,7 @@ namespace WorldServer.Managers.Commands
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks the pairing the player is in for the given realm (1 - Order, 2 - Dest). forceNumberOfBags = 0 for default.")]
         public static void LockPairing(Player plr, Realms realm, int forceNumberOfBags=0)
         {
-            plr.SendClientMessage($"Attempting to lock the {plr.Region.Campaign.CampaignName} campaign... (call AdvancePairing <realm> <tier> to move ahead)");
+            plr.SendClientMessage($"Attempting to lock the {plr.Region.Campaign.ActiveCampaignName} campaign... (call AdvancePairing <realm> <tier> to move ahead)");
 
             if (WorldMgr.GetRegion(plr.Region.RegionId, false) == null)
                 plr.SendClientMessage("Region does not exist.");

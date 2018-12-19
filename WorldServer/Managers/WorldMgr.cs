@@ -1431,12 +1431,26 @@ namespace WorldServer
                 switch (regionMgr.RegionId)
                 {
                     case 1: // t1 dw/gs
+                        regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierCampaignManager, new ApocCommunications());
+                        break;
                     case 3: // t1 he/de
+                        regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierCampaignManager, new ApocCommunications());
+                        break;
                     case 8: // t1 em/ch
                         regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierCampaignManager, new ApocCommunications());
                         break;
-                    default: // Everything else...
+                        // Tier 4
+                    case 11:
                         regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierCampaignManager, new ApocCommunications());
+                        break;
+                    case 2:
+                        regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierCampaignManager, new ApocCommunications());
+                        break;
+                    case 4:
+                        regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierCampaignManager, new ApocCommunications());
+                        break;
+
+                    default: // Everything else...
                         break;
                 }
             }
