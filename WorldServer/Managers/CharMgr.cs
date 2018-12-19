@@ -1223,32 +1223,50 @@ namespace WorldServer
 
 
                     //checks for guild leader id player not found guildleader banned or guild leader inactive is so tryes to set a new guild leader if no guildleader can be found guild is set to inactive
+                    Account accountEntity = null;
+                    var characterEntity = CharMgr.GetCharacter(guild.LeaderId, true);
+                    if (characterEntity != null)
+                        accountEntity= Program.AcctMgr.GetAccountById(characterEntity.AccountId);
 
-                    // Guild Leader Account not found.
-                    var character = CharMgr.GetCharacter(guild.LeaderId, true);
-                    var guildLeaderAccount = Program.AcctMgr.GetAccountById(character?.AccountId);
-                    
-                    if ((guildLeaderAccount == null)||(!guild.Members.ContainsKey(guild.LeaderId) || guild.Members[guild.LeaderId].RankId != 9 || guildLeaderAccount.Banned == 1 || Program.AcctMgr.GetAccountById(CharMgr.GetCharacter(guild.LeaderId, true).AccountId).GmLevel == -1 || CharMgr.GetCharacter(guild.LeaderId, true).Value.LastSeen + 2246400 < TCPManager.GetTimeStamp()))
+                    if ((characterEntity != null) && (accountEntity != null))
                     {
 
-
-                        bool newleaderfound = false;
-
-                        for (int i = 0; i < members.Count; i++)
+                        if (!guild.Members.ContainsKey(guild.LeaderId)
+                            || guild.Members[guild.LeaderId].RankId != 9
+                            || accountEntity.Banned == 1
+                            || accountEntity.GmLevel == -1
+                            || CharMgr.GetCharacter(guild.LeaderId, true).Value.LastSeen + 2246400 <
+                            TCPManager.GetTimeStamp())
                         {
-                            if (CharMgr.GetCharacter(members[i].CharacterId, true).Value.LastSeen + 2246400 > TCPManager.GetTimeStamp())
+
+
+                            bool newleaderfound = false;
+
+                            for (int i = 0; i < members.Count; i++)
                             {
-                                newleaderfound = true;
-                                guild.LeaderId = members[i].CharacterId;
-                                members[i].RankId = 9;
-                                CharMgr.Database.SaveObject(members[i]);
-                                Database.SaveObject(guild);
-                                Log.Info("LoadGuilds", guild.Name + " Leader not found banned or not logged in for 26 days, set to new leader " + members[i].CharacterId);
-                                break;
+                                if (CharMgr.GetCharacter(members[i].CharacterId, true).Value.LastSeen + 2246400 >
+                                    TCPManager.GetTimeStamp())
+                                {
+                                    newleaderfound = true;
+                                    guild.LeaderId = members[i].CharacterId;
+                                    members[i].RankId = 9;
+                                    CharMgr.Database.SaveObject(members[i]);
+                                    Database.SaveObject(guild);
+                                    Log.Info("LoadGuilds",
+                                        guild.Name +
+                                        " Leader not found banned or not loged in for 26 days, set to new leader " +
+                                        members[i].CharacterId);
+                                    break;
+                                }
                             }
+
+                            if (!newleaderfound)
+                                Guild.GetGuild(guild.Name).Inactive = true;
                         }
-                        if (!newleaderfound)
-                            Guild.GetGuild(guild.Name).Inactive = true;
+                    }
+                    else
+                    {
+                        Log.Error("Missing Guild Leader", $"Guild Leader {guild.LeaderId} is missing in the the DB");
                     }
 
                     if (guild.GuildId > Guild.MaxGuildGUID)
