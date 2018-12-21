@@ -789,8 +789,9 @@ namespace WorldServer
                     if (!slayerOilFix)
                     {
                         AddOffensiveStats(caster, damageInfo, 0.2f, false);
-                        AddLinearMitigation(target, damageInfo, 0.2f, false);
                     }
+                    AddLinearMitigation(target, damageInfo, 0.2f, false);
+
                 }
 
                 caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DealingDamage, damageInfo, target);
