@@ -343,7 +343,7 @@ namespace WorldServer.Managers.Commands
             #else
             new GmCommandHandler("debugmode", SetDebugMode, null, EGmLevel.AllStaff, 0, "Enables debugging messages (byte enableDebug)"),
             #endif
-            new GmCommandHandler("togglerank", GmMgr.ToggleShowRank, null, EGmLevel.EmpoweredStaff, 0, "Toggles whether or not to display your staff rank in chat messages."),
+            new GmCommandHandler("togglerank", GmMgr.ToggleShowRank, null, EGmLevel.Management, 0, "Toggles whether or not to display your staff rank in chat messages."),
             new GmCommandHandler("name", SetSurname, null, EGmLevel.EmpoweredStaff, 1, "Changes your last name (string Surname) - use 'clear' to clear the name"),
             new GmCommandHandler("info",Info, null, EGmLevel.AllStaff, 0, "Prints general information about your current target."),
             new GmCommandHandler("aiinfo", AIInfo, null, EGmLevel.AllStaff, 0, "Sends information about the targeted creature's AI state."),
