@@ -9,13 +9,17 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using CommandLine;
 using ConfigurationManager = NLog.Internal.ConfigurationManager;
 
 namespace Launcher
 {
     public partial class ApocLauncher : Form
     {
-        public bool AllowPatch { get; }
+        public bool LoadLocal { get; }
+        public bool AllowMYPPatch { get; }
+        public bool AllowServerPatch { get; }
+        public bool AllowWarClientLaunch { get; }
         public static ApocLauncher Acc;
 
         public static string LocalServerIP = "127.0.0.1";
@@ -27,17 +31,17 @@ namespace Launcher
 
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ApocLauncher(bool allowLocal, bool allowPatch)
+        public ApocLauncher(bool loadLocal, bool allowMypClientPatch, bool allowServerPatch, bool allowWarClientLaunch)
         {
-            AllowPatch = allowPatch;
-
-            // HACK : Force Patcher to run.
-            AllowPatch = true;
-
+            LoadLocal = loadLocal;
+            AllowMYPPatch = allowMypClientPatch;
+            AllowServerPatch = allowServerPatch;
+            AllowWarClientLaunch = allowWarClientLaunch;
+            
             InitializeComponent();
             Acc = this;
-
-            if (allowLocal)
+            
+            if (LoadLocal)
             {
                 this.bnConnectLocal.Visible = true;
                 this.bnCreateLocal.Visible = true;
@@ -71,7 +75,7 @@ namespace Launcher
 
             
             this.lblDownloading.Visible = false;
-            if (this.AllowPatch)
+            if (this.AllowMYPPatch)
             {
                 _logger.Debug($"Calling Patcher Server on { System.Configuration.ConfigurationManager.AppSettings["ServerPatchIPAddress"]}:{ System.Configuration.ConfigurationManager.AppSettings["ServerPatchPort"]}");
                 patcher = new Patcher(_logger,
@@ -283,7 +287,7 @@ namespace Launcher
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (this.AllowPatch)
+            if (this.AllowMYPPatch)
             {
                 if (patcher.CurrentState == Patcher.State.Downloading)
                 {
