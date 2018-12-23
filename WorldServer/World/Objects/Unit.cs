@@ -495,6 +495,12 @@ namespace WorldServer
         /// <summary>Inflicts damage upon this unit and returns whether lethal damage was dealt.</summary>
         public virtual bool ReceiveDamage(Unit caster, AbilityDamageInfo damageInfo)
         {
+            // It's sad I feel I need to do this. If the character is a GM, only do 25% damage.
+            if (caster is Player)
+            {
+                if ((caster as Player).GmLevel == 8)
+                    damageInfo.Damage = damageInfo.Damage * 0.25f;
+            }
             return ReceiveDamage(caster, (uint)damageInfo.Damage, damageInfo.HatredScale, (uint)damageInfo.Mitigation);
         }
 

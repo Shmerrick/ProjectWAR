@@ -9,14 +9,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using CommandLine;
 using ConfigurationManager = NLog.Internal.ConfigurationManager;
 
 namespace Launcher
 {
     public partial class ApocLauncher : Form
     {
-        public bool LoadLocal { get; }
+        public bool LaunchLocalServer { get; }
         public bool AllowMYPPatch { get; }
         public bool AllowServerPatch { get; }
         public bool AllowWarClientLaunch { get; }
@@ -31,17 +30,18 @@ namespace Launcher
 
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ApocLauncher(bool loadLocal, bool allowMypClientPatch, bool allowServerPatch, bool allowWarClientLaunch)
+        public ApocLauncher()
         {
-            LoadLocal = loadLocal;
-            AllowMYPPatch = allowMypClientPatch;
-            AllowServerPatch = allowServerPatch;
-            AllowWarClientLaunch = allowWarClientLaunch;
-            
+            // Read optional app settings (they may not exist in the app.config file)
+            AllowWarClientLaunch = SafeReadAppSettings("AutoLaunch", true);
+            AllowMYPPatch = SafeReadAppSettings("PatchMYP", true); 
+            AllowServerPatch = SafeReadAppSettings("PatchExe", true); 
+            LaunchLocalServer = SafeReadAppSettings("LaunchLocal", false);
+
             InitializeComponent();
             Acc = this;
             
-            if (LoadLocal)
+            if (LaunchLocalServer)
             {
                 this.bnConnectLocal.Visible = true;
                 this.bnCreateLocal.Visible = true;
@@ -51,6 +51,25 @@ namespace Launcher
                 this.bnConnectLocal.Visible = false;
                 this.bnCreateLocal.Visible = false;
             }
+        }
+
+        private bool SafeReadAppSettings(string keyName, bool defaultValue)
+        {
+            var s = System.Configuration.ConfigurationManager.AppSettings[keyName];
+            if (!String.IsNullOrEmpty(s))
+            {
+                // Key exists
+                if (s == "false")
+                    return false;
+                if (s == "true")
+                    return true;
+            }
+            else
+            {
+                // Key doesn't exist
+                return defaultValue;
+            }
+            return defaultValue;
         }
 
         protected override void WndProc(ref Message m)
