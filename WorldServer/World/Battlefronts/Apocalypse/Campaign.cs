@@ -88,6 +88,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public bool DefenderPopTooSmall { get; set; }
         public int Tier { get; set; }
 
+        public int DestructionDominationTimer { get; set; }
+        public int OrderDominationTimer { get; set; }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -115,6 +118,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             AgainstAllOddsTracker = new AAOTracker();
             _rewardManager = new RVRRewardManager();
 
+            DestructionDominationTimer = 5 * 60;
+            OrderDominationTimer = 5 * 60;
+
+
             _EvtInterface.AddEvent(UpdateBattleFrontScalers, 12000, 0); // 120000
             _EvtInterface.AddEvent(UpdateVictoryPoints, 6000, 0);
 
@@ -128,6 +135,106 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // record metrics
             _EvtInterface.AddEvent(SavePlayerContribution, 60000, 0);
             _EvtInterface.AddEvent(RecordMetrics, 60000, 0);
+            _EvtInterface.AddEvent(DestructionDominationCheck, 60000, 0);
+
+        }
+
+        private void DestructionDominationCheck()
+        {
+            var destructionDominationCount = 0;
+
+            foreach (var keep in Keeps)
+            {
+                if (keep.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                {
+                    if (keep.KeepStatus == KeepStatus.KEEPSTATUS_SAFE)
+                    {
+                        destructionDominationCount++;
+                    }
+                }
+            }
+
+            foreach (var campaignObjective in Objectives)
+            {
+                if (campaignObjective.OwningRealm == Realms.REALMS_REALM_DESTRUCTION)
+                {
+                    if (campaignObjective.State == StateFlags.Secure)
+                    {
+                        destructionDominationCount++;
+                    }
+                }
+            }
+
+            if (destructionDominationCount == 8)
+            {
+                _EvtInterface.AddEvent(DestructionDominationZoneLock, DestructionDominationTimer, 0);
+            }
+            else
+            {
+                _EvtInterface.RemoveEvent(DestructionDominationZoneLock);
+            }
+
+        }
+
+        /// <summary>
+        /// Lock this zone as a Domination Lock.
+        /// </summary>
+        private void DestructionDominationZoneLock()
+        {
+            BattlefrontLogger.Info($"Destruction Domination Victory!");
+            VictoryPointProgress.DestructionVictoryPoints = BattleFrontConstants.LOCK_VICTORY_POINTS;
+
+            // Remove the timer
+            _EvtInterface.RemoveEvent(DestructionDominationZoneLock);
+
+        }
+
+        /// <summary>
+        /// Lock this zone as a Domination Lock.
+        /// </summary>
+        private void OrderDominationZoneLock()
+        {
+            BattlefrontLogger.Info($"Order Domination Victory!");
+            VictoryPointProgress.OrderVictoryPoints = BattleFrontConstants.LOCK_VICTORY_POINTS;
+
+            // Remove the timer
+            _EvtInterface.RemoveEvent(OrderDominationZoneLock);
+        }
+
+        private void OrderDominationCheck()
+        {
+            var OrderDominationCount = 0;
+
+            foreach (var keep in Keeps)
+            {
+                if (keep.Realm == Realms.REALMS_REALM_ORDER)
+                {
+                    if (keep.KeepStatus == KeepStatus.KEEPSTATUS_SAFE)
+                    {
+                        OrderDominationCount++;
+                    }
+                }
+            }
+
+            foreach (var campaignObjective in Objectives)
+            {
+                if (campaignObjective.OwningRealm == Realms.REALMS_REALM_ORDER)
+                {
+                    if (campaignObjective.State == StateFlags.Secure)
+                    {
+                        OrderDominationCount++;
+                    }
+                }
+            }
+
+            if (OrderDominationCount == 8)
+            {
+                _EvtInterface.AddEvent(OrderDominationZoneLock, OrderDominationTimer, 0);
+            }
+            else
+            {
+                _EvtInterface.RemoveEvent(OrderDominationZoneLock);
+            }
 
         }
 
