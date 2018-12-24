@@ -135,8 +135,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 player.AddXp(xp, false, false);
                 player.AddRenown(rr, false, RewardType.ObjectiveCapture, objectiveName);
                 
-                // TODO
-                //Campaign.AddContribution(player, (uint)baseRp);
 
                 _logger.Trace($"Player:{player.Name} ScaleMult:{rewardScaleMultiplier} XP:{xp} RR:{rr}");
             }
@@ -152,11 +150,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 					break;
 
 				case BORewardType.BIG: // big tick
-					if (owningRealm == Realms.REALMS_REALM_ORDER)
-						VP.OrderVictoryPoints += 50;
-					else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
-						VP.DestructionVictoryPoints += 50;
-					break;
+				    if (owningRealm == Realms.REALMS_REALM_ORDER)
+				    {
+				        VP.OrderVictoryPoints += 50;
+				        VP.DestructionVictoryPoints -= 50;
+                    }
+				    else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
+				    {
+				        VP.DestructionVictoryPoints += 50;
+				        VP.OrderVictoryPoints -= 50;
+                    }
+
+				    break;
 
 				case BORewardType.SMALL_LOCKED: // small tick
 					if (owningRealm == Realms.REALMS_REALM_ORDER)
