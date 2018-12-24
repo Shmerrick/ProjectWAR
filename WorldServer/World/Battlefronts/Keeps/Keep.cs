@@ -143,12 +143,13 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
 
 
-            if (WorldMgr._Keeps.ContainsKey(Info.KeepId))
-                WorldMgr._Keeps[Info.KeepId] = this;
-            else
-            {
-                WorldMgr._Keeps.Add(Info.KeepId, this);
-            }
+            //TODO : Uncomment
+            //if (WorldMgr._Keeps.ContainsKey(Info.KeepId))
+            //    WorldMgr._Keeps[Info.KeepId] = this;
+            //else
+            //{
+            //    WorldMgr._Keeps.Add(Info.KeepId, this);
+            //}
 
             SupplyReturnPoints = BattleFrontService.GetResourceSpawns(Info.KeepId);
 
@@ -205,13 +206,14 @@ namespace WorldServer.World.BattleFronts.Keeps
 						if (captain != null)
 						{
 							var allUsedCreatures = Creatures.Select(y => y).Where(y => y.Creature != null).Select(x => x.Info).ToList();
-							if (allUsedCreatures.Contains(captain))
-							{
-								Keep_Creature add = captain.CreateDeepCopy();
-								Creatures.Add(new KeepNpcCreature(Region, add, this));
-							}
-							else
-								Creatures.Add(new KeepNpcCreature(Region, captain, this));
+                            // TODO : Uncomment
+							//if (allUsedCreatures.Contains(captain))
+							//{
+							//	Keep_Creature add = captain.CreateDeepCopy();
+							//	Creatures.Add(new KeepNpcCreature(Region, add, this));
+							//}
+							//else
+							//	Creatures.Add(new KeepNpcCreature(Region, captain, this));
 						}
 					}
 				}
@@ -1859,8 +1861,9 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                 spawn.BuildFromProto(proto);
 
-                h.CurrentWeapon = new Siege(spawn, player, this, SiegeType.OIL);
-                Region.AddObject(h.CurrentWeapon, spawn.ZoneId);
+                //TODO : Uncomment!
+                //h.CurrentWeapon = new Siege(spawn, player, this, SiegeType.OIL);
+                //Region.AddObject(h.CurrentWeapon, spawn.ZoneId);
 
                 player.ItmInterface.DeleteItem(slot, 1);
                 return;
@@ -2000,10 +2003,12 @@ namespace WorldServer.World.BattleFronts.Keeps
                     return;
             }
 
-            Siege siege = Siege.SpawnSiegeWeapon(player, this, protoEntry, true);
-            _activeMateriel[type].Add(siege);
-            Region.AddObject(siege, Info.ZoneId);
-            _materielSupply[type] -= 1f;
+            // this->keep
+            //TODO : uncomment!
+            //Siege siege = Siege.SpawnSiegeWeapon(player, this, protoEntry, true);
+            //_activeMateriel[type].Add(siege);
+            //Region.AddObject(siege, Info.ZoneId);
+            //_materielSupply[type] -= 1f;
 
             
         }

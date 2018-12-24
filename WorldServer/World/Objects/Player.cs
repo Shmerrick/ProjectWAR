@@ -6444,7 +6444,7 @@ namespace WorldServer
                 }
                 else if (pqarea > 28)  // keeps
                 {
-                    foreach (Keep keep in Region.Campaign.Keeps)
+                    foreach (var keep in Region.Campaign.Keeps)
                     {
                         if (keep.Info.ZoneId == Zone.ZoneId && keep.Info.PQuest?.PQAreaId == pqarea)
                         {

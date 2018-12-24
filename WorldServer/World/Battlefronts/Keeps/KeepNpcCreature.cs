@@ -1,13 +1,10 @@
-using System;
-using System.Xml.Schema;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.World.BattleFronts;
+using NLog;
+using System;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
-using System.Threading;
-using NLog;
 
 namespace WorldServer.World.BattleFronts.Keeps
 {
@@ -251,13 +248,13 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             public bool OnReceiveDamage(Object sender, object args)
             {
-                if (_flagGrd.Info.KeepLord || _flagGrd.Creature.Spawn.Proto.CreatureType == (int)GameData.CreatureTypes.SIEGE)
-                {
-                    _keep.ResetSafeTimer();
+                _keep.OnKeepNpcAttacked(PctHealth);
 
-                    if (_flagGrd.Info.KeepLord)
-                        _keep.OnKeepLordAttacked(PctHealth);
-                }
+                if (_flagGrd.Info.KeepLord)
+                    _keep.OnKeepLordAttacked(PctHealth);
+
+                if (_flagGrd.Creature.Spawn.Proto.CreatureType == (int)GameData.CreatureTypes.SIEGE)
+                    _keep.OnKeepSiegeAttacked(PctHealth);
 
                 return false;
             }

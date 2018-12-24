@@ -12,13 +12,13 @@ namespace WorldServer
 {
     public class Siege : Creature
     {
-        public Keep Keep { get; }
+        public BattleFrontKeep Keep { get; }
         private readonly SiegeType _type;
 
         public const int MAX_SHOTS = 15;
         public int ShotCount = MAX_SHOTS;
 
-        public Siege(Creature_spawn spawn, Player owner, Keep k, SiegeType type) : base(spawn)
+        public Siege(Creature_spawn spawn, Player owner, BattleFrontKeep k, SiegeType type) : base(spawn)
         {
             Keep = k;
 
@@ -28,7 +28,7 @@ namespace WorldServer
             SiegeInterface.DeathTime = TCPManager.GetTimeStampMS() + 300 * 1000;
         }
 
-        public static Siege SpawnSiegeWeapon(Player plr, Keep keep, uint entry, bool defender)
+        public static Siege SpawnSiegeWeapon(Player plr, BattleFrontKeep keep, uint entry, bool defender)
         {
             Creature_proto proto = CreatureService.GetCreatureProto(entry);
 

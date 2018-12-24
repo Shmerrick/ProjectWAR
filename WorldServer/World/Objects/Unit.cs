@@ -933,7 +933,6 @@ namespace WorldServer
 
         public virtual void GenerateLoot(Player looter, float dropMod)
         {
-            DeathLogger.Debug($"Looter : {looter.Name}");
             RewardLogger.Debug($"Looter : {looter.Name}");
             
             lootContainer = LootsMgr.GenerateLoot(this, looter, dropMod);

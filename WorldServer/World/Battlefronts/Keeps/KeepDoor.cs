@@ -22,9 +22,9 @@ namespace WorldServer.World.BattleFronts.Keeps
         public RegionMgr Region;
         public KeepGameObject GameObject;
         public Keep_Door Info;
-        public Keep Keep;
+        public BattleFrontKeep Keep;
 
-        public KeepDoor(RegionMgr region, Keep_Door info, Keep keep)
+        public KeepDoor(RegionMgr region, Keep_Door info, BattleFrontKeep keep)
         {
             Region = region;
             Info = info;
@@ -34,7 +34,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public class KeepGameObject : GameObject
         {
             KeepDoor _keepDoor;
-            Keep _keep;
+            BattleFrontKeep _keep;
 
             public uint DoorId
             {
@@ -48,7 +48,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             private readonly Point3D[] _enterExitPoints = new Point3D[2];
 
-            public KeepGameObject(GameObject_spawn spawn, KeepDoor keepDoor, Keep keep)
+            public KeepGameObject(GameObject_spawn spawn, KeepDoor keepDoor, BattleFrontKeep keep)
             {
                 _keep = keep;
                 Spawn = spawn;
@@ -86,7 +86,6 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             protected override void SetDeath(Unit killer)
             {
-                _keep.ResetSafeTimer();
                 base.SetDeath(killer);
                 OpenDoor(false);
                 EvtInterface.RemoveEventNotify(EventName.OnReceiveDamage, OnReceiveDamage);
@@ -107,27 +106,6 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                 if (IsDead || PendingDisposal || IsInvulnerable)
                     return false;
-
-                //debuff damage on door
-                var vp = (Realm == Realms.REALMS_REALM_ORDER)
-                    ? (uint)Region.Campaign.VictoryPointProgress.DestructionVictoryPoints
-                    : (uint)Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
-
-                if (vp >= 0 && vp < 2500)
-                {
-                    Log.Debug("DOOR BEFORE BUFF", damage.ToString());
-                    var newDmg = damage * 80 / 100;
-                    damage = newDmg;
-                    Log.Debug("DOOR AFTER BUFF", damage.ToString());
-
-                }
-                else if (vp >= 2500 && vp < 4000)
-                {
-                    Log.Debug("DOOR BEFORE BUFF", damage.ToString());
-                    var newDmg = damage * 90 / 100;
-                    damage = newDmg;
-                    Log.Debug("DOOR AFTER BUFF", damage.ToString());
-                }
 
                 lock (DamageApplicationLock)
                 {
@@ -172,12 +150,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             public bool OnReceiveDamage(Object sender, object args)
             {
-                // RB   6/13/2016   args is damage value 
-                if (args != null && Convert.ToInt32(args) > 1)
-                    _keep.ResetSafeTimer();
-
                 _keep.OnKeepDoorAttacked(_keepDoor.Info.Number, PctHealth);
-
                 return false;
             }
 
@@ -287,10 +260,10 @@ namespace WorldServer.World.BattleFronts.Keeps
                 Occlusion.SetFixtureVisible(_keepDoor.Info.DoorId, true);
                 Destroy();
 
-                if (_keepDoor.Info.Number == (int)KeepDoorType.OuterMain && _keep.LastMessage >= Keep.KeepMessage.Outer0)
-                    _keep.LastMessage = Keep.KeepMessage.Safe;
-                else if (_keepDoor.Info.Number == (int)KeepDoorType.InnerMain && _keep.LastMessage >= Keep.KeepMessage.Inner0)
-                    _keep.LastMessage = Keep.KeepMessage.Outer0;
+                //if (_keepDoor.Info.Number == (int)KeepDoorType.OuterMain && _keep.LastMessage >= Keep.KeepMessage.Outer0)
+                //    _keep.LastMessage = Keep.KeepMessage.Safe;
+                //else if (_keepDoor.Info.Number == (int)KeepDoorType.InnerMain && _keep.LastMessage >= Keep.KeepMessage.Inner0)
+                //    _keep.LastMessage = Keep.KeepMessage.Outer0;
             }
         }
 

@@ -44,7 +44,7 @@ namespace WorldServer.Managers.Commands
                 DisplayKeepStatus(orderKeep, plr);
         }
 
-        private static void DisplayKeepStatus(Keep keep, Player plr)
+        private static void DisplayKeepStatus(BattleFrontKeep keep, Player plr)
         {
             plr.SendClientMessage($"Keep Status : {keep.KeepStatus}");
             plr.SendClientMessage($"Ram Deployed : {keep.RamDeployed}");

@@ -59,6 +59,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                     {new StateTransition(ProcessState.Initial, Command.OnOpenBattleFront), ProcessState.Safe},
                     {new StateTransition(ProcessState.Safe, Command.OnOuterDoorDown), ProcessState.OuterDown},
+                    {new StateTransition(ProcessState.Safe, Command.OnInnerDoorDown), ProcessState.InnerDown},
                     {new StateTransition(ProcessState.OuterDown, Command.OnInnerDoorDown), ProcessState.InnerDown},
                     {new StateTransition(ProcessState.Safe, Command.OnLordWounded), ProcessState.LordWounded},
                     {new StateTransition(ProcessState.OuterDown, Command.OnLordWounded), ProcessState.LordWounded},
@@ -70,7 +71,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {new StateTransition(ProcessState.InnerDown, Command.OnDefenceTickTimerEnd), ProcessState.DefenceTick},
                     {new StateTransition(ProcessState.DefenceTick, Command.OnBackToSafeTimerEnd), ProcessState.Safe},
                     {new StateTransition(ProcessState.OuterDown, Command.OnOuterDownTimerEnd), ProcessState.Safe},
-                    {new StateTransition(ProcessState.InnerDown, Command.OnInnerDownTimerEnd), ProcessState.Safe}
+                    {new StateTransition(ProcessState.InnerDown, Command.OnInnerDownTimerEnd), ProcessState.Safe},
+
+                    {new StateTransition(ProcessState.Locked, Command.OnOpenBattleFront), ProcessState.Safe}
                 };
             }
 

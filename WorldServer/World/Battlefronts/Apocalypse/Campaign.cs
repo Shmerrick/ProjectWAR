@@ -47,7 +47,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         /// A list of keeps within this Campaign.
         /// </summary>
-        public readonly List<Keep> Keeps = new List<Keep>();
+        public readonly List<BattleFrontKeep> Keeps = new List<BattleFrontKeep>();
         public string ActiveCampaignName => BattleFrontManager.ActiveBattleFrontName;
 
         protected readonly EventInterface _EvtInterface = new EventInterface();
@@ -664,7 +664,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             BattlefrontLogger.Debug($"Loading {keeps.Count} keeps for Region {Region.RegionId}");
             foreach (Keep_Info info in keeps)
             {
-                Keep keep = new Keep(info, (byte)Tier, Region);
+                BattleFrontKeep keep = new BattleFrontKeep(info, (byte)Tier, Region);
                 keep.Realm = (Realms)keep.Info.Realm;
 
                 Keeps.Add(keep);
@@ -690,12 +690,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public Keep GetClosestKeep(Point3D destPos)
+        public BattleFrontKeep GetClosestKeep(Point3D destPos)
         {
-            Keep bestKeep = null;
+            BattleFrontKeep bestKeep = null;
             ulong bestDist = 0;
 
-            foreach (Keep keep in Keeps)
+            foreach (var keep in Keeps)
             {
                 ulong curDist = keep.GetDistanceSquare(destPos);
 
@@ -709,12 +709,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return bestKeep;
         }
 
-        public Keep GetClosestFriendlyKeep(Point3D destPos, Realms myRealm)
+        public BattleFrontKeep GetClosestFriendlyKeep(Point3D destPos, Realms myRealm)
         {
-            Keep bestKeep = null;
+            BattleFrontKeep bestKeep = null;
             ulong bestDist = 0;
 
-            foreach (Keep keep in Keeps)
+            foreach (var keep in Keeps)
             {
                 if (keep.Realm == myRealm)
                 {
@@ -731,9 +731,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return bestKeep;
         }
 
-        public Keep GetZoneKeep(ushort zoneId, int realm)
+        public BattleFrontKeep GetZoneKeep(ushort zoneId, int realm)
         {
-            foreach (Keep keep in Keeps)
+            foreach (var keep in Keeps)
                 if (keep.Info.KeepId == realm)
                     return keep;
             return null;

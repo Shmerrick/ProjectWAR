@@ -229,12 +229,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {
                         if (rerollMode == CampaignRerollMode.INIT)
                         {
-                            keep.LockKeep((Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm, false, false);
+                            keep.OnLockZone((Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm);
                             ProgressionLogger.Debug($" Locking Keep {keep.Info.Name} to {(Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm} {keep.Name} {keep.KeepStatus} ");
                         }
                         else
                         {
-                            keep.LockKeep(Realms.REALMS_REALM_NEUTRAL, false, false);
+                            keep.OnLockZone(Realms.REALMS_REALM_NEUTRAL);
                             ProgressionLogger.Debug($" Locking Keep {keep.Info.Name} to Neutral {keep.Name} {keep.KeepStatus} ");
                         }
                     }
@@ -328,12 +328,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     return this.ActiveBattleFront;
                 }
 
-                foreach (Keep keep in activeRegion.Campaign.Keeps)
+                foreach (var keep in activeRegion.Campaign.Keeps)
                 {
                     if (ActiveBattleFront.ZoneId == keep.ZoneId)
                     {
-                        ProgressionLogger.Debug($"Notifying Pairing unlocked Name : {keep.Info.Name} Zone : {keep.ZoneId} ");
-                        keep.NotifyPairingUnlocked();
+                        ProgressionLogger.Debug($"Notifying Pairing (OpenBattleFront) unlocked Name : {keep.Info.Name} Zone : {keep.ZoneId} ");
+                        keep.OpenBattleFront();
                     }
                 }
 
@@ -359,10 +359,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     flag.LockObjective(realm, true);
             }
 
-            foreach (Keep keep in activeRegion.Campaign.Keeps)
+            foreach (BattleFrontKeep keep in activeRegion.Campaign.Keeps)
             {
                 if (ActiveBattleFront.ZoneId == keep.ZoneId)
-                    keep.LockKeep(realm, true, true);
+                    keep.OnLockZone(realm);
             }
 
             activeRegion.Campaign.LockBattleFront(realm, forceNumberBags);
