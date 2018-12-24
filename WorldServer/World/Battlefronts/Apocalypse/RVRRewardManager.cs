@@ -146,23 +146,23 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			{
 				case BORewardType.SMALL_CONTESTED: // small tick
 					if (owningRealm == Realms.REALMS_REALM_ORDER)
-						VP.OrderVictoryPoints += 15;
+						VP.OrderVictoryPoints += 0;
 					else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
-						VP.DestructionVictoryPoints += 15;
+						VP.DestructionVictoryPoints += 0;
 					break;
 
 				case BORewardType.BIG: // big tick
 					if (owningRealm == Realms.REALMS_REALM_ORDER)
-						VP.OrderVictoryPoints += 200;
+						VP.OrderVictoryPoints += 50;
 					else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
-						VP.DestructionVictoryPoints += 200;
+						VP.DestructionVictoryPoints += 50;
 					break;
 
 				case BORewardType.SMALL_LOCKED: // small tick
 					if (owningRealm == Realms.REALMS_REALM_ORDER)
-						VP.OrderVictoryPoints += 30;
+						VP.OrderVictoryPoints += 0;
 					else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
-						VP.DestructionVictoryPoints += 30;
+						VP.DestructionVictoryPoints += 0;
 					break;
 
 				default:

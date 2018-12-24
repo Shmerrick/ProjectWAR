@@ -1326,12 +1326,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 					break;
 			}
 
-			if (capturingRealm == Realms.REALMS_REALM_ORDER)
-				BattleFront.VictoryPointProgress.OrderVictoryPoints += VP.OrderVictoryPoints;
-			else if (capturingRealm == Realms.REALMS_REALM_DESTRUCTION)
-				BattleFront.VictoryPointProgress.DestructionVictoryPoints += VP.DestructionVictoryPoints;
+		    if (capturingRealm == Realms.REALMS_REALM_ORDER)
+		    {
+		        BattleFront.VictoryPointProgress.OrderVictoryPoints += VP.OrderVictoryPoints;
+		        BattleFront.VictoryPointProgress.DestructionVictoryPoints -= VP.DestructionVictoryPoints;
+            }
+		    else if (capturingRealm == Realms.REALMS_REALM_DESTRUCTION)
+		    {
+		        BattleFront.VictoryPointProgress.DestructionVictoryPoints += VP.DestructionVictoryPoints;
+		        BattleFront.VictoryPointProgress.OrderVictoryPoints -= VP.OrderVictoryPoints;
+            }
 
-			// Make sure VP dont go less than 0
+		    // Make sure VP dont go less than 0
 			if (BattleFront.VictoryPointProgress.OrderVictoryPoints <= 0)
 				BattleFront.VictoryPointProgress.OrderVictoryPoints = 0;
 

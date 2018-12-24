@@ -151,12 +151,12 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             SupplyReturnPoints = BattleFrontService.GetResourceSpawns(Info.KeepId);
 
-            if (SupplyReturnPoints == null)
-                Log.Error("Keep", $"No resource return points for {Info.Name}");
-            else
-            {
-                CreateSupplyDrops();
-            }
+            //if (SupplyReturnPoints == null)
+            //    Log.Error("Keep", $"No resource return points for {Info.Name}");
+            //else
+            //{
+            //    CreateSupplyDrops();
+            //}
         }
 
 		#region Update AAO multiplier
@@ -542,11 +542,13 @@ namespace WorldServer.World.BattleFronts.Keeps
                 _logger.Info($"Awarding VP for Keep Lord kill");
                 if (Realm == Realms.REALMS_REALM_ORDER)
                 {
-                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints += 1500;
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints += 300;
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints -= 300;
                 }
                 else
                 {
-                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += 1500;
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += 300;
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints -= 300;
                 }
                
             }
@@ -867,78 +869,78 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public GameObject ResourceReturnFlag;
 
-        public void CreateSupplyDrops()
-        {
-            for (int index = 0; index < SupplyReturnPoints.Count; index++)
-            {
-                var returnPoint = SupplyReturnPoints[index];
+        //public void CreateSupplyDrops()
+        //{
+        //    for (int index = 0; index < SupplyReturnPoints.Count; index++)
+        //    {
+        //        var returnPoint = SupplyReturnPoints[index];
 
-                Realms displayRealm = index == 0 ? Realm : GetContestedRealm();
+        //        Realms displayRealm = index == 0 ? Realm : GetContestedRealm();
 
-                GameObject_proto proto = GameObjectService.GetGameObjectProto(displayRealm == Realms.REALMS_REALM_ORDER ? (uint)100650 : (uint)100651);
+        //        GameObject_proto proto = GameObjectService.GetGameObjectProto(displayRealm == Realms.REALMS_REALM_ORDER ? (uint)100650 : (uint)100651);
 
-                Point3D flagPos = ZoneService.GetWorldPosition(Zone.Info, (ushort) returnPoint.X, (ushort) returnPoint.Y, (ushort) returnPoint.Z);
+        //        Point3D flagPos = ZoneService.GetWorldPosition(Zone.Info, (ushort) returnPoint.X, (ushort) returnPoint.Y, (ushort) returnPoint.Z);
 
-                GameObject_spawn spawn = new GameObject_spawn
-                {
-                    WorldX = flagPos.X,
-                    WorldY = flagPos.Y,
-                    WorldZ = flagPos.Z,
-                    WorldO = returnPoint.O,
-                    ZoneId = Info.ZoneId
-                };
+        //        GameObject_spawn spawn = new GameObject_spawn
+        //        {
+        //            WorldX = flagPos.X,
+        //            WorldY = flagPos.Y,
+        //            WorldZ = flagPos.Z,
+        //            WorldO = returnPoint.O,
+        //            ZoneId = Info.ZoneId
+        //        };
 
-                spawn.BuildFromProto(proto);
+        //        spawn.BuildFromProto(proto);
 
-                switch (displayRealm)
-                {
-                    case Realms.REALMS_REALM_ORDER:
-                        switch (Zone.Info.ZoneId/100)
-                        {
-                            // Dwarf
-                            case 0:
-                                spawn.DisplayID = 3238;
-                                break;
+        //        switch (displayRealm)
+        //        {
+        //            case Realms.REALMS_REALM_ORDER:
+        //                switch (Zone.Info.ZoneId/100)
+        //                {
+        //                    // Dwarf
+        //                    case 0:
+        //                        spawn.DisplayID = 3238;
+        //                        break;
 
-                            // Empire
-                            case 1:
-                                spawn.DisplayID = 4753;
-                                break;
+        //                    // Empire
+        //                    case 1:
+        //                        spawn.DisplayID = 4753;
+        //                        break;
 
-                            // High Elf
-                            case 2:
-                                spawn.DisplayID = 4769;
-                                break;
-                        }
-                        break;
-                    case Realms.REALMS_REALM_DESTRUCTION:
-                        switch (Zone.Info.ZoneId/100)
-                        {
-                            // Greenskin
-                            case 0:
-                                spawn.DisplayID = 4779;
-                                break;
+        //                    // High Elf
+        //                    case 2:
+        //                        spawn.DisplayID = 4769;
+        //                        break;
+        //                }
+        //                break;
+        //            case Realms.REALMS_REALM_DESTRUCTION:
+        //                switch (Zone.Info.ZoneId/100)
+        //                {
+        //                    // Greenskin
+        //                    case 0:
+        //                        spawn.DisplayID = 4779;
+        //                        break;
 
-                            // Chaos
-                            case 1:
-                                spawn.DisplayID = 4782;
-                                break;
+        //                    // Chaos
+        //                    case 1:
+        //                        spawn.DisplayID = 4782;
+        //                        break;
 
-                            // Dark Elf
-                            case 2:
-                                spawn.DisplayID = 1463;
-                                break;
-                        }
-                        break;
-                }
+        //                    // Dark Elf
+        //                    case 2:
+        //                        spawn.DisplayID = 1463;
+        //                        break;
+        //                }
+        //                break;
+        //        }
 
-                ResourceReturnFlag = Region.CreateGameObject(spawn);
+        //        ResourceReturnFlag = Region.CreateGameObject(spawn);
 
-                ResourceReturnFlag.CaptureDuration = 3;
-                ResourceReturnFlag.AssignCaptureCheck(CheckHoldingSupplies);
-                //ResourceReturnFlag.AssignCaptureDelegate(SuppliesReturned);
-            }
-        }
+        //        ResourceReturnFlag.CaptureDuration = 3;
+        //        ResourceReturnFlag.AssignCaptureCheck(CheckHoldingSupplies);
+        //        //ResourceReturnFlag.AssignCaptureDelegate(SuppliesReturned);
+        //    }
+        //}
 
         public bool CheckHoldingSupplies(Player returner)
         {
@@ -1716,79 +1718,66 @@ namespace WorldServer.World.BattleFronts.Keeps
             LastMessage = KeepMessage.Safe;
         }
 
+        /// <summary>
+        /// The campaign (pairing) for this keep has just unlocked. Set the intial owner according to the zone.
+        /// </summary>
         public void NotifyPairingUnlocked()
         {
             // Default was 15, changed to 10
             int _keepLockTime = (10*60*1000);
 
-            Realms unlockedRealm = GetContestedRealm();
-
-            if (unlockedRealm != Realm)
-            {
-                Realm = unlockedRealm;
-
-                foreach (KeepNpcCreature crea in Creatures)
-					if (!crea.Info.IsPatrol)
-						crea.SpawnGuard(Realm);
-
-				foreach (KeepDoor door in Doors)
-                    door.Spawn();
-            }
-
-            UpdateKeepStatus(KeepStatus.KEEPSTATUS_LOCKED);
+            UpdateKeepStatus(KeepStatus.KEEPSTATUS_SAFE);
 
             EvtInterface.RemoveEvent(UpdateResources);
 
             LastMessage = KeepMessage.Safe;
 
-            EvtInterface.AddEvent(ReopenKeep, _keepLockTime, 1);
-
             SendKeepStatus(null);
         }
 
-        public Realms GetContestedRealm()
-        {
-            switch (Info.KeepId)
-            {
-                case 6:  // Kazad Dammaz
-                case 15: // Wilhelm's Fist
-                case 26: // Pillars of Remembrance
-                    Log.Info(Info.Name, "Overriding control of this keep towards Destruction");
-                    return Realms.REALMS_REALM_DESTRUCTION;
-                case 9: // Ironskin Skar
-                case 20: // Charon's Citadel
-                case 30: // Wrath's Resolve
-                    Log.Info(Info.Name, "Overriding control of this keep towards Order");
-                    return Realms.REALMS_REALM_ORDER;
-                default:
-                    return (Realms)Info.Realm;
-            }
-        }
+        //public Realms GetInitialOwner()
+        //{
+        //    switch (Info.KeepId)
+        //    {
+        //        case 6:  // Kazad Dammaz
+        //        case 15: // Wilhelm's Fist
+        //        case 26: // Pillars of Remembrance
+        //            Log.Info(Info.Name, "Overriding control of this keep towards Destruction");
+        //            return Realms.REALMS_REALM_DESTRUCTION;
+        //        case 9: // Ironskin Skar
+        //        case 20: // Charon's Citadel
+        //        case 30: // Wrath's Resolve
+        //            Log.Info(Info.Name, "Overriding control of this keep towards Order");
+        //            return Realms.REALMS_REALM_ORDER;
+        //        default:
+        //            return (Realms)Info.Realm;
+        //    }
+        //}
 
-        public void ReopenKeep()
-        {
-            UpdateKeepStatus(KeepStatus.KEEPSTATUS_SAFE);
+        //public void ReopenKeep()
+        //{
+        //    UpdateKeepStatus(KeepStatus.KEEPSTATUS_SAFE);
 
-            InformRankOne = false;
+        //    InformRankOne = false;
 
-            EvtInterface.AddEvent(UpdateResources, 60000, 0);
+        //    EvtInterface.AddEvent(UpdateResources, 60000, 0);
 
-            foreach (KeepDoor door in Doors)
-            {
-                door.GameObject.SetAttackable(true);
-            }
+        //    foreach (KeepDoor door in Doors)
+        //    {
+        //        door.GameObject.SetAttackable(true);
+        //    }
 
-            foreach (Object obj in Region.Objects)
-            {
-                Player plr = obj as Player;
+        //    foreach (Object obj in Region.Objects)
+        //    {
+        //        Player plr = obj as Player;
 
-                if (plr == null || !plr.ValidInTier(Tier, true))
-                    continue;
+        //        if (plr == null || !plr.ValidInTier(Tier, true))
+        //            continue;
 
-                plr.SendLocalizeString(Info.Name + " is now open for capture!", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                plr.SendLocalizeString(Info.Name + " is now open for capture!", Realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE, Localized_text.CHAT_TAG_DEFAULT);
-            }
-        }
+        //        plr.SendLocalizeString(Info.Name + " is now open for capture!", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
+        //        plr.SendLocalizeString(Info.Name + " is now open for capture!", Realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE, Localized_text.CHAT_TAG_DEFAULT);
+        //    }
+        //}
 
 #endregion
 

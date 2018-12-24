@@ -54,7 +54,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// Minimal number of victory points required for locking
         /// NOT What the game is using as lock values.
         /// </summary>
-        public static float LOCK_VICTORY_POINTS = 5000f;
+        public static float LOCK_VICTORY_POINTS = 1000f;
 
         #endregion
 
