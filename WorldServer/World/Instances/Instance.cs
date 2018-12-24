@@ -326,6 +326,7 @@ namespace WorldServer
                     spawn.WorldX = obj.WorldX;
                     spawn.ZoneId = obj.ZoneID;
                     spawn.Enabled = 1;
+                    spawn.Level = spawn.Proto.MinLevel;
 
 					InstanceBossSpawn IS = null;
 
