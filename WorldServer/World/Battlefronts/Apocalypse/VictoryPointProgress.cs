@@ -159,5 +159,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			OrderVictoryPoints = 0;
             DestructionVictoryPoints = 0;
         }
+
+        public void AddKeepTake(Realms attackingRealm)
+        {
+            if (attackingRealm == Realms.REALMS_REALM_ORDER)
+            {
+                OrderVictoryPoints += 300;
+                DestructionVictoryPoints -= 300;
+            }
+            else
+            {
+                DestructionVictoryPoints += 300;
+                OrderVictoryPoints -= 300;
+            }
+        }
     }
 }

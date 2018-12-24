@@ -44,6 +44,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             public Process()
             {
                 CurrentState = ProcessState.Initial;
+
                 transitions = new Dictionary<StateTransition, ProcessState>
                 {
                     {new StateTransition(ProcessState.Initial, Command.OnLockZone), ProcessState.Locked},
@@ -73,6 +74,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 };
             }
 
+          
             public ProcessState CurrentState { get; private set; }
 
             public ProcessState GetNext(Command command)

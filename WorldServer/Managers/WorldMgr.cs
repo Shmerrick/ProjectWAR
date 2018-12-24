@@ -1378,7 +1378,7 @@ namespace WorldServer
         #endregion
 
         #region Keep registry, to remove it's static bullshit
-        public static Dictionary<uint, Keep> _Keeps = new Dictionary<uint, Keep>();
+        public static Dictionary<uint, BattleFrontKeep> _Keeps = new Dictionary<uint, Keep>();
 
         public static void SendKeepStatus(Player Plr)
         {

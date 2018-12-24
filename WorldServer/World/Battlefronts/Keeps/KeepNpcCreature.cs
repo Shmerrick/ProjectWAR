@@ -17,9 +17,9 @@ namespace WorldServer.World.BattleFronts.Keeps
         public RegionMgr Region;
         public KeepCreature Creature;
         public Keep_Creature Info;
-        public Keep Keep;
+        public BattleFrontKeep Keep;
 
-        public KeepNpcCreature(RegionMgr region, Keep_Creature info, Keep keep)
+        public KeepNpcCreature(RegionMgr region, Keep_Creature info, BattleFrontKeep keep)
         {
             Region = region;
             Info = info;
@@ -149,12 +149,12 @@ namespace WorldServer.World.BattleFronts.Keeps
         public class KeepCreature : Creature
         {
             private readonly KeepNpcCreature _flagGrd;
-            private readonly Keep _keep;
+            private readonly BattleFrontKeep _keep;
             /// <summary>Incoming damage scaler from 0.25 to 1<summary>
             private volatile float _damageScaler = 1f;
             public AIInterface NearAiInterface = null;
 
-            public KeepCreature(Creature_spawn spawn, KeepNpcCreature flagGrd, Keep keep) : base(spawn)
+            public KeepCreature(Creature_spawn spawn, KeepNpcCreature flagGrd, BattleFrontKeep keep) : base(spawn)
             {
                 _keep = keep;
                 _flagGrd = flagGrd;
@@ -229,28 +229,6 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                 if (_flagGrd.Info.KeepLord)
                 {
-                    //debuff damage on door
-                    var vp = (Realm == Realms.REALMS_REALM_ORDER)
-                        ? (uint)Region.Campaign.VictoryPointProgress.DestructionVictoryPoints
-                        : (uint)Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
-
-                    if (vp >= 0 && vp < 2500)
-                    {
-                        Log.Debug("DOOR BEFORE BUFF", damage.ToString());
-                        var newDmg = damage * 60 / 100;
-                        damage = newDmg;
-                        Log.Debug("DOOR AFTER BUFF", damage.ToString());
-                    }
-                    else if (vp >= 2500 && vp < 4000)
-                    {
-                        Log.Debug("DOOR BEFORE BUFF", damage.ToString());
-                        var newDmg = damage * 75 / 100;
-                        damage = newDmg;
-                        Log.Debug("DOOR AFTER BUFF", damage.ToString());
-                    }
-
-                    if (_keep.LastMessage < Keep.KeepMessage.Inner0)
-                        return false;
                     damage = (uint)(damage * _damageScaler);
                 }
 
@@ -264,33 +242,6 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                 if (_flagGrd.Info.KeepLord)
                 {
-                    if (_keep.LastMessage < Keep.KeepMessage.Inner0)
-                        return false;
-
-                    //debuff damage on door
-                    var vp = (Realm == Realms.REALMS_REALM_ORDER)
-                        ? (uint)Region.Campaign.VictoryPointProgress.DestructionVictoryPoints
-                        : (uint)Region.Campaign.VictoryPointProgress.OrderVictoryPoints;
-
-                    if (vp >= 0 && vp < 2500)
-                    {
-                        Log.Debug("DOOR BEFORE BUFF", damageInfo.Damage.ToString());
-
-                        var newDmg = damageInfo.Damage * 60 / 100;
-                        damageInfo.Damage = newDmg;
-                        Log.Debug("DOOR AFTER BUFF", damageInfo.Damage.ToString());
-
-                    }
-                    else if (vp >= 2500 && vp < 4000)
-                    {
-                        Log.Debug("DOOR BEFORE BUFF", damageInfo.Damage.ToString());
-
-                        var newDmg = damageInfo.Damage * 75 / 100;
-                        damageInfo.Damage = newDmg;
-                        Log.Debug("DOOR AFTER BUFF", damageInfo.Damage.ToString());
-
-                    }
-
                     damageInfo.Mitigation += damageInfo.Damage * (1 - _damageScaler);
                     damageInfo.Damage *= _damageScaler;
                 }
