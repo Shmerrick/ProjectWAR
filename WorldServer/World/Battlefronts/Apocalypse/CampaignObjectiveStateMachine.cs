@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -27,6 +28,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public class Process
         {
+            private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
+
             class StateTransition
             {
                 readonly ProcessState CurrentState;
@@ -82,7 +85,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             public ProcessState MoveNext(Command command)
             {
+                BattlefrontLogger.Debug($"{CurrentState}.{command}==>");
                 CurrentState = GetNext(command);
+                BattlefrontLogger.Debug($"{CurrentState}");
                 return CurrentState;
             }
         }

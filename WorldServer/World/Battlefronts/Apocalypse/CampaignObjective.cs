@@ -87,9 +87,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>Displayed timer in seconds</summary>
         private int _displayedTimer;
 
-        /// <summary>True if a player is threatening players (opposite of secure realm)</summary>
-        private bool _hasThreateningPlayer;
-
         private StateFlags _lastBroadCastState = StateFlags.Hidden;
 		
 		private long _lastGaugeUpdateTick;
@@ -101,9 +98,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>Expected timestamp of next owner change
         ///     <summary>
         public long _nextTransitionTimestamp;
-
-        private long _nextUpdateTick;
-        private short _playersInRangeCount;
 
         /// <summary>Positive between 0 and SECURE_PROGRESS_MAX indicating the objective securisation indicator, in seconds
         ///     <summary>
@@ -123,7 +117,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public bool Ruin = false;
 
         public ApocCommunications CommsEngine { get; set; }
-        public ProximityEngine ProximityEngine { get; set; }
+        
         public Campaign BattleFront { get; set; }
         public string Name { get; set; }
 
@@ -143,12 +137,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 		private static bool _allowLockTimer = true;
 
-		#region Helpers
+        public CampaignObjectiveStateMachine StateMachine = new CampaignObjectiveStateMachine();
+        public CampaignObjectiveStateMachine.Process p = new CampaignObjectiveStateMachine.Process();
 
-		/*
-         * HELPER Methods
-         */
-		internal bool HasThreateningPlayer => _hasThreateningPlayer;
+        #region Helpers
+
 
         #endregion Helpers
 
@@ -158,9 +151,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public CampaignObjective()
         {
             CommsEngine = new ApocCommunications();
-            ProximityEngine = new ProximityEngine();
             RewardManager = new RVRRewardManager();
-            CampaignObjectiveContributions = new ConcurrentDictionary<uint, uint>();
+            
         }
 
         /// <summary>
@@ -180,7 +172,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Tier = (byte)tier;
             State = StateFlags.Unsecure;
 
-            CampaignObjectiveContributions = new ConcurrentDictionary<uint, uint>();
+            
         }
 
         /// <summary>
@@ -213,12 +205,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             CommsEngine = new ApocCommunications();
 
-            ProximityEngine = new ProximityEngine();
-
             RewardManager = new RVRRewardManager();
 
-            CampaignObjectiveContributions = new ConcurrentDictionary<uint, uint>();
-        
 
 			if (objective.Guards != null)
 			{
@@ -257,30 +245,25 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return $"Objective : {this.Name} \t Status : {State} \t Owner : {this.OwningRealm} \t Close players (O/D) : {this._closeOrderCount}/{this._closeDestroCount}";
         }
 
-        /// <summary>
-        ///  For this objective, reward close players with a tick.
-        /// </summary>
-        /// <returns></returns>
-        public VictoryPoint RewardCaptureTick(float pairingRewardScaler)
-        {
-            if (_secureProgress != BattleFrontConstants.MAX_SECURE_PROGRESS)
-                return new VictoryPoint(0, 0);
-            if (_closeOrderCount > 0 == _closeDestroCount > 0)
-                return new VictoryPoint(0, 0); // Both sides have players in range, or none of them -> not fully secured
+        ///// <summary>
+        /////  For this objective, reward close players with a tick.
+        ///// </summary>
+        ///// <returns></returns>
+        //public VictoryPoint RewardCaptureTick(float pairingRewardScaler)
+        //{
+        //    if (_secureProgress != BattleFrontConstants.MAX_SECURE_PROGRESS)
+        //        return new VictoryPoint(0, 0);
+        //    if (_closeOrderCount > 0 == _closeDestroCount > 0)
+        //        return new VictoryPoint(0, 0); // Both sides have players in range, or none of them -> not fully secured
 
-            // Record the character received a tick at this BO (proxy for contribution).
-            foreach (var closePlayer in _closePlayers)
-            {
-                this.CampaignObjectiveContributions.TryAdd(closePlayer.CharacterId, (uint)this.Id);
-            }
             
-            // Scalers in this model are additive.
-            return this.RewardManager.RewardCaptureTick(_closePlayers,
-                OwningRealm,
-                Tier,
-                Name,
-                pairingRewardScaler, BORewardType.SMALL_CONTESTED);
-        }
+        //    // Scalers in this model are additive.
+        //    return this.RewardManager.RewardCaptureTick(_closePlayers,
+        //        OwningRealm,
+        //        Tier,
+        //        Name,
+        //        pairingRewardScaler, BORewardType.SMALL_CONTESTED);
+        //}
 
         //public bool FlagActive()
         //{
@@ -339,170 +322,166 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return OwningRealm;
         }
 
-        private void UpdateGauge(long tick)
-        {
-            if (State == StateFlags.ZoneLocked)
-                return;
+//        private void UpdateGauge(long tick)
+//        {
+//            if (State == StateFlags.ZoneLocked)
+//                return;
 
-            var frnt = BattleFront;
-            if (frnt != null && frnt.IsBattleFrontLocked())
-                return;
+//            var frnt = BattleFront;
+//            if (frnt != null && frnt.IsBattleFrontLocked())
+//                return;
 
-            // Apply previously computed transition speed since last update
-            if (_lastTransitionUpdateSpeed != 0)
-            {
-                _controlGauge += (int)((tick - _lastGaugeUpdateTick) * _lastTransitionUpdateSpeed);
-                _controlGauge = Clamp(_controlGauge, -MAX_CONTROL_GAUGE, MAX_CONTROL_GAUGE);
-            }
-            // If flag was unsecured by any realm, it lose control until it reachs zero
-            else if (State == StateFlags.Unsecure)
-            {
-                var wasOrder = _controlGauge < 0;
-                float defaultTransitionSpeed = -Clamp(_controlGauge, -1, 1);
-                _controlGauge += (int)((tick - _lastGaugeUpdateTick) * defaultTransitionSpeed);
-                if (wasOrder != _controlGauge < 0) // If reached zero
-				{
-					_controlGauge = 0;
-				}
-            }
+//            // Apply previously computed transition speed since last update
+//            if (_lastTransitionUpdateSpeed != 0)
+//            {
+//                _controlGauge += (int)((tick - _lastGaugeUpdateTick) * _lastTransitionUpdateSpeed);
+//                _controlGauge = Clamp(_controlGauge, -MAX_CONTROL_GAUGE, MAX_CONTROL_GAUGE);
+//            }
+//            // If flag was unsecured by any realm, it lose control until it reachs zero
+//            else if (State == StateFlags.Unsecure)
+//            {
+//                var wasOrder = _controlGauge < 0;
+//                float defaultTransitionSpeed = -Clamp(_controlGauge, -1, 1);
+//                _controlGauge += (int)((tick - _lastGaugeUpdateTick) * defaultTransitionSpeed);
+//                if (wasOrder != _controlGauge < 0) // If reached zero
+//				{
+//					_controlGauge = 0;
+//				}
+//            }
 
-            var newTransitionSpeed = GetNewTransitionSpeed();
-            var incomingSecureProgress = Math.Abs(_controlGauge) * MAX_SECURE_PROGRESS / MAX_CONTROL_GAUGE;
+//            var newTransitionSpeed = GetNewTransitionSpeed();
+//            var incomingSecureProgress = Math.Abs(_controlGauge) * MAX_SECURE_PROGRESS / MAX_CONTROL_GAUGE;
 
-            var announce = true;
+//            var announce = true;
 
-            if (newTransitionSpeed == 0f) // Status quo or fully secured || (OwningRealm == Realms.REALMS_REALM_DESTRUCTION) == assaultSpeed > 0
-            {
-                // _controlGauge = CONTROL_GAUGE_MAX;
-                AssaultingRealm = Realms.REALMS_REALM_NEUTRAL;
+//            if (newTransitionSpeed == 0f) // Status quo or fully secured || (OwningRealm == Realms.REALMS_REALM_DESTRUCTION) == assaultSpeed > 0
+//            {
+//                // _controlGauge = CONTROL_GAUGE_MAX;
+//                AssaultingRealm = Realms.REALMS_REALM_NEUTRAL;
 
-                //if (incomingSecureProgress != MAX_SECURE_PROGRESS) // Intermediate state
-                //{
-                //    OwningRealm = Realms.REALMS_REALM_NEUTRAL;
-                //    State = StateFlags.Unsecure;
-                //    SendState(GetPlayer(), announce, true);
-                //}
+//                //if (incomingSecureProgress != MAX_SECURE_PROGRESS) // Intermediate state
+//                //{
+//                //    OwningRealm = Realms.REALMS_REALM_NEUTRAL;
+//                //    State = StateFlags.Unsecure;
+//                //    SendState(GetPlayer(), announce, true);
+//                //}
 
-                ////Objective changes back to secured if attackers repelled
-                //if (State == StateFlags.Contested)
-                //{
-                //    if (_closeOrderCount == 0 || _closeDestroCount == 0)
-                //    {
-                //        State = StateFlags.Secure;
-                //        SendState(GetPlayer(), announce, true);
-                //    }
-                //}
+//                ////Objective changes back to secured if attackers repelled
+//                //if (State == StateFlags.Contested)
+//                //{
+//                //    if (_closeOrderCount == 0 || _closeDestroCount == 0)
+//                //    {
+//                //        State = StateFlags.Secure;
+//                //        SendState(GetPlayer(), announce, true);
+//                //    }
+//                //}
 
-     //           //Sets flag state to contested
-     //           if (_closeOrderCount != 0 && _closeDestroCount != 0)
-     //           {   
-     //               if (OwningRealm == Realms.REALMS_REALM_ORDER)
-     //               {
-     //                   AssaultingRealm = Realms.REALMS_REALM_DESTRUCTION;
-     //               }
-     //               else
-     //               {
-     //                   AssaultingRealm = Realms.REALMS_REALM_ORDER;
-     //               }
-     //               State = StateFlags.Contested;
-     //               SendState(GetPlayer(), announce, true);
-     //           }
-     //           else if (newTransitionSpeed == 0 && _closeOrderCount == _closeDestroCount) // Abandonned
-     //           {
-					//if (State == StateFlags.Secure)
-					//	DespawnAllGuards();
+//     //           //Sets flag state to contested
+//     //           if (_closeOrderCount != 0 && _closeDestroCount != 0)
+//     //           {   
+//     //               if (OwningRealm == Realms.REALMS_REALM_ORDER)
+//     //               {
+//     //                   AssaultingRealm = Realms.REALMS_REALM_DESTRUCTION;
+//     //               }
+//     //               else
+//     //               {
+//     //                   AssaultingRealm = Realms.REALMS_REALM_ORDER;
+//     //               }
+//     //               State = StateFlags.Contested;
+//     //               SendState(GetPlayer(), announce, true);
+//     //           }
+//     //           else if (newTransitionSpeed == 0 && _closeOrderCount == _closeDestroCount) // Abandonned
+//     //           {
+//					//if (State == StateFlags.Secure)
+//					//	DespawnAllGuards();
 
-					//OwningRealm = Realms.REALMS_REALM_NEUTRAL;
-     //               State = StateFlags.Unsecure;
-     //               SendState(GetPlayer(), announce, true);
-     //           }
-     //           else
-     //           {
-     //               if (Ruin)
-     //                   foreach (var keep in Region.Campaign.Keeps)
-     //                       if (Id == keep.Info.KeepId)
-     //                       {
-     //                           keep.Realm = OwningRealm;
-     //                           keep.SendKeepStatus(null);
-     //                       }
+//					//OwningRealm = Realms.REALMS_REALM_NEUTRAL;
+//     //               State = StateFlags.Unsecure;
+//     //               SendState(GetPlayer(), announce, true);
+//     //           }
+//     //           else
+//     //           {
+//     //               if (Ruin)
+//     //                   foreach (var keep in Region.Campaign.Keeps)
+//     //                       if (Id == keep.Info.KeepId)
+//     //                       {
+//     //                           keep.Realm = OwningRealm;
+//     //                           keep.SendKeepStatus(null);
+//     //                       }
 
-					//SpawnAllGuards(OwningRealm);
-     //           }
+//					//SpawnAllGuards(OwningRealm);
+//     //           }
 
-                // No more update until next close player change or lock / unlock
-                _displayedTimer = 0;
-                _nextTransitionTimestamp = 0;
-                _nextUpdateTick = long.MaxValue;
-                announce = true;
-            }
-			else // Changing
-			{
-				var toOrder = newTransitionSpeed < 0f;
-				var isOrder = _controlGauge != 0 ? _controlGauge < 0f : toOrder;
+//                // No more update until next close player change or lock / unlock
+//                _displayedTimer = 0;
+//                _nextTransitionTimestamp = 0;
+                
+//                announce = true;
+//            }
+//			else // Changing
+//			{
+//				var toOrder = newTransitionSpeed < 0f;
+//				var isOrder = _controlGauge != 0 ? _controlGauge < 0f : toOrder;
 
-				// Updates owning and assault teams
-				AssaultingRealm = Realms.REALMS_REALM_NEUTRAL;
-				if (isOrder)
-				{
-					OwningRealm = Realms.REALMS_REALM_ORDER;
-					if (!toOrder)
-						AssaultingRealm = Realms.REALMS_REALM_DESTRUCTION;
-				}
-				else
-				{
-					OwningRealm = Realms.REALMS_REALM_DESTRUCTION;
-					if (toOrder)
-						AssaultingRealm = Realms.REALMS_REALM_ORDER;
-				}
+//				// Updates owning and assault teams
+//				AssaultingRealm = Realms.REALMS_REALM_NEUTRAL;
+//				if (isOrder)
+//				{
+//					OwningRealm = Realms.REALMS_REALM_ORDER;
+//					if (!toOrder)
+//						AssaultingRealm = Realms.REALMS_REALM_DESTRUCTION;
+//				}
+//				else
+//				{
+//					OwningRealm = Realms.REALMS_REALM_DESTRUCTION;
+//					if (toOrder)
+//						AssaultingRealm = Realms.REALMS_REALM_ORDER;
+//				}
 
-				// Computes timers
-				int remainingTransitionTime; // LastUpdatedTime in millis until next update
-				if (toOrder == isOrder) // Securing
-				{
-					State = StateFlags.Secure;
-					remainingTransitionTime = MAX_CONTROL_GAUGE;
-					if (toOrder)
-						remainingTransitionTime += _controlGauge;
-					else
-						remainingTransitionTime -= _controlGauge;
-					remainingTransitionTime = (int)Math.Abs(remainingTransitionTime / newTransitionSpeed);
-					_displayedTimer =
-						(short)(remainingTransitionTime / 1000); // Full secure time - already secured time
-				}
-				else // Assaulting
-				{
-					State = StateFlags.Contested;
-					remainingTransitionTime = (int)Math.Abs(_controlGauge / newTransitionSpeed);
-					_displayedTimer =
-						(short)((Math.Abs(MAX_CONTROL_GAUGE / newTransitionSpeed) + remainingTransitionTime) /
-								 1000); // Full secure time + remaining assault time
-				}
+//				// Computes timers
+//				int remainingTransitionTime; // LastUpdatedTime in millis until next update
+//				if (toOrder == isOrder) // Securing
+//				{
+//					State = StateFlags.Secure;
+//					remainingTransitionTime = MAX_CONTROL_GAUGE;
+//					if (toOrder)
+//						remainingTransitionTime += _controlGauge;
+//					else
+//						remainingTransitionTime -= _controlGauge;
+//					remainingTransitionTime = (int)Math.Abs(remainingTransitionTime / newTransitionSpeed);
+//					_displayedTimer =
+//						(short)(remainingTransitionTime / 1000); // Full secure time - already secured time
+//				}
+//				else // Assaulting
+//				{
+//					State = StateFlags.Contested;
+//					remainingTransitionTime = (int)Math.Abs(_controlGauge / newTransitionSpeed);
+//					_displayedTimer =
+//						(short)((Math.Abs(MAX_CONTROL_GAUGE / newTransitionSpeed) + remainingTransitionTime) /
+//								 1000); // Full secure time + remaining assault time
+//				}
 
-				// Updates next transition timestamp
-				_nextTransitionTimestamp = tick + remainingTransitionTime;
-				_nextUpdateTick = _nextTransitionTimestamp;
-				// Log.Info("remainingTransitionTime", remainingTransitionTime.ToString());
+//				// Updates next transition timestamp
+//				_nextTransitionTimestamp = tick + remainingTransitionTime;
+//			}
 
-				//BlockSupplySpawn();
-			}
+//			_lastGaugeUpdateTick = tick;
+//            _lastTransitionUpdateSpeed = newTransitionSpeed;
+//            _secureProgress = incomingSecureProgress;
 
-			_lastGaugeUpdateTick = tick;
-            _lastTransitionUpdateSpeed = newTransitionSpeed;
-            _secureProgress = incomingSecureProgress;
+//#if disabled
+//        Log.Info("newSecureProgress", newSecureProgress.ToString());
+//        Log.Info("newTransitionSpeed", newTransitionSpeed.ToString());
+//        Log.Info("_displayedTimer", _displayedTimer.ToString());
+//        Log.Info("OwningRealm", OwningRealm.ToString());
+//        Log.Info("AssaultingRealm", AssaultingRealm.ToString());
+//#endif
 
-#if disabled
-        Log.Info("newSecureProgress", newSecureProgress.ToString());
-        Log.Info("newTransitionSpeed", newTransitionSpeed.ToString());
-        Log.Info("_displayedTimer", _displayedTimer.ToString());
-        Log.Info("OwningRealm", OwningRealm.ToString());
-        Log.Info("AssaultingRealm", AssaultingRealm.ToString());
-#endif
+//            // This is for State of the Realms addon
+//            //UpdateStateOfTheRealmBO();
 
-            // This is for State of the Realms addon
-            //UpdateStateOfTheRealmBO();
-
-            BroadcastFlagInfo(announce);
-        }
+//            BroadcastFlagInfo(announce);
+//        }
 
 		public override void SendInteract(Player player, InteractMenu menu)
 		{
@@ -623,7 +602,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 SendFlagInfo(plr);
                 plr.CurrentObjectiveFlag = this;
-                ++_playersInRangeCount;
 
                 if (_tokdiscovery > 0)
                     plr.TokInterface.AddTok((ushort)_tokdiscovery);
@@ -642,7 +620,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 CommsEngine.SendFlagLeft(plr, Id);
                 if (plr.CurrentObjectiveFlag == this)
                     plr.CurrentObjectiveFlag = null;
-                --_playersInRangeCount;
             }
 
             base.RemoveInRange(obj);
@@ -664,8 +641,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			var closeHeight = 70 / 2 * UNITS_TO_FEET;
             var threatenHeight = 200 / 2 * UNITS_TO_FEET;
 
-            _hasThreateningPlayer = false;
-
+            
             foreach (var player in PlayersInRange)
             {
                 if (player.IsDead || player.StealthLevel != 0 || !player.CbtInterface.IsPvp || player.IsInvulnerable)
@@ -692,9 +668,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 						destroCount_200++;
 				}
 
-				// Updates the threatening flag if was not already set
-				_hasThreateningPlayer |= player.Realm != OwningRealm // One player of opposite realm
-                                         && distance < 200 && heightDiff < threatenHeight; // under threaten range
             }
 
             // Switch the players sets
@@ -723,10 +696,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public override void Update(long tick)
         {
             EvtInterface.Update(tick);
-			//if (tick < _nextUpdateTick)
-			//    return;
-
-			//UpdateGauge(tick);
 
 			if (State == StateFlags.ZoneLocked)
 				return;
@@ -1259,6 +1228,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             SendState(GetPlayer(), true, true);
 
+            p.MoveNext(CampaignObjectiveStateMachine.Command.LockZone);
+
+
             if (!announce)
                 return;
 
@@ -1407,35 +1379,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			}
 		}
 		
-		private void ChangeOwnership(Realms newRealm)
-		{
-			if (OwningRealm == newRealm)
-				return;
-
-			if (newRealm == Realms.REALMS_REALM_NEUTRAL)
-			{
-				OwningRealm = newRealm;
-				AssaultingRealm = Realms.REALMS_REALM_NEUTRAL;
-			}
-			else
-			{
-				Realms oldRealm = OwningRealm;
-				OwningRealm = newRealm;
-
-				//if (!Region.Bttlfront.NoSupplies)
-				//{
-				//	if (_supplies.HeldState == EHeldState.Inactive)
-				//		StartSupplyRespawnTimer(SupplyEvent.OwnershipChanged);
-
-				//	else _supplies.SetRealmAssociation(newRealm);
-				//}
-
-				//if (Constants.DoomsdaySwitch == 2)
-				//	((ProximityBattlefront)Region.Bttlfront).ObjectiveCaptured(oldRealm, newRealm, ZoneId);
-				//else
-				//	((Battlefront)Region.Bttlfront).ObjectiveCaptured(oldRealm, newRealm, ZoneId);
-			}
-		}
+		
 
 		#endregion
 	}
