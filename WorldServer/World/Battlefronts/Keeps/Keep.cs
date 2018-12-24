@@ -2099,6 +2099,9 @@ namespace WorldServer.World.BattleFronts.Keeps
                 return false;
 
             Realm playerRealm;
+            // If we are too near to chest I guess we cannot deply it...?
+            if (player.PointWithinRadiusFeet(new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ), 50))
+                return false;
 
             if (player.Realm == Realm)
             {
