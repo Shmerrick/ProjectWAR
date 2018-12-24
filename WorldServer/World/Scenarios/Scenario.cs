@@ -671,14 +671,14 @@ namespace WorldServer.Scenarios
                     _logger.Debug($"Scenario {Info.Name} won by Destruction. {Score[1]} to {Score[0]}");
                     _logger.Debug($"Suggest {Score[1] / 10} additional VP to winner,  {Score[0] / 20} to loser.");
                     new ApocCommunications().Broadcast("Destruction has defeated Order in a critical battle! Their forces come closer to victory.", Tier);
-                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += 25;
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.AddScenarioWin(Realms.REALMS_REALM_DESTRUCTION);
                 }
                 if (winningTeam == 0)
                 {
                     _logger.Debug($"Scenario {Info.Name} won by Order. {Score[0]} to {Score[1]}");
                     _logger.Debug($"Suggest {Score[0] / 10} additional VP to winner,  {Score[1] / 20} to loser.");
                     new ApocCommunications().Broadcast("Order has defeated Destruction in a critical battle! Their forces come closer to victory.", Tier);
-                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints += 25;
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.AddScenarioWin(Realms.REALMS_REALM_ORDER);
 
                 }
 

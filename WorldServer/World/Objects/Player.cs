@@ -4058,16 +4058,8 @@ namespace WorldServer
                 //GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
                 //var bonusVP = Math.Floor(this.BaseBountyValue / 10f);
 
-                if (killer.Realm == Realms.REALMS_REALM_DESTRUCTION)
-                {
-                    killer.Region.Campaign.VictoryPointProgress.DestructionVictoryPoints += 2;
-                }
-                else
-                {
-                    killer.Region.Campaign.VictoryPointProgress.OrderVictoryPoints += 2;
-                }
-
-                killer.SendClientMessage($"+2 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
+                killer.Region.Campaign.VictoryPointProgress.AddPlayerKill(killer.Realm);
+                //killer.SendClientMessage($"+2 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
             }
 
             #endregion
