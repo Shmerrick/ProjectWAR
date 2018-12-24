@@ -178,7 +178,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             ZoneId = (ushort)zoneId;
             RegionId = (ushort)regionId;
             Tier = (byte)tier;
-            State = StateFlags.ZoneLocked;
+            State = StateFlags.Unsecure;
 
             CampaignObjectiveContributions = new ConcurrentDictionary<uint, uint>();
         }
@@ -203,7 +203,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _tokdiscovery = objective.TokDiscovered;
             _tokunlocked = objective.TokUnlocked;
 
-            State = StateFlags.ZoneLocked;
+            State = StateFlags.Unsecure;
 			CaptureDuration = 10;
 
 			Heading = _o;
@@ -282,22 +282,22 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 pairingRewardScaler, BORewardType.SMALL_CONTESTED);
         }
 
-        public bool FlagActive()
-        {
-            return this.State != StateFlags.ZoneLocked && this.State != StateFlags.Locked && OwningRealm != Realms.REALMS_REALM_NEUTRAL;
-        }
+        //public bool FlagActive()
+        //{
+        //    return this.State != StateFlags.ZoneLocked && this.State != StateFlags.Locked && OwningRealm != Realms.REALMS_REALM_NEUTRAL;
+        //}
 
-        public bool CheckKillValid(Player player)
-        {
-            if (FlagActive() && Get2DDistanceToObject(player) < 200)
-            {
-                if (player.Realm != OwningRealm)
-                    AccumulatedKills++;
-                return true;
-            }
+        //public bool CheckKillValid(Player player)
+        //{
+        //    if (FlagActive() && Get2DDistanceToObject(player) < 200)
+        //    {
+        //        if (player.Realm != OwningRealm)
+        //            AccumulatedKills++;
+        //        return true;
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
 		private bool SpawnAllGuards(Realms owner)
 		{
@@ -934,7 +934,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             switch (State)
             {
                 case StateFlags.Secure:
-                    return _secureProgress == MAX_SECURE_PROGRESS ? "GENERATING" : "SECURING";
+                    //return _secureProgress == MAX_SECURE_PROGRESS ? "GENERATING" : "SECURING";
+                    return "Alpha-CAPTURED";
 
                 case StateFlags.Abandoned:
                     return "ABANDONED";
@@ -943,13 +944,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     return realm == OwningRealm ? "DEFEND" : "ASSAULT";
 
                 case StateFlags.Unsecure:
-                    return "OPEN";
+                    return "Alpha-UNLOCKED";
 
                 case StateFlags.Hidden:
                     return "";
 
                 case StateFlags.ZoneLocked:
-                    return "LOCKED";
+                    return "Alpha-CAPTURING";
 
                 case StateFlags.Locked:
                     return "SECURED";

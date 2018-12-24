@@ -4011,13 +4011,7 @@ namespace WorldServer
                 if (Region.Campaign.PreventKillReward() || (killer.Client?._Account != null && CheckKillFarm(killer)))
                     return;
 
-                if (CurrentKeep != null)
-                    CurrentKeep.CheckKillValid(this);
-                else if (CurrentObjectiveFlag != null)
-                    CurrentObjectiveFlag.CheckKillValid(this);
-
-
-
+             
                 float rewardScale = Region.Campaign.ModifyKill(killer, this);
 
                 // Maximum 25% bonus depending on how much damage the target took while alive.
