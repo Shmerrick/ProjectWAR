@@ -775,23 +775,10 @@ namespace WorldServer
 
                 #endregion
 
-                bool slayerOilFix = false;
                 if (damageInfo.StatUsed > 0)
                 {
-                    if(caster is Player)
-                    {
-                        if(((Player) caster).Info.Career == 2 && damageInfo.SubDamageType != SubDamageTypes.Oil)
-                        {
-                            slayerOilFix = true;
-                        }
-                    }
-
-                    if (!slayerOilFix)
-                    {
-                        AddOffensiveStats(caster, damageInfo, 0.2f, false);
-                    }
+                    AddOffensiveStats(caster, damageInfo, 0.2f, false);
                     AddLinearMitigation(target, damageInfo, 0.2f, false);
-
                 }
 
                 caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DealingDamage, damageInfo, target);
@@ -808,19 +795,36 @@ namespace WorldServer
 
                 if (damageInfo.DamageType == 0) // physical damage
                 {
-                    float secondaryStat = caster.StsInterface.GetTotalStat(Stats.WeaponSkill);
-                    float pen = secondaryStat / (7.5f * caster.EffectiveLevel + 50f) * 0.25f;
+                    if (damageInfo.SubDamageType != SubDamageTypes.Oil)
+                    {
+                        float secondaryStat = caster.StsInterface.GetTotalStat(Stats.WeaponSkill);
+                        float pen = secondaryStat / (7.5f * caster.EffectiveLevel + 50f) * 0.25f;
 
-                    originalResistance = target.StsInterface.GetTotalStat(Stats.Armor);
+                        originalResistance = target.StsInterface.GetTotalStat(Stats.Armor);
 
-                    if (originalResistance <= 0)
-                        damageTypeResistance = 0;
+                        if (originalResistance <= 0)
+                            damageTypeResistance = 0;
+                        else
+                        {
+                            damageTypeResistance = originalResistance / (caster.EffectiveLevel * 44f) * 0.4f; //this will give you the total mitigation from armour.
+                            damageTypeResistance *= 1f - pen;
+                            if (damageTypeResistance > 0.75f) //puts in hard cap for physical mitigation of 75%
+                                damageTypeResistance = 0.75f;
+                        }
+                    }
                     else
                     {
-                        damageTypeResistance = originalResistance / (caster.EffectiveLevel * 44f) * 0.4f; //this will give you the total mitigation from armour.
-                        damageTypeResistance *= 1f - pen;
-                        if (damageTypeResistance > 0.75f) //puts in hard cap for physical mitigation of 75%
-                            damageTypeResistance = 0.75f;
+                        originalResistance = target.StsInterface.GetTotalStat(Stats.Armor);
+
+                        if (originalResistance <= 0)
+                            damageTypeResistance = 0;
+                        else
+                        {
+                            damageTypeResistance = originalResistance / (caster.EffectiveLevel * 44f) * 0.4f; //this will give you the total mitigation from armour.
+                            //damageTypeResistance *= 1f - pen;
+                            if (damageTypeResistance > 0.75f) //puts in hard cap for physical mitigation of 75%
+                                damageTypeResistance = 0.75f;
+                        }
                     }
                 }
                 else
