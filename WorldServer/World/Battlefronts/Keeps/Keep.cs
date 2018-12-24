@@ -20,6 +20,7 @@ namespace WorldServer.World.BattleFronts.Keeps
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
+        private static readonly Logger ProgressionLogger = LogManager.GetLogger("RVRProgressionLogger");
 
         public const int KEEP_INNER_DOOR_VICTORYPOINTS = 500;
         public const int KEEP_OUTER_DOOR_VICTORYPOINTS = 250;
@@ -755,6 +756,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         private void UpdateKeepStatus(KeepStatus newStatus)
         {
+            ProgressionLogger.Debug($"Updating Keep Status : {newStatus}");
             KeepStatus = newStatus;
             SendKeepStatus(null);
         }
@@ -1689,7 +1691,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         /// <param name="reset">Reset the owner to the original keep owner for the campaign</param>
         public void LockKeep(Realms lockingRealm, bool announce, bool reset)
         {
-            _logger.Debug($"Locking Keep {Name} for {lockingRealm.ToString()} -- keep can no longer be retaken");
+            _logger.Debug($"Locking Keep {Info.Name} for {lockingRealm.ToString()} -- keep can no longer be retaken");
 
             _safeKeepTimer = 0;
 
@@ -1726,7 +1728,9 @@ namespace WorldServer.World.BattleFronts.Keeps
             // Default was 15, changed to 10
             int _keepLockTime = (10*60*1000);
 
-            UpdateKeepStatus(KeepStatus.KEEPSTATUS_SAFE);
+            Realm = (Realms) Info.Realm;
+
+            UpdateKeepStatus(KeepStatus.KEEPSTATUS_LOCKED);
 
             EvtInterface.RemoveEvent(UpdateResources);
 

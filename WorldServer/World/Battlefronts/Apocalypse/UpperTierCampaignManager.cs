@@ -230,12 +230,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         if (rerollMode == CampaignRerollMode.INIT)
                         {
                             keep.LockKeep((Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm, false, false);
-                            ProgressionLogger.Debug($" Locking Keep to {(Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm} {keep.Name} {keep.KeepStatus} ");
+                            ProgressionLogger.Debug($" Locking Keep {keep.Info.Name} to {(Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm} {keep.Name} {keep.KeepStatus} ");
                         }
                         else
                         {
                             keep.LockKeep(Realms.REALMS_REALM_NEUTRAL, false, false);
-                            ProgressionLogger.Debug($" Locking Keep to Neutral {keep.Name} {keep.KeepStatus} ");
+                            ProgressionLogger.Debug($" Locking Keep {keep.Info.Name} to Neutral {keep.Name} {keep.KeepStatus} ");
                         }
                     }
                 }
@@ -331,7 +331,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 foreach (Keep keep in activeRegion.Campaign.Keeps)
                 {
                     if (ActiveBattleFront.ZoneId == keep.ZoneId)
+                    {
+                        ProgressionLogger.Debug($"Notifying Pairing unlocked Name : {keep.Info.Name} Zone : {keep.ZoneId} ");
                         keep.NotifyPairingUnlocked();
+                    }
                 }
 
                 return ActiveBattleFront;
