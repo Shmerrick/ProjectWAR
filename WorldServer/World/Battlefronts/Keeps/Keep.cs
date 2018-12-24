@@ -1,4 +1,5 @@
 ﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
@@ -19,24 +20,6 @@ namespace WorldServer.World.BattleFronts.Keeps
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
-
-
-        /*  public enum KeepMessage
-        {
-            KEEP_OUTER_100,
-            KEEP_OUTER_50,
-            KEEP_OUTER_20,
-            KEEP_OUTER_0,
-            KEEP_SANCTUM_100,
-            KEEP_SANCTUM_50,
-            KEEP_SANCTUM_20,
-            KEEP_SANCTUM_0,
-            KEEP_LORD_100,
-            KEEP_LORD_50,
-            KEEP_LORD_
-
-        }*/
-
 
         public const int KEEP_INNER_DOOR_VICTORYPOINTS = 500;
         public const int KEEP_OUTER_DOOR_VICTORYPOINTS = 250;
@@ -83,10 +66,12 @@ namespace WorldServer.World.BattleFronts.Keeps
 
 		// keep safe timer variables
 		private int _safeKeepTimer = 0;
-		private const int TIMESPAN_SAFEKEEP = 15 * 60;
+        private int _lockKeepTimer = 0;
+        private const int TIMESPAN_SAFEKEEP = 15 * 60;
+        private const int TIMESPAN_LOCKKEEP = 5 * 60;
 
-		// public variables
-		public byte Tier;
+        // public variables
+        public byte Tier;
         public bool InformRankOne = false;
         public int _OrderCount = 0;
         public int _DestroCount = 0;
@@ -94,7 +79,6 @@ namespace WorldServer.World.BattleFronts.Keeps
         public Dictionary<uint, ContributionInfo> Attackers = new Dictionary<uint, ContributionInfo>();
         public Dictionary<uint, ContributionInfo> Defenders = new Dictionary<uint, ContributionInfo>();
         public Realms Realm;
-        public bool Ruin = false;
         public RegionMgr Region;
 
 		public List<KeepNpcCreature> Creatures = new List<KeepNpcCreature>();
@@ -124,9 +108,8 @@ namespace WorldServer.World.BattleFronts.Keeps
                 _hardpoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuterX, info.RamOuterY, info.RamOuterZ, info.RamOuterO));
             }
 
-            //SetSupplyRequirement();
-
             EvtInterface.AddEvent(UpdateResources, 60000, 0);
+            EvtInterface.AddEvent(CheckLockTimer, 30000, 0);
 
             PlayersInRangeOnTake = new HashSet<uint>();
         }
@@ -509,8 +492,12 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void OnKeepLordDied()
         {
-            // if (KeepStatus == KeepStatus.KEEPSTATUS_LOCKED)
-            //     return;
+            // If the keep is already locked, leave
+            if (this.KeepStatus == KeepStatus.KEEPSTATUS_LOCKED)
+            {
+                RewardLogger.Warn($"Kill on Keep Lord while Keep is LOCKED");
+                return;
+            }
 
             var contributionDefinition = new ContributionDefinition();
 
@@ -518,21 +505,18 @@ namespace WorldServer.World.BattleFronts.Keeps
                 h.CurrentWeapon?.Destroy();
 
             UpdateKeepStatus(KeepStatus.KEEPSTATUS_SEIZED);
-            Ruin = true;
-            
-            _safeKeepTimer = TCPManager.GetTimeStamp() + 45 * 60;
+            LastMessage = KeepMessage.Fallen;
+
+            // Time until the seized realm spawns lord and guards.
+            _lockKeepTimer = TCPManager.GetTimeStamp() + TIMESPAN_LOCKKEEP;
 
             // Despawn Keep Creatures
             foreach (KeepNpcCreature crea in Creatures)
 			{
-				if (!crea.Info.IsPatrol)
-					crea.SpawnGuard(0);
-                // This is spawning new ProximityFlag inside keep
-                // We are also moving keep rank from keep level to realm level
-                if (crea.Info.KeepLord)
-                    SpawnRuinFlag(crea);
+				crea.DespawnGuard();
             }
 
+            // Flip realm on Lord Kill
             Realm = ((Realm == Realms.REALMS_REALM_ORDER) ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER);
 
             foreach (Player plr in PlayersInRange)
@@ -565,39 +549,17 @@ namespace WorldServer.World.BattleFronts.Keeps
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += 1500;
                 }
                
-                
-
             }
-
-            /*if (_playersKilledInRange >= (4*Tier))
-            {
-                Dictionary<uint, ContributionInfo> attackers = Region.Campaign.GetContributorsFromRealm(Realm);
-                GoldChest.Create(Region, Info.PQuest, ref attackers);
-            }*/
-
             DistributeRewards();
-
-            Rank = 0;
-            _currentResource = 0;
-            _currentResourcePercent = 0;
-            //SetSupplyRequirement();
             SendKeepStatus(null);
-
             EvtInterface.AddEvent(UpdateStateOfTheRealmKeep,100,1);
+
+            _OrderCount = 0;
+            _DestroCount = 0;
+            _playersKilledInRange = 0;
         }
 
-        public void SpawnRuinFlag(KeepNpcCreature crea)
-        {
-            //var flag = new Objectives(Info.KeepId, "Ruins of " + Info.Name, (ushort)ZoneId, (uint)crea.Info.X, (uint)crea.Info.Y, (ushort)crea.Info.Z, (ushort)crea.Info.O, Region.Campaign, Region, Tier);
-            // TODO - replace??? Region.Campaign.Objectives.Add(flag);
-            //Region.AddObject(flag, (ushort)ZoneId);
-
-            //flag.Ruin = true;
-
-            //// Need to be correctly set
-            //flag.SetWarcampDistanceScaler(1, 1);
-        }
-
+      
         public void DistributeRewards()
         {
             Log.Info("Keep", "Locking " + Zone.Info.Name);
@@ -705,11 +667,11 @@ namespace WorldServer.World.BattleFronts.Keeps
                 throw;
             }
 
-         
-
-        
         }
 
+        /// <summary>
+        /// If a guard, or door has been attacked, reset the safe timer for the keep.
+        /// </summary>
         public void ResetSafeTimer()
         {
             if (KeepStatus != KeepStatus.KEEPSTATUS_SAFE && KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
@@ -718,6 +680,9 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
         }
 
+        /// <summary>
+        /// Provide a defence tick
+        /// </summary>
         public void SafeKeep()
         {
             uint influenceId = 0;
@@ -775,12 +740,6 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             if ((LastMessage >= KeepMessage.Outer0 && Tier > 2) || (Tier == 2 && LastMessage >= KeepMessage.Inner0))
             {
-                /*if (StaticRandom.Instance.Next(100) < 25)
-                {
-                    foreach (ContributionInfo plrInfo in Defenders.Values)
-                        plrInfo.RandomBonus = (ushort) StaticRandom.Instance.Next(1000);
-                    GoldChest.Create(Region, Info.PQuest, ref Defenders);
-                }*/
                 _playersKilledInRange /= 2;
             }
 
@@ -829,7 +788,6 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             plr.CurrentKeep?.RemovePlayer(plr);
 
-            if (!Ruin)
                 SendKeepInfo(plr);
 
             // RB   5/22/2016   Prevent underleveled players from leeching rewards.
@@ -1288,6 +1246,41 @@ namespace WorldServer.World.BattleFronts.Keeps
             new[] { 15, 15, 10, 7, 5, 3 } // ram
         };
 
+        /// <summary>
+        /// When the lock timer ends, reset the keep to safe. The lord should spawn with guards.
+        /// </summary>
+        public void CheckLockTimer()
+        {
+            if (KeepStatus == KeepStatus.KEEPSTATUS_SEIZED)
+            {
+                // Lock timer has fired.
+                if (_lockKeepTimer > 0 && _lockKeepTimer < TCPManager.GetTimeStamp())
+                {
+                    RewardLogger.Info($"Locking Keep - setting SAFE");
+
+                    foreach (KeepNpcCreature crea in Creatures)
+                    {
+                        if (crea.Creature == null && !crea.Info.IsPatrol)
+                            crea.SpawnGuard(Realm);
+                        else if (crea.Info.IsPatrol)
+                            crea.DespawnGuard();
+                    }
+
+                    foreach (KeepDoor door in Doors)
+                    {
+                        door.Spawn();
+                    }
+
+                    UpdateKeepStatus(KeepStatus.KEEPSTATUS_SAFE);
+                    LastMessage = KeepMessage.Safe;
+
+                    _OrderCount = 0;
+                    _DestroCount = 0;
+                    _playersKilledInRange = 0;
+                }
+            }
+        }
+
         public void UpdateResources()
         {
             if (KeepStatus != KeepStatus.KEEPSTATUS_LOCKED)
@@ -1342,13 +1335,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 if (KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
                     TickSafety();
-                // No more keep reclaiming, sorry...
-                /*else if (Region.Campaign.CanReclaimKeep((Realms)Info.Realm))
-                    ReclaimKeep();*/
             }
-
-            // TODO - NEW DAWN status of Keep
-            // TickUpkeep();
         }
 
         public void ReloadSiege()
@@ -1458,8 +1445,6 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public bool AttackerCanUsePostern(int posternNum)
         {
-            if (Ruin)
-                return true;
 
             // Keeps rank 4 or 5 have unaccessible posterns for attackers, even after main gate falls
             if (Rank > 3)
@@ -1542,9 +1527,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             Out.WriteByte((byte) Realm);
             Out.WriteByte(1);
             Out.WriteUInt16(0);
-            if (Ruin)
-                Out.WritePascalString("Ruins of " + Info.Name);
-            else
                 Out.WritePascalString(Info.Name);
             Out.WriteByte(2);
             Out.WriteUInt32(0x000039F5);
@@ -1605,18 +1587,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             PacketOut Out = new PacketOut((byte) Opcodes.F_KEEP_STATUS, 26);
             Out.WriteByte(Info.KeepId);
 
-            if (Ruin)
-            {
-                Out.WriteByte(2); // Keep Status
-                Out.WriteByte(0); // ?
-                //Out.WriteByte((byte)Realm);
-                Out.WriteByte((byte)Realm);
-                Out.WriteByte(0); // Number of doors
-                Out.WriteByte(0); // Rank
-                Out.WriteByte(0); // Door Health
-                Out.WriteByte(0); // Next rank %
-            }
-            else
             {
                 Out.WriteByte(KeepStatus == KeepStatus.KEEPSTATUS_LOCKED ? (byte)1 : (byte)KeepStatus);
                 Out.WriteByte(0); // ?
@@ -1705,42 +1675,36 @@ namespace WorldServer.World.BattleFronts.Keeps
                 plr.SendPacket(Out);
         }
 
-#endregion
+        #endregion
 
-#region Zone Locking
+        #region Zone Locking
 
+        /// <summary>
+        /// Lock the keep. Keep can no longer be retaken until the Campaign is Initialised.
+        /// </summary>
+        /// <param name="lockingRealm"></param>
+        /// <param name="announce"></param>
+        /// <param name="reset">Reset the owner to the original keep owner for the campaign</param>
         public void LockKeep(Realms lockingRealm, bool announce, bool reset)
         {
-            _logger.Debug($"Locking Keep {Name} for {lockingRealm.ToString()}");
+            _logger.Debug($"Locking Keep {Name} for {lockingRealm.ToString()} -- keep can no longer be retaken");
 
             _safeKeepTimer = 0;
 
             Rank = 0;
-            Ruin = false;
             _currentResource = 0;
-            //SetSupplyRequirement();
-
-            // RA - Currently dont do anything with lockingRealm.
-
             if (reset)
             {
                 Realm = (Realms) Info.Realm;
-                KeepStatus = KeepStatus.KEEPSTATUS_LOCKED;
             }
             else
             {
                 Realm = lockingRealm;
-                KeepStatus = KeepStatus.KEEPSTATUS_LOCKED;
             }
 
-            if (KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
-            {
-				foreach (KeepNpcCreature crea in Creatures)
-					if (!crea.Info.IsPatrol)
-						crea.SpawnGuard(Realm);
-					else
-						crea.DespawnGuard();
-            }
+            // Despawning the lord means the keep cannot be retaken -> and hence cannot be seized -> reward.
+			foreach (KeepNpcCreature crea in Creatures)
+				crea.DespawnGuard();
 
             foreach (KeepDoor door in Doors)
                 door.Spawn();
@@ -1757,10 +1721,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             // Default was 15, changed to 10
             int _keepLockTime = (10*60*1000);
 
-#if (DEBUG)
-            _keepLockTime = (2*60*1000);
-#endif
-
             Realms unlockedRealm = GetContestedRealm();
 
             if (unlockedRealm != Realm)
@@ -1776,8 +1736,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
 
             UpdateKeepStatus(KeepStatus.KEEPSTATUS_LOCKED);
-
-            Ruin = false;
 
             EvtInterface.RemoveEvent(UpdateResources);
 
@@ -1845,12 +1803,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                 return;
             }
 
-            if (Ruin)
-            {
-                player.SendClientMessage("Can't deploy oil at ruined keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                player.SendClientMessage("You cannot deploy oil at a keep that is ruined.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-                return;
-            }
 
             uint entry = player.ItmInterface.GetItemInSlot(slot).Info.Entry;
 
@@ -2146,24 +2098,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             if (player == null)
                 return false;
 
-            // If the keep is ruined we check if we can deploy siege at Warcamp - we beed to be 50 ft from the entrance to do that
-            // This need to be redone correctly
             Realm playerRealm;
-            if (Ruin)
-            {
-                foreach (KeyValuePair<ushort, Point3D[]> entry in BattleFrontService._warcampEntrances)
-                {
-                    if (player.PointWithinRadiusFeet(entry.Value[(int)player.Realm-1],50))
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            // If we are too near to chest I guess we cannot deply it...?
-            else if (player.PointWithinRadiusFeet(new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ), 50))
-                return false;
 
             if (player.Realm == Realm)
             {
@@ -2240,7 +2175,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                     plr.SendClientMessage($"Keep is now safe", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                 plr.SendClientMessage($"RamDeployed: " + RamDeployed); 
             }
-            plr.SendClientMessage($"Ruin: {Ruin}");
         }
 
         public void AddAllSiege(List<Siege> siege)
