@@ -534,13 +534,18 @@ namespace WorldServer
 
         }
 
-		public void RemoveInstanceObjectOnBossDeath(uint bossId)
-		{
-			var list = _Objects.Where(x => (x as InstanceObject).Info.EncounterID == bossId).ToList();
-			if (list != null && list.Count > 0)
-			{
-				list.ForEach(x => x.RemoveFromWorld());
-			}
-		}
+        public void RemoveInstanceObjectOnBossDeath(uint bossId)
+        {
+            var list = _Objects.Where(x => (x as InstanceObject).Info.BossID == bossId).ToList();
+            if (list != null && list.Count > 0)
+            {
+                list.ForEach(x => x.RemoveFromWorld());
+            }
+            var spawns = _Spawns[bossId].ToList();
+            if (spawns != null && spawns.Count > 0)
+            {
+                spawns.ForEach(x => x.RemoveFromWorld());
+            }
+        }
     }
 }
