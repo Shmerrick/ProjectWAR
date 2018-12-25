@@ -185,5 +185,31 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 DestructionVictoryPoints -= 300;
             }
         }
+
+        public void BOWon(Realms attackingRealm, string name)
+        {
+            _logger.Debug($"BOWon {attackingRealm} {name}");
+            if (attackingRealm == Realms.REALMS_REALM_ORDER)
+            {
+                OrderVictoryPoints += 50;
+            }
+            else
+            {
+                DestructionVictoryPoints += 50;
+            }
+        }
+
+        public void BOLost(Realms losingRealm, string name)
+        {
+            _logger.Debug($"BOLost {losingRealm} {name}");
+            if (losingRealm == Realms.REALMS_REALM_ORDER)
+            {
+                OrderVictoryPoints -= 50;
+            }
+            else
+            {
+                DestructionVictoryPoints -= 50;
+            }
+        }
     }
 }

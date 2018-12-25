@@ -89,7 +89,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 var transition = new StateTransition(CurrentState, command);
                 ProcessState nextState;
                 if (!transitions.TryGetValue(transition, out nextState))
-                    throw new Exception("Invalid transition: " + CurrentState + " -> " + command);
+                {
+                    // throw new Exception("Invalid transition: " + CurrentState + " -> " + command);
+                    BattlefrontLogger.Warn("Invalid transition: " + CurrentState + " -> " + command);
+                    return CurrentState;
+                }
                 return nextState;
             }
 

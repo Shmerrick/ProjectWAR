@@ -1265,7 +1265,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 				case StateFlags.Secure: // big tick
 					VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.BIG);
-				    lock (_closePlayers)
+
+				    if (capturingRealm == Realms.REALMS_REALM_ORDER)
+				    {
+				        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.BOWon(Realms.REALMS_REALM_ORDER, this.Name);
+				        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.BOLost(Realms.REALMS_REALM_DESTRUCTION, this.Name);
+				    }
+				    else if (capturingRealm == Realms.REALMS_REALM_DESTRUCTION)
+				    {
+				        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.BOWon(Realms.REALMS_REALM_DESTRUCTION, this.Name);
+				        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.BOLost(Realms.REALMS_REALM_ORDER, this.Name);
+				    }
+                    
+                    lock (_closePlayers)
 				    {
 				        foreach (var closePlayer in _closePlayers)
 				        {
@@ -1299,19 +1311,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 					break;
 			}
 
-		    if (capturingRealm == Realms.REALMS_REALM_ORDER)
-		    {
-		        BattleFront.VictoryPointProgress.OrderVictoryPoints += VP.OrderVictoryPoints;
-		        BattleFront.VictoryPointProgress.DestructionVictoryPoints += VP.DestructionVictoryPoints;  //Losing side VP numbers are negative
-            }
-		    else if (capturingRealm == Realms.REALMS_REALM_DESTRUCTION)
-		    {
-		        BattleFront.VictoryPointProgress.DestructionVictoryPoints += VP.DestructionVictoryPoints;
-		        BattleFront.VictoryPointProgress.OrderVictoryPoints += VP.OrderVictoryPoints;
-            }
+		  
 
-		    // Make sure VP dont go less than 0
-			if (BattleFront.VictoryPointProgress.OrderVictoryPoints <= 0)
+            // Make sure VP dont go less than 0
+            if (BattleFront.VictoryPointProgress.OrderVictoryPoints <= 0)
 				BattleFront.VictoryPointProgress.OrderVictoryPoints = 0;
 
 			if (BattleFront.VictoryPointProgress.DestructionVictoryPoints <= 0)

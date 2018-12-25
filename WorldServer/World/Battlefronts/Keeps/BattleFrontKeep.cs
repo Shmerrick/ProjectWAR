@@ -1,5 +1,4 @@
 ﻿using Common;
-using Common;
 using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
@@ -145,10 +144,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                 WorldMgr._Keeps[Info.KeepId] = this;
             else
                 WorldMgr._Keeps.Add(Info.KeepId, this);
-
-
-          
-
         }
 
         public void SetSeized()
@@ -204,7 +199,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public void SetInnerDoorDown()
         {
             SendRegionMessage(Info.Name + "'s inner sanctum  door has been destroyed!");
-            _logger.Debug($"Inner door destroyed for realm {Realms.REALMS_REALM_DESTRUCTION}");
+            _logger.Debug($"{Info.Name} : Inner door destroyed for realm {Realms.REALMS_REALM_DESTRUCTION}");
 
             // TODO : What is this for?
             //LastMessage = KeepMessage.Inner0;
@@ -220,12 +215,19 @@ namespace WorldServer.World.BattleFronts.Keeps
                 }
             }
             InnerDownTimer = TCPManager.GetTimeStamp() + InnerDownTimerLength;
+
+            foreach (var plr in PlayersInRange)
+            {
+                SendKeepInfo(plr);
+            }
+            SendKeepStatus(null);
+
         }
 
         public void SetOuterDoorDown()
         {
             SendRegionMessage(Info.Name + "'s outer door has been destroyed!");
-            _logger.Debug($"Outer door destroyed for realm {Realms.REALMS_REALM_DESTRUCTION}");
+            _logger.Debug($"{Info.Name} : Outer door destroyed for realm {Realms.REALMS_REALM_DESTRUCTION}");
 
             // TODO : What is this for?
             //LastMessage = KeepMessage.Outer0;
@@ -242,6 +244,12 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
 
             OuterDownTimer = TCPManager.GetTimeStamp() + OuterDownTimerLength;
+
+            foreach (var plr in PlayersInRange)
+            {
+                SendKeepInfo(plr);
+            }
+            SendKeepStatus(null);
         }
 
         /// <summary>
@@ -282,14 +290,24 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             foreach (var door in Doors)
             {
-                door.Spawn();
+                if (door.GameObject.IsDead)
+                    door.Spawn();
             }
+
+            foreach (var crea in Creatures)
+                    crea.DespawnGuard();
+
             foreach (var crea in Creatures)
                 if (!crea.Info.IsPatrol)
                     crea.SpawnGuard(Realm);
 
             PlayersKilledInRange /= 2;
 
+            foreach (var plr in PlayersInRange)
+            {
+                SendKeepInfo(plr);
+            }
+            SendKeepStatus(null);
         }
 
         /// <summary>
@@ -309,6 +327,12 @@ namespace WorldServer.World.BattleFronts.Keeps
             foreach (var crea in Creatures)
                 if (!crea.Info.IsPatrol)
                     crea.DespawnGuard();
+
+            foreach (var plr in PlayersInRange)
+            {
+                SendKeepInfo(plr);
+            }
+
 
         }
 
@@ -404,11 +428,11 @@ namespace WorldServer.World.BattleFronts.Keeps
         public void OpenBattleFront()
         {
             // When the battlefront opens, set the default realm for the keep
-            PendingRealm = (Realms) Info.Realm;
+            PendingRealm = (Realms)Info.Realm;
 
             // Set the initial VP for this keep.
-           WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.AddKeepTake(PendingRealm);
-            
+            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.AddKeepTake(PendingRealm);
+
             var state = p.MoveNext(KeepStateMachine.Command.OnOpenBattleFront);
             ExecuteAction(state);
         }
@@ -418,7 +442,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             _logger.Debug($"Outer door has reset");
 
             OuterDownTimer = 0;
-            
+
             var state = p.MoveNext(KeepStateMachine.Command.OnOuterDownTimerEnd);
             ExecuteAction(state);
         }
@@ -584,7 +608,10 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             // Reset the defence tick timer
             if (DefenceTickTimer > 0)
+            {
+                ProgressionLogger.Debug($"{Info.Name} : Defence Timer reset");
                 DefenceTickTimer = TCPManager.GetTimeStamp() + DefenceTickTimerLength;
+            }
 
             switch (number)
             {
@@ -598,22 +625,39 @@ namespace WorldServer.World.BattleFronts.Keeps
         }
 
         public void OnKeepNpcAttacked(byte pctHealth)
-        { 
+        {
             // Reset the defence tick timer
             if (DefenceTickTimer > 0)
+            {
+                ProgressionLogger.Debug($"{Info.Name} : Defence Timer reset");
                 DefenceTickTimer = TCPManager.GetTimeStamp() + DefenceTickTimerLength;
+            }
 
-            ProgressionLogger.Debug($"Keep NPC Attacked");
+            ProgressionLogger.Debug($"{Info.Name} : Keep NPC Attacked");
         }
 
         public void OnOuterDoorAttacked(byte pctHealth)
         {
-            ProgressionLogger.Debug($"Outer Door Attacked");
+            ProgressionLogger.Debug($" {Info.Name} : Outer Door Attacked ");
+            SendRegionMessage(Info.Name + "'s outer door is under attack!");
+            EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
+
+            foreach (var plr in PlayersInRange)
+            {
+                SendKeepInfo(plr);
+            }
         }
 
         public void OnInnerDoorAttacked(byte pctHealth)
         {
-            ProgressionLogger.Debug($"Inner Door Attacked");
+            ProgressionLogger.Debug($" {Info.Name} : Inner Door Attacked");
+            SendRegionMessage(Info.Name + "'s inner door is under attack!");
+            EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
+
+            foreach (var plr in PlayersInRange)
+            {
+                SendKeepInfo(plr);
+            }
         }
 
         //        public void OnKeepDoorAttacked(byte number, byte pctHealth)
@@ -1441,9 +1485,9 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             if (KeepStatus != KeepStatus.KEEPSTATUS_LOCKED)
             {
-                for (var i = 0; i < (int) MaterielType.MaxMateriel; ++i)
+                for (var i = 0; i < (int)MaterielType.MaxMateriel; ++i)
                 {
-                    var prevSupply = (int) _materielSupply[i];
+                    var prevSupply = (int)_materielSupply[i];
 
                     if (_materielCaps[i][Rank] == 0)
                     {
@@ -1460,7 +1504,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                         else _materielSupply[i] += 0.1f / _materielRegenTime[i][Rank];
                     }
 
-                    var curSupply = (int) _materielSupply[i];
+                    var curSupply = (int)_materielSupply[i];
 
                     if (i > 0 && curSupply > prevSupply)
                     {
@@ -2194,8 +2238,6 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             if (player == null)
                 return false;
-
-            Realm playerRealm;
             // If we are too near to chest I guess we cannot deply it...?
             if (player.PointWithinRadiusFeet(new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ), 50))
                 return false;
