@@ -162,15 +162,27 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void AddKeepTake(Realms attackingRealm)
         {
+            _logger.Debug($"AddKeepTake {attackingRealm} ");
             if (attackingRealm == Realms.REALMS_REALM_ORDER)
             {
                 OrderVictoryPoints += 300;
-                DestructionVictoryPoints -= 300;
             }
             else
             {
                 DestructionVictoryPoints += 300;
+            }
+        }
+
+        public void KeepLost(Realms losingRealm)
+        {
+            _logger.Debug($"KeepLost {losingRealm} ");
+            if (losingRealm == Realms.REALMS_REALM_ORDER)
+            {
                 OrderVictoryPoints -= 300;
+            }
+            else
+            {
+                DestructionVictoryPoints -= 300;
             }
         }
     }

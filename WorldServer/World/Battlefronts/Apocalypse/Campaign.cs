@@ -143,24 +143,33 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             var destructionDominationCount = 0;
 
+            var zoneId = this.BattleFrontManager.ActiveBattleFront.ZoneId;
+
+
             foreach (var keep in Keeps)
             {
-                if (keep.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                if (keep.ZoneId == zoneId)
                 {
-                    if (keep.KeepStatus == KeepStatus.KEEPSTATUS_SAFE)
+                    if (keep.Realm == Realms.REALMS_REALM_DESTRUCTION)
                     {
-                        destructionDominationCount++;
+                        if (keep.p.CurrentState == KeepStateMachine.ProcessState.Safe)
+                        {
+                            destructionDominationCount++;
+                        }
                     }
                 }
             }
 
             foreach (var campaignObjective in Objectives)
             {
-                if (campaignObjective.OwningRealm == Realms.REALMS_REALM_DESTRUCTION)
+                if (campaignObjective.ZoneId == zoneId)
                 {
-                    if (campaignObjective.State == StateFlags.Secure)
+                    if (campaignObjective.OwningRealm == Realms.REALMS_REALM_DESTRUCTION)
                     {
-                        destructionDominationCount++;
+                        if (campaignObjective.State == StateFlags.Secure)
+                        {
+                            destructionDominationCount++;
+                        }
                     }
                 }
             }
@@ -605,6 +614,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void UpdateRVRStatus()
         {
+            
+
             // Update players with status of campaign
             foreach (Player plr in Region.Players)
             {
@@ -623,8 +634,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // also save into db
             RVRProgressionService.SaveRVRProgression(WorldMgr.LowerTierCampaignManager.BattleFrontProgressions);
             RVRProgressionService.SaveRVRProgression(WorldMgr.UpperTierCampaignManager.BattleFrontProgressions);
-
-
 
         }
 

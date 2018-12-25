@@ -1302,12 +1302,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 		    if (capturingRealm == Realms.REALMS_REALM_ORDER)
 		    {
 		        BattleFront.VictoryPointProgress.OrderVictoryPoints += VP.OrderVictoryPoints;
-		        BattleFront.VictoryPointProgress.DestructionVictoryPoints -= VP.DestructionVictoryPoints;
+		        BattleFront.VictoryPointProgress.DestructionVictoryPoints += VP.DestructionVictoryPoints;  //Losing side VP numbers are negative
             }
 		    else if (capturingRealm == Realms.REALMS_REALM_DESTRUCTION)
 		    {
 		        BattleFront.VictoryPointProgress.DestructionVictoryPoints += VP.DestructionVictoryPoints;
-		        BattleFront.VictoryPointProgress.OrderVictoryPoints -= VP.OrderVictoryPoints;
+		        BattleFront.VictoryPointProgress.OrderVictoryPoints += VP.OrderVictoryPoints;
             }
 
 		    // Make sure VP dont go less than 0

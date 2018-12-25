@@ -1,4 +1,5 @@
 ﻿using Common;
+using Common;
 using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
@@ -37,7 +38,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public const int OuterDownTimerLength = 5 * 60;
         public const int InnerDownTimerLength = 5 * 60;
         public const int SeizedTimerLength = 5 * 60;
-        public const int LordKilledTimerLength = 5 * 60;
+        public const int LordKilledTimerLength = 1 * 60;
         public const int DefenceTickTimerLength = 5 * 60;
         public const int BackToSafeTimerLength = 5 * 60;
         #endregion
@@ -158,30 +159,24 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void SetLordKilled()
         {
-            //// If the keep is already locked, leave
-            //if (KeepStatus == KeepStatus.KEEPSTATUS_LOCKED)
-            //{
-            //    RewardLogger.Warn($"Kill on Keep Lord while Keep is LOCKED");
-            //    return;
-            //}
             _logger.Debug($"Lord Killed");
             var contributionDefinition = new ContributionDefinition();
 
             foreach (var h in _hardpoints)
                 h.CurrentWeapon?.Destroy();
 
-            //UpdateKeepStatus(KeepStatus.KEEPSTATUS_SEIZED);
-            //LastMessage = KeepMessage.Fallen;
-
-            //// Time until the seized realm spawns lord and guards.
-            //_lockKeepTimer = TCPManager.GetTimeStamp() + TIMESPAN_LOCKKEEP;
-
             // Despawn Keep Creatures
             foreach (var crea in Creatures)
                 crea.DespawnGuard();
 
+            // Mark the Keep as lost for VP calculations. 
+            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.KeepLost(Realm);
+
             // Flip realm on Lord Kill
             Realm = Realm == Realms.REALMS_REALM_ORDER ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
+
+            // Mark the Keep as win for VP calculations. 
+            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.AddKeepTake(Realm);
 
             foreach (var plr in PlayersInRange)
             {
@@ -198,12 +193,11 @@ namespace WorldServer.World.BattleFronts.Keeps
             LastMessage = KeepMessage.Fallen;
             _logger.Info($"Awarding VP for Keep Lord kill");
 
-            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.AddKeepTake(Realm);
-
             SendKeepStatus(null);
             EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
 
             PlayersKilledInRange = 0;
+            LordKilledTimer = TCPManager.GetTimeStamp() + LordKilledTimerLength;
         }
 
 
@@ -411,6 +405,10 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             // When the battlefront opens, set the default realm for the keep
             PendingRealm = (Realms) Info.Realm;
+
+            // Set the initial VP for this keep.
+           WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.AddKeepTake(PendingRealm);
+            
             var state = p.MoveNext(KeepStateMachine.Command.OnOpenBattleFront);
             ExecuteAction(state);
         }
@@ -419,7 +417,8 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             _logger.Debug($"Outer door has reset");
 
-            //Doors.Single(x=>x.Info.Number == OUTER_DOOR).Spawn();
+            OuterDownTimer = 0;
+            
             var state = p.MoveNext(KeepStateMachine.Command.OnOuterDownTimerEnd);
             ExecuteAction(state);
         }
@@ -428,6 +427,8 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             _logger.Debug($"Inner door has reset");
 
+            InnerDownTimer = 0;
+
             // Doors.Single(x => x.Info.Number == INNER_DOOR).Spawn();
             var state = p.MoveNext(KeepStateMachine.Command.OnInnerDownTimerEnd);
             ExecuteAction(state);
@@ -435,11 +436,15 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         private void ExecuteAction(KeepStateMachine.ProcessState state)
         {
+            _logger.Debug($"Executing Action {actions[state]} for {state}");
+            SendRegionMessage($"Executing Action {actions[state]} for {state}");
             actions[state].Invoke();
         }
 
         public void OnSeizedTimerEnd()
         {
+            SeizedTimer = 0;
+
             var state = p.MoveNext(KeepStateMachine.Command.OnSeizedTimerEnd);
             ExecuteAction(state);
         }
@@ -471,18 +476,24 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void OnLordKilledTimerEnd()
         {
+            LordKilledTimer = 0;
+
             var state = p.MoveNext(KeepStateMachine.Command.OnLordKilledTimerEnd);
             ExecuteAction(state);
         }
 
         public void OnDefenceTickTimerEnd()
         {
+            DefenceTickTimer = 0;
+
             var state = p.MoveNext(KeepStateMachine.Command.OnDefenceTickTimerEnd);
             ExecuteAction(state);
         }
 
         public void OnBackToSafeTimerEnd()
         {
+            BackToSafeTimer = 0;
+
             var state = p.MoveNext(KeepStateMachine.Command.OnBackToSafeTimerEnd);
             ExecuteAction(state);
         }
@@ -863,14 +874,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             //}
         }
 
-        public void OnKeepLordDied()
-        {
-
-        }
-
-
-
-       
 
         ///// <summary>
         /////     Provide a defence tick

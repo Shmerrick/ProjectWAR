@@ -306,9 +306,10 @@ namespace WorldServer.World.BattleFronts.Keeps
                     Region.AddObject(_flagGrd.Creature, Spawn.ZoneId);
                     Destroy();
                 }
-
                 else
-                    _keep.OnKeepLordDied();
+                {
+                    _keep.OnLordKilled();
+                }
             }
 
             protected override void SetRespawnTimer()

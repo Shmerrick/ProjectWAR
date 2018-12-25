@@ -64,6 +64,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {new StateTransition(ProcessState.Safe, Command.OnLordWounded), ProcessState.LordWounded},
                     {new StateTransition(ProcessState.OuterDown, Command.OnLordWounded), ProcessState.LordWounded},
                     {new StateTransition(ProcessState.InnerDown, Command.OnLordWounded), ProcessState.LordWounded},
+                    // unlikely - but possible for a gm
+                    {new StateTransition(ProcessState.InnerDown, Command.OnLordKilled), ProcessState.LordKilled},
+                    // unlikely - but possible for a gm
+                    {new StateTransition(ProcessState.OuterDown, Command.OnLordKilled), ProcessState.LordKilled},
                     {new StateTransition(ProcessState.LordWounded, Command.OnLordKilled), ProcessState.LordKilled},
                     {new StateTransition(ProcessState.LordKilled, Command.OnLordKilledTimerEnd), ProcessState.Seized},
                     {new StateTransition(ProcessState.Seized, Command.OnSeizedTimerEnd), ProcessState.Safe},
