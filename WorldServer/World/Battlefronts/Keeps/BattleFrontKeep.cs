@@ -34,9 +34,9 @@ namespace WorldServer.World.BattleFronts.Keeps
         public int DefenceTickTimer;
         public int BackToSafeTimer;
 
-        public const int OuterDownTimerLength = 5 * 60;
-        public const int InnerDownTimerLength = 5 * 60;
-        public const int SeizedTimerLength = 5 * 60;
+        public const int OuterDownTimerLength = 1 * 60;
+        public const int InnerDownTimerLength = 1 * 60;
+        public const int SeizedTimerLength = 1 * 60;
         public const int LordKilledTimerLength = 1 * 60;
         public const int DefenceTickTimerLength = 5 * 60;
         public const int BackToSafeTimerLength = 5 * 60;
@@ -91,6 +91,46 @@ namespace WorldServer.World.BattleFronts.Keeps
             actions.Add(KeepStateMachine.ProcessState.InnerDown, SetInnerDoorDown);
             actions.Add(KeepStateMachine.ProcessState.LordKilled, SetLordKilled);
             actions.Add(KeepStateMachine.ProcessState.Seized, SetSeized);
+            actions.Add(KeepStateMachine.ProcessState.InnerDoorRepaired, SetInnerDoorRepaired);
+            actions.Add(KeepStateMachine.ProcessState.OuterDoorRepaired, SetOuterDoorRepaired);
+
+        }
+
+        private void SetInnerDoorRepaired()
+        {
+            _logger.Debug($"Inner Door Repaired");
+
+            Doors.Single(x => x.Info.Number == INNER_DOOR).Spawn();
+            Doors.Single(x => x.Info.Number == INNER_DOOR).GameObject.MaxHealth = 100;
+
+            // If both doors are alive - door status is ok
+            foreach (var keepDoor in Doors)
+            {
+                if (keepDoor.GameObject.IsDead)
+                    return;
+            }
+
+            var state = p.MoveNext(KeepStateMachine.Command.AllDoorsRepaired);
+            ExecuteAction(state);
+
+        }
+
+        private void SetOuterDoorRepaired()
+        {
+            _logger.Debug($"Outer Door Repaired");
+
+            Doors.Single(x=>x.Info.Number == OUTER_DOOR).Spawn();
+            
+            // If both doors are alive - door status is ok
+            foreach (var keepDoor in Doors)
+            {
+                if (keepDoor.GameObject.IsDead)
+                    return;
+            }
+
+            var state = p.MoveNext(KeepStateMachine.Command.AllDoorsRepaired);
+            ExecuteAction(state);
+
         }
 
         /// <summary>
@@ -132,12 +172,12 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             IsActive = true;
 
-            foreach (var crea in Creatures)
-                if (!crea.Info.IsPatrol)
-                    crea.SpawnGuard(Realm);
+            //foreach (var crea in Creatures)
+            //    if (!crea.Info.IsPatrol)
+            //        crea.SpawnGuard(Realm);
 
-            foreach (var door in Doors)
-                door.Spawn();
+            //foreach (var door in Doors)
+            //    door.Spawn();
 
 
             if (WorldMgr._Keeps.ContainsKey(Info.KeepId))
@@ -165,13 +205,13 @@ namespace WorldServer.World.BattleFronts.Keeps
                 crea.DespawnGuard();
 
             // Mark the Keep as lost for VP calculations. 
-            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.KeepLost(Realm);
-
+            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
+            
             // Flip realm on Lord Kill
             Realm = Realm == Realms.REALMS_REALM_ORDER ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
 
             // Mark the Keep as win for VP calculations. 
-            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.AddKeepTake(Realm);
+            //WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.AddKeepTake(Realm);
 
             foreach (var plr in PlayersInRange)
             {
@@ -290,8 +330,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             foreach (var door in Doors)
             {
-                if (door.GameObject.IsDead)
-                    door.Spawn();
+                door.Spawn();
             }
 
             foreach (var crea in Creatures)
@@ -323,6 +362,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             foreach (var door in Doors)
             {
                 door.Spawn();
+                door.GameObject.SetAttackable(false);
             }
             foreach (var crea in Creatures)
                 if (!crea.Info.IsPatrol)
@@ -431,7 +471,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             PendingRealm = (Realms)Info.Realm;
 
             // Set the initial VP for this keep.
-            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.AddKeepTake(PendingRealm);
+            // WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.AddKeepTake(PendingRealm);
 
             var state = p.MoveNext(KeepStateMachine.Command.OnOpenBattleFront);
             ExecuteAction(state);
@@ -443,6 +483,20 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             OuterDownTimer = 0;
 
+            Doors.Single(x => x.Info.Number == OUTER_DOOR).Spawn();
+            
+            // If both doors are alive - door status is ok
+            lock (Doors)
+            {
+                _logger.Debug($"Checking Outer door");
+                var doorList = Doors.Where(x => x.Info.Number == INNER_DOOR || x.Info.Number == OUTER_DOOR);
+
+                foreach (var keepDoor in doorList)
+                {
+                    if (keepDoor.GameObject.IsDead)
+                        return;
+                }
+            }
             var state = p.MoveNext(KeepStateMachine.Command.OnOuterDownTimerEnd);
             ExecuteAction(state);
         }
@@ -453,10 +507,24 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             InnerDownTimer = 0;
 
-            // Doors.Single(x => x.Info.Number == INNER_DOOR).Spawn();
+            Doors.Single(x => x.Info.Number == INNER_DOOR).Spawn();
+
+            // If both doors are alive - door status is ok
+            lock (Doors)
+            {
+                _logger.Debug($"Checking Inner door");
+                var doorList = Doors.Where(x => x.Info.Number == INNER_DOOR || x.Info.Number == OUTER_DOOR);
+
+                foreach (var keepDoor in doorList)
+                {
+                    if (keepDoor.GameObject.IsDead)
+                        return;
+                }
+            }
             var state = p.MoveNext(KeepStateMachine.Command.OnInnerDownTimerEnd);
             ExecuteAction(state);
         }
+
 
         private void ExecuteAction(KeepStateMachine.ProcessState state)
         {

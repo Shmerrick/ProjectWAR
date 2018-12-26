@@ -402,5 +402,37 @@ namespace WorldServer.Services.World
             }
         }
         */
+        public static List<Keep_Info> GetZoneKeeps(int regionId, int zoneId)
+        {
+            var keepList = new List<Keep_Info>();
+            foreach (var keyValuePair in _KeepInfos.Where(x=>x.Key == regionId))
+            {
+                foreach (var keep in keyValuePair.Value)
+                {
+                    if (keep.ZoneId == zoneId)
+                    {
+                        keepList.Add(keep);
+                    }
+                }
+            }
+            return keepList;
+        }
+
+
+        public static List<BattleFront_Objective> GetZoneBattlefrontObjectives(int regionId, int zoneId)
+        {
+            var boList = new List<BattleFront_Objective>();
+            foreach (var keyValuePair in _BattleFrontObjectives.Where(x => x.Key == regionId))
+            {
+                foreach (var bo in keyValuePair.Value)
+                {
+                    if (bo.ZoneId == zoneId)
+                    {
+                        boList.Add(bo);
+                    }
+                }
+            }
+            return boList;
+        }
     }
 }

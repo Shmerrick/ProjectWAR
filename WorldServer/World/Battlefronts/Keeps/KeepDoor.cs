@@ -4,7 +4,9 @@ using System.Linq;
 using Common;
 using FrameWork;
 using GameData;
+using NLog;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Map;
 
 namespace WorldServer.World.BattleFronts.Keeps
@@ -23,6 +25,8 @@ namespace WorldServer.World.BattleFronts.Keeps
         public KeepGameObject GameObject;
         public Keep_Door Info;
         public BattleFrontKeep Keep;
+
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public KeepDoor(RegionMgr region, Keep_Door info, BattleFrontKeep keep)
         {
@@ -55,23 +59,14 @@ namespace WorldServer.World.BattleFronts.Keeps
                 Name = spawn.Proto.Name;
                 _keepDoor = keepDoor;
 
-                if (Constants.DoomsdaySwitch == 0)
-                {
-                    if (keepDoor.Info.Number == (int)KeepDoorType.InnerMain || keepDoor.Info.Number == (int)KeepDoorType.OuterMain)
-                    {
-                        Realm = keep.Realm;
-                        Spawn.Proto.HealthPoints = (uint)_keep.Tier * 100000;
-                    }
-                }
-                else
-                {
+                
                     if (keepDoor.Info.Number == (int)KeepDoorType.InnerMain || keepDoor.Info.Number == (int)KeepDoorType.OuterMain)
                     {
                         Realm = keep.Realm;
                         Spawn.Proto.HealthPoints = 4 * 500000;
+                        Health = Spawn.Proto.HealthPoints;
                     }
-                }
-
+                
                 _enterExitPoints[0] = new Point3D(_keepDoor.Info.TeleportX1, _keepDoor.Info.TeleportY1, _keepDoor.Info.TeleportZ1);
                 _enterExitPoints[1] = new Point3D(_keepDoor.Info.TeleportX2, _keepDoor.Info.TeleportY2, _keepDoor.Info.TeleportZ2);
 
@@ -243,10 +238,16 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             public void SetAttackable(bool attackable)
             {
+                if (this._keepDoor.Info.Number == (int) KeepDoorType.InnerMain)
+                    _logger.Debug($"Keep : {this._keep.Info.Name} DoorId : {this.DoorId} INNER SetAttackable = {attackable}");
+                if (this._keepDoor.Info.Number == (int)KeepDoorType.OuterMain)
+                    _logger.Debug($"Keep : {this._keep.Info.Name} DoorId : {this.DoorId} OUTER SetAttackable = {attackable}");
+
+
                 if (IsInvulnerable == attackable)
                 {
                     IsInvulnerable = !attackable;
-
+                    
                     foreach (Player plr in PlayersInRange)
                         SendMeTo(plr);
                 }
@@ -295,8 +296,8 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             GameObject = new KeepGameObject(spawn, this, Keep);
             Region.AddObject(GameObject, spawn.ZoneId);
-
-            GameObject.SetAttackable(Keep.KeepStatus != KeepStatus.KEEPSTATUS_LOCKED);
+            
+            GameObject.SetAttackable(true);
 
             Occlusion.SetFixtureVisible(Info.DoorId, true);
         }

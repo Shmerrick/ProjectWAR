@@ -141,40 +141,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void DestructionDominationCheck()
         {
-            var destructionDominationCount = 0;
-
-            var zoneId = this.BattleFrontManager.ActiveBattleFront.ZoneId;
-
-
-            foreach (var keep in Keeps)
-            {
-                if (keep.ZoneId == zoneId)
-                {
-                    if (keep.Realm == Realms.REALMS_REALM_DESTRUCTION)
-                    {
-                        if (keep.p.CurrentState == KeepStateMachine.ProcessState.Safe)
-                        {
-                            destructionDominationCount++;
-                        }
-                    }
-                }
-            }
-
-            foreach (var campaignObjective in Objectives)
-            {
-                if (campaignObjective.ZoneId == zoneId)
-                {
-                    if (campaignObjective.OwningRealm == Realms.REALMS_REALM_DESTRUCTION)
-                    {
-                        if (campaignObjective.State == StateFlags.Secure)
-                        {
-                            destructionDominationCount++;
-                        }
-                    }
-                }
-            }
-
-            if (destructionDominationCount == 8)
+            if (this.BattleFrontManager.GetActiveCampaign().VictoryPointProgress.GetDominationCount(
+                Realms.REALMS_REALM_DESTRUCTION) == 8)
             {
                 _EvtInterface.AddEvent(DestructionDominationZoneLock, DestructionDominationTimer, 0);
             }
@@ -212,31 +180,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void OrderDominationCheck()
         {
-            var OrderDominationCount = 0;
-
-            foreach (var keep in Keeps)
-            {
-                if (keep.Realm == Realms.REALMS_REALM_ORDER)
-                {
-                    if (keep.KeepStatus == KeepStatus.KEEPSTATUS_SAFE)
-                    {
-                        OrderDominationCount++;
-                    }
-                }
-            }
-
-            foreach (var campaignObjective in Objectives)
-            {
-                if (campaignObjective.OwningRealm == Realms.REALMS_REALM_ORDER)
-                {
-                    if (campaignObjective.State == StateFlags.Secure)
-                    {
-                        OrderDominationCount++;
-                    }
-                }
-            }
-
-            if (OrderDominationCount == 8)
+            if (this.BattleFrontManager.GetActiveCampaign().VictoryPointProgress.GetDominationCount(
+                    Realms.REALMS_REALM_ORDER) == 8)
             {
                 _EvtInterface.AddEvent(OrderDominationZoneLock, OrderDominationTimer, 0);
             }
@@ -244,7 +189,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 _EvtInterface.RemoveEvent(OrderDominationZoneLock);
             }
-
         }
 
         private void DetermineCaptains()

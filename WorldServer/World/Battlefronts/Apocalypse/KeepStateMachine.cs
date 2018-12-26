@@ -19,7 +19,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             OnLordKilledTimerEnd,
             OnDefenceTickTimerEnd,
             OnBackToSafeTimerEnd,
-            OnLordWounded
+            OnLordWounded,
+            AllDoorsRepaired
         }
 
         public enum ProcessState
@@ -32,7 +33,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Seized,
             Locked,
             DefenceTick,
-            LordWounded
+            LordWounded,
+            OuterDoorRepaired,
+            InnerDoorRepaired
         }
 
         public class Process
@@ -74,8 +77,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {new StateTransition(ProcessState.OuterDown, Command.OnDefenceTickTimerEnd), ProcessState.DefenceTick},
                     {new StateTransition(ProcessState.InnerDown, Command.OnDefenceTickTimerEnd), ProcessState.DefenceTick},
                     {new StateTransition(ProcessState.DefenceTick, Command.OnBackToSafeTimerEnd), ProcessState.Safe},
+
                     {new StateTransition(ProcessState.OuterDown, Command.OnOuterDownTimerEnd), ProcessState.Safe},
+                    {new StateTransition(ProcessState.InnerDown, Command.OnOuterDownTimerEnd), ProcessState.Safe},
+                    {new StateTransition(ProcessState.LordWounded, Command.OnOuterDownTimerEnd), ProcessState.Safe},
                     {new StateTransition(ProcessState.InnerDown, Command.OnInnerDownTimerEnd), ProcessState.Safe},
+                    {new StateTransition(ProcessState.LordWounded, Command.OnInnerDownTimerEnd), ProcessState.Safe},
+                    //OnOuterDownTimerEnd -> door.spawn, check both doors, if ok - exec safe
+                    //{new StateTransition(ProcessState.InnerDoorRepaired, Command.AllDoorsRepaired), ProcessState.Safe},
+                    //{new StateTransition(ProcessState.OuterDoorRepaired, Command.AllDoorsRepaired), ProcessState.Safe},
+                    //{new StateTransition(ProcessState.OuterDoorRepaired, Command.OnInnerDownTimerEnd), ProcessState.InnerDoorRepaired},
+                    //{new StateTransition(ProcessState.InnerDoorRepaired, Command.OnOuterDownTimerEnd), ProcessState.OuterDoorRepaired},
 
                     {new StateTransition(ProcessState.Locked, Command.OnOpenBattleFront), ProcessState.Safe}
                 };

@@ -1,5 +1,7 @@
-﻿using GameData;
+﻿using System.Linq;
+using GameData;
 using NLog;
+using WorldServer.World.BattleFronts.Objectives;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -16,6 +18,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public int NumberOrderPlayerKills { get; set; }
         public int NumberDestructionScenarioWins { get; set; }
         public int NumberOrderScenarioWins { get; set; }
+        public int DestructionVictoryDominationCount { get; set; }
+        public int OrderVictoryDominationCount { get; set; }
 
         public float DestructionVictoryPoints
         {
@@ -62,10 +66,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             NumberOrderPlayerKills = 0;
             NumberDestructionScenarioWins = 0;
             NumberOrderScenarioWins = 0;
+            DestructionVictoryDominationCount = 0;
+            OrderVictoryDominationCount = 0;
+
+
 
         }
 
-        public VictoryPointProgress(float orderVP, float destroVP)
+    public VictoryPointProgress(float orderVP, float destroVP)
 		{
 			OrderVictoryPoints = orderVP;
 			DestructionVictoryPoints = destroVP;
@@ -87,7 +95,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (NumberOrderPlayerKills <= MAX_NUMBER_PLAYER_KILLS)
                 {
-                    OrderVictoryPoints += 2;
                     NumberOrderPlayerKills++;
                 }
             }
@@ -96,7 +103,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (NumberDestructionPlayerKills <= MAX_NUMBER_PLAYER_KILLS)
                 {
-                    DestructionVictoryPoints += 2;
                     NumberDestructionPlayerKills++;
                 }
             }
@@ -108,7 +114,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (NumberOrderScenarioWins <= MAX_NUMBER_SCENARIO_WINS)
                 {
-                    OrderVictoryPoints += 25;
                     NumberOrderScenarioWins++;
                 }
             }
@@ -117,7 +122,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (NumberDestructionScenarioWins <= MAX_NUMBER_SCENARIO_WINS)
                 {
-                    DestructionVictoryPoints += 25;
                     NumberDestructionScenarioWins++;
                 }
             }
@@ -160,56 +164,132 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             DestructionVictoryPoints = 0;
         }
 
-        public void AddKeepTake(Realms attackingRealm)
+        //public void AddKeepTake(Realms attackingRealm)
+        //{
+        //    _logger.Debug($"AddKeepTake {attackingRealm} ");
+        //    if (attackingRealm == Realms.REALMS_REALM_ORDER)
+        //    {
+        //        OrderVictoryPoints += 300;
+        //    }
+        //    else
+        //    {
+        //        DestructionVictoryPoints += 300;
+        //    }
+        //}
+
+        //public void KeepLost(Realms losingRealm)
+        //{
+        //    _logger.Debug($"KeepLost {losingRealm} ");
+        //    if (losingRealm == Realms.REALMS_REALM_ORDER)
+        //    {
+        //        OrderVictoryPoints -= 300;
+        //    }
+        //    else
+        //    {
+        //        DestructionVictoryPoints -= 300;
+        //    }
+        //}
+
+        //public void BOWon(Realms attackingRealm, string name)
+        //{
+        //    _logger.Debug($"BOWon {attackingRealm} {name}");
+        //    if (attackingRealm == Realms.REALMS_REALM_ORDER)
+        //    {
+        //        OrderVictoryPoints += 50;
+        //    }
+        //    else
+        //    {
+        //        DestructionVictoryPoints += 50;
+        //    }
+        //}
+
+        //public void BOLost(Realms losingRealm, string name)
+        //{
+        //    _logger.Debug($"BOLost {losingRealm} {name}");
+        //    if (losingRealm == Realms.REALMS_REALM_ORDER)
+        //    {
+        //        OrderVictoryPoints -= 50;
+        //    }
+        //    else
+        //    {
+        //        DestructionVictoryPoints -= 50;
+        //    }
+        //}
+
+
+        public void UpdateStatus(Campaign campaign)
         {
-            _logger.Debug($"AddKeepTake {attackingRealm} ");
-            if (attackingRealm == Realms.REALMS_REALM_ORDER)
+            DestructionVictoryPoints = 0;
+            OrderVictoryPoints = 0;
+            DestructionVictoryDominationCount = 0;
+            OrderVictoryDominationCount = 0;
+
+            foreach (var battleFrontKeep in campaign.Keeps)
             {
-                OrderVictoryPoints += 300;
+                foreach (var keep in campaign.ActiveBattleFrontStatus.KeepList)
+                {
+                    if (keep.KeepId == battleFrontKeep.Info.KeepId)
+                    {
+                        if (battleFrontKeep.p.CurrentState == KeepStateMachine.ProcessState.Safe)
+                        {
+                            if (battleFrontKeep.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                            {
+                                DestructionVictoryPoints += 300;
+                                DestructionVictoryDominationCount++;
+                            }
+                            if (battleFrontKeep.Realm == Realms.REALMS_REALM_ORDER)
+                            {
+                                OrderVictoryPoints += 300;
+                                OrderVictoryDominationCount++;
+                            }
+                        }
+                    }
+                }
             }
-            else
+
+            foreach (var campaignObjective in campaign.Objectives)
             {
-                DestructionVictoryPoints += 300;
+                foreach (var bo in campaign.ActiveBattleFrontStatus.BattlefieldObjectives)
+                {
+                    if (campaignObjective.State == StateFlags.Secure)
+                    {
+                        if (bo.Entry == campaignObjective.Id)
+                        {
+                            if (campaignObjective.OwningRealm == Realms.REALMS_REALM_DESTRUCTION)
+                            {
+                                DestructionVictoryPoints += 50;
+                                DestructionVictoryDominationCount++;
+                            }
+                            if (campaignObjective.OwningRealm == Realms.REALMS_REALM_ORDER)
+                            {
+                                OrderVictoryPoints += 50;
+                                OrderVictoryDominationCount++;
+                            }
+                        }
+                    }
+                }
             }
+
+            OrderVictoryPoints += NumberOrderScenarioWins * 25;
+            DestructionVictoryPoints += NumberDestructionScenarioWins * 25;
+
+            OrderVictoryPoints += NumberOrderPlayerKills * 2;
+            DestructionVictoryPoints += NumberDestructionPlayerKills * 2;
+
         }
 
-        public void KeepLost(Realms losingRealm)
-        {
-            _logger.Debug($"KeepLost {losingRealm} ");
-            if (losingRealm == Realms.REALMS_REALM_ORDER)
-            {
-                OrderVictoryPoints -= 300;
-            }
-            else
-            {
-                DestructionVictoryPoints -= 300;
-            }
-        }
 
-        public void BOWon(Realms attackingRealm, string name)
+        public int GetDominationCount(Realms realm)
         {
-            _logger.Debug($"BOWon {attackingRealm} {name}");
-            if (attackingRealm == Realms.REALMS_REALM_ORDER)
+            if (realm == Realms.REALMS_REALM_DESTRUCTION)
             {
-                OrderVictoryPoints += 50;
+                return DestructionVictoryDominationCount;
             }
-            else
+            if (realm == Realms.REALMS_REALM_ORDER)
             {
-                DestructionVictoryPoints += 50;
+                return OrderVictoryDominationCount;
             }
-        }
-
-        public void BOLost(Realms losingRealm, string name)
-        {
-            _logger.Debug($"BOLost {losingRealm} {name}");
-            if (losingRealm == Realms.REALMS_REALM_ORDER)
-            {
-                OrderVictoryPoints -= 50;
-            }
-            else
-            {
-                DestructionVictoryPoints -= 50;
-            }
+            return 0;
         }
     }
 }

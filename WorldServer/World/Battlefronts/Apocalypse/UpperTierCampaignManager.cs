@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
+using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.BattleFronts.Keeps;
@@ -115,6 +116,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattleFrontStatuses.Clear();
                 foreach (var battleFrontProgression in battleFrontProgressions)
                 {
+                    // Keeps for this region.
+                    var keeps = BattleFrontService.GetZoneKeeps(battleFrontProgression.RegionId, battleFrontProgression.ZoneId);
+                    // BattleFront Objectives for this region.
+                    var battlefieldObjectives = BattleFrontService.GetZoneBattlefrontObjectives(battleFrontProgression.RegionId, battleFrontProgression.ZoneId);
+
                     this.BattleFrontStatuses.Add(new BattleFrontStatus(this.ImpactMatrixManagerInstance)
                     {
                         BattleFrontId = battleFrontProgression.BattleFrontId,
@@ -126,7 +132,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         LockTimeStamp = 0,
                         Locked = true,
                         RegionId = battleFrontProgression.RegionId,
-                        Description = battleFrontProgression.Description
+                        Description = battleFrontProgression.Description,
+                        ZoneId = battleFrontProgression.ZoneId,
+                        KeepList = keeps,
+                        BattlefieldObjectives = battlefieldObjectives
+
                     });
                 }
             }

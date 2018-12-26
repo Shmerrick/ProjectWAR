@@ -4,6 +4,7 @@ using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Common;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Bounty;
 
@@ -23,12 +24,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public string Description { get; set; }
         public ContributionManager ContributionManagerInstance { get; set; }
         public ImpactMatrixManager ImpactMatrixManagerInstance { get; set; }
+        public int ZoneId { get; set; }
 
         public RewardManager RewardManagerInstance { get; set; }
 
         public HashSet<uint> KillContributionSet { get; set; }
         public Player DestructionRealmCaptain { get; set; }
         public Player OrderRealmCaptain { get; set; }
+        public List<Keep_Info> KeepList { get; set; }
+        public List<BattleFront_Objective> BattlefieldObjectives { get; set; }
+
 
         public BattleFrontStatus(ImpactMatrixManager impactMatrixManager)
         {
@@ -38,6 +43,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BountyService._ContributionDefinitions);
 
             RewardManagerInstance = new RewardManager(ContributionManagerInstance, new StaticWrapper(), RewardService._RewardPlayerKills, ImpactMatrixManagerInstance);
+
+            KeepList = new List<Keep_Info>();
+            BattlefieldObjectives = new List<BattleFront_Objective>();
         }
 
         public float DestructionVictoryPointPercentage

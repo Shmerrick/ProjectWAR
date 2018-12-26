@@ -1266,17 +1266,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				case StateFlags.Secure: // big tick
 					VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.BIG);
 
-				    if (capturingRealm == Realms.REALMS_REALM_ORDER)
-				    {
-				        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.BOWon(Realms.REALMS_REALM_ORDER, this.Name);
-				        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.BOLost(Realms.REALMS_REALM_DESTRUCTION, this.Name);
-				    }
-				    else if (capturingRealm == Realms.REALMS_REALM_DESTRUCTION)
-				    {
-				        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.BOWon(Realms.REALMS_REALM_DESTRUCTION, this.Name);
-				        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.BOLost(Realms.REALMS_REALM_ORDER, this.Name);
-				    }
-                    
+				    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
+
                     lock (_closePlayers)
 				    {
 				        foreach (var closePlayer in _closePlayers)
