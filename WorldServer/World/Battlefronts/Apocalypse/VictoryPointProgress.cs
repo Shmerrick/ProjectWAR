@@ -68,9 +68,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             NumberOrderScenarioWins = 0;
             DestructionVictoryDominationCount = 0;
             OrderVictoryDominationCount = 0;
-
-
-
         }
 
     public VictoryPointProgress(float orderVP, float destroVP)
@@ -230,7 +227,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     if (keep.KeepId == battleFrontKeep.Info.KeepId)
                     {
-                        if (battleFrontKeep.p.CurrentState == KeepStateMachine.ProcessState.Safe)
+                        if (battleFrontKeep.p.CurrentState == KeepStateMachine.ProcessState.Safe || battleFrontKeep.p.CurrentState == KeepStateMachine.ProcessState.Locked)
                         {
                             if (battleFrontKeep.Realm == Realms.REALMS_REALM_DESTRUCTION)
                             {
@@ -276,6 +273,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             OrderVictoryPoints += NumberOrderPlayerKills * 2;
             DestructionVictoryPoints += NumberDestructionPlayerKills * 2;
 
+            _logger.Info($"VPP {OrderVictoryPoints}/{DestructionVictoryPoints}");
         }
 
 

@@ -204,14 +204,12 @@ namespace WorldServer.World.BattleFronts.Keeps
             foreach (var crea in Creatures)
                 crea.DespawnGuard();
 
-            // Mark the Keep as lost for VP calculations. 
-            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
             
             // Flip realm on Lord Kill
-            Realm = Realm == Realms.REALMS_REALM_ORDER ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER;
+            Realm = Realms.REALMS_REALM_NEUTRAL;
+            PendingRealm = Realm == Realms.REALMS_REALM_ORDER ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER; ;
 
-            // Mark the Keep as win for VP calculations. 
-            //WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.AddKeepTake(Realm);
+            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
 
             foreach (var plr in PlayersInRange)
             {
@@ -347,6 +345,8 @@ namespace WorldServer.World.BattleFronts.Keeps
                 SendKeepInfo(plr);
             }
             SendKeepStatus(null);
+
+            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
         }
 
         /// <summary>
@@ -469,9 +469,6 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             // When the battlefront opens, set the default realm for the keep
             PendingRealm = (Realms)Info.Realm;
-
-            // Set the initial VP for this keep.
-            // WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.AddKeepTake(PendingRealm);
 
             var state = p.MoveNext(KeepStateMachine.Command.OnOpenBattleFront);
             ExecuteAction(state);
