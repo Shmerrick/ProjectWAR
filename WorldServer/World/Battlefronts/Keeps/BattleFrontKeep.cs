@@ -53,6 +53,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public byte Tier;
         public int PlayersKilledInRange { get; set; }
         public Realms PendingRealm { get; set; }
+        public Guild OwningGuild { get; set; }
 
         public Dictionary<KeepStateMachine.ProcessState, Action> actions = new Dictionary<KeepStateMachine.ProcessState, Action>();
         public KeepNpcCreature KeepLord => Creatures?.Find(x => x.Info.KeepLord);
@@ -94,6 +95,12 @@ namespace WorldServer.World.BattleFronts.Keeps
             actions.Add(KeepStateMachine.ProcessState.InnerDoorRepaired, SetInnerDoorRepaired);
             actions.Add(KeepStateMachine.ProcessState.OuterDoorRepaired, SetOuterDoorRepaired);
 
+        }
+
+        public void SetGuildOwner(Guild guild)
+        {
+            this.OwningGuild = guild;
+            SendRegionMessage($"{guild.Info.Name} has taken {Info.Name} as their own!");
         }
 
         private void SetInnerDoorRepaired()
