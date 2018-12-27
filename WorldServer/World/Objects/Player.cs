@@ -254,7 +254,15 @@ namespace WorldServer
 
         public BattleFrontStatus ActiveBattleFrontStatus => this.GetBattlefrontManager(this.Region.RegionId).GetActiveCampaign().GetActiveBattleFrontStatus();
         public BountyManager BountyManagerInstance => this.GetBattlefrontManager(this.Region.RegionId).BountyManagerInstance;
-        public ImpactMatrixManager ImpactMatrixManager => this.GetBattlefrontManager(this.Region.RegionId).ImpactMatrixManagerInstance;
+        public ImpactMatrixManager ImpactMatrixManager => GetPlayerImpactMatrixManager();
+
+        private ImpactMatrixManager GetPlayerImpactMatrixManager()
+        {
+            if (this.ScnInterface.Scenario == null)
+                return this.GetBattlefrontManager(this.Region.RegionId).ImpactMatrixManagerInstance;
+            else
+                return ScenarioMgr.ImpactMatrixManagerInstance;
+        }
 
         public void SpreadSpooky(object list)
         {
@@ -3910,7 +3918,7 @@ namespace WorldServer
             // Clearing heal aggro...
             HealAggros = new Dictionary<ushort, AggroInfo>();
             // Only do this if not in an SC
-            if (this.ScnInterface != null)
+            if (this.ScnInterface.Scenario == null)
             {
                 var battleFrontManager = GetBattlefrontManager(this.Region.RegionId);
                 // Reset this characters bounty to their base bounty.
@@ -3918,6 +3926,12 @@ namespace WorldServer
                 // Reset the impacts on this character.
                 battleFrontManager.ImpactMatrixManagerInstance.ClearImpacts(CharacterId);
             }
+            else
+            {
+                // In a Scenario
+                ScenarioMgr.ImpactMatrixManagerInstance.ClearImpacts(CharacterId);
+            }
+
             // inform instance that the player was killed
             if (!string.IsNullOrEmpty(InstanceID))
             {

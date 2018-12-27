@@ -4,6 +4,7 @@ using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using WorldServer.Scenarios;
 using WorldServer.World.Battlefronts.Bounty;
 
 namespace WorldServer
@@ -544,8 +545,19 @@ namespace WorldServer
             if (this is Player player)
             {
                 DeathLogger.Trace($"Looking for instanceManagerInstance");
-                // find the battlefrontstatus that this player is in.
-                var impactManagerInstance = player.GetBattlefrontManager(player.Region.RegionId).ImpactMatrixManagerInstance;
+                ImpactMatrixManager impactManagerInstance;
+                if (player.ScnInterface.Scenario == null)
+                {
+                    //find the battlefrontstatus that this player is in.
+                    impactManagerInstance =
+                        player.GetBattlefrontManager(player.Region.RegionId).ImpactMatrixManagerInstance;
+                }
+                else
+                {
+                    impactManagerInstance = ScenarioMgr.ImpactMatrixManagerInstance;
+
+                }
+
                 var modificationValue = (float) impactManagerInstance.CalculateModificationValue((float) player.BaseBountyValue, (float) caster.BaseBountyValue);
 
                 // Added impact to ImpactMatrix

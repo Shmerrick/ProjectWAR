@@ -300,6 +300,8 @@ namespace WorldServer
                     Campaign?.Update(start);
 
                     Campaign?.BattleFrontManager?.ImpactMatrixManagerInstance?.Update(start);
+
+                    ScenarioMgr.ImpactMatrixManagerInstance?.Update(start);
                 }
 
                 catch (Exception e)
