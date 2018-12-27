@@ -297,7 +297,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             GameObject = new KeepGameObject(spawn, this, Keep);
             Region.AddObject(GameObject, spawn.ZoneId);
             
-            GameObject.SetAttackable(true);
+            GameObject.SetAttackable(Keep.KeepStatus==KeepStatus.KEEPSTATUS_SAFE);
 
             Occlusion.SetFixtureVisible(Info.DoorId, true);
         }

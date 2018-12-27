@@ -227,7 +227,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     if (keep.KeepId == battleFrontKeep.Info.KeepId)
                     {
-                        if (battleFrontKeep.p.CurrentState == KeepStateMachine.ProcessState.Safe || battleFrontKeep.p.CurrentState == KeepStateMachine.ProcessState.Locked)
+                        if (battleFrontKeep.KeepStatus == KeepStatus.KEEPSTATUS_SAFE || battleFrontKeep.KeepStatus == KeepStatus.KEEPSTATUS_LOCKED)
                         {
                             if (battleFrontKeep.Realm == Realms.REALMS_REALM_DESTRUCTION)
                             {
