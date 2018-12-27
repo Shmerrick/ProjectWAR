@@ -42,7 +42,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -53,7 +54,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -62,10 +64,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FakeItEasy, Version=4.0.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
-      <HintPath>..\packages\FakeItEasy.4.7.1\lib\net45\FakeItEasy.dll</HintPath>
+      <HintPath>..\packages\FakeItEasy.4.9.2\lib\net45\FakeItEasy.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Protobuf, Version=3.6.0.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Protobuf.3.6.0\lib\net45\Google.Protobuf.dll</HintPath>
+    <Reference Include="Google.Protobuf, Version=3.6.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />

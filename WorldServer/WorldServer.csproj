@@ -45,7 +45,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -57,7 +58,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -71,7 +73,8 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -82,28 +85,32 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>world.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Evolve, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Evolve.1.8.0\lib\net451\Evolve.dll</HintPath>
+    <Reference Include="Appccelerate.StateMachine, Version=4.4.0.0, Culture=neutral, PublicKeyToken=917bca444d1f2b4c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Appccelerate.StateMachine.4.4.0\lib\netstandard1.0\Appccelerate.StateMachine.dll</HintPath>
+    </Reference>
+    <Reference Include="Evolve, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Evolve.1.9.0\lib\net451\Evolve.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.DotNet.PlatformAbstractions, Version=1.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Evolve.1.8.0\lib\net451\Microsoft.DotNet.PlatformAbstractions.dll</HintPath>
+      <HintPath>..\packages\Evolve.1.9.0\lib\net451\Microsoft.DotNet.PlatformAbstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.DependencyModel, Version=1.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Evolve.1.8.0\lib\net451\Microsoft.Extensions.DependencyModel.dll</HintPath>
+      <HintPath>..\packages\Evolve.1.9.0\lib\net451\Microsoft.Extensions.DependencyModel.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Evolve.1.8.0\lib\net451\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Evolve.1.9.0\lib\net451\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.5.7\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.5.11\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -531,12 +538,12 @@ if not exist $(TargetDir)\TempFilesDirectory mkdir $(TargetDir)\TempFilesDirecto
 if not exist $(TargetDir)\Abilities mkdir $(TargetDir)\Abilities
 </PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\Evolve.1.8.0\build\net451\Evolve.targets" Condition="Exists('..\packages\Evolve.1.8.0\build\net451\Evolve.targets')" />
+  <Import Project="..\packages\Evolve.1.9.0\build\net451\Evolve.targets" Condition="Exists('..\packages\Evolve.1.9.0\build\net451\Evolve.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Evolve.1.8.0\build\net451\Evolve.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Evolve.1.8.0\build\net451\Evolve.targets'))" />
+    <Error Condition="!Exists('..\packages\Evolve.1.9.0\build\net451\Evolve.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Evolve.1.9.0\build\net451\Evolve.targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

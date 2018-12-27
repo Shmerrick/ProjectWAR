@@ -55,7 +55,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public Realms PendingRealm { get; set; }
         public Guild OwningGuild { get; set; }
 
-        public Dictionary<KeepStateMachine.ProcessState, Action> actions = new Dictionary<KeepStateMachine.ProcessState, Action>();
+        //public Dictionary<KeepStateMachine.ProcessState, Action> actions = new Dictionary<KeepStateMachine.ProcessState, Action>();
         public KeepNpcCreature KeepLord => Creatures?.Find(x => x.Info.KeepLord);
 
 
@@ -83,17 +83,21 @@ namespace WorldServer.World.BattleFronts.Keeps
             PlayersKilledInRange = 0;
             PlayersInRangeOnTake = new HashSet<uint>();
 
+            var fsm = new SM(this).fsm;
+            fsm.Initialize(SM.ProcessState.Initial);
+            fsm.Start();
 
-            actions.Add(KeepStateMachine.ProcessState.Safe, SetKeepSafe);
-            actions.Add(KeepStateMachine.ProcessState.Locked, SetKeepLocked);
-            actions.Add(KeepStateMachine.ProcessState.LordWounded, SetLordWounded);
-            actions.Add(KeepStateMachine.ProcessState.DefenceTick, SetDefenceTick);
-            actions.Add(KeepStateMachine.ProcessState.OuterDown, SetOuterDoorDown);
-            actions.Add(KeepStateMachine.ProcessState.InnerDown, SetInnerDoorDown);
-            actions.Add(KeepStateMachine.ProcessState.LordKilled, SetLordKilled);
-            actions.Add(KeepStateMachine.ProcessState.Seized, SetSeized);
-            actions.Add(KeepStateMachine.ProcessState.InnerDoorRepaired, SetInnerDoorRepaired);
-            actions.Add(KeepStateMachine.ProcessState.OuterDoorRepaired, SetOuterDoorRepaired);
+
+            //actions.Add(KeepStateMachine.ProcessState.Safe, SetKeepSafe);
+            //actions.Add(KeepStateMachine.ProcessState.Locked, SetKeepLocked);
+            //actions.Add(KeepStateMachine.ProcessState.LordWounded, SetLordWounded);
+            //actions.Add(KeepStateMachine.ProcessState.DefenceTick, SetDefenceTick);
+            //actions.Add(KeepStateMachine.ProcessState.OuterDown, SetOuterDoorDown);
+            //actions.Add(KeepStateMachine.ProcessState.InnerDown, SetInnerDoorDown);
+            //actions.Add(KeepStateMachine.ProcessState.LordKilled, SetLordKilled);
+            //actions.Add(KeepStateMachine.ProcessState.Seized, SetSeized);
+            //actions.Add(KeepStateMachine.ProcessState.InnerDoorRepaired, SetInnerDoorRepaired);
+            //actions.Add(KeepStateMachine.ProcessState.OuterDoorRepaired, SetOuterDoorRepaired);
 
         }
 
@@ -103,42 +107,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             SendRegionMessage($"{guild.Info.Name} has taken {Info.Name} as their own!");
         }
 
-        private void SetInnerDoorRepaired()
-        {
-            _logger.Debug($"Inner Door Repaired");
-
-            Doors.Single(x => x.Info.Number == INNER_DOOR).Spawn();
-            Doors.Single(x => x.Info.Number == INNER_DOOR).GameObject.MaxHealth = 100;
-
-            // If both doors are alive - door status is ok
-            foreach (var keepDoor in Doors)
-            {
-                if (keepDoor.GameObject.IsDead)
-                    return;
-            }
-
-            var state = p.MoveNext(KeepStateMachine.Command.AllDoorsRepaired);
-            ExecuteAction(state);
-
-        }
-
-        private void SetOuterDoorRepaired()
-        {
-            _logger.Debug($"Outer Door Repaired");
-
-            Doors.Single(x=>x.Info.Number == OUTER_DOOR).Spawn();
-            
-            // If both doors are alive - door status is ok
-            foreach (var keepDoor in Doors)
-            {
-                if (keepDoor.GameObject.IsDead)
-                    return;
-            }
-
-            var state = p.MoveNext(KeepStateMachine.Command.AllDoorsRepaired);
-            ExecuteAction(state);
-
-        }
+       
 
         /// <summary>
         /// Check the various timers and determine whether to fire any events
@@ -295,6 +264,44 @@ namespace WorldServer.World.BattleFronts.Keeps
                 SendKeepInfo(plr);
             }
             SendKeepStatus(null);
+        }
+
+        public bool BothDoorsRepaired()
+        {
+            // If both doors are alive - door status is ok
+            foreach (var keepDoor in Doors)
+            {
+                if (keepDoor.GameObject.IsDead)
+                    return false;
+            }
+
+            return true;
+        }
+
+
+        public void SetInnerDoorRepaired()
+        {
+            _logger.Debug($"Inner Door Repaired");
+
+            Doors.Single(x => x.Info.Number == INNER_DOOR).Spawn();
+            Doors.Single(x => x.Info.Number == INNER_DOOR).GameObject.MaxHealth = 100;
+
+
+
+            //var state = p.MoveNext(KeepStateMachine.Command.AllDoorsRepaired);
+            //ExecuteAction(state);
+
+        }
+
+        public void SetOuterDoorRepaired()
+        {
+            _logger.Debug($"Outer Door Repaired");
+
+            Doors.Single(x => x.Info.Number == OUTER_DOOR).Spawn();
+
+            //var state = p.MoveNext(KeepStateMachine.Command.AllDoorsRepaired);
+            //ExecuteAction(state);
+
         }
 
         /// <summary>
@@ -477,8 +484,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             // When the battlefront opens, set the default realm for the keep
             PendingRealm = (Realms)Info.Realm;
 
-            var state = p.MoveNext(KeepStateMachine.Command.OnOpenBattleFront);
-            ExecuteAction(state);
+            //var state = p.MoveNext(KeepStateMachine.Command.OnOpenBattleFront);
+            //ExecuteAction(state);
         }
 
         public void OnOuterDownTimerEnd()
@@ -501,8 +508,8 @@ namespace WorldServer.World.BattleFronts.Keeps
                         return;
                 }
             }
-            var state = p.MoveNext(KeepStateMachine.Command.OnOuterDownTimerEnd);
-            ExecuteAction(state);
+            //var state = p.MoveNext(KeepStateMachine.Command.OnOuterDownTimerEnd);
+            //ExecuteAction(state);
         }
 
         public void OnInnerDownTimerEnd()
@@ -525,79 +532,79 @@ namespace WorldServer.World.BattleFronts.Keeps
                         return;
                 }
             }
-            var state = p.MoveNext(KeepStateMachine.Command.OnInnerDownTimerEnd);
-            ExecuteAction(state);
+            //var state = p.MoveNext(KeepStateMachine.Command.OnInnerDownTimerEnd);
+            //ExecuteAction(state);
         }
 
 
-        private void ExecuteAction(KeepStateMachine.ProcessState state)
-        {
-            _logger.Debug($"Executing Action {actions[state]} for {state}");
-            SendRegionMessage($"Executing Action {actions[state]} for {state}");
-            actions[state].Invoke();
-        }
+        //private void ExecuteAction(KeepStateMachine.ProcessState state)
+        //{
+        //    _logger.Debug($"Executing Action {actions[state]} for {state}");
+        //    SendRegionMessage($"Executing Action {actions[state]} for {state}");
+        //    actions[state].Invoke();
+        //}
 
         public void OnSeizedTimerEnd()
         {
             SeizedTimer = 0;
 
-            var state = p.MoveNext(KeepStateMachine.Command.OnSeizedTimerEnd);
-            ExecuteAction(state);
+            //var state = p.MoveNext(KeepStateMachine.Command.OnSeizedTimerEnd);
+            //ExecuteAction(state);
         }
 
         public void OnOuterDoorDown()
         {
-            var state = p.MoveNext(KeepStateMachine.Command.OnOuterDoorDown);
-            ExecuteAction(state);
+            //var state = p.MoveNext(KeepStateMachine.Command.OnOuterDoorDown);
+            //ExecuteAction(state);
         }
 
         public void OnInnerDoorDown()
         {
-            var state = p.MoveNext(KeepStateMachine.Command.OnInnerDoorDown);
-            ExecuteAction(state);
+            //var state = p.MoveNext(KeepStateMachine.Command.OnInnerDoorDown);
+            //ExecuteAction(state);
         }
 
         public void OnLordKilled()
         {
-            var state = p.MoveNext(KeepStateMachine.Command.OnLordKilled);
-            ExecuteAction(state);
+            //var state = p.MoveNext(KeepStateMachine.Command.OnLordKilled);
+            //ExecuteAction(state);
         }
 
         public void OnLockZone(Realms lockingRealm)
         {
             PendingRealm = lockingRealm;
-            var state = p.MoveNext(KeepStateMachine.Command.OnLockZone);
-            ExecuteAction(state);
+            //var state = p.MoveNext(KeepStateMachine.Command.OnLockZone);
+            //ExecuteAction(state);
         }
 
         public void OnLordKilledTimerEnd()
         {
             LordKilledTimer = 0;
 
-            var state = p.MoveNext(KeepStateMachine.Command.OnLordKilledTimerEnd);
-            ExecuteAction(state);
+            //var state = p.MoveNext(KeepStateMachine.Command.OnLordKilledTimerEnd);
+            //ExecuteAction(state);
         }
 
         public void OnDefenceTickTimerEnd()
         {
             DefenceTickTimer = 0;
 
-            var state = p.MoveNext(KeepStateMachine.Command.OnDefenceTickTimerEnd);
-            ExecuteAction(state);
+            //var state = p.MoveNext(KeepStateMachine.Command.OnDefenceTickTimerEnd);
+            //ExecuteAction(state);
         }
 
         public void OnBackToSafeTimerEnd()
         {
             BackToSafeTimer = 0;
 
-            var state = p.MoveNext(KeepStateMachine.Command.OnBackToSafeTimerEnd);
-            ExecuteAction(state);
+            //var state = p.MoveNext(KeepStateMachine.Command.OnBackToSafeTimerEnd);
+            //ExecuteAction(state);
         }
 
         public void OnLordWounded()
         {
-            var state = p.MoveNext(KeepStateMachine.Command.OnLordWounded);
-            ExecuteAction(state);
+            //var state = p.MoveNext(KeepStateMachine.Command.OnLordWounded);
+            //ExecuteAction(state);
         }
 
         #endregion
@@ -2367,6 +2374,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             ProgressionLogger.Debug($"Keep Siege Attacked {pctHealth}");
         }
+
     }
 
 
