@@ -337,7 +337,6 @@
     <Compile Include="World\Battlefronts\Objectives\StateFlags.cs" />
     <Compile Include="World\Battlefronts\RationTracker.cs" />
     <Compile Include="World\Battlefronts\Legacy\BattlefrontObjective.cs" />
-    <Compile Include="World\Battlefronts\Keeps\Keep.cs" />
     <Compile Include="World\Abilities\Buffs\BuffInterface.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepDoor.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepNpcCreature.cs" />

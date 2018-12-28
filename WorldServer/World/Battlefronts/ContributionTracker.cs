@@ -581,10 +581,6 @@ namespace WorldServer.World.BattleFronts
             PlayerContributions.Clear();
         }
 
-        internal void CreateGoldChest(Keep keep, Realms realm)
-        {
-            throw new NotImplementedException();
-        }
 
         internal void UpdateLoserShare(int _orderCount, int _destroCount)
         {

@@ -7,6 +7,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using SystemData;
+using Appccelerate.StateMachine;
 using Common.Database.World.Battlefront;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Services.World;
@@ -14,35 +15,11 @@ using WorldServer.World.BattleFronts.Objectives;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
-	public class CampaignObjective : Object
-    {
-        private const int DEFENSE_TICK_INTERVAL_SECONDS = 300;
+	public class BO : Object
+	{
+	    public const int TRANSITION_SPEED = 9;
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
-
-		/// <summary>
-		/// Absolute maximum of the control gauges of the flags
-		/// <summary>
-		//public static int MAX_SECURE_PROGRESS = 80;
-		public static int MAX_SECURE_PROGRESS = 100;
-		
-		/// <summary>
-		/// Absolute maximum of the control gauges of the flags.
-		/// Is used as a base timer in milliseconds when securing objectives.
-		/// <summary>
-		public static int MAX_CONTROL_GAUGE = MAX_SECURE_PROGRESS * 200;
-
-		public static int CONTESTED_TIMESPAN = 300; //300; // 5 min contested
-		public static int SECURED_TIMESPAN = 480; //900; // 5 min secured
-		public static int GUARDSPAWN_DELAY = 60; //60; // 1 min delayed
-
-		private int _stopWatch_Mode = 0;
-		private Stopwatch _stopWatch = null;
-		private Stopwatch _guardWatch = null;
-
-		private volatile bool _captureInProgress = false;
-
-		/// <summary>Maximum players each side taken in consideration for assaults a flag</summary>
-		public static short MAX_CLOSE_PLAYERS = 6;
+        private List<FlagGuard> Guards = new List<FlagGuard>();
 
         /// <summary>The tier within which the Campaign exists.</summary>
         public readonly byte Tier;
@@ -59,49 +36,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>Influence area containing the objective</summary>
         private Zone_Area _area;
 
-        /// <summary>
-        ///     Numbers of players close to the flag who can influence the state of the flag (0/1 for o/d), limited to
-        ///     CLOSE_PLAYERS_MAX
-        /// </summary>
-        private volatile short _closeOrderCount, _closeDestroCount;
-
-		private volatile short _nearOrderCount, _nearDestroCount;
-
         /// <summary>Set of all players in close range, not limited</summary>
         private ISet<Player> _closePlayers = new HashSet<Player>();
 
-        /// <summary>For memory optimization</summary>
-        private ISet<Player> _closePlayersBuffer = new HashSet<Player>();
-
-        /// <summary>
-        ///     Main control jauge in milliseconds :
-        ///     -CONTROL_GAUGE_MAX : generating resources for order
-        ///     -CONTROL_GAUGE_MAX to CONTROL_GAUGE_MAX : transition
-        ///     CONTROL_GAUGE_MAX : generating resources for destro
-        /// </summary>
-        /// <remarks>
-        ///     This is the base value when computing transition timer.
-        /// </remarks>
-        private int _controlGauge;
-
         /// <summary>Displayed timer in seconds</summary>
         private int _displayedTimer;
-
-        private StateFlags _lastBroadCastState = StateFlags.Hidden;
-		
-		private long _lastGaugeUpdateTick;
-        private bool _lastSecutedState;
-
-        /// <summary>Absolute transition speed last time it was recomputed</summary>
-        private float _lastTransitionUpdateSpeed;
-
-        /// <summary>Expected timestamp of next owner change
-        ///     <summary>
-        public long _nextTransitionTimestamp;
-
-        /// <summary>Positive between 0 and SECURE_PROGRESS_MAX indicating the objective securisation indicator, in seconds
-        ///     <summary>
-        private int _secureProgress;
 
         private readonly uint _tokdiscovery; // This is for ToK unlocks
         private readonly uint _tokunlocked; // This is for ToK unlocks
@@ -113,15 +52,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public uint AccumulatedKills;
 
-        /// <summary> This marks BO flags that are created inside ruins</summary>
-        public bool Ruin = false;
-
         public ApocCommunications CommsEngine { get; set; }
-        
+
         public Campaign BattleFront { get; set; }
+        public BattleFrontStatus battleFrontStatus { get; set; }
+
         public string Name { get; set; }
 
-		public StateFlags State { get; set; }
+        public StateFlags State { get; set; }
 
         /// <summary>Gets the currently owning realm, may be neutral.</summary>
         public Realms OwningRealm { get; set; }
@@ -130,38 +68,33 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public RVRRewardManager RewardManager { get; set; }
 
-        public ConcurrentDictionary<uint, uint> CampaignObjectiveContributions { get; set; }
-
-        
-		private List<FlagGuard> Guards = new List<FlagGuard>();
-
-		private static bool _allowLockTimer = true;
+        public PassiveStateMachine<CampaignObjectiveStateMachine.ProcessState, CampaignObjectiveStateMachine.Command> fsm { get; set; }
 
 
-        #region Helpers
 
-
-        #endregion Helpers
+        #region timers
+        public int CaptureTimer;
+        public const int CaptureTimerLength = 1 * 60;
+        #endregion
 
         /// <summary>
         /// Constructor to assist in isolation testing.
         /// </summary>
-        public CampaignObjective()
+        public BO()
         {
             CommsEngine = new ApocCommunications();
             RewardManager = new RVRRewardManager();
-            
         }
 
         /// <summary>
-        /// **** Constructor to assist in testing - DONT use in production. ****
+        /// **** TEST : : Constructor to assist in testing - dont use in production. ***
         /// </summary>
         /// <param name="id"></param>
         /// <param name="name"></param>
         /// <param name="zoneId"></param>
         /// <param name="regionId"></param>
         /// <param name="tier"></param>
-        public CampaignObjective(int id, string name, int zoneId, int regionId, int tier)
+        public BO(int id, string name, int zoneId, int regionId, int tier)
         {
             Id = id;
             Name = name;
@@ -169,8 +102,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             RegionId = (ushort)regionId;
             Tier = (byte)tier;
             State = StateFlags.Unsecure;
-
-            
         }
 
         /// <summary>
@@ -178,13 +109,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         /// <param name="objective"></param>
         /// <param name="tier"></param>
-        public CampaignObjective(RegionMgr region, BattleFront_Objective objective)
+        public BO(RegionMgr region, BattleFront_Objective objective)
         {
             Id = objective.Entry;
             Name = objective.Name;
             ZoneId = objective.ZoneId;
             RegionId = objective.RegionId;
             Tier = (byte)region.GetTier();
+            State = StateFlags.Unsecure;
 
             _x = (uint)objective.X;
             _y = (uint)objective.Y;
@@ -193,18 +125,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _tokdiscovery = objective.TokDiscovered;
             _tokunlocked = objective.TokUnlocked;
 
-            State = StateFlags.Unsecure;
-
 			Heading = _o;
             WorldPosition.X = (int)_x;
             WorldPosition.Y = (int)_y;
             WorldPosition.Z = _z;
-
+            
             CommsEngine = new ApocCommunications();
             RewardManager = new RVRRewardManager();
+            fsm = new CampaignObjectiveStateMachine(this).fsm;
 
-
-			if (objective.Guards != null)
+            if (objective.Guards != null)
 			{
 				foreach (BattleFront_Guard Guard in objective.Guards)
 				{
@@ -223,60 +153,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             SetOffset((ushort)(_x >> 12), (ushort)(_y >> 12));
 
-            // Events
-            EvtInterface.AddEvent(CheckPlayersInCloseRange, 1000, 0);
-
             // Initial state
             IsActive = true;
 
-			//if (!Ruin)
-			//    _objectivePortalMgr.ObjectiveUnlocked(); // Updates portals
-
-			////if (_supplySpawns != null && _supplySpawns.Count > 0 && _tier > 1)
-			////    LoadResources();
 		}
 
         public override string ToString()
         {
-            return $"Objective : {this.Name} \t Status : {State} \t Owner : {this.OwningRealm} \t Close players (O/D) : {this._closeOrderCount}/{this._closeDestroCount}";
+            return $"Objective : {this.Name} Status : {State} Owner : {this.OwningRealm}";
         }
-
-        ///// <summary>
-        /////  For this objective, reward close players with a tick.
-        ///// </summary>
-        ///// <returns></returns>
-        //public VictoryPoint RewardCaptureTick(float pairingRewardScaler)
-        //{
-        //    if (_secureProgress != BattleFrontConstants.MAX_SECURE_PROGRESS)
-        //        return new VictoryPoint(0, 0);
-        //    if (_closeOrderCount > 0 == _closeDestroCount > 0)
-        //        return new VictoryPoint(0, 0); // Both sides have players in range, or none of them -> not fully secured
-
-            
-        //    // Scalers in this model are additive.
-        //    return this.RewardManager.RewardCaptureTick(_closePlayers,
-        //        OwningRealm,
-        //        Tier,
-        //        Name,
-        //        pairingRewardScaler, BORewardType.SMALL_CONTESTED);
-        //}
-
-        //public bool FlagActive()
-        //{
-        //    return this.State != StateFlags.ZoneLocked && this.State != StateFlags.Locked && OwningRealm != Realms.REALMS_REALM_NEUTRAL;
-        //}
-
-        //public bool CheckKillValid(Player player)
-        //{
-        //    if (FlagActive() && Get2DDistanceToObject(player) < 200)
-        //    {
-        //        if (player.Realm != OwningRealm)
-        //            AccumulatedKills++;
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
 
 		private bool SpawnAllGuards(Realms owner)
 		{
@@ -306,178 +191,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			}
 			return false;
 		}
-
-        /// <summary>
-        ///     Gets the realm that have actually secured to objective.
-        /// </summary>
-        /// <returns>Realm or n</returns>
-        public Realms GetSecureRealm()
-        {
-            if (State != StateFlags.ZoneLocked && State != StateFlags.Secure || _secureProgress < MAX_SECURE_PROGRESS)
-                return Realms.REALMS_REALM_NEUTRAL;
-            return OwningRealm;
-        }
-
-//        private void UpdateGauge(long tick)
-//        {
-//            if (State == StateFlags.ZoneLocked)
-//                return;
-
-//            var frnt = BattleFront;
-//            if (frnt != null && frnt.IsBattleFrontLocked())
-//                return;
-
-//            // Apply previously computed transition speed since last update
-//            if (_lastTransitionUpdateSpeed != 0)
-//            {
-//                _controlGauge += (int)((tick - _lastGaugeUpdateTick) * _lastTransitionUpdateSpeed);
-//                _controlGauge = Clamp(_controlGauge, -MAX_CONTROL_GAUGE, MAX_CONTROL_GAUGE);
-//            }
-//            // If flag was unsecured by any realm, it lose control until it reachs zero
-//            else if (State == StateFlags.Unsecure)
-//            {
-//                var wasOrder = _controlGauge < 0;
-//                float defaultTransitionSpeed = -Clamp(_controlGauge, -1, 1);
-//                _controlGauge += (int)((tick - _lastGaugeUpdateTick) * defaultTransitionSpeed);
-//                if (wasOrder != _controlGauge < 0) // If reached zero
-//				{
-//					_controlGauge = 0;
-//				}
-//            }
-
-//            var newTransitionSpeed = GetNewTransitionSpeed();
-//            var incomingSecureProgress = Math.Abs(_controlGauge) * MAX_SECURE_PROGRESS / MAX_CONTROL_GAUGE;
-
-//            var announce = true;
-
-//            if (newTransitionSpeed == 0f) // Status quo or fully secured || (OwningRealm == Realms.REALMS_REALM_DESTRUCTION) == assaultSpeed > 0
-//            {
-//                // _controlGauge = CONTROL_GAUGE_MAX;
-//                AssaultingRealm = Realms.REALMS_REALM_NEUTRAL;
-
-//                //if (incomingSecureProgress != MAX_SECURE_PROGRESS) // Intermediate state
-//                //{
-//                //    OwningRealm = Realms.REALMS_REALM_NEUTRAL;
-//                //    State = StateFlags.Unsecure;
-//                //    SendState(GetPlayer(), announce, true);
-//                //}
-
-//                ////Objective changes back to secured if attackers repelled
-//                //if (State == StateFlags.Contested)
-//                //{
-//                //    if (_closeOrderCount == 0 || _closeDestroCount == 0)
-//                //    {
-//                //        State = StateFlags.Secure;
-//                //        SendState(GetPlayer(), announce, true);
-//                //    }
-//                //}
-
-//     //           //Sets flag state to contested
-//     //           if (_closeOrderCount != 0 && _closeDestroCount != 0)
-//     //           {   
-//     //               if (OwningRealm == Realms.REALMS_REALM_ORDER)
-//     //               {
-//     //                   AssaultingRealm = Realms.REALMS_REALM_DESTRUCTION;
-//     //               }
-//     //               else
-//     //               {
-//     //                   AssaultingRealm = Realms.REALMS_REALM_ORDER;
-//     //               }
-//     //               State = StateFlags.Contested;
-//     //               SendState(GetPlayer(), announce, true);
-//     //           }
-//     //           else if (newTransitionSpeed == 0 && _closeOrderCount == _closeDestroCount) // Abandonned
-//     //           {
-//					//if (State == StateFlags.Secure)
-//					//	DespawnAllGuards();
-
-//					//OwningRealm = Realms.REALMS_REALM_NEUTRAL;
-//     //               State = StateFlags.Unsecure;
-//     //               SendState(GetPlayer(), announce, true);
-//     //           }
-//     //           else
-//     //           {
-//     //               if (Ruin)
-//     //                   foreach (var keep in Region.Campaign.Keeps)
-//     //                       if (Id == keep.Info.KeepId)
-//     //                       {
-//     //                           keep.Realm = OwningRealm;
-//     //                           keep.SendKeepStatus(null);
-//     //                       }
-
-//					//SpawnAllGuards(OwningRealm);
-//     //           }
-
-//                // No more update until next close player change or lock / unlock
-//                _displayedTimer = 0;
-//                _nextTransitionTimestamp = 0;
-                
-//                announce = true;
-//            }
-//			else // Changing
-//			{
-//				var toOrder = newTransitionSpeed < 0f;
-//				var isOrder = _controlGauge != 0 ? _controlGauge < 0f : toOrder;
-
-//				// Updates owning and assault teams
-//				AssaultingRealm = Realms.REALMS_REALM_NEUTRAL;
-//				if (isOrder)
-//				{
-//					OwningRealm = Realms.REALMS_REALM_ORDER;
-//					if (!toOrder)
-//						AssaultingRealm = Realms.REALMS_REALM_DESTRUCTION;
-//				}
-//				else
-//				{
-//					OwningRealm = Realms.REALMS_REALM_DESTRUCTION;
-//					if (toOrder)
-//						AssaultingRealm = Realms.REALMS_REALM_ORDER;
-//				}
-
-//				// Computes timers
-//				int remainingTransitionTime; // LastUpdatedTime in millis until next update
-//				if (toOrder == isOrder) // Securing
-//				{
-//					State = StateFlags.Secure;
-//					remainingTransitionTime = MAX_CONTROL_GAUGE;
-//					if (toOrder)
-//						remainingTransitionTime += _controlGauge;
-//					else
-//						remainingTransitionTime -= _controlGauge;
-//					remainingTransitionTime = (int)Math.Abs(remainingTransitionTime / newTransitionSpeed);
-//					_displayedTimer =
-//						(short)(remainingTransitionTime / 1000); // Full secure time - already secured time
-//				}
-//				else // Assaulting
-//				{
-//					State = StateFlags.Contested;
-//					remainingTransitionTime = (int)Math.Abs(_controlGauge / newTransitionSpeed);
-//					_displayedTimer =
-//						(short)((Math.Abs(MAX_CONTROL_GAUGE / newTransitionSpeed) + remainingTransitionTime) /
-//								 1000); // Full secure time + remaining assault time
-//				}
-
-//				// Updates next transition timestamp
-//				_nextTransitionTimestamp = tick + remainingTransitionTime;
-//			}
-
-//			_lastGaugeUpdateTick = tick;
-//            _lastTransitionUpdateSpeed = newTransitionSpeed;
-//            _secureProgress = incomingSecureProgress;
-
-//#if disabled
-//        Log.Info("newSecureProgress", newSecureProgress.ToString());
-//        Log.Info("newTransitionSpeed", newTransitionSpeed.ToString());
-//        Log.Info("_displayedTimer", _displayedTimer.ToString());
-//        Log.Info("OwningRealm", OwningRealm.ToString());
-//        Log.Info("AssaultingRealm", AssaultingRealm.ToString());
-//#endif
-
-//            // This is for State of the Realms addon
-//            //UpdateStateOfTheRealmBO();
-
-//            BroadcastFlagInfo(announce);
-//        }
 
 		public override void SendInteract(Player player, InteractMenu menu)
 		{
@@ -533,36 +246,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 		public override void NotifyInteractionBroken(NewBuff b)
 		{
-			_captureInProgress = false;
+		    fsm.Fire(CampaignObjectiveStateMachine.Command.OnPlayerInteractionBroken);
 		}
 
 		public override void NotifyInteractionComplete(NewBuff b)
 		{
-			// Updates owning and assault teams
-			AssaultingRealm = Realms.REALMS_REALM_NEUTRAL;
-			
-			if (CapturingPlayer != null)
-			{
-				OwningRealm = CapturingPlayer.Realm;
-			}
-			State = StateFlags.Contested;
-			_captureInProgress = false;
-			SendState(CapturingPlayer, true, true);
-
-			DespawnAllGuards();
-
-			_displayedTimer = Convert.ToInt16(CONTESTED_TIMESPAN);
-			BroadcastFlagInfo(true);
-			GrantCaptureRewards(OwningRealm);
-			_stopWatch_Mode = 0;
-			_stopWatch = new Stopwatch();
-			_stopWatch.Reset();
-			_stopWatch.Start();
-
-			_guardWatch = new Stopwatch();
-			_guardWatch.Reset();
-			_guardWatch.Start();
-		}
+		    fsm.Fire(CampaignObjectiveStateMachine.Command.OnPlayerInteractionComplete, CapturingPlayer);
+        }
 
 		/// <summary>
 		///     Conputes the assaulting speed depending of players in close range.
@@ -574,22 +264,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 		///     1 to 2 for destro assault
 		/// </returns>
 		private float GetNewTransitionSpeed()
-        {
-            var diff = _closeDestroCount - _closeOrderCount;
-            if (diff == 0)
-                return 0f; // no assault or assault stopped
-            if (diff > 0 && _controlGauge == MAX_CONTROL_GAUGE)
-                return 0f; // Already fully controlled by destro
-            if (diff < 0 && _controlGauge == -MAX_CONTROL_GAUGE)
-                return 0f; // Already fully controlled by order
-
-            float speed;
-            if (diff > 0)
-                speed = 1f + (diff - 1) / 5f;
-            else
-                speed = -1f + (diff + 1) / 5f;
-            return speed;
-        }
+		{
+		    return TRANSITION_SPEED;
+		}
 
         public override void AddInRange(Object obj)
         {
@@ -621,156 +298,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             base.RemoveInRange(obj);
         }
 
-        /// Checks where are the players in range to update their count depending on distances.
-        /// </summary>
-        private void CheckPlayersInCloseRange()
-        {
-            if (State == StateFlags.ZoneLocked)
-                return;
-
-            short orderCount = 0;
-            short destroCount = 0;
-
-			short orderCount_200 = 0;
-			short destroCount_200 = 0;
-
-			var closeHeight = 70 / 2 * UNITS_TO_FEET;
-            var threatenHeight = 200 / 2 * UNITS_TO_FEET;
-
-            
-            foreach (var player in PlayersInRange)
-            {
-                if (player.IsDead || player.StealthLevel != 0 || !player.CbtInterface.IsPvp || player.IsInvulnerable)
-                    continue;
-
-                var distance = GetDistanceToObject(player);
-                var heightDiff = Math.Abs(Z - player.Z);
-                if (distance < 200 && heightDiff < closeHeight)
-                {
-                    if (player.Realm == Realms.REALMS_REALM_ORDER)
-                        orderCount++;
-                    else
-                        destroCount++;
-                    _closePlayersBuffer.Add(player);
-					SendMeTo(player);
-                }
-
-				// near count is used for calculating objectiveRewardScaler
-				if (distance < 200 && heightDiff < closeHeight)
-				{
-					if (player.Realm == Realms.REALMS_REALM_ORDER)
-						orderCount_200++;
-					else
-						destroCount_200++;
-				}
-
-            }
-
-            // Switch the players sets
-            var previous = _closePlayers;
-            _closePlayers = _closePlayersBuffer;
-            _closePlayersBuffer = previous;
-            _closePlayersBuffer.Clear();
-
-            // Trim counts
-            if (orderCount > MAX_CLOSE_PLAYERS)
-                orderCount = MAX_CLOSE_PLAYERS;
-            if (destroCount > MAX_CLOSE_PLAYERS)
-                destroCount = MAX_CLOSE_PLAYERS;
-			
-            _closeOrderCount = orderCount;
-            _closeDestroCount = destroCount;
-
-			_nearOrderCount = orderCount_200;
-			_nearDestroCount = destroCount_200;
-		}
-
-        /// <summary>
-        ///     Update thread.
-        /// </summary>
-        /// <param name="tick"></param>
-        public override void Update(long tick)
-        {
-            EvtInterface.Update(tick);
-
-			if (State == StateFlags.ZoneLocked)
-				return;
-
-			var frnt = BattleFront;
-			if (frnt != null && frnt.IsBattleFrontLocked())
-				return;
-
-			if (_stopWatch != null)
-			{
-				// mode 0: 
-				if (_stopWatch_Mode == 0)
-				{
-					_displayedTimer = Convert.ToInt16(CONTESTED_TIMESPAN - (int)_stopWatch.Elapsed.TotalSeconds);
-					
-					if (_stopWatch?.Elapsed.TotalSeconds >= CONTESTED_TIMESPAN)
-					{
-						_stopWatch.Stop();
-						State = StateFlags.Secure;
-						GrantCaptureRewards(OwningRealm);
-						DespawnAllGuards();
-						BroadcastFlagInfo(true);
-
-						_displayedTimer = Convert.ToInt16(SECURED_TIMESPAN);
-						_stopWatch.Reset();
-						_stopWatch_Mode = 1;
-						_stopWatch.Start();
-
-						SendState(GetPlayer(), true, true);
-					}
-					else
-						SendState(GetPlayer(), false, true);
-
-					if (_guardWatch?.Elapsed.TotalSeconds >= GUARDSPAWN_DELAY)
-					{
-						SpawnAllGuards(OwningRealm);
-						_guardWatch.Reset();
-					}
-				}
-				else if (_stopWatch_Mode == 1)
-				{
-					_displayedTimer = Convert.ToInt16(SECURED_TIMESPAN - (int)_stopWatch.Elapsed.TotalSeconds);
-
-					if (_stopWatch?.Elapsed.TotalSeconds >= SECURED_TIMESPAN)
-					{
-						UnlockObjective();
-
-						SendState(GetPlayer(), true, true);
-					}
-					else
-						SendState(GetPlayer(), false, true);
-				}
-			}
-		}
-
-        /// <summary>
-        ///     Allows this objective to be captured if it was previously locked.
-        /// </summary>
-        public void UnlockObjective()
-        {
-            BattlefrontLogger.Debug($"Unlocking objective {this.Name}");
-			// stop bo stopwatch
-			_stopWatch?.Stop();
-			_stopWatch?.Reset();
-			// stop guard stopwatch
-			_guardWatch?.Stop();
-			_guardWatch?.Reset();
-			// handle timer related stuff
-			_displayedTimer = 0;
-			_stopWatch_Mode = -1;
-			// despawn all guards
-			DespawnAllGuards();
-			
-			// state change and send state
-			State = StateFlags.Unsecure;
-			OwningRealm = Realms.REALMS_REALM_NEUTRAL;
-			BroadcastFlagInfo(true);
-            SendState(GetPlayer(), false, true);
-        }
 
         /// <summary>
         ///     Broadcasts flag state to all players withing range.
@@ -1188,48 +715,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             //player.SendClientMessage($"Order / Destro warcamp distances: {_orderWarcampDistance} / {_destroWarcampDistance}");
         }
 
-        /// <summary>
-        ///     Prevents this objective from being captured.
-        /// </summary>
-        public void LockObjective(Realms lockingRealm, bool announce)
-        {
-            BattlefrontLogger.Trace($"Locking Objective {Name} for {lockingRealm.ToString()}");
-
-			// stop bo stopwatch
-			_stopWatch?.Stop();
-			_stopWatch?.Reset();
-			// stop guard stopwatch
-			_guardWatch?.Stop();
-			_guardWatch?.Reset();
-			// handle timer related stuff
-			_displayedTimer = 0;
-			_stopWatch_Mode = -1;
-			// despawn all guards
-			DespawnAllGuards();
-			
-			OwningRealm = lockingRealm;
-            AssaultingRealm = Realms.REALMS_REALM_NEUTRAL;
-            State = StateFlags.ZoneLocked;
-            _nextTransitionTimestamp = 0;
-            AccumulatedKills = 0;
-            _controlGauge = lockingRealm == Realms.REALMS_REALM_ORDER ? -MAX_CONTROL_GAUGE : MAX_CONTROL_GAUGE;
-            _lastGaugeUpdateTick = 0;
-            _lastTransitionUpdateSpeed = 0;
-            _secureProgress = MAX_SECURE_PROGRESS;
-			_displayedTimer = 0;
-
-            _closeOrderCount = 0;
-            _closeDestroCount = 0;
-            _closePlayers.Clear();
-
-            SendState(GetPlayer(), true, true);
-            
-            
-            if (!announce)
-                return;
-
-            BroadcastFlagInfo(false);
-        }
 
 		/// <summary>
 		/// Grants rewards for taking this battlefield objective from the enemy.
@@ -1276,7 +761,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         }
                     }
 				    break;
-                    // This case is not called on BO unlock -- Ik
 				case StateFlags.Locked: // small tick
 					VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_LOCKED);
 				    lock (_closePlayers)
@@ -1296,8 +780,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 					break;
 			}
 
-		  
-
             // Make sure VP dont go less than 0
             if (BattleFront.VictoryPointProgress.OrderVictoryPoints <= 0)
 				BattleFront.VictoryPointProgress.OrderVictoryPoints = 0;
@@ -1306,45 +788,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				BattleFront.VictoryPointProgress.DestructionVictoryPoints = 0;
 			
 			BattlefrontLogger.Trace($"{Name} Order VP:{BattleFront.VictoryPointProgress.OrderVictoryPoints} Dest VP:{BattleFront.VictoryPointProgress.DestructionVictoryPoints}");
-		}
-
-		/// <summary>
-		/// Get rewards for holding a flag when keep falls.
-		/// </summary>
-		public void GrantKeepCaptureRewards()
-        {
-            foreach (Player plr in PlayersInRange)
-            {
-                if (plr.Realm == this.OwningRealm && plr.ValidInTier(Tier, true))
-                {
-                    BattlefrontLogger.Debug($"Rewarding {plr.Name}");
-                    if (AccumulatedKills < 3)
-                    {
-                        plr.SendLocalizeString("Defending this objective was a noble duty. You have received a small reward for your service.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                        plr.ItmInterface.CreateItem((uint)208470, 2);
-                        plr.AddNonScalingRenown((uint)500, false, RewardType.ZoneKeepCapture, "");
-                    }
-                    else if (AccumulatedKills <= 6)
-                    {
-                        plr.SendLocalizeString("Your defense of this objective has been noteworthy! You have received a moderate reward.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                        plr.ItmInterface.CreateItem((uint)208470, 5);
-                        plr.AddNonScalingRenown((uint)2000, false, RewardType.ZoneKeepCapture, "");
-                    }
-                    else if (AccumulatedKills > 6)
-                    {
-                        plr.SendLocalizeString("Your defense of this objective has been heroic! You have received a respectable reward.", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                        plr.ItmInterface.CreateItem((uint)208470, 10);
-                        plr.AddNonScalingRenown((uint)4000, false, RewardType.ZoneKeepCapture, "");
-                    }
-                }
-            }
-
-            AccumulatedKills = 0;
-        }
-
-		public float CalculateObjectiveRewardScale(Player player)
-		{
-			return RewardManager.CalculateObjectiveRewardScale(player.Realm, _nearOrderCount, _nearDestroCount);
 		}
 
 		#region Interaction
@@ -1378,12 +821,33 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void SetObjectiveLocked()
         {
-            throw new NotImplementedException();
+            BattlefrontLogger.Debug($"Locking objective {this.Name} to {AssaultingRealm}");
+            _displayedTimer = 0;
+            DespawnAllGuards();
+
+            // state change and send state
+            State = StateFlags.ZoneLocked;
+            OwningRealm = Realms.REALMS_REALM_NEUTRAL;
+            BroadcastFlagInfo(true);
+            SendState(GetPlayer(), false, true);
+
         }
 
         public void SetObjectiveCapturing()
         {
-            throw new NotImplementedException();
+            // Updates owning and assault teams
+            AssaultingRealm = Realms.REALMS_REALM_NEUTRAL;
+
+            if (CapturingPlayer != null)
+            {
+                OwningRealm = CapturingPlayer.Realm;
+            }
+            State = StateFlags.Contested;
+            SendState(CapturingPlayer, true, true);
+            DespawnAllGuards();
+            CaptureTimer = TCPManager.GetTimeStamp() + CaptureTimerLength;
+            BroadcastFlagInfo(true);
+            GrantCaptureRewards(OwningRealm);
         }
 
         public void SetObjectiveCaptured()

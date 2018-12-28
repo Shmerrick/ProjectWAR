@@ -82,14 +82,14 @@ namespace WorldServer.World.BattleFronts
             }
         }
 
-        public void UpdateRationing(IList<Player> players, IList<Keep> keeps, IList<int>[] popHistory)
+        public void UpdateRationing(IList<Player> players, IList<BattleFrontKeep> keeps, IList<int>[] popHistory)
         {
             int[] popHigh = { popHistory[0].Max(), popHistory[1].Max() };
 
             for (int i = 0; i < 2; ++i)
             {
-                Keep currentKeep = null;
-                foreach (Keep keep in keeps)
+                BattleFrontKeep currentKeep = null;
+                foreach (var keep in keeps)
                 {
                     if ((int)keep.Realm == i + 1 && keep.KeepStatus != KeepStatus.KEEPSTATUS_LOCKED && keep.KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
                     {

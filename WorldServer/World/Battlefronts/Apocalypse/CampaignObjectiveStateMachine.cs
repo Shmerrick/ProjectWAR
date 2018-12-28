@@ -19,7 +19,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public enum Command
         {
-            OnPlayerInteractTimerEnd,
+            OnPlayerInteractionComplete,
+            OnPlayerInteractionBroken,
             OnCaptureTimerEnd,
             OnSafeTimerEnd,
             OnLockZone,
@@ -27,12 +28,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
 
-        public CampaignObjective Objective { get; set; }
+        public BO Objective { get; set; }
         public PassiveStateMachine<Apocalypse.CampaignObjectiveStateMachine.ProcessState, Apocalypse.CampaignObjectiveStateMachine.Command> fsm { get; set; }
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public CampaignObjectiveStateMachine(CampaignObjective objective)
+        public CampaignObjectiveStateMachine(BO objective)
         {
             Objective = objective;
             fsm = new PassiveStateMachine<ProcessState, Command>();
@@ -58,7 +59,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 
             fsm.In(ProcessState.Neutral)
-                .On(Command.OnPlayerInteractTimerEnd).Goto(ProcessState.Capturing).Execute(() => Objective.SetObjectiveCapturing());
+                .On(Command.OnPlayerInteractionComplete).Goto(ProcessState.Capturing).Execute(() => Objective.SetObjectiveCapturing());
+            fsm.In(ProcessState.Neutral)
+                .On(Command.OnPlayerInteractionBroken).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
+
             fsm.In(ProcessState.Capturing)
                 .On(Command.OnCaptureTimerEnd).Goto(ProcessState.Captured).Execute(() => Objective.SetObjectiveCaptured());
             fsm.In(ProcessState.Captured)

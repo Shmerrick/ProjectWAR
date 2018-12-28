@@ -4546,10 +4546,10 @@ namespace WorldServer
 
         #region RvR
 
-        public Keep CurrentKeep { get; set; }
+        public BattleFrontKeep CurrentKeep { get; set; }
         public Creature CurrentSiege { get; set; }
         public RvRStructure Palisade { get; set; }
-        public CampaignObjective CurrentObjectiveFlag { get; set; }
+        public BO CurrentObjectiveFlag { get; set; }
 
         #endregion
 
