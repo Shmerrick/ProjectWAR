@@ -11,6 +11,9 @@ namespace Common.Database.World.Battlefront
         [PrimaryKey]
         public long LockId { get; set; }
 
+        [DataElement(AllowDbNull = false), PrimaryKey]
+        public int RegionId { get; set; }
+        
         [DataElement(AllowDbNull = false)]
         public DateTime Timestamp { get; set; }
 
@@ -23,8 +26,6 @@ namespace Common.Database.World.Battlefront
         [DataElement(AllowDbNull = false)]
         public string Description { get; set; }
 
-        [DataElement(AllowDbNull = false)]
-        public int RegionId { get; set; }
 
 		[DataElement(AllowDbNull = false)]
 		public int OrderVP { get; set; }

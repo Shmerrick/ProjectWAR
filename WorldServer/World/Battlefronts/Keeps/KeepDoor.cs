@@ -120,7 +120,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                         _health = Math.Max(0, _health - damage);
                 }
 
-                _keep.SendKeepStatus(null);
+                _keep.KeepCommunications.SendKeepStatus(null, _keep);
 
                 CbtInterface.OnTakeDamage(caster, damage, 1f);
 

@@ -7,17 +7,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public interface IBattleFrontManager
     {
-        RVRProgression ResetBattleFrontProgression(CampaignRerollMode rerollMode = CampaignRerollMode.NONE);
+        RVRProgression GetActiveBattleFrontFromProgression();
         RVRProgression GetBattleFrontByName(string name);
         RVRProgression GetBattleFrontByBattleFrontId(int id);
         
         string ActiveBattleFrontName { get; set; }
         RVRProgression ActiveBattleFront { get; set; }
         void AuditBattleFronts(int tier);
-        void LockBattleFrontsAllRegions(int tier, CampaignRerollMode rerollMode = CampaignRerollMode.NONE);
+        void LockBattleFrontsAllRegions(int tier);
 
-        RVRProgression AdvanceBattleFront(Realms lockingRealm, out CampaignRerollMode rerollMode);
-		RVRProgression OpenActiveBattlefront(CampaignRerollMode rerollMode = CampaignRerollMode.NONE);
+        RVRProgression AdvanceBattleFront(Realms lockingRealm);
+		RVRProgression OpenActiveBattlefront();
         RVRProgression LockActiveBattleFront(Realms realm, int forceNumberOfBags = 0);
 
         List<BattleFrontStatus> GetBattleFrontStatusList();

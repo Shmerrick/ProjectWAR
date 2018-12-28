@@ -1388,7 +1388,7 @@ namespace WorldServer
                 {
                     if (_Keeps.ContainsKey(KeepInfo.KeepId))
                     {
-                        _Keeps[KeepInfo.KeepId].SendKeepStatus(Plr);
+                        _Keeps[KeepInfo.KeepId].KeepCommunications.SendKeepStatus(Plr, _Keeps[KeepInfo.KeepId]);
                     }
                     else
                     {

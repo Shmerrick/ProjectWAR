@@ -140,20 +140,20 @@ namespace WorldServer
             WorldMgr.UpperTierCampaignManager = new UpperTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 4).ToList(), WorldMgr._Regions);
             Log.Texte("Battlefront Manager", "Creating Lower Tier Campaign Manager", ConsoleColor.Cyan);
             WorldMgr.LowerTierCampaignManager = new LowerTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 1).ToList(), WorldMgr._Regions);
-            Log.Texte("Battlefront Manager", "Resetting Progression", ConsoleColor.Cyan);
-            WorldMgr.UpperTierCampaignManager.ResetBattleFrontProgression(CampaignRerollMode.INIT);
-            WorldMgr.LowerTierCampaignManager.ResetBattleFrontProgression(CampaignRerollMode.INIT);
-            Log.Texte("Battlefront Manager", "Attaching Battlefronts to Regions", ConsoleColor.Cyan);
+            Log.Texte("Battlefront Manager", "Getting Progression based upon rvr_progression.LastOpenedZone", ConsoleColor.Cyan);
+            WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontFromProgression();
+            WorldMgr.LowerTierCampaignManager.GetActiveBattleFrontFromProgression();
+            Log.Texte("Battlefront Manager", "Attaching Campaigns to Regions", ConsoleColor.Cyan);
             // Attach Battlefronts to regions
             WorldMgr.AttachCampaignsToRegions();
 
             Log.Texte("Battlefront Manager", "Locking Battlefronts", ConsoleColor.Cyan);
-            WorldMgr.UpperTierCampaignManager.LockBattleFrontsAllRegions(4, CampaignRerollMode.INIT);
-            WorldMgr.LowerTierCampaignManager.LockBattleFrontsAllRegions(1, CampaignRerollMode.INIT);
+            WorldMgr.UpperTierCampaignManager.LockBattleFrontsAllRegions(4);
+            WorldMgr.LowerTierCampaignManager.LockBattleFrontsAllRegions(1);
 
             Log.Texte("Battlefront Manager", "Opening Active battlefronts", ConsoleColor.Cyan);
-            WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront(CampaignRerollMode.INIT);
-            WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront(CampaignRerollMode.INIT);
+            WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront();
+            WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront();
 
             WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
 

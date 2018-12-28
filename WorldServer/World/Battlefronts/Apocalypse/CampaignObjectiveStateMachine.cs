@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Appccelerate.StateMachine;
 using NLog;
+using System;
+using WorldServer.Services.World;
+using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -20,95 +19,62 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public enum Command
         {
-            PlayerInteractTimerEnd,
-            CaptureTimerEnd,
-            SafeTimerEnd,
-            LockZone
+            OnPlayerInteractTimerEnd,
+            OnCaptureTimerEnd,
+            OnSafeTimerEnd,
+            OnLockZone,
+            OnOpenBattleFront
         }
 
-        public class Process
+
+        public CampaignObjective Objective { get; set; }
+        public PassiveStateMachine<Apocalypse.CampaignObjectiveStateMachine.ProcessState, Apocalypse.CampaignObjectiveStateMachine.Command> fsm { get; set; }
+
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+        public CampaignObjectiveStateMachine(CampaignObjective objective)
         {
-            private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
+            Objective = objective;
+            fsm = new PassiveStateMachine<ProcessState, Command>();
 
-            class StateTransition
-            {
-                readonly ProcessState CurrentState;
-                readonly Command Command;
+            fsm.TransitionCompleted += RecordTransition;
 
-                public StateTransition(ProcessState currentState, Command command)
-                {
-                    CurrentState = currentState;
-                    Command = command;
-                }
+            /* Initial State */
+            fsm.In(ProcessState.Neutral)
+                .On(Command.OnOpenBattleFront).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
+            /* Any call to Lock Zone will execute Lock */
+            fsm.In(ProcessState.Neutral)
+                .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Objective.SetObjectiveLocked());
+            fsm.In(ProcessState.Capturing)
+                .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Objective.SetObjectiveLocked());
+            fsm.In(ProcessState.Captured)
+                .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Objective.SetObjectiveLocked());
+            fsm.In(ProcessState.Locked)
+                .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Objective.SetObjectiveLocked());
+            fsm.In(ProcessState.Guarded)
+                .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Objective.SetObjectiveLocked());
+            fsm.In(ProcessState.Locked)
+                .On(Command.OnOpenBattleFront).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
 
-                public override int GetHashCode()
-                {
-                    return 17 + 31 * CurrentState.GetHashCode() + 31 * Command.GetHashCode();
-                }
 
-                public override bool Equals(object obj)
-                {
-                    StateTransition other = obj as StateTransition;
-                    return other != null && this.CurrentState == other.CurrentState && this.Command == other.Command;
-                }
-            }
+            fsm.In(ProcessState.Neutral)
+                .On(Command.OnPlayerInteractTimerEnd).Goto(ProcessState.Capturing).Execute(() => Objective.SetObjectiveCapturing());
+            fsm.In(ProcessState.Capturing)
+                .On(Command.OnCaptureTimerEnd).Goto(ProcessState.Captured).Execute(() => Objective.SetObjectiveCaptured());
+            fsm.In(ProcessState.Captured)
+                .On(Command.OnSafeTimerEnd).Goto(ProcessState.Guarded).Execute(() => Objective.SetObjectiveGuarded());
 
-            Dictionary<StateTransition, ProcessState> transitions;
-            public ProcessState CurrentState { get; private set; }
-
-            public Process()
-            {
-                CurrentState = ProcessState.Neutral;
-                transitions = new Dictionary<StateTransition, ProcessState>
-            {
-                { new StateTransition(ProcessState.Neutral, Command.LockZone), ProcessState.Locked },
-                { new StateTransition(ProcessState.Capturing, Command.LockZone), ProcessState.Locked },
-                { new StateTransition(ProcessState.Captured, Command.LockZone), ProcessState.Locked },
-                { new StateTransition(ProcessState.Locked, Command.LockZone), ProcessState.Locked },
-                { new StateTransition(ProcessState.Guarded, Command.LockZone), ProcessState.Locked },
-
-                { new StateTransition(ProcessState.Neutral, Command.PlayerInteractTimerEnd), ProcessState.Capturing },
-                { new StateTransition(ProcessState.Capturing, Command.CaptureTimerEnd), ProcessState.Captured },
-                { new StateTransition(ProcessState.Captured, Command.SafeTimerEnd), ProcessState.Guarded },
-                { new StateTransition(ProcessState.Guarded, Command.PlayerInteractTimerEnd), ProcessState.Capturing }
-            };
-            }
-
-            public ProcessState GetNext(Command command)
-            {
-                StateTransition transition = new StateTransition(CurrentState, command);
-                ProcessState nextState;
-                if (!transitions.TryGetValue(transition, out nextState))
-                    throw new Exception("Invalid transition: " + CurrentState + " -> " + command);
-                return nextState;
-            }
-
-            public ProcessState MoveNext(Command command)
-            {
-                BattlefrontLogger.Debug($"{CurrentState}.{command}==>");
-                CurrentState = GetNext(command);
-                BattlefrontLogger.Debug($"{CurrentState}");
-                return CurrentState;
-            }
         }
 
+        private void RecordTransition(object sender, EventArgs e)
+        {
+            _logger.Debug($"{e.ToString()}");
+
+            var s = (Appccelerate.StateMachine.Machine.Events.TransitionCompletedEventArgs<ProcessState, Command>)e;
+            // Save the state transition.
+            //_logger.Debug($"Saving campaign objective state {Objective.Id},{s.StateId}");
+            //RVRProgressionService.SaveBattleFrontKeepState(Objective.Id, s.StateId);
+
+        }
     }
 }
-
-
-/*
- * public class Program
-   {
-   static void Main(string[] args)
-   {
-   Process p = new Process();
-   Console.WriteLine("Current State = " + p.CurrentState);
-   Console.WriteLine("Command.Begin: Current State = " + p.MoveNext(Command.Begin));
-   Console.WriteLine("Command.Pause: Current State = " + p.MoveNext(Command.Pause));
-   Console.WriteLine("Command.End: Current State = " + p.MoveNext(Command.End));
-   Console.WriteLine("Command.Exit: Current State = " + p.MoveNext(Command.Exit));
-   Console.ReadLine();
-   }
-   }
-
-    */

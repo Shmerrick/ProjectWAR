@@ -1,7 +1,7 @@
-﻿using System;
-using Appccelerate.StateMachine;
+﻿using Appccelerate.StateMachine;
 using NLog;
-using System.Collections.Generic;
+using System;
+using WorldServer.Services.World;
 using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
@@ -40,14 +40,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             LordWounded,
             OuterDoorRepaired,
             InnerDoorRepaired
+
         }
 
 
         public BattleFrontKeep Keep { get; set; }
         public PassiveStateMachine<ProcessState, Command> fsm { get; set; }
 
-        //public delegate void MyEventHandler(string contents);
-        //public event MyEventHandler RecordTransitionHandler;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public SM(BattleFrontKeep keep)
@@ -152,11 +151,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             fsm.In(ProcessState.Locked)
                 .On(Command.OnOpenBattleFront).Goto(ProcessState.Safe).Execute(() => Keep.SetKeepSafe());
 
+
+
         }
 
         private void RecordTransition(object sender, EventArgs e)
         {
             _logger.Debug($"{e.ToString()}");
+
+            var s = (Appccelerate.StateMachine.Machine.Events.TransitionCompletedEventArgs<WorldServer.World.Battlefronts.Apocalypse.SM.ProcessState, WorldServer.World.Battlefronts.Apocalypse.SM.Command>)e;
+            // Save the state transition.
+            _logger.Debug($"Saving keep state {Keep.Info.KeepId},{s.StateId}");
+            RVRProgressionService.SaveBattleFrontKeepState(Keep.Info.KeepId, s.StateId);
+
         }
     }
 }

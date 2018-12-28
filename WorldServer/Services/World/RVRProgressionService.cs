@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Common.Database.World.Battlefront;
+using FrameWork;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common.Database.World.Battlefront;
-using FrameWork;
-using GameData;
+using Common;
+using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer.Services.World
 {
@@ -30,25 +29,46 @@ namespace WorldServer.Services.World
             _RVRPairings = Database.SelectAllObjects<RVRPairing>() as List<RVRPairing>;
             Log.Success("RVRProgression", "Loaded " + _RVRProgressions.Count + " Pairings");
         }
-		
-		public static void SaveRVRProgression(List<RVRProgression> rvrProg)
-		{
-			if (rvrProg == null || rvrProg.Count <= 0)
-				return;
 
-			Log.Debug("WorldMgr", "Saving RVR progression ...");
+        public static void SaveRVRProgression(List<RVRProgression> rvrProg)
+        {
+            if (rvrProg == null || rvrProg.Count <= 0)
+                return;
 
-			foreach (var item in rvrProg)
-			{
-				item.Dirty = true;
-				item.IsValid = true;
-				Database.SaveObject(item);
-				item.Dirty = false;
-			}
+            Log.Debug("WorldMgr", "Saving RVR progression ...");
 
-			Database.ForceSave();
-			
-			Log.Dump("RVRProgression", $"Saved RVR progression in tier {rvrProg.FirstOrDefault().Tier}");
-		}
-	}
+            foreach (var item in rvrProg)
+            {
+                item.Dirty = true;
+                item.IsValid = true;
+                Database.SaveObject(item);
+                item.Dirty = false;
+            }
+
+            Database.ForceSave();
+
+            Log.Dump("RVRProgression", $"Saved RVR progression in tier {rvrProg.FirstOrDefault().Tier}");
+        }
+
+        public static void SaveBattleFrontKeepState(byte keepId, SM.ProcessState state)
+        {
+            var statusEntity = new BattleFrontKeepStatus {KeepId = keepId, Status = (int) state};
+
+            Log.Debug("WorldMgr", $"Saving battlefront keep status {keepId} {(int)state}...");
+            RemoveBattleFrontKeepStatus(keepId);
+            Database.AddObject(statusEntity);
+            Database.ForceSave();
+        }
+
+        public static void RemoveBattleFrontKeepStatus(byte keepId)
+        {
+            Database.ExecuteNonQuery($"DELETE FROM battlefront_keep_status WHERE keepId={keepId}");
+        }
+
+        public static BattleFrontKeepStatus GetBattleFrontKeepStatus(byte keepId)
+        {
+            var status = Database.SelectObject<BattleFrontKeepStatus>($"KeepId={keepId}");
+            return status;
+        }
+    }
 }

@@ -325,8 +325,10 @@
     <Compile Include="World\Battlefronts\Apocalypse\ProximityEngine.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\VictoryPoint.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\VictoryPointProgress.cs" />
+    <Compile Include="World\Battlefronts\Keeps\KeepCommunications.cs" />
     <Compile Include="World\Battlefronts\Keeps\BattleFrontKeep.cs" />
     <Compile Include="World\Battlefronts\Keeps\HardPoint.cs" />
+    <Compile Include="World\Battlefronts\Keeps\IKeepCommunications.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepMessage.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepRewardManager.cs" />
     <Compile Include="World\Battlefronts\Objectives\PortalToObjective.cs" />
