@@ -162,7 +162,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     Guards.Add(new FlagGuard(this, region, objective.ZoneId, Guard.OrderId, Guard.DestroId, Guard.X, Guard.Y, Guard.Z, Guard.O));
                 }
             }
-
+            _captureProgress = 20000;
             EvtInterface.AddEvent(CheckTimers, 10000, 0);
         }
 
