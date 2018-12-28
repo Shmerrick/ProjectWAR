@@ -127,7 +127,6 @@ namespace WorldServer.Managers.Commands
 
             if (tier == 1)
             {
-                CampaignRerollMode rerollMode;
                 var progression = WorldMgr.LowerTierCampaignManager.AdvanceBattleFront(realm);
                 WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront();
                 WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);

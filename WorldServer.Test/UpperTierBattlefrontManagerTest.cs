@@ -181,7 +181,7 @@ namespace WorldServer.Test
 
             Assert.IsTrue(bf.DestWinProgression == 2);
 
-			CampaignRerollMode rerollMode;
+			
 			bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 			Assert.IsTrue(bf.BattleFrontId == 2);
             Assert.IsTrue(bf.DestWinProgression == 6);
@@ -304,7 +304,7 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).FinalVictoryPoint.OrderVictoryPoints == 1000f);
 
 			// Advance Destro
-			CampaignRerollMode rerollMode;
+			
 			var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 			Assert.IsTrue(progression.BattleFrontId == 2);
             Assert.IsTrue(progression.ZoneId == 201);
@@ -388,7 +388,7 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).RegionId ==1);
 
 			// Advance Destro
-			CampaignRerollMode rerollMode;
+			
 			var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 			Assert.IsTrue(progression.BattleFrontId == 2);
             Assert.IsTrue(progression.ZoneId == 201);
@@ -525,7 +525,7 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).RegionId == 1);
 
 			// Advance Destro
-			CampaignRerollMode rerollMode;
+			
 			var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 			Assert.IsTrue(progression.BattleFrontId == 2);
             Assert.IsTrue(progression.ZoneId == 201);

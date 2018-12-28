@@ -29,8 +29,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// Is used as a base timer in milliseconds when securing objectives.
         /// <summary>
         public static int MAX_CONTROL_GAUGE = MAX_SECURE_PROGRESS * 200;
-        public static int CONTESTED_TIMESPAN = 60; //300; // 5 min contested
-        public static int SECURED_TIMESPAN = 60; //900; // 5 min secured
+        public static int CONTESTED_TIMESPAN = 30; //300; // 5 min contested
+        public static int SECURED_TIMESPAN = 30; //900; // 5 min secured
         public static int GUARDSPAWN_DELAY = 60; //60; // 1 min delayed
 
 
@@ -90,12 +90,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         // Positive between 0 and SECURE_PROGRESS_MAX indicating the objective securisation indicator, in seconds
         private int _secureProgress;
 
+        
+
         #region timers
         public int CaptureTimer;
         public int GuardedTimer;
 
-        public const int CaptureTimerLength = 1 * 60;
-        public const int GuardedTimerLength = 1 * 60;
+        public const int CaptureTimerLength = 1 * 20;
+        public const int GuardedTimerLength = 1 * 20;
         #endregion
 
         /// <summary>
@@ -163,6 +165,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 }
             }
             _captureProgress = 20000;
+            CaptureDuration = 10;
             EvtInterface.AddEvent(CheckTimers, 10000, 0);
         }
 
@@ -299,6 +302,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public override void NotifyInteractionComplete(NewBuff b)
         {
             fsm.Fire(CampaignObjectiveStateMachine.Command.OnPlayerInteractionComplete, CapturingPlayer);
+        }
+
+        public void OpenBattleFront()
+        {
+
+            fsm.Initialize(CampaignObjectiveStateMachine.ProcessState.Neutral);
+            BattlefrontLogger.Debug($"Starting BO {Name} FSM...");
+            fsm.Fire(CampaignObjectiveStateMachine.Command.OnOpenBattleFront);
+            fsm.Start();
+
         }
 
         /// <summary>
@@ -453,22 +466,22 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 case StateFlags.Secure:
                     //return _secureProgress == MAX_SECURE_PROGRESS ? "GENERATING" : "SECURING";
-                    return "Alpha-CAPTURED";
+                    return "CAPTURED";
 
                 case StateFlags.Abandoned:
-                    return "ABANDONED";
+                    return "SECURED";
 
                 case StateFlags.Contested:
-                    return realm == OwningRealm ? "DEFEND" : "ASSAULT";
+                    return realm == OwningRealm ? "DEFEND" : "HOLD";
 
                 case StateFlags.Unsecure:
-                    return "Alpha-UNLOCKED";
+                    return "AVAILABLE";
 
                 case StateFlags.Hidden:
                     return "";
 
                 case StateFlags.ZoneLocked:
-                    return "Alpha-CAPTURING";
+                    return "ZONE-LOCKED";
 
                 case StateFlags.Locked:
                     return "SECURED";
@@ -811,11 +824,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             switch (State)
             {
                 case StateFlags.ZoneLocked:
-                case StateFlags.Locked:
                 case StateFlags.Secure:
                     return false;
                 case StateFlags.Unsecure:
                 case StateFlags.Contested:
+                    return plr.Realm != AssaultingRealm;
+                case StateFlags.Locked:
                     return plr.Realm != OwningRealm;
                 default:
                     return false;
@@ -826,7 +840,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void SetObjectiveSafe()
         {
-            BattlefrontLogger.Debug($"Setting objective safe {Name} (NEUTRAL)");
+            BattlefrontLogger.Debug($"{Name} : Safe : (NEUTRAL)");
             _displayedTimer = 0;
             DespawnAllGuards();
 
@@ -839,7 +853,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void SetObjectiveLocked()
         {
-            BattlefrontLogger.Debug($"Locking objective {Name} to {AssaultingRealm}");
+            BattlefrontLogger.Debug($"{Name} : Locking : {AssaultingRealm}");
             _displayedTimer = 0;
             DespawnAllGuards();
 
@@ -853,6 +867,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void SetObjectiveCapturing()
         {
+            BattlefrontLogger.Debug($"{Name} : Capturing : {AssaultingRealm} {OwningRealm}");
             if (CapturingPlayer != null)
             {
                 AssaultingRealm = CapturingPlayer.Realm;
@@ -867,7 +882,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void SetObjectiveCaptured()
         {
-            BattlefrontLogger.Debug($"Captured : {AssaultingRealm}");
+            BattlefrontLogger.Debug($"{Name} : Captured : {AssaultingRealm}  {OwningRealm}");
 
             OwningRealm = AssaultingRealm;
             State = StateFlags.Secure;
@@ -880,10 +895,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void SetObjectiveGuarded()
         {
+            BattlefrontLogger.Debug($"{Name} : Guarded : {OwningRealm}");
 
-            BattlefrontLogger.Debug($"Guarded : {OwningRealm}");
-
-            State = StateFlags.Abandoned;
+            State = StateFlags.Locked;
             BroadcastFlagInfo(true);
             GrantCaptureRewards(OwningRealm);
         }

@@ -82,9 +82,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void RecordTransition(object sender, EventArgs e)
         {
-            _logger.Debug($"{e.ToString()}");
-
             var s = (Appccelerate.StateMachine.Machine.Events.TransitionCompletedEventArgs<ProcessState, Command>)e;
+            _logger.Debug($"{Objective.Name} : {e.ToString()} {s.StateId}=>{s.NewStateId}");
+
             // Save the state transition.
             //_logger.Debug($"Saving campaign objective state {Objective.Id},{s.StateId}");
             //RVRProgressionService.SaveBattleFrontKeepState(Objective.Id, s.StateId);

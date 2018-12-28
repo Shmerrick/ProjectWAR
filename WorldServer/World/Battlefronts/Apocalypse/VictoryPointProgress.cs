@@ -248,7 +248,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 foreach (var bo in campaign.ActiveBattleFrontStatus.BattlefieldObjectives)
                 {
-                    if (campaignObjective.State == StateFlags.Secure)
+                    if (campaignObjective.State == StateFlags.Secure || campaignObjective.State == StateFlags.Locked)
                     {
                         if (bo.Entry == campaignObjective.Id)
                         {

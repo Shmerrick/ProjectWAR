@@ -576,7 +576,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             //var state = p.MoveNext(KeepStateMachine.Command.OnSeizedTimerEnd);
             //ExecuteAction(state);
-            fsm.Fire(SM.Command.OnSeizedTimerEnd);
+           fsm.Fire(SM.Command.OnSeizedTimerEnd);
         }
 
         public void OnOuterDoorDown()

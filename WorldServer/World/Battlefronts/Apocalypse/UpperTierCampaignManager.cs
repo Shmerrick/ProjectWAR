@@ -110,7 +110,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// Sets up the Battlefront status list with default values.
         /// </summary>
         /// <param name="battleFrontProgressions"></param>
-        private void BuildApocBattleFrontStatusList(List<RVRProgression> battleFrontProgressions, CampaignRerollMode rerollMode = CampaignRerollMode.NONE)
+        private void BuildApocBattleFrontStatusList(List<RVRProgression> battleFrontProgressions)
         {
             lock (LockObject)
             {
@@ -125,9 +125,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     BattleFrontStatuses.Add(new BattleFrontStatus(ImpactMatrixManagerInstance)
                     {
                         BattleFrontId = battleFrontProgression.BattleFrontId,
-                        LockingRealm = (rerollMode == CampaignRerollMode.INIT)
-                            ? (Realms)BattleFrontProgressions.Single(x => x.BattleFrontId == battleFrontProgression.BattleFrontId).LastOwningRealm
-                            : (Realms)BattleFrontProgressions.Single(x => x.BattleFrontId == battleFrontProgression.BattleFrontId).DefaultRealmLock,
+                        LockingRealm = (Realms)BattleFrontProgressions.Single(x => x.BattleFrontId == battleFrontProgression.BattleFrontId).LastOwningRealm,
                         FinalVictoryPoint = new VictoryPointProgress(battleFrontProgression.OrderVP, battleFrontProgression.DestroVP),
                         OpenTimeStamp = 0,
                         LockTimeStamp = 0,
@@ -293,7 +291,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 foreach (var flag in activeRegion.Campaign.Objectives)
                 {
                     if (ActiveBattleFront.ZoneId == flag.ZoneId)
-                        flag.SetObjectiveSafe();
+                    {
+                        flag.OpenBattleFront();
+                        //flag.SetObjectiveSafe();
+                    }
                 }
 
                 if (activeRegion.Campaign.Keeps == null)
