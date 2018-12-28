@@ -1736,7 +1736,7 @@ namespace WorldServer
             #endregion
         }
 
-        public static void HealTarget(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target, int criticalNumerator=100)
+        public static void HealTarget(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target, int criticalNumerator=0)
         {
             #region Base Damage
 
@@ -1770,7 +1770,7 @@ namespace WorldServer
 
                 #region CriticalHeal
 
-                int rand = StaticRandom.Instance.Next(0, criticalNumerator);
+                int rand = StaticRandom.Instance.Next(criticalNumerator, 100);
 
                 int chanceToBeCrit = 10 + damageInfo.CriticalHitRate + caster.StsInterface.GetTotalStat(Stats.CriticalHitRate) + caster.StsInterface.GetTotalStat(Stats.HealCritRate);
                 if (rand <= chanceToBeCrit)
