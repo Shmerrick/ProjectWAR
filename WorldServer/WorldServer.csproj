@@ -279,6 +279,7 @@
     <Compile Include="World\AI\SimpleLVHealerBrain.cs" />
     <Compile Include="World\Auction\AuctionHouse.cs" />
     <Compile Include="World\Battlefronts\AAOTracker.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\BO.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\KeepStateMachine.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\CampaignObjectiveStateMachine.cs" />
     <Compile Include="World\Battlefronts\Bounty\BountyException.cs" />
@@ -315,7 +316,6 @@
     <Compile Include="World\Battlefronts\Apocalypse\AAOTracker.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\BattlefrontConstants.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\IBattlefrontManager.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\CampaignObjective.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Campaign.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\LowerTierCampaignManager.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\RVRRewardManager.cs" />

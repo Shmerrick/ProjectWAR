@@ -54,7 +54,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         protected readonly EventInterface _EvtInterface = new EventInterface();
 
         public HashSet<Player> PlayersInLakeSet;
-        public List<CampaignObjective> Objectives;
+        public List<BO> Objectives;
 
         public ConcurrentDictionary<int, int> OrderPlayerPopulationList = new ConcurrentDictionary<int, int>();
         public ConcurrentDictionary<int, int> DestructionPlayerPopulationList = new ConcurrentDictionary<int, int>();
@@ -99,7 +99,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="objectives"></param>
         /// <param name="players"></param>
         public Campaign(RegionMgr regionMgr,
-            List<CampaignObjective> objectives,
+            List<BO> objectives,
             HashSet<Player> players,
             IBattleFrontManager bfm,
             IApocCommunications communicationsEngine)
@@ -595,7 +595,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             foreach (BattleFront_Objective obj in objectives)
             {
-                CampaignObjective flag = new CampaignObjective(Region, obj);
+                BO flag = new BO(Region, obj);
                 Objectives.Add(flag);
                 Region.AddObject(flag, obj.ZoneId);
                 flag.BattleFront = this;
@@ -878,7 +878,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if ((flag.ZoneId != zoneId) && (flag.RegionId == Region.RegionId))
                 {
-                    flag.LockObjective(realm, true);
+                    flag.OwningRealm = realm;
+                    flag.SetObjectiveLocked();
                 }
             }
         }
@@ -891,7 +892,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (flag.Id == objectiveToLock)
                 {
-                    flag.LockObjective(realm, true);
+                    flag.OwningRealm = realm;
+                    flag.SetObjectiveLocked();
                 }
             }
         }
@@ -1301,7 +1303,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void SendObjectives(Player plr)
         {
             BattlefrontLogger.Trace(".");
-            foreach (CampaignObjective bo in Objectives)
+            foreach (var bo in Objectives)
                 bo.SendState(plr, false);
         }
 
@@ -1315,7 +1317,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (BattleFrontManager.ActiveBattleFront.RegionId != Region.RegionId)
                 return;
 
-            foreach (CampaignObjective flag in Objectives)
+            foreach (var flag in Objectives)
             {
                 flag.Update(TCPManager.GetTimeStampMS());
             }
@@ -1529,13 +1531,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public CampaignObjective GetClosestFlag(Point3D destPos, bool inPlay = false)
+        public BO GetClosestFlag(Point3D destPos, bool inPlay = false)
         {
             BattlefrontLogger.Trace(".");
-            CampaignObjective bestFlag = null;
+            BO bestFlag = null;
             ulong bestDist = 0;
 
-            foreach (CampaignObjective flag in Objectives)
+            foreach (BO flag in Objectives)
             {
                 ulong curDist = flag.GetDistanceSquare(destPos);
 
@@ -1586,7 +1588,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     rewardMod += (1000 - Math.Min(killed.GetDistanceTo(closestFlag), 1000)) * 0.001f * 0.5f;
 
                 // calculate ObjectiveReward scale on near players
-                var scale = closestFlag.CalculateObjectiveRewardScale(killer);
+                var scale = 1f;
+                    //closestFlag.CalculateObjectiveRewardScale(killer);
                 BattlefrontLogger.Debug("objective scale = " + scale);
                 rewardMod += scale;
             }

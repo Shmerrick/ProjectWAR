@@ -1,25 +1,38 @@
-﻿using Common;
+﻿using Appccelerate.StateMachine;
+using Common;
+using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
 using NLog;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using SystemData;
-using Appccelerate.StateMachine;
-using Common.Database.World.Battlefront;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Services.World;
 using WorldServer.World.BattleFronts.Objectives;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
-	public class BO : Object
-	{
-	    public const int TRANSITION_SPEED = 9;
+    public class BO : Object
+    {
+        public const int TRANSITION_SPEED = 9;
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
         private List<FlagGuard> Guards = new List<FlagGuard>();
+
+        /// <summary>
+        /// Absolute maximum of the control gauges of the flags
+        /// <summary>
+        public static int MAX_SECURE_PROGRESS = 100;
+
+        /// <summary>
+        /// Absolute maximum of the control gauges of the flags.
+        /// Is used as a base timer in milliseconds when securing objectives.
+        /// <summary>
+        public static int MAX_CONTROL_GAUGE = MAX_SECURE_PROGRESS * 200;
+        public static int CONTESTED_TIMESPAN = 60; //300; // 5 min contested
+        public static int SECURED_TIMESPAN = 60; //900; // 5 min secured
+        public static int GUARDSPAWN_DELAY = 60; //60; // 1 min delayed
+
 
         /// <summary>The tier within which the Campaign exists.</summary>
         public readonly byte Tier;
@@ -70,11 +83,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public PassiveStateMachine<CampaignObjectiveStateMachine.ProcessState, CampaignObjectiveStateMachine.Command> fsm { get; set; }
 
-
+        // Position of the capture
+        private int _captureProgress;
+        // Whether a capture is in progress
+        private bool _captureInProgress;
+        // Positive between 0 and SECURE_PROGRESS_MAX indicating the objective securisation indicator, in seconds
+        private int _secureProgress;
 
         #region timers
         public int CaptureTimer;
+        public int GuardedTimer;
+
         public const int CaptureTimerLength = 1 * 60;
+        public const int GuardedTimerLength = 1 * 60;
         #endregion
 
         /// <summary>
@@ -125,23 +146,25 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _tokdiscovery = objective.TokDiscovered;
             _tokunlocked = objective.TokUnlocked;
 
-			Heading = _o;
+            Heading = _o;
             WorldPosition.X = (int)_x;
             WorldPosition.Y = (int)_y;
             WorldPosition.Z = _z;
-            
+
             CommsEngine = new ApocCommunications();
             RewardManager = new RVRRewardManager();
             fsm = new CampaignObjectiveStateMachine(this).fsm;
 
             if (objective.Guards != null)
-			{
-				foreach (BattleFront_Guard Guard in objective.Guards)
-				{
-					Guards.Add(new FlagGuard(this, region, objective.ZoneId, Guard.OrderId, Guard.DestroId, Guard.X, Guard.Y, Guard.Z, Guard.O));
-				}
-			}
-		}
+            {
+                foreach (BattleFront_Guard Guard in objective.Guards)
+                {
+                    Guards.Add(new FlagGuard(this, region, objective.ZoneId, Guard.OrderId, Guard.DestroId, Guard.X, Guard.Y, Guard.Z, Guard.O));
+                }
+            }
+
+            EvtInterface.AddEvent(CheckTimers, 10000, 0);
+        }
 
         public override void OnLoad()
         {
@@ -156,117 +179,141 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Initial state
             IsActive = true;
 
-		}
+        }
 
         public override string ToString()
         {
-            return $"Objective : {this.Name} Status : {State} Owner : {this.OwningRealm}";
+            return $"Objective : {Name} Status : {State} Owner : {OwningRealm}";
         }
 
-		private bool SpawnAllGuards(Realms owner)
-		{
-			if (owner == Realms.REALMS_REALM_DESTRUCTION || owner == Realms.REALMS_REALM_ORDER)
-			{
-				if (Guards != null)
-					foreach (FlagGuard guard in Guards)
-						guard.SpawnGuard((int)owner);
-				return true;
-			}
-			return false;
-		}
+        /// <summary>
+        /// Check the various timers and determine whether to fire any events
+        /// </summary>
+        private void CheckTimers()
+        {
+            var currentTime = TCPManager.GetTimeStamp();
 
-		private bool DespawnAllGuards()
-		{
-			if (Guards != null)
-			{
-				foreach (FlagGuard guard in Guards)
-				{
-					guard.DespawnGuard();
-					if (guard.Creature != null)
-					{
-						guard.Creature = null;
-					}
-				}
-				return true;
-			}
-			return false;
-		}
+            if (CaptureTimer > 0 && CaptureTimer <= currentTime)
+                OnCapturedTimerEnd();
+            if (GuardedTimer > 0 && GuardedTimer <= currentTime)
+                OnGuardedTimerEnd();
 
-		public override void SendInteract(Player player, InteractMenu menu)
-		{
-			if (OwningRealm == player.Realm && AssaultingRealm == Realms.REALMS_REALM_NEUTRAL)
-			{
-				player.SendClientMessage("Your realm already owns this flag.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-				return;
-			}
-
-			if (OwningRealm != player.Realm && OwningRealm == player.Realm)
-			{
-				player.SendClientMessage("Your realm is already assaulting this flag.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-				return;
-			}
-
-			if (!player.CbtInterface.IsPvp)
-			{
-				player.SendClientMessage("You must be flagged to cap.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-				return;
-			}
-
-			if (player.StealthLevel > 0)
-			{
-				player.SendClientMessage("You can't interact with objects while in stealth.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-				return;
-			}
-
-			foreach (var guard in Guards)
-			{
-				if (guard.Creature != null && !guard.Creature.IsDead && GetDistanceTo(guard.Creature) < 100)
-				{
-					player.SendClientMessage("Can't capture while a guard (" + guard.Creature.Name + ") is still alive.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-					return;
-				}
-			}
-
-			if (AllowInteract(player) && InteractableFor(player))
-			{
-				if (_captureInProgress)
-				{
-					player.SendClientMessage(CapturingPlayer?.Name + " is already interacting with this object.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-				}
-				else
-				{
-					CapturingPlayer = null;
-					_captureInProgress = true;
-					BeginInteraction(player);
-
-					_secureProgress = Math.Abs(_controlGauge) * MAX_SECURE_PROGRESS / MAX_CONTROL_GAUGE;
-				}
-			}
-		}
-
-		public override void NotifyInteractionBroken(NewBuff b)
-		{
-		    fsm.Fire(CampaignObjectiveStateMachine.Command.OnPlayerInteractionBroken);
-		}
-
-		public override void NotifyInteractionComplete(NewBuff b)
-		{
-		    fsm.Fire(CampaignObjectiveStateMachine.Command.OnPlayerInteractionComplete, CapturingPlayer);
         }
 
-		/// <summary>
-		///     Conputes the assaulting speed depending of players in close range.
-		/// </summary>
-		/// <returns>
-		///     Timer accelerator :
-		///     -2 to -1 for order assault
-		///     -0 for no assault
-		///     1 to 2 for destro assault
-		/// </returns>
-		private float GetNewTransitionSpeed()
-		{
-		    return TRANSITION_SPEED;
-		}
+        private void OnGuardedTimerEnd()
+        {
+            fsm.Fire(CampaignObjectiveStateMachine.Command.OnGuardedTimerEnd);
+        }
+
+        private void OnCapturedTimerEnd()
+        {
+            fsm.Fire(CampaignObjectiveStateMachine.Command.OnCaptureTimerEnd);
+        }
+
+        private bool SpawnAllGuards(Realms owner)
+        {
+            if (owner == Realms.REALMS_REALM_DESTRUCTION || owner == Realms.REALMS_REALM_ORDER)
+            {
+                if (Guards != null)
+                    foreach (FlagGuard guard in Guards)
+                        guard.SpawnGuard((int)owner);
+                return true;
+            }
+            return false;
+        }
+
+        private bool DespawnAllGuards()
+        {
+            if (Guards != null)
+            {
+                foreach (FlagGuard guard in Guards)
+                {
+                    guard.DespawnGuard();
+                    if (guard.Creature != null)
+                    {
+                        guard.Creature = null;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public override void SendInteract(Player player, InteractMenu menu)
+        {
+            if (OwningRealm == player.Realm && AssaultingRealm == Realms.REALMS_REALM_NEUTRAL)
+            {
+                player.SendClientMessage("Your realm already owns this flag.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return;
+            }
+
+            if (OwningRealm != player.Realm && OwningRealm == player.Realm)
+            {
+                player.SendClientMessage("Your realm is already assaulting this flag.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return;
+            }
+
+            if (!player.CbtInterface.IsPvp)
+            {
+                player.SendClientMessage("You must be flagged to cap.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return;
+            }
+
+            if (player.StealthLevel > 0)
+            {
+                player.SendClientMessage("You can't interact with objects while in stealth.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return;
+            }
+
+            foreach (var guard in Guards)
+            {
+                if (guard.Creature != null && !guard.Creature.IsDead && GetDistanceTo(guard.Creature) < 100)
+                {
+                    player.SendClientMessage("Can't capture while a guard (" + guard.Creature.Name + ") is still alive.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    return;
+                }
+            }
+
+            if (AllowInteract(player) && InteractableFor(player))
+            {
+                if (_captureInProgress)
+                {
+                    player.SendClientMessage(CapturingPlayer?.Name + " is already interacting with this object.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                }
+                else
+                {
+                    CapturingPlayer = null;
+                    _captureInProgress = true;
+                    BeginInteraction(player);
+
+                    _secureProgress = Math.Abs(_captureProgress) * MAX_SECURE_PROGRESS / MAX_CONTROL_GAUGE;
+                }
+            }
+        }
+
+        public override void NotifyInteractionBroken(NewBuff b)
+        {
+            fsm.Fire(CampaignObjectiveStateMachine.Command.OnPlayerInteractionBroken);
+        }
+
+        public override void NotifyInteractionComplete(NewBuff b)
+        {
+            fsm.Fire(CampaignObjectiveStateMachine.Command.OnPlayerInteractionComplete, CapturingPlayer);
+        }
+
+        /// <summary>
+        ///     Conputes the assaulting speed depending of players in close range.
+        /// </summary>
+        /// <returns>
+        ///     Timer accelerator :
+        ///     -2 to -1 for order assault
+        ///     -0 for no assault
+        ///     1 to 2 for destro assault
+        /// </returns>
+        private float GetNewTransitionSpeed()
+        {
+            return TRANSITION_SPEED;
+        }
 
         public override void AddInRange(Object obj)
         {
@@ -322,21 +369,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // return;
             var owningRealm = OwningRealm;
             var assaultingRealm = AssaultingRealm;
-
-            //if (Tier == 4)
-            //{
-            //    var prFrnt = (ProximityProgressingBattleFront)Region.Bttlfront;
-            //    if (prFrnt != null && ZoneId != prFrnt.Zones[prFrnt._BattleFrontStatus.OpenZoneIndex].ZoneId)
-            //    {
-            //        owningRealm = OwningRealm;
-            //        assaultingRealm = OwningRealm;
-            //    }
-            //}
-
-            // Log.Info("Name", ID.ToString());
-            // Log.Info("OwningRealm", Enum.GetName(typeof(Realms), owningRealm));
-            // Log.Info("AssaultingRealm", Enum.GetName(typeof(Realms), assaultingRealm));
-
             var Out = new PacketOut((byte)Opcodes.F_OBJECTIVE_INFO, 32);
             Out.WriteUInt32((uint)Id);
             Out.WriteByte(0);
@@ -397,12 +429,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     break;
             }
 
-			// Displayed transition timer in seconds
-			//var transitionTimer = _nextTransitionTimestamp == 0
-   //             ? (ushort)0
-   //             : (ushort)((_nextTransitionTimestamp - TCPManager.GetTimeStampMS()) / 1000);
-   //         transitionTimer = (ushort)_displayedTimer;
-            // Log.Info("transitionTimer", _displayedTimer.ToString());
 
             Out.WriteUInt16(0); // _displayedTimer
             Out.WriteUInt16((ushort)_displayedTimer); // _displayedTimer
@@ -494,12 +520,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Out.WriteUInt16(0);
             Out.WriteByte(0);
 
-			if (State != StateFlags.Locked && State != StateFlags.ZoneLocked && InteractableFor(plr))
-				Out.WriteUInt16(4);
-			else
-				Out.WriteUInt16(0);
+            if (State != StateFlags.Locked && State != StateFlags.ZoneLocked && InteractableFor(plr))
+                Out.WriteUInt16(4);
+            else
+                Out.WriteUInt16(0);
 
-			Out.WriteByte(0);
+            Out.WriteByte(0);
 
             Out.WriteUInt16(0);
             Out.WriteByte(0);
@@ -524,11 +550,26 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             if (State == StateFlags.ZoneLocked)
                 return StateFlags.Locked;
-			
-            //if (State == StateFlags.Securing)
-            //    State += (byte)StateFlags.ResourceInteraction;
 
             return State;
+        }
+
+        /// <summary>
+        ///     Update thread.
+        /// </summary>
+        /// <param name="tick"></param>
+        public override void Update(long tick)
+        {
+            EvtInterface.Update(tick);
+
+            if (State == StateFlags.ZoneLocked)
+                return;
+
+            var frnt = BattleFront;
+            if (frnt != null && frnt.IsBattleFrontLocked())
+                return;
+
+
         }
 
         /// <summary>
@@ -555,27 +596,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 Out.Fill(0xFF, 2);
                 Out.WriteUInt16(0);
             }
-            /*else if (GeneratingSupplies && _tier > 1 && _displayedTimer == 0)
-            {
-                Out.Fill(0xFF, 4);
-                Out.WriteByte(0);
-                Out.WriteByte((byte)Math.Max(0, _generationTimerEnd - TCPManager.GetTimeStamp())); // Unk6 - time till next resource release
-                Out.WriteUInt16(175); // Unk7 - vertical offset for drawing overlay - Unk6 may not exceed
-            }*/
+
             else if (State == StateFlags.Secure)
             {
                 //Out.Fill(0xFF, 4);
                 Out.Fill(0, 2);
                 Out.WriteUInt16((ushort)_displayedTimer);
-                //Out.WriteByte((byte)(SECURE_PROGRESS_MAX - _lastSecureProgress)); // Unk6 - time till next resource release
-                //Out.WriteByte(0);
-                //if (SECURE_PROGRESS_MAX == _lastSecureProgress)
-                //{
-                //    Out.Fill(0xFF, 2);
-                //} else
-                //{
-                //    Out.WriteUInt16((ushort)(SECURE_PROGRESS_MAX - _lastSecureProgress)); // Unk6 - time till next resource release
-                //}
+
                 Out.WriteByte(0);
                 Out.WriteByte((byte)(MAX_SECURE_PROGRESS - _secureProgress)); // Unk6 - time till next resource release
                 Out.WriteUInt16(
@@ -617,38 +644,26 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     break;
 
                 case StateFlags.Contested:
-                    if (_lastBroadCastState != State)
-                    {
-                        _lastBroadCastState = State;
-                        _lastSecutedState = false;
-                        message = string.Concat(Name, " is under assault by the forces of ",
-                            GetRealmString(AssaultingRealm), "!");
-                    }
+                    message = string.Concat(Name, " is under assault by the forces of ", GetRealmString(AssaultingRealm), "!");
                     break;
 
                 case StateFlags.Secure:
                     var securedState = _secureProgress == MAX_SECURE_PROGRESS;
-                    if (_lastBroadCastState != State || _lastSecutedState != securedState)
-                    {
-                        _lastBroadCastState = State;
-                        _lastSecutedState = securedState;
 
-                        if (_secureProgress == MAX_SECURE_PROGRESS)
-                        {
-                            message = string.Concat($"The forces of ", GetRealmString(OwningRealm), " have taken ",
-                                Name, "!");
-                            snd = new PacketOut((byte)Opcodes.F_PLAY_SOUND);
-                            snd.WriteByte(0);
-                            snd.WriteUInt16(OwningRealm == Realms.REALMS_REALM_ORDER ? (ushort)0x0C : (ushort)0x332);
-                            snd.Fill(0, 10);
-                            break;
-                        }
-                        else
-                        {
-                            message = string.Concat($"The forces of ", GetRealmString(OwningRealm), " are securing ",
-                                Name, "!");
-                            break;
-                        }
+                    if (_secureProgress == MAX_SECURE_PROGRESS)
+                    {
+                        message = string.Concat($"The forces of ", GetRealmString(OwningRealm), " have taken ",
+                            Name, "!");
+                        snd = new PacketOut((byte)Opcodes.F_PLAY_SOUND);
+                        snd.WriteByte(0);
+                        snd.WriteUInt16(OwningRealm == Realms.REALMS_REALM_ORDER ? (ushort)0x0C : (ushort)0x332);
+                        snd.Fill(0, 10);
+                        break;
+                    }
+                    else
+                    {
+                        message = string.Concat($"The forces of ", GetRealmString(OwningRealm), " are securing ", Name, "!");
+                        break;
                     }
                     break;
 
@@ -661,13 +676,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 if (plr != null)
                 {
                     plr.SendPacket(Out);
-                    BattlefrontLogger.Debug("Sending State to Player", "Player: " + plr.Name + ", BO: " + this.Name);
+                    BattlefrontLogger.Debug("Sending State to Player", "Player: " + plr.Name + ", BO: " + Name);
                 }
                 else
                     foreach (var player in Region.Players)
                     {
                         player.SendPacket(Out); // Objective's state
-                        BattlefrontLogger.Debug("Sending State to Player", "Player: " + player.Name + ", BO: " + this.Name);
+                        BattlefrontLogger.Debug("Sending State to Player", "Player: " + player.Name + ", BO: " + Name);
 
                         if (string.IsNullOrEmpty(message) || !player.CbtInterface.IsPvp)
                             continue;
@@ -675,7 +690,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         // Notify RvR flagged players of activity
                         player.SendLocalizeString(message, ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
                         player.SendLocalizeString(message, largeFilter, Localized_text.CHAT_TAG_DEFAULT);
-                        BattlefrontLogger.Debug("Sending Activity to RVR-Player", "Player: " + player.Name + ", BO: " + this.Name + "Message: " + message);
+                        BattlefrontLogger.Debug("Sending Activity to RVR-Player", "Player: " + player.Name + ", BO: " + Name + "Message: " + message);
                         if (snd != null)
                             player.SendPacket(snd);
                     }
@@ -706,128 +721,131 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             player.SendClientMessage(
                 $"{Enum.GetName(typeof(StateFlags), State)} and held by {(OwningRealm == Realms.REALMS_REALM_NEUTRAL ? "no realm" : (OwningRealm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"))}");
 
-            player.SendClientMessage($"Control gauge: {_controlGauge}");
+            player.SendClientMessage($"Control progress: {_captureProgress}");
             player.SendClientMessage($"Secure progress: {_secureProgress}");
             player.SendClientMessage($"Flag status: {State}");
 
-            //_quadrantHistoryTracker.SendDiagnostic(player);
-
-            //player.SendClientMessage($"Order / Destro warcamp distances: {_orderWarcampDistance} / {_destroWarcampDistance}");
         }
 
 
-		/// <summary>
-		/// Grants rewards for taking this battlefield objective from the enemy.
-		/// </summary>
-		/// <param name="capturingRealm"></param>
-		public void GrantCaptureRewards(Realms capturingRealm)
-		{
-			if (State == StateFlags.ZoneLocked)
-				return;
+        /// <summary>
+        /// Grants rewards for taking this battlefield objective from the enemy.
+        /// </summary>
+        /// <param name="capturingRealm"></param>
+        public void GrantCaptureRewards(Realms capturingRealm)
+        {
+            if (State == StateFlags.ZoneLocked)
+                return;
 
             var contributionDefinition = new ContributionDefinition();
-		    var activeBattleFrontStatus = BattleFront.GetActiveBattleFrontStatus();
+            var activeBattleFrontStatus = BattleFront.GetActiveBattleFrontStatus();
 
-            VictoryPoint VP = new VictoryPoint(0,0);
-			switch (State)
-			{
-				case StateFlags.Contested: // small tick
-					VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_CONTESTED);
-				    lock (_closePlayers)
-				    {
-				        foreach (var closePlayer in _closePlayers)
-				        {
-				            closePlayer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.BO_TAKE_SMALL_TICK);
+            VictoryPoint VP = new VictoryPoint(0, 0);
+            switch (State)
+            {
+                case StateFlags.Contested: // small tick
+                    VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_CONTESTED);
+                    lock (_closePlayers)
+                    {
+                        foreach (var closePlayer in _closePlayers)
+                        {
+                            closePlayer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.BO_TAKE_SMALL_TICK);
                         }
                     }
                     break;
 
-				case StateFlags.Secure: // big tick
-					VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.BIG);
+                case StateFlags.Secure: // big tick
+                    VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.BIG);
 
-				    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
 
                     lock (_closePlayers)
-				    {
-				        foreach (var closePlayer in _closePlayers)
-				        {
-				            closePlayer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
+                    {
+                        foreach (var closePlayer in _closePlayers)
+                        {
+                            closePlayer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
 
                             // is this player the group leader?
                             if (closePlayer.PriorityGroup?.GetLeader() == closePlayer)
-				            {
-				                closePlayer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.GROUP_LEADER_BO_BIG_TICK);
+                            {
+                                closePlayer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.GROUP_LEADER_BO_BIG_TICK);
                             }
                         }
                     }
-				    break;
-				case StateFlags.Locked: // small tick
-					VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_LOCKED);
-				    lock (_closePlayers)
-				    {
-				        foreach (var closePlayer in _closePlayers)
-				        {
+                    break;
+                case StateFlags.Locked: // small tick
+                    VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_LOCKED);
+                    lock (_closePlayers)
+                    {
+                        foreach (var closePlayer in _closePlayers)
+                        {
                             // ContributionManagerInstance holds the long term values of contribution for a player.
-				            activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte)ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
-				            contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
-				            closePlayer.BountyManagerInstance.AddCharacterBounty(closePlayer.CharacterId, contributionDefinition.ContributionValue);
+                            activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte)ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
+                            contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
+                            closePlayer.BountyManagerInstance.AddCharacterBounty(closePlayer.CharacterId, contributionDefinition.ContributionValue);
                         }
-				    }
+                    }
 
                     break;
 
-				default:
-					break;
-			}
+                default:
+                    break;
+            }
 
             // Make sure VP dont go less than 0
             if (BattleFront.VictoryPointProgress.OrderVictoryPoints <= 0)
-				BattleFront.VictoryPointProgress.OrderVictoryPoints = 0;
+                BattleFront.VictoryPointProgress.OrderVictoryPoints = 0;
 
-			if (BattleFront.VictoryPointProgress.DestructionVictoryPoints <= 0)
-				BattleFront.VictoryPointProgress.DestructionVictoryPoints = 0;
-			
-			BattlefrontLogger.Trace($"{Name} Order VP:{BattleFront.VictoryPointProgress.OrderVictoryPoints} Dest VP:{BattleFront.VictoryPointProgress.DestructionVictoryPoints}");
-		}
+            if (BattleFront.VictoryPointProgress.DestructionVictoryPoints <= 0)
+                BattleFront.VictoryPointProgress.DestructionVictoryPoints = 0;
 
-		#region Interaction
+            BattlefrontLogger.Trace($"{Name} Order VP:{BattleFront.VictoryPointProgress.OrderVictoryPoints} Dest VP:{BattleFront.VictoryPointProgress.DestructionVictoryPoints}");
+        }
 
-		private bool InteractableFor(Player plr)
-		{
-			Log.Debug($"CampaignObjective", $"State={State}");
-			
-			switch (State)
-			{
-				case StateFlags.ZoneLocked:
-				case StateFlags.Locked:
-				case StateFlags.Secure:
-					return false;
-				case StateFlags.Unsecure:
-				case StateFlags.Contested:
-					return plr.Realm != OwningRealm;
-				default:
-					return false;
-			}
-		}
-		
-		
+        #region Interaction
 
-		#endregion
+        private bool InteractableFor(Player plr)
+        {
+            Log.Debug($"CampaignObjective", $"State={State}");
+
+            switch (State)
+            {
+                case StateFlags.ZoneLocked:
+                case StateFlags.Locked:
+                case StateFlags.Secure:
+                    return false;
+                case StateFlags.Unsecure:
+                case StateFlags.Contested:
+                    return plr.Realm != OwningRealm;
+                default:
+                    return false;
+            }
+        }
+
+        #endregion
 
         public void SetObjectiveSafe()
         {
-            throw new NotImplementedException();
+            BattlefrontLogger.Debug($"Setting objective safe {Name} (NEUTRAL)");
+            _displayedTimer = 0;
+            DespawnAllGuards();
+
+            // state change and send state
+            State = StateFlags.Unsecure;
+            OwningRealm = Realms.REALMS_REALM_NEUTRAL;
+            BroadcastFlagInfo(true);
+            SendState(GetPlayer(), false, true);
         }
 
         public void SetObjectiveLocked()
         {
-            BattlefrontLogger.Debug($"Locking objective {this.Name} to {AssaultingRealm}");
+            BattlefrontLogger.Debug($"Locking objective {Name} to {AssaultingRealm}");
             _displayedTimer = 0;
             DespawnAllGuards();
 
             // state change and send state
             State = StateFlags.ZoneLocked;
-            OwningRealm = Realms.REALMS_REALM_NEUTRAL;
+            OwningRealm = AssaultingRealm;
             BroadcastFlagInfo(true);
             SendState(GetPlayer(), false, true);
 
@@ -835,12 +853,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void SetObjectiveCapturing()
         {
-            // Updates owning and assault teams
-            AssaultingRealm = Realms.REALMS_REALM_NEUTRAL;
-
             if (CapturingPlayer != null)
             {
-                OwningRealm = CapturingPlayer.Realm;
+                AssaultingRealm = CapturingPlayer.Realm;
             }
             State = StateFlags.Contested;
             SendState(CapturingPlayer, true, true);
@@ -852,12 +867,25 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void SetObjectiveCaptured()
         {
-            throw new NotImplementedException();
+            BattlefrontLogger.Debug($"Captured : {AssaultingRealm}");
+
+            OwningRealm = AssaultingRealm;
+            State = StateFlags.Secure;
+            SendState(CapturingPlayer, true, true);
+            SpawnAllGuards(OwningRealm);
+            BroadcastFlagInfo(true);
+            GrantCaptureRewards(OwningRealm);
+            GuardedTimer = TCPManager.GetTimeStamp() + GuardedTimerLength;
         }
 
         public void SetObjectiveGuarded()
         {
-            throw new NotImplementedException();
+
+            BattlefrontLogger.Debug($"Guarded : {OwningRealm}");
+
+            State = StateFlags.Abandoned;
+            BroadcastFlagInfo(true);
+            GrantCaptureRewards(OwningRealm);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace WorldServer.Test
 		public void CampaignObjectiveRewardVPTest()
 		{
 			// arrange
-			var flag = new CampaignObjective();
+			var flag = new BO();
 
 			// act
 			var VP = flag.RewardManager.RewardCaptureTick(new HashSet<Player>(), GameData.Realms.REALMS_REALM_ORDER, 4, "thisFlag", 1f, BORewardType.SMALL_CONTESTED);

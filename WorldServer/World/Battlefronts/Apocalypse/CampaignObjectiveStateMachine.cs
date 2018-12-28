@@ -22,7 +22,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             OnPlayerInteractionComplete,
             OnPlayerInteractionBroken,
             OnCaptureTimerEnd,
-            OnSafeTimerEnd,
+            OnGuardedTimerEnd,
             OnLockZone,
             OnOpenBattleFront
         }
@@ -64,9 +64,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 .On(Command.OnPlayerInteractionBroken).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
 
             fsm.In(ProcessState.Capturing)
+                .On(Command.OnPlayerInteractionComplete).Goto(ProcessState.Capturing).Execute(() => Objective.SetObjectiveCapturing());
+            fsm.In(ProcessState.Capturing)
+                .On(Command.OnPlayerInteractionBroken).Goto(ProcessState.Capturing).Execute(() => Objective.SetObjectiveCapturing());
+
+            fsm.In(ProcessState.Capturing)
                 .On(Command.OnCaptureTimerEnd).Goto(ProcessState.Captured).Execute(() => Objective.SetObjectiveCaptured());
             fsm.In(ProcessState.Captured)
-                .On(Command.OnSafeTimerEnd).Goto(ProcessState.Guarded).Execute(() => Objective.SetObjectiveGuarded());
+                .On(Command.OnGuardedTimerEnd).Goto(ProcessState.Guarded).Execute(() => Objective.SetObjectiveGuarded());
+
+            fsm.In(ProcessState.Guarded)
+                .On(Command.OnPlayerInteractionComplete).Goto(ProcessState.Capturing).Execute(() => Objective.SetObjectiveCapturing());
+            fsm.In(ProcessState.Guarded)
+                .On(Command.OnPlayerInteractionBroken).Goto(ProcessState.Guarded).Execute(() => Objective.SetObjectiveGuarded());
 
         }
 

@@ -1458,7 +1458,7 @@ namespace WorldServer
             }
         }
 
-        public static List<CampaignObjective> LoadObjectives(RegionMgr regionMgr)
+        public static List<BO> LoadObjectives(RegionMgr regionMgr)
         {
             List<BattleFront_Objective> objectives = BattleFrontService.GetBattleFrontObjectives(regionMgr.RegionId);
             if (objectives == null)
@@ -1466,11 +1466,11 @@ namespace WorldServer
                 _logger.Warn($"Region = {regionMgr.RegionId} has no objectives");
                 return null;
             }
-            var resultList = new List<CampaignObjective>();
+            var resultList = new List<BO>();
             _logger.Debug($"Region = {regionMgr.RegionId} ObjectiveCount = {objectives.Count}");
             foreach (BattleFront_Objective obj in objectives)
             {
-                CampaignObjective flag = new CampaignObjective(regionMgr, obj);
+                BO flag = new BO(regionMgr, obj);
 				resultList.Add(flag);
             }
 

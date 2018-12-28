@@ -4125,7 +4125,7 @@ namespace WorldServer
             // Factor of kill rewards to transfer to objective
             float transferenceFactor = 2.5f - bonusMod;
 
-            CampaignObjective closestFlag = null;
+            BO closestFlag = null;
 
 
 
