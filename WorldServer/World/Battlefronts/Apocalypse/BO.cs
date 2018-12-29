@@ -880,13 +880,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void SetObjectiveLocked()
         {
-            BattlefrontLogger.Debug($"{Name} : Locking : {AssaultingRealm}");
+            BattlefrontLogger.Debug($"{Name} : Locking : {OwningRealm}");
             _displayedTimer = 0;
             DespawnAllGuards();
 
             // state change and send state
             State = StateFlags.ZoneLocked;
-            OwningRealm = AssaultingRealm;
+            
             BroadcastFlagInfo(true);
             SendState(GetPlayer(), false, true);
 
@@ -936,7 +936,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             State = StateFlags.Locked;
             BroadcastFlagInfo(true);
-            GrantCaptureRewards(OwningRealm);
+            SendState(GetPlayer(), true, true);
         }
     }
 }

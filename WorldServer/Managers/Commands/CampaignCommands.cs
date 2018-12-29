@@ -1,20 +1,15 @@
-﻿using Common;
-using System;
-using System.Collections.Generic;
-using SystemData;
-using static WorldServer.Managers.Commands.GMUtils;
-using WorldServer.World.BattleFronts;
+﻿using Common.Database.World.BattleFront;
 using FrameWork;
-using System.Reflection;
-using System.Linq;
-using System.Text.RegularExpressions;
 using GameData;
-using Common.Database.World.BattleFront;
-using WorldServer.World.BattleFronts.Keeps;
-using WorldServer.World.BattleFronts.Objectives;
+using System;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.Map;
+using static WorldServer.Managers.Commands.GMUtils;
 using BattleFrontConstants = WorldServer.World.Battlefronts.Apocalypse.BattleFrontConstants;
 
 namespace WorldServer.Managers.Commands
@@ -108,7 +103,7 @@ namespace WorldServer.Managers.Commands
 
 
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks the pairing the player is in for the given realm (1 - Order, 2 - Dest). forceNumberOfBags = 0 for default.")]
-        public static void LockPairing(Player plr, Realms realm, int forceNumberOfBags=0)
+        public static void LockPairing(Player plr, Realms realm, int forceNumberOfBags = 0)
         {
             plr.SendClientMessage($"Attempting to lock the {plr.Region.Campaign.ActiveCampaignName} campaign... (call AdvancePairing <realm> <tier> to move ahead)");
 
@@ -118,7 +113,7 @@ namespace WorldServer.Managers.Commands
             if (WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign == null)
                 plr.SendClientMessage("Region / Campaign does not exist.");
 
-            WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign.BattleFrontManager.LockActiveBattleFront(realm, (byte) forceNumberOfBags);
+            WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign.BattleFrontManager.LockActiveBattleFront(realm, (byte)forceNumberOfBags);
         }
 
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Advances the pairing the player is in ")]
@@ -272,15 +267,42 @@ namespace WorldServer.Managers.Commands
         }
 
 
-        [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks a battle objective for the given realm (1 - Order, 2 - Dest).")]
+        [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks a battle objective for the given realm (1 - Order, 2 - Dest), values = 0 (all), otherwise objectiveid")]
         public static void LockObj(Player plr, Realms realm, int values)
         {
             plr.SendClientMessage($"Attempting to lock objective...");
 
             var objectiveToLock = values;
+            if (objectiveToLock == 0)
+            {
+                foreach (var flag in WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign.Objectives)
+                {
+                    flag.OwningRealm = realm;
+                    flag.SetObjectiveLocked();
+                }
+            }
+            else
+            {
+                WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign.LockBattleObjective(realm, objectiveToLock);
+            }
+        }
 
-            WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign.LockBattleObjective(realm, objectiveToLock);
+        [CommandAttribute(EGmLevel.EmpoweredStaff, "Sets objectives in the players current realm as Guarded")]
+        public static void MarkObjectivesAsGuarded(Player plr)
+        {
+            plr.SendClientMessage($"Attempting to lock objective...");
 
+            foreach (var flag in WorldMgr.GetRegion(plr.Region.RegionId, false).Campaign.Objectives)
+            {
+                if (flag.ZoneId == plr.ZoneId)
+                {
+                    flag.OwningRealm = plr.Realm;
+                    flag.SetObjectiveGuarded();
+                }
+            }
+            // For VPP update
+            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().
+                VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
         }
 
 

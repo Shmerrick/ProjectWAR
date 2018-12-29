@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using GameData;
 using NLog;
+using WorldServer.Services.World;
 using WorldServer.World.BattleFronts.Objectives;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
