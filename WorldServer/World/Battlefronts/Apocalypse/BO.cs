@@ -99,8 +99,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public int CaptureTimer;
         public int GuardedTimer;
 
-        public const int CaptureTimerLength = 1 * 20;
-        public const int GuardedTimerLength = 1 * 20;
+        public const int CaptureTimerLength = 1 * 60;
+        public const int GuardedTimerLength = 1 * 60;
         #endregion
 
         /// <summary>

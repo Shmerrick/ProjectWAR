@@ -35,10 +35,10 @@ namespace WorldServer.World.BattleFronts.Keeps
         public int DefenceTickTimer;
         public int BackToSafeTimer;
 
-        public const int OuterDownTimerLength = 1 * 60;
-        public const int InnerDownTimerLength = 1 * 60;
-        public const int SeizedTimerLength = 1 * 60;
-        public const int LordKilledTimerLength = 1 * 60;
+        public const int OuterDownTimerLength = 3 * 60;
+        public const int InnerDownTimerLength =3 * 60;
+        public const int SeizedTimerLength = 2 * 60;
+        public const int LordKilledTimerLength = 2 * 60;
         public const int DefenceTickTimerLength = 5 * 60;
         public const int BackToSafeTimerLength = 5 * 60;
         #endregion
