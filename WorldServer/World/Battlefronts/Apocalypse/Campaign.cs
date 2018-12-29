@@ -196,7 +196,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         private void DestructionDominationZoneLockCheck()
         {
-            if (DestructionDominationTimerLength > TCPManager.GetTimeStamp())
+            if (DestructionDominationTimerEnd > TCPManager.GetTimeStamp())
                 return;
 
             BattlefrontLogger.Info($"Destruction Domination Victory!");
@@ -211,7 +211,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         private void OrderDominationZoneLockCheck()
         {
-            if (OrderDominationTimerLength > TCPManager.GetTimeStamp())
+            if (OrderDominationTimerEnd > TCPManager.GetTimeStamp())
                 return;
 
             BattlefrontLogger.Info($"Order Domination Victory!");
