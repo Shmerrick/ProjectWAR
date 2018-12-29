@@ -302,6 +302,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 {
                     /*if (_flagGrd.Info.KeepLord)
                         Log.Info(_keep.Info.Name, (_keep.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction") + " keep lord respawned.");*/
+                    _logger.Debug($"Kill request from own realm {killer.Name} {_keep.Realm}");
                     _flagGrd.Creature = new KeepCreature(Spawn, _flagGrd, _keep);
                     Region.AddObject(_flagGrd.Creature, Spawn.ZoneId);
                     Destroy();

@@ -283,7 +283,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             if (AllowInteract(player) && InteractableFor(player))
             {
-                if (_captureInProgress)
+                if (_captureInProgress)  // cross realm fires here
                 {
                     player.SendClientMessage(CapturingPlayer?.Name + " is already interacting with this object.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 }
@@ -301,11 +301,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public override void NotifyInteractionBroken(NewBuff b)
         {
             fsm.Fire(CampaignObjectiveStateMachine.Command.OnPlayerInteractionBroken);
+            _captureInProgress = false;
+            CapturingPlayer = null;
         }
 
         public override void NotifyInteractionComplete(NewBuff b)
         {
             fsm.Fire(CampaignObjectiveStateMachine.Command.OnPlayerInteractionComplete, CapturingPlayer);
+            _captureInProgress = false;
+            CapturingPlayer = null;
         }
 
         public void OpenBattleFront()
@@ -476,7 +480,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     return "SECURED";
 
                 case StateFlags.Contested:
-                    return realm == OwningRealm ? "DEFEND" : "HOLD";
+                    return realm == OwningRealm ? "RECLAIM" : "HOLD";
 
                 case StateFlags.Unsecure:
                     return "AVAILABLE";
@@ -538,7 +542,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Out.WriteByte(0);
 
             BattlefrontLogger.Trace($"{State} / {InteractableFor(plr)}");
-            if (State != StateFlags.Locked && State != StateFlags.ZoneLocked && InteractableFor(plr))
+            if (InteractableFor(plr))
             {
                 BattlefrontLogger.Trace($"4");
                 Out.WriteUInt16(4);
@@ -612,15 +616,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var Out = new PacketOut((byte)Opcodes.F_OBJECTIVE_STATE, 16);
             Out.WriteUInt32((uint)Id);
 
-            if (
-                State == StateFlags.Contested /*|| (State == StateFlags.Secure && MAX_SECURE_PROGRESS == _secureProgress)*/)
+            if (State == StateFlags.Contested)
             {
                 Out.Fill(0, 2);
                 Out.WriteUInt16((ushort)_displayedTimer);
                 Out.Fill(0xFF, 2);
                 Out.WriteUInt16(0);
             }
-
             else if (State == StateFlags.Secure)
             {
                 //Out.Fill(0xFF, 4);
@@ -830,21 +832,32 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private bool InteractableFor(Player plr)
         {
-            Log.Debug($"CampaignObjective", $"State={State}");
-
+            BattlefrontLogger.Debug($"CampaignObjective", $"State={State}");
+            var result = false;
             switch (State)
             {
-                case StateFlags.ZoneLocked:
-                case StateFlags.Secure:
-                    return false;
                 case StateFlags.Unsecure:
+                    result= true;
+                    break;
+                case StateFlags.ZoneLocked:
+                    result = false;
+                    break;
+                case StateFlags.Secure:
+                    result = false;
+                    break;
                 case StateFlags.Contested:
-                    return plr.Realm != AssaultingRealm;
+                    result = plr.Realm != AssaultingRealm;  // interact if not the assaulting realm
+                    break;
                 case StateFlags.Locked:
-                    return plr.Realm != OwningRealm;
+                    result = plr.Realm != OwningRealm;      // interact if not the owning realm
+                    break;
                 default:
-                    return false;
+                    result =false;
+                    break;
             }
+            BattlefrontLogger.Debug($"result={result}");
+
+            return result;
         }
 
         #endregion
