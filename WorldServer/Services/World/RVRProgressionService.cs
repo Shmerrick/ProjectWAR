@@ -13,6 +13,7 @@ namespace WorldServer.Services.World
     {
         public static List<RVRProgression> _RVRProgressions;
         public static List<RVRPairing> _RVRPairings;
+        public static List<CampaignObjectiveBuff> _CampaignObjectiveBuffs;
 
         [LoadingFunction(true)]
         public static void LoadRVRProgressions()
@@ -28,6 +29,14 @@ namespace WorldServer.Services.World
             Log.Debug("WorldMgr", "Loading RVR Pairings...");
             _RVRPairings = Database.SelectAllObjects<RVRPairing>() as List<RVRPairing>;
             Log.Success("RVRProgression", "Loaded " + _RVRProgressions.Count + " Pairings");
+        }
+
+        [LoadingFunction(true)]
+        public static void LoadCampaignObjectiveBuffs()
+        {
+            Log.Debug("WorldMgr", "Loading Campaign Objective Buffs...");
+            _CampaignObjectiveBuffs = Database.SelectAllObjects<CampaignObjectiveBuff>() as List<CampaignObjectiveBuff>;
+            Log.Success("RVRProgression", "Loaded " + _CampaignObjectiveBuffs.Count + " Campaign Objective Buffs");
         }
 
         public static void SaveRVRProgression(List<RVRProgression> rvrProg)
@@ -70,5 +79,8 @@ namespace WorldServer.Services.World
             var status = Database.SelectObject<BattleFrontKeepStatus>($"KeepId={keepId}");
             return status;
         }
+
+
+
     }
 }

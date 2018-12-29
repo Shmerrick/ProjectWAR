@@ -6,6 +6,7 @@ using GameData;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using SystemData;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Services.World;
@@ -79,6 +80,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private Realms AssaultingRealm { get; set; }
 
+        public int BuffId { get; set; }
+
         public RVRRewardManager RewardManager { get; set; }
 
         public PassiveStateMachine<CampaignObjectiveStateMachine.ProcessState, CampaignObjectiveStateMachine.Command> fsm { get; set; }
@@ -90,7 +93,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         // Positive between 0 and SECURE_PROGRESS_MAX indicating the objective securisation indicator, in seconds
         private int _secureProgress;
 
-        
+
 
         #region timers
         public int CaptureTimer;
@@ -167,6 +170,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _captureProgress = 20000;
             CaptureDuration = 10;
             EvtInterface.AddEvent(CheckTimers, 10000, 0);
+            BuffId = 0;
         }
 
         public override void OnLoad()
@@ -847,8 +851,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // state change and send state
             State = StateFlags.Unsecure;
             OwningRealm = Realms.REALMS_REALM_NEUTRAL;
+            // Make sure we remove the Buff Id.
+            BuffId = 0;
             BroadcastFlagInfo(true);
             SendState(GetPlayer(), false, true);
+
         }
 
         public void SetObjectiveLocked()
@@ -885,12 +892,22 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             BattlefrontLogger.Debug($"{Name} : Captured : {AssaultingRealm}  {OwningRealm}");
 
             OwningRealm = AssaultingRealm;
+
+            // Add buffs to Assaulting Realm
+            var campaignObjectiveBuff = RVRProgressionService._CampaignObjectiveBuffs.Single(x => x.ObjectiveId == Id);
+            if (campaignObjectiveBuff != null)
+            {
+                BuffId = campaignObjectiveBuff.BuffId;
+                BattlefrontLogger.Info($"Setting Campaign Objective Buff {campaignObjectiveBuff.BuffId} for Objective {Id}");
+            }
+
             State = StateFlags.Secure;
             SendState(CapturingPlayer, true, true);
             SpawnAllGuards(OwningRealm);
             BroadcastFlagInfo(true);
             GrantCaptureRewards(OwningRealm);
             GuardedTimer = TCPManager.GetTimeStamp() + GuardedTimerLength;
+
         }
 
         public void SetObjectiveGuarded()

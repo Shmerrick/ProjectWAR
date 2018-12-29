@@ -434,5 +434,9 @@ namespace WorldServer.Services.World
             }
             return boList;
         }
+
+        public static void SetCampaignBuff(int buffId, int battleFrontId)
+        {
+        }
     }
 }

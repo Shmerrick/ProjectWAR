@@ -145,6 +145,7 @@
     <Compile Include="Database\World\Battlefront\Keep_Creature.cs" />
     <Compile Include="Database\World\Battlefront\Keep_Door.cs" />
     <Compile Include="Database\World\Battlefront\Keep_Info.cs" />
+    <Compile Include="Database\World\Battlefront\CampaignObjectiveBuff.cs" />
     <Compile Include="Database\World\Battlefront\RVRPairing.cs" />
     <Compile Include="Database\World\Battlefront\PlayerContribution.cs" />
     <Compile Include="Database\World\Battlefront\BattleFrontKeepStatus.cs" />

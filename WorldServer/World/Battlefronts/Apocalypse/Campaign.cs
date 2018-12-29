@@ -135,6 +135,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(DestructionDominationCheck, 60000, 0);
             _EvtInterface.AddEvent(OrderDominationCheck, 60000, 0);
 
+            _EvtInterface.AddEvent(UpdateCampaignObjectiveBuffs, 10000, 0);
+
         }
 
         private void DestructionDominationCheck()
@@ -206,6 +208,67 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     _EvtInterface.RemoveEvent(OrderDominationZoneLock);
                     BattlefrontLogger.Info($"Order Domination Timer has stopped");
+                }
+            }
+        }
+
+        private void BuffAssigned(NewBuff buff)
+        {
+            var newBuff = buff;
+        }
+
+        public void UpdateCampaignObjectiveBuffs()
+        {
+            var status = BattleFrontManager.GetActiveCampaign().ActiveBattleFrontStatus;
+            lock (status)
+            {
+                BattlefrontLogger.Trace($"Updating Campaign Objective Buffs...");
+                if (status.RegionId == Region.RegionId)
+                {
+                    foreach (var objective in Objectives)
+                    {
+                        if (objective.BuffId != 0)
+                        {
+                            if (objective.ZoneId == status.ZoneId)
+                            {
+                                if (objective.OwningRealm != Realms.REALMS_REALM_NEUTRAL)
+                                {
+                                    var buffId = objective.BuffId;
+                                    BattlefrontLogger.Trace($"Applying BuffId {buffId} to players.");
+                                    var playersToApply = Player._Players.Where(x => !x.IsDisposed
+                                                                                          && x.IsInWorld()
+                                                                                          && x.CbtInterface.IsPvp
+                                                                                          && x.ScnInterface.Scenario == null
+                                                                                          && x.Region.RegionId == status.RegionId
+                                                                                          && x.ZoneId == status.ZoneId
+                                                                                          && x.Realm == objective.OwningRealm);
+
+                                    foreach (var player in playersToApply)
+                                    {
+                                        player.BuffInterface.QueueBuff(
+                                            new BuffQueueInfo(
+                                                player, player.Level, AbilityMgr.GetBuffInfo((ushort)buffId), BuffAssigned));
+                                    }
+
+                                    BattlefrontLogger.Trace($"Removing BuffId {buffId} from opposing players.");
+
+                                    var playersToRemove = Player._Players.Where(x => !x.IsDisposed
+                                                                                    && x.IsInWorld()
+                                                                                    && x.CbtInterface.IsPvp
+                                                                                    && x.ScnInterface.Scenario == null
+                                                                                    && x.Region.RegionId == status.RegionId
+                                                                                    && x.ZoneId == status.ZoneId
+                                                                                    && x.Realm != objective.OwningRealm);
+
+                                    foreach (var player in playersToRemove)
+                                    {
+                                        player.BuffInterface.RemoveBuffByEntry((ushort)buffId);
+                                    }
+
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
