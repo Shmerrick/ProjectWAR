@@ -537,10 +537,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Out.WriteUInt16(0);
             Out.WriteByte(0);
 
+            BattlefrontLogger.Trace($"{State} / {InteractableFor(plr)}");
             if (State != StateFlags.Locked && State != StateFlags.ZoneLocked && InteractableFor(plr))
+            {
+                BattlefrontLogger.Trace($"4");
                 Out.WriteUInt16(4);
+            }
             else
+            {
+                BattlefrontLogger.Trace($"0");
                 Out.WriteUInt16(0);
+            }
 
             Out.WriteByte(0);
 
