@@ -146,6 +146,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void DestructionDominationCheck()
         {
+            var status = BattleFrontManager.GetActiveCampaign().ActiveBattleFrontStatus;
+            // Only worry about the battlefrontstatus in this region.
+            if (status.RegionId != Region.RegionId)
+                return;
+
             BattlefrontLogger.Debug
             ($"Destruction Domination Count = " +
              $"{this.BattleFrontManager.GetActiveCampaign().VictoryPointProgress.GetDominationCount(Realms.REALMS_REALM_DESTRUCTION)}");
@@ -156,10 +161,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 if (!_EvtInterface.HasEvent(DestructionDominationZoneLockCheck))
                 {
-                    var status = BattleFrontManager.GetActiveCampaign().ActiveBattleFrontStatus;
-                    // Only worry about the battlefrontstatus in this region.
-                    if (status.RegionId != Region.RegionId)
-                        return;
+                    
                     lock (status)
                     {
                         var playersToNotify = Player._Players.Where(x => !x.IsDisposed
@@ -223,6 +225,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void OrderDominationCheck()
         {
+            var status = BattleFrontManager.GetActiveCampaign().ActiveBattleFrontStatus;
+            // Only worry about the battlefrontstatus in this region.
+            if (status.RegionId != Region.RegionId)
+                return;
+
             BattlefrontLogger.Debug
             ($"Order Domination Count = " +
              $"{this.BattleFrontManager.GetActiveCampaign().VictoryPointProgress.GetDominationCount(Realms.REALMS_REALM_ORDER)}");
@@ -231,11 +238,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (!_EvtInterface.HasEvent(OrderDominationZoneLockCheck))
                 {
-                    var status = BattleFrontManager.GetActiveCampaign().ActiveBattleFrontStatus;
-                    // Only worry about the battlefrontstatus in this region.
-                    if (status.RegionId != Region.RegionId)
-                        return;
-
                     lock (status)
                     {
                         var playersToNotify = Player._Players.Where(x => !x.IsDisposed
