@@ -173,19 +173,26 @@ namespace WorldServer
                 for (int i = 0; i < GroupsinCombat.Count; i++)
                 {
                     List<InstanceSpawn> sp = new List<InstanceSpawn>();
-                    _Spawns.TryGetValue(GroupsinCombat[i], out sp);
-                    ushort death = 0;
+                    bool valid = _Spawns.TryGetValue(GroupsinCombat[i], out sp);
+                    if (valid)
+                    {
+                        ushort death = 0;
 
-                    foreach (InstanceSpawn IS in sp)
-                    {
-                        if (IS.IsDead)
-                            death++;
+                        foreach (InstanceSpawn IS in sp)
+                        {
+                            if (IS.IsDead)
+                                death++;
+                        }
+                        if (death == sp.Count)
+                        {
+                            Respawns.Add(new Respawn(TCPManager.GetTimeStampMS() + (Info.TrashRespawnTimer * 1000), GroupsinCombat[i]));
+                            GroupsinCombat.Remove(GroupsinCombat[i]);
+                            i--;
+                        }
                     }
-                    if (death == sp.Count)
+                    else
                     {
-                        Respawns.Add(new Respawn(TCPManager.GetTimeStampMS() + (Info.TrashRespawnTimer * 1000), GroupsinCombat[i]));
-                        GroupsinCombat.Remove(GroupsinCombat[i]);
-                        i--;
+                        GroupsinCombat.RemoveAt(i);
                     }
                 }
             }
@@ -544,7 +551,10 @@ namespace WorldServer
             var spawns = _Spawns[bossId].ToList();
             if (spawns != null && spawns.Count > 0)
             {
-                spawns.ForEach(x => x.RemoveFromWorld());
+                spawns.ForEach(x =>
+                {
+                    x.RemoveFromWorld();
+                });
             }
         }
     }
