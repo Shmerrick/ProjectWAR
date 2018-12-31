@@ -914,7 +914,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             OwningRealm = AssaultingRealm;
 
             // Add buffs to Assaulting Realm
-            var campaignObjectiveBuff = RVRProgressionService._CampaignObjectiveBuffs.Single(x => x.ObjectiveId == Id);
+            var campaignObjectiveBuff = RVRProgressionService._CampaignObjectiveBuffs.SingleOrDefault(x => x.ObjectiveId == Id);
             if (campaignObjectiveBuff != null)
             {
                 BuffId = campaignObjectiveBuff.BuffId;
