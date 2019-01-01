@@ -1396,12 +1396,12 @@ namespace WorldServer
             if (!cmd.LastCommand.DamageInfo.WasLethalDamage)
                 return false;
 
-            CombatManager.HealTarget(cmd.DamageInfo.Clone(), level, _caster, _caster);
+            CombatManager.HealTarget(cmd.DamageInfo.Clone(), level, _caster, _caster,100);
 
             Unit oathFriend = ((Player)_caster).CrrInterface.GetTargetOfInterest();
 
             if (oathFriend != null)
-                CombatManager.HealTarget(cmd.DamageInfo, level, _caster, oathFriend);
+                CombatManager.HealTarget(cmd.DamageInfo, level, _caster, oathFriend,100);
 
             return true;
         }
