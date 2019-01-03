@@ -763,6 +763,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (State == StateFlags.ZoneLocked)
                 return;
 
+            var closePlayers = GetClosePlayers();
+
             var contributionDefinition = new ContributionDefinition();
             var activeBattleFrontStatus = BattleFront.GetActiveBattleFrontStatus();
 
@@ -770,7 +772,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             switch (State)
             {
                 case StateFlags.Contested: // small tick
-                    VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_CONTESTED);
+                    VP = RewardManager.RewardCaptureTick(closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_CONTESTED);
                     lock (_closePlayers)
                     {
                         foreach (var closePlayer in _closePlayers)
@@ -826,6 +828,29 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattleFront.VictoryPointProgress.DestructionVictoryPoints = 0;
 
             BattlefrontLogger.Trace($"{Name} Order VP:{BattleFront.VictoryPointProgress.OrderVictoryPoints} Dest VP:{BattleFront.VictoryPointProgress.DestructionVictoryPoints}");
+        }
+
+        private HashSet<Player> GetClosePlayers()
+        {
+            var closeHeight = 70 / 2 * UNITS_TO_FEET;
+            var closePlayers = new HashSet<Player>();
+
+            foreach (var player in PlayersInRange)
+            {
+                if (player.IsDead || player.StealthLevel != 0 || !player.CbtInterface.IsPvp || player.IsInvulnerable)
+                    continue;
+
+                var distance = GetDistanceToObject(player);
+                var heightDiff = Math.Abs(Z - player.Z);
+                if (distance < 200 && heightDiff < closeHeight)
+                {
+                    closePlayers.Add(player);
+                    SendMeTo(player);
+                }
+
+            }
+
+            return closePlayers;
         }
 
         #region Interaction
