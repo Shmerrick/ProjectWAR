@@ -51,7 +51,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private Zone_Area _area;
 
         /// <summary>Set of all players in close range, not limited</summary>
-        private ISet<Player> _closePlayers = new HashSet<Player>();
+        // private ISet<Player> _closePlayers = new HashSet<Player>();
 
         /// <summary>Displayed timer in seconds</summary>
         private int _displayedTimer;
@@ -773,9 +773,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 case StateFlags.Contested: // small tick
                     VP = RewardManager.RewardCaptureTick(closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_CONTESTED);
-                    lock (_closePlayers)
+                    lock (closePlayers)
                     {
-                        foreach (var closePlayer in _closePlayers)
+                        foreach (var closePlayer in closePlayers)
                         {
                             closePlayer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.BO_TAKE_SMALL_TICK);
                         }
@@ -783,13 +783,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     break;
 
                 case StateFlags.Secure: // big tick
-                    VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.BIG);
+                    VP = RewardManager.RewardCaptureTick(closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.BIG);
 
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
 
-                    lock (_closePlayers)
+                    lock (closePlayers)
                     {
-                        foreach (var closePlayer in _closePlayers)
+                        foreach (var closePlayer in closePlayers)
                         {
                             closePlayer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
 
@@ -802,10 +802,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     }
                     break;
                 case StateFlags.Locked: // small tick
-                    VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_LOCKED);
-                    lock (_closePlayers)
+                    VP = RewardManager.RewardCaptureTick(closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_LOCKED);
+                    lock (closePlayers)
                     {
-                        foreach (var closePlayer in _closePlayers)
+                        foreach (var closePlayer in closePlayers)
                         {
                             // ContributionManagerInstance holds the long term values of contribution for a player.
                             activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte)ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
