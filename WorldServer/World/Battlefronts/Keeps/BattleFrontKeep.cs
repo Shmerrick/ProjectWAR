@@ -238,8 +238,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             SendRegionMessage(Info.Name + "'s outer door has been destroyed!");
             _logger.Debug($"{Info.Name} : Outer door destroyed for realm {Realms.REALMS_REALM_DESTRUCTION}");
 
-            // TODO : What is this for?
-            //LastMessage = KeepMessage.Outer0;
             KeepRewardManager.OuterDoorReward(PlayersInRange, Info.Name, Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
             // Remove any placed rams. TODO - correct?
             foreach (var h in _hardpoints)

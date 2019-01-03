@@ -15,6 +15,12 @@ namespace WorldServer.World.Battlefronts.Keeps
     {
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
 
+        public const int OUTER_DOOR_RP = 200;
+        public const int OUTER_DOOR_XP = 1000;
+        public const int INNER_DOOR_RP = 400;
+        public const int INNER_DOOR_XP = 1500;
+
+
         public static void OuterDoorReward(List<Player> playersInRange, string description, ContributionManager contributionManagerInstance)
         {
             // Small reward for outer door destruction
@@ -23,11 +29,14 @@ namespace WorldServer.World.Battlefronts.Keeps
                 if (!player.Initialized)
                     continue;
 
+
+                RewardLogger.Trace($"Outer Door reward for player : {player.Name} ");
+
                 var rnd = new Random();
                 var random = rnd.Next(1, 25);
 
-                player.AddXp((uint)(1000 * (1 + random / 100)), false, false);
-                player.AddRenown((uint)(200 * (1 + random / 100)), false, RewardType.ObjectiveCapture, description);
+                player.AddXp((uint)(OUTER_DOOR_XP * (1 + random / 100)), false, false);
+                player.AddRenown((uint)(OUTER_DOOR_RP * (1 + random / 100)), false, RewardType.ObjectiveCapture, description);
 
                 // Add contribution
                 contributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
@@ -43,10 +52,13 @@ namespace WorldServer.World.Battlefronts.Keeps
             {
                 if (!player.Initialized)
                     continue;
+
+                RewardLogger.Trace($"Inner Door reward for player : {player.Name} ");
+
                 var rnd = new Random();
                 var random = rnd.Next(1, 25);
-                player.AddXp((uint)(1500 * (1 + random / 100)), false, false);
-                player.AddRenown((uint)(400 * (1 + random / 100)), false, RewardType.ObjectiveCapture, description);
+                player.AddXp((uint)(INNER_DOOR_XP * (1 + random / 100)), false, false);
+                player.AddRenown((uint)(INNER_DOOR_RP * (1 + random / 100)), false, RewardType.ObjectiveCapture, description);
 
                 // Add contribution
                 contributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_INNER_DOOR);
