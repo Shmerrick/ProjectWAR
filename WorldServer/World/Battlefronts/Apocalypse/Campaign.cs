@@ -758,6 +758,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 BattleFrontKeep keep = new BattleFrontKeep(info, (byte)Tier, Region, new KeepCommunications());
                 keep.Realm = (Realms)keep.Info.Realm;
+                
 
                 Keeps.Add(keep);
 

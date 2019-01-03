@@ -71,6 +71,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             Tier = tier;
             Region = region;
             KeepCommunications = comms;
+            this.Zone = region.GetZoneMgr(info.ZoneId);
 
             _hardpoints.Add(new Hardpoint(SiegeType.OIL, info.OilX, info.OilY, info.OilZ, info.OilO));
             if (info.OilOuterX > 0)
