@@ -48,7 +48,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             LastAAORallyCall = FrameWork.TCPManager.GetTimeStamp();
 
-            _EvtInterface.AddEvent(BroadcastPlayerMessages, 30000, 0);
+            _EvtInterface.AddEvent(BroadcastPlayerMessages, 600000, 0);
 
         }
 
@@ -77,7 +77,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         if (player.Realm == Realms.REALMS_REALM_ORDER)
                         {
                             // Only tell players that are valid in the tier
-                            if (player.ValidInTier(4, true))
+                            if (player.ValidInTier(BATTLEFRONT_TIER, true))
                             {
                                 player.SendMessage(
                                     $"Your realm is under serious attack. Proceed with all haste to {activeBattleFrontStatus.Description}.",
@@ -94,7 +94,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {
                         if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
                         {
-                            if (player.ValidInTier(4, true))
+                            if (player.ValidInTier(BATTLEFRONT_TIER, true))
                             {
                                 player.SendMessage(
                                     $"Your realm is under serious attack. Proceed with all haste to {activeBattleFrontStatus.Description}.",
@@ -249,7 +249,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             try
             {
                 var activeRegion = RegionMgrs.Single(x => x.RegionId == ActiveBattleFront.RegionId);
-                ProgressionLogger.Info($"Opening battlefront in {activeRegion.RegionName} Zone : {ActiveBattleFront.ZoneId} {ActiveBattleFrontName}");
+                ProgressionLogger.Info($"Opening Active battlefront in {activeRegion.RegionName} Zone : {ActiveBattleFront.ZoneId} {ActiveBattleFrontName}");
 
                 activeRegion.Campaign.VictoryPointProgress.Reset(activeRegion.Campaign);
                 ProgressionLogger.Info($"Resetting VP Progress {activeRegion.RegionName} BF Id : {ActiveBattleFront.BattleFrontId} Zone : {ActiveBattleFront.ZoneId} {ActiveBattleFrontName}");
@@ -308,7 +308,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     if (ActiveBattleFront.ZoneId == keep.ZoneId)
                     {
-                        ProgressionLogger.Debug($"Notifying Pairing (OpenBattleFront) unlocked Name : {keep.Info.Name} Zone : {keep.ZoneId} ");
+                        ProgressionLogger.Debug($"Informing Keep of Open battlefront Name : {keep.Info.Name} Zone : {keep.ZoneId} ");
                         keep.OpenBattleFront();
                     }
                 }
