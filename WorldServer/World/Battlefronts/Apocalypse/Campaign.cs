@@ -276,52 +276,57 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void UpdateCampaignObjectiveBuffs()
         {
-            var status = BattleFrontManager.GetActiveCampaign().ActiveBattleFrontStatus;
-            lock (status)
+            // There is a race condition here.
+            var activeCampaign = BattleFrontManager.GetActiveCampaign();
+            var status = activeCampaign?.ActiveBattleFrontStatus;
+            if (status != null)
             {
-                BattlefrontLogger.Trace($"Updating Campaign Objective Buffs...");
-                if (status.RegionId == Region.RegionId)
+                lock (status)
                 {
-                    foreach (var objective in Objectives)
+                    BattlefrontLogger.Trace($"Updating Campaign Objective Buffs...");
+                    if (status.RegionId == Region.RegionId)
                     {
-                        if (objective.BuffId != 0)
+                        foreach (var objective in Objectives)
                         {
-                            if (objective.ZoneId == status.ZoneId)
+                            if (objective.BuffId != 0)
                             {
-                                if (objective.OwningRealm != Realms.REALMS_REALM_NEUTRAL)
+                                if (objective.ZoneId == status.ZoneId)
                                 {
-                                    var buffId = objective.BuffId;
-                                    BattlefrontLogger.Trace($"Applying BuffId {buffId} to players.");
-                                    var playersToApply = Player._Players.Where(x => !x.IsDisposed
-                                                                                          && x.IsInWorld()
-                                                                                          && x.CbtInterface.IsPvp
-                                                                                          && x.ScnInterface.Scenario == null
-                                                                                          && x.Region.RegionId == status.RegionId
-                                                                                          && x.ZoneId == status.ZoneId
-                                                                                          && x.Realm == objective.OwningRealm);
-
-                                    foreach (var player in playersToApply)
+                                    if (objective.OwningRealm != Realms.REALMS_REALM_NEUTRAL)
                                     {
-                                        player.BuffInterface.QueueBuff(
-                                            new BuffQueueInfo(
-                                                player, player.Level, AbilityMgr.GetBuffInfo((ushort)buffId), BuffAssigned));
+                                        var buffId = objective.BuffId;
+                                        BattlefrontLogger.Trace($"Applying BuffId {buffId} to players.");
+                                        var playersToApply = Player._Players.Where(x => !x.IsDisposed
+                                                                                        && x.IsInWorld()
+                                                                                        && x.CbtInterface.IsPvp
+                                                                                        && x.ScnInterface.Scenario == null
+                                                                                        && x.Region.RegionId == status.RegionId
+                                                                                        && x.ZoneId == status.ZoneId
+                                                                                        && x.Realm == objective.OwningRealm);
+
+                                        foreach (var player in playersToApply)
+                                        {
+                                            player.BuffInterface.QueueBuff(
+                                                new BuffQueueInfo(
+                                                    player, player.Level, AbilityMgr.GetBuffInfo((ushort) buffId), BuffAssigned));
+                                        }
+
+                                        BattlefrontLogger.Trace($"Removing BuffId {buffId} from opposing players.");
+
+                                        var playersToRemove = Player._Players.Where(x => !x.IsDisposed
+                                                                                         && x.IsInWorld()
+                                                                                         && x.CbtInterface.IsPvp
+                                                                                         && x.ScnInterface.Scenario == null
+                                                                                         && x.Region.RegionId == status.RegionId
+                                                                                         && x.ZoneId == status.ZoneId
+                                                                                         && x.Realm != objective.OwningRealm);
+
+                                        foreach (var player in playersToRemove)
+                                        {
+                                            player.BuffInterface.RemoveBuffByEntry((ushort) buffId);
+                                        }
+
                                     }
-
-                                    BattlefrontLogger.Trace($"Removing BuffId {buffId} from opposing players.");
-
-                                    var playersToRemove = Player._Players.Where(x => !x.IsDisposed
-                                                                                    && x.IsInWorld()
-                                                                                    && x.CbtInterface.IsPvp
-                                                                                    && x.ScnInterface.Scenario == null
-                                                                                    && x.Region.RegionId == status.RegionId
-                                                                                    && x.ZoneId == status.ZoneId
-                                                                                    && x.Realm != objective.OwningRealm);
-
-                                    foreach (var player in playersToRemove)
-                                    {
-                                        player.BuffInterface.RemoveBuffByEntry((ushort)buffId);
-                                    }
-
                                 }
                             }
                         }

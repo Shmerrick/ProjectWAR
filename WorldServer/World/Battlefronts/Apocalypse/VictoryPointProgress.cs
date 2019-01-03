@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics.Tracing;
+using System.Linq;
 using GameData;
 using NLog;
 using WorldServer.Services.World;
@@ -274,7 +275,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             OrderVictoryPoints += NumberOrderPlayerKills * 2;
             DestructionVictoryPoints += NumberDestructionPlayerKills * 2;
 
-            _logger.Info($"VPP {OrderVictoryPoints}/{DestructionVictoryPoints}");
+            if ((OrderVictoryPoints == 0) && (DestructionVictoryPoints == 0))
+            {
+                _logger.Trace($"VPP {OrderVictoryPoints}/{DestructionVictoryPoints}");
+            }
+            else
+            {
+                _logger.Info($"VPP {OrderVictoryPoints}/{DestructionVictoryPoints}");
+            }
         }
 
 
