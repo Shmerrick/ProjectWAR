@@ -4172,14 +4172,11 @@ namespace WorldServer
                 totalInfluence = (uint)(100 * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
             }
 
-            //// 500% bonus for killing resource carrier
-            //if (HeldObject is ResourceBox)
-            //{
-            //    totalXP *= 5;
-            //    totalRenown *= 5;
-            //}
+            killer.AddXp(totalXP, 1, false, false);
+            killer.AddRenown(totalRenown, false, RewardType.Kill, $"Killing {this.Name}");
+            killer.AddInfluence(influenceId, (ushort)totalInfluence);
 
-            RewardLogger.Debug($"Total XP : {totalXP} RP : {totalRenown} INF : {totalInfluence}");
+            RewardLogger.Debug($"Total XP : {totalXP} RP : {totalRenown} INF : {totalInfluence} ==> {killer.Name}");
 
             #endregion
 

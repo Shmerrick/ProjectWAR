@@ -94,7 +94,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             ushort influenceId;
 
-            _logger.Trace($"Objective {objectiveName} has {playersWithinRange} players nearby");
+            _logger.Trace($"Objective {objectiveName} has {playersWithinRange} players (realm:{owningRealm}) nearby");
 
 			// Because of the Field of Glory buff, the XP value here is doubled.
 			// The base reward in T4 is therefore 3000 XP.
@@ -105,13 +105,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             foreach (var player in playersWithinRange)
             {
-                if (player.Realm != owningRealm || player.IsAFK || player.IsAutoAFK)
-                    continue;
+                // if the BO is Neutral, allow rewards. 
+                if (owningRealm != Realms.REALMS_REALM_NEUTRAL)
+                {
+                    if (player.Realm != owningRealm || player.IsAFK || player.IsAutoAFK)
+                        continue;
+                }
 
                 // Bad dirty hak by Hargrim to fix Area Influence bug
                 if (player.CurrentArea != null)
                 {
-                    if (owningRealm == Realms.REALMS_REALM_ORDER)
+                    if (player.Realm == Realms.REALMS_REALM_ORDER)
                         influenceId = (ushort) player.CurrentArea.OrderInfluenceId;
                     else
                         influenceId = (ushort) player.CurrentArea.DestroInfluenceId;

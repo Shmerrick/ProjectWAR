@@ -763,7 +763,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (State == StateFlags.ZoneLocked)
                 return;
 
-            var closePlayers = GetClosePlayers();
+            var closePlayers = GetClosePlayers(capturingRealm);
 
             var contributionDefinition = new ContributionDefinition();
             var activeBattleFrontStatus = BattleFront.GetActiveBattleFrontStatus();
@@ -830,12 +830,24 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             BattlefrontLogger.Trace($"{Name} Order VP:{BattleFront.VictoryPointProgress.OrderVictoryPoints} Dest VP:{BattleFront.VictoryPointProgress.DestructionVictoryPoints}");
         }
 
-        private HashSet<Player> GetClosePlayers()
+        /// <summary>
+        /// Get players that are close and members of a given realm.
+        /// </summary>
+        /// <param name="capturingRealm"></param>
+        /// <returns></returns>
+        private ISet<Player> GetClosePlayers(Realms capturingRealm)
+        {
+            var applicablePlayerList = PlayersInRange.Where(x => x.Realm == capturingRealm).ToList();
+            
+            return GetClosePlayers(applicablePlayerList);
+        }
+
+        private HashSet<Player> GetClosePlayers(List<Player> playerList)
         {
             var closeHeight = 70 / 2 * UNITS_TO_FEET;
             var closePlayers = new HashSet<Player>();
 
-            foreach (var player in PlayersInRange)
+            foreach (var player in playerList)
             {
                 if (player.IsDead || player.StealthLevel != 0 || !player.CbtInterface.IsPvp || player.IsInvulnerable)
                     continue;
@@ -847,9 +859,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     closePlayers.Add(player);
                     SendMeTo(player);
                 }
-
             }
-
             return closePlayers;
         }
 
@@ -929,7 +939,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             DespawnAllGuards();
             CaptureTimer = TCPManager.GetTimeStamp() + CaptureTimerLength;
             BroadcastFlagInfo(true);
-            GrantCaptureRewards(OwningRealm);
+            GrantCaptureRewards(AssaultingRealm);
         }
 
         public void SetObjectiveCaptured()
