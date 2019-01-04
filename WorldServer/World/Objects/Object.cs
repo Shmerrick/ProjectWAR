@@ -805,7 +805,6 @@ namespace WorldServer
 
             lock (ObjectsInRange)
             {
-                Log.Info($"AddInRange:ObjectsInRange", $"{obj.Name}");
                 ObjectsInRange.Add(obj);
             }
 
@@ -815,7 +814,6 @@ namespace WorldServer
             {
                 lock (PlayersInRange)
                 {
-                    Log.Info($"AddInRange", $"{obj.Name} ++ {plr.Name}");
                     PlayersInRange.Add(plr);
                 }
             }
@@ -846,7 +844,6 @@ namespace WorldServer
             {
                 lock (PlayersInRange)
                 {
-                    Log.Debug($"RemoveInRange", $"{obj.Name} -- {plr.Name}");
                     PlayersInRange.Remove(plr);
                 }
             }

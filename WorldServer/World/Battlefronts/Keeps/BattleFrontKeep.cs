@@ -126,8 +126,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public void CheckTimers()
         {
             var currentTime = TCPManager.GetTimeStamp();
-            _logger.Debug($"Defence Tick Timer checking... {DefenceTickTimer}");
-
+            
             if (OuterDownTimer > 0 && OuterDownTimer <= currentTime)
                 OnOuterDownTimerEnd();
             if (InnerDownTimer > 0 && InnerDownTimer <= currentTime)
