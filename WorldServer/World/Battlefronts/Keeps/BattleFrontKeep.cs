@@ -52,6 +52,9 @@ namespace WorldServer.World.BattleFronts.Keeps
         public Realms Realm;
         public RegionMgr Region;
 
+        public bool InnerPosternCanBeUsed { get; set; }
+        public bool OuterPosternCanBeUsed { get; set; }
+
         public IKeepCommunications KeepCommunications { get; private set; }
 
         public byte Tier;
@@ -91,6 +94,9 @@ namespace WorldServer.World.BattleFronts.Keeps
             PlayersInRangeOnTake = new HashSet<uint>();
 
             fsm = new SM(this).fsm;
+
+            InnerPosternCanBeUsed = false;
+            OuterPosternCanBeUsed = false;
         }
 
        
@@ -231,6 +237,9 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
             KeepCommunications.SendKeepStatus(null, this);
             KeepStatus = KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK;
+
+            InnerPosternCanBeUsed = true;
+
         }
 
         public void SetOuterDoorDown()
@@ -259,6 +268,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
             KeepStatus = KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK;
 
+            OuterPosternCanBeUsed = true;
         }
 
         public bool BothDoorsRepaired()
@@ -281,11 +291,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             Doors.Single(x => x.Info.Number == INNER_DOOR).Spawn();
             Doors.Single(x => x.Info.Number == INNER_DOOR).GameObject.MaxHealth = 100;
 
-
-
-            //var state = p.MoveNext(KeepStateMachine.Command.AllDoorsRepaired);
-            //ExecuteAction(state);
-
+            InnerPosternCanBeUsed = false;
         }
 
         public void SetOuterDoorRepaired()
@@ -293,10 +299,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             _logger.Debug($"Outer Door Repaired");
 
             Doors.Single(x => x.Info.Number == OUTER_DOOR).Spawn();
-
-            //var state = p.MoveNext(KeepStateMachine.Command.AllDoorsRepaired);
-            //ExecuteAction(state);
-
+            OuterPosternCanBeUsed = false;
         }
 
         /// <summary>
@@ -361,6 +364,8 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
 
+            InnerPosternCanBeUsed = false;
+            OuterPosternCanBeUsed = false;
 
         }
 
@@ -391,6 +396,9 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             KeepStatus = KeepStatus.KEEPSTATUS_LOCKED;
 
+            InnerPosternCanBeUsed = false;
+            OuterPosternCanBeUsed = false;
+
             // Remove any persisted values for this keep.
             RVRProgressionService.RemoveBattleFrontKeepStatus(Info.KeepId);
         }
@@ -408,14 +416,14 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public bool AttackerCanUsePostern(int posternNum)
         {
-            // Keeps rank 4 or 5 have unaccessible posterns for attackers, even after main gate falls
-            if (Rank > 3)
-                return false;
+            if (posternNum == (int) KeepDoorType.OuterPostern)
+                return OuterPosternCanBeUsed;
+            if (posternNum == (int)KeepDoorType.InnerPostern)
+                return InnerPosternCanBeUsed;
 
-            if (posternNum == (int)KeepDoorType.OuterPostern)
-                return LastMessage >= KeepMessage.Outer0 && Rank < 4;
-            return LastMessage >= KeepMessage.Inner0 && Rank < 3;
+            return false;
         }
+
 
         public void SendDiagnostic(Player plr)
         {
