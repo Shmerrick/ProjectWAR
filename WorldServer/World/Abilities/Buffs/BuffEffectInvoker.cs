@@ -4242,7 +4242,7 @@ namespace WorldServer
 
         #endregion
 
-        #region BO
+        #region BattlefieldObjective
         private static bool DaGreenest(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
         {
             cmd.CommandResult = damageInfo.DamageType == 0 ? (short)3242 : (short)(3238 + (int)damageInfo.DamageType);

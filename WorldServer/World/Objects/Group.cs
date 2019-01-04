@@ -1937,7 +1937,7 @@ namespace WorldServer
             }
         }
 
-        public void HandleKillRewards(Unit victim, Player killer, float bonusMod, uint xp, uint renown, ushort influenceId, ushort influence, float transferenceFactor, BO closestFlag)
+        public void HandleKillRewards(Unit victim, Player killer, float bonusMod, uint xp, uint renown, ushort influenceId, ushort influence, float transferenceFactor, BattlefieldObjective closestFlag)
         {
             List<Player> members = GetPlayersCloseTo(victim, MAX_SHARE_DIST);
 

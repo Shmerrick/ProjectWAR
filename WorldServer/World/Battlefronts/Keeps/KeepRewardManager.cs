@@ -38,7 +38,8 @@ namespace WorldServer.World.Battlefronts.Keeps
                 var random = rnd.Next(1, 25);
 
                 player.AddXp((uint)(OUTER_DOOR_XP * (1 + random / 100)), false, false);
-                player.AddRenown((uint)(OUTER_DOOR_RP * (1 + random / 100)), false, RewardType.ObjectiveCapture, description);
+                player.AddRenown((uint)(OUTER_DOOR_RP * (1 + random / 100)), false, RewardType.None, $"Destruction of {description}'s outer door");
+
 
                 // Add contribution
                 contributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
@@ -62,7 +63,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 var rnd = new Random();
                 var random = rnd.Next(1, 25);
                 player.AddXp((uint)(INNER_DOOR_XP * (1 + random / 100)), false, false);
-                player.AddRenown((uint)(INNER_DOOR_RP * (1 + random / 100)), false, RewardType.ObjectiveCapture, description);
+                player.AddRenown((uint)(INNER_DOOR_RP * (1 + random / 100)), false, RewardType.None, $"Destruction of {description}'s inner door");
 
                 // Add contribution
                 contributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_INNER_DOOR);
@@ -91,7 +92,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     }
 
                     plr.AddXp((uint)totalXp, false, false);
-                    plr.AddRenown((uint)totalRenown, false, RewardType.ObjectiveDefense, description);
+                    plr.AddRenown((uint)totalRenown, false, RewardType.None, $"Defence of {description} against the enemy");
                     plr.AddInfluence((ushort)influenceId, (ushort)totalInfluence);
 
                     plr.SendClientMessage($"You've received a reward for your contribution to the holding of {keep.Info.Name}.", ChatLogFilters.CHATLOGFILTERS_RVR);
@@ -160,7 +161,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                         player.SendClientMessage("This keep was taken with little to no resistance. The rewards have therefore been reduced.");
 
                     RewardLogger.Info($"Distributing rewards for Keep {keep.Info.Name} to {player.Name} RR:{totalRenown} INF:{totalInfluence}");
-                    RewardLogger.Info($"Distributing rewards for Keep {keep.Info.Name} to {player.Name} RR:{totalRenown} INF:{totalInfluence}");
+                    
                 }
 
                 keep.PlayersKilledInRange = 0;

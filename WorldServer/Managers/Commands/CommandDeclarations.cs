@@ -263,7 +263,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("appear",TeleportAppear, null, EGmLevel.GM, 1, "Teleports you to a player's location (string playerName)"),
             new GmCommandHandler("summon",TeleportSummon, null, EGmLevel.GM, 1, "Summons a player/group to your location (string playerName optional GROUP)"),
             new GmCommandHandler("set",TeleportSet, null, EGmLevel.GM, 5, "Sets offline/online players coordinates in database (player_name byte byte ZoneID , uint WorldX, uint WorldY, uint WorldZ)"),
-            new GmCommandHandler("objective",TeleportObjective, null, EGmLevel.GM, 1, "Teleport player to BO (ObjectiveId)"),
+            new GmCommandHandler("objective",TeleportObjective, null, EGmLevel.GM, 1, "Teleport player to BattlefieldObjective (ObjectiveId)"),
             
         };
 

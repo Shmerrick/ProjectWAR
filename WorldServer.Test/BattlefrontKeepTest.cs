@@ -13,8 +13,8 @@ namespace WorldServer.Test
     {
         public PassiveStateMachine<SM.ProcessState, SM.Command> fsm { get; set; }
 
-        public List<BO> Region1BOList { get; set; }
-        public List<BO> Region3BOList { get; set; }
+        public List<BattlefieldObjective> Region1BOList { get; set; }
+        public List<BattlefieldObjective> Region3BOList { get; set; }
         public List<RegionMgr> RegionMgrs { get; set; }
         public IKeepCommunications FakeKeepComms { get; set; }
         public IApocCommunications FakeApocComms { get; set; }

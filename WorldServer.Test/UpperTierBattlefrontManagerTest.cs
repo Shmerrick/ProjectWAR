@@ -18,13 +18,13 @@ namespace WorldServer.Test
         public List<RVRProgression> SampleProgressionList { get; set; }
         public RegionMgr Region1 { get; set; }
         public RegionMgr Region3 { get; set; }
-        public List<BO> PraagBOList { get; set; }
-        public List<BO> ChaosWastesBOList { get; set; }
-        public List<BO> ThunderMountainBOList { get; set; }
-        public List<BO> KadrinValleyBOList { get; set; }
+        public List<BattlefieldObjective> PraagBOList { get; set; }
+        public List<BattlefieldObjective> ChaosWastesBOList { get; set; }
+        public List<BattlefieldObjective> ThunderMountainBOList { get; set; }
+        public List<BattlefieldObjective> KadrinValleyBOList { get; set; }
 
-        public List<BO> Region1BOList { get; set; }
-        public List<BO> Region3BOList { get; set; }
+        public List<BattlefieldObjective> Region1BOList { get; set; }
+        public List<BattlefieldObjective> Region3BOList { get; set; }
         public List<RegionMgr> RegionMgrs { get; set; }
         public IApocCommunications FakeComms { get; set; }
 
@@ -35,13 +35,13 @@ namespace WorldServer.Test
             FakeComms = A.Fake<IApocCommunications>();
             RegionMgrs = new List<RegionMgr>();
 
-            PraagBOList = new List<BO>();
-            ChaosWastesBOList = new List<BO>();
-            ThunderMountainBOList = new List<BO>();
-            KadrinValleyBOList = new List<BO>();
+            PraagBOList = new List<BattlefieldObjective>();
+            ChaosWastesBOList = new List<BattlefieldObjective>();
+            ThunderMountainBOList = new List<BattlefieldObjective>();
+            KadrinValleyBOList = new List<BattlefieldObjective>();
 
-            Region1BOList = new List<BO>();
-            Region3BOList = new List<BO>();
+            Region1BOList = new List<BattlefieldObjective>();
+            Region3BOList = new List<BattlefieldObjective>();
 
 
             var R1ZoneList = new List<Zone_Info>();
@@ -60,25 +60,25 @@ namespace WorldServer.Test
             RegionMgrs.Add(Region3);
 
 
-            PraagBOList.Add(new BO(1, "BO1", 200, 1, 4));
-            PraagBOList.Add(new BO(2, "BO2", 200, 1, 4));
-            PraagBOList.Add(new BO(3, "BO3", 200, 1, 4));
-            PraagBOList.Add(new BO(4, "BO4", 200, 1, 4));
+            PraagBOList.Add(new BattlefieldObjective(1, "BO1", 200, 1, 4));
+            PraagBOList.Add(new BattlefieldObjective(2, "BO2", 200, 1, 4));
+            PraagBOList.Add(new BattlefieldObjective(3, "BO3", 200, 1, 4));
+            PraagBOList.Add(new BattlefieldObjective(4, "BO4", 200, 1, 4));
 
-            ChaosWastesBOList.Add(new BO(11, "BO1", 201, 1, 4));
-            ChaosWastesBOList.Add(new BO(12, "BO2", 201, 1, 4));
-            ChaosWastesBOList.Add(new BO(13, "BO3", 201, 1, 4));
-            ChaosWastesBOList.Add(new BO(14, "BO4", 201, 1, 4));
+            ChaosWastesBOList.Add(new BattlefieldObjective(11, "BO1", 201, 1, 4));
+            ChaosWastesBOList.Add(new BattlefieldObjective(12, "BO2", 201, 1, 4));
+            ChaosWastesBOList.Add(new BattlefieldObjective(13, "BO3", 201, 1, 4));
+            ChaosWastesBOList.Add(new BattlefieldObjective(14, "BO4", 201, 1, 4));
 
-            ThunderMountainBOList.Add(new BO(21, "BO1", 400, 3, 4));
-            ThunderMountainBOList.Add(new BO(22, "BO2", 400, 3, 4));
-            ThunderMountainBOList.Add(new BO(23, "BO3", 400, 3, 4));
-            ThunderMountainBOList.Add(new BO(24, "BO4", 400, 3, 4));
+            ThunderMountainBOList.Add(new BattlefieldObjective(21, "BO1", 400, 3, 4));
+            ThunderMountainBOList.Add(new BattlefieldObjective(22, "BO2", 400, 3, 4));
+            ThunderMountainBOList.Add(new BattlefieldObjective(23, "BO3", 400, 3, 4));
+            ThunderMountainBOList.Add(new BattlefieldObjective(24, "BO4", 400, 3, 4));
 
-            KadrinValleyBOList.Add(new BO(31, "BO1", 401, 3, 4));
-            KadrinValleyBOList.Add(new BO(32, "BO2", 401, 3, 4));
-            KadrinValleyBOList.Add(new BO(33, "BO3", 401, 3, 4));
-            KadrinValleyBOList.Add(new BO(34, "BO4", 401, 3, 4));
+            KadrinValleyBOList.Add(new BattlefieldObjective(31, "BO1", 401, 3, 4));
+            KadrinValleyBOList.Add(new BattlefieldObjective(32, "BO2", 401, 3, 4));
+            KadrinValleyBOList.Add(new BattlefieldObjective(33, "BO3", 401, 3, 4));
+            KadrinValleyBOList.Add(new BattlefieldObjective(34, "BO4", 401, 3, 4));
 
             Region1BOList.AddRange(PraagBOList);
             Region1BOList.AddRange(ChaosWastesBOList);

@@ -51,7 +51,7 @@ namespace WorldServer.Managers.Commands
                 if (doorRegen > 0)
                 {
                     WorldMgr.WorldSettingsMgr.SetDoorRegenValue(doorRegen);
-                    plr.SendClientMessage("Changed Door Regen to " + doorRegen + " which amounts to " + (float)doorRegen / 10000f * 100f + "% per 1 tick from BO.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
+                    plr.SendClientMessage("Changed Door Regen to " + doorRegen + " which amounts to " + (float)doorRegen / 10000f * 100f + "% per 1 tick from BattlefieldObjective.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
                 }
                 else
                     plr.SendClientMessage("Door Regen cannot be set to 0 or less.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
@@ -59,7 +59,7 @@ namespace WorldServer.Managers.Commands
             }
             else
             {
-                plr.SendClientMessage("Current Door Regen is equal to " + WorldMgr.WorldSettingsMgr.GetDoorRegenValue() + " which amounts to " + (float)WorldMgr.WorldSettingsMgr.GetDoorRegenValue() / 10000f * 100f + "% per 1 tick from BO.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
+                plr.SendClientMessage("Current Door Regen is equal to " + WorldMgr.WorldSettingsMgr.GetDoorRegenValue() + " which amounts to " + (float)WorldMgr.WorldSettingsMgr.GetDoorRegenValue() / 10000f * 100f + "% per 1 tick from BattlefieldObjective.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
             }
         }
 
@@ -89,7 +89,7 @@ namespace WorldServer.Managers.Commands
             }
         }
 
-        [CommandAttribute(EGmLevel.SourceDev, "Set amount of refreshed ammunition per 1 minute from 1 BO, provided value is divided by 10 to allow for fractures")]
+        [CommandAttribute(EGmLevel.SourceDev, "Set amount of refreshed ammunition per 1 minute from 1 BattlefieldObjective, provided value is divided by 10 to allow for fractures")]
         public static void AmmoRefresh(Player plr, string targetString = null)
         {
             int ammoRefreshRate;
@@ -137,11 +137,11 @@ namespace WorldServer.Managers.Commands
             if (targetString != null && Int32.TryParse(targetString, out boHold))
             {
                     WorldMgr.WorldSettingsMgr.SetGenericSetting(9, boHold);
-                    plr.SendClientMessage("Set minimum BO hold to " + boHold, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
+                    plr.SendClientMessage("Set minimum BattlefieldObjective hold to " + boHold, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
             }
             else
             {
-                plr.SendClientMessage("Minimum BO hold is equal to " + WorldMgr.WorldSettingsMgr.GetGenericSetting(9), ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
+                plr.SendClientMessage("Minimum BattlefieldObjective hold is equal to " + WorldMgr.WorldSettingsMgr.GetGenericSetting(9), ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
             }
         }
 
@@ -152,11 +152,11 @@ namespace WorldServer.Managers.Commands
             if (targetString != null && Int32.TryParse(targetString, out suppliesSwitch))
             {
                 WorldMgr.WorldSettingsMgr.SetGenericSetting(10, suppliesSwitch);
-                plr.SendClientMessage("Supplies from abandoned BO set to " + suppliesSwitch, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
+                plr.SendClientMessage("Supplies from abandoned BattlefieldObjective set to " + suppliesSwitch, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
             }
             else
             {
-                plr.SendClientMessage("Supplies from abandoned BO are set to " + WorldMgr.WorldSettingsMgr.GetGenericSetting(10), ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
+                plr.SendClientMessage("Supplies from abandoned BattlefieldObjective are set to " + WorldMgr.WorldSettingsMgr.GetGenericSetting(10), ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
             }
         }
 

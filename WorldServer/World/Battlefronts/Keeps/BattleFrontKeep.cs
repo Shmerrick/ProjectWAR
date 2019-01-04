@@ -34,11 +34,11 @@ namespace WorldServer.World.BattleFronts.Keeps
         public int DefenceTickTimer;
         public int BackToSafeTimer;
 
-        public const int OuterDownTimerLength = 3 * 60;
-        public const int InnerDownTimerLength = 3 * 60;
+        public const int OuterDownTimerLength = 1 * 60;
+        public const int InnerDownTimerLength = 1 * 60;
         public const int SeizedTimerLength = 1 * 60;
         public const int LordKilledTimerLength = 1 * 60;
-        public const int DefenceTickTimerLength = 5 * 60;
+        public const int DefenceTickTimerLength = 1 * 60;
         public const int BackToSafeTimerLength = 5 * 60;
         #endregion
 
@@ -126,6 +126,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public void CheckTimers()
         {
             var currentTime = TCPManager.GetTimeStamp();
+            _logger.Debug($"Defence Tick Timer checking... {DefenceTickTimer}");
 
             if (OuterDownTimer > 0 && OuterDownTimer <= currentTime)
                 OnOuterDownTimerEnd();
@@ -329,7 +330,9 @@ namespace WorldServer.World.BattleFronts.Keeps
                 if (keepDoor.GameObject.IsDead)
                     return false;
             }
-
+            // Start the defence tick timer once the outer door has been repaired.
+            DefenceTickTimer = TCPManager.GetTimeStamp() + DefenceTickTimerLength;
+            _logger.Debug($"Defence Tick Timer started {DefenceTickTimer}");
             return true;
         }
 
@@ -350,6 +353,8 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             Doors.Single(x => x.Info.Number == OUTER_DOOR).Spawn();
             OuterPosternCanBeUsed = false;
+
+
         }
 
         /// <summary>
@@ -358,14 +363,21 @@ namespace WorldServer.World.BattleFronts.Keeps
         public void SetDefenceTick()
         {
             ProgressionLogger.Info($"Defence Tick for {Info.Name}");
-            KeepRewardManager.DefenceTickReward(this, PlayersInRange, Info.Name, Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
-
-            // Send client message to players in range.
-            foreach (var player in PlayersInRange)
+            var lord = Creatures.SingleOrDefault(x => x.Info.KeepLord == true);
+            if (lord == null)
             {
-                SendKeepInfo(player);
+                _logger.Info($"Lord is NULL {Info.Name}");
+                return;
             }
 
+            KeepRewardManager.DefenceTickReward(this, lord.Creature.PlayersInRange, Info.Name, Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
+
+            foreach (var plr in lord.Creature.PlayersInRange)
+            {
+                SendKeepInfo(plr);
+            }
+           
+            ProgressionLogger.Info($"Resetting DefenceTickTimer {Info.Name}");
             DefenceTickTimer = 0;
         }
 
@@ -616,8 +628,10 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void OnDefenceTickTimerEnd()
         {
+            _logger.Debug($"End Defence Tick Timer {DefenceTickTimer}");
+
             DefenceTickTimer = 0;
-            fsm.Fire(SM.Command.OnDefenceTickTimerEnd);
+            SetDefenceTick();
         }
 
         public void OnBackToSafeTimerEnd()
@@ -712,8 +726,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             // Reset the defence tick timer
             if (DefenceTickTimer > 0)
             {
-                ProgressionLogger.Debug($"{Info.Name} : Defence Timer reset");
                 DefenceTickTimer = TCPManager.GetTimeStamp() + DefenceTickTimerLength;
+                ProgressionLogger.Debug($"{Info.Name} : Defence Timer {DefenceTickTimer}");
             }
 
             switch (number)
@@ -732,8 +746,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             // Reset the defence tick timer
             if (DefenceTickTimer > 0)
             {
-                ProgressionLogger.Debug($"{Info.Name} : Defence Timer reset");
                 DefenceTickTimer = TCPManager.GetTimeStamp() + DefenceTickTimerLength;
+                ProgressionLogger.Debug($"{Info.Name} : Defence Timer {DefenceTickTimer}");
             }
 
             ProgressionLogger.Debug($"{Info.Name} : Keep NPC Attacked");

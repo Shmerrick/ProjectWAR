@@ -117,7 +117,7 @@ namespace WorldServer
         }
 
         /// <summary>
-        /// This is how much % one door regenerates per 1 controled BO
+        /// This is how much % one door regenerates per 1 controled BattlefieldObjective
         /// </summary>
         /// <returns></returns>
         public int GetDoorRegenValue()

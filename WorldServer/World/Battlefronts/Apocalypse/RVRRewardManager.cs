@@ -61,7 +61,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
 		/// <summary>
-		/// Return an additional scale value based upon who is holding a BO and how many players from either side are near.
+		/// Return an additional scale value based upon who is holding a BattlefieldObjective and how many players from either side are near.
 		/// </summary>
 		/// <param name="owningRealm"></param>
 		/// <param name="nearOrderCount"></param>
@@ -105,7 +105,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             foreach (var player in playersWithinRange)
             {
-                // if the BO is Neutral, allow rewards. 
+                // if the BattlefieldObjective is Neutral, allow rewards. 
                 if (owningRealm != Realms.REALMS_REALM_NEUTRAL)
                 {
                     if (player.Realm != owningRealm || player.IsAFK || player.IsAutoAFK)

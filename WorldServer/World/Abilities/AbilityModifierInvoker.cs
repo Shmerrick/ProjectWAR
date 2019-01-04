@@ -545,7 +545,7 @@ namespace WorldServer
                 player.SendClientMessage("Cannot deploy siege at ruined keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
                 return false;
             }*/
-
+            
                 if (player.CurrentKeep == null)
                 {
                     player.SendClientMessage("Must deploy siege at friendly keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);

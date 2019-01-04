@@ -14,7 +14,7 @@ using WorldServer.World.BattleFronts.Objectives;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
-    public class BO : Object
+    public class BattlefieldObjective : Object
     {
         public const int TRANSITION_SPEED = 9;
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
@@ -106,7 +106,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         /// Constructor to assist in isolation testing.
         /// </summary>
-        public BO()
+        public BattlefieldObjective()
         {
             CommsEngine = new ApocCommunications();
             RewardManager = new RVRRewardManager();
@@ -120,7 +120,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="zoneId"></param>
         /// <param name="regionId"></param>
         /// <param name="tier"></param>
-        public BO(int id, string name, int zoneId, int regionId, int tier)
+        public BattlefieldObjective(int id, string name, int zoneId, int regionId, int tier)
         {
             Id = id;
             Name = name;
@@ -135,7 +135,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         /// <param name="objective"></param>
         /// <param name="tier"></param>
-        public BO(RegionMgr region, BattleFront_Objective objective)
+        public BattlefieldObjective(RegionMgr region, BattleFront_Objective objective)
         {
             Id = objective.Entry;
             Name = objective.Name;
@@ -316,7 +316,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
 
             fsm.Initialize(CampaignObjectiveStateMachine.ProcessState.Neutral);
-            BattlefrontLogger.Debug($"Starting BO {Name} FSM...");
+            BattlefrontLogger.Debug($"Starting BattlefieldObjective {Name} FSM...");
             fsm.Fire(CampaignObjectiveStateMachine.Command.OnOpenBattleFront);
             fsm.Start();
 
@@ -702,13 +702,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 if (plr != null)
                 {
                     plr.SendPacket(Out);
-                    BattlefrontLogger.Debug("Sending State to Player", "Player: " + plr.Name + ", BO: " + Name);
+                    BattlefrontLogger.Debug("Sending State to Player", "Player: " + plr.Name + ", BattlefieldObjective: " + Name);
                 }
                 else
                     foreach (var player in Region.Players)
                     {
                         player.SendPacket(Out); // Objective's state
-                        BattlefrontLogger.Debug("Sending State to Player", "Player: " + player.Name + ", BO: " + Name);
+                        BattlefrontLogger.Debug("Sending State to Player", "Player: " + player.Name + ", BattlefieldObjective: " + Name);
 
                         if (string.IsNullOrEmpty(message) || !player.CbtInterface.IsPvp)
                             continue;
@@ -716,7 +716,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         // Notify RvR flagged players of activity
                         player.SendLocalizeString(message, ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
                         player.SendLocalizeString(message, largeFilter, Localized_text.CHAT_TAG_DEFAULT);
-                        BattlefrontLogger.Debug("Sending Activity to RVR-Player", "Player: " + player.Name + ", BO: " + Name + "Message: " + message);
+                        BattlefrontLogger.Debug("Sending Activity to RVR-Player", "Player: " + player.Name + ", BattlefieldObjective: " + Name + "Message: " + message);
                         if (snd != null)
                             player.SendPacket(snd);
                     }
@@ -801,7 +801,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         }
                     }
                     break;
-                case StateFlags.Locked: // small tick
+                case StateFlags.Locked: // unlock tick
                     VP = RewardManager.RewardCaptureTick(closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_LOCKED);
                     lock (closePlayers)
                     {
@@ -972,6 +972,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             State = StateFlags.Locked;
             BroadcastFlagInfo(true);
             SendState(GetPlayer(), true, true);
+            GrantCaptureRewards(OwningRealm);
         }
     }
 }

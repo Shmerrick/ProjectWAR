@@ -279,7 +279,7 @@
     <Compile Include="World\AI\SimpleLVHealerBrain.cs" />
     <Compile Include="World\Auction\AuctionHouse.cs" />
     <Compile Include="World\Battlefronts\AAOTracker.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\BO.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\BattlefieldObjective.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\KeepStateMachine.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\CampaignObjectiveStateMachine.cs" />
     <Compile Include="World\Battlefronts\Bounty\BountyException.cs" />

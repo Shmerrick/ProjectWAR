@@ -50,7 +50,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         protected readonly EventInterface _EvtInterface = new EventInterface();
 
         public HashSet<Player> PlayersInLakeSet;
-        public List<BO> Objectives;
+        public List<BattlefieldObjective> Objectives;
 
         public ConcurrentDictionary<int, int> OrderPlayerPopulationList = new ConcurrentDictionary<int, int>();
         public ConcurrentDictionary<int, int> DestructionPlayerPopulationList = new ConcurrentDictionary<int, int>();
@@ -99,7 +99,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="objectives"></param>
         /// <param name="players"></param>
         public Campaign(RegionMgr regionMgr,
-            List<BO> objectives,
+            List<BattlefieldObjective> objectives,
             HashSet<Player> players,
             IBattleFrontManager bfm,
             IApocCommunications communicationsEngine)
@@ -807,7 +807,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             foreach (BattleFront_Objective obj in objectives)
             {
-                BO flag = new BO(Region, obj);
+                BattlefieldObjective flag = new BattlefieldObjective(Region, obj);
                 Objectives.Add(flag);
                 Region.AddObject(flag, obj.ZoneId);
                 flag.BattleFront = this;
@@ -1744,13 +1744,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public BO GetClosestFlag(Point3D destPos, bool inPlay = false)
+        public BattlefieldObjective GetClosestFlag(Point3D destPos, bool inPlay = false)
         {
             BattlefrontLogger.Trace(".");
-            BO bestFlag = null;
+            BattlefieldObjective bestFlag = null;
             ulong bestDist = 0;
 
-            foreach (BO flag in Objectives)
+            foreach (BattlefieldObjective flag in Objectives)
             {
                 ulong curDist = flag.GetDistanceSquare(destPos);
 

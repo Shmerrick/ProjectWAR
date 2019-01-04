@@ -94,21 +94,26 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 .On(Command.OnLordKilled).Goto(ProcessState.LordKilled).Execute(() => Keep.SetLordKilled());
             fsm.In(ProcessState.OuterDown)
                 .On(Command.OnLordKilled).Goto(ProcessState.LordKilled).Execute(() => Keep.SetLordKilled());
-
             fsm.In(ProcessState.LordWounded)
                 .On(Command.OnLordKilled).Goto(ProcessState.LordKilled).Execute(() => Keep.SetLordKilled());
+            // Allow for keep to be safe (doors repaired) and lord still to be killed.
+            fsm.In(ProcessState.Safe)
+                .On(Command.OnLordKilled).Goto(ProcessState.LordKilled).Execute(() => Keep.SetLordKilled());
+
             fsm.In(ProcessState.LordKilled)
                 .On(Command.OnLordKilledTimerEnd).Goto(ProcessState.Seized).Execute(() => Keep.SetKeepSeized());
             fsm.In(ProcessState.Seized)
                 .On(Command.OnSeizedTimerEnd).Goto(ProcessState.Safe).Execute(() => Keep.SetKeepSafe());
+
             /* Defence tick events */
-            fsm.In(ProcessState.OuterDown)
-                .On(Command.OnDefenceTickTimerEnd).Goto(ProcessState.DefenceTick).Execute(() => Keep.SetDefenceTick());
-            fsm.In(ProcessState.InnerDown)
-                .On(Command.OnDefenceTickTimerEnd).Goto(ProcessState.DefenceTick).Execute(() => Keep.SetDefenceTick());
+            //fsm.In(ProcessState.OuterDown)
+            //    .On(Command.OnDefenceTickTimerEnd).Goto(ProcessState.DefenceTick).Execute(() => Keep.SetDefenceTick());
+            //fsm.In(ProcessState.InnerDown)
+            //    .On(Command.OnDefenceTickTimerEnd).Goto(ProcessState.DefenceTick).Execute(() => Keep.SetDefenceTick());
             fsm.In(ProcessState.DefenceTick)
                 .On(Command.OnBackToSafeTimerEnd).Goto(ProcessState.Safe).Execute(() => Keep.SetKeepSafe());
-            /* OnOuterDown events */
+
+            /* Door repair events */
             fsm.In(ProcessState.OuterDown)
                 .On(Command.OnOuterDownTimerEnd)
                 .If(Keep.BothDoorsRepaired)
@@ -128,7 +133,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 .Execute(() => Keep.SetOuterDoorRepaired())
                 .Execute(() => Keep.SetKeepSafe());
 
-            /* OnInnerDownTimerEnd events */
+            /* Door repair events */
             fsm.In(ProcessState.OuterDown)
                 .On(Command.OnInnerDownTimerEnd)
                 .If(Keep.BothDoorsRepaired)

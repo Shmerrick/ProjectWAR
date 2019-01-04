@@ -1115,7 +1115,7 @@ namespace WorldServer
 
             ScnInterface.Scenario?.EnqueueScenarioAction(new ScenarioQueueAction(EScenarioQueueAction.RemovePlayer, this));
 
-            // Reset to nearest spawn point if logging while dead or too close to BO/Keep
+            // Reset to nearest spawn point if logging while dead or too close to BattlefieldObjective/Keep
             if (CurrentArea != null && Zone != null && ScnInterface.Scenario == null)
             {
                 if (CurrentArea.IsRvR)
@@ -1796,7 +1796,7 @@ namespace WorldServer
                 Out.WriteUInt32(0);
 
             Out.WriteByte(1); // type of xp
-            Out.WritePascalString(""); // optional, sent only with BO capture
+            Out.WritePascalString(""); // optional, sent only with BattlefieldObjective capture
             Out.WriteByte(0);
             Out.WriteByte(0);
             SendPacket(Out);
@@ -4138,7 +4138,7 @@ namespace WorldServer
             // Factor of kill rewards to transfer to objective
             float transferenceFactor = 2.5f - bonusMod;
 
-            BO closestFlag = null;
+            BattlefieldObjective closestFlag = null;
 
 
 
@@ -4559,7 +4559,7 @@ namespace WorldServer
         public BattleFrontKeep CurrentKeep { get; set; }
         public Creature CurrentSiege { get; set; }
         public RvRStructure Palisade { get; set; }
-        public BO CurrentObjectiveFlag { get; set; }
+        public BattlefieldObjective CurrentObjectiveFlag { get; set; }
 
         #endregion
 

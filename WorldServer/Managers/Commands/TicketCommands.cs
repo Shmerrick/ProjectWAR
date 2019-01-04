@@ -66,7 +66,7 @@ namespace WorldServer.Managers.Commands
                  *      0               7               PQ Issue
                  *      0               8               SC Issue
                  *      0               10              Monster Issue
-                 *      0               9               BO and Keep Issue
+                 *      0               9               BattlefieldObjective and Keep Issue
                  *      0               11              Quest and Quest Item Issue
                  *      0               12              Combat Issue
                  *      0               13              TOK Issue

@@ -1031,7 +1031,7 @@ namespace WorldServer.Scenarios
             plr.ScnInterface.Scenario = this;
             plr.ScnInterface.ClearPendingScenario();
 
-            // Reset to nearest spawn point if taking SC in ORvR area while in presence of BO or keep
+            // Reset to nearest spawn point if taking SC in ORvR area while in presence of BattlefieldObjective or keep
             if (plr.CurrentArea != null && plr.CurrentArea.IsRvR && plr.Zone != null && (plr.CurrentKeep != null || plr.CurrentObjectiveFlag != null))
             {
                 Zone_Respawn warcampRespawn = WorldMgr.GetZoneRespawn(plr.Zone.ZoneId, (byte)plr.Realm, plr);

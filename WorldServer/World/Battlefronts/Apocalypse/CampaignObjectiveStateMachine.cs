@@ -28,12 +28,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
 
-        public BO Objective { get; set; }
+        public BattlefieldObjective Objective { get; set; }
         public PassiveStateMachine<Apocalypse.CampaignObjectiveStateMachine.ProcessState, Apocalypse.CampaignObjectiveStateMachine.Command> fsm { get; set; }
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public CampaignObjectiveStateMachine(BO objective)
+        public CampaignObjectiveStateMachine(BattlefieldObjective objective)
         {
             Objective = objective;
             fsm = new PassiveStateMachine<ProcessState, Command>();

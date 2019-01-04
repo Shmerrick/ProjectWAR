@@ -450,7 +450,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW_UNDER_AAO);
             }
 
-            // If the deathblow comes while the target is near a BO
+            // If the deathblow comes while the target is near a BattlefieldObjective
             if (killer.CurrentObjectiveFlag != null)
             {
                 killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PLAYER_KILL_ON_BO);
@@ -501,7 +501,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PLAYER_KILL_ASSIST_UNDER_AAO);
             }
 
-            // If the deathblow comes while the target is near a BO
+            // If the deathblow comes while the target is near a BattlefieldObjective
             if (killer.CurrentObjectiveFlag != null)
             {
                 killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PLAYER_KILL_ASSIST_ON_BO);

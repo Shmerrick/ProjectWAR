@@ -45,7 +45,7 @@ namespace WorldServer.Scenarios.Objects
         public GuardCreature Creature;
 		int team;
 
-        public FlagGuard(BO flag, RegionMgr Region, ushort ZoneId, uint OrderId, uint DestroId, int x, int y, int z, int o)
+        public FlagGuard(BattlefieldObjective flag, RegionMgr Region, ushort ZoneId, uint OrderId, uint DestroId, int x, int y, int z, int o)
         {
             this.Region = Region;
             this.ZoneId = ZoneId;

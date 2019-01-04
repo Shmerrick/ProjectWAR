@@ -40,7 +40,7 @@ namespace WorldServer.Test
                 new ContributionDefinition
                 {
                     ContributionId = 2,
-                    ContributionDescription = "BO Capture",
+                    ContributionDescription = "BattlefieldObjective Capture",
                     ContributionValue = 3,
                     MaxContributionCount = 4
                 }
