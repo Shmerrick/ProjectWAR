@@ -2944,6 +2944,11 @@ namespace WorldServer
                 SendLevelUp(values);
                 SendXp();
             }
+
+            // Reset the bounty score for the player upon gaining an XP Level
+            BountyManagerInstance?.ResetCharacterBounty(this.CharacterId, this);
+
+
             //Check area for bolster
             CheckArea();
 
@@ -3047,6 +3052,9 @@ namespace WorldServer
 
             AbtInterface.OnPlayerLeveled((byte)(Level - 1), Level);
 
+            // Reset the bounty score for the player upon gaining an XP Level
+            BountyManagerInstance?.ResetCharacterBounty(this.CharacterId, this);
+
             RemoveBolster();
             TryBolster(0, CurrentArea);
 
@@ -3095,6 +3103,9 @@ namespace WorldServer
             _Value.RenownRank = level;
             //_Value.Renown = 0;
 
+            // Reset the bounty score for the player upon gaining an XP Level
+            BountyManagerInstance?.ResetCharacterBounty(this.CharacterId, this);
+            
             if (level % 10 == 0)
                 DispatchUpdateState(8, _Value.RenownRank); // Update renown title.
 
@@ -3317,6 +3328,8 @@ namespace WorldServer
             SetRenownLevel((byte)(_Value.RenownRank + 1));
             AddRenown(Rest);
              */
+             // Reset the bounty score for the player upon gaining an RR
+            BountyManagerInstance?.ResetCharacterBounty(this.CharacterId, this);
         }
 
         public void AddPendingRenown(uint addAmount)
@@ -4159,14 +4172,11 @@ namespace WorldServer
                 totalInfluence = (uint)(100 * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
             }
 
-            //// 500% bonus for killing resource carrier
-            //if (HeldObject is ResourceBox)
-            //{
-            //    totalXP *= 5;
-            //    totalRenown *= 5;
-            //}
+            killer.AddXp(totalXP, 1, false, false);
+            killer.AddRenown(totalRenown, false, RewardType.Kill, $"Killing {this.Name}");
+            killer.AddInfluence(influenceId, (ushort)totalInfluence);
 
-            RewardLogger.Debug($"Total XP : {totalXP} RP : {totalRenown} INF : {totalInfluence}");
+            RewardLogger.Debug($"Total XP : {totalXP} RP : {totalRenown} INF : {totalInfluence} ==> {killer.Name}");
 
             #endregion
 

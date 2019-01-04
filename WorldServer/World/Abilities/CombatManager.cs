@@ -964,7 +964,7 @@ namespace WorldServer
 
         private const float OFFHAND_DAMAGE_PEN = 0.9f;
         private const float OFFHAND_STAT_COEFF = 0.05f;
-        private const int HEAL_CONTRIBUTION_CHANCE = 5;
+        private const int HEAL_CONTRIBUTION_CHANCE = 8;
 
         public static void InflictDamage(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target)
         {

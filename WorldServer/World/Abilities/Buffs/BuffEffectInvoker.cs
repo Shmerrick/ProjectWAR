@@ -19,6 +19,7 @@ namespace WorldServer
     public static class BuffEffectInvoker
     {
         const byte MAX_AOE_TARGETS = 9;
+        private const int HOLD_THE_LINE_CONTRIBUTION_CHANCE = 8;
 
         private const byte BUFF_START = 1;
         private const byte BUFF_TICK = 2;
@@ -2689,8 +2690,10 @@ namespace WorldServer
                     hostBuff.AddBuffParameter(1, hostBuff.Caster == hostBuff.Target ? 45 : 15);
 
                     // Give contribution for HTL.
-                    (hostBuff.Caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.HOLD_THE_LINE);
-
+                    if (StaticRandom.Instance.Next(100) < HOLD_THE_LINE_CONTRIBUTION_CHANCE)
+                    {
+                        (hostBuff.Caster as Player)?.UpdatePlayerBountyEvent((byte) ContributionDefinitions.HOLD_THE_LINE);
+                    }
                     break;
                 case BUFF_END:
                 case BUFF_REMOVE:

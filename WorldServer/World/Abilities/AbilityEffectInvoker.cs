@@ -22,6 +22,8 @@ namespace WorldServer
     public class AbilityEffectInvoker
     {
         const int MAX_AOE_TARGETS = 9;
+        private const int TANK_GUARD_CONTRIBUTION_CHANCE = 8;
+
 
         private readonly Unit _caster;
         private Unit _instigator, _target;
@@ -835,7 +837,7 @@ namespace WorldServer
             target.ApplyKnockback(_caster, AbilityMgr.GetKnockbackInfo(cmd.Entry, cmd.PrimaryValue));
 
             // Give contribution for punt.
-            (_caster as Player)?.UpdatePlayerBountyEvent((byte) ContributionDefinitions.PUNT_ENEMY);
+            (_caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PUNT_ENEMY);
 
             return true;
         }
@@ -1079,7 +1081,11 @@ namespace WorldServer
             LinkedBuffInteraction lbi = new LinkedBuffInteraction((ushort)cmd.PrimaryValue, _caster, target, BuffEffectInvoker.CreateGuardBuff);
             lbi.Initialize();
             // Give contribution for guarding.
-            (_caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.TANK_GUARD);
+
+            if (StaticRandom.Instance.Next(100) < TANK_GUARD_CONTRIBUTION_CHANCE)
+            {
+                (_caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.TANK_GUARD);
+            }
             return true;
         }
 

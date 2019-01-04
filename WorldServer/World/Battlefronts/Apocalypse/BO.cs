@@ -51,7 +51,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private Zone_Area _area;
 
         /// <summary>Set of all players in close range, not limited</summary>
-        private ISet<Player> _closePlayers = new HashSet<Player>();
+        // private ISet<Player> _closePlayers = new HashSet<Player>();
 
         /// <summary>Displayed timer in seconds</summary>
         private int _displayedTimer;
@@ -763,7 +763,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (State == StateFlags.ZoneLocked)
                 return;
 
-            var closePlayers = GetClosePlayers();
+            var closePlayers = GetClosePlayers(capturingRealm);
 
             var contributionDefinition = new ContributionDefinition();
             var activeBattleFrontStatus = BattleFront.GetActiveBattleFrontStatus();
@@ -773,9 +773,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 case StateFlags.Contested: // small tick
                     VP = RewardManager.RewardCaptureTick(closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_CONTESTED);
-                    lock (_closePlayers)
+                    lock (closePlayers)
                     {
-                        foreach (var closePlayer in _closePlayers)
+                        foreach (var closePlayer in closePlayers)
                         {
                             closePlayer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.BO_TAKE_SMALL_TICK);
                         }
@@ -783,13 +783,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     break;
 
                 case StateFlags.Secure: // big tick
-                    VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.BIG);
+                    VP = RewardManager.RewardCaptureTick(closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.BIG);
 
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
 
-                    lock (_closePlayers)
+                    lock (closePlayers)
                     {
-                        foreach (var closePlayer in _closePlayers)
+                        foreach (var closePlayer in closePlayers)
                         {
                             closePlayer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
 
@@ -802,10 +802,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     }
                     break;
                 case StateFlags.Locked: // small tick
-                    VP = RewardManager.RewardCaptureTick(_closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_LOCKED);
-                    lock (_closePlayers)
+                    VP = RewardManager.RewardCaptureTick(closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_LOCKED);
+                    lock (closePlayers)
                     {
-                        foreach (var closePlayer in _closePlayers)
+                        foreach (var closePlayer in closePlayers)
                         {
                             // ContributionManagerInstance holds the long term values of contribution for a player.
                             activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte)ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
@@ -830,12 +830,24 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             BattlefrontLogger.Trace($"{Name} Order VP:{BattleFront.VictoryPointProgress.OrderVictoryPoints} Dest VP:{BattleFront.VictoryPointProgress.DestructionVictoryPoints}");
         }
 
-        private HashSet<Player> GetClosePlayers()
+        /// <summary>
+        /// Get players that are close and members of a given realm.
+        /// </summary>
+        /// <param name="capturingRealm"></param>
+        /// <returns></returns>
+        private ISet<Player> GetClosePlayers(Realms capturingRealm)
+        {
+            var applicablePlayerList = PlayersInRange.Where(x => x.Realm == capturingRealm).ToList();
+            
+            return GetClosePlayers(applicablePlayerList);
+        }
+
+        private HashSet<Player> GetClosePlayers(List<Player> playerList)
         {
             var closeHeight = 70 / 2 * UNITS_TO_FEET;
             var closePlayers = new HashSet<Player>();
 
-            foreach (var player in PlayersInRange)
+            foreach (var player in playerList)
             {
                 if (player.IsDead || player.StealthLevel != 0 || !player.CbtInterface.IsPvp || player.IsInvulnerable)
                     continue;
@@ -847,9 +859,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     closePlayers.Add(player);
                     SendMeTo(player);
                 }
-
             }
-
             return closePlayers;
         }
 
@@ -919,7 +929,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void SetObjectiveCapturing()
         {
-            BattlefrontLogger.Debug($"{Name} : Capturing : {AssaultingRealm} {OwningRealm}");
+            BattlefrontLogger.Debug($"{Name} : Capturing : {OwningRealm} => {AssaultingRealm}");
             if (CapturingPlayer != null)
             {
                 AssaultingRealm = CapturingPlayer.Realm;
@@ -929,12 +939,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             DespawnAllGuards();
             CaptureTimer = TCPManager.GetTimeStamp() + CaptureTimerLength;
             BroadcastFlagInfo(true);
-            GrantCaptureRewards(OwningRealm);
+            GrantCaptureRewards(AssaultingRealm);
         }
 
         public void SetObjectiveCaptured()
         {
-            BattlefrontLogger.Debug($"{Name} : Captured : {AssaultingRealm}  {OwningRealm}");
+            BattlefrontLogger.Debug($"{Name} : Captured : {OwningRealm} => {AssaultingRealm} ");
 
             OwningRealm = AssaultingRealm;
 
