@@ -1,6 +1,5 @@
-﻿using Appccelerate.StateMachine;
+﻿ using Appccelerate.StateMachine;
 using Common;
-using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
 using NLog;
@@ -15,7 +14,7 @@ using CreatureSubTypes = GameData.CreatureSubTypes;
 
 namespace WorldServer.World.BattleFronts.Keeps
 {
-    public class BattleFrontKeep : BattleFrontObjective
+    public class BattleFrontKeep : Object
     {
         public const byte INNER_DOOR = 1;
         public const byte OUTER_DOOR = 2;
@@ -36,9 +35,9 @@ namespace WorldServer.World.BattleFronts.Keeps
         public int BackToSafeTimer;
 
         public const int OuterDownTimerLength = 3 * 60;
-        public const int InnerDownTimerLength =3 * 60;
-        public const int SeizedTimerLength = 2 * 60;
-        public const int LordKilledTimerLength = 2 * 60;
+        public const int InnerDownTimerLength = 3 * 60;
+        public const int SeizedTimerLength = 1 * 60;
+        public const int LordKilledTimerLength = 1 * 60;
         public const int DefenceTickTimerLength = 5 * 60;
         public const int BackToSafeTimerLength = 5 * 60;
         #endregion
@@ -47,7 +46,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public List<KeepDoor> Doors = new List<KeepDoor>();
         public Keep_Info Info;
         public List<KeepDoor.KeepGameObject> KeepGOs = new List<KeepDoor.KeepGameObject>();
-        //public KeepStateMachine.Process p = new KeepStateMachine.Process();
+
         public bool RamDeployed;
         public Realms Realm;
         public RegionMgr Region;
@@ -57,9 +56,23 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public IKeepCommunications KeepCommunications { get; private set; }
 
+        public HashSet<Player> PlayersCloseToLord { get; set; }
+
         public byte Tier;
         public int PlayersKilledInRange { get; set; }
         public Realms PendingRealm { get; set; }
+        public Realms AttackingRealm
+        {
+            get
+            {
+                if (Realm == Realms.REALMS_REALM_DESTRUCTION)
+                    return Realms.REALMS_REALM_ORDER;
+                else
+                {
+                    return Realms.REALMS_REALM_DESTRUCTION;
+                }
+            }
+        }
         public Guild OwningGuild { get; set; }
         public PassiveStateMachine<SM.ProcessState, SM.Command> fsm { get; set; }
 
@@ -74,7 +87,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             Tier = tier;
             Region = region;
             KeepCommunications = comms;
-            this.Zone = region.GetZoneMgr(info.ZoneId);
+            Zone = region.GetZoneMgr(info.ZoneId);
 
             _hardpoints.Add(new Hardpoint(SiegeType.OIL, info.OilX, info.OilY, info.OilZ, info.OilO));
             if (info.OilOuterX > 0)
@@ -88,18 +101,17 @@ namespace WorldServer.World.BattleFronts.Keeps
                 _hardpoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuterX, info.RamOuterY, info.RamOuterZ, info.RamOuterO));
             }
 
-            EvtInterface.AddEvent(UpdateResources, 60000, 0);
-            EvtInterface.AddEvent(CheckTimers, 10000, 0);
             PlayersKilledInRange = 0;
-            PlayersInRangeOnTake = new HashSet<uint>();
 
             fsm = new SM(this).fsm;
 
             InnerPosternCanBeUsed = false;
             OuterPosternCanBeUsed = false;
+
+            PlayersCloseToLord = new HashSet<Player>();
         }
 
-       
+
         public void SetGuildOwner(Guild guild)
         {
             OwningGuild = guild;
@@ -111,7 +123,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         /// <summary>
         /// Check the various timers and determine whether to fire any events
         /// </summary>
-        private void CheckTimers()
+        public void CheckTimers()
         {
             var currentTime = TCPManager.GetTimeStamp();
 
@@ -128,8 +140,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             if (BackToSafeTimer > 0 && BackToSafeTimer <= currentTime)
                 OnBackToSafeTimerEnd();
         }
-
-        public HashSet<uint> PlayersInRangeOnTake { get; set; }
 
         public override void OnLoad()
         {
@@ -161,26 +171,27 @@ namespace WorldServer.World.BattleFronts.Keeps
                 WorldMgr._Keeps.Add(Info.KeepId, this);
         }
 
-        public void SetSeized()
+        public void SetKeepSeized()
         {
             _logger.Debug($"Set Seized Timer");
             SeizedTimer = TCPManager.GetTimeStamp() + SeizedTimerLength;
 
             KeepStatus = KeepStatus.KEEPSTATUS_SEIZED;
+
+            foreach (var plr in this.Region.Players)
+            {
+                SendKeepInfo(plr);
+            }
+            KeepCommunications.SendKeepStatus(null, this);
+
         }
 
         public void SetLordKilled()
         {
             _logger.Debug($"{Info.Name} : Lord Killed");
-            var contributionDefinition = new ContributionDefinition();
 
             foreach (var h in _hardpoints)
                 h.CurrentWeapon?.Destroy();
-
-            // Despawn Keep Creatures
-            foreach (var crea in Creatures)
-                crea.DespawnGuard();
-
 
             // Flip realm on Lord Kill
             PendingRealm = Realm == Realms.REALMS_REALM_ORDER ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER; ;
@@ -188,38 +199,72 @@ namespace WorldServer.World.BattleFronts.Keeps
             _logger.Info($"Updating VP for Lord Kill. Pending Realm = {PendingRealm}");
             WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
 
-            foreach (var plr in PlayersInRange)
+            // Find the lord in the Keep creatures.
+            var lord = Creatures.SingleOrDefault(x => x.Info.KeepLord == true);
+            if (lord == null)
+            {
+                _logger.Info($"Lord is NULL {Info.Name}");
+                return;
+            }
+
+            foreach (var plr in lord.Creature.PlayersInRange)
             {
                 SendKeepInfo(plr);
             }
-
+            
             var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(activeBattleFrontId);
-            var eligiblePlayers = activeBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
 
             _logger.Info($"Updating Contribution for Lord Kill. Pending Realm = {PendingRealm}");
-            KeepRewardManager.KeepLordKill(this, PlayersInRange, Info.Name, activeBattleFrontStatus.ContributionManagerInstance, eligiblePlayers);
+            foreach (var plr in lord.Creature.PlayersInRange)
+            {
+                // Add contribution for being in range
+                activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.KILL_KEEP_LORD);
+                var contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.KILL_KEEP_LORD);
+                plr.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
+
+                if (plr.PriorityGroup?.GetLeader() == plr)
+                {
+                    activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
+                    contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
+                    plr.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
+                }
+            }
+
+            // Players with contribution to be rewarded.
+            var eligiblePlayers = activeBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
+
+            KeepRewardManager.KeepLordKill(this, lord.Creature.PlayersInRange, eligiblePlayers);
+
+            // Despawn Keep Creatures
+            foreach (var crea in Creatures)
+                crea.DespawnGuard();
 
             SendRegionMessage(Info.Name + "'s Keep Lord has fallen!");
-            LastMessage = KeepMessage.Fallen;
-
+            
             KeepCommunications.SendKeepStatus(null, this);
             EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
 
             PlayersKilledInRange = 0;
             LordKilledTimer = TCPManager.GetTimeStamp() + LordKilledTimerLength;
+
+            
         }
 
 
         public void SetInnerDoorDown()
         {
             SendRegionMessage(Info.Name + "'s inner sanctum  door has been destroyed!");
-            _logger.Debug($"{Info.Name} : Inner door destroyed for realm {Realms.REALMS_REALM_DESTRUCTION}");
+            _logger.Debug($"{Info.Name} : Inner door destroyed by realm {AttackingRealm}");
 
-            // TODO : What is this for?
-            //LastMessage = KeepMessage.Inner0;
-            KeepRewardManager.InnerDoorReward(PlayersInRange, Info.Name, Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
-            // Remove any placed rams. TODO - correct?
+            var door = Doors.Single(x => x.Info.Number == INNER_DOOR);
+
+            KeepRewardManager.InnerDoorReward(door,
+                AttackingRealm,
+                Info.Name,
+                Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
+
+            // Remove any placed rams. 
             foreach (var h in _hardpoints)
             {
                 if (h.SiegeType == SiegeType.RAM)
@@ -230,13 +275,13 @@ namespace WorldServer.World.BattleFronts.Keeps
                 }
             }
             InnerDownTimer = TCPManager.GetTimeStamp() + InnerDownTimerLength;
-
-            foreach (var plr in PlayersInRange)
+            KeepStatus = KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK;
+            foreach (var plr in this.Region.Players)
             {
                 SendKeepInfo(plr);
             }
             KeepCommunications.SendKeepStatus(null, this);
-            KeepStatus = KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK;
+
 
             InnerPosternCanBeUsed = true;
 
@@ -245,9 +290,15 @@ namespace WorldServer.World.BattleFronts.Keeps
         public void SetOuterDoorDown()
         {
             SendRegionMessage(Info.Name + "'s outer door has been destroyed!");
-            _logger.Debug($"{Info.Name} : Outer door destroyed for realm {Realms.REALMS_REALM_DESTRUCTION}");
+            _logger.Debug($"{Info.Name} : Outer door destroyed by realm {AttackingRealm}");
 
-            KeepRewardManager.OuterDoorReward(PlayersInRange, Info.Name, Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
+            var door = Doors.Single(x => x.Info.Number == OUTER_DOOR);
+
+            KeepRewardManager.OuterDoorReward(door,
+                AttackingRealm,
+                Info.Name,
+                Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
+
             // Remove any placed rams. TODO - correct?
             foreach (var h in _hardpoints)
             {
@@ -261,14 +312,13 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             OuterDownTimer = TCPManager.GetTimeStamp() + OuterDownTimerLength;
 
+            KeepStatus = KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK;
             KeepCommunications.SendKeepStatus(null, this);
-            foreach (var plr in PlayersInRange)
+            foreach (var plr in this.Region.Players)
             {
                 SendKeepInfo(plr);
             }
-            KeepStatus = KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK;
-
-            OuterPosternCanBeUsed = true;
+            KeepCommunications.SendKeepStatus(null, this);
         }
 
         public bool BothDoorsRepaired()
@@ -328,6 +378,11 @@ namespace WorldServer.World.BattleFronts.Keeps
             SendRegionMessage($"{KeepLord.Creature.Name} has been wounded!");
 
             KeepStatus = KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK;
+
+            foreach (var plr in PlayersInRange)
+            {
+                SendKeepInfo(plr);
+            }
         }
 
 
@@ -388,14 +443,14 @@ namespace WorldServer.World.BattleFronts.Keeps
                 if (!crea.Info.IsPatrol)
                     crea.DespawnGuard();
 
+            KeepStatus = KeepStatus.KEEPSTATUS_LOCKED;
+
             foreach (var plr in PlayersInRange)
             {
                 SendKeepInfo(plr);
             }
             KeepCommunications.SendKeepStatus(null, this);
-
-            KeepStatus = KeepStatus.KEEPSTATUS_LOCKED;
-
+            
             InnerPosternCanBeUsed = false;
             OuterPosternCanBeUsed = false;
 
@@ -404,19 +459,9 @@ namespace WorldServer.World.BattleFronts.Keeps
         }
 
 
-        /*public bool AttackerCanUsePostern(int posternNum)
-        {
-            if (Rank > 0)
-                return false;
-
-            if (posternNum == (int) KeepDoorType.OuterPostern)
-                return LastMessage >= KeepMessage.Outer0;
-            return LastMessage >= KeepMessage.Inner0;
-        }*/
-
         public bool AttackerCanUsePostern(int posternNum)
         {
-            if (posternNum == (int) KeepDoorType.OuterPostern)
+            if (posternNum == (int)KeepDoorType.OuterPostern)
                 return OuterPosternCanBeUsed;
             if (posternNum == (int)KeepDoorType.InnerPostern)
                 return InnerPosternCanBeUsed;
@@ -521,132 +566,68 @@ namespace WorldServer.World.BattleFronts.Keeps
         public void OnOuterDownTimerEnd()
         {
             _logger.Debug($"Outer door has reset");
-
             OuterDownTimer = 0;
-
             Doors.Single(x => x.Info.Number == OUTER_DOOR).Spawn();
-
-            //// If both doors are alive - door status is ok
-            //lock (Doors)
-            //{
-            //    _logger.Debug($"Checking Outer door");
-            //    var doorList = Doors.Where(x => x.Info.Number == INNER_DOOR || x.Info.Number == OUTER_DOOR);
-
-            //    foreach (var keepDoor in doorList)
-            //    {
-            //        if (keepDoor.GameObject.IsDead)
-            //            return;
-            //    }
-            //}
-            //var state = p.MoveNext(KeepStateMachine.Command.OnOuterDownTimerEnd);
-            //ExecuteAction(state);
             fsm.Fire(SM.Command.OnOuterDownTimerEnd);
         }
 
         public void OnInnerDownTimerEnd()
         {
             _logger.Debug($"Inner door has reset");
-
             InnerDownTimer = 0;
-
             Doors.Single(x => x.Info.Number == INNER_DOOR).Spawn();
-
-            //// If both doors are alive - door status is ok
-            //lock (Doors)
-            //{
-            //    _logger.Debug($"Checking Inner door");
-            //    var doorList = Doors.Where(x => x.Info.Number == INNER_DOOR || x.Info.Number == OUTER_DOOR);
-
-            //    foreach (var keepDoor in doorList)
-            //    {
-            //        if (keepDoor.GameObject.IsDead)
-            //            return;
-            //    }
-            //}
-            //var state = p.MoveNext(KeepStateMachine.Command.OnInnerDownTimerEnd);
-            //ExecuteAction(state);
             fsm.Fire(SM.Command.OnInnerDownTimerEnd);
 
         }
 
 
-        //private void ExecuteAction(KeepStateMachine.ProcessState state)
-        //{
-        //    _logger.Debug($"Executing Action {actions[state]} for {state}");
-        //    SendRegionMessage($"Executing Action {actions[state]} for {state}");
-        //    actions[state].Invoke();
-        //}
-
         public void OnSeizedTimerEnd()
         {
             SeizedTimer = 0;
-
-            //var state = p.MoveNext(KeepStateMachine.Command.OnSeizedTimerEnd);
-            //ExecuteAction(state);
-           fsm.Fire(SM.Command.OnSeizedTimerEnd);
+            fsm.Fire(SM.Command.OnSeizedTimerEnd);
         }
 
         public void OnOuterDoorDown()
         {
-            //var state = p.MoveNext(KeepStateMachine.Command.OnOuterDoorDown);
-            //ExecuteAction(state);
             fsm.Fire(SM.Command.OnOuterDoorDown);
         }
 
         public void OnInnerDoorDown()
         {
-            //var state = p.MoveNext(KeepStateMachine.Command.OnInnerDoorDown);
-            //ExecuteAction(state);
             fsm.Fire(SM.Command.OnInnerDoorDown);
         }
 
         public void OnLordKilled()
         {
-            //var state = p.MoveNext(KeepStateMachine.Command.OnLordKilled);
-            //ExecuteAction(state);
             fsm.Fire(SM.Command.OnLordKilled);
         }
 
         public void OnLockZone(Realms lockingRealm)
         {
             PendingRealm = lockingRealm;
-            //var state = p.MoveNext(KeepStateMachine.Command.OnLockZone);
-            //ExecuteAction(state);
-
             fsm.Fire(SM.Command.OnLockZone);
         }
 
         public void OnLordKilledTimerEnd()
         {
             LordKilledTimer = 0;
-
-            //var state = p.MoveNext(KeepStateMachine.Command.OnLordKilledTimerEnd);
-            //ExecuteAction(state);
             fsm.Fire(SM.Command.OnLordKilledTimerEnd);
         }
 
         public void OnDefenceTickTimerEnd()
         {
             DefenceTickTimer = 0;
-
-            //var state = p.MoveNext(KeepStateMachine.Command.OnDefenceTickTimerEnd);
-            //ExecuteAction(state);
             fsm.Fire(SM.Command.OnDefenceTickTimerEnd);
         }
 
         public void OnBackToSafeTimerEnd()
         {
             BackToSafeTimer = 0;
-
-            //var state = p.MoveNext(KeepStateMachine.Command.OnBackToSafeTimerEnd);
-            //ExecuteAction(state);
             fsm.Fire(SM.Command.OnBackToSafeTimerEnd);
         }
 
         public void OnLordWounded()
         {
-            //var state = p.MoveNext(KeepStateMachine.Command.OnLordWounded);
-            //ExecuteAction(state);
             fsm.Fire(SM.Command.OnLordWounded);
         }
 
@@ -782,115 +763,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
         }
 
-        //        public void OnKeepDoorAttacked(byte number, byte pctHealth)
-        //        {
-        //            if (number == 2)
-        //            {
-        //                if (KeepStatus == KeepStatus.KEEPSTATUS_SAFE)
-        //                {
-        //                    UpdateKeepStatus(KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK);
-        //                    SendRegionMessage(Info.Name + "'s outer door is under attack!");
-        //                    foreach (var plr in PlayersInRange)
-        //                    {
-        //                        SendKeepInfo(plr);
-        //                        PlayersInRangeOnTake.Add(plr.CharacterId);
-        //                    }
-        //                    EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
-        //                }
-
-        //                if (LastMessage < KeepMessage.Outer0)
-        //                {
-        //                    if (pctHealth < 75 && LastMessage < KeepMessage.Outer75)
-        //                    {
-        //                        SendRegionMessage(Info.Name + "'s outer door is taking damage!");
-        //                        LastMessage = KeepMessage.Outer75;
-        //                        KeepCommunications.SendKeepStatus(null, this);
-        //                        EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
-        //                    }
-        //                    if (pctHealth < 50 && LastMessage < KeepMessage.Outer50)
-        //                    {
-        //                        SendRegionMessage(Info.Name + "'s outer door begins to buckle under the assault!");
-        //                        LastMessage = KeepMessage.Outer50;
-        //                        KeepCommunications.SendKeepStatus(null, this);
-        //                        EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
-        //                    }
-        //                    if (pctHealth < 20 && LastMessage < KeepMessage.Outer20)
-        //                    {
-        //                        SendRegionMessage(Info.Name + "'s outer door creaks and moans. It appears to be almost at the breaking point!");
-        //                        LastMessage = KeepMessage.Outer20;
-        //                        KeepCommunications.SendKeepStatus(null, this);
-        //                        EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
-        //                    }
-        //                }
-        //            }
-        //            else if (number == 1)
-        //            {
-        //                if (Info.DoorCount == 1 && KeepStatus == KeepStatus.KEEPSTATUS_SAFE || KeepStatus == KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK)
-        //                {
-        //                    UpdateKeepStatus(KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK);
-        //                    SendRegionMessage(Info.Name + "'s inner sanctum door is under attack!");
-        //                    foreach (var plr in PlayersInRange)
-        //                    {
-        //                        SendKeepInfo(plr);
-
-        //                        PlayersInRangeOnTake.Add(plr.CharacterId);
-        //                    }
-        //                    EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
-        //                }
-
-        //                if (LastMessage < KeepMessage.Inner0)
-        //                {
-        //                    if (pctHealth < 75 && LastMessage < KeepMessage.Inner75)
-        //                    {
-        //                        SendRegionMessage(Info.Name + "'s inner sanctum door is taking damage!");
-        //                        LastMessage = KeepMessage.Inner75;
-        //                        KeepCommunications.SendKeepStatus(null, this);
-        //                        EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
-        //                    }
-        //                    if (pctHealth < 50 && LastMessage < KeepMessage.Inner50)
-        //                    {
-        //                        SendRegionMessage(Info.Name + "'s inner sanctum door begins to buckle under the assault!");
-        //                        LastMessage = KeepMessage.Inner50;
-        //                        KeepCommunications.SendKeepStatus(null, this);
-        //                        EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
-        //                    }
-        //                    if (pctHealth < 20 && LastMessage < KeepMessage.Inner20)
-        //                    {
-        //                        SendRegionMessage(Info.Name + "'s inner sanctum door creaks and moans. It appears to be almost at the breaking point!");
-        //                        LastMessage = KeepMessage.Inner20;
-        //                        KeepCommunications.SendKeepStatus(null, this);
-        //                        EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
-
-        //                        // This disables rewards for attackers
-        //                        if (Constants.DoomsdaySwitch == 2)
-        //                            if (WorldMgr.WorldSettingsMgr.GetPopRewardSwitchSetting() == 1)
-        //                            {
-        ////                                _DestroCount = Region.Campaign._totalMaxDestro;
-        ////                                _OrderCount = Region.Campaign._totalMaxOrder;
-
-        ////#if !DEBUG
-        ////                                if (Info.Realm == (byte)Realms.REALMS_REALM_ORDER)
-        ////                                {
-        ////                                    if (_DestroCount > _OrderCount * 4)
-        ////                                    {
-        ////                                        Region.Campaign.DefenderPopTooSmall = true;
-        ////                                        SendRegionMessage("The forces of Destruction are attacking abandoned keep, there are no spoils of war inside!");
-        ////                                    }
-        ////                                }
-        ////                                else
-        ////                                {
-        ////                                    if (_OrderCount > _DestroCount * 4)
-        ////                                    {
-        ////                                        Region.Campaign.DefenderPopTooSmall = true;
-        ////                                        SendRegionMessage("The forces of Order are attacking abandoned keep, there are no spoils of war inside!");
-        ////                                    }
-        ////                                }
-        ////#endif
-        //                            }
-        //                    }
-        //                }
-        //            }
-        //        }
 
         public void OnDoorDestroyed(byte number, Realms realm)
         {
@@ -905,101 +777,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
         }
 
-        //public void OnDoorDestroyed(byte number, Realms realm)
-        //{
-        //    if (LastMessage < KeepMessage.Inner0)
-        //    {
-        //        switch (number)
-        //        {
-        //            case 1:
-        //                SendRegionMessage(Info.Name + "'s inner sanctum door has been destroyed!");
-        //                if (Rank == 0)
-        //                    SendRegionMessage(Info.Name + "'s inner sanctum postern is no longer defended!");
-        //                LastMessage = KeepMessage.Inner0;
-
-        //                foreach (var h in _hardpoints)
-        //                    if (h.SiegeType == SiegeType.RAM && (Tier == 2 || h.SiegeRequirement > 0))
-        //                    {
-        //                        h.CurrentWeapon?.Destroy();
-        //                        RamDeployed = false;
-        //                        break;
-        //                    }
-
-        //                // Small reward for inner door destruction
-        //                foreach (var player in PlayersInRange)
-        //                {
-        //                    if (!player.Initialized)
-        //                        continue;
-        //                    var rnd = new Random();
-        //                    var random = rnd.Next(1, 25);
-        //                    player.AddXp((uint)(1500 * (1 + random / 100)), false, false);
-        //                    player.AddRenown((uint)(400 * (1 + random / 100)), false, RewardType.ObjectiveCapture, Info.Name);
-
-        //                    // Add contribution
-        //                    Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance
-        //                        .UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_INNER_DOOR);
-        //                    var contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.DESTROY_INNER_DOOR);
-        //                    player.BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionDefinition.ContributionValue);
-        //                }
-
-        //                if (realm == Realms.REALMS_REALM_DESTRUCTION)
-        //                    Region.Campaign.VictoryPointProgress.DestructionVictoryPoints += KEEP_INNER_DOOR_VICTORYPOINTS;
-        //                else
-        //                    Region.Campaign.VictoryPointProgress.OrderVictoryPoints += KEEP_INNER_DOOR_VICTORYPOINTS;
-
-        //                _logger.Debug($"Inner door destroyed for realm {Realms.REALMS_REALM_DESTRUCTION} adding {KEEP_INNER_DOOR_VICTORYPOINTS} VP");
-
-        //                break;
-        //            case 2:
-        //                SendRegionMessage(Info.Name + "'s outer door has been destroyed!");
-        //                if (Rank == 0)
-        //                    SendRegionMessage($"{Info.Name}'s outer postern{(Tier == 2 ? " is " : "s are ")} no longer defended!");
-        //                LastMessage = KeepMessage.Outer0;
-
-
-        //                // Small reward for outer door destruction
-        //                foreach (var player in PlayersInRange)
-        //                {
-        //                    if (!player.Initialized)
-        //                        continue;
-
-        //                    var rnd = new Random();
-        //                    var random = rnd.Next(1, 25);
-
-        //                    player.AddXp((uint)(1000 * (1 + random / 100)), false, false);
-        //                    player.AddRenown((uint)(200 * (1 + random / 100)), false, RewardType.ObjectiveCapture, Info.Name);
-
-        //                    // Add contribution
-        //                    Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance
-        //                        .UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
-        //                    var contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
-        //                    player.BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionDefinition.ContributionValue);
-        //                }
-
-        //                foreach (var h in _hardpoints)
-        //                    if (h.SiegeType == SiegeType.RAM)
-        //                    {
-        //                        h.CurrentWeapon?.Destroy();
-        //                        RamDeployed = false;
-        //                        break;
-        //                    }
-
-        //                _logger.Debug($"Outer door destroyed for realm {Realms.REALMS_REALM_DESTRUCTION} adding {KEEP_OUTER_DOOR_VICTORYPOINTS} VP");
-
-        //                if (realm == Realms.REALMS_REALM_DESTRUCTION)
-        //                    Region.Campaign.VictoryPointProgress.DestructionVictoryPoints += KEEP_OUTER_DOOR_VICTORYPOINTS;
-        //                else
-        //                    Region.Campaign.VictoryPointProgress.OrderVictoryPoints += KEEP_OUTER_DOOR_VICTORYPOINTS;
-
-
-        //                break;
-        //        }
-
-        //        KeepCommunications.SendKeepStatus(null, this);
-        //    }
-
-        //    EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
-        //}
 
         public void OnKeepLordAttacked(byte pctHealth)
         {
@@ -1009,102 +786,8 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             ProgressionLogger.Debug($"Keep Lord attacked {pctHealth}");
 
-            //if (KeepStatus == KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK)
-            //{
-            //    UpdateKeepStatus(KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK);
-            //    foreach (var plr in PlayersInRange)
-            //    {
-            //        SendKeepInfo(plr);
-            //        PlayersInRangeOnTake.Add(plr.CharacterId);
-            //    }
-            //    EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
-            //}
-
-            //if (pctHealth < 100 && LastMessage < KeepMessage.Lord100)
-            //{
-            //    SendRegionMessage(Info.Name + "'s Keep Lord is under attack!");
-            //    LastMessage = KeepMessage.Lord100;
-            //    EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
-            //}
-            //else if (pctHealth < 50 && LastMessage < KeepMessage.Lord50)
-            //{
-            //    SendRegionMessage(Info.Name + "'s Keep Lord is being overrun!");
-            //    LastMessage = KeepMessage.Lord50;
-            //    EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
-            //}
-            //else if (pctHealth < 20 && LastMessage < KeepMessage.Lord20)
-            //{
-            //    SendRegionMessage(Info.Name + "'s Keep Lord is weak!");
-            //    LastMessage = KeepMessage.Lord20;
-            //    EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
-            //}
         }
 
-
-        ///// <summary>
-        /////     Provide a defence tick
-        ///// </summary>
-        //public void SafeKeep()
-        //{
-        //    uint influenceId = 0;
-
-        //    if (KeepStatus == KeepStatus.KEEPSTATUS_SEIZED || KeepStatus == KeepStatus.KEEPSTATUS_LOCKED || KeepStatus == KeepStatus.KEEPSTATUS_SAFE)
-        //        return;
-
-        //    foreach (var plr in PlayersInRange)
-        //    {
-        //        if (Realm == plr.Realm && plr.ValidInTier(Tier, true))
-        //        {
-        //            if (influenceId == 0)
-        //                influenceId = plr.Realm == Realms.REALMS_REALM_DESTRUCTION ? plr.CurrentArea.DestroInfluenceId : plr.CurrentArea.OrderInfluenceId;
-
-        //            var totalXp = 2000 * Tier;
-        //            var totalRenown = 300 * Tier;
-        //            var totalInfluence = 100 * Tier;
-
-        //            if (_playersKilledInRange < 4 * Tier)
-        //            {
-        //                totalXp += (int)(totalXp * (0.25 + _playersKilledInRange / 40f * 0.75));
-        //                totalRenown += (int)(totalRenown * (0.25 + _playersKilledInRange / 40f * 0.75));
-        //                totalInfluence += (int)(totalInfluence * (0.25 + _playersKilledInRange / 40f * 0.75));
-        //            }
-
-        //            plr.AddXp((uint)totalXp, false, false);
-        //            plr.AddRenown((uint)totalRenown, false, RewardType.ObjectiveDefense, Info.Name);
-        //            plr.AddInfluence((ushort)influenceId, (ushort)totalInfluence);
-
-        //            plr.SendClientMessage($"You've received a reward for your contribution to the holding of {Info.Name}.", ChatLogFilters.CHATLOGFILTERS_RVR);
-
-        //            // Add Contribution for Keep Defence Tick
-        //            plr.UpdatePlayerBountyEvent((byte)ContributionDefinitions.KEEP_DEFENCE_TICK);
-
-        //            Log.Info("Keep", $"Keep Defence XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
-        //        }
-
-        //        SendKeepInfo(plr);
-        //    }
-
-        //    foreach (var crea in Creatures)
-        //        if (crea.Creature == null && !crea.Info.IsPatrol)
-        //            crea.SpawnGuard(Realm);
-        //        else if (crea.Info.IsPatrol)
-        //            crea.DespawnGuard();
-
-        //    foreach (var door in Doors)
-        //        door.Spawn();
-
-        //    Log.Info("SafeKeep", "Players Killed: " + _playersKilledInRange);
-
-        //    if (LastMessage >= KeepMessage.Outer0 && Tier > 2 || Tier == 2 && LastMessage >= KeepMessage.Inner0)
-        //        _playersKilledInRange /= 2;
-
-        //    UpdateKeepStatus(KeepStatus.KEEPSTATUS_SAFE);
-        //    LastMessage = KeepMessage.Safe;
-
-        //    _OrderCount = 0;
-        //    _DestroCount = 0;
-        //    _playersKilledInRange = 0;
-        //}
 
         private void UpdateKeepStatus(KeepStatus newStatus)
         {
@@ -1123,15 +806,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                 if (crea.Creature != null && crea.Info.KeepLord)
                     crea.Creature.ScaleLord(enemyPlayercount);
         }
-
-
-
-        //public void ScaleLordVP(int vp)
-        //{
-        //    foreach (KeepNpcCreature crea in Creatures)
-        //        if (crea.Creature != null && crea.Info.KeepLord)
-        //            crea.Creature.ScaleLordVP(vp);
-        //}
 
         #endregion
 
@@ -1153,6 +827,39 @@ namespace WorldServer.World.BattleFronts.Keeps
                 return;
 
             SendKeepInfoLeft(plr);
+        }
+
+        /// <summary>
+        /// Get players that are close and members of a given realm.
+        /// </summary>
+        /// <param name="capturingRealm"></param>
+        /// <returns></returns>
+        private List<Player> GetClosePlayers(Realms capturingRealm)
+        {
+            var applicablePlayerList = PlayersInRange.Where(x => x.Realm == capturingRealm).ToList();
+
+            return GetClosePlayers(applicablePlayerList);
+        }
+
+        private List<Player> GetClosePlayers(List<Player> playerList)
+        {
+            var closeHeight = 70 / 2 * UNITS_TO_FEET;
+            var closePlayers = new List<Player>();
+
+            foreach (var player in playerList)
+            {
+                if (player.IsDead || player.StealthLevel != 0 || !player.CbtInterface.IsPvp || player.IsInvulnerable)
+                    continue;
+
+                var distance = GetDistanceToObject(player);
+                var heightDiff = Math.Abs(Z - player.Z);
+                if (distance < 200 && heightDiff < closeHeight)
+                {
+                    closePlayers.Add(player);
+                    SendMeTo(player);
+                }
+            }
+            return closePlayers;
         }
 
         #endregion
@@ -1751,6 +1458,11 @@ namespace WorldServer.World.BattleFronts.Keeps
                     return "Kill the Keep Lord";
                 case KeepStatus.KEEPSTATUS_SEIZED:
                     return "Hold the Battlefield Objectives";
+                case KeepStatus.KEEPSTATUS_SAFE:
+                case KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK:
+                    return "Destroy the Outer Door";
+                case KeepStatus.KEEPSTATUS_LOCKED:
+                    return "Keep Locked";
                 default:
                     return "Destroy the Outer Door";
             }
@@ -1866,7 +1578,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
         }
 
-        
+
 
         //reconstructed packet from client dissasmbly
         //player must have role of SystemData.GuildPermissons.KEEPUPGRADE_EDIT 
@@ -2383,6 +2095,41 @@ namespace WorldServer.World.BattleFronts.Keeps
             ProgressionLogger.Debug($"Keep Siege Attacked {pctHealth}");
         }
 
+
+        /// <summary>
+        /// Record players that were within range of the Keep Lord. 
+        /// </summary>
+        public void CheckKeepPlayersInvolved()
+        {
+            var lord = Creatures.SingleOrDefault(x => x.Info.KeepLord == true);
+            if (lord == null)
+                _logger.Error($"Lord is null!!");
+            else
+            {
+                var playersCloseToLord = lord.Creature?.PlayersInRange.Where(x => x.Realm == PendingRealm).ToList();
+                if (playersCloseToLord != null)
+                {
+                    foreach (var player in playersCloseToLord)
+                    {
+                        PlayersCloseToLord.Add(player);
+                    }
+                }
+
+                var y = lord.Creature?.GetPlayersInRange(400, true);
+                if (y != null)
+                {
+                    foreach (var plr in y)
+                    {
+                        _logger.Trace($"Players close to Lord Y : {plr.Name}");
+                    }
+                }
+            }
+
+            foreach (var plr in PlayersCloseToLord)
+            {
+                _logger.Trace($"Players close to Lord : {plr.Name}");
+            }
+        }
     }
 
 

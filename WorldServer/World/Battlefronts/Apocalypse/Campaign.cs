@@ -141,7 +141,76 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(OrderDominationCheck, 60000, 0);
 
             _EvtInterface.AddEvent(UpdateCampaignObjectiveBuffs, 10000, 0);
+            _EvtInterface.AddEvent(CheckKeepTimers, 10000, 0);
+            _EvtInterface.AddEvent(UpdateKeepResources, 60000, 0);
 
+            //_EvtInterface.AddEvent(CheckKeepPlayersInvolved, 60000, 0);
+        }
+
+        private void CheckKeepTimers()
+        {
+            // There is a race condition here.
+            var activeCampaign = BattleFrontManager.GetActiveCampaign();
+            var status = activeCampaign?.ActiveBattleFrontStatus;
+            if (status != null)
+            {
+                lock (status)
+                {
+                    BattlefrontLogger.Trace($"Checking Keep Timers...");
+                    if (status.RegionId == Region.RegionId)
+                    {
+                        foreach (var keep in Keeps)
+                        {
+                            keep.CheckTimers();
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Disabled at the moment - intent is to track who was close to the lord for when rewards are handed out.
+        /// </summary>
+        private void CheckKeepPlayersInvolved()
+        {
+            // There is a race condition here.
+            var activeCampaign = BattleFrontManager.GetActiveCampaign();
+            var status = activeCampaign?.ActiveBattleFrontStatus;
+            if (status != null)
+            {
+                lock (status)
+                {
+                    BattlefrontLogger.Trace($"Checking Keep Players Involved...");
+                    if (status.RegionId == Region.RegionId)
+                    {
+                        foreach (var keep in Keeps)
+                        {
+                            keep.CheckKeepPlayersInvolved();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void UpdateKeepResources()
+        {
+            // There is a race condition here.
+            var activeCampaign = BattleFrontManager.GetActiveCampaign();
+            var status = activeCampaign?.ActiveBattleFrontStatus;
+            if (status != null)
+            {
+                lock (status)
+                {
+                    BattlefrontLogger.Trace($"Checking Keep Resources...");
+                    if (status.RegionId == Region.RegionId)
+                    {
+                        foreach (var keep in Keeps)
+                        {
+                            keep.UpdateResources();
+                        }
+                    }
+                }
+            }
         }
 
         private void DestructionDominationCheck()

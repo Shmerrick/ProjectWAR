@@ -98,7 +98,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             fsm.In(ProcessState.LordWounded)
                 .On(Command.OnLordKilled).Goto(ProcessState.LordKilled).Execute(() => Keep.SetLordKilled());
             fsm.In(ProcessState.LordKilled)
-                .On(Command.OnLordKilledTimerEnd).Goto(ProcessState.Seized).Execute(() => Keep.SetSeized());
+                .On(Command.OnLordKilledTimerEnd).Goto(ProcessState.Seized).Execute(() => Keep.SetKeepSeized());
             fsm.In(ProcessState.Seized)
                 .On(Command.OnSeizedTimerEnd).Goto(ProcessState.Safe).Execute(() => Keep.SetKeepSafe());
             /* Defence tick events */

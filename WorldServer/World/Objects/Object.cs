@@ -804,14 +804,20 @@ namespace WorldServer
                 return;
 
             lock (ObjectsInRange)
+            {
+                Log.Info($"AddInRange:ObjectsInRange", $"{obj.Name}");
                 ObjectsInRange.Add(obj);
+            }
 
             Player plr = obj as Player;
 
             if (plr != null)
             {
                 lock (PlayersInRange)
+                {
+                    Log.Info($"AddInRange", $"{obj.Name} ++ {plr.Name}");
                     PlayersInRange.Add(plr);
+                }
             }
 
             ScrInterface.OnEnterRange(this, obj);
@@ -839,7 +845,10 @@ namespace WorldServer
             if (plr != null)
             {
                 lock (PlayersInRange)
+                {
+                    Log.Debug($"RemoveInRange", $"{obj.Name} -- {plr.Name}");
                     PlayersInRange.Remove(plr);
+                }
             }
 
             Player thisPlayer = this as Player;

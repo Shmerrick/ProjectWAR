@@ -21,10 +21,12 @@ namespace WorldServer.World.Battlefronts.Keeps
         public const int INNER_DOOR_XP = 1500;
 
 
-        public static void OuterDoorReward(List<Player> playersInRange, string description, ContributionManager contributionManagerInstance)
+        public static void OuterDoorReward(KeepDoor door, Realms attackingRealm, string description, ContributionManager contributionManagerInstance)
         {
+            var attackingPlayers = door.GameObject.PlayersInRange.Where(x => x.Realm == attackingRealm);
+
             // Small reward for outer door destruction
-            foreach (var player in playersInRange)
+            foreach (var player in attackingPlayers)
             {
                 if (!player.Initialized)
                     continue;
@@ -45,10 +47,12 @@ namespace WorldServer.World.Battlefronts.Keeps
             }
         }
 
-        public static void InnerDoorReward(List<Player> playersInRange, string description, ContributionManager contributionManagerInstance)
+        public static void InnerDoorReward(KeepDoor door, Realms attackingRealm,  string description, ContributionManager contributionManagerInstance)
         {
+            var attackingPlayers = door.GameObject.PlayersInRange.Where(x => x.Realm == attackingRealm);
+
             // Small reward for inner door destruction
-            foreach (var player in playersInRange)
+            foreach (var player in attackingPlayers)
             {
                 if (!player.Initialized)
                     continue;
@@ -100,26 +104,10 @@ namespace WorldServer.World.Battlefronts.Keeps
             }
         }
 
-        public static void KeepLordKill(BattleFrontKeep keep, List<Player> playersInRange, string description, ContributionManager contributionManagerInstance, IEnumerable<KeyValuePair<uint, int>> eligiblePlayers)
+        public static void KeepLordKill(BattleFrontKeep keep, List<Player> playersInRange, IEnumerable<KeyValuePair<uint, int>> eligiblePlayers)
         {
-            foreach (var plr in playersInRange)
-            {
-                // Add contribution for being in range
-                contributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.KILL_KEEP_LORD);
-                var contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.KILL_KEEP_LORD);
-                plr.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
-
-                if (plr.PriorityGroup?.GetLeader() == plr)
-                {
-                    contributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
-                    contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
-                    plr.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
-                }
-            }
-
-
             RewardLogger.Info("**********************KEEP FLIP******************************");
-            RewardLogger.Info($"Distributing rewards for Keep {description}");
+            RewardLogger.Info($"Distributing rewards for Keep {keep.Info.Name} number players : {playersInRange.Count}");
             RewardLogger.Info("*************************************************************");
 
             uint influenceId = 0;
