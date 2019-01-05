@@ -229,7 +229,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                             var money = CalculateMoneyReward(playerReward.Value, modificationValue * repeatKillReward);
                             var racialInfluenceModifier = CalculateRacialInfluenceModifier(member, victim);
                             var scaledRenownPoints = (int)CalculateScaledRenownPoints(modificationValue * repeatKillReward);
-                            var baseRenownPoints = (int)CalculateBaseRenownPoints(member, victim);
+                            var baseRenownPoints = (int)CalculateBaseRenownPoints(member, victim, modificationValue);
                             var influence = CalculateInfluenceReward(playerReward.Value, modificationValue * repeatKillReward * racialInfluenceModifier);
 
                             DistributeBaseRewardsForPlayerKill(member, money, scaledRenownPoints, baseRenownPoints, influence, $"Party assist {killer.Name} in killing {victim.Name}", xp, influenceId);
@@ -338,14 +338,14 @@ namespace WorldServer.World.Battlefronts.Bounty
             return 0;
         }
 
-        private float CalculateBaseRenownPoints(Player killer, Player victim)
+        private float CalculateBaseRenownPoints(Player killer, Player victim, float modificationValue=1)
         {
             var victimContributionValue = ContributionManager.GetContributionValue(victim.CharacterId);
             var killerContributionValue = ContributionManager.GetContributionValue(killer.CharacterId);
 
-            return BASE_RP_CEILING -
+            return (BASE_RP_CEILING -
                 (CalculateModifiedBountyValue(victim.BaseBountyValue, victimContributionValue) +
-                CalculateModifiedBountyValue(killer.BaseBountyValue, killerContributionValue));
+                CalculateModifiedBountyValue(killer.BaseBountyValue, killerContributionValue)))*modificationValue;
         }
 
         private float CalculateScaledRenownPoints(float externalModifier)
