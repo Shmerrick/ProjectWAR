@@ -198,10 +198,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             // Dictionary of attackers and the impact fraction they have on the victim.
             var impactFractions = GetImpactFractionsForKill(victim, playerDictionary);
 
-            // TODO : Ensure the player is actually in the active battlefront.
-            // List of players involved in the kill
-            //var playersToReward = GenerateBaseRewardForKill(victim, killer, StaticRandom.Instance.Next(1, 100), playerDictionary, repeatKillReward);
-
+            // impactFractions is CharacterId, and ImpactFraction.
             foreach (var playerReward in impactFractions)
             {
                 // reward key is the characterId
@@ -222,7 +219,8 @@ namespace WorldServer.World.Battlefronts.Bounty
 
                             var modificationValue = ImpactMatrixManagerInstance.CalculateModificationValue(victim.BaseBountyValue, member.BaseBountyValue);
                             var shareModifier = (1f / shares);
-                            modificationValue = shareModifier * modificationValue;
+                            
+                            modificationValue = shareModifier * modificationValue * playerReward.Value;
 
                             RewardLogger.Debug($"+++ Modification Value {modificationValue} Share Modifier {shareModifier} Number Shares {shares}");
                             RewardLogger.Info($"+++ Assessing rewards for party member {member.Name} ({member.CharacterId})");
@@ -291,10 +289,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                         {
                             DistributeInsigniaReward(playerToBeRewarded, $"++ You have been awarded 1 {insigniaName} for a deathblow on {victim.Name}", 1);
                         }
-                        //var killerBFM = killer.GetBattlefrontManager(killer.Region.RegionId);
-                        //var activeBFId = killerBFM.ActiveBattleFront.ZoneId;
-                        //var killerBFId = killer.ZoneId;
-
+                       
                         if (killer.GetBattlefrontManager(killer.Region.RegionId).ActiveBattleFront.ZoneId == killer.ZoneId)
                             DistributeDeathBlowContributionForPlayerKill(killer, victim.Name);
                         else
