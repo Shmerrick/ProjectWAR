@@ -93,12 +93,20 @@ namespace WorldServer.World.BattleFronts.Keeps
             if (info.OilOuterX > 0)
                 _hardpoints.Add(new Hardpoint(SiegeType.OIL, info.OilOuterX, info.OilOuterY, info.OilOuterZ, info.OilOuterO));
 
+            //added these in for forts oils outer walls
+            _hardpoints.Add(new Hardpoint(SiegeType.OIL, info.OilOuter1X, info.OilOuter1Y, info.OilOuter1Z, info.OilOuter1O));
+            _hardpoints.Add(new Hardpoint(SiegeType.OIL, info.OilOuter2X, info.OilOuter2Y, info.OilOuter2Z, info.OilOuter2O));
+
             _hardpoints.Add(new Hardpoint(SiegeType.RAM, info.RamX, info.RamY, info.RamZ, info.RamO));
 
             if (info.RamOuterX > 0)
             {
                 _hardpoints[_hardpoints.Count - 1].SiegeRequirement = KeepMessage.Outer0;
                 _hardpoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuterX, info.RamOuterY, info.RamOuterZ, info.RamOuterO));
+
+             //added these for the forts outer rams
+                _hardpoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuter1X, info.RamOuter1Y, info.RamOuter1Z, info.RamOuter1O));
+                _hardpoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuter2X, info.RamOuter2Y, info.RamOuter2Z, info.RamOuter2O));
             }
 
             PlayersKilledInRange = 0;
