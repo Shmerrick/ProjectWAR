@@ -992,6 +992,7 @@ namespace WorldServer.Managers.Commands
             pos += "\nWorld Position: " + obj.WorldPosition.X + ", " + obj.WorldPosition.Y + ", " + obj.WorldPosition.Z;
             pos += "\nOffsets: X " + obj.XOffset + ", Y " + obj.YOffset;
             pos += "\nWh=" + obj.Heading + ",Ph=" + obj.Heading + ",HeightMap=" + ClientFileMgr.GetHeight(obj.Zone.ZoneId, obj.X, obj.Y);
+            pos += "\nWorld O Position: " + plr._Value.WorldO;   //  added to get O INFO coordinates just for ez of it.
 
             if (values.Count > 0 && GetString(ref values) == "say")
             {
