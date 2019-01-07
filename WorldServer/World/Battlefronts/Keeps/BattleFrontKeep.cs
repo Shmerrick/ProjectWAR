@@ -689,7 +689,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 {
                     for (var i = 0; i < size - patrols.Count; i++)
                     {
-                        var captain = Info.Creatures.Select(x => x).Where(x => x.IsPatrol).FirstOrDefault();
+                        var captain = Info.Creatures?.Select(x => x).Where(x => x.IsPatrol).FirstOrDefault();
                         if (captain != null)
                         {
                             var allUsedCreatures = Creatures.Select(y => y).Where(y => y.Creature != null).Select(x => x.Info).ToList();
