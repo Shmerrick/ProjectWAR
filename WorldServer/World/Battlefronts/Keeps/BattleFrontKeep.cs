@@ -76,7 +76,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public Guild OwningGuild { get; set; }
         public PassiveStateMachine<SM.ProcessState, SM.Command> fsm { get; set; }
 
-        //public Dictionary<KeepStateMachine.ProcessState, Action> actions = new Dictionary<KeepStateMachine.ProcessState, Action>();
+        
         public KeepNpcCreature KeepLord => Creatures?.Find(x => x.Info.KeepLord);
 
 
