@@ -9,6 +9,7 @@ using SystemData;
 using WorldServer.Scenarios;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
+using WorldServer.World.BattleFronts.Keeps;
 using static System.UInt16;
 using static WorldServer.Managers.Commands.GMUtils;
 
@@ -874,6 +875,38 @@ namespace WorldServer.Managers.Commands
             else
             {
                 plr.SendMessage(0, "", other.ToString(), ChatLogFilters.CHATLOGFILTERS_EMOTE);
+            }
+
+            return true;
+        }
+
+        public static bool KeepDoorInfo(Player plr, ref List<string> values)
+        {
+            Object other = GetObjectTarget(plr);
+            GameObject go = other as GameObject;
+            if (go != null && go.IsGameObject())
+            {
+                string result = go.ToString();
+                if (go.Spawn.TokUnlock != null && go.Spawn.TokUnlock != "0")
+                    result = result + ", SpawnTokUnlock=" + go.Spawn.TokUnlock;
+                if (go.Spawn.Proto.TokUnlock != null && go.Spawn.Proto.TokUnlock != "0")
+                    result = result + ", ProtoTokUnlock=" + go.Spawn.Proto.TokUnlock;
+                if (go.Spawn.Proto.TokUnlock != null && go.Spawn.Proto.TokUnlock != "0")
+                    result = result + ", Realm=" + go.Realm;
+
+                plr.SendMessage(0, "", result, ChatLogFilters.CHATLOGFILTERS_EMOTE);
+
+                if (go is KeepDoor.KeepGameObject)
+                {
+                    var kgo = (KeepDoor.KeepGameObject) go;
+
+                    result = result + ", InteractState=" + kgo.InteractState.ToString();
+                    result = result + ", DoorId=" + kgo.DoorId;
+                    result = result + ", Entry=" + kgo.Entry;
+                    result = result + ", IsAttackable=" + kgo.IsAttackable.ToString();
+                    result = result + ", Health=" + kgo.PctHealth;
+                }
+                plr.SendMessage(0, "", result, ChatLogFilters.CHATLOGFILTERS_EMOTE);
             }
 
             return true;
