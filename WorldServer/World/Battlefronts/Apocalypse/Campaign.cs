@@ -989,7 +989,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="plr">Player to add, not null</param>
         public void NotifyEnteredLake(Player plr)
         {
-            if (plr == null)
+             if (plr == null)
                 return;
 
             if (!plr.ValidInTier(Tier, true))

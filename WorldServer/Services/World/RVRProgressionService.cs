@@ -5,6 +5,7 @@ using System.Linq;
 using Common;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.Objects;
 
 namespace WorldServer.Services.World
 {
@@ -14,6 +15,8 @@ namespace WorldServer.Services.World
         public static List<RVRProgression> _RVRProgressions;
         public static List<RVRPairing> _RVRPairings;
         public static List<CampaignObjectiveBuff> _CampaignObjectiveBuffs;
+        public static List<RVRAreaPolygon> _RVRAreaPolygons;
+        
 
         [LoadingFunction(true)]
         public static void LoadRVRProgressions()
@@ -38,6 +41,16 @@ namespace WorldServer.Services.World
             _CampaignObjectiveBuffs = Database.SelectAllObjects<CampaignObjectiveBuff>() as List<CampaignObjectiveBuff>;
             Log.Success("RVRProgression", "Loaded " + _CampaignObjectiveBuffs.Count + " Campaign Objective Buffs");
         }
+
+        [LoadingFunction(true)]
+        public static void LoadRVRAreaPolygons()
+        {
+            Log.Debug("RVRProgression", "Loading RVR Area Polygons...");
+            _RVRAreaPolygons = Database.SelectAllObjects<RVRAreaPolygon>() as List<RVRAreaPolygon>;
+            Log.Success("RVRProgression", "Loaded " + _RVRAreaPolygons.Count + " RVR Area Polygons");
+        }
+
+       
 
         public static void SaveRVRProgression(List<RVRProgression> rvrProg)
         {

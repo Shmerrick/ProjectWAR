@@ -6457,7 +6457,7 @@ namespace WorldServer
                 else
                     pqarea = 31;
             }
-            //    Log.Info("modpqarea", "  " + pqarea);
+            Log.Info("CheckArea", " PQ Area : " + pqarea);
 
             if (CurrentPQArea != pqarea)
             {
@@ -6472,6 +6472,7 @@ namespace WorldServer
                     {
                         if (keep.Info.ZoneId == Zone.ZoneId && keep.Info.PQuest?.PQAreaId == pqarea)
                         {
+                            Log.Info("CheckArea", " Adding Keep : " + keep.Info.Name);
                             keep.AddPlayer(this);
                         }
                     }

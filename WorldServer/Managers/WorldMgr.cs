@@ -16,6 +16,7 @@ using Common.Database.World.Maps;
 using NLog;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
+using WorldServer.World.Objects;
 using BattleFrontConstants = WorldServer.World.Battlefronts.Apocalypse.BattleFrontConstants;
 
 namespace WorldServer
@@ -56,7 +57,8 @@ namespace WorldServer
         public static LowerTierCampaignManager LowerTierCampaignManager;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public static RewardDistributor RewardDistributor;
-        
+        public static RVRArea RVRArea;
+    
 
         //Log.Success("StartingPairing: ", StartingPairing.ToString());
 
@@ -291,6 +293,9 @@ namespace WorldServer
 
             return L;
         }
+
+        
+
         #endregion
 
         #region Xp / Renown
@@ -1551,23 +1556,23 @@ namespace WorldServer
 
             Out.Fill(0, 83);
 
-            Out.WriteByte(3);   //dwarf fort
+            Out.WriteByte(BattleFrontConstants.ZONE_STATUS_ORDER_LOCKED);   //  Dwarf Fort
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN).LockStatus);
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus);
-            Out.WriteByte(3);   //or
+            Out.WriteByte(BattleFrontConstants.ZONE_STATUS_DESTRO_LOCKED);   // greenskin Fort
 
-            Out.WriteByte(3);   //emp fort
+            Out.WriteByte(BattleFrontConstants.ZONE_STATUS_CONTESTED);   // Empire Fort
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG).LockStatus);
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus);
-            Out.WriteByte(3);   //or
+            Out.WriteByte(BattleFrontConstants.ZONE_STATUS_DESTRO_LOCKED);   // Chaos Fort
 
-            Out.WriteByte(3);   //elf fort
+            Out.WriteByte(BattleFrontConstants.ZONE_STATUS_ORDER_LOCKED);   //elf fortress
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus);
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus);
-            Out.WriteByte(3);   //or
+            Out.WriteByte(BattleFrontConstants.ZONE_STATUS_DESTRO_LOCKED);   //Dark elf Fortress
 
             //For debugging purposes
             var lockStr = upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus.ToString();

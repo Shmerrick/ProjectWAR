@@ -349,6 +349,7 @@
     <Compile Include="World\Objects\Instances\SimpleMalghorGreathorn.cs" />
     <Compile Include="World\Objects\Instances\SimpleTheDeamonicBeast.cs" />
     <Compile Include="World\Objects\Instances\SimpleTonragThunderborn.cs" />
+    <Compile Include="World\Objects\RVRArea.cs" />
     <Compile Include="World\Scripting\BasicScript.cs" />
     <Compile Include="World\Scripting\BehaviorLib.cs" />
     <Compile Include="World\Scripting\Dungeons\AltdorfSewers\AltdorfSewersWingIII.cs" />

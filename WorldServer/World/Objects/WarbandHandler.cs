@@ -8,6 +8,7 @@ using System.Security.Policy;
 using System.Threading;
 using SystemData;
 using GameData;
+using WorldServer.World.Objects;
 
 namespace WorldServer
 {
@@ -701,7 +702,7 @@ namespace WorldServer
             //Out.WriteByte(0); // 03: PQ - 02: RVR - 01: PVE - 00: Any - 04: SCE - 05: DUN
             if (Leader.ScnInterface.Scenario != null)
                 Out.WriteByte(4);
-            else if (Group.PlayerInRvR(Leader))
+            else if (RVRArea.IsPlayerInRvR(Leader, WorldMgr.RVRArea.GetZoneRVRAreas()))
                 Out.WriteByte(2);
             else if (Leader.QtsInterface.PublicQuest!= null && Leader.QtsInterface.PublicQuest.ObjectWithinRadiusFeet(Leader, 1000))
                 Out.WriteByte(3);

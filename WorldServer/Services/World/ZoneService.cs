@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Common.Database.World.Battlefront;
 using WorldServer.World.BattleFronts;
 
 namespace WorldServer.Services.World
