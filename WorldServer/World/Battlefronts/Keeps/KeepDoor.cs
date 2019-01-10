@@ -84,7 +84,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 base.SetDeath(killer);
                 OpenDoor(false);
                 EvtInterface.RemoveEventNotify(EventName.OnReceiveDamage, OnReceiveDamage);
-                _keep.OnDoorDestroyed(_keepDoor.Info.Number, killer.Realm);
+                _keep.OnDoorDestroyed(_keepDoor.Info.Number, killer.Realm, _keepDoor.GameObject.DoorId);
                 Occlusion.SetFixtureVisible(_keepDoor.Info.DoorId, false);
             }
 
@@ -145,7 +145,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             public bool OnReceiveDamage(Object sender, object args)
             {
-                _keep.OnKeepDoorAttacked(_keepDoor.Info.Number, PctHealth);
+                _keep.OnKeepDoorAttacked(_keepDoor.Info.Number, PctHealth, this.DoorId);
                 return false;
             }
 

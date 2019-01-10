@@ -4,7 +4,8 @@ using FrameWork;
 using GameData;
 using NLog;
 using System;
-using System.Collections.Generic;
+ using System.Collections.Concurrent;
+ using System.Collections.Generic;
 using System.Linq;
 using SystemData;
 using WorldServer.Services.World;
@@ -44,6 +45,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public List<KeepNpcCreature> Creatures = new List<KeepNpcCreature>();
         public List<KeepDoor> Doors = new List<KeepDoor>();
+        public ConcurrentDictionary<uint, int> DoorRepairTimers = new ConcurrentDictionary<uint, int>();
         public Keep_Info Info;
         public List<KeepDoor.KeepGameObject> KeepGOs = new List<KeepDoor.KeepGameObject>();
 
@@ -170,7 +172,12 @@ namespace WorldServer.World.BattleFronts.Keeps
                     crea.SpawnGuard(Realm);
 
             foreach (var door in Doors)
+            {
+                // Set up a dictionary of door repair timers.
+                DoorRepairTimers.TryAdd(door.GameObject.DoorId, 0);
                 door.Spawn();
+            }
+
 
 
             if (WorldMgr._Keeps.ContainsKey(Info.KeepId))
@@ -219,7 +226,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 SendKeepInfo(plr);
             }
-            
+            KeepCommunications.SendKeepStatus(null, this);
+
             var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(activeBattleFrontId);
 
@@ -260,12 +268,12 @@ namespace WorldServer.World.BattleFronts.Keeps
         }
 
 
-        public void SetInnerDoorDown()
+        public void SetInnerDoorDown(uint doorId)
         {
             SendRegionMessage(Info.Name + "'s inner sanctum  door has been destroyed!");
-            _logger.Debug($"{Info.Name} : Inner door destroyed by realm {AttackingRealm}");
+            _logger.Debug($"{Info.Name} : Inner door destroyed by realm {AttackingRealm}. Door Id : {doorId}");
 
-            var door = Doors.Single(x => x.Info.Number == INNER_DOOR);
+            var door = Doors.Single(x => x.GameObject.DoorId == doorId);
 
             KeepRewardManager.InnerDoorReward(door,
                 AttackingRealm,
@@ -295,12 +303,12 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         }
 
-        public void SetOuterDoorDown()
+        public void SetOuterDoorDown(uint doorId)
         {
             SendRegionMessage(Info.Name + "'s outer door has been destroyed!");
-            _logger.Debug($"{Info.Name} : Outer door destroyed by realm {AttackingRealm}");
+            _logger.Debug($"{Info.Name} : Outer door destroyed by realm {AttackingRealm}. Door Id : {doorId}");
 
-            var door = Doors.Single(x => x.Info.Number == OUTER_DOOR);
+            var door = Doors.Single(x => x.GameObject.DoorId == doorId);
 
             KeepRewardManager.OuterDoorReward(door,
                 AttackingRealm,
@@ -329,9 +337,9 @@ namespace WorldServer.World.BattleFronts.Keeps
             KeepCommunications.SendKeepStatus(null, this);
         }
 
-        public bool BothDoorsRepaired()
+        public bool AllDoorsRepaired()
         {
-            // If both doors are alive - door status is ok
+            // If all doors are alive - door status is ok
             foreach (var keepDoor in Doors)
             {
                 if (keepDoor.GameObject.IsDead)
@@ -383,7 +391,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 SendKeepInfo(plr);
             }
-           
+            KeepCommunications.SendKeepStatus(null, this);
+
             ProgressionLogger.Info($"Resetting DefenceTickTimer {Info.Name}");
             DefenceTickTimer = 0;
         }
@@ -402,6 +411,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 SendKeepInfo(plr);
             }
+            KeepCommunications.SendKeepStatus(null, this);
         }
 
 
@@ -606,14 +616,14 @@ namespace WorldServer.World.BattleFronts.Keeps
             fsm.Fire(SM.Command.OnSeizedTimerEnd);
         }
 
-        public void OnOuterDoorDown()
+        public void OnOuterDoorDown(uint doorId)
         {
-            fsm.Fire(SM.Command.OnOuterDoorDown);
+            fsm.Fire(SM.Command.OnOuterDoorDown, doorId);
         }
 
-        public void OnInnerDoorDown()
+        public void OnInnerDoorDown(uint doorId)
         {
-            fsm.Fire(SM.Command.OnInnerDoorDown);
+            fsm.Fire(SM.Command.OnInnerDoorDown, doorId);
         }
 
         public void OnLordKilled()
@@ -728,7 +738,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public KeepStatus KeepStatus = KeepStatus.KEEPSTATUS_SAFE;
         public KeepMessage LastMessage;
 
-        public void OnKeepDoorAttacked(byte number, byte pctHealth)
+        public void OnKeepDoorAttacked(byte number, byte pctHealth, uint doorId)
         {
             // Reset the defence tick timer
             if (DefenceTickTimer > 0)
@@ -740,10 +750,10 @@ namespace WorldServer.World.BattleFronts.Keeps
             switch (number)
             {
                 case INNER_DOOR:
-                    OnInnerDoorAttacked(pctHealth);
+                    OnInnerDoorAttacked(pctHealth, doorId);
                     break;
                 case OUTER_DOOR:
-                    OnOuterDoorAttacked(pctHealth);
+                    OnOuterDoorAttacked(pctHealth, doorId);
                     break;
             }
         }
@@ -760,40 +770,44 @@ namespace WorldServer.World.BattleFronts.Keeps
             ProgressionLogger.Debug($"{Info.Name} : Keep NPC Attacked");
         }
 
-        public void OnOuterDoorAttacked(byte pctHealth)
+        public void OnOuterDoorAttacked(byte pctHealth, uint doorId)
         {
-            ProgressionLogger.Debug($" {Info.Name} : Outer Door Attacked ");
-            SendRegionMessage(Info.Name + "'s outer door is under attack!");
+            ProgressionLogger.Debug($" {Info.Name} : Outer Door ({doorId}) Attacked");
+            SendRegionMessage($"{Info.Name}'s outer door is under attack!");
+            
             EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
 
             foreach (var plr in PlayersInRange)
             {
                 SendKeepInfo(plr);
             }
+            KeepCommunications.SendKeepStatus(null, this);
         }
 
-        public void OnInnerDoorAttacked(byte pctHealth)
+        public void OnInnerDoorAttacked(byte pctHealth, uint doorId)
         {
-            ProgressionLogger.Debug($" {Info.Name} : Inner Door Attacked");
-            SendRegionMessage(Info.Name + "'s inner door is under attack!");
+            ProgressionLogger.Debug($" {Info.Name} : Inner Door ({doorId}) Attacked");
+            SendRegionMessage($"{Info.Name}'s inner door is under attack!");
+
             EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
 
             foreach (var plr in PlayersInRange)
             {
                 SendKeepInfo(plr);
             }
+            KeepCommunications.SendKeepStatus(null, this);
         }
 
 
-        public void OnDoorDestroyed(byte number, Realms realm)
+        public void OnDoorDestroyed(byte number, Realms realm, uint doorId)
         {
             switch (number)
             {
                 case INNER_DOOR:
-                    OnInnerDoorDown();
+                    OnInnerDoorDown(doorId);
                     break;
                 case OUTER_DOOR:
-                    OnOuterDoorDown();
+                    OnOuterDoorDown(doorId);
                     break;
             }
         }
@@ -1549,7 +1563,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             Out.WriteUInt32(0x000039F5);
             Out.WriteByte(0);
 
-            // Expansion for objective goal
+            // if player is not the owner and the keep is not locked - send attacker message.
             if (plr.Realm != Realm && KeepStatus != KeepStatus.KEEPSTATUS_LOCKED)
             {
                 Out.WriteUInt16(0x0100);
@@ -1563,15 +1577,19 @@ namespace WorldServer.World.BattleFronts.Keeps
                 Out.WriteByte(0);
             }
 
-            Out.WriteUInt16(0xFF00);
+            //Out.WriteUInt16(0xFF00);
+            Out.WriteByte(2);  // hard difficulty
+            Out.WriteByte(0);
             Out.WritePascalString(GetObjectiveMessage(plr));
             Out.WriteByte(0);
 
             Out.WritePascalString(GetObjectiveDescription(plr.Realm));
 
-            Out.WriteUInt32(0); // timer
-            Out.WriteUInt32(0); // timer
-            Out.Fill(0, 4);
+            // Zeroes previously
+            Out.WriteUInt32(10); // timer
+            Out.WriteUInt32(09); // timer
+            Out.WriteUInt32(59); // timer
+            //Out.Fill(0, 4);
             Out.WriteByte(0x71);
             Out.WriteByte(3); // keep
             Out.Fill(0, 3);

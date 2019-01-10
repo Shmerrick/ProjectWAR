@@ -78,12 +78,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Keep.SetKeepLocked());
             fsm.In(ProcessState.LordWounded)
                 .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Keep.SetKeepLocked());
+
             fsm.In(ProcessState.Safe)
-                .On(Command.OnOuterDoorDown).Goto(ProcessState.OuterDown).Execute(() => Keep.SetOuterDoorDown());
+                .On(Command.OnOuterDoorDown)
+                .Goto(ProcessState.OuterDown)
+                .Execute<uint>((uint doorId) => Keep.SetOuterDoorDown(doorId));
             fsm.In(ProcessState.Safe)
-                .On(Command.OnInnerDoorDown).Goto(ProcessState.InnerDown).Execute(() => Keep.SetInnerDoorDown());
+                .On(Command.OnInnerDoorDown)
+                .Goto(ProcessState.InnerDown)
+                .Execute<uint>((uint doorId) => Keep.SetInnerDoorDown(doorId));
             fsm.In(ProcessState.OuterDown)
-                .On(Command.OnInnerDoorDown).Goto(ProcessState.InnerDown).Execute(() => Keep.SetInnerDoorDown());
+                .On(Command.OnInnerDoorDown)
+                .Goto(ProcessState.InnerDown)
+                .Execute<uint>((uint doorId) => Keep.SetInnerDoorDown(doorId));
             /* Lord Wounded events */
             fsm.In(ProcessState.Safe)
                 .On(Command.OnLordWounded).Goto(ProcessState.LordWounded).Execute(() => Keep.SetLordWounded());
@@ -116,19 +123,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             /* Door repair events */
             fsm.In(ProcessState.OuterDown)
                 .On(Command.OnOuterDownTimerEnd)
-                .If(Keep.BothDoorsRepaired)
+                .If(Keep.AllDoorsRepaired)
                 .Goto(ProcessState.Safe)
                 .Execute(() => Keep.SetOuterDoorRepaired())
                 .Execute(() => Keep.SetKeepSafe());
             fsm.In(ProcessState.InnerDown)
                 .On(Command.OnOuterDownTimerEnd)
-                .If(Keep.BothDoorsRepaired)
+                .If(Keep.AllDoorsRepaired)
                 .Goto(ProcessState.Safe)
                 .Execute(() => Keep.SetOuterDoorRepaired())
                 .Execute(() => Keep.SetKeepSafe());
             fsm.In(ProcessState.LordWounded)
                 .On(Command.OnOuterDownTimerEnd)
-                .If(Keep.BothDoorsRepaired)
+                .If(Keep.AllDoorsRepaired)
                 .Goto(ProcessState.Safe)
                 .Execute(() => Keep.SetOuterDoorRepaired())
                 .Execute(() => Keep.SetKeepSafe());
@@ -136,19 +143,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             /* Door repair events */
             fsm.In(ProcessState.OuterDown)
                 .On(Command.OnInnerDownTimerEnd)
-                .If(Keep.BothDoorsRepaired)
+                .If(Keep.AllDoorsRepaired)
                 .Goto(ProcessState.Safe)
                 .Execute(() => Keep.SetInnerDoorRepaired())
                 .Execute(() => Keep.SetKeepSafe());
             fsm.In(ProcessState.InnerDown)
                 .On(Command.OnInnerDownTimerEnd)
-                .If(Keep.BothDoorsRepaired)
+                .If(Keep.AllDoorsRepaired)
                 .Goto(ProcessState.Safe)
                 .Execute(() => Keep.SetInnerDoorRepaired())
                 .Execute(() => Keep.SetKeepSafe());
             fsm.In(ProcessState.LordWounded)
                 .On(Command.OnInnerDownTimerEnd)
-                .If(Keep.BothDoorsRepaired)
+                .If(Keep.AllDoorsRepaired)
                 .Goto(ProcessState.Safe)
                 .Execute(() => Keep.SetInnerDoorRepaired())
                 .Execute(() => Keep.SetKeepSafe());
