@@ -13,8 +13,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public enum Command
         {
             OnOpenBattleFront,
-            OnOuterDownTimerEnd,
-            OnInnerDownTimerEnd,
+            //OnOuterDownTimerEnd,
+            //OnInnerDownTimerEnd,
             OnSeizedTimerEnd,
             OnOuterDoorDown,
             OnInnerDoorDown,
@@ -24,7 +24,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             OnDefenceTickTimerEnd,
             OnBackToSafeTimerEnd,
             OnLordWounded,
-            AllDoorsRepaired
+            AllDoorsRepaired,
+            OnDoorRepaired
         }
 
         public enum ProcessState
@@ -112,53 +113,48 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             fsm.In(ProcessState.Seized)
                 .On(Command.OnSeizedTimerEnd).Goto(ProcessState.Safe).Execute(() => Keep.SetKeepSafe());
 
-            /* Defence tick events */
-            //fsm.In(ProcessState.OuterDown)
-            //    .On(Command.OnDefenceTickTimerEnd).Goto(ProcessState.DefenceTick).Execute(() => Keep.SetDefenceTick());
-            //fsm.In(ProcessState.InnerDown)
-            //    .On(Command.OnDefenceTickTimerEnd).Goto(ProcessState.DefenceTick).Execute(() => Keep.SetDefenceTick());
             fsm.In(ProcessState.DefenceTick)
                 .On(Command.OnBackToSafeTimerEnd).Goto(ProcessState.Safe).Execute(() => Keep.SetKeepSafe());
 
-            /* Door repair events */
+            
             fsm.In(ProcessState.OuterDown)
-                .On(Command.OnOuterDownTimerEnd)
+                .On(Command.OnDoorRepaired)
                 .If(Keep.AllDoorsRepaired)
                 .Goto(ProcessState.Safe)
-                .Execute(() => Keep.SetOuterDoorRepaired())
+                //.Execute<uint>((uint doorId) => Keep.SetDoorRepaired(doorId))
                 .Execute(() => Keep.SetKeepSafe());
             fsm.In(ProcessState.InnerDown)
-                .On(Command.OnOuterDownTimerEnd)
+                .On(Command.OnDoorRepaired)
                 .If(Keep.AllDoorsRepaired)
                 .Goto(ProcessState.Safe)
-                .Execute(() => Keep.SetOuterDoorRepaired())
+                //.Execute<uint>((uint doorId) => Keep.SetDoorRepaired(doorId))
                 .Execute(() => Keep.SetKeepSafe());
             fsm.In(ProcessState.LordWounded)
-                .On(Command.OnOuterDownTimerEnd)
+                .On(Command.OnDoorRepaired)
                 .If(Keep.AllDoorsRepaired)
                 .Goto(ProcessState.Safe)
-                .Execute(() => Keep.SetOuterDoorRepaired())
+                //.Execute<uint>((uint doorId) => Keep.SetDoorRepaired(doorId))
                 .Execute(() => Keep.SetKeepSafe());
 
-            /* Door repair events */
-            fsm.In(ProcessState.OuterDown)
-                .On(Command.OnInnerDownTimerEnd)
-                .If(Keep.AllDoorsRepaired)
-                .Goto(ProcessState.Safe)
-                .Execute(() => Keep.SetInnerDoorRepaired())
-                .Execute(() => Keep.SetKeepSafe());
-            fsm.In(ProcessState.InnerDown)
-                .On(Command.OnInnerDownTimerEnd)
-                .If(Keep.AllDoorsRepaired)
-                .Goto(ProcessState.Safe)
-                .Execute(() => Keep.SetInnerDoorRepaired())
-                .Execute(() => Keep.SetKeepSafe());
-            fsm.In(ProcessState.LordWounded)
-                .On(Command.OnInnerDownTimerEnd)
-                .If(Keep.AllDoorsRepaired)
-                .Goto(ProcessState.Safe)
-                .Execute(() => Keep.SetInnerDoorRepaired())
-                .Execute(() => Keep.SetKeepSafe());
+            ///* Door repair events */
+            //fsm.In(ProcessState.OuterDown)
+            //    .On(Command.OnDoorRepaired)
+            //    .If(Keep.AllDoorsRepaired)
+            //    .Goto(ProcessState.Safe)
+            //    .Execute(() => Keep.SetInnerDoorRepaired())
+            //    .Execute(() => Keep.SetKeepSafe());
+            //fsm.In(ProcessState.InnerDown)
+            //    .On(Command.OnDoorRepaired)
+            //    .If(Keep.AllDoorsRepaired)
+            //    .Goto(ProcessState.Safe)
+            //    .Execute(() => Keep.SetInnerDoorRepaired())
+            //    .Execute(() => Keep.SetKeepSafe());
+            //fsm.In(ProcessState.LordWounded)
+            //    .On(Command.OnDoorRepaired)
+            //    .If(Keep.AllDoorsRepaired)
+            //    .Goto(ProcessState.Safe)
+            //    .Execute(() => Keep.SetInnerDoorRepaired())
+            //    .Execute(() => Keep.SetKeepSafe());
 
             fsm.In(ProcessState.Locked)
                 .On(Command.OnOpenBattleFront).Goto(ProcessState.Safe).Execute(() => Keep.SetKeepSafe());

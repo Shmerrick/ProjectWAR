@@ -28,15 +28,13 @@ namespace WorldServer.World.BattleFronts.Keeps
         private readonly List<Hardpoint> _hardpoints = new List<Hardpoint>();
 
         #region timers
-        public int OuterDownTimer;
-        public int InnerDownTimer;
         public int SeizedTimer;
         public int LordKilledTimer;
         public int DefenceTickTimer;
         public int BackToSafeTimer;
 
-        public const int OuterDownTimerLength = 1 * 60;
-        public const int InnerDownTimerLength = 1 * 60;
+        public const int DoorAttackedRepairIncrementLength = 1 * 5;
+        public const int DoorRepairTimerLength = 1 * 60;
         public const int SeizedTimerLength = 1 * 60;
         public const int LordKilledTimerLength = 1 * 60;
         public const int DefenceTickTimerLength = 1 * 60;
@@ -119,6 +117,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             OuterPosternCanBeUsed = false;
 
             PlayersCloseToLord = new HashSet<Player>();
+            
         }
 
 
@@ -136,11 +135,18 @@ namespace WorldServer.World.BattleFronts.Keeps
         public void CheckTimers()
         {
             var currentTime = TCPManager.GetTimeStamp();
+
+            foreach (var doorRepairTimer in DoorRepairTimers)
+            {
+               if (doorRepairTimer.Value > 0 && doorRepairTimer.Value <= currentTime)
+                {
+                    var doorIdRepaired = doorRepairTimer.Key;
+                    DoorRepairTimers[doorRepairTimer.Key] = 0;
+                    DoorRepairTimers[doorRepairTimer.Key] = 0;
+                    OnDoorRepaired(doorIdRepaired);
+                }
+            }
             
-            if (OuterDownTimer > 0 && OuterDownTimer <= currentTime)
-                OnOuterDownTimerEnd();
-            if (InnerDownTimer > 0 && InnerDownTimer <= currentTime)
-                OnInnerDownTimerEnd();
             if (SeizedTimer > 0 && SeizedTimer <= currentTime)
                 OnSeizedTimerEnd();
             if (LordKilledTimer > 0 && LordKilledTimer <= currentTime)
@@ -173,9 +179,8 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             foreach (var door in Doors)
             {
-                // Set up a dictionary of door repair timers.
-                DoorRepairTimers.TryAdd(door.GameObject.DoorId, 0);
                 door.Spawn();
+               
             }
 
 
@@ -267,6 +272,39 @@ namespace WorldServer.World.BattleFronts.Keeps
             
         }
 
+        public void SetDoorRepaired(uint doorId)
+        {
+            _logger.Debug($"{Info.Name} : Door REPAIRED. Door Id : {doorId}");
+
+            foreach (var keepDoor in Doors)
+            {
+                if (keepDoor.GameObject.DoorId == doorId)
+                {
+                    keepDoor.Spawn();
+                    keepDoor.GameObject.MaxHealth = 100;
+                    if (keepDoor.Info.Number == INNER_DOOR)
+                        InnerPosternCanBeUsed = false;
+                    if (keepDoor.Info.Number == OUTER_DOOR)
+                        OuterPosternCanBeUsed = false;
+
+                }
+            }
+        }
+
+        //public void SetInnerDoorRepaired()
+        //{
+        //    _logger.Debug($"Inner Door Repaired");
+
+        //    Doors.Single(x => x.Info.Number == INNER_DOOR).Spawn();
+        //    Doors.Single(x => x.Info.Number == INNER_DOOR).GameObject.MaxHealth = 100;
+        //}
+
+        //public void SetOuterDoorRepaired()
+        //{
+        //    _logger.Debug($"Outer Door Repaired");
+
+        //    Doors.Single(x => x.Info.Number == OUTER_DOOR).Spawn();
+        //}
 
         public void SetInnerDoorDown(uint doorId)
         {
@@ -290,7 +328,8 @@ namespace WorldServer.World.BattleFronts.Keeps
                     break;
                 }
             }
-            InnerDownTimer = TCPManager.GetTimeStamp() + InnerDownTimerLength;
+            DoorRepairTimers[doorId] = TCPManager.GetTimeStamp() + DoorRepairTimerLength;
+
             KeepStatus = KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK;
             foreach (var plr in this.Region.Players)
             {
@@ -326,7 +365,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 }
             }
 
-            OuterDownTimer = TCPManager.GetTimeStamp() + OuterDownTimerLength;
+            DoorRepairTimers[doorId] = TCPManager.GetTimeStamp() + DoorRepairTimerLength;
 
             KeepStatus = KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK;
             KeepCommunications.SendKeepStatus(null, this);
@@ -352,25 +391,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         }
 
 
-        public void SetInnerDoorRepaired()
-        {
-            _logger.Debug($"Inner Door Repaired");
-
-            Doors.Single(x => x.Info.Number == INNER_DOOR).Spawn();
-            Doors.Single(x => x.Info.Number == INNER_DOOR).GameObject.MaxHealth = 100;
-
-            InnerPosternCanBeUsed = false;
-        }
-
-        public void SetOuterDoorRepaired()
-        {
-            _logger.Debug($"Outer Door Repaired");
-
-            Doors.Single(x => x.Info.Number == OUTER_DOOR).Spawn();
-            OuterPosternCanBeUsed = false;
-
-
-        }
+       
 
         /// <summary>
         /// Set the keep safe
@@ -450,6 +471,14 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             InnerPosternCanBeUsed = false;
             OuterPosternCanBeUsed = false;
+
+            ProgressionLogger.Trace($"Setting Door Timers {Info.Name}. Pending Realm = {PendingRealm}");
+
+            foreach (var door in Doors)
+            {
+                // Set up a dictionary of door repair timers.
+                DoorRepairTimers.TryAdd(door.GameObject.DoorId, 0);
+            }
 
         }
 
@@ -592,22 +621,31 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         }
 
-        public void OnOuterDownTimerEnd()
+        public void OnDoorRepaired(uint doorId)
         {
-            _logger.Debug($"Outer door has reset");
-            OuterDownTimer = 0;
-            Doors.Single(x => x.Info.Number == OUTER_DOOR).Spawn();
-            fsm.Fire(SM.Command.OnOuterDownTimerEnd);
-        }
-
-        public void OnInnerDownTimerEnd()
-        {
-            _logger.Debug($"Inner door has reset");
-            InnerDownTimer = 0;
-            Doors.Single(x => x.Info.Number == INNER_DOOR).Spawn();
-            fsm.Fire(SM.Command.OnInnerDownTimerEnd);
+            _logger.Debug($"Door has been repaired {doorId}");
+            
+            SetDoorRepaired(doorId);
+            fsm.Fire(SM.Command.OnDoorRepaired, doorId);
 
         }
+
+        //public void OnOuterDownTimerEnd()
+        //{
+        //    _logger.Debug($"Outer door has reset");
+        //    OuterDownTimer = 0;
+        //    Doors.Single(x => x.Info.Number == OUTER_DOOR).Spawn();
+        //    fsm.Fire(SM.Command.OnOuterDownTimerEnd);
+        //}
+
+        //public void OnInnerDownTimerEnd()
+        //{
+        //    _logger.Debug($"Inner door has reset");
+        //    InnerDownTimer = 0;
+        //    Doors.Single(x => x.Info.Number == INNER_DOOR).Spawn();
+        //    fsm.Fire(SM.Command.OnInnerDownTimerEnd);
+
+        //}
 
 
         public void OnSeizedTimerEnd()
@@ -745,6 +783,18 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 DefenceTickTimer = TCPManager.GetTimeStamp() + DefenceTickTimerLength;
                 ProgressionLogger.Debug($"{Info.Name} : Defence Timer {DefenceTickTimer}");
+            }
+
+            // On a door being attacked, extend its repair time by a given amount, back up to the maximum repair time.
+            foreach (var doorRepairTimer in DoorRepairTimers)
+            {
+                if (doorRepairTimer.Value > 0)
+                {
+                    if ((doorRepairTimer.Value + DoorAttackedRepairIncrementLength) > DoorRepairTimerLength)
+                        DoorRepairTimers[doorRepairTimer.Key] = DoorRepairTimerLength;
+                    else
+                        DoorRepairTimers[doorRepairTimer.Key] += DoorAttackedRepairIncrementLength;
+                }
             }
 
             switch (number)

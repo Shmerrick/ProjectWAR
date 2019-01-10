@@ -161,7 +161,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {
                         foreach (var keep in Keeps)
                         {
-                            keep.CheckTimers();
+                            if (keep.KeepStatus != KeepStatus.KEEPSTATUS_LOCKED)
+                            {
+                                keep.CheckTimers();
+                            }
                         }
                     }
                 }
