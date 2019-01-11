@@ -35,7 +35,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public const int DoorRepairTimerLength = 1 * 60;
         public const int SeizedTimerLength = 1 * 60;
-        public const int LordKilledTimerLength = 1 * 60;
+        public const int LordKilledTimerLength = 1 * 15;
         public const int DefenceTickTimerLength = 1 * 60;
         public const int BackToSafeTimerLength = 5 * 60;
         #endregion
@@ -116,10 +116,10 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             PlayersCloseToLord = new HashSet<Player>();
 
-            SeizedTimer = new KeepTimer("Seized Keep Timer", 0, SeizedTimerLength);
-            LordKilledTimer = new KeepTimer("Lord Killed Timer", 0, LordKilledTimerLength);
-            DefenceTickTimer = new KeepTimer("Defence Tick Timer", 0, DefenceTickTimerLength);
-            BackToSafeTimer = new KeepTimer("Back to Safe Keep Timer", 0, BackToSafeTimerLength);
+            SeizedTimer = new KeepTimer($"Seized Keep {Info.Name} Timer", 0, SeizedTimerLength);
+            LordKilledTimer = new KeepTimer($"Lord Killed {Info.Name} Timer", 0, LordKilledTimerLength);
+            DefenceTickTimer = new KeepTimer($"Defence Tick {Info.Name} Timer", 0, DefenceTickTimerLength);
+            BackToSafeTimer = new KeepTimer($"Back to Safe {Info.Name} Keep Timer", 0, BackToSafeTimerLength);
 
         }
 
@@ -143,19 +143,32 @@ namespace WorldServer.World.BattleFronts.Keeps
                 {
                     var doorIdRepaired = doorRepairTimer.Key;
                     DoorRepairTimers[doorRepairTimer.Key].Reset();
-                    DoorRepairTimers[doorRepairTimer.Key].Reset();
                     OnDoorRepaired(doorIdRepaired);
+
+                    return;
                 }
             }
 
             if (SeizedTimer.IsExpired())
+            {
                 OnSeizedTimerEnd();
+                return;
+            }
             if (LordKilledTimer.IsExpired())
+            {
                 OnLordKilledTimerEnd();
+                return;
+            }
             if (DefenceTickTimer.IsExpired())
+            {
                 OnDefenceTickTimerEnd();
+                return;
+            }
             if (BackToSafeTimer.IsExpired())
+            {
                 OnBackToSafeTimerEnd();
+                return;
+            }
         }
 
         public override void OnLoad()
@@ -196,7 +209,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             KeepStatus = KeepStatus.KEEPSTATUS_SEIZED;
 
         }
-        
+
         public void SetLordKilled()
         {
             _logger.Debug($"{Info.Name} : Lord Killed");
@@ -246,20 +259,36 @@ namespace WorldServer.World.BattleFronts.Keeps
             foreach (var crea in Creatures)
                 crea.DespawnGuard();
 
-            SendRegionMessage(Info.Name + "'s Keep Lord has fallen!");
+            SendRegionMessage(Info.Name + "'s Keep Lord has fallen! Hold the keep and await reinforcements.");
 
-            KeepCommunications.SendKeepStatus(null, this);
+            KeepStatus = KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK;
+
             EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
 
             PlayersKilledInRange = 0;
+
+            ResetAllStateTimers();
+
             LordKilledTimer.Start();
 
+        }
 
+        private void ResetAllStateTimers()
+        {
+            _logger.Debug($"{Info.Name} Reset All Timers ");
+            foreach (var doorRepairTimer in DoorRepairTimers)
+            {
+                DoorRepairTimers[doorRepairTimer.Key].Reset();
+            }
+
+            SeizedTimer.Reset();
+            LordKilledTimer.Reset();
+            DefenceTickTimer.Reset();
+            BackToSafeTimer.Reset();
         }
 
         public void SetDoorRepaired(uint doorId)
         {
-            _logger.Debug($"{Info.Name} : Door REPAIRED. Door Id : {doorId}");
 
             foreach (var keepDoor in Doors)
             {
@@ -334,7 +363,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             DoorRepairTimers[doorId].Start();
 
             KeepStatus = KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK;
-            
+
         }
 
         public bool AllDoorsRepaired()
@@ -345,6 +374,9 @@ namespace WorldServer.World.BattleFronts.Keeps
                 if (keepDoor.GameObject.IsDead)
                     return false;
             }
+
+            _logger.Info($"{Info.Name} : All doors repaired");
+
             // Start the defence tick timer once the outer door has been repaired.
             DefenceTickTimer.Start();
 
@@ -365,6 +397,9 @@ namespace WorldServer.World.BattleFronts.Keeps
                 _logger.Warn($"{Info.Name} : Lord is null");
             if (KeepLord.Creature == null)
                 _logger.Warn($"{Info.Name} : KeepLord.Creature is null");
+
+            _logger.Debug($"Defence Tick for {Info.Name} - {KeepLord?.Creature?.PlayersInRange} players in range.");
+
 
             KeepRewardManager.DefenceTickReward(this, KeepLord?.Creature?.PlayersInRange, Info.Name, Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
 
@@ -439,7 +474,11 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             foreach (var door in Doors)
             {
-                DoorRepairTimers.TryAdd(door.GameObject.DoorId, new KeepTimer($"Door {door.GameObject.DoorId} Repair Timer", 0, DoorRepairTimerLength));
+                if (!DoorRepairTimers.ContainsKey(door.GameObject.DoorId))
+                {
+                    DoorRepairTimers.TryAdd(door.GameObject.DoorId, new KeepTimer($"Door {door.GameObject.DoorId} Repair Timer", 0, DoorRepairTimerLength));
+                }
+
             }
 
         }
@@ -470,6 +509,8 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             // Remove any persisted values for this keep.
             RVRProgressionService.RemoveBattleFrontKeepStatus(Info.KeepId);
+            // Stop the state machine
+           //  this.fsm.Stop();
         }
 
 
@@ -1073,14 +1114,16 @@ namespace WorldServer.World.BattleFronts.Keeps
                 case KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK:
                     return "Destroy the Sanctum Door";
                 case KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK:
-                    return "Kill the Keep Lord";
+                    return "Kill the Lord";
                 case KeepStatus.KEEPSTATUS_SEIZED:
-                    return "Hold the Battlefield Objectives";
+                    return "Hold your ground until reinforcements arrive";
                 case KeepStatus.KEEPSTATUS_SAFE:
                 case KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK:
                     return "Destroy the Outer Door";
                 case KeepStatus.KEEPSTATUS_LOCKED:
-                    return "Keep Locked";
+                    return "Locked";
+                case KeepStatus.KEEPSTATUS_HOLD_THE_KEEP:
+                    return "Await reinforcements";
                 default:
                     return "Destroy the Outer Door";
             }

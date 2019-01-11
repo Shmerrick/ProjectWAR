@@ -23,7 +23,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             Value = value;
             Length = length;
 
-            _logger.Debug($"{this.KeepTimerName} created, value={Value}, length={Length}");
+            _logger.Trace($"{this.KeepTimerName} created, value={Value}, length={Length}");
         }
       
         public int Start()
@@ -38,7 +38,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         {
             if (Value > 0)
             {
-                if (TCPManager.GetTimeStamp() > Length)
+                if (TCPManager.GetTimeStamp() > Value)
                 {
                     _logger.Debug($"{this.KeepTimerName} expired, value={Value}, resetting.");
                     Reset();

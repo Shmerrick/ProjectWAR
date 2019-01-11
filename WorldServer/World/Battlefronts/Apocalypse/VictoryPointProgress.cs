@@ -231,16 +231,38 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {
                         if (battleFrontKeep.KeepStatus == KeepStatus.KEEPSTATUS_SAFE || battleFrontKeep.KeepStatus == KeepStatus.KEEPSTATUS_LOCKED)
                         {
-                            if (battleFrontKeep.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                            //TODO
+                            // Fortresses have 8 doors (inc postern). This is a bit dirty.
+                            //if (battleFrontKeep.Doors.Count == 8)
+                            //{
+                            //    // Add Keep VPP
+                            //    if (battleFrontKeep.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                            //    {
+                            //        DestructionVictoryPoints += 1000;
+                            //        DestructionVictoryDominationCount++;
+                            //    }
+                            //    if (battleFrontKeep.Realm == Realms.REALMS_REALM_ORDER)
+                            //    {
+                            //        OrderVictoryPoints += 1000;
+                            //        OrderVictoryDominationCount++;
+                            //    }
+                            //}
+                            //else
                             {
-                                DestructionVictoryPoints += 300;
-                                DestructionVictoryDominationCount++;
+                                // Add Keep VPP
+                                if (battleFrontKeep.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                                {
+                                    DestructionVictoryPoints += 300;
+                                    DestructionVictoryDominationCount++;
+                                }
+                                if (battleFrontKeep.Realm == Realms.REALMS_REALM_ORDER)
+                                {
+                                    OrderVictoryPoints += 300;
+                                    OrderVictoryDominationCount++;
+                                }
                             }
-                            if (battleFrontKeep.Realm == Realms.REALMS_REALM_ORDER)
-                            {
-                                OrderVictoryPoints += 300;
-                                OrderVictoryDominationCount++;
-                            }
+
+                            
                         }
                     }
                 }

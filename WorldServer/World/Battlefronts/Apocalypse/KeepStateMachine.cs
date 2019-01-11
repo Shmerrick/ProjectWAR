@@ -160,15 +160,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void RecordTransition(object sender, EventArgs e)
         {
-            _logger.Debug($"{e.ToString()}");
-
             // Send packets to players, on FSM transition.
             Keep.InformRegionPlayersOfKeepStatus();
-            
             var stateInformation = (Appccelerate.StateMachine.Machine.Events.TransitionCompletedEventArgs<SM.ProcessState, SM.Command>)e;
             // Save the state transition.
-            _logger.Debug($"Saving keep state {Keep.Info.KeepId},{stateInformation.StateId}");
-            RVRProgressionService.SaveBattleFrontKeepState(Keep.Info.KeepId, stateInformation.StateId);
+            _logger.Debug($"Saving keep state KeepId : {Keep.Info.KeepId} {Keep.Info.Name}, " +
+                          $"State : {stateInformation.StateId}=>{stateInformation.NewStateId} due to {stateInformation.EventId}");
+            RVRProgressionService.SaveBattleFrontKeepState(Keep.Info.KeepId, stateInformation.NewStateId);
 
         }
     }

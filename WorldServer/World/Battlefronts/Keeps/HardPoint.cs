@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 
 namespace WorldServer.World.Battlefronts.Keeps
 {
@@ -12,6 +13,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         public readonly ushort Heading;
         public Siege CurrentWeapon;
         public KeepMessage SiegeRequirement = KeepMessage.Safe;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public Hardpoint(SiegeType type, int x, int y, int z, int heading)
         {
@@ -20,6 +22,8 @@ namespace WorldServer.World.Battlefronts.Keeps
             Y = y;
             Z = z;
             Heading = (ushort)heading;
+
+            _logger.Debug($"Placed Hardpoint {x} {y} {z} {heading}");
         }
     }
 }

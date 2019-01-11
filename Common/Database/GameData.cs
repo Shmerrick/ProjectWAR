@@ -1318,7 +1318,8 @@ namespace GameData
         KEEPSTATUS_KEEP_LORD_UNDER_ATTACK = 4,
         KEEPSTATUS_SEIZED = 5,
         KEEPSTATUS_LOCKED = 6,
-        KEEPSTATUS_RUINED = 7
+        KEEPSTATUS_RUINED = 7,
+        KEEPSTATUS_HOLD_THE_KEEP = 8
     };
 
     public enum Cultivation

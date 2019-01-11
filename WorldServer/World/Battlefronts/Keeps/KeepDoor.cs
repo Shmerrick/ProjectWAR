@@ -282,7 +282,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 return;
             }
 
-            _logger.Debug("KeepDoor", "Spawning Keep Door = " + Info.DoorId + " Number = " + Info.Number + " for Keep =" + Keep.Info.Name);
+            _logger.Debug($"Spawning Keep Door = {Info.DoorId} Number = {Info.Number} for Keep = {Keep.Info.Name}");
 
             GameObject_spawn spawn = new GameObject_spawn
             {
