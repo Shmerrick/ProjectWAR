@@ -1562,11 +1562,13 @@ namespace WorldServer
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus);
             Out.WriteByte(BattleFrontConstants.ZONE_STATUS_DESTRO_LOCKED);   // greenskin Fort
 
-            Out.WriteByte(BattleFrontConstants.ZONE_STATUS_CONTESTED);   // Empire Fort
-            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
+            //Out.WriteByte(BattleFrontConstants.ZONE_STATUS_CONTESTED);   // Empire Fort
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKWALD).LockStatus);
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus); 
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG).LockStatus);
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus);
-            Out.WriteByte(BattleFrontConstants.ZONE_STATUS_DESTRO_LOCKED);   // Chaos Fort
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_THE_MAW).LockStatus);
+            //Out.WriteByte(BattleFrontConstants.ZONE_STATUS_DESTRO_LOCKED);   // Chaos Fort
 
             Out.WriteByte(BattleFrontConstants.ZONE_STATUS_ORDER_LOCKED);   //elf fortress
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)

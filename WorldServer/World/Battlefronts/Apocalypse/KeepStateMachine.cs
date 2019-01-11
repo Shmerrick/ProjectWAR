@@ -13,18 +13,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public enum Command
         {
             OnOpenBattleFront,
-            //OnOuterDownTimerEnd,
-            //OnInnerDownTimerEnd,
             OnSeizedTimerEnd,
             OnOuterDoorDown,
             OnInnerDoorDown,
             OnLordKilled,
             OnLockZone,
             OnLordKilledTimerEnd,
-            OnDefenceTickTimerEnd,
             OnBackToSafeTimerEnd,
             OnLordWounded,
-            AllDoorsRepaired,
             OnDoorRepaired
         }
 
@@ -38,9 +34,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Seized,
             Locked,
             DefenceTick,
-            LordWounded,
-            OuterDoorRepaired,
-            InnerDoorRepaired
+            LordWounded
+            
 
         }
 

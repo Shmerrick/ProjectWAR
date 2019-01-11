@@ -145,7 +145,10 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             public bool OnReceiveDamage(Object sender, object args)
             {
-                _keep.OnKeepDoorAttacked(_keepDoor.Info.Number, PctHealth, this.DoorId);
+
+                if (PctHealth < 50)
+                    _keep.OnKeepDoorAttacked(_keepDoor.Info.Number, PctHealth, this.DoorId);
+                
                 return false;
             }
 

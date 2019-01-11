@@ -44,8 +44,9 @@ namespace WorldServer.World.BattleFronts.Keeps
         public List<KeepDoor> Doors = new List<KeepDoor>();
         public ConcurrentDictionary<uint, KeepTimer> DoorRepairTimers = new ConcurrentDictionary<uint, KeepTimer>();
         public Keep_Info Info;
+        public KeepStatus KeepStatus = KeepStatus.KEEPSTATUS_SAFE;
 
-
+        public byte Rank = 0;
         public bool RamDeployed;
         public Realms Realm;
         public RegionMgr Region;
@@ -277,7 +278,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void SetInnerDoorDown(uint doorId)
         {
-            SendRegionMessage(Info.Name + "'s inner sanctum  door has been destroyed!");
+            SendRegionMessage(Info.Name + "'s inner sanctum door has been destroyed!");
             _logger.Debug($"{Info.Name} : Inner door destroyed by realm {AttackingRealm}. Door Id : {doorId}");
 
             var door = Doors.Single(x => x.GameObject.DoorId == doorId);
@@ -300,7 +301,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             DoorRepairTimers[doorId] = new KeepTimer($"Door {doorId} Repair Timer", 0, DoorRepairTimerLength);
             DoorRepairTimers[doorId].Start();
 
-            KeepStatus = KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK;
+            KeepStatus = KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK;
 
             InnerPosternCanBeUsed = true;
 
@@ -332,10 +333,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             DoorRepairTimers[doorId] = new KeepTimer($"Door {doorId} Repair Timer", 0, DoorRepairTimerLength);
             DoorRepairTimers[doorId].Start();
 
-
-            KeepStatus = KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK;
-
-
+            KeepStatus = KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK;
+            
         }
 
         public bool AllDoorsRepaired()
@@ -490,8 +489,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             plr.SendClientMessage($"[{Info.Name}]", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
             plr.SendClientMessage(
                 $"{Enum.GetName(typeof(KeepStatus), KeepStatus)} and held by {(Realm == Realms.REALMS_REALM_NEUTRAL ? "no realm" : (Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"))}");
-            plr.SendClientMessage($"Last message sent: {Enum.GetName(typeof(KeepMessage), LastMessage)}");
-            //plr.SendClientMessage($"Rank {Rank}, Ration Factor {GetRationFactor()}");
 
             var lord = Creatures.Find(x => x.Info.KeepLord);
 
@@ -529,7 +526,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             var keepStatus = "";
             if (this != null && ZoneId != null)
             {
-                keepStatus = "SoR_T" + Tier + "_Keep_Update:" + ZoneId + ":" + Info.KeepId + ":" + (int)Realm + ":" + Rank + ":" + (int)KeepStatus + ":" + (int)LastMessage;
+                keepStatus = "SoR_T" + Tier + "_Keep_Update:" + ZoneId + ":" + Info.KeepId + ":" + (int)Realm + ":" + Rank + ":" + (int)KeepStatus + ":" + (int)0;
                 if (Tier == 4)
                 {
                     var BattleFrontStatus = BattleFrontService.GetStatusFor(Region.RegionId);
@@ -728,14 +725,15 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         #region Keep Progression
 
-        public KeepStatus KeepStatus = KeepStatus.KEEPSTATUS_SAFE;
-        public KeepMessage LastMessage;
 
         public void OnKeepDoorAttacked(byte number, byte pctHealth, uint doorId)
         {
             // Reset the Def Tick timer.
             if (pctHealth < HEALTH_BOUNDARY_DEFENCE_TICK_RESTART)
+            {
                 DefenceTickTimer.Start();
+                KeepStatus = KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK;
+            }
 
             switch (number)
             {
@@ -750,6 +748,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void OnKeepNpcAttacked(byte pctHealth)
         {
+            // If NPC has been killed
             if (pctHealth == 0)
                 DefenceTickTimer.Start();
 
@@ -867,27 +866,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
             return closePlayers;
         }
-
-        #endregion
-
-        #region Reward Management
-
-        private ushort _playersKilledInRange;
-
-        public void ModifyLoot(LootContainer lootContainer)
-        {
-            if (StaticRandom.Instance.Next(100) <= 10)
-                lootContainer.LootInfo.Add(new LootInfo(ItemService.GetItem_Info(208470)));
-        }
-
-        #endregion
-
-        #region Resources
-
-        public byte Rank { get; set; }
-
-        private int _nextDoorWarnTime;
-        private int _nextDegenerationWarnTime;
 
         #endregion
 
@@ -1182,19 +1160,17 @@ namespace WorldServer.World.BattleFronts.Keeps
                 Out.WriteByte(0);
             }
 
-            //Out.WriteUInt16(0xFF00);
-            Out.WriteByte(2);  // hard difficulty
-            Out.WriteByte(0);
+            Out.WriteUInt16(0xFF00);
             Out.WritePascalString(GetObjectiveMessage(plr));
             Out.WriteByte(0);
 
             Out.WritePascalString(GetObjectiveDescription(plr.Realm));
 
             // Zeroes previously
-            Out.WriteUInt32(10); // timer
-            Out.WriteUInt32(09); // timer
-            Out.WriteUInt32(59); // timer
-            //Out.Fill(0, 4);
+            Out.WriteUInt32(0); // timer
+            Out.WriteUInt32(0); // timer
+            Out.Fill(0, 4);
+
             Out.WriteByte(0x71);
             Out.WriteByte(3); // keep
             Out.Fill(0, 3);
