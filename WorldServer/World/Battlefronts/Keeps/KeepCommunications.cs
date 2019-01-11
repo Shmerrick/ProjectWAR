@@ -38,7 +38,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     Out.WriteByte(sortedDoors.First().GameObject.PctHealth); // Door health
                 else
                     Out.WriteByte(0);
-                Out.WriteByte(keep._currentResourcePercent); // Next rank %
+                Out.WriteByte(0); // Next rank %
             }
 
 

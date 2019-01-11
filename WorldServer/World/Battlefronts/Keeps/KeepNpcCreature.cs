@@ -294,7 +294,10 @@ namespace WorldServer.World.BattleFronts.Keeps
                 EvtInterface.RemoveEventNotify(EventName.OnReceiveDamage, OnReceiveDamage);
 
                 if (!_flagGrd.Info.KeepLord)
+                {
+                    _keep.OnKeepNpcAttacked(0);
                     return;
+                }
 
                 /*Log.Info(_keep.Info.Name, (_keep.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction") + " keep lord slain by " + killer.Name + " of " + (killer.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"));*/
 

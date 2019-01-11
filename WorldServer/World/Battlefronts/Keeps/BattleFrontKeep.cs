@@ -1,11 +1,11 @@
-﻿ using Appccelerate.StateMachine;
+﻿using Appccelerate.StateMachine;
 using Common;
 using FrameWork;
 using GameData;
 using NLog;
 using System;
- using System.Collections.Concurrent;
- using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using SystemData;
 using WorldServer.Services.World;
@@ -19,7 +19,7 @@ namespace WorldServer.World.BattleFronts.Keeps
     {
         public const byte INNER_DOOR = 1;
         public const byte OUTER_DOOR = 2;
-
+        public const byte HEALTH_BOUNDARY_DEFENCE_TICK_RESTART = 50;
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private static readonly Logger ProgressionLogger = LogManager.GetLogger("RVRProgressionLogger");
@@ -28,12 +28,11 @@ namespace WorldServer.World.BattleFronts.Keeps
         private readonly List<Hardpoint> _hardpoints = new List<Hardpoint>();
 
         #region timers
-        public int SeizedTimer;
-        public int LordKilledTimer;
-        public int DefenceTickTimer;
-        public int BackToSafeTimer;
+        public KeepTimer SeizedTimer;
+        public KeepTimer LordKilledTimer;
+        public KeepTimer DefenceTickTimer;
+        public KeepTimer BackToSafeTimer;
 
-        public const int DoorAttackedRepairIncrementLength = 1 * 5;
         public const int DoorRepairTimerLength = 1 * 60;
         public const int SeizedTimerLength = 1 * 60;
         public const int LordKilledTimerLength = 1 * 60;
@@ -43,9 +42,9 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public List<KeepNpcCreature> Creatures = new List<KeepNpcCreature>();
         public List<KeepDoor> Doors = new List<KeepDoor>();
-        public ConcurrentDictionary<uint, int> DoorRepairTimers = new ConcurrentDictionary<uint, int>();
+        public ConcurrentDictionary<uint, KeepTimer> DoorRepairTimers = new ConcurrentDictionary<uint, KeepTimer>();
         public Keep_Info Info;
-        public List<KeepDoor.KeepGameObject> KeepGOs = new List<KeepDoor.KeepGameObject>();
+
 
         public bool RamDeployed;
         public Realms Realm;
@@ -75,8 +74,6 @@ namespace WorldServer.World.BattleFronts.Keeps
         }
         public Guild OwningGuild { get; set; }
         public PassiveStateMachine<SM.ProcessState, SM.Command> fsm { get; set; }
-
-        
         public KeepNpcCreature KeepLord => Creatures?.Find(x => x.Info.KeepLord);
 
 
@@ -104,7 +101,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 _hardpoints[_hardpoints.Count - 1].SiegeRequirement = KeepMessage.Outer0;
                 _hardpoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuterX, info.RamOuterY, info.RamOuterZ, info.RamOuterO));
 
-             //added these for the forts outer rams
+                //added these for the forts outer rams
                 _hardpoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuter1X, info.RamOuter1Y, info.RamOuter1Z, info.RamOuter1O));
                 _hardpoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuter2X, info.RamOuter2Y, info.RamOuter2Z, info.RamOuter2O));
             }
@@ -117,7 +114,12 @@ namespace WorldServer.World.BattleFronts.Keeps
             OuterPosternCanBeUsed = false;
 
             PlayersCloseToLord = new HashSet<Player>();
-            
+
+            SeizedTimer = new KeepTimer("Seized Keep Timer", 0, SeizedTimerLength);
+            LordKilledTimer = new KeepTimer("Lord Killed Timer", 0, LordKilledTimerLength);
+            DefenceTickTimer = new KeepTimer("Defence Tick Timer", 0, DefenceTickTimerLength);
+            BackToSafeTimer = new KeepTimer("Back to Safe Keep Timer", 0, BackToSafeTimerLength);
+
         }
 
 
@@ -134,26 +136,24 @@ namespace WorldServer.World.BattleFronts.Keeps
         /// </summary>
         public void CheckTimers()
         {
-            var currentTime = TCPManager.GetTimeStamp();
-
             foreach (var doorRepairTimer in DoorRepairTimers)
             {
-               if (doorRepairTimer.Value > 0 && doorRepairTimer.Value <= currentTime)
+                if (doorRepairTimer.Value.IsExpired())
                 {
                     var doorIdRepaired = doorRepairTimer.Key;
-                    DoorRepairTimers[doorRepairTimer.Key] = 0;
-                    DoorRepairTimers[doorRepairTimer.Key] = 0;
+                    DoorRepairTimers[doorRepairTimer.Key].Reset();
+                    DoorRepairTimers[doorRepairTimer.Key].Reset();
                     OnDoorRepaired(doorIdRepaired);
                 }
             }
-            
-            if (SeizedTimer > 0 && SeizedTimer <= currentTime)
+
+            if (SeizedTimer.IsExpired())
                 OnSeizedTimerEnd();
-            if (LordKilledTimer > 0 && LordKilledTimer <= currentTime)
+            if (LordKilledTimer.IsExpired())
                 OnLordKilledTimerEnd();
-            if (DefenceTickTimer > 0 && DefenceTickTimer <= currentTime)
+            if (DefenceTickTimer.IsExpired())
                 OnDefenceTickTimerEnd();
-            if (BackToSafeTimer > 0 && BackToSafeTimer <= currentTime)
+            if (BackToSafeTimer.IsExpired())
                 OnBackToSafeTimerEnd();
         }
 
@@ -180,10 +180,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             foreach (var door in Doors)
             {
                 door.Spawn();
-               
             }
-
-
 
             if (WorldMgr._Keeps.ContainsKey(Info.KeepId))
                 WorldMgr._Keeps[Info.KeepId] = this;
@@ -193,19 +190,12 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void SetKeepSeized()
         {
-            _logger.Debug($"Set Seized Timer");
-            SeizedTimer = TCPManager.GetTimeStamp() + SeizedTimerLength;
+            SeizedTimer.Start();
 
             KeepStatus = KeepStatus.KEEPSTATUS_SEIZED;
 
-            foreach (var plr in this.Region.Players)
-            {
-                SendKeepInfo(plr);
-            }
-            KeepCommunications.SendKeepStatus(null, this);
-
         }
-
+        
         public void SetLordKilled()
         {
             _logger.Debug($"{Info.Name} : Lord Killed");
@@ -226,12 +216,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                 _logger.Info($"Lord is NULL {Info.Name}");
                 return;
             }
-
-            foreach (var plr in lord.Creature.PlayersInRange)
-            {
-                SendKeepInfo(plr);
-            }
-            KeepCommunications.SendKeepStatus(null, this);
 
             var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(activeBattleFrontId);
@@ -262,14 +246,14 @@ namespace WorldServer.World.BattleFronts.Keeps
                 crea.DespawnGuard();
 
             SendRegionMessage(Info.Name + "'s Keep Lord has fallen!");
-            
+
             KeepCommunications.SendKeepStatus(null, this);
             EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
 
             PlayersKilledInRange = 0;
-            LordKilledTimer = TCPManager.GetTimeStamp() + LordKilledTimerLength;
+            LordKilledTimer.Start();
 
-            
+
         }
 
         public void SetDoorRepaired(uint doorId)
@@ -290,21 +274,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                 }
             }
         }
-
-        //public void SetInnerDoorRepaired()
-        //{
-        //    _logger.Debug($"Inner Door Repaired");
-
-        //    Doors.Single(x => x.Info.Number == INNER_DOOR).Spawn();
-        //    Doors.Single(x => x.Info.Number == INNER_DOOR).GameObject.MaxHealth = 100;
-        //}
-
-        //public void SetOuterDoorRepaired()
-        //{
-        //    _logger.Debug($"Outer Door Repaired");
-
-        //    Doors.Single(x => x.Info.Number == OUTER_DOOR).Spawn();
-        //}
 
         public void SetInnerDoorDown(uint doorId)
         {
@@ -328,15 +297,10 @@ namespace WorldServer.World.BattleFronts.Keeps
                     break;
                 }
             }
-            DoorRepairTimers[doorId] = TCPManager.GetTimeStamp() + DoorRepairTimerLength;
+            DoorRepairTimers[doorId] = new KeepTimer($"Door {doorId} Repair Timer", 0, DoorRepairTimerLength);
+            DoorRepairTimers[doorId].Start();
 
             KeepStatus = KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK;
-            foreach (var plr in this.Region.Players)
-            {
-                SendKeepInfo(plr);
-            }
-            KeepCommunications.SendKeepStatus(null, this);
-
 
             InnerPosternCanBeUsed = true;
 
@@ -365,15 +329,13 @@ namespace WorldServer.World.BattleFronts.Keeps
                 }
             }
 
-            DoorRepairTimers[doorId] = TCPManager.GetTimeStamp() + DoorRepairTimerLength;
+            DoorRepairTimers[doorId] = new KeepTimer($"Door {doorId} Repair Timer", 0, DoorRepairTimerLength);
+            DoorRepairTimers[doorId].Start();
+
 
             KeepStatus = KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK;
-            KeepCommunications.SendKeepStatus(null, this);
-            foreach (var plr in this.Region.Players)
-            {
-                SendKeepInfo(plr);
-            }
-            KeepCommunications.SendKeepStatus(null, this);
+
+
         }
 
         public bool AllDoorsRepaired()
@@ -385,13 +347,13 @@ namespace WorldServer.World.BattleFronts.Keeps
                     return false;
             }
             // Start the defence tick timer once the outer door has been repaired.
-            DefenceTickTimer = TCPManager.GetTimeStamp() + DefenceTickTimerLength;
-            _logger.Debug($"Defence Tick Timer started {DefenceTickTimer}");
+            DefenceTickTimer.Start();
+
             return true;
         }
 
 
-       
+
 
         /// <summary>
         /// Set the keep safe
@@ -399,23 +361,22 @@ namespace WorldServer.World.BattleFronts.Keeps
         public void SetDefenceTick()
         {
             ProgressionLogger.Info($"Defence Tick for {Info.Name}");
-            var lord = Creatures.SingleOrDefault(x => x.Info.KeepLord == true);
-            if (lord == null)
-            {
-                _logger.Info($"Lord is NULL {Info.Name}");
-                return;
-            }
 
-            KeepRewardManager.DefenceTickReward(this, lord.Creature.PlayersInRange, Info.Name, Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
+            if (KeepLord == null)
+                _logger.Warn($"{Info.Name} : Lord is null");
+            if (KeepLord.Creature == null)
+                _logger.Warn($"{Info.Name} : KeepLord.Creature is null");
 
-            foreach (var plr in lord.Creature.PlayersInRange)
+            KeepRewardManager.DefenceTickReward(this, KeepLord?.Creature?.PlayersInRange, Info.Name, Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
+
+            foreach (var plr in KeepLord?.Creature?.PlayersInRange)
             {
                 SendKeepInfo(plr);
             }
             KeepCommunications.SendKeepStatus(null, this);
 
             ProgressionLogger.Info($"Resetting DefenceTickTimer {Info.Name}");
-            DefenceTickTimer = 0;
+
         }
 
         /// <summary>
@@ -427,8 +388,11 @@ namespace WorldServer.World.BattleFronts.Keeps
             SendRegionMessage($"{KeepLord.Creature.Name} has been wounded!");
 
             KeepStatus = KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK;
+        }
 
-            foreach (var plr in PlayersInRange)
+        public void InformRegionPlayersOfKeepStatus()
+        {
+            foreach (var plr in Region.Players)
             {
                 SendKeepInfo(plr);
             }
@@ -476,8 +440,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             foreach (var door in Doors)
             {
-                // Set up a dictionary of door repair timers.
-                DoorRepairTimers.TryAdd(door.GameObject.DoorId, 0);
+                DoorRepairTimers.TryAdd(door.GameObject.DoorId, new KeepTimer($"Door {door.GameObject.DoorId} Repair Timer", 0, DoorRepairTimerLength));
             }
 
         }
@@ -503,12 +466,6 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             KeepStatus = KeepStatus.KEEPSTATUS_LOCKED;
 
-            foreach (var plr in PlayersInRange)
-            {
-                SendKeepInfo(plr);
-            }
-            KeepCommunications.SendKeepStatus(null, this);
-            
             InnerPosternCanBeUsed = false;
             OuterPosternCanBeUsed = false;
 
@@ -624,7 +581,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public void OnDoorRepaired(uint doorId)
         {
             _logger.Debug($"Door has been repaired {doorId}");
-            
+
             SetDoorRepaired(doorId);
             fsm.Fire(SM.Command.OnDoorRepaired, doorId);
 
@@ -650,7 +607,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void OnSeizedTimerEnd()
         {
-            SeizedTimer = 0;
+            SeizedTimer.Reset();
             fsm.Fire(SM.Command.OnSeizedTimerEnd);
         }
 
@@ -677,21 +634,19 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void OnLordKilledTimerEnd()
         {
-            LordKilledTimer = 0;
+            LordKilledTimer.Reset();
             fsm.Fire(SM.Command.OnLordKilledTimerEnd);
         }
 
         public void OnDefenceTickTimerEnd()
         {
-            _logger.Debug($"End Defence Tick Timer {DefenceTickTimer}");
-
-            DefenceTickTimer = 0;
+            DefenceTickTimer.Reset();
             SetDefenceTick();
         }
 
         public void OnBackToSafeTimerEnd()
         {
-            BackToSafeTimer = 0;
+            BackToSafeTimer.Reset();
             fsm.Fire(SM.Command.OnBackToSafeTimerEnd);
         }
 
@@ -778,24 +733,9 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void OnKeepDoorAttacked(byte number, byte pctHealth, uint doorId)
         {
-            // Reset the defence tick timer
-            if (DefenceTickTimer > 0)
-            {
-                DefenceTickTimer = TCPManager.GetTimeStamp() + DefenceTickTimerLength;
-                ProgressionLogger.Debug($"{Info.Name} : Defence Timer {DefenceTickTimer}");
-            }
-
-            // On a door being attacked, extend its repair time by a given amount, back up to the maximum repair time.
-            foreach (var doorRepairTimer in DoorRepairTimers)
-            {
-                if (doorRepairTimer.Value > 0)
-                {
-                    if ((doorRepairTimer.Value + DoorAttackedRepairIncrementLength) > DoorRepairTimerLength)
-                        DoorRepairTimers[doorRepairTimer.Key] = DoorRepairTimerLength;
-                    else
-                        DoorRepairTimers[doorRepairTimer.Key] += DoorAttackedRepairIncrementLength;
-                }
-            }
+            // Reset the Def Tick timer.
+            if (pctHealth < HEALTH_BOUNDARY_DEFENCE_TICK_RESTART)
+                DefenceTickTimer.Start();
 
             switch (number)
             {
@@ -810,12 +750,8 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void OnKeepNpcAttacked(byte pctHealth)
         {
-            // Reset the defence tick timer
-            if (DefenceTickTimer > 0)
-            {
-                DefenceTickTimer = TCPManager.GetTimeStamp() + DefenceTickTimerLength;
-                ProgressionLogger.Debug($"{Info.Name} : Defence Timer {DefenceTickTimer}");
-            }
+            if (pctHealth == 0)
+                DefenceTickTimer.Start();
 
             ProgressionLogger.Debug($"{Info.Name} : Keep NPC Attacked");
         }
@@ -824,14 +760,8 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             ProgressionLogger.Debug($" {Info.Name} : Outer Door ({doorId}) Attacked");
             SendRegionMessage($"{Info.Name}'s outer door is under attack!");
-            
-            EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
 
-            foreach (var plr in PlayersInRange)
-            {
-                SendKeepInfo(plr);
-            }
-            KeepCommunications.SendKeepStatus(null, this);
+            EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
         }
 
         public void OnInnerDoorAttacked(byte pctHealth, uint doorId)
@@ -840,12 +770,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             SendRegionMessage($"{Info.Name}'s inner door is under attack!");
 
             EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
-
-            foreach (var plr in PlayersInRange)
-            {
-                SendKeepInfo(plr);
-            }
-            KeepCommunications.SendKeepStatus(null, this);
         }
 
 
@@ -865,10 +789,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void OnKeepLordAttacked(byte pctHealth)
         {
-            // Reset the defence tick timer
-            if (DefenceTickTimer > 0)
-                DefenceTickTimer = TCPManager.GetTimeStamp() + DefenceTickTimerLength;
-
+            DefenceTickTimer.Start();
             ProgressionLogger.Debug($"Keep Lord attacked {pctHealth}");
 
         }
@@ -963,376 +884,10 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         #region Resources
 
-        //DoomsDay Change
-        //public byte Rank { get; private set; }
         public byte Rank { get; set; }
-
-        public float _currentResource;
-        public int _maxResource;
-        public byte _currentResourcePercent;
-
-        public int _lastReturnSeconds;
-
-        public readonly int[] _resourcePerRank = { 3, 5, 7, 9, 12, 14 /*, 18*/};
-        public readonly int[] _resourceValueMax = { 12, 24, 48, 72, 108, 144 /*, 180*/};
-
-        //public void SetSupplyRequirement(int realm = -1)
-        //{
-        //    if (realm > -1)
-        //    {
-        //        Region.Campaign.RealmMaxResource[realm-1] = Region.Campaign._RealmResourcePerRank[Region.Campaign.RealmRank[realm-1]] * Region.Campaign._RealmResourceValueMax[Region.Campaign.RealmRank[realm - 1]];
-        //    }
-        //    else
-        //        _maxResource = _resourcePerRank[Rank] * _resourceValueMax[Rank];
-        //}
-
-        public GameObject ResourceReturnFlag;
-
-        //public void CreateSupplyDrops()
-        //{
-        //    for (int index = 0; index < SupplyReturnPoints.Count; index++)
-        //    {
-        //        var returnPoint = SupplyReturnPoints[index];
-
-        //        Realms displayRealm = index == 0 ? Realm : GetContestedRealm();
-
-        //        GameObject_proto proto = GameObjectService.GetGameObjectProto(displayRealm == Realms.REALMS_REALM_ORDER ? (uint)100650 : (uint)100651);
-
-        //        Point3D flagPos = ZoneService.GetWorldPosition(Zone.Info, (ushort) returnPoint.X, (ushort) returnPoint.Y, (ushort) returnPoint.Z);
-
-        //        GameObject_spawn spawn = new GameObject_spawn
-        //        {
-        //            WorldX = flagPos.X,
-        //            WorldY = flagPos.Y,
-        //            WorldZ = flagPos.Z,
-        //            WorldO = returnPoint.O,
-        //            ZoneId = Info.ZoneId
-        //        };
-
-        //        spawn.BuildFromProto(proto);
-
-        //        switch (displayRealm)
-        //        {
-        //            case Realms.REALMS_REALM_ORDER:
-        //                switch (Zone.Info.ZoneId/100)
-        //                {
-        //                    // Dwarf
-        //                    case 0:
-        //                        spawn.DisplayID = 3238;
-        //                        break;
-
-        //                    // Empire
-        //                    case 1:
-        //                        spawn.DisplayID = 4753;
-        //                        break;
-
-        //                    // High Elf
-        //                    case 2:
-        //                        spawn.DisplayID = 4769;
-        //                        break;
-        //                }
-        //                break;
-        //            case Realms.REALMS_REALM_DESTRUCTION:
-        //                switch (Zone.Info.ZoneId/100)
-        //                {
-        //                    // Greenskin
-        //                    case 0:
-        //                        spawn.DisplayID = 4779;
-        //                        break;
-
-        //                    // Chaos
-        //                    case 1:
-        //                        spawn.DisplayID = 4782;
-        //                        break;
-
-        //                    // Dark Elf
-        //                    case 2:
-        //                        spawn.DisplayID = 1463;
-        //                        break;
-        //                }
-        //                break;
-        //        }
-
-        //        ResourceReturnFlag = Region.CreateGameObject(spawn);
-
-        //        ResourceReturnFlag.CaptureDuration = 3;
-        //        ResourceReturnFlag.AssignCaptureCheck(CheckHoldingSupplies);
-        //        //ResourceReturnFlag.AssignCaptureDelegate(SuppliesReturned);
-        //    }
-        //}
-
-        public bool CheckHoldingSupplies(Player returner)
-        {
-            if (returner.Realm != Realm || returner.HeldObject == null)
-                return false;
-
-            var buff = returner.BuffInterface.GetBuff((ushort)GameBuffs.ResourceCarrier, returner);
-
-            return buff != null && !buff.BuffHasExpired;
-        }
-
-        //        public void SuppliesReturned(Player returner, GameObject sender)
-        //        {
-        //            HoldObjectBuff buff = (HoldObjectBuff) returner.BuffInterface.GetBuff((ushort)GameBuffs.ResourceCarrier, returner);
-
-        //            if (buff == null || buff.BuffHasExpired)
-        //                return;
-
-        //            if (KeepStatus == KeepStatus.KEEPSTATUS_LOCKED)
-        //            {
-        //                returner.SendClientMessage("This keep is not active!", ChatLogFilters.CHATLOGFILTERS_RVR);
-        //                return;
-        //            }
-
-        //            foreach (Player plr in Region.Players)
-        //            {
-        //                if (plr.CbtInterface.IsPvp)
-        //                    plr.SendClientMessage($"{returner.Name} successfully returned the supplies!", returner.Realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE);
-        //            }
-
-        //            ResourceBox box = (ResourceBox) buff.HeldObject;
-
-        //            float resourceValue;
-        //            if (Constants.DoomsdaySwitch == 2)
-        //                resourceValue = ((ProximityBattleFront)Region.Campaign).GetResourceValue(returner.Realm, _resourceValueMax[Rank]);
-        //            else
-        //                resourceValue = ((Campaign)Region.Campaign).GetResourceValue(returner.Realm, _resourceValueMax[Rank]);
-
-        //            float distFactor = sender.GetDistanceToObject(box.Objective) / 2000f;
-
-        //#if DEBUG
-        //            //resourceValue *= 50;
-        //#endif
-        //            //resourceValue *= 50;
-
-        //            if (!sender.ObjectWithinRadiusFeet(this, 100))
-        //            {
-        //                returner.SendClientMessage("As you have returned supplies to the warcamp, they are worth 50% less.", ChatLogFilters.CHATLOGFILTERS_RVR);
-        //                distFactor *= 0.5f;
-        //            }
-
-        //            resourceValue *= distFactor;
-
-        //            Item_Info medallionInfo = ItemService.GetItem_Info((uint)(208398 + Tier));
-        //            ushort medallionCount = (ushort)Clamp(resourceValue/35, 1, 4);
-        //            uint renownCount = (uint) (resourceValue * 10 + Tier*50*GetDistanceToObject(box.Objective)/2000f);
-
-        //            returner.AddXp(renownCount * 5, false, false);
-        //            returner.AddRenown(renownCount, false);
-        //            Region.Campaign.AddContribution(returner, renownCount);
-
-        //            if (returner.ItmInterface.CreateItem(medallionInfo, medallionCount) == ItemResult.RESULT_OK)
-        //                returner.SendLocalizeString(new[] { medallionInfo.Name, medallionCount.ToString() }, ChatLogFilters.CHATLOGFILTERS_LOOT, Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
-
-        //            if (returner.WorldGroup != null)
-        //            {
-        //                List<Player> members = returner.WorldGroup.GetPlayersCloseTo(returner, 300);
-
-        //                foreach (Player player in members)
-        //                {
-        //                    if (player != returner && player.IsWithinRadiusFeet(returner, 300))
-        //                    {
-        //                        player.AddXp((uint)resourceValue * 50, false, false);
-        //                        player.AddRenown((uint)resourceValue * 10, false);
-        //                        Region.Campaign.AddContribution(player, (uint)resourceValue * 10);
-
-        //                        if (player.ItmInterface.CreateItem(medallionInfo, medallionCount) == ItemResult.RESULT_OK)
-        //                            player.SendLocalizeString(new[] { medallionInfo.Name, medallionCount.ToString() }, ChatLogFilters.CHATLOGFILTERS_LOOT, Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
-        //                    }
-        //                }
-        //            }
-
-        //            // Reload siege weapons
-        //            //ReloadSiege();
-
-        //            // Intercept to check if any doors need repairing
-        //            foreach (KeepDoor door in Doors)
-        //            {
-        //                if (door.GameObject.PctHealth < 100 && !door.GameObject.IsDead)
-        //                {
-        //                    // One box heals 30%.
-        //                    float healCapability = Math.Min(door.GameObject.MaxHealth * 0.5f, distFactor * 0.5f * door.GameObject.MaxHealth);
-
-        //                    uint currentDamage = door.GameObject.MaxHealth - door.GameObject.Health;
-
-        //                    float consumeFactor = Math.Min(1f, currentDamage/healCapability);
-
-        //                    door.GameObject.ReceiveHeal(returner, (uint)healCapability);
-
-        //                    Region.Campaign.Broadcast($"{returner.Name} has repaired {Info.Name}'s keep door by {(int)(healCapability / door.GameObject.MaxHealth * 100)}%!", Realm);
-
-        //                    resourceValue *= 1f - consumeFactor;
-
-        //                    // If resources are not stored in keep, keep continues to derank
-        //                    if (consumeFactor == 1f)
-        //                    {
-        //                        returner.SendClientMessage("You expended all of your resources to repair the keep door.", ChatLogFilters.CHATLOGFILTERS_RVR);
-        //                        buff.HeldObject.ResetTo(EHeldState.Inactive);
-        //                        KeepCommunications.SendKeepStatus(null, this);
-        //                        return;
-        //                    }
-
-        //                    returner.SendClientMessage("You expended part of your resources to repair the keep door.", ChatLogFilters.CHATLOGFILTERS_RVR);
-        //                }
-        //            }
-
-        //            if (Rank < 6 && _currentResource + resourceValue >= _maxResource)
-        //            {
-        //                if (CanSustainRank(Rank + 1))
-        //                {
-        //                    resourceValue -= _maxResource - _currentResource;
-
-        //                    if (Rank < 5)
-        //                        ++Rank;
-        //                    SetSupplyRequirement();
-        //                    _currentResource = resourceValue;
-        //                    Region.Campaign.Broadcast($"{Info.Name} is now Rank {Rank}!", Realm);
-        //                    if (Rank == 1)
-        //                    {
-        //                        if (LastMessage >= KeepMessage.Inner0)
-        //                            Region.Campaign.Broadcast($"{Info.Name}'s postern doors are barred once again!", Realm);
-        //                        else if (LastMessage >= KeepMessage.Outer0)
-        //                            Region.Campaign.Broadcast($"{Info.Name}'s outer postern doors are barred once again!", Realm);
-        //                    }
-        //                }
-
-        //                else
-        //                {
-        //                    _currentResource = _maxResource - 1;
-        //                    returner.SendClientMessage("More warriors of your realm are required to reach the next Keep rank!", ChatLogFilters.CHATLOGFILTERS_RVR);
-        //                }
-
-        //                // We notify everyone that this keep is Rank 1
-        //                if (Rank == 1)
-        //                {
-        //                    foreach (Player player in Player._Players)
-        //                    {
-        //                        if (player.Region.GetTier() > 1 && player.ValidInTier(Tier, true) && !InformRankOne && player.Region.RegionId != Region.RegionId)
-        //                        {
-        //                            player.SendLocalizeString($"{Info.Name} keep in {Zone.Info.Name} just reached Rank 1!", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-        //                        }
-        //                    }
-        //                    InformRankOne = true;
-        //                }
-        //            }
-
-        //            else
-        //                _currentResource += resourceValue;
-
-        //            _currentResourcePercent = (byte) (_currentResource/_maxResource*100f);
-
-        //#if DEBUG
-        //            if (Constants.DoomsdaySwitch == 2)
-        //                returner.SendClientMessage($"Resource worth {resourceValue} ({((ProximityBattleFront)Region.Campaign).GetResourceValue(returner.Realm, _resourceValueMax[Rank])} base * {GetDistanceToObject(box.Objective) / 2000f} dist factor) returned!");
-        //            else
-        //                returner.SendClientMessage($"Resource worth {resourceValue} ({((Campaign)Region.Campaign).GetResourceValue(returner.Realm, _resourceValueMax[Rank])} base * {GetDistanceToObject(box.Objective) / 2000f} dist factor) returned!");
-
-        //            returner.SendClientMessage($"Resources: {_currentResource}/{_maxResource} ({_currentResourcePercent}%)");
-        //#endif
-
-        //            buff.HeldObject.ResetTo(EHeldState.Inactive);
-        //            _lastReturnSeconds = TCPManager.GetTimeStamp();
-        //            EvtInterface.AddEvent(UpdateStateOfTheRealmKeep,100,1);
-        //            KeepCommunications.SendKeepStatus(null, this);
-        //        }
 
         private int _nextDoorWarnTime;
         private int _nextDegenerationWarnTime;
-
-        //private readonly int[] _rankDecayTimer = {480, 300, 300, 240, 180, 120};
-        private readonly int[] _rankDecayTimer = { 60, 60, 60, 60, 60, 40 };
-
-        // TODO - fix Keep status.
-        //     public void TickUpkeep()
-        //     {
-        //         // We are ticking Realm Rank in sync here
-        //         Region.Campaign.TickRealmRankTimer();
-
-        //         if (Rank == 0 && _currentResource == 0)
-        //             return;
-
-        //         int curTime = TCPManager.GetTimeStamp();
-
-        //         // Sustain keep if resources were returned within last 10 minutes and enough players exist to support the rank
-        //         ProximityBattleFront front = (ProximityBattleFront)Region.Campaign;
-        //         if (_lastReturnSeconds + _rankDecayTimer[Rank] > curTime && CanSustainRank(Rank) && front.HeldObjectives[(int)Realm] > WorldMgr.WorldSettingsMgr.GetGenericSetting(9))
-        //             return;
-
-        //         if (_nextDegenerationWarnTime < curTime)
-        //         {
-        //             _nextDegenerationWarnTime = curTime + 5000;
-        //             // codeword 0ni0n
-        //             //Region.Campaign.Broadcast(CanSustainRank(Rank) ? $"{Info.Name} is not meeting its supply upkeep!" : $"Not enough warriors are present to sustain {Info.Name}'s current rank!", Realm);
-        //         }
-
-        //         // Degeneration for failing to supply keep or for failing numbers threshold.
-        //         // Loss of 10% of rank per minute -> rank loss every 10 minutes
-        //         float rankLoss = _maxResource * 0.1f;
-        //         // Changed to 50% per minute
-        //         rankLoss = _maxResource * (float)WorldMgr.WorldSettingsMgr.GetGenericSetting(8) / 10.0f;
-        //         if (rankLoss > _currentResource)
-        //         {
-        //             // Keeps Rank 3 or less do not derank
-        //             //if (Rank == 0)
-        //             if (Rank < 4)
-        //                 _currentResource = 0;
-        //             else
-        //             {
-        //                 --Rank;
-        //                 SetSupplyRequirement();
-        //                 _currentResource = _maxResource*0.95f;
-        //                 Region.Campaign.Broadcast($"{Info.Name}'s rank has fallen to {Rank}!", Realm);
-        //                 if (Rank == 0)
-        //                 {
-        //                     if (LastMessage >= KeepMessage.Inner0)
-        //                         Region.Campaign.Broadcast($"{Info.Name}'s postern doors are no longer defended!", Realm);
-        //                     else if (LastMessage >= KeepMessage.Outer0)
-        //                         Region.Campaign.Broadcast($"{Info.Name}'s outer postern doors are no longer defended!", Realm);
-        //                 }
-        //             }
-        //         }
-
-        //else
-        //	_currentResource -= rankLoss;
-
-        //         _currentResourcePercent = (byte)(_currentResource / _maxResource * 100f);
-
-        //         EvtInterface.AddEvent(UpdateStateOfTheRealmKeep,100,1);
-
-        //         KeepCommunications.SendKeepStatus(null, this);
-        //     }
-
-        //        public bool CanSustainRank(int rank)
-        //        {
-        //#if DEBUG
-        //            return true;
-        //#endif
-        //            if (Constants.DoomsdaySwitch == 2)
-        //            {
-        //                //return true;
-        //            }
-        //            if (rank == 0)
-        //                return true;
-        //            if (rank > 5)
-        //                rank = 5;
-
-        //            return Region.Campaign.CanSustainRank(Realm, _resourceValueMax[rank]);
-        //        }
-
-        //        public bool ShouldRation()
-        //        {
-        //            return !CanSustainRank(Rank);
-        //        }
-
-        //        public float GetRationFactor()
-        //        {
-        //            float rationFactor = 0.25f + Rank * 0.15f;
-
-        //            if (CanSustainRank(Rank))
-        //                rationFactor *= 2f;
-
-        //            return Math.Min(rationFactor, 1f);
-        //        }
 
         #endregion
 

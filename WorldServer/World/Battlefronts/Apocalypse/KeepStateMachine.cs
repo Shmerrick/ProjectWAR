@@ -167,10 +167,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             _logger.Debug($"{e.ToString()}");
 
-            var s = (Appccelerate.StateMachine.Machine.Events.TransitionCompletedEventArgs<WorldServer.World.Battlefronts.Apocalypse.SM.ProcessState, WorldServer.World.Battlefronts.Apocalypse.SM.Command>)e;
+            // Send packets to players, on FSM transition.
+            Keep.InformRegionPlayersOfKeepStatus();
+            
+            var stateInformation = (Appccelerate.StateMachine.Machine.Events.TransitionCompletedEventArgs<SM.ProcessState, SM.Command>)e;
             // Save the state transition.
-            _logger.Debug($"Saving keep state {Keep.Info.KeepId},{s.StateId}");
-            RVRProgressionService.SaveBattleFrontKeepState(Keep.Info.KeepId, s.StateId);
+            _logger.Debug($"Saving keep state {Keep.Info.KeepId},{stateInformation.StateId}");
+            RVRProgressionService.SaveBattleFrontKeepState(Keep.Info.KeepId, stateInformation.StateId);
 
         }
     }
