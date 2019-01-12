@@ -1018,6 +1018,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                     }
                 }
             }
+            InformRegionPlayersOfKeepStatus();
             //if (_safeKeepTimer > 0 && _safeKeepTimer < TCPManager.GetTimeStamp())
             //    if (KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
             //        TickSafety();
@@ -1129,8 +1130,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                     return "Destroy the Outer Door";
                 case KeepStatus.KEEPSTATUS_LOCKED:
                     return "Locked";
-                case KeepStatus.KEEPSTATUS_HOLD_THE_KEEP:
-                    return "Await reinforcements";
                 default:
                     return "Destroy the Outer Door";
             }
