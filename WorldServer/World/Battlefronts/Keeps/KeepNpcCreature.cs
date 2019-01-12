@@ -40,7 +40,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             if (realm != Realms.REALMS_REALM_NEUTRAL)
             {
-                if (Info.DestroId == 0)
+                if (Info.DestroId == 0 && realm == Realms.REALMS_REALM_DESTRUCTION)
                     _logger.Trace($"Creature Id = 0, no spawning");
                 else
                 {
