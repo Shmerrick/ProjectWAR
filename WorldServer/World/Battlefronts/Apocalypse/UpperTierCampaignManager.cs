@@ -224,6 +224,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     foreach (var objective in regionMgr.Campaign.Objectives)
                     {
                         objective.OwningRealm = (Realms) regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm;
+                        //objective.fsm.Fire(CampaignObjectiveStateMachine.Command.OnLockZone);
                         objective.SetObjectiveLocked();
                         ProgressionLogger.Debug($" Locking BattlefieldObjective to {(Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm} {objective.Name} {objective.State} {objective.State}");
                     }
@@ -232,6 +233,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {
                         keep.PendingRealm =
                             (Realms) regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm;
+                        //keep.fsm.Fire(SM.Command.OnLockZone);
                         keep.SetKeepLocked();
                         ProgressionLogger.Debug($" Locking Keep {keep.Info.Name} to {(Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm} {keep.KeepStatus} ");
                     }

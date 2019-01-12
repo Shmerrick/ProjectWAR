@@ -19,6 +19,7 @@ namespace Common
         private ushort _ZoneId;
         private ushort _RegionId;
         private ushort _PQuestId;
+        
 
         [PrimaryKey]
         public byte KeepId
@@ -75,6 +76,10 @@ namespace Common
             get { return _PQuestId; }
             set { _PQuestId = value; Dirty = true; }
         }
+
+
+        [DataElement(AllowDbNull = false)]
+        public bool IsFortress { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public int X { get; set; }

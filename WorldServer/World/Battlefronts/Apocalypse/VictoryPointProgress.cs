@@ -1,8 +1,5 @@
-﻿using System.Diagnostics.Tracing;
-using System.Linq;
-using GameData;
+﻿using GameData;
 using NLog;
-using WorldServer.Services.World;
 using WorldServer.World.BattleFronts.Objectives;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
@@ -72,11 +69,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             OrderVictoryDominationCount = 0;
         }
 
-    public VictoryPointProgress(float orderVP, float destroVP)
-		{
-			OrderVictoryPoints = orderVP;
-			DestructionVictoryPoints = destroVP;
-		}
+        public VictoryPointProgress(float orderVP, float destroVP)
+        {
+            OrderVictoryPoints = orderVP;
+            DestructionVictoryPoints = destroVP;
+        }
 
         public float DestructionVictoryPointPercentage
         {
@@ -159,7 +156,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void Reset(Campaign BattleFront)
         {
             _logger.Debug($"Resetting Campaign VP {BattleFront.ActiveCampaignName} to Neutral");
-			OrderVictoryPoints = 0;
+            OrderVictoryPoints = 0;
             DestructionVictoryPoints = 0;
         }
 
@@ -231,39 +228,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {
                         if (battleFrontKeep.KeepStatus == KeepStatus.KEEPSTATUS_SAFE || battleFrontKeep.KeepStatus == KeepStatus.KEEPSTATUS_LOCKED)
                         {
-                            //TODO
-                            // Fortresses have 8 doors (inc postern). This is a bit dirty.
-                            //if (battleFrontKeep.Doors.Count == 8)
-                            //{
-                            //    // Add Keep VPP
-                            //    if (battleFrontKeep.Realm == Realms.REALMS_REALM_DESTRUCTION)
-                            //    {
-                            //        DestructionVictoryPoints += 1000;
-                            //        DestructionVictoryDominationCount++;
-                            //    }
-                            //    if (battleFrontKeep.Realm == Realms.REALMS_REALM_ORDER)
-                            //    {
-                            //        OrderVictoryPoints += 1000;
-                            //        OrderVictoryDominationCount++;
-                            //    }
-                            //}
-                            //else
+                            // Add Keep VPP
+                            if (battleFrontKeep.Realm == Realms.REALMS_REALM_DESTRUCTION)
                             {
-                                // Add Keep VPP
-                                if (battleFrontKeep.Realm == Realms.REALMS_REALM_DESTRUCTION)
-                                {
-                                    DestructionVictoryPoints += 300;
-                                    DestructionVictoryDominationCount++;
-                                }
-                                if (battleFrontKeep.Realm == Realms.REALMS_REALM_ORDER)
-                                {
-                                    OrderVictoryPoints += 300;
-                                    OrderVictoryDominationCount++;
-                                }
+                                DestructionVictoryPoints += 300;
+                                DestructionVictoryDominationCount++;
                             }
-
-                            
+                            if (battleFrontKeep.Realm == Realms.REALMS_REALM_ORDER)
+                            {
+                                OrderVictoryPoints += 300;
+                                OrderVictoryDominationCount++;
+                            }
                         }
+
                     }
                 }
             }

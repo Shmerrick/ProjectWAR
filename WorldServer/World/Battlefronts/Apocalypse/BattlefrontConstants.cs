@@ -87,7 +87,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static int BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG = 2;
         public static int BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND = 3;
         public static int BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKWALD = 13;
-        public static int BATTLEFRONT_EMPIRE_CHAOS_TIER4_THE_MAW = 14;
+        public static int BATTLEFRONT_EMPIRE_CHAOS_TIER4_THE_MAW = 15;
 
 
         public static int BATTLEFRONT_ELF_DARKELF_TIER1_CHRACE = 12;

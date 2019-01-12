@@ -106,7 +106,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             fsm.In(ProcessState.LordKilled)
                 .On(Command.OnLordKilledTimerEnd).Goto(ProcessState.Seized).Execute(() => Keep.SetKeepSeized());
             fsm.In(ProcessState.Seized)
-                .On(Command.OnSeizedTimerEnd).Goto(ProcessState.Safe).Execute(() => Keep.SetKeepSafe());
+                .On(Command.OnSeizedTimerEnd)
+                .If(Keep.IsFortress)
+                .Goto(ProcessState.Safe)
+                .Execute(() => Keep.SetKeepSafe())
+                .Execute(() => Keep.ForceLockZone());
+            fsm.In(ProcessState.Seized)
+                .On(Command.OnSeizedTimerEnd)
+                .If(Keep.IsNotFortress)
+                .Goto(ProcessState.Safe)
+                .Execute(() => Keep.SetKeepSafe());
 
             fsm.In(ProcessState.DefenceTick)
                 .On(Command.OnBackToSafeTimerEnd).Goto(ProcessState.Safe).Execute(() => Keep.SetKeepSafe());

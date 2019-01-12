@@ -36,61 +36,40 @@ namespace WorldServer.World.BattleFronts.Keeps
                 Creature.Destroy();
                 Creature = null;
 
-                /*if (Info.KeepLord)
-                    Log.Info(Keep.Info.Name, (Keep.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction") + " keep lord disposed.");*/
-            }
+           }
 
             if (realm != Realms.REALMS_REALM_NEUTRAL)
             {
-                Creature_proto proto = CreatureService.GetCreatureProto(realm == Realms.REALMS_REALM_ORDER ? Info.OrderId : Info.DestroId);
-
-                _logger.Trace($"Spawning Guard {proto.Name} ({proto.Entry})");
-
-                if (proto == null)
+                if (Info.DestroId == 0)
+                    _logger.Trace($"Creature Id = 0, no spawning");
+                else
                 {
-                    Log.Error("KeepNPC", "No FlagGuard Proto");
-                    return;
-                }
+                    Creature_proto proto = CreatureService.GetCreatureProto(realm == Realms.REALMS_REALM_ORDER ? Info.OrderId : Info.DestroId);
 
-                Creature_spawn spawn = new Creature_spawn();
-                spawn.BuildFromProto(proto);
-                spawn.WorldO = Info.O;
-                /*
-                if (proto.CreatureType == 32 && Info.Y < 70000)
-                {
-                    WorldMgr.Database.DeleteObject(Info);
-                    Keep_Creature newInfo = new Keep_Creature
+                    _logger.Trace($"Spawning Guard {proto.Name} ({proto.Entry})");
+
+                    if (proto == null)
                     {
-                        KeepId = Info.KeepId,
-                        ZoneId = Info.ZoneId,
-                        OrderId = Info.OrderId,
-                        DestroId = Info.DestroId,
-                        X = Info.X,
-                        Y = ZoneMgr.CalculWorldPosition(WorldMgr.GetZone_Info(Info.ZoneId), 0, (ushort) Info.Y, 0).Y,
-                        Z = Info.Z,
-                        O = Info.O
+                        Log.Error("KeepNPC", "No FlagGuard Proto");
+                        return;
+                    }
+
+                    Creature_spawn spawn = new Creature_spawn();
+                    spawn.BuildFromProto(proto);
+                    spawn.WorldO = Info.O;
+                    spawn.WorldX = Info.X;
+                    spawn.WorldY = Info.Y;
+                    spawn.WorldZ = Info.Z;
+                    spawn.ZoneId = Info.ZoneId;
+
+                    Creature = new KeepCreature(spawn, this, Keep)
+                    {
+                        WaypointGUID = Convert.ToUInt32(Info.WaypointGUID)
                     };
-                    WorldMgr.Database.AddObject(newInfo);
 
-                    Info = newInfo;
-                }*/
-                spawn.WorldX = Info.X;
-                spawn.WorldY = Info.Y;
-                spawn.WorldZ = Info.Z;
-                spawn.ZoneId = Info.ZoneId;
-
-
-                Creature = new KeepCreature(spawn, this, Keep)
-                {
-                    WaypointGUID = Convert.ToUInt32(Info.WaypointGUID)
-                };
-
-                /*if (Info.KeepLord)
-                    Log.Info(Keep.Info.Name, (Keep.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction") + " keep lord spawned.");*/
-
-
-
-                Region.AddObject(Creature, spawn.ZoneId);
+                    Region.AddObject(Creature, spawn.ZoneId);
+                }
+                
             }
         }
 

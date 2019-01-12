@@ -57,7 +57,8 @@ namespace WorldServer.World.BattleFronts.Keeps
         public IKeepCommunications KeepCommunications { get; private set; }
 
         public HashSet<Player> PlayersCloseToLord { get; set; }
-
+        public bool Fortress { get; set; }
+        
         public byte Tier;
         public int PlayersKilledInRange { get; set; }
         public Realms PendingRealm { get; set; }
@@ -78,7 +79,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public KeepNpcCreature KeepLord => Creatures?.Find(x => x.Info.KeepLord);
 
 
-        public BattleFrontKeep(Keep_Info info, byte tier, RegionMgr region, IKeepCommunications comms)
+        public BattleFrontKeep(Keep_Info info, byte tier, RegionMgr region, IKeepCommunications comms, bool isFortress)
         {
             Info = info;
             Realm = (Realms)info.Realm;
@@ -120,6 +121,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             LordKilledTimer = new KeepTimer($"Lord Killed {Info.Name} Timer", 0, LordKilledTimerLength);
             DefenceTickTimer = new KeepTimer($"Defence Tick {Info.Name} Timer", 0, DefenceTickTimerLength);
             BackToSafeTimer = new KeepTimer($"Back to Safe {Info.Name} Keep Timer", 0, BackToSafeTimerLength);
+
+            Fortress = isFortress;
 
         }
 
@@ -600,19 +603,23 @@ namespace WorldServer.World.BattleFronts.Keeps
             if (status != null)
             {
                 ProgressionLogger.Debug($"Existing BattlefrontKeepStatus located. Loading.. {status.Status}");
-                // Take us to whatever this was..
-                fsm.Initialize((SM.ProcessState)status.Status);
+                if (!fsm.IsRunning)
+                    fsm.Initialize((SM.ProcessState)status.Status);
 
             }
             else
             {
                 // Take us to SAFE
-                fsm.Initialize(SM.ProcessState.Initial);
-                fsm.Fire(SM.Command.OnOpenBattleFront);
+                if (!fsm.IsRunning)
+                {
+                    fsm.Initialize(SM.ProcessState.Initial);
+                    fsm.Fire(SM.Command.OnOpenBattleFront);
+                }
             }
             ProgressionLogger.Debug($"Starting Keep {Info.Name} FSM...");
 
-            fsm.Start();
+            if (!fsm.IsRunning)
+                fsm.Start();
 
         }
 
@@ -1793,6 +1800,23 @@ namespace WorldServer.World.BattleFronts.Keeps
                 _logger.Trace($"Players close to Lord : {plr.Name}");
             }
         }
+
+
+        public void ForceLockZone()
+        {
+            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(Realm);
+        }
+
+        public bool IsFortress()
+        {
+            return Fortress;
+        }
+        public bool IsNotFortress()
+        {
+            return !Fortress;
+        }
+
+        
     }
 
 
