@@ -411,6 +411,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var status = BattleFrontManager.GetActiveCampaign().ActiveBattleFrontStatus;
             lock (status)
             {
+               
                 BattlefrontLogger.Trace($"Checking for new Realm Captains...");
                 if (status.RegionId == Region.RegionId)
                 {

@@ -80,7 +80,7 @@ namespace WorldServer.Test
             keepInfo.KeepId = 1;
             keepInfo.Name = "test keep";
 
-            var bfk = new BattleFrontKeep(keepInfo, 4, Region1, FakeKeepComms);
+            var bfk = new BattleFrontKeep(keepInfo, 4, Region1, FakeKeepComms, false);
 
             bfk.fsm.Initialize(SM.ProcessState.Initial);
             bfk.fsm.Fire(SM.Command.OnOpenBattleFront);
