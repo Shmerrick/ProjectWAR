@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
-using CreatureSubTypes = GameData.CreatureSubTypes;
-using WorldServer.World.BattleFronts.Keeps;
+using System;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.Services.World;
+using WorldServer.World.BattleFronts.Keeps;
+using CreatureSubTypes = GameData.CreatureSubTypes;
 
 namespace WorldServer
 {
@@ -28,40 +28,22 @@ namespace WorldServer
             SiegeInterface.DeathTime = TCPManager.GetTimeStampMS() + 300 * 1000;
         }
 
-        public static Siege SpawnSiegeWeapon(Player plr, BattleFrontKeep keep, uint entry, bool defender)
+        public static Siege SpawnSiegeWeapon(Player plr, ushort zoneId, uint entry, bool defender)
         {
             Creature_proto proto = CreatureService.GetCreatureProto(entry);
 
             Creature_spawn spawn = null;
-            if (Constants.DoomsdaySwitch == 0)
+            spawn = new Creature_spawn
             {
-                spawn = new Creature_spawn
-                {
-                    Guid = (uint)CreatureService.GenerateCreatureSpawnGUID(),
-                    WorldO = plr.Heading,
-                    WorldY = plr.WorldPosition.Y,
-                    WorldZ = plr.Z,
-                    WorldX = plr.WorldPosition.X,
-                    ZoneId = keep.Info.ZoneId,
-                    Level = (byte)(keep.Info.PQuest.PQTier * 10)
-                };
-            }
-            // We want sieges to be level 40
-            else
-            {
-                spawn = new Creature_spawn
-                {
-                    Guid = (uint)CreatureService.GenerateCreatureSpawnGUID(),
-                    WorldO = plr.Heading,
-                    WorldY = plr.WorldPosition.Y,
-                    WorldZ = plr.Z,
-                    WorldX = plr.WorldPosition.X,
-                    ZoneId = keep.Info.ZoneId,
-                    Level = 40
-                };
-            }
-
-
+                Guid = (uint)CreatureService.GenerateCreatureSpawnGUID(),
+                WorldO = plr.Heading,
+                WorldY = plr.WorldPosition.Y,
+                WorldZ = plr.Z,
+                WorldX = plr.WorldPosition.X,
+                ZoneId = zoneId,
+                Level = 40
+            };
+            
             spawn.BuildFromProto(proto);
 
             return new Siege(spawn, plr, keep, SiegeType.GTAOE);
@@ -239,11 +221,11 @@ namespace WorldServer
         {
             base.Update(tick);
 
-            if (_nextAreaCheckTime<tick)
+            if (_nextAreaCheckTime < tick)
             {
                 _nextAreaCheckTime = tick + 2000;
 
-                Zone_Area newArea = Zone.ClientInfo.GetZoneAreaFor((ushort)X, (ushort)Y, Zone.ZoneId,(ushort)Z);
+                Zone_Area newArea = Zone.ClientInfo.GetZoneAreaFor((ushort)X, (ushort)Y, Zone.ZoneId, (ushort)Z);
 
                 if (newArea == null || !newArea.IsRvR)
                     OutOfAreaDecay();
@@ -261,7 +243,7 @@ namespace WorldServer
 
         private int _outofAreaCount;
         private void OutOfAreaDecay()
-        { 
+        {
             _outofAreaCount++;
             if (_outofAreaCount > 5)
             {
@@ -273,7 +255,7 @@ namespace WorldServer
         // Azarael - Siege weapons don't resurrect
         protected override void SetRespawnTimer()
         {
-            
+
         }
 
         #region Health/Damage
@@ -333,7 +315,7 @@ namespace WorldServer
             if (siege != null)
             {
                 Siege s = siege;
-                foreach (KeyValuePair<Player,byte> p in s.SiegeInterface.Players)
+                foreach (KeyValuePair<Player, byte> p in s.SiegeInterface.Players)
                     p.Key.CbtInterface.OnDealDamage(this, damage);
             }
             else
@@ -354,12 +336,12 @@ namespace WorldServer
             Pet pet = killer as Pet;
             Player credited = (pet != null) ? pet.Owner : (killer as Player);
 
-            (killer as  Player).SendClientMessage($"{credited.Name} {(killer as Player).Name} has killed a siege item!!!!!");
+            (killer as Player).SendClientMessage($"{credited.Name} {(killer as Player).Name} has killed a siege item!!!!!");
 
             if (credited != null)
             {
                 // Contribution for Siege kill
-                credited.UpdatePlayerBountyEvent((byte) ContributionDefinitions.DESTROY_SIEGE);
+                credited.UpdatePlayerBountyEvent((byte)ContributionDefinitions.DESTROY_SIEGE);
                 HandleXPRenown(credited);
             }
 
@@ -419,7 +401,7 @@ namespace WorldServer
         /// <param name="incDamage"></param>
         public override void ModifyDamageIn(AbilityDamageInfo incDamage)
         {
-            CreatureSubTypes subType = (CreatureSubTypes) Spawn.Proto.CreatureSubType;
+            CreatureSubTypes subType = (CreatureSubTypes)Spawn.Proto.CreatureSubType;
 
             if (subType == CreatureSubTypes.SIEGE_RAM)
             {
@@ -459,7 +441,7 @@ namespace WorldServer
                                     incDamage.Damage = 0;
                                     incDamage.PrecalcDamage = 0;
                                     incDamage.DamageReduction = 0f;
-                                    incDamage.DamageEvent = (byte) CombatEvent.COMBATEVENT_BLOCK;
+                                    incDamage.DamageEvent = (byte)CombatEvent.COMBATEVENT_BLOCK;
                                 }
                                 else
                                     incDamage.DamageReduction *= 0.066f;
@@ -479,48 +461,48 @@ namespace WorldServer
             }
 
             else switch (incDamage.SubDamageType)
-            {
-                case SubDamageTypes.Cleave:
-                    incDamage.DamageReduction *= 0.8f;
-                    break;
-                case SubDamageTypes.Artillery:
-                    incDamage.Mitigation = incDamage.Damage * 0.95f;
-                    incDamage.Damage *= 0.05f;
-                    break;
-                case SubDamageTypes.Oil:
-                    incDamage.Damage = 0;
-                    incDamage.PrecalcDamage = 0;
-                    incDamage.DamageReduction = 0f;
-                    incDamage.DamageEvent = (byte) CombatEvent.COMBATEVENT_BLOCK;
-                    break;
-                case SubDamageTypes.Cannon:
-                    incDamage.Mitigation = incDamage.Damage*0.5f;
-                    incDamage.Damage *= 0.5f;
-                    break;
-                case SubDamageTypes.None:
-                    switch (incDamage.DamageType)
-                    {
-                        case DamageTypes.Physical:
-                            if (incDamage.StatUsed == 8)
-                            {
-                                incDamage.Damage = 0;
-                                incDamage.PrecalcDamage = 0;
-                                incDamage.DamageReduction = 0f;
-                                incDamage.DamageEvent = (byte) CombatEvent.COMBATEVENT_BLOCK;
-                            }
-                            else
-                                incDamage.DamageReduction *= 0.4f;
-                            break;
-                        case DamageTypes.RawDamage:
-                            incDamage.Mitigation = incDamage.Damage * 0.5f;
-                            incDamage.Damage *= 0.5f;
-                            break;
-                        default:
-                            incDamage.DamageReduction *= 0.05f;
-                            break;
-                    }
-                    break;
-            }
+                {
+                    case SubDamageTypes.Cleave:
+                        incDamage.DamageReduction *= 0.8f;
+                        break;
+                    case SubDamageTypes.Artillery:
+                        incDamage.Mitigation = incDamage.Damage * 0.95f;
+                        incDamage.Damage *= 0.05f;
+                        break;
+                    case SubDamageTypes.Oil:
+                        incDamage.Damage = 0;
+                        incDamage.PrecalcDamage = 0;
+                        incDamage.DamageReduction = 0f;
+                        incDamage.DamageEvent = (byte)CombatEvent.COMBATEVENT_BLOCK;
+                        break;
+                    case SubDamageTypes.Cannon:
+                        incDamage.Mitigation = incDamage.Damage * 0.5f;
+                        incDamage.Damage *= 0.5f;
+                        break;
+                    case SubDamageTypes.None:
+                        switch (incDamage.DamageType)
+                        {
+                            case DamageTypes.Physical:
+                                if (incDamage.StatUsed == 8)
+                                {
+                                    incDamage.Damage = 0;
+                                    incDamage.PrecalcDamage = 0;
+                                    incDamage.DamageReduction = 0f;
+                                    incDamage.DamageEvent = (byte)CombatEvent.COMBATEVENT_BLOCK;
+                                }
+                                else
+                                    incDamage.DamageReduction *= 0.4f;
+                                break;
+                            case DamageTypes.RawDamage:
+                                incDamage.Mitigation = incDamage.Damage * 0.5f;
+                                incDamage.Damage *= 0.5f;
+                                break;
+                            default:
+                                incDamage.DamageReduction *= 0.05f;
+                                break;
+                        }
+                        break;
+                }
         }
 
         private uint _damageOut;
@@ -565,8 +547,8 @@ namespace WorldServer
 
             #region Initialize reward values
 
-            uint totalXP = (uint)(500 * Region.GetTier() * Math.Min(6f, _damageOut / (float) 100) * (1f + killer.AAOBonus));
-            uint totalRenown = (uint)(100 * Region.GetTier()  * Math.Min(6f, _damageOut / (float)100) * (1f + killer.AAOBonus));
+            uint totalXP = (uint)(500 * Region.GetTier() * Math.Min(6f, _damageOut / (float)100) * (1f + killer.AAOBonus));
+            uint totalRenown = (uint)(100 * Region.GetTier() * Math.Min(6f, _damageOut / (float)100) * (1f + killer.AAOBonus));
 
             ushort influenceId = 0;
             uint totalInfluence = 0;

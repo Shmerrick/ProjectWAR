@@ -1,13 +1,11 @@
 ﻿//#define MODIFIER_DEBUG
 
+using Common;
+using FrameWork;
+using GameData;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using SystemData;
-using FrameWork;
-using Common;
-using GameData;
-using WorldServer.Services.World;
 
 namespace WorldServer
 {
@@ -545,21 +543,30 @@ namespace WorldServer
                 player.SendClientMessage("Cannot deploy siege at ruined keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
                 return false;
             }*/
-            
-                if (player.CurrentKeep == null)
+            var creaturesInRange = player.GetInRange<Creature>(100);
+            var nearSiegeMerchant = false;
+            foreach (var creature in creaturesInRange)
+            {
+                if (creature.IsSiegeMerchant() && creature.Realm == player.Realm)
                 {
-                    player.SendClientMessage("Must deploy siege at friendly keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                    return false;
+                    nearSiegeMerchant = true;
+                    break;
                 }
-               
-                if (player.CurrentKeep == null || player.CurrentKeep.Realm != player.Realm)
-                {
-                    player.SendClientMessage("Must deploy siege at friendly keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                    return false;
-                }
-            	
+            }
 
-            return player.CurrentKeep.CanDeploySiege(player, abInfo.Level, (uint)abInfo.CommandInfo[0].PrimaryValue);
+            if (nearSiegeMerchant)
+            {
+                // No check for max number of siege.
+                return true;
+            }
+
+            if ((player.CurrentKeep != null && player.CurrentKeep.Realm == player.Realm))
+            {
+                return player.CurrentKeep.CanDeploySiege(player, abInfo.Level, (uint)abInfo.CommandInfo[0].PrimaryValue);
+            }
+
+            player.SendClientMessage("Must deploy siege at friendly keep, or friendly Siege Merchant", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+            return false;
         }
         #endregion
 

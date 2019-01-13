@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
-using CreatureSubTypes = GameData.CreatureSubTypes;
+using System;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.Services.World;
+using CreatureSubTypes = GameData.CreatureSubTypes;
 
 namespace WorldServer
 {
@@ -59,10 +59,10 @@ namespace WorldServer
         public byte Active;
         public byte ActivateOnCombatStart;
         public byte RandomTarget;
-		public byte TargetFocus;
-		public long CooldownEnd;
+        public byte TargetFocus;
+        public long CooldownEnd;
 
-        public NPCAbility (ushort entry, ushort range, ushort cooldown, bool autoUse, string text, uint timestart = 0, byte percent = 0, byte abilitycycle = 1, byte active = 1, byte activateoncombatstart = 0, byte randomtarget = 0, byte targetFocus = 0, byte disablepercent = 0, byte minrange = 0)
+        public NPCAbility(ushort entry, ushort range, ushort cooldown, bool autoUse, string text, uint timestart = 0, byte percent = 0, byte abilitycycle = 1, byte active = 1, byte activateoncombatstart = 0, byte randomtarget = 0, byte targetFocus = 0, byte disablepercent = 0, byte minrange = 0)
         {
             Entry = entry;
             MinRange = minrange;
@@ -78,8 +78,8 @@ namespace WorldServer
             Active = active;
             ActivateOnCombatStart = activateoncombatstart;
             RandomTarget = randomtarget;
-			TargetFocus = targetFocus;
-		}
+            TargetFocus = targetFocus;
+        }
     }
 
     public class Creature : Unit
@@ -109,12 +109,12 @@ namespace WorldServer
             if (spawn.Proto.Invulnerable == 1)
                 IsInvulnerable = true;
 
-            Scale = (byte) StaticRandom.Instance.Next(Spawn.Proto.MinScale, Spawn.Proto.MaxScale);
+            Scale = (byte)StaticRandom.Instance.Next(Spawn.Proto.MinScale, Spawn.Proto.MaxScale);
 
             if (spawn.Proto.BaseRadiusUnits > 0)
-                BaseRadius = spawn.Proto.BaseRadiusUnits * (Scale/50f) / UNITS_TO_FEET;
+                BaseRadius = spawn.Proto.BaseRadiusUnits * (Scale / 50f) / UNITS_TO_FEET;
             else
-                BaseRadius *= (Scale/50f);
+                BaseRadius *= (Scale / 50f);
 
             SiegeInterface = AddInterface<SiegeInterface>();
         }
@@ -253,7 +253,7 @@ namespace WorldServer
                         {
                             return 3;
                         }
-                        if(career == 2) // mdps
+                        if (career == 2) // mdps
                         {
                             return 6;
                         }
@@ -451,19 +451,19 @@ namespace WorldServer
         protected virtual void SendCreateMonster(Player plr)
         {
             if (Spawn == null)
-            { 
+            {
                 Log.Error("ERROR", "NO SPAWN FOR " + Name);
                 return;
             }
 
-            PacketOut Out = new PacketOut((byte) Opcodes.F_CREATE_MONSTER, 110 + States.Count + (Name?.Length ?? Spawn.Proto.Name.Length));
+            PacketOut Out = new PacketOut((byte)Opcodes.F_CREATE_MONSTER, 110 + States.Count + (Name?.Length ?? Spawn.Proto.Name.Length));
             Out.WriteUInt16(Oid);
             Out.WriteUInt16(0);
 
             Out.WriteUInt16(Heading);
-            Out.WriteUInt16((ushort) WorldPosition.Z);
-            Out.WriteUInt32((uint) WorldPosition.X);
-            Out.WriteUInt32((uint) WorldPosition.Y);
+            Out.WriteUInt16((ushort)WorldPosition.Z);
+            Out.WriteUInt32((uint)WorldPosition.X);
+            Out.WriteUInt32((uint)WorldPosition.Y);
             Out.WriteUInt16(0); // Speed Z
             if (Model2 != 0)
                 Out.WriteUInt16(StaticRandom.Instance.Next(0, 100) < 50 ? Model1 : Model2);
@@ -475,7 +475,7 @@ namespace WorldServer
             Out.WriteByte(Faction);
 
             Out.WriteByte(0);
-            Out.WriteByte(SiegeInterface != null && SiegeInterface.IsDeployed ? (byte)1: (byte)0);
+            Out.WriteByte(SiegeInterface != null && SiegeInterface.IsDeployed ? (byte)1 : (byte)0);
             Out.Fill(0, 2);
             Out.WriteByte(Spawn.Emote);
             Out.WriteByte(0); // ?
@@ -513,7 +513,7 @@ namespace WorldServer
                 Out.WriteByte((byte)questState);
 
             Out.WriteByte(0);
-            
+
             Out.WriteCString(Spawn.Proto.GenderedName);
 
             Out.Write(Spawn.Proto.FigLeafData, 0, Spawn.Proto.FigLeafData.Length);
@@ -572,87 +572,87 @@ namespace WorldServer
                 switch (menu.Menu)
                 {
                     case 7:
-                    {
-                        switch (Spawn.Proto.TitleId)
                         {
-                            case CreatureTitle.Apothecary:
-                                if (player._Value.CraftingSkill != 4)
-                                {
-                                    player.SendTradeSkill(player._Value.CraftingSkill, 0);
-                                    player._Value.CraftingSkill = 0;
-                                    player._Value.CraftingSkillLevel = 0;
-                                    player._Value.CraftingSkill = 4;
-                                    player._Value.CraftingSkillLevel = 1;
-                                    player.CraftApoInterface.Load();
-                                 }
+                            switch (Spawn.Proto.TitleId)
+                            {
+                                case CreatureTitle.Apothecary:
+                                    if (player._Value.CraftingSkill != 4)
+                                    {
+                                        player.SendTradeSkill(player._Value.CraftingSkill, 0);
+                                        player._Value.CraftingSkill = 0;
+                                        player._Value.CraftingSkillLevel = 0;
+                                        player._Value.CraftingSkill = 4;
+                                        player._Value.CraftingSkillLevel = 1;
+                                        player.CraftApoInterface.Load();
+                                    }
 
-                                 break;
-                            case CreatureTitle.Butcher:
-                                if (player._Value.GatheringSkill != 1)
-                                {
-                                    player.SendTradeSkill(player._Value.GatheringSkill, 0);
-                                    player._Value.GatheringSkill = 0;
-                                    player._Value.GatheringSkillLevel = 0;
-                                    player._Value.GatheringSkill = 1;
-                                    player._Value.GatheringSkillLevel = 1;
-                                    player.GatherInterface.Load();
-                                }
-                                break;
-                            case CreatureTitle.Cultivator:
+                                    break;
+                                case CreatureTitle.Butcher:
+                                    if (player._Value.GatheringSkill != 1)
+                                    {
+                                        player.SendTradeSkill(player._Value.GatheringSkill, 0);
+                                        player._Value.GatheringSkill = 0;
+                                        player._Value.GatheringSkillLevel = 0;
+                                        player._Value.GatheringSkill = 1;
+                                        player._Value.GatheringSkillLevel = 1;
+                                        player.GatherInterface.Load();
+                                    }
+                                    break;
+                                case CreatureTitle.Cultivator:
 
-                                if (player._Value.GatheringSkill != 3)
-                                {
-                                    player.SendTradeSkill(player._Value.GatheringSkill, 0);
-                                    player._Value.GatheringSkill = 0;
-                                    player._Value.GatheringSkillLevel = 0;
-                                    player._Value.GatheringSkill = 3;
-                                    player._Value.GatheringSkillLevel = 1;
-                                    player.CultivInterface.Load();
-                                }
-                                break;
-                            case CreatureTitle.Salvager:
-                                if (player._Value.GatheringSkill != 6)
-                                {
-                                    player.SendTradeSkill(player._Value.GatheringSkill, 0);
-                                    player._Value.GatheringSkill = 0;
-                                    player._Value.GatheringSkillLevel = 0;
-                                    player._Value.GatheringSkill = 6;
-                                    player._Value.GatheringSkillLevel = 1;
-                                    player.GatherInterface.Load();
-                                }
-                                break;
-                            case CreatureTitle.Scavenger:
-                                if (player._Value.GatheringSkill != 2)
-                                {
-                                    player.SendTradeSkill(player._Value.GatheringSkill, 0);
-                                    player._Value.GatheringSkill = 0;
-                                    player._Value.GatheringSkillLevel = 0;
-                                    player._Value.GatheringSkill = 2;
-                                    player._Value.GatheringSkillLevel = 1;
-                                    player.GatherInterface.Load();
-                                }
-                                break;
-                            case CreatureTitle.HedgeWizard: //talsiman
-                                if (player._Value.CraftingSkill != 5)
-                                {
-                                    player.SendTradeSkill(player._Value.CraftingSkill, 0);
-                                    player._Value.CraftingSkill = 0;
-                                    player._Value.CraftingSkillLevel = 0;
-                                    player._Value.CraftingSkill = 5;
-                                    player._Value.CraftingSkillLevel = 1;
-                                    player.CraftTalInterface.Load();
-                                }
-                                break;
-                            default:
-                                PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE, 5);
-                                Out.WriteByte(5);
-                                Out.WriteByte(0x0F);
-                                Out.WriteByte(6);
-                                Out.WriteUInt16(0);
-                                player.SendPacket(Out);
-                                break;
+                                    if (player._Value.GatheringSkill != 3)
+                                    {
+                                        player.SendTradeSkill(player._Value.GatheringSkill, 0);
+                                        player._Value.GatheringSkill = 0;
+                                        player._Value.GatheringSkillLevel = 0;
+                                        player._Value.GatheringSkill = 3;
+                                        player._Value.GatheringSkillLevel = 1;
+                                        player.CultivInterface.Load();
+                                    }
+                                    break;
+                                case CreatureTitle.Salvager:
+                                    if (player._Value.GatheringSkill != 6)
+                                    {
+                                        player.SendTradeSkill(player._Value.GatheringSkill, 0);
+                                        player._Value.GatheringSkill = 0;
+                                        player._Value.GatheringSkillLevel = 0;
+                                        player._Value.GatheringSkill = 6;
+                                        player._Value.GatheringSkillLevel = 1;
+                                        player.GatherInterface.Load();
+                                    }
+                                    break;
+                                case CreatureTitle.Scavenger:
+                                    if (player._Value.GatheringSkill != 2)
+                                    {
+                                        player.SendTradeSkill(player._Value.GatheringSkill, 0);
+                                        player._Value.GatheringSkill = 0;
+                                        player._Value.GatheringSkillLevel = 0;
+                                        player._Value.GatheringSkill = 2;
+                                        player._Value.GatheringSkillLevel = 1;
+                                        player.GatherInterface.Load();
+                                    }
+                                    break;
+                                case CreatureTitle.HedgeWizard: //talsiman
+                                    if (player._Value.CraftingSkill != 5)
+                                    {
+                                        player.SendTradeSkill(player._Value.CraftingSkill, 0);
+                                        player._Value.CraftingSkill = 0;
+                                        player._Value.CraftingSkillLevel = 0;
+                                        player._Value.CraftingSkill = 5;
+                                        player._Value.CraftingSkillLevel = 1;
+                                        player.CraftTalInterface.Load();
+                                    }
+                                    break;
+                                default:
+                                    PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE, 5);
+                                    Out.WriteByte(5);
+                                    Out.WriteByte(0x0F);
+                                    Out.WriteByte(6);
+                                    Out.WriteUInt16(0);
+                                    player.SendPacket(Out);
+                                    break;
+                            }
                         }
-                    }
                         break;
                     case 9:
                         if (Spawn.Proto.VendorID > 0)
@@ -708,32 +708,32 @@ namespace WorldServer
 
         private void GenericInteract(Player player, InteractMenu menu)
         {
-            if (Spawn.Proto.CreatureType == (byte) GameData.CreatureTypes.SIEGE)
+            if (Spawn.Proto.CreatureType == (byte)GameData.CreatureTypes.SIEGE)
             {
-                SiegeInterface.Interact(player, (byte) menu.Menu);
+                SiegeInterface.Interact(player, (byte)menu.Menu);
                 return;
             }
 
             switch (InteractType)
             {
                 case InteractType.INTERACTTYPE_FLIGHT_MASTER:
-                {
-                    SendFlightInfo(player);
-                    break;
-                }
+                    {
+                        SendFlightInfo(player);
+                        break;
+                    }
 
                 case InteractType.INTERACTTYPE_STORE:
-                {
-                 
-                }
+                    {
+
+                    }
                     break;
                 case InteractType.INTERACTTYPE_BANKER:
-                {
-                    PacketOut Out = new PacketOut((byte) Opcodes.F_INTERACT_RESPONSE);
-                    Out.WriteByte(0x1D);
-                    Out.WriteByte(0);
-                    player.SendPacket(Out);
-                }
+                    {
+                        PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE);
+                        Out.WriteByte(0x1D);
+                        Out.WriteByte(0);
+                        player.SendPacket(Out);
+                    }
                     break;
                 case InteractType.INTERACTTYPE_GUILD_VAULT:
                     player.GldInterface.Guild?.SendGuildVault(player);
@@ -742,121 +742,121 @@ namespace WorldServer
                     HealerInteract(player, menu);
                     break;
                 case InteractType.INTERACTTYPE_BARBER_SURGEON:
-                {
-                    PacketOut Out = new PacketOut((byte) Opcodes.F_INTERACT_RESPONSE);
-                    Out.WriteByte(16); // BarberShop
-                    Out.WriteByte(0);
-                    player.SendPacket(Out);
-                }
+                    {
+                        PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE);
+                        Out.WriteByte(16); // BarberShop
+                        Out.WriteByte(0);
+                        player.SendPacket(Out);
+                    }
                     break;
                 case InteractType.INTERACTTYPE_AUCTIONEER:
-                {
-                    PacketOut Out = new PacketOut((byte) Opcodes.F_INTERACT_RESPONSE);
-                    Out.WriteByte(0x1A);
-                    Out.WriteByte(0);
-                    player.SendPacket(Out);
-                }
+                    {
+                        PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE);
+                        Out.WriteByte(0x1A);
+                        Out.WriteByte(0);
+                        player.SendPacket(Out);
+                    }
                     break;
                 case InteractType.INTERACTTYPE_LASTNAMESHOP:
-                {
-                    const int dialogId = 0x1C;
-                    PacketOut Out = new PacketOut((byte) Opcodes.F_INTERACT_RESPONSE);
-                    Out.WriteByte(dialogId); // Last name change dialog
-                    Out.WriteByte(0);
-                    Out.WriteUInt32(Constants.LastNameChangeCost);
-                    player.SendPacket(Out);
-                }
+                    {
+                        const int dialogId = 0x1C;
+                        PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE);
+                        Out.WriteByte(dialogId); // Last name change dialog
+                        Out.WriteByte(0);
+                        Out.WriteUInt32(Constants.LastNameChangeCost);
+                        player.SendPacket(Out);
+                    }
                     break;
                 default:
-                {
-                    ushort menuItems = 0;
-                    string text = CreatureService.GetCreatureText(Spawn.Entry);
-
-                    if (InteractType == InteractType.INTERACTTYPE_DYEMERCHANT)
                     {
-                        if (!VendorValid())
+                        ushort menuItems = 0;
+                        string text = CreatureService.GetCreatureText(Spawn.Entry);
+
+                        if (InteractType == InteractType.INTERACTTYPE_DYEMERCHANT)
                         {
-                            PacketOut nope = new PacketOut((byte) Opcodes.F_INTERACT_RESPONSE);
-                            nope.WriteByte(0);
-                            nope.WriteUInt16(menu.Oid);
-                            nope.WriteUInt16(0);
-                            nope.WriteUInt16(32); // hasText
-                            nope.WriteShortString("There exists a time and a place for my services, " + player.Name + ", and this is neither the time nor the place.");
-                            player.SendPacket(nope);
-                            return;
+                            if (!VendorValid())
+                            {
+                                PacketOut nope = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE);
+                                nope.WriteByte(0);
+                                nope.WriteUInt16(menu.Oid);
+                                nope.WriteUInt16(0);
+                                nope.WriteUInt16(32); // hasText
+                                nope.WriteShortString("There exists a time and a place for my services, " + player.Name + ", and this is neither the time nor the place.");
+                                player.SendPacket(nope);
+                                return;
+                            }
+
+                            menuItems += 2; // Shop
+                            menuItems += 16384; // Dyes
+                                                // You need Text to see the 'dyes' option
+                            if (text == string.Empty)
+                                text = "Come and see what I have.";
                         }
 
-                        menuItems += 2; // Shop
-                        menuItems += 16384; // Dyes
-                        // You need Text to see the 'dyes' option
-                        if (text == string.Empty)
-                            text = "Come and see what I have.";
+                        if (InteractType == InteractType.INTERACTTYPE_HEALER)
+                        {
+                            menuItems += 512; // Heal
+                                              // You need Text to see the 'dyes' option
+                            if (text == string.Empty)
+                                text = "Come and see what I have.";
+                        }
+
+                        bool influence = false;
+                        bool hasQuests = QtsInterface.HasQuestInteract(player, this);
+                        if (hasQuests)
+                            menuItems += 64; // Quests
+
+
+                        if (InteractType == InteractType.INTERACTTYPE_GUILD_REGISTRAR)
+                        {
+                            menuItems += 128; // Guild Register
+                                              // Guild Registrar needs text
+                            if (text == string.Empty)
+                                text = "Let's get started. To form a guild, you'll need to have a full group of six adventurers with you. None of you can belong to another guild. For a modest fee of only fifty silver I can create your guild.";
+                        }
+
+
+                        if (InteractType == InteractType.INTERACTTYPE_TRAINER)
+                        {
+                            if (Spawn.Proto.TitleId == CreatureTitle.CareerTrainer || Spawn.Proto.TitleId == CreatureTitle.RenownTrainer || Spawn.Proto.TitleId == CreatureTitle.Trainer || player.Level <= Constants.MaxTierLevel[Region.GetTier() - 1])
+                                menuItems += 1; // Trainer
+
+                            // Theese were previously in there, nice to keep them unless theres info in creature_texts
+                            if (text == string.Empty)
+                                if (player.Realm == Realms.REALMS_REALM_ORDER)
+                                    text = "Hail defender of the Empire!  Your performance in battle is the only thing that keeps the hordes of Chaos at bay. Let's begin your training at once!";
+                                else
+                                    text = "Learn these lessons well, for gaining the favor of the Raven god should be of utmost importance to you. Otherwise... There is always room for more Spawn within our ranks.";
+                        }
+
+                        if (InteractType == InteractType.INTERACTTYPE_BINDER)
+                        {
+                            menuItems += 256; // Rally Point
+                            menuItems += 4;
+                            influence = true;
+                        }
+                        if (!string.IsNullOrEmpty(text))
+                            menuItems += 32; // Text
+
+
+                        PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE);
+                        Out.WriteByte(0);
+                        Out.WriteUInt16(menu.Oid);
+                        Out.WriteUInt16(0);
+                        Out.WriteUInt16(menuItems);
+                        if (hasQuests)
+                            QtsInterface.BuildInteract(player, this, Out);
+                        if (!string.IsNullOrEmpty(text))
+                            Out.WriteShortString(text);
+
+                        if (influence)
+                            Out.WriteUInt16(ChapterService.GetChapterByNPCID(Entry));
+                        if ((menuItems & 1) > 0)
+                            Out.WriteByte(Spawn.Proto.InteractTrainerType);
+                        player.SendPacket(Out);
                     }
 
-                    if (InteractType == InteractType.INTERACTTYPE_HEALER)
-                    {
-                        menuItems += 512; // Heal
-                        // You need Text to see the 'dyes' option
-                        if (text == string.Empty)
-                            text = "Come and see what I have.";
-                    }
-
-                    bool influence = false;
-                    bool hasQuests = QtsInterface.HasQuestInteract(player, this);
-                    if (hasQuests)
-                        menuItems += 64; // Quests
-
-
-                    if (InteractType == InteractType.INTERACTTYPE_GUILD_REGISTRAR)
-                    {
-                        menuItems += 128; // Guild Register
-                        // Guild Registrar needs text
-                        if (text == string.Empty)
-                            text = "Let's get started. To form a guild, you'll need to have a full group of six adventurers with you. None of you can belong to another guild. For a modest fee of only fifty silver I can create your guild.";
-                    }
-
-
-                    if (InteractType == InteractType.INTERACTTYPE_TRAINER)
-                    {
-                        if (Spawn.Proto.TitleId == CreatureTitle.CareerTrainer || Spawn.Proto.TitleId == CreatureTitle.RenownTrainer || Spawn.Proto.TitleId == CreatureTitle.Trainer || player.Level <= Constants.MaxTierLevel[Region.GetTier() - 1])
-                            menuItems += 1; // Trainer
-
-                        // Theese were previously in there, nice to keep them unless theres info in creature_texts
-                        if (text == string.Empty)
-                            if (player.Realm == Realms.REALMS_REALM_ORDER)
-                                text = "Hail defender of the Empire!  Your performance in battle is the only thing that keeps the hordes of Chaos at bay. Let's begin your training at once!";
-                            else
-                                text = "Learn these lessons well, for gaining the favor of the Raven god should be of utmost importance to you. Otherwise... There is always room for more Spawn within our ranks.";
-                    }
-
-                    if (InteractType == InteractType.INTERACTTYPE_BINDER)
-                    {
-                        menuItems += 256; // Rally Point
-                        menuItems += 4;
-                        influence = true;
-                    }
-                    if (!string.IsNullOrEmpty(text))
-                        menuItems += 32; // Text
-
-
-                    PacketOut Out = new PacketOut((byte) Opcodes.F_INTERACT_RESPONSE);
-                    Out.WriteByte(0);
-                    Out.WriteUInt16(menu.Oid);
-                    Out.WriteUInt16(0);
-                    Out.WriteUInt16(menuItems);
-                    if (hasQuests)
-                        QtsInterface.BuildInteract(player, this, Out);
-                    if (!string.IsNullOrEmpty(text))
-                        Out.WriteShortString(text);
-
-                    if (influence)
-                        Out.WriteUInt16(ChapterService.GetChapterByNPCID(Entry));
-                    if ((menuItems & 1) > 0)
-                        Out.WriteByte(Spawn.Proto.InteractTrainerType);
-                    player.SendPacket(Out);
-                }
-
-                break;
+                    break;
             }
 
         }
@@ -904,7 +904,7 @@ namespace WorldServer
             {
                 if (_gatheringLoot == null)
                     _gatheringLoot = _gatherType == 1 ?
-                        CreatureService.GenerateButchery(Spawn.Proto.CreatureSubType, (byte)Math.Min(Level * 5, player._Value.GatheringSkillLevel)) 
+                        CreatureService.GenerateButchery(Spawn.Proto.CreatureSubType, (byte)Math.Min(Level * 5, player._Value.GatheringSkillLevel))
                          : CreatureService.GenerateScavenge(Level, Rank, (byte)Math.Min(Level * 5, player._Value.GatheringSkillLevel));
 
                 _gatheringLoot.SendInteract(player, menu, this);
@@ -1004,7 +1004,7 @@ namespace WorldServer
                     GenerateLoot(looter, 1f);
                     CreditQuestKill(looter);
                 }
-            }           
+            }
         }
 
         protected void CreditQuestKill(Player killer)
@@ -1058,7 +1058,7 @@ namespace WorldServer
         public override void ModifyDamageIn(AbilityDamageInfo damage)
         {
             /*if (damage.SubDamageType == SubDamageTypes.Cannon || damage.SubDamageType == SubDamageTypes.Artillery)
-                damage.DamageEvent = (byte) CombatEvent.COMBATEVENT_EVADE;*/ 
+                damage.DamageEvent = (byte) CombatEvent.COMBATEVENT_EVADE;*/
         }
 
         public override void ModifyDamageOut(AbilityDamageInfo outDamage)
@@ -1093,7 +1093,7 @@ namespace WorldServer
         }
         protected void Repair()
         {
-            if(SiegeInterface != null)
+            if (SiegeInterface != null)
                 SiegeInterface.Repair();
 
         }
@@ -1132,7 +1132,7 @@ namespace WorldServer
             return "SpawnId=" + Spawn.Guid + ",Entry=" + Spawn.Entry + ",Name=" + Name + ",Level=" + Level + ",Rank=" + Rank + ",Max Health=" + MaxHealth + ",Faction=" + Faction + ",Emote=" + Spawn.Emote + "AI:" + AiInterface.State + ",Position :" + base.ToString();
         }
 
-#region Interactions
+        #region Interactions
 
         private void HealerInteract(Player player, InteractMenu menu)
         {
@@ -1142,11 +1142,11 @@ namespace WorldServer
                 return;
 
             byte stacks = healDebuff.StackLevel;
-            uint costPerHeal = (uint) (50*player.Level);
+            uint costPerHeal = (uint)(50 * player.Level);
 
             if (menu.Menu == 0)
             {
-                PacketOut Out = new PacketOut((byte) Opcodes.F_INTERACT_RESPONSE);
+                PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE);
                 Out.WriteByte(19); // healer
                 Out.WriteByte(stacks); // number of penalties
                 Out.WriteUInt32(costPerHeal); // heal cost per penalty
@@ -1176,7 +1176,7 @@ namespace WorldServer
 
             foreach (Characters_influence Obj in player.Info.Influences)
             {
-                
+
                 if (Obj.InfluenceId == ChapterService.GetChapterByNPCID(Entry))
                 {
                     uint itemId = 0;
@@ -1387,6 +1387,26 @@ namespace WorldServer
             player.SendPacket(Out);
         }
 
-#endregion
+        #endregion
+        /// <summary>
+        /// Determine whether this merchant is a siege merchant
+        /// </summary>
+        /// <returns></returns>
+        public bool IsSiegeMerchant()
+        {
+            if (InteractType != InteractType.INTERACTTYPE_DYEMERCHANT)
+                return false;
+            var proto = CreatureService.GetCreatureProto(this.Entry);
+            var vendorId = proto.VendorID;
+
+            var items = VendorService.GetVendorItems((ushort)vendorId);
+            foreach (var item in items)
+            {
+                if (item.Info.IsSiege)
+                    return true;
+            }
+           
+            return false;
+        }
     }
 }
