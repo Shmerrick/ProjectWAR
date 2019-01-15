@@ -1535,13 +1535,18 @@ namespace WorldServer
         private bool SummonSiegeWeapon(AbilityCommandInfo cmd, byte level, Unit target)
         {
             Player player = (Player)_caster;
-            if (player.CurrentKeep == null)
-            {
-                var siege = Siege.SpawnSiegeWeapon(player, this, (uint) cmd.PrimaryValue, true);
-                Region.AddObject(siege, Info.ZoneId);
-            }
-            else
-                player.CurrentKeep.SpawnSiegeWeapon(player, (uint) cmd.PrimaryValue);
+
+            var siege = Siege.SpawnSiegeWeapon(player, (ushort) player.ZoneId, (uint)cmd.PrimaryValue, true);
+            player.Region.AddObject(siege, (ushort)player.ZoneId);
+            player.Region.Campaign.SiegeManager.Add(siege);
+
+            //if (player.CurrentKeep == null)
+            //{
+            //    var siege = Siege.SpawnSiegeWeapon(player, this, (uint) cmd.PrimaryValue, true);
+            //    Region.AddObject(siege, Info.ZoneId);
+            //}
+            //else
+            //    player.CurrentKeep.SpawnSiegeWeapon(player, (uint) cmd.PrimaryValue);
             return true;
         }
 

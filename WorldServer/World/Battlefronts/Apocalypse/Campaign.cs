@@ -48,6 +48,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         protected readonly EventInterface _EvtInterface = new EventInterface();
 
+        public SiegeManager SiegeManager { get; set; }
+
         public HashSet<Player> PlayersInLakeSet;
         public List<BattlefieldObjective> Objectives;
 
@@ -117,11 +119,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             LoadKeeps();
             AgainstAllOddsTracker = new AAOTracker();
             _rewardManager = new RVRRewardManager();
+            SiegeManager = new SiegeManager();
 
             DestructionDominationTimerLength = 5 * 60;
             OrderDominationTimerLength = 5 * 60;
-
-
+            
             _EvtInterface.AddEvent(UpdateBattleFrontScalers, 12000, 0); // 120000
             _EvtInterface.AddEvent(UpdateVictoryPoints, 6000, 0);
 
@@ -1429,6 +1431,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             ActiveBattleFrontStatus.DestructionRealmCaptain = null;
             ActiveBattleFrontStatus.OrderRealmCaptain = null;
             BattleFrontManager.BountyManagerInstance.BountyDictionary.Clear();
+            SiegeManager.DestroyAllSiege();
             BattlefrontLogger.Debug($"Contribution and Bounty Dictionaries cleared");
         }
 

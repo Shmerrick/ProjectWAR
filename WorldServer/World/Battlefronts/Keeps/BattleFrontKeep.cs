@@ -25,7 +25,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         private static readonly Logger ProgressionLogger = LogManager.GetLogger("RVRProgressionLogger");
 
         // List of positions where siege weapons may be deployed.
-        private readonly List<Hardpoint> _hardpoints = new List<Hardpoint>();
+        public List<Hardpoint> HardPoints = new List<Hardpoint>();
 
         #region timers
         public KeepTimer SeizedTimer;
@@ -58,7 +58,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public HashSet<Player> PlayersCloseToLord { get; set; }
         public bool Fortress { get; set; }
-        
+
         public byte Tier;
         public int PlayersKilledInRange { get; set; }
         public Realms PendingRealm { get; set; }
@@ -88,24 +88,24 @@ namespace WorldServer.World.BattleFronts.Keeps
             KeepCommunications = comms;
             Zone = region.GetZoneMgr(info.ZoneId);
 
-            _hardpoints.Add(new Hardpoint(SiegeType.OIL, info.OilX, info.OilY, info.OilZ, info.OilO));
+            HardPoints.Add(new Hardpoint(SiegeType.OIL, info.OilX, info.OilY, info.OilZ, info.OilO));
             if (info.OilOuterX > 0)
-                _hardpoints.Add(new Hardpoint(SiegeType.OIL, info.OilOuterX, info.OilOuterY, info.OilOuterZ, info.OilOuterO));
+                HardPoints.Add(new Hardpoint(SiegeType.OIL, info.OilOuterX, info.OilOuterY, info.OilOuterZ, info.OilOuterO));
 
             //added these in for forts oils outer walls
-            _hardpoints.Add(new Hardpoint(SiegeType.OIL, info.OilOuter1X, info.OilOuter1Y, info.OilOuter1Z, info.OilOuter1O));
-            _hardpoints.Add(new Hardpoint(SiegeType.OIL, info.OilOuter2X, info.OilOuter2Y, info.OilOuter2Z, info.OilOuter2O));
+            HardPoints.Add(new Hardpoint(SiegeType.OIL, info.OilOuter1X, info.OilOuter1Y, info.OilOuter1Z, info.OilOuter1O));
+            HardPoints.Add(new Hardpoint(SiegeType.OIL, info.OilOuter2X, info.OilOuter2Y, info.OilOuter2Z, info.OilOuter2O));
 
-            _hardpoints.Add(new Hardpoint(SiegeType.RAM, info.RamX, info.RamY, info.RamZ, info.RamO));
+            HardPoints.Add(new Hardpoint(SiegeType.RAM, info.RamX, info.RamY, info.RamZ, info.RamO));
 
             if (info.RamOuterX > 0)
             {
-                _hardpoints[_hardpoints.Count - 1].SiegeRequirement = KeepMessage.Outer0;
-                _hardpoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuterX, info.RamOuterY, info.RamOuterZ, info.RamOuterO));
+                HardPoints[HardPoints.Count - 1].SiegeRequirement = KeepMessage.Outer0;
+                HardPoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuterX, info.RamOuterY, info.RamOuterZ, info.RamOuterO));
 
                 //added these for the forts outer rams
-                _hardpoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuter1X, info.RamOuter1Y, info.RamOuter1Z, info.RamOuter1O));
-                _hardpoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuter2X, info.RamOuter2Y, info.RamOuter2Z, info.RamOuter2O));
+                HardPoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuter1X, info.RamOuter1Y, info.RamOuter1Z, info.RamOuter1O));
+                HardPoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuter2X, info.RamOuter2Y, info.RamOuter2Z, info.RamOuter2O));
             }
 
             PlayersKilledInRange = 0;
@@ -217,7 +217,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             _logger.Debug($"{Info.Name} : Lord Killed");
 
-            foreach (var h in _hardpoints)
+            foreach (var h in HardPoints)
                 h.CurrentWeapon?.Destroy();
 
             // Flip realm on Lord Kill
@@ -321,7 +321,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
 
             // Remove any placed rams. 
-            foreach (var h in _hardpoints)
+            foreach (var h in HardPoints)
             {
                 if (h.SiegeType == SiegeType.RAM)
                 {
@@ -352,7 +352,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
 
             // Remove any placed rams. TODO - correct?
-            foreach (var h in _hardpoints)
+            foreach (var h in HardPoints)
             {
                 if (h.SiegeType == SiegeType.RAM)
                 {
@@ -460,6 +460,10 @@ namespace WorldServer.World.BattleFronts.Keeps
                 if (!crea.Info.IsPatrol)
                     crea.SpawnGuard(Realm);
 
+
+            // Remove all siege
+            RemoveAllAttackingKeepSiege();
+
             PlayersKilledInRange /= 2;
 
             foreach (var plr in PlayersInRange)
@@ -510,10 +514,13 @@ namespace WorldServer.World.BattleFronts.Keeps
             InnerPosternCanBeUsed = false;
             OuterPosternCanBeUsed = false;
 
+            // Remove all siege
+            RemoveAllKeepSiege();
+
             // Remove any persisted values for this keep.
             RVRProgressionService.RemoveBattleFrontKeepStatus(Info.KeepId);
             // Stop the state machine
-           //  this.fsm.Stop();
+            //  this.fsm.Stop();
         }
 
 
@@ -1024,17 +1031,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             //        TickSafety();
         }
 
-        public void ReloadSiege()
-        {
-            if (_activeMateriel[(int)MaterielType.Artillery].Count > 0)
-                foreach (var siege in _activeMateriel[(int)MaterielType.Artillery])
-                    siege.AddShots((int)(Siege.MAX_SHOTS * 0.65f * GetSiegeDamageMod(SiegeType.GTAOE)));
-
-            if (_activeMateriel[(int)MaterielType.Cannon].Count > 0)
-                foreach (var siege in _activeMateriel[(int)MaterielType.Cannon])
-                    siege.AddShots((int)(Siege.MAX_SHOTS * 0.65f * GetSiegeDamageMod(SiegeType.SNIPER)));
-        }
-
         public void ProximityReloadSiege(int ammo)
         {
             if (_activeMateriel[(int)MaterielType.Artillery].Count > 0)
@@ -1440,7 +1436,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                     return;
             }
 
-            foreach (var h in _hardpoints)
+            foreach (var h in HardPoints)
             {
                 if (h.SiegeType != SiegeType.OIL || !player.PointWithinRadiusFeet(h, 10))
                     continue;
@@ -1480,7 +1476,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                 spawn.BuildFromProto(proto);
 
-                h.CurrentWeapon = new Siege(spawn, player, this, SiegeType.OIL);
+                h.CurrentWeapon = new Siege(spawn, player, SiegeType.OIL);
                 Region.AddObject(h.CurrentWeapon, spawn.ZoneId);
 
                 player.ItmInterface.DeleteItem(slot, 1);
@@ -1537,7 +1533,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                     break;
                 case CreatureSubTypes.SIEGE_RAM:
                     type = (int)MaterielType.Ram;
-                    //foreach (Hardpoint h in _hardpoints)
+                    //foreach (Hardpoint h in HardPoints)
                     //{
                     //    if (h.SiegeType == SiegeType.OIL)
                     //    {
@@ -1579,6 +1575,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void SpawnSiegeWeapon(Player player, uint protoEntry)
         {
+            //TODO : This should not be being called!
             if (Constants.DoomsdaySwitch == 0)
                 protoEntry += (uint)(4 * (Tier - 2));
             else
@@ -1620,15 +1617,15 @@ namespace WorldServer.World.BattleFronts.Keeps
                     return;
             }
 
-            var siege = Siege.SpawnSiegeWeapon(player, this, protoEntry, true);
-            _activeMateriel[type].Add(siege);
-            Region.AddObject(siege, Info.ZoneId);
+            //var siege = Siege.SpawnSiegeWeapon(player, protoEntry, true);
+            //_activeMateriel[type].Add(siege);
+            //Region.AddObject(siege, Info.ZoneId);
             _materielSupply[type] -= 1f;
         }
 
         public void RemoveKeepSiege(Siege weapon)
         {
-            foreach (var h in _hardpoints)
+            foreach (var h in HardPoints)
                 if (h.CurrentWeapon == weapon)
                 {
                     h.CurrentWeapon = null;
@@ -1636,41 +1633,57 @@ namespace WorldServer.World.BattleFronts.Keeps
                 }
         }
 
-        public void RemoveSiege(Siege weapon)
+        public void RemoveAllKeepSiege()
         {
-            switch ((CreatureSubTypes)weapon.Spawn.Proto.CreatureSubType)
-            {
-                case CreatureSubTypes.SIEGE_GTAOE:
-                    _activeMateriel[(int)MaterielType.Artillery].Remove(weapon);
-                    break;
-                case CreatureSubTypes.SIEGE_SINGLE_TARGET:
-                    _activeMateriel[(int)MaterielType.Cannon].Remove(weapon);
-                    break;
-                case CreatureSubTypes.SIEGE_RAM:
-                    var message = $"{weapon.SiegeInterface.Creator.Name}'s ram has been destroyed!";
-                    var filter = Realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE;
-                    foreach (var plr in Region.Players)
-                        if (plr.CbtInterface.IsPvp && plr.ValidInTier(Region.GetTier(), true) && plr.Realm == Realm)
-                        {
-                            plr.SendClientMessage(message, filter);
-                            plr.SendClientMessage(message, ChatLogFilters.CHATLOGFILTERS_RVR);
-                        }
-                    _activeMateriel[(int)MaterielType.Ram].Remove(weapon);
+            foreach (var h in HardPoints)
+                h.CurrentWeapon = null;
+            return;
+        }
 
-                    foreach (var h in _hardpoints)
-                        if (weapon == h.CurrentWeapon)
-                        {
-                            h.CurrentWeapon = null;
-                            RamDeployed = false;
-                        }
-                    break;
+        public void RemoveAllAttackingKeepSiege()
+        {
+            foreach (var h in HardPoints)
+            {
+                if (h.CurrentWeapon?.Realm != this.Realm)
+                    h.CurrentWeapon = null;
             }
         }
+
+        //public void RemoveSiege(Siege weapon)
+        //{
+        //    switch ((CreatureSubTypes)weapon.Spawn.Proto.CreatureSubType)
+        //    {
+        //        case CreatureSubTypes.SIEGE_GTAOE:
+        //            _activeMateriel[(int)MaterielType.Artillery].Remove(weapon);
+        //            break;
+        //        case CreatureSubTypes.SIEGE_SINGLE_TARGET:
+        //            _activeMateriel[(int)MaterielType.Cannon].Remove(weapon);
+        //            break;
+        //        case CreatureSubTypes.SIEGE_RAM:
+        //            var message = $"{weapon.SiegeInterface.Creator.Name}'s ram has been destroyed!";
+        //            var filter = Realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE;
+        //            foreach (var plr in Region.Players)
+        //                if (plr.CbtInterface.IsPvp && plr.ValidInTier(Region.GetTier(), true) && plr.Realm == Realm)
+        //                {
+        //                    plr.SendClientMessage(message, filter);
+        //                    plr.SendClientMessage(message, ChatLogFilters.CHATLOGFILTERS_RVR);
+        //                }
+        //            _activeMateriel[(int)MaterielType.Ram].Remove(weapon);
+
+        //            foreach (var h in HardPoints)
+        //                if (weapon == h.CurrentWeapon)
+        //                {
+        //                    h.CurrentWeapon = null;
+        //                    RamDeployed = false;
+        //                }
+        //            break;
+        //    }
+        //}
 
         public void TryAlignRam(Object owner, Player player)
         {
             var hardPos = new Point3D();
-            foreach (var h in _hardpoints)
+            foreach (var h in HardPoints)
             {
                 if (h.SiegeType != SiegeType.RAM)
                     continue;
@@ -1694,14 +1707,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
         }
 
-        public float GetSiegeDamageMod(SiegeType type)
-        {
-            float siegeCap = _materielCaps[(int)(type == SiegeType.SNIPER ? MaterielType.Cannon : MaterielType.Artillery)][Rank];
-            float siegeCount = Math.Max(1, _activeMateriel[(int)(type == SiegeType.SNIPER ? MaterielType.Cannon : MaterielType.Artillery)].Count);
-
-            return Math.Min(1f, siegeCap / siegeCount);
-        }
-
         public bool CheckDist(Player player)
         {
             if (player == null)
@@ -1712,7 +1717,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             if (player.Realm == Realm)
             {
-                foreach (Hardpoint h in _hardpoints)
+                foreach (Hardpoint h in HardPoints)
                 {
                     if (player.PointWithinRadiusFeet(h, 40))
                         return false;
@@ -1720,7 +1725,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
             else
             {
-                foreach (Hardpoint h in _hardpoints)
+                foreach (Hardpoint h in HardPoints)
                 {
                     if (player.PointWithinRadiusFeet(h, 40))
                         return false;
@@ -1815,7 +1820,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             return !Fortress;
         }
 
-        
+
     }
 
 

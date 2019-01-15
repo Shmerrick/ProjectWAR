@@ -12,20 +12,19 @@ namespace WorldServer
 {
     public class Siege : Creature
     {
-        public BattleFrontKeep Keep { get; }
+//        public BattleFrontKeep Keep { get; }
         private readonly SiegeType _type;
 
         public const int MAX_SHOTS = 15;
         public int ShotCount = MAX_SHOTS;
+        public int SiegeLifeSpan = 300 * 1000;
 
-        public Siege(Creature_spawn spawn, Player owner, BattleFrontKeep k, SiegeType type) : base(spawn)
+        public Siege(Creature_spawn spawn, Player owner, SiegeType type) : base(spawn)
         {
-            Keep = k;
-
             _type = type;
             SiegeInterface = AddInterface<SiegeInterface>();
             SiegeInterface.Creator = owner;
-            SiegeInterface.DeathTime = TCPManager.GetTimeStampMS() + 300 * 1000;
+            SiegeInterface.DeathTime = TCPManager.GetTimeStampMS() + SiegeLifeSpan;
         }
 
         public static Siege SpawnSiegeWeapon(Player plr, ushort zoneId, uint entry, bool defender)
@@ -46,7 +45,7 @@ namespace WorldServer
             
             spawn.BuildFromProto(proto);
 
-            return new Siege(spawn, plr, keep, SiegeType.GTAOE);
+            return new Siege(spawn, plr, GetSiegeType(entry));
         }
 
         protected override void SetCreatureStats()
@@ -57,19 +56,7 @@ namespace WorldServer
 
             // Normal siege weapons will tank 5 cannon hits (4500, cannons hit for 1000)
             // Rams will tank 300 cannon hits (60000, cannons hit for 200)
-            switch (Keep.Tier)
-            {
-                case 2:
-                    StsInterface.SetBaseStat(Stats.Wounds, _type == SiegeType.RAM ? (ushort)3500 : (ushort)500);
-                    break;
-                case 3:
-                    StsInterface.SetBaseStat(Stats.Wounds, _type == SiegeType.RAM ? (ushort)4600 : (ushort)700);
-                    break;
-                case 4:
-                    StsInterface.SetBaseStat(Stats.Wounds, _type == SiegeType.RAM ? (ushort)6000 : (ushort)900);
-                    break;
-            }
-
+            StsInterface.SetBaseStat(Stats.Wounds, _type == SiegeType.RAM ? (ushort)6000 : (ushort)900);
             StsInterface.ApplyStats();
         }
 
@@ -629,18 +616,20 @@ namespace WorldServer
 
         public override void Destroy()
         {
-            // RB   5/18/2016   Remove objects from keeps, and make sure spawns are removed, so they don't come back.
-            switch (_type)
-            {
-                case SiegeType.OIL:
-                    Keep.RemoveKeepSiege(this);
-                    break;
-                default:
-                    Keep.RemoveSiege(this);
-                    break;
-            }
+            var x = 1 + 1;
+            //TODO : No longer required.
+            //// RB   5/18/2016   Remove objects from keeps, and make sure spawns are removed, so they don't come back.
+            //switch (_type)
+            //{
+            //    case SiegeType.OIL:
+            //        Keep.RemoveKeepSiege(this);
+            //        break;
+            //    default:
+            //        Keep.RemoveSiege(this);
+            //        break;
+            //}
 
-            PendingDisposal = true;
+            //PendingDisposal = true;
         }
 
         public override void Dispose()
@@ -648,6 +637,31 @@ namespace WorldServer
             SiegeInterface.RemoveAllPlayers();
 
             base.Dispose();
+        }
+
+        public static SiegeType GetSiegeType(uint primaryValue)
+        {
+           var siegeProto =  CreatureService.GetCreatureProto(primaryValue);
+
+            SiegeType siegeType;
+
+            switch ((GameData.CreatureSubTypes)siegeProto.CreatureSubType)
+            {
+                case GameData.CreatureSubTypes.SIEGE_GTAOE:
+                    siegeType = SiegeType.GTAOE;
+                    break;
+                case GameData.CreatureSubTypes.SIEGE_SINGLE_TARGET:
+                    siegeType = SiegeType.SNIPER;
+                    break;
+                case GameData.CreatureSubTypes.SIEGE_RAM:
+                    siegeType = SiegeType.RAM;
+                    break;
+                default:
+                    siegeType = SiegeType.RAM;
+                    break;
+            }
+
+            return siegeType;
         }
     }
 }

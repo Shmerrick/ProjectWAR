@@ -6,6 +6,8 @@ using GameData;
 using System;
 using System.Collections.Generic;
 using SystemData;
+using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer
 {
@@ -526,47 +528,37 @@ namespace WorldServer
 
         private static bool CanDeploySiege(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
         {
-            Player player = caster as Player;
-
-            if (player == null)
+            if (!(caster is Player player))
                 return false;
 
-            /*if (BattleFrontService.GetWarcampEntrance((ushort)player.ZoneId, player.Realm).IsWithinRadiusFeet(player, 100))
-            {
-                ProximityBattleFront front = player.Region.Bttlfront as ProximityBattleFront;
-                if (front != null && front.RealmLostKeep[(int)player.Realm-1])
-                    return front.CanDeploySiegeAtWarcamp(player, abInfo.Level, (uint)abInfo.CommandInfo[0].PrimaryValue);
-            }
+            // TODO - whats this +8?
 
-            if (player.CurrentKeep != null && player.CurrentKeep.Ruin)
-            {
-                player.SendClientMessage("Cannot deploy siege at ruined keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                return false;
-            }*/
-            var creaturesInRange = player.GetInRange<Creature>(100);
-            var nearSiegeMerchant = false;
-            foreach (var creature in creaturesInRange)
-            {
-                if (creature.IsSiegeMerchant() && creature.Realm == player.Realm)
-                {
-                    nearSiegeMerchant = true;
-                    break;
-                }
-            }
+            var siegeType = Siege.GetSiegeType((uint) abInfo.CommandInfo[0].PrimaryValue);
 
-            if (nearSiegeMerchant)
-            {
-                // No check for max number of siege.
+            var nearMerchant = player.Region.Campaign.SiegeManager.CanDeploySiege(
+                 (Player)caster,
+                 new SiegeMerchantLocationComparitor(), siegeType);
+
+            var nearFriendlyKeep = player.Region.Campaign.SiegeManager.CanDeploySiege(
+                (Player)caster,
+                new FriendlyKeepLocationComparitor(), siegeType);
+
+            if (nearMerchant == DeploymentReason.Success || nearFriendlyKeep == DeploymentReason.Success)
                 return true;
-            }
-
-            if ((player.CurrentKeep != null && player.CurrentKeep.Realm == player.Realm))
+            else
             {
-                return player.CurrentKeep.CanDeploySiege(player, abInfo.Level, (uint)abInfo.CommandInfo[0].PrimaryValue);
+                if (nearFriendlyKeep == DeploymentReason.MaximumCount || nearMerchant == DeploymentReason.MaximumCount)
+                {
+                    player.SendClientMessage("There are too many of this type of Siege deployed", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                    return false;
+                }
+                if (nearFriendlyKeep == DeploymentReason.Range || nearMerchant == DeploymentReason.Range)
+                {
+                    player.SendClientMessage("Must deploy siege at friendly keep or near friendly Siege Merchant", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                    return false;
+                }
+                return false;
             }
-
-            player.SendClientMessage("Must deploy siege at friendly keep, or friendly Siege Merchant", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-            return false;
         }
         #endregion
 

@@ -1316,9 +1316,6 @@ namespace WorldServer
 
             float artilleryScale = front.GetArtilleryDamageScale(weapon.Realm);
 
-            if (siege != null)
-                artilleryScale *= siege.Keep.GetSiegeDamageMod(siege.SiegeInterface.Type);
-
             int desiredStackLevel = (int)(Point2D.Clamp(relevantPlayers - 20, 0, 30) * 0.1f * artilleryScale);
 
             artilleryScale *= 1f + (float)Math.Pow(relevantPlayers / 30f, 3);

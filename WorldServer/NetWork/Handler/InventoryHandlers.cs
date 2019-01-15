@@ -227,16 +227,19 @@ namespace WorldServer
             if (item.Info.SpellId == 0)
                 return;
 
-            var ramDeployedBeforeCast = false;
-            var ramDeployedAfterCast = false;
+            var ramDeployedBeforeCast = 0;
+            var ramDeployedAfterCast = 0;
             if (item.Info.IsSiege)
             {
                 // Get the closest, friendly keep
-                var closestFriendlyKeep = Plr.Region.Campaign.GetClosestFriendlyKeep(Plr.WorldPosition, Plr.Realm);
-                if (closestFriendlyKeep != null)
-                {
-                    ramDeployedBeforeCast = closestFriendlyKeep.IsRamDeployed();
-                }
+                //var closestFriendlyKeep = Plr.Region.Campaign.GetClosestFriendlyKeep(Plr.WorldPosition, Plr.Realm);
+                //if (closestFriendlyKeep != null)
+                //{
+                //    ramDeployedBeforeCast = closestFriendlyKeep.IsRamDeployed();
+                //}
+
+                ramDeployedBeforeCast = Plr.Region.Campaign.SiegeManager.GetNumberRamsDeployed();
+
             }
 
 
@@ -257,19 +260,20 @@ namespace WorldServer
             // Determine whether to remove the siege item from inventory.
             if (item.Info.IsSiege)
             {
+                ramDeployedAfterCast = Plr.Region.Campaign.SiegeManager.GetNumberRamsDeployed();
                 // Get the closest, friendly keep - tested again to lower calculation impact for all F_USE_ITEM calls.
-                var closestFriendlyKeep = Plr.Region.Campaign.GetClosestFriendlyKeep(Plr.WorldPosition, Plr.Realm);
-                if (closestFriendlyKeep != null)
-                {
-                    ramDeployedAfterCast = closestFriendlyKeep.IsRamDeployed();
-                }
+                //var closestFriendlyKeep = Plr.Region.Campaign.GetClosestFriendlyKeep(Plr.WorldPosition, Plr.Realm);
+                //if (closestFriendlyKeep != null)
+                //{
+                //    ramDeployedAfterCast = closestFriendlyKeep.IsRamDeployed();
+                //}
 
                 if ((item.Owner as Player).CharacterId == Plr.CharacterId)
                 {
                     if (item.Info.IsValid)
                     {
                         // If there is a Ram now, but there wasnt one before, remove it from inventory
-                        if (ramDeployedAfterCast && !ramDeployedBeforeCast)
+                        if (ramDeployedBeforeCast + 1== ramDeployedAfterCast)
                         {
                             Plr.ItmInterface.DeleteItem(slot, 1);
                         }
