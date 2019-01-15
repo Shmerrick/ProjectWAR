@@ -159,10 +159,10 @@ namespace WorldServer
                 Plr.ItmInterface.DeleteItem(slot, 1);
             }
 
-
+            // Oil
             if (item.Info.Entry == 86203 || item.Info.Entry == 86207 || item.Info.Entry == 86211 || item.Info.Entry == 86215 || item.Info.Entry == 86219 || item.Info.Entry == 86223) // siege oil
             {
-                BattleFrontKeep keep = Plr.Region.Campaign.GetClosestKeep(Plr.WorldPosition);
+                BattleFrontKeep keep = Plr.Region.Campaign.GetClosestFriendlyKeep(Plr.WorldPosition, Plr.Realm);
 
                 if (keep.Realm == Plr.Realm)
                     keep.SpawnOil(Plr, slot);

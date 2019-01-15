@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FrameWork;
+using GameData;
 using NLog;
 using WorldServer.World.Battlefronts.Keeps;
 
@@ -32,6 +33,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             };
             
             DeployedSieges = new List<Siege>();
+        }
+
+        public override string ToString()
+        {
+            var s = String.Empty;
+            foreach (var track in SiegeTracking)
+            {
+                s += $"{track.Type} : {track.CurrentNumberSiege}/{track.MaxNumberSiege}. ";
+            }
+
+            return s;
         }
 
         public void Add(Siege siege)
@@ -171,8 +183,39 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
     }
 
+    public class EnemyKeepLocationComparitor : ILocationComparitor
+    {
+        public int KeepComparisonRange = 200;
+        
 
-    
+        public bool InRange(Player player)
+        {
+            var closestKeep = player.Region.Campaign.GetClosestKeep(player.WorldPosition, KeepStatus.KEEPSTATUS_LOCKED);
+
+            if (closestKeep != null)
+            {
+                if (closestKeep.Realm != player.Realm)
+                {
+                    if (player.PointWithinRadiusFeet(
+                        new Point3D(
+                            closestKeep.Info.PQuest.GoldChestWorldX,
+                            closestKeep.Info.PQuest.GoldChestWorldY,
+                            closestKeep.Info.PQuest.GoldChestWorldZ),
+                        KeepComparisonRange))
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+    }
+
+
     public class SiegeTracker
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();

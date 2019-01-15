@@ -861,7 +861,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public BattleFrontKeep GetClosestKeep(Point3D destPos)
+        public BattleFrontKeep GetClosestKeep(Point3D destPos, KeepStatus excludedKeepStatus=KeepStatus.KEEPSTATUS_RUINED)
         {
             BattleFrontKeep bestKeep = null;
             ulong bestDist = 0;
@@ -872,6 +872,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 if (bestKeep == null || curDist < bestDist)
                 {
+                    // Dont process keeps that are in excluded status
+                    if (keep.KeepStatus == excludedKeepStatus)
+                        continue;
                     bestKeep = keep;
                     bestDist = keep.GetDistanceSquare(destPos);
                 }
@@ -879,6 +882,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             return bestKeep;
         }
+
+
 
         public BattleFrontKeep GetClosestFriendlyKeep(Point3D destPos, Realms myRealm)
         {

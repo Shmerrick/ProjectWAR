@@ -4,6 +4,7 @@ using GameData;
 using System;
 using System.Collections.Generic;
 using SystemData;
+using NLog;
 using WorldServer.Services.World;
 using WorldServer.World.BattleFronts.Keeps;
 using CreatureSubTypes = GameData.CreatureSubTypes;
@@ -14,6 +15,7 @@ namespace WorldServer
     {
 //        public BattleFrontKeep Keep { get; }
         private readonly SiegeType _type;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public const int MAX_SHOTS = 15;
         public int ShotCount = MAX_SHOTS;
@@ -323,7 +325,7 @@ namespace WorldServer
             Pet pet = killer as Pet;
             Player credited = (pet != null) ? pet.Owner : (killer as Player);
 
-            (killer as Player).SendClientMessage($"{credited.Name} {(killer as Player).Name} has killed a siege item!!!!!");
+            (killer as Player).SendClientMessage($"{(killer as Player).Name} has killed a siege item!!!!!");
 
             if (credited != null)
             {
@@ -616,7 +618,9 @@ namespace WorldServer
 
         public override void Destroy()
         {
-            var x = 1 + 1;
+            _logger.Debug($"Destroying Siege {this.Name}. SiegeManager : {this.Region.Campaign.SiegeManager.ToString()}");
+            this.Region.Campaign.SiegeManager.Remove(this);
+            
             //TODO : No longer required.
             //// RB   5/18/2016   Remove objects from keeps, and make sure spawns are removed, so they don't come back.
             //switch (_type)

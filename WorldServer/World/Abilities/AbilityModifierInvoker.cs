@@ -6,7 +6,6 @@ using GameData;
 using System;
 using System.Collections.Generic;
 using SystemData;
-using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer
@@ -533,32 +532,59 @@ namespace WorldServer
 
             // TODO - whats this +8?
 
-            var siegeType = Siege.GetSiegeType((uint) abInfo.CommandInfo[0].PrimaryValue);
+            var siegeType = Siege.GetSiegeType((uint)abInfo.CommandInfo[0].PrimaryValue);
 
             var nearMerchant = player.Region.Campaign.SiegeManager.CanDeploySiege(
-                 (Player)caster,
-                 new SiegeMerchantLocationComparitor(), siegeType);
+                (Player)caster,
+                new SiegeMerchantLocationComparitor(), siegeType);
 
             var nearFriendlyKeep = player.Region.Campaign.SiegeManager.CanDeploySiege(
                 (Player)caster,
                 new FriendlyKeepLocationComparitor(), siegeType);
 
-            if (nearMerchant == DeploymentReason.Success || nearFriendlyKeep == DeploymentReason.Success)
-                return true;
-            else
+            var nearEnemyKeep = player.Region.Campaign.SiegeManager.CanDeploySiege(
+                (Player)caster,
+                new EnemyKeepLocationComparitor(), siegeType);
+
+            if (siegeType == SiegeType.RAM)
             {
-                if (nearFriendlyKeep == DeploymentReason.MaximumCount || nearMerchant == DeploymentReason.MaximumCount)
+                if (nearMerchant == DeploymentReason.Success || nearFriendlyKeep == DeploymentReason.Success)
+                    return true;
+                else
                 {
-                    player.SendClientMessage("There are too many of this type of Siege deployed", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                    if (nearFriendlyKeep == DeploymentReason.MaximumCount || nearMerchant == DeploymentReason.MaximumCount)
+                    {
+                        player.SendClientMessage("There are too many of this type of Siege deployed", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                        return false;
+                    }
+                    if (nearFriendlyKeep == DeploymentReason.Range || nearMerchant == DeploymentReason.Range)
+                    {
+                        player.SendClientMessage("Must deploy siege at friendly keep or near friendly Siege Merchant", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                        return false;
+                    }
                     return false;
                 }
-                if (nearFriendlyKeep == DeploymentReason.Range || nearMerchant == DeploymentReason.Range)
-                {
-                    player.SendClientMessage("Must deploy siege at friendly keep or near friendly Siege Merchant", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                    return false;
-                }
-                return false;
             }
+            if (siegeType == SiegeType.GTAOE || siegeType == SiegeType.SNIPER || siegeType == SiegeType.DIRECT)
+            {
+                if (nearEnemyKeep == DeploymentReason.Success)
+                    return true;
+                else
+                {
+                    if (nearEnemyKeep == DeploymentReason.MaximumCount)
+                    {
+                        player.SendClientMessage("There are too many of this type of Siege deployed", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                        return false;
+                    }
+                    if (nearEnemyKeep == DeploymentReason.Range)
+                    {
+                        player.SendClientMessage("Must deploy siege at enemy keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                        return false;
+                    }
+                    return false;
+                }
+            }
+            return false;
         }
         #endregion
 
