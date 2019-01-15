@@ -907,12 +907,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return bestKeep;
         }
 
-        public BattleFrontKeep GetZoneKeep(ushort zoneId, int realm)
+        public List<BattleFrontKeep> GetZoneKeeps(ushort zoneId)
         {
-            foreach (var keep in Keeps)
-                if (keep.Info.KeepId == realm)
-                    return keep;
-            return null;
+            return Keeps.Where(x => x.ZoneId == zoneId).ToList();
         }
 
         public void WriteCaptureStatus(PacketOut Out)

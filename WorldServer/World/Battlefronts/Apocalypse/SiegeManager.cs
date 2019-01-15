@@ -186,29 +186,29 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     public class EnemyKeepLocationComparitor : ILocationComparitor
     {
         public int KeepComparisonRange = 200;
-        
 
         public bool InRange(Player player)
         {
-            var closestKeep = player.Region.Campaign.GetClosestKeep(player.WorldPosition, KeepStatus.KEEPSTATUS_LOCKED);
+            // Get the keeps in this zone.
+            var keepsInZone = player.Region.Campaign.GetZoneKeeps(player.ZoneId);
 
-            if (closestKeep != null)
+            // If one of the keeps belongs to the enemy and you are within a certain distance from it...
+            if (keepsInZone != null)
             {
-                if (closestKeep.Realm != player.Realm)
+                foreach (var battleFrontKeep in keepsInZone)
                 {
-                    if (player.PointWithinRadiusFeet(
-                        new Point3D(
-                            closestKeep.Info.PQuest.GoldChestWorldX,
-                            closestKeep.Info.PQuest.GoldChestWorldY,
-                            closestKeep.Info.PQuest.GoldChestWorldZ),
-                        KeepComparisonRange))
+                    if (battleFrontKeep.Realm != player.Realm)
                     {
-                        return true;
+                        if (player.PointWithinRadiusFeet(
+                            new Point3D(
+                                battleFrontKeep.Info.PQuest.GoldChestWorldX,
+                                battleFrontKeep.Info.PQuest.GoldChestWorldY,
+                                battleFrontKeep.Info.PQuest.GoldChestWorldZ),
+                            KeepComparisonRange))
+                        {
+                            return true;
+                        }
                     }
-                }
-                else
-                {
-                    return false;
                 }
             }
             return false;
