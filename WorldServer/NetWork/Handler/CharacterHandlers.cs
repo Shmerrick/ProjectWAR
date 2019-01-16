@@ -113,7 +113,7 @@ namespace WorldServer
                         {
                             CharacterId = Char.CharacterId,
                             Level = 1,
-                            Money = 20,
+                            Money = 2000,
                             Online = false,
                             RallyPoint = CharInfo.RallyPt,
                             RegionId = CharInfo.Region,
