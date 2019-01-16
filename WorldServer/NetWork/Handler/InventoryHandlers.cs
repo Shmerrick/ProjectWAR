@@ -1,12 +1,15 @@
 ﻿using FrameWork;
 using GameData;
 using SystemData;
+using NLog;
 using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer
 {
     public class InventoryHandlers : IPacketHandler
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_BAG_INFO, (int)eClientState.Playing, "onBagInfo")]
         public static void F_BAG_INFO(BaseClient client, PacketIn packet)
         {
@@ -227,21 +230,20 @@ namespace WorldServer
             if (item.Info.SpellId == 0)
                 return;
 
-            var ramDeployedBeforeCast = 0;
-            var ramDeployedAfterCast = 0;
-            if (item.Info.IsSiege)
+            var numberSiegeTypeBeforeCast = 0;
+            var numberSiegeTypeAfterCast = 0;
+
+            var siegeType = Siege.GetSiegeType(item.Info.Entry);
+            if (siegeType == null)
             {
-                // Get the closest, friendly keep
-                //var closestFriendlyKeep = Plr.Region.Campaign.GetClosestFriendlyKeep(Plr.WorldPosition, Plr.Realm);
-                //if (closestFriendlyKeep != null)
-                //{
-                //    ramDeployedBeforeCast = closestFriendlyKeep.IsRamDeployed();
-                //}
-
-                ramDeployedBeforeCast = Plr.Region.Campaign.SiegeManager.GetNumberRamsDeployed();
-
+                _logger.Warn($"Could not locate SiegeType for {item.Info.Entry}");
+                return;
             }
 
+            if (item.Info.IsSiege)
+            {
+                numberSiegeTypeBeforeCast = Plr.Region.Campaign.SiegeManager.GetNumberByType(siegeType.Value);
+            }
 
             #region Ability Cast
 
@@ -260,20 +262,15 @@ namespace WorldServer
             // Determine whether to remove the siege item from inventory.
             if (item.Info.IsSiege)
             {
-                ramDeployedAfterCast = Plr.Region.Campaign.SiegeManager.GetNumberRamsDeployed();
-                // Get the closest, friendly keep - tested again to lower calculation impact for all F_USE_ITEM calls.
-                //var closestFriendlyKeep = Plr.Region.Campaign.GetClosestFriendlyKeep(Plr.WorldPosition, Plr.Realm);
-                //if (closestFriendlyKeep != null)
-                //{
-                //    ramDeployedAfterCast = closestFriendlyKeep.IsRamDeployed();
-                //}
+                // If the siege exists, and the cast was not blocked or interrupted.
+                numberSiegeTypeAfterCast = Plr.Region.Campaign.SiegeManager.GetNumberByType(siegeType.Value);
 
                 if ((item.Owner as Player).CharacterId == Plr.CharacterId)
                 {
                     if (item.Info.IsValid)
                     {
                         // If there is a Ram now, but there wasnt one before, remove it from inventory
-                        if (ramDeployedBeforeCast + 1== ramDeployedAfterCast)
+                        if (numberSiegeTypeBeforeCast + 1 == numberSiegeTypeAfterCast)
                         {
                             Plr.ItmInterface.DeleteItem(slot, 1);
                         }

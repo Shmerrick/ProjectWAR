@@ -45,14 +45,13 @@ namespace WorldServer.World.BattleFronts.Keeps
                 else
                 {
                     Creature_proto proto = CreatureService.GetCreatureProto(realm == Realms.REALMS_REALM_ORDER ? Info.OrderId : Info.DestroId);
-
-                    _logger.Trace($"Spawning Guard {proto.Name} ({proto.Entry})");
-
+                    
                     if (proto == null)
                     {
                         Log.Error("KeepNPC", "No FlagGuard Proto");
                         return;
                     }
+                    _logger.Trace($"Spawning Guard {proto.Name} ({proto.Entry})");
 
                     Creature_spawn spawn = new Creature_spawn();
                     spawn.BuildFromProto(proto);

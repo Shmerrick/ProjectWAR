@@ -536,15 +536,15 @@ namespace WorldServer
 
             var nearMerchant = player.Region.Campaign.SiegeManager.CanDeploySiege(
                 (Player)caster,
-                new SiegeMerchantLocationComparitor(), siegeType);
+                new SiegeMerchantLocationComparitor(), siegeType.Value);
 
             var nearFriendlyKeep = player.Region.Campaign.SiegeManager.CanDeploySiege(
                 (Player)caster,
-                new FriendlyKeepLocationComparitor(), siegeType);
+                new FriendlyKeepLocationComparitor(), siegeType.Value);
 
             var nearEnemyKeep = player.Region.Campaign.SiegeManager.CanDeploySiege(
                 (Player)caster,
-                new EnemyKeepLocationComparitor(), siegeType);
+                new EnemyKeepLocationComparitor(), siegeType.Value);
 
             if (siegeType == SiegeType.RAM)
             {

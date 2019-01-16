@@ -47,7 +47,7 @@ namespace WorldServer
             
             spawn.BuildFromProto(proto);
 
-            return new Siege(spawn, plr, GetSiegeType(entry));
+            return new Siege(spawn, plr, GetSiegeType(entry).Value);
         }
 
         protected override void SetCreatureStats()
@@ -643,11 +643,14 @@ namespace WorldServer
             base.Dispose();
         }
 
-        public static SiegeType GetSiegeType(uint primaryValue)
+        public static SiegeType? GetSiegeType(uint primaryValue)
         {
            var siegeProto =  CreatureService.GetCreatureProto(primaryValue);
+            if (siegeProto == null)
+                return null;
 
             SiegeType siegeType;
+
 
             switch ((GameData.CreatureSubTypes)siegeProto.CreatureSubType)
             {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Common.Database.World.Battlefront;
 using FrameWork;
 
 namespace Common
@@ -189,6 +189,7 @@ namespace Common
         [DataElement(AllowDbNull = false)]
         public int RamOuter2O { get; set; }
 
+        public List<KeepSiegeSpawnPoints> KeepSiegeSpawnPoints { get; set; }
         public List<Keep_Creature> Creatures;
         public List<Keep_Door> Doors;
         public PQuest_Info PQuest;

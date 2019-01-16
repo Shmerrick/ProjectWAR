@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
+using Common.Database.World.Battlefront;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Keeps;
@@ -26,6 +27,8 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         // List of positions where siege weapons may be deployed.
         public List<Hardpoint> HardPoints = new List<Hardpoint>();
+
+        public List<KeepSiegeSpawnPoints> SpawnPoints = new List<KeepSiegeSpawnPoints>();
 
         #region timers
         public KeepTimer SeizedTimer;
@@ -107,6 +110,8 @@ namespace WorldServer.World.BattleFronts.Keeps
                 HardPoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuter1X, info.RamOuter1Y, info.RamOuter1Z, info.RamOuter1O));
                 HardPoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuter2X, info.RamOuter2Y, info.RamOuter2Z, info.RamOuter2O));
             }
+
+            SpawnPoints = Info.KeepSiegeSpawnPoints;
 
             PlayersKilledInRange = 0;
 
@@ -1745,8 +1750,10 @@ namespace WorldServer.World.BattleFronts.Keeps
                     baseEntry = 13406;
                     break;
                 case 3: //human
+                    baseEntry = 86211;  
+                    break;
                 case 4: //chaos
-                    baseEntry = 13418;
+                    baseEntry = 86211;//TODO : fix - incorrect
                     break;
                 case 5: //he
                 case 6: //de
@@ -1754,12 +1761,8 @@ namespace WorldServer.World.BattleFronts.Keeps
                     break;
             }
 
-            if (targetRealm == Realms.REALMS_REALM_DESTRUCTION)
-                baseEntry += 36;
 
-            if (Constants.DoomsdaySwitch == 0)
-                return (uint)(baseEntry + (Info.PQuest.PQTier - 2) * 4);
-            return baseEntry + (4 - 2) * 4;
+            return baseEntry;
         }
 
         #endregion

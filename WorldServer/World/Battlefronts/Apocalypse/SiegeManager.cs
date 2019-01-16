@@ -116,6 +116,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 return 0;
             }
         }
+
+        public int GetNumberByType(SiegeType siegeType)
+        {
+            var tracking = SiegeTracking.SingleOrDefault(x => x.Type == siegeType);
+            if (tracking != null)
+                return tracking.CurrentNumberSiege;
+            else
+            {
+                return 0;
+            }
+        }
     }
 
     public enum DeploymentReason
@@ -185,12 +196,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
     public class EnemyKeepLocationComparitor : ILocationComparitor
     {
-        public int KeepComparisonRange = 200;
+        public int KeepComparisonRange = 100;
 
         public bool InRange(Player player)
         {
             // Get the keeps in this zone.
-            var keepsInZone = player.Region.Campaign.GetZoneKeeps(player.ZoneId);
+            var keepsInZone = player.Region.Campaign.GetZoneKeeps((ushort) player.ZoneId);
 
             // If one of the keeps belongs to the enemy and you are within a certain distance from it...
             if (keepsInZone != null)
@@ -199,15 +210,20 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     if (battleFrontKeep.Realm != player.Realm)
                     {
-                        if (player.PointWithinRadiusFeet(
-                            new Point3D(
-                                battleFrontKeep.Info.PQuest.GoldChestWorldX,
-                                battleFrontKeep.Info.PQuest.GoldChestWorldY,
-                                battleFrontKeep.Info.PQuest.GoldChestWorldZ),
-                            KeepComparisonRange))
+                        // Keeps can have multiple siege spawn points. If the player is within range of any, allow spawn of siege.
+                        foreach (var spawnPoint in battleFrontKeep.SpawnPoints)
                         {
-                            return true;
+                            if (player.PointWithinRadiusFeet(
+                                new Point3D(
+                                    spawnPoint.X,
+                                    spawnPoint.Y,
+                                    spawnPoint.Z),
+                                KeepComparisonRange))
+                            {
+                                return true;
+                            }
                         }
+                        
                     }
                 }
             }

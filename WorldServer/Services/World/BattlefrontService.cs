@@ -4,6 +4,7 @@ using FrameWork;
 using GameData;
 using System.Collections.Generic;
 using System.Linq;
+using Common.Database.World.Battlefront;
 
 namespace WorldServer.Services.World
 {
@@ -70,6 +71,7 @@ namespace WorldServer.Services.World
         {
             LoadKeepCreatures();
             LoadKeepDoors();
+            LoadKeepSiegeSpawnPoints();
 
             _KeepInfos = new Dictionary<uint, List<Keep_Info>>();
 
@@ -90,6 +92,9 @@ namespace WorldServer.Services.World
 
                 if (_KeepDoors.ContainsKey(keepInfo.KeepId))
                     keepInfo.Doors = _KeepDoors[keepInfo.KeepId];
+
+                if (_KeepSiegeSpawnPoints.ContainsKey(keepInfo.KeepId))
+                    keepInfo.KeepSiegeSpawnPoints = _KeepSiegeSpawnPoints[keepInfo.KeepId];
 
                 ++Count;
             }
@@ -140,6 +145,29 @@ namespace WorldServer.Services.World
             }
 
             Log.Success("WorldMgr", "Loaded " + Count + " Keep Doors");
+        }
+
+
+        public static Dictionary<int, List<KeepSiegeSpawnPoints>> _KeepSiegeSpawnPoints = new Dictionary<int, List<KeepSiegeSpawnPoints>>();
+        public static void LoadKeepSiegeSpawnPoints()
+        {
+            _KeepSiegeSpawnPoints = new Dictionary<int, List<KeepSiegeSpawnPoints>>();
+
+            Log.Debug("WorldMgr", "Loading KeepSiegeSpawnPoints...");
+
+            IList<KeepSiegeSpawnPoints> points = Database.SelectAllObjects<KeepSiegeSpawnPoints>();
+
+            int Count = 0;
+            foreach (KeepSiegeSpawnPoints point in points)
+            {
+                if (!_KeepSiegeSpawnPoints.ContainsKey(point.KeepId))
+                    _KeepSiegeSpawnPoints.Add(point.KeepId, new List<KeepSiegeSpawnPoints>());
+
+                _KeepSiegeSpawnPoints[point.KeepId].Add(point);
+                ++Count;
+            }
+
+            Log.Success("WorldMgr", "Loaded " + Count + " KeepSiegeSpawnPoints");
         }
 
         public static List<Keep_Info> GetKeepInfos(uint RegionId)
