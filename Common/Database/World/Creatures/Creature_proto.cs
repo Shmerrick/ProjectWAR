@@ -1447,11 +1447,7 @@ namespace Common
         }
 
         [DataElement(AllowDbNull = false)]
-        public ushort Unk2
-        {
-            get { return _Unks[2]; }
-            set { if (_Unks == null)_Unks = new ushort[7]; _Unks[2] = value; }
-        }
+        public ushort NpcRank { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public ushort Unk3
