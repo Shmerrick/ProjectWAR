@@ -173,26 +173,19 @@ namespace WorldServer
                 for (int i = 0; i < GroupsinCombat.Count; i++)
                 {
                     List<InstanceSpawn> sp = new List<InstanceSpawn>();
-                    bool valid = _Spawns.TryGetValue(GroupsinCombat[i], out sp);
-                    if (valid)
-                    {
-                        ushort death = 0;
+                    _Spawns.TryGetValue(GroupsinCombat[i], out sp);
+                    ushort death = 0;
 
-                        foreach (InstanceSpawn IS in sp)
-                        {
-                            if (IS.IsDead)
-                                death++;
-                        }
-                        if (death == sp.Count)
-                        {
-                            Respawns.Add(new Respawn(TCPManager.GetTimeStampMS() + (Info.TrashRespawnTimer * 1000), GroupsinCombat[i]));
-                            GroupsinCombat.Remove(GroupsinCombat[i]);
-                            i--;
-                        }
-                    }
-                    else
+                    foreach (InstanceSpawn IS in sp)
                     {
-                        GroupsinCombat.RemoveAt(i);
+                        if (IS.IsDead)
+                            death++;
+                    }
+                    if (death == sp.Count)
+                    {
+                        Respawns.Add(new Respawn(TCPManager.GetTimeStampMS() + (Info.TrashRespawnTimer * 1000), GroupsinCombat[i]));
+                        GroupsinCombat.Remove(GroupsinCombat[i]);
+                        i--;
                     }
                 }
             }
@@ -333,10 +326,8 @@ namespace WorldServer
                     spawn.WorldX = obj.WorldX;
                     spawn.ZoneId = obj.ZoneID;
                     spawn.Enabled = 1;
-                    spawn.Level = spawn.Proto.MinLevel;
-                    spawn.Level = obj.Level;
 
-                    InstanceBossSpawn IS = null;
+					InstanceBossSpawn IS = null;
 
 					switch (obj.Entry)
                     {
@@ -541,21 +532,13 @@ namespace WorldServer
 
         }
 
-        public void RemoveInstanceObjectOnBossDeath(uint bossId)
-        {
-            var list = _Objects.Where(x => (x as InstanceObject).Info.BossID == bossId).ToList();
-            if (list != null && list.Count > 0)
-            {
-                list.ForEach(x => x.RemoveFromWorld());
-            }
-            var spawns = _Spawns[bossId].ToList();
-            if (spawns != null && spawns.Count > 0)
-            {
-                spawns.ForEach(x =>
-                {
-                    x.RemoveFromWorld();
-                });
-            }
-        }
+		public void RemoveInstanceObjectOnBossDeath(uint bossId)
+		{
+			var list = _Objects.Where(x => (x as InstanceObject).Info.EncounterID == bossId).ToList();
+			if (list != null && list.Count > 0)
+			{
+				list.ForEach(x => x.RemoveFromWorld());
+			}
+		}
     }
 }

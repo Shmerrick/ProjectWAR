@@ -17,7 +17,7 @@ namespace Common
         public uint InstanceID { get; set; }
 
         [DataElement]
-        public uint BossID { get; set; }
+        public uint EncounterID { get; set; }
 
         [DataElement]
         public uint DoorID { get; set; }
@@ -46,8 +46,6 @@ namespace Common
         [DataElement]
         public uint VfxState { get; set; }
 
-        [DataElement]
-        public uint Realm { get; set; }
 
         public List<Instance_Spawn_State> Scripts = new List<Instance_Spawn_State>();
         public List<Instance_Attribute> Attributes = new List<Instance_Attribute>();
