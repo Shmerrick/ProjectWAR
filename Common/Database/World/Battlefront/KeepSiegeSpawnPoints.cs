@@ -22,5 +22,10 @@ namespace Common.Database.World.Battlefront
         [DataElement(AllowDbNull = false)]
         public int Z { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public int O { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int SiegeType { get; set; }
     }
 }

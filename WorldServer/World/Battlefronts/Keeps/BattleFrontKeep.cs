@@ -91,27 +91,36 @@ namespace WorldServer.World.BattleFronts.Keeps
             KeepCommunications = comms;
             Zone = region.GetZoneMgr(info.ZoneId);
 
-            HardPoints.Add(new Hardpoint(SiegeType.OIL, info.OilX, info.OilY, info.OilZ, info.OilO));
-            if (info.OilOuterX > 0)
-                HardPoints.Add(new Hardpoint(SiegeType.OIL, info.OilOuterX, info.OilOuterY, info.OilOuterZ, info.OilOuterO));
-
-            //added these in for forts oils outer walls
-            HardPoints.Add(new Hardpoint(SiegeType.OIL, info.OilOuter1X, info.OilOuter1Y, info.OilOuter1Z, info.OilOuter1O));
-            HardPoints.Add(new Hardpoint(SiegeType.OIL, info.OilOuter2X, info.OilOuter2Y, info.OilOuter2Z, info.OilOuter2O));
-
-            HardPoints.Add(new Hardpoint(SiegeType.RAM, info.RamX, info.RamY, info.RamZ, info.RamO));
-
-            if (info.RamOuterX > 0)
-            {
-                HardPoints[HardPoints.Count - 1].SiegeRequirement = KeepMessage.Outer0;
-                HardPoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuterX, info.RamOuterY, info.RamOuterZ, info.RamOuterO));
-
-                //added these for the forts outer rams
-                HardPoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuter1X, info.RamOuter1Y, info.RamOuter1Z, info.RamOuter1O));
-                HardPoints.Add(new Hardpoint(SiegeType.RAM, info.RamOuter2X, info.RamOuter2Y, info.RamOuter2Z, info.RamOuter2O));
-            }
-
             SpawnPoints = Info.KeepSiegeSpawnPoints;
+
+            if (SpawnPoints != null)
+            {
+                _logger.Debug($"Loading SpawnPoints for {Info.Name}");
+                foreach (var keepSiegeSpawnPointse in SpawnPoints)
+                {
+                    switch (keepSiegeSpawnPointse.SiegeType)
+                    {
+                        case (int) SiegeType.OIL:
+                            HardPoints.Add(
+                                new Hardpoint(
+                                    SiegeType.OIL,
+                                    keepSiegeSpawnPointse.X,
+                                    keepSiegeSpawnPointse.Y,
+                                    keepSiegeSpawnPointse.Z,
+                                    keepSiegeSpawnPointse.O));
+                            break;
+                        case (int) SiegeType.RAM:
+                            HardPoints.Add(
+                                new Hardpoint(
+                                    SiegeType.RAM,
+                                    keepSiegeSpawnPointse.X,
+                                    keepSiegeSpawnPointse.Y,
+                                    keepSiegeSpawnPointse.Z,
+                                    keepSiegeSpawnPointse.O));
+                            break;
+                    }
+                }
+            }
 
             PlayersKilledInRange = 0;
 
@@ -434,11 +443,25 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void InformRegionPlayersOfKeepStatus()
         {
-            foreach (var plr in Region.Players)
-            {
-                SendKeepInfo(plr);
-            }
-            KeepCommunications.SendKeepStatus(null, this);
+
+            // if the player is in the active battlefront, find the closest keep and tell them about that. 
+
+            // if the player is not in the active battlefront, find the active battlefront and report on any non-safe keep. 
+
+            // if there are no non-safe keeps, report on any keep.
+            
+
+            // get the active battlefront and direct 
+
+
+
+            //foreach (var plr in Region.Players)
+            //{
+            //    if (plr.ZoneId == )
+
+            //    SendKeepInfo(plr);
+            //}
+            //KeepCommunications.SendKeepStatus(null, this);
         }
 
 
@@ -470,11 +493,12 @@ namespace WorldServer.World.BattleFronts.Keeps
             RemoveAllAttackingKeepSiege();
 
             PlayersKilledInRange /= 2;
-
-            foreach (var plr in PlayersInRange)
+            // Update all players within 200 range - update the map.
+            foreach (var plr in GetInRange<Player>(200))
             {
                 SendKeepInfo(plr);
             }
+            // Send all players an update upper right.
             KeepCommunications.SendKeepStatus(null, this);
 
             WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
@@ -1031,9 +1055,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                 }
             }
             InformRegionPlayersOfKeepStatus();
-            //if (_safeKeepTimer > 0 && _safeKeepTimer < TCPManager.GetTimeStamp())
-            //    if (KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
-            //        TickSafety();
         }
 
         public void ProximityReloadSiege(int ammo)
@@ -1183,6 +1204,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         #region Senders
 
+        // Updates objective text and 
         public void SendKeepInfo(Player plr)
         {
             var Out = new PacketOut((byte)Opcodes.F_OBJECTIVE_INFO, 32);
@@ -1204,7 +1226,6 @@ namespace WorldServer.World.BattleFronts.Keeps
 
                 Out.WriteShortString(GetAttackerMessage());
             }
-
             else
             {
                 Out.WriteByte(0);
@@ -1311,103 +1332,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             if (plr != null)
                 plr.SendPacket(Out);
         }
-
-        #endregion
-
-        #region Zone Locking
-
-        ///// <summary>
-        /////     Lock the keep. Keep can no longer be retaken until the Campaign is Initialised.
-        ///// </summary>
-        ///// <param name="lockingRealm"></param>
-        ///// <param name="announce"></param>
-        ///// <param name="reset">Reset the owner to the original keep owner for the campaign</param>
-        //public void LockKeep(Realms lockingRealm, bool announce, bool reset)
-        //{
-        //    _logger.Debug($"Locking Keep {Info.Name} for {lockingRealm.ToString()} -- keep can no longer be retaken");
-
-        //    _safeKeepTimer = 0;
-
-        //    Rank = 0;
-        //    _currentResource = 0;
-        //    if (reset)
-        //        Realm = (Realms)Info.Realm;
-        //    else
-        //        Realm = lockingRealm;
-
-        //    // Despawning the lord means the keep cannot be retaken -> and hence cannot be seized -> reward.
-        //    foreach (var crea in Creatures)
-        //        crea.DespawnGuard();
-
-        //    foreach (var door in Doors)
-        //        door.Spawn();
-
-        //    UpdateKeepStatus(KeepStatus.KEEPSTATUS_LOCKED);
-
-        //    EvtInterface.RemoveEvent(UpdateResources);
-
-        //    LastMessage = KeepMessage.Safe;
-        //}
-
-        /// <summary>
-        ///     The campaign (pairing) for this keep has just unlocked. Set the intial owner according to the zone.
-        /// </summary>
-        //public void NotifyPairingUnlocked()
-        //{
-        //    Realm = (Realms)Info.Realm;
-
-        //    UpdateKeepStatus(KeepStatus.KEEPSTATUS_LOCKED);
-
-        //    EvtInterface.RemoveEvent(UpdateResources);
-
-        //    LastMessage = KeepMessage.Safe;
-
-        //    KeepCommunications.SendKeepStatus(null, this);
-        //}
-
-        //public Realms GetInitialOwner()
-        //{
-        //    switch (Info.KeepId)
-        //    {
-        //        case 6:  // Kazad Dammaz
-        //        case 15: // Wilhelm's Fist
-        //        case 26: // Pillars of Remembrance
-        //            Log.Info(Info.Name, "Overriding control of this keep towards Destruction");
-        //            return Realms.REALMS_REALM_DESTRUCTION;
-        //        case 9: // Ironskin Skar
-        //        case 20: // Charon's Citadel
-        //        case 30: // Wrath's Resolve
-        //            Log.Info(Info.Name, "Overriding control of this keep towards Order");
-        //            return Realms.REALMS_REALM_ORDER;
-        //        default:
-        //            return (Realms)Info.Realm;
-        //    }
-        //}
-
-        //public void ReopenKeep()
-        //{
-        //    UpdateKeepStatus(KeepStatus.KEEPSTATUS_SAFE);
-
-        //    InformRankOne = false;
-
-        //    EvtInterface.AddEvent(UpdateResources, 60000, 0);
-
-        //    foreach (KeepDoor door in Doors)
-        //    {
-        //        door.GameObject.SetAttackable(true);
-        //    }
-
-        //    foreach (Object obj in Region.Objects)
-        //    {
-        //        Player plr = obj as Player;
-
-        //        if (plr == null || !plr.ValidInTier(Tier, true))
-        //            continue;
-
-        //        plr.SendLocalizeString(Info.Name + " is now open for capture!", ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-        //        plr.SendLocalizeString(Info.Name + " is now open for capture!", Realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE, Localized_text.CHAT_TAG_DEFAULT);
-        //    }
-        //}
 
         #endregion
 
@@ -1538,24 +1462,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                     break;
                 case CreatureSubTypes.SIEGE_RAM:
                     type = (int)MaterielType.Ram;
-                    //foreach (Hardpoint h in HardPoints)
-                    //{
-                    //    if (h.SiegeType == SiegeType.OIL)
-                    //    {
-                    //        player.SendClientMessage("Keep under attack", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                    //        player.SendClientMessage("You cannot deploy a ram at a keep that is defending itself.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-                    //        return false;
-                    //    }
-                    //}
-
-
-                    //if (KeepStatus != KeepStatus.KEEPSTATUS_SAFE)
-                    //{
-                    //    player.SendClientMessage("Unsafe keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                    //    player.SendClientMessage("You cannot deploy a ram at a keep that is unsafe.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-                    //    return false;
-                    //}
-
+                  
                     // If the number of spawned siege items > cap per keep level, dont allow.
                     if (_activeMateriel[type].Count >= _materielCaps[type][Rank])
                     {
@@ -1563,13 +1470,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                         player.SendClientMessage("Your supply lines cannot support any more rams.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                         return false;
                     }
-
-                    //if (player.GldInterface.Guild == null || (Tier == 4 && player.GldInterface.Guild.Info.Level < 20))
-                    //{
-                    //    player.SendClientMessage(Tier == 4 ? "Must be in guild of rank 20" : "Must be in guild", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                    //    player.SendClientMessage($"In order to deploy a ram, you must be in a { (Tier == 4 ? "reputable guild of rank 20 or higher." : "guild.") }", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-                    //    return false;
-                    //}
                     break;
                 default:
                     return true;

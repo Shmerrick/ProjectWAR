@@ -544,7 +544,7 @@ namespace WorldServer
 
             var nearEnemyKeep = player.Region.Campaign.SiegeManager.CanDeploySiege(
                 (Player)caster,
-                new EnemyKeepLocationComparitor(), siegeType.Value);
+                new EnemyKeepLocationComparitor(siegeType.Value), siegeType.Value);
 
             if (siegeType == SiegeType.RAM)
             {

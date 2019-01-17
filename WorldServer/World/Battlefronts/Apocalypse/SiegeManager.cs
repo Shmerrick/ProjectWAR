@@ -1,12 +1,9 @@
-﻿using System;
+﻿using FrameWork;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FrameWork;
-using GameData;
-using NLog;
 using WorldServer.World.Battlefronts.Keeps;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
@@ -31,7 +28,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 new SiegeTracker {CurrentNumberSiege = 0, MaxNumberSiege = 2, Type = SiegeType.GTAOE},
                 new SiegeTracker {CurrentNumberSiege = 0, MaxNumberSiege = 2, Type = SiegeType.SNIPER}
             };
-            
+
             DeployedSieges = new List<Siege>();
         }
 
@@ -196,12 +193,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
     public class EnemyKeepLocationComparitor : ILocationComparitor
     {
+        public SiegeType SiegeTypeValue { get; set; }
         public int KeepComparisonRange = 100;
+
+        public EnemyKeepLocationComparitor(SiegeType siegeTypeValue)
+        {
+            SiegeTypeValue = siegeTypeValue;
+        }
 
         public bool InRange(Player player)
         {
             // Get the keeps in this zone.
-            var keepsInZone = player.Region.Campaign.GetZoneKeeps((ushort) player.ZoneId);
+            var keepsInZone = player.Region.Campaign.GetZoneKeeps((ushort)player.ZoneId);
 
             // If one of the keeps belongs to the enemy and you are within a certain distance from it...
             if (keepsInZone != null)
@@ -211,7 +214,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (battleFrontKeep.Realm != player.Realm)
                     {
                         // Keeps can have multiple siege spawn points. If the player is within range of any, allow spawn of siege.
-                        foreach (var spawnPoint in battleFrontKeep.SpawnPoints)
+                        var keepSpawnPoints = battleFrontKeep.SpawnPoints.Where(x => x.SiegeType == (int)SiegeTypeValue && x.KeepId == battleFrontKeep.Info.KeepId);
+                        foreach (var spawnPoint in keepSpawnPoints)
                         {
                             if (player.PointWithinRadiusFeet(
                                 new Point3D(
@@ -223,7 +227,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                 return true;
                             }
                         }
-                        
                     }
                 }
             }
@@ -247,7 +250,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public bool CanDeploy()
         {
-            _logger.Debug($"{this.ToString()}");
+            _logger.Debug($"{ToString()}");
             return CurrentNumberSiege < MaxNumberSiege;
         }
 
@@ -256,12 +259,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             CurrentNumberSiege++;
             if (CurrentNumberSiege > MaxNumberSiege)
                 _logger.Warn($"Number of Siege now exceeds maximum!");
-                
+
         }
         public void Decrement()
         {
             CurrentNumberSiege--;
-            if (CurrentNumberSiege < 0 )
+            if (CurrentNumberSiege < 0)
                 _logger.Warn($"Number of Siege now less than zero!");
 
         }

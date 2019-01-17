@@ -134,18 +134,45 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(UpdateAAOBuffs, 30000, 0);
             _EvtInterface.AddEvent(DetermineCaptains, 60000, 0);
             // Check RVR zone for highest contributors (Captains)
-            // record metrics
             _EvtInterface.AddEvent(SavePlayerContribution, 60000, 0);
-            _EvtInterface.AddEvent(RecordMetrics, 60000, 0);
-
+            // record metrics
+            _EvtInterface.AddEvent(RecordMetrics, 600000, 0);
             _EvtInterface.AddEvent(DestructionDominationCheck, 60000, 0);
             _EvtInterface.AddEvent(OrderDominationCheck, 60000, 0);
-
             _EvtInterface.AddEvent(UpdateCampaignObjectiveBuffs, 10000, 0);
             _EvtInterface.AddEvent(CheckKeepTimers, 10000, 0);
             _EvtInterface.AddEvent(UpdateKeepResources, 60000, 0);
+            _EvtInterface.AddEvent(RefreshObjectiveStatus, 20000, 0);
 
             //_EvtInterface.AddEvent(CheckKeepPlayersInvolved, 60000, 0);
+        }
+
+
+        /// <summary>
+        /// Inform all players in the active battlefront about the objective status
+        /// </summary>
+        private void RefreshObjectiveStatus()
+        {
+            var activeCampaign = BattleFrontManager.GetActiveCampaign();
+            var status = activeCampaign?.ActiveBattleFrontStatus;
+            if (status != null)
+            {
+                lock (status)
+                {
+                    BattlefrontLogger.Trace($"Checking RefreshObjectiveStatus...");
+                    var playersToAnnounceTo = Player._Players.Where(x => !x.IsDisposed
+                                                                         && x.IsInWorld()
+                                                                         && x.CbtInterface.IsPvp
+                                                                         && x.ScnInterface.Scenario == null
+                                                                         && x.ZoneId == status.ZoneId
+                                                                         && x.Region.RegionId == status.RegionId);
+
+                    foreach (var player in playersToAnnounceTo)
+                    {
+                        SendObjectives(player);
+                    }
+                }
+            }
         }
 
         private void CheckKeepTimers()
@@ -1022,7 +1049,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             _destroCount++;
                         }
                     }
-                    catch { }
+                    catch
+                    {
+                        BattlefrontLogger.Debug($"Error adding {plr.Name} to PopulationList");
+                    }
+
+                    // Tell the player about the objectives.
+                    SendObjectives(plr);
+                    // Update worldmap
+                    WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
                 }
             }
 
@@ -1522,7 +1557,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="plr"></param>
         public void SendObjectives(Player plr)
         {
-            BattlefrontLogger.Trace(".");
             foreach (var bo in Objectives)
                 bo.SendState(plr, false);
         }
@@ -1541,6 +1575,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 flag.Update(TCPManager.GetTimeStampMS());
             }
+
+           
+
         }
 
         /// <summary>

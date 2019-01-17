@@ -380,14 +380,6 @@ namespace WorldServer
                         if (obj.MustUpdateRange)
                             UpdateRange(obj.Obj);
 
-                        if (plr != null)
-                        {
-                            //Bttlfront?.SendObjectives(plr);
-
-                            Campaign?.SendObjectives(plr);
-                            // ApocCommunications.SendCampaignStatus(plr, Campaign?.VictoryPointProgress, (Campaign?.VictoryPointProgress.DestructionVictoryPoints >= BattleFrontConstants.LOCK_VICTORY_POINTS) ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER);
-                            WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
-                        }
                     }
                     _objectsToAdd.Clear();
                 }

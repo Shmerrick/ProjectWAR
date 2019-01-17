@@ -4182,6 +4182,77 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        // blue / red keep image top right
+        public static bool SendKeepStatusWrapper(Player plr, ref List<string> values)
+        {
+
+            var Out = new PacketOut((byte)Opcodes.F_KEEP_STATUS, 26);
+            Out.WriteByte(18);  // garrison of skulls
+
+            {
+                Out.WriteByte(Convert.ToByte(values[0]));   //1 : locked
+                Out.WriteByte(0); // ?
+                Out.WriteByte((byte)2);  //realm
+                Out.WriteByte((byte)4);  // door count
+                Out.WriteByte(2); // Rank
+                Out.WriteByte(Convert.ToByte(values[1])); // Door health
+                Out.WriteByte(0); // Next rank %
+            }
+
+
+            Out.Fill(0, 18);
+
+            if (plr != null)
+                plr.SendPacket(Out);
+            else
+                lock (Player._Players)
+                {
+                    foreach (var player in Player._Players)
+                        player.SendCopy(Out);
+                }
+
+            return true;
+        }
+
+        // Chat and Map
+        public static bool SendKeepInfoWrapper(Player plr, ref List<string> values)
+        {
+            var Out = new PacketOut((byte)Opcodes.F_OBJECTIVE_INFO, 32);
+            Out.WriteUInt32(606);
+            Out.WriteByte(0);
+            Out.WriteByte((byte)Realms.REALMS_REALM_DESTRUCTION);
+            Out.WriteByte(1);
+            Out.WriteUInt16(0);
+            Out.WritePascalString("KeepName");
+            Out.WriteByte(2);
+            Out.WriteUInt32(0x000039F5);
+            Out.WriteByte(0);
+
+            Out.WriteUInt16(0x0100);
+            Out.WriteUInt32(0x00010000);
+
+            Out.WriteShortString("Attacking Message");
+
+            Out.WriteUInt16(0xFF00);
+            Out.WritePascalString("Obj Message");
+            Out.WriteByte(0);
+
+            Out.WritePascalString("Obj Description");
+
+            // Zeroes previously
+            Out.WriteUInt32(0); // timer
+            Out.WriteUInt32(0); // timer
+            Out.Fill(0, 4);
+
+            Out.WriteByte(0x71);
+            Out.WriteByte(3); // keep
+            Out.Fill(0, 3);
+
+            plr.SendPacket(Out);
+
+            return true;
+        }
+
         #endregion
     }
 }

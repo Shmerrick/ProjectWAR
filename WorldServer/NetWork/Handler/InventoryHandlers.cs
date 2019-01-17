@@ -232,18 +232,22 @@ namespace WorldServer
 
             var numberSiegeTypeBeforeCast = 0;
             var numberSiegeTypeAfterCast = 0;
-
             var siegeType = Siege.GetSiegeType(item.Info.Entry);
-            if (siegeType == null)
-            {
-                _logger.Warn($"Could not locate SiegeType for {item.Info.Entry}");
-                return;
-            }
 
             if (item.Info.IsSiege)
             {
-                numberSiegeTypeBeforeCast = Plr.Region.Campaign.SiegeManager.GetNumberByType(siegeType.Value);
+                if (siegeType == null)
+                {
+                    _logger.Warn($"Could not locate SiegeType for {item.Info.Entry}");
+                    return;
+                }
+
+                if (item.Info.IsSiege)
+                {
+                    numberSiegeTypeBeforeCast = Plr.Region.Campaign.SiegeManager.GetNumberByType(siegeType.Value);
+                }
             }
+
 
             #region Ability Cast
 
