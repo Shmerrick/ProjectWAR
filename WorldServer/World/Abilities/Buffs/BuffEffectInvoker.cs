@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
-using WorldServer.World.BattleFronts;
-using WorldServer.World.BattleFronts.Keeps;
+using System;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.Scenarios.Objects;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer
 {
@@ -1480,7 +1479,7 @@ namespace WorldServer
 
                     case BUFF_TICK:
                         goto case 4;
-                        
+
                     case BUFF_END:
                         if (plrTarget != null)
                         {
@@ -1490,11 +1489,11 @@ namespace WorldServer
                         }
                         else
                             if (hostBuff.Caster is Player plrCaster)
-                                plrCaster.ModifyActionPoints((short)cmd.PrimaryValue);
+                            plrCaster.ModifyActionPoints((short)cmd.PrimaryValue);
                         break;
                 }
             }
-            
+
             return true;
         }
 
@@ -1504,7 +1503,7 @@ namespace WorldServer
 
             if (plrTarget == null)
                 return false;
-            
+
             switch (hostBuff.BuffState)
             {
                 case BUFF_START:
@@ -2975,6 +2974,10 @@ namespace WorldServer
 
         private static bool RefreshIfMoving(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
+            //Lets not let a refresh of a buff happen to a siege object. ram / oil and cannons.
+            if (target is Siege)
+                return true;
+
             //lets not let a refresh of a buff happen to a keep lord
             WorldServer.World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature Lord = target as WorldServer.World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature;
             if (Lord != null && Lord.returnflag().Info.KeepLord)
