@@ -1182,8 +1182,8 @@ namespace WorldServer
                     ((Player)hostBuff.Target).SendDialog(Dialog.ResurrectionOffer, hostBuff.Caster.Oid, 60);
                     hostBuff.AddBuffParameter(cmd.BuffLine, -1);
 
-                  
-                    
+
+
                     break;
             }
             return true;
@@ -1481,7 +1481,7 @@ namespace WorldServer
 
                     case BUFF_TICK:
                         goto case 4;
-                        
+
                     case BUFF_END:
                         if (plrTarget != null)
                         {
@@ -1491,11 +1491,11 @@ namespace WorldServer
                         }
                         else
                             if (hostBuff.Caster is Player plrCaster)
-                                plrCaster.ModifyActionPoints((short)cmd.PrimaryValue);
+                            plrCaster.ModifyActionPoints((short)cmd.PrimaryValue);
                         break;
                 }
             }
-            
+
             return true;
         }
 
@@ -1505,7 +1505,7 @@ namespace WorldServer
 
             if (plrTarget == null)
                 return false;
-            
+
             switch (hostBuff.BuffState)
             {
                 case BUFF_START:
@@ -2013,7 +2013,7 @@ namespace WorldServer
                         }
 
                         #region Client Effect
-                            if (cmd.PrimaryValue >= 16)
+                        if (cmd.PrimaryValue >= 16)
                         {
                             target.StsInterface.AddVelocityModifier(hostBuff, 0);
 
@@ -2689,7 +2689,7 @@ namespace WorldServer
                     // Give contribution for HTL.
                     if (StaticRandom.Instance.Next(100) < HOLD_THE_LINE_CONTRIBUTION_CHANCE)
                     {
-                        (hostBuff.Caster as Player)?.UpdatePlayerBountyEvent((byte) ContributionDefinitions.HOLD_THE_LINE);
+                        (hostBuff.Caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.HOLD_THE_LINE);
                     }
                     break;
                 case BUFF_END:
@@ -2991,6 +2991,10 @@ namespace WorldServer
 
         private static bool RefreshIfMoving(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
+            //Lets not let a refresh of a buff happen to a siege object. for now good but needs more once sieges and ram rework is complete.
+            if (target is Siege)            
+                return true;
+            
             //lets not let a refresh of a buff happen to a keep lord
             WorldServer.World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature Lord = target as WorldServer.World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature;
             if (Lord != null && Lord.returnflag().Info.KeepLord)

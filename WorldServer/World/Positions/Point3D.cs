@@ -135,30 +135,22 @@ namespace WorldServer
         /// <returns>True if the point is within the radius, otherwise false</returns>
         public virtual bool IsWithinRadiusUnits(IPoint3D point, int radius)
         {
-            if (radius > ushort.MaxValue)
-                return GetDistance(point) <= radius;
-
             double dx = X - point.X;
             double dy = Y - point.Y;
             double dz = Z - point.Z;
             double distSquare = dx * dx + dy * dy + dz * dz;
 
-            return distSquare <= radius * radius;
+            return (Math.Abs(distSquare / (radius * radius)) < 1.0f);
         }
 
         public virtual bool IsWithinRadiusFeet(IPoint3D point, int radius)
         {
-            radius *= UNITS_TO_FEET;
-
-            if (radius > ushort.MaxValue)
-                return GetDistance(point) <= radius;
-
             double dx = X - point.X;
             double dy = Y - point.Y;
             double dz = Z - point.Z;
             double distSquare = dx * dx + dy * dy + dz * dz;
 
-            return distSquare <= radius * radius;
+            return (Math.Abs(distSquare / ((radius * radius) * UNITS_TO_FEET)) < 1.0f);
         }
     }
 }

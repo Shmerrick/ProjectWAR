@@ -572,7 +572,7 @@ namespace WorldServer
             double dz = WorldPosition.Z - obj.WorldPosition.Z;
             double distSquare = dx * dx + dy * dy + dz * dz;
 
-            return distSquare <= radius * radius;
+            return Math.Abs(distSquare / ((radius * radius) * UNITS_TO_FEET)) < 1.0f;
         }
 
         public bool PointWithinRadiusFeet(Point3D point, int radius)
@@ -594,7 +594,7 @@ namespace WorldServer
             double dz = WorldPosition.Z - point.Z;
             double distSquare = dx * dx + dy * dy + dz * dz;
 
-            return distSquare <= radius * radius;
+         return (Math.Abs(distSquare / (radius * radius * UNITS_TO_FEET)) < 1.0f);
         }
 
         /// <summary>

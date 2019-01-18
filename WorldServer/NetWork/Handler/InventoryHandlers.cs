@@ -248,7 +248,6 @@ namespace WorldServer
                 }
             }
 
-
             #region Ability Cast
 
             if (!Plr.AbtInterface.CanCastCooldown(item.Info.SpellId))
