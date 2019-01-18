@@ -92,6 +92,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             Zone = region.GetZoneMgr(info.ZoneId);
 
             SpawnPoints = Info.KeepSiegeSpawnPoints;
+            PlayersInRange = new HashSet<Player>();
 
             if (SpawnPoints != null)
             {
@@ -146,7 +147,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             OwningGuild = guild;
             SendRegionMessage($"{guild.Info.Name} has taken {Info.Name} as their own!");
         }
-
 
 
         /// <summary>
@@ -224,7 +224,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             SeizedTimer.Start();
 
             KeepStatus = KeepStatus.KEEPSTATUS_SEIZED;
-
+            KeepCommunications.SendKeepStatus(null, this);
+            
         }
 
         public void SetLordKilled()
@@ -279,10 +280,13 @@ namespace WorldServer.World.BattleFronts.Keeps
             SendRegionMessage(Info.Name + "'s Keep Lord has fallen! Hold the keep and await reinforcements.");
 
             KeepStatus = KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK;
+            KeepCommunications.SendKeepStatus(null, this);
 
             EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
 
             PlayersKilledInRange = 0;
+            
+            
 
             ResetAllStateTimers();
 
@@ -349,6 +353,9 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             KeepStatus = KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK;
 
+            KeepCommunications.SendKeepStatus(null, this);
+
+
             InnerPosternCanBeUsed = true;
 
         }
@@ -380,6 +387,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             DoorRepairTimers[doorId].Start();
 
             KeepStatus = KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK;
+            KeepCommunications.SendKeepStatus(null, this);
 
         }
 
@@ -900,14 +908,19 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         #region Range
 
-        private short _playersInRange;
+        public HashSet<Player> PlayersInRange;
 
         public void AddPlayer(Player plr)
         {
+
+
             if (plr == null)
                 return;
-
+            SendKeepInfoLeft(plr);
             SendKeepInfo(plr);
+            KeepCommunications.SendKeepStatus(plr, this);
+            plr.CurrentKeep = this;
+            PlayersInRange.Add(plr);
         }
 
         public void RemovePlayer(Player plr)
@@ -916,6 +929,8 @@ namespace WorldServer.World.BattleFronts.Keeps
                 return;
 
             SendKeepInfoLeft(plr);
+            plr.CurrentKeep = null;
+            PlayersInRange.Remove(plr);
         }
 
         /// <summary>
@@ -1247,6 +1262,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             Out.Fill(0, 3);
 
             plr.SendPacket(Out);
+
+            _logger.Debug($"F_OBJECTIVE_INFO {Info.Name} Quest Id : {Info.PQuestId} Status : {KeepStatus} {GetAttackerMessage()}");
         }
 
         public void SendKeepInfoLeft(Player plr)

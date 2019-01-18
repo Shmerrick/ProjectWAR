@@ -1003,9 +1003,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 return;
             }
 
-            // RA - TODO 12/05/18
-            //foreach (Player player in Region.Players)
-            //    WorldMgr.SendCampaignStatus(player);
         }
 
         #endregion Reward Splitting
@@ -1501,54 +1498,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return realm == Realms.REALMS_REALM_DESTRUCTION ? _relativePopulationFactor : 1f / _relativePopulationFactor;
         }
 
-        private readonly List<int>[] _popHistory = { new List<int>(), new List<int>() };
-
-        /// <summary>
-        /// Scales battlefield objective rewards by the following factors:
-        /// <para>- The internal AAO</para>
-        /// <para>- The relative activity in this Campaign compared to others in its tier</para>
-        /// <para>- The total number of people fighting</para>
-        /// <para>- The capturing lockingRealm's population at this objective.</para>
-        /// </summary>
-        //public float GetObjectiveRewardScaler(Realms capturingRealm, int playerCount)
-        //{
-        //    float scaleMult = GetRelativePopFactor(capturingRealm) * PopulationScaleFactor * RelativeActivityFactor;
-
-        //    int maxRewardPlayers = 6;
-
-        //    if (_popHistory[(int)capturingRealm - 1].Count > 0)
-        //        maxRewardPlayers = Math.Max(6, _popHistory[(int)capturingRealm - 1].Max() / 5);
-
-        //    if (playerCount > maxRewardPlayers)
-        //        scaleMult *= maxRewardPlayers / (float)playerCount;
-
-        //    return scaleMult;
-        //}
-
-
-        /////
-        ///// Unlocks this NDBF for capture.
-        ///// 
-        //public void ResetBattleFront()
-        //{
-        //    BattlefrontLogger.Trace($"Resetting Battlefront...{this.ActiveCampaignName}");
-
-        //    VictoryPointProgress.Reset(this);
-        //    LockingRealm = Realms.REALMS_REALM_NEUTRAL;
-
-        //    foreach (var flag in Objectives)
-        //        flag.UnlockObjective();
-
-        //    foreach (Keep keep in Keeps)
-        //        keep.NotifyPairingUnlocked();
-
-        //    //UpdateStateOfTheRealm();
-
-        //    // This seems to look at all BattleFronts and report their status, but incorrectly in the new system.
-        //    // TODO - fix
-        //    // WorldMgr.SendCampaignStatus(null);
-        //}
-
+      
 
 
         /// <summary>

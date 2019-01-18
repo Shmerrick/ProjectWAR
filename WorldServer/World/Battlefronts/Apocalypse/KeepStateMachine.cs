@@ -169,8 +169,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void RecordTransition(object sender, EventArgs e)
         {
-            // Send packets to players, on FSM transition.
-            Keep.InformRegionPlayersOfKeepStatus();
+            foreach (var plr in Keep.PlayersInRange)
+            {
+                Keep.SendKeepInfo(plr);
+            }
+            
             var stateInformation = (Appccelerate.StateMachine.Machine.Events.TransitionCompletedEventArgs<SM.ProcessState, SM.Command>)e;
             // Save the state transition.
             _logger.Debug($"Saving keep state KeepId : {Keep.Info.KeepId} {Keep.Info.Name}, " +

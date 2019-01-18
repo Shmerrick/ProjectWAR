@@ -1399,7 +1399,7 @@ namespace WorldServer
                     {
                         PacketOut Out = new PacketOut((byte)Opcodes.F_KEEP_STATUS, 26);
                         Out.WriteByte(KeepInfo.KeepId);
-                        Out.WriteByte(1); // anything else explosion
+                        Out.WriteByte(1); // status
                         Out.WriteByte(0); // ?
                         Out.WriteByte(KeepInfo.Realm);
                         Out.WriteByte(KeepInfo.DoorCount);
@@ -1574,6 +1574,19 @@ namespace WorldServer
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus);
             Out.WriteByte(BattleFrontConstants.ZONE_STATUS_DESTRO_LOCKED);   //Dark elf Fortress
 
+            Out.WriteByte(0); // Order underdog rating
+            Out.WriteByte(0); // Destruction underdog rating
+
+
+            /*Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+
+            Out.WriteByte(00);
+
+            Out.Fill(0, 4);*/
+
             //For debugging purposes
             var lockStr = upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus.ToString();
             lockStr += upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN).LockStatus.ToString();
@@ -1584,15 +1597,6 @@ namespace WorldServer
             lockStr += upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus.ToString();
             lockStr += upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus.ToString();
             lockStr += upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus.ToString();
-            Out.WriteByte(0);
-            Out.WriteByte(0);
-            Out.WriteByte(0);
-            Out.WriteByte(0);
-
-            Out.WriteByte(00);
-
-            Out.Fill(0, 4);
-
 
             byte[] buffer = Out.ToArray();
             _logger.Trace("WorldMgr : " + lockStr);
@@ -1606,26 +1610,25 @@ namespace WorldServer
 
                     player.SendPacket(Out);
 
-                    //PacketOut playerCampaignStatus = new PacketOut(0, 159) { Position = 0 };
-                    //playerCampaignStatus.Write(buffer, 0, buffer.Length);
+                    PacketOut playerCampaignStatus = new PacketOut(0, 159) { Position = 0 };
+                    playerCampaignStatus.Write(buffer, 0, buffer.Length);
 
-                    //if (player.Region?.Campaign != null)
-                    //{
-                    //    Out.WriteByte((byte)player.Region?.Campaign.VictoryPointProgress.OrderVictoryPointPercentage);
-                    //    Out.WriteByte((byte)player.Region?.Campaign.VictoryPointProgress.DestructionVictoryPointPercentage);
+                    if (player.Region?.Campaign != null)
+                    {
 
-                    //    //no clue but set to a value wont show the pool updatetimer
-                    //    Out.WriteByte(0);
-                    //    Out.WriteByte(0);
+                            Out.WriteByte((byte)75);
+                            Out.WriteByte((byte)25);
 
-                    //    Out.WriteByte(00);
-                    //}
-                    //else
-                    //    playerCampaignStatus.Fill(0, 9);
-
-                    //playerCampaignStatus.Fill(0, 4);
-
-                    //player.SendPacket(playerCampaignStatus);
+                        //Out.WriteByte((byte) player.Region?.Campaign.VictoryPointProgress.OrderVictoryPointPercentage);
+                        //Out.WriteByte((byte) player.Region?.Campaign.VictoryPointProgress.DestructionVictoryPointPercentage);
+                    }
+                    else
+                    {
+                        playerCampaignStatus.Fill(0, 9);
+                    }
+                    playerCampaignStatus.Fill(0, 4);
+                    
+                    player.SendPacket(playerCampaignStatus);
                 }
             }
         }
