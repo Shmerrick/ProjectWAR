@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using SystemData;
@@ -195,7 +194,7 @@ namespace WorldServer
             Out.WriteUInt16(soundID);
             Out.Fill(10, 0);
 
-            if(sendarea)
+            if (sendarea)
                 foreach (var p in GetPlayersInRange(400))
                     p.SendPacket(Out);
 
@@ -248,7 +247,7 @@ namespace WorldServer
 
         public virtual void SendMeTo(Player plr)
         {
-           
+
         }
 
         public virtual void SendRemove(Player plr)
@@ -298,7 +297,7 @@ namespace WorldServer
                     player.SendCopy(Out);
         }
 
-        public virtual void DispatchPacket(PacketOut Out, bool sendToSelf,bool playerstate = false)
+        public virtual void DispatchPacket(PacketOut Out, bool sendToSelf, bool playerstate = false)
         {
             lock (PlayersInRange)
                 foreach (Player player in PlayersInRange)
@@ -547,8 +546,8 @@ namespace WorldServer
 
             if (IsMoving && obj.IsMoving && radiusFeet == 5)
                 radiusFeet = 8;
-            
-           
+
+
             radiusFeet = (uint)(radiusFeet + BaseRadius + obj.BaseRadius);
 
             return WorldPosition.IsWithinRadiusFeet(obj.WorldPosition, (int)radiusFeet);
@@ -556,55 +555,38 @@ namespace WorldServer
 
         public bool ObjectWithinRadiusFeet(Object obj, int radius)
         {
-            if (obj.WorldPosition == null)
-            {
-                //Log.Error(Name, "RadiusFeet check against " + obj.Name + " with NULL WorldPosition");
+            if ((null == WorldPosition) || (null == obj.WorldPosition))
                 return false;
-            }
-
-            radius *= UNITS_TO_FEET;
-
-            if (radius > ushort.MaxValue)
-                return GetDistance(obj) <= radius;
 
             double dx = WorldPosition.X - obj.WorldPosition.X;
             double dy = WorldPosition.Y - obj.WorldPosition.Y;
             double dz = WorldPosition.Z - obj.WorldPosition.Z;
             double distSquare = dx * dx + dy * dy + dz * dz;
 
-            return Math.Abs(distSquare / ((radius * radius) * UNITS_TO_FEET)) < 1.0f;
+            return (Math.Abs(distSquare / ((radius * radius) * UNITS_TO_FEET)) < 1.0f);
         }
 
         public bool PointWithinRadiusFeet(Point3D point, int radius)
         {
-
-            if (WorldPosition == null)
+            if ((null == WorldPosition) || (null == point))
                 return false;
-
-            if (point == null)
-                return false;
-
-            radius *= UNITS_TO_FEET;
-
-            if (radius > ushort.MaxValue)
-                return GetDistance(point) <= radius;
 
             double dx = WorldPosition.X - point.X;
             double dy = WorldPosition.Y - point.Y;
             double dz = WorldPosition.Z - point.Z;
             double distSquare = dx * dx + dy * dy + dz * dz;
 
-         return (Math.Abs(distSquare / (radius * radius * UNITS_TO_FEET)) < 1.0f);
+            return (Math.Abs(distSquare / ((radius * radius) * UNITS_TO_FEET)) < 1.0f);
         }
 
         /// <summary>
-		/// Determines whether a target object is in front of this one. Optionally factors in the distance between the objects. In front is defined as north +- viewangle/2.
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="viewangle"></param>
-		/// <param name="rangeCheck"></param>
-		/// <returns></returns>
-		public virtual bool IsObjectInFront(Object target, double viewangle, uint MaxRadius = 0)
+        /// Determines whether a target object is in front of this one. Optionally factors in the distance between the objects. In front is defined as north +- viewangle/2.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="viewangle"></param>
+        /// <param name="rangeCheck"></param>
+        /// <returns></returns>
+        public virtual bool IsObjectInFront(Object target, double viewangle, uint MaxRadius = 0)
         {
             if (target == null || target.Zone == null)
                 return false;
@@ -644,7 +626,7 @@ namespace WorldServer
             }
         }
 
-        public Point2D LastRangeCheck = new Point2D(0,0);
+        public Point2D LastRangeCheck = new Point2D(0, 0);
 
         public virtual void InitPosition(ushort OffX, ushort OffY, ushort PinX, ushort PinY)
         {
@@ -770,14 +752,14 @@ namespace WorldServer
         public List<Player> GetPlayersInRange(int distance, bool includeSelf = false)
         {
             List<Player> players = new List<Player>();
-            lock(PlayersInRange)
+            lock (PlayersInRange)
             {
                 foreach (var player in PlayersInRange)
                     if (ObjectWithinRadiusFeet(player, distance))
                         players.Add(player);
             }
 
-            if(includeSelf && GetPlayer() != null)
+            if (includeSelf && GetPlayer() != null)
                 players.Add(GetPlayer());
             return players;
         }
@@ -875,7 +857,7 @@ namespace WorldServer
             lock (PlayersInRange)
                 PlayersInRange.Clear();
 
-            lock(ObjectsInRange)
+            lock (ObjectsInRange)
                 ObjectsInRange.Clear();
         }
 
@@ -916,7 +898,7 @@ namespace WorldServer
 
             CapturingPlayer = interactor;
 
-            BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort) GameBuffs.Interaction);
+            BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)GameBuffs.Interaction);
             buffInfo.Duration = CaptureDuration;
             CapturingPlayer.BuffInterface.QueueBuff(new BuffQueueInfo(CapturingPlayer, CapturingPlayer.Level, buffInfo, InteractionBuff.GetNew, LinkToCaptureBuff));
 
@@ -931,7 +913,6 @@ namespace WorldServer
                 InteractionBuff captureBuff = (InteractionBuff)b;
                 captureBuff.SetObject(this);
             }
-
             else
                 CapturingPlayer = null;
         }

@@ -19,7 +19,6 @@ namespace Common
         private ushort _ZoneId;
         private ushort _RegionId;
         private ushort _PQuestId;
-        
 
         [PrimaryKey]
         public byte KeepId
@@ -76,7 +75,6 @@ namespace Common
             get { return _PQuestId; }
             set { _PQuestId = value; Dirty = true; }
         }
-
 
         [DataElement(AllowDbNull = false)]
         public bool IsFortress { get; set; }
@@ -141,6 +139,10 @@ namespace Common
         [DataElement(AllowDbNull = false)]
         public int OilOuter2O { get; set; }
 
+
+
+        // RB   5/15/2016   Fixed Ram locations in DB
+
         [DataElement(AllowDbNull = false)]
         public int RamX { get; set; }
 
@@ -193,5 +195,6 @@ namespace Common
         public List<Keep_Creature> Creatures;
         public List<Keep_Door> Doors;
         public PQuest_Info PQuest;
+
     }
 }
