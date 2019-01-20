@@ -1,5 +1,6 @@
 ﻿using Appccelerate.StateMachine;
 using Common;
+using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
 using NLog;
@@ -8,7 +9,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common.Database.World.Battlefront;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Keeps;
@@ -21,6 +21,9 @@ namespace WorldServer.World.BattleFronts.Keeps
         public const byte INNER_DOOR = 1;
         public const byte OUTER_DOOR = 2;
         public const byte HEALTH_BOUNDARY_DEFENCE_TICK_RESTART = 50;
+
+        public uint HEAVY_EMPIRE_OIL = 86211;
+        public uint HEAVY_CHAOS_OIL = 86223;
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private static readonly Logger ProgressionLogger = LogManager.GetLogger("RVRProgressionLogger");
@@ -101,7 +104,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 {
                     switch (keepSiegeSpawnPointse.SiegeType)
                     {
-                        case (int) SiegeType.OIL:
+                        case (int)SiegeType.OIL:
                             HardPoints.Add(
                                 new Hardpoint(
                                     SiegeType.OIL,
@@ -110,7 +113,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                                     keepSiegeSpawnPointse.Z,
                                     keepSiegeSpawnPointse.O));
                             break;
-                        case (int) SiegeType.RAM:
+                        case (int)SiegeType.RAM:
                             HardPoints.Add(
                                 new Hardpoint(
                                     SiegeType.RAM,
@@ -225,7 +228,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             KeepStatus = KeepStatus.KEEPSTATUS_SEIZED;
             KeepCommunications.SendKeepStatus(null, this);
-            
+
         }
 
         public void SetLordKilled()
@@ -285,8 +288,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
 
             PlayersKilledInRange = 0;
-            
-            
+
+
 
             ResetAllStateTimers();
 
@@ -457,7 +460,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             // if the player is not in the active battlefront, find the active battlefront and report on any non-safe keep. 
 
             // if there are no non-safe keeps, report on any keep.
-            
+
 
             // get the active battlefront and direct 
 
@@ -1479,7 +1482,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                     break;
                 case CreatureSubTypes.SIEGE_RAM:
                     type = (int)MaterielType.Ram;
-                  
+
                     // If the number of spawned siege items > cap per keep level, dont allow.
                     if (_activeMateriel[type].Count >= _materielCaps[type][Rank])
                     {
@@ -1508,19 +1511,13 @@ namespace WorldServer.World.BattleFronts.Keeps
             if (siegeProto == null)
                 return;
 
-            int type;
-
             switch ((CreatureSubTypes)siegeProto.CreatureSubType)
             {
                 case CreatureSubTypes.SIEGE_GTAOE:
-                    type = (int)MaterielType.Artillery;
                     break;
                 case CreatureSubTypes.SIEGE_SINGLE_TARGET:
-                    type = (int)MaterielType.Cannon;
                     break;
                 case CreatureSubTypes.SIEGE_RAM:
-                    type = (int)MaterielType.Ram;
-
                     if (player.GldInterface.Guild != null)
                     {
                         var message = $"{player.Name} of {player.GldInterface.Guild.Info.Name} has deployed a ram at {Info.Name}!";
@@ -1538,11 +1535,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                 default:
                     return;
             }
-
-            //var siege = Siege.SpawnSiegeWeapon(player, protoEntry, true);
-            //_activeMateriel[type].Add(siege);
-            //Region.AddObject(siege, Info.ZoneId);
-            _materielSupply[type] -= 1f;
         }
 
         public void RemoveKeepSiege(Siege weapon)
@@ -1566,41 +1558,10 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             foreach (var h in HardPoints)
             {
-                if (h.CurrentWeapon?.Realm != this.Realm)
+                if (h.CurrentWeapon?.Realm != Realm)
                     h.CurrentWeapon = null;
             }
         }
-
-        //public void RemoveSiege(Siege weapon)
-        //{
-        //    switch ((CreatureSubTypes)weapon.Spawn.Proto.CreatureSubType)
-        //    {
-        //        case CreatureSubTypes.SIEGE_GTAOE:
-        //            _activeMateriel[(int)MaterielType.Artillery].Remove(weapon);
-        //            break;
-        //        case CreatureSubTypes.SIEGE_SINGLE_TARGET:
-        //            _activeMateriel[(int)MaterielType.Cannon].Remove(weapon);
-        //            break;
-        //        case CreatureSubTypes.SIEGE_RAM:
-        //            var message = $"{weapon.SiegeInterface.Creator.Name}'s ram has been destroyed!";
-        //            var filter = Realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE;
-        //            foreach (var plr in Region.Players)
-        //                if (plr.CbtInterface.IsPvp && plr.ValidInTier(Region.GetTier(), true) && plr.Realm == Realm)
-        //                {
-        //                    plr.SendClientMessage(message, filter);
-        //                    plr.SendClientMessage(message, ChatLogFilters.CHATLOGFILTERS_RVR);
-        //                }
-        //            _activeMateriel[(int)MaterielType.Ram].Remove(weapon);
-
-        //            foreach (var h in HardPoints)
-        //                if (weapon == h.CurrentWeapon)
-        //                {
-        //                    h.CurrentWeapon = null;
-        //                    RamDeployed = false;
-        //                }
-        //            break;
-        //    }
-        //}
 
         public void TryAlignRam(Object owner, Player player)
         {
@@ -1658,6 +1619,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         private uint GetOilProto(Realms targetRealm)
         {
+
             uint baseEntry = 0;
 
             switch (Info.Race)
@@ -1668,11 +1630,11 @@ namespace WorldServer.World.BattleFronts.Keeps
                 case 2: //orc
                     baseEntry = 86223;
                     break;
-                case 3: //human
-                    baseEntry = 86211;  
+                case 3: //empire
+                    baseEntry = HEAVY_EMPIRE_OIL;
                     break;
                 case 4: //chaos
-                    baseEntry = 86223;
+                    baseEntry = HEAVY_CHAOS_OIL;
                     break;
                 case 5: //he
                     baseEntry = 86211;
@@ -1685,6 +1647,8 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             return baseEntry;
         }
+
+
 
         #endregion
 
