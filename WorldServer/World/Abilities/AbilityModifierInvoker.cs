@@ -575,11 +575,12 @@ namespace WorldServer
                         player.SendClientMessage("There are too many of this type of Siege deployed", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
                         return false;
                     }
-                    if (nearEnemyKeep == DeploymentReason.Range)
+                    if (nearFriendlyKeep == DeploymentReason.Range || nearEnemyKeep == DeploymentReason.Range)
                     {
-                        player.SendClientMessage("Must deploy siege at enemy keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                        player.SendClientMessage("Must deploy siege at keep/fort", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
                         return false;
                     }
+
                     return false;
                 }
             }

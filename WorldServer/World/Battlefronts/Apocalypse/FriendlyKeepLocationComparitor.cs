@@ -2,7 +2,7 @@
 {
     public class FriendlyKeepLocationComparitor : ILocationComparitor
     {
-        public int KeepComparisonRange = 50;
+        public int KeepComparisonRange = 250;
         public int HardPointComparisonRange = 40;
 
         public bool InRange(Player player)

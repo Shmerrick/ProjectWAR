@@ -1663,18 +1663,22 @@ namespace WorldServer.World.BattleFronts.Keeps
             switch (Info.Race)
             {
                 case 1: //dwarf
+                    baseEntry = 86211;
+                    break;
                 case 2: //orc
-                    baseEntry = 13406;
+                    baseEntry = 86223;
                     break;
                 case 3: //human
                     baseEntry = 86211;  
                     break;
                 case 4: //chaos
-                    baseEntry = 86211;//TODO : fix - incorrect
+                    baseEntry = 86223;
                     break;
                 case 5: //he
+                    baseEntry = 86211;
+                    break;
                 case 6: //de
-                    baseEntry = 13430;
+                    baseEntry = 86223;
                     break;
             }
 
