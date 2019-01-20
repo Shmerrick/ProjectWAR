@@ -280,10 +280,16 @@
     <Compile Include="World\Auction\AuctionHouse.cs" />
     <Compile Include="World\Battlefronts\AAOTracker.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\BattlefieldObjective.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\DeploymentReason.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\EnemyKeepLocationComparitor.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\FriendlyKeepLocationComparitor.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\ILocationComparitor.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\KeepStateMachine.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\CampaignObjectiveStateMachine.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\PlayerRewardOptions.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\SiegeManager.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\SiegeMerchantLocationComparitor.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\SiegeTracker.cs" />
     <Compile Include="World\Battlefronts\Bounty\BountyException.cs" />
     <Compile Include="World\Battlefronts\Bounty\CharacterBounty.cs" />
     <Compile Include="World\Battlefronts\Bounty\ContributionManager.cs" />

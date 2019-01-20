@@ -19,7 +19,7 @@ namespace WorldServer
 
         public const int MAX_SHOTS = 15;
         public int ShotCount = MAX_SHOTS;
-        public int SiegeLifeSpan = 60;
+        public int SiegeLifeSpan = 300;
 
         public Siege(Creature_spawn spawn, Player owner, SiegeType type) : base(spawn)
         {
