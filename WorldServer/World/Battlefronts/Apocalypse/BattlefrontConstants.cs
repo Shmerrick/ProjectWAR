@@ -100,18 +100,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public const int ZONE_STATUS_CONTESTED = 0;
         public const int ZONE_STATUS_ORDER_LOCKED = 1;
         public const int ZONE_STATUS_DESTRO_LOCKED = 2;
-        // const int ZONE_STATUS_UNLOCKABLE    = 3;
 
 
         #endregion
 
-#if _DEBUG
-        static BattleFrontConstants() {
-            MAX_SECURE_PROGRESS /= 5;
-            MAX_CONTROL_GAUGE /= 5;
-            T1_LOCK_VICTORY_POINTS /= 10;
-        }
-#endif
+
 
     }
 }

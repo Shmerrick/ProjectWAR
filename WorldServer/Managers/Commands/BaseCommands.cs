@@ -8,6 +8,7 @@ using System.Linq;
 using SystemData;
 using WorldServer.Scenarios;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.BattleFronts.Keeps;
 using static System.UInt16;
@@ -4253,6 +4254,14 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+
+        
+        public static bool SendCampaignStatusWrapper(Player plr, ref List<string> values)
+        {
+
+            new ApocCommunications().SendCampaignStatus(plr, new VictoryPointProgress(50f, 50f), Realms.REALMS_REALM_DESTRUCTION);
+            return true;
+        }
         #endregion
     }
 }

@@ -463,7 +463,8 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("summonpet", SummonPet, null, EGmLevel.SourceDev, 1, "Summons the pet requested."),
             new GmCommandHandler("spawnmobinstance", SpawnMobInstance, null, EGmLevel.SourceDev, 2, "Spawns one or more mobs (does not save to db)"),
             new GmCommandHandler("sendkeepinfo", SendKeepInfoWrapper, null, EGmLevel.SourceDev, 0, "Sends a KeepInfo message"),
-            new GmCommandHandler("sendkeepstatus", SendKeepStatusWrapper, null, EGmLevel.SourceDev, 0, "Sends a KeepInfo message")
+            new GmCommandHandler("sendkeepstatus", SendKeepStatusWrapper, null, EGmLevel.SourceDev, 0, "Sends a KeepInfo message"),
+            new GmCommandHandler("sendcampaignstatus", SendCampaignStatusWrapper, null, EGmLevel.SourceDev, 0, "Sends a Campaign Status message"),
         };
 
         #endregion
