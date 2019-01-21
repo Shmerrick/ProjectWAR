@@ -148,8 +148,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         private void RefreshObjectiveStatus()
         {
-            var activeCampaign = BattleFrontManager.GetActiveCampaign();
-            var status = activeCampaign?.ActiveBattleFrontStatus;
+            var status = this.ActiveBattleFrontStatus;
+            if (status.Locked)
+                return;
+            
             if (status != null)
             {
                 lock (status)
