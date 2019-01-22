@@ -21,6 +21,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public const byte INNER_DOOR = 1;
         public const byte OUTER_DOOR = 2;
         public const byte HEALTH_BOUNDARY_DEFENCE_TICK_RESTART = 50;
+        public const byte DEFENCE_LOCK_COUNT = 4;
 
         public uint HEAVY_EMPIRE_OIL = 86211;
         public uint HEAVY_CHAOS_OIL = 86223;
@@ -64,6 +65,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public HashSet<Player> PlayersCloseToLord { get; set; }
         public bool Fortress { get; set; }
+        public byte FortDefenceCounter { get; set; }
 
         public byte Tier;
         public int PlayersKilledInRange { get; set; }
@@ -83,7 +85,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public Guild OwningGuild { get; set; }
         public PassiveStateMachine<SM.ProcessState, SM.Command> fsm { get; set; }
         public KeepNpcCreature KeepLord => Creatures?.Find(x => x.Info.KeepLord);
-
+        
 
         public BattleFrontKeep(Keep_Info info, byte tier, RegionMgr region, IKeepCommunications comms, bool isFortress)
         {
@@ -127,6 +129,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
 
             PlayersKilledInRange = 0;
+            FortDefenceCounter = 0;
 
             fsm = new SM(this).fsm;
 
@@ -142,6 +145,35 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             Fortress = isFortress;
 
+            
+
+        }
+
+        /// <summary>
+        /// Each time this ticks, add one to the FortDefenceCounter. Once it's == 4 (60 mins), Lock the fort in favour of the defender.
+        /// </summary>
+        public void CountdownFortDefenceTimer()
+        {
+            if (IsFortress())
+            {
+                FortDefenceCounter++;
+                if (FortDefenceCounter >= DEFENCE_LOCK_COUNT)
+                {
+                    //if (this.Info.Realm == Realms.REALMS_REALM_ORDER)
+                    //    SendRegionMessage($"Order has thrown back those who would assault their fair city.");
+                    //if (this.Info.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                    //    SendRegionMessage($"The forces of Chaos have thrown back .");
+
+                    // Lock the keep for the defending realm
+                    OnLockZone((Realms) this.Info.Realm);
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock((Realms)this.Info.Realm);
+                    FortDefenceCounter = 0;
+                }
+                else
+                {
+                    SendRegionMessage($"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter) * 15} minutes remaining to capture the fortress.");
+                }
+            }
         }
 
 
@@ -553,6 +585,14 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             InnerPosternCanBeUsed = false;
             OuterPosternCanBeUsed = false;
+
+            // Update all players within 200 range - update the map.
+            foreach (var plr in GetInRange<Player>(200))
+            {
+                SendKeepInfo(plr);
+            }
+            // Send all players an update upper right.
+            KeepCommunications.SendKeepStatus(null, this);
 
             // Remove all siege
             RemoveAllKeepSiege();
@@ -1698,6 +1738,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void ForceLockZone()
         {
+            OnLockZone(Realm);
             WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(Realm);
         }
 
@@ -1709,6 +1750,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             return !Fortress;
         }
+
 
 
     }

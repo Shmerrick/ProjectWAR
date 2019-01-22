@@ -34,5 +34,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         void Update(long tick);
         ImpactMatrixManager ImpactMatrixManagerInstance { get; set; }
         BountyManager BountyManagerInstance { get; set; }
+
+        List<RVRProgression> BattleFrontProgressions { get; }
+        void UpdateRVRPRogression(Realms lockingRealm, RVRProgression oldProg, RVRProgression newProg);
     }
 }

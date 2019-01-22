@@ -124,10 +124,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             _EvtInterface.AddEvent(UpdateBOs, 5000, 0);
             // Tell each player the RVR status
-            _EvtInterface.AddEvent(UpdateRVRStatus, 60000, 0);
+            _EvtInterface.AddEvent(UpdateRVRStatus, 120000, 0);
             // Recalculate AAO
             _EvtInterface.AddEvent(UpdateAAOBuffs, 30000, 0);
-            _EvtInterface.AddEvent(DetermineCaptains, 60000, 0);
+            _EvtInterface.AddEvent(DetermineCaptains, 120000, 0);
             // Check RVR zone for highest contributors (Captains)
             _EvtInterface.AddEvent(SavePlayerContribution, 60000, 0);
             // record metrics
@@ -138,8 +138,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(CheckKeepTimers, 10000, 0);
             _EvtInterface.AddEvent(UpdateKeepResources, 60000, 0);
             _EvtInterface.AddEvent(RefreshObjectiveStatus, 20000, 0);
+            _EvtInterface.AddEvent(CountdownFortDefenceTimer, 90000, 0);
+        }
 
-            //_EvtInterface.AddEvent(CheckKeepPlayersInvolved, 60000, 0);
+        /// <summary>
+        /// If there is a keep under attack, check it's defence timer count down.
+        /// </summary>
+        private void CountdownFortDefenceTimer()
+        {
+            var k = Keeps.SingleOrDefault(x => x.IsFortress() && x.ZoneId == ActiveBattleFrontStatus.ZoneId);
+            k?.CountdownFortDefenceTimer();
         }
 
 
@@ -737,8 +745,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void UpdateRVRStatus()
         {
-
-
             // Update players with status of campaign
             foreach (Player plr in Region.Players)
             {
@@ -757,31 +763,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // also save into db
             RVRProgressionService.SaveRVRProgression(WorldMgr.LowerTierCampaignManager.BattleFrontProgressions);
             RVRProgressionService.SaveRVRProgression(WorldMgr.UpperTierCampaignManager.BattleFrontProgressions);
-
         }
-
-        ///// <summary>
-        ///// Loads Campaign objectives.
-        ///// </summary>
-
-        //private void LoadObjectives()
-        //{
-        //    List<BattleFront_Objective> objectives = BattleFrontService.GetBattleFrontObjectives(Region.RegionId);
-
-        //    if (objectives == null)
-        //        return; // t1 or database lack
-
-        //    foreach (BattleFront_Objective obj in objectives)
-        //    {
-        //        BattlefieldObjective flag = new BattlefieldObjective(Region, obj);
-        //        Objectives.Add(flag);
-        //        Region.AddObject(flag, obj.ZoneId);
-        //        flag.BattleFront = this;
-
-        //        //orderDistanceSum += flag.GetWarcampDistance(Realms.REALMS_REALM_ORDER);
-        //        //destroDistanceSum += flag.GetWarcampDistance(Realms.REALMS_REALM_DESTRUCTION);
-        //    }
-        //}
 
         /// <summary>
         /// Loads keeps, keep units and doors.
@@ -798,7 +780,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 BattleFrontKeep keep = new BattleFrontKeep(info, (byte)Tier, Region, new KeepCommunications(), info.IsFortress);
                 keep.Realm = (Realms)keep.Info.Realm;
-
 
                 Keeps.Add(keep);
 
@@ -1498,13 +1479,33 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void ExecuteBattleFrontLock(Realms lockingRealm)
         {
+            BattlefrontLogger.Info($"Executing BattleFront Lock for {lockingRealm}");
+            var oldBattleFront = BattleFrontManager.GetActiveBattleFrontFromProgression();
             BattleFrontManager.LockActiveBattleFront(lockingRealm, 0);
             // Select the next Progression
             var nextBattleFront = BattleFrontManager.AdvanceBattleFront(lockingRealm);
+
+            // If the next RVRProgression is the Reset progression, then reset all of the pairings to default.
+            if (nextBattleFront.ResetProgressionOnEntry == 1)
+            {
+                foreach (var progression in BattleFrontManager.BattleFrontProgressions)
+                {
+                    if (progression.Tier == 4)
+                    {
+                        progression.DestroVP = 0;
+                        progression.OrderVP = 0;
+                        progression.LastOpenedZone = 0;
+                        progression.LastOwningRealm = progression.DefaultRealmLock;
+                    }
+                }
+            }
+            // Set the RVR Progression table values.
+            BattleFrontManager.UpdateRVRPRogression(lockingRealm, oldBattleFront, nextBattleFront);
             // Tell the players
             SendCampaignMovementMessage(nextBattleFront);
             // Unlock the next Progression
             BattleFrontManager.OpenActiveBattlefront();
+
             // This is kind of nasty, should use an event to signal the WorldMgr
             // Tell the server that the RVR status has changed.
             WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);

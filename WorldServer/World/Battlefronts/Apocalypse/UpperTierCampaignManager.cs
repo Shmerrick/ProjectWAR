@@ -451,7 +451,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 var newBattleFront = GetBattleFrontByBattleFrontId(ActiveBattleFront.OrderWinProgression);
                 ProgressionLogger.Debug($"Order Win : Advancing Battlefront from {ActiveBattleFrontName} to {newBattleFront.Description}");
-                UpdateRVRPRogression(lockingRealm, ActiveBattleFront, newBattleFront);
                 return ActiveBattleFront = newBattleFront;
             }
 
@@ -459,14 +458,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 var newBattleFront = GetBattleFrontByBattleFrontId(ActiveBattleFront.DestWinProgression);
                 ProgressionLogger.Debug($"Destruction Win : Advancing Battlefront from {ActiveBattleFrontName} to {newBattleFront.Description}");
-                UpdateRVRPRogression(lockingRealm, ActiveBattleFront, newBattleFront);
                 return ActiveBattleFront = newBattleFront;
             }
 
             return GetActiveBattleFrontFromProgression();
         }
 
-        private void UpdateRVRPRogression(Realms lockingRealm, RVRProgression oldProg, RVRProgression newProg)
+        public void UpdateRVRPRogression(Realms lockingRealm, RVRProgression oldProg, RVRProgression newProg)
         {
             oldProg.DestroVP = oldProg.OrderVP = 0;
             oldProg.LastOpenedZone = 0;
