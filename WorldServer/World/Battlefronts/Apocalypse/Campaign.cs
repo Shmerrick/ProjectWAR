@@ -248,7 +248,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (status.RegionId != Region.RegionId)
                 return;
 
-            BattlefrontLogger.Debug
+            BattlefrontLogger.Trace
             ($"Destruction Domination Count = " +
              $"{BattleFrontManager.GetActiveCampaign().VictoryPointProgress.GetDominationCount(Realms.REALMS_REALM_DESTRUCTION)}");
 
@@ -327,7 +327,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (status.RegionId != Region.RegionId)
                 return;
 
-            BattlefrontLogger.Debug
+            BattlefrontLogger.Trace
             ($"Order Domination Count = " +
              $"{BattleFrontManager.GetActiveCampaign().VictoryPointProgress.GetDominationCount(Realms.REALMS_REALM_ORDER)}");
 

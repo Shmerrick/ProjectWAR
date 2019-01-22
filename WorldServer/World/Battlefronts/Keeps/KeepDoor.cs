@@ -241,11 +241,13 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             public void SetAttackable(bool attackable)
             {
-                if (this._keepDoor.Info.Number == (int) KeepDoorType.InnerMain)
-                    _logger.Debug($"Keep : {this._keep.Info.Name} DoorId : {this.DoorId} INNER SetAttackable = {attackable}");
-                if (this._keepDoor.Info.Number == (int)KeepDoorType.OuterMain)
-                    _logger.Debug($"Keep : {this._keep.Info.Name} DoorId : {this.DoorId} OUTER SetAttackable = {attackable}");
+                string doorType = String.Empty;
 
+                if ((int) KeepDoorType.InnerMain == this._keepDoor.Info.Number)
+                    doorType = "Inner";
+                if ((int)KeepDoorType.OuterMain == this._keepDoor.Info.Number)
+                    doorType = "Outer";
+                _logger.Debug($"Keep : {this._keep.Info.Name} DoorId : {this.DoorId} {doorType} SetAttackable = {attackable}");
 
                 if (IsInvulnerable == attackable)
                 {
@@ -303,6 +305,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             GameObject.SetAttackable(Keep.KeepStatus==KeepStatus.KEEPSTATUS_SAFE);
 
             Occlusion.SetFixtureVisible(Info.DoorId, true);
+
         }
 
 
