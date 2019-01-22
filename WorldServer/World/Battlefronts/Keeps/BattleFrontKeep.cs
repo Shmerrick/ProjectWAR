@@ -1619,7 +1619,15 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         private uint GetOilProto(Realms targetRealm)
         {
+            // Dwarf or Orc
+            if (Info.Race == 1 || Info.Race == 2)
+            {
+                if (targetRealm == Realms.REALMS_REALM_DESTRUCTION)
+                    return HEAVY_CHAOS_OIL;
+                if (targetRealm == Realms.REALMS_REALM_ORDER)
+                    return HEAVY_EMPIRE_OIL;
 
+            }
             // Empire or Chaos (Human). Depending on which realm owns the keep, return the correct type of oil.
             if (Info.Race == 3 || Info.Race == 4)
             {
@@ -1629,35 +1637,17 @@ namespace WorldServer.World.BattleFronts.Keeps
                     return HEAVY_EMPIRE_OIL;
 
             }
+            // High Elf or Dark Elf
+            if (Info.Race == 5 || Info.Race == 6)
+            {
+                if (targetRealm == Realms.REALMS_REALM_DESTRUCTION)
+                    return HEAVY_CHAOS_OIL;
+                if (targetRealm == Realms.REALMS_REALM_ORDER)
+                    return HEAVY_EMPIRE_OIL;
+
+            }
             return 0;
 
-
-            //switch (Info.Race)
-            //{
-            //    case 1: //dwarf
-            //        baseEntry = 86211;
-            //        break;
-            //    case 2: //orc
-            //        baseEntry = 86223;
-            //        break;
-            //    case 3 && targetRealm == Realms.REALMS_REALM_DESTRUCTION: //empire or chaos
-            //    case 4 : 
-
-            //        baseEntry = HEAVY_EMPIRE_OIL;
-            //        break;
-            //    case 4: //chaos
-            //        baseEntry = HEAVY_CHAOS_OIL;
-            //        break;
-            //    case 5: //he
-            //        baseEntry = 86211;
-            //        break;
-            //    case 6: //de
-            //        baseEntry = 86223;
-            //        break;
-            //}
-
-
-            //return baseEntry;
         }
 
 
