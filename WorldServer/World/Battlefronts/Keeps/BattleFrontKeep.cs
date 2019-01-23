@@ -159,10 +159,11 @@ namespace WorldServer.World.BattleFronts.Keeps
                 FortDefenceCounter++;
                 if (FortDefenceCounter >= DEFENCE_LOCK_COUNT)
                 {
-                    //if (this.Info.Realm == Realms.REALMS_REALM_ORDER)
-                    //    SendRegionMessage($"Order has thrown back those who would assault their fair city.");
-                    //if (this.Info.Realm == Realms.REALMS_REALM_DESTRUCTION)
-                    //    SendRegionMessage($"The forces of Chaos have thrown back .");
+                    //if (this.Info.Realm == (int) Realms.REALMS_REALM_ORDER)
+                    //    SendRegionMessage("Weakened by the long crusade, the forces of Chaos have been thrown back from Reikwald. The Empire prepares their army for a counterattack.");
+                    //if (this.Info.Realm == (int)Realms.REALMS_REALM_DESTRUCTION)
+                    //    SendRegionMessage($"The Dark gods have blessed the fortress defenders." +
+                    //                      $"Chaos will spread across the Old World with renewed strength.");
 
                     // Lock the keep for the defending realm
                     OnLockZone((Realms) this.Info.Realm);
@@ -171,8 +172,12 @@ namespace WorldServer.World.BattleFronts.Keeps
                 }
                 else
                 {
-                    SendRegionMessage($"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter) * 15} minutes remaining to capture the fortress.");
+                    // Inform players on the defending side of the remaining time.
+                    SendRegionMessage(
+                        $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter-1) * 15} minutes remaining to capture the fortress.", 
+                        this.Info.Realm);
                 }
+                
             }
         }
 
@@ -1317,15 +1322,21 @@ namespace WorldServer.World.BattleFronts.Keeps
             plr.SendPacket(Out);
         }
 
-        public void SendRegionMessage(string message)
+        public void SendRegionMessage(string message, int realmFilter = 0)
         {
             foreach (var obj in Region.Objects)
             {
                 var plr = obj as Player;
-                plr?.SendLocalizeString(message, ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
-                plr?.SendLocalizeString(message,
-                    Realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE,
-                    Localized_text.CHAT_TAG_DEFAULT);
+                if (realmFilter != 0)
+                {
+                    if (plr?.Realm == (Realms) realmFilter)
+                    {
+                        plr?.SendLocalizeString(message, ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
+                        plr?.SendLocalizeString(message,
+                            Realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE,
+                            Localized_text.CHAT_TAG_DEFAULT);
+                    }
+                }
             }
         }
 
@@ -1736,10 +1747,22 @@ namespace WorldServer.World.BattleFronts.Keeps
         }
 
 
+        /// <summary>
+        /// Force Zone lock for the attacker
+        /// </summary>
         public void ForceLockZone()
         {
-            OnLockZone(Realm);
-            WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(Realm);
+            if (this.IsFortress())
+            {
+                OnLockZone(Realm);
+                WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(Realm);
+                WorldMgr.UpperTierCampaignManager.GetActiveCampaign().StartRegionLock();
+                FortDefenceCounter = 0;
+            }
+            else
+            {
+                _logger.Warn($"Attempt to Force Lock Zone for non-fortress {this.Info.Name}");
+            }
         }
 
         public bool IsFortress()

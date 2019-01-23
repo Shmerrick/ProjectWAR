@@ -89,6 +89,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public int OrderDominationTimerEnd { get; set; }
         public int DestructionDominationTimerEnd { get; set; }
 
+        public bool RegionLocked { get; set; }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -107,7 +109,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Objectives = objectives;
             BattleFrontManager = bfm;
             CommunicationsEngine = communicationsEngine;
-
+            RegionLocked = false;
 
             Tier = (byte)Region.GetTier();
             PlaceObjectives();
@@ -146,7 +148,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         private void CountdownFortDefenceTimer()
         {
-            var k = Keeps.SingleOrDefault(x => x.IsFortress() && x.ZoneId == ActiveBattleFrontStatus.ZoneId);
+            // If its a fort, not locked and the active zone
+            var k = Keeps.SingleOrDefault(x => x.IsFortress() && x.ZoneId == ActiveBattleFrontStatus.ZoneId && x.KeepStatus != KeepStatus.KEEPSTATUS_LOCKED);
             k?.CountdownFortDefenceTimer();
         }
 
@@ -174,7 +177,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                     foreach (var player in playersToAnnounceTo)
                     {
-                        SendObjectives(player);
+                        SendObjectives(player, Objectives.Where(x=>x.ZoneId == status.ZoneId));
                     }
                 }
             }
@@ -262,8 +265,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             if (BattleFrontManager.GetActiveCampaign().VictoryPointProgress.GetDominationCount(Realms.REALMS_REALM_DESTRUCTION) == DOMINATION_POINTS_REQUIRED)
             {
-
-
                 if (!_EvtInterface.HasEvent(DestructionDominationZoneLockCheck))
                 {
 
@@ -1394,10 +1395,20 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// Sends information to a player about the objectives within a Campaign upon their entry.
         /// </summary>
         /// <param name="plr"></param>
-        public void SendObjectives(Player plr)
+        public void SendObjectives(Player plr, IEnumerable<BattlefieldObjective> filteredObjectives = null)
         {
-            foreach (var bo in Objectives)
-                bo.SendState(plr, false);
+            if (filteredObjectives == null)
+            {
+                foreach (var bo in Objectives)
+                    bo.SendState(plr, false);
+            }
+            else
+            {
+                foreach (var bo in filteredObjectives)
+                {
+                    bo.SendState(plr, false);
+                }
+            }
         }
 
         private void UpdateBOs()
@@ -1481,6 +1492,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             BattlefrontLogger.Info($"Executing BattleFront Lock for {lockingRealm}");
             var oldBattleFront = BattleFrontManager.GetActiveBattleFrontFromProgression();
+
             BattleFrontManager.LockActiveBattleFront(lockingRealm, 0);
             // Select the next Progression
             var nextBattleFront = BattleFrontManager.AdvanceBattleFront(lockingRealm);
@@ -1560,6 +1572,38 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public float GetArtilleryDamageScale(Realms weaponRealm)
         {
             return 1f;
+        }
+
+        public void StartRegionLock()
+        {
+            BattlefrontLogger.Info($"Starting Region Lock for Region : {this.Region.RegionId}");
+            _EvtInterface.AddEvent(EndRegionLock, 90000, 1);
+            RegionLocked = true;
+            var playersToAnnounceTo = Player._Players.Where(x => !x.IsDisposed
+                                                                 && x.IsInWorld()
+                                                                 && x.ScnInterface.Scenario == null
+                                                                 && x.Region.RegionId == this.Region.RegionId);
+
+            foreach (var player in playersToAnnounceTo)
+            {
+                player.SendClientMessage($"{Region.RegionName} is in ruins, but it shall rise again!");
+            }
+        }
+
+        private void EndRegionLock()
+        {
+            BattlefrontLogger.Info($"Ending Region Lock for Region : {this.Region.RegionId}");
+            _EvtInterface.RemoveEvent(EndRegionLock);
+            RegionLocked = false;
+            var playersToAnnounceTo = Player._Players.Where(x => !x.IsDisposed
+                                                                 && x.IsInWorld()
+                                                                 && x.ScnInterface.Scenario == null
+                                                                 && x.Region.RegionId == this.Region.RegionId);
+
+            foreach (var player in playersToAnnounceTo)
+            {
+                player.SendClientMessage($"{Region.RegionName} has recovered and is available for battle!");
+            }
         }
     }
 }
