@@ -815,49 +815,49 @@ namespace WorldServer.World.BattleFronts.Keeps
                     || Realm == Realms.REALMS_REALM_DESTRUCTION && aaoMultiplier > 0) // keep is destro and aao is on order
                     size = (int)Math.Round(Math.Abs(aaoMultiplier) / 2.5); // 20 / 2.5 = 8 -> 8 is max guard size
 
-                var patrols = Creatures.Select(x => x).Where(x => x.Info.IsPatrol && x.Creature != null).ToList();
-                if (patrols.Count > size) // remove overflow patrols
-                {
-                    var toRemove = patrols.GetRange(size, patrols.Count - size);
+                //var patrols = Creatures.Select(x => x).Where(x => x.Info.IsPatrol && x.Creature != null).ToList();
+                //if (patrols.Count > size) // remove overflow patrols
+                //{
+                //    var toRemove = patrols.GetRange(size, patrols.Count - size);
 
-                    foreach (var crea in toRemove)
-                        crea.DespawnGuard();
-                    for (var i = 0; i < toRemove.Count; i++)
-                        Creatures.Remove(toRemove[i]);
-                }
-                else if (patrols.Count < size) // add new patrols
-                {
-                    for (var i = 0; i < size - patrols.Count; i++)
-                    {
-                        var captain = Info.Creatures?.Select(x => x).Where(x => x.IsPatrol).FirstOrDefault();
-                        if (captain != null)
-                        {
-                            var allUsedCreatures = Creatures.Select(y => y).Where(y => y.Creature != null).Select(x => x.Info).ToList();
-                            if (allUsedCreatures.Contains(captain))
-                            {
-                                var add = captain.CreateDeepCopy();
-                                Creatures.Add(new KeepNpcCreature(Region, add, this));
-                            }
-                            else
-                            {
-                                Creatures.Add(new KeepNpcCreature(Region, captain, this));
-                            }
-                        }
-                    }
-                }
+                //    foreach (var crea in toRemove)
+                //        crea.DespawnGuard();
+                //    for (var i = 0; i < toRemove.Count; i++)
+                //        Creatures.Remove(toRemove[i]);
+                //}
+                //else if (patrols.Count < size) // add new patrols
+                //{
+                //    for (var i = 0; i < size - patrols.Count; i++)
+                //    {
+                //        var captain = Info.Creatures?.Select(x => x).Where(x => x.IsPatrol).FirstOrDefault();
+                //        if (captain != null)
+                //        {
+                //            var allUsedCreatures = Creatures.Select(y => y).Where(y => y.Creature != null).Select(x => x.Info).ToList();
+                //            if (allUsedCreatures.Contains(captain))
+                //            {
+                //                var add = captain.CreateDeepCopy();
+                //                Creatures.Add(new KeepNpcCreature(Region, add, this));
+                //            }
+                //            else
+                //            {
+                //                Creatures.Add(new KeepNpcCreature(Region, captain, this));
+                //            }
+                //        }
+                //    }
+                //}
 
-                // spawn all not yet spawned patrols
-                foreach (var patrol in Creatures.Select(x => x).Where(x => x.Info.IsPatrol))
-                    if (patrol.Creature == null)
-                    {
-                        var list = Creatures.Select(x => x).Where(x => x.Info.IsPatrol && x.Creature != null).ToList();
-                        list.Sort();
-                        var curr = list.FirstOrDefault();
-                        if (curr != null)
-                            patrol.SpawnGuardNear(Realm, curr);
-                        else
-                            patrol.SpawnGuard(Realm);
-                    }
+                //// spawn all not yet spawned patrols
+                //foreach (var patrol in Creatures.Select(x => x).Where(x => x.Info.IsPatrol))
+                //    if (patrol.Creature == null)
+                //    {
+                //        var list = Creatures.Select(x => x).Where(x => x.Info.IsPatrol && x.Creature != null).ToList();
+                //        list.Sort();
+                //        var curr = list.FirstOrDefault();
+                //        if (curr != null)
+                //            patrol.SpawnGuardNear(Realm, curr);
+                //        else
+                //            patrol.SpawnGuard(Realm);
+                //    }
             }
         }
 

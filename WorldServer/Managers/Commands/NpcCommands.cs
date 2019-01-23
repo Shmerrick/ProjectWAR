@@ -52,7 +52,9 @@ namespace WorldServer.Managers.Commands
 
             WorldMgr.Database.AddObject(spawn);
 
-            plr.Region.CreateCreature(spawn);
+var c =             plr.Region.CreateCreature(spawn);
+            c.AiInterface.SetBrain(new PassiveBrain(c));
+            
 
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;
@@ -167,7 +169,7 @@ namespace WorldServer.Managers.Commands
         {
             Creature npc = plr.CbtInterface.GetCurrentTarget() as Creature;
 
-            if (npc == null || npc.Spawn.Entry == 0 || npc is Pet || npc is PQuestCreature || npc is KeepNpcCreature.KeepCreature)
+            if (npc == null || npc.Spawn.Entry == 0 || npc is Pet || npc is PQuestCreature || npc is KeepCreature)
             {
                 plr.SendClientMessage("NPC QUOTE: This command may only be used on a static creature.");
                 return true;

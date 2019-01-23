@@ -4159,8 +4159,10 @@ namespace WorldServer.Managers.Commands
             spawn.Level = 42;
 
             Creature c = plr.Region.CreateCreature(spawn);
+            //c.WaypointGUID = 
             c.PlayersInRange = plr.PlayersInRange;
-            c.AiInterface.SetBrain(new AggressiveBrain(c));
+            c.AiInterface.SetBrain(new PassiveBrain(c));
+            
 
 
             return true;

@@ -169,7 +169,7 @@ namespace WorldServer
 
             if (_unit != null)
             {
-                if (_unit is KeepNpcCreature.KeepCreature npc && !npc.IsPatrol)
+                if (_unit is KeepCreature npc && !npc.IsPatrol)
                 {
                     if (((npc.Z - npc.SpawnPoint.Z > 120 || npc.SpawnPoint.Z - npc.Z > 30)) || !npc.PointWithinRadiusFeet(npc.WorldSpawnPoint, 200))
                     {
@@ -191,7 +191,7 @@ namespace WorldServer
             if (creature == null || creature is Pet)
                 return;
 
-			if (_unit is KeepNpcCreature.KeepCreature patrol && patrol.IsPatrol && patrol.AiInterface != null && patrol.AiInterface.CurrentWaypoint != null)
+			if (_unit is KeepCreature patrol && patrol.IsPatrol && patrol.AiInterface != null && patrol.AiInterface.CurrentWaypoint != null)
 			{
 				if (!patrol.PointWithinRadiusFeet(new Point3D((int)patrol.AiInterface.CurrentWaypoint.X, (int)patrol.AiInterface.CurrentWaypoint.Y, (int)patrol.AiInterface.CurrentWaypoint.Z), 200))
 				{
@@ -231,7 +231,7 @@ namespace WorldServer
 
 			_StopWaypoints = true;
 			
-			if (!(_unit is KeepNpcCreature.KeepCreature))
+			if (!(_unit is KeepCreature))
                 _thinkInterval = 650;
 
             bool processLink = State != AiState.FIGHTING && target is Player && _unit.Aggressive;
@@ -468,7 +468,7 @@ namespace WorldServer
 
                     if (unitOwner != null)
                     {
-                        if (unitOwner is KeepNpcCreature.KeepCreature npc && !npc.IsPatrol)
+                        if (unitOwner is KeepCreature npc && !npc.IsPatrol)
                         {
                             // Keep NPCs have additional hardening. If their target goes outside the keep, instantly reset.
                             if (enemy.Z - npc.SpawnPoint.Z > 120 || npc.SpawnPoint.Z - enemy.Z > 30 || !enemy.PointWithinRadiusFeet(npc.WorldSpawnPoint, 200) || !npc.PointWithinRadiusFeet(npc.WorldSpawnPoint, 200))
@@ -546,15 +546,16 @@ namespace WorldServer
             //System.Diagnostics.Trace.Assert(_Owner.Name != "Heinz Lutzen");
             if (_Owner.IsCreature())
             {
+                // If there are no waypoints - create a waypoint where the target is
                 if (Waypoints.Count == 0)
                 {
                     Waypoint StartWp = new Waypoint
                     {
                         CreatureSpawnGUID = _Owner.GetCreature().Spawn.Guid,
                         GameObjectSpawnGUID = _Owner.Oid,
-                        X = (ushort) _Owner.X,
-                        Y = (ushort) _Owner.Y,
-                        Z = (ushort) _Owner.Z,
+                        X = (uint) _Owner.WorldPosition.X,
+                        Y = (uint) _Owner.WorldPosition.Y,
+                        Z = (uint) _Owner.WorldPosition.Z,
                         Speed = AddWp.Speed,
                         WaitAtEndMS = AddWp.WaitAtEndMS
                     };
@@ -567,6 +568,8 @@ namespace WorldServer
                     }
                     // lock (WaypointsTableLock)
                 }
+
+                // Create the next waypoint.
                 AddWp.CreatureSpawnGUID = _Owner.GetCreature().Spawn.Guid;
                 AddWp.GameObjectSpawnGUID = _Owner.Oid;
                 lock (WaypointsTableLock)
@@ -576,10 +579,31 @@ namespace WorldServer
                     WaypointService.DatabaseAddWaypoint(AddWp);
                 }
                 // lock (WaypointsTableLock)
-                Waypoint PrevWp = Waypoints[Waypoints.Count - 1];
-                PrevWp.NextWaypointGUID = AddWp.GUID;
-                SaveWaypoint(PrevWp);
+                if (Waypoints.Count == 2)
+                {
+                    var secondWaypoint = Waypoints[1];
+                    var firstWaypoint = Waypoints[0];
+                    firstWaypoint.NextWaypointGUID = secondWaypoint.GUID;
+                    
+                    // Force save the  GUID update.
+                    WaypointService.DatabaseSaveWaypoint(firstWaypoint);
+                }
+                else
+                {
+                    var lastWaypoint = Waypoints[Waypoints.Count - 2];
+                    lastWaypoint.NextWaypointGUID = AddWp.GUID;
+                    SaveWaypoint(lastWaypoint);
+                }
             }
+        }
+
+        private long GenerateRandomUint()
+        {
+            return Convert.ToInt64(DateTime.Now.ToString("yyMMddHHmmssmmm"));
+            //uint thirtyBits = (uint)StaticRandom.Instance.Next(1 << 30);
+            //uint twoBits = (uint)StaticRandom.Instance.Next(1 << 2);
+            //uint fullRange = (thirtyBits << 2) | twoBits;
+            //return fullRange;
         }
 
         public void SaveWaypoint(Waypoint SaveWp)

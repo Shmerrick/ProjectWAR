@@ -1276,7 +1276,7 @@ namespace WorldServer
         /// </summary>
         private static bool ArtilleryStrike(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
-            if (hostBuff.OptionalObject is Siege || hostBuff.OptionalObject is KeepNpcCreature.KeepCreature)
+            if (hostBuff.OptionalObject is Siege || hostBuff.OptionalObject is KeepCreature)
                 HandleArtillery(hostBuff, cmd, target);
             else
                 HandleAnticampSiege(hostBuff, cmd, target);
@@ -2992,8 +2992,8 @@ namespace WorldServer
         private static bool RefreshIfMoving(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
             //lets not let a refresh of a buff happen to a keep lord
-            WorldServer.World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature Lord = target as WorldServer.World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature;
-            if (Lord != null && Lord.returnflag().Info.KeepLord)
+            var lord = target as KeepCreature;
+            if (lord != null && lord.returnflag().Info.KeepLord)
                 return true;
 
             if (target.IsMoving)

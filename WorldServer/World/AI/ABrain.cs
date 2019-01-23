@@ -4,6 +4,7 @@ using System.Linq;
 using SystemData;
 using FrameWork;
 using GameData;
+using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer
 {
@@ -98,7 +99,7 @@ namespace WorldServer
                 NewRange = crea.Ranged;
 			
 			// set speed to 100 when combat starts for keep patrol guard
-			if (_unit is World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature keepGuard && keepGuard.IsPatrol)
+			if (_unit is KeepCreature keepGuard && keepGuard.IsPatrol)
 			{
 				keepGuard.Speed = 100;
 				keepGuard.UpdateSpeed();
@@ -307,7 +308,7 @@ namespace WorldServer
                 npc.BuffInterface.RemoveAllBuffs();
                 npc.ReceiveHeal(null, npc.MaxHealth);
                 
-				if (_unit is World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature keepGuard && keepGuard.IsPatrol
+				if (_unit is KeepCreature keepGuard && keepGuard.IsPatrol
 					&& keepGuard.AiInterface != null && keepGuard.AiInterface.CurrentWaypoint != null)
 				{
 					keepGuard.AiInterface.State = AiState.MOVING;

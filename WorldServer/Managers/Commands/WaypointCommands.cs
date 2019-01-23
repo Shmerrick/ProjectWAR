@@ -22,11 +22,13 @@ namespace WorldServer.Managers.Commands
             if (target == null || !target.IsCreature())
                 return false;
 
-            Waypoint wp = new Waypoint();
-            wp.X = (ushort)plr.X;
-            wp.Y = (ushort)plr.Y;
-            wp.Z = (ushort)plr.Z;
-            wp.WaitAtEndMS = 2000;
+            Waypoint wp = new Waypoint
+            {
+                X = (uint) plr.WorldPosition.X,
+                Y = (uint)plr.WorldPosition.Y,
+                Z = (uint)plr.WorldPosition.Z,
+                WaitAtEndMS = 2000
+            };
 
             target.GetUnit().AiInterface.AddWaypoint(wp);
 

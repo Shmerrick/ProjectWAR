@@ -32,16 +32,19 @@ namespace WorldServer.Services.World
         public static void DatabaseAddWaypoint(Waypoint AddWp)
         {
             Database.AddObject(AddWp);
+            Database.ForceSave();
         }
 
         public static void DatabaseSaveWaypoint(Waypoint SaveWp)
         {
             Database.SaveObject(SaveWp);
+            Database.ForceSave();
         }
 
         public static void DatabaseDeleteWaypoint(Waypoint DeleteWp)
         {
             Database.DeleteObject(DeleteWp);
+            Database.ForceSave();
         }
 
 		/// <summary>
