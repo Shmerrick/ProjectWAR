@@ -78,7 +78,7 @@ namespace WorldServer.Services.World
 
             Log.Debug("WorldMgr", $"Saving battlefront keep status {keepId} {(int)state}...");
             RemoveBattleFrontKeepStatus(keepId);
-            Database.AddObject(statusEntity);
+            Database.SaveObject(statusEntity);
             Database.ForceSave();
         }
 
