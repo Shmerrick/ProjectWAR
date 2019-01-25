@@ -44,17 +44,14 @@ namespace WorldServer.Services.World
         /// <returns>Zone or null if was not fount</returns>
         public static Zone_Info GetZone_Info(ushort ZoneId)
         {
-            foreach (Zone_Info zone in _Zone_Info)
-                if (zone != null && zone.ZoneId == ZoneId)
-                    return zone;
-            return null;
+            return _Zone_Info.FirstOrDefault(zone => zone != null && zone.ZoneId == ZoneId);
         }
-        /// <summary>
-        /// Gets all zones in given region.
-        /// </summary>
-        /// <param name="RegionId">Region id to get zones of.</param>
-        /// <returns>List on known regions, cannot be null, may be empty</returns>
-        public static List<Zone_Info> GetZoneRegion(ushort RegionId)
+            /// <summary>
+            /// Gets all zones in given region.
+            /// </summary>
+            /// <param name="RegionId">Region id to get zones of.</param>
+            /// <returns>List on known regions, cannot be null, may be empty</returns>
+            public static List<Zone_Info> GetZoneRegion(ushort RegionId)
         {
             List<Zone_Info> list = new List<Zone_Info>();
             foreach (Zone_Info zone in _Zone_Info)

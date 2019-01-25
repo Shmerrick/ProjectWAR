@@ -65,6 +65,73 @@ namespace WorldServer.Managers.Commands
         }
 
         /// <summary>
+        /// Spawn an npc +Keep
+        /// </summary>
+        /// <param name="plr">Player that initiated the command</param>
+        /// <param name="values">List of command arguments (after command name)</param>
+        /// <returns>True if command was correctly handled, false if operation was canceled</returns>
+        public static bool NpcKeepSpawn(Player plr, ref List<string> values)
+        {
+            int entry = GetInt(ref values);
+
+            Creature_proto proto = CreatureService.GetCreatureProto((uint)entry);
+            if (proto == null)
+            {
+                proto = WorldMgr.Database.SelectObject<Creature_proto>("Entry=" + entry);
+
+                if (proto != null)
+                    plr.SendClientMessage("NPC SPAWN: Npc Entry is valid but npc stats are empty. No sniff data about this npc");
+                else
+                    plr.SendClientMessage("NPC SPAWN:  Invalid npc entry(" + entry + ")");
+
+                return false;
+            }
+
+            plr.UpdateWorldPosition();
+
+            Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
+            spawn.BuildFromProto(proto);
+            spawn.WorldO = plr._Value.WorldO;
+            spawn.WorldY = plr._Value.WorldY;
+            spawn.WorldZ = plr._Value.WorldZ;
+            spawn.WorldX = plr._Value.WorldX;
+            spawn.ZoneId = plr.Zone.ZoneId;
+            spawn.Enabled = 1;
+
+            WorldMgr.Database.AddObject(spawn);
+
+            var c = plr.Region.CreateCreature(spawn);
+
+            var kc = new Keep_Creature();
+            var realm = values[2];
+            kc.ZoneId = plr.Zone.ZoneId;
+            if (realm == "2")
+                kc.DestroId = proto.Entry;
+            if (realm == "1")
+                kc.OrderId = proto.Entry;
+
+            kc.IsPatrol = false;
+            kc.KeepId = Convert.ToInt32(values[3]);
+            kc.KeepLord = false;
+            kc.X = plr._Value.WorldX;
+            kc.Y = plr._Value.WorldY;
+            kc.Z = plr._Value.WorldZ;
+            kc.O = plr._Value.WorldO;
+            kc.WaypointGUID = 0;
+
+            WorldMgr.Database.AddObject(kc);
+
+            GMCommandLog log = new GMCommandLog();
+            log.PlayerName = plr.Name;
+            log.AccountId = (uint)plr.Client._Account.AccountId;
+            log.Command = "SPAWN KEEP CREATURE " + spawn.Entry + " " + spawn.Guid + " AT " + spawn.ZoneId + " " + plr._Value.WorldX + " " + plr._Value.WorldY;
+            log.Date = DateTime.Now;
+            CharMgr.Database.AddObject(log);
+
+            return true;
+        }
+
+        /// <summary>
         /// Delete the target <(0=World,1=Database)>
         /// </summary>
         /// <param name="plr">Player that initiated the command</param>
