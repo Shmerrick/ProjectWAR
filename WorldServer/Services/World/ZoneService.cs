@@ -43,10 +43,7 @@ namespace WorldServer.Services.World
         /// <returns>Zone or null if was not fount</returns>
         public static Zone_Info GetZone_Info(ushort ZoneId)
         {
-            foreach (Zone_Info zone in _Zone_Info)
-                if (zone != null && zone.ZoneId == ZoneId)
-                    return zone;
-            return null;
+            return _Zone_Info.FirstOrDefault(zone => zone != null && zone.ZoneId == ZoneId);
         }
         /// <summary>
         /// Gets all zones in given region.
