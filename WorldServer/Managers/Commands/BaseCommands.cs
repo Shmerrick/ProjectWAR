@@ -6,9 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
+using WorldServer;
 using WorldServer.Scenarios;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
+using WorldServer.World.BattleFronts.Keeps;
 using static System.UInt16;
 using static WorldServer.Managers.Commands.GMUtils;
 
@@ -841,6 +843,11 @@ namespace WorldServer.Managers.Commands
             else if (c != null && c.IsCreature())
             {
                 string result = c.ToString();
+
+                result += $"WP:{c.WorldPosition.X}, {c.WorldPosition.Y}, {c.WorldPosition.Z}";
+                if (c is KeepNpcCreature.KeepCreature)
+                    result += $"Keep Creature: WayPoint :{(c as KeepNpcCreature.KeepCreature).WaypointGUID}";
+
                 if (c.Spawn.Proto.TokUnlock != null && c.Spawn.Proto.TokUnlock != "0")
                     result = result + ", TokUnlock=" + c.Spawn.Proto.TokUnlock;
 

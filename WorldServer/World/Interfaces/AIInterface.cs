@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using SystemData;
 using Common;
 using FrameWork;
@@ -60,6 +61,10 @@ namespace WorldServer
             _unit.EvtInterface.AddEventNotify(EventName.OnTargetDie, OnTargetDie);
 
             ResetThinkInterval();
+
+            // Load Waypoints if they exist.
+            if (_unit.WaypointGUID != 0)
+                this.Waypoints = WaypointService.GetNpcWaypoints(_unit.WaypointGUID);
 
             return base.Load();
         }
@@ -544,42 +549,72 @@ namespace WorldServer
         public void AddWaypoint(Waypoint AddWp)
         {
             //System.Diagnostics.Trace.Assert(_Owner.Name != "Heinz Lutzen");
+            
             if (_Owner.IsCreature())
             {
+                // If there are no waypoints - create a waypoint where the target is
                 if (Waypoints.Count == 0)
                 {
                     Waypoint StartWp = new Waypoint
                     {
                         CreatureSpawnGUID = _Owner.GetCreature().Spawn.Guid,
                         GameObjectSpawnGUID = _Owner.Oid,
-                        X = (ushort) _Owner.X,
-                        Y = (ushort) _Owner.Y,
-                        Z = (ushort) _Owner.Z,
+                        X = (uint)_Owner.WorldPosition.X,
+                        Y = (uint)_Owner.WorldPosition.Y,
+                        Z = (uint)_Owner.WorldPosition.Z,
                         Speed = AddWp.Speed,
                         WaitAtEndMS = AddWp.WaitAtEndMS
                     };
 
                     lock (WaypointsTableLock)
                     {
-                        StartWp.GUID = Convert.ToUInt32(WorldMgr.Database.GetNextAutoIncrement<Waypoint>());
+                        StartWp.GUID = Convert.ToUInt32(GenerateRandomUint());
                         Waypoints.Add(StartWp);
                         WaypointService.DatabaseAddWaypoint(StartWp);
+                        Thread.Sleep(5000);
                     }
                     // lock (WaypointsTableLock)
                 }
+
+                // Create the next waypoint.
                 AddWp.CreatureSpawnGUID = _Owner.GetCreature().Spawn.Guid;
                 AddWp.GameObjectSpawnGUID = _Owner.Oid;
                 lock (WaypointsTableLock)
                 {
-                    AddWp.GUID = Convert.ToUInt32(WorldMgr.Database.GetNextAutoIncrement<Waypoint>());
+                    AddWp.GUID = Convert.ToUInt32(GenerateRandomUint());
                     Waypoints.Add(AddWp);
                     WaypointService.DatabaseAddWaypoint(AddWp);
                 }
                 // lock (WaypointsTableLock)
-                Waypoint PrevWp = Waypoints[Waypoints.Count - 1];
-                PrevWp.NextWaypointGUID = AddWp.GUID;
-                SaveWaypoint(PrevWp);
+                if (Waypoints.Count == 2)
+                {
+                    var secondWaypoint = Waypoints[1];
+                    var firstWaypoint = Waypoints[0];
+                    firstWaypoint.NextWaypointGUID = secondWaypoint.GUID;
+
+                    // Force save the  GUID update.
+                    WaypointService.DatabaseSaveWaypoint(firstWaypoint);
+                }
+                else
+                {
+                    var lastWaypoint = Waypoints[Waypoints.Count - 2];
+                    lastWaypoint.NextWaypointGUID = AddWp.GUID;
+                    SaveWaypoint(lastWaypoint);
+                }
             }
+        }
+
+        private long GenerateRandomUint()
+        {
+            var max = WorldMgr.Database.ExecuteQueryInt("SELECT MAX(GUID) as MAXGUID FROM war_world.waypoints");
+            return max + 1;
+
+
+            // return Convert.ToInt64(DateTime.Now.ToString("yyMMddHHmmssmmm"));
+            //uint thirtyBits = (uint)StaticRandom.Instance.Next(1 << 30);
+            //uint twoBits = (uint)StaticRandom.Instance.Next(1 << 2);
+            //uint fullRange = (thirtyBits << 2) | twoBits;
+            //return fullRange;
         }
 
         public void SaveWaypoint(Waypoint SaveWp)

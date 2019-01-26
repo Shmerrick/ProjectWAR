@@ -3,7 +3,6 @@ using FrameWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using WorldServer.Services.World;
 using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.Objects.PublicQuests;
@@ -63,9 +62,9 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
-        
 
-            /// <summary>
+
+        /// <summary>
         /// Move a keep npc 
         /// </summary>
         /// <param name="plr">Player that initiated the command</param>
@@ -77,7 +76,7 @@ namespace WorldServer.Managers.Commands
             if (!obj.IsCreature())
                 return false;
 
-            Creature creature = (Creature) obj;
+            Creature creature = (Creature)obj;
 
             var selectedEntry = creature.Entry;
 
@@ -124,7 +123,7 @@ namespace WorldServer.Managers.Commands
 
 
 
-           
+
 
             return true;
         }
@@ -137,26 +136,38 @@ namespace WorldServer.Managers.Commands
         /// <returns>True if command was correctly handled, false if operation was canceled</returns>
         public static bool NpcKeepSpawn(Player plr, ref List<string> values)
         {
-            int entry = GetInt(ref values);
+            var destroId = values[0];
+            var orderId = values[1];
 
-            Creature_proto proto = CreatureService.GetCreatureProto((uint)entry);
+            Creature_proto proto = CreatureService.GetCreatureProto(Convert.ToUInt32(destroId));
             if (proto == null)
             {
-                proto = WorldMgr.Database.SelectObject<Creature_proto>("Entry=" + entry);
+                proto = WorldMgr.Database.SelectObject<Creature_proto>("Entry=" + destroId);
 
                 if (proto != null)
                     plr.SendClientMessage("NPC SPAWN: Npc Entry is valid but npc stats are empty. No sniff data about this npc");
                 else
-                    plr.SendClientMessage("NPC SPAWN:  Invalid npc entry(" + entry + ")");
+                    plr.SendClientMessage("NPC SPAWN:  Invalid npc entry(" + destroId + ")");
 
                 return false;
             }
 
-            
+            Creature_proto protoOrder = CreatureService.GetCreatureProto(Convert.ToUInt32(orderId));
+            if (protoOrder == null)
+            {
+                protoOrder = WorldMgr.Database.SelectObject<Creature_proto>("Entry=" + orderId);
+
+                if (protoOrder != null)
+                    plr.SendClientMessage("NPC SPAWN: Npc Entry is valid but npc stats are empty. No sniff data about this npc");
+                else
+                    plr.SendClientMessage("NPC SPAWN:  Invalid npc entry(" + orderId + ")");
+
+                return false;
+            }
 
             plr.UpdateWorldPosition();
 
-            Creature_spawn spawn = new Creature_spawn {Guid = (uint) CreatureService.GenerateCreatureSpawnGUID()};
+            Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
             spawn.BuildFromProto(proto);
             spawn.WorldO = plr._Value.WorldO;
             spawn.WorldY = plr._Value.WorldY;
@@ -170,20 +181,27 @@ namespace WorldServer.Managers.Commands
             var c = plr.Region.CreateCreature(spawn);
 
             var kc = new Keep_Creature();
-            var realm = values[2];
+
             kc.ZoneId = plr.Zone.ZoneId;
-            if (realm == "2")
-                kc.DestroId = proto.Entry;
-            if (realm == "1")
-                kc.OrderId = proto.Entry;
+            kc.DestroId = Convert.ToUInt32(destroId);
+            kc.OrderId = Convert.ToUInt32(orderId);
 
             kc.IsPatrol = false;
-            kc.KeepId = Convert.ToInt32(values[3]);
+            if (values[2] == "0")
+            {
+                Keep keep = plr.Region.Campaign.GetClosestKeep(plr.WorldPosition);
+                kc.KeepId = keep.Info.KeepId;
+            }
+            else
+            {
+                kc.KeepId = Convert.ToInt32(values[2]);
+            }
+
             kc.KeepLord = false;
             kc.X = plr._Value.WorldX;
             kc.Y = plr._Value.WorldY;
             kc.Z = plr._Value.WorldZ;
-            kc.O  = plr._Value.WorldO;
+            kc.O = plr._Value.WorldO;
             kc.WaypointGUID = 0;
 
             WorldMgr.Database.AddObject(kc);
@@ -489,7 +507,6 @@ namespace WorldServer.Managers.Commands
             Object target = plr.CbtInterface.GetCurrentTarget();
             if (target == null)
                 return false;
-            int enable = 0;
 
             Creature creature = target.GetCreature();
 
