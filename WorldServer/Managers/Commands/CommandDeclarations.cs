@@ -191,6 +191,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("addtoevent",NpcEventConvert, null, EGmLevel.DatabaseDev, 1, "Adds NPC to event. Currently doesn't work."),
             new GmCommandHandler("health",NpcHealth, null, EGmLevel.DatabaseDev, 1, "Sets NPC or GO health to specified value percent."),
             new GmCommandHandler("keepspawn",NpcKeepSpawn, null, EGmLevel.DatabaseDev, 1, "Spawn an keep npc"),
+            new GmCommandHandler("keepnpcmove",MoveKeepSpawn, null, EGmLevel.DatabaseDev, 1, "Moves an keep npc"),
         };
 
         /// <summary>Public Quest commands under .pq</summary>

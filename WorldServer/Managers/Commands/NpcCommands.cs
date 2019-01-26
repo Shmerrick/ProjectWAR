@@ -63,7 +63,71 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
+        
 
+            /// <summary>
+        /// Move a keep npc 
+        /// </summary>
+        /// <param name="plr">Player that initiated the command</param>
+        /// <param name="values">List of command arguments (after command name)</param>
+        /// <returns>True if command was correctly handled, false if operation was canceled</returns>
+        public static bool MoveKeepSpawn(Player plr, ref List<string> values)
+        {
+            Object obj = GetObjectTarget(plr);
+            if (!obj.IsCreature())
+                return false;
+
+            Creature creature = (Creature) obj;
+
+            var selectedEntry = creature.Entry;
+
+            var oldX = creature.WorldPosition.X;
+            var oldY = creature.WorldPosition.Y;
+            var oldZ = creature.WorldPosition.Z;
+            var oldO = creature.Heading;
+
+            // Now find the Keep Creature DB record
+            Keep keep = plr.Region.Campaign.GetClosestKeep(plr.WorldPosition);
+            plr.SendClientMessage(keep.Info.Name);
+
+            foreach (var keepNpcCreature in keep.Creatures)
+            {
+                if (keepNpcCreature.Creature.Entry == selectedEntry)
+                {
+                    if (keepNpcCreature.Info.X == oldX)
+                    {
+                        keepNpcCreature.Info.X = plr.WorldPosition.X;
+                        keepNpcCreature.Info.Y = plr.WorldPosition.Y;
+                        keepNpcCreature.Info.Z = plr.WorldPosition.Z;
+                        keepNpcCreature.Info.O = plr.Oid;
+                        keepNpcCreature.Info.WaypointGUID = Convert.ToInt32(values[0]);
+                        var sql = $"UPDATE war_world.keep_creatures " +
+                                  $"SET X={keepNpcCreature.Info.X}, Y={keepNpcCreature.Info.Y}, Z = {keepNpcCreature.Info.Z}, O={keepNpcCreature.Info.O}, " +
+                                  $"WaypointGUID = {keepNpcCreature.Info.WaypointGUID} " +
+                                  $"where KeepId = {keep.Info.KeepId} and X={oldX} and Y={oldY} and Z={oldZ}";
+                        WorldMgr.Database.ExecuteNonQuery(sql);
+
+                        keepNpcCreature.Creature.X = plr.WorldPosition.X;
+                        keepNpcCreature.Creature.Y = plr.WorldPosition.Y;
+
+                        //WorldMgr.Database.SaveObject(keepNpcCreature.Info);
+
+                        GMCommandLog log = new GMCommandLog();
+                        log.PlayerName = plr.Name;
+                        log.AccountId = (uint)plr.Client._Account.AccountId;
+                        log.Command = "MOVE KEEP CREATURE " + selectedEntry + " " + " AT " + keepNpcCreature.Info.ZoneId + " " + plr._Value.WorldX + " " + plr._Value.WorldY;
+                        log.Date = DateTime.Now;
+                        CharMgr.Database.AddObject(log);
+                    }
+                }
+            }
+
+
+
+           
+
+            return true;
+        }
 
         /// <summary>
         /// Spawn an npc +Keep
