@@ -619,7 +619,7 @@ namespace WorldServer.Managers.Commands
             }
 
             plr.SendClientMessage("[Stats for " + playerTarget.Name + "]\n", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
-            if (playerTarget is Creature && plr.GmLevel >= 1)
+            if (playerTarget is Creature && plr.GmLevel > 1)
             {
                 Creature c = playerTarget as Creature;
                 plr.SendClientMessage("Creature Career: " + c.Spawn.Proto.Career, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
