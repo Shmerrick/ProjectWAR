@@ -183,24 +183,22 @@ namespace WorldServer.Managers.Commands
         public static List<GmCommandHandler> NpcCommands = new List<GmCommandHandler>
         {
 
-            new GmCommandHandler("spawn", NpcSpawn, null, EGmLevel.DatabaseDev, 1, "Spawn an npc"),
-            new GmCommandHandler("remove", NpcRemove, null, EGmLevel.DatabaseDev, 1, "Delete the target <(0=World,1=Database)>"),
-            new GmCommandHandler("go", NpcGoTo, null, EGmLevel.DatabaseDev, 3, "Npc Go To Target <X,Y,Z>"),
-            new GmCommandHandler("come", NpcCome, null, EGmLevel.DatabaseDev, 0, "Move target to my position"),
-            new GmCommandHandler("modify", NpcModify, null, EGmLevel.DatabaseDev, 2, "Modify a column value <columnname,value,0 target- 1 all>"),
-            new GmCommandHandler("quote", NpcQuote, null, EGmLevel.DatabaseDev, 1, "Adds speech to the targeted NPC, by spawn (string text)"),
-            new GmCommandHandler("tint", NpcTint, null, EGmLevel.DatabaseDev, 3, "Sets armor piece color <slotIndex (0=all), pri_tint, sec_tint (from tintpalette_equipment.csv)>"),
-            new GmCommandHandler("animscript", NpcAnimScript, null, EGmLevel.DatabaseDev, 1,
-                "Sets monster's animation script <animID> (animID from anim_scripts.csv. 0 to remove)."),
-            new GmCommandHandler("animationset", NpcPermaAnimScript, null, EGmLevel.DatabaseDev, 1,
-                "Sets monster's animation script <animID> (animID from anim_scripts.csv. 0 to remove). This is permanent, updates DB."),
-            new GmCommandHandler("level", NpcLevel, null, EGmLevel.DatabaseDev, 1, "Sets NPC Level to specified value"),
-            new GmCommandHandler("disable", NpcDisable, null, EGmLevel.DatabaseDev, 0, "Disables NPC from spawns. Can be restored using the DB."),
-            new GmCommandHandler("move", NpcChangeSpawnPlace, null, EGmLevel.DatabaseDev, 0, "Makes NPC come to player and updates his position in DB."),
-            new GmCommandHandler("addtoevent", NpcEventConvert, null, EGmLevel.DatabaseDev, 1, "Adds NPC to event. Currently doesn't work."),
-            new GmCommandHandler("health", NpcHealth, null, EGmLevel.DatabaseDev, 1, "Sets NPC or GO health to specified value percent."),
-
-
+            new GmCommandHandler("spawn",NpcSpawn, null, EGmLevel.DatabaseDev, 1, "Spawn an npc"),
+            new GmCommandHandler("remove",NpcRemove, null, EGmLevel.DatabaseDev, 1, "Delete the target <(0=World,1=Database)>"),
+            new GmCommandHandler("go",NpcGoTo, null, EGmLevel.DatabaseDev, 3, "Npc Go To Target <X,Y,Z>"),
+            new GmCommandHandler("come",NpcCome, null, EGmLevel.DatabaseDev, 0, "Move target to my position"),
+            new GmCommandHandler("modify",NpcModify, null, EGmLevel.DatabaseDev, 2, "Modify a column value <columnname,value,0 target- 1 all>"),
+            new GmCommandHandler("quote",NpcQuote, null, EGmLevel.DatabaseDev, 1, "Adds speech to the targeted NPC, by spawn (string text)"),
+            new GmCommandHandler("tint",NpcTint, null, EGmLevel.DatabaseDev, 3, "Sets armor piece color <slotIndex (0=all), pri_tint, sec_tint (from tintpalette_equipment.csv)>"),
+            new GmCommandHandler("animscript", NpcAnimScript, null, EGmLevel.DatabaseDev, 1, "Sets monster's animation script <animID> (animID from anim_scripts.csv. 0 to remove)."),
+            new GmCommandHandler("animationset", NpcPermaAnimScript, null, EGmLevel.DatabaseDev, 1, "Sets monster's animation script <animID> (animID from anim_scripts.csv. 0 to remove). This is permanent, updates DB."),
+            new GmCommandHandler("level",NpcLevel, null, EGmLevel.DatabaseDev, 1, "Sets NPC Level to specified value"),
+            new GmCommandHandler("disable",NpcDisable, null, EGmLevel.DatabaseDev, 0, "Disables NPC from spawns. Can be restored using the DB."),
+            new GmCommandHandler("move",NpcChangeSpawnPlace, null, EGmLevel.DatabaseDev, 0, "Makes NPC come to player and updates his position in DB."),
+            new GmCommandHandler("addtoevent",NpcEventConvert, null, EGmLevel.DatabaseDev, 1, "Adds NPC to event. Currently doesn't work."),
+            new GmCommandHandler("health",NpcHealth, null, EGmLevel.DatabaseDev, 1, "Sets NPC or GO health to specified value percent."),
+            new GmCommandHandler("keepspawn",NpcKeepSpawn, null, EGmLevel.DatabaseDev, 1, "Spawn an keep npc <destroId> <orderId> <keepId (0 for auto)>"),
+            new GmCommandHandler("keepnpcmove",MoveKeepSpawn, null, EGmLevel.DatabaseDev, 1, "Moves an keep npc"),
         };
 
         /// <summary>Public Quest commands under .pq</summary>

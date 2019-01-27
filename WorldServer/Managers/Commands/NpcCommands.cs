@@ -3,7 +3,6 @@ using FrameWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using WorldServer.Services.World;
 using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.Objects.PublicQuests;
@@ -60,6 +59,159 @@ var c =             plr.Region.CreateCreature(spawn);
             log.PlayerName = plr.Name;
             log.AccountId = (uint)plr.Client._Account.AccountId;
             log.Command = "SPAWN CREATURE " + spawn.Entry + " " + spawn.Guid + " AT " + spawn.ZoneId + " " + plr._Value.WorldX + " " + plr._Value.WorldY;
+            log.Date = DateTime.Now;
+            CharMgr.Database.AddObject(log);
+
+            return true;
+        }
+
+
+        /// <summary>
+        /// Move a keep npc 
+        /// </summary>
+        /// <param name="plr">Player that initiated the command</param>
+        /// <param name="values">List of command arguments (after command name)</param>
+        /// <returns>True if command was correctly handled, false if operation was canceled</returns>
+        public static bool MoveKeepSpawn(Player plr, ref List<string> values)
+        {
+            Object obj = GetObjectTarget(plr);
+            if (!obj.IsCreature())
+                return false;
+
+            Creature creature = (Creature)obj;
+
+            var selectedEntry = creature.Entry;
+
+            var oldX = creature.WorldPosition.X;
+            var oldY = creature.WorldPosition.Y;
+            var oldZ = creature.WorldPosition.Z;
+            var oldO = creature.Heading;
+
+            // Now find the Keep Creature DB record
+            Keep keep = plr.Region.Campaign.GetClosestKeep(plr.WorldPosition);
+            plr.SendClientMessage(keep.Info.Name);
+
+            foreach (var keepNpcCreature in keep.Creatures)
+            {
+                if (keepNpcCreature.Creature.Entry == selectedEntry)
+                {
+                    if (keepNpcCreature.Info.X == oldX)
+                    {
+                        keepNpcCreature.Info.X = plr.WorldPosition.X;
+                        keepNpcCreature.Info.Y = plr.WorldPosition.Y;
+                        keepNpcCreature.Info.Z = plr.WorldPosition.Z;
+                        keepNpcCreature.Info.O = plr.Oid;
+                        keepNpcCreature.Info.WaypointGUID = Convert.ToInt32(values[0]);
+                        var sql = $"UPDATE war_world.keep_creatures " +
+                                  $"SET X={keepNpcCreature.Info.X}, Y={keepNpcCreature.Info.Y}, Z = {keepNpcCreature.Info.Z}, O={keepNpcCreature.Info.O}, " +
+                                  $"WaypointGUID = {keepNpcCreature.Info.WaypointGUID} " +
+                                  $"where KeepId = {keep.Info.KeepId} and X={oldX} and Y={oldY} and Z={oldZ}";
+                        WorldMgr.Database.ExecuteNonQuery(sql);
+
+                        keepNpcCreature.Creature.X = plr.WorldPosition.X;
+                        keepNpcCreature.Creature.Y = plr.WorldPosition.Y;
+
+                        //WorldMgr.Database.SaveObject(keepNpcCreature.Info);
+
+                        GMCommandLog log = new GMCommandLog();
+                        log.PlayerName = plr.Name;
+                        log.AccountId = (uint)plr.Client._Account.AccountId;
+                        log.Command = "MOVE KEEP CREATURE " + selectedEntry + " " + " AT " + keepNpcCreature.Info.ZoneId + " " + plr._Value.WorldX + " " + plr._Value.WorldY;
+                        log.Date = DateTime.Now;
+                        CharMgr.Database.AddObject(log);
+                    }
+                }
+            }
+
+
+
+
+
+            return true;
+        }
+
+        /// <summary>
+        /// Spawn an npc +Keep
+        /// </summary>
+        /// <param name="plr">Player that initiated the command</param>
+        /// <param name="values">List of command arguments (after command name)</param>
+        /// <returns>True if command was correctly handled, false if operation was canceled</returns>
+        public static bool NpcKeepSpawn(Player plr, ref List<string> values)
+        {
+            var destroId = values[0];
+            var orderId = values[1];
+
+            Creature_proto proto = CreatureService.GetCreatureProto(Convert.ToUInt32(destroId));
+            if (proto == null)
+            {
+                proto = WorldMgr.Database.SelectObject<Creature_proto>("Entry=" + destroId);
+
+                if (proto != null)
+                    plr.SendClientMessage("NPC SPAWN: Npc Entry is valid but npc stats are empty. No sniff data about this npc");
+                else
+                    plr.SendClientMessage("NPC SPAWN:  Invalid npc entry(" + destroId + ")");
+
+                return false;
+            }
+
+            Creature_proto protoOrder = CreatureService.GetCreatureProto(Convert.ToUInt32(orderId));
+            if (protoOrder == null)
+            {
+                protoOrder = WorldMgr.Database.SelectObject<Creature_proto>("Entry=" + orderId);
+
+                if (protoOrder != null)
+                    plr.SendClientMessage("NPC SPAWN: Npc Entry is valid but npc stats are empty. No sniff data about this npc");
+                else
+                    plr.SendClientMessage("NPC SPAWN:  Invalid npc entry(" + orderId + ")");
+
+                return false;
+            }
+
+            plr.UpdateWorldPosition();
+
+            Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
+            spawn.BuildFromProto(proto);
+            spawn.WorldO = plr._Value.WorldO;
+            spawn.WorldY = plr._Value.WorldY;
+            spawn.WorldZ = plr._Value.WorldZ;
+            spawn.WorldX = plr._Value.WorldX;
+            spawn.ZoneId = plr.Zone.ZoneId;
+            spawn.Enabled = 1;
+
+            WorldMgr.Database.AddObject(spawn);
+
+            var c = plr.Region.CreateCreature(spawn);
+
+            var kc = new Keep_Creature();
+
+            kc.ZoneId = plr.Zone.ZoneId;
+            kc.DestroId = Convert.ToUInt32(destroId);
+            kc.OrderId = Convert.ToUInt32(orderId);
+
+            kc.IsPatrol = false;
+            if (values[2] == "0")
+            {
+                Keep keep = plr.Region.Campaign.GetClosestKeep(plr.WorldPosition);
+                kc.KeepId = keep.Info.KeepId;
+            }
+            else
+            {
+                kc.KeepId = Convert.ToInt32(values[2]);
+            }
+
+            kc.KeepLord = false;
+            kc.X = plr._Value.WorldX;
+            kc.Y = plr._Value.WorldY;
+            kc.Z = plr._Value.WorldZ;
+            kc.O = plr._Value.WorldO;
+            kc.WaypointGUID = 0;
+
+            WorldMgr.Database.AddObject(kc);
+
+            GMCommandLog log = new GMCommandLog();
+            log.PlayerName = plr.Name;
+            log.AccountId = (uint)plr.Client._Account.AccountId;
+            log.Command = "SPAWN KEEP CREATURE " + spawn.Entry + " " + spawn.Guid + " AT " + spawn.ZoneId + " " + plr._Value.WorldX + " " + plr._Value.WorldY;
             log.Date = DateTime.Now;
             CharMgr.Database.AddObject(log);
 
@@ -357,7 +509,6 @@ var c =             plr.Region.CreateCreature(spawn);
             Object target = plr.CbtInterface.GetCurrentTarget();
             if (target == null)
                 return false;
-            int enable = 0;
 
             Creature creature = target.GetCreature();
 

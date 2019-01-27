@@ -24,7 +24,7 @@ namespace WorldServer.Managers.Commands
 
             Waypoint wp = new Waypoint
             {
-                X = (uint) plr.WorldPosition.X,
+                X = (uint)plr.WorldPosition.X,
                 Y = (uint)plr.WorldPosition.Y,
                 Z = (uint)plr.WorldPosition.Z,
                 WaitAtEndMS = 2000

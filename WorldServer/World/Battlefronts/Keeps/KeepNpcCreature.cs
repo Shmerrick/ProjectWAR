@@ -4,6 +4,7 @@ using GameData;
 using NLog;
 using System;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer.World.BattleFronts.Keeps
 {
@@ -30,7 +31,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 Creature.Destroy();
                 Creature = null;
 
-           }
+            }
 
             if (realm != Realms.REALMS_REALM_NEUTRAL)
             {
@@ -39,7 +40,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 else
                 {
                     Creature_proto proto = CreatureService.GetCreatureProto(realm == Realms.REALMS_REALM_ORDER ? Info.OrderId : Info.DestroId);
-                    
+
                     if (proto == null)
                     {
                         Log.Error("KeepNPC", "No FlagGuard Proto");
