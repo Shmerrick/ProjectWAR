@@ -150,6 +150,11 @@ namespace Common
             ItemsRequired = (byte)(actionType % 10 - 2);
             ActionType = (byte)(actionType / 10);
             StatOrSpell = stat;
+            //switches all armor set damage bonuses to % based
+            if (StatOrSpell == 24)
+            {
+                StatOrSpell = 25;
+            }
             Value = value;
             Percentage = percentage;
         }
