@@ -2892,6 +2892,11 @@ namespace WorldServer
 
                     foreach (ItemSetBonusInfo info in bonusList)
                     {
+                        //switches all armor set damage bonuses to % based
+                        if (info.StatOrSpell == 24)
+                        {
+                            info.StatOrSpell = 25;
+                        }
                         if (info.ActionType == 3)
                             _playerOwner.StsInterface.AddItemBonusStat((Stats)info.StatOrSpell, info.Value);
                         else
