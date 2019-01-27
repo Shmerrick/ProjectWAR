@@ -581,6 +581,12 @@ namespace FrameWork
     F_INFLUENCE_INFO = 0xFC,
     F_KNOCKBACK = 0xFD,
     F_PLAY_VOICE_OVER = 0xFE,
+    //these opcodes were missing need checks to confirm the right value
+    //F_CURRENT_EVENTS = 0x0E,
+    //F_VIEW_LOOT_BAG = 0x60,
+    //F_MARKETING_REWARD_LIST = 0x065,
+    //F_ADVANCED_WAR_REPORT = 0x95,
+    //F_WAR_REPORT = 0x0E,
     MAX_GAME_OPCODE = 0xFF
 };
 }
