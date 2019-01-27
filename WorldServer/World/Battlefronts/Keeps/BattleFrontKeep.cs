@@ -25,6 +25,11 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public uint HEAVY_EMPIRE_OIL = 86211;
         public uint HEAVY_CHAOS_OIL = 86223;
+        public uint HEAVY_GREENSKIN_OIL = 13450;
+
+        public uint HEAVY_DWARF_OIL = 13414;
+        public uint HEAVY_DARKELF_OIL = 13474;
+        public uint HEAVY_HIGHELF_OIL = 13438;
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private static readonly Logger ProgressionLogger = LogManager.GetLogger("RVRProgressionLogger");
@@ -1674,9 +1679,9 @@ namespace WorldServer.World.BattleFronts.Keeps
             if (Info.Race == 1 || Info.Race == 2)
             {
                 if (targetRealm == Realms.REALMS_REALM_DESTRUCTION)
-                    return HEAVY_CHAOS_OIL;
+                    return HEAVY_GREENSKIN_OIL;
                 if (targetRealm == Realms.REALMS_REALM_ORDER)
-                    return HEAVY_EMPIRE_OIL;
+                    return HEAVY_DWARF_OIL;
 
             }
             // Empire or Chaos (Human). Depending on which realm owns the keep, return the correct type of oil.
@@ -1692,16 +1697,16 @@ namespace WorldServer.World.BattleFronts.Keeps
             if (Info.Race == 5 || Info.Race == 6)
             {
                 if (targetRealm == Realms.REALMS_REALM_DESTRUCTION)
-                    return HEAVY_CHAOS_OIL;
+                    return HEAVY_DARKELF_OIL;
                 if (targetRealm == Realms.REALMS_REALM_ORDER)
-                    return HEAVY_EMPIRE_OIL;
+                    return HEAVY_HIGHELF_OIL;
 
             }
             return 0;
 
         }
 
-
+       
 
         #endregion
 

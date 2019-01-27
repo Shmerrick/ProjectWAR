@@ -42,12 +42,7 @@ namespace Common
 		public bool IsPatrol { get; set; }
 
 		[DataElement(AllowDbNull = false)]
-		public int OrderWaypointGUID { get; set; }
-
-        [DataElement(AllowDbNull = false)]
-        public int DestroWaypointGUID { get; set; }
-
-     
+		public int WaypointGUID { get; set; }
 
 		public Keep_Creature CreateDeepCopy()
 		{
@@ -142,8 +137,8 @@ namespace Common
 				O = O,
 				KeepLord = KeepLord,
 				IsPatrol = IsPatrol,
-			    OrderWaypointGUID = OrderWaypointGUID,
-			    DestroWaypointGUID = DestroWaypointGUID
+			    WaypointGUID = WaypointGUID
+			    
             };
 		}
 

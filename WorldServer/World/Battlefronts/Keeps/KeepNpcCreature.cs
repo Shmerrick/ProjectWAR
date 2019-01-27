@@ -55,17 +55,9 @@ namespace WorldServer.World.BattleFronts.Keeps
                     spawn.WorldZ = Info.Z;
                     spawn.ZoneId = Info.ZoneId;
 
-                    if (realm == Realms.REALMS_REALM_DESTRUCTION)
-                    {
-                        Creature = new KeepCreature(spawn, this, Keep);
-                        Creature.WaypointGUID = Convert.ToUInt32(Info.DestroWaypointGUID);
-                    }
+                    Creature = new KeepCreature(spawn, this, Keep);
+                    Creature.WaypointGUID = Convert.ToUInt32(Info.WaypointGUID);
 
-                    if (realm == Realms.REALMS_REALM_ORDER)
-                    {
-                        Creature = new KeepCreature(spawn, this, Keep);
-                        Creature.WaypointGUID = Convert.ToUInt32(Info.OrderWaypointGUID);
-                    }
                     Region.AddObject(Creature, spawn.ZoneId);
                 }
             }
