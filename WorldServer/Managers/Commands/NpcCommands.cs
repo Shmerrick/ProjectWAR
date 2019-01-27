@@ -88,7 +88,7 @@ var c =             plr.Region.CreateCreature(spawn);
             var oldO = creature.Heading;
 
             // Now find the Keep Creature DB record
-            Keep keep = plr.Region.Campaign.GetClosestKeep(plr.WorldPosition);
+            var keep = plr.Region.Campaign.GetClosestKeep(plr.WorldPosition);
             plr.SendClientMessage(keep.Info.Name);
 
             foreach (var keepNpcCreature in keep.Creatures)
@@ -191,7 +191,7 @@ var c =             plr.Region.CreateCreature(spawn);
             kc.IsPatrol = false;
             if (values[2] == "0")
             {
-                Keep keep = plr.Region.Campaign.GetClosestKeep(plr.WorldPosition);
+                var keep = plr.Region.Campaign.GetClosestKeep(plr.WorldPosition);
                 kc.KeepId = keep.Info.KeepId;
             }
             else

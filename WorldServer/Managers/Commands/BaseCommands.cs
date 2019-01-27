@@ -846,8 +846,8 @@ namespace WorldServer.Managers.Commands
                 string result = c.ToString();
 
                 result += $"WP:{c.WorldPosition.X}, {c.WorldPosition.Y}, {c.WorldPosition.Z}";
-                if (c is KeepNpcCreature.KeepCreature)
-                    result += $"Keep Creature: WayPoint :{(c as KeepNpcCreature.KeepCreature).WaypointGUID}";
+                if (c is KeepCreature)
+                    result += $"Keep Creature: WayPoint :{(c as KeepCreature).WaypointGUID}";
 
                 if (c.Spawn.Proto.TokUnlock != null && c.Spawn.Proto.TokUnlock != "0")
                     result = result + ", TokUnlock=" + c.Spawn.Proto.TokUnlock;
