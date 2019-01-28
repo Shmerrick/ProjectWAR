@@ -8,6 +8,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using SystemData;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
@@ -90,7 +91,6 @@ namespace WorldServer.World.BattleFronts.Keeps
         public Guild OwningGuild { get; set; }
         public PassiveStateMachine<SM.ProcessState, SM.Command> fsm { get; set; }
         public KeepNpcCreature KeepLord => Creatures?.Find(x => x.Info.KeepLord);
-        
 
         public BattleFrontKeep(Keep_Info info, byte tier, RegionMgr region, IKeepCommunications comms, bool isFortress)
         {
@@ -149,9 +149,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             BackToSafeTimer = new KeepTimer($"Back to Safe {Info.Name} Keep Timer", 0, BackToSafeTimerLength);
 
             Fortress = isFortress;
-
-            
-
         }
 
         /// <summary>
@@ -171,18 +168,18 @@ namespace WorldServer.World.BattleFronts.Keeps
                     //                      $"Chaos will spread across the Old World with renewed strength.");
 
                     // Lock the keep for the defending realm
-                    OnLockZone((Realms) this.Info.Realm);
-                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock((Realms)this.Info.Realm);
+                    OnLockZone((Realms)Info.Realm);
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock((Realms)Info.Realm);
                     FortDefenceCounter = 0;
                 }
                 else
                 {
                     // Inform players on the defending side of the remaining time.
                     SendRegionMessage(
-                        $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter-1) * 15} minutes remaining to capture the fortress.", 
-                        this.Info.Realm);
+                        $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter - 1) * 15} minutes remaining to capture the fortress.",
+                        Info.Realm);
                 }
-                
+
             }
         }
 
@@ -412,7 +409,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 Info.Name,
                 Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
 
-            // Remove any placed rams. TODO - correct?
+            // Remove any placed rams. 
             foreach (var h in HardPoints)
             {
                 if (h.SiegeType == SiegeType.RAM)
@@ -487,31 +484,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             SendRegionMessage($"{KeepLord.Creature.Name} has been wounded!");
 
             InnerPosternCanBeUsed = true;
-            
+
             KeepStatus = KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK;
-        }
-
-        public void InformRegionPlayersOfKeepStatus()
-        {
-
-            // if the player is in the active battlefront, find the closest keep and tell them about that. 
-
-            // if the player is not in the active battlefront, find the active battlefront and report on any non-safe keep. 
-
-            // if there are no non-safe keeps, report on any keep.
-
-
-            // get the active battlefront and direct 
-
-
-
-            //foreach (var plr in Region.Players)
-            //{
-            //    if (plr.ZoneId == )
-
-            //    SendKeepInfo(plr);
-            //}
-            //KeepCommunications.SendKeepStatus(null, this);
         }
 
 
@@ -644,10 +618,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                 plr.SendClientMessage($"WorldPosition: {lord.Creature.WorldPosition}");
                 plr.SendClientMessage($"Distance from spawnpoint: {lord.Creature.WorldPosition.GetDistanceTo(lord.Creature.WorldSpawnPoint)}");
                 plr.SendClientMessage($"Health: {lord.Creature.PctHealth}");
-                //if (_safeKeepTimer > 0)
-                //    plr.SendClientMessage($"Keep will be safe in {(_safeKeepTimer - TCPManager.GetTimeStamp()) / 60} minutes", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                //else
-                //    plr.SendClientMessage($"Keep is now safe", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                 plr.SendClientMessage($"RamDeployed: " + RamDeployed);
             }
         }
@@ -725,24 +695,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             fsm.Fire(SM.Command.OnDoorRepaired, doorId);
 
         }
-
-        //public void OnOuterDownTimerEnd()
-        //{
-        //    _logger.Debug($"Outer door has reset");
-        //    OuterDownTimer = 0;
-        //    Doors.Single(x => x.Info.Number == OUTER_DOOR).Spawn();
-        //    fsm.Fire(SM.Command.OnOuterDownTimerEnd);
-        //}
-
-        //public void OnInnerDownTimerEnd()
-        //{
-        //    _logger.Debug($"Inner door has reset");
-        //    InnerDownTimer = 0;
-        //    Doors.Single(x => x.Info.Number == INNER_DOOR).Spawn();
-        //    fsm.Fire(SM.Command.OnInnerDownTimerEnd);
-
-        //}
-
 
         public void OnSeizedTimerEnd()
         {
@@ -870,7 +822,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public void OnKeepDoorAttacked(byte number, byte pctHealth, uint doorId)
         {
-            // Reset the Def Tick timer.
+            // If enough damage is done to the door (not just 'tagged')
             if (pctHealth < HEALTH_BOUNDARY_DEFENCE_TICK_RESTART)
             {
                 DefenceTickTimer.Start();
@@ -880,7 +832,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 if (doorUnderAttack != null)
                 {
                     // Is the door an inner main?
-                    if (doorUnderAttack.Info.Number == (int) KeepDoorType.InnerMain)
+                    if (doorUnderAttack.Info.Number == (int)KeepDoorType.InnerMain)
                     {
                         // Find active timers for outer doors and reset them.
                         foreach (var doorRepairTimer in DoorRepairTimers)
@@ -888,7 +840,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                             if (doorRepairTimer.Value.Value != 0)
                             {
                                 // outer doors.
-                                var outerDoors = this.Doors.Where(x => x.Info.Number == (int)KeepDoorType.OuterMain);
+                                var outerDoors = Doors.Where(x => x.Info.Number == (int)KeepDoorType.OuterMain);
                                 foreach (var outerDoor in outerDoors)
                                 {
                                     DoorRepairTimers[outerDoor.GameObject.DoorId].Reset();
@@ -1144,7 +1096,6 @@ namespace WorldServer.World.BattleFronts.Keeps
                     }
                 }
             }
-            InformRegionPlayersOfKeepStatus();
         }
 
         public void ProximityReloadSiege(int ammo)
@@ -1158,70 +1109,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                     siege.AddShots(ammo);
         }
 
-        //private void TickSafety()
-        //{
-        //    var doorReplacementCost = 0;
 
-        //    //Check doors. If any door is down, it needs to be regenerated before we can declare safe.
-        //    foreach (var door in Doors)
-        //        if (door.GameObject.IsDead)
-        //            doorReplacementCost += Math.Min(_resourceValueMax[Rank] * 4, (int)(_maxResource * 0.35f));
-        //        else if (door.GameObject.PctHealth < 100)
-        //            doorReplacementCost += (int)(Math.Min(_resourceValueMax[Rank] * 4, (int)(_maxResource * 0.35f)) * (1f - door.GameObject.PctHealth * 0.01f));
-
-        //    if (doorReplacementCost > 0)
-        //    {
-        //        if (_currentResource < doorReplacementCost)
-        //        {
-        //            if (_nextDoorWarnTime < TCPManager.GetTimeStamp())
-        //            {
-        //                _nextDoorWarnTime = TCPManager.GetTimeStamp() + 300;
-
-        //                foreach (var player in Region.Players)
-        //                    if (player.Realm == Realm && player.CbtInterface.IsPvp)
-        //                        player.SendClientMessage(Info.Name + " requires supplies to repair the fallen doors!", ChatLogFilters.CHATLOGFILTERS_RVR);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            _currentResource -= doorReplacementCost;
-
-        //            _currentResourcePercent = (byte)(_currentResource / _maxResource * 100f);
-
-        //            foreach (var door in Doors)
-        //                if (door.GameObject.IsDead)
-        //                    door.Spawn();
-
-        //            SafeKeep();
-
-        //            _safeKeepTimer = 0;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        SafeKeep();
-
-        //        _safeKeepTimer = 0;
-        //    }
-        //}
-
-        //private void ReclaimKeep()
-        //{
-        //    Region.Campaign.CommunicationsEngine.Broadcast($"{Info.Name} has been reclaimed by the forces of {(Info.Realm == 1 ? "Order" : "Destruction")}!", Tier);
-
-        //    Realm = (Realms)Info.Realm;
-
-        //    foreach (var crea in Creatures)
-        //        if (!crea.Info.IsPatrol)
-        //            crea.SpawnGuard(Realm);
-
-        //    foreach (var door in Doors)
-        //        door.Spawn();
-
-        //    UpdateKeepStatus(KeepStatus.KEEPSTATUS_SAFE);
-
-        //    LastMessage = KeepMessage.Safe;
-        //}
 
         #endregion
 
@@ -1356,7 +1244,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 var plr = obj as Player;
                 if (realmFilter != 0)
                 {
-                    if (plr?.Realm == (Realms) realmFilter)
+                    if (plr?.Realm == (Realms)realmFilter)
                     {
                         plr?.SendLocalizeString(message, ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
                         plr?.SendLocalizeString(message,
@@ -1447,21 +1335,9 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             var entry = player.ItmInterface.GetItemInSlot(slot).Info.Entry;
 
-            if (Constants.DoomsdaySwitch == 0)
-            {
-                if ((entry == 86215 || entry == 86203) && Info.PQuest.PQTier != 2)
-                    return;
-                if ((entry == 86219 || entry == 86207) && Info.PQuest.PQTier != 3)
-                    return;
-                if ((entry == 86223 || entry == 86211) && Info.PQuest.PQTier != 4)
-                    return;
-            }
             // Disabling T2 and T3 oils here
-            else
-            {
-                if (entry == 86215 || entry == 86203 || entry == 86219 || entry == 86207)
-                    return;
-            }
+            if (entry == 86215 || entry == 86203 || entry == 86219 || entry == 86207)
+                return;
 
             foreach (var h in HardPoints)
             {
@@ -1478,28 +1354,17 @@ namespace WorldServer.World.BattleFronts.Keeps
                 var proto = CreatureService.GetCreatureProto(GetOilProto(player.Realm));
 
                 Creature_spawn spawn = null;
-                if (Constants.DoomsdaySwitch == 0)
-                    spawn = new Creature_spawn
-                    {
-                        Guid = (uint)CreatureService.GenerateCreatureSpawnGUID(),
-                        Level = (byte)(Info.PQuest.PQTier * 10),
-                        ZoneId = Info.ZoneId,
-                        WorldX = h.X,
-                        WorldY = h.Y,
-                        WorldZ = h.Z,
-                        WorldO = h.Heading
-                    };
-                else
-                    spawn = new Creature_spawn
-                    {
-                        Guid = (uint)CreatureService.GenerateCreatureSpawnGUID(),
-                        Level = 40,
-                        ZoneId = Info.ZoneId,
-                        WorldX = h.X,
-                        WorldY = h.Y,
-                        WorldZ = h.Z,
-                        WorldO = h.Heading
-                    };
+
+                spawn = new Creature_spawn
+                {
+                    Guid = (uint)CreatureService.GenerateCreatureSpawnGUID(),
+                    Level = 40,
+                    ZoneId = Info.ZoneId,
+                    WorldX = h.X,
+                    WorldY = h.Y,
+                    WorldZ = h.Z,
+                    WorldO = h.Heading
+                };
 
                 spawn.BuildFromProto(proto);
 
@@ -1516,14 +1381,6 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         public bool CanDeploySiege(Player player, int level, uint protoEntry)
         {
-            if (Constants.DoomsdaySwitch == 0)
-                if (level / 10 != Tier)
-                {
-                    player.SendClientMessage("Invalid weapon tier", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                    player.SendClientMessage("This weapon is not of the correct tier.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-                    return false;
-                }
-
             if (!CheckDist(player))
             {
                 player.SendClientMessage("Too close to other weapon or deploy point", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
@@ -1576,44 +1433,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             return true;
         }
 
-        public void SpawnSiegeWeapon(Player player, uint protoEntry)
-        {
-            //TODO : This should not be being called!
-            if (Constants.DoomsdaySwitch == 0)
-                protoEntry += (uint)(4 * (Tier - 2));
-            else
-                protoEntry += 8;
-
-            var siegeProto = CreatureService.GetCreatureProto(protoEntry);
-
-            if (siegeProto == null)
-                return;
-
-            switch ((CreatureSubTypes)siegeProto.CreatureSubType)
-            {
-                case CreatureSubTypes.SIEGE_GTAOE:
-                    break;
-                case CreatureSubTypes.SIEGE_SINGLE_TARGET:
-                    break;
-                case CreatureSubTypes.SIEGE_RAM:
-                    if (player.GldInterface.Guild != null)
-                    {
-                        var message = $"{player.Name} of {player.GldInterface.Guild.Info.Name} has deployed a ram at {Info.Name}!";
-                        var filter = player.Realm == Realms.REALMS_REALM_ORDER
-                            ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE
-                            : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE;
-                        foreach (var plr in Region.Players)
-                            if (plr.CbtInterface.IsPvp && plr.ValidInTier(Region.GetTier(), true) && plr.Realm == player.Realm)
-                            {
-                                plr.SendClientMessage(message, filter);
-                                plr.SendClientMessage(message, ChatLogFilters.CHATLOGFILTERS_RVR);
-                            }
-                    }
-                    break;
-                default:
-                    return;
-            }
-        }
 
         public void RemoveKeepSiege(Siege weapon)
         {
@@ -1727,9 +1546,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             return 0;
 
         }
-
-       
-
+        
         #endregion
 
         public void OnKeepSiegeAttacked(byte pctHealth)
@@ -1779,18 +1596,18 @@ namespace WorldServer.World.BattleFronts.Keeps
         /// </summary>
         public void ForceLockZone()
         {
-            _logger.Info($"Attempt to Force Lock Zone from {this.Info.Name}");
-            if (this.IsFortress())
+            _logger.Info($"Attempt to Force Lock Zone from {Info.Name}");
+            if (IsFortress())
             {
                 OnLockZone(Realm);
                 WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(Realm);
                 WorldMgr.UpperTierCampaignManager.GetActiveCampaign().StartRegionLock();
                 FortDefenceCounter = 0;
-                _logger.Info($"Zone Force Locked from {this.Info.Name}");
+                _logger.Info($"Zone Force Locked from {Info.Name}");
             }
             else
             {
-                _logger.Warn($"Attempt to Force Lock Zone for non-fortress {this.Info.Name}");
+                _logger.Warn($"Attempt to Force Lock Zone for non-fortress {Info.Name}");
             }
         }
 
@@ -1798,10 +1615,12 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             return Fortress;
         }
+
         public bool IsNotFortress()
         {
             return !Fortress;
         }
+
 
 
 

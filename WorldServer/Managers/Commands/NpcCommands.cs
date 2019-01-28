@@ -146,33 +146,45 @@ namespace WorldServer.Managers.Commands
             var destroId = values[0];
             var orderId = values[1];
 
-            Creature_proto proto = CreatureService.GetCreatureProto(Convert.ToUInt32(destroId));
-            if (proto == null)
+            Creature_proto proto = null;
+            Creature_proto protoOrder = null;
+
+            if (destroId == "0")
+                plr.SendClientMessage("NPC SPAWN:  Setting Destro Id -> 0");
+            else
             {
-                proto = WorldMgr.Database.SelectObject<Creature_proto>("Entry=" + destroId);
+                proto = CreatureService.GetCreatureProto(Convert.ToUInt32(destroId));
+                if (proto == null)
+                {
+                    proto = WorldMgr.Database.SelectObject<Creature_proto>("Entry=" + destroId);
 
-                if (proto != null)
-                    plr.SendClientMessage("NPC SPAWN: Npc Entry is valid but npc stats are empty. No sniff data about this npc");
-                else
-                    plr.SendClientMessage("NPC SPAWN:  Invalid npc entry(" + destroId + ")");
+                    if (proto != null)
+                        plr.SendClientMessage("NPC SPAWN: Npc Entry is valid but npc stats are empty. No sniff data about this npc");
+                    else
+                        plr.SendClientMessage("NPC SPAWN:  Invalid npc entry(" + destroId + ")");
 
-                return false;
+                    return false;
+                }
+            }
+            if (orderId == "0")
+                plr.SendClientMessage("NPC SPAWN:  Setting Order Id -> 0");
+            else
+            {
+                protoOrder = CreatureService.GetCreatureProto(Convert.ToUInt32(orderId));
+                if (protoOrder == null)
+                {
+                    protoOrder = WorldMgr.Database.SelectObject<Creature_proto>("Entry=" + orderId);
+
+                    if (protoOrder != null)
+                        plr.SendClientMessage("NPC SPAWN: Npc Entry is valid but npc stats are empty. No sniff data about this npc");
+                    else
+                        plr.SendClientMessage("NPC SPAWN:  Invalid npc entry(" + orderId + ")");
+
+                    return false;
+                }
             }
 
-            Creature_proto protoOrder = CreatureService.GetCreatureProto(Convert.ToUInt32(orderId));
-            if (protoOrder == null)
-            {
-                protoOrder = WorldMgr.Database.SelectObject<Creature_proto>("Entry=" + orderId);
-
-                if (protoOrder != null)
-                    plr.SendClientMessage("NPC SPAWN: Npc Entry is valid but npc stats are empty. No sniff data about this npc");
-                else
-                    plr.SendClientMessage("NPC SPAWN:  Invalid npc entry(" + orderId + ")");
-
-                return false;
-            }
-
-            plr.UpdateWorldPosition();
+           plr.UpdateWorldPosition();
 
             Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
             spawn.BuildFromProto(proto);

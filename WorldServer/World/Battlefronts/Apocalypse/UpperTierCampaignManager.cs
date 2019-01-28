@@ -262,17 +262,22 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     if (apocBattleFrontStatus.BattleFrontId == ActiveBattleFront.BattleFrontId)
                     {
-                        ProgressionLogger.Info($"Resetting BFStatus {activeRegion.RegionName} BF Id : {ActiveBattleFront.BattleFrontId} Zone : {ActiveBattleFront.ZoneId} {ActiveBattleFrontName}");
+                        lock (apocBattleFrontStatus)
+                        {
+                            ProgressionLogger.Info(
+                                $"Resetting BFStatus {activeRegion.RegionName} BF Id : {ActiveBattleFront.BattleFrontId} Zone : {ActiveBattleFront.ZoneId} {ActiveBattleFrontName}");
 
-                        apocBattleFrontStatus.Locked = false;
-                        apocBattleFrontStatus.OpenTimeStamp = FrameWork.TCPManager.GetTimeStamp();
-                        apocBattleFrontStatus.LockingRealm = Realms.REALMS_REALM_NEUTRAL;
-                        apocBattleFrontStatus.FinalVictoryPoint = new VictoryPointProgress();
-                        apocBattleFrontStatus.LockTimeStamp = 0;
+                            apocBattleFrontStatus.Locked = false;
+                            apocBattleFrontStatus.OpenTimeStamp = FrameWork.TCPManager.GetTimeStamp();
+                            apocBattleFrontStatus.LockingRealm = Realms.REALMS_REALM_NEUTRAL;
+                            apocBattleFrontStatus.FinalVictoryPoint = new VictoryPointProgress();
+                            apocBattleFrontStatus.LockTimeStamp = 0;
 
-                        // Reset the population for the battle front status
-                        ProgressionLogger.Info($"InitializePopulationList {activeRegion.RegionName} BF Id : {ActiveBattleFront.BattleFrontId} Zone : {ActiveBattleFront.ZoneId} {ActiveBattleFrontName}");
-                        GetActiveCampaign().InitializePopulationList(ActiveBattleFront.BattleFrontId);
+                            // Reset the population for the battle front status
+                            ProgressionLogger.Info(
+                                $"InitializePopulationList {activeRegion.RegionName} BF Id : {ActiveBattleFront.BattleFrontId} Zone : {ActiveBattleFront.ZoneId} {ActiveBattleFrontName}");
+                            GetActiveCampaign().InitializePopulationList(ActiveBattleFront.BattleFrontId);
+                        }
                     }
                 }
 
