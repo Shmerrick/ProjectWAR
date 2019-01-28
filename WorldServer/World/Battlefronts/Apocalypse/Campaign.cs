@@ -942,9 +942,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             _destroCount++;
                         }
                     }
-                    catch
+                    catch(Exception ex)
                     {
                         BattlefrontLogger.Debug($"Error adding {plr.Name} to PopulationList");
+                        BattlefrontLogger.Warn($"{ex.Message}");
                     }
 
                     // Tell the player about the objectives.

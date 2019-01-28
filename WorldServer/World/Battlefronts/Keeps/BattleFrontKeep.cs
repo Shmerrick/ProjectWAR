@@ -1757,12 +1757,14 @@ namespace WorldServer.World.BattleFronts.Keeps
         /// </summary>
         public void ForceLockZone()
         {
+            _logger.Info($"Attempt to Force Lock Zone from {this.Info.Name}");
             if (this.IsFortress())
             {
                 OnLockZone(Realm);
                 WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(Realm);
                 WorldMgr.UpperTierCampaignManager.GetActiveCampaign().StartRegionLock();
                 FortDefenceCounter = 0;
+                _logger.Info($"Zone Force Locked from {this.Info.Name}");
             }
             else
             {
