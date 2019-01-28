@@ -874,7 +874,29 @@ namespace WorldServer.World.BattleFronts.Keeps
             if (pctHealth < HEALTH_BOUNDARY_DEFENCE_TICK_RESTART)
             {
                 DefenceTickTimer.Start();
-                
+
+                // if the door attacked is an inner door, reset any active outer door timers.
+                var doorUnderAttack = Doors.SingleOrDefault(x => x.GameObject.DoorId == doorId);
+                if (doorUnderAttack != null)
+                {
+                    // Is the door an inner main?
+                    if (doorUnderAttack.Info.Number == (int) KeepDoorType.InnerMain)
+                    {
+                        // Find active timers for outer doors and reset them.
+                        foreach (var doorRepairTimer in DoorRepairTimers)
+                        {
+                            if (doorRepairTimer.Value.Value != 0)
+                            {
+                                // outer doors.
+                                var outerDoors = this.Doors.Where(x => x.Info.Number == (int)KeepDoorType.OuterMain);
+                                foreach (var outerDoor in outerDoors)
+                                {
+                                    DoorRepairTimers[outerDoor.GameObject.DoorId].Reset();
+                                }
+                            }
+                        }
+                    }
+                }
                 KeepStatus = KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK;
             }
 
