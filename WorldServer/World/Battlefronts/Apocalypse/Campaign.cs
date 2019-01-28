@@ -805,7 +805,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public BattleFrontKeep GetClosestKeep(Point3D destPos, KeepStatus excludedKeepStatus=KeepStatus.KEEPSTATUS_RUINED)
+        public BattleFrontKeep GetClosestKeep(Point3D destPos, ushort zoneId, KeepStatus excludedKeepStatus=KeepStatus.KEEPSTATUS_RUINED)
         {
             BattleFrontKeep bestKeep = null;
             ulong bestDist = 0;
@@ -819,8 +819,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     // Dont process keeps that are in excluded status
                     if (keep.KeepStatus == excludedKeepStatus)
                         continue;
-                    bestKeep = keep;
-                    bestDist = keep.GetDistanceSquare(destPos);
+                    
+                    if (keep.ZoneId == zoneId)
+                    {
+                        bestKeep = keep;
+                        bestDist = keep.GetDistanceSquare(destPos);
+                    }
                 }
             }
 
@@ -855,6 +859,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             return Keeps.Where(x => x.ZoneId == zoneId).ToList();
         }
+
+        
 
         //public void WriteCaptureStatus(PacketOut Out)
         //{

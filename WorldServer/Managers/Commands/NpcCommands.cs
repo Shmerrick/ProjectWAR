@@ -1,5 +1,6 @@
 ﻿using Common;
 using FrameWork;
+using GameData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,9 +52,9 @@ namespace WorldServer.Managers.Commands
 
             WorldMgr.Database.AddObject(spawn);
 
-var c =             plr.Region.CreateCreature(spawn);
+            var c = plr.Region.CreateCreature(spawn);
             c.AiInterface.SetBrain(new PassiveBrain(c));
-            
+
 
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;
@@ -87,46 +88,50 @@ var c =             plr.Region.CreateCreature(spawn);
             var oldZ = creature.WorldPosition.Z;
             var oldO = creature.Heading;
 
-            // Now find the Keep Creature DB record
-            var keep = plr.Region.Campaign.GetClosestKeep(plr.WorldPosition);
+
+            var keep = plr.Region.Campaign.GetClosestKeep(plr.WorldPosition, (ushort)plr.ZoneId);
+
             plr.SendClientMessage(keep.Info.Name);
 
-            foreach (var keepNpcCreature in keep.Creatures)
+            KeepNpcCreature keepNpcCreature = null;
+
+            if (keep.Realm == Realms.REALMS_REALM_DESTRUCTION)
             {
-                if (keepNpcCreature.Creature.Entry == selectedEntry)
-                {
-                    if (keepNpcCreature.Info.X == oldX)
-                    {
-                        keepNpcCreature.Info.X = plr.WorldPosition.X;
-                        keepNpcCreature.Info.Y = plr.WorldPosition.Y;
-                        keepNpcCreature.Info.Z = plr.WorldPosition.Z;
-                        keepNpcCreature.Info.O = plr.Oid;
-                        keepNpcCreature.Info.WaypointGUID = Convert.ToInt32(values[0]);
-                        var sql = $"UPDATE war_world.keep_creatures " +
-                                  $"SET X={keepNpcCreature.Info.X}, Y={keepNpcCreature.Info.Y}, Z = {keepNpcCreature.Info.Z}, O={keepNpcCreature.Info.O}, " +
-                                  $"WaypointGUID = {keepNpcCreature.Info.WaypointGUID} " +
-                                  $"where KeepId = {keep.Info.KeepId} and X={oldX} and Y={oldY} and Z={oldZ}";
-                        WorldMgr.Database.ExecuteNonQuery(sql);
-
-                        keepNpcCreature.Creature.X = plr.WorldPosition.X;
-                        keepNpcCreature.Creature.Y = plr.WorldPosition.Y;
-
-                        //WorldMgr.Database.SaveObject(keepNpcCreature.Info);
-
-                        GMCommandLog log = new GMCommandLog();
-                        log.PlayerName = plr.Name;
-                        log.AccountId = (uint)plr.Client._Account.AccountId;
-                        log.Command = "MOVE KEEP CREATURE " + selectedEntry + " " + " AT " + keepNpcCreature.Info.ZoneId + " " + plr._Value.WorldX + " " + plr._Value.WorldY;
-                        log.Date = DateTime.Now;
-                        CharMgr.Database.AddObject(log);
-                    }
-                }
+                keepNpcCreature = keep.Creatures.SingleOrDefault(x => x.Info.DestroId == selectedEntry && x.Info.X == oldX);
+            }
+            if (keep.Realm == Realms.REALMS_REALM_ORDER)
+            {
+                keepNpcCreature = keep.Creatures.SingleOrDefault(x => x.Info.OrderId == selectedEntry && x.Info.X == oldX);
             }
 
+            if (keepNpcCreature == null)
+            {
+                plr.SendClientMessage($"Could not locate selected target");
+                return true;
+            }
 
+            keepNpcCreature.Info.X = plr.WorldPosition.X;
+            keepNpcCreature.Info.Y = plr.WorldPosition.Y;
+            keepNpcCreature.Info.Z = plr.WorldPosition.Z;
+            keepNpcCreature.Info.O = plr.Oid;
+            keepNpcCreature.Info.WaypointGUID = Convert.ToInt32(values[0]);
+            var sql = $"UPDATE war_world.keep_creatures " +
+                      $"SET X={keepNpcCreature.Info.X}, Y={keepNpcCreature.Info.Y}, Z = {keepNpcCreature.Info.Z}, O={keepNpcCreature.Info.O}, " +
+                      $"WaypointGUID = {keepNpcCreature.Info.WaypointGUID} " +
+                      $"where KeepId = {keep.Info.KeepId} and X={oldX} and Y={oldY} and Z={oldZ}";
+            WorldMgr.Database.ExecuteNonQuery(sql);
 
+            keepNpcCreature.Creature.X = plr.WorldPosition.X;
+            keepNpcCreature.Creature.Y = plr.WorldPosition.Y;
 
+            plr.SendClientMessage($"Moved keep creature to new position");
 
+            GMCommandLog log = new GMCommandLog();
+            log.PlayerName = plr.Name;
+            log.AccountId = (uint)plr.Client._Account.AccountId;
+            log.Command = "MOVE KEEP CREATURE " + selectedEntry + " " + " AT " + keepNpcCreature.Info.ZoneId + " " + plr._Value.WorldX + " " + plr._Value.WorldY;
+            log.Date = DateTime.Now;
+            CharMgr.Database.AddObject(log);
             return true;
         }
 
@@ -191,7 +196,7 @@ var c =             plr.Region.CreateCreature(spawn);
             kc.IsPatrol = false;
             if (values[2] == "0")
             {
-                var keep = plr.Region.Campaign.GetClosestKeep(plr.WorldPosition);
+                var keep = plr.Region.Campaign.GetClosestKeep(plr.WorldPosition, (ushort) plr.ZoneId);
                 kc.KeepId = keep.Info.KeepId;
             }
             else
@@ -207,6 +212,7 @@ var c =             plr.Region.CreateCreature(spawn);
             kc.WaypointGUID = 0;
 
             WorldMgr.Database.AddObject(kc);
+            plr.SendClientMessage("Created keep creature");
 
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;
