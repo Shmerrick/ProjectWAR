@@ -23,7 +23,9 @@ namespace WorldServer.Managers.Commands
             foreach (var regionMgr in WorldMgr._Regions)
             {
                 var campaign = regionMgr.Campaign;
-                foreach (var battleFrontKeep in campaign.Keeps)
+                if (campaign == null)
+                    continue;
+                foreach (var battleFrontKeep in campaign?.Keeps)
                 {
                     var result = $"Checking {battleFrontKeep.Info.Name} ({battleFrontKeep.Realm}/{battleFrontKeep.KeepStatus})";
                     var numberCreatures = battleFrontKeep.Creatures.Count;
@@ -31,9 +33,13 @@ namespace WorldServer.Managers.Commands
                     var doors = battleFrontKeep.Doors.Count;
                     var lord = battleFrontKeep.KeepLord;
 
-                    result += $"Number Keep Creatures {numberCreatures}";
-                    result += $"Number Keep Spawn Points {numberSpawnPoints}";
-                    result += $"Number Keep Doors {doors}";
+                    result += $"Keep Creatures:{numberCreatures}.";
+                    result += $"Keep Spawn Points:{numberSpawnPoints}.";
+                    result += $"Keep Doors:{doors}.";
+
+                    if ((doors < 4) || (numberCreatures < 10) || (numberSpawnPoints < 4))
+                    result += " ** WARNING **";
+
                     if (lord != null)
                     {
                         if (lord.Creature != null)
