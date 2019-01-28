@@ -331,8 +331,6 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             PlayersKilledInRange = 0;
 
-
-
             ResetAllStateTimers();
 
             LordKilledTimer.Start();
@@ -399,9 +397,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             KeepStatus = KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK;
 
             KeepCommunications.SendKeepStatus(null, this);
-
-
-            InnerPosternCanBeUsed = true;
 
         }
 
@@ -491,6 +486,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             ProgressionLogger.Info($"Lord Wounded in {Info.Name}");
             SendRegionMessage($"{KeepLord.Creature.Name} has been wounded!");
 
+            InnerPosternCanBeUsed = true;
+            
             KeepStatus = KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK;
         }
 
@@ -877,6 +874,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             if (pctHealth < HEALTH_BOUNDARY_DEFENCE_TICK_RESTART)
             {
                 DefenceTickTimer.Start();
+                
                 KeepStatus = KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK;
             }
 
@@ -912,6 +910,8 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             ProgressionLogger.Debug($" {Info.Name} : Inner Door ({doorId}) Attacked");
             SendRegionMessage($"{Info.Name}'s inner door is under attack!");
+
+            OuterPosternCanBeUsed = true;
 
             EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
         }
