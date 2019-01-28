@@ -105,6 +105,8 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("bounty", GetPlayerBounty, null, EGmLevel.AnyGM, 0, "Gets the bounty of the player."),
             new GmCommandHandler("impacts", GetPlayerImpactMatrix, null, EGmLevel.AnyGM, 0, "Gets the bounty of the player."),
             new GmCommandHandler("allcontribution", GetBattleFrontContribution, null, EGmLevel.AnyGM, 0, "Gets the contribution of all players in the battlefront."),
+            new GmCommandHandler("keeps", CheckKeeps, null, EGmLevel.AnyGM, 0, "Checks all keeps that they have the minimum required child table records."),
+            new GmCommandHandler("captain", CheckCaptain, null, EGmLevel.AnyGM, 0, "Returns captain for either realm in the current region"),
         };
 
         /// <summary>Database commands under .database</summary>
