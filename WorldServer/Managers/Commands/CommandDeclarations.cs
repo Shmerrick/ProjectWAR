@@ -371,6 +371,7 @@ namespace WorldServer.Managers.Commands
 
             // All empowered staff
             new GmCommandHandler("kill", Kill, null, EGmLevel.GM, 0, "Slays the targeted Unit."),
+            new GmCommandHandler("wound", Wound, null, EGmLevel.GM, 0, "Wounds the targeted Unit."),
             new GmCommandHandler("nuke", Nuke, null, EGmLevel.EmpoweredStaff, 2,
                 "Slays everyone in radius. Takes 2 parameters, realm and radius in ft. Realm 0 - all, 1 - order, 2 - destro"),
 
