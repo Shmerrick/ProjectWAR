@@ -9,79 +9,6 @@ using CreatureSubTypes = GameData.CreatureSubTypes;
 
 namespace WorldServer
 {
-    public enum CreatureState
-    {
-        Merchant = 0,
-        SkillTrainer = 1,
-        KillCollector = 2,
-        Dead = 3,
-        QuestFinishable = 4,
-        QuestAvailable = 5,
-        RepeatableQuestAvailable = 6,
-        QuestInProgress = 7,
-        Lootable = 8,
-        // 9 and 10 do not appear in logs
-        Banker = 11,
-        Auctioneer = 12,
-        Influence = 13,
-        GuildRegistrar = 14,
-        FlightMaster = 15,
-        RallyMasterIcon = 16,
-        Healer = 17,
-        RvRFlagged = 18,
-        // 19 and 20 do not appear in logs
-        Butcherable = 21,
-        Scavengeable = 22,
-        StandardBanner = 23,
-        Effects = 24,
-        UnkOmnipresent = 25,
-        DyeMerchant = 26,
-        NameRegistrar = 27,
-        ConsistentAppearance = 28,
-        PhysicalEffects = 29, // when set, fig leaf data is very long... probably reads some stuff for modifying appearance to be "special" - traits, perhaps? set on player corpses
-        // 30 does not appear in logs
-        QuestEventAvailable = 32
-    }
-
-    public class NPCAbility
-    {
-        public ushort Entry;
-        public byte MinRange;
-        public ushort Range;
-        public ushort Cooldown;
-        public bool AutoUse;
-        public string Text;
-        public uint TimeStart;
-        public byte ActivateAtHealthPercent;
-        public byte DisableAtHealthPercent;
-        public byte AbilityCycle;
-        public byte AbilityUsed;
-        public byte Active;
-        public byte ActivateOnCombatStart;
-        public byte RandomTarget;
-        public byte TargetFocus;
-        public long CooldownEnd;
-
-        public NPCAbility(ushort entry, ushort range, ushort cooldown, bool autoUse, string text, uint timestart = 0, byte percent = 0, byte abilitycycle = 1, byte active = 1, byte activateoncombatstart = 0, byte randomtarget = 0, byte targetFocus = 0, byte disablepercent = 0, byte minrange = 0)
-        {
-            Entry = entry;
-            MinRange = minrange;
-            Range = range;
-            Cooldown = cooldown;
-            AutoUse = autoUse;
-            Text = text;
-            TimeStart = timestart;
-            ActivateAtHealthPercent = percent;
-            DisableAtHealthPercent = disablepercent;
-            AbilityCycle = abilitycycle;
-            AbilityUsed = 0;
-            Active = active;
-            ActivateOnCombatStart = activateoncombatstart;
-            RandomTarget = randomtarget;
-            TargetFocus = targetFocus;
-        }
-    }
-
     public class Creature : Unit
     {
         public Creature_spawn Spawn;
@@ -92,6 +19,7 @@ namespace WorldServer
         public ushort Ranged { get; set; }
         public ushort Model1 { get; set; }
         public ushort Model2 { get; set; }
+        public bool IsWandering { get; set; }
 
         public Creature()
         {
@@ -106,6 +34,7 @@ namespace WorldServer
             Ranged = spawn.Proto.Ranged;
             Model1 = spawn.Proto.Model1;
             Model2 = spawn.Proto.Model2;
+            IsWandering = false;
             if (spawn.Proto.Invulnerable == 1)
                 IsInvulnerable = true;
 
@@ -1407,6 +1336,11 @@ namespace WorldServer
             }
            
             return false;
+        }
+
+        public void SetWander(bool wander)
+        {
+            this.IsWandering = true;
         }
     }
 }

@@ -349,6 +349,7 @@
     <Compile Include="World\Battlefronts\Keeps\KeepNpcCreature.cs" />
     <Compile Include="World\Instances\TOTVL.cs" />
     <Compile Include="World\Map\Occlusion.cs" />
+    <Compile Include="World\Objects\CreatureState.cs" />
     <Compile Include="World\Objects\Instances\SimpleAhzranok.cs" />
     <Compile Include="World\Objects\Instances\SimpleDralel.cs" />
     <Compile Include="World\Objects\Instances\SimpleFulgurThunderborn.cs" />
@@ -356,6 +357,7 @@
     <Compile Include="World\Objects\Instances\SimpleMalghorGreathorn.cs" />
     <Compile Include="World\Objects\Instances\SimpleTheDeamonicBeast.cs" />
     <Compile Include="World\Objects\Instances\SimpleTonragThunderborn.cs" />
+    <Compile Include="World\Objects\NPCAbility.cs" />
     <Compile Include="World\Objects\RVRArea.cs" />
     <Compile Include="World\Scripting\BasicScript.cs" />
     <Compile Include="World\Scripting\BehaviorLib.cs" />

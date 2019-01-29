@@ -23,7 +23,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             Z = z;
             Heading = (ushort)heading;
 
-            _logger.Debug($"Placed Hardpoint {x} {y} {z} {heading}");
+            
         }
     }
 }

@@ -277,6 +277,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             ProgressionLogger.Info(
                                 $"InitializePopulationList {activeRegion.RegionName} BF Id : {ActiveBattleFront.BattleFrontId} Zone : {ActiveBattleFront.ZoneId} {ActiveBattleFrontName}");
                             GetActiveCampaign().InitializePopulationList(ActiveBattleFront.BattleFrontId);
+
+                            //GetActiveCampaign().StartWanderingMobs(ActiveBattleFront.ZoneId);
                         }
                     }
                 }
