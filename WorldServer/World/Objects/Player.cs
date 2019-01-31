@@ -986,7 +986,7 @@ namespace WorldServer
                 _nextSpeedPenLiftTime += 1000;
             }
 
-            ForceCloseMobsToWander(200);
+            ForceCloseMobsToWander(100);
 
 
             if (StealthLevel == 0 || tick - _lastStealthCheck <= STEALTH_CHECK_INTERVAL)
@@ -1002,19 +1002,45 @@ namespace WorldServer
         private void ForceCloseMobsToWander(int distance)
         {
             var random = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));
-            var creaturesClose = GetInRange<Creature>(distance);
+            var creaturesClose = GetInRange<Creature>(distance).Take(StaticRandom.Instance.Next(2, 6));
+            // var creature = (Creature)CbtInterface.GetCurrentTarget();
             foreach (var creature in creaturesClose)
             {
-                if (!creature.MvtInterface.IsMoving)
+                // Not in original position.
+
+                // If the mob is not at their spawn point, move them back.  ** Bad performance below
+                if (creature.MvtInterface.MoveState == MovementInterface.EMoveState.None)
                 {
-                    creature.MvtInterface.SetBaseSpeed(50);
-                    var point = CalculatePoint(random, 300, creature.Spawn.WorldX, creature.Spawn.WorldY);
-                    creature.MvtInterface.Move(point.X, point.Y, creature.Z);
+                    if (!BetweenRanges(creature.Spawn.WorldX - 10, creature.Spawn.WorldX + 10, creature.WorldPosition.X))
+                    {
+                        var returnHome = new Point3D(creature.Spawn.WorldX, creature.Spawn.WorldY, creature.Spawn.WorldZ);
+                        //SendClientMessage($"Asking {creature.Name} to return home");
+                        creature.MvtInterface.SetBaseSpeed(50);
+                        creature.MvtInterface.Move(returnHome);
+                        creature.MvtInterface.SetBaseSpeed(100);
+                    }
+                    else
+                    {
+                        var point = CalculatePoint(random, 800, creature.Spawn.WorldX, creature.Spawn.WorldY);
+
+                        if (creature.LOSHit(this)) //CbtInterface.GetCurrentTarget(); works?
+                        {
+                            //SendClientMessage($"Asking {creature.Name} to move from {creature.Spawn.WorldX},{creature.Spawn.WorldY} to {point.X},{point.Y}");
+                            creature.MvtInterface.SetBaseSpeed(50);
+                            creature.MvtInterface.Move(point.X, point.Y, creature.Z);
+                            creature.MvtInterface.SetBaseSpeed(100);
+                        }
+                    }
+
                 }
             }
+            //}
         }
 
-
+        public static bool BetweenRanges(int a, int b, int number)
+        {
+            return (a <= number && number <= b);
+        }
         private Point2D CalculatePoint(Random random, int radius, int originX, int originY)
         {
             var angle = random.NextDouble() * Math.PI * 2;
