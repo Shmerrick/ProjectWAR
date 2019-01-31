@@ -986,7 +986,7 @@ namespace WorldServer
                 _nextSpeedPenLiftTime += 1000;
             }
 
-            ForceCloseMobsToWander(300);
+            ForceCloseMobsToWander(200);
 
 
             if (StealthLevel == 0 || tick - _lastStealthCheck <= STEALTH_CHECK_INTERVAL)
@@ -1008,9 +1008,8 @@ namespace WorldServer
                 if (!creature.MvtInterface.IsMoving)
                 {
                     creature.MvtInterface.SetBaseSpeed(50);
-                    var point = CalculatePoint(random, 1500, creature.Spawn.WorldX, creature.Spawn.WorldY);
+                    var point = CalculatePoint(random, 300, creature.Spawn.WorldX, creature.Spawn.WorldY);
                     creature.MvtInterface.Move(point.X, point.Y, creature.Z);
-                    
                 }
             }
         }

@@ -232,6 +232,7 @@ namespace WorldServer
 
             _unit.SetPosition(pinX, pinY, pinZ, _unit.Heading, destZone.ZoneId);
 
+            
             if (tick > _moveStartTime + _moveDuration)
             {
                 if (MoveState == EMoveState.Move)
