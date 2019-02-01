@@ -191,7 +191,7 @@ namespace WorldServer
 
             // Banner hack for standards.
             if (item.ModelId >= 6188 && item.ModelId < 6194)
-                Plr.Standard(item.Info.SpellId);
+                Plr.Standard(item.Info.SpellId, true);
 
             if (item.Info.Crafts.Length > 0 && CraftingApoInterface.GetCraft(5, item.Info.Crafts) == 4 && (CraftingApoInterface.GetCraft(8, item.Info.Crafts) < 5 || CraftingApoInterface.GetCraft(8, item.Info.Crafts) == 18))
                 CultivationInterface.ReapResin(Plr, slot);

@@ -1001,7 +1001,7 @@ namespace WorldServer
 
         private void ForceCloseMobsToWander(int distance)
         {
-            return;
+            
 
             // Simple random seed.
             var random = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));
@@ -2631,13 +2631,25 @@ namespace WorldServer
 
         public WeaponStance WeaponStance;
 
-        public void Standard(uint SpellId)
+        public void Standard(uint SpellId, bool bypassGuildChecks = false)
         {
-            if (!GldInterface.IsInGuild())
-                return;
-            if (GldInterface.Guild.Info.Level < 6)
-                return;
-
+            if (!bypassGuildChecks)
+            {
+                if (!GldInterface.IsInGuild())
+                {
+                    SendClientMessage("You are not in a guild, so cannot use a Guild Standard");
+                    return;
+                }
+                if (GldInterface.Guild.Info.Level < 6)
+                {
+                    SendClientMessage("Your Guild has not achieved high enough standing, so cannot use a Guild Standard");
+                    return;
+                }
+            }
+            else
+            {
+                SendClientMessage("Standard - Bypassing Guild Checks");
+            }
 
             byte banner = 0;
 
@@ -2688,6 +2700,7 @@ namespace WorldServer
 
                 Guild_member gm;
                 if (GldInterface.Guild.Info.Members.TryGetValue(CharacterId, out gm))
+                {
                     if (gm.StandardBearer)
                     {
                         WeaponStance = WeaponStance.Standard;
@@ -2724,6 +2737,7 @@ namespace WorldServer
                                 Log.Info("AddBannerBuff ", " " + buffspellid);
                         }
                     }
+                }
             }
         }
 
