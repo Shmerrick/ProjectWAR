@@ -986,7 +986,7 @@ namespace WorldServer
                 _nextSpeedPenLiftTime += 1000;
             }
 
-            ForceCloseMobsToWander(100);
+            ForceCloseMobsToWander(200);
 
 
             if (StealthLevel == 0 || tick - _lastStealthCheck <= STEALTH_CHECK_INTERVAL)
@@ -1003,7 +1003,7 @@ namespace WorldServer
         {
             // Simple random seed.
             var random = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));
-            var creaturesClose = GetInRange<Creature>(distance).Take(StaticRandom.Instance.Next(3, 8));
+            var creaturesClose = GetInRange<Creature>(distance).Take(StaticRandom.Instance.Next(2, 6));
             // Filter the creatures - less than equal to level 43, not hero or above, not siege, not vendors.
             var creaturesToWander = creaturesClose.Where(x => x.Level <= 43 && x.Spawn.Proto.Unk2 <= 1001 && x.Spawn.Proto.CreatureType != 32 && x.Spawn.Proto.VendorID == 0);
             foreach (var creature in creaturesToWander)
