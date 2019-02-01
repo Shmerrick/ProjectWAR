@@ -1001,10 +1001,12 @@ namespace WorldServer
 
         private void ForceCloseMobsToWander(int distance)
         {
+            // Simple random seed.
             var random = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));
-            var creaturesClose = GetInRange<Creature>(distance).Take(StaticRandom.Instance.Next(2, 6));
-            // var creature = (Creature)CbtInterface.GetCurrentTarget();
-            foreach (var creature in creaturesClose)
+            var creaturesClose = GetInRange<Creature>(distance).Take(StaticRandom.Instance.Next(3, 8));
+            // Filter the creatures - less than equal to level 43, not hero or above, not siege, not vendors.
+            var creaturesToWander = creaturesClose.Where(x => x.Level <= 43 && x.Spawn.Proto.Unk2 <= 1001 && x.Spawn.Proto.CreatureType != 32 && x.Spawn.Proto.VendorID == 0);
+            foreach (var creature in creaturesToWander)
             {
                 // Not in original position.
 
@@ -1023,7 +1025,7 @@ namespace WorldServer
                     {
                         var point = CalculatePoint(random, 800, creature.Spawn.WorldX, creature.Spawn.WorldY);
 
-                        if (creature.LOSHit(this)) //CbtInterface.GetCurrentTarget(); works?
+                        if (creature.LOSHit((ushort)this.ZoneId, new Point3D(point.X, point.Y, creature.Z))) 
                         {
                             //SendClientMessage($"Asking {creature.Name} to move from {creature.Spawn.WorldX},{creature.Spawn.WorldY} to {point.X},{point.Y}");
                             creature.MvtInterface.SetBaseSpeed(50);
