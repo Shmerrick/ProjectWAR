@@ -690,7 +690,7 @@ namespace WorldServer
                     break;
 
                 case SiegeType.RAM:
-                    _abilityId = 24684;
+                    _abilityId = 24684;   // Ram damage.
                     _moveType = _Owner is Siege ? MoveType.Tow : MoveType.Static;
                     break;
 

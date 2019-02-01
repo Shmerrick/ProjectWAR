@@ -1001,11 +1001,19 @@ namespace WorldServer
 
         private void ForceCloseMobsToWander(int distance)
         {
+            return;
+
             // Simple random seed.
             var random = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));
             var creaturesClose = GetInRange<Creature>(distance).Take(StaticRandom.Instance.Next(2, 6));
-            // Filter the creatures - less than equal to level 43, not hero or above, not siege, not vendors.
-            var creaturesToWander = creaturesClose.Where(x => x.Level <= 43 && x.Spawn.Proto.Unk2 <= 1001 && x.Spawn.Proto.CreatureType != 32 && x.Spawn.Proto.VendorID == 0);
+            // Filter the creatures - less than equal to level 43, not hero or above, not siege, not vendors, not questline.
+            var creaturesToWander = creaturesClose.Where(
+                x => x.Level <= 43 
+                && x.Spawn.Proto.Unk2 <= 1001 
+                && x.Spawn.Proto.CreatureType != 32 
+                && x.Spawn.Proto.VendorID == 0
+                && x.Spawn.Proto.FinishingQuests == null 
+                && x.Spawn.Proto.StartingQuests == null);
             foreach (var creature in creaturesToWander)
             {
                 // Not in original position.
