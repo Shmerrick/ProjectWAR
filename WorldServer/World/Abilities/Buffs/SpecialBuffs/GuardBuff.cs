@@ -12,6 +12,13 @@ namespace WorldServer
             if (Entry == 1674)
                 _hateSplitFactor = 0.5f;
 
+            // Reduce Guard damage by 30% (Stoic)
+            if (Entry == 10365)
+                _damageSplitFactor = 0.5f * 0.3f;
+            // Reduce Guard damage by 30% (Solid)
+            if (Entry == 10379)
+                _damageSplitFactor = 0.5f * 0.3f;
+
             BuffState = (byte)EBuffState.Running;
 
             if (Caster != Target)
