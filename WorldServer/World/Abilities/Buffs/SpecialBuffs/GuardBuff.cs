@@ -9,9 +9,6 @@ namespace WorldServer
 
         public override void StartBuff()
         {
-            if (Entry == 1674)
-                _hateSplitFactor = 0.5f;
-
             // Reduce Guard damage by 30% (Stoic)
             if (Entry == 10365)
                 _damageSplitFactor = 0.5f * 0.3f;
