@@ -16,12 +16,12 @@ namespace WorldServer
                 // Reduce Guard damage by 30% (Stoic)
                 if (Caster.BuffInterface.GetBuff(10365, (Unit)Caster) != null)
                 {
-                    _casterDamageSplitFactor = 0.2f;
+                    _casterDamageSplitFactor *= 0.7f;
                 }
                 // Reduce Guard damage by 30% (Solid)
                 if (Caster.BuffInterface.GetBuff(10379, (Unit)Caster) != null)
                 {
-                    _casterDamageSplitFactor = 0.2f;
+                    _casterDamageSplitFactor *= 0.7f;
                 }
             }
 
