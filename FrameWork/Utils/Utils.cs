@@ -590,7 +590,7 @@ namespace FrameWork
     F_ADVANCED_WAR_REPORT = 0x95, //works but prob sub id?
     //F_MONSTER_POSITION =???
     //F_ACTION_COUNTER_TIMESTAMP_INFO = ???
-    //F_RRQ =
+    F_RRQ = 0x00,
 
     //part of old ones but needs to be bottom
     MAX_GAME_OPCODE = 0xFF

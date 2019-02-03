@@ -985,6 +985,13 @@ namespace SystemData
         STANDARDBEARERSTATUS_UNKNOWN = 0
     };
 
+    public enum GuildHeraldryReservation
+    {
+        NONE = 0,
+        LOCKED = 1,
+        RESET_AVAILABLE = 2,
+    };
+
     public enum NameFilterType
     {
         Equals,
