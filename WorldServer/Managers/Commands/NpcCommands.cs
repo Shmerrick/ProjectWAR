@@ -197,8 +197,6 @@ namespace WorldServer.Managers.Commands
 
             WorldMgr.Database.AddObject(spawn);
 
-            var c = plr.Region.CreateCreature(spawn);
-
             var kc = new Keep_Creature();
 
             kc.ZoneId = plr.Zone.ZoneId;
