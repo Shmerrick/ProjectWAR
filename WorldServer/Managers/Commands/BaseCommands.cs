@@ -804,6 +804,46 @@ namespace WorldServer.Managers.Commands
 
         public static bool Info(Player plr, ref List<string> values)
         {
+            //Blastoise added in to test specific packets
+            PacketOut Out = new PacketOut((byte)Opcodes.F_ADVANCED_WAR_REPORT);
+            Out.WritePacketString(@"|1D 06 65 00 00 00 01 00 00 66 00 00 00 |.,...e......f...|
+|02 00 00 67 00 00 00 01 00 00 68 00 00 00 02 00 |...g......h.....|
+|00 69 00 00 00 00 00 00 6A 00 00 00 02 00 00    |............... |");
+            plr.SendPacket(Out);
+
+            Out = new PacketOut((byte)Opcodes.F_ADVANCED_WAR_REPORT);
+            Out.WritePacketString(@"|1D 06 65 00 00 00 01 00 00 66 00 00 00 |.Y...e......f...|
+| 02 11 54 68 65 20 43 72 69 6D 73 6F 6E 20 4C 6F |..The Crimson Lo|
+| 72 64 73 00 67 00 00 00 01 00 00 68 00 00 00 02 | rds.g......h....|
+| 0A 49 6E 71 75 69 73 69 74 69 6F 00 69 00 00 00 |.Inquisitio.i...|
+| 00 00 00 6A 00 00 00 02 12 54 68 65 20 4D 75 72 |...j.....The Mur |
+| 64 65 72 20 4A 75 6E 6B 69 65 73 00 |............    |");
+            plr.SendPacket(Out);
+
+
+            Out = new PacketOut((byte)Opcodes.F_ADVANCED_WAR_REPORT);
+            Out.WritePacketString(@"|1D 06 65 00 00 00 01 12 4F 72 64 65 72 |.k...e.....Order |
+| 20 61 6E 64 20 50 72 6F 67 72 65 73 73 00 66 00 | and Progress.f.|
+| 00 00 02 11 54 68 65 20 43 72 69 6D 73 6F 6E 20 |....The Crimson |
+| 4C 6F 72 64 73 00 67 00 00 00 01 00 00 68 00 00 | Lords.g......h..|
+| 00 02 0A 49 6E 71 75 69 73 69 74 69 6F 00 69 00 |...Inquisitio.i.|
+| 00 00 01 00 00 6A 00 00 00 02 12 54 68 65 20 4D |.....j.....The M |
+| 75 72 64 65 72 20 4A 75 6E 6B 69 65 73 00 |..............  |");
+                plr.SendPacket(Out);
+
+            Out = new PacketOut((byte)Opcodes.F_ADVANCED_WAR_REPORT);
+            Out.WritePacketString(@"|1D 06 65 00 00 00 01 00 00 66 00 00 00 |.Z...e......f...|
+| 02 11 54 68 65 20 43 72 69 6D 73 6F 6E 20 4C 6F |..The Crimson Lo|
+| 72 64 73 00 67 00 00 00 01 07 45 2D 54 68 75 67 | rds.g.....E - Thug |
+| 73 00 68 00 00 00 02 04 44 52 4F 57 00 69 00 00 | s.h.....DROW.i..|
+| 00 01 00 00 6A 00 00 00 02 12 54 68 65 20 4D 75 |....j.....The Mu |
+| 72 64 65 72 20 4A 75 6E 6B 69 65 73 00 |.............   |");
+                plr.SendPacket(Out);
+
+
+            //end of blastoise test
+
+
             Object other = GetObjectTarget(plr);
             GameObject go = other as GameObject;
             Creature c = other as Creature;
