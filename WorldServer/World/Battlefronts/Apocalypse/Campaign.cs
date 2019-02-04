@@ -30,6 +30,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static int REALM_CAPTAIN_MINIMUM_CONTRIBUTION = 50;
         public static int DOMINATION_POINTS_REQUIRED = 6;
         static readonly object LockObject = new object();
+        public static int SCALE_MODEL_UP = 1;
+        public static int SCALE_MODEL_DOWN = 0;
 
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
 
@@ -452,34 +454,38 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattlefrontLogger.Trace($"Checking for new Realm Captains...");
                 if (status.RegionId == Region.RegionId)
                 {
-                    status.RemoveAsRealmCaptain(status.DestructionRealmCaptain);
-                    status.RemoveAsRealmCaptain(status.OrderRealmCaptain);
+                    var zonePlayers = Player._Players.Where(x => !x.IsDisposed
+                                                                 && x.IsInWorld()
+                                                                 && x.CbtInterface.IsPvp
+                                                                 && x.ScnInterface.Scenario == null
+                                                                 && x.ZoneId == status.ZoneId).ToList();
+
 
                     var realmCaptains = ActiveBattleFrontStatus.ContributionManagerInstance.GetHigestContributors(
-                        REALM_CAPTAIN_MINIMUM_CONTRIBUTION,
-                        Player._Players.Where(x => !x.IsDisposed
-                        && x.IsInWorld()
-                        && x.CbtInterface.IsPvp
-                        && x.ScnInterface.Scenario == null
-                        && x.Region.RegionId == status.RegionId));
+                        REALM_CAPTAIN_MINIMUM_CONTRIBUTION, zonePlayers);
 
-                    var playersToAnnounceTo = Player._Players.Where(x => !x.IsDisposed
-                                                                         && x.IsInWorld()
-                                                                         && x.CbtInterface.IsPvp
-                                                                         && x.ScnInterface.Scenario == null
-                                                                         && x.Region.RegionId == status.RegionId);
+                   
+                    ScaleModel(status.DestructionRealmCaptain, zonePlayers, SCALE_MODEL_DOWN);
+                    ScaleModel(status.OrderRealmCaptain, zonePlayers, SCALE_MODEL_DOWN);
+
+                    status.RemoveAsRealmCaptain(status.DestructionRealmCaptain);
+                    status.RemoveAsRealmCaptain(status.OrderRealmCaptain);
+                    
 
                     // Destruction
                     if (realmCaptains[0] != null)
                     {
                         status.SetAsRealmCaptain(realmCaptains[0]);
+
+                        ScaleModel(realmCaptains[0], zonePlayers, SCALE_MODEL_UP);
+
                         if (StaticRandom.Instance.Next(100) < REALM_CAPTAIN_TELL_CHANCE)
                         {
-                            foreach (var player in playersToAnnounceTo.Where(x => x.Realm == Realms.REALMS_REALM_ORDER))
+                            foreach (var player in zonePlayers.Where(x => x.Realm == Realms.REALMS_REALM_ORDER))
                             {
                                 player.SendMessage(
                                     $"A captain has emerged from the ranks of the enemy. Take the head of {realmCaptains[0].Name}!",
-                                    ChatLogFilters.CHATLOGFILTERS_RVR_KILLS_DESTRUCTION);
+                                    ChatLogFilters.CHATLOGFILTERS_RVR);
                             }
                         }
                     }
@@ -487,17 +493,44 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (realmCaptains[1] != null)
                     {
                         status.SetAsRealmCaptain(realmCaptains[1]);
+                        ScaleModel(realmCaptains[1], zonePlayers, SCALE_MODEL_UP);
                         if (StaticRandom.Instance.Next(100) < REALM_CAPTAIN_TELL_CHANCE)
                         {
-                            foreach (var player in playersToAnnounceTo.Where(x => x.Realm == Realms.REALMS_REALM_ORDER))
+                            foreach (var player in zonePlayers.Where(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION))
                             {
                                 player.SendMessage(
                                     $"A captain has emerged from the ranks of the enemy. Take the head of {realmCaptains[1].Name}!",
-                                    ChatLogFilters.CHATLOGFILTERS_RVR_KILLS_ORDER);
+                                    ChatLogFilters.CHATLOGFILTERS_RVR);
                             }
                         }
                     }
+
                 }
+            }
+        }
+
+        private void ScaleModel(Player player, List<Player> playersToAnnounce, int upDown)
+        {
+            if (player == null) return;
+            if (playersToAnnounce == null) return;
+
+            if (upDown ==SCALE_MODEL_UP)
+                player.EffectStates.Add((byte)ObjectEffectState.OBJECTEFFECTSTATE_SCALE_UP);
+            if (upDown == SCALE_MODEL_DOWN)
+                player.EffectStates.Remove((byte)ObjectEffectState.OBJECTEFFECTSTATE_SCALE_UP);
+
+            //var Out = new PacketOut((byte)Opcodes.F_OBJECT_EFFECT_STATE);
+
+            //Out.WriteUInt16(player.Oid);
+            //Out.WriteByte(1);
+            //Out.WriteByte((byte)ObjectEffectState.OBJECTEFFECTSTATE_SCALE_UP);
+            //Out.WriteByte((byte)(upDown));
+            //Out.WriteByte(0);
+
+            foreach (var announce in playersToAnnounce)
+            {
+                //announce.DispatchPacket(Out, true);
+                player.SendMeTo(announce);
             }
         }
 

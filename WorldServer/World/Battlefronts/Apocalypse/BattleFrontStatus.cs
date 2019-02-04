@@ -95,7 +95,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (realmCaptain.Realm == Realms.REALMS_REALM_ORDER)
                 OrderRealmCaptain = null;
 
-            ScaleDownModel(realmCaptain);
+            //ScaleDownModel(realmCaptain);
 
         }
 
@@ -110,38 +110,24 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (realmCaptain.Realm == Realms.REALMS_REALM_ORDER)
                 OrderRealmCaptain = realmCaptain;
 
-            ScaleUpModel(realmCaptain);
         }
 
-        private void ScaleUpModel(Player player)
-        {
-            player.EffectStates.Add((byte)ObjectEffectState.OBJECTEFFECTSTATE_SCALE_UP);
+        
 
-            var Out = new PacketOut((byte)Opcodes.F_OBJECT_EFFECT_STATE);
+        //private void ScaleDownModel(Player player)
+        //{
+        //    player.EffectStates.Remove((byte)ObjectEffectState.OBJECTEFFECTSTATE_SCALE_UP);
 
-            Out.WriteUInt16(player.Oid);
-            Out.WriteByte(1);
-            Out.WriteByte((byte)ObjectEffectState.OBJECTEFFECTSTATE_SCALE_UP);
-            Out.WriteByte((byte)(1));
-            Out.WriteByte(0);
+        //    var Out = new PacketOut((byte)Opcodes.F_OBJECT_EFFECT_STATE);
 
-            player.DispatchPacket(Out, true);
-        }
+        //    Out.WriteUInt16(player.Oid);
+        //    Out.WriteByte(1);
+        //    Out.WriteByte((byte)ObjectEffectState.OBJECTEFFECTSTATE_SCALE_UP);
+        //    Out.WriteByte((byte)(0));
+        //    Out.WriteByte(0);
 
-        private void ScaleDownModel(Player player)
-        {
-            player.EffectStates.Remove((byte)ObjectEffectState.OBJECTEFFECTSTATE_SCALE_UP);
-
-            var Out = new PacketOut((byte)Opcodes.F_OBJECT_EFFECT_STATE);
-
-            Out.WriteUInt16(player.Oid);
-            Out.WriteByte(1);
-            Out.WriteByte((byte)ObjectEffectState.OBJECTEFFECTSTATE_SCALE_UP);
-            Out.WriteByte((byte)(0));
-            Out.WriteByte(0);
-
-            player.DispatchPacket(Out, true);
-        }
+        //    player.DispatchPacket(Out, true);
+        //}
 
         public void SavePlayerContribution(int battleFrontId)
         {
