@@ -342,35 +342,46 @@
     <Compile Include="World\Abilities\Buffs\BuffInterface.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepDoor.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepNpcCreature.cs" />
-    <Compile Include="World\Instances\TOTVL.cs" />
+    <Compile Include="World\Objects\Instances\Bilerot Burrow\SimpleBartholomeustheSickly.cs" />
+    <Compile Include="World\Objects\Instances\Bilerot Burrow\SimpleSsrydianMorbidae.cs" />
+    <Compile Include="World\Objects\Instances\Bilerot Burrow\SimpleTheBileLord.cs" />
+    <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleBarakustheGodslayer.cs" />
+    <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleKorthuktheRaging.cs" />
+    <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleSarlothBloodtouched.cs" />
+    <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleCuliusEmbervine.cs" />
+    <Compile Include="World\Objects\Instances\TomboftheVultureLord\TOTVL.cs" />
     <Compile Include="World\Map\Occlusion.cs" />
-    <Compile Include="World\Objects\Instances\SimpleAhzranok.cs" />
-    <Compile Include="World\Objects\Instances\SimpleDralel.cs" />
-    <Compile Include="World\Objects\Instances\SimpleFulgurThunderborn.cs" />
-    <Compile Include="World\Objects\Instances\SimpleHorgulul.cs" />
-    <Compile Include="World\Objects\Instances\SimpleMalghorGreathorn.cs" />
-    <Compile Include="World\Objects\Instances\SimpleTheDeamonicBeast.cs" />
-    <Compile Include="World\Objects\Instances\SimpleTonragThunderborn.cs" />
+    <Compile Include="World\Objects\Instances\Bastion Stairs\SimpleKaarntheVanquisher.cs" />
+    <Compile Include="World\Objects\Instances\Bastion Stairs\SimpleLordSlaurith.cs" />
+    <Compile Include="World\Objects\Instances\Bastion Stairs\SimpleSkullLordVar%27Ithrok.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleAhzranok.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleDralel.cs" />
+    <Compile Include="World\Objects\Instances\RemovedBosses\SimpleFulgurThunderborn.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleHorgulul.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleMalghorGreathorn.cs" />
+    <Compile Include="World\Objects\Instances\Bastion Stairs\SimpleThar%27lgnan.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleTheDeamonicBeast.cs" />
+    <Compile Include="World\Objects\Instances\RemovedBosses\SimpleTonragThunderborn.cs" />
     <Compile Include="World\Objects\RVRArea.cs" />
     <Compile Include="World\Scripting\BasicScript.cs" />
     <Compile Include="World\Scripting\BehaviorLib.cs" />
-    <Compile Include="World\Scripting\Dungeons\AltdorfSewers\AltdorfSewersWingIII.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\Arathremia.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\ArdtaFeed.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\BasicGunbad.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\BroodMotherSzikalax.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\ElderKizzig.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\FoulMoufdaUngry.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\GarrolaththePoxbearer.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\GlompDaSquigMasta.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\GriblikdaStinka.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\HeraldofSolithex.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\Logazor.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\MastaMixa.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\MastaWranglaGlix.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\RedeyeBigOaf.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\BlazAndVelkyrrix.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\WightLordSolithex.cs" />
+    <Compile Include="World\Objects\Instances\AltdorfSewers3\AltdorfSewersWingIII.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad\Arathremia.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad\ArdtaFeed.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad\BasicGunbad.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad\BroodMotherSzikalax.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad\ElderKizzig.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad\FoulMoufdaUngry.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad\GarrolaththePoxbearer.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad\GlompDaSquigMasta.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad\GriblikdaStinka.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad\HeraldofSolithex.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad\Logazor.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad\MastaMixa.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad\MastaWranglaGlix.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad\RedeyeBigOaf.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad\BlazAndVelkyrrix.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad\WightLordSolithex.cs" />
     <Compile Include="World\Scripting\Events\Halloween\BasicHalloween.cs" />
     <Compile Include="World\Scripting\Lairs\Beastlords\BasicBeastlord.cs" />
     <Compile Include="World\Scripting\Lairs\Beastlords\AllBeastlords.cs" />
@@ -385,10 +396,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="World\WorldSettings\WorldSettings.cs" />
-    <Compile Include="World\Instances\Instance.cs" />
-    <Compile Include="World\Instances\InstanceDoor.cs" />
-    <Compile Include="World\Instances\InstanceMgr.cs" />
-    <Compile Include="World\Instances\InstanceObject.cs" />
+    <Compile Include="World\Objects\Instances\Instance.cs" />
+    <Compile Include="World\Objects\Instances\InstanceDoor.cs" />
+    <Compile Include="World\Objects\Instances\InstanceMgr.cs" />
+    <Compile Include="World\Objects\Instances\InstanceObject.cs" />
     <Compile Include="World\Interfaces\CombatInterface\CombatInterface_NPC.cs" />
     <Compile Include="World\Interfaces\CombatInterface\CombatInterface_Pet.cs" />
     <Compile Include="World\Interfaces\CombatInterface\CombatInterface_Player.cs" />
@@ -412,7 +423,7 @@
     <Compile Include="World\Interfaces\ScenarioInterface.cs" />
     <Compile Include="World\Interfaces\ScriptsInterface.cs" />
     <Compile Include="World\Objects\Instances\InstanceBossSpawn.cs" />
-    <Compile Include="World\Objects\Instances\InstanceSpawn.cs" />
+    <Compile Include="World\Objects\Instances\TomboftheVultureLord\InstanceSpawn.cs" />
     <Compile Include="World\Objects\PublicQuests\ContributionInfo.cs" />
     <Compile Include="World\Objects\PublicQuests\PQuestCreature.cs" />
     <Compile Include="World\Objects\PublicQuests\PQuestGameObject.cs" />
@@ -534,7 +545,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="World\Instances\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if not exist $(TargetDir)\PatcherFilesDirectory mkdir $(TargetDir)\PatcherFilesDirectory

@@ -6,6 +6,7 @@ using System.Threading;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Objects.Instances;
+using WorldServer.World.Objects.Instances.Bastion_Stairs;
 
 namespace WorldServer
 {
@@ -175,12 +176,14 @@ namespace WorldServer
                     List<InstanceSpawn> sp = new List<InstanceSpawn>();
                     _Spawns.TryGetValue(GroupsinCombat[i], out sp);
                     ushort death = 0;
-
-                    foreach (InstanceSpawn IS in sp)
-                    {
-                        if (IS.IsDead)
-                            death++;
-                    }
+                    if (sp != null)
+                        foreach (InstanceSpawn IS in sp)
+                        {
+                            if (IS.IsDead)
+                                death++;
+                        }
+                    else
+                        return;
                     if (death == sp.Count)
                     {
                         Respawns.Add(new Respawn(TCPManager.GetTimeStampMS() + (Info.TrashRespawnTimer * 1000), GroupsinCombat[i]));
@@ -191,7 +194,7 @@ namespace WorldServer
             }
         }
 
-		public int GetBossCount()
+        public int GetBossCount()
 		{
 			return _BossSpawns.Count;
 		}
@@ -350,7 +353,11 @@ namespace WorldServer
                         case 6843:
                             IS = new SimpleDralel(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
                             break;
-                            
+
+                        case 45084:
+                            IS = new SimpleTharlgnan(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
+                            break;
+
                         //case 2000899:
                         //    IS = new SimpleFulgurThunderborn(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
                         //    break;

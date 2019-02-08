@@ -6,7 +6,7 @@ using System.Text;
 
 namespace WorldServer
 {
-    public class InstanceSpawn:Creature
+    public class InstanceSpawn : Creature
     {
         uint InstanceGroupSpawnID;
         uint BossID;
