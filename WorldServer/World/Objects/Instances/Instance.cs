@@ -7,6 +7,8 @@ using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Objects.Instances;
 using WorldServer.World.Objects.Instances.Bastion_Stairs;
+using WorldServer.World.Objects.Instances.Bilerot_Burrow;
+using WorldServer.World.Objects.Instances.Bloodwrought_Enclave;
 
 namespace WorldServer
 {
