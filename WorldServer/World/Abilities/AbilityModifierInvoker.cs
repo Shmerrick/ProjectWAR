@@ -530,8 +530,6 @@ namespace WorldServer
             if (!(caster is Player player))
                 return false;
 
-            // TODO - whats this +8?
-
             var siegeType = Siege.GetSiegeType((uint)abInfo.CommandInfo[0].PrimaryValue);
 
             var nearMerchant = player.Region.Campaign.SiegeManager.CanDeploySiege(
@@ -567,7 +565,8 @@ namespace WorldServer
             }
             if (siegeType == SiegeType.GTAOE || siegeType == SiegeType.SNIPER || siegeType == SiegeType.DIRECT)
             {
-                if (nearEnemyKeep == DeploymentReason.Success)
+                // Deployed near enemy keep (attacking) or in defence near friendly keep
+                if (nearEnemyKeep == DeploymentReason.Success || nearFriendlyKeep == DeploymentReason.Success)
                     return true;
                 else
                 {
@@ -576,11 +575,12 @@ namespace WorldServer
                         player.SendClientMessage("There are too many of this type of Siege deployed", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
                         return false;
                     }
-                    if (nearEnemyKeep == DeploymentReason.Range)
+                    if (nearFriendlyKeep == DeploymentReason.Range || nearEnemyKeep == DeploymentReason.Range)
                     {
-                        player.SendClientMessage("Must deploy siege at enemy keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                        player.SendClientMessage("Must deploy siege at keep/fort", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
                         return false;
                     }
+
                     return false;
                 }
             }

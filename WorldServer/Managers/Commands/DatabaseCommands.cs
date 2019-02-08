@@ -57,6 +57,9 @@ namespace WorldServer.Managers.Commands
             CreatureService.LoadCreatureStats();
             plr.SendClientMessage("RELOADCREATURES: Stats Loaded : " + CreatureService._CreatureStats.Count);
 
+            BattleFrontService.LoadKeepCreatures();
+            plr.SendClientMessage("RELOADCREATURES: Keep Creatures Loaded : " + BattleFrontService._KeepCreatures.Count);
+
             List<Object> allCells = new List<Object>();
             allCells.AddRange(plr._Cell.Objects);
             foreach (Object obj in allCells)

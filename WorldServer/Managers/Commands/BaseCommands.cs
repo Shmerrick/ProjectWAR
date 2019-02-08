@@ -6,8 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
+using WorldServer;
 using WorldServer.Scenarios;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.BattleFronts.Keeps;
 using static System.UInt16;
@@ -882,6 +884,11 @@ namespace WorldServer.Managers.Commands
             else if (c != null && c.IsCreature())
             {
                 string result = c.ToString();
+
+                result += $"WP:{c.WorldPosition.X}, {c.WorldPosition.Y}, {c.WorldPosition.Z}";
+                if (c is KeepCreature)
+                    result += $"Keep Creature: WayPoint :{(c as KeepCreature).WaypointGUID}";
+
                 if (c.Spawn.Proto.TokUnlock != null && c.Spawn.Proto.TokUnlock != "0")
                     result = result + ", TokUnlock=" + c.Spawn.Proto.TokUnlock;
 
@@ -1494,6 +1501,81 @@ namespace WorldServer.Managers.Commands
             damageOut.WriteByte(7);
 
             damageOut.WriteZigZag(-30000);
+
+            damageOut.WriteByte(0);
+
+            target.DispatchPacketUnreliable(damageOut, true, player);
+
+            return true;
+        }
+
+        public static bool Wound(Player player, ref List<string> values)
+        {
+            if (AbilityInterface.PreventCasting)
+            {
+                player.SendClientMessage("WOUND: This command does not function when ability casting is blocked.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return true;
+            }
+
+            Unit target = player.CbtInterface.GetCurrentTarget();
+
+            if (target == null || target.IsDead)
+            {
+                player.SendClientMessage("WOUND: The target is null or already dead.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return true;
+            }
+
+            if (target.IsPlayer())
+            {
+                if (!Utils.HasFlag(player.GmLevel, (int)EGmLevel.TrustedStaff))
+                {
+                    player.SendClientMessage("WOUND: Using this command on players requires trusted staff access.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    return true;
+                }
+            }
+
+            GMCommandLog log = new GMCommandLog
+            {
+                PlayerName = player.Name,
+                AccountId = (uint)player.Client._Account.AccountId,
+                Command = "WOUND PLAYER " + target.Name,
+                Date = DateTime.Now
+            };
+
+            CharMgr.Database.AddObject(log);
+
+            if (String.IsNullOrWhiteSpace(values[0]))
+            {
+                target.ReceiveDamage(player, int.MaxValue);
+            }
+            else
+            {
+                target.ReceiveDamage(player, Convert.ToUInt32(values[0]));
+            }
+
+            
+
+            PacketOut damageOut = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 24);
+
+            damageOut.WriteUInt16(player.Oid);
+            damageOut.WriteUInt16(target.Oid);
+            damageOut.WriteUInt16(13085); // Mourkain Rift
+
+            damageOut.WriteByte(0);
+            damageOut.WriteByte(0); // DAMAGE EVENT
+            damageOut.WriteByte(7);
+
+            if (String.IsNullOrWhiteSpace(values[0]))
+            {
+                damageOut.WriteZigZag(-30000);
+            }
+            else
+            {
+                damageOut.WriteZigZag(-1 * Convert.ToInt32(values[0]));
+            }
+
+
+
             damageOut.WriteByte(0);
 
             target.DispatchPacketUnreliable(damageOut, true, player);
@@ -4198,8 +4280,10 @@ namespace WorldServer.Managers.Commands
             spawn.Level = 42;
 
             Creature c = plr.Region.CreateCreature(spawn);
+            //c.WaypointGUID = 
             c.PlayersInRange = plr.PlayersInRange;
-            c.AiInterface.SetBrain(new AggressiveBrain(c));
+            c.AiInterface.SetBrain(new PassiveBrain(c));
+            
 
 
             return true;
@@ -4293,6 +4377,14 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+
+        
+        public static bool SendCampaignStatusWrapper(Player plr, ref List<string> values)
+        {
+
+            new ApocCommunications().SendCampaignStatus(plr, new VictoryPointProgress(50f, 50f), Realms.REALMS_REALM_DESTRUCTION);
+            return true;
+        }
         #endregion
     }
 }

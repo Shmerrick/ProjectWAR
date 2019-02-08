@@ -19,14 +19,14 @@ namespace WorldServer
 
         public const int MAX_SHOTS = 15;
         public int ShotCount = MAX_SHOTS;
-        public int SiegeLifeSpan = 300 * 1000;
+        public int SiegeLifeSpan = 300;
 
         public Siege(Creature_spawn spawn, Player owner, SiegeType type) : base(spawn)
         {
             _type = type;
             SiegeInterface = AddInterface<SiegeInterface>();
             SiegeInterface.Creator = owner;
-            SiegeInterface.DeathTime = TCPManager.GetTimeStampMS() + SiegeLifeSpan;
+            SiegeInterface.DeathTime = TCPManager.GetTimeStamp() + SiegeLifeSpan;
         }
 
         public static Siege SpawnSiegeWeapon(Player plr, ushort zoneId, uint entry, bool defender)
@@ -228,6 +228,8 @@ namespace WorldServer
                 ReceiveDamage(this, MaxHealth / 5);
                 _nextDamageTime = tick + 2000;
             }
+
+
         }
 
         private int _outofAreaCount;
@@ -325,8 +327,9 @@ namespace WorldServer
             Pet pet = killer as Pet;
             Player credited = (pet != null) ? pet.Owner : (killer as Player);
 
-            (killer as Player).SendClientMessage($"{(killer as Player).Name} has killed a siege item!!!!!");
-
+            if (killer is Player)
+                (killer as Player).SendClientMessage($"{(killer as Player).Name} has killed a siege item!!!!!");
+               
             if (credited != null)
             {
                 // Contribution for Siege kill
@@ -620,20 +623,7 @@ namespace WorldServer
         {
             _logger.Debug($"Destroying Siege {this.Name}. SiegeManager : {this.Region.Campaign.SiegeManager.ToString()}");
             this.Region.Campaign.SiegeManager.Remove(this);
-            
-            //TODO : No longer required.
-            //// RB   5/18/2016   Remove objects from keeps, and make sure spawns are removed, so they don't come back.
-            //switch (_type)
-            //{
-            //    case SiegeType.OIL:
-            //        Keep.RemoveKeepSiege(this);
-            //        break;
-            //    default:
-            //        Keep.RemoveSiege(this);
-            //        break;
-            //}
-
-            //PendingDisposal = true;
+            PendingDisposal = true;
         }
 
         public override void Dispose()

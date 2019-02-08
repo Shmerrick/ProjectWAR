@@ -1,10 +1,11 @@
-﻿using GameData;
+﻿using Common;
+using FrameWork;
+using GameData;
 using Newtonsoft.Json;
 using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Common;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Bounty;
 
@@ -94,6 +95,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (realmCaptain.Realm == Realms.REALMS_REALM_ORDER)
                 OrderRealmCaptain = null;
 
+            //ScaleDownModel(realmCaptain);
+
         }
 
         public void SetAsRealmCaptain(Player realmCaptain)
@@ -108,6 +111,23 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 OrderRealmCaptain = realmCaptain;
 
         }
+
+        
+
+        //private void ScaleDownModel(Player player)
+        //{
+        //    player.EffectStates.Remove((byte)ObjectEffectState.OBJECTEFFECTSTATE_SCALE_UP);
+
+        //    var Out = new PacketOut((byte)Opcodes.F_OBJECT_EFFECT_STATE);
+
+        //    Out.WriteUInt16(player.Oid);
+        //    Out.WriteByte(1);
+        //    Out.WriteByte((byte)ObjectEffectState.OBJECTEFFECTSTATE_SCALE_UP);
+        //    Out.WriteByte((byte)(0));
+        //    Out.WriteByte(0);
+
+        //    player.DispatchPacket(Out, true);
+        //}
 
         public void SavePlayerContribution(int battleFrontId)
         {

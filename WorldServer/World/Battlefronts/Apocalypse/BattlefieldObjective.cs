@@ -976,5 +976,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             SendState(GetPlayer(), true, true);
             GrantCaptureRewards(OwningRealm);
         }
+
+
     }
 }

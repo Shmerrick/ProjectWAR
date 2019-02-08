@@ -71,7 +71,7 @@ namespace WorldServer.Services.World
                         Y = (ushort)(Spawn.WorldY >> 12);
 
                         GetRegionCell(Info.Region, X, Y).AddSpawn(Spawn);
-
+                        
                         if (!RegionCount.ContainsKey(Info.Name))
                             RegionCount.Add(Info.Name, 0);
 

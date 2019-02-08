@@ -25,7 +25,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (region == null)
                 Out.Fill(0, 3);
             else
-                region.Campaign.WriteCaptureStatus(Out, realm);
+                region.Campaign?.WriteCaptureStatus(Out, realm);
         }
 
         public void BuildBattleFrontStatus(PacketOut Out, RegionMgr region)
@@ -288,13 +288,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             Out.WriteByte(00);
 
+
+            Out.WriteUInt32(0);
             //local timer for poolupdates
             //int curTimeSeconds = TCPManager.GetTimeStamp();
 
             //if (_nextVpUpdateTime == 0 || curTimeSeconds > _nextVpUpdateTime)
-            //    Out.WriteUInt32(0);
-            //else
-            //    Out.WriteUInt32((uint) (_nextVpUpdateTime - curTimeSeconds)); //in seconds
+            //        Out.WriteUInt32(0);
+            //    else
+            //        Out.WriteUInt32((uint)(_nextVpUpdateTime - curTimeSeconds)); //in seconds
         }
 
         public void Broadcast(string message, int tier)

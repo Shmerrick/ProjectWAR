@@ -10,38 +10,64 @@ namespace WorldServer.Services.World
     public class WaypointService : ServiceBase
     {
         public static Lookup<uint, Waypoint> LookupWaypoints;
+        public static IList<Waypoint> TableWaypoints;
 
-        [LoadingFunction(true)]
+       [LoadingFunction(true)]
         public static void LoadNpcWaypoints()
         {
             Log.Debug("WorldMgr", "Loading Npc Waypoints...");
 
-            IList<Waypoint> TableWaypoints = Database.SelectAllObjects<Waypoint>();
-            LookupWaypoints = (Lookup<uint, Waypoint>)TableWaypoints.ToLookup(W => W.CreatureSpawnGUID, W => W);
+            TableWaypoints = Database.SelectAllObjects<Waypoint>();
+            LookupWaypoints = (Lookup<uint, Waypoint>)TableWaypoints.ToLookup(W => W.GUID, W => W);
 
             if (TableWaypoints != null)
                 Log.Success("LoadNpcWaypoints", "Loaded " + TableWaypoints.Count + " Waypoints");
         }
 
-        public static List<Waypoint> GetNpcWaypoints(uint CreatureSpawnGuid)
+        public static List<Waypoint> GetNextWayPoint(uint first, List<Waypoint> matchingList)
         {
-            IEnumerable<Waypoint> NpcWaypoints = LookupWaypoints[CreatureSpawnGuid];
-            return NpcWaypoints.ToList();
+            var match = TableWaypoints.SingleOrDefault(x => x.GUID == first);
+            if (match != null)
+            {
+                matchingList.Add(match);
+                if (match.NextWaypointGUID != 0)
+                    GetNextWayPoint(match.NextWaypointGUID, matchingList);
+            }
+            return matchingList;
+
+        }
+
+        public static List<Waypoint> GetNpcWaypoints(uint initialWayPoint)
+        {
+            var match = TableWaypoints.SingleOrDefault(x => x.GUID == initialWayPoint);
+            if (match != null)
+            {
+                var result = GetNextWayPoint(match.GUID, new List<Waypoint>());
+                return result;
+            }
+            return null;
+
+
+            //IEnumerable<Waypoint> NpcWaypoints = LookupWaypoints[WayPointUID];
+            //return NpcWaypoints.ToList();
         }
 
         public static void DatabaseAddWaypoint(Waypoint AddWp)
         {
             Database.AddObject(AddWp);
+            Database.ForceSave();
         }
 
         public static void DatabaseSaveWaypoint(Waypoint SaveWp)
         {
             Database.SaveObject(SaveWp);
+            Database.ForceSave();
         }
 
         public static void DatabaseDeleteWaypoint(Waypoint DeleteWp)
         {
             Database.DeleteObject(DeleteWp);
+            Database.ForceSave();
         }
 
 		/// <summary>

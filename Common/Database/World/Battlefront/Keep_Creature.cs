@@ -9,7 +9,7 @@ namespace Common
 {
     [DataTable(PreCache = false, TableName = "keep_creatures", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
-    public class Keep_Creature : DataObject, IComparable<Keep_Creature>
+    public class Keep_Creature : DataObject
     {
         [DataElement(AllowDbNull = false)]
         public int KeepId { get; set; }
@@ -43,12 +43,6 @@ namespace Common
 
 		[DataElement(AllowDbNull = false)]
 		public int WaypointGUID { get; set; }
-
-		public int CompareTo(Keep_Creature other)
-		{
-			if (other == null) return 1;
-			return WaypointGUID.CompareTo(other.WaypointGUID);
-		}
 
 		public Keep_Creature CreateDeepCopy()
 		{
@@ -143,8 +137,9 @@ namespace Common
 				O = O,
 				KeepLord = KeepLord,
 				IsPatrol = IsPatrol,
-				WaypointGUID = WaypointGUID
-			};
+			    WaypointGUID = WaypointGUID
+			    
+            };
 		}
 
 		/// <summary>

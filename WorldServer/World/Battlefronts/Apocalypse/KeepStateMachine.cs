@@ -102,14 +102,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Allow for keep to be safe (doors repaired) and lord still to be killed.
             fsm.In(ProcessState.Safe)
                 .On(Command.OnLordKilled).Goto(ProcessState.LordKilled).Execute(() => Keep.SetLordKilled());
-
             fsm.In(ProcessState.LordKilled)
                 .On(Command.OnLordKilledTimerEnd).Goto(ProcessState.Seized).Execute(() => Keep.SetKeepSeized());
             fsm.In(ProcessState.Seized)
                 .On(Command.OnSeizedTimerEnd)
                 .If(Keep.IsFortress)
                 .Goto(ProcessState.Safe)
-                .Execute(() => Keep.SetKeepSafe())
                 .Execute(() => Keep.ForceLockZone());
             fsm.In(ProcessState.Seized)
                 .On(Command.OnSeizedTimerEnd)
@@ -140,26 +138,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 //.Execute<uint>((uint doorId) => Keep.SetDoorRepaired(doorId))
                 .Execute(() => Keep.SetKeepSafe());
 
-            ///* Door repair events */
-            //fsm.In(ProcessState.OuterDown)
-            //    .On(Command.OnDoorRepaired)
-            //    .If(Keep.AllDoorsRepaired)
-            //    .Goto(ProcessState.Safe)
-            //    .Execute(() => Keep.SetInnerDoorRepaired())
-            //    .Execute(() => Keep.SetKeepSafe());
-            //fsm.In(ProcessState.InnerDown)
-            //    .On(Command.OnDoorRepaired)
-            //    .If(Keep.AllDoorsRepaired)
-            //    .Goto(ProcessState.Safe)
-            //    .Execute(() => Keep.SetInnerDoorRepaired())
-            //    .Execute(() => Keep.SetKeepSafe());
-            //fsm.In(ProcessState.LordWounded)
-            //    .On(Command.OnDoorRepaired)
-            //    .If(Keep.AllDoorsRepaired)
-            //    .Goto(ProcessState.Safe)
-            //    .Execute(() => Keep.SetInnerDoorRepaired())
-            //    .Execute(() => Keep.SetKeepSafe());
-
+           
             fsm.In(ProcessState.Locked)
                 .On(Command.OnOpenBattleFront).Goto(ProcessState.Safe).Execute(() => Keep.SetKeepSafe());
 
@@ -169,8 +148,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private void RecordTransition(object sender, EventArgs e)
         {
-            // Send packets to players, on FSM transition.
-            Keep.InformRegionPlayersOfKeepStatus();
+            foreach (var plr in Keep.PlayersInRange)
+            {
+                Keep.SendKeepInfo(plr);
+            }
+            
             var stateInformation = (Appccelerate.StateMachine.Machine.Events.TransitionCompletedEventArgs<SM.ProcessState, SM.Command>)e;
             // Save the state transition.
             _logger.Debug($"Saving keep state KeepId : {Keep.Info.KeepId} {Keep.Info.Name}, " +

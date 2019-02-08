@@ -73,7 +73,7 @@ namespace WorldServer
 
             Log.Debug(ToString(), "Loading... ");
 
-            #if !DEBUG || !SUPPRESS_LOAD
+            
             foreach (Creature_spawn spawn in Spawns.CreatureSpawns)
                 Region.CreateCreature(spawn);
 
@@ -85,7 +85,7 @@ namespace WorldServer
 
             foreach (PQuest_Info quest in Spawns.PublicQuests)
                 Region.CreatePQuest(quest);
-            #endif
+            
     }
 
         public override string ToString()

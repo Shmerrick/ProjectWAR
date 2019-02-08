@@ -49,6 +49,7 @@ namespace WorldServer
         public RewardManager RewardManager;
         public BountyManager BountyManager;
         public ContributionManager ContributionManager;
+        public List<Creature> RegionCreatures;
 
         /// <summary>Races associated with the pairing, may be null</summary>
         private readonly Races[] _races;
@@ -63,86 +64,6 @@ namespace WorldServer
             LoadSpawns();
 
             BountyManager = new BountyManager();
-
-            //ContributionManager = new ContributionManager(new ConcurrentDictionary<uint, List<PlayerContribution>>(), contributionFactorReferenceList);
-            //RewardManager = new RewardManager(ContributionManager, new StaticWrapper(), RewardService._RewardPlayerKills );
-
-            if (Constants.DoomsdaySwitch == 2)
-            {
-                //switch (regionId)
-                //{
-                //    case 2:
-                //    case 4:
-                //    case 11: // This is T4
-                //        Bttlfront = new ProximityProgressingBattleFront(this, true);
-                //        break;
-                //    case 1: // t1 dw/gs
-                //    case 3: // t1 he/de
-                //    case 8: // t1 em/ch
-                // Bttlfront = new T1BattleFront(this, true);
-                //        break;
-                //    case 12: // T2
-                //        Bttlfront = new T1BattleFront(this, true);
-                //        break;
-                //    case 14: // T2
-                //        Bttlfront = new T1BattleFront(this, true);
-                //        break;
-                //    case 15: // T2
-                //        Bttlfront = new T1BattleFront(this, true);
-                //        break;
-                //    case 6:  // T3
-                //        Bttlfront = new T1BattleFront(this, true);
-                //        break;
-                //    case 10: // T3
-                //        Bttlfront = new T1BattleFront(this, true);
-                //        break;
-                //    case 16: // T3
-                //        Bttlfront = new T1BattleFront(this, true);
-                //        break;
-                //    default: // Everything else...
-                //        Bttlfront = new ProximityBattleFront(this, false);
-                //        break;
-                //}
-
-                //switch (regionId)
-                //{
-                //    case 1: // t1 dw/gs
-                //    case 3: // t1 he/de
-                //    case 8: // t1 em/ch
-                //        Campaign = new Campaign(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.LowerTierCampaignManager);
-                //        break;
-                //    default: // Everything else...
-                //        Campaign = new Campaign(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.UpperTierCampaignManager);
-                //        break;
-                //}
-            }
-            else
-            {
-                //switch (regionId)
-                //{
-                //    case 2:
-                //    case 4:
-                //    case 11: // This is T4
-                //        Bttlfront = new ProgressingBattleFront(this, true);
-                //        break;
-                //    case 1: // t1 dw/gs
-                //    case 3: // t1 he/de
-                //    case 8: // t1 em/ch
-                //        Bttlfront = new T1BattleFront(this, true);
-                //        break;
-                //    case 12: // T2
-                //    case 14: // T2
-                //    case 15: // T2
-                //    case 6:  // T3
-                //    case 10: // T3
-                //    case 16: // T3
-                //        Bttlfront = new Campaign(this, zones.First().Type == 0);
-                //        break;
-                //    default: // Everything else...
-                //        Bttlfront = new Campaign(this, false);
-                //        break;
-                //}
-            }
 
             try
             {
@@ -167,9 +88,10 @@ namespace WorldServer
                 throw;
             }
             
-
             _updater = new Thread(Update);
             _updater.Start();
+
+            RegionCreatures = this.GetObjects<Creature>().ToList();
         }
 
        
@@ -296,12 +218,13 @@ namespace WorldServer
 
                     UpdateActors(start);
 
-                    //Bttlfront?.Update(start);
                     Campaign?.Update(start);
 
                     Campaign?.BattleFrontManager?.ImpactMatrixManagerInstance?.Update(start);
 
                     ScenarioMgr.ImpactMatrixManagerInstance?.Update(start);
+
+                    
                 }
 
                 catch (Exception e)
@@ -328,6 +251,7 @@ namespace WorldServer
             DisposeActors();
         }
 
+      
         /// <summary>
         /// A list of players currently within this region. Should only be accessed from within this region's thread!
         /// </summary>
@@ -845,6 +769,7 @@ namespace WorldServer
             {
                 cell?.Load();
             });
+            
         }
         public void GetCells(ushort x, ushort y, int range, GetCellDelegate cellFunction)
         {

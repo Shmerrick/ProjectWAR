@@ -1563,9 +1563,13 @@ namespace WorldServer
             #endregion
         }
 
-        public static void InflictGuardDamage(Unit attacker, Player receiver, ushort entry, AbilityDamageInfo originalDamage)
+        public static void InflictGuardDamage(Unit attacker, Player receiver, ushort entry, AbilityDamageInfo originalDamage, float casterDamageSplitFactor)
         {
             AbilityDamageInfo tempDmg = new AbilityDamageInfo { Entry = 0, Damage = originalDamage.Damage };
+
+            tempDmg.Damage *= casterDamageSplitFactor;
+            tempDmg.Mitigation *= casterDamageSplitFactor;
+
             byte defenseEvent = 0;
 
             receiver.CbtInterface.RefreshCombatTimer();

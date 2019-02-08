@@ -320,7 +320,21 @@ namespace WorldServer
             _weapon.MvtInterface.StopMove();
 
             if (Type == SiegeType.RAM)
-                _Owner.Region.Campaign.GetClosestKeep(_Owner.WorldPosition)?.TryAlignRam(_Owner, player);
+            {
+                var zoneKeeps = _Owner.Region.Campaign.GetZoneKeeps((ushort)player.ZoneId);
+                var dictKeepDistances = new Dictionary<BattleFrontKeep, float>();
+                foreach (var battleFrontKeep in zoneKeeps)
+                {
+                    ulong curDist = battleFrontKeep.GetDistanceSquare(player.WorldPosition);
+                    dictKeepDistances.Add(battleFrontKeep, curDist);
+                }
+                var keepToUse = dictKeepDistances.OrderByDescending(pair => pair.Value).Take(1).ToDictionary(pair => pair.Key, pair => pair.Value);
+                foreach (var f in keepToUse)
+                {
+                    f.Key.TryAlignRam(_Owner, player);
+                    break;
+                }
+            }
 
             foreach (Player p in _Owner.PlayersInRange)
             {
@@ -676,7 +690,7 @@ namespace WorldServer
                     break;
 
                 case SiegeType.RAM:
-                    _abilityId = 24684;
+                    _abilityId = 24684;   // Ram damage.
                     _moveType = _Owner is Siege ? MoveType.Tow : MoveType.Static;
                     break;
 

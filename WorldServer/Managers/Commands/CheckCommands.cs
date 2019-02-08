@@ -12,6 +12,81 @@ namespace WorldServer.Managers.Commands
     /// <summary>Debugging commands under .check</summary>
     internal class CheckCommands
     {
+        /// <summary>
+        /// Check the child records for all keeps
+        /// </summary>
+        /// <param name="plr">Player that initiated the command</param>
+        /// <param name="values">List of command arguments (after command name)</param>
+        /// <returns>True if command was correctly handled, false if operation was canceled</returns>
+        public static bool CheckKeeps(Player plr, ref List<string> values)
+        {
+            foreach (var regionMgr in WorldMgr._Regions)
+            {
+                var campaign = regionMgr.Campaign;
+                if (campaign == null)
+                    continue;
+                foreach (var battleFrontKeep in campaign?.Keeps)
+                {
+                    var result = $"Checking {battleFrontKeep.Info.Name} ({battleFrontKeep.Realm}/{battleFrontKeep.KeepStatus})";
+                    var numberCreatures = battleFrontKeep.Creatures.Count;
+                    var numberSpawnPoints = battleFrontKeep.SpawnPoints.Count;
+                    var doors = battleFrontKeep.Doors.Count;
+                    var lord = battleFrontKeep.KeepLord;
+
+                    result += $"Keep Creatures:{numberCreatures}.";
+                    result += $"Keep Spawn Points:{numberSpawnPoints}.";
+                    result += $"Keep Doors:{doors}.";
+
+                    if ((doors < 4) || (numberCreatures < 10) || (numberSpawnPoints < 4))
+                    result += " ** WARNING **";
+
+                    if (lord != null)
+                    {
+                        if (lord.Creature != null)
+                        {
+                            result += $"Keep Lord {lord.Creature.Name}";
+                        }
+                        else
+                        {
+                            result += $"Keep Lord NULL!";
+                        }
+                    }
+                    else
+                        result += $"Keep Lord NULL!";
+
+                    plr.SendClientMessage(result);
+                }
+                
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Check the child records for all keeps
+        /// </summary>
+        /// <param name="plr">Player that initiated the command</param>
+        /// <param name="values">List of command arguments (after command name)</param>
+        /// <returns>True if command was correctly handled, false if operation was canceled</returns>
+        public static bool CheckCaptain(Player plr, ref List<string> values)
+        {
+            var destructionRealmCaptain = plr.ActiveBattleFrontStatus.DestructionRealmCaptain;
+            var orderRealmCaptain = plr.ActiveBattleFrontStatus.OrderRealmCaptain;
+
+            if (destructionRealmCaptain != null)
+                plr.SendClientMessage($"Destruction Captain {destructionRealmCaptain.Name}");
+            else
+            {
+                plr.SendClientMessage($"No Destruction Captain");
+            }
+            if (orderRealmCaptain != null)
+                plr.SendClientMessage($"Order Captain {orderRealmCaptain.Name}");
+            else
+            {
+                plr.SendClientMessage($"No Order Captain");
+            }
+
+            return true;
+        }
 
         /// <summary>
         /// Check how many groups exist on the server.
