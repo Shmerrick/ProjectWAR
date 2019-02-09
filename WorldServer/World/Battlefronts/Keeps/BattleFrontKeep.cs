@@ -155,6 +155,38 @@ namespace WorldServer.World.BattleFronts.Keeps
             Fortress = isFortress;
         }
 
+        public override void OnLoad()
+        {
+            Z = Info.Z;
+            X = Zone.CalculPin((uint)Info.X, true);
+            Y = Zone.CalculPin((uint)Info.Y, false);
+
+            base.OnLoad();
+
+            Heading = (ushort)Info.O;
+            WorldPosition.X = Info.X;
+            WorldPosition.Y = Info.Y;
+            WorldPosition.Z = Info.Z;
+
+            SetOffset((ushort)(Info.X >> 12), (ushort)(Info.Y >> 12));
+
+            IsActive = true;
+
+            foreach (var crea in Creatures)
+                if (!crea.Info.IsPatrol)
+                    crea.SpawnGuard(Realm);
+
+            foreach (var door in Doors)
+            {
+                door.Spawn();
+            }
+
+            if (WorldMgr._Keeps.ContainsKey(Info.KeepId))
+                WorldMgr._Keeps[Info.KeepId] = this;
+            else
+                WorldMgr._Keeps.Add(Info.KeepId, this);
+        }
+
         /// <summary>
         /// Each time this ticks, add one to the FortDefenceCounter. Once it's == 4 (60 mins), Lock the fort in favour of the defender.
         /// </summary>
@@ -234,36 +266,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
         }
 
-        public override void OnLoad()
-        {
-            Z = Info.Z;
-            X = Zone.CalculPin((uint)Info.X, true);
-            Y = Zone.CalculPin((uint)Info.Y, false);
-            base.OnLoad();
-
-            Heading = (ushort)Info.O;
-            WorldPosition.X = Info.X;
-            WorldPosition.Y = Info.Y;
-            WorldPosition.Z = Info.Z;
-
-            SetOffset((ushort)(Info.X >> 12), (ushort)(Info.Y >> 12));
-
-            IsActive = true;
-
-            foreach (var crea in Creatures)
-                if (!crea.Info.IsPatrol)
-                    crea.SpawnGuard(Realm);
-
-            foreach (var door in Doors)
-            {
-                door.Spawn();
-            }
-
-            if (WorldMgr._Keeps.ContainsKey(Info.KeepId))
-                WorldMgr._Keeps[Info.KeepId] = this;
-            else
-                WorldMgr._Keeps.Add(Info.KeepId, this);
-        }
+       
 
         public void SetKeepSeized()
         {
