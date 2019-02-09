@@ -356,10 +356,6 @@ namespace WorldServer
                             IS = new SimpleDralel(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
                             break;
 
-                        case 45084:
-                            IS = new SimpleTharlgnan(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
-                            break;
-
                         //case 2000899:
                         //    IS = new SimpleFulgurThunderborn(spawn, obj.SpawnGroupID, obj.BossID, obj.InstanceID, this);
                         //    break;

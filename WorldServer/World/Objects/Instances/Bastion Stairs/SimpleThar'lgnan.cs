@@ -1,109 +1,262 @@
-﻿using Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using WorldServer.World.AI;
+using Common;
+using WorldServer.Services.World;
 
-namespace WorldServer.World.Objects.Instances.Bastion_Stairs
+namespace WorldServer
 {
-    public class SimpleTharlgnan : InstanceBossSpawn
+    [GeneralScript(false, "", 45084, 0)]
+    public class SimpleTharlgnan : AGeneralScript
     {
-        #region Constructors
+        private Object Obj; // This is creature 45084
+        private int Stage = -1; // This is variable that controls combat Stage
+        private int AddsSpawnTimer = 3000; // this variable is used - after this many milliseconds adds will be spawned
+        List<Object> stuffInRange = new List<Object>(); // This list keeps all objects in range
+        List<GameObject> magicWalls = new List<GameObject>(); // this list keeps all magic walls in range
+        List<Creature> addList = new List<Creature>(); // this list keeps all adds spawned by `The Creator`
 
-        public SimpleTharlgnan(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
+        // With this we can do some stuff when creature 45084 spawns
+        public override void OnObjectLoad(Object Obj)
         {
+            this.Obj = Obj;
+            //Obj.EvtInterface.AddEvent(CheckHP, 1000, 0);
         }
 
-        #endregion Constructors
-
-        #region Attributes
-
-        private readonly List<List<object>> _AddSpawns = new List<List<object>>()
+        // When Boss kills player this event is run
+        public bool OnKilledPlayer(Object pkilled, object instigator)
         {
-            //Frenzied Bloodsnout :45088
-         
-        };
-
-
-        #endregion Attributes
-
-        #region Overrides
-
-        public override void OnLoad()
-        {
-            base.OnLoad();
-
-            AiInterface.SetBrain(new InstanceBossBrain(this));
-        }
-
-        public override bool OnEnterCombat(Object mob, object args)
-        {
-            bool res = base.OnEnterCombat(mob, args);
-            EvtInterface.AddEvent(SpawnAdds, 1000, 0, 0.75);
-            EvtInterface.AddEvent(RemoveAllCCImmunitiesFromPlayers, 1000, 0);
-            return res;
-        }
-
-        public override bool OnLeaveCombat(Object mob, object args)
-        {
-            bool res = base.OnLeaveCombat(mob, args);
-            EvtInterface.RemoveEvent(del: SpawnAdds);
-            EvtInterface.RemoveEvent(RemoveAllCCImmunitiesFromPlayers);
-            return res;
-        }
-
-        #endregion Overrides
-
-        #region Methods
-
-        private void SpawnAdds(object threshold)
-        {
-            try
+            Player plr = pkilled as Player; // Casting object pkilled to Player type
+            if (plr.IsPlayer())
             {
-                // first check if boss health is under 'threshold'
-                if (Health > MaxHealth * (double)threshold)
-                    return;
+                this.Obj.Say("Filthy Scum " + pkilled.Name + " Blood for the Blood God!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY); // Boss will say this
+            }
 
-                SpawnAdds(_AddSpawns);
+            // Below we check if the killed player was the last alive player in the instance - we check this for group and for individual players
+            if (plr?.PriorityGroup != null)
+            {
+                Group currentGroup = plr.PriorityGroup;
 
-                EvtInterface.RemoveEvent(SpawnAdds);
-
-                switch ((double)threshold)
+                int groupCount = currentGroup.MemberCount;
+                int deadMembers = 0;
+                for (int i = 0; i < groupCount; i++)
                 {
-                    case 0.75:
-                        EvtInterface.AddEvent(SpawnAdds, 1000, 0, 0.5);
-                        break;
-
-                    case 0.5:
-                        EvtInterface.AddEvent(SpawnAdds, 1000, 0, 0.25);
-                        break;
-
-                    default:
-                        break;
+                    if (plr.IsDead) deadMembers++;
+                }
+                // If all party members died we are removing magic walls and all spawned adds
+                if (deadMembers == groupCount)
+                {
+                    Stage = -1; // Stage -1 means `The Mob` is ready to roll again
+                    RemoveWall();
+                    RemoveAllAdds();
                 }
             }
-            catch (Exception ex)
+            else
             {
-                _logger.Error(ex.Message + "\r\n" + ex.StackTrace);
-                EvtInterface.RemoveEvent(SpawnAdds);
-                return;
+                Stage = -1;
+                RemoveWall();
+                RemoveAllAdds();
             }
+            return false;
         }
 
-        /// <summary>
-        /// 402, 403 = Unstoppable
-        /// 408 = Immovable
-        /// </summary>
-        private void RemoveAllCCImmunitiesFromPlayers()
+        public bool OnDmg(Object pkilled, object instigator)
         {
-            foreach (var plr in PlayersInRange)
+            return false;
+        }
+
+        public override void OnEnterRange(Object Obj, Object DistObj)
+        {
+            if (DistObj.IsPlayer())
             {
-                plr.BuffInterface.RemoveBuffByEntry(408); // Removing Immunity
-                NewBuff newBuff = plr.BuffInterface.GetBuff(408, null);
-                if (newBuff != null)
-                    newBuff.RemoveBuff(true);
+                stuffInRange.Add(DistObj);
+                Obj.EvtInterface.AddEventNotify(EventName.OnReceiveDamage, CheckHP);
+                DistObj.EvtInterface.AddEventNotify(EventName.OnDie, OnKilledPlayer);
+                Obj.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAllAdds);
+                Obj.EvtInterface.AddEventNotify(EventName.OnDie, RemoveWall);
+            }
+            else if (DistObj.IsGameObject())
+            {
+                GameObject GO = DistObj as GameObject;
+                if (GO.Entry == 2000441)
+                {
+                    magicWalls.Add(GO);
+                }
+            }
+        }
+        public void FinalWords()
+        {
+            Obj.Say("Blood will Flow!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+            Obj.Say("Blood for the Blood God!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+        }
+        public void SayStuff()
+        {
+            Obj.Say("Blood will Flow!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+            Obj.Say("Blood for the Blood God!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+        }
+        public bool CheckHP(Object Obj, object instigator)
+        {
+            Creature c = this.Obj as Creature;
+            if (Stage < 0 && !c.IsDead)
+            {
+                AddWall();
+                Stage = 0;
+                c.Say("Fools! How dare you disturb the Bloodherd!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY); // Banter
+            }
+            if (c.Health < c.TotalHealth * 0.2 && Stage < 4 && !c.IsDead)
+            {
+                c.IsImmovable = true;
+                c.IsInvulnerable = true;
+                c.Say("Watch this!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+                c.EvtInterface.AddEvent(FinalWords, 5000, 1);
+                c.EvtInterface.AddEvent(RemoveBuffs, 5000, 1); // We are removing is immovability and invulnerability
+                Stage = 4;
+            }
+            else if (c.Health < c.TotalHealth * 0.4 && Stage < 3 && !c.IsDead)
+            {
+                c.IsImmovable = true;
+                c.IsInvulnerable = true;
+                c.Say("You have not seen the last of the Bloodherd!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+                c.EvtInterface.AddEvent(SpawnTharlgnanGor, AddsSpawnTimer, 1); // We are spawnning some adds
+                c.EvtInterface.AddEvent(RemoveBuffs, 5000, 1);
+                Stage = 3;
+            }
+            else if (c.Health < c.TotalHealth * 0.6 && Stage < 2 && !c.IsDead)
+            {
+                c.IsImmovable = true;
+                c.IsInvulnerable = true;
+                c.Say("Tremble at the Bloodherd!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+                c.EvtInterface.AddEvent(SpawnTharlgnanGuardian, AddsSpawnTimer, 1);
+                c.EvtInterface.AddEvent(RemoveBuffs, 5000, 1);
+                Stage = 2;
+            }
+            else if (c.Health < c.TotalHealth * 0.8 && Stage < 1 && !c.IsDead)
+            {
+                c.IsImmovable = true;
+                c.IsInvulnerable = true;
+                c.Say("You are just a frenzied bait!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+                c.EvtInterface.AddEvent(SpawnTharlgnanbloodsnout, AddsSpawnTimer, 1);
+                c.EvtInterface.AddEvent(RemoveBuffs, 5000, 1);
+                Stage = 1;
+            }
+            return false;
+        }
+
+        public void RemoveBuffs()
+        {
+            Creature c = this.Obj as Creature;
+            //c.IsImmovable = false;
+            c.IsInvulnerable = false;
+        }
+
+        // Removal of magic wall
+        public bool RemoveWall(Object GO = null, object instigator = null)
+        {
+            foreach (GameObject wall in magicWalls)
+            {
+                wall.Destroy();
+            }
+            return false;
+        }
+
+        public void AddWall()
+        {
+            GameObject_proto proto = GameObjectService.GetGameObjectProto(2000441);
+            GameObject_spawn spawn = new GameObject_spawn
+            {
+                Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
+                WorldX = 998950,
+                WorldY = 988894,
+                WorldZ = 8894,
+                WorldO = 2046,
+                ZoneId = 163
+            };
+
+            spawn.BuildFromProto(proto);
+            GameObject GO = Obj.Region.CreateGameObject(spawn);
+            GO.Say("**Wall of magical force is now blocking the exit**", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+            magicWalls.Add(GO);
+        }
+
+        public void SpawnTharlgnanbloodsnout() // Spawning adds
+        {
+            Creature_proto Proto = CreatureService.GetCreatureProto((uint)1630999);
+            Random rand = new Random();
+            for (int i = 0; i < 6; i++)
+            {
+                Creature_spawn Spawn = new Creature_spawn();
+                Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
+                Spawn.BuildFromProto(Proto);
+                Spawn.WorldO = Obj.Heading;
+                Spawn.WorldX = (int)(999112 + 150 - 300 * rand.NextDouble());
+                Spawn.WorldY = (int)(984749 + 150 - 300 * rand.NextDouble());
+                Spawn.WorldZ = 9022;
+                Spawn.ZoneId = 163;
+                Spawn.Level = 33;
+                Creature c = Obj.Region.CreateCreature(Spawn);
+                c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds); // We are removing spawns from server when adds die
+                addList.Add(c); // Adding adds to the list for easy removal
             }
         }
 
-        #endregion Methods
+        public void SpawnTharlgnanGuardian()
+        {
+            Creature_proto Proto = CreatureService.GetCreatureProto((uint)1631999);
+            Random rand = new Random();
+            for (int i = 0; i < 6; i++)
+            {
+                Creature_spawn Spawn = new Creature_spawn();
+                Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
+                Spawn.BuildFromProto(Proto);
+                Spawn.WorldO = Obj.Heading;
+                Spawn.WorldX = (int)(999112 + 150 - 300 * rand.NextDouble());
+                Spawn.WorldY = (int)(984749 + 150 - 300 * rand.NextDouble());
+                Spawn.WorldZ = 8969;
+                Spawn.ZoneId = 163;
+                Spawn.Level = 33;
+                Creature c = Obj.Region.CreateCreature(Spawn);
+                c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds);
+                addList.Add(c);
+            }
+        }
+        
+        public void SpawnTharlgnanGor()
+        {
+            Creature_proto Proto = CreatureService.GetCreatureProto((uint)1632999);
+            Random rand = new Random();
+            for (int i = 0; i < 6; i++)
+            {
+                Creature_spawn Spawn = new Creature_spawn();
+                Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
+                Spawn.BuildFromProto(Proto);
+                Spawn.WorldO = Obj.Heading;
+                Spawn.WorldX = (int)(999112 + 150 - 300 * rand.NextDouble());
+                Spawn.WorldY = (int)(984749 + 150 - 300 * rand.NextDouble());
+                Spawn.WorldZ = 9023;
+                Spawn.ZoneId = 163;
+                Spawn.Level = 33;
+                Creature c = Obj.Region.CreateCreature(Spawn);
+                c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds);
+                addList.Add(c);
+            }
+        }
+
+        // This remove adds from game
+        public bool RemoveAdds(Object npc = null, object instigator = null)
+        {
+            Creature c = npc as Creature;
+            c.EvtInterface.AddEvent(c.Destroy, 20000, 1);
+            return false;
+        }
+
+        // This remove all adds from game
+        public bool RemoveAllAdds(Object npc = null, object instigator = null)
+        {
+            foreach (Creature add in addList)
+            {
+                add.Health = 0;
+                add.EvtInterface.AddEvent(add.Destroy, 20000, 1);
+            }
+            return false;
+        }
     }
 }
