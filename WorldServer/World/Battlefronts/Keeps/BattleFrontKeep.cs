@@ -105,6 +105,11 @@ namespace WorldServer.World.BattleFronts.Keeps
             KeepCommunications = comms;
             Zone = region.GetZoneMgr(info.ZoneId);
 
+            if (Zone == null)
+            {
+                _logger.Warn($"Zone for {Info.Name} is null!");
+            }
+
             SpawnPoints = Info.KeepSiegeSpawnPoints;
             PlayersInRange = new HashSet<Player>();
 

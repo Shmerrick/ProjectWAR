@@ -818,6 +818,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 keep.Realm = (Realms)keep.Info.Realm;
 
                 Keeps.Add(keep);
+                keep.Load();
 
                 Region.AddObject(keep, info.ZoneId);
 
