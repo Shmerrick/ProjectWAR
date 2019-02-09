@@ -17,7 +17,11 @@ using CreatureSubTypes = GameData.CreatureSubTypes;
 
 namespace WorldServer.World.BattleFronts.Keeps
 {
-    public class BattleFrontKeep : Object
+    public abstract class BattleFrontObjective : Object
+    {
+    }
+
+    public class BattleFrontKeep : BattleFrontObjective
     {
         public const byte INNER_DOOR = 1;
         public const byte OUTER_DOOR = 2;

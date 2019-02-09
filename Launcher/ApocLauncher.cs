@@ -18,9 +18,9 @@ namespace Launcher
         public bool AllowPatch { get; }
         public static ApocLauncher Acc;
 
-        public static string LocalServerIP = "127.0.0.1";
-        public static string TestServerIP = "game.warapoc.com";
-        public static int LocalServerPort = 8047;
+        public static string LocalServerIP = "192.168.0.21";
+        public static string TestServerIP = "192.168.0.21";
+        public static int LocalServerPort = 8000;
         public static int TestServerPort = 8000;
         static HttpClient client = new HttpClient();
         private Patcher patcher;

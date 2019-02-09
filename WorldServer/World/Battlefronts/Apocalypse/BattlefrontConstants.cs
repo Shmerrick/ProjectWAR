@@ -78,8 +78,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static int BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG = 4;
         public static int BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN = 5;
         public static int BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY = 6;
-        public static int BATTLEFRONT_DWARF_GREENSKIN_TIER4_Stonewatch = 14;
-        public static int BATTLEFRONT_DWARF_GREENSKIN_TIER4_Butchers_Pass = 18;
+        public static int BATTLEFRONT_DWARF_GREENSKIN_TIER4_STONEWATCH = 14;
+        public static int BATTLEFRONT_DWARF_GREENSKIN_TIER4_BUTCHERS_PASS = 16;
 
 
         public static int BATTLEFRONT_EMPIRE_CHAOS_TIER1_NORDLAND = 10;
@@ -98,8 +98,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static int BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE =7;
         public static int BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE = 8;
         public static int BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR = 9;
-        public static int BATTLEFRONT_ELF_DARKELF_TIER4_Shining_Way = 16;
-        public static int BATTLEFRONT_ELF_DARKELF_TIER4_Fell_Landing = 17;
+        public static int BATTLEFRONT_ELF_DARKELF_TIER4_SHINING_WAY = 17;
+        public static int BATTLEFRONT_ELF_DARKELF_TIER4_FELL_LANDING = 18;
 
         public const int ZONE_STATUS_CONTESTED = 0;
         public const int ZONE_STATUS_ORDER_LOCKED = 1;
