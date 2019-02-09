@@ -570,17 +570,24 @@ namespace WorldServer
                     return true;
                 else
                 {
-                    if (nearEnemyKeep == DeploymentReason.MaximumCount)
+                    // If deploying defensive siege - must be near the siege merchant
+                    if (nearMerchant == DeploymentReason.Success)
                     {
-                        player.SendClientMessage("There are too many of this type of Siege deployed", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                        return false;
+                        return true;
                     }
-                    if (nearFriendlyKeep == DeploymentReason.Range || nearEnemyKeep == DeploymentReason.Range)
+                    else
                     {
-                        player.SendClientMessage("Must deploy siege at keep/fort", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                        return false;
+                        if (nearEnemyKeep == DeploymentReason.MaximumCount)
+                        {
+                            player.SendClientMessage("There are too many of this type of Siege deployed", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                            return false;
+                        }
+                        if (nearFriendlyKeep == DeploymentReason.Range || nearEnemyKeep == DeploymentReason.Range)
+                        {
+                            player.SendClientMessage("Must deploy siege at keep/fort", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                            return false;
+                        }
                     }
-
                     return false;
                 }
             }

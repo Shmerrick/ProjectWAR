@@ -2,7 +2,7 @@
 {
     public class SiegeMerchantLocationComparitor : ILocationComparitor
     {
-        public int ComparisonRange = 100;
+        public int ComparisonRange = 150;
 
         public bool InRange(Player player)
         {
