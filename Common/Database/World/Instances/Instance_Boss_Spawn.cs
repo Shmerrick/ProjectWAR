@@ -19,6 +19,27 @@ namespace Common
             set { _Instance_spawns_ID = value; Dirty = true; }
         }
 
+        private string _name;
+
+        [DataElement(Varchar = 255, AllowDbNull = false)]
+        public string Name
+        {
+            get { return _name; }
+
+            set
+            {
+                GenderedName = value;
+
+                int caratPos = value.IndexOf("^", StringComparison.Ordinal);
+
+                if (caratPos == -1)
+                    _name = value;
+                else
+                    _name = value.Substring(0, caratPos);
+            }
+        }
+        public string GenderedName;
+
         [DataElement]
         public uint Entry { get; set; }
 
