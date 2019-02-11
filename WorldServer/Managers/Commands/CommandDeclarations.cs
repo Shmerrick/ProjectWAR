@@ -107,6 +107,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("allcontribution", GetBattleFrontContribution, null, EGmLevel.AnyGM, 0, "Gets the contribution of all players in the battlefront."),
             new GmCommandHandler("keeps", CheckKeeps, null, EGmLevel.AnyGM, 0, "Checks all keeps that they have the minimum required child table records."),
             new GmCommandHandler("captain", CheckCaptain, null, EGmLevel.AnyGM, 0, "Returns captain for either realm in the current region"),
+            new GmCommandHandler("oil", CheckOil, null, EGmLevel.AnyGM, 0, "Returns information about the current keep/oil"),
         };
 
         /// <summary>Database commands under .database</summary>

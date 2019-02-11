@@ -6,6 +6,7 @@ using System.Text;
 using GameData;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer.Managers.Commands
 {
@@ -83,6 +84,28 @@ namespace WorldServer.Managers.Commands
             else
             {
                 plr.SendClientMessage($"No Order Captain");
+            }
+
+            return true;
+        }
+        
+        /// <summary>
+        /// Returns the closest keep and distance to Oil spawn pt
+        /// </summary>
+        /// <param name="plr">Player that initiated the command</param>
+        /// <param name="values">List of command arguments (after command name)</param>
+        /// <returns>True if command was correctly handled, false if operation was canceled</returns>
+        public static bool CheckOil(Player plr, ref List<string> values)
+        {
+
+            BattleFrontKeep keep = plr.Region.Campaign.GetClosestFriendlyKeep(plr.WorldPosition, plr.Realm);
+            plr.SendClientMessage($"Closest Keep : {keep.Info.Name}");
+
+
+            foreach (var h in keep.HardPoints)
+            {
+                if (!plr.PointWithinRadiusFeet(h, 10))
+                    plr.SendClientMessage($"Player too far from hardpoint {h.ToString()}");
             }
 
             return true;
