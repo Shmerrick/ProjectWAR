@@ -18,7 +18,6 @@ namespace WorldServer
         /// </remarks>
         public const double HEADING_TO_RADIAN = (360.0 / 4096.0) * (Math.PI / 180.0);
 
-
         /// <summary>
         /// The factor to convert radians to a heading value
         /// </summary>
@@ -263,11 +262,23 @@ namespace WorldServer
         /// <returns>True if the point is within the radius, otherwise false</returns>
         public bool IsWithinRadiusUnits(IPoint2D point, int radius)
         {
-            double dx = X - point.X;
-            double dy = Y - point.Y;
-            double distSquare = dx * dx + dy * dy;
+            if (radius > ushort.MaxValue)
+                return GetDistance(point) <= radius;
 
-            return (Math.Abs(distSquare / (radius * radius)) < 1.0f);
+            uint rSquared = (uint)radius * (uint)radius;
+
+            int dx = X - point.X;
+
+            long dist = (long)dx * dx;
+
+            if (dist > rSquared)
+                return false;
+
+            int dy = Y - point.Y;
+
+            dist += (long)dy * dy;
+
+            return dist <= rSquared;
         }
 
         /// <summary>
@@ -278,11 +289,25 @@ namespace WorldServer
         /// <returns>True if the point is within the radius, otherwise false</returns>
         public bool IsWithinRadiusFeet(IPoint2D point, int radius)
         {
-            double dx = X - point.X;
-            double dy = Y - point.Y;
-            double distSquare = dx * dx + dy * dy;
+            radius *= UNITS_TO_FEET;
 
-            return (Math.Abs(distSquare / ((radius * radius) * UNITS_TO_FEET)) < 1.0f);
+            if (radius > ushort.MaxValue)
+                return GetDistance(point) <= radius;
+
+            uint rSquared = (uint)radius * (uint)radius;
+
+            int dx = X - point.X;
+
+            long dist = (long)dx * dx;
+
+            if (dist > rSquared)
+                return false;
+
+            int dy = Y - point.Y;
+
+            dist += (long)dy * dy;
+
+            return dist <= rSquared;
         }
     }
 }

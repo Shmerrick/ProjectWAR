@@ -16,7 +16,9 @@ namespace WorldServer
         /// Constructs a new 3D point object
         /// </summary>
         public Point3D()
-            : base(0, 0) { }
+            : base(0, 0)
+        {
+        }
 
         /// <summary>
         /// Constructs a new 3D point object
@@ -36,14 +38,18 @@ namespace WorldServer
         /// <param name="point">2D point</param>
         /// <param name="z">Z coord</param>
         public Point3D(IPoint2D point, int z)
-            : this(point.X, point.Y, z) { }
+            : this(point.X, point.Y, z)
+        {
+        }
 
         /// <summary>
         /// Constructs a new 3D point object
         /// </summary>
         /// <param name="point">3D point</param>
         public Point3D(IPoint3D point)
-            : this(point.X, point.Y, point.Z) { }
+            : this(point.X, point.Y, point.Z)
+        {
+        }
 
         #region IPoint3D Members
 
@@ -129,28 +135,30 @@ namespace WorldServer
         /// <returns>True if the point is within the radius, otherwise false</returns>
         public virtual bool IsWithinRadiusUnits(IPoint3D point, int radius)
         {
+            if (radius > ushort.MaxValue)
+                return GetDistance(point) <= radius;
+
             double dx = X - point.X;
             double dy = Y - point.Y;
             double dz = Z - point.Z;
             double distSquare = dx * dx + dy * dy + dz * dz;
 
-            return (Math.Abs(distSquare / (radius * radius)) < 1.0f);
+            return distSquare <= radius * radius;
         }
 
-        /// <summary>
-        /// Determine if another point is within a given radius
-        /// </summary>
-        /// <param name="point">Target point</param>
-        /// <param name="radius">Radius</param>
-        /// <returns>True if the point is within the radius, otherwise false</returns>
         public virtual bool IsWithinRadiusFeet(IPoint3D point, int radius)
         {
+            radius *= UNITS_TO_FEET;
+
+            if (radius > ushort.MaxValue)
+                return GetDistance(point) <= radius;
+
             double dx = X - point.X;
             double dy = Y - point.Y;
             double dz = Z - point.Z;
             double distSquare = dx * dx + dy * dy + dz * dz;
 
-            return (Math.Abs(distSquare / ((radius * radius) * UNITS_TO_FEET)) < 1.0f);
+            return distSquare <= radius * radius;
         }
     }
 }

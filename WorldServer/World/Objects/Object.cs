@@ -555,28 +555,45 @@ namespace WorldServer
 
         public bool ObjectWithinRadiusFeet(Object obj, int radius)
         {
-            if ((null == WorldPosition) || (null == obj.WorldPosition))
+            if (obj.WorldPosition == null)
+            {
+                //Log.Error(Name, "RadiusFeet check against " + obj.Name + " with NULL WorldPosition");
                 return false;
+            }
+
+            radius *= UNITS_TO_FEET;
+
+            if (radius > ushort.MaxValue)
+                return GetDistance(obj) <= radius;
 
             double dx = WorldPosition.X - obj.WorldPosition.X;
             double dy = WorldPosition.Y - obj.WorldPosition.Y;
             double dz = WorldPosition.Z - obj.WorldPosition.Z;
             double distSquare = dx * dx + dy * dy + dz * dz;
 
-            return (Math.Abs(distSquare / ((radius * radius) * UNITS_TO_FEET)) < 1.0f);
+            return distSquare <= radius * radius;
         }
 
         public bool PointWithinRadiusFeet(Point3D point, int radius)
         {
-            if ((null == WorldPosition) || (null == point))
+
+            if (WorldPosition == null)
                 return false;
+
+            if (point == null)
+                return false;
+
+            radius *= UNITS_TO_FEET;
+
+            if (radius > ushort.MaxValue)
+                return GetDistance(point) <= radius;
 
             double dx = WorldPosition.X - point.X;
             double dy = WorldPosition.Y - point.Y;
             double dz = WorldPosition.Z - point.Z;
             double distSquare = dx * dx + dy * dy + dz * dz;
 
-            return (Math.Abs(distSquare / ((radius * radius) * UNITS_TO_FEET)) < 1.0f);
+            return distSquare <= radius * radius;
         }
 
         /// <summary>
