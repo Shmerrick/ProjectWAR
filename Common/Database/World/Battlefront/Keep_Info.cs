@@ -76,8 +76,6 @@ namespace Common
             set { _PQuestId = value; Dirty = true; }
         }
 
-        [DataElement(AllowDbNull = false)]
-        public bool IsFortress { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public int X { get; set; }
@@ -190,6 +188,10 @@ namespace Common
 
         [DataElement(AllowDbNull = false)]
         public int RamOuter2O { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public bool IsFortress { get; set; }
+
 
         public List<KeepSiegeSpawnPoints> KeepSiegeSpawnPoints { get; set; }
         public List<Keep_Creature> Creatures;

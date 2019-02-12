@@ -232,7 +232,7 @@ namespace WorldServer
                 _nextDamageTime = msTick + TimeSpan.TicksPerSecond * 10;
             }
 
-            if (msTick > SiegeInterface.DeathTime)
+            if (msTick > SiegeInterface.DeathTime && msTick > _nextDamageTime)
             {
                 ReceiveDamage(this, MaxHealth / 5);
                 _nextDamageTime = msTick + TimeSpan.TicksPerSecond * 10;
