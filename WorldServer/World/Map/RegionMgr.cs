@@ -30,7 +30,7 @@ namespace WorldServer
     public class RegionMgr
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        public static int RegionUpdateInterval = 50; // 50 ms between each update
+        public static int REGION_UPDATE_INTERVAL = 50; // 50 ms between each update
         public static ushort MaxCellID = 800;
         public static ushort MaxCells = 16;
         public static int MaxVisibilityRange = 400; // It was 400 on Age of Reckoning
@@ -200,29 +200,29 @@ namespace WorldServer
         {
             while (_running)
             {
-                long start = TCPManager.GetTimeStampMS();
+                long stampMs = TCPManager.GetTimeStampMS();
 
-                if (start - _lastRegionUpdate > 500)
-                    Log.Error("RegionMgr", "[" + RegionId + "] - Region inter-update period too long - took " + (start - _lastRegionUpdate) + " ms.");
+                if (stampMs - _lastRegionUpdate > 500)
+                    Log.Error("RegionMgr", "[" + RegionId + "] - Region inter-update period too long - took " + (stampMs - _lastRegionUpdate) + " ms.");
 
-                else if (start - _lastRegionUpdate > 250)
-                    Log.Notice("RegionMgr", "[" + RegionId + "] - Region inter-update period too long - took " + (start - _lastRegionUpdate) + " ms.");
+                else if (stampMs - _lastRegionUpdate > 250)
+                    Log.Notice("RegionMgr", "[" + RegionId + "] - Region inter-update period too long - took " + (stampMs - _lastRegionUpdate) + " ms.");
 
                 try
                 {
-                    WorldMgr.UpdateScripts(start);
+                    WorldMgr.UpdateScripts(stampMs);
 
                     AddNewObjects();
 
                     RemoveOldObjects();
 
-                    UpdateActors(start);
+                    UpdateActors(stampMs);
 
-                    Campaign?.Update(start);
+                    Campaign?.Update(stampMs);
 
-                    Campaign?.BattleFrontManager?.ImpactMatrixManagerInstance?.Update(start);
+                    Campaign?.BattleFrontManager?.ImpactMatrixManagerInstance?.Update(stampMs);
 
-                    ScenarioMgr.ImpactMatrixManagerInstance?.Update(start);
+                    ScenarioMgr.ImpactMatrixManagerInstance?.Update(stampMs);
 
                     
                 }
@@ -232,12 +232,13 @@ namespace WorldServer
                     Log.Error("Error", e.ToString());
                 }
 
-                long elapsed = TCPManager.GetTimeStampMS() - start;
+                long elapsed = TCPManager.GetTimeStampMS() - stampMs;
 
                 _lastRegionUpdate = TCPManager.GetTimeStampMS();
 
-                if (elapsed < RegionUpdateInterval)
-                    Thread.Sleep((int)(RegionUpdateInterval - elapsed));
+                // If we updated the region in less time than the REGION_UPDATE_INTERVAL sleep until the interval has expired.
+                if (elapsed < REGION_UPDATE_INTERVAL)
+                    Thread.Sleep((int)(REGION_UPDATE_INTERVAL - elapsed));
                 else
                 {
                     if (elapsed > 500)

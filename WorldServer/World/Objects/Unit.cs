@@ -237,28 +237,28 @@ namespace WorldServer
         /// </summary>
         private readonly int _stateInterval = 40000 + StaticRandom.Instance.Next(10000);
 
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
             if (!IsDead)
             {
-                UpdateHealth(tick);
+                UpdateHealth(msTick);
                 SendCollatedHit();
             }
 
-            if (_nextSend < tick)
+            if (_nextSend < msTick)
             {
-                _nextSend = tick + _stateInterval;
+                _nextSend = msTick + _stateInterval;
                 StateDirty = true;
             }
 
             if (StateDirty)
             {
-                _nextSend = tick + _stateInterval;
+                _nextSend = msTick + _stateInterval;
                 StateDirty = false;
                 SendState();
             }
 
-            base.Update(tick);
+            base.Update(msTick);
         }
 
         #region Sender

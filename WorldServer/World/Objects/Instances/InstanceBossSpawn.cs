@@ -39,9 +39,9 @@ namespace WorldServer.World.Objects.Instances
             AddCrowdControlImmunity((int)GameData.CrowdControlTypes.All);
         }
 
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
-            base.Update(tick);
+            base.Update(msTick);
         }
 
         public override void ApplyKnockback(Unit caster, AbilityKnockbackInfo kbInfo)

@@ -548,9 +548,9 @@ namespace WorldServer.World.Objects.PublicQuests
             }
         }
 
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
-            base.Update(tick);
+            base.Update(msTick);
 
             long curTimeSeconds = TCPManager.GetTimeStamp();
 

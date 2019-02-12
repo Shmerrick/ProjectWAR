@@ -19,14 +19,14 @@ namespace WorldServer
 
         public const int MAX_SHOTS = 15;
         public int ShotCount = MAX_SHOTS;
-        public int SiegeLifeSpan = 300;
+        public long SiegeLifeSpan = (int) TimeSpan.FromMinutes(1).TotalMilliseconds;
 
         public Siege(Creature_spawn spawn, Player owner, SiegeType type) : base(spawn)
         {
             _type = type;
             SiegeInterface = AddInterface<SiegeInterface>();
             SiegeInterface.Creator = owner;
-            SiegeInterface.DeathTime = TCPManager.GetTimeStamp() + SiegeLifeSpan;
+            SiegeInterface.DeathTime = TCPManager.GetTimeStampMS() + SiegeLifeSpan;
         }
 
         public static Siege SpawnSiegeWeapon(Player plr, ushort zoneId, uint entry, bool defender)
@@ -206,13 +206,13 @@ namespace WorldServer
         private long _nextAreaCheckTime;
         private long _nextDamageTime;
 
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
-            base.Update(tick);
+            base.Update(msTick);
 
-            if (_nextAreaCheckTime < tick)
+            if (_nextAreaCheckTime < msTick)
             {
-                _nextAreaCheckTime = tick + 2000;
+                _nextAreaCheckTime = msTick + 2000;
 
                 Zone_Area newArea = Zone.ClientInfo.GetZoneAreaFor((ushort)X, (ushort)Y, Zone.ZoneId, (ushort)Z);
 
@@ -222,11 +222,20 @@ namespace WorldServer
                     _outofAreaCount--;
             }
 
+            if (SiegeInterface.IsAbandoned)
+                SiegeInterface.Creator.SendClientMessage("Your siege has been adandoned!!");
+
             // RB   6/25/2016   Kill siege weapons that have decayed and are not being interacted with.
-            if (SiegeInterface.IsAbandoned && tick > SiegeInterface.DeathTime && tick > _nextDamageTime)
+            if (SiegeInterface.IsAbandoned && msTick > _nextDamageTime)
             {
                 ReceiveDamage(this, MaxHealth / 5);
-                _nextDamageTime = tick + 2000;
+                _nextDamageTime = msTick + TimeSpan.TicksPerSecond * 10;
+            }
+
+            if (msTick > SiegeInterface.DeathTime)
+            {
+                ReceiveDamage(this, MaxHealth / 5);
+                _nextDamageTime = msTick + TimeSpan.TicksPerSecond * 10;
             }
 
 

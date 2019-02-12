@@ -119,7 +119,7 @@ namespace WorldServer.Scenarios.Objects
             Region.AddObject(_glowObject, spawn.ZoneId);
         }
 
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
             if (PendingDisposal)
             {
@@ -127,10 +127,10 @@ namespace WorldServer.Scenarios.Objects
                 return;
             }
 
-            if (_holdResetTime > 0 && HeldState == EHeldState.Carried && _holdResetTime < tick)
+            if (_holdResetTime > 0 && HeldState == EHeldState.Carried && _holdResetTime < msTick)
                 ResetFromHeld();
 
-            _evtInterface.Update(tick);
+            _evtInterface.Update(msTick);
         }
 
         private void SetGlowColorFor(Realms realm)

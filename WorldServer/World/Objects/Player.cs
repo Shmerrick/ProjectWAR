@@ -890,7 +890,7 @@ namespace WorldServer
                 SendPacket(Out);
             }
         }
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
             if (Client == null)
             {
@@ -917,7 +917,7 @@ namespace WorldServer
                 return;
             }
 
-            if (LastKeepAliveTime != 0 && LastKeepAliveTime + PING_TIMEOUT < tick)
+            if (LastKeepAliveTime != 0 && LastKeepAliveTime + PING_TIMEOUT < msTick)
             {
                 Client.Disconnect("Ping timeout");
                 if (!IsDisposed && CbtInterface.IsInCombat && CbtInterface.IsPvp)
@@ -942,12 +942,12 @@ namespace WorldServer
                 return;
             }
 
-            UpdateMorale(tick);
+            UpdateMorale(msTick);
 
             if (!IsDead)
-                UpdateActionPoints(tick);
+                UpdateActionPoints(msTick);
 
-            base.Update(tick);
+            base.Update(msTick);
 
             //System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
 
@@ -957,7 +957,7 @@ namespace WorldServer
             //if (stopWatch.ElapsedMilliseconds >= 40)
             //    Log.Error("Region" + Region?.RegionId, "Updating " + Name + " (Packets) took " + stopWatch.ElapsedMilliseconds + "ms!");
 
-            if (tick - _lastLevelResourceAdd > RENOWN_UPDATE_INTERVAL)
+            if (msTick - _lastLevelResourceAdd > RENOWN_UPDATE_INTERVAL)
             {
                 if (_pendingXP > 0)
                 {
@@ -969,13 +969,13 @@ namespace WorldServer
                 }
 
 
-                _lastLevelResourceAdd = tick + RENOWN_UPDATE_INTERVAL;
+                _lastLevelResourceAdd = msTick + RENOWN_UPDATE_INTERVAL;
 
                 if (_pingSampleCount < 10)
                     UpdatePing();
             }
 
-            if (_speedPenCount > 0 && tick > _nextSpeedPenLiftTime)
+            if (_speedPenCount > 0 && msTick > _nextSpeedPenLiftTime)
             {
                 --_speedPenCount;
                 if (_speedPenCount > 1)
@@ -989,11 +989,11 @@ namespace WorldServer
             ForceCloseMobsToWander(200);
 
 
-            if (StealthLevel == 0 || tick - _lastStealthCheck <= STEALTH_CHECK_INTERVAL)
+            if (StealthLevel == 0 || msTick - _lastStealthCheck <= STEALTH_CHECK_INTERVAL)
                 return;
 
             CheckStealth();
-            _lastStealthCheck = tick + STEALTH_CHECK_INTERVAL;
+            _lastStealthCheck = msTick + STEALTH_CHECK_INTERVAL;
 
 
 

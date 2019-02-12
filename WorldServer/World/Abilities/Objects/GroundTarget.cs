@@ -63,7 +63,7 @@ namespace WorldServer
             EvtInterface.AddEvent(Destroy, (int)(expireTime - TCPManager.GetTimeStampMS()), 1);
         }
 
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
             if (PendingDisposal)
             {
@@ -71,8 +71,8 @@ namespace WorldServer
                 return;
             }
 
-            BuffInterface.Update(tick);
-            EvtInterface.Update(tick);
+            BuffInterface.Update(msTick);
+            EvtInterface.Update(msTick);
         }
 
         public override void SendMeTo(Player plr)

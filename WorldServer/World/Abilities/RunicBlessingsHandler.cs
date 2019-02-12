@@ -18,9 +18,9 @@ namespace WorldServer
             _rezTime = TCPManager.GetTimeStampMS() + 2000;
         }
 
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
-            if (tick <= _rezTime)
+            if (msTick <= _rezTime)
                 return;
 
             _slayerChoppa.RezUnit(_slayerChoppa.Realm == Realms.REALMS_REALM_ORDER ? (ushort)1489 : (ushort)1795, 25, true);

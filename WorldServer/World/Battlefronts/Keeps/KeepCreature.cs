@@ -75,13 +75,13 @@ namespace WorldServer.World.BattleFronts.Keeps
             }
         }
 
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
-            base.Update(tick);
+            base.Update(msTick);
 
             if (WaypointGUID > 0 && AiInterface != null && AiInterface.Waypoints != null && AiInterface.Waypoints.Count > 0)
             {
-                AiInterface.Update(tick);
+                AiInterface.Update(msTick);
             }
         }
 

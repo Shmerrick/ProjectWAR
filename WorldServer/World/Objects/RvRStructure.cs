@@ -145,12 +145,12 @@ namespace WorldServer
             // _logger.Debug($"RVRStructure Sendinteract Oid={Oid} {IsActive} {_buildState} {Faction} {Realm} {Level} {X} {Y} {Z} {XOffset} {YOffset} ");
         }
 
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
             switch (_buildState)
             {
                 case EConstructionState.Constructing:
-                    ProcessConstruction(tick);
+                    ProcessConstruction(msTick);
                     break;
                 case EConstructionState.Destroying:
                     ProcessDestruction();
@@ -162,7 +162,7 @@ namespace WorldServer
                     break;
             }
 
-            base.Update(tick);
+            base.Update(msTick);
         }
 
         #region Construction

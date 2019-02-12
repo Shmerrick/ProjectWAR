@@ -65,7 +65,7 @@ namespace WorldServer
 
         #endregion
 
-        public virtual void Update(long tick)
+        public virtual void Update(long msTick)
         {
             if (PendingDisposal)
             {
@@ -74,7 +74,7 @@ namespace WorldServer
             }
 
             for (int i = 0; i < Interfaces.Count; ++i)
-                Interfaces[i].Update(tick);
+                Interfaces[i].Update(msTick);
         }
 
         #region Load/Save

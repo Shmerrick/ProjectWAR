@@ -530,6 +530,9 @@ namespace WorldServer
             if (!(caster is Player player))
                 return false;
 
+            if (!(caster as Player).CbtInterface.IsPvp)
+                return false;
+
             var siegeType = Siege.GetSiegeType((uint)abInfo.CommandInfo[0].PrimaryValue);
 
             var nearMerchant = player.Region.Campaign.SiegeManager.CanDeploySiege(

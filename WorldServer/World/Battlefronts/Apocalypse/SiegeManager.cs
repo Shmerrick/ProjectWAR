@@ -62,7 +62,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _logger.Debug("Destroying all siege.");
             foreach (var deployedSiege in DeployedSieges)
             {
-                deployedSiege.SiegeInterface.DeathTime = TCPManager.GetTimeStamp();
+                deployedSiege.SiegeInterface.DeathTime = DateTime.Now.Ticks;
             }
         }
 

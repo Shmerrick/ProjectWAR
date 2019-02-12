@@ -587,10 +587,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         ///     Update thread.
         /// </summary>
-        /// <param name="tick"></param>
-        public override void Update(long tick)
+        /// <param name="msTick"></param>
+        public override void Update(long msTick)
         {
-            EvtInterface.Update(tick);
+            EvtInterface.Update(msTick);
 
             if (State == StateFlags.ZoneLocked)
                 return;
