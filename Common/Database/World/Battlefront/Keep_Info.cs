@@ -192,6 +192,8 @@ namespace Common
         [DataElement(AllowDbNull = false)]
         public bool IsFortress { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public int GuildClaimObjectiveId { get; set; }
 
         public List<KeepSiegeSpawnPoints> KeepSiegeSpawnPoints { get; set; }
         public List<Keep_Creature> Creatures;

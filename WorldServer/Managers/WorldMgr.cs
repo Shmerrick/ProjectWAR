@@ -118,6 +118,7 @@ namespace WorldServer
 
                 List<Zone_Respawn> resps = new List<Zone_Respawn>();
 
+                // Gunbad
                 if (player.ZoneId == 60 && player.QtsInterface.PublicQuest == null)
                 {
                     resps = ZoneService.GetZoneRespawns(zoneId);
@@ -130,7 +131,9 @@ namespace WorldServer
                 {
                     resps = ZoneService.GetZoneRespawns(zoneId);
                     foreach (Zone_Respawn res in resps)
-                        if (res.Realm == 0 && res.ZoneID == zoneId && res.RespawnID == player.QtsInterface.PublicQuest.Info.RespawnID)
+                        if (res.Realm == 0 && 
+                            res.ZoneID == zoneId && 
+                            res.RespawnID == player.QtsInterface.PublicQuest.Info.RespawnID)
                             return res;
                 }
 

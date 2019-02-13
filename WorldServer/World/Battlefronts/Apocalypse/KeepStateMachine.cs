@@ -13,7 +13,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public enum Command
         {
             OnOpenBattleFront,
-            OnSeizedTimerEnd,
+            OnGuildClaimTimerEnd,
             OnOuterDoorDown,
             OnInnerDoorDown,
             OnLordKilled,
@@ -21,7 +21,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             OnLordKilledTimerEnd,
             OnBackToSafeTimerEnd,
             OnLordWounded,
-            OnDoorRepaired
+            OnDoorRepaired,
+            OnGuildClaimInteracted
         }
 
         public enum ProcessState
@@ -31,12 +32,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             OuterDown,
             InnerDown,
             LordKilled,
-            Seized,
+            GuildClaim,
             Locked,
             DefenceTick,
             LordWounded
-            
-
         }
 
 
@@ -54,7 +53,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             /* Initial State */
             fsm.In(ProcessState.Initial)
-                .On(Command.OnOpenBattleFront).Goto(ProcessState.Safe).Execute(() => Keep.SetKeepSafe());
+                .On(Command.OnOpenBattleFront)
+                .Goto(ProcessState.Safe)
+                .Execute(() => Keep.SetKeepSafe());
             /* Any call to Lock Zone will execute Lock */
             fsm.In(ProcessState.Initial)
                 .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Keep.SetKeepLocked());
@@ -66,7 +67,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Keep.SetKeepLocked());
             fsm.In(ProcessState.LordKilled)
                 .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Keep.SetKeepLocked());
-            fsm.In(ProcessState.Seized)
+            fsm.In(ProcessState.GuildClaim)
                 .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Keep.SetKeepLocked());
             fsm.In(ProcessState.Locked)
                 .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Keep.SetKeepLocked());
@@ -103,14 +104,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             fsm.In(ProcessState.Safe)
                 .On(Command.OnLordKilled).Goto(ProcessState.LordKilled).Execute(() => Keep.SetLordKilled());
             fsm.In(ProcessState.LordKilled)
-                .On(Command.OnLordKilledTimerEnd).Goto(ProcessState.Seized).Execute(() => Keep.SetKeepSeized());
-            fsm.In(ProcessState.Seized)
-                .On(Command.OnSeizedTimerEnd)
+                .On(Command.OnLordKilledTimerEnd).Goto(ProcessState.GuildClaim).Execute(() => Keep.SetKeepSeized());
+            fsm.In(ProcessState.GuildClaim)  // Guild claim interacted, go to safe.
+                .On(Command.OnGuildClaimInteracted)
+                .Goto(ProcessState.Safe)
+                .Execute<uint>((uint guildId) => Keep.SetGuildClaimed(guildId))
+                .Execute(() => Keep.SetKeepSafe());
+            fsm.In(ProcessState.GuildClaim)
+                .On(Command.OnGuildClaimTimerEnd)
                 .If(Keep.IsFortress)
                 .Goto(ProcessState.Safe)
                 .Execute(() => Keep.ForceLockZone());
-            fsm.In(ProcessState.Seized)
-                .On(Command.OnSeizedTimerEnd)
+            fsm.In(ProcessState.GuildClaim)
+                .On(Command.OnGuildClaimTimerEnd)
                 .If(Keep.IsNotFortress)
                 .Goto(ProcessState.Safe)
                 .Execute(() => Keep.SetKeepSafe());

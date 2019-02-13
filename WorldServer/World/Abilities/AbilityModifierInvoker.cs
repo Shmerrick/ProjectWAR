@@ -1616,6 +1616,11 @@ namespace WorldServer
         private static void SetAuraPropagation(Unit caster, BuffInfo buffInfo, AbilityModifierEffect myEffect)
         {
             buffInfo.AuraPropagation = "Foe";
+            if (myEffect.PrimaryValue == 40)
+            {
+                buffInfo.AuraPropagation = "Foe40";
+                (caster as Player).SendClientMessage("Debug : Casting Aura for40");
+            }
         }
 
         private static void SwitchBuffCommandParams(Unit caster, BuffInfo buffInfo, AbilityModifierEffect myEffect)

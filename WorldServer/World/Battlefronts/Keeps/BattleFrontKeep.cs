@@ -13,6 +13,7 @@ using SystemData;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.BattleFronts.Objectives;
 using CreatureSubTypes = GameData.CreatureSubTypes;
 
 namespace WorldServer.World.BattleFronts.Keeps
@@ -43,6 +44,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public List<Hardpoint> HardPoints = new List<Hardpoint>();
 
         public List<KeepSiegeSpawnPoints> SpawnPoints = new List<KeepSiegeSpawnPoints>();
+        public GuildClaimObjective GuildFlag { get; set; }
 
         #region timers
         public KeepTimer SeizedTimer;
@@ -113,6 +115,9 @@ namespace WorldServer.World.BattleFronts.Keeps
             SpawnPoints = Info.KeepSiegeSpawnPoints;
             PlayersInRange = new HashSet<Player>();
 
+            //TODO - might need to supply the BFO.
+            GuildFlag = new GuildClaimObjective(this.Region, new BattleFront_Objective());
+
             if (SpawnPoints != null)
             {
                 _logger.Debug($"Loading SpawnPoints for {Info.Name}");
@@ -152,7 +157,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             PlayersCloseToLord = new HashSet<Player>();
 
-            SeizedTimer = new KeepTimer($"Seized Keep {Info.Name} Timer", 0, SeizedTimerLength);
+            SeizedTimer = new KeepTimer($"GuildClaim Keep {Info.Name} Timer", 0, SeizedTimerLength);
             LordKilledTimer = new KeepTimer($"Lord Killed {Info.Name} Timer", 0, LordKilledTimerLength);
             DefenceTickTimer = new KeepTimer($"Defence Tick {Info.Name} Timer", 0, DefenceTickTimerLength);
             BackToSafeTimer = new KeepTimer($"Back to Safe {Info.Name} Keep Timer", 0, BackToSafeTimerLength);
@@ -251,7 +256,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             if (SeizedTimer.IsExpired())
             {
-                OnSeizedTimerEnd();
+                OnGuildClaimTimerEnd();
                 return;
             }
             if (LordKilledTimer.IsExpired())
@@ -343,6 +348,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             ResetAllStateTimers();
 
             LordKilledTimer.Start();
+
+            this.GuildFlag.State = StateFlags.Unsecure;
 
         }
 
@@ -690,6 +697,8 @@ namespace WorldServer.World.BattleFronts.Keeps
                 {
                     fsm.Initialize(SM.ProcessState.Initial);
                     fsm.Fire(SM.Command.OnOpenBattleFront);
+                    this.GuildFlag.Keep = this;
+                    this.GuildFlag.State = StateFlags.Unsecure;
                 }
             }
             ProgressionLogger.Debug($"Starting Keep {Info.Name} FSM...");
@@ -708,10 +717,10 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         }
 
-        public void OnSeizedTimerEnd()
+        public void OnGuildClaimTimerEnd()
         {
             SeizedTimer.Reset();
-            fsm.Fire(SM.Command.OnSeizedTimerEnd);
+            fsm.Fire(SM.Command.OnGuildClaimTimerEnd);
         }
 
         public void OnOuterDoorDown(uint doorId)
@@ -751,6 +760,11 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             BackToSafeTimer.Reset();
             fsm.Fire(SM.Command.OnBackToSafeTimerEnd);
+        }
+
+        public void OnGuildClaimInteracted(uint guildId)
+        {
+            fsm.Fire(SM.Command.OnGuildClaimInteracted, guildId);
         }
 
         public void OnLordWounded()
@@ -1586,8 +1600,16 @@ namespace WorldServer.World.BattleFronts.Keeps
         }
 
 
-
-
+        /// <summary>
+        /// Keep guild claim flag has been interacted with and a guild has claimed this keep.
+        /// </summary>
+        /// <param name="guildId"></param>
+        public void SetGuildClaimed(uint guildId)
+        {
+            // Flag is secure (cant be interacted with)
+            this.GuildFlag.State = StateFlags.Secure;
+            SetGuildOwner(Guild.GetGuild(guildId));
+        }
     }
 
 
