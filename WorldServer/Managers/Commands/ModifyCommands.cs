@@ -468,6 +468,29 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        public static bool ModifyKeepGuild(Player plr, ref List<string> values)
+        {
+            var keepId = Convert.ToInt32(values[0]);
+            var guildId = Convert.ToInt32(values[1]);
+
+            var selectedKeep = plr.Region.Campaign.Keeps.SingleOrDefault(x => x.Info.KeepId == keepId);
+            if (selectedKeep == null)
+            {
+                plr.SendClientMessage($"MODIFY KEEP GUILD: Keep {keepId} not found");
+                return true;
+            }
+
+            var guild = Guild.GetGuild((uint) guildId);
+            if (guild == null)
+            {
+                plr.SendClientMessage($"MODIFY KEEP GUILD: Guild {guildId} not found");
+                return true;
+            }
+
+            selectedKeep.GuildFlag.BeginInteraction(plr);
+            return true;
+        }
+
         /// <summary>
         /// Changes your stat (byte Stat)
         /// </summary>

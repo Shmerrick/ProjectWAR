@@ -229,13 +229,13 @@ namespace WorldServer
             if (SiegeInterface.IsAbandoned && msTick > _nextDamageTime)
             {
                 ReceiveDamage(this, MaxHealth / 5);
-                _nextDamageTime = msTick + TimeSpan.TicksPerSecond * 10;
+                _nextDamageTime = msTick + 10 * 1000;
             }
 
             if (msTick > SiegeInterface.DeathTime && msTick > _nextDamageTime)
             {
                 ReceiveDamage(this, MaxHealth / 5);
-                _nextDamageTime = msTick + TimeSpan.TicksPerSecond * 10;
+                _nextDamageTime = msTick + 10 * 1000;
             }
 
 

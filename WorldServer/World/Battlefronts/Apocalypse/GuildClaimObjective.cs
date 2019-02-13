@@ -48,9 +48,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>Influence area containing the objective</summary>
         private Zone_Area _area;
 
-        /// <summary> The region id within which the Campaign exists.</summary>
-        public readonly ushort KeepId;
-
 
         /// <summary>Set of all players in close range, not limited</summary>
         // private ISet<Player> _closePlayers = new HashSet<Player>();
@@ -82,10 +79,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public int BuffId { get; set; }
 
-        public RVRRewardManager RewardManager { get; set; }
-
-        public PassiveStateMachine<CampaignObjectiveStateMachine.ProcessState, CampaignObjectiveStateMachine.Command> fsm { get; set; }
-
         // Position of the capture
         private int _captureProgress;
         // Whether a capture is in progress
@@ -114,12 +107,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         /// **** TEST : : Constructor to assist in testing - dont use in production. ***
         /// </summary>
-        public GuildClaimObjective(string name, int zoneId, int regionId, ushort keepId)
+        public GuildClaimObjective(string name, int zoneId, int regionId)
         {
             Name = name;
             ZoneId = (ushort)zoneId;
             RegionId = (ushort)regionId;
-            KeepId = keepId;
         }
 
         /// <summary>
@@ -177,21 +169,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public bool CanClaim(Player player)
         {
-            if (player.GldInterface == null)
-                return false;
-
-            if (!player.GldInterface.IsInGuild())
-                return false;
-
-            if (player.GldInterface.Guild == null)
-                return false;
-
-            if (this.Keep.KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
-                return false;
-
-            if (player.Realm != this.Keep.Realm)
-                return false;
-
             foreach (var vaultUser in player.GldInterface.Guild.GuildVaultUser)
             {
                 if (player.CharacterId == vaultUser.CharacterId)
@@ -204,9 +181,33 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         
         public override void SendInteract(Player player, InteractMenu menu)
         {
+            if (player.GldInterface == null)
+            {
+                player.SendClientMessage("Only guild members can claim a keep", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return;
+            }
+
+            if (!player.GldInterface.IsInGuild())
+            {
+                player.SendClientMessage("Only guild members can claim a keep", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return;
+            }
+
+            if (player.GldInterface.Guild == null)
+            {
+                player.SendClientMessage("Only guild members can claim a keep", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return;
+            }
+
+            if (this.Keep.KeepStatus != KeepStatus.KEEPSTATUS_SEIZED)
+            {
+                player.SendClientMessage("You can only claim a keep when it's lord has been killed", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return;
+            }
+
             if (!CanClaim(player))
             {
-                player.SendClientMessage("Your cannot claim this keep.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                player.SendClientMessage("You are not senior enough in your guild to claim this keep", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 return;
             }
 
@@ -255,7 +256,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public override void NotifyInteractionComplete(NewBuff b)
         {
-            this.CapturingPlayer.SendClientMessage(CapturingPlayer?.Name + $" has claimed {this.Keep.Info.Name} ");
+            this.CapturingPlayer.SendClientMessage(CapturingPlayer?.Name + $" has claimed {this.Keep.Info.Name} for {this.CapturingPlayer.GldInterface.Guild.Info.Name}");
             this.ClaimingGuild = this.CapturingPlayer.GldInterface.Guild;
             _captureInProgress = false;
             CapturingPlayer = null;

@@ -115,9 +115,6 @@ namespace WorldServer.World.BattleFronts.Keeps
             SpawnPoints = Info.KeepSiegeSpawnPoints;
             PlayersInRange = new HashSet<Player>();
 
-            //TODO - might need to supply the BFO.
-            GuildFlag = new GuildClaimObjective(this.Region, new BattleFront_Objective());
-
             if (SpawnPoints != null)
             {
                 _logger.Debug($"Loading SpawnPoints for {Info.Name}");
@@ -189,6 +186,18 @@ namespace WorldServer.World.BattleFronts.Keeps
             foreach (var door in Doors)
             {
                 door.Spawn();
+            }
+
+            // Create the guild claim objective flag.
+            var guildClaimObjective = BattleFrontService.GetBattleFrontObjectives(this.Region.RegionId).SingleOrDefault(x => x.Entry == Info.GuildClaimObjectiveId);
+            if (guildClaimObjective != null)
+            {
+                GuildFlag = new GuildClaimObjective(this.Region, guildClaimObjective);
+                Region.AddObject(GuildFlag, this.ZoneId.Value);
+            }
+            else
+            {
+                _logger.Error($"Could not find Guild Claim Objective for {this.Info.Name}");
             }
 
             if (WorldMgr._Keeps.ContainsKey(Info.KeepId))
@@ -638,6 +647,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 plr.SendClientMessage($"Distance from spawnpoint: {lord.Creature.WorldPosition.GetDistanceTo(lord.Creature.WorldSpawnPoint)}");
                 plr.SendClientMessage($"Health: {lord.Creature.PctHealth}");
                 plr.SendClientMessage($"RamDeployed: " + RamDeployed);
+                plr.SendClientMessage($"GuildClaim: " + this.OwningGuild?.Info.Name);
             }
         }
 
@@ -697,8 +707,12 @@ namespace WorldServer.World.BattleFronts.Keeps
                 {
                     fsm.Initialize(SM.ProcessState.Initial);
                     fsm.Fire(SM.Command.OnOpenBattleFront);
-                    this.GuildFlag.Keep = this;
-                    this.GuildFlag.State = StateFlags.Unsecure;
+
+                    if (this.GuildFlag != null)
+                    {
+                        this.GuildFlag.Keep = this;
+                        this.GuildFlag.State = StateFlags.Unsecure;
+                    }
                 }
             }
             ProgressionLogger.Debug($"Starting Keep {Info.Name} FSM...");
@@ -1169,7 +1183,9 @@ namespace WorldServer.World.BattleFronts.Keeps
             Out.WriteByte((byte)Realm);
             Out.WriteByte(1);
             Out.WriteUInt16(0);
-            Out.WritePascalString(Info.Name);
+
+            if (this.OwningGuild != null)
+                Out.WritePascalString($"{Info.Name} ({this.OwningGuild.Info.Name})");
             Out.WriteByte(2);
             Out.WriteUInt32(0x000039F5);
             Out.WriteByte(0);

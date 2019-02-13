@@ -41,6 +41,9 @@ namespace Common
         [DataElement(AllowDbNull = false)]
         public uint TokUnlocked { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public bool KeepSpawn { get; set; }
+
         public List<BattleFront_Guard> Guards;
     }
 }

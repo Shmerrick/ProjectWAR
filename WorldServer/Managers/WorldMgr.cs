@@ -1476,7 +1476,7 @@ namespace WorldServer
             }
             var resultList = new List<BattlefieldObjective>();
             _logger.Debug($"Region = {regionMgr.RegionId} ObjectiveCount = {objectives.Count}");
-            foreach (BattleFront_Objective obj in objectives)
+            foreach (BattleFront_Objective obj in objectives.Where(x=>x.KeepSpawn == false))
             {
                 BattlefieldObjective flag = new BattlefieldObjective(regionMgr, obj);
 				resultList.Add(flag);
