@@ -32,9 +32,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// Is used as a base timer in milliseconds when securing objectives.
         /// <summary>
         public static int MAX_CONTROL_GAUGE = MAX_SECURE_PROGRESS * 200;
-        public static int CONTESTED_TIMESPAN = 30; //300; // 5 min contested
-        public static int SECURED_TIMESPAN = 30; //900; // 5 min secured
-        public static int GUARDSPAWN_DELAY = 60; //60; // 1 min delayed
 
         public int Id { get; set; }
         public byte Tier { get; set; }
@@ -63,12 +60,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private readonly ushort _z; // why other attributes ?
         private readonly ushort _o; // why other attributes ?
 
-        public uint AccumulatedKills;
-
         public ApocCommunications CommsEngine { get; set; }
 
         public Campaign BattleFront { get; set; }
-        public BattleFrontStatus battleFrontStatus { get; set; }
 
         public string Name { get; set; }
 
@@ -86,15 +80,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         // Positive between 0 and SECURE_PROGRESS_MAX indicating the objective securisation indicator, in seconds
         private int _secureProgress;
 
-
-
-        #region timers
-        public int CaptureTimer;
-        public int GuardedTimer;
-
-        public const int CaptureTimerLength = 1 * 60;
-        public const int GuardedTimerLength = 1 * 60;
-        #endregion
 
         /// <summary>
         /// Constructor to assist in isolation testing.
@@ -497,18 +482,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // does nothing : base.SendMeTo(plr);
         }
 
-        /// <summary>
-        ///     Builds binary flag depending on the objective's current state.
-        /// </summary>
-        /// <returns>Bit flags representation</returns>
-        private StateFlags GetStateFlags()
-        {
-            if (State == StateFlags.ZoneLocked)
-                return StateFlags.Locked;
-
-            return State;
-        }
-
+       
         /// <summary>
         ///     Update thread.
         /// </summary>
