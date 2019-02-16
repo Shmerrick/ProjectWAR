@@ -602,7 +602,7 @@ namespace WorldServer.Managers.Commands
         {
             Unit playerTarget = GetTargetOrMe(plr);
 
-            if (playerTarget == null)
+            if (playerTarget == null || !(playerTarget is Player))
             {
                 plr.SendClientMessage("Your target is not a player.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 return true;
@@ -614,15 +614,15 @@ namespace WorldServer.Managers.Commands
                 {
                     plr.SendClientMessage("[Your Pet]\n", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
                 }
-                //else
-                //{
-                //    plr.SendClientMessage("Use of the GetStats command against other players is not allowed for non-GM characters.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-                //    return true;
-                //}
+                else
+                {
+                    plr.SendClientMessage("Use of the GetStats command against other players is not allowed for non-GM characters.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    return true;
+                }
             }
 
             plr.SendClientMessage("[Stats for " + playerTarget.Name + "]\n", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
-            if (playerTarget is Creature && plr.GmLevel >= 1)
+            if (playerTarget is Creature && plr.GmLevel > 1)
             {
                 Creature c = playerTarget as Creature;
                 plr.SendClientMessage("Creature Career: " + c.Spawn.Proto.Career, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);

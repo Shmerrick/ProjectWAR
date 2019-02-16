@@ -48,7 +48,7 @@ namespace WorldServer
             get
             {
                 if (_player != null)
-                    return _player.Info.Hidden;
+                    return false; //  Disable hidden option.
 
                 return false;
             }
@@ -57,7 +57,7 @@ namespace WorldServer
                 if (_player != null)
                 {
 
-                    _player.Info.Hidden = value;
+                    _player.Info.Hidden = false;   // Force hidden disabled.
                     CharMgr.Database.SaveObject(_player.Info);
                     //CharMgr.Database.ForceSave();
 

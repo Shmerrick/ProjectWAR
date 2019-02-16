@@ -797,19 +797,36 @@ namespace WorldServer
 
                 if (damageInfo.DamageType == 0) // physical damage
                 {
-                    float secondaryStat = caster.StsInterface.GetTotalStat(Stats.WeaponSkill);
-                    float pen = secondaryStat / (7.5f * caster.EffectiveLevel + 50f) * 0.25f;
+                    if (damageInfo.SubDamageType != SubDamageTypes.Oil)
+                    {
+                        float secondaryStat = caster.StsInterface.GetTotalStat(Stats.WeaponSkill);
+                        float pen = secondaryStat / (7.5f * caster.EffectiveLevel + 50f) * 0.25f;
 
-                    originalResistance = target.StsInterface.GetTotalStat(Stats.Armor);
+                        originalResistance = target.StsInterface.GetTotalStat(Stats.Armor);
 
-                    if (originalResistance <= 0)
-                        damageTypeResistance = 0;
+                        if (originalResistance <= 0)
+                            damageTypeResistance = 0;
+                        else
+                        {
+                            damageTypeResistance = originalResistance / (caster.EffectiveLevel * 44f) * 0.4f; //this will give you the total mitigation from armour.
+                            damageTypeResistance *= 1f - pen;
+                            if (damageTypeResistance > 0.75f) //puts in hard cap for physical mitigation of 75%
+                                damageTypeResistance = 0.75f;
+                        }
+                    }
                     else
                     {
-                        damageTypeResistance = originalResistance / (caster.EffectiveLevel * 44f) * 0.4f; //this will give you the total mitigation from armour.
-                        damageTypeResistance *= 1f - pen;
-                        if (damageTypeResistance > 0.75f) //puts in hard cap for physical mitigation of 75%
-                            damageTypeResistance = 0.75f;
+                        originalResistance = target.StsInterface.GetTotalStat(Stats.Armor);
+
+                        if (originalResistance <= 0)
+                            damageTypeResistance = 0;
+                        else
+                        {
+                            damageTypeResistance = originalResistance / (caster.EffectiveLevel * 44f) * 0.4f; //this will give you the total mitigation from armour.
+                            //damageTypeResistance *= 1f - pen;
+                            if (damageTypeResistance > 0.75f) //puts in hard cap for physical mitigation of 75%
+                                damageTypeResistance = 0.75f;
+                        }
                     }
                 }
                 else
@@ -1726,7 +1743,7 @@ namespace WorldServer
             #endregion
         }
 
-        public static void HealTarget(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target)
+        public static void HealTarget(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target, int criticalNumerator=0)
         {
             #region Base Damage
 
@@ -1760,7 +1777,7 @@ namespace WorldServer
 
                 #region CriticalHeal
 
-                int rand = StaticRandom.Instance.Next(0, 100);
+                int rand = StaticRandom.Instance.Next(criticalNumerator, 100);
 
                 int chanceToBeCrit = 10 + damageInfo.CriticalHitRate + caster.StsInterface.GetTotalStat(Stats.CriticalHitRate) + caster.StsInterface.GetTotalStat(Stats.HealCritRate);
                 if (rand <= chanceToBeCrit)
