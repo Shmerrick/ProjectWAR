@@ -22,7 +22,7 @@ namespace Launcher
         public static ApocLauncher Acc;
 
         public static string LocalServerIP = "192.168.0.21";
-        public static string TestServerIP = "192.168.0.21";
+        public static string TestServerIP = "10.10.10.156";
         public static int LocalServerPort = 8000;
         public static int TestServerPort = 8000;
         static HttpClient client = new HttpClient();

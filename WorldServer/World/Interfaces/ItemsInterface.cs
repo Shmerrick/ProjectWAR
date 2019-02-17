@@ -2849,7 +2849,7 @@ namespace WorldServer
 
                     foreach (ItemSetBonusInfo info in bonusList)
                     {
-                        if (info.ActionType == 3)
+                        if (info.ActionType == 3)  // remove stats
                             _playerOwner.StsInterface.RemoveItemBonusStat((Stats)info.StatOrSpell, info.Value);
                         else
                         {
