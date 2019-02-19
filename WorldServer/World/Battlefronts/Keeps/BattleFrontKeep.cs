@@ -140,6 +140,34 @@ namespace WorldServer.World.BattleFronts.Keeps
                                     keepSiegeSpawnPointse.Z,
                                     keepSiegeSpawnPointse.O));
                             break;
+                        case (int) SiegeType.GTAOE:
+                        case (int) SiegeType.DIRECT:
+                        case (int) SiegeType.SNIPER:
+                        {
+
+                            GameObject_proto glowProto = GameObjectService.GetGameObjectProto(99858);
+
+                            if (glowProto != null)
+                            {
+                                GameObject_spawn spawn = new GameObject_spawn
+                                {
+                                    Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
+                                    WorldO = Heading,
+                                    WorldX = keepSiegeSpawnPointse.X,
+                                    WorldY = keepSiegeSpawnPointse.Y,
+                                    WorldZ = keepSiegeSpawnPointse.Z,
+                                    ZoneId = Region.RegionId,
+                                };
+                                spawn.BuildFromProto(glowProto);
+
+                                var siegeRangeFlag = new GameObject(spawn);
+                                siegeRangeFlag.VfxState = 1;
+
+                                Region.AddObject(siegeRangeFlag, Info.ZoneId);
+                            }
+
+                            break;
+                        }
                     }
                 }
             }
@@ -162,6 +190,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             Fortress = isFortress;
         }
 
+       
         public override void OnLoad()
         {
             Z = Info.Z;
