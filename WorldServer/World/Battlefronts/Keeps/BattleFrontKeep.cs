@@ -145,9 +145,9 @@ namespace WorldServer.World.BattleFronts.Keeps
                         case (int) SiegeType.SNIPER:
                         {
 
-                            GameObject_proto glowProto = GameObjectService.GetGameObjectProto(99858);
+                            GameObject_proto glowProto = GameObjectService.GetGameObjectProto(99858);//99858
 
-                            if (glowProto != null)
+                                if (glowProto != null)
                             {
                                 GameObject_spawn spawn = new GameObject_spawn
                                 {
@@ -161,7 +161,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                                 spawn.BuildFromProto(glowProto);
 
                                 var siegeRangeFlag = new GameObject(spawn);
-                                siegeRangeFlag.VfxState = 1;
+                                siegeRangeFlag.VfxState = 3;  //1 blue, 2 red, 3 white, 4 - white;
 
                                 Region.AddObject(siegeRangeFlag, Info.ZoneId);
                             }
