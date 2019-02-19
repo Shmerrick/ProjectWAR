@@ -540,6 +540,8 @@ namespace WorldServer
             EvtInterface.AddEventNotify(EventName.OnStartCasting, CancelQuit);
 
             EvtInterface.AddEventNotify(EventName.OnDealDamage, CheckHotSpot);
+
+            BroadcastRank = true;
         }
 
         public override void OnLoad()

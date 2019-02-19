@@ -13,31 +13,10 @@ namespace Launcher
         [STAThread]
         static void Main(string[] args)
         {
-            var allowLocal = false;
-            var allowPatch = false;
-
-            for (int i = 0; i < args.Length; i++)
-            {
-                if (args.Length > 0)
-                {
-                    if (args[0] == "local")
-                        allowLocal = true;
-
-                    if (args[0] == "patch")
-                        allowPatch = true;
-                }
-
-                if (args.Length > 1)
-                {
-                    if (args[1] == "patch")
-                        allowPatch = true;
-                }
-
-            }
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ApocLauncher(allowLocal, allowPatch));
+            Application.Run(new ApocLauncher());
 
 
         }

@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net.Sockets;
-using System.IO;
-using System.Windows.Forms;
-using System.Threading;
-using System.Diagnostics;
-using nsHashDictionary;
-using MYPHandler;
+﻿using MYPHandler;
 using NLog;
+using nsHashDictionary;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Net.Sockets;
+using System.Text;
+using System.Windows.Forms;
 
 namespace Launcher
 {
@@ -443,9 +441,6 @@ namespace Launcher
                     {
                         authToken = packet.GetString();
                         _logger.Info($"Authentication Token Received : {authToken}");
-
-
-                        //ApocLauncher.Acc.lblConnection.Text = $@"Starting Client..";
                         try
                         {
 
@@ -472,13 +467,28 @@ namespace Launcher
 
                             _logger.Info($"Starting Client {warDirectory.FullName}\\WAR.exe");
 
-                            Process process = new Process();
-                            process.StartInfo.WorkingDirectory = warDirectory.FullName;
-                            process.StartInfo.FileName = "WAR.exe";
-                            process.StartInfo.Arguments = " --acctname=" + Convert.ToBase64String(Encoding.ASCII.GetBytes(User)) + " --sesstoken=" + Convert.ToBase64String(Encoding.ASCII.GetBytes(authToken));
-                            _logger.Info($"Starting process WAR.exe (in {warDirectory})");
-                            process.Start();
-                            Directory.SetCurrentDirectory(warDirectory.FullName);
+                            if (ApocLauncher.Acc.AllowWarClientLaunch)
+                            {
+
+                                Process process = new Process
+                                {
+                                    StartInfo =
+                                    {
+                                        WorkingDirectory = warDirectory.FullName,
+                                        FileName = "WAR.exe",
+                                        Arguments = " --acctname=" + Convert.ToBase64String(Encoding.ASCII.GetBytes(User)) + " --sesstoken=" +
+                                                    Convert.ToBase64String(Encoding.ASCII.GetBytes(authToken))
+                                    }
+                                };
+                                _logger.Info($"Starting process WAR.exe (in {warDirectory})");
+                                process.Start();
+                                Directory.SetCurrentDirectory(warDirectory.FullName);
+                            }
+                            else
+                            {
+                                _logger.Info($"Not launching WAR.Exe (in {warDirectory}) "+ " --acctname=" + Convert.ToBase64String(Encoding.ASCII.GetBytes(User)) + " --sesstoken=" +
+                                             Convert.ToBase64String(Encoding.ASCII.GetBytes(authToken)));
+                            }
                         }
                         catch (Exception e)
                         {
@@ -493,19 +503,6 @@ namespace Launcher
                     {
                         _logger.Info($"Processing LCR_INFO : Number Realms : {packet.GetUint8()} Name : {packet.GetString()} Parsed : {packet.GetParsedString()}");
 
-                        //Accueil.Acc.ClearRealms();
-                        //byte RealmsCount = packet.GetUint8();
-                        //for (byte i = 0; i < RealmsCount; ++i)
-                        //{
-                        //    bool Online = packet.GetUint8() > 0;
-                        //    string Name = packet.GetString();
-                        //    uint OnlinePlayers = packet.GetUint32();
-                        //    uint OrderCount = packet.GetUint32();
-                        //    uint DestructionCount = packet.GetUint32();
-
-                        //    //Accueil.Acc.AddRealm(Name, Online, OnlinePlayers, OrderCount, DestructionCount);
-
-                        //}
                     }
                     break;
 
@@ -569,73 +566,88 @@ namespace Launcher
         }
         public static void patchExe()
         {
-            _logger.Info("Patching WAR.exe");
-            using (Stream stream = new FileStream(Directory.GetCurrentDirectory() + "\\..\\WAR.exe", FileMode.OpenOrCreate))
+            if (ApocLauncher.Acc.AllowServerPatch)
             {
 
-                int encryptAddress = (0x00957FBE + 3) - 0x00400000;
-                stream.Seek(encryptAddress, SeekOrigin.Begin);
-                stream.WriteByte(0x01);
+                _logger.Info("Patching WAR.exe");
+                using (Stream stream = new FileStream(Directory.GetCurrentDirectory() + "\\..\\WAR.exe", FileMode.OpenOrCreate))
+                {
 
-                //0x90 == 144
-                //0x57 == 87
-                //0x8B == 139
-                //0xF8 == 248
-                //0xEB == 235
-                //0x32 == 50
+                    int encryptAddress = (0x00957FBE + 3) - 0x00400000;
+                    stream.Seek(encryptAddress, SeekOrigin.Begin);
+                    stream.WriteByte(0x01);
+
+                    //0x90 == 144
+                    //0x57 == 87
+                    //0x8B == 139
+                    //0xF8 == 248
+                    //0xEB == 235
+                    //0x32 == 50
 
 
-                //0x934b468a ==147.75.70.138
+                    //0x934b468a ==147.75.70.138
 
-                byte[] decryptPatch1 = { 0x90, 0x90, 0x90, 0x90, 0x57, 0x8B, 0xF8, 0xEB, 0x32 };
-                int decryptAddress1 = (0x009580CB) - 0x00400000;
-                stream.Seek(decryptAddress1, SeekOrigin.Begin);
-                stream.Write(decryptPatch1, 0, 9);
+                    byte[] decryptPatch1 = { 0x90, 0x90, 0x90, 0x90, 0x57, 0x8B, 0xF8, 0xEB, 0x32 };
+                    int decryptAddress1 = (0x009580CB) - 0x00400000;
+                    stream.Seek(decryptAddress1, SeekOrigin.Begin);
+                    stream.Write(decryptPatch1, 0, 9);
 
-                byte[] decryptPatch2 = { 0x90, 0x90, 0x90, 0x90, 0xEB, 0x08 };
-                int decryptAddress2 = (0x0095814B) - 0x00400000;
-                stream.Seek(decryptAddress2, SeekOrigin.Begin);
-                stream.Write(decryptPatch2, 0, 6);
+                    byte[] decryptPatch2 = { 0x90, 0x90, 0x90, 0x90, 0xEB, 0x08 };
+                    int decryptAddress2 = (0x0095814B) - 0x00400000;
+                    stream.Seek(decryptAddress2, SeekOrigin.Begin);
+                    stream.Write(decryptPatch2, 0, 6);
 
-                //stream.WriteByte(0x01);
+                    //stream.WriteByte(0x01);
+                }
+                _logger.Info("Done patching WAR.exe");
             }
-            _logger.Info("Done patching WAR.exe");
+            else
+            {
+                _logger.Info("Not Patching WAR.exe");
+            }
         }
         public static void UpdateWarData()
         {
-            try
+            if (ApocLauncher.Acc.AllowServerPatch)
             {
-                _logger.Info("Updating mythloginserviceconfig.xml and data.myp");
-                FileStream fs = new FileStream(Application.StartupPath + "\\mythloginserviceconfig.xml", FileMode.Open, FileAccess.Read);
-
-                Directory.SetCurrentDirectory(Directory.GetCurrentDirectory() + "\\..\\");
-
-                HashDictionary hashDictionary = new HashDictionary();
-                hashDictionary.AddHash(0x3FE03665, 0x349E2A8C, "mythloginserviceconfig.xml", 0);
-                MYPHandler.MYPHandler mypHandler = new MYPHandler.MYPHandler("data.myp", null, null, hashDictionary);
-                mypHandler.GetFileTable();
-
-                FileInArchive theFile = mypHandler.SearchForFile("mythloginserviceconfig.xml");
-
-                if (theFile == null)
+                try
                 {
-                    _logger.Error("Can not find config file in data.myp");
-                    return;
-                }
+                    _logger.Info("Updating mythloginserviceconfig.xml and data.myp");
+                    FileStream fs = new FileStream(Application.StartupPath + "\\mythloginserviceconfig.xml", FileMode.Open, FileAccess.Read);
 
-                if (File.Exists(Application.StartupPath + "\\mythloginserviceconfig.xml") == false)
+                    Directory.SetCurrentDirectory(Directory.GetCurrentDirectory() + "\\..\\");
+
+                    HashDictionary hashDictionary = new HashDictionary();
+                    hashDictionary.AddHash(0x3FE03665, 0x349E2A8C, "mythloginserviceconfig.xml", 0);
+                    MYPHandler.MYPHandler mypHandler = new MYPHandler.MYPHandler("data.myp", null, null, hashDictionary);
+                    mypHandler.GetFileTable();
+
+                    FileInArchive theFile = mypHandler.SearchForFile("mythloginserviceconfig.xml");
+
+                    if (theFile == null)
+                    {
+                        _logger.Error("Can not find config file in data.myp");
+                        return;
+                    }
+
+                    if (File.Exists(Application.StartupPath + "\\mythloginserviceconfig.xml") == false)
+                    {
+                        _logger.Error("Missing file : mythloginserviceconfig.xml");
+                        return;
+                    }
+
+                    mypHandler.ReplaceFile(theFile, fs);
+
+                    fs.Close();
+                }
+                catch (Exception e)
                 {
-                    _logger.Error("Missing file : mythloginserviceconfig.xml");
-                    return;
+                    Print(e.ToString());
                 }
-
-                mypHandler.ReplaceFile(theFile, fs);
-
-                fs.Close();
             }
-            catch (Exception e)
+            else
             {
-                Print(e.ToString());
+                _logger.Info("Not Patching data.myp");
             }
         }
 

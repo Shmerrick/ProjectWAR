@@ -575,7 +575,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             PlayersKilledInRange /= 2;
             // Update all players within 200 range - update the map.
-            foreach (var plr in GetInRange<Player>(200))
+            foreach (var plr in GetInRange<Player>(300))
             {
                 SendKeepInfo(plr);
             }
@@ -625,7 +625,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             OuterPosternCanBeUsed = false;
 
             // Update all players within 200 range - update the map.
-            foreach (var plr in GetInRange<Player>(200))
+            foreach (var plr in GetInRange<Player>(300))
             {
                 SendKeepInfo(plr);
             }
@@ -673,7 +673,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 plr.SendClientMessage($"Keep Lord: {lord.Creature.Name}");
                 plr.SendClientMessage($"WorldPosition: {lord.Creature.WorldPosition}");
-                plr.SendClientMessage($"Distance from spawnpoint: {lord.Creature.WorldPosition.GetDistanceTo(lord.Creature.WorldSpawnPoint)}");
+                plr.SendClientMessage($"Plr Distance to Lord: {plr.WorldPosition.GetDistanceTo(lord.Creature.WorldSpawnPoint)}");
                 plr.SendClientMessage($"Health: {lord.Creature.PctHealth}");
                 plr.SendClientMessage($"RamDeployed: " + RamDeployed);
                 plr.SendClientMessage($"GuildClaim: " + this.OwningGuild?.Info.Name);
@@ -1203,7 +1203,7 @@ namespace WorldServer.World.BattleFronts.Keeps
 
         #region Senders
 
-        // Updates objective text and 
+        // Updates objective text  
         public void SendKeepInfo(Player plr)
         {
             var Out = new PacketOut((byte)Opcodes.F_OBJECTIVE_INFO, 32);
@@ -1215,6 +1215,10 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             if (this.OwningGuild != null)
                 Out.WritePascalString($"{Info.Name} ({this.OwningGuild.Info.Name})");
+            else
+            {
+                Out.WritePascalString($"{Info.Name}");
+            }
             Out.WriteByte(2);
             Out.WriteUInt32(0x000039F5);
             Out.WriteByte(0);
@@ -1654,6 +1658,14 @@ namespace WorldServer.World.BattleFronts.Keeps
             // Flag is secure (cant be interacted with)
             this.GuildFlag.State = StateFlags.Secure;
             SetGuildOwner(Guild.GetGuild(guildId));
+
+            foreach (var regionPlayer in this.Region.Players)
+            {
+                SendKeepInfo(regionPlayer);
+            }
+
+            KeepCommunications.SendKeepStatus(null, this);
+
         }
     }
 

@@ -129,7 +129,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _captureProgress = 20000;
             CaptureDuration = 10;
             // TODO : Can add a default buff here.
-            BuffId = 0;
+            BuffId = 14121;  // King of the hill
         }
 
         public override void OnLoad()
@@ -154,13 +154,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public bool CanClaim(Player player)
         {
-            foreach (var vaultUser in player.GldInterface.Guild.GuildVaultUser)
-            {
-                if (player.CharacterId == vaultUser.CharacterId)
-                    return true;
-            }
+            //foreach (var vaultUser in player.GldInterface.Guild.GuildVaultUser)
+            //{
+            //    if (player.CharacterId == vaultUser.CharacterId)
+            //        return true;
+            //}
 
-            return false;
+            return true;
         }
 
         
@@ -242,7 +242,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public override void NotifyInteractionComplete(NewBuff b)
         {
             this.CapturingPlayer.SendClientMessage(CapturingPlayer?.Name + $" has claimed {this.Keep.Info.Name} for {this.CapturingPlayer.GldInterface.Guild.Info.Name}");
+            BattlefrontLogger.Info(CapturingPlayer?.Name + $" has claimed {this.Keep.Info.Name} for {this.CapturingPlayer.GldInterface.Guild.Info.Name}");
             this.ClaimingGuild = this.CapturingPlayer.GldInterface.Guild;
+            this.OwningRealm = this.CapturingPlayer.Realm;
             _captureInProgress = false;
             CapturingPlayer = null;
 

@@ -82,6 +82,7 @@ namespace WorldServer.Services.World
                         Log.Debug("LoadRegionSpawns", "ZoneId (" + Spawn.ZoneId + ") invalid, Spawn Guid(" + Spawn.Guid + ")");
                         ++InvalidSpawns;
                     }
+                    
                 }
             }
 

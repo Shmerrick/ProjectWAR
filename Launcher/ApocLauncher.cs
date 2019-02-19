@@ -15,11 +15,14 @@ namespace Launcher
 {
     public partial class ApocLauncher : Form
     {
-        public bool AllowPatch { get; }
+        public bool LaunchLocalServer { get; }
+        public bool AllowMYPPatch { get; }
+        public bool AllowServerPatch { get; }
+        public bool AllowWarClientLaunch { get; }
         public static ApocLauncher Acc;
 
         public static string LocalServerIP = "192.168.0.21";
-        public static string TestServerIP = "192.168.0.21";
+        public static string TestServerIP = "10.10.10.156";
         public static int LocalServerPort = 8000;
         public static int TestServerPort = 8000;
         static HttpClient client = new HttpClient();
@@ -27,17 +30,18 @@ namespace Launcher
 
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ApocLauncher(bool allowLocal, bool allowPatch)
+        public ApocLauncher()
         {
-            AllowPatch = allowPatch;
-
-            // HACK : Force Patcher to run.
-            AllowPatch = true;
+            // Read optional app settings (they may not exist in the app.config file)
+            AllowWarClientLaunch = SafeReadAppSettings("AutoLaunch", true);
+            AllowMYPPatch = SafeReadAppSettings("PatchMYP", true); 
+            AllowServerPatch = SafeReadAppSettings("PatchExe", true); 
+            LaunchLocalServer = SafeReadAppSettings("LaunchLocal", false);
 
             InitializeComponent();
             Acc = this;
-
-            if (allowLocal)
+            
+            if (LaunchLocalServer)
             {
                 this.bnConnectLocal.Visible = true;
                 this.bnCreateLocal.Visible = true;
@@ -47,6 +51,25 @@ namespace Launcher
                 this.bnConnectLocal.Visible = false;
                 this.bnCreateLocal.Visible = false;
             }
+        }
+
+        private bool SafeReadAppSettings(string keyName, bool defaultValue)
+        {
+            var s = System.Configuration.ConfigurationManager.AppSettings[keyName];
+            if (!String.IsNullOrEmpty(s))
+            {
+                // Key exists
+                if (s == "false")
+                    return false;
+                if (s == "true")
+                    return true;
+            }
+            else
+            {
+                // Key doesn't exist
+                return defaultValue;
+            }
+            return defaultValue;
         }
 
         protected override void WndProc(ref Message m)
@@ -71,7 +94,7 @@ namespace Launcher
 
             
             this.lblDownloading.Visible = false;
-            if (this.AllowPatch)
+            if (this.AllowMYPPatch)
             {
                 _logger.Debug($"Calling Patcher Server on { System.Configuration.ConfigurationManager.AppSettings["ServerPatchIPAddress"]}:{ System.Configuration.ConfigurationManager.AppSettings["ServerPatchPort"]}");
                 patcher = new Patcher(_logger,
@@ -283,7 +306,7 @@ namespace Launcher
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (this.AllowPatch)
+            if (this.AllowMYPPatch)
             {
                 if (patcher.CurrentState == Patcher.State.Downloading)
                 {
