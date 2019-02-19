@@ -535,6 +535,10 @@ namespace WorldServer
 
             var siegeType = Siege.GetSiegeType((uint)abInfo.CommandInfo[0].PrimaryValue);
 
+            var nearRamSpawn = player.Region.Campaign.SiegeManager.CanDeploySiege(
+                (Player)caster,
+                new RamSpawnFlagComparitor(player.Realm), siegeType.Value);
+
             var nearMerchant = player.Region.Campaign.SiegeManager.CanDeploySiege(
                 (Player)caster,
                 new SiegeMerchantLocationComparitor(), siegeType.Value);
@@ -549,18 +553,18 @@ namespace WorldServer
 
             if (siegeType == SiegeType.RAM)
             {
-                if (nearMerchant == DeploymentReason.Success || nearFriendlyKeep == DeploymentReason.Success)
+                if (nearRamSpawn == DeploymentReason.Success || nearFriendlyKeep == DeploymentReason.Success)
                     return true;
                 else
                 {
-                    if (nearFriendlyKeep == DeploymentReason.MaximumCount || nearMerchant == DeploymentReason.MaximumCount)
+                    if (nearFriendlyKeep == DeploymentReason.MaximumCount || nearRamSpawn == DeploymentReason.MaximumCount)
                     {
                         player.SendClientMessage("There are too many of this type of Siege deployed", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
                         return false;
                     }
-                    if (nearFriendlyKeep == DeploymentReason.Range || nearMerchant == DeploymentReason.Range)
+                    if (nearFriendlyKeep == DeploymentReason.Range || nearRamSpawn == DeploymentReason.Range)
                     {
-                        player.SendClientMessage("Must deploy siege at friendly keep or near friendly Siege Merchant", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                        player.SendClientMessage("Must deploy siege at friendly keep or near friendly Siege Merchant (Spawn Flag)", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
                         return false;
                     }
                     return false;
