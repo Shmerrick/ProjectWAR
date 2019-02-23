@@ -206,20 +206,20 @@ namespace WorldServer
             }
 
             List<Zone_Respawn> respawns = ZoneService.GetZoneRespawns(zoneId);
-            if (zoneId == 110)
-                respawns = ZoneService.GetZoneRespawns(109);
-            if (zoneId == 104)
-                respawns = ZoneService.GetZoneRespawns(103);
-            if (zoneId == 210)
-                respawns = ZoneService.GetZoneRespawns(209);
-            if (zoneId == 204)
-                respawns = ZoneService.GetZoneRespawns(203);
-            if (zoneId == 220)
-                respawns = ZoneService.GetZoneRespawns(205);
-            if (zoneId == 10)
-                respawns = ZoneService.GetZoneRespawns(9);
-            if (zoneId == 4)
-                respawns = ZoneService.GetZoneRespawns(3);
+            //if (zoneId == 110)
+            //    respawns = ZoneService.GetZoneRespawns(109);
+            //if (zoneId == 104)
+            //    respawns = ZoneService.GetZoneRespawns(103);
+            //if (zoneId == 210)
+            //    respawns = ZoneService.GetZoneRespawns(209);
+            //if (zoneId == 204)
+            //    respawns = ZoneService.GetZoneRespawns(203);
+            //if (zoneId == 220)
+            //    respawns = ZoneService.GetZoneRespawns(205);
+            //if (zoneId == 10)
+            //    respawns = ZoneService.GetZoneRespawns(9);
+            //if (zoneId == 4)
+            //    respawns = ZoneService.GetZoneRespawns(3);
             if (respawns != null)
             {
                 if (player.ScnInterface.Scenario != null)
