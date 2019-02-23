@@ -170,13 +170,29 @@ namespace WorldServer
                                 var dist = player.GetDistanceToWorldPoint(keep.WorldPosition);
                                 if (dist < bestDist)
                                 {
-                                    resp = new Zone_Respawn
+
+                                    if (keep.PlayerSpawnLocation.Value != null)
                                     {
-                                        ZoneID = keep.Zone.ZoneId,
-                                        PinX = ZoneService.CalculPin(keep.Zone.Info, keep.Info.X, true),
-                                        PinY = ZoneService.CalculPin(keep.Zone.Info, keep.Info.Y, false),
-                                        PinZ = (ushort)keep.Info.Z
-                                    };
+                                        resp = new Zone_Respawn
+                                        {
+                                            ZoneID = keep.Zone.ZoneId,
+                                            PinX = ZoneService.CalculPin(keep.Zone.Info, keep.PlayerSpawnLocation.Value.X, true),
+                                            PinY = ZoneService.CalculPin(keep.Zone.Info, keep.PlayerSpawnLocation.Value.Y, false),
+                                            PinZ = (ushort)keep.PlayerSpawnLocation.Value.Z
+                                        };
+                                    }
+                                    else
+                                    {
+                                        resp = new Zone_Respawn
+                                        {
+                                            ZoneID = keep.Zone.ZoneId,
+                                            PinX = ZoneService.CalculPin(keep.Zone.Info, keep.Info.X, true),
+                                            PinY = ZoneService.CalculPin(keep.Zone.Info, keep.Info.Y, false),
+                                            PinZ = (ushort)keep.Info.Z
+                                        };
+                                    }
+
+                                   
                                     bestDist = dist;
                                 }
                             }

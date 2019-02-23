@@ -64,6 +64,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         public ConcurrentDictionary<uint, KeepTimer> DoorRepairTimers = new ConcurrentDictionary<uint, KeepTimer>();
         public Keep_Info Info;
         public KeepStatus KeepStatus = KeepStatus.KEEPSTATUS_SAFE;
+        public KeyValuePair<int, PlayerKeepSpawn> PlayerSpawnLocation { get; set; }
 
         public byte Rank = 0;
         public bool RamDeployed;
@@ -228,6 +229,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             {
                 _logger.Error($"Could not find Guild Claim Objective for {this.Info.Name}");
             }
+
+            PlayerSpawnLocation = BattleFrontService._PlayerKeepSpawnPoints.SingleOrDefault(x => x.Key == Info.KeepId);
 
             if (WorldMgr._Keeps.ContainsKey(Info.KeepId))
                 WorldMgr._Keeps[Info.KeepId] = this;

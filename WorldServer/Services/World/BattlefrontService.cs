@@ -23,6 +23,7 @@ namespace WorldServer.Services.World
             LoadBattleFrontObjects();
 
             LoadKeepInfos();
+            LoadPlayerKeepSpawnPoints();
         }
 
         #region Objectives
@@ -168,6 +169,29 @@ namespace WorldServer.Services.World
             }
 
             Log.Success("WorldMgr", "Loaded " + Count + " KeepSiegeSpawnPoints");
+        }
+
+
+        public static Dictionary<int, PlayerKeepSpawn> _PlayerKeepSpawnPoints = new Dictionary<int, PlayerKeepSpawn>();
+        public static void LoadPlayerKeepSpawnPoints()
+        {
+            _PlayerKeepSpawnPoints = new Dictionary<int, PlayerKeepSpawn>();
+
+            Log.Debug("WorldMgr", "Loading PlayerKeepSpawn...");
+
+            var spawns = Database.SelectAllObjects<PlayerKeepSpawn>();
+
+            int count = 0;
+            foreach (var spawn in spawns)
+            {
+                if (!_PlayerKeepSpawnPoints.ContainsKey(spawn.KeepId))
+                    _PlayerKeepSpawnPoints.Add(spawn.KeepId, new PlayerKeepSpawn());
+
+                _PlayerKeepSpawnPoints[spawn.KeepId] = spawn;
+                ++count;
+            }
+
+            Log.Success("WorldMgr", "Loaded " + count + " Player Keep Spawn Points");
         }
 
         public static List<Keep_Info> GetKeepInfos(uint RegionId)
@@ -397,39 +421,7 @@ namespace WorldServer.Services.World
         }
         #endregion
 
-        /* no idea what it is for
-        public static void CheckBattleFrontPositions()
-        {
-            IList<BattleFront_Objective> Objectives = Database.SelectAllObjects<BattleFront_Objective>();
-
-            foreach (BattleFront_Objective Obj in Objectives)
-            {
-                // Buggy Pin coords - calculate!
-                if (Obj.X <= 65535)
-                {
-                    Zone_Info info = ZoneService.GetZone_Info(Obj.ZoneId);
-
-                    if (info != null)
-                    {
-                        int x = Obj.X > 32768 ? Obj.X - 32768 : Obj.X;
-                        int y = Obj.Y > 32768 ? Obj.Y - 32768 : Obj.Y;
-                        Point3D WorldPosition = new Point3D(0, 0, 0);
-
-
-                        WorldPosition.X = (int)ZoneMgr.CalcOffset(info, (ushort)Obj.X, true) + (x & 0x00000FFF);
-                        WorldPosition.Y = (int)ZoneMgr.CalcOffset(info, (ushort)Obj.Y, false) + (y & 0x00000FFF);
-                        WorldPosition.Z = Obj.Z;
-
-                        Log.Notice(Obj.Name, "Region ID: " + Obj.RegionId + " Zone ID: " + Obj.ZoneId);
-                        Log.Notice("Pin Position", "X: " + Obj.X + " Y: " + Obj.Y + " Z: " + Obj.Z);
-                        Log.Notice("World Position", "X: " + WorldPosition.X + " Y: " + WorldPosition.Y + " Z: " + WorldPosition.Z);
-                        Log.Notice("=", "==================================================================================================");
-                    }
-
-                }
-            }
-        }
-        */
+       
         public static List<Keep_Info> GetZoneKeeps(int regionId, int zoneId)
         {
             return (from keyValuePair in _KeepInfos.Where(x => x.Key == regionId)
