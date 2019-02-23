@@ -151,6 +151,7 @@
     <Compile Include="Database\World\Battlefront\PlayerContribution.cs" />
     <Compile Include="Database\World\Battlefront\BattleFrontKeepStatus.cs" />
     <Compile Include="Database\World\Battlefront\RVRAreaPolygon.cs" />
+    <Compile Include="Database\World\Battlefront\RVRProgression - Copy.cs" />
     <Compile Include="Database\World\Battlefront\ZoneLockSummary.cs" />
     <Compile Include="Database\World\Battlefront\RVRProgression.cs" />
     <Compile Include="Database\World\Battlefront\RVRZoneLockReward.cs" />
