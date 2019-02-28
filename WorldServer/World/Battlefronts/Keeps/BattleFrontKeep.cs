@@ -29,8 +29,8 @@ namespace WorldServer.World.BattleFronts.Keeps
         public const byte HEALTH_BOUNDARY_DEFENCE_TICK_RESTART = 50;
         public const byte DEFENCE_LOCK_COUNT = 4;
 
-        public uint HEAVY_EMPIRE_OIL = 86211;
-        public uint HEAVY_CHAOS_OIL = 86223;
+        public uint HEAVY_EMPIRE_OIL = 13426;
+        public uint HEAVY_CHAOS_OIL = 13462;
         public uint HEAVY_GREENSKIN_OIL = 13450;
 
         public uint HEAVY_DWARF_OIL = 13414;
@@ -390,8 +390,18 @@ namespace WorldServer.World.BattleFronts.Keeps
 
             LordKilledTimer.Start();
 
-            this.GuildFlag.State = StateFlags.Unsecure;
+            SetGuildFlagState(StateFlags.Unsecure);
+            
 
+        }
+
+        private void SetGuildFlagState(StateFlags newState)
+        {
+            if (this.GuildFlag != null)
+            {
+                _logger.Info($"Guild Flag changing state from {this.GuildFlag.State} to {newState} ");
+                this.GuildFlag.State = newState;
+            }
         }
 
         private void ResetAllStateTimers()
@@ -1629,8 +1639,8 @@ namespace WorldServer.World.BattleFronts.Keeps
             _logger.Info($"Attempt to Force Lock Zone from {Info.Name}");
             if (IsFortress())
             {
-                OnLockZone(Realm);
-                WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(Realm);
+                OnLockZone(PendingRealm);
+                WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(PendingRealm);
                 WorldMgr.UpperTierCampaignManager.GetActiveCampaign().StartRegionLock();
                 FortDefenceCounter = 0;
                 _logger.Info($"Zone Force Locked from {Info.Name}");

@@ -23,11 +23,24 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 switch (PlayerRealm)
                 {
-                    case Realms.REALMS_REALM_DESTRUCTION when test.Entry == 666572:
-                        return true;
-                    case Realms.REALMS_REALM_ORDER when test.Entry == 666571:
-                        return true;
-
+                    case Realms.REALMS_REALM_DESTRUCTION:
+                    {
+                        if (test.Entry == 666572)
+                            return true;
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    case Realms.REALMS_REALM_ORDER:
+                    {
+                        if (test.Entry == 666571)
+                            return true;
+                        else
+                        {
+                            break;
+                        }
+                    }
                     default:
                         return false;
 

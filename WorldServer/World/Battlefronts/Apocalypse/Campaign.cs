@@ -133,7 +133,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(UpdateAAOBuffs, 30000, 0);
             _EvtInterface.AddEvent(DetermineCaptains, 120000, 0);
             // Check RVR zone for highest contributors (Captains)
-            _EvtInterface.AddEvent(SavePlayerContribution, 60000, 0);
+            _EvtInterface.AddEvent(SavePlayerContribution, 180000, 0);
             // record metrics
             _EvtInterface.AddEvent(RecordMetrics, 600000, 0);
             _EvtInterface.AddEvent(DestructionDominationCheck, 60000, 0);

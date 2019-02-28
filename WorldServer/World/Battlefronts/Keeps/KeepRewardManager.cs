@@ -150,12 +150,20 @@ namespace WorldServer.World.Battlefronts.Keeps
 
                     RewardLogger.Debug($"Player {player.Name} is valid");
 
-                    if (influenceId == 0)
-                        influenceId = player.Realm == Realms.REALMS_REALM_DESTRUCTION ? player.CurrentArea.DestroInfluenceId : player.CurrentArea.OrderInfluenceId;
-
                     player.AddXp((uint)totalXp, false, false);
                     player.AddRenown((uint)totalRenown, false, RewardType.ZoneKeepCapture, keep.Info.Name);
-                    player.AddInfluence((ushort)influenceId, (ushort)totalInfluence);
+
+                    if ((influenceId == 0) && player.CurrentArea != null)
+                    {
+                        influenceId = player.Realm == Realms.REALMS_REALM_DESTRUCTION
+                            ? player.CurrentArea.DestroInfluenceId
+                            : player.CurrentArea.OrderInfluenceId;
+                        player.AddInfluence((ushort) influenceId, (ushort) totalInfluence);
+                    }
+                    else
+                    {
+                        RewardLogger.Warn($"Player {player.Name} is not in CurrentArea");
+                    }
 
                     if (battlePenalty)
                         player.SendClientMessage("This keep was taken with little to no resistance. The rewards have therefore been reduced.");

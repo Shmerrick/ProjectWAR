@@ -95,8 +95,10 @@ namespace FrameWork
 
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
+                Log.Debug("ConsoleMgr", "Attempting to load : " +  assembly.FullName);
                 foreach (Type type in assembly.GetTypes())
                 {
+                    Log.Debug("ConsoleMgr", "Attempting to load : " + type.FullName);
                     // Pick up a class
                     if (type.IsClass != true)
                         continue;

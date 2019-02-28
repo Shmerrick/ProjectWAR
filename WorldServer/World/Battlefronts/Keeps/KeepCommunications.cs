@@ -33,7 +33,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 Out.WriteByte(keep.Rank); // Rank
                 if (doors.Count > 0)
                     if (innerDoor != null)
-                        Out.WriteByte((byte)((innerDoor.GameObject.PctHealth) / 2)); // Door health
+                        Out.WriteByte((byte)((innerDoor.GameObject.PctHealth))); // Door health
                     else
                     {
                         Out.WriteByte(0);

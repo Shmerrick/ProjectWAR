@@ -222,9 +222,6 @@ namespace WorldServer
                     _outofAreaCount--;
             }
 
-            if (SiegeInterface.IsAbandoned)
-                SiegeInterface.Creator.SendClientMessage("Your siege has been adandoned!!");
-
             // RB   6/25/2016   Kill siege weapons that have decayed and are not being interacted with.
             if (SiegeInterface.IsAbandoned && msTick > _nextDamageTime)
             {
