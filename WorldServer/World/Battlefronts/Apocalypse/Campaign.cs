@@ -1543,6 +1543,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // If the next RVRProgression is the Reset progression, then reset all of the pairings to default.
             if (nextBattleFront.ResetProgressionOnEntry == 1)
             {
+                BattlefrontLogger.Info($"ResetProgressionOnEntry is TRUE");
                 foreach (var progression in BattleFrontManager.BattleFrontProgressions)
                 {
                     if (progression.Tier == 4)
@@ -1551,6 +1552,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         progression.OrderVP = 0;
                         progression.LastOpenedZone = 0;
                         progression.LastOwningRealm = progression.DefaultRealmLock;
+
+                        var status = BattleFrontManager.GetBattleFrontStatusList().SingleOrDefault(x=>x.BattleFrontId==progression.BattleFrontId);
+                        if (status != null)
+                        {
+                            status.Locked = false;
+                            status.OpenTimeStamp = FrameWork.TCPManager.GetTimeStamp();
+                            status.LockingRealm = (Realms)progression.DefaultRealmLock;
+                            status.FinalVictoryPoint = new VictoryPointProgress();
+                            status.LockTimeStamp = 0;
+                            // Reset the population for the battle front status
+                            BattleFrontManager.GetActiveCampaign().InitializePopulationList(status.BattleFrontId);
+                        }
                     }
                 }
             }

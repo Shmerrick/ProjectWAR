@@ -309,99 +309,6 @@ namespace WorldServer.Managers.Commands
 
 
 
-
-        //[CommandAttribute(EGmLevel.DatabaseDev, "Adds a resource spawn point at the current location for the nearest objective - legacy")]
-        //public static void Point(Player plr)
-        //{
-        //    if (plr.Zone == null)
-        //    {
-        //        SendCsr(plr, "CAMPAIGN POINT: Must be in a zone to use this command.");
-        //        return;
-        //    }
-
-        //    IBattleFrontFlag closestFlag = plr.Region.Bttlfront.GetClosestFlag(plr.WorldPosition);
-
-        //    if (closestFlag == null)
-        //    {
-        //        SendCsr(plr, "CAMPAIGN POINT: Must be in an open-world RvR zone.");
-        //        return;
-        //    }
-        //    else if (!(closestFlag is BattleFrontFlag))
-        //    {
-        //        SendCsr(plr, "CAMPAIGN POINT: This command is supported in legacy RvR.");
-        //        return;
-        //    }
-
-        //    plr.SendClientMessage("Flag: " + closestFlag.ObjectiveName);
-        //    GameObject_proto proto = GameObjectService.GetGameObjectProto(429);
-
-        //    GameObject_spawn spawn = new GameObject_spawn
-        //    {
-        //        Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
-        //        WorldX = plr.WorldPosition.X,
-        //        WorldY = plr.WorldPosition.Y,
-        //        WorldZ = plr.WorldPosition.Z,
-        //        WorldO = plr.Heading,
-        //        ZoneId = plr.Zone.ZoneId
-        //    };
-
-        //    spawn.BuildFromProto(proto);
-        //    plr.Region.CreateGameObject(spawn);
-
-        //    BattleFrontResourceSpawn res = new BattleFrontResourceSpawn
-        //    {
-        //        Entry = ((BattleFrontFlag)closestFlag).ID,
-        //        X = plr.X,
-        //        Y = plr.Y,
-        //        Z = plr.Z,
-        //        O = plr.Heading
-        //    };
-
-        //    WorldMgr.Database.AddObject(res);
-        //}
-
-        //[CommandAttribute(EGmLevel.DatabaseDev, "Adds a resource return point at the current location - legacy")]
-        //public static void Drop(Player plr, int realmIndex)
-        //{
-        //    if (plr.Zone == null)
-        //    {
-        //        SendCsr(plr, "CAMPAIGN DROP: Must be in a zone to use this command.");
-        //        return;
-        //    }
-        //    else if (!(plr.Region.Bttlfront is Campaign))
-        //    {
-        //        SendCsr(plr, "CAMPAIGN DROP: This command is supported in legacy RvR.");
-        //        return;
-        //    }
-
-        //    Keep closestKeep = ((Campaign)plr.Region.Bttlfront).GetZoneKeep(plr.Zone.ZoneId, realmIndex);
-
-        //    if (closestKeep == null)
-        //    {
-        //        SendCsr(plr, "CAMPAIGN DROP: Must be in an open-world RvR zone.");
-        //        return;
-        //    }
-
-        //    plr.SendClientMessage("Keep: " + closestKeep.Info.Name);
-
-        //    BattleFrontResourceSpawn res = new BattleFrontResourceSpawn
-        //    {
-        //        Entry = closestKeep.Info.KeepId,
-        //        X = plr.X,
-        //        Y = plr.Y,
-        //        Z = plr.Z,
-        //        O = plr.Heading
-        //    };
-
-        //    WorldMgr.Database.AddObject(res);
-
-        //    closestKeep.SupplyReturnPoints.Clear();
-        //    closestKeep.SupplyReturnPoints.Add(res);
-        //    closestKeep.CreateSupplyDrops();
-        //}
-
-
-
         [CommandAttribute(EGmLevel.DatabaseDev, "Sets the number of VP for a realm")]
         public static void SetVictoryPoints(Player plr, Realms realm, int points)
         {
@@ -442,7 +349,7 @@ namespace WorldServer.Managers.Commands
         }
 
 
-        [CommandAttribute(EGmLevel.DatabaseDev, "Get or sets warcamp entrance, use realm parameter order|destruction or 1|2 to update entrabce coordinate")]
+        [CommandAttribute(EGmLevel.DatabaseDev, "Get or sets warcamp entrance, use realm parameter order|destruction or 1|2 to update entrance coordinate")]
         public static void Warcamp(Player plr, string realm = "")
         {
             ushort zoneId = plr.Zone.ZoneId;
@@ -522,6 +429,50 @@ namespace WorldServer.Managers.Commands
 
             WorldMgr.Database.AddObject(newObject);
             WorldMgr.Database.ForceSave();
+        }
+
+        [CommandAttribute(EGmLevel.DatabaseDev, "Resets the World Campaign to default values")]
+        public static void ResetAllCampaign(Player plr)
+        {
+            
+
+
+            foreach (var progression in WorldMgr.UpperTierCampaignManager.BattleFrontProgressions)
+            {
+                if (progression.Tier == 4)
+                {
+                    progression.DestroVP = 0;
+                    progression.OrderVP = 0;
+                    progression.LastOpenedZone = 0;
+                    progression.LastOwningRealm = progression.DefaultRealmLock;
+
+                    if (progression.BattleFrontId == 2) // PRAAG
+                    {
+                        progression.LastOpenedZone = 1;
+                        WorldMgr.UpperTierCampaignManager.ActiveBattleFront = progression;
+                    }
+
+                    var status = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatusList().SingleOrDefault(x => x.BattleFrontId == progression.BattleFrontId);
+                    if (status != null)
+                    {
+                        status.Locked = true;
+                        status.OpenTimeStamp = FrameWork.TCPManager.GetTimeStamp();
+                        status.LockingRealm = (Realms) progression.DefaultRealmLock;
+                        status.FinalVictoryPoint = new VictoryPointProgress();
+                        status.LockTimeStamp = 0;
+                        // Reset the population for the battle front status
+                        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().InitializePopulationList(status.BattleFrontId);
+                    }
+                }
+            }
+
+            // Unlock the next Progression
+            WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront();
+
+            // This is kind of nasty, should use an event to signal the WorldMgr
+            // Tell the server that the RVR status has changed.
+            WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
+
         }
     }
 }

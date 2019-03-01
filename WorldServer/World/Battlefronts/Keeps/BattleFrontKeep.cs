@@ -141,34 +141,34 @@ namespace WorldServer.World.BattleFronts.Keeps
                                     keepSiegeSpawnPointse.Z,
                                     keepSiegeSpawnPointse.O));
                             break;
-                        case (int) SiegeType.GTAOE:
-                        case (int) SiegeType.DIRECT:
-                        case (int) SiegeType.SNIPER:
-                        {
+                        //case (int) SiegeType.GTAOE:
+                        //case (int) SiegeType.DIRECT:
+                        //case (int) SiegeType.SNIPER:
+                        //{
 
-                            GameObject_proto glowProto = GameObjectService.GetGameObjectProto(99858);//99858
+                        //    GameObject_proto glowProto = GameObjectService.GetGameObjectProto(99858);//99858
 
-                                if (glowProto != null)
-                            {
-                                GameObject_spawn spawn = new GameObject_spawn
-                                {
-                                    Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
-                                    WorldO = Heading,
-                                    WorldX = keepSiegeSpawnPointse.X,
-                                    WorldY = keepSiegeSpawnPointse.Y,
-                                    WorldZ = keepSiegeSpawnPointse.Z,
-                                    ZoneId = Region.RegionId,
-                                };
-                                spawn.BuildFromProto(glowProto);
+                        //        if (glowProto != null)
+                        //    {
+                        //        GameObject_spawn spawn = new GameObject_spawn
+                        //        {
+                        //            Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
+                        //            WorldO = Heading,
+                        //            WorldX = keepSiegeSpawnPointse.X,
+                        //            WorldY = keepSiegeSpawnPointse.Y,
+                        //            WorldZ = keepSiegeSpawnPointse.Z,
+                        //            ZoneId = Region.RegionId,
+                        //        };
+                        //        spawn.BuildFromProto(glowProto);
 
-                                var siegeRangeFlag = new GameObject(spawn);
-                                siegeRangeFlag.VfxState = 3;  //1 blue, 2 red, 3 white, 4 - white;
+                        //        var siegeRangeFlag = new GameObject(spawn);
+                        //        siegeRangeFlag.VfxState = 3;  //1 blue, 2 red, 3 white, 4 - white;
 
-                                Region.AddObject(siegeRangeFlag, Info.ZoneId);
-                            }
+                        //        Region.AddObject(siegeRangeFlag, Info.ZoneId);
+                        //    }
 
-                            break;
-                        }
+                        //    break;
+                        //}
                     }
                 }
             }
