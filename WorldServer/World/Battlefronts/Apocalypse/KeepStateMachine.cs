@@ -114,7 +114,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 .On(Command.OnGuildClaimTimerEnd)
                 .If(Keep.IsFortress)
                 .Goto(ProcessState.Safe)
-                .Execute(() => Keep.ForceLockZone());
+                .Execute(() => Keep.ForceLockZone())
+                .Execute(() => Keep.SetKeepSafe());
             fsm.In(ProcessState.GuildClaim)
                 .On(Command.OnGuildClaimTimerEnd)
                 .If(Keep.IsNotFortress)
@@ -124,7 +125,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             fsm.In(ProcessState.DefenceTick)
                 .On(Command.OnBackToSafeTimerEnd).Goto(ProcessState.Safe).Execute(() => Keep.SetKeepSafe());
 
-            
+
             fsm.In(ProcessState.OuterDown)
                 .On(Command.OnDoorRepaired)
                 .If(Keep.AllDoorsRepaired)
@@ -144,7 +145,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 //.Execute<uint>((uint doorId) => Keep.SetDoorRepaired(doorId))
                 .Execute(() => Keep.SetKeepSafe());
 
-           
+
             fsm.In(ProcessState.Locked)
                 .On(Command.OnOpenBattleFront).Goto(ProcessState.Safe).Execute(() => Keep.SetKeepSafe());
 
@@ -158,7 +159,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 Keep.SendKeepInfo(plr);
             }
-            
+
             var stateInformation = (Appccelerate.StateMachine.Machine.Events.TransitionCompletedEventArgs<SM.ProcessState, SM.Command>)e;
             // Save the state transition.
             _logger.Debug($"Saving keep state KeepId : {Keep.Info.KeepId} {Keep.Info.Name}, " +
