@@ -357,7 +357,12 @@ namespace WorldServer
             Out.WriteUInt32(guild.Info.GuildId);
             Out.WriteByte(guild.Info.Level); //level
             Out.WriteShortString(guild.Info.Name);
-            Out.WriteShortString(guild.Info.Members[guild.Info.LeaderId].Member.Name);
+            if (guild.Info.Members[guild.Info.LeaderId] != null)
+                Out.WriteShortString(guild.Info.Members[guild.Info.LeaderId].Member.Name);
+            else
+            {
+                Out.WriteShortString("UNKNOWN");
+            }
             Out.WriteShortString(guild.Info.BriefDescription);
             Out.WriteShortString(guild.Info.Summary);
             Out.WriteByte(guild.Info.PlayStyle);
