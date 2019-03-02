@@ -54,7 +54,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         // private ISet<Player> _closePlayers = new HashSet<Player>();
 
         /// <summary>Displayed timer in seconds</summary>
-        private int _displayedTimer;
+        public int DisplayedTimer;
 
         private readonly uint _tokdiscovery; // This is for ToK unlocks
         private readonly uint _tokunlocked; // This is for ToK unlocks
@@ -454,9 +454,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 
             Out.WriteUInt16(0); // _displayedTimer
-            Out.WriteUInt16((ushort)_displayedTimer); // _displayedTimer
+            Out.WriteUInt16((ushort)DisplayedTimer); // _displayedTimer
             Out.WriteUInt16(0); // _displayedTimer
-            Out.WriteUInt16((ushort)_displayedTimer); // _displayedTimer
+            Out.WriteUInt16((ushort)DisplayedTimer); // _displayedTimer
             Out.Fill(0, 4);
             Out.WriteByte(0x71);
             Out.WriteByte(1);
@@ -621,7 +621,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (State == StateFlags.Contested)
             {
                 Out.Fill(0, 2);
-                Out.WriteUInt16((ushort)_displayedTimer);
+                Out.WriteUInt16((ushort)DisplayedTimer);
                 Out.Fill(0xFF, 2);
                 Out.WriteUInt16(0);
             }
@@ -629,7 +629,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 //Out.Fill(0xFF, 4);
                 Out.Fill(0, 2);
-                Out.WriteUInt16((ushort)_displayedTimer);
+                Out.WriteUInt16((ushort)DisplayedTimer);
 
                 Out.WriteByte(0);
                 Out.WriteByte((byte)(MAX_SECURE_PROGRESS - _secureProgress)); // Unk6 - time till next resource release
@@ -902,7 +902,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void SetObjectiveSafe()
         {
             BattlefrontLogger.Debug($"{Name} : Safe : (NEUTRAL)");
-            _displayedTimer = 0;
+            DisplayedTimer = 0;
             DespawnAllGuards();
 
             // state change and send state
@@ -918,7 +918,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void SetObjectiveLocked()
         {
             BattlefrontLogger.Debug($"{Name} : Locking : {OwningRealm}");
-            _displayedTimer = 0;
+            DisplayedTimer = 0;
             DespawnAllGuards();
 
             // state change and send state
@@ -937,9 +937,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 AssaultingRealm = CapturingPlayer.Realm;
             }
             State = StateFlags.Contested;
+            CaptureTimer = TCPManager.GetTimeStamp() + CaptureTimerLength;
+            DisplayedTimer = CaptureTimerLength;
             SendState(CapturingPlayer, true, true);
             DespawnAllGuards();
-            CaptureTimer = TCPManager.GetTimeStamp() + CaptureTimerLength;
             BroadcastFlagInfo(true);
             GrantCaptureRewards(AssaultingRealm);
         }
@@ -964,6 +965,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             BroadcastFlagInfo(true);
             GrantCaptureRewards(OwningRealm);
             GuardedTimer = TCPManager.GetTimeStamp() + GuardedTimerLength;
+            DisplayedTimer = GuardedTimerLength;
 
         }
 
