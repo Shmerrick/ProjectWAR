@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Threading;
+using NLog;
 
 namespace FrameWork
 {
     public static class Log
     {
         private static readonly Encoding encoding = new UTF8Encoding(true);
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private static LogConfig _config = new LogConfig();
         private static Thread _thread;
@@ -204,7 +206,7 @@ namespace FrameWork
             _thread.Start();
         }
 
-        public static void Texte(string name, string message, ConsoleColor Color, bool sync = false)
+        public static void XTexte(string name, string message, ConsoleColor Color, bool sync = false)
         {
             if (sync)
             {
@@ -237,37 +239,43 @@ namespace FrameWork
         public static void Info(string name, string message, bool sync = false)
         {
             if (_config.Info.Info)
-                Texte("I "+name, message, ConsoleColor.White, sync);
+                Log._logger.Info("I "+ name + " " + message, ConsoleColor.White, sync);
+        }
+
+        public static void Info(string name, string message, ConsoleColor c)
+        {
+            if (_config.Info.Info)
+                Log._logger.Info("I " + name +" "+ message, c);
         }
 
         public static void Success(string name, string message, bool sync = false)
         {
             if (_config.Info.Successs)
-                Texte("S " + name, message, ConsoleColor.Green, sync);
+                Log._logger.Info("S " + name + " " + message, ConsoleColor.Green, sync);
         }
 
         public static void Notice(string name, string message, bool sync = false)
         {
             if (_config.Info.Notice)
-                Texte("N " + name, message, ConsoleColor.Yellow, sync);
+                Log._logger.Warn("N " + name + " " + message, ConsoleColor.Yellow, sync);
         }
 
         public static void Error(string name, string message, bool sync = false)
         {
             if (_config.Info.Error)
-                Texte("E " + name, message, ConsoleColor.Red, sync);
+                Log._logger.Error("E " + name + " " + message, ConsoleColor.Red, sync);
         }
 
         public static void Debug(string name, string message, bool sync = false)
         {
             if (_config.Info.Debug)
-                Texte("D " + name, message, ConsoleColor.Blue, sync);
+                Log._logger.Debug("D " + name + " " + message, ConsoleColor.Blue, sync);
         }
 
         public static void Dump(string name, string message, bool sync = false)
         {
             if (_config.Info.Dump)
-                Texte("D " + name, message, ConsoleColor.Gray, sync);
+                Log._logger.Trace("D " + name + " " + message, ConsoleColor.Gray, sync);
         }
 
         public static bool CanDump()
@@ -280,14 +288,14 @@ namespace FrameWork
             if (Force || _config.Info.Tcp)
             {
                 byte[] Buff = Packet.ToArray();
-                Texte("P " + name, Hex(Buff, 0, Buff.Length), ConsoleColor.Gray, sync);
+                Log._logger.Trace("P " + name +" "+ Hex(Buff, 0, Buff.Length), ConsoleColor.Gray, sync);
             }
         }
 
         public static void Tcp(string name, byte[] dump, int start, int len, bool Force=false, bool sync = false)
         {
             if (Force || _config.Info.Tcp)
-                Texte("P " + name, Hex(dump, start, len), ConsoleColor.Gray, sync);
+                Log._logger.Trace("P " + " " + name, Hex(dump, start, len), ConsoleColor.Gray, sync);
         }
 
         public static void Dump(string name, MemoryStream Packet, bool Force = false, bool sync = false)
@@ -295,14 +303,14 @@ namespace FrameWork
             if (Force || _config.Info.Dump)
             {
                 byte[] Buff = Packet.ToArray();
-                Texte("U " + name, Hex(Buff, 0, Buff.Length), ConsoleColor.Gray, sync);
+                Log._logger.Trace("U " + " " + name, Hex(Buff, 0, Buff.Length), ConsoleColor.Gray, sync);
             }
         }
 
         public static void Dump(string name, byte[] dump, int start, int len, bool Force = false, bool sync = false)
         {
             if (_config.Info.Dump)
-                Texte("U " + name, Hex(dump,start,len), ConsoleColor.Gray, sync);
+                Log._logger.Trace("U " + " " + name, Hex(dump,start,len), ConsoleColor.Gray, sync);
         }
 
         public static void Compare(string Name, byte[] First, byte[] Second, bool sync = false)
@@ -406,7 +414,7 @@ namespace FrameWork
                 }
             }
 
-            Texte("C " + Name, hex.ToString(), ConsoleColor.Gray, sync);
+            Log._logger.Trace("C " + Name+" " + hex.ToString(), ConsoleColor.Gray, sync);
         }
 
         public static string Hex(byte[] dump, int start, int len)

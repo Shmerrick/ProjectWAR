@@ -20,7 +20,7 @@ namespace AccountCacher
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(onError);
 
-            Log.Texte("", "-------------------- Account Cacher  -------------------", ConsoleColor.DarkRed);
+            Log.Info("", "-------------------- Account Cacher  -------------------", ConsoleColor.DarkRed);
 
             // Loading all configs files
             ConfigMgr.LoadConfigs();

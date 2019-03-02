@@ -30,7 +30,7 @@ namespace WorldServer
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(onError);
             Console.CancelKeyPress += new ConsoleCancelEventHandler(OnClose);
 
-            Log.Texte("", "-------------------- World Server ---------------------", ConsoleColor.DarkRed);
+            Log.Info("", "-------------------- World Server ---------------------", ConsoleColor.DarkRed);
 
             // Default the server to DEV mode.
             if (args.Length == 0)
@@ -54,7 +54,7 @@ namespace WorldServer
                 }
             }  
 
-            Log.Texte("", "SERVER running in " + WorldMgr.ServerMode + " mode", ConsoleColor.Cyan);
+            Log.Info("", "SERVER running in " + WorldMgr.ServerMode + " mode", ConsoleColor.Cyan);
             
 
             // Loading all configs files
@@ -97,22 +97,22 @@ namespace WorldServer
             // Ensure directory structure is correct
             if (!Directory.Exists("Zones"))
             {
-                Log.Texte("Directory Check", "Zones directory does not exist", ConsoleColor.Red);
+                Log.Error("Directory Check", "Zones directory does not exist");
                 ConsoleMgr.WaitAndExit(2000);
             }
             if (!Directory.Exists("Scripts"))
             {
-                Log.Texte("Directory Check", "Scripts directory does not exist", ConsoleColor.Red);
+                Log.Error("Directory Check", "Scripts directory does not exist");
                 ConsoleMgr.WaitAndExit(2000);
             }
             if (!Directory.Exists("World"))
             {
-                Log.Texte("Directory Check", "World directory does not exist", ConsoleColor.Red);
+                Log.Error("Directory Check", "World directory does not exist");
                 ConsoleMgr.WaitAndExit(2000);
             }
             if (!Directory.Exists("Abilities"))
             {
-                Log.Texte("Directory Check", "Abilities directory does not exist", ConsoleColor.Red);
+                Log.Error("Directory Check", "Abilities directory does not exist");
                 ConsoleMgr.WaitAndExit(2000);
             }
 
@@ -131,27 +131,27 @@ namespace WorldServer
             }
 
             LoaderMgr.Start();
-            Log.Texte("Battlefront Manager", "Creating Upper Tier Campaign Manager", ConsoleColor.Cyan);
+            Log.Info("Battlefront Manager", "Creating Upper Tier Campaign Manager", ConsoleColor.Cyan);
             if (RVRProgressionService._RVRProgressions.Count == 0)
             {
                 Log.Error("RVR Progression", "NO RVR Progressions in DB");
                 return;
             }
             WorldMgr.UpperTierCampaignManager = new UpperTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 4).ToList(), WorldMgr._Regions);
-            Log.Texte("Battlefront Manager", "Creating Lower Tier Campaign Manager", ConsoleColor.Cyan);
+            Log.Info("Battlefront Manager", "Creating Lower Tier Campaign Manager", ConsoleColor.Cyan);
             WorldMgr.LowerTierCampaignManager = new LowerTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 1).ToList(), WorldMgr._Regions);
-            Log.Texte("Battlefront Manager", "Resetting Progression", ConsoleColor.Cyan);
+            Log.Info("Battlefront Manager", "Resetting Progression", ConsoleColor.Cyan);
             WorldMgr.UpperTierCampaignManager.ResetBattleFrontProgression(CampaignRerollMode.INIT);
             WorldMgr.LowerTierCampaignManager.ResetBattleFrontProgression(CampaignRerollMode.INIT);
-            Log.Texte("Battlefront Manager", "Attaching Battlefronts to Regions", ConsoleColor.Cyan);
+            Log.Info("Battlefront Manager", "Attaching Battlefronts to Regions", ConsoleColor.Cyan);
             // Attach Battlefronts to regions
             WorldMgr.AttachCampaignsToRegions();
 
-            Log.Texte("Battlefront Manager", "Locking Battlefronts", ConsoleColor.Cyan);
+            Log.Info("Battlefront Manager", "Locking Battlefronts", ConsoleColor.Cyan);
             WorldMgr.UpperTierCampaignManager.LockBattleFrontsAllRegions(4, CampaignRerollMode.INIT);
             WorldMgr.LowerTierCampaignManager.LockBattleFrontsAllRegions(1, CampaignRerollMode.INIT);
 
-            Log.Texte("Battlefront Manager", "Opening Active battlefronts", ConsoleColor.Cyan);
+            Log.Info("Battlefront Manager", "Opening Active battlefronts", ConsoleColor.Cyan);
             WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront(CampaignRerollMode.INIT);
             WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront(CampaignRerollMode.INIT);
 
