@@ -248,6 +248,7 @@ namespace WorldServer
                 switch (Spawn.Entry)
                 {
                     case 242:
+                    case 511:// Inside hunters vale portal  // vale vine
                     case 100132:
                     case 99667:
                     case 98845:
