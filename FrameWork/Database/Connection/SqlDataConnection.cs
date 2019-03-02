@@ -115,8 +115,7 @@ namespace FrameWork
 
         public override bool IsSQLConnection
         {
-            get
-            {
+            get {
                 return true;
             }
         }
@@ -155,8 +154,8 @@ namespace FrameWork
 
                     string colName = prop.Name;
 
-                  
-                    var col = (DataElement)prop.GetCustomAttributes(typeof(DataElement),true).FirstOrDefault();
+
+                    var col = (DataElement)prop.GetCustomAttributes(typeof(DataElement), true).FirstOrDefault();
                     if (col != null)
                     {
 
@@ -166,7 +165,7 @@ namespace FrameWork
                             ClrName = prop.Name,
                             Type = prop.PropertyType,
                         };
-                        map.SqlToClrFields[colName] = map.ClrToSqlFields[prop.Name]; 
+                        map.SqlToClrFields[colName] = map.ClrToSqlFields[prop.Name];
                     }
 
                     var pk = (PrimaryKey)prop.GetCustomAttributes(typeof(PrimaryKey), true).FirstOrDefault();
@@ -348,7 +347,7 @@ namespace FrameWork
             }
 
         }
-      
+
 
         public override DbConnection GetConnection()
         {
@@ -440,10 +439,10 @@ namespace FrameWork
                 case 10054:
                 case 10057:
                 case 10058:
-                    {
-                        ret = true;
-                        break;
-                    }
+                {
+                    ret = true;
+                    break;
+                }
             }
 
             Log.Notice("DataConnection", $"Socket exception: ({socketException.ErrorCode}) {socketException.Message}; repeat: {ret}");
@@ -546,12 +545,11 @@ namespace FrameWork
             ArrayList databaseColumns = new ArrayList();
             List<string> databasePrimaryKeys = new List<string>();
 
-            bool createNewTable = false;
             string key = SchemaName.ToLower() + "." + table.TableName.ToLower();
 
             if (!Schemas.ContainsKey(key))
             {
-               // var schema = Schemas[SchemaName + "." + table.TableName];
+                // var schema = Schemas[SchemaName + "." + table.TableName];
                 var builder = new StringBuilder();
 
                 builder.AppendLine("CREATE TABLE [" + SchemaName.ToLower() + "].[" + table.TableName.ToLower() + "](");
@@ -593,10 +591,10 @@ namespace FrameWork
             else
             {
                 var schema = Schemas[SchemaName.ToLower() + "." + table.TableName.ToLower()];
-                bool primaryKeysDirty = false;
+                // bool primaryKeysDirty = false;
                 try
                 {
-                    var dbCols = schema.Columns.OrderBy(e=>e.Value.ORDINAL_POSITION).Select(e=>e.Value).ToList();
+                    var dbCols = schema.Columns.OrderBy(e => e.Value.ORDINAL_POSITION).Select(e => e.Value).ToList();
                     //rename changed columns
                     //for(int i=0; i<table.Columns.Count && i < dbCols.Count; i++)
                     //{
@@ -640,7 +638,7 @@ namespace FrameWork
                         }
                     }
 
-                   
+
                 }
                 catch (Exception e)
                 {
@@ -671,7 +669,7 @@ namespace FrameWork
             SqlConnection conn = null;
             do
             {
-                
+
                 try
                 {
                     conn = (SqlConnection)GetConnection();

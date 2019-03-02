@@ -27,26 +27,30 @@ namespace WorldServer
     public class RegionMgr
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        public static int RegionUpdateInterval = 50; // 50 ms between each update
-        public static ushort MaxCellID = 800;
-        public static ushort MaxCells = 16;
-        public static int MaxVisibilityRange = 400; // It was 400 on Age of Reckoning
+        public static UInt16 MaxCellID = 800;
+        public static UInt16 MaxCells = 16;
+        public static Int32 MaxVisibilityRange = 400; // It was 400 on Age of Reckoning
 
-        private long _lastRegionUpdate = TCPManager.GetTimeStampMS();
         public IApocCommunications ApocCommunications { get; set; }
-        public ushort RegionId;
-        private readonly Thread _updater;
-        private bool _running = true;
+        public UInt16 RegionId;
+
+        private volatile Boolean _updateLoopRunning = false;
+        private volatile Boolean _updateTriggerLoopRunning = false;
+        private readonly Thread _updateTriggerLoop;
+        private readonly Thread _updateLoop;
+        private const Int32 _updateInterval = 99; // every minute (1000ms) process operations, actions and objects.
+        private static ManualResetEvent _updateSleep = new ManualResetEvent(false);
+
         public List<Zone_Info> ZonesInfo;
         
         public Campaign Campaign;
         public Scenario Scenario;
-        public string RegionName;
+        public String RegionName;
 
         /// <summary>Races associated with the pairing, may be null</summary>
         private readonly Races[] _races;
 
-        public RegionMgr(ushort regionId, List<Zone_Info> zones, string name, IApocCommunications apocCommunications)
+        public RegionMgr(UInt16 regionId, List<Zone_Info> zones, String name, IApocCommunications apocCommunications)
         {
             ApocCommunications = apocCommunications;
             RegionId = regionId;
@@ -55,118 +59,32 @@ namespace WorldServer
             
             LoadSpawns();
 
-            if (Constants.DoomsdaySwitch == 2)
-            {
-                //switch (regionId)
-                //{
-                //    case 2:
-                //    case 4:
-                //    case 11: // This is T4
-                //        Bttlfront = new ProximityProgressingBattleFront(this, true);
-                //        break;
-                //    case 1: // t1 dw/gs
-                //    case 3: // t1 he/de
-                //    case 8: // t1 em/ch
-                // Bttlfront = new T1BattleFront(this, true);
-                //        break;
-                //    case 12: // T2
-                //        Bttlfront = new T1BattleFront(this, true);
-                //        break;
-                //    case 14: // T2
-                //        Bttlfront = new T1BattleFront(this, true);
-                //        break;
-                //    case 15: // T2
-                //        Bttlfront = new T1BattleFront(this, true);
-                //        break;
-                //    case 6:  // T3
-                //        Bttlfront = new T1BattleFront(this, true);
-                //        break;
-                //    case 10: // T3
-                //        Bttlfront = new T1BattleFront(this, true);
-                //        break;
-                //    case 16: // T3
-                //        Bttlfront = new T1BattleFront(this, true);
-                //        break;
-                //    default: // Everything else...
-                //        Bttlfront = new ProximityBattleFront(this, false);
-                //        break;
-                //}
-
-                //switch (regionId)
-                //{
-                //    case 1: // t1 dw/gs
-                //    case 3: // t1 he/de
-                //    case 8: // t1 em/ch
-                //        Campaign = new Campaign(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.LowerTierCampaignManager);
-                //        break;
-                //    default: // Everything else...
-                //        Campaign = new Campaign(this, new List<BattleFrontObjective>(), new HashSet<Player>(), WorldMgr.UpperTierCampaignManager);
-                //        break;
-                //}
-            }
-            else
-            {
-                //switch (regionId)
-                //{
-                //    case 2:
-                //    case 4:
-                //    case 11: // This is T4
-                //        Bttlfront = new ProgressingBattleFront(this, true);
-                //        break;
-                //    case 1: // t1 dw/gs
-                //    case 3: // t1 he/de
-                //    case 8: // t1 em/ch
-                //        Bttlfront = new T1BattleFront(this, true);
-                //        break;
-                //    case 12: // T2
-                //    case 14: // T2
-                //    case 15: // T2
-                //    case 6:  // T3
-                //    case 10: // T3
-                //    case 16: // T3
-                //        Bttlfront = new Campaign(this, zones.First().Type == 0);
-                //        break;
-                //    default: // Everything else...
-                //        Bttlfront = new Campaign(this, false);
-                //        break;
-                //}
-            }
-
             switch (ZonesInfo[0].Pairing)
             {
-                case (byte)Pairing.PAIRING_GREENSKIN_DWARVES:
+                case (Byte)Pairing.PAIRING_GREENSKIN_DWARVES:
                     _races = new Races[] { Races.RACES_DWARF, Races.RACES_GOBLIN };
                     break;
-                case (byte)Pairing.PAIRING_EMPIRE_CHAOS:
+                case (Byte)Pairing.PAIRING_EMPIRE_CHAOS:
                     _races = new Races[] { Races.RACES_EMPIRE, Races.RACES_CHAOS };
                     break;
-                case (byte)Pairing.PAIRING_ELVES_DARKELVES:
+                case (Byte)Pairing.PAIRING_ELVES_DARKELVES:
                     _races = new Races[] { Races.RACES_HIGH_ELF, Races.RACES_DARK_ELF };
                     break;
                 default:
                     break;
             }
 
-            _updater = new Thread(Update);
-            _updater.Start();
-        }
+            ThreadStart updateTriggerStart = UpdateTrigger;
+            _updateTriggerLoop = new Thread(updateTriggerStart);
+            _updateTriggerLoop.Name = "RegionMgr.UpdateTrigger";
+            _updateTriggerLoopRunning = true;
+            _updateTriggerLoop.Start();
 
-       
-
-        public void Stop()
-        {
-            try
-            {
-                Log.Debug("RegionMgr", "[" + RegionId + "] Stop");
-                _running = false;
-
-                foreach (ZoneMgr zone in ZonesMgr)
-                    zone.Stop();
-            }
-            catch (Exception e)
-            {
-                Log.Error("Region " + RegionId + " Stop", e.ToString());
-            }
+            ThreadStart updateLoopStart = UpdateLoop;
+            _updateLoop = new Thread(updateLoopStart);
+            _updateLoop.Name = "RegionMgr.Update";
+            _updateLoopRunning = true;
+            _updateLoop.Start();
         }
 
         /// <summary>
@@ -174,7 +92,7 @@ namespace WorldServer
         /// </summary>
         /// <param name="zoneId">Identifier of the searched zone</param>
         /// <returns>Zone or null if does not exists</returns>
-        public Zone_Info GetZone_Info(ushort zoneId)
+        public Zone_Info GetZone_Info(UInt16 zoneId)
         {
             foreach (Zone_Info zone in ZonesInfo)
             {
@@ -183,21 +101,15 @@ namespace WorldServer
             }
             return null;
         }
-        public Zone_Info GetZone(ushort offX, ushort offY)
+
+        public Zone_Info GetZone(UInt16 offX, UInt16 offY)
         {
             return ZonesInfo.Find(zone => zone != null &&
                 (zone.OffX <= offX && zone.OffX + MaxCells > offX) &&
                 (zone.OffY <= offY && zone.OffY + MaxCells > offY));
         }
 
-        public int GetTier()
-        {
-            if (Scenario != null)
-                return Scenario.Tier;
-            if (ZonesInfo.Count > 0)
-                return ZonesInfo[0].Tier;
-            return 4;
-        }
+        public Int32 GetTier() => Scenario != null ? Scenario.Tier : ZonesInfo.Count > 0 ? ZonesInfo[0].Tier : 4;
 
         #region ZoneMgr
 
@@ -208,7 +120,7 @@ namespace WorldServer
         /// </summary>
         /// <param name="zoneId">Id of the zone to get</param>
         /// <returns>Zone or null if zone info does not exists</returns>
-        public ZoneMgr GetZoneMgr(ushort zoneId)
+        public ZoneMgr GetZoneMgr(UInt16 zoneId)
         {
             Zone_Info info = GetZone_Info(zoneId);
             if (info == null)
@@ -233,7 +145,7 @@ namespace WorldServer
             return mgr;
         }
 
-        public ushort CheckZone(Object obj)
+        public UInt16 CheckZone(Object obj)
         {
             Zone_Info info = GetZone(obj.XOffset, obj.YOffset);
             if (info != null && info != obj.Zone.Info)
@@ -253,54 +165,62 @@ namespace WorldServer
             return info?.ZoneId ?? 0;
         }
 
-        public void Update()
+        ~RegionMgr()
         {
-            while (_running)
-            {
-                long start = TCPManager.GetTimeStampMS();
+            Stop();
+        }
 
-                if (start - _lastRegionUpdate > 500)
-                    Log.Error("RegionMgr", "[" + RegionId + "] - Region inter-update period too long - took " + (start - _lastRegionUpdate) + " ms.");
+        public void Stop()
+        {
+            _updateTriggerLoopRunning = false;
+            _updateLoopRunning = false;
+            _updateSleep.Set();
+        }
 
-                else if (start - _lastRegionUpdate > 250)
-                    Log.Notice("RegionMgr", "[" + RegionId + "] - Region inter-update period too long - took " + (start - _lastRegionUpdate) + " ms.");
+        protected virtual void UpdateTrigger()
+        {
+            while (_updateTriggerLoopRunning) {
+                Thread.Sleep(_updateInterval);
+                _updateSleep.Set();
+                Thread.Yield();
+                //Log.Notice(Thread.CurrentThread.Name, $"A Thread Necromancer awakens.");
+            }
+        }
+
+        protected void UpdateLoop()
+        {
+            Int64 previousTick;
+            Int64 thisTick = TCPManager.GetTimeStampMS();
+            Int64 deltaTick;
+
+            while (_updateLoopRunning) {
+                Thread.Yield();
+
+                previousTick = thisTick;
+                thisTick = TCPManager.GetTimeStampMS();
+                deltaTick = thisTick - previousTick;
 
                 try
                 {
-                    WorldMgr.UpdateScripts(start);
+                    WorldMgr.UpdateScripts(deltaTick);
 
                     AddNewObjects();
 
+                    UpdateActors(deltaTick);
+
                     RemoveOldObjects();
 
-                    UpdateActors(start);
+                    Campaign?.Update(deltaTick);
 
-                    //Bttlfront?.Update(start);
-                    Campaign?.Update(start);
-
-                    Campaign?.BattleFrontManager.Update(start);
-
+                    Campaign?.BattleFrontManager.Update(deltaTick);
+                }
+                catch (Exception e) {
+                    Log.Error(RegionName + $" ({RegionId})", e.Message);
                 }
 
-                catch (Exception e)
-                {
-                    Log.Error("Error", e.ToString());
-                }
-
-                long elapsed = TCPManager.GetTimeStampMS() - start;
-
-                _lastRegionUpdate = TCPManager.GetTimeStampMS();
-
-                if (elapsed < RegionUpdateInterval)
-                    Thread.Sleep((int)(RegionUpdateInterval - elapsed));
-                else
-                {
-                    if (elapsed > 500)
-                        Log.Error("RegionMgr", "[" + RegionId + "] - Region update took too long. " + GetObjects() + " objects. " + elapsed + "ms.");
-                    else if (elapsed > 250)
-                        Log.Notice("RegionMgr", "[" + RegionId + "] - Region update took too long. " + GetObjects() + " objects. " + elapsed + "ms.");
-
-                }
+                _updateSleep.WaitOne();
+                _updateSleep.Reset();
+                //Log.Notice(Thread.CurrentThread.Name, $"Thread Necromancer hit you for {deltaTick}ms.");
             }
 
             DisposeActors();
@@ -311,8 +231,9 @@ namespace WorldServer
         /// </summary>
         public readonly List<Player> Players = new List<Player>();
 
-        public  int OrderPlayers { get; set; }
-        public  int DestPlayers { get; set; }
+        public Int32 OrderPlayers { get; set; }
+
+        public Int32 DestPlayers { get; set; }
 
         private void AddNewObjects()
         {
@@ -320,8 +241,9 @@ namespace WorldServer
             {
                 lock (_objectsToAdd)
                 {
-                    foreach (ObjectAdd obj in _objectsToAdd)
-                    {
+                    foreach (ObjectAdd obj in _objectsToAdd) {
+                        Thread.Yield();
+
                         var plr = obj.Obj as Player;
 
                         if (obj.Obj.Region != this)
@@ -382,8 +304,9 @@ namespace WorldServer
             {
                 lock (_objectsToRemove)
                 {
-                    foreach (ObjectRemove removeInfo in _objectsToRemove)
-                    {
+                    foreach (ObjectRemove removeInfo in _objectsToRemove) {
+                        Thread.Yield();
+
                         removeInfo.Obj.InRegionChange = false;
                         removeInfo.Obj.ClearRange();
 
@@ -422,11 +345,11 @@ namespace WorldServer
             }
         }
 
-        private void UpdateActors(long start)
+        private void UpdateActors(Int64 start)
         {
-            
-            for (int i = 0; i < Objects.Length; ++i)
-            {
+            for (Int32 i = 0; i < Objects.Length; ++i) {
+                Thread.Yield();
+
                 Object obj = Objects[i];
                 if (obj == null || obj.Region != this)
                     continue;
@@ -477,8 +400,9 @@ namespace WorldServer
         {
             RemoveOldObjects();
 
-            for (int i = 0; i < Objects.Length; ++i)
-            {
+            for (Int32 i = 0; i < Objects.Length; ++i) {
+                Thread.Yield();
+
                 Object obj = Objects[i];
 
                 if (obj == null || obj.Region != this)
@@ -501,21 +425,18 @@ namespace WorldServer
         /// </summary>
         /// <param name="race">Race to check</param>
         /// <returns>True if matchs, false otherwise</returns>
-        public bool Matches(Races race)
-        {
-            return _races != null && (_races[0] == race || _races[1] == race);
-        }
+        public Boolean Matches(Races race) => _races != null && (_races[0] == race || _races[1] == race);
 
         #region Diagnostic
         public void CountObjects(Player plr)
         {
-            Dictionary<string, int> objectCounts = new Dictionary<string, int>();
+            Dictionary<String, Int32> objectCounts = new Dictionary<String, Int32>();
 
             foreach (Object obj in Objects)
             {
                 if (obj == null)
                     continue;
-                string type = obj.GetType().ToString();
+                String type = obj.GetType().ToString();
 
                 if (objectCounts.ContainsKey(type))
                     objectCounts[type]++;
@@ -534,14 +455,14 @@ namespace WorldServer
 
         public delegate void RangedObjectDelegate(Object obj);
 
-        public void GetRangedObject(Object obj, int range, RangedObjectDelegate rangeFunction)
+        public void GetRangedObject(Object obj, Int32 range, RangedObjectDelegate rangeFunction)
         {
             if (!obj.IsInWorld())
                 return;
 
             GetCells(obj.XOffset, obj.YOffset, range, cell =>
             {
-                for (int i = 0; i < cell.Objects.Count; ++i)
+                for (Int32 i = 0; i < cell.Objects.Count; ++i)
                 {
                     Object distObject;
                     if ((distObject = cell.Objects[i]) == null)
@@ -554,18 +475,15 @@ namespace WorldServer
                 }
             });
         }
-        public static bool IsRange(int fixe, int move, int range)
+        public static Boolean IsRange(Int32 fixe, Int32 move, Int32 range)
         {
-            int max = fixe + range;
-            int min = fixe - range;
+            Int32 max = fixe + range;
+            Int32 min = fixe - range;
 
-            if (move > max || move < min)
-                return false;
-
-            return true;
+            return move <= max && move >= min;
         }
 
-        public void DispatchPacket(PacketOut packet, Point3D point, int radius, Func<Player, bool> predicate = null)
+        public void DispatchPacket(PacketOut packet, Point3D point, Int32 radius, Func<Player, Boolean> predicate = null)
         {
             foreach (var player in WorldQuery<Player>(point, radius, predicate))
             {
@@ -573,12 +491,12 @@ namespace WorldServer
             }
         }
 
-        public List<T> WorldQuery<T>(Point3D point, int radius, Func<T, bool> predicate = null) where T : Object
+        public List<T> WorldQuery<T>(Point3D point, Int32 radius, Func<T, Boolean> predicate = null) where T : Object
         {
             var list = new List<T>();
 
-            int aradius = radius * Point2D.UNITS_TO_FEET;
-            int count = 0;
+            Int32 aradius = radius * Point2D.UNITS_TO_FEET;
+            Int32 count = 0;
             foreach (var zone in ZonesInfo.ToList())
             {
                 var mapX = zone.OffX << 12;
@@ -587,11 +505,11 @@ namespace WorldServer
                 if (point.X - aradius >= mapX && point.X + aradius <= mapX + 0xFFFF &&
                     point.Y - aradius >= mapY && point.Y + aradius <= mapY + 0xFFFF) //is the point on this zone?
                 {
-                    ushort offX = (ushort)Math.Truncate((decimal)((point.X - mapX) / 4096 + zone.OffX));
-                    ushort offY = (ushort)Math.Truncate((decimal)((point.Y - mapY) / 4096 + zone.OffY));
+                    UInt16 offX = (UInt16)Math.Truncate((Decimal)((point.X - mapX) / 4096 + zone.OffX));
+                    UInt16 offY = (UInt16)Math.Truncate((Decimal)((point.Y - mapY) / 4096 + zone.OffY));
 
-                    for (int x = offX - 1; x < offX + 1; x++) //scan all cells within radius
-                        for (int y = offY - 1; y < offY + 1; y++)
+                    for (Int32 x = offX - 1; x < offX + 1; x++) //scan all cells within radius
+                        for (Int32 y = offY - 1; y < offY + 1; y++)
                         {
                             if (x >= 0 && x <= MaxCellID && y >= 0 && y <= MaxCellID)
                                 if (Cells[x, y] != null)
@@ -605,13 +523,10 @@ namespace WorldServer
                 }
 
             }
-            if (predicate != null)
-                return list.Where(predicate).ToList();
-            return list;
+            return predicate != null ? list.Where(predicate).ToList() : list;
         }
 
-
-        public bool UpdateRange(Object curObj, bool forceUpdate = false)
+        public Boolean UpdateRange(Object curObj, Boolean forceUpdate = false)
         {
             if (!curObj.IsActive || curObj.IsDisposed)
                 return false;
@@ -619,7 +534,7 @@ namespace WorldServer
             if (curObj.X == 0 && curObj.Y == 0)
                 return false;
 
-            float distance = curObj.Get2DDistanceToWorldPoint(curObj.LastRangeCheck);
+            Single distance = curObj.Get2DDistanceToWorldPoint(curObj.LastRangeCheck);
             if (distance > 100 || forceUpdate)
             {
                 curObj.LastRangeCheck.X = curObj.WorldPosition.X;
@@ -650,7 +565,7 @@ namespace WorldServer
 
             Object dist;
 
-            for (int i = 0; i < curObj.ObjectsInRange.Count; ++i)
+            for (Int32 i = 0; i < curObj.ObjectsInRange.Count; ++i)
             {
                 if ((dist = curObj.ObjectsInRange[i]) == null)
                     continue;
@@ -666,43 +581,39 @@ namespace WorldServer
             return true;
         }
 
-        public bool IsVisibleBForA(Object a, Object b)
+        public Boolean IsVisibleBForA(Object a, Object b)
         {
             if (a == null || b == null || a.IsDisposed || b.IsDisposed)
                 return false;
 
-            if (a == b || !a.IsActive || !b.IsActive || !b.IsVisible)
-                return false;
-
-            if (b.IsPlayer() && (b.GetPlayer().Client == null || !b.GetPlayer().Client.IsPlaying()))
-                return false;
-
-            return true;
+            return a == b || !a.IsActive || !b.IsActive || !b.IsVisible
+                ? false
+                : !b.IsPlayer() || b.GetPlayer().Client != null && b.GetPlayer().Client.IsPlaying();
         }
 
         #endregion
 
         #region Oid
 
-        public static ushort MaxObjects = 65000;
-        public static ushort MaxOid = 2;
+        public static UInt16 MaxObjects = 65000;
+        public static UInt16 MaxOid = 2;
         public Object[] Objects = new Object[MaxObjects];
-        public Dictionary<uint, PublicQuest> PublicQuests = new Dictionary<uint, PublicQuest>();
+        public Dictionary<UInt32, PublicQuest> PublicQuests = new Dictionary<UInt32, PublicQuest>();
         private List<ObjectAdd> _objectsToAdd = new List<ObjectAdd>();
         private List<ObjectRemove> _objectsToRemove = new List<ObjectRemove>();
 
         public void GenerateOid(Object obj)
         {
-            ushort oid = GetOid();
+            UInt16 oid = GetOid();
             Objects[oid] = obj;
 
             obj.SetOid(oid);
             obj.Loaded = false;
         }
 
-        public ushort GetOid()
+        public UInt16 GetOid()
         {
-            for (int i = MaxOid; i < MaxObjects; ++i)
+            for (Int32 i = MaxOid; i < MaxObjects; ++i)
             {
                 if (MaxOid >= MaxObjects - 1)
                 {
@@ -712,8 +623,8 @@ namespace WorldServer
 
                 if (Objects[i] == null)
                 {
-                    MaxOid = (ushort)i;
-                    return (ushort)i;
+                    MaxOid = (UInt16)i;
+                    return (UInt16)i;
                 }
             }
 
@@ -723,11 +634,11 @@ namespace WorldServer
         public struct ObjectAdd
         {
             public Object Obj;
-            public ushort ZoneId;
-            public bool MustUpdateRange;
+            public UInt16 ZoneId;
+            public Boolean MustUpdateRange;
         }
 
-        public bool AddObject(Object obj, ushort zoneId, bool mustUpdateRange = false)
+        public Boolean AddObject(Object obj, UInt16 zoneId, Boolean mustUpdateRange = false)
         {
             Zone_Info info = GetZone_Info(zoneId);
             if (info == null)
@@ -754,12 +665,12 @@ namespace WorldServer
         public struct ObjectRemove
         {
             public Object Obj;
-            public ushort Oid;
+            public UInt16 Oid;
             public ZoneMgr Zone;
             public CellMgr Cell;
         }
 
-        public bool RemoveObject(Object obj)
+        public Boolean RemoveObject(Object obj)
         {
 			// nothing to remove here
 			if (obj == null)
@@ -784,32 +695,20 @@ namespace WorldServer
             return false;
         }
 
-        public Object GetObject(ushort oid)
+        public Object GetObject(UInt16 oid)
         {
             if (oid < 2 || oid >= Objects.Length)
                 return null;
 
             Object obj = Objects[oid];
 
-            if (obj == null || obj.IsDisposed)
-                return null;
-
-            return obj;
+            return obj == null || obj.IsDisposed ? null : obj;
         }
 
-        public Player GetPlayer(ushort oid)
-        {
-            return (GetObject(oid) as Player);
-        }
-        public ushort GetObjects()
-        {
-            return (ushort)Objects.Count(obj => obj != null);
-        }
+        public Player GetPlayer(UInt16 oid) => (GetObject(oid) as Player);
+        public UInt16 GetObjects() => (UInt16)Objects.Count(obj => obj != null);
 
-        public List<T> GetObjects<T>() where T : Object
-        {
-            return Objects.Where(obj => obj != null && obj is T).Select(e => (T)e).ToList();
-        }
+        public List<T> GetObjects<T>() where T : Object => Objects.Where(obj => obj != null && obj is T).Select(e => (T)e).ToList();
 
         #endregion
 
@@ -818,33 +717,33 @@ namespace WorldServer
         public CellMgr[,] Cells = new CellMgr[MaxCellID, MaxCellID];
         public delegate void GetCellDelegate(CellMgr cell);
 
-        public CellMgr GetCell(ushort x, ushort y)
+        public CellMgr GetCell(UInt16 x, UInt16 y)
         {
-            if (x >= MaxCellID) x = (ushort)(MaxCellID - 1);
-            if (y >= MaxCellID) y = (ushort)(MaxCellID - 1);
+            if (x >= MaxCellID) x = (UInt16)(MaxCellID - 1);
+            if (y >= MaxCellID) y = (UInt16)(MaxCellID - 1);
 
             return Cells[x, y] ?? (Cells[x, y] = new CellMgr(this, x, y));
         }
-        public void LoadCells(ushort x, ushort y, int range)
+        public void LoadCells(UInt16 x, UInt16 y, Int32 range)
         {
             GetCells(x, y, range, cell =>
             {
                 cell?.Load();
             });
         }
-        public void GetCells(ushort x, ushort y, int range, GetCellDelegate cellFunction)
+        public void GetCells(UInt16 x, UInt16 y, Int32 range, GetCellDelegate cellFunction)
         {
             if (cellFunction == null)
                 return;
 
-            ushort minX = (ushort)Math.Max(0, x - range);
-            ushort maxX = (ushort)Math.Min(MaxCellID - 1, x + range);
+            UInt16 minX = (UInt16)Math.Max(0, x - range);
+            UInt16 maxX = (UInt16)Math.Min(MaxCellID - 1, x + range);
 
-            ushort minY = (ushort)Math.Max(0, y - range);
-            ushort maxY = (ushort)Math.Min(MaxCellID - 1, y + range);
+            UInt16 minY = (UInt16)Math.Max(0, y - range);
+            UInt16 maxY = (UInt16)Math.Min(MaxCellID - 1, y + range);
 
-            for (ushort ox = minX; ox <= maxX; ++ox)
-                for (ushort oy = minY; oy <= maxY; ++oy)
+            for (UInt16 ox = minX; ox <= maxX; ++ox)
+                for (UInt16 oy = minY; oy <= maxY; ++oy)
                     cellFunction(GetCell(ox, oy));
         }
 
@@ -854,15 +753,12 @@ namespace WorldServer
 
         private CellSpawns[,] _cellSpawns;
 
-        public void LoadSpawns()
-        {
-            _cellSpawns = CellSpawnService.GetCells(RegionId);
-        }
+        public void LoadSpawns() => _cellSpawns = CellSpawnService.GetCells(RegionId);
 
-        public CellSpawns GetCellSpawn(ushort x, ushort y)
+        public CellSpawns GetCellSpawn(UInt16 x, UInt16 y)
         {
-            x = (ushort)Math.Min(MaxCellID - 1, x);
-            y = (ushort)Math.Min(MaxCellID - 1, y);
+            x = (UInt16)Math.Min(MaxCellID - 1, x);
+            y = (UInt16)Math.Min(MaxCellID - 1, y);
 
             return _cellSpawns[x, y] ?? (_cellSpawns[x, y] = new CellSpawns(RegionId, x, y));
         }
@@ -908,12 +804,12 @@ namespace WorldServer
 
         #region Outgoing packet logging
 
-        private readonly Dictionary<byte, uint> _packetVolume = new Dictionary<byte, uint>();
+        private readonly Dictionary<Byte, UInt32> _packetVolume = new Dictionary<Byte, UInt32>();
 
-        public bool LogPacketVolume;
-        private bool _sending;
+        public Boolean LogPacketVolume;
+        private Boolean _sending;
 
-        public void NotifyOutgoingPacket(byte opcode, uint len)
+        public void NotifyOutgoingPacket(Byte opcode, UInt32 len)
         {
             lock (_packetVolume)
             {
@@ -947,7 +843,7 @@ namespace WorldServer
 
                 plr.SendClientMessage("[Total Packet Volume]");
 
-                foreach (KeyValuePair<byte, uint> pair in _packetVolume)
+                foreach (KeyValuePair<Byte, UInt32> pair in _packetVolume)
                     plr.SendClientMessage((Opcodes)pair.Key + ": " + $"{pair.Value * 0.001f:0.0##}" + "KB");
 
                 _sending = false;
