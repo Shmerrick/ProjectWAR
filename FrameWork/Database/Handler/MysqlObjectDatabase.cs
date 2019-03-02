@@ -9,13 +9,13 @@ using System.Xml;
 
 using MySql.Data.MySqlClient;
 using MySql.Data.Types;
-using System.Threading;
 
 namespace FrameWork
 {
     public class MySQLObjectDatabase : ObjectDatabase
     {
-        public MySQLObjectDatabase(MySqlDataConnection connection) : base(connection)
+        public MySQLObjectDatabase(MySqlDataConnection connection)
+            : base(connection)
         {
         }
 
@@ -24,140 +24,145 @@ namespace FrameWork
         /// <summary>
         /// Converts an input value to the representation that will be stored in the DB.
         /// </summary>
-        protected Object ConvertToDatabaseFormat(Object val, String dateFormat)
+        protected object ConvertToDatabaseFormat(object val, string dateFormat)
         {
-            Object Obj = null;
+            object Obj = null;
 
-            if (val is Boolean)
-                Obj = ((Boolean)val) ? 1 : 0;
+            if (val is bool)
+                Obj = ((bool)val) ? 1 : 0;
             else if (val is DateTime)
                 Obj = ((DateTime)val).ToString(dateFormat);
-            else if (val is Single)
-                Obj = ((Single)val).ToString(Nfi);
-            else if (val is Double)
-                Obj = ((Double)val).ToString(Nfi);
-            else if (val is String)
-                Obj = Escape((String)val);
+            else if (val is float)
+                Obj = ((float)val).ToString(Nfi);
+            else if (val is double)
+                Obj = ((double)val).ToString(Nfi);
+            else if (val is string)
+                Obj = Escape((string)val);
 
-            else if (val is List<Byte>)
-                Obj = Utils.ConvertArrayToString<Byte>(((List<Byte>)val).ToArray());
-            else if (val is Byte[])
-                Obj = Utils.ConvertArrayToString<Byte>(((Byte[])val));
+            else if (val is List<byte>)
+                Obj = Utils.ConvertArrayToString<byte>(((List<byte>) val).ToArray());
+            else if (val is byte[])
+                Obj = Utils.ConvertArrayToString<byte>(((byte[]) val));
 
-            else if (val is List<Int16>)
-                Obj = Utils.ConvertArrayToString<Int16>(((List<Int16>)val).ToArray());
-            else if (val is Int16[])
-                Obj = Utils.ConvertArrayToString<Int16>(((Int16[])val));
+            else if (val is List<short>)
+                Obj = Utils.ConvertArrayToString<short>(((List<short>) val).ToArray());
+            else if (val is short[])
+                Obj = Utils.ConvertArrayToString<short>(((short[]) val));
 
-            else if (val is List<Int32>)
-                Obj = Utils.ConvertArrayToString<Int32>(((List<Int32>)val).ToArray());
-            else if (val is Int32[])
-                Obj = Utils.ConvertArrayToString<Int32>(((Int32[])val));
+            else if (val is List<int>)
+                Obj = Utils.ConvertArrayToString<int>(((List<int>) val).ToArray());
+            else if (val is int[])
+                Obj = Utils.ConvertArrayToString<int>(((int[]) val));
 
-            else if (val is List<UInt32>)
-                Obj = Utils.ConvertArrayToString<UInt32>(((List<UInt32>)val).ToArray());
-            else if (val is UInt32[])
-                Obj = Utils.ConvertArrayToString<UInt32>(((UInt32[])val));
+            else if (val is List<uint>)
+                Obj = Utils.ConvertArrayToString<uint>(((List<uint>) val).ToArray());
+            else if (val is uint[])
+                Obj = Utils.ConvertArrayToString<uint>(((uint[]) val));
 
-            else if (val is List<Single>)
-                Obj = Utils.ConvertArrayToString<Single>(((List<Single>)val).ToArray());
-            else if (val is Single[])
-                Obj = Utils.ConvertArrayToString<Single>(((Single[])val));
+            else if (val is List<float>)
+                Obj = Utils.ConvertArrayToString<float>(((List<float>) val).ToArray());
+            else if (val is float[])
+                Obj = Utils.ConvertArrayToString<float>(((float[]) val));
 
-            else if (val is List<UInt64>)
-                Obj = Utils.ConvertArrayToString<UInt64>(((List<UInt64>)val).ToArray());
-            else if (val is UInt64[])
-                Obj = Utils.ConvertArrayToString<UInt64>(((UInt64[])val));
+            else if (val is List<ulong>)
+                Obj = Utils.ConvertArrayToString<ulong>(((List<ulong>) val).ToArray());
+            else if (val is ulong[])
+                Obj = Utils.ConvertArrayToString<ulong>(((ulong[]) val));
 
-            else if (val is List<Int64>)
-                Obj = Utils.ConvertArrayToString<Int64>(((List<Int64>)val).ToArray());
-            else if (val is Int64[])
-                Obj = Utils.ConvertArrayToString<Int64>(((Int64[])val));
+            else if (val is List<long>)
+                Obj = Utils.ConvertArrayToString<long>(((List<long>) val).ToArray());
+            else if (val is long[])
+                Obj = Utils.ConvertArrayToString<long>(((long[]) val));
 
-            else if (val != null)
+            else if(val != null)
                 Obj = Escape(val.ToString());
 
             return Obj;
         }
 
-        protected Object ConvertFromDatabaseFormat(Type type, Object val)
+        protected object ConvertFromDatabaseFormat(Type type, object val)
         {
-            if (type == typeof(Boolean))
+            if (type == typeof (bool))
                 return Convert.ToBoolean(Convert.ToInt32(val));
 
             if (type == typeof(DateTime))
             {
-                return val is MySqlDateTime ? ((MySqlDateTime)val).GetDateTime() : (Object)((IConvertible)val).ToDateTime(null);
+                if (val is MySqlDateTime)
+                    return ((MySqlDateTime)val).GetDateTime();
+                return ((IConvertible)val).ToDateTime(null);
             }
 
-            if (!(val is String) || type == typeof(String))
+            if (!(val is string) || type == typeof(string))
                 return val;
 
-            if (type == typeof(Byte[]))
-                return Utils.ConvertStringToArray<Byte>((String)val).ToArray();
-            if (type == typeof(List<Byte>))
-                return Utils.ConvertStringToArray<Byte>((String)val);
+            if (type == typeof (byte[]))
+                return Utils.ConvertStringToArray<byte>((string) val).ToArray();
+            if (type == typeof(List<byte>))
+                return Utils.ConvertStringToArray<byte>((string) val);
 
-            if (type == typeof(Int16[]))
-                return Utils.ConvertStringToArray<Int16>((String)val).ToArray();
-            if (type == typeof(List<Int16>))
-                return Utils.ConvertStringToArray<Int16>((String)val);
+            if (type == typeof(short[]))
+                return Utils.ConvertStringToArray<short>((string) val).ToArray();
+            if (type == typeof(List<short>))
+                return Utils.ConvertStringToArray<short>((string) val);
 
-            if (type == typeof(UInt16[]))
-                return Utils.ConvertStringToArray<UInt16>((String)val).ToArray();
-            if (type == typeof(List<UInt16>))
-                return Utils.ConvertStringToArray<UInt16>((String)val);
+            if (type == typeof(ushort[]))
+                return Utils.ConvertStringToArray<ushort>((string) val).ToArray();
+            if (type == typeof(List<ushort>))
+                return Utils.ConvertStringToArray<ushort>((string) val);
 
-            if (type == typeof(Int32[]))
-                return Utils.ConvertStringToArray<Int32>((String)val).ToArray();
-            if (type == typeof(List<Int32>))
-                return Utils.ConvertStringToArray<Int32>((String)val);
+            if (type == typeof(int[]))
+                return Utils.ConvertStringToArray<int>((string) val).ToArray();
+            if (type == typeof(List<int>))
+                return Utils.ConvertStringToArray<int>((string) val);
 
-            if (type == typeof(UInt32[]))
-                return Utils.ConvertStringToArray<UInt32>((String)val).ToArray();
-            if (type == typeof(List<UInt32>))
-                return Utils.ConvertStringToArray<UInt32>((String)val);
+            if (type == typeof(uint[]))
+                return Utils.ConvertStringToArray<uint>((string) val).ToArray();
+            if (type == typeof(List<uint>))
+                return Utils.ConvertStringToArray<uint>((string) val);
 
-            if (type == typeof(Int64[]))
-                return Utils.ConvertStringToArray<Int64>((String)val).ToArray();
-            if (type == typeof(List<Int64>))
-                return Utils.ConvertStringToArray<Int64>((String)val);
+            if (type == typeof(long[]))
+                return Utils.ConvertStringToArray<long>((string) val).ToArray();
+            if (type == typeof(List<long>))
+                return Utils.ConvertStringToArray<long>((string) val);
 
-            if (type == typeof(UInt64[]))
-                return Utils.ConvertStringToArray<UInt64>((String)val).ToArray();
-            if (type == typeof(List<UInt64>))
-                return Utils.ConvertStringToArray<UInt64>((String)val);
+            if (type == typeof(ulong[]))
+                return Utils.ConvertStringToArray<ulong>((string) val).ToArray();
+            if (type == typeof(List<ulong>))
+                return Utils.ConvertStringToArray<ulong>((string) val);
 
-            if (type == typeof(Single[]))
-                return Utils.ConvertStringToArray<Single>((String)val).ToArray();
-            return type == typeof(List<Single>) ? Utils.ConvertStringToArray<Single>((String)val) : val;
+            if (type == typeof(float[]))
+                return Utils.ConvertStringToArray<float>((string) val).ToArray();
+            if (type == typeof(List<float>))
+                return Utils.ConvertStringToArray<float>((string) val);
+
+            return val;
         }
 
         /// <summary>
         /// Assigns data loaded from the DB to the DataObject field to which it is to be loaded.
         /// </summary>
-        protected Exception GetVal(Object Object, MemberInfo info, Object val)
+        protected Exception GetVal(object Object, MemberInfo info, object val)
         {
             try
             {
                 Type type;
                 if (info is FieldInfo)
-                    type = ((FieldInfo)info).FieldType;
+                    type = ((FieldInfo) info).FieldType;
                 else if (info is PropertyInfo)
-                    type = ((PropertyInfo)info).PropertyType;
+                    type = ((PropertyInfo) info).PropertyType;
                 else
                     return null;
 
-                Object obj = ConvertFromDatabaseFormat(type, val);
+                object obj = ConvertFromDatabaseFormat(type, val);
 
                 if (info is PropertyInfo)
                 {
-                    ((PropertyInfo)info).SetValue(Object, obj, null);
+                    ((PropertyInfo) info).SetValue(Object, obj, null);
                 }
-                else ((FieldInfo)info).SetValue(Object, obj);
+                else ((FieldInfo) info).SetValue(Object, obj);
 
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 return e;
             }
@@ -172,15 +177,16 @@ namespace FrameWork
         private readonly StringBuilder _opBuilder = new StringBuilder(2048);
         private readonly StringBuilder _whereBuilder = new StringBuilder(1024);
 
+
         /// <summary>
         /// Returns a MySQL statement which would add the given object to the database.
         /// </summary>
         /// <param name="dataObject"></param>
         /// <param name="hasRelations"></param>
         /// <returns></returns>
-        private String FormulateInsert(DataObject dataObject, out Boolean hasRelations)
+        private string FormulateInsert(DataObject dataObject, out bool hasRelations)
         {
-            String tableName = dataObject.TableName;
+            string tableName = dataObject.TableName;
 
             var columns = new StringBuilder();
             var values = new StringBuilder();
@@ -188,8 +194,8 @@ namespace FrameWork
             BindingInfo[] bindInfos = GetBindingInfo(dataObject.GetType());
 
             hasRelations = false;
-            Boolean first = true;
-            String dateFormat = Connection.GetDBDateFormat();
+            bool first = true;
+            string dateFormat = Connection.GetDBDateFormat();
 
             if (TableDatasets[tableName].RequiresObjectId)
             {
@@ -211,7 +217,7 @@ namespace FrameWork
                 // and is thus valid for saving
                 if (bindInfo.PrimaryKey || bindInfo.DataElementAttribute != null)
                 {
-                    Object val = null;
+                    object val = null;
                     if (bindInfo.Member is PropertyInfo)
                         val = ((PropertyInfo)bindInfo.Member).GetValue(dataObject, null);
                     else if (bindInfo.Member is FieldInfo)
@@ -244,9 +250,9 @@ namespace FrameWork
         /// <param name="dataObject"></param>
         /// <param name="hasRelations"></param>
         /// <returns></returns>
-        private String FormulateUpdate(DataObject dataObject, out Boolean hasRelations)
+        private string FormulateUpdate(DataObject dataObject, out bool hasRelations)
         {
-            String tableName = dataObject.TableName;
+            string tableName = dataObject.TableName;
 
             _opBuilder.Clear();
             _opBuilder.Append("UPDATE `" + tableName + "` SET ");
@@ -256,9 +262,9 @@ namespace FrameWork
 
             BindingInfo[] bindInfos = GetBindingInfo(dataObject.GetType());
             hasRelations = false;
-            Boolean first = true;
-            Boolean firstPK = true;
-            String dateFormat = Connection.GetDBDateFormat();
+            bool first = true;
+            bool firstPK = true;
+            string dateFormat = Connection.GetDBDateFormat();
 
             foreach (BindingInfo bind in bindInfos)
             {
@@ -271,7 +277,7 @@ namespace FrameWork
                 // Add PKs to the WHERE clause.
                 if (bind.PrimaryKey)
                 {
-                    Object val;
+                    object val;
                     if (bind.Member is PropertyInfo)
                         val = ((PropertyInfo)bind.Member).GetValue(dataObject, null);
                     else if (bind.Member is FieldInfo)
@@ -296,7 +302,7 @@ namespace FrameWork
                 // Add other elements to the SET clause.
                 else if (!bind.HasRelation)
                 {
-                    Object val;
+                    object val;
                     if (bind.Member is PropertyInfo)
                         val = ((PropertyInfo)bind.Member).GetValue(dataObject, null);
                     else if (bind.Member is FieldInfo)
@@ -324,7 +330,7 @@ namespace FrameWork
 
             _opBuilder.Append(_whereBuilder);
 
-            return _opBuilder.ToString();
+           return _opBuilder.ToString();
         }
 
         /// <summary>
@@ -332,7 +338,7 @@ namespace FrameWork
         /// </summary>
         /// <param name="dataObject"></param>
         /// <returns></returns>
-        private String FormulateDelete(DataObject dataObject)
+        private string FormulateDelete(DataObject dataObject)
         {
             _opBuilder.Clear();
             _opBuilder.Append("DELETE FROM `");
@@ -343,15 +349,15 @@ namespace FrameWork
             _whereBuilder.Append(" WHERE ");
 
             BindingInfo[] bindInfos = GetBindingInfo(dataObject.GetType());
-            Boolean firstPK = true;
-            String dateFormat = Connection.GetDBDateFormat();
+            bool firstPK = true;
+            string dateFormat = Connection.GetDBDateFormat();
 
             foreach (BindingInfo bind in bindInfos)
             {
                 // Add PKs to the WHERE clause.
                 if (bind.PrimaryKey)
                 {
-                    Object val;
+                    object val;
                     if (bind.Member is PropertyInfo)
                         val = ((PropertyInfo)bind.Member).GetValue(dataObject, null);
                     else if (bind.Member is FieldInfo)
@@ -384,17 +390,17 @@ namespace FrameWork
         /// <summary>
         /// Adds a new object to the database.
         /// </summary>
-        protected override Boolean AddObjectImpl(DataObject dataObject)
+        protected override bool AddObjectImpl(DataObject dataObject)
         {
             try
             {
-                Boolean hasRelations = false;
+                bool hasRelations = false;
 
-                String sql = FormulateInsert(dataObject, out hasRelations);
+                string sql = FormulateInsert(dataObject, out hasRelations);
 
                 Log.Debug("MysqlObject", sql);
 
-                Int32 res = Connection.ExecuteNonQuery(sql);
+                int res = Connection.ExecuteNonQuery(sql);
                 if (res == 0)
                 {
                     Log.Error("MysqlObject", "Add Error : " + dataObject.TableName + " ID=" + dataObject.ObjectId + "Query = " + sql);
@@ -425,13 +431,13 @@ namespace FrameWork
         {
             try
             {
-                Boolean hasRelations;
+                bool hasRelations;
 
-                String sql = FormulateUpdate(dataObject, out hasRelations);
+                string sql = FormulateUpdate(dataObject, out hasRelations);
 
                 Log.Debug("MysqlObject", sql);
 
-                Int32 res = Connection.ExecuteNonQuery(sql);
+                int res = Connection.ExecuteNonQuery(sql);
 
                 if (res == 0)
                 {
@@ -450,7 +456,7 @@ namespace FrameWork
             }
             catch (Exception e)
             {
-                Log.Error("MysqlObject", "Modify error : " + dataObject.TableName + " " + dataObject.ObjectId + e);
+                Log.Error("MysqlObject", "Modify error : " + dataObject.TableName + " " + dataObject.ObjectId + e );
             }
         }
 
@@ -461,11 +467,11 @@ namespace FrameWork
         {
             try
             {
-                String sql = FormulateDelete(dataObject);
+                string sql = FormulateDelete(dataObject);
 
                 Log.Debug("MysqlObject", sql);
 
-                Int32 result = Connection.ExecuteNonQuery(sql);
+                int result = Connection.ExecuteNonQuery(sql);
                 if (result == 0)
                     Log.Error("MysqlObject", "Delete Object : " + dataObject.TableName + " failed! ID=" + dataObject.ObjectId + " " + Environment.StackTrace);
 
@@ -486,84 +492,86 @@ namespace FrameWork
 
         #region Transactions
 
-        protected override Boolean RunTransaction(List<DataObject> dataObjects)
+        protected override bool RunTransaction(List<DataObject> dataObjects)
         {
-            var sqlConn = (MySqlConnection)Connection.GetConnection();
+            long startTime = TCPManager.GetTimeStampMS();
+
+            MySqlConnection sqlConn = (MySqlConnection)Connection.GetConnection();
             MySqlCommand sqlCommand = sqlConn.CreateCommand();
             MySqlTransaction transaction = sqlConn.BeginTransaction();
 
             sqlCommand.Connection = sqlConn;
             sqlCommand.Transaction = transaction;
-            
-            Boolean rel;
 
-            try {
-                foreach (DataObject dataObject in dataObjects) {
-                    Thread.Yield();
+            try
+            {
+                uint addsThisPass = 0;
+                uint savesThisPass = 0;
+                uint deletesThisPass = 0;
+                bool rel;
 
-                    switch (dataObject.pendingOp) {
-
+                foreach (var dataObject in dataObjects)
+                {
+                    switch (dataObject.pendingOp)
+                    {
                         case DatabaseOp.DOO_Insert:
                             sqlCommand.CommandText = FormulateInsert(dataObject, out rel);
                             sqlCommand.ExecuteNonQuery();
-                            ++_inserts;
-                            break;
-
+                            ++addsThisPass; break;
                         case DatabaseOp.DOO_Update:
                             sqlCommand.CommandText = FormulateUpdate(dataObject, out rel);
                             sqlCommand.ExecuteNonQuery();
-                            ++_updates;
-                            break;
-
+                            ++savesThisPass; break;
                         case DatabaseOp.DOO_Delete:
                             sqlCommand.CommandText = FormulateDelete(dataObject);
                             sqlCommand.ExecuteNonQuery();
-                            ++_deletes;
-                            break;
+                            ++deletesThisPass; break;
                     }
                 }
+
                 transaction.Commit();
 
-                Log.Debug(Connection.SchemaName, "Transaction committed: " + dataObjects.Count + " Inserts " + _inserts + ", Updates " + _updates + ", Deletes " + _deletes + ".");
+                Log.Debug(Connection.SchemaName, "Transaction committed: " + dataObjects.Count + " objects in " + (TCPManager.GetTimeStampMS() - startTime) + "ms. Added " + addsThisPass + ", updated " + savesThisPass + ", deleted " + deletesThisPass + ".");
 
-                foreach (DataObject d in dataObjects){
-                    Thread.Yield();
-
+                foreach (DataObject d in dataObjects)
+                {
                     d.Dirty = false;
                     d.UpdateDBStatus();
                 }
 
                 return true;
             }
-            catch (Exception e) {
-                Log.Error(Connection.SchemaName, e.Message);
+            catch (Exception)
+            {
+                try
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+                catch (Exception)
+                {
+                    Log.Error(Connection.SchemaName, "Transaction rollback FAILED");
+                    return false;
+                }
             }
-            finally {
-            }
-
-            try {
-                transaction.Rollback();
-            }
-            catch (Exception e) {
+            finally
+            {
                 sqlConn.Close();
-                Log.Error(Connection.SchemaName, "Transaction rollback FAILED " + e.Message);
             }
-
-            return false;
         }
 
         #endregion
 
         #region Locators
 
-        protected override DataObject FindObjectByKeyImpl(Type objectType, Object key)
+        protected override DataObject FindObjectByKeyImpl(Type objectType, object key)
         {
             MemberInfo[] members = objectType.GetMembers();
             var ret = Activator.CreateInstance(objectType) as DataObject;
 
-            String tableName = ret.TableName;
+            string tableName = ret.TableName;
             DataTableHandler dth = TableDatasets[tableName];
-            String whereClause = null;
+            string whereClause = null;
 
             if (dth.UsesPreCaching)
             {
@@ -575,9 +583,9 @@ namespace FrameWork
             // Escape PK value
             key = Escape(key.ToString());
 
-            for (Int32 i = 0; i < members.Length; i++)
+            for (int i = 0; i < members.Length; i++)
             {
-                Object[] keyAttrib = members[i].GetCustomAttributes(typeof(PrimaryKey), true);
+                object[] keyAttrib = members[i].GetCustomAttributes(typeof(PrimaryKey), true);
                 if (keyAttrib.Length > 0)
                 {
                     whereClause = "`" + members[i].Name + "` = '" + key + "'";
@@ -590,7 +598,7 @@ namespace FrameWork
                 whereClause = "`" + ret.TableName + "_ID` = '" + key + "'";
             }
 
-            DataObject[] objs = SelectObjectsImpl(objectType, whereClause, IsolationLevel.DEFAULT);
+            var objs = SelectObjectsImpl(objectType, whereClause, IsolationLevel.DEFAULT);
             if (objs.Length > 0)
             {
                 dth.SetPreCachedObject(key, objs[0]);
@@ -601,14 +609,14 @@ namespace FrameWork
         }
 
         // Retourne l'objet a partir de sa primary key
-        protected override TObject FindObjectByKeyImpl<TObject>(Object key)
+        protected override TObject FindObjectByKeyImpl<TObject>(object key)
         {
             MemberInfo[] members = typeof(TObject).GetMembers();
             var ret = (TObject)Activator.CreateInstance(typeof(TObject));
 
-            String tableName = ret.TableName;
+            string tableName = ret.TableName;
             DataTableHandler dth = TableDatasets[tableName];
-            String whereClause = null;
+            string whereClause = null;
 
             if (dth.UsesPreCaching)
             {
@@ -620,9 +628,9 @@ namespace FrameWork
             // Escape PK value
             key = Escape(key.ToString());
 
-            for (Int32 i = 0; i < members.Length; i++)
+            for (int i = 0; i < members.Length; i++)
             {
-                Object[] keyAttrib = members[i].GetCustomAttributes(typeof(PrimaryKey), true);
+                object[] keyAttrib = members[i].GetCustomAttributes(typeof(PrimaryKey), true);
                 if (keyAttrib.Length > 0)
                 {
                     whereClause = "`" + members[i].Name + "` = '" + key + "'";
@@ -635,7 +643,7 @@ namespace FrameWork
                 whereClause = "`" + ret.TableName + "_ID` = '" + key + "'";
             }
 
-            IList<TObject> objs = SelectObjectsImpl<TObject>(whereClause, IsolationLevel.DEFAULT);
+            var objs = SelectObjectsImpl<TObject>(whereClause, IsolationLevel.DEFAULT);
             if (objs.Count > 0)
             {
                 dth.SetPreCachedObject(key, objs[0]);
@@ -650,18 +658,18 @@ namespace FrameWork
         #region Select
 
         // Sélectionne tous les objets d'une table
-        protected override DataObject[] SelectObjectsImpl(Type objectType, String whereClause, IsolationLevel isolation)
+        protected override DataObject[] SelectObjectsImpl(Type objectType, string whereClause, IsolationLevel isolation)
         {
-            String tableName = GetTableOrViewName(objectType);
+            string tableName = GetTableOrViewName(objectType);
             var dataObjects = new List<DataObject>(64);
-            Boolean useObjectID = TableDatasets[tableName].RequiresObjectId;
+            bool useObjectID = TableDatasets[tableName].RequiresObjectId;
 
             // build sql command
             var sb = new StringBuilder("SELECT ");
             if (useObjectID)
                 sb.Append("`" + tableName + "_ID`, ");
 
-            Boolean first = true;
+            bool first = true;
 
             BindingInfo[] bindingInfo = GetBindingInfo(objectType);
             foreach (BindingInfo bind in bindingInfo)
@@ -683,34 +691,34 @@ namespace FrameWork
                 sb.Append(" WHERE " + whereClause);
             }
 
-            String sql = sb.ToString();
+            string sql = sb.ToString();
 
             Log.Debug("MysqlObject", "DataObject[] SelectObjectsImpl: " + sql);
 
-            Int32 objCount = 0;
+            int objCount = 0;
 
             // read data and fill objects
             Connection.ExecuteSelect(sql, (reader) =>
             {
-                Object[] data = new Object[reader.FieldCount];
+                var data = new object[reader.FieldCount];
                 while (reader.Read())
                 {
                     objCount++;
 
                     reader.GetValues(data);
 
-                    var obj = Activator.CreateInstance(objectType) as DataObject;
+                    DataObject obj = Activator.CreateInstance(objectType) as DataObject;
 
-                    Int32 field = 0;
+                    int field = 0;
 
                     // ObjectID field is in use, so we need to get rid of the first data value and start from index 1 when reading later.
                     if (useObjectID)
                     {
                         ++field;
                         if (data[0] != null)
-                            obj.ObjectId = (String)data[0];
+                            obj.ObjectId = (string)data[0];
                     }
-                    Boolean hasRelations = false;
+                    bool hasRelations = false;
 
                     // we can use hard index access because we iterate the same order here
                     foreach (BindingInfo bind in bindingInfo)
@@ -722,7 +730,7 @@ namespace FrameWork
 
                         if (!bind.HasRelation)
                         {
-                            Object val = data[field++];
+                            object val = data[field++];
                             if (val != null && !val.GetType().IsInstanceOfType(DBNull.Value))
                             {
                                 Exception e = GetVal(obj, bind.Member, val);
@@ -754,20 +762,20 @@ namespace FrameWork
         }
 
         // Sélectionne tous les objets d'une table
-        protected override IList<TObject> SelectObjectsImpl<TObject>(String whereClause, IsolationLevel isolation)
+        protected override IList<TObject> SelectObjectsImpl<TObject>(string whereClause, IsolationLevel isolation)
         {
-            String tableName = GetTableOrViewName(typeof(TObject));
-            Boolean useObjectID = TableDatasets[tableName].RequiresObjectId;
+            string tableName = GetTableOrViewName(typeof (TObject));
+            bool useObjectID = TableDatasets[tableName].RequiresObjectId;
 
             // build sql command
             var sb = new StringBuilder("SELECT ");
             if (useObjectID)
                 sb.Append("`" + tableName + "_ID`, ");
 
-            Boolean first = true;
+            bool first = true;
 
-            BindingInfo[] bindingInfo = GetBindingInfo(typeof(TObject));
-            for (Int32 i = 0; i < bindingInfo.Length; i++)
+            BindingInfo[] bindingInfo = GetBindingInfo(typeof (TObject));
+            for (int i = 0; i < bindingInfo.Length; i++)
             {
                 if (!bindingInfo[i].HasRelation)
                 {
@@ -790,7 +798,7 @@ namespace FrameWork
                 sb.Append(" WHERE " + whereClause);
             }
 
-            String sql = sb.ToString();
+            string sql = sb.ToString();
 
             Log.Debug("MysqlObject", "IList<TObject> SelectObjectsImpl: " + sql);
 
@@ -809,14 +817,15 @@ namespace FrameWork
             }
         }
 
-        protected List<TObject> ReflectionSelect<TObject>(IsolationLevel isolation, String tableName, String sqlCommand, BindingInfo[] bindingInfo, Boolean useObjectID) where TObject : DataObject
+        protected List<TObject> ReflectionSelect<TObject>(IsolationLevel isolation, string tableName, string sqlCommand, BindingInfo[] bindingInfo, bool useObjectID)
+            where TObject: DataObject
         {
-            var dataObjects = new List<TObject>(64);
+            List<TObject> dataObjects = new List<TObject>(64);
 
             // read data and fill objects
             Connection.ExecuteSelect(sqlCommand, (reader) =>
             {
-                Object[] data = new Object[reader.FieldCount];
+                var data = new object[reader.FieldCount];
 
 #if LOGTIME
                 long objectLoad = 0;
@@ -831,18 +840,18 @@ namespace FrameWork
 #endif
                     reader.GetValues(data);
 
-                    var currentObject = (TObject)Activator.CreateInstance(typeof(TObject));
+                    TObject currentObject = (TObject) Activator.CreateInstance(typeof(TObject));
 
-                    Int32 field = 0;
+                    int field = 0;
 
                     // ObjectID field is in use, so we need to get rid of the first data value and start from index 1 when reading later.
                     if (useObjectID)
                     {
                         ++field;
                         if (data[0] != null)
-                            currentObject.ObjectId = (String)data[0];
+                            currentObject.ObjectId = (string)data[0];
                     }
-                    Boolean hasRelations = false;
+                    bool hasRelations = false;
 
                     // we can use hard index access because we iterate the same order here
                     foreach (BindingInfo bind in bindingInfo)
@@ -854,7 +863,7 @@ namespace FrameWork
 
                         if (!bind.HasRelation)
                         {
-                            Object val = data[field++];
+                            object val = data[field++];
                             if (val != null && !val.GetType().IsInstanceOfType(DBNull.Value))
                             {
                                 Exception e = GetVal(currentObject, bind.Member, val);
@@ -889,14 +898,16 @@ namespace FrameWork
                 if (count > 0)
                     Log.Notice(tableName, $"ReflectionSelect object loading time: {objectLoad / (float)Stopwatch.Frequency} seconds, average ticks per object: {objectLoad / count}");
 #endif
-            }, isolation);
+            }
+                , isolation);
 
             return dataObjects;
         }
 
-        protected List<TObject> StaticBindSelect<TObject>(IsolationLevel isolation, String tableName, String sqlCommand, BindingInfo[] bindingInfo, Boolean useObjectID) where TObject : DataObject
+        protected List<TObject> StaticBindSelect<TObject>(IsolationLevel isolation, string tableName, string sqlCommand, BindingInfo[] bindingInfo, bool useObjectID)
+        where TObject : DataObject
         {
-            var dataObjects = new List<TObject>(64);
+            List<TObject> dataObjects = new List<TObject>(64);
 
             ObjectPool<StaticMemberBindInfo> pool = GetStaticBindPool<TObject>();
 
@@ -905,7 +916,7 @@ namespace FrameWork
             // read data and fill objects
             Connection.ExecuteSelect(sqlCommand, (reader) =>
             {
-                Object[] data = new Object[reader.FieldCount];
+                var data = new object[reader.FieldCount];
 
 #if LOGTIME
                 long objectLoad = 0;
@@ -924,21 +935,21 @@ namespace FrameWork
                     reader.GetValues(data);
 
                     //TObject obj = Activator.CreateInstance(typeof(TObject)) as TObject;
-                    var currentObject = (TObject)staticBindInfo.AssignObject;
+                    TObject currentObject = (TObject)staticBindInfo.AssignObject;
 
-                    Int32 field = 0;
+                    int field = 0;
 
                     // ObjectID field is in use, so we need to get rid of the first data value and start from index 1 when reading later.
                     if (useObjectID)
                     {
                         ++field;
                         if (data[0] != null)
-                            currentObject.ObjectId = (String)data[0];
+                            currentObject.ObjectId = (string)data[0];
                     }
 
-                    Boolean hasRelations = false;
+                    bool hasRelations = false;
                     // we can use hard index access because we iterate the same order here
-                    for (Int32 i = 0; i < bindingInfo.Length; i++)
+                    for (int i = 0; i < bindingInfo.Length; i++)
                     {
                         BindingInfo bind = bindingInfo[i];
 
@@ -959,19 +970,19 @@ namespace FrameWork
 
                         if (!bind.HasRelation)
                         {
-                            Object val = data[field++];
-                            Object obj = null;
+                            object val = data[field++];
+                            object obj = null;
 
                             if (val != null && !Convert.IsDBNull(val))
-                                obj = ConvertFromDatabaseFormat(((PropertyInfo)bind.Member).PropertyType, val);
-
+                                obj = ConvertFromDatabaseFormat(((PropertyInfo) bind.Member).PropertyType, val);
+                            
                             try
                             {
                                 staticBindInfo.DataBinders[i].Assign(obj);
                             }
                             catch (InvalidCastException)
                             {
-                                Log.Error(tableName, "Failed to cast " + ((PropertyInfo)bind.Member).Name);
+                                Log.Error(tableName, "Failed to cast " + ((PropertyInfo) bind.Member).Name);
                             }
                         }
                     }
@@ -981,7 +992,9 @@ namespace FrameWork
                     dataObjects.Add(currentObject);
 
                     if (hasRelations)
+                    {
                         FillLazyObjectRelations(currentObject, true);
+                    }
 
                     currentObject.IsValid = true;
                     currentObject.AllowAdd = false; // exists already
@@ -997,16 +1010,18 @@ namespace FrameWork
                 if (count > 0)
                     Log.Notice(tableName, $"StaticBindSelect object loading time: {objectLoad / (float)Stopwatch.Frequency} seconds, average ticks per object: {objectLoad / count}");
 #endif
-            }, isolation);
+            }
+                , isolation);
 
             pool.Enqueue(staticBindInfo);
 
             return dataObjects;
         }
 
-        protected List<TObject> CompiledExpressionSelect<TObject>(IsolationLevel isolation, String tableName, String sqlCommand, BindingInfo[] bindingInfo, Boolean useObjectID) where TObject : DataObject
+        protected List<TObject> CompiledExpressionSelect<TObject>(IsolationLevel isolation, string tableName, string sqlCommand, BindingInfo[] bindingInfo, bool useObjectID)
+        where TObject : DataObject
         {
-            var dataObjects = new List<TObject>(64);
+            List<TObject> dataObjects = new List<TObject>(64);
 
             // read data and fill objects
             Connection.ExecuteSelect(sqlCommand, (reader) =>
@@ -1018,7 +1033,7 @@ namespace FrameWork
                 Stopwatch watch = new Stopwatch();
 #endif
 
-                var mySqlReader = (MySqlDataReader)reader;
+                MySqlDataReader mySqlReader = (MySqlDataReader)reader;
                 while (mySqlReader.Read())
                 {
 #if LOGTIME
@@ -1026,9 +1041,9 @@ namespace FrameWork
                     ++count;
 #endif
 
-                    var currentObject = (TObject)Activator.CreateInstance(typeof(TObject));
+                    TObject currentObject = (TObject) Activator.CreateInstance(typeof(TObject));
 
-                    Int32 field = 0;
+                    int field = 0;
 
                     // ObjectID field is in use, so we need to get rid of the first data value and start from index 1 when reading later.
                     if (useObjectID)
@@ -1037,9 +1052,9 @@ namespace FrameWork
                         currentObject.ObjectId = reader.GetString(0);
                     }
 
-                    Boolean hasRelations = false;
+                    bool hasRelations = false;
                     // we can use hard index access because we iterate the same order here
-                    for (Int32 i = 0; i < bindingInfo.Length; i++)
+                    for (int i = 0; i < bindingInfo.Length; i++)
                     {
                         BindingInfo bind = bindingInfo[i];
                         if (!hasRelations)
@@ -1048,7 +1063,7 @@ namespace FrameWork
                         if (!bind.HasRelation && bind.MySqlBinder != null && !mySqlReader.IsDBNull(field))
                         {
                             // Value type
-                            if (((PropertyInfo)bind.Member).PropertyType.IsValueType && !((PropertyInfo)bind.Member).PropertyType.IsEnum)
+                            if (((PropertyInfo) bind.Member).PropertyType.IsValueType && !((PropertyInfo) bind.Member).PropertyType.IsEnum)
                             {
                                 //try
                                 //{
@@ -1065,8 +1080,8 @@ namespace FrameWork
                             {
                                 //try
                                 //{
-                                Object obj = ConvertFromDatabaseFormat(((PropertyInfo)bind.Member).PropertyType, mySqlReader.GetValue(field));
-                                bind.MySqlBinder.AssignObject(currentObject, obj);
+                                    object obj = ConvertFromDatabaseFormat(((PropertyInfo) bind.Member).PropertyType, mySqlReader.GetValue(field));
+                                      bind.MySqlBinder.AssignObject(currentObject, obj);
                                 //}
                                 //catch (Exception)
                                 //{
@@ -1099,14 +1114,16 @@ namespace FrameWork
                 if (count > 0)
                     Log.Notice(tableName, $"CompiledExpressionSelect object loading time: {objectLoad / (float)Stopwatch.Frequency} seconds, average ticks per object: {objectLoad / count}");
 #endif
-            }, isolation);
+            }
+                , isolation);
 
             return dataObjects;
         }
 
-        protected List<TObject> ManualSelect<TObject>(IsolationLevel isolation, String tableName, String sqlCommand, BindingInfo[] bindingInfo, Boolean useObjectID) where TObject : DataObject
+        protected List<TObject> ManualSelect<TObject>(IsolationLevel isolation, string tableName, string sqlCommand, BindingInfo[] bindingInfo, bool useObjectID)
+        where TObject : DataObject
         {
-            var dataObjects = new List<TObject>(64);
+            List<TObject> dataObjects = new List<TObject>(64);
 
             // read data and fill objects
             Connection.ExecuteSelect(sqlCommand, (reader) =>
@@ -1119,7 +1136,7 @@ namespace FrameWork
 
 #endif
 
-                var mySqlReader = (MySqlDataReader)reader;
+                MySqlDataReader mySqlReader = (MySqlDataReader)reader;
                 while (mySqlReader.Read())
                 {
 #if LOGTIME
@@ -1127,9 +1144,9 @@ namespace FrameWork
                     ++count;
 #endif
 
-                    var currentObject = (TObject)Activator.CreateInstance(typeof(TObject));
+                    TObject currentObject = (TObject) Activator.CreateInstance(typeof(TObject));
 
-                    Int32 field = 0;
+                    int field = 0;
 
                     // ObjectID field is in use, so we need to get rid of the first data value and start from index 1 when reading later.
                     if (useObjectID)
@@ -1156,33 +1173,35 @@ namespace FrameWork
                 if (count > 0)
                     Log.Notice(tableName, $"Object loading time: {objectLoad / (float)Stopwatch.Frequency} seconds, average ticks per object: {objectLoad / count}");
 #endif
-            }, isolation);
+            }
+                , isolation);
 
             return dataObjects;
         }
 
         // Sélectionne tous les objets d'une table
-        protected override IList<TObject> SelectAllObjectsImpl<TObject>(IsolationLevel isolation) => SelectObjectsImpl<TObject>("", isolation);
-
+        protected override IList<TObject> SelectAllObjectsImpl<TObject>(IsolationLevel isolation)
+        {
+            return SelectObjectsImpl<TObject>("", isolation);
+        }
         #endregion
 
         #region Map
-
-        protected override Dictionary<TKey, TObject> MapAllObjectsImpl<TKey, TObject>(String keyName, String whereClause, Int32 expectedRowCount, IsolationLevel isolation)
+        protected override Dictionary<TKey, TObject> MapAllObjectsImpl<TKey, TObject>(string keyName, string whereClause, int expectedRowCount, IsolationLevel isolation)
         {
-            String tableName = GetTableOrViewName(typeof(TObject));
-            Boolean useObjectID = TableDatasets[tableName].RequiresObjectId;
+            string tableName = GetTableOrViewName(typeof(TObject));
+            bool useObjectID = TableDatasets[tableName].RequiresObjectId;
 
             // build sql command
             var sb = new StringBuilder("SELECT ");
             if (useObjectID)
                 sb.Append("`" + tableName + "_ID`, ");
 
-            Boolean first = true;
+            bool first = true;
 
             BindingInfo[] bindingInfo = GetBindingInfo(typeof(TObject));
-            Int32 keyIndex = -1;
-            for (Int32 i = 0; i < bindingInfo.Length; i++)
+            int keyIndex = -1;
+            for (int i = 0; i < bindingInfo.Length; i++)
             {
                 if (!bindingInfo[i].HasRelation)
                 {
@@ -1190,7 +1209,7 @@ namespace FrameWork
                         sb.Append(", ");
                     else
                         first = false;
-                    String name = bindingInfo[i].Member.Name;
+                    string name = bindingInfo[i].Member.Name;
                     sb.Append("`" + name + "`");
 
                     if (name.Equals(keyName, StringComparison.InvariantCultureIgnoreCase))
@@ -1207,7 +1226,7 @@ namespace FrameWork
                 sb.Append(" WHERE " + whereClause);
             }
 
-            String sql = sb.ToString();
+            string sql = sb.ToString();
 
             Log.Debug("MysqlObject", "IList<TObject> SelectObjectsImpl: " + sql);
 
@@ -1226,14 +1245,15 @@ namespace FrameWork
             }
         }
 
-        protected Dictionary<TKey, TObject> ReflectionMap<TKey, TObject>(Int32 keyIndex, Int32 expectedRowCount, IsolationLevel isolation, String tableName, String sqlCommand, BindingInfo[] bindingInfo, Boolean useObjectID) where TObject : DataObject
+        protected Dictionary<TKey, TObject> ReflectionMap<TKey, TObject>(int keyIndex, int expectedRowCount, IsolationLevel isolation, string tableName, string sqlCommand, BindingInfo[] bindingInfo, bool useObjectID)
+            where TObject : DataObject
         {
-            var dataObjects = new Dictionary<TKey, TObject>(expectedRowCount);
+            Dictionary<TKey, TObject> dataObjects = new Dictionary<TKey, TObject>(expectedRowCount);
 
             // read data and fill objects
             Connection.ExecuteSelect(sqlCommand, (reader) =>
             {
-                Object[] data = new Object[reader.FieldCount];
+                var data = new object[reader.FieldCount];
 
 #if LOGTIME
                 long objectLoad = 0;
@@ -1248,18 +1268,18 @@ namespace FrameWork
 #endif
                     reader.GetValues(data);
 
-                    var currentObject = (TObject)Activator.CreateInstance(typeof(TObject));
+                    TObject currentObject = (TObject)Activator.CreateInstance(typeof(TObject));
 
-                    Int32 field = 0;
+                    int field = 0;
 
                     // ObjectID field is in use, so we need to get rid of the first data value and start from index 1 when reading later.
                     if (useObjectID)
                     {
                         ++field;
                         if (data[0] != null)
-                            currentObject.ObjectId = (String)data[0];
+                            currentObject.ObjectId = (string)data[0];
                     }
-                    Boolean hasRelations = false;
+                    bool hasRelations = false;
 
                     // we can use hard index access because we iterate the same order here
                     foreach (BindingInfo bind in bindingInfo)
@@ -1271,7 +1291,7 @@ namespace FrameWork
 
                         if (!bind.HasRelation)
                         {
-                            Object val = data[field++];
+                            object val = data[field++];
                             if (val != null && !val.GetType().IsInstanceOfType(DBNull.Value))
                             {
                                 Exception e = GetVal(currentObject, bind.Member, val);
@@ -1306,14 +1326,16 @@ namespace FrameWork
                 if (count > 0)
                     Log.Notice(tableName, $"ReflectionSelect object loading time: {objectLoad / (float)Stopwatch.Frequency} seconds, average ticks per object: {objectLoad / count}");
 #endif
-            }, isolation);
+            }
+                , isolation);
 
             return dataObjects;
         }
 
-        protected Dictionary<TKey, TObject> StaticBindMap<TKey, TObject>(Int32 keyIndex, Int32 expectedRowCount, IsolationLevel isolation, String tableName, String sqlCommand, BindingInfo[] bindingInfo, Boolean useObjectID) where TObject : DataObject
+        protected Dictionary<TKey, TObject> StaticBindMap<TKey, TObject>(int keyIndex, int expectedRowCount, IsolationLevel isolation, string tableName, string sqlCommand, BindingInfo[] bindingInfo, bool useObjectID)
+        where TObject : DataObject
         {
-            var dataObjects = new Dictionary<TKey, TObject>(expectedRowCount);
+            Dictionary<TKey, TObject> dataObjects = new Dictionary<TKey, TObject>(expectedRowCount);
 
             ObjectPool<StaticMemberBindInfo> pool = GetStaticBindPool<TObject>();
 
@@ -1322,7 +1344,7 @@ namespace FrameWork
             // read data and fill objects
             Connection.ExecuteSelect(sqlCommand, (reader) =>
             {
-                Object[] data = new Object[reader.FieldCount];
+                var data = new object[reader.FieldCount];
 
 #if LOGTIME
                 long objectLoad = 0;
@@ -1341,21 +1363,21 @@ namespace FrameWork
                     reader.GetValues(data);
 
                     //TObject obj = Activator.CreateInstance(typeof(TObject)) as TObject;
-                    var currentObject = (TObject)staticBindInfo.AssignObject;
+                    TObject currentObject = (TObject)staticBindInfo.AssignObject;
 
-                    Int32 field = 0;
+                    int field = 0;
 
                     // ObjectID field is in use, so we need to get rid of the first data value and start from index 1 when reading later.
                     if (useObjectID)
                     {
                         ++field;
                         if (data[0] != null)
-                            currentObject.ObjectId = (String)data[0];
+                            currentObject.ObjectId = (string)data[0];
                     }
 
-                    Boolean hasRelations = false;
+                    bool hasRelations = false;
                     // we can use hard index access because we iterate the same order here
-                    for (Int32 i = 0; i < bindingInfo.Length; i++)
+                    for (int i = 0; i < bindingInfo.Length; i++)
                     {
                         BindingInfo bind = bindingInfo[i];
 
@@ -1376,8 +1398,8 @@ namespace FrameWork
 
                         if (!bind.HasRelation)
                         {
-                            Object val = data[field++];
-                            Object obj = null;
+                            object val = data[field++];
+                            object obj = null;
 
                             if (val != null && !Convert.IsDBNull(val))
                                 obj = ConvertFromDatabaseFormat(((PropertyInfo)bind.Member).PropertyType, val);
@@ -1416,16 +1438,18 @@ namespace FrameWork
                 if (count > 0)
                     Log.Notice(tableName, $"StaticBindSelect object loading time: {objectLoad / (float)Stopwatch.Frequency} seconds, average ticks per object: {objectLoad / count}");
 #endif
-            }, isolation);
+            }
+                , isolation);
 
             pool.Enqueue(staticBindInfo);
 
             return dataObjects;
         }
 
-        protected Dictionary<TKey, TObject> CompiledExpressionMap<TKey, TObject>(Int32 keyIndex, Int32 expectedRowCount, IsolationLevel isolation, String tableName, String sqlCommand, BindingInfo[] bindingInfo, Boolean useObjectID) where TObject : DataObject
+        protected Dictionary<TKey, TObject> CompiledExpressionMap<TKey, TObject>(int keyIndex, int expectedRowCount, IsolationLevel isolation, string tableName, string sqlCommand, BindingInfo[] bindingInfo, bool useObjectID)
+        where TObject : DataObject
         {
-            var dataObjects = new Dictionary<TKey, TObject>(expectedRowCount);
+            Dictionary<TKey, TObject> dataObjects = new Dictionary<TKey, TObject>(expectedRowCount);
 
             // read data and fill objects
             Connection.ExecuteSelect(sqlCommand, (reader) =>
@@ -1437,7 +1461,7 @@ namespace FrameWork
                 Stopwatch watch = new Stopwatch();
 #endif
 
-                var mySqlReader = (MySqlDataReader)reader;
+                MySqlDataReader mySqlReader = (MySqlDataReader)reader;
                 while (mySqlReader.Read())
                 {
 #if LOGTIME
@@ -1445,9 +1469,9 @@ namespace FrameWork
                     ++count;
 #endif
 
-                    var currentObject = (TObject)Activator.CreateInstance(typeof(TObject));
+                    TObject currentObject = (TObject)Activator.CreateInstance(typeof(TObject));
 
-                    Int32 field = 0;
+                    int field = 0;
 
                     // ObjectID field is in use, so we need to get rid of the first data value and start from index 1 when reading later.
                     if (useObjectID)
@@ -1456,10 +1480,10 @@ namespace FrameWork
                         currentObject.ObjectId = reader.GetString(0);
                     }
 
-                    Boolean hasRelations = false;
-                    var key = default(TKey);
+                    bool hasRelations = false;
+                    TKey key = default(TKey);
                     // we can use hard index access because we iterate the same order here
-                    for (Int32 i = 0; i < bindingInfo.Length; i++)
+                    for (int i = 0; i < bindingInfo.Length; i++)
                     {
                         BindingInfo bind = bindingInfo[i];
                         if (!hasRelations)
@@ -1476,7 +1500,7 @@ namespace FrameWork
                             }
                             else
                             {
-                                Object obj = ConvertFromDatabaseFormat(((PropertyInfo)bind.Member).PropertyType, mySqlReader.GetValue(field));
+                                object obj = ConvertFromDatabaseFormat(((PropertyInfo)bind.Member).PropertyType, mySqlReader.GetValue(field));
                                 bind.MySqlBinder.AssignObject(currentObject, obj);
                                 if (i == keyIndex)
                                     key = (TKey)obj;
@@ -1507,14 +1531,16 @@ namespace FrameWork
                 if (count > 0)
                     Log.Notice(tableName, $"CompiledExpressionSelect object loading time: {objectLoad / (float)Stopwatch.Frequency} seconds, average ticks per object: {objectLoad / count}");
 #endif
-            }, isolation);
+            }
+                , isolation);
 
             return dataObjects;
         }
 
-        protected Dictionary<TKey, TObject> ManualMap<TKey, TObject>(Int32 keyIndex, Int32 expectedRowCount, IsolationLevel isolation, String tableName, String sqlCommand, BindingInfo[] bindingInfo, Boolean useObjectID) where TObject : DataObject
+        protected Dictionary<TKey, TObject> ManualMap<TKey, TObject>(int keyIndex, int expectedRowCount, IsolationLevel isolation, string tableName, string sqlCommand, BindingInfo[] bindingInfo, bool useObjectID)
+        where TObject : DataObject
         {
-            var dataObjects = new Dictionary<TKey, TObject>(expectedRowCount);
+            Dictionary<TKey, TObject> dataObjects = new Dictionary<TKey, TObject>(expectedRowCount);
 
             // read data and fill objects
             Connection.ExecuteSelect(sqlCommand, (reader) =>
@@ -1527,7 +1553,7 @@ namespace FrameWork
 
 #endif
 
-                var mySqlReader = (MySqlDataReader)reader;
+                MySqlDataReader mySqlReader = (MySqlDataReader)reader;
                 while (mySqlReader.Read())
                 {
 #if LOGTIME
@@ -1535,9 +1561,9 @@ namespace FrameWork
                     ++count;
 #endif
 
-                    var currentObject = (TObject)Activator.CreateInstance(typeof(TObject));
+                    TObject currentObject = (TObject)Activator.CreateInstance(typeof(TObject));
 
-                    Int32 field = 0;
+                    int field = 0;
 
                     // ObjectID field is in use, so we need to get rid of the first data value and start from index 1 when reading later.
                     if (useObjectID)
@@ -1548,7 +1574,7 @@ namespace FrameWork
 
                     currentObject.Load(mySqlReader, field);
 
-                    dataObjects[(TKey)reader.GetValue(keyIndex)] = currentObject;
+                    dataObjects[(TKey) reader.GetValue(keyIndex)] = currentObject;
 
                     currentObject.IsValid = true;
                     currentObject.AllowAdd = false; // exists already
@@ -1564,7 +1590,8 @@ namespace FrameWork
                 if (count > 0)
                     Log.Notice(tableName, $"Object loading time: {objectLoad / (float)Stopwatch.Frequency} seconds, average ticks per object: {objectLoad / count}");
 #endif
-            }, isolation);
+            }
+                , isolation);
 
             return dataObjects;
         }
@@ -1573,11 +1600,11 @@ namespace FrameWork
         #region General DB accessor
 
         ///<summary>Returns the next auto-increment for the supplied object.</summary> 
-        protected override Int32 GetNextAutoIncrementImpl<TObject>()
-        {
-            String sqlQuery = "SELECT * FROM information_schema.TABLES WHERE TABLE_NAME = '" + GetTableOrViewName(typeof(TObject)) + "'";
-            Int32 nextAutoIncrement = 0;
-
+        protected override int GetNextAutoIncrementImpl<TObject>()
+        {   
+            string sqlQuery = "SELECT * FROM information_schema.TABLES WHERE TABLE_NAME = '" + GetTableOrViewName(typeof(TObject)) + "'";
+            int nextAutoIncrement = 0;
+            
             if (Connection.IsSQLConnection)
             {
                 Connection.ExecuteSelect(sqlQuery, (r) =>
@@ -1597,20 +1624,23 @@ namespace FrameWork
         /// <summary>
         /// Returns the number of this object type in the DB, optionally matching the WHERE condition.
         /// </summary>
-        protected override Int32 GetObjectCountImpl<TObject>(String where)
+        protected override int GetObjectCountImpl<TObject>(string where)
         {
-            String tableName = GetTableOrViewName(typeof(TObject));
+            string tableName = GetTableOrViewName(typeof(TObject));
 
             if (Connection.IsSQLConnection)
             {
-                String query = "SELECT COUNT(*) FROM " + tableName;
+                string query = "SELECT COUNT(*) FROM " + tableName;
                 if (where != "")
                     query += " WHERE " + where;
 
-                Object count = Connection.ExecuteScalar(query);
+                object count = Connection.ExecuteScalar(query);
                 if (count is DBNull)
                     return 0;
-                return count is Int64 ? (Int32)((Int64)count) : (Int32)count;
+                if (count is long)
+                    return (int)((long)count);
+
+                return (int)count;
             }
 
             return 0;
@@ -1619,16 +1649,18 @@ namespace FrameWork
         /// <summary>
         /// Gets the highest value for the supplied column.
         /// </summary>
-        protected override Int64 GetMaxColValueImpl<TObject>(String column)
+        protected override long GetMaxColValueImpl<TObject>(string column)
         {
-            String tableName = GetTableOrViewName(typeof(TObject));
+            string tableName = GetTableOrViewName(typeof(TObject));
 
             if (Connection.IsSQLConnection)
             {
-                String query = "SELECT MAX(" + column + ") FROM " + tableName;
+                string query = "SELECT MAX(" + column+ ") FROM " + tableName;
 
-                Object count = Connection.ExecuteScalar(query);
-                return count is DBNull ? 0 : Convert.ToInt64(count);
+                object count = Connection.ExecuteScalar(query);
+                if (count is DBNull)
+                    return 0;
+                return Convert.ToInt64(count);
             }
 
             return 0;
@@ -1639,13 +1671,13 @@ namespace FrameWork
         /// <summary>
         /// Executes a non-blocking request.
         /// </summary>
-        protected override Boolean ExecuteNonQueryImpl(String rawQuery)
+        protected override bool ExecuteNonQueryImpl(string rawQuery)
         {
             try
             {
                 Log.Debug("MysqlObject", rawQuery);
 
-                Int32 res = Connection.ExecuteNonQuery(rawQuery);
+                int res = Connection.ExecuteNonQuery(rawQuery);
                 if (res == 0)
                 {
                     Log.Error("MysqlObject", "Execution error : " + rawQuery);
@@ -1657,7 +1689,7 @@ namespace FrameWork
             }
             catch (Exception e)
             {
-                Log.Error("MysqlObject", "Execution error : " + rawQuery + e);
+                Log.Error("MysqlObject", "Execution error : " + rawQuery + e );
             }
 
             return false;
@@ -1666,9 +1698,9 @@ namespace FrameWork
         /// <summary>
         /// Executes a non-blocking request. Looks for integer in first column, mostly used for select count(*) queries
         /// </summary>
-        protected override Int64 ExecuteQueryIntImpl(String rawQuery)
+        protected override long ExecuteQueryIntImpl(string rawQuery)
         {
-            Int64 result = 0;
+            long result = 0;
             try
             {
                 Log.Debug("Mysql count query", rawQuery);

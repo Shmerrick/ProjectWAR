@@ -143,7 +143,7 @@ namespace FrameWork
                     obj = Utils.ConvertStringToArray<float>(val as string).ToArray();
                 else if (type == typeof(List<float>))
                     obj = Utils.ConvertStringToArray<float>(val as string);
-                else if (val is long && type == typeof(uint))
+                else if (val is long &&  type == typeof(uint))
                     obj = Convert.ToUInt32(val);
                 else if (val is int && type == typeof(ushort))
                     obj = Convert.ToUInt16(val);
@@ -479,11 +479,12 @@ namespace FrameWork
 
         protected override bool RunTransaction(List<DataObject> dataObjects)
         {
+            bool isNew;
             long startTime = TCPManager.GetTimeStampMS();
 
-            SqlConnection sqlConn = (SqlConnection)Connection.GetConnection();
-            SqlCommand sqlCommand = sqlConn.CreateCommand();
-            SqlTransaction transaction = sqlConn.BeginTransaction();
+           SqlConnection sqlConn = (SqlConnection)Connection.GetConnection();
+           SqlCommand sqlCommand = sqlConn.CreateCommand();
+           SqlTransaction transaction = sqlConn.BeginTransaction();
 
             sqlCommand.Connection = sqlConn;
             sqlCommand.Transaction = transaction;

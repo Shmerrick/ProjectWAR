@@ -14,19 +14,19 @@ namespace WorldServer
 {
     public class ZoneMgr
     {
-        public UInt16 ZoneId;
+        public ushort ZoneId;
         public Zone_Info Info;
         public ClientZoneInfo ClientInfo;
         public RegionMgr Region;
-        public static Int32 LOW_FIGHT = 100;
-        public static Int32 MEDIUM_FIGHT = 400;
-        public static Int32 LARGE_FIGHT = 1600;
+        public static int LOW_FIGHT = 100;
+        public static int MEDIUM_FIGHT = 400;
+        public static int LARGE_FIGHT = 1600;
+        public bool Running;
 
         // List of pqs in the zone
         public List<PublicQuest> PQuests = new List<PublicQuest>();
 
-        private Int32[,] _heatmap = new Int32[64, 64];
-
+        private int[,] _heatmap = new int[64,64];
         // list of hot spots in the zone
         public List<HotSpot> HotSpots = new List<HotSpot>();
 
@@ -37,7 +37,12 @@ namespace WorldServer
             this.Region = Region;
             ZoneId = Info.ZoneId;
             this.Info = Info;
+            Running = true;
             ClientInfo = ClientFileMgr.GetZoneInfo(Info.ZoneId);
+        }
+        public void Stop()
+        {
+            Log.Debug("ZoneMgr", "[" + ZoneId + "] Stop");
         }
 
         #region Objects
@@ -64,7 +69,6 @@ namespace WorldServer
 
             obj.LastRangeCheck = new Point2D();
         }
-
         public void RemoveObject(Object obj)
         {
             if (obj.Zone == this)
@@ -82,44 +86,57 @@ namespace WorldServer
             if (obj is HotSpot)
                 HotSpots.Remove((HotSpot)obj);
         }
+        /*
+        public bool Run(long Tick)
+        {
+            if (!Running)
+                return false;
+
+            int i = 0;
+            lock (_Objects)
+            {
+                UpdateAnnounces(Tick);
+
+            }
+
+            return true;
+        }*/
 
         #endregion
 
         #region HotSpots
-
-        public void AddHotspotDamage(Int32 zoneX, Int32 zoneY)
+        public void AddHotspotDamage(int zoneX, int zoneY)
         {
-            Int32 x = (Int32)Point2D.Clamp(zoneX / 1024, 0, 63);
-            Int32 y = (Int32)Point2D.Clamp(zoneY / 1024, 0, 63);
-            if (_heatmap[x, y] <= LARGE_FIGHT + 1000)
-                _heatmap[x, y]++;
+            int x = (int)Point2D.Clamp(zoneX / 1024, 0, 63);
+            int y = (int)Point2D.Clamp(zoneY / 1024, 0, 63);
+            if(_heatmap[x, y] <= LARGE_FIGHT+1000)
+                _heatmap[x,y]++;
         }
-
-        public List<Tuple<Point3D, Int32>> GetHotSpots()
+        public List<Tuple<Point3D, int>> GetHotSpots()
         {
-            var HotSpots = new List<Tuple<Point3D, Int32>>();
+            List<Tuple<Point3D, int>> HotSpots = new List<Tuple<Point3D, int>>();
 
-            for (Int32 x = 0; x < 64; x++)
-                for (Int32 y = 0; y < 64; y++)
+            for (int x = 0; x < 64; x++)
+                for (int y = 0; y < 64; y++)
                 {
-                    if (_heatmap[x, y] >= LOW_FIGHT)
+                    if (_heatmap[x, y] >= LOW_FIGHT )
                     {
-                        HotSpots.Add(new Tuple<Point3D, Int32>(new Point3D(x * 1024 + 512, y * 1024 + 512, 0), (Int32)(_heatmap[x, y])));
+                        HotSpots.Add(new Tuple<Point3D, int>(new Point3D(x * 1024 + 512, y*1024 + 512,0), (int)(_heatmap[x, y])));
                     }
                 }
             return HotSpots;
         }
 
-        public void DecayHotspots(Int32 amount = 25)
+        public void DecayHotspots(int amount = 25)
         {
 
-            for (Int32 x = 0; x < 64; x++)
-                for (Int32 y = 0; y < 64; y++)
+            for (int x = 0; x < 64; x++)
+                for (int y = 0; y < 64; y++)
                 {
                     if (_heatmap[x, y] > 0)
                     {
-
-                        if (_heatmap[x, y] > MEDIUM_FIGHT)
+                      
+                        if(_heatmap[x, y] > MEDIUM_FIGHT)
                             _heatmap[x, y] -= amount * 3;
                         else
                             _heatmap[x, y] -= amount;
@@ -132,17 +149,17 @@ namespace WorldServer
 
         public void SendHotSpots(Player Plr)
         {
-            List<Tuple<Point3D, Int32>> HotSpots = GetHotSpots();
-            var Out = new PacketOut((Byte)Opcodes.F_UPDATE_HOT_SPOT);
-            Out.WriteByte((Byte)HotSpots.Count);
+            List<Tuple<Point3D, int>> HotSpots = GetHotSpots();
+            PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_HOT_SPOT);
+            Out.WriteByte((byte)HotSpots.Count);
             Out.WriteByte(3); // 3 - multipul hotspots
             Out.WriteUInt16(ZoneId);
 
-            for (Int32 i = 0; i < HotSpots.Count; i++)
+            for (int i = 0; i < HotSpots.Count; i++)
             {
-                Out.WriteByte((Byte)i);
-                Out.WriteUInt16((UInt16)HotSpots[i].Item1.X);
-                Out.WriteUInt16((UInt16)HotSpots[i].Item1.Y);
+                Out.WriteByte((byte)i);
+                Out.WriteUInt16((ushort)HotSpots[i].Item1.X);
+                Out.WriteUInt16((ushort)HotSpots[i].Item1.Y);
 
                 if (HotSpots[i].Item2 >= LARGE_FIGHT)
                     Out.WriteByte(0); // 24 or more
@@ -153,7 +170,7 @@ namespace WorldServer
             }
 
             if (Plr == null)
-                lock (Players)
+                lock(Players)
                     foreach (Player pPlr in Players)
                     {
                         if (pPlr == null || pPlr.IsDisposed || !pPlr.IsInWorld())
@@ -169,7 +186,46 @@ namespace WorldServer
 
         #region Range
 
-        public UInt16 CalculPin(UInt32 WorldPos, Boolean x) => ZoneService.CalculPin(Info, (Int32)WorldPos, x);
+        public ushort CalculPin(uint WorldPos, bool x)
+        {
+            return ZoneService.CalculPin(Info, (int)WorldPos, x);
+        }
+
+        #endregion
+
+        #region Announces
+
+        public int CurrentAnnounce = 0;
+        public long NextAnnounce = 0;
+
+        public void UpdateAnnounces(long Tick)
+        {/*
+            if (NextAnnounce <= Tick)
+            {
+                TimedAnnounce Announce = WorldMgr.GetNextAnnounce(ref CurrentAnnounce, ZoneId);
+                if (Announce == null)
+                    NextAnnounce = Tick + 30000;
+                else
+                {
+                    foreach (Player Plr in _Players)
+                    {
+                        if (Plr == null)
+                            continue;
+
+                        if (Announce.Realm == 0 || (byte)Plr.Realm == Announce.Realm)
+                        {
+                            Plr.SendMessage(0, Announce.SenderName, Announce.Message, (SystemData.ChatLogFilters)Announce.Type);
+                        }
+                    }
+
+                    NextAnnounce = Tick + Announce.NextTime;
+                }
+            }*/
+        }
+
+        #endregion
+
+        #region Statics
 
         #endregion
     }

@@ -58,10 +58,16 @@ namespace FrameWork
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
 
-            var conn = new MySqlConnection(_connString);
+            long start1 = Environment.TickCount;
+            MySqlConnection conn = new MySqlConnection(_connString);
             conn.Open();
+            if (Environment.TickCount - start1 > 1000)
+            {
+                Log.Notice("DataConnection", "Connection time : " + (Environment.TickCount - start1) + "ms");
+            }
 
-            Log.Notice("DataConnection", "New DB Connection");
+            Log.Debug("DataConnection", "New DB Connection");
+
             return conn;
         }
 
@@ -70,7 +76,7 @@ namespace FrameWork
         {
             if (ConnectionType == ConnectionType.DATABASE_MYSQL)
             {
-                Log.Dump("DataConnection", "SQL: " + sqlcommand);
+                Log.Debug("DataConnection", "SQL: " + sqlcommand);
 
                 int affected = 0;
                 bool repeat;
@@ -84,11 +90,14 @@ namespace FrameWork
                             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
                             long start = Environment.TickCount;
                             affected = cmd.ExecuteNonQuery();
-                            
+
                             Log.Debug("DataConnection", "SQL NonQuery exec time " + (Environment.TickCount - start) + "ms");
 
                             if (Environment.TickCount - start > 500)
-                                Log.Dump("DataConnection", "SQL NonQuery took " + (Environment.TickCount - start) + "ms!\n" + sqlcommand + "\nTrace: " + Environment.StackTrace);
+                            {
+                                Log.Notice("DataConnection", "SQL NonQuery took " + (Environment.TickCount - start) + "ms!\n" + sqlcommand + "\nTrace: " + Environment.StackTrace);
+                            }
+
 
                             conn.Close();
 
@@ -110,7 +119,7 @@ namespace FrameWork
                 return affected;
             }
 
-            Log.Error("DataConnection", "SQL NonQuery failed.");
+            Log.Notice("DataConnection", "SQL NonQuery's not supported.");
 
             return 0;
         }

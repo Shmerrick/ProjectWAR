@@ -13,7 +13,7 @@ namespace FrameWork
         public string Database = "warserver";
         public string Username = "warserver";
         public string Password = "madremia";
-        public string Custom = "";
+        public string Custom = "Treat Tiny As Boolean=False";
         public string Catalog = "";
         public string IPAddress = "";
         public bool MultipleActiveResultSets = false;
@@ -29,9 +29,6 @@ namespace FrameWork
                 Result += "Server=" + Server + ";";
                 Result += "Port=" + Port + ";";
                 Result += "Database=" + Database + ";";
-                Result += "AllowBatch=True;";
-                Result += "Pooling=True;MinimumPoolSize=0;MaximumPoolSize=200;ConnectionLifeTime=300;";
-                Result += "KeepAlive=30;UseUsageAdvisor=True;Logging=True;";
             }
             else if (ConnectionType == ConnectionType.DATABASE_MSSQL)
             {
@@ -53,6 +50,7 @@ namespace FrameWork
             return Result;
         }
     }
+
 
     public class DBManager
     {

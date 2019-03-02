@@ -162,14 +162,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>If Not Exist "$(SolutionDir)bin\$(Configuration)\PatcherFilesDirectory\" ( mkdir "$(SolutionDir)bin\$(Configuration)\PatcherFilesDirectory\" )
-If Not Exist "$(SolutionDir)bin\$(Configuration)\TempFilesDirectory\" ( mkdir "$(SolutionDir)bin\$(Configuration)\TempFilesDirectory\" )
-If Not Exist "$(SolutionDir)bin\$(Configuration)\Abilities\" ( mkdir "$(SolutionDir)bin\$(Configuration)\Abilities\" )
-If Not Exist "$(SolutionDir)bin\$(Configuration)\Zones\" ( mkdir "$(SolutionDir)bin\$(Configuration)\Zones\" )
-If Not Exist "$(SolutionDir)bin\$(Configuration)\Logs\" ( mkdir "$(SolutionDir)bin\$(Configuration)\Logs\" )
-If Not Exist "$(SolutionDir)bin\$(Configuration)\Scripts\" ( mkdir "$(SolutionDir)bin\$(Configuration)\Scripts\" )
-If Not Exist "$(SolutionDir)bin\$(Configuration)\LOS\" ( mkdir "$(SolutionDir)bin\$(Configuration)\LOS\" )
-If Not Exist "$(SolutionDir)bin\$(Configuration)\Configs\" ( mkdir "$(SolutionDir)bin\$(Configuration)\Configs\" )</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
