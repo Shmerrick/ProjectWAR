@@ -398,7 +398,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Out.WriteByte((byte)owningRealm); //(byte)OwningRealm
             Out.WriteByte(1);
             Out.WriteUInt16(0);
-            Out.WritePascalString(Name);
+            Out.WritePascalString(Name+"XXXX");
             //
             //
             //
@@ -454,9 +454,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 
             Out.WriteUInt16(0); // _displayedTimer
-            Out.WriteUInt16((ushort)DisplayedTimer); // _displayedTimer
+            Out.WriteUInt16((ushort)DisplayedTimer); // Timer on map UI
             Out.WriteUInt16(0); // _displayedTimer
-            Out.WriteUInt16((ushort)DisplayedTimer); // _displayedTimer
+            Out.WriteUInt16((ushort)(DisplayedTimer)); // Timer in top right of UI
             Out.Fill(0, 4);
             Out.WriteByte(0x71);
             Out.WriteByte(1);
@@ -959,20 +959,20 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattlefrontLogger.Info($"Setting Campaign Objective Buff {campaignObjectiveBuff.BuffId} for Objective {Id}");
             }
 
+            GuardedTimer = TCPManager.GetTimeStamp() + GuardedTimerLength;
+            DisplayedTimer = GuardedTimerLength;
+
             State = StateFlags.Secure;
             SendState(CapturingPlayer, true, true);
             SpawnAllGuards(OwningRealm);
             BroadcastFlagInfo(true);
             GrantCaptureRewards(OwningRealm);
-            GuardedTimer = TCPManager.GetTimeStamp() + GuardedTimerLength;
-            DisplayedTimer = GuardedTimerLength;
-
         }
 
         public void SetObjectiveGuarded()
         {
             BattlefrontLogger.Debug($"{Name} : Guarded : {OwningRealm}");
-
+            DisplayedTimer = 0;
             State = StateFlags.Locked;
             BroadcastFlagInfo(true);
             SendState(GetPlayer(), true, true);
