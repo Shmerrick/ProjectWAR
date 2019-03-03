@@ -36,7 +36,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public List<BattleFront_Objective> BattlefieldObjectives { get; set; }
 
 
-        public BattleFrontStatus(ImpactMatrixManager impactMatrixManager)
+        public BattleFrontStatus(ImpactMatrixManager impactMatrixManager, int bfId = 0)
         {
             ImpactMatrixManagerInstance = impactMatrixManager;
             ContributionManagerInstance = new ContributionManager(
@@ -47,6 +47,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             KeepList = new List<Keep_Info>();
             BattlefieldObjectives = new List<BattleFront_Objective>();
+            if (bfId != 0)
+                BattleFrontId = bfId;
         }
 
         public float DestructionVictoryPointPercentage
