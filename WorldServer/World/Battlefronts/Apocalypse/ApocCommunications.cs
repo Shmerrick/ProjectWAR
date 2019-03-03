@@ -43,6 +43,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void ResetProgressionCommunications(Player plr, Realms realm, VictoryPointProgress vpp, string forceT4)
         {
+            _logger.Warn("F_CAMPAIGN_STATUS");
             PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
             Out.WriteHexStringBytes("0005006700CB00"); // 7
 
@@ -167,6 +168,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void SendCampaignStatus(Player plr, VictoryPointProgress vpp, Realms realm)
         {
             _logger.Trace("Send Campaign Status");
+            _logger.Warn("F_CAMPAIGN_STATUS");
             PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
             Out.WriteHexStringBytes("0005006700CB00"); // 7
 

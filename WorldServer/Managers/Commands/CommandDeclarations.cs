@@ -466,6 +466,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("sendkeepinfo", SendKeepInfoWrapper, null, EGmLevel.SourceDev, 0, "Sends a KeepInfo message"),
             new GmCommandHandler("sendkeepstatus", SendKeepStatusWrapper, null, EGmLevel.SourceDev, 0, "Sends a KeepInfo message"),
             new GmCommandHandler("sendcampaignstatus", SendCampaignStatusWrapper, null, EGmLevel.SourceDev, 0, "Sends a Campaign Status message"),
+            
         };
 
         #endregion

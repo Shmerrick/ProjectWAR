@@ -1508,7 +1508,7 @@ namespace WorldServer
         {
             if ((lowerTierCampaignManager == null) || (upperTierCampaignManager == null))
                 return;
-
+            _logger.Warn("F_CAMPAIGN_STATUS1");
             PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
             Out.WriteHexStringBytes("0005006700CB00"); // 7
 
@@ -1545,13 +1545,13 @@ namespace WorldServer
             // Empire vs Chaos T3
             // BuildCaptureStatus(Out, WorldMgr.GetRegion(6, false), realm);
             Out.WriteByte(0);
-            Out.WriteByte(0);  // % Order lock
-            Out.WriteByte(0);    // % Dest lock
+            Out.WriteByte(45);  // % Order lock
+            Out.WriteByte(55);    // % Dest lock
             // Empire vs Chaos T4
             // BuildCaptureStatus(Out, WorldMgr.GetRegion(11, false), realm);
             Out.WriteByte(0);
-            Out.WriteByte(0);  // % Order lock
-            Out.WriteByte(0);    // % Dest lock
+            Out.WriteByte(40);  // % Order lock
+            Out.WriteByte(60);    // % Dest lock
             // High Elves vs Dark Elves T1
             //BuildCaptureStatus(Out, WorldMgr.GetRegion(3, false), realm);
             Out.WriteByte(0);

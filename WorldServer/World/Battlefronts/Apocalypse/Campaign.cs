@@ -917,13 +917,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             switch (lockingRealm)
             {
                 case Realms.REALMS_REALM_ORDER:
-                    orderPercent = 100;
-                    destroPercent = 0;
+                    orderPercent = 80;
+                    destroPercent = 20;
                     break;
 
                 case Realms.REALMS_REALM_DESTRUCTION:
-                    orderPercent = 0;
-                    destroPercent = 100;
+                    orderPercent = 20;
+                    destroPercent = 80;
                     break;
 
                 default:

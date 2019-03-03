@@ -398,7 +398,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Out.WriteByte((byte)owningRealm); //(byte)OwningRealm
             Out.WriteByte(1);
             Out.WriteUInt16(0);
-            Out.WritePascalString(Name+"XXXX");
+            Out.WritePascalString(Name);
             //
             //
             //
