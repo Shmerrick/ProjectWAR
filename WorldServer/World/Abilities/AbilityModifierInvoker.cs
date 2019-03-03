@@ -533,6 +533,14 @@ namespace WorldServer
             if (!(caster as Player).CbtInterface.IsPvp)
                 return false;
 
+            if ((caster as Player).ZoneId !=
+                WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontFromProgression().ZoneId)
+            {
+                player.SendClientMessage("You may only deploy Siege in the active zone",
+                    ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                return false;
+            }
+
             var siegeType = Siege.GetSiegeType((uint)abInfo.CommandInfo[0].PrimaryValue);
 
             var nearRamSpawn = player.Region.Campaign.SiegeManager.CanDeploySiege(
