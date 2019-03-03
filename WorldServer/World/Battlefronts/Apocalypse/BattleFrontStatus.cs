@@ -36,12 +36,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public List<BattleFront_Objective> BattlefieldObjectives { get; set; }
 
 
-        public BattleFrontStatus(ImpactMatrixManager impactMatrixManager)
+        public BattleFrontStatus(ImpactMatrixManager impactMatrixManager, int battleFrontId)
         {
             ImpactMatrixManagerInstance = impactMatrixManager;
-            ContributionManagerInstance = new ContributionManager(
-                new ConcurrentDictionary<uint, List<PlayerContribution>>(),
-                BountyService._ContributionDefinitions);
+            BattleFrontId = battleFrontId;
+
+            LoadPlayerContribution();
 
             RewardManagerInstance = new RewardManager(ContributionManagerInstance, new StaticWrapper(), RewardService._RewardPlayerKills, ImpactMatrixManagerInstance);
 
@@ -150,6 +150,24 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     WorldMgr.Database.AddObject(recordToWrite);
                 }
             }
+        }
+
+        private void LoadPlayerContribution()
+        {
+            var contributionDictionary = new ConcurrentDictionary<uint, List<PlayerContribution>>();
+            var contributions =
+                WorldMgr.Database.SelectObjects<Common.Database.World.Battlefront.PlayerContribution>(
+                    $"BattleFrontId = {BattleFrontId.ToString()}");
+
+            foreach (var contribution in contributions)
+            {
+                contributionDictionary.TryAdd(contribution.CharacterId,
+                    JsonConvert.DeserializeObject<List<PlayerContribution>>(contribution.ContributionSerialised));
+            }
+
+            ContributionManagerInstance = new ContributionManager(
+                contributionDictionary,
+                BountyService._ContributionDefinitions);
         }
     }
 }

@@ -122,9 +122,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     // BattleFront Objectives for this region.
                     var battlefieldObjectives = BattleFrontService.GetZoneBattlefrontObjectives(battleFrontProgression.RegionId, battleFrontProgression.ZoneId);
 
-                    BattleFrontStatuses.Add(new BattleFrontStatus(ImpactMatrixManagerInstance)
+                    BattleFrontStatuses.Add(new BattleFrontStatus(ImpactMatrixManagerInstance, battleFrontProgression.BattleFrontId)
                     {
-                        BattleFrontId = battleFrontProgression.BattleFrontId,
                         LockingRealm = (Realms)BattleFrontProgressions.Single(x => x.BattleFrontId == battleFrontProgression.BattleFrontId).LastOwningRealm,
                         FinalVictoryPoint = new VictoryPointProgress(battleFrontProgression.OrderVP, battleFrontProgression.DestroVP),
                         OpenTimeStamp = 0,
