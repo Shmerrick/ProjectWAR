@@ -50,9 +50,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				this.BattleFrontStatuses.Clear();
 				foreach (var battleFrontProgression in battleFrontProgressions)
 				{
-					this.BattleFrontStatuses.Add(new BattleFrontStatus(this.ImpactMatrixManagerInstance)
+					this.BattleFrontStatuses.Add(new BattleFrontStatus(this.ImpactMatrixManagerInstance, battleFrontProgression.BattleFrontId)
                     {
-						BattleFrontId = battleFrontProgression.BattleFrontId,
 						LockingRealm = (Realms)BattleFrontProgressions.Single(x => x.BattleFrontId == battleFrontProgression.BattleFrontId).LastOwningRealm,
 						FinalVictoryPoint = new VictoryPointProgress(battleFrontProgression.OrderVP, battleFrontProgression.DestroVP),
 						OpenTimeStamp = 0,
