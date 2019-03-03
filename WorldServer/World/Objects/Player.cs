@@ -1014,6 +1014,8 @@ namespace WorldServer
                 && x.Spawn.Proto.Unk2 <= 1001 
                 && x.Spawn.Proto.CreatureType != 32 
                 && x.Spawn.Proto.VendorID == 0
+                && x.Spawn.Proto.LairBoss == false
+                && x.Spawn.Proto.Title == 0
                 && x.Spawn.Proto.FinishingQuests == null 
                 && x.Spawn.Proto.StartingQuests == null);
             foreach (var creature in creaturesToWander)
