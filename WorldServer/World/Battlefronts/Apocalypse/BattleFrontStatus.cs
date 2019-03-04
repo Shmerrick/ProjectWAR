@@ -47,8 +47,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             KeepList = new List<Keep_Info>();
             BattlefieldObjectives = new List<BattleFront_Objective>();
-            if (bfId != 0)
-                BattleFrontId = bfId;
+            if (battleFrontId != 0)
+                BattleFrontId = battleFrontId;
         }
 
         public float DestructionVictoryPointPercentage

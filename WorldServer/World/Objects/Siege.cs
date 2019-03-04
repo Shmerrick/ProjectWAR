@@ -19,7 +19,7 @@ namespace WorldServer
 
         public const int MAX_SHOTS = 15;
         public int ShotCount = MAX_SHOTS;
-        public long SiegeLifeSpan = (int) TimeSpan.FromMinutes(1).TotalMilliseconds;
+        public long SiegeLifeSpan = (int) TimeSpan.FromMinutes(5).TotalMilliseconds;
 
         public Siege(Creature_spawn spawn, Player owner, SiegeType type) : base(spawn)
         {
@@ -334,8 +334,14 @@ namespace WorldServer
             Player credited = (pet != null) ? pet.Owner : (killer as Player);
 
             if (killer is Player)
-                (killer as Player).SendClientMessage($"{(killer as Player).Name} has killed a siege item!!!!!");
-               
+                (killer as Player).SendClientMessage($"{(killer as Player).Name} has killed a siege item!");
+
+
+            if (this.SiegeInterface.Creator != null)
+            {
+                this.SiegeInterface.Creator.SendClientMessage($"Your siege has been destroyed!");
+            }
+
             if (credited != null)
             {
                 // Contribution for Siege kill
