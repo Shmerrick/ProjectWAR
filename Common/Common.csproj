@@ -200,6 +200,10 @@
     <Compile Include="Database\World\Levels\Renown_Info.cs" />
     <Compile Include="Database\World\Chapters\Tok_Info.cs" />
     <Compile Include="Database\World\Levels\Xp_Info.cs" />
+	<Compile Include="Database\World\LiveEvents\LiveEventReward_Info.cs" />
+    <Compile Include="Database\World\LiveEvents\LiveEventSubTask_Info.cs" />
+    <Compile Include="Database\World\LiveEvents\LiveEventTask_Info.cs" />
+    <Compile Include="Database\World\LiveEvents\LiveEvent_Info.cs" />
     <Compile Include="Database\World\LootGroups\Loot_Group.cs" />
     <Compile Include="Database\World\LootGroups\Loot_Groups_Butcher.cs" />
     <Compile Include="Database\World\LootGroups\Loot_Group_Item.cs" />

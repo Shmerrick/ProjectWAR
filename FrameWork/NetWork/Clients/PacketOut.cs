@@ -480,6 +480,19 @@ namespace FrameWork
             Write(bytes, 0, bytes.Length);
         }
 
+        public virtual void WriteVarIntString(string str)
+        {
+            if (str == null || str.Length <= 0)
+            {
+                WriteByte(0);
+                return;
+            }
+
+            byte[] bytes = ISO8859_1.GetBytes(str);
+            WriteVarUInt((uint)str.Length);
+            Write(bytes, 0, bytes.Length);
+        }
+
         public virtual void WriteShortString(string str)
         {
             if (str == null || str.Length <= 0)
