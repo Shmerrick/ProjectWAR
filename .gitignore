@@ -219,3 +219,4 @@ WarPatcher/Release
 # VS2017 needed references - maybe c++ parts
 /.vs/WarEmulator/v15/Solution.VC.db-wal
 /.vs/WarEmulator/v15/Solution.VC.db-shm
+/WorldServer/Configs/LocalDevelopment
