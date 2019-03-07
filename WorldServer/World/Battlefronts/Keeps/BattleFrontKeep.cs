@@ -586,7 +586,7 @@ namespace WorldServer.World.BattleFronts.Keeps
             // Remove all siege
             RemoveAllAttackingKeepSiege();
 
-            PlayersKilledInRange /= 2;
+            PlayersKilledInRange = 0;
             // Update all players within 200 range - update the map.
             foreach (var plr in GetInRange<Player>(300))
             {
