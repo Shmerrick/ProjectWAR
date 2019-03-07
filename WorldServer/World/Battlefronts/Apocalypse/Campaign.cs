@@ -252,8 +252,60 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             keep.UpdateResources();
                         }
                     }
+                    if (NumberDestructionKeepsInZone() == 2)
+                    {
+                        // Place Siege merchant out the front of the WC
+                        // TODO
+                    }
+                    if (NumberOrderKeepsInZone() == 2)
+                    {
+                        // Place Siege merchant out the front of the WC
+                        // TODO
+                    }
                 }
             }
+        }
+
+        public int NumberOrderKeepsInZone()
+        {
+            var activeCampaign = BattleFrontManager.GetActiveCampaign();
+            var status = activeCampaign?.ActiveBattleFrontStatus;
+            var orderCount = 0;
+            
+
+            if (status != null)
+            {
+                foreach (var keep in status.KeepList)
+                {
+                    if ((Realms) keep.Realm == Realms.REALMS_REALM_ORDER)
+                    {
+                        orderCount++;
+                    }
+                }
+            }
+
+            return orderCount;
+        }
+
+        public int NumberDestructionKeepsInZone()
+        {
+            var activeCampaign = BattleFrontManager.GetActiveCampaign();
+            var status = activeCampaign?.ActiveBattleFrontStatus;
+            var destCount = 0;
+
+
+            if (status != null)
+            {
+                foreach (var keep in status.KeepList)
+                {
+                    if ((Realms)keep.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                    {
+                        destCount++;
+                    }
+                }
+            }
+
+            return destCount;
         }
 
         private void DestructionDominationCheck()
