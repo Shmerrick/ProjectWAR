@@ -832,7 +832,9 @@ namespace WorldServer
             // Purge all matching items from the standard inventory slots.
             for (ushort slot = MAX_EQUIPMENT_SLOT; slot < GetMaxInventorySlot(); ++slot)
             {
-                if (Items[slot] == null || Items[slot].Info.Entry != entry)
+                if (Items[slot] == null)
+                    continue;
+                if (Items[slot].Info.Entry != entry)
                     continue;
 
                 count += Items[slot].Count;

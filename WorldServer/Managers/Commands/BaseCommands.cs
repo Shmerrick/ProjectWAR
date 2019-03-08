@@ -4228,8 +4228,12 @@ namespace WorldServer.Managers.Commands
                 spawn.Level = 42;
 
                 Creature c = plr.Region.CreateCreature(spawn);
+                // Potion of healing
+                var item = new Creature_item {Entry = 208221, ModelId = 695, SlotId = 10, EffectId = 0};
+
+                c.ItmInterface.AddCreatureItem(item);
                 c.PlayersInRange = plr.PlayersInRange;
-                c.AiInterface.SetBrain(new AggressiveBrain(c));
+                c.AiInterface.SetBrain(new TankBrain(c));
 
                 creatureList.Add(c);
             }
@@ -4277,13 +4281,20 @@ namespace WorldServer.Managers.Commands
             spawn.WorldY = Y + StaticRandom.Instance.Next(500);
             spawn.WorldZ = Z;
             spawn.ZoneId = (ushort)plr.ZoneId;
-            spawn.Level = 42;
+            spawn.Level = 35;
 
             Creature c = plr.Region.CreateCreature(spawn);
+            c.AiInterface.SetBrain(new TankBrain(c));
+            //var itemDetails = ItemService.GetItem_Info(208221);
+            //var item = new Creature_item { Entry = itemDetails.Entry, ModelId = (ushort) itemDetails.ModelId, SlotId = 10, EffectId = 0 };
+            //item.SlotId = c.ItmInterface.GetFreeInventorySlot(itemDetails, false);
+
+            //c.ItmInterface.AddCreatureItem(item);
+            c.OnLoad();
             //c.WaypointGUID = 
             c.PlayersInRange = plr.PlayersInRange;
-            c.AiInterface.SetBrain(new PassiveBrain(c));
             
+           
 
 
             return true;

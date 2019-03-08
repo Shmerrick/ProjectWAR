@@ -19,7 +19,7 @@ namespace WorldServer
         public ushort Ranged { get; set; }
         public ushort Model1 { get; set; }
         public ushort Model2 { get; set; }
-        public bool IsWandering { get; set; }
+        
 
         public Creature()
         {
@@ -34,7 +34,6 @@ namespace WorldServer
             Ranged = spawn.Proto.Ranged;
             Model1 = spawn.Proto.Model1;
             Model2 = spawn.Proto.Model2;
-            IsWandering = false;
             if (spawn.Proto.Invulnerable == 1)
                 IsInvulnerable = true;
 
@@ -1337,9 +1336,5 @@ namespace WorldServer
             return false;
         }
 
-        public void SetWander(bool wander)
-        {
-            this.IsWandering = true;
-        }
     }
 }

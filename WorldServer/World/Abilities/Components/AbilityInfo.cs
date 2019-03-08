@@ -62,7 +62,16 @@ namespace WorldServer
 
         public void AppendAbilityCommand(AbilityCommandInfo cmd, byte slot)
         {
-            CommandInfo[slot].AddCommandToChain(cmd);
+            try
+            {
+                CommandInfo[slot].AddCommandToChain(cmd);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
         }
 
         public void AppendAbilityCommandWithDamage(AbilityCommandInfo cmd, byte slot)

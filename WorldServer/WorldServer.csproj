@@ -271,10 +271,13 @@
     <Compile Include="World\Abilities\Objects\LandMine.cs" />
     <Compile Include="World\Abilities\RunicBlessingsHandler.cs" />
     <Compile Include="World\AI\ABrain.cs" />
+    <Compile Include="World\AI\TankBrain.cs" />
+    <Compile Include="World\AI\MdpsBrain.cs" />
     <Compile Include="World\AI\AgressiveBrain.cs" />
     <Compile Include="World\AI\DummyBrain.cs" />
     <Compile Include="World\AI\GuardBrain.cs" />
     <Compile Include="World\AI\InstanceBossBrain.cs" />
+    <Compile Include="World\AI\MdpsStateMachine.cs" />
     <Compile Include="World\AI\PassiveBrain.cs" />
     <Compile Include="World\AI\SimpleLVHealerBrain.cs" />
     <Compile Include="World\Auction\AuctionHouse.cs" />
@@ -349,6 +352,7 @@
     <Compile Include="World\Abilities\Buffs\BuffInterface.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepDoor.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepNpcCreature.cs" />
+    <Compile Include="World\Objects\AdvancedCreature.cs" />
     <Compile Include="World\Objects\CreatureState.cs" />
     <Compile Include="World\Objects\Instances\Bilerot Burrow\SimpleBartholomeustheSickly.cs" />
     <Compile Include="World\Objects\Instances\Bilerot Burrow\SimpleSsrydianMorbidae.cs" />

@@ -1183,7 +1183,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 case KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK:
                     return plr.Realm == Realm ? "Defend Sanctum Door" : "Destroy Sanctum Door";
                 case KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK:
-                    return plr.Realm == Realm ? "Defend Keep Lord" : "Kill Keep Lord";
+                    return plr.Realm == Realm ? "Defend the Lord" : "Kill the Lord";
                 default:
                     throw new ArgumentOutOfRangeException();
             }

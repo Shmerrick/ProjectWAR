@@ -88,7 +88,7 @@ namespace WorldServer
             if (_Owner.IsUnit() && Waypoints != null && Waypoints.Count > 0)
             {
                 if (!_unit.IsDead && !_StopWaypoints)
-                    UpdateWaypoints(tick);
+                    ProcessNpcWaypoints(tick);
             }
 
             if (tick > _nextThinkTime)
@@ -217,11 +217,6 @@ namespace WorldServer
         /// <summary> Attempts to initiate AI-controlled combat. </summary>
         public void ProcessCombatStart(Unit target)
         {
-            #if DEBUG && NO_RESPOND
-            if (!(_unit is Pet))
-                return;
-            #endif
-
             if (_unit == null)
                 return;
 
@@ -704,7 +699,7 @@ namespace WorldServer
             return null;
         }
 
-        public void UpdateWaypoints(long Tick)
+        public void ProcessNpcWaypoints(long Tick)
         {
             if (State == AiState.STANDING || State == AiState.MOVING)
             {
