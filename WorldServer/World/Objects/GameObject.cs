@@ -248,7 +248,7 @@ namespace WorldServer
                 switch (Spawn.Entry)
                 {
                     case 242:
-                    case 511:// Inside hunters vale portal  // vale vine
+                    case 511:       // Inside hunters vale portal  // vale vine
                     case 100132:
                     case 99667:
                     case 98845:
@@ -264,7 +264,7 @@ namespace WorldServer
                         ZoneJump(player);
                         return;
                         
-                    case 98878: // Hardcoded portal for Gunbad
+                    case 98878:     // Hardcoded portal for Gunbad
                         ZoneJump(player, 60);
                         return;
                 }

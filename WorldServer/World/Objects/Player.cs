@@ -475,6 +475,7 @@ namespace WorldServer
         public CraftingApoInterface CraftApoInterface;
         public CraftingTalInterface CraftTalInterface;
         public GatheringInterface GatherInterface;
+        public LiveEventInterface LiveEventInterface;
 
         public uint CharacterId => Info?.CharacterId ?? 0;
         public int GmLevel => Client?._Account.GmLevel ?? 0;
@@ -533,6 +534,7 @@ namespace WorldServer
             CraftTalInterface = AddInterface<CraftingTalInterface>();
             CraftApoInterface = AddInterface<CraftingApoInterface>();
             GatherInterface = AddInterface<GatheringInterface>();
+            LiveEventInterface = AddInterface<LiveEventInterface>();
 
             EvtInterface.AddEventNotify(EventName.OnMove, CancelQuit);
             EvtInterface.AddEventNotify(EventName.OnReceiveDamage, CancelQuit);
@@ -731,6 +733,8 @@ namespace WorldServer
 
                 // Block 2
                 QtsInterface.SendQuests();
+                LiveEventInterface.SendLiveEvents();
+
                 SendXpTable();
                 if (GldInterface.IsInGuild())
                     GldInterface.Guild.SendGuildInfo(this);

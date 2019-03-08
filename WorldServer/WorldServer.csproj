@@ -184,6 +184,7 @@
     <Compile Include="Services\World\ItemService.cs" />
     <Compile Include="Services\World\BattlefrontService.cs" />
     <Compile Include="Services\World\InstanceService.cs" />
+    <Compile Include="Services\World\LiveEventService.cs" />
     <Compile Include="Services\World\PQuestService.cs" />
     <Compile Include="Services\World\QuestService.cs" />
     <Compile Include="Services\World\RallyPointService.cs" />
@@ -365,6 +366,7 @@
     <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleSarlothBloodtouched.cs" />
     <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleCuliusEmbervine.cs" />
     <Compile Include="World\Objects\Instances\TomboftheVultureLord\TOTVL.cs" />
+    <Compile Include="World\Interfaces\LiveEventInterface.cs" />
     <Compile Include="World\Map\Occlusion.cs" />
     <Compile Include="World\Objects\Instances\Bastion Stairs\SimpleKaarntheVanquisher.cs" />
     <Compile Include="World\Objects\Instances\Bastion Stairs\SimpleLordSlaurith.cs" />
