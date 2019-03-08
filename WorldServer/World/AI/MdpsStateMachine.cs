@@ -34,35 +34,35 @@ namespace WorldServer.World.AI
         }
 
 
-        public MdpsBrain Brain { get; set; }
+        public MarauderBrain Brain { get; set; }
         public PassiveStateMachine<ProcessState, Command> fsm { get; set; }
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public MdpsStateMachine(MdpsBrain brain)
+        public MdpsStateMachine(MarauderBrain brain)
         {
             Brain = brain;
             fsm = new PassiveStateMachine<ProcessState, Command>();
 
             fsm.TransitionCompleted += RecordTransition;
 
-            /* Initial State */
-            fsm.In(ProcessState.Initial)
-                .On(Command.OnStartPatrol)
-                .Goto(ProcessState.Patrol)
-                .Execute(() => brain.PerformPatrolling());
-            fsm.In(ProcessState.Patrol)
-                .On(Command.OnDetectEnemy)
-                .Goto(ProcessState.Closing)
-                .Execute(() => brain.SelectTarget());
-            fsm.In(ProcessState.Closing)
-                .On(Command.OnAttack)
-                .Goto(ProcessState.Combat)
-                .Execute(() => brain.PerformCombat());
-            fsm.In(ProcessState.Combat)
-                .On(Command.OnCheckHealth)
-                .Goto(ProcessState.HealthCheck)
-                .Execute(() => brain.PerformHealthCheck());
+            ///* Initial State */
+            //fsm.In(ProcessState.Initial)
+            //    .On(Command.OnStartPatrol)
+            //    .Goto(ProcessState.Patrol)
+            //    .Execute(() => brain.PerformPatrolling());
+            //fsm.In(ProcessState.Patrol)
+            //    .On(Command.OnDetectEnemy)
+            //    .Goto(ProcessState.Closing)
+            //    .Execute(() => brain.SelectTarget());
+            //fsm.In(ProcessState.Closing)
+            //    .On(Command.OnAttack)
+            //    .Goto(ProcessState.Combat)
+            //    .Execute(() => brain.PerformCombat());
+            //fsm.In(ProcessState.Combat)
+            //    .On(Command.OnCheckHealth)
+            //    .Goto(ProcessState.HealthCheck)
+            //    .Execute(() => brain.PerformHealthCheck());
 
         }
 

@@ -358,7 +358,7 @@ namespace WorldServer
                     abInfo.Instigator = instigator;
                     abInfo.Level = overrideAbilityLevel;
 
-                    return _abilityProcessor.StartAbility(abInfo, castSequence, cooldownGroup, enemyVisible, friendlyVisible, moving);
+                        return _abilityProcessor.StartAbility(abInfo, castSequence, cooldownGroup, enemyVisible, friendlyVisible, moving);
                 }
                 if (_Owner is Player)
                 {

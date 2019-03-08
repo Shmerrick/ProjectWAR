@@ -8,15 +8,13 @@ using WorldServer.World.AI;
 
 namespace WorldServer
 {
-    public class TankBrain : ABrain
+    public class ChosenBrain : ABrain
     {
-        public PassiveStateMachine<MdpsStateMachine.ProcessState, MdpsStateMachine.Command> fsm { get; set; }
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public TankBrain(Unit myOwner)
+        public ChosenBrain(Unit myOwner)
             : base(myOwner)
         {
-            fsm = new PassiveStateMachine<MdpsStateMachine.ProcessState, MdpsStateMachine.Command>("MDPSStateMachine");
         }
 
         public override void Think()
@@ -24,16 +22,9 @@ namespace WorldServer
             if (_unit.IsDead)
                 return;
 
-            if (_unit.AbtInterface.NPCAbilities == null)
-                return;
-
-
-
-            base.Think();
-
-
-
-
+          
+           base.Think();
+            
             // Only bother to seek targets if we're actually being observed by a player
             if (Combat.CurrentTarget == null && _unit.PlayersInRange.Count > 0)
             {
@@ -98,93 +89,86 @@ namespace WorldServer
                     {
                         //Repel
                         _logger.Debug($"{_unit} using Repel vs {(target as Player).Name}");
-//                        _unit.AbtInterface.StartCast(_unit, 8356, 1);
+                        //                        _unit.AbtInterface.StartCast(_unit, 8356, 1);
                         target.ApplyKnockback(_unit, AbilityMgr.GetKnockbackInfo(8329, 0));
 
                     }
-
                 }
 
-                var blessing = target.BuffInterface.HasBuffOfType((byte)BuffTypes.Blessing);
-                if (blessing && (_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < 5))
+
+                var rand = StaticRandom.Instance.Next(20);
+                switch (rand)
                 {
-                    // 8339 - Sever blessing
-                    _logger.Debug($"{_unit} using Sever Blessing vs {(target as Player).Name}");
-                    _unit.AbtInterface.StartCast(_unit, 8339, 1);
+                    case 0:
+                        {
+                            // Switch targets
+                            _logger.Debug($"{_unit} using Changing Targets {(target as Player).Name}");
+                            var randomTarget = SetRandomTarget();
+                            _logger.Debug($"{_unit} => {(randomTarget as Player).Name}");
+                            break;
+                        }
+                    case 1:
+                    case 2:
+                        {
+                            // Seeping Wound
+                            _logger.Debug($"{_unit} using Seeping Wound vs {(target as Player).Name}");
+                            _unit.AbtInterface.StartCast(_unit, 8320, 1);
+                            break;
+                        }
+                    case 3:
+                    case 4:
+                        {
+                            // Touch of Palsy
+                            _logger.Debug($"{_unit} using Touch of Palsy vs {(target as Player).Name}");
+                            _unit.AbtInterface.StartCast(_unit, 8338, 1);
+                            break;
+                        }
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                        {
+                            //Ravage
+                            _logger.Debug($"{_unit} using Ravage vs {(target as Player).Name}");
+                            _unit.AbtInterface.StartCast(_unit, 8323, 1);
+                            break;
+                        }
+                    case 10:
+                    case 11:
+                        {
+                            var tauntTarget = SetRandomTarget();
+                            // Taunt
+                            _logger.Debug($"{_unit} using Taunt vs {(tauntTarget as Player).Name}");
+                            _unit.AbtInterface.StartCast(_unit, 8322, 1);
+                            break;
+                        }
+                    case 12:
+                        {
+                            // Taunt
+                            _logger.Debug($"{_unit} using Champ Challenge vs {(target as Player).Name}");
+                            _unit.AbtInterface.StartCast(_unit, 608, 1);
+                            break;
+                        }
+                    case 13:
+                    case 14:
+                        {
+                            var blessing = target.BuffInterface.HasBuffOfType((byte)BuffTypes.Blessing);
+                            if (blessing && (_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < 5))
+                            {
+                                // 8339 - Sever blessing
+                                _logger.Debug($"{_unit} using Sever Blessing vs {(target as Player).Name}");
+                                _unit.AbtInterface.StartCast(_unit, 8339, 1);
 
+                            }
+                            break;
+                        }
                 }
 
-               
-
-
-                var rand = StaticRandom.Instance.Next(100);
-                if (rand < 5)
-                {
-                    // Switch targets
-                    _logger.Debug($"{_unit} using Changing Targets {(target as Player).Name}");
-                    var randomTarget = SetRandomTarget();
-                    _logger.Debug($"{_unit} => {(randomTarget as Player).Name}");
-                }
-
-                if ((rand >= 5) && (rand < 15))
-                {
-                    // Seeping Wound
-                    _logger.Debug($"{_unit} using Seeping Wound vs {(target as Player).Name}");
-                    _unit.AbtInterface.StartCast(_unit, 8320, 1);
-
-                }
-
-                if ((rand >= 15) && (rand < 30))
-                {
-                    // Touch of Palsy
-                    _logger.Debug($"{_unit} using Touch of Palsy vs {(target as Player).Name}");
-                    _unit.AbtInterface.StartCast(_unit, 8338, 1);
-
-                }
-
-                if ((rand >= 30) && (rand < 70))
-                {
-                    //Ravage
-                    _logger.Debug($"{_unit} using Ravage vs {(target as Player).Name}");
-                    _unit.AbtInterface.StartCast(_unit, 8323, 1);
-
-                }
-
-                if ((rand >= 70) && (rand < 80))
-                {
-                    var tauntTarget = SetRandomTarget();
-                    // Taunt
-                    _logger.Debug($"{_unit} using Taunt vs {(tauntTarget as Player).Name}");
-                    _unit.AbtInterface.StartCast(_unit, 8322, 1);
-
-                }
 
             }
 
         }
 
-
-
-
-
-        public void PerformPatrolling()
-        {
-            //_unit.AiInterface.ProcessNpcWaypoints();
-        }
-
-        public void SelectTarget()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PerformCombat()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PerformHealthCheck()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

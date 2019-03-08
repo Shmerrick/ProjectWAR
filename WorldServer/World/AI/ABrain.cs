@@ -4,6 +4,7 @@ using System.Linq;
 using SystemData;
 using FrameWork;
 using GameData;
+using NLog;
 using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer
@@ -17,7 +18,9 @@ namespace WorldServer
         protected Pet _pet;
         protected CombatInterface_Npc Combat;
         protected AIInterface AI;
-        
+
+        protected static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         protected ABrain(Unit unit)
         {
             _unit = unit;
@@ -473,6 +476,22 @@ namespace WorldServer
                 }
             }
         }
+
+        public void SimpleCast(Unit caster, Unit target, string description, int abilityId)
+        {
+            if (target == null)
+            {
+                _logger.Debug($"{_unit.Name} using {description}");
+            }
+            else
+            {
+                _logger.Debug($"{_unit.Name} using {description} on {target.Name}");
+            }
+
+            _unit.AbtInterface.StartCast(_unit, (ushort)abilityId, 1);
+
+        }
+
 
         public Player SetRandomTarget()
         {

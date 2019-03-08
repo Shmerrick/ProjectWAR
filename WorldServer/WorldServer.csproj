@@ -271,8 +271,9 @@
     <Compile Include="World\Abilities\Objects\LandMine.cs" />
     <Compile Include="World\Abilities\RunicBlessingsHandler.cs" />
     <Compile Include="World\AI\ABrain.cs" />
-    <Compile Include="World\AI\TankBrain.cs" />
-    <Compile Include="World\AI\MdpsBrain.cs" />
+    <Compile Include="World\AI\ChosenBrain.cs" />
+    <Compile Include="World\AI\ZealotBrain.cs" />
+    <Compile Include="World\AI\MarauderBrain.cs" />
     <Compile Include="World\AI\AgressiveBrain.cs" />
     <Compile Include="World\AI\DummyBrain.cs" />
     <Compile Include="World\AI\GuardBrain.cs" />
