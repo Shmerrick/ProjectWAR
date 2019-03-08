@@ -4285,7 +4285,7 @@ namespace WorldServer.Managers.Commands
 
             Creature c = plr.Region.CreateCreature(spawn);
 
-            c.AiInterface.SetBrain(new PassiveBrain(c));
+            c.AiInterface.SetBrain(new RunepriestBrain(c));
             //c.AiInterface.SetBrain(new ChosenBrain(c));
             //var itemDetails = ItemService.GetItem_Info(208221);
             //var item = new Creature_item { Entry = itemDetails.Entry, ModelId = (ushort) itemDetails.ModelId, SlotId = 10, EffectId = 0 };
