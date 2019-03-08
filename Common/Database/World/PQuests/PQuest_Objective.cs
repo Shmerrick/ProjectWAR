@@ -47,6 +47,12 @@ namespace Common
         [DataElement(Varchar = 255, AllowDbNull = true)]
         public string ObjectId4 { get; set; }
 
+        [DataElement(Varchar = 255, AllowDbNull = true)]
+        public string ObjectId5 { get; set; }
+
+        [DataElement(Varchar = 255, AllowDbNull = true)]
+        public string ObjectId6 { get; set; }
+
         [DataElement(AllowDbNull = false)]
         public uint TokCompleted { get; set; }
 
