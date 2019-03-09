@@ -501,7 +501,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             foreach (var player in playersToNotify)
             {
-                player.SendClientMessage(message);
+                player.SendClientMessage(message, ChatLogFilters.CHATLOGFILTERS_RVR);
             }
 
             DominationTimerLastSentMessage = TCPManager.GetTimeStamp();
