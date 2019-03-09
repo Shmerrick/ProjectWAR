@@ -140,18 +140,18 @@ namespace WorldServer
             WorldMgr.UpperTierCampaignManager = new UpperTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 4).ToList(), WorldMgr._Regions);
             Log.Info("Battlefront Manager", "Creating Lower Tier Campaign Manager", ConsoleColor.Cyan);
             WorldMgr.LowerTierCampaignManager = new LowerTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 1).ToList(), WorldMgr._Regions);
-            Log.Texte("Battlefront Manager", "Getting Progression based upon rvr_progression.LastOpenedZone", ConsoleColor.Cyan);
+            Log.Info("Battlefront Manager", "Getting Progression based upon rvr_progression.LastOpenedZone", ConsoleColor.Cyan);
             WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontFromProgression();
             WorldMgr.LowerTierCampaignManager.GetActiveBattleFrontFromProgression();
-            Log.Texte("Battlefront Manager", "Attaching Campaigns to Regions", ConsoleColor.Cyan);
+            Log.Info("Battlefront Manager", "Attaching Campaigns to Regions", ConsoleColor.Cyan);
             // Attach Battlefronts to regions
             WorldMgr.AttachCampaignsToRegions();
 
-            Log.Texte("Battlefront Manager", "Locking Battlefronts", ConsoleColor.Cyan);
+            Log.Info("Battlefront Manager", "Locking Battlefronts", ConsoleColor.Cyan);
             WorldMgr.UpperTierCampaignManager.LockBattleFrontsAllRegions(4);
             WorldMgr.LowerTierCampaignManager.LockBattleFrontsAllRegions(1);
 
-            Log.Texte("Battlefront Manager", "Opening Active battlefronts", ConsoleColor.Cyan);
+            Log.Info("Battlefront Manager", "Opening Active battlefronts", ConsoleColor.Cyan);
             WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront();
             WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront();
 
