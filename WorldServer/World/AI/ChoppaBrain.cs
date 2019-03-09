@@ -67,7 +67,7 @@ namespace WorldServer
                     {
                         if (nextDetauntAvailable < FrameWork.TCPManager.GetTimeStamp())
                         {
-                            SimpleCast(_unit, target, "Wave of Horror (detaunt)", 8402);
+                            SimpleCast(_unit, target, "Outta My Face! (detaunt)", 1753);
                             nextDetauntAvailable = FrameWork.TCPManager.GetTimeStamp() + 30; // available in another 30 seconds
                         }
                     }
@@ -87,7 +87,7 @@ namespace WorldServer
 
                         if (randParry >= 50)
                         {
-                            SimpleCast(_unit, target, "Death Grip", 8405);
+                            SimpleCast(_unit, target, "Drop Da Basha", 1756);
                         }
                     }
                 }
@@ -109,8 +109,8 @@ namespace WorldServer
                             {
                                 _unit.CbtInterface.SetTarget(enemyPlayer.Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
 
-                                // Mouth of Tzeetch
-                                SimpleCast(_unit, target, "Mouth of Tzeetch", 8397);
+                                // 1747 - Lotsa Choppin
+                                SimpleCast(_unit, target, "Lotsa Choppin", 1747);
                                 _unit.CbtInterface.SetTarget(oldTarget.Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
                                 break;
                             }
@@ -134,33 +134,35 @@ namespace WorldServer
                     case 1:
                     case 2:
                         {
-                            // Thunderous Blow
-                            SimpleCast(_unit, target, "Thunderous Blow", 8424);
+                            // 1750 - Try An' Hurt Me
+                            SimpleCast(_unit, target, "Try An' Hurt Me", 1750);
                             break;
                         }
                     case 3:
                     case 4:
                         {
-                            // Cutting Claw
-                            SimpleCast(_unit, target, "Cutting Claw", 8418);
+                            // 1746 - Can't Stop Da Chop
+                            SimpleCast(_unit, target, "Can't Stop Da Chop", 1746);
                             break;
                         }
                     case 5:
                     case 6:
                         {
-                            //Corruption
-                            SimpleCast(_unit, target, "Corruption", 8400);
+                            // 1742 - Throat Slasha
+                            SimpleCast(_unit, target, "Throat Slasha", 1742);
                             break;
                         }
                     case 7:
                     case 8:
                         {
-                            SimpleCast(_unit, target, "Rend", 8395);
+                            // 1771 - Bleed Em Out
+                            SimpleCast(_unit, target, "Bleed Em Out", 1771);
                             break;
                         }
                     case 9:
                         {
-                            SimpleCast(_unit, target, "Tainted Claw", 8401);
+                            // 1761 - Reckless Blow
+                            SimpleCast(_unit, target, "Reckless Blow", 1761);
                             break;
                         }
                     case 10:
@@ -171,7 +173,8 @@ namespace WorldServer
                                 ((target as Player).Info.CareerLine == (int)CareerLine.CAREERLINE_RUNE_PRIEST) ||
                                 ((target as Player).Info.CareerLine == (int)CareerLine.CAREERLINE_WARRIOR_PRIEST))
                             {
-                                SimpleCast(_unit, target, "Touch of Instability", 8407);
+                                // 1744 - Don't Go Nowhere
+                                SimpleCast(_unit, target, "Don't Go Nowhere", 1744);
                             }
                             break;
                         }
@@ -184,8 +187,8 @@ namespace WorldServer
 
                     case 13:
                         {
-                            // Debilitate
-                            SimpleCast(_unit, target, "Debilitate", 8396);
+                            // 1770 - Keep On Choppin'
+                            SimpleCast(_unit, target, "Keep On Choppin'", 1770);
                             break;
                         }
                     case 14:

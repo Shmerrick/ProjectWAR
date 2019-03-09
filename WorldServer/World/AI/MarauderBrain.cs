@@ -177,14 +177,14 @@ namespace WorldServer
                         }
                     case 12:
                         {
-                            // Confusing Movements
+                            // 631 - Confusing Movements
                             SimpleCast(_unit, target, "Confusing Movements", 631);
                             break;
                         }
 
                     case 13:
                         {
-                            // Debilitate
+                            // 8396 - Debilitate
                             SimpleCast(_unit, target, "Debilitate", 8396);
                             break;
                         }

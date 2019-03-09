@@ -87,7 +87,7 @@ namespace WorldServer
 
                     if (randCC >= 80)
                     {
-                        //Repel
+                        // 8329 - Repel
                         _logger.Debug($"{_unit} using Repel vs {(target as Player).Name}");
                         //                        _unit.AbtInterface.StartCast(_unit, 8356, 1);
                         target.ApplyKnockback(_unit, AbilityMgr.GetKnockbackInfo(8329, 0));
@@ -110,7 +110,7 @@ namespace WorldServer
                     case 1:
                     case 2:
                         {
-                            // Seeping Wound
+                            // 8320 - Seeping Wound
                             _logger.Debug($"{_unit} using Seeping Wound vs {(target as Player).Name}");
                             _unit.AbtInterface.StartCast(_unit, 8320, 1);
                             break;
@@ -118,7 +118,7 @@ namespace WorldServer
                     case 3:
                     case 4:
                         {
-                            // Touch of Palsy
+                            // 8338 - Touch of Palsy
                             _logger.Debug($"{_unit} using Touch of Palsy vs {(target as Player).Name}");
                             _unit.AbtInterface.StartCast(_unit, 8338, 1);
                             break;
@@ -129,7 +129,7 @@ namespace WorldServer
                     case 8:
                     case 9:
                         {
-                            //Ravage
+                            // 8323 - Ravage
                             _logger.Debug($"{_unit} using Ravage vs {(target as Player).Name}");
                             _unit.AbtInterface.StartCast(_unit, 8323, 1);
                             break;
@@ -145,8 +145,8 @@ namespace WorldServer
                         }
                     case 12:
                         {
-                            // Taunt
-                            _logger.Debug($"{_unit} using Champ Challenge vs {(target as Player).Name}");
+                            // 608 - Champion's Challenge
+                            _logger.Debug($"{_unit} using Champion's Challenge vs {(target as Player).Name}");
                             _unit.AbtInterface.StartCast(_unit, 608, 1);
                             break;
                         }

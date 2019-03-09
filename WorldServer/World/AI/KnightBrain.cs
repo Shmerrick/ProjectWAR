@@ -80,17 +80,17 @@ namespace WorldServer
 
                     if (randCC < 80)
                     {
-                        // 8346 - downfall
-                        _logger.Debug($"{_unit} using Downfall vs {(target as Player).Name}");
-                        _unit.AbtInterface.StartCast(_unit, 8346, 1);
+                        // 8018 - Smashing Counter
+                        _logger.Debug($"{_unit} using Smashing Counter vs {(target as Player).Name}");
+                        _unit.AbtInterface.StartCast(_unit, 8018, 1);
                     }
 
                     if (randCC >= 80)
                     {
-                        //Repel
-                        _logger.Debug($"{_unit} using Repel vs {(target as Player).Name}");
+                        // 8017 - Repel Darkness
+                        _logger.Debug($"{_unit} using Repel Darkness vs {(target as Player).Name}");
                         //                        _unit.AbtInterface.StartCast(_unit, 8356, 1);
-                        target.ApplyKnockback(_unit, AbilityMgr.GetKnockbackInfo(8329, 0));
+                        target.ApplyKnockback(_unit, AbilityMgr.GetKnockbackInfo(8017, 0));
 
                     }
                 }
@@ -110,17 +110,17 @@ namespace WorldServer
                     case 1:
                     case 2:
                         {
-                            // Seeping Wound
-                            _logger.Debug($"{_unit} using Seeping Wound vs {(target as Player).Name}");
-                            _unit.AbtInterface.StartCast(_unit, 8320, 1);
+                            // 8035 - Shining Blade
+                            _logger.Debug($"{_unit} using Shining Blade vs {(target as Player).Name}");
+                            _unit.AbtInterface.StartCast(_unit, 8035, 1);
                             break;
                         }
                     case 3:
                     case 4:
                         {
-                            // Touch of Palsy
-                            _logger.Debug($"{_unit} using Touch of Palsy vs {(target as Player).Name}");
-                            _unit.AbtInterface.StartCast(_unit, 8338, 1);
+                            // 8036 - Now's Our Chance!
+                            _logger.Debug($"{_unit} using Now's Our Chance! vs {(target as Player).Name}");
+                            _unit.AbtInterface.StartCast(_unit, 8036, 1);
                             break;
                         }
                     case 5:
@@ -129,24 +129,24 @@ namespace WorldServer
                     case 8:
                     case 9:
                         {
-                            //Ravage
-                            _logger.Debug($"{_unit} using Ravage vs {(target as Player).Name}");
-                            _unit.AbtInterface.StartCast(_unit, 8323, 1);
+                            // 8005 - Precision Strike
+                            _logger.Debug($"{_unit} using Precision Strike vs {(target as Player).Name}");
+                            _unit.AbtInterface.StartCast(_unit, 8005, 1);
                             break;
                         }
                     case 10:
                     case 11:
                         {
                             var tauntTarget = SetRandomTarget();
-                            // Taunt
+                            // 8010 - Taunt
                             _logger.Debug($"{_unit} using Taunt vs {(tauntTarget as Player).Name}");
-                            _unit.AbtInterface.StartCast(_unit, 8322, 1);
+                            _unit.AbtInterface.StartCast(_unit, 8010, 1);
                             break;
                         }
                     case 12:
                         {
-                            // Taunt
-                            _logger.Debug($"{_unit} using Champ Challenge vs {(target as Player).Name}");
+                            // 608 - Champion's Challenge
+                            _logger.Debug($"{_unit} using Champion's Challenge vs {(target as Player).Name}");
                             _unit.AbtInterface.StartCast(_unit, 608, 1);
                             break;
                         }
@@ -156,9 +156,9 @@ namespace WorldServer
                             var blessing = target.BuffInterface.HasBuffOfType((byte)BuffTypes.Blessing);
                             if (blessing && (_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < 5))
                             {
-                                // 8339 - Sever blessing
-                                _logger.Debug($"{_unit} using Sever Blessing vs {(target as Player).Name}");
-                                _unit.AbtInterface.StartCast(_unit, 8339, 1);
+                                // 8023 - Shatter Confidence
+                                _logger.Debug($"{_unit} using Shatter Confidence vs {(target as Player).Name}");
+                                _unit.AbtInterface.StartCast(_unit, 8023, 1);
 
                             }
                             break;
