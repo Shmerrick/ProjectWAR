@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Common</RootNamespace>
     <AssemblyName>Common</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -200,7 +200,7 @@
     <Compile Include="Database\World\Levels\Renown_Info.cs" />
     <Compile Include="Database\World\Chapters\Tok_Info.cs" />
     <Compile Include="Database\World\Levels\Xp_Info.cs" />
-	<Compile Include="Database\World\LiveEvents\LiveEventReward_Info.cs" />
+    <Compile Include="Database\World\LiveEvents\LiveEventReward_Info.cs" />
     <Compile Include="Database\World\LiveEvents\LiveEventSubTask_Info.cs" />
     <Compile Include="Database\World\LiveEvents\LiveEventTask_Info.cs" />
     <Compile Include="Database\World\LiveEvents\LiveEvent_Info.cs" />
