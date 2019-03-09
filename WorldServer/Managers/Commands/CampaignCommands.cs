@@ -450,6 +450,16 @@ namespace WorldServer.Managers.Commands
                     {
                         progression.LastOpenedZone = 1;
                         WorldMgr.UpperTierCampaignManager.ActiveBattleFront = progression;
+                        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x=>x.Info.KeepId == progression.OrderKeepId).Realm = Realms.REALMS_REALM_ORDER;
+                        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x => x.Info.KeepId == progression.OrderKeepId).SetKeepSafe();
+                        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x => x.Info.KeepId == progression.OrderKeepId).Realm = Realms.REALMS_REALM_DESTRUCTION;
+                        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x => x.Info.KeepId == progression.DestroKeepId).SetKeepSafe();
+                        var objectives = WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Objectives
+                            .Where(x => x.ZoneId == progression.ZoneId);
+                        foreach (var battlefieldObjective in objectives)
+                        {
+                            battlefieldObjective.SetObjectiveSafe();
+                        }
                     }
 
                     var status = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatusList().SingleOrDefault(x => x.BattleFrontId == progression.BattleFrontId);
