@@ -677,8 +677,11 @@ namespace WorldServer
                 {
                     if ((buff.CrowdControl & flags) != 0)
                     {
-                        bRemoved = true;
-                        buff.BuffHasExpired = true;
+                        if(buff.BuffClass != BuffClass.Morale)
+                        {
+                            bRemoved = true;
+                            buff.BuffHasExpired = true;
+                        }
                     }
                 }
             }

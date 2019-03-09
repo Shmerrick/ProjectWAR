@@ -451,8 +451,8 @@ namespace Common
             List<string> all = GetAllLockouts();
 
             for (int i = 0; i < all.Count; i++)
-            {
-                if (int.Parse(all[i].Split(':')[1]) + lockoutTimer * 60 >= TCPManager.GetTimeStamp())
+            {//removed + lockoutTimer * 60 on the left side of the >=
+                if (int.Parse(all[i].Split(':')[1]) >= TCPManager.GetTimeStamp())
                     newLockouts += all[i];
             }
 

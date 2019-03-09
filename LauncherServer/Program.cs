@@ -45,7 +45,7 @@ namespace AuthenticationServer
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(onError);
 
-            Log.Texte("", "------------------- Launcher Server -------------------", ConsoleColor.DarkRed);
+            Log.Info("", "------------------- Launcher Server -------------------", ConsoleColor.DarkRed);
 
             // Loading all configs files
             ConfigMgr.LoadConfigs();

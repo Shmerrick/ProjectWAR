@@ -22,7 +22,7 @@ namespace LobbyServer
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(onError);
 
-            Log.Texte("", "-------------------- Lobby Server ---------------------", ConsoleColor.DarkRed);
+            Log.Info("", "-------------------- Lobby Server ---------------------", ConsoleColor.DarkRed);
 
             // Loading all configs files
             ConfigMgr.LoadConfigs();

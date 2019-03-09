@@ -393,7 +393,7 @@ namespace WorldServer
                 {
                     if (!player.IsDead)
                     {
-                        Log.Texte("groundstate instadeath: ", player.Name + " managed to trigger groundtype instadeath in zone: " + player.ZoneId, ConsoleColor.Yellow);
+                        Log.Notice("groundstate instadeath: ", player.Name + " managed to trigger groundtype instadeath in zone: " + player.ZoneId);
                         player.SendClientMessage("You have managed to trigger the instadeath code from river mortis, please screenshot your death and send to the devs on the bugtracker", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                         player.Terminate();
                     }
@@ -591,7 +591,7 @@ namespace WorldServer
                 {
                     if (!player.IsDead)
                     {
-                        Log.Texte("groundstate instadeath: ", player.Name + " managed to trigger groundtype instadeath in zone: " + player.ZoneId, ConsoleColor.Yellow);
+                        Log.Notice("groundstate instadeath: ", player.Name + " managed to trigger groundtype instadeath in zone: " + player.ZoneId);
                         player.SendClientMessage("You have managed to trigger the instadeath code from river mortis, please screenshot your death and send to the devs on the bugtracker", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
                         player.Terminate();
