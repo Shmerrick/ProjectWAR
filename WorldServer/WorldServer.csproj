@@ -272,6 +272,9 @@
     <Compile Include="World\Abilities\Objects\LandMine.cs" />
     <Compile Include="World\Abilities\RunicBlessingsHandler.cs" />
     <Compile Include="World\AI\ABrain.cs" />
+    <Compile Include="World\AI\BlackguardBrain.cs" />
+    <Compile Include="World\AI\IronBreakerBrain.cs" />
+    <Compile Include="World\AI\KnightBrain.cs" />
     <Compile Include="World\AI\ChosenBrain.cs" />
     <Compile Include="World\AI\RunepriestBrain.cs" />
     <Compile Include="World\AI\RangedBrain.cs" />

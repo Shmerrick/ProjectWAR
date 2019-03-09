@@ -8,11 +8,11 @@ using WorldServer.World.AI;
 //test with .spawnmobinstance 2000681
 namespace WorldServer
 {
-    public class ChosenBrain : ABrain
+    public class KnightBrain : ABrain
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ChosenBrain(Unit myOwner)
+        public KnightBrain(Unit myOwner)
             : base(myOwner)
         {
         }
