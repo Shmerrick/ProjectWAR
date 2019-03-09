@@ -144,8 +144,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(SavePlayerContribution, 180000, 0);
             // record metrics
             _EvtInterface.AddEvent(RecordMetrics, 600000, 0);
-            _EvtInterface.AddEvent(DestructionDominationCheck, 60000, 0);
-            _EvtInterface.AddEvent(OrderDominationCheck, 60000, 0);
+            _EvtInterface.AddEvent(DestructionDominationCheck, 29000, 0);
+            _EvtInterface.AddEvent(OrderDominationCheck, 29000, 0);
             _EvtInterface.AddEvent(UpdateCampaignObjectiveBuffs, 10000, 0);
             _EvtInterface.AddEvent(CheckKeepTimers, 10000, 0);
             _EvtInterface.AddEvent(UpdateKeepResources, 60000, 0);
