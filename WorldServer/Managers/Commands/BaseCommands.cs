@@ -602,9 +602,9 @@ namespace WorldServer.Managers.Commands
         {
             Unit playerTarget = GetTargetOrMe(plr);
 
-            if (playerTarget == null || !(playerTarget is Player))
+            if (playerTarget == null )
             {
-                plr.SendClientMessage("Your target is not a player.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                plr.SendClientMessage("No target selected.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 return true;
             }
 
@@ -4285,7 +4285,7 @@ namespace WorldServer.Managers.Commands
 
             Creature c = plr.Region.CreateCreature(spawn);
 
-            c.AiInterface.SetBrain(new RunepriestBrain(c));
+            c.AiInterface.SetBrain(new ChosenBrain(c));
             //c.AiInterface.SetBrain(new ChosenBrain(c));
             //var itemDetails = ItemService.GetItem_Info(208221);
             //var item = new Creature_item { Entry = itemDetails.Entry, ModelId = (ushort) itemDetails.ModelId, SlotId = 10, EffectId = 0 };
