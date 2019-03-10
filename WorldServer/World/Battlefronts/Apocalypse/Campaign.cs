@@ -151,7 +151,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(CheckKeepTimers, 10000, 0);
             _EvtInterface.AddEvent(UpdateKeepResources, 60000, 0);
            // _EvtInterface.AddEvent(RefreshObjectiveStatus, 20000, 0);
-            _EvtInterface.AddEvent(CountdownFortDefenceTimer, 9000000, 0);
+            _EvtInterface.AddEvent(CountdownFortDefenceTimer, 300000, 0);
 
             //_EvtInterface.AddEvent(UpdateWanderingMobs, 5000, 0);
         }
