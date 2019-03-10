@@ -368,6 +368,10 @@ namespace WorldServer.World.BattleFronts.Keeps
                 }
             }
 
+            // Give extra reward for being Realm Captain
+            activeBattleFrontStatus.DestructionRealmCaptain?.AddRenown(1250, false, RewardType.Kill, null);
+            activeBattleFrontStatus.OrderRealmCaptain?.AddRenown(1250, false, RewardType.Kill, null);
+            
             // Players with contribution to be rewarded.
             var eligiblePlayers = activeBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
 
@@ -448,6 +452,10 @@ namespace WorldServer.World.BattleFronts.Keeps
                 Info.Name,
                 Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
 
+            // Give extra reward for being Realm Captain
+            Region.Campaign.GetActiveBattleFrontStatus().OrderRealmCaptain?.AddRenown(500, false, RewardType.None, "For being Realm Captain");
+            Region.Campaign.GetActiveBattleFrontStatus().DestructionRealmCaptain?.AddRenown(500, false, RewardType.None, "For being Realm Captain");
+
             // Remove any placed rams. 
             foreach (var h in HardPoints)
             {
@@ -478,6 +486,11 @@ namespace WorldServer.World.BattleFronts.Keeps
                 AttackingRealm,
                 Info.Name,
                 Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
+
+            // Give extra reward for being Realm Captain
+            Region.Campaign.GetActiveBattleFrontStatus().OrderRealmCaptain?.AddRenown(250, false, RewardType.None, "For being Realm Captain");
+            Region.Campaign.GetActiveBattleFrontStatus().DestructionRealmCaptain?.AddRenown(250, false, RewardType.None, "For being Realm Captain");
+
 
             // Remove any placed rams. 
             foreach (var h in HardPoints)

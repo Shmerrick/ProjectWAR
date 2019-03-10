@@ -171,7 +171,8 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("resource", ModifyCrrRes, null, EGmLevel.SourceDev, 1, "Modify your career resource value (byte careerResource)"),
             new GmCommandHandler("gatheringskill", ModifyGath, null, EGmLevel.GM, 1, "Changes your proficiency in your current gathering skill (byte Skill)"),
             new GmCommandHandler("craftingskill", ModifyCraf, null, EGmLevel.GM, 1, "Changes your proficiency in your current crafting skill (byte Skill)"),
-            new GmCommandHandler("keepguild", ModifyKeepGuild, null, EGmLevel.GM, 1, "Claims or removes claim on keep for a guild")
+            new GmCommandHandler("keepguild", ModifyKeepGuild, null, EGmLevel.GM, 1, "Claims or removes claim on keep for a guild"),
+            new GmCommandHandler("contribution", ModifyContribution, null, EGmLevel.GM, 0, "Sets a players contribution.")
         };
 
         /// <summary>Mount commands under .mount</summary>

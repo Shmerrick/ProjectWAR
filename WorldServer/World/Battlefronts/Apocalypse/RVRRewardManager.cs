@@ -112,7 +112,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         continue;
                 }
 
-                // Bad dirty hak by Hargrim to fix Area Influence bug
+                
+
+
                 if (player.CurrentArea != null)
                 {
                     if (player.Realm == Realms.REALMS_REALM_ORDER)

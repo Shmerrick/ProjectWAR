@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using SystemData;
 using System.Linq;
 using GameData;
+using WorldServer.World.Battlefronts.Apocalypse;
 using static WorldServer.Managers.Commands.GMUtils;
 
 namespace WorldServer.Managers.Commands
@@ -420,6 +421,63 @@ namespace WorldServer.Managers.Commands
             plr.CrrInterface.SetResource((byte)crrRes, true);
             return true;
         }
+
+        /// <summary>
+        /// Modify a players contribution
+        /// </summary>
+        /// <param name="plr"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static bool ModifyContribution(Player plr, ref List<string> values)
+        {
+            Player target = GetTargetOrMe(plr) as Player; 
+
+            var activeCampaign = WorldMgr.UpperTierCampaignManager.GetActiveCampaign();
+            var status = activeCampaign?.ActiveBattleFrontStatus;
+            if (status != null)
+            {
+                lock (status)
+                {
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte) ContributionDefinitions.DESTROY_INNER_DOOR);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.GROUP_LEADER_BO_BIG_TICK);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.KILL_KEEP_LORD);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.KEEP_DEFENCE_TICK);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+
+                    return true;
+                }
+            }
+
+            return true;
+        }
+
+
+        
 
         /// <summary>
         /// Changes your proficiency in your current gathering skill (byte Skill)
