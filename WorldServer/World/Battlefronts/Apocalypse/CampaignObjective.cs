@@ -528,7 +528,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 				return;
 			}
 
-			foreach (var guard in Guards)
+            if (this.BattleFront.IsBattleFrontLocked())
+            {
+                player.SendClientMessage("You can't interact with this Objective when the Battlefront is locked.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return;
+            }
+            if (this.State == StateFlags.ZoneLocked)
+            {
+                player.SendClientMessage("You can't interact with this Objective when it is locked.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return;
+            }
+
+            foreach (var guard in Guards)
 			{
 				if (guard.Creature != null && !guard.Creature.IsDead && GetDistanceTo(guard.Creature) < 100)
 				{
