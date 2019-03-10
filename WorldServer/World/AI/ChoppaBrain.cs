@@ -80,11 +80,6 @@ namespace WorldServer
                     {
                         var randParry = StaticRandom.Instance.Next(100);
 
-                        if (randParry < 50)
-                        {
-                            SimpleCast(_unit, target, "Gut Ripper", 8414);
-                        }
-
                         if (randParry >= 50)
                         {
                             SimpleCast(_unit, target, "Drop Da Basha", 1756);

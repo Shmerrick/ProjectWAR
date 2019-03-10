@@ -99,8 +99,8 @@ namespace WorldServer
                         }
                     case 3:
                         {
-                            //Grugnis gift
-                            SimpleCast(_unit, FriendlyTarget, "Rune of Mending", 1587);
+                            // 1587 - Grungni's Gift
+                            SimpleCast(_unit, FriendlyTarget, "Grungni's Gift", 1587);
                             break;
                         }
                     case 4:

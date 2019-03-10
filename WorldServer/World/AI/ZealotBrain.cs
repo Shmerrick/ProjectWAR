@@ -1,47 +1,40 @@
 ﻿using FrameWork;
 using GameData;
-using System.Data;
 using System.Linq;
 using WorldServer.Services.World;
-
-//36172 <-- Ravenclaw Marauder
-
+//1174
 namespace WorldServer
 {
-    public class ZealotBrain : ABrain
+    public class ZealotBrain : RangedBrain
     {
-
-        public bool potionUsed { get; set; }
-        public int nextDetauntAvailable { get; set; }
+        public Unit FriendlyTarget { get; set; }
+        public int runeofShieldingCooldown { get; set; }
 
 
         public ZealotBrain(Unit myOwner)
             : base(myOwner)
         {
-            potionUsed = false;
-            nextDetauntAvailable = 0;
+            runeofShieldingCooldown = 0;
         }
 
         public override void Think()
         {
+            base.Think();
+
             if (_unit.IsDead)
                 return;
 
-
-            base.Think();
-
-            // Only bother to seek targets if we're actually being observed by a player
-            if (Combat.CurrentTarget == null && _unit.PlayersInRange.Count > 0)
+            if ((FriendlyTarget == null))
             {
-                if (_pet != null && (_pet.IsHeeling || ((CombatInterface_Pet)_pet.CbtInterface).IgnoreDamageEvents))
-                    return;
-
-                Unit target = _unit.AiInterface.GetAttackableUnit();
-                if (target != null)
-                    _unit.AiInterface.ProcessCombatStart(target);
+                var friendlyPlayers = _unit.GetInRange<Unit>(120).Where(x => x.Realm == _unit.Realm && x.PctHealth < 100).OrderBy(o => o.PctHealth).ToList();
+                if (friendlyPlayers.Count() > 0)
+                {
+                    _logger.Debug($"{_unit} changing friendly target to  {(friendlyPlayers[0]).Name}");
+                    FriendlyTarget = friendlyPlayers[0];
+                }
             }
 
-            if (Combat.IsFighting && Combat.CurrentTarget != null && _unit.AbtInterface.CanCastCooldown(0) &&
+            if (_unit.AbtInterface.CanCastCooldown(0) &&
                 TCPManager.GetTimeStampMS() > NextTryCastTime)
             {
                 var percentHealth = (_unit.Health * 100) / _unit.MaxHealth;
@@ -67,170 +60,66 @@ namespace WorldServer
                     {
                         if (nextDetauntAvailable < FrameWork.TCPManager.GetTimeStamp())
                         {
-                            SimpleCast(_unit, target, "Wave of Horror (detaunt)", 8402);
-                            nextDetauntAvailable = FrameWork.TCPManager.GetTimeStamp() + 30; // available in another 30 seconds
+                            SimpleCast(_unit, target, "Chaotic Blur (detaunt)", 8621);
+                            nextDetauntAvailable =
+                                FrameWork.TCPManager.GetTimeStamp() + 30; // available in another 30 seconds
                         }
                     }
-                }
 
-                if (target.CbtInterface.WasDefendedAgainst((int)CombatEvent.COMBATEVENT_PARRY))
-                {
-                    _logger.Debug($"{target} has parried - enabling partry skills");
-                    if ((_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < 5))
-                    {
-                        var randParry = StaticRandom.Instance.Next(100);
-
-                        if (randParry < 50)
-                        {
-                            SimpleCast(_unit, target, "Gut Ripper", 8414);
-                        }
-
-                        if (randParry >= 50)
-                        {
-                            SimpleCast(_unit, target, "Death Grip", 8405);
-                        }
-                    }
-                }
-
-                var randInterrupt = StaticRandom.Instance.Next(3);
-
-                if (randInterrupt == 0)
-                {
-                    var enemyPlayers = _unit.GetPlayersInRange(30, false).Where(x => x.Realm != _unit.Realm).ToList();
-                    if (enemyPlayers.Count() > 0)
-                    {
-                        var oldTarget = target;
-                        foreach (var enemyPlayer in enemyPlayers)
-                        {
-                            if ((enemyPlayer.Info.CareerLine == (int)CareerLine.CAREERLINE_BRIGHT_WIZARD) ||
-                                (enemyPlayer.Info.CareerLine == (int)CareerLine.CAREERLINE_ARCHMAGE) ||
-                                (enemyPlayer.Info.CareerLine == (int)CareerLine.CAREERLINE_RUNE_PRIEST) ||
-                                (enemyPlayer.Info.CareerLine == (int)CareerLine.CAREERLINE_WARRIOR_PRIEST))
-                            {
-                                _unit.CbtInterface.SetTarget(enemyPlayer.Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
-
-                                // Mouth of Tzeetch
-                                SimpleCast(_unit, target, "Mouth of Tzeetch", 8397);
-                                _unit.CbtInterface.SetTarget(oldTarget.Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
-                                break;
-                            }
-                        }
-                    }
+                    return;
                 }
 
 
 
-                var rand = StaticRandom.Instance.Next(20);
+                var rand = StaticRandom.Instance.Next(10);
                 switch (rand)
                 {
                     case 0:
                         {
-                            // Switch targets
-                            _logger.Debug($"{_unit} using Changing Targets {(target as Player).Name}");
-                            var randomTarget = SetRandomTarget();
-                            _logger.Debug($"{_unit} => {(randomTarget as Player).Name}");
+                            // 8566 - Elixir Of Dark Blessings
+                            SimpleCast(_unit, FriendlyTarget, "Elixir Of Dark Blessings", 8566);
                             break;
                         }
                     case 1:
+                        {
+                            // 8557 - Leaping Alteration
+                            SimpleCast(_unit, FriendlyTarget, "Leaping Alteration", 8557);
+                            break;
+                        }
                     case 2:
                         {
-                            // Thunderous Blow
-                            SimpleCast(_unit, target, "Thunderous Blow", 8424);
+                            // 8564 - Veil of Chaos
+                            if (runeofShieldingCooldown < FrameWork.TCPManager.GetTimeStamp())
+                            {
+                                SimpleCast(_unit, FriendlyTarget, "Veil of Chaos", 8564);
+                                runeofShieldingCooldown = FrameWork.TCPManager.GetTimeStamp() + 20; // available in another 20 seconds
+                            }
+
                             break;
                         }
                     case 3:
-                    case 4:
                         {
-                            // Cutting Claw
-                            SimpleCast(_unit, target, "Cutting Claw", 8418);
+                            // 8569 - Flash of Chaos
+                            SimpleCast(_unit, FriendlyTarget, "Flash of Chaos", 8569);
                             break;
                         }
+                    case 4:
                     case 5:
                     case 6:
                         {
-                            //Corruption
-                            SimpleCast(_unit, target, "Corruption", 8400);
-                            break;
-                        }
-                    case 7:
-                    case 8:
-                        {
-                            SimpleCast(_unit, target, "Rend", 8395);
-                            break;
-                        }
-                    case 9:
-                        {
-                            SimpleCast(_unit, target, "Tainted Claw", 8401);
-                            break;
-                        }
-                    case 10:
-                    case 11:
-                        {
-                            if (((target as Player).Info.CareerLine == (int)CareerLine.CAREERLINE_BRIGHT_WIZARD) ||
-                                ((target as Player).Info.CareerLine == (int)CareerLine.CAREERLINE_ARCHMAGE) ||
-                                ((target as Player).Info.CareerLine == (int)CareerLine.CAREERLINE_RUNE_PRIEST) ||
-                                ((target as Player).Info.CareerLine == (int)CareerLine.CAREERLINE_WARRIOR_PRIEST))
+                            var friendlyPlayers = _unit.GetInRange<Unit>(120).Where(x => x.Realm == _unit.Realm && x.PctHealth < 100).OrderBy(o => o.PctHealth).ToList();
+                            if (friendlyPlayers.Count() > 0)
                             {
-                                SimpleCast(_unit, target, "Touch of Instability", 8407);
-                            }
-                            break;
-                        }
-                    case 12:
-                        {
-                            // Confusing Movements
-                            SimpleCast(_unit, target, "Confusing Movements", 631);
-                            break;
-                        }
-
-                    case 13:
-                        {
-                            // Debilitate
-                            SimpleCast(_unit, target, "Debilitate", 8396);
-                            break;
-                        }
-                    case 14:
-                        {
-                            // Go for Low Health target
-                            var enemyPlayers = _unit.GetPlayersInRange(30, false).Where(x => x.Realm != _unit.Realm).ToList();
-                            if (enemyPlayers.Count() > 0)
-                            {
-                                foreach (var enemyPlayer in enemyPlayers)
-                                {
-                                    if (enemyPlayer.PctHealth < 50)
-                                    {
-                                        _logger.Debug($"{_unit} changing target to  {(enemyPlayer as Player).Name}");
-                                        _unit.CbtInterface.SetTarget(enemyPlayer.Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
-                                        break;
-                                    }
-                                }
-                            }
-
-                            break;
-                        }
-                    case 15:
-                        {
-                            // Go for Soft Target target
-                            var enemyPlayers = _unit.GetPlayersInRange(30, false).Where(x => x.Realm != _unit.Realm).ToList();
-                            if (enemyPlayers.Count() > 0)
-                            {
-                                foreach (var enemyPlayer in enemyPlayers)
-                                {
-                                    if (((enemyPlayer).Info.CareerLine == (int)CareerLine.CAREERLINE_BRIGHT_WIZARD) ||
-                                        ((enemyPlayer).Info.CareerLine == (int)CareerLine.CAREERLINE_ARCHMAGE) ||
-                                        ((enemyPlayer).Info.CareerLine == (int)CareerLine.CAREERLINE_RUNE_PRIEST) ||
-                                        ((enemyPlayer).Info.CareerLine == (int)CareerLine.CAREERLINE_WARRIOR_PRIEST))
-                                    {
-                                        _logger.Debug($"{_unit} changing target to  {(enemyPlayer as Player).Name}");
-                                        _unit.CbtInterface.SetTarget(enemyPlayer.Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
-                                        break;
-                                    }
-                                }
+                                _logger.Debug($"{_unit} changing friendly target to  {(friendlyPlayers[0]).Name}");
+                                FriendlyTarget = friendlyPlayers[0];
                             }
 
                             break;
                         }
                 }
             }
+
+
         }
     }
 }
