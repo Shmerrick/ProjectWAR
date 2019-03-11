@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using WorldServer.World.Objects;
 
 namespace WorldServer.World.AI
@@ -28,6 +29,11 @@ namespace WorldServer.World.AI
                     _unit.MvtInterface.TacticalWithdrawl(enemyPlayers[0], 30, 60, false, true);
                 }
             }
+        }
+
+        internal void Think()
+        {
+            throw new NotImplementedException();
         }
     }
 }

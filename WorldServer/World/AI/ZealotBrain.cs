@@ -1,14 +1,7 @@
 ﻿using System.Linq;
 using FrameWork;
-using GameData;
-using System.Linq;
 using WorldServer.Services.World;
-//1174
-namespace WorldServer
-using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
-
-//36172 <-- Ravenclaw Marauder
 
 namespace WorldServer.World.AI
 {
