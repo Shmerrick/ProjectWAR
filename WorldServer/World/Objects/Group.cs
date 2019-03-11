@@ -6,14 +6,14 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.World.BattleFronts;
-using WorldServer.World.BattleFronts.Objectives;
 using NLog;
-using WorldServer.Services.World;
+using WorldServer.Managers;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.Objects;
+using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.Interfaces;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     public class LootRoll
     {

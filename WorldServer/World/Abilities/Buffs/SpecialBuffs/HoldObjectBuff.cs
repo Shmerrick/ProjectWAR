@@ -1,10 +1,11 @@
 ﻿using System.Threading;
-using Common;
 using FrameWork;
 using GameData;
-using WorldServer.Scenarios.Objects;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
+using WorldServer.World.Scenarios.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 {
     public class HoldObjectBuff : NewBuff
     {

@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Common.Database.World.Battlefront;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.NewDawn.Rewards;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {

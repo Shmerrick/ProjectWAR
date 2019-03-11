@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using GameData;
 using NLog;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {

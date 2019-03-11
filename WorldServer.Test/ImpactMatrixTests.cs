@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorldServer.World.Battlefronts.Bounty;
-
+using WorldServer.World.Objects;
 
 
 namespace WorldServer.Test

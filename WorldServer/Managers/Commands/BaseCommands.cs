@@ -7,13 +7,24 @@ using System.Collections.Generic;
 using System.Linq;
 using SystemData;
 using WorldServer;
-using WorldServer.Scenarios;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.CareerInterfaces;
+using WorldServer.World.AI.BT;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Guild;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using WorldServer.World.Scenarios;
 using static System.UInt16;
 using static WorldServer.Managers.Commands.GMUtils;
+using Item = WorldServer.World.Objects.Item;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.Managers.Commands
 {
@@ -4283,16 +4294,19 @@ namespace WorldServer.Managers.Commands
             spawn.ZoneId = (ushort)plr.ZoneId;
             spawn.Level = 35;
 
-            Creature c = plr.Region.CreateCreature(spawn);
-
+            var c = plr.Region.CreateCreature(spawn);
             c.AiInterface.SetBrain(new ChosenBrain(c));
+            // Force zones to update
+            plr.Region.Update();
+
+            
             //c.AiInterface.SetBrain(new ChosenBrain(c));
             //var itemDetails = ItemService.GetItem_Info(208221);
             //var item = new Creature_item { Entry = itemDetails.Entry, ModelId = (ushort) itemDetails.ModelId, SlotId = 10, EffectId = 0 };
             //item.SlotId = c.ItmInterface.GetFreeInventorySlot(itemDetails, false);
 
             //c.ItmInterface.AddCreatureItem(item);
-            c.OnLoad();
+            //c.OnLoad();
             //c.WaypointGUID = 
             c.PlayersInRange = plr.PlayersInRange;
             

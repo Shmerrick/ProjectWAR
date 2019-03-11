@@ -1,12 +1,17 @@
-﻿using Common;
+﻿using System;
+using Common;
 using FrameWork;
 using GameData;
 using NLog;
-using System;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities.Components;
 using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer.World.BattleFronts.Keeps
+namespace WorldServer.World.Battlefronts.Keeps
 {
     public class KeepCreature : Creature
     {

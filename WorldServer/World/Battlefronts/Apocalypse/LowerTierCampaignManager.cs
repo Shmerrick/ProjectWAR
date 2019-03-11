@@ -5,6 +5,8 @@ using Common.Database.World.Battlefront;
 using GameData;
 using NLog;
 using WorldServer.World.Battlefronts.Bounty;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
 
 // ReSharper disable InconsistentNaming
 

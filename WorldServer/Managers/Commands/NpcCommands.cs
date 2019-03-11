@@ -5,9 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using WorldServer.Services.World;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.AI;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Objects;
 using WorldServer.World.Objects.PublicQuests;
+using WorldServer.World.Positions;
 using static WorldServer.Managers.Commands.GMUtils;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.Managers.Commands
 {

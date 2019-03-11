@@ -4,10 +4,20 @@ using Common;
 using FrameWork;
 using GameData;
 using NLog;
-using WorldServer.Scenarios;
+using WorldServer.Managers;
+using WorldServer.NetWork.Handler;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.AI;
 using WorldServer.World.Battlefronts.Bounty;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Positions;
+using WorldServer.World.Scenarios;
+using AbilityType = WorldServer.World.Abilities.Components.AbilityType;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     public enum StateOpcode
     {

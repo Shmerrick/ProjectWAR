@@ -1,27 +1,26 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.IO;
-
+using System.Threading;
 using Common;
 using FrameWork;
-using System.Threading;
+using WorldServer.World.Objects;
 
-public enum eClientState
+namespace WorldServer.NetWork
 {
-    NotConnected = 0x00,
-    Connecting = 0x01,
-    CharScreen = 0x02,
-    WorldEnter = 0x03,
-    Playing = 0x04,
-    Linkdead = 0x05,
-    Disconnected = 0x06
-} ;
+    public enum eClientState
+    {
+        NotConnected = 0x00,
+        Connecting = 0x01,
+        CharScreen = 0x02,
+        WorldEnter = 0x03,
+        Playing = 0x04,
+        Linkdead = 0x05,
+        Disconnected = 0x06
+    } ;
 
-namespace WorldServer
-{
     public class GameClient : BaseClient
     {
         public Account _Account = null;
@@ -231,10 +230,10 @@ namespace WorldServer
                         _opcode = inStream.GetUint8();
                         bufferLength -= 8;
 
-                        #if DEBUG
+#if DEBUG
                         if (bufferLength > _packetSize + 2)
                             Log.Debug("OnReceive", "Packet contains multiple opcodes " + bufferLength + ">" + (_packetSize + 2));
-                        #endif
+#endif
 
                         ReadingData = true;
                     }

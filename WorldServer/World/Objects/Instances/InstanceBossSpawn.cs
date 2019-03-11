@@ -6,8 +6,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using WorldServer.Managers;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities.Components;
 using WorldServer.World.AI;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects.Instances.The_Lost_Vale;
 
 namespace WorldServer.World.Objects.Instances
 {

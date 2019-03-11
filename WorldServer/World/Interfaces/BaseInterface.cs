@@ -1,5 +1,7 @@
 ﻿
-namespace WorldServer
+using WorldServer.World.Objects;
+
+namespace WorldServer.World.Interfaces
 {
     public abstract class BaseInterface
     {

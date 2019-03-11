@@ -1,8 +1,12 @@
-﻿using GameData;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using GameData;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
 
-namespace WorldServer.World.BattleFronts
+namespace WorldServer.World.Battlefronts
 {
     /// <summary>
     /// Object bound to a Campaign responsible of tracking players to compute AAO.

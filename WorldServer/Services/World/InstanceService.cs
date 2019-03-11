@@ -3,6 +3,7 @@ using FrameWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WorldServer.World.Objects;
 using WorldServer.World.Objects.Instances;
 
 namespace WorldServer.Services.World

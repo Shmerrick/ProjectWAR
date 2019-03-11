@@ -1,22 +1,27 @@
-﻿using Appccelerate.StateMachine;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using SystemData;
+using Appccelerate.StateMachine;
 using Common;
 using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
 using NLog;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using SystemData;
+using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.Battlefronts.Keeps;
-using WorldServer.World.BattleFronts.Objectives;
+using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
 using CreatureSubTypes = GameData.CreatureSubTypes;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer.World.BattleFronts.Keeps
+namespace WorldServer.World.Battlefronts.Keeps
 {
     public abstract class BattleFrontObjective : Object
     {
@@ -95,7 +100,7 @@ namespace WorldServer.World.BattleFronts.Keeps
                 }
             }
         }
-        public Guild OwningGuild { get; set; }
+        public Guild.Guild OwningGuild { get; set; }
         public PassiveStateMachine<SM.ProcessState, SM.Command> fsm { get; set; }
         public KeepNpcCreature KeepLord => Creatures?.Find(x => x.Info.KeepLord);
 
@@ -271,7 +276,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         }
 
 
-        public void SetGuildOwner(Guild guild)
+        public void SetGuildOwner(Guild.Guild guild)
         {
             OwningGuild = guild;
             SendRegionMessage($"{guild.Info.Name} has taken {Info.Name} as their own!");
@@ -1683,7 +1688,7 @@ namespace WorldServer.World.BattleFronts.Keeps
         {
             // Flag is secure (cant be interacted with)
             this.GuildFlag.State = StateFlags.Secure;
-            SetGuildOwner(Guild.GetGuild(guildId));
+            SetGuildOwner(Guild.Guild.GetGuild(guildId));
 
             foreach (var regionPlayer in this.Region.Players)
             {

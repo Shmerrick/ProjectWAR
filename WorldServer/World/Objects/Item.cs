@@ -3,9 +3,12 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
+using WorldServer.Managers;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Interfaces;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     public enum EquipSlot
     {

@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using SystemData;
-using Common;
 using FrameWork;
 using GameData;
-using WorldServer.Scenarios;
+using WorldServer.Managers;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
+using WorldServer.World.Scenarios;
+using Item = WorldServer.World.Objects.Item;
 
-namespace WorldServer
+namespace WorldServer.NetWork.Handler
 {
     public class InterfaceHandlers : IPacketHandler
     {

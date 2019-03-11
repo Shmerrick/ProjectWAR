@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Common;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Components
 {
     public class AbilityInfo
     {
@@ -68,7 +70,7 @@ namespace WorldServer
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                System.Console.WriteLine(e);
                 throw;
             }
             

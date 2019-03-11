@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Common;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.BattleFronts.Keeps;
 using WorldServer.World.Objects;
 
 namespace WorldServer.Services.World

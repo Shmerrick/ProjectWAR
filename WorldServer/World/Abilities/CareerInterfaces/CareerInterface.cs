@@ -1,8 +1,12 @@
 ﻿using System;
 using SystemData;
 using FrameWork;
+using WorldServer.Managers;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.CareerInterfaces
 {
     interface IPetCareerInterface
     {

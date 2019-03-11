@@ -6,7 +6,12 @@ using SystemData;
 using System.Linq;
 using GameData;
 using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Guild;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
 using static WorldServer.Managers.Commands.GMUtils;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.Managers.Commands
 {

@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using SystemData;
 using FrameWork;
+using WorldServer.NetWork;
 using WorldServer.Services.World;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class GatheringInterface : BaseInterface
     {

@@ -1,6 +1,7 @@
 ﻿using Common;
 using System;
 using System.Collections.Generic;
+using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.AI;
 
 namespace WorldServer.World.Objects.Instances.Bastion_Stairs

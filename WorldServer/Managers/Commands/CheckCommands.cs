@@ -6,7 +6,8 @@ using System.Text;
 using GameData;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Objects;
 
 namespace WorldServer.Managers.Commands
 {

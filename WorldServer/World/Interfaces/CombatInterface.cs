@@ -1,9 +1,8 @@
-﻿
-using FrameWork;
+﻿using FrameWork;
 using GameData;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class AggroInfo
     {

@@ -1,14 +1,20 @@
 ﻿//#define MODIFIER_DEBUG
 
-using Common;
-using FrameWork;
-using GameData;
 using System;
 using System.Collections.Generic;
 using SystemData;
+using Common;
+using FrameWork;
+using GameData;
+using WorldServer.Managers;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
 using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using Item = WorldServer.World.Objects.Item;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities
 {
 
     /// <summary>

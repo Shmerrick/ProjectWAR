@@ -3,17 +3,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security;
+using System.Text.RegularExpressions;
 using System.Threading;
 using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using System.Text.RegularExpressions;
 using NLog;
+using WorldServer.Managers;
 using WorldServer.Services.World;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using Item = WorldServer.World.Objects.Item;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Guild
 {
 
     public class Alliance

@@ -17,15 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Common;
-using FrameWork;
-
-namespace WorldServer
+namespace WorldServer.World.Scripting.Creatures
 {
     /*
     [GeneralScript(false, "", CreatureEntry = 116, GameObjectEntry = 0)]

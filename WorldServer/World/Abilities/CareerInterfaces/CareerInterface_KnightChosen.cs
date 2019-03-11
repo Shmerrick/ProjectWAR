@@ -1,7 +1,6 @@
-﻿using SystemData;
-using GameData;
+﻿using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.CareerInterfaces
 {
     class CareerInterface_KnightChosen : CareerInterface
     {

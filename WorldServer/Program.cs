@@ -8,9 +8,14 @@ using System.Reflection;
 
 using Common;
 using FrameWork;
+using WorldServer.Configs;
+using WorldServer.Managers;
+using WorldServer.NetWork;
 using WorldServer.Services.World;
+using WorldServer.World.Auction;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
+using WorldServer.World.Objects;
 
 namespace WorldServer
 {

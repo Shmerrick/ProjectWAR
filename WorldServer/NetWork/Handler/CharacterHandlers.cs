@@ -1,14 +1,13 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-
 using Common;
 using FrameWork;
-using System.IO;
+using WorldServer.Managers;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.NetWork.Handler
 {
     public class CharacterHandlers : IPacketHandler
     {

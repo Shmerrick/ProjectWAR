@@ -1,11 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using Common;
 using FrameWork;
+using WorldServer.Managers;
+using WorldServer.World.Abilities.Objects;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class MovementInterface : BaseInterface
     {

@@ -2,7 +2,6 @@
 using NLog;
 using System;
 using WorldServer.Services.World;
-using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {

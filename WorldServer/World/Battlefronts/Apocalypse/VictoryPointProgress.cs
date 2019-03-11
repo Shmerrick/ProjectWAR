@@ -1,6 +1,7 @@
 ﻿using GameData;
 using NLog;
-using WorldServer.World.BattleFronts.Objectives;
+using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using SystemData;
 using FrameWork;
+using WorldServer.Managers;
+using WorldServer.World.Interfaces;
 
 namespace WorldServer.World.Objects.PublicQuests
 {

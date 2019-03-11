@@ -1,4 +1,5 @@
 ﻿using NLog;
+using WorldServer.World.Interfaces;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {

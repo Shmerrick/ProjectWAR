@@ -1,9 +1,16 @@
-﻿using FrameWork;
+﻿using System.Linq;
+using FrameWork;
 using GameData;
 using System.Linq;
 using WorldServer.Services.World;
 //1174
 namespace WorldServer
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+
+//36172 <-- Ravenclaw Marauder
+
+namespace WorldServer.World.AI
 {
     public class ZealotBrain : RangedBrain
     {
@@ -17,7 +24,7 @@ namespace WorldServer
             runeofShieldingCooldown = 0;
         }
 
-        public override void Think()
+        public override void Think(long tick)
         {
             base.Think();
 
@@ -25,6 +32,11 @@ namespace WorldServer
                 return;
 
             if ((FriendlyTarget == null))
+
+            base.Think(tick);
+
+            // Only bother to seek targets if we're actually being observed by a player
+            if (Combat.CurrentTarget == null && _unit.PlayersInRange.Count > 0)
             {
                 var friendlyPlayers = _unit.GetInRange<Unit>(120).Where(x => x.Realm == _unit.Realm && x.PctHealth < 100).OrderBy(o => o.PctHealth).ToList();
                 if (friendlyPlayers.Count() > 0)

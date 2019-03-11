@@ -2,19 +2,23 @@
 using System.Collections.Generic;
 using SystemData;
 using FrameWork;
+using WorldServer.World.Guild;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class GuildInterface : BaseInterface
     {
-        public Guild Guild;
+        public Guild.Guild Guild;
         public GuildInvitation invite;
-        public Guild invitedTo;
+        public Guild.Guild invitedTo;
         public uint AllianceinvitedTo;
         public string AllianceFormName;
         public uint AllianceFormGuildId;
 
-        public GuildInterface Load(Guild Guild)
+        public GuildInterface Load(Guild.Guild Guild)
         {
             this.Guild = Guild;
 
@@ -85,7 +89,7 @@ namespace WorldServer
             {
                 foreach (uint alli in Alliance.Alliances[Guild.Info.AllianceId].Members)
                 {
-                    Guild gl = Guild.GetGuild(alli);
+                    Guild.Guild gl = World.Guild.Guild.GetGuild(alli);
 
                     // Filter "+" spam 
                     bool isAdd = Message.StartsWith("+");
@@ -108,7 +112,7 @@ namespace WorldServer
             {
                 foreach (uint alli in Alliance.Alliances[Guild.Info.AllianceId].Members)
                 {
-                    Guild gl = Guild.GetGuild(alli);
+                    Guild.Guild gl = World.Guild.Guild.GetGuild(alli);
                     lock (gl.OnlineMembers)
                     foreach (Player Plr in gl.OnlineMembers)
                             if(gl.Info.Members[Plr.CharacterId].RankId >= 9 || gl.Info.Members[Plr.CharacterId].AllianceOfficer)
@@ -144,7 +148,7 @@ namespace WorldServer
 
         const int MAX_GUILD_SEND = 80;
 
-        public void SendGuilds(List<Guild> guilds)
+        public void SendGuilds(List<Guild.Guild> guilds)
         {
             if (!HasPlayer())
                 return;
@@ -158,7 +162,7 @@ namespace WorldServer
             Out.WriteByte((byte)toSend);
 
             for (int i = 0; i < toSend; ++i)
-                Guild.BuildGuild(ref Out, guilds[i]);
+                World.Guild.Guild.BuildGuild(ref Out, guilds[i]);
 
             player.SendPacket(Out);
         }

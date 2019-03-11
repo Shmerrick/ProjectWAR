@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using FrameWork;
 
-using FrameWork;
-
-namespace WorldServer
+namespace WorldServer.Configs
 {
     [aConfigAttributes("Configs/World.xml")]
     public class WorldConfigs : aConfig

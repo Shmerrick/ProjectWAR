@@ -95,10 +95,10 @@ namespace FrameWork
 
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                Log.Debug("ConsoleMgr", "Attempting to load : " +  assembly.FullName);
+                Log.Dump("ConsoleMgr", "Attempting to load : " +  assembly.FullName);
                 foreach (Type type in assembly.GetTypes())
                 {
-                    Log.Debug("ConsoleMgr", "Attempting to load : " + type.FullName);
+                    Log.Dump("ConsoleMgr", "Attempting to load : " + type.FullName);
                     // Pick up a class
                     if (type.IsClass != true)
                         continue;
@@ -112,12 +112,12 @@ namespace FrameWork
 
                     if (consoleHandlerAttribs.Length > 0)
                     {
-                        Log.Info("ConsoleMgr", "." + consoleHandlerAttribs[0].Command + " : " + consoleHandlerAttribs[0].Description);
+                        Log.Dump("ConsoleMgr", "." + consoleHandlerAttribs[0].Command + " : " + consoleHandlerAttribs[0].Description);
                         RegisterHandler(consoleHandlerAttribs[0].Command, (IConsoleHandler)Activator.CreateInstance(type));
                     }
-                    Log.Debug("ConsoleMgr", type.FullName);
+                    Log.Dump("ConsoleMgr", type.FullName);
                 }
-                Log.Debug("ConsoleMgr", assembly.FullName);
+                Log.Dump("ConsoleMgr", assembly.FullName);
             }
         }
 

@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using FrameWork;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
 using WorldServer.World.Objects.PublicQuests;
 
-namespace WorldServer
+namespace WorldServer.NetWork.Handler
 {
     public class QuestHandlers : IPacketHandler
     {

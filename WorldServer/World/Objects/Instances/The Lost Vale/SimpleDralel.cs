@@ -1,7 +1,9 @@
 ﻿using Common;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.CareerInterfaces;
 using WorldServer.World.AI;
 
-namespace WorldServer.World.Objects.Instances
+namespace WorldServer.World.Objects.Instances.The_Lost_Vale
 {
     public class SimpleDralel : InstanceBossSpawn
     {

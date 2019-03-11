@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using WorldServer.World.Battlefronts;
 using WorldServer.World.Battlefronts.Bounty;
-using WorldServer.World.Battlefronts.NewDawn.Rewards;
 
 namespace WorldServer.Services.World
 {

@@ -1,12 +1,6 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using FrameWork;
 
-using FrameWork;
-
-namespace WorldServer
+namespace WorldServer.NetWork.Crypt
 {
     [Crypt("RC4Crypto")]
     public class RC4Crypto : ICryptHandler

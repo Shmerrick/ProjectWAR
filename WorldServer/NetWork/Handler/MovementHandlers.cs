@@ -4,11 +4,17 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.Scenarios;
+using WorldServer.Managers;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using WorldServer.World.Scenarios;
+
 //using WorldServer.NetWork.Handler;    //this is needed for state2
 
-namespace WorldServer
+namespace WorldServer.NetWork.Handler
 {
     public class MovementHandlers : IPacketHandler
     {

@@ -1,8 +1,8 @@
-﻿using Common;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Common;
 using GameData;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Components
 {
     public class AbilityConstants
     {

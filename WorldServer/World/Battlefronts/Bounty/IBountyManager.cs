@@ -1,4 +1,6 @@
-﻿namespace WorldServer.World.Battlefronts.Bounty
+﻿using WorldServer.World.Objects;
+
+namespace WorldServer.World.Battlefronts.Bounty
 {
     public interface IBountyManager
     {

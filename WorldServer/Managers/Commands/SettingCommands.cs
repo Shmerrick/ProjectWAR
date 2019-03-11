@@ -7,11 +7,10 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.Scenarios;
 using static System.UInt16;
 using static WorldServer.Managers.Commands.GMUtils;
 using WorldServer.Services.World;
-using WorldServer.World.BattleFronts;
+using WorldServer.World.Objects;
 
 namespace WorldServer.Managers.Commands
 {

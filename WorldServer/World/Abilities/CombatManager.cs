@@ -1,11 +1,15 @@
-﻿using Common;
-using FrameWork;
-using System;
+﻿using System;
 using SystemData;
+using Common;
+using FrameWork;
 using GameData;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities
 {
     public static class CombatManager
     {

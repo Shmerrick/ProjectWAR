@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using WorldServer.NetWork.Handler;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
 
-using Common;
-using FrameWork;
-
-namespace WorldServer
+namespace WorldServer.World.Scripting.GameObject
 {
     [GeneralScript(false, "", 0, 99999)]
     public class DoorScript : AGeneralScript
     {
         public override void OnInteract(Object Obj, Player Target, InteractMenu Menu)
         {
-            GameObject go = Obj.GetGameObject();
+            Objects.GameObject go = Obj.GetGameObject();
 
             float dx = go.Spawn.WorldX - Target._Value.WorldX;
             float dy = go.Spawn.WorldY - Target._Value.WorldY;

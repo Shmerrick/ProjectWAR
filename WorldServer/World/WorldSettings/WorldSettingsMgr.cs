@@ -1,13 +1,9 @@
-﻿using Common;
-using FrameWork;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using SystemData;
-using WorldServer.Services.World;
+using Common;
+using WorldServer.Managers;
 
-namespace WorldServer
+namespace WorldServer.World.WorldSettings
 {
     public class WorldSettingsMgr
     {

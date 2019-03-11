@@ -7,11 +7,17 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.World.Objects.PublicQuests;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.Managers;
 using WorldServer.Services.World;
+using WorldServer.World.AI;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Objects;
+using WorldServer.World.Objects.PublicQuests;
+using WorldServer.World.Positions;
+using Item = WorldServer.World.Objects.Item;
+using Object = WorldServer.World.Objects.Object;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class AIInterface : BaseInterface
     {
@@ -93,7 +99,7 @@ namespace WorldServer
 
             if (tick > _nextThinkTime)
             {
-                UpdateThink();
+                UpdateThink(tick);
 
                 _nextThinkTime = tick + _thinkInterval;
             }
@@ -167,7 +173,7 @@ namespace WorldServer
             CurrentBrain?.Start(Aggros);
         }
 
-        public void UpdateThink()
+        public void UpdateThink(long tick)
         {
             if (HasPlayer())
                 return;
@@ -186,7 +192,7 @@ namespace WorldServer
 
             if (CurrentBrain != null && CurrentBrain.IsStart && !CurrentBrain.IsStop)
             {
-                CurrentBrain.Think();
+                CurrentBrain.Think(tick);
                 if (State == AiState.FIGHTING)
                     CurrentBrain.Fight();
             }

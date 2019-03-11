@@ -1,6 +1,6 @@
 ﻿using Common;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     public class ChapterObject : Object
     {

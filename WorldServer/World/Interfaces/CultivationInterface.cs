@@ -4,8 +4,11 @@ using Common;
 using FrameWork;
 using GameData;
 using WorldServer.Services.World;
+using WorldServer.World.Objects;
+using Item = WorldServer.World.Objects.Item;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class CultivationPlot
     {

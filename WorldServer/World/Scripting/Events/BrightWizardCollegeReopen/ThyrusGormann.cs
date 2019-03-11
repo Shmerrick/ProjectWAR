@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using System.Collections.Generic;
 using Common;
-using FrameWork;
+using WorldServer.Managers;
 using WorldServer.Services.World;
-using GameData;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
 
-namespace WorldServer
+namespace WorldServer.World.Scripting.Events.BrightWizardCollegeReopen
 {
     [GeneralScript(false, "", 1989, 0)]
     public class ThyrusGorman : AGeneralScript

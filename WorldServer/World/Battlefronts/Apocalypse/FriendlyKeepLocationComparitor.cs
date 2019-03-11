@@ -1,4 +1,7 @@
-﻿namespace WorldServer.World.Battlefronts.Apocalypse
+﻿using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+
+namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public class FriendlyKeepLocationComparitor : ILocationComparitor
     {

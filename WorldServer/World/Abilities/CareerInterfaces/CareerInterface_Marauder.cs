@@ -1,7 +1,8 @@
-﻿using SystemData;
-using FrameWork;
+﻿using FrameWork;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.CareerInterfaces
 {
     class CareerInterface_Marauder : CareerInterface
     {

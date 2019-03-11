@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using NLog;
+using WorldServer.Managers;
+using WorldServer.World.Objects;
 
 namespace WorldServer.Services.World
 {

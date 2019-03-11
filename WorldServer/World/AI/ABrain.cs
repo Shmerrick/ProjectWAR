@@ -5,9 +5,18 @@ using SystemData;
 using FrameWork;
 using GameData;
 using NLog;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.Managers;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using WorldServer.World.Objects.Instances.TomboftheVultureLord;
+using WorldServer.World.Positions;
+using Object = WorldServer.World.Objects.Object;
 
-namespace WorldServer
+namespace WorldServer.World.AI
 {
     public abstract class ABrain
     {
@@ -48,7 +57,7 @@ namespace WorldServer
             return true;
         }
 
-        public virtual void Think()
+        public virtual void Think(long tick)
         {
 
         }

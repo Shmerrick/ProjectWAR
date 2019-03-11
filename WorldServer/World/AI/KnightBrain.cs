@@ -1,12 +1,15 @@
-﻿using Appccelerate.StateMachine;
+﻿using System.Linq;
 using FrameWork;
 using NLog;
-using System;
-using System.Linq;
 using WorldServer.Services.World;
-using WorldServer.World.AI;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+
 //test with .spawnmobinstance 2000681
-namespace WorldServer
+namespace WorldServer.World.AI
 {
     public class KnightBrain : ABrain
     {
@@ -17,13 +20,13 @@ namespace WorldServer
         {
         }
 
-        public override void Think()
+        public override void Think(long tick)
         {
             if (_unit.IsDead)
                 return;
 
           
-           base.Think();
+           base.Think(tick);
             
             // Only bother to seek targets if we're actually being observed by a player
             if (Combat.CurrentTarget == null && _unit.PlayersInRange.Count > 0)

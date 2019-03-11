@@ -1,8 +1,14 @@
 ﻿using System.Collections.Generic;
 using Common;
 using FrameWork;
+using WorldServer.NetWork;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class TacticsInterface : BaseInterface
     {

@@ -6,6 +6,8 @@ using System.Linq;
 using static WorldServer.Managers.Commands.GMUtils;
 using GameData;
 using WorldServer.Services.World;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
 
 namespace WorldServer.Managers.Commands
 {

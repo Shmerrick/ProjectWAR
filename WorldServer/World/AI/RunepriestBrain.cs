@@ -1,9 +1,10 @@
-﻿using FrameWork;
-using GameData;
-using System.Linq;
+﻿using System.Linq;
+using FrameWork;
 using WorldServer.Services.World;
+using WorldServer.World.Objects;
+
 //1174
-namespace WorldServer
+namespace WorldServer.World.AI
 {
     public class RunepriestBrain : RangedBrain
     {
@@ -17,9 +18,9 @@ namespace WorldServer
             runeofShieldingCooldown = 0;
         }
 
-        public override void Think()
+        public override void Think(long tick)
         {
-            base.Think();
+            base.Think(tick);
 
             if (_unit.IsDead)
                 return;

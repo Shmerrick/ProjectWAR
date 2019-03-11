@@ -8,9 +8,13 @@ using Common;
 using FrameWork;
 using GameData;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities.CareerInterfaces;
 using WorldServer.World.Battlefronts.Bounty;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer.Scenarios
+namespace WorldServer.World.Scenarios
 {
     enum ScenarioQueueType
     {

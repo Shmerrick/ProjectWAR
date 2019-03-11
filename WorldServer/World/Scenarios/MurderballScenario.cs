@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.Scenarios.Objects;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Buffs.SpecialBuffs;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using WorldServer.World.Scenarios.Objects;
 
-namespace WorldServer.Scenarios
+namespace WorldServer.World.Scenarios
 {
     public class MurderballScenario : Scenario
     {

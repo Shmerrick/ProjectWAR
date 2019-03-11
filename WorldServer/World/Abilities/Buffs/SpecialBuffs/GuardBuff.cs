@@ -1,6 +1,8 @@
-﻿using Common;
+﻿using WorldServer.World.Abilities.Components;
+using WorldServer.World.AI;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 {
     public class GuardBuff : NewBuff
     {

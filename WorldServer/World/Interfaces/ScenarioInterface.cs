@@ -1,7 +1,8 @@
 ﻿using FrameWork;
-using WorldServer.Scenarios;
+using WorldServer.World.Objects;
+using WorldServer.World.Scenarios;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class ScenarioInterface : BaseInterface
     {

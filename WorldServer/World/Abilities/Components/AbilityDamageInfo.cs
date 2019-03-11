@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using Common;
 using FrameWork;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Components
 {
     public class AbilityDamageInfo
     {

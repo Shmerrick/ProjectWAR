@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WorldServer
+namespace WorldServer.World.Scripting
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class GeneralScriptAttribute : Attribute

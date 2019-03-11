@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.World.Objects.PublicQuests;
+using WorldServer.Managers;
 using WorldServer.Services.World;
+using WorldServer.World.Objects;
+using WorldServer.World.Objects.PublicQuests;
+using Item = WorldServer.World.Objects.Item;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class QuestsInterface : BaseInterface
     {

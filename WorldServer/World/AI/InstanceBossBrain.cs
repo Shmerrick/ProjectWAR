@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SystemData;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
 
 namespace WorldServer.World.AI
 {
@@ -26,9 +28,9 @@ namespace WorldServer.World.AI
 
 		#region Overrides
 		
-		public override void Think()
+		public override void Think(long tick)
 		{
-			base.Think();
+			base.Think(tick);
 		}
 
 		public override bool Start(Dictionary<ushort, AggroInfo> aggros)

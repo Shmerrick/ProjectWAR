@@ -1,30 +1,27 @@
 ﻿//#define NO_CREATURE
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-
 using Common;
-using Common.Database.World.Battlefront;
-using FrameWork;
-using WorldServer.World.BattleFronts;
-using GameData;
-using WorldServer.World.Objects.PublicQuests;
-using WorldServer.Scenarios;
-using WorldServer.World.BattleFronts.Objectives;
 using Common.Database.World.Maps;
+using FrameWork;
+using GameData;
 using NLog;
+using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
-using BattleFrontConstants = WorldServer.World.Battlefronts.Apocalypse.BattleFrontConstants;
 using WorldServer.World.Battlefronts.Bounty;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using WorldServer.World.Objects.PublicQuests;
+using WorldServer.World.Positions;
+using WorldServer.World.Scenarios;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Map
 {
 
     public class RegionMgr
@@ -818,6 +815,20 @@ namespace WorldServer
             AddObject(crea, spawn.ZoneId);
             return crea;
         }
+
+        public AdvancedCreature CreateAdvancedCreature(Creature_spawn spawn)
+        {
+#if NO_CREATURE
+            return null;
+#endif
+            if (spawn?.Proto == null)
+                return null;
+
+            AdvancedCreature crea = new AdvancedCreature(spawn);
+            AddObject(crea, spawn.ZoneId);
+            return crea;
+        }
+
         public GameObject CreateGameObject(GameObject_spawn spawn)
         {
             if (spawn == null || spawn.Proto == null)

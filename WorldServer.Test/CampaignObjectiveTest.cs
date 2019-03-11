@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.Services.World;
 using Common;
+using WorldServer.World.Objects;
 
 namespace WorldServer.Test
 {

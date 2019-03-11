@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using SystemData;
-using System.Linq;
-using WorldServer.World.Objects.PublicQuests;
+using WorldServer.Managers;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
-using WorldServer.World.BattleFronts;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
+using WorldServer.World.Objects.PublicQuests;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
 
     static class RandomEnumerable

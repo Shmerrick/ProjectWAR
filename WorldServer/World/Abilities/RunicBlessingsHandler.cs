@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
-using Common;
 using FrameWork;
 using GameData;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities
 {
     public class RunicBlessingsHandler : Object
     {

@@ -6,7 +6,9 @@ using Common;
 using FrameWork;
 using GameData;
 using WorldServer.Services.World;
-using WorldServer.Scenarios;
+using WorldServer.World.Abilities.CareerInterfaces;
+using WorldServer.World.Scenarios;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Objects.PublicQuests
 {

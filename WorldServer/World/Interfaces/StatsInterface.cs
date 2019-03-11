@@ -1,12 +1,16 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using WorldServer.Managers;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class StatsInterface : BaseInterface
     {
@@ -424,7 +428,7 @@ namespace WorldServer
                     {
                         if (stat.StatId == mod.PrimaryValue)
                         {
-                            byte[] points = new byte[((WorldServer.Pet)_Owner).Owner.AbtInterface._pointsInTree[mod.MasteryTree]];
+                            byte[] points = new byte[((Pet)_Owner).Owner.AbtInterface._pointsInTree[mod.MasteryTree]];
                             int modPoints = Math.Abs(mod.PointEnd - mod.PointStart) + 1;
                             int modPtPdct = modPoints - (Math.Abs(mod.PointEnd - points.Length));
 

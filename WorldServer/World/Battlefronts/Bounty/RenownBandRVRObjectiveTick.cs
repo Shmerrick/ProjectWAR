@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FrameWork;
 
-namespace WorldServer.World.Battlefronts.NewDawn.Rewards
+namespace WorldServer.World.Battlefronts.Bounty
 {
     /// <summary>
     /// Represents the rewards a objective tick will give a player as a baseline.

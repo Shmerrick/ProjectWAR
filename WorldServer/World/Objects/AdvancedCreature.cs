@@ -3,16 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BehaviourTree;
 using Common;
 using FrameWork;
+using NLog;
+using WorldServer.World.AI;
+using WorldServer.World.AI.BT;
 
 namespace WorldServer.World.Objects
 {
     /// <summary>
     /// WIP - thinking about a cut down, but smarter mob
     /// </summary>
-    public class AdvancedCreature : Unit
+    public class AdvancedCreature : Creature, IClock
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         public Creature_spawn Spawn;
         public uint ProtoEntryId { get; set; }
         protected byte Scale { get; set; }
@@ -25,7 +31,7 @@ namespace WorldServer.World.Objects
         public AdvancedCreature(Creature_spawn spawn)
         {
             if (spawn == null)
-                throw new ArgumentNullException("NULL spawn passed to Creature.");
+                throw new ArgumentNullException("NULL spawn passed to AdvancedCreature.");
             Spawn = spawn;
             Name = spawn.Proto.Name;
             Ranged = spawn.Proto.Ranged;
@@ -40,6 +46,19 @@ namespace WorldServer.World.Objects
                 BaseRadius = spawn.Proto.BaseRadiusUnits * (Scale / 50f) / UNITS_TO_FEET;
             else
                 BaseRadius *= (Scale / 50f);
+
+            
+        }
+        public long GetTimeStampInMilliseconds()
+        {
+            return DateTime.Now.Millisecond;
+        }
+
+
+        public override void OnLoad()
+        {
+            _logger.Trace($"Calling AdvCreature.OnLoad");
+            base.OnLoad();
         }
 
     }

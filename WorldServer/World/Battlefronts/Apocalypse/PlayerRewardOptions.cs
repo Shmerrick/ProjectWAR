@@ -1,4 +1,5 @@
 ﻿using GameData;
+using Item = WorldServer.World.Objects.Item;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {

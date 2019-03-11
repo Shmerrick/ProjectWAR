@@ -7,7 +7,7 @@ using System.Linq;
 using SystemData;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Bounty;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Keeps
 {

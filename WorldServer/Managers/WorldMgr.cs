@@ -5,21 +5,28 @@ using System.Reflection;
 using System.Threading;
 using SystemData;
 using Common;
-using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
-using Common.Database.World.BattleFront;
-using WorldServer.World.BattleFronts.Keeps;
-using WorldServer.Scenarios;
-using WorldServer.Services.World;
-using Common.Database.World.Maps;
 using NLog;
+using WorldServer.NetWork.Handler;
+using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
 using WorldServer.World.Objects;
+using WorldServer.World.Objects.Instances;
+using WorldServer.World.Positions;
+using WorldServer.World.Scenarios;
+using WorldServer.World.Scripting;
+using WorldServer.World.WorldSettings;
 using BattleFrontConstants = WorldServer.World.Battlefronts.Apocalypse.BattleFrontConstants;
+using Item = WorldServer.World.Objects.Item;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.Managers
 {
     [Service(
         typeof(AnnounceService),

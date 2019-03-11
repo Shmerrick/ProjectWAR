@@ -1,7 +1,7 @@
 ﻿using Common;
+using WorldServer.Managers;
 
-
-namespace WorldServer
+namespace WorldServer.World.WorldSettings
 {
     public class WorldSettings
     {

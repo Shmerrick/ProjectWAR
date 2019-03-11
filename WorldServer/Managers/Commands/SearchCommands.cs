@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SystemData;
 using WorldServer.Services.World;
+using WorldServer.World.Objects;
 using static WorldServer.Managers.Commands.GMUtils;
 
 namespace WorldServer.Managers.Commands

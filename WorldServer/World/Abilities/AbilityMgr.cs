@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using FrameWork;
 using Common;
-using WorldServer.Services.World;
+using FrameWork;
+using WorldServer.Managers;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities
 {
     [Service(typeof(WorldMgr))]
     public static class AbilityMgr
@@ -454,11 +455,11 @@ namespace WorldServer
                 if (abInfo != null)
                 {
                     temp[cAb.ProtoEntry].Add(new NPCAbility(cAb.AbilityId, abInfo.ConstantInfo.AIRange, Math.Max(abInfo.Cooldown, cAb.Cooldown), true, cAb.Text, cAb.TimeStart, cAb.ActivateAtHealthPercent, cAb.AbilityCycle, cAb.Active, cAb.ActivateOnCombatStart, cAb.RandomTarget, cAb.TargetFocus, cAb.DisableAtHealthPercent, cAb.MinRange));
-                    Log.Info("Entry: " + cAb.ProtoEntry, cAb.AbilityId + " " + abInfo.Name + " ~ Loaded");
+                    Log.Dump("Entry: " + cAb.ProtoEntry, cAb.AbilityId + " " + abInfo.Name + " ~ Loaded");
                 }
                 else
                 {
-                    Log.Info("Entry: " + cAb.ProtoEntry, cAb.AbilityId + " ~ Failed loading");
+                    Log.Error("Entry: " + cAb.ProtoEntry, cAb.AbilityId + " ~ Failed loading");
                 }
             }
 

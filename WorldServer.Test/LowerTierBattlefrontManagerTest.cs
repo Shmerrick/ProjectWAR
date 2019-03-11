@@ -7,6 +7,7 @@ using GameData;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorldServer.Managers.Commands;
 using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Map;
 
 namespace WorldServer.Test
 {

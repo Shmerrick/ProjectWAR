@@ -5,6 +5,7 @@ using GameData;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Database.World.Battlefront;
+using WorldServer.World.Positions;
 
 namespace WorldServer.Services.World
 {

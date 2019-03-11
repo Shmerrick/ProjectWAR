@@ -1,13 +1,6 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using FrameWork;
 
-using Common;
-using FrameWork;
-
-namespace WorldServer
+namespace WorldServer.NetWork.Handler
 {
     public class Unk1 : IPacketHandler
     {

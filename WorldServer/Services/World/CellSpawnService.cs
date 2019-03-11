@@ -3,6 +3,7 @@ using Common.Database.World.Maps;
 using FrameWork;
 using System;
 using System.Collections.Generic;
+using WorldServer.World.Map;
 
 namespace WorldServer.Services.World
 {
