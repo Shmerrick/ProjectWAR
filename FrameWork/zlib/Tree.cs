@@ -45,8 +45,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using System;
 namespace FrameWork
 {
-	
-	sealed class Tree
+    public sealed class Tree
 	{
 		private const int MAX_BITS = 15;
 		private const int BL_CODES = 19;

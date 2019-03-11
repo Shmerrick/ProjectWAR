@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Common;
+﻿using Common;
 using FrameWork;
+using WorldServer.Managers;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.NetWork.Handler
 {
     public class MailHandlers : IPacketHandler
     {

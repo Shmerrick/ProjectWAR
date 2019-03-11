@@ -1,9 +1,11 @@
 ﻿using System;
-using SystemData;
 using FrameWork;
-using GameData;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.CareerInterfaces
 {
     public class CareerInterface_Blackguard: CareerInterface
     {

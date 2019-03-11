@@ -1,15 +1,13 @@
 ﻿//#define SUPPRESS_LOAD
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Common;
-using FrameWork;
 using Common.Database.World.Maps;
+using FrameWork;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
 
-namespace WorldServer
+namespace WorldServer.World.Map
 {
     public class CellMgr
     {

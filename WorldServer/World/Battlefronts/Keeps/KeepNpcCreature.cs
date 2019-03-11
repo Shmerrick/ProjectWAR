@@ -1,12 +1,12 @@
+using System;
 using Common;
 using FrameWork;
 using GameData;
 using NLog;
-using System;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Map;
 
-namespace WorldServer.World.BattleFronts.Keeps
+namespace WorldServer.World.Battlefronts.Keeps
 {
     public class KeepNpcCreature
     {

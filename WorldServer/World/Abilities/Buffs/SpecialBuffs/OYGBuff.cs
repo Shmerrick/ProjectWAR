@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
 
-using Common;
-using FrameWork;
-
-namespace WorldServer
+namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 {
     class OYGBuff : NewBuff
     {

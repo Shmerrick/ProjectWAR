@@ -6,7 +6,10 @@ using System.Text;
 using Common;
 using FrameWork;
 using WorldServer.Services.World;
+using WorldServer.World.Objects;
 using WorldServer.World.Objects.PublicQuests;
+using WorldServer.World.Scripting;
+using Object = WorldServer.World.Objects.Object;
 
 namespace WorldServer
 {

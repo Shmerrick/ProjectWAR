@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Components;
 
 namespace WorldServer.Test
 {

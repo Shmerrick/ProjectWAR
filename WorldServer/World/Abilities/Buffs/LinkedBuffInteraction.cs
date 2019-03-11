@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Buffs
 {
     /// <summary>
     /// A class which creates two buffs on two different players and links them together.

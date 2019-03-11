@@ -1,7 +1,7 @@
 ﻿using System;
 using FrameWork;
 
-namespace WorldServer
+namespace WorldServer.World.Positions
 {
     public class Point2D : IPoint2D
     {

@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Common.Database.World.Battlefront;
-using WorldServer.World.BattleFronts;
+using WorldServer.Managers;
+using WorldServer.World.Positions;
 
 namespace WorldServer.Services.World
 {

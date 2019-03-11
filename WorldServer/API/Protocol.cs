@@ -5,7 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using WorldServer.Managers;
 using WorldServer.Services.World;
+using WorldServer.World.Objects;
 
 namespace WorldServer.API
 {

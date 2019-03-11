@@ -1,12 +1,10 @@
-﻿using Common;
+﻿using System;
+using Common;
 using FrameWork;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using WorldServer.Services.World;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects.Instances
 {
     public class InstanceObject : GameObject
 	{

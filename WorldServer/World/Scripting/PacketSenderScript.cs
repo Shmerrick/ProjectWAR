@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
-
-using Common;
 using FrameWork;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
 
-namespace WorldServer
+namespace WorldServer.World.Scripting
 {
     [GeneralScript(true, "CareerPackagesSender", 0, 0)]
     public class CareerPackagesSender : AGeneralScript

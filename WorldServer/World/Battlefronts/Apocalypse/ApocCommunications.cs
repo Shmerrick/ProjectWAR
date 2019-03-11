@@ -4,6 +4,10 @@ using SystemData;
 using FrameWork;
 using GameData;
 using NLog;
+using WorldServer.Managers;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {

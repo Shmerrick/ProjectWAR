@@ -1,16 +1,17 @@
-﻿using Common;
-using FrameWork;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Common;
+using FrameWork;
+using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.Objects.Instances;
-using WorldServer.World.Objects.Instances.Bastion_Stairs;
-using WorldServer.World.Objects.Instances.Bilerot_Burrow;
-using WorldServer.World.Objects.Instances.Bloodwrought_Enclave;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
+using WorldServer.World.Objects.Instances.The_Lost_Vale;
+using WorldServer.World.Objects.Instances.TomboftheVultureLord;
 
-namespace WorldServer
+namespace WorldServer.World.Objects.Instances
 {
     public class Respawn
     {

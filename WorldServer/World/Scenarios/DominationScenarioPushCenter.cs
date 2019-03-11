@@ -1,14 +1,14 @@
-﻿using Common;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Common;
 using FrameWork;
 using GameData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using WorldServer.Scenarios.Objects;
 using WorldServer.Services.World;
+using WorldServer.World.Objects;
+using WorldServer.World.Scenarios.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer.Scenarios
+namespace WorldServer.World.Scenarios
 {
     public class DominationScenarioPushCenter : Scenario
     {

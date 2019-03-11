@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using Common;
 using WorldServer.Services.World;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Scripting;
 
-namespace WorldServer
+namespace WorldServer.World.Objects.Instances.Bastion_Stairs
 {
     [GeneralScript(false, "", 45084, 0)]
     public class SimpleTharlgnan : AGeneralScript

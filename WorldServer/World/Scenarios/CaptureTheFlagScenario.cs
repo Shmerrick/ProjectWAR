@@ -1,12 +1,19 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.Scenarios.Objects;
+using WorldServer.NetWork.Handler;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Buffs.SpecialBuffs;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using WorldServer.World.Scenarios.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer.Scenarios
+namespace WorldServer.World.Scenarios
 {
     class CaptureTheFlagScenario : Scenario
     {

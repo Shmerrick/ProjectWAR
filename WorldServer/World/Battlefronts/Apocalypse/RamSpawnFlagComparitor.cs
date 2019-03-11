@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using GameData;
+using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {

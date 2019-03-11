@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using SystemData;
-using FrameWork;
+﻿using FrameWork;
 using GameData;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class CombatInterface_Pet : CombatInterface_Npc
     {

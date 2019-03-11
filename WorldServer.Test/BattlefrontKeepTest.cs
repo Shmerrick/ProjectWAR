@@ -3,8 +3,9 @@ using Appccelerate.StateMachine;
 using Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.BattleFronts.Keeps;
 using FakeItEasy;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Map;
 
 namespace WorldServer.Test
 {

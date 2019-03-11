@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using WorldServer.Managers;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities.CareerInterfaces;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
 
 

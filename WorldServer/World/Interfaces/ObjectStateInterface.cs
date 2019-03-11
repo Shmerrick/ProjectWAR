@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FrameWork;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class ObjectStateInterface : BaseInterface
     {

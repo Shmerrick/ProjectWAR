@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
 using WorldServer.World.Objects.Instances;
 
 namespace WorldServer.World.AI
@@ -26,9 +29,9 @@ namespace WorldServer.World.AI
             return base.GetNextTarget();
         }
         
-        public override void Think()
+        public override void Think(long tick)
         {
-            base.Think();
+            base.Think(tick);
         }
         
         public override void TryUseAbilities()

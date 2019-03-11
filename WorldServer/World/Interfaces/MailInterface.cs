@@ -1,14 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using SystemData;
 using ByteOperations;
 using Common;
 using FrameWork;
 using GameData;
+using WorldServer.Managers;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
+using WorldServer.World.Objects;
+using Item = WorldServer.World.Objects.Item;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public enum MailInteractType
     {

@@ -2,13 +2,20 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using SystemData;
-using Common;
 using FrameWork;
 using GameData;
+using WorldServer.NetWork;
+using WorldServer.World.Abilities.CareerInterfaces;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Item = WorldServer.World.Objects.Item;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities
 {
     public class AbilityInterface : BaseInterface
     {

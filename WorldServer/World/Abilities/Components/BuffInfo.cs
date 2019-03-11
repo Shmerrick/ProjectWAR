@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Common;
-using System;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Components
 {
     /// <summary>
     /// Contains information about an effect which may be cast upon players.

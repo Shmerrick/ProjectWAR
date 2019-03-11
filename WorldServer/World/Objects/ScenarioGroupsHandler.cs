@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FrameWork;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     /// <summary>
     /// <para>The manager for the six scenario groups, as well as for the solo players therein.</para>

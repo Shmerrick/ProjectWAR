@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Common;
-using WorldServer.Services.World;
-using FrameWork;
 using System.Threading;
+using Common;
+using FrameWork;
+using WorldServer.Services.World;
+using WorldServer.World.Interfaces;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
 {
     class Pendulum : GameObject
     {

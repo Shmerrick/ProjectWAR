@@ -7,6 +7,8 @@ using SystemData;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
 using static WorldServer.Managers.Commands.GMUtils;
 
 namespace WorldServer.Managers.Commands

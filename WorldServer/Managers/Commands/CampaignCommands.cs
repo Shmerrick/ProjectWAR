@@ -7,8 +7,10 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
 using static WorldServer.Managers.Commands.GMUtils;
 using BattleFrontConstants = WorldServer.World.Battlefronts.Apocalypse.BattleFrontConstants;
 

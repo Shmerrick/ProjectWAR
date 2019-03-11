@@ -1,27 +1,38 @@
-﻿using Common;
-using Common.Database.World.BattleFront;
-using FrameWork;
-using GameData;
-using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
 using SystemData;
+using Common;
+using Common.Database.World.BattleFront;
+using FrameWork;
+using GameData;
+using NLog;
+using WorldServer.Managers;
 using WorldServer.Managers.Commands;
-using WorldServer.Scenarios;
-using WorldServer.Scenarios.Objects;
+using WorldServer.NetWork;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.CareerInterfaces;
+using WorldServer.World.Abilities.Components;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Bounty;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
 using WorldServer.World.Objects.PublicQuests;
+using WorldServer.World.Positions;
+using WorldServer.World.Scenarios;
+using WorldServer.World.Scenarios.Objects;
 using BattleFrontStatus = WorldServer.World.Battlefronts.Apocalypse.BattleFrontStatus;
 using Exception = System.Exception;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     public class ResurrectionInfo
     {
@@ -575,7 +586,7 @@ namespace WorldServer
                 TokInterface.Load(Info.Toks, Info.TokKills);
                 SocInterface.Load();
                 MlInterface.Load(Info.Mails);
-                GldInterface.Load(Guild.GetGuildFromLeader(Info.CharacterId));
+                GldInterface.Load(Guild.Guild.GetGuildFromLeader(Info.CharacterId));
                 AbtInterface.Load(); // used to send mastery here
                 OSInterface.Load();
                 TacInterface.Load();
@@ -2378,12 +2389,12 @@ namespace WorldServer
                     else if (Link[0] == "GUILD")
                     {
                         uint GuildId = uint.Parse(Link[1]);
-                        Guild Guild = Guild.GetGuild(GuildId);
+                        Guild.Guild Guild = World.Guild.Guild.GetGuild(GuildId);
                         if (Guild != null)
                         {
                             ++Count;
                             Out.WriteByte(5); // Guild
-                            Guild.BuildGuild(ref Out, Guild);
+                            World.Guild.Guild.BuildGuild(ref Out, Guild);
                         }
                     }
                     else if (Link[0] == "QUEST")

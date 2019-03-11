@@ -1,18 +1,21 @@
 ﻿using System;
-using FrameWork;
-using GameData;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common;
+using FrameWork;
+using GameData;
+using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
 using CreatureSubTypes = GameData.CreatureSubTypes;
 using CreatureTypes = GameData.CreatureTypes;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 using Vector3 = FrameWork.Vector3;
-using WorldServer.World.BattleFronts.Keeps;
-using WorldServer.Services.World;
-using WorldServer.World.Map;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public enum SiegeType
     {

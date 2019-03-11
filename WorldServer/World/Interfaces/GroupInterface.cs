@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SystemData;
 using FrameWork;
 using GameData;
+using WorldServer.Managers;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public enum EGroupJoinState
     {

@@ -1,4 +1,4 @@
-﻿namespace WorldServer
+﻿namespace WorldServer.World.Objects
 {
     public enum CreatureState
     {

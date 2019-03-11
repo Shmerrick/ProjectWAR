@@ -7,7 +7,7 @@ using System.Text;
 using FrameWork;
 using Microsoft.CSharp;
 
-namespace WorldServer
+namespace WorldServer.Managers
 {
     public class CSharpScriptCompiler
     {

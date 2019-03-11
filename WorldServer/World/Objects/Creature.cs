@@ -1,15 +1,24 @@
-﻿using Common;
-using FrameWork;
-using GameData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using SystemData;
+using BehaviourTree;
+using Common;
+using FrameWork;
+using GameData;
+using WorldServer.Managers;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.AI;
+using WorldServer.World.Interfaces;
 using CreatureSubTypes = GameData.CreatureSubTypes;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
-    public class Creature : Unit
+    public class Creature : Unit, IClock
     {
         public Creature_spawn Spawn;
         public SiegeInterface SiegeInterface;
@@ -52,6 +61,11 @@ namespace WorldServer
         public override void ApplyKnockback(Unit caster, AbilityKnockbackInfo kbInfo)
         {
             BuffInterface.QueueBuff(new BuffQueueInfo(caster, caster.EffectiveLevel, AbilityMgr.GetBuffInfo(237)));
+        }
+
+        public long GetTimeStampInMilliseconds()
+        {
+            return DateTime.Now.Millisecond;
         }
 
         #endregion

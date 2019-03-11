@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using FrameWork;
+using WorldServer.NetWork.Handler;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
 
-using Common;
-using FrameWork;
-
-namespace WorldServer
+namespace WorldServer.World.Scripting.GameObject
 {
     [GeneralScript(true,"MailBoxScript", 0 , 0)]
     public class MailBoxScript : AGeneralScript

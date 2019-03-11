@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using SystemData;
+using System.Linq;
 using Common;
 using FrameWork;
 using GameData;
-using System.Linq;
+using WorldServer.NetWork.Handler;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
 
-namespace WorldServer.Scenarios
+namespace WorldServer.World.Scenarios
 {
     public class DominationScenarioEC : DominationScenario
     {

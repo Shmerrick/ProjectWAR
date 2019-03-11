@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using WorldServer.Services.World;
+using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {

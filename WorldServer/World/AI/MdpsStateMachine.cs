@@ -7,7 +7,6 @@ using Appccelerate.StateMachine;
 using NLog;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.BattleFronts.Keeps;
 
 namespace WorldServer.World.AI
 {

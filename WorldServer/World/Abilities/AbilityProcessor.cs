@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using FrameWork;
-using Common;
-
-using GameData;
-using WorldServer.Services.World;
 using System.Linq;
 using System.Text.RegularExpressions;
+using FrameWork;
+using GameData;
 using WorldServer.Managers.Commands;
+using WorldServer.Services.World;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Abilities.Objects;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Group = WorldServer.World.Objects.Group;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities
 {
     public class AbilityProcessor
     {

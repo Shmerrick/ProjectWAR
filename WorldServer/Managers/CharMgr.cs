@@ -1,18 +1,23 @@
-﻿using Common;
-using FrameWork;
-using GameData;
-using NLog;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using SystemData;
+using Common;
+using FrameWork;
+using GameData;
+using NLog;
+using WorldServer.NetWork;
 using WorldServer.Services.World;
+using WorldServer.World.Auction;
+using WorldServer.World.Guild;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using Item = WorldServer.World.Objects.Item;
 
-namespace WorldServer
+namespace WorldServer.Managers
 {
     public class AccountChars
     {

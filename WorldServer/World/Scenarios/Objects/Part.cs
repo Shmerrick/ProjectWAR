@@ -1,12 +1,15 @@
+using System.Collections.Generic;
+using System.Linq;
 using Common;
 using FrameWork;
 using GameData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Object = WorldServer.World.Objects.Object;
 
-namespace WorldServer.Scenarios.Objects
+namespace WorldServer.World.Scenarios.Objects
 {
     public class Part: GameObject
     {

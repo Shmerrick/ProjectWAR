@@ -1,8 +1,12 @@
 ﻿using Common;
 using FrameWork;
 using GameData;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Objects
 {
     class LandMine : BuffHostObject
     {

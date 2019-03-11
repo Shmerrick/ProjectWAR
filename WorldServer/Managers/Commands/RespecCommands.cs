@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using WorldServer.World.Objects;
 
 namespace WorldServer.Managers.Commands
 {

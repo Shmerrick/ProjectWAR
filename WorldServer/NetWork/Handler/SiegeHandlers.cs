@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using FrameWork;
+using WorldServer.World.Objects;
 
-using Common;
-using FrameWork;
-
-namespace WorldServer
+namespace WorldServer.NetWork.Handler
 {
     public class SiegeHandlers : IPacketHandler
     {

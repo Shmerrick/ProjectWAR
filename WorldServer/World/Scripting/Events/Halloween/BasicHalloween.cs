@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Object = WorldServer.World.Objects.Object;
 
-using Common;
-using FrameWork;
-using WorldServer.Services.World;
-
-namespace WorldServer
+namespace WorldServer.World.Scripting.Events.Halloween
 {
     class BasicHalloween : AGeneralScript
     {
@@ -22,7 +22,7 @@ namespace WorldServer
         protected int spawnWorldO;
         protected List<Object> stuffInRange = new List<Object>(); // This list keeps all objects in range
         protected List<Creature> addList = new List<Creature>(); // this list keeps all adds spawned by boss
-        protected List<GameObject> goList = new List<GameObject>(); // this list keeps all adds spawned by boss
+        protected List<Objects.GameObject> goList = new List<Objects.GameObject>(); // this list keeps all adds spawned by boss
         protected int Stage = -1; // This is variable that controls combat Stage
 
         public override void OnObjectLoad(Object Obj)
@@ -53,7 +53,7 @@ namespace WorldServer
             Stage = -1;
 
             addList = new List<Creature>();
-            goList = new List<GameObject>();
+            goList = new List<Objects.GameObject>();
 
             return false;
         }

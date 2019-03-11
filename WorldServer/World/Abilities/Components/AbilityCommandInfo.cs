@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Common;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Components
 {
     public class AbilityCommandInfo
     {

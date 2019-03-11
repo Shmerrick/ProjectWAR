@@ -1,8 +1,6 @@
-﻿using FrameWork;
-using GameData;
-using WorldServer.World.BattleFronts.Keeps;
+﻿using WorldServer.World.Objects;
 
-namespace WorldServer.World.Battlefronts.Apocalypse
+namespace WorldServer.World.Battlefronts.Keeps
 {
     public interface IKeepCommunications
     {

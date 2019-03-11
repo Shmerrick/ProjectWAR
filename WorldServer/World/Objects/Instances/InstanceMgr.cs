@@ -1,13 +1,13 @@
-﻿using Common;
-using FrameWork;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SystemData;
+using Common;
+using FrameWork;
 using WorldServer.Services.World;
+using WorldServer.World.Objects.Instances.TomboftheVultureLord;
 
-namespace WorldServer
+namespace WorldServer.World.Objects.Instances
 {
     public class InstanceMgr
     {

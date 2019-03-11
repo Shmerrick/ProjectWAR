@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using SystemData;
+using WorldServer.World.Objects;
 
 namespace WorldServer.Managers.Commands
 {

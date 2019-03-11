@@ -1,12 +1,13 @@
-﻿using FrameWork;
+﻿using System.Linq;
+using FrameWork;
 using GameData;
-using System.Data;
-using System.Linq;
 using WorldServer.Services.World;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
 
 //36172 <-- Ravenclaw Marauder
 
-namespace WorldServer
+namespace WorldServer.World.AI
 {
     public class ChoppaBrain : ABrain
     {
@@ -22,13 +23,13 @@ namespace WorldServer
             nextDetauntAvailable = 0;
         }
 
-        public override void Think()
+        public override void Think(long tick)
         {
             if (_unit.IsDead)
                 return;
 
 
-            base.Think();
+            base.Think(tick);
 
             // Only bother to seek targets if we're actually being observed by a player
             if (Combat.CurrentTarget == null && _unit.PlayersInRange.Count > 0)

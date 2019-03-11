@@ -1,7 +1,8 @@
-﻿using SystemData;
-using Common;
+﻿using Common;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.CareerInterfaces
 {
     class CareerInterface_SquigHerder : CareerInterface, IPetCareerInterface
     {

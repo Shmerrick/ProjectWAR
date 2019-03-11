@@ -1,16 +1,15 @@
 ﻿using System;
-using System.CodeDom;
-using FrameWork;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Security.Policy;
 using System.Threading;
 using SystemData;
+using FrameWork;
 using GameData;
-using WorldServer.World.Objects;
+using WorldServer.Managers;
+using WorldServer.World.Interfaces;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     /// <summary>This class assumes control of 4 Groups, which are slaves to it, to implement Warband handling.</summary>
     public class WarbandHandler

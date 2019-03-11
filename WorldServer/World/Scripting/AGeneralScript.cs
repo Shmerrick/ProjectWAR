@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using WorldServer.NetWork.Handler;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
 
-using Common;
-using FrameWork;
-
-namespace WorldServer
+namespace WorldServer.World.Scripting
 {
     public abstract class AGeneralScript
     {
@@ -99,7 +97,7 @@ namespace WorldServer
 
         }
 
-        public virtual void OnWorldGameObjectEvent(string EventName, GameObject Obj, object Data)
+        public virtual void OnWorldGameObjectEvent(string EventName, Objects.GameObject Obj, object Data)
         {
 
         }

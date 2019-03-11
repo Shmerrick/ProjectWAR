@@ -1,7 +1,10 @@
 ﻿using Common;
 using FrameWork;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Objects
 {
     /// <summary>
     /// An object used as a host for buffs representing ground-targeted attacks.

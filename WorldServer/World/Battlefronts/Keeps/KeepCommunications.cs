@@ -3,7 +3,8 @@ using GameData;
 using NLog;
 using System.Linq;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Battlefronts.Keeps
 {

@@ -1,8 +1,8 @@
 ﻿using System;
-using Common;
 using System.Collections.Generic;
+using Common;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Components
 {
     public class BuffCommandInfo
     {

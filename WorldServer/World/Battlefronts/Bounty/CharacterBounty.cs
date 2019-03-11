@@ -1,4 +1,5 @@
 ﻿using System;
+using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {

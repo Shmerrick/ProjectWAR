@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SystemData;
+using Common;
 using FrameWork;
 using GameData;
-using Common;
-using System.Collections.Generic;
 using WorldServer.Managers.Commands;
+using WorldServer.World.Abilities.CareerInterfaces;
+using WorldServer.World.Guild;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.Managers
 {
     public class CommandHandler
     {

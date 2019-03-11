@@ -1,8 +1,7 @@
 ﻿using Common;
-using System.Collections.Generic;
 using WorldServer.World.AI;
 
-namespace WorldServer.World.Objects.Instances
+namespace WorldServer.World.Objects.Instances.RemovedBosses
 {
     public class SimpleFulgurThunderborn : InstanceBossSpawn
     {

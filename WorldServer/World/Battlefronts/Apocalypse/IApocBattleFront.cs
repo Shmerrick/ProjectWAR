@@ -1,6 +1,7 @@
 ﻿using Common;
 using FrameWork;
 using GameData;
+using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {

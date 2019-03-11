@@ -1,10 +1,7 @@
 ﻿using Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using WorldServer.World.Interfaces;
 
-namespace WorldServer
+namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
 {
     public class InstanceSpawn : Creature
     {

@@ -2,6 +2,8 @@
 using GameData;
 using SystemData;
 using FrameWork;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.Managers.Commands
 {

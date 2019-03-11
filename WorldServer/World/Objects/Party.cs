@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     public class Party
     {

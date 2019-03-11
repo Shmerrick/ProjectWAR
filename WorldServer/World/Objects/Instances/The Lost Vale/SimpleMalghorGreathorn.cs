@@ -1,10 +1,7 @@
 ﻿using Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using WorldServer.World.AI;
 
-namespace WorldServer.World.Objects.Instances
+namespace WorldServer.World.Objects.Instances.The_Lost_Vale
 {
 	public class SimpleMalghorGreathorn : InstanceBossSpawn
 	{

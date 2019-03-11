@@ -1,15 +1,12 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using SystemData;
-using Common;
 using FrameWork;
 using GameData;
 using WorldServer.Services.World;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
 
-namespace WorldServer
+namespace WorldServer.NetWork.Handler
 {
     public struct InteractMenu
     {

@@ -4,9 +4,11 @@ using Common;
 using Common.Database.World.Battlefront;
 using GameData;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.BattleFronts.Objectives;
 using FakeItEasy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
 
 
 namespace WorldServer.Test
@@ -18,7 +20,7 @@ namespace WorldServer.Test
         public List<RVRProgression> SampleProgressionList { get; set; }
         public RegionMgr Region1 { get; set; }
         public RegionMgr Region3 { get; set; }
-        public List<BattlefieldObjective> PraagBOList { get; set; }
+        public List<WorldServer.World.Battlefronts.Apocalypse.BattlefieldObjective> PraagBOList { get; set; }
         public List<BattlefieldObjective> ChaosWastesBOList { get; set; }
         public List<BattlefieldObjective> ThunderMountainBOList { get; set; }
         public List<BattlefieldObjective> KadrinValleyBOList { get; set; }

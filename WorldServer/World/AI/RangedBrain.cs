@@ -1,6 +1,7 @@
 ﻿using System.Linq;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.AI
 {
     public class RangedBrain : ABrain
     {
@@ -15,9 +16,9 @@ namespace WorldServer
 
         }
 
-        public override void Think()
+        public override void Think(long tick)
         {
-            base.Think();
+            base.Think(tick);
 
             if (_unit.PlayersInRange.Count > 0)
             {

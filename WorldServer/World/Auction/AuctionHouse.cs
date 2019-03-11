@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SystemData;
 using Common;
 using FrameWork;
+using WorldServer.Managers;
 using WorldServer.Services.World;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Auction
 {
     public class AuctionHouse
     {
@@ -27,10 +29,10 @@ namespace WorldServer
         {
             Log.Debug("WorldMgr", "Loading auctions...");
 
-            Auctions = CharMgr.Database.SelectAllObjects<Auction>() as List<Auction>;
+            Auctions = CharMgr.Database.SelectAllObjects<Common.Auction>() as List<Common.Auction>;
             int count = 0;
             if (Auctions != null)
-                foreach (Auction auct in Auctions)
+                foreach (Common.Auction auct in Auctions)
                 {
                     auct.Seller = CharMgr.GetCharacter(auct.SellerId, false);
 
@@ -45,17 +47,17 @@ namespace WorldServer
 
         #endregion
 
-        public static List<Auction> Auctions;
+        public static List<Common.Auction> Auctions;
 
         public static void SendAuctions(Player plr, string searchTerm, string sellerName, byte minLevel, byte maxLevel, byte rarity, byte career, List<byte> types, List<byte> slots, byte stat)
         {
-            List<Auction> matching = new List<Auction>();
-            List<Auction> toRemove = new List<Auction>();
+            List<Common.Auction> matching = new List<Common.Auction>();
+            List<Common.Auction> toRemove = new List<Common.Auction>();
 
             int count = 0;
             lock (Auctions)
             {
-                foreach (Auction auct in Auctions)
+                foreach (Common.Auction auct in Auctions)
                     if (count < MAX_AUCTIONS_TO_SEND)
                     {
                         if (auct.Item == null)
@@ -117,7 +119,7 @@ namespace WorldServer
             Out.WriteByte((byte)matching.Count);// count
             Out.WriteByte(0x01);
 
-            foreach (Auction auct in matching)
+            foreach (Common.Auction auct in matching)
             {
                 Out.WriteUInt64(auct.AuctionId); // id
                 Out.WriteUInt16(1); // part of the id?
@@ -138,7 +140,7 @@ namespace WorldServer
             plr.SendPacket(Out);
         }
 
-        public static void AddAuction(Auction auction)
+        public static void AddAuction(Common.Auction auction)
         {
             lock (Auctions)
                 Auctions.Add(auction);
@@ -148,7 +150,7 @@ namespace WorldServer
 
         public static void BuyOutAuction(Player buyer, ulong auctionId, uint price)
         {
-            Auction auction;
+            Common.Auction auction;
 
             bool cancel = false;
 
@@ -240,7 +242,7 @@ namespace WorldServer
             byte count = 0;
             lock (Auctions)
             {
-                foreach (Auction auct in Auctions)
+                foreach (Common.Auction auct in Auctions)
                     if (sellerId == auct.SellerId)
                         count++;
             }
@@ -260,7 +262,7 @@ namespace WorldServer
                     if (Auctions[i].StartTime >= expireTimeStart)
                         continue;
 
-                    Auction auction = Auctions[i];
+                    Common.Auction auction = Auctions[i];
 
                     if (auction.Item == null)
                         auction.Item = ItemService.GetItem_Info(auction.ItemId);

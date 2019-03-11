@@ -3,9 +3,20 @@ using System.Collections.Generic;
 using System.Threading;
 using SystemData;
 using FrameWork;
+using WorldServer.Managers;
+using WorldServer.NetWork.Handler;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Buffs.SpecialBuffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
 using WorldServer.World.Objects.Instances;
+using WorldServer.World.Objects.Instances.TomboftheVultureLord;
+using WorldServer.World.Positions;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     public class Object : Point3D
     {

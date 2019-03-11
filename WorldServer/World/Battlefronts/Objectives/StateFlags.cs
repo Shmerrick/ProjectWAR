@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WorldServer.World.BattleFronts.Objectives
+namespace WorldServer.World.Battlefronts.Objectives
 {
     /// <summary>
     /// Bit flags describing an objective state.

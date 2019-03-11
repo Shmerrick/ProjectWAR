@@ -4,6 +4,7 @@ using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {

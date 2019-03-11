@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SystemData;
 using Common;
 using FrameWork;
+using WorldServer.World.Guild;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.NetWork.Handler
 {
     public class GuildHandlers : IPacketHandler
     {

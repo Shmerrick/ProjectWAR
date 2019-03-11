@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Common;
 using FrameWork;
-using WorldServer.Services.World;
-using static WorldServer.Managers.Commands.GMUtils;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Scripting
 {
     class BasicScript : AGeneralScript
     {
@@ -23,7 +25,7 @@ namespace WorldServer
         protected int spawnWorldO;
         protected List<Object> stuffInRange = new List<Object>(); // This list keeps all objects in range
         protected List<Creature> addList = new List<Creature>(); // this list keeps all adds spawned by boss
-        protected List<GameObject> goList = new List<GameObject>(); // this list keeps all adds spawned by boss
+        protected List<Objects.GameObject> goList = new List<Objects.GameObject>(); // this list keeps all adds spawned by boss
         protected int Stage = -1; // This is variable that controls combat Stage
 
         public override void OnObjectLoad(Object Obj)
@@ -61,11 +63,11 @@ namespace WorldServer
 
             foreach (Creature creature in addList)
                 creature.Destroy();
-            foreach (GameObject go in goList)
+            foreach (Objects.GameObject go in goList)
                 go.Destroy();
 
             addList = new List<Creature>();
-            goList = new List<GameObject>();
+            goList = new List<Objects.GameObject>();
 
             return false;
         }
@@ -77,11 +79,11 @@ namespace WorldServer
 
             foreach (Creature c in addList)
                 c.Destroy();
-            foreach (GameObject go in goList)
+            foreach (Objects.GameObject go in goList)
                 go.Destroy();
 
             addList = new List<Creature>();
-            goList = new List<GameObject>();
+            goList = new List<Objects.GameObject>();
         }
 
         public override void OnRemoveFromWorld(Object Obj)
@@ -91,11 +93,11 @@ namespace WorldServer
 
             foreach (Creature c in addList)
                 c.Destroy();
-            foreach (GameObject go in goList)
+            foreach (Objects.GameObject go in goList)
                 go.Destroy();
 
             addList = new List<Creature>();
-            goList = new List<GameObject>();
+            goList = new List<Objects.GameObject>();
         }
 
         public void MountNPC(Unit target, uint entry)
@@ -154,7 +156,7 @@ namespace WorldServer
         {
             foreach (Object o in Obj.ObjectsInRange)
             {
-                GameObject go = o as GameObject;
+                Objects.GameObject go = o as Objects.GameObject;
                 if (go != null && go.Spawn.Guid == door)
                 {
                     go.Interactable = false;
@@ -172,7 +174,7 @@ namespace WorldServer
         {
             foreach (Object o in Obj.ObjectsInRange)
             {
-                GameObject go = o as GameObject;
+                Objects.GameObject go = o as Objects.GameObject;
                 if (go != null && go.Spawn.Guid == door)
                 {
                     go.Interactable = true;

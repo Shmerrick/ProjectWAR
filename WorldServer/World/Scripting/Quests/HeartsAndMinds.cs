@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using Common;
 using FrameWork;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Scripting.Quests
 {
     /* Quest: Hearts And Minds
      * (needs verifing)

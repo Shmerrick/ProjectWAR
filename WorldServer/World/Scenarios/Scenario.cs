@@ -8,11 +8,21 @@ using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
 using NLog;
-using WorldServer.Scenarios.Objects;
+using WorldServer.Managers;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using WorldServer.World.Scenarios.Objects;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer.Scenarios
+namespace WorldServer.World.Scenarios
 {
     public class ScenarioScoreboard
     {

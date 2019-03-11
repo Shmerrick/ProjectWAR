@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Interfaces;
 using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Object = WorldServer.World.Objects.Object;
 
-namespace WorldServer.World.BattleFronts.Keeps
+namespace WorldServer.World.Battlefronts.Keeps
 {
     public enum KeepDoorType
     {

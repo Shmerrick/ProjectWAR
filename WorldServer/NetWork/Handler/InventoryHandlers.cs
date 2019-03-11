@@ -1,10 +1,14 @@
-﻿using FrameWork;
+﻿using SystemData;
+using FrameWork;
 using GameData;
-using SystemData;
 using NLog;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.Managers;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using Item = WorldServer.World.Objects.Item;
 
-namespace WorldServer
+namespace WorldServer.NetWork.Handler
 {
     public class InventoryHandlers : IPacketHandler
     {

@@ -1,15 +1,18 @@
-﻿using Common;
-using FrameWork;
-using GameData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using SystemData;
+using Common;
+using FrameWork;
+using GameData;
 using NLog;
 using WorldServer.Services.World;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.AI;
+using WorldServer.World.Interfaces;
 using CreatureSubTypes = GameData.CreatureSubTypes;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     public class Siege : Creature
     {

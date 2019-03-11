@@ -1,9 +1,9 @@
-﻿using GameData;
-using System.Threading;
+﻿using System.Threading;
+using GameData;
+using WorldServer.World.Abilities.Components;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.BattleFronts;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 {
     /// <summary>
     /// Ration wounds debuff applied to RvR players,

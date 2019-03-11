@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common;
 using FrameWork;
-using WorldServer.Services.World;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Positions;
+using WorldServer.World.Scripting;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 38829, 0)]
     class GlompdaSquigMasta : BasicGunbad

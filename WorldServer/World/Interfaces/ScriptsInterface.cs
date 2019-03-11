@@ -1,8 +1,13 @@
 ﻿using System.Collections.Generic;
-using Common;
 using FrameWork;
+using WorldServer.Managers;
+using WorldServer.NetWork.Handler;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using WorldServer.World.Scripting;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class ScriptsInterface : BaseInterface
     {

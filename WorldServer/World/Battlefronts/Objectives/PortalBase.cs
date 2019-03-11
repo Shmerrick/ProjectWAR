@@ -1,9 +1,11 @@
-﻿using Common.Database.World.BattleFront;
-using System;
+﻿using System;
 using Common;
+using Common.Database.World.BattleFront;
 using WorldServer.Services.World;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
 
-namespace WorldServer.World.BattleFronts.Objectives
+namespace WorldServer.World.Battlefronts.Objectives
 {
     /// <summary>
     /// Game object representing a portal around an objective

@@ -8,15 +8,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
-using WorldServer.World.BattleFronts.Keeps;
-using WorldServer.World.BattleFronts.Objectives;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public class GuildClaimObjective : Object
     {
-        public Guild ClaimingGuild { get; set; }
+        public Guild.Guild ClaimingGuild { get; set; }
         public BattleFrontKeep Keep { get; set; }
 
         public const int TRANSITION_SPEED = 9;

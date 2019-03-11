@@ -11,6 +11,7 @@ using GameData;
 using NLog;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Bounty;
+using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {

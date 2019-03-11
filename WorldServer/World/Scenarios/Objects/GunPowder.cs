@@ -1,12 +1,13 @@
-﻿using FrameWork;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Collections.Generic;
 using SystemData;
+using FrameWork;
+using WorldServer.NetWork.Handler;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer.Scenarios.Objects
+namespace WorldServer.World.Scenarios.Objects
 {
     public class GunPowder : Object
     {

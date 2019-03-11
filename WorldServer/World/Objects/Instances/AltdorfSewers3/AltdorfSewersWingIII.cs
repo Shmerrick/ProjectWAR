@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Common;
-using FrameWork;
 using WorldServer.Services.World;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Scripting;
 
-namespace WorldServer
+namespace WorldServer.World.Objects.Instances.AltdorfSewers3
 {
     // This assigns script AltdorfSewersWing3Boss to creature with ID 33401
     [GeneralScript(false, "", 33401, 0)]

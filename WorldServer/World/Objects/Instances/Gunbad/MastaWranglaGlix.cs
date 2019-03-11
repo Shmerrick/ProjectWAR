@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Positions;
+using WorldServer.World.Scripting;
 
-using Common;
-using FrameWork;
-using WorldServer.Services.World;
-
-namespace WorldServer
+namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 36615, 0)]
     class MastaWranglaGlix : BasicGunbad

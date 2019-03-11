@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Common;
-using FrameWork;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Scripting;
 
-namespace WorldServer
+namespace WorldServer.World.Objects.Instances.Gunbad
 {
     class BasicGunbad : BasicScript
     {
