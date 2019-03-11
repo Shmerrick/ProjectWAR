@@ -19,7 +19,7 @@ namespace WorldServer.World.AI
 
         public override void Think(long tick)
         {
-            base.Think();
+            base.Think(tick);
 
             if (_unit.IsDead)
                 return;

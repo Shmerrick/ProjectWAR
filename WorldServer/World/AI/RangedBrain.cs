@@ -30,10 +30,5 @@ namespace WorldServer.World.AI
                 }
             }
         }
-
-        internal void Think()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
