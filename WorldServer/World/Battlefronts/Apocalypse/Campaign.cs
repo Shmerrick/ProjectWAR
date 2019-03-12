@@ -1687,28 +1687,34 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (nextBattleFront.ResetProgressionOnEntry == 1)
             {
                 BattlefrontLogger.Info($"ResetProgressionOnEntry is TRUE");
-                foreach (var progression in BattleFrontManager.BattleFrontProgressions)
-                {
-                    if (progression.Tier == 4)
-                    {
-                        progression.DestroVP = 0;
-                        progression.OrderVP = 0;
-                        progression.LastOpenedZone = 0;
-                        progression.LastOwningRealm = progression.DefaultRealmLock;
 
-                        var status = BattleFrontManager.GetBattleFrontStatusList().SingleOrDefault(x=>x.BattleFrontId==progression.BattleFrontId);
-                        if (status != null)
-                        {
-                            status.Locked = false;
-                            status.OpenTimeStamp = FrameWork.TCPManager.GetTimeStamp();
-                            status.LockingRealm = (Realms)progression.DefaultRealmLock;
-                            status.FinalVictoryPoint = new VictoryPointProgress();
-                            status.LockTimeStamp = 0;
-                            // Reset the population for the battle front status
-                            BattleFrontManager.GetActiveCampaign().InitializePopulationList(status.BattleFrontId);
-                        }
-                    }
-                }
+                BattleFrontManager.LockBattleFrontsAllRegions(4);
+                BattleFrontManager.OpenActiveBattlefront();
+
+                WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
+
+                //foreach (var progression in BattleFrontManager.BattleFrontProgressions)
+                //{
+                //    if (progression.Tier == 4)
+                //    {
+                //        progression.DestroVP = 0;
+                //        progression.OrderVP = 0;
+                //        progression.LastOpenedZone = 0;
+                //        progression.LastOwningRealm = progression.DefaultRealmLock;
+
+                //        var status = BattleFrontManager.GetBattleFrontStatusList().SingleOrDefault(x=>x.BattleFrontId==progression.BattleFrontId);
+                //        if (status != null)
+                //        {
+                //            status.Locked = false;
+                //            status.OpenTimeStamp = FrameWork.TCPManager.GetTimeStamp();
+                //            status.LockingRealm = (Realms)progression.DefaultRealmLock;
+                //            status.FinalVictoryPoint = new VictoryPointProgress();
+                //            status.LockTimeStamp = 0;
+                //            // Reset the population for the battle front status
+                //            BattleFrontManager.GetActiveCampaign().InitializePopulationList(status.BattleFrontId);
+                //        }
+                //    }
+                //}
             }
             // Set the RVR Progression table values.
             BattleFrontManager.UpdateRVRPRogression(lockingRealm, oldBattleFront, nextBattleFront);

@@ -14,7 +14,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         string ActiveBattleFrontName { get; set; }
         RVRProgression ActiveBattleFront { get; set; }
         void AuditBattleFronts(int tier);
-        void LockBattleFrontsAllRegions(int tier);
+        void LockBattleFrontsAllRegions(int tier, bool forceDefaultRealm = false);
 
         RVRProgression AdvanceBattleFront(Realms lockingRealm);
 		RVRProgression OpenActiveBattlefront();

@@ -780,8 +780,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             VictoryPoint VP = new VictoryPoint(0, 0);
 
             // Give extra reward for being Realm Captain
-            this.battleFrontStatus.DestructionRealmCaptain?.AddRenown(250, false, RewardType.ObjectiveCapture, "For being Realm Captain");
-            this.battleFrontStatus.OrderRealmCaptain?.AddRenown(250, false, RewardType.ObjectiveCapture, "For being Realm Captain");
+            activeBattleFrontStatus.DestructionRealmCaptain?.AddRenown(250, false, RewardType.ObjectiveCapture, "For being Realm Captain");
+            activeBattleFrontStatus.OrderRealmCaptain?.AddRenown(250, false, RewardType.ObjectiveCapture, "For being Realm Captain");
 
             switch (State)
             {

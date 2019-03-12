@@ -202,7 +202,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         /// Lock Battlefronts across all the regions.
         /// </summary>
-        public void LockBattleFrontsAllRegions(int tier)
+        public void LockBattleFrontsAllRegions(int tier, bool forceDefaultRealm = false)
         {
             foreach (var regionMgr in RegionMgrs)
             {
@@ -214,7 +214,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         apocBattleFrontStatus.Locked = true;
                         apocBattleFrontStatus.OpenTimeStamp = FrameWork.TCPManager.GetTimeStamp();
                         // Determine what the "start" realm this battlefront should be locked to.
-                        apocBattleFrontStatus.LockingRealm = (Realms)BattleFrontProgressions.Single(x => x.BattleFrontId == apocBattleFrontStatus.BattleFrontId).LastOwningRealm;
+                        if (forceDefaultRealm)
+                            apocBattleFrontStatus.LockingRealm = (Realms)BattleFrontProgressions.Single(x => x.BattleFrontId == apocBattleFrontStatus.BattleFrontId).DefaultRealmLock;
+                        else
+                        {
+                            apocBattleFrontStatus.LockingRealm = (Realms)BattleFrontProgressions.Single(x => x.BattleFrontId == apocBattleFrontStatus.BattleFrontId).LastOwningRealm;
+                        }
                         apocBattleFrontStatus.FinalVictoryPoint = new VictoryPointProgress();
                         apocBattleFrontStatus.LockTimeStamp = FrameWork.TCPManager.GetTimeStamp();
                     }
@@ -226,7 +231,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                     foreach (var objective in regionMgr.Campaign.Objectives)
                     {
-                        objective.OwningRealm = (Realms) regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm;
+                        if (forceDefaultRealm)
+                            objective.OwningRealm = (Realms) regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.DefaultRealmLock;
+                        else
+                        {
+                            objective.OwningRealm = (Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm;
+                        }
                         //objective.fsm.Fire(CampaignObjectiveStateMachine.Command.OnLockZone);
                         objective.SetObjectiveLocked();
                         ProgressionLogger.Debug($" Locking BattlefieldObjective to {(Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm} {objective.Name} {objective.State} {objective.State}");
@@ -234,8 +244,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                     foreach (var keep in regionMgr.Campaign.Keeps)
                     {
-                        keep.PendingRealm =
-                            (Realms) regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm;
+                        if (forceDefaultRealm)
+                            keep.PendingRealm =
+                                (Realms) regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.DefaultRealmLock;
+                        else
+                        {
+                            keep.PendingRealm =
+                                (Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm;
+                        }
                         //keep.fsm.Fire(SM.Command.OnLockZone);
                         keep.SetKeepLocked();
                         ProgressionLogger.Debug($" Locking Keep {keep.Info.Name} to {(Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm} {keep.KeepStatus} ");
