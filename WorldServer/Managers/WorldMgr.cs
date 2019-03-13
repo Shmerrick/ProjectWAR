@@ -396,25 +396,11 @@ namespace WorldServer.Managers
         #region Vendors
         
 
-        public static void SendDynamicVendorItems(Player plr)
+        public static void SendDynamicVendorItems(Player plr, List<Vendor_items> items)
         {
             if (plr == null)
                 return;
-
-            var rr = (plr as Player)._Value.RenownRank;
-            var xr = (plr as Player)._Value.Level;
             
-            List<Vendor_items> items = new List<Vendor_items>();
-
-            var item = new Vendor_items();
-
-            item.Info = ItemService.GetItem_Info(2);
-            item.ItemId = 2;
-            item.Price = (uint)(rr * 100 + xr);
-            item.VendorId = 0;
-
-            items.Add(item);
-
 
             byte Page = 0;
             int Count = items.Count;
@@ -577,25 +563,12 @@ namespace WorldServer.Managers
             }
         }
 
-        public static void BuyItemDynamicVendor(Player plr, InteractMenu Menu)
+        public static void BuyItemDynamicVendor(Player plr, InteractMenu Menu, List<Vendor_items> items)
         {
             int Num = (Menu.Page * VendorService.MAX_ITEM_PAGE) + Menu.Num;
             ushort Count = Menu.Packet.GetUint16();
             if (Count == 0)
                 Count = 1;
-
-            List<Vendor_items> items = new List<Vendor_items>();
-
-            var rr = (plr as Player)._Value.RenownRank;
-            var xr = (plr as Player)._Value.Level;
-            var item = new Vendor_items();
-
-            item.Info = ItemService.GetItem_Info(2);
-            item.ItemId = 2;
-            item.Price = (uint)(rr * 100 + xr);
-            item.VendorId = 0;
-
-            items.Add(item);
 
             if (items.Count <= Num)
                 return;

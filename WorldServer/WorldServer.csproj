@@ -497,6 +497,7 @@
     <Compile Include="World\Battlefronts\Keeps\KeepNpcCreature.cs" />
     <Compile Include="World\Objects\AdvancedCreature.cs" />
     <Compile Include="World\Objects\CreatureState.cs" />
+    <Compile Include="World\Objects\DynamicVendor.cs" />
     <Compile Include="World\Objects\Instances\Bilerot Burrow\SimpleBartholomeustheSickly.cs" />
     <Compile Include="World\Objects\Instances\Bilerot Burrow\SimpleSsrydianMorbidae.cs" />
     <Compile Include="World\Objects\Instances\Bilerot Burrow\SimpleTheBileLord.cs" />

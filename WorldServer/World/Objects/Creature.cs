@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using SystemData;
-using BehaviourTree;
+﻿using BehaviourTree;
 using Common;
 using FrameWork;
 using GameData;
+using System;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
@@ -28,7 +28,7 @@ namespace WorldServer.World.Objects
         public ushort Ranged { get; set; }
         public ushort Model1 { get; set; }
         public ushort Model2 { get; set; }
-        
+
 
         public Creature()
         {
@@ -596,21 +596,34 @@ namespace WorldServer.World.Objects
                         }
                         break;
                     case 9:
-                        if (Spawn.Proto.VendorID > 0)
-                            WorldMgr.SendVendor(player, Spawn.Proto.VendorID);
-                        // Special Case for Dynamic Vendor
-                        if (Spawn.Proto.Entry == 32)
-                            WorldMgr.SendDynamicVendorItems(player);
+                        // Dynamic Vendor
+                        if (Spawn.Proto.VendorID > 9999)
+                        {
+                            WorldMgr.SendDynamicVendorItems(player, 
+                                new RenownLevelVendorItem(player._Value.RenownRank, player._Value.Level).items);
+                        }
+                        else
+                        {
+                            if ((Spawn.Proto.VendorID > 0) && (Spawn.Proto.VendorID <= 9999))
+                                WorldMgr.SendVendor(player, Spawn.Proto.VendorID);
+                        }
                         break;
                     case 10:
                         TakeInfluenceItem(player, menu);
                         break;
                     case 11:
-                        if (Spawn.Proto.VendorID > 0)
-                            WorldMgr.BuyItemVendor(player, menu, Spawn.Proto.VendorID);
-                        // Special Case for Dynamic Vendor
-                        if (Spawn.Proto.Entry == 32)
-                            WorldMgr.BuyItemDynamicVendor(player, menu);
+                        // Dynamic Vendor
+                        if (Spawn.Proto.VendorID > 9999)
+                        {
+                            WorldMgr.BuyItemDynamicVendor(player, menu, 
+                                new RenownLevelVendorItem(player._Value.RenownRank, player._Value.Level).items);
+                        }
+                        else
+                        {
+                            if (Spawn.Proto.VendorID > 0)
+                                WorldMgr.BuyItemVendor(player, menu, Spawn.Proto.VendorID);
+                        }
+
                         break;
                     case 14:
                         player.ItmInterface.SellItem(menu);
@@ -1343,7 +1356,7 @@ namespace WorldServer.World.Objects
         {
             if (InteractType != InteractType.INTERACTTYPE_DYEMERCHANT)
                 return false;
-            var proto = CreatureService.GetCreatureProto(this.Entry);
+            var proto = CreatureService.GetCreatureProto(Entry);
             var vendorId = proto.VendorID;
 
             var items = VendorService.GetVendorItems((ushort)vendorId);
@@ -1352,7 +1365,7 @@ namespace WorldServer.World.Objects
                 if (item.Info.IsSiege)
                     return true;
             }
-           
+
             return false;
         }
 
