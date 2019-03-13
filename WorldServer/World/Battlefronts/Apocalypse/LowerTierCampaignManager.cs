@@ -113,9 +113,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
         /// <summary>
-        /// Log the status of all battlefronts 
+        /// Log the status of all battlefronts. , bool forceDefaultRealm = false ignored in lower tier.
         /// </summary>
-        public void LockBattleFrontsAllRegions(int tier)
+        public void LockBattleFrontsAllRegions(int tier, bool forceDefaultRealm = false)
         {
             foreach (var regionMgr in RegionMgrs)
             {

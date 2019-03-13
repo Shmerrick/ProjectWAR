@@ -598,6 +598,9 @@ namespace WorldServer.World.Objects
                     case 9:
                         if (Spawn.Proto.VendorID > 0)
                             WorldMgr.SendVendor(player, Spawn.Proto.VendorID);
+                        // Special Case for Dynamic Vendor
+                        if (Spawn.Proto.Entry == 32)
+                            WorldMgr.SendDynamicVendorItems(player);
                         break;
                     case 10:
                         TakeInfluenceItem(player, menu);
@@ -605,6 +608,9 @@ namespace WorldServer.World.Objects
                     case 11:
                         if (Spawn.Proto.VendorID > 0)
                             WorldMgr.BuyItemVendor(player, menu, Spawn.Proto.VendorID);
+                        // Special Case for Dynamic Vendor
+                        if (Spawn.Proto.Entry == 32)
+                            WorldMgr.BuyItemDynamicVendor(player, menu);
                         break;
                     case 14:
                         player.ItmInterface.SellItem(menu);

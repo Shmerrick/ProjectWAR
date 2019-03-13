@@ -1688,7 +1688,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 BattlefrontLogger.Info($"ResetProgressionOnEntry is TRUE");
 
-                BattleFrontManager.LockBattleFrontsAllRegions(4);
+                BattleFrontManager.LockBattleFrontsAllRegions(4, true);
                 BattleFrontManager.OpenActiveBattlefront();
 
                 WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);

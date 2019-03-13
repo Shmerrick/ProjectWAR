@@ -6,12 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using WorldServer;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.CareerInterfaces;
 using WorldServer.World.AI.BT;
-using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Guild;
@@ -613,7 +611,7 @@ namespace WorldServer.Managers.Commands
         {
             Unit playerTarget = GetTargetOrMe(plr);
 
-            if (playerTarget == null )
+            if (playerTarget == null)
             {
                 plr.SendClientMessage("No target selected.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 return true;
@@ -842,7 +840,7 @@ namespace WorldServer.Managers.Commands
 | 00 02 0A 49 6E 71 75 69 73 69 74 69 6F 00 69 00 |...Inquisitio.i.|
 | 00 00 01 00 00 6A 00 00 00 02 12 54 68 65 20 4D |.....j.....The M |
 | 75 72 64 65 72 20 4A 75 6E 6B 69 65 73 00 |..............  |");
-                plr.SendPacket(Out);
+            plr.SendPacket(Out);
 
             Out = new PacketOut((byte)Opcodes.F_ADVANCED_WAR_REPORT);
             Out.WritePacketString(@"|1D 06 65 00 00 00 01 00 00 66 00 00 00 |.Z...e......f...|
@@ -851,7 +849,7 @@ namespace WorldServer.Managers.Commands
 | 73 00 68 00 00 00 02 04 44 52 4F 57 00 69 00 00 | s.h.....DROW.i..|
 | 00 01 00 00 6A 00 00 00 02 12 54 68 65 20 4D 75 |....j.....The Mu |
 | 72 64 65 72 20 4A 75 6E 6B 69 65 73 00 |.............   |");
-                plr.SendPacket(Out);
+            plr.SendPacket(Out);
 
 
             //end of blastoise test
@@ -956,7 +954,7 @@ namespace WorldServer.Managers.Commands
 
                 if (go is KeepDoor.KeepGameObject)
                 {
-                    var kgo = (KeepDoor.KeepGameObject) go;
+                    var kgo = (KeepDoor.KeepGameObject)go;
 
                     result = result + ", InteractState=" + kgo.InteractState.ToString();
                     result = result + ", DoorId=" + kgo.DoorId;
@@ -1564,7 +1562,7 @@ namespace WorldServer.Managers.Commands
                 target.ReceiveDamage(player, Convert.ToUInt32(values[0]));
             }
 
-            
+
 
             PacketOut damageOut = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 24);
 
@@ -4240,7 +4238,7 @@ namespace WorldServer.Managers.Commands
 
                 Creature c = plr.Region.CreateCreature(spawn);
                 // Potion of healing
-                var item = new Creature_item {Entry = 208221, ModelId = 695, SlotId = 10, EffectId = 0};
+                var item = new Creature_item { Entry = 208221, ModelId = 695, SlotId = 10, EffectId = 0 };
 
                 c.ItmInterface.AddCreatureItem(item);
                 c.PlayersInRange = plr.PlayersInRange;
@@ -4299,7 +4297,7 @@ namespace WorldServer.Managers.Commands
             // Force zones to update
             plr.Region.Update();
 
-            
+
             //c.AiInterface.SetBrain(new ChosenBrain(c));
             //var itemDetails = ItemService.GetItem_Info(208221);
             //var item = new Creature_item { Entry = itemDetails.Entry, ModelId = (ushort) itemDetails.ModelId, SlotId = 10, EffectId = 0 };
@@ -4309,8 +4307,8 @@ namespace WorldServer.Managers.Commands
             //c.OnLoad();
             //c.WaypointGUID = 
             c.PlayersInRange = plr.PlayersInRange;
-            
-           
+
+
 
 
             return true;
@@ -4404,8 +4402,53 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        /// <summary>
+        /// Creates a vendor that sells a junk item for your RR level silver and your Character Level copper.
+        /// Current need to use proto = 32
+        /// </summary>
+        /// <param name="plr"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static bool CreateDynamicVendor(Player plr, ref List<string> values)
+        {
+            Unit playerTarget = GetTargetOrMe(plr);
 
-        
+            if (playerTarget == null)
+            {
+                plr.SendClientMessage("No target selected.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return true;
+            }
+
+            Creature_proto proto = CreatureService.GetCreatureProto((uint)Convert.ToInt32(values[0]));
+
+            if (proto == null)
+            {
+                plr.SendClientMessage("Proto does not exist.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return true;
+            }
+
+            var states = new List<byte> {(byte) CreatureState.Merchant};
+            proto.States = states.ToArray();
+
+            proto.InteractType = InteractType.INTERACTTYPE_DYEMERCHANT;
+
+            Creature_spawn spawn = new Creature_spawn();
+            spawn.BuildFromProto(proto);
+            spawn.WorldO = 2048;
+            spawn.WorldX = plr.WorldPosition.X;
+            spawn.WorldY = plr.WorldPosition.Y;
+            spawn.WorldZ = plr.WorldPosition.Z;
+            spawn.ZoneId = (ushort)plr.ZoneId;
+
+            Creature c = plr.Region.CreateCreature(spawn);
+
+           
+
+
+            return true;
+        }
+
+
         public static bool SendCampaignStatusWrapper(Player plr, ref List<string> values)
         {
 
@@ -4460,18 +4503,18 @@ namespace WorldServer.Managers.Commands
             //    | 02 FE 3C 28 0A 3C 00 00 00 03 84 00 00 00 00 |............... |");
             //plr.SendPacket(Out2);
 
-//            PacketOut Out2 = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS);
-//            Out2.WritePacketString(@"|00 9C 1A 00 05 00 67 00 CD 00 00 00 19 00 32 32 |......g.......22|
-//|00 32 32 00 32 32 00 00 64 00 32 32 00 32 32 00 |.22.22..d.22.22.|
-//|32 32 00 00 00 00 64 00 00 32 32 00 00 00 00 00 |22....d..22.....|
-//|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
-//|00 00 00 00 00 00 00 43 5C 00 00 32 09 00 32 3C |.......C\..2..2<|
-//|32 11 06 32 27 00 00 00 00 01 00 00 00 00 01 00 |2..2'...........|
-//|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
-//|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
-//|00 03 01 00 02 03 03 01 01 00 03 03 01 00 02 03 |................|
-//|02 FE 3C 28 0A 3C 00 00 00 03 84 00 00 00 00    |............... |");
-//            plr.SendPacket(Out2);
+            //            PacketOut Out2 = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS);
+            //            Out2.WritePacketString(@"|00 9C 1A 00 05 00 67 00 CD 00 00 00 19 00 32 32 |......g.......22|
+            //|00 32 32 00 32 32 00 00 64 00 32 32 00 32 32 00 |.22.22..d.22.22.|
+            //|32 32 00 00 00 00 64 00 00 32 32 00 00 00 00 00 |22....d..22.....|
+            //|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
+            //|00 00 00 00 00 00 00 43 5C 00 00 32 09 00 32 3C |.......C\..2..2<|
+            //|32 11 06 32 27 00 00 00 00 01 00 00 00 00 01 00 |2..2'...........|
+            //|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
+            //|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
+            //|00 03 01 00 02 03 03 01 01 00 03 03 01 00 02 03 |................|
+            //|02 FE 3C 28 0A 3C 00 00 00 03 84 00 00 00 00    |............... |");
+            //            plr.SendPacket(Out2);
 
 
             //| 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F | 0123456789ABCDEF |

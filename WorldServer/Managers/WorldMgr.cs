@@ -394,6 +394,45 @@ namespace WorldServer.Managers
         #endregion
 
         #region Vendors
+        
+
+        public static void SendDynamicVendorItems(Player plr)
+        {
+            if (plr == null)
+                return;
+
+            var rr = (plr as Player)._Value.RenownRank;
+            var xr = (plr as Player)._Value.Level;
+            
+            List<Vendor_items> items = new List<Vendor_items>();
+
+            var item = new Vendor_items();
+
+            item.Info = ItemService.GetItem_Info(2);
+            item.ItemId = 2;
+            item.Price = (uint)(rr * 100 + xr);
+            item.VendorId = 0;
+
+            items.Add(item);
+
+
+            byte Page = 0;
+            int Count = items.Count;
+            while (Count > 0)
+            {
+                byte ToSend = (byte)Math.Min(Count, VendorService.MAX_ITEM_PAGE);
+                if (ToSend <= Count)
+                    Count -= ToSend;
+                else
+                    Count = 0;
+
+                WorldMgr.SendVendorPage(plr, ref items, ToSend, Page);
+
+                ++Page;
+            }
+            plr.ItmInterface.SendBuyBack();
+        }
+
         public static void SendVendor(Player Plr, ushort id)
         {
             if (Plr == null)
@@ -537,6 +576,63 @@ namespace WorldServer.Managers
 
             }
         }
+
+        public static void BuyItemDynamicVendor(Player plr, InteractMenu Menu)
+        {
+            int Num = (Menu.Page * VendorService.MAX_ITEM_PAGE) + Menu.Num;
+            ushort Count = Menu.Packet.GetUint16();
+            if (Count == 0)
+                Count = 1;
+
+            List<Vendor_items> items = new List<Vendor_items>();
+
+            var rr = (plr as Player)._Value.RenownRank;
+            var xr = (plr as Player)._Value.Level;
+            var item = new Vendor_items();
+
+            item.Info = ItemService.GetItem_Info(2);
+            item.ItemId = 2;
+            item.Price = (uint)(rr * 100 + xr);
+            item.VendorId = 0;
+
+            items.Add(item);
+
+            if (items.Count <= Num)
+                return;
+
+            if (!plr.HasMoney((items[Num].Price) * Count))
+            {
+                plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_INSUFFICIENT_MONEY_TO_BUY);
+                return;
+            }
+
+            foreach (KeyValuePair<uint, ushort> Kp in items[Num].ItemsReq)
+            {
+                if (!plr.ItmInterface.HasItemCountInInventory(Kp.Key, (ushort)(Kp.Value * Count)))
+                {
+                    plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_FAIL_PURCHASE_REQUIREMENT);
+                    return;
+                }
+            }
+
+
+            ItemResult result = plr.ItmInterface.CreateItem(items[Num].Info, Count);
+            if (result == ItemResult.RESULT_OK)
+            {
+                plr.RemoveMoney(items[Num].Price * Count);
+                foreach (KeyValuePair<uint, ushort> Kp in items[Num].ItemsReq)
+                    plr.ItmInterface.RemoveItems(Kp.Key, (ushort)(Kp.Value * Count));
+            }
+            else if (result == ItemResult.RESULT_MAX_BAG)
+            {
+                plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_INSUFFICIENT_SPACE_TO_BUY);
+            }
+            else if (result == ItemResult.RESULT_ITEMID_INVALID)
+            {
+
+            }
+        }
+
         #endregion
 
         #region Quests
