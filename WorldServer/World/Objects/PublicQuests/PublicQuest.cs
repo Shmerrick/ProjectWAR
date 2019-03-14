@@ -696,7 +696,7 @@ namespace WorldServer.World.Objects.PublicQuests
             switch (ZoneId)
             {
                 case 60:
-                case 50:
+
                     return true;
             }
 
