@@ -438,6 +438,18 @@ namespace WorldServer.World.Objects.PublicQuests
                             obj.Count += count;
                             break;
                         }
+                        if (obj.Objective.Creature != null && (UInt32.TryParse(obj.Objective.ObjectId4, out outVal) && Convert.ToUInt32(obj.Objective.ObjectId5) == entry))
+                        {
+                            objectID = obj.Objective.ObjectId4;
+                            obj.Count += count;
+                            break;
+                        }
+                        if (obj.Objective.Creature != null && (UInt32.TryParse(obj.Objective.ObjectId4, out outVal) && Convert.ToUInt32(obj.Objective.ObjectId6) == entry))
+                        {
+                            objectID = obj.Objective.ObjectId4;
+                            obj.Count += count;
+                            break;
+                        }
 
                         break;
 
@@ -684,6 +696,7 @@ namespace WorldServer.World.Objects.PublicQuests
             switch (ZoneId)
             {
                 case 60:
+                case 50:
                     return true;
             }
 
