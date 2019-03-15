@@ -65,7 +65,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             fsm.In(ProcessState.Capturing)
                 .On(Command.OnPlayerInteractionComplete).Goto(ProcessState.Capturing).Execute(() => Objective.SetObjectiveCapturing());
             fsm.In(ProcessState.Capturing)
-                .On(Command.OnPlayerInteractionBroken).Goto(ProcessState.Capturing).Execute(() => Objective.SetObjectiveCapturing());
+                .On(Command.OnPlayerInteractionBroken).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
 
             fsm.In(ProcessState.Capturing)
                 .On(Command.OnCaptureTimerEnd).Goto(ProcessState.Captured).Execute(() => Objective.SetObjectiveCaptured());
