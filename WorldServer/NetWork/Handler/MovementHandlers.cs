@@ -447,7 +447,7 @@ namespace WorldServer.NetWork.Handler
                     }
                 }
 
-                if (player.Zone.Info.Illegal && player.GmLevel < 1)
+                if (player.Zone.Info.Illegal && player.GmLevel == 1)
                 {
                     if (!player.IsDead && player.BuffInterface.GetBuff(27960, player) == null)
                         player.BuffInterface.QueueBuff(new BuffQueueInfo(player, player.Level, AbilityMgr.GetBuffInfo(27960)));
