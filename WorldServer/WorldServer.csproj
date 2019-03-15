@@ -488,6 +488,7 @@
     <Compile Include="World\Battlefronts\Keeps\KeepMessage.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepRewardManager.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepTimer.cs" />
+    <Compile Include="World\Battlefronts\Objectives\PortalToGatehouse.cs" />
     <Compile Include="World\Battlefronts\Objectives\PortalToObjective.cs" />
     <Compile Include="World\Battlefronts\Objectives\PortalBase.cs" />
     <Compile Include="World\Battlefronts\Objectives\PortalToWarcamp.cs" />

@@ -6,12 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
+using Common.Database.World.BattleFront;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.CareerInterfaces;
 using WorldServer.World.AI.BT;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Battlefronts.Objectives;
 using WorldServer.World.Guild;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Map;
@@ -4402,14 +4404,33 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        public static bool CreateGateHousePortal(Player plr, ref List<string> values)
+        {
+            Unit playerTarget = GetTargetOrMe(plr);
+
+            if (playerTarget == null)
+            {
+                plr.SendClientMessage("No target selected.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return true;
+            }
+
+            var portal = new PortalToGatehouse(105, 1444161,  833355, 14409,568, 1444179,833050,15219, 568,"test");
+            portal.Interactable = true;
+            portal.IsActive = true;
+            portal.Health = 100;
+            plr.Region.CreateGameObject(portal.Spawn);
+
+            return true;
+        }
+
         /// <summary>
-        /// Creates a vendor that sells a junk item for your RR level silver and your Character Level copper.
-        /// Current need to use proto = 32
-        /// </summary>
-        /// <param name="plr"></param>
-        /// <param name="values"></param>
-        /// <returns></returns>
-        public static bool CreateDynamicVendor(Player plr, ref List<string> values)
+            /// Creates a vendor that sells a junk item for your RR level silver and your Character Level copper.
+            /// Current need to use proto = 32
+            /// </summary>
+            /// <param name="plr"></param>
+            /// <param name="values"></param>
+            /// <returns></returns>
+            public static bool CreateDynamicVendor(Player plr, ref List<string> values)
         {
             Unit playerTarget = GetTargetOrMe(plr);
 

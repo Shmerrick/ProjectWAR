@@ -9,36 +9,30 @@ using WorldServer.World.Positions;
 namespace WorldServer.World.Battlefronts.Objectives
 {
     /// <summary>
-    /// Game object representing a portal around an objective
-    /// allowing port to warcamp.
+    /// Game object representing a portal allowing teleport to the gatehouse
     /// </summary>
-    class PortalToObjective : PortalBase
-    {
-        private const string NAME_START = "Portal to ";
+    class PortalToGatehouse : PortalBase
+    { 
+        private const string NAME_START = "Portal to gatehouse ";
 
         /// <summary>Portal targets depending on realm</summary>
-        private BattleFrontObject _target;
-        private Point3D _targetPos;
+        private PortalBase targetPortal;
+        private Point3D targetPosition;
 
         private long _nextAvailableTimestamp;
 
-        public PortalToObjective(BattleFrontObject origin, BattleFrontObject target, string name)
-            : base(origin)
+        public PortalToGatehouse(int zoneId, int x1, int y1, int z1, int o1, int x2, int y2, int z2, int o2, string name)
+            : base(zoneId, x1, y1, z1, o1)
         {
             Name = NAME_START + name;
             Spawn.Proto.Name = Name; // For debug purpose only
 
-            _target = target;
-            _targetPos = GetWorldPosition(target);
+            //var target = new PortalBase(zoneId, x2, y2, z2, o2);
+
+            //targetPortal = target;
+            targetPosition = new Point3D(x2, y2,z2);
         }
 
-        public PortalToObjective(PortalToObjective other)
-            : base(other.Spawn)
-        {
-            Name = other.Name;
-            _target = other._target;
-            _targetPos = other._targetPos;
-        }
 
         public override void SendInteract(Player player, InteractMenu menu)
         {
@@ -51,7 +45,7 @@ namespace WorldServer.World.Battlefronts.Objectives
 
             _nextAvailableTimestamp = now + BattleFrontConstants.PORTAL_DELAY;
 
-            Teleport(player, _target.ZoneId, _targetPos);
+            Teleport(player, (int) targetPortal.ZoneId, targetPosition);
         }
     }
 }

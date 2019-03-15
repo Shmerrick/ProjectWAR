@@ -56,7 +56,7 @@ namespace WorldServer.World.Battlefronts.Objectives
                 targetPos = _destroTargetPos;
             }
 
-            Teleport(player, target, targetPos);
+            Teleport(player, target.ZoneId, targetPos);
         }
 
     }
