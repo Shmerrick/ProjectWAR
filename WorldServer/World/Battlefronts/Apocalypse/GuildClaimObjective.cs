@@ -695,7 +695,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private bool InteractableFor(Player plr)
         {
-            BattlefrontLogger.Debug($"CampaignObjective", $"State={State}");
+            BattlefrontLogger.Trace($"CampaignObjective", $"State={State}");
             var result = false;
             switch (State)
             {
@@ -712,7 +712,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     result =false;
                     break;
             }
-            BattlefrontLogger.Debug($"result={result}");
+            BattlefrontLogger.Trace($"result={result}");
 
             return result;
         }

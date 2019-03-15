@@ -1584,7 +1584,7 @@ namespace WorldServer.Managers
         {
             if ((lowerTierCampaignManager == null) || (upperTierCampaignManager == null))
                 return;
-            _logger.Warn("F_CAMPAIGN_STATUS1");
+            _logger.Trace("F_CAMPAIGN_STATUS1");
             PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
             Out.WriteHexStringBytes("0005006700CB00"); // 7
 

@@ -904,7 +904,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     result =false;
                     break;
             }
-            BattlefrontLogger.Debug($"result={result}");
+            BattlefrontLogger.Trace($"result={result}");
 
             return result;
         }
@@ -913,7 +913,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void SetObjectiveSafe()
         {
-            BattlefrontLogger.Debug($"{Name} : Safe : (NEUTRAL)");
+            BattlefrontLogger.Trace($"{Name} : Safe : (NEUTRAL)");
             DisplayedTimer = 0;
             DespawnAllGuards();
 
@@ -924,6 +924,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             BuffId = 0;
             BroadcastFlagInfo(true);
             SendState(GetPlayer(), false, true);
+
+            GuardedTimer = 0;
+            CaptureTimer = 0;
 
         }
 
@@ -938,6 +941,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             
             BroadcastFlagInfo(true);
             SendState(GetPlayer(), false, true);
+
+            GuardedTimer = 0;
+            CaptureTimer = 0;
+
 
         }
 

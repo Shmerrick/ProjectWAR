@@ -1053,7 +1053,7 @@ namespace WorldServer.World.Objects
                     else
                     {
                         var point = CalculatePoint(random, 800, creature.Spawn.WorldX, creature.Spawn.WorldY);
-
+                        
                         if (creature.LOSHit((ushort)this.ZoneId, new Point3D(point.X, point.Y, creature.Z))) 
                         {
                             //SendClientMessage($"Asking {creature.Name} to move from {creature.Spawn.WorldX},{creature.Spawn.WorldY} to {point.X},{point.Y}");
