@@ -345,26 +345,26 @@ namespace WorldServer.World.Objects
                 AiInterface.SetBrain(new DummyBrain(this));
 
             //// WAYPOINTS
-            //AiInterface.Waypoints = WaypointService.GetNpcWaypoints(Spawn.Guid);
+            AiInterface.Waypoints = WaypointService.GetNpcWaypoints(Spawn.Guid);
 
-            //if (Spawn.Icone == 0 && Spawn.Proto.Title == 0 && Spawn.Icone == 0 && Spawn.Emote == 0 && Spawn.Proto.FinishingQuests == null && Spawn.Proto.StartingQuests == null)
-            //{
-            //    if (Faction <= 1 || Faction == 128 || Faction == 129)
-            //    {
-            //        if (AiInterface.Waypoints.Count == 0)
-            //        {
-            //            for (int i = 0; i < 3; ++i)
-            //            {
-            //                Waypoint Wp = new Waypoint();
-            //                AiInterface.AddWaypoint(Wp);
-            //            }
-            //        }
-            //        foreach (Waypoint Wp in AiInterface.Waypoints)
-            //        {
-            //            AiInterface.RandomizeWaypoint(Wp);
-            //        }
-            //    }
-            //}
+            if (Spawn.Icone == 0 && Spawn.Proto.Title == 0 && Spawn.Icone == 0 && Spawn.Emote == 0 && Spawn.Proto.FinishingQuests == null && Spawn.Proto.StartingQuests == null)
+            {
+                if (Faction <= 1 || Faction == 128 || Faction == 129)
+                {
+                    if (AiInterface.Waypoints.Count == 0)
+                    {
+                        for (int i = 0; i < 3; ++i)
+                        {
+                            Waypoint Wp = new Waypoint();
+                            AiInterface.AddWaypoint(Wp);
+                        }
+                    }
+                    foreach (Waypoint Wp in AiInterface.Waypoints)
+                    {
+                        AiInterface.RandomizeWaypoint(Wp);
+                    }
+                }
+            }
 
 
 

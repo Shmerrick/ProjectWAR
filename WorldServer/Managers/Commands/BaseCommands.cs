@@ -4414,7 +4414,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            var portal = new PortalToGatehouse(105, 1444161,  833355, 14409,568, 1444179,833050,15219, 568,"test");
+            var portal = new PortalToGatehouse(105, 1444161,  836355, 14409,568, 1444179,833050,15219, 568,"test");
             portal.Interactable = true;
             portal.IsActive = true;
             portal.Health = 100;

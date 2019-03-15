@@ -913,10 +913,10 @@ namespace WorldServer.World.Objects
 
             World.Map.Occlusion.SegmentIntersect(Zone.ZoneId, Zone.ZoneId, fromRegionX, fromRegionY, Z + CHARACTER_HEIGHT, toRegionX, toRegionY, pinPos.Z + CHARACTER_HEIGHT, true, true, 190, ref playnice);
           
-            #if DEBUG
-            //if (IsPlayer())
-               // GetPlayer().SendLocalizeString(playnice.ToString(), SystemData.ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_DEFAULT);
-#endif
+//            #if DEBUG
+//            //if (IsPlayer())
+//               // GetPlayer().SendLocalizeString(playnice.ToString(), SystemData.ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_DEFAULT);
+//#endif
 
             return playnice.Result == World.Map.OcclusionResult.NotOccluded;
         }
