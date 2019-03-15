@@ -742,6 +742,8 @@ namespace WorldServer.World.Objects
                 TacInterface.HandleTactics(_Value.GetTactics());
                 TacInterface.SendTactics();
 
+                SendUpdatehv();// tempary fix for hunters vale pq
+
                 // Block 2
                 QtsInterface.SendQuests();
                 LiveEventInterface.SendLiveEvents();
@@ -1745,6 +1747,27 @@ namespace WorldServer.World.Objects
             Out.WriteUInt16(_Value.RallyPoint);
             SendPacket(Out);
 
+        }// temp fix hunters vale should be that it reads the data from database
+        public void SendUpdatehv()
+        {
+            PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE);
+            Out.WriteUInt16(0016);   // area id
+            Out.WriteByte(0x11);
+            Out.WriteByte(2);
+            Out.WriteByte(1);
+            Out.WriteByte(0);
+            Out.Fill(0, 4);
+            SendPacket(Out);
+
+            //TOVL temp fix should be that it reads the data from database
+            Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE);
+            Out.WriteUInt16(0031);   // area id
+            Out.WriteByte(0x11);
+            Out.WriteByte(2);
+            Out.WriteByte(1);
+            Out.WriteByte(0);
+            Out.Fill(0, 4);
+            SendPacket(Out);
         }
         public void SendXpTable()
         {
