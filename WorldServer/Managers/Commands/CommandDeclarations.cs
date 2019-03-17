@@ -469,6 +469,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("sendcampaignstatus", SendCampaignStatusWrapper, null, EGmLevel.SourceDev, 0, "Sends a Campaign Status message"),
             new GmCommandHandler("dynamicvendor", CreateDynamicVendor, null, EGmLevel.SourceDev, 0, "Creates a dynamic vendor"),
             new GmCommandHandler("creategatehouseportal", CreateGateHousePortal, null, EGmLevel.SourceDev, 0, "Creates a portal to Southern Garrison gatehouse"),
+            new GmCommandHandler("realmcaptain", MakeRealmCaptain, null, EGmLevel.SourceDev, 0, "Makes the targetted player a realm captain"),
 
         };
 

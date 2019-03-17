@@ -86,6 +86,7 @@ namespace WorldServer.World.AI
                                 break;
                             }
                         case 7:
+                        case 8:
                             {
                                 // Go for Low Health target
                                 var enemyPlayers = _unit.GetPlayersInRange(30, false).Where(x => x.Realm != _unit.Realm)

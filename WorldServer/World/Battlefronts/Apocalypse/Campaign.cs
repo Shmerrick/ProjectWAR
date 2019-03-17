@@ -33,7 +33,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     {
         public static int REALM_CAPTAIN_TELL_CHANCE = 10;
         public static IObjectDatabase Database = null;
-        public static int REALM_CAPTAIN_MINIMUM_CONTRIBUTION = 50;
+        public static int REALM_CAPTAIN_MINIMUM_CONTRIBUTION = 200;
         public static int REALM_CAPTAIN_MINIMUM_PLAYERS = 20;
         public static int DOMINATION_POINTS_REQUIRED = 6;
         static readonly object LockObject = new object();
@@ -652,7 +652,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        private void ScaleModel(Player player, List<Player> playersToAnnounce, int upDown)
+        public void ScaleModel(Player player, List<Player> playersToAnnounce, int upDown)
         {
             if (player == null) return;
             if (playersToAnnounce == null) return;

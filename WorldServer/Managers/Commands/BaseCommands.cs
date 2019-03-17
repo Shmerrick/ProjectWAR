@@ -4407,6 +4407,31 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        
+
+        public static bool MakeRealmCaptain(Player plr, ref List<string> values)
+        {
+            Unit playerTarget = GetTargetOrMe(plr);
+
+            if (playerTarget is Player)
+            {
+
+                if (playerTarget == null)
+                {
+                    plr.SendClientMessage("No target selected.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    return true;
+                }
+
+                var status = WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ActiveBattleFrontStatus;
+
+                status.SetAsRealmCaptain((Player) playerTarget);
+
+                WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ScaleModel((Player)playerTarget, Player._Players, 1);
+            }
+
+            return true;
+        }
+
         public static bool CreateGateHousePortal(Player plr, ref List<string> values)
         {
             Unit playerTarget = GetTargetOrMe(plr);
