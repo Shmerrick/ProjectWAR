@@ -16,25 +16,25 @@ namespace WorldServer.World.Battlefronts.Keeps
     public class KeepCreature : Creature
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private readonly KeepNpcCreature _flagGrd;
+        public KeepNpcCreature FlagGuard;
         private readonly BattleFrontKeep _keep;
         /// <summary>Incoming damage scaler from 0.25 to 1<summary>
         private volatile float _damageScaler = 1f;
         public AIInterface NearAiInterface = null;
 
-        public KeepCreature(Creature_spawn spawn, KeepNpcCreature flagGrd, BattleFrontKeep keep) : base(spawn)
+        public KeepCreature(Creature_spawn spawn, KeepNpcCreature flagGuard, BattleFrontKeep keep) : base(spawn)
         {
             _keep = keep;
-            _flagGrd = flagGrd;
-            IsKeepLord = flagGrd.Info.KeepLord;
-            IsPatrol = flagGrd.Info.IsPatrol;
+            FlagGuard = flagGuard;
+            IsKeepLord = flagGuard.Info.KeepLord;
+            IsPatrol = flagGuard.Info.IsPatrol;
 
             EvtInterface.AddEventNotify(EventName.OnReceiveDamage, OnReceiveDamage);
         }
 
         public KeepNpcCreature returnflag()
         {
-            return _flagGrd;
+            return FlagGuard;
         }
 
         public override void OnLoad()
@@ -46,38 +46,40 @@ namespace WorldServer.World.Battlefronts.Keeps
             if (IsKeepLord)
                 Health *= 3;
 
-            if (WaypointGUID > 0)
-            {
-                AiInterface.Waypoints = WaypointService.GetNpcWaypoints(WaypointGUID);
-                foreach (var wp in AiInterface.Waypoints)
-                {
-                    wp.X = Convert.ToUInt32(wp.X + WaypointService.ShuffleWaypointOffset(5, 15));
-                    wp.X = Convert.ToUInt32(wp.X + WaypointService.ShuffleWaypointOffset(5, 15));
-                }
-            }
+            //if (WaypointGUID > 0)
+            //{
+            //    AiInterface.Waypoints = WaypointService.GetKeepNpcWaypoints((int) WaypointGUID);
+            //    if (AiInterface.Waypoints.Count > 0)
+            //        this.Scale = 110;
+            //    //foreach (var wp in AiInterface.Waypoints)
+            //    //{
+            //    //    wp.X = Convert.ToUInt32(wp.X + WaypointService.ShuffleWaypointOffset(5, 15));
+            //    //    wp.X = Convert.ToUInt32(wp.X + WaypointService.ShuffleWaypointOffset(5, 15));
+            //    //}
+            //}
 
-            if (NearAiInterface != null)
-            {
-                AiInterface.IsWalkingBack = NearAiInterface.IsWalkingBack;
-                AiInterface.NextAllowedMovementTime = NearAiInterface.NextAllowedMovementTime;
-                AiInterface.Ended = NearAiInterface.Ended;
-                AiInterface.Started = NearAiInterface.Started;
+            //if (NearAiInterface != null)
+            //{
+            //    AiInterface.IsWalkingBack = NearAiInterface.IsWalkingBack;
+            //    AiInterface.NextAllowedMovementTime = NearAiInterface.NextAllowedMovementTime;
+            //    AiInterface.Ended = NearAiInterface.Ended;
+            //    AiInterface.Started = NearAiInterface.Started;
 
-                if (NearAiInterface.State == AiState.MOVING)
-                {
-                    if (!AiInterface.IsWalkingBack)
-                        AiInterface.CurrentWaypointID = NearAiInterface.CurrentWaypointID - 1;
-                    else
-                        AiInterface.CurrentWaypointID = NearAiInterface.CurrentWaypointID + 1;
-                }
-                else
-                {
-                    AiInterface.CurrentWaypointID = NearAiInterface.CurrentWaypointID;
-                    AiInterface.SetNextWaypoint(TCPManager.GetTimeStampMS());
-                }
+            //    if (NearAiInterface.State == AiState.MOVING)
+            //    {
+            //        if (!AiInterface.IsWalkingBack)
+            //            AiInterface.CurrentWaypointID = NearAiInterface.CurrentWaypointID - 1;
+            //        else
+            //            AiInterface.CurrentWaypointID = NearAiInterface.CurrentWaypointID + 1;
+            //    }
+            //    else
+            //    {
+            //        AiInterface.CurrentWaypointID = NearAiInterface.CurrentWaypointID;
+            //        AiInterface.SetNextWaypoint(TCPManager.GetTimeStampMS());
+            //    }
 
-                NearAiInterface = null;
-            }
+            //    NearAiInterface = null;
+            //}
         }
 
         public override void Update(long msTick)
@@ -95,7 +97,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             if (_keep.KeepStatus == KeepStatus.KEEPSTATUS_LOCKED)
                 return false;
 
-            if (_flagGrd.Info.KeepLord)
+            if (FlagGuard.Info.KeepLord)
             {
                 damage = (uint)(damage * _damageScaler);
             }
@@ -108,7 +110,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             if (_keep.KeepStatus == KeepStatus.KEEPSTATUS_LOCKED)
                 return false;
 
-            if (_flagGrd.Info.KeepLord)
+            if (FlagGuard.Info.KeepLord)
             {
                 damageInfo.Mitigation += damageInfo.Damage * (1 - _damageScaler);
                 damageInfo.Damage *= _damageScaler;
@@ -121,10 +123,10 @@ namespace WorldServer.World.Battlefronts.Keeps
         {
             _keep.OnKeepNpcAttacked(PctHealth);
 
-            if (_flagGrd.Info.KeepLord)
+            if (FlagGuard.Info.KeepLord)
                 _keep.OnKeepLordAttacked(PctHealth);
 
-            if (_flagGrd.Creature.Spawn.Proto.CreatureType == (int)GameData.CreatureTypes.SIEGE)
+            if (FlagGuard.Creature.Spawn.Proto.CreatureType == (int)GameData.CreatureTypes.SIEGE)
                 _keep.OnKeepSiegeAttacked(PctHealth);
 
             return false;
@@ -164,7 +166,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             EvtInterface.RemoveEventNotify(EventName.OnReceiveDamage, OnReceiveDamage);
 
-            if (!_flagGrd.Info.KeepLord)
+            if (!FlagGuard.Info.KeepLord)
             {
                 _keep.OnKeepNpcAttacked(0);
                 return;
@@ -174,11 +176,11 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             if (_keep.Realm == killer.Realm)
             {
-                /*if (_flagGrd.Info.KeepLord)
+                /*if (FlagGuard.Info.KeepLord)
                     Log.Info(_keep.Info.Name, (_keep.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction") + " keep lord respawned.");*/
                 _logger.Debug($"Kill request from own realm {killer.Name} {_keep.Realm}");
-                _flagGrd.Creature = new KeepCreature(Spawn, _flagGrd, _keep);
-                Region.AddObject(_flagGrd.Creature, Spawn.ZoneId);
+                FlagGuard.Creature = new KeepCreature(Spawn, FlagGuard, _keep);
+                Region.AddObject(FlagGuard.Creature, Spawn.ZoneId);
                 Destroy();
             }
             else
@@ -189,7 +191,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         protected override void SetRespawnTimer()
         {
-            if (!_flagGrd.Info.KeepLord)
+            if (!FlagGuard.Info.KeepLord)
             {
                 if (Spawn.Proto.CreatureType == (int)GameData.CreatureTypes.SIEGE)
                     EvtInterface.AddEvent(RezUnit, (20 - (_keep.Rank * 3)) * 60000, 1); // 5-20 minute respawn period.
@@ -233,11 +235,11 @@ namespace WorldServer.World.Battlefronts.Keeps
         public override void RezUnit()
         {
             // Keep lord dosent respawn;
-            if (_flagGrd.Info.KeepLord)
+            if (FlagGuard.Info.KeepLord)
                 return;
 
-            _flagGrd.Creature = new KeepCreature(Spawn, _flagGrd, _keep);
-            Region.AddObject(_flagGrd.Creature, Spawn.ZoneId);
+            FlagGuard.Creature = new KeepCreature(Spawn, FlagGuard, _keep);
+            Region.AddObject(FlagGuard.Creature, Spawn.ZoneId);
             Destroy();
         }
     }

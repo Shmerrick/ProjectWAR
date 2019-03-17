@@ -58,6 +58,9 @@ namespace WorldServer.World.Battlefronts.Keeps
 
                     Creature = new KeepCreature(spawn, this, Keep);
                     Creature.WaypointGUID = Convert.ToUInt32(Info.WaypointGUID);
+                    if (Info.WaypointGUID > 0)
+                        Creature.AiInterface.Waypoints =  WaypointService.GetKeepNpcWaypoints(Info.WaypointGUID);
+
 
                     Region.AddObject(Creature, spawn.ZoneId);
                 }

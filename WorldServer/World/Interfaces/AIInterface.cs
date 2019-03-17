@@ -69,8 +69,18 @@ namespace WorldServer.World.Interfaces
             ResetThinkInterval();
 
             // Load Waypoints if they exist.
-            if (_unit.WaypointGUID != 0)
-                this.Waypoints = WaypointService.GetNpcWaypoints(_unit.WaypointGUID);
+            //if (_unit.WaypointGUID != 0) // Conflicting with load from KeepNPCCreature
+            //    this.Waypoints = WaypointService.GetNpcWaypoints(_unit.WaypointGUID);
+
+            if (_Owner is KeepCreature)
+            {
+            }
+            else
+            {
+                if (_unit.WaypointGUID != 0) // Conflicting with load from KeepNPCCreature
+                    this.Waypoints = WaypointService.GetNpcWaypoints(_unit.WaypointGUID);
+            }
+
 
             return base.Load();
         }
@@ -601,6 +611,17 @@ namespace WorldServer.World.Interfaces
                     var lastWaypoint = Waypoints[Waypoints.Count - 2];
                     lastWaypoint.NextWaypointGUID = AddWp.GUID;
                     SaveWaypoint(lastWaypoint);
+                }
+
+
+
+                if (_Owner is KeepCreature)
+                {
+                    (_Owner as KeepCreature).FlagGuard.Info.WaypointGUID = _Owner.Oid;
+                    var toSave = (_Owner as KeepCreature).FlagGuard.Info;
+                    toSave.Dirty = true;
+                    WorldMgr.Database.SaveObject(toSave);
+                    WorldMgr.Database.ForceSave();
                 }
             }
         }

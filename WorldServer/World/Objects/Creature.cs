@@ -340,32 +340,18 @@ namespace WorldServer.World.Objects
             LoadInterfaces();
 
             // Ensure siege cannons won't go walkabout
-
             if (Spawn.Proto.CreatureType == (byte)GameData.CreatureTypes.SIEGE)
                 AiInterface.SetBrain(new DummyBrain(this));
 
-            //// WAYPOINTS
-            AiInterface.Waypoints = WaypointService.GetNpcWaypoints(Spawn.Guid);
-
-            if (Spawn.Icone == 0 && Spawn.Proto.Title == 0 && Spawn.Icone == 0 && Spawn.Emote == 0 && Spawn.Proto.FinishingQuests == null && Spawn.Proto.StartingQuests == null)
-            {
-                if (Faction <= 1 || Faction == 128 || Faction == 129)
-                {
-                    if (AiInterface.Waypoints.Count == 0)
-                    {
-                        for (int i = 0; i < 3; ++i)
-                        {
-                            Waypoint Wp = new Waypoint();
-                            AiInterface.AddWaypoint(Wp);
-                        }
-                    }
-                    foreach (Waypoint Wp in AiInterface.Waypoints)
-                    {
-                        AiInterface.RandomizeWaypoint(Wp);
-                    }
-                }
-            }
-
+            //if (AiInterface.Waypoints.Count == 0)
+                //if (Scale == 110)
+                //{
+                //    var x = AiInterface.Waypoints;
+                //}
+                //else
+                //{
+                //    AiInterface.Waypoints = WaypointService.GetNpcWaypoints(Spawn.Guid);
+                //}
 
 
             if (StsInterface.Speed != 0)
@@ -599,7 +585,7 @@ namespace WorldServer.World.Objects
                         // Dynamic Vendor
                         if (Spawn.Proto.VendorID > 9999)
                         {
-                            WorldMgr.SendDynamicVendorItems(player, 
+                            WorldMgr.SendDynamicVendorItems(player,
                                 new RenownLevelVendorItem(player._Value.RenownRank, player._Value.Level).items);
                         }
                         else
@@ -615,7 +601,7 @@ namespace WorldServer.World.Objects
                         // Dynamic Vendor
                         if (Spawn.Proto.VendorID > 9999)
                         {
-                            WorldMgr.BuyItemDynamicVendor(player, menu, 
+                            WorldMgr.BuyItemDynamicVendor(player, menu,
                                 new RenownLevelVendorItem(player._Value.RenownRank, player._Value.Level).items);
                         }
                         else
