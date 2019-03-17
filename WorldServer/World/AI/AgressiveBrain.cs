@@ -64,7 +64,7 @@ namespace WorldServer.World.AI
                             {
 
                                 // Now's Our Chance
-                                SimpleCast(_unit, target, "Now's Our Chance!", 8036);
+                                SimpleCast(_unit, target, "Punish the False!", 8112);
                                 break;
                             }
                         case 5:
