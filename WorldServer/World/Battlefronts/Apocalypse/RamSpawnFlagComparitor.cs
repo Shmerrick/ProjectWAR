@@ -7,7 +7,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     public class RamSpawnFlagComparitor : ILocationComparitor
     {
         public Realms PlayerRealm { get; }
-        public int ComparisonRange = 150;
+        public int ComparisonRange = 50;
 
         public RamSpawnFlagComparitor(Realms playerRealm)
         {

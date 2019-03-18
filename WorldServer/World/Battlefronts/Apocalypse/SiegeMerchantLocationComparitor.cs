@@ -1,4 +1,5 @@
-﻿using WorldServer.World.Objects;
+﻿using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -11,7 +12,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var creaturesInRange = player.GetInRange<Creature>(ComparisonRange);
             foreach (var creature in creaturesInRange)
             {
-                if (creature.IsSiegeMerchant() && creature.Realm == player.Realm)
+                if (creature.IsSiegeMerchant() && creature.Realm == player.Realm && (creature is KeepCreature))
                 {
                     return true;
                 }
