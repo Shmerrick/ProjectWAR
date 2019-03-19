@@ -1035,6 +1035,7 @@ namespace WorldServer.World.Objects
                 && x.Spawn.Proto.Title == 0
                 && !(x is Keep_Creature)
                 && x.Spawn.Proto.FinishingQuests == null 
+                     && !(x is Pet)
                 && x.Spawn.Proto.StartingQuests == null);
             foreach (var creature in creaturesToWander)
             {
