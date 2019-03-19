@@ -14,6 +14,7 @@ namespace WorldServer.World.AI
         {
             base.Think(tick);
 
+
             //if (_unit.PlayersInRange.Count > 0)
             //{
             //    var enemyPlayers = _unit.GetPlayersInRange(30, false).Where(x => x.Realm != _unit.Realm).ToList();

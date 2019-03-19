@@ -583,7 +583,14 @@ namespace WorldServer.World.Objects
                         break;
                     case 9:
                         // Dynamic Vendor
-                        if (Spawn.Proto.VendorID > 9999)
+                        if (Spawn.Proto.VendorID == 10001)
+                        {
+                            WorldMgr.SendDynamicVendorItems(player,
+                                new RealmCaptainVendorItem(player).items);
+                        }
+
+
+                        if (Spawn.Proto.VendorID == 10000)
                         {
                             WorldMgr.SendDynamicVendorItems(player,
                                 new RenownLevelVendorItem(player._Value.RenownRank, player._Value.Level).items);
@@ -599,7 +606,12 @@ namespace WorldServer.World.Objects
                         break;
                     case 11:
                         // Dynamic Vendor
-                        if (Spawn.Proto.VendorID > 9999)
+                        if (Spawn.Proto.VendorID == 10001)
+                        {
+                            WorldMgr.SendDynamicVendorItems(player,
+                                new RealmCaptainVendorItem(player).items);
+                        }
+                        if (Spawn.Proto.VendorID == 10000)
                         {
                             WorldMgr.BuyItemDynamicVendor(player, menu,
                                 new RenownLevelVendorItem(player._Value.RenownRank, player._Value.Level).items);

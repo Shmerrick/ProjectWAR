@@ -22,4 +22,24 @@ namespace WorldServer.World.Objects
             items.Add(item);
         }
     }
+
+    public class RealmCaptainVendorItem
+    {
+        public List<Vendor_items> items = new List<Vendor_items>();
+
+        public RealmCaptainVendorItem(Player player)
+        {
+            //var item = new Vendor_items
+            //{
+            //    Info = ItemService.GetItem_Info(2),
+            //    ItemId = 2,
+            //    Price = (uint)(renown * 100 + level),
+            //    VendorId = 0
+            //};
+
+            //items.Add(item);
+
+            
+        }
+    }
 }

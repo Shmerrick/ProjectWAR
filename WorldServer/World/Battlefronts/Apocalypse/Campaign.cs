@@ -133,9 +133,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _rewardManager = new RVRRewardManager();
             SiegeManager = new SiegeManager();
 
-            DestructionDominationTimerLength = 5 * 60;
+            DestructionDominationTimerLength = 30 * 60;
             DestructionDominationTimerRemaining = DestructionDominationTimerLength;
-            OrderDominationTimerLength = 5 * 60;
+            OrderDominationTimerLength = 30 * 60;
             OrderDominationTimerRemaining = OrderDominationTimerLength;
             DominationTimerNotifyInterval = 60;
             
@@ -157,7 +157,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(CheckKeepTimers, 10000, 0);
             _EvtInterface.AddEvent(UpdateKeepResources, 60000, 0);
            // _EvtInterface.AddEvent(RefreshObjectiveStatus, 20000, 0);
-            _EvtInterface.AddEvent(CountdownFortDefenceTimer, 300000, 0);
+            _EvtInterface.AddEvent(CountdownFortDefenceTimer, 600000, 0);
 
             //_EvtInterface.AddEvent(UpdateWanderingMobs, 5000, 0);
         }
