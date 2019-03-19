@@ -58,10 +58,10 @@ namespace WorldServer.World.Battlefronts.Keeps
         public KeepTimer BackToSafeTimer;
 
         public const int DoorRepairTimerLength = 5 * 60;
-        public const int SeizedTimerLength = 1 * 60;
+        public const int SeizedTimerLength = 1 * 10;
         public const int LordKilledTimerLength = 1 * 15;
-        public const int DefenceTickTimerLength = 5 * 60;
-        public const int BackToSafeTimerLength = 5 * 60;
+        public const int DefenceTickTimerLength = 15 * 60;
+        public const int BackToSafeTimerLength = 10 * 60;
         #endregion
 
         public List<KeepNpcCreature> Creatures = new List<KeepNpcCreature>();
