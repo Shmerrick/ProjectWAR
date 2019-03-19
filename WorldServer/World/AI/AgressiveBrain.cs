@@ -364,9 +364,13 @@ namespace WorldServer.World.AI
         private void SwitchTarget(Unit target)
         {
             // Switch targets
-            _logger.Debug($"{_unit} using Changing Targets {(target as Player).Name}");
-            var randomTarget = SetRandomTarget();
-            _logger.Debug($"{_unit} => {(randomTarget as Player).Name}");
+            if (target is Player)
+            {
+                _logger.Debug($"{_unit} using Changing Targets {(target as Player).Name}");
+                var randomTarget = SetRandomTarget();
+                if (randomTarget != null)
+                    _logger.Debug($"{_unit} => {(randomTarget as Player).Name}");
+            }
         }
     }
 }

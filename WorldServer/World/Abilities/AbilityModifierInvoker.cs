@@ -345,11 +345,16 @@ namespace WorldServer.World.Abilities
         #region Resources
         private static bool HasResource(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
         {
-            Player plr = caster as Player;
+            if (caster is Player)
+            {
 
-            if (myCheck.SecondaryValue == 0)
-                return plr.CrrInterface.CareerResource == myCheck.PrimaryValue;
-            return plr.CrrInterface.HasResourceRange(myCheck.PrimaryValue, myCheck.SecondaryValue);
+                Player plr = caster as Player;
+
+                if (myCheck.SecondaryValue == 0)
+                    return plr.CrrInterface.CareerResource == myCheck.PrimaryValue;
+                return plr.CrrInterface.HasResourceRange(myCheck.PrimaryValue, myCheck.SecondaryValue);
+            }
+            return false;
         }
 
         private static bool RequiresResource(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
