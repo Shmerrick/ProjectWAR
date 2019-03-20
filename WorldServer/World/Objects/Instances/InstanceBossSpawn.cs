@@ -30,6 +30,7 @@ namespace WorldServer.World.Objects.Instances
         public InstanceBossSpawn(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn)
         {
             InstanceGroupSpawnID = instancegroupspawnid;
+            Name = spawn.Proto.Name;
             BossID = bossid;
             Instance = instance;
             InstanceID = Instanceid;
@@ -93,7 +94,7 @@ namespace WorldServer.World.Objects.Instances
                 InstanceService.SaveTtkPerBoss(Instance.ZoneID + ":" + Instance.ID, this, BossTimer.Elapsed);
             }
             // reset add list
-            List<Creature> AddList = new List<Creature>();
+            AddList = new List<Creature>();
 
             // reset all Modify Scalers
             ModifyDmgHealScaler = 1f;
@@ -136,7 +137,7 @@ namespace WorldServer.World.Objects.Instances
         protected override void SetDeath(Unit killer)
         {
             // reset add list
-            List<Creature> AddList = new List<Creature>();
+            AddList = new List<Creature>();
 
             base.SetDeath(killer);
 
