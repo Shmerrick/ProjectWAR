@@ -5,6 +5,7 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
+using NLog;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
@@ -54,6 +55,8 @@ namespace WorldServer.World.Interfaces
         public static ushort QUEST_START_SLOT = 700;
 
         #endregion
+
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public float BolsterFactor;
 
@@ -2912,9 +2915,16 @@ namespace WorldServer.World.Interfaces
                             _playerOwner.StsInterface.AddItemBonusStat((Stats)info.StatOrSpell, info.Value);
                         else
                         {
+                            _logger.Debug($"{_playerOwner.Name} finding buff {info.StatOrSpell} ");
                             BuffInfo buffInfo = AbilityMgr.GetBuffInfo(info.StatOrSpell);
-                            if (buffInfo != null && buffInfo.BuffClass != BuffClass.Tactic) // To allow signalling of Intimidating Repent without casting it
-                                _playerOwner.BuffInterface.QueueBuff(new BuffQueueInfo(_playerOwner, itemSetInfo.Unk, buffInfo));
+                            if (buffInfo != null && buffInfo.BuffClass != BuffClass.Tactic
+                            ) // To allow signalling of Intimidating Repent without casting it
+                            {
+                                // Unk is desired level.
+                                _logger.Debug($"{_playerOwner.Name} queueing buff {itemSetInfo.Unk}, {buffInfo.Entry} {buffInfo.Name} ");
+                                _playerOwner.BuffInterface.QueueBuff(new BuffQueueInfo(_playerOwner, itemSetInfo.Unk,
+                                    buffInfo));
+                            }
                         }
                     }
                 }

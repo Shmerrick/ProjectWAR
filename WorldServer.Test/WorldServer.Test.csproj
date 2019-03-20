@@ -80,6 +80,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="BattlefrontKeepTest.cs" />
+    <Compile Include="ItemSetTests.cs" />
     <Compile Include="LootDeciderTests.cs" />
     <Compile Include="ImpactMatrixTests.cs" />
     <Compile Include="CampaignObjectiveTest.cs" />
