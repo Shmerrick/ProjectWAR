@@ -4187,7 +4187,7 @@ namespace WorldServer.World.Objects
 
                 // Add bounty to the death blow killer  
                 BountyManagerInstance.AddCharacterBounty(CharacterId, definition.ContributionValue);
-                SendClientMessage($"[Contrib]:+{definition.ContributionValue} {definition.ContributionDescription}");
+                //SendClientMessage($"[Contrib]:+{definition.ContributionValue} {definition.ContributionDescription}");
                 RewardLogger.Info($"+++ Update player Bounty character Id : {CharacterId} Contribution Def : {contributionDefinitionId} ({definition.ContributionDescription})");
             }
             else
