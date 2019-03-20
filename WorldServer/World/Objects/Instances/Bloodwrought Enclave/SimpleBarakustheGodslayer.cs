@@ -1,11 +1,11 @@
 ﻿using Common;
-using System;
-using System.Collections.Generic;
-using WorldServer.World.AI;
 
-namespace WorldServer.World.Objects.Instances.Bloodwrought_Enclave
+namespace WorldServer.World.Objects.Instances
 {
-    class SimpleBarakustheGodslayer
+    internal class SimpleBarakustheGodslayer : InstanceBossSpawn
     {
+        public SimpleBarakustheGodslayer(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
+        {
+        }
     }
 }

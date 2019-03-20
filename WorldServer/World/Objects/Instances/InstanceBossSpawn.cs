@@ -30,6 +30,7 @@ namespace WorldServer.World.Objects.Instances
         public InstanceBossSpawn(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn)
         {
             InstanceGroupSpawnID = instancegroupspawnid;
+            Name = spawn.Proto.Name;
             BossID = bossid;
             Instance = instance;
             InstanceID = Instanceid;
