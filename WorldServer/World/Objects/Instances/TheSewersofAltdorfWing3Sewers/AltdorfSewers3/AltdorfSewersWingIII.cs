@@ -212,7 +212,7 @@ namespace WorldServer.World.Objects.Instances.AltdorfSewers3
             return false;
         }
 
-        // Make RoR Great Again - adding wall
+        //adding wall
         public void AddWall()
         {
             GameObject_proto proto = GameObjectService.GetGameObjectProto(2000441);

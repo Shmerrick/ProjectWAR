@@ -93,7 +93,7 @@ namespace WorldServer.World.Objects.Instances
                 InstanceService.SaveTtkPerBoss(Instance.ZoneID + ":" + Instance.ID, this, BossTimer.Elapsed);
             }
             // reset add list
-            AddList = new List<Creature>();
+            List<Creature> AddList = new List<Creature>();
 
             // reset all Modify Scalers
             ModifyDmgHealScaler = 1f;
@@ -136,7 +136,7 @@ namespace WorldServer.World.Objects.Instances
         protected override void SetDeath(Unit killer)
         {
             // reset add list
-            AddList = new List<Creature>();
+            List<Creature> AddList = new List<Creature>();
 
             base.SetDeath(killer);
 
