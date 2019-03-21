@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
+using FrameWork;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Objects;
@@ -34,11 +35,10 @@ namespace WorldServer.World.Battlefronts.Keeps
 
                 RewardLogger.Trace($"Outer Door reward for player : {player.Name} ");
 
-                var rnd = new Random();
-                var random = rnd.Next(1, 25);
+                var random = StaticRandom.Instance.Next(1, 25);
 
-                player.AddXp((uint)(OUTER_DOOR_XP * (1 + random / 100)), false, false);
-                player.AddRenown((uint)(OUTER_DOOR_RP * (1 + random / 100)), false, RewardType.None, $"Destruction of {description}'s outer door");
+                player.AddXp((uint)(OUTER_DOOR_XP * (1 + (float)random / 100)), false, false);
+                player.AddRenown((uint)(OUTER_DOOR_RP * (1 + (float)random / 100)), false, RewardType.None, $"Destruction of {description}'s outer door");
 
 
                 // Add contribution
@@ -60,10 +60,10 @@ namespace WorldServer.World.Battlefronts.Keeps
 
                 RewardLogger.Trace($"Inner Door reward for player : {player.Name} ");
 
-                var rnd = new Random();
-                var random = rnd.Next(1, 25);
-                player.AddXp((uint)(INNER_DOOR_XP * (1 + random / 100)), false, false);
-                player.AddRenown((uint)(INNER_DOOR_RP * (1 + random / 100)), false, RewardType.None, $"Destruction of {description}'s inner door");
+                
+                var random = StaticRandom.Instance.Next(1, 25);
+                player.AddXp((uint)(INNER_DOOR_XP * (1 + (float)random / 100)), false, false);
+                player.AddRenown((uint)(INNER_DOOR_RP * (1 + (float)random / 100)), false, RewardType.None, $"Destruction of {description}'s inner door");
 
                 // Add contribution
                 contributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_INNER_DOOR);
@@ -79,10 +79,10 @@ namespace WorldServer.World.Battlefronts.Keeps
                 if (keep.Realm == plr.Realm && plr.ValidInTier(keep.Tier, true))
                 {
                     var influenceId = plr.Realm == Realms.REALMS_REALM_DESTRUCTION ? plr.CurrentArea.DestroInfluenceId : plr.CurrentArea.OrderInfluenceId;
-
-                    var totalXp = 2000 * keep.Tier;
-                    var totalRenown = 300 * keep.Tier;
-                    var totalInfluence = 100 * keep.Tier;
+                    var random = StaticRandom.Instance.Next(80, 120);
+                    var totalXp = 2000 * keep.Tier * random/100;
+                    var totalRenown = 300 * keep.Tier * random/100;
+                    var totalInfluence = 100 * keep.Tier * random/100;
 
                     if (keep.PlayersKilledInRange < 4 * keep.Tier)
                     {
@@ -100,7 +100,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     // Add Contribution for Keep Defence Tick
                     plr.UpdatePlayerBountyEvent((byte)ContributionDefinitions.KEEP_DEFENCE_TICK);
 
-                    RewardLogger.Info("Keep", $"Keep Defence XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
+                    RewardLogger.Info("Keep", $"Keep Defence XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}. Players killed in range {keep.PlayersKilledInRange}");
                 }
             }
         }
