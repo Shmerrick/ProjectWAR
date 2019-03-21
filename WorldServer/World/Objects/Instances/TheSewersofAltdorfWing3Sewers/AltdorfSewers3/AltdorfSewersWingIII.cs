@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using System.Collections.Generic;
 using Common;
 using WorldServer.Services.World;
@@ -326,4 +327,4 @@ namespace WorldServer.World.Objects.Instances.AltdorfSewers3
             return false;
         }
     }
-}
+}*/

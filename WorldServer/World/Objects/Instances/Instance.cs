@@ -8,8 +8,23 @@ using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Map;
+using WorldServer.World.Objects.Instances.Bastion_Stairs;
+using WorldServer.World.Objects.Instances.Bilerot_Burrow;
+using WorldServer.World.Objects.Instances.Bloodwrought_Enclave;
+using WorldServer.World.Objects.Instances.Hunters_Vale;
+using WorldServer.World.Objects.Instances.Mount_Gunbad;
+using WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum1;
+using WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum2;
+using WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum3;
+using WorldServer.World.Objects.Instances.SigmarCrypts;
 using WorldServer.World.Objects.Instances.The_Lost_Vale;
+using WorldServer.World.Objects.Instances.TheSewersofAltdorfWing1Sewers2;
+using WorldServer.World.Objects.Instances.TheSewersofAltdorfWing2Sewers3;
+using WorldServer.World.Objects.Instances.TheSewersofAltdorfWing3Sewers;
 using WorldServer.World.Objects.Instances.TomboftheVultureLord;
+using WorldServer.World.Objects.Instances.Tombs;
+using WorldServer.World.Objects.Instances.WarpbladeTunnels1;
+using WorldServer.World.Objects.Instances.WarpbladeTunnels2;
 
 namespace WorldServer.World.Objects.Instances
 {

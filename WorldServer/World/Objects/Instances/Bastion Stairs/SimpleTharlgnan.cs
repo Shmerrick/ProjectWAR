@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using Common;
 using WorldServer.World.AI;
 
-namespace WorldServer.World.Objects.Instances.Bloodwrought_Enclave
+namespace WorldServer.World.Objects.Instances.Bastion_Stairs
 {
-    public class SimpleBarakustheGodslayer : InstanceBossSpawn
+    public class SimpleTharlgnan : InstanceBossSpawn
     {
         #region Constructors
-        public SimpleBarakustheGodslayer(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
+
+        public SimpleTharlgnan(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
         }

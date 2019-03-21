@@ -1,7 +1,7 @@
 ﻿using Common;
 using WorldServer.World.Interfaces;
 
-namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
+namespace WorldServer.World.Objects.Instances
 {
     public class InstanceSpawn : Creature
     {

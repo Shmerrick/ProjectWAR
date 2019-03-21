@@ -12,9 +12,9 @@ using WorldServer.World.Abilities.Components;
 using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
-using WorldServer.World.Objects.Instances.TomboftheVultureLord;
 using WorldServer.World.Positions;
 using Object = WorldServer.World.Objects.Object;
+using WorldServer.World.Objects.Instances;
 
 namespace WorldServer.World.AI
 {
