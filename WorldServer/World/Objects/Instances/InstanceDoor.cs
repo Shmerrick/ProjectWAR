@@ -16,7 +16,7 @@ namespace WorldServer.World.Objects.Instances
                 UpdateVfxState(VfxState);
 
                 if (value)
-                    Instance.DoorOpenned(this);
+                    Instance.DoorOpened(this);
                 else
                     Instance.DoorClosed(this);
 

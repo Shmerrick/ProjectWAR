@@ -775,7 +775,7 @@ namespace WorldServer.World.Objects.Instances
             EncounterInProgress = false;
         }
 
-        public void DoorOpenned(InstanceDoor door)
+        public void DoorOpened(InstanceDoor door)
         {
 
         }
