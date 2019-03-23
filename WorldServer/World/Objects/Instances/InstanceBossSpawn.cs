@@ -27,7 +27,7 @@ namespace WorldServer.World.Objects.Instances
 
         public InstanceBossSpawn(Creature_spawn spawn, uint bossId, ushort instanceId, Instance instance) : base(spawn)
         {
-
+            
             Name = spawn.Proto.Name;
             BossId = bossId;
             Instance = instance;
@@ -62,12 +62,15 @@ namespace WorldServer.World.Objects.Instances
             }
 
 
-            //         Unit Attacker = mob.GetCreature().CbtInterface.GetTarget(GameData.TargetTypes.TARGETTYPES_TARGET_ENEMY);
+   //         Unit Attacker = mob.GetCreature().CbtInterface.GetTarget(GameData.TargetTypes.TARGETTYPES_TARGET_ENEMY);
 
-            //         if(InstanceGroupSpawnId > 0)
-            //         {
-            //             Instance.BossAttackTarget(InstanceGroupSpawnId, Attacker);
-            //}
+   //         if(InstanceGroupSpawnId > 0)
+   //         {
+   //             Instance.BossAttackTarget(InstanceGroupSpawnId, Attacker);
+			//}
+
+			BossTimer = new Stopwatch();
+			BossTimer.Start();
 
             BossTimer = new Stopwatch();
             BossTimer.Start();
@@ -217,7 +220,7 @@ namespace WorldServer.World.Objects.Instances
 
         public InstanceBossSpawn RezInstanceSpawn()
         {
-            InstanceBossSpawn newCreature = new InstanceBossSpawn(Spawn, BossId, InstanceID, Instance);
+            InstanceBossSpawn newCreature = new InstanceBossSpawn(Spawn, BossId, InstanceID,Instance);
             Region.AddObject(newCreature, Spawn.ZoneId);
             Destroy();
             return newCreature;
