@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using SystemData;
+using Common;
+using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Interfaces;
@@ -103,124 +105,59 @@ namespace WorldServer.World.AI
                     _logger.Debug($"***{keyValuePair.Key.Name} => {keyValuePair.Value}");
                 }
 
-
-                foreach (var keyValuePair in myList)
+                lock (myList)
                 {
-                    if (keyValuePair.Value < tick)
+                    foreach (var keyValuePair in myList)
                     {
-                        if (keyValuePair.Key.ExecuteChance >= rand)
+                        if (keyValuePair.Value < tick)
                         {
-                            Type t = GetType();
-                            MethodInfo method = t.GetMethod(keyValuePair.Key.Execution);
-
-                            _logger.Trace($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
-
-                            method.Invoke(this, null);
-                            if (!String.IsNullOrEmpty(keyValuePair.Key.Speech))
+                            if (keyValuePair.Key.ExecuteChance >= rand)
                             {
-                                _unit.Say(keyValuePair.Key.Speech, ChatLogFilters.CHATLOGFILTERS_SHOUT);
-                            }
-                            if (!String.IsNullOrEmpty(keyValuePair.Key.Sound))
-                            {
-                                foreach (var plr in GetClosePlayers())
+                                Type t = GetType();
+                                MethodInfo method = t.GetMethod(keyValuePair.Key.Execution);
+
+                                _logger.Trace($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
+
+
+                                if (!String.IsNullOrEmpty(keyValuePair.Key.Speech))
                                 {
-                                    plr.PlaySound(Convert.ToUInt16(keyValuePair.Key.Sound));
+                                    _unit.Say(keyValuePair.Key.Speech, ChatLogFilters.CHATLOGFILTERS_SHOUT);
                                 }
-                            }
 
-                            _logger.Trace($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
-                            NextTryCastTime = FrameWork.TCPManager.GetTimeStamp() + NEXT_ATTACK_COOLDOWN;
-                            lock (AbilityTracker)
-                            {
-                                AbilityTracker[keyValuePair.Key] = tick + keyValuePair.Key.CoolDown * 1000;
+                                if (!String.IsNullOrEmpty(keyValuePair.Key.Sound))
+                                {
+                                    foreach (var plr in GetClosePlayers())
+                                    {
+                                        plr.PlaySound(Convert.ToUInt16(keyValuePair.Key.Sound));
+                                    }
+                                }
+
+                                _logger.Trace($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
+                                NextTryCastTime = FrameWork.TCPManager.GetTimeStamp() + NEXT_ATTACK_COOLDOWN;
+                                lock (AbilityTracker)
+                                {
+                                    AbilityTracker[keyValuePair.Key] = tick + keyValuePair.Key.CoolDown * 1000;
+                                }
+
+                                method.Invoke(this, null);
+
+                                _logger.Trace(
+                                    $"Updating the tracker : {keyValuePair.Key.Name} => {tick + keyValuePair.Key.CoolDown * 1000} ");
+                                _logger.Debug($"CoolDowns : {_unit.AbtInterface.Cooldowns.Count}");
+                                break; // Leave the loop, come back on next tick
                             }
-                            _logger.Trace($"Updating the tracker : {keyValuePair.Key.Name} => {tick + keyValuePair.Key.CoolDown * 1000} ");
-                            _logger.Debug($"CoolDowns : {_unit.AbtInterface.Cooldowns.Count}");
-                            break; // Leave the loop, come back on next tick
+                            else
+                            {
+                                _logger.Debug($"Skipping : {keyValuePair.Key.Name} => {keyValuePair.Value} (random)");
+                            }
                         }
                         else
                         {
-                            _logger.Debug($"Skipping : {keyValuePair.Key.Name} => {keyValuePair.Value} (random)");
+
+                            // _logger.Debug($"Skipping : {keyValuePair.Key.Name} => {keyValuePair.Value} (time not valid) {keyValuePair.Value} >= {tick} ({ new DateTime(tick).ToString("HHmmss")})");
                         }
                     }
-                    else
-                    {
-
-                       // _logger.Debug($"Skipping : {keyValuePair.Key.Name} => {keyValuePair.Value} (time not valid) {keyValuePair.Value} >= {tick} ({ new DateTime(tick).ToString("HHmmss")})");
-                    }
                 }
-
-
-                //var rand = StaticRandom.Instance.Next(20);
-                //switch (rand)
-                //{
-                //    case 0:
-                //        {
-                //            // Switch targets
-                //            _logger.Debug($"{_unit} using Changing Targets {(target as Player).Name}");
-                //            var randomTarget = SetRandomTarget();
-                //            _logger.Debug($"{_unit} => {(randomTarget as Player).Name}");
-                //            break;
-                //        }
-                //    case 1:
-                //    case 2:
-                //        {
-                //            // 8035 - Shining Blade
-                //            SpeakYourMind($"{_unit} using Shining Blade vs {(target as Player).Name}");
-                //            _unit.AbtInterface.StartCast(_unit, 8035, 1);
-                //            break;
-                //        }
-                //    case 3:
-                //    case 4:
-                //        {
-                //            // 8036 - Now's Our Chance!
-                //            _logger.Debug($"{_unit} using Now's Our Chance! vs {(target as Player).Name}");
-                //            _unit.AbtInterface.StartCast(_unit, 8036, 1);
-                //            break;
-                //        }
-                //    case 5:
-                //    case 6:
-                //    case 7:
-                //    case 8:
-                //    case 9:
-                //        {
-                //            // 8005 - Precision Strike
-                //            _logger.Debug($"{_unit} using Precision Strike vs {(target as Player).Name}");
-                //            _unit.AbtInterface.StartCast(_unit, 8005, 1);
-                //            break;
-                //        }
-                //    case 10:
-                //    case 11:
-                //        {
-                //            var tauntTarget = SetRandomTarget();
-                //            // 8010 - Taunt
-                //            _logger.Debug($"{_unit} using Taunt vs {(tauntTarget as Player).Name}");
-                //            _unit.AbtInterface.StartCast(_unit, 8010, 1);
-                //            break;
-                //        }
-                //    case 12:
-                //        {
-                //            // 608 - Champion's Challenge
-                //            _logger.Debug($"{_unit} using Champion's Challenge vs {(target as Player).Name}");
-                //            _unit.AbtInterface.StartCast(_unit, 608, 1);
-                //            break;
-                //        }
-                //    case 13:
-                //    case 14:
-                //        {
-                //            var blessing = target.BuffInterface.HasBuffOfType((byte)BuffTypes.Blessing);
-                //            if (blessing && (_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < 5))
-                //            {
-                //                // 8023 - Shatter Confidence
-                //                _logger.Debug($"{_unit} using Shatter Confidence vs {(target as Player).Name}");
-                //                _unit.AbtInterface.StartCast(_unit, 8023, 1);
-
-                //            }
-                //            break;
-                //        }
-                //}
-
-
             }
 
         }
@@ -399,6 +336,38 @@ namespace WorldServer.World.AI
                 SpeakYourMind($" using Quake vs {(Combat.CurrentTarget as Player).Name}");
                 SimpleCast(_unit, Combat.CurrentTarget, "Quake", 8349);
             }
+        }
+
+        public void SpawnAdds()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                ushort facing = 2093;
+
+                var X = _unit.WorldPosition.X;
+                var Y = _unit.WorldPosition.Y;
+                var Z = _unit.WorldPosition.Z;
+
+
+                Creature_spawn spawn = new Creature_spawn {Guid = (uint) CreatureService.GenerateCreatureSpawnGUID()};
+                var proto = CreatureService.GetCreatureProto(6986);
+                if (proto == null)
+                    return;
+                spawn.BuildFromProto(proto);
+
+                spawn.WorldO = facing;
+                spawn.WorldX = X + StaticRandom.Instance.Next(500);
+                spawn.WorldY = Y + StaticRandom.Instance.Next(500);
+                spawn.WorldZ = Z;
+                spawn.ZoneId = (ushort)_unit.ZoneId;
+                spawn.Level = 35;
+
+                var c = _unit.Region.CreateCreature(spawn);
+                c.AiInterface.SetBrain(new AggressiveBrain(c));
+                
+            }
+            // Force zones to update
+            _unit.Region.Update();
         }
         public class BossAbilityTrack
         {
