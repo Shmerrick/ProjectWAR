@@ -8,7 +8,7 @@ namespace WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum3
     public class SimpleVultheBloodchosen : InstanceBossSpawn
     {
         #region Constructors
-        public SimpleVultheBloodchosen(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
+        public SimpleVultheBloodchosen(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
         }

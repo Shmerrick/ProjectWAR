@@ -8,7 +8,7 @@ namespace WorldServer.World.Objects.Instances.Bloodwrought_Enclave
     public class SimpleCuliusEmbervine : InstanceBossSpawn
     {
         #region Constructors
-        public SimpleCuliusEmbervine(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
+        public SimpleCuliusEmbervine(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
         }

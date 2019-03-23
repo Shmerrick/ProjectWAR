@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Common;
+using WorldServer.Services.World;
 using WorldServer.World.AI;
 
 namespace WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum1
@@ -8,20 +10,17 @@ namespace WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum1
     public class SimpleGoremane : InstanceBossSpawn
     {
         #region Constructors
-        public SimpleGoremane(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
+        public SimpleGoremane(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
+            
         }
 
         #endregion Constructors
 
         #region Attributes
 
-        private List<List<object>> _AddSpawns = new List<List<object>>()
-        {
-            // spawns
-            new List<object> { new List<uint> { }},
-        };
+        
 
         #endregion Attributes
 
@@ -30,8 +29,12 @@ namespace WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum1
         public override void OnLoad()
         {
             base.OnLoad();
+            
+            var brain = new BossBrain(this);
+            brain.Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == this.BossId).ToList();
+            AiInterface.SetBrain(brain);
 
-            AiInterface.SetBrain(new InstanceBossBrain(this));
+            //AiInterface.SetBrain(new BossBrain(this));
         }
 
         public override bool OnEnterCombat(Object mob, object args)
@@ -52,25 +55,7 @@ namespace WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum1
 
         #region Methods
 
-        private void SpawnAdds()
-        {
-            try
-            {
-                // first check if boss health is under 20%
-                if (Health > MaxHealth * 0.2)
-                    return;
-
-                SpawnAdds(_AddSpawns);
-
-                EvtInterface.RemoveEvent(SpawnAdds);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message + "\r\n" + ex.StackTrace);
-                EvtInterface.RemoveEvent(SpawnAdds);
-                return;
-            }
-        }
+        
         //private void CheckBossRageTimer()
         //{
         //	// check rage timer

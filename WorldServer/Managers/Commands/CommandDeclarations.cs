@@ -140,11 +140,11 @@ namespace WorldServer.Managers.Commands
         {
             new GmCommandHandler("doorinfo", DoorInfo, null, 0, 0, "Returns LOS information about keep door"),
             new GmCommandHandler("info", InIinfo, null, EGmLevel.AllStaff, 0, "instance infos optional: <instanceid>"),
-            new GmCommandHandler("spawn", InISpawn, null, EGmLevel.DatabaseDev, 4, "Spawn a Instance NPC <object id> <bossid> <spawngroup> <realm>"),
-            new GmCommandHandler("convert", InstanceConvert, null, EGmLevel.DatabaseDev, 3, "Converts selected Object to a Instance spawn <bossid> <spawngroup> <realm>"),
-            new GmCommandHandler("bossspawn", InIBossSpawn, null, EGmLevel.DatabaseDev, 4, "Spawn a Instance Boss NPC <object id> <bossid> <spawngroup> <instanceid>"),
+            new GmCommandHandler("spawn", InISpawn, null, EGmLevel.DatabaseDev, 4, "Spawn a Instance NPC <object id> <BossId> <spawngroup> <realm>"),
+            new GmCommandHandler("convert", InstanceConvert, null, EGmLevel.DatabaseDev, 3, "Converts selected Object to a Instance spawn <BossId> <spawngroup> <realm>"),
+            new GmCommandHandler("bossspawn", InIBossSpawn, null, EGmLevel.DatabaseDev, 4, "Spawn a Instance Boss NPC <object id> <BossId> <spawngroup> <instanceid>"),
             new GmCommandHandler("bossconvert", InstanceBossConvert, null, EGmLevel.DatabaseDev, 3,
-                "Converts selected Object to a Instance Boss spawn <bossid> <spawngroup> <instanceid>"),
+                "Converts selected Object to a Instance Boss spawn <BossId> <spawngroup> <instanceid>"),
             new GmCommandHandler("reset", InstanceReset, null, EGmLevel.DatabaseDev, 0, "Resets the current pq"),
             new GmCommandHandler("opendoor", InstanceOpenDoor, null, EGmLevel.DatabaseDev, 0, "Opens door inside instance (uniqueID, instanceID, open=1/close=0)"),
 

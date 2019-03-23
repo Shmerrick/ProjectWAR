@@ -8,7 +8,7 @@ namespace WorldServer.World.Objects.Instances.WarpbladeTunnels2
     public class SimpleBrauk : InstanceBossSpawn
     {
         #region Constructors
-        public SimpleBrauk(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
+        public SimpleBrauk(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
         }

@@ -1984,7 +1984,7 @@ namespace WorldServer.World.Objects
 
                         foreach (Instance_Boss_Spawn bs in bosses)
                         {
-                            if (bs.BossID.ToString() == deadBosses[i])
+                            if (bs.bossId.ToString() == deadBosses[i])
                                 Bossentry = bs.Entry;
                         }
 
@@ -6926,19 +6926,19 @@ namespace WorldServer.World.Objects
 
         #region Lockouts
 
-        public bool HasLockout(ushort zoneId, uint bossID)
+        public bool HasLockout(ushort zoneId, uint bossId)
         {
             string lockout = _Value.GetLockout(zoneId);
             if (lockout == null)
                 return false;
 
-            if (lockout.Contains(bossID.ToString()))
+            if (lockout.Contains(bossId.ToString()))
                 return true;
 
             //var split = lockout.Split(':');
             //for (int i = 2; i < split.Length; i++)
             //{
-            //	if (uint.Parse(split[i]).Equals(bossID))
+            //	if (uint.Parse(split[i]).Equals(BossId))
             //		return true;
             //}
 

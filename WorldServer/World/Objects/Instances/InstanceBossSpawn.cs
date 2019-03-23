@@ -18,8 +18,8 @@ namespace WorldServer.World.Objects.Instances
 {
     public class InstanceBossSpawn : Creature
     {
-        public uint InstanceGroupSpawnID;
-        public uint BossID;
+        public uint InstanceGroupSpawnId;
+        public uint BossId;
         public ushort InstanceID;
 		public Instance Instance { get; set; } = null;
 		public Stopwatch BossTimer { get; set; } = null;
@@ -27,13 +27,13 @@ namespace WorldServer.World.Objects.Instances
         public List<Creature> AddList = new List<Creature>();
         public int PlayerDeathsCount { get; set; } = 0;
 
-        public InstanceBossSpawn(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn)
+        public InstanceBossSpawn(Creature_spawn spawn, uint bossId, ushort instanceId, Instance instance) : base(spawn)
         {
-            InstanceGroupSpawnID = instancegroupspawnid;
+            
             Name = spawn.Proto.Name;
-            BossID = bossid;
+            BossId = bossId;
             Instance = instance;
-            InstanceID = Instanceid;
+            InstanceID = instanceId;
             EvtInterface.AddEventNotify(EventName.OnEnterCombat, OnEnterCombat);
             EvtInterface.AddEventNotify(EventName.OnLeaveCombat, OnLeaveCombat);
         }
@@ -57,15 +57,19 @@ namespace WorldServer.World.Objects.Instances
 
         public virtual bool OnEnterCombat(Object mob, object args)
         {
-            Instance.Encounterinprogress = true;
-            Instance.CurrentBossId = BossID;
-
-            Unit Attacker = mob.GetCreature().CbtInterface.GetTarget(GameData.TargetTypes.TARGETTYPES_TARGET_ENEMY);
-
-            if(InstanceGroupSpawnID > 0)
+            if (Instance != null)
             {
-                Instance.BossAttackTarget(InstanceGroupSpawnID, Attacker);
-			}
+                Instance.EncounterInProgress = true;
+                Instance.CurrentBossId = BossId;
+            }
+
+
+   //         Unit Attacker = mob.GetCreature().CbtInterface.GetTarget(GameData.TargetTypes.TARGETTYPES_TARGET_ENEMY);
+
+   //         if(InstanceGroupSpawnId > 0)
+   //         {
+   //             Instance.BossAttackTarget(InstanceGroupSpawnId, Attacker);
+			//}
 
 			BossTimer = new Stopwatch();
 			BossTimer.Start();
@@ -83,8 +87,8 @@ namespace WorldServer.World.Objects.Instances
                 // save statistics
                 InstanceService.SaveAttemptsPerBoss(Instance.ZoneID + ":" + Instance.ID, this, 1);
 
-                if (InstanceGroupSpawnID > 0)
-                    Instance.BossRespawnInstanceGroup(InstanceGroupSpawnID);
+                if (InstanceGroupSpawnId > 0)
+                    Instance.BossRespawnInstanceGroup(InstanceGroupSpawnId);
             }
             else
             {
@@ -141,10 +145,10 @@ namespace WorldServer.World.Objects.Instances
 
             base.SetDeath(killer);
 
-            Instance.OnBossDeath(InstanceGroupSpawnID, this);
+            Instance.OnBossDeath(InstanceGroupSpawnId, this);
 
 			// remove barriages from this instance
-			Instance.RemoveInstanceObjectOnBossDeath(BossID);
+			Instance.RemoveInstanceObjectOnBossDeath(BossId);
 
             // handle torch of lileath on horgulul death
             if (this is SimpleHorgulul horgulul)
@@ -170,7 +174,7 @@ namespace WorldServer.World.Objects.Instances
 				{
                     foreach (Player member in player.PriorityGroup.Members)
                     {
-                        if (!member.HasLockout((ushort)ZoneId, BossID))
+                        if (!member.HasLockout((ushort)ZoneId, BossId))
                             subGroup.Add(member);
                     }
                     // used to only have items of careers in group in the lootcontainer
@@ -185,7 +189,7 @@ namespace WorldServer.World.Objects.Instances
                         player.Zone.Info != null &&
                         (player.Zone.Info.Type == 4 || player.Zone.Info.Type == 5 || player.Zone.Info.Type == 6))
                     {
-                        if (!player.HasLockout((ushort)ZoneId, BossID))
+                        if (!player.HasLockout((ushort)ZoneId, BossId))
                         {
                             lootContainer.SendInteract(player, menu);
                             Instance.ApplyLockout(new List<Player> { player });
@@ -204,7 +208,7 @@ namespace WorldServer.World.Objects.Instances
 
 		public InstanceBossSpawn RezInstanceSpawn()
         {
-            InstanceBossSpawn newCreature = new InstanceBossSpawn(Spawn, InstanceGroupSpawnID, BossID, InstanceID,Instance);
+            InstanceBossSpawn newCreature = new InstanceBossSpawn(Spawn, BossId, InstanceID,Instance);
             Region.AddObject(newCreature, Spawn.ZoneId);
             Destroy();
             return newCreature;
@@ -326,7 +330,7 @@ namespace WorldServer.World.Objects.Instances
 
         public override string ToString()
         {
-            return "SpawnId=" + Spawn.Guid + ",Entry=" + Spawn.Entry + ",Spawngroup=" + InstanceGroupSpawnID + ",BossID=" + BossID + ",Name=" + Name + ",Level=" + Level + ",Rank=" + Rank + ",Max Health=" + MaxHealth + ",Faction=" + Faction + ",Emote=" + Spawn.Emote + "AI:" + AiInterface.State + ",Position :" + base.ToString();
+            return "SpawnId=" + Spawn.Guid + ",Entry=" + Spawn.Entry + ",Spawngroup=" + InstanceGroupSpawnId + ",BossId=" + BossId + ",Name=" + Name + ",Level=" + Level + ",Rank=" + Rank + ",Max Health=" + MaxHealth + ",Faction=" + Faction + ",Emote=" + Spawn.Emote + "AI:" + AiInterface.State + ",Position :" + base.ToString();
         }
     }
 }

@@ -187,7 +187,7 @@ namespace WorldServer.World.Objects.Instances
             {
                 _instances.TryGetValue(Instanceid, out Instance inst);
 
-                if (inst.Encounterinprogress)
+                if (inst.EncounterInProgress)
                 {
                     player.SendClientMessage("There is an Encounter in progress you cannot enter now", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                     return false;

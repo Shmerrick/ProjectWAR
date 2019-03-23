@@ -35,7 +35,7 @@ namespace Common
         public ushort ZoneID { get; set; }
 
         [DataElement]
-        public uint ConnectedBossID { get; set; }
+        public uint ConnectedbossId { get; set; }
 
         [DataElement]
         public uint SpawnGroupID { get; set; }

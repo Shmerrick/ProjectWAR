@@ -468,7 +468,7 @@ namespace Common
 
         public void AddLockout(Instance_Lockouts Lockout)
 		{
-			// ~zoneID:timestamp:bossID:...~zoneID:timestamp:bossID:...~zoneID:timestamp:bossID:...
+			// ~zoneID:timestamp:bossId:...~zoneID:timestamp:bossId:...~zoneID:timestamp:bossId:...
 			string newLockout = string.Empty;
 			
             if (string.IsNullOrEmpty(_lockouts))
@@ -490,15 +490,15 @@ namespace Common
                         if (!newLockout.StartsWith("~"))
                             newLockout += "~"; // ~
                         newLockout += currLockout.Split(':')[0] + ":" + currLockout.Split(':')[1]; // ~260:12345, keep old timestamp
-                        List<string> bossIDList = new List<string>();
+                        List<string> bossIdList = new List<string>();
                         for (int j = 2; j < currLockout.Split(':').Length; j++)
-                            bossIDList.Add(currLockout.Split(':')[j]);
+                            bossIdList.Add(currLockout.Split(':')[j]);
                         for (int j = 0; j < Lockout.Bosseskilled.Split(':').Length; j++)
-                            bossIDList.Add(Lockout.Bosseskilled.Split(':')[j]);
-                        bossIDList = bossIDList.Distinct().ToList(); // remove multiple bosses
-                        bossIDList.Sort();
-                        foreach (string bossID in bossIDList)
-                            newLockout += ":" + bossID; // build string with bosses: ~260:12345:330:331:.....
+                            bossIdList.Add(Lockout.Bosseskilled.Split(':')[j]);
+                        bossIdList = bossIdList.Distinct().ToList(); // remove multiple bosses
+                        bossIdList.Sort();
+                        foreach (string bossId in bossIdList)
+                            newLockout += ":" + bossId; // build string with bosses: ~260:12345:330:331:.....
                     }
                     else
                     {

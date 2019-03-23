@@ -8,7 +8,7 @@ namespace WorldServer.World.Objects.Instances.SigmarCrypts
     public class SimpleSeraphinePaleEye : InstanceBossSpawn
     {
         #region Constructors
-        public SimpleSeraphinePaleEye(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
+        public SimpleSeraphinePaleEye(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
         }

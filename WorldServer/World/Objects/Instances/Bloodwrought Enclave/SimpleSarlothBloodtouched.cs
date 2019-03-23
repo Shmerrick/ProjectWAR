@@ -8,7 +8,7 @@ namespace WorldServer.World.Objects.Instances.Bloodwrought_Enclave
     public class SimpleSarlothBloodtouched : InstanceBossSpawn
     {
         #region Constructors
-        public SimpleSarlothBloodtouched(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
+        public SimpleSarlothBloodtouched(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
         }

@@ -7,7 +7,7 @@ namespace WorldServer.World.Objects.Instances.The_Lost_Vale
 	{
 		#region Constructors
 
-		public SimpleMalghorGreathorn(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
+		public SimpleMalghorGreathorn(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
 		{
 			
 		}

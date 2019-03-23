@@ -20,6 +20,7 @@ using WorldServer.World.Guild;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Map;
 using WorldServer.World.Objects;
+using WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum1;
 using WorldServer.World.Positions;
 using WorldServer.World.Scenarios;
 using static System.UInt16;
@@ -4288,9 +4289,9 @@ namespace WorldServer.Managers.Commands
             var bossSpawnId = values[0];
 
             var bossSpawn = CreatureService.BossSpawns.SingleOrDefault(x => x.BossSpawnId == Convert.ToInt32(bossSpawnId));
-            
+
             Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
-            var proto = CreatureService.GetCreatureProto((uint) bossSpawn.ProtoId);
+            var proto = CreatureService.GetCreatureProto((uint)bossSpawn.ProtoId);
             if (proto == null)
                 return true;
             spawn.BuildFromProto(proto);
@@ -4302,10 +4303,14 @@ namespace WorldServer.Managers.Commands
             spawn.ZoneId = (ushort)plr.ZoneId;
             spawn.Level = 35;
 
-            var c = plr.Region.CreateCreature(spawn);
-            var brain = new BossBrain(c);
-            brain.Abilities = CreatureService.BossSpawnAbilities.Where(x=>x.BossSpawnId == bossSpawn.BossSpawnId).ToList();
-            c.AiInterface.SetBrain(brain);
+            //var c = plr.Region.CreateCreature(spawn);
+            //var brain = new BossBrain(c);
+            //brain.Abilities = CreatureService.BossSpawnAbilities.Where(x=>x.BossSpawnId == bossSpawn.BossSpawnId).ToList();
+            //c.AiInterface.SetBrain(brain);
+
+
+            var IS = new SimpleGoremane(spawn, Convert.ToUInt32(bossSpawnId), 0, null);
+
             // Force zones to update
             plr.Region.Update();
 

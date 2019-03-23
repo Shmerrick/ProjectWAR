@@ -8,7 +8,7 @@ namespace WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum2
     public class SimpleHoarfrost : InstanceBossSpawn
     {
         #region Constructors
-        public SimpleHoarfrost(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
+        public SimpleHoarfrost(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
         }

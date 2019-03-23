@@ -1,14 +1,13 @@
-﻿using Common.Database.World.Creatures;
+﻿using Common;
+using Common.Database.World.Creatures;
 using FrameWork;
 using GameData;
 using NLog;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using SystemData;
-using Common;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Components;
@@ -23,13 +22,20 @@ namespace WorldServer.World.AI
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public List<BossSpawnAbilities> Abilities { get; set; }
         public Dictionary<BossSpawnAbilities, long> AbilityTracker { get; set; }
+        // Melee range for the boss - could use baseradius perhaps?
         public static int BOSS_MELEE_RANGE = 25;
+        // Cooldown between special attacks 
         public static int NEXT_ATTACK_COOLDOWN = 2500;
+        // List of Adds that the boss should spawn, if any.
+        public List<uint> AddList { get; set; }
+        // List of Adds that the boss has spawned, and their states.
+        public List<Creature> SpawnList { get; set; }
 
         public BossBrain(Unit myOwner)
             : base(myOwner)
         {
             AbilityTracker = new Dictionary<BossSpawnAbilities, long>();
+            SpawnList = new List<Creature>();
         }
 
         public override void Think(long tick)
@@ -164,7 +170,12 @@ namespace WorldServer.World.AI
 
         private List<Player> GetClosePlayers()
         {
-            return _unit.GetPlayersInRange(300, true);
+            return _unit.GetPlayersInRange(300, false);
+        }
+
+        private bool PlayersWithinRange()
+        {
+            return _unit.GetPlayersInRange(30, false).Count > 0;
         }
 
         public bool TargetInMeleeRange()
@@ -230,37 +241,7 @@ namespace WorldServer.World.AI
 
         public bool TwentyPercentHealth()
         {
-            if (_unit.PctHealth <= 24)
-                return true;
-            else
-            {
-                return false;
-            }
-        }
-
-        public bool FourtyNinePercentHealth()
-        {
-            if (_unit.PctHealth <= 49)
-                return true;
-            else
-            {
-                return false;
-            }
-        }
-
-        public bool SeventyFivePercentHealth()
-        {
-            if (_unit.PctHealth <= 74)
-                return true;
-            else
-            {
-                return false;
-            }
-        }
-
-        public bool NinetyNinePercentHealth()
-        {
-            if (_unit.PctHealth <= 99)
+            if (_unit.PctHealth <= 20)
                 return true;
             else
             {
@@ -298,8 +279,6 @@ namespace WorldServer.World.AI
         public bool TargetIsUnstoppable()
         {
             var buff = Combat.CurrentTarget.BuffInterface.GetBuff((ushort)GameBuffs.Unstoppable, Combat.CurrentTarget);
-            if (buff != null)
-                SpeakYourMind($" {Combat.CurrentTarget.Name} is unstoppable!");
             return buff != null;
         }
 
@@ -338,9 +317,30 @@ namespace WorldServer.World.AI
             }
         }
 
+        public void BestialFlurry()
+        {
+            if (Combat.CurrentTarget != null)
+            {
+                SpeakYourMind($" using BestialFlurry vs {(Combat.CurrentTarget as Player).Name}");
+                SimpleCast(_unit, Combat.CurrentTarget, "BestialFlurry", 5347);
+            }
+        }
+
+        public void Whirlwind()
+        {
+            SpeakYourMind($" using Whirlwind");
+            SimpleCast(_unit, Combat.CurrentTarget, "Whirlwind", 5568);
+        }
+
+        public void EnfeeblingShout()
+        {
+            SpeakYourMind($" using Enfeebling Shout");
+            SimpleCast(_unit, Combat.CurrentTarget, "Enfeebling Shout", 5575);
+        }
+
         public void SpawnAdds()
         {
-            for (int i = 0; i < 5; i++)
+            foreach (var protoId in AddList)
             {
                 ushort facing = 2093;
 
@@ -349,8 +349,8 @@ namespace WorldServer.World.AI
                 var Z = _unit.WorldPosition.Z;
 
 
-                Creature_spawn spawn = new Creature_spawn {Guid = (uint) CreatureService.GenerateCreatureSpawnGUID()};
-                var proto = CreatureService.GetCreatureProto(6986);
+                Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
+                var proto = CreatureService.GetCreatureProto(protoId);
                 if (proto == null)
                     return;
                 spawn.BuildFromProto(proto);
@@ -360,15 +360,18 @@ namespace WorldServer.World.AI
                 spawn.WorldY = Y + StaticRandom.Instance.Next(500);
                 spawn.WorldZ = Z;
                 spawn.ZoneId = (ushort)_unit.ZoneId;
-                spawn.Level = 35;
-
-                var c = _unit.Region.CreateCreature(spawn);
-                c.AiInterface.SetBrain(new AggressiveBrain(c));
                 
+                
+                var creature = _unit.Region.CreateCreature(spawn);
+                SpawnList.Add(creature);
+                creature.AiInterface.SetBrain(new AggressiveBrain(creature));
+
             }
             // Force zones to update
             _unit.Region.Update();
         }
+
+
         public class BossAbilityTrack
         {
             public string Execution { get; set; }

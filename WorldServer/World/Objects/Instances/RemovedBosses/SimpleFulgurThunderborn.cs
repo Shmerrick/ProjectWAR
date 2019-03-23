@@ -7,7 +7,7 @@ namespace WorldServer.World.Objects.Instances.RemovedBosses
     {
         #region Constructors
 
-        public SimpleFulgurThunderborn(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
+        public SimpleFulgurThunderborn(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(ChargeRandomNonTankPlayer, 15000, 0);
         }

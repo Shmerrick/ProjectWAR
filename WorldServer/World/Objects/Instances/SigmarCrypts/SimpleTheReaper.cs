@@ -8,7 +8,7 @@ namespace WorldServer.World.Objects.Instances.SigmarCrypts
     public class SimpleTheReaper : InstanceBossSpawn
     {
         #region Constructors
-        public SimpleTheReaper(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
+        public SimpleTheReaper(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
         }

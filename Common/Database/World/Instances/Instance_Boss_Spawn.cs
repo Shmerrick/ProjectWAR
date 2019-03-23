@@ -59,7 +59,7 @@ namespace Common
         public ushort InstanceID { get; set; }
 
         [DataElement]
-        public uint BossID { get; set; }
+        public uint bossId { get; set; }
 
         [DataElement]
         public uint SpawnGroupID { get; set; }

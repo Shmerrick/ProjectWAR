@@ -8,7 +8,7 @@ namespace WorldServer.World.Objects.Instances.WarpbladeTunnels1
     public class SimpleSkivRedwarp : InstanceBossSpawn
     {
         #region Constructors
-        public SimpleSkivRedwarp(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
+        public SimpleSkivRedwarp(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
         }

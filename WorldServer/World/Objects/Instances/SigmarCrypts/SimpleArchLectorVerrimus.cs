@@ -8,7 +8,7 @@ namespace WorldServer.World.Objects.Instances.SigmarCrypts
     public class SimpleArchLectorVerrimus : InstanceBossSpawn
     {
         #region Constructors
-        public SimpleArchLectorVerrimus(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
+        public SimpleArchLectorVerrimus(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
         }

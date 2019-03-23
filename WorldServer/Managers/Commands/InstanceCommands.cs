@@ -18,14 +18,14 @@ namespace WorldServer.Managers.Commands
         public static bool InISpawn(Player plr, ref List<string> values)
         {
             int entry = GetInt(ref values);
-            int bossid = GetInt(ref values);
+            int bossId = GetInt(ref values);
             int spawngroup = GetInt(ref values);
             int realm = GetInt(ref values);
 
             plr.UpdateWorldPosition();
 
             Instance_Spawn spawn = new Instance_Spawn();
-            // "Spawn a Instance NPC <object id> <bossid> <spawngroup> <realm>"
+            // "Spawn a Instance NPC <object id> <BossId> <spawngroup> <realm>"
             spawn.Instance_spawns_ID = Guid.NewGuid().ToString();
             spawn.Entry = (uint)entry;
             spawn.WorldO = (uint)plr._Value.WorldO;
@@ -34,7 +34,7 @@ namespace WorldServer.Managers.Commands
             spawn.WorldX = plr._Value.WorldX;
             spawn.ZoneID = plr.Zone.ZoneId;
             spawn.SpawnGroupID = (uint)spawngroup;
-            spawn.ConnectedBossID = (uint)bossid;
+            spawn.ConnectedbossId = (uint)bossId;
             spawn.Realm = (byte)realm;
 
 
@@ -55,14 +55,14 @@ namespace WorldServer.Managers.Commands
         public static bool InIBossSpawn(Player plr, ref List<string> values)
         {
             int entry = GetInt(ref values);
-            int bossid = GetInt(ref values);
+            int bossId = GetInt(ref values);
             int spawngroup = GetInt(ref values);
             int InstanceID = GetInt(ref values);
 
             plr.UpdateWorldPosition();
 
             Instance_Boss_Spawn spawn = new Instance_Boss_Spawn();
-            // "Spawn a Instance NPC <object id> <bossid> <spawngroup> <realm>"
+            // "Spawn a Instance NPC <object id> <BossId> <spawngroup> <realm>"
             spawn.Instance_spawns_ID = Guid.NewGuid().ToString();
             spawn.Entry = (uint)entry;
             spawn.WorldO = (uint)plr._Value.WorldO;
@@ -71,7 +71,7 @@ namespace WorldServer.Managers.Commands
             spawn.WorldX = plr._Value.WorldX;
             spawn.ZoneID = plr.Zone.ZoneId;
             spawn.SpawnGroupID = (uint)spawngroup;
-            spawn.BossID = (uint)bossid;
+            spawn.bossId = (uint)bossId;
             spawn.InstanceID = (ushort)InstanceID;
 
             WorldMgr.Database.AddObject(spawn);
@@ -87,9 +87,9 @@ namespace WorldServer.Managers.Commands
         /// <returns>True if command was correctly handled, false if operation was canceled</returns>
         public static bool InstanceConvert(Player plr, ref List<string> values)
         {
-            //<bossid> <spawngroup> <realm>
+            //<BossId> <spawngroup> <realm>
 
-            int bossid = GetInt(ref values);
+            int bossId = GetInt(ref values);
             int spawngroup = GetInt(ref values);
             int realm = GetInt(ref values);
 
@@ -114,7 +114,7 @@ namespace WorldServer.Managers.Commands
                     newSpawn.Emote = spawn.Emote;
                     newSpawn.Level = spawn.Level;
                     newSpawn.SpawnGroupID = (uint)spawngroup;
-                    newSpawn.ConnectedBossID = (uint)bossid;
+                    newSpawn.ConnectedbossId = (uint)bossId;
                     newSpawn.Realm = (byte)realm;
 
 
@@ -125,9 +125,9 @@ namespace WorldServer.Managers.Commands
 
         public static bool InstanceBossConvert(Player plr, ref List<string> values)
         {
-            //<bossid> <spawngroup> <realm>
+            //<BossId> <spawngroup> <realm>
 
-            int bossid = GetInt(ref values);
+            int bossId = GetInt(ref values);
             int spawngroup = GetInt(ref values);
             int instanceid = GetInt(ref values);
 
@@ -152,7 +152,7 @@ namespace WorldServer.Managers.Commands
             newSpawn.Emote = spawn.Emote;
             newSpawn.Level = spawn.Level;
             newSpawn.SpawnGroupID = (uint)spawngroup;
-            newSpawn.BossID = (uint)bossid;
+            newSpawn.bossId = (uint)bossId;
             newSpawn.InstanceID = (byte)instanceid;
 
 

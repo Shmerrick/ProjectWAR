@@ -8,7 +8,7 @@ namespace WorldServer.World.Objects.Instances.TheSewersofAltdorfWing3Sewers
     public class SimpleGoradiantheCreator : InstanceBossSpawn
     {
         #region Constructors
-        public SimpleGoradiantheCreator(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn, instancegroupspawnid, bossid, Instanceid, instance)
+        public SimpleGoradiantheCreator(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
         }
