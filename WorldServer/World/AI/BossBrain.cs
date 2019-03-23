@@ -293,7 +293,37 @@ namespace WorldServer.World.AI
 
         public bool TwentyPercentHealth()
         {
-            if (_unit.PctHealth <= 20)
+            if (_unit.PctHealth <= 24)
+                return true;
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool FourtyNinePercentHealth()
+        {
+            if (_unit.PctHealth <= 49)
+                return true;
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool SeventyFivePercentHealth()
+        {
+            if (_unit.PctHealth <= 74)
+                return true;
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool NinetyNinePercentHealth()
+        {
+            if (_unit.PctHealth <= 99)
                 return true;
             else
             {
