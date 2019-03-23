@@ -405,6 +405,7 @@
     <Compile Include="World\AI\ABrain.cs" />
     <Compile Include="World\AI\BlackguardBrain.cs" />
     <Compile Include="World\AI\BT\ChosenBehaviourTree.cs" />
+    <Compile Include="World\AI\BossBrain.cs" />
     <Compile Include="World\AI\SlayerBrain.cs" />
     <Compile Include="World\AI\WitchHunterBrain.cs" />
     <Compile Include="World\AI\WitchElfBrain.cs" />

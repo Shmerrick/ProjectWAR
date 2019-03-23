@@ -199,11 +199,11 @@ namespace WorldServer.World.Map
             {
                 long stampMs = TCPManager.GetTimeStampMS();
 
-                if (stampMs - _lastRegionUpdate > 500)
-                    Log.Error("RegionMgr", "[" + RegionId + "] - Region inter-update period too long - took " + (stampMs - _lastRegionUpdate) + " ms.");
+                //if (stampMs - _lastRegionUpdate > 50000)
+                //    Log.Error("RegionMgr", "[" + RegionId + "] - Region inter-update period too long - took " + (stampMs - _lastRegionUpdate) + " ms.");
 
-                else if (stampMs - _lastRegionUpdate > 250)
-                    Log.Notice("RegionMgr", "[" + RegionId + "] - Region inter-update period too long - took " + (stampMs - _lastRegionUpdate) + " ms.");
+                //else if (stampMs - _lastRegionUpdate > 25000)
+                //    Log.Notice("RegionMgr", "[" + RegionId + "] - Region inter-update period too long - took " + (stampMs - _lastRegionUpdate) + " ms.");
 
                 try
                 {
@@ -238,10 +238,10 @@ namespace WorldServer.World.Map
                     Thread.Sleep((int)(REGION_UPDATE_INTERVAL - elapsed));
                 else
                 {
-                    if (elapsed > 500)
-                        Log.Error("RegionMgr", "[" + RegionId + "] - Region update took too long. " + GetObjects() + " objects. " + elapsed + "ms.");
-                    else if (elapsed > 250)
-                        Log.Notice("RegionMgr", "[" + RegionId + "] - Region update took too long. " + GetObjects() + " objects. " + elapsed + "ms.");
+                    //if (elapsed > 500)
+                    //    Log.Error("RegionMgr", "[" + RegionId + "] - Region update took too long. " + GetObjects() + " objects. " + elapsed + "ms.");
+                    //else if (elapsed > 250)
+                    //    Log.Notice("RegionMgr", "[" + RegionId + "] - Region update took too long. " + GetObjects() + " objects. " + elapsed + "ms.");
 
                 }
             }

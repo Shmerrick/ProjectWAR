@@ -64,12 +64,7 @@ namespace WorldServer.World.AI.BT
 
         }
 
-        public void SpeakYourMind(string message)
-        {
-            _logger.Debug($"{_unit.Name} : {message}");
-            _unit.Say(message);
-        }
-
+     
         public IBehaviour<Creature> ProcessDirectiveBehaviour()
         {
             return FluentBuilder.Create<Creature>()

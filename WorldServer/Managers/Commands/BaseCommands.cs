@@ -7,9 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using SystemData;
 using Common.Database.World.BattleFront;
+using Common.Database.World.Creatures;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.CareerInterfaces;
+using WorldServer.World.AI;
 using WorldServer.World.AI.BT;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Battlefronts.Keeps;
@@ -4275,6 +4277,41 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        public static bool SpawnBossInstance(Player plr, ref List<string> values)
+        {
+            ushort facing = 2093;
+
+            var X = plr.WorldPosition.X;
+            var Y = plr.WorldPosition.Y;
+            var Z = plr.WorldPosition.Z;
+
+            var bossSpawnId = values[0];
+
+            var bossSpawn = CreatureService.BossSpawns.SingleOrDefault(x => x.BossSpawnId == Convert.ToInt32(bossSpawnId));
+            
+            Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
+            var proto = CreatureService.GetCreatureProto((uint) bossSpawn.ProtoId);
+            if (proto == null)
+                return true;
+            spawn.BuildFromProto(proto);
+
+            spawn.WorldO = facing;
+            spawn.WorldX = X + StaticRandom.Instance.Next(500);
+            spawn.WorldY = Y + StaticRandom.Instance.Next(500);
+            spawn.WorldZ = Z;
+            spawn.ZoneId = (ushort)plr.ZoneId;
+            spawn.Level = 35;
+
+            var c = plr.Region.CreateCreature(spawn);
+            var brain = new BossBrain(c);
+            brain.Abilities = CreatureService.BossSpawnAbilities.Where(x=>x.BossSpawnId == bossSpawn.BossSpawnId).ToList();
+            c.AiInterface.SetBrain(brain);
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+
         public static bool SpawnMobInstance(Player plr, ref List<string> values)
         {
             ushort facing = 2093;
@@ -4298,7 +4335,7 @@ namespace WorldServer.Managers.Commands
             spawn.Level = 35;
 
             var c = plr.Region.CreateCreature(spawn);
-            c.AiInterface.SetBrain(new ChosenBrain(c));
+            c.AiInterface.SetBrain(new KnightBrain(c));
             // Force zones to update
             plr.Region.Update();
 

@@ -62,6 +62,13 @@ namespace WorldServer.World.AI
 
         }
 
+        public void SpeakYourMind(string message)
+        {
+            _logger.Debug($"{_unit.Name} : {message}");
+            _unit.Say(message);
+        }
+
+
         private long _nextDistanceCheckTime;
 
 		#region Combat
@@ -497,7 +504,7 @@ namespace WorldServer.World.AI
                 _logger.Debug($"{_unit.Name} using {description} on {target.Name}");
             }
 
-            _unit.AbtInterface.StartCast(_unit, (ushort)abilityId, 1);
+            caster.AbtInterface.StartCast(caster, (ushort)abilityId, 1);
 
         }
 

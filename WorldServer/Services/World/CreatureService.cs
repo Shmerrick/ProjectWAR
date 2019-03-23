@@ -4,6 +4,7 @@ using GameData;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Common.Database.World.Creatures;
 using NLog;
 using WorldServer.Managers;
 using WorldServer.World.Objects;
@@ -15,6 +16,8 @@ namespace WorldServer.Services.World
     {
         private static Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         public static Dictionary<uint, Creature_proto> CreatureProtos;
+        public static IList<BossSpawn> BossSpawns;
+        public static IList<BossSpawnAbilities> BossSpawnAbilities;
 
         #region Creature Proto
         [LoadingFunction(true)]
@@ -242,6 +245,23 @@ namespace WorldServer.Services.World
         {
             return Interlocked.Increment(ref MaxCreatureGUID);
         }
+
+        [LoadingFunction(true)]
+        public static void LoadBossSpawns()
+        {
+            Log.Debug("WorldMgr", "Loading Boss_Spawns...");
+
+            BossSpawns = Database.SelectAllObjects<BossSpawn>();
+            Log.Success("LoadBossSpawns", "Loaded " + BossSpawns.Count + " BossSpawns");
+
+            BossSpawnAbilities = Database.SelectAllObjects<BossSpawnAbilities>();
+            Log.Success("LoadBossSpawns", "Loaded " + BossSpawnAbilities.Count + " BossSpawnAbilities");
+
+        }
+
+
+
+
 
         [LoadingFunction(true)]
         public static void LoadCreatureSpawns()
