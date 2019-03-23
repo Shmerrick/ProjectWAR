@@ -75,7 +75,7 @@ namespace WorldServer.World.Objects.Instances.Bastion_Stairs
         //private void CheckBossRageTimer()
         //{
         //	// check rage timer
-        //	if (BossTimer != null && BossTimer.ElapsedMilliseconds / 1000 >= TIMER_RAGE_MAX)
+        //	if (BossCombatTimer != null && BossCombatTimer.ElapsedMilliseconds / 1000 >= TIMER_RAGE_MAX)
         //	{
         //		// rage timer maximum reached
         //		// nuke all players
@@ -86,7 +86,7 @@ namespace WorldServer.World.Objects.Instances.Bastion_Stairs
         //private void ApplyIncomingDmgIncreaseOnPlayers()
         //{
         //	// apply incoming dmg increase on players
-        //	if (BossTimer != null && (BossTimer.ElapsedMilliseconds / 1000) % 60 == 0)
+        //	if (BossCombatTimer != null && (BossCombatTimer.ElapsedMilliseconds / 1000) % 60 == 0)
         //	{
         //		foreach (Player plr in GetPlayersInRange(300, false))
         //		{

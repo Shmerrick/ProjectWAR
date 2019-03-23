@@ -1,13 +1,12 @@
-﻿using Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using SystemData;
+using Common;
 using Common.Database.World.Creatures;
 using FrameWork;
 using GameData;
 using NLog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using SystemData;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Components;
@@ -19,40 +18,49 @@ namespace WorldServer.World.AI
 {
     public class BossBrain : ABrain
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        public List<BossSpawnAbilities> Abilities { get; set; }
-        public Dictionary<BossSpawnAbilities, long> AbilityTracker { get; set; }
         // Melee range for the boss - could use baseradius perhaps?
         public static int BOSS_MELEE_RANGE = 25;
+
         // Cooldown between special attacks 
         public static int NEXT_ATTACK_COOLDOWN = 2500;
-        // List of Adds that the boss should spawn, if any.
-        public List<uint> AddList { get; set; }
-        // List of Adds that the boss has spawned, and their states.
-        public List<Creature> SpawnList { get; set; }
+
+
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public BossBrain(Unit myOwner)
             : base(myOwner)
         {
             AbilityTracker = new Dictionary<BossSpawnAbilities, long>();
             SpawnList = new List<Creature>();
+            CurrentPhase = 0;
         }
+
+        public List<BossSpawnAbilities> Abilities { get; set; }
+
+        public Dictionary<BossSpawnAbilities, long> AbilityTracker { get; set; }
+
+        // List of Adds that the boss should spawn, if any.
+        public List<uint> AddList { get; set; }
+
+        // List of Adds that the boss has spawned, and their states.
+        public List<Creature> SpawnList { get; set; }
+        public List<BossSpawnPhase> Phases { get; set; }
+        public int CurrentPhase { get; set; }
 
         public override void Think(long tick)
         {
             if (_unit.IsDead)
                 return;
 
-
             base.Think(tick);
 
             // Only bother to seek targets if we're actually being observed by a player
             if (Combat.CurrentTarget == null && _unit.PlayersInRange.Count > 0)
             {
-                if (_pet != null && (_pet.IsHeeling || ((CombatInterface_Pet)_pet.CbtInterface).IgnoreDamageEvents))
+                if (_pet != null && (_pet.IsHeeling || ((CombatInterface_Pet) _pet.CbtInterface).IgnoreDamageEvents))
                     return;
 
-                Unit target = _unit.AiInterface.GetAttackableUnit();
+                var target = _unit.AiInterface.GetAttackableUnit();
                 if (target != null)
                     _unit.AiInterface.ProcessCombatStart(target);
             }
@@ -61,16 +69,17 @@ namespace WorldServer.World.AI
                 _unit.AbtInterface.CanCastCooldown(0) &&
                 TCPManager.GetTimeStampMS() > NextTryCastTime)
             {
-
                 var target = Combat.GetCurrentTarget();
 
+                var phaseAbilities = GetPhaseAbilities(Abilities);
+
                 // Get abilities that can fire now.
-                foreach (var ability in Abilities)
+                foreach (var ability in phaseAbilities)
                 {
-                    Type t = GetType();
-                    MethodInfo method = t.GetMethod(ability.Condition);
+                    var t = GetType();
+                    var method = t.GetMethod(ability.Condition);
                     _logger.Trace($"Checking condition: {ability.Condition} ");
-                    bool conditionTrue = (bool)method.Invoke(this, null);
+                    var conditionTrue = (bool) method.Invoke(this, null);
                     if (conditionTrue)
                     {
                         // If the ability is not in the ability tracker, add it
@@ -80,6 +89,7 @@ namespace WorldServer.World.AI
                             {
                                 AbilityTracker.Add(ability, 0); // 0 to ensure its possible to execute on check
                             }
+
                             _logger.Debug($"Adding ability to the tracker : {AbilityTracker.Count} {ability.Name} 0");
                         }
                         else // If this ability is already in the abilitytracker  -- can probably remove this as it should be removed on execution.
@@ -92,10 +102,6 @@ namespace WorldServer.World.AI
                             {
                                 // Do nothing
                             }
-                            else
-                            {
-                                // If it's next invocation < now, leave it.
-                            }
                         }
                     }
                 }
@@ -107,39 +113,30 @@ namespace WorldServer.World.AI
                 myList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
 
                 foreach (var keyValuePair in myList)
-                {
                     _logger.Debug($"***{keyValuePair.Key.Name} => {keyValuePair.Value}");
-                }
 
                 lock (myList)
                 {
                     foreach (var keyValuePair in myList)
-                    {
                         if (keyValuePair.Value < tick)
                         {
                             if (keyValuePair.Key.ExecuteChance >= rand)
                             {
-                                Type t = GetType();
-                                MethodInfo method = t.GetMethod(keyValuePair.Key.Execution);
+                                var t = GetType();
+                                var method = t.GetMethod(keyValuePair.Key.Execution);
 
                                 _logger.Trace($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
 
 
-                                if (!String.IsNullOrEmpty(keyValuePair.Key.Speech))
-                                {
+                                if (!string.IsNullOrEmpty(keyValuePair.Key.Speech))
                                     _unit.Say(keyValuePair.Key.Speech, ChatLogFilters.CHATLOGFILTERS_SHOUT);
-                                }
 
-                                if (!String.IsNullOrEmpty(keyValuePair.Key.Sound))
-                                {
+                                if (!string.IsNullOrEmpty(keyValuePair.Key.Sound))
                                     foreach (var plr in GetClosePlayers())
-                                    {
                                         plr.PlaySound(Convert.ToUInt16(keyValuePair.Key.Sound));
-                                    }
-                                }
 
                                 _logger.Trace($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
-                                NextTryCastTime = FrameWork.TCPManager.GetTimeStamp() + NEXT_ATTACK_COOLDOWN;
+                                NextTryCastTime = TCPManager.GetTimeStamp() + NEXT_ATTACK_COOLDOWN;
                                 lock (AbilityTracker)
                                 {
                                     AbilityTracker[keyValuePair.Key] = tick + keyValuePair.Key.CoolDown * 1000;
@@ -152,20 +149,24 @@ namespace WorldServer.World.AI
                                 _logger.Debug($"CoolDowns : {_unit.AbtInterface.Cooldowns.Count}");
                                 break; // Leave the loop, come back on next tick
                             }
-                            else
-                            {
-                                _logger.Debug($"Skipping : {keyValuePair.Key.Name} => {keyValuePair.Value} (random)");
-                            }
-                        }
-                        else
-                        {
 
-                            // _logger.Debug($"Skipping : {keyValuePair.Key.Name} => {keyValuePair.Value} (time not valid) {keyValuePair.Value} >= {tick} ({ new DateTime(tick).ToString("HHmmss")})");
+                            _logger.Debug($"Skipping : {keyValuePair.Key.Name} => {keyValuePair.Value} (random)");
                         }
-                    }
                 }
             }
+        }
 
+        private List<BossSpawnAbilities> GetPhaseAbilities(List<BossSpawnAbilities> abilities)
+        {
+            var result = new List<BossSpawnAbilities>();
+            foreach (var ability in Abilities)
+            {
+                if (ability.Phase == "*")
+                    result.Add(ability);
+                if (Convert.ToInt32(ability.Phase) == CurrentPhase) result.Add(ability);
+            }
+
+            return result;
         }
 
         private List<Player> GetClosePlayers()
@@ -182,41 +183,30 @@ namespace WorldServer.World.AI
         {
             if (Combat.HasTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY))
             {
-                if ((_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < BOSS_MELEE_RANGE))  // In melee range
-                {
+                if (_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < BOSS_MELEE_RANGE
+                ) // In melee range
                     return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
                 return false;
             }
 
+            return false;
         }
 
         public bool HasBlessing()
         {
             if (Combat.HasTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY))
             {
-                if ((_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < BOSS_MELEE_RANGE))  // In melee range
+                if (_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < BOSS_MELEE_RANGE
+                ) // In melee range
                 {
-                    var blessing = Combat.CurrentTarget.BuffInterface.HasBuffOfType((byte)BuffTypes.Blessing);
+                    var blessing = Combat.CurrentTarget.BuffInterface.HasBuffOfType((byte) BuffTypes.Blessing);
                     return blessing;
                 }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
+
                 return false;
             }
 
+            return false;
         }
 
         public bool CanKnockDownTarget()
@@ -243,10 +233,37 @@ namespace WorldServer.World.AI
         {
             if (_unit.PctHealth <= 20)
                 return true;
-            else
-            {
-                return false;
-            }
+            return false;
+        }
+
+        public bool FourtyNinePercentHealth()
+        {
+            if (_unit.PctHealth <= 49)
+                return true;
+            return false;
+        }
+
+        public bool SeventyFivePercentHealth()
+        {
+            if (_unit.PctHealth <= 74)
+                return true;
+            return false;
+        }
+
+        public bool NinetyNinePercentHealth()
+        {
+            if (_unit.PctHealth <= 99)
+                return true;
+            return false;
+        }
+
+        public void IncrementPhase()
+        {
+            // Phases must be ints in ascending order.
+            var currentPhase = CurrentPhase;
+            if (Phases.Count == currentPhase)
+                return;
+            CurrentPhase = currentPhase + 1;
         }
 
         public void ShatterBlessing()
@@ -278,7 +295,7 @@ namespace WorldServer.World.AI
 
         public bool TargetIsUnstoppable()
         {
-            var buff = Combat.CurrentTarget.BuffInterface.GetBuff((ushort)GameBuffs.Unstoppable, Combat.CurrentTarget);
+            var buff = Combat.CurrentTarget.BuffInterface.GetBuff((ushort) GameBuffs.Unstoppable, Combat.CurrentTarget);
             return buff != null;
         }
 
@@ -290,7 +307,6 @@ namespace WorldServer.World.AI
 
         public void PuntTarget()
         {
-
             if (Combat.CurrentTarget != null)
             {
                 SpeakYourMind($" using Repel vs {(Combat.CurrentTarget as Player).Name}");
@@ -328,13 +344,13 @@ namespace WorldServer.World.AI
 
         public void Whirlwind()
         {
-            SpeakYourMind($" using Whirlwind");
+            SpeakYourMind(" using Whirlwind");
             SimpleCast(_unit, Combat.CurrentTarget, "Whirlwind", 5568);
         }
 
         public void EnfeeblingShout()
         {
-            SpeakYourMind($" using Enfeebling Shout");
+            SpeakYourMind(" using Enfeebling Shout");
             SimpleCast(_unit, Combat.CurrentTarget, "Enfeebling Shout", 5575);
         }
 
@@ -349,7 +365,7 @@ namespace WorldServer.World.AI
                 var Z = _unit.WorldPosition.Z;
 
 
-                Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
+                var spawn = new Creature_spawn {Guid = (uint) CreatureService.GenerateCreatureSpawnGUID()};
                 var proto = CreatureService.GetCreatureProto(protoId);
                 if (proto == null)
                     return;
@@ -359,14 +375,14 @@ namespace WorldServer.World.AI
                 spawn.WorldX = X + StaticRandom.Instance.Next(500);
                 spawn.WorldY = Y + StaticRandom.Instance.Next(500);
                 spawn.WorldZ = Z;
-                spawn.ZoneId = (ushort)_unit.ZoneId;
-                
-                
+                spawn.ZoneId = (ushort) _unit.ZoneId;
+
+
                 var creature = _unit.Region.CreateCreature(spawn);
                 SpawnList.Add(creature);
                 creature.AiInterface.SetBrain(new AggressiveBrain(creature));
-
             }
+
             // Force zones to update
             _unit.Region.Update();
         }
@@ -376,7 +392,6 @@ namespace WorldServer.World.AI
         {
             public string Execution { get; set; }
             public int NextInvocation { get; set; }
-
         }
     }
 }

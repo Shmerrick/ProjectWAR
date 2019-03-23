@@ -816,6 +816,16 @@ namespace WorldServer.World.Map
             return crea;
         }
 
+        public Boss CreateBoss(Creature_spawn spawn, uint bossId)
+        {
+            if (spawn?.Proto == null)
+                return null;
+
+            Boss boss = new Boss(spawn, bossId);
+            AddObject(boss, spawn.ZoneId);
+            return boss;
+        }
+
         public AdvancedCreature CreateAdvancedCreature(Creature_spawn spawn)
         {
 #if NO_CREATURE

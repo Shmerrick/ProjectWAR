@@ -34,6 +34,9 @@ namespace Common.Database.World.Creatures
         [DataElement(AllowDbNull = true)]  // Sounds to play
         public string Sound { get; set; }
 
+        [DataElement(AllowDbNull = true)]  // * - any phase, (1,2,3..) specific phase
+        public string Phase { get; set; }
+
     }
 
 

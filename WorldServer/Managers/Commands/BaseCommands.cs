@@ -5,6 +5,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 using SystemData;
 using Common.Database.World.BattleFront;
 using Common.Database.World.Creatures;
@@ -4301,20 +4302,70 @@ namespace WorldServer.Managers.Commands
             spawn.WorldY = Y + StaticRandom.Instance.Next(500);
             spawn.WorldZ = Z;
             spawn.ZoneId = (ushort)plr.ZoneId;
-            spawn.Level = 35;
 
-            //var c = plr.Region.CreateCreature(spawn);
-            //var brain = new BossBrain(c);
-            //brain.Abilities = CreatureService.BossSpawnAbilities.Where(x=>x.BossSpawnId == bossSpawn.BossSpawnId).ToList();
-            //c.AiInterface.SetBrain(brain);
-
-
-            var IS = new SimpleGoremane(spawn, Convert.ToUInt32(bossSpawnId), 0, null);
+            var boss = plr.Region.CreateBoss(spawn, Convert.ToUInt32(bossSpawnId));
+            boss.CanBeKnockedBack = false;
+            boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
+            
+            var brain = new BossBrain(boss)
+            {
+                Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == bossSpawn.BossSpawnId)
+                    .ToList()
+            };
+            boss.AiInterface.SetBrain(brain);
 
             // Force zones to update
             plr.Region.Update();
 
             return true;
+        }
+
+        public static bool SummonGoremane(Player plr, ref List<string> values)
+        {
+            ushort facing = 2093;
+
+            var X = plr.WorldPosition.X;
+            var Y = plr.WorldPosition.Y;
+            var Z = plr.WorldPosition.Z;
+
+            var bossSpawnId = 33182;
+
+            var bossSpawn = CreatureService.BossSpawns.SingleOrDefault(x => x.BossSpawnId == Convert.ToInt32(bossSpawnId));
+
+            Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
+            var proto = CreatureService.GetCreatureProto((uint)bossSpawn.ProtoId);
+            if (proto == null)
+                return true;
+            spawn.BuildFromProto(proto);
+
+            spawn.WorldO = facing;
+            spawn.WorldX = X + StaticRandom.Instance.Next(500);
+            spawn.WorldY = Y + StaticRandom.Instance.Next(500);
+            spawn.WorldZ = Z;
+            spawn.ZoneId = (ushort)plr.ZoneId;
+
+            var boss = plr.Region.CreateBoss(spawn, Convert.ToUInt32(bossSpawnId));
+            boss.CanBeKnockedBack = false;
+            boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
+
+            var brain = new BossBrain(boss)
+            {
+                Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == bossSpawn.BossSpawnId).ToList(),
+                Phases = CreatureService.BossSpawnPhases.Where( x=> x.BossSpawnId == bossSpawn.BossSpawnId).ToList()
+            };
+            boss.AiInterface.SetBrain(brain);
+            boss.BossCombatTimerInterval = 30000;
+            boss.BossCombatTimer.Elapsed += delegate { BossCombatTimerOnElapsed(boss); };
+
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+
+        private static void BossCombatTimerOnElapsed(Boss boss)
+        {
+            boss.Say($"{boss.Name} :: timer complete");
         }
 
         public static bool SpawnMobInstance(Player plr, ref List<string> values)
