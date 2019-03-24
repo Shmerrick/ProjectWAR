@@ -13,7 +13,7 @@ namespace WorldServer.World.AI
         public int runeofShieldingCooldown { get; set; }
 
         // Cooldown between special attacks 
-        public static int NEXT_ATTACK_COOLDOWN = 2;
+        public static int NEXT_ATTACK_COOLDOWN = 4000;
 
 
         public HealerBrain(Unit myOwner)
