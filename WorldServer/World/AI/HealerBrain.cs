@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using FrameWork;
+using GameData;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 
@@ -10,7 +11,10 @@ namespace WorldServer.World.AI
     {
         public Unit FriendlyTarget { get; set; }
         public int runeofShieldingCooldown { get; set; }
-        
+
+        // Cooldown between special attacks 
+        public static int NEXT_ATTACK_COOLDOWN = 2;
+
 
         public HealerBrain(Unit myOwner)
             : base(myOwner)
@@ -31,6 +35,7 @@ namespace WorldServer.World.AI
                 if (friendlyPlayers.Count() > 0)
                 {
                     _logger.Debug($"{_unit} changing friendly target to  {(friendlyPlayers[0]).Name}");
+                    SpeakYourMind($"{_unit.Name} friendly target=> {(friendlyPlayers[0]).Name}");
                     FriendlyTarget = friendlyPlayers[0];
                 }
             }
@@ -38,39 +43,8 @@ namespace WorldServer.World.AI
             if (_unit.AbtInterface.CanCastCooldown(0) &&
                 TCPManager.GetTimeStampMS() > NextTryCastTime)
             {
-                var percentHealth = (_unit.Health * 100) / _unit.MaxHealth;
-                var target = Combat.GetCurrentTarget();
 
-                if (percentHealth < 20f)
-                {
-                    // 695 is healing pot model - bit of hack
-                    // This needs to be timed if we dont have a proper inventory to work with.
-                    var items = CreatureService.GetCreatureItems((_unit as Creature).Entry)
-                        .Where(x => x.ModelId == 695);
-                    // Low health -- potion of healing
-                    if (items.Count() > 0)
-                    {
-                        // 7872 - Potion of Healing ability
-                        if (!potionUsed)
-                        {
-                            SimpleCast(_unit, _unit, "Potion of Healing", 7872);
-                            potionUsed = true;
-                        }
-                    }
-                    else
-                    {
-                        if (nextDetauntAvailable < FrameWork.TCPManager.GetTimeStamp())
-                        {
-                            SimpleCast(_unit, target, "Rune of preservation (detaunt)", 1595);
-                            nextDetauntAvailable =
-                                FrameWork.TCPManager.GetTimeStamp() + 30; // available in another 30 seconds
-                        }
-                    }
-
-                    return;
-                }
-
-               
+                Combat.SetTarget(FriendlyTarget.Oid, TargetTypes.TARGETTYPES_TARGET_ALLY);
 
                 var rand = StaticRandom.Instance.Next(10);
                 switch (rand)
@@ -118,6 +92,8 @@ namespace WorldServer.World.AI
                         break;
                     }
                 }
+
+                NextTryCastTime = TCPManager.GetTimeStampMS() + NEXT_ATTACK_COOLDOWN;
             }
 
 

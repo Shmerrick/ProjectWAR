@@ -503,8 +503,9 @@ namespace WorldServer.World.AI
             {
                 _logger.Debug($"{_unit.Name} using {description} on {target.Name}");
             }
-
+            
             caster.AbtInterface.StartCast(caster, (ushort)abilityId, 1);
+            
 
         }
 

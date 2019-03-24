@@ -22,7 +22,7 @@ namespace WorldServer.World.AI
         public static int BOSS_MELEE_RANGE = 25;
 
         // Cooldown between special attacks 
-        public static int NEXT_ATTACK_COOLDOWN = 2500;
+        public static int NEXT_ATTACK_COOLDOWN = 2000;
 
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -85,7 +85,7 @@ namespace WorldServer.World.AI
                         {
                             lock (AbilityTracker)
                             {
-                                AbilityTracker.Add(ability, 0); // 0 to ensure its possible to execute on check
+                                AbilityTracker.Add(ability, TCPManager.GetTimeStamp() + NEXT_ATTACK_COOLDOWN); 
                             }
 
                             _logger.Debug($"Adding ability to the tracker : {AbilityTracker.Count} {ability.Name} 0");
@@ -133,14 +133,24 @@ namespace WorldServer.World.AI
                                     foreach (var plr in GetClosePlayers())
                                         plr.PlaySound(Convert.ToUInt16(keyValuePair.Key.Sound));
 
-                                _logger.Trace($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
-                                NextTryCastTime = TCPManager.GetTimeStamp() + NEXT_ATTACK_COOLDOWN;
+                                _logger.Debug($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
+                                NextTryCastTime = TCPManager.GetTimeStampMS() + NEXT_ATTACK_COOLDOWN;
                                 lock (AbilityTracker)
                                 {
                                     AbilityTracker[keyValuePair.Key] = tick + keyValuePair.Key.CoolDown * 1000;
                                 }
 
-                                method.Invoke(this, null);
+                                try
+                                {
+                                    method.Invoke(this, null);
+                                }
+                                catch (Exception e)
+                                {
+                                    _logger.Error($"{e.Message} {e.StackTrace}");
+                                    throw;
+                                }
+
+                                
 
                                 _logger.Trace(
                                     $"Updating the tracker : {keyValuePair.Key.Name} => {tick + keyValuePair.Key.CoolDown * 1000} ");
