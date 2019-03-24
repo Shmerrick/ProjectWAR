@@ -162,7 +162,11 @@ namespace WorldServer.World.AI
             foreach (var ability in Abilities)
             {
                 if (ability.Phase == "*")
+                {
                     result.Add(ability);
+                    continue;
+                }
+
                 if (Convert.ToInt32(ability.Phase) == CurrentPhase) result.Add(ability);
             }
 
@@ -174,9 +178,20 @@ namespace WorldServer.World.AI
             return _unit.GetPlayersInRange(300, false);
         }
 
-        private bool PlayersWithinRange()
+        public bool PlayersWithinRange()
         {
-            return _unit.GetPlayersInRange(30, false).Count > 0;
+            if (_unit != null)
+            {
+                var players = _unit.GetPlayersInRange(30, false);
+                if (players == null)
+                    return false;
+                else
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public bool TargetInMeleeRange()
@@ -264,6 +279,8 @@ namespace WorldServer.World.AI
             if (Phases.Count == currentPhase)
                 return;
             CurrentPhase = currentPhase + 1;
+
+            SpeakYourMind($" using Increment Phase vs {currentPhase}=>{CurrentPhase}");
         }
 
         public void ShatterBlessing()

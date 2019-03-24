@@ -5,6 +5,7 @@ using System.Linq;
 using System.Timers;
 using Common;
 using FrameWork;
+using GameData;
 using NLog;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
@@ -39,7 +40,8 @@ namespace WorldServer.World.Objects
             BossProtoId = protoId;
             EvtInterface.AddEventNotify(EventName.OnEnterCombat, OnEnterCombat);
             EvtInterface.AddEventNotify(EventName.OnLeaveCombat, OnLeaveCombat);
-
+            CrowdControlImmunities = new List<CrowdControlTypes>();
+            BossCombatTimer = new Timer();
             CanBeKnockedBack = false;  // default : no KD - can be overriden
 
         }
@@ -52,6 +54,8 @@ namespace WorldServer.World.Objects
             {
                 AddCrowdControlImmunity((int) crowdControlImmunity);
             }
+
+            BossCombatTimer.Enabled = false;
         }
 
         public override void Update(long msTick)
@@ -71,7 +75,7 @@ namespace WorldServer.World.Objects
 
         public virtual bool OnEnterCombat(Object mob, object args)
         {
-            BossCombatTimer = new Timer {Enabled = true, Interval = BossCombatTimerInterval};
+            BossCombatTimer.Interval = BossCombatTimerInterval;
 
             return false;
         }

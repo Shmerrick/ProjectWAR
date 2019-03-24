@@ -10,7 +10,7 @@ namespace Common.Database.World.Creatures
         [PrimaryKey]
         public int BossSpawnId { get; set; }
 
-        [DataElement(AllowDbNull = false)]  
+        [PrimaryKey]  
         public int PhaseId { get; set; }
         
         [DataElement(AllowDbNull = false)]  // Name of this ability

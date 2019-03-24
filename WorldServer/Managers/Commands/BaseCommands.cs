@@ -4356,6 +4356,7 @@ namespace WorldServer.Managers.Commands
             boss.AiInterface.SetBrain(brain);
             boss.BossCombatTimerInterval = 30000;
             boss.BossCombatTimer.Elapsed += delegate { BossCombatTimerOnElapsed(boss); };
+            boss.BossCombatTimer.Enabled = false;
 
             // Force zones to update
             plr.Region.Update();
