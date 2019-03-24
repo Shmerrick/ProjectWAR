@@ -100,7 +100,7 @@ namespace WorldServer.World.Objects.Instances
             }
             // Want to keep the add list on the boss instance. 
             //// reset add list
-            //AddList = new List<Creature>();
+            //AddDictionary = new List<Creature>();
 
             // reset all Modify Scalers
             ModifyDmgHealScaler = 1f;
@@ -150,7 +150,7 @@ namespace WorldServer.World.Objects.Instances
         protected override void SetDeath(Unit killer)
         {
             // reset add list
-            // AddList = new List<Creature>();
+            // AddDictionary = new List<Creature>();
 
             base.SetDeath(killer);
 

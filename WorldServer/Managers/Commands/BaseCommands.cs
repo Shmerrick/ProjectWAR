@@ -4352,11 +4352,15 @@ namespace WorldServer.Managers.Commands
             {
                 Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == bossSpawn.BossSpawnId).ToList(),
                 Phases = CreatureService.BossSpawnPhases.Where( x=> x.BossSpawnId == bossSpawn.BossSpawnId).ToList()
+                
             };
             boss.AiInterface.SetBrain(brain);
             boss.BossCombatTimerInterval = 30000;
             boss.BossCombatTimer.Elapsed += delegate { BossCombatTimerOnElapsed(boss); };
             boss.BossCombatTimer.Enabled = false;
+
+            boss.AddDictionary.Add(6896, BrainType.HealerBrain);
+            boss.AddDictionary.Add(6896, BrainType.HealerBrain);
 
             // Force zones to update
             plr.Region.Update();

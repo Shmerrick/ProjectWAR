@@ -11,6 +11,7 @@ using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities.Components;
+using WorldServer.World.AI;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects.Instances;
 using WorldServer.World.Objects.Instances.The_Lost_Vale;
@@ -24,7 +25,8 @@ namespace WorldServer.World.Objects
         public Timer BossCombatTimer { get; set; } = null;
         public static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         // List of Adds that the Boss can spawn
-        public List<Creature> AddList = new List<Creature>();
+        public Dictionary<uint, BrainType> AddDictionary;
+        public Dictionary<uint, Creature> SpawnDictionary;
         public int PlayerDeathsCount { get; set; } = 0;
         // List of CC that the Boss is immune to.
         public List<GameData.CrowdControlTypes> CrowdControlImmunities { get; set; }
@@ -43,6 +45,7 @@ namespace WorldServer.World.Objects
             CrowdControlImmunities = new List<CrowdControlTypes>();
             BossCombatTimer = new Timer();
             CanBeKnockedBack = false;  // default : no KD - can be overriden
+            AddDictionary = new Dictionary<uint, BrainType>();
 
         }
 

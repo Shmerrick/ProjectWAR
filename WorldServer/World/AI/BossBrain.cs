@@ -39,8 +39,6 @@ namespace WorldServer.World.AI
 
         public Dictionary<BossSpawnAbilities, long> AbilityTracker { get; set; }
 
-        // List of Adds that the boss should spawn, if any.
-        public List<uint> AddList { get; set; }
 
         // List of Adds that the boss has spawned, and their states.
         public List<Creature> SpawnList { get; set; }
@@ -373,42 +371,45 @@ namespace WorldServer.World.AI
 
         public void SpawnAdds()
         {
-            foreach (var protoId in AddList)
+            if (_unit is Boss)
             {
-                ushort facing = 2093;
+                var adds = (_unit as Boss).AddDictionary;
+                foreach (KeyValuePair<uint, BrainType> entry in adds)
+                {
+                    ushort facing = 2093;
 
-                var X = _unit.WorldPosition.X;
-                var Y = _unit.WorldPosition.Y;
-                var Z = _unit.WorldPosition.Z;
-
-
-                var spawn = new Creature_spawn {Guid = (uint) CreatureService.GenerateCreatureSpawnGUID()};
-                var proto = CreatureService.GetCreatureProto(protoId);
-                if (proto == null)
-                    return;
-                spawn.BuildFromProto(proto);
-
-                spawn.WorldO = facing;
-                spawn.WorldX = X + StaticRandom.Instance.Next(500);
-                spawn.WorldY = Y + StaticRandom.Instance.Next(500);
-                spawn.WorldZ = Z;
-                spawn.ZoneId = (ushort) _unit.ZoneId;
+                    var X = _unit.WorldPosition.X;
+                    var Y = _unit.WorldPosition.Y;
+                    var Z = _unit.WorldPosition.Z;
 
 
-                var creature = _unit.Region.CreateCreature(spawn);
-                SpawnList.Add(creature);
-                creature.AiInterface.SetBrain(new AggressiveBrain(creature));
+                    var spawn = new Creature_spawn {Guid = (uint) CreatureService.GenerateCreatureSpawnGUID()};
+                    var proto = CreatureService.GetCreatureProto(entry.Key);
+                    if (proto == null)
+                        return;
+                    spawn.BuildFromProto(proto);
+
+                    spawn.WorldO = facing;
+                    spawn.WorldX = X + StaticRandom.Instance.Next(500);
+                    spawn.WorldY = Y + StaticRandom.Instance.Next(500);
+                    spawn.WorldZ = Z;
+                    spawn.ZoneId = (ushort) _unit.ZoneId;
+
+
+                    var creature = _unit.Region.CreateCreature(spawn);
+                    (_unit as Boss).SpawnDictionary.Add(entry.Key, creature);
+
+                    if (entry.Value == BrainType.AggressiveBrain)
+                        creature.AiInterface.SetBrain(new AggressiveBrain(creature));
+                    if (entry.Value == BrainType.HealerBrain)
+                        creature.AiInterface.SetBrain(new HealerBrain(creature));
+
+                }
+
+                // Force zones to update
+                _unit.Region.Update();
             }
-
-            // Force zones to update
-            _unit.Region.Update();
         }
 
-
-        public class BossAbilityTrack
-        {
-            public string Execution { get; set; }
-            public int NextInvocation { get; set; }
-        }
     }
 }
