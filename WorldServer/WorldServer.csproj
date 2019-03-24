@@ -404,8 +404,10 @@
     <Compile Include="World\Abilities\RunicBlessingsHandler.cs" />
     <Compile Include="World\AI\ABrain.cs" />
     <Compile Include="World\AI\BlackguardBrain.cs" />
+    <Compile Include="World\AI\BrainType.cs" />
     <Compile Include="World\AI\BT\ChosenBehaviourTree.cs" />
     <Compile Include="World\AI\BossBrain.cs" />
+    <Compile Include="World\AI\HealerBrain.cs" />
     <Compile Include="World\AI\SlayerBrain.cs" />
     <Compile Include="World\AI\WitchHunterBrain.cs" />
     <Compile Include="World\AI\WitchElfBrain.cs" />
@@ -500,6 +502,7 @@
     <Compile Include="World\Objects\AdvancedCreature.cs" />
     <Compile Include="World\Objects\CreatureState.cs" />
     <Compile Include="World\Objects\DynamicVendor.cs" />
+    <Compile Include="World\Objects\Boss.cs" />
     <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleBarakustheGodslayer.cs" />
     <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleCuliusEmbervine.cs" />
     <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleKorthuktheRaging.cs" />

@@ -37,9 +37,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// Is used as a base timer in milliseconds when securing objectives.
         /// <summary>
         public static int MAX_CONTROL_GAUGE = MAX_SECURE_PROGRESS * 200;
-        public static int CONTESTED_TIMESPAN = 30; //300; // 5 min contested
-        public static int SECURED_TIMESPAN = 30; //900; // 5 min secured
-        public static int GUARDSPAWN_DELAY = 60; //60; // 1 min delayed
 
 
         /// <summary>The tier within which the Campaign exists.</summary>
@@ -106,8 +103,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public int CaptureTimer;
         public int GuardedTimer;
 
-        public const int CaptureTimerLength = 1 * 60;
-        public const int GuardedTimerLength = 1 * 60;
+        public const int CaptureTimerLength = 2 * 60;
+        public const int GuardedTimerLength = 5 * 60;
         #endregion
 
         /// <summary>
@@ -956,8 +953,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 AssaultingRealm = CapturingPlayer.Realm;
             }
             State = StateFlags.Contested;
-            CaptureTimer = TCPManager.GetTimeStamp() + CaptureTimerLength;
-            DisplayedTimer = CaptureTimerLength;
+
+            var timerLength = CaptureTimerLength + StaticRandom.Instance.Next(0, 60);
+
+            CaptureTimer = TCPManager.GetTimeStamp() + timerLength;
+            DisplayedTimer = timerLength;
             SendState(CapturingPlayer, true, true);
             DespawnAllGuards();
             BroadcastFlagInfo(true);
@@ -978,8 +978,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattlefrontLogger.Info($"Setting Campaign Objective Buff {campaignObjectiveBuff.BuffId} for Objective {Id}");
             }
 
-            GuardedTimer = TCPManager.GetTimeStamp() + GuardedTimerLength;
-            DisplayedTimer = GuardedTimerLength;
+            var timerLength = GuardedTimerLength + StaticRandom.Instance.Next(120, 300);
+
+            GuardedTimer = TCPManager.GetTimeStamp() + GuardedTimerLength+ timerLength;
+            DisplayedTimer = GuardedTimerLength+ timerLength;
 
             State = StateFlags.Secure;
             SendState(CapturingPlayer, true, true);
