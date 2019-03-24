@@ -76,7 +76,7 @@ namespace WorldServer.World.AI
                 {
                     var t = GetType();
                     var method = t.GetMethod(ability.Condition);
-                    _logger.Trace($"Checking condition: {ability.Condition} ");
+                    _logger.Debug($"Checking condition: {ability.Condition} ");
                     var conditionTrue = (bool) method.Invoke(this, null);
                     if (conditionTrue)
                     {

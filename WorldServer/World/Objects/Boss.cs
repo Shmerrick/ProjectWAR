@@ -46,7 +46,7 @@ namespace WorldServer.World.Objects
             BossCombatTimer = new Timer();
             CanBeKnockedBack = false;  // default : no KD - can be overriden
             AddDictionary = new Dictionary<uint, BrainType>();
-
+            SpawnDictionary = new Dictionary<uint, Creature>();
         }
 
         public override void OnLoad()
@@ -135,6 +135,17 @@ namespace WorldServer.World.Objects
         {
             base.SetDeath(killer);
 
+            // Clean up spawns.
+            if (SpawnDictionary.Count > 0)
+            {
+                foreach (KeyValuePair<uint, Creature> entry in SpawnDictionary)
+                {
+                    if ((!entry.Value.IsDisposed) && (entry.Value.IsInWorld()))
+                    {
+                        entry.Value.Destroy();
+                    }
+                }
+            }
         }
 
         public override void TryLoot(Player player, InteractMenu menu)
