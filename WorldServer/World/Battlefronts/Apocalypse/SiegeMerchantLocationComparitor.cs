@@ -5,7 +5,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public class SiegeMerchantLocationComparitor : ILocationComparitor
     {
-        public int ComparisonRange = 150;
+        public int ComparisonRange = 200;
 
         public bool InRange(Player player)
         {

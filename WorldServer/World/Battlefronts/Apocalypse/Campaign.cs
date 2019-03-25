@@ -33,8 +33,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     {
         public static int REALM_CAPTAIN_TELL_CHANCE = 10;
         public static IObjectDatabase Database = null;
-        public static int REALM_CAPTAIN_MINIMUM_CONTRIBUTION = 200;
-        public static int REALM_CAPTAIN_MINIMUM_PLAYERS = 20;
+        public static int REALM_CAPTAIN_MINIMUM_CONTRIBUTION = 50;
+        public static int REALM_CAPTAIN_MINIMUM_PLAYERS = 5;
         public static int DOMINATION_POINTS_REQUIRED = 6;
         static readonly object LockObject = new object();
         public static int SCALE_MODEL_UP = 1;
