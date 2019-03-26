@@ -260,13 +260,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 lock (status)
                 {
                     BattlefrontLogger.Trace($"Checking Keep Resources...");
-                    if (status.RegionId == Region.RegionId)
-                    {
-                        foreach (var keep in Keeps)
-                        {
-                            keep.UpdateResources();
-                        }
-                    }
+                   
                     if (NumberDestructionKeepsInZone() == 2)
                     {
                         // Place Siege merchant out the front of the WC
