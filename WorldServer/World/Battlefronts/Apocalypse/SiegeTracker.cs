@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using GameData;
+using NLog;
 using WorldServer.World.Interfaces;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
@@ -10,10 +11,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public byte MaxNumberSiege { get; set; }
         public byte CurrentNumberSiege { get; set; }
         public SiegeType Type { get; set; }
+        public Realms Realm { get; set; }
 
         public override string ToString()
         {
-            return $"{Type} {CurrentNumberSiege}/{MaxNumberSiege}";
+            return $"{Type} {CurrentNumberSiege}/{MaxNumberSiege} ({Realm})";
         }
 
         public bool CanDeploy()

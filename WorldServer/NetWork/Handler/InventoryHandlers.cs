@@ -248,7 +248,7 @@ namespace WorldServer.NetWork.Handler
 
                 if (item.Info.IsSiege)
                 {
-                    numberSiegeTypeBeforeCast = Plr.Region.Campaign.SiegeManager.GetNumberByType(siegeType.Value);
+                    numberSiegeTypeBeforeCast = Plr.Region.Campaign.SiegeManager.GetNumberByType(siegeType.Value, Plr.Realm);
                 }
             }
 
@@ -270,7 +270,7 @@ namespace WorldServer.NetWork.Handler
             if (item.Info.IsSiege)
             {
                 // If the siege exists, and the cast was not blocked or interrupted.
-                numberSiegeTypeAfterCast = Plr.Region.Campaign.SiegeManager.GetNumberByType(siegeType.Value);
+                numberSiegeTypeAfterCast = Plr.Region.Campaign.SiegeManager.GetNumberByType(siegeType.Value, Plr.Realm);
 
                 if ((item.Owner as Player).CharacterId == Plr.CharacterId)
                 {
