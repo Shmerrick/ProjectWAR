@@ -190,7 +190,8 @@ namespace WorldServer.World.Interfaces
 
             if (_unit != null)
             {
-                if (_unit is KeepCreature npc && !npc.IsPatrol)
+                // If keep creature has moved > 200 feet or significant Z shift (fall?).
+                if (_unit is KeepCreature npc)
                 {
                     if (((npc.Z - npc.SpawnPoint.Z > 120 || npc.SpawnPoint.Z - npc.Z > 30)) || !npc.PointWithinRadiusFeet(npc.WorldSpawnPoint, 200))
                     {

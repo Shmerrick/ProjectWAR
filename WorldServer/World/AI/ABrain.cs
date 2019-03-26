@@ -85,7 +85,7 @@ namespace WorldServer.World.AI
 
         public virtual bool StartCombat(Unit fighter)
         {
-            if (_unit.IsDead)
+                if (_unit.IsDead)
                 return false;
 
             // We try to buff NPC here

@@ -404,6 +404,7 @@
     <Compile Include="World\Abilities\RunicBlessingsHandler.cs" />
     <Compile Include="World\AI\ABrain.cs" />
     <Compile Include="World\AI\BlackguardBrain.cs" />
+    <Compile Include="World\AI\BossSpawn.cs" />
     <Compile Include="World\AI\BrainType.cs" />
     <Compile Include="World\AI\BT\ChosenBehaviourTree.cs" />
     <Compile Include="World\AI\BossBrain.cs" />

@@ -4320,44 +4320,79 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        public static bool SummonGoremane(Player plr, ref List<string> values)
+        public static bool SummonKokrit(Player plr, ref List<string> values)
         {
-            ushort facing = 2093;
+            var bossSpawnId = 19409;
 
+            var boss = SummonBoss(bossSpawnId, plr);
+            
+            
+
+            boss.AddDictionary.Add(6896, BrainType.HealerBrain);
+            boss.AddDictionary.Add(6896, BrainType.HealerBrain);
+
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+
+        private static Boss SummonBoss(int bossProtoId, Player plr)
+        {
             var X = plr.WorldPosition.X;
             var Y = plr.WorldPosition.Y;
             var Z = plr.WorldPosition.Z;
 
-            var bossSpawnId = 33182;
+            var bossSpawnId = bossProtoId;
 
             var bossSpawn = CreatureService.BossSpawns.SingleOrDefault(x => x.BossSpawnId == Convert.ToInt32(bossSpawnId));
 
             Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
             var proto = CreatureService.GetCreatureProto((uint)bossSpawn.ProtoId);
             if (proto == null)
-                return true;
+                return null;
             spawn.BuildFromProto(proto);
 
-            spawn.WorldO = facing;
+            spawn.WorldO = 2093;
             spawn.WorldX = X + StaticRandom.Instance.Next(500);
             spawn.WorldY = Y + StaticRandom.Instance.Next(500);
             spawn.WorldZ = Z;
             spawn.ZoneId = (ushort)plr.ZoneId;
 
             var boss = plr.Region.CreateBoss(spawn, Convert.ToUInt32(bossSpawnId));
+
             boss.CanBeKnockedBack = false;
             boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
 
             var brain = new BossBrain(boss)
             {
-                Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == bossSpawn.BossSpawnId).ToList(),
-                Phases = CreatureService.BossSpawnPhases.Where( x=> x.BossSpawnId == bossSpawn.BossSpawnId).ToList()
-                
+                Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == bossSpawnId).ToList(),
+                Phases = CreatureService.BossSpawnPhases.Where(x => x.BossSpawnId == bossSpawnId).ToList()
+
             };
             boss.AiInterface.SetBrain(brain);
             boss.BossCombatTimerInterval = 30000;
             boss.BossCombatTimer.Elapsed += delegate { BossCombatTimerOnElapsed(boss); };
             boss.BossCombatTimer.Enabled = false;
+
+            return boss;
+        }
+
+        public static bool SummonGoremane(Player plr, ref List<string> values)
+        {
+           
+            var bossSpawnId = 33182;
+            var boss = SummonBoss(bossSpawnId, plr);
+                       boss.CanBeKnockedBack = false;
+            boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
+
+            var brain = new BossBrain(boss)
+            {
+                Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == bossSpawnId).ToList(),
+                Phases = CreatureService.BossSpawnPhases.Where( x=> x.BossSpawnId == bossSpawnId).ToList()
+                
+            };
+          
 
             boss.AddDictionary.Add(6896, BrainType.HealerBrain);
             boss.AddDictionary.Add(6896, BrainType.HealerBrain);

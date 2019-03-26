@@ -472,6 +472,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("realmcaptain", MakeRealmCaptain, null, EGmLevel.SourceDev, 0, "Makes the targetted player a realm captain"),
             new GmCommandHandler("spawnboss", SpawnBossInstance, null, EGmLevel.SourceDev, 1, "Spawns a boss <protoid>"),
             new GmCommandHandler("summongoremane", SummonGoremane, null, EGmLevel.SourceDev, 0, "Spawns Goremane"),
+            new GmCommandHandler("summonkokrit", SummonKokrit, null, EGmLevel.SourceDev, 0, "Spawns Kokrit"),
         };
 
         #endregion

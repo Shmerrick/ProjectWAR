@@ -25,8 +25,8 @@ namespace WorldServer.World.Objects
         public Timer BossCombatTimer { get; set; } = null;
         public static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         // List of Adds that the Boss can spawn
-        public Dictionary<uint, BrainType> AddDictionary;
-        public Dictionary<uint, Creature> SpawnDictionary;
+        public List<BossSpawn> AddDictionary;
+        public List<BossSpawn> SpawnDictionary;
         public int PlayerDeathsCount { get; set; } = 0;
         // List of CC that the Boss is immune to.
         public List<GameData.CrowdControlTypes> CrowdControlImmunities { get; set; }
