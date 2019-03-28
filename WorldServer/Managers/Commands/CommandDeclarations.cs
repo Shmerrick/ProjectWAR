@@ -474,6 +474,9 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("summongoremane", SummonGoremane, null, EGmLevel.SourceDev, 0, "Spawns Goremane"),
             new GmCommandHandler("summonkokrit", SummonKokrit, null, EGmLevel.SourceDev, 0, "Spawns Kokrit"),
             new GmCommandHandler("summonbulbousone", SummonBulbousOne, null, EGmLevel.SourceDev, 0, "Spawns the Bulbous One"),
+            new GmCommandHandler("summonazukthul", SummonAzukThul, null, EGmLevel.SourceDev, 0, "Spawns AzukThul"),
+            new GmCommandHandler("summonborzhar", SummonBorzhar, null, EGmLevel.SourceDev, 0, "Spawns Borzhar"),
+            
         };
 
         #endregion

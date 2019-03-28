@@ -110,6 +110,11 @@ namespace WorldServer.World.Objects
             //    Log.Error("Exception", e.Message + "\r\n" + e.StackTrace);
             //}
 
+            if (mob is Boss)
+            {
+                (mob as Boss).BuffInterface.RemoveBuffsOnDeath();
+            }
+
             if (BossCombatTimer != null)
             {
                 BossCombatTimer.Stop();

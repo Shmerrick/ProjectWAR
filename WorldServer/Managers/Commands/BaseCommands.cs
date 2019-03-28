@@ -4350,6 +4350,18 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        public static bool SummonAzukThul(Player plr, ref List<string> values)
+        {
+            var bossSpawnId = 2000687;
+
+            var boss = SummonBoss(bossSpawnId, plr);
+
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+
         private static Boss SummonBoss(int bossProtoId, Player plr)
         {
             var X = plr.WorldPosition.X;
@@ -4407,6 +4419,32 @@ namespace WorldServer.Managers.Commands
             };
 
             var bossSpawn = new BossSpawn { Creature = null, ProtoId = 6896, Type = BrainType.HealerBrain };
+
+            boss.AddDictionary.Add(bossSpawn);
+            boss.AddDictionary.Add(bossSpawn);
+
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+
+        public static bool SummonBorzhar(Player plr, ref List<string> values)
+        {
+
+            var bossSpawnId = 2000690;
+            var boss = SummonBoss(bossSpawnId, plr);
+            boss.CanBeKnockedBack = false;
+            boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
+
+            var brain = new BossBrain(boss)
+            {
+                Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == bossSpawnId).ToList(),
+                Phases = CreatureService.BossSpawnPhases.Where(x => x.BossSpawnId == bossSpawnId).ToList()
+
+            };
+
+            var bossSpawn = new BossSpawn { Creature = null, ProtoId = 6926, Type = BrainType.AggressiveBrain };
 
             boss.AddDictionary.Add(bossSpawn);
             boss.AddDictionary.Add(bossSpawn);
