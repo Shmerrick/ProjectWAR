@@ -1246,6 +1246,16 @@ namespace WorldServer.World.Abilities
                     damageInfo.Damage = (caster.ItmInterface.GetWeaponDamage(slot)) * damageInfo.CastTimeDamageMult;
                 }
 
+                //TODO : REMOVE BEFORE PRODUCTION
+                if (target is Player)
+                {
+                    if (target.Name.Contains("Ikthal"))
+                    {
+                        damageInfo.Damage *= 0.05f;
+                    }
+                }
+
+
                 if (damageInfo.StatUsed > 0)
                 {
                     AddOffensiveStats(caster, damageInfo, 0.1f, false, true);

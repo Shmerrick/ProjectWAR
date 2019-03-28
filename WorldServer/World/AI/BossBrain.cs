@@ -65,47 +65,13 @@ namespace WorldServer.World.AI
 
             if (Combat.IsFighting && Combat.CurrentTarget != null &&
                 _unit.AbtInterface.CanCastCooldown(0) &&
-                TCPManager.GetTimeStampMS() > NextTryCastTime)
+                tick > NextTryCastTime)
             {
-                var target = Combat.GetCurrentTarget();
-
                 var phaseAbilities = GetPhaseAbilities(Abilities);
 
                 // Get abilities that can fire now.
-                foreach (var ability in phaseAbilities)
-                {
-                    var t = GetType();
-                    var method = t.GetMethod(ability.Condition);
-                    _logger.Debug($"Checking condition: {ability.Condition} ");
-                    var conditionTrue = (bool) method.Invoke(this, null);
-                    if (conditionTrue)
-                    {
-                        // If the ability is not in the ability tracker, add it
-                        if (!AbilityTracker.ContainsKey(ability))
-                        {
-                            lock (AbilityTracker)
-                            {
-                                AbilityTracker.Add(ability, TCPManager.GetTimeStamp() + NEXT_ATTACK_COOLDOWN); 
-                            }
+                FilterAbilities(tick, phaseAbilities);
 
-                            _logger.Debug($"Adding ability to the tracker : {AbilityTracker.Count} {ability.Name} 0");
-                        }
-                        else // If this ability is already in the abilitytracker  -- can probably remove this as it should be removed on execution.
-                        {
-                            long nextInvocation = 0;
-
-                            // If it's next invocation > now, dont add.
-                            AbilityTracker.TryGetValue(ability, out nextInvocation);
-                            if (nextInvocation > tick)
-                            {
-                                // Do nothing
-                            }
-                        }
-                    }
-                }
-
-                // This contains the list of abilities that can possibly be executed.
-                var rand = StaticRandom.Instance.Next(1, 100);
                 // Sort dictionary in value (time) order.
                 var myList = AbilityTracker.ToList();
                 myList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
@@ -113,56 +79,111 @@ namespace WorldServer.World.AI
                 foreach (var keyValuePair in myList)
                     _logger.Debug($"***{keyValuePair.Key.Name} => {keyValuePair.Value}");
 
-                lock (myList)
+                ExecuteNextAbilityFromList(tick, myList);
+            }
+        }
+
+        private void FilterAbilities(long tick, List<BossSpawnAbilities> phaseAbilities)
+        {
+            foreach (var ability in phaseAbilities)
+            {
+                var t = GetType();
+                var method = t.GetMethod(ability.Condition);
+                _logger.Debug($"Checking condition: {ability.Condition} ");
+                var conditionTrue = (bool)method.Invoke(this, null);
+                if (conditionTrue)
                 {
-                    foreach (var keyValuePair in myList)
-                        if (keyValuePair.Value < tick)
+                    // If the ability is not in the ability tracker, add it
+                    if (!AbilityTracker.ContainsKey(ability))
+                    {
+                        lock (AbilityTracker)
                         {
-                            if (keyValuePair.Key.ExecuteChance >= rand)
-                            {
-                                var t = GetType();
-                                var method = t.GetMethod(keyValuePair.Key.Execution);
-
-                                _logger.Trace($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
-
-
-                                if (!string.IsNullOrEmpty(keyValuePair.Key.Speech))
-                                    _unit.Say(keyValuePair.Key.Speech, ChatLogFilters.CHATLOGFILTERS_SHOUT);
-
-                                if (!string.IsNullOrEmpty(keyValuePair.Key.Sound))
-                                    foreach (var plr in GetClosePlayers())
-                                        plr.PlaySound(Convert.ToUInt16(keyValuePair.Key.Sound));
-
-                                _logger.Debug($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
-                                NextTryCastTime = TCPManager.GetTimeStampMS() + NEXT_ATTACK_COOLDOWN;
-                                lock (AbilityTracker)
-                                {
-                                    AbilityTracker[keyValuePair.Key] = tick + keyValuePair.Key.CoolDown * 1000;
-                                }
-
-                                try
-                                {
-                                    method.Invoke(this, null);
-                                }
-                                catch (Exception e)
-                                {
-                                    _logger.Error($"{e.Message} {e.StackTrace}");
-                                    throw;
-                                }
-
-                                
-
-                                _logger.Trace(
-                                    $"Updating the tracker : {keyValuePair.Key.Name} => {tick + keyValuePair.Key.CoolDown * 1000} ");
-                                _logger.Debug($"CoolDowns : {_unit.AbtInterface.Cooldowns.Count}");
-                                break; // Leave the loop, come back on next tick
-                            }
-
-                            _logger.Debug($"Skipping : {keyValuePair.Key.Name} => {keyValuePair.Value} (random)");
+                            AbilityTracker.Add(ability, TCPManager.GetTimeStamp() + NEXT_ATTACK_COOLDOWN);
                         }
+
+                        _logger.Debug($"Adding ability to the tracker : {AbilityTracker.Count} {ability.Name} 0");
+                    }
+                    else // If this ability is already in the abilitytracker  -- can probably remove this as it should be removed on execution.
+                    {
+                        long nextInvocation = 0;
+
+                        // If it's next invocation > now, dont add.
+                        AbilityTracker.TryGetValue(ability, out nextInvocation);
+                        if (nextInvocation > tick)
+                        {
+                            // Do nothing
+                        }
+                    }
                 }
             }
         }
+
+        private void ExecuteNextAbilityFromList(long tick, List<KeyValuePair<BossSpawnAbilities, long>> myList)
+        {
+            // This contains the list of abilities that can possibly be executed.
+            var rand = StaticRandom.Instance.Next(1, 100);
+            lock (myList)
+            {
+                foreach (var keyValuePair in myList)
+                {
+                    if (keyValuePair.Value < tick)
+                    {
+                        if (keyValuePair.Key.ExecuteChance >= rand)
+                        {
+                            var method = GetType().GetMethod(keyValuePair.Key.Execution);
+
+                            _logger.Trace($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
+
+                            PerformSpeech(keyValuePair.Key);
+                           
+                            PerformSound(keyValuePair.Key);
+                            
+                            _logger.Debug($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
+
+                            NextTryCastTime = TCPManager.GetTimeStampMS() + NEXT_ATTACK_COOLDOWN;
+
+                            lock (AbilityTracker)
+                            {
+                                // TODO : See if this is required, or can use ability cool down instead
+                                AbilityTracker[keyValuePair.Key] = tick + keyValuePair.Key.CoolDown * 1000;
+                            }
+
+                            try
+                            {
+                                method.Invoke(this, null);
+                            }
+                            catch (Exception e)
+                            {
+                                _logger.Error($"{e.Message} {e.StackTrace}");
+                                throw;
+                            }
+
+                            _logger.Trace(
+                                $"Updating the tracker : {keyValuePair.Key.Name} => {tick + keyValuePair.Key.CoolDown * 1000} ");
+                            _logger.Debug($"CoolDowns : {_unit.AbtInterface.Cooldowns.Count}");
+                            break; // Leave the loop, come back on next tick
+                        }
+
+                        _logger.Debug($"Skipping : {keyValuePair.Key.Name} => {keyValuePair.Value} (random)");
+                    }
+                }
+            }
+        }
+
+        private void PerformSound(BossSpawnAbilities key)
+        {
+            if (!string.IsNullOrEmpty(key.Sound))
+                foreach (var plr in GetClosePlayers())
+                    plr.PlaySound(Convert.ToUInt16(key.Sound));
+        }
+
+        private void PerformSpeech(BossSpawnAbilities key)
+        {
+            if (!string.IsNullOrEmpty(key.Speech))
+                _unit.Say(key.Speech, ChatLogFilters.CHATLOGFILTERS_SHOUT);
+
+        }
+
 
         private List<BossSpawnAbilities> GetPhaseAbilities(List<BossSpawnAbilities> abilities)
         {
@@ -379,12 +400,24 @@ namespace WorldServer.World.AI
             SimpleCast(_unit, Combat.CurrentTarget, "Enfeebling Shout", 5575);
         }
 
+        public void Cleave()
+        {
+            SpeakYourMind(" using Cleave");
+            SimpleCast(_unit, Combat.CurrentTarget, "Cleave", 13626);
+        }
+
+        public void PlagueAura()
+        {
+            SpeakYourMind(" using PlagueAura");
+            SimpleCast(_unit, Combat.CurrentTarget, "PlagueAura", 13660);
+        }
+
         public void SpawnAdds()
         {
             if (_unit is Boss)
             {
                 var adds = (_unit as Boss).AddDictionary;
-                foreach (KeyValuePair<uint, BrainType> entry in adds)
+                foreach (var entry in adds)
                 {
                     ushort facing = 2093;
 
@@ -394,7 +427,7 @@ namespace WorldServer.World.AI
 
 
                     var spawn = new Creature_spawn {Guid = (uint) CreatureService.GenerateCreatureSpawnGUID()};
-                    var proto = CreatureService.GetCreatureProto(entry.Key);
+                    var proto = CreatureService.GetCreatureProto(entry.ProtoId);
                     if (proto == null)
                         return;
                     spawn.BuildFromProto(proto);
@@ -407,11 +440,12 @@ namespace WorldServer.World.AI
 
 
                     var creature = _unit.Region.CreateCreature(spawn);
-                    (_unit as Boss).SpawnDictionary.Add(entry.Key, creature);
+                    entry.Creature = creature;
+                    (_unit as Boss).SpawnDictionary.Add(entry);
 
-                    if (entry.Value == BrainType.AggressiveBrain)
+                    if (entry.Type == BrainType.AggressiveBrain)
                         creature.AiInterface.SetBrain(new AggressiveBrain(creature));
-                    if (entry.Value == BrainType.HealerBrain)
+                    if (entry.Type == BrainType.HealerBrain)
                         creature.AiInterface.SetBrain(new HealerBrain(creature));
 
                 }

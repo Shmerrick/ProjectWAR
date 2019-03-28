@@ -473,6 +473,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("spawnboss", SpawnBossInstance, null, EGmLevel.SourceDev, 1, "Spawns a boss <protoid>"),
             new GmCommandHandler("summongoremane", SummonGoremane, null, EGmLevel.SourceDev, 0, "Spawns Goremane"),
             new GmCommandHandler("summonkokrit", SummonKokrit, null, EGmLevel.SourceDev, 0, "Spawns Kokrit"),
+            new GmCommandHandler("summonbulbousone", SummonBulbousOne, null, EGmLevel.SourceDev, 0, "Spawns the Bulbous One"),
         };
 
         #endregion

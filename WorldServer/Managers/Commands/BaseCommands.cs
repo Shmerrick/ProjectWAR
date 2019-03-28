@@ -26,6 +26,7 @@ using WorldServer.World.Positions;
 using WorldServer.World.Scenarios;
 using static System.UInt16;
 using static WorldServer.Managers.Commands.GMUtils;
+using BossSpawn = WorldServer.World.AI.BossSpawn;
 using Item = WorldServer.World.Objects.Item;
 using Object = WorldServer.World.Objects.Object;
 using Opcodes = WorldServer.NetWork.Opcodes;
@@ -4325,11 +4326,23 @@ namespace WorldServer.Managers.Commands
             var bossSpawnId = 19409;
 
             var boss = SummonBoss(bossSpawnId, plr);
-            
-            
 
-            boss.AddDictionary.Add(6896, BrainType.HealerBrain);
-            boss.AddDictionary.Add(6896, BrainType.HealerBrain);
+            var bossSpawn = new BossSpawn {Creature = null, ProtoId = 6896, Type = BrainType.HealerBrain};
+
+            boss.AddDictionary.Add(bossSpawn);
+            boss.AddDictionary.Add(bossSpawn);
+
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+
+        public static bool SummonBulbousOne(Player plr, ref List<string> values)
+        {
+            var bossSpawnId = 3650;
+
+            var boss = SummonBoss(bossSpawnId, plr);
 
             // Force zones to update
             plr.Region.Update();
@@ -4392,10 +4405,11 @@ namespace WorldServer.Managers.Commands
                 Phases = CreatureService.BossSpawnPhases.Where( x=> x.BossSpawnId == bossSpawnId).ToList()
                 
             };
-          
 
-            boss.AddDictionary.Add(6896, BrainType.HealerBrain);
-            boss.AddDictionary.Add(6896, BrainType.HealerBrain);
+            var bossSpawn = new BossSpawn { Creature = null, ProtoId = 6896, Type = BrainType.HealerBrain };
+
+            boss.AddDictionary.Add(bossSpawn);
+            boss.AddDictionary.Add(bossSpawn);
 
             // Force zones to update
             plr.Region.Update();

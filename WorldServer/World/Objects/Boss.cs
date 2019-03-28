@@ -45,8 +45,8 @@ namespace WorldServer.World.Objects
             CrowdControlImmunities = new List<CrowdControlTypes>();
             BossCombatTimer = new Timer();
             CanBeKnockedBack = false;  // default : no KD - can be overriden
-            AddDictionary = new Dictionary<uint, BrainType>();
-            SpawnDictionary = new Dictionary<uint, Creature>();
+            AddDictionary = new List<BossSpawn>();
+            SpawnDictionary = new List<BossSpawn>();
         }
 
         public override void OnLoad()
@@ -138,11 +138,11 @@ namespace WorldServer.World.Objects
             // Clean up spawns.
             if (SpawnDictionary.Count > 0)
             {
-                foreach (KeyValuePair<uint, Creature> entry in SpawnDictionary)
+                foreach (var entry in SpawnDictionary)
                 {
-                    if ((!entry.Value.IsDisposed) && (entry.Value.IsInWorld()))
+                    if ((!entry.Creature.IsDisposed) && (entry.Creature.IsInWorld()))
                     {
-                        entry.Value.Destroy();
+                        entry.Creature.Destroy();
                     }
                 }
             }
