@@ -80,6 +80,13 @@ namespace WorldServer.World.Objects
         {
             BossCombatTimer.Interval = BossCombatTimerInterval;
 
+                if (this.AiInterface.CurrentBrain is BossBrain)
+            {
+                (this.AiInterface.CurrentBrain as BossBrain).ExecuteStartUpAbilities();
+
+               
+            }
+
             return false;
         }
 

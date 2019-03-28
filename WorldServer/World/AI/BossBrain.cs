@@ -67,7 +67,7 @@ namespace WorldServer.World.AI
                 _unit.AbtInterface.CanCastCooldown(0) &&
                 tick > NextTryCastTime)
             {
-                var phaseAbilities = GetPhaseAbilities(Abilities);
+                var phaseAbilities = GetPhaseAbilities();
 
                 // Get abilities that can fire now.
                 FilterAbilities(tick, phaseAbilities);
@@ -170,31 +170,50 @@ namespace WorldServer.World.AI
             }
         }
 
-        private void PerformSound(BossSpawnAbilities key)
+        public void PerformSound(BossSpawnAbilities key)
         {
             if (!string.IsNullOrEmpty(key.Sound))
                 foreach (var plr in GetClosePlayers())
                     plr.PlaySound(Convert.ToUInt16(key.Sound));
         }
 
-        private void PerformSpeech(BossSpawnAbilities key)
+        public void PerformSpeech(BossSpawnAbilities key)
         {
             if (!string.IsNullOrEmpty(key.Speech))
                 _unit.Say(key.Speech, ChatLogFilters.CHATLOGFILTERS_SHOUT);
 
         }
 
-
-        private List<BossSpawnAbilities> GetPhaseAbilities(List<BossSpawnAbilities> abilities)
+        public List<BossSpawnAbilities> GetStartCombatAbilities()
         {
             var result = new List<BossSpawnAbilities>();
             foreach (var ability in Abilities)
             {
+                if (ability.Phase == "!")
+                {
+                    result.Add(ability);
+                    continue;
+                }
+            }
+            return result;
+        }
+
+
+        private List<BossSpawnAbilities> GetPhaseAbilities()
+        {
+            var result = new List<BossSpawnAbilities>();
+            foreach (var ability in Abilities)
+            {
+                // Any phase ability
                 if (ability.Phase == "*")
                 {
                     result.Add(ability);
                     continue;
                 }
+
+                // Start up ability
+                if (ability.Phase == "!")
+                    continue;
 
                 if (Convert.ToInt32(ability.Phase) == CurrentPhase) result.Add(ability);
             }
@@ -455,5 +474,19 @@ namespace WorldServer.World.AI
             }
         }
 
+        public void ExecuteStartUpAbilities()
+        {
+            var abilities = GetStartCombatAbilities();
+            foreach (var startUpAbility in abilities)
+            {
+                _logger.Trace($"Executing Start Up : {startUpAbility.Name} ");
+                var method = GetType().GetMethod(startUpAbility.Execution);
+                method.Invoke(this, null);
+
+                PerformSpeech(startUpAbility);
+
+                    PerformSound(startUpAbility);
+            }
+        }
     }
 }
