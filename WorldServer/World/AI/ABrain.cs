@@ -69,6 +69,11 @@ namespace WorldServer.World.AI
         }
 
 
+        protected List<Player> GetClosePlayers(int range = 30)
+        {
+            return _unit.GetPlayersInRange(range, false);
+        }
+
         private long _nextDistanceCheckTime;
 
 		#region Combat
