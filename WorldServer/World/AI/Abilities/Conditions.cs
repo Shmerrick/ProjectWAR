@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GameData;
+﻿using GameData;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
@@ -12,17 +7,17 @@ namespace WorldServer.World.AI.Abilities
 {
     public class Conditions
     {
-        public Unit Owner { get; }
-        public CombatInterface_Npc Combat { get; }
-
         // Melee range for the boss - could use baseradius perhaps?
         public static int BOSS_MELEE_RANGE = 25;
 
-        public Conditions(Unit Owner, CombatInterface_Npc combat)
+        public Conditions(Unit owner, CombatInterface_Npc combat)
         {
-            Owner = Owner;
+            Owner = owner;
             Combat = combat;
         }
+
+        public Unit Owner { get; }
+        public CombatInterface_Npc Combat { get; }
 
 
         public bool PlayersWithinRange()
@@ -32,10 +27,7 @@ namespace WorldServer.World.AI.Abilities
                 var players = Owner.GetPlayersInRange(30, false);
                 if (players == null)
                     return false;
-                else
-                {
-                    return true;
-                }
+                return true;
             }
 
             return false;
@@ -61,7 +53,7 @@ namespace WorldServer.World.AI.Abilities
                 if (Owner.GetDistanceToObject(Owner.CbtInterface.GetCurrentTarget()) < BOSS_MELEE_RANGE
                 ) // In melee range
                 {
-                    var blessing = Combat.CurrentTarget.BuffInterface.HasBuffOfType((byte)BuffTypes.Blessing);
+                    var blessing = Combat.CurrentTarget.BuffInterface.HasBuffOfType((byte) BuffTypes.Blessing);
                     return blessing;
                 }
 
@@ -121,7 +113,7 @@ namespace WorldServer.World.AI.Abilities
 
         public bool TargetIsUnstoppable()
         {
-            var buff = Combat.CurrentTarget.BuffInterface.GetBuff((ushort)GameBuffs.Unstoppable, Combat.CurrentTarget);
+            var buff = Combat.CurrentTarget.BuffInterface.GetBuff((ushort) GameBuffs.Unstoppable, Combat.CurrentTarget);
             return buff != null;
         }
     }

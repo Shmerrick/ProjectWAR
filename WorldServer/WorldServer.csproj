@@ -402,6 +402,8 @@
     <Compile Include="World\Abilities\Objects\BuffHostObject.cs" />
     <Compile Include="World\Abilities\Objects\LandMine.cs" />
     <Compile Include="World\Abilities\RunicBlessingsHandler.cs" />
+    <Compile Include="World\AI\Abilities\Conditions.cs" />
+    <Compile Include="World\AI\Abilities\Executions.cs" />
     <Compile Include="World\AI\ABrain.cs" />
     <Compile Include="World\AI\BlackguardBrain.cs" />
     <Compile Include="World\AI\BossSpawn.cs" />
