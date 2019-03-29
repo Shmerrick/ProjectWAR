@@ -75,7 +75,7 @@ namespace WorldServer.World.AI
                 var phaseAbilities = GetPhaseAbilities();
 
                 // Get abilities that can fire now.
-                FilterAbilities(tick, phaseAbilities);
+                    FilterAbilities(tick, phaseAbilities);
 
                 // Sort dictionary in value (time) order.
                 var myList = AbilityTracker.ToList();
@@ -92,7 +92,7 @@ namespace WorldServer.World.AI
         {
             foreach (var ability in phaseAbilities)
             {
-                var t = GetType();
+                var t = ConditionManager.GetType();
                 var method = t.GetMethod(ability.Condition);
                 _logger.Debug($"Checking condition: {ability.Condition} ");
                 var conditionTrue = (bool)method.Invoke(ConditionManager, null);
@@ -135,7 +135,7 @@ namespace WorldServer.World.AI
                     {
                         if (keyValuePair.Key.ExecuteChance >= rand)
                         {
-                            var method = GetType().GetMethod(keyValuePair.Key.Execution);
+                            var method = ExecutionManager.GetType().GetMethod(keyValuePair.Key.Execution);
 
                             _logger.Trace($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
 
@@ -155,7 +155,7 @@ namespace WorldServer.World.AI
 
                             try
                             {
-                                method.Invoke(this, null);
+                                method.Invoke(ExecutionManager, null);
                             }
                             catch (Exception e)
                             {

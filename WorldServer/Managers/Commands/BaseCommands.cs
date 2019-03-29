@@ -4411,17 +4411,25 @@ namespace WorldServer.Managers.Commands
                        boss.CanBeKnockedBack = false;
             boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
 
-            var brain = new BossBrain(boss)
-            {
-                Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == bossSpawnId).ToList(),
-                Phases = CreatureService.BossSpawnPhases.Where( x=> x.BossSpawnId == bossSpawnId).ToList()
-                
-            };
-
+         
             var bossSpawn = new BossSpawn { Creature = null, ProtoId = 6896, Type = BrainType.HealerBrain };
 
             boss.AddDictionary.Add(bossSpawn);
             boss.AddDictionary.Add(bossSpawn);
+
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+        
+        public static bool SummonGahlvoth(Player plr, ref List<string> values)
+        {
+
+            var bossSpawnId = 45224;
+            var boss = SummonBoss(bossSpawnId, plr);
+            boss.CanBeKnockedBack = false;
+            boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
 
             // Force zones to update
             plr.Region.Update();
@@ -4437,12 +4445,7 @@ namespace WorldServer.Managers.Commands
             boss.CanBeKnockedBack = false;
             boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
 
-            var brain = new BossBrain(boss)
-            {
-                Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == bossSpawnId).ToList(),
-                Phases = CreatureService.BossSpawnPhases.Where(x => x.BossSpawnId == bossSpawnId).ToList()
-
-            };
+          
 
             var bossSpawn = new BossSpawn { Creature = null, ProtoId = 6926, Type = BrainType.AggressiveBrain };
 

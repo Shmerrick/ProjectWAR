@@ -476,6 +476,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("summonbulbousone", SummonBulbousOne, null, EGmLevel.SourceDev, 0, "Spawns the Bulbous One"),
             new GmCommandHandler("summonazukthul", SummonAzukThul, null, EGmLevel.SourceDev, 0, "Spawns AzukThul"),
             new GmCommandHandler("summonborzhar", SummonBorzhar, null, EGmLevel.SourceDev, 0, "Spawns Borzhar"),
+            new GmCommandHandler("summongahlvoth", SummonGahlvoth, null, EGmLevel.SourceDev, 0, "Spawns Gahlvoth"),
             
         };
 

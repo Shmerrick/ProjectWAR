@@ -1,13 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
-using WorldServer.World.AI;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
 using Object = System.Object;
@@ -26,7 +21,7 @@ namespace WorldServer.World.AI.Abilities
             Combat = combat;
             Brain = bossBrain;
         }
-    
+
 
         //public void IncrementPhase()
         //{
@@ -237,6 +232,34 @@ namespace WorldServer.World.AI.Abilities
 
                 // Force zones to update
                 Owner.Region.Update();
+            }
+        }
+
+
+        public void EnergyFlux()
+        {
+            Brain.SpeakYourMind(" using EnergyFlux");
+
+            ushort facing = 2093;
+
+            var spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
+            var proto = CreatureService.GetCreatureProto(52595);
+            if (proto == null)
+                return;
+            spawn.BuildFromProto(proto);
+            
+            var newTarget = Brain.SetRandomTarget();
+            if (newTarget != null)
+            {
+                spawn.WorldO = facing;
+                spawn.WorldX = newTarget.WorldPosition.X;
+                spawn.WorldY = newTarget.WorldPosition.Y;
+                spawn.WorldZ = newTarget.WorldPosition.Z;
+                spawn.ZoneId = (ushort)Owner.ZoneId;
+
+                var creature = Owner.Region.CreateCreature(spawn);
+                creature.EvtInterface.AddEventNotify(EventName.OnDie, RemoveNPC);
+                creature.AiInterface.SetBrain(new PassiveBrain(creature));
             }
         }
 
