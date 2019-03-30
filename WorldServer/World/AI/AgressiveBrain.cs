@@ -408,7 +408,7 @@ namespace WorldServer.World.AI
                             }
                         case 4:
                             {
-                                SimpleCast(_unit, target, "Disabling Strike", 5806);
+                                SimpleCast(_unit, target, "Heavy Blow", 1354);
                                 break;
                             }
                         case 5:
@@ -424,7 +424,7 @@ namespace WorldServer.World.AI
                                 if ((buff == null) &&
                                     (_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < 5))
                                 {
-                                    SimpleCast(_unit, target, "Tentacle Knock up", 5467);
+                                    SimpleCast(_unit, target, "Downfall", 8346);
                                 }
 
                                 break;
@@ -458,7 +458,7 @@ namespace WorldServer.World.AI
                             }
                         case 4:
                             {
-                                SimpleCast(_unit, target, "Envenomed Blade", 9403);
+                                SimpleCast(_unit, target, "Crippling Blow", 5132);
                                 break;
                             }
                         case 5:
