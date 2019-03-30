@@ -32,6 +32,7 @@ namespace WorldServer.World.Objects
         public List<GameData.CrowdControlTypes> CrowdControlImmunities { get; set; }
         // Whether the boss can be knockedback/down
         public bool CanBeKnockedBack { get; set; }
+        public bool CanBeTaunted { get; set; }
         public int BossCombatTimerInterval { get; set; } = 30000;
         
 
@@ -45,6 +46,7 @@ namespace WorldServer.World.Objects
             CrowdControlImmunities = new List<CrowdControlTypes>();
             BossCombatTimer = new Timer();
             CanBeKnockedBack = false;  // default : no KD - can be overriden
+            CanBeTaunted = true;
             AddDictionary = new List<BossSpawn>();
             SpawnDictionary = new List<BossSpawn>();
         }
@@ -60,6 +62,7 @@ namespace WorldServer.World.Objects
 
             BossCombatTimer.Enabled = false;
         }
+
 
         public override void Update(long msTick)
         {

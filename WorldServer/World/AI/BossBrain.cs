@@ -227,10 +227,6 @@ namespace WorldServer.World.AI
         }
 
 
-        
-
-     
-
         public void ExecuteStartUpAbilities()
         {
             var abilities = GetStartCombatAbilities();
@@ -244,6 +240,17 @@ namespace WorldServer.World.AI
 
                     PerformSound(startUpAbility);
             }
+        }
+
+
+        public override void OnTaunt(Unit taunter, byte lvl)
+        {
+            if (_unit is Boss)
+            {
+                (_unit as Boss).CanBeTaunted = false;
+            }
+
+            base.OnTaunt(taunter, lvl);
         }
     }
 }

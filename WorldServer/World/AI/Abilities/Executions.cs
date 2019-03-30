@@ -3,6 +3,7 @@ using FrameWork;
 using GameData;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
 using Object = System.Object;
@@ -155,6 +156,20 @@ namespace WorldServer.World.AI.Abilities
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "Terror", 5968);
         }
 
+        
+
+        public void ThunderingBlow()
+        {
+            Brain.SpeakYourMind(" using ThunderingBlow");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "ThunderingBlow", 8424);
+        }
+
+        public void ArdentBreath()
+        {
+            Brain.SpeakYourMind(" using ArdentBreath");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "ArdentBreath", 4980);
+        }
+
 
         public void PlagueAura()
         {
@@ -240,27 +255,64 @@ namespace WorldServer.World.AI.Abilities
         {
             Brain.SpeakYourMind(" using EnergyFlux");
 
-            ushort facing = 2093;
+            // Remove any old electron fluxes (max of 4)
+            var fluxes = Owner.GetInRange<GameObject>(150);
 
-            var spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
-            var proto = CreatureService.GetCreatureProto(52595);
-            if (proto == null)
-                return;
-            spawn.BuildFromProto(proto);
-            
+            if (fluxes.Count > 4)
+            {
+                foreach (var flux in fluxes)
+                {
+                    if (flux.Entry == 3100414)
+                    {
+                        flux.EvtInterface.AddEvent(flux.Destroy, 2 * 1000, 1);
+                        break;
+                    }
+                }
+            }
+
+
+            GameObject_proto proto = GameObjectService.GetGameObjectProto(3100414);
+
             var newTarget = Brain.SetRandomTarget();
             if (newTarget != null)
             {
-                spawn.WorldO = facing;
-                spawn.WorldX = newTarget.WorldPosition.X;
-                spawn.WorldY = newTarget.WorldPosition.Y;
-                spawn.WorldZ = newTarget.WorldPosition.Z;
-                spawn.ZoneId = (ushort)Owner.ZoneId;
+                GameObject_spawn spawn = new GameObject_spawn
+                {
+                    Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
+                    WorldO = 2093,
+                    WorldX = newTarget.WorldPosition.X + StaticRandom.Instance.Next(50),
+                    WorldY = newTarget.WorldPosition.Y + StaticRandom.Instance.Next(50),
+                    WorldZ = newTarget.WorldPosition.Z,
+                    ZoneId = (ushort)Owner.ZoneId
 
-                var creature = Owner.Region.CreateCreature(spawn);
-                creature.EvtInterface.AddEventNotify(EventName.OnDie, RemoveNPC);
-                creature.AiInterface.SetBrain(new PassiveBrain(creature));
+                };
+
+                spawn.BuildFromProto(proto);
+                proto.IsAttackable = 1;
+
+                var go = Owner.Region.CreateGameObject(spawn);
+                go.EvtInterface.AddEventNotify(EventName.OnDie, RemoveGOs);
+                Owner.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAllFluxes);
+
+                go.BuffInterface.QueueBuff(new BuffQueueInfo(go, 48, AbilityMgr.GetBuffInfo((ushort)1543),
+                    BuffAssigned));
             }
+
+        }
+
+        private bool RemoveAllFluxes(Objects.Object obj, object args)
+        {
+            var fluxes = Owner.GetInRange<GameObject>(150);
+
+            foreach (var flux in fluxes)
+            {
+                if (flux.Entry == 3100414)
+                {
+                    flux.EvtInterface.AddEvent(flux.Destroy, 2 * 1000, 1);
+                }
+            }
+
+            return true;
         }
 
         private void Spawn(BossSpawn entry)
@@ -307,6 +359,9 @@ namespace WorldServer.World.AI.Abilities
             return false;
         }
 
-
+        private void BuffAssigned(NewBuff buff)
+        {
+            var newBuff = buff;
+        }
     }
 }

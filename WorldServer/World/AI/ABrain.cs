@@ -67,7 +67,8 @@ namespace WorldServer.World.AI
             _logger.Debug($"{_unit.Name} : {message}");
             _unit.Say(message);
         }
-
+        
+        
 
         protected List<Player> GetClosePlayers(int range = 30)
         {
