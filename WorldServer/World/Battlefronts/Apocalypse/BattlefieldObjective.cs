@@ -173,7 +173,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
             _captureProgress = 20000;
             CaptureDuration = 10;
-            EvtInterface.AddEvent(CheckTimers, 10000, 0);
+            EvtInterface.AddEvent(CheckTimers, 3000, 0);
             BuffId = 0;
         }
 
@@ -594,6 +594,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="msTick"></param>
         public override void Update(long msTick)
         {
+
+
             EvtInterface.Update(msTick);
 
             if (State == StateFlags.ZoneLocked)
@@ -849,7 +851,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private ISet<Player> GetClosePlayers(Realms capturingRealm)
         {
             var applicablePlayerList = PlayersInRange.Where(x => x.Realm == capturingRealm).ToList();
-            
+
             return GetClosePlayers(applicablePlayerList);
         }
 
@@ -883,7 +885,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             switch (State)
             {
                 case StateFlags.Unsecure:
-                    result= true;
+                    result = true;
                     break;
                 case StateFlags.ZoneLocked:
                     result = false;
@@ -898,7 +900,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     result = plr.Realm != OwningRealm;      // interact if not the owning realm
                     break;
                 default:
-                    result =false;
+                    result = false;
                     break;
             }
             BattlefrontLogger.Trace($"result={result}");
@@ -925,6 +927,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             GuardedTimer = 0;
             CaptureTimer = 0;
 
+            RemoveGlow();
+
         }
 
         public void SetObjectiveLocked()
@@ -935,14 +939,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             // state change and send state
             State = StateFlags.ZoneLocked;
-            
+
             BroadcastFlagInfo(true);
             SendState(GetPlayer(), false, true);
 
             GuardedTimer = 0;
             CaptureTimer = 0;
 
-
+            RemoveGlow();
         }
 
         public void SetObjectiveCapturing()
@@ -952,6 +956,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 AssaultingRealm = CapturingPlayer.Realm;
             }
+
             State = StateFlags.Contested;
 
             var timerLength = CaptureTimerLength + StaticRandom.Instance.Next(0, 60);
@@ -962,6 +967,37 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             DespawnAllGuards();
             BroadcastFlagInfo(true);
             GrantCaptureRewards(AssaultingRealm);
+
+            AddGlow(AssaultingRealm);
+
+        }
+
+        private void AddGlow(Realms assaultingRealm)
+        {
+            GameObject_proto glowProto = GameObjectService.GetGameObjectProto(99858); //99858
+
+            if (glowProto != null)
+            {
+                GameObject_spawn spawn = new GameObject_spawn
+                {
+                    Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
+                    WorldO = Heading,
+                    WorldX = WorldPosition.X,
+                    WorldY = WorldPosition.Y,
+                    WorldZ = WorldPosition.Z,
+                    ZoneId = ZoneId,
+                };
+                spawn.BuildFromProto(glowProto);
+
+                var siegeRangeFlag = new GameObject(spawn);
+                if (assaultingRealm == Realms.REALMS_REALM_DESTRUCTION)
+                    siegeRangeFlag.VfxState = 2; //1 blue, 2 red, 3 white, 4 - white;
+                else
+                {
+                    siegeRangeFlag.VfxState = 1; //1 blue, 2 red, 3 white, 4 - white;
+                }
+                Region.AddObject(siegeRangeFlag, ZoneId);
+            }
         }
 
         public void SetObjectiveCaptured()
@@ -980,14 +1016,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             var timerLength = GuardedTimerLength + StaticRandom.Instance.Next(120, 300);
 
-            GuardedTimer = TCPManager.GetTimeStamp() + GuardedTimerLength+ timerLength;
-            DisplayedTimer = GuardedTimerLength+ timerLength;
+            GuardedTimer = TCPManager.GetTimeStamp() + GuardedTimerLength + timerLength;
+            DisplayedTimer = GuardedTimerLength + timerLength;
 
             State = StateFlags.Secure;
             SendState(CapturingPlayer, true, true);
             SpawnAllGuards(OwningRealm);
             BroadcastFlagInfo(true);
             GrantCaptureRewards(OwningRealm);
+
+            RemoveGlow();
         }
 
         public void SetObjectiveGuarded()
@@ -998,8 +1036,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             BroadcastFlagInfo(true);
             SendState(GetPlayer(), true, true);
             GrantCaptureRewards(OwningRealm);
+
+            RemoveGlow();
         }
 
-
+        private void RemoveGlow()
+        {
+            var goList = Region.GetObjects<GameObject>().Where(x => x.Entry == 99858);
+            foreach (var gameObject in goList)
+            {
+                gameObject.Destroy();
+            }
+        }
     }
 }
