@@ -364,7 +364,7 @@ namespace WorldServer.World.AI
                         case 5:
                             {
                                 // This 1 needs looking into Basicly want mob to have slow aura
-                                SimpleCast(_unit, target, "Covenant of Celerity", 9559);
+                                SimpleCast(_unit, target, "Broad Swings", 629);
                                 break;
                             }
                         case 6:
@@ -403,7 +403,6 @@ namespace WorldServer.World.AI
                         case 2:
                         case 3:
                             {
-                                //Change abilities dont know the right abilities for a centigor probably charge and knockback would be best!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                                 SimpleCast(_unit, target, "Charge", 13307);
                                 break;
                             }
@@ -425,7 +424,7 @@ namespace WorldServer.World.AI
                                 if ((buff == null) &&
                                     (_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < 5))
                                 {
-                                    SimpleCast(_unit, target, "Downfall", 8346);
+                                    SimpleCast(_unit, target, "Tentacle Knock up", 5467);
                                 }
 
                                 break;
@@ -469,13 +468,12 @@ namespace WorldServer.World.AI
                             }
                         case 6:
                             {
-                                // dont think bloodlust works so need a diff 1
                                 var buff = target.BuffInterface.GetBuff((ushort)GameBuffs.Unstoppable, target);
 
                                 if ((buff == null) &&
                                     (_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < 5))
                                 {
-                                    SimpleCast(_unit, target, "Bloodlust", 1780);
+                                    SimpleCast(_unit, target, "Sever Blessing", 8101);
                                 }
 
                                 break;
@@ -504,8 +502,7 @@ namespace WorldServer.World.AI
                         case 2:
                         case 3:
                             {
-                                //Change abilities!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                                SimpleCast(_unit, target, "Seeping Wound", 8320);
+                                SimpleCast(_unit, target, "Feral Bite", 13076);
                                 break;
                             }
                         case 4:
