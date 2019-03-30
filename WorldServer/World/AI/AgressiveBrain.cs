@@ -338,6 +338,207 @@ namespace WorldServer.World.AI
                     }
 
                 }
+                if ((proto.CreatureSubType == (int)GameData.CreatureSubTypes.HUMANOIDS_BEASTMEN_GOR) &&
+            ((proto.CreatureType == (int)GameData.CreatureTypes.HUMANOIDS_BEASTMEN)))
+                {
+
+                    switch (rand)
+                    {
+                        case 0:
+                            {
+                                SwitchTarget(target);
+                                break;
+                            }
+                        case 1:
+                        case 2:
+                        case 3:
+                            {
+                                SimpleCast(_unit, target, "Bloody Claw", 4606);
+                                break;
+                            }
+                        case 4:
+                            {
+                                SimpleCast(_unit, target, "Charge", 13307);
+                                break;
+                            }
+                        case 5:
+                            {
+                                // This 1 needs looking into Basicly want mob to have slow aura
+                                SimpleCast(_unit, target, "Covenant of Celerity", 9559);
+                                break;
+                            }
+                        case 6:
+                            {
+                                var buff = target.BuffInterface.GetBuff((ushort)GameBuffs.Unstoppable, target);
+
+                                if ((buff == null) &&
+                                    (_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < 5))
+                                {
+                                    SimpleCast(_unit, target, "Downfall", 8346);
+                                }
+
+                                break;
+                            }
+                        case 7:
+                            {
+                                SwitchToLowHealthTarget();
+
+                                break;
+                            }
+                    }
+
+                }
+                if ((proto.CreatureSubType == (int)GameData.CreatureSubTypes.MONSTERS_CHAOS_BREEDS_CENTIGOR) &&
+            ((proto.CreatureType == (int)GameData.CreatureTypes.MONSTERS_CHAOS_BREEDS)))
+                {
+
+                    switch (rand)
+                    {
+                        case 0:
+                            {
+                                SwitchTarget(target);
+                                break;
+                            }
+                        case 1:
+                        case 2:
+                        case 3:
+                            {
+                                //Change abilities dont know the right abilities for a centigor probably charge and knockback would be best!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                                SimpleCast(_unit, target, "Charge", 13307);
+                                break;
+                            }
+                        case 4:
+                            {
+                                SimpleCast(_unit, target, "Disabling Strike", 5806);
+                                break;
+                            }
+                        case 5:
+                            {
+                                // Confusing Movements
+                                SimpleCast(_unit, target, "Confusing Movements", 631);
+                                break;
+                            }
+                        case 6:
+                            {
+                                var buff = target.BuffInterface.GetBuff((ushort)GameBuffs.Unstoppable, target);
+
+                                if ((buff == null) &&
+                                    (_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < 5))
+                                {
+                                    SimpleCast(_unit, target, "Downfall", 8346);
+                                }
+
+                                break;
+                            }
+                        case 7:
+                            {
+                                SwitchToLowHealthTarget();
+
+                                break;
+                            }
+                    }
+
+                }
+                if ((proto.CreatureSubType == (int)GameData.CreatureSubTypes.DAEMONS_KHORNE_BLOODLETTER) &&
+            ((proto.CreatureType == (int)GameData.CreatureTypes.DAEMONS_KHORNE)))
+                {
+
+                    switch (rand)
+                    {
+                        case 0:
+                            {
+                                SwitchTarget(target);
+                                break;
+                            }
+                        case 1:
+                        case 2:
+                        case 3:
+                            {
+                                SimpleCast(_unit, target, "Slice", 9398);
+                                break;
+                            }
+                        case 4:
+                            {
+                                SimpleCast(_unit, target, "Envenomed Blade", 9403);
+                                break;
+                            }
+                        case 5:
+                            {
+                                SimpleCast(_unit, target, "Crippling Bellow", 13573);
+                                break;
+                            }
+                        case 6:
+                            {
+                                // dont think bloodlust works so need a diff 1
+                                var buff = target.BuffInterface.GetBuff((ushort)GameBuffs.Unstoppable, target);
+
+                                if ((buff == null) &&
+                                    (_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < 5))
+                                {
+                                    SimpleCast(_unit, target, "Bloodlust", 1780);
+                                }
+
+                                break;
+                            }
+                        case 7:
+                            {
+                                SwitchToLowHealthTarget();
+
+                                break;
+                            }
+                    }
+
+                }
+                if ((proto.CreatureSubType == (int)GameData.CreatureSubTypes.DAEMONS_UNMARKED_DAEMONS_CHAOS_HOUND) &&
+            ((proto.CreatureType == (int)GameData.CreatureTypes.DAEMONS_UNMARKED)))
+                {
+
+                    switch (rand)
+                    {
+                        case 0:
+                            {
+                                SwitchTarget(target);
+                                break;
+                            }
+                        case 1:
+                        case 2:
+                        case 3:
+                            {
+                                //Change abilities!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                                SimpleCast(_unit, target, "Seeping Wound", 8320);
+                                break;
+                            }
+                        case 4:
+                            {
+                                SimpleCast(_unit, target, "Slice", 9398);
+                                break;
+                            }
+                        case 5:
+                            {
+                                // Confusing Movements
+                                SimpleCast(_unit, target, "Confusing Movements", 631);
+                                break;
+                            }
+                        case 6:
+                            {
+                                var buff = target.BuffInterface.GetBuff((ushort)GameBuffs.Unstoppable, target);
+
+                                if ((buff == null) &&
+                                    (_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < 5))
+                                {
+                                    SimpleCast(_unit, target, "Downfall", 8346);
+                                }
+
+                                break;
+                            }
+                        case 7:
+                            {
+                                SwitchToLowHealthTarget();
+
+                                break;
+                            }
+                    }
+                }
             }
         }
 
