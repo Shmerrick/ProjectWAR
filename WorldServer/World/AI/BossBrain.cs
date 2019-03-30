@@ -247,10 +247,11 @@ namespace WorldServer.World.AI
         {
             if (_unit is Boss)
             {
-                (_unit as Boss).CanBeTaunted = false;
+                if ((_unit as Boss).CanBeTaunted)
+                    base.OnTaunt(taunter, lvl);
             }
 
-            base.OnTaunt(taunter, lvl);
+            
         }
     }
 }

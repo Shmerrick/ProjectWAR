@@ -4423,7 +4423,20 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        
+        public static bool SummonLordSlaurith(Player plr, ref List<string> values)
+        {
+
+            var bossSpawnId = 48112;
+            var boss = SummonBoss(bossSpawnId, plr);
+            boss.CanBeKnockedBack = false;
+            boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
+            boss.CanBeTaunted = true;
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+
 
         public static bool SummonZekaraz(Player plr, ref List<string> values)
         {

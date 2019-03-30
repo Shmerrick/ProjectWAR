@@ -167,14 +167,38 @@ namespace WorldServer.World.AI.Abilities
         public void ArdentBreath()
         {
             Brain.SpeakYourMind(" using ArdentBreath");
-            Brain.SimpleCast(Owner, Combat.CurrentTarget, "ArdentBreath", 4980);
-        }
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "ArdentBreath", 13816);
+        }//4980
 
 
         public void PlagueAura()
         {
             Brain.SpeakYourMind(" using PlagueAura");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "PlagueAura", 13660);
+        }
+
+        public void RampantSlash()
+        {
+            Brain.SpeakYourMind(" using RampantSlash");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "RampantSlash", 13660);
+        }
+
+        public void DisablingStrike()
+        {
+            Brain.SpeakYourMind(" using Disabling Strike");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Disabling Strike", 5806);
+        }
+
+        public void BloodPulse()
+        {
+            Brain.SpeakYourMind(" using BloodPulse");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "BloodPulse", 5066);
+        }
+
+        public void BloodscentAura()
+        {
+            Brain.SpeakYourMind(" using EF - TEST");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "EF - TEST", 13728);
         }
 
         /// <summary>
