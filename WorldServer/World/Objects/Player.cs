@@ -6427,7 +6427,7 @@ namespace WorldServer.World.Objects
                 else
                     pqarea = 31;
             }
-            Log.Info("CheckArea", " PQ Area : " + pqarea);
+            Log.Dump("CheckArea", " PQ Area : " + pqarea);
 
             if (CurrentPQArea != pqarea)
             {

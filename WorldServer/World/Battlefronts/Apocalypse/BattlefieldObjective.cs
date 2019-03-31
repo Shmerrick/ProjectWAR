@@ -163,7 +163,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             CommsEngine = new ApocCommunications();
             RewardManager = new RVRRewardManager();
             fsm = new CampaignObjectiveStateMachine(this).fsm;
-
+            fsm.Initialize(CampaignObjectiveStateMachine.ProcessState.Neutral);
             if (objective.Guards != null)
             {
                 foreach (BattleFront_Guard Guard in objective.Guards)
@@ -320,7 +320,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             if (!fsm.IsRunning)
             {
-                fsm.Initialize(CampaignObjectiveStateMachine.ProcessState.Neutral);
+                BattlefrontLogger.Debug($"Starting BattlefieldObjective {Name} FSM...");
+                fsm.Fire(CampaignObjectiveStateMachine.Command.OnOpenBattleFront);
+                fsm.Start();
+            }
+            else
+            {
+                BattlefrontLogger.Debug($"Stopping BattlefieldObjective {Name} FSM...");
+                fsm.Stop();
+                
                 BattlefrontLogger.Debug($"Starting BattlefieldObjective {Name} FSM...");
                 fsm.Fire(CampaignObjectiveStateMachine.Command.OnOpenBattleFront);
                 fsm.Start();

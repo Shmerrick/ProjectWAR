@@ -42,6 +42,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             /* Initial State */
             fsm.In(ProcessState.Neutral)
                 .On(Command.OnOpenBattleFront).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
+            fsm.In(ProcessState.Guarded)
+                .On(Command.OnOpenBattleFront).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
+            fsm.In(ProcessState.Locked)
+                .On(Command.OnOpenBattleFront).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
+            fsm.In(ProcessState.Captured)
+                .On(Command.OnOpenBattleFront).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
+            fsm.In(ProcessState.Capturing)
+                .On(Command.OnOpenBattleFront).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
+
             /* Any call to Lock Zone will execute Lock */
             fsm.In(ProcessState.Neutral)
                 .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Objective.SetObjectiveLocked());
@@ -53,8 +62,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Objective.SetObjectiveLocked());
             fsm.In(ProcessState.Guarded)
                 .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Objective.SetObjectiveLocked());
-            fsm.In(ProcessState.Locked)
-                .On(Command.OnOpenBattleFront).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
 
 
             fsm.In(ProcessState.Neutral)
