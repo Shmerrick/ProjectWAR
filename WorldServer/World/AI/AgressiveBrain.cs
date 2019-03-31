@@ -9,10 +9,13 @@ namespace WorldServer.World.AI
 {
     public class AggressiveBrain : ABrain
     {
+        private static long ABILITY_COOLDOWN = 4000;
+        public long NextAbilityExecution { get; set; }
+
         public AggressiveBrain(Unit myOwner)
             : base(myOwner)
         {
-
+            NextAbilityExecution = 0;
         }
 
         public override void Think(long tick)
@@ -36,13 +39,19 @@ namespace WorldServer.World.AI
                 if (target == null)
                     return;
 
+                if (tick <= NextAbilityExecution)
+                    return;
+                    
+
+                NextAbilityExecution = tick + ABILITY_COOLDOWN;
+
                 var rand = StaticRandom.Instance.Next(15);
 
                 var proto = (_unit as Creature).Spawn.Proto;
                 if ((proto.CreatureSubType == (int)GameData.CreatureSubTypes.HUMANOIDS_HUMANS_EMPIRE) &&
                     ((proto.CreatureType == (int)GameData.CreatureTypes.HUMANOIDS_HUMANS)))
                 {
-                    
+
                     switch (rand)
                     {
                         case 0:
@@ -64,7 +73,11 @@ namespace WorldServer.World.AI
                             }
                         case 5:
                             {
-                                SimpleCast(_unit, target, "Confusing Movements", 631);
+                                // Only perform morale ability when health < 50%
+                                if (_unit.PctHealth < 50)
+                                {
+                                    SimpleCast(_unit, target, "Confusing Movements", 631);
+                                }
                                 break;
                             }
                         case 6:
@@ -112,9 +125,12 @@ namespace WorldServer.World.AI
                                 break;
                             }
                         case 5:
-                            {
-                                // Confusing Movements
-                                SimpleCast(_unit, target, "Confusing Movements", 631);
+                            { // Only perform morale ability when health < 50%
+                                if (_unit.PctHealth < 50)
+                                {
+                                    SimpleCast(_unit, target, "Confusing Movements", 631);
+                                }
+
                                 break;
                             }
                         case 6:
@@ -163,8 +179,12 @@ namespace WorldServer.World.AI
                             }
                         case 5:
                             {
-                                // Confusing Movements
-                                SimpleCast(_unit, target, "Skin Of Iron", 1419);
+                                // Only perform morale ability when health < 50%
+                                if (_unit.PctHealth < 50)
+                                {
+                                    SimpleCast(_unit, target, "Skin Of Iron", 1419);
+                                }
+
                                 break;
                             }
                         case 6:
@@ -213,8 +233,12 @@ namespace WorldServer.World.AI
                             }
                         case 5:
                             {
-                                // Confusing Movements
-                                SimpleCast(_unit, target, "Tuffa N Nail", 1669);
+                                // Only perform morale ability when health < 50%
+                                if (_unit.PctHealth < 50)
+                                {
+                                    SimpleCast(_unit, target, "Tuffa N Nail", 1669);
+                                }
+
                                 break;
                             }
                         case 6:
@@ -263,8 +287,12 @@ namespace WorldServer.World.AI
                             }
                         case 5:
                             {
-                                // Confusing Movements
-                                SimpleCast(_unit, target, "Raze", 607);
+                                // Only perform morale ability when health < 50%
+                                if (_unit.PctHealth < 50)
+                                {
+                                    SimpleCast(_unit, target, "Raze", 607);
+                                }
+
                                 break;
                             }
                         case 6:
@@ -313,8 +341,12 @@ namespace WorldServer.World.AI
                             }
                         case 5:
                             {
-                                // Confusing Movements
-                                SimpleCast(_unit, target, "Away Cretins", 9381);
+                                // Only perform morale ability when health < 50%
+                                if (_unit.PctHealth < 50)
+                                {
+                                    SimpleCast(_unit, target, "Away Cretins", 9381);
+                                }
+
                                 break;
                             }
                         case 6:
@@ -367,7 +399,12 @@ namespace WorldServer.World.AI
                             }
                         case 5:
                             {
-                                SimpleCast(_unit, target, "Concealment", 652);
+                                // Only perform morale ability when health < 50%
+                                if (_unit.PctHealth < 50)
+                                {
+                                    SimpleCast(_unit, target, "Concealment", 652);
+                                }
+
                                 break;
                             }
                         case 6:
@@ -420,7 +457,12 @@ namespace WorldServer.World.AI
                             }
                         case 5:
                             {
-                                SimpleCast(_unit, target, "Confusing Movements", 631);
+                                // Only perform morale ability when health < 50%
+                                if (_unit.PctHealth < 50)
+                                {
+                                    SimpleCast(_unit, target, "Confusing Movements", 631);
+                                }
+
                                 break;
                             }
                         case 6:
@@ -473,8 +515,12 @@ namespace WorldServer.World.AI
                             }
                         case 5:
                             {
-                                // Confusing Movements
-                                SimpleCast(_unit, target, "Champion's Challenge", 608);
+                                // Only perform morale ability when health < 50%
+                                if (_unit.PctHealth < 50)
+                                {
+                                    SimpleCast(_unit, target, "Champion's Challenge", 608);
+                                }
+
                                 break;
                             }
                         case 6:
@@ -521,7 +567,12 @@ namespace WorldServer.World.AI
                             }
                         case 4:
                             {
-                                SimpleCast(_unit, target, "Head Butt", 13107);
+                                // Only perform morale ability when health < 50%
+                                if (_unit.PctHealth < 50)
+                                {
+                                    SimpleCast(_unit, target, "Head Butt", 13107);
+                                }
+
                                 break;
                             }
                         case 5:
@@ -579,7 +630,12 @@ namespace WorldServer.World.AI
                             }
                         case 5:
                             {
-                                SimpleCast(_unit, target, "Low Blow", 5688);
+                                // Only perform morale ability when health < 50%
+                                if (_unit.PctHealth < 50)
+                                {
+                                    SimpleCast(_unit, target, "Low Blow", 5688);
+                                }
+
                                 break;
                             }
                         case 6:
@@ -632,8 +688,12 @@ namespace WorldServer.World.AI
                             }
                         case 5:
                             {
-                                // Confusing Movements
-                                SimpleCast(_unit, target, "Champion's Challenge", 608);
+                                // Only perform morale ability when health < 50%
+                                if (_unit.PctHealth < 50)
+                                {
+                                    SimpleCast(_unit, target, "Champion's Challenge", 608);
+                                }
+
                                 break;
                             }
                         case 6:
