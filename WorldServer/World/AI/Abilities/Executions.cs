@@ -315,9 +315,11 @@ namespace WorldServer.World.AI.Abilities
                 proto.IsAttackable = 1;
 
                 var go = Owner.Region.CreateGameObject(spawn);
+                // When the gameobject dies, remove it.
                 go.EvtInterface.AddEventNotify(EventName.OnDie, RemoveGOs);
+                // When the boss dies, remove all child "fluxes"
                 Owner.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAllFluxes);
-
+                // Buff the flux with the lightning rod buff.
                 go.BuffInterface.QueueBuff(new BuffQueueInfo(go, 48, AbilityMgr.GetBuffInfo((ushort)1543),
                     BuffAssigned));
             }

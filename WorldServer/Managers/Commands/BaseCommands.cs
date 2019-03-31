@@ -4368,8 +4368,9 @@ namespace WorldServer.Managers.Commands
             var Y = plr.WorldPosition.Y;
             var Z = plr.WorldPosition.Z;
 
+            // Proto Id of the boss
             var bossSpawnId = bossProtoId;
-
+            // Find the boss in the boss_spawn table
             var bossSpawn = CreatureService.BossSpawns.SingleOrDefault(x => x.BossSpawnId == Convert.ToInt32(bossSpawnId));
 
             Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
@@ -4384,18 +4385,21 @@ namespace WorldServer.Managers.Commands
             spawn.WorldZ = Z;
             spawn.ZoneId = (ushort)plr.ZoneId;
 
+            // Using the spawn, place the boss in the region.
             var boss = plr.Region.CreateBoss(spawn, Convert.ToUInt32(bossSpawnId));
-
+            // Set some default boss settings.
             boss.CanBeKnockedBack = false;
             boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
-
+            // Build the brain - abilities and phases
             var brain = new BossBrain(boss)
             {
                 Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == bossSpawnId).ToList(),
                 Phases = CreatureService.BossSpawnPhases.Where(x => x.BossSpawnId == bossSpawnId).ToList()
 
             };
+            // Assign the brain
             boss.AiInterface.SetBrain(brain);
+            // Not used yet, but manages a 30 second timer for the boss (so we can measure things like time in combat)
             boss.BossCombatTimerInterval = 30000;
             boss.BossCombatTimer.Elapsed += delegate { BossCombatTimerOnElapsed(boss); };
             boss.BossCombatTimer.Enabled = false;
@@ -4443,8 +4447,6 @@ namespace WorldServer.Managers.Commands
 
             var bossSpawnId = 46325;
             var boss = SummonBoss(bossSpawnId, plr);
-            boss.CanBeKnockedBack = false;
-            boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
             boss.CanBeTaunted = false;
             // Force zones to update
             plr.Region.Update();
