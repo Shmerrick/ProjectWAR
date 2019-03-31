@@ -352,17 +352,17 @@ namespace WorldServer.World.AI
                         case 1:
                         case 2:
                             {
-                                SimpleCast(_unit, target, "Slice", 9398);
+                                SimpleCast(_unit, target, "Touch of Rot", 8404);
                                 break;
                             }
                         case 3:
                             {
-                                SimpleCast(_unit, target, "Bloody Claw", 4606);
+                                SimpleCast(_unit, target, "Vicious Slash", 8009);
                                 break;
                             }
                         case 4:
                             {
-                                SimpleCast(_unit, target, "Charge", 13307);
+                                SimpleCast(_unit, target, "Bloody Claw", 4606);
                                 break;
                             }
                         case 5:
@@ -516,19 +516,15 @@ namespace WorldServer.World.AI
                             }
                         case 3:
                             {
-                                SimpleCast(_unit, target, "Heavy Blow", 1354);
+                                SimpleCast(_unit, target, "Crippling Thorns", 5137);
                                 break;
                             }
                         case 4:
                             {
-                                SimpleCast(_unit, target, "Crippling Blow", 5132);
+                                SimpleCast(_unit, target, "Head Butt", 13107);
                                 break;
                             }
                         case 5:
-                            {
-                                SimpleCast(_unit, target, "Charge", 13307);
-                                break;
-                            }
                         case 6:
                             {
                                 var buff = target.BuffInterface.GetBuff((ushort)GameBuffs.Unstoppable, target);
@@ -562,6 +558,10 @@ namespace WorldServer.World.AI
                                 break;
                             }
                         case 1:
+                            {
+                                SimpleCast(_unit, target, "Cleave", 13626);
+                                break;
+                            }
                         case 2:
                             {
                                 SimpleCast(_unit, target, "Slice", 9398);
@@ -569,7 +569,7 @@ namespace WorldServer.World.AI
                             }
                         case 3:
                             {
-                                SimpleCast(_unit, target, "Crippling Bellow", 13573);
+                                SimpleCast(_unit, target, "Wot armor?", 1666);
                                 break;
                             }
                         case 4:
@@ -603,8 +603,8 @@ namespace WorldServer.World.AI
                     }
 
                 }
-                if ((proto.CreatureSubType == (int)GameData.CreatureSubTypes.DAEMONS_UNMARKED_DAEMONS_CHAOS_HOUND) &&
-            ((proto.CreatureType == (int)GameData.CreatureTypes.DAEMONS_UNMARKED)))
+                if ((proto.CreatureSubType == (int)GameData.CreatureSubTypes.DAEMONS_KHORNE_FLESH_HOUND) &&
+            ((proto.CreatureType == (int)GameData.CreatureTypes.DAEMONS_KHORNE)))
                 {
 
                     switch (rand)
@@ -616,6 +616,10 @@ namespace WorldServer.World.AI
                             }
                         case 1:
                         case 2:
+                            {
+                                SimpleCast(_unit, target, "Piercing Bite", 8435);
+                                break;
+                            }
                         case 3:
                             {
                                 SimpleCast(_unit, target, "Feral Bite", 13076);
@@ -623,13 +627,13 @@ namespace WorldServer.World.AI
                             }
                         case 4:
                             {
-                                SimpleCast(_unit, target, "Piercing Bite", 8435);
+                                SimpleCast(_unit, target, "Infectious Bite", 5700);
                                 break;
                             }
                         case 5:
                             {
                                 // Confusing Movements
-                                SimpleCast(_unit, target, "Confusing Movements", 631);
+                                SimpleCast(_unit, target, "Champion's Challenge", 608);
                                 break;
                             }
                         case 6:
