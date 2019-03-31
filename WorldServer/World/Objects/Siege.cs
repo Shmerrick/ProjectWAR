@@ -637,7 +637,7 @@ namespace WorldServer.World.Objects
         public override void Destroy()
         {
             _logger.Debug($"Destroying Siege {this.Name}. SiegeManager : {this.Region.Campaign.SiegeManager.ToString()}");
-            this.Region.Campaign.SiegeManager.Remove(this);
+            this.Region.Campaign.SiegeManager.Remove(this, this.SiegeInterface.Creator.Realm);
             PendingDisposal = true;
         }
 

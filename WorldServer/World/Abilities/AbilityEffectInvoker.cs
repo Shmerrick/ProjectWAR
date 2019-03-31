@@ -1548,7 +1548,7 @@ namespace WorldServer.World.Abilities
 
             var siege = Siege.SpawnSiegeWeapon(player, (ushort) player.ZoneId, (uint)cmd.PrimaryValue, true);
             player.Region.AddObject(siege, (ushort)player.ZoneId);
-            player.Region.Campaign.SiegeManager.Add(siege);
+            player.Region.Campaign.SiegeManager.Add(siege, player.Realm);
 
             //if (player.CurrentKeep == null)
             //{

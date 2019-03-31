@@ -51,17 +51,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return s;
         }
 
-        public void Add(Siege siege)
+        public void Add(Siege siege, Realms realm)
         {
             DeployedSieges.Add(siege);
-            var siegeType = SiegeTracking.SingleOrDefault(x => x.Type == siege.SiegeInterface.Type && x.Realm == siege.Realm);
+            var siegeType = SiegeTracking.SingleOrDefault(x => x.Type == siege.SiegeInterface.Type && x.Realm == realm);
             siegeType?.Increment();
         }
 
-        public void Remove(Siege siege)
+        public void Remove(Siege siege, Realms realm)
         {
             DeployedSieges.Remove(siege);
-            var siegeType = SiegeTracking.SingleOrDefault(x => x.Type == siege.SiegeInterface.Type && x.Realm == siege.Realm);
+            var siegeType = SiegeTracking.SingleOrDefault(x => x.Type == siege.SiegeInterface.Type && x.Realm == realm);
             siegeType?.Decrement();
         }
 
