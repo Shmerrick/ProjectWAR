@@ -36,6 +36,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             CurrentNumberSiege--;
             if (CurrentNumberSiege < 0)
                 _logger.Warn($"Number of Siege now less than zero!");
+            if (CurrentNumberSiege ==255)
+                _logger.Warn($"Number of Siege now (255)!");
 
         }
 
