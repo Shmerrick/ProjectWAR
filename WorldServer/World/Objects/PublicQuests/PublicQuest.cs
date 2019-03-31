@@ -924,7 +924,7 @@ namespace WorldServer.World.Objects.PublicQuests
                     healCount -= targetInfo.HealingDamagePool;
                     targetInfo.HealingDamagePool = 0;
                     SplitContribution(healer, (ushort)targetInfo.HealingContribPool);
-                    healer.SendClientMessage("Received " + targetInfo.HealingContribPool + " contribution from emptying the target's healing contribution pool.", ChatLogFilters.CHATLOGFILTERS_QUEST, true);
+                    //healer.SendClientMessage("Received " + targetInfo.HealingContribPool + " contribution from emptying the target's healing contribution pool.", ChatLogFilters.CHATLOGFILTERS_QUEST, true);
                     targetInfo.HealingContribPool = 0;
                 }
 
@@ -932,7 +932,7 @@ namespace WorldServer.World.Objects.PublicQuests
                 {
                     float contribFactor = (float)healCount / targetInfo.HealingDamagePool;
                     SplitContribution(healer, (ushort)(targetInfo.HealingContribPool * contribFactor));
-                    healer.SendClientMessage("Received " + (uint)(targetInfo.HealingContribPool * contribFactor) + " contribution from the target's healing contribution pool.", ChatLogFilters.CHATLOGFILTERS_QUEST, true);
+                    //healer.SendClientMessage("Received " + (uint)(targetInfo.HealingContribPool * contribFactor) + " contribution from the target's healing contribution pool.", ChatLogFilters.CHATLOGFILTERS_QUEST, true);
                     targetInfo.HealingContribPool = (uint)(targetInfo.HealingContribPool * (1f - contribFactor));
                     return;
                 }
@@ -1014,7 +1014,7 @@ namespace WorldServer.World.Objects.PublicQuests
                     if (targPlayer != null)
                     {
                         SplitContribution(targPlayer, (ushort)(100 * rankMod * scaler));
-                        targPlayer.SendClientMessage("Received " + (ushort)(100 * rankMod * scaler) + " contribution from tanking damage.", ChatLogFilters.CHATLOGFILTERS_QUEST, true);
+                        //targPlayer.SendClientMessage("Received " + (ushort)(100 * rankMod * scaler) + " contribution from tanking damage.", ChatLogFilters.CHATLOGFILTERS_QUEST, true);
                     }
 
                     tankerInfo.ActiveTimeEnd = TCPManager.GetTimeStamp() + 5;
@@ -1048,7 +1048,7 @@ namespace WorldServer.World.Objects.PublicQuests
                             if (Players.ContainsKey(targPlayer.CharacterId))
                             {
                                 SplitContribution(targPlayer, (ushort)(mobHealing[targPlayer.CharacterId] / totalHealing * rankMod * 100));
-                                targPlayer.SendClientMessage("Received " + (ushort)(mobHealing[targPlayer.CharacterId] / totalHealing * rankMod * 100) + " contribution from healing other players.", ChatLogFilters.CHATLOGFILTERS_QUEST, true);
+                                //targPlayer.SendClientMessage("Received " + (ushort)(mobHealing[targPlayer.CharacterId] / totalHealing * rankMod * 100) + " contribution from healing other players.", ChatLogFilters.CHATLOGFILTERS_QUEST, true);
                                 Players[targPlayer.CharacterId].ActiveTimeEnd = TCPManager.GetTimeStamp() + 5;
                             }
                         }
