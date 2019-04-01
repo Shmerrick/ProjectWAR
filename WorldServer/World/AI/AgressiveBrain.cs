@@ -555,17 +555,26 @@ namespace WorldServer.World.AI
                                 break;
                             }
                         case 1:
-                        case 2:
-                            {
-                                SimpleCast(_unit, target, "Low Blow", 5688);
-                                break;
-                            }
-                        case 3:
                             {
                                 SimpleCast(_unit, target, "Crippling Thorns", 5137);
                                 break;
                             }
+                        case 2:
+                            {
+                                SimpleCast(_unit, target, "Crippling Stomp", 4811);
+                                break;
+                            }
+                        case 3:
+                            {
+                                SimpleCast(_unit, target, "Low Blow", 5688);
+                                break;
+                            }
                         case 4:
+                            {
+                                SimpleCast(_unit, target, "Bloody Claw", 4606);
+                                break;
+                            }
+                        case 5:
                             {
                                 // Only perform morale ability when health < 50%
                                 if (_unit.PctHealth < 50)
@@ -575,7 +584,6 @@ namespace WorldServer.World.AI
 
                                 break;
                             }
-                        case 5:
                         case 6:
                             {
                                 var buff = target.BuffInterface.GetBuff((ushort)GameBuffs.Unstoppable, target);
