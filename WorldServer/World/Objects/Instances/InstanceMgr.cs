@@ -141,7 +141,7 @@ namespace WorldServer.World.Objects.Instances
         {
             lock (_instances)
             {
-                for (ushort i = 1; i < ushort.MaxValue ; i++)
+                for (ushort i = 2; i < ushort.MaxValue ; i++)
                 {
                     if (!_instances.ContainsKey(i))
                     {
