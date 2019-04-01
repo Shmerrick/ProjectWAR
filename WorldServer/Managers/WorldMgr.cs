@@ -211,6 +211,11 @@ namespace WorldServer.Managers
                     #endregion
                 }
             }
+            else
+            {
+                // Crude patch - if no currentarea, respawn into IC/Altdorf
+                return ZoneService.GetZoneRespawn(zoneId, realm);
+            }
 
             List<Zone_Respawn> respawns = ZoneService.GetZoneRespawns(zoneId);
             //if (zoneId == 110)
