@@ -277,6 +277,7 @@ namespace WorldServer.Services.World
 
         /// <summary>
         /// Translates coordinates in a zone to world coordinates.
+        /// Converts Pin into World Coordinates
         /// </summary>
         /// <param name="Info">Zone data</param>
         /// <param name="PinX">X coordinate in zone (as seen in map in game)</param>

@@ -729,7 +729,22 @@ namespace WorldServer.World.Interfaces
                     if (artillery != null && !artillery.CanFire(player))
                         return;
 
-                    _weapon.AbtInterface.StartCastAtPos(player, _abilityId, ZoneService.GetWorldPosition(_weapon.Zone.Info, targetX, targetY, targetZ), _weapon.Zone.ZoneId, 0);
+                    // 72675 is the orcapult - catapults player rather than a stone!
+                    if (this._weapon.Entry == 72675)
+                    {
+                        var targetPosition = ZoneService.GetWorldPosition(_weapon.Zone.Info, targetX, targetY, targetZ);
+                        float speed = 6400f;
+                        float flightTimePuntee = 4;//(float)this._leader.GetDistanceSquare(new Point3D(targetPosition.X, targetPosition.Y, targetPosition.Z)) / speed / 1000f;
+                        this._leader.Catapult(_weapon.Zone, new Point3D(targetPosition.X, targetPosition.Y, targetPosition.Z), (ushort)flightTimePuntee, (ushort)340);
+                        this._leader.AbtInterface.Cancel(true);
+                        SendSiegeResponse(_leader, Type, SiegeControlType.Leader, 1);
+                    }
+                    else
+                    {
+                        _weapon.AbtInterface.StartCastAtPos(player, _abilityId, ZoneService.GetWorldPosition(_weapon.Zone.Info, targetX, targetY, targetZ), _weapon.Zone.ZoneId, 0);
+                    }
+
+                    
                     break;
                 case SiegeType.OIL:
                     _weapon.AbtInterface.StartCastAtPos(player, _abilityId, ZoneService.GetWorldPosition(_weapon.Zone.Info, targetX, targetY, targetZ), _weapon.Zone.ZoneId, 0);
