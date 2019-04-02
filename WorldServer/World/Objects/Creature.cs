@@ -821,10 +821,6 @@ namespace WorldServer.World.Objects
 
         private bool VendorValid()
         {
-#if DEBUG
-            return true;
-#endif
-
             if (Zone == null)
                 return true;
 

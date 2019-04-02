@@ -479,6 +479,8 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("summongahlvoth", SummonGahlvoth, null, EGmLevel.SourceDev, 0, "Spawns Gahlvoth"),
             new GmCommandHandler("summonzekaraz", SummonZekaraz, null, EGmLevel.SourceDev, 0, "Spawns Zekaraz"),
             new GmCommandHandler("summonlordslaurith", SummonLordSlaurith, null, EGmLevel.SourceDev, 0, "Spawns LordSlaurith"),
+            new GmCommandHandler("summonorcapult", SummonOrcapult, null, EGmLevel.SourceDev, 0, "Its flying time"),
+            
 
         };
 

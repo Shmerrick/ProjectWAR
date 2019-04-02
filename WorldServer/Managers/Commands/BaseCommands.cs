@@ -4441,6 +4441,36 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        public static bool SummonOrcapult(Player plr, ref List<string> values)
+        {
+
+            var X = plr.WorldPosition.X;
+            var Y = plr.WorldPosition.Y;
+            var Z = plr.WorldPosition.Z;
+
+           
+
+            Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
+            var proto = CreatureService.GetCreatureProto((uint)72675);
+            if (proto == null)
+                return true;
+            spawn.BuildFromProto(proto);
+
+            spawn.WorldO = 2093;
+            spawn.WorldX = X + StaticRandom.Instance.Next(500);
+            spawn.WorldY = Y + StaticRandom.Instance.Next(500);
+            spawn.WorldZ = Z;
+            spawn.ZoneId = (ushort)plr.ZoneId;
+
+            // Using the spawn, place the boss in the region.
+            var orcapult = plr.Region.CreateCreature(spawn);
+
+            // Check SendInteract on Siege interface and creature itself.
+            
+
+            return true;
+        }
+
 
         public static bool SummonZekaraz(Player plr, ref List<string> values)
         {
