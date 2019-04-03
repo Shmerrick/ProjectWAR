@@ -167,6 +167,7 @@
     <Compile Include="Database\World\Characters\Tok_Bestary.cs" />
     <Compile Include="Database\World\Creatures\Boss_Spawn.cs" />
     <Compile Include="Database\World\Creatures\Boss_Phases.cs" />
+    <Compile Include="Database\World\Creatures\Creature_Smart_Abilities.cs" />
     <Compile Include="Database\World\Creatures\Boss_Spawn_Abilities.cs" />
     <Compile Include="Database\World\Creatures\Creature_abilities.cs" />
     <Compile Include="Database\World\Creatures\Creature_item.cs" />
