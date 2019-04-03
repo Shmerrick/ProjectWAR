@@ -583,7 +583,7 @@ namespace WorldServer.World.Abilities
                     }
                     if (nearFriendlyKeep == DeploymentReason.Range || nearRamSpawn == DeploymentReason.Range)
                     {
-                        player.SendClientMessage("Must deploy siege at friendly keep or near friendly Siege Merchant (Spawn Flag)", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                        player.SendClientMessage("Must deploy at a friendly keep or near the siege deployment flag outside of your realm’s RvR camp.", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
                         return false;
                     }
                     return false;
