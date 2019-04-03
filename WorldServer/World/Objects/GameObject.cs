@@ -254,6 +254,7 @@ namespace WorldServer.World.Objects
                 {
                     case 242:
                     case 511:       // Inside hunters vale portal  // vale vine
+                    case 99891:     // Hardcoded portal for Thanquil's incursion 
                     case 100132:
                     case 99667:
                     case 98845:
