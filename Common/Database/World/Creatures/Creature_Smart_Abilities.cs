@@ -11,10 +11,10 @@ namespace Common.Database.World.Creatures
         public int UniqueId { get; set; }
 
         [PrimaryKey]
-        public int CreeatureTypeId { get; set; }
+        public int CreatureTypeId { get; set; }
 
         [PrimaryKey]
-        public int CreeatureSubTypeId { get; set; }
+        public int CreatureSubTypeId { get; set; }
 
         [DataElement(AllowDbNull = false)]  // Description of this type/subtype - for ease of understanding
         public string CreatureTypeDescription { get; set; }

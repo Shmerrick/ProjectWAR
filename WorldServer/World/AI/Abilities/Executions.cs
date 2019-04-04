@@ -1,6 +1,8 @@
-﻿using Common;
+﻿using System.Linq;
+using Common;
 using FrameWork;
 using GameData;
+using NLog;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
@@ -14,13 +16,16 @@ namespace WorldServer.World.AI.Abilities
     {
         public Unit Owner { get; }
         public CombatInterface_Npc Combat { get; }
-        public BossBrain Brain { get; set; }
+        public ABrain Brain { get; set; }
 
-        public Executions(Unit owner, CombatInterface_Npc combat, BossBrain bossBrain)
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+
+        public Executions(Unit owner, CombatInterface_Npc combat, ABrain brain)
         {
             Owner = owner;
             Combat = combat;
-            Brain = bossBrain;
+            Brain = brain;
         }
 
 
@@ -81,10 +86,14 @@ namespace WorldServer.World.AI.Abilities
 
         public void Corruption()
         {
-            if (Combat.CurrentTarget != null)
+            if (Combat.CurrentTarget == null)
+                return;
+            if (Combat.CurrentTarget is Player)
             {
-                Brain.SpeakYourMind($" using Corruption vs {(Combat.CurrentTarget as Player).Name}");
+                var target = ((Player) Combat.CurrentTarget);
+                Brain.SpeakYourMind($" using Corruption vs {target.Name}");
                 Brain.SimpleCast(Owner, Combat.CurrentTarget, "Corruption", 8400);
+
             }
         }
 
@@ -176,6 +185,13 @@ namespace WorldServer.World.AI.Abilities
             Brain.SpeakYourMind(" using PlagueAura");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "PlagueAura", 13660);
         }
+
+        public void SlimyVomit()
+        {
+            Brain.SpeakYourMind(" using SlimyVomit");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "SlimyVomit", 13660);
+        }
+
 
         public void RampantSlash()
         {
@@ -294,7 +310,6 @@ namespace WorldServer.World.AI.Abilities
                 }
             }
 
-
             GameObject_proto proto = GameObjectService.GetGameObjectProto(3100414);
 
             var newTarget = Brain.SetRandomTarget();
@@ -389,5 +404,37 @@ namespace WorldServer.World.AI.Abilities
         {
             var newBuff = buff;
         }
+        private void SwitchToLowHealthTarget()
+        {
+            // Go for Low Health target
+            var enemyPlayers = Owner.GetPlayersInRange(30, false).Where(x => x.Realm != Owner.Realm)
+                .ToList();
+            if (enemyPlayers.Count() > 0)
+            {
+                foreach (var enemyPlayer in enemyPlayers)
+                {
+                    if (enemyPlayer.PctHealth < 50)
+                    {
+                        _logger.Debug($"{Owner} changing target to  {(enemyPlayer as Player).Name}");
+                        Owner.CbtInterface.SetTarget(enemyPlayer.Oid,
+                            TargetTypes.TARGETTYPES_TARGET_ENEMY);
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void SwitchTarget()
+        {
+            // Switch targets
+            if (Combat.GetCurrentTarget() is Player)
+            {
+                _logger.Debug($"{Owner} using Changing Targets {(Combat.GetCurrentTarget() as Player).Name}");
+                var randomTarget = Owner.AiInterface.CurrentBrain.SetRandomTarget();
+                if (randomTarget != null)
+                    _logger.Debug($"{Owner} => {(randomTarget as Player).Name}");
+            }
+        }
+
     }
 }

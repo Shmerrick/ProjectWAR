@@ -411,6 +411,7 @@
     <Compile Include="World\AI\BT\ChosenBehaviourTree.cs" />
     <Compile Include="World\AI\BossBrain.cs" />
     <Compile Include="World\AI\HealerBrain.cs" />
+    <Compile Include="World\AI\NpcBrain.cs" />
     <Compile Include="World\AI\SlayerBrain.cs" />
     <Compile Include="World\AI\WitchHunterBrain.cs" />
     <Compile Include="World\AI\WitchElfBrain.cs" />

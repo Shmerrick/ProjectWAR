@@ -19,6 +19,7 @@ namespace WorldServer.Services.World
         public static IList<BossSpawn> BossSpawns;
         public static IList<BossSpawnAbilities> BossSpawnAbilities;
         public static IList<BossSpawnPhase> BossSpawnPhases;
+        public static List<CreatureSmartAbilities> CreatureSmartAbilities;
 
         #region Creature Proto
         [LoadingFunction(true)]
@@ -283,6 +284,10 @@ namespace WorldServer.Services.World
             }
 
             Log.Success("LoadCreatureSpawns", "Loaded " + CreatureSpawns.Count + " Creature_Spawns");
+
+            CreatureSmartAbilities = (List<CreatureSmartAbilities>) Database.SelectAllObjects<CreatureSmartAbilities>();
+            Log.Success("CreatureSmartAbilities", "Loaded " + CreatureSmartAbilities.Count + " CreatureSmartAbilities");
+
         }
         #endregion
 

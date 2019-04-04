@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Common;
 using FrameWork;
 using GameData;
 using NLog;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
+using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
@@ -1142,7 +1144,9 @@ namespace WorldServer.World.Objects
             if (AiInterface.CurrentBrain == null || (!(this is GameObject) && AiInterface.CurrentBrain is DummyBrain))
             {
                 if (Aggressive)
-                    AiInterface.SetBrain(new AggressiveBrain(this));
+                {
+                    AiInterface.SetBrain(new NpcBrain(this));
+                }
                 else
                     AiInterface.SetBrain(new PassiveBrain(this));
             }
