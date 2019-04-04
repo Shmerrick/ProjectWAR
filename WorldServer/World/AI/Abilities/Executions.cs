@@ -179,24 +179,52 @@ namespace WorldServer.World.AI.Abilities
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "ArdentBreath", 13816);
         }//4980
 
-
         public void PlagueAura()
         {
             Brain.SpeakYourMind(" using PlagueAura");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "PlagueAura", 13660);
         }
 
-        public void SlimyVomit()
-        {
-            Brain.SpeakYourMind(" using SlimyVomit");
-            Brain.SimpleCast(Owner, Combat.CurrentTarget, "SlimyVomit", 13660);
+        public void CorrosiveVomit()
+        {   //Heal debuff 50 % 30 sec
+            Brain.SpeakYourMind(" using CorrosiveVomit");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "CorrosiveVomit", 5303);
         }
-
 
         public void RampantSlash()
         {
             Brain.SpeakYourMind(" using RampantSlash");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "RampantSlash", 13660);
+        }
+
+        public void InfectiousBite()
+        {
+            Brain.SpeakYourMind(" using InfectiousBite");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "InfectiousBite", 5700);
+        }
+
+        public void LowBlow()
+        {
+            Brain.SpeakYourMind(" using LowBlow");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "LowBlow", 5688);
+        }
+
+        public void Shred()
+        {
+            Brain.SpeakYourMind(" using Shred");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Shred", 430);
+        }
+
+        public void LegTear()
+        {
+            Brain.SpeakYourMind(" using LegTear");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "LegTear", 46);
+        }
+
+        public void Bite()
+        {
+            Brain.SpeakYourMind(" using Bite");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Bite", 41);
         }
 
         public void DisablingStrike()
