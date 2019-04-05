@@ -8,6 +8,7 @@ using System.Linq;
 using Common.Database.World.Battlefront;
 using WorldServer.Managers;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Bounty
@@ -220,7 +221,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
                             var modificationValue = ImpactMatrixManagerInstance.CalculateModificationValue(victim.BaseBountyValue, member.BaseBountyValue);
                             var shareModifier = (1f / shares);
-                            
+
                             modificationValue = shareModifier * modificationValue * playerReward.Value;
 
                             RewardLogger.Debug($"+++ Modification Value {modificationValue} Share Modifier {shareModifier} Number Shares {shares}");
@@ -290,7 +291,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                         {
                             DistributeInsigniaReward(playerToBeRewarded, $"++ You have been awarded 1 {insigniaName} for a deathblow on {victim.Name}", 1);
                         }
-                       
+
                         if (killer.GetBattlefrontManager(killer.Region.RegionId).ActiveBattleFront.ZoneId == killer.ZoneId)
                             DistributeDeathBlowContributionForPlayerKill(killer, victim.Name);
                         else
@@ -318,7 +319,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                             RewardLogger.Warn($"{killer.Name} performed assist not in active BF");
                         }
 
-                        
+
 
                     }
                 }
@@ -339,14 +340,14 @@ namespace WorldServer.World.Battlefronts.Bounty
             return 0;
         }
 
-        private float CalculateBaseRenownPoints(Player killer, Player victim, float modificationValue=1)
+        private float CalculateBaseRenownPoints(Player killer, Player victim, float modificationValue = 1)
         {
             var victimContributionValue = ContributionManager.GetContributionValue(victim.CharacterId);
             var killerContributionValue = ContributionManager.GetContributionValue(killer.CharacterId);
 
             return (BASE_RP_CEILING -
                 (CalculateModifiedBountyValue(victim.BaseBountyValue, victimContributionValue) +
-                CalculateModifiedBountyValue(killer.BaseBountyValue, killerContributionValue)))*modificationValue;
+                CalculateModifiedBountyValue(killer.BaseBountyValue, killerContributionValue))) * modificationValue;
         }
 
         private float CalculateScaledRenownPoints(float externalModifier)
@@ -533,7 +534,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             RewardLogger.Info($"Death Blow rewards given to {killer.Name} ({killer.CharacterId}) for realm captain kill");
             killer.AddInfluence(influenceId, REALM_CAPTAIN_INFLUENCE_KILL);
-            killer.AddRenown(REALM_CAPTAIN_RENOWN_KILL,1f, false);
+            killer.AddRenown(REALM_CAPTAIN_RENOWN_KILL, 1f, false);
             killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.REALM_CAPTAIN_KILL);
 
             ushort crests = (ushort)StaticRandom.Instance.Next(10);
@@ -597,21 +598,29 @@ namespace WorldServer.World.Battlefronts.Bounty
             var availableGearDrops = RewardService._PlayerRVRGearDrops
                 .Where(x => x.MinimumRenownRank < victim.RenownRank)
                 .Where(x => x.MaximumRenownRank >= victim.RenownRank)
-                .Where(x=>x.DropChance < rand);
+                .Where(x => x.DropChance >= rand)
+                .Where(x => x.Career == killer.Info.CareerLine);
+            //Randomise list
+            availableGearDrops  = availableGearDrops?.OrderBy(a => StaticRandom.Instance.Next()).ToList();
 
             var playerItemList = (from item in killer.ItmInterface.Items where item != null select item.Info.Entry).ToList();
 
             foreach (var availableGearDrop in availableGearDrops)
             {
+
                 if (!ItemExistsForPlayer(availableGearDrop.ItemId, playerItemList))
                 {
-                    victim.lootContainer = new LootContainer {Money = availableGearDrop.Money};
-                    victim.lootContainer.LootInfo.Add(new LootInfo(ItemService.GetItem_Info(availableGearDrop.ItemId)));
+                    victim.lootContainer = new LootContainer { Money = availableGearDrop.Money };
+                    victim.lootContainer.LootInfo.Add(
+                        new LootInfo(ItemService.GetItem_Info(availableGearDrop.ItemId)));
                     if (victim.lootContainer != null)
                         victim.SetLootable(true, killer);
 
+                    RewardLogger.Info($"{victim} dropped {availableGearDrop.ItemId} for killer {killer}");
+
                     return;
                 }
+
             }
 
             // If there were items, but player had them, give them some crests as a reward
