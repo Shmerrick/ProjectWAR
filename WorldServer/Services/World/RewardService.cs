@@ -17,6 +17,7 @@ namespace WorldServer.Services.World
         public static List<RenownBandRVRObjectiveTick> _RewardObjectiveTicks;
         public static List<RenownBandRVRZoneLock> _RewardZoneLocks;
         public static List<RewardPlayerKill> _RewardPlayerKills;
+        public static List<PlayerRVRGearDrop> _PlayerRVRGearDrops;
 
         [LoadingFunction(true)]
         public static void LoadRenownBandRewards()
@@ -32,6 +33,11 @@ namespace WorldServer.Services.World
             Log.Debug("WorldMgr", "Loading RVR Player Kill rewards...");
             _RewardPlayerKills = Database.SelectAllObjects<RewardPlayerKill>() as List<RewardPlayerKill>;
             Log.Success("LoadRVRPlayerKillRewards", "Loaded " + _RewardPlayerKills.Count + " rvr_reward_player_kill");
+
+            Log.Debug("WorldMgr", "Loading Player Gear Drops...");
+            _PlayerRVRGearDrops = Database.SelectAllObjects<PlayerRVRGearDrop>() as List<PlayerRVRGearDrop>;
+            Log.Success("PlayerRVRGearDrops", "Loaded " + _PlayerRVRGearDrops.Count + " rvr_player_gear_drop");
+
         }
 
         public static RewardPlayerKill GetPlayerKillReward(int renownBand)

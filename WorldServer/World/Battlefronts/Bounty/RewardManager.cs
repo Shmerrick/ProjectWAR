@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Database.World.Battlefront;
+using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 
@@ -582,6 +583,41 @@ namespace WorldServer.World.Battlefronts.Bounty
                 if (playerRenownLevel % 10 == 0) return playerRenownLevel;
                 return (10 - playerRenownLevel % 10) + playerRenownLevel;
             }
+        }
+
+        /// <summary>
+        /// Determine whether killing the player should drop a piece of gear for the killer. The gear should be matched to the killer.
+        /// </summary>
+        /// <param name="killer"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public void DetermineRVRGearDrop(Player killer, Player victim)
+        {
+            var rand = StaticRandom.Instance.Next(0, 10000);
+            var availableGearDrops = RewardService._PlayerRVRGearDrops
+                .Where(x => x.MinimumRenownRank < victim.RenownRank)
+                .Where(x => x.MaximumRenownRank >= victim.RenownRank)
+                .Where(x=>x.DropChance < rand);
+
+            var playerItemList = (from item in killer.ItmInterface.Items where item != null select item.Info.Entry).ToList();
+
+            foreach (var availableGearDrop in availableGearDrops)
+            {
+                if (!ItemExistsForPlayer(availableGearDrop.ItemId, playerItemList))
+                {
+                    victim.lootContainer = new LootContainer {Money = availableGearDrop.Money};
+                    victim.lootContainer.LootInfo.Add(new LootInfo(ItemService.GetItem_Info(availableGearDrop.ItemId)));
+                    if (victim.lootContainer != null)
+                        victim.SetLootable(true, killer);
+
+                    break;
+                }
+            }
+        }
+
+        private bool ItemExistsForPlayer(uint itemId, List<uint> playerItemList)
+        {
+            return playerItemList.Count(x => x == itemId) > 0;
         }
     }
 

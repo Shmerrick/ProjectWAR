@@ -4152,6 +4152,7 @@ namespace WorldServer.World.Objects
                     }
 
                     ActiveBattleFrontStatus.RewardManagerInstance.DistributePlayerKillRewards(this, killer, AAOBonus, influenceId, PlayersByCharId);
+                    var item = ActiveBattleFrontStatus.RewardManagerInstance.DetermineRVRGearDrop(killer, this);
                 }
 
                 // Record the recent killers of this toon.
@@ -4162,6 +4163,8 @@ namespace WorldServer.World.Objects
                 //HandleXPRenown(killer, rewardScale);
                 //GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
                 //var bonusVP = Math.Floor(this.BaseBountyValue / 10f);
+
+               
 
                 killer.Region.Campaign.VictoryPointProgress.AddPlayerKill(killer.Realm);
                 //killer.SendClientMessage($"+2 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
