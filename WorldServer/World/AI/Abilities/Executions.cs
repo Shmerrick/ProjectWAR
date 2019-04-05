@@ -67,8 +67,6 @@ namespace WorldServer.World.AI.Abilities
             }
         }
 
-
-
         public void KnockDownTarget()
         {
             Brain.SpeakYourMind($" using Downfall vs {(Combat.CurrentTarget as Player).Name}");
@@ -96,7 +94,6 @@ namespace WorldServer.World.AI.Abilities
 
             }
         }
-
 
         public void Stagger()
         {
@@ -146,7 +143,6 @@ namespace WorldServer.World.AI.Abilities
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "EnragedBlow", 8315);
         }
 
-
         public void FlingSpines()
         {
             var newTarget = Brain.SetRandomTarget();
@@ -158,14 +154,11 @@ namespace WorldServer.World.AI.Abilities
             }
         }
 
-
         public void Terror()
         {
             Brain.SpeakYourMind(" using Terror");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "Terror", 5968);
-        }
-
-        
+        }    
 
         public void ThunderingBlow()
         {
@@ -282,7 +275,6 @@ namespace WorldServer.World.AI.Abilities
             return false;
         }
 
-
         /// <summary>
         /// Aslong as the Banner of the Bloodherdisup, Bloodherd Gors willrally to
         /// Borzhar’s side. To stopthe reinforcement, players must destroy the Banner of
@@ -317,7 +309,6 @@ namespace WorldServer.World.AI.Abilities
                 Owner.Region.Update();
             }
         }
-
 
         public void EnergyFlux()
         {
