@@ -18,17 +18,13 @@ namespace WorldServer.World.Battlefronts.Bounty
         [DataElement(AllowDbNull = false)]
         public uint MaximumRenownRank { get; set; }
         [DataElement(AllowDbNull = false)]
-        public uint CrestId { get; set; }
-        [DataElement(AllowDbNull = false)]
         public uint Money { get; set; }
         [DataElement(AllowDbNull = false)]
-        public uint CrestCount { get; set; }
-        [DataElement(AllowDbNull = false)]  // 10^5 base (ie 10,000).
         public uint DropChance { get; set; }
 
         public override string ToString()
         {
-            return $"RVR Player Gear Drop {MinimumRenownRank}-{MaximumRenownRank}. {CrestCount}x{CrestId}, {Money}";
+            return $"RVR Player Gear Drop {MinimumRenownRank}-{MaximumRenownRank}. {Money}";
         }
     }
 }
