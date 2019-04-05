@@ -591,7 +591,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <param name="killer"></param>
         /// <param name="player"></param>
         /// <returns></returns>
-        public void DetermineRVRGearDrop(Player killer, Player victim)
+        public void SetPlayerRVRGearDrop(Player killer, Player victim)
         {
             var rand = StaticRandom.Instance.Next(0, 10000);
             var availableGearDrops = RewardService._PlayerRVRGearDrops
