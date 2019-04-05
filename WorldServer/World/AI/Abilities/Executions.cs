@@ -220,6 +220,12 @@ namespace WorldServer.World.AI.Abilities
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "Maul", 48);
         }
 
+        public void Charge()
+        {
+            Brain.SpeakYourMind(" using Charge");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Charge", 13307);
+        }
+
         public void Bite()
         {
             Brain.SpeakYourMind(" using Bite");
@@ -240,8 +246,14 @@ namespace WorldServer.World.AI.Abilities
 
         public void DisablingStrike()
         {
-            Brain.SpeakYourMind(" using Disabling Strike");
-            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Disabling Strike", 5806);
+            Brain.SpeakYourMind(" using DisablingStrike");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "DisablingStrike", 5806);
+        }
+
+        public void CripplingBlow()
+        {
+            Brain.SpeakYourMind(" using CripplingBlow");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "CripplingBlow", 5132);
         }
 
         public void BloodPulse()
