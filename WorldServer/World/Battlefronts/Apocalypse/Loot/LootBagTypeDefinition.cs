@@ -50,7 +50,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
             var numberGoldBags = ((uint)Math.Floor((numberLootBags / 10.0)));
             var numberPurpledBags = ((uint)Math.Floor((numberLootBags / 10.0)));
-            var numberBlueBags = ((uint)Math.Floor((numberLootBags / 3.0)));
+            var numberBlueBags = ((uint)Math.Floor((numberLootBags / 4.0)));
             var numberGreenBags = ((uint)Math.Floor((numberLootBags / 2.0)));
 
             byte lootBagNumber = 0;
