@@ -203,7 +203,7 @@ namespace WorldServer.World.AI.Abilities
         }
 
         public void Shred()
-        {
+        {   // Armor debuff
             Brain.SpeakYourMind(" using Shred");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "Shred", 430);
         }
@@ -214,10 +214,28 @@ namespace WorldServer.World.AI.Abilities
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "LegTear", 46);
         }
 
+        public void Maul()
+        {
+            Brain.SpeakYourMind(" using Maul");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Maul", 48);
+        }
+
         public void Bite()
         {
             Brain.SpeakYourMind(" using Bite");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "Bite", 41);
+        }
+
+        public void WrithingFangs()
+        {
+            Brain.SpeakYourMind(" using WrithingFangs");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "WrithingFangs", 13097);
+        }
+
+        public void GutRipper()
+        {
+            Brain.SpeakYourMind(" using GutRipper");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "GutRipper", 49);
         }
 
         public void DisablingStrike()
