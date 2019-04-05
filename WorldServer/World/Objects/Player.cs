@@ -4152,7 +4152,7 @@ namespace WorldServer.World.Objects
                     }
 
                     ActiveBattleFrontStatus.RewardManagerInstance.DistributePlayerKillRewards(this, killer, AAOBonus, influenceId, PlayersByCharId);
-                    var item = ActiveBattleFrontStatus.RewardManagerInstance.DetermineRVRGearDrop(killer, this);
+                    ActiveBattleFrontStatus.RewardManagerInstance.SetPlayerRVRGearDrop(killer, this);
                 }
 
                 // Record the recent killers of this toon.
