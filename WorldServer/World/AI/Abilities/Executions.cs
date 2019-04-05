@@ -67,8 +67,6 @@ namespace WorldServer.World.AI.Abilities
             }
         }
 
-
-
         public void KnockDownTarget()
         {
             Brain.SpeakYourMind($" using Downfall vs {(Combat.CurrentTarget as Player).Name}");
@@ -96,7 +94,6 @@ namespace WorldServer.World.AI.Abilities
 
             }
         }
-
 
         public void Stagger()
         {
@@ -146,7 +143,6 @@ namespace WorldServer.World.AI.Abilities
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "EnragedBlow", 8315);
         }
 
-
         public void FlingSpines()
         {
             var newTarget = Brain.SetRandomTarget();
@@ -158,14 +154,11 @@ namespace WorldServer.World.AI.Abilities
             }
         }
 
-
         public void Terror()
         {
             Brain.SpeakYourMind(" using Terror");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "Terror", 5968);
-        }
-
-        
+        }    
 
         public void ThunderingBlow()
         {
@@ -210,7 +203,7 @@ namespace WorldServer.World.AI.Abilities
         }
 
         public void Shred()
-        {
+        {   // Armor debuff
             Brain.SpeakYourMind(" using Shred");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "Shred", 430);
         }
@@ -221,10 +214,28 @@ namespace WorldServer.World.AI.Abilities
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "LegTear", 46);
         }
 
+        public void Maul()
+        {
+            Brain.SpeakYourMind(" using Maul");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Maul", 48);
+        }
+
         public void Bite()
         {
             Brain.SpeakYourMind(" using Bite");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "Bite", 41);
+        }
+
+        public void WrithingFangs()
+        {
+            Brain.SpeakYourMind(" using WrithingFangs");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "WrithingFangs", 13097);
+        }
+
+        public void GutRipper()
+        {
+            Brain.SpeakYourMind(" using GutRipper");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "GutRipper", 49);
         }
 
         public void DisablingStrike()
@@ -282,7 +293,6 @@ namespace WorldServer.World.AI.Abilities
             return false;
         }
 
-
         /// <summary>
         /// Aslong as the Banner of the Bloodherdisup, Bloodherd Gors willrally to
         /// Borzhar’s side. To stopthe reinforcement, players must destroy the Banner of
@@ -317,7 +327,6 @@ namespace WorldServer.World.AI.Abilities
                 Owner.Region.Update();
             }
         }
-
 
         public void EnergyFlux()
         {
