@@ -610,7 +610,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                     if (victim.lootContainer != null)
                         victim.SetLootable(true, killer);
 
-                    break;
+                    return;
                 }
             }
 
