@@ -117,15 +117,14 @@ namespace WorldServer.World.Objects
                         Money = 0,
                         Opened = false
                     };
-
                     //TODO
-                    //Mail.CharacterIdSender = plr.CharacterId;
-                    //MailItem item = lootBag.
-                    //if (item != null)
-                    //{
-                    //    mail.Items.Add(item);
-                    //    CharMgr.AddMail(mail);
-                    //}
+                    mail.CharacterIdSender = lootBag.Key;
+                    MailItem item = new MailItem((uint)lootBag.Value.Key.Entry, lootBag.Value.Value, 0, 0,(ushort)lootBag.Value.Value.Count);
+                    if (item != null)
+                    {
+                        mail.Items.Add(item);
+                        CharMgr.AddMail(mail);
+                    }
                 }
             }
             catch (NullReferenceException)
