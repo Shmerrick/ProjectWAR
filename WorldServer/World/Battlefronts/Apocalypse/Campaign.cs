@@ -94,6 +94,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public int DestructionDominationTimerLength { get; set; }
         public int OrderDominationTimerLength { get; set; }
 
+        public LootChest OrderLootChest { get; set; }
+        public LootChest DestructionLootChest { get; set; }
 
         public int OrderDominationTimerStart { get; set; }
         public int DestructionDominationTimerStart { get; set; }
@@ -1364,6 +1366,23 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     var bagContentSelector = new BagContentSelector(RVRZoneRewardService.RVRZoneLockItemOptions, StaticRandom.Instance);
 
+                    if (rewardAssignments.Count > 0)
+                    {
+
+                        //TODO
+                        //var orderLootChest = new LootChest(
+                        //    this.Region, 
+                        //    BattleFrontService.GetWarcampEntrance(
+                        //        (ushort) this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_ORDER), 
+                        //    (ushort)this.ActiveBattleFrontStatus.ZoneId);
+                        //var destLootChest = new LootChest(
+                        //    this.Region, 
+                        //    BattleFrontService.GetWarcampEntrance(
+                        //        (ushort) this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_DESTRUCTION), 
+                        //        (ushort)this.ActiveBattleFrontStatus.ZoneId);
+
+                    }
+
                     foreach (var reward in rewardAssignments)
                     {
                         if (reward.Assignee != 0)
@@ -1393,8 +1412,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                 BattlefrontLogger.Debug($"{player.Key.Info.Name} has received {lootDefinition.FormattedString()}");
                                 BattlefrontLogger.Debug($"{lootDefinition.ToString()}");
                                 // Only distribute if loot is valid
-                                var rewardDescription = WorldMgr.RewardDistributor.DistributeWinningRealm(lootDefinition, player.Key, playerRenownBand);
-                                player.Key.SendClientMessage($"{rewardDescription}", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+                                var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(lootDefinition, player.Key);
+                                if (player.Key.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                                    DestructionLootChest.Add(player.Key.CharacterId, generatedLootBag);
+                                if (player.Key.Realm == Realms.REALMS_REALM_ORDER)
+                                    OrderLootChest.Add(player.Key.CharacterId, generatedLootBag);
+
+                                player.Key.SendClientMessage($"For your efforts, you have received a {generatedLootBag.Key.Name} bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
                             }
                             else

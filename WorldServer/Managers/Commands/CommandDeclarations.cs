@@ -480,7 +480,8 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("summonzekaraz", SummonZekaraz, null, EGmLevel.SourceDev, 0, "Spawns Zekaraz"),
             new GmCommandHandler("summonlordslaurith", SummonLordSlaurith, null, EGmLevel.SourceDev, 0, "Spawns LordSlaurith"),
             new GmCommandHandler("summonorcapult", SummonOrcapult, null, EGmLevel.SourceDev, 0, "Its flying time"),
-            
+            new GmCommandHandler("creategoldchest", CreateGoldChest, null, EGmLevel.SourceDev, 0, "Summon a GoldChest"),
+
 
         };
 

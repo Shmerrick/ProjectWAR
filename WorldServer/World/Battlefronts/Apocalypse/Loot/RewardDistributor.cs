@@ -76,46 +76,33 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         }
 
         
-
-        public string DistributeWinningRealm(LootBagTypeDefinition lootBag, Player player, byte playerRenownBand)
+        /// <summary>
+        /// Builds the bag containing the players items.
+        /// </summary>
+        /// <param name="lootBag"></param>
+        /// <param name="player"></param>
+        /// <param name="playerRenownBand"></param>
+        /// <returns></returns>
+        public KeyValuePair<Item_Info, List<Talisman>> BuildChestLootBag(LootBagTypeDefinition lootBag, Player player)
         {
-            //// Combine the lootBag reward
-            //var lockReward = ZoneLockRewards.SingleOrDefault(x => x.RRBand == playerRenownBand);
-
-            //if (lockReward == null)
-            //{
-            //    RewardLogger.Warn($"Could not find renownBand for player : {player.Name}.");
-            //    return "";
-            //}
-
             var lootRewardDescription = string.Empty;
             // Get the bag item id
             var lootBagItemId = Convert.ToInt32(LootBagTypeDefinition.GetDescription(lootBag.BagRarity));
             // Get the bag item object
             var lootBagItem = ItemService.GetItem_Info((uint)lootBagItemId);
-            var internalBagContainer = new List<Talisman>
+            var lootBagContents = new List<Talisman>
             {
                 new Talisman(lootBag.ItemId, (byte) lootBag.ItemCount, 0, 0)
             };
 
             // Create a 'talisman' from the reward Item
-            var result = player.ItmInterface.CreateItem(lootBagItem, 1, internalBagContainer, 0, 0, false, 0, false);
+            // RA - removed temp. TODO
+            // var result = player.ItmInterface.CreateItem(lootBagItem, 1, internalBagContainer, 0, 0, false, 0, false);
+            // RewardLogger.Info($"Distributing reward of {lootBagItem.Name}, containing {lootBag.ItemId} ({lootBag.ItemCount}) to {player.Name}. Result = {result}");
 
-            RewardLogger.Info($"Distributing reward of {lootBagItem.Name}, containing {lootBag.ItemId} ({lootBag.ItemCount}) to {player.Name}. Result = {result}");
-            
-            //if ((lockReward.ItemCount != 0) && (lockReward.ItemId != 0))
-            //{
-            //    //crests etc
-            //    var lockItem = ItemService.GetItem_Info((uint)lockReward.ItemId);
-            //    if (lockItem != null)
-            //    {
-            //        lootRewardDescription += $"You have been awarded {lockReward.ItemCount} {lockItem.Name}. ";
-            //    }
-            //}
 
-            lootRewardDescription += $"For your efforts you have also won {lootBag.FormattedString()}! ";
+            return new KeyValuePair<Item_Info, List<Talisman>>(lootBagItem, lootBagContents);
 
-            return lootRewardDescription;
         }
     }
 }

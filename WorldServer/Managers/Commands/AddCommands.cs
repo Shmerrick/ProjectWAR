@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
+using GameData;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
@@ -182,7 +183,9 @@ namespace WorldServer.Managers.Commands
 
         public static bool AddZoneLockBags(Player plr, ref List<string> values)
         {
+            var destructionLootChest = LootChest.Create(plr.Region, plr.WorldPosition, (ushort) plr.ZoneId);
 
+            var orderLootChest = LootChest.Create(plr.Region, plr.WorldPosition, (ushort)plr.ZoneId);
             plr = GetTargetOrMe(plr) as Player;
             if (plr == null)
             {
@@ -213,9 +216,19 @@ namespace WorldServer.Managers.Commands
                         var lootDefinition = bagContentSelector.SelectBagContentForPlayer(reward, playerRenownBand, playerClass, playerItemList.ToList(), true);
                         if (lootDefinition.IsValid())
                         {
+                            plr.SendClientMessage("Lootdefinition is valid");
                             // Only distribute if loot is valid
-                            var rewardDescription = WorldMgr.RewardDistributor.DistributeWinningRealm(lootDefinition, plr, playerRenownBand);
-                            plr.SendClientMessage($"{rewardDescription}", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+                            var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(lootDefinition, plr);
+                            
+                            if (plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                                destructionLootChest.Add(plr.CharacterId, generatedLootBag);
+                            if (plr.Realm == Realms.REALMS_REALM_ORDER)
+                                orderLootChest.Add(plr.CharacterId, generatedLootBag);
+
+                        }
+                        else
+                        {
+                            plr.SendClientMessage("Lootdefinition is NOT valid");
                         }
                     }
                 }

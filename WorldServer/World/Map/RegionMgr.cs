@@ -838,6 +838,16 @@ namespace WorldServer.World.Map
             return obj;
         }
 
+        public LootChest CreateLootChest(GameObject_spawn spawn)
+        {
+            if (spawn == null || spawn.Proto == null)
+                return null;
+
+            var obj = new LootChest(spawn);
+            AddObject(obj, spawn.ZoneId);
+            return obj;
+        }
+
         public ChapterObject CreateChapter(Chapter_Info chapter)
         {
             var obj = new ChapterObject(chapter);
