@@ -508,6 +508,7 @@
     <Compile Include="World\Objects\CreatureState.cs" />
     <Compile Include="World\Objects\DynamicVendor.cs" />
     <Compile Include="World\Objects\Boss.cs" />
+    <Compile Include="World\Objects\LootChest.cs" />
     <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleBarakustheGodslayer.cs" />
     <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleCuliusEmbervine.cs" />
     <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleKorthuktheRaging.cs" />

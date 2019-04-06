@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using WorldServer.Managers;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
@@ -16,6 +17,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         public uint ItemId { get; set; }
         public uint ItemCount { get; set; }
         public byte RenownBand { get; set; }
+
+        
 
         public LootBagTypeDefinition()
         {

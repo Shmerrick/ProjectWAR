@@ -4441,6 +4441,30 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        public static bool CreateGoldChest(Player plr, ref List<string> values)
+        {
+
+            GameObject_proto proto = GameObjectService.GetGameObjectProto(Convert.ToUInt32(188));
+           
+            GameObject_spawn spawn = new GameObject_spawn
+            {
+                Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
+                WorldX = plr.WorldPosition.X + StaticRandom.Instance.Next(50),
+                WorldY = plr.WorldPosition.Y + StaticRandom.Instance.Next(50),
+                WorldZ = plr.WorldPosition.Z,
+                WorldO = 2093,
+                ZoneId = plr.Zone.ZoneId
+            };
+
+            spawn.BuildFromProto(proto);
+            
+
+            WorldMgr.Database.AddObject(spawn);
+
+            var gameObject = plr.Region.CreateGameObject(spawn);
+            //EvtInterface.AddEvent(Destroy, 180 * 1000, 1);
+            return true;
+        }
         public static bool SummonOrcapult(Player plr, ref List<string> values)
         {
 
