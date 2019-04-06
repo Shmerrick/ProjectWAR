@@ -191,27 +191,45 @@ namespace WorldServer.World.AI.Abilities
         }
 
         public void InfectiousBite()
-        {
-            Brain.SpeakYourMind(" using InfectiousBite");
-            Brain.SimpleCast(Owner, Combat.CurrentTarget, "InfectiousBite", 5700);
+        { // dot
+            if (Combat.CurrentTarget != null)
+            {
+                Brain.SpeakYourMind($" using InfectiousBite vs {(Combat.CurrentTarget as Player).Name}");
+                Brain.SimpleCast(Owner, Combat.CurrentTarget, "InfectiousBite", 5700);
+            }
         }
-
         public void LowBlow()
-        {
-            Brain.SpeakYourMind(" using LowBlow");
-            Brain.SimpleCast(Owner, Combat.CurrentTarget, "LowBlow", 5688);
+        { // stun
+            if (Combat.CurrentTarget != null)
+            {
+                Brain.SpeakYourMind($" using LowBlow vs {(Combat.CurrentTarget as Player).Name}");
+                Brain.SimpleCast(Owner, Combat.CurrentTarget, "LowBlow", 5688);
+            }
         }
 
         public void Shred()
-        {   // Armor debuff
-            Brain.SpeakYourMind(" using Shred");
-            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Shred", 430);
+        { // Armor debuff
+            if (Combat.CurrentTarget != null)
+            {
+                Brain.SpeakYourMind($" using Shred vs {(Combat.CurrentTarget as Player).Name}");
+                Brain.SimpleCast(Owner, Combat.CurrentTarget, "Shred", 430);
+            }
         }
-
         public void LegTear()
-        {
-            Brain.SpeakYourMind(" using LegTear");
-            Brain.SimpleCast(Owner, Combat.CurrentTarget, "LegTear", 46);
+        { // 10 sec snare
+            if (Combat.CurrentTarget != null)
+            {
+                Brain.SpeakYourMind($" using LegTear vs {(Combat.CurrentTarget as Player).Name}");
+                Brain.SimpleCast(Owner, Combat.CurrentTarget, "LegTear", 46);
+            }
+        }
+        public void WhitefireWebBolt()
+        { // knockback and snare
+            if (Combat.CurrentTarget != null)
+            {
+                Brain.SpeakYourMind($" using WhitefireWebBolt vs {(Combat.CurrentTarget as Player).Name}");
+                Brain.SimpleCast(Owner, Combat.CurrentTarget, "WhitefireWebBolt", 4462);
+            }
         }
 
         public void Maul()
