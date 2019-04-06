@@ -1369,17 +1369,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (rewardAssignments.Count > 0)
                     {
 
-                        //TODO
-                        //var orderLootChest = new LootChest(
-                        //    this.Region, 
-                        //    BattleFrontService.GetWarcampEntrance(
-                        //        (ushort) this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_ORDER), 
-                        //    (ushort)this.ActiveBattleFrontStatus.ZoneId);
-                        //var destLootChest = new LootChest(
-                        //    this.Region, 
-                        //    BattleFrontService.GetWarcampEntrance(
-                        //        (ushort) this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_DESTRUCTION), 
-                        //        (ushort)this.ActiveBattleFrontStatus.ZoneId);
+                        
+                       OrderLootChest = LootChest.Create(
+                            this.Region,
+                            BattleFrontService.GetWarcampEntrance(
+                                (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_ORDER),
+                            (ushort)this.ActiveBattleFrontStatus.ZoneId);
+                        DestructionLootChest = LootChest.Create(
+                            this.Region,
+                            BattleFrontService.GetWarcampEntrance(
+                                (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_DESTRUCTION),
+                                (ushort)this.ActiveBattleFrontStatus.ZoneId);
 
                     }
 
@@ -1418,7 +1418,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                 if (player.Key.Realm == Realms.REALMS_REALM_ORDER)
                                     OrderLootChest.Add(player.Key.CharacterId, generatedLootBag);
 
-                                player.Key.SendClientMessage($"For your efforts, you have received a {generatedLootBag.Key.Name} bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+                                player.Key.SendClientMessage($"For your efforts, you have received a {generatedLootBag.Key.Name}. Pick up your rewards at your Warcamp.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
                             }
                             else

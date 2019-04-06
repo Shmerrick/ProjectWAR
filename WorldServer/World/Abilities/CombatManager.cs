@@ -1249,7 +1249,7 @@ namespace WorldServer.World.Abilities
                 //TODO : REMOVE BEFORE PRODUCTION
                 if (target is Player)
                 {
-                    if (target.Name.Contains("Ikthal"))
+                    if (target.Name.Contains("Ikthaleon"))
                     {
                         damageInfo.Damage *= 0.05f;
                     }

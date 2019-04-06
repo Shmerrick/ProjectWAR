@@ -866,6 +866,8 @@ namespace WorldServer.Managers.Commands
             GameObject go = other as GameObject;
             Creature c = other as Creature;
             Player p = other as Player;
+            LootChest lo = other as LootChest;
+            
             if (go != null && go.IsGameObject())
             {
                 string result = go.ToString();
@@ -875,6 +877,8 @@ namespace WorldServer.Managers.Commands
                     result = result + ", ProtoTokUnlock=" + go.Spawn.Proto.TokUnlock;
                 if (go.Spawn.Proto.TokUnlock != null && go.Spawn.Proto.TokUnlock != "0")
                     result = result + ", Realm=" + go.Realm;
+
+                result += $"Loot Chest : Bags : {lo?.LootBags.Count}";
 
                 IList<Quest_Objectives> quests = WorldMgr.Database.SelectObjects<Quest_Objectives>("objtype = 3 AND objid = " + go.Entry);
 
