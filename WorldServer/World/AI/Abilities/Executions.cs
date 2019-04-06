@@ -256,6 +256,18 @@ namespace WorldServer.World.AI.Abilities
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "CripplingBlow", 5132);
         }
 
+        public void EnvenomedStinger()
+        {
+            Brain.SpeakYourMind(" using EnvenomedStinger");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "EnvenomedStinger", 12402);
+        }
+
+        public void SappingStrike()
+        {
+            Brain.SpeakYourMind(" using SappingStrike");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "SappingStrike", 20224);
+        }
+
         public void BloodPulse()
         {
             Brain.SpeakYourMind(" using BloodPulse");
