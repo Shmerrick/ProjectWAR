@@ -1369,17 +1369,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (rewardAssignments.Count > 0)
                     {
 
-                        //TODO
-                        //var orderLootChest = new LootChest(
-                        //    this.Region, 
-                        //    BattleFrontService.GetWarcampEntrance(
-                        //        (ushort) this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_ORDER), 
-                        //    (ushort)this.ActiveBattleFrontStatus.ZoneId);
-                        //var destLootChest = new LootChest(
-                        //    this.Region, 
-                        //    BattleFrontService.GetWarcampEntrance(
-                        //        (ushort) this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_DESTRUCTION), 
-                        //        (ushort)this.ActiveBattleFrontStatus.ZoneId);
+                        
+                       OrderLootChest = LootChest.Create(
+                            this.Region,
+                            BattleFrontService.GetWarcampEntrance(
+                                (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_ORDER),
+                            (ushort)this.ActiveBattleFrontStatus.ZoneId);
+                        DestructionLootChest = LootChest.Create(
+                            this.Region,
+                            BattleFrontService.GetWarcampEntrance(
+                                (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_DESTRUCTION),
+                                (ushort)this.ActiveBattleFrontStatus.ZoneId);
 
                     }
 
