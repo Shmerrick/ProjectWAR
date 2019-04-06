@@ -1418,7 +1418,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                 if (player.Key.Realm == Realms.REALMS_REALM_ORDER)
                                     OrderLootChest.Add(player.Key.CharacterId, generatedLootBag);
 
-                                player.Key.SendClientMessage($"For your efforts, you have received a {generatedLootBag.Key.Name} bag!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+                                player.Key.SendClientMessage($"For your efforts, you have received a {generatedLootBag.Key.Name}. Pick up your rewards at your Warcamp.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
                             }
                             else
