@@ -267,10 +267,19 @@ namespace WorldServer.World.Battlefronts.Keeps
                         this.Region,
                         new Point3D(this.Info.PQuest.GoldChestWorldX, this.Info.PQuest.GoldChestWorldY, this.Info.PQuest.GoldChestWorldZ),
                         (ushort)this.ZoneId);
+
+                    orderLootChest.Title = $"Fort Defence {this.Info.Name}";
+                    orderLootChest.Content = $"Fort Defence Rewards";
+                    orderLootChest.SenderName = $"{this.Info.Name}";
+
                     var destructionLootChest = LootChest.Create(
                         this.Region,
                         new Point3D(this.Info.PQuest.GoldChestWorldX, this.Info.PQuest.GoldChestWorldY, this.Info.PQuest.GoldChestWorldZ),
                         (ushort)this.ZoneId);
+
+                    destructionLootChest.Title = $"Fort Defence {this.Info.Name}";
+                    destructionLootChest.Content = $"Fort Defence Rewards";
+                    destructionLootChest.SenderName = $"{this.Info.Name}";
 
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock((Realms)Info.Realm, orderLootChest, destructionLootChest);
                     FortDefenceCounter = 0;
@@ -1205,7 +1214,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 case KeepStatus.KEEPSTATUS_SEIZED:
                     return "Keep Has Fallen";
                 case KeepStatus.KEEPSTATUS_LOCKED:
-                    return "Keep RegionLockManager";
+                    return "Keep Locked";
                 case KeepStatus.KEEPSTATUS_SAFE:
                 case KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK:
                     return plr.Realm == Realm ? "Defend Outer Door" : "Destroy Outer Door";
@@ -1675,11 +1684,19 @@ namespace WorldServer.World.Battlefronts.Keeps
                     this.Region,
                     new Point3D(this.Info.PQuest.GoldChestWorldX, this.Info.PQuest.GoldChestWorldY, this.Info.PQuest.GoldChestWorldZ),
                     (ushort)this.ZoneId);
+
+                orderLootChest.Title = $"Fort Assault {this.Info.Name}";
+                orderLootChest.Content = $"Fort Assault Rewards";
+                orderLootChest.SenderName = $"{this.Info.Name}";
+
                 var destructionLootChest = LootChest.Create(
                     this.Region,
                     new Point3D(this.Info.PQuest.GoldChestWorldX, this.Info.PQuest.GoldChestWorldY, this.Info.PQuest.GoldChestWorldZ),
                     (ushort)this.ZoneId);
 
+                destructionLootChest.Title = $"Fort Assault {this.Info.Name}";
+                destructionLootChest.Content = $"Fort Assault Rewards";
+                destructionLootChest.SenderName = $"{this.Info.Name}";
 
                 WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(PendingRealm, orderLootChest, destructionLootChest);
                 FortDefenceCounter = 0;

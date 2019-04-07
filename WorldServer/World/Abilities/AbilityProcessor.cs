@@ -1031,6 +1031,7 @@ namespace WorldServer.World.Abilities
 
         private void Cast()
         {
+
             if (!AllowCast())
                 return;
             

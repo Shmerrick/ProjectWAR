@@ -176,7 +176,7 @@ namespace WorldServer.Managers.Commands
 
                     foreach (var contributionStage in stageDictionary)
                     {
-                        sumContribution += contributionStage.Value.ContributionStageValue;
+                        sumContribution += contributionStage.Value.ContributionStageSum;
                         plr.SendClientMessage(contributionStage.ToString());
                     }
 

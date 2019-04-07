@@ -90,9 +90,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public int DestructionDominationTimerLength { get; set; }
         public int OrderDominationTimerLength { get; set; }
 
-        public LootChest OrderLootChest { get; set; }
-        public LootChest DestructionLootChest { get; set; }
-
         public int OrderDominationTimerStart { get; set; }
         public int DestructionDominationTimerStart { get; set; }
         // Both 'remaining' start as *DominationTimerLength and are reduced each time the domination timer is stopped
@@ -1407,19 +1404,27 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 try
                 {
                     //Create Chests at WC entrances
-                    OrderLootChest = LootChest.Create(
+                    var orderLootChest = LootChest.Create(
                         this.Region,
                         BattleFrontService.GetWarcampEntrance(
                             (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_ORDER),
                         (ushort)this.ActiveBattleFrontStatus.ZoneId);
-                    DestructionLootChest = LootChest.Create(
+
+                    orderLootChest.Title = $"Zone Assault {this.ActiveCampaignName}";
+                    orderLootChest.Content = $"Zone Assault Rewards";
+                    orderLootChest.SenderName = $"{this.ActiveCampaignName}";
+
+                    var destructionLootChest = LootChest.Create(
                         this.Region,
                         BattleFrontService.GetWarcampEntrance(
                             (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_DESTRUCTION),
                         (ushort)this.ActiveBattleFrontStatus.ZoneId);
 
+                    destructionLootChest.Title = $"Zone Assault {this.ActiveCampaignName}";
+                    destructionLootChest.Content = $"Zone Assault Rewards";
+                    destructionLootChest.SenderName = $"{this.ActiveCampaignName}";
 
-                    ExecuteBattleFrontLock(Realms.REALMS_REALM_ORDER, OrderLootChest, DestructionLootChest);
+                    ExecuteBattleFrontLock(Realms.REALMS_REALM_ORDER, orderLootChest, destructionLootChest);
                 }
                 catch (Exception e)
                 {
@@ -1435,18 +1440,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 try
                 {
                     //Create Chests at WC entrances
-                    OrderLootChest = LootChest.Create(
+                    var orderLootChest = LootChest.Create(
                         this.Region,
                         BattleFrontService.GetWarcampEntrance(
                             (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_ORDER),
                         (ushort)this.ActiveBattleFrontStatus.ZoneId);
-                    DestructionLootChest = LootChest.Create(
+                   var destructionLootChest = LootChest.Create(
                         this.Region,
                         BattleFrontService.GetWarcampEntrance(
                             (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_DESTRUCTION),
                         (ushort)this.ActiveBattleFrontStatus.ZoneId);
 
-                    ExecuteBattleFrontLock(Realms.REALMS_REALM_DESTRUCTION, OrderLootChest, DestructionLootChest);
+                    ExecuteBattleFrontLock(Realms.REALMS_REALM_DESTRUCTION, orderLootChest, destructionLootChest);
                 }
                 catch (Exception e)
                 {
@@ -1463,7 +1468,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             BattlefrontLogger.Info($"Executing BattleFront Lock on {oldBattleFront.Description} for {lockingRealm}");
 
             BattleFrontManager.LockActiveBattleFront(lockingRealm, 0);
-            GenerateZoneLockRewards(lockingRealm, OrderLootChest, DestructionLootChest, 0);
+            GenerateZoneLockRewards(lockingRealm, orderLootChest, destructionLootChest, 0);
             // Select the next Progression
             var nextBattleFront = BattleFrontManager.AdvanceBattleFront(lockingRealm);
 

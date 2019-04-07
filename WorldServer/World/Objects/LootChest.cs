@@ -22,7 +22,10 @@ namespace WorldServer.World.Objects
     {
         // Dictionary of characterId, and Bag -* List of Bag Contents
         public Dictionary<uint, KeyValuePair<Item_Info, List<Talisman>>> LootBags { get; set; }
-        
+        public string Title { get; set; }
+        public string SenderName { get; set; }
+        public string Content { get; set; }
+
         //EvtInterface.AddEvent(Destroy, 180 * 1000, 1);
 
         public LootChest(GameObject_spawn spawn)
@@ -109,11 +112,11 @@ namespace WorldServer.World.Objects
                     {
                         Guid = CharMgr.GenerateMailGuid(),
                         CharacterId = lootBag.Key,  //CharacterId
-                        SenderName = "Public Quest",
+                        SenderName = SenderName,
                         ReceiverName = characterName,
                         SendDate = (uint)TCPManager.GetTimeStamp(),
-                        Title = "Public Quest Loot",
-                        Content = "You won a Public Quest Loot Bag",
+                        Title = Title,
+                        Content = Content,
                         Money = 0,
                         Opened = false
                     };
