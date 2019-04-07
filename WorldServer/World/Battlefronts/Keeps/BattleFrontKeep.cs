@@ -261,7 +261,18 @@ namespace WorldServer.World.Battlefronts.Keeps
 
                     // Lock the keep for the defending realm
                     OnLockZone((Realms)Info.Realm);
-                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock((Realms)Info.Realm);
+
+                    // Create Loot Chests at the Fort GoldChest location.
+                    var orderLootChest = LootChest.Create(
+                        this.Region,
+                        new Point3D(this.Info.PQuest.GoldChestWorldX, this.Info.PQuest.GoldChestWorldY, this.Info.PQuest.GoldChestWorldZ),
+                        (ushort)this.ZoneId);
+                    var destructionLootChest = LootChest.Create(
+                        this.Region,
+                        new Point3D(this.Info.PQuest.GoldChestWorldX, this.Info.PQuest.GoldChestWorldY, this.Info.PQuest.GoldChestWorldZ),
+                        (ushort)this.ZoneId);
+
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock((Realms)Info.Realm, orderLootChest, destructionLootChest);
                     FortDefenceCounter = 0;
                 }
                 else
@@ -1658,7 +1669,19 @@ namespace WorldServer.World.Battlefronts.Keeps
             if (IsFortress())
             {
                 OnLockZone(PendingRealm);
-                WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(PendingRealm);
+
+                // Create Loot Chests at the Fort GoldChest location.
+                var orderLootChest = LootChest.Create(
+                    this.Region,
+                    new Point3D(this.Info.PQuest.GoldChestWorldX, this.Info.PQuest.GoldChestWorldY, this.Info.PQuest.GoldChestWorldZ),
+                    (ushort)this.ZoneId);
+                var destructionLootChest = LootChest.Create(
+                    this.Region,
+                    new Point3D(this.Info.PQuest.GoldChestWorldX, this.Info.PQuest.GoldChestWorldY, this.Info.PQuest.GoldChestWorldZ),
+                    (ushort)this.ZoneId);
+
+
+                WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(PendingRealm, orderLootChest, destructionLootChest);
                 FortDefenceCounter = 0;
                 WorldMgr.UpperTierCampaignManager.GetActiveCampaign().RegionLockManager.Start();  // TODO : no action on Region Lock currently 7-APR-19
                 _logger.Info($"Zone (FORT) Force RegionLockManager from {Info.Name}");

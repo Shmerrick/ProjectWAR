@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WorldServer.World.Battlefronts.Bounty;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
@@ -64,13 +65,23 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         }
 
         /// <summary>
-        /// For a list of player Ids, select those getting a reward, and assign a colored loot bag (reward) to them.
+        /// Assign a bagdefinition to a player that is eligible.
         /// </summary>
-        /// <param name="eligiblePlayers"></param>
+        /// <param name="contributionManager"></param>
+        /// <param name="numberOfBagsToAward"></param>
         /// <param name="bagDefinitions"></param>
         /// <returns></returns>
-        public List<LootBagTypeDefinition> AssignLootToPlayers(List<uint> eligiblePlayers, List<LootBagTypeDefinition> bagDefinitions)
+        public List<LootBagTypeDefinition> AssignLootToPlayers(
+            ContributionManager contributionManager,
+            int numberOfBagsToAward, 
+            List<LootBagTypeDefinition> bagDefinitions)
         {
+            // Select the highest contribution players for bag assignment - those eligible (either realm). These are sorted in eligibility order.
+            var eligiblePlayers = contributionManager.GetEligiblePlayers(numberOfBagsToAward).ToList();
+            RewardLogger.Debug($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBagsToAward} Bags");
+            // Get the character Ids of the eligible characters
+            var eligiblePlayerCharacterIds = eligiblePlayers.Select(x => x.Key).ToList();
+
             if (eligiblePlayers.Count == 0)
                 return null;
 
@@ -97,7 +108,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
                     try
                     {
-                        lootBagTypeDefinition.Assignee = selectedPlayer;
+                        lootBagTypeDefinition.Assignee = selectedPlayer.Key;
                         RewardLogger.Debug(
                             $"Selected player {selectedPlayer} selected for reward. LootBag Id : {lootBagTypeDefinition.LootBagNumber} ({lootBagTypeDefinition.BagRarity}). Index = {bagIndex}");
                         // player assigned, go to next bag

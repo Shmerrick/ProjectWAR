@@ -200,7 +200,7 @@ namespace WorldServer.Managers.Commands
             // Assign eligible players to the bag definitions.
             foreach (var lootBagTypeDefinition in bagDefinitions)
             {
-                var rewardAssignments = rewardAssigner.AssignLootToPlayers(new List<uint> { plr.CharacterId }, new List<LootBagTypeDefinition> { lootBagTypeDefinition });
+                var rewardAssignments = rewardAssigner.AssignLootToPlayers(plr.Region.ContributionManager, numberBags, new List<LootBagTypeDefinition> { lootBagTypeDefinition });
 
                 var bagContentSelector = new BagContentSelector(RVRZoneRewardService.RVRZoneLockItemOptions, StaticRandom.Instance);
 

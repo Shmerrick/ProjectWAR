@@ -1046,8 +1046,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (_rewardManager == null)
                 BattlefrontLogger.Warn($"_rewardManager is null!!");
 
-            BattlefrontLogger.Info($"*************************BATTLEFRONT GENERATING REWARDS***********");
-            GenerateZoneLockRewards(lockingRealm, forceNumberBags);
+
             BattlefrontLogger.Info($"*************************BATTLEFRONT LOCK-END [LockId:{lockId}] *********************");
 
         }
@@ -1089,12 +1088,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// </summary>
         /// <param name="lockingRealm"></param>
         /// <param name="forceNumberBags">By default 0 allows the system to decide the number of bags, setting to -1 forces no rewards.</param>
-        private void GenerateZoneLockRewards(Realms lockingRealm, int forceNumberBags = 0)
+        private void GenerateZoneLockRewards(Realms lockingRealm, LootChest OrderLootChest, LootChest DestructionLootChest, int forceNumberBags = 0)
         {
             var winningRealmPlayers = new ConcurrentDictionary<Player, int>();
             var losingRealmPlayers = new ConcurrentDictionary<Player, int>();
             var eligiblePlayersAllRealms= new ConcurrentDictionary<Player, int>();
             var rewardAssigner = new RewardAssigner(StaticRandom.Instance);
+
+            BattlefrontLogger.Info($"*************************BATTLEFRONT GENERATING REWARDS***********");
 
             // Calculate no rewards
             if (forceNumberBags == -1)
@@ -1117,24 +1118,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 losingRealmPlayers = eligibilitySplits.Item3;
 
                 var numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, allContributingPlayers);
-                
+                // Determine and build out the bag types to be assigned
+                var bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
+
                 BattlefrontLogger.Debug($"winningRealmPlayers Players Count = {winningRealmPlayers.Count()}");
                 BattlefrontLogger.Debug($"losingRealmPlayers Players Count = {losingRealmPlayers.Count()}");
 
-                // Distribute RR, INF, etc to contributing players
+                // Distribute RR, INF, etc to contributing players TODO - Distributor
                 DistributeBaseRewards(losingRealmPlayers, winningRealmPlayers, lockingRealm, ContributionManager.MAXIMUM_CONTRIBUTION);
 
-
-
-                // Select the highest contribution players for bag assignment - those eligible (either realm). These are sorted in eligibility order.
-                var eligiblePlayers = ActiveBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(numberOfBagsToAward);
-                BattlefrontLogger.Debug($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBagsToAward} Bags");
-                // Get the character Ids of the eligible characters
-                var eligiblePlayerCharacterIds = eligiblePlayers.Select(x => x.Key).ToList();
-                // Determine and build out the bag types to be assigned
-                var bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
                 // Assign eligible players to the bag definitions.
-                var rewardAssignments = rewardAssigner.AssignLootToPlayers(eligiblePlayerCharacterIds, bagDefinitions);
+                var rewardAssignments = rewardAssigner.AssignLootToPlayers(ActiveBattleFrontStatus.ContributionManagerInstance, numberOfBagsToAward, bagDefinitions);
 
                 if (rewardAssignments == null)
                 {
@@ -1150,21 +1144,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     var bagContentSelector = new BagContentSelector(RVRZoneRewardService.RVRZoneLockItemOptions, StaticRandom.Instance);
 
-                    if (rewardAssignments.Count > 0)
-                    {
-                        OrderLootChest = LootChest.Create(
-                             this.Region,
-                             BattleFrontService.GetWarcampEntrance(
-                                 (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_ORDER),
-                             (ushort)this.ActiveBattleFrontStatus.ZoneId);
-                        DestructionLootChest = LootChest.Create(
-                            this.Region,
-                            BattleFrontService.GetWarcampEntrance(
-                                (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_DESTRUCTION),
-                                (ushort)this.ActiveBattleFrontStatus.ZoneId);
-
-                    }
-
+                 
                     foreach (var reward in rewardAssignments)
                     {
                         if (reward.Assignee != 0)
@@ -1195,10 +1175,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                 BattlefrontLogger.Debug($"{lootDefinition.ToString()}");
                                 // Only distribute if loot is valid
                                 var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(lootDefinition, player.Key);
-                                if (player.Key.Realm == Realms.REALMS_REALM_DESTRUCTION)
-                                    DestructionLootChest.Add(player.Key.CharacterId, generatedLootBag);
-                                if (player.Key.Realm == Realms.REALMS_REALM_ORDER)
-                                    OrderLootChest.Add(player.Key.CharacterId, generatedLootBag);
+                                switch (player.Key.Realm)
+                                {
+                                    case Realms.REALMS_REALM_DESTRUCTION:
+                                        DestructionLootChest.Add(player.Key.CharacterId, generatedLootBag);
+                                        break;
+                                    case Realms.REALMS_REALM_ORDER:
+                                        OrderLootChest.Add(player.Key.CharacterId, generatedLootBag);
+                                        break;
+                                }
 
                                 player.Key.SendClientMessage($"For your efforts, you have received a {generatedLootBag.Key.Name}. Pick up your rewards at your Warcamp.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
@@ -1264,7 +1249,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 foreach (var player in allPlayersInZone)
                 {
-
                     if (player.Realm == lockingRealm)
                     {
                         // Ensure player is not in the eligible list.
@@ -1422,7 +1406,20 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 try
                 {
-                    ExecuteBattleFrontLock(Realms.REALMS_REALM_ORDER);
+                    //Create Chests at WC entrances
+                    OrderLootChest = LootChest.Create(
+                        this.Region,
+                        BattleFrontService.GetWarcampEntrance(
+                            (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_ORDER),
+                        (ushort)this.ActiveBattleFrontStatus.ZoneId);
+                    DestructionLootChest = LootChest.Create(
+                        this.Region,
+                        BattleFrontService.GetWarcampEntrance(
+                            (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_DESTRUCTION),
+                        (ushort)this.ActiveBattleFrontStatus.ZoneId);
+
+
+                    ExecuteBattleFrontLock(Realms.REALMS_REALM_ORDER, OrderLootChest, DestructionLootChest);
                 }
                 catch (Exception e)
                 {
@@ -1437,7 +1434,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 try
                 {
-                    ExecuteBattleFrontLock(Realms.REALMS_REALM_DESTRUCTION);
+                    //Create Chests at WC entrances
+                    OrderLootChest = LootChest.Create(
+                        this.Region,
+                        BattleFrontService.GetWarcampEntrance(
+                            (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_ORDER),
+                        (ushort)this.ActiveBattleFrontStatus.ZoneId);
+                    DestructionLootChest = LootChest.Create(
+                        this.Region,
+                        BattleFrontService.GetWarcampEntrance(
+                            (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_DESTRUCTION),
+                        (ushort)this.ActiveBattleFrontStatus.ZoneId);
+
+                    ExecuteBattleFrontLock(Realms.REALMS_REALM_DESTRUCTION, OrderLootChest, DestructionLootChest);
                 }
                 catch (Exception e)
                 {
@@ -1447,13 +1456,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public void ExecuteBattleFrontLock(Realms lockingRealm)
+        public void ExecuteBattleFrontLock(Realms lockingRealm, LootChest orderLootChest, LootChest destructionLootChest)
         {
 
             var oldBattleFront = BattleFrontManager.GetActiveBattleFrontFromProgression();
             BattlefrontLogger.Info($"Executing BattleFront Lock on {oldBattleFront.Description} for {lockingRealm}");
 
             BattleFrontManager.LockActiveBattleFront(lockingRealm, 0);
+            GenerateZoneLockRewards(lockingRealm, OrderLootChest, DestructionLootChest, 0);
             // Select the next Progression
             var nextBattleFront = BattleFrontManager.AdvanceBattleFront(lockingRealm);
 
