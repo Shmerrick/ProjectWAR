@@ -88,7 +88,7 @@ namespace WorldServer.World.AI.Abilities
                 return;
             if (Combat.CurrentTarget is Player)
             {
-                var target = ((Player) Combat.CurrentTarget);
+                var target = ((Player)Combat.CurrentTarget);
                 Brain.SpeakYourMind($" using Corruption vs {target.Name}");
                 Brain.SimpleCast(Owner, Combat.CurrentTarget, "Corruption", 8400);
 
@@ -255,11 +255,8 @@ namespace WorldServer.World.AI.Abilities
         }
         public void LegTear()
         { // 10 sec snare
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using LegTear vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "LegTear", 46);
-            }
+            Brain.SpeakYourMind($" using LegTear vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "LegTear", 46);
         }
         public void WhitefireWebBolt()
         { // knockback and snare
