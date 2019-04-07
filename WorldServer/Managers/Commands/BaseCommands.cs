@@ -14,6 +14,7 @@ using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.CareerInterfaces;
 using WorldServer.World.AI;
 using WorldServer.World.AI.BT;
+using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Battlefronts.Objectives;
@@ -4703,7 +4704,7 @@ namespace WorldServer.Managers.Commands
 
                 status.SetAsRealmCaptain((Player) playerTarget);
 
-                WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ScaleModel((Player)playerTarget, Player._Players, 1);
+                RealmCaptainManager.ScaleModel((Player)playerTarget, Player._Players, 1);
             }
 
             return true;

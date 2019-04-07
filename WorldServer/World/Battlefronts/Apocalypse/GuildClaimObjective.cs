@@ -334,7 +334,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         //    switch (State)
         //    {
         //        case StateFlags.ZoneLocked:
-        //        case StateFlags.Locked:
+        //        case StateFlags.RegionLockManager:
         //            Out.WritePascalString("This area has been captured by ", GetRealmString(OwningRealm),
         //                ". The battle wages on elsewhere!");
         //            break;
@@ -411,7 +411,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         //        case StateFlags.ZoneLocked:
         //            return "ZONE-LOCKED";
 
-        //        case StateFlags.Locked:
+        //        case StateFlags.RegionLockManager:
         //            return "SECURED";
         //    }
 

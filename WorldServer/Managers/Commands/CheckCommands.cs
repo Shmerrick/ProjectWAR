@@ -172,10 +172,15 @@ namespace WorldServer.Managers.Commands
                     }
                     var stageDictionary = activeBattleFrontStatus.ContributionManagerInstance.GetContributionStageList(target.CharacterId);
 
+                    var sumContribution = 0;
+
                     foreach (var contributionStage in stageDictionary)
                     {
+                        sumContribution += contributionStage.Value.ContributionStageValue;
                         plr.SendClientMessage(contributionStage.ToString());
                     }
+
+                    plr.SendClientMessage($"Total = {sumContribution}");
                 }
             }
             return true;

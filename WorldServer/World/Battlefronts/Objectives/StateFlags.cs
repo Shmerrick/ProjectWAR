@@ -15,7 +15,7 @@ namespace WorldServer.World.Battlefronts.Objectives
         Secure = 2,
         /// <summary>Neutral Icon on Fire</summary>
         Contested = 4,
-        /// <summary>Locked (because of Campaign state)</summary>
+        /// <summary>RegionLockManager (because of Campaign state)</summary>
         Abandoned = 8,
         /// <summary>Bright halo</summary>
         Locked = 16,
