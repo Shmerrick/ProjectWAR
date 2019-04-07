@@ -1,6 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using GameData;
 using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
+using FrameWork;
+using WorldServer.Managers;
+using WorldServer.World.Battlefronts.Apocalypse.Loot;
+using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
@@ -69,6 +77,47 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             lock (Player._Players)
             {
                 return Player._Players.Where(x => !x.IsDisposed && x.IsInWorld() && !x.IsAFK && !x.IsAutoAFK && x != null && x.ZoneId == zoneId && x.CbtInterface.IsPvp).ToList();
+            }
+        }
+
+
+        public static Tuple<ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>> 
+            SplitPlayerEligibility(
+                IEnumerable<KeyValuePair<uint, int>> allContributingPlayers, Realms lockingRealm, ContributionManager contributionManager)
+        {
+            var winningRealmPlayers = new ConcurrentDictionary<Player, int>();
+            var losingRealmPlayers = new ConcurrentDictionary<Player, int>();
+            var allEligiblePlayerDictionary = new ConcurrentDictionary<Player, int>();
+
+           
+                // Partition the players by winning realm. 
+                foreach (var contributingPlayer in allContributingPlayers)
+                {
+                    var player = Player.GetPlayer(contributingPlayer.Key);
+                    if (player != null)
+                    {
+                        // Update the Honor Points of the Contributing Players
+                        player.Info.HonorPoints += (ushort) contributingPlayer.Value;
+                        CharMgr.Database.SaveObject(player.Info);
+
+                        if (player.Realm == lockingRealm)
+                            winningRealmPlayers.TryAdd(player, contributingPlayer.Value);
+                        else
+                        {
+                            losingRealmPlayers.TryAdd(player, contributingPlayer.Value);
+                        }
+
+                        allEligiblePlayerDictionary.TryAdd(player, contributingPlayer.Value);
+
+                        // Get the contribution list for this player
+                        var contributionDictionary =
+                            contributionManager.GetContributionStageDictionary(contributingPlayer.Key);
+                        // Record the contribution types and values for the player for analytics
+                        PlayerContributionManager.RecordContributionAnalytics(player, contributionDictionary);
+
+                    }
+                }
+
             }
         }
     }

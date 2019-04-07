@@ -87,16 +87,7 @@ namespace WorldServer.World.AI
                 // Get abilities that can fire now.
                 FilterAbilities(tick);
 
-                //// Sort dictionary in value (time) order.
-                //var myList = AbilityTracker.ToList();
-                //myList.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
-
-                //foreach (var keyValuePair in myList)
-                //    _logger.Debug($"***{keyValuePair.Key.Name} => {keyValuePair.Value}");
-
                 ExecuteNextAbilityFromList(tick);
-
-
             }
         }
 
@@ -107,6 +98,11 @@ namespace WorldServer.World.AI
                 var t = ConditionManager.GetType();
                 var method = t.GetMethod(ability.Condition);
                 _logger.Debug($"Checking condition: {ability.Condition} ");
+                if (method == null)
+                {
+                    _logger.Error($"Method is null: {ability.Condition} ");
+                    return;
+                }
                 var conditionTrue = (bool)method.Invoke(ConditionManager, null);
                 if (conditionTrue)
                 {
