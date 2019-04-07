@@ -39,47 +39,34 @@ namespace WorldServer.World.AI.Abilities
 
         //    Brain.SpeakYourMind($" using Increment Phase vs {currentPhase}=>{CurrentPhase}");
         //}
-
         public void ShatterBlessing()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using Shatter Confidence vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "Shatter Confidence", 8023);
-            }
+            Brain.SpeakYourMind($" using Shatter Confidence vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Shatter Confidence", 8023);
         }
 
         public void PrecisionStrike()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using PrecisionStrike vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "PrecisionStrike", 8005);
-            }
+            Brain.SpeakYourMind($" using PrecisionStrike vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "PrecisionStrike", 8005);
         }
 
         public void SeepingWound()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using Seeping Wound vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "Seeping Wound", 8346);
-            }
+            Brain.SpeakYourMind($" using Seeping Wound vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Seeping Wound", 8320);
         }
 
         public void KnockDownTarget()
         {
-            Brain.SpeakYourMind($" using Downfall vs {(Combat.CurrentTarget as Player).Name}");
+            Brain.SpeakYourMind($" using Downfall vs {(Combat.CurrentTarget as Player)?.Name}");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "Downfall", 8346);
         }
 
         public void PuntTarget()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using Repel vs {(Combat.CurrentTarget as Player).Name}");
+                Brain.SpeakYourMind($" using Repel vs {(Combat.CurrentTarget as Player)?.Name}");
                 Combat.CurrentTarget.ApplyKnockback(Owner, AbilityMgr.GetKnockbackInfo(8329, 0));
-            }
         }
 
         public void Corruption()
@@ -88,7 +75,7 @@ namespace WorldServer.World.AI.Abilities
                 return;
             if (Combat.CurrentTarget is Player)
             {
-                var target = ((Player) Combat.CurrentTarget);
+                var target = ((Player)Combat.CurrentTarget);
                 Brain.SpeakYourMind($" using Corruption vs {target.Name}");
                 Brain.SimpleCast(Owner, Combat.CurrentTarget, "Corruption", 8400);
 
@@ -97,65 +84,44 @@ namespace WorldServer.World.AI.Abilities
 
         public void Stagger()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using Quake vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "Quake", 8349);
-            }
+            Brain.SpeakYourMind($" using Quake vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Quake", 8349);
         }
 
         public void BestialFlurry()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using BestialFlurry vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "BestialFlurry", 5347);
-            }
+            Brain.SpeakYourMind($" using BestialFlurry vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "BestialFlurry", 5347);
         }
 
         public void Whirlwind()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using Whirlwind vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "Whirlwind", 5568);
-            }
+            Brain.SpeakYourMind($" using Whirlwind vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Whirlwind", 5568);
         }
 
         public void EnfeeblingShout()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using Enfeebling Shout vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "Enfeebling Shout", 5575);
-            }
+            Brain.SpeakYourMind($" using Enfeebling Shout vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Enfeebling Shout", 5575);
         }
 
         public void Cleave()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using Cleave vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "Cleave", 13626);
-            }
+            Brain.SpeakYourMind($" using Cleave vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Cleave", 13626);
         }
 
         public void Stomp()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using Stomp vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "Stomp", 4811);
-            }
+            Brain.SpeakYourMind($" using Stomp vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Stomp", 4811);
         }
 
         public void EnragedBlow()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using EnragedBlow vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "EnragedBlow", 8315);
-            }
+            Brain.SpeakYourMind($" using EnragedBlow vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "EnragedBlow", 8315);
         }
 
         public void FlingSpines()
@@ -171,29 +137,20 @@ namespace WorldServer.World.AI.Abilities
 
         public void Terror()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using Terror vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "Terror", 5968);
-            }
+            Brain.SpeakYourMind($" using Terror vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Terror", 5968);
         }
 
         public void ThunderingBlow()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using ThunderingBlow vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "ThunderingBlow", 8424);
-            }
+            Brain.SpeakYourMind($" using ThunderingBlow vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "ThunderingBlow", 8424);
         }
 
         public void ArdentBreath()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using ArdentBreath vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "ArdentBreath", 13816);
-            }
+            Brain.SpeakYourMind($" using ArdentBreath vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "ArdentBreath", 13816);
         }
 
         public void PlagueAura()
@@ -210,163 +167,111 @@ namespace WorldServer.World.AI.Abilities
         }
 
         public void CorrosiveVomit()
-        {       //Heal debuff 50 % 30 sec
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using CorrosiveVomit vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "CorrosiveVomit", 5303);
-            }
+        { //Heal debuff 50 % 30 sec
+            Brain.SpeakYourMind($" using CorrosiveVomit vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "CorrosiveVomit", 5303);
         }
 
         public void RampantSlash()
-        {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using RampantSlash vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "RampantSlash", 13660);
-            }
+        { //Heal debuff 50 % 30 sec
+            Brain.SpeakYourMind($" using RampantSlash vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "RampantSlash", 13660);
         }
 
         public void InfectiousBite()
         { // dot
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using InfectiousBite vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "InfectiousBite", 5700);
-            }
+            Brain.SpeakYourMind($" using InfectiousBite vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "InfectiousBite", 5700);
         }
 
         public void LowBlow()
-        { // stun
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using LowBlow vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "LowBlow", 5688);
-            }
+        { // dot
+            Brain.SpeakYourMind($" using LowBlow vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "LowBlow", 5688);
         }
 
         public void Shred()
         { // Armor debuff
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using Shred vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "Shred", 430);
-            }
+            Brain.SpeakYourMind($" using Shred vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Shred", 430);
         }
+
         public void LegTear()
-        { // 10 sec snare
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using LegTear vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "LegTear", 46);
-            }
+        { // 10 sec snare 
+            Brain.SpeakYourMind($" using LegTear vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "LegTear", 46);
         }
+
         public void WhitefireWebBolt()
         { // knockback and snare
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using WhitefireWebBolt vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "WhitefireWebBolt", 4462);
-            }
+            Brain.SpeakYourMind($" using WhitefireWebBolt vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "WhitefireWebBolt", 4462);
         }
 
         public void SlimyVomit()
         { // PUKEEE
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using SlimyVomit vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "SlimyVomit", 5304);
-            }
+            Brain.SpeakYourMind($" using SlimyVomit vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "SlimyVomit", 5304);
         }
 
         public void Maul()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using Maul vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "Maul", 48);
-            }
+            Brain.SpeakYourMind($" using Maul vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Maul", 48);
         }
 
         public void Charge()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using Charge vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "Charge", 13307);
-            }
+            Brain.SpeakYourMind($" using Charge vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Charge", 13307);
         }
 
         public void Bite()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using Bite vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "Bite", 41);
-            }
+            Brain.SpeakYourMind($" using Bite vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Bite", 41);
         }
 
         public void WrithingFangs()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using WrithingFangs vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "WrithingFangs", 13097);
-            }
+            Brain.SpeakYourMind($" using WrithingFangs vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "WrithingFangs", 13097);
         }
 
         public void GutRipper()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using GutRipper vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "GutRipper", 49);
-            }
+            Brain.SpeakYourMind($" using GutRipper vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "GutRipper", 49);
         }
 
         public void DisablingStrike()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using DisablingStrike vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "DisablingStrike", 5806);
-            }
+            Brain.SpeakYourMind($" using DisablingStrike vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "DisablingStrike", 5806);
         }
 
         public void CripplingBlow()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using CripplingBlow vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "CripplingBlow", 5132);
-            }
+            Brain.SpeakYourMind($" using CripplingBlow vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "CripplingBlow", 5132);
         }
 
         public void EnvenomedStinger()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using EnvenomedStinger vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "EnvenomedStinger", 12402);
-            }
+            Brain.SpeakYourMind($" using EnvenomedStinger vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "EnvenomedStinger", 12402);
         }
 
         public void SappingStrike()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using SappingStrike vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "SappingStrike", 20224);
-            }
+            Brain.SpeakYourMind($" using SappingStrike vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "SappingStrike", 20224);
         }
 
         public void BloodPulse()
         {
-            if (Combat.CurrentTarget != null)
-            {
-                Brain.SpeakYourMind($" using BloodPulse vs {(Combat.CurrentTarget as Player).Name}");
-                Brain.SimpleCast(Owner, Combat.CurrentTarget, "BloodPulse", 5066);
-            }
+            Brain.SpeakYourMind($" using BloodPulse vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "BloodPulse", 5066);
         }
 
         public void BloodscentAura()
