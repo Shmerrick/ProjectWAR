@@ -81,44 +81,53 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
 
-        public static Tuple<ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>> 
+        public static Tuple<ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>>
             SplitPlayerEligibility(
-                IEnumerable<KeyValuePair<uint, int>> allContributingPlayers, Realms lockingRealm, ContributionManager contributionManager)
+                IEnumerable<KeyValuePair<uint, int>> allContributingPlayers, Realms lockingRealm, ContributionManager contributionManager, bool updateHonor=true, bool updateAnalytics=true)
         {
             var winningRealmPlayers = new ConcurrentDictionary<Player, int>();
             var losingRealmPlayers = new ConcurrentDictionary<Player, int>();
             var allEligiblePlayerDictionary = new ConcurrentDictionary<Player, int>();
 
-           
-                // Partition the players by winning realm. 
-                foreach (var contributingPlayer in allContributingPlayers)
+
+            // Partition the players by winning realm. 
+            foreach (var contributingPlayer in allContributingPlayers)
+            {
+                var player = Player.GetPlayer(contributingPlayer.Key);
+                if (player != null)
                 {
-                    var player = Player.GetPlayer(contributingPlayer.Key);
-                    if (player != null)
+                    if (updateHonor)
                     {
                         // Update the Honor Points of the Contributing Players
                         player.Info.HonorPoints += (ushort) contributingPlayer.Value;
                         CharMgr.Database.SaveObject(player.Info);
+                    }
 
-                        if (player.Realm == lockingRealm)
-                            winningRealmPlayers.TryAdd(player, contributingPlayer.Value);
-                        else
-                        {
-                            losingRealmPlayers.TryAdd(player, contributingPlayer.Value);
-                        }
+                    if (player.Realm == lockingRealm)
+                    {
+                        winningRealmPlayers.TryAdd(player, contributingPlayer.Value);
+                    }
+                    else
+                    {
+                        losingRealmPlayers.TryAdd(player, contributingPlayer.Value);
+                    }
 
-                        allEligiblePlayerDictionary.TryAdd(player, contributingPlayer.Value);
+                    allEligiblePlayerDictionary.TryAdd(player, contributingPlayer.Value);
 
+                    if (updateAnalytics)
+                    {
                         // Get the contribution list for this player
                         var contributionDictionary =
                             contributionManager.GetContributionStageDictionary(contributingPlayer.Key);
                         // Record the contribution types and values for the player for analytics
                         PlayerContributionManager.RecordContributionAnalytics(player, contributionDictionary);
-
                     }
-                }
 
+                }
             }
+
+            return new Tuple<ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>>(allEligiblePlayerDictionary, winningRealmPlayers, losingRealmPlayers);
+
         }
     }
 }

@@ -1104,7 +1104,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
 
                 // Get all players with at least some contribution.
-                var allContributingPlayers = ActiveBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
+                IEnumerable<KeyValuePair<uint, int>> allContributingPlayers = ActiveBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
 
                 BattlefrontLogger.Debug($"forceNumberBags = {forceNumberBags}");
 

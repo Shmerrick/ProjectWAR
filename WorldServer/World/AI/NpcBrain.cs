@@ -18,7 +18,7 @@ namespace WorldServer.World.AI
 {
     public class NpcBrain : ABrain
     {
-        private static long ABILITY_COOLDOWN = 4000;
+        private static long ABILITY_COOLDOWN = 5000;
         public long NextAbilityExecution { get; set; }
         public Conditions ConditionManager { get; set; }
         public Executions ExecutionManager { get; set; }
