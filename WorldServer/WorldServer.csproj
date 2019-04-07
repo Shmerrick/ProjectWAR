@@ -432,6 +432,9 @@
     <Compile Include="World\AI\SimpleLVHealerBrain.cs" />
     <Compile Include="World\Auction\AuctionHouse.cs" />
     <Compile Include="World\Battlefronts\AAOTracker.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\CampaignMetrics.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\PlayerContributionManager.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\PlayerUtil.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\GuildClaimObjective.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\BattlefieldObjective.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\DeploymentReason.cs" />
@@ -441,6 +444,8 @@
     <Compile Include="World\Battlefronts\Apocalypse\KeepStateMachine.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\CampaignObjectiveStateMachine.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\PlayerRewardOptions.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\RealmCaptainManager.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\RegionLockManager.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\SiegeManager.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\RamSpawnFlagComparitor.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\SiegeMerchantLocationComparitor.cs" />

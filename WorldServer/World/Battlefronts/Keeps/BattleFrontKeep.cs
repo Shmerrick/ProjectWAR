@@ -637,7 +637,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         /// <param name="realm"></param>
         public void SetKeepLocked()
         {
-            ProgressionLogger.Info($"Setting Keep Locked {Info.Name} locking to {PendingRealm}");
+            ProgressionLogger.Info($"Setting Keep RegionLockManager {Info.Name} locking to {PendingRealm}");
 
             Realm = PendingRealm;
 
@@ -1181,7 +1181,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 case KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK:
                     return "Destroy the Outer Door";
                 case KeepStatus.KEEPSTATUS_LOCKED:
-                    return "Locked";
+                    return "RegionLockManager";
                 default:
                     return "Destroy the Outer Door";
             }
@@ -1194,7 +1194,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 case KeepStatus.KEEPSTATUS_SEIZED:
                     return "Keep Has Fallen";
                 case KeepStatus.KEEPSTATUS_LOCKED:
-                    return "Keep Locked";
+                    return "Keep RegionLockManager";
                 case KeepStatus.KEEPSTATUS_SAFE:
                 case KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK:
                     return plr.Realm == Realm ? "Defend Outer Door" : "Destroy Outer Door";
@@ -1650,22 +1650,22 @@ namespace WorldServer.World.Battlefronts.Keeps
 
 
         /// <summary>
-        /// Force Zone lock for the attacker
+        /// Force Zone lock for the attacker - only to be used for Forts.
         /// </summary>
         public void ForceLockZone()
         {
-            _logger.Info($"Attempt to Force Lock Zone from {Info.Name}");
+            _logger.Info($"Attempt to (FORT) Force Lock Zone from {Info.Name}");
             if (IsFortress())
             {
                 OnLockZone(PendingRealm);
                 WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(PendingRealm);
-                WorldMgr.UpperTierCampaignManager.GetActiveCampaign().StartRegionLock();
                 FortDefenceCounter = 0;
-                _logger.Info($"Zone Force Locked from {Info.Name}");
+                WorldMgr.UpperTierCampaignManager.GetActiveCampaign().RegionLockManager.Start();  // TODO : no action on Region Lock currently 7-APR-19
+                _logger.Info($"Zone (FORT) Force RegionLockManager from {Info.Name}");
             }
             else
             {
-                _logger.Warn($"Attempt to Force Lock Zone for non-fortress {Info.Name}");
+                _logger.Warn($"Attempt to (FORT) Force Lock Zone for non-fortress {Info.Name}");
             }
         }
 

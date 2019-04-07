@@ -43,7 +43,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             ImpactMatrixManagerInstance = impactMatrixManager;
             BattleFrontId = battleFrontId;
 
-            LoadPlayerContribution();
+            ContributionManagerInstance = PlayerContributionManager.LoadPlayerContribution(battleFrontId);
 
             RewardManagerInstance = new RewardManager(ContributionManagerInstance, new StaticWrapper(), RewardService._RewardPlayerKills, ImpactMatrixManagerInstance);
 
@@ -133,45 +133,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         //    player.DispatchPacket(Out, true);
         //}
 
-        public void SavePlayerContribution(int battleFrontId)
-        {
-            if (BattleFrontId == battleFrontId)
-            {
-                WorldMgr.Database.ExecuteNonQuery($"DELETE FROM rvr_player_contribution Where BattleFrontId={battleFrontId};");
-
-                foreach (var contribution in ContributionManagerInstance.ContributionDictionary)
-                {
-                    var characterId = contribution.Key;
-                    var contributionSerialised = JsonConvert.SerializeObject(contribution.Value);
-                    var recordToWrite = new Common.Database.World.Battlefront.PlayerContribution
-                    {
-                        CharacterId = characterId,
-                        BattleFrontId = battleFrontId,
-                        ContributionSerialised = contributionSerialised,
-                        Timestamp = DateTime.Now
-                    };
-
-                    WorldMgr.Database.AddObject(recordToWrite);
-                }
-            }
-        }
-
-        private void LoadPlayerContribution()
-        {
-            var contributionDictionary = new ConcurrentDictionary<uint, List<PlayerContribution>>();
-            var contributions =
-                WorldMgr.Database.SelectObjects<Common.Database.World.Battlefront.PlayerContribution>(
-                    $"BattleFrontId = {BattleFrontId.ToString()}");
-
-            foreach (var contribution in contributions)
-            {
-                contributionDictionary.TryAdd(contribution.CharacterId,
-                    JsonConvert.DeserializeObject<List<PlayerContribution>>(contribution.ContributionSerialised));
-            }
-
-            ContributionManagerInstance = new ContributionManager(
-                contributionDictionary,
-                BountyService._ContributionDefinitions);
-        }
+        
     }
 }
