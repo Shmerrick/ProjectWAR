@@ -1445,11 +1445,20 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         BattleFrontService.GetWarcampEntrance(
                             (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_ORDER),
                         (ushort)this.ActiveBattleFrontStatus.ZoneId);
-                   var destructionLootChest = LootChest.Create(
+
+                    orderLootChest.Title = $"Zone Assault {this.ActiveCampaignName}";
+                    orderLootChest.Content = $"Zone Assault Rewards";
+                    orderLootChest.SenderName = $"{this.ActiveCampaignName}";
+
+                    var destructionLootChest = LootChest.Create(
                         this.Region,
                         BattleFrontService.GetWarcampEntrance(
                             (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_DESTRUCTION),
                         (ushort)this.ActiveBattleFrontStatus.ZoneId);
+
+                   destructionLootChest.Title = $"Zone Assault {this.ActiveCampaignName}";
+                   destructionLootChest.Content = $"Zone Assault Rewards";
+                   destructionLootChest.SenderName = $"{this.ActiveCampaignName}";
 
                     ExecuteBattleFrontLock(Realms.REALMS_REALM_DESTRUCTION, orderLootChest, destructionLootChest);
                 }

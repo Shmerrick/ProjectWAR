@@ -474,6 +474,11 @@ namespace WorldServer.Managers.Commands
                         status.LockTimeStamp = 0;
                         // Reset the population for the battle front status
                         WorldMgr.UpperTierCampaignManager.GetActiveCampaign().InitializePopulationList(status.BattleFrontId);
+
+                        if (status.BattleFrontId == 2)
+                        {
+                            status.Locked = false;
+                        }
                     }
                 }
             }

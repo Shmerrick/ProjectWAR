@@ -355,7 +355,12 @@ namespace WorldServer.World.Objects
         public ZoneMgr Zone { get; protected set; }
 
         /// <summary>Current zone id containing the object, may be null</summary>
-        public ushort? ZoneId => Zone?.ZoneId;
+        public ushort? ZoneId
+        {
+            get => Zone?.ZoneId;
+            set => throw new NotImplementedException();
+        }
+
         /// <summary>Current region containing the object, may be null</summary>
         public RegionMgr Region => Zone?.Region;
         /// <summary>True is zone is not null</summary>

@@ -1,6 +1,7 @@
 ﻿using Common;
 using FrameWork;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
@@ -8,6 +9,7 @@ using GameData;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
+using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
 using static WorldServer.Managers.Commands.GMUtils;
@@ -183,7 +185,7 @@ namespace WorldServer.Managers.Commands
 
         public static bool AddZoneLockBags(Player plr, ref List<string> values)
         {
-            var destructionLootChest = LootChest.Create(plr.Region, plr.WorldPosition, (ushort) plr.ZoneId);
+            var destructionLootChest = LootChest.Create(plr.Region, plr.WorldPosition, (ushort)plr.ZoneId);
 
             var orderLootChest = LootChest.Create(plr.Region, plr.WorldPosition, (ushort)plr.ZoneId);
             plr = GetTargetOrMe(plr) as Player;
@@ -200,7 +202,17 @@ namespace WorldServer.Managers.Commands
             // Assign eligible players to the bag definitions.
             foreach (var lootBagTypeDefinition in bagDefinitions)
             {
-                var rewardAssignments = rewardAssigner.AssignLootToPlayers(plr.Region.ContributionManager, numberBags, new List<LootBagTypeDefinition> { lootBagTypeDefinition });
+                var listPlayerContributions = new List<PlayerContribution>();
+                var pc = new PlayerContribution();
+                pc.ContributionId = 4;
+                pc.Timestamp = TCPManager.GetTimeStamp();
+                listPlayerContributions.Add(pc);
+
+                var cd = new ConcurrentDictionary<uint, List<PlayerContribution>>();
+                cd.TryAdd(plr.CharacterId, listPlayerContributions);
+                var cm = new ContributionManager(cd, BountyService._ContributionDefinitions);
+
+                var rewardAssignments = rewardAssigner.AssignLootToPlayers(cm, numberBags, new List<LootBagTypeDefinition> { lootBagTypeDefinition });
 
                 var bagContentSelector = new BagContentSelector(RVRZoneRewardService.RVRZoneLockItemOptions, StaticRandom.Instance);
 
@@ -219,7 +231,7 @@ namespace WorldServer.Managers.Commands
                             plr.SendClientMessage("Lootdefinition is valid");
                             // Only distribute if loot is valid
                             var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(lootDefinition, plr);
-                            
+
                             if (plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
                                 destructionLootChest.Add(plr.CharacterId, generatedLootBag);
                             if (plr.Realm == Realms.REALMS_REALM_ORDER)

@@ -37,6 +37,11 @@ namespace WorldServer.World.Objects
                 Name = spawn.Proto.Name;
             VfxState = (byte)spawn.VfxState;
 
+            this.Y = spawn.WorldY;
+            this.Z = spawn.WorldZ;
+            this.X = spawn.WorldX;
+            
+
             EvtInterface.AddEvent(Destroy, 180 * 1000, 1);
         }
 
