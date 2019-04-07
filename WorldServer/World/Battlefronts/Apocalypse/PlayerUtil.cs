@@ -1,13 +1,9 @@
-﻿using System;
+﻿using GameData;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using GameData;
 using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
-using FrameWork;
 using WorldServer.Managers;
-using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Objects;
 
@@ -80,10 +76,18 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-
+        /// <summary>
+        /// Given contributing players and their contributions, split out the eligible, the contributing winning realm and contributing losing realm players.
+        /// </summary>
+        /// <param name="allContributingPlayers"></param>
+        /// <param name="lockingRealm"></param>
+        /// <param name="contributionManager"></param>
+        /// <param name="updateHonor"></param>
+        /// <param name="updateAnalytics"></param>
+        /// <returns></returns>
         public static Tuple<ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>>
-            SplitPlayerEligibility(
-                IEnumerable<KeyValuePair<uint, int>> allContributingPlayers, Realms lockingRealm, ContributionManager contributionManager, bool updateHonor=true, bool updateAnalytics=true)
+            SegmentEligiblePlayers(
+                IEnumerable<KeyValuePair<uint, int>> allContributingPlayers, Realms lockingRealm, ContributionManager contributionManager, bool updateHonor = true, bool updateAnalytics = true)
         {
             var winningRealmPlayers = new ConcurrentDictionary<Player, int>();
             var losingRealmPlayers = new ConcurrentDictionary<Player, int>();
@@ -99,7 +103,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (updateHonor)
                     {
                         // Update the Honor Points of the Contributing Players
-                        player.Info.HonorPoints += (ushort) contributingPlayer.Value;
+                        player.Info.HonorPoints += (ushort)contributingPlayer.Value;
                         CharMgr.Database.SaveObject(player.Info);
                     }
 
