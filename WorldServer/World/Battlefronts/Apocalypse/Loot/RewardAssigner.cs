@@ -112,5 +112,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             }
             return bagDefinitions;
         }
-}
+
+        public int GetNumberOfBagsToAward(int forceNumberBags, List<KeyValuePair<uint, int>> allContributingPlayers)
+        {
+            RewardLogger.Debug($"forceNumberBags = {forceNumberBags}");
+
+            // Force the number of bags to hand out.
+            var numberOfBags = forceNumberBags;
+            if (forceNumberBags == 0)
+                numberOfBags = (int)DetermineNumberOfAwards(allContributingPlayers.Count());
+
+            RewardLogger.Debug($"AllContributing Players Count = {allContributingPlayers.Count()}, numberBags = {numberOfBags}");
+
+            return numberOfBags;
+        }
+    }
 }

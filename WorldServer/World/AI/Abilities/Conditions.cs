@@ -9,6 +9,7 @@ namespace WorldServer.World.AI.Abilities
     {
         // Melee range for the boss - could use baseradius perhaps?
         public static int BOSS_MELEE_RANGE = 25;
+        public static int NPC_MELEE_RANGE = 10;
 
         public Conditions(Unit owner, CombatInterface_Npc combat)
         {
@@ -46,6 +47,19 @@ namespace WorldServer.World.AI.Abilities
             return false;
         }
 
+        public bool PlayerInMeleeRange()
+        {
+            if (!Combat.HasTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY)) return false;
+            if (Combat.CurrentTarget is Player)
+            {
+                return Owner.GetDistanceToObject(Owner.CbtInterface.GetCurrentTarget()) < NPC_MELEE_RANGE;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public bool HasBlessing()
         {
             if (Combat.HasTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY))
@@ -53,7 +67,7 @@ namespace WorldServer.World.AI.Abilities
                 if (Owner.GetDistanceToObject(Owner.CbtInterface.GetCurrentTarget()) < BOSS_MELEE_RANGE
                 ) // In melee range
                 {
-                    var blessing = Combat.CurrentTarget.BuffInterface.HasBuffOfType((byte) BuffTypes.Blessing);
+                    var blessing = Combat.CurrentTarget.BuffInterface.HasBuffOfType((byte)BuffTypes.Blessing);
                     return blessing;
                 }
 
@@ -113,7 +127,7 @@ namespace WorldServer.World.AI.Abilities
 
         public bool TargetIsUnstoppable()
         {
-            var buff = Combat.CurrentTarget.BuffInterface.GetBuff((ushort) GameBuffs.Unstoppable, Combat.CurrentTarget);
+            var buff = Combat.CurrentTarget.BuffInterface.GetBuff((ushort)GameBuffs.Unstoppable, Combat.CurrentTarget);
             return buff != null;
         }
     }

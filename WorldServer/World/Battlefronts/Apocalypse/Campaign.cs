@@ -1093,65 +1093,46 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             var winningRealmPlayers = new ConcurrentDictionary<Player, int>();
             var losingRealmPlayers = new ConcurrentDictionary<Player, int>();
-            var allEligiblePlayerDictionary = new ConcurrentDictionary<Player, int>();
+            var eligiblePlayersAllRealms= new ConcurrentDictionary<Player, int>();
+            var rewardAssigner = new RewardAssigner(StaticRandom.Instance);
 
             // Calculate no rewards
             if (forceNumberBags == -1)
                 return;
-
-            var rewardAssigner = new RewardAssigner(StaticRandom.Instance);
             try
             {
-
                 // Get all players with at least some contribution.
-                var allContributingPlayers = ActiveBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
+                var allContributingPlayers = ActiveBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0).ToList();
 
-                BattlefrontLogger.Debug($"forceNumberBags = {forceNumberBags}");
+                // Split the contributing players into segments.
+                var eligibilitySplits = PlayerUtil.SegmentEligiblePlayers(
+                    allContributingPlayers,   
+                    lockingRealm, 
+                    ActiveBattleFrontStatus.ContributionManagerInstance, 
+                    true, 
+                    true);
 
-                // Determine the number of Bags to be handed out.
-                var numberOfBags = forceNumberBags;
-                if (forceNumberBags == 0)
-                    numberOfBags = (int)rewardAssigner.DetermineNumberOfAwards(allContributingPlayers.Count());
+                eligiblePlayersAllRealms = eligibilitySplits.Item1;
+                winningRealmPlayers = eligibilitySplits.Item2;
+                losingRealmPlayers = eligibilitySplits.Item3;
 
-                BattlefrontLogger.Debug($"AllContributing Players Count = {allContributingPlayers.Count()}, numberBags = {numberOfBags}");
-
-                // Partition the players by winning realm. 
-                foreach (var contributingPlayer in allContributingPlayers)
-                {
-                    var player = Player.GetPlayer(contributingPlayer.Key);
-                    if (player != null)
-                    {
-                        // Update the Honor Points of the Contributing Players
-                        player.Info.HonorPoints += (ushort)contributingPlayer.Value;
-                        CharMgr.Database.SaveObject(player.Info);
-
-                        if (player.Realm == lockingRealm)
-                            winningRealmPlayers.TryAdd(player, contributingPlayer.Value);
-                        else
-                        {
-                            losingRealmPlayers.TryAdd(player, contributingPlayer.Value);
-                        }
-                        allEligiblePlayerDictionary.TryAdd(player, contributingPlayer.Value);
-
-                        // Get the contribution list for this player
-                        var contributionDictionary = ActiveBattleFrontStatus.ContributionManagerInstance.GetContributionStageDictionary(contributingPlayer.Key);
-                        // Record the contribution types and values for the player for analytics
-                        PlayerContributionManager.RecordContributionAnalytics(player, contributionDictionary);
-
-                    }
-                }
+                var numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, allContributingPlayers);
+                
                 BattlefrontLogger.Debug($"winningRealmPlayers Players Count = {winningRealmPlayers.Count()}");
                 BattlefrontLogger.Debug($"losingRealmPlayers Players Count = {losingRealmPlayers.Count()}");
 
                 // Distribute RR, INF, etc to contributing players
                 DistributeBaseRewards(losingRealmPlayers, winningRealmPlayers, lockingRealm, ContributionManager.MAXIMUM_CONTRIBUTION);
+
+
+
                 // Select the highest contribution players for bag assignment - those eligible (either realm). These are sorted in eligibility order.
-                var eligiblePlayers = ActiveBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(numberOfBags);
-                BattlefrontLogger.Debug($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBags} Bags");
+                var eligiblePlayers = ActiveBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(numberOfBagsToAward);
+                BattlefrontLogger.Debug($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBagsToAward} Bags");
                 // Get the character Ids of the eligible characters
                 var eligiblePlayerCharacterIds = eligiblePlayers.Select(x => x.Key).ToList();
                 // Determine and build out the bag types to be assigned
-                var bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBags);
+                var bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
                 // Assign eligible players to the bag definitions.
                 var rewardAssignments = rewardAssigner.AssignLootToPlayers(eligiblePlayerCharacterIds, bagDefinitions);
 
@@ -1192,7 +1173,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             KeyValuePair<Player, int> player;
                             try
                             {
-                                player = allEligiblePlayerDictionary.Single(x => x.Key.CharacterId == reward.Assignee);
+                                player = eligiblePlayersAllRealms.Single(x => x.Key.CharacterId == reward.Assignee);
                             }
                             catch (Exception e)
                             {

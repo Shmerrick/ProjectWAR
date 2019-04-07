@@ -197,7 +197,7 @@ namespace WorldServer.World.AI.Abilities
         }
 
         public void LegTear()
-        { // 10 sec snare 
+        { // 10 sec snare
             Brain.SpeakYourMind($" using LegTear vs {(Combat.CurrentTarget as Player)?.Name}");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "LegTear", 46);
         }

@@ -95,12 +95,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 new Talisman(lootBag.ItemId, (byte) lootBag.ItemCount, 0, 0)
             };
 
-            // Create a 'talisman' from the reward Item
-            // RA - removed temp. TODO
-            // var result = player.ItmInterface.CreateItem(lootBagItem, 1, internalBagContainer, 0, 0, false, 0, false);
             // RewardLogger.Info($"Distributing reward of {lootBagItem.Name}, containing {lootBag.ItemId} ({lootBag.ItemCount}) to {player.Name}. Result = {result}");
-
-
+            
             return new KeyValuePair<Item_Info, List<Talisman>>(lootBagItem, lootBagContents);
 
         }
