@@ -214,7 +214,7 @@ namespace WorldServer.Managers.Commands
 
                 var rewardAssignments = rewardAssigner.AssignLootToPlayers(cm, numberBags, new List<LootBagTypeDefinition> { lootBagTypeDefinition });
 
-                var bagContentSelector = new BagContentSelector(RVRZoneRewardService.RVRZoneLockItemOptions, StaticRandom.Instance);
+                var bagContentSelector = new BagContentSelector(RVRZoneRewardService.RVRRewardKeepItems, StaticRandom.Instance);
 
                 foreach (var reward in rewardAssignments)
                 {

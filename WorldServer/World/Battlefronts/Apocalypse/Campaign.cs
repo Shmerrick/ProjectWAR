@@ -1084,8 +1084,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// Generate zone lock rewards. 
         /// </summary>
         /// <param name="lockingRealm"></param>
+        /// <param name="orderLootChest"></param>
+        /// <param name="destructionLootChest"></param>
+        /// <param name="lootOptions"></param>
         /// <param name="forceNumberBags">By default 0 allows the system to decide the number of bags, setting to -1 forces no rewards.</param>
-        private void GenerateZoneLockRewards(Realms lockingRealm, LootChest OrderLootChest, LootChest DestructionLootChest, int forceNumberBags = 0)
+        private void GenerateZoneLockRewards(Realms lockingRealm, LootChest orderLootChest, LootChest destructionLootChest, List<RVRRewardKeepItems> lootOptions, int forceNumberBags = 0)
         {
             var winningRealmPlayers = new ConcurrentDictionary<Player, int>();
             var losingRealmPlayers = new ConcurrentDictionary<Player, int>();
@@ -1139,7 +1142,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 }
                 else
                 {
-                    var bagContentSelector = new BagContentSelector(RVRZoneRewardService.RVRZoneLockItemOptions, StaticRandom.Instance);
+                    //RVRZoneRewardService.RVRRewardKeepItems
+                       var bagContentSelector = new BagContentSelector(lootOptions, StaticRandom.Instance);
 
                  
                     foreach (var reward in rewardAssignments)
@@ -1175,10 +1179,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                 switch (player.Key.Realm)
                                 {
                                     case Realms.REALMS_REALM_DESTRUCTION:
-                                        DestructionLootChest.Add(player.Key.CharacterId, generatedLootBag);
+                                        destructionLootChest.Add(player.Key.CharacterId, generatedLootBag);
                                         break;
                                     case Realms.REALMS_REALM_ORDER:
-                                        OrderLootChest.Add(player.Key.CharacterId, generatedLootBag);
+                                        orderLootChest.Add(player.Key.CharacterId, generatedLootBag);
                                         break;
                                 }
 
@@ -1424,7 +1428,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     destructionLootChest.Content = $"Zone Assault Rewards";
                     destructionLootChest.SenderName = $"{this.ActiveCampaignName}";
 
-                    ExecuteBattleFrontLock(Realms.REALMS_REALM_ORDER, orderLootChest, destructionLootChest);
+                    ExecuteBattleFrontLock(Realms.REALMS_REALM_ORDER, orderLootChest, destructionLootChest, RVRZoneRewardService.RVRRewardKeepItems);
                 }
                 catch (Exception e)
                 {
@@ -1460,7 +1464,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                    destructionLootChest.Content = $"Zone Assault Rewards";
                    destructionLootChest.SenderName = $"{this.ActiveCampaignName}";
 
-                    ExecuteBattleFrontLock(Realms.REALMS_REALM_DESTRUCTION, orderLootChest, destructionLootChest);
+                    ExecuteBattleFrontLock(Realms.REALMS_REALM_DESTRUCTION, orderLootChest, destructionLootChest, RVRZoneRewardService.RVRRewardKeepItems);
                 }
                 catch (Exception e)
                 {
@@ -1470,14 +1474,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public void ExecuteBattleFrontLock(Realms lockingRealm, LootChest orderLootChest, LootChest destructionLootChest)
+        public void ExecuteBattleFrontLock(Realms lockingRealm, LootChest orderLootChest, LootChest destructionLootChest, List<RVRRewardKeepItems> lootOptions)
         {
 
             var oldBattleFront = BattleFrontManager.GetActiveBattleFrontFromProgression();
             BattlefrontLogger.Info($"Executing BattleFront Lock on {oldBattleFront.Description} for {lockingRealm}");
 
             BattleFrontManager.LockActiveBattleFront(lockingRealm, 0);
-            GenerateZoneLockRewards(lockingRealm, orderLootChest, destructionLootChest, 0);
+            GenerateZoneLockRewards(lockingRealm, orderLootChest, destructionLootChest, lootOptions, 0);
             // Select the next Progression
             var nextBattleFront = BattleFrontManager.AdvanceBattleFront(lockingRealm);
 

@@ -14,7 +14,7 @@ namespace WorldServer.Test
     [TestClass]
     public class LootDeciderTests
     {
-        public List<RVRZoneLockItemOptionReward> SampleZoneItemOptions { get; set; }
+        public List<RVRRewardKeepItems> SampleZoneItemOptions { get; set; }
         public List<uint> SamplePlayerItems { get; set; }
 
         [TestInitialize]
@@ -22,9 +22,9 @@ namespace WorldServer.Test
         {
             SamplePlayerItems = new List<uint> {1, 2, 3, 4, 5, 6, 100, 200};
 
-            SampleZoneItemOptions = new List<RVRZoneLockItemOptionReward>
+            SampleZoneItemOptions = new List<RVRRewardKeepItems>
             {
-                new RVRZoneLockItemOptionReward
+                new RVRRewardKeepItems
                 {
                     ItemId = 100,
                     ItemCount = 1,
@@ -34,7 +34,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Gold,
                     RewardId = 1
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardKeepItems
                 {
                     ItemId = 200,
                     ItemCount = 1,
@@ -44,7 +44,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Green,
                     RewardId = 2
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardKeepItems
                 {
                     ItemId = 300,
                     ItemCount = 1,
@@ -54,7 +54,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Blue,
                     RewardId = 3
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardKeepItems
                 {
                     ItemId = 400,
                     ItemCount = 2,
@@ -64,7 +64,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Purple,
                     RewardId = 4
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardKeepItems
                 {
                     ItemId = 500,
                     ItemCount = 1,
@@ -74,7 +74,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Purple,
                     RewardId = 5
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardKeepItems
                 {
                     ItemId = 301,
                     ItemCount = 1,
@@ -84,7 +84,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Blue,
                     RewardId = 6
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardKeepItems
                 {
                     ItemId = 302,
                     ItemCount = 1,
@@ -94,7 +94,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Blue,
                     RewardId = 7
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardKeepItems
                 {
                     ItemId = 303,
                     ItemCount = 1,
@@ -105,7 +105,7 @@ namespace WorldServer.Test
                     RewardId = 8
                 }
                 ,
-                new RVRZoneLockItemOptionReward
+                new RVRRewardKeepItems
                 {
                     ItemId = 601,
                     ItemCount = 1,
@@ -115,7 +115,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Blue,
                     RewardId = 9
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardKeepItems
                 {
                     ItemId = 602,
                     ItemCount = 1,
@@ -125,7 +125,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Blue,
                     RewardId = 10
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardKeepItems
                 {
                     ItemId = 603,
                     ItemCount = 1,

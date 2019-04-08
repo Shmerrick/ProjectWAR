@@ -1698,7 +1698,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 destructionLootChest.Content = $"Fort Assault Rewards";
                 destructionLootChest.SenderName = $"{this.Info.Name}";
 
-                WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(PendingRealm, orderLootChest, destructionLootChest);
+                WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(PendingRealm, orderLootChest, destructionLootChest, RVRZoneRewardService.RVRRewardFortItems);
                 FortDefenceCounter = 0;
                 WorldMgr.UpperTierCampaignManager.GetActiveCampaign().RegionLockManager.Start();  // TODO : no action on Region Lock currently 7-APR-19
                 _logger.Info($"Zone (FORT) Force RegionLockManager from {Info.Name}");

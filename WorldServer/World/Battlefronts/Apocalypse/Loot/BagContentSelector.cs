@@ -11,11 +11,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
     public class BagContentSelector : IBagContentSelector
     {
-        public List<RVRZoneLockItemOptionReward> RVRZoneRewards { get; private set; }
+        public List<RVRRewardKeepItems> RVRZoneRewards { get; private set; }
         public Random RandomGenerator { get; }
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
 
-        public BagContentSelector(List<RVRZoneLockItemOptionReward> rvrZoneRewards, Random randomGenerator)
+        public BagContentSelector(List<RVRRewardKeepItems> rvrZoneRewards, Random randomGenerator)
         {
             RVRZoneRewards = rvrZoneRewards;
             RandomGenerator = randomGenerator;

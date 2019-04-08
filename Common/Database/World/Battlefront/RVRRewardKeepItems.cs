@@ -4,10 +4,9 @@ using FrameWork;
 namespace Common.Database.World.Battlefront
 {
 
-    // Fixed value of a character 
-    [DataTable(PreCache = false, TableName = "rvr_zone_lock_item_option", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
+    [DataTable(PreCache = false, TableName = "rvr_reward_keep_items", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
-    public class RVRZoneLockItemOptionReward : DataObject
+    public class RVRRewardKeepItems : DataObject
     {
         [PrimaryKey(AutoIncrement = true)]
         public int RewardId { get; set; }
