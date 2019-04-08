@@ -8,13 +8,14 @@ using FrameWork;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
+using WorldServer.World.Objects;
 
 namespace WorldServer.Test
 {
     [TestClass]
     public class LootDeciderTests
     {
-        public List<RVRRewardKeepItems> SampleZoneItemOptions { get; set; }
+        public List<RVRRewardItem> SampleZoneItemOptions { get; set; }
         public List<uint> SamplePlayerItems { get; set; }
 
         [TestInitialize]
@@ -22,9 +23,9 @@ namespace WorldServer.Test
         {
             SamplePlayerItems = new List<uint> {1, 2, 3, 4, 5, 6, 100, 200};
 
-            SampleZoneItemOptions = new List<RVRRewardKeepItems>
+            SampleZoneItemOptions = new List<RVRRewardItem>
             {
-                new RVRRewardKeepItems
+                new RVRRewardItem
                 {
                     ItemId = 100,
                     ItemCount = 1,
@@ -34,7 +35,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Gold,
                     RewardId = 1
                 },
-                new RVRRewardKeepItems
+                new RVRRewardItem
                 {
                     ItemId = 200,
                     ItemCount = 1,
@@ -44,7 +45,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Green,
                     RewardId = 2
                 },
-                new RVRRewardKeepItems
+                new RVRRewardItem
                 {
                     ItemId = 300,
                     ItemCount = 1,
@@ -54,7 +55,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Blue,
                     RewardId = 3
                 },
-                new RVRRewardKeepItems
+                new RVRRewardItem
                 {
                     ItemId = 400,
                     ItemCount = 2,
@@ -64,7 +65,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Purple,
                     RewardId = 4
                 },
-                new RVRRewardKeepItems
+                new RVRRewardItem
                 {
                     ItemId = 500,
                     ItemCount = 1,
@@ -74,7 +75,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Purple,
                     RewardId = 5
                 },
-                new RVRRewardKeepItems
+                new RVRRewardItem
                 {
                     ItemId = 301,
                     ItemCount = 1,
@@ -84,7 +85,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Blue,
                     RewardId = 6
                 },
-                new RVRRewardKeepItems
+                new RVRRewardItem
                 {
                     ItemId = 302,
                     ItemCount = 1,
@@ -94,7 +95,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Blue,
                     RewardId = 7
                 },
-                new RVRRewardKeepItems
+                new RVRRewardItem
                 {
                     ItemId = 303,
                     ItemCount = 1,
@@ -105,7 +106,7 @@ namespace WorldServer.Test
                     RewardId = 8
                 }
                 ,
-                new RVRRewardKeepItems
+                new RVRRewardItem
                 {
                     ItemId = 601,
                     ItemCount = 1,
@@ -115,7 +116,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Blue,
                     RewardId = 9
                 },
-                new RVRRewardKeepItems
+                new RVRRewardItem
                 {
                     ItemId = 602,
                     ItemCount = 1,
@@ -125,7 +126,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Blue,
                     RewardId = 10
                 },
-                new RVRRewardKeepItems
+                new RVRRewardItem
                 {
                     ItemId = 603,
                     ItemCount = 1,

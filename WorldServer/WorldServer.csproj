@@ -597,6 +597,7 @@
     <Compile Include="World\Objects\Instances\RemovedBosses\SimpleTonragThunderborn.cs" />
     <Compile Include="World\Objects\NPCAbility.cs" />
     <Compile Include="World\Objects\RVRArea.cs" />
+    <Compile Include="World\Objects\RVRRewardItem.cs" />
     <Compile Include="World\Scripting\BasicScript.cs" />
     <Compile Include="World\Scripting\BehaviorLib.cs" />
     <Compile Include="World\Objects\Instances\Gunbad ROR\Arathremia.cs" />

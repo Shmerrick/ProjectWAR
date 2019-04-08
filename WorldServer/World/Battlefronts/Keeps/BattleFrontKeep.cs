@@ -281,7 +281,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     destructionLootChest.Content = $"Fort Defence Rewards";
                     destructionLootChest.SenderName = $"{this.Info.Name}";
 
-                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock((Realms)Info.Realm, orderLootChest, destructionLootChest);
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock((Realms)Info.Realm, orderLootChest, destructionLootChest, RVRZoneRewardService.RVRRewardFortItems);
                     FortDefenceCounter = 0;
                 }
                 else

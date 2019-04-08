@@ -6,18 +6,19 @@ using System.Threading.Tasks;
 using Common;
 using Common.Database.World.Battlefront;
 using NLog;
+using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
     public class BagContentSelector : IBagContentSelector
     {
-        public List<RVRRewardKeepItems> RVRZoneRewards { get; private set; }
+        public List<RVRRewardItem> RVRRewards { get; private set; }
         public Random RandomGenerator { get; }
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
 
-        public BagContentSelector(List<RVRRewardKeepItems> rvrZoneRewards, Random randomGenerator)
+        public BagContentSelector(List<RVRRewardItem> rvrRewards, Random randomGenerator)
         {
-            RVRZoneRewards = rvrZoneRewards;
+            RVRRewards = rvrRewards;
             RandomGenerator = randomGenerator;
         }
 
@@ -34,7 +35,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         {
             RewardLogger.Debug($"SelectBagContentForPlayer. Assignee {lootBag.Assignee} Rarity {lootBag.BagRarity} Player RR Band {playerRRBand} Class {playerClass} Shuffle {shuffleRewards} ");
             // get a closer list of matching items.
-            var matchingRewards = RVRZoneRewards.Where(x => lootBag.BagRarity == (LootBagRarity) x.Rarity);
+            var matchingRewards = RVRRewards.Where(x => lootBag.BagRarity == (LootBagRarity) x.Rarity);
             RewardLogger.Debug($"Matching Rewards = {matchingRewards.Count()}");
             if (matchingRewards == null)
                 return lootBag;

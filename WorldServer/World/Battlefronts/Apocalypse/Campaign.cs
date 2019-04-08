@@ -1088,7 +1088,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="destructionLootChest"></param>
         /// <param name="lootOptions"></param>
         /// <param name="forceNumberBags">By default 0 allows the system to decide the number of bags, setting to -1 forces no rewards.</param>
-        private void GenerateZoneLockRewards(Realms lockingRealm, LootChest orderLootChest, LootChest destructionLootChest, List<RVRRewardKeepItems> lootOptions, int forceNumberBags = 0)
+        private void GenerateZoneLockRewards(Realms lockingRealm, LootChest orderLootChest, LootChest destructionLootChest, List<RVRRewardItem> lootOptions, int forceNumberBags = 0)
         {
             var winningRealmPlayers = new ConcurrentDictionary<Player, int>();
             var losingRealmPlayers = new ConcurrentDictionary<Player, int>();
@@ -1442,7 +1442,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                      BattleFrontConstants.LOCK_VICTORY_POINTS)
             {
                 try
-                {
+                     {
                     //Create Chests at WC entrances
                     var orderLootChest = LootChest.Create(
                         this.Region,
@@ -1474,7 +1474,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public void ExecuteBattleFrontLock(Realms lockingRealm, LootChest orderLootChest, LootChest destructionLootChest, List<RVRRewardKeepItems> lootOptions)
+        public void ExecuteBattleFrontLock(Realms lockingRealm, LootChest orderLootChest, LootChest destructionLootChest, List<RVRRewardItem> lootOptions)
         {
 
             var oldBattleFront = BattleFrontManager.GetActiveBattleFrontFromProgression();
