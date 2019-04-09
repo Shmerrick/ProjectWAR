@@ -4446,28 +4446,67 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        /// <summary>
+        /// ForceLock a Fort Zone
+        /// </summary>
+        /// <param name="plr"></param>
+        /// <param name="values">1: FortId (KeepId) (eg 100 for Reikwald), 2:ForceNumberOfBags</param>
+        /// <returns></returns>
+        public static bool ForceLockZone(Player plr, ref List<string> values)
+        {
+            // Create the chest in values[0] keep
+            var keepId = Convert.ToInt32(values[0]);
+
+            var bfk = WorldMgr._Keeps[(uint)keepId];
+            bfk.ForceLockZone(Convert.ToInt32(values[1]));
+            return true;
+        }
+
         public static bool CreateGoldChest(Player plr, ref List<string> values)
         {
 
             GameObject_proto proto = GameObjectService.GetGameObjectProto(Convert.ToUInt32(188));
-           
-            GameObject_spawn spawn = new GameObject_spawn
+
+            // If no value passed, create the chest on the player
+            if (values.Count == 0)
             {
-                Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
-                WorldX = plr.WorldPosition.X + StaticRandom.Instance.Next(50),
-                WorldY = plr.WorldPosition.Y + StaticRandom.Instance.Next(50),
-                WorldZ = plr.WorldPosition.Z,
-                WorldO = 2093,
-                ZoneId = plr.Zone.ZoneId
-            };
+                GameObject_spawn spawn = new GameObject_spawn
+                {
+                    Guid = (uint) GameObjectService.GenerateGameObjectSpawnGUID(),
+                    WorldX = plr.WorldPosition.X + StaticRandom.Instance.Next(50),
+                    WorldY = plr.WorldPosition.Y + StaticRandom.Instance.Next(50),
+                    WorldZ = plr.WorldPosition.Z,
+                    WorldO = 2093,
+                    ZoneId = plr.Zone.ZoneId
+                };
 
-            spawn.BuildFromProto(proto);
+                spawn.BuildFromProto(proto);
+                
+                WorldMgr.Database.AddObject(spawn);
+
+                var gameObject = plr.Region.CreateGameObject(spawn);
+            }
+            else
+            {
+                // Create the chest in values[0] keep
+                var keepId = Convert.ToInt32(values[0]);
+
+                var keeps = BattleFrontService.GetKeepInfos(plr.Region.RegionId);
+                var keep = keeps.SingleOrDefault(x => x.KeepId == keepId);
+
+                var orderLootChest = LootChest.Create(
+                    plr.Region,
+                    new Point3D(keep.PQuest.GoldChestWorldX, keep.PQuest.GoldChestWorldY, keep.PQuest.GoldChestWorldZ),
+                    (ushort)plr.ZoneId);
+
+
+                orderLootChest.Title = $"Zone Assault ";
+                orderLootChest.Content = $"Zone Assault Rewards";
+                orderLootChest.SenderName = $"BaseCommand";
+
+
+            }
             
-
-            WorldMgr.Database.AddObject(spawn);
-
-            var gameObject = plr.Region.CreateGameObject(spawn);
-            //EvtInterface.AddEvent(Destroy, 180 * 1000, 1);
             return true;
         }
         public static bool SummonOrcapult(Player plr, ref List<string> values)

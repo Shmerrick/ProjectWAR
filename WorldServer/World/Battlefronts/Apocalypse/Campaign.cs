@@ -1179,10 +1179,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                 switch (player.Key.Realm)
                                 {
                                     case Realms.REALMS_REALM_DESTRUCTION:
-                                        destructionLootChest.Add(player.Key.CharacterId, generatedLootBag);
+                                        destructionLootChest?.Add(player.Key.CharacterId, generatedLootBag);
                                         break;
                                     case Realms.REALMS_REALM_ORDER:
-                                        orderLootChest.Add(player.Key.CharacterId, generatedLootBag);
+                                        orderLootChest?.Add(player.Key.CharacterId, generatedLootBag);
                                         break;
                                 }
 
@@ -1474,14 +1474,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public void ExecuteBattleFrontLock(Realms lockingRealm, LootChest orderLootChest, LootChest destructionLootChest, List<RVRRewardItem> lootOptions)
+        public void ExecuteBattleFrontLock(Realms lockingRealm, LootChest orderLootChest, LootChest destructionLootChest, List<RVRRewardItem> lootOptions, int forceNumberBags = 0)
         {
 
             var oldBattleFront = BattleFrontManager.GetActiveBattleFrontFromProgression();
             BattlefrontLogger.Info($"Executing BattleFront Lock on {oldBattleFront.Description} for {lockingRealm}");
 
-            BattleFrontManager.LockActiveBattleFront(lockingRealm, 0);
-            GenerateZoneLockRewards(lockingRealm, orderLootChest, destructionLootChest, lootOptions, 0);
+            BattleFrontManager.LockActiveBattleFront(lockingRealm, forceNumberBags);
+            GenerateZoneLockRewards(lockingRealm, orderLootChest, destructionLootChest, lootOptions, forceNumberBags);
             // Select the next Progression
             var nextBattleFront = BattleFrontManager.AdvanceBattleFront(lockingRealm);
 

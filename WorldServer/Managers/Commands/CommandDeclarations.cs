@@ -481,6 +481,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("summonlordslaurith", SummonLordSlaurith, null, EGmLevel.SourceDev, 0, "Spawns LordSlaurith"),
             new GmCommandHandler("summonorcapult", SummonOrcapult, null, EGmLevel.SourceDev, 0, "Its flying time"),
             new GmCommandHandler("creategoldchest", CreateGoldChest, null, EGmLevel.SourceDev, 0, "Summon a GoldChest"),
+            new GmCommandHandler("forcelockzone", ForceLockZone, null, EGmLevel.SourceDev, 0, "Force Lock a Fort Zone")
 
 
         };

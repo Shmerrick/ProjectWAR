@@ -54,14 +54,14 @@ namespace WorldServer.World.Objects
             }
             
             GameObject_proto proto = GameObjectService.GetGameObjectProto(188);
-            var targetPosition = ZoneService.GetWorldPosition(ZoneService.GetZone_Info(zoneId), (ushort) location.X, (ushort)location.Y, (ushort)location.Z);
+           // var targetPosition = ZoneService.GetWorldPosition(ZoneService.GetZone_Info(zoneId), (ushort) location.X, (ushort)location.Y, (ushort)location.Z);
             GameObject_spawn spawn = new GameObject_spawn
             {
                 Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
                 WorldO = 0,
-                WorldY = targetPosition.Y + StaticRandom.Instance.Next(50),
-                WorldZ = targetPosition.Z,
-                WorldX = targetPosition.X+StaticRandom.Instance.Next(50),
+                WorldY = location.Y,
+                WorldZ = location.Z,
+                WorldX = location.X,
                 ZoneId = zoneId
             };
 

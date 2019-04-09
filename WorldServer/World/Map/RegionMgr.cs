@@ -554,7 +554,7 @@ namespace WorldServer.World.Map
                 if (distObj == null)
                     return;
 
-                if (IsVisibleBForA(curObj, distObj) && !curObj.HasInRange(distObj))
+                if (IsVisibleBForA(curObj, distObj) && !curObj.HasInRange(distObj) && distObj.Get2DDistanceToObject(curObj) <= MaxVisibilityRange)
                 {
                     curObj.AddInRange(distObj);
                     distObj.AddInRange(curObj);

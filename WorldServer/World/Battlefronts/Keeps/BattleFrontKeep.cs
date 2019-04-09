@@ -1672,33 +1672,38 @@ namespace WorldServer.World.Battlefronts.Keeps
         /// <summary>
         /// Force Zone lock for the attacker - only to be used for Forts.
         /// </summary>
-        public void ForceLockZone()
+        public void ForceLockZone(int forceNumberBags=0)
         {
             _logger.Info($"Attempt to (FORT) Force Lock Zone from {Info.Name}");
             if (IsFortress())
             {
                 OnLockZone(PendingRealm);
 
-                // Create Loot Chests at the Fort GoldChest location.
-                var orderLootChest = LootChest.Create(
+                // Create Loot Chests at the Fort GoldChest location 
+                var lootChest = LootChest.Create(
                     this.Region,
                     new Point3D(this.Info.PQuest.GoldChestWorldX, this.Info.PQuest.GoldChestWorldY, this.Info.PQuest.GoldChestWorldZ),
                     (ushort)this.ZoneId);
 
-                orderLootChest.Title = $"Fort Assault {this.Info.Name}";
-                orderLootChest.Content = $"Fort Assault Rewards";
-                orderLootChest.SenderName = $"{this.Info.Name}";
-
-                var destructionLootChest = LootChest.Create(
-                    this.Region,
-                    new Point3D(this.Info.PQuest.GoldChestWorldX, this.Info.PQuest.GoldChestWorldY, this.Info.PQuest.GoldChestWorldZ),
-                    (ushort)this.ZoneId);
-
-                destructionLootChest.Title = $"Fort Assault {this.Info.Name}";
-                destructionLootChest.Content = $"Fort Assault Rewards";
-                destructionLootChest.SenderName = $"{this.Info.Name}";
-
-                WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(PendingRealm, orderLootChest, destructionLootChest, RVRZoneRewardService.RVRRewardFortItems);
+                lootChest.Title = $"Fort Assault {this.Info.Name}";
+                lootChest.Content = $"Fort Assault Rewards";
+                lootChest.SenderName = $"{this.Info.Name}";
+                if (PendingRealm == Realms.REALMS_REALM_DESTRUCTION)
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(
+                        PendingRealm, 
+                        null, 
+                        lootChest, 
+                        RVRZoneRewardService.RVRRewardFortItems,
+                        forceNumberBags);
+                else
+                {
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(
+                        PendingRealm, 
+                        lootChest, 
+                        null, 
+                        RVRZoneRewardService.RVRRewardFortItems,
+                        forceNumberBags);
+                }
                 FortDefenceCounter = 0;
                 WorldMgr.UpperTierCampaignManager.GetActiveCampaign().RegionLockManager.Start();  // TODO : no action on Region Lock currently 7-APR-19
                 _logger.Info($"Zone (FORT) Force RegionLockManager from {Info.Name}");
