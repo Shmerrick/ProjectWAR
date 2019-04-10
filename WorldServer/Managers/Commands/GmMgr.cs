@@ -53,35 +53,16 @@ namespace WorldServer.Managers.Commands
         {
             plr.BroadcastRank = !plr.BroadcastRank;
             string rank = "";
-            if (plr.BroadcastRank)
-            {
-                if (Utils.HasFlag(plr.GmLevel, (int)EGmLevel.DatabaseDev))
-                    rank = "[DB]";
-                if (Utils.HasFlag(plr.GmLevel, (int)EGmLevel.AnyGM))
-                    rank = "[GM]";
-                if (Utils.HasFlag(plr.GmLevel, (int)EGmLevel.SourceDev))
-                    rank = "[Dev]";
-                if (Utils.HasFlag(plr.GmLevel, (int)EGmLevel.Management))
-                    rank = "[Lead]";
 
-                PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_LASTNAME);
-                Out.WriteUInt16(plr.Oid);
-                Out.WritePascalString(rank);
-                plr.DispatchPacket(Out, true);
+            if (plr.GmLevel > 1)
+                rank = "[Staff]";
 
-                plr.Info.Surname = rank;
-            }
-           if (!plr.BroadcastRank)
-            {
-                PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_LASTNAME);
-                Out.WriteUInt16(plr.Oid);
-                Out.WritePascalString(rank);
-                plr.DispatchPacket(Out, true);
+            PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_LASTNAME);
+            Out.WriteUInt16(plr.Oid);
+            Out.WritePascalString(rank);
+            plr.DispatchPacket(Out, true);
 
-                plr.Info.Surname = rank;
-            }
-            
-            plr.SendClientMessage(plr.BroadcastRank ? "Your rank will now be shown in chat messages." : "Your rank will no longer be shown in chat messages.");
+            plr.Info.Surname = rank;
 
             return true;
         }

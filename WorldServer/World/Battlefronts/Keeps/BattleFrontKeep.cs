@@ -1683,7 +1683,8 @@ namespace WorldServer.World.Battlefronts.Keeps
                 var lootChest = LootChest.Create(
                     this.Region,
                     new Point3D(this.Info.PQuest.GoldChestWorldX, this.Info.PQuest.GoldChestWorldY, this.Info.PQuest.GoldChestWorldZ),
-                    (ushort)this.ZoneId);
+                    (ushort)this.ZoneId, 
+                    false);
 
                 lootChest.Title = $"Fort Assault {this.Info.Name}";
                 lootChest.Content = $"Fort Assault Rewards";

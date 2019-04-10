@@ -45,7 +45,7 @@ namespace WorldServer.World.Objects
             EvtInterface.AddEvent(Destroy, 180 * 1000, 1);
         }
 
-        public static LootChest Create(RegionMgr region, Point3D location, ushort zoneId)
+        public static LootChest Create(RegionMgr region, Point3D location, ushort zoneId, bool convertPin = true)
         {
             if (region == null)
             {
@@ -54,16 +54,30 @@ namespace WorldServer.World.Objects
             }
             
             GameObject_proto proto = GameObjectService.GetGameObjectProto(188);
-           // var targetPosition = ZoneService.GetWorldPosition(ZoneService.GetZone_Info(zoneId), (ushort) location.X, (ushort)location.Y, (ushort)location.Z);
-            GameObject_spawn spawn = new GameObject_spawn
+            GameObject_spawn spawn = new GameObject_spawn();
+
+            if (convertPin)  // Non-fort zone location points are PIN position system, forts are worldposition.
             {
-                Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
-                WorldO = 0,
-                WorldY = location.Y,
-                WorldZ = location.Z,
-                WorldX = location.X,
-                ZoneId = zoneId
-            };
+                var targetPosition = ZoneService.GetWorldPosition(ZoneService.GetZone_Info(zoneId), (ushort) location.X,
+                    (ushort) location.Y, (ushort) location.Z);
+
+                spawn.Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID();
+                spawn.WorldO = 0;
+                spawn.WorldY = targetPosition.Y;
+                spawn.WorldZ = targetPosition.Z;
+                spawn.WorldX = targetPosition.X;
+                spawn.ZoneId = zoneId;
+            }
+            else
+            {
+                spawn.Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID();
+                spawn.WorldO = 0;
+                spawn.WorldY = location.Y;
+                spawn.WorldZ = location.Z;
+                spawn.WorldX = location.X;
+                spawn.ZoneId = zoneId;
+            }
+
 
             spawn.BuildFromProto(proto);
             var chest = region.CreateLootChest(spawn);

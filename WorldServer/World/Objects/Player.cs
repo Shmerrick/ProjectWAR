@@ -425,19 +425,12 @@ namespace WorldServer.World.Objects
         {
             get
             {
-                if (GmLevel == 1 || !BroadcastRank)
+                if (GmLevel == 1)
                     return Name;
-
-                if (Utils.HasFlag(GmLevel, (int)EGmLevel.Management))
-                    return Name + " [Lead]";
-
-                if (Utils.HasFlag(GmLevel, (int)EGmLevel.SourceDev))
-                    return Name + " [Dev]";
-
-                if (Utils.HasFlag(GmLevel, (int)EGmLevel.AnyGM))
-                    return Name + " [GM]";
-
-                return Name + " [DB]";
+                else
+                {
+                    return Name + " [Staff]";
+                }
             }
         }
 
@@ -555,6 +548,13 @@ namespace WorldServer.World.Objects
             EvtInterface.AddEventNotify(EventName.OnDealDamage, CheckHotSpot);
 
             BroadcastRank = true;
+
+            PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_LASTNAME);
+            Out.WriteUInt16(Oid);
+            Out.WritePascalString(ChatName);
+            DispatchPacket(Out, true);
+
+            Info.Surname = ChatName;
         }
 
         public override void OnLoad()
