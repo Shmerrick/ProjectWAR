@@ -322,6 +322,7 @@
     <Compile Include="Services\World\RewardService.cs" />
     <Compile Include="Services\World\BountyService.cs" />
     <Compile Include="Services\World\RVRProgressionService.cs" />
+    <Compile Include="Services\World\HonorService.cs" />
     <Compile Include="Services\World\RVRZoneRewardService.cs" />
     <Compile Include="Services\World\ScenarioService.cs" />
     <Compile Include="Services\World\TokService.cs" />

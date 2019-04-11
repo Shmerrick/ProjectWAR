@@ -582,8 +582,8 @@ namespace WorldServer.World.Objects
                         }
                         break;
                     case 9:
-                        // Dynamic Vendor
-                        if (Spawn.Proto.VendorID == 10001)
+                        // Dynamic Vendor (10001,10002)
+                        if ((Spawn.Proto.VendorID == 10002) || (Spawn.Proto.VendorID == 10001))
                         {
                             WorldMgr.SendDynamicVendorItems(player,
                                 new RealmCaptainVendorItem(player).items);
@@ -606,10 +606,9 @@ namespace WorldServer.World.Objects
                         break;
                     case 11:
                         // Dynamic Vendor
-                        if (Spawn.Proto.VendorID == 10001)
+                        if ((Spawn.Proto.VendorID == 10002) || (Spawn.Proto.VendorID == 10001))
                         {
-                            WorldMgr.SendDynamicVendorItems(player,
-                                new RealmCaptainVendorItem(player).items);
+                            WorldMgr.BuyItemDynamicVendor(player, menu, new RealmCaptainVendorItem(player).items);
                         }
                         if (Spawn.Proto.VendorID == 10000)
                         {

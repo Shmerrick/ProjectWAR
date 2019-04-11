@@ -141,6 +141,7 @@
     <Compile Include="Database\World\Battlefront\Battlefront_Objective.cs" />
     <Compile Include="Database\World\Battlefront\ContributionDefinition.cs" />
     <Compile Include="Database\World\Battlefront\KeepSiegeSpawnPoints.cs" />
+    <Compile Include="Database\World\Battlefront\PlayerKeepSpawn.cs" />
     <Compile Include="Database\World\Battlefront\RVRMetrics.cs" />
     <Compile Include="Database\World\Battlefront\RvRObjectInfo.cs" />
     <Compile Include="Database\World\Battlefront\Keep_Creature.cs" />
@@ -151,7 +152,6 @@
     <Compile Include="Database\World\Battlefront\PlayerContribution.cs" />
     <Compile Include="Database\World\Battlefront\BattleFrontKeepStatus.cs" />
     <Compile Include="Database\World\Battlefront\RVRAreaPolygon.cs" />
-    <Compile Include="Database\World\Battlefront\RVRProgression - Copy.cs" />
     <Compile Include="Database\World\Battlefront\RVRRewardFortItems.cs" />
     <Compile Include="Database\World\Battlefront\ZoneLockSummary.cs" />
     <Compile Include="Database\World\Battlefront\RVRProgression.cs" />
@@ -165,6 +165,7 @@
     <Compile Include="Database\World\Characters\PetStatOverride.cs" />
     <Compile Include="Database\World\Characters\PetMasteryModifiers.cs" />
     <Compile Include="Database\World\Characters\CharacterInfo_stats.cs" />
+    <Compile Include="Database\World\Characters\HonorReward.cs" />
     <Compile Include="Database\World\Characters\Tok_Bestary.cs" />
     <Compile Include="Database\World\Creatures\Boss_Spawn.cs" />
     <Compile Include="Database\World\Creatures\Boss_Phases.cs" />
