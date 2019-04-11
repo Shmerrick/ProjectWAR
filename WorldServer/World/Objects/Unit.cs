@@ -1145,7 +1145,7 @@ namespace WorldServer.World.Objects
             {
                 if (Aggressive)
                 {
-                    AiInterface.SetBrain(new NpcBrain(this));
+                    AiInterface.SetBrain(new AggressiveBrain(this));
                 }
                 else
                     AiInterface.SetBrain(new PassiveBrain(this));
