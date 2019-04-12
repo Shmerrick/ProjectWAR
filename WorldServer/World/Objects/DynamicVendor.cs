@@ -62,18 +62,36 @@ namespace WorldServer.World.Objects
                 {
                     if (honorReward.Class == 0 || honorReward.Class == player.Info.CharacterId)
                     {
-                        var item = new Vendor_items
+                        // Ensure the player doesnt have more than max count of these items.
+                        if (!player.GetCountOfPlayerItems(honorReward.ItemId, honorReward.MaxCount))
                         {
-                            Info = ItemService.GetItem_Info((uint)honorReward.ItemId),
-                            ItemId = (uint)honorReward.ItemId,
-                            Price = 1,
-                            VendorId = 0
-                        };
-                        items.Add(item);
+                            if (HonorItemCooldown(honorReward.ItemId, player.CharacterId) <
+                                FrameWork.TCPManager.GetTimeStamp())
+                            {
+                                var item = new Vendor_items
+                                {
+                                    Info = ItemService.GetItem_Info((uint) honorReward.ItemId),
+                                    ItemId = (uint) honorReward.ItemId,
+                                    Price = 1,
+                                    VendorId = 0
+                                };
+                                items.Add(item);
+                            }
+                        }
                     }
                 }
             }
             return items;
+        }
+
+        // What is the time (seconds) that this item will be re-purchasble.
+
+        private int HonorItemCooldown(int honorRewardItemId, uint playerCharacterId)
+        {
+            //TODOD
+
+            return 0;
+            
         }
     }
 

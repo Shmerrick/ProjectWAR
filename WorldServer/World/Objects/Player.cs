@@ -6980,6 +6980,10 @@ namespace WorldServer.World.Objects
         }
 
 
+        public bool GetCountOfPlayerItems(int itemId, int maxCount)
+        {
+            return this.ItmInterface.HasItemCountInInventory((uint) itemId, (ushort) maxCount);
+        }
     }
 }
 

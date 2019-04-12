@@ -162,6 +162,7 @@
     <Compile Include="Database\World\Characters\CharacterInfo.cs" />
     <Compile Include="Database\World\Characters\CharacterInfo_item.cs" />
     <Compile Include="Database\World\Characters\CharacterInfo_renown.cs" />
+    <Compile Include="Database\World\Characters\HonorRewardCooldon.cs" />
     <Compile Include="Database\World\Characters\PetStatOverride.cs" />
     <Compile Include="Database\World\Characters\PetMasteryModifiers.cs" />
     <Compile Include="Database\World\Characters\CharacterInfo_stats.cs" />
