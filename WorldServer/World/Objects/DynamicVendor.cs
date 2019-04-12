@@ -33,35 +33,13 @@ namespace WorldServer.World.Objects
 
         public HonorVendorItem(Player player)
         {
-            switch (player.Info.HonorRank)
-            {
-                case 1:
-                    {
-                        items = GetHonorRankItems(player, 1);
-                        break;
-                    }
-                case 2:
-                    {
-                        items = GetHonorRankItems(player, 2);
-                        break;
-                    }
-                case 3:
-                    {
-                        items = GetHonorRankItems(player, 3);
-                        break;
-                    }
-                case 4:
-                {
-                    items = GetHonorRankItems(player, 4);
-                    break;
-                }
-            }
+            items = GetHonorRankItems(player, player.Info.HonorRank);
         }
 
 
         private List<Vendor_items> GetHonorRankItems(Player player, int rank)
         {
-            var rankItems = HonorService.HonorRewards.Where(x => x.HonorRank == rank);
+            var rankItems = HonorService.HonorRewards.Where(x => x.HonorRank <= rank);
 
             foreach (var honorReward in rankItems)
             {
