@@ -50,6 +50,11 @@ namespace WorldServer.World.Objects
                         items = GetHonorRankItems(player, 3);
                         break;
                     }
+                case 4:
+                {
+                    items = GetHonorRankItems(player, 4);
+                    break;
+                }
             }
         }
 

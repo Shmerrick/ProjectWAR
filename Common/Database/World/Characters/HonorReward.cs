@@ -25,6 +25,7 @@ namespace Common.Database.World.Characters
 
         [DataElement(AllowDbNull = false)]
         public int MaxCount { get; set; }
-
+        [DataElement(AllowDbNull = false)]
+        public int ItemCount { get; set; }
     }
 }

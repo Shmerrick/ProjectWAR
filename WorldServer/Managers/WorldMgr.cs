@@ -601,7 +601,7 @@ namespace WorldServer.Managers
             if (!honorVendor.IsValidItemForPlayer(plr, reward))
                 return;
 
-            ItemResult result = plr.ItmInterface.CreateItem(items[Num].Info, Count);
+            ItemResult result = plr.ItmInterface.CreateItem(items[Num].Info, (ushort)reward.ItemCount);
             if (result == ItemResult.RESULT_OK)
             {
                 plr.RemoveMoney(items[Num].Price * Count);
