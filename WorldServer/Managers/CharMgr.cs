@@ -344,7 +344,7 @@ namespace WorldServer.Managers
                 Dictionary<uint, List<Characters_bag_pools>> charBagPools = Database.SelectAllObjects<Characters_bag_pools>().GroupBy(v => v.CharacterId).ToDictionary(g => (uint)g.Key, g => g.ToList());
                 Dictionary<uint, List<Character_mail>> charMail = Database.SelectAllObjects<Character_mail>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
                 Dictionary<uint, List<CharacterSavedBuff>> charBuffs = Database.SelectAllObjects<CharacterSavedBuff>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
-                Dictionary<uint, List<HonorRewardCooldown>> charHonorCooldowns = Database.SelectAllObjects<HonorRewardCooldown>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
+                Dictionary<uint, List<HonorRewardCooldown>> charHonorCooldowns = Database.SelectAllObjects<HonorRewardCooldown>().GroupBy(v => v.CharacterId).ToDictionary(g => (uint)g.Key, g => g.ToList());
 
                 int count = 0;
                 foreach (Character Char in chars)
@@ -401,7 +401,7 @@ namespace WorldServer.Managers
                 Dictionary<uint, List<Characters_bag_pools>> charBagPools = Database.SelectObjects<Characters_bag_pools>(whereString).GroupBy(v => v.CharacterId).ToDictionary(g => (uint)g.Key, g => g.ToList());
                 Dictionary<uint, List<Character_mail>> charMail = Database.SelectObjects<Character_mail>(whereString).GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
                 Dictionary<uint, List<CharacterSavedBuff>> charBuffs = Database.SelectObjects<CharacterSavedBuff>(whereString).GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
-                Dictionary<uint, List<HonorRewardCooldown>> charHonorCooldowns = Database.SelectAllObjects<HonorRewardCooldown>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
+                Dictionary<uint, List<HonorRewardCooldown>> charHonorCooldowns = Database.SelectAllObjects<HonorRewardCooldown>().GroupBy(v => v.CharacterId).ToDictionary(g => (uint)g.Key, g => g.ToList());
 
                 int count = 0;
                 foreach (Character Char in chars)
@@ -786,7 +786,7 @@ namespace WorldServer.Managers
             Dictionary<uint, List<Characters_bag_pools>> charBagPools = Database.SelectObjects<Characters_bag_pools>(whereString).GroupBy(v => v.CharacterId).ToDictionary(g => (uint)g.Key, g => g.ToList());
             Dictionary<uint, List<Character_mail>> charMail = Database.SelectObjects<Character_mail>(whereString).GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
             Dictionary<uint, List<CharacterSavedBuff>> charBuffs = Database.SelectObjects<CharacterSavedBuff>(whereString).GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
-            Dictionary<uint, List<HonorRewardCooldown>> charHonorCooldowns = Database.SelectAllObjects<HonorRewardCooldown>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
+            Dictionary<uint, List<HonorRewardCooldown>> charHonorCooldowns = Database.SelectAllObjects<HonorRewardCooldown>().GroupBy(v => v.CharacterId).ToDictionary(g => (uint)g.Key, g => g.ToList());
 
             List<CharacterItem> charItems = (List<CharacterItem>)Database.SelectObjects<CharacterItem>(whereString);
 
