@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading;
 using SystemData;
 using Common;
+using Common.Database.World.Characters;
 using FrameWork;
 using GameData;
 using NLog;
@@ -65,7 +66,7 @@ namespace WorldServer.Managers
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public static RewardDistributor RewardDistributor;
         public static RVRArea RVRArea;
-    
+
 
         //Log.Success("StartingPairing: ", StartingPairing.ToString());
 
@@ -138,8 +139,8 @@ namespace WorldServer.Managers
                 {
                     resps = ZoneService.GetZoneRespawns(zoneId);
                     foreach (Zone_Respawn res in resps)
-                        if (res.Realm == 0 && 
-                            res.ZoneID == zoneId && 
+                        if (res.Realm == 0 &&
+                            res.ZoneID == zoneId &&
                             res.RespawnID == player.QtsInterface.PublicQuest.Info.RespawnID)
                             return res;
                 }
@@ -199,7 +200,7 @@ namespace WorldServer.Managers
                                         };
                                     }
 
-                                   
+
                                     bestDist = dist;
                                 }
                             }
@@ -325,7 +326,7 @@ namespace WorldServer.Managers
             return L;
         }
 
-        
+
 
         #endregion
 
@@ -399,13 +400,13 @@ namespace WorldServer.Managers
         #endregion
 
         #region Vendors
-        
+
 
         public static void SendDynamicVendorItems(Player plr, List<Vendor_items> items)
         {
             if (plr == null)
                 return;
-            
+
 
             byte Page = 0;
             int Count = items.Count;
@@ -594,11 +595,11 @@ namespace WorldServer.Managers
             //}
 
             var honorVendor = new HonorVendorItem(plr);
-
-            if (!honorVendor.IsValidItemForPlayer(plr,items[Num].Info.Entry))
+            var reward = HonorService.HonorRewards.SingleOrDefault(x => x.ItemId == items[Num].Info.Entry);
+            if (reward == null)
                 return;
-
-
+            if (!honorVendor.IsValidItemForPlayer(plr, reward))
+                return;
 
             ItemResult result = plr.ItmInterface.CreateItem(items[Num].Info, Count);
             if (result == ItemResult.RESULT_OK)
@@ -608,6 +609,26 @@ namespace WorldServer.Managers
                     plr.ItmInterface.RemoveItems(Kp.Key, (ushort)(Kp.Value * Count));
 
                 items.Remove(items[Num]);
+
+                // Set the Honor Reward Cooldown
+                // Remove all existing Honor Reward Cooldowns for this item
+                var existingRewards = plr.Info.HonorCooldowns?.Where(x => x.ItemId == reward.ItemId);
+                foreach (var existingReward in existingRewards)
+                {
+                    plr.Info.HonorCooldowns.Remove(existingReward);
+                    CharMgr.Database.DeleteObject(existingReward);
+                }
+
+                // Add the definitive reward cooldown for this item
+                var honorRewardCooldown = new HonorRewardCooldown
+                {
+                    CharacterId = plr.CharacterId,
+                    Cooldown = FrameWork.TCPManager.GetTimeStamp() + reward.Cooldown,
+                    ItemId = reward.ItemId
+                };
+
+                plr.Info.HonorCooldowns.Add(honorRewardCooldown);
+                CharMgr.Database.AddObject(honorRewardCooldown);
             }
             else if (result == ItemResult.RESULT_MAX_BAG)
             {
@@ -617,7 +638,7 @@ namespace WorldServer.Managers
             {
 
             }
-            
+
         }
 
         #endregion
@@ -1555,7 +1576,7 @@ namespace WorldServer.Managers
                     case 8: // t1 em/ch
                         regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierCampaignManager, new ApocCommunications());
                         break;
-                        // Tier 4
+                    // Tier 4
                     case 11:
                         regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierCampaignManager, new ApocCommunications());
                         break;
@@ -1582,10 +1603,10 @@ namespace WorldServer.Managers
             }
             var resultList = new List<BattlefieldObjective>();
             _logger.Debug($"Region = {regionMgr.RegionId} ObjectiveCount = {objectives.Count}");
-            foreach (BattleFront_Objective obj in objectives.Where(x=>x.KeepSpawn == false))
+            foreach (BattleFront_Objective obj in objectives.Where(x => x.KeepSpawn == false))
             {
                 BattlefieldObjective flag = new BattlefieldObjective(regionMgr, obj);
-				resultList.Add(flag);
+                resultList.Add(flag);
             }
 
             return resultList;
@@ -1672,7 +1693,7 @@ namespace WorldServer.Managers
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BUTCHERS_PASS).LockStatus);   // greenskin Fort
 
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKWALD).LockStatus);// Empire Fort
-            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus); 
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus);
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG).LockStatus);
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus);
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_THE_MAW).LockStatus);  // Chaos Fort
@@ -1725,8 +1746,8 @@ namespace WorldServer.Managers
                     if (player.Region?.Campaign != null)
                     {
 
-                            Out.WriteByte((byte)75);
-                            Out.WriteByte((byte)25);
+                        Out.WriteByte((byte)75);
+                        Out.WriteByte((byte)25);
 
                         //Out.WriteByte((byte) player.Region?.Campaign.VictoryPointProgress.OrderVictoryPointPercentage);
                         //Out.WriteByte((byte) player.Region?.Campaign.VictoryPointProgress.DestructionVictoryPointPercentage);
@@ -1736,7 +1757,7 @@ namespace WorldServer.Managers
                         playerCampaignStatus.Fill(0, 9);
                     }
                     playerCampaignStatus.Fill(0, 4);
-                    
+
                     player.SendPacket(playerCampaignStatus);
                 }
             }

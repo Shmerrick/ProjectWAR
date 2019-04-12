@@ -364,7 +364,8 @@ namespace WorldServer.Managers
                     // Mail list must never be null
                     if (Char.Mails == null)
                         Char.Mails = new List<Character_mail>();
-
+                    if (Char.HonorCooldowns == null)
+                        Char.HonorCooldowns = new List<HonorRewardCooldown>();
                     AddChar(Char);
                     ++count;
                 }
@@ -421,6 +422,9 @@ namespace WorldServer.Managers
                     // Mail list must never be null
                     if (Char.Mails == null)
                         Char.Mails = new List<Character_mail>();
+                    if (Char.HonorCooldowns == null)
+                        Char.HonorCooldowns = new List<HonorRewardCooldown>();
+
 
                     AddChar(Char);
                     if (Char.Value != null)
@@ -809,6 +813,8 @@ namespace WorldServer.Managers
                 // Mail list must never be null
                 if (chara.Mails == null)
                     chara.Mails = new List<Character_mail>();
+                if (chara.HonorCooldowns == null)
+                    chara.HonorCooldowns = new List<HonorRewardCooldown>();
                 ++count;
             }
 

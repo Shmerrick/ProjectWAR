@@ -84,7 +84,7 @@ namespace WorldServer.World.Objects
                     // Ensure the player doesn't have more than max count of these items.
                     if (!player.GetCountOfPlayerItems(honorReward.ItemId, honorReward.MaxCount))
                     {
-                        if (HonorItemCooldown(honorReward.ItemId, player.CharacterId) <
+                        if (HonorItemCooldown(honorReward.ItemId, player) <
                             FrameWork.TCPManager.GetTimeStamp() || honorReward.Cooldown == 0)
                         {
                             return true;
@@ -98,26 +98,18 @@ namespace WorldServer.World.Objects
 
         // What is the time (seconds) that this item will be re-purchasble.
 
-        private int HonorItemCooldown(int honorRewardItemId, uint playerCharacterId)
+        private long HonorItemCooldown(int honorRewardItemId, Player player)
         {
-            //TODOD
-
-            return 0;
-
+            var cooldown = player.Info.HonorCooldowns?.SingleOrDefault(x => x.ItemId == honorRewardItemId);
+            if (cooldown == null)
+                return 0;
+            else
+                return cooldown.Cooldown;
         }
 
       
 
-        public bool IsValidItemForPlayer(Player player, uint itemId)
-        {
-            var item = HonorService.HonorRewards.SingleOrDefault(x => x.ItemId == itemId);
-            if (item == null)
-                return false;
-            else
-            {
-                return IsValidItemForPlayer(player, item);
-            }
-        }
+       
     }
 
     public class RealmCaptainVendorItem
