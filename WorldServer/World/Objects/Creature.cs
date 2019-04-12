@@ -583,12 +583,18 @@ namespace WorldServer.World.Objects
                         break;
                     case 9:
                         // Dynamic Vendor (10001,10002)
-                        if ((Spawn.Proto.VendorID == 10002) || (Spawn.Proto.VendorID == 10001))
+                        // Honor vendor
+                        if (Spawn.Proto.VendorID == 10002)
+                        {
+                            WorldMgr.SendDynamicVendorItems(player,
+                                new HonorVendorItem(player).items);
+                        }
+                        // Realm Captain Vendor
+                        if (Spawn.Proto.VendorID == 10001)
                         {
                             WorldMgr.SendDynamicVendorItems(player,
                                 new RealmCaptainVendorItem(player).items);
                         }
-
 
                         if (Spawn.Proto.VendorID == 10000)
                         {
@@ -605,11 +611,17 @@ namespace WorldServer.World.Objects
                         TakeInfluenceItem(player, menu);
                         break;
                     case 11:
-                        // Dynamic Vendor
-                        if ((Spawn.Proto.VendorID == 10002) || (Spawn.Proto.VendorID == 10001))
+                        // Dynamic Vendor -- Honor vendor
+                        if (Spawn.Proto.VendorID == 10002)
+                        {
+                            WorldMgr.BuyItemDynamicVendor(player, menu, new HonorVendorItem(player).items);
+                        }
+                        // realm captain vendor
+                        if (Spawn.Proto.VendorID == 10001)
                         {
                             WorldMgr.BuyItemDynamicVendor(player, menu, new RealmCaptainVendorItem(player).items);
                         }
+
                         if (Spawn.Proto.VendorID == 10000)
                         {
                             WorldMgr.BuyItemDynamicVendor(player, menu,

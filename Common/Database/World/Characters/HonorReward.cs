@@ -20,7 +20,11 @@ namespace Common.Database.World.Characters
         [DataElement(AllowDbNull = false)]
         public int Class { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public int Cooldown { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public int MaxCount { get; set; }
 
     }
 }
