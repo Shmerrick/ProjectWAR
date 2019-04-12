@@ -554,7 +554,7 @@ namespace WorldServer.World.Objects
             Out.WritePascalString(ChatName);
             DispatchPacket(Out, true);
 
-            Info.Surname = ChatName;
+            
         }
 
         public override void OnLoad()
