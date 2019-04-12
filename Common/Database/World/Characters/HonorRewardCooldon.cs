@@ -15,7 +15,7 @@ namespace Common.Database.World.Characters
         public long Cooldown { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public int CharacterId { get; set; }
+        public uint CharacterId { get; set; }
 
      
     }

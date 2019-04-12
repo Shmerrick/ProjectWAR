@@ -568,7 +568,7 @@ namespace WorldServer.Managers
             }
         }
 
-        public static void BuyItemDynamicVendor(Player plr, InteractMenu Menu, List<Vendor_items> items)
+        public static void BuyItemHonorDynamicVendor(Player plr, InteractMenu Menu, List<Vendor_items> items)
         {
             int Num = (Menu.Page * VendorService.MAX_ITEM_PAGE) + Menu.Num;
             ushort Count = Menu.Packet.GetUint16();
@@ -578,20 +578,26 @@ namespace WorldServer.Managers
             if (items.Count <= Num)
                 return;
 
-            if (!plr.HasMoney((items[Num].Price) * Count))
-            {
-                plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_INSUFFICIENT_MONEY_TO_BUY);
-                return;
-            }
+            //if (!plr.HasMoney((items[Num].Price) * Count))
+            //{
+            //    plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_INSUFFICIENT_MONEY_TO_BUY);
+            //    return;
+            //}
 
-            foreach (KeyValuePair<uint, ushort> Kp in items[Num].ItemsReq)
-            {
-                if (!plr.ItmInterface.HasItemCountInInventory(Kp.Key, (ushort)(Kp.Value * Count)))
-                {
-                    plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_FAIL_PURCHASE_REQUIREMENT);
-                    return;
-                }
-            }
+            //foreach (KeyValuePair<uint, ushort> Kp in items[Num].ItemsReq)
+            //{
+            //    if (!plr.ItmInterface.HasItemCountInInventory(Kp.Key, (ushort)(Kp.Value * Count)))
+            //    {
+            //        plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_FAIL_PURCHASE_REQUIREMENT);
+            //        return;
+            //    }
+            //}
+
+            var honorVendor = new HonorVendorItem(plr);
+
+            if (!honorVendor.IsValidItemForPlayer(plr,items[Num].Info.Entry))
+                return;
+
 
 
             ItemResult result = plr.ItmInterface.CreateItem(items[Num].Info, Count);
@@ -600,6 +606,8 @@ namespace WorldServer.Managers
                 plr.RemoveMoney(items[Num].Price * Count);
                 foreach (KeyValuePair<uint, ushort> Kp in items[Num].ItemsReq)
                     plr.ItmInterface.RemoveItems(Kp.Key, (ushort)(Kp.Value * Count));
+
+                items.Remove(items[Num]);
             }
             else if (result == ItemResult.RESULT_MAX_BAG)
             {
@@ -609,6 +617,7 @@ namespace WorldServer.Managers
             {
 
             }
+            
         }
 
         #endregion

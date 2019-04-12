@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using SystemData;
 using Common;
+using Common.Database.World.Characters;
 using FrameWork;
 using GameData;
 using NLog;
@@ -343,6 +344,7 @@ namespace WorldServer.Managers
                 Dictionary<uint, List<Characters_bag_pools>> charBagPools = Database.SelectAllObjects<Characters_bag_pools>().GroupBy(v => v.CharacterId).ToDictionary(g => (uint)g.Key, g => g.ToList());
                 Dictionary<uint, List<Character_mail>> charMail = Database.SelectAllObjects<Character_mail>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
                 Dictionary<uint, List<CharacterSavedBuff>> charBuffs = Database.SelectAllObjects<CharacterSavedBuff>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
+                Dictionary<uint, List<HonorRewardCooldown>> charHonorCooldowns = Database.SelectAllObjects<HonorRewardCooldown>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
 
                 int count = 0;
                 foreach (Character Char in chars)
@@ -357,6 +359,7 @@ namespace WorldServer.Managers
                     if (charBagPools.ContainsKey(Char.CharacterId)) Char.Bag_Pools = charBagPools[Char.CharacterId];
                     if (charMail.ContainsKey(Char.CharacterId)) Char.Mails = charMail[Char.CharacterId];
                     if (charBuffs.ContainsKey(Char.CharacterId)) Char.Buffs = charBuffs[Char.CharacterId];
+                    if (charHonorCooldowns.ContainsKey(Char.CharacterId)) Char.HonorCooldowns = charHonorCooldowns[Char.CharacterId];
 
                     // Mail list must never be null
                     if (Char.Mails == null)
@@ -398,6 +401,7 @@ namespace WorldServer.Managers
                 Dictionary<uint, List<Characters_bag_pools>> charBagPools = Database.SelectObjects<Characters_bag_pools>(whereString).GroupBy(v => v.CharacterId).ToDictionary(g => (uint)g.Key, g => g.ToList());
                 Dictionary<uint, List<Character_mail>> charMail = Database.SelectObjects<Character_mail>(whereString).GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
                 Dictionary<uint, List<CharacterSavedBuff>> charBuffs = Database.SelectObjects<CharacterSavedBuff>(whereString).GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
+                Dictionary<uint, List<HonorRewardCooldown>> charHonorCooldowns = Database.SelectAllObjects<HonorRewardCooldown>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
 
                 int count = 0;
                 foreach (Character Char in chars)
@@ -412,6 +416,7 @@ namespace WorldServer.Managers
                     if (charBagPools.ContainsKey(Char.CharacterId)) Char.Bag_Pools = charBagPools[Char.CharacterId];
                     if (charMail.ContainsKey(Char.CharacterId)) Char.Mails = charMail[Char.CharacterId];
                     if (charBuffs.ContainsKey(Char.CharacterId)) Char.Buffs = charBuffs[Char.CharacterId];
+                    if (charHonorCooldowns.ContainsKey(Char.CharacterId)) Char.HonorCooldowns = charHonorCooldowns[Char.CharacterId];
 
                     // Mail list must never be null
                     if (Char.Mails == null)
@@ -479,6 +484,7 @@ namespace WorldServer.Managers
             Char.Influences = (List<Characters_influence>)Database.SelectObjects<Characters_influence>("CharacterId=" + Char.CharacterId);
             Char.Bag_Pools = (List<Characters_bag_pools>)Database.SelectObjects<Characters_bag_pools>("CharacterId=" + Char.CharacterId);
             Char.Buffs = (List<CharacterSavedBuff>)Database.SelectObjects<CharacterSavedBuff>("CharacterId=" + Char.CharacterId);
+            Char.HonorCooldowns = (List<HonorRewardCooldown>)Database.SelectObjects<HonorRewardCooldown>("CharacterId=" + Char.CharacterId);
 
             if (Char.Mails == null)
                 Char.Mails = (List<Character_mail>)Database.SelectObjects<Character_mail>("CharacterId=" + Char.CharacterId);
@@ -780,6 +786,7 @@ namespace WorldServer.Managers
             Dictionary<uint, List<Characters_bag_pools>> charBagPools = Database.SelectObjects<Characters_bag_pools>(whereString).GroupBy(v => v.CharacterId).ToDictionary(g => (uint)g.Key, g => g.ToList());
             Dictionary<uint, List<Character_mail>> charMail = Database.SelectObjects<Character_mail>(whereString).GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
             Dictionary<uint, List<CharacterSavedBuff>> charBuffs = Database.SelectObjects<CharacterSavedBuff>(whereString).GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
+            Dictionary<uint, List<HonorRewardCooldown>> charHonorCooldowns = Database.SelectAllObjects<HonorRewardCooldown>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.ToList());
 
             List<CharacterItem> charItems = (List<CharacterItem>)Database.SelectObjects<CharacterItem>(whereString);
 
@@ -798,6 +805,7 @@ namespace WorldServer.Managers
                 if (charBagPools.ContainsKey(characterId)) chara.Bag_Pools = charBagPools[characterId];
                 if (charMail.ContainsKey(characterId)) chara.Mails = charMail[characterId];
                 if (charBuffs.ContainsKey(characterId)) chara.Buffs = charBuffs[characterId];
+                if (charHonorCooldowns.ContainsKey(characterId)) chara.HonorCooldowns = charHonorCooldowns[characterId];
                 // Mail list must never be null
                 if (chara.Mails == null)
                     chara.Mails = new List<Character_mail>();

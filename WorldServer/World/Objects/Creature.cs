@@ -584,28 +584,35 @@ namespace WorldServer.World.Objects
                     case 9:
                         // Dynamic Vendor (10001,10002)
                         // Honor vendor
-                        if (Spawn.Proto.VendorID == 10002)
+                        switch (Spawn.Proto.VendorID)
                         {
-                            WorldMgr.SendDynamicVendorItems(player,
-                                new HonorVendorItem(player).items);
-                        }
-                        // Realm Captain Vendor
-                        if (Spawn.Proto.VendorID == 10001)
-                        {
-                            WorldMgr.SendDynamicVendorItems(player,
-                                new RealmCaptainVendorItem(player).items);
+                            case 10002:
+                            {
+                                WorldMgr.SendDynamicVendorItems(player,
+                                    new HonorVendorItem(player).items);
+                                break;
+                            }
+                            case 10001:
+                            {
+                                WorldMgr.SendDynamicVendorItems(player,
+                                    new RealmCaptainVendorItem(player).items);
+                                break;
+                            }
+                            case 10000:
+                            {
+                                WorldMgr.SendDynamicVendorItems(player,
+                                    new RenownLevelVendorItem(player._Value.RenownRank, player._Value.Level).items);
+                                break;
+                            }
+                            default:
+                            {
+                                if ((Spawn.Proto.VendorID > 0) && (Spawn.Proto.VendorID <= 9999))
+                                    WorldMgr.SendVendor(player, Spawn.Proto.VendorID);
+                                break;
+                            }
                         }
 
-                        if (Spawn.Proto.VendorID == 10000)
-                        {
-                            WorldMgr.SendDynamicVendorItems(player,
-                                new RenownLevelVendorItem(player._Value.RenownRank, player._Value.Level).items);
-                        }
-                        else
-                        {
-                            if ((Spawn.Proto.VendorID > 0) && (Spawn.Proto.VendorID <= 9999))
-                                WorldMgr.SendVendor(player, Spawn.Proto.VendorID);
-                        }
+                    
                         break;
                     case 10:
                         TakeInfluenceItem(player, menu);
@@ -614,23 +621,32 @@ namespace WorldServer.World.Objects
                         // Dynamic Vendor -- Honor vendor
                         if (Spawn.Proto.VendorID == 10002)
                         {
-                            WorldMgr.BuyItemDynamicVendor(player, menu, new HonorVendorItem(player).items);
-                        }
-                        // realm captain vendor
-                        if (Spawn.Proto.VendorID == 10001)
-                        {
-                            WorldMgr.BuyItemDynamicVendor(player, menu, new RealmCaptainVendorItem(player).items);
-                        }
-
-                        if (Spawn.Proto.VendorID == 10000)
-                        {
-                            WorldMgr.BuyItemDynamicVendor(player, menu,
-                                new RenownLevelVendorItem(player._Value.RenownRank, player._Value.Level).items);
+                            var items = new HonorVendorItem(player).items;
+                            WorldMgr.BuyItemHonorDynamicVendor(player, menu, items);
+                            // Refresh the available item list.
+                            WorldMgr.SendDynamicVendorItems(player,
+                                new HonorVendorItem(player).items);
                         }
                         else
                         {
-                            if (Spawn.Proto.VendorID > 0)
-                                WorldMgr.BuyItemVendor(player, menu, Spawn.Proto.VendorID);
+                            // realm captain vendor
+                            if (Spawn.Proto.VendorID == 10001)
+                            {
+                               // WorldMgr.BuyItemDynamicVendor(player, menu, new RealmCaptainVendorItem(player).items);
+                            }
+                            else
+                            {
+                                if (Spawn.Proto.VendorID == 10000)
+                                {
+                                    //WorldMgr.BuyItemDynamicVendor(player, menu,
+                                    //    new RenownLevelVendorItem(player._Value.RenownRank, player._Value.Level).items);
+                                }
+                                else
+                                {
+                                    if (Spawn.Proto.VendorID > 0)
+                                        WorldMgr.BuyItemVendor(player, menu, Spawn.Proto.VendorID);
+                                }
+                            }                            
                         }
 
                         break;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
+using Common.Database.World.Characters;
 using WorldServer.Services.World;
 
 namespace WorldServer.World.Objects
@@ -35,53 +36,64 @@ namespace WorldServer.World.Objects
             switch (player.Info.HonorRank)
             {
                 case 1:
-                {
-                    items = GetHonorRankItems(player, 1);
-                    break;
-                }
+                    {
+                        items = GetHonorRankItems(player, 1);
+                        break;
+                    }
                 case 2:
-                {
-                    items = GetHonorRankItems(player, 2);
-                    break;
-                }
+                    {
+                        items = GetHonorRankItems(player, 2);
+                        break;
+                    }
                 case 3:
-                {
-                    items = GetHonorRankItems(player, 3);
-                    break;
-                }
+                    {
+                        items = GetHonorRankItems(player, 3);
+                        break;
+                    }
             }
         }
 
 
         private List<Vendor_items> GetHonorRankItems(Player player, int rank)
         {
-            var rankOneItems = HonorService.HonorRewards.Where(x => x.HonorRank == rank);
-            foreach (var honorReward in rankOneItems)
+            var rankItems = HonorService.HonorRewards.Where(x => x.HonorRank == rank);
+
+            foreach (var honorReward in rankItems)
             {
-                if (honorReward.Realm == 0 || honorReward.Realm == (int)player.Realm)
+                if (IsValidItemForPlayer(player, honorReward))
                 {
-                    if (honorReward.Class == 0 || honorReward.Class == player.Info.CharacterId)
+                    var item = new Vendor_items
                     {
-                        // Ensure the player doesnt have more than max count of these items.
-                        if (!player.GetCountOfPlayerItems(honorReward.ItemId, honorReward.MaxCount))
+                        Info = ItemService.GetItem_Info((uint)honorReward.ItemId),
+                        ItemId = (uint)honorReward.ItemId,
+                        Price = 0,
+                        VendorId = 0
+                    };
+                    items.Add(item);
+                }
+            }
+            return items;
+        }
+
+        public bool IsValidItemForPlayer(Player player, HonorReward honorReward)
+        {
+            if (honorReward.Realm == 0 || honorReward.Realm == (int)player.Realm)
+            {
+                if (honorReward.Class == 0 || honorReward.Class == player.Info.CareerLine)
+                {
+                    // Ensure the player doesn't have more than max count of these items.
+                    if (!player.GetCountOfPlayerItems(honorReward.ItemId, honorReward.MaxCount))
+                    {
+                        if (HonorItemCooldown(honorReward.ItemId, player.CharacterId) <
+                            FrameWork.TCPManager.GetTimeStamp() || honorReward.Cooldown == 0)
                         {
-                            if (HonorItemCooldown(honorReward.ItemId, player.CharacterId) <
-                                FrameWork.TCPManager.GetTimeStamp())
-                            {
-                                var item = new Vendor_items
-                                {
-                                    Info = ItemService.GetItem_Info((uint) honorReward.ItemId),
-                                    ItemId = (uint) honorReward.ItemId,
-                                    Price = 1,
-                                    VendorId = 0
-                                };
-                                items.Add(item);
-                            }
+                            return true;
                         }
                     }
                 }
             }
-            return items;
+
+            return false;
         }
 
         // What is the time (seconds) that this item will be re-purchasble.
@@ -91,7 +103,20 @@ namespace WorldServer.World.Objects
             //TODOD
 
             return 0;
-            
+
+        }
+
+      
+
+        public bool IsValidItemForPlayer(Player player, uint itemId)
+        {
+            var item = HonorService.HonorRewards.SingleOrDefault(x => x.ItemId == itemId);
+            if (item == null)
+                return false;
+            else
+            {
+                return IsValidItemForPlayer(player, item);
+            }
         }
     }
 

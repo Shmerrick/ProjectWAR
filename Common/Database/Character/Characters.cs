@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using Common.Database.World.Characters;
 using FrameWork;
 
 namespace Common
@@ -192,6 +192,8 @@ namespace Common
             get { return _honorRank; }
             set { _honorRank = value; Dirty = true; }
         }
+
+        public List<HonorRewardCooldown> HonorCooldowns { get; set; }
 
         public Character_value Value;
 
