@@ -868,7 +868,7 @@ namespace WorldServer.Managers.Commands
             Creature c = other as Creature;
             Player p = other as Player;
             LootChest lo = other as LootChest;
-            
+
             if (go != null && go.IsGameObject())
             {
                 string result = go.ToString();
@@ -4312,7 +4312,7 @@ namespace WorldServer.Managers.Commands
             var boss = plr.Region.CreateBoss(spawn, Convert.ToUInt32(bossSpawnId));
             boss.CanBeKnockedBack = false;
             boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
-            
+
             var brain = new BossBrain(boss)
             {
                 Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == bossSpawn.BossSpawnId)
@@ -4332,7 +4332,7 @@ namespace WorldServer.Managers.Commands
 
             var boss = SummonBoss(bossSpawnId, plr);
 
-            var bossSpawn = new BossSpawn {Creature = null, ProtoId = 6896, Type = BrainType.HealerBrain};
+            var bossSpawn = new BossSpawn { Creature = null, ProtoId = 6896, Type = BrainType.HealerBrain };
 
             boss.AddDictionary.Add(bossSpawn);
             boss.AddDictionary.Add(bossSpawn);
@@ -4414,13 +4414,13 @@ namespace WorldServer.Managers.Commands
 
         public static bool SummonGoremane(Player plr, ref List<string> values)
         {
-           
+
             var bossSpawnId = 33182;
             var boss = SummonBoss(bossSpawnId, plr);
-                       boss.CanBeKnockedBack = false;
+            boss.CanBeKnockedBack = false;
             boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
 
-         
+
             var bossSpawn = new BossSpawn { Creature = null, ProtoId = 6896, Type = BrainType.HealerBrain };
 
             boss.AddDictionary.Add(bossSpawn);
@@ -4472,7 +4472,7 @@ namespace WorldServer.Managers.Commands
             {
                 GameObject_spawn spawn = new GameObject_spawn
                 {
-                    Guid = (uint) GameObjectService.GenerateGameObjectSpawnGUID(),
+                    Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
                     WorldX = plr.WorldPosition.X + StaticRandom.Instance.Next(50),
                     WorldY = plr.WorldPosition.Y + StaticRandom.Instance.Next(50),
                     WorldZ = plr.WorldPosition.Z,
@@ -4481,7 +4481,7 @@ namespace WorldServer.Managers.Commands
                 };
 
                 spawn.BuildFromProto(proto);
-                
+
                 WorldMgr.Database.AddObject(spawn);
 
                 var gameObject = plr.Region.CreateGameObject(spawn);
@@ -4506,7 +4506,7 @@ namespace WorldServer.Managers.Commands
 
 
             }
-            
+
             return true;
         }
         public static bool SummonOrcapult(Player plr, ref List<string> values)
@@ -4516,7 +4516,7 @@ namespace WorldServer.Managers.Commands
             var Y = plr.WorldPosition.Y;
             var Z = plr.WorldPosition.Z;
 
-           
+
 
             Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
             var proto = CreatureService.GetCreatureProto((uint)72675);
@@ -4534,7 +4534,7 @@ namespace WorldServer.Managers.Commands
             var orcapult = plr.Region.CreateCreature(spawn);
 
             // Check SendInteract on Siege interface and creature itself.
-            
+
 
             return true;
         }
@@ -4574,7 +4574,7 @@ namespace WorldServer.Managers.Commands
             boss.CanBeKnockedBack = false;
             boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
 
-          
+
 
             var bossSpawn = new BossSpawn { Creature = null, ProtoId = 6926, Type = BrainType.AggressiveBrain };
 
@@ -4724,7 +4724,14 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        
+        public static bool CheckPlayerHonor(Player plr, ref List<string> values)
+        {
+            plr.SendClientMessage(
+                $"Honor Rank for Player {plr.Name} is {plr.Info.HonorRank}");
+
+            return true;
+        }
+
 
         public static bool MakeRealmCaptain(Player plr, ref List<string> values)
         {
@@ -4741,7 +4748,7 @@ namespace WorldServer.Managers.Commands
 
                 var status = WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ActiveBattleFrontStatus;
 
-                status.SetAsRealmCaptain((Player) playerTarget);
+                status.SetAsRealmCaptain((Player)playerTarget);
 
                 RealmCaptainManager.ScaleModel((Player)playerTarget, Player._Players, 1);
             }
@@ -4759,7 +4766,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            var portal = new PortalToGatehouse(105, 1444161,  836355, 14409,568, 1444179,833050,15219, 568,"test");
+            var portal = new PortalToGatehouse(105, 1444161, 836355, 14409, 568, 1444179, 833050, 15219, 568, "test");
             portal.Interactable = true;
             portal.IsActive = true;
             portal.Health = 100;
@@ -4769,13 +4776,13 @@ namespace WorldServer.Managers.Commands
         }
 
         /// <summary>
-            /// Creates a vendor that sells a junk item for your RR level silver and your Character Level copper.
-            /// Current need to use proto = 32
-            /// </summary>
-            /// <param name="plr"></param>
-            /// <param name="values"></param>
-            /// <returns></returns>
-            public static bool CreateDynamicVendor(Player plr, ref List<string> values)
+        /// Creates a vendor that sells a junk item for your RR level silver and your Character Level copper.
+        /// Current need to use proto = 32
+        /// </summary>
+        /// <param name="plr"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static bool CreateDynamicVendor(Player plr, ref List<string> values)
         {
             Unit playerTarget = GetTargetOrMe(plr);
 
@@ -4793,7 +4800,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            var states = new List<byte> {(byte) CreatureState.Merchant};
+            var states = new List<byte> { (byte)CreatureState.Merchant };
             proto.States = states.ToArray();
 
             proto.InteractType = InteractType.INTERACTTYPE_DYEMERCHANT;
@@ -4808,7 +4815,7 @@ namespace WorldServer.Managers.Commands
 
             Creature c = plr.Region.CreateCreature(spawn);
 
-           
+
 
 
             return true;

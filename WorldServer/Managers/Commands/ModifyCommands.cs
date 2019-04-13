@@ -481,6 +481,17 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        public static bool ModifyHonorRank(Player plr, ref List<string> values)
+        {
+            Player target = GetTargetOrMe(plr) as Player;
+
+            target.Info.HonorRank = Convert.ToUInt16(values[0]);
+
+            plr.SendClientMessage($"Updated Honor Rank for {target.Name} to {values[0]}");
+
+            return true;
+        }
+
 
         
 

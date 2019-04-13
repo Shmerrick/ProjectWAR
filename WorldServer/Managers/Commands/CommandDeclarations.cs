@@ -107,7 +107,8 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("allcontribution", GetBattleFrontContribution, null, EGmLevel.AnyGM, 0, "Gets the contribution of all players in the battlefront."),
             new GmCommandHandler("keeps", CheckKeeps, null, EGmLevel.AnyGM, 0, "Checks all keeps that they have the minimum required child table records."),
             new GmCommandHandler("captain", CheckCaptain, null, EGmLevel.AnyGM, 0, "Returns captain for either realm in the current region"),
-            new GmCommandHandler("oil", CheckOil, null, EGmLevel.AnyGM, 0, "Returns information about the current keep/oil"),
+            new GmCommandHandler("oil", CheckOil, null, EGmLevel.AnyGM, 0, "Returns information about the current keep/oil")
+            
         };
 
         /// <summary>Database commands under .database</summary>
@@ -172,7 +173,8 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("gatheringskill", ModifyGath, null, EGmLevel.GM, 1, "Changes your proficiency in your current gathering skill (byte Skill)"),
             new GmCommandHandler("craftingskill", ModifyCraf, null, EGmLevel.GM, 1, "Changes your proficiency in your current crafting skill (byte Skill)"),
             new GmCommandHandler("keepguild", ModifyKeepGuild, null, EGmLevel.GM, 1, "Claims or removes claim on keep for a guild"),
-            new GmCommandHandler("contribution", ModifyContribution, null, EGmLevel.GM, 0, "Sets a players contribution.")
+            new GmCommandHandler("contribution", ModifyContribution, null, EGmLevel.GM, 0, "Sets a players contribution."),
+            new GmCommandHandler("honorrank", ModifyHonorRank, null, EGmLevel.GM, 1, "Sets a players honor rank.")
         };
 
         /// <summary>Mount commands under .mount</summary>
@@ -481,7 +483,9 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("summonlordslaurith", SummonLordSlaurith, null, EGmLevel.SourceDev, 0, "Spawns LordSlaurith"),
             new GmCommandHandler("summonorcapult", SummonOrcapult, null, EGmLevel.SourceDev, 0, "Its flying time"),
             new GmCommandHandler("creategoldchest", CreateGoldChest, null, EGmLevel.SourceDev, 0, "Summon a GoldChest"),
-            new GmCommandHandler("forcelockzone", ForceLockZone, null, EGmLevel.SourceDev, 0, "Force Lock a Fort Zone")
+            new GmCommandHandler("forcelockzone", ForceLockZone, null, EGmLevel.SourceDev, 0, "Force Lock a Fort Zone"),
+            new GmCommandHandler("honor", CheckPlayerHonor, null, EGmLevel.Anyone, 0, "Checks a player's honor rank"),
+
 
 
         };
