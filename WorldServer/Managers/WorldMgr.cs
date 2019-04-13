@@ -11,6 +11,8 @@ using GameData;
 using NLog;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Battlefronts.Keeps;
@@ -579,20 +581,6 @@ namespace WorldServer.Managers
             if (items.Count <= Num)
                 return;
 
-            //if (!plr.HasMoney((items[Num].Price) * Count))
-            //{
-            //    plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_INSUFFICIENT_MONEY_TO_BUY);
-            //    return;
-            //}
-
-            //foreach (KeyValuePair<uint, ushort> Kp in items[Num].ItemsReq)
-            //{
-            //    if (!plr.ItmInterface.HasItemCountInInventory(Kp.Key, (ushort)(Kp.Value * Count)))
-            //    {
-            //        plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_FAIL_PURCHASE_REQUIREMENT);
-            //        return;
-            //    }
-            //}
 
             var honorVendor = new HonorVendorItem(plr);
             var reward = HonorService.HonorRewards.SingleOrDefault(x => x.ItemId == items[Num].Info.Entry);
@@ -639,6 +627,27 @@ namespace WorldServer.Managers
 
             }
 
+        }
+
+        public static void BuyItemRealmCaptainDynamicVendor(Player plr, InteractMenu Menu, List<Vendor_items> items)
+        {
+            int Num = (Menu.Page * VendorService.MAX_ITEM_PAGE) + Menu.Num;
+            ushort Count = Menu.Packet.GetUint16();
+            if (Count == 0)
+                Count = 1;
+
+            if (items.Count <= Num)
+                return;
+
+            if (RealmCaptainManager.IsPlayerRealmCaptain(plr.CharacterId))
+            {
+                RealmCaptainManager.ApplyRealmCaptainBuff(plr, items[Num].Info.SpellId);
+            }
+        }
+
+        private static void BuffAssigned(NewBuff buff)
+        {
+            var newBuff = buff;
         }
 
         #endregion

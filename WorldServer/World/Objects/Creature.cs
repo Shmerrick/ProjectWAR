@@ -582,17 +582,16 @@ namespace WorldServer.World.Objects
                         }
                         break;
                     case 9:
-                        // Dynamic Vendor (10001,10002)
-                        // Honor vendor
+                        // Dynamic Vendor
                         switch (Spawn.Proto.VendorID)
                         {
-                            case 10002:
+                            case 10002:  // Honor Vendor
                             {
                                 WorldMgr.SendDynamicVendorItems(player,
                                     new HonorVendorItem(player).items);
                                 break;
                             }
-                            case 10001:
+                            case 10001:  // Realm Captain Vendor
                             {
                                 WorldMgr.SendDynamicVendorItems(player,
                                     new RealmCaptainVendorItem(player).items);
@@ -632,7 +631,8 @@ namespace WorldServer.World.Objects
                             // realm captain vendor
                             if (Spawn.Proto.VendorID == 10001)
                             {
-                               // WorldMgr.BuyItemDynamicVendor(player, menu, new RealmCaptainVendorItem(player).items);
+                                var items = new RealmCaptainVendorItem(player).items;
+                                WorldMgr.BuyItemRealmCaptainDynamicVendor(player, menu, items);
                             }
                             else
                             {

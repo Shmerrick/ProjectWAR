@@ -8,6 +8,9 @@ using SystemData;
 using FrameWork;
 using GameData;
 using NLog;
+using WorldServer.Managers;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Map;
 using WorldServer.World.Objects;
 
@@ -108,6 +111,25 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 //announce.DispatchPacket(Out, true);
                 player.SendMeTo(announce);
             }
+        }
+
+
+        public static bool IsPlayerRealmCaptain(uint characterId)
+        {
+            var status = WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ActiveBattleFrontStatus;
+            return status.DestructionRealmCaptain?.CharacterId == characterId ||
+                   status.OrderRealmCaptain?.CharacterId == characterId;
+        }
+
+        public static void ApplyRealmCaptainBuff(Player plr, ushort infoSpellId)
+        {
+            // Remove any other RC buffs
+            plr.BuffInterface.RemoveBuffByEntry(28115);
+            plr.BuffInterface.RemoveBuffByEntry(28116);
+            plr.BuffInterface.RemoveBuffByEntry(28118);
+
+            plr.BuffInterface.QueueBuff(new BuffQueueInfo(plr, plr.Level,
+                AbilityMgr.GetBuffInfo(infoSpellId)));
         }
     }
 }
