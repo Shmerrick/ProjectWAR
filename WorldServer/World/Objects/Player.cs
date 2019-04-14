@@ -4073,6 +4073,15 @@ namespace WorldServer.World.Objects
 
         private void RecordKillTracking(Player victim, Player killer, long timestamp)
         {
+            if (killer == null)
+                return;
+
+            if (victim == null)
+                return;
+
+            if (killer.GldInterface == null)
+                return;
+
             var tracker = new KillTracker
             {
                 Timestamp = timestamp,
