@@ -99,6 +99,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private static void RemoveRealmCaptainBuffs(Player player)
         {
+            if (player == null)
+                return;
             player.BuffInterface.RemoveBuffByEntry(28115);
             player.BuffInterface.RemoveBuffByEntry(28116);
             player.BuffInterface.RemoveBuffByEntry(28118);
