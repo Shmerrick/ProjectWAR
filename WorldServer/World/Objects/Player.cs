@@ -3471,7 +3471,7 @@ namespace WorldServer.World.Objects
             }
             else
                 infl.InfluenceCount += Value;
-
+            // If influence > max influence for the chapter.
             if (infl.InfluenceCount > info.Tier3InfluenceCount)
                 infl.InfluenceCount = (ushort)info.Tier3InfluenceCount;
 
