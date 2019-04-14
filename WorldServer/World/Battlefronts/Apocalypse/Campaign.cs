@@ -122,7 +122,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Objectives = objectives;
             BattleFrontManager = bfm;
             CommunicationsEngine = communicationsEngine;
-            
+
             Tier = (byte)Region.GetTier();
             PlaceObjectives();
 
@@ -1092,7 +1092,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             var winningRealmPlayers = new ConcurrentDictionary<Player, int>();
             var losingRealmPlayers = new ConcurrentDictionary<Player, int>();
-            var eligiblePlayersAllRealms= new ConcurrentDictionary<Player, int>();
+            var eligiblePlayersAllRealms = new ConcurrentDictionary<Player, int>();
             var rewardAssigner = new RewardAssigner(StaticRandom.Instance);
 
             BattlefrontLogger.Info($"*************************BATTLEFRONT GENERATING REWARDS***********");
@@ -1107,10 +1107,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 // Split the contributing players into segments.
                 var eligibilitySplits = PlayerUtil.SegmentEligiblePlayers(
-                    allContributingPlayers,   
-                    lockingRealm, 
-                    ActiveBattleFrontStatus.ContributionManagerInstance, 
-                    true, 
+                    allContributingPlayers,
+                    lockingRealm,
+                    ActiveBattleFrontStatus.ContributionManagerInstance,
+                    true,
                     true);
 
                 eligiblePlayersAllRealms = eligibilitySplits.Item1;
@@ -1143,9 +1143,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 else
                 {
                     //RVRZoneRewardService.RVRRewardKeepItems
-                       var bagContentSelector = new BagContentSelector(lootOptions, StaticRandom.Instance);
+                    var bagContentSelector = new BagContentSelector(lootOptions, StaticRandom.Instance);
 
-                 
+
                     foreach (var reward in rewardAssignments)
                     {
                         if (reward.Assignee != 0)
@@ -1179,11 +1179,31 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                 switch (player.Key.Realm)
                                 {
                                     case Realms.REALMS_REALM_DESTRUCTION:
-                                        destructionLootChest?.Add(player.Key.CharacterId, generatedLootBag);
-                                        break;
+                                        {
+                                            if (destructionLootChest == null)
+                                            {
+                                                MailLootBag(player.Key.CharacterId, generatedLootBag);
+                                            }
+                                            else
+                                            {
+                                                destructionLootChest?.Add(player.Key.CharacterId, generatedLootBag);
+                                            }
+
+                                            break;
+                                        }
                                     case Realms.REALMS_REALM_ORDER:
-                                        orderLootChest?.Add(player.Key.CharacterId, generatedLootBag);
+                                    {
+                                        if (orderLootChest == null)
+                                        {
+                                            MailLootBag(player.Key.CharacterId, generatedLootBag);
+                                        }
+                                        else
+                                        {
+                                            orderLootChest?.Add(player.Key.CharacterId, generatedLootBag);
+                                        }
+
                                         break;
+                                    }
                                 }
 
                                 player.Key.SendClientMessage($"For your efforts, you have received a {generatedLootBag.Key.Name}. Pick up your rewards at your Warcamp.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
@@ -1209,6 +1229,33 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         }
 
+        private void MailLootBag(uint keyCharacterId, KeyValuePair<Item_Info, List<Talisman>> lootBag)
+        {
+            var character = CharMgr.GetCharacter(keyCharacterId, false);
+            var characterName = character?.Name;
+
+            Character_mail mail = new Character_mail
+            {
+                Guid = CharMgr.GenerateMailGuid(),
+                CharacterId = keyCharacterId, //CharacterId
+                SenderName = "RVR Campaign",
+                ReceiverName = characterName,
+                SendDate = (uint) TCPManager.GetTimeStamp(),
+                Title = "Reward",
+                Content = "Reward",
+                Money = 0,
+                Opened = false,
+                CharacterIdSender = keyCharacterId
+            };
+
+            MailItem item = new MailItem(lootBag.Key.Entry,
+                lootBag.Value, 0, 0, 1);
+            if (item != null)
+            {
+                mail.Items.Add(item);
+                CharMgr.AddMail(mail);
+            }
+        }
 
 
         /// <summary>
@@ -1400,35 +1447,33 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             BattleFrontManager.ActiveBattleFront.OrderVP = (int)Math.Round(VictoryPointProgress.OrderVictoryPoints);
             BattleFrontManager.ActiveBattleFront.DestroVP = (int)Math.Round(VictoryPointProgress.DestructionVictoryPoints);
 
+            
+
             ///
             /// Check to Lock and Advance the Battlefront
             /// 
             if (VictoryPointProgress.OrderVictoryPoints >= BattleFrontConstants.LOCK_VICTORY_POINTS)
             {
+                var orderWarcampEntrance = BattleFrontService.GetWarcampEntrance(
+                    (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_ORDER);
+
+                if (orderWarcampEntrance == null)
+                {
+                    BattlefrontLogger.Error($"orderWarcampEntrance is null. {(ushort)this.ActiveBattleFrontStatus.ZoneId} ");
+                }
+                
+                var destructionWarcampEntrance = BattleFrontService.GetWarcampEntrance(
+                    (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_DESTRUCTION);
+
+                if (destructionWarcampEntrance == null)
+                {
+                    BattlefrontLogger.Error($"destructionWarcampEntrance is null. {(ushort)this.ActiveBattleFrontStatus.ZoneId} ");
+                }
+
                 try
                 {
-                    //Create Chests at WC entrances
-                    var orderLootChest = LootChest.Create(
-                        this.Region,
-                        BattleFrontService.GetWarcampEntrance(
-                            (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_ORDER),
-                        (ushort)this.ActiveBattleFrontStatus.ZoneId);
-
-                    orderLootChest.Title = $"Zone Assault {this.ActiveCampaignName}";
-                    orderLootChest.Content = $"Zone Assault Rewards";
-                    orderLootChest.SenderName = $"{this.ActiveCampaignName}";
-
-                    var destructionLootChest = LootChest.Create(
-                        this.Region,
-                        BattleFrontService.GetWarcampEntrance(
-                            (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_DESTRUCTION),
-                        (ushort)this.ActiveBattleFrontStatus.ZoneId);
-
-                    destructionLootChest.Title = $"Zone Assault {this.ActiveCampaignName}";
-                    destructionLootChest.Content = $"Zone Assault Rewards";
-                    destructionLootChest.SenderName = $"{this.ActiveCampaignName}";
-
-                    ExecuteBattleFrontLock(Realms.REALMS_REALM_ORDER, orderLootChest, destructionLootChest, RVRZoneRewardService.RVRRewardKeepItems);
+                    var tuple = PlaceChestsAtWarcampEntrances(orderWarcampEntrance, destructionWarcampEntrance);
+                    ExecuteBattleFrontLock(Realms.REALMS_REALM_ORDER, tuple.Item1, tuple.Item2, RVRZoneRewardService.RVRRewardKeepItems);
                 }
                 catch (Exception e)
                 {
@@ -1441,30 +1486,26 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             else if (VictoryPointProgress.DestructionVictoryPoints >=
                      BattleFrontConstants.LOCK_VICTORY_POINTS)
             {
+                var orderWarcampEntrance = BattleFrontService.GetWarcampEntrance(
+                    (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_ORDER);
+                
+                if (orderWarcampEntrance == null)
+                {
+                    BattlefrontLogger.Error($"orderWarcampEntrance is null. {(ushort)this.ActiveBattleFrontStatus.ZoneId} ");
+                }
+                
+                var destructionWarcampEntrance = BattleFrontService.GetWarcampEntrance(
+                    (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_DESTRUCTION);
+
+                if (destructionWarcampEntrance == null)
+                {
+                    BattlefrontLogger.Error($"destructionWarcampEntrance is null. {(ushort)this.ActiveBattleFrontStatus.ZoneId} ");
+                }
+                
                 try
-                     {
-                    //Create Chests at WC entrances
-                    var orderLootChest = LootChest.Create(
-                        this.Region,
-                        BattleFrontService.GetWarcampEntrance(
-                            (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_ORDER),
-                        (ushort)this.ActiveBattleFrontStatus.ZoneId);
-
-                    orderLootChest.Title = $"Zone Assault {this.ActiveCampaignName}";
-                    orderLootChest.Content = $"Zone Assault Rewards";
-                    orderLootChest.SenderName = $"{this.ActiveCampaignName}";
-
-                    var destructionLootChest = LootChest.Create(
-                        this.Region,
-                        BattleFrontService.GetWarcampEntrance(
-                            (ushort)this.ActiveBattleFrontStatus.ZoneId, Realms.REALMS_REALM_DESTRUCTION),
-                        (ushort)this.ActiveBattleFrontStatus.ZoneId);
-
-                   destructionLootChest.Title = $"Zone Assault {this.ActiveCampaignName}";
-                   destructionLootChest.Content = $"Zone Assault Rewards";
-                   destructionLootChest.SenderName = $"{this.ActiveCampaignName}";
-
-                    ExecuteBattleFrontLock(Realms.REALMS_REALM_DESTRUCTION, orderLootChest, destructionLootChest, RVRZoneRewardService.RVRRewardKeepItems);
+                {
+                    var tuple = PlaceChestsAtWarcampEntrances(orderWarcampEntrance, destructionWarcampEntrance);
+                    ExecuteBattleFrontLock(Realms.REALMS_REALM_DESTRUCTION, tuple.Item1, tuple.Item2, RVRZoneRewardService.RVRRewardKeepItems);
                 }
                 catch (Exception e)
                 {
@@ -1472,6 +1513,38 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     throw;
                 }
             }
+        }
+
+        private Tuple<LootChest, LootChest> PlaceChestsAtWarcampEntrances(Point3D orderWarcampEntrance, Point3D destructionWarcampEntrance)
+        {
+            LootChest orderLootChest = null;
+            LootChest destructionLootChest = null; ;
+
+            if (orderWarcampEntrance != null)
+            {
+                orderLootChest = LootChest.Create(
+                    this.Region,
+                    orderWarcampEntrance,
+                    (ushort)this.ActiveBattleFrontStatus.ZoneId);
+
+                orderLootChest.Title = $"Zone Assault {this.ActiveCampaignName}";
+                orderLootChest.Content = $"Zone Assault Rewards";
+                orderLootChest.SenderName = $"{this.ActiveCampaignName}";
+            }
+
+            if (destructionWarcampEntrance != null)
+            {
+                destructionLootChest = LootChest.Create(
+                    this.Region,
+                    destructionWarcampEntrance,
+                    (ushort)this.ActiveBattleFrontStatus.ZoneId);
+
+                destructionLootChest.Title = $"Zone Assault {this.ActiveCampaignName}";
+                destructionLootChest.Content = $"Zone Assault Rewards";
+                destructionLootChest.SenderName = $"{this.ActiveCampaignName}";
+            }
+
+            return new Tuple<LootChest, LootChest>(orderLootChest, destructionLootChest);
         }
 
         public void ExecuteBattleFrontLock(Realms lockingRealm, LootChest orderLootChest, LootChest destructionLootChest, List<RVRRewardItem> lootOptions, int forceNumberBags = 0)

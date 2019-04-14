@@ -4750,7 +4750,7 @@ namespace WorldServer.Managers.Commands
 
                 status.SetAsRealmCaptain((Player)playerTarget);
 
-                RealmCaptainManager.ScaleModel((Player)playerTarget, Player._Players, 1);
+                RealmCaptainManager.MarkPlayerAsRealmCaptain((Player)playerTarget, Player._Players, 1);
             }
 
             return true;

@@ -18,8 +18,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public static class RealmCaptainManager
     {
-        public static int SCALE_MODEL_UP = 1;
-        public static int SCALE_MODEL_DOWN = 0;
+        public static int MARK_PLAYER_REALM_CAPTAIN = 1;
+        public static int UNMARK_PLAYER_REALM_CAPTAIN = 0;
         public static int REALM_CAPTAIN_TELL_CHANCE = 10;
         public static int REALM_CAPTAIN_MINIMUM_CONTRIBUTION = 50;
         public static int REALM_CAPTAIN_MINIMUM_PLAYERS = 5;
@@ -51,19 +51,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         REALM_CAPTAIN_MINIMUM_CONTRIBUTION, zonePlayers);
 
 
-                    ScaleModel(status.DestructionRealmCaptain, zonePlayers, SCALE_MODEL_DOWN);
-                    ScaleModel(status.OrderRealmCaptain, zonePlayers, SCALE_MODEL_DOWN);
+                    MarkPlayerAsRealmCaptain(status.DestructionRealmCaptain, zonePlayers, UNMARK_PLAYER_REALM_CAPTAIN);
+                    MarkPlayerAsRealmCaptain(status.OrderRealmCaptain, zonePlayers, UNMARK_PLAYER_REALM_CAPTAIN);
 
                     status.RemoveAsRealmCaptain(status.DestructionRealmCaptain);
                     status.RemoveAsRealmCaptain(status.OrderRealmCaptain);
 
+                    RemoveRealmCaptainBuffs(status.DestructionRealmCaptain);
+                    RemoveRealmCaptainBuffs(status.OrderRealmCaptain);
 
                     // Destruction
                     if (realmCaptains[0] != null)
                     {
                         status.SetAsRealmCaptain(realmCaptains[0]);
 
-                        ScaleModel(realmCaptains[0], zonePlayers, SCALE_MODEL_UP);
+                        MarkPlayerAsRealmCaptain(realmCaptains[0], zonePlayers, MARK_PLAYER_REALM_CAPTAIN);
 
                         if (StaticRandom.Instance.Next(100) < REALM_CAPTAIN_TELL_CHANCE)
                         {
@@ -79,7 +81,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (realmCaptains[1] != null)
                     {
                         status.SetAsRealmCaptain(realmCaptains[1]);
-                        ScaleModel(realmCaptains[1], zonePlayers, SCALE_MODEL_UP);
+                        MarkPlayerAsRealmCaptain(realmCaptains[1], zonePlayers, MARK_PLAYER_REALM_CAPTAIN);
                         if (StaticRandom.Instance.Next(100) < REALM_CAPTAIN_TELL_CHANCE)
                         {
                             foreach (var player in zonePlayers.Where(x => x.Realm == Realms.REALMS_REALM_DESTRUCTION))
@@ -95,15 +97,22 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        public static void ScaleModel(Player player, List<Player> playersToAnnounce, int upDown)
+        private static void RemoveRealmCaptainBuffs(Player player)
+        {
+            player.BuffInterface.RemoveBuffByEntry(28115);
+            player.BuffInterface.RemoveBuffByEntry(28116);
+            player.BuffInterface.RemoveBuffByEntry(28118);
+        }
+
+        public static void MarkPlayerAsRealmCaptain(Player player, List<Player> playersToAnnounce, int upDown)
         {
             if (player == null) return;
             if (playersToAnnounce == null) return;
 
-            if (upDown == SCALE_MODEL_UP)
-                player.EffectStates.Add((byte)ObjectEffectState.OBJECTEFFECTSTATE_SCALE_UP);
-            if (upDown == SCALE_MODEL_DOWN)
-                player.EffectStates.Remove((byte)ObjectEffectState.OBJECTEFFECTSTATE_SCALE_UP);
+            if (upDown == MARK_PLAYER_REALM_CAPTAIN)
+                player.EffectStates.Add((byte)ObjectEffectState.OBJECTEFFECTSTATE_CARRYING_BANNER);
+            if (upDown == UNMARK_PLAYER_REALM_CAPTAIN)
+                player.EffectStates.Remove((byte)ObjectEffectState.OBJECTEFFECTSTATE_CARRYING_BANNER);
 
 
             foreach (var announce in playersToAnnounce)

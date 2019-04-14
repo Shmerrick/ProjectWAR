@@ -87,32 +87,7 @@ namespace WorldServer.World.Objects
             return chest;
         }
 
-        //public  LootChest(RegionMgr region, PQuest_Info info, List<LootBagTypeDefinition> lootBags)
-        //{
-            
-        //    if (lootBags == null)
-        //        return;
-        //    if (lootBags.Count() == 0)
-        //        return;
-
-        //    GameObject_proto proto = GameObjectService.GetGameObjectProto(188);
-
-        //    GameObject_spawn spawn = new GameObject_spawn
-        //    {
-        //        Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
-        //        WorldO = 0,
-        //        WorldY = info.GoldChestWorldY,
-        //        WorldZ = info.GoldChestWorldZ,
-        //        WorldX = info.GoldChestWorldX,
-        //        ZoneId = info.ZoneId
-        //    };
-
-        //    spawn.BuildFromProto(proto);
-        //    LootChest chest = (LootChest) region.CreateGameObject(spawn);
-        //    chest.lootBags = lootBags;
-
-        //    EvtInterface.AddEvent(Destroy, 180 * 1000, 1);
-        //}
+        
 
         // Called by Destroy of Object
         public override void Dispose()
@@ -139,7 +114,7 @@ namespace WorldServer.World.Objects
                         Money = 0,
                         Opened = false
                     };
-                    //TODO
+                 
                     mail.CharacterIdSender = lootBag.Key;
                     MailItem item = new MailItem((uint)lootBag.Value.Key.Entry, lootBag.Value.Value, 0, 0,(ushort)lootBag.Value.Value.Count);
                     if (item != null)
