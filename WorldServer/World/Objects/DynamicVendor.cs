@@ -113,6 +113,8 @@ namespace WorldServer.World.Objects
                 {1298378490, "+10% to all Stats"}, {1298378491, "+5% RR/INF"}, {1298378492, "+5% Critical chance"}
             };
 
+            //, {1298380000, "Ally Shield"} -- removed until I can get it working.
+
             foreach (var realmCaptainBuff in realmCaptainItems)
             {
 

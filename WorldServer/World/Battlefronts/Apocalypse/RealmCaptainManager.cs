@@ -20,7 +20,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     {
         public static int MARK_PLAYER_REALM_CAPTAIN = 1;
         public static int UNMARK_PLAYER_REALM_CAPTAIN = 0;
-        public static int REALM_CAPTAIN_TELL_CHANCE = 10;
+        public static int REALM_CAPTAIN_TELL_CHANCE = 30;
         public static int REALM_CAPTAIN_MINIMUM_CONTRIBUTION = 50;
         public static int REALM_CAPTAIN_MINIMUM_PLAYERS = 5;
 
@@ -103,6 +103,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 return;
             player.BuffInterface.RemoveBuffByEntry(28115);
             player.BuffInterface.RemoveBuffByEntry(28116);
+            player.BuffInterface.RemoveBuffByEntry(28117);
             player.BuffInterface.RemoveBuffByEntry(28118);
         }
 
@@ -134,9 +135,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public static void ApplyRealmCaptainBuff(Player plr, ushort infoSpellId)
         {
+            if (plr == null)
+                return;
             // Remove any other RC buffs
             plr.BuffInterface.RemoveBuffByEntry(28115);
             plr.BuffInterface.RemoveBuffByEntry(28116);
+            plr.BuffInterface.RemoveBuffByEntry(28117);
             plr.BuffInterface.RemoveBuffByEntry(28118);
 
             plr.BuffInterface.QueueBuff(new BuffQueueInfo(plr, plr.Level,
