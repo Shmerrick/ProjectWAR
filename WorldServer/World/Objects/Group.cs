@@ -1957,6 +1957,15 @@ namespace WorldServer.World.Objects
 
         private void BuildOpenPartyInfo(Player player, PacketOut Out)
         {
+
+            if (Leader == null)
+                _logger.Warn($"Leader is null for BuildOpenPartyInfo. Player {player}");
+
+            if (WorldMgr.RVRArea.GetZoneRVRAreas() == null)
+            {
+                _logger.Warn($"GetZoneRVRAreas is null. Player {player}");
+            }
+
             if (_warbandSlave)
                 _warbandHandler.BuildOpenPartyInfo(player, Out);
 

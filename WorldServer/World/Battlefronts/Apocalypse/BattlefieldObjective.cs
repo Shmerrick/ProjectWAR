@@ -888,7 +888,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private bool InteractableFor(Player plr)
         {
-            BattlefrontLogger.Debug($"CampaignObjective", $"State={State}");
+            BattlefrontLogger.Debug($"CampaignObjective..State={State}");
             var result = false;
             switch (State)
             {
