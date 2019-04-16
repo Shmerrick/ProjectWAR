@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common.Database.World.Battlefront
 {
@@ -16,12 +12,25 @@ namespace Common.Database.World.Battlefront
         [PrimaryKey] public int KeepId { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public int X{ get; set; }
+        public int AttackerX { get; set; }
+        [DataElement(AllowDbNull = false)]
+        public int AttackerY { get; set; }
+        [DataElement(AllowDbNull = false)]
+        public int AttackerZ { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public int Y { get; set; }
+        public int DefenderKeepSafeX { get; set; }
         [DataElement(AllowDbNull = false)]
-        public int Z { get; set; }
+        public int DefenderKeepSafeY { get; set; }
+        [DataElement(AllowDbNull = false)]
+        public int DefenderKeepSafeZ { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int DefenderKeepUnderAttackX { get; set; }
+        [DataElement(AllowDbNull = false)]
+        public int DefenderKeepUnderAttackY { get; set; }
+        [DataElement(AllowDbNull = false)]
+        public int DefenderKeepUnderAttackZ { get; set; }
 
     }
 }

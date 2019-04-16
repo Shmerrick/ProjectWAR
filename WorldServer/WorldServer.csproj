@@ -302,6 +302,7 @@
     <Compile Include="Managers\Commands\StatesCommand.cs" />
     <Compile Include="Managers\Commands\TeleportCommands.cs" />
     <Compile Include="Managers\Commands\WaypointCommands.cs" />
+    <Compile Include="Managers\RespawnManager.cs" />
     <Compile Include="NetWork\Handler\SiegeHandlers.cs" />
     <Compile Include="Services\ServiceBase.cs" />
     <Compile Include="Services\World\AnnounceService.cs" />

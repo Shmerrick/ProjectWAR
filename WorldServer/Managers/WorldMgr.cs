@@ -156,66 +156,116 @@ namespace WorldServer.Managers
                     if (!player.CurrentArea.IsRvR)
                         return resp;
 
-                    #region RvR area respawns
-                    var front = player.Region.Campaign;
-
-                    if (front != null)
+                    var keep = player.CurrentKeep;
+                    if (keep != null)
                     {
-                        var bestDist =
-                            player.GetDistanceToWorldPoint(
-                                ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)resp.ZoneID), resp.PinX, resp.PinY, resp.PinZ));
+                        var keepId = keep.Info.KeepId;
+                        var keepAttackingRealm = keep.AttackingRealm;
 
-                        foreach (var keep in front.Keeps)
+                        // If Keep is safe and your realm is defending - use DefenderKeepSafeX
+                        if (player.Realm == keep.Realm)
                         {
-                            if (keep == null || keep.Zone == null || keep.Info == null)
-                            {
-                                Log.Error("GetZoneRespawn", "Null required Keep information");
-                                continue;
-                            }
-
                             if (keep.Realm == player.Realm &&
                                 (keep.KeepStatus == KeepStatus.KEEPSTATUS_SAFE ||
                                  keep.KeepStatus == KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK))
                             {
-                                var dist = player.GetDistanceToWorldPoint(keep.WorldPosition);
-                                if (dist < bestDist)
+                                player.IntraRegionTeleport(
+                                    (uint)keep.PlayerSpawnLocation.Value.DefenderKeepSafeX,
+                                    (uint)keep.PlayerSpawnLocation.Value.DefenderKeepSafeY, 
+                                    (ushort)keep.PlayerSpawnLocation.Value.DefenderKeepSafeZ, 
+                                    2048);
+
+                            }
+                            else
+                            {
+                                var result = new Zone_Respawn
                                 {
+                                    ZoneID = keep.Zone.ZoneId,
+                                    PinX = (ushort) keep.PlayerSpawnLocation.Value.DefenderKeepUnderAttackX,
+                                    PinY = (ushort) keep.PlayerSpawnLocation.Value.DefenderKeepUnderAttackY,
+                                    PinZ = (ushort) keep.PlayerSpawnLocation.Value.DefenderKeepUnderAttackZ
+                                };
 
-                                    if (keep.PlayerSpawnLocation.Value != null)
-                                    {
-                                        resp = new Zone_Respawn
-                                        {
-                                            ZoneID = keep.Zone.ZoneId,
-                                            PinX = ZoneService.CalculPin(keep.Zone.Info, keep.PlayerSpawnLocation.Value.X, true),
-                                            PinY = ZoneService.CalculPin(keep.Zone.Info, keep.PlayerSpawnLocation.Value.Y, false),
-                                            PinZ = (ushort)keep.PlayerSpawnLocation.Value.Z
-                                        };
-                                    }
-                                    else
-                                    {
-                                        resp = new Zone_Respawn
-                                        {
-                                            ZoneID = keep.Zone.ZoneId,
-                                            PinX = ZoneService.CalculPin(keep.Zone.Info, keep.Info.X, true),
-                                            PinY = ZoneService.CalculPin(keep.Zone.Info, keep.Info.Y, false),
-                                            PinZ = (ushort)keep.Info.Z
-                                        };
-                                    }
-
-
-                                    bestDist = dist;
-                                }
+                                return result;
                             }
                         }
+                        else
+                        {
+                            var result = new Zone_Respawn
+                            {
+                                ZoneID = keep.Zone.ZoneId,
+                                PinX = (ushort) keep.PlayerSpawnLocation.Value.AttackerX,
+                                PinY = (ushort) keep.PlayerSpawnLocation.Value.AttackerY,
+                                PinZ = (ushort) keep.PlayerSpawnLocation.Value.AttackerZ
+                            };
 
-                        return resp;
+                            return result;
+                        }
                     }
 
-                    #endregion
+                    //#region RvR area respawns
+                    //var front = player.Region.Campaign;
+
+                    //if (front != null)
+                    //{
+                    //    var bestDist =
+                    //        player.GetDistanceToWorldPoint(
+                    //            ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)resp.ZoneID), resp.PinX, resp.PinY, resp.PinZ));
+
+                    //    foreach (var keep in front.Keeps)
+                    //    {
+                    //        if (keep == null || keep.Zone == null || keep.Info == null)
+                    //        {
+                    //            Log.Error("GetZoneRespawn", "Null required Keep information");
+                    //            continue;
+                    //        }
+
+                    //        if (keep.Realm == player.Realm &&
+                    //            (keep.KeepStatus == KeepStatus.KEEPSTATUS_SAFE ||
+                    //             keep.KeepStatus == KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK))
+                    //        {
+                    //            var dist = player.GetDistanceToWorldPoint(keep.WorldPosition);
+                    //            if (dist < bestDist)
+                    //            {
+
+                    //                if (keep.PlayerSpawnLocation.Value != null)
+                    //                {
+                    //                    resp = new Zone_Respawn
+                    //                    {
+                    //                        //ZoneID = keep.Zone.ZoneId,
+                    //                        //PinX = ZoneService.CalculPin(keep.Zone.Info, keep.PlayerSpawnLocation.Value.X, true),
+                    //                        //PinY = ZoneService.CalculPin(keep.Zone.Info, keep.PlayerSpawnLocation.Value.Y, false),
+                    //                        //PinZ = (ushort)keep.PlayerSpawnLocation.Value.Z
+                    //                    };
+                    //                }
+                    //                else
+                    //                {
+                    //                    resp = new Zone_Respawn
+                    //                    {
+                    //                        ZoneID = keep.Zone.ZoneId,
+                    //                        PinX = ZoneService.CalculPin(keep.Zone.Info, keep.Info.X, true),
+                    //                        PinY = ZoneService.CalculPin(keep.Zone.Info, keep.Info.Y, false),
+                    //                        PinZ = (ushort)keep.Info.Z
+                    //                    };
+                    //                }
+
+
+                    //                bestDist = dist;
+                    //            }
+                    //        }
+                    //    }
+
+                    //    return resp;
+                    //}
+
+                    //#endregion
                 }
             }
             else
             {
+
+
+
                 // Crude patch - if no currentarea, respawn into IC/Altdorf
                 return ZoneService.GetZoneRespawn(zoneId, realm);
             }
