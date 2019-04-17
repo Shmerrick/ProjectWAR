@@ -302,7 +302,6 @@
     <Compile Include="Managers\Commands\StatesCommand.cs" />
     <Compile Include="Managers\Commands\TeleportCommands.cs" />
     <Compile Include="Managers\Commands\WaypointCommands.cs" />
-    <Compile Include="Managers\RespawnManager.cs" />
     <Compile Include="NetWork\Handler\SiegeHandlers.cs" />
     <Compile Include="Services\ServiceBase.cs" />
     <Compile Include="Services\World\AnnounceService.cs" />
@@ -600,6 +599,7 @@
     <Compile Include="World\Objects\NPCAbility.cs" />
     <Compile Include="World\Objects\RVRArea.cs" />
     <Compile Include="World\Objects\RVRRewardItem.cs" />
+    <Compile Include="World\Objects\SpawnPoint.cs" />
     <Compile Include="World\Scripting\BasicScript.cs" />
     <Compile Include="World\Scripting\BehaviorLib.cs" />
     <Compile Include="World\Objects\Instances\Gunbad ROR\Arathremia.cs" />

@@ -346,7 +346,7 @@ namespace WorldServer.Managers.Commands
             byte realm = (byte)GetInt(ref values);
 
             plr.SendClientMessage("Closest respawn for " + (realm == 1 ? "Order" : "Destruction") + " is " +
-                             WorldMgr.GetZoneRespawn(plr.Zone.ZoneId, realm, plr).RespawnID);
+                             WorldMgr.GetZoneRespawn(plr.Zone.ZoneId, realm, plr).ToString());
 
             return true;
         }

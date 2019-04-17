@@ -169,11 +169,11 @@ namespace WorldServer.World.Scenarios
 
             for (byte i = 0; i < 2; ++i)
             {
-                Zone_Respawn respawn = WorldMgr.GetZoneRespawn(Info.MapId, (byte)(i + 1), null);
-                if (respawn == null)
+                var spawnPoint = WorldMgr.GetZoneRespawn(Info.MapId, (byte)(i + 1), null);
+                if (spawnPoint == null)
                     throw new Exception("Scenario " + Info.Name + " is missing a respawn!");
-                RespawnLocations[i] = ZoneService.GetWorldPosition(ZoneService.GetZone_Info(Info.MapId), respawn.PinX, respawn.PinY, respawn.PinZ);
-                RespawnHeadings[i] = respawn.WorldO;
+                RespawnLocations[i] = spawnPoint.As3DPoint();
+                RespawnHeadings[i] = 0;
             }
 
             Region = new RegionMgr(Info.MapId, ZoneService.GetZoneRegion(Info.RegionId), info.Name, new ApocCommunications()) { Scenario = this };
@@ -1041,15 +1041,13 @@ namespace WorldServer.World.Scenarios
             // Reset to nearest spawn point if taking SC in ORvR area while in presence of BattlefieldObjective or keep
             if (plr.CurrentArea != null && plr.CurrentArea.IsRvR && plr.Zone != null && (plr.CurrentKeep != null || plr.CurrentObjectiveFlag != null))
             {
-                Zone_Respawn warcampRespawn = WorldMgr.GetZoneRespawn(plr.Zone.ZoneId, (byte)plr.Realm, plr);
+                var warcampRespawn = WorldMgr.GetZoneRespawn(plr.Zone.ZoneId, (byte)plr.Realm, plr);
 
-                Point3D world = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)warcampRespawn.ZoneID), warcampRespawn.PinX, warcampRespawn.PinY, warcampRespawn.PinZ);
-
-                plr.ScnInterface.ScenarioEntryWorldX = world.X;
-                plr.ScnInterface.ScenarioEntryWorldZ = world.Z;
-                plr.ScnInterface.ScenarioEntryWorldY = world.Y;
-                plr.ScnInterface.ScenarioEntryWorldO = warcampRespawn.WorldO;
-                plr.ScnInterface.ScenarioEntryZoneId = (ushort)warcampRespawn.ZoneID;
+                plr.ScnInterface.ScenarioEntryWorldX = warcampRespawn.X;
+                plr.ScnInterface.ScenarioEntryWorldY = warcampRespawn.Y;
+                plr.ScnInterface.ScenarioEntryWorldZ = warcampRespawn.Z;
+                plr.ScnInterface.ScenarioEntryWorldO = plr.Heading;
+                plr.ScnInterface.ScenarioEntryZoneId = warcampRespawn.ZoneId;
             }
 
             else

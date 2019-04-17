@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using SystemData;
-using Appccelerate.StateMachine;
+﻿using Appccelerate.StateMachine;
 using Common;
 using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
 using NLog;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
@@ -146,34 +146,34 @@ namespace WorldServer.World.Battlefronts.Keeps
                                     keepSiegeSpawnPointse.Z,
                                     keepSiegeSpawnPointse.O));
                             break;
-                        //case (int) SiegeType.GTAOE:
-                        //case (int) SiegeType.DIRECT:
-                        //case (int) SiegeType.SNIPER:
-                        //{
+                            //case (int) SiegeType.GTAOE:
+                            //case (int) SiegeType.DIRECT:
+                            //case (int) SiegeType.SNIPER:
+                            //{
 
-                        //    GameObject_proto glowProto = GameObjectService.GetGameObjectProto(99858);//99858
+                            //    GameObject_proto glowProto = GameObjectService.GetGameObjectProto(99858);//99858
 
-                        //        if (glowProto != null)
-                        //    {
-                        //        GameObject_spawn spawn = new GameObject_spawn
-                        //        {
-                        //            Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
-                        //            WorldO = Heading,
-                        //            WorldX = keepSiegeSpawnPointse.X,
-                        //            WorldY = keepSiegeSpawnPointse.Y,
-                        //            WorldZ = keepSiegeSpawnPointse.Z,
-                        //            ZoneId = Region.RegionId,
-                        //        };
-                        //        spawn.BuildFromProto(glowProto);
+                            //        if (glowProto != null)
+                            //    {
+                            //        GameObject_spawn spawn = new GameObject_spawn
+                            //        {
+                            //            Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
+                            //            WorldO = Heading,
+                            //            WorldX = keepSiegeSpawnPointse.X,
+                            //            WorldY = keepSiegeSpawnPointse.Y,
+                            //            WorldZ = keepSiegeSpawnPointse.Z,
+                            //            ZoneId = Region.RegionId,
+                            //        };
+                            //        spawn.BuildFromProto(glowProto);
 
-                        //        var siegeRangeFlag = new GameObject(spawn);
-                        //        siegeRangeFlag.VfxState = 3;  //1 blue, 2 red, 3 white, 4 - white;
+                            //        var siegeRangeFlag = new GameObject(spawn);
+                            //        siegeRangeFlag.VfxState = 3;  //1 blue, 2 red, 3 white, 4 - white;
 
-                        //        Region.AddObject(siegeRangeFlag, Info.ZoneId);
-                        //    }
+                            //        Region.AddObject(siegeRangeFlag, Info.ZoneId);
+                            //    }
 
-                        //    break;
-                        //}
+                            //    break;
+                            //}
                     }
                 }
             }
@@ -196,7 +196,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             Fortress = isFortress;
         }
 
-       
+
         public override void OnLoad()
         {
             Z = Info.Z;
@@ -224,15 +224,15 @@ namespace WorldServer.World.Battlefronts.Keeps
             }
 
             // Create the guild claim objective flag.
-            var guildClaimObjective = BattleFrontService.GetBattleFrontObjectives(this.Region.RegionId).SingleOrDefault(x => x.Entry == Info.GuildClaimObjectiveId);
+            var guildClaimObjective = BattleFrontService.GetBattleFrontObjectives(Region.RegionId).SingleOrDefault(x => x.Entry == Info.GuildClaimObjectiveId);
             if (guildClaimObjective != null)
             {
-                GuildFlag = new GuildClaimObjective(this.Region, guildClaimObjective);
-                Region.AddObject(GuildFlag, this.ZoneId.Value);
+                GuildFlag = new GuildClaimObjective(Region, guildClaimObjective);
+                Region.AddObject(GuildFlag, ZoneId.Value);
             }
             else
             {
-                _logger.Error($"Could not find Guild Claim Objective for {this.Info.Name}");
+                _logger.Error($"Could not find Guild Claim Objective for {Info.Name}");
             }
 
             PlayerSpawnLocation = BattleFrontService._PlayerKeepSpawnPoints.SingleOrDefault(x => x.Key == Info.KeepId);
@@ -264,22 +264,22 @@ namespace WorldServer.World.Battlefronts.Keeps
 
                     // Create Loot Chests at the Fort GoldChest location.
                     var orderLootChest = LootChest.Create(
-                        this.Region,
-                        new Point3D(this.Info.PQuest.GoldChestWorldX, this.Info.PQuest.GoldChestWorldY, this.Info.PQuest.GoldChestWorldZ),
-                        (ushort)this.ZoneId);
+                        Region,
+                        new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ),
+                        (ushort)ZoneId);
 
-                    orderLootChest.Title = $"Fort Defence {this.Info.Name}";
+                    orderLootChest.Title = $"Fort Defence {Info.Name}";
                     orderLootChest.Content = $"Fort Defence Rewards";
-                    orderLootChest.SenderName = $"{this.Info.Name}";
+                    orderLootChest.SenderName = $"{Info.Name}";
 
                     var destructionLootChest = LootChest.Create(
-                        this.Region,
-                        new Point3D(this.Info.PQuest.GoldChestWorldX, this.Info.PQuest.GoldChestWorldY, this.Info.PQuest.GoldChestWorldZ),
-                        (ushort)this.ZoneId);
+                        Region,
+                        new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ),
+                        (ushort)ZoneId);
 
-                    destructionLootChest.Title = $"Fort Defence {this.Info.Name}";
+                    destructionLootChest.Title = $"Fort Defence {Info.Name}";
                     destructionLootChest.Content = $"Fort Defence Rewards";
-                    destructionLootChest.SenderName = $"{this.Info.Name}";
+                    destructionLootChest.SenderName = $"{Info.Name}";
 
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock((Realms)Info.Realm, orderLootChest, destructionLootChest, RVRZoneRewardService.RVRRewardFortItems);
                     FortDefenceCounter = 0;
@@ -342,7 +342,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             }
         }
 
-       
+
 
         public void SetKeepSeized()
         {
@@ -396,7 +396,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             // Give extra reward for being Realm Captain
             activeBattleFrontStatus.DestructionRealmCaptain?.AddRenown(1250, false, RewardType.Kill, null);
             activeBattleFrontStatus.OrderRealmCaptain?.AddRenown(1250, false, RewardType.Kill, null);
-            
+
             // Players with contribution to be rewarded.
             var eligiblePlayers = activeBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
 
@@ -420,16 +420,16 @@ namespace WorldServer.World.Battlefronts.Keeps
             LordKilledTimer.Start();
 
             SetGuildFlagState(StateFlags.Unsecure);
-            
+
 
         }
 
         private void SetGuildFlagState(StateFlags newState)
         {
-            if (this.GuildFlag != null)
+            if (GuildFlag != null)
             {
-                _logger.Info($"Guild Flag changing state from {this.GuildFlag.State} to {newState} ");
-                this.GuildFlag.State = newState;
+                _logger.Info($"Guild Flag changing state from {GuildFlag.State} to {newState} ");
+                GuildFlag.State = newState;
             }
         }
 
@@ -727,7 +727,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 plr.SendClientMessage($"Plr Distance to Lord: {plr.WorldPosition.GetDistanceTo(lord.Creature.WorldSpawnPoint)}");
                 plr.SendClientMessage($"Health: {lord.Creature.PctHealth}");
                 plr.SendClientMessage($"RamDeployed: " + RamDeployed);
-                plr.SendClientMessage($"GuildClaim: " + this.OwningGuild?.Info.Name);
+                plr.SendClientMessage($"GuildClaim: " + OwningGuild?.Info.Name);
             }
         }
 
@@ -788,10 +788,10 @@ namespace WorldServer.World.Battlefronts.Keeps
                     fsm.Initialize(SM.ProcessState.Initial);
                     fsm.Fire(SM.Command.OnOpenBattleFront);
 
-                    if (this.GuildFlag != null)
+                    if (GuildFlag != null)
                     {
-                        this.GuildFlag.Keep = this;
-                        this.GuildFlag.State = StateFlags.Unsecure;
+                        GuildFlag.Keep = this;
+                        GuildFlag.State = StateFlags.Unsecure;
                     }
                 }
             }
@@ -889,7 +889,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     || Realm == Realms.REALMS_REALM_DESTRUCTION && aaoMultiplier > 0) // keep is destro and aao is on order
                     size = (int)Math.Round(Math.Abs(aaoMultiplier) / 2.5); // 20 / 2.5 = 8 -> 8 is max guard size
 
-               
+
             }
         }
 
@@ -1264,8 +1264,8 @@ namespace WorldServer.World.Battlefronts.Keeps
             Out.WriteByte(1);
             Out.WriteUInt16(0);
 
-            if (this.OwningGuild != null)
-                Out.WritePascalString($"{Info.Name} ({this.OwningGuild.Info.Name})");
+            if (OwningGuild != null)
+                Out.WritePascalString($"{Info.Name} ({OwningGuild.Info.Name})");
             else
             {
                 Out.WritePascalString($"{Info.Name}");
@@ -1624,7 +1624,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             return 0;
 
         }
-        
+
         #endregion
 
         public void OnKeepSiegeAttacked(byte pctHealth)
@@ -1672,7 +1672,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         /// <summary>
         /// Force Zone lock for the attacker - only to be used for Forts.
         /// </summary>
-        public void ForceLockZone(int forceNumberBags=0)
+        public void ForceLockZone(int forceNumberBags = 0)
         {
             _logger.Info($"Attempt to (FORT) Force Lock Zone from {Info.Name}");
             if (IsFortress())
@@ -1681,27 +1681,27 @@ namespace WorldServer.World.Battlefronts.Keeps
 
                 // Create Loot Chests at the Fort GoldChest location 
                 var lootChest = LootChest.Create(
-                    this.Region,
-                    new Point3D(this.Info.PQuest.GoldChestWorldX, this.Info.PQuest.GoldChestWorldY, this.Info.PQuest.GoldChestWorldZ),
-                    (ushort)this.ZoneId, 
+                    Region,
+                    new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ),
+                    (ushort)ZoneId,
                     false);
 
-                lootChest.Title = $"Fort Assault {this.Info.Name}";
+                lootChest.Title = $"Fort Assault {Info.Name}";
                 lootChest.Content = $"Fort Assault Rewards";
-                lootChest.SenderName = $"{this.Info.Name}";
+                lootChest.SenderName = $"{Info.Name}";
                 if (PendingRealm == Realms.REALMS_REALM_DESTRUCTION)
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(
-                        PendingRealm, 
-                        null, 
-                        lootChest, 
+                        PendingRealm,
+                        null,
+                        lootChest,
                         RVRZoneRewardService.RVRRewardFortItems,
                         forceNumberBags);
                 else
                 {
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(
-                        PendingRealm, 
-                        lootChest, 
-                        null, 
+                        PendingRealm,
+                        lootChest,
+                        null,
                         RVRZoneRewardService.RVRRewardFortItems,
                         forceNumberBags);
                 }
@@ -1733,16 +1733,53 @@ namespace WorldServer.World.Battlefronts.Keeps
         public void SetGuildClaimed(uint guildId)
         {
             // Flag is secure (cant be interacted with)
-            this.GuildFlag.State = StateFlags.Secure;
+            GuildFlag.State = StateFlags.Secure;
             SetGuildOwner(Guild.Guild.GetGuild(guildId));
 
-            foreach (var regionPlayer in this.Region.Players)
+            foreach (var regionPlayer in Region.Players)
             {
                 SendKeepInfo(regionPlayer);
             }
 
             KeepCommunications.SendKeepStatus(null, this);
 
+        }
+
+        /// <summary>
+        /// Get the spawn point for player that is owned by the keep.
+        ///
+        /// If the player is the same realm as the keep - and the keep is safe or walls under attack - spawn in defensive position.
+        /// If the player is the same realm as the keep - and the keep is unsafe - spawn in defender external position (normally closest WC).
+        /// If the player is attacking the keep - spawn in attacker external position (normally closest Fort).
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+
+        public SpawnPoint GetSpawnPoint(Player player)
+        {
+            if (player.Realm == Realm)
+            {
+                if (Realm == player.Realm &&
+                    (KeepStatus == KeepStatus.KEEPSTATUS_SAFE ||
+                     KeepStatus == KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK))
+                {
+                    return new SpawnPoint(Zone.ZoneId, PlayerSpawnLocation.Value.DefenderKeepSafeX,
+                        PlayerSpawnLocation.Value.DefenderKeepSafeY,
+                        PlayerSpawnLocation.Value.DefenderKeepSafeZ);
+
+                }
+
+                return new SpawnPoint(Zone.ZoneId, PlayerSpawnLocation.Value.DefenderKeepUnderAttackX,
+                    PlayerSpawnLocation.Value.DefenderKeepUnderAttackY,
+                    PlayerSpawnLocation.Value.DefenderKeepUnderAttackZ);
+
+            }
+            else
+            {
+                return new SpawnPoint(Zone.ZoneId, PlayerSpawnLocation.Value.AttackerX,
+                    PlayerSpawnLocation.Value.AttackerY,
+                    PlayerSpawnLocation.Value.AttackerZ);
+            }
         }
     }
 

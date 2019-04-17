@@ -220,5 +220,9 @@ namespace Common
                 Dirty = true;
             }
         }
+
+
+        [DataElement(AllowDbNull = true)]
+        public string Email { get; set; }
     }
 } 

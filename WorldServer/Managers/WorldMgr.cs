@@ -111,182 +111,60 @@ namespace WorldServer.Managers
 
         #region Zones
 
-        public static Zone_Respawn GetZoneRespawn(ushort zoneId, byte realm, Player player)
+        public static SpawnPoint GetZoneRespawn(ushort zoneId, byte realm, Player player)
         {
-            Zone_Respawn respawn = null;
-
             if (player == null)
-                return ZoneService.GetZoneRespawn(zoneId, realm);
+            {
+                return new SpawnPoint(ZoneService.GetZoneRespawn(zoneId, realm));
+            }
 
             if (player.CurrentArea != null)
             {
+                // If player is in a Public Quest
+                if (player.QtsInterface.PublicQuest != null)
+                {
+                    var pqRespawns = ZoneService.GetZoneRespawns(zoneId);
+                    foreach (var res in pqRespawns)
+                        if (res.Realm == 0 &&
+                            res.ZoneID == zoneId &&
+                            res.RespawnID == player.QtsInterface.PublicQuest.Info.RespawnID)
+                            return new SpawnPoint(res);
+                }
+
                 ushort respawnId = realm == 1
                     ? player.CurrentArea.OrderRespawnId
                     : player.CurrentArea.DestroRespawnId;
 
-                #region Public Quest and Instances Respawns
-
-                List<Zone_Respawn> resps = new List<Zone_Respawn>();
-
-                // Gunbad
-                if (player.ZoneId == 60 && player.QtsInterface.PublicQuest == null)
-                {
-                    resps = ZoneService.GetZoneRespawns(zoneId);
-                    foreach (Zone_Respawn res in resps)
-                        if (res.ZoneID == 60 && (res.RespawnID == 308 || res.RespawnID == 321))
-                            return res;
-                }
-
-                if (player.QtsInterface.PublicQuest != null)
-                {
-                    resps = ZoneService.GetZoneRespawns(zoneId);
-                    foreach (Zone_Respawn res in resps)
-                        if (res.Realm == 0 &&
-                            res.ZoneID == zoneId &&
-                            res.RespawnID == player.QtsInterface.PublicQuest.Info.RespawnID)
-                            return res;
-                }
-
-                #endregion
-
                 if (respawnId > 0)
                 {
-                    Zone_Respawn resp = ZoneService.GetZoneRespawn(respawnId);
-
+                    // PVE respawn
                     if (!player.CurrentArea.IsRvR)
-                        return resp;
+                        return new SpawnPoint(ZoneService.GetZoneRespawn(respawnId));
 
-                    var keep = player.CurrentKeep;
-                    if (keep != null)
-                    {
-                        var keepId = keep.Info.KeepId;
-                        var keepAttackingRealm = keep.AttackingRealm;
+                    // Keep respawn.
+                    return player.CurrentKeep?.GetSpawnPoint(player); 
 
-                        // If Keep is safe and your realm is defending - use DefenderKeepSafeX
-                        if (player.Realm == keep.Realm)
-                        {
-                            if (keep.Realm == player.Realm &&
-                                (keep.KeepStatus == KeepStatus.KEEPSTATUS_SAFE ||
-                                 keep.KeepStatus == KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK))
-                            {
-                                player.IntraRegionTeleport(
-                                    (uint)keep.PlayerSpawnLocation.Value.DefenderKeepSafeX,
-                                    (uint)keep.PlayerSpawnLocation.Value.DefenderKeepSafeY, 
-                                    (ushort)keep.PlayerSpawnLocation.Value.DefenderKeepSafeZ, 
-                                    2048);
-
-                            }
-                            else
-                            {
-                                var result = new Zone_Respawn
-                                {
-                                    ZoneID = keep.Zone.ZoneId,
-                                    PinX = (ushort) keep.PlayerSpawnLocation.Value.DefenderKeepUnderAttackX,
-                                    PinY = (ushort) keep.PlayerSpawnLocation.Value.DefenderKeepUnderAttackY,
-                                    PinZ = (ushort) keep.PlayerSpawnLocation.Value.DefenderKeepUnderAttackZ
-                                };
-
-                                return result;
-                            }
-                        }
-                        else
-                        {
-                            var result = new Zone_Respawn
-                            {
-                                ZoneID = keep.Zone.ZoneId,
-                                PinX = (ushort) keep.PlayerSpawnLocation.Value.AttackerX,
-                                PinY = (ushort) keep.PlayerSpawnLocation.Value.AttackerY,
-                                PinZ = (ushort) keep.PlayerSpawnLocation.Value.AttackerZ
-                            };
-
-                            return result;
-                        }
-                    }
-
-                    //#region RvR area respawns
-                    //var front = player.Region.Campaign;
-
-                    //if (front != null)
-                    //{
-                    //    var bestDist =
-                    //        player.GetDistanceToWorldPoint(
-                    //            ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)resp.ZoneID), resp.PinX, resp.PinY, resp.PinZ));
-
-                    //    foreach (var keep in front.Keeps)
-                    //    {
-                    //        if (keep == null || keep.Zone == null || keep.Info == null)
-                    //        {
-                    //            Log.Error("GetZoneRespawn", "Null required Keep information");
-                    //            continue;
-                    //        }
-
-                    //        if (keep.Realm == player.Realm &&
-                    //            (keep.KeepStatus == KeepStatus.KEEPSTATUS_SAFE ||
-                    //             keep.KeepStatus == KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK))
-                    //        {
-                    //            var dist = player.GetDistanceToWorldPoint(keep.WorldPosition);
-                    //            if (dist < bestDist)
-                    //            {
-
-                    //                if (keep.PlayerSpawnLocation.Value != null)
-                    //                {
-                    //                    resp = new Zone_Respawn
-                    //                    {
-                    //                        //ZoneID = keep.Zone.ZoneId,
-                    //                        //PinX = ZoneService.CalculPin(keep.Zone.Info, keep.PlayerSpawnLocation.Value.X, true),
-                    //                        //PinY = ZoneService.CalculPin(keep.Zone.Info, keep.PlayerSpawnLocation.Value.Y, false),
-                    //                        //PinZ = (ushort)keep.PlayerSpawnLocation.Value.Z
-                    //                    };
-                    //                }
-                    //                else
-                    //                {
-                    //                    resp = new Zone_Respawn
-                    //                    {
-                    //                        ZoneID = keep.Zone.ZoneId,
-                    //                        PinX = ZoneService.CalculPin(keep.Zone.Info, keep.Info.X, true),
-                    //                        PinY = ZoneService.CalculPin(keep.Zone.Info, keep.Info.Y, false),
-                    //                        PinZ = (ushort)keep.Info.Z
-                    //                    };
-                    //                }
-
-
-                    //                bestDist = dist;
-                    //            }
-                    //        }
-                    //    }
-
-                    //    return resp;
-                    //}
-
-                    //#endregion
+                }
+                else
+                {
+                    // Crude patch - if no currentarea, respawn into current zoneid
+                    _logger.Warn($"Respawning player {player.Name} from respawnId=0 area {player.CurrentArea.AreaId}");
+                    return new SpawnPoint(ZoneService.GetZoneRespawn(zoneId, realm));
                 }
             }
             else
             {
-
-
-
-                // Crude patch - if no currentarea, respawn into IC/Altdorf
-                return ZoneService.GetZoneRespawn(zoneId, realm);
+                // Crude patch - if no currentarea, respawn into current zoneid
+                _logger.Warn($"Respawning player {player.Name} from NULL area");
+                return new SpawnPoint(ZoneService.GetZoneRespawn(zoneId, realm));
             }
+        
 
             List<Zone_Respawn> respawns = ZoneService.GetZoneRespawns(zoneId);
-            //if (zoneId == 110)
-            //    respawns = ZoneService.GetZoneRespawns(109);
-            //if (zoneId == 104)
-            //    respawns = ZoneService.GetZoneRespawns(103);
-            //if (zoneId == 210)
-            //    respawns = ZoneService.GetZoneRespawns(209);
-            //if (zoneId == 204)
-            //    respawns = ZoneService.GetZoneRespawns(203);
-            //if (zoneId == 220)
-            //    respawns = ZoneService.GetZoneRespawns(205);
-            //if (zoneId == 10)
-            //    respawns = ZoneService.GetZoneRespawns(9);
-            //if (zoneId == 4)
-            //    respawns = ZoneService.GetZoneRespawns(3);
+            
             if (respawns != null)
             {
+                // Scenario respawn
                 if (player.ScnInterface.Scenario != null)
                 {
                     #region Scenario Spawns
@@ -301,7 +179,7 @@ namespace WorldServer.Managers
                         options.Add(res);
                     }
 
-                    return options.Count == 1 ? options[0] : options[StaticRandom.Instance.Next(options.Count)];
+                    return new SpawnPoint(options.Count == 1 ? options[0] : options[StaticRandom.Instance.Next(options.Count)]);
 
                     #endregion
                 }
@@ -321,17 +199,16 @@ namespace WorldServer.Managers
                     if (distance < lastDistance)
                     {
                         lastDistance = distance;
-                        respawn = res;
+                        return new SpawnPoint(res);
                     }
                 }
 
                 #endregion
             }
-
             else
+            {
                 Log.Error("WorldMgr", "Zone Respawn not found for : " + zoneId);
-
-            return respawn;
+            }
         }
 
         public static List<Zone_Taxi> GetTaxis(Player Plr)

@@ -1195,17 +1195,15 @@ namespace WorldServer.World.Objects
 
                 if (IsDead || !ValidInTier(Zone.Info.Tier, true) || CurrentArea.IsRvR && (CurrentObjectiveFlag != null || CurrentKeep != null))
                 {
-                    Zone_Respawn closestRespawn = WorldMgr.GetZoneRespawn(Zone.ZoneId, (byte)Realm, this);
+                    var closestRespawn = WorldMgr.GetZoneRespawn(Zone.ZoneId, (byte)Realm, this);
 
                     if (closestRespawn != null)
                     {
-                        Point3D world = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)closestRespawn.ZoneID), closestRespawn.PinX, closestRespawn.PinY, closestRespawn.PinZ);
-
-                        _Value.WorldX = world.X;
-                        _Value.WorldZ = world.Z;
-                        _Value.WorldY = world.Y;
-                        _Value.WorldO = closestRespawn.WorldO;
-                        _Value.ZoneId = (ushort)closestRespawn.ZoneID;
+                        _Value.WorldX = closestRespawn.X;
+                        _Value.WorldZ = closestRespawn.Z;
+                        _Value.WorldY = closestRespawn.Y;
+                        _Value.WorldO = 0;
+                        _Value.ZoneId = (ushort)closestRespawn.ZoneId;
                     }
                 }
 
@@ -4417,21 +4415,22 @@ namespace WorldServer.World.Objects
                 BuffInterface.QueueBuff(new BuffQueueInfo(this, Level, buffInfo));
             }
 
-            Zone_Respawn respawn = WorldMgr.GetZoneRespawn(Zone.ZoneId, (byte)Realm, this);
-            if (respawn != null)
+            var spawnPoint = WorldMgr.GetZoneRespawn(Zone.ZoneId, (byte)Realm, this);
+            if (spawnPoint != null)
             {
-                if (respawn.InZoneID > 0)
+
+                if (ZoneId == spawnPoint.ZoneId)
                 {
-                    Point3D world = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)respawn.InZoneID), respawn.PinX, respawn.PinY, respawn.PinZ);
-                    Teleport((ushort)respawn.InZoneID, (uint)world.X, (uint)world.Y, (ushort)world.Z, respawn.WorldO);
+                    Teleport((ushort)spawnPoint.ZoneId, (uint)spawnPoint.X, (uint)spawnPoint.Y, (ushort)spawnPoint.Z, Heading);
                 }
-                else if (respawn.ZoneID == Zone.ZoneId)
-                    ZoneTeleport(respawn.PinX, respawn.PinY, respawn.PinZ, respawn.WorldO);
-                else // ?? unreachable 
+                else
                 {
-                    Point3D world = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)respawn.ZoneID), respawn.PinX, respawn.PinY, respawn.PinZ);
-                    IntraRegionTeleport((uint)world.X, (uint)world.Y, (ushort)world.Z, respawn.WorldO);
+                    IntraRegionTeleport((uint)spawnPoint.X, (uint)spawnPoint.Y, (ushort)spawnPoint.Z, Heading);
                 }
+            }
+            else
+            {
+                _logger.Warn($"Spawnpoint is null for player {Name}, ZoneId {ZoneId}");
             }
 
             RezUnit();
