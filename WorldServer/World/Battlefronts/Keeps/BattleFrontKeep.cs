@@ -1768,18 +1768,45 @@ namespace WorldServer.World.Battlefronts.Keeps
                         PlayerSpawnLocation.Value.DefenderKeepSafeZ);
 
                 }
-
-                return new SpawnPoint(Zone.ZoneId, PlayerSpawnLocation.Value.DefenderKeepUnderAttackX,
-                    PlayerSpawnLocation.Value.DefenderKeepUnderAttackY,
-                    PlayerSpawnLocation.Value.DefenderKeepUnderAttackZ);
-
             }
-            else
-            {
-                return new SpawnPoint(Zone.ZoneId, PlayerSpawnLocation.Value.AttackerX,
-                    PlayerSpawnLocation.Value.AttackerY,
-                    PlayerSpawnLocation.Value.AttackerZ);
-            }
+            // Closest WC
+            var wc = BattleFrontService.GetWarcampEntrance(Zone.ZoneId, player.Realm);
+            var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)Zone.ZoneId), (ushort)wc.X, (ushort)wc.Y, (ushort)wc.Z);
+            return new SpawnPoint(Zone.ZoneId, target.X, target.Y, target.Z);
+
+            //if (Fortress)
+            //{
+
+
+            //        //return new SpawnPoint(Zone.ZoneId, PlayerSpawnLocation.Value.DefenderKeepUnderAttackX,
+            //        //    PlayerSpawnLocation.Value.DefenderKeepUnderAttackY,
+            //        //    PlayerSpawnLocation.Value.DefenderKeepUnderAttackZ);
+
+            //    }
+            //    else
+            //    {
+            //        return new SpawnPoint(Zone.ZoneId, PlayerSpawnLocation.Value.AttackerX,
+            //            PlayerSpawnLocation.Value.AttackerY,
+            //            PlayerSpawnLocation.Value.AttackerZ);
+            //    }
+            //}
+            //else
+            //{
+            //    if (player.Realm == Realm)
+            //    {
+            //        if (Realm == player.Realm &&
+            //            (KeepStatus == KeepStatus.KEEPSTATUS_SAFE ||
+            //             KeepStatus == KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK))
+            //        {
+            //            return new SpawnPoint(Zone.ZoneId, PlayerSpawnLocation.Value.DefenderKeepSafeX,
+            //                PlayerSpawnLocation.Value.DefenderKeepSafeY,
+            //                PlayerSpawnLocation.Value.DefenderKeepSafeZ);
+
+            //        }
+            //    }
+            //}
+
+
         }
     }
 

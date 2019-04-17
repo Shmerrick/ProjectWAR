@@ -1,17 +1,16 @@
-﻿using System;
+﻿using Common;
+using Common.Database.World.Characters;
+using FrameWork;
+using GameData;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using SystemData;
-using Common;
-using Common.Database.World.Characters;
-using FrameWork;
-using GameData;
-using NLog;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
-using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
@@ -131,46 +130,11 @@ namespace WorldServer.Managers
                             return new SpawnPoint(res);
                 }
 
-                ushort respawnId = realm == 1
-                    ? player.CurrentArea.OrderRespawnId
-                    : player.CurrentArea.DestroRespawnId;
-
-                if (respawnId > 0)
-                {
-                    // PVE respawn
-                    if (!player.CurrentArea.IsRvR)
-                        return new SpawnPoint(ZoneService.GetZoneRespawn(respawnId));
-
-                    // Keep respawn.
-                    return player.CurrentKeep?.GetSpawnPoint(player); 
-
-                }
-                else
-                {
-                    // Crude patch - if no currentarea, respawn into current zoneid
-                    _logger.Warn($"Respawning player {player.Name} from respawnId=0 area {player.CurrentArea.AreaId}");
-                    return new SpawnPoint(ZoneService.GetZoneRespawn(zoneId, realm));
-                }
-            }
-            else
-            {
-                // Crude patch - if no currentarea, respawn into current zoneid
-                _logger.Warn($"Respawning player {player.Name} from NULL area");
-                return new SpawnPoint(ZoneService.GetZoneRespawn(zoneId, realm));
-            }
-        
-
-            List<Zone_Respawn> respawns = ZoneService.GetZoneRespawns(zoneId);
-            
-            if (respawns != null)
-            {
-                // Scenario respawn
+                // Scenario respawn - random if > 1 
                 if (player.ScnInterface.Scenario != null)
                 {
-                    #region Scenario Spawns
-
+                    List<Zone_Respawn> respawns = ZoneService.GetZoneRespawns(zoneId);
                     List<Zone_Respawn> options = new List<Zone_Respawn>();
-
                     foreach (Zone_Respawn res in respawns)
                     {
                         if (res.Realm != realm)
@@ -180,12 +144,35 @@ namespace WorldServer.Managers
                     }
 
                     return new SpawnPoint(options.Count == 1 ? options[0] : options[StaticRandom.Instance.Next(options.Count)]);
-
-                    #endregion
                 }
 
-                #region World Spawns
+                // Keep respawn.
+                if (player.CurrentKeep != null)
+                    return player.CurrentKeep.GetSpawnPoint(player);
+                
+                ushort respawnId = realm == 1
+                    ? player.CurrentArea.OrderRespawnId
+                    : player.CurrentArea.DestroRespawnId;
 
+                if (respawnId > 0)
+                {
+                    // PVE respawn
+                    return new SpawnPoint(ZoneService.GetZoneRespawn(respawnId));
+                }
+                else
+                {
+
+                    // Crude patch - if no currentarea, respawn into current zoneid
+                    _logger.Warn(
+                        $"Respawning player {player.Name} from respawnId=0 area {player.CurrentArea.AreaId}");
+                    return new SpawnPoint(ZoneService.GetZoneRespawn(zoneId, realm));
+                }
+
+            }
+            else
+            {
+                // World Spawns
+                List<Zone_Respawn> respawns = ZoneService.GetZoneRespawns(zoneId);
                 float lastDistance = float.MaxValue;
 
                 foreach (Zone_Respawn res in respawns)
@@ -203,12 +190,11 @@ namespace WorldServer.Managers
                     }
                 }
 
-                #endregion
+                // Crude patch - if no currentarea, respawn into current zoneid
+                _logger.Warn($"Respawning player {player.Name} from NULL area");
+                return new SpawnPoint(ZoneService.GetZoneRespawn(zoneId, realm));
             }
-            else
-            {
-                Log.Error("WorldMgr", "Zone Respawn not found for : " + zoneId);
-            }
+
         }
 
         public static List<Zone_Taxi> GetTaxis(Player Plr)

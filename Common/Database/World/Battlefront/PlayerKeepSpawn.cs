@@ -11,13 +11,7 @@ namespace Common.Database.World.Battlefront
     {
         [PrimaryKey] public int KeepId { get; set; }
 
-        [DataElement(AllowDbNull = false)]
-        public int AttackerX { get; set; }
-        [DataElement(AllowDbNull = false)]
-        public int AttackerY { get; set; }
-        [DataElement(AllowDbNull = false)]
-        public int AttackerZ { get; set; }
-
+       
         [DataElement(AllowDbNull = false)]
         public int DefenderKeepSafeX { get; set; }
         [DataElement(AllowDbNull = false)]
@@ -25,12 +19,6 @@ namespace Common.Database.World.Battlefront
         [DataElement(AllowDbNull = false)]
         public int DefenderKeepSafeZ { get; set; }
 
-        [DataElement(AllowDbNull = false)]
-        public int DefenderKeepUnderAttackX { get; set; }
-        [DataElement(AllowDbNull = false)]
-        public int DefenderKeepUnderAttackY { get; set; }
-        [DataElement(AllowDbNull = false)]
-        public int DefenderKeepUnderAttackZ { get; set; }
-
+       
     }
 }
