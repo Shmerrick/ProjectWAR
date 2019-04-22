@@ -18,6 +18,10 @@ namespace Common.Database.World.Battlefront
         public int DefenderKeepSafeY { get; set; }
         [DataElement(AllowDbNull = false)]
         public int DefenderKeepSafeZ { get; set; }
+        [DataElement(AllowDbNull = false)]
+        public int OrderFeedZoneId { get; set; }
+        [DataElement(AllowDbNull = false)]
+        public int DestructionFeedZoneId { get; set; }
 
        
     }

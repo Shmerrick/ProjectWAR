@@ -1772,10 +1772,23 @@ namespace WorldServer.World.Battlefronts.Keeps
 
                 }
             }
-            // Closest WC
-            var wc = BattleFrontService.GetWarcampEntrance(Zone.ZoneId, player.Realm);
-            var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)Zone.ZoneId), (ushort)wc.X, (ushort)wc.Y, (ushort)wc.Z);
-            return new SpawnPoint(Zone.ZoneId, target.X, target.Y, target.Z);
+
+            if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
+            {
+                var destructionWCId = PlayerSpawnLocation.Value.DestructionFeedZoneId;
+                // Closest WC
+                var wc = BattleFrontService.GetWarcampEntrance((ushort) destructionWCId, player.Realm);
+                var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)destructionWCId), (ushort)wc.X, (ushort)wc.Y, (ushort)wc.Z);
+                return new SpawnPoint((ushort) destructionWCId, target.X, target.Y, target.Z);
+            }
+            else
+            {
+                var orderWCId = PlayerSpawnLocation.Value.OrderFeedZoneId;
+                // Closest WC
+                var wc = BattleFrontService.GetWarcampEntrance((ushort) orderWCId, player.Realm);
+                var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)orderWCId), (ushort)wc.X, (ushort)wc.Y, (ushort)wc.Z);
+                return new SpawnPoint((ushort) orderWCId, target.X, target.Y, target.Z);
+            }
 
             //if (Fortress)
             //{
