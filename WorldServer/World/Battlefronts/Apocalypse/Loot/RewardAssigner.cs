@@ -77,7 +77,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             List<LootBagTypeDefinition> bagDefinitions)
         {
             // Select the highest contribution players for bag assignment - those eligible (either realm). These are sorted in eligibility order.
-            var eligiblePlayers = contributionManager.GetEligiblePlayers(numberOfBagsToAward).ToList();
+            var eligiblePlayers = contributionManager.GetEligiblePlayers(numberOfBagsToAward).Reverse().ToList();
             RewardLogger.Debug($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBagsToAward} Bags");
             // Get the character Ids of the eligible characters
             var eligiblePlayerCharacterIds = eligiblePlayers.Select(x => x.Key).ToList();

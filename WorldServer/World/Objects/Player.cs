@@ -4417,7 +4417,7 @@ namespace WorldServer.World.Objects
 
             var spawnPoint = WorldMgr.GetZoneRespawn(Zone.ZoneId, (byte)Realm, this);
             _logger.Debug($"Respawning player {this.Name} in Zone {spawnPoint.ToString()}");
-            SendClientMessage($"DEBUG ONLY : Respawning player {this.Name} in Zone {spawnPoint.ToString()}");
+           // SendClientMessage($"DEBUG ONLY : Respawning player {this.Name} in Zone {spawnPoint.ToString()}");
             if (spawnPoint != null)
             {
 

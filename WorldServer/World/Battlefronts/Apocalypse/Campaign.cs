@@ -1347,7 +1347,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             ActiveBattleFrontStatus.OrderRealmCaptain = null;
             BattleFrontManager.BountyManagerInstance.BountyDictionary.Clear();
             SiegeManager.DestroyAllSiege();
-            BattlefrontLogger.Debug($"Contribution and Bounty Dictionaries cleared");
+            // Remove rvr player contribution.
+            SavePlayerContribution();
+
+            BattlefrontLogger.Debug($"RVR Player Contribution, Contribution and Bounty Dictionaries cleared");
         }
 
         /// <summary>

@@ -4748,9 +4748,27 @@ namespace WorldServer.Managers.Commands
 
                 var status = WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ActiveBattleFrontStatus;
 
-                status.SetAsRealmCaptain((Player)playerTarget);
+                foreach (var player in Player._Players)
+                {
+                    player.EffectStates.Clear();
+                }
 
-                RealmCaptainManager.MarkPlayerAsRealmCaptain((Player)playerTarget, Player._Players, 1);
+                if (status.OrderRealmCaptain == playerTarget)
+                {
+                    status.RemoveAsRealmCaptain((Player) playerTarget);
+                    RealmCaptainManager.MarkPlayerAsRealmCaptain((Player) playerTarget, Player._Players, 0);
+                }
+
+                if (status.DestructionRealmCaptain == playerTarget)
+                {
+                    status.RemoveAsRealmCaptain((Player) playerTarget);
+                    RealmCaptainManager.MarkPlayerAsRealmCaptain((Player) playerTarget, Player._Players, 0);
+                }
+
+                status.SetAsRealmCaptain((Player) playerTarget);
+
+                RealmCaptainManager.MarkPlayerAsRealmCaptain((Player) playerTarget, Player._Players, 1);
+
             }
 
             return true;

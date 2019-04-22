@@ -346,8 +346,14 @@ namespace WorldServer.Managers.Commands
 
             plr.SendClientMessage($"  Campaign Status : \t {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierCampaignManager.ActiveBattleFront.RegionId, false).Campaign.GetBattleFrontStatus()}");
 
+            plr.SendClientMessage($"  Order RC : \t {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierCampaignManager.ActiveBattleFront.RegionId, false).Campaign.ActiveBattleFrontStatus.OrderRealmCaptain?.Name}");
+            plr.SendClientMessage($"  Dest RC : \t {WorldMgr.GetRegion((ushort)WorldMgr.UpperTierCampaignManager.ActiveBattleFront.RegionId, false).Campaign.ActiveBattleFrontStatus.DestructionRealmCaptain?.Name}");
+
             foreach (var flag in plr.Region.Campaign.Objectives)
                 plr.SendClientMessage($"{flag.ToString()}");
+
+
+
         }
 
 

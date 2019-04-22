@@ -13,6 +13,7 @@ using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Map;
 using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -21,8 +22,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static int MARK_PLAYER_REALM_CAPTAIN = 1;
         public static int UNMARK_PLAYER_REALM_CAPTAIN = 0;
         public static int REALM_CAPTAIN_TELL_CHANCE = 100;
-        public static int REALM_CAPTAIN_MINIMUM_CONTRIBUTION = 50;
-        public static int REALM_CAPTAIN_MINIMUM_PLAYERS = 5;
+        public static int REALM_CAPTAIN_MINIMUM_CONTRIBUTION = 10;
+        public static int REALM_CAPTAIN_MINIMUM_PLAYERS = 1;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -51,8 +52,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         REALM_CAPTAIN_MINIMUM_CONTRIBUTION, zonePlayers);
 
 
-                    MarkPlayerAsRealmCaptain(status.DestructionRealmCaptain, zonePlayers, UNMARK_PLAYER_REALM_CAPTAIN);
-                    MarkPlayerAsRealmCaptain(status.OrderRealmCaptain, zonePlayers, UNMARK_PLAYER_REALM_CAPTAIN);
+                    MarkPlayerAsRealmCaptain(status.DestructionRealmCaptain, Player._Players, UNMARK_PLAYER_REALM_CAPTAIN);
+                    MarkPlayerAsRealmCaptain(status.OrderRealmCaptain, Player._Players, UNMARK_PLAYER_REALM_CAPTAIN);
 
                     status.RemoveAsRealmCaptain(status.DestructionRealmCaptain);
                     status.RemoveAsRealmCaptain(status.OrderRealmCaptain);
@@ -123,6 +124,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 //announce.DispatchPacket(Out, true);
                 player.SendMeTo(announce);
             }
+
+            var Out = new PacketOut((byte)Opcodes.F_OBJECT_EFFECT_STATE);
+
+            Out.WriteUInt16(player.Oid);
+            Out.WriteByte(1);
+            Out.WriteByte((byte)ObjectEffectState.OBJECTEFFECTSTATE_CARRYING_BANNER);
+            Out.WriteByte((byte)(upDown));
+            Out.WriteByte(0);
+
+            player.DispatchPacket(Out, true);
         }
 
 

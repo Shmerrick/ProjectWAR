@@ -520,7 +520,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             RewardLogger.Info(logMessage);
 
-            killer.SendClientMessage(logMessage);
+           
         }
 
         /// <summary>
