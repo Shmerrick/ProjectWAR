@@ -77,8 +77,11 @@ namespace WorldServer.World.Interfaces
             }
             else
             {
-                if (_unit.WaypointGUID != 0) // Conflicting with load from KeepNPCCreature
-                    this.Waypoints = WaypointService.GetNpcWaypoints(_unit.WaypointGUID);
+                if (_unit is Creature)
+                {
+                    if ((_unit as Creature).Spawn !=null)
+                        this.Waypoints = WaypointService.GetNpcWaypoints((_unit as Creature).Spawn.Guid);
+                }
             }
 
 
