@@ -66,7 +66,7 @@ namespace WorldServer.Managers
         public static LowerTierCampaignManager LowerTierCampaignManager;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public static RewardDistributor RewardDistributor;
-        public static RVRArea RVRArea;
+        public static RVRArea RVRArea = new RVRArea();
 
 
         //Log.Success("StartingPairing: ", StartingPairing.ToString());
