@@ -14,6 +14,7 @@ using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Objects;
 using WorldServer.World.Objects.PublicQuests;
 using WorldServer.World.Positions;
+using WorldServer.World.Scenarios.Objects;
 using Item = WorldServer.World.Objects.Item;
 using Object = WorldServer.World.Objects.Object;
 
@@ -79,8 +80,16 @@ namespace WorldServer.World.Interfaces
             {
                 if (_unit is Creature)
                 {
-                    if ((_unit as Creature).Spawn !=null)
-                        this.Waypoints = WaypointService.GetNpcWaypoints((_unit as Creature).Spawn.Guid);
+                    if ((_unit as Creature).Spawn != null)
+                    {
+                        if (_unit is GuardCreature)
+                        {
+                        }
+                        else
+                        {
+                            this.Waypoints = WaypointService.GetNpcWaypoints((_unit as Creature).Spawn.Guid);
+                        }
+                    }
                 }
             }
 

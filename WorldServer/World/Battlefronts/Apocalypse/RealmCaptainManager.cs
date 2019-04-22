@@ -22,8 +22,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static int MARK_PLAYER_REALM_CAPTAIN = 1;
         public static int UNMARK_PLAYER_REALM_CAPTAIN = 0;
         public static int REALM_CAPTAIN_TELL_CHANCE = 100;
-        public static int REALM_CAPTAIN_MINIMUM_CONTRIBUTION = 10;
-        public static int REALM_CAPTAIN_MINIMUM_PLAYERS = 1;
+        public static int REALM_CAPTAIN_MINIMUM_CONTRIBUTION = 100;
+        public static int REALM_CAPTAIN_MINIMUM_PLAYERS = 20;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
