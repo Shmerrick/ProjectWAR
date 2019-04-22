@@ -23,11 +23,26 @@ namespace WorldServer.World.Objects
 
         public SpawnPoint(Zone_Respawn respawn)
         {
-            Point3D world = ZoneService.GetWorldPosition(
-                ZoneService.GetZone_Info(
-                    (ushort)respawn.ZoneID), respawn.PinX, respawn.PinY, respawn.PinZ);
+            Point3D world;
 
-            ZoneId = (ushort) respawn.ZoneID;
+            if (respawn.InZoneID != 0)
+            {
+                 world = ZoneService.GetWorldPosition(
+                    ZoneService.GetZone_Info(
+                        (ushort)respawn.InZoneID), respawn.PinX, respawn.PinY, respawn.PinZ);
+                 ZoneId = (ushort) respawn.InZoneID;
+
+            }
+            else
+            {
+                 world = ZoneService.GetWorldPosition(
+                    ZoneService.GetZone_Info(
+                        (ushort)respawn.ZoneID), respawn.PinX, respawn.PinY, respawn.PinZ);
+                 ZoneId = (ushort) respawn.ZoneID;
+            }
+
+
+            
             X = world.X;
             Y = world.Y;
             Z = world.Z;

@@ -4421,14 +4421,7 @@ namespace WorldServer.World.Objects
             if (spawnPoint != null)
             {
 
-                if (ZoneId == spawnPoint.ZoneId)
-                {
-                    Teleport((ushort)spawnPoint.ZoneId, (uint)spawnPoint.X, (uint)spawnPoint.Y, (ushort)spawnPoint.Z, Heading);
-                }
-                else
-                {
-                    IntraRegionTeleport((uint)spawnPoint.X, (uint)spawnPoint.Y, (ushort)spawnPoint.Z, Heading);
-                }
+                Teleport((ushort)spawnPoint.ZoneId, (uint)spawnPoint.X, (uint)spawnPoint.Y, (ushort)spawnPoint.Z, Heading);
             }
             else
             {

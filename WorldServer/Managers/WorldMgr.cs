@@ -253,7 +253,7 @@ namespace WorldServer.Managers
             uint VLvl = victim.AdjustedLevel;
 
             if (KLvl > VLvl + 8)
-                return 0;
+                    return 0;
 
             uint XP = VLvl * 100;
 
