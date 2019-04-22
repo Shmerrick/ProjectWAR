@@ -718,13 +718,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 if (plr != null)
                 {
                     plr.SendPacket(Out);
-                    BattlefrontLogger.Debug("Sending State to Player", "Player: " + plr.Name + ", BattlefieldObjective: " + Name);
+                    
                 }
                 else
                     foreach (var player in Region.Players)
                     {
                         player.SendPacket(Out); // Objective's state
-                        BattlefrontLogger.Debug("Sending State to Player", "Player: " + player.Name + ", BattlefieldObjective: " + Name);
+                        
 
                         if (string.IsNullOrEmpty(message) || !player.CbtInterface.IsPvp)
                             continue;
@@ -732,7 +732,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         // Notify RvR flagged players of activity
                         player.SendLocalizeString(message, ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
                         player.SendLocalizeString(message, largeFilter, Localized_text.CHAT_TAG_DEFAULT);
-                        BattlefrontLogger.Debug("Sending Activity to RVR-Player", "Player: " + player.Name + ", BattlefieldObjective: " + Name + "Message: " + message);
+                        
                         if (snd != null)
                             player.SendPacket(snd);
                     }
