@@ -251,6 +251,9 @@ namespace WorldServer.World.Battlefronts.Keeps
             if (IsFortress())
             {
                 FortDefenceCounter++;
+
+                this.Region.ApocCommunications.Broadcast($"Fort defence {(FortDefenceCounter*100)/4}%", 4);
+
                 if (FortDefenceCounter >= DEFENCE_LOCK_COUNT)
                 {
                     //if (this.Info.Realm == (int) Realms.REALMS_REALM_ORDER)
