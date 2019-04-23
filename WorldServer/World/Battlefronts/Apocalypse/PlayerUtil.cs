@@ -82,11 +82,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public static void UpdateHonorRankAllPlayers(bool announce)
         {
-            foreach (var player in CharMgr.Chars)
-            {
-                if (player.Value.HonorPoints < 10)
-                    continue;
+            var eligiblePlayers = CharMgr.Chars.Where(x => x.Value.HonorPoints >= 10);
 
+            foreach (var player in eligiblePlayers)
+            {
+               
                 try
                 {
                     var currentHonorPoints = player.Value.HonorPoints;
