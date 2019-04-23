@@ -298,7 +298,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             Player destructionRealmCaptain = null;
             Player orderRealmCaptain = null;
             // Return ordered (contrib descending) list of Eligible Players
-            var eligiblePlayers = GetEligiblePlayers(0).Take(20).Reverse();
+            var eligiblePlayers = GetEligiblePlayers(0).Reverse();
             lock (eligiblePlayers)
             {
                 foreach (var eligiblePlayer in eligiblePlayers)

@@ -950,7 +950,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             if (pctHealth == 0)
                 DefenceTickTimer.Start();
 
-            ProgressionLogger.Debug($"{Info.Name} : Keep NPC Attacked");
+            ProgressionLogger.Trace($"{Info.Name} : Keep NPC Attacked");
         }
 
         public void OnOuterDoorAttacked(byte pctHealth, uint doorId)
@@ -1632,7 +1632,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public void OnKeepSiegeAttacked(byte pctHealth)
         {
-            ProgressionLogger.Debug($"Keep Siege Attacked {pctHealth}");
+            ProgressionLogger.Debug($"Keep Siege Attacked {pctHealth}% health");
         }
 
 

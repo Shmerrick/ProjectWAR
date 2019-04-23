@@ -904,7 +904,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     // Which battlefrontId?
                     var battleFrontId = BattleFrontManager.ActiveBattleFront.BattleFrontId;
-
+                    BattlefrontLogger.Warn($"BF Id : {battleFrontId}");
                     try
                     {
                         if (plr.Realm == Realms.REALMS_REALM_ORDER)
@@ -920,7 +920,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     }
                     catch (Exception ex)
                     {
-                        BattlefrontLogger.Debug($"Error adding {plr.Name} to PopulationList");
+                        BattlefrontLogger.Debug($"{OrderPlayerPopulationList.Count} {DestructionPlayerPopulationList.Count}");
+                        BattlefrontLogger.Debug($"Error adding {plr.Name} to PopulationList. ");
                         BattlefrontLogger.Warn($"{ex.Message}");
                     }
 
@@ -1117,12 +1118,41 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 winningRealmPlayers = eligibilitySplits.Item2;
                 losingRealmPlayers = eligibilitySplits.Item3;
 
-                var numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, allContributingPlayers);
+                var fortZones = new List<int> {4, 10, 104, 110, 210};
+                var numberOfBagsToAward = 0;
+
+                if (fortZones.Contains(ActiveBattleFrontStatus.ZoneId))
+                {
+                    
+                    var x = new List<KeyValuePair<uint, int>>();
+                    foreach (var winningRealmPlayer in winningRealmPlayers)
+                    {
+                        x.Add(new KeyValuePair<uint, int>((uint)winningRealmPlayer.Key.CharacterId, winningRealmPlayer.Value));
+                    }
+
+                    foreach (var pair in x)
+                    {
+                        BattlefrontLogger.Debug($"FORT REWARDS : {pair.Key}:{pair.Value}");
+                    }
+                    numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, x);
+                }
+                else
+                {
+                    numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, allContributingPlayers);
+                }
+
+                
                 // Determine and build out the bag types to be assigned
                 var bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
 
+                BattlefrontLogger.Debug($"eligiblePlayersAllRealms Players Count = {eligiblePlayersAllRealms.Count()}");
                 BattlefrontLogger.Debug($"winningRealmPlayers Players Count = {winningRealmPlayers.Count()}");
                 BattlefrontLogger.Debug($"losingRealmPlayers Players Count = {losingRealmPlayers.Count()}");
+
+                foreach (var eligiblePlayersAllRealm in eligiblePlayersAllRealms)
+                {
+                    BattlefrontLogger.Debug($"eligible : {eligiblePlayersAllRealm.Key.Name} ({eligiblePlayersAllRealm.Key.CharacterId})");
+                }
 
                 // Distribute RR, INF, etc to contributing players TODO - Distributor
                 DistributeBaseRewards(losingRealmPlayers, winningRealmPlayers, lockingRealm, ContributionManager.MAXIMUM_CONTRIBUTION);
