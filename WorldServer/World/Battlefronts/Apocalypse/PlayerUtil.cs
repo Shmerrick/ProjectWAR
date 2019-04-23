@@ -1,9 +1,9 @@
 ﻿using GameData;
+using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using NLog;
 using WorldServer.Managers;
 using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Objects;
@@ -80,6 +80,54 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
+        public static void UpdateHonorRankAllPlayers(bool announce)
+        {
+            foreach (var player in CharMgr.Chars)
+            {
+                if (player.Value.HonorPoints < 10)
+                    continue;
+
+                try
+                {
+                    var currentHonorPoints = player.Value.HonorPoints;
+                    // Reduce honor points by X%, unless they are < 10 - in which case make it 0
+                    var newHonorPoints = 0;
+                    if (currentHonorPoints < 10)
+                        newHonorPoints = 0;
+                    else
+                        newHonorPoints = (int) (currentHonorPoints * HONOR_REDUCTION_PERCENT);
+
+                    player.Value.HonorPoints = (ushort) newHonorPoints;
+                    var oldHonorRank = player.Value.HonorRank;
+
+                    // Recalculate Honor Rank
+                    var honorLevel = new Common.HonorCalculation().GetHonorLevel((int) newHonorPoints);
+                    player.Value.HonorRank = (ushort) honorLevel;
+                    Logger.Debug(
+                        $"Updating honor for {player.Value.Name} ({player.Value.CharacterId}) New Honor Pts: {player.Value.HonorPoints} ({player.Value.HonorRank}) ");
+                    
+                    CharMgr.Database.SaveObject(player.Value);
+
+                    if (announce)
+                    {
+                        if (honorLevel > oldHonorRank)
+                        {
+                            var playerToAnnounce = Player.GetPlayer((uint) player.Value.CharacterId);
+                            if (playerToAnnounce.CharacterId == player.Value.CharacterId)
+                            {
+                                playerToAnnounce.SendClientMessage($"You have reached Honor Rank {honorLevel}");
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Error($"{e.Message} {e.StackTrace}");
+                }
+            }
+
+        }
+
         /// <summary>
         /// Given contributing players and their contributions, split out the eligible, the contributing winning realm and contributing losing realm players.
         /// </summary>
@@ -109,28 +157,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         // Update the Honor Points of the Contributing Players
                         Logger.Debug($"Updating honor for {player.Info.Name} ({player.Info.CharacterId}) current honor : {player.Info.HonorPoints} ({player.Info.HonorRank})");
                         player.Info.HonorPoints += (ushort)contributingPlayer.Value;
-                        
-                        try
-                        {
-                            var currentHonorPoints = player.Info.HonorPoints;
-                            // Reduce honor points by X%, unless they are < 10 - in which case make it 0
-                            var newHonorPoints = 0;
-                            if (currentHonorPoints < 10)
-                                newHonorPoints = 0;
-                            else
-                                newHonorPoints = (int)(currentHonorPoints * HONOR_REDUCTION_PERCENT);
-
-                            // Recalculate Honor Rank
-                            var honorLevel = new Common.HonorCalculation().GetHonorLevel((int)newHonorPoints);
-                            player.Info.HonorRank = (ushort) honorLevel;
-                            Logger.Debug($"Updating honor for {player.Info.Name} ({player.Info.CharacterId}) new honor {player.Info.HonorPoints} ({player.Info.HonorRank}) ");
-                            CharMgr.Database.SaveObject(player.Info);
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.Error($"{e.Message} {e.StackTrace}");
-                        }
-
+                        Logger.Debug($"Updating honor for {player.Info.Name} ({player.Info.CharacterId}) new honor : {player.Info.HonorPoints} ({player.Info.HonorRank})");
                         CharMgr.Database.SaveObject(player.Info);
                     }
 
@@ -156,6 +183,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 }
             }
+            // Update and inform players of change in Honor Rank.
+            UpdateHonorRankAllPlayers(false);
 
             return new Tuple<ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>>(allEligiblePlayerDictionary, winningRealmPlayers, losingRealmPlayers);
 
