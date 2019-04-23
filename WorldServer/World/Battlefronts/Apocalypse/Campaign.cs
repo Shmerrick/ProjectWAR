@@ -1180,10 +1180,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         if (reward.Assignee != 0)
                         {
                             BattlefrontLogger.Debug($"Assigning reward to {reward.Assignee} {reward.BagRarity}");
-                            KeyValuePair<Player, int> player;
+                            Player assignedPlayer;
                             try
                             {
-                                player = eligiblePlayersAllRealms.Single(x => x.Key.CharacterId == reward.Assignee);
+                                assignedPlayer = Player.GetPlayer(reward.Assignee);
+                                //player = eligiblePlayersAllRealms.Single(x => x.Key.CharacterId == reward.Assignee);
                             }
                             catch (Exception e)
                             {
@@ -1192,30 +1193,30 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             }
 
 
-                            var playerItemList = (from item in player.Key.ItmInterface.Items where item != null select item.Info.Entry).ToList();
-                            var playerRenown = player.Key.CurrentRenown.Level;
-                            var playerClass = player.Key.Info.CareerLine;
+                            var playerItemList = (from item in assignedPlayer.ItmInterface.Items where item != null select item.Info.Entry).ToList();
+                            var playerRenown = assignedPlayer.CurrentRenown.Level;
+                            var playerClass = assignedPlayer.Info.CareerLine;
                             var playerRenownBand = _rewardManager.CalculateRenownBand(playerRenown);
 
                             var lootDefinition = bagContentSelector.SelectBagContentForPlayer(reward, playerRenownBand, playerClass, playerItemList.ToList(), true);
                             BattlefrontLogger.Debug($"Award to be handed out : {lootDefinition.ToString()}");
                             if (lootDefinition.IsValid())
                             {
-                                BattlefrontLogger.Debug($"{player.Key.Info.Name} has received {lootDefinition.FormattedString()}");
+                                BattlefrontLogger.Debug($"{assignedPlayer.Info.Name} has received {lootDefinition.FormattedString()}");
                                 BattlefrontLogger.Debug($"{lootDefinition.ToString()}");
                                 // Only distribute if loot is valid
-                                var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(lootDefinition, player.Key);
-                                switch (player.Key.Realm)
+                                var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(lootDefinition, assignedPlayer);
+                                switch (assignedPlayer.Realm)
                                 {
                                     case Realms.REALMS_REALM_DESTRUCTION:
                                         {
                                             if (destructionLootChest == null)
                                             {
-                                                MailLootBag(player.Key.CharacterId, generatedLootBag);
+                                                MailLootBag(assignedPlayer.CharacterId, generatedLootBag);
                                             }
                                             else
                                             {
-                                                destructionLootChest?.Add(player.Key.CharacterId, generatedLootBag);
+                                                destructionLootChest?.Add(assignedPlayer.CharacterId, generatedLootBag);
                                             }
 
                                             break;
@@ -1224,23 +1225,23 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                     {
                                         if (orderLootChest == null)
                                         {
-                                            MailLootBag(player.Key.CharacterId, generatedLootBag);
+                                            MailLootBag(assignedPlayer.CharacterId, generatedLootBag);
                                         }
                                         else
                                         {
-                                            orderLootChest?.Add(player.Key.CharacterId, generatedLootBag);
+                                            orderLootChest?.Add(assignedPlayer.CharacterId, generatedLootBag);
                                         }
 
                                         break;
                                     }
                                 }
 
-                                player.Key.SendClientMessage($"For your efforts, you have received a {generatedLootBag.Key.Name}. Pick up your rewards at your Warcamp.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+                                assignedPlayer.SendClientMessage($"For your efforts, you have received a {generatedLootBag.Key.Name}. Pick up your rewards at your Warcamp.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
                             }
                             else
                             {
-                                BattlefrontLogger.Debug($"{player.Key.Info.Name} has received [INVALID for Player] {lootDefinition.FormattedString()}");
+                                BattlefrontLogger.Debug($"{assignedPlayer.Info.Name} has received [INVALID for Player] {lootDefinition.FormattedString()}");
                             }
 
                         }
