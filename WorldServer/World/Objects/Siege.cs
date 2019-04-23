@@ -637,7 +637,27 @@ namespace WorldServer.World.Objects
         public override void Destroy()
         {
             //_logger.Debug($"Destroying Siege {this.Name}. SiegeManager : {this.Region.Campaign.SiegeManager.ToString()}");
-            //this.Region.Campaign?.SiegeManager?.Remove(this, this.SiegeInterface.Creator.Realm);
+            try
+            {
+                if (this.SiegeInterface == null)
+                    _logger.Debug($"SiegeIntf null");
+
+                if (this.SiegeInterface.Creator == null)
+                    _logger.Debug($"SiegeIntf.Creator null");
+
+                if (this.Region.Campaign == null)
+                    _logger.Debug($"this.Region.Campaign null");
+
+                if (this.Region.Campaign.SiegeManager == null)
+                    _logger.Debug($"this.Region.Campaign.SiegeManager null");
+
+                this.Region.Campaign?.SiegeManager?.Remove(this, this.SiegeInterface.Creator.Realm);
+            }
+            catch (Exception e)
+            {
+                _logger.Debug($"{e.Message}{e.StackTrace}");
+            }
+            
             PendingDisposal = true;
         }
 

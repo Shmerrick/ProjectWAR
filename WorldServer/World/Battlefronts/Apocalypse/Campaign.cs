@@ -1395,6 +1395,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             ActiveBattleFrontStatus.OrderRealmCaptain = null;
             BattleFrontManager.BountyManagerInstance.BountyDictionary.Clear();
             SiegeManager.DestroyAllSiege();
+            SiegeManager = new SiegeManager();  //HACK TODO : fix
             // Remove rvr player contribution.
             SavePlayerContribution();
 
