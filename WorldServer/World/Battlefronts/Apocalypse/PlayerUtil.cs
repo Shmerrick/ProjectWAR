@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using WorldServer.Managers;
 using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Objects;
@@ -11,6 +12,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public static class PlayerUtil
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        public static readonly float HONOR_REDUCTION_PERCENT = 0.98f;
+
         public static int GetTotalPVPPlayerCountInRegion(int regionId)
         {
             lock (Player._Players)
@@ -103,7 +107,30 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (updateHonor)
                     {
                         // Update the Honor Points of the Contributing Players
+                        Logger.Debug($"Updating honor for {player.Info.Name} ({player.Info.CharacterId}) current honor : {player.Info.HonorPoints} ({player.Info.HonorRank})");
                         player.Info.HonorPoints += (ushort)contributingPlayer.Value;
+                        
+                        try
+                        {
+                            var currentHonorPoints = player.Info.HonorPoints;
+                            // Reduce honor points by X%, unless they are < 10 - in which case make it 0
+                            var newHonorPoints = 0;
+                            if (currentHonorPoints < 10)
+                                newHonorPoints = 0;
+                            else
+                                newHonorPoints = (int)(currentHonorPoints * HONOR_REDUCTION_PERCENT);
+
+                            // Recalculate Honor Rank
+                            var honorLevel = new Common.HonorCalculation().GetHonorLevel((int)newHonorPoints);
+                            player.Info.HonorRank = (ushort) honorLevel;
+                            Logger.Debug($"Updating honor for {player.Info.Name} ({player.Info.CharacterId}) new honor {player.Info.HonorPoints} ({player.Info.HonorRank}) ");
+                            CharMgr.Database.SaveObject(player.Info);
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.Error($"{e.Message} {e.StackTrace}");
+                        }
+
                         CharMgr.Database.SaveObject(player.Info);
                     }
 

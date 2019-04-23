@@ -1123,7 +1123,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 if (fortZones.Contains(ActiveBattleFrontStatus.ZoneId))
                 {
-                    
                     var x = new List<KeyValuePair<uint, int>>();
                     foreach (var winningRealmPlayer in winningRealmPlayers)
                     {
