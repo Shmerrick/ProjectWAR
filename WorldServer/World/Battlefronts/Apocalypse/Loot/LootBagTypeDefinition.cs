@@ -52,8 +52,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             var result = new List<LootBagTypeDefinition>();
 
             var numberGoldBags = ((uint)Math.Floor((numberLootBags / 10.0)));
-            var numberPurpledBags = ((uint)Math.Floor((numberLootBags / 10.0)));
-            var numberBlueBags = ((uint)Math.Floor((numberLootBags / 4.0)));
+            var numberPurpleBags = ((uint)Math.Floor((numberLootBags / 10.0)));
+            var numberBlueBags = ((uint)Math.Floor((numberLootBags / 3.0)));
             var numberGreenBags = ((uint)Math.Floor((numberLootBags / 2.0)));
 
             byte lootBagNumber = 0;
@@ -62,7 +62,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             {
                 result.Add(new LootBagTypeDefinition { LootBagNumber= lootBagNumber++, Assignee = 0, BagRarity = LootBagRarity.Gold });
             }
-            for (byte i = 0; i < numberPurpledBags; i++)
+            for (byte i = 0; i < numberPurpleBags; i++)
             {
                 result.Add(new LootBagTypeDefinition { LootBagNumber = lootBagNumber++, Assignee = 0, BagRarity = LootBagRarity.Purple });
             }

@@ -212,7 +212,9 @@ namespace WorldServer.Managers.Commands
                 cd.TryAdd(plr.CharacterId, listPlayerContributions);
                 var cm = new ContributionManager(cd, BountyService._ContributionDefinitions);
 
-                var rewardAssignments = rewardAssigner.AssignLootToPlayers(cm, numberBags, new List<LootBagTypeDefinition> { lootBagTypeDefinition });
+                var eligPlayer = new List<KeyValuePair<uint, int>>();
+                eligPlayer.Add(new KeyValuePair<uint, int>(plr.CharacterId, 10));
+                var rewardAssignments = rewardAssigner.AssignLootToPlayers(cm, numberBags, new List<LootBagTypeDefinition> { lootBagTypeDefinition }, eligPlayer);
 
                 var bagContentSelector = new BagContentSelector(RVRZoneRewardService.RVRRewardKeepItems, StaticRandom.Instance);
 
