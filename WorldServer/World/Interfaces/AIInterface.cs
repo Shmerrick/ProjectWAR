@@ -82,7 +82,7 @@ namespace WorldServer.World.Interfaces
                 {
                     if ((_unit as Creature).Spawn != null)
                     {
-                        if (_unit is GuardCreature)
+                        if ((_unit is GuardCreature) ||(_unit is Siege) || (_unit is Pet))
                         {
                         }
                         else
