@@ -4167,14 +4167,8 @@ namespace WorldServer.World.Objects
                     _recentLooters.Add(killer.CharacterId, TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL);
                 else _recentLooters[killer.CharacterId] = TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL;
 
-                //HandleXPRenown(killer, rewardScale);
-                //GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, rewardScale);
-                //var bonusVP = Math.Floor(this.BaseBountyValue / 10f);
-
-               
-
                 killer.Region.Campaign.VictoryPointProgress.AddPlayerKill(killer.Realm);
-                //killer.SendClientMessage($"+2 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
+                killer.SendClientMessage($"+2 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
             }
 
             #endregion

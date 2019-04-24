@@ -540,6 +540,8 @@ namespace WorldServer.World.Battlefronts.Bounty
             ushort crests = (ushort)StaticRandom.Instance.Next(10);
 
             killer.SendClientMessage($"Awarded {crests} Crest(s) to " + killer.Name + " for killing realm captain");
+            killer.SendClientMessage($"Awarded {REALM_CAPTAIN_RENOWN_KILL} RR {REALM_CAPTAIN_INFLUENCE_KILL} INF to " + killer.Name + " for killing realm captain");
+            killer.SendClientMessage($"You have been awarded additional contribution in assisting with the downfall of the enemy");
             RewardLogger.Trace($"Awarded {crests} Crest(s) to " + killer.Name + " for killing realm captain");
             killer.ItmInterface.CreateItem(208470, crests);
 
