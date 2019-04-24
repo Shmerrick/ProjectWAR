@@ -104,7 +104,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     var honorLevel = new Common.HonorCalculation().GetHonorLevel((int) newHonorPoints);
                     player.Value.HonorRank = (ushort) honorLevel;
                     Logger.Debug(
-                        $"Updating honor for {player.Value.Name} ({player.Value.CharacterId}) New Honor Pts: {player.Value.HonorPoints} ({player.Value.HonorRank}) ");
+                        $"Updating honor for {player.Value.Name} ({player.Value.CharacterId}) Current / New Honor Pts: {currentHonorPoints} / {player.Value.HonorPoints} ({player.Value.HonorRank}) ");
                     
                     CharMgr.Database.SaveObject(player.Value);
 
