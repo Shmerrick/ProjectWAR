@@ -24,18 +24,6 @@ namespace Common.Database.World.Battlefront
         public int DestWinProgression { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public int OrderWinReward { get; set; }
-
-        [DataElement(AllowDbNull = false)]
-        public int DestWinReward { get; set; }
-
-        [DataElement(AllowDbNull = false)]
-        public int OrderLossReward { get; set; }
-
-        [DataElement(AllowDbNull = false)]
-        public int DestLossReward { get; set; }
-
-        [DataElement(AllowDbNull = false)]
         public string Description { get; set; }
 
         [DataElement(AllowDbNull = false)]

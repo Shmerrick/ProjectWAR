@@ -1,14 +1,20 @@
-﻿using Common;
-using FrameWork;
-using System;
+﻿using System;
 using SystemData;
+using Common;
+using FrameWork;
 using GameData;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities
 {
     public static class CombatManager
     {
+
+
         #region Defense
         public static bool CheckDefense(AbilityCommandInfo cmdInfo, Unit caster, Unit target, bool isAoE)
         {
@@ -979,6 +985,7 @@ namespace WorldServer
 
         private const float OFFHAND_DAMAGE_PEN = 0.9f;
         private const float OFFHAND_STAT_COEFF = 0.05f;
+        private const int HEAL_CONTRIBUTION_CHANCE = 8;
 
         public static void InflictDamage(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target)
         {
@@ -1238,6 +1245,16 @@ namespace WorldServer
                 {
                     damageInfo.Damage = (caster.ItmInterface.GetWeaponDamage(slot)) * damageInfo.CastTimeDamageMult;
                 }
+
+                //TODO : REMOVE BEFORE PRODUCTION
+                if (target is Player)
+                {
+                    if (target.Name.Contains("Ikthaleon"))
+                    {
+                        damageInfo.Damage *= 0.05f;
+                    }
+                }
+
 
                 if (damageInfo.StatUsed > 0)
                 {
@@ -1577,9 +1594,13 @@ namespace WorldServer
             #endregion
         }
 
-        public static void InflictGuardDamage(Unit attacker, Player receiver, ushort entry, AbilityDamageInfo originalDamage)
+        public static void InflictGuardDamage(Unit attacker, Player receiver, ushort entry, AbilityDamageInfo originalDamage, float casterDamageSplitFactor)
         {
             AbilityDamageInfo tempDmg = new AbilityDamageInfo { Entry = 0, Damage = originalDamage.Damage };
+
+            tempDmg.Damage *= casterDamageSplitFactor;
+            tempDmg.Mitigation *= casterDamageSplitFactor;
+
             byte defenseEvent = 0;
 
             receiver.CbtInterface.RefreshCombatTimer();
@@ -1805,6 +1826,12 @@ namespace WorldServer
 
             if (pointsHealed == -1)
                 return;
+
+            if (pointsHealed > 0)
+            {
+                if (StaticRandom.Instance.Next(100) < HEAL_CONTRIBUTION_CHANCE)
+                 (caster as Player)?.UpdatePlayerBountyEvent((byte) ContributionDefinitions.GENERAL_HEALING);
+            }
 
             damageInfo.Mitigation = damageInfo.Damage - pointsHealed;
             damageInfo.Damage = pointsHealed;

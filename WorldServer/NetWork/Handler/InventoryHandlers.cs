@@ -1,12 +1,21 @@
-﻿using FrameWork;
-using GameData;
+﻿using System.Linq;
 using SystemData;
-using WorldServer.World.BattleFronts.Keeps;
+using FrameWork;
+using GameData;
+using NLog;
+using WorldServer.Managers;
+using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using Item = WorldServer.World.Objects.Item;
 
-namespace WorldServer
+namespace WorldServer.NetWork.Handler
 {
     public class InventoryHandlers : IPacketHandler
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_BAG_INFO, (int)eClientState.Playing, "onBagInfo")]
         public static void F_BAG_INFO(BaseClient client, PacketIn packet)
         {
@@ -152,6 +161,16 @@ namespace WorldServer
                 Plr.ItmInterface.DeleteItem(slot, 1);
             }
 
+            // Honor rewards
+            var honorReward = HonorService.HonorRewards.SingleOrDefault(x => x.ItemId == item.Info.Entry);
+            if (honorReward !=null)
+            {
+                if (Plr.Info.HonorRank < honorReward.HonorRank)
+                {
+                    Plr.SendClientMessage("You can no longer use this item, as you do not have a high enough Honor Rank.");
+                    return;
+                }
+            }
 
             if ((item.Info.Entry == 208477) || (item.Info.Entry == 208474))
             {
@@ -159,10 +178,10 @@ namespace WorldServer
                 Plr.ItmInterface.DeleteItem(slot, 1);
             }
 
-
+            // Oil
             if (item.Info.Entry == 86203 || item.Info.Entry == 86207 || item.Info.Entry == 86211 || item.Info.Entry == 86215 || item.Info.Entry == 86219 || item.Info.Entry == 86223) // siege oil
             {
-                Keep keep = Plr.Region.Campaign.GetClosestKeep(Plr.WorldPosition);
+                BattleFrontKeep keep = Plr.Region.Campaign.GetClosestFriendlyKeep(Plr.WorldPosition, Plr.Realm);
 
                 if (keep.Realm == Plr.Realm)
                     keep.SpawnOil(Plr, slot);
@@ -188,7 +207,7 @@ namespace WorldServer
 
             // Banner hack for standards.
             if (item.ModelId >= 6188 && item.ModelId < 6194)
-                Plr.Standard(item.Info.SpellId);
+                Plr.Standard(item.Info.SpellId, true);
 
             if (item.Info.Crafts.Length > 0 && CraftingApoInterface.GetCraft(5, item.Info.Crafts) == 4 && (CraftingApoInterface.GetCraft(8, item.Info.Crafts) < 5 || CraftingApoInterface.GetCraft(8, item.Info.Crafts) == 18))
                 CultivationInterface.ReapResin(Plr, slot);
@@ -227,18 +246,23 @@ namespace WorldServer
             if (item.Info.SpellId == 0)
                 return;
 
-            var ramDeployedBeforeCast = false;
-            var ramDeployedAfterCast = false;
+            var numberSiegeTypeBeforeCast = 0;
+            var numberSiegeTypeAfterCast = 0;
+            var siegeType = Siege.GetSiegeType(item.Info.Entry);
+
             if (item.Info.IsSiege)
             {
-                // Get the closest, friendly keep
-                var closestFriendlyKeep = Plr.Region.Campaign.GetClosestFriendlyKeep(Plr.WorldPosition, Plr.Realm);
-                if (closestFriendlyKeep != null)
+                if (siegeType == null)
                 {
-                    ramDeployedBeforeCast = closestFriendlyKeep.IsRamDeployed();
+                    _logger.Warn($"Could not locate SiegeType for {item.Info.Entry}");
+                    return;
+                }
+
+                if (item.Info.IsSiege)
+                {
+                    numberSiegeTypeBeforeCast = Plr.Region.Campaign.SiegeManager.GetNumberByType(siegeType.Value, Plr.Realm);
                 }
             }
-
 
             #region Ability Cast
 
@@ -257,19 +281,15 @@ namespace WorldServer
             // Determine whether to remove the siege item from inventory.
             if (item.Info.IsSiege)
             {
-                // Get the closest, friendly keep - tested again to lower calculation impact for all F_USE_ITEM calls.
-                var closestFriendlyKeep = Plr.Region.Campaign.GetClosestFriendlyKeep(Plr.WorldPosition, Plr.Realm);
-                if (closestFriendlyKeep != null)
-                {
-                    ramDeployedAfterCast = closestFriendlyKeep.IsRamDeployed();
-                }
+                // If the siege exists, and the cast was not blocked or interrupted.
+                numberSiegeTypeAfterCast = Plr.Region.Campaign.SiegeManager.GetNumberByType(siegeType.Value, Plr.Realm);
 
                 if ((item.Owner as Player).CharacterId == Plr.CharacterId)
                 {
                     if (item.Info.IsValid)
                     {
                         // If there is a Ram now, but there wasnt one before, remove it from inventory
-                        if (ramDeployedAfterCast && !ramDeployedBeforeCast)
+                        if (numberSiegeTypeBeforeCast + 1 == numberSiegeTypeAfterCast)
                         {
                             Plr.ItmInterface.DeleteItem(slot, 1);
                         }

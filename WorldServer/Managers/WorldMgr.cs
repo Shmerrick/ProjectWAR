@@ -1,29 +1,39 @@
-﻿using System;
+﻿using Common;
+using Common.Database.World.Characters;
+using FrameWork;
+using GameData;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using SystemData;
-using Common;
-using Common.Database.World.Battlefront;
-using FrameWork;
-using GameData;
-using Common.Database.World.BattleFront;
-using WorldServer.World.BattleFronts.Keeps;
-using WorldServer.Scenarios;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
-using Common.Database.World.Maps;
-using NLog;
+using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
-using WorldServer.World.BattleFronts;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using WorldServer.World.Objects.Instances;
+using WorldServer.World.Positions;
+using WorldServer.World.Scenarios;
+using WorldServer.World.Scripting;
+using WorldServer.World.WorldSettings;
 using BattleFrontConstants = WorldServer.World.Battlefronts.Apocalypse.BattleFrontConstants;
+using Item = WorldServer.World.Objects.Item;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.Managers
 {
     [Service(
         typeof(AnnounceService),
         typeof(BattleFrontService),
+        typeof(BountyService),
         typeof(CellSpawnService),
         typeof(ChapterService),
         typeof(CreatureService),
@@ -35,6 +45,7 @@ namespace WorldServer
         typeof(QuestService),
         typeof(RallyPointService),
         typeof(RVRProgressionService),
+        typeof(RewardService),
         typeof(ScenarioService),
         typeof(TokService),
         typeof(VendorService),
@@ -55,6 +66,8 @@ namespace WorldServer
         public static LowerTierCampaignManager LowerTierCampaignManager;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public static RewardDistributor RewardDistributor;
+        public static RVRArea RVRArea = new RVRArea();
+
 
         //Log.Success("StartingPairing: ", StartingPairing.ToString());
 
@@ -97,114 +110,31 @@ namespace WorldServer
 
         #region Zones
 
-        public static Zone_Respawn GetZoneRespawn(ushort zoneId, byte realm, Player player)
+        public static SpawnPoint GetZoneRespawn(ushort zoneId, byte realm, Player player)
         {
-            Zone_Respawn respawn = null;
-
             if (player == null)
-                return ZoneService.GetZoneRespawn(zoneId, realm);
+            {
+                return new SpawnPoint(ZoneService.GetZoneRespawn(zoneId, realm));
+            }
 
             if (player.CurrentArea != null)
             {
-                ushort respawnId = realm == 1
-                    ? player.CurrentArea.OrderRespawnId
-                    : player.CurrentArea.DestroRespawnId;
-
-                #region Public Quest and Instances Respawns
-
-                List<Zone_Respawn> resps = new List<Zone_Respawn>();
-
-                if (player.ZoneId == 60 && player.QtsInterface.PublicQuest == null)
-                {
-                    resps = ZoneService.GetZoneRespawns(zoneId);
-                    foreach (Zone_Respawn res in resps)
-                        if (res.ZoneID == 60 && (res.RespawnID == 308 || res.RespawnID == 321))
-                            return res;
-                }
-
+                // If player is in a Public Quest
                 if (player.QtsInterface.PublicQuest != null)
                 {
-                    resps = ZoneService.GetZoneRespawns(zoneId);
-                    foreach (Zone_Respawn res in resps)
-                        if (res.Realm == 0 && res.ZoneID == zoneId && res.RespawnID == player.QtsInterface.PublicQuest.Info.RespawnID)
-                            return res;
+                    var pqRespawns = ZoneService.GetZoneRespawns(zoneId);
+                    foreach (var res in pqRespawns)
+                        if (res.Realm == 0 &&
+                            res.ZoneID == zoneId &&
+                            res.RespawnID == player.QtsInterface.PublicQuest.Info.RespawnID)
+                            return new SpawnPoint(res);
                 }
 
-                #endregion
-
-                if (respawnId > 0)
-                {
-                    Zone_Respawn resp = ZoneService.GetZoneRespawn(respawnId);
-
-                    if (!player.CurrentArea.IsRvR)
-                        return resp;
-
-                    #region RvR area respawns
-                    var front = player.Region.Campaign;
-
-                    if (front != null)
-                    {
-                        var bestDist =
-                            player.GetDistanceToWorldPoint(
-                                ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)resp.ZoneID), resp.PinX, resp.PinY, resp.PinZ));
-
-                        foreach (var keep in front.Keeps)
-                        {
-                            if (keep == null || keep.Zone == null || keep.Info == null)
-                            {
-                                Log.Error("GetZoneRespawn", "Null required Keep information");
-                                continue;
-                            }
-
-                            if (keep.Realm == player.Realm &&
-                                (keep.KeepStatus == KeepStatus.KEEPSTATUS_SAFE ||
-                                 keep.KeepStatus == KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK))
-                            {
-                                var dist = player.GetDistanceToWorldPoint(keep.WorldPosition);
-                                if (dist < bestDist)
-                                {
-                                    resp = new Zone_Respawn
-                                    {
-                                        ZoneID = keep.Zone.ZoneId,
-                                        PinX = ZoneService.CalculPin(keep.Zone.Info, keep.Info.X, true),
-                                        PinY = ZoneService.CalculPin(keep.Zone.Info, keep.Info.Y, false),
-                                        PinZ = (ushort)keep.Info.Z
-                                    };
-                                    bestDist = dist;
-                                }
-                            }
-                        }
-
-                        return resp;
-                    }
-
-                    #endregion
-                }
-            }
-
-            List<Zone_Respawn> respawns = ZoneService.GetZoneRespawns(zoneId);
-            if (zoneId == 110)
-                respawns = ZoneService.GetZoneRespawns(109);
-            if (zoneId == 104)
-                respawns = ZoneService.GetZoneRespawns(103);
-            if (zoneId == 210)
-                respawns = ZoneService.GetZoneRespawns(209);
-            if (zoneId == 204)
-                respawns = ZoneService.GetZoneRespawns(203);
-            if (zoneId == 220)
-                respawns = ZoneService.GetZoneRespawns(205);
-            if (zoneId == 10)
-                respawns = ZoneService.GetZoneRespawns(9);
-            if (zoneId == 4)
-                respawns = ZoneService.GetZoneRespawns(3);
-            if (respawns != null)
-            {
+                // Scenario respawn - random if > 1 
                 if (player.ScnInterface.Scenario != null)
                 {
-                    #region Scenario Spawns
-
+                    List<Zone_Respawn> respawns = ZoneService.GetZoneRespawns(zoneId);
                     List<Zone_Respawn> options = new List<Zone_Respawn>();
-
                     foreach (Zone_Respawn res in respawns)
                     {
                         if (res.Realm != realm)
@@ -213,13 +143,36 @@ namespace WorldServer
                         options.Add(res);
                     }
 
-                    return options.Count == 1 ? options[0] : options[StaticRandom.Instance.Next(options.Count)];
-
-                    #endregion
+                    return new SpawnPoint(options.Count == 1 ? options[0] : options[StaticRandom.Instance.Next(options.Count)]);
                 }
 
-                #region World Spawns
+                // Keep respawn.
+                if (player.CurrentKeep != null)
+                    return player.CurrentKeep.GetSpawnPoint(player);
+                
+                ushort respawnId = realm == 1
+                    ? player.CurrentArea.OrderRespawnId
+                    : player.CurrentArea.DestroRespawnId;
 
+                if (respawnId > 0)
+                {
+                    // PVE respawn
+                    return new SpawnPoint(ZoneService.GetZoneRespawn(respawnId));
+                }
+                else
+                {
+
+                    // Crude patch - if no currentarea, respawn into current zoneid
+                    _logger.Warn(
+                        $"Respawning player {player.Name} from respawnId=0 area {player.CurrentArea.AreaId}");
+                    return new SpawnPoint(ZoneService.GetZoneRespawn(zoneId, realm));
+                }
+
+            }
+            else
+            {
+                // World Spawns
+                List<Zone_Respawn> respawns = ZoneService.GetZoneRespawns(zoneId);
                 float lastDistance = float.MaxValue;
 
                 foreach (Zone_Respawn res in respawns)
@@ -233,17 +186,15 @@ namespace WorldServer
                     if (distance < lastDistance)
                     {
                         lastDistance = distance;
-                        respawn = res;
+                        return new SpawnPoint(res);
                     }
                 }
 
-                #endregion
+                // Crude patch - if no currentarea, respawn into current zoneid
+                _logger.Warn($"Respawning player {player.Name} from NULL area");
+                return new SpawnPoint(ZoneService.GetZoneRespawn(zoneId, realm));
             }
 
-            else
-                Log.Error("WorldMgr", "Zone Respawn not found for : " + zoneId);
-
-            return respawn;
         }
 
         public static List<Zone_Taxi> GetTaxis(Player Plr)
@@ -289,6 +240,9 @@ namespace WorldServer
 
             return L;
         }
+
+
+
         #endregion
 
         #region Xp / Renown
@@ -299,7 +253,7 @@ namespace WorldServer
             uint VLvl = victim.AdjustedLevel;
 
             if (KLvl > VLvl + 8)
-                return 0;
+                    return 0;
 
             uint XP = VLvl * 100;
 
@@ -361,6 +315,31 @@ namespace WorldServer
         #endregion
 
         #region Vendors
+
+
+        public static void SendDynamicVendorItems(Player plr, List<Vendor_items> items)
+        {
+            if (plr == null)
+                return;
+
+
+            byte Page = 0;
+            int Count = items.Count;
+            while (Count > 0)
+            {
+                byte ToSend = (byte)Math.Min(Count, VendorService.MAX_ITEM_PAGE);
+                if (ToSend <= Count)
+                    Count -= ToSend;
+                else
+                    Count = 0;
+
+                WorldMgr.SendVendorPage(plr, ref items, ToSend, Page);
+
+                ++Page;
+            }
+            plr.ItmInterface.SendBuyBack();
+        }
+
         public static void SendVendor(Player Plr, ushort id)
         {
             if (Plr == null)
@@ -504,6 +483,86 @@ namespace WorldServer
 
             }
         }
+
+        public static void BuyItemHonorDynamicVendor(Player plr, InteractMenu Menu, List<Vendor_items> items)
+        {
+            int Num = (Menu.Page * VendorService.MAX_ITEM_PAGE) + Menu.Num;
+            ushort Count = Menu.Packet.GetUint16();
+            if (Count == 0)
+                Count = 1;
+
+            if (items.Count <= Num)
+                return;
+
+
+            var honorVendor = new HonorVendorItem(plr);
+            var reward = HonorService.HonorRewards.SingleOrDefault(x => x.ItemId == items[Num].Info.Entry);
+            if (reward == null)
+                return;
+            if (!honorVendor.IsValidItemForPlayer(plr, reward))
+                return;
+
+            ItemResult result = plr.ItmInterface.CreateItem(items[Num].Info, (ushort)reward.ItemCount);
+            if (result == ItemResult.RESULT_OK)
+            {
+                plr.RemoveMoney(items[Num].Price * Count);
+                foreach (KeyValuePair<uint, ushort> Kp in items[Num].ItemsReq)
+                    plr.ItmInterface.RemoveItems(Kp.Key, (ushort)(Kp.Value * Count));
+
+                items.Remove(items[Num]);
+
+                // Set the Honor Reward Cooldown
+                // Remove all existing Honor Reward Cooldowns for this item
+                var existingRewards = plr.Info.HonorCooldowns?.Where(x => x.ItemId == reward.ItemId);
+                foreach (var existingReward in existingRewards)
+                {
+                    plr.Info.HonorCooldowns.Remove(existingReward);
+                    CharMgr.Database.DeleteObject(existingReward);
+                }
+
+                // Add the definitive reward cooldown for this item
+                var honorRewardCooldown = new HonorRewardCooldown
+                {
+                    CharacterId = plr.CharacterId,
+                    Cooldown = FrameWork.TCPManager.GetTimeStamp() + reward.Cooldown,
+                    ItemId = reward.ItemId
+                };
+
+                plr.Info.HonorCooldowns.Add(honorRewardCooldown);
+                CharMgr.Database.AddObject(honorRewardCooldown);
+            }
+            else if (result == ItemResult.RESULT_MAX_BAG)
+            {
+                plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_INSUFFICIENT_SPACE_TO_BUY);
+            }
+            else if (result == ItemResult.RESULT_ITEMID_INVALID)
+            {
+
+            }
+
+        }
+
+        public static void BuyItemRealmCaptainDynamicVendor(Player plr, InteractMenu Menu, List<Vendor_items> items)
+        {
+            int Num = (Menu.Page * VendorService.MAX_ITEM_PAGE) + Menu.Num;
+            ushort Count = Menu.Packet.GetUint16();
+            if (Count == 0)
+                Count = 1;
+
+            if (items.Count <= Num)
+                return;
+
+            if (RealmCaptainManager.IsPlayerRealmCaptain(plr.CharacterId))
+            {
+                RealmCaptainManager.ApplyRealmCaptainBuff(plr, items[Num].Info.SpellId);
+            }
+        }
+
+        private static void BuffAssigned(NewBuff buff)
+        {
+            var newBuff = buff;
+        }
+
         #endregion
 
         #region Quests
@@ -1376,7 +1435,7 @@ namespace WorldServer
         #endregion
 
         #region Keep registry, to remove it's static bullshit
-        public static Dictionary<uint, Keep> _Keeps = new Dictionary<uint, Keep>();
+        public static Dictionary<uint, BattleFrontKeep> _Keeps = new Dictionary<uint, BattleFrontKeep>();
 
         public static void SendKeepStatus(Player Plr)
         {
@@ -1386,13 +1445,13 @@ namespace WorldServer
                 {
                     if (_Keeps.ContainsKey(KeepInfo.KeepId))
                     {
-                        _Keeps[KeepInfo.KeepId].SendKeepStatus(Plr);
+                        _Keeps[KeepInfo.KeepId].KeepCommunications.SendKeepStatus(Plr, _Keeps[KeepInfo.KeepId]);
                     }
                     else
                     {
                         PacketOut Out = new PacketOut((byte)Opcodes.F_KEEP_STATUS, 26);
                         Out.WriteByte(KeepInfo.KeepId);
-                        Out.WriteByte(1); // anything else explosion
+                        Out.WriteByte(1); // status
                         Out.WriteByte(0); // ?
                         Out.WriteByte(KeepInfo.Realm);
                         Out.WriteByte(KeepInfo.DoorCount);
@@ -1439,7 +1498,7 @@ namespace WorldServer
                     case 8: // t1 em/ch
                         regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierCampaignManager, new ApocCommunications());
                         break;
-                        // Tier 4
+                    // Tier 4
                     case 11:
                         regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierCampaignManager, new ApocCommunications());
                         break;
@@ -1456,7 +1515,7 @@ namespace WorldServer
             }
         }
 
-        public static List<CampaignObjective> LoadObjectives(RegionMgr regionMgr)
+        public static List<BattlefieldObjective> LoadObjectives(RegionMgr regionMgr)
         {
             List<BattleFront_Objective> objectives = BattleFrontService.GetBattleFrontObjectives(regionMgr.RegionId);
             if (objectives == null)
@@ -1464,12 +1523,12 @@ namespace WorldServer
                 _logger.Warn($"Region = {regionMgr.RegionId} has no objectives");
                 return null;
             }
-            var resultList = new List<CampaignObjective>();
+            var resultList = new List<BattlefieldObjective>();
             _logger.Debug($"Region = {regionMgr.RegionId} ObjectiveCount = {objectives.Count}");
-            foreach (BattleFront_Objective obj in objectives)
+            foreach (BattleFront_Objective obj in objectives.Where(x => x.KeepSpawn == false))
             {
-                CampaignObjective flag = new CampaignObjective(regionMgr, obj);
-				resultList.Add(flag);
+                BattlefieldObjective flag = new BattlefieldObjective(regionMgr, obj);
+                resultList.Add(flag);
             }
 
             return resultList;
@@ -1482,7 +1541,7 @@ namespace WorldServer
         {
             if ((lowerTierCampaignManager == null) || (upperTierCampaignManager == null))
                 return;
-
+            _logger.Trace("F_CAMPAIGN_STATUS1");
             PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
             Out.WriteHexStringBytes("0005006700CB00"); // 7
 
@@ -1519,13 +1578,13 @@ namespace WorldServer
             // Empire vs Chaos T3
             // BuildCaptureStatus(Out, WorldMgr.GetRegion(6, false), realm);
             Out.WriteByte(0);
-            Out.WriteByte(0);  // % Order lock
-            Out.WriteByte(0);    // % Dest lock
+            Out.WriteByte(45);  // % Order lock
+            Out.WriteByte(55);    // % Dest lock
             // Empire vs Chaos T4
             // BuildCaptureStatus(Out, WorldMgr.GetRegion(11, false), realm);
             Out.WriteByte(0);
-            Out.WriteByte(0);  // % Order lock
-            Out.WriteByte(0);    // % Dest lock
+            Out.WriteByte(40);  // % Order lock
+            Out.WriteByte(60);    // % Dest lock
             // High Elves vs Dark Elves T1
             //BuildCaptureStatus(Out, WorldMgr.GetRegion(3, false), realm);
             Out.WriteByte(0);
@@ -1549,23 +1608,36 @@ namespace WorldServer
 
             Out.Fill(0, 83);
 
-            Out.WriteByte(3);   //dwarf fort
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_STONEWATCH).LockStatus);  //  Dwarf Fort
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN).LockStatus);
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus);
-            Out.WriteByte(3);   //or
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BUTCHERS_PASS).LockStatus);   // greenskin Fort
 
-            Out.WriteByte(3);   //emp fort
-            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKWALD).LockStatus);// Empire Fort
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND).LockStatus);
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG).LockStatus);
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES).LockStatus);
-            Out.WriteByte(3);   //or
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_EMPIRE_CHAOS_TIER4_THE_MAW).LockStatus);  // Chaos Fort
 
-            Out.WriteByte(3);   //elf fort
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_SHINING_WAY).LockStatus);   //elf fortress
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus);  // (ZONE_STATUS_ORDER_LOCKED/ZONE_STATUS_DESTRO_LOCKED)
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus);
             Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus);
-            Out.WriteByte(3);   //or
+            Out.WriteByte((byte)upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_FELL_LANDING).LockStatus);   //Dark elf Fortress
+
+            Out.WriteByte(0); // Order underdog rating
+            Out.WriteByte(0); // Destruction underdog rating
+
+
+            /*Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+
+            Out.WriteByte(00);
+
+            Out.Fill(0, 4);*/
 
             //For debugging purposes
             var lockStr = upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG).LockStatus.ToString();
@@ -1577,18 +1649,9 @@ namespace WorldServer
             lockStr += upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR).LockStatus.ToString();
             lockStr += upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE).LockStatus.ToString();
             lockStr += upperTierCampaignManager.GetBattleFrontStatus(BattleFrontConstants.BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE).LockStatus.ToString();
-            Out.WriteByte(0);
-            Out.WriteByte(0);
-            Out.WriteByte(0);
-            Out.WriteByte(0);
-
-            Out.WriteByte(00);
-
-            Out.Fill(0, 4);
-
 
             byte[] buffer = Out.ToArray();
-            _logger.Debug("WorldMgr : " + lockStr);
+            _logger.Trace("WorldMgr : " + lockStr);
 
             lock (Player._Players)
             {
@@ -1599,26 +1662,25 @@ namespace WorldServer
 
                     player.SendPacket(Out);
 
-                    //PacketOut playerCampaignStatus = new PacketOut(0, 159) { Position = 0 };
-                    //playerCampaignStatus.Write(buffer, 0, buffer.Length);
+                    PacketOut playerCampaignStatus = new PacketOut(0, 159) { Position = 0 };
+                    playerCampaignStatus.Write(buffer, 0, buffer.Length);
 
-                    //if (player.Region?.Campaign != null)
-                    //{
-                    //    Out.WriteByte((byte)player.Region?.Campaign.VictoryPointProgress.OrderVictoryPointPercentage);
-                    //    Out.WriteByte((byte)player.Region?.Campaign.VictoryPointProgress.DestructionVictoryPointPercentage);
+                    if (player.Region?.Campaign != null)
+                    {
 
-                    //    //no clue but set to a value wont show the pool updatetimer
-                    //    Out.WriteByte(0);
-                    //    Out.WriteByte(0);
+                        Out.WriteByte((byte)75);
+                        Out.WriteByte((byte)25);
 
-                    //    Out.WriteByte(00);
-                    //}
-                    //else
-                    //    playerCampaignStatus.Fill(0, 9);
+                        //Out.WriteByte((byte) player.Region?.Campaign.VictoryPointProgress.OrderVictoryPointPercentage);
+                        //Out.WriteByte((byte) player.Region?.Campaign.VictoryPointProgress.DestructionVictoryPointPercentage);
+                    }
+                    else
+                    {
+                        playerCampaignStatus.Fill(0, 9);
+                    }
+                    playerCampaignStatus.Fill(0, 4);
 
-                    //playerCampaignStatus.Fill(0, 4);
-
-                    //player.SendPacket(playerCampaignStatus);
+                    player.SendPacket(playerCampaignStatus);
                 }
             }
         }

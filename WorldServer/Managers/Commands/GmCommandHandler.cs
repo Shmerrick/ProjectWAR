@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using FrameWork;
 using System;
+using WorldServer.World.Objects;
 
 namespace WorldServer.Managers.Commands
 {

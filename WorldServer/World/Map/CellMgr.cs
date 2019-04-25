@@ -1,15 +1,13 @@
 ﻿//#define SUPPRESS_LOAD
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Common;
-using FrameWork;
 using Common.Database.World.Maps;
+using FrameWork;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
 
-namespace WorldServer
+namespace WorldServer.World.Map
 {
     public class CellMgr
     {
@@ -73,7 +71,7 @@ namespace WorldServer
 
             Log.Debug(ToString(), "Loading... ");
 
-            #if !DEBUG || !SUPPRESS_LOAD
+            
             foreach (Creature_spawn spawn in Spawns.CreatureSpawns)
                 Region.CreateCreature(spawn);
 
@@ -85,7 +83,7 @@ namespace WorldServer
 
             foreach (PQuest_Info quest in Spawns.PublicQuests)
                 Region.CreatePQuest(quest);
-            #endif
+            
     }
 
         public override string ToString()

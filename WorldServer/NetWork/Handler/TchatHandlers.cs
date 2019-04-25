@@ -1,12 +1,7 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Common;
-using FrameWork;
+﻿using FrameWork;
+using WorldServer.Managers;
 
-namespace WorldServer
+namespace WorldServer.NetWork.Handler
 {
     public class TchatHandlers : IPacketHandler
     {

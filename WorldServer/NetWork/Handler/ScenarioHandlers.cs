@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using SystemData;
-using Common;
+﻿using SystemData;
 using FrameWork;
-using WorldServer.Scenarios;
+using WorldServer.Managers;
+using WorldServer.World.Objects;
+using WorldServer.World.Scenarios;
 
-namespace WorldServer
+namespace WorldServer.NetWork.Handler
 {
     public class ScenarioHandlers : IPacketHandler
     {

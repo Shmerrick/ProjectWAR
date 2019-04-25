@@ -29,13 +29,23 @@ namespace Common
     [Serializable]
     public class Vendor_items : DataObject
     {
+
         public ushort _VendorId;
         public Item_Info Info;
+        private uint _ItemGuid;
         private uint _ItemId;
         private uint _Price;
         private string _ReqItems;
         private ushort _ReqTokUnlock;
         private byte _ReqGuildlvl;
+        
+
+        [PrimaryKey]
+        public uint ItemGuid
+        {
+            get { return _ItemGuid; }
+            set { _ItemGuid = value; Dirty = true; }
+        }
 
         [PrimaryKey]
         public ushort VendorId
@@ -50,6 +60,8 @@ namespace Common
             get { return _ItemId; }
             set { _ItemId = value; Dirty = true; }
         }
+
+       
 
         [DataElement(AllowDbNull = false)]
         public uint Price

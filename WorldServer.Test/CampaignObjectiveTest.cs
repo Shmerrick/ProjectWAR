@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.Services.World;
 using Common;
+using WorldServer.World.Objects;
 
 namespace WorldServer.Test
 {
@@ -23,7 +24,7 @@ namespace WorldServer.Test
 		public void CampaignObjectiveRewardVPTest()
 		{
 			// arrange
-			var flag = new CampaignObjective();
+			var flag = new BattlefieldObjective();
 
 			// act
 			var VP = flag.RewardManager.RewardCaptureTick(new HashSet<Player>(), GameData.Realms.REALMS_REALM_ORDER, 4, "thisFlag", 1f, BORewardType.SMALL_CONTESTED);

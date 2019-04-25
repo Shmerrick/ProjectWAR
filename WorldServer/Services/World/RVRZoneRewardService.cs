@@ -6,14 +6,19 @@ using System.Threading.Tasks;
 using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
+using WorldServer.World.Objects;
 
 namespace WorldServer.Services.World
 {
     [Service]
     public class RVRZoneRewardService : ServiceBase
     {
-        public static List<RVRZoneLockItemOptionReward> RVRZoneLockItemOptions;
+        private static List<RVRRewardKeepItems> _RVRRewardKeepItems;
         public static List<RVRZoneLockReward> RVRZoneRewards;
+        private static List<RVRRewardFortItems> _RVRRewardFortItems;
+
+        public static List<RVRRewardItem> RVRRewardKeepItems;
+        public static List<RVRRewardItem> RVRRewardFortItems;
 
         /// <summary>
         /// List of RVR Zone Lock items that are to be considered on a zone lock
@@ -22,8 +27,35 @@ namespace WorldServer.Services.World
         public static void LoadRVRZoneLockItemOptions()
         {
             Log.Debug("WorldMgr", "Loading RVR Zone Lock Item Options...");
-            RVRZoneLockItemOptions = Database.SelectAllObjects<RVRZoneLockItemOptionReward>() as List<RVRZoneLockItemOptionReward>;
-            if (RVRZoneLockItemOptions != null) Log.Success("LoadRVRZoneLockItemOptions", "Loaded " + RVRZoneLockItemOptions.Count + " RVR Zone Lock Item Options");
+            _RVRRewardKeepItems = Database.SelectAllObjects<RVRRewardKeepItems>() as List<RVRRewardKeepItems>;
+            if (_RVRRewardKeepItems != null) Log.Success("LoadRVRZoneLockItemOptions", "Loaded " + _RVRRewardKeepItems.Count + " RVR Zone Lock Item Options");
+
+            if (RVRRewardKeepItems == null)
+                RVRRewardKeepItems = new List<RVRRewardItem>();
+
+            foreach (var rvrRewardKeepItem in _RVRRewardKeepItems)
+            {
+                RVRRewardKeepItems.Add(new RVRRewardItem(rvrRewardKeepItem));
+            }
+        }
+
+        /// <summary>
+        /// List of RVR Zone Lock items that are to be considered on a zone lock
+        /// </summary>
+        [LoadingFunction(true)]
+        public static void LoadFortZoneLockOptions()
+        {
+            Log.Debug("WorldMgr", "Loading RVR Fort Zone Lock Options...");
+            _RVRRewardFortItems = Database.SelectAllObjects<RVRRewardFortItems>() as List<RVRRewardFortItems>;
+            if (_RVRRewardFortItems != null) Log.Success("LoadFortZoneLockOptions", "Loaded " + _RVRRewardFortItems.Count + " RVRRewardFortItems");
+
+            if (RVRRewardFortItems == null)
+                RVRRewardFortItems = new List<RVRRewardItem>();
+
+            foreach (var rvrRewardKeepItem in _RVRRewardFortItems)
+            {
+                RVRRewardFortItems.Add(new RVRRewardItem(rvrRewardKeepItem));
+            }
         }
 
         /// <summary>

@@ -32,7 +32,7 @@ namespace WorldServer.World.Objects.PublicQuests
         /// </summary>
         public uint PersistenceBonus;
         /// <summary>
-        /// A bonus to the roll derived from the player's relative Contribution value.
+        /// A bonus to the roll derived from the player's relative ContributionManagerInstance value.
         /// </summary>
         public uint ContributionBonus;
 
@@ -40,7 +40,7 @@ namespace WorldServer.World.Objects.PublicQuests
         public uint HealingContribPool { get; set; }
 
         /// <summary>
-        /// Contribution that will be split on the next PQ tick.
+        /// ContributionManagerInstance that will be split on the next PQ tick.
         /// </summary>
         public uint PendingContribution { get; set; }
 

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Common;
+﻿using Common;
 using FrameWork;
+using WorldServer.Managers;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.NetWork.Handler
 {
     public class AuthentificationHandlers : IPacketHandler
     {
@@ -55,6 +52,7 @@ namespace WorldServer
                 else
                 {
                     Log.Success("F_CONNECT", "MeId=" + cclient.Id);
+                    Log.Success("F_CONNECT", "User connection : " + Username);
 
                     GameClient Other = ((TCPServer) cclient.Server).GetClientByAccount(cclient, cclient._Account.AccountId);
                     if (Other != null)

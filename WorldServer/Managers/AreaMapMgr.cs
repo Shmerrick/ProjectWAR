@@ -1,4 +1,4 @@
-﻿namespace WorldServer
+﻿namespace WorldServer.Managers
 {
     /*public class AreaMapInfo
     {

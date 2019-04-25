@@ -1,18 +1,21 @@
 ﻿using System;
-using FrameWork;
-using GameData;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common;
+using FrameWork;
+using GameData;
+using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
 using CreatureSubTypes = GameData.CreatureSubTypes;
 using CreatureTypes = GameData.CreatureTypes;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 using Vector3 = FrameWork.Vector3;
-using WorldServer.World.BattleFronts.Keeps;
-using WorldServer.Services.World;
-using WorldServer.World.Map;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public enum SiegeType
     {
@@ -320,7 +323,21 @@ namespace WorldServer
             _weapon.MvtInterface.StopMove();
 
             if (Type == SiegeType.RAM)
-                _Owner.Region.Campaign.GetClosestKeep(_Owner.WorldPosition)?.TryAlignRam(_Owner, player);
+            {
+                var zoneKeeps = _Owner.Region.Campaign.GetZoneKeeps((ushort)player.ZoneId);
+                var dictKeepDistances = new Dictionary<BattleFrontKeep, float>();
+                foreach (var battleFrontKeep in zoneKeeps)
+                {
+                    ulong curDist = battleFrontKeep.GetDistanceSquare(player.WorldPosition);
+                    dictKeepDistances.Add(battleFrontKeep, curDist);
+                }
+                var keepToUse = dictKeepDistances.OrderByDescending(pair => pair.Value).Take(1).ToDictionary(pair => pair.Key, pair => pair.Value);
+                foreach (var f in keepToUse)
+                {
+                    f.Key.TryAlignRam(_Owner, player);
+                    break;
+                }
+            }
 
             foreach (Player p in _Owner.PlayersInRange)
             {
@@ -676,7 +693,7 @@ namespace WorldServer
                     break;
 
                 case SiegeType.RAM:
-                    _abilityId = 24684;
+                    _abilityId = 24684;   // Ram damage.
                     _moveType = _Owner is Siege ? MoveType.Tow : MoveType.Static;
                     break;
 
@@ -712,7 +729,22 @@ namespace WorldServer
                     if (artillery != null && !artillery.CanFire(player))
                         return;
 
-                    _weapon.AbtInterface.StartCastAtPos(player, _abilityId, ZoneService.GetWorldPosition(_weapon.Zone.Info, targetX, targetY, targetZ), _weapon.Zone.ZoneId, 0);
+                    // 72675 is the orcapult - catapults player rather than a stone!
+                    if (this._weapon.Entry == 72675)
+                    {
+                        var targetPosition = ZoneService.GetWorldPosition(_weapon.Zone.Info, targetX, targetY, targetZ);
+                        float speed = 6400f;
+                        float flightTimePuntee = 4;//(float)this._leader.GetDistanceSquare(new Point3D(targetPosition.X, targetPosition.Y, targetPosition.Z)) / speed / 1000f;
+                        this._leader.Catapult(_weapon.Zone, new Point3D(targetPosition.X, targetPosition.Y, targetPosition.Z), (ushort)flightTimePuntee, (ushort)340);
+                        this._leader.AbtInterface.Cancel(true);
+                        SendSiegeResponse(_leader, Type, SiegeControlType.Leader, 1);
+                    }
+                    else
+                    {
+                        _weapon.AbtInterface.StartCastAtPos(player, _abilityId, ZoneService.GetWorldPosition(_weapon.Zone.Info, targetX, targetY, targetZ), _weapon.Zone.ZoneId, 0);
+                    }
+
+                    
                     break;
                 case SiegeType.OIL:
                     _weapon.AbtInterface.StartCastAtPos(player, _abilityId, ZoneService.GetWorldPosition(_weapon.Zone.Info, targetX, targetY, targetZ), _weapon.Zone.ZoneId, 0);

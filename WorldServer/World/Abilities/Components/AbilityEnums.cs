@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Components
 {
     public enum DamageTypes : byte
     {

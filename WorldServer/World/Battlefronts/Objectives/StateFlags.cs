@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WorldServer.World.BattleFronts.Objectives
+namespace WorldServer.World.Battlefronts.Objectives
 {
     /// <summary>
     /// Bit flags describing an objective state.
@@ -11,14 +11,14 @@ namespace WorldServer.World.BattleFronts.Objectives
         /// <summary>The flag is not secured by any realm (neutral)</summary>
         Unsecure = 0,
         Hidden = 1,
-        /// <summary> Flag without the bright halo </summary>
-        Abandoned = 2,
-        /// <summary>A realm in contesting the objective to the other</summary>
+        /// <summary> Flag without the bright halo</summary>
+        Secure = 2,
+        /// <summary>Neutral Icon on Fire</summary>
         Contested = 4,
-        /// <summary>Locked (because of Campaign state)</summary>
-        Locked = 8,
-        /// <summary>Secured (or securing), have bright halo</summary>
-        Secure = 16,
+        /// <summary>RegionLockManager (because of Campaign state)</summary>
+        Abandoned = 8,
+        /// <summary>Bright halo</summary>
+        Locked = 16,
 
         ZoneLocked = 9
     };

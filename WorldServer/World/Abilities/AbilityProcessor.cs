@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using FrameWork;
-using Common;
-
-using GameData;
-using WorldServer.Services.World;
 using System.Linq;
 using System.Text.RegularExpressions;
+using FrameWork;
+using GameData;
+using NLog;
 using WorldServer.Managers.Commands;
+using WorldServer.Services.World;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Abilities.Objects;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Group = WorldServer.World.Objects.Group;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities
 {
     public class AbilityProcessor
     {
@@ -18,6 +24,8 @@ namespace WorldServer
         private readonly AbilityInterface _abInterface;
         private readonly AbilityEffectInvoker _abEffectInvoker;
         private readonly NewChannelHandler _channelHandler;
+
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private readonly List<byte> _setbacks = new List<byte>();
 
@@ -350,7 +358,17 @@ namespace WorldServer
             }
 
             if (_caster.ItmInterface != null)
-                return _caster.ItmInterface.WeaponCheck(_pendingInfo.ConstantInfo.WeaponNeeded) == AbilityResult.ABILITYRESULT_OK;
+            {
+                var weaponOk = _caster.ItmInterface.WeaponCheck(_pendingInfo.ConstantInfo.WeaponNeeded);
+                if (weaponOk == AbilityResult.ABILITYRESULT_OK)
+                    return true;
+                else
+                {
+                    _logger.Warn($"Weaponcheck failed for {_caster.Name} {_pendingInfo.Name}");
+                    return false;
+                }
+            }
+
             return true;
         }
 
@@ -484,8 +502,19 @@ namespace WorldServer
                         return false;
                     _pendingInfo.Target = _caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ALLY) ?? _caster;
 
-                    if (!CombatInterface.IsFriend(_caster, _pendingInfo.Target) || (_pendingInfo.Target is Creature && !(_pendingInfo.Target is Pet)))
-                        return false;
+                    if (!CombatInterface.IsFriend(_caster, _pendingInfo.Target) ||
+                        (_pendingInfo.Target is Creature && !(_pendingInfo.Target is Pet)))
+                    {
+                        if ((_pendingInfo.Target is Boss) && (_caster is Creature))
+                        {
+                            // Allow healing on a boss -- careful to not allow lord heal from player
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                   
                     if (_pendingInfo.Target != _caster)
                     {
                         if (_pendingInfo.TargetType.HasFlag(CommandTargetTypes.Groupmates))
@@ -1002,6 +1031,7 @@ namespace WorldServer
 
         private void Cast()
         {
+
             if (!AllowCast())
                 return;
             

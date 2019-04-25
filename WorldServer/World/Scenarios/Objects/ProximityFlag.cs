@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
-
 using Common;
 using FrameWork;
 using GameData;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer.Scenarios.Objects
+namespace WorldServer.World.Scenarios.Objects
 {
     public class GuardCreature : Creature
     {
@@ -45,7 +47,7 @@ namespace WorldServer.Scenarios.Objects
         public GuardCreature Creature;
 		int team;
 
-        public FlagGuard(CampaignObjective flag, RegionMgr Region, ushort ZoneId, uint OrderId, uint DestroId, int x, int y, int z, int o)
+        public FlagGuard(BattlefieldObjective flag, RegionMgr Region, ushort ZoneId, uint OrderId, uint DestroId, int x, int y, int z, int o)
         {
             this.Region = Region;
             this.ZoneId = ZoneId;

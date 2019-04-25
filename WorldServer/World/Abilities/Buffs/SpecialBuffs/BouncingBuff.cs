@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Threading;
 using FrameWork;
-using Common;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 {
     public class BouncingBuff : NewBuff
     {

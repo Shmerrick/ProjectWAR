@@ -1,14 +1,22 @@
 ﻿//#define DIST_DEBUG
 
 using System;
-using System.Collections.Generic;
-using SystemData;
 using Common;
 using FrameWork;
 using GameData;
+using WorldServer.Managers;
+using WorldServer.NetWork;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.CareerInterfaces;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.AI;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Positions;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     public class Pet : Creature
     {

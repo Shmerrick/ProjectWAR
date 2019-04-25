@@ -4,8 +4,19 @@ using System.Linq;
 using SystemData;
 using FrameWork;
 using GameData;
+using NLog;
+using WorldServer.Managers;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Object = WorldServer.World.Objects.Object;
+using WorldServer.World.Objects.Instances;
 
-namespace WorldServer
+namespace WorldServer.World.AI
 {
     public abstract class ABrain
     {
@@ -16,7 +27,9 @@ namespace WorldServer
         protected Pet _pet;
         protected CombatInterface_Npc Combat;
         protected AIInterface AI;
-        
+
+        protected static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         protected ABrain(Unit unit)
         {
             _unit = unit;
@@ -44,9 +57,22 @@ namespace WorldServer
             return true;
         }
 
-        public virtual void Think()
+        public virtual void Think(long tick)
         {
 
+        }
+
+        public void SpeakYourMind(string message)
+        {
+            _logger.Debug($"{_unit.Name} : {message}");
+            _unit.Say(message);
+        }
+        
+        
+
+        protected List<Player> GetClosePlayers(int range = 30)
+        {
+            return _unit.GetPlayersInRange(range, false);
         }
 
         private long _nextDistanceCheckTime;
@@ -65,7 +91,7 @@ namespace WorldServer
 
         public virtual bool StartCombat(Unit fighter)
         {
-            if (_unit.IsDead)
+                if (_unit.IsDead)
                 return false;
 
             // We try to buff NPC here
@@ -98,7 +124,7 @@ namespace WorldServer
                 NewRange = crea.Ranged;
 			
 			// set speed to 100 when combat starts for keep patrol guard
-			if (_unit is World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature keepGuard && keepGuard.IsPatrol)
+			if (_unit is KeepCreature keepGuard && keepGuard.IsPatrol)
 			{
 				keepGuard.Speed = 100;
 				keepGuard.UpdateSpeed();
@@ -307,7 +333,7 @@ namespace WorldServer
                 npc.BuffInterface.RemoveAllBuffs();
                 npc.ReceiveHeal(null, npc.MaxHealth);
                 
-				if (_unit is World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature keepGuard && keepGuard.IsPatrol
+				if (_unit is KeepCreature keepGuard && keepGuard.IsPatrol
 					&& keepGuard.AiInterface != null && keepGuard.AiInterface.CurrentWaypoint != null)
 				{
 					keepGuard.AiInterface.State = AiState.MOVING;
@@ -319,6 +345,8 @@ namespace WorldServer
 				}
 			}
         }
+
+
 
 		#endregion
 
@@ -472,6 +500,23 @@ namespace WorldServer
                 }
             }
         }
+
+        public void SimpleCast(Unit caster, Unit target, string description, int abilityId)
+        {
+            if (target == null)
+            {
+                _logger.Debug($"{_unit.Name} using {description}");
+            }
+            else
+            {
+                _logger.Debug($"{_unit.Name} using {description} on {target.Name}");
+            }
+            
+            caster.AbtInterface.StartCast(caster, (ushort)abilityId, 1);
+            
+
+        }
+
 
         public Player SetRandomTarget()
         {

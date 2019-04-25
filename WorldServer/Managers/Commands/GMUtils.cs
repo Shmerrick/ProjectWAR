@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using SystemData;
 using WorldServer.Services.World;
+using WorldServer.World.Objects;
 
 namespace WorldServer.Managers.Commands
 {

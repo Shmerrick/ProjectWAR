@@ -1,21 +1,18 @@
 ﻿using Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using WorldServer.World.Interfaces;
 
-namespace WorldServer
+namespace WorldServer.World.Objects.Instances
 {
-    public class InstanceSpawn:Creature
+    public class InstanceSpawn : Creature
     {
-        uint InstanceGroupSpawnID;
-        uint BossID;
+        uint instanceGroupSpawnId;
+        uint bossId;
         Instance Instance;
         
-        public InstanceSpawn(Creature_spawn spawn, uint instancegroupspawnid, uint bossid,Instance instance):base(spawn)
+        public InstanceSpawn(Creature_spawn spawn, uint bossId,Instance instance):base(spawn)
         {
-            InstanceGroupSpawnID = instancegroupspawnid;
-            BossID = bossid;
+            instanceGroupSpawnId = instanceGroupSpawnId;
+            bossId = bossId;
             Instance = instance;
             EvtInterface.AddEventNotify(EventName.OnEnterCombat, OnEnterCombat);
             EvtInterface.AddEventNotify(EventName.OnLeaveCombat, OnLeaveCombat);
@@ -27,18 +24,18 @@ namespace WorldServer
             Unit Attacker = mob.GetCreature().CbtInterface.GetTarget(GameData.TargetTypes.TARGETTYPES_TARGET_ENEMY);
             if (Attacker == null)
                 return false;
-            if(InstanceGroupSpawnID > 0)
+            if(instanceGroupSpawnId > 0)
             {
-                Instance.AttackTarget(InstanceGroupSpawnID, Attacker);
+                Instance.AttackTarget(instanceGroupSpawnId, Attacker);
             }
             return false;
         }
 
         public bool OnLeaveCombat(Object mob, object args)
         {
-            if (!mob.GetInstanceSpawn().IsDead && InstanceGroupSpawnID > 0)
+            if (!mob.GetInstanceSpawn().IsDead && instanceGroupSpawnId > 0)
             {
-                Instance.RespawnInstanceGroup(InstanceGroupSpawnID);
+                Instance.RespawnInstanceGroup(instanceGroupSpawnId);
             }
             return false;
         }
@@ -50,7 +47,7 @@ namespace WorldServer
 
         public InstanceSpawn RezInstanceSpawn()
         {
-            InstanceSpawn newCreature = new InstanceSpawn(Spawn, InstanceGroupSpawnID, BossID, Instance);
+            InstanceSpawn newCreature = new InstanceSpawn(Spawn, bossId, Instance);
             Region.AddObject(newCreature, Spawn.ZoneId);
             Destroy();
             return newCreature;
@@ -60,7 +57,7 @@ namespace WorldServer
 
         public override string ToString()
         {
-            return "SpawnId=" + Spawn.Guid + ",Entry=" + Spawn.Entry + ",Spawngroup=" + InstanceGroupSpawnID + ",LinkedBoss=" + BossID + ",Name=" + Name + ",Level=" + Level + ",Rank=" + Rank + ",Max Health=" + MaxHealth + ",Faction=" + Faction + ",Emote=" + Spawn.Emote + "AI:" + AiInterface.State + ",Position :" + base.ToString();
+            return "SpawnId=" + Spawn.Guid + ",Entry=" + Spawn.Entry + ",Spawngroup=" + instanceGroupSpawnId + ",LinkedBoss=" + bossId + ",Name=" + Name + ",Level=" + Level + ",Rank=" + Rank + ",Max Health=" + MaxHealth + ",Faction=" + Faction + ",Emote=" + Spawn.Emote + "AI:" + AiInterface.State + ",Position :" + base.ToString();
         }
     }
 }

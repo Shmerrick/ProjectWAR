@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading;
-using System.Text;
-
-using Common;
+﻿using System.Threading;
 using FrameWork;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 {
     class InteractionBuff: NewBuff
     {

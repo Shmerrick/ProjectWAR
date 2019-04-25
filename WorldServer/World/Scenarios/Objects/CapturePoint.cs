@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using SystemData;
 using Common;
 using FrameWork;
 using GameData;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer.Scenarios.Objects
+namespace WorldServer.World.Scenarios.Objects
 {
     public class CapturePoint : Object
     {

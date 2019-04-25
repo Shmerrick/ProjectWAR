@@ -54,7 +54,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// Minimal number of victory points required for locking
         /// NOT What the game is using as lock values.
         /// </summary>
-        public static float LOCK_VICTORY_POINTS = 5000f;
+        public static float LOCK_VICTORY_POINTS = 1000f;
 
         #endregion
 
@@ -78,6 +78,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static int BATTLEFRONT_DWARF_GREENSKIN_TIER4_BLACK_CRAG = 4;
         public static int BATTLEFRONT_DWARF_GREENSKIN_TIER4_THUNDER_MOUNTAIN = 5;
         public static int BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY = 6;
+        public static int BATTLEFRONT_DWARF_GREENSKIN_TIER4_STONEWATCH = 14;
+        public static int BATTLEFRONT_DWARF_GREENSKIN_TIER4_BUTCHERS_PASS = 16;
 
 
         public static int BATTLEFRONT_EMPIRE_CHAOS_TIER1_NORDLAND = 10;
@@ -86,6 +88,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static int BATTLEFRONT_EMPIRE_CHAOS_TIER4_CHAOS_WASTES = 1;
         public static int BATTLEFRONT_EMPIRE_CHAOS_TIER4_PRAAG = 2;
         public static int BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKLAND = 3;
+        public static int BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKWALD = 13;
+        public static int BATTLEFRONT_EMPIRE_CHAOS_TIER4_THE_MAW = 15;
 
 
         public static int BATTLEFRONT_ELF_DARKELF_TIER1_CHRACE = 12;
@@ -94,22 +98,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static int BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE =7;
         public static int BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE = 8;
         public static int BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR = 9;
+        public static int BATTLEFRONT_ELF_DARKELF_TIER4_SHINING_WAY = 17;
+        public static int BATTLEFRONT_ELF_DARKELF_TIER4_FELL_LANDING = 18;
 
         public const int ZONE_STATUS_CONTESTED = 0;
         public const int ZONE_STATUS_ORDER_LOCKED = 1;
         public const int ZONE_STATUS_DESTRO_LOCKED = 2;
-        // const int ZONE_STATUS_UNLOCKABLE    = 3;
 
 
         #endregion
 
-#if _DEBUG
-        static BattleFrontConstants() {
-            MAX_SECURE_PROGRESS /= 5;
-            MAX_CONTROL_GAUGE /= 5;
-            T1_LOCK_VICTORY_POINTS /= 10;
-        }
-#endif
+
 
     }
 }

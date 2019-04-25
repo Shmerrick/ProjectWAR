@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using WorldServer.World.BattleFronts;
+using Common.Database.World.Battlefront;
+using WorldServer.Managers;
+using WorldServer.World.Positions;
 
 namespace WorldServer.Services.World
 {
@@ -45,12 +47,12 @@ namespace WorldServer.Services.World
         {
             return _Zone_Info.FirstOrDefault(zone => zone != null && zone.ZoneId == ZoneId);
         }
-        /// <summary>
-        /// Gets all zones in given region.
-        /// </summary>
-        /// <param name="RegionId">Region id to get zones of.</param>
-        /// <returns>List on known regions, cannot be null, may be empty</returns>
-        public static List<Zone_Info> GetZoneRegion(ushort RegionId)
+            /// <summary>
+            /// Gets all zones in given region.
+            /// </summary>
+            /// <param name="RegionId">Region id to get zones of.</param>
+            /// <returns>List on known regions, cannot be null, may be empty</returns>
+            public static List<Zone_Info> GetZoneRegion(ushort RegionId)
         {
             List<Zone_Info> list = new List<Zone_Info>();
             foreach (Zone_Info zone in _Zone_Info)
@@ -275,6 +277,7 @@ namespace WorldServer.Services.World
 
         /// <summary>
         /// Translates coordinates in a zone to world coordinates.
+        /// Converts Pin into World Coordinates
         /// </summary>
         /// <param name="Info">Zone data</param>
         /// <param name="PinX">X coordinate in zone (as seen in map in game)</param>

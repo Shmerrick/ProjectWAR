@@ -1,12 +1,22 @@
-﻿using Common;
-using FrameWork;
-using GameData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Common;
+using FrameWork;
+using GameData;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.CareerInterfaces;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Abilities.Objects;
+using WorldServer.World.AI;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities
 {
     public class AbCmdStorageComparer : Comparer<AbilityInfo>
     {
@@ -22,6 +32,8 @@ namespace WorldServer
     public class AbilityEffectInvoker
     {
         const int MAX_AOE_TARGETS = 9;
+        private const int TANK_GUARD_CONTRIBUTION_CHANCE = 8;
+
 
         private readonly Unit _caster;
         private Unit _instigator, _target;
@@ -833,6 +845,10 @@ namespace WorldServer
         private bool PuntEnemy(AbilityCommandInfo cmd, byte level, Unit target)
         {
             target.ApplyKnockback(_caster, AbilityMgr.GetKnockbackInfo(cmd.Entry, cmd.PrimaryValue));
+
+            // Give contribution for punt.
+            (_caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PUNT_ENEMY);
+
             return true;
         }
 
@@ -1074,6 +1090,12 @@ namespace WorldServer
         {
             LinkedBuffInteraction lbi = new LinkedBuffInteraction((ushort)cmd.PrimaryValue, _caster, target, BuffEffectInvoker.CreateGuardBuff);
             lbi.Initialize();
+            // Give contribution for guarding.
+
+            if (StaticRandom.Instance.Next(100) < TANK_GUARD_CONTRIBUTION_CHANCE)
+            {
+                (_caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.TANK_GUARD);
+            }
             return true;
         }
 
@@ -1523,7 +1545,18 @@ namespace WorldServer
         private bool SummonSiegeWeapon(AbilityCommandInfo cmd, byte level, Unit target)
         {
             Player player = (Player)_caster;
-            player.CurrentKeep.SpawnSiegeWeapon(player, (uint)cmd.PrimaryValue);
+
+            var siege = Siege.SpawnSiegeWeapon(player, (ushort) player.ZoneId, (uint)cmd.PrimaryValue, true);
+            player.Region.AddObject(siege, (ushort)player.ZoneId);
+            player.Region.Campaign.SiegeManager.Add(siege, player.Realm);
+
+            //if (player.CurrentKeep == null)
+            //{
+            //    var siege = Siege.SpawnSiegeWeapon(player, this, (uint) cmd.PrimaryValue, true);
+            //    Region.AddObject(siege, Info.ZoneId);
+            //}
+            //else
+            //    player.CurrentKeep.SpawnSiegeWeapon(player, (uint) cmd.PrimaryValue);
             return true;
         }
 

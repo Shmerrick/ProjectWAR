@@ -1,8 +1,11 @@
-﻿using Common.Database.World.BattleFront;
+﻿using SystemData;
+using Common.Database.World.BattleFront;
 using GameData;
-using SystemData;
+using WorldServer.NetWork.Handler;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
 
-namespace WorldServer.World.BattleFronts.Objectives
+namespace WorldServer.World.Battlefronts.Objectives
 {
     /// <summary>
     /// Game object representing a portal around an objective
@@ -53,7 +56,7 @@ namespace WorldServer.World.BattleFronts.Objectives
                 targetPos = _destroTargetPos;
             }
 
-            Teleport(player, target, targetPos);
+            Teleport(player, target.ZoneId, targetPos);
         }
 
     }

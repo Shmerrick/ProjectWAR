@@ -2,14 +2,19 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net;
 using SystemData;
-using FrameWork;
 using Common;
+using FrameWork;
 using GameData;
-using WorldServer.Services.World;
+using WorldServer.Managers;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using Item = WorldServer.World.Objects.Item;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities
 {
 
     /// <summary>
@@ -340,11 +345,16 @@ namespace WorldServer
         #region Resources
         private static bool HasResource(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
         {
-            Player plr = caster as Player;
+            if (caster is Player)
+            {
 
-            if (myCheck.SecondaryValue == 0)
-                return plr.CrrInterface.CareerResource == myCheck.PrimaryValue;
-            return plr.CrrInterface.HasResourceRange(myCheck.PrimaryValue, myCheck.SecondaryValue);
+                Player plr = caster as Player;
+
+                if (myCheck.SecondaryValue == 0)
+                    return plr.CrrInterface.CareerResource == myCheck.PrimaryValue;
+                return plr.CrrInterface.HasResourceRange(myCheck.PrimaryValue, myCheck.SecondaryValue);
+            }
+            return false;
         }
 
         private static bool RequiresResource(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
@@ -528,38 +538,86 @@ namespace WorldServer
 
         private static bool CanDeploySiege(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
         {
-            Player player = caster as Player;
-
-            if (player == null)
+            if (!(caster is Player player))
                 return false;
 
-            /*if (BattleFrontService.GetWarcampEntrance((ushort)player.ZoneId, player.Realm).IsWithinRadiusFeet(player, 100))
+            if (!(caster as Player).CbtInterface.IsPvp)
+                return false;
+
+            if ((caster as Player).ZoneId !=
+                WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontFromProgression().ZoneId)
             {
-                ProximityBattleFront front = player.Region.Bttlfront as ProximityBattleFront;
-                if (front != null && front.RealmLostKeep[(int)player.Realm-1])
-                    return front.CanDeploySiegeAtWarcamp(player, abInfo.Level, (uint)abInfo.CommandInfo[0].PrimaryValue);
+                player.SendClientMessage("You may only deploy Siege in the active zone",
+                    ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                return false;
             }
 
-            if (player.CurrentKeep != null && player.CurrentKeep.Ruin)
+            var siegeType = Siege.GetSiegeType((uint)abInfo.CommandInfo[0].PrimaryValue);
+
+            var nearRamSpawn = player.Region.Campaign.SiegeManager.CanDeploySiege(
+                (Player)caster,
+                new RamSpawnFlagComparitor(player.Realm), siegeType.Value);
+
+            var nearMerchant = player.Region.Campaign.SiegeManager.CanDeploySiege(
+                (Player)caster,
+                new SiegeMerchantLocationComparitor(), siegeType.Value);
+
+            var nearFriendlyKeep = player.Region.Campaign.SiegeManager.CanDeploySiege(
+                (Player)caster,
+                new FriendlyKeepLocationComparitor(), siegeType.Value);
+
+            var nearEnemyKeep = player.Region.Campaign.SiegeManager.CanDeploySiege(
+                (Player)caster,
+                new EnemyKeepLocationComparitor(siegeType.Value), siegeType.Value);
+
+            if (siegeType == SiegeType.RAM)
             {
-                player.SendClientMessage("Cannot deploy siege at ruined keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                return false;
-            }*/
-
-                if (player.CurrentKeep == null)
+                if (nearRamSpawn == DeploymentReason.Success || nearFriendlyKeep == DeploymentReason.Success)
+                    return true;
+                else
                 {
-                    player.SendClientMessage("Must deploy siege at friendly keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                    if (nearFriendlyKeep == DeploymentReason.MaximumCount || nearRamSpawn == DeploymentReason.MaximumCount)
+                    {
+                        player.SendClientMessage("There are too many of this type of Siege deployed", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                        return false;
+                    }
+                    if (nearFriendlyKeep == DeploymentReason.Range || nearRamSpawn == DeploymentReason.Range)
+                    {
+                        player.SendClientMessage("Must deploy at a friendly keep or near the siege deployment flag outside of your realm’s RvR camp.", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                        return false;
+                    }
                     return false;
                 }
-               
-                if (player.CurrentKeep == null || player.CurrentKeep.Realm != player.Realm)
+            }
+            if (siegeType == SiegeType.GTAOE || siegeType == SiegeType.SNIPER || siegeType == SiegeType.DIRECT)
+            {
+                // Deployed near enemy keep (attacking) or in defence near friendly keep
+                if (nearEnemyKeep == DeploymentReason.Success || nearFriendlyKeep == DeploymentReason.Success)
+                    return true;
+                else
                 {
-                    player.SendClientMessage("Must deploy siege at friendly keep", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                    // If deploying defensive siege - must be near the siege merchant
+                    if (nearMerchant == DeploymentReason.Success)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        if (nearEnemyKeep == DeploymentReason.MaximumCount)
+                        {
+                            player.SendClientMessage("There are too many of this type of Siege deployed", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                            return false;
+                        }
+                        if (nearFriendlyKeep == DeploymentReason.Range || nearEnemyKeep == DeploymentReason.Range)
+                        {
+                            player.SendClientMessage("Must deploy siege at keep/fort", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
+                            return false;
+                        }
+                    }
                     return false;
                 }
-            	
-
-            return player.CurrentKeep.CanDeploySiege(player, abInfo.Level, (uint)abInfo.CommandInfo[0].PrimaryValue);
+            }
+            return false;
         }
         #endregion
 
@@ -1581,6 +1639,11 @@ namespace WorldServer
         private static void SetAuraPropagation(Unit caster, BuffInfo buffInfo, AbilityModifierEffect myEffect)
         {
             buffInfo.AuraPropagation = "Foe";
+            if (myEffect.PrimaryValue == 40)
+            {
+                buffInfo.AuraPropagation = "Foe40";
+                (caster as Player).SendClientMessage("Debug : Casting Aura for40");
+            }
         }
 
         private static void SwitchBuffCommandParams(Unit caster, BuffInfo buffInfo, AbilityModifierEffect myEffect)

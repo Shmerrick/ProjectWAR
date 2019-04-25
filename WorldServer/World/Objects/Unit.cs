@@ -1,11 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using WorldServer.Managers;
+using WorldServer.NetWork.Handler;
+using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.AI;
+using WorldServer.World.Battlefronts.Bounty;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Positions;
+using WorldServer.World.Scenarios;
+using AbilityType = WorldServer.World.Abilities.Components.AbilityType;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     public enum StateOpcode
     {
@@ -235,28 +249,28 @@ namespace WorldServer
         /// </summary>
         private readonly int _stateInterval = 40000 + StaticRandom.Instance.Next(10000);
 
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
             if (!IsDead)
             {
-                UpdateHealth(tick);
+                UpdateHealth(msTick);
                 SendCollatedHit();
             }
 
-            if (_nextSend < tick)
+            if (_nextSend < msTick)
             {
-                _nextSend = tick + _stateInterval;
+                _nextSend = msTick + _stateInterval;
                 StateDirty = true;
             }
 
             if (StateDirty)
             {
-                _nextSend = tick + _stateInterval;
+                _nextSend = msTick + _stateInterval;
                 StateDirty = false;
                 SendState();
             }
 
-            base.Update(tick);
+            base.Update(msTick);
         }
 
         #region Sender
@@ -545,6 +559,44 @@ namespace WorldServer
             if (DamageSources.ContainsKey(caster))
                 DamageSources[caster] += damage;
             else DamageSources.Add(caster, damage);
+
+            if (this is Player player)
+            {
+                DeathLogger.Trace($"Looking for instanceManagerInstance");
+                ImpactMatrixManager impactManagerInstance;
+                if (player.ScnInterface.Scenario == null)
+                {
+                    //find the battlefrontstatus that this player is in.
+                    impactManagerInstance =
+                        player.GetBattlefrontManager(player.Region.RegionId).ImpactMatrixManagerInstance;
+                }
+                else
+                {
+                    impactManagerInstance = ScenarioMgr.ImpactMatrixManagerInstance;
+
+                }
+
+                var modificationValue = (float) impactManagerInstance.CalculateModificationValue((float) player.BaseBountyValue, (float) caster.BaseBountyValue);
+
+                // Added impact to ImpactMatrix
+                if (this.CbtInterface.IsPvp)
+                {
+
+                    if (Region == null)
+                        DeathLogger.Debug($"Region is null for caster {caster.Name}");
+                    if (Region?.Campaign == null)
+                        DeathLogger.Debug($"Region.Campaign is null for caster {caster.Name}");
+
+                    impactManagerInstance.UpdateMatrix(player.CharacterId,
+                        new PlayerImpact
+                        {
+                            CharacterId = caster.Info.CharacterId,
+                            ExpiryTimestamp = FrameWork.TCPManager.GetTimeStamp() + ImpactMatrixManager.IMPACT_EXPIRY_TIME,
+                            ImpactValue = (int) damage,
+                            ModificationValue = modificationValue
+                        });
+                }
+            }
         }
 
         public void ClearTrackedDamage()
@@ -863,10 +915,10 @@ namespace WorldServer
 
             World.Map.Occlusion.SegmentIntersect(Zone.ZoneId, Zone.ZoneId, fromRegionX, fromRegionY, Z + CHARACTER_HEIGHT, toRegionX, toRegionY, pinPos.Z + CHARACTER_HEIGHT, true, true, 190, ref playnice);
           
-            #if DEBUG
-            if (IsPlayer())
-                GetPlayer().SendLocalizeString(playnice.ToString(), SystemData.ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_DEFAULT);
-#endif
+//            #if DEBUG
+//            //if (IsPlayer())
+//               // GetPlayer().SendLocalizeString(playnice.ToString(), SystemData.ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_DEFAULT);
+//#endif
 
             return playnice.Result == World.Map.OcclusionResult.NotOccluded;
         }
@@ -911,8 +963,7 @@ namespace WorldServer
 
         public virtual void GenerateLoot(Player looter, float dropMod)
         {
-            DeathLogger.Warn($"Looter : {looter.Name}");
-            RewardLogger.Warn($"Looter : {looter.Name}");
+            RewardLogger.Debug($"Looter : {looter.Name}");
             
             lootContainer = LootsMgr.GenerateLoot(this, looter, dropMod);
             
@@ -1093,7 +1144,9 @@ namespace WorldServer
             if (AiInterface.CurrentBrain == null || (!(this is GameObject) && AiInterface.CurrentBrain is DummyBrain))
             {
                 if (Aggressive)
+                {
                     AiInterface.SetBrain(new AggressiveBrain(this));
+                }
                 else
                     AiInterface.SetBrain(new PassiveBrain(this));
             }

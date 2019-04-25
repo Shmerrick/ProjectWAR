@@ -1,6 +1,6 @@
-﻿using SystemData;
+﻿using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.CareerInterfaces
 {
     class CareerInterface_ShadowWarrior : CareerInterface
     {

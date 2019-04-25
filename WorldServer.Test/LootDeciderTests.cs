@@ -4,16 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common.Database.World.Battlefront;
+using FrameWork;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
+using WorldServer.World.Objects;
 
 namespace WorldServer.Test
 {
     [TestClass]
     public class LootDeciderTests
     {
-        public List<RVRZoneLockItemOptionReward> SampleZoneItemOptions { get; set; }
+        public List<RVRRewardItem> SampleZoneItemOptions { get; set; }
         public List<uint> SamplePlayerItems { get; set; }
 
         [TestInitialize]
@@ -21,9 +23,9 @@ namespace WorldServer.Test
         {
             SamplePlayerItems = new List<uint> {1, 2, 3, 4, 5, 6, 100, 200};
 
-            SampleZoneItemOptions = new List<RVRZoneLockItemOptionReward>
+            SampleZoneItemOptions = new List<RVRRewardItem>
             {
-                new RVRZoneLockItemOptionReward
+                new RVRRewardItem
                 {
                     ItemId = 100,
                     ItemCount = 1,
@@ -33,7 +35,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Gold,
                     RewardId = 1
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardItem
                 {
                     ItemId = 200,
                     ItemCount = 1,
@@ -43,7 +45,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Green,
                     RewardId = 2
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardItem
                 {
                     ItemId = 300,
                     ItemCount = 1,
@@ -53,7 +55,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Blue,
                     RewardId = 3
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardItem
                 {
                     ItemId = 400,
                     ItemCount = 2,
@@ -63,7 +65,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Purple,
                     RewardId = 4
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardItem
                 {
                     ItemId = 500,
                     ItemCount = 1,
@@ -73,7 +75,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Purple,
                     RewardId = 5
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardItem
                 {
                     ItemId = 301,
                     ItemCount = 1,
@@ -83,7 +85,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Blue,
                     RewardId = 6
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardItem
                 {
                     ItemId = 302,
                     ItemCount = 1,
@@ -93,7 +95,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Blue,
                     RewardId = 7
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardItem
                 {
                     ItemId = 303,
                     ItemCount = 1,
@@ -104,7 +106,7 @@ namespace WorldServer.Test
                     RewardId = 8
                 }
                 ,
-                new RVRZoneLockItemOptionReward
+                new RVRRewardItem
                 {
                     ItemId = 601,
                     ItemCount = 1,
@@ -114,7 +116,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Blue,
                     RewardId = 9
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardItem
                 {
                     ItemId = 602,
                     ItemCount = 1,
@@ -124,7 +126,7 @@ namespace WorldServer.Test
                     Rarity = (int) LootBagRarity.Blue,
                     RewardId = 10
                 },
-                new RVRZoneLockItemOptionReward
+                new RVRRewardItem
                 {
                     ItemId = 603,
                     ItemCount = 1,
@@ -139,7 +141,7 @@ namespace WorldServer.Test
 
         }
 
-        public class LockedRandomNumberGenerator : IRandomGenerator
+        public class LockedRandomNumberGenerator : Random
         {
             public int OverrideNumber { get; set; }
 
@@ -158,21 +160,21 @@ namespace WorldServer.Test
         [TestMethod]
         public void DetermineRVRZoneReward_NoMatches()
         {
-            var lootDecider = new LootDecider(this.SampleZoneItemOptions, new LockedRandomNumberGenerator(10));
+            var lootDecider = new BagContentSelector(this.SampleZoneItemOptions, StaticRandom.Instance);
             var bag = new LootBagTypeDefinition();
 
-            var result = lootDecider.DetermineRVRZoneReward(bag, 70, 64, new List<uint>());
+            var result = lootDecider.SelectBagContentForPlayer(bag, 70, 64, new List<uint>());
             Assert.IsFalse(result.IsValid());
         }
 
         [TestMethod]
         public void DetermineRVRZoneReward_1Match_ValidBag()
         {
-            var lootDecider = new LootDecider(this.SampleZoneItemOptions, new LockedRandomNumberGenerator(10));
+            var lootDecider = new BagContentSelector(this.SampleZoneItemOptions, new LockedRandomNumberGenerator(10));
             var bag = new LootBagTypeDefinition { BagRarity = LootBagRarity.Blue, Assignee = 1, LootBagNumber = 1 };
 
             // SHould match 1 record
-            var result = lootDecider.DetermineRVRZoneReward(bag, 20, 64, new List<uint>(), false);
+            var result = lootDecider.SelectBagContentForPlayer(bag, 20, 64, new List<uint>(), false);
             Assert.IsTrue(result.IsValid());
             Assert.IsTrue(result.RenownBand == 20);
             Assert.IsTrue(result.ItemId == 601);
@@ -181,11 +183,11 @@ namespace WorldServer.Test
         [TestMethod]
         public void DetermineRVRZoneReward_1Match_ValidBagPlayerItems()
         {
-            var lootDecider = new LootDecider(this.SampleZoneItemOptions, new LockedRandomNumberGenerator(10));
+            var lootDecider = new BagContentSelector(this.SampleZoneItemOptions, new LockedRandomNumberGenerator(10));
             var bag = new LootBagTypeDefinition { BagRarity = LootBagRarity.Blue, Assignee = 1, LootBagNumber = 1 };
 
             // SHould match 1 record
-            var result = lootDecider.DetermineRVRZoneReward(bag, 20, 64, SamplePlayerItems, false);
+            var result = lootDecider.SelectBagContentForPlayer(bag, 20, 64, SamplePlayerItems, false);
             Assert.IsTrue(result.IsValid());
             Assert.IsTrue(result.RenownBand == 20);
             Assert.IsTrue(result.ItemId == 601);
@@ -194,11 +196,11 @@ namespace WorldServer.Test
         [TestMethod]
         public void DetermineRVRZoneReward_NMatches_ValidBag()
         {
-            var lootDecider = new LootDecider(this.SampleZoneItemOptions, new LockedRandomNumberGenerator(10));
+            var lootDecider = new BagContentSelector(this.SampleZoneItemOptions, new LockedRandomNumberGenerator(10));
             var bag = new LootBagTypeDefinition { BagRarity = LootBagRarity.Blue, Assignee = 1, LootBagNumber = 1 };
 
             // SHould match 3 record
-            var result = lootDecider.DetermineRVRZoneReward(bag, 10, 64, new List<uint>(), false);
+            var result = lootDecider.SelectBagContentForPlayer(bag, 10, 64, new List<uint>(), false);
             Assert.IsTrue(result.IsValid());
             Assert.IsTrue(result.RenownBand == 10);
             Assert.IsTrue(result.ItemId == 301);
@@ -209,22 +211,22 @@ namespace WorldServer.Test
         [TestMethod]
         public void DetermineRVRZoneReward_ManualTest_ValidBag()
         {
-            var lootDecider = new LootDecider(this.SampleZoneItemOptions, new RandomGenerator());
+            var lootDecider = new BagContentSelector(this.SampleZoneItemOptions, new LockedRandomNumberGenerator(10));
             var bag = new LootBagTypeDefinition { BagRarity = LootBagRarity.Blue, Assignee = 1, LootBagNumber = 1 };
 
             // SHould match 3 record
-            var result = lootDecider.DetermineRVRZoneReward(bag, 10, 64, new List<uint>(), true);
+            var result = lootDecider.SelectBagContentForPlayer(bag, 10, 64, new List<uint>(), true);
             Assert.IsTrue(1==1);
         }
 
         [TestMethod]
         public void DetermineRVRZoneReward_NMatches_ValidBag_PlayerItemsNoMatch()
         {
-            var lootDecider = new LootDecider(this.SampleZoneItemOptions, new LockedRandomNumberGenerator(10));
+            var lootDecider = new BagContentSelector(this.SampleZoneItemOptions, new LockedRandomNumberGenerator(10));
             var bag = new LootBagTypeDefinition { BagRarity = LootBagRarity.Blue, Assignee = 1, LootBagNumber = 1 };
 
             // SHould match 3 record
-            var result = lootDecider.DetermineRVRZoneReward(bag, 10, 64, SamplePlayerItems, false);
+            var result = lootDecider.SelectBagContentForPlayer(bag, 10, 64, SamplePlayerItems, false);
             Assert.IsTrue(result.IsValid());
             Assert.IsTrue(result.RenownBand == 10);
             Assert.IsTrue(result.ItemId == 301);
@@ -233,13 +235,13 @@ namespace WorldServer.Test
         [TestMethod]
         public void DetermineRVRZoneReward_NMatches_ValidBag_PlayerItemsMatch()
         {
-            var lootDecider = new LootDecider(this.SampleZoneItemOptions, new LockedRandomNumberGenerator(10));
+            var lootDecider = new BagContentSelector(this.SampleZoneItemOptions, new LockedRandomNumberGenerator(10));
             var bag = new LootBagTypeDefinition { BagRarity = LootBagRarity.Blue, Assignee = 1, LootBagNumber = 1 };
 
             SamplePlayerItems.Add(301);
 
             // SHould match 3 record
-            var result = lootDecider.DetermineRVRZoneReward(bag, 10, 64, SamplePlayerItems, false);
+            var result = lootDecider.SelectBagContentForPlayer(bag, 10, 64, SamplePlayerItems, false);
             Assert.IsTrue(result.IsValid());
             Assert.IsTrue(result.RenownBand == 10);
             Assert.IsTrue(result.ItemId == 302);
@@ -247,7 +249,7 @@ namespace WorldServer.Test
             SamplePlayerItems.Add(302);
 
             // SHould match 3 record
-            var result2 = lootDecider.DetermineRVRZoneReward(bag, 10, 64, SamplePlayerItems, false);
+            var result2 = lootDecider.SelectBagContentForPlayer(bag, 10, 64, SamplePlayerItems, false);
             Assert.IsTrue(result2.IsValid());
             Assert.IsTrue(result2.RenownBand == 10);
             Assert.IsTrue(result2.ItemId == 303);
@@ -256,14 +258,14 @@ namespace WorldServer.Test
         [TestMethod]
         public void DetermineRVRZoneReward_NMatches_ValidBag_PlayerItemsMatchDupeOk()
         {
-            var lootDecider = new LootDecider(this.SampleZoneItemOptions, new LockedRandomNumberGenerator(10));
+            var lootDecider = new BagContentSelector(this.SampleZoneItemOptions, new LockedRandomNumberGenerator(10));
             var bag = new LootBagTypeDefinition { BagRarity = LootBagRarity.Blue, Assignee = 1, LootBagNumber = 1 };
 
             SamplePlayerItems.Add(301);
             SamplePlayerItems.Add(601);
 
             // SHould match 3 record
-            var result = lootDecider.DetermineRVRZoneReward(bag, 20, 64, SamplePlayerItems, false);
+            var result = lootDecider.SelectBagContentForPlayer(bag, 20, 64, SamplePlayerItems, false);
             Assert.IsTrue(result.IsValid());
             Assert.IsTrue(result.RenownBand == 20);
             Assert.IsTrue(result.ItemId == 601);
@@ -271,7 +273,7 @@ namespace WorldServer.Test
             SamplePlayerItems.Add(602);
 
             // SHould match 3 record
-            var result2 = lootDecider.DetermineRVRZoneReward(bag, 20, 64, SamplePlayerItems, false);
+            var result2 = lootDecider.SelectBagContentForPlayer(bag, 20, 64, SamplePlayerItems, false);
             Assert.IsTrue(result2.IsValid());
             Assert.IsTrue(result2.RenownBand == 20);
             Assert.IsTrue(result2.ItemId == 601);

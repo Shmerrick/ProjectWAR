@@ -1,15 +1,25 @@
-﻿using Common;
-using FrameWork;
-using GameData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using SystemData;
-using WorldServer.Scenarios.Objects;
+using Common;
+using FrameWork;
+using GameData;
+using WorldServer.Managers;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities.Buffs.SpecialBuffs;
+using WorldServer.World.Abilities.CareerInterfaces;
+using WorldServer.World.Abilities.Components;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using WorldServer.World.Scenarios.Objects;
+using Item = WorldServer.World.Objects.Item;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Buffs
 {
     /// <summary>
     /// Holds and invokes buff commands.
@@ -18,6 +28,7 @@ namespace WorldServer
     public static class BuffEffectInvoker
     {
         const byte MAX_AOE_TARGETS = 9;
+        private const int HOLD_THE_LINE_CONTRIBUTION_CHANCE = 8;
 
         private const byte BUFF_START = 1;
         private const byte BUFF_TICK = 2;
@@ -1179,6 +1190,9 @@ namespace WorldServer
                     hostBuff.OptionalObject = new Point3D(hostBuff.Caster.WorldPosition);
                     ((Player)hostBuff.Target).SendDialog(Dialog.ResurrectionOffer, hostBuff.Caster.Oid, 60);
                     hostBuff.AddBuffParameter(cmd.BuffLine, -1);
+
+
+
                     break;
             }
             return true;
@@ -1271,7 +1285,7 @@ namespace WorldServer
         /// </summary>
         private static bool ArtilleryStrike(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
-            if (hostBuff.OptionalObject is Siege || hostBuff.OptionalObject is KeepNpcCreature.KeepCreature)
+            if (hostBuff.OptionalObject is Siege || hostBuff.OptionalObject is KeepCreature)
                 HandleArtillery(hostBuff, cmd, target);
             else
                 HandleAnticampSiege(hostBuff, cmd, target);
@@ -1310,9 +1324,6 @@ namespace WorldServer
             relevantPlayers = Math.Min(relevantPlayers, 50);
 
             float artilleryScale = front.GetArtilleryDamageScale(weapon.Realm);
-
-            if (siege != null)
-                artilleryScale *= siege.Keep.GetSiegeDamageMod(siege.SiegeInterface.Type);
 
             int desiredStackLevel = (int)(Point2D.Clamp(relevantPlayers - 20, 0, 30) * 0.1f * artilleryScale);
 
@@ -2003,6 +2014,13 @@ namespace WorldServer
 
                         target.CrowdControlType = (byte)cmd.PrimaryValue;
                         target.AbtInterface.OnPlayerCCed();
+
+                        // 
+                        if ((cmd.PrimaryValue == 16) && (cmd.SecondaryValue == 1))
+                        {
+                            (hostBuff.Caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.KNOCK_DOWN);
+                        }
+
                         #region Client Effect
                         if (cmd.PrimaryValue >= 16)
                         {
@@ -2109,6 +2127,8 @@ namespace WorldServer
                         }
 
                         hostBuff.AddBuffParameter(cmd.BuffLine, 0);
+
+                        (hostBuff.Caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.AOE_ROOT);
                     }
 
                     break;
@@ -2674,6 +2694,12 @@ namespace WorldServer
                         target.StsInterface.HTLStacks += 3;
                     else ++target.StsInterface.HTLStacks;
                     hostBuff.AddBuffParameter(1, hostBuff.Caster == hostBuff.Target ? 45 : 15);
+
+                    // Give contribution for HTL.
+                    if (StaticRandom.Instance.Next(100) < HOLD_THE_LINE_CONTRIBUTION_CHANCE)
+                    {
+                        (hostBuff.Caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.HOLD_THE_LINE);
+                    }
                     break;
                 case BUFF_END:
                 case BUFF_REMOVE:
@@ -2974,13 +3000,13 @@ namespace WorldServer
 
         private static bool RefreshIfMoving(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
-            //Lets not let a refresh of a buff happen to a siege object. ram / oil and cannons.
-            if (target is Siege)
+            //Lets not let a refresh of a buff happen to a siege object. for now good but needs more once sieges and ram rework is complete.
+            if (target is Siege)            
                 return true;
-
+            
             //lets not let a refresh of a buff happen to a keep lord
-            WorldServer.World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature Lord = target as WorldServer.World.BattleFronts.Keeps.KeepNpcCreature.KeepCreature;
-            if (Lord != null && Lord.returnflag().Info.KeepLord)
+            var lord = target as KeepCreature;
+            if (lord != null && lord.returnflag().Info.KeepLord)
                 return true;
 
             if (target.IsMoving)
@@ -3107,11 +3133,6 @@ namespace WorldServer
                     cmd.EventChance -= 25;
 
                 List<Player> nearby = player.WorldGroup.GetPlayersCloseTo(player, 50);
-
-                player.Region.Campaign.AddContribution(player, 5);
-
-                foreach (Player member in nearby)
-                    player.Region.Campaign.AddContribution(member, 5);
 
                 cmd.EventChance -= (byte)(nearby.Count * 5);
             }
@@ -4231,7 +4252,7 @@ namespace WorldServer
 
         #endregion
 
-        #region BO
+        #region BattlefieldObjective
         private static bool DaGreenest(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
         {
             cmd.CommandResult = damageInfo.DamageType == 0 ? (short)3242 : (short)(3238 + (int)damageInfo.DamageType);

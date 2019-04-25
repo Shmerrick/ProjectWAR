@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using WorldServer.Managers;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
@@ -16,6 +17,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         public uint ItemId { get; set; }
         public uint ItemCount { get; set; }
         public byte RenownBand { get; set; }
+
+        
 
         public LootBagTypeDefinition()
         {
@@ -49,7 +52,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             var result = new List<LootBagTypeDefinition>();
 
             var numberGoldBags = ((uint)Math.Floor((numberLootBags / 10.0)));
-            var numberPurpledBags = ((uint)Math.Floor((numberLootBags / 10.0)));
+            var numberPurpleBags = ((uint)Math.Floor((numberLootBags / 8.0)));
             var numberBlueBags = ((uint)Math.Floor((numberLootBags / 3.0)));
             var numberGreenBags = ((uint)Math.Floor((numberLootBags / 2.0)));
 
@@ -59,7 +62,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             {
                 result.Add(new LootBagTypeDefinition { LootBagNumber= lootBagNumber++, Assignee = 0, BagRarity = LootBagRarity.Gold });
             }
-            for (byte i = 0; i < numberPurpledBags; i++)
+            for (byte i = 0; i < numberPurpleBags; i++)
             {
                 result.Add(new LootBagTypeDefinition { LootBagNumber = lootBagNumber++, Assignee = 0, BagRarity = LootBagRarity.Purple });
             }

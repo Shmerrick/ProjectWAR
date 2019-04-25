@@ -1,11 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using Common;
 using FrameWork;
+using WorldServer.Managers;
+using WorldServer.World.Abilities.Objects;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class MovementInterface : BaseInterface
     {
@@ -26,7 +29,8 @@ namespace WorldServer
             Turn,
             Move,
             Follow,
-            Recall
+            Recall,
+            TacticalWithdrawl
         }
 
         public EMoveState MoveState { get; private set; }
@@ -66,6 +70,68 @@ namespace WorldServer
                 case EMoveState.Recall:
                     UpdateRecall(tick);
                     break;
+                case EMoveState.TacticalWithdrawl:
+                    UpdateWithdrawl(tick);
+                    if (_moveDuration > 0)
+                        UpdateMove(tick);
+                    break;
+            }
+        }
+
+        private void UpdateWithdrawl(long tick)
+        {
+            if (IsMoving)
+            {
+                if (_unit.GetDistanceTo(ThreateningTarget) > _minWithdrawlTolerance)
+                {
+                    StopWithdrawlMove();
+                    return;
+                }
+            }
+
+            if (MovementSpeed == 0 || _unit != null && _unit.IsDisabled || _unit != null && _unit.IsStaggered)
+            {
+                StopWithdrawlMove();
+                return;
+            }
+
+            if (tick > _nextWithdrawlUpdate)
+            {
+                // already out of range
+                int distTo = _unit.GetDistanceTo(ThreateningTarget);
+
+                _withdrawlCatchupFactor = _pathThrough && distTo < _minWithdrawlTolerance + 30 ? 30 : 0;
+
+                if (distTo > _maxWithdrawlTolerance)
+                {
+                    _nextWithdrawlUpdate = tick + WithdrawlReacquisitionInterval;
+                    // Gets the heading of the threatening unit (should end facing the ThreateningTarget)
+                    _unit.Heading = _unit.WorldPosition.GetHeading(ThreateningTarget.WorldPosition);
+                    return;
+                }
+
+                _nextWithdrawlUpdate = tick + WITHDRAWL_PATH_UPDATE_INTERVAL;
+
+                _destWithdrawlPos.SetCoordsFrom(ThreateningTarget.WorldPosition);
+
+                _toTarget.X = _unit.WorldPosition.X - _destWithdrawlPos.X;
+                _toTarget.Y = _unit.WorldPosition.Y - _destWithdrawlPos.Y;
+
+                _toTarget.Normalize();
+
+                if (!_pathThrough || !ThreateningTarget.IsMoving)
+                {
+                    _destWithdrawlPos.X += (int)(_toTarget.X * _minWithdrawlTolerance * 12);
+                    _destWithdrawlPos.Y += (int)(_toTarget.Y * _minWithdrawlTolerance * 12);
+                }
+
+                else
+                {
+                    _destWithdrawlPos.X -= (int)(_toTarget.X * _minWithdrawlTolerance * 12);
+                    _destWithdrawlPos.Y -= (int)(_toTarget.Y * _minWithdrawlTolerance * 12);
+                }
+
+                Move(_destWithdrawlPos);
             }
         }
 
@@ -74,6 +140,7 @@ namespace WorldServer
         public ushort BaseSpeed { get; private set; } = 100;
         public ushort MovementSpeed { get; private set; } = 100;
         private int _followCatchupFactor;
+        private int _withdrawlCatchupFactor;
 
         private int _totalSpeed
         {
@@ -81,6 +148,9 @@ namespace WorldServer
             {
                 if (MoveState == EMoveState.Follow)
                     return MovementSpeed + _followCatchupFactor;
+                if (MoveState == EMoveState.TacticalWithdrawl)
+                    return MovementSpeed + _withdrawlCatchupFactor;
+
                 return MovementSpeed;
             }
         }
@@ -120,6 +190,10 @@ namespace WorldServer
                     _nextFollowUpdate = 0;
                     Follow(FollowTarget, _minFollowTolerance, _maxFollowTolerance);
                     break;
+                case EMoveState.TacticalWithdrawl:
+                    _nextWithdrawlUpdate = 0;
+                    TacticalWithdrawl(ThreateningTarget, _minWithdrawlTolerance, _maxWithdrawlTolerance);
+                    break;
             }
         }
 
@@ -130,6 +204,19 @@ namespace WorldServer
         public void TurnTo(Point3D destWorldPos)
         {
             ushort newHeading = _unit.WorldPosition.GetHeading(destWorldPos);
+
+            if (newHeading != _unit.Heading)
+            {
+                _unit.Heading = newHeading;
+                if (!IsMoving)
+                    UpdateMovementState(null);
+            }
+        }
+
+
+        public void TurnAwayFrom(Point3D destWorldPos)
+        {
+            ushort newHeading = (ushort) (_unit.WorldPosition.GetHeading(destWorldPos)+2048);
 
             if (newHeading != _unit.Heading)
             {
@@ -232,6 +319,7 @@ namespace WorldServer
 
             _unit.SetPosition(pinX, pinY, pinZ, _unit.Heading, destZone.ZoneId);
 
+            
             if (tick > _moveStartTime + _moveDuration)
             {
                 if (MoveState == EMoveState.Move)
@@ -256,9 +344,22 @@ namespace WorldServer
             UpdateMovementState(null);
         }
 
+        public void StopWithdrawlMove()
+        {
+            _followCatchupFactor = 0;
+            MoveState = EMoveState.None;
+            _moveDuration = 0;
+            FollowTarget = null;
+            UpdateMovementState(null);
+        }
+
         #endregion
 
         #region Follow
+
+        public Unit ThreateningTarget { get; private set; }
+        private long _nextWithdrawlUpdate;
+        private int _minWithdrawlTolerance, _maxWithdrawlTolerance;
 
         public Unit FollowTarget { get; private set; }
         private long _nextFollowUpdate;
@@ -268,8 +369,10 @@ namespace WorldServer
         /// </summary>
         private bool _pathThrough;
         const int FOLLOW_PATH_UPDATE_INTERVAL = 500;
+        const int WITHDRAWL_PATH_UPDATE_INTERVAL = 500;
         public int FollowReacquisitionInterval = 500;
-        
+        public int WithdrawlReacquisitionInterval = 500;
+
         public void Follow(Unit followTarget, int minTolerance, int maxTolerance, bool pathThrough = false, bool ForceMove = false)
         {
             if (MovementSpeed == 0 && !ForceMove || _unit != null && _unit.IsDisabled && !ForceMove || _unit != null && _unit.IsStaggered && !ForceMove)
@@ -298,7 +401,34 @@ namespace WorldServer
                 TurnTo(FollowTarget.WorldPosition);
         }
 
+
+        public void TacticalWithdrawl(Unit threateningTarget, int minTolerance, int maxTolerance, bool pathThrough = false, bool ForceMove = false)
+        {
+            if (MovementSpeed == 0 || _unit != null && _unit.IsDisabled || _unit != null && _unit.IsStaggered)
+            {
+                return;
+            }
+
+            if (ThreateningTarget == threateningTarget && !ForceMove)
+            {
+                TurnTo(ThreateningTarget.WorldPosition);
+                return;
+            }
+
+            ThreateningTarget = threateningTarget;
+
+            _minWithdrawlTolerance = minTolerance;
+            _maxWithdrawlTolerance = maxTolerance;
+            _nextWithdrawlUpdate = 0;
+
+            MoveState = EMoveState.TacticalWithdrawl;
+
+            if (_unit.WorldPosition.IsWithinRadiusFeet(ThreateningTarget.WorldPosition, minTolerance))
+                TurnTo(ThreateningTarget.WorldPosition);
+        }
+
         private readonly Point3D _destFollowPos = new Point3D();
+        private readonly Point3D _destWithdrawlPos = new Point3D();
         private readonly Vector2 _toTarget = new Vector2();
 
         private void UpdateFollow(long tick)

@@ -2,68 +2,139 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WorldServer.World.Battlefronts.Bounty;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
+    /// <summary>
+    /// Responsibility : To calculate the number of rewards, select players and assign 
+    /// </summary>
     public class RewardAssigner : IRewardAssigner
     {
-        public IRandomGenerator RandomGenerator { get; set; }
-        public IRewardSelector RewardSelector { get; }
+        public Random RandomGenerator { get; set; }
 
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
-        public RewardAssigner(IRandomGenerator randomGenerator, IRewardSelector rewardSelector)
+        public RewardAssigner(Random randomGenerator)
         {
             RandomGenerator = randomGenerator;
-            RewardSelector = rewardSelector;
         }
 
         /// <summary>
-        /// For a list of player Ids, select those getting a reward, and assign a colored loot bag (reward) to them.
+        /// Increase the number of possible awards based upon the number of eligible Players.
         /// </summary>
         /// <param name="eligiblePlayers"></param>
-        /// <param name="forceNumberRewards"></param>
         /// <returns></returns>
-        public List<LootBagTypeDefinition> AssignLootToPlayers(List<uint> eligiblePlayers, int forceNumberRewards = 0)
+        public byte DetermineNumberOfAwards(int eligiblePlayers)
         {
+            RewardLogger.Info($"{eligiblePlayers}");
+
+            byte numberOfAwards = 0;
+            // Simple set for low pop for now. TODO base this upon population sizes and % chance to win a bag per flip.
+            if (eligiblePlayers == 0)
+                numberOfAwards = 0;
+            else
+            {
+                if (eligiblePlayers < 10)
+                    numberOfAwards = 4;
+                else
+                {
+                    if (eligiblePlayers < 20)
+                        numberOfAwards = 6;
+                    else
+                    {
+                        numberOfAwards = (byte)(eligiblePlayers < 40 ? 12 : 20);
+                    }
+                }
+            }
+            if (eligiblePlayers < numberOfAwards)
+                numberOfAwards = (byte)eligiblePlayers;
+
+            RewardLogger.Info($"Number of eligible players {eligiblePlayers}, number of Awards {numberOfAwards}");
+
+            return numberOfAwards;
+        }
+
+
+        public List<LootBagTypeDefinition> DetermineBagTypes(int numberOfBags)
+        {
+            // Define the types of bags to give
+            var lootBagDefinitions = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(numberOfBags);
+            RewardLogger.Debug($"Number loot bags {lootBagDefinitions.Count} to award.");
+
+            return lootBagDefinitions;
+        }
+
+        /// <summary>
+        /// Assign a bagdefinition to a player that is eligible.
+        /// </summary>
+        /// <param name="contributionManager"></param>
+        /// <param name="numberOfBagsToAward"></param>
+        /// <param name="bagDefinitions"></param>
+        /// <param name="eligiblePlayers"></param>
+        /// <returns></returns>
+        public List<LootBagTypeDefinition> AssignLootToPlayers(
+            ContributionManager contributionManager,
+            int numberOfBagsToAward, 
+            List<LootBagTypeDefinition> bagDefinitions, List<KeyValuePair<uint, int>> eligiblePlayers)
+        {
+            RewardLogger.Debug($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBagsToAward} Bags");
+            // Get the character Ids of the eligible characters
+            var eligiblePlayerCharacterIds = eligiblePlayers.Select(x => x.Key).ToList();
+
             if (eligiblePlayers.Count == 0)
                 return null;
 
-            // Randomise the players
-            var randomisedPlayerList = eligiblePlayers.OrderBy(a => Guid.NewGuid()).ToList();
-            //var randomisedPlayerList = RewardSelector.RandomisePlayerList(eligiblePlayers);
-            int numberLootBags = 0;
-            // Determine the number of awards to give
-            numberLootBags = forceNumberRewards == 0 ? RewardSelector.DetermineNumberOfAwards((uint)eligiblePlayers.Count()) : forceNumberRewards;
-
-            // Define the types of awards to give
-            var lootBagDefinitions = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(numberLootBags);
-            RewardLogger.Info($"Number loot bags {lootBagDefinitions.Count}");
-
-            var i = 0;
-
-            foreach (var lootBagTypeDefinition in lootBagDefinitions)
+            if (bagDefinitions == null)
             {
-                // If we run out of players break the loop
-                if (i >= randomisedPlayerList.Count)
-                    break;
-                var selectedPlayer = randomisedPlayerList[i];
-
-                try
-                {
-                    RewardLogger.Debug($"Selected player {selectedPlayer} {eligiblePlayers.Count} for reward");
-                    lootBagTypeDefinition.Assignee = selectedPlayer;
-                }
-                catch (Exception e)
-                {
-                    RewardLogger.Warn($"{e.Message}");
-                }
-                
-                i++;
+                RewardLogger.Warn("BagDefinitions is null");
+                return null;
             }
-            //var selectedPlayer = randomisedPlayerList[StaticRandom.Instance.Next((eligiblePlayers.Count))];
-            //RewardLogger.Debug($"Selected player {selectedPlayer} {eligiblePlayers.Count} for reward");
-            //lootBagTypeDefinition.Assignee = selectedPlayer;
-            return lootBagDefinitions;
+
+            RewardLogger.Info($"Assigning loot. Number of Bags : {bagDefinitions.Count} Number of players : {eligiblePlayers.Count}");
+
+            var bagIndex = 0;
+            foreach (var selectedPlayer in eligiblePlayers)
+            {
+                // Bag definition exists.
+                if (bagDefinitions.Count > bagIndex)
+                {
+                    var lootBagTypeDefinition = bagDefinitions[bagIndex];
+                    if (lootBagTypeDefinition == null)
+                    {
+                        RewardLogger.Warn($"lootBagTypeDefinition (index = {bagIndex}) is null");
+                        continue;
+                    }
+
+                    try
+                    {
+                        lootBagTypeDefinition.Assignee = selectedPlayer.Key;
+                        RewardLogger.Debug(
+                            $"Selected player {selectedPlayer} selected for reward. LootBag Id : {lootBagTypeDefinition.LootBagNumber} ({lootBagTypeDefinition.BagRarity}). Index = {bagIndex}");
+                        // player assigned, go to next bag
+                        bagIndex++;
+                    }
+                    catch (Exception e)
+                    {
+                        RewardLogger.Warn($"{e.Message}");
+                    }
+                }
+
+            }
+            return bagDefinitions;
         }
-}
+
+        public int GetNumberOfBagsToAward(int forceNumberBags, List<KeyValuePair<uint, int>> allContributingPlayers)
+        {
+            RewardLogger.Debug($"forceNumberBags = {forceNumberBags}");
+
+            // Force the number of bags to hand out.
+            var numberOfBags = forceNumberBags;
+            if (forceNumberBags == 0)
+                numberOfBags = (int)DetermineNumberOfAwards(allContributingPlayers.Count());
+
+            RewardLogger.Debug($"AllContributing Players Count = {allContributingPlayers.Count()}, numberBags = {numberOfBags}");
+
+            return numberOfBags;
+        }
+    }
 }

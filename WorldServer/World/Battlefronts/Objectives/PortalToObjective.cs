@@ -1,9 +1,12 @@
-﻿using Common.Database.World.BattleFront;
+﻿using SystemData;
+using Common.Database.World.BattleFront;
 using FrameWork;
-using SystemData;
-using static WorldServer.World.Battlefronts.Apocalypse.BattleFrontConstants;
+using WorldServer.NetWork.Handler;
+using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
 
-namespace WorldServer.World.BattleFronts.Objectives
+namespace WorldServer.World.Battlefronts.Objectives
 {
     /// <summary>
     /// Game object representing a portal around an objective
@@ -46,9 +49,9 @@ namespace WorldServer.World.BattleFronts.Objectives
                 return;
             }
 
-            _nextAvailableTimestamp = now + PORTAL_DELAY;
+            _nextAvailableTimestamp = now + BattleFrontConstants.PORTAL_DELAY;
 
-            Teleport(player, _target, _targetPos);
+            Teleport(player, _target.ZoneId, _targetPos);
         }
     }
 }

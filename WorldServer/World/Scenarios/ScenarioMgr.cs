@@ -8,8 +8,13 @@ using Common;
 using FrameWork;
 using GameData;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities.CareerInterfaces;
+using WorldServer.World.Battlefronts.Bounty;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer.Scenarios
+namespace WorldServer.World.Scenarios
 {
     enum ScenarioQueueType
     {
@@ -475,6 +480,9 @@ namespace WorldServer.Scenarios
         /// <summary>Pending queue actions mainly updated by Scenario TCP handler</summary>
         private readonly List<PendingQueueAction> _pendingQueueActions = new List<PendingQueueAction>();
 
+        public static ImpactMatrixManager ImpactMatrixManagerInstance { get; set; }
+
+
         /// <summary>Flag to ask for delayed manager stop</summary>
         private bool Running = true;
         /// <summary>Dedicated event of the manager</summary>
@@ -495,6 +503,8 @@ namespace WorldServer.Scenarios
         /// <param name="activeScenarios">List of enabled scenarios (table scenario_objects)</param>
         public ScenarioMgr(List<Scenario_Info> activeScenarios)
         {
+            ImpactMatrixManagerInstance = new ImpactMatrixManager();
+
             foreach (Scenario_Info scenario in ScenarioService.Scenarios)
             {
                 _instances.Add(scenario, new Dictionary<byte, List<Scenario>>());

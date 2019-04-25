@@ -39,32 +39,42 @@ namespace WorldServer.Services.World
 
         public static List<Waypoint> GetNpcWaypoints(uint initialWayPoint)
         {
-            var match = TableWaypoints.SingleOrDefault(x => x.GUID == initialWayPoint);
-            if (match != null)
-            {
-                var result = GetNextWayPoint(match.GUID, new List<Waypoint>());
-                return result;
-            }
-            return null;
+            //var match = TableWaypoints.SingleOrDefault(x => x.GUID == initialWayPoint);
+            //if (match != null)
+            //{
+            //    var result = GetNextWayPoint(match.GUID, new List<Waypoint>());
+            //    return result;
+            //}
+            //return null;
+
+            return TableWaypoints.Where(x => x.CreatureSpawnGUID == initialWayPoint).ToList();
 
 
             //IEnumerable<Waypoint> NpcWaypoints = LookupWaypoints[WayPointUID];
             //return NpcWaypoints.ToList();
         }
 
+        public static List<Waypoint> GetKeepNpcWaypoints(int infoWaypointGuid)
+        {
+            return TableWaypoints.Where(x => x.GameObjectSpawnGUID == infoWaypointGuid).ToList();
+        }
+
         public static void DatabaseAddWaypoint(Waypoint AddWp)
         {
-            Database.AddObject(AddWp); Database.ForceSave();
+            Database.AddObject(AddWp);
+            Database.ForceSave();
         }
 
         public static void DatabaseSaveWaypoint(Waypoint SaveWp)
         {
-            Database.SaveObject(SaveWp); Database.ForceSave();
+            Database.SaveObject(SaveWp);
+            Database.ForceSave();
         }
 
         public static void DatabaseDeleteWaypoint(Waypoint DeleteWp)
         {
-            Database.DeleteObject(DeleteWp); Database.ForceSave();
+            Database.DeleteObject(DeleteWp);
+            Database.ForceSave();
         }
 
 		/// <summary>

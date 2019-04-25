@@ -1,8 +1,12 @@
 ﻿using Common;
 using FrameWork;
 using GameData;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Objects
 {
     class LandMine : BuffHostObject
     {
@@ -41,9 +45,9 @@ namespace WorldServer
             _nextCheckInterval = TCPManager.GetTimeStampMS() + 1000;
         }
 
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
-            if (!_hasExploded && tick > _nextCheckInterval)
+            if (!_hasExploded && msTick > _nextCheckInterval)
             {
                 foreach (var obj in ObjectsInRange)
                 {
@@ -64,7 +68,7 @@ namespace WorldServer
                     }
                 }
 
-                _nextCheckInterval = tick + 1000;
+                _nextCheckInterval = msTick + 1000;
             }
 
             if (PendingDisposal)
@@ -73,8 +77,8 @@ namespace WorldServer
                 return;
             }
 
-            BuffInterface.Update(tick);
-            EvtInterface.Update(tick);
+            BuffInterface.Update(msTick);
+            EvtInterface.Update(msTick);
         }
 
         protected override void SetDeath(Unit killer)

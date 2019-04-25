@@ -5,8 +5,12 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
+using WorldServer.Managers;
+using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class SocialInterface : BaseInterface
     {

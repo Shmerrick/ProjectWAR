@@ -4,11 +4,17 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.Scenarios;
+using WorldServer.Managers;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using WorldServer.World.Scenarios;
+
 //using WorldServer.NetWork.Handler;    //this is needed for state2
 
-namespace WorldServer
+namespace WorldServer.NetWork.Handler
 {
     public class MovementHandlers : IPacketHandler
     {
@@ -441,7 +447,7 @@ namespace WorldServer
                     }
                 }
 
-                if (player.Zone.Info.Illegal && player.GmLevel < 1)
+                if (player.Zone.Info.Illegal && player.GmLevel == 1)
                 {
                     if (!player.IsDead && player.BuffInterface.GetBuff(27960, player) == null)
                         player.BuffInterface.QueueBuff(new BuffQueueInfo(player, player.Level, AbilityMgr.GetBuffInfo(27960)));

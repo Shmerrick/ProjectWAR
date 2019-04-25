@@ -6,6 +6,11 @@ using System.Linq;
 using System.Reflection;
 using static WorldServer.Managers.Commands.GMUtils;
 using GameData;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.Managers.Commands
 {

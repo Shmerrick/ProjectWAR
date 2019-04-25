@@ -4,6 +4,7 @@ using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -61,7 +62,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
 		/// <summary>
-		/// Return an additional scale value based upon who is holding a BO and how many players from either side are near.
+		/// Return an additional scale value based upon who is holding a BattlefieldObjective and how many players from either side are near.
 		/// </summary>
 		/// <param name="owningRealm"></param>
 		/// <param name="nearOrderCount"></param>
@@ -94,7 +95,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             ushort influenceId;
 
-            _logger.Trace($"Objective {objectiveName} has {playersWithinRange} players nearby");
+            _logger.Trace($"Objective {objectiveName} has {playersWithinRange} players (realm:{owningRealm}) nearby");
 
 			// Because of the Field of Glory buff, the XP value here is doubled.
 			// The base reward in T4 is therefore 3000 XP.
@@ -105,13 +106,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             foreach (var player in playersWithinRange)
             {
-                if (player.Realm != owningRealm || player.IsAFK || player.IsAutoAFK)
-                    continue;
+                // if the BattlefieldObjective is Neutral, allow rewards. 
+                if (owningRealm != Realms.REALMS_REALM_NEUTRAL)
+                {
+                    if (player.Realm != owningRealm || player.IsAFK || player.IsAutoAFK)
+                        continue;
+                }
 
-                // Bad dirty hak by Hargrim to fix Area Influence bug
+                
+
+
                 if (player.CurrentArea != null)
                 {
-                    if (owningRealm == Realms.REALMS_REALM_ORDER)
+                    if (player.Realm == Realms.REALMS_REALM_ORDER)
                         influenceId = (ushort) player.CurrentArea.OrderInfluenceId;
                     else
                         influenceId = (ushort) player.CurrentArea.DestroInfluenceId;
@@ -135,8 +142,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 player.AddXp(xp, false, false);
                 player.AddRenown(rr, false, RewardType.ObjectiveCapture, objectiveName);
                 
-                // TODO
-                //Campaign.AddContribution(player, (uint)baseRp);
 
                 _logger.Trace($"Player:{player.Name} ScaleMult:{rewardScaleMultiplier} XP:{xp} RR:{rr}");
             }
@@ -146,23 +151,30 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			{
 				case BORewardType.SMALL_CONTESTED: // small tick
 					if (owningRealm == Realms.REALMS_REALM_ORDER)
-						VP.OrderVictoryPoints += 15;
+						VP.OrderVictoryPoints += 0;
 					else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
-						VP.DestructionVictoryPoints += 15;
+						VP.DestructionVictoryPoints += 0;
 					break;
 
 				case BORewardType.BIG: // big tick
-					if (owningRealm == Realms.REALMS_REALM_ORDER)
-						VP.OrderVictoryPoints += 200;
-					else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
-						VP.DestructionVictoryPoints += 200;
-					break;
+				    if (owningRealm == Realms.REALMS_REALM_ORDER)
+				    {
+				        VP.OrderVictoryPoints += 50;
+				        VP.DestructionVictoryPoints -= 50;
+                    }
+				    else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
+				    {
+				        VP.DestructionVictoryPoints += 50;
+				        VP.OrderVictoryPoints -= 50;
+                    }
+
+				    break;
 
 				case BORewardType.SMALL_LOCKED: // small tick
 					if (owningRealm == Realms.REALMS_REALM_ORDER)
-						VP.OrderVictoryPoints += 30;
+						VP.OrderVictoryPoints += 0;
 					else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
-						VP.DestructionVictoryPoints += 30;
+						VP.DestructionVictoryPoints += 0;
 					break;
 
 				default:

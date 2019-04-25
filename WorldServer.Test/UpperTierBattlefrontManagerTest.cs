@@ -4,9 +4,11 @@ using Common;
 using Common.Database.World.Battlefront;
 using GameData;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.BattleFronts.Objectives;
 using FakeItEasy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
 
 
 namespace WorldServer.Test
@@ -18,13 +20,13 @@ namespace WorldServer.Test
         public List<RVRProgression> SampleProgressionList { get; set; }
         public RegionMgr Region1 { get; set; }
         public RegionMgr Region3 { get; set; }
-        public List<CampaignObjective> PraagBOList { get; set; }
-        public List<CampaignObjective> ChaosWastesBOList { get; set; }
-        public List<CampaignObjective> ThunderMountainBOList { get; set; }
-        public List<CampaignObjective> KadrinValleyBOList { get; set; }
+        public List<WorldServer.World.Battlefronts.Apocalypse.BattlefieldObjective> PraagBOList { get; set; }
+        public List<BattlefieldObjective> ChaosWastesBOList { get; set; }
+        public List<BattlefieldObjective> ThunderMountainBOList { get; set; }
+        public List<BattlefieldObjective> KadrinValleyBOList { get; set; }
 
-        public List<CampaignObjective> Region1BOList { get; set; }
-        public List<CampaignObjective> Region3BOList { get; set; }
+        public List<BattlefieldObjective> Region1BOList { get; set; }
+        public List<BattlefieldObjective> Region3BOList { get; set; }
         public List<RegionMgr> RegionMgrs { get; set; }
         public IApocCommunications FakeComms { get; set; }
 
@@ -35,13 +37,13 @@ namespace WorldServer.Test
             FakeComms = A.Fake<IApocCommunications>();
             RegionMgrs = new List<RegionMgr>();
 
-            PraagBOList = new List<CampaignObjective>();
-            ChaosWastesBOList = new List<CampaignObjective>();
-            ThunderMountainBOList = new List<CampaignObjective>();
-            KadrinValleyBOList = new List<CampaignObjective>();
+            PraagBOList = new List<BattlefieldObjective>();
+            ChaosWastesBOList = new List<BattlefieldObjective>();
+            ThunderMountainBOList = new List<BattlefieldObjective>();
+            KadrinValleyBOList = new List<BattlefieldObjective>();
 
-            Region1BOList = new List<CampaignObjective>();
-            Region3BOList = new List<CampaignObjective>();
+            Region1BOList = new List<BattlefieldObjective>();
+            Region3BOList = new List<BattlefieldObjective>();
 
 
             var R1ZoneList = new List<Zone_Info>();
@@ -60,25 +62,25 @@ namespace WorldServer.Test
             RegionMgrs.Add(Region3);
 
 
-            PraagBOList.Add(new CampaignObjective(1, "BO1", 200, 1, 4));
-            PraagBOList.Add(new CampaignObjective(2, "BO2", 200, 1, 4));
-            PraagBOList.Add(new CampaignObjective(3, "BO3", 200, 1, 4));
-            PraagBOList.Add(new CampaignObjective(4, "BO4", 200, 1, 4));
+            PraagBOList.Add(new BattlefieldObjective(1, "BO1", 200, 1, 4));
+            PraagBOList.Add(new BattlefieldObjective(2, "BO2", 200, 1, 4));
+            PraagBOList.Add(new BattlefieldObjective(3, "BO3", 200, 1, 4));
+            PraagBOList.Add(new BattlefieldObjective(4, "BO4", 200, 1, 4));
 
-            ChaosWastesBOList.Add(new CampaignObjective(11, "BO1", 201, 1, 4));
-            ChaosWastesBOList.Add(new CampaignObjective(12, "BO2", 201, 1, 4));
-            ChaosWastesBOList.Add(new CampaignObjective(13, "BO3", 201, 1, 4));
-            ChaosWastesBOList.Add(new CampaignObjective(14, "BO4", 201, 1, 4));
+            ChaosWastesBOList.Add(new BattlefieldObjective(11, "BO1", 201, 1, 4));
+            ChaosWastesBOList.Add(new BattlefieldObjective(12, "BO2", 201, 1, 4));
+            ChaosWastesBOList.Add(new BattlefieldObjective(13, "BO3", 201, 1, 4));
+            ChaosWastesBOList.Add(new BattlefieldObjective(14, "BO4", 201, 1, 4));
 
-            ThunderMountainBOList.Add(new CampaignObjective(21, "BO1", 400, 3, 4));
-            ThunderMountainBOList.Add(new CampaignObjective(22, "BO2", 400, 3, 4));
-            ThunderMountainBOList.Add(new CampaignObjective(23, "BO3", 400, 3, 4));
-            ThunderMountainBOList.Add(new CampaignObjective(24, "BO4", 400, 3, 4));
+            ThunderMountainBOList.Add(new BattlefieldObjective(21, "BO1", 400, 3, 4));
+            ThunderMountainBOList.Add(new BattlefieldObjective(22, "BO2", 400, 3, 4));
+            ThunderMountainBOList.Add(new BattlefieldObjective(23, "BO3", 400, 3, 4));
+            ThunderMountainBOList.Add(new BattlefieldObjective(24, "BO4", 400, 3, 4));
 
-            KadrinValleyBOList.Add(new CampaignObjective(31, "BO1", 401, 3, 4));
-            KadrinValleyBOList.Add(new CampaignObjective(32, "BO2", 401, 3, 4));
-            KadrinValleyBOList.Add(new CampaignObjective(33, "BO3", 401, 3, 4));
-            KadrinValleyBOList.Add(new CampaignObjective(34, "BO4", 401, 3, 4));
+            KadrinValleyBOList.Add(new BattlefieldObjective(31, "BO1", 401, 3, 4));
+            KadrinValleyBOList.Add(new BattlefieldObjective(32, "BO2", 401, 3, 4));
+            KadrinValleyBOList.Add(new BattlefieldObjective(33, "BO3", 401, 3, 4));
+            KadrinValleyBOList.Add(new BattlefieldObjective(34, "BO4", 401, 3, 4));
 
             Region1BOList.AddRange(PraagBOList);
             Region1BOList.AddRange(ChaosWastesBOList);
@@ -138,7 +140,7 @@ namespace WorldServer.Test
             });
             manager = new UpperTierCampaignManager(SampleProgressionList, RegionMgrs);
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
-            manager.ResetBattleFrontProgression();
+            manager.GetActiveBattleFrontFromProgression();
 
             Region1.Campaign = new Campaign(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
             Region3.Campaign = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
@@ -164,7 +166,7 @@ namespace WorldServer.Test
         public void ResetActivePairing()
         {
             var manager = new UpperTierCampaignManager(SampleProgressionList, RegionMgrs);
-            var bf = manager.ResetBattleFrontProgression();
+            var bf = manager.GetActiveBattleFrontFromProgression();
             Assert.IsTrue(bf.BattleFrontId == 1);
         }
 
@@ -174,39 +176,39 @@ namespace WorldServer.Test
 
             manager = new UpperTierCampaignManager(SampleProgressionList, RegionMgrs);
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
-            var bf = manager.ResetBattleFrontProgression();
+            var bf = manager.GetActiveBattleFrontFromProgression();
 
             Region1.Campaign = new Campaign(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
             Region3.Campaign = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
 
             Assert.IsTrue(bf.DestWinProgression == 2);
 
-			CampaignRerollMode rerollMode;
-			bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
+			
+			bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 			Assert.IsTrue(bf.BattleFrontId == 2);
             Assert.IsTrue(bf.DestWinProgression == 6);
             Assert.IsTrue(bf.OrderWinProgression == 7);
             Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 2);
 
-            bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
+            bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 			Assert.IsTrue(bf.BattleFrontId == 6);
             Assert.IsTrue(bf.DestWinProgression == 7);
             Assert.IsTrue(bf.OrderWinProgression == 2);
             Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 6);
 
-            bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_ORDER, out rerollMode);
+            bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_ORDER);
 			Assert.IsTrue(bf.BattleFrontId == 2);
             Assert.IsTrue(bf.DestWinProgression == 6);
             Assert.IsTrue(bf.OrderWinProgression == 7);
             Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 2);
 
-            bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
+            bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 			Assert.IsTrue(bf.BattleFrontId == 6);
             Assert.IsTrue(bf.DestWinProgression == 7);
             Assert.IsTrue(bf.OrderWinProgression == 2);
             Assert.IsTrue(manager.ActiveBattleFront.BattleFrontId == 6);
 
-            bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
+            bf = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 			Assert.IsTrue(bf.BattleFrontId == 7);
             Assert.IsTrue(bf.DestWinProgression == 1);
             Assert.IsTrue(bf.OrderWinProgression == 1);
@@ -221,7 +223,7 @@ namespace WorldServer.Test
         {
             manager = new UpperTierCampaignManager(SampleProgressionList, RegionMgrs);
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
-            var bf = manager.ResetBattleFrontProgression();
+            var bf = manager.GetActiveBattleFrontFromProgression();
 
             Region1.Campaign = new Campaign(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
             Region3.Campaign = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
@@ -250,7 +252,7 @@ namespace WorldServer.Test
             var fakeCommsEngine = A.Fake<IApocCommunications>();
             manager = new UpperTierCampaignManager(SampleProgressionList, RegionMgrs);
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
-            var bf = manager.ResetBattleFrontProgression();
+            var bf = manager.GetActiveBattleFrontFromProgression();
 
             Region1.Campaign = new Campaign(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
             Region3.Campaign = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
@@ -286,7 +288,7 @@ namespace WorldServer.Test
             var fakeCommsEngine = A.Fake<IApocCommunications>();
             manager = new UpperTierCampaignManager(SampleProgressionList, RegionMgrs);
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
-            var bf = manager.ResetBattleFrontProgression();
+            var bf = manager.GetActiveBattleFrontFromProgression();
 
             Region1.Campaign = new Campaign(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
             Region3.Campaign = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
@@ -304,8 +306,8 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).FinalVictoryPoint.OrderVictoryPoints == 1000f);
 
 			// Advance Destro
-			CampaignRerollMode rerollMode;
-			var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
+			
+			var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 			Assert.IsTrue(progression.BattleFrontId == 2);
             Assert.IsTrue(progression.ZoneId == 201);
 
@@ -369,7 +371,7 @@ namespace WorldServer.Test
             var fakeCommsEngine = A.Fake<IApocCommunications>();
             manager = new UpperTierCampaignManager(SampleProgressionList, RegionMgrs);
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
-            var bf = manager.ResetBattleFrontProgression();
+            var bf = manager.GetActiveBattleFrontFromProgression();
 
             Region1.Campaign = new Campaign(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
             Region3.Campaign = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
@@ -388,8 +390,8 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).RegionId ==1);
 
 			// Advance Destro
-			CampaignRerollMode rerollMode;
-			var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
+			
+			var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 			Assert.IsTrue(progression.BattleFrontId == 2);
             Assert.IsTrue(progression.ZoneId == 201);
 
@@ -412,7 +414,7 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).Locked);
 
             // Advance Destro
-            var progression2 = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
+            var progression2 = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 			Assert.IsTrue(progression2.BattleFrontId == 6);
             Assert.IsTrue(progression2.ZoneId == 400);
 
@@ -461,7 +463,7 @@ namespace WorldServer.Test
             var fakeCommsEngine = A.Fake<IApocCommunications>();
             manager = new UpperTierCampaignManager(SampleProgressionList, RegionMgrs);
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
-            var bf = manager.ResetBattleFrontProgression();
+            var bf = manager.GetActiveBattleFrontFromProgression();
 
             Region1.Campaign = new Campaign(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
             Region3.Campaign = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
@@ -483,7 +485,7 @@ namespace WorldServer.Test
             var fakeCommsEngine = A.Fake<IApocCommunications>();
             manager = new UpperTierCampaignManager(SampleProgressionList, RegionMgrs);
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
-            var bf = manager.ResetBattleFrontProgression();
+            var bf = manager.GetActiveBattleFrontFromProgression();
 
             Region1.Campaign = new Campaign(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
             Region3.Campaign = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
@@ -505,7 +507,7 @@ namespace WorldServer.Test
             var fakeCommsEngine = A.Fake<IApocCommunications>();
             manager = new UpperTierCampaignManager(SampleProgressionList, RegionMgrs);
             // Must be run before attaching ApocBattleFronts to get an ActiveBF
-            var bf = manager.ResetBattleFrontProgression();
+            var bf = manager.GetActiveBattleFrontFromProgression();
 
             Region1.Campaign = new Campaign(Region1, Region1BOList, new HashSet<Player>(), manager, FakeComms);
             Region3.Campaign = new Campaign(Region3, Region3BOList, new HashSet<Player>(), manager, FakeComms);
@@ -525,8 +527,8 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).RegionId == 1);
 
 			// Advance Destro
-			CampaignRerollMode rerollMode;
-			var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
+			
+			var progression = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 			Assert.IsTrue(progression.BattleFrontId == 2);
             Assert.IsTrue(progression.ZoneId == 201);
             manager.OpenActiveBattlefront();
@@ -547,20 +549,20 @@ namespace WorldServer.Test
             Assert.IsTrue(manager.GetBattleFrontStatus(manager.ActiveBattleFront.BattleFrontId).Locked);
 
             // Advance Destro
-            var progression2 = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
+            var progression2 = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 			Assert.IsTrue(progression2.BattleFrontId == 6);
             Assert.IsTrue(progression2.ZoneId == 400);
 
             // KV
             manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION, -1);
-            var progression3 = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
+            var progression3 = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 			manager.OpenActiveBattlefront();
             Assert.IsTrue(progression3.BattleFrontId == 7);
             Assert.IsTrue(progression3.ZoneId == 401);
 
             //Back to Emp
             manager.LockActiveBattleFront(Realms.REALMS_REALM_DESTRUCTION, -1);
-            var progression4 = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION, out rerollMode);
+            var progression4 = manager.AdvanceBattleFront(Realms.REALMS_REALM_DESTRUCTION);
 			manager.OpenActiveBattlefront();
             Assert.IsTrue(progression4.BattleFrontId == 1);
             Assert.IsTrue(progression4.ZoneId == 200);

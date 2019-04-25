@@ -3,6 +3,7 @@ using Common.Database.World.Maps;
 using FrameWork;
 using System;
 using System.Collections.Generic;
+using WorldServer.World.Map;
 
 namespace WorldServer.Services.World
 {
@@ -71,7 +72,7 @@ namespace WorldServer.Services.World
                         Y = (ushort)(Spawn.WorldY >> 12);
 
                         GetRegionCell(Info.Region, X, Y).AddSpawn(Spawn);
-
+                        
                         if (!RegionCount.ContainsKey(Info.Name))
                             RegionCount.Add(Info.Name, 0);
 

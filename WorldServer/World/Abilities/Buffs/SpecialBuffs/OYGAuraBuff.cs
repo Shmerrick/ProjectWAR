@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using Common;
 using FrameWork;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 {
     class OYGAuraBuff : AuraBuff
     {

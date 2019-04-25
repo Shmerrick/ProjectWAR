@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using WorldServer.World.Positions;
+using Object = WorldServer.World.Objects.Object;
 
-namespace WorldServer
+namespace WorldServer.World.Scripting.Quests
 {
     public class BasicQuest : AGeneralScript
     {

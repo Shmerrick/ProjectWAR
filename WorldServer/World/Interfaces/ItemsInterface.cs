@@ -5,9 +5,19 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
+using NLog;
+using WorldServer.Managers;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Abilities.Objects;
+using WorldServer.World.Objects;
+using Item = WorldServer.World.Objects.Item;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public enum ItemResult
     {
@@ -45,6 +55,8 @@ namespace WorldServer
         public static ushort QUEST_START_SLOT = 700;
 
         #endregion
+
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public float BolsterFactor;
 
@@ -832,7 +844,9 @@ namespace WorldServer
             // Purge all matching items from the standard inventory slots.
             for (ushort slot = MAX_EQUIPMENT_SLOT; slot < GetMaxInventorySlot(); ++slot)
             {
-                if (Items[slot] == null || Items[slot].Info.Entry != entry)
+                if (Items[slot] == null)
+                    continue;
+                if (Items[slot].Info.Entry != entry)
                     continue;
 
                 count += Items[slot].Count;
@@ -2849,7 +2863,7 @@ namespace WorldServer
 
                     foreach (ItemSetBonusInfo info in bonusList)
                     {
-                        if (info.ActionType == 3)
+                        if (info.ActionType == 3)  // remove stats
                             _playerOwner.StsInterface.RemoveItemBonusStat((Stats)info.StatOrSpell, info.Value);
                         else
                         {
@@ -2892,13 +2906,25 @@ namespace WorldServer
 
                     foreach (ItemSetBonusInfo info in bonusList)
                     {
+                        //switches all armor set damage bonuses to % based
+                        if (info.StatOrSpell == 24)
+                        {
+                            info.StatOrSpell = 25;
+                        }
                         if (info.ActionType == 3)
                             _playerOwner.StsInterface.AddItemBonusStat((Stats)info.StatOrSpell, info.Value);
                         else
                         {
+                            _logger.Debug($"{_playerOwner.Name} finding buff {info.StatOrSpell} ");
                             BuffInfo buffInfo = AbilityMgr.GetBuffInfo(info.StatOrSpell);
-                            if (buffInfo != null && buffInfo.BuffClass != BuffClass.Tactic) // To allow signalling of Intimidating Repent without casting it
-                                _playerOwner.BuffInterface.QueueBuff(new BuffQueueInfo(_playerOwner, itemSetInfo.Unk, buffInfo));
+                            if (buffInfo != null && buffInfo.BuffClass != BuffClass.Tactic
+                            ) // To allow signalling of Intimidating Repent without casting it
+                            {
+                                // Unk is desired level.
+                                _logger.Debug($"{_playerOwner.Name} queueing buff {itemSetInfo.Unk}, {buffInfo.Entry} {buffInfo.Name} ");
+                                _playerOwner.BuffInterface.QueueBuff(new BuffQueueInfo(_playerOwner, itemSetInfo.Unk,
+                                    buffInfo));
+                            }
                         }
                     }
                 }

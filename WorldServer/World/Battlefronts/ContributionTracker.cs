@@ -1,17 +1,19 @@
-﻿using Common;
-using FrameWork;
-using GameData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using SystemData;
+using Common;
+using FrameWork;
+using GameData;
 using NLog;
+using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
 using WorldServer.World.Objects.PublicQuests;
 
-
-namespace WorldServer.World.BattleFronts
+namespace WorldServer.World.Battlefronts
 {
     internal class ContributionTracker
     {
@@ -196,7 +198,7 @@ namespace WorldServer.World.BattleFronts
         /// <summary>
         /// Gets a ream players contribution.
         /// </summary>
-        /// <returns>Contribution infos indexed by character id</returns>
+        /// <returns>ContributionManagerInstance infos indexed by character id</returns>
         public Dictionary<uint, ContributionInfo> GetContributorsFromRealm(Realms realm)
         {
             Dictionary<uint, ContributionInfo> newDic = new Dictionary<uint, ContributionInfo>();
@@ -581,10 +583,6 @@ namespace WorldServer.World.BattleFronts
             PlayerContributions.Clear();
         }
 
-        internal void CreateGoldChest(Keep keep, Realms realm)
-        {
-            throw new NotImplementedException();
-        }
 
         internal void UpdateLoserShare(int _orderCount, int _destroCount)
         {
@@ -597,7 +595,7 @@ namespace WorldServer.World.BattleFronts
         /// <summary>
         /// Utility method returning maximum contribution in a contriution map.
         /// </summary>
-        /// <param name="contribs">Contribution infos indexed by character id</param>
+        /// <param name="contribs">ContributionManagerInstance infos indexed by character id</param>
         /// <returns>Maximum contribution or 1</returns>
         private uint GetMaxContribution(Dictionary<uint, ContributionInfo> contribs)
         {

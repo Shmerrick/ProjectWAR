@@ -31,12 +31,12 @@ namespace HonorUpdater
                 foreach (var character in characterList)
                 {
                     var currentHonorPoints = character.HonorPoints;
-                    // Reduce honor points by 5%, unless they are < 10 - in which case make it 0
+                    // Reduce honor points by 10%, unless they are < 10 - in which case make it 0
                     var newHonorPoints = 0;
                     if (currentHonorPoints < 10)
                         newHonorPoints = 0;
                     else 
-                        newHonorPoints = (int) (currentHonorPoints * 0.95f);
+                        newHonorPoints = (int) (currentHonorPoints * 0.90f);
 
                     // Recalculate Honor Rank
                     var honorLevel = new Common.HonorCalculation().GetHonorLevel((int) newHonorPoints);

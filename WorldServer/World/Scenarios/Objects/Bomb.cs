@@ -1,11 +1,12 @@
-﻿using Common;
-using FrameWork;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using FrameWork;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Buffs.SpecialBuffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Positions;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer.Scenarios.Objects
+namespace WorldServer.World.Scenarios.Objects
 {
     public class Bomb: HoldObject
     {

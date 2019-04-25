@@ -1,15 +1,20 @@
-﻿using Common;
-using FrameWork;
-using GameData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SystemData;
-using WorldServer.Scenarios.Objects;
+using Common;
+using FrameWork;
+using GameData;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Abilities.Objects;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using WorldServer.World.Scenarios.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer.Scenarios
+namespace WorldServer.World.Scenarios
 {
     class DominationScenarioKhaine : Scenario
     {

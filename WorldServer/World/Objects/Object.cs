@@ -1,12 +1,22 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using SystemData;
 using FrameWork;
+using WorldServer.Managers;
+using WorldServer.NetWork.Handler;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Buffs.SpecialBuffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
 using WorldServer.World.Objects.Instances;
+using WorldServer.World.Objects.Instances.TomboftheVultureLord;
+using WorldServer.World.Positions;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     public class Object : Point3D
     {
@@ -66,7 +76,7 @@ namespace WorldServer
 
         #endregion
 
-        public virtual void Update(long tick)
+        public virtual void Update(long msTick)
         {
             if (PendingDisposal)
             {
@@ -75,7 +85,7 @@ namespace WorldServer
             }
 
             for (int i = 0; i < Interfaces.Count; ++i)
-                Interfaces[i].Update(tick);
+                Interfaces[i].Update(msTick);
         }
 
         #region Load/Save
@@ -195,7 +205,7 @@ namespace WorldServer
             Out.WriteUInt16(soundID);
             Out.Fill(10, 0);
 
-            if(sendarea)
+            if (sendarea)
                 foreach (var p in GetPlayersInRange(400))
                     p.SendPacket(Out);
 
@@ -248,7 +258,7 @@ namespace WorldServer
 
         public virtual void SendMeTo(Player plr)
         {
-           
+
         }
 
         public virtual void SendRemove(Player plr)
@@ -298,7 +308,7 @@ namespace WorldServer
                     player.SendCopy(Out);
         }
 
-        public virtual void DispatchPacket(PacketOut Out, bool sendToSelf,bool playerstate = false)
+        public virtual void DispatchPacket(PacketOut Out, bool sendToSelf, bool playerstate = false)
         {
             lock (PlayersInRange)
                 foreach (Player player in PlayersInRange)
@@ -345,7 +355,12 @@ namespace WorldServer
         public ZoneMgr Zone { get; protected set; }
 
         /// <summary>Current zone id containing the object, may be null</summary>
-        public ushort? ZoneId => Zone?.ZoneId;
+        public ushort? ZoneId
+        {
+            get => Zone?.ZoneId;
+            set => throw new NotImplementedException();
+        }
+
         /// <summary>Current region containing the object, may be null</summary>
         public RegionMgr Region => Zone?.Region;
         /// <summary>True is zone is not null</summary>
@@ -547,8 +562,8 @@ namespace WorldServer
 
             if (IsMoving && obj.IsMoving && radiusFeet == 5)
                 radiusFeet = 8;
-            
-           
+
+
             radiusFeet = (uint)(radiusFeet + BaseRadius + obj.BaseRadius);
 
             return WorldPosition.IsWithinRadiusFeet(obj.WorldPosition, (int)radiusFeet);
@@ -598,13 +613,13 @@ namespace WorldServer
         }
 
         /// <summary>
-		/// Determines whether a target object is in front of this one. Optionally factors in the distance between the objects. In front is defined as north +- viewangle/2.
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="viewangle"></param>
-		/// <param name="rangeCheck"></param>
-		/// <returns></returns>
-		public virtual bool IsObjectInFront(Object target, double viewangle, uint MaxRadius = 0)
+        /// Determines whether a target object is in front of this one. Optionally factors in the distance between the objects. In front is defined as north +- viewangle/2.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="viewangle"></param>
+        /// <param name="rangeCheck"></param>
+        /// <returns></returns>
+        public virtual bool IsObjectInFront(Object target, double viewangle, uint MaxRadius = 0)
         {
             if (target == null || target.Zone == null)
                 return false;
@@ -644,7 +659,7 @@ namespace WorldServer
             }
         }
 
-        public Point2D LastRangeCheck = new Point2D(0,0);
+        public Point2D LastRangeCheck = new Point2D(0, 0);
 
         public virtual void InitPosition(ushort OffX, ushort OffY, ushort PinX, ushort PinY)
         {
@@ -770,14 +785,14 @@ namespace WorldServer
         public List<Player> GetPlayersInRange(int distance, bool includeSelf = false)
         {
             List<Player> players = new List<Player>();
-            lock(PlayersInRange)
+            lock (PlayersInRange)
             {
                 foreach (var player in PlayersInRange)
                     if (ObjectWithinRadiusFeet(player, distance))
                         players.Add(player);
             }
 
-            if(includeSelf && GetPlayer() != null)
+            if (includeSelf && GetPlayer() != null)
                 players.Add(GetPlayer());
             return players;
         }
@@ -804,14 +819,18 @@ namespace WorldServer
                 return;
 
             lock (ObjectsInRange)
+            {
                 ObjectsInRange.Add(obj);
+            }
 
             Player plr = obj as Player;
 
             if (plr != null)
             {
                 lock (PlayersInRange)
+                {
                     PlayersInRange.Add(plr);
+                }
             }
 
             ScrInterface.OnEnterRange(this, obj);
@@ -839,7 +858,9 @@ namespace WorldServer
             if (plr != null)
             {
                 lock (PlayersInRange)
+                {
                     PlayersInRange.Remove(plr);
+                }
             }
 
             Player thisPlayer = this as Player;
@@ -869,7 +890,7 @@ namespace WorldServer
             lock (PlayersInRange)
                 PlayersInRange.Clear();
 
-            lock(ObjectsInRange)
+            lock (ObjectsInRange)
                 ObjectsInRange.Clear();
         }
 
@@ -910,7 +931,7 @@ namespace WorldServer
 
             CapturingPlayer = interactor;
 
-            BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort) GameBuffs.Interaction);
+            BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)GameBuffs.Interaction);
             buffInfo.Duration = CaptureDuration;
             CapturingPlayer.BuffInterface.QueueBuff(new BuffQueueInfo(CapturingPlayer, CapturingPlayer.Level, buffInfo, InteractionBuff.GetNew, LinkToCaptureBuff));
 
@@ -925,7 +946,6 @@ namespace WorldServer
                 InteractionBuff captureBuff = (InteractionBuff)b;
                 captureBuff.SetObject(this);
             }
-
             else
                 CapturingPlayer = null;
         }

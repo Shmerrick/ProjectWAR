@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using Common;
 using FrameWork;
-using Color = System.Drawing.Color;
 using WorldServer.Services.World;
+using Color = System.Drawing.Color;
 
-namespace WorldServer
+namespace WorldServer.Managers
 {
     public struct AreaInfluence
     {

@@ -13,16 +13,10 @@ namespace Common
         public HonorCalculation()
         {
             // This list MUST be descending in sequence for this to work ;)
-            honorLevelReference.Add(10, 6000);
-            honorLevelReference.Add(9, 4000);
-            honorLevelReference.Add(8, 2000);
-            honorLevelReference.Add(7, 1400);
-            honorLevelReference.Add(6, 1100);
-            honorLevelReference.Add(5, 800);
-            honorLevelReference.Add(4, 600);
-            honorLevelReference.Add(3, 400);
-            honorLevelReference.Add(2, 200);
-            honorLevelReference.Add(1, 100);
+            honorLevelReference.Add(4, 8000);
+            honorLevelReference.Add(3, 4000);
+            honorLevelReference.Add(2, 2000);
+            honorLevelReference.Add(1, 1000);
             
         }
 

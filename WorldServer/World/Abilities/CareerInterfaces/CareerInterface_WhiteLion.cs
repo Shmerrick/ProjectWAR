@@ -1,9 +1,9 @@
 ﻿using System;
-using SystemData;
 using Common;
-using WorldServer.Scenarios;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.CareerInterfaces
 {
     class CareerInterface_WhiteLion : CareerInterface, IPetCareerInterface
     {

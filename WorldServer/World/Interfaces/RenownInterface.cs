@@ -4,8 +4,14 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
+using WorldServer.Managers;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class RenownInterface : BaseInterface
     {

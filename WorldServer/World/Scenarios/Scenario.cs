@@ -4,14 +4,25 @@ using System.Linq;
 using System.Threading;
 using SystemData;
 using Common;
+using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
 using NLog;
-using WorldServer.Scenarios.Objects;
+using WorldServer.Managers;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using WorldServer.World.Scenarios.Objects;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer.Scenarios
+namespace WorldServer.World.Scenarios
 {
     public class ScenarioScoreboard
     {
@@ -158,11 +169,11 @@ namespace WorldServer.Scenarios
 
             for (byte i = 0; i < 2; ++i)
             {
-                Zone_Respawn respawn = WorldMgr.GetZoneRespawn(Info.MapId, (byte)(i + 1), null);
-                if (respawn == null)
+                var spawnPoint = WorldMgr.GetZoneRespawn(Info.MapId, (byte)(i + 1), null);
+                if (spawnPoint == null)
                     throw new Exception("Scenario " + Info.Name + " is missing a respawn!");
-                RespawnLocations[i] = ZoneService.GetWorldPosition(ZoneService.GetZone_Info(Info.MapId), respawn.PinX, respawn.PinY, respawn.PinZ);
-                RespawnHeadings[i] = respawn.WorldO;
+                RespawnLocations[i] = spawnPoint.As3DPoint();
+                RespawnHeadings[i] = 0;
             }
 
             Region = new RegionMgr(Info.MapId, ZoneService.GetZoneRegion(Info.RegionId), info.Name, new ApocCommunications()) { Scenario = this };
@@ -560,6 +571,8 @@ namespace WorldServer.Scenarios
                 return;
             }
 
+            var contributionDefinition = new ContributionDefinition();
+
             _rewardsDealt = true;
 
             uint[] endingXp = new uint[2];
@@ -613,6 +626,14 @@ namespace WorldServer.Scenarios
                 PlayerScoreboard[plr].EndXP = endingXp[realmIndex];
                 PlayerScoreboard[plr].EndRenown = endingRenown[realmIndex];
 
+                // Add Contribution
+                plr.ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.PLAY_SCENARIO);
+                contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.PLAY_SCENARIO);
+                plr.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
+
+                
+                _logger.Debug($"Giving PLAY_SCEN contribution to {plr.Name}");
+
 
                 if (realmIndex == winningTeam)
                 {
@@ -628,6 +649,14 @@ namespace WorldServer.Scenarios
                         plr.ItmInterface.CreateItem(desiredItem, 6);
                         plr.SendLocalizeString(new[] { desiredItem.Name, "6" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
                             Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
+
+                        _logger.Debug($"Giving WIN_SCEN contribution to {plr.Name}");
+
+                        // Add Contribution
+                        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.WIN_SCENARIO);
+                        contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.WIN_SCENARIO);
+                        plr.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
+
                     }
 
                     plr.QtsInterface.HandleEvent(Objective_Type.QUEST_WIN_SCENARIO, Info.ScenarioId, 1);
@@ -649,16 +678,14 @@ namespace WorldServer.Scenarios
                     _logger.Debug($"Scenario {Info.Name} won by Destruction. {Score[1]} to {Score[0]}");
                     _logger.Debug($"Suggest {Score[1] / 10} additional VP to winner,  {Score[0] / 20} to loser.");
                     new ApocCommunications().Broadcast("Destruction has defeated Order in a critical battle! Their forces come closer to victory.", Tier);
-                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += (Score[1] / 10);
-                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints += (Score[0] / 20);
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.AddScenarioWin(Realms.REALMS_REALM_DESTRUCTION);
                 }
                 if (winningTeam == 0)
                 {
                     _logger.Debug($"Scenario {Info.Name} won by Order. {Score[0]} to {Score[1]}");
                     _logger.Debug($"Suggest {Score[0] / 10} additional VP to winner,  {Score[1] / 20} to loser.");
                     new ApocCommunications().Broadcast("Order has defeated Destruction in a critical battle! Their forces come closer to victory.", Tier);
-                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.OrderVictoryPoints += (Score[1] / 10);
-                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.DestructionVictoryPoints += (Score[0] / 20);
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.AddScenarioWin(Realms.REALMS_REALM_ORDER);
 
                 }
 
@@ -1011,18 +1038,16 @@ namespace WorldServer.Scenarios
             plr.ScnInterface.Scenario = this;
             plr.ScnInterface.ClearPendingScenario();
 
-            // Reset to nearest spawn point if taking SC in ORvR area while in presence of BO or keep
+            // Reset to nearest spawn point if taking SC in ORvR area while in presence of BattlefieldObjective or keep
             if (plr.CurrentArea != null && plr.CurrentArea.IsRvR && plr.Zone != null && (plr.CurrentKeep != null || plr.CurrentObjectiveFlag != null))
             {
-                Zone_Respawn warcampRespawn = WorldMgr.GetZoneRespawn(plr.Zone.ZoneId, (byte)plr.Realm, plr);
+                var warcampRespawn = WorldMgr.GetZoneRespawn(plr.Zone.ZoneId, (byte)plr.Realm, plr);
 
-                Point3D world = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)warcampRespawn.ZoneID), warcampRespawn.PinX, warcampRespawn.PinY, warcampRespawn.PinZ);
-
-                plr.ScnInterface.ScenarioEntryWorldX = world.X;
-                plr.ScnInterface.ScenarioEntryWorldZ = world.Z;
-                plr.ScnInterface.ScenarioEntryWorldY = world.Y;
-                plr.ScnInterface.ScenarioEntryWorldO = warcampRespawn.WorldO;
-                plr.ScnInterface.ScenarioEntryZoneId = (ushort)warcampRespawn.ZoneID;
+                plr.ScnInterface.ScenarioEntryWorldX = warcampRespawn.X;
+                plr.ScnInterface.ScenarioEntryWorldY = warcampRespawn.Y;
+                plr.ScnInterface.ScenarioEntryWorldZ = warcampRespawn.Z;
+                plr.ScnInterface.ScenarioEntryWorldO = plr.Heading;
+                plr.ScnInterface.ScenarioEntryZoneId = warcampRespawn.ZoneId;
             }
 
             else

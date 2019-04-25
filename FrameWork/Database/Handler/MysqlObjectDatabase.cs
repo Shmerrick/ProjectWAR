@@ -429,11 +429,12 @@ namespace FrameWork
         /// </summary>
         protected override void SaveObjectImpl(DataObject dataObject)
         {
+            bool hasRelations;
+
+            string sql = FormulateUpdate(dataObject, out hasRelations);
             try
             {
-                bool hasRelations;
-
-                string sql = FormulateUpdate(dataObject, out hasRelations);
+               
 
                 Log.Debug("MysqlObject", sql);
 
@@ -456,7 +457,7 @@ namespace FrameWork
             }
             catch (Exception e)
             {
-                Log.Error("MysqlObject", "Modify error : " + dataObject.TableName + " " + dataObject.ObjectId + e );
+                Log.Error("MysqlObject", "Modify error : " + dataObject.TableName + " " + dataObject.ObjectId + e + "SQL="+sql);
             }
         }
 
@@ -1680,7 +1681,7 @@ namespace FrameWork
                 int res = Connection.ExecuteNonQuery(rawQuery);
                 if (res == 0)
                 {
-                    Log.Error("MysqlObject", "Execution error : " + rawQuery);
+                    Log.Info("MysqlObject", "Statement : " + rawQuery + " returned 0 results.");
 
                     return false;
                 }

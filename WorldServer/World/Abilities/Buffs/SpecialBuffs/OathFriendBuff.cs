@@ -1,7 +1,9 @@
 ﻿using System.Threading;
-using Common;
+using WorldServer.World.Abilities.CareerInterfaces;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Objects;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 {
     public class OathFriendBuff : NewBuff
     {

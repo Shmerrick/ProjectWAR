@@ -7,11 +7,18 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using WorldServer.World.Objects.PublicQuests;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.Managers;
 using WorldServer.Services.World;
+using WorldServer.World.AI;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Objects;
+using WorldServer.World.Objects.PublicQuests;
+using WorldServer.World.Positions;
+using WorldServer.World.Scenarios.Objects;
+using Item = WorldServer.World.Objects.Item;
+using Object = WorldServer.World.Objects.Object;
 
-namespace WorldServer
+namespace WorldServer.World.Interfaces
 {
     public class AIInterface : BaseInterface
     {
@@ -63,8 +70,29 @@ namespace WorldServer
             ResetThinkInterval();
 
             // Load Waypoints if they exist.
-            if (_unit.WaypointGUID != 0)
-                this.Waypoints = WaypointService.GetNpcWaypoints(_unit.WaypointGUID);
+            //if (_unit.WaypointGUID != 0) // Conflicting with load from KeepNPCCreature
+            //    this.Waypoints = WaypointService.GetNpcWaypoints(_unit.WaypointGUID);
+
+            if (_Owner is KeepCreature)
+            {
+            }
+            else
+            {
+                if (_unit is Creature)
+                {
+                    if ((_unit as Creature).Spawn != null)
+                    {
+                        if ((_unit is GuardCreature) ||(_unit is Siege) || (_unit is Pet))
+                        {
+                        }
+                        else
+                        {
+                            this.Waypoints = WaypointService.GetNpcWaypoints((_unit as Creature).Spawn.Guid);
+                        }
+                    }
+                }
+            }
+
 
             return base.Load();
         }
@@ -88,12 +116,12 @@ namespace WorldServer
             if (_Owner.IsUnit() && Waypoints != null && Waypoints.Count > 0)
             {
                 if (!_unit.IsDead && !_StopWaypoints)
-                    UpdateWaypoints(tick);
+                    ProcessNpcWaypoints(tick);
             }
 
             if (tick > _nextThinkTime)
             {
-                UpdateThink();
+                UpdateThink(tick);
 
                 _nextThinkTime = tick + _thinkInterval;
             }
@@ -167,14 +195,15 @@ namespace WorldServer
             CurrentBrain?.Start(Aggros);
         }
 
-        public void UpdateThink()
+        public void UpdateThink(long tick)
         {
             if (HasPlayer())
                 return;
 
             if (_unit != null)
             {
-                if (_unit is KeepNpcCreature.KeepCreature npc && !npc.IsPatrol)
+                // If keep creature has moved > 200 feet or significant Z shift (fall?).
+                if (_unit is KeepCreature npc)
                 {
                     if (((npc.Z - npc.SpawnPoint.Z > 120 || npc.SpawnPoint.Z - npc.Z > 30)) || !npc.PointWithinRadiusFeet(npc.WorldSpawnPoint, 200))
                     {
@@ -186,7 +215,7 @@ namespace WorldServer
 
             if (CurrentBrain != null && CurrentBrain.IsStart && !CurrentBrain.IsStop)
             {
-                CurrentBrain.Think();
+                CurrentBrain.Think(tick);
                 if (State == AiState.FIGHTING)
                     CurrentBrain.Fight();
             }
@@ -196,7 +225,7 @@ namespace WorldServer
             if (creature == null || creature is Pet)
                 return;
 
-			if (_unit is KeepNpcCreature.KeepCreature patrol && patrol.IsPatrol && patrol.AiInterface != null && patrol.AiInterface.CurrentWaypoint != null)
+			if (_unit is KeepCreature patrol && patrol.IsPatrol && patrol.AiInterface != null && patrol.AiInterface.CurrentWaypoint != null)
 			{
 				if (!patrol.PointWithinRadiusFeet(new Point3D((int)patrol.AiInterface.CurrentWaypoint.X, (int)patrol.AiInterface.CurrentWaypoint.Y, (int)patrol.AiInterface.CurrentWaypoint.Z), 200))
 				{
@@ -217,11 +246,6 @@ namespace WorldServer
         /// <summary> Attempts to initiate AI-controlled combat. </summary>
         public void ProcessCombatStart(Unit target)
         {
-            #if DEBUG && NO_RESPOND
-            if (!(_unit is Pet))
-                return;
-            #endif
-
             if (_unit == null)
                 return;
 
@@ -236,7 +260,7 @@ namespace WorldServer
 
 			_StopWaypoints = true;
 			
-			if (!(_unit is KeepNpcCreature.KeepCreature))
+			if (!(_unit is KeepCreature))
                 _thinkInterval = 650;
 
             bool processLink = State != AiState.FIGHTING && target is Player && _unit.Aggressive;
@@ -473,7 +497,7 @@ namespace WorldServer
 
                     if (unitOwner != null)
                     {
-                        if (unitOwner is KeepNpcCreature.KeepCreature npc && !npc.IsPatrol)
+                        if (unitOwner is KeepCreature npc && !npc.IsPatrol)
                         {
                             // Keep NPCs have additional hardening. If their target goes outside the keep, instantly reset.
                             if (enemy.Z - npc.SpawnPoint.Z > 120 || npc.SpawnPoint.Z - enemy.Z > 30 || !enemy.PointWithinRadiusFeet(npc.WorldSpawnPoint, 200) || !npc.PointWithinRadiusFeet(npc.WorldSpawnPoint, 200))
@@ -601,6 +625,17 @@ namespace WorldServer
                     lastWaypoint.NextWaypointGUID = AddWp.GUID;
                     SaveWaypoint(lastWaypoint);
                 }
+
+
+
+                if (_Owner is KeepCreature)
+                {
+                    (_Owner as KeepCreature).FlagGuard.Info.WaypointGUID = _Owner.Oid;
+                    var toSave = (_Owner as KeepCreature).FlagGuard.Info;
+                    toSave.Dirty = true;
+                    WorldMgr.Database.SaveObject(toSave);
+                    WorldMgr.Database.ForceSave();
+                }
             }
         }
 
@@ -704,7 +739,7 @@ namespace WorldServer
             return null;
         }
 
-        public void UpdateWaypoints(long Tick)
+        public void ProcessNpcWaypoints(long Tick)
         {
             if (State == AiState.STANDING || State == AiState.MOVING)
             {

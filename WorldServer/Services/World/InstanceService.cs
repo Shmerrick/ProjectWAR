@@ -3,6 +3,7 @@ using FrameWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WorldServer.World.Objects;
 using WorldServer.World.Objects.Instances;
 
 namespace WorldServer.Services.World
@@ -207,7 +208,7 @@ namespace WorldServer.Services.World
             int idx = -1;
             foreach (var s in split)
             {
-                if (s.Split(':')[0].Equals(boss.BossID.ToString()))
+                if (s.Split(':')[0].Equals(boss.BossId.ToString()))
                 {
                     idx = split.ToList().IndexOf(s);
                     break;
@@ -216,14 +217,14 @@ namespace WorldServer.Services.World
 
             if (idx == -1) // nothing found
             {
-                stat.ttkPerBoss += boss.BossID + ":" + Math.Round(time.TotalSeconds, 0) + ";";
+                stat.ttkPerBoss += boss.BossId + ":" + Math.Round(time.TotalSeconds, 0) + ";";
             }
             else
             {
                 string[] spl = split[idx].Split(':');
                 try
                 {
-                    string newStr = boss.BossID + ":" + Math.Round(time.TotalSeconds, 0);
+                    string newStr = boss.BossId + ":" + Math.Round(time.TotalSeconds, 0);
                     stat.ttkPerBoss = stat.ttkPerBoss.Replace(split[idx], newStr);
                 }
                 catch (Exception e)
@@ -253,7 +254,7 @@ namespace WorldServer.Services.World
             int idx = -1;
             foreach (var s in split)
             {
-                if (s.Split(':')[0].Equals(boss.BossID.ToString()))
+                if (s.Split(':')[0].Equals(boss.BossId.ToString()))
                 {
                     idx = split.ToList().IndexOf(s);
                     break;
@@ -262,14 +263,14 @@ namespace WorldServer.Services.World
 
             if (idx == -1) // nothing found
             {
-                stat.deathCountPerBoss += boss.BossID + ":" + deaths + ";";
+                stat.deathCountPerBoss += boss.BossId + ":" + deaths + ";";
             }
             else
             {
                 string[] spl = split[idx].Split(':');
                 try
                 {
-                    string newStr = boss.BossID + ":" + (int.Parse(spl[1]) + deaths).ToString();
+                    string newStr = boss.BossId + ":" + (int.Parse(spl[1]) + deaths).ToString();
                     stat.deathCountPerBoss = stat.deathCountPerBoss.Replace(split[idx], newStr);
                 }
                 catch (Exception e)
@@ -299,7 +300,7 @@ namespace WorldServer.Services.World
             int idx = -1;
             foreach (var s in split)
             {
-                if (s.Split(':')[0].Equals(boss.BossID.ToString()))
+                if (s.Split(':')[0].Equals(boss.BossId.ToString()))
                 {
                     idx = split.ToList().IndexOf(s);
                     break;
@@ -308,14 +309,14 @@ namespace WorldServer.Services.World
 
             if (idx == -1) // nothing found
             {
-                stat.attemptsPerBoss += boss.BossID + ":" + attempts + ";";
+                stat.attemptsPerBoss += boss.BossId + ":" + attempts + ";";
             }
             else
             {
                 string[] spl = split[idx].Split(':');
                 try
                 {
-                    string newStr = boss.BossID + ":" + (int.Parse(spl[1]) + attempts).ToString();
+                    string newStr = boss.BossId + ":" + (int.Parse(spl[1]) + attempts).ToString();
                     stat.attemptsPerBoss = stat.attemptsPerBoss.Replace(split[idx], newStr);
                 }
                 catch (Exception e)
@@ -330,12 +331,12 @@ namespace WorldServer.Services.World
             Database.ForceSave();
         }
 
-        public static Instance_Encounter GetInstanceEncounter(uint instanceID,uint BossID)
+        public static Instance_Encounter GetInstanceEncounter(uint instanceID,uint bossId)
         {
             _InstanceEncounter.TryGetValue(instanceID, out List<Instance_Encounter> bosses);
             foreach (Instance_Encounter IE in bosses)
             {
-                if (BossID == IE.BossID)
+                if (bossId == IE.bossId)
                     return IE;
             }
             return null;

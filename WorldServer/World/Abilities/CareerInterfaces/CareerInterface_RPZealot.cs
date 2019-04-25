@@ -1,8 +1,10 @@
-﻿using SystemData;
-using FrameWork;
+﻿using FrameWork;
 using GameData;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.CareerInterfaces
 {
     class CareerInterface_RPZealot : CareerInterface
     {

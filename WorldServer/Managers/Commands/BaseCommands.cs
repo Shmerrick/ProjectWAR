@@ -5,14 +5,32 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 using SystemData;
-using WorldServer;
-using WorldServer.Scenarios;
+using Common.Database.World.BattleFront;
+using Common.Database.World.Creatures;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.CareerInterfaces;
+using WorldServer.World.AI;
+using WorldServer.World.AI.BT;
+using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
-using WorldServer.World.BattleFronts.Keeps;
+using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Battlefronts.Objectives;
+using WorldServer.World.Guild;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum1;
+using WorldServer.World.Positions;
+using WorldServer.World.Scenarios;
 using static System.UInt16;
 using static WorldServer.Managers.Commands.GMUtils;
+using BossSpawn = WorldServer.World.AI.BossSpawn;
+using Item = WorldServer.World.Objects.Item;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.Managers.Commands
 {
@@ -601,9 +619,9 @@ namespace WorldServer.Managers.Commands
         {
             Unit playerTarget = GetTargetOrMe(plr);
 
-            if (playerTarget == null || !(playerTarget is Player))
+            if (playerTarget == null)
             {
-                plr.SendClientMessage("Your target is not a player.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                plr.SendClientMessage("No target selected.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 return true;
             }
 
@@ -805,10 +823,52 @@ namespace WorldServer.Managers.Commands
 
         public static bool Info(Player plr, ref List<string> values)
         {
+            //Blastoise added in to test specific packets
+            PacketOut Out = new PacketOut((byte)Opcodes.F_ADVANCED_WAR_REPORT);
+            Out.WritePacketString(@"|1D 06 65 00 00 00 01 00 00 66 00 00 00 |.,...e......f...|
+|02 00 00 67 00 00 00 01 00 00 68 00 00 00 02 00 |...g......h.....|
+|00 69 00 00 00 00 00 00 6A 00 00 00 02 00 00    |............... |");
+            plr.SendPacket(Out);
+
+            Out = new PacketOut((byte)Opcodes.F_ADVANCED_WAR_REPORT);
+            Out.WritePacketString(@"|1D 06 65 00 00 00 01 00 00 66 00 00 00 |.Y...e......f...|
+| 02 11 54 68 65 20 43 72 69 6D 73 6F 6E 20 4C 6F |..The Crimson Lo|
+| 72 64 73 00 67 00 00 00 01 00 00 68 00 00 00 02 | rds.g......h....|
+| 0A 49 6E 71 75 69 73 69 74 69 6F 00 69 00 00 00 |.Inquisitio.i...|
+| 00 00 00 6A 00 00 00 02 12 54 68 65 20 4D 75 72 |...j.....The Mur |
+| 64 65 72 20 4A 75 6E 6B 69 65 73 00 |............    |");
+            plr.SendPacket(Out);
+
+
+            Out = new PacketOut((byte)Opcodes.F_ADVANCED_WAR_REPORT);
+            Out.WritePacketString(@"|1D 06 65 00 00 00 01 12 4F 72 64 65 72 |.k...e.....Order |
+| 20 61 6E 64 20 50 72 6F 67 72 65 73 73 00 66 00 | and Progress.f.|
+| 00 00 02 11 54 68 65 20 43 72 69 6D 73 6F 6E 20 |....The Crimson |
+| 4C 6F 72 64 73 00 67 00 00 00 01 00 00 68 00 00 | Lords.g......h..|
+| 00 02 0A 49 6E 71 75 69 73 69 74 69 6F 00 69 00 |...Inquisitio.i.|
+| 00 00 01 00 00 6A 00 00 00 02 12 54 68 65 20 4D |.....j.....The M |
+| 75 72 64 65 72 20 4A 75 6E 6B 69 65 73 00 |..............  |");
+            plr.SendPacket(Out);
+
+            Out = new PacketOut((byte)Opcodes.F_ADVANCED_WAR_REPORT);
+            Out.WritePacketString(@"|1D 06 65 00 00 00 01 00 00 66 00 00 00 |.Z...e......f...|
+| 02 11 54 68 65 20 43 72 69 6D 73 6F 6E 20 4C 6F |..The Crimson Lo|
+| 72 64 73 00 67 00 00 00 01 07 45 2D 54 68 75 67 | rds.g.....E - Thug |
+| 73 00 68 00 00 00 02 04 44 52 4F 57 00 69 00 00 | s.h.....DROW.i..|
+| 00 01 00 00 6A 00 00 00 02 12 54 68 65 20 4D 75 |....j.....The Mu |
+| 72 64 65 72 20 4A 75 6E 6B 69 65 73 00 |.............   |");
+            plr.SendPacket(Out);
+
+
+            //end of blastoise test
+
+
             Object other = GetObjectTarget(plr);
             GameObject go = other as GameObject;
             Creature c = other as Creature;
             Player p = other as Player;
+            LootChest lo = other as LootChest;
+
             if (go != null && go.IsGameObject())
             {
                 string result = go.ToString();
@@ -818,6 +878,8 @@ namespace WorldServer.Managers.Commands
                     result = result + ", ProtoTokUnlock=" + go.Spawn.Proto.TokUnlock;
                 if (go.Spawn.Proto.TokUnlock != null && go.Spawn.Proto.TokUnlock != "0")
                     result = result + ", Realm=" + go.Realm;
+
+                result += $"Loot Chest : Bags : {lo?.LootBags.Count}";
 
                 IList<Quest_Objectives> quests = WorldMgr.Database.SelectObjects<Quest_Objectives>("objtype = 3 AND objid = " + go.Entry);
 
@@ -845,8 +907,11 @@ namespace WorldServer.Managers.Commands
                 string result = c.ToString();
 
                 result += $"WP:{c.WorldPosition.X}, {c.WorldPosition.Y}, {c.WorldPosition.Z}";
-                if (c is KeepNpcCreature.KeepCreature)
-                    result += $"Keep Creature: WayPoint :{(c as KeepNpcCreature.KeepCreature).WaypointGUID}";
+                if (c is KeepCreature)
+                {
+                    result += $"Keep Creature: WayPoint :{(c as KeepCreature).WaypointGUID}";
+                    result += $"=>{(c as KeepCreature).FlagGuard.Info.WaypointGUID}";
+                }
 
                 if (c.Spawn.Proto.TokUnlock != null && c.Spawn.Proto.TokUnlock != "0")
                     result = result + ", TokUnlock=" + c.Spawn.Proto.TokUnlock;
@@ -881,6 +946,38 @@ namespace WorldServer.Managers.Commands
             else
             {
                 plr.SendMessage(0, "", other.ToString(), ChatLogFilters.CHATLOGFILTERS_EMOTE);
+            }
+
+            return true;
+        }
+
+        public static bool KeepDoorInfo(Player plr, ref List<string> values)
+        {
+            Object other = GetObjectTarget(plr);
+            GameObject go = other as GameObject;
+            if (go != null && go.IsGameObject())
+            {
+                string result = go.ToString();
+                if (go.Spawn.TokUnlock != null && go.Spawn.TokUnlock != "0")
+                    result = result + ", SpawnTokUnlock=" + go.Spawn.TokUnlock;
+                if (go.Spawn.Proto.TokUnlock != null && go.Spawn.Proto.TokUnlock != "0")
+                    result = result + ", ProtoTokUnlock=" + go.Spawn.Proto.TokUnlock;
+                if (go.Spawn.Proto.TokUnlock != null && go.Spawn.Proto.TokUnlock != "0")
+                    result = result + ", Realm=" + go.Realm;
+
+                plr.SendMessage(0, "", result, ChatLogFilters.CHATLOGFILTERS_EMOTE);
+
+                if (go is KeepDoor.KeepGameObject)
+                {
+                    var kgo = (KeepDoor.KeepGameObject)go;
+
+                    result = result + ", InteractState=" + kgo.InteractState.ToString();
+                    result = result + ", DoorId=" + kgo.DoorId;
+                    result = result + ", Entry=" + kgo.Entry;
+                    result = result + ", IsAttackable=" + kgo.IsAttackable.ToString();
+                    result = result + ", Health=" + kgo.PctHealth;
+                }
+                plr.SendMessage(0, "", result, ChatLogFilters.CHATLOGFILTERS_EMOTE);
             }
 
             return true;
@@ -999,6 +1096,7 @@ namespace WorldServer.Managers.Commands
             pos += "\nWorld Position: " + obj.WorldPosition.X + ", " + obj.WorldPosition.Y + ", " + obj.WorldPosition.Z;
             pos += "\nOffsets: X " + obj.XOffset + ", Y " + obj.YOffset;
             pos += "\nWh=" + obj.Heading + ",Ph=" + obj.Heading + ",HeightMap=" + ClientFileMgr.GetHeight(obj.Zone.ZoneId, obj.X, obj.Y);
+            pos += "\nWorld O Position: " + plr._Value.WorldO;   //  added to get O INFO coordinates just for ez of it.
 
             if (values.Count > 0 && GetString(ref values) == "say")
             {
@@ -1427,6 +1525,81 @@ namespace WorldServer.Managers.Commands
             damageOut.WriteByte(7);
 
             damageOut.WriteZigZag(-30000);
+
+            damageOut.WriteByte(0);
+
+            target.DispatchPacketUnreliable(damageOut, true, player);
+
+            return true;
+        }
+
+        public static bool Wound(Player player, ref List<string> values)
+        {
+            if (AbilityInterface.PreventCasting)
+            {
+                player.SendClientMessage("WOUND: This command does not function when ability casting is blocked.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return true;
+            }
+
+            Unit target = player.CbtInterface.GetCurrentTarget();
+
+            if (target == null || target.IsDead)
+            {
+                player.SendClientMessage("WOUND: The target is null or already dead.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return true;
+            }
+
+            if (target.IsPlayer())
+            {
+                if (!Utils.HasFlag(player.GmLevel, (int)EGmLevel.TrustedStaff))
+                {
+                    player.SendClientMessage("WOUND: Using this command on players requires trusted staff access.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    return true;
+                }
+            }
+
+            GMCommandLog log = new GMCommandLog
+            {
+                PlayerName = player.Name,
+                AccountId = (uint)player.Client._Account.AccountId,
+                Command = "WOUND PLAYER " + target.Name,
+                Date = DateTime.Now
+            };
+
+            CharMgr.Database.AddObject(log);
+
+            if (String.IsNullOrWhiteSpace(values[0]))
+            {
+                target.ReceiveDamage(player, int.MaxValue);
+            }
+            else
+            {
+                target.ReceiveDamage(player, Convert.ToUInt32(values[0]));
+            }
+
+
+
+            PacketOut damageOut = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 24);
+
+            damageOut.WriteUInt16(player.Oid);
+            damageOut.WriteUInt16(target.Oid);
+            damageOut.WriteUInt16(13085); // Mourkain Rift
+
+            damageOut.WriteByte(0);
+            damageOut.WriteByte(0); // DAMAGE EVENT
+            damageOut.WriteByte(7);
+
+            if (String.IsNullOrWhiteSpace(values[0]))
+            {
+                damageOut.WriteZigZag(-30000);
+            }
+            else
+            {
+                damageOut.WriteZigZag(-1 * Convert.ToInt32(values[0]));
+            }
+
+
+
             damageOut.WriteByte(0);
 
             target.DispatchPacketUnreliable(damageOut, true, player);
@@ -3794,6 +3967,15 @@ namespace WorldServer.Managers.Commands
             {
                 CharMgr.RemoveQuestsFromCharacter(chara);
                 plr.SendClientMessage("Removed all quests from character: " + playerName);
+
+                GMCommandLog log = new GMCommandLog
+                {
+                    PlayerName = plr.Name,
+                    AccountId = (uint)plr.Client._Account.AccountId,
+                    Command = "Removed all quests from character: " + playerName,
+                    Date = DateTime.Now
+                };
+
                 return true;
             }
 
@@ -4070,8 +4252,12 @@ namespace WorldServer.Managers.Commands
                 spawn.Level = 42;
 
                 Creature c = plr.Region.CreateCreature(spawn);
+                // Potion of healing
+                var item = new Creature_item { Entry = 208221, ModelId = 695, SlotId = 10, EffectId = 0 };
+
+                c.ItmInterface.AddCreatureItem(item);
                 c.PlayersInRange = plr.PlayersInRange;
-                c.AiInterface.SetBrain(new AggressiveBrain(c));
+                c.AiInterface.SetBrain(new ChosenBrain(c));
 
                 creatureList.Add(c);
             }
@@ -4099,6 +4285,313 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        public static bool SpawnBossInstance(Player plr, ref List<string> values)
+        {
+            ushort facing = 2093;
+
+            var X = plr.WorldPosition.X;
+            var Y = plr.WorldPosition.Y;
+            var Z = plr.WorldPosition.Z;
+
+            var bossSpawnId = values[0];
+
+            var bossSpawn = CreatureService.BossSpawns.SingleOrDefault(x => x.BossSpawnId == Convert.ToInt32(bossSpawnId));
+
+            Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
+            var proto = CreatureService.GetCreatureProto((uint)bossSpawn.ProtoId);
+            if (proto == null)
+                return true;
+            spawn.BuildFromProto(proto);
+
+            spawn.WorldO = facing;
+            spawn.WorldX = X + StaticRandom.Instance.Next(500);
+            spawn.WorldY = Y + StaticRandom.Instance.Next(500);
+            spawn.WorldZ = Z;
+            spawn.ZoneId = (ushort)plr.ZoneId;
+
+            var boss = plr.Region.CreateBoss(spawn, Convert.ToUInt32(bossSpawnId));
+            boss.CanBeKnockedBack = false;
+            boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
+
+            var brain = new BossBrain(boss)
+            {
+                Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == bossSpawn.BossSpawnId)
+                    .ToList()
+            };
+            boss.AiInterface.SetBrain(brain);
+
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+
+        public static bool SummonKokrit(Player plr, ref List<string> values)
+        {
+            var bossSpawnId = 19409;
+
+            var boss = SummonBoss(bossSpawnId, plr);
+
+            var bossSpawn = new BossSpawn { Creature = null, ProtoId = 6896, Type = BrainType.HealerBrain };
+
+            boss.AddDictionary.Add(bossSpawn);
+            boss.AddDictionary.Add(bossSpawn);
+
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+
+        public static bool SummonBulbousOne(Player plr, ref List<string> values)
+        {
+            var bossSpawnId = 3650;
+
+            var boss = SummonBoss(bossSpawnId, plr);
+
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+
+        public static bool SummonAzukThul(Player plr, ref List<string> values)
+        {
+            var bossSpawnId = 2000687;
+
+            var boss = SummonBoss(bossSpawnId, plr);
+
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+
+        private static Boss SummonBoss(int bossProtoId, Player plr)
+        {
+            var X = plr.WorldPosition.X;
+            var Y = plr.WorldPosition.Y;
+            var Z = plr.WorldPosition.Z;
+
+            // Proto Id of the boss
+            var bossSpawnId = bossProtoId;
+            // Find the boss in the boss_spawn table
+            var bossSpawn = CreatureService.BossSpawns.SingleOrDefault(x => x.BossSpawnId == Convert.ToInt32(bossSpawnId));
+
+            Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
+            var proto = CreatureService.GetCreatureProto((uint)bossSpawn.ProtoId);
+            if (proto == null)
+                return null;
+            spawn.BuildFromProto(proto);
+
+            spawn.WorldO = 2093;
+            spawn.WorldX = X + StaticRandom.Instance.Next(500);
+            spawn.WorldY = Y + StaticRandom.Instance.Next(500);
+            spawn.WorldZ = Z;
+            spawn.ZoneId = (ushort)plr.ZoneId;
+
+            // Using the spawn, place the boss in the region.
+            var boss = plr.Region.CreateBoss(spawn, Convert.ToUInt32(bossSpawnId));
+            // Set some default boss settings.
+            boss.CanBeKnockedBack = false;
+            boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
+            // Build the brain - abilities and phases
+            var brain = new BossBrain(boss)
+            {
+                Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == bossSpawnId).ToList(),
+                Phases = CreatureService.BossSpawnPhases.Where(x => x.BossSpawnId == bossSpawnId).ToList()
+
+            };
+            // Assign the brain
+            boss.AiInterface.SetBrain(brain);
+            // Not used yet, but manages a 30 second timer for the boss (so we can measure things like time in combat)
+            boss.BossCombatTimerInterval = 30000;
+            boss.BossCombatTimer.Elapsed += delegate { BossCombatTimerOnElapsed(boss); };
+            boss.BossCombatTimer.Enabled = false;
+
+            return boss;
+        }
+
+        public static bool SummonGoremane(Player plr, ref List<string> values)
+        {
+
+            var bossSpawnId = 33182;
+            var boss = SummonBoss(bossSpawnId, plr);
+            boss.CanBeKnockedBack = false;
+            boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
+
+
+            var bossSpawn = new BossSpawn { Creature = null, ProtoId = 6896, Type = BrainType.HealerBrain };
+
+            boss.AddDictionary.Add(bossSpawn);
+            boss.AddDictionary.Add(bossSpawn);
+
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+
+        public static bool SummonLordSlaurith(Player plr, ref List<string> values)
+        {
+
+            var bossSpawnId = 48112;
+            var boss = SummonBoss(bossSpawnId, plr);
+            boss.CanBeKnockedBack = false;
+            boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
+            boss.CanBeTaunted = true;
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+
+        /// <summary>
+        /// ForceLock a Fort Zone
+        /// </summary>
+        /// <param name="plr"></param>
+        /// <param name="values">1: FortId (KeepId) (eg 100 for Reikwald), 2:ForceNumberOfBags</param>
+        /// <returns></returns>
+        public static bool ForceLockZone(Player plr, ref List<string> values)
+        {
+            // Create the chest in values[0] keep
+            var keepId = Convert.ToInt32(values[0]);
+
+            var bfk = WorldMgr._Keeps[(uint)keepId];
+            bfk.ForceLockZone(Convert.ToInt32(values[1]));
+            return true;
+        }
+
+        public static bool CreateGoldChest(Player plr, ref List<string> values)
+        {
+
+            GameObject_proto proto = GameObjectService.GetGameObjectProto(Convert.ToUInt32(188));
+
+            // If no value passed, create the chest on the player
+            if (values.Count == 0)
+            {
+                GameObject_spawn spawn = new GameObject_spawn
+                {
+                    Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID(),
+                    WorldX = plr.WorldPosition.X + StaticRandom.Instance.Next(50),
+                    WorldY = plr.WorldPosition.Y + StaticRandom.Instance.Next(50),
+                    WorldZ = plr.WorldPosition.Z,
+                    WorldO = 2093,
+                    ZoneId = plr.Zone.ZoneId
+                };
+
+                spawn.BuildFromProto(proto);
+
+                WorldMgr.Database.AddObject(spawn);
+
+                var gameObject = plr.Region.CreateGameObject(spawn);
+            }
+            else
+            {
+                // Create the chest in values[0] keep
+                var keepId = Convert.ToInt32(values[0]);
+
+                var keeps = BattleFrontService.GetKeepInfos(plr.Region.RegionId);
+                var keep = keeps.SingleOrDefault(x => x.KeepId == keepId);
+
+                var orderLootChest = LootChest.Create(
+                    plr.Region,
+                    new Point3D(keep.PQuest.GoldChestWorldX, keep.PQuest.GoldChestWorldY, keep.PQuest.GoldChestWorldZ),
+                    (ushort)plr.ZoneId);
+
+
+                orderLootChest.Title = $"Zone Assault ";
+                orderLootChest.Content = $"Zone Assault Rewards";
+                orderLootChest.SenderName = $"BaseCommand";
+
+
+            }
+
+            return true;
+        }
+        public static bool SummonOrcapult(Player plr, ref List<string> values)
+        {
+
+            var X = plr.WorldPosition.X;
+            var Y = plr.WorldPosition.Y;
+            var Z = plr.WorldPosition.Z;
+
+
+
+            Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
+            var proto = CreatureService.GetCreatureProto((uint)72675);
+            if (proto == null)
+                return true;
+            spawn.BuildFromProto(proto);
+
+            spawn.WorldO = 2093;
+            spawn.WorldX = X + StaticRandom.Instance.Next(500);
+            spawn.WorldY = Y + StaticRandom.Instance.Next(500);
+            spawn.WorldZ = Z;
+            spawn.ZoneId = (ushort)plr.ZoneId;
+
+            // Using the spawn, place the boss in the region.
+            var orcapult = plr.Region.CreateCreature(spawn);
+
+            // Check SendInteract on Siege interface and creature itself.
+
+
+            return true;
+        }
+
+
+        public static bool SummonZekaraz(Player plr, ref List<string> values)
+        {
+
+            var bossSpawnId = 46325;
+            var boss = SummonBoss(bossSpawnId, plr);
+            boss.CanBeTaunted = false;
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+
+        public static bool SummonGahlvoth(Player plr, ref List<string> values)
+        {
+
+            var bossSpawnId = 45224;
+            var boss = SummonBoss(bossSpawnId, plr);
+            boss.CanBeKnockedBack = false;
+            boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
+
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+
+        public static bool SummonBorzhar(Player plr, ref List<string> values)
+        {
+
+            var bossSpawnId = 2000690;
+            var boss = SummonBoss(bossSpawnId, plr);
+            boss.CanBeKnockedBack = false;
+            boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
+
+
+
+            var bossSpawn = new BossSpawn { Creature = null, ProtoId = 6926, Type = BrainType.AggressiveBrain };
+
+            boss.AddDictionary.Add(bossSpawn);
+            boss.AddDictionary.Add(bossSpawn);
+
+            // Force zones to update
+            plr.Region.Update();
+
+            return true;
+        }
+
+        private static void BossCombatTimerOnElapsed(Boss boss)
+        {
+            boss.Say($"{boss.Name} :: timer complete");
+        }
+
         public static bool SpawnMobInstance(Player plr, ref List<string> values)
         {
             ushort facing = 2093;
@@ -4119,11 +4612,25 @@ namespace WorldServer.Managers.Commands
             spawn.WorldY = Y + StaticRandom.Instance.Next(500);
             spawn.WorldZ = Z;
             spawn.ZoneId = (ushort)plr.ZoneId;
-            spawn.Level = 42;
+            spawn.Level = 35;
 
-            Creature c = plr.Region.CreateCreature(spawn);
+            var c = plr.Region.CreateCreature(spawn);
+            c.AiInterface.SetBrain(new KnightBrain(c));
+            // Force zones to update
+            plr.Region.Update();
+
+
+            //c.AiInterface.SetBrain(new ChosenBrain(c));
+            //var itemDetails = ItemService.GetItem_Info(208221);
+            //var item = new Creature_item { Entry = itemDetails.Entry, ModelId = (ushort) itemDetails.ModelId, SlotId = 10, EffectId = 0 };
+            //item.SlotId = c.ItmInterface.GetFreeInventorySlot(itemDetails, false);
+
+            //c.ItmInterface.AddCreatureItem(item);
+            //c.OnLoad();
+            //c.WaypointGUID = 
             c.PlayersInRange = plr.PlayersInRange;
-            c.AiInterface.SetBrain(new AggressiveBrain(c));
+
+
 
 
             return true;
@@ -4146,6 +4653,277 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        // blue / red keep image top right
+        public static bool SendKeepStatusWrapper(Player plr, ref List<string> values)
+        {
+
+            var Out = new PacketOut((byte)Opcodes.F_KEEP_STATUS, 26);
+            Out.WriteByte(18);  // garrison of skulls
+
+            {
+                Out.WriteByte(Convert.ToByte(values[0]));   //1 : locked
+                Out.WriteByte(0); // ?
+                Out.WriteByte((byte)2);  //realm
+                Out.WriteByte((byte)4);  // door count
+                Out.WriteByte(2); // Rank
+                Out.WriteByte(Convert.ToByte(values[1])); // Door health
+                Out.WriteByte(0); // Next rank %
+            }
+
+
+            Out.Fill(0, 18);
+
+            if (plr != null)
+                plr.SendPacket(Out);
+            else
+                lock (Player._Players)
+                {
+                    foreach (var player in Player._Players)
+                        player.SendCopy(Out);
+                }
+
+            return true;
+        }
+
+        // Chat and Map
+        public static bool SendKeepInfoWrapper(Player plr, ref List<string> values)
+        {
+            var Out = new PacketOut((byte)Opcodes.F_OBJECTIVE_INFO, 32);
+            Out.WriteUInt32(606);
+            Out.WriteByte(0);
+            Out.WriteByte((byte)Realms.REALMS_REALM_DESTRUCTION);
+            Out.WriteByte(1);
+            Out.WriteUInt16(0);
+            Out.WritePascalString("KeepName");
+            Out.WriteByte(2);
+            Out.WriteUInt32(0x000039F5);
+            Out.WriteByte(0);
+
+            Out.WriteUInt16(0x0100);
+            Out.WriteUInt32(0x00010000);
+
+            Out.WriteShortString("Attacking Message");
+
+            Out.WriteUInt16(0xFF00);
+            Out.WritePascalString("Obj Message");
+            Out.WriteByte(0);
+
+            Out.WritePascalString("Obj Description");
+
+            // Zeroes previously
+            Out.WriteUInt32(0); // timer
+            Out.WriteUInt32(0); // timer
+            Out.Fill(0, 4);
+
+            Out.WriteByte(0x71);
+            Out.WriteByte(3); // keep
+            Out.Fill(0, 3);
+
+            plr.SendPacket(Out);
+
+            return true;
+        }
+
+        public static bool CheckPlayerHonor(Player plr, ref List<string> values)
+        {
+            plr.SendClientMessage(
+                $"Honor Rank for Player {plr.Name} is {plr.Info.HonorRank}");
+
+            return true;
+        }
+
+
+        public static bool MakeRealmCaptain(Player plr, ref List<string> values)
+        {
+            Unit playerTarget = GetTargetOrMe(plr);
+
+            if (playerTarget is Player)
+            {
+
+                if (playerTarget == null)
+                {
+                    plr.SendClientMessage("No target selected.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    return true;
+                }
+
+                var status = WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ActiveBattleFrontStatus;
+
+                foreach (var player in Player._Players)
+                {
+                    player.EffectStates.Clear();
+                }
+
+                if (status.OrderRealmCaptain == playerTarget)
+                {
+                    status.RemoveAsRealmCaptain((Player) playerTarget);
+                    RealmCaptainManager.MarkPlayerAsRealmCaptain((Player) playerTarget, Player._Players, 0);
+                }
+
+                if (status.DestructionRealmCaptain == playerTarget)
+                {
+                    status.RemoveAsRealmCaptain((Player) playerTarget);
+                    RealmCaptainManager.MarkPlayerAsRealmCaptain((Player) playerTarget, Player._Players, 0);
+                }
+
+                status.SetAsRealmCaptain((Player) playerTarget);
+
+                RealmCaptainManager.MarkPlayerAsRealmCaptain((Player) playerTarget, Player._Players, 1);
+
+            }
+
+            return true;
+        }
+
+        public static bool CreateGateHousePortal(Player plr, ref List<string> values)
+        {
+            Unit playerTarget = GetTargetOrMe(plr);
+
+            if (playerTarget == null)
+            {
+                plr.SendClientMessage("No target selected.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return true;
+            }
+
+            var portal = new PortalToGatehouse(105, 1444161, 836355, 14409, 568, 1444179, 833050, 15219, 568, "test");
+            portal.Interactable = true;
+            portal.IsActive = true;
+            portal.Health = 100;
+            plr.Region.CreateGameObject(portal.Spawn);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Creates a vendor that sells a junk item for your RR level silver and your Character Level copper.
+        /// Current need to use proto = 32
+        /// </summary>
+        /// <param name="plr"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static bool CreateDynamicVendor(Player plr, ref List<string> values)
+        {
+            Unit playerTarget = GetTargetOrMe(plr);
+
+            if (playerTarget == null)
+            {
+                plr.SendClientMessage("No target selected.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return true;
+            }
+
+            Creature_proto proto = CreatureService.GetCreatureProto((uint)Convert.ToInt32(values[0]));
+
+            if (proto == null)
+            {
+                plr.SendClientMessage("Proto does not exist.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                return true;
+            }
+
+            var states = new List<byte> { (byte)CreatureState.Merchant };
+            proto.States = states.ToArray();
+
+            proto.InteractType = InteractType.INTERACTTYPE_DYEMERCHANT;
+
+            Creature_spawn spawn = new Creature_spawn();
+            spawn.BuildFromProto(proto);
+            spawn.WorldO = 2048;
+            spawn.WorldX = plr.WorldPosition.X;
+            spawn.WorldY = plr.WorldPosition.Y;
+            spawn.WorldZ = plr.WorldPosition.Z;
+            spawn.ZoneId = (ushort)plr.ZoneId;
+
+            Creature c = plr.Region.CreateCreature(spawn);
+
+
+
+
+            return true;
+        }
+
+
+        public static bool SendCampaignStatusWrapper(Player plr, ref List<string> values)
+        {
+
+            //            PacketOut Out = new PacketOut((byte)Opcodes.F_WAR_REPORT);
+            //            Out.WritePacketString(@"|01 0F 00 00 00 00 00 00 1C 20 00 00 06 |.'.......... ...|
+            //|09 02 03 01 00 00 00 C5 00 00 00 E4 00 00 00 6A |...............j|
+            //|00 00 06 14 02 03 01 00 00 00 01 00 00 13 E9 00 |................|
+            //|00 00 6A 00 00 06 1A 02 04 01 00 00 01 50 00 00 |..j..........P..|
+            //|00 6A 00 00 00 6A 00 00 06 1B 02 05 02 00 00 03 |.j...j..........|
+            //|04 00 00 00 02 00 00 00 01 00 00 06 13 02 03 04 |................|
+            //|00 00 01 41 00 00 13 D8 00 00 00 69 00 00 06 0D |...A.......i....|
+            //|02 03 04 00 00 00 0A 00 00 02 7A 00 00 00 D1 00 |..........z.....|
+            //|00 06 04 02 04 04 00 00 00 02 00 00 00 D1 00 00 |................|
+            //|00 D1 00 00 00 05 02 0A 01 00 00 00 00 00 00 00 |................|
+            //|6A 00 00 00 6A 00 00 00 06 02 0A 02 00 00 00 00 |j...j...........|
+            //|00 00 00 01 00 00 00 01 00 00 00 07 02 0A 03 00 |................|
+            //|00 00 00 00 00 00 08 00 00 00 08 00 00 00 08 02 |................|
+            //|0A 04 00 00 00 00 00 00 00 D1 00 00 00 D1 00 00 |................|
+            //|00 01 01 08 01 00 00 00 00 00 00 00 6A 00 00 00 |............j...|
+            //|6A 00 00 00 02 01 08 02 00 00 00 00 00 00 00 01 |j...............|
+            //|00 00 00 01 00 00 00 03 01 08 03 00 00 00 00 00 |................|
+            //|00 00 08 00 00 00 08 00 00 00 04 01 08 04 00 00 |................|
+            //|00 00 00 00 00 D1 00 00 00 00                   |..........      |");
+            //            plr.SendPacket(Out);
+
+            // Sets 3% 2%  -- IK 3 Mar
+
+            PacketOut Out1 = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS);
+            Out1.WritePacketString(@"|00 9C 1A 00 05 00 67 00 CB 00 00 00 19 00 32 32 |......g.......22|
+|00 32 32 00 32 32 00 00 64 00 32 32 00 32 32 00 |.22.22..d.22.22.|
+|32 32 00 00 00 00 64 00 00 32 32 00 64 00 00 00 |22....d..22.d...|
+|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
+|00 00 00 00 00 00 00 43 5E 00 00 32 0E 00 32 3E |.......C^..2..2>|
+|32 12 05 39 25 00 00 00 00 01 00 00 00 00 01 00 |2..9%...........|
+|01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
+|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
+|00 03 01 00 02 03 03 01 01 00 03 03 01 01 01 03 |................|
+|02 FE 3C 28 0A 3C 00 00 00 03 84 00 00 00 00    |............... |");
+            plr.SendPacket(Out1);
+
+
+            //PacketOut Out2 = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS);
+            //Out2.WritePacketString(@"|00 9C 1A 00 05 00 67 00 CD 00 00 00 19 00 32 32 |......g.......22 |
+            //    | 00 32 32 00 32 32 00 21 43 00 32 32 00 32 32 00 |.22.22.!C.22.22.|
+            //    | 32 32 00 00 00 00 32 32 00 64 00 00 32 32 17 03 |22....22.d..22..|
+            //    | 17 03 17 03 17 03 17 03 17 03 17 03 17 03 17 03 |................|
+            //    | 17 03 17 03 17 03 00 44 56 00 00 32 09 05 32 42 |.......DV..2..2B|
+            //    | 32 16 08 32 21 00 00 00 00 00 00 00 00 00 00 01 |2..2!...........|
+            //    | 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
+            //    | 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
+            //    | 00 03 01 00 02 03 03 01 01 00 03 03 01 00 02 03 |................|
+            //    | 02 FE 3C 28 0A 3C 00 00 00 03 84 00 00 00 00 |............... |");
+            //plr.SendPacket(Out2);
+
+            //            PacketOut Out2 = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS);
+            //            Out2.WritePacketString(@"|00 9C 1A 00 05 00 67 00 CD 00 00 00 19 00 32 32 |......g.......22|
+            //|00 32 32 00 32 32 00 00 64 00 32 32 00 32 32 00 |.22.22..d.22.22.|
+            //|32 32 00 00 00 00 64 00 00 32 32 00 00 00 00 00 |22....d..22.....|
+            //|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
+            //|00 00 00 00 00 00 00 43 5C 00 00 32 09 00 32 3C |.......C\..2..2<|
+            //|32 11 06 32 27 00 00 00 00 01 00 00 00 00 01 00 |2..2'...........|
+            //|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
+            //|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
+            //|00 03 01 00 02 03 03 01 01 00 03 03 01 00 02 03 |................|
+            //|02 FE 3C 28 0A 3C 00 00 00 03 84 00 00 00 00    |............... |");
+            //            plr.SendPacket(Out2);
+
+
+            //| 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F | 0123456789ABCDEF |
+            //| ------------------------------------------------| ----------------|
+            //| 00 9C 1A 00 05 00 67 00 CD 00 00 00 19 00 32 32 |......g.......22 |
+            //| 00 32 32 00 32 32 00 21 21 00 32 32 00 32 32 00 | .22.22.!!.22.22.|
+            //| 32 32 00 00 00 00 32 32 00 64 00 00 32 32 F6 F4 | 22....22.d..22..|
+            //| F6 F4 F6 F4 F6 F4 F6 F4 00 00 00 00 00 00 00 00 |................|
+            //| 00 00 00 00 00 00 00 44 55 00 00 32 09 05 32 41 |.......DU..2..2A |
+            //| 32 16 08 32 22 00 00 00 00 00 00 00 00 00 00 01 | 2..2"...........|
+            //| 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
+            //| 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 |................|
+            //| 00 03 01 00 02 03 03 01 01 00 03 03 01 00 02 03 |................|
+            //| 02 FE 3C 28 0A 3C 00 00 00 03 84 00 00 00 00 |............... |
+
+            //     new ApocCommunications().SendCampaignStatus(plr, new VictoryPointProgress(50f, 50f), Realms.REALMS_REALM_DESTRUCTION);
+            return true;
+        }
         #endregion
     }
 }

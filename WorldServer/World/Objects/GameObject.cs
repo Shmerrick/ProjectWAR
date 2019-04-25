@@ -1,14 +1,19 @@
-﻿using Common;
-using FrameWork;
-using System;
-using SystemData;
+﻿using System;
 using System.Collections.Generic;
-using WorldServer.Services.World;
-using WorldServer.World.Objects.PublicQuests;
+using SystemData;
+using Common;
+using FrameWork;
 using GameData;
+using WorldServer.Managers;
+using WorldServer.NetWork.Handler;
+using WorldServer.Services.World;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Interfaces;
 using WorldServer.World.Map;
+using WorldServer.World.Objects.PublicQuests;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     public class GameObject : Unit
     {
@@ -248,6 +253,8 @@ namespace WorldServer
                 switch (Spawn.Entry)
                 {
                     case 242:
+                    case 511:       // Inside hunters vale portal  // vale vine
+                    case 99891:     // Hardcoded portal for Thanquil's incursion 
                     case 100132:
                     case 99667:
                     case 98845:
@@ -263,7 +270,7 @@ namespace WorldServer
                         ZoneJump(player);
                         return;
                         
-                    case 98878: // Hardcoded portal for Gunbad
+                    case 98878:     // Hardcoded portal for Gunbad
                         ZoneJump(player, 60);
                         return;
                 }

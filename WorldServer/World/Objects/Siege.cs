@@ -4,67 +4,53 @@ using SystemData;
 using Common;
 using FrameWork;
 using GameData;
-using CreatureSubTypes = GameData.CreatureSubTypes;
-using WorldServer.World.BattleFronts.Keeps;
+using NLog;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.AI;
+using WorldServer.World.Interfaces;
+using CreatureSubTypes = GameData.CreatureSubTypes;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     public class Siege : Creature
     {
-        public Keep Keep { get; }
+//        public BattleFrontKeep Keep { get; }
         private readonly SiegeType _type;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public const int MAX_SHOTS = 15;
         public int ShotCount = MAX_SHOTS;
+        public long SiegeLifeSpan = (int) TimeSpan.FromMinutes(5).TotalMilliseconds;
 
-        public Siege(Creature_spawn spawn, Player owner, Keep k, SiegeType type) : base(spawn)
+        public Siege(Creature_spawn spawn, Player owner, SiegeType type) : base(spawn)
         {
-            Keep = k;
-
             _type = type;
             SiegeInterface = AddInterface<SiegeInterface>();
             SiegeInterface.Creator = owner;
-            SiegeInterface.DeathTime = TCPManager.GetTimeStampMS() + 300 * 1000;
+            SiegeInterface.DeathTime = TCPManager.GetTimeStampMS() + SiegeLifeSpan;
         }
 
-        public static Siege SpawnSiegeWeapon(Player plr, Keep keep, uint entry, bool defender)
+        public static Siege SpawnSiegeWeapon(Player plr, ushort zoneId, uint entry, bool defender)
         {
             Creature_proto proto = CreatureService.GetCreatureProto(entry);
 
             Creature_spawn spawn = null;
-            if (Constants.DoomsdaySwitch == 0)
+            spawn = new Creature_spawn
             {
-                spawn = new Creature_spawn
-                {
-                    Guid = (uint)CreatureService.GenerateCreatureSpawnGUID(),
-                    WorldO = plr.Heading,
-                    WorldY = plr.WorldPosition.Y,
-                    WorldZ = plr.Z,
-                    WorldX = plr.WorldPosition.X,
-                    ZoneId = keep.Info.ZoneId,
-                    Level = (byte)(keep.Info.PQuest.PQTier * 10)
-                };
-            }
-            // We want sieges to be level 40
-            else
-            {
-                spawn = new Creature_spawn
-                {
-                    Guid = (uint)CreatureService.GenerateCreatureSpawnGUID(),
-                    WorldO = plr.Heading,
-                    WorldY = plr.WorldPosition.Y,
-                    WorldZ = plr.Z,
-                    WorldX = plr.WorldPosition.X,
-                    ZoneId = keep.Info.ZoneId,
-                    Level = 40
-                };
-            }
-
-
+                Guid = (uint)CreatureService.GenerateCreatureSpawnGUID(),
+                WorldO = plr.Heading,
+                WorldY = plr.WorldPosition.Y,
+                WorldZ = plr.Z,
+                WorldX = plr.WorldPosition.X,
+                ZoneId = zoneId,
+                Level = 40
+            };
+            
             spawn.BuildFromProto(proto);
 
-            return new Siege(spawn, plr, keep, SiegeType.GTAOE);
+            return new Siege(spawn, plr, GetSiegeType(entry).Value);
         }
 
         protected override void SetCreatureStats()
@@ -75,19 +61,7 @@ namespace WorldServer
 
             // Normal siege weapons will tank 5 cannon hits (4500, cannons hit for 1000)
             // Rams will tank 300 cannon hits (60000, cannons hit for 200)
-            switch (Keep.Tier)
-            {
-                case 2:
-                    StsInterface.SetBaseStat(Stats.Wounds, _type == SiegeType.RAM ? (ushort)3500 : (ushort)500);
-                    break;
-                case 3:
-                    StsInterface.SetBaseStat(Stats.Wounds, _type == SiegeType.RAM ? (ushort)4600 : (ushort)700);
-                    break;
-                case 4:
-                    StsInterface.SetBaseStat(Stats.Wounds, _type == SiegeType.RAM ? (ushort)6000 : (ushort)900);
-                    break;
-            }
-
+            StsInterface.SetBaseStat(Stats.Wounds, _type == SiegeType.RAM ? (ushort)6000 : (ushort)900);
             StsInterface.ApplyStats();
         }
 
@@ -235,15 +209,15 @@ namespace WorldServer
         private long _nextAreaCheckTime;
         private long _nextDamageTime;
 
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
-            base.Update(tick);
+            base.Update(msTick);
 
-            if (_nextAreaCheckTime<tick)
+            if (_nextAreaCheckTime < msTick)
             {
-                _nextAreaCheckTime = tick + 2000;
+                _nextAreaCheckTime = msTick + 2000;
 
-                Zone_Area newArea = Zone.ClientInfo.GetZoneAreaFor((ushort)X, (ushort)Y, Zone.ZoneId,(ushort)Z);
+                Zone_Area newArea = Zone.ClientInfo.GetZoneAreaFor((ushort)X, (ushort)Y, Zone.ZoneId, (ushort)Z);
 
                 if (newArea == null || !newArea.IsRvR)
                     OutOfAreaDecay();
@@ -252,16 +226,24 @@ namespace WorldServer
             }
 
             // RB   6/25/2016   Kill siege weapons that have decayed and are not being interacted with.
-            if (SiegeInterface.IsAbandoned && tick > SiegeInterface.DeathTime && tick > _nextDamageTime)
+            if (SiegeInterface.IsAbandoned && msTick > _nextDamageTime)
             {
                 ReceiveDamage(this, MaxHealth / 5);
-                _nextDamageTime = tick + 2000;
+                _nextDamageTime = msTick + 10 * 1000;
             }
+
+            if (msTick > SiegeInterface.DeathTime && msTick > _nextDamageTime)
+            {
+                ReceiveDamage(this, MaxHealth / 5);
+                _nextDamageTime = msTick + 10 * 1000;
+            }
+
+
         }
 
         private int _outofAreaCount;
         private void OutOfAreaDecay()
-        { 
+        {
             _outofAreaCount++;
             if (_outofAreaCount > 5)
             {
@@ -273,7 +255,7 @@ namespace WorldServer
         // Azarael - Siege weapons don't resurrect
         protected override void SetRespawnTimer()
         {
-            
+
         }
 
         #region Health/Damage
@@ -333,7 +315,7 @@ namespace WorldServer
             if (siege != null)
             {
                 Siege s = siege;
-                foreach (KeyValuePair<Player,byte> p in s.SiegeInterface.Players)
+                foreach (KeyValuePair<Player, byte> p in s.SiegeInterface.Players)
                     p.Key.CbtInterface.OnDealDamage(this, damage);
             }
             else
@@ -354,8 +336,21 @@ namespace WorldServer
             Pet pet = killer as Pet;
             Player credited = (pet != null) ? pet.Owner : (killer as Player);
 
+            if (killer is Player)
+                (killer as Player).SendClientMessage($"{(killer as Player).Name} has killed a siege item!");
+
+
+            if (this.SiegeInterface.Creator != null)
+            {
+                this.SiegeInterface.Creator.SendClientMessage($"Your siege has been destroyed!");
+            }
+
             if (credited != null)
+            {
+                // Contribution for Siege kill
+                credited.UpdatePlayerBountyEvent((byte)ContributionDefinitions.DESTROY_SIEGE);
                 HandleXPRenown(credited);
+            }
 
             SiegeInterface.RemoveAllPlayers();
 
@@ -413,7 +408,7 @@ namespace WorldServer
         /// <param name="incDamage"></param>
         public override void ModifyDamageIn(AbilityDamageInfo incDamage)
         {
-            CreatureSubTypes subType = (CreatureSubTypes) Spawn.Proto.CreatureSubType;
+            CreatureSubTypes subType = (CreatureSubTypes)Spawn.Proto.CreatureSubType;
 
             if (subType == CreatureSubTypes.SIEGE_RAM)
             {
@@ -453,7 +448,7 @@ namespace WorldServer
                                     incDamage.Damage = 0;
                                     incDamage.PrecalcDamage = 0;
                                     incDamage.DamageReduction = 0f;
-                                    incDamage.DamageEvent = (byte) CombatEvent.COMBATEVENT_BLOCK;
+                                    incDamage.DamageEvent = (byte)CombatEvent.COMBATEVENT_BLOCK;
                                 }
                                 else
                                     incDamage.DamageReduction *= 0.066f;
@@ -473,48 +468,48 @@ namespace WorldServer
             }
 
             else switch (incDamage.SubDamageType)
-            {
-                case SubDamageTypes.Cleave:
-                    incDamage.DamageReduction *= 0.8f;
-                    break;
-                case SubDamageTypes.Artillery:
-                    incDamage.Mitigation = incDamage.Damage * 0.95f;
-                    incDamage.Damage *= 0.05f;
-                    break;
-                case SubDamageTypes.Oil:
-                    incDamage.Damage = 0;
-                    incDamage.PrecalcDamage = 0;
-                    incDamage.DamageReduction = 0f;
-                    incDamage.DamageEvent = (byte) CombatEvent.COMBATEVENT_BLOCK;
-                    break;
-                case SubDamageTypes.Cannon:
-                    incDamage.Mitigation = incDamage.Damage*0.5f;
-                    incDamage.Damage *= 0.5f;
-                    break;
-                case SubDamageTypes.None:
-                    switch (incDamage.DamageType)
-                    {
-                        case DamageTypes.Physical:
-                            if (incDamage.StatUsed == 8)
-                            {
-                                incDamage.Damage = 0;
-                                incDamage.PrecalcDamage = 0;
-                                incDamage.DamageReduction = 0f;
-                                incDamage.DamageEvent = (byte) CombatEvent.COMBATEVENT_BLOCK;
-                            }
-                            else
-                                incDamage.DamageReduction *= 0.4f;
-                            break;
-                        case DamageTypes.RawDamage:
-                            incDamage.Mitigation = incDamage.Damage * 0.5f;
-                            incDamage.Damage *= 0.5f;
-                            break;
-                        default:
-                            incDamage.DamageReduction *= 0.05f;
-                            break;
-                    }
-                    break;
-            }
+                {
+                    case SubDamageTypes.Cleave:
+                        incDamage.DamageReduction *= 0.8f;
+                        break;
+                    case SubDamageTypes.Artillery:
+                        incDamage.Mitigation = incDamage.Damage * 0.95f;
+                        incDamage.Damage *= 0.05f;
+                        break;
+                    case SubDamageTypes.Oil:
+                        incDamage.Damage = 0;
+                        incDamage.PrecalcDamage = 0;
+                        incDamage.DamageReduction = 0f;
+                        incDamage.DamageEvent = (byte)CombatEvent.COMBATEVENT_BLOCK;
+                        break;
+                    case SubDamageTypes.Cannon:
+                        incDamage.Mitigation = incDamage.Damage * 0.5f;
+                        incDamage.Damage *= 0.5f;
+                        break;
+                    case SubDamageTypes.None:
+                        switch (incDamage.DamageType)
+                        {
+                            case DamageTypes.Physical:
+                                if (incDamage.StatUsed == 8)
+                                {
+                                    incDamage.Damage = 0;
+                                    incDamage.PrecalcDamage = 0;
+                                    incDamage.DamageReduction = 0f;
+                                    incDamage.DamageEvent = (byte)CombatEvent.COMBATEVENT_BLOCK;
+                                }
+                                else
+                                    incDamage.DamageReduction *= 0.4f;
+                                break;
+                            case DamageTypes.RawDamage:
+                                incDamage.Mitigation = incDamage.Damage * 0.5f;
+                                incDamage.Damage *= 0.5f;
+                                break;
+                            default:
+                                incDamage.DamageReduction *= 0.05f;
+                                break;
+                        }
+                        break;
+                }
         }
 
         private uint _damageOut;
@@ -559,8 +554,8 @@ namespace WorldServer
 
             #region Initialize reward values
 
-            uint totalXP = (uint)(500 * Region.GetTier() * Math.Min(6f, _damageOut / (float) 100) * (1f + killer.AAOBonus));
-            uint totalRenown = (uint)(100 * Region.GetTier()  * Math.Min(6f, _damageOut / (float)100) * (1f + killer.AAOBonus));
+            uint totalXP = (uint)(500 * Region.GetTier() * Math.Min(6f, _damageOut / (float)100) * (1f + killer.AAOBonus));
+            uint totalRenown = (uint)(100 * Region.GetTier() * Math.Min(6f, _damageOut / (float)100) * (1f + killer.AAOBonus));
 
             ushort influenceId = 0;
             uint totalInfluence = 0;
@@ -611,7 +606,6 @@ namespace WorldServer
                         if (influenceId != 0)
                             curPlayer.AddInfluence(influenceId, influenceShare);
 
-                        Region.Campaign?.AddContribution(curPlayer, renownShare);
                     }
 
                     curPlayer.EvtInterface.Notify(EventName.OnKill, killer, null);
@@ -642,17 +636,31 @@ namespace WorldServer
 
         public override void Destroy()
         {
-            // RB   5/18/2016   Remove objects from keeps, and make sure spawns are removed, so they don't come back.
-            switch (_type)
+            //_logger.Debug($"Destroying Siege {this.Name}. SiegeManager : {this.Region.Campaign.SiegeManager.ToString()}");
+            try
             {
-                case SiegeType.OIL:
-                    Keep.RemoveKeepSiege(this);
-                    break;
-                default:
-                    Keep.RemoveSiege(this);
-                    break;
-            }
+                if (this.SiegeInterface == null)
+                    _logger.Debug($"SiegeIntf null");
 
+                if (this.SiegeInterface.Creator == null)
+                    _logger.Debug($"SiegeIntf.Creator null");
+
+                if (this.Region == null)
+                    _logger.Debug($"this.Region null");
+
+                if (this.Region.Campaign == null)
+                    _logger.Debug($"this.Region.Campaign null");
+
+                if (this.Region.Campaign.SiegeManager == null)
+                    _logger.Debug($"this.Region.Campaign.SiegeManager null");
+
+                this.Region.Campaign?.SiegeManager?.Remove(this, this.SiegeInterface.Creator.Realm);
+            }
+            catch (Exception e)
+            {
+                _logger.Debug($"{e.Message}{e.StackTrace}");
+            }
+            
             PendingDisposal = true;
         }
 
@@ -661,6 +669,34 @@ namespace WorldServer
             SiegeInterface.RemoveAllPlayers();
 
             base.Dispose();
+        }
+
+        public static SiegeType? GetSiegeType(uint primaryValue)
+        {
+           var siegeProto =  CreatureService.GetCreatureProto(primaryValue);
+            if (siegeProto == null)
+                return null;
+
+            SiegeType siegeType;
+
+
+            switch ((GameData.CreatureSubTypes)siegeProto.CreatureSubType)
+            {
+                case GameData.CreatureSubTypes.SIEGE_GTAOE:
+                    siegeType = SiegeType.GTAOE;
+                    break;
+                case GameData.CreatureSubTypes.SIEGE_SINGLE_TARGET:
+                    siegeType = SiegeType.SNIPER;
+                    break;
+                case GameData.CreatureSubTypes.SIEGE_RAM:
+                    siegeType = SiegeType.RAM;
+                    break;
+                default:
+                    siegeType = SiegeType.RAM;
+                    break;
+            }
+
+            return siegeType;
         }
     }
 }

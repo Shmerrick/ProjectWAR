@@ -4,7 +4,10 @@ using GameData;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Common.Database.World.Creatures;
 using NLog;
+using WorldServer.Managers;
+using WorldServer.World.Objects;
 
 namespace WorldServer.Services.World
 {
@@ -13,6 +16,10 @@ namespace WorldServer.Services.World
     {
         private static Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         public static Dictionary<uint, Creature_proto> CreatureProtos;
+        public static IList<BossSpawn> BossSpawns;
+        public static IList<BossSpawnAbilities> BossSpawnAbilities;
+        public static IList<BossSpawnPhase> BossSpawnPhases;
+        public static List<CreatureSmartAbilities> CreatureSmartAbilities;
 
         #region Creature Proto
         [LoadingFunction(true)]
@@ -242,6 +249,26 @@ namespace WorldServer.Services.World
         }
 
         [LoadingFunction(true)]
+        public static void LoadBossSpawns()
+        {
+            Log.Debug("WorldMgr", "Loading Boss_Spawns...");
+
+            BossSpawns = Database.SelectAllObjects<BossSpawn>();
+            Log.Success("LoadBossSpawns", "Loaded " + BossSpawns.Count + " BossSpawns");
+
+            BossSpawnAbilities = Database.SelectAllObjects<BossSpawnAbilities>();
+            Log.Success("LoadBossSpawns", "Loaded " + BossSpawnAbilities.Count + " BossSpawnAbilities");
+
+            BossSpawnPhases = Database.SelectAllObjects<BossSpawnPhase>();
+            Log.Success("LoadBossSpawnPhases", "Loaded " + BossSpawnPhases.Count + " BossSpawnPhase");
+
+        }
+
+
+
+
+
+        [LoadingFunction(true)]
         public static void LoadCreatureSpawns()
         {
             Log.Debug("WorldMgr", "Loading Creature_Spawns...");
@@ -257,6 +284,10 @@ namespace WorldServer.Services.World
             }
 
             Log.Success("LoadCreatureSpawns", "Loaded " + CreatureSpawns.Count + " Creature_Spawns");
+
+            CreatureSmartAbilities = (List<CreatureSmartAbilities>) Database.SelectAllObjects<CreatureSmartAbilities>();
+            Log.Success("CreatureSmartAbilities", "Loaded " + CreatureSmartAbilities.Count + " CreatureSmartAbilities");
+
         }
         #endregion
 

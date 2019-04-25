@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using SystemData;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Objects;
 using static WorldServer.Managers.Commands.GMUtils;
 
 namespace WorldServer.Managers.Commands
@@ -56,6 +59,12 @@ namespace WorldServer.Managers.Commands
 
             CreatureService.LoadCreatureStats();
             plr.SendClientMessage("RELOADCREATURES: Stats Loaded : " + CreatureService._CreatureStats.Count);
+
+            BattleFrontService.LoadKeepCreatures();
+            plr.SendClientMessage("RELOADCREATURES: Keep Creatures Loaded : " + BattleFrontService._KeepCreatures.Count);
+
+            CreatureService.LoadBossSpawns();
+            plr.SendClientMessage("RELOADCREATURES: Bosses Loaded : " + CreatureService.BossSpawns.Count);
 
             List<Object> allCells = new List<Object>();
             allCells.AddRange(plr._Cell.Objects);

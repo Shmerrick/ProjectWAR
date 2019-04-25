@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WorldServer</RootNamespace>
     <AssemblyName>WorldServer</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -45,7 +45,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -57,7 +58,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -71,7 +73,8 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -82,26 +85,171 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>
+    </CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>world.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Appccelerate.StateMachine, Version=4.4.0.0, Culture=neutral, PublicKeyToken=917bca444d1f2b4c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Appccelerate.StateMachine.4.4.0\lib\netstandard1.0\Appccelerate.StateMachine.dll</HintPath>
+    </Reference>
+    <Reference Include="BehaviourTree, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BehaviourTree.1.0.70\lib\netstandard1.0\BehaviourTree.dll</HintPath>
+    </Reference>
+    <Reference Include="BehaviourTree.FluentBuilder, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BehaviourTree.FluentBuilder.1.0.70\lib\netstandard1.0\BehaviourTree.FluentBuilder.dll</HintPath>
+    </Reference>
+    <Reference Include="Evolve, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Evolve.1.9.0\lib\net451\Evolve.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.DotNet.PlatformAbstractions, Version=1.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Evolve.1.9.0\lib\net451\Microsoft.DotNet.PlatformAbstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyModel, Version=1.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Evolve.1.9.0\lib\net451\Microsoft.Extensions.DependencyModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Evolve.1.9.0\lib\net451\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.5.7\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.5.11\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.AppContext.4.3.0\lib\net463\System.AppContext.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Console, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Console.4.3.0\lib\net46\System.Console.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.3.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.Tracing, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.Tracing.4.3.0\lib\net462\System.Diagnostics.Tracing.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Globalization.Calendars, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Globalization.Calendars.4.3.0\lib\net46\System.Globalization.Calendars.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Compression.ZipFile, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.ZipFile.4.3.0\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.4.3.0\lib\net46\System.IO.FileSystem.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Linq, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.4.3.0\lib\net463\System.Linq.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Linq.Expressions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Expressions.4.3.0\lib\net463\System.Linq.Expressions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.3.0\lib\net46\System.Net.Http.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Reflection, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.4.3.0\lib\net462\System.Reflection.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Extensions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.Extensions.4.3.0\lib\net462\System.Runtime.Extensions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.4.3.0\lib\net463\System.Runtime.InteropServices.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.3.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.3.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.RegularExpressions.4.3.0\lib\net463\System.Text.RegularExpressions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -111,6 +259,11 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Xml.ReaderWriter.4.3.0\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\ApiPacket.cs" />
@@ -162,10 +315,14 @@
     <Compile Include="Services\World\ItemService.cs" />
     <Compile Include="Services\World\BattlefrontService.cs" />
     <Compile Include="Services\World\InstanceService.cs" />
+    <Compile Include="Services\World\LiveEventService.cs" />
     <Compile Include="Services\World\PQuestService.cs" />
     <Compile Include="Services\World\QuestService.cs" />
     <Compile Include="Services\World\RallyPointService.cs" />
+    <Compile Include="Services\World\RewardService.cs" />
+    <Compile Include="Services\World\BountyService.cs" />
     <Compile Include="Services\World\RVRProgressionService.cs" />
+    <Compile Include="Services\World\HonorService.cs" />
     <Compile Include="Services\World\RVRZoneRewardService.cs" />
     <Compile Include="Services\World\ScenarioService.cs" />
     <Compile Include="Services\World\TokService.cs" />
@@ -246,82 +403,221 @@
     <Compile Include="World\Abilities\Objects\BuffHostObject.cs" />
     <Compile Include="World\Abilities\Objects\LandMine.cs" />
     <Compile Include="World\Abilities\RunicBlessingsHandler.cs" />
+    <Compile Include="World\AI\Abilities\Conditions.cs" />
+    <Compile Include="World\AI\Abilities\Executions.cs" />
     <Compile Include="World\AI\ABrain.cs" />
+    <Compile Include="World\AI\BlackguardBrain.cs" />
+    <Compile Include="World\AI\BossSpawn.cs" />
+    <Compile Include="World\AI\BrainType.cs" />
+    <Compile Include="World\AI\BT\ChosenBehaviourTree.cs" />
+    <Compile Include="World\AI\BossBrain.cs" />
+    <Compile Include="World\AI\HealerBrain.cs" />
+    <Compile Include="World\AI\NpcBrain.cs" />
+    <Compile Include="World\AI\SlayerBrain.cs" />
+    <Compile Include="World\AI\WitchHunterBrain.cs" />
+    <Compile Include="World\AI\WitchElfBrain.cs" />
+    <Compile Include="World\AI\IronBreakerBrain.cs" />
+    <Compile Include="World\AI\KnightBrain.cs" />
+    <Compile Include="World\AI\BT\ChosenBrain.cs" />
+    <Compile Include="World\AI\ChoppaBrain.cs" />
+    <Compile Include="World\AI\RunepriestBrain.cs" />
+    <Compile Include="World\AI\RangedBrain.cs" />
+    <Compile Include="World\AI\ZealotBrain.cs" />
+    <Compile Include="World\AI\MarauderBrain.cs" />
     <Compile Include="World\AI\AgressiveBrain.cs" />
     <Compile Include="World\AI\DummyBrain.cs" />
     <Compile Include="World\AI\GuardBrain.cs" />
     <Compile Include="World\AI\InstanceBossBrain.cs" />
+    <Compile Include="World\AI\MdpsStateMachine.cs" />
     <Compile Include="World\AI\PassiveBrain.cs" />
     <Compile Include="World\AI\SimpleLVHealerBrain.cs" />
     <Compile Include="World\Auction\AuctionHouse.cs" />
     <Compile Include="World\Battlefronts\AAOTracker.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\CampaignMetrics.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\PlayerContributionManager.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\PlayerUtil.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\GuildClaimObjective.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\BattlefieldObjective.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\DeploymentReason.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\EnemyKeepLocationComparitor.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\FriendlyKeepLocationComparitor.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\ILocationComparitor.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\KeepStateMachine.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\CampaignObjectiveStateMachine.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\PlayerRewardOptions.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\RealmCaptainManager.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\RegionLockManager.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\SiegeManager.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\RamSpawnFlagComparitor.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\SiegeMerchantLocationComparitor.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\SiegeTracker.cs" />
+    <Compile Include="World\Battlefronts\Bounty\BountyException.cs" />
+    <Compile Include="World\Battlefronts\Bounty\CharacterBounty.cs" />
+    <Compile Include="World\Battlefronts\Bounty\ContributionManager.cs" />
+    <Compile Include="World\Battlefronts\Bounty\BountyManager.cs" />
+    <Compile Include="World\Battlefronts\Bounty\ContributionStage.cs" />
+    <Compile Include="World\Battlefronts\Bounty\IBountyManager.cs" />
+    <Compile Include="World\Battlefronts\Bounty\IContributionManager.cs" />
+    <Compile Include="World\Battlefronts\Bounty\IImpactMatrixManager.cs" />
+    <Compile Include="World\Battlefronts\Bounty\PlayerContribution.cs" />
+    <Compile Include="World\Battlefronts\Bounty\PlayerImpact.cs" />
+    <Compile Include="World\Battlefronts\Bounty\ImpactMatrixManager.cs" />
+    <Compile Include="World\Battlefronts\Bounty\RenownBandRVRObjectiveTick.cs" />
+    <Compile Include="World\Battlefronts\Bounty\PlayerRVRGearDrop.cs" />
+    <Compile Include="World\Battlefronts\Bounty\RewardPlayerKill.cs" />
+    <Compile Include="World\Battlefronts\Bounty\RenownBandRVRPairingLock.cs" />
+    <Compile Include="World\Battlefronts\Bounty\RenownBandRVRZoneLock.cs" />
+    <Compile Include="World\Battlefronts\Bounty\RewardManager.cs" />
+    <Compile Include="World\Battlefronts\Bounty\StaticWrapper.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\BattleFrontStatus.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\IApocCommunications.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\ILootBagBuilder.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\ILootDecider.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\IRandomGenerator.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\IRewardAssigner.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\Loot\IRewardSelector.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\LootBagRarity.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\LootBagTypeDefinition.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\Loot\LootDecider.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\BagContentSelector.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\RandomGenerator.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardAssigner.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardDistributor.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardSelector.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\SimpleContribution.cs" />
     <Compile Include="World\Battlefronts\ContributionTracker.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\AAOTracker.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\BattlefrontConstants.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\IBattlefrontManager.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\CampaignObjective.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Campaign.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\LowerTierCampaignManager.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\RVRRewardManager.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\UpperTierCampaignManager.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\IApocBattleFront.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\ApocCommunications.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\ProximityEngine.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\VictoryPoint.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\VictoryPointProgress.cs" />
+    <Compile Include="World\Battlefronts\Keeps\KeepCommunications.cs" />
+    <Compile Include="World\Battlefronts\Keeps\BattleFrontKeep.cs" />
+    <Compile Include="World\Battlefronts\Keeps\HardPoint.cs" />
+    <Compile Include="World\Battlefronts\Keeps\IKeepCommunications.cs" />
+    <Compile Include="World\Battlefronts\Keeps\KeepCreature.cs" />
+    <Compile Include="World\Battlefronts\Keeps\KeepMessage.cs" />
+    <Compile Include="World\Battlefronts\Keeps\KeepRewardManager.cs" />
+    <Compile Include="World\Battlefronts\Keeps\KeepTimer.cs" />
+    <Compile Include="World\Battlefronts\Objectives\PortalToGatehouse.cs" />
     <Compile Include="World\Battlefronts\Objectives\PortalToObjective.cs" />
     <Compile Include="World\Battlefronts\Objectives\PortalBase.cs" />
     <Compile Include="World\Battlefronts\Objectives\PortalToWarcamp.cs" />
     <Compile Include="World\Battlefronts\Objectives\StateFlags.cs" />
-    <Compile Include="World\Battlefronts\RationTracker.cs" />
-    <Compile Include="World\Battlefronts\Legacy\BattlefrontObjective.cs" />
-    <Compile Include="World\Battlefronts\Keeps\Keep.cs" />
     <Compile Include="World\Abilities\Buffs\BuffInterface.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepDoor.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepNpcCreature.cs" />
-    <Compile Include="World\Instances\TOTVL.cs" />
+    <Compile Include="World\Objects\AdvancedCreature.cs" />
+    <Compile Include="World\Objects\CreatureState.cs" />
+    <Compile Include="World\Objects\DynamicVendor.cs" />
+    <Compile Include="World\Objects\Boss.cs" />
+    <Compile Include="World\Objects\LootChest.cs" />
+    <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleBarakustheGodslayer.cs" />
+    <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleCuliusEmbervine.cs" />
+    <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleKorthuktheRaging.cs" />
+    <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleSarlothBloodtouched.cs" />
+    <Compile Include="World\Objects\Instances\Bilerot Burrow\SimpleBartholomeustheSickly.cs" />
+    <Compile Include="World\Objects\Instances\Bilerot Burrow\SimpleSsrydianMorbidae.cs" />
+    <Compile Include="World\Objects\Instances\Bilerot Burrow\SimpleTheBileLord.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleButcherGutbeater.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleChulEarthkeeper.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleGoraktheAncient.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleLargtheDevourer.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleNKariKeeperofSecrets.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleSarthaintheWorldbearer.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleSechartheDarkpromiseChieftain.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleTheDarkpromiseBeast2.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleZaarthePainseeker.cs" />
+    <Compile Include="World\Objects\Instances\TheSewersofAltdorfWing3Sewers\AltdorfSewers3\AltdorfSewersWingIII.cs" />
+    <Compile Include="World\Objects\Instances\Tombs\SimpleBennuApeht.cs" />
+    <Compile Include="World\Objects\Instances\Tombs\SimpleHapuShebikef.cs" />
+    <Compile Include="World\Objects\Instances\Tombs\SimpleSaaKhasef.cs" />
+    <Compile Include="World\Objects\Instances\Tombs\SimpleTsekaniHeyafa.cs" />
+    <Compile Include="World\Objects\Instances\TomboftheVultureLord\SimpleAkiltheShrewd.cs" />
+    <Compile Include="World\Objects\Instances\TomboftheVultureLord\SimpleHandofUalatp.cs" />
+    <Compile Include="World\Objects\Instances\TomboftheVultureLord\SimpleHierophantEutrata.cs" />
+    <Compile Include="World\Objects\Instances\TomboftheVultureLord\SimpleHighPriestHerakh1.cs" />
+    <Compile Include="World\Objects\Instances\TomboftheVultureLord\SimpleHighPriestHerakh2.cs" />
+    <Compile Include="World\Objects\Instances\TomboftheVultureLord\SimpleHighPriestHerakh3.cs" />
+    <Compile Include="World\Objects\Instances\TomboftheVultureLord\SimpleJahitheIndignant.cs" />
+    <Compile Include="World\Objects\Instances\TomboftheVultureLord\SimpleKingAmenemhetumtheVultureLord.cs" />
+    <Compile Include="World\Objects\Instances\TomboftheVultureLord\SimpleTumainitheHopeless.cs" />
+    <Compile Include="World\Objects\Instances\TomboftheVultureLord\SimpleUsiriansKeeper.cs" />
+    <Compile Include="World\Objects\Instances\WarpbladeTunnels1\SimpleSkivRedwarp.cs" />
+    <Compile Include="World\Objects\Instances\WarpbladeTunnels1\SimpleWarlockPeenk.cs" />
+    <Compile Include="World\Objects\Instances\SigmarCrypts\SimpleArchLectorVerrimus.cs" />
+    <Compile Include="World\Objects\Instances\SigmarCrypts\SimpleArchLectorZakarai.cs" />
+    <Compile Include="World\Objects\Instances\SigmarCrypts\SimpleCryptwebQueen.cs" />
+    <Compile Include="World\Objects\Instances\SigmarCrypts\SimpleNecromancerMalcidious.cs" />
+    <Compile Include="World\Objects\Instances\SigmarCrypts\SimpleSeraphinePaleEye.cs" />
+    <Compile Include="World\Objects\Instances\SigmarCrypts\SimpleSisterEudocia.cs" />
+    <Compile Include="World\Objects\Instances\SigmarCrypts\SimpleTheReaper.cs" />
+    <Compile Include="World\Objects\Instances\SigmarCrypts\SimpleTobiastheFallen.cs" />
+    <Compile Include="World\Objects\Instances\SacellumDungeonsSouthWingSacellum1\SimpleGoremane.cs" />
+    <Compile Include="World\Objects\Instances\SacellumDungeonsSouthWingSacellum1\SimpleSnaptailtheBreeder.cs" />
+    <Compile Include="World\Objects\Instances\SacellumDungeonsSouthWingSacellum1\SimpleViraxiltheBroken.cs" />
+    <Compile Include="World\Objects\Instances\TheSewersofAltdorfWing3Sewers\SimpleGoradiantheCreator.cs" />
+    <Compile Include="World\Objects\Instances\TheSewersofAltdorfWing3Sewers\SimpleMasterMoulderVitchek.cs" />
+    <Compile Include="World\Objects\Instances\Bastion Stairs\SimpleKaarntheVanquisher.cs" />
+    <Compile Include="World\Objects\Instances\Bastion Stairs\SimpleLordSlaurith.cs" />
+    <Compile Include="World\Objects\Instances\Bastion Stairs\SimpleSkullLordVarIthrok.cs" />
+    <Compile Include="World\Objects\Instances\Bastion Stairs\SimpleTharlgnan.cs" />
+    <Compile Include="World\Objects\Instances\SacellumDungeonsEastWingSacellum3\SimpleGhalmarRagehorn.cs" />
+    <Compile Include="World\Objects\Instances\SacellumDungeonsEastWingSacellum3\SimpleUzhaktheBetrayer.cs" />
+    <Compile Include="World\Objects\Instances\SacellumDungeonsEastWingSacellum3\SimpleVultheBloodchosen.cs" />
+    <Compile Include="World\Objects\Instances\SacellumDungeonsWestWingSacellum2\SimpleHoarfrost.cs" />
+    <Compile Include="World\Objects\Instances\SacellumDungeonsWestWingSacellum2\SimpleLorthThunderbelly.cs" />
+    <Compile Include="World\Objects\Instances\SacellumDungeonsWestWingSacellum2\SimpleSebcrawtheDiscarded.cs" />
+    <Compile Include="World\Objects\Instances\SacellumDungeonsWestWingSacellum2\SimpleSlorthThunderbelly.cs" />
+    <Compile Include="World\Objects\Instances\WarpbladeTunnels2\SimpleBrauk.cs" />
+    <Compile Include="World\Objects\Instances\WarpbladeTunnels2\SimpleGreySeerQuoltik.cs" />
+    <Compile Include="World\Objects\Instances\WarpbladeTunnels2\SimpleMasterMoulderSkrot.cs" />
+    <Compile Include="World\Objects\Instances\TheSewersofAltdorfWing2Sewers3\SimpleBulbousOne.cs" />
+    <Compile Include="World\Objects\Instances\TheSewersofAltdorfWing2Sewers3\SimpleProtFangchitter.cs" />
+    <Compile Include="World\Objects\Instances\TheSewersofAltdorfWing2Sewers3\SimpleVermerFangchitter.cs" />
+    <Compile Include="World\Objects\Instances\TheSewersofAltdorfWing1Sewers 2\SimpleKokritManEater.cs" />
+    <Compile Include="World\Objects\Instances\Mount Gunbad\SimpleWightLordSolithex.cs" />
+    <Compile Include="World\Objects\Instances\Mount Gunbad\SimpleArdtaFeed.cs" />
+    <Compile Include="World\Objects\Instances\Mount Gunbad\SimpleMastaMixa.cs" />
+    <Compile Include="World\Objects\Instances\Mount Gunbad\SimpleGlompdaSquigMasta.cs" />
+    <Compile Include="World\Objects\Instances\Hunters Vale\SimpleSpiritofKurnous.cs" />
+    <Compile Include="World\Objects\Instances\Hunters Vale\SimpleThananTreeLord.cs" />
+    <Compile Include="World\Objects\Instances\Hunters Vale\SimpleTheCadaithaineLion.cs" />
+    <Compile Include="World\Objects\Instances\TomboftheVultureLord\TOTVL.cs" />
+    <Compile Include="World\Interfaces\LiveEventInterface.cs" />
     <Compile Include="World\Map\Occlusion.cs" />
-    <Compile Include="World\Objects\Instances\SimpleAhzranok.cs" />
-    <Compile Include="World\Objects\Instances\SimpleDralel.cs" />
-    <Compile Include="World\Objects\Instances\SimpleFulgurThunderborn.cs" />
-    <Compile Include="World\Objects\Instances\SimpleHorgulul.cs" />
-    <Compile Include="World\Objects\Instances\SimpleMalghorGreathorn.cs" />
-    <Compile Include="World\Objects\Instances\SimpleTheDeamonicBeast.cs" />
-    <Compile Include="World\Objects\Instances\SimpleTonragThunderborn.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleAhzranok.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleDralel.cs" />
+    <Compile Include="World\Objects\Instances\RemovedBosses\SimpleFulgurThunderborn.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleHorgulul.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleMalghorGreathorn.cs" />
+    <Compile Include="World\Objects\Instances\The Lost Vale\SimpleTheDeamonicBeast.cs" />
+    <Compile Include="World\Objects\Instances\RemovedBosses\SimpleTonragThunderborn.cs" />
+    <Compile Include="World\Objects\NPCAbility.cs" />
+    <Compile Include="World\Objects\RVRArea.cs" />
+    <Compile Include="World\Objects\RVRRewardItem.cs" />
+    <Compile Include="World\Objects\SpawnPoint.cs" />
     <Compile Include="World\Scripting\BasicScript.cs" />
     <Compile Include="World\Scripting\BehaviorLib.cs" />
-    <Compile Include="World\Scripting\Dungeons\AltdorfSewers\AltdorfSewersWingIII.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\Arathremia.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\ArdtaFeed.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\BasicGunbad.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\BroodMotherSzikalax.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\ElderKizzig.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\FoulMoufdaUngry.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\GarrolaththePoxbearer.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\GlompDaSquigMasta.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\GriblikdaStinka.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\HeraldofSolithex.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\Logazor.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\MastaMixa.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\MastaWranglaGlix.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\RedeyeBigOaf.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\BlazAndVelkyrrix.cs" />
-    <Compile Include="World\Scripting\Dungeons\Gunbad\WightLordSolithex.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\Arathremia.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\ArdtaFeed.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\BasicGunbad.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\BroodMotherSzikalax.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\ElderKizzig.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\FoulMoufdaUngry.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\GarrolaththePoxbearer.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\GlompDaSquigMasta.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\GriblikdaStinka.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\HeraldofSolithex.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\Logazor.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\MastaMixa.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\MastaWranglaGlix.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\RedeyeBigOaf.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\BlazAndVelkyrrix.cs" />
+    <Compile Include="World\Objects\Instances\Gunbad ROR\WightLordSolithex.cs" />
     <Compile Include="World\Scripting\Events\Halloween\BasicHalloween.cs" />
     <Compile Include="World\Scripting\Lairs\Beastlords\BasicBeastlord.cs" />
     <Compile Include="World\Scripting\Lairs\Beastlords\AllBeastlords.cs" />
@@ -336,10 +632,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="World\WorldSettings\WorldSettings.cs" />
-    <Compile Include="World\Instances\Instance.cs" />
-    <Compile Include="World\Instances\InstanceDoor.cs" />
-    <Compile Include="World\Instances\InstanceMgr.cs" />
-    <Compile Include="World\Instances\InstanceObject.cs" />
+    <Compile Include="World\Objects\Instances\Instance.cs" />
+    <Compile Include="World\Objects\Instances\InstanceDoor.cs" />
+    <Compile Include="World\Objects\Instances\InstanceMgr.cs" />
+    <Compile Include="World\Objects\Instances\InstanceObject.cs" />
     <Compile Include="World\Interfaces\CombatInterface\CombatInterface_NPC.cs" />
     <Compile Include="World\Interfaces\CombatInterface\CombatInterface_Pet.cs" />
     <Compile Include="World\Interfaces\CombatInterface\CombatInterface_Player.cs" />
@@ -458,6 +754,7 @@
     <None Include="app.config" />
     <None Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
@@ -492,6 +789,13 @@ if not exist $(TargetDir)\TempFilesDirectory mkdir $(TargetDir)\TempFilesDirecto
 if not exist $(TargetDir)\Abilities mkdir $(TargetDir)\Abilities
 </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\Evolve.1.9.0\build\net451\Evolve.targets" Condition="Exists('..\packages\Evolve.1.9.0\build\net451\Evolve.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Evolve.1.9.0\build\net451\Evolve.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Evolve.1.9.0\build\net451\Evolve.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

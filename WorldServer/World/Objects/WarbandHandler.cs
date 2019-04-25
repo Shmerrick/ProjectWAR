@@ -1,15 +1,15 @@
 ﻿using System;
-using System.CodeDom;
-using FrameWork;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Security.Policy;
 using System.Threading;
 using SystemData;
+using FrameWork;
 using GameData;
+using WorldServer.Managers;
+using WorldServer.World.Interfaces;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     /// <summary>This class assumes control of 4 Groups, which are slaves to it, to implement Warband handling.</summary>
     public class WarbandHandler
@@ -701,7 +701,7 @@ namespace WorldServer
             //Out.WriteByte(0); // 03: PQ - 02: RVR - 01: PVE - 00: Any - 04: SCE - 05: DUN
             if (Leader.ScnInterface.Scenario != null)
                 Out.WriteByte(4);
-            else if (Group.PlayerInRvR(Leader))
+            else if (RVRArea.IsPlayerInRvR(Leader, WorldMgr.RVRArea.GetZoneRVRAreas()))
                 Out.WriteByte(2);
             else if (Leader.QtsInterface.PublicQuest!= null && Leader.QtsInterface.PublicQuest.ObjectWithinRadiusFeet(Leader, 1000))
                 Out.WriteByte(3);

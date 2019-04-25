@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Common.Database.World.Battlefront;
 using FrameWork;
 
 namespace Common
@@ -76,6 +76,7 @@ namespace Common
             set { _PQuestId = value; Dirty = true; }
         }
 
+
         [DataElement(AllowDbNull = false)]
         public int X { get; set; }
 
@@ -112,6 +113,32 @@ namespace Common
         [DataElement(AllowDbNull = false)]
         public int OilOuterO { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public int OilOuter1X { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int OilOuter1Y { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int OilOuter1Z { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int OilOuter1O { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int OilOuter2X { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int OilOuter2Y { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int OilOuter2Z { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int OilOuter2O { get; set; }
+
+
+
         // RB   5/15/2016   Fixed Ram locations in DB
 
         [DataElement(AllowDbNull = false)]
@@ -138,8 +165,40 @@ namespace Common
         [DataElement(AllowDbNull = false)]
         public int RamOuterO { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public int RamOuter1X { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int RamOuter1Y { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int RamOuter1Z { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int RamOuter1O { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int RamOuter2X { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int RamOuter2Y { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int RamOuter2Z { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int RamOuter2O { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public bool IsFortress { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public int GuildClaimObjectiveId { get; set; }
+
+        public List<KeepSiegeSpawnPoints> KeepSiegeSpawnPoints { get; set; }
         public List<Keep_Creature> Creatures;
         public List<Keep_Door> Doors;
         public PQuest_Info PQuest;
+
     }
 }

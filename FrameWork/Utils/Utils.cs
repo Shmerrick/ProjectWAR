@@ -388,6 +388,7 @@ namespace FrameWork
     F_PING = 0x0B,
     F_PLAYER_QUIT = 0x0C,
     F_DUMP_STATICS = 0x0D,
+    F_WAR_REPORT = 0x0E,
     F_CONNECT = 0x0F,
     F_DISCONNECT = 0x10,
     F_HEARTBEAT = 0x11,
@@ -581,6 +582,17 @@ namespace FrameWork
     F_INFLUENCE_INFO = 0xFC,
     F_KNOCKBACK = 0xFD,
     F_PLAY_VOICE_OVER = 0xFE,
+
+    //these opcodes were missing need checks to confirm the right value
+    F_CURRENT_EVENTS = 0x95, //works but prob sub id?
+    //F_VIEW_LOOT_BAG = 0x60
+    //F_MARKETING_REWARD_LIST = 0x065
+    F_ADVANCED_WAR_REPORT = 0x95, //works but prob sub id?
+    //F_MONSTER_POSITION =???
+    //F_ACTION_COUNTER_TIMESTAMP_INFO = ???
+    F_RRQ = 0x00,
+
+    //part of old ones but needs to be bottom
     MAX_GAME_OPCODE = 0xFF
-};
+    };
 }

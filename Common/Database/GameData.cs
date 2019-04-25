@@ -711,6 +711,27 @@ namespace GameData
         TOME_REWARD_XP = 0
     };
 
+    public enum RRQDisplayType
+    {
+        ERRQDISPLAY_DEFAULT = 1,
+        ERRQDISPLAY_TOMB_KINGS = 2,
+        ERRQDISPLAY_LIVE_EVENT = 3,
+    };
+
+    public enum FortressMessage
+    {
+        SEIZEOWNREALM = 15,
+        ALREADYCLAIMED = 7,
+        NOGUILDORALLIANCEFOUND = 9,
+        INVALIDSUBAREA = 11,
+        NOTINALLIANCE = 10,
+        NOTINPLAYERORG = 13,
+        OUTOFRANGE = 6,
+        UNCLAIMNOTOWNER = 14,
+        REALMOWNERSHIP = 12,
+        MAINFORTRESSNOTCLAIMED = 8,
+    };
+
     public enum Sound
     {
         SOUND_APOTHECARY_FAILED = 1105,
@@ -3626,5 +3647,37 @@ namespace GameData
         Flag8 = 8,
         Flag9 = 9,
         Flag10 = 10,
+    }
+
+    public enum ContributionDefinitions
+    {
+        BO_TAKE_BIG_TICK,
+        BO_TAKE_SMALL_TICK,
+        BO_TAKE_UNLOCK_TICK,
+        PLAYER_KILL_DEATHBLOW,
+        PLAYER_KILL_ON_BO,
+        KILL_KEEP_LORD,
+        DESTROY_OUTER_DOOR,
+        DESTROY_INNER_DOOR,
+        DESTROY_SIEGE,
+        PLAYER_KILL_ASSIST,
+        PLAY_SCENARIO,
+        WIN_SCENARIO,
+        KEEP_DEFENCE_TICK,
+        PLAYER_KILL_DEATHBLOW_UNDER_AAO,
+        PLAYER_KILL_ASSIST_UNDER_AAO,
+        GROUP_LEADER_BO_BIG_TICK,
+        GROUP_LEADER_KILL_KEEP_LORD,
+        RESURRECT_PLAYER,
+        OUT_OF_GROUP_HEALING,
+        PARTY_KILL_ASSIST,
+        REALM_CAPTAIN_KILL,
+        PLAYER_KILL_ASSIST_ON_BO,
+        PUNT_ENEMY,
+        HOLD_THE_LINE,
+        TANK_GUARD,
+        GENERAL_HEALING,
+        KNOCK_DOWN,
+        AOE_ROOT
     }
 }

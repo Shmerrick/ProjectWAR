@@ -1,13 +1,20 @@
-﻿using System;
-using System.Security.Policy;
-using System.Threading;
-using SystemData;
+﻿using SystemData;
 using Common;
 using FrameWork;
 using GameData;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Buffs.SpecialBuffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer.Scenarios.Objects
+namespace WorldServer.World.Scenarios.Objects
 {
     public enum EHeldState
     {
@@ -119,7 +126,7 @@ namespace WorldServer.Scenarios.Objects
             Region.AddObject(_glowObject, spawn.ZoneId);
         }
 
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
             if (PendingDisposal)
             {
@@ -127,10 +134,10 @@ namespace WorldServer.Scenarios.Objects
                 return;
             }
 
-            if (_holdResetTime > 0 && HeldState == EHeldState.Carried && _holdResetTime < tick)
+            if (_holdResetTime > 0 && HeldState == EHeldState.Carried && _holdResetTime < msTick)
                 ResetFromHeld();
 
-            _evtInterface.Update(tick);
+            _evtInterface.Update(msTick);
         }
 
         private void SetGlowColorFor(Realms realm)

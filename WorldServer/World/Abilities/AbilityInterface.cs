@@ -2,13 +2,20 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using SystemData;
-using Common;
 using FrameWork;
 using GameData;
+using WorldServer.NetWork;
+using WorldServer.World.Abilities.CareerInterfaces;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Item = WorldServer.World.Objects.Item;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities
 {
     public class AbilityInterface : BaseInterface
     {
@@ -320,7 +327,7 @@ namespace WorldServer
 
         #region AbilityCast
 
-        public bool StartCast(Unit instigator, ushort abilityID, byte castSequence, byte cooldownGroup = 0, byte overrideAbilityLevel = 0, bool enemyVisible = true, bool friendlyVisible = true, bool moving = false)
+        public bool StartCast(Unit instigator, ushort abilityId, byte castSequence, byte cooldownGroup = 0, byte overrideAbilityLevel = 0, bool enemyVisible = true, bool friendlyVisible = true, bool moving = false)
         {
             if (PreventCasting)
             {
@@ -330,10 +337,10 @@ namespace WorldServer
             }
 
             // Allow only interruption of channeled skills of a different ID to the skill being used
-            if (IsCasting() && (!_abilityProcessor.IsChannelling || _abilityProcessor.AbInfo.Entry == abilityID))
+            if (IsCasting() && (!_abilityProcessor.IsChannelling || _abilityProcessor.AbInfo.Entry == abilityId))
                 return false;
 
-            AbilityInfo abInfo = AbilityMgr.GetAbilityInfo(abilityID);
+            AbilityInfo abInfo = AbilityMgr.GetAbilityInfo(abilityId);
 
             if (abInfo == null || (abInfo.ConstantInfo.Origin != AbilityOrigin.AO_ITEM && !IsValidAbility(abInfo)))
                 return false;
@@ -341,7 +348,7 @@ namespace WorldServer
             //Fix so that WE/WH cant use all their 3 openers at the same time, this is in conjunction with whats in AbilityProcessor
             if (_Owner is Player)
             {
-                if ((_Owner as Player).StealthLevel == 0 && (abilityID == 9406 || abilityID == 9401 || abilityID == 9411 || abilityID == 8091 || abilityID == 8096 || abilityID == 8098))
+                if ((_Owner as Player).StealthLevel == 0 && (abilityId == 9406 || abilityId == 9401 || abilityId == 9411 || abilityId == 8091 || abilityId == 8096 || abilityId == 8098))
                 {
                     return false;
                 }
@@ -350,7 +357,7 @@ namespace WorldServer
             try
             {
 
-                if (AbilityMgr.HasCommandsFor(abilityID) || abInfo.ConstantInfo.ChannelID != 0)
+                if (AbilityMgr.HasCommandsFor(abilityId) || abInfo.ConstantInfo.ChannelID != 0)
                 {
                     if (_abilityProcessor == null)
                         _abilityProcessor = new AbilityProcessor(_unitOwner, this);
@@ -358,12 +365,12 @@ namespace WorldServer
                     abInfo.Instigator = instigator;
                     abInfo.Level = overrideAbilityLevel;
 
-                    return _abilityProcessor.StartAbility(abInfo, castSequence, cooldownGroup, enemyVisible, friendlyVisible, moving);
+                        return _abilityProcessor.StartAbility(abInfo, castSequence, cooldownGroup, enemyVisible, friendlyVisible, moving);
                 }
                 if (_Owner is Player)
                 {
                     Player owner = _Owner as Player;
-                    owner?.SendClientMessage(abilityID + " " + AbilityMgr.GetAbilityNameFor(abilityID) + " has no implementation.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    owner?.SendClientMessage(abilityId + " " + AbilityMgr.GetAbilityNameFor(abilityId) + " has no implementation.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 }
                 return false;
             }
@@ -371,7 +378,7 @@ namespace WorldServer
             catch (Exception e)
             {
                 if (_Owner is Player)
-                    (_Owner as Player)?.SendClientMessage(abilityID + " " + AbilityMgr.GetAbilityNameFor(abilityID) + " threw an unhandled " + e.GetType().Name + " from " + e.TargetSite + ".");
+                    (_Owner as Player)?.SendClientMessage(abilityId + " " + AbilityMgr.GetAbilityNameFor(abilityId) + " threw an unhandled " + e.GetType().Name + " from " + e.TargetSite + ".");
                 Log.Error("Ability System", e.ToString());
                 return false;
             }

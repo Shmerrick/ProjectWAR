@@ -5,29 +5,33 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
+using WorldServer.Managers;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
-using WorldServer.World.AI;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects.Instances.The_Lost_Vale;
 
 namespace WorldServer.World.Objects.Instances
 {
     public class InstanceBossSpawn : Creature
     {
-        public uint InstanceGroupSpawnID;
-        public uint BossID;
+        public uint InstanceGroupSpawnId;
+        public uint BossId;
         public ushort InstanceID;
-		public Instance Instance { get; set; } = null;
-		public Stopwatch BossTimer { get; set; } = null;
+        public Instance Instance { get; set; } = null;
+        public Stopwatch BossTimer { get; set; } = null;
         public static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public List<Creature> AddList = new List<Creature>();
         public int PlayerDeathsCount { get; set; } = 0;
 
-        public InstanceBossSpawn(Creature_spawn spawn, uint instancegroupspawnid, uint bossid, ushort Instanceid, Instance instance) : base(spawn)
+        public InstanceBossSpawn(Creature_spawn spawn, uint bossId, ushort instanceId, Instance instance) : base(spawn)
         {
-            InstanceGroupSpawnID = instancegroupspawnid;
-            BossID = bossid;
+            
+            Name = spawn.Proto.Name;
+            BossId = bossId;
             Instance = instance;
-            InstanceID = Instanceid;
+            InstanceID = instanceId;
             EvtInterface.AddEventNotify(EventName.OnEnterCombat, OnEnterCombat);
             EvtInterface.AddEventNotify(EventName.OnLeaveCombat, OnLeaveCombat);
         }
@@ -35,13 +39,13 @@ namespace WorldServer.World.Objects.Instances
         public override void OnLoad()
         {
             base.OnLoad();
-            
+
             AddCrowdControlImmunity((int)GameData.CrowdControlTypes.All);
         }
 
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
-            base.Update(tick);
+            base.Update(msTick);
         }
 
         public override void ApplyKnockback(Unit caster, AbilityKnockbackInfo kbInfo)
@@ -51,34 +55,41 @@ namespace WorldServer.World.Objects.Instances
 
         public virtual bool OnEnterCombat(Object mob, object args)
         {
-            Instance.Encounterinprogress = true;
-            Instance.CurrentBossId = BossID;
-
-            Unit Attacker = mob.GetCreature().CbtInterface.GetTarget(GameData.TargetTypes.TARGETTYPES_TARGET_ENEMY);
-
-            if(InstanceGroupSpawnID > 0)
+            if (Instance != null)
             {
-                Instance.BossAttackTarget(InstanceGroupSpawnID, Attacker);
-			}
+                Instance.EncounterInProgress = true;
+                Instance.CurrentBossId = BossId;
+            }
+
+
+   //         Unit Attacker = mob.GetCreature().CbtInterface.GetTarget(GameData.TargetTypes.TARGETTYPES_TARGET_ENEMY);
+
+   //         if(InstanceGroupSpawnId > 0)
+   //         {
+   //             Instance.BossAttackTarget(InstanceGroupSpawnId, Attacker);
+			//}
 
 			BossTimer = new Stopwatch();
 			BossTimer.Start();
 
-			return false;
+            BossTimer = new Stopwatch();
+            BossTimer.Start();
+
+            return false;
         }
 
         public virtual bool OnLeaveCombat(Object mob, object args)
         {
             // save statistics
             InstanceService.SaveDeathCountPerBoss(Instance.ZoneID + ":" + Instance.ID, mob.GetInstanceBossSpawn(), PlayerDeathsCount);
-            
+
             if (!mob.GetInstanceBossSpawn().IsDead)
             {
                 // save statistics
                 InstanceService.SaveAttemptsPerBoss(Instance.ZoneID + ":" + Instance.ID, this, 1);
 
-                if (InstanceGroupSpawnID > 0)
-                    Instance.BossRespawnInstanceGroup(InstanceGroupSpawnID);
+                if (InstanceGroupSpawnId > 0)
+                    Instance.BossRespawnInstanceGroup(InstanceGroupSpawnId);
             }
             else
             {
@@ -87,8 +98,9 @@ namespace WorldServer.World.Objects.Instances
                 // save statistics
                 InstanceService.SaveTtkPerBoss(Instance.ZoneID + ":" + Instance.ID, this, BossTimer.Elapsed);
             }
-            // reset add list
-            AddList = new List<Creature>();
+            // Want to keep the add list on the boss instance. 
+            //// reset add list
+            //AddDictionary = new List<Creature>();
 
             // reset all Modify Scalers
             ModifyDmgHealScaler = 1f;
@@ -97,15 +109,22 @@ namespace WorldServer.World.Objects.Instances
             {
                 plr.ModifyDmgHealScaler = 1f;
             }
+            // reset the outgoing damage of the boss
+            try
+            {
+                StsInterface.RemoveBonusMultiplier(GameData.Stats.OutgoingDamagePercent, 1.0f, BuffClass.Standard);
+            }
+            catch (Exception e)
+            {
+                Log.Error("Exception", e.Message + "\r\n" + e.StackTrace);
+            }
 
-            try { StsInterface.RemoveBonusMultiplier(GameData.Stats.OutgoingDamagePercent, 1.0f, BuffClass.Standard); } catch (Exception e) { Log.Error("Exception", e.Message + "\r\n" + e.StackTrace); }
-            
             if (BossTimer != null)
-			{
-				BossTimer.Reset();
-			}
+            {
+                BossTimer.Reset();
+            }
 
-			return false;
+            return false;
         }
 
         public override bool ReceiveDamage(Unit caster, AbilityDamageInfo damageInfo)
@@ -117,7 +136,7 @@ namespace WorldServer.World.Objects.Instances
         {
             return base.ReceiveDamage(caster, damage, hatredScale, mitigation);
         }
-        
+
         public override int ReceiveHeal(Unit caster, uint healAmount, float healHatredScale = 1)
         {
             return base.ReceiveHeal(caster, healAmount, healHatredScale);
@@ -125,20 +144,23 @@ namespace WorldServer.World.Objects.Instances
 
         protected override void SetRespawnTimer()
         {
-            
+
         }
 
         protected override void SetDeath(Unit killer)
         {
             // reset add list
-            AddList = new List<Creature>();
+            // AddDictionary = new List<Creature>();
 
             base.SetDeath(killer);
 
-            Instance.OnBossDeath(InstanceGroupSpawnID, this);
+            if (Instance != null)
+            {
+                Instance.OnBossDeath(InstanceGroupSpawnId, this);
 
-			// remove barriages from this instance
-			Instance.RemoveInstanceObjectOnBossDeath(BossID);
+                // remove barriages from this instance
+                Instance.RemoveInstanceObjectOnBossDeath(BossId);
+            }
 
             // handle torch of lileath on horgulul death
             if (this is SimpleHorgulul horgulul)
@@ -153,18 +175,18 @@ namespace WorldServer.World.Objects.Instances
                 }
             }
         }
-        
-        public override void TryLoot(Player player, InteractMenu menu)
-		{
-			if (lootContainer != null && lootContainer.IsLootable())
-			{
-				List<Player> subGroup = new List<Player>();
 
-				if (player.PriorityGroup != null)
-				{
+        public override void TryLoot(Player player, InteractMenu menu)
+        {
+            if (lootContainer != null && lootContainer.IsLootable())
+            {
+                List<Player> subGroup = new List<Player>();
+
+                if (player.PriorityGroup != null)
+                {
                     foreach (Player member in player.PriorityGroup.Members)
                     {
-                        if (!member.HasLockout((ushort)ZoneId, BossID))
+                        if (!member.HasLockout((ushort)ZoneId, BossId))
                             subGroup.Add(member);
                     }
                     // used to only have items of careers in group in the lootcontainer
@@ -179,7 +201,7 @@ namespace WorldServer.World.Objects.Instances
                         player.Zone.Info != null &&
                         (player.Zone.Info.Type == 4 || player.Zone.Info.Type == 5 || player.Zone.Info.Type == 6))
                     {
-                        if (!player.HasLockout((ushort)ZoneId, BossID))
+                        if (!player.HasLockout((ushort)ZoneId, BossId))
                         {
                             lootContainer.SendInteract(player, menu);
                             Instance.ApplyLockout(new List<Player> { player });
@@ -188,17 +210,17 @@ namespace WorldServer.World.Objects.Instances
                 }
                 else
                     lootContainer.SendInteract(player, menu);
-                
-                if (!lootContainer.IsLootable())
-				{
-					SetLootable(false, player);
-                }
-			}
-		}
 
-		public InstanceBossSpawn RezInstanceSpawn()
+                if (!lootContainer.IsLootable())
+                {
+                    SetLootable(false, player);
+                }
+            }
+        }
+
+        public InstanceBossSpawn RezInstanceSpawn()
         {
-            InstanceBossSpawn newCreature = new InstanceBossSpawn(Spawn, InstanceGroupSpawnID, BossID, InstanceID,Instance);
+            InstanceBossSpawn newCreature = new InstanceBossSpawn(Spawn, BossId, InstanceID,Instance);
             Region.AddObject(newCreature, Spawn.ZoneId);
             Destroy();
             return newCreature;
@@ -213,8 +235,8 @@ namespace WorldServer.World.Objects.Instances
             int Y = (int)Params[2];
             int Z = (int)Params[3];
             ushort O = Convert.ToUInt16(Params[4]);
-            
-            foreach(var entry in Entries)
+
+            foreach (var entry in Entries)
             {
                 Creature_proto Proto = CreatureService.GetCreatureProto(entry);
 
@@ -258,7 +280,7 @@ namespace WorldServer.World.Objects.Instances
             int idx = rnd.Next(1, list.Count);
             return list[idx - 1];
         }
-        
+
         public bool RemoveAdds(Object npc = null, object instigator = null)
         {
             Creature c = npc as Creature;
@@ -320,7 +342,7 @@ namespace WorldServer.World.Objects.Instances
 
         public override string ToString()
         {
-            return "SpawnId=" + Spawn.Guid + ",Entry=" + Spawn.Entry + ",Spawngroup=" + InstanceGroupSpawnID + ",BossID=" + BossID + ",Name=" + Name + ",Level=" + Level + ",Rank=" + Rank + ",Max Health=" + MaxHealth + ",Faction=" + Faction + ",Emote=" + Spawn.Emote + "AI:" + AiInterface.State + ",Position :" + base.ToString();
+            return "SpawnId=" + Spawn.Guid + ",Entry=" + Spawn.Entry + ",Spawngroup=" + InstanceGroupSpawnId + ",BossId=" + BossId + ",Name=" + Name + ",Level=" + Level + ",Rank=" + Rank + ",Max Health=" + MaxHealth + ",Faction=" + Faction + ",Emote=" + Spawn.Emote + "AI:" + AiInterface.State + ",Position :" + base.ToString();
         }
     }
 }

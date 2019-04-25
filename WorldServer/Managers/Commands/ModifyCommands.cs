@@ -5,7 +5,13 @@ using System.Collections.Generic;
 using SystemData;
 using System.Linq;
 using GameData;
+using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Guild;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
 using static WorldServer.Managers.Commands.GMUtils;
+using Object = WorldServer.World.Objects.Object;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.Managers.Commands
 {
@@ -422,6 +428,74 @@ namespace WorldServer.Managers.Commands
         }
 
         /// <summary>
+        /// Modify a players contribution
+        /// </summary>
+        /// <param name="plr"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static bool ModifyContribution(Player plr, ref List<string> values)
+        {
+            Player target = GetTargetOrMe(plr) as Player; 
+
+            var activeCampaign = WorldMgr.UpperTierCampaignManager.GetActiveCampaign();
+            var status = activeCampaign?.ActiveBattleFrontStatus;
+            if (status != null)
+            {
+                lock (status)
+                {
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte) ContributionDefinitions.DESTROY_INNER_DOOR);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.BO_TAKE_BIG_TICK);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.GROUP_LEADER_BO_BIG_TICK);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.KILL_KEEP_LORD);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.KEEP_DEFENCE_TICK);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+                    status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
+                        (byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
+
+                    return true;
+                }
+            }
+
+            return true;
+        }
+
+        public static bool ModifyHonorRank(Player plr, ref List<string> values)
+        {
+            Player target = GetTargetOrMe(plr) as Player;
+
+            target.Info.HonorRank = Convert.ToUInt16(values[0]);
+
+            plr.SendClientMessage($"Updated Honor Rank for {target.Name} to {values[0]}");
+
+            return true;
+        }
+
+
+        
+
+        /// <summary>
         /// Changes your proficiency in your current gathering skill (byte Skill)
         /// </summary>
         /// <param name="plr">Player that initiated the command</param>
@@ -465,6 +539,29 @@ namespace WorldServer.Managers.Commands
             target.SendTradeSkill(target._Value.CraftingSkill, target._Value.CraftingSkillLevel);
 
             plr.SendClientMessage("MODIFY CRAFTING: Changed " + target.Name + "'s crafting skill to " + lvl + ".");
+            return true;
+        }
+
+        public static bool ModifyKeepGuild(Player plr, ref List<string> values)
+        {
+            var keepId = Convert.ToInt32(values[0]);
+            var guildId = Convert.ToInt32(values[1]);
+
+            var selectedKeep = plr.Region.Campaign.Keeps.SingleOrDefault(x => x.Info.KeepId == keepId);
+            if (selectedKeep == null)
+            {
+                plr.SendClientMessage($"MODIFY KEEP GUILD: Keep {keepId} not found");
+                return true;
+            }
+
+            var guild = Guild.GetGuild((uint) guildId);
+            if (guild == null)
+            {
+                plr.SendClientMessage($"MODIFY KEEP GUILD: Guild {guildId} not found");
+                return true;
+            }
+
+            selectedKeep.GuildFlag.BeginInteraction(plr);
             return true;
         }
 

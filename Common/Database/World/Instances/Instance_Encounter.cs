@@ -23,7 +23,7 @@ namespace Common
         public uint Zone { get; set; }
 
         [DataElement]
-        public uint BossID { get; set; }
+        public uint bossId { get; set; }
 
         [DataElement]
         public uint InstanceID { get; set; }

@@ -1,8 +1,17 @@
 ﻿using Common;
+using FrameWork;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using SystemData;
 using GameData;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Battlefronts.Apocalypse.Loot;
+using WorldServer.World.Battlefronts.Bounty;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Objects;
 using static WorldServer.Managers.Commands.GMUtils;
 
 namespace WorldServer.Managers.Commands
@@ -160,34 +169,10 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        /// <summary>
-        /// Add Contribution to player FOR TESTING ONLY
-        /// </summary>
-        /// <param name="plr">Player that initiated the command</param>
-        /// <param name="values">List of command arguments (after command name)</param>
-        /// <returns>True if command was correctly handled, false if operation was canceled</returns>
-        public static bool AddContrib(Player plr, ref List<string> values)
-        {
-            int value = GetInt(ref values);
-
-            plr = GetTargetOrMe(plr) as Player;
-            plr.Region.Campaign.AddContribution(plr, (uint)value);
-
-            GMCommandLog log = new GMCommandLog();
-            log.PlayerName = plr.Name;
-            log.AccountId = (uint)plr.Client._Account.AccountId;
-            log.Command = "ADD Infl TO " + plr.Name + " contribution Value " + value;
-            log.Date = DateTime.Now;
-            CharMgr.Database.AddObject(log);
-
-            plr.SendClientMessage(value + " contribution added for " + plr.Name);
-            return true;
-        }
-
         public static bool AddRewardEligibility(Player plr, ref List<string> values)
         {
             var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
-            var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontStatus(activeBattleFrontId);
+            var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(activeBattleFrontId);
 
             plr = GetTargetOrMe(plr) as Player;
 
@@ -196,6 +181,74 @@ namespace WorldServer.Managers.Commands
             plr.SendClientMessage(plr.Name + " added to Eligibility");
 
             return true;
+        }
+
+        public static bool AddZoneLockBags(Player plr, ref List<string> values)
+        {
+            var destructionLootChest = LootChest.Create(plr.Region, plr.WorldPosition, (ushort)plr.ZoneId);
+
+            var orderLootChest = LootChest.Create(plr.Region, plr.WorldPosition, (ushort)plr.ZoneId);
+            plr = GetTargetOrMe(plr) as Player;
+            if (plr == null)
+            {
+                return true;
+            }
+            int numberBags = GetInt(ref values);
+            var _rewardManager = new RVRRewardManager();
+
+            var rewardAssigner = new RewardAssigner(StaticRandom.Instance);
+
+            var bagDefinitions = rewardAssigner.DetermineBagTypes(numberBags);
+            // Assign eligible players to the bag definitions.
+            foreach (var lootBagTypeDefinition in bagDefinitions)
+            {
+                var listPlayerContributions = new List<PlayerContribution>();
+                var pc = new PlayerContribution();
+                pc.ContributionId = 4;
+                pc.Timestamp = TCPManager.GetTimeStamp();
+                listPlayerContributions.Add(pc);
+
+                var cd = new ConcurrentDictionary<uint, List<PlayerContribution>>();
+                cd.TryAdd(plr.CharacterId, listPlayerContributions);
+                var cm = new ContributionManager(cd, BountyService._ContributionDefinitions);
+
+                var eligPlayer = new List<KeyValuePair<uint, int>>();
+                eligPlayer.Add(new KeyValuePair<uint, int>(plr.CharacterId, 10));
+                var rewardAssignments = rewardAssigner.AssignLootToPlayers(cm, numberBags, new List<LootBagTypeDefinition> { lootBagTypeDefinition }, eligPlayer);
+
+                var bagContentSelector = new BagContentSelector(RVRZoneRewardService.RVRRewardKeepItems, StaticRandom.Instance);
+
+                foreach (var reward in rewardAssignments)
+                {
+                    if (reward.Assignee != 0)
+                    {
+                        var playerItemList = (from item in plr.ItmInterface.Items where item != null select item.Info.Entry).ToList();
+                        var playerRenown = plr.CurrentRenown.Level;
+                        var playerClass = plr.Info.CareerLine;
+                        var playerRenownBand = _rewardManager.CalculateRenownBand(playerRenown);
+
+                        var lootDefinition = bagContentSelector.SelectBagContentForPlayer(reward, playerRenownBand, playerClass, playerItemList.ToList(), true);
+                        if (lootDefinition.IsValid())
+                        {
+                            plr.SendClientMessage("Lootdefinition is valid");
+                            // Only distribute if loot is valid
+                            var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(lootDefinition, plr);
+
+                            if (plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                                destructionLootChest.Add(plr.CharacterId, generatedLootBag);
+                            if (plr.Realm == Realms.REALMS_REALM_ORDER)
+                                orderLootChest.Add(plr.CharacterId, generatedLootBag);
+
+                        }
+                        else
+                        {
+                            plr.SendClientMessage("Lootdefinition is NOT valid");
+                        }
+                    }
+                }
+            }
+            return true;
+
         }
     }
 }

@@ -4,6 +4,10 @@ using SystemData;
 using FrameWork;
 using GameData;
 using NLog;
+using WorldServer.Managers;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -25,7 +29,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (region == null)
                 Out.Fill(0, 3);
             else
-                region.Campaign.WriteCaptureStatus(Out, realm);
+                region.Campaign?.WriteCaptureStatus(Out, realm);
         }
 
         public void BuildBattleFrontStatus(PacketOut Out, RegionMgr region)
@@ -43,6 +47,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void ResetProgressionCommunications(Player plr, Realms realm, VictoryPointProgress vpp, string forceT4)
         {
+            _logger.Warn("F_CAMPAIGN_STATUS");
             PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
             Out.WriteHexStringBytes("0005006700CB00"); // 7
 
@@ -167,6 +172,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public void SendCampaignStatus(Player plr, VictoryPointProgress vpp, Realms realm)
         {
             _logger.Trace("Send Campaign Status");
+            _logger.Warn("F_CAMPAIGN_STATUS");
             PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
             Out.WriteHexStringBytes("0005006700CB00"); // 7
 
@@ -288,13 +294,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             Out.WriteByte(00);
 
+
+            Out.WriteUInt32(0);
             //local timer for poolupdates
             //int curTimeSeconds = TCPManager.GetTimeStamp();
 
             //if (_nextVpUpdateTime == 0 || curTimeSeconds > _nextVpUpdateTime)
-            //    Out.WriteUInt32(0);
-            //else
-            //    Out.WriteUInt32((uint) (_nextVpUpdateTime - curTimeSeconds)); //in seconds
+            //        Out.WriteUInt32(0);
+            //    else
+            //        Out.WriteUInt32((uint)(_nextVpUpdateTime - curTimeSeconds)); //in seconds
         }
 
         public void Broadcast(string message, int tier)

@@ -1,7 +1,10 @@
 ﻿using Common;
 using FrameWork;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Abilities.Objects
 {
     /// <summary>
     /// An object used as a host for buffs representing ground-targeted attacks.
@@ -63,7 +66,7 @@ namespace WorldServer
             EvtInterface.AddEvent(Destroy, (int)(expireTime - TCPManager.GetTimeStampMS()), 1);
         }
 
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
             if (PendingDisposal)
             {
@@ -71,8 +74,8 @@ namespace WorldServer
                 return;
             }
 
-            BuffInterface.Update(tick);
-            EvtInterface.Update(tick);
+            BuffInterface.Update(msTick);
+            EvtInterface.Update(msTick);
         }
 
         public override void SendMeTo(Player plr)

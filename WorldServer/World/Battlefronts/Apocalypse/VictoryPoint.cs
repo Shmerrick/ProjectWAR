@@ -1,4 +1,6 @@
-﻿namespace WorldServer.World.Battlefronts.Apocalypse
+﻿using WorldServer.World.Objects;
+
+namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public class VictoryPoint
     {

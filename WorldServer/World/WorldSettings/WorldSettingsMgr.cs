@@ -1,13 +1,9 @@
-﻿using Common;
-using FrameWork;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using SystemData;
-using WorldServer.Services.World;
+using Common;
+using WorldServer.Managers;
 
-namespace WorldServer
+namespace WorldServer.World.WorldSettings
 {
     public class WorldSettingsMgr
     {
@@ -117,7 +113,7 @@ namespace WorldServer
         }
 
         /// <summary>
-        /// This is how much % one door regenerates per 1 controled BO
+        /// This is how much % one door regenerates per 1 controled BattlefieldObjective
         /// </summary>
         /// <returns></returns>
         public int GetDoorRegenValue()

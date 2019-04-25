@@ -1,13 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using SystemData;
-using FrameWork;
 using Common;
+using FrameWork;
 using GameData;
 using NLog;
+using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
+using WorldServer.World.Abilities;
+using WorldServer.World.Abilities.Buffs;
+using WorldServer.World.Abilities.Buffs.SpecialBuffs;
+using WorldServer.World.Abilities.Components;
+using WorldServer.World.Abilities.Objects;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Positions;
+using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Objects
 {
     public class RvRStructure : Unit
     {
@@ -145,12 +154,12 @@ namespace WorldServer
             // _logger.Debug($"RVRStructure Sendinteract Oid={Oid} {IsActive} {_buildState} {Faction} {Realm} {Level} {X} {Y} {Z} {XOffset} {YOffset} ");
         }
 
-        public override void Update(long tick)
+        public override void Update(long msTick)
         {
             switch (_buildState)
             {
                 case EConstructionState.Constructing:
-                    ProcessConstruction(tick);
+                    ProcessConstruction(msTick);
                     break;
                 case EConstructionState.Destroying:
                     ProcessDestruction();
@@ -162,7 +171,7 @@ namespace WorldServer
                     break;
             }
 
-            base.Update(tick);
+            base.Update(msTick);
         }
 
         #region Construction
