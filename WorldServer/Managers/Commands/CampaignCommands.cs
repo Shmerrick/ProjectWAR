@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using NLog;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Keeps;
@@ -19,6 +20,7 @@ namespace WorldServer.Managers.Commands
     /// <summary>RvR campaign commmands under .campaign</summary>
     internal class CampaignCommands
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         /// <summary>Constant initials extractor<summary>
         private static readonly Regex INITIALS = new Regex(@"([A-Z])[A-Z1-9]*_?");
 
@@ -327,6 +329,7 @@ namespace WorldServer.Managers.Commands
                 BattleFront.VictoryPointProgress.DestructionVictoryPoints = points;
 
             plr.SendClientMessage($"Victory Points set to {points} for realm {realm}");
+            _logger.Info($"{plr.Name} set Victory Points set to {points} for realm {realm}");
         }
 
 
@@ -474,6 +477,10 @@ namespace WorldServer.Managers.Commands
                     if (status != null)
                     {
                         status.Locked = true;
+                        if (status.BattleFrontId == 2)
+                        {
+                            status.Locked = false;
+                        }
                         status.OpenTimeStamp = FrameWork.TCPManager.GetTimeStamp();
                         status.LockingRealm = (Realms) progression.DefaultRealmLock;
                         status.FinalVictoryPoint = new VictoryPointProgress();
@@ -481,10 +488,7 @@ namespace WorldServer.Managers.Commands
                         // Reset the population for the battle front status
                         WorldMgr.UpperTierCampaignManager.GetActiveCampaign().InitializePopulationList(status.BattleFrontId);
 
-                        if (status.BattleFrontId == 2)
-                        {
-                            status.Locked = false;
-                        }
+                        
                     }
                 }
             }
@@ -495,7 +499,7 @@ namespace WorldServer.Managers.Commands
             // This is kind of nasty, should use an event to signal the WorldMgr
             // Tell the server that the RVR status has changed.
             WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
-
+            _logger.Info($"{plr.Name} set RESET ALL");
         }
     }
 }

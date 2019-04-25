@@ -284,6 +284,8 @@ namespace WorldServer.World.Battlefronts.Keeps
                     destructionLootChest.Content = $"Fort Defence Rewards";
                     destructionLootChest.SenderName = $"{Info.Name}";
 
+                    _logger.Info($"FORT DEFENCE TIMER complete. CountdownFortDefenceTimer {(Realms)Info.Realm}");
+
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock((Realms)Info.Realm, orderLootChest, destructionLootChest, RVRZoneRewardService.RVRRewardFortItems);
                     FortDefenceCounter = 0;
                 }
@@ -358,7 +360,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public void SetLordKilled()
         {
-            _logger.Debug($"{Info.Name} : Lord Killed");
+            _logger.Info($"{Info.Name} : Lord Killed");
 
             foreach (var h in HardPoints)
                 h.CurrentWeapon?.Destroy();
@@ -366,7 +368,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             // Flip realm on Lord Kill
             PendingRealm = Realm == Realms.REALMS_REALM_ORDER ? Realms.REALMS_REALM_DESTRUCTION : Realms.REALMS_REALM_ORDER; ;
 
-            _logger.Info($"Updating VP for Lord Kill. Pending Realm = {PendingRealm}");
+            _logger.Info($"Updating VP for Lord Kill. Pending Realm = {PendingRealm} {Info.Name}");
             WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
 
             // Find the lord in the Keep creatures.
@@ -989,7 +991,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         public void OnKeepLordAttacked(byte pctHealth)
         {
             DefenceTickTimer.Start();
-            ProgressionLogger.Debug($"Keep Lord attacked {pctHealth}");
+            ProgressionLogger.Debug($"Keep Lord attacked health remaining {pctHealth}%");
 
         }
 
@@ -1692,6 +1694,9 @@ namespace WorldServer.World.Battlefronts.Keeps
                 lootChest.Title = $"Fort Assault {Info.Name}";
                 lootChest.Content = $"Fort Assault Rewards";
                 lootChest.SenderName = $"{Info.Name}";
+
+                _logger.Info($"*** FORCE LOCK ZONE from {Info.Name}");
+
                 if (PendingRealm == Realms.REALMS_REALM_DESTRUCTION)
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock(
                         PendingRealm,

@@ -104,7 +104,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     var honorLevel = new Common.HonorCalculation().GetHonorLevel((int) newHonorPoints);
                     player.Value.HonorRank = (ushort) honorLevel;
                     Logger.Debug(
-                        $"Updating honor for {player.Value.Name} ({player.Value.CharacterId}) Current / New Honor Pts: {currentHonorPoints} / {player.Value.HonorPoints} ({player.Value.HonorRank}) ");
+                        $"Updating honor for {player.Value.Name} ({player.Value.CharacterId}) Current => New Honor Pts: {currentHonorPoints} => {player.Value.HonorPoints} ({player.Value.HonorRank}) ");
                     
                     CharMgr.Database.SaveObject(player.Value);
 
@@ -155,9 +155,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (updateHonor)
                     {
                         // Update the Honor Points of the Contributing Players
-                        Logger.Debug($"Updating honor for {player.Info.Name} ({player.Info.CharacterId}) current honor : {player.Info.HonorPoints} ({player.Info.HonorRank})");
+                        var oldHonorPoints = player.Info.HonorPoints;
                         player.Info.HonorPoints += (ushort)contributingPlayer.Value;
-                        Logger.Debug($"Updating honor for {player.Info.Name} ({player.Info.CharacterId}) new honor : {player.Info.HonorPoints} ({player.Info.HonorRank})");
+                        Logger.Debug($"Updating honor for {player.Info.Name} ({player.Info.CharacterId}) {oldHonorPoints} => {player.Info.HonorPoints} ({player.Info.HonorRank})");
                         CharMgr.Database.SaveObject(player.Info);
                     }
 

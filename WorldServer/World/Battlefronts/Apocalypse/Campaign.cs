@@ -37,6 +37,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         static readonly object LockObject = new object();
 
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public VictoryPointProgress VictoryPointProgress { get; set; }
         public RegionMgr Region { get; set; }
@@ -647,7 +648,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
             catch (Exception e)
             {
-                BattlefrontLogger.Warn($"Exception : {e.Message} {e.StackTrace}");
+                BattlefrontLogger.Warn($"Exception ALL BF Statuses are LOCKED : {e.Message} {e.StackTrace}");
                 throw;
             }
             ;
@@ -1604,6 +1605,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             var oldBattleFront = BattleFrontManager.GetActiveBattleFrontFromProgression();
             BattlefrontLogger.Info($"Executing BattleFront Lock on {oldBattleFront.Description} for {lockingRealm}");
+            Logger.Info($"***Executing BattleFront Lock on {oldBattleFront.Description} for {lockingRealm}***");
 
             BattleFrontManager.LockActiveBattleFront(lockingRealm, forceNumberBags);
             GenerateZoneLockRewards(lockingRealm, orderLootChest, destructionLootChest, lootOptions, forceNumberBags);

@@ -645,6 +645,9 @@ namespace WorldServer.World.Objects
                 if (this.SiegeInterface.Creator == null)
                     _logger.Debug($"SiegeIntf.Creator null");
 
+                if (this.Region == null)
+                    _logger.Debug($"this.Region null");
+
                 if (this.Region.Campaign == null)
                     _logger.Debug($"this.Region.Campaign null");
 
