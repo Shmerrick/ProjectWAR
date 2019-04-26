@@ -805,6 +805,10 @@ namespace WorldServer.World.Battlefronts.Keeps
             if (!fsm.IsRunning)
                 fsm.Start();
 
+            if (!fsm.IsRunning)
+                _logger.Error($"** Keep FSM is NOT Running! {Info.Name}");
+
+
         }
 
         public void OnDoorRepaired(uint doorId)
