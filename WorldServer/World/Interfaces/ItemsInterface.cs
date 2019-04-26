@@ -2374,6 +2374,10 @@ namespace WorldServer.World.Interfaces
 
         public void HandleTrade(PacketIn packet)
         {
+            try
+            {
+
+            
             TradingUpdated = false;
 
             byte Status = packet.GetUint8();
@@ -2486,6 +2490,11 @@ namespace WorldServer.World.Interfaces
                 Trading.ItmInterface.SendTradeClose(_Owner.Oid);
                 SendTradeClose(Oid);
             }
+            }
+            catch (Exception e)
+            {
+               _logger.Error($"Handletrade error {e.Message} {e.StackTrace}");
+            }
         }
         public void Trade(ItemsInterface distInter)
         {
@@ -2581,6 +2590,10 @@ namespace WorldServer.World.Interfaces
         }
         public void SendTradeInfo(ItemsInterface distInterface)
         {
+            try
+            {
+
+           
             PacketOut Out = new PacketOut((byte)Opcodes.F_TRADE_STATUS);
             Out.WriteByte(distInterface.TradingAccepted);
             Out.WriteByte(0);
@@ -2598,6 +2611,11 @@ namespace WorldServer.World.Interfaces
             }
 
             _playerOwner.SendPacket(Out);
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"Exception : {e.Message} {e.StackTrace} {e.Source}");
+            }
         }
         public bool IsTrading()
         {
