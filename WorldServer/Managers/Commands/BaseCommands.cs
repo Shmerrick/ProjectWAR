@@ -87,6 +87,7 @@ namespace WorldServer.Managers.Commands
         public static bool DecodeCommand(Player plr, ref List<string> values, List<GmCommandHandler> handlers, List<GmCommandHandler> baseHandlers)
         {
             string command = GetString(ref values).ToLower();
+            _logger.Debug($"{plr.Name} executed : {command}");
 
             //Log.Success("DecodeCommand", "Command = " + Command);
 

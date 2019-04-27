@@ -3919,7 +3919,8 @@ namespace WorldServer.World.Objects
             {
                 _Value.RVRDeaths++;
 
-                RecordKillTracking(this, playerKiller, deathTime);
+                // Turned off for the moment - in case this causes lag
+               // RecordKillTracking(this, playerKiller, deathTime);
 
                 byte subtype = 0;
 
@@ -4046,6 +4047,14 @@ namespace WorldServer.World.Objects
             if (!string.IsNullOrEmpty(InstanceID))
             {
                 WorldMgr.InstanceMgr?.HandlePlayerSetDeath(this, killer);
+            }
+
+            ///
+            /// Increment the players killed in range value.
+            /// 
+            if (this.CurrentKeep != null)
+            {
+                this.CurrentKeep.PlayersKilledInRange++;
             }
         }
 

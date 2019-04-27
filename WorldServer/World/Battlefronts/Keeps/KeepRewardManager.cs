@@ -173,6 +173,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 }
 
                 keep.PlayersKilledInRange = 0;
+
             }
             catch (Exception e)
             {
