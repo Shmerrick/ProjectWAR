@@ -43,8 +43,9 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             ScaleLord(_keep.Rank);
             // buff lord with multipler 3 //TODO: rework needed (morale abilities does dmg through the scaler etc)
+            // Upgrade keep lord health
             if (IsKeepLord)
-                Health *= 3;
+                Health *= 4;
 
             //if (WaypointGUID > 0)
             //{
