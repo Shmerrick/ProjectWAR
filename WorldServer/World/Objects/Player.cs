@@ -3556,6 +3556,9 @@ namespace WorldServer.World.Objects
             if (info == null)
                 return;
 
+            if (info.CreatureEntry == 0)
+                return;
+
             Characters_influence chapterinf = null;
 
             if (Info.Influences != null)

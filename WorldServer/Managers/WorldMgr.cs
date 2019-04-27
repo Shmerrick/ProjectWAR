@@ -867,7 +867,7 @@ namespace WorldServer.Managers
 
                 if (Zone == null || (Info.PinX <= 0 && Info.PinY <= 0))
                 {
-                    Log.Debug("LoadChapters", "Chapter (" + Info.Entry + ")[" + Info.Name + "] Invalid");
+                    _logger.Warn("LoadChapters Chapter (" + Info.Entry + ")[" + Info.Name + "] Invalid");
                     ++InvalidChapters;
                 }
 
@@ -931,7 +931,7 @@ namespace WorldServer.Managers
 
 
             if (InvalidChapters > 0)
-                Log.Error("LoadChapters", "[" + InvalidChapters + "] Invalid Chapter(s)");
+                _logger.Warn("LoadChapters", "[" + InvalidChapters + "] Invalid Chapter(s)");
         }
         public static void LoadPublicQuests()
         {
