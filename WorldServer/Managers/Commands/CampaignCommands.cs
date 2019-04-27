@@ -47,6 +47,13 @@ namespace WorldServer.Managers.Commands
         {
             plr.SendClientMessage($"Keep Status : {keep.KeepStatus}");
             plr.SendClientMessage($"Ram Deployed : {keep.RamDeployed}");
+            plr.SendClientMessage($"Players killed in range : {keep.PlayersKilledInRange}");
+            plr.SendClientMessage($"Players in range : {keep.PlayersInRange}");
+            foreach (var keepDoorRepairTimer in keep.DoorRepairTimers)
+            {
+                plr.SendClientMessage($"Door Repair Timer : {keepDoorRepairTimer.Key}:{keepDoorRepairTimer.Value.Value}/{keepDoorRepairTimer.Value.Length}");
+            }
+           
             keep.SendDiagnostic(plr);
             foreach (var door in keep.Doors)
             {
