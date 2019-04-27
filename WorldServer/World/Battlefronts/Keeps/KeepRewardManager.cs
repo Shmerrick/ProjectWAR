@@ -108,7 +108,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         public static void KeepLordKill(BattleFrontKeep keep, List<Player> playersInRange, IEnumerable<KeyValuePair<uint, int>> eligiblePlayers)
         {
             RewardLogger.Info("**********************KEEP FLIP******************************");
-            RewardLogger.Info($"Distributing rewards for Keep {keep.Info.Name} number players : {playersInRange.Count}");
+            RewardLogger.Info($"Distributing rewards for Keep {keep.Info.Name} number players : {playersInRange.Count} players killed in range {keep.PlayersKilledInRange}");
             RewardLogger.Info("*************************************************************");
 
             uint influenceId = 0;

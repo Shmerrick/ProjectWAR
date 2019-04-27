@@ -4054,7 +4054,10 @@ namespace WorldServer.World.Objects
             /// 
             if (this.CurrentKeep != null)
             {
-                this.CurrentKeep.PlayersKilledInRange++;
+                if (killer is Player)
+                {
+                    this.CurrentKeep.PlayersKilledInRange++;
+                }
             }
         }
 
