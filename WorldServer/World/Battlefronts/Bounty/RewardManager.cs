@@ -363,6 +363,43 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <returns></returns>
         private float CalculateRacialInfluenceModifier(Player playerToBeRewarded, Player victim)
         {
+
+
+            //if (playerToBeRewarded.Info.CareerLine == )
+            //CAREERLINE_IRON_BREAKER = 1,
+            //CAREERLINE_SLAYER = 2,
+            //CAREERLINE_RUNE_PRIEST = 3,
+            //CAREERLINE_ENGINEER = 4,
+
+            //CAREERLINE_BLACK_ORC = 5,
+            //CAREERLINE_CHOPPA = 6,
+            //CAREERLINE_SHAMAN = 7,
+            //CAREERLINE_SQUIG_HERDER = 8,
+
+            //CAREERLINE_WITCH_HUNTER = 9,
+            //CAREERLINE_KNIGHT = 10,
+            //CAREERLINE_BRIGHT_WIZARD = 11,
+            //CAREERLINE_WARRIOR_PRIEST = 12,
+
+            //CAREERLINE_CHOSEN = 13,
+            //CAREERLINE_WARRIOR = 14,
+            //CAREERLINE_ZEALOT = 15,
+            //CAREERLINE_MAGUS = 16,
+
+            //CAREERLINE_SWORDMASTER = 17,
+            //CAREERLINE_SHADOW_WARRIOR = 18,
+            //CAREERLINE_WHITELION = 19,
+            //CAREERLINE_ARCHMAGE = 20,
+
+            //CAREERLINE_BLACKGUARD = 21,
+            //CAREERLINE_WITCHELF = 22,
+            //CAREERLINE_DISCIPLE = 23,
+            //CAREERLINE_SORCERER = 24,
+
+            //var pairing = 
+
+            //if (playerToBeRewarded.Zone.Info.Pairing == 
+
             return 1f;
         }
 

@@ -1470,11 +1470,12 @@ namespace WorldServer.World.Battlefronts.Keeps
                     WorldY = h.Y,
                     WorldZ = h.Z,
                     WorldO = h.Heading
+                   
                 };
 
                 spawn.BuildFromProto(proto);
 
-                h.CurrentWeapon = new Siege(spawn, player, SiegeType.OIL);
+                h.CurrentWeapon = new Siege(spawn, player, SiegeType.OIL, this);
                 Region.AddObject(h.CurrentWeapon, spawn.ZoneId);
 
                 player.ItmInterface.DeleteItem(slot, 1);

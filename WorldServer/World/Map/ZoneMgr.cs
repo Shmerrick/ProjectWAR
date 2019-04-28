@@ -18,9 +18,9 @@ namespace WorldServer.World.Map
         public Zone_Info Info;
         public ClientZoneInfo ClientInfo;
         public RegionMgr Region;
-        public static int LOW_FIGHT = 100;
-        public static int MEDIUM_FIGHT = 400;
-        public static int LARGE_FIGHT = 1600;
+        public static int LOW_FIGHT = 50;
+        public static int MEDIUM_FIGHT = 200;
+        public static int LARGE_FIGHT = 600;
         public bool Running;
 
         // List of pqs in the zone

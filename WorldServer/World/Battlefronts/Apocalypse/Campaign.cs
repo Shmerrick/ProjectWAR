@@ -132,9 +132,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _rewardManager = new RVRRewardManager();
             SiegeManager = new SiegeManager();
 
-            DestructionDominationTimerLength = 30 * 60;
+            DestructionDominationTimerLength = 20 * 60;
             DestructionDominationTimerRemaining = DestructionDominationTimerLength;
-            OrderDominationTimerLength = 30 * 60;
+            OrderDominationTimerLength = 20 * 60;
             OrderDominationTimerRemaining = OrderDominationTimerLength;
             DominationTimerNotifyInterval = 60;
 

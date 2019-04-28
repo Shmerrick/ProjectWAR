@@ -8,6 +8,7 @@ using NLog;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.AI;
+using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Interfaces;
 using CreatureSubTypes = GameData.CreatureSubTypes;
 using Opcodes = WorldServer.NetWork.Opcodes;
@@ -19,18 +20,21 @@ namespace WorldServer.World.Objects
 //        public BattleFrontKeep Keep { get; }
         private readonly SiegeType _type;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
+        public BattleFrontKeep AssignedKeep { get; set; }
         public const int MAX_SHOTS = 15;
         public int ShotCount = MAX_SHOTS;
         public long SiegeLifeSpan = (int) TimeSpan.FromMinutes(5).TotalMilliseconds;
 
-        public Siege(Creature_spawn spawn, Player owner, SiegeType type) : base(spawn)
+        public Siege(Creature_spawn spawn, Player owner, SiegeType type, BattleFrontKeep keep=null) : base(spawn)
         {
             _type = type;
             SiegeInterface = AddInterface<SiegeInterface>();
             SiegeInterface.Creator = owner;
+            AssignedKeep = keep;  // Only need to assign keep for oil
             SiegeInterface.DeathTime = TCPManager.GetTimeStampMS() + SiegeLifeSpan;
         }
+
+        
 
         public static Siege SpawnSiegeWeapon(Player plr, ushort zoneId, uint entry, bool defender)
         {
@@ -653,6 +657,17 @@ namespace WorldServer.World.Objects
 
                 if (this.Region.Campaign.SiegeManager == null)
                     _logger.Debug($"this.Region.Campaign.SiegeManager null");
+
+                if (this.AssignedKeep != null)
+                {
+                    foreach (var h in this.AssignedKeep.HardPoints)
+                    {
+                        if (h.CurrentWeapon == this)
+                        {
+                            h.CurrentWeapon = null;
+                        }
+                    }
+                }
 
                 this.Region.Campaign?.SiegeManager?.Remove(this, this.SiegeInterface.Creator.Realm);
             }

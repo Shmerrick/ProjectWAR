@@ -53,7 +53,11 @@ namespace WorldServer.Managers.Commands
             {
                 plr.SendClientMessage($"Door Repair Timer : {keepDoorRepairTimer.Key}:{keepDoorRepairTimer.Value.Value}/{keepDoorRepairTimer.Value.Length}");
             }
-           
+
+            foreach (var keepHardPoint in keep.HardPoints)
+            {
+                plr.SendClientMessage($"Siege : {keepHardPoint.CurrentWeapon} {keepHardPoint.SiegeType}");
+            }
             keep.SendDiagnostic(plr);
             foreach (var door in keep.Doors)
             {
