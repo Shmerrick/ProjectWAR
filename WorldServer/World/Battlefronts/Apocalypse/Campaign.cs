@@ -696,17 +696,22 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             allPlayersInZone.AddRange(destPlayersInZone);
             allPlayersInZone.AddRange(orderPlayersInZone);
 
-            BattlefrontLogger.Trace(
-                $"Calculating AAO. Order players : {orderPlayersInZone.Count} Dest players : {destPlayersInZone.Count}");
+            if (this.Tier == 4)
+            {
+                BattlefrontLogger.Debug(
+                    $"Calculating AAO. {this.ActiveCampaignName} Order players : {orderPlayersInZone.Count} Dest players : {destPlayersInZone.Count}");
+            }
 
             AgainstAllOddsTracker.RecalculateAAO(allPlayersInZone, orderPlayersInZone.Count, destPlayersInZone.Count);
 
+            // Used to set keep defence sizes
             foreach (var keep in Keeps)
             {
                 keep.UpdateCurrentAAO(AgainstAllOddsTracker.AgainstAllOddsMult);
             }
 
         }
+
 
         private void SavePlayerContribution()
         {

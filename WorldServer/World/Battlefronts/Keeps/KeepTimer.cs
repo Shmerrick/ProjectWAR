@@ -26,10 +26,15 @@ namespace WorldServer.World.Battlefronts.Keeps
             _logger.Trace($"{this.KeepTimerName} created, value={Value}, length={Length}");
         }
       
+        public static DateTime FromUnixTime(long unixTime)
+        {
+            return new DateTime(1970, 1, 1).AddSeconds(unixTime);
+        }
+      
         public int Start()
         {
             Value = TCPManager.GetTimeStamp() + Length;
-            _logger.Debug($"{this.KeepTimerName} started, value={Value}");
+            _logger.Debug($"{this.KeepTimerName} started, value={Value} ({FromUnixTime(Value).ToString("HH:mm:ss tt zz")})");
 
             return Value;
         }
