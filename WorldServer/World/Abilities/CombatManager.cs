@@ -1846,7 +1846,7 @@ namespace WorldServer.World.Abilities
                             {
                                 (caster as Player)?.UpdatePlayerBountyEvent((byte) ContributionDefinitions
                                     .OUT_OF_GROUP_HEALING);
-                                (caster as Player).AddRenown((uint) StaticRandom.Instance.Next(3) + 1, false,
+                                (caster as Player).AddRenown((uint)(pointsHealed / 12) + (uint) StaticRandom.Instance.Next(8), false,
                                     RewardType.None, "Out of Group Healing");
                             }
                         }
