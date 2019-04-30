@@ -266,7 +266,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
 
         /// <summary>
-        /// Return an ordered list of eligible players based on the highest contribution
+        /// Return an ordered list of eligible players based on the highest contribution (result is in ascending order)
         /// </summary>
         /// <param name="numberOfBags"></param>
         /// <returns></returns>

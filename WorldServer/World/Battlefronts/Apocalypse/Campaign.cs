@@ -1109,9 +1109,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 return;
             try
             {
-                // Get all players with at least some contribution.
+                // Get all players with at least some contribution - result is ordered by contribution ascending
                 var allContributingPlayers = ActiveBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0).ToList();
-
+                // Reverse the order so we have highest eligbility first.
+                allContributingPlayers.Reverse();
+                
                 var rewardAssignments = new List<LootBagTypeDefinition>();
 
                 // Split the contributing players into segments.
@@ -1121,7 +1123,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     ActiveBattleFrontStatus.ContributionManagerInstance,
                     true,
                     true);
-
+                // All eligible players that are still in game
                 eligiblePlayersAllRealms = eligibilitySplits.Item1;
                 winningRealmPlayers = eligibilitySplits.Item2;
                 losingRealmPlayers = eligibilitySplits.Item3;
@@ -1139,12 +1141,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                     foreach (var pair in pairs)
                     {
-                        BattlefrontLogger.Debug($"FORT REWARDS : {pair.Key}:{pair.Value}");
+                        BattlefrontLogger.Debug($"WIN FORT REWARDS : {pair.Key}:{pair.Value}");
                     }
                     numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, pairs);
                     // Determine and build out the bag types to be assigned
                     var bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
-
                     // Assign eligible players to the bag definitions.
                     rewardAssignments = rewardAssigner.AssignLootToPlayers(ActiveBattleFrontStatus.ContributionManagerInstance, numberOfBagsToAward, bagDefinitions, pairs);
                 }
@@ -1180,9 +1181,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 //// Select the highest contribution players for bag assignment - those eligible (either realm). These are sorted in eligibility order.
                 //var eligiblePlayers = contributionManager.GetEligiblePlayers(numberOfBagsToAward).Reverse().ToList();
-
-
-               
+                
 
                 if (rewardAssignments == null)
                 {
@@ -1199,7 +1198,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     //RVRZoneRewardService.RVRRewardKeepItems
                     var bagContentSelector = new BagContentSelector(lootOptions, StaticRandom.Instance);
 
-
+                    var lootBagReportList = new List<KeyValuePair<Item_Info, List<Talisman>>>();
                     foreach (var reward in rewardAssignments)
                     {
                         if (reward.Assignee != 0)
@@ -1224,6 +1223,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                     BattlefrontLogger.Debug($"{lootDefinition.ToString()}");
                                     // Only distribute if loot is valid
                                     var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(lootDefinition, assignedPlayer);
+                                    lootBagReportList.Add(generatedLootBag);
                                     switch (assignedPlayer.Realm)
                                     {
                                         case Realms.REALMS_REALM_DESTRUCTION:
@@ -1270,7 +1270,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                         }
                     }
+
+                    // Report to the players the rewards distributed.'
+                    var y = "";
+                    Enum.GetName(typeof(LootBagRarity),y);
+                    var goldBagCount = lootBagReportList.Count(x => x.Key.Entry == 9980);
+                    var purpleBagCount = lootBagReportList.Count(x => x.Key.Entry == 9943);
+                    var blueBagCount = lootBagReportList.Count(x => x.Key.Entry == 9942);
+                    var greenBagCount = lootBagReportList.Count(x => x.Key.Entry == 9941);
+                    var whiteBagCount = lootBagReportList.Count(x => x.Key.Entry == 9940);
+
+                    Region.ApocCommunications.Broadcast($"Rewards Gold {goldBagCount} Purple {purpleBagCount} Blue {blueBagCount} Green {greenBagCount}", Realms.REALMS_REALM_ORDER, Region, 4);
+                    Region.ApocCommunications.Broadcast($"Rewards Gold {goldBagCount} Purple {purpleBagCount} Blue {blueBagCount} Green {greenBagCount}", Realms.REALMS_REALM_DESTRUCTION, Region, 4);
+
                 }
+
                 // Remove eligible players.
                 ClearDictionaries();
 
