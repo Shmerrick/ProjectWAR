@@ -163,6 +163,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     else
                     {
                         RewardLogger.Warn($"Player {player.Name} is not in CurrentArea");
+                        totalInfluence = 0;
                     }
 
                     if (battlePenalty)

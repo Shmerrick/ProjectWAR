@@ -58,8 +58,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
             byte lootBagNumber = 0;
 
-            // Always allow a gold bag to drop
-            numberGoldBags++;
+            if (numberLootBags > 2)
+            {
+                numberGoldBags++;
+            }
 
             for (byte i = 0; i < numberGoldBags; i++)
             {

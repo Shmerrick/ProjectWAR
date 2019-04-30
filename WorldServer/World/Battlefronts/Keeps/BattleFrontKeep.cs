@@ -58,8 +58,8 @@ namespace WorldServer.World.Battlefronts.Keeps
         public KeepTimer BackToSafeTimer;
 
         public const int DoorRepairTimerLength = 30 * 60;
-        public const int SeizedTimerLength = 1 * 5;
-        public const int LordKilledTimerLength = 1 * 5;
+        public const int SeizedTimerLength = 1 * 2;
+        public const int LordKilledTimerLength = 1 * 2;
         public const int DefenceTickTimerLength = 30 * 60;
         public const int BackToSafeTimerLength = 30 * 60;
         #endregion
@@ -243,81 +243,81 @@ namespace WorldServer.World.Battlefronts.Keeps
                 WorldMgr._Keeps.Add(Info.KeepId, this);
         }
 
-     /// <summary> 
+        /// <summary> 
         /// Each time this ticks, add one to the FortDefenceCounter. Once it's == 4 (60 mins), Lock the fort in favour of the defender. 
         /// </summary> 
-        public void CountdownFortDefenceTimer() 
-        { 
-            if (IsFortress()) 
-            { 
-                FortDefenceCounter++; 
- 
-                Region.ApocCommunications.Broadcast($"Fort defence {(FortDefenceCounter * 100) / 4}%", 4); 
-                _logger.Info($"Fort defence {(FortDefenceCounter * 100) / 4}%", 4); 
- 
-                if (FortDefenceCounter >= DEFENCE_LOCK_COUNT) 
-                { 
+        public void CountdownFortDefenceTimer()
+        {
+            if (IsFortress())
+            {
+                FortDefenceCounter++;
+
+                Region.ApocCommunications.Broadcast($"Fort defence {(FortDefenceCounter * 100) / 4}%", 4);
+                _logger.Info($"Fort defence {(FortDefenceCounter * 100) / 4}%", 4);
+
+                if (FortDefenceCounter >= DEFENCE_LOCK_COUNT)
+                {
                     //if (this.Info.Realm == (int) Realms.REALMS_REALM_ORDER) 
                     //    SendRegionMessage("Weakened by the long crusade, the forces of Chaos have been thrown back from Reikwald. The Empire prepares their army for a counterattack."); 
                     //if (this.Info.Realm == (int)Realms.REALMS_REALM_DESTRUCTION) 
                     //    SendRegionMessage($"The Dark gods have blessed the fortress defenders." + 
                     //                      $"Chaos will spread across the Old World with renewed strength."); 
- 
+
                     // Lock the keep for the defending realm 
-                    OnLockZone((Realms)Info.Realm); 
- 
+                    OnLockZone((Realms)Info.Realm);
+
                     // Create Loot Chests at the Fort GoldChest location. 
-                    var orderLootChest = LootChest.Create( 
-                        Region, 
-                        new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ), 
-                        (ushort)ZoneId); 
- 
-                    orderLootChest.Title = $"Fort Defence {Info.Name}"; 
-                    orderLootChest.Content = $"Fort Defence Rewards"; 
-                    orderLootChest.SenderName = $"{Info.Name}"; 
- 
-                    var destructionLootChest = LootChest.Create( 
-                        Region, 
-                        new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ), 
-                        (ushort)ZoneId); 
- 
-                    destructionLootChest.Title = $"Fort Defence {Info.Name}"; 
-                    destructionLootChest.Content = $"Fort Defence Rewards"; 
-                    destructionLootChest.SenderName = $"{Info.Name}"; 
- 
-                    _logger.Info($"FORT DEFENCE TIMER complete. CountdownFortDefenceTimer {(Realms)Info.Realm}"); 
- 
-                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock((Realms)Info.Realm, orderLootChest, destructionLootChest, RVRZoneRewardService.RVRRewardFortItems); 
-                    FortDefenceCounter = 0; 
-                } 
-                else 
-                { 
-                    if (Info.Realm == (int)Realms.REALMS_REALM_ORDER) 
-                    { 
+                    var orderLootChest = LootChest.Create(
+                        Region,
+                        new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ),
+                        (ushort)ZoneId);
+
+                    orderLootChest.Title = $"Fort Defence {Info.Name}";
+                    orderLootChest.Content = $"Fort Defence Rewards";
+                    orderLootChest.SenderName = $"{Info.Name}";
+
+                    var destructionLootChest = LootChest.Create(
+                        Region,
+                        new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ),
+                        (ushort)ZoneId);
+
+                    destructionLootChest.Title = $"Fort Defence {Info.Name}";
+                    destructionLootChest.Content = $"Fort Defence Rewards";
+                    destructionLootChest.SenderName = $"{Info.Name}";
+
+                    _logger.Info($"FORT DEFENCE TIMER complete. CountdownFortDefenceTimer {(Realms)Info.Realm}");
+
+                    WorldMgr.UpperTierCampaignManager.GetActiveCampaign().ExecuteBattleFrontLock((Realms)Info.Realm, orderLootChest, destructionLootChest, RVRZoneRewardService.RVRRewardFortItems);
+                    FortDefenceCounter = 0;
+                }
+                else
+                {
+                    if (Info.Realm == (int)Realms.REALMS_REALM_ORDER)
+                    {
                         // Inform players on the defending side of the remaining time. 
-                        SendRegionMessage( 
-                            $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter - 1) * 15} minutes remaining to defend the fortress.", 
-                            (int)Realms.REALMS_REALM_ORDER); 
+                        SendRegionMessage(
+                            $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter - 1) * 15} minutes remaining to defend the fortress.",
+                            (int)Realms.REALMS_REALM_ORDER);
                         // Inform players on the defending side of the remaining time. 
-                        SendRegionMessage( 
-                            $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter - 1) * 15} minutes remaining to take the fortress.", 
-                            (int)Realms.REALMS_REALM_DESTRUCTION); 
-                    } 
-                    else 
-                    { 
+                        SendRegionMessage(
+                            $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter - 1) * 15} minutes remaining to take the fortress.",
+                            (int)Realms.REALMS_REALM_DESTRUCTION);
+                    }
+                    else
+                    {
                         // Inform players on the defending side of the remaining time. 
-                        SendRegionMessage( 
-                            $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter - 1) * 15} minutes remaining to defend the fortress.", 
-                            (int)Realms.REALMS_REALM_DESTRUCTION); 
+                        SendRegionMessage(
+                            $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter - 1) * 15} minutes remaining to defend the fortress.",
+                            (int)Realms.REALMS_REALM_DESTRUCTION);
                         // Inform players on the defending side of the remaining time. 
-                        SendRegionMessage( 
-                            $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter - 1) * 15} minutes remaining to take the fortress.", 
-                            (int)Realms.REALMS_REALM_ORDER); 
-                    } 
-                } 
- 
-            } 
-        } 
+                        SendRegionMessage(
+                            $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter - 1) * 15} minutes remaining to take the fortress.",
+                            (int)Realms.REALMS_REALM_ORDER);
+                    }
+                }
+
+            }
+        }
 
 
         public void SetGuildOwner(Guild.Guild guild)
@@ -432,7 +432,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             SendRegionMessage(Info.Name + "'s Keep Lord has fallen! Hold the keep and await reinforcements.");
 
-            KeepStatus = KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK;
+            KeepStatus = KeepStatus.KEEPSTATUS_SEIZED;
             KeepCommunications.SendKeepStatus(null, this);
 
             EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
@@ -648,7 +648,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             // Remove all siege
             RemoveAllAttackingKeepSiege();
 
-            
+
             // Update all players within 200 range - update the map.
             foreach (var plr in GetInRange<Player>(300))
             {
@@ -810,13 +810,14 @@ namespace WorldServer.World.Battlefronts.Keeps
                 if (!fsm.IsRunning)
                 {
                     fsm.Initialize(SM.ProcessState.Initial);
-                    fsm.Fire(SM.Command.OnOpenBattleFront);
+                }
 
-                    if (GuildFlag != null)
-                    {
-                        GuildFlag.Keep = this;
-                        GuildFlag.State = StateFlags.Unsecure;
-                    }
+                fsm.Fire(SM.Command.OnOpenBattleFront);
+
+                if (GuildFlag != null)
+                {
+                    GuildFlag.Keep = this;
+                    GuildFlag.State = StateFlags.Unsecure;
                 }
             }
             ProgressionLogger.Debug($"Starting Keep {Info.Name} FSM...");
@@ -1470,7 +1471,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     WorldY = h.Y,
                     WorldZ = h.Z,
                     WorldO = h.Heading
-                   
+
                 };
 
                 spawn.BuildFromProto(proto);
@@ -1806,17 +1807,17 @@ namespace WorldServer.World.Battlefronts.Keeps
             {
                 var destructionWCId = PlayerSpawnLocation.Value.DestructionFeedZoneId;
                 // Closest WC
-                var wc = BattleFrontService.GetWarcampEntrance((ushort) destructionWCId, player.Realm);
+                var wc = BattleFrontService.GetWarcampEntrance((ushort)destructionWCId, player.Realm);
                 var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)destructionWCId), (ushort)wc.X, (ushort)wc.Y, (ushort)wc.Z);
-                return new SpawnPoint((ushort) destructionWCId, target.X, target.Y, target.Z);
+                return new SpawnPoint((ushort)destructionWCId, target.X, target.Y, target.Z);
             }
             else
             {
                 var orderWCId = PlayerSpawnLocation.Value.OrderFeedZoneId;
                 // Closest WC
-                var wc = BattleFrontService.GetWarcampEntrance((ushort) orderWCId, player.Realm);
+                var wc = BattleFrontService.GetWarcampEntrance((ushort)orderWCId, player.Realm);
                 var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)orderWCId), (ushort)wc.X, (ushort)wc.Y, (ushort)wc.Z);
-                return new SpawnPoint((ushort) orderWCId, target.X, target.Y, target.Z);
+                return new SpawnPoint((ushort)orderWCId, target.X, target.Y, target.Z);
             }
 
             //if (Fortress)

@@ -62,10 +62,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                                                  && x.ScnInterface.Scenario == null
                                                                  && x.Region.RegionId == this.Region.RegionId);
 
-            foreach (var player in playersToAnnounceTo)
-            {
-                player.SendClientMessage($"{Region.RegionName} has recovered and is available for battle!");
-            }
+            //foreach (var player in playersToAnnounceTo)
+            //{
+            //    player.SendClientMessage($"{Region.RegionName} has recovered and is available for battle!");
+            //}
         }
     }
 }

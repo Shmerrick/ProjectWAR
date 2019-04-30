@@ -698,7 +698,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             if (this.Tier == 4)
             {
-                BattlefrontLogger.Debug(
+                BattlefrontLogger.Trace(
                     $"Calculating AAO. {this.ActiveCampaignName} Order players : {orderPlayersInZone.Count} Dest players : {destPlayersInZone.Count}");
             }
 
@@ -1273,8 +1273,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     }
 
                     // Report to the players the rewards distributed.'
-                    var y = "";
-                    Enum.GetName(typeof(LootBagRarity),y);
                     var goldBagCount = lootBagReportList.Count(x => x.Key.Entry == 9980);
                     var purpleBagCount = lootBagReportList.Count(x => x.Key.Entry == 9943);
                     var blueBagCount = lootBagReportList.Count(x => x.Key.Entry == 9942);
