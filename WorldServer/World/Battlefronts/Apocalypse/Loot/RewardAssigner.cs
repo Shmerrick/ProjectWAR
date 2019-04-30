@@ -39,10 +39,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 else
                 {
                     if (eligiblePlayers < 20)
-                        numberOfAwards = 6;
+                        numberOfAwards = 8;
                     else
                     {
-                        numberOfAwards = (byte)(eligiblePlayers < 40 ? 12 : 20);
+                        numberOfAwards = eligiblePlayers < 40 ? (byte) 16 : (byte) 20;
                     }
                 }
             }

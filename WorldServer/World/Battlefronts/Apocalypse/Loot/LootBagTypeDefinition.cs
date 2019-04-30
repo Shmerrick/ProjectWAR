@@ -58,6 +58,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
             byte lootBagNumber = 0;
 
+            // Always allow a gold bag to drop
+            numberGoldBags++;
+
             for (byte i = 0; i < numberGoldBags; i++)
             {
                 result.Add(new LootBagTypeDefinition { LootBagNumber= lootBagNumber++, Assignee = 0, BagRarity = LootBagRarity.Gold });
