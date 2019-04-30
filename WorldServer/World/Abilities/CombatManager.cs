@@ -716,6 +716,9 @@ namespace WorldServer.World.Abilities
                 damageInfo.ApplyDamageModifiers();
 
                 target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivingHeal, damageInfo, caster);
+
+                AwardOutOfGroupHealing(caster, target, (int) damageInfo.Damage, 30, 4);
+                
             }
 
             #region Application
@@ -743,6 +746,32 @@ namespace WorldServer.World.Abilities
             target.DispatchPacketUnreliable(outl, true, caster);
 
             #endregion
+        }
+
+        private static void AwardOutOfGroupHealing(Unit caster, Unit target, int healAmount, int divisor, int random)
+        {
+            if (caster is Player)
+            {
+                if (target is Player)
+                {
+                    if ((target as Player).ImpactMatrixManager.HasImpacts((target as Player).CharacterId))
+                    {
+                        // General healing
+                        if (StaticRandom.Instance.Next(100) < HEAL_CONTRIBUTION_CHANCE)
+                            (caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.GENERAL_HEALING);
+
+
+                        // Check for out of group healing
+                        if (((caster as Player).PriorityGroup != (target as Player).PriorityGroup) || ((caster as Player).PriorityGroup == null))
+                        {
+                            (caster as Player)?.UpdatePlayerBountyEvent((byte) ContributionDefinitions
+                                .OUT_OF_GROUP_HEALING);
+                            (caster as Player).AddRenown((uint)(healAmount / divisor) + (uint) StaticRandom.Instance.Next(random), false,
+                                RewardType.None, "Out of Group Healing");
+                        }
+                    }
+                }
+            }
         }
 
         #endregion
@@ -1830,28 +1859,7 @@ namespace WorldServer.World.Abilities
 
             if (pointsHealed > 0)
             {
-                if (caster is Player)
-                {
-                    if (target is Player)
-                    {
-                        if ((target as Player).ImpactMatrixManager.HasImpacts((target as Player).CharacterId))
-                        {
-                            // General healing
-                            if (StaticRandom.Instance.Next(100) < HEAL_CONTRIBUTION_CHANCE)
-                                (caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.GENERAL_HEALING);
-
-
-                            // Check for out of group healing
-                            if ((caster as Player).PriorityGroup != (target as Player).PriorityGroup)
-                            {
-                                (caster as Player)?.UpdatePlayerBountyEvent((byte) ContributionDefinitions
-                                    .OUT_OF_GROUP_HEALING);
-                                (caster as Player).AddRenown((uint)(pointsHealed / 12) + (uint) StaticRandom.Instance.Next(8), false,
-                                    RewardType.None, "Out of Group Healing");
-                            }
-                        }
-                    }
-                }
+                AwardOutOfGroupHealing(caster, target, pointsHealed, 24, 4);
             }
 
             damageInfo.Mitigation = damageInfo.Damage - pointsHealed;
