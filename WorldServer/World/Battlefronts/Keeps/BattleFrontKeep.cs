@@ -250,10 +250,10 @@ namespace WorldServer.World.Battlefronts.Keeps
         {
             if (IsFortress())
             {
-                FortDefenceCounter++;
-
                 Region.ApocCommunications.Broadcast($"Fort defence {(FortDefenceCounter * 100) / 4}%", 4);
                 _logger.Info($"Fort defence {(FortDefenceCounter * 100) / 4}%", 4);
+
+                FortDefenceCounter++;
 
                 if (FortDefenceCounter >= DEFENCE_LOCK_COUNT)
                 {
