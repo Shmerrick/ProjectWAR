@@ -1133,6 +1133,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 if (fortZones.Contains(ActiveBattleFrontStatus.ZoneId))
                 {
+                    List<LootBagTypeDefinition> bagDefinitions = new List<LootBagTypeDefinition>();
+
                     var pairs = new List<KeyValuePair<uint, int>>();
                     foreach (var winningRealmPlayer in winningRealmPlayers)
                     {
@@ -1145,9 +1147,27 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     }
                     numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, pairs);
                     // Determine and build out the bag types to be assigned
-                    var bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
+                    bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
                     // Assign eligible players to the bag definitions.
                     rewardAssignments = rewardAssigner.AssignLootToPlayers(ActiveBattleFrontStatus.ContributionManagerInstance, numberOfBagsToAward, bagDefinitions, pairs);
+
+
+                    pairs.Clear();
+                    foreach (var losingRealmPlayer in losingRealmPlayers)
+                    {
+                        pairs.Add(new KeyValuePair<uint, int>((uint)losingRealmPlayer.Key.CharacterId, losingRealmPlayer.Value));
+                    }
+
+                    foreach (var pair in pairs)
+                    {
+                        BattlefrontLogger.Debug($"LOSS FORT REWARDS : {pair.Key}:{pair.Value}");
+                    }
+                    numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, pairs);
+                    // Determine and build out the bag types to be assigned
+                    bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
+                    // Assign eligible players to the bag definitions.
+                    rewardAssignments = rewardAssigner.AssignLootToPlayers(ActiveBattleFrontStatus.ContributionManagerInstance, numberOfBagsToAward, bagDefinitions, pairs);
+
                 }
                 else
                 {
