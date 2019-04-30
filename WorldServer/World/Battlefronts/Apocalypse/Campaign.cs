@@ -1280,7 +1280,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     var whiteBagCount = lootBagReportList.Count(x => x.Key.Entry == 9940);
 
                     Region.ApocCommunications.Broadcast($"Rewards Gold {goldBagCount} Purple {purpleBagCount} Blue {blueBagCount} Green {greenBagCount}", Realms.REALMS_REALM_ORDER, Region, 4);
-                    Region.ApocCommunications.Broadcast($"Rewards Gold {goldBagCount} Purple {purpleBagCount} Blue {blueBagCount} Green {greenBagCount}", Realms.REALMS_REALM_DESTRUCTION, Region, 4);
+                    
 
                 }
 

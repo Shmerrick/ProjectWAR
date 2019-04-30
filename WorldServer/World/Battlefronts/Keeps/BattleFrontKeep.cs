@@ -592,7 +592,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             if (KeepLord.Creature == null)
                 _logger.Warn($"{Info.Name} : KeepLord.Creature is null");
 
-            _logger.Debug($"Defence Tick for {Info.Name} - {KeepLord?.Creature?.PlayersInRange} players in range.");
+            _logger.Debug($"Defence Tick for {Info.Name} - {KeepLord?.Creature?.PlayersInRange.Count} players in range.");
 
 
             KeepRewardManager.DefenceTickReward(this, KeepLord?.Creature?.PlayersInRange, Info.Name, Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
