@@ -4,6 +4,7 @@ using Common;
 using FrameWork;
 using GameData;
 using WorldServer.World.Abilities.Components;
+using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
@@ -1829,8 +1830,28 @@ namespace WorldServer.World.Abilities
 
             if (pointsHealed > 0)
             {
-                if (StaticRandom.Instance.Next(100) < HEAL_CONTRIBUTION_CHANCE)
-                 (caster as Player)?.UpdatePlayerBountyEvent((byte) ContributionDefinitions.GENERAL_HEALING);
+                if (caster is Player)
+                {
+                    if (target is Player)
+                    {
+                        if ((target as Player).ImpactMatrixManager.HasImpacts((target as Player).CharacterId))
+                        {
+                            // General healing
+                            if (StaticRandom.Instance.Next(100) < HEAL_CONTRIBUTION_CHANCE)
+                                (caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.GENERAL_HEALING);
+
+
+                            // Check for out of group healing
+                            if ((caster as Player).PriorityGroup != (target as Player).PriorityGroup)
+                            {
+                                (caster as Player)?.UpdatePlayerBountyEvent((byte) ContributionDefinitions
+                                    .OUT_OF_GROUP_HEALING);
+                                (caster as Player).AddRenown((uint) StaticRandom.Instance.Next(3) + 1, false,
+                                    RewardType.None, "Out of Group Healing");
+                            }
+                        }
+                    }
+                }
             }
 
             damageInfo.Mitigation = damageInfo.Damage - pointsHealed;

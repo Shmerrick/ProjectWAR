@@ -197,6 +197,12 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             return result;
         }
+
+        public bool HasImpacts(uint characterId)
+        {
+            return this.ImpactMatrix.ContainsKey(characterId);
+        }
+
     }   
 
 
