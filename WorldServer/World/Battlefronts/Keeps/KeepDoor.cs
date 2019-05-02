@@ -276,7 +276,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             }
         }
 
-        public void Spawn()
+        public void Spawn(bool attackable)
         {
             GameObject?.Destroy();
 
@@ -305,7 +305,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             GameObject = new KeepGameObject(spawn, this, Keep);
             Region.AddObject(GameObject, spawn.ZoneId);
             
-            GameObject.SetAttackable(Keep.KeepStatus==KeepStatus.KEEPSTATUS_SAFE);
+            GameObject.SetAttackable(attackable);
 
             Occlusion.SetFixtureVisible(Info.DoorId, true);
 

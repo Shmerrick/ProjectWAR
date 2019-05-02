@@ -57,11 +57,11 @@ namespace WorldServer.World.Battlefronts.Keeps
         public KeepTimer DefenceTickTimer;
         public KeepTimer BackToSafeTimer;
 
-        public const int DoorRepairTimerLength = 30 * 60;
+        public const int DoorRepairTimerLength = 2 * 60;
         public const int SeizedTimerLength = 1 * 2;
         public const int LordKilledTimerLength = 1 * 2;
-        public const int DefenceTickTimerLength = 30 * 60;
-        public const int BackToSafeTimerLength = 30 * 60;
+        public const int DefenceTickTimerLength = 3 * 60;
+        public const int BackToSafeTimerLength = 1 * 60;  // should be "short", as it's the time between def tick and doors up
         #endregion
 
         public List<KeepNpcCreature> Creatures = new List<KeepNpcCreature>();
@@ -220,7 +220,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             foreach (var door in Doors)
             {
-                door.Spawn();
+                door.Spawn(KeepStatus==KeepStatus.KEEPSTATUS_SAFE);
             }
 
             // Create the guild claim objective flag.
@@ -246,14 +246,11 @@ namespace WorldServer.World.Battlefronts.Keeps
         /// <summary> 
         /// Each time this ticks, add one to the FortDefenceCounter. Once it's == 4 (60 mins), Lock the fort in favour of the defender. 
         /// </summary> 
-        public void CountdownFortDefenceTimer()
+        public void CountdownFortDefenceTimer(int fortDefenceTimerTickLength)
         {
             if (IsFortress())
             {
-                Region.ApocCommunications.Broadcast($"Fort defence {(FortDefenceCounter * 100) / 4}%", 4);
-                _logger.Info($"Fort defence {(FortDefenceCounter * 100) / 4}%", 4);
-
-                FortDefenceCounter++;
+                _logger.Info($"Fort defence counter = {FortDefenceCounter}. You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter) * 15} mins");
 
                 if (FortDefenceCounter >= DEFENCE_LOCK_COUNT)
                 {
@@ -296,26 +293,26 @@ namespace WorldServer.World.Battlefronts.Keeps
                     {
                         // Inform players on the defending side of the remaining time. 
                         SendRegionMessage(
-                            $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter - 1) * 15} minutes remaining to defend the fortress.",
+                            $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter) * (fortDefenceTimerTickLength)} minutes remaining to defend the fortress.",
                             (int)Realms.REALMS_REALM_ORDER);
                         // Inform players on the defending side of the remaining time. 
                         SendRegionMessage(
-                            $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter - 1) * 15} minutes remaining to take the fortress.",
+                            $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter) * fortDefenceTimerTickLength} minutes remaining to take the fortress.",
                             (int)Realms.REALMS_REALM_DESTRUCTION);
                     }
                     else
                     {
                         // Inform players on the defending side of the remaining time. 
                         SendRegionMessage(
-                            $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter - 1) * 15} minutes remaining to defend the fortress.",
+                            $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter) * fortDefenceTimerTickLength} minutes remaining to defend the fortress.",
                             (int)Realms.REALMS_REALM_DESTRUCTION);
                         // Inform players on the defending side of the remaining time. 
                         SendRegionMessage(
-                            $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter - 1) * 15} minutes remaining to take the fortress.",
+                            $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter) * fortDefenceTimerTickLength} minutes remaining to take the fortress.",
                             (int)Realms.REALMS_REALM_ORDER);
                     }
                 }
-
+                FortDefenceCounter++;
             }
         }
 
@@ -323,7 +320,8 @@ namespace WorldServer.World.Battlefronts.Keeps
         public void SetGuildOwner(Guild.Guild guild)
         {
             OwningGuild = guild;
-            SendRegionMessage($"{guild.Info.Name} has taken {Info.Name} as their own!");
+            SendRegionMessage($"{guild.Info.Name} has taken {Info.Name} as their own!", (int)Realms.REALMS_REALM_ORDER);
+            SendRegionMessage($"{guild.Info.Name} has taken {Info.Name} as their own!", (int)Realms.REALMS_REALM_DESTRUCTION);
         }
 
 
@@ -430,7 +428,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             foreach (var crea in Creatures)
                 crea.DespawnGuard();
 
-            SendRegionMessage(Info.Name + "'s Keep Lord has fallen! Hold the keep and await reinforcements.");
+            SendRegionMessage(Info.Name + "'s Lord has fallen! Hold and await reinforcements.", (int) (PendingRealm));
 
             KeepStatus = KeepStatus.KEEPSTATUS_SEIZED;
             KeepCommunications.SendKeepStatus(null, this);
@@ -471,6 +469,34 @@ namespace WorldServer.World.Battlefronts.Keeps
             BackToSafeTimer.Reset();
         }
 
+        private bool IsInnerDoor(uint doorId)
+        {
+            foreach (var keepDoor in Doors)
+            {
+                if (keepDoor.GameObject.DoorId != doorId) continue;
+                if (keepDoor.Info.Number == INNER_DOOR)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsOuterDoor(uint doorId)
+        {
+            foreach (var keepDoor in Doors)
+            {
+                if (keepDoor.GameObject.DoorId != doorId) continue;
+                if (keepDoor.Info.Number == OUTER_DOOR)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public void SetDoorRepaired(uint doorId)
         {
 
@@ -478,20 +504,32 @@ namespace WorldServer.World.Battlefronts.Keeps
             {
                 if (keepDoor.GameObject.DoorId == doorId)
                 {
-                    keepDoor.Spawn();
+                    keepDoor.Spawn(true);
                     keepDoor.GameObject.MaxHealth = 100;
-                    if (keepDoor.Info.Number == INNER_DOOR)
+                    if (IsInnerDoor(doorId))
+                    {
+                        SendRegionMessage(Info.Name + "'s inner door has been repaired!", (int)(Realms.REALMS_REALM_ORDER));
+                        SendRegionMessage(Info.Name + "'s inner door has been repaired!", (int)(Realms.REALMS_REALM_DESTRUCTION));
                         InnerPosternCanBeUsed = false;
-                    if (keepDoor.Info.Number == OUTER_DOOR)
-                        OuterPosternCanBeUsed = false;
+                    }
 
+                    if (IsOuterDoor(doorId))
+                    {
+                        SendRegionMessage(Info.Name + "'s outer door has been repaired!", (int)(Realms.REALMS_REALM_ORDER));
+                        SendRegionMessage(Info.Name + "'s outer door has been repaired!", (int)(Realms.REALMS_REALM_DESTRUCTION));
+                        OuterPosternCanBeUsed = false;
+                    }
+
+                    _logger.Debug($"Starting Defence tick timer as door repaired {doorId}");
+                    DefenceTickTimer.Start();
                 }
             }
         }
 
         public void SetInnerDoorDown(uint doorId)
         {
-            SendRegionMessage(Info.Name + "'s inner sanctum door has been destroyed!");
+            SendRegionMessage(Info.Name + "'s inner sanctum door has been destroyed!", (int)Realms.REALMS_REALM_DESTRUCTION);
+            SendRegionMessage(Info.Name + "'s inner sanctum door has been destroyed!", (int)Realms.REALMS_REALM_ORDER);
             _logger.Debug($"{Info.Name} : Inner door destroyed by realm {AttackingRealm}. Door Id : {doorId}");
 
             var door = Doors.Single(x => x.GameObject.DoorId == doorId);
@@ -526,7 +564,8 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public void SetOuterDoorDown(uint doorId)
         {
-            SendRegionMessage(Info.Name + "'s outer door has been destroyed!");
+            SendRegionMessage(Info.Name + "'s outer door has been destroyed!", (int) Realms.REALMS_REALM_ORDER);
+            SendRegionMessage(Info.Name + "'s outer door has been destroyed!", (int) Realms.REALMS_REALM_DESTRUCTION);
             _logger.Debug($"{Info.Name} : Outer door destroyed by realm {AttackingRealm}. Door Id : {doorId}");
 
             var door = Doors.Single(x => x.GameObject.DoorId == doorId);
@@ -594,6 +633,9 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             _logger.Debug($"Defence Tick for {Info.Name} - {KeepLord?.Creature?.PlayersInRange.Count} players in range.");
 
+            SendRegionMessage(Info.Name + " has been successfully defended!", (int) Realms.REALMS_REALM_ORDER);
+            SendRegionMessage(Info.Name + " has been successfully defended!", (int) Realms.REALMS_REALM_DESTRUCTION);
+
 
             KeepRewardManager.DefenceTickReward(this, KeepLord?.Creature?.PlayersInRange, Info.Name, Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
 
@@ -613,7 +655,6 @@ namespace WorldServer.World.Battlefronts.Keeps
         public void SetLordWounded()
         {
             ProgressionLogger.Info($"Lord Wounded in {Info.Name}");
-            SendRegionMessage($"{KeepLord.Creature.Name} has been wounded!");
 
             InnerPosternCanBeUsed = true;
 
@@ -628,13 +669,17 @@ namespace WorldServer.World.Battlefronts.Keeps
         {
             ProgressionLogger.Info($"Setting Keep Safe {Info.Name}. Pending Realm = {PendingRealm}");
 
+            SendRegionMessage(Info.Name + " is now safe!", (int) Realms.REALMS_REALM_ORDER);
+            SendRegionMessage(Info.Name + " is now safe!", (int) Realms.REALMS_REALM_DESTRUCTION);
+
+
             Realm = PendingRealm;
             // Must be set before the doors are spawned.
             KeepStatus = KeepStatus.KEEPSTATUS_SAFE;
 
             foreach (var door in Doors)
             {
-                door.Spawn();
+                door.Spawn(true);
             }
 
             foreach (var crea in Creatures)
@@ -687,8 +732,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             foreach (var door in Doors)
             {
-                door.Spawn();
-                door.GameObject.SetAttackable(false);
+                door.Spawn(false);
             }
             foreach (var crea in Creatures)
                 if (!crea.Info.IsPatrol)
@@ -833,10 +877,18 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public void OnDoorRepaired(uint doorId)
         {
-            _logger.Debug($"Door has been repaired {doorId}");
+            if (IsInnerDoor(doorId))
+            {
+                _logger.Debug($"Inner Door has been repaired {doorId}");
+                SetDoorRepaired(doorId);
+            }
 
-            SetDoorRepaired(doorId);
-            fsm.Fire(SM.Command.OnDoorRepaired, doorId);
+            if (IsOuterDoor(doorId))
+            {
+                _logger.Debug($"Inner Door has been repaired {doorId}");
+                SetDoorRepaired(doorId);
+            }
+
 
         }
 
@@ -877,12 +929,14 @@ namespace WorldServer.World.Battlefronts.Keeps
         {
             DefenceTickTimer.Reset();
             SetDefenceTick();
+            // Defence tick has occurred - start back to safe timer.
+            BackToSafeTimer.Start();
         }
 
         public void OnBackToSafeTimerEnd()
         {
             BackToSafeTimer.Reset();
-            fsm.Fire(SM.Command.OnBackToSafeTimerEnd);
+            SetKeepSafe();
         }
 
         public void OnGuildClaimInteracted(uint guildId)
@@ -932,6 +986,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             // If enough damage is done to the door (not just 'tagged')
             if (pctHealth < HEALTH_BOUNDARY_DEFENCE_TICK_RESTART)
             {
+                _logger.Debug($"Keep Door attacked, starting the defence tick timer from the top {number}/{doorId}/{pctHealth}");
                 DefenceTickTimer.Start();
 
                 // if the door attacked is an inner door, reset any active outer door timers.
@@ -974,7 +1029,10 @@ namespace WorldServer.World.Battlefronts.Keeps
         {
             // If NPC has been killed
             if (pctHealth == 0)
+            {
+                _logger.Debug($"NPC Killed, starting the defence tick timer from the top {pctHealth}");
                 DefenceTickTimer.Start();
+            }
 
             ProgressionLogger.Trace($"{Info.Name} : Keep NPC Attacked");
         }

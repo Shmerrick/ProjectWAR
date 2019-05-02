@@ -34,6 +34,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static IObjectDatabase Database = null;
 
         public static int DOMINATION_POINTS_REQUIRED = 6;
+        public static int FORT_DEFENCE_TIMER = 1200000;
         static readonly object LockObject = new object();
 
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
@@ -156,7 +157,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(CheckKeepTimers, 10000, 0);
             _EvtInterface.AddEvent(UpdateKeepResources, 60000, 0);
             // _EvtInterface.AddEvent(RefreshObjectiveStatus, 20000, 0);
-            _EvtInterface.AddEvent(CountdownFortDefenceTimer, 1200000, 0);
+            _EvtInterface.AddEvent(CountdownFortDefenceTimer, FORT_DEFENCE_TIMER, 0);
 
             RegionLockManager = new RegionLockManager(Region);
         }
@@ -173,7 +174,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             // If its a fort, not locked and the active zone
             var k = Keeps.SingleOrDefault(x => x.IsFortress() && x.ZoneId == ActiveBattleFrontStatus.ZoneId && x.KeepStatus != KeepStatus.KEEPSTATUS_LOCKED);
-            k?.CountdownFortDefenceTimer();
+            k?.CountdownFortDefenceTimer((int) FORT_DEFENCE_TIMER/1000/60);
         }
 
 

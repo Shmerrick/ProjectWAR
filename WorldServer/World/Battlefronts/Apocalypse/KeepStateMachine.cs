@@ -21,7 +21,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 OnLordKilledTimerEnd,
                 OnBackToSafeTimerEnd,
                 OnLordWounded,
-                OnDoorRepaired,
                 OnGuildClaimInteracted
             }
 
@@ -93,6 +92,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     .On(Command.OnLordWounded).Goto(ProcessState.LordWounded).Execute(() => Keep.SetLordWounded());
                 fsm.In(ProcessState.InnerDown)
                     .On(Command.OnInnerDoorDown).Goto(ProcessState.LordWounded).Execute(() => Keep.SetLordWounded());
+
+
                 /* GM only events - lord kill */
                 fsm.In(ProcessState.InnerDown)
                     .On(Command.OnLordKilled).Goto(ProcessState.LordKilled).Execute(() => Keep.SetLordKilled());
@@ -105,6 +106,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     .On(Command.OnLordKilled).Goto(ProcessState.LordKilled).Execute(() => Keep.SetLordKilled());
                 fsm.In(ProcessState.LordKilled)
                     .On(Command.OnLordKilledTimerEnd).Goto(ProcessState.GuildClaim).Execute(() => Keep.SetKeepSeized());
+
+
+
                 fsm.In(ProcessState.GuildClaim)  // Guild claim interacted, go to safe.
                     .On(Command.OnGuildClaimInteracted)
                     .Goto(ProcessState.Safe)
@@ -122,28 +126,29 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     .Goto(ProcessState.Safe)
                     .Execute(() => Keep.SetKeepSafe());
 
-                fsm.In(ProcessState.DefenceTick)
-                    .On(Command.OnBackToSafeTimerEnd).Goto(ProcessState.Safe).Execute(() => Keep.SetKeepSafe());
 
 
-                fsm.In(ProcessState.OuterDown)
-                    .On(Command.OnDoorRepaired)
-                    .If(Keep.AllDoorsRepaired)
-                    .Goto(ProcessState.Safe)
-                    //.Execute<uint>((uint doorId) => Keep.SetDoorRepaired(doorId))
-                    .Execute(() => Keep.SetKeepSafe());
-                fsm.In(ProcessState.InnerDown)
-                    .On(Command.OnDoorRepaired)
-                    .If(Keep.AllDoorsRepaired)
-                    .Goto(ProcessState.Safe)
-                    //.Execute<uint>((uint doorId) => Keep.SetDoorRepaired(doorId))
-                    .Execute(() => Keep.SetKeepSafe());
-                fsm.In(ProcessState.LordWounded)
-                    .On(Command.OnDoorRepaired)
-                    .If(Keep.AllDoorsRepaired)
-                    .Goto(ProcessState.Safe)
-                    //.Execute<uint>((uint doorId) => Keep.SetDoorRepaired(doorId))
-                    .Execute(() => Keep.SetKeepSafe());
+                //fsm.In(ProcessState.OuterDown)
+                //    .On(Command.OnDoorRepaired)
+                //    .If(Keep.AllDoorsRepaired)
+                //    .Goto(ProcessState.Safe)
+                //    //.Execute<uint>((uint doorId) => Keep.SetDoorRepaired(doorId))
+                //    .Execute(() => Keep.SetKeepSafe());
+                //fsm.In(ProcessState.InnerDown)                             // Inner down, but all repaired (implies outer repaired) -> safe
+                //    .On(Command.OnDoorRepaired)
+                //    .If(Keep.AllDoorsRepaired)
+                //    .Goto(ProcessState.Safe)
+                //    .Execute(() => Keep.SetKeepSafe());
+                //fsm.In(ProcessState.InnerDown)                             // Inner down, but not all repaired -> outer still 
+                //    .On(Command.OnDoorRepaired)
+                //    .Goto(ProcessState.Safe)
+                //    .Execute<uint>((uint doorId) => Keep.SetDoorRepaired(doorId));
+                //fsm.In(ProcessState.LordWounded)
+                //    .On(Command.OnDoorRepaired)
+                //    .If(Keep.AllDoorsRepaired)
+                //    .Goto(ProcessState.Safe)
+                //    //.Execute<uint>((uint doorId) => Keep.SetDoorRepaired(doorId))
+                //    .Execute(() => Keep.SetKeepSafe());
 
 
                 fsm.In(ProcessState.Locked)
