@@ -3086,7 +3086,7 @@ namespace WorldServer.World.Objects
         }
         private void InternalAddXp(uint xp, bool shouldPool, bool scalesWithRest)
         {
-            RewardLogger.Debug($"{xp} XP awarded to {Name}");
+            RewardLogger.Trace($"{xp} XP awarded to {Name}");
             if (shouldPool)
                 _xpPool += (uint)(xp * 0.25f);
 
@@ -3264,7 +3264,7 @@ namespace WorldServer.World.Objects
                 return;
             }
 
-            RewardLogger.Debug($"{renown} RP awarded to {Name} for {rewardString}");
+            RewardLogger.Trace($"{renown} RP awarded to {Name} for {rewardString}");
 
             EvtInterface.Notify(EventName.OnAddRenown, this, renown);
 

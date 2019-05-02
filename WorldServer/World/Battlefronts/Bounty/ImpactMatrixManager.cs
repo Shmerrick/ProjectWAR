@@ -132,7 +132,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
                 foreach (var playerImpact in entry.Value)
                 {
-                    _logger.Debug($"Checking for decay : {playerImpact.CharacterId} {playerImpact.ImpactValue} {playerImpact.ExpiryTimestamp}");
+                    _logger.Trace($"Checking for decay : {playerImpact.CharacterId} {playerImpact.ImpactValue} {playerImpact.ExpiryTimestamp}");
                     if (playerImpact.ExpiryTimestamp < expiryTime)
                     {
                         if (this.ImpactMatrix.TryRemove(entry.Key, out removedPlayerImpactList))

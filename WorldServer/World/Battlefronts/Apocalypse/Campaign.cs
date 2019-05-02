@@ -696,10 +696,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             allPlayersInZone.AddRange(destPlayersInZone);
             allPlayersInZone.AddRange(orderPlayersInZone);
 
-            if (this.Tier == 4)
+            if (Tier == 4)
             {
                 BattlefrontLogger.Trace(
-                    $"Calculating AAO. {this.ActiveCampaignName} Order players : {orderPlayersInZone.Count} Dest players : {destPlayersInZone.Count}");
+                    $"Calculating AAO. {ActiveCampaignName} Order players : {orderPlayersInZone.Count} Dest players : {destPlayersInZone.Count}");
             }
 
             AgainstAllOddsTracker.RecalculateAAO(allPlayersInZone, orderPlayersInZone.Count, destPlayersInZone.Count);
@@ -910,7 +910,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     // Which battlefrontId?
                     var battleFrontId = BattleFrontManager.ActiveBattleFront.BattleFrontId;
-                    BattlefrontLogger.Warn($"BF Id : {battleFrontId}");
+                    BattlefrontLogger.Info($"{plr.Name} {plr.Realm} BF Id : {battleFrontId}");
                     try
                     {
                         if (plr.Realm == Realms.REALMS_REALM_ORDER)
@@ -1113,7 +1113,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 var allContributingPlayers = ActiveBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0).ToList();
                 // Reverse the order so we have highest eligbility first.
                 allContributingPlayers.Reverse();
-                
+
                 var rewardAssignments = new List<LootBagTypeDefinition>();
 
                 // Split the contributing players into segments.
@@ -1144,10 +1144,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {
                         pairs.Add(new KeyValuePair<uint, int>((uint)winningRealmPlayer.Key.CharacterId, winningRealmPlayer.Value));
                     }
+                    // sort the pairs
+                    pairs.OrderBy(x => x.Value).ToList().Reverse();
+
 
                     foreach (var pair in pairs)
                     {
-                        BattlefrontLogger.Debug($"WIN FORT REWARDS : {pair.Key}:{pair.Value}");
+                        try
+                        {
+                            var name = winningRealmPlayers.SingleOrDefault(x => x.Key.CharacterId == pair.Key);
+                            BattlefrontLogger.Debug($"WIN FORT REWARDS : {pair.Key}:{pair.Value} ({name.Key.Name})");
+                        }
+                        catch (Exception e)
+                        {
+                            BattlefrontLogger.Debug($"{e.Message})");
+                        }
                     }
                     numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, pairs);
                     // Determine and build out the bag types to be assigned
@@ -1158,23 +1169,32 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 else
                 {
                     var pairs = new List<KeyValuePair<uint, int>>();
-                    foreach (var player in winningRealmPlayers)
+                    foreach (var player in eligiblePlayersAllRealms)
                     {
                         pairs.Add(new KeyValuePair<uint, int>((uint)player.Key.CharacterId, player.Value));
                     }
-
+                    // sort the pairs
+                    pairs.OrderBy(x => x.Value).ToList().Reverse();
                     foreach (var pair in pairs)
                     {
-                        BattlefrontLogger.Debug($"WIN KEEP REWARDS : {pair.Key}:{pair.Value}");
+                        try
+                        {
+                            var name = eligiblePlayersAllRealms.SingleOrDefault(x => x.Key.CharacterId == pair.Key);
+                            BattlefrontLogger.Debug($"WIN KEEP REWARDS : {pair.Key}:{pair.Value} ({name.Key.Name})");
+                        }
+                        catch (Exception e)
+                        {
+                            BattlefrontLogger.Debug($"{e.Message})");
+                        }
                     }
-                    
+
                     numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, pairs);
                     var bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
 
                     rewardAssignments = rewardAssigner.AssignLootToPlayers(ActiveBattleFrontStatus.ContributionManagerInstance, numberOfBagsToAward, bagDefinitions, pairs);
                 }
 
-                
+
 
                 foreach (var eligiblePlayersAllRealm in eligiblePlayersAllRealms)
                 {
@@ -1210,7 +1230,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             {
                                 var assignedPlayer = Player.GetPlayer(reward.Assignee);
                                 //player = eligiblePlayersAllRealms.Single(x => x.Key.CharacterId == reward.Assignee);
-                                
+
                                 var playerItemList = (from item in assignedPlayer.ItmInterface.Items where item != null select item.Info.Entry).ToList();
                                 var playerRenown = assignedPlayer.CurrentRenown.Level;
                                 var playerClass = assignedPlayer.Info.CareerLine;
@@ -1280,7 +1300,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     var whiteBagCount = lootBagReportList.Count(x => x.Key.Entry == 9940);
 
                     Region.ApocCommunications.Broadcast($"Rewards Gold {goldBagCount} Purple {purpleBagCount} Blue {blueBagCount} Green {greenBagCount}", Realms.REALMS_REALM_ORDER, Region, 4);
-                    
+
 
                 }
 
@@ -1543,8 +1563,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 try
                 {
-                    var tuple = PlaceChestsAtWarcampEntrances(orderWarcampEntrance, destructionWarcampEntrance);
-                    ExecuteBattleFrontLock(Realms.REALMS_REALM_ORDER, tuple.Item1, tuple.Item2, RVRZoneRewardService.RVRRewardKeepItems);
+                    // TODO : This is a bit of a hack - assumes that if the WC entrances are null, this is a fort.
+                    if ((orderWarcampEntrance == null) && (destructionWarcampEntrance == null))
+                    {
+                        ExecuteBattleFrontLock(Realms.REALMS_REALM_ORDER, null, null, RVRZoneRewardService.RVRRewardFortItems);
+                    }
+                    else
+                    {
+                        var tuple = PlaceChestsAtWarcampEntrances(orderWarcampEntrance, destructionWarcampEntrance);
+                        ExecuteBattleFrontLock(Realms.REALMS_REALM_ORDER, tuple.Item1, tuple.Item2,
+                            RVRZoneRewardService.RVRRewardKeepItems);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -1575,8 +1604,16 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 try
                 {
-                    var tuple = PlaceChestsAtWarcampEntrances(orderWarcampEntrance, destructionWarcampEntrance);
-                    ExecuteBattleFrontLock(Realms.REALMS_REALM_DESTRUCTION, tuple.Item1, tuple.Item2, RVRZoneRewardService.RVRRewardKeepItems);
+                    // TODO : This is a bit of a hack - assumes that if the WC entrances are null, this is a fort.
+                    if ((orderWarcampEntrance == null) && (destructionWarcampEntrance == null))
+                    {
+                        ExecuteBattleFrontLock(Realms.REALMS_REALM_DESTRUCTION, null, null, RVRZoneRewardService.RVRRewardFortItems);
+                    }
+                    else
+                    {
+                        var tuple = PlaceChestsAtWarcampEntrances(orderWarcampEntrance, destructionWarcampEntrance);
+                        ExecuteBattleFrontLock(Realms.REALMS_REALM_DESTRUCTION, tuple.Item1, tuple.Item2, RVRZoneRewardService.RVRRewardKeepItems);
+                    }
                 }
                 catch (Exception e)
                 {

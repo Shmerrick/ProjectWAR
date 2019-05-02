@@ -449,7 +449,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         private void DistributeKillAssistContributionForPlayerKill(Player killer)
         {
-            RewardLogger.Info($"++ Kill Assist contribution given to {killer.Name} ({killer.CharacterId})");
+            RewardLogger.Trace($"++ Kill Assist contribution given to {killer.Name} ({killer.CharacterId})");
 
             killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PARTY_KILL_ASSIST);
 

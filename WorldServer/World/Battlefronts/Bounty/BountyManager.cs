@@ -33,7 +33,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         public bool AddCharacterBounty(uint targetCharacterId, int additionalContribution)
         {
-            BountyLogger.Debug($"+++ Adding Character Bounty {targetCharacterId} value {additionalContribution}");
+            BountyLogger.Trace($"+++ Adding Character Bounty {targetCharacterId} value {additionalContribution}");
             var bounty = GetBounty(targetCharacterId);
             if (bounty != null)
             {
