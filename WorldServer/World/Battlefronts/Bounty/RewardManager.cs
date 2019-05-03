@@ -565,12 +565,11 @@ namespace WorldServer.World.Battlefronts.Bounty
                 .Where(x => x.Career == killer.Info.CareerLine);
             //Randomise list
             availableGearDrops  = availableGearDrops?.OrderBy(a => StaticRandom.Instance.Next()).ToList();
-
+            RewardLogger.Debug($"### {victim.Name} / {victim.RenownRank} {availableGearDrops.Count()} RVR Gear items available for killer {killer}");
             var playerItemList = (from item in killer.ItmInterface.Items where item != null select item.Info.Entry).ToList();
 
             foreach (var availableGearDrop in availableGearDrops)
             {
-
                 if (!ItemExistsForPlayer(availableGearDrop.ItemId, playerItemList))
                 {
                     victim.lootContainer = new LootContainer { Money = availableGearDrop.Money };
@@ -579,11 +578,11 @@ namespace WorldServer.World.Battlefronts.Bounty
                     if (victim.lootContainer != null)
                         victim.SetLootable(true, killer);
 
-                    RewardLogger.Info($"{victim} dropped {availableGearDrop.ItemId} for killer {killer}");
+                    RewardLogger.Info($"### {victim.Name} / {victim.RenownRank} dropped {availableGearDrop.ItemId} for killer {killer}");
+                    killer.SendClientMessage($"You have scavenged an item of rare worth from {victim.Name}");
 
                     return;
                 }
-
             }
 
             // If there were items, but player had them, give them some crests as a reward
