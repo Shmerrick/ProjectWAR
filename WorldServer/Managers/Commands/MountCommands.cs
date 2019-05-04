@@ -60,7 +60,7 @@ namespace WorldServer.Managers.Commands
                 WorldMgr.Database.AddObject(info);
 
                 target.Mount((ushort)info.Entry);
-                plr.SendMessage(null, "Added mount to Database " + info.Name, ChatLogFilters.CHATLOGFILTERS_SHOUT);
+                plr.SendMessage(null, "Added mount to Database. Mount Name : " + info.Name, ChatLogFilters.CHATLOGFILTERS_SHOUT);
             }
             else
             {

@@ -717,7 +717,7 @@ namespace WorldServer.World.Abilities
 
                 target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivingHeal, damageInfo, caster);
 
-                AwardOutOfGroupHealing(caster, target, (int) damageInfo.Damage, 30, 4);
+                AwardOutOfGroupHealing(caster, target, (int) damageInfo.Damage, 30, 8);
                 
             }
 
@@ -756,18 +756,23 @@ namespace WorldServer.World.Abilities
                 {
                     if ((target as Player).ImpactMatrixManager.HasImpacts((target as Player).CharacterId))
                     {
+                        var rand = StaticRandom.Instance.Next(100);
                         // General healing
-                        if (StaticRandom.Instance.Next(100) < HEAL_CONTRIBUTION_CHANCE)
+                        if (rand < HEAL_CONTRIBUTION_CHANCE)
                             (caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.GENERAL_HEALING);
 
 
                         // Check for out of group healing
                         if (((caster as Player).PriorityGroup != (target as Player).PriorityGroup) || ((caster as Player).PriorityGroup == null))
                         {
-                            (caster as Player)?.UpdatePlayerBountyEvent((byte) ContributionDefinitions
-                                .OUT_OF_GROUP_HEALING);
-                            (caster as Player).AddRenown((uint)(healAmount / divisor) + (uint) StaticRandom.Instance.Next(random), false,
-                                RewardType.None, "Out of Group Healing");
+                            if (rand < HEAL_CONTRIBUTION_CHANCE)
+                            {
+                                (caster as Player)?.UpdatePlayerBountyEvent((byte) ContributionDefinitions
+                                    .OUT_OF_GROUP_HEALING);
+                                (caster as Player).AddRenown(
+                                    (uint) (healAmount / divisor) + (uint) StaticRandom.Instance.Next(random), false,
+                                    RewardType.None, "Out of Group Healing");
+                            }
                         }
                     }
                 }
@@ -1859,7 +1864,7 @@ namespace WorldServer.World.Abilities
 
             if (pointsHealed > 0)
             {
-                AwardOutOfGroupHealing(caster, target, pointsHealed, 24, 4);
+                AwardOutOfGroupHealing(caster, target, pointsHealed, 24, 8);
             }
 
             damageInfo.Mitigation = damageInfo.Damage - pointsHealed;
