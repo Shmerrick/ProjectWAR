@@ -572,7 +572,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 .Where(x => x.Career == killer.Info.CareerLine);
             //Randomise list
             availableGearDrops  = availableGearDrops?.OrderBy(a => StaticRandom.Instance.Next()).ToList();
-            RewardLogger.Debug($"### {victim.Name} / {victim.RenownRank} {availableGearDrops.Count()} RVR Gear items available for killer {killer}");
+            RewardLogger.Debug($"### {victim.Name} / {victim.RenownRank} {availableGearDrops.Count()} RVR Gear items available for killer {killer}. PlayerCount = {Player._Players.Count}");
             var playerItemList = (from item in killer.ItmInterface.Items where item != null select item.Info.Entry).ToList();
 
             foreach (var availableGearDrop in availableGearDrops)
