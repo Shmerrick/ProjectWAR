@@ -28,6 +28,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         public const int REALM_CAPTAIN_INFLUENCE_KILL = 500;
         public const int REALM_CAPTAIN_RENOWN_KILL = 2000;
         public const int INSIGNIA_ITEM_ID = 208470;
+        public const int PLAYER_DROP_TIER = 50;
 
         public IContributionManager ContributionManager { get; }
         public IStaticWrapper StaticWrapper { get; }
@@ -557,7 +558,13 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <returns></returns>
         public void SetPlayerRVRGearDrop(Player killer, Player victim)
         {
-            var rand = StaticRandom.Instance.Next(0, 10000);
+            var rand = 0;
+            if (Player._Players.Count < PLAYER_DROP_TIER)
+                rand = StaticRandom.Instance.Next(0, 6000);
+            else
+            {
+                rand = StaticRandom.Instance.Next(0, 10000);
+            }
             var availableGearDrops = RewardService._PlayerRVRGearDrops
                 .Where(x => x.MinimumRenownRank < victim.RenownRank)
                 .Where(x => x.MaximumRenownRank >= victim.RenownRank)

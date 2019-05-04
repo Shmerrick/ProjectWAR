@@ -68,6 +68,7 @@ namespace WorldServer.World.Objects
         public static uint DestruCount;
         // The bounty level for this player. 
         public int BaseBountyValue => (_Value.Level) + (2 * _Value.RenownRank);
+        public float AAOBonus { get; set; }
 
         public string InstanceID { get; set; } = string.Empty;
 
@@ -4224,8 +4225,6 @@ namespace WorldServer.World.Objects
             }
             return 0;
         }
-
-        public float AAOBonus { get; set; }
 
         /// <summary>
         /// Grants XP, Renown, Influence, ToK kill incrementation and kill contribution credit to all players inflicting damage.
