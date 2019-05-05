@@ -717,7 +717,7 @@ namespace WorldServer.World.Abilities
 
                 target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivingHeal, damageInfo, caster);
 
-                AwardOutOfGroupHealing(caster, target, (int) damageInfo.Damage, 30, 4);
+                AwardOutOfGroupHealing(caster, target, (int) damageInfo.Damage, 45, 4);
                 
             }
 
@@ -769,8 +769,12 @@ namespace WorldServer.World.Abilities
                             {
                                 (caster as Player)?.UpdatePlayerBountyEvent((byte) ContributionDefinitions
                                     .OUT_OF_GROUP_HEALING);
+                            }
+                            if (StaticRandom.Instance.Next(100) < OOG_HEAL_RENOWN_CHANCE)
+                            {
                                 (caster as Player).AddRenown(
-                                    (uint) (healAmount / divisor) + (uint) StaticRandom.Instance.Next(random), false,
+                                    (uint) (healAmount / divisor) + (uint) StaticRandom.Instance.Next(random),
+                                    false,
                                     RewardType.None, "Out of Group Healing");
                             }
                         }
@@ -1021,6 +1025,7 @@ namespace WorldServer.World.Abilities
         private const float OFFHAND_DAMAGE_PEN = 0.9f;
         private const float OFFHAND_STAT_COEFF = 0.05f;
         private const int HEAL_CONTRIBUTION_CHANCE = 8;
+        private const int OOG_HEAL_RENOWN_CHANCE = 25;
 
         public static void InflictDamage(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target)
         {
@@ -1864,7 +1869,7 @@ namespace WorldServer.World.Abilities
 
             if (pointsHealed > 0)
             {
-                AwardOutOfGroupHealing(caster, target, pointsHealed, 24, 8);
+                AwardOutOfGroupHealing(caster, target, pointsHealed, 40, 8);
             }
 
             damageInfo.Mitigation = damageInfo.Damage - pointsHealed;
