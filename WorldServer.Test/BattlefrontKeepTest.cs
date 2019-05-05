@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Appccelerate.StateMachine;
 using Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -47,6 +49,28 @@ namespace WorldServer.Test
             RegionMgrs.Add(Region3);
         }
 
+
+        [TestMethod]
+        public void ListSortTest()
+        {
+            var pairs= new Dictionary<uint, int>();
+
+            //var pairs = new List<KeyValuePair<uint, int>>();
+            pairs.Add((uint)1000, 25);
+            pairs.Add((uint)1001, 35);
+            pairs.Add((uint)1002, 5);
+            pairs.Add((uint)1003, 17);
+            pairs.Add((uint)1004, 57);
+            pairs.Add((uint)1005, 7);
+            // sort the pairs
+            var y = pairs.OrderBy(x => x.Value).Reverse().ToList();
+
+            Assert.IsTrue(y[0].Key == 1004);
+            Assert.IsTrue(y[1].Key == 1001);
+            Assert.IsTrue(y[2].Key == 1000);
+            Assert.IsTrue(y[3].Key == 1003);
+                    
+        }
 
         [TestMethod]
         public void CanStartFSM()

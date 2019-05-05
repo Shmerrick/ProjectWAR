@@ -717,7 +717,7 @@ namespace WorldServer.World.Abilities
 
                 target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivingHeal, damageInfo, caster);
 
-                AwardOutOfGroupHealing(caster, target, (int) damageInfo.Damage, 30, 8);
+                AwardOutOfGroupHealing(caster, target, (int) damageInfo.Damage, 30, 4);
                 
             }
 

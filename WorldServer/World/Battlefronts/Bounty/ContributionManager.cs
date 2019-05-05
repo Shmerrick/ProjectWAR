@@ -233,8 +233,6 @@ namespace WorldServer.World.Battlefronts.Bounty
             List<PlayerContribution> contributionList;
             ContributionDictionary.TryGetValue(targetCharacterId, out contributionList);
 
-            short contributionValue = 0;
-
             return GetContributionStageDictionary(contributionList, ContributionFactors);
         }
 
@@ -283,11 +281,11 @@ namespace WorldServer.World.Battlefronts.Bounty
             // Number of awards = 0 -> return all.
             if (numberOfBags == 0)
             {
-                return summationDictionary.OrderBy(x => x.Value);
+                return summationDictionary.Where(x => x.Value > 6).OrderBy(x => x.Value);
             }
             else
             {
-                return summationDictionary.OrderBy(x => x.Value).Take(numberOfBags);
+                return summationDictionary.Where(x => x.Value > 6).OrderBy(x => x.Value).Take(numberOfBags);
             }
         }
 
@@ -361,7 +359,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             foreach (var playerContribution in playerContributionList)
             {
-                
+
             }
         }
     }

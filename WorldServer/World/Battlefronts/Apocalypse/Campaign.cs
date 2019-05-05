@@ -1146,10 +1146,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         pairs.Add(new KeyValuePair<uint, int>((uint)winningRealmPlayer.Key.CharacterId, winningRealmPlayer.Value));
                     }
                     // sort the pairs
-                    pairs.OrderBy(x => x.Value).ToList().Reverse();
-
-
-                    foreach (var pair in pairs)
+                    //pairs.OrderBy(x => x.Value).ToList().Reverse();
+                    var fortPairs = pairs.OrderBy(x => x.Value).Reverse().ToList();
+                    
+                    foreach (var pair in fortPairs)
                     {
                         try
                         {
@@ -1175,8 +1175,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         pairs.Add(new KeyValuePair<uint, int>((uint)player.Key.CharacterId, player.Value));
                     }
                     // sort the pairs
-                    pairs.OrderBy(x => x.Value).ToList().Reverse();
-                    foreach (var pair in pairs)
+                    //pairs.OrderBy(x => x.Value).ToList().Reverse();
+                    var keepPairs = pairs.OrderBy(x => x.Value).Reverse().ToList();
+                    foreach (var pair in keepPairs)
                     {
                         try
                         {
