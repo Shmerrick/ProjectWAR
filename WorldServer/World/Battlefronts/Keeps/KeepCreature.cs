@@ -1,11 +1,9 @@
-﻿using System;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
 using NLog;
-using WorldServer.Services.World;
+using System;
 using WorldServer.World.Abilities.Components;
-using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
 using Object = WorldServer.World.Objects.Object;
@@ -46,41 +44,6 @@ namespace WorldServer.World.Battlefronts.Keeps
             // Upgrade keep lord health
             if (IsKeepLord)
                 Health *= 4;
-
-            //if (WaypointGUID > 0)
-            //{
-            //    AiInterface.Waypoints = WaypointService.GetKeepNpcWaypoints((int) WaypointGUID);
-            //    if (AiInterface.Waypoints.Count > 0)
-            //        this.Scale = 110;
-            //    //foreach (var wp in AiInterface.Waypoints)
-            //    //{
-            //    //    wp.X = Convert.ToUInt32(wp.X + WaypointService.ShuffleWaypointOffset(5, 15));
-            //    //    wp.X = Convert.ToUInt32(wp.X + WaypointService.ShuffleWaypointOffset(5, 15));
-            //    //}
-            //}
-
-            //if (NearAiInterface != null)
-            //{
-            //    AiInterface.IsWalkingBack = NearAiInterface.IsWalkingBack;
-            //    AiInterface.NextAllowedMovementTime = NearAiInterface.NextAllowedMovementTime;
-            //    AiInterface.Ended = NearAiInterface.Ended;
-            //    AiInterface.Started = NearAiInterface.Started;
-
-            //    if (NearAiInterface.State == AiState.MOVING)
-            //    {
-            //        if (!AiInterface.IsWalkingBack)
-            //            AiInterface.CurrentWaypointID = NearAiInterface.CurrentWaypointID - 1;
-            //        else
-            //            AiInterface.CurrentWaypointID = NearAiInterface.CurrentWaypointID + 1;
-            //    }
-            //    else
-            //    {
-            //        AiInterface.CurrentWaypointID = NearAiInterface.CurrentWaypointID;
-            //        AiInterface.SetNextWaypoint(TCPManager.GetTimeStampMS());
-            //    }
-
-            //    NearAiInterface = null;
-            //}
         }
 
         public override void Update(long msTick)
@@ -223,12 +186,24 @@ namespace WorldServer.World.Battlefronts.Keeps
             if (AbtInterface.NPCAbilities == null)
                 return;
 
-            float scaler;
-            if (playerCount >= BattleFrontConstants.MAX_LORD_SCALER_POP)
-                scaler = 1f - BattleFrontConstants.MAX_LORD_SCALER;
-            else
-                scaler = 1f - (BattleFrontConstants.MAX_LORD_SCALER * playerCount / BattleFrontConstants.MAX_LORD_SCALER_POP);
-            _damageScaler = scaler;
+            // Player count is number of defenders in range of the lord
+            if (playerCount > 40)
+            {
+                _damageScaler = 0.25f;
+            }
+            if (playerCount > 20)
+            {
+                _damageScaler = 0.40f;
+            }
+            if (playerCount > 10)
+            {
+                _damageScaler = 0.50f;
+            }
+            if (playerCount > 6)
+            {
+                _damageScaler = 0.60f;
+            }
+            _damageScaler = playerCount > 1 ? 0.70f : 1.00f;
         }
 
 

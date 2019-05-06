@@ -60,10 +60,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 
         #region NPCs and misc
-        /// <summary>Lord maximum damage mitigation scaler</summary>
-        public static float MAX_LORD_SCALER = 0.75f;
-        /// <summary>Maximum enemies in lakes for lord incoming damage reduction (-75%)</summary>
-        public static int MAX_LORD_SCALER_POP = 70;
 
         /// <summary>Delay between each usage of warcamp to objective portals.</summary>
         public static long PORTAL_DELAY = 5000;
