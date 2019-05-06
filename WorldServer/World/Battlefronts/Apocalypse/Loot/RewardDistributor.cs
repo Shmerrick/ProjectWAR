@@ -100,5 +100,24 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             return new KeyValuePair<Item_Info, List<Talisman>>(lootBagItem, lootBagContents);
 
         }
+
+        /// <summary>
+        /// Builds the bag containing the players items.
+        /// </summary>
+        /// <returns></returns>
+        public KeyValuePair<Item_Info, List<Talisman>> BuildChestLootBag(LootBagRarity rarity, uint itemId, Player player)
+        {
+            var lootRewardDescription = string.Empty;
+            // Get the bag item id
+            var lootBagItemId = Convert.ToInt32(LootBagTypeDefinition.GetDescription(rarity));
+            // Get the bag item object
+            var lootBagItem = ItemService.GetItem_Info(itemId);
+            var lootBagContents = new List<Talisman>
+            {
+                new Talisman(itemId, (byte) 1, 0, 0)
+            };
+
+            return new KeyValuePair<Item_Info, List<Talisman>>(lootBagItem, lootBagContents);
+        }
     }
 }

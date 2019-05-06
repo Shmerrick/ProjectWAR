@@ -5,11 +5,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Common.Database.World.Battlefront;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Objects;
+using WorldServer.World.Positions;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
@@ -99,7 +99,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             return resultDictionary;
         }
 
-        
+
         private float CalculateImpactFraction(float impactValue, float totalImpact)
         {
             return impactValue / totalImpact;
@@ -482,7 +482,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             RewardLogger.Info(logMessage);
 
-           
+
         }
 
         /// <summary>
@@ -571,7 +571,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 .Where(x => x.DropChance >= rand)
                 .Where(x => x.Career == killer.Info.CareerLine);
             //Randomise list
-            availableGearDrops  = availableGearDrops?.OrderBy(a => StaticRandom.Instance.Next()).ToList();
+            availableGearDrops = availableGearDrops?.OrderBy(a => StaticRandom.Instance.Next()).ToList();
             RewardLogger.Debug($"### {victim.Name} / {victim.RenownRank} {availableGearDrops.Count()} RVR Gear items available for killer {killer}. PlayerCount = {Player._Players.Count}");
             var playerItemList = (from item in killer.ItmInterface.Items where item != null select item.Info.Entry).ToList();
 
@@ -579,11 +579,27 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
                 if (!ItemExistsForPlayer(availableGearDrop.ItemId, playerItemList))
                 {
-                    victim.lootContainer = new LootContainer { Money = availableGearDrop.Money };
-                    victim.lootContainer.LootInfo.Add(
-                        new LootInfo(ItemService.GetItem_Info(availableGearDrop.ItemId)));
-                    if (victim.lootContainer != null)
-                        victim.SetLootable(true, killer);
+                    var lootChest = LootChest.Create(
+                        victim.Region,
+                        new Point3D(victim.WorldPosition.X, victim.WorldPosition.Y, victim.WorldPosition.Z),
+                        (ushort)victim.ZoneId, false);
+
+
+                    var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(LootBagRarity.Gold, availableGearDrop.ItemId, killer);
+
+                    lootChest.Add(killer.CharacterId, generatedLootBag);
+
+                    // Add item to victim as loot
+                    //victim.lootContainer = new LootContainer { Money = availableGearDrop.Money };
+                    //victim.lootContainer.LootInfo.Add(
+                    //    new LootInfo(ItemService.GetItem_Info(availableGearDrop.ItemId)));
+                    //if (victim.lootContainer != null)
+                    //{
+                    //    victim.SetLootable(true, killer);
+
+                    //}
+
+
 
                     RewardLogger.Info($"### {victim.Name} / {victim.RenownRank} dropped {availableGearDrop.ItemId} for killer {killer}");
                     killer.SendClientMessage($"You have scavenged an item of rare worth from {victim.Name}");
