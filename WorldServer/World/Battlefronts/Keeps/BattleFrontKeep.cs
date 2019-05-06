@@ -57,10 +57,10 @@ namespace WorldServer.World.Battlefronts.Keeps
         public KeepTimer DefenceTickTimer;
         public KeepTimer BackToSafeTimer;
 
-        public const int DoorRepairTimerLength = 15 * 60;
+        public const int DoorRepairTimerLength = 45 * 60;
         public const int SeizedTimerLength = 1 * 2;
         public const int LordKilledTimerLength = 1 * 2;
-        public const int DefenceTickTimerLength = 30 * 60;
+        public const int DefenceTickTimerLength = 20 * 60;
         public const int BackToSafeTimerLength = 4 * 60;  // should be "short", as it's the time between def tick and doors up
         #endregion
 
