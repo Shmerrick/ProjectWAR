@@ -3,6 +3,7 @@ using FrameWork;
 using GameData;
 using NLog;
 using System;
+using SystemData;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
@@ -180,30 +181,45 @@ namespace WorldServer.World.Battlefronts.Keeps
         /// <summary>
         /// Scales the lord depending on enemy population.
         /// </summary>
-        /// <param name="enemyPlayercount">Maximum number of enemies in short history.</param>
-        public void ScaleLord(int playerCount)
+        public void ScaleLord(int defenderPlayerCount)
         {
             if (AbtInterface.NPCAbilities == null)
                 return;
 
+            var oldScaler = _damageScaler;
+
             // Player count is number of defenders in range of the lord
-            if (playerCount > 40)
+            if (defenderPlayerCount > 40)
             {
                 _damageScaler = 0.25f;
             }
-            if (playerCount > 20)
+            if (defenderPlayerCount > 20)
             {
                 _damageScaler = 0.40f;
             }
-            if (playerCount > 10)
+            if (defenderPlayerCount > 10)
             {
                 _damageScaler = 0.50f;
             }
-            if (playerCount > 6)
+            if (defenderPlayerCount > 6)
             {
                 _damageScaler = 0.60f;
             }
-            _damageScaler = playerCount > 1 ? 0.70f : 1.00f;
+            _damageScaler = defenderPlayerCount > 1 ? 0.70f : 1.00f;
+
+            if (oldScaler > _damageScaler)
+            {
+                Say("I grow weaker!", ChatLogFilters.CHATLOGFILTERS_SHOUT);
+            }
+            else if (oldScaler < _damageScaler)
+            {
+                Say("I grow stronger!", ChatLogFilters.CHATLOGFILTERS_SHOUT);
+            }
+
+
+
+
+            _logger.Debug($"Lord DPS scaled to {_damageScaler} population {defenderPlayerCount}");
         }
 
 

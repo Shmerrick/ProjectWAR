@@ -1082,14 +1082,13 @@ namespace WorldServer.World.Battlefronts.Keeps
 
 
         /// <summary>
-        ///     Scales the lord depending on enemy population.
+        ///     Scales the lord depending on defender population.
         /// </summary>
-        /// <param name="enemyPlayercount">Maximum number of enemies in short history.</param>
-        public void ScaleLord(int enemyPlayercount)
+        public void ScaleLord(int defenderPlayerCount)
         {
             foreach (var crea in Creatures)
                 if (crea.Creature != null && crea.Info.KeepLord)
-                    crea.Creature.ScaleLord(enemyPlayercount);
+                    crea.Creature.ScaleLord(defenderPlayerCount);
         }
 
         #endregion
