@@ -1409,6 +1409,22 @@ namespace WorldServer.World.Abilities
                     creature.AiInterface.SetBrain(new AggressiveBrain(creature));
                     creature.CbtInterface.SetTarget(player.CbtInterface.GetCurrentTarget().Oid,
                         TargetTypes.TARGETTYPES_TARGET_NONE);
+
+
+                    //// Using the spawn, place the boss in the region.
+                    //var boss = player.Region.CreateBoss(spawn, Convert.ToUInt32(cmd.PrimaryValue));
+                    //// Set some default boss settings.
+                    //boss.CanBeKnockedBack = false;
+                    //boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
+                    //// Build the brain - abilities and phases
+                    //var brain = new BossBrain(boss)
+                    //{
+                    //    Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == cmd.PrimaryValue).ToList(),
+                    //    Phases = CreatureService.BossSpawnPhases.Where(x => x.BossSpawnId == cmd.PrimaryValue).ToList()
+
+                    //};
+                    //// Assign the brain
+                    //boss.AiInterface.SetBrain(brain);
                 }
 
             }

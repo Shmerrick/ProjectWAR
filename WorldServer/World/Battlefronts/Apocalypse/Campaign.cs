@@ -34,7 +34,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static IObjectDatabase Database = null;
 
         public static int DOMINATION_POINTS_REQUIRED = 6;
-        public static int FORT_DEFENCE_TIMER = 1200000;
+        public static int FORT_DEFENCE_TIMER = 120000;
         static readonly object LockObject = new object();
 
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
