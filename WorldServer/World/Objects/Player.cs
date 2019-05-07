@@ -3429,7 +3429,7 @@ namespace WorldServer.World.Objects
 
         public void AddPendingRenown(uint addAmount)
         {
-            _pendingRenown += addAmount;
+            //_pendingRenown += addAmount;
         }
 
         public float GetKillRewardScaler(Player victim)
