@@ -602,18 +602,6 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             }
 
-            // If there were items, but player had them, give them some crests as a reward
-            if (availableGearDrops.Count() > 0)
-            {
-                victim.lootContainer = new LootContainer { Money = 1000 };
-                victim.lootContainer.LootInfo.Add(new LootInfo(ItemService.GetItem_Info(208470)));
-                victim.lootContainer.LootInfo.Add(new LootInfo(ItemService.GetItem_Info(208470)));
-                victim.lootContainer.LootInfo.Add(new LootInfo(ItemService.GetItem_Info(208470)));
-                victim.lootContainer.LootInfo.Add(new LootInfo(ItemService.GetItem_Info(208470)));
-                victim.lootContainer.LootInfo.Add(new LootInfo(ItemService.GetItem_Info(208470)));
-                if (victim.lootContainer != null)
-                    victim.SetLootable(true, killer);
-            }
         }
 
         private bool ItemExistsForPlayer(uint itemId, List<uint> playerItemList)

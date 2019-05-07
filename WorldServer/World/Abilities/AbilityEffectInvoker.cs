@@ -4,6 +4,7 @@ using System.Linq;
 using Common;
 using FrameWork;
 using GameData;
+using WorldServer.Managers.Commands;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.CareerInterfaces;
@@ -117,6 +118,7 @@ namespace WorldServer.World.Abilities
             _commandList.Add("TeleportToTarget", TeleportToTarget);
             _commandList.Add("PlayEffect", PlayEffect);
             _commandList.Add("PlayGroundEffect", PlayGroundEffect);
+            _commandList.Add("SummonNPC", SummonNPC);
             // Item
             _commandList.Add("WarpToBindPoint", WarpToBindPoint);
             _commandList.Add("WarpToZoneJump", WarpToZoneJump);
@@ -1357,6 +1359,7 @@ namespace WorldServer.World.Abilities
         }
         /// <summary>
         /// to play a effect from a location, similar to the command .playeffect but instead of on a person, place it on the floor at the target location
+        /// still need a way to turn the effect off. Initially I had a groundtarget that disappeared after a while aking to groundattack but I could not apply effect to it.
         /// </summary>
         /// <param name="cmd"></param>
         /// <param name="level"></param>
@@ -1367,6 +1370,45 @@ namespace WorldServer.World.Abilities
             //still need a way to turn the effect off. Initially I had a groundtarget that disappeared after a while aking to groundattack but I could not apply effect to it.
             target.PlayEffect((ushort)cmd.PrimaryValue, target.WorldPosition);
 
+
+            return true;
+        }
+
+        /// <summary>
+        /// to play a effect from a location, similar to the command .playeffect but instead of on a person, place it on the floor at the target location
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <param name="level"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        private bool SummonNPC(AbilityCommandInfo cmd, byte level, Unit target)
+        {
+            if (target is Player)
+            {
+                ushort facing = 2093;
+
+                var X = target.WorldPosition.X;
+                var Y = target.WorldPosition.Y;
+                var Z = target.WorldPosition.Z;
+
+
+                var spawn = new Creature_spawn {Guid = (uint) CreatureService.GenerateCreatureSpawnGUID()};
+                var proto = CreatureService.GetCreatureProto(1000155);
+                spawn.BuildFromProto(proto);
+
+                spawn.WorldO = facing;
+                spawn.WorldX = X + StaticRandom.Instance.Next(500);
+                spawn.WorldY = Y + StaticRandom.Instance.Next(500);
+                spawn.WorldZ = Z;
+                spawn.ZoneId = (ushort) target.ZoneId;
+
+                var player = _caster as Player;
+
+                var creature = target.Region.CreateCreature(spawn);
+                creature.AiInterface.SetBrain(new AggressiveBrain(creature));
+                creature.CbtInterface.SetTarget(player.CbtInterface.GetCurrentTarget().Oid, TargetTypes.TARGETTYPES_TARGET_NONE);
+
+            }
 
             return true;
         }

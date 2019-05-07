@@ -441,7 +441,13 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             ResetAllStateTimers();
 
-            LordKilledTimer.Start();
+            if (!Fortress)
+                LordKilledTimer.Start();
+            else
+            {
+                ForceLockZone();
+                SetKeepSafe();
+            }
 
             SetGuildFlagState(StateFlags.Unsecure);
 
@@ -843,7 +849,10 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             // If this keep is a Fortress, no need to run the Statemachine - reply on defence timer or lord kill only.
             if (Fortress)
+            {
+                SetKeepSafe();
                 return;
+            }
 
             // Detect if there is a save state for this Keep. If so, load it. 
             var status = RVRProgressionService.GetBattleFrontKeepStatus(Info.KeepId);
