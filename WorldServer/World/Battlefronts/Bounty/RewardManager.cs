@@ -7,9 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using WorldServer.Managers;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Objects;
-using WorldServer.World.Positions;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
@@ -577,35 +575,31 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             foreach (var availableGearDrop in availableGearDrops)
             {
-                if (!ItemExistsForPlayer(availableGearDrop.ItemId, playerItemList))
+                // Drop item into GOld Chest
+                //var lootChest = LootChest.Create(
+                //    victim.Region,
+                //    new Point3D(victim.WorldPosition.X, victim.WorldPosition.Y, victim.WorldPosition.Z),
+                //    (ushort)victim.ZoneId, false);
+
+
+                //var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(LootBagRarity.Gold, availableGearDrop.ItemId, killer);
+
+                //lootChest.Add(killer.CharacterId, generatedLootBag);
+
+                // Add item to victim as loot
+                victim.lootContainer = new LootContainer { Money = availableGearDrop.Money };
+                victim.lootContainer.LootInfo.Add(
+                    new LootInfo(ItemService.GetItem_Info(availableGearDrop.ItemId)));
+                if (victim.lootContainer != null)
                 {
-                    var lootChest = LootChest.Create(
-                        victim.Region,
-                        new Point3D(victim.WorldPosition.X, victim.WorldPosition.Y, victim.WorldPosition.Z),
-                        (ushort)victim.ZoneId, false);
-
-
-                    var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(LootBagRarity.Gold, availableGearDrop.ItemId, killer);
-
-                    lootChest.Add(killer.CharacterId, generatedLootBag);
-
-                    // Add item to victim as loot
-                    //victim.lootContainer = new LootContainer { Money = availableGearDrop.Money };
-                    //victim.lootContainer.LootInfo.Add(
-                    //    new LootInfo(ItemService.GetItem_Info(availableGearDrop.ItemId)));
-                    //if (victim.lootContainer != null)
-                    //{
-                    //    victim.SetLootable(true, killer);
-
-                    //}
-
-
-
-                    RewardLogger.Info($"### {victim.Name} / {victim.RenownRank} dropped {availableGearDrop.ItemId} for killer {killer}");
-                    killer.SendClientMessage($"You have scavenged an item of rare worth from {victim.Name}");
-
-                    return;
+                    victim.SetLootable(true, killer);
                 }
+
+                RewardLogger.Info($"### {victim.Name} / {victim.RenownRank} dropped {availableGearDrop.ItemId} for killer {killer}");
+                killer.SendClientMessage($"You have scavenged an item of rare worth from {victim.Name}");
+
+                return;
+
             }
 
             // If there were items, but player had them, give them some crests as a reward
