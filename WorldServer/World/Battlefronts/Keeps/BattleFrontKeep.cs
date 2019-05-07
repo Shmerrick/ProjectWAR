@@ -220,7 +220,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             foreach (var door in Doors)
             {
-                door.Spawn(KeepStatus==KeepStatus.KEEPSTATUS_SAFE);
+                door.Spawn(KeepStatus == KeepStatus.KEEPSTATUS_SAFE);
             }
 
             // Create the guild claim objective flag.
@@ -430,7 +430,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             foreach (var crea in Creatures)
                 crea.DespawnGuard();
 
-            SendRegionMessage(Info.Name + "'s Lord has fallen! Hold and await reinforcements.", (int) (PendingRealm));
+            SendRegionMessage(Info.Name + "'s Lord has fallen! Hold and await reinforcements.", (int)(PendingRealm));
 
             KeepStatus = KeepStatus.KEEPSTATUS_SEIZED;
             KeepCommunications.SendKeepStatus(null, this);
@@ -566,8 +566,8 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public void SetOuterDoorDown(uint doorId)
         {
-            SendRegionMessage(Info.Name + "'s outer door has been destroyed!", (int) Realms.REALMS_REALM_ORDER);
-            SendRegionMessage(Info.Name + "'s outer door has been destroyed!", (int) Realms.REALMS_REALM_DESTRUCTION);
+            SendRegionMessage(Info.Name + "'s outer door has been destroyed!", (int)Realms.REALMS_REALM_ORDER);
+            SendRegionMessage(Info.Name + "'s outer door has been destroyed!", (int)Realms.REALMS_REALM_DESTRUCTION);
             _logger.Debug($"{Info.Name} : Outer door destroyed by realm {AttackingRealm}. Door Id : {doorId}");
 
             var door = Doors.Single(x => x.GameObject.DoorId == doorId);
@@ -635,8 +635,8 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             _logger.Debug($"Defence Tick for {Info.Name} - {KeepLord?.Creature?.PlayersInRange.Count} players in range.");
 
-            SendRegionMessage(Info.Name + " has been successfully defended!", (int) Realms.REALMS_REALM_ORDER);
-            SendRegionMessage(Info.Name + " has been successfully defended!", (int) Realms.REALMS_REALM_DESTRUCTION);
+            SendRegionMessage(Info.Name + " has been successfully defended!", (int)Realms.REALMS_REALM_ORDER);
+            SendRegionMessage(Info.Name + " has been successfully defended!", (int)Realms.REALMS_REALM_DESTRUCTION);
 
 
             KeepRewardManager.DefenceTickReward(this, KeepLord?.Creature?.PlayersInRange, Info.Name, Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
@@ -671,8 +671,8 @@ namespace WorldServer.World.Battlefronts.Keeps
         {
             ProgressionLogger.Info($"Setting Keep Safe {Info.Name}. Pending Realm = {PendingRealm}");
 
-            SendRegionMessage(Info.Name + " is now safe!", (int) Realms.REALMS_REALM_ORDER);
-            SendRegionMessage(Info.Name + " is now safe!", (int) Realms.REALMS_REALM_DESTRUCTION);
+            SendRegionMessage(Info.Name + " is now safe!", (int)Realms.REALMS_REALM_ORDER);
+            SendRegionMessage(Info.Name + " is now safe!", (int)Realms.REALMS_REALM_DESTRUCTION);
 
 
             Realm = PendingRealm;
@@ -841,6 +841,10 @@ namespace WorldServer.World.Battlefronts.Keeps
             // When the battlefront opens, set the default realm for the keep
             PendingRealm = (Realms)Info.Realm;
 
+            // If this keep is a Fortress, no need to run the Statemachine - reply on defence timer or lord kill only.
+            if (Fortress)
+                return;
+
             // Detect if there is a save state for this Keep. If so, load it. 
             var status = RVRProgressionService.GetBattleFrontKeepStatus(Info.KeepId);
             if (status != null)
@@ -897,34 +901,47 @@ namespace WorldServer.World.Battlefronts.Keeps
         public void OnGuildClaimTimerEnd()
         {
             SeizedTimer.Reset();
-            fsm.Fire(SM.Command.OnGuildClaimTimerEnd);
+            if (!Fortress)
+                fsm.Fire(SM.Command.OnGuildClaimTimerEnd);
         }
 
         public void OnOuterDoorDown(uint doorId)
         {
-            fsm.Fire(SM.Command.OnOuterDoorDown, doorId);
+            if (!Fortress)
+                fsm.Fire(SM.Command.OnOuterDoorDown, doorId);
         }
 
         public void OnInnerDoorDown(uint doorId)
         {
-            fsm.Fire(SM.Command.OnInnerDoorDown, doorId);
+            if (!Fortress)
+                fsm.Fire(SM.Command.OnInnerDoorDown, doorId);
         }
 
         public void OnLordKilled()
         {
-            fsm.Fire(SM.Command.OnLordKilled);
+            if (!Fortress)
+                fsm.Fire(SM.Command.OnLordKilled);
+            else
+            {
+                SetLordKilled();
+            }
         }
 
         public void OnLockZone(Realms lockingRealm)
         {
+
             PendingRealm = lockingRealm;
-            fsm.Fire(SM.Command.OnLockZone);
+            if (!Fortress)
+                fsm.Fire(SM.Command.OnLockZone);
+            else
+                SetKeepLocked();
         }
 
         public void OnLordKilledTimerEnd()
         {
             LordKilledTimer.Reset();
-            fsm.Fire(SM.Command.OnLordKilledTimerEnd);
+            if (!Fortress)
+                fsm.Fire(SM.Command.OnLordKilledTimerEnd);
         }
 
         public void OnDefenceTickTimerEnd()
@@ -943,12 +960,14 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public void OnGuildClaimInteracted(uint guildId)
         {
-            fsm.Fire(SM.Command.OnGuildClaimInteracted, guildId);
+            if (!Fortress)
+                fsm.Fire(SM.Command.OnGuildClaimInteracted, guildId);
         }
 
         public void OnLordWounded()
         {
-            fsm.Fire(SM.Command.OnLordWounded);
+            if (!Fortress)
+                fsm.Fire(SM.Command.OnLordWounded);
         }
 
         #endregion
