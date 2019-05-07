@@ -1391,22 +1391,25 @@ namespace WorldServer.World.Abilities
                 var Y = target.WorldPosition.Y;
                 var Z = target.WorldPosition.Z;
 
+                for (int i = 0; i < cmd.SecondaryValue; i++)
+                {
+                    var spawn = new Creature_spawn {Guid = (uint) CreatureService.GenerateCreatureSpawnGUID()};
+                    var proto = CreatureService.GetCreatureProto((uint) cmd.PrimaryValue);
+                    spawn.BuildFromProto(proto);
 
-                var spawn = new Creature_spawn {Guid = (uint) CreatureService.GenerateCreatureSpawnGUID()};
-                var proto = CreatureService.GetCreatureProto(1000155);
-                spawn.BuildFromProto(proto);
+                    spawn.WorldO = facing;
+                    spawn.WorldX = X + StaticRandom.Instance.Next(500);
+                    spawn.WorldY = Y + StaticRandom.Instance.Next(500);
+                    spawn.WorldZ = Z;
+                    spawn.ZoneId = (ushort) target.ZoneId;
 
-                spawn.WorldO = facing;
-                spawn.WorldX = X + StaticRandom.Instance.Next(500);
-                spawn.WorldY = Y + StaticRandom.Instance.Next(500);
-                spawn.WorldZ = Z;
-                spawn.ZoneId = (ushort) target.ZoneId;
+                    var player = _caster as Player;
 
-                var player = _caster as Player;
-
-                var creature = target.Region.CreateCreature(spawn);
-                creature.AiInterface.SetBrain(new AggressiveBrain(creature));
-                creature.CbtInterface.SetTarget(player.CbtInterface.GetCurrentTarget().Oid, TargetTypes.TARGETTYPES_TARGET_NONE);
+                    var creature = target.Region.CreateCreature(spawn);
+                    creature.AiInterface.SetBrain(new AggressiveBrain(creature));
+                    creature.CbtInterface.SetTarget(player.CbtInterface.GetCurrentTarget().Oid,
+                        TargetTypes.TARGETTYPES_TARGET_NONE);
+                }
 
             }
 
