@@ -34,7 +34,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static IObjectDatabase Database = null;
 
         public static int DOMINATION_POINTS_REQUIRED = 6;
-        public static int FORT_DEFENCE_TIMER = 1200000;
+        public static int FORT_DEFENCE_TIMER = 900000;  // 15mins
         static readonly object LockObject = new object();
 
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
@@ -1101,7 +1101,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var winningRealmPlayers = new ConcurrentDictionary<Player, int>();
             var losingRealmPlayers = new ConcurrentDictionary<Player, int>();
             var eligiblePlayersAllRealms = new ConcurrentDictionary<Player, int>();
-            var rewardAssigner = new RewardAssigner(StaticRandom.Instance);
+
 
             BattlefrontLogger.Info($"*************************GenerateZoneLockRewards***********");
 
@@ -1134,69 +1134,20 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattlefrontLogger.Debug($"losingRealmPlayers Players Count = {losingRealmPlayers.Count()}");
 
                 var fortZones = new List<int> { 4, 10, 104, 110, 210 };
-                var numberOfBagsToAward = 0;
+
 
                 if (fortZones.Contains(ActiveBattleFrontStatus.ZoneId))
                 {
-                    List<LootBagTypeDefinition> bagDefinitions = new List<LootBagTypeDefinition>();
-
-                    var pairs = new List<KeyValuePair<uint, int>>();
-                    foreach (var winningRealmPlayer in winningRealmPlayers)
-                    {
-                        pairs.Add(new KeyValuePair<uint, int>((uint)winningRealmPlayer.Key.CharacterId, winningRealmPlayer.Value));
-                    }
-                    // sort the pairs
-                    //pairs.OrderBy(x => x.Value).ToList().Reverse();
-                    var fortPairs = pairs.OrderBy(x => x.Value).Reverse().ToList();
-
-                    foreach (var pair in fortPairs)
-                    {
-                        try
-                        {
-                            var name = winningRealmPlayers.SingleOrDefault(x => x.Key.CharacterId == pair.Key);
-                            BattlefrontLogger.Debug($"WIN FORT REWARDS : {pair.Key}:{pair.Value} ({name.Key.Name})");
-                        }
-                        catch (Exception e)
-                        {
-                            BattlefrontLogger.Debug($"{e.Message})");
-                        }
-                    }
-                    numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, pairs);
-                    // Determine and build out the bag types to be assigned
-                    bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
-                    // Assign eligible players to the bag definitions.
-                    rewardAssignments = rewardAssigner.AssignLootToPlayers(ActiveBattleFrontStatus.ContributionManagerInstance, numberOfBagsToAward, bagDefinitions, pairs);
+                    Logger.Info($"Generating WIN FORT rewards for {winningRealmPlayers.Count} players");
+                    rewardAssignments = RewardManager.GenerateRewardAssignments(winningRealmPlayers, forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 100);
+                    rewardAssignments.AddRange(RewardManager.GenerateRewardAssignments(losingRealmPlayers, forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 50));
                 }
                 else
                 {
-                    var pairs = new List<KeyValuePair<uint, int>>();
-                    foreach (var player in eligiblePlayersAllRealms)
-                    {
-                        pairs.Add(new KeyValuePair<uint, int>((uint)player.Key.CharacterId, player.Value));
-                    }
-                    // sort the pairs
-                    //pairs.OrderBy(x => x.Value).ToList().Reverse();
-                    var keepPairs = pairs.OrderBy(x => x.Value).Reverse().ToList();
-                    foreach (var pair in keepPairs)
-                    {
-                        try
-                        {
-                            var name = eligiblePlayersAllRealms.SingleOrDefault(x => x.Key.CharacterId == pair.Key);
-                            BattlefrontLogger.Debug($"WIN KEEP REWARDS : {pair.Key}:{pair.Value} ({name.Key.Name})");
-                        }
-                        catch (Exception e)
-                        {
-                            BattlefrontLogger.Debug($"{e.Message})");
-                        }
-                    }
-
-                    numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, pairs);
-                    var bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
-
-                    rewardAssignments = rewardAssigner.AssignLootToPlayers(ActiveBattleFrontStatus.ContributionManagerInstance, numberOfBagsToAward, bagDefinitions, pairs);
+                    rewardAssignments = RewardManager.GenerateRewardAssignments(eligiblePlayersAllRealms, forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 100);
                 }
 
-
+                Logger.Debug($"Number of rewards assigned : {rewardAssignments.Count}");
 
                 foreach (var eligiblePlayersAllRealm in eligiblePlayersAllRealms)
                 {
@@ -1295,14 +1246,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         }
                     }
 
-                    // Report to the players the rewards distributed.'
-                    var goldBagCount = lootBagReportList.Count(x => x.Key.Entry == 9980);
-                    var purpleBagCount = lootBagReportList.Count(x => x.Key.Entry == 9943);
-                    var blueBagCount = lootBagReportList.Count(x => x.Key.Entry == 9942);
-                    var greenBagCount = lootBagReportList.Count(x => x.Key.Entry == 9941);
-                    var whiteBagCount = lootBagReportList.Count(x => x.Key.Entry == 9940);
+                    //// Report to the players the rewards distributed.'
+                    //var goldBagCount = lootBagReportList.Count(x => x.Key.Entry == 9980);
+                    //var purpleBagCount = lootBagReportList.Count(x => x.Key.Entry == 9943);
+                    //var blueBagCount = lootBagReportList.Count(x => x.Key.Entry == 9942);
+                    //var greenBagCount = lootBagReportList.Count(x => x.Key.Entry == 9941);
+                    //var whiteBagCount = lootBagReportList.Count(x => x.Key.Entry == 9940);
 
-                    Region.ApocCommunications.Broadcast($"Rewards Gold {goldBagCount} Purple {purpleBagCount} Blue {blueBagCount} Green {greenBagCount}", Realms.REALMS_REALM_ORDER, Region, 4);
+                    //Region.ApocCommunications.Broadcast($"Rewards Gold {goldBagCount} Purple {purpleBagCount} Blue {blueBagCount} Green {greenBagCount}", Realms.REALMS_REALM_ORDER, Region, 4);
 
 
                 }
@@ -1337,16 +1288,23 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     BattlefrontLogger.Warn($"Item for {assignedPlayer.Name} returns null");
                     return;
                 }
+                var itemDetails = ItemService.GetItem_Info(item.Entry);
+                if (itemDetails == null)
+                {
+                    BattlefrontLogger.Warn($"Item {item.Entry} does not exist");
+                    return;
+                }
 
                 var history = new ZoneLockBagRewardHistory
                 {
                     CharacterId = (int)assignedPlayer.CharacterId,
                     BagRarity = generatedLootBag.Key.Rarity,
                     CharacterName = assignedPlayer.Name,
-                    ItemId = (int) item.Entry,
+                    ItemId = (int)item.Entry,
+                    ItemName = itemDetails.Name,
                     LockingRealm = (int)lockingRealm,
                     ZoneId = (int)assignedPlayer.ZoneId,
-                    ZoneName = assignedPlayer.Name,
+                    ZoneName = zone.Name,
                     Timestamp = DateTime.UtcNow
                 };
                 WorldMgr.Database.AddObject(history);

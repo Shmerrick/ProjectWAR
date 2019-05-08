@@ -8,8 +8,8 @@ namespace Common.Database.World.Battlefront
     [Serializable]
     public class ZoneLockBagRewardHistory : DataObject
     {
-        [PrimaryKey]
-        public long LockId { get; set; }
+        [PrimaryKey (AutoIncrement = true)]
+        public long HistoryId { get; set; }
 
         [DataElement(AllowDbNull = false), PrimaryKey]
         public int ZoneId { get; set; }
@@ -34,6 +34,9 @@ namespace Common.Database.World.Battlefront
 
         [DataElement(AllowDbNull = false)]
         public string ZoneName { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public string ItemName { get; set; }
 
     }
 }

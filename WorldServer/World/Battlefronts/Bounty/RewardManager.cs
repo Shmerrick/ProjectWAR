@@ -5,9 +5,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using SystemData;
 using Common.Database.World.Battlefront;
 using WorldServer.Managers;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Objects;
 using Item = GameData.Item;
 
@@ -16,6 +18,7 @@ namespace WorldServer.World.Battlefronts.Bounty
     public class RewardManager
     {
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public const float BOUNTY_BASE_RP_MODIFIER = 200f;
         public const float BOUNTY_BASE_XP_MODIFIER = 5.5f;
@@ -590,18 +593,20 @@ namespace WorldServer.World.Battlefronts.Bounty
                 //lootChest.Add(killer.CharacterId, generatedLootBag);
 
                 // Add item to victim as loot
-                victim.lootContainer = new LootContainer { Money = availableGearDrop.Money };
-                victim.lootContainer.LootInfo.Add(
-                    new LootInfo(ItemService.GetItem_Info(availableGearDrop.ItemId)));
-                if (victim.lootContainer != null)
-                {
-                    victim.SetLootable(true, killer);
-                }
+                //victim.lootContainer = new LootContainer { Money = availableGearDrop.Money };
+                //victim.lootContainer.LootInfo.Add(
+                //    new LootInfo(ItemService.GetItem_Info(availableGearDrop.ItemId)));
+                //if (victim.lootContainer != null)
+                //{
+                //    victim.SetLootable(true, killer);
+                //}
+
+                killer.ItmInterface.CreateItem(ItemService.GetItem_Info((uint)availableGearDrop.ItemId), (ushort)1);
 
                 RecordPlayerKillRewardHistory(killer, victim, availableGearDrop.ItemId);
 
                 RewardLogger.Info($"### {victim.Name} / {victim.RenownRank} dropped {availableGearDrop.ItemId} for killer {killer}");
-                killer.SendClientMessage($"You have scavenged an item of rare worth from {victim.Name}");
+                killer.SendClientMessage($"You have scavenged an item of rare worth from {victim.Name}", ChatLogFilters.CHATLOGFILTERS_LOOT);
 
                 return;
 
@@ -640,6 +645,44 @@ namespace WorldServer.World.Battlefronts.Bounty
         private bool ItemExistsForPlayer(uint itemId, List<uint> playerItemList)
         {
             return playerItemList.Count(x => x == itemId) > 0;
+        }
+
+        public static List<LootBagTypeDefinition> GenerateRewardAssignments(ConcurrentDictionary<Player, int> realmPlayers, int forceNumberBags, ContributionManager contributionManager, int forceDropChance=100)
+        {
+            List<LootBagTypeDefinition> bagDefinitions = new List<LootBagTypeDefinition>();
+            var numberOfBagsToAward = 0;
+            var rewardAssigner = new RewardAssigner(StaticRandom.Instance);
+
+            var pairs = new List<KeyValuePair<uint, int>>();
+            foreach (var winningRealmPlayer in realmPlayers)
+            {
+                pairs.Add(new KeyValuePair<uint, int>((uint)winningRealmPlayer.Key.CharacterId, winningRealmPlayer.Value));
+            }
+            // sort the pairs
+            var fortPairs = pairs.OrderBy(x => x.Value).Reverse().ToList();
+
+            foreach (var pair in fortPairs)
+            {
+                try
+                {
+                    var name = realmPlayers.SingleOrDefault(x => x.Key.CharacterId == pair.Key);
+                    Logger.Debug($"REWARDS : {pair.Key}:{pair.Value} ({name.Key.Name})");
+                }
+                catch (Exception e)
+                {
+                    Logger.Debug($"{e.Message})");
+                }
+            }
+            numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, pairs);
+
+            numberOfBagsToAward = (int) Math.Ceiling(numberOfBagsToAward * (forceDropChance / 100f));
+            Logger.Debug($"Number Of Awards (post dropchance {forceDropChance}) : {numberOfBagsToAward}");
+
+            // Determine and build out the bag types to be assigned
+            bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
+            // Assign eligible players to the bag definitions.
+            return rewardAssigner.AssignLootToPlayers(contributionManager, numberOfBagsToAward, bagDefinitions, pairs);
+
         }
     }
 
