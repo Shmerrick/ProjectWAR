@@ -22,14 +22,14 @@ namespace WorldServer.Test
         [TestMethod]
         public void CTOR_Null()
         {
-            var rewardAssigner = new RewardAssigner(StaticRandom.Instance);
+            var rewardAssigner = new RewardAssigner(StaticRandom.Instance, null);
             Assert.IsNotNull(rewardAssigner);
         }
 
         [TestMethod]
         public void DetermineNumberOfAwards_Range()
         {
-            var rewardAssigner = new RewardAssigner(StaticRandom.Instance);
+            var rewardAssigner = new RewardAssigner(StaticRandom.Instance, null);
             Assert.IsTrue(rewardAssigner.DetermineNumberOfAwards(0) == 0);
             Assert.IsTrue(rewardAssigner.DetermineNumberOfAwards(1) == 1);
             Assert.IsTrue(rewardAssigner.DetermineNumberOfAwards(2) == 2);

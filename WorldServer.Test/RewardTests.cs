@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using FrameWork;
+using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Battlefronts.Bounty;
 
 namespace WorldServer.Test
@@ -9,6 +11,24 @@ namespace WorldServer.Test
     [TestClass]
     public class RewardTests
     {
+
+        [TestMethod]
+        public void CheckSortOrderBagDefinitions()
+        {
+            var x = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(20);
+            Assert.IsTrue(x[0].BagRarity == LootBagRarity.Gold);
+            Assert.IsTrue(x[1].BagRarity == LootBagRarity.Gold);
+            Assert.IsTrue(x[x.Count-1].BagRarity == LootBagRarity.Green);
+
+        }
+
+        [TestMethod]
+        public void AssignLootSortingIsCorrectToBags()
+        {
+            var rewardAssigner= new  RewardAssigner(StaticRandom.Instance, null);
+            var x = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(20);
+            rewardAssigner.AssignLootToPlayers(contributionManager, 20, x, sortedPairs);
+        }
 
         [TestMethod]
         public void Replicate_Excel_TestCase1()

@@ -12,11 +12,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
     public class RewardAssigner : IRewardAssigner
     {
         public Random RandomGenerator { get; set; }
+        public Logger Logger { get; set; }
 
-        private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
-        public RewardAssigner(Random randomGenerator)
+        public RewardAssigner(Random randomGenerator, Logger logger)
         {
             RandomGenerator = randomGenerator;
+            Logger = logger;
         }
 
         /// <summary>
@@ -26,7 +27,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// <returns></returns>
         public byte DetermineNumberOfAwards(int eligiblePlayers)
         {
-            RewardLogger.Info($"{eligiblePlayers}");
+            Logger.Info($"{eligiblePlayers}");
 
             byte numberOfAwards = 0;
             // Simple set for low pop for now. TODO base this upon population sizes and % chance to win a bag per flip.
@@ -52,7 +53,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             if (eligiblePlayers < numberOfAwards)
                 numberOfAwards = (byte)eligiblePlayers;
 
-            RewardLogger.Info($"Number of eligible players {eligiblePlayers}, number of Awards {numberOfAwards}");
+            Logger.Info($"Number of eligible players {eligiblePlayers}, number of Awards {numberOfAwards}");
 
             return numberOfAwards;
         }
@@ -62,7 +63,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         {
             // Define the types of bags to give
             var lootBagDefinitions = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(numberOfBags);
-            RewardLogger.Debug($"Number loot bags {lootBagDefinitions.Count} to award.");
+            Logger.Debug($"Number loot bags {lootBagDefinitions.Count} to award.");
 
             return lootBagDefinitions;
         }
@@ -80,7 +81,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             int numberOfBagsToAward,
             List<LootBagTypeDefinition> bagDefinitions, List<KeyValuePair<uint, int>> eligiblePlayers)
         {
-            RewardLogger.Debug($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBagsToAward} Bags");
+            Logger.Debug($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBagsToAward} Bags");
             // Get the character Ids of the eligible characters
             var eligiblePlayerCharacterIds = eligiblePlayers.Select(x => x.Key).ToList();
 
@@ -89,11 +90,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
             if (bagDefinitions == null)
             {
-                RewardLogger.Warn("BagDefinitions is null");
+                Logger.Warn("BagDefinitions is null");
                 return null;
             }
 
-            RewardLogger.Info($"Assigning loot. Number of Bags : {bagDefinitions.Count} Number of players : {eligiblePlayers.Count}");
+            Logger.Info($"Assigning loot. Number of Bags : {bagDefinitions.Count} Number of players : {eligiblePlayers.Count}");
 
             var bagIndex = 0;
             foreach (var selectedPlayer in eligiblePlayers)
@@ -104,21 +105,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                     var lootBagTypeDefinition = bagDefinitions[bagIndex];
                     if (lootBagTypeDefinition == null)
                     {
-                        RewardLogger.Warn($"lootBagTypeDefinition (index = {bagIndex}) is null");
+                        Logger.Warn($"lootBagTypeDefinition (index = {bagIndex}) is null");
                         continue;
                     }
 
                     try
                     {
                         lootBagTypeDefinition.Assignee = selectedPlayer.Key;
-                        RewardLogger.Debug(
+                        Logger.Debug(
                             $"Selected player {selectedPlayer} selected for reward. LootBag Id : {lootBagTypeDefinition.LootBagNumber} ({lootBagTypeDefinition.BagRarity}). Index = {bagIndex}");
                         // player assigned, go to next bag
                         bagIndex++;
                     }
                     catch (Exception e)
                     {
-                        RewardLogger.Warn($"{e.Message}");
+                        Logger.Warn($"{e.Message}");
                     }
                 }
 
@@ -128,14 +129,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
         public int GetNumberOfBagsToAward(int forceNumberBags, List<KeyValuePair<uint, int>> allContributingPlayers)
         {
-            RewardLogger.Debug($"forceNumberBags = {forceNumberBags}");
+            Logger.Debug($"forceNumberBags = {forceNumberBags}");
 
             // Force the number of bags to hand out.
             var numberOfBags = forceNumberBags;
             if (forceNumberBags == 0)
                 numberOfBags = (int)DetermineNumberOfAwards(allContributingPlayers.Count());
 
-            RewardLogger.Debug($"AllContributing Players Count = {allContributingPlayers.Count()}, numberBags = {numberOfBags}");
+            Logger.Debug($"AllContributing Players Count = {allContributingPlayers.Count()}, numberBags = {numberOfBags}");
 
             return numberOfBags;
         }

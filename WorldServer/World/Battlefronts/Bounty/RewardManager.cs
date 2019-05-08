@@ -568,10 +568,10 @@ namespace WorldServer.World.Battlefronts.Bounty
             RewardLogger.Debug($"### {victim.Name} / {victim.RenownRank} : AAOBonus {killer.AAOBonus} Multiplier {randomScaleMultiplier}");
 
             if (Player._Players.Count < PLAYER_DROP_TIER)
-                rand = StaticRandom.Instance.Next(0, (int) (6000*randomScaleMultiplier));
+                rand = StaticRandom.Instance.Next(0, (int) (600*randomScaleMultiplier));
             else
             {
-                rand = StaticRandom.Instance.Next(0, (int) (10000*randomScaleMultiplier));
+                rand = StaticRandom.Instance.Next(0, (int) (1000*randomScaleMultiplier));
             }
 
             var availableGearDrops = RewardService._PlayerRVRGearDrops
@@ -656,7 +656,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             List<LootBagTypeDefinition> bagDefinitions = new List<LootBagTypeDefinition>();
             var numberOfBagsToAward = 0;
-            var rewardAssigner = new RewardAssigner(StaticRandom.Instance);
+            var rewardAssigner = new RewardAssigner(StaticRandom.Instance, RewardLogger);
 
             var pairs = new List<KeyValuePair<uint, int>>();
             foreach (var winningRealmPlayer in realmPlayers)
@@ -664,9 +664,9 @@ namespace WorldServer.World.Battlefronts.Bounty
                 pairs.Add(new KeyValuePair<uint, int>((uint)winningRealmPlayer.Key.CharacterId, winningRealmPlayer.Value));
             }
             // sort the pairs
-            var fortPairs = pairs.OrderBy(x => x.Value).Reverse().ToList();
+            var sortedPairs = pairs.OrderBy(x => x.Value).Reverse().ToList();
 
-            foreach (var pair in fortPairs)
+            foreach (var pair in sortedPairs)
             {
                 try
                 {
@@ -679,7 +679,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 }
             }
             // The number of bags to award is based upon the number of eligible players. 
-            numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, pairs);
+            numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, sortedPairs);
 
             numberOfBagsToAward = (int) Math.Ceiling(numberOfBagsToAward * (forceDropChance / 100f));
             Logger.Debug($"Number Of Awards (post dropchance {forceDropChance}) : {numberOfBagsToAward}");
@@ -688,7 +688,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
 
             // Assign eligible players to the bag definitions.
-            return rewardAssigner.AssignLootToPlayers(contributionManager, numberOfBagsToAward, bagDefinitions, pairs);
+            return rewardAssigner.AssignLootToPlayers(contributionManager, numberOfBagsToAward, bagDefinitions, sortedPairs);
 
         }
     }
