@@ -142,6 +142,7 @@
     <Compile Include="Database\World\Battlefront\ContributionDefinition.cs" />
     <Compile Include="Database\World\Battlefront\KeepSiegeSpawnPoints.cs" />
     <Compile Include="Database\World\Battlefront\PlayerKeepSpawn.cs" />
+    <Compile Include="Database\World\Battlefront\PlayerKillRewardHistory.cs" />
     <Compile Include="Database\World\Battlefront\RVRMetrics.cs" />
     <Compile Include="Database\World\Battlefront\RvRObjectInfo.cs" />
     <Compile Include="Database\World\Battlefront\Keep_Creature.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="Database\World\Battlefront\BattleFrontKeepStatus.cs" />
     <Compile Include="Database\World\Battlefront\RVRAreaPolygon.cs" />
     <Compile Include="Database\World\Battlefront\RVRRewardFortItems.cs" />
+    <Compile Include="Database\World\Battlefront\ZoneLockRewardHistory.cs" />
     <Compile Include="Database\World\Battlefront\ZoneLockSummary.cs" />
     <Compile Include="Database\World\Battlefront\RVRProgression.cs" />
     <Compile Include="Database\World\Battlefront\RVRZoneLockReward.cs" />
