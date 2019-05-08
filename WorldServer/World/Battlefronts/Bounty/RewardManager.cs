@@ -562,11 +562,16 @@ namespace WorldServer.World.Battlefronts.Bounty
         public void SetPlayerRVRGearDrop(Player killer, Player victim)
         {
             var rand = 0;
+            
+            var randomScaleMultiplier = 1 - Math.Abs(killer.AAOBonus)/100;
+       
+            RewardLogger.Debug($"### {victim.Name} / {victim.RenownRank} : AAOBonus {killer.AAOBonus} Multiplier {randomScaleMultiplier}");
+
             if (Player._Players.Count < PLAYER_DROP_TIER)
-                rand = StaticRandom.Instance.Next(0, 6000);
+                rand = StaticRandom.Instance.Next(0, (int) (6000*randomScaleMultiplier));
             else
             {
-                rand = StaticRandom.Instance.Next(0, 10000);
+                rand = StaticRandom.Instance.Next(0, (int) (10000*randomScaleMultiplier));
             }
 
             var availableGearDrops = RewardService._PlayerRVRGearDrops
@@ -673,6 +678,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                     Logger.Debug($"{e.Message})");
                 }
             }
+            // The number of bags to award is based upon the number of eligible players. 
             numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, pairs);
 
             numberOfBagsToAward = (int) Math.Ceiling(numberOfBagsToAward * (forceDropChance / 100f));
@@ -680,6 +686,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             // Determine and build out the bag types to be assigned
             bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
+
             // Assign eligible players to the bag definitions.
             return rewardAssigner.AssignLootToPlayers(contributionManager, numberOfBagsToAward, bagDefinitions, pairs);
 

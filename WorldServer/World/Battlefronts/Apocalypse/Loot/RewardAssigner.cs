@@ -34,16 +34,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 numberOfAwards = 0;
             else
             {
-                if (eligiblePlayers < 10)
-                    numberOfAwards = 4;
+                if (eligiblePlayers <= 10)
+                    numberOfAwards = (byte)Math.Ceiling(eligiblePlayers / 2f);
                 else
                 {
-                    if (eligiblePlayers < 20)
-                        numberOfAwards = 8;
+                    if (eligiblePlayers <= 20)
+                    {
+                        numberOfAwards = (byte)Math.Ceiling(eligiblePlayers / 1.8f);
+                    }
                     else
                     {
-                        numberOfAwards = eligiblePlayers < 40 ? (byte) 16 : (byte) 20;
+                        numberOfAwards = (byte)Math.Ceiling(eligiblePlayers / 1.6f);
                     }
+                    
                 }
             }
             if (eligiblePlayers < numberOfAwards)
@@ -74,7 +77,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// <returns></returns>
         public List<LootBagTypeDefinition> AssignLootToPlayers(
             ContributionManager contributionManager,
-            int numberOfBagsToAward, 
+            int numberOfBagsToAward,
             List<LootBagTypeDefinition> bagDefinitions, List<KeyValuePair<uint, int>> eligiblePlayers)
         {
             RewardLogger.Debug($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBagsToAward} Bags");
