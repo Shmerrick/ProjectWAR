@@ -6,19 +6,16 @@ namespace Common.Database.World.Battlefront
     // Fixed value of a character 
     [DataTable(PreCache = false, TableName = "rvr_zone_lock_bag_reward_history", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
-    public class ZoneLockRewardHistory : DataObject
+    public class ZoneLockBagRewardHistory : DataObject
     {
         [PrimaryKey]
         public long LockId { get; set; }
 
         [DataElement(AllowDbNull = false), PrimaryKey]
-        public int RegionId { get; set; }
+        public int ZoneId { get; set; }
         
         [DataElement(AllowDbNull = false)]
         public DateTime Timestamp { get; set; }
-
-        [DataElement(AllowDbNull = false)]
-        public int Tier { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public int LockingRealm { get; set; }
@@ -33,8 +30,10 @@ namespace Common.Database.World.Battlefront
         public int BagRarity { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public int Contribution { get; set; }
+        public int ItemId { get; set; }
 
+        [DataElement(AllowDbNull = false)]
+        public string ZoneName { get; set; }
 
     }
 }

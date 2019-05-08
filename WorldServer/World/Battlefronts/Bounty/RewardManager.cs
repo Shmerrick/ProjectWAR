@@ -5,9 +5,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Common.Database.World.Battlefront;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
+using Item = GameData.Item;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
@@ -596,6 +598,8 @@ namespace WorldServer.World.Battlefronts.Bounty
                     victim.SetLootable(true, killer);
                 }
 
+                RecordPlayerKillRewardHistory(killer, victim, availableGearDrop.ItemId);
+
                 RewardLogger.Info($"### {victim.Name} / {victim.RenownRank} dropped {availableGearDrop.ItemId} for killer {killer}");
                 killer.SendClientMessage($"You have scavenged an item of rare worth from {victim.Name}");
 
@@ -603,6 +607,34 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             }
 
+        }
+
+        private void RecordPlayerKillRewardHistory(Player killer, Player victim, uint itemId)
+        {
+            RewardLogger.Debug($"Recording Player Kill history - item drop {killer.Name} kills {victim.Name}, receives {itemId}");
+            try
+            {
+                var history = new PlayerKillRewardHistory
+                {
+                    VictimCharacterId = (int) victim.CharacterId,
+                    KillerCharacterId = (int) killer.CharacterId,
+                    VictimCharacterName = victim.Name,
+                    KillerCharacterName = killer.Name,
+                    Timestamp = DateTime.UtcNow,
+                    ZoneId = (int) killer.ZoneId,
+                    ItemName = ItemService.GetItem_Info(itemId).Name,
+                    ItemId = (int) itemId,
+                    ZoneName = ZoneService.GetZone_Info((ushort) killer.ZoneId).Name
+                };
+                RewardLogger.Debug($"=> {history.ItemName}");
+
+                WorldMgr.Database.AddObject(history);
+            }
+            catch (Exception e)
+            {
+                RewardLogger.Error($"{e.Message} {e.StackTrace}");
+            }
+            
         }
 
         private bool ItemExistsForPlayer(uint itemId, List<uint> playerItemList)

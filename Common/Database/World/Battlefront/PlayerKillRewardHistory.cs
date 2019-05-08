@@ -8,17 +8,14 @@ namespace Common.Database.World.Battlefront
     [Serializable]
     public class PlayerKillRewardHistory : DataObject
     {
-        [PrimaryKey]
-        public long LockId { get; set; }
+        [PrimaryKey(AutoIncrement=true)]
+        public int KillId { get; set; }
 
         [DataElement(AllowDbNull = false), PrimaryKey]
-        public int RegionId { get; set; }
+        public int ZoneId { get; set; }
         
         [DataElement(AllowDbNull = false)]
         public DateTime Timestamp { get; set; }
-
-        [DataElement(AllowDbNull = false)]
-        public int Tier { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public int KillerCharacterId { get; set; }
@@ -37,6 +34,10 @@ namespace Common.Database.World.Battlefront
 
         [DataElement(AllowDbNull = false)]
         public string VictimCharacterName { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public string ZoneName { get; set; }
+
 
     }
 }

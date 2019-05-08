@@ -34,7 +34,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static IObjectDatabase Database = null;
 
         public static int DOMINATION_POINTS_REQUIRED = 6;
-        public static int FORT_DEFENCE_TIMER = 120000;
+        public static int FORT_DEFENCE_TIMER = 1200000;
         static readonly object LockObject = new object();
 
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
@@ -174,7 +174,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             // If its a fort, not locked and the active zone
             var k = Keeps.SingleOrDefault(x => x.IsFortress() && x.ZoneId == ActiveBattleFrontStatus.ZoneId && x.KeepStatus != KeepStatus.KEEPSTATUS_LOCKED);
-            k?.CountdownFortDefenceTimer((int) FORT_DEFENCE_TIMER/1000/60);
+            k?.CountdownFortDefenceTimer((int)FORT_DEFENCE_TIMER / 1000 / 60);
         }
 
 
@@ -1148,7 +1148,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     // sort the pairs
                     //pairs.OrderBy(x => x.Value).ToList().Reverse();
                     var fortPairs = pairs.OrderBy(x => x.Value).Reverse().ToList();
-                    
+
                     foreach (var pair in fortPairs)
                     {
                         try
@@ -1277,6 +1277,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                             }
                                     }
 
+                                    RecordZoneLockBagRewardHistory(assignedPlayer, generatedLootBag, lockingRealm);
                                     assignedPlayer.SendClientMessage($"For your efforts, you have received a {generatedLootBag.Key.Name}. Pick up your rewards at your Warcamp.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
                                 }
@@ -1316,6 +1317,29 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 throw;
             }
 
+        }
+
+        private void RecordZoneLockBagRewardHistory(Player assignedPlayer, KeyValuePair<Item_Info, List<Talisman>> generatedLootBag, Realms lockingRealm)
+        {
+            BattlefrontLogger.Debug($"Recording zone lock bag reward history for {assignedPlayer.Name} ({assignedPlayer.CharacterId}) {generatedLootBag.Key.Name}");
+            try
+            {
+                var history = new ZoneLockBagRewardHistory();
+                history.CharacterId = (int)assignedPlayer.CharacterId;
+                history.BagRarity = generatedLootBag.Key.Rarity;
+                history.CharacterName = assignedPlayer.Name;
+                history.ItemId = (int) generatedLootBag.Value[0].Entry;
+                history.LockingRealm = (int)lockingRealm;
+                history.ZoneId = assignedPlayer.ZoneId;
+                history.ZoneName = ZoneService.GetZone_Info(assignedPlayer.ZoneId).Name;
+                history.Timestamp = DateTime.UtcNow;
+
+                WorldMgr.Database.AddObject(history);
+            }
+            catch (Exception e)
+            {
+                BattlefrontLogger.Error($"{e.Message}{e.StackTrace}");
+            }
         }
 
         private void MailLootBag(uint keyCharacterId, KeyValuePair<Item_Info, List<Talisman>> lootBag)
