@@ -563,11 +563,12 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
                 rand = StaticRandom.Instance.Next(0, 10000);
             }
+
             var availableGearDrops = RewardService._PlayerRVRGearDrops
                 .Where(x => x.MinimumRenownRank < victim.RenownRank)
                 .Where(x => x.MaximumRenownRank >= victim.RenownRank)
-                .Where(x => x.DropChance >= rand)
-                .Where(x => x.Career == killer.Info.CareerLine);
+                .Where(x => x.DropChance >= rand);
+                
             //Randomise list
             availableGearDrops = availableGearDrops?.OrderBy(a => StaticRandom.Instance.Next()).ToList();
             RewardLogger.Debug($"### {victim.Name} / {victim.RenownRank} {availableGearDrops.Count()} RVR Gear items available for killer {killer}. PlayerCount = {Player._Players.Count}");
