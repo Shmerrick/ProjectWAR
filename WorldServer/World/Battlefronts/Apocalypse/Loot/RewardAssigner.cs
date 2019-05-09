@@ -27,7 +27,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// <returns></returns>
         public byte DetermineNumberOfAwards(int eligiblePlayers)
         {
-            Logger.Info($"{eligiblePlayers}");
+            Logger.Debug($"{eligiblePlayers}");
 
             byte numberOfAwards = 0;
             // Simple set for low pop for now. TODO base this upon population sizes and % chance to win a bag per flip.
@@ -53,7 +53,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             if (eligiblePlayers < numberOfAwards)
                 numberOfAwards = (byte)eligiblePlayers;
 
-            Logger.Info($"Number of eligible players {eligiblePlayers}, number of Awards {numberOfAwards}");
+            Logger.Debug($"Number of eligible players {eligiblePlayers}, number of Awards {numberOfAwards}");
 
             return numberOfAwards;
         }
@@ -94,7 +94,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 return null;
             }
 
-            Logger.Info($"Assigning loot. Number of Bags : {bagDefinitions.Count} Number of players : {eligiblePlayers.Count}");
+            Logger.Debug($"Assigning loot. Number of Bags : {bagDefinitions.Count} Number of players : {eligiblePlayers.Count}");
 
             var bagIndex = 0;
             foreach (var selectedPlayer in eligiblePlayers)
@@ -112,7 +112,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                     try
                     {
                         lootBagTypeDefinition.Assignee = selectedPlayer.Key;
-                        Logger.Debug(
+                        Logger.Info(
                             $"Selected player {selectedPlayer} selected for reward. LootBag Id : {lootBagTypeDefinition.LootBagNumber} ({lootBagTypeDefinition.BagRarity}). Index = {bagIndex}");
                         // player assigned, go to next bag
                         bagIndex++;

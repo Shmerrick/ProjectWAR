@@ -607,6 +607,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             var availableGearDrops = RewardService._PlayerRVRGearDrops
                 .Where(x => x.MinimumRenownRank < victim.RenownRank)
                 .Where(x => x.MaximumRenownRank >= victim.RenownRank)
+                .Where(x=>x.Realm == (int)killer.Realm)
                 .Where(x => x.DropChance >= rand);
 
             //Randomise list

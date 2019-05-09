@@ -34,7 +34,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static IObjectDatabase Database = null;
 
         public static int DOMINATION_POINTS_REQUIRED = 6;
-        public static int FORT_DEFENCE_TIMER = 120000;  // 15mins
+        public static int FORT_DEFENCE_TIMER = 60000;  // 15mins  (1.2mill)
         static readonly object LockObject = new object();
 
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
@@ -1142,12 +1142,32 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     isFortZone = true;
                     Logger.Info($"Generating WIN FORT rewards for {winningRealmPlayers.Count} players");
                     rewardAssignments = RewardManager.GenerateRewardAssignments(winningRealmPlayers, forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 100);
-                    rewardAssignments.AddRange(RewardManager.GenerateRewardAssignments(losingRealmPlayers, forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 50));
+                    var losingRewardAssignments = RewardManager.GenerateRewardAssignments(losingRealmPlayers,
+                        forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 50);
+                    if (rewardAssignments != null)
+                        rewardAssignments.AddRange(losingRewardAssignments);
+                    else
+                    {
+                        rewardAssignments = losingRewardAssignments;
+                    }
+
+                    foreach (var player in eligiblePlayersAllRealms)
+                    {
+                        Logger.Debug($"Assigning Warlord Crests for Fort Zone Flip {player.Key.Name}");
+                        player.Key.ItmInterface.CreateItem(ItemService.GetItem_Info(208454),(ushort) 5);
+                        player.Key.SendClientMessage($"You have been awarded 5 Warlord Crests.", ChatLogFilters.CHATLOGFILTERS_LOOT);
+                    }
                 }
                 else
                 {
                     isFortZone = false;
                     rewardAssignments = RewardManager.GenerateRewardAssignments(eligiblePlayersAllRealms, forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 100);
+                }
+
+                if (rewardAssignments == null)
+                {
+                    Logger.Warn("No reward assignments created");
+                    return;
                 }
 
                 Logger.Debug($"Number of rewards assigned : {rewardAssignments.Count}");
@@ -1200,13 +1220,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                     BattlefrontLogger.Debug($"{lootDefinition.ToString()}");
                                     // Only distribute if loot is valid
                                     var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(lootDefinition, assignedPlayer);
-                                    // If its a fort, add a warlord crest to the chest
-                                    if (isFortZone)
-                                    {
-                                        var crest = ItemService.GetItem_Info(208454);
-                                        generatedLootBag.Value.Add(new Talisman(208454, 0, 1, 0));
-                                    }
-                                    
+                                    //// If its a fort, add a warlord crest to the chest
+                                    //if (isFortZone)
+                                    //{
+                                    //    var crest = ItemService.GetItem_Info(208454);
+                                    //    generatedLootBag.Value.Add(new Talisman(208454, 1, 0, 0));
+                                    //}
+
                                     lootBagReportList.Add(generatedLootBag);
                                     switch (assignedPlayer.Realm)
                                     {

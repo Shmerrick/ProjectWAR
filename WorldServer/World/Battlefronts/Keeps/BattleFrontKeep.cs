@@ -1447,6 +1447,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                         plr?.SendLocalizeString(message,
                             Realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE,
                             Localized_text.CHAT_TAG_DEFAULT);
+                        ProgressionLogger.Info($"REGION : {message}");
                     }
                 }
             }

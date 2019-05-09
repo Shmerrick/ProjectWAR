@@ -13,6 +13,8 @@ namespace WorldServer.World.Battlefronts.Bounty
     {
         [PrimaryKey]
         public uint ItemId { get; set; }
+        [PrimaryKey]
+        public int Realm { get; set; }
         [DataElement(AllowDbNull = false)]
         public uint MinimumRenownRank { get; set; }
         [DataElement(AllowDbNull = false)]
