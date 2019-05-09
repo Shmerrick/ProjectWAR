@@ -1101,6 +1101,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var winningRealmPlayers = new ConcurrentDictionary<Player, int>();
             var losingRealmPlayers = new ConcurrentDictionary<Player, int>();
             var eligiblePlayersAllRealms = new ConcurrentDictionary<Player, int>();
+            var isFortZone = false;
 
 
             BattlefrontLogger.Info($"*************************GenerateZoneLockRewards***********");
@@ -1138,12 +1139,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 if (fortZones.Contains(ActiveBattleFrontStatus.ZoneId))
                 {
+                    isFortZone = true;
                     Logger.Info($"Generating WIN FORT rewards for {winningRealmPlayers.Count} players");
                     rewardAssignments = RewardManager.GenerateRewardAssignments(winningRealmPlayers, forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 100);
                     rewardAssignments.AddRange(RewardManager.GenerateRewardAssignments(losingRealmPlayers, forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 50));
                 }
                 else
                 {
+                    isFortZone = false;
                     rewardAssignments = RewardManager.GenerateRewardAssignments(eligiblePlayersAllRealms, forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 100);
                 }
 
@@ -1197,6 +1200,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                     BattlefrontLogger.Debug($"{lootDefinition.ToString()}");
                                     // Only distribute if loot is valid
                                     var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(lootDefinition, assignedPlayer);
+                                    // If its a fort, add a warlord crest to the chest
+                                    if (isFortZone)
+                                    {
+                                        var crest = ItemService.GetItem_Info(208454);
+                                        generatedLootBag.Value.Add(new Talisman(208454, 0, 1, 0));
+                                    }
+                                    
                                     lootBagReportList.Add(generatedLootBag);
                                     switch (assignedPlayer.Realm)
                                     {
