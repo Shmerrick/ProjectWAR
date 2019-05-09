@@ -1,4 +1,5 @@
-﻿using FrameWork;
+﻿using Common.Database.World.Battlefront;
+using FrameWork;
 using GameData;
 using NLog;
 using System;
@@ -6,12 +7,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common.Database.World.Battlefront;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Objects;
-using Item = GameData.Item;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
@@ -27,18 +26,19 @@ namespace WorldServer.World.Battlefronts.Bounty
         public const float BASE_RP_CEILING = 800f;
         public const int BASE_MONEY_REWARD = 1000;
         public const int BASE_INFLUENCE_REWARD = 200;
-        public const int BASE_XP_REWARD = 2000;
+        public const int BASE_XP_REWARD = 1000;
         public const int REALM_CAPTAIN_INFLUENCE_KILL = 500;
         public const int REALM_CAPTAIN_RENOWN_KILL = 2000;
         public const int INSIGNIA_ITEM_ID = 208470;
         public const int PLAYER_DROP_TIER = 50;
+        public const float RVR_GEAR_DROP_MINIMUM_IMPACT_FRACTION = 0.1f;
 
         public IContributionManager ContributionManager { get; }
         public IStaticWrapper StaticWrapper { get; }
         public List<RewardPlayerKill> PlayerKillRewardBand { get; }
-        public ImpactMatrixManager ImpactMatrixManagerInstance { get; set; }
+        public IImpactMatrixManager ImpactMatrixManagerInstance { get; set; }
 
-        public RewardManager(IContributionManager contributionManager, IStaticWrapper staticWrapper, List<RewardPlayerKill> playerKillRewardBand, ImpactMatrixManager impactMatrixManagerInstance)
+        public RewardManager(IContributionManager contributionManager, IStaticWrapper staticWrapper, List<RewardPlayerKill> playerKillRewardBand, IImpactMatrixManager impactMatrixManagerInstance)
         {
             ContributionManager = contributionManager;
             StaticWrapper = staticWrapper;
@@ -176,7 +176,6 @@ namespace WorldServer.World.Battlefronts.Bounty
                                     $"++ You have been awarded 1 {insigniaName} for a kill assist on {victim.Name}",
                                     1);
                             }
-
                             DistributeKillAssistContributionForPlayerKill(member);
                         }
                         RewardLogger.Trace($"++ End Group Rewards");
@@ -246,16 +245,47 @@ namespace WorldServer.World.Battlefronts.Bounty
                         {
                             RewardLogger.Warn($"{killer.Name} performed assist not in active BF");
                         }
-
-
-
                     }
                 }
-
             }
+
+            /* Determine and send Player RVR Gear Drop. */
+            
+            var selectedKillerCharacterId = GetPlayerRVRDropCandidate(impactFractions);
+            if (selectedKillerCharacterId != 0)
+            {
+                var selectedKiller = Player.GetPlayer(selectedKillerCharacterId);
+                if (selectedKiller != null)
+                    SetPlayerRVRGearDrop(selectedKiller, victim);
+            }
+
             RewardLogger.Info($"=============== FINISHED : {victim.Name} killed by {killer.Name}. ===============");
 
         }
+
+        public uint GetPlayerRVRDropCandidate(ConcurrentDictionary<uint, float> impactFractions, int forceSelectedInstance = -1)
+        {
+            var selectedInstance = 0;
+            if (forceSelectedInstance == -1)
+                selectedInstance = StaticRandom.Instance.Next(0, impactFractions.Count());
+            else
+            {
+                selectedInstance = forceSelectedInstance;
+            }
+
+            var minimumImpactCharacterList =
+                impactFractions.Where(x => x.Value > RVR_GEAR_DROP_MINIMUM_IMPACT_FRACTION).ToList();
+
+            if (minimumImpactCharacterList.Count >= selectedInstance)
+            {
+                return minimumImpactCharacterList[selectedInstance].Key;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         private int CalculateXpReward(float impactFraction, float externalModifier)
         {
             // Add 0-50% XP to the base amount
@@ -562,23 +592,23 @@ namespace WorldServer.World.Battlefronts.Bounty
         public void SetPlayerRVRGearDrop(Player killer, Player victim)
         {
             var rand = 0;
-            
-            var randomScaleMultiplier = 1 - Math.Abs(killer.AAOBonus)/100;
-       
+
+            var randomScaleMultiplier = 1 - Math.Abs(killer.AAOBonus) / 100;
+
             RewardLogger.Debug($"### {victim.Name} / {victim.RenownRank} : AAOBonus {killer.AAOBonus} Multiplier {randomScaleMultiplier}");
 
             if (Player._Players.Count < PLAYER_DROP_TIER)
-                rand = StaticRandom.Instance.Next(0, (int) (600*randomScaleMultiplier));
+                rand = StaticRandom.Instance.Next(0, (int)(600 * randomScaleMultiplier));
             else
             {
-                rand = StaticRandom.Instance.Next(0, (int) (1000*randomScaleMultiplier));
+                rand = StaticRandom.Instance.Next(0, (int)(1000 * randomScaleMultiplier));
             }
 
             var availableGearDrops = RewardService._PlayerRVRGearDrops
                 .Where(x => x.MinimumRenownRank < victim.RenownRank)
                 .Where(x => x.MaximumRenownRank >= victim.RenownRank)
                 .Where(x => x.DropChance >= rand);
-                
+
             //Randomise list
             availableGearDrops = availableGearDrops?.OrderBy(a => StaticRandom.Instance.Next()).ToList();
             RewardLogger.Debug($"### {victim.Name} / {victim.RenownRank} {availableGearDrops.Count()} RVR Gear items available for killer {killer}. PlayerCount = {Player._Players.Count}");
@@ -626,15 +656,15 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
                 var history = new PlayerKillRewardHistory
                 {
-                    VictimCharacterId = (int) victim.CharacterId,
-                    KillerCharacterId = (int) killer.CharacterId,
+                    VictimCharacterId = (int)victim.CharacterId,
+                    KillerCharacterId = (int)killer.CharacterId,
                     VictimCharacterName = victim.Name,
                     KillerCharacterName = killer.Name,
                     Timestamp = DateTime.UtcNow,
-                    ZoneId = (int) killer.ZoneId,
+                    ZoneId = (int)killer.ZoneId,
                     ItemName = ItemService.GetItem_Info(itemId).Name,
-                    ItemId = (int) itemId,
-                    ZoneName = ZoneService.GetZone_Info((ushort) killer.ZoneId).Name
+                    ItemId = (int)itemId,
+                    ZoneName = ZoneService.GetZone_Info((ushort)killer.ZoneId).Name
                 };
                 RewardLogger.Debug($"=> {history.ItemName}");
 
@@ -644,7 +674,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
                 RewardLogger.Error($"{e.Message} {e.StackTrace}");
             }
-            
+
         }
 
         private bool ItemExistsForPlayer(uint itemId, List<uint> playerItemList)
@@ -652,7 +682,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             return playerItemList.Count(x => x == itemId) > 0;
         }
 
-        public static List<LootBagTypeDefinition> GenerateRewardAssignments(ConcurrentDictionary<Player, int> realmPlayers, int forceNumberBags, ContributionManager contributionManager, int forceDropChance=100)
+        public static List<LootBagTypeDefinition> GenerateRewardAssignments(ConcurrentDictionary<Player, int> realmPlayers, int forceNumberBags, ContributionManager contributionManager, int forceDropChance = 100)
         {
             List<LootBagTypeDefinition> bagDefinitions = new List<LootBagTypeDefinition>();
             var numberOfBagsToAward = 0;
@@ -681,14 +711,14 @@ namespace WorldServer.World.Battlefronts.Bounty
             // The number of bags to award is based upon the number of eligible players. 
             numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, sortedPairs);
 
-            numberOfBagsToAward = (int) Math.Ceiling(numberOfBagsToAward * (forceDropChance / 100f));
+            numberOfBagsToAward = (int)Math.Ceiling(numberOfBagsToAward * (forceDropChance / 100f));
             Logger.Debug($"Number Of Awards (post dropchance {forceDropChance}) : {numberOfBagsToAward}");
 
             // Determine and build out the bag types to be assigned
             bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
 
             // Assign eligible players to the bag definitions.
-            return rewardAssigner.AssignLootToPlayers(contributionManager, numberOfBagsToAward, bagDefinitions, sortedPairs);
+            return rewardAssigner.AssignLootToPlayers(numberOfBagsToAward, bagDefinitions, sortedPairs);
 
         }
     }

@@ -41,10 +41,12 @@ namespace WorldServer.World.Battlefronts.Keeps
                 player.AddRenown((uint)(OUTER_DOOR_RP * (1 + (float)random / 100)), false, RewardType.None, $"Destruction of {description}'s outer door");
 
 
-                // Add contribution
-                contributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
-                var contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
-                player.BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionDefinition.ContributionValue);
+                player.UpdatePlayerBountyEvent((byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
+
+                //// Add contribution
+                //contributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
+                //var contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
+                //player.BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionDefinition.ContributionValue);
             }
         }
 
@@ -65,10 +67,12 @@ namespace WorldServer.World.Battlefronts.Keeps
                 player.AddXp((uint)(INNER_DOOR_XP * (1 + (float)random / 100)), false, false);
                 player.AddRenown((uint)(INNER_DOOR_RP * (1 + (float)random / 100)), false, RewardType.None, $"Destruction of {description}'s inner door");
 
+                player.UpdatePlayerBountyEvent((byte)ContributionDefinitions.DESTROY_INNER_DOOR);
+
                 // Add contribution
-                contributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_INNER_DOOR);
-                var contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.DESTROY_INNER_DOOR);
-                player.BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionDefinition.ContributionValue);
+                //contributionManagerInstance.UpdateContribution(player.CharacterId, (byte)ContributionDefinitions.DESTROY_INNER_DOOR);
+                //var contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.DESTROY_INNER_DOOR);
+                //player.BountyManagerInstance.AddCharacterBounty(player.CharacterId, contributionDefinition.ContributionValue);
             }
         }
 

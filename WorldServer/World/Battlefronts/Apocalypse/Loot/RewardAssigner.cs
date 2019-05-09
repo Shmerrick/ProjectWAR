@@ -77,7 +77,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// <param name="eligiblePlayers"></param>
         /// <returns></returns>
         public List<LootBagTypeDefinition> AssignLootToPlayers(
-            ContributionManager contributionManager,
+            
             int numberOfBagsToAward,
             List<LootBagTypeDefinition> bagDefinitions, List<KeyValuePair<uint, int>> eligiblePlayers)
         {

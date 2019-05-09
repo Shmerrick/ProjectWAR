@@ -829,9 +829,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         foreach (var closePlayer in closePlayers)
                         {
                             // ContributionManagerInstance holds the long term values of contribution for a player.
-                            activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(closePlayer.CharacterId, (byte)ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
-                            contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
-                            closePlayer.BountyManagerInstance.AddCharacterBounty(closePlayer.CharacterId, contributionDefinition.ContributionValue);
+                            closePlayer.UpdatePlayerBountyEvent((byte) ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
                         }
                     }
 

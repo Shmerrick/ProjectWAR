@@ -1,8 +1,10 @@
-﻿using FakeItEasy;
+﻿using System.Collections.Concurrent;
+using FakeItEasy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using FrameWork;
+using NLog;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Battlefronts.Bounty;
 
@@ -11,6 +13,7 @@ namespace WorldServer.Test
     [TestClass]
     public class RewardTests
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         [TestMethod]
         public void CheckSortOrderBagDefinitions()
@@ -25,10 +28,76 @@ namespace WorldServer.Test
         [TestMethod]
         public void AssignLootSortingIsCorrectToBags()
         {
-            var rewardAssigner= new  RewardAssigner(StaticRandom.Instance, null);
-            var x = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(20);
-            rewardAssigner.AssignLootToPlayers(contributionManager, 20, x, sortedPairs);
+
+            var sortedPairs = new List<KeyValuePair<uint, int>>
+            {
+                new KeyValuePair<uint, int>(128, 124),
+                new KeyValuePair<uint, int>(123, 100),
+                new KeyValuePair<uint, int>(127, 78),
+                new KeyValuePair<uint, int>(126, 77),
+                new KeyValuePair<uint, int>(124, 50),
+                new KeyValuePair<uint, int>(129, 12),
+                new KeyValuePair<uint, int>(130, 4),
+                new KeyValuePair<uint, int>(125, 0)
+
+            };
+
+
+            var rewardAssigner = new  RewardAssigner(StaticRandom.Instance, _logger);
+            var numberOfAwards = rewardAssigner.DetermineNumberOfAwards(sortedPairs.Count);
+            var x = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(numberOfAwards);
+
+            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs);
+
+            Assert.IsTrue(assignedLoot[0].Assignee == 128);
+            Assert.IsTrue(assignedLoot[1].Assignee == 123);
+            Assert.IsTrue(assignedLoot[2]?.Assignee == 127);
+            Assert.IsTrue(assignedLoot[3]?.Assignee == 126);
+            Assert.IsTrue(assignedLoot[4]?.Assignee == 124);
+            Assert.IsTrue(assignedLoot[5]?.Assignee == 129);
+            Assert.IsTrue(assignedLoot[6]?.Assignee == 130);
+            //Assert.IsTrue(assignedLoot[7]?.Assignee == 125);
+
         }
+
+
+        [TestMethod]
+        public void DropCandidateIsRandom()
+        {
+            var fakeBountyManager = A.Fake<IBountyManager>();
+            var fakeContributionManager = A.Fake<IContributionManager>();
+            var fakeImpactMatrixManager = A.Fake<IImpactMatrixManager>();
+            var fakeRewardManager = A.Fake<RewardManager>();
+            var fakeStaticWrapper = A.Fake<IStaticWrapper>();
+
+
+            var rm = new RewardManager(
+                fakeContributionManager,
+                fakeStaticWrapper, new List<RewardPlayerKill>(),
+                fakeImpactMatrixManager);
+
+            var impactFractions = new ConcurrentDictionary<uint, float>();
+
+            impactFractions.TryAdd(100, 0.05f);
+            impactFractions.TryAdd(101, 0.10f);
+            impactFractions.TryAdd(102, 0.15f);
+            impactFractions.TryAdd(103, 0.50f);
+            impactFractions.TryAdd(104, 0.20f);
+
+            var x = rm.GetPlayerRVRDropCandidate(impactFractions,0);
+
+            Assert.IsTrue(x==102);
+
+            var y = rm.GetPlayerRVRDropCandidate(impactFractions, 1);
+            Assert.IsTrue(y == 103);
+
+            var z = rm.GetPlayerRVRDropCandidate(impactFractions, 0);
+            Assert.IsTrue(z != 0);
+
+
+        }
+
+
 
         [TestMethod]
         public void Replicate_Excel_TestCase1()

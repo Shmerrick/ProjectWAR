@@ -4175,7 +4175,7 @@ namespace WorldServer.World.Objects
                     }
 
                     ActiveBattleFrontStatus.RewardManagerInstance.DistributePlayerKillRewards(this, killer, AAOBonus, influenceId, PlayersByCharId);
-                    ActiveBattleFrontStatus.RewardManagerInstance.SetPlayerRVRGearDrop(killer, this);
+                    
                 }
 
                 // Record the recent killers of this toon.
@@ -4201,6 +4201,10 @@ namespace WorldServer.World.Objects
         {
             if (ActiveBattleFrontStatus != null)
             {
+                // If player is not in the active zone, stop getting contribution.
+                if (this.ZoneId != ActiveBattleFrontStatus.ZoneId)
+                    return;
+
                 // Add contribution for this kill to the killer.
                 ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(CharacterId, contributionDefinitionId);
 

@@ -196,7 +196,7 @@ namespace WorldServer.Managers.Commands
             int numberBags = GetInt(ref values);
             var _rewardManager = new RVRRewardManager();
 
-            var rewardAssigner = new RewardAssigner(StaticRandom.Instance);
+            var rewardAssigner = new RewardAssigner(StaticRandom.Instance, null);
 
             var bagDefinitions = rewardAssigner.DetermineBagTypes(numberBags);
             // Assign eligible players to the bag definitions.
@@ -214,7 +214,7 @@ namespace WorldServer.Managers.Commands
 
                 var eligPlayer = new List<KeyValuePair<uint, int>>();
                 eligPlayer.Add(new KeyValuePair<uint, int>(plr.CharacterId, 10));
-                var rewardAssignments = rewardAssigner.AssignLootToPlayers(cm, numberBags, new List<LootBagTypeDefinition> { lootBagTypeDefinition }, eligPlayer);
+                var rewardAssignments = rewardAssigner.AssignLootToPlayers(numberBags, new List<LootBagTypeDefinition> { lootBagTypeDefinition }, eligPlayer);
 
                 var bagContentSelector = new BagContentSelector(RVRZoneRewardService.RVRRewardKeepItems, StaticRandom.Instance);
 

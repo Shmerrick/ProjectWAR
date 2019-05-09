@@ -626,7 +626,7 @@ namespace WorldServer.World.Scenarios
                 PlayerScoreboard[plr].EndXP = endingXp[realmIndex];
                 PlayerScoreboard[plr].EndRenown = endingRenown[realmIndex];
 
-                // Add Contribution
+                // Add Contribution - using direct calls to avoid out of zone filtering.
                 plr.ActiveBattleFrontStatus.ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.PLAY_SCENARIO);
                 contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.PLAY_SCENARIO);
                 plr.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
