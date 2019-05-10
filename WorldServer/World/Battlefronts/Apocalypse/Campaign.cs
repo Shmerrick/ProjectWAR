@@ -1142,10 +1142,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     isFortZone = true;
                     Logger.Info($"Generating WIN FORT rewards for {winningRealmPlayers.Count} players");
                     rewardAssignments = RewardManager.GenerateRewardAssignments(winningRealmPlayers, forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 100);
-                    var losingRewardAssignments = RewardManager.GenerateRewardAssignments(losingRealmPlayers,
-                        forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 50);
+                    Logger.Info($"Generating LOSS FORT rewards for {winningRealmPlayers.Count} players");
+                    var losingRewardAssignments = RewardManager.GenerateRewardAssignments(losingRealmPlayers,forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 50);
                     if (rewardAssignments != null)
-                        rewardAssignments.AddRange(losingRewardAssignments);
+                    {
+                        if (losingRewardAssignments != null)
+                        {
+                            foreach (var losingRewardAssignment in losingRewardAssignments)
+                            {
+                                rewardAssignments.Add(losingRewardAssignment);
+                            }
+                        }
+                        Logger.Debug($"rewardAssignments count = {rewardAssignments.Count}");
+                    }
                     else
                     {
                         rewardAssignments = losingRewardAssignments;
@@ -1170,7 +1179,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     return;
                 }
 
-                Logger.Debug($"Number of rewards assigned : {rewardAssignments.Count}");
+                Logger.Debug($"Number of total rewards assigned : {rewardAssignments.Count}");
 
                 foreach (var eligiblePlayersAllRealm in eligiblePlayersAllRealms)
                 {
