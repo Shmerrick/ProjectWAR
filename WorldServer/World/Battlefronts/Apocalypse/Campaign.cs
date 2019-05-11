@@ -428,7 +428,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 return;
             }
 
-            BattlefrontLogger.Info($"Order Domination Victory!");
+            BattlefrontLogger.Info($"Order Domination Victory! currentime : {currentTime}, OrderDominationTimerStart : {OrderDominationTimerStart} OrderDominationTimerRemaining: {OrderDominationTimerRemaining}");
             VictoryPointProgress.OrderVictoryPoints = BattleFrontConstants.LOCK_VICTORY_POINTS;
 
             // Remove the timer

@@ -249,7 +249,15 @@ namespace WorldServer.World.Battlefronts.Bounty
                 }
             }
 
-           
+            /* Determine and send Player RVR Gear Drop. */ 
+             
+            var selectedKillerCharacterId = GetPlayerRVRDropCandidate(impactFractions); 
+            if (selectedKillerCharacterId != 0) 
+            { 
+                var selectedKiller = Player.GetPlayer(selectedKillerCharacterId); 
+                if (selectedKiller != null) 
+                    SetPlayerRVRGearDrop(selectedKiller, victim); 
+            } 
 
             RewardLogger.Info($"=============== FINISHED : {victim.Name} killed by {killer.Name}. ===============");
 
