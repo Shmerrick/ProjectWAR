@@ -215,11 +215,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             {
                 Say("I grow stronger!", ChatLogFilters.CHATLOGFILTERS_SHOUT);
             }
-
-
-
-
-            _logger.Debug($"Lord DPS scaled to {_damageScaler} population {defenderPlayerCount}");
+            _logger.Trace($"Lord DPS scaled to {_damageScaler} population {defenderPlayerCount}");
         }
 
 

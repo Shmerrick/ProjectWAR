@@ -60,8 +60,8 @@ namespace WorldServer.World.Battlefronts.Keeps
         public const int DoorRepairTimerLength = 3 * 60;
         public const int SeizedTimerLength = 1 * 2;
         public const int LordKilledTimerLength = 1 * 2;
-        public const int DefenceTickTimerLength = 3 * 60;
-        public const int BackToSafeTimerLength = 5 * 60;  // should be "short", as it's the time between def tick and doors up
+        public const int DefenceTickTimerLength = 5 * 60;
+        public const int BackToSafeTimerLength = 2 * 60;  // should be "short", as it's the time between def tick and doors up
         #endregion
 
         public List<KeepNpcCreature> Creatures = new List<KeepNpcCreature>();
@@ -406,7 +406,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             {
                 // Add contribution for being in range
 
-                plr.UpdatePlayerBountyEvent((byte) ContributionDefinitions.KILL_KEEP_LORD);
+                plr.UpdatePlayerBountyEvent((byte)ContributionDefinitions.KILL_KEEP_LORD);
                 //activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.KILL_KEEP_LORD);
                 //var contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.KILL_KEEP_LORD);
                 //plr.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
@@ -564,8 +564,12 @@ namespace WorldServer.World.Battlefronts.Keeps
                     break;
                 }
             }
-            DoorRepairTimers[doorId] = new KeepTimer($"Door {doorId} Repair Timer", 0, DoorRepairTimerLength);
-            DoorRepairTimers[doorId].Start();
+
+
+            DefenceTickTimer.Start();
+
+            //DoorRepairTimers[doorId] = new KeepTimer($"Door {doorId} Repair Timer", 0, DoorRepairTimerLength);
+            //DoorRepairTimers[doorId].Start();
 
             KeepStatus = KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK;
 
@@ -602,8 +606,10 @@ namespace WorldServer.World.Battlefronts.Keeps
                 }
             }
 
-            DoorRepairTimers[doorId] = new KeepTimer($"Door {doorId} Repair Timer", 0, DoorRepairTimerLength);
-            DoorRepairTimers[doorId].Start();
+            DefenceTickTimer.Start();
+
+            //DoorRepairTimers[doorId] = new KeepTimer($"Door {doorId} Repair Timer", 0, DoorRepairTimerLength);
+            //DoorRepairTimers[doorId].Start();
 
             KeepStatus = KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK;
             KeepCommunications.SendKeepStatus(null, this);
@@ -635,7 +641,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         /// </summary>
         public void SetDefenceTick()
         {
-            ProgressionLogger.Info($"Defence Tick for {Info.Name}");
+            _logger.Info($"Defence Tick for {Info.Name}");
 
             if (KeepLord == null)
                 _logger.Warn($"{Info.Name} : Lord is null");
@@ -648,15 +654,13 @@ namespace WorldServer.World.Battlefronts.Keeps
             SendRegionMessage(Info.Name + " has been successfully defended!", (int)Realms.REALMS_REALM_DESTRUCTION);
 
 
-            KeepRewardManager.DefenceTickReward(this, KeepLord?.Creature?.PlayersInRange, Info.Name, Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
+            KeepRewardManager.DefenceTickReward(this, PlayersInRange.ToList(), Info.Name, Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
 
-            foreach (var plr in KeepLord?.Creature?.PlayersInRange)
+            foreach (var plr in Region.Players)
             {
                 SendKeepInfo(plr);
             }
             KeepCommunications.SendKeepStatus(null, this);
-
-            ProgressionLogger.Info($"Resetting DefenceTickTimer {Info.Name}");
 
         }
 
@@ -958,6 +962,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public void OnDefenceTickTimerEnd()
         {
+            _logger.Debug($"Defence tick timer finished. ");
             DefenceTickTimer.Reset();
             SetDefenceTick();
             // Defence tick has occurred - start back to safe timer.
@@ -1016,36 +1021,33 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public void OnKeepDoorAttacked(byte number, byte pctHealth, uint doorId)
         {
-            // If enough damage is done to the door (not just 'tagged')
-            if (pctHealth < HEALTH_BOUNDARY_DEFENCE_TICK_RESTART)
-            {
-                _logger.Debug($"Keep Door attacked, starting the defence tick timer from the top {number}/{doorId}/{pctHealth}");
-                DefenceTickTimer.Start();
+            _logger.Debug($"Keep Door attacked, starting the defence tick timer from the top {number}/{doorId}/{pctHealth}");
+            DefenceTickTimer.Start();
 
-                // if the door attacked is an inner door, reset any active outer door timers.
-                var doorUnderAttack = Doors.SingleOrDefault(x => x.GameObject.DoorId == doorId);
-                if (doorUnderAttack != null)
+            // if the door attacked is an inner door, reset any active outer door timers.
+            var doorUnderAttack = Doors.SingleOrDefault(x => x.GameObject.DoorId == doorId);
+            if (doorUnderAttack != null)
+            {
+                // Is the door an inner main?
+                if (doorUnderAttack.Info.Number == (int)KeepDoorType.InnerMain)
                 {
-                    // Is the door an inner main?
-                    if (doorUnderAttack.Info.Number == (int)KeepDoorType.InnerMain)
+                    // Find active timers for outer doors and reset them.
+                    foreach (var doorRepairTimer in DoorRepairTimers)
                     {
-                        // Find active timers for outer doors and reset them.
-                        foreach (var doorRepairTimer in DoorRepairTimers)
+                        if (doorRepairTimer.Value.Value != 0)
                         {
-                            if (doorRepairTimer.Value.Value != 0)
+                            // outer doors.
+                            var outerDoors = Doors.Where(x => x.Info.Number == (int)KeepDoorType.OuterMain);
+                            foreach (var outerDoor in outerDoors)
                             {
-                                // outer doors.
-                                var outerDoors = Doors.Where(x => x.Info.Number == (int)KeepDoorType.OuterMain);
-                                foreach (var outerDoor in outerDoors)
-                                {
-                                    DoorRepairTimers[outerDoor.GameObject.DoorId].Reset();
-                                }
+                                DoorRepairTimers[outerDoor.GameObject.DoorId].Reset();
                             }
                         }
                     }
                 }
-                KeepStatus = KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK;
             }
+            KeepStatus = KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK;
+
 
             switch (number)
             {
@@ -1944,6 +1946,18 @@ namespace WorldServer.World.Battlefronts.Keeps
             //}
 
 
+        }
+
+
+
+        public void OnPlayerKilledInRange(Player victim, Unit killer)
+        {
+
+            if (!DefenceTickTimer.IsExpired())
+            {
+                _logger.Debug($"Player {victim.Name} killed by {killer.Name} near keep, resetting defence timer.");
+                DefenceTickTimer.Start();
+            }
         }
     }
 

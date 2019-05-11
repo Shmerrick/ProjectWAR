@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Common;
+using Common.Database.World.BattleFront;
+using FrameWork;
+using GameData;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
 using SystemData;
-using Common;
-using Common.Database.World.BattleFront;
-using FrameWork;
-using GameData;
-using NLog;
 using WorldServer.Managers;
 using WorldServer.Managers.Commands;
 using WorldServer.NetWork;
@@ -555,7 +555,7 @@ namespace WorldServer.World.Objects
             Out.WritePascalString(ChatName);
             DispatchPacket(Out, true);
 
-            
+
         }
 
         public override void OnLoad()
@@ -1022,21 +1022,21 @@ namespace WorldServer.World.Objects
 
         private void ForceCloseMobsToWander(int distance)
         {
-            
+
 
             // Simple random seed.
             var random = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));
             var creaturesClose = GetInRange<Creature>(distance).Take(StaticRandom.Instance.Next(2, 6));
             // Filter the creatures - less than equal to level 43, not hero or above, not siege, not vendors, not questline.
             var creaturesToWander = creaturesClose.Where(
-                x => x.Level <= 43 
-                && x.Spawn.Proto.Unk2 <= 1001 
-                && x.Spawn.Proto.CreatureType != 32 
+                x => x.Level <= 43
+                && x.Spawn.Proto.Unk2 <= 1001
+                && x.Spawn.Proto.CreatureType != 32
                 && x.Spawn.Proto.VendorID == 0
                 && x.Spawn.Proto.LairBoss == false
                 && x.Spawn.Proto.Title == 0
                 && !(x is Keep_Creature)
-                && x.Spawn.Proto.FinishingQuests == null 
+                && x.Spawn.Proto.FinishingQuests == null
                      && !(x is Pet)
                 && x.Spawn.Proto.StartingQuests == null);
             foreach (var creature in creaturesToWander)
@@ -1057,8 +1057,8 @@ namespace WorldServer.World.Objects
                     else
                     {
                         var point = CalculatePoint(random, 200, creature.Spawn.WorldX, creature.Spawn.WorldY);
-                        
-                        if (creature.LOSHit((ushort)this.ZoneId, new Point3D(point.X, point.Y, creature.Z))) 
+
+                        if (creature.LOSHit((ushort)ZoneId, new Point3D(point.X, point.Y, creature.Z)))
                         {
                             //SendClientMessage($"Asking {creature.Name} to move from {creature.Spawn.WorldX},{creature.Spawn.WorldY} to {point.X},{point.Y}");
                             creature.MvtInterface.SetBaseSpeed(50);
@@ -3921,7 +3921,7 @@ namespace WorldServer.World.Objects
                 _Value.RVRDeaths++;
 
                 // Turned off for the moment - in case this causes lag
-               // RecordKillTracking(this, playerKiller, deathTime);
+                // RecordKillTracking(this, playerKiller, deathTime);
 
                 byte subtype = 0;
 
@@ -4053,11 +4053,12 @@ namespace WorldServer.World.Objects
             ///
             /// Increment the players killed in range value.
             /// 
-            if (this.CurrentKeep != null)
+            if (CurrentKeep != null)
             {
                 if (killer is Player)
                 {
-                    this.CurrentKeep.PlayersKilledInRange++;
+                    CurrentKeep.PlayersKilledInRange++;
+                    CurrentKeep?.OnPlayerKilledInRange(this, killer);
                 }
             }
         }
@@ -4175,7 +4176,7 @@ namespace WorldServer.World.Objects
                     }
 
                     ActiveBattleFrontStatus.RewardManagerInstance.DistributePlayerKillRewards(this, killer, AAOBonus, influenceId, PlayersByCharId);
-                    
+
                 }
 
                 // Record the recent killers of this toon.
@@ -4202,7 +4203,7 @@ namespace WorldServer.World.Objects
             if (ActiveBattleFrontStatus != null)
             {
                 // If player is not in the active zone, stop getting contribution.
-                if (this.ZoneId != ActiveBattleFrontStatus.ZoneId)
+                if (ZoneId != ActiveBattleFrontStatus.ZoneId)
                     return;
 
                 // Add contribution for this kill to the killer.
@@ -4428,8 +4429,8 @@ namespace WorldServer.World.Objects
             }
 
             var spawnPoint = WorldMgr.GetZoneRespawn(Zone.ZoneId, (byte)Realm, this);
-            _logger.Debug($"Respawning player {this.Name} in Zone {spawnPoint.ToString()}");
-           // SendClientMessage($"DEBUG ONLY : Respawning player {this.Name} in Zone {spawnPoint.ToString()}");
+            _logger.Debug($"Respawning player {Name} in Zone {spawnPoint.ToString()}");
+            // SendClientMessage($"DEBUG ONLY : Respawning player {this.Name} in Zone {spawnPoint.ToString()}");
             if (spawnPoint != null)
             {
 
@@ -6997,7 +6998,7 @@ namespace WorldServer.World.Objects
 
         public bool GetCountOfPlayerItems(int itemId, int maxCount)
         {
-            return this.ItmInterface.HasItemCountInInventory((uint) itemId, (ushort) maxCount);
+            return ItmInterface.HasItemCountInInventory((uint)itemId, (ushort)maxCount);
         }
     }
 }

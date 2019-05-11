@@ -78,6 +78,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public static void DefenceTickReward(BattleFrontKeep keep, List<Player> playersInRange, string description, ContributionManager contributionManagerInstance)
         {
+            RewardLogger.Info($"DefenceTickReward. {keep.Info.Name} Players : {playersInRange.Count} {description}");
             foreach (var plr in playersInRange)
             {
                 if (keep.Realm == plr.Realm && plr.ValidInTier(keep.Tier, true))
