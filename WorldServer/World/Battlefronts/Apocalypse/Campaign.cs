@@ -1273,7 +1273,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                 }
                                 else
                                 {
-                                    BattlefrontLogger.Debug($"{assignedPlayer.Info.Name} has received [INVALID for Player] {lootDefinition.FormattedString()}");
+                                    BattlefrontLogger.Warn($"{assignedPlayer.Info.Name} has received [INVALID for Player] {lootDefinition.FormattedString()}");
                                 }
                             }
                             catch (Exception e)

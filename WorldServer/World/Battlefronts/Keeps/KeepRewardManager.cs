@@ -153,7 +153,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     if (player.ValidInTier(keep.Tier, true))
                         player.QtsInterface.HandleEvent(Objective_Type.QUEST_CAPTURE_KEEP, keep.Info.KeepId, 1);
 
-                    RewardLogger.Debug($"Player {player.Name} is valid");
+                    RewardLogger.Trace($"Player {player.Name} is valid");
 
                     player.AddXp((uint)totalXp, false, false);
                     player.AddRenown((uint)totalRenown, false, RewardType.ZoneKeepCapture, keep.Info.Name);
