@@ -598,10 +598,10 @@ namespace WorldServer.World.Battlefronts.Bounty
             RewardLogger.Debug($"### {victim.Name} / {victim.RenownRank} : AAOBonus {killer.AAOBonus} Multiplier {randomScaleMultiplier}");
 
             if (Player._Players.Count < PLAYER_DROP_TIER)
-                rand = StaticRandom.Instance.Next(0, (int)(600 * randomScaleMultiplier));
+                rand = StaticRandom.Instance.Next(0, (int)(6000 * randomScaleMultiplier));
             else
             {
-                rand = StaticRandom.Instance.Next(0, (int)(1000 * randomScaleMultiplier));
+                rand = StaticRandom.Instance.Next(0, (int)(10000 * randomScaleMultiplier));
             }
 
             var availableGearDrops = RewardService._PlayerRVRGearDrops
