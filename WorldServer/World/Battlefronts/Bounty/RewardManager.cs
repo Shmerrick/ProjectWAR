@@ -595,17 +595,17 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             //In a scenario, leave. 
             if (killer.ScnInterface.Scenario != null) 
-                return; 
+                return;
 
-            var randomScaleMultiplier = 1 - Math.Abs(killer.AAOBonus);
+            var randomScaleMultiplier = 1;
 
             RewardLogger.Debug($"### Multiplier {randomScaleMultiplier}");
 
-            if (Math.Abs(randomScaleMultiplier) < 0.3)
-                randomScaleMultiplier = 1;
+            //if (Math.Abs(randomScaleMultiplier) < 0.3)
+            //    randomScaleMultiplier = 1;
 
-            if (Math.Abs(randomScaleMultiplier) > 1.3)
-                randomScaleMultiplier = 1;
+            //if (Math.Abs(randomScaleMultiplier) > 1.3)
+            //    randomScaleMultiplier = 1;
 
             RewardLogger.Debug($"### {victim.Name} / {victim.RenownRank} : AAOBonus {killer.AAOBonus} Multiplier {randomScaleMultiplier}");
 
