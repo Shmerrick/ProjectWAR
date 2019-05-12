@@ -278,7 +278,16 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             if (minimumImpactCharacterList.Count >= selectedInstance)
             {
-                return minimumImpactCharacterList[selectedInstance].Key;
+                try
+                {
+                    return minimumImpactCharacterList[selectedInstance].Key;
+                }
+                catch (Exception e)
+                {
+                    Logger. Debug($"{e.Message} {e.StackTrace}. Selected Instance {selectedInstance} Count {minimumImpactCharacterList.Count}");
+                    return 0;
+                }
+                
             }
             else
             {

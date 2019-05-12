@@ -363,7 +363,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 return;
             }
 
-            ScaleLord(PlayersInRange.Count(x => x.Realm == Realm));
+            //ScaleLord(PlayersInRange.Count(x => x.Realm == Realm));
         }
 
 
