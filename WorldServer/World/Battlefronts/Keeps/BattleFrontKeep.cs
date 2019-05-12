@@ -250,7 +250,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         {
             if (IsFortress())
             {
-                _logger.Info($"Fort defence counter = {FortDefenceCounter}. You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter) * 15} mins");
+                _logger.Info($"Fort defence counter = {FortDefenceCounter}. You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter) * 10} mins");
 
                 if (FortDefenceCounter >= DEFENCE_LOCK_COUNT)
                 {
