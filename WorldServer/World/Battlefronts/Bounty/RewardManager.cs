@@ -19,7 +19,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public const float BOUNTY_BASE_RP_MODIFIER = 200f;
+        public const float BOUNTY_BASE_RP_MODIFIER = 180f;
         public const float BOUNTY_BASE_XP_MODIFIER = 5.5f;
         public const float BOUNTY_BASE_INF_MODIFIER = 0.4f;
         public const float BOUNTY_BASE_MONEY_MODIFIER = 10f;
@@ -131,11 +131,22 @@ namespace WorldServer.World.Battlefronts.Bounty
             // impactFractions is CharacterId, and ImpactFraction.
             foreach (var playerReward in impactFractions)
             {
+              
+
                 // reward key is the characterId
                 if (playerDictionary.ContainsKey(playerReward.Key))
                 {
                     var playerToBeRewarded = playerDictionary[playerReward.Key];
                     RewardLogger.Info($"+ Assessing rewards for {playerToBeRewarded.Name} ({playerToBeRewarded.CharacterId})");
+
+                    // Do not reward if player is in another zone to the victim
+                    if (playerToBeRewarded.ZoneId != victim.ZoneId)
+                    {
+                        RewardLogger.Info(
+                            $"+ Skipping rewards for {playerToBeRewarded.Name} ({playerToBeRewarded.CharacterId}) - different zone to victim");
+                        continue;
+                    }
+
                     /*
                      * Generate rewards for all those involved in killing the victim, including those out of the group and those within the group of the killer
                      */
