@@ -289,7 +289,16 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             if (minimumImpactCharacterList.Count >= selectedInstance)
             {
-                return minimumImpactCharacterList[selectedInstance].Key;
+                try
+                {
+                    return minimumImpactCharacterList[selectedInstance].Key;
+                }
+                catch (Exception e)
+                {
+                    Logger. Debug($"{e.Message} {e.StackTrace}. Selected Instance {selectedInstance} Count {minimumImpactCharacterList.Count}");
+                    return 0;
+                }
+                
             }
             else
             {
@@ -604,15 +613,27 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             var rand = 0;
 
-            var randomScaleMultiplier = 1 - Math.Abs(killer.AAOBonus) / 100;
+            //In a scenario, leave. 
+            if (killer.ScnInterface.Scenario != null) 
+                return;
+
+            var randomScaleMultiplier = 1;
+
+            RewardLogger.Debug($"### Multiplier {randomScaleMultiplier}");
+
+            //if (Math.Abs(randomScaleMultiplier) < 0.3)
+            //    randomScaleMultiplier = 1;
+
+            //if (Math.Abs(randomScaleMultiplier) > 1.3)
+            //    randomScaleMultiplier = 1;
 
             RewardLogger.Debug($"### {victim.Name} / {victim.RenownRank} : AAOBonus {killer.AAOBonus} Multiplier {randomScaleMultiplier}");
 
             if (Player._Players.Count < PLAYER_DROP_TIER)
-                rand = StaticRandom.Instance.Next(0, (int)(600 * randomScaleMultiplier));
+                rand = StaticRandom.Instance.Next(0, (int)(6000 * randomScaleMultiplier));
             else
             {
-                rand = StaticRandom.Instance.Next(0, (int)(1000 * randomScaleMultiplier));
+                rand = StaticRandom.Instance.Next(0, (int)(10000 * randomScaleMultiplier));
             }
 
             var availableGearDrops = RewardService._PlayerRVRGearDrops

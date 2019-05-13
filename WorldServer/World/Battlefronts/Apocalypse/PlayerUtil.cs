@@ -13,7 +13,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     public static class PlayerUtil
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        public static readonly float HONOR_REDUCTION_PERCENT = 0.992f;
+        public static readonly float HONOR_REDUCTION_PERCENT = 0.998f;
 
         public static int GetTotalPVPPlayerCountInRegion(int regionId)
         {

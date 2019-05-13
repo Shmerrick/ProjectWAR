@@ -34,7 +34,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static IObjectDatabase Database = null;
 
         public static int DOMINATION_POINTS_REQUIRED = 6;
-        public static int FORT_DEFENCE_TIMER = 60000;  // 15mins  (1.2mill)
+        public static int FORT_DEFENCE_TIMER = 600000;  // 15 mins is 900k.
         static readonly object LockObject = new object();
 
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
@@ -1273,7 +1273,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                 }
                                 else
                                 {
-                                    BattlefrontLogger.Debug($"{assignedPlayer.Info.Name} has received [INVALID for Player] {lootDefinition.FormattedString()}");
+                                    BattlefrontLogger.Warn($"{assignedPlayer.Info.Name} has received [INVALID for Player] {lootDefinition.FormattedString()}");
                                 }
                             }
                             catch (Exception e)
