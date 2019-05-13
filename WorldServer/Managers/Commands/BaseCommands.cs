@@ -5,10 +5,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Timers;
 using SystemData;
-using Common.Database.World.BattleFront;
-using Common.Database.World.Creatures;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.CareerInterfaces;
@@ -22,7 +19,6 @@ using WorldServer.World.Guild;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Map;
 using WorldServer.World.Objects;
-using WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum1;
 using WorldServer.World.Positions;
 using WorldServer.World.Scenarios;
 using static System.UInt16;
@@ -4730,6 +4726,34 @@ namespace WorldServer.Managers.Commands
             plr.SendClientMessage(
                 $"Honor Rank for Player {plr.Name} is {plr.Info.HonorRank}");
 
+            var percent = 0;
+
+            switch (plr.Info.HonorRank)
+            {
+                case 0:
+                    percent = HonorCalculation.CalculateRank0Percent(plr.Info.HonorPoints);
+                       
+                    break;
+
+                case 1:
+                    percent = HonorCalculation.CalculateRank1Percent(plr.Info.HonorPoints);
+                    break;
+
+                case 2:
+                    percent = HonorCalculation.CalculateRank2Percent(plr.Info.HonorPoints);
+                    break;
+
+                case 3:
+                    percent = HonorCalculation.CalculateRank3Percent(plr.Info.HonorPoints);
+                    break;
+
+                case 4:
+                    plr.SendClientMessage($"-----MAX-----");
+                    return true;
+
+            }
+            plr.SendClientMessage($"-----{percent:00}%-----");
+
             return true;
         }
 
@@ -4756,19 +4780,19 @@ namespace WorldServer.Managers.Commands
 
                 if (status.OrderRealmCaptain == playerTarget)
                 {
-                    status.RemoveAsRealmCaptain((Player) playerTarget);
-                    RealmCaptainManager.MarkPlayerAsRealmCaptain((Player) playerTarget, Player._Players, 0);
+                    status.RemoveAsRealmCaptain((Player)playerTarget);
+                    RealmCaptainManager.MarkPlayerAsRealmCaptain((Player)playerTarget, Player._Players, 0);
                 }
 
                 if (status.DestructionRealmCaptain == playerTarget)
                 {
-                    status.RemoveAsRealmCaptain((Player) playerTarget);
-                    RealmCaptainManager.MarkPlayerAsRealmCaptain((Player) playerTarget, Player._Players, 0);
+                    status.RemoveAsRealmCaptain((Player)playerTarget);
+                    RealmCaptainManager.MarkPlayerAsRealmCaptain((Player)playerTarget, Player._Players, 0);
                 }
 
-                status.SetAsRealmCaptain((Player) playerTarget);
+                status.SetAsRealmCaptain((Player)playerTarget);
 
-                RealmCaptainManager.MarkPlayerAsRealmCaptain((Player) playerTarget, Player._Players, 1);
+                RealmCaptainManager.MarkPlayerAsRealmCaptain((Player)playerTarget, Player._Players, 1);
 
             }
 

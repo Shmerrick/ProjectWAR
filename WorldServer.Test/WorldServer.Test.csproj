@@ -90,6 +90,7 @@
     <Compile Include="RewardSelectorTest.cs" />
     <Compile Include="LootBagTypeDefinitionTest.cs" />
     <Compile Include="HonorCalculationTest.cs" />
+    <Compile Include="HonorTests.cs" />
     <Compile Include="RewardTests.cs" />
     <Compile Include="ContributionTests.cs" />
     <Compile Include="UpperTierBattlefrontManagerTest.cs" />
