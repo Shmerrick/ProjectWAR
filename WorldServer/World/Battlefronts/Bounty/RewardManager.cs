@@ -5,6 +5,7 @@ using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using SystemData;
 using WorldServer.Managers;
@@ -265,9 +266,19 @@ namespace WorldServer.World.Battlefronts.Bounty
             var selectedKillerCharacterId = GetPlayerRVRDropCandidate(impactFractions); 
             if (selectedKillerCharacterId != 0) 
             { 
-                var selectedKiller = Player.GetPlayer(selectedKillerCharacterId); 
-                if (selectedKiller != null) 
-                    SetPlayerRVRGearDrop(selectedKiller, victim); 
+                var selectedKiller = Player.GetPlayer(selectedKillerCharacterId);
+                if (selectedKiller != null)
+                {
+                    if (selectedKiller.PriorityGroup != null)
+                    {
+                        var selectedPartyMember = selectedKiller.PriorityGroup.GetGroupLooter(selectedKiller);
+                        SetPlayerRVRGearDrop(selectedPartyMember, victim);    
+                    }
+                    else
+                    {
+                        SetPlayerRVRGearDrop(selectedKiller, victim);    
+                    }
+                }
             } 
 
             RewardLogger.Info($"=============== FINISHED : {victim.Name} killed by {killer.Name}. ===============");
