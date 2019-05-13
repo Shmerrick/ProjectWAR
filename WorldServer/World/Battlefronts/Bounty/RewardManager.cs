@@ -272,7 +272,9 @@ namespace WorldServer.World.Battlefronts.Bounty
                     if (selectedKiller.PriorityGroup != null)
                     {
                         var selectedPartyMember = selectedKiller.PriorityGroup.GetGroupLooter(selectedKiller);
+                        RewardLogger.Info($"{selectedPartyMember.Name} selected for group loot - linked from {selectedKiller.Name}");
                         SetPlayerRVRGearDrop(selectedPartyMember, victim);    
+
                     }
                     else
                     {
