@@ -2030,7 +2030,7 @@ namespace WorldServer.World.Objects
         {
             try
             {
-                var selected = StaticRandom.Instance.Next(MemberCount-1);
+                var selected = StaticRandom.Instance.Next(MemberCount);
                 return this.Members[selected];
             }
             catch (Exception e)
