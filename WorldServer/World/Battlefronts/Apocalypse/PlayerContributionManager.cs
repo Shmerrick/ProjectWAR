@@ -26,7 +26,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 RenownRank = player.RenownRank,
                 Name = player.Name,
                 Class = player.Info.CareerLine,
-                AccountId = player.Info.AccountId
+                AccountId = player.Info.AccountId,
+                    ZoneId = (int)player.ZoneId.GetValueOrDefault()
             };
 
             WorldMgr.Database.AddObject(analyticsRecord);
