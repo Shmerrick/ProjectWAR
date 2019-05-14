@@ -1375,7 +1375,7 @@ namespace WorldServer.World.Abilities
         }
 
         /// <summary>
-        /// to play a effect from a location, similar to the command .playeffect but instead of on a person, place it on the floor at the target location
+        /// Summon an aggressive NPC
         /// </summary>
         /// <param name="cmd"></param>
         /// <param name="level"></param>
@@ -1410,21 +1410,7 @@ namespace WorldServer.World.Abilities
                     creature.CbtInterface.SetTarget(player.CbtInterface.GetCurrentTarget().Oid,
                         TargetTypes.TARGETTYPES_TARGET_NONE);
 
-
-                    //// Using the spawn, place the boss in the region.
-                    //var boss = player.Region.CreateBoss(spawn, Convert.ToUInt32(cmd.PrimaryValue));
-                    //// Set some default boss settings.
-                    //boss.CanBeKnockedBack = false;
-                    //boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
-                    //// Build the brain - abilities and phases
-                    //var brain = new BossBrain(boss)
-                    //{
-                    //    Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == cmd.PrimaryValue).ToList(),
-                    //    Phases = CreatureService.BossSpawnPhases.Where(x => x.BossSpawnId == cmd.PrimaryValue).ToList()
-
-                    //};
-                    //// Assign the brain
-                    //boss.AiInterface.SetBrain(brain);
+                    creature.EvtInterface.AddEvent(creature.Destroy, 30000, 1);
                 }
 
             }
