@@ -925,12 +925,20 @@ namespace WorldServer.World.Battlefronts.Keeps
         {
             if (!Fortress)
                 fsm.Fire(SM.Command.OnOuterDoorDown, doorId);
+            else
+            {
+                KeepStatus = KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK;
+            }
         }
 
         public void OnInnerDoorDown(uint doorId)
         {
             if (!Fortress)
                 fsm.Fire(SM.Command.OnInnerDoorDown, doorId);
+            else
+            {
+                KeepStatus = KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK;
+            }
         }
 
         public void OnLordKilled()

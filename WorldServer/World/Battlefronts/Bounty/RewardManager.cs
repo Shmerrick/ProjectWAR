@@ -271,10 +271,13 @@ namespace WorldServer.World.Battlefronts.Bounty
                 {
                     if (selectedKiller.PriorityGroup != null)
                     {
-                        var selectedPartyMember = selectedKiller.PriorityGroup.GetGroupLooter(selectedKiller);
-                        RewardLogger.Info($"{selectedPartyMember.Name} selected for group loot - linked from {selectedKiller.Name}");
-                        SetPlayerRVRGearDrop(selectedPartyMember, victim);    
-
+                        var selectedPartyMember = selectedKiller.PriorityGroup.SelectRandomPlayer();
+                        if (selectedPartyMember != null)
+                        {
+                            RewardLogger.Info(
+                                $"{selectedPartyMember.Name} selected for group loot - linked from {selectedKiller.Name}");
+                            SetPlayerRVRGearDrop(selectedPartyMember, victim);
+                        }
                     }
                     else
                     {
@@ -657,7 +660,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             //Randomise list
             availableGearDrops = availableGearDrops?.OrderBy(a => StaticRandom.Instance.Next()).ToList();
-            RewardLogger.Debug($"### {victim.Name} / {victim.RenownRank} {availableGearDrops.Count()} RVR Gear items available for killer {killer}. PlayerCount = {Player._Players.Count}");
+            RewardLogger.Debug($"### {victim.Name} / {victim.RenownRank} Nbr Gear Drops : {availableGearDrops.Count()} RVR Gear items available for killer {killer}. PlayerCount = {Player._Players.Count}");
             var playerItemList = (from item in killer.ItmInterface.Items where item != null select item.Info.Entry).ToList();
 
             foreach (var availableGearDrop in availableGearDrops)

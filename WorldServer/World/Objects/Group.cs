@@ -2025,5 +2025,18 @@ namespace WorldServer.World.Objects
                 }
             }
         }
+
+        public Player SelectRandomPlayer()
+        {
+            try
+            {
+                var selected = StaticRandom.Instance.Next(MemberCount-1);
+                return this.Members[selected];
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
     }
 }

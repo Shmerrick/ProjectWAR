@@ -45,6 +45,11 @@ namespace WorldServer.Test
             Assert.IsTrue(HonorCalculation.CalculateRank2Percent(3000) == 50);
             Assert.IsTrue(HonorCalculation.CalculateRank2Percent(3999) == 100);
 
+            var x= StaticRandom.Instance.Next(2);
+            var y = StaticRandom.Instance.Next(2);
+            var z = StaticRandom.Instance.Next(2);
+
+
         }
 
     }
