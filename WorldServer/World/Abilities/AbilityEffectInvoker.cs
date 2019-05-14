@@ -1383,6 +1383,8 @@ namespace WorldServer.World.Abilities
         /// <returns></returns>
         private bool SummonNPC(AbilityCommandInfo cmd, byte level, Unit target)
         {
+            target = target == null ? _caster : _caster.CbtInterface.GetCurrentTarget();
+
             if (target is Player)
             {
                 ushort facing = 2093;
@@ -1407,7 +1409,7 @@ namespace WorldServer.World.Abilities
 
                     var creature = target.Region.CreateCreature(spawn);
                     creature.AiInterface.SetBrain(new AggressiveBrain(creature));
-                    creature.CbtInterface.SetTarget(player.CbtInterface.GetCurrentTarget().Oid,
+                    creature.CbtInterface.SetTarget(_caster.CbtInterface.GetCurrentTarget().Oid,
                         TargetTypes.TARGETTYPES_TARGET_NONE);
 
                     creature.EvtInterface.AddEvent(creature.Destroy, 30000, 1);
