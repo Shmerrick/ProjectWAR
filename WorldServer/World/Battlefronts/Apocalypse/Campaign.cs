@@ -1158,33 +1158,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-        private void MailLootBag(uint keyCharacterId, KeyValuePair<Item_Info, List<Talisman>> lootBag)
-        {
-            var character = CharMgr.GetCharacter(keyCharacterId, false);
-            var characterName = character?.Name;
-
-            Character_mail mail = new Character_mail
-            {
-                Guid = CharMgr.GenerateMailGuid(),
-                CharacterId = keyCharacterId, //CharacterId
-                SenderName = "RVR Campaign",
-                ReceiverName = characterName,
-                SendDate = (uint)TCPManager.GetTimeStamp(),
-                Title = "Reward",
-                Content = "Reward",
-                Money = 0,
-                Opened = false,
-                CharacterIdSender = keyCharacterId
-            };
-
-            MailItem item = new MailItem(lootBag.Key.Entry,
-                lootBag.Value, 0, 0, 1);
-            if (item != null)
-            {
-                mail.Items.Add(item);
-                CharMgr.AddMail(mail);
-            }
-        }
+        
 
 
         /// <summary>
@@ -1206,7 +1180,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 double contributionScale = CalculateContributonScale(losingRealmPlayer.Value, baselineContribution);
                 WorldMgr.RewardDistributor.DistributeNonBagAwards(
                     losingRealmPlayer.Key,
-                    _rewardManager.CalculateRenownBand(losingRealmPlayer.Key.RenownRank),
+                    PlayerUtil.CalculateRenownBand(losingRealmPlayer.Key.RenownRank),
                     (1f + contributionScale) * tierRewardScale);
             }
 
@@ -1216,7 +1190,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 double contributionScale = CalculateContributonScale(winningRealmPlayer.Value, baselineContribution);
                 WorldMgr.RewardDistributor.DistributeNonBagAwards(
                     winningRealmPlayer.Key,
-                    _rewardManager.CalculateRenownBand(winningRealmPlayer.Key.RenownRank),
+                    PlayerUtil.CalculateRenownBand(winningRealmPlayer.Key.RenownRank),
                     (1.5f + contributionScale) * tierRewardScale);
             }
 
@@ -1234,7 +1208,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             // Give player no bag, but half rewards
                             WorldMgr.RewardDistributor.DistributeNonBagAwards(
                                 player,
-                                _rewardManager.CalculateRenownBand(player.RenownRank),
+                                PlayerUtil.CalculateRenownBand(player.RenownRank),
                                 0.5 * tierRewardScale);
                         }
                     }
@@ -1246,7 +1220,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             // Give player no bag, but quarter rewards
                             WorldMgr.RewardDistributor.DistributeNonBagAwards(
                                 player,
-                                _rewardManager.CalculateRenownBand(player.RenownRank),
+                                PlayerUtil.CalculateRenownBand(player.RenownRank),
                                 0.25 * tierRewardScale);
                         }
                     }

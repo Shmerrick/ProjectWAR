@@ -52,6 +52,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public List<KeepSiegeSpawnPoints> SpawnPoints = new List<KeepSiegeSpawnPoints>();
         public GuildClaimObjective GuildFlag { get; set; }
+        public IRewardManager RewardManager { get; set; }
 
         #region timers
         public KeepTimer SeizedTimer;
@@ -1965,7 +1966,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public void GenerateKeepTakeRewards()
         {
-
+            
             var eligiblitySplits =
                 Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.DetermineEligiblePlayers(_logger, Realm);
 

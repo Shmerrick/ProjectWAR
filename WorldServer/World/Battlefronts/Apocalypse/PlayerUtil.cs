@@ -15,6 +15,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public static readonly float HONOR_REDUCTION_PERCENT = 0.998f;
 
+
+        public static byte CalculateRenownBand(byte playerRenown)
+        {
+            return (byte)(Math.Round((playerRenown / 10.0)) * 10 + 10);
+        }
+
         public static int GetTotalPVPPlayerCountInRegion(int regionId)
         {
             lock (Player._Players)
