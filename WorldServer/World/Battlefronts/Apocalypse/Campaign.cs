@@ -16,6 +16,7 @@ using WorldServer.World.Abilities.Components;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Battlefronts.Keeps;
+using WorldServer.World.Battlefronts.Objectives;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Map;
 using WorldServer.World.Objects;
@@ -92,14 +93,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public int DestructionDominationTimerLength { get; set; }
         public int OrderDominationTimerLength { get; set; }
 
-        public int OrderDominationTimerStart { get; set; }
-        public int DestructionDominationTimerStart { get; set; }
-        // Both 'remaining' start as *DominationTimerLength and are reduced each time the domination timer is stopped
-        public int OrderDominationTimerRemaining { get; set; }
-        public int DestructionDominationTimerRemaining { get; set; }
-        public int DominationTimerLastSentMessage { get; set; }
-        public int DominationTimerNotifyInterval { get; set; }
-
+        public int DestructionDominationCounter { get; set; }
+        public int OrderDominationCounter { get; set; }
 
         public RegionLockManager RegionLockManager { get; set; }
 
@@ -133,11 +128,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _rewardManager = new RVRRewardManager();
             SiegeManager = new SiegeManager();
 
-            DestructionDominationTimerLength = 20 * 60;
-            DestructionDominationTimerRemaining = DestructionDominationTimerLength;
-            OrderDominationTimerLength = 20 * 60;
-            OrderDominationTimerRemaining = OrderDominationTimerLength;
-            DominationTimerNotifyInterval = 60;
+            DestructionDominationCounter = 20;
+            OrderDominationCounter = 20;
 
             _EvtInterface.AddEvent(UpdateVictoryPoints, 6000, 0);
 
@@ -151,8 +143,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(SavePlayerContribution, 180000, 0);
             // record metrics
             _EvtInterface.AddEvent(RecordMetrics, 600000, 0);
-            _EvtInterface.AddEvent(DestructionDominationCheck, 29000, 0);
-            _EvtInterface.AddEvent(OrderDominationCheck, 29000, 0);
+            _EvtInterface.AddEvent(DestructionDominationCheck, 60000, 0);
+            _EvtInterface.AddEvent(OrderDominationCheck, 60000, 0);
             _EvtInterface.AddEvent(UpdateCampaignObjectiveBuffs, 10000, 0);
             _EvtInterface.AddEvent(CheckKeepTimers, 10000, 0);
             _EvtInterface.AddEvent(UpdateKeepResources, 60000, 0);
@@ -325,176 +317,113 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private void DestructionDominationCheck()
         {
             var status = BattleFrontManager.GetActiveCampaign().ActiveBattleFrontStatus;
+
             // Only worry about the battlefrontstatus in this region.
             if (status.RegionId != Region.RegionId)
                 return;
 
-            BattlefrontLogger.Trace
-            ($"Destruction Domination Count = " +
-             $"{BattleFrontManager.GetActiveCampaign().VictoryPointProgress.GetDominationCount(Realms.REALMS_REALM_DESTRUCTION)}");
+            if (BattleFrontManager.GetActiveCampaign().Tier != 4)
+                return;
 
-            if (BattleFrontManager.GetActiveCampaign().VictoryPointProgress.GetDominationCount(Realms.REALMS_REALM_DESTRUCTION) == DOMINATION_POINTS_REQUIRED)
+            var objectives = BattleFrontManager.GetActiveCampaign().Objectives.Where(x => x.ZoneId == status.ZoneId);
+            foreach (var battlefieldObjective in objectives)
             {
-                if (!_EvtInterface.HasEvent(DestructionDominationZoneLockCheck))
+                if (battlefieldObjective.State != StateFlags.Locked)
                 {
-                    lock (status)
-                    {
-                        NotifyPlayersOfDomination(
-                            $"Destruction is dominating. Zone will lock in {SecondsToNearestMinute(DestructionDominationTimerLength).ToString()} minutes unless Order intercedes.",
-                            status);
-                    }
-
-                    DestructionDominationTimerStart = FrameWork.TCPManager.GetTimeStamp();
-                    DominationTimerLastSentMessage = DestructionDominationTimerStart;
-
-                    _EvtInterface.AddEvent(DestructionDominationZoneLockCheck, 30000, 0);
-                    BattlefrontLogger.Info($"Destruction Domination Timer has started");
+                    return;
                 }
+                if (battlefieldObjective.OwningRealm != Realms.REALMS_REALM_DESTRUCTION)
+                {
+                    return;
+                }
+            }
+            var keeps = BattleFrontManager.GetActiveCampaign().Keeps.Where(x => x.ZoneId == status.ZoneId);
+            foreach (var battleFrontKeep in keeps)
+            {
+                if (battleFrontKeep.KeepStatus != KeepStatus.KEEPSTATUS_SAFE)
+                {
+                    return;
+                }
+                if (battleFrontKeep.Realm != Realms.REALMS_REALM_DESTRUCTION)
+                {
+                    return;
+                }
+            }
+
+            DestructionDominationCounter--;
+
+            if (DestructionDominationCounter == 0)
+            {
+                BattlefrontLogger.Info($"Destruction Domination Victory!");
+                NotifyPlayersOfDomination($"Destruction Domination Victory!", status);
+                VictoryPointProgress.DestructionVictoryPoints = BattleFrontConstants.LOCK_VICTORY_POINTS;
             }
             else
             {
-                if (_EvtInterface.HasEvent(DestructionDominationZoneLockCheck))
-                {
-                    _EvtInterface.RemoveEvent(DestructionDominationZoneLockCheck);
-                    BattlefrontLogger.Info($"Destruction Domination Timer has stopped");
-                    // Reduce the remaining time, meaning the realm only has to dominate for TimerLength total
-                    DestructionDominationTimerRemaining -=
-                        DestructionDominationTimerStart + DestructionDominationTimerLength -
-                        TCPManager.GetTimeStamp();
-                }
+                NotifyPlayersOfDomination($"Destruction is dominating - {DestructionDominationCounter} minutes remain", status);
             }
 
         }
-        /// <summary>
-        /// Lock this zone as a Domination Lock if timer has expired
-        /// </summary>
-        private void DestructionDominationZoneLockCheck()
-        {
-            var currentTime = TCPManager.GetTimeStamp();
-            if (DestructionDominationTimerStart + DestructionDominationTimerRemaining > currentTime)
-            { // Domination timer hasn't expired
-                var status = BattleFrontManager.GetActiveCampaign().ActiveBattleFrontStatus;
-                // Only worry about the battlefrontstatus in this region.
-                if (status.RegionId != Region.RegionId)
-                    return;
-                lock (status)
-                {
-                    var timeSinceLastMessage = currentTime - DominationTimerLastSentMessage;
-                    var remainingSeconds = DestructionDominationTimerStart + DestructionDominationTimerRemaining -
-                                           currentTime;
-                    // Notify every interval or when there's 30 seconds remaining
-                    // 30 seconds remaining could occur twice if this check fires more frequently than 30 seconds
-                    if (timeSinceLastMessage >= DominationTimerNotifyInterval || remainingSeconds <= 30)
-                    {
-                        NotifyPlayersOfDomination(DominationMessage(remainingSeconds, "Destruction"), status);
-                    }
-                }
 
+        private void OrderDominationCheck()
+        {
+            var status = BattleFrontManager.GetActiveCampaign().ActiveBattleFrontStatus;
+
+            // Only worry about the battlefrontstatus in this region.
+            if (status.RegionId != Region.RegionId)
                 return;
-            }
 
-            BattlefrontLogger.Info($"Destruction Domination Victory!");
-            VictoryPointProgress.DestructionVictoryPoints = BattleFrontConstants.LOCK_VICTORY_POINTS;
-
-            // Remove the timer
-            _EvtInterface.RemoveEvent(DestructionDominationZoneLockCheck);
-        }
-
-        /// <summary>
-        /// Lock this zone as a Domination Lock if timer has expired
-        /// </summary>
-        private void OrderDominationZoneLockCheck()
-        {
-            int currentTime = TCPManager.GetTimeStamp();
-            if (OrderDominationTimerStart + OrderDominationTimerRemaining > currentTime)
-            { // Domination timer hasn't expired
-                var status = BattleFrontManager.GetActiveCampaign().ActiveBattleFrontStatus;
-                // Only worry about the battlefrontstatus in this region.
-                if (status.RegionId != Region.RegionId)
-                    return;
-                lock (status)
-                {
-                    var timeSinceLastMessage = currentTime - DominationTimerLastSentMessage;
-                    var remainingSeconds = OrderDominationTimerStart + OrderDominationTimerRemaining -
-                                           currentTime;
-                    // Notify every interval or when there's 30 seconds remaining
-                    // 30 seconds remaining could occur twice if this check fires more frequently than 30 seconds
-                    if (timeSinceLastMessage >= DominationTimerNotifyInterval || remainingSeconds <= 30)
-                    {
-                        NotifyPlayersOfDomination(DominationMessage(remainingSeconds, "Order"), status);
-                    }
-                }
-
+            if (BattleFrontManager.GetActiveCampaign().Tier != 4)
                 return;
-            }
 
-            BattlefrontLogger.Info($"Order Domination Victory! currentime : {currentTime}, OrderDominationTimerStart : {OrderDominationTimerStart} OrderDominationTimerRemaining: {OrderDominationTimerRemaining}");
-            VictoryPointProgress.OrderVictoryPoints = BattleFrontConstants.LOCK_VICTORY_POINTS;
-
-            // Remove the timer
-            _EvtInterface.RemoveEvent(OrderDominationZoneLockCheck);
-        }
-
-        private string DominationMessage(int remainingSeconds, string realm)
-        {
-            if (remainingSeconds <= 30)
+            var objectives = BattleFrontManager.GetActiveCampaign().Objectives.Where(x => x.ZoneId == status.ZoneId);
+            foreach (var battlefieldObjective in objectives)
             {
-                return $"{realm} will lock the zone in 30 SECONDS.";
+                if (battlefieldObjective.State != StateFlags.Locked)
+                {
+                    return;
+                }
+                if (battlefieldObjective.OwningRealm != Realms.REALMS_REALM_ORDER)
+                {
+                    return;
+                }
+            }
+            var keeps = BattleFrontManager.GetActiveCampaign().Keeps.Where(x => x.ZoneId == status.ZoneId);
+            foreach (var battleFrontKeep in keeps)
+            {
+                if (battleFrontKeep.KeepStatus != KeepStatus.KEEPSTATUS_SAFE)
+                {
+                    return;
+                }
+                if (battleFrontKeep.Realm != Realms.REALMS_REALM_ORDER)
+                {
+                    return;
+                }
             }
 
-            var remainingMinutes = SecondsToNearestMinute(remainingSeconds);
-            return remainingMinutes == 1
-                ? $"{realm} will lock the zone in ONE MINUTE."
-                : $"There are {remainingMinutes.ToString()} minutes until {realm} locks the zone.";
+            OrderDominationCounter--;
+
+            if (OrderDominationCounter == 0)
+            {
+                BattlefrontLogger.Info($"Order Domination Victory!");
+                NotifyPlayersOfDomination($"Order Domination Victory!", status);
+                VictoryPointProgress.OrderVictoryPoints = BattleFrontConstants.LOCK_VICTORY_POINTS;
+            }
+            else
+            {
+                NotifyPlayersOfDomination($"Order is dominating - {OrderDominationCounter} minutes remain", status);
+            }
+
         }
+        
+
 
         private int SecondsToNearestMinute(int seconds)
         {
             return Convert.ToInt32(Math.Round((double)seconds / 60, MidpointRounding.AwayFromZero));
         }
 
-        private void OrderDominationCheck()
-        {
-            var status = BattleFrontManager.GetActiveCampaign().ActiveBattleFrontStatus;
-            // Only worry about the battlefrontstatus in this region.
-            if (status.RegionId != Region.RegionId)
-                return;
-
-            BattlefrontLogger.Trace
-            ($"Order Domination Count = " +
-             $"{BattleFrontManager.GetActiveCampaign().VictoryPointProgress.GetDominationCount(Realms.REALMS_REALM_ORDER)}");
-
-            if (BattleFrontManager.GetActiveCampaign().VictoryPointProgress.GetDominationCount(Realms.REALMS_REALM_ORDER) == DOMINATION_POINTS_REQUIRED)
-            {
-                if (!_EvtInterface.HasEvent(OrderDominationZoneLockCheck))
-                {
-                    lock (status)
-                    {
-                        NotifyPlayersOfDomination(
-                            $"Order is dominating. Zone will lock in {SecondsToNearestMinute(OrderDominationTimerLength).ToString()} minutes unless Destruction intercedes.",
-                            status);
-                    }
-
-                    OrderDominationTimerStart = FrameWork.TCPManager.GetTimeStamp();
-                    DominationTimerLastSentMessage = OrderDominationTimerStart;
-
-                    _EvtInterface.AddEvent(OrderDominationZoneLockCheck, 30000, 0);
-                    BattlefrontLogger.Info($"Order Domination Timer has started");
-                }
-            }
-            else
-            {
-                if (_EvtInterface.HasEvent(OrderDominationZoneLockCheck))
-                {
-                    _EvtInterface.RemoveEvent(OrderDominationZoneLockCheck);
-                    BattlefrontLogger.Info($"Order Domination Timer has stopped");
-                    // Reduce the remaining time, meaning the realm only has to dominate for TimerLength total
-                    OrderDominationTimerRemaining -=
-                        OrderDominationTimerStart + OrderDominationTimerLength -
-                        TCPManager.GetTimeStamp();
-                }
-            }
-        }
+        
 
         private void NotifyPlayersOfDomination(string message, BattleFrontStatus status)
         {
@@ -509,8 +438,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 player.SendClientMessage(message, ChatLogFilters.CHATLOGFILTERS_RVR);
             }
-
-            DominationTimerLastSentMessage = TCPManager.GetTimeStamp();
         }
 
         private void BuffAssigned(NewBuff buff)
@@ -1101,7 +1028,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var winningRealmPlayers = new ConcurrentDictionary<Player, int>();
             var losingRealmPlayers = new ConcurrentDictionary<Player, int>();
             var eligiblePlayersAllRealms = new ConcurrentDictionary<Player, int>();
-            var isFortZone = false;
 
 
             BattlefrontLogger.Info($"*************************GenerateZoneLockRewards***********");
@@ -1139,11 +1065,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 if (fortZones.Contains(ActiveBattleFrontStatus.ZoneId))
                 {
-                    isFortZone = true;
                     Logger.Info($"Generating WIN FORT rewards for {winningRealmPlayers.Count} players");
                     rewardAssignments = RewardManager.GenerateRewardAssignments(winningRealmPlayers, forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 100);
                     Logger.Info($"Generating LOSS FORT rewards for {winningRealmPlayers.Count} players");
-                    var losingRewardAssignments = RewardManager.GenerateRewardAssignments(losingRealmPlayers,forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 50);
+                    var losingRewardAssignments = RewardManager.GenerateRewardAssignments(losingRealmPlayers, forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 50);
                     if (rewardAssignments != null)
                     {
                         if (losingRewardAssignments != null)
@@ -1163,13 +1088,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     foreach (var player in eligiblePlayersAllRealms)
                     {
                         Logger.Debug($"Assigning Warlord Crests for Fort Zone Flip {player.Key.Name}");
-                        player.Key.ItmInterface.CreateItem(ItemService.GetItem_Info(208454),(ushort) 5);
+                        player.Key.ItmInterface.CreateItem(ItemService.GetItem_Info(208454), (ushort)5);
                         player.Key.SendClientMessage($"You have been awarded 5 Warlord Crests.", ChatLogFilters.CHATLOGFILTERS_LOOT);
                     }
                 }
                 else
                 {
-                    isFortZone = false;
                     rewardAssignments = RewardManager.GenerateRewardAssignments(eligiblePlayersAllRealms, forceNumberBags, ActiveBattleFrontStatus.ContributionManagerInstance, 100);
                 }
 
