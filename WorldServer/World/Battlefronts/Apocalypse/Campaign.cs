@@ -437,6 +437,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             foreach (var player in playersToNotify)
             {
                 player.SendClientMessage(message, ChatLogFilters.CHATLOGFILTERS_RVR);
+                BattlefrontLogger.Debug($"{message}");
             }
         }
 
