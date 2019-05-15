@@ -8,8 +8,10 @@ using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using SystemData;
+using Common;
 using WorldServer.Managers;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Objects;
 
@@ -731,7 +733,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             return playerItemList.Count(x => x == itemId) > 0;
         }
 
-        public static List<LootBagTypeDefinition> GenerateRewardAssignments(ConcurrentDictionary<Player, int> realmPlayers, int forceNumberBags, ContributionManager contributionManager, int forceDropChance = 100)
+        public static List<LootBagTypeDefinition> GenerateBagDropAssignments(ConcurrentDictionary<Player, int> realmPlayers, int forceNumberBags,  int forceDropChance = 100)
         {
             List<LootBagTypeDefinition> bagDefinitions = new List<LootBagTypeDefinition>();
             var numberOfBagsToAward = 0;
@@ -769,6 +771,193 @@ namespace WorldServer.World.Battlefronts.Bounty
             // Assign eligible players to the bag definitions.
             return rewardAssigner.AssignLootToPlayers(numberOfBagsToAward, bagDefinitions, sortedPairs);
 
+        }
+
+
+
+
+        public static void GenerateKeepTakeRewards(
+            ILogger logger, 
+            ConcurrentDictionary<Player, int> allEligiblePlayers, 
+            ConcurrentDictionary<Player, int> winningEligiblePlayers, 
+            ConcurrentDictionary<Player, int> losingEligiblePlayers, 
+            Realms lockingRealm, 
+            int zoneId, 
+            List<RVRRewardItem> lootOptions, 
+            int forceNumberBags=0)
+        {
+            var isFortZone = false;
+
+            logger.Info($"*************************GenerateKeepTakeRewards*************************");
+
+            // Calculate no rewards
+            if (forceNumberBags == -1)
+                return;
+
+            try
+            {
+               
+                var fortZones = new List<int> { 4, 10, 104, 110, 210 };
+
+                var rewardAssignments = CalculateRewardAssignments(winningEligiblePlayers, losingEligiblePlayers, forceNumberBags);
+                
+                if (fortZones.Contains(zoneId))
+                {
+                    isFortZone = true;
+                    // Give all players eligible in the Fort zone some warlord crests
+                    foreach (var player in allEligiblePlayers)
+                    {
+                        Logger.Debug($"Assigning Warlord Crests for Fort Zone Flip {player.Key.Name}");
+                        player.Key.ItmInterface.CreateItem(ItemService.GetItem_Info(208454), (ushort)5);
+                        player.Key.SendClientMessage($"You have been awarded 5 Warlord Crests.", ChatLogFilters.CHATLOGFILTERS_LOOT);
+                    }
+                }
+               
+
+                if (rewardAssignments == null)
+                {
+                    Logger.Warn("No reward assignments created");
+                    return;
+                }
+
+                Logger.Info($"Number of total rewards assigned : {rewardAssignments.Count}");
+
+                foreach (var eligiblePlayersAllRealm in allEligiblePlayers)
+                {
+                    logger.Debug($"eligible : {eligiblePlayersAllRealm.Key.Name} ({eligiblePlayersAllRealm.Key.CharacterId}) {eligiblePlayersAllRealm.Key.Realm}");
+                }
+
+                // Distribute RR, INF, etc to contributing players TODO - Distributor
+                DistributeBaseRewards(losingRealmPlayers, winningRealmPlayers, lockingRealm, ContributionManager.MAXIMUM_CONTRIBUTION);
+
+                    //RVRZoneRewardService.RVRRewardKeepItems
+                    var bagContentSelector = new BagContentSelector(lootOptions, StaticRandom.Instance);
+
+                    var lootBagReportList = new List<KeyValuePair<Item_Info, List<Talisman>>>();
+                    foreach (var reward in rewardAssignments)
+                    {
+                        if (reward.Assignee != 0)
+                        {
+                            logger.Debug($"Assigning reward to {reward.Assignee} => {reward.BagRarity}");
+
+                            try
+                            {
+                                var assignedPlayer = Player.GetPlayer(reward.Assignee);
+                                //player = eligiblePlayersAllRealms.Single(x => x.Key.CharacterId == reward.Assignee);
+
+                                var playerItemList = (from item in assignedPlayer.ItmInterface.Items where item != null select item.Info.Entry).ToList();
+                                var playerRenown = assignedPlayer.CurrentRenown.Level;
+                                var playerClass = assignedPlayer.Info.CareerLine;
+                                var playerRenownBand = _rewardManager.CalculateRenownBand(playerRenown);
+
+                                var lootDefinition = bagContentSelector.SelectBagContentForPlayer(reward, playerRenownBand, playerClass, playerItemList.ToList(), true);
+                                logger.Debug($"Award to be handed out : {lootDefinition.ToString()}");
+                                if (lootDefinition.IsValid())
+                                {
+                                    logger.Debug($"{assignedPlayer.Info.Name} has received {lootDefinition.FormattedString()}");
+                                    logger.Debug($"{lootDefinition.ToString()}");
+                                    // Only distribute if loot is valid
+                                    var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(lootDefinition, assignedPlayer);
+                                    //// If its a fort, add a warlord crest to the chest
+                                    //if (isFortZone)
+                                    //{
+                                    //    var crest = ItemService.GetItem_Info(208454);
+                                    //    generatedLootBag.Value.Add(new Talisman(208454, 1, 0, 0));
+                                    //}
+
+                                    lootBagReportList.Add(generatedLootBag);
+                                    switch (assignedPlayer.Realm)
+                                    {
+                                        case Realms.REALMS_REALM_DESTRUCTION:
+                                            {
+                                                if (destructionLootChest == null)
+                                                {
+                                                    MailLootBag(assignedPlayer.CharacterId, generatedLootBag);
+                                                }
+                                                else
+                                                {
+                                                    destructionLootChest?.Add(assignedPlayer.CharacterId, generatedLootBag);
+                                                }
+
+                                                break;
+                                            }
+                                        case Realms.REALMS_REALM_ORDER:
+                                            {
+                                                if (orderLootChest == null)
+                                                {
+                                                    MailLootBag(assignedPlayer.CharacterId, generatedLootBag);
+                                                }
+                                                else
+                                                {
+                                                    orderLootChest?.Add(assignedPlayer.CharacterId, generatedLootBag);
+                                                }
+
+                                                break;
+                                            }
+                                    }
+
+                                    RecordZoneLockBagRewardHistory(assignedPlayer, generatedLootBag, lockingRealm);
+                                    assignedPlayer.SendClientMessage($"For your efforts, you have received a {generatedLootBag.Key.Name}. Pick up your rewards at your Warcamp.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+
+                                }
+                                else
+                                {
+                                    logger.Warn($"{assignedPlayer.Info.Name} has received [INVALID for Player] {lootDefinition.FormattedString()}");
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                logger.Warn($"Could not locate player {reward.Assignee} {e.Message} {e.StackTrace}");
+                                continue;
+                            }
+
+                        }
+                    }
+
+                    //// Report to the players the rewards distributed.'
+                    //var goldBagCount = lootBagReportList.Count(x => x.Key.Entry == 9980);
+                    //var purpleBagCount = lootBagReportList.Count(x => x.Key.Entry == 9943);
+                    //var blueBagCount = lootBagReportList.Count(x => x.Key.Entry == 9942);
+                    //var greenBagCount = lootBagReportList.Count(x => x.Key.Entry == 9941);
+                    //var whiteBagCount = lootBagReportList.Count(x => x.Key.Entry == 9940);
+
+                    //Region.ApocCommunications.Broadcast($"Rewards Gold {goldBagCount} Purple {purpleBagCount} Blue {blueBagCount} Green {greenBagCount}", Realms.REALMS_REALM_ORDER, Region, 4);
+
+                
+            }
+        }
+
+        /// <summary>
+        /// Given lists of winning and losing players, return bag drop assignments for winners and losers.
+        /// </summary>
+        /// <param name="winningEligiblePlayers"></param>
+        /// <param name="losingEligiblePlayers"></param>
+        /// <param name="forceNumberBags"></param>
+        /// <returns></returns>
+        private static List<LootBagTypeDefinition> CalculateRewardAssignments(ConcurrentDictionary<Player, int> winningEligiblePlayers, ConcurrentDictionary<Player, int> losingEligiblePlayers, int forceNumberBags)
+        {
+            
+            Logger.Info($"Generating WIN FORT rewards for {winningEligiblePlayers.Count} players");
+            var rewardAssignments = RewardManager.GenerateBagDropAssignments(winningEligiblePlayers, forceNumberBags, 100);
+            Logger.Info($"Generating LOSS FORT rewards for {losingEligiblePlayers.Count} players");
+            var losingRewardAssignments = RewardManager.GenerateBagDropAssignments(losingEligiblePlayers, forceNumberBags, 50);
+            if (rewardAssignments != null)
+            {
+                if (losingRewardAssignments != null)
+                {
+                    foreach (var losingRewardAssignment in losingRewardAssignments)
+                    {
+                        rewardAssignments.Add(losingRewardAssignment);
+                    }
+                }
+                Logger.Debug($"rewardAssignments count = {rewardAssignments.Count}");
+            }
+            else
+            {
+                rewardAssignments = losingRewardAssignments;
+            }
+
+            return rewardAssignments;
         }
     }
 

@@ -1,5 +1,10 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Common.Database.World.Battlefront;
+using GameData;
+using NLog;
+using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
@@ -16,5 +21,16 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         void Clear();
         void AddCharacter(uint characterId);
+        IEnumerable<KeyValuePair<uint, int>> GetEligiblePlayers(int numberOfBags);
+
+        ConcurrentDictionary<short, ContributionStage> GetContributionStageDictionary(
+            List<PlayerContribution> contributionList,
+            List<ContributionDefinition> contributionFactors);
+
+        ConcurrentDictionary<short, ContributionStage> GetContributionStageDictionary(uint targetCharacterId);
+
+        Tuple<ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>>
+            DetermineEligiblePlayers(ILogger logger, Realms lockingRealm);
+
     }
 }

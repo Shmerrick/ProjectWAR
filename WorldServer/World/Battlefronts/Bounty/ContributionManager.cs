@@ -1,11 +1,15 @@
-﻿using Common.Database.World.Battlefront;
+﻿using System;
+using Common.Database.World.Battlefront;
 using GameData;
 using NLog;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
@@ -361,6 +365,45 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
 
             }
+        }
+
+        /// <summary>
+        /// Split eligible players based upon contribution into "all", "winner", "loser"
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="lockingRealm"></param>
+        /// <returns></returns>
+        public Tuple<ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>> DetermineEligiblePlayers(ILogger logger, Realms lockingRealm)
+        {
+            ConcurrentDictionary<Player, int> winningRealmPlayers;
+            ConcurrentDictionary<Player, int> losingRealmPlayers;
+            ConcurrentDictionary<Player, int> eligiblePlayersAllRealms;
+
+            
+            var allEligiblePlayers = GetEligiblePlayers(0).ToList();
+            // Reverse the order so we have highest eligbility first.
+            allEligiblePlayers.Reverse();
+
+            // var rewardAssignments = new List<LootBagTypeDefinition>();
+
+            // Split the contributing players into segments.
+            var eligibilitySplits = PlayerUtil.SegmentEligiblePlayers(
+                allEligiblePlayers,
+                lockingRealm,
+                this,
+                true,
+                true);
+            // All eligible players that are still in game
+            eligiblePlayersAllRealms = eligibilitySplits.Item1;
+            winningRealmPlayers = eligibilitySplits.Item2;
+            losingRealmPlayers = eligibilitySplits.Item3;
+
+            logger.Debug($"eligiblePlayersAllRealms Players Count = {eligiblePlayersAllRealms.Count()}");
+            logger.Debug($"winningRealmPlayers Players Count = {winningRealmPlayers.Count()}");
+            logger.Debug($"losingRealmPlayers Players Count = {losingRealmPlayers.Count()}");
+
+            return eligibilitySplits;
+
         }
     }
 }

@@ -12,6 +12,8 @@ using SystemData;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Battlefronts.Apocalypse.Loot;
+using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Battlefronts.Objectives;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Map;
@@ -407,16 +409,9 @@ namespace WorldServer.World.Battlefronts.Keeps
                 // Add contribution for being in range
 
                 plr.UpdatePlayerBountyEvent((byte)ContributionDefinitions.KILL_KEEP_LORD);
-                //activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.KILL_KEEP_LORD);
-                //var contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.KILL_KEEP_LORD);
-                //plr.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
-
                 if (plr.PriorityGroup?.GetLeader() == plr)
                 {
                     plr.UpdatePlayerBountyEvent((byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
-                    //activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
-                    //contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
-                    //plr.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
                 }
             }
 
@@ -1967,6 +1962,25 @@ namespace WorldServer.World.Battlefronts.Keeps
                 DefenceTickTimer.Start();
             }
         }
+
+        public void GenerateKeepTakeRewards()
+        {
+
+            var eligiblitySplits =
+                Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.DetermineEligiblePlayers(_logger, Realm);
+
+            RewardManager.GenerateKeepTakeRewards(
+                _logger,
+                eligiblitySplits.Item1,
+                eligiblitySplits.Item2,
+                eligiblitySplits.Item3,
+                Realm,
+                Region.Campaign.GetActiveBattleFrontStatus().ZoneId,0
+                );
+
+        }
+
+       
     }
 
 
