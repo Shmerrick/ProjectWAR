@@ -139,21 +139,6 @@ namespace WorldServer.World.Battlefronts.Bounty
                     var playerToBeRewarded = playerDictionary[playerReward.Key];
                     RewardLogger.Info($"+ Assessing rewards for {playerToBeRewarded.Name} ({playerToBeRewarded.CharacterId})");
 
-                    // Do not reward if player is in another zone to the victim (is afk, or not in pvp)
-                    if ((playerToBeRewarded.ZoneId != victim.ZoneId) || (playerToBeRewarded.IsAFK) || (!playerToBeRewarded.CbtInterface.IsPvp))
-                    {
-                        RewardLogger.Info(
-                            $"+ Skipping rewards for {playerToBeRewarded.Name} ({playerToBeRewarded.CharacterId}) - different zone / afk/ not pvp/scen to victim");
-                        continue;
-                    }
-
-                    if (playerToBeRewarded.Get2DDistanceToWorldPoint(victim) > 400)
-                    {
-                        RewardLogger.Info(
-                            $"+ Skipping rewards for {playerToBeRewarded.Name} ({playerToBeRewarded.CharacterId}) {playerToBeRewarded.Get2DDistanceToWorldPoint(victim)} - distance from victim");
-                        continue;
-                    }
-
                     /*
                      * Generate rewards for all those involved in killing the victim, including those out of the group and those within the group of the killer
                      */
@@ -164,6 +149,9 @@ namespace WorldServer.World.Battlefronts.Bounty
                         foreach (var member in playerToBeRewarded.PriorityGroup.Members)
                         {
                             RewardLogger.Trace($"+++ Group Rewards for {member.Name} ({member.CharacterId})");
+
+                            if (!member.IsValidForReward(victim))
+                                continue;
 
                             var modificationValue = ImpactMatrixManagerInstance.CalculateModificationValue(victim.BaseBountyValue, member.BaseBountyValue);
                             var shareModifier = (1f / shares);
@@ -246,6 +234,8 @@ namespace WorldServer.World.Battlefronts.Bounty
                     }
                     else // An assist only.
                     {
+                        if (!playerToBeRewarded.IsValidForReward(victim))
+                            continue;
 
                         var hasInsigniaReward = GetInsigniaRewards(ASSIST_CREST_CHANCE * repeatKillReward);
                         var insigniaName = ItemService.GetItem_Info((uint)INSIGNIA_ITEM_ID).Name;
@@ -280,9 +270,12 @@ namespace WorldServer.World.Battlefronts.Bounty
                         var selectedPartyMember = selectedKiller.PriorityGroup.SelectRandomPlayer();
                         if (selectedPartyMember != null)
                         {
-                            RewardLogger.Info(
-                                $"{selectedPartyMember.Name} selected for group loot - linked from {selectedKiller.Name}");
-                            SetPlayerRVRGearDrop(selectedPartyMember, victim);
+                            if (selectedPartyMember.IsValidForReward(victim))
+                            {
+                                RewardLogger.Info(
+                                    $"{selectedPartyMember.Name} selected for group loot - linked from {selectedKiller.Name}");
+                                SetPlayerRVRGearDrop(selectedPartyMember, victim);
+                            }
                         }
                     }
                     else
