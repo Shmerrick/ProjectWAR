@@ -122,7 +122,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         public void DistributePlayerKillRewards(Player victim, Player killer, float aaoBonus, ushort influenceId, Dictionary<uint, Player> playerDictionary)
         {
-            float ASSIST_CREST_CHANCE = 15f;
+            float ASSIST_CREST_CHANCE = 12f;
             RewardLogger.Info($"=============== START : {victim.Name} killed by {killer.Name}. AAO = {aaoBonus}===============");
             var repeatKillReward = GetRepeatKillModifier(victim, killer);
             RewardLogger.Trace($"+repeatKillReward={repeatKillReward}");
@@ -133,19 +133,24 @@ namespace WorldServer.World.Battlefronts.Bounty
             // impactFractions is CharacterId, and ImpactFraction.
             foreach (var playerReward in impactFractions)
             {
-              
-
                 // reward key is the characterId
                 if (playerDictionary.ContainsKey(playerReward.Key))
                 {
                     var playerToBeRewarded = playerDictionary[playerReward.Key];
                     RewardLogger.Info($"+ Assessing rewards for {playerToBeRewarded.Name} ({playerToBeRewarded.CharacterId})");
 
-                    // Do not reward if player is in another zone to the victim
-                    if (playerToBeRewarded.ZoneId != victim.ZoneId)
+                    // Do not reward if player is in another zone to the victim (is afk, or not in pvp)
+                    if ((playerToBeRewarded.ZoneId != victim.ZoneId) || (playerToBeRewarded.IsAFK) || (!playerToBeRewarded.CbtInterface.IsPvp))
                     {
                         RewardLogger.Info(
-                            $"+ Skipping rewards for {playerToBeRewarded.Name} ({playerToBeRewarded.CharacterId}) - different zone to victim");
+                            $"+ Skipping rewards for {playerToBeRewarded.Name} ({playerToBeRewarded.CharacterId}) - different zone / afk/ not pvp/scen to victim");
+                        continue;
+                    }
+
+                    if (playerToBeRewarded.Get2DDistanceToWorldPoint(victim) > 400)
+                    {
+                        RewardLogger.Info(
+                            $"+ Skipping rewards for {playerToBeRewarded.Name} ({playerToBeRewarded.CharacterId}) {playerToBeRewarded.Get2DDistanceToWorldPoint(victim)} - distance from victim");
                         continue;
                     }
 
