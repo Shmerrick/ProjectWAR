@@ -32,5 +32,6 @@ namespace WorldServer.World.Battlefronts.Bounty
         Tuple<ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>>
             DetermineEligiblePlayers(ILogger logger, Realms lockingRealm);
 
+        int GetMaximumContribution();
     }
 }

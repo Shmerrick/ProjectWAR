@@ -1964,11 +1964,24 @@ namespace WorldServer.World.Battlefronts.Keeps
             }
         }
 
+        /// <summary>
+        /// Generate Keep Flip rewards.
+        ///
+        /// Winning Realm chest to be placed in the Lords room of the Keep. Losing Realm chest to be placed at the WC entrance.
+        /// </summary>
         public void GenerateKeepTakeRewards()
         {
             
             var eligiblitySplits =
                 Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.DetermineEligiblePlayers(_logger, Realm);
+
+            if (Realm == Realms.REALMS_REALM_DESTRUCTION)
+                destructionChest = WCEntrace.
+            else
+                this.Info.PQuest.GoldChestWorldX;
+
+            var destructionChest = 
+                
 
             RewardManager.GenerateKeepTakeRewards(
                 _logger,
@@ -1976,7 +1989,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 eligiblitySplits.Item2,
                 eligiblitySplits.Item3,
                 Realm,
-                Region.Campaign.GetActiveBattleFrontStatus().ZoneId,0
+                Region.Campaign.GetActiveBattleFrontStatus().ZoneId,0,
                 );
 
         }

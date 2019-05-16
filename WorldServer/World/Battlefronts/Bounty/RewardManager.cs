@@ -277,12 +277,12 @@ namespace WorldServer.World.Battlefronts.Bounty
                         {
                             RewardLogger.Info(
                                 $"{selectedPartyMember.Name} selected for group loot - linked from {selectedKiller.Name}");
-                            SetPlayerRVRGearDrop(selectedPartyMember, victim);
+                            PlayerKillPVPDrop(selectedPartyMember, victim);
                         }
                     }
                     else
                     {
-                        SetPlayerRVRGearDrop(selectedKiller, victim);
+                        PlayerKillPVPDrop(selectedKiller, victim);
                     }
                 }
             }
@@ -494,9 +494,9 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <param name="lockingRealm"></param>
         /// <param name="baselineContribution">The baseline expected of an 'average' player. If player is below this amount, lower reward, above, increase.</param>
         private void DistributeKeepTakeBaseRewards(
-            ConcurrentDictionary<Player, int> eligibleLosingRealmPlayers, 
-            ConcurrentDictionary<Player, int> eligibleWinningRealmPlayers, 
-            Realms lockingRealm, 
+            ConcurrentDictionary<Player, int> eligibleLosingRealmPlayers,
+            ConcurrentDictionary<Player, int> eligibleWinningRealmPlayers,
+            Realms lockingRealm,
             int baselineContribution,
             Single tierRewardScale,
             List<Player> allPlayersInZone)
@@ -847,7 +847,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             try
             {
-                var zone = ZoneService.GetZone_Info((ushort) zoneId);
+                var zone = ZoneService.GetZone_Info((ushort)zoneId);
                 if (zone == null)
                 {
                     logger.Warn($"Zone is null! {zoneId}");
@@ -882,11 +882,17 @@ namespace WorldServer.World.Battlefronts.Bounty
 
                 // Distribute RR, INF, etc to contributing players TODO - Distributor
                 // Get All players in the zone and if they are not in the eligible list, they receive minor awards
-                    var allPlayersInZone = PlayerUtil.GetAllFlaggedPlayersInZone(BattleFrontManager.ActiveBattleFront.ZoneId);
+                var allPlayersInZone = PlayerUtil.GetAllFlaggedPlayersInZone(zoneId);
 
-                DistributeKeepTakeBaseRewards(losingRealmPlayers, winningRealmPlayers, lockingRealm, ContributionManager.GetMaximumContribution(), zone.Tier == 1 ? 0.5f : 1f, allPlayersInZone);
+                DistributeKeepTakeBaseRewards(
+                    losingEligiblePlayers,
+                    winningEligiblePlayers, 
+                    lockingRealm, 
+                    ContributionManager.GetMaximumContribution(), 
+                    zone.Tier == 1 ? 0.5f : 1f, 
+                    allPlayersInZone);
 
-                
+
 
                 //RVRZoneRewardService.RVRRewardKeepItems
                 var bagContentSelector = new BagContentSelector(lootOptions, StaticRandom.Instance);
@@ -916,7 +922,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                                 logger.Debug($"{lootDefinition.ToString()}");
                                 // Only distribute if loot is valid
                                 var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(lootDefinition, assignedPlayer);
-                              
+
 
                                 lootBagReportList.Add(generatedLootBag);
                                 switch (assignedPlayer.Realm)
@@ -967,16 +973,11 @@ namespace WorldServer.World.Battlefronts.Bounty
                     }
                 }
 
-                //// Report to the players the rewards distributed.'
-                //var goldBagCount = lootBagReportList.Count(x => x.Key.Entry == 9980);
-                //var purpleBagCount = lootBagReportList.Count(x => x.Key.Entry == 9943);
-                //var blueBagCount = lootBagReportList.Count(x => x.Key.Entry == 9942);
-                //var greenBagCount = lootBagReportList.Count(x => x.Key.Entry == 9941);
-                //var whiteBagCount = lootBagReportList.Count(x => x.Key.Entry == 9940);
-
-                //Region.ApocCommunications.Broadcast($"Rewards Gold {goldBagCount} Purple {purpleBagCount} Blue {blueBagCount} Green {greenBagCount}", Realms.REALMS_REALM_ORDER, Region, 4);
-
-
+              
+            }
+            catch (Exception e)
+            {
+                logger.Warn($"Unexpectedexception {zoneId} {keep.KeepId} {e.Message} {e.StackTrace}");
             }
         }
 
@@ -1089,6 +1090,6 @@ namespace WorldServer.World.Battlefronts.Bounty
         }
     }
 
-   
+
 
 }

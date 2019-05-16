@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Common;
 using GameData;
 using NLog;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
@@ -37,6 +38,9 @@ namespace WorldServer.World.Battlefronts.Bounty
             Realms lockingRealm,
             int zoneId,
             List<RVRRewardItem> lootOptions,
+            LootChest destructionLootChest,
+            LootChest orderLootChest,
+            Keep_Info keep,
             int forceNumberBags = 0);
 
 
