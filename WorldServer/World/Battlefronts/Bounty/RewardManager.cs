@@ -1,4 +1,5 @@
 ﻿using Common;
+using Common;
 using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
@@ -493,13 +494,16 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <param name="eligibleWinningRealmPlayers">non-zero contribution winning realm playes</param>
         /// <param name="lockingRealm"></param>
         /// <param name="baselineContribution">The baseline expected of an 'average' player. If player is below this amount, lower reward, above, increase.</param>
-        private void DistributeKeepTakeBaseRewards(
-            ConcurrentDictionary<Player, int> eligibleLosingRealmPlayers,
+        /// <param name="tierRewardScale"></param>
+        /// <param name="allPlayersInZone"></param>
+        /// <param name="rvrKeepRewards"></param>
+        public void DistributeKeepTakeBaseRewards(ConcurrentDictionary<Player, int> eligibleLosingRealmPlayers,
             ConcurrentDictionary<Player, int> eligibleWinningRealmPlayers,
             Realms lockingRealm,
             int baselineContribution,
-            Single tierRewardScale,
-            List<Player> allPlayersInZone)
+            float tierRewardScale,
+            List<Player> allPlayersInZone, 
+            List<RVRKeepLockReward> rvrKeepRewards)
         {
 
             // Distribute rewards to losing players with eligibility - halve rewards.
@@ -510,7 +514,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 WorldMgr.RewardDistributor.DistributeNonBagAwards(
                     losingRealmPlayer.Key,
                     PlayerUtil.CalculateRenownBand(losingRealmPlayer.Key.RenownRank),
-                    (1f + contributionScale) * tierRewardScale);
+                    (1f + contributionScale) * tierRewardScale, rvrKeepRewards);
             }
 
             // Distribute rewards to winning players with eligibility - full rewards.
@@ -520,7 +524,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 WorldMgr.RewardDistributor.DistributeNonBagAwards(
                     winningRealmPlayer.Key,
                     PlayerUtil.CalculateRenownBand(winningRealmPlayer.Key.RenownRank),
-                    (1.5f + contributionScale) * tierRewardScale);
+                    (1.5f + contributionScale) * tierRewardScale, rvrKeepRewards);
             }
 
             if (allPlayersInZone != null)
@@ -536,7 +540,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                             WorldMgr.RewardDistributor.DistributeNonBagAwards(
                                 player,
                                 PlayerUtil.CalculateRenownBand(player.RenownRank),
-                                0.5 * tierRewardScale);
+                                0.5 * tierRewardScale, rvrKeepRewards);
                         }
                     }
                     else
@@ -548,7 +552,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                             WorldMgr.RewardDistributor.DistributeNonBagAwards(
                                 player,
                                 PlayerUtil.CalculateRenownBand(player.RenownRank),
-                                0.25 * tierRewardScale);
+                                0.25 * tierRewardScale, rvrKeepRewards);
                         }
                     }
                 }
@@ -852,18 +856,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                     return;
                 }
 
-                var fortZones = new List<int> { 4, 10, 104, 110, 204, 210 };
                 var rewardAssignments = CalculateRewardAssignments(winningEligiblePlayers, losingEligiblePlayers, forceNumberBags);
-                if (fortZones.Contains(zoneId))
-                {
-                    // Give all players eligible in the Fort zone some warlord crests
-                    foreach (var player in allEligiblePlayers)
-                    {
-                        logger.Debug($"Assigning Warlord Crests for Fort Zone Flip {player.Key.Name}");
-                        player.Key.ItmInterface.CreateItem(ItemService.GetItem_Info(208454), (ushort)5);
-                        player.Key.SendClientMessage($"You have been awarded 5 Warlord Crests.", ChatLogFilters.CHATLOGFILTERS_LOOT);
-                    }
-                }
 
                 if (rewardAssignments == null)
                 {
@@ -877,22 +870,10 @@ namespace WorldServer.World.Battlefronts.Bounty
                 {
                     logger.Debug($"eligible : {eligiblePlayersAllRealm.Key.Name} ({eligiblePlayersAllRealm.Key.CharacterId}) {eligiblePlayersAllRealm.Key.Realm}");
                 }
-
-                // Distribute RR, INF, etc to contributing players TODO - Distributor
-                // Get All players in the zone and if they are not in the eligible list, they receive minor awards
-                var allPlayersInZone = PlayerUtil.GetAllFlaggedPlayersInZone(zoneId);
-
-                DistributeKeepTakeBaseRewards(
-                    losingEligiblePlayers,
-                    winningEligiblePlayers, 
-                    lockingRealm, 
-                    ContributionManager.GetMaximumContribution(), 
-                    zone.Tier == 1 ? 0.5f : 1f, 
-                    allPlayersInZone);
-
+                
                 var bagContentSelector = new BagContentSelector(lootOptions, StaticRandom.Instance);
-
                 var lootBagReportList = new List<KeyValuePair<Item_Info, List<Talisman>>>();
+
                 foreach (var reward in rewardAssignments)
                 {
                     if (reward.Assignee != 0)
@@ -902,8 +883,6 @@ namespace WorldServer.World.Battlefronts.Bounty
                         try
                         {
                             var assignedPlayer = Player.GetPlayer(reward.Assignee);
-                            //player = eligiblePlayersAllRealms.Single(x => x.Key.CharacterId == reward.Assignee);
-
                             var playerItemList = (from item in assignedPlayer.ItmInterface.Items where item != null select item.Info.Entry).ToList();
                             var playerRenown = assignedPlayer.CurrentRenown.Level;
                             var playerClass = assignedPlayer.Info.CareerLine;
@@ -917,7 +896,6 @@ namespace WorldServer.World.Battlefronts.Bounty
                                 logger.Debug($"{lootDefinition.ToString()}");
                                 // Only distribute if loot is valid
                                 var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(lootDefinition, assignedPlayer);
-
 
                                 lootBagReportList.Add(generatedLootBag);
                                 switch (assignedPlayer.Realm)
@@ -1054,11 +1032,14 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <summary>
         /// Given lists of winning and losing players, return bag drop assignments for winners and losers.
         /// </summary>
+        /// <param name="eligiblePlayers"></param>
         /// <param name="winningEligiblePlayers"></param>
         /// <param name="losingEligiblePlayers"></param>
         /// <param name="forceNumberBags"></param>
         /// <returns></returns>
-        private List<LootBagTypeDefinition> CalculateRewardAssignments(ConcurrentDictionary<Player, int> winningEligiblePlayers, ConcurrentDictionary<Player, int> losingEligiblePlayers, int forceNumberBags)
+        private List<LootBagTypeDefinition> CalculateRewardAssignments(
+            ConcurrentDictionary<Player, int> winningEligiblePlayers,
+            ConcurrentDictionary<Player, int> losingEligiblePlayers, int forceNumberBags)
         {
 
             Logger.Info($"Generating WIN FORT rewards for {winningEligiblePlayers.Count} players");
@@ -1082,6 +1063,68 @@ namespace WorldServer.World.Battlefronts.Bounty
             }
 
             return rewardAssignments;
+        }
+
+        public void DistributeZoneFlipBaseRewards(
+            ConcurrentDictionary<Player, int> eligibleLosingRealmPlayers,
+            ConcurrentDictionary<Player, int> eligibleWinningRealmPlayers,
+            Realms lockingRealm,
+            int baselineContribution,
+            float tierRewardScale,
+            List<Player> allPlayersInZone, 
+            List<RVRZoneLockReward> rvrZoneLockRewards)
+        {
+            // Distribute rewards to losing players with eligibility - halve rewards.
+            foreach (var losingRealmPlayer in eligibleLosingRealmPlayers)
+            {
+                // Scale of player contribution against the highest contributor
+                double contributionScale = CalculateContributonScale(losingRealmPlayer.Value, baselineContribution);
+                WorldMgr.RewardDistributor.DistributeNonBagAwards(
+                    losingRealmPlayer.Key,
+                    PlayerUtil.CalculateRenownBand(losingRealmPlayer.Key.RenownRank),
+                    (1f + contributionScale) * tierRewardScale, rvrZoneLockRewards);
+            }
+
+            // Distribute rewards to winning players with eligibility - full rewards.
+            foreach (var winningRealmPlayer in eligibleWinningRealmPlayers)
+            {
+                double contributionScale = CalculateContributonScale(winningRealmPlayer.Value, baselineContribution);
+                WorldMgr.RewardDistributor.DistributeNonBagAwards(
+                    winningRealmPlayer.Key,
+                    PlayerUtil.CalculateRenownBand(winningRealmPlayer.Key.RenownRank),
+                    (1.5f + contributionScale) * tierRewardScale, rvrZoneLockRewards);
+            }
+
+            if (allPlayersInZone != null)
+            {
+                foreach (var player in allPlayersInZone)
+                {
+                    if (player.Realm == lockingRealm)
+                    {
+                        // Ensure player is not in the eligible list.
+                        if (eligibleWinningRealmPlayers.All(x => x.Key.CharacterId != player.CharacterId))
+                        {
+                            // Give player no bag, but half rewards
+                            WorldMgr.RewardDistributor.DistributeNonBagAwards(
+                                player,
+                                PlayerUtil.CalculateRenownBand(player.RenownRank),
+                                0.5 * tierRewardScale, rvrZoneLockRewards);
+                        }
+                    }
+                    else
+                    {
+                        // Ensure player is not in the eligible list.
+                        if (eligibleLosingRealmPlayers.All(x => x.Key.CharacterId != player.CharacterId))
+                        {
+                            // Give player no bag, but quarter rewards
+                            WorldMgr.RewardDistributor.DistributeNonBagAwards(
+                                player,
+                                PlayerUtil.CalculateRenownBand(player.RenownRank),
+                                0.25 * tierRewardScale, rvrZoneLockRewards);
+                        }
+                    }
+                }
+            }
         }
     }
 

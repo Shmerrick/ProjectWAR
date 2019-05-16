@@ -1805,6 +1805,8 @@ namespace WorldServer.World.Battlefronts.Keeps
             {
                 OnLockZone(PendingRealm);
 
+                GenerateKeepTakeRewards();
+
                 // Create Loot Chests at the Fort GoldChest location 
                 var lootChest = LootChest.Create(
                     Region,
@@ -2004,19 +2006,49 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             _logger.Debug($"Generating rewards for Keep {Info.Name} Zone {ZoneId}");
 
-            RewardManager.GenerateKeepTakeRewards(
-                _logger,
-                eligiblitySplits.Item1,
-                eligiblitySplits.Item2,
+            var fortZones = new List<int> { 4, 10, 104, 110, 204, 210 };
+            if (fortZones.Contains((ushort)ZoneId))
+            {
+                // Give all players eligible in the Fort zone some warlord crests
+                foreach (var player in eligiblitySplits.Item1)
+                {
+                    _logger.Debug($"Assigning Warlord Crests for Fort Zone Flip {player.Key.Name}");
+                    player.Key.ItmInterface.CreateItem(ItemService.GetItem_Info(208454), (ushort)5);
+                    player.Key.SendClientMessage($"You have been awarded 5 Warlord Crests.", ChatLogFilters.CHATLOGFILTERS_LOOT);
+                }
+
+                RewardManager.GenerateKeepTakeRewards(
+                    _logger,
+                    eligiblitySplits.Item1,
+                    eligiblitySplits.Item2,
+                    eligiblitySplits.Item3,
+                    Realm,
+                    (ushort)ZoneId, RVRZoneRewardService.RVRRewardKeepItems, destructionLootChest, orderLootChest, Info);
+            }
+            else
+            {
+                RewardManager.GenerateKeepTakeRewards(
+                    _logger,
+                    eligiblitySplits.Item1, // all
+                    eligiblitySplits.Item2, //winning
+                    eligiblitySplits.Item3, //losing
+                    Realm,
+                    (ushort)ZoneId, RVRZoneRewardService.RVRRewardFortItems, destructionLootChest, orderLootChest, Info);
+
+            }
+
+            // Distribute RR, INF, etc to contributing players TODO - Distributor
+            // Get All players in the zone and if they are not in the eligible list, they receive minor awards
+            var allPlayersInZone = PlayerUtil.GetAllFlaggedPlayersInZone((ushort)ZoneId);
+
+            RewardManager.DistributeKeepTakeBaseRewards(
                 eligiblitySplits.Item3,
-                Realm,
-                (ushort)ZoneId, RVRZoneRewardService.RVRRewardKeepItems, destructionLootChest, orderLootChest, Info);
-
+                eligiblitySplits.Item2, 
+                Realm, 
+                Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.GetMaximumContribution(), 
+                Tier == 1 ? 0.5f : 1f, 
+                allPlayersInZone,
+                RVRZoneRewardService.RVRKeepRewards);
         }
-
-
     }
-
-
-
 }

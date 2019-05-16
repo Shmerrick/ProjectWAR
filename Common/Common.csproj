@@ -155,6 +155,7 @@
     <Compile Include="Database\World\Battlefront\RVRAreaPolygon.cs" />
     <Compile Include="Database\World\Battlefront\RVRRewardFortItems.cs" />
     <Compile Include="Database\World\Battlefront\KeepLockBagRewardHistory.cs" />
+    <Compile Include="Database\World\Battlefront\RVRKeepLockReward.cs" />
     <Compile Include="Database\World\Battlefront\ZoneLockRewardHistory.cs" />
     <Compile Include="Database\World\Battlefront\ZoneLockSummary.cs" />
     <Compile Include="Database\World\Battlefront\RVRProgression.cs" />

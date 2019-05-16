@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Common;
+using Common.Database.World.Battlefront;
 using GameData;
 using NLog;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
@@ -43,6 +44,12 @@ namespace WorldServer.World.Battlefronts.Bounty
             Keep_Info keep,
             int forceNumberBags = 0);
 
-
+        void DistributeKeepTakeBaseRewards(ConcurrentDictionary<Player, int> eligibleLosingRealmPlayers,
+            ConcurrentDictionary<Player, int> eligibleWinningRealmPlayers,
+            Realms lockingRealm,
+            int baselineContribution,
+            float tierRewardScale,
+            List<Player> allPlayersInZone,
+            List<RVRKeepLockReward> rvrKeepRewards);
     }
 }

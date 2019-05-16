@@ -1092,17 +1092,31 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// Generate zone lock rewards. 
         /// </summary>
         /// <param name="lockingRealm"></param>
+        /// <param name="zoneId"></param>
         /// <param name="orderLootChest"></param>
         /// <param name="destructionLootChest"></param>
         /// <param name="lootOptions"></param>
         /// <param name="forceNumberBags">By default 0 allows the system to decide the number of bags, setting to -1 forces no rewards.</param>
-        private void GenerateZoneLockRewards(Realms lockingRealm, LootChest orderLootChest, LootChest destructionLootChest, List<RVRRewardItem> lootOptions, int forceNumberBags = 0)
+        private void GenerateZoneLockRewards(Realms lockingRealm, int zoneId)
         {
            try
             { 
+                var eligiblitySplits =
+                    Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.DetermineEligiblePlayers(BattlefrontLogger, lockingRealm);
 
-                // Remove eligible players.
-                ClearDictionaries();
+                // Distribute RR, INF, etc to contributing players
+                // Get All players in the zone and if they are not in the eligible list, they receive minor awards
+                var allPlayersInZone = PlayerUtil.GetAllFlaggedPlayersInZone((ushort)zoneId);
+
+                RewardManager.DistributeZoneFlipBaseRewards(
+                    eligiblitySplits.Item3,
+                    eligiblitySplits.Item2, 
+                    lockingRealm, 
+                    Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.GetMaximumContribution(), 
+                    Tier == 1 ? 0.5f : 1f, 
+                    allPlayersInZone,
+                    RVRZoneRewardService.RVRZoneRewards);
+               
 
             }
             catch (Exception e)
@@ -1403,7 +1417,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Logger.Info($"***Executing BattleFront Lock on {oldBattleFront.Description} for {lockingRealm}***");
 
             BattleFrontManager.LockActiveBattleFront(lockingRealm, forceNumberBags);
-            GenerateZoneLockRewards(lockingRealm, orderLootChest, destructionLootChest, lootOptions, forceNumberBags);
+
+            GenerateZoneLockRewards(lockingRealm, oldBattleFront.ZoneId);
+
+            // Remove eligible players.
+            ClearDictionaries();
+
             // Select the next Progression
             var nextBattleFront = BattleFrontManager.AdvanceBattleFront(lockingRealm);
 

@@ -22,19 +22,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
 
         public IRandomGenerator RandomGenerator { get; }
+        public List<RVRKeepLockReward> KeepLockRewards { get; set; }
 
-        public RewardDistributor(List<RVRZoneLockReward> zoneLockRewards, IRandomGenerator randomGenerator)
+        public RewardDistributor(List<RVRZoneLockReward> zoneLockRewards, IRandomGenerator randomGenerator, List<RVRKeepLockReward> keepLockRewards)
         {
             ZoneLockRewards = zoneLockRewards;
             RandomGenerator = randomGenerator;
+            KeepLockRewards = keepLockRewards;
         }
 
-        public void DistributeNonBagAwards(Player player, byte playerRenownBand, double modifier)
+        public void DistributeNonBagAwards(Player player, byte playerRenownBand, double modifier, List<RVRKeepLockReward> rvrKeepRewards)
         {
             if (player == null)
                 return;
 
-            var lockReward = ZoneLockRewards.SingleOrDefault(x => x.RRBand == playerRenownBand);
+            var lockReward = rvrKeepRewards.SingleOrDefault(x => x.RRBand == playerRenownBand);
 
             if (lockReward == null)
             {
