@@ -1134,7 +1134,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattlefrontLogger.Debug($"winningRealmPlayers Players Count = {winningRealmPlayers.Count()}");
                 BattlefrontLogger.Debug($"losingRealmPlayers Players Count = {losingRealmPlayers.Count()}");
 
-                var fortZones = new List<int> { 4, 10, 104, 110, 210 };
+                var fortZones = new List<int> { 4, 10, 104, 110, 210, 204 };
 
 
                 if (fortZones.Contains(ActiveBattleFrontStatus.ZoneId))
