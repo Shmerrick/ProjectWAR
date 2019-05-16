@@ -823,9 +823,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         }
 
-
-
-
+       
         public void GenerateKeepTakeRewards(
             ILogger logger,
             ConcurrentDictionary<Player, int> allEligiblePlayers,
@@ -854,7 +852,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                     return;
                 }
 
-                var fortZones = new List<int> { 4, 10, 104, 110, 210 };
+                var fortZones = new List<int> { 4, 10, 104, 110, 204, 210 };
                 var rewardAssignments = CalculateRewardAssignments(winningEligiblePlayers, losingEligiblePlayers, forceNumberBags);
                 if (fortZones.Contains(zoneId))
                 {
@@ -892,9 +890,6 @@ namespace WorldServer.World.Battlefronts.Bounty
                     zone.Tier == 1 ? 0.5f : 1f, 
                     allPlayersInZone);
 
-
-
-                //RVRZoneRewardService.RVRRewardKeepItems
                 var bagContentSelector = new BagContentSelector(lootOptions, StaticRandom.Instance);
 
                 var lootBagReportList = new List<KeyValuePair<Item_Info, List<Talisman>>>();

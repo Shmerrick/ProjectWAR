@@ -12,7 +12,6 @@ using SystemData;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Battlefronts.Objectives;
 using WorldServer.World.Interfaces;
@@ -1971,17 +1970,39 @@ namespace WorldServer.World.Battlefronts.Keeps
         /// </summary>
         public void GenerateKeepTakeRewards()
         {
-            
+
             var eligiblitySplits =
                 Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.DetermineEligiblePlayers(_logger, Realm);
 
-            if (Realm == Realms.REALMS_REALM_DESTRUCTION)
-                destructionChest = WCEntrace.
-            else
-                this.Info.PQuest.GoldChestWorldX;
+            LootChest orderLootChest = null;
+            LootChest destructionLootChest = null;
 
-            var destructionChest = 
-                
+            if (Realm == Realms.REALMS_REALM_DESTRUCTION)
+            {
+                var wc = BattleFrontService.GetWarcampEntrance((ushort)ZoneId, Realms.REALMS_REALM_ORDER);
+                orderLootChest = LootChest.Create(Region, wc, (ushort)ZoneId);
+                destructionLootChest = LootChest.Create(
+                Region,
+                new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ),
+                (ushort)ZoneId);
+            }
+            if (Realm == Realms.REALMS_REALM_ORDER)
+            {
+                var wc = BattleFrontService.GetWarcampEntrance((ushort)ZoneId, Realms.REALMS_REALM_DESTRUCTION);
+                destructionLootChest = LootChest.Create(Region, wc, (ushort)ZoneId);
+
+                orderLootChest = LootChest.Create(
+                    Region,
+                    new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ),
+                    (ushort)ZoneId);
+            }
+
+            if (orderLootChest == null)
+                _logger.Warn($"Order Loot chest is null");
+            if (destructionLootChest == null)
+                _logger.Warn($"Destruction Loot chest is null");
+
+            _logger.Debug($"Generating rewards for Keep {Info.Name} Zone {ZoneId}");
 
             RewardManager.GenerateKeepTakeRewards(
                 _logger,
@@ -1989,12 +2010,11 @@ namespace WorldServer.World.Battlefronts.Keeps
                 eligiblitySplits.Item2,
                 eligiblitySplits.Item3,
                 Realm,
-                Region.Campaign.GetActiveBattleFrontStatus().ZoneId,0,
-                );
+                (ushort)ZoneId, RVRZoneRewardService.RVRRewardKeepItems, destructionLootChest, orderLootChest, Info);
 
         }
 
-       
+
     }
 
 
