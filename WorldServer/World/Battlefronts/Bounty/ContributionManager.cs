@@ -32,7 +32,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         public BountyService BountyService { get; }
 
-        public const short MAXIMUM_CONTRIBUTION = 515;  // based upon sum of all contribution values in bounty_contribution_definition
+        private const short MAXIMUM_CONTRIBUTION = 515;  // based upon sum of all contribution values in bounty_contribution_definition
 
         public ContributionManager(ConcurrentDictionary<uint, List<PlayerContribution>> contributionDictionary, List<ContributionDefinition> contributionFactors)
         {
@@ -404,6 +404,11 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             return eligibilitySplits;
 
+        }
+
+        public int GetMaximumContribution()
+        {
+            return MAXIMUM_CONTRIBUTION;
         }
     }
 }

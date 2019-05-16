@@ -1161,86 +1161,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         
 
 
-        /// <summary>
-        /// Distribute RR XP INF rewards to players that have some contribution
-        /// </summary>
-        /// <param name="eligibleLosingRealmPlayers">non-zero contribution losing realm players</param>
-        /// <param name="eligibleWinningRealmPlayers">non-zero contribution winning realm playes</param>
-        /// <param name="lockingRealm"></param>
-        /// <param name="baselineContribution">The baseline expected of an 'average' player. If player is below this amount, lower reward, above, increase.</param>
-        private void DistributeBaseRewards(ConcurrentDictionary<Player, int> eligibleLosingRealmPlayers, ConcurrentDictionary<Player, int> eligibleWinningRealmPlayers, Realms lockingRealm, int baselineContribution)
-        {
-            // Ensure that tier 1 gets half rewards.
-            var tierRewardScale = Tier == 1 ? 0.5f : 1f;
-
-            // Distribute rewards to losing players with eligibility - halve rewards.
-            foreach (var losingRealmPlayer in eligibleLosingRealmPlayers)
-            {
-                // Scale of player contribution against the highest contributor
-                double contributionScale = CalculateContributonScale(losingRealmPlayer.Value, baselineContribution);
-                WorldMgr.RewardDistributor.DistributeNonBagAwards(
-                    losingRealmPlayer.Key,
-                    PlayerUtil.CalculateRenownBand(losingRealmPlayer.Key.RenownRank),
-                    (1f + contributionScale) * tierRewardScale);
-            }
-
-            // Distribute rewards to winning players with eligibility - full rewards.
-            foreach (var winningRealmPlayer in eligibleWinningRealmPlayers)
-            {
-                double contributionScale = CalculateContributonScale(winningRealmPlayer.Value, baselineContribution);
-                WorldMgr.RewardDistributor.DistributeNonBagAwards(
-                    winningRealmPlayer.Key,
-                    PlayerUtil.CalculateRenownBand(winningRealmPlayer.Key.RenownRank),
-                    (1.5f + contributionScale) * tierRewardScale);
-            }
-
-            // Get All players in the zone and if they are not in the eligible list, they receive minor awards
-            var allPlayersInZone = PlayerUtil.GetAllFlaggedPlayersInZone(BattleFrontManager.ActiveBattleFront.ZoneId);
-            if (allPlayersInZone != null)
-            {
-                foreach (var player in allPlayersInZone)
-                {
-                    if (player.Realm == lockingRealm)
-                    {
-                        // Ensure player is not in the eligible list.
-                        if (eligibleWinningRealmPlayers.All(x => x.Key.CharacterId != player.CharacterId))
-                        {
-                            // Give player no bag, but half rewards
-                            WorldMgr.RewardDistributor.DistributeNonBagAwards(
-                                player,
-                                PlayerUtil.CalculateRenownBand(player.RenownRank),
-                                0.5 * tierRewardScale);
-                        }
-                    }
-                    else
-                    {
-                        // Ensure player is not in the eligible list.
-                        if (eligibleLosingRealmPlayers.All(x => x.Key.CharacterId != player.CharacterId))
-                        {
-                            // Give player no bag, but quarter rewards
-                            WorldMgr.RewardDistributor.DistributeNonBagAwards(
-                                player,
-                                PlayerUtil.CalculateRenownBand(player.RenownRank),
-                                0.25 * tierRewardScale);
-                        }
-                    }
-                }
-            }
-        }
+        
 
 
-        /// <summary>
-        /// Calculate the contribution scale for this player. This is to vary the reward given for individual contribution to the zone lock.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="maximumContribution"></param>
-        /// <returns></returns>
-        private double CalculateContributonScale(int value, int maximumContribution)
-        {
-            if (maximumContribution == 0)
-                return 0;
-            return (double)value / (double)maximumContribution;
-        }
+        
 
 
         public void ClearDictionaries()
