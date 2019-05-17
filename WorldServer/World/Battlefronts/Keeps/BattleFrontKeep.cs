@@ -196,6 +196,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             BackToSafeTimer = new KeepTimer($"Back to Safe {Info.Name} Keep Timer", 0, BackToSafeTimerLength);
 
             Fortress = isFortress;
+           
         }
 
 
@@ -402,6 +403,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(activeBattleFrontId);
+            RewardManager = activeBattleFrontStatus.RewardManagerInstance;
 
             _logger.Info($"Updating Contribution for Lord Kill. Pending Realm = {PendingRealm}");
             foreach (var plr in lord.Creature.PlayersInRange)
@@ -1972,14 +1974,19 @@ namespace WorldServer.World.Battlefronts.Keeps
         /// </summary>
         public void GenerateKeepTakeRewards()
         {
+            if (RewardManager == null)
+            {
+                _logger.Error("Reward manager is NULL!");
+                return;
+            }
 
             var eligiblitySplits =
-                Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.DetermineEligiblePlayers(_logger, Realm);
+                Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.DetermineEligiblePlayers(_logger, this.PendingRealm);
 
             LootChest orderLootChest = null;
             LootChest destructionLootChest = null;
 
-            if (Realm == Realms.REALMS_REALM_DESTRUCTION)
+            if (this.PendingRealm == Realms.REALMS_REALM_DESTRUCTION)
             {
                 var wc = BattleFrontService.GetWarcampEntrance((ushort)ZoneId, Realms.REALMS_REALM_ORDER);
                 orderLootChest = LootChest.Create(Region, wc, (ushort)ZoneId);
@@ -1988,7 +1995,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ),
                 (ushort)ZoneId);
             }
-            if (Realm == Realms.REALMS_REALM_ORDER)
+            if (this.PendingRealm == Realms.REALMS_REALM_ORDER)
             {
                 var wc = BattleFrontService.GetWarcampEntrance((ushort)ZoneId, Realms.REALMS_REALM_DESTRUCTION);
                 destructionLootChest = LootChest.Create(Region, wc, (ushort)ZoneId);
@@ -2022,7 +2029,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     eligiblitySplits.Item1,
                     eligiblitySplits.Item2,
                     eligiblitySplits.Item3,
-                    Realm,
+                    this.PendingRealm,
                     (ushort)ZoneId, RVRZoneRewardService.RVRRewardKeepItems, destructionLootChest, orderLootChest, Info);
             }
             else
@@ -2032,7 +2039,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     eligiblitySplits.Item1, // all
                     eligiblitySplits.Item2, //winning
                     eligiblitySplits.Item3, //losing
-                    Realm,
+                    this.PendingRealm,
                     (ushort)ZoneId, RVRZoneRewardService.RVRRewardFortItems, destructionLootChest, orderLootChest, Info);
 
             }
@@ -2044,7 +2051,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             RewardManager.DistributeKeepTakeBaseRewards(
                 eligiblitySplits.Item3,
                 eligiblitySplits.Item2, 
-                Realm, 
+                this.PendingRealm, 
                 Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.GetMaximumContribution(), 
                 Tier == 1 ? 0.5f : 1f, 
                 allPlayersInZone,

@@ -51,7 +51,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 crestCount = (ushort) (((ushort) lockReward.ItemCount) + 1);
 
             player.AddXp((uint)(xp), false, false);
-            player.AddRenown((uint)rr, false, RewardType.ZoneKeepCapture, "");
+            player.AddRenown((uint)rr, false, RewardType.None, "");
             player.AddMoney((uint)money);
 
 			if (player.CurrentArea != null)

@@ -897,6 +897,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                                         {
                                             if (destructionLootChest == null)
                                             {
+                                                logger.Warn("Destruction Loot Chest is null");
                                                 MailLootBag(assignedPlayer.CharacterId, generatedLootBag, $"{zone.Name} keep take.");
                                             }
                                             else
@@ -910,6 +911,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                                         {
                                             if (orderLootChest == null)
                                             {
+                                                logger.Warn("Order Loot Chest is null");
                                                 MailLootBag(assignedPlayer.CharacterId, generatedLootBag, $"{zone.Name} keep take.");
                                             }
                                             else
