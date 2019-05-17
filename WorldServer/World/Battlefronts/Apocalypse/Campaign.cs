@@ -1152,7 +1152,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     return;
                 }
 
-                var history = new ZoneLockBagRewardHistory
+                var history = new KeepLockBagRewardHistory
                 {
                     CharacterId = (int)assignedPlayer.CharacterId,
                     BagRarity = generatedLootBag.Key.Rarity,

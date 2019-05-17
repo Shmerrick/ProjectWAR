@@ -4,7 +4,7 @@ using FrameWork;
 namespace Common.Database.World.Battlefront
 {
     // Fixed value of a character 
-    [DataTable(PreCache = false, TableName = "rvr_zone_lock_bag_reward_history", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
+    [DataTable(PreCache = false, TableName = "rvr_keep_lock_bag_reward_history", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class ZoneLockBagRewardHistory : DataObject
     {
