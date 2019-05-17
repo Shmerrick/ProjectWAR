@@ -18,8 +18,8 @@ namespace WorldServer.Services.World
 
         public static List<RVRRewardItem> RVRRewardKeepItems;
         public static List<RVRRewardItem> RVRRewardFortItems;
-        public static List<RVRZoneLockReward> RVRZoneRewards;
-        public static List<RVRKeepLockReward> RVRKeepRewards;
+        public static List<RVRZoneLockReward> RVRZoneLockRewards;
+        public static List<RVRKeepLockReward> RVRKeepLockRewards;
 
         /// <summary>
         /// List of RVR Zone Lock items that are to be considered on a zone lock
@@ -63,22 +63,22 @@ namespace WorldServer.Services.World
         /// List of rewards, regardless of item consideration (ie crests, RR, money, etc)
         /// </summary>
         [LoadingFunction(true)]
-        public static void LoadRVRRewards()
+        public static void LoadRVRZoneLockRewards()
         {
-            Log.Debug("WorldMgr", "Loading RVR Zone Rewards...");
-            RVRZoneRewards = Database.SelectAllObjects<RVRZoneLockReward>() as List<RVRZoneLockReward>;
-            if (RVRZoneRewards != null) Log.Success("RVRZoneReward", "Loaded " + RVRZoneRewards.Count + " RVRZoneReward");
+            Log.Debug("WorldMgr", "Loading RVR Zone Lock Rewards...");
+            RVRZoneLockRewards = Database.SelectAllObjects<RVRZoneLockReward>() as List<RVRZoneLockReward>;
+            if (RVRZoneLockRewards != null) Log.Success("RVRZoneReward", "Loaded " + RVRZoneLockRewards.Count + " RVRZoneReward");
         }
 
         /// <summary>
         /// List of rewards, regardless of item consideration (ie crests, RR, money, etc)
         /// </summary>
         [LoadingFunction(true)]
-        public static void LoadRVRKeepRewards()
+        public static void LoadRVRKeepLockRewards()
         {
-            Log.Debug("WorldMgr", "Loading RVR Keep Rewards...");
-            RVRKeepRewards = Database.SelectAllObjects<RVRKeepLockReward>() as List<RVRKeepLockReward>;
-            if (RVRKeepRewards != null) Log.Success("RVRKeepRewards", "Loaded " + RVRKeepRewards.Count + " RVRKeepRewards");
+            Log.Debug("WorldMgr", "Loading RVR Keep Lock Rewards...");
+            RVRKeepLockRewards = Database.SelectAllObjects<RVRKeepLockReward>() as List<RVRKeepLockReward>;
+            if (RVRKeepLockRewards != null) Log.Success("RVRKeepLockRewards", "Loaded " + RVRKeepLockRewards.Count + " RVRKeepLockRewards");
         }
 
     }

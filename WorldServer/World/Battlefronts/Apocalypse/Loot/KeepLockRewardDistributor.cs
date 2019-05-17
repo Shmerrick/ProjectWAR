@@ -15,28 +15,24 @@ using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
-    public class RewardDistributor
+    public class KeepLockRewardDistributor
     {
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
-        public List<RVRZoneLockReward> ZoneLockRewards { get; private set; }
-
-
         public IRandomGenerator RandomGenerator { get; }
         public List<RVRKeepLockReward> KeepLockRewards { get; set; }
 
-        public RewardDistributor(List<RVRZoneLockReward> zoneLockRewards, IRandomGenerator randomGenerator, List<RVRKeepLockReward> keepLockRewards)
+        public KeepLockRewardDistributor(IRandomGenerator randomGenerator, List<RVRKeepLockReward> keepLockRewards)
         {
-            ZoneLockRewards = zoneLockRewards;
             RandomGenerator = randomGenerator;
             KeepLockRewards = keepLockRewards;
         }
 
-        public void DistributeNonBagAwards(Player player, byte playerRenownBand, double modifier, List<RVRKeepLockReward> rvrKeepRewards)
+        public void DistributeNonBagAwards(Player player, byte playerRenownBand, double modifier)
         {
             if (player == null)
                 return;
 
-            var lockReward = rvrKeepRewards.SingleOrDefault(x => x.RRBand == playerRenownBand);
+            var lockReward = KeepLockRewards.SingleOrDefault(x => x.RRBand == playerRenownBand);
 
             if (lockReward == null)
             {

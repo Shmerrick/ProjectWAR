@@ -51,5 +51,12 @@ namespace WorldServer.World.Battlefronts.Bounty
             float tierRewardScale,
             List<Player> allPlayersInZone,
             List<RVRKeepLockReward> rvrKeepRewards);
+
+        void DistributeZoneFlipBaseRewards(ConcurrentDictionary<Player, int> eligibleLosingRealmPlayers,
+            ConcurrentDictionary<Player, int> eligibleWinningRealmPlayers,
+            Realms lockingRealm,
+            int baselineContribution,
+            float tierRewardScale,
+            List<Player> allPlayersInZone);
     }
 }

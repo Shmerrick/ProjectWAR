@@ -232,7 +232,7 @@ namespace WorldServer.Managers.Commands
                         {
                             plr.SendClientMessage("Lootdefinition is valid");
                             // Only distribute if loot is valid
-                            var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(lootDefinition, plr);
+                            var generatedLootBag = new LootBagBuilder().BuildChestLootBag(lootDefinition, plr);
 
                             if (plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
                                 destructionLootChest.Add(plr.CharacterId, generatedLootBag);

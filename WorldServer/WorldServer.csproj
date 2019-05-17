@@ -434,6 +434,8 @@
     <Compile Include="World\Auction\AuctionHouse.cs" />
     <Compile Include="World\Battlefronts\AAOTracker.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\CampaignMetrics.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\LootBagBuilder.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\ZoneLockRewardDistributor.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\PlayerContributionManager.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\PlayerUtil.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\GuildClaimObjective.cs" />
@@ -482,7 +484,7 @@
     <Compile Include="World\Battlefronts\Apocalypse\Loot\BagContentSelector.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\RandomGenerator.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardAssigner.cs" />
-    <Compile Include="World\Battlefronts\Apocalypse\Loot\RewardDistributor.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\KeepLockRewardDistributor.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\SimpleContribution.cs" />
     <Compile Include="World\Battlefronts\ContributionTracker.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\AAOTracker.cs" />

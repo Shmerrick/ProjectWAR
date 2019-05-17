@@ -102,7 +102,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 
         public RegionLockManager RegionLockManager { get; set; }
-
+        public IRewardManager RewardManager { get; set; }
 
 
 
@@ -1114,8 +1114,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     lockingRealm, 
                     Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.GetMaximumContribution(), 
                     Tier == 1 ? 0.5f : 1f, 
-                    allPlayersInZone,
-                    RVRZoneRewardService.RVRZoneRewards);
+                    allPlayersInZone);
                
 
             }

@@ -2048,7 +2048,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.GetMaximumContribution(), 
                 Tier == 1 ? 0.5f : 1f, 
                 allPlayersInZone,
-                RVRZoneRewardService.RVRKeepRewards);
+                RVRZoneRewardService.RVRKeepLockRewards);
         }
     }
 }
