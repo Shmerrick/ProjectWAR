@@ -266,10 +266,10 @@ namespace WorldServer.World.Battlefronts.Bounty
                         if (selectedPartyMember != null)
                         {
                             if (selectedPartyMember.IsValidForReward(victim))
-                                SetPlayerRVRGearDrop(selectedPartyMember, victim);
-                                    $"{selectedPartyMember.Name} selected for group loot - linked from {selectedKiller.Name}");
-                                RewardLogger.Info(
                             {
+                                PlayerKillPVPDrop(selectedPartyMember, victim);
+                                RewardLogger.Debug(
+                                    $"{selectedPartyMember.Name} selected for group loot - linked from {selectedKiller.Name}");
                             }
                         }
                     }

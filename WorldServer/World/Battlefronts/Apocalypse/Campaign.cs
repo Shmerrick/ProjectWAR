@@ -1048,7 +1048,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                // For all eligible players present them with 5 invader crests
                 foreach (var  player in eligiblitySplits.Item1)
                 {
-                    player.Key.ItmInterface.CreateItem(ItemService.GetItem_Info(208429), (ushort)5);
+                    player.Key.ItmInterface.CreateItem(ItemService.GetItem_Info(208453), (ushort)5);
                     player.Key.SendClientMessage($"You have been awarded 5 Invader Crests.", ChatLogFilters.CHATLOGFILTERS_LOOT);
                 }
                
