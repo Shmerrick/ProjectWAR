@@ -282,7 +282,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 var contributionValue = GetContributionValue(dictionaryItem.Key);
                 summationDictionary.TryAdd(dictionaryItem.Key, contributionValue);
             }
-            // Number of awards = 0 -> return all.
+            // Number of awards = 0 -> return all. Added check for > 6 contribution to ensure afkers get nothing.
             if (numberOfBags == 0)
             {
                 return summationDictionary.Where(x => x.Value > 6).OrderBy(x => x.Value);

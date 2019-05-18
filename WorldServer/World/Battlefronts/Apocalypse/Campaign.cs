@@ -132,6 +132,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             AgainstAllOddsTracker = new AAOTracker();
             _rewardManager = new RVRRewardManager();
             SiegeManager = new SiegeManager();
+            
 
             DestructionDominationTimerLength = 20 * 60;
             DestructionDominationTimerRemaining = DestructionDominationTimerLength;
@@ -1108,13 +1109,20 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 // Get All players in the zone and if they are not in the eligible list, they receive minor awards
                 var allPlayersInZone = PlayerUtil.GetAllFlaggedPlayersInZone((ushort)zoneId);
 
-                RewardManager.DistributeZoneFlipBaseRewards(
+                Region.Campaign.GetActiveBattleFrontStatus().RewardManagerInstance.DistributeZoneFlipBaseRewards(
                     eligiblitySplits.Item3,
                     eligiblitySplits.Item2, 
                     lockingRealm, 
                     Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.GetMaximumContribution(), 
                     Tier == 1 ? 0.5f : 1f, 
                     allPlayersInZone);
+
+               // For all eligible players present them with 5 invader crests
+                foreach (var  player in eligiblitySplits.Item1)
+                {
+                    player.Key.ItmInterface.CreateItem(ItemService.GetItem_Info(208429), (ushort)5);
+                    player.Key.SendClientMessage($"You have been awarded 5 Invader Crests.", ChatLogFilters.CHATLOGFILTERS_LOOT);
+                }
                
 
             }
@@ -1414,11 +1422,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var oldBattleFront = BattleFrontManager.GetActiveBattleFrontFromProgression();
             BattlefrontLogger.Info($"Executing BattleFront Lock on {oldBattleFront.Description} for {lockingRealm}");
             Logger.Info($"***Executing BattleFront Lock on {oldBattleFront.Description} for {lockingRealm}***");
-
-            BattleFrontManager.LockActiveBattleFront(lockingRealm, forceNumberBags);
-
+            // Must be called before locking the battlefront
             GenerateZoneLockRewards(lockingRealm, oldBattleFront.ZoneId);
-
+            BattleFrontManager.LockActiveBattleFront(lockingRealm, forceNumberBags);
             // Remove eligible players.
             ClearDictionaries();
 

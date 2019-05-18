@@ -135,47 +135,50 @@ namespace WorldServer.World.Battlefronts.Keeps
                 totalInfluence = (int)(totalInfluence * (0.25 + keep.PlayersKilledInRange / 40f * 0.75));
             }
 
-            RewardLogger.Info($"Lock XP : {totalXp} RP: {totalRenown}, Influence: {totalInfluence}");
             try
             {
-                RewardLogger.Info($"Processing {eligiblePlayers.Count()} players for Keep lock rewards");
+                RewardLogger.Info($"Processing {playersInRange.Count()} players for Keep lock rewards");
 
-                foreach (var characterId in eligiblePlayers)
+                foreach (var player in playersInRange)
                 {
-                    var player = Player.GetPlayer(characterId.Key);
-
                     if (player == null)
                         continue;
 
                     if (!player.Initialized)
                         continue;
 
-                    if (player.ValidInTier(keep.Tier, true))
-                        player.QtsInterface.HandleEvent(Objective_Type.QUEST_CAPTURE_KEEP, keep.Info.KeepId, 1);
-
-                    RewardLogger.Trace($"Player {player.Name} is valid");
-
-                    player.AddXp((uint)totalXp, false, false);
-                    player.AddRenown((uint)totalRenown, false, RewardType.ZoneKeepCapture, keep.Info.Name);
-
-                    if ((influenceId == 0) && player.CurrentArea != null)
+                    // Player in range must be eligible
+                    if (eligiblePlayers.Any(x => x.Key == player.CharacterId))
                     {
-                        influenceId = player.Realm == Realms.REALMS_REALM_DESTRUCTION
-                            ? player.CurrentArea.DestroInfluenceId
-                            : player.CurrentArea.OrderInfluenceId;
-                        player.AddInfluence((ushort) influenceId, (ushort) totalInfluence);
-                    }
-                    else
-                    {
-                        RewardLogger.Warn($"Player {player.Name} is not in CurrentArea");
-                        totalInfluence = 0;
-                    }
 
-                    if (battlePenalty)
-                        player.SendClientMessage("This keep was taken with little to no resistance. The rewards have therefore been reduced.");
+                        if (player.ValidInTier(keep.Tier, true))
+                            player.QtsInterface.HandleEvent(Objective_Type.QUEST_CAPTURE_KEEP, keep.Info.KeepId, 1);
 
-                    RewardLogger.Info($"Distributing rewards for Keep {keep.Info.Name} to {player.Name} RR:{totalRenown} INF:{totalInfluence}");
-                    
+                        RewardLogger.Trace($"Player {player.Name} is valid");
+
+                        player.AddXp((uint) totalXp, false, false);
+                        player.AddRenown((uint) totalRenown, false, RewardType.ZoneKeepCapture, keep.Info.Name);
+
+                        if ((influenceId == 0) && player.CurrentArea != null)
+                        {
+                            influenceId = player.Realm == Realms.REALMS_REALM_DESTRUCTION
+                                ? player.CurrentArea.DestroInfluenceId
+                                : player.CurrentArea.OrderInfluenceId;
+                            player.AddInfluence((ushort) influenceId, (ushort) totalInfluence);
+                        }
+                        else
+                        {
+                            RewardLogger.Warn($"Player {player.Name} is not in CurrentArea");
+                            totalInfluence = 0;
+                        }
+
+                        if (battlePenalty)
+                            player.SendClientMessage(
+                                "This keep was taken with little to no resistance. The rewards have therefore been reduced.");
+
+                        RewardLogger.Info(
+                            $"Distributing rewards for Keep {keep.Info.Name} to {player.Name} RR:{totalRenown} INF:{totalInfluence}");
+                    }
                 }
 
                 keep.PlayersKilledInRange = 0;

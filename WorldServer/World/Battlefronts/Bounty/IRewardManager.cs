@@ -31,7 +31,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         List<LootBagTypeDefinition> GenerateBagDropAssignments(ConcurrentDictionary<Player, int> realmPlayers,
             int forceNumberBags, int forceDropChance = 100);
 
-        void GenerateKeepTakeRewards(
+        void GenerateKeepTakeLootBags(
             ILogger logger,
             ConcurrentDictionary<Player, int> allEligiblePlayers,
             ConcurrentDictionary<Player, int> winningEligiblePlayers,

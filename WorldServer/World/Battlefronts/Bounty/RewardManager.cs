@@ -821,7 +821,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         }
 
        
-        public void GenerateKeepTakeRewards(
+        public void GenerateKeepTakeLootBags(
             ILogger logger,
             ConcurrentDictionary<Player, int> allEligiblePlayers,
             ConcurrentDictionary<Player, int> winningEligiblePlayers,
@@ -834,7 +834,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             Keep_Info keep,
           int forceNumberBags = 0)
         {
-            logger.Info($"*************************GenerateKeepTakeRewards*************************");
+            logger.Info($"*************************GenerateKeepTakeLootBags*************************");
 
             // Calculate no rewards
             if (forceNumberBags == -1)
