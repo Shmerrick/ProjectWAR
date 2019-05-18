@@ -2018,7 +2018,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 destructionLootChest = LootChest.Create(
                     Region,
                     new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ),
-                    (ushort)ZoneId);
+                    (ushort)ZoneId, false);
 
                 destructionLootChest.SenderName = $"{zone.Name} assault";
                 destructionLootChest.Title = "Successful assault";
@@ -2048,7 +2048,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 orderLootChest = LootChest.Create(
                     Region,
                     new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ),
-                    (ushort)ZoneId);
+                    (ushort)ZoneId, false);
 
                 orderLootChest.SenderName = $"{zone.Name} assault";
                 orderLootChest.Content = "RVR Rewards";
