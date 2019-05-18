@@ -7000,6 +7000,26 @@ namespace WorldServer.World.Objects
         {
             return ItmInterface.HasItemCountInInventory((uint)itemId, (ushort)maxCount);
         }
+
+        public bool IsValidForReward(Player victim)
+        {
+            // Do not reward if player is in another zone to the victim (is afk, or not in pvp)
+            if ((ZoneId != victim.ZoneId) || (IsAFK) || (!CbtInterface.IsPvp) || (IsDisposed) || (PendingDisposal))
+            {
+                RewardLogger.Debug(
+                    $"+ Skipping rewards for {Name} ({CharacterId}) - different zone / afk/ not pvp/scen to victim");
+                return false;
+            }
+                    
+            if (GetObjectInRange(victim.Oid) ==null)
+            {
+                RewardLogger.Debug(
+                    $"+ Skipping rewards for {Name} ({CharacterId})  - distance from victim");
+                return false;
+            }
+
+            return true;
+        }
     }
 }
 

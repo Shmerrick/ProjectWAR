@@ -31,7 +31,8 @@ namespace WorldServer.World.Battlefronts.Bounty
         public const int BASE_INFLUENCE_REWARD = 200;
         public const int BASE_XP_REWARD = 1000;
         public const int REALM_CAPTAIN_INFLUENCE_KILL = 500;
-        public const int REALM_CAPTAIN_RENOWN_KILL = 2000;
+        public const int REALM_CAPTAIN_RENOWN_KILL_SOLO = 1200;
+        public const int REALM_CAPTAIN_RENOWN_KILL_PARTY = 450;
         public const int INSIGNIA_ITEM_ID = 208470;
         public const int PLAYER_DROP_TIER = 50;
         public const float RVR_GEAR_DROP_MINIMUM_IMPACT_FRACTION = 0.1f;
@@ -116,7 +117,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         public void DistributePlayerKillRewards(Player victim, Player killer, float aaoBonus, ushort influenceId, Dictionary<uint, Player> playerDictionary)
         {
-            float ASSIST_CREST_CHANCE = 15f;
+            float ASSIST_CREST_CHANCE = 12f;
             RewardLogger.Info($"=============== START : {victim.Name} killed by {killer.Name}. AAO = {aaoBonus}===============");
             var repeatKillReward = GetRepeatKillModifier(victim, killer);
             RewardLogger.Trace($"+repeatKillReward={repeatKillReward}");
@@ -127,21 +128,11 @@ namespace WorldServer.World.Battlefronts.Bounty
             // impactFractions is CharacterId, and ImpactFraction.
             foreach (var playerReward in impactFractions)
             {
-
-
                 // reward key is the characterId
                 if (playerDictionary.ContainsKey(playerReward.Key))
                 {
                     var playerToBeRewarded = playerDictionary[playerReward.Key];
                     RewardLogger.Info($"+ Assessing rewards for {playerToBeRewarded.Name} ({playerToBeRewarded.CharacterId})");
-
-                    // Do not reward if player is in another zone to the victim
-                    if (playerToBeRewarded.ZoneId != victim.ZoneId)
-                    {
-                        RewardLogger.Info(
-                            $"+ Skipping rewards for {playerToBeRewarded.Name} ({playerToBeRewarded.CharacterId}) - different zone to victim");
-                        continue;
-                    }
 
                     /*
                      * Generate rewards for all those involved in killing the victim, including those out of the group and those within the group of the killer
@@ -153,6 +144,9 @@ namespace WorldServer.World.Battlefronts.Bounty
                         foreach (var member in playerToBeRewarded.PriorityGroup.Members)
                         {
                             RewardLogger.Trace($"+++ Group Rewards for {member.Name} ({member.CharacterId})");
+
+                            if (!member.IsValidForReward(victim))
+                                continue;
 
                             var modificationValue = ImpactMatrixManagerInstance.CalculateModificationValue(victim.BaseBountyValue, member.BaseBountyValue);
                             var shareModifier = (1f / shares);
@@ -235,6 +229,8 @@ namespace WorldServer.World.Battlefronts.Bounty
                     }
                     else // An assist only.
                     {
+                        if (!playerToBeRewarded.IsValidForReward(victim))
+                            continue;
 
                         var hasInsigniaReward = GetInsigniaRewards(ASSIST_CREST_CHANCE * repeatKillReward);
                         var insigniaName = ItemService.GetItem_Info((uint)INSIGNIA_ITEM_ID).Name;
@@ -269,9 +265,12 @@ namespace WorldServer.World.Battlefronts.Bounty
                         var selectedPartyMember = selectedKiller.PriorityGroup.SelectRandomPlayer();
                         if (selectedPartyMember != null)
                         {
-                            RewardLogger.Info(
-                                $"{selectedPartyMember.Name} selected for group loot - linked from {selectedKiller.Name}");
-                            PlayerKillPVPDrop(selectedPartyMember, victim);
+                            if (selectedPartyMember.IsValidForReward(victim))
+                                SetPlayerRVRGearDrop(selectedPartyMember, victim);
+                                    $"{selectedPartyMember.Name} selected for group loot - linked from {selectedKiller.Name}");
+                                RewardLogger.Info(
+                            {
+                            }
                         }
                     }
                     else
@@ -642,29 +641,33 @@ namespace WorldServer.World.Battlefronts.Bounty
         public void RealmCaptainKill(Player victim, Player killer, ushort influenceId, Dictionary<uint, Player> playersByCharId)
         {
             RewardLogger.Info($"Death Blow rewards given to {killer.Name} ({killer.CharacterId}) for realm captain kill");
-            killer.AddInfluence(influenceId, REALM_CAPTAIN_INFLUENCE_KILL);
-            killer.AddRenown(REALM_CAPTAIN_RENOWN_KILL, 1f, false);
-            killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.REALM_CAPTAIN_KILL);
-
-            ushort crests = (ushort)StaticRandom.Instance.Next(10);
-
-            killer.SendClientMessage($"Awarded {crests} Crest(s) to " + killer.Name + " for killing realm captain");
-            killer.SendClientMessage($"Awarded {REALM_CAPTAIN_RENOWN_KILL} RR {REALM_CAPTAIN_INFLUENCE_KILL} INF to " + killer.Name + " for killing realm captain");
-            killer.SendClientMessage($"You have been awarded additional contribution in assisting with the downfall of the enemy");
-            RewardLogger.Trace($"Awarded {crests} Crest(s) to " + killer.Name + " for killing realm captain");
-            killer.ItmInterface.CreateItem(208470, crests);
+            
 
             if (killer.PriorityGroup != null)
             {
                 foreach (var groupMember in killer.PriorityGroup.Members)
                 {
-                    killer.SendClientMessage($"Awarded {1} Crest(s) to " + killer.Name + " for killing realm captain");
+                    groupMember.SendClientMessage($"Awarded {1} Crest(s) to " + killer.Name + " for killing realm captain");
                     RewardLogger.Trace($"Awarded {1} Crest(s) to " + killer.Name + " for killing realm captain");
-                    killer.ItmInterface.CreateItem(208470, 1);
-
-                    killer.AddInfluence(influenceId, (ushort)Math.Floor((double)(REALM_CAPTAIN_INFLUENCE_KILL / killer.PriorityGroup.Members.Count)));
-                    killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.REALM_CAPTAIN_KILL);
+                    groupMember.ItmInterface.CreateItem(208470, 1);
+                    groupMember.AddRenown(REALM_CAPTAIN_RENOWN_KILL_PARTY, 1f, false);       
+                    groupMember.SendClientMessage($"Awarded {REALM_CAPTAIN_RENOWN_KILL_PARTY} RR {(ushort)Math.Floor((double)(REALM_CAPTAIN_INFLUENCE_KILL / killer.PriorityGroup.Members.Count))} INF to " + groupMember.Name + " for killing realm captain");
+                    groupMember.AddInfluence(influenceId, (ushort)Math.Floor((double)(REALM_CAPTAIN_INFLUENCE_KILL / killer.PriorityGroup.Members.Count)));
+                    groupMember.UpdatePlayerBountyEvent((byte)ContributionDefinitions.REALM_CAPTAIN_KILL);
                 }
+            }
+            else
+            {
+                ushort crests = (ushort)StaticRandom.Instance.Next(6);
+                RewardLogger.Trace($"Awarded {crests} Crest(s) to " + killer.Name + " for killing realm captain");
+
+                killer.AddRenown(REALM_CAPTAIN_RENOWN_KILL_SOLO, 1f, false);
+                killer.AddInfluence(influenceId, REALM_CAPTAIN_INFLUENCE_KILL);
+                killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.REALM_CAPTAIN_KILL);
+                killer.SendClientMessage($"Awarded {crests} Crest(s) to " + killer.Name + " for killing realm captain");
+                killer.SendClientMessage($"You have been awarded additional contribution in assisting with the downfall of the enemy");
+                
+                killer.ItmInterface.CreateItem(208470, crests);
             }
         }
 
