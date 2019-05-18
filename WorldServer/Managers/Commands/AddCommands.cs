@@ -225,14 +225,14 @@ namespace WorldServer.Managers.Commands
                         var playerItemList = (from item in plr.ItmInterface.Items where item != null select item.Info.Entry).ToList();
                         var playerRenown = plr.CurrentRenown.Level;
                         var playerClass = plr.Info.CareerLine;
-                        var playerRenownBand = _rewardManager.CalculateRenownBand(playerRenown);
+                        var playerRenownBand = PlayerUtil.CalculateRenownBand(playerRenown);
 
                         var lootDefinition = bagContentSelector.SelectBagContentForPlayer(reward, playerRenownBand, playerClass, playerItemList.ToList(), true);
                         if (lootDefinition.IsValid())
                         {
                             plr.SendClientMessage("Lootdefinition is valid");
                             // Only distribute if loot is valid
-                            var generatedLootBag = WorldMgr.RewardDistributor.BuildChestLootBag(lootDefinition, plr);
+                            var generatedLootBag = new LootBagBuilder().BuildChestLootBag(lootDefinition, plr);
 
                             if (plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
                                 destructionLootChest.Add(plr.CharacterId, generatedLootBag);

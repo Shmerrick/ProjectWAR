@@ -1,11 +1,15 @@
-﻿using Common.Database.World.Battlefront;
+﻿using System;
+using Common.Database.World.Battlefront;
 using GameData;
 using NLog;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Objects;
+using Object = WorldServer.World.Objects.Object;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
@@ -28,7 +32,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         public BountyService BountyService { get; }
 
-        public const short MAXIMUM_CONTRIBUTION = 515;  // based upon sum of all contribution values in bounty_contribution_definition
+        private const short MAXIMUM_CONTRIBUTION = 515;  // based upon sum of all contribution values in bounty_contribution_definition
 
         public ContributionManager(ConcurrentDictionary<uint, List<PlayerContribution>> contributionDictionary, List<ContributionDefinition> contributionFactors)
         {
@@ -278,7 +282,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 var contributionValue = GetContributionValue(dictionaryItem.Key);
                 summationDictionary.TryAdd(dictionaryItem.Key, contributionValue);
             }
-            // Number of awards = 0 -> return all.
+            // Number of awards = 0 -> return all. Added check for > 6 contribution to ensure afkers get nothing.
             if (numberOfBags == 0)
             {
                 return summationDictionary.Where(x => x.Value > 6).OrderBy(x => x.Value);
@@ -361,6 +365,50 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
 
             }
+        }
+
+        /// <summary>
+        /// Split eligible players based upon contribution into "all", "winner", "loser"
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="lockingRealm"></param>
+        /// <returns></returns>
+        public Tuple<ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>> DetermineEligiblePlayers(ILogger logger, Realms lockingRealm)
+        {
+            ConcurrentDictionary<Player, int> winningRealmPlayers;
+            ConcurrentDictionary<Player, int> losingRealmPlayers;
+            ConcurrentDictionary<Player, int> eligiblePlayersAllRealms;
+
+            
+            var allEligiblePlayers = GetEligiblePlayers(0).ToList();
+            // Reverse the order so we have highest eligbility first.
+            allEligiblePlayers.Reverse();
+
+            // var rewardAssignments = new List<LootBagTypeDefinition>();
+
+            // Split the contributing players into segments.
+            var eligibilitySplits = PlayerUtil.SegmentEligiblePlayers(
+                allEligiblePlayers,
+                lockingRealm,
+                this,
+                true,
+                true);
+            // All eligible players that are still in game
+            eligiblePlayersAllRealms = eligibilitySplits.Item1;
+            winningRealmPlayers = eligibilitySplits.Item2;
+            losingRealmPlayers = eligibilitySplits.Item3;
+
+            logger.Debug($"eligiblePlayersAllRealms Players Count = {eligiblePlayersAllRealms.Count()}");
+            logger.Debug($"winningRealmPlayers Players Count = {winningRealmPlayers.Count()}");
+            logger.Debug($"losingRealmPlayers Players Count = {losingRealmPlayers.Count()}");
+
+            return eligibilitySplits;
+
+        }
+
+        public int GetMaximumContribution()
+        {
+            return MAXIMUM_CONTRIBUTION;
         }
     }
 }

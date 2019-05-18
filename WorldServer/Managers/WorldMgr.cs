@@ -65,7 +65,6 @@ namespace WorldServer.Managers
         public static UpperTierCampaignManager UpperTierCampaignManager;
         public static LowerTierCampaignManager LowerTierCampaignManager;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        public static RewardDistributor RewardDistributor;
         public static RVRArea RVRArea = new RVRArea();
 
 

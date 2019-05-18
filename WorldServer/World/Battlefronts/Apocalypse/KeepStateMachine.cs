@@ -124,6 +124,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     .On(Command.OnGuildClaimTimerEnd)
                     .If(Keep.IsNotFortress)
                     .Goto(ProcessState.Safe)
+                    .Execute(() => Keep.GenerateKeepTakeRewards())
                     .Execute(() => Keep.SetKeepSafe());
 
 

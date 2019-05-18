@@ -12,6 +12,7 @@ using SystemData;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
+using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Battlefronts.Objectives;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Map;
@@ -50,6 +51,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public List<KeepSiegeSpawnPoints> SpawnPoints = new List<KeepSiegeSpawnPoints>();
         public GuildClaimObjective GuildFlag { get; set; }
+        public IRewardManager RewardManager { get; set; }
 
         #region timers
         public KeepTimer SeizedTimer;
@@ -194,6 +196,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             BackToSafeTimer = new KeepTimer($"Back to Safe {Info.Name} Keep Timer", 0, BackToSafeTimerLength);
 
             Fortress = isFortress;
+           
         }
 
 
@@ -400,6 +403,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             var activeBattleFrontId = WorldMgr.UpperTierCampaignManager.ActiveBattleFront.BattleFrontId;
             var activeBattleFrontStatus = WorldMgr.UpperTierCampaignManager.GetBattleFrontStatus(activeBattleFrontId);
+            RewardManager = activeBattleFrontStatus.RewardManagerInstance;
 
             _logger.Info($"Updating Contribution for Lord Kill. Pending Realm = {PendingRealm}");
             foreach (var plr in lord.Creature.PlayersInRange)
@@ -407,16 +411,9 @@ namespace WorldServer.World.Battlefronts.Keeps
                 // Add contribution for being in range
 
                 plr.UpdatePlayerBountyEvent((byte)ContributionDefinitions.KILL_KEEP_LORD);
-                //activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.KILL_KEEP_LORD);
-                //var contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.KILL_KEEP_LORD);
-                //plr.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
-
                 if (plr.PriorityGroup?.GetLeader() == plr)
                 {
                     plr.UpdatePlayerBountyEvent((byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
-                    //activeBattleFrontStatus.ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
-                    //contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.GROUP_LEADER_KILL_KEEP_LORD);
-                    //plr.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
                 }
             }
 
@@ -426,7 +423,6 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             // Players with contribution to be rewarded.
             var eligiblePlayers = activeBattleFrontStatus.ContributionManagerInstance.GetEligiblePlayers(0);
-
             KeepRewardManager.KeepLordKill(this, lord.Creature.PlayersInRange, eligiblePlayers);
 
             // Despawn Keep Creatures
@@ -1810,6 +1806,8 @@ namespace WorldServer.World.Battlefronts.Keeps
             {
                 OnLockZone(PendingRealm);
 
+                GenerateKeepTakeRewards();
+
                 // Create Loot Chests at the Fort GoldChest location 
                 var lootChest = LootChest.Create(
                     Region,
@@ -1967,8 +1965,169 @@ namespace WorldServer.World.Battlefronts.Keeps
                 DefenceTickTimer.Start();
             }
         }
+
+        /// <summary>
+        /// Generate Keep Flip rewards.
+        ///
+        /// Winning Realm chest to be placed in the Lords room of the Keep. Losing Realm chest to be placed at the WC entrance.
+        /// </summary>
+        public void GenerateKeepTakeRewards()
+        {
+            bool isFortress = false;
+            if (RewardManager == null)
+            {
+                _logger.Error("Reward manager is NULL!");
+                return;
+            }
+
+            var eligiblitySplits =
+                Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.DetermineEligiblePlayers(_logger, this.PendingRealm);
+
+            var zone = ZoneService.GetZone_Info((ushort)ZoneId);
+
+            var fortZones = new List<int> { 4, 10, 104, 110, 204, 210 };
+            if (fortZones.Contains((ushort) ZoneId))
+            {
+                isFortress = true;
+            }
+
+            RecordKeepEligibilityHistory(eligiblitySplits.Item1, zone, Info, this.PendingRealm);
+
+            LootChest orderLootChest = null;
+            LootChest destructionLootChest = null;
+
+            if (this.PendingRealm == Realms.REALMS_REALM_DESTRUCTION)
+            {
+                if (isFortress)
+                {
+                    // There is no WC in Fort zone - look for the feedin zone.
+                    var spawnPoint = new SpawnPoint(Zone.ZoneId, PlayerSpawnLocation.Value.DefenderKeepSafeX,
+                        PlayerSpawnLocation.Value.DefenderKeepSafeY,
+                        PlayerSpawnLocation.Value.DefenderKeepSafeZ);
+
+                    orderLootChest = LootChest.Create(Region, spawnPoint.As3DPoint(), (ushort)spawnPoint.ZoneId, !isFortress);
+                }
+                else
+                {
+                    var wc = BattleFrontService.GetWarcampEntrance((ushort)ZoneId, Realms.REALMS_REALM_ORDER);    
+                    orderLootChest = LootChest.Create(Region, wc, (ushort)ZoneId, !isFortress);
+                }
+                
+                orderLootChest.SenderName = $"{zone.Name} defence";
+
+                destructionLootChest = LootChest.Create(
+                    Region,
+                    new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ),
+                    (ushort)ZoneId, false);
+
+                destructionLootChest.SenderName = $"{zone.Name} assault";
+                destructionLootChest.Title = "Successful assault";
+            }
+            if (this.PendingRealm == Realms.REALMS_REALM_ORDER)
+            {
+
+                if (isFortress)
+                {
+                    // There is no WC in Fort zone - look for the feedin zone.
+                    var spawnPoint = new SpawnPoint(Zone.ZoneId, PlayerSpawnLocation.Value.DefenderKeepSafeX,
+                        PlayerSpawnLocation.Value.DefenderKeepSafeY,
+                        PlayerSpawnLocation.Value.DefenderKeepSafeZ);
+
+                    destructionLootChest = LootChest.Create(Region, spawnPoint.As3DPoint(), (ushort)spawnPoint.ZoneId, !isFortress);
+                    
+                }
+                else
+                {
+                    var wc = BattleFrontService.GetWarcampEntrance((ushort)ZoneId, Realms.REALMS_REALM_ORDER);    
+                    destructionLootChest = LootChest.Create(Region, wc, (ushort)ZoneId, !isFortress);
+                    
+                }
+                destructionLootChest.SenderName = $"{zone.Name} defence";
+
+
+                orderLootChest = LootChest.Create(
+                    Region,
+                    new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ),
+                    (ushort)ZoneId, false);
+
+                orderLootChest.SenderName = $"{zone.Name} assault";
+                orderLootChest.Content = "RVR Rewards";
+                orderLootChest.Title = "Successful assault";
+            }
+
+            if (orderLootChest == null)
+                _logger.Warn($"Order Loot chest is null");
+            if (destructionLootChest == null)
+                _logger.Warn($"Destruction Loot chest is null");
+
+            _logger.Debug($"Generating rewards for Keep {Info.Name} Zone {ZoneId}");
+
+           if (isFortress)
+            {
+                // Give all players eligible in the Fort zone some warlord crests
+                foreach (var player in eligiblitySplits.Item1)
+                {
+                    _logger.Debug($"Assigning Warlord Crests for Fort Zone Flip {player.Key.Name}");
+                    player.Key.ItmInterface.CreateItem(ItemService.GetItem_Info(208454), (ushort)5);
+                    player.Key.SendClientMessage($"You have been awarded 5 Warlord Crests.", ChatLogFilters.CHATLOGFILTERS_LOOT);
+                }
+
+                RewardManager.GenerateKeepTakeLootBags(
+                    _logger,
+                    eligiblitySplits.Item1,
+                    eligiblitySplits.Item2,
+                    eligiblitySplits.Item3,
+                    this.PendingRealm,
+                    (ushort)ZoneId, RVRZoneRewardService.RVRRewardKeepItems, destructionLootChest, orderLootChest, Info);
+            }
+            else
+            {
+                RewardManager.GenerateKeepTakeLootBags(
+                    _logger,
+                    eligiblitySplits.Item1, // all
+                    eligiblitySplits.Item2, //winning
+                    eligiblitySplits.Item3, //losing
+                    this.PendingRealm,
+                    (ushort)ZoneId, RVRZoneRewardService.RVRRewardFortItems, destructionLootChest, orderLootChest, Info);
+
+            }
+
+            //// Distribute RR, INF, etc to contributing players TODO - Distributor
+            //// Get All players in the zone and if they are not in the eligible list, they receive minor awards
+            //var allPlayersInZone = PlayerUtil.GetAllFlaggedPlayersInZone((ushort)ZoneId);
+
+            //RewardManager.DistributeKeepTakeBaseRewards(
+            //    eligiblitySplits.Item3,
+            //    eligiblitySplits.Item2, 
+            //    this.PendingRealm, 
+            //    Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.GetMaximumContribution(), 
+            //    Tier == 1 ? 0.5f : 1f, 
+            //    allPlayersInZone,
+            //    RVRZoneRewardService.RVRKeepLockRewards);
+        }
+
+        private void RecordKeepEligibilityHistory(ConcurrentDictionary<Player, int> eligiblePlayers, Zone_Info zone, Keep_Info info, Realms lockingRealm)
+        {
+
+            foreach (var eligiblePlayer in eligiblePlayers)
+            {
+                var history = new KeepLockEligibilityHistory
+                {
+                    CharacterId = (int) eligiblePlayer.Key.CharacterId,
+                    CharacterName = eligiblePlayer.Key.Name,
+                    KeepId = info.KeepId,
+                    KeepName = info.Name,
+                    LockingRealm = (int) lockingRealm,
+                    Timestamp = DateTime.UtcNow,
+                    ZoneId = zone.ZoneId,
+                    ZoneName = zone.Name,
+                    CharacterClass = eligiblePlayer.Key.Info.CareerLine,
+                    ContributionValue =  eligiblePlayer.Value
+                };
+
+                WorldMgr.Database.AddObject(history);
+            }
+            
+        }
     }
-
-
-
 }
