@@ -1045,11 +1045,27 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     Tier == 1 ? 0.5f : 1f, 
                     allPlayersInZone);
 
-               // For all eligible players present them with 5 invader crests
+                var fortZones = new List<int> { 4, 10, 104, 110, 204, 210 };
+                if (fortZones.Contains((ushort)zoneId))
+                {
+                    return;
+                }
+
+               // For all eligible players present them with 5 invader crests (only for non-fort zones)
                 foreach (var  player in eligiblitySplits.Item1)
                 {
-                    player.Key.ItmInterface.CreateItem(ItemService.GetItem_Info(208453), (ushort)5);
-                    player.Key.SendClientMessage($"You have been awarded 5 Invader Crests.", ChatLogFilters.CHATLOGFILTERS_LOOT);
+                    try
+                    {
+                        var zoneDescription = Region.Campaign.GetActiveBattleFrontStatus()?.Description;
+                        Logger.Debug($"Assigning Invader Crests for Zone Flip {player.Key.Name}");
+                        player.Key.SendClientMessage($"You have been awarded 5 Invader Crests - check your mail.", ChatLogFilters.CHATLOGFILTERS_LOOT);
+                        Region.Campaign.GetActiveBattleFrontStatus().RewardManagerInstance.MailItem(player.Key.CharacterId, ItemService.GetItem_Info(208453), 5, zoneDescription , "Zone Flip", "Invader crests");
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Warn($"Could not mail invader crests to {player.Key.CharacterId} {ex.Message} {ex.StackTrace}");
+                    }
+
                 }
                
 

@@ -1,5 +1,4 @@
 ﻿using Common;
-using Common;
 using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
@@ -56,7 +55,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             ZoneLockRewardDistributor = new ZoneLockRewardDistributor(new RandomGenerator(), RVRZoneRewardService.RVRZoneLockRewards);
         }
 
-     
+
 
 
         /// <summary>
@@ -494,7 +493,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             Realms lockingRealm,
             int baselineContribution,
             float tierRewardScale,
-            List<Player> allPlayersInZone, 
+            List<Player> allPlayersInZone,
             List<RVRKeepLockReward> rvrKeepRewards)
         {
 
@@ -513,10 +512,10 @@ namespace WorldServer.World.Battlefronts.Bounty
             foreach (var winningRealmPlayer in eligibleWinningRealmPlayers)
             {
                 double contributionScale = CalculateContributonScale(winningRealmPlayer.Value, baselineContribution);
-               KeepLockRewardDistributor.DistributeNonBagAwards(
-                    winningRealmPlayer.Key,
-                    PlayerUtil.CalculateRenownBand(winningRealmPlayer.Key.RenownRank),
-                    (1.5f + contributionScale) * tierRewardScale);
+                KeepLockRewardDistributor.DistributeNonBagAwards(
+                     winningRealmPlayer.Key,
+                     PlayerUtil.CalculateRenownBand(winningRealmPlayer.Key.RenownRank),
+                     (1.5f + contributionScale) * tierRewardScale);
             }
 
             if (allPlayersInZone != null)
@@ -529,10 +528,10 @@ namespace WorldServer.World.Battlefronts.Bounty
                         if (eligibleWinningRealmPlayers.All(x => x.Key.CharacterId != player.CharacterId))
                         {
                             // Give player no bag, but half rewards
-                           KeepLockRewardDistributor.DistributeNonBagAwards(
-                                player,
-                                PlayerUtil.CalculateRenownBand(player.RenownRank),
-                                0.5 * tierRewardScale);
+                            KeepLockRewardDistributor.DistributeNonBagAwards(
+                                 player,
+                                 PlayerUtil.CalculateRenownBand(player.RenownRank),
+                                 0.5 * tierRewardScale);
                         }
                     }
                     else
@@ -541,10 +540,10 @@ namespace WorldServer.World.Battlefronts.Bounty
                         if (eligibleLosingRealmPlayers.All(x => x.Key.CharacterId != player.CharacterId))
                         {
                             // Give player no bag, but quarter rewards
-                           KeepLockRewardDistributor.DistributeNonBagAwards(
-                                player,
-                                PlayerUtil.CalculateRenownBand(player.RenownRank),
-                                0.25 * tierRewardScale);
+                            KeepLockRewardDistributor.DistributeNonBagAwards(
+                                 player,
+                                 PlayerUtil.CalculateRenownBand(player.RenownRank),
+                                 0.25 * tierRewardScale);
                         }
                     }
                 }
@@ -641,7 +640,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         public void RealmCaptainKill(Player victim, Player killer, ushort influenceId, Dictionary<uint, Player> playersByCharId)
         {
             RewardLogger.Info($"Death Blow rewards given to {killer.Name} ({killer.CharacterId}) for realm captain kill");
-            
+
 
             if (killer.PriorityGroup != null)
             {
@@ -650,7 +649,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                     groupMember.SendClientMessage($"Awarded {1} Crest(s) to " + killer.Name + " for killing realm captain");
                     RewardLogger.Trace($"Awarded {1} Crest(s) to " + killer.Name + " for killing realm captain");
                     groupMember.ItmInterface.CreateItem(208470, 1);
-                    groupMember.AddRenown(REALM_CAPTAIN_RENOWN_KILL_PARTY, 1f, false);       
+                    groupMember.AddRenown(REALM_CAPTAIN_RENOWN_KILL_PARTY, 1f, false);
                     groupMember.SendClientMessage($"Awarded {REALM_CAPTAIN_RENOWN_KILL_PARTY} RR {(ushort)Math.Floor((double)(REALM_CAPTAIN_INFLUENCE_KILL / killer.PriorityGroup.Members.Count))} INF to " + groupMember.Name + " for killing realm captain");
                     groupMember.AddInfluence(influenceId, (ushort)Math.Floor((double)(REALM_CAPTAIN_INFLUENCE_KILL / killer.PriorityGroup.Members.Count)));
                     groupMember.UpdatePlayerBountyEvent((byte)ContributionDefinitions.REALM_CAPTAIN_KILL);
@@ -666,7 +665,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.REALM_CAPTAIN_KILL);
                 killer.SendClientMessage($"Awarded {crests} Crest(s) to " + killer.Name + " for killing realm captain");
                 killer.SendClientMessage($"You have been awarded additional contribution in assisting with the downfall of the enemy");
-                
+
                 killer.ItmInterface.CreateItem(208470, crests);
             }
         }
@@ -823,7 +822,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         }
 
-       
+
         public void GenerateKeepTakeLootBags(
             ILogger logger,
             ConcurrentDictionary<Player, int> allEligiblePlayers,
@@ -866,7 +865,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 {
                     logger.Debug($"eligible : {eligiblePlayersAllRealm.Key.Name} ({eligiblePlayersAllRealm.Key.CharacterId}) {eligiblePlayersAllRealm.Key.Realm}");
                 }
-                
+
                 var bagContentSelector = new BagContentSelector(lootOptions, StaticRandom.Instance);
                 var lootBagReportList = new List<KeyValuePair<Item_Info, List<Talisman>>>();
 
@@ -891,7 +890,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                                 logger.Debug($"{assignedPlayer.Info.Name} has received {lootDefinition.FormattedString()}");
                                 logger.Debug($"{lootDefinition.ToString()}");
                                 // Only distribute if loot is valid
-                                var generatedLootBag =KeepLockRewardDistributor.BuildChestLootBag(lootDefinition, assignedPlayer);
+                                var generatedLootBag = KeepLockRewardDistributor.BuildChestLootBag(lootDefinition, assignedPlayer);
 
                                 lootBagReportList.Add(generatedLootBag);
                                 switch (assignedPlayer.Realm)
@@ -944,7 +943,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                     }
                 }
 
-              
+
             }
             catch (Exception e)
             {
@@ -1027,6 +1026,44 @@ namespace WorldServer.World.Battlefronts.Bounty
             }
         }
 
+
+        public void MailItem(uint keyCharacterId, Item_Info itemToSend, int count, string senderName, string title = "", string content = "")
+        {
+            try
+            {
+                var character = CharMgr.GetCharacter(keyCharacterId, false);
+                var characterName = character?.Name;
+
+                Character_mail mail = new Character_mail
+                {
+                    Guid = CharMgr.GenerateMailGuid(),
+                    CharacterId = keyCharacterId, //CharacterId
+                    SenderName = senderName,
+                    ReceiverName = characterName,
+                    SendDate = (uint)TCPManager.GetTimeStamp(),
+                    Title = title,
+                    Content = content,
+                    Money = 0,
+                    Opened = false,
+                    CharacterIdSender = keyCharacterId
+                };
+
+                Logger.Info($"Mail : {characterName} ({keyCharacterId}) {itemToSend.Name} {senderName}");
+
+                MailItem item = new MailItem(itemToSend.Entry, (ushort)count);
+                if (item != null)
+                {
+                    mail.Items.Add(item);
+                    CharMgr.AddMail(mail);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Warn($"{keyCharacterId} :: {e.Message} {e.StackTrace}");
+            }
+
+        }
+
         /// <summary>
         /// Given lists of winning and losing players, return bag drop assignments for winners and losers.
         /// </summary>
@@ -1077,10 +1114,10 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
                 // Scale of player contribution against the highest contributor
                 double contributionScale = CalculateContributonScale(losingRealmPlayer.Value, baselineContribution);
-               ZoneLockRewardDistributor.DistributeNonBagAwards(
-                    losingRealmPlayer.Key,
-                    PlayerUtil.CalculateRenownBand(losingRealmPlayer.Key.RenownRank),
-                    (1f + contributionScale) * tierRewardScale);
+                ZoneLockRewardDistributor.DistributeNonBagAwards(
+                     losingRealmPlayer.Key,
+                     PlayerUtil.CalculateRenownBand(losingRealmPlayer.Key.RenownRank),
+                     (1f + contributionScale) * tierRewardScale);
             }
 
             // Distribute rewards to winning players with eligibility - full rewards.

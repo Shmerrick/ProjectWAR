@@ -58,5 +58,8 @@ namespace WorldServer.World.Battlefronts.Bounty
             int baselineContribution,
             float tierRewardScale,
             List<Player> allPlayersInZone);
+
+        void MailItem(uint keyCharacterId, Item_Info itemToSend, int count, string senderName, string title = "",
+            string content = "");
     }
 }
