@@ -4,6 +4,7 @@ using GameData;
 using NLog;
 using System;
 using SystemData;
+using Common.Database.World.Battlefront;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
@@ -69,6 +70,8 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             return base.ReceiveDamage(caster, damage, hatredScale);
         }
+
+        
 
         public override bool ReceiveDamage(Unit caster, AbilityDamageInfo damageInfo)
         {
@@ -181,43 +184,39 @@ namespace WorldServer.World.Battlefronts.Keeps
         /// <summary>
         /// Scales the lord depending on enemy population.
         /// </summary>
-        public void ScaleLord(int attackerPlayerCount)
+        public void ScaleLord(int defenderPlayerCount)
         {
             if (AbtInterface.NPCAbilities == null)
                 return;
 
-            var oldScaler = _damageScaler;
+            var oldRank = this.Rank;
 
-            if (attackerPlayerCount > 40)
+            if (defenderPlayerCount > 40)
             {
-                _damageScaler = 1.25f;
-            }
-            if (attackerPlayerCount > 20)
-            {
-                _damageScaler = 1.00f;
-            }
-            if (attackerPlayerCount > 10)
-            {
-                _damageScaler = 0.75f;
-            }
-            if (attackerPlayerCount > 6)
-            {
-                _damageScaler = 0.60f;
+                this.Rank = 1;
             }
             else
             {
-                _damageScaler = 0.50f;
+                if (defenderPlayerCount > 20)
+                {
+                    this.Rank = 2;
+                }
+                else
+                {
+                    this.Rank = 3;
+                }
             }
 
-            if (oldScaler > _damageScaler)
+
+            if (oldRank > this.Rank)
             {
                 Say("I grow weaker!", ChatLogFilters.CHATLOGFILTERS_SHOUT);
             }
-            else if (oldScaler < _damageScaler)
+            else if (oldRank < this.Rank)
             {
                 Say("I grow stronger!", ChatLogFilters.CHATLOGFILTERS_SHOUT);
             }
-            _logger.Trace($"Lord Mitigation scaled to {_damageScaler} population {attackerPlayerCount}");
+            _logger.Trace($"Lord Rank scaled to {this.Rank} population {defenderPlayerCount}");
         }
 
 
