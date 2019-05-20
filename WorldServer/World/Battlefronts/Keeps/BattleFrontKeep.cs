@@ -59,11 +59,11 @@ namespace WorldServer.World.Battlefronts.Keeps
         public KeepTimer DefenceTickTimer;
         public KeepTimer BackToSafeTimer;
 
-        public const int DoorRepairTimerLength = 30 * 60;
-        public const int SeizedTimerLength = 1 * 2;
-        public const int LordKilledTimerLength = 1 * 2;
-        public const int DefenceTickTimerLength = 20 * 60;
-        public const int BackToSafeTimerLength = 3 * 60;  // should be "short", as it's the time between def tick and doors up
+        //public const int DoorRepairTimerLength = 30 * 60;
+        //public const int SeizedTimerLength = 1 * 2;
+        //public const int LordKilledTimerLength = 1 * 2;
+        //public const int DefenceTickTimerLength = 20 * 60;
+        //public const int BackToSafeTimerLength = 3 * 60;  // should be "short", as it's the time between def tick and doors up
         #endregion
 
         public List<KeepNpcCreature> Creatures = new List<KeepNpcCreature>();
@@ -190,10 +190,10 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             PlayersCloseToLord = new HashSet<Player>();
 
-            SeizedTimer = new KeepTimer($"GuildClaim Keep {Info.Name} Timer", 0, SeizedTimerLength);
-            LordKilledTimer = new KeepTimer($"Lord Killed {Info.Name} Timer", 0, LordKilledTimerLength);
-            DefenceTickTimer = new KeepTimer($"Defence Tick {Info.Name} Timer", 0, DefenceTickTimerLength);
-            BackToSafeTimer = new KeepTimer($"Back to Safe {Info.Name} Keep Timer", 0, BackToSafeTimerLength);
+            SeizedTimer = new KeepTimer($"GuildClaim Keep {Info.Name} Timer", 0, Program.Config.SeizedTimerLength);
+            LordKilledTimer = new KeepTimer($"Lord Killed {Info.Name} Timer", 0, Program.Config.LordKilledTimerLength);
+            DefenceTickTimer = new KeepTimer($"Defence Tick {Info.Name} Timer", 0, Program.Config.DefenceTickTimerLength);
+            BackToSafeTimer = new KeepTimer($"Back to Safe {Info.Name} Keep Timer", 0, Program.Config.BackToSafeTimerLength);
 
             Fortress = isFortress;
 
@@ -726,7 +726,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             {
                 if (!DoorRepairTimers.ContainsKey(door.GameObject.DoorId))
                 {
-                    DoorRepairTimers.TryAdd(door.GameObject.DoorId, new KeepTimer($"Door {door.GameObject.DoorId} Repair Timer", 0, DoorRepairTimerLength));
+                    DoorRepairTimers.TryAdd(door.GameObject.DoorId, new KeepTimer($"Door {door.GameObject.DoorId} Repair Timer", 0, Program.Config.DoorRepairTimerLength));
                 }
 
             }

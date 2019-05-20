@@ -34,8 +34,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     {
         public static IObjectDatabase Database = null;
 
-        public static int DOMINATION_POINTS_REQUIRED = 6;
-        public static int FORT_DEFENCE_TIMER = 60000;  // 15 mins is 900k.
+        public static int DOMINATION_POINTS_REQUIRED = Program.Config.DominationPointsRequired;
+        public static int FORT_DEFENCE_TIMER = Program.Config.FortDefenceTimer;  // 15 mins is 900k.
         static readonly object LockObject = new object();
 
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
@@ -129,8 +129,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             SiegeManager = new SiegeManager();
             
 
-            DestructionDominationCounter = 20;
-            OrderDominationCounter = 20;
+            DestructionDominationCounter = Program.Config.DestructionDominationTimerLength;
+            OrderDominationCounter = Program.Config.OrderDominationTimerLength;
 
             _EvtInterface.AddEvent(UpdateVictoryPoints, 6000, 0);
 

@@ -49,5 +49,32 @@ namespace WorldServer.Configs
 
         // Networking
         public int PacketCollateLength = 0;
+
+
+        // RVR Configuration
+
+        // Minimum number of defenders to set Lord Rank.
+        public int LordRankOne = 40;        // When there are at least this many defenders, set the Lord's rank to 1 (weakest)
+        public int LordRankTwo = 20;
+        public int LordRankThree = 0;
+
+        public int FortDefenceTimer = 600000;   // Number of MS for a tick (there are 4 ticks) before a Fort Defends itself.
+
+        public int DominationPointsRequired = 6;    // Number of domination points required to start the domination timer.
+        public int DestructionDominationTimerLength = 20;   // Number of minutes for Dest Domination to finish.
+        public int OrderDominationTimerLength = 20;   // Number of minutes for Order Domination to finish.
+
+        public int DoorRepairTimerLength = 30 * 60;
+        public int SeizedTimerLength = 1 * 2;
+        public int LordKilledTimerLength = 1 * 2;
+        public int DefenceTickTimerLength = 20 * 60;
+        public int BackToSafeTimerLength = 3 * 60;  // should be "short"
+
+        public int REALM_CAPTAIN_RENOWN_KILL_SOLO = 1200;
+        public int REALM_CAPTAIN_RENOWN_KILL_PARTY = 450;
+        public int REALM_CAPTAIN_INFLUENCE_KILL = 500;
+        public int REALM_CAPTAIN_KILL_CRESTS = 6;
+        public int REALM_CAPTAIN_ASSIST_CRESTS = 1;
+
     }
 }

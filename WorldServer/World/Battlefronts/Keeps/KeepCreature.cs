@@ -191,13 +191,13 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             var oldRank = this.Rank;
 
-            if (defenderPlayerCount > 40)
+            if (defenderPlayerCount > Program.Config.LordRankOne)
             {
                 this.Rank = 1;
             }
             else
             {
-                if (defenderPlayerCount > 20)
+                if (defenderPlayerCount > Program.Config.LordRankTwo)
                 {
                     this.Rank = 2;
                 }

@@ -341,8 +341,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     }
                 }
 
-                activeRegion.Campaign.DestructionDominationCounter = 20;
-                activeRegion.Campaign.OrderDominationCounter = 20;
+                activeRegion.Campaign.DestructionDominationCounter = Program.Config.DestructionDominationTimerLength;
+                activeRegion.Campaign.OrderDominationCounter = Program.Config.OrderDominationTimerLength;
 
 
                 return ActiveBattleFront;

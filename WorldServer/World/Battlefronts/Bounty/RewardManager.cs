@@ -29,9 +29,6 @@ namespace WorldServer.World.Battlefronts.Bounty
         public const int BASE_MONEY_REWARD = 1000;
         public const int BASE_INFLUENCE_REWARD = 200;
         public const int BASE_XP_REWARD = 1000;
-        public const int REALM_CAPTAIN_INFLUENCE_KILL = 500;
-        public const int REALM_CAPTAIN_RENOWN_KILL_SOLO = 1200;
-        public const int REALM_CAPTAIN_RENOWN_KILL_PARTY = 450;
         public const int INSIGNIA_ITEM_ID = 208470;
         public const int PLAYER_DROP_TIER = 50;
         public const float RVR_GEAR_DROP_MINIMUM_IMPACT_FRACTION = 0.1f;
@@ -648,20 +645,20 @@ namespace WorldServer.World.Battlefronts.Bounty
                 {
                     groupMember.SendClientMessage($"Awarded {1} Crest(s) to " + killer.Name + " for killing realm captain");
                     RewardLogger.Trace($"Awarded {1} Crest(s) to " + killer.Name + " for killing realm captain");
-                    groupMember.ItmInterface.CreateItem(208470, 1);
-                    groupMember.AddRenown(REALM_CAPTAIN_RENOWN_KILL_PARTY, 1f, false);
-                    groupMember.SendClientMessage($"Awarded {REALM_CAPTAIN_RENOWN_KILL_PARTY} RR {(ushort)Math.Floor((double)(REALM_CAPTAIN_INFLUENCE_KILL / killer.PriorityGroup.Members.Count))} INF to " + groupMember.Name + " for killing realm captain");
-                    groupMember.AddInfluence(influenceId, (ushort)Math.Floor((double)(REALM_CAPTAIN_INFLUENCE_KILL / killer.PriorityGroup.Members.Count)));
+                    groupMember.ItmInterface.CreateItem(208470, (ushort)Program.Config.REALM_CAPTAIN_ASSIST_CRESTS);
+                    groupMember.AddRenown((uint) Program.Config.REALM_CAPTAIN_RENOWN_KILL_PARTY, 1f, false);
+                    groupMember.SendClientMessage($"Awarded {Program.Config.REALM_CAPTAIN_RENOWN_KILL_PARTY} RR {(ushort)Math.Floor((double)(Program.Config.REALM_CAPTAIN_INFLUENCE_KILL / killer.PriorityGroup.Members.Count))} INF to " + groupMember.Name + " for killing realm captain");
+                    groupMember.AddInfluence(influenceId, (ushort)Math.Floor((double)(Program.Config.REALM_CAPTAIN_INFLUENCE_KILL / killer.PriorityGroup.Members.Count)));
                     groupMember.UpdatePlayerBountyEvent((byte)ContributionDefinitions.REALM_CAPTAIN_KILL);
                 }
             }
             else
             {
-                ushort crests = (ushort)StaticRandom.Instance.Next(6);
+                ushort crests = (ushort)StaticRandom.Instance.Next(Program.Config.REALM_CAPTAIN_KILL_CRESTS);
                 RewardLogger.Trace($"Awarded {crests} Crest(s) to " + killer.Name + " for killing realm captain");
 
-                killer.AddRenown(REALM_CAPTAIN_RENOWN_KILL_SOLO, 1f, false);
-                killer.AddInfluence(influenceId, REALM_CAPTAIN_INFLUENCE_KILL);
+                killer.AddRenown((uint) Program.Config.REALM_CAPTAIN_RENOWN_KILL_SOLO, 1f, false);
+                killer.AddInfluence(influenceId, (ushort) Program.Config.REALM_CAPTAIN_INFLUENCE_KILL);
                 killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.REALM_CAPTAIN_KILL);
                 killer.SendClientMessage($"Awarded {crests} Crest(s) to " + killer.Name + " for killing realm captain");
                 killer.SendClientMessage($"You have been awarded additional contribution in assisting with the downfall of the enemy");
