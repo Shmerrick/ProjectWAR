@@ -368,7 +368,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 return;
             }
 
-            //ScaleLord(PlayersInRange.Count(x => x.Realm == Realm));
+           // ScaleLord(PlayersInRange.Count(x => x.Realm != Realm));
         }
 
 
@@ -1123,11 +1123,11 @@ namespace WorldServer.World.Battlefronts.Keeps
         /// <summary>
         ///     Scales the lord depending on defender population.
         /// </summary>
-        public void ScaleLord(int defenderPlayerCount)
+        public void ScaleLord(int attackerPlayerCount)
         {
             foreach (var crea in Creatures)
                 if (crea.Creature != null && crea.Info.KeepLord)
-                    crea.Creature.ScaleLord(defenderPlayerCount);
+                    crea.Creature.ScaleLord(attackerPlayerCount);
         }
 
         #endregion

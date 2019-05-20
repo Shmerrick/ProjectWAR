@@ -181,31 +181,33 @@ namespace WorldServer.World.Battlefronts.Keeps
         /// <summary>
         /// Scales the lord depending on enemy population.
         /// </summary>
-        public void ScaleLord(int defenderPlayerCount)
+        public void ScaleLord(int attackerPlayerCount)
         {
             if (AbtInterface.NPCAbilities == null)
                 return;
 
             var oldScaler = _damageScaler;
 
-            // Player count is number of defenders in range of the lord
-            if (defenderPlayerCount > 40)
+            if (attackerPlayerCount > 40)
             {
-                _damageScaler = 0.25f;
+                _damageScaler = 1.25f;
             }
-            if (defenderPlayerCount > 20)
+            if (attackerPlayerCount > 20)
             {
-                _damageScaler = 0.40f;
+                _damageScaler = 1.00f;
             }
-            if (defenderPlayerCount > 10)
+            if (attackerPlayerCount > 10)
             {
-                _damageScaler = 0.50f;
+                _damageScaler = 0.75f;
             }
-            if (defenderPlayerCount > 6)
+            if (attackerPlayerCount > 6)
             {
                 _damageScaler = 0.60f;
             }
-            _damageScaler = defenderPlayerCount > 1 ? 0.70f : 1.00f;
+            else
+            {
+                _damageScaler = 0.50f;
+            }
 
             if (oldScaler > _damageScaler)
             {
@@ -215,7 +217,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             {
                 Say("I grow stronger!", ChatLogFilters.CHATLOGFILTERS_SHOUT);
             }
-            _logger.Trace($"Lord DPS scaled to {_damageScaler} population {defenderPlayerCount}");
+            _logger.Trace($"Lord Mitigation scaled to {_damageScaler} population {attackerPlayerCount}");
         }
 
 

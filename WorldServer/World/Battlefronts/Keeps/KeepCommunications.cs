@@ -55,7 +55,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                         player.SendCopy(Out);
                 }
 
-            _logger.Debug($"F_KEEP_STATUS {keep.Info.Name} Status : {keep.KeepStatus} ");
+            _logger.Trace($"F_KEEP_STATUS {keep.Info.Name} Status : {keep.KeepStatus} ");
         }
 
     }

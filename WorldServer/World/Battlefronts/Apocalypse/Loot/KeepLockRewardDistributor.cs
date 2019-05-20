@@ -70,7 +70,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 player.SendClientMessage($"You have been awarded {(ushort) crestCount} war crests.");
             }
 
-            RewardLogger.Info($"RR {rr} Money {money} INF {influence} Crests {(uint)lockReward.ItemId} ({(ushort)crestCount}) to {player.Name}. Modifier = {modifier}");
+            RewardLogger.Info($"RR {rr} Money {money} INF {influence} Crests {(uint)lockReward.ItemId} ({(ushort)crestCount}) to {player.Name} {player.CharacterId}. Modifier = {modifier}");
         }
 
         

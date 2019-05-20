@@ -4734,14 +4734,16 @@ namespace WorldServer.Managers.Commands
             if (count == "")
                 return true;
 
-            var character = CharMgr.GetCharacter(characterId, false);
+            var character = CharMgr.GetCharacter(Convert.ToUInt32(characterId), true);
             var characterName = character?.Name;
+
+            
 
             Character_mail mail = new Character_mail
             {
                 Guid = CharMgr.GenerateMailGuid(),
                 CharacterId = Convert.ToUInt32(characterId), //CharacterId
-                SenderName = character.Name,
+                SenderName = plr.Name,
                 ReceiverName = characterName,
                 SendDate = (uint)TCPManager.GetTimeStamp(),
                 Title = "",
