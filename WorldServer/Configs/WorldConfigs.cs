@@ -70,9 +70,9 @@ namespace WorldServer.Configs
         public int DefenceTickTimerLength = 20 * 60;
         public int BackToSafeTimerLength = 3 * 60;  // should be "short"
 
-        public int REALM_CAPTAIN_RENOWN_KILL_SOLO = 1200;
-        public int REALM_CAPTAIN_RENOWN_KILL_PARTY = 450;
-        public int REALM_CAPTAIN_INFLUENCE_KILL = 500;
+        public int REALM_CAPTAIN_RENOWN_KILL_SOLO = 1200;  // RP for killing RC solo
+        public int REALM_CAPTAIN_RENOWN_KILL_PARTY = 450;  // RP for killing RC as part of a party
+        public int REALM_CAPTAIN_INFLUENCE_KILL = 500;    // INF for killing RC solo
         public int REALM_CAPTAIN_KILL_CRESTS = 6;
         public int REALM_CAPTAIN_ASSIST_CRESTS = 1;
 

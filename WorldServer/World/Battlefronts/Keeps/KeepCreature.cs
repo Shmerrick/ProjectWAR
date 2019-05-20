@@ -21,6 +21,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         /// <summary>Incoming damage scaler from 0.25 to 1<summary>
         private volatile float _damageScaler = 1f;
         public AIInterface NearAiInterface = null;
+        public int DefenceRank { get; set; }
 
         public KeepCreature(Creature_spawn spawn, KeepNpcCreature flagGuard, BattleFrontKeep keep) : base(spawn)
         {
@@ -28,6 +29,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             FlagGuard = flagGuard;
             IsKeepLord = flagGuard.Info.KeepLord;
             IsPatrol = flagGuard.Info.IsPatrol;
+            DefenceRank = 3;
 
             EvtInterface.AddEventNotify(EventName.OnReceiveDamage, OnReceiveDamage);
         }
@@ -189,37 +191,51 @@ namespace WorldServer.World.Battlefronts.Keeps
             if (AbtInterface.NPCAbilities == null)
                 return;
 
-            var oldRank = this.Rank;
+            var oldRank = this.DefenceRank;
 
             if (defenderPlayerCount > Program.Config.LordRankOne)
             {
-                this.Rank = 1;
+                this.DefenceRank = 1;
             }
             else
             {
                 if (defenderPlayerCount > Program.Config.LordRankTwo)
                 {
-                    this.Rank = 2;
+                    this.DefenceRank = 2;
                 }
                 else
                 {
-                    this.Rank = 3;
+                    this.DefenceRank = 3;
                 }
             }
 
 
-            if (oldRank > this.Rank)
+            if (oldRank > this.DefenceRank)
             {
                 Say("I grow weaker!", ChatLogFilters.CHATLOGFILTERS_SHOUT);
             }
-            else if (oldRank < this.Rank)
+            else if (oldRank < this.DefenceRank)
             {
                 Say("I grow stronger!", ChatLogFilters.CHATLOGFILTERS_SHOUT);
             }
             _logger.Trace($"Lord Rank scaled to {this.Rank} population {defenderPlayerCount}");
         }
 
+        public override ushort GetStrikeDamage()
+        {
+            ushort strikeDamage = (ushort)(50f * Level); // Normal NPC
+            switch (DefenceRank)
+            {
+                case 1: strikeDamage = (ushort)(120f * Level); break; // Champ
+                case 2: strikeDamage = (ushort)(300f * Level); break; // Hero
+                case 3: strikeDamage = (ushort)(700f * Level); break; // Lord
+            }
 
+            if (Spawn.Proto.WeaponDPS != 0)
+                strikeDamage = (ushort)(Spawn.Proto.WeaponDPS * Level); // Override
+
+            return strikeDamage;
+        }
 
         public override void RezUnit()
         {
