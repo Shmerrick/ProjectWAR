@@ -188,8 +188,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         /// </summary>
         public void ScaleLord(int defenderPlayerCount)
         {
-            if (AbtInterface.NPCAbilities == null)
-                return;
+            
 
             var oldRank = this.DefenceRank;
 
