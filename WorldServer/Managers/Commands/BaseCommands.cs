@@ -4721,6 +4721,59 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        public static bool MailItem(Player plr, ref List<string> values)
+        {
+            var characterId = values[0];
+            var itemId = values[1];
+            var count = values[2];
+
+            if (characterId == "")
+                return true;
+            if (itemId == "")
+                return true;
+            if (count == "")
+                return true;
+
+            var character = CharMgr.GetCharacter(characterId, false);
+            var characterName = character?.Name;
+
+            Character_mail mail = new Character_mail
+            {
+                Guid = CharMgr.GenerateMailGuid(),
+                CharacterId = Convert.ToUInt32(characterId), //CharacterId
+                SenderName = character.Name,
+                ReceiverName = characterName,
+                SendDate = (uint)TCPManager.GetTimeStamp(),
+                Title = "",
+                Content = "",
+                Money = 0,
+                Opened = false,
+                CharacterIdSender = plr.CharacterId
+            };
+
+            MailItem item = new MailItem(Convert.ToUInt32(itemId), Convert.ToUInt16(count));
+            if (item != null)
+            {
+                mail.Items.Add(item);
+                CharMgr.AddMail(mail);
+            }
+
+            plr.SendClientMessage($"MAIL Item {itemId} x{count} to {characterId}");
+
+            GMCommandLog log = new GMCommandLog
+            {
+                PlayerName = plr.Name,
+                AccountId = (uint)plr.Client._Account.AccountId,
+                Command = $"MAIL Item {itemId} x{count} to {characterId}",
+                Date = DateTime.Now
+            };
+
+            CharMgr.Database.AddObject(log);
+
+            return true;
+
+        }
+
         public static bool CheckPlayerHonor(Player plr, ref List<string> values)
         {
             plr.SendClientMessage(

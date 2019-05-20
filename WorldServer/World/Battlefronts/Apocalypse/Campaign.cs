@@ -35,7 +35,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static IObjectDatabase Database = null;
 
         public static int DOMINATION_POINTS_REQUIRED = 6;
-        public static int FORT_DEFENCE_TIMER = 600000;  // 15 mins is 900k.
+        public static int FORT_DEFENCE_TIMER = 60000;  // 15 mins is 900k.
         static readonly object LockObject = new object();
 
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
@@ -353,7 +353,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             DestructionDominationCounter--;
 
-            if (DestructionDominationCounter == 0)
+            if (DestructionDominationCounter <= 0)
             {
                 BattlefrontLogger.Info($"Destruction Domination Victory!");
                 NotifyPlayersOfDomination($"Destruction Domination Victory!", status);
@@ -404,7 +404,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             OrderDominationCounter--;
 
-            if (OrderDominationCounter == 0)
+            if (OrderDominationCounter <= 0)
             {
                 BattlefrontLogger.Info($"Order Domination Victory!");
                 NotifyPlayersOfDomination($"Order Domination Victory!", status);
@@ -979,7 +979,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattlefrontLogger.Warn($"No players in the Lake!!");
             if (_rewardManager == null)
                 BattlefrontLogger.Warn($"_rewardManager is null!!");
-
 
             BattlefrontLogger.Info($"*************************BATTLEFRONT LOCK-END [LockId:{lockId}] *********************");
 

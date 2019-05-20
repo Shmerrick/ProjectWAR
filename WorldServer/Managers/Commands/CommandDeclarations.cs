@@ -485,6 +485,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("creategoldchest", CreateGoldChest, null, EGmLevel.SourceDev, 0, "Summon a GoldChest"),
             new GmCommandHandler("forcelockzone", ForceLockZone, null, EGmLevel.SourceDev, 0, "Force Lock a Fort Zone"),
             new GmCommandHandler("honor", CheckPlayerHonor, null, EGmLevel.Anyone, 0, "Checks a player's honor rank"),
+            new GmCommandHandler("mailitem", MailItem, null, EGmLevel.Anyone, 3, "Mail an item to a character"),
 
 
 

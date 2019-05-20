@@ -341,6 +341,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     }
                 }
 
+                activeRegion.Campaign.DestructionDominationCounter = 20;
+                activeRegion.Campaign.OrderDominationCounter = 20;
+
+
                 return ActiveBattleFront;
             }
             catch (Exception e)

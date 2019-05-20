@@ -263,6 +263,8 @@ namespace WorldServer.World.Battlefronts.Keeps
                     //    SendRegionMessage($"The Dark gods have blessed the fortress defenders." + 
                     //                      $"Chaos will spread across the Old World with renewed strength."); 
 
+                    GenerateKeepTakeRewards();
+
                     // Lock the keep for the defending realm 
                     OnLockZone((Realms)Info.Realm);
 
@@ -1974,11 +1976,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         public void GenerateKeepTakeRewards()
         {
             bool isFortress = false;
-            if (RewardManager == null)
-            {
-                _logger.Error("Reward manager is NULL!");
-                return;
-            }
+          
 
             var eligiblitySplits =
                 Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.DetermineEligiblePlayers(_logger, PendingRealm);
@@ -2071,7 +2069,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     {
                         _logger.Debug($"Assigning Warlord Crests for Fort Zone Flip {player.Key.Name}");
                         player.Key.SendClientMessage($"You have been awarded 5 Warlord Crests - check your mail.", ChatLogFilters.CHATLOGFILTERS_LOOT);
-                        RewardManager.MailItem(player.Key.CharacterId, ItemService.GetItem_Info(208454), 5, Info.Name, "Fortress Battle", "Warlord crests");
+                        Region.Campaign.GetActiveBattleFrontStatus().RewardManagerInstance.MailItem(player.Key.CharacterId, ItemService.GetItem_Info(208454), 5, Info.Name, "Fortress Battle", "Warlord crests");
                     }
                     catch (Exception)
                     {
@@ -2080,7 +2078,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 }
 
 
-                RewardManager.GenerateKeepTakeLootBags(
+                Region.Campaign.GetActiveBattleFrontStatus().RewardManagerInstance.GenerateKeepTakeLootBags(
                     _logger,
                     eligiblitySplits.Item1,
                     eligiblitySplits.Item2,
@@ -2090,7 +2088,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             }
             else
             {
-                RewardManager.GenerateKeepTakeLootBags(
+                Region.Campaign.GetActiveBattleFrontStatus().RewardManagerInstance.GenerateKeepTakeLootBags(
                     _logger,
                     eligiblitySplits.Item1, // all
                     eligiblitySplits.Item2, //winning
