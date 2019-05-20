@@ -980,7 +980,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 var history = new KeepLockBagRewardHistory
                 {
                     CharacterId = (int)assignedPlayer.CharacterId,
-                    BagRarity = generatedLootBag.Key.Rarity,
+                    BagRarity = (int) generatedLootBag.Key.Entry,
                     CharacterName = assignedPlayer.Name,
                     ItemId = (int)item.Entry,
                     ItemName = itemDetails.Name,

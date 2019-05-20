@@ -1077,58 +1077,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         }
 
-        private void RecordZoneLockBagRewardHistory(Player assignedPlayer, KeyValuePair<Item_Info, List<Talisman>> generatedLootBag, Realms lockingRealm)
-        {
-            BattlefrontLogger.Debug($"Recording zone lock bag reward history for {assignedPlayer.Name} ({assignedPlayer.CharacterId}) {generatedLootBag.Key.Name}");
-            try
-            {
-                var zone = ZoneService.GetZone_Info((ushort)assignedPlayer.ZoneId);
-                if (zone == null)
-                {
-                    BattlefrontLogger.Warn($"Zone {assignedPlayer.ZoneId} returns null");
-                    return;
-                }
-
-                var item = generatedLootBag.Value[0];
-                if (item == null)
-                {
-                    BattlefrontLogger.Warn($"Item for {assignedPlayer.Name} returns null");
-                    return;
-                }
-                var itemDetails = ItemService.GetItem_Info(item.Entry);
-                if (itemDetails == null)
-                {
-                    BattlefrontLogger.Warn($"Item {item.Entry} does not exist");
-                    return;
-                }
-
-                var history = new KeepLockBagRewardHistory
-                {
-                    CharacterId = (int)assignedPlayer.CharacterId,
-                    BagRarity = generatedLootBag.Key.Rarity,
-                    CharacterName = assignedPlayer.Name,
-                    ItemId = (int)item.Entry,
-                    ItemName = itemDetails.Name,
-                    LockingRealm = (int)lockingRealm,
-                    ZoneId = (int)assignedPlayer.ZoneId,
-                    ZoneName = zone.Name,
-                    Timestamp = DateTime.UtcNow
-                };
-                WorldMgr.Database.AddObject(history);
-            }
-            catch (Exception e)
-            {
-                BattlefrontLogger.Error($"{e.Message}{e.StackTrace}");
-            }
-        }
-
-        
-
-
-        
-
-
-        
 
 
         public void ClearDictionaries()
