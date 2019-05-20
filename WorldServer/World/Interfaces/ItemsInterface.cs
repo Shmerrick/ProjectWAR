@@ -2882,7 +2882,7 @@ namespace WorldServer.World.Interfaces
                     foreach (ItemSetBonusInfo info in bonusList)
                     {
                         if (info.ActionType == 3)  // remove stats
-                            _playerOwner.StsInterface.RemoveItemBonusStat((Stats)info.StatOrSpell, info.Value);
+                            _playerOwner.StsInterface.RemoveItemBonusStat((Stats)info.StatOrSpell, info.Value, info.Percentage);
                         else
                         {
                             BuffInfo buffInfo = AbilityMgr.GetBuffInfo(info.StatOrSpell);
@@ -2930,7 +2930,7 @@ namespace WorldServer.World.Interfaces
                             info.StatOrSpell = 25;
                         }
                         if (info.ActionType == 3)
-                            _playerOwner.StsInterface.AddItemBonusStat((Stats)info.StatOrSpell, info.Value);
+                            _playerOwner.StsInterface.AddItemBonusStat((Stats)info.StatOrSpell, info.Value, info.Percentage);
                         else
                         {
                             _logger.Debug($"{_playerOwner.Name} finding buff {info.StatOrSpell} ");
