@@ -607,6 +607,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             DefenceTickTimer.Start();
 
             //DoorRepairTimers[doorId] = new KeepTimer($"Door {doorId} Repair Timer", 0, DoorRepairTimerLength);
+            //DoorRepairTimers[doorId] = new KeepTimer($"Door {doorId} Repair Timer", 0, DoorRepairTimerLength);
             //DoorRepairTimers[doorId].Start();
 
             KeepStatus = KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK;

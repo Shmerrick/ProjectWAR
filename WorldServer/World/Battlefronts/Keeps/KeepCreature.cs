@@ -188,7 +188,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         /// </summary>
         public void ScaleLord(int defenderPlayerCount)
         {
-            
+            return;
 
             var oldRank = this.DefenceRank;
 
@@ -220,21 +220,21 @@ namespace WorldServer.World.Battlefronts.Keeps
             _logger.Trace($"Lord Rank scaled to {this.Rank} population {defenderPlayerCount}");
         }
 
-        public override ushort GetStrikeDamage()
-        {
-            ushort strikeDamage = (ushort)(50f * Level); // Normal NPC
-            switch (DefenceRank)
-            {
-                case 1: strikeDamage = (ushort)(120f * Level); break; // Champ
-                case 2: strikeDamage = (ushort)(300f * Level); break; // Hero
-                case 3: strikeDamage = (ushort)(700f * Level); break; // Lord
-            }
+        //public override ushort GetStrikeDamage()
+        //{
+        //    ushort strikeDamage = (ushort)(50f * Level); // Normal NPC
+        //    switch (DefenceRank)
+        //    {
+        //        case 1: strikeDamage = (ushort)(120f * Level); break; // Champ
+        //        case 2: strikeDamage = (ushort)(300f * Level); break; // Hero
+        //        case 3: strikeDamage = (ushort)(700f * Level); break; // Lord
+        //    }
 
-            if (Spawn.Proto.WeaponDPS != 0)
-                strikeDamage = (ushort)(Spawn.Proto.WeaponDPS * Level); // Override
+        //    if (Spawn.Proto.WeaponDPS != 0)
+        //        strikeDamage = (ushort)(Spawn.Proto.WeaponDPS * Level); // Override
 
-            return strikeDamage;
-        }
+        //    return strikeDamage;
+        //}
 
         public override void RezUnit()
         {
