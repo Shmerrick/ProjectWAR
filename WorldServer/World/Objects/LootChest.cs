@@ -26,8 +26,7 @@ namespace WorldServer.World.Objects
         public string SenderName { get; set; }
         public string Content { get; set; }
 
-        //EvtInterface.AddEvent(Destroy, 180 * 1000, 1);
-
+        
         public LootChest(GameObject_spawn spawn)
         {
             Spawn = spawn;
@@ -102,6 +101,12 @@ namespace WorldServer.World.Objects
                     var character = CharMgr.GetCharacter(lootBag.Key, false);
                     var characterName = character?.Name;
 
+                    // Forced to have some value here.
+                    if (Content == null)
+                        Content = "mail";
+                    if (String.IsNullOrEmpty(Content))
+                        Content = "mail";
+
                     Character_mail mail = new Character_mail
                     {
                         Guid = CharMgr.GenerateMailGuid(),
@@ -122,11 +127,14 @@ namespace WorldServer.World.Objects
                         mail.Items.Add(item);
                         CharMgr.AddMail(mail);
                     }
+
+                
+
                 }
             }
-            catch (NullReferenceException)
+            catch (Exception ex)
             {
-                Log.Error("LootChest", "Failed to mail loot.");
+                Log.Error("LootChest", $"Failed to mail loot. {ex.Message} {ex.StackTrace}");
             }
 
             

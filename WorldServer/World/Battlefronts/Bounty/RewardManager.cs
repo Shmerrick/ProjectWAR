@@ -897,7 +897,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                                             if (destructionLootChest == null)
                                             {
                                                 logger.Warn("Destruction Loot Chest is null");
-                                                MailLootBag(assignedPlayer.CharacterId, generatedLootBag, $"{zone.Name} keep take.");
+                                                MailLootBag(assignedPlayer.CharacterId, generatedLootBag, $"{zone.Name} keep take.", "Reward", "Reward");
                                             }
                                             else
                                             {
@@ -911,7 +911,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                                             if (orderLootChest == null)
                                             {
                                                 logger.Warn("Order Loot Chest is null");
-                                                MailLootBag(assignedPlayer.CharacterId, generatedLootBag, $"{zone.Name} keep take.");
+                                                MailLootBag(assignedPlayer.CharacterId, generatedLootBag, $"{zone.Name} keep take.", "Reward", "Reward");
                                             }
                                             else
                                             {
@@ -1024,7 +1024,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         }
 
 
-        public void MailItem(uint keyCharacterId, Item_Info itemToSend, int count, string senderName, string title = "", string content = "")
+        public void MailItem(uint keyCharacterId, Item_Info itemToSend, int count, string senderName, string title = "", string content = "mail")
         {
             try
             {
