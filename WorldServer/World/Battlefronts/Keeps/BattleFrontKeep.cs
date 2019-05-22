@@ -2074,7 +2074,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     }
                     catch (Exception)
                     {
-                        _logger.Warn($"Could not mail warlord crests to {player.Key.CharacterId}");
+                        _logger.Warn($"Could not mail warlord crests (5) to {player.Key.CharacterId}");
                     }
                 }
 

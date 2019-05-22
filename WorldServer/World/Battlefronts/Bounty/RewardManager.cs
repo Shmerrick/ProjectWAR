@@ -880,7 +880,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                             var playerClass = assignedPlayer.Info.CareerLine;
                             var playerRenownBand = PlayerUtil.CalculateRenownBand(playerRenown);
 
-                            var lootDefinition = bagContentSelector.SelectBagContentForPlayer(reward, playerRenownBand, playerClass, playerItemList.ToList(), true);
+                            var lootDefinition = bagContentSelector.SelectBagContentForPlayer(Logger, reward, playerRenownBand, playerClass, playerItemList.ToList(), true);
                             logger.Debug($"Award to be handed out : {lootDefinition.ToString()}");
                             if (lootDefinition.IsValid())
                             {

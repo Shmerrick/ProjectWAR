@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SystemData;
 using GameData;
+using NLog;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
@@ -19,7 +20,7 @@ namespace WorldServer.Managers.Commands
     /// <summary>Addition commands under .add</summary>
     internal class AddCommands
     {
-
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Add xp to player
         /// </summary>
@@ -227,7 +228,7 @@ namespace WorldServer.Managers.Commands
                         var playerClass = plr.Info.CareerLine;
                         var playerRenownBand = PlayerUtil.CalculateRenownBand(playerRenown);
 
-                        var lootDefinition = bagContentSelector.SelectBagContentForPlayer(reward, playerRenownBand, playerClass, playerItemList.ToList(), true);
+                        var lootDefinition = bagContentSelector.SelectBagContentForPlayer(_logger, reward, playerRenownBand, playerClass, playerItemList.ToList(), true);
                         if (lootDefinition.IsValid())
                         {
                             plr.SendClientMessage("Lootdefinition is valid");

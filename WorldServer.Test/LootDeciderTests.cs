@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Common.Database.World.Battlefront;
 using FrameWork;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NLog;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Objects;
@@ -17,6 +18,7 @@ namespace WorldServer.Test
     {
         public List<RVRRewardItem> SampleZoneItemOptions { get; set; }
         public List<uint> SamplePlayerItems { get; set; }
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         [TestInitialize]
         public void Init()
@@ -163,7 +165,7 @@ namespace WorldServer.Test
             var lootDecider = new BagContentSelector(this.SampleZoneItemOptions, StaticRandom.Instance);
             var bag = new LootBagTypeDefinition();
 
-            var result = lootDecider.SelectBagContentForPlayer(bag, 70, 64, new List<uint>());
+            var result = lootDecider.SelectBagContentForPlayer(Logger,bag, 70, 64, new List<uint>());
             Assert.IsFalse(result.IsValid());
         }
 
@@ -174,7 +176,7 @@ namespace WorldServer.Test
             var bag = new LootBagTypeDefinition { BagRarity = LootBagRarity.Blue, Assignee = 1, LootBagNumber = 1 };
 
             // SHould match 1 record
-            var result = lootDecider.SelectBagContentForPlayer(bag, 20, 64, new List<uint>(), false);
+            var result = lootDecider.SelectBagContentForPlayer(Logger,bag, 20, 64, new List<uint>(), false);
             Assert.IsTrue(result.IsValid());
             Assert.IsTrue(result.RenownBand == 20);
             Assert.IsTrue(result.ItemId == 601);
@@ -187,7 +189,7 @@ namespace WorldServer.Test
             var bag = new LootBagTypeDefinition { BagRarity = LootBagRarity.Blue, Assignee = 1, LootBagNumber = 1 };
 
             // SHould match 1 record
-            var result = lootDecider.SelectBagContentForPlayer(bag, 20, 64, SamplePlayerItems, false);
+            var result = lootDecider.SelectBagContentForPlayer(Logger,bag, 20, 64, SamplePlayerItems, false);
             Assert.IsTrue(result.IsValid());
             Assert.IsTrue(result.RenownBand == 20);
             Assert.IsTrue(result.ItemId == 601);
@@ -200,7 +202,7 @@ namespace WorldServer.Test
             var bag = new LootBagTypeDefinition { BagRarity = LootBagRarity.Blue, Assignee = 1, LootBagNumber = 1 };
 
             // SHould match 3 record
-            var result = lootDecider.SelectBagContentForPlayer(bag, 10, 64, new List<uint>(), false);
+            var result = lootDecider.SelectBagContentForPlayer(Logger,bag, 10, 64, new List<uint>(), false);
             Assert.IsTrue(result.IsValid());
             Assert.IsTrue(result.RenownBand == 10);
             Assert.IsTrue(result.ItemId == 301);
@@ -215,7 +217,7 @@ namespace WorldServer.Test
             var bag = new LootBagTypeDefinition { BagRarity = LootBagRarity.Blue, Assignee = 1, LootBagNumber = 1 };
 
             // SHould match 3 record
-            var result = lootDecider.SelectBagContentForPlayer(bag, 10, 64, new List<uint>(), true);
+            var result = lootDecider.SelectBagContentForPlayer(Logger,bag, 10, 64, new List<uint>(), true);
             Assert.IsTrue(1==1);
         }
 
@@ -226,7 +228,7 @@ namespace WorldServer.Test
             var bag = new LootBagTypeDefinition { BagRarity = LootBagRarity.Blue, Assignee = 1, LootBagNumber = 1 };
 
             // SHould match 3 record
-            var result = lootDecider.SelectBagContentForPlayer(bag, 10, 64, SamplePlayerItems, false);
+            var result = lootDecider.SelectBagContentForPlayer(Logger,bag, 10, 64, SamplePlayerItems, false);
             Assert.IsTrue(result.IsValid());
             Assert.IsTrue(result.RenownBand == 10);
             Assert.IsTrue(result.ItemId == 301);
@@ -241,7 +243,7 @@ namespace WorldServer.Test
             SamplePlayerItems.Add(301);
 
             // SHould match 3 record
-            var result = lootDecider.SelectBagContentForPlayer(bag, 10, 64, SamplePlayerItems, false);
+            var result = lootDecider.SelectBagContentForPlayer(Logger,bag, 10, 64, SamplePlayerItems, false);
             Assert.IsTrue(result.IsValid());
             Assert.IsTrue(result.RenownBand == 10);
             Assert.IsTrue(result.ItemId == 302);
@@ -249,7 +251,7 @@ namespace WorldServer.Test
             SamplePlayerItems.Add(302);
 
             // SHould match 3 record
-            var result2 = lootDecider.SelectBagContentForPlayer(bag, 10, 64, SamplePlayerItems, false);
+            var result2 = lootDecider.SelectBagContentForPlayer(Logger,bag, 10, 64, SamplePlayerItems, false);
             Assert.IsTrue(result2.IsValid());
             Assert.IsTrue(result2.RenownBand == 10);
             Assert.IsTrue(result2.ItemId == 303);
@@ -265,7 +267,7 @@ namespace WorldServer.Test
             SamplePlayerItems.Add(601);
 
             // SHould match 3 record
-            var result = lootDecider.SelectBagContentForPlayer(bag, 20, 64, SamplePlayerItems, false);
+            var result = lootDecider.SelectBagContentForPlayer(Logger,bag, 20, 64, SamplePlayerItems, false);
             Assert.IsTrue(result.IsValid());
             Assert.IsTrue(result.RenownBand == 20);
             Assert.IsTrue(result.ItemId == 601);
@@ -273,7 +275,7 @@ namespace WorldServer.Test
             SamplePlayerItems.Add(602);
 
             // SHould match 3 record
-            var result2 = lootDecider.SelectBagContentForPlayer(bag, 20, 64, SamplePlayerItems, false);
+            var result2 = lootDecider.SelectBagContentForPlayer(Logger,bag, 20, 64, SamplePlayerItems, false);
             Assert.IsTrue(result2.IsValid());
             Assert.IsTrue(result2.RenownBand == 20);
             Assert.IsTrue(result2.ItemId == 601);

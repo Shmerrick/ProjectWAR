@@ -14,8 +14,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
     {
         public List<RVRRewardItem> RVRRewards { get; private set; }
         public Random RandomGenerator { get; }
-        private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
-
+        
         public BagContentSelector(List<RVRRewardItem> rvrRewards, Random randomGenerator)
         {
             RVRRewards = rvrRewards;
@@ -31,12 +30,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// <param name="playerItems"></param>
         /// <param name="shuffleRewards"></param>
         /// <returns></returns>
-        public LootBagTypeDefinition SelectBagContentForPlayer(LootBagTypeDefinition lootBag, byte playerRRBand, int playerClass, List<uint> playerItems, bool shuffleRewards = true)
+        public LootBagTypeDefinition SelectBagContentForPlayer(ILogger logger, LootBagTypeDefinition lootBag, byte playerRRBand, int playerClass, List<uint> playerItems, bool shuffleRewards = true)
         {
-            RewardLogger.Debug($"SelectBagContentForPlayer. Assignee {lootBag.Assignee} Rarity {lootBag.BagRarity} Player RR Band {playerRRBand} Class {playerClass} Shuffle {shuffleRewards} ");
+            logger.Debug($"SelectBagContentForPlayer. Assignee {lootBag.Assignee} Rarity {lootBag.BagRarity} Player RR Band {playerRRBand} Class {playerClass} Shuffle {shuffleRewards} ");
             // get a closer list of matching items.
             var matchingRewards = RVRRewards.Where(x => lootBag.BagRarity == (LootBagRarity) x.Rarity);
-            RewardLogger.Debug($"Matching Rewards = {matchingRewards.Count()}");
+            logger.Debug($"Matching Rewards = {matchingRewards.Count()}");
             if (matchingRewards == null)
                 return lootBag;
 
@@ -50,9 +49,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
             // Filter rewards to match the player's need
             var rrBandMatches = matchingRewards.Where(x => x.RRBand == 0 || x.RRBand == playerRRBand);
-            RewardLogger.Debug($"rrBandMatches Rewards = {rrBandMatches.Count()}");
+            logger.Debug($"rrBandMatches Rewards = {rrBandMatches.Count()}");
             var rrClassMatches = rrBandMatches.Where(x => x.Class == 0 || x.Class == playerClass);
-            RewardLogger.Debug($"rrClassMatches Rewards = {rrClassMatches.Count()}");
+            logger.Debug($"rrClassMatches Rewards = {rrClassMatches.Count()}");
 
             // Works but not good for unit tests
             //matchingRewards = matchingRewards.OrderBy(a => Guid.NewGuid()).ToList();
@@ -60,13 +59,26 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             foreach (var matchingReward in rrClassMatches)
             {
                 // Does this matching reward exist in player's items? And we cannot duplicate move on.
-                if (playerItems.Count(x => x == matchingReward.ItemId) > 0 && matchingReward.CanAwardDuplicate == 0)
+                if (playerItems.Count(x => x == matchingReward.ItemId) > 0)
                 {
-                    RewardLogger.Debug($"Duplicate found...");
-                    continue;
+                    logger.Debug($"Duplicate found...");
+                    if (matchingReward.CanAwardDuplicate == 0)
+                    {
+                        logger.Debug($"Player {lootBag.Assignee} has item {matchingReward.ItemId} already...skipping");
+                        continue;
+                    }
+                    else
+                    {
+                        logger.Debug($"Player {lootBag.Assignee} has item {matchingReward.ItemId} already...but duplicates are allowed.");
+                        lootBag.ItemCount = (uint)matchingReward.ItemCount;
+                        lootBag.ItemId = (uint)matchingReward.ItemId;
+                        lootBag.RenownBand = playerRRBand;
+                        break;
+                    }
                 }
                 else
                 {
+                    logger.Debug($"Player {lootBag.Assignee} does not have item {matchingReward.ItemId} already...assigning");
                     lootBag.ItemCount = (uint) matchingReward.ItemCount;
                     lootBag.ItemId = (uint) matchingReward.ItemId;
                     lootBag.RenownBand = playerRRBand;
