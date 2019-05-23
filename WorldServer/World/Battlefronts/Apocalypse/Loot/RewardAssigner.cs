@@ -104,15 +104,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 foreach (var eligiblePlayer in eligiblePlayers)
                 {
                     var randomForCharacter = 0;
-                    if (randomRollBonuses.ContainsKey(eligiblePlayer.Key))
+                    if (randomRollBonuses != null)
                     {
-                        randomForCharacter = randomRollBonuses[eligiblePlayer.Key];
+                        if (randomRollBonuses.ContainsKey(eligiblePlayer.Key))
+                        {
+                            randomForCharacter = randomRollBonuses[eligiblePlayer.Key];
+                        }
                     }
 
                     var pairingContributionForCharacter = 0;
-                    if (pairingContributionBonuses.ContainsKey(eligiblePlayer.Key))
+                    if (pairingContributionBonuses != null)
                     {
-                        pairingContributionForCharacter = pairingContributionBonuses[eligiblePlayer.Key];
+                        if (pairingContributionBonuses.ContainsKey(eligiblePlayer.Key))
+                        {
+                            pairingContributionForCharacter = pairingContributionBonuses[eligiblePlayer.Key];
+                        }
                     }
 
                     var characterId = eligiblePlayer.Key;
@@ -152,6 +158,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                     {
                         comparisonDictionary.Add(characterId,  eligiblePlayer.Value+randomForCharacter+pairingContributionForCharacter);
                     }
+                    Logger.Debug($"Loot Assignment Bonuses : Character {characterId}, Base {eligiblePlayer.Value} Random {randomForCharacter} Pairing {pairingContributionForCharacter}");
                 }
                 // Sort the comparison dictionary
                 var comparisonList = comparisonDictionary.OrderBy(x => x.Value).ToList();

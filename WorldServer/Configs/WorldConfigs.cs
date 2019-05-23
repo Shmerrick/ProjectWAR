@@ -79,6 +79,8 @@ namespace WorldServer.Configs
         public int EligiblePlayerBagBonusIncrement = 1;     // Amount contribution is increased if player is eligible but does not get a bag.
         public int BagRollRandomUpperLimit = 10;            // Upper limit to random bag roll
         public int BagRollRandomLowerLimit = 1;             // Lower limit to random bag roll
+        public int PairingContributionTimeIntervalHours = 2; // Number of hours we trace back for zone/pairing contribution
+        public int PairingBonusIncrement = 5;               // Increment for each leadin zone player was eligible in.
 
     }
 }

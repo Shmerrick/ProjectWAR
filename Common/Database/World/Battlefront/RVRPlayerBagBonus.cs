@@ -35,5 +35,10 @@ namespace Common.Database.World.Battlefront
         [DataElement(AllowDbNull = false)]
         public string CharacterName { get; set; }
 
+
+        public override string ToString()
+        {
+            return $"{BonusId}. {CharacterName} ({CharacterId}). {GoldBag}/{PurpleBag}/{BlueBag}/{GreenBag}/{WhiteBag}";
+        }
     }
 }
