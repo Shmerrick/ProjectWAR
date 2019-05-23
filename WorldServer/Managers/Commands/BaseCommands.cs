@@ -4721,6 +4721,11 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        public static bool Scoreboard(Player plr, ref List<string> values)
+        {
+            return true;
+        }
+
         public static bool MailItem(Player plr, ref List<string> values)
         {
             var characterId = values[0];
