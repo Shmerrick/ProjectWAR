@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using GameData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common;
-using FrameWork;
-using GameData;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities.Buffs.SpecialBuffs;
@@ -145,6 +145,7 @@ namespace WorldServer.World.Abilities.Buffs
             _commandList.Add("ModifyStatByNearbyFoes", ModifyStatByNearbyFoes);
             _commandList.Add("ModifyStatByNearbyAllies", ModifyStatByNearbyAllies);
             _commandList.Add("ModifyStatByResourceLevel", ModifyStatByResourceLevel);
+            _commandList.Add("ModifyPercentageStatByNearbyAllies", ModifyPercentageStatByNearbyAllies);
             _commandList.Add("ModifyPercentageStatByResourceLevel", ModifyPercentageStatByResourceLevel);
             _commandList.Add("ModifyStatIfHasResource", ModifyStatIfHasResource);
             _commandList.Add("AddCasterStat", AddCasterStat);
@@ -1787,7 +1788,7 @@ namespace WorldServer.World.Abilities.Buffs
         }
 
 
-         private static bool ModifyStatByNearbyAllies(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        private static bool ModifyStatByNearbyAllies(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
             switch (hostBuff.BuffState)
             {
@@ -1801,21 +1802,69 @@ namespace WorldServer.World.Abilities.Buffs
                     byte count = 0;
 
                     var alliesInRange = source.PlayersInRange.Where(x => x.Realm == source.Realm);
-                    
+
                     foreach (var player in alliesInRange)
                     {
                         if (source.ObjectWithinRadiusFeet(player, 100))
                             count++;
                     }
 
-                    
+
 
                     if (count > cmd.MaxTargets)
                         count = cmd.MaxTargets;
 
                     cmd.CommandResult *= count;
-                    
 
+
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    else
+                        target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+
+                    hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
+                    break;
+                case BUFF_TICK:
+                    Log.Error("BuffEffectInvoker", "ModifyStat should never tick!");
+                    break;
+                case BUFF_END:
+                    if (cmd.CommandResult < 0)
+                        target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    break;
+                case BUFF_REMOVE:
+                    goto case 4;
+            }
+
+            return true;
+        }
+
+        private static bool ModifyPercentageStatByNearbyAllies(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
+        {
+            switch (hostBuff.BuffState)
+            {
+                case BUFF_START:
+                    if (cmd.TertiaryValue != 0)
+                        cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
+                    else cmd.CommandResult = (short)cmd.SecondaryValue;
+
+                    // Get foes within range
+                    Unit source = hostBuff.Caster;
+                    byte count = 0;
+
+                    var alliesInRange = source.PlayersInRange.Where(x => x.Realm == source.Realm);
+
+                    foreach (var player in alliesInRange)
+                    {
+                        if (source.ObjectWithinRadiusFeet(player, 100))
+                            count++;
+                    }
+                    
+                    if (count > cmd.MaxTargets)
+                        count = cmd.MaxTargets;
+
+                    cmd.CommandResult *= count;
+                    
                     if (cmd.CommandResult < 0)
                         target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     else
@@ -3055,9 +3104,9 @@ namespace WorldServer.World.Abilities.Buffs
         private static bool RefreshIfMoving(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
             //Lets not let a refresh of a buff happen to a siege object. for now good but needs more once sieges and ram rework is complete.
-            if (target is Siege)            
+            if (target is Siege)
                 return true;
-            
+
             //lets not let a refresh of a buff happen to a keep lord
             var lord = target as KeepCreature;
             if (lord != null && lord.returnflag().Info.KeepLord)
