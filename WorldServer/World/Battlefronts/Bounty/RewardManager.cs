@@ -798,7 +798,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 try
                 {
                     var name = realmPlayers.SingleOrDefault(x => x.Key.CharacterId == pair.Key);
-                    Logger.Debug($"REWARDS pre bonus: {pair.Key}:{pair.Value} ({name.Key.Name})");
+                    Logger.Debug($"===== Character / Contribution pre bonus : {pair.Key}:{pair.Value} ({name.Key.Name})");
                 }
                 catch (Exception e)
                 {
@@ -809,7 +809,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, sortedPairs);
             // forceDropChance should alter the number of bags dropped.
             numberOfBagsToAward = (int)Math.Ceiling(numberOfBagsToAward * (forceDropChance / 100f));
-            Logger.Debug($"Number Of Awards (post dropchance {forceDropChance}) : {numberOfBagsToAward}");
+            Logger.Debug($"===== Number Of Awards (post dropchance {forceDropChance}) : {numberOfBagsToAward}");
             // Determine and build out the bag types to be assigned
             bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
 
@@ -1197,9 +1197,9 @@ namespace WorldServer.World.Battlefronts.Bounty
             ConcurrentDictionary<Player, int> losingEligiblePlayers, int forceNumberBags, string leadinZones)
         {
 
-            Logger.Info($"Generating WIN FORT rewards for {winningEligiblePlayers.Count} players");
+            Logger.Info($"=== Generating WINNING REALM rewards for {winningEligiblePlayers.Count} players");
             var rewardAssignments = GenerateBagDropAssignments(winningEligiblePlayers, forceNumberBags, leadinZones, 100);
-            Logger.Info($"Generating LOSS FORT rewards for {losingEligiblePlayers.Count} players");
+            Logger.Info($"=== Generating LOSING REALM rewards for {losingEligiblePlayers.Count} players");
             var losingRewardAssignments = GenerateBagDropAssignments(losingEligiblePlayers, forceNumberBags, leadinZones, 50);
             if (rewardAssignments != null)
             {
