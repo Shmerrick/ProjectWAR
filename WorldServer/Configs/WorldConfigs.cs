@@ -76,5 +76,9 @@ namespace WorldServer.Configs
         public int REALM_CAPTAIN_KILL_CRESTS = 6;
         public int REALM_CAPTAIN_ASSIST_CRESTS = 1;
 
+        public int EligiblePlayerBagBonusIncrement = 1;     // Amount contribution is increased if player is eligible but does not get a bag.
+        public int BagRollRandomUpperLimit = 10;            // Upper limit to random bag roll
+        public int BagRollRandomLowerLimit = 1;             // Lower limit to random bag roll
+
     }
 }

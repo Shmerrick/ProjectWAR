@@ -646,7 +646,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                     groupMember.SendClientMessage($"Awarded {1} Crest(s) to " + killer.Name + " for killing realm captain");
                     RewardLogger.Trace($"Awarded {1} Crest(s) to " + killer.Name + " for killing realm captain");
                     groupMember.ItmInterface.CreateItem(208470, (ushort)Program.Config.REALM_CAPTAIN_ASSIST_CRESTS);
-                    groupMember.AddRenown((uint) Program.Config.REALM_CAPTAIN_RENOWN_KILL_PARTY, 1f, false);
+                    groupMember.AddRenown((uint)Program.Config.REALM_CAPTAIN_RENOWN_KILL_PARTY, 1f, false);
                     groupMember.SendClientMessage($"Awarded {Program.Config.REALM_CAPTAIN_RENOWN_KILL_PARTY} RR {(ushort)Math.Floor((double)(Program.Config.REALM_CAPTAIN_INFLUENCE_KILL / killer.PriorityGroup.Members.Count))} INF to " + groupMember.Name + " for killing realm captain");
                     groupMember.AddInfluence(influenceId, (ushort)Math.Floor((double)(Program.Config.REALM_CAPTAIN_INFLUENCE_KILL / killer.PriorityGroup.Members.Count)));
                     groupMember.UpdatePlayerBountyEvent((byte)ContributionDefinitions.REALM_CAPTAIN_KILL);
@@ -657,8 +657,8 @@ namespace WorldServer.World.Battlefronts.Bounty
                 ushort crests = (ushort)StaticRandom.Instance.Next(Program.Config.REALM_CAPTAIN_KILL_CRESTS);
                 RewardLogger.Trace($"Awarded {crests} Crest(s) to " + killer.Name + " for killing realm captain");
 
-                killer.AddRenown((uint) Program.Config.REALM_CAPTAIN_RENOWN_KILL_SOLO, 1f, false);
-                killer.AddInfluence(influenceId, (ushort) Program.Config.REALM_CAPTAIN_INFLUENCE_KILL);
+                killer.AddRenown((uint)Program.Config.REALM_CAPTAIN_RENOWN_KILL_SOLO, 1f, false);
+                killer.AddInfluence(influenceId, (ushort)Program.Config.REALM_CAPTAIN_INFLUENCE_KILL);
                 killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.REALM_CAPTAIN_KILL);
                 killer.SendClientMessage($"Awarded {crests} Crest(s) to " + killer.Name + " for killing realm captain");
                 killer.SendClientMessage($"You have been awarded additional contribution in assisting with the downfall of the enemy");
@@ -798,7 +798,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 try
                 {
                     var name = realmPlayers.SingleOrDefault(x => x.Key.CharacterId == pair.Key);
-                    Logger.Debug($"REWARDS : {pair.Key}:{pair.Value} ({name.Key.Name})");
+                    Logger.Debug($"REWARDS pre bonus: {pair.Key}:{pair.Value} ({name.Key.Name})");
                 }
                 catch (Exception e)
                 {
@@ -807,15 +807,25 @@ namespace WorldServer.World.Battlefronts.Bounty
             }
             // The number of bags to award is based upon the number of eligible players. 
             numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, sortedPairs);
-
+            // forceDropChance should alter the number of bags dropped.
             numberOfBagsToAward = (int)Math.Ceiling(numberOfBagsToAward * (forceDropChance / 100f));
             Logger.Debug($"Number Of Awards (post dropchance {forceDropChance}) : {numberOfBagsToAward}");
-
             // Determine and build out the bag types to be assigned
             bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
 
+            var characterList = (from kvp in sortedPairs select kvp.Key).Distinct().ToList();
+            var characterJoinedList = string.Join(",", characterList);
+            var bagBonuses = CharMgr.Database.SelectObjects<RVRPlayerBagBonus>($"CharacterId in ({characterJoinedList})");
+            // Generate random rolls for each of the sortedPairs (characters).
+            var randomRollList = new Dictionary<uint, int>();
+            foreach (var character in sortedPairs)
+            {
+                var random = StaticRandom.Instance.Next(Program.Config.BagRollRandomLowerLimit, Program.Config.BagRollRandomUpperLimit);
+                randomRollList.Add(character.Key, random);
+            }
             // Assign eligible players to the bag definitions.
-            return rewardAssigner.AssignLootToPlayers(numberOfBagsToAward, bagDefinitions, sortedPairs);
+            var pairingContributions = new Dictionary<uint, int>();
+            return rewardAssigner.AssignLootToPlayers(numberOfBagsToAward, bagDefinitions, sortedPairs, bagBonuses, randomRollList,pairingContributions);
 
         }
 
@@ -861,6 +871,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 foreach (var eligiblePlayersAllRealm in allEligiblePlayers)
                 {
                     logger.Debug($"eligible : {eligiblePlayersAllRealm.Key.Name} ({eligiblePlayersAllRealm.Key.CharacterId}) {eligiblePlayersAllRealm.Key.Realm}");
+                    UpdatePlayerBagBonus(eligiblePlayersAllRealm.Key);
                 }
 
                 var bagContentSelector = new BagContentSelector(lootOptions, StaticRandom.Instance);
@@ -923,6 +934,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                                 }
 
                                 RecordKeepTakeRewardHistory(logger, assignedPlayer, generatedLootBag, lockingRealm, keep);
+                                ResetBagBonus(assignedPlayer, generatedLootBag.Key);
                                 assignedPlayer.SendClientMessage($"For your efforts, you have received a {generatedLootBag.Key.Name}. Pick up your rewards at your Warcamp.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
                             }
@@ -947,6 +959,74 @@ namespace WorldServer.World.Battlefronts.Bounty
                 logger.Warn($"Unexpectedexception {zoneId} {keep.KeepId} {e.Message} {e.StackTrace}");
             }
         }
+
+        /// <summary>
+        /// Bag assigned to player, reset their bag bonus for that bag
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="item"></param>
+        private void ResetBagBonus(Player player, Item_Info item)
+        {
+            var characterBagBonus = CharMgr.Database.SelectObject<RVRPlayerBagBonus>($"CharacterId = {player.CharacterId}");
+            if (characterBagBonus != null)
+            {
+                switch (item.Entry)
+                {
+                    case 9940: characterBagBonus.WhiteBag = 0; break;
+                    case 9941: characterBagBonus.GreenBag = 0; break;
+                    case 9942: characterBagBonus.BlueBag = 0; break;
+                    case 9943: characterBagBonus.PurpleBag = 0; break;
+                    case 9980: characterBagBonus.GoldBag = 0; break;
+                }
+                characterBagBonus.Timestamp = DateTime.UtcNow;
+                CharMgr.Database.SaveObject(characterBagBonus);
+                Logger.Debug($"Resetting bag bonus for {characterBagBonus} ({player.CharacterId})");
+            }
+        }
+
+        /// <summary>
+        /// Add bag bonus value to each eligible player (ie increment their bonus)
+        /// </summary>
+        /// <param name="keyCharacterId"></param>
+
+        private void UpdatePlayerBagBonus(Player player)
+        {
+            var increment = Program.Config.EligiblePlayerBagBonusIncrement;
+
+            var characterBagBonus = CharMgr.Database.SelectObject<RVRPlayerBagBonus>($"CharacterId = {player.CharacterId}");
+            if (characterBagBonus == null)
+            {
+                var bagBonus = new RVRPlayerBagBonus
+                {
+                    CharacterId = (int)player.CharacterId,
+                    GoldBag = increment,
+                    BlueBag = increment,
+                    PurpleBag = increment,
+                    GreenBag = increment,
+                    WhiteBag = increment,
+                    Timestamp = DateTime.UtcNow,
+                    CharacterName = player.Name
+                };
+
+                CharMgr.Database.AddObject(bagBonus);
+                Logger.Debug($"Adding bag bonus for {characterBagBonus} ({player.CharacterId})");
+            }
+            else
+            {
+                characterBagBonus.GoldBag += increment;
+                characterBagBonus.BlueBag += increment;
+                characterBagBonus.PurpleBag += increment;
+                characterBagBonus.GreenBag += increment;
+                characterBagBonus.WhiteBag += increment;
+                characterBagBonus.Timestamp = DateTime.UtcNow;
+                characterBagBonus.CharacterName = player.Name;
+
+                CharMgr.Database.SaveObject(characterBagBonus);
+                Logger.Debug($"Updating bag bonus for {characterBagBonus} ({player.CharacterId})");
+            }
+        }
+
+
 
         private void RecordKeepTakeRewardHistory(ILogger logger, Player assignedPlayer, KeyValuePair<Item_Info, List<Talisman>> generatedLootBag, Realms lockingRealm, Keep_Info keep)
         {
@@ -977,7 +1057,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 var history = new KeepLockBagRewardHistory
                 {
                     CharacterId = (int)assignedPlayer.CharacterId,
-                    BagRarity = (int) generatedLootBag.Key.Entry,
+                    BagRarity = (int)generatedLootBag.Key.Entry,
                     CharacterName = assignedPlayer.Name,
                     ItemId = (int)item.Entry,
                     ItemName = itemDetails.Name,
@@ -1068,6 +1148,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <param name="winningEligiblePlayers"></param>
         /// <param name="losingEligiblePlayers"></param>
         /// <param name="forceNumberBags"></param>
+
         /// <returns></returns>
         private List<LootBagTypeDefinition> CalculateRewardAssignments(
             ConcurrentDictionary<Player, int> winningEligiblePlayers,

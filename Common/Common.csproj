@@ -132,6 +132,7 @@
     <Compile Include="Database\World\Ability\BuffCommands.cs" />
     <Compile Include="Database\World\Ability\DBAbilityInfo.cs" />
     <Compile Include="Database\World\Battlefront\ContributionAnalytics.cs" />
+    <Compile Include="Database\World\Battlefront\RVRPlayerBagBonus.cs" />
     <Compile Include="Database\World\Battlefront\KillTracking.cs" />
     <Compile Include="Database\World\Battlefront\BattlefrontObject.cs" />
     <Compile Include="Database\World\Battlefront\BattlefrontObjectType.cs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using static WorldServer.Managers.Commands.GMUtils;
 using System.Text;
+using Common.Database.World.Battlefront;
 using GameData;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
@@ -181,6 +182,30 @@ namespace WorldServer.Managers.Commands
                     }
 
                     plr.SendClientMessage($"Total = {sumContribution}");
+                }
+            }
+            return true;
+        }
+
+        public static bool GetBagBonus(Player plr, ref List<string> values)
+        {
+            var target = (Player)plr.CbtInterface.GetCurrentTarget();
+            if (target != null)
+            {
+                var bagBonus = CharMgr.Database.SelectObject<RVRPlayerBagBonus>("CharacterId = " + target.CharacterId);
+
+                if (bagBonus == null)
+                {
+                    plr.SendClientMessage("Player has no bag bonus");
+                }
+                else
+                {
+                    plr.SendClientMessage($"Gold {bagBonus.GoldBag}");
+                    plr.SendClientMessage($"Purple {bagBonus.PurpleBag}");
+                    plr.SendClientMessage($"Blue {bagBonus.BlueBag}");
+                    plr.SendClientMessage($"Green {bagBonus.GreenBag}");
+                    plr.SendClientMessage($"White {bagBonus.WhiteBag}");
+                    plr.SendClientMessage($"Updated {bagBonus.Timestamp.ToShortDateString()}");
                 }
             }
             return true;
