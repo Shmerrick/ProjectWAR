@@ -1809,8 +1809,6 @@ namespace WorldServer.World.Abilities.Buffs
                             count++;
                     }
 
-
-
                     if (count > cmd.MaxTargets)
                         count = cmd.MaxTargets;
 
@@ -1844,10 +1842,7 @@ namespace WorldServer.World.Abilities.Buffs
             switch (hostBuff.BuffState)
             {
                 case BUFF_START:
-                    if (cmd.TertiaryValue != 0)
-                        cmd.CommandResult = (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f));
-                    else cmd.CommandResult = (short)cmd.SecondaryValue;
-
+                    
                     // Get foes within range
                     Unit source = hostBuff.Caster;
                     byte count = 0;
@@ -1863,22 +1858,18 @@ namespace WorldServer.World.Abilities.Buffs
                     if (count > cmd.MaxTargets)
                         count = cmd.MaxTargets;
 
-                    cmd.CommandResult *= count;
                     
-                    if (cmd.CommandResult < 0)
-                        target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                    else
-                        target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    cmd.CommandResult = count;
 
+                    target.StsInterface.AddReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult*cmd.SecondaryValue) * 0.01f,  hostBuff.GetBuffClass(cmd));
+                    
                     hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
                     break;
                 case BUFF_TICK:
                     Log.Error("BuffEffectInvoker", "ModifyStat should never tick!");
                     break;
                 case BUFF_END:
-                    if (cmd.CommandResult < 0)
-                        target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
-                    else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
+                    target.StsInterface.RemoveReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
                     break;
                 case BUFF_REMOVE:
                     goto case 4;
