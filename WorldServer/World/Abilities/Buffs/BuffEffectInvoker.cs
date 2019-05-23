@@ -1801,20 +1801,20 @@ namespace WorldServer.World.Abilities.Buffs
                     byte count = 0;
 
                     var alliesInRange = source.PlayersInRange.Where(x => x.Realm == source.Realm);
-                    source.Say($"I can see {alliesInRange.Count()}");
+                    
                     foreach (var player in alliesInRange)
                     {
                         if (source.ObjectWithinRadiusFeet(player, 100))
                             count++;
                     }
 
-                    source.Say($"But only {count} are within 100 feet");
+                    
 
                     if (count > cmd.MaxTargets)
                         count = cmd.MaxTargets;
 
                     cmd.CommandResult *= count;
-                    source.Say($"cmd Result {cmd.CommandResult}");
+                    
 
                     if (cmd.CommandResult < 0)
                         target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
