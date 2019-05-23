@@ -4723,6 +4723,9 @@ namespace WorldServer.Managers.Commands
 
         public static bool Scoreboard(Player plr, ref List<string> values)
         {
+            foreach (KeyValuePair<uint, ContributionInfo> playerRoll in players)
+                Scoreboard(playerRoll.Value, _preRoll.IndexOf(playerRoll), _postRoll.IndexOf(playerRoll));
+
             return true;
         }
 
