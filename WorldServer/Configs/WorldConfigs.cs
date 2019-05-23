@@ -82,5 +82,8 @@ namespace WorldServer.Configs
         public int PairingContributionTimeIntervalHours = 2; // Number of hours we trace back for zone/pairing contribution
         public int PairingBonusIncrement = 5;               // Increment for each leadin zone player was eligible in.
 
+        public string AllowBagBonusContribution = "Y";
+        public string AllowPairingContribution = "Y";
+        public string AllowRandomContribution = "Y";
     }
 }

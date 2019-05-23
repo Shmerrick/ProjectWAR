@@ -8,6 +8,7 @@ using SystemData;
 using Common.Database.World.Battlefront;
 using GameData;
 using NLog;
+using WorldServer.Configs;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
@@ -220,7 +221,7 @@ namespace WorldServer.Managers.Commands
                 var bonuses = new List<RVRPlayerBagBonus>();
                 var randomRolls = new Dictionary<uint, int>();
                 var pairingContributions = new Dictionary<uint, int>();
-                var rewardAssignments = rewardAssigner.AssignLootToPlayers(numberBags, new List<LootBagTypeDefinition> { lootBagTypeDefinition }, eligPlayer, bonuses, randomRolls,pairingContributions);
+                var rewardAssignments = rewardAssigner.AssignLootToPlayers(numberBags, new List<LootBagTypeDefinition> { lootBagTypeDefinition }, eligPlayer, bonuses, randomRolls,pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y"});
 
                 var bagContentSelector = new BagContentSelector(RVRZoneRewardService.RVRRewardKeepItems, StaticRandom.Instance);
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using Common.Database.World.Battlefront;
+using WorldServer.Configs;
 using WorldServer.Managers;
 using WorldServer.World.Battlefronts.Bounty;
 
@@ -80,7 +81,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// <returns></returns>
         public List<LootBagTypeDefinition> AssignLootToPlayers(int numberOfBagsToAward,
             List<LootBagTypeDefinition> bagDefinitions, List<KeyValuePair<uint, int>> eligiblePlayers,
-            IList<RVRPlayerBagBonus> bagBonuses, Dictionary<uint, int> randomRollBonuses, Dictionary<uint, int> pairingContributionBonuses)
+            IList<RVRPlayerBagBonus> bagBonuses, Dictionary<uint, int> randomRollBonuses, Dictionary<uint, int> pairingContributionBonuses, WorldConfigs configSettings)
         {
             Logger.Trace($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBagsToAward} Bags");
 
@@ -102,7 +103,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 foreach (var eligiblePlayer in eligiblePlayers)
                 {
                     var randomForCharacter = 0;
-                    if (randomRollBonuses != null)
+                    if ((randomRollBonuses != null) && (configSettings.AllowRandomContribution == "Y"))
                     {
                         if (randomRollBonuses.ContainsKey(eligiblePlayer.Key))
                         {
@@ -111,7 +112,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                     }
 
                     var pairingContributionForCharacter = 0;
-                    if (pairingContributionBonuses != null)
+                    if ((pairingContributionBonuses != null) && (configSettings.AllowPairingContribution == "Y"))
                     {
                         if (pairingContributionBonuses.ContainsKey(eligiblePlayer.Key))
                         {
@@ -119,9 +120,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                         }
                     }
 
+                    
                     var characterId = eligiblePlayer.Key;
                     var bonus = bagBonuses.SingleOrDefault(x => x.CharacterId == characterId);
-                    if (bonus != null)
+                    if ((bonus != null) && (configSettings.AllowBagBonusContribution == "Y"))
                     {
                         switch (lootBagTypeDefinition.BagRarity)
                         {
