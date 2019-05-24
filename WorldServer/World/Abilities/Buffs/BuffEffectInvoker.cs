@@ -1842,7 +1842,7 @@ namespace WorldServer.World.Abilities.Buffs
             switch (hostBuff.BuffState)
             {
                 case BUFF_START:
-                    
+
                     // Get foes within range
                     Unit source = hostBuff.Caster;
                     byte count = 0;
@@ -1851,25 +1851,30 @@ namespace WorldServer.World.Abilities.Buffs
 
                     foreach (var player in alliesInRange)
                     {
+                        if (player.IsAFK)
+                            continue;
+                        if (player.IsDead)
+                            continue;
+
                         if (source.ObjectWithinRadiusFeet(player, 100))
                             count++;
                     }
-                    
+
                     if (count > cmd.MaxTargets)
                         count = cmd.MaxTargets;
 
-                    
+
                     cmd.CommandResult = count;
 
-                    target.StsInterface.AddReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult*cmd.SecondaryValue) * 0.01f,  hostBuff.GetBuffClass(cmd));
-                    
+                    target.StsInterface.AddReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult * cmd.SecondaryValue) * 0.01f, hostBuff.GetBuffClass(cmd));
+
                     hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
                     break;
                 case BUFF_TICK:
                     Log.Error("BuffEffectInvoker", "ModifyStat should never tick!");
                     break;
                 case BUFF_END:
-                    target.StsInterface.RemoveReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
+                    target.StsInterface.RemoveReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult * cmd.SecondaryValue) * 0.01f, hostBuff.GetBuffClass(cmd));
                     break;
                 case BUFF_REMOVE:
                     goto case 4;
