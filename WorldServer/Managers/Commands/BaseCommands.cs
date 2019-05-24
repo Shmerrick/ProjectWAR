@@ -4722,120 +4722,120 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        public static bool Scoreboard(Player plr, ref List<string> values)
-        {
-            //foreach (KeyValuePair<uint, ContributionInfo> playerRoll in players)
-            //    Scoreboard(playerRoll.Value, _preRoll.IndexOf(playerRoll), _postRoll.IndexOf(playerRoll));
+        //public static bool Scoreboard(Player plr, ref List<string> values)
+        //{
+        //    //foreach (KeyValuePair<uint, ContributionInfo> playerRoll in players)
+        //    //    Scoreboard(playerRoll.Value, _preRoll.IndexOf(playerRoll), _postRoll.IndexOf(playerRoll));
 
 
-            Player targPlayer = Player.GetPlayer(playerRoll.PlayerCharId);
+        //    Player targPlayer = Player.GetPlayer(playerRoll.PlayerCharId);
 
-            if (targPlayer == null)
-                return true;
+        //    if (targPlayer == null)
+        //        return true;
 
-            PacketOut Out = new PacketOut((byte)Opcodes.F_PQLOOT_TRIGGER, 1723);
-            Out.WriteStringBytes("test name");
-            Out.Fill(0, 24 - "test name".Length);
-            Out.WriteByte(2);  // gold
-            Out.WriteByte(2);
-            Out.WriteByte(3);
-            Out.WriteByte(4);
-            Out.WriteByte(0); // white
-            Out.Fill(0, 3);
+        //    PacketOut Out = new PacketOut((byte)Opcodes.F_PQLOOT_TRIGGER, 1723);
+        //    Out.WriteStringBytes("test name");
+        //    Out.Fill(0, 24 - "test name".Length);
+        //    Out.WriteByte(2);  // gold
+        //    Out.WriteByte(2);
+        //    Out.WriteByte(3);
+        //    Out.WriteByte(4);
+        //    Out.WriteByte(0); // white
+        //    Out.Fill(0, 3);
 
-            WritePreRolls(Out);
+        //    WritePreRolls(Out);
 
-            Out.WriteStringBytes("player1");
-            Out.Fill(0, 24 - "player1".Length);
-            Out.Fill(0, 2);
-            Out.WriteUInt16R((ushort)111);
-            Out.WriteUInt16R((ushort)222);
-            Out.WriteUInt16R((ushort)333);
-            Out.WriteUInt16((ushort)(1)); // place
+        //    Out.WriteStringBytes("player1");
+        //    Out.Fill(0, 24 - "player1".Length);
+        //    Out.Fill(0, 2);
+        //    Out.WriteUInt16R((ushort)111);
+        //    Out.WriteUInt16R((ushort)222);
+        //    Out.WriteUInt16R((ushort)333);
+        //    Out.WriteUInt16((ushort)(1)); // place
 
-            WritePostRolls(Out);
+        //    WritePostRolls(Out);
 
-            Out.WriteUInt16((ushort)(2)); // place
-            Out.WriteStringBytes("player1");
-            Out.Fill(0, 24 - "player1".Length);
-            Out.Fill(0, 2);
-            Out.WriteUInt16R((ushort)playerRoll.RandomBonus);
-            Out.WriteUInt16R((ushort)playerRoll.ContributionBonus);
-            Out.WriteUInt16R((ushort)playerRoll.PersistenceBonus);
-            Out.WriteByte(1);  // ???
-            Out.WriteByte(playerRoll.BagWon);  // bag won
+        //    Out.WriteUInt16((ushort)(2)); // place
+        //    Out.WriteStringBytes("player1");
+        //    Out.Fill(0, 24 - "player1".Length);
+        //    Out.Fill(0, 2);
+        //    Out.WriteUInt16R((ushort)playerRoll.RandomBonus);
+        //    Out.WriteUInt16R((ushort)playerRoll.ContributionBonus);
+        //    Out.WriteUInt16R((ushort)playerRoll.PersistenceBonus);
+        //    Out.WriteByte(1);  // ???
+        //    Out.WriteByte(playerRoll.BagWon);  // bag won
 
-            Out.Fill(0, 2);
-            //Out.WriteUInt16(TIME_PQ_RESET);
-            Out.WriteByte(0);
-            Out.WriteByte(3);
-
-
-            Out.WriteByte(0);
-            Out.WriteByte(0);
-            Out.WriteByte(1);
-            Out.Fill(0, 27);
-            //
-            // no clue yet seams to be if you didnt won anything you get that item
+        //    Out.Fill(0, 2);
+        //    //Out.WriteUInt16(TIME_PQ_RESET);
+        //    Out.WriteByte(0);
+        //    Out.WriteByte(3);
 
 
-            /*
-            Out.WritePacketString(@"|d4 c0 01 |...d............|     
-            |57 61 72 20 43 72 65 73 74 00 00 00 00 00 00 00 |War Crest.......|
-            |00 00 00 00 00 00 00 00 00 00 00                |...........     |
-            ");
-            */
+        //    Out.WriteByte(0);
+        //    Out.WriteByte(0);
+        //    Out.WriteByte(1);
+        //    Out.Fill(0, 27);
+        //    //
+        //    // no clue yet seams to be if you didnt won anything you get that item
 
-            targPlayer.SendPacket(Out);
-            // Info.SendCurrentStage(plr);
-          //  d4 c0 01
 
-            return true;
-        }
+        //    /*
+        //    Out.WritePacketString(@"|d4 c0 01 |...d............|     
+        //    |57 61 72 20 43 72 65 73 74 00 00 00 00 00 00 00 |War Crest.......|
+        //    |00 00 00 00 00 00 00 00 00 00 00                |...........     |
+        //    ");
+        //    */
 
-        private void WritePreRolls(PacketOut Out)
-        {
-            int maxCount = Math.Min(24, _preRoll.Count);
+        //    targPlayer.SendPacket(Out);
+        //    // Info.SendCurrentStage(plr);
+        //  //  d4 c0 01
 
-            for (int i = 0; i < maxCount; i++)
-            {
-                ContributionInfo curRoll = _preRoll[i].Value;
+        //    return true;
+        //}
 
-                Out.WriteStringBytes(curRoll.PlayerName);
-                Out.Fill(0, 24 - curRoll.PlayerName.Length);
-                Out.Fill(0, 2);
-                Out.WriteUInt16R((ushort)curRoll.RandomBonus);
-                Out.WriteUInt16R((ushort)curRoll.ContributionBonus);
-                Out.WriteUInt16R((ushort)curRoll.PersistenceBonus);
-            }
+        //private void WritePreRolls(PacketOut Out)
+        //{
+        //    int maxCount = Math.Min(24, _preRoll.Count);
 
-            if (maxCount < 24)
-                for (int i = maxCount; i < 24; i++)
-                    Out.Fill(0, 32);
-        }
+        //    for (int i = 0; i < maxCount; i++)
+        //    {
+        //        ContributionInfo curRoll = _preRoll[i].Value;
 
-        private void WritePostRolls(PacketOut Out)
-        {
-            int maxCount = Math.Min(24, _postRoll.Count);
+        //        Out.WriteStringBytes(curRoll.PlayerName);
+        //        Out.Fill(0, 24 - curRoll.PlayerName.Length);
+        //        Out.Fill(0, 2);
+        //        Out.WriteUInt16R((ushort)curRoll.RandomBonus);
+        //        Out.WriteUInt16R((ushort)curRoll.ContributionBonus);
+        //        Out.WriteUInt16R((ushort)curRoll.PersistenceBonus);
+        //    }
 
-            for (int i = 0; i < maxCount; i++)
-            {
-                ContributionInfo curRoll = _postRoll[i].Value;
+        //    if (maxCount < 24)
+        //        for (int i = maxCount; i < 24; i++)
+        //            Out.Fill(0, 32);
+        //}
 
-                Out.WriteStringBytes(curRoll.PlayerName);
-                Out.Fill(0, 24 - curRoll.PlayerName.Length);
-                Out.Fill(0, 2);
-                Out.WriteUInt16R((ushort)curRoll.RandomBonus);
-                Out.WriteUInt16R((ushort)curRoll.ContributionBonus);
-                Out.WriteUInt16R((ushort)curRoll.PersistenceBonus);
-                Out.WriteByte(1);  // ???
-                Out.WriteByte(curRoll.BagWon);  // bag won
-            }
+        //private void WritePostRolls(PacketOut Out)
+        //{
+        //    int maxCount = Math.Min(24, _postRoll.Count);
 
-            if (maxCount < 24)
-                for (int i = maxCount; i < 24; i++)
-                    Out.Fill(0, 34);  // i just send empty once here
-        }
+        //    for (int i = 0; i < maxCount; i++)
+        //    {
+        //        ContributionInfo curRoll = _postRoll[i].Value;
+
+        //        Out.WriteStringBytes(curRoll.PlayerName);
+        //        Out.Fill(0, 24 - curRoll.PlayerName.Length);
+        //        Out.Fill(0, 2);
+        //        Out.WriteUInt16R((ushort)curRoll.RandomBonus);
+        //        Out.WriteUInt16R((ushort)curRoll.ContributionBonus);
+        //        Out.WriteUInt16R((ushort)curRoll.PersistenceBonus);
+        //        Out.WriteByte(1);  // ???
+        //        Out.WriteByte(curRoll.BagWon);  // bag won
+        //    }
+
+        //    if (maxCount < 24)
+        //        for (int i = maxCount; i < 24; i++)
+        //            Out.Fill(0, 34);  // i just send empty once here
+        //}
 
         public static bool MailItem(Player plr, ref List<string> values)
         {
