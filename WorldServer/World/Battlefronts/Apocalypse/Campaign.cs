@@ -349,7 +349,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     return;
                 }
+
+                if (battleFrontKeep.Fortress)
+                    return;
+
             }
+
+            
 
             DestructionDominationCounter--;
 
@@ -400,6 +406,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     return;
                 }
+                
+                if (battleFrontKeep.Fortress)
+                    return;
             }
 
             OrderDominationCounter--;
