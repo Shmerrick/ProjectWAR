@@ -5,6 +5,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using SystemData;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
@@ -92,8 +93,12 @@ namespace WorldServer.Managers.Commands
             if (handler == null) // Si la commande n'existe pas , on affiche la liste des commandes
             {
                 List<GmCommandHandler> Base = handlers ?? baseHandlers;
-                PrintCommands(plr, Base);
-                plr.SendClientMessage(handler.Name.ToUpper() + ": This command not found", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                if (plr.GmLevel > 1)
+                {
+                    PrintCommands(plr, Base);
+                }
+
+                plr.SendClientMessage("This command not found", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 return true;
             }
             if (handler.AccessRequired > 0 && (int)handler.AccessRequired > plr.GmLevel) // GmLevel insuffisant

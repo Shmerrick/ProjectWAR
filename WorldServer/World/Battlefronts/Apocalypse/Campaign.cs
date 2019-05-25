@@ -866,7 +866,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     catch (Exception ex)
                     {
                         BattlefrontLogger.Debug($"{OrderPlayerPopulationList.Count} {DestructionPlayerPopulationList.Count}");
-                        BattlefrontLogger.Debug($"Error adding {plr.Name} to PopulationList. ");
+                        BattlefrontLogger.Debug($"Could not add {plr.Name} to PopulationList. ");
                         BattlefrontLogger.Warn($"{ex.Message}");
                     }
 
