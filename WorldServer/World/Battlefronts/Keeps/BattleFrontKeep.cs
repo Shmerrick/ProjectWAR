@@ -732,6 +732,8 @@ namespace WorldServer.World.Battlefronts.Keeps
                 }
 
             }
+          
+
 
         }
 
@@ -857,6 +859,8 @@ namespace WorldServer.World.Battlefronts.Keeps
             // If this keep is a Fortress, no need to run the Statemachine - reply on defence timer or lord kill only.
             if (Fortress)
             {
+                // Reset the Fort Defence Counter.
+                FortDefenceCounter = 0;
                 SetKeepSafe();
                 return;
             }
