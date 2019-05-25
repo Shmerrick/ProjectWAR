@@ -2026,6 +2026,8 @@ namespace WorldServer.World.Battlefronts.Keeps
 
                 destructionLootChest.SenderName = $"{zone.Name} assault";
                 destructionLootChest.Title = "Successful assault";
+
+                
             }
             if (PendingRealm == Realms.REALMS_REALM_ORDER)
             {
@@ -2063,6 +2065,9 @@ namespace WorldServer.World.Battlefronts.Keeps
                 _logger.Warn($"Order Loot chest is null");
             if (destructionLootChest == null)
                 _logger.Warn($"Destruction Loot chest is null");
+
+            _logger.Debug($"Placing Order Chest at {orderLootChest.ToString()}");
+            _logger.Debug($"Placing Destruction Chest at {destructionLootChest.ToString()}");
 
             _logger.Debug($"Generating rewards for Keep {Info.Name} Zone {ZoneId}");
 

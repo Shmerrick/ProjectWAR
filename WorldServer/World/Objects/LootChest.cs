@@ -44,6 +44,20 @@ namespace WorldServer.World.Objects
             EvtInterface.AddEvent(Destroy, 180 * 1000, 1);
         }
 
+        public override string ToString()
+        {
+            if (LootBags != null)
+            {
+                return $"{Name}. {X}.{Y}.{Z}. Lootbags = {LootBags.Count}";
+            }
+            else
+            {
+                return $"{Name}. {X}.{Y}.{Z}";    
+            }
+
+            
+        }
+
         public static LootChest Create(RegionMgr region, Point3D location, ushort zoneId, bool convertPin = true)
         {
             if (region == null)
