@@ -62,18 +62,18 @@ namespace WorldServer.World.Objects
 
                 spawn.Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID();
                 spawn.WorldO = 0;
-                spawn.WorldY = targetPosition.Y+StaticRandom.Instance.Next(25,50);
+                spawn.WorldY = targetPosition.Y+StaticRandom.Instance.Next(50,100);
                 spawn.WorldZ = targetPosition.Z;
-                spawn.WorldX = targetPosition.X+StaticRandom.Instance.Next(25,50);
+                spawn.WorldX = targetPosition.X+StaticRandom.Instance.Next(50,100);
                 spawn.ZoneId = zoneId;
             }
             else
             {
                 spawn.Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID();
                 spawn.WorldO = 0;
-                spawn.WorldY = location.Y+StaticRandom.Instance.Next(25,50);
+                spawn.WorldY = location.Y+StaticRandom.Instance.Next(50,100);
                 spawn.WorldZ = location.Z;
-                spawn.WorldX = location.X+StaticRandom.Instance.Next(25,50);
+                spawn.WorldX = location.X+StaticRandom.Instance.Next(50,100);
                 spawn.ZoneId = zoneId;
             }
 

@@ -76,5 +76,14 @@ namespace WorldServer.Configs
         public int REALM_CAPTAIN_KILL_CRESTS = 6;
         public int REALM_CAPTAIN_ASSIST_CRESTS = 1;
 
+        public int EligiblePlayerBagBonusIncrement = 1;     // Amount contribution is increased if player is eligible but does not get a bag.
+        public int BagRollRandomUpperLimit = 10;            // Upper limit to random bag roll
+        public int BagRollRandomLowerLimit = 1;             // Lower limit to random bag roll
+        public int PairingContributionTimeIntervalHours = 2; // Number of hours we trace back for zone/pairing contribution
+        public int PairingBonusIncrement = 5;               // Increment for each leadin zone player was eligible in.
+
+        public string AllowBagBonusContribution = "Y";
+        public string AllowPairingContribution = "Y";
+        public string AllowRandomContribution = "Y";
     }
 }

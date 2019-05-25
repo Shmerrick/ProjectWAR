@@ -102,6 +102,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("population", GetServerPopulation, null, EGmLevel.AnyGM, 0, "Finds all players in the game."),
             new GmCommandHandler("eligibility", GetRewardEligibility, null, EGmLevel.AnyGM, 0, "Reports on players eligibility"),
             new GmCommandHandler("contribution", GetPlayerContribution, null, EGmLevel.AnyGM, 0, "Gets the contribution of the player."),
+            new GmCommandHandler("bagbonus", GetBagBonus, null, EGmLevel.AnyGM, 0, "Gets the bagbonus of the player."),
             new GmCommandHandler("bounty", GetPlayerBounty, null, EGmLevel.AnyGM, 0, "Gets the bounty of the player."),
             new GmCommandHandler("impacts", GetPlayerImpactMatrix, null, EGmLevel.AnyGM, 0, "Gets the bounty of the player."),
             new GmCommandHandler("allcontribution", GetBattleFrontContribution, null, EGmLevel.AnyGM, 0, "Gets the contribution of all players in the battlefront."),
@@ -486,7 +487,10 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("forcelockzone", ForceLockZone, null, EGmLevel.SourceDev, 0, "Force Lock a Fort Zone"),
             new GmCommandHandler("honor", CheckPlayerHonor, null, EGmLevel.Anyone, 0, "Checks a player's honor rank"),
             new GmCommandHandler("mailitem", MailItem, null, EGmLevel.SourceDev, 3, "Mail an item to a character"),
-
+            new GmCommandHandler("testscoreboard", Scoreboard, null, EGmLevel.SourceDev, 0, "test scoreboard"),
+            new GmCommandHandler("title", SetTitle, null, EGmLevel.SourceDev, 1, "Set player title"),
+            
+            
 
 
         };

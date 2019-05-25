@@ -1690,7 +1690,7 @@ namespace FrameWork
             }
             catch (Exception e)
             {
-                Log.Error("MysqlObject", "Execution error : " + rawQuery + e );
+                Log.Error("MysqlObject", "Execution error : " + rawQuery + e + e.Message);
             }
 
             return false;

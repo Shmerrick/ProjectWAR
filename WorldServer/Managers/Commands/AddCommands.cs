@@ -5,8 +5,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
+using Common.Database.World.Battlefront;
 using GameData;
 using NLog;
+using WorldServer.Configs;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
@@ -14,6 +16,7 @@ using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
 using static WorldServer.Managers.Commands.GMUtils;
+using PlayerContribution = WorldServer.World.Battlefronts.Bounty.PlayerContribution;
 
 namespace WorldServer.Managers.Commands
 {
@@ -215,7 +218,10 @@ namespace WorldServer.Managers.Commands
 
                 var eligPlayer = new List<KeyValuePair<uint, int>>();
                 eligPlayer.Add(new KeyValuePair<uint, int>(plr.CharacterId, 10));
-                var rewardAssignments = rewardAssigner.AssignLootToPlayers(numberBags, new List<LootBagTypeDefinition> { lootBagTypeDefinition }, eligPlayer);
+                var bonuses = new List<RVRPlayerBagBonus>();
+                var randomRolls = new Dictionary<uint, int>();
+                var pairingContributions = new Dictionary<uint, int>();
+                var rewardAssignments = rewardAssigner.AssignLootToPlayers(numberBags, new List<LootBagTypeDefinition> { lootBagTypeDefinition }, eligPlayer, bonuses, randomRolls,pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y"});
 
                 var bagContentSelector = new BagContentSelector(RVRZoneRewardService.RVRRewardKeepItems, StaticRandom.Instance);
 

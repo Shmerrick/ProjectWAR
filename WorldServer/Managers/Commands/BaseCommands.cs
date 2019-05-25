@@ -4721,6 +4721,218 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        internal class PQContribution
+        {
+            public uint CharacterId { get; set; }
+            public string CharacterName { get; set; }
+            public int RandomBonus { get; set; }
+            public int ContributionValue { get; set; }
+            public int BagBonus { get; set; }
+        }
+
+        public static bool SetTitle(Player plr, ref List<string> values)
+        {
+            Unit playerTarget = GetTargetOrMe(plr);
+
+            if (playerTarget is Player)
+            {
+
+                if (playerTarget == null)
+                {
+                    plr.SendClientMessage("No target selected.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    return true;
+                }
+                else
+                {
+
+                    ((Player)playerTarget).SetTitleId((ushort) Convert.ToInt32(values[0]));
+                }
+            }
+            return true;
+
+        }
+
+        public static bool Scoreboard(Player plr, ref List<string> values)
+        {
+            //foreach (KeyValuePair<uint, ContributionInfo> playerRoll in players)
+            //    Scoreboard(playerRoll.Value, _preRoll.IndexOf(playerRoll), _postRoll.IndexOf(playerRoll));
+
+
+            var scoreBoardName = "TEST : Hatred's Way";
+            var lootBags = new List<LootBagTypeDefinition>
+            {
+                new LootBagTypeDefinition
+                {
+                    BagRarity = LootBagRarity.Blue,
+                    LootBagNumber = 0,
+                    RenownBand = 0,
+                    ItemId = 208470,
+                    ItemCount = 5
+                },
+                {
+                    new LootBagTypeDefinition
+                    {
+                        BagRarity = LootBagRarity.Purple,
+                        LootBagNumber = 1,
+                        RenownBand = 0,
+                        ItemId = 208454,
+                        ItemCount = 5
+                    }
+                }
+            };
+
+
+            var contributionList = new List<PQContribution>
+            {
+                new PQContribution
+                {
+                    CharacterId = 123,
+                    CharacterName = "Azagthoth",
+                    ContributionValue = 100,
+                    RandomBonus = 120,
+                    BagBonus = 200
+                },
+                new PQContribution
+                {
+                    CharacterId = 124,
+                    CharacterName = "Jelas",
+                    ContributionValue = 200,
+                    RandomBonus = 160,
+                    BagBonus = 100
+                },
+                new PQContribution
+                {
+                    CharacterId = 125,
+                    CharacterName = "Bethorlas",
+                    ContributionValue = 300,
+                    RandomBonus = 20,
+                    BagBonus = 50
+                },
+                new PQContribution
+                {
+                    CharacterId = 271,
+                    CharacterName = "Ik",
+                    ContributionValue = 750,
+                    RandomBonus = 80,
+                    BagBonus = 50
+                }
+            };
+
+
+            Player targPlayer = plr;
+
+            if (targPlayer == null)
+                return true;
+
+            PacketOut Out = new PacketOut((byte)Opcodes.F_PQLOOT_TRIGGER, 1723);
+            Out.WriteStringBytes(scoreBoardName);
+            Out.Fill(0, 24 - scoreBoardName.Length);
+            Out.WriteByte((byte)lootBags.Count(x => x.BagRarity == LootBagRarity.Gold));  // gold
+            Out.WriteByte((byte)lootBags.Count(x => x.BagRarity == LootBagRarity.Purple));
+            Out.WriteByte((byte)lootBags.Count(x => x.BagRarity == LootBagRarity.Blue));
+            Out.WriteByte((byte)lootBags.Count(x => x.BagRarity == LootBagRarity.Green));
+            Out.WriteByte((byte)lootBags.Count(x => x.BagRarity == LootBagRarity.White)); // white
+            Out.Fill(0, 3);
+
+            WritePreRolls(Out, contributionList);
+
+            Out.WriteStringBytes(plr.Name);
+            Out.Fill(0, 24 - plr.Name.Length);
+            Out.Fill(0, 2);
+            Out.WriteUInt16R((ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).RandomBonus);
+            Out.WriteUInt16R((ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).ContributionValue);
+            Out.WriteUInt16R((ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).BagBonus);
+            Out.WriteUInt16((ushort)(1)); // place
+
+            WritePostRolls(Out, contributionList);
+
+            Out.WriteUInt16((ushort)(1)); // place
+            Out.WriteStringBytes(plr.Name);
+            Out.Fill(0, 24 - plr.Name.Length);
+            Out.Fill(0, 2);
+            Out.WriteUInt16R((ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).RandomBonus);  //random
+            Out.WriteUInt16R((ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).ContributionValue);  // Contrib
+            Out.WriteUInt16R((ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).BagBonus);  // persistence
+            Out.WriteByte(1);  // ???
+            Out.WriteByte((int)LootBagRarity.Purple);  // bag won
+
+            Out.Fill(0, 2);
+            //Out.WriteUInt16(TIME_PQ_RESET);
+            Out.WriteByte(0);
+            Out.WriteByte(3);
+
+
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.WriteByte(1);
+            Out.Fill(0, 27);
+            //
+            // no clue yet seams to be if you didnt won anything you get that item
+
+
+            /*
+            Out.WritePacketString(@"|d4 c0 01 |...d............|     
+            |57 61 72 20 43 72 65 73 74 00 00 00 00 00 00 00 |War Crest.......|
+            |00 00 00 00 00 00 00 00 00 00 00                |...........     |
+            ");
+            */
+
+            targPlayer.SendPacket(Out);
+            // Info.SendCurrentStage(plr);
+            //  d4 c0 01
+
+            return true;
+        }
+
+        private static void WritePreRolls(PacketOut Out, List<PQContribution> pl)
+        {
+            int maxCount = Math.Min(24, pl.Count);
+            for (int i = 0; i < maxCount; i++)
+            {
+                //ContributionInfo curRoll = _preRoll[i].Value;
+                if (i == pl.Count)
+                    break;
+
+
+                Out.WriteStringBytes(pl[i]?.CharacterName);
+                Out.Fill(0, 24 - pl[i].CharacterName.Length);
+                Out.Fill(0, 2);
+                Out.WriteUInt16R((ushort) ((ushort)pl[i]?.RandomBonus+5));
+                Out.WriteUInt16R((ushort) ((ushort)pl[i]?.ContributionValue+5));
+                Out.WriteUInt16R((ushort) ((ushort)pl[i]?.BagBonus+5));
+            }
+
+            if (maxCount < 24)
+                for (int i = maxCount; i < 24; i++)
+                    Out.Fill(0, 32);
+        }
+
+        private static void WritePostRolls(PacketOut Out, List<PQContribution> pl)
+        {
+            int maxCount = Math.Min(24, pl.Count);
+
+            for (int i = 0; i < maxCount; i++)
+            {
+                if (i == pl.Count)
+                    break;
+
+                //ContributionInfo curRoll = _postRoll[i].Value;
+
+                Out.WriteStringBytes(pl[i]?.CharacterName);
+                Out.Fill(0, 24 - pl[i].CharacterName.Length);
+                Out.Fill(0, 2);
+                Out.WriteUInt16R((ushort)pl[i]?.RandomBonus);
+                Out.WriteUInt16R((ushort)pl[i]?.ContributionValue);
+                Out.WriteUInt16R((ushort)pl[i]?.BagBonus);
+                Out.WriteByte(1);  // ???
+                Out.WriteByte((int)LootBagRarity.Blue);  // bag won
+            }
+
+            if (maxCount < 24)
+                for (int i = maxCount; i < 24; i++)
+                    Out.Fill(0, 34);  // i just send empty once here
+        }
+
         public static bool MailItem(Player plr, ref List<string> values)
         {
             var characterId = values[0];
@@ -4737,7 +4949,7 @@ namespace WorldServer.Managers.Commands
             var character = CharMgr.GetCharacter(Convert.ToUInt32(characterId), true);
             var characterName = character?.Name;
 
-            
+
 
             Character_mail mail = new Character_mail
             {
@@ -4787,7 +4999,7 @@ namespace WorldServer.Managers.Commands
             {
                 case 0:
                     percent = HonorCalculation.CalculateRank0Percent(plr.Info.HonorPoints);
-                       
+
                     break;
 
                 case 1:

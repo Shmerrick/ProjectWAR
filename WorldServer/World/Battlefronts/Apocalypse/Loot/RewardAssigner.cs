@@ -2,6 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using Common.Database.World.Battlefront;
+using WorldServer.Configs;
+using WorldServer.Managers;
 using WorldServer.World.Battlefronts.Bounty;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
@@ -27,8 +31,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// <returns></returns>
         public byte DetermineNumberOfAwards(int eligiblePlayers)
         {
-            Logger.Debug($"{eligiblePlayers}");
-
             byte numberOfAwards = 0;
             // Simple set for low pop for now. TODO base this upon population sizes and % chance to win a bag per flip.
             if (eligiblePlayers == 0)
@@ -71,19 +73,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// <summary>
         /// Assign a bagdefinition to a player that is eligible.
         /// </summary>
-        /// <param name="contributionManager"></param>
         /// <param name="numberOfBagsToAward"></param>
         /// <param name="bagDefinitions"></param>
-        /// <param name="eligiblePlayers"></param>
+        /// <param name="eligiblePlayers">List of Character and Eligibility values</param>
+        /// <param name="bagBonuses"></param>
+        /// <param name="randomRollBonuses"></param>
         /// <returns></returns>
-        public List<LootBagTypeDefinition> AssignLootToPlayers(
-            
-            int numberOfBagsToAward,
-            List<LootBagTypeDefinition> bagDefinitions, List<KeyValuePair<uint, int>> eligiblePlayers)
+        public List<LootBagTypeDefinition> AssignLootToPlayers(int numberOfBagsToAward,
+            List<LootBagTypeDefinition> bagDefinitions, List<KeyValuePair<uint, int>> eligiblePlayers,
+            IList<RVRPlayerBagBonus> bagBonuses, Dictionary<uint, int> randomRollBonuses, Dictionary<uint, int> pairingContributionBonuses, WorldConfigs configSettings)
         {
-            Logger.Debug($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBagsToAward} Bags");
-            // Get the character Ids of the eligible characters
-            var eligiblePlayerCharacterIds = eligiblePlayers.Select(x => x.Key).ToList();
+            Logger.Trace($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBagsToAward} Bags");
 
             if (eligiblePlayers.Count == 0)
                 return null;
@@ -94,49 +94,100 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 return null;
             }
 
-            Logger.Debug($"Assigning loot. Number of Bags : {bagDefinitions.Count} Number of players : {eligiblePlayers.Count}");
+            Logger.Trace($"Assigning loot. Number of Bags : {bagDefinitions.Count} Number of players : {eligiblePlayers.Count}");
 
-            var bagIndex = 0;
-            foreach (var selectedPlayer in eligiblePlayers)
+            foreach (var lootBagTypeDefinition in bagDefinitions)
             {
-                // Bag definition exists.
-                if (bagDefinitions.Count > bagIndex)
+                
+                var comparisonDictionary = new Dictionary<uint, int>();
+                foreach (var eligiblePlayer in eligiblePlayers)
                 {
-                    var lootBagTypeDefinition = bagDefinitions[bagIndex];
-                    if (lootBagTypeDefinition == null)
+                    var randomForCharacter = 0;
+                    if ((randomRollBonuses != null) && (configSettings.AllowRandomContribution == "Y"))
                     {
-                        Logger.Warn($"lootBagTypeDefinition (index = {bagIndex}) is null");
-                        continue;
+                        if (randomRollBonuses.ContainsKey(eligiblePlayer.Key))
+                        {
+                            randomForCharacter = randomRollBonuses[eligiblePlayer.Key];
+                        }
                     }
 
-                    try
+                    var pairingContributionForCharacter = 0;
+                    if ((pairingContributionBonuses != null) && (configSettings.AllowPairingContribution == "Y"))
                     {
-                        lootBagTypeDefinition.Assignee = selectedPlayer.Key;
-                        Logger.Info(
-                            $"Selected player {selectedPlayer} selected for reward. LootBag Id : {lootBagTypeDefinition.LootBagNumber} ({lootBagTypeDefinition.BagRarity}). Index = {bagIndex}");
-                        // player assigned, go to next bag
-                        bagIndex++;
+                        if (pairingContributionBonuses.ContainsKey(eligiblePlayer.Key))
+                        {
+                            pairingContributionForCharacter = pairingContributionBonuses[eligiblePlayer.Key];
+                        }
                     }
-                    catch (Exception e)
+
+                    
+                    var characterId = eligiblePlayer.Key;
+                    var bonus = bagBonuses.SingleOrDefault(x => x.CharacterId == characterId);
+                    if ((bonus != null) && (configSettings.AllowBagBonusContribution == "Y"))
                     {
-                        Logger.Warn($"{e.Message}");
+                        switch (lootBagTypeDefinition.BagRarity)
+                        {
+                            case LootBagRarity.White:
+                            {
+                                comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.WhiteBag+randomForCharacter+pairingContributionForCharacter);
+                                break;
+                            }
+                            case LootBagRarity.Green:
+                            {
+                                comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.GreenBag+randomForCharacter+pairingContributionForCharacter);
+                                break;
+                            }
+                            case LootBagRarity.Blue:
+                            {
+                                comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.BlueBag+randomForCharacter+pairingContributionForCharacter);
+                                break;
+                            }
+                            case LootBagRarity.Purple:
+                            {
+                                comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.PurpleBag+randomForCharacter+pairingContributionForCharacter);
+                                break;
+                            }
+                            case LootBagRarity.Gold:
+                            {
+                                comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.GoldBag+randomForCharacter+pairingContributionForCharacter);
+                                break;
+                            }
+                        }
                     }
+                    else
+                    {
+                        comparisonDictionary.Add(characterId,  eligiblePlayer.Value+randomForCharacter+pairingContributionForCharacter);
+                    }
+                    Logger.Debug($"===== Loot Assignment Bonuses : Character {characterId}, Base {eligiblePlayer.Value} Random {randomForCharacter} Pairing {pairingContributionForCharacter}");
+                }
+                // Sort the comparison dictionary
+                var comparisonList = comparisonDictionary.OrderBy(x => x.Value).ToList();
+                comparisonList.Reverse();
+
+                foreach (var keyValuePair in comparisonList)
+                {
+                    Logger.Debug($"======= Post modification values for comparison : Character {keyValuePair.Key}, Value {keyValuePair.Value}");
                 }
 
+                lootBagTypeDefinition.Assignee = comparisonList[0].Key;
+                // remove this assignee from future comparisons.
+                eligiblePlayers.RemoveAll(x=>x.Key==comparisonList[0].Key);
+                Logger.Info(
+                    $"===== Selected player {lootBagTypeDefinition.Assignee} selected for reward. LootBag Id : {lootBagTypeDefinition.LootBagNumber} ({lootBagTypeDefinition.BagRarity}).");
+                
             }
             return bagDefinitions;
         }
 
         public int GetNumberOfBagsToAward(int forceNumberBags, List<KeyValuePair<uint, int>> allContributingPlayers)
         {
-            Logger.Debug($"forceNumberBags = {forceNumberBags}");
+            if (forceNumberBags != 0)
+                Logger.Debug($"forceNumberBags = {forceNumberBags}");
 
             // Force the number of bags to hand out.
             var numberOfBags = forceNumberBags;
             if (forceNumberBags == 0)
                 numberOfBags = (int)DetermineNumberOfAwards(allContributingPlayers.Count());
-
-            Logger.Debug($"AllContributing Players Count = {allContributingPlayers.Count()}, numberBags = {numberOfBags}");
 
             return numberOfBags;
         }

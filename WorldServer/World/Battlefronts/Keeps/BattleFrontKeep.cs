@@ -263,6 +263,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     //    SendRegionMessage($"The Dark gods have blessed the fortress defenders." + 
                     //                      $"Chaos will spread across the Old World with renewed strength."); 
 
+                  
                     GenerateKeepTakeRewards();
 
                     // Lock the keep for the defending realm 
@@ -731,6 +732,8 @@ namespace WorldServer.World.Battlefronts.Keeps
                 }
 
             }
+          
+
 
         }
 
@@ -856,6 +859,8 @@ namespace WorldServer.World.Battlefronts.Keeps
             // If this keep is a Fortress, no need to run the Statemachine - reply on defence timer or lord kill only.
             if (Fortress)
             {
+                // Reset the Fort Defence Counter.
+                FortDefenceCounter = 0;
                 SetKeepSafe();
                 return;
             }
@@ -2063,18 +2068,18 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             if (isFortress)
             {
-                // Give all players eligible in the Fort zone some warlord crests
-                foreach (var player in eligiblitySplits.Item1)
+                // Give all players in the zone WLC.
+                foreach (var player in PlayerUtil.GetAllFlaggedPlayersInZone((int) ZoneId))
                 {
                     try
                     {
-                        _logger.Debug($"Assigning Warlord Crests for Fort Zone Flip {player.Key.Name}");
-                        player.Key.SendClientMessage($"You have been awarded 5 Warlord Crests - check your mail.", ChatLogFilters.CHATLOGFILTERS_LOOT);
-                        Region.Campaign.GetActiveBattleFrontStatus().RewardManagerInstance.MailItem(player.Key.CharacterId, ItemService.GetItem_Info(208454), 5, Info.Name, "Fortress Battle", "Warlord crests");
+                        _logger.Debug($"Assigning Warlord Crests for Fort Zone Flip {player.Name}");
+                        player.SendClientMessage($"You have been awarded 5 Warlord Crests - check your mail.", ChatLogFilters.CHATLOGFILTERS_LOOT);
+                        Region.Campaign.GetActiveBattleFrontStatus().RewardManagerInstance.MailItem(player.CharacterId, ItemService.GetItem_Info(208454), 5, Info.Name, "Fortress Battle", "Warlord crests");
                     }
                     catch (Exception)
                     {
-                        _logger.Warn($"Could not mail warlord crests (5) to {player.Key.CharacterId}");
+                        _logger.Warn($"Could not mail warlord crests (5) to {player.CharacterId}");
                     }
                 }
 

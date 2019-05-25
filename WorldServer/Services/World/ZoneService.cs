@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Common.Database.World.Battlefront;
+using Common.Database.World.Maps;
 using WorldServer.Managers;
 using WorldServer.World.Positions;
 
@@ -304,5 +305,7 @@ namespace WorldServer.Services.World
             return (uint)Math.Truncate((decimal)(Pin / 4096 + (x ? Info.OffX : Info.OffY))) << 12;
         }
         #endregion
+
+       
     }
 }

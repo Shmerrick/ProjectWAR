@@ -29,7 +29,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         void PlayerKillPVPDrop(Player killer, Player victim);
 
         List<LootBagTypeDefinition> GenerateBagDropAssignments(ConcurrentDictionary<Player, int> realmPlayers,
-            int forceNumberBags, int forceDropChance = 100);
+            int forceNumberBags, string leadInZones, int forceDropChance = 100);
 
         void GenerateKeepTakeLootBags(
             ILogger logger,
