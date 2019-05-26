@@ -434,6 +434,7 @@
     <Compile Include="World\Auction\AuctionHouse.cs" />
     <Compile Include="World\Battlefronts\AAOTracker.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\CampaignMetrics.cs" />
+    <Compile Include="World\Battlefronts\Apocalypse\Loot\KeepLockTracker.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\LootBagBuilder.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\Loot\ZoneLockRewardDistributor.cs" />
     <Compile Include="World\Battlefronts\Apocalypse\PlayerContributionManager.cs" />

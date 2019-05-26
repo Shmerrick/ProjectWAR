@@ -7,6 +7,7 @@ using Common.Database.World.Battlefront;
 using WorldServer.Configs;
 using WorldServer.Managers;
 using WorldServer.World.Battlefronts.Bounty;
+using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
@@ -78,11 +79,22 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         /// <param name="eligiblePlayers">List of Character and Eligibility values</param>
         /// <param name="bagBonuses"></param>
         /// <param name="randomRollBonuses"></param>
+        /// <param name="pairingContributionBonuses"></param>
+        /// <param name="configSettings"></param>
         /// <returns></returns>
         public List<LootBagTypeDefinition> AssignLootToPlayers(int numberOfBagsToAward,
             List<LootBagTypeDefinition> bagDefinitions, List<KeyValuePair<uint, int>> eligiblePlayers,
-            IList<RVRPlayerBagBonus> bagBonuses, Dictionary<uint, int> randomRollBonuses, Dictionary<uint, int> pairingContributionBonuses, WorldConfigs configSettings)
+            IList<RVRPlayerBagBonus> bagBonuses, Dictionary<uint, int> randomRollBonuses,
+            Dictionary<uint, int> pairingContributionBonuses, WorldConfigs configSettings)
         {
+            var characterKeepTrackerList = new List<KeepLockTracker>();
+            // Preload the tracker
+            foreach (var eligiblePlayer in eligiblePlayers)
+            {
+                var k = new KeepLockTracker {CharacterId = eligiblePlayer.Key, ZoneContribution = eligiblePlayer.Value};
+                characterKeepTrackerList.Add(k);
+            }
+
             Logger.Trace($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBagsToAward} Bags");
 
             if (eligiblePlayers.Count == 0)
@@ -102,12 +114,14 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 var comparisonDictionary = new Dictionary<uint, int>();
                 foreach (var eligiblePlayer in eligiblePlayers)
                 {
+                    var klt = characterKeepTrackerList.SingleOrDefault(x => x.CharacterId == eligiblePlayer.Key);
                     var randomForCharacter = 0;
                     if ((randomRollBonuses != null) && (configSettings.AllowRandomContribution == "Y"))
                     {
                         if (randomRollBonuses.ContainsKey(eligiblePlayer.Key))
                         {
                             randomForCharacter = randomRollBonuses[eligiblePlayer.Key];
+                            if (klt != null) klt.RandomBonus = randomForCharacter;
                         }
                     }
 
@@ -117,6 +131,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                         if (pairingContributionBonuses.ContainsKey(eligiblePlayer.Key))
                         {
                             pairingContributionForCharacter = pairingContributionBonuses[eligiblePlayer.Key];
+                            if (klt != null) klt.PairingBonus = pairingContributionForCharacter;
                         }
                     }
 
@@ -130,26 +145,31 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                             case LootBagRarity.White:
                             {
                                 comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.WhiteBag+randomForCharacter+pairingContributionForCharacter);
+                                if (klt != null) klt.WhiteBagBonus = bonus.WhiteBag;
                                 break;
                             }
                             case LootBagRarity.Green:
                             {
                                 comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.GreenBag+randomForCharacter+pairingContributionForCharacter);
+                                if (klt != null) klt.GreenBagBonus = bonus.GreenBag;
                                 break;
                             }
                             case LootBagRarity.Blue:
                             {
                                 comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.BlueBag+randomForCharacter+pairingContributionForCharacter);
+                                if (klt != null) klt.BlueBagBonus = bonus.BlueBag;
                                 break;
                             }
                             case LootBagRarity.Purple:
                             {
                                 comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.PurpleBag+randomForCharacter+pairingContributionForCharacter);
+                                if (klt != null) klt.PurpleBagBonus = bonus.PurpleBag;
                                 break;
                             }
                             case LootBagRarity.Gold:
                             {
                                 comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.GoldBag+randomForCharacter+pairingContributionForCharacter);
+                                if (klt != null) klt.GoldBagBonus = bonus.GoldBag;
                                 break;
                             }
                         }
@@ -158,8 +178,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                     {
                         comparisonDictionary.Add(characterId,  eligiblePlayer.Value+randomForCharacter+pairingContributionForCharacter);
                     }
-                    Logger.Debug($"===== Loot Assignment Bonuses : Character {characterId}, Base {eligiblePlayer.Value} Random {randomForCharacter} Pairing {pairingContributionForCharacter}");
+                    //Logger.Debug($"===== Loot Assignment Bonuses : Character {characterId}, Base {eligiblePlayer.Value} Random {randomForCharacter} Pairing {pairingContributionForCharacter}");
                 }
+                
                 // Sort the comparison dictionary
                 var comparisonList = comparisonDictionary.OrderBy(x => x.Value).ToList();
                 comparisonList.Reverse();
@@ -176,6 +197,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                     $"===== Selected player {lootBagTypeDefinition.Assignee} selected for reward. LootBag Id : {lootBagTypeDefinition.LootBagNumber} ({lootBagTypeDefinition.BagRarity}).");
                 
             }
+
+            foreach (var keepLockTracker in characterKeepTrackerList)
+            {
+                Logger.Debug($"===== Loot Assignment Bonuses (KLT) : {keepLockTracker.ToString()}");
+                if (configSettings.DebugLootRolls == "Y")
+                {
+                    var player = Player._Players.SingleOrDefault(x => x.CharacterId == keepLockTracker.CharacterId);
+                    if (player != null) player.SendClientMessage($"{player.Name} Loot Rolls: {keepLockTracker.ToString()}");
+                         
+
+                }
+            }
+
             return bagDefinitions;
         }
 

@@ -9,6 +9,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
+using WorldServer.Configs;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
@@ -1033,6 +1034,9 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public void OnKeepDoorAttacked(byte number, byte pctHealth, uint doorId)
         {
+            if (pctHealth >= Program.Config.KeepDoorPercentHealthBoundary)
+                return;
+
             _logger.Debug($"Keep Door attacked, starting the defence tick timer from the top {number}/{doorId}/{pctHealth}");
             DefenceTickTimer.Start();
 
