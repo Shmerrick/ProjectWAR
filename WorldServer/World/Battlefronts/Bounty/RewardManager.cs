@@ -828,7 +828,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             // Assign eligible players to the bag definitions.
             var pairingContributions = new Dictionary<uint, int>();
             var zoneEligibiltyCharacters = new List<KeepLockEligibilityHistory>();
-            if (leadInZones == "")
+            if (leadInZones != "")
             {
                 zoneEligibiltyCharacters = (List<KeepLockEligibilityHistory>)CharMgr.Database.SelectObjects<KeepLockEligibilityHistory>(
                     $"CharacterId in ({characterJoinedList}) and ZoneId in ({leadInZones}) and date >= DATE_SUB(NOW(),INTERVAL {Program.Config.PairingContributionTimeIntervalHours} HOUR); ");
@@ -839,7 +839,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 var random = StaticRandom.Instance.Next(Program.Config.BagRollRandomLowerLimit, Program.Config.BagRollRandomUpperLimit);
                 randomRollList.Add(character.Key, random);
 
-                if (leadInZones == "")
+                if (leadInZones != "")
                 {
                     var pairingBonus = Program.Config.PairingBonusIncrement *
                                        zoneEligibiltyCharacters.Count(x => x.CharacterId == character.Key);

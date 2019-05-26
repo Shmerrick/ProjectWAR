@@ -86,6 +86,6 @@ namespace WorldServer.Configs
         public string AllowPairingContribution = "Y";
         public string AllowRandomContribution = "Y";
         public int KeepDoorPercentHealthBoundary = 98;      // % of door health required to trigger door under attack logic
-        public string DebugLootRolls = "Y";                    // Display loot roll details to players
+        public string DebugLootRolls = "N";                    // Display loot roll details to players
     }
 }
