@@ -839,7 +839,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             if ((leadInZones != "") && (characterJoinedList !=""))
             {
                 var query =
-                    $"CharacterId in ({characterJoinedList}) and ZoneId in ({leadInZones}) and timestamp >= DATE_SUB(NOW(),INTERVAL {Program.Config.PairingContributionTimeIntervalHours} HOUR) ";
+                    $"CharacterId in ({characterJoinedList}) and ZoneId in ({leadInZones}) and timestamp BETWEEN DATE_SUB(NOW(), INTERVAL {{Program.Config.PairingContributionTimeIntervalHours}} HOUR) AND NOW() ) ";
                 zoneEligibiltyCharacters = (List<KeepLockEligibilityHistory>)WorldMgr.Database.SelectObjects<KeepLockEligibilityHistory>(query);
             }
 
