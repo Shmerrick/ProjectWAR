@@ -95,6 +95,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 characterKeepTrackerList.Add(k);
             }
 
+            Logger.Debug($"=== Pairing Contributions");
+            foreach (var bonus in pairingContributionBonuses)
+            {
+                Logger.Debug($"{bonus.Key}:{bonus.Value}");
+            }
+
             Logger.Trace($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBagsToAward} Bags");
 
             if (eligiblePlayers.Count == 0)
@@ -205,8 +211,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 {
                     var player = Player._Players.SingleOrDefault(x => x.CharacterId == keepLockTracker.CharacterId);
                     if (player != null) player.SendClientMessage($"{player.Name} Loot Rolls: {keepLockTracker.ToString()}");
-                         
-
                 }
             }
 

@@ -1051,7 +1051,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 };
 
                 CharMgr.Database.AddObject(bagBonus);
-                Logger.Debug($"Adding bag bonus for {characterBagBonus.ToString()} ({player.CharacterId})");
+                Logger.Debug($"Adding bag bonus for {bagBonus.ToString()} ({player.CharacterId})");
             }
             else
             {

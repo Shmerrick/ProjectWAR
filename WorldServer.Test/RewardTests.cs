@@ -49,7 +49,7 @@ namespace WorldServer.Test
             var bonusList = new List<RVRPlayerBagBonus>();
             var randomRolls = new Dictionary<uint, int>();
             var pairingContributions = new Dictionary<uint, int> { { 50000, 100 } };
-            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "N", AllowRandomContribution = "Y" });
+            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "N", AllowRandomContribution = "Y", DebugLootRolls = "N" });
 
 
             Assert.IsTrue(numberOfAwards == assignedLoot.Count);
@@ -82,7 +82,7 @@ namespace WorldServer.Test
             var bonusList = new List<RVRPlayerBagBonus>();
             var randomRolls = new Dictionary<uint, int>();
             var pairingContributions = new Dictionary<uint, int> { { 50000, 100 } };
-            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y" });
+            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y", DebugLootRolls = "N"});
 
 
             Assert.IsTrue(numberOfAwards == assignedLoot.Count);
@@ -115,7 +115,7 @@ namespace WorldServer.Test
             var bonusList = new List<RVRPlayerBagBonus>();
             var randomRolls = new Dictionary<uint, int> { { 50000, 100 } };
             var pairingContributions = new Dictionary<uint, int>();
-            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y" });
+            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y", DebugLootRolls = "N"});
 
             Assert.IsTrue(numberOfAwards == assignedLoot.Count);
             Assert.IsTrue(assignedLoot[0].Assignee == 50000);
@@ -147,7 +147,7 @@ namespace WorldServer.Test
             var bonusList = new List<RVRPlayerBagBonus>();
             var randomRolls = new Dictionary<uint, int> { { 50000, 100 }, { 12202, 200 } };
             var pairingContributions = new Dictionary<uint, int>();
-            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y" });
+            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y", DebugLootRolls = "N" });
 
             Assert.IsTrue(numberOfAwards == assignedLoot.Count);
             Assert.IsTrue(assignedLoot[0].Assignee == 50000);
@@ -180,7 +180,7 @@ namespace WorldServer.Test
             var bonusList = new List<RVRPlayerBagBonus>();
             var randomRolls = new Dictionary<uint, int>();
             var pairingContributions = new Dictionary<uint, int>();
-            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y" });
+            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y",  DebugLootRolls = "N"});
 
             Assert.IsTrue(numberOfAwards == assignedLoot.Count);
             Assert.IsTrue(assignedLoot[0].Assignee == 33222);
@@ -228,7 +228,7 @@ namespace WorldServer.Test
             var randomRolls = new Dictionary<uint, int>();
 
             var pairingContributions = new Dictionary<uint, int>();
-            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y" });
+            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y", DebugLootRolls = "N" });
 
             Assert.IsTrue(numberOfAwards == assignedLoot.Count);
             Assert.IsTrue(assignedLoot[0].Assignee == 50020);
@@ -276,7 +276,7 @@ namespace WorldServer.Test
             var x = new LootBagTypeDefinition().BuildLootBagTypeDefinitions(numberOfAwards);
             var randomRolls = new Dictionary<uint, int>();
             var pairingContributions = new Dictionary<uint, int>();
-            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y" });
+            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y", DebugLootRolls = "N" });
 
 
             Assert.IsTrue(numberOfAwards == assignedLoot.Count);
