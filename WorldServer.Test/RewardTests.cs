@@ -60,6 +60,56 @@ namespace WorldServer.Test
         }
 
         [TestMethod]
+        public void UpdatePlayerBagBonus()
+        {
+            var bagBonus = new RVRPlayerBagBonus {CharacterId = 100, BlueBag = 10, GreenBag = 20};
+
+            var fakeBountyManager = A.Fake<IBountyManager>();
+            var fakeContributionManager = A.Fake<IContributionManager>();
+            var fakeImpactMatrixManager = A.Fake<IImpactMatrixManager>();
+            var fakeRewardManager = A.Fake<RewardManager>();
+            var fakeStaticWrapper = A.Fake<IStaticWrapper>();
+
+
+            var rm = new RewardManager(
+                fakeContributionManager,
+                fakeStaticWrapper, new List<RewardPlayerKill>(),
+                fakeImpactMatrixManager);
+
+            var result = rm.UpdatePlayerBagBonus(100, "XXX", bagBonus, new WorldConfigs { EligiblePlayerBagBonusIncrement = 5});
+            
+            Assert.IsTrue(result.BlueBag == 15);
+            Assert.IsTrue(result.GreenBag == 25);
+            Assert.IsTrue(result.GoldBag == 5);
+
+        }
+
+        [TestMethod]
+        public void UpdatePlayerBagBonusWrapper()
+        {
+            var bagBonus = new RVRPlayerBagBonus {CharacterId = 100, BlueBag = 10, GreenBag = 20};
+
+            var fakeBountyManager = A.Fake<IBountyManager>();
+            var fakeContributionManager = A.Fake<IContributionManager>();
+            var fakeImpactMatrixManager = A.Fake<IImpactMatrixManager>();
+            var fakeRewardManager = A.Fake<RewardManager>();
+            var fakeStaticWrapper = A.Fake<IStaticWrapper>();
+
+
+            var rm = new RewardManager(
+                fakeContributionManager,
+                fakeStaticWrapper, new List<RewardPlayerKill>(),
+                fakeImpactMatrixManager);
+
+            var result = rm.UpdatePlayerBagBonus(100, "XXX", bagBonus, new WorldConfigs { EligiblePlayerBagBonusIncrement = 5});
+            
+            Assert.IsTrue(result.BlueBag == 15);
+            Assert.IsTrue(result.GreenBag == 25);
+            Assert.IsTrue(result.GoldBag == 5);
+
+        }
+
+        [TestMethod]
         public void AssignLootSortingIsCorrectToBagsContribution()
         {
 
@@ -82,7 +132,7 @@ namespace WorldServer.Test
             var bonusList = new List<RVRPlayerBagBonus>();
             var randomRolls = new Dictionary<uint, int>();
             var pairingContributions = new Dictionary<uint, int> { { 50000, 100 } };
-            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y", DebugLootRolls = "N"});
+            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y", DebugLootRolls = "N" });
 
 
             Assert.IsTrue(numberOfAwards == assignedLoot.Count);
@@ -115,7 +165,7 @@ namespace WorldServer.Test
             var bonusList = new List<RVRPlayerBagBonus>();
             var randomRolls = new Dictionary<uint, int> { { 50000, 100 } };
             var pairingContributions = new Dictionary<uint, int>();
-            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y", DebugLootRolls = "N"});
+            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y", DebugLootRolls = "N" });
 
             Assert.IsTrue(numberOfAwards == assignedLoot.Count);
             Assert.IsTrue(assignedLoot[0].Assignee == 50000);
@@ -180,7 +230,7 @@ namespace WorldServer.Test
             var bonusList = new List<RVRPlayerBagBonus>();
             var randomRolls = new Dictionary<uint, int>();
             var pairingContributions = new Dictionary<uint, int>();
-            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y",  DebugLootRolls = "N"});
+            var assignedLoot = rewardAssigner.AssignLootToPlayers(numberOfAwards, x, sortedPairs, bonusList, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y", DebugLootRolls = "N" });
 
             Assert.IsTrue(numberOfAwards == assignedLoot.Count);
             Assert.IsTrue(assignedLoot[0].Assignee == 33222);

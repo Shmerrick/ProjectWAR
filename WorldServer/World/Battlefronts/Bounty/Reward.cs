@@ -1,7 +1,5 @@
 ﻿namespace WorldServer.World.Battlefronts.Bounty
 {
-    public partial class RewardManager
-    {
         public class Reward
         {
             public int RenownBand { get; set; }
@@ -30,6 +28,4 @@
                 return (10 - playerRenownLevel % 10) + playerRenownLevel;
             }
         }
-    }
-
 }

@@ -881,6 +881,8 @@ namespace WorldServer.World.Battlefronts.Bounty
             if (forceNumberBags == -1)
                 return;
 
+            var bagBonus = new Dictionary<Player, RVRPlayerBagBonus>();
+
             try
             {
                 var zone = ZoneService.GetZone_Info((ushort)zoneId);
@@ -904,7 +906,17 @@ namespace WorldServer.World.Battlefronts.Bounty
 
                 logger.Info($"Number of total rewards assigned : {rewardAssignments.Count}");
 
-             
+                foreach (var eligiblePlayersAllRealm in allEligiblePlayers)
+                {
+                    logger.Debug($"eligible : {eligiblePlayersAllRealm.Key.Name} ({eligiblePlayersAllRealm.Key.CharacterId}) {eligiblePlayersAllRealm.Key.Realm}");
+                    bagBonus.Add(eligiblePlayersAllRealm.Key, CharMgr.Database.SelectObject<RVRPlayerBagBonus>($"CharacterId = {eligiblePlayersAllRealm.Key.CharacterId}"));
+                }
+
+                foreach (var bonus in bagBonus.Keys.ToList())
+                {
+                    bagBonus[bonus] = UpdatePlayerBagBonus(bonus.CharacterId, bonus.Name, bagBonus[bonus], Program.Config);
+                }
+                
                 var bagContentSelector = new BagContentSelector(lootOptions, StaticRandom.Instance);
                 var lootBagReportList = new List<KeyValuePair<Item_Info, List<Talisman>>>();
 
@@ -965,7 +977,9 @@ namespace WorldServer.World.Battlefronts.Bounty
                                 }
 
                                 RecordKeepTakeRewardHistory(logger, assignedPlayer, generatedLootBag, lockingRealm, keep);
-                                ResetBagBonus(assignedPlayer, generatedLootBag.Key);
+                                var characterBagBonus = bagBonus.SingleOrDefault(x => x.Key.CharacterId == assignedPlayer.CharacterId);
+                                characterBagBonus = ResetBagBonus(assignedPlayer, generatedLootBag.Key, characterBagBonus);
+                                bagBonus[assignedPlayer] = characterBagBonus.Value;
                                 assignedPlayer.SendClientMessage($"For your efforts, you have received a {generatedLootBag.Key.Name}. Pick up your rewards at your Warcamp.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
                             }
@@ -983,100 +997,104 @@ namespace WorldServer.World.Battlefronts.Bounty
                     }
                 }
 
-                foreach (var eligiblePlayersAllRealm in allEligiblePlayers)
+                foreach (var bonus in bagBonus.Keys.ToList())
                 {
-                    logger.Debug($"eligible : {eligiblePlayersAllRealm.Key.Name} ({eligiblePlayersAllRealm.Key.CharacterId}) {eligiblePlayersAllRealm.Key.Realm}");
-                    UpdatePlayerBagBonus(eligiblePlayersAllRealm.Key);
+                    var bonusToWrite = bagBonus[bonus];
+                    bonusToWrite.Dirty = true;
+                    CharMgr.Database.SaveObject(bonusToWrite);
                 }
             }
             catch (Exception e)
             {
                 logger.Warn($"Unexpectedexception {zoneId} {keep.KeepId} {e.Message} {e.StackTrace}");
             }
+
+            
         }
 
+       
         /// <summary>
         /// Bag assigned to player, reset their bag bonus for that bag
         /// </summary>
         /// <param name="player"></param>
         /// <param name="item"></param>
-        private void ResetBagBonus(Player player, Item_Info item)
+        /// <param name="singleOrDefault"></param>
+        private KeyValuePair<Player, RVRPlayerBagBonus> ResetBagBonus(Player player, Item_Info item,
+            KeyValuePair<Player, RVRPlayerBagBonus> bagBonus)
         {
-            var characterBagBonus = CharMgr.Database.SelectObject<RVRPlayerBagBonus>($"CharacterId = {player.CharacterId}");
             var bagDescription = "";
-            if (characterBagBonus != null)
+            if (bagBonus.Value != null)
             {
                 switch (item.Entry)
                 {
                     case 9940:
-                        characterBagBonus.WhiteBag = 0;
+                        bagBonus.Value.WhiteBag = 0;
                         bagDescription = "White"; 
                         break;
                     case 9941:
-                        characterBagBonus.GreenBag = 0;
+                        bagBonus.Value.GreenBag = 0;
                         bagDescription = "Green"; 
                         break;
-                    case 9942: characterBagBonus.BlueBag = 0; 
+                    case 9942: bagBonus.Value.BlueBag = 0; 
                         bagDescription = "Blue"; 
                         break;
-                    case 9943: characterBagBonus.PurpleBag = 0; 
+                    case 9943: bagBonus.Value.PurpleBag = 0; 
                         bagDescription = "Purple"; 
                         break;
-                    case 9980: characterBagBonus.GoldBag = 0; 
+                    case 9980: bagBonus.Value.GoldBag = 0; 
                         bagDescription = "Gold"; 
                         break;
                 }
-                characterBagBonus.Timestamp = DateTime.UtcNow;
-                characterBagBonus.Dirty = true;
-                CharMgr.Database.SaveObject(characterBagBonus);
-                CharMgr.Database.ForceSave();
+                bagBonus.Value.Timestamp = DateTime.UtcNow;
                 
-                Logger.Debug($"Resetting bag bonus for {item.Entry} {bagDescription} ({player.CharacterId}). {characterBagBonus.ToString()} {characterBagBonus.Timestamp.ToShortDateString()}");
+                Logger.Debug($"Resetting bag bonus for {item.Entry} {bagDescription} ({player.CharacterId}). {bagBonus.Value.ToString()} {bagBonus.Value.Timestamp.ToShortDateString()}");
+
             }
+
+            return bagBonus;
         }
 
         /// <summary>
         /// Add bag bonus value to each eligible player (ie increment their bonus)
         /// </summary>
-        /// <param name="keyCharacterId"></param>
-
-        private void UpdatePlayerBagBonus(Player player)
+        
+        /// <param name="bonus"></param>
+        public RVRPlayerBagBonus UpdatePlayerBagBonus(uint characterId, string characterName, RVRPlayerBagBonus bonus, WorldConfigs settings)
         {
-            var increment = Program.Config.EligiblePlayerBagBonusIncrement;
+            var increment = settings.EligiblePlayerBagBonusIncrement;
 
-            var characterBagBonus = CharMgr.Database.SelectObject<RVRPlayerBagBonus>($"CharacterId = {player.CharacterId}");
-            if (characterBagBonus == null)
+            if (bonus == null)
             {
                 var bagBonus = new RVRPlayerBagBonus
                 {
-                    CharacterId = (int)player.CharacterId,
+                    CharacterId = (int) characterId,
                     GoldBag = increment,
                     BlueBag = increment,
                     PurpleBag = increment,
                     GreenBag = increment,
                     WhiteBag = increment,
                     Timestamp = DateTime.UtcNow,
-                    CharacterName = player.Name,
+                    CharacterName = characterName,
                     Dirty = true
                 };
 
                 CharMgr.Database.AddObject(bagBonus);
-                Logger.Debug($"Adding bag bonus for {bagBonus.ToString()} ({player.CharacterId})");
+                Logger.Debug($"Adding bag bonus for {bagBonus.ToString()} ({characterId})");
             }
             else
             {
-                characterBagBonus.GoldBag += increment;
-                characterBagBonus.BlueBag += increment;
-                characterBagBonus.PurpleBag += increment;
-                characterBagBonus.GreenBag += increment;
-                characterBagBonus.WhiteBag += increment;
-                characterBagBonus.Timestamp = DateTime.UtcNow;
-                characterBagBonus.CharacterName = player.Name;
-                characterBagBonus.Dirty = true;
-                CharMgr.Database.SaveObject(characterBagBonus);
-                Logger.Debug($"Updating bag bonus for {characterBagBonus.ToString()} ({player.CharacterId})");
+                bonus.GoldBag += increment;
+                bonus.BlueBag += increment;
+                bonus.PurpleBag += increment;
+                bonus.GreenBag += increment;
+                bonus.WhiteBag += increment;
+                bonus.Timestamp = DateTime.UtcNow;
+                bonus.CharacterName = characterName;
+                bonus.Dirty = true;
+                Logger.Debug($"Updating bag bonus for {characterName} ({characterId})");
             }
-            
+
+            return bonus;
         }
 
 

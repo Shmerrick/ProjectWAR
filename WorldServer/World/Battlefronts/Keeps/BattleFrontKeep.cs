@@ -2008,12 +2008,17 @@ namespace WorldServer.World.Battlefronts.Keeps
             {
                 if (isFortress)
                 {
-                    // There is no WC in Fort zone - look for the feedin zone.
-                    var spawnPoint = new SpawnPoint(Zone.ZoneId, PlayerSpawnLocation.Value.DefenderKeepSafeX,
-                        PlayerSpawnLocation.Value.DefenderKeepSafeY,
-                        PlayerSpawnLocation.Value.DefenderKeepSafeZ);
+                    var orderWCId = PlayerSpawnLocation.Value.OrderFeedZoneId;
+                    var wc = BattleFrontService.GetWarcampEntrance((ushort)orderWCId, Realms.REALMS_REALM_ORDER);
+                    var orderWCZone = ZoneService.GetZone_Info((ushort) orderWCId);
+                    var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)orderWCId), (ushort)wc.X, (ushort)wc.Y, (ushort)wc.Z);
+                    
+                    //// There is no WC in Fort zone - look for the feedin zone.
+                    //var spawnPoint = new SpawnPoint(Zone.ZoneId, PlayerSpawnLocation.Value.DefenderKeepSafeX,
+                    //    PlayerSpawnLocation.Value.DefenderKeepSafeY,
+                    //    PlayerSpawnLocation.Value.DefenderKeepSafeZ);
 
-                    orderLootChest = LootChest.Create(Region, spawnPoint.As3DPoint(), (ushort)spawnPoint.ZoneId, !isFortress);
+                    orderLootChest = LootChest.Create(Region, target, (ushort)orderWCZone.ZoneId, isFortress);
                 }
                 else
                 {
