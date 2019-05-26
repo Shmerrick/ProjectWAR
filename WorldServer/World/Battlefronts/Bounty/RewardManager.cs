@@ -733,13 +733,14 @@ namespace WorldServer.World.Battlefronts.Bounty
                 //{
                 //    victim.SetLootable(true, killer);
                 //}
+                var item = ItemService.GetItem_Info((uint) availableGearDrop.ItemId);
 
-                killer.ItmInterface.CreateItem(ItemService.GetItem_Info((uint)availableGearDrop.ItemId), (ushort)1);
+                killer.ItmInterface.CreateItem(item, (ushort)1);
 
                 RecordPlayerKillRewardHistory(killer, victim, availableGearDrop.ItemId);
 
                 RewardLogger.Info($"### {victim.Name} / {victim.RenownRank} dropped {availableGearDrop.ItemId} for killer {killer}");
-                killer.SendClientMessage($"You have scavenged an item of rare worth from {victim.Name}", ChatLogFilters.CHATLOGFILTERS_LOOT);
+                killer.SendClientMessage($"You have been awarded an item of rare worth from {victim.Name} - {item.Name}", ChatLogFilters.CHATLOGFILTERS_LOOT);
 
                 return;
 
