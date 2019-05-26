@@ -820,18 +820,27 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             var characterList = (from kvp in sortedPairs select kvp.Key).Distinct().ToList();
             var characterJoinedList = string.Join(",", characterList);
+            var bagBonusCharacters = new List<RVRPlayerBagBonus>();
+            if (characterJoinedList != "")
+            {
+                bagBonusCharacters =
+                    CharMgr.Database.SelectObjects<RVRPlayerBagBonus>($"CharacterId in ({characterJoinedList})").ToList();
+            }
 
-            var bagBonusCharacters = CharMgr.Database.SelectObjects<RVRPlayerBagBonus>($"CharacterId in ({characterJoinedList})");
+            Logger.Debug(characterJoinedList);
+            Logger.Debug(leadInZones);
+
             // Generate random rolls for each of the sortedPairs (characters).
             var randomRollList = new Dictionary<uint, int>();
 
             // Assign eligible players to the bag definitions.
             var pairingContributions = new Dictionary<uint, int>();
             var zoneEligibiltyCharacters = new List<KeepLockEligibilityHistory>();
-            if (leadInZones != "")
+            if ((leadInZones != "") && (characterJoinedList !=""))
             {
-                zoneEligibiltyCharacters = (List<KeepLockEligibilityHistory>)CharMgr.Database.SelectObjects<KeepLockEligibilityHistory>(
-                    $"CharacterId in ({characterJoinedList}) and ZoneId in ({leadInZones}) and date >= DATE_SUB(NOW(),INTERVAL {Program.Config.PairingContributionTimeIntervalHours} HOUR); ");
+                var query =
+                    $"CharacterId in ({characterJoinedList}) and ZoneId in ({leadInZones}) and timestamp >= DATE_SUB(NOW(),INTERVAL {Program.Config.PairingContributionTimeIntervalHours} HOUR) ";
+                zoneEligibiltyCharacters = (List<KeepLockEligibilityHistory>)WorldMgr.Database.SelectObjects<KeepLockEligibilityHistory>(query);
             }
 
             foreach (var character in sortedPairs)
