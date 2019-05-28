@@ -990,7 +990,8 @@ namespace WorldServer.World.Interfaces
             byte type = (byte)bonusType;
 
             if (bonusType < Stats.MaxStatCount)
-                _statModifiers[type].RemoveBonusMultiplier(mult, (byte)statGroup);
+                if (_statModifiers[type] != null)
+                    _statModifiers[type].RemoveBonusMultiplier(mult, (byte)statGroup);
 
             if (bonusType == Stats.Wounds || bonusType == Stats.Armor || bonusType == Stats.Willpower || bonusType == Stats.WeaponSkill || bonusType == Stats.Initiative || bonusType == Stats.Strength || bonusType == Stats.Toughness || bonusType == Stats.BallisticSkill)
                 ApplyStats();

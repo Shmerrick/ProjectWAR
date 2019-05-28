@@ -72,9 +72,7 @@ namespace WorldServer.World.Objects.Instances
 			BossTimer = new Stopwatch();
 			BossTimer.Start();
 
-            BossTimer = new Stopwatch();
-            BossTimer.Start();
-
+            
             return false;
         }
 
