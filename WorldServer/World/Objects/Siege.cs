@@ -232,14 +232,14 @@ namespace WorldServer.World.Objects
             // RB   6/25/2016   Kill siege weapons that have decayed and are not being interacted with.
             if (SiegeInterface.IsAbandoned && msTick > _nextDamageTime)
             {
-                ReceiveDamage(this, MaxHealth / 5);
-                _nextDamageTime = msTick + 10 * 1000;
+                ReceiveDamage(this, MaxHealth / 10);
+                _nextDamageTime = msTick + 20 * 1000;
             }
 
             if (msTick > SiegeInterface.DeathTime && msTick > _nextDamageTime)
             {
-                ReceiveDamage(this, MaxHealth / 5);
-                _nextDamageTime = msTick + 10 * 1000;
+                ReceiveDamage(this, MaxHealth / 10);
+                _nextDamageTime = msTick + 20 * 1000;
             }
 
 
