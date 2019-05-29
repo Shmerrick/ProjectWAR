@@ -217,5 +217,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             };
             WorldMgr.Database.AddObject(honorHistory);
         }
+
+        public static void SendGMBroadcastMessage(List<Player> players, string message)
+        {
+            lock (players)
+            {
+                foreach (Player plr in players)
+                {
+                    if (plr.GmLevel > 1)
+                        plr.SendClientMessage(message, ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+                }
+            }
+        }
     }
 }

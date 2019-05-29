@@ -149,10 +149,31 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(UpdateCampaignObjectiveBuffs, 10000, 0);
             _EvtInterface.AddEvent(CheckKeepTimers, 10000, 0);
             _EvtInterface.AddEvent(UpdateKeepResources, 60000, 0);
+            _EvtInterface.AddEvent(IPCheck, 180000, 0);
             // _EvtInterface.AddEvent(RefreshObjectiveStatus, 20000, 0);
             _EvtInterface.AddEvent(CountdownFortDefenceTimer, FORT_DEFENCE_TIMER, 0);
 
             RegionLockManager = new RegionLockManager(Region);
+        }
+
+        /// <summary>
+        /// Loop through players in the campaign and if any have the same IP - inform a GM.
+        /// </summary>
+        private void IPCheck()
+        {
+            var hash = new HashSet<string>();
+            foreach (var item in PlayersInLakeSet)
+            {
+                var ipAddress = item.Client._Account.Ip;
+                if (item.Client._Account.GmLevel == 1)
+                {
+                    if (!hash.Add(ipAddress))
+                    {
+                        PlayerUtil.SendGMBroadcastMessage(Player._Players,
+                            $"{item.Name} has a duplicate IP address in game.");
+                    }
+                }
+            }
         }
 
         private void DetermineCaptains()

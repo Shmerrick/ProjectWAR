@@ -4350,15 +4350,8 @@ namespace WorldServer.World.Objects
                 {
                     string message = "Suspicious kill pattern detected: " + killer.Name + " has " + _lastKillerKillCount + " kills against " + Name;
 
-                    lock (_Players)
-                    {
-                        foreach (Player plr in _Players)
-                        {
-                            if (plr.GmLevel > 1)
-                                plr.SendClientMessage(message, ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                        }
-                    }
-
+                    PlayerUtil.SendGMBroadcastMessage(_Players, message);
+                    
                     return true;
                 }
             }
