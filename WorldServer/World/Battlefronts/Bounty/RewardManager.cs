@@ -842,6 +842,8 @@ namespace WorldServer.World.Battlefronts.Bounty
                 var query =
                     $"CharacterId in ({characterJoinedList}) and ZoneId in ({leadInZones}) and timestamp BETWEEN DATE_SUB(NOW(), INTERVAL {{Program.Config.PairingContributionTimeIntervalHours}} HOUR) AND NOW() ) ";
                 zoneEligibiltyCharacters = (List<KeepLockEligibilityHistory>)WorldMgr.Database.SelectObjects<KeepLockEligibilityHistory>(query);
+                Logger.Debug($"{query}");
+                Logger.Debug($"zoneEligibiltyCharacters : {zoneEligibiltyCharacters.Count}");
             }
 
             foreach (var character in sortedPairs)
@@ -853,6 +855,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 {
                     var pairingBonus = Program.Config.PairingBonusIncrement *
                                        zoneEligibiltyCharacters.Count(x => x.CharacterId == character.Key);
+                    Logger.Debug($"Pairing Bonus : {pairingBonus}");
                     pairingContributions.Add(character.Key, pairingBonus);
                 }
             }
@@ -1000,6 +1003,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 foreach (var bonus in bagBonus.Keys.ToList())
                 {
                     var bonusToWrite = bagBonus[bonus];
+                    logger.Warn($"Finalisation (writing) - bag Bonus {bonusToWrite.ToString()}");
                     bonusToWrite.Dirty = true;
                     CharMgr.Database.SaveObject(bonusToWrite);
                 }
