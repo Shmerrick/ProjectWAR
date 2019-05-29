@@ -1,11 +1,8 @@
-﻿using System;
+﻿using Common.Database.World.Battlefront;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common.Database.World.Battlefront;
-using Newtonsoft.Json;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Bounty;
@@ -27,23 +24,26 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 Name = player.Name,
                 Class = player.Info.CareerLine,
                 AccountId = player.Info.AccountId,
-                    ZoneId = (int)player.ZoneId.GetValueOrDefault()
+                ZoneId = (int)player.ZoneId.GetValueOrDefault(),
             };
 
-            WorldMgr.Database.AddObject(analyticsRecord);
-
+            var totalValue = 0;
             foreach (var playerContribution in playerContributionList)
             {
                 var contributionDetails = new ContributionAnalyticsDetails
                 {
                     CharacterId = player.CharacterId,
-                    Timestamp = DateTime.Now,
+                    Timestamp = DateTime.UtcNow,
                     ContributionId = playerContribution.Key,
                     ContributionSum = playerContribution.Value.ContributionStageSum
                 };
+                totalValue += playerContribution.Value.ContributionStageSum;
 
                 WorldMgr.Database.AddObject(contributionDetails);
             }
+
+            analyticsRecord.ContributionValue = totalValue;
+            WorldMgr.Database.AddObject(analyticsRecord);
         }
 
         public static void SavePlayerContribution(int battleFrontId, ContributionManager contributionManagerInstance)

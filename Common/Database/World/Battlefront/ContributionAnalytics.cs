@@ -29,6 +29,8 @@ namespace Common.Database.World.Battlefront
         public int AccountId { get; set; }
         [DataElement(AllowDbNull = false)]
         public int ZoneId { get; set; }
+        [DataElement(AllowDbNull = false)]
+        public int ContributionValue { get; set; }
 
 
     }
