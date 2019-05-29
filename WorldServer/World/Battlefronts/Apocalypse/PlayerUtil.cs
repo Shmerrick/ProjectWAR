@@ -212,7 +212,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 CharacterName = playerName,
                 CurrentHonorPoints = (uint) infoHonorPoints,
                 OldHonorPoints = oldHonorPoints,
-                RateOfChange =  (uint) (oldHonorPoints - infoHonorPoints),
+                RateOfChange =  (oldHonorPoints - infoHonorPoints),
                 Timestamp = DateTime.UtcNow
             };
             WorldMgr.Database.AddObject(honorHistory);

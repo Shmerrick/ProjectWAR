@@ -19,7 +19,7 @@ namespace Common.Database.World.Battlefront
         [DataElement(AllowDbNull = false)]
         public uint OldHonorPoints { get; set; }
         [DataElement(AllowDbNull = false)]
-        public uint RateOfChange { get; set; }
+        public int RateOfChange { get; set; }
         [DataElement(AllowDbNull = false)]
         public string CharacterName { get; set; }
 
