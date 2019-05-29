@@ -158,7 +158,7 @@
     <Compile Include="Database\World\Battlefront\KeepLockBagRewardHistory.cs" />
     <Compile Include="Database\World\Battlefront\RVRKeepLockReward.cs" />
     <Compile Include="Database\World\Battlefront\KeepLockEligibilityHistory.cs" />
-    <Compile Include="Database\World\Battlefront\ZoneLockRewardHistory.cs" />
+    <Compile Include="Database\World\Battlefront\ZoneLockEligibilityHistory.cs" />
     <Compile Include="Database\World\Battlefront\ZoneLockSummary.cs" />
     <Compile Include="Database\World\Battlefront\RVRProgression.cs" />
     <Compile Include="Database\World\Battlefront\RVRZoneLockReward.cs" />

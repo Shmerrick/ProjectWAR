@@ -836,12 +836,12 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             // Assign eligible players to the bag definitions.
             var pairingContributions = new Dictionary<uint, int>();
-            var zoneEligibiltyCharacters = new List<KeepLockEligibilityHistory>();
+            var zoneEligibiltyCharacters = new List<ZoneLockEligibilityHistory>();
             if ((leadInZones != "") && (characterJoinedList !=""))
             {
                 var query =
                     $"CharacterId in ({characterJoinedList}) and ZoneId in ({leadInZones}) and timestamp BETWEEN DATE_SUB(NOW(), INTERVAL {{Program.Config.PairingContributionTimeIntervalHours}} HOUR) AND NOW() ) ";
-                zoneEligibiltyCharacters = (List<KeepLockEligibilityHistory>)WorldMgr.Database.SelectObjects<KeepLockEligibilityHistory>(query);
+                zoneEligibiltyCharacters = (List<ZoneLockEligibilityHistory>)WorldMgr.Database.SelectObjects<ZoneLockEligibilityHistory>(query);
                 Logger.Debug($"{query}");
                 Logger.Debug($"zoneEligibiltyCharacters : {zoneEligibiltyCharacters.Count}");
             }

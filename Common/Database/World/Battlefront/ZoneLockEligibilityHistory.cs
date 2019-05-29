@@ -4,9 +4,9 @@ using FrameWork;
 namespace Common.Database.World.Battlefront
 {
     // Fixed value of a character 
-    [DataTable(PreCache = false, TableName = "rvr_zone_lock_bag_reward_history", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
+    [DataTable(PreCache = false, TableName = "rvr_zone_lock_eligibility_history", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
-    public class ZoneLockBagRewardHistory : DataObject
+    public class ZoneLockEligibilityHistory : DataObject
     {
         [PrimaryKey (AutoIncrement = true)]
         public long HistoryId { get; set; }
@@ -27,16 +27,11 @@ namespace Common.Database.World.Battlefront
         public string CharacterName { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public int BagRarity { get; set; }
-
-        [DataElement(AllowDbNull = false)]
-        public int ItemId { get; set; }
-
-        [DataElement(AllowDbNull = false)]
         public string ZoneName { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public string ItemName { get; set; }
+        public int ContributionValue { get; set; }
 
     }
 }
+
