@@ -3678,6 +3678,7 @@ namespace GameData
         TANK_GUARD,
         GENERAL_HEALING,
         KNOCK_DOWN,
-        AOE_ROOT
+        AOE_ROOT,
+        FORT_ZONE_LOCK_PRESENCE
     }
 }

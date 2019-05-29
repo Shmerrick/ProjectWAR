@@ -1987,17 +1987,30 @@ namespace WorldServer.World.Battlefronts.Keeps
         {
             bool isFortress = false;
           
-
-            var eligiblitySplits =
-                Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.DetermineEligiblePlayers(_logger, PendingRealm);
-
             var zone = ZoneService.GetZone_Info((ushort)ZoneId);
-
             var fortZones = new List<int> { 4, 10, 104, 110, 204, 210 };
             if (fortZones.Contains((ushort)ZoneId))
             {
                 isFortress = true;
+
+                // Add contribution for players in fort zone.
+                foreach (var player in PlayerUtil.GetAllFlaggedPlayersInZone((int) ZoneId))
+                {
+                    try
+                    {
+                        Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(
+                            player.CharacterId, (byte) ContributionDefinitions.FORT_ZONE_LOCK_PRESENCE);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+                }
             }
+            
+            var eligiblitySplits =
+                Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.DetermineEligiblePlayers(_logger, PendingRealm);
 
             RecordKeepEligibilityHistory(eligiblitySplits.Item1, zone, Info, PendingRealm);
 
@@ -2082,6 +2095,8 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             if (isFortress)
             {
+                
+
                 // Give all eligible players in the zone WLC.
                 foreach (var player in eligiblitySplits.Item1)
                 {
