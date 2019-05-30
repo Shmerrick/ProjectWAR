@@ -54,7 +54,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("cast", InvokeAbility, null, EGmLevel.DatabaseDev, 1, "If possible, casts the ability of the specified ID."),
             new GmCommandHandler("buffcast", InvokeBuff, null, EGmLevel.DatabaseDev, 2, "Invokes the buff of the specified ID."),
             new GmCommandHandler("zerostats", SendZeroStats, null, EGmLevel.DatabaseDev, 0, "Sends zero stats to the client for debug purposes."),
-            new GmCommandHandler("list", GetAbilityList, null, EGmLevel.DatabaseDev, 0, "Gets the complete ability list of target (creature).")
+            new GmCommandHandler("list", GetAbilityList, null, EGmLevel.GM, 0, "Gets the complete ability list of target (creature).")
 
         };
 
@@ -65,7 +65,7 @@ namespace WorldServer.Managers.Commands
         {
             new GmCommandHandler("item", AddItem, null, EGmLevel.AnyGM, 1, "Add item to player"),
             new GmCommandHandler("money", AddMoney, null, EGmLevel.DatabaseDev, 1, "Add money to player"),
-            new GmCommandHandler("tok", AddTok, null, EGmLevel.DatabaseDev, 1, "Add tok to player"),
+            new GmCommandHandler("tok", AddTok, null, EGmLevel.GM, 1, "Add tok to player"),
             new GmCommandHandler("renown", AddRenown, null, EGmLevel.TrustedStaff, 1, "Add renown to player"),
             new GmCommandHandler("influence", AddInf, null, EGmLevel.TrustedStaff, 1, "Add Influence to player"),
             new GmCommandHandler("xp", AddXp, null, EGmLevel.TrustedStaff, 1, "Add xp to player"),
@@ -94,21 +94,21 @@ namespace WorldServer.Managers.Commands
         {
             new GmCommandHandler("groups", CheckGroups, null, EGmLevel.SourceDev, 0, "Check how many groups exist on the server."),
             new GmCommandHandler("objects", CheckObjects, null, EGmLevel.SourceDev, 0, "Check how many objects exist in the current region."),
-            new GmCommandHandler("players", CheckPlayersInRange, null, EGmLevel.SourceDev, 0, "Finds all players currently in range."),
+            new GmCommandHandler("players", CheckPlayersInRange, null, EGmLevel.GM, 0, "Finds all players currently in range."),
             new GmCommandHandler("respawn", FindClosestRespawn, null, EGmLevel.DatabaseDev, 0, "Find the closest respawn point for the specified realm."),
             new GmCommandHandler("logpackets", LogPackets, null, EGmLevel.SourceDev, 0, "Toggles logging outgoing packet volume."),
             new GmCommandHandler("readpackets", ReadPackets, null, EGmLevel.SourceDev, 0, "Displays the volume of outgoing packets over the defined period."),
-            new GmCommandHandler("los", StartStopLosMonitor, null, EGmLevel.AllStaff, 0, "Starts/Stops line of sight monitoring for selected target."),
-            new GmCommandHandler("population", GetServerPopulation, null, EGmLevel.AnyGM, 0, "Finds all players in the game."),
-            new GmCommandHandler("eligibility", GetRewardEligibility, null, EGmLevel.AnyGM, 0, "Reports on players eligibility"),
-            new GmCommandHandler("contribution", GetPlayerContribution, null, EGmLevel.AnyGM, 0, "Gets the contribution of the player."),
-            new GmCommandHandler("bagbonus", GetBagBonus, null, EGmLevel.AnyGM, 0, "Gets the bagbonus of the player."),
-            new GmCommandHandler("bounty", GetPlayerBounty, null, EGmLevel.AnyGM, 0, "Gets the bounty of the player."),
-            new GmCommandHandler("impacts", GetPlayerImpactMatrix, null, EGmLevel.AnyGM, 0, "Gets the bounty of the player."),
-            new GmCommandHandler("allcontribution", GetBattleFrontContribution, null, EGmLevel.AnyGM, 0, "Gets the contribution of all players in the battlefront."),
-            new GmCommandHandler("keeps", CheckKeeps, null, EGmLevel.AnyGM, 0, "Checks all keeps that they have the minimum required child table records."),
-            new GmCommandHandler("captain", CheckCaptain, null, EGmLevel.AnyGM, 0, "Returns captain for either realm in the current region"),
-            new GmCommandHandler("oil", CheckOil, null, EGmLevel.AnyGM, 0, "Returns information about the current keep/oil")
+            new GmCommandHandler("los", StartStopLosMonitor, null, EGmLevel.GM, 0, "Starts/Stops line of sight monitoring for selected target."),
+            new GmCommandHandler("population", GetServerPopulation, null, EGmLevel.GM, 0, "Finds all players in the game."),
+            new GmCommandHandler("eligibility", GetRewardEligibility, null, EGmLevel.GM, 0, "Reports on players eligibility"),
+            new GmCommandHandler("contribution", GetPlayerContribution, null, EGmLevel.GM, 0, "Gets the contribution of the player."),
+            new GmCommandHandler("bagbonus", GetBagBonus, null, EGmLevel.GM, 0, "Gets the bagbonus of the player."),
+            new GmCommandHandler("bounty", GetPlayerBounty, null, EGmLevel.GM, 0, "Gets the bounty of the player."),
+            new GmCommandHandler("impacts", GetPlayerImpactMatrix, null, EGmLevel.GM, 0, "Gets the bounty of the player."),
+            new GmCommandHandler("allcontribution", GetBattleFrontContribution, null, EGmLevel.GM, 0, "Gets the contribution of all players in the battlefront."),
+            new GmCommandHandler("keeps", CheckKeeps, null, EGmLevel.GM, 0, "Checks all keeps that they have the minimum required child table records."),
+            new GmCommandHandler("captain", CheckCaptain, null, EGmLevel.GM, 0, "Returns captain for either realm in the current region"),
+            new GmCommandHandler("oil", CheckOil, null, EGmLevel.GM, 0, "Returns information about the current keep/oil")
             
         };
 
@@ -130,7 +130,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("add", EquipAdd, null, EGmLevel.DatabaseDev, 3, "Add Equipement to target <Model,Slot,Save>"),
             new GmCommandHandler("remove", EquipRemove, null, EGmLevel.DatabaseDev, 2, "Remove Equipement to target <Slot,Save>"),
             new GmCommandHandler("clear", EquipClear, null, EGmLevel.DatabaseDev, 1, "Remove All Equipements to target <Save>"),
-            new GmCommandHandler("list", EquipList, null, EGmLevel.DatabaseDev, 0, "Draw Equipement list of target")
+            new GmCommandHandler("list", EquipList, null, EGmLevel.GM, 0, "Draw Equipement list of target")
 
         };
 
@@ -140,7 +140,7 @@ namespace WorldServer.Managers.Commands
         /// <summary>PVE Instance commands</summary>
         public static List<GmCommandHandler> InstanceCommands = new List<GmCommandHandler>
         {
-            new GmCommandHandler("doorinfo", DoorInfo, null, 0, 0, "Returns LOS information about keep door"),
+            new GmCommandHandler("doorinfo", DoorInfo, null, EGmLevel.AllStaff, 0, "Returns LOS information about keep door"),
             new GmCommandHandler("info", InIinfo, null, EGmLevel.AllStaff, 0, "instance infos optional: <instanceid>"),
             new GmCommandHandler("spawn", InISpawn, null, EGmLevel.DatabaseDev, 4, "Spawn a Instance NPC <object id> <BossId> <spawngroup> <realm>"),
             new GmCommandHandler("convert", InstanceConvert, null, EGmLevel.DatabaseDev, 3, "Converts selected Object to a Instance spawn <BossId> <spawngroup> <realm>"),
@@ -156,8 +156,8 @@ namespace WorldServer.Managers.Commands
         public static List<GmCommandHandler> ModifyCommands = new List<GmCommandHandler>
         {
 
-            new GmCommandHandler("speed", ModifySpeed, null, EGmLevel.GM, 1, "Changes the speed of the targeted player (int Speed, 0-1000)"),
-            new GmCommandHandler("playername", ModifyPlayerName, null, EGmLevel.GM, 2, "Changes players name"),
+            new GmCommandHandler("speed", ModifySpeed, null, EGmLevel.AnyGM, 1, "Changes the speed of the targeted player (int Speed, 0-1000)"),
+            new GmCommandHandler("playername", ModifyPlayerName, null, EGmLevel.AnyGM, 2, "Changes players name"),
             new GmCommandHandler("playernametemp", ModifyPlayerNameTemp, null, EGmLevel.EmpoweredStaff, 0, "Temporarily changes players name until server restart."),
             new GmCommandHandler("guildleader", ModifyGuildLeader, null, EGmLevel.EmpoweredStaff, 2, "Changes the leader of the guild (string newLeader, string guildName)"),
             new GmCommandHandler("guildnamebyid", ModifyGuildNameByID, null, EGmLevel.TrustedGM, 2, "Changes the name of the guild by ID (int guildID string guildName)"),
@@ -171,11 +171,11 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("faction", ModifyFaction, null, EGmLevel.SourceDev, 1, "Changes the current faction of selected Unit (byte Faction)"),
             new GmCommandHandler("influence", ModifyInf, null, EGmLevel.SourceDev, 1, "Change the Influence Chaptter Value"),
             new GmCommandHandler("resource", ModifyCrrRes, null, EGmLevel.SourceDev, 1, "Modify your career resource value (byte careerResource)"),
-            new GmCommandHandler("gatheringskill", ModifyGath, null, EGmLevel.GM, 1, "Changes your proficiency in your current gathering skill (byte Skill)"),
-            new GmCommandHandler("craftingskill", ModifyCraf, null, EGmLevel.GM, 1, "Changes your proficiency in your current crafting skill (byte Skill)"),
-            new GmCommandHandler("keepguild", ModifyKeepGuild, null, EGmLevel.GM, 1, "Claims or removes claim on keep for a guild"),
-            new GmCommandHandler("contribution", ModifyContribution, null, EGmLevel.GM, 0, "Sets a players contribution."),
-            new GmCommandHandler("honorrank", ModifyHonorRank, null, EGmLevel.GM, 1, "Sets a players honor rank.")
+            new GmCommandHandler("gatheringskill", ModifyGath, null, EGmLevel.AnyGM, 1, "Changes your proficiency in your current gathering skill (byte Skill)"),
+            new GmCommandHandler("craftingskill", ModifyCraf, null, EGmLevel.AnyGM,1, "Changes your proficiency in your current crafting skill (byte Skill)"),
+            new GmCommandHandler("keepguild", ModifyKeepGuild, null, EGmLevel.AnyGM, 1, "Claims or removes claim on keep for a guild"),
+            new GmCommandHandler("contribution", ModifyContribution, null, EGmLevel.AnyGM, 0, "Sets a players contribution."),
+            new GmCommandHandler("honorrank", ModifyHonorRank, null, EGmLevel.AnyGM, 1, "Sets a players honor rank.")
         };
 
         /// <summary>Mount commands under .mount</summary>
@@ -184,7 +184,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("set", SetMountCommand, null, EGmLevel.TrustedGM, 1, "Changes the mount of the selected unit (int Entry)"),
             new GmCommandHandler("add", AddMountCommand, null, EGmLevel.DatabaseDev, 3, "Adds a new mount to the database (int Entry, int Speed, string Name)"),
             new GmCommandHandler("remove", RemoveMountCommand, null, EGmLevel.TrustedGM, 0, "Removes the mount of the selected unit."),
-            new GmCommandHandler("list", ListMountsCommand, null, EGmLevel.DatabaseDev, 0, "Shows the list of all mounts.")
+            new GmCommandHandler("list", ListMountsCommand, null, EGmLevel.GM, 0, "Shows the list of all mounts.")
         };
 
         /// <summary>NPC commands under .npc</summary>
@@ -209,15 +209,15 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("keepnpcmove",MoveKeepSpawn, null, EGmLevel.DatabaseDev, 1, "Moves an keep npc"),
         };
 
-        /// <summary>Public Quest commands under .pq</summary>
+        /// <summary>Public Quest commands under .pq</summary>11
         public static List<GmCommandHandler> PqCommands = new List<GmCommandHandler>
         {
 
             new GmCommandHandler("spawn", PqSpawn, null, EGmLevel.DatabaseDev, 3, "Spawn a PQ NPC <object id> <objective id> <type 1 = NPC>"),
             new GmCommandHandler("convert", PqConvert, null, EGmLevel.DatabaseDev, 1, "Converts selected Object to a PQ spawn <objective id>"),
-            new GmCommandHandler("next", PqNextStage, null, EGmLevel.GM, 0, "Lets go onto the next pq stage"),
-            new GmCommandHandler("clear", PqClear, null, EGmLevel.GM, 0, "Despawns all npc of the current stage stage"),
-            new GmCommandHandler("reset", PqReset, null, EGmLevel.GM, 0, "Resets the current pq")
+            new GmCommandHandler("next", PqNextStage, null, EGmLevel.AnyGM, 0, "Lets go onto the next pq stage"),
+            new GmCommandHandler("clear", PqClear, null, EGmLevel.AnyGM, 0, "Despawns all npc of the current stage stage"),
+            new GmCommandHandler("reset", PqReset, null, EGmLevel.AnyGM, 0, "Resets the current pq")
 
         };
 
@@ -250,12 +250,12 @@ namespace WorldServer.Managers.Commands
         /// <summary>Search commands under .search</summary>
         public static List<GmCommandHandler> SearchCommands = new List<GmCommandHandler>
         {
-            new GmCommandHandler("item", SearchItem, null, EGmLevel.AnyGM, 1, "Search an item by name <name>"),
-            new GmCommandHandler("npc", SearchNpc, null, EGmLevel.DatabaseDev, 1, "Seach an npc by name <name>"),
-            new GmCommandHandler("gameobject", SearchGameObject, null, EGmLevel.DatabaseDev, 1, "Seach an gameobject by name <name>"),
-            new GmCommandHandler("quest", SearchQuest, null, EGmLevel.DatabaseDev, 1, "Seach an quest by name <name>"),
-            new GmCommandHandler("zone", SearchZone, null, EGmLevel.DatabaseDev, 1, "Seach an zone by name <name>"),
-            new GmCommandHandler("inventory", SearchInventory, null, EGmLevel.AnyGM, 0, "Search inventory of selected target. 1st param : <filter>")
+            new GmCommandHandler("item", SearchItem, null, EGmLevel.GM, 1, "Search an item by name <name>"),
+            new GmCommandHandler("npc", SearchNpc, null, EGmLevel.GM, 1, "Seach an npc by name <name>"),
+            new GmCommandHandler("gameobject", SearchGameObject, null, EGmLevel.GM, 1, "Seach an gameobject by name <name>"),
+            new GmCommandHandler("quest", SearchQuest, null, EGmLevel.GM, 1, "Seach an quest by name <name>"),
+            new GmCommandHandler("zone", SearchZone, null, EGmLevel.GM, 1, "Seach an zone by name <name>"),
+            new GmCommandHandler("inventory", SearchInventory, null, EGmLevel.GM, 0, "Search inventory of selected target. 1st param : <filter>")
         };
 
         /// <summary>State modification commands under .state</summary>
@@ -263,7 +263,7 @@ namespace WorldServer.Managers.Commands
         {
             new GmCommandHandler("add", StatesAdd, null, EGmLevel.SourceDev, 1, "Add State To Target <Id>"),
             new GmCommandHandler("remove", StatesRemove, null, EGmLevel.SourceDev, 1, "Remove state from target <Id>"),
-            new GmCommandHandler("list", StatesList, null, EGmLevel.SourceDev, 0, "Show target States List")
+            new GmCommandHandler("list", StatesList, null, EGmLevel.GM, 0, "Show target States List")
         };
 
         /// <summary>Contains the list of teleportation commands under .teleport</summary>
@@ -273,8 +273,8 @@ namespace WorldServer.Managers.Commands
                 "Teleports you to the specified world coordinates in a given zone (byte ZoneID , uint WorldX, uint WorldY, uint WorldZ)"),
             new GmCommandHandler("center", TeleportCenter, null, EGmLevel.GM, 1, "Teleport to the centre of the given map."),
             new GmCommandHandler("appear", TeleportAppear, null, EGmLevel.GM, 1, "Teleports you to a player's location (string playerName)"),
-            new GmCommandHandler("summon", TeleportSummon, null, EGmLevel.GM, 1, "Summons a player/group to your location (string playerName optional GROUP)"),
-            new GmCommandHandler("set", TeleportSet, null, EGmLevel.GM, 5,
+            new GmCommandHandler("summon", TeleportSummon, null, EGmLevel.AnyGM, 1, "Summons a player/group to your location (string playerName optional GROUP)"),
+            new GmCommandHandler("set", TeleportSet, null, EGmLevel.AnyGM, 5,
                 "Sets offline/online players coordinates in database (player_name byte byte ZoneID , uint WorldX, uint WorldY, uint WorldZ)"),
             new GmCommandHandler("objective", TeleportObjective, null, EGmLevel.GM, 1, "Teleport player to BattlefieldObjective (ObjectiveId)"),
 
@@ -283,12 +283,12 @@ namespace WorldServer.Managers.Commands
         /// <summary>Ticket management commands under .ticket</summary>
         public static List<GmCommandHandler> TicketCommands = new List<GmCommandHandler>
         {
-            new GmCommandHandler("listtickets", ListTickets, null, EGmLevel.GM, 0, "Lists the current tickets"),
-            new GmCommandHandler("assign", Assign, null, EGmLevel.GM, 2, "Assigns a person to a ticket (string accountname, string bugreportID)"),
-            new GmCommandHandler("assignme", AssignMe, null, EGmLevel.GM, 1, "Assigns a person to a ticket (string bugreportID)"),
-            new GmCommandHandler("numberoftickets", NumberOfTickets, null, EGmLevel.GM, 0, "Shows how many tickets there currently is"),
-            new GmCommandHandler("deleteticket", DeleteTicket, null, EGmLevel.GM, 1, "Deletes the ticket (string bugreportID)"),
-            new GmCommandHandler("answer", Answer, null, EGmLevel.GM, 2, "Answers and closes a ticket (string reportID, string message)")
+            new GmCommandHandler("listtickets", ListTickets, null, EGmLevel.DatabaseDev, 0, "Lists the current tickets"),
+            new GmCommandHandler("assign", Assign, null, EGmLevel.DatabaseDev, 2, "Assigns a person to a ticket (string accountname, string bugreportID)"),
+            new GmCommandHandler("assignme", AssignMe, null, EGmLevel.DatabaseDev, 1, "Assigns a person to a ticket (string bugreportID)"),
+            new GmCommandHandler("numberoftickets", NumberOfTickets, null, EGmLevel.DatabaseDev, 0, "Shows how many tickets there currently is"),
+            new GmCommandHandler("deleteticket", DeleteTicket, null, EGmLevel.DatabaseDev, 1, "Deletes the ticket (string bugreportID)"),
+            new GmCommandHandler("answer", Answer, null, EGmLevel.DatabaseDev, 2, "Answers and closes a ticket (string reportID, string message)")
         };
 
         /// <summary>Waypoint commands under .warpoint</summary>
@@ -308,22 +308,22 @@ namespace WorldServer.Managers.Commands
             #region Command Group Handlers
 
             new GmCommandHandler("ability", null, AbilityCommands, 0, 0, "Ability commands."),
-            new GmCommandHandler("add", null, AddCommands, EGmLevel.AnyGM, 0, "Addition commands."),
-            new GmCommandHandler("campaign", null, CampaignCommands, EGmLevel.GM, 0, "RvR campaign commmands."),
+            new GmCommandHandler("add", null, AddCommands, EGmLevel.GM, 0, "Addition commands."),
+            new GmCommandHandler("campaign", null, CampaignCommands, EGmLevel.AnyGM, 0, "RvR campaign commmands."),
             new GmCommandHandler("chapter", null, ChapterCommands, EGmLevel.DatabaseDev, 0, "Chapter modification commands."),
             new GmCommandHandler("check", null, CheckCommands, EGmLevel.GM, 0, "Debugging commands."),
             new GmCommandHandler("database", null, DatabaseCommands, EGmLevel.DatabaseDev, 0, "Database commands."),
-            new GmCommandHandler("equip", null, EquipCommands, EGmLevel.DatabaseDev, 0, "Creature equipment modification commands."),
+            new GmCommandHandler("equip", null, EquipCommands, EGmLevel.GM, 0, "Creature equipment modification commands."),
             new GmCommandHandler("go", null, GoCommands, EGmLevel.DatabaseDev, 0, "Game object commands."),
             new GmCommandHandler("instance", null, InstanceCommands, EGmLevel.DatabaseDev, 0, "PVE Instance commands."),
-            new GmCommandHandler("modify", null, ModifyCommands, EGmLevel.GM, 0, "Unit modification commands."),
-            new GmCommandHandler("mount", null, MountCommands, EGmLevel.DatabaseDev, 0, "Mount commands."),
+            new GmCommandHandler("modify", null, ModifyCommands, EGmLevel.DatabaseDev, 0, "Unit modification commands."),
+            new GmCommandHandler("mount", null, MountCommands, EGmLevel.GM, 0, "Mount commands."),
             new GmCommandHandler("npc", null, NpcCommands, EGmLevel.DatabaseDev, 0, "NPC commands."),
             new GmCommandHandler("pq", null, PqCommands, EGmLevel.DatabaseDev, 0, "Public Quest commands."),
             new GmCommandHandler("respawn", null, RespawnCommands, EGmLevel.DatabaseDev, 0, "Respawn modification commands."),
             new GmCommandHandler("respec", null, RespecCommands, 0, 0, "Respecialization commands."),
             new GmCommandHandler("scenario", null, ScenarioCommands, EGmLevel.AllStaff, 0, "Scenario commands."),
-            new GmCommandHandler("search", null, SearchCommands, EGmLevel.AnyGM, 0, "Search commands."),
+            new GmCommandHandler("search", null, SearchCommands, EGmLevel.GM, 0, "Search commands."),
             new GmCommandHandler("states", null, StatesCommand, EGmLevel.DatabaseDev, 0, "State modification commands."),
             new GmCommandHandler("teleport", null, TeleportCommands, EGmLevel.GM, 0, "Contains the list of teleportation commands."),
             new GmCommandHandler("ticket", null, TicketCommands, EGmLevel.GM, 0, "Contains the list of ticket commands"),
@@ -345,30 +345,30 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("unlock", Unlock, null, 0, 0, "Used to fix stuck-in-combat problems preventing you from joining a scenario."),
             new GmCommandHandler("tellblock", TellBlock, null, 0, 0, "Allows you to block whispers from non-staff players who are outside of your guild."),
             new GmCommandHandler("getstats", GetStats, null, 0, 0, "Shows your own linear stat bonuses."),
-            new GmCommandHandler("standard", AssignStandard, null, 0, 0, "Assigns Standard Bearer Titel to the Player."),
-            new GmCommandHandler("ror", RoRFeatures, null, 0, 0, "Help Files for RoR-specific features."),
-            new GmCommandHandler("changename", RequestNameChange, null, 0, 1, "Requests a name change, one per account per month (string newName)"),
+            new GmCommandHandler("standard", AssignStandard, null, EGmLevel.GM, 0, "Assigns Standard Bearer Titel to the Player."),
+            new GmCommandHandler("ror", RoRFeatures, null, EGmLevel.GM, 0, "Help Files for RoR-specific features."),
+            new GmCommandHandler("changename", RequestNameChange, null, EGmLevel.GM, 1, "Requests a name change, one per account per month (string newName)"),
             new GmCommandHandler("ping", GetPing, null, 0, 0, "Returns an avg of 10 latency packets"),
             new GmCommandHandler("sorenable", SoREnable, null, 0, 0, "Enables SoR addon."),
             // new GmCommandHandler("pug", PugScenario, null, 0, 0, "Displays current PUG scenario."),
             new GmCommandHandler("sorenable", SoREnable, null, 0, 0, "Enables SoR addon."),
             //   new GmCommandHandler("version", GetVersion, null, 0, 0, "Gets the WorldServer version."),
             // Halloween event stuff
-            new GmCommandHandler("spooky", Spooky, null, 0, 0, "This command will make you spooky..."),
-            new GmCommandHandler("notspooky", NotSpooky, null, 0, 0,
+            new GmCommandHandler("spooky", Spooky, null, EGmLevel.GM, 0, "This command will make you spooky..."),
+            new GmCommandHandler("notspooky", NotSpooky, null, EGmLevel.GM, 0,
                 "You don't want to be spooky :(... You need to run this command upon logging on server, it do not disable spookieness if you are already spooky."),
             new GmCommandHandler("morph", Morph, null, EGmLevel.GM, 0, "This command will make you morph..."),
             // All staff
 #if (DEBUG)
-            new GmCommandHandler("debugmode", SetDebugMode, null, 0, 0, "Enables debugging messages (byte enableDebug)"),
+            new GmCommandHandler("debugmode", SetDebugMode, null, EGmLevel.SourceDev, 0, "Enables debugging messages (byte enableDebug)"),
 #else
             new GmCommandHandler("debugmode", SetDebugMode, null, EGmLevel.AllStaff, 0, "Enables debugging messages (byte enableDebug)"),
             #endif
-            new GmCommandHandler("togglerank", GmMgr.ToggleShowRank, null, EGmLevel.Management, 0, "Toggles whether or not to display your staff rank in chat messages."),
-            new GmCommandHandler("name", SetSurname, null, EGmLevel.EmpoweredStaff, 1, "Changes your last name (string Surname) - use 'clear' to clear the name"),
-            new GmCommandHandler("info", Info, null, EGmLevel.AnyGM, 0, "Prints general information about your current target."),
-            new GmCommandHandler("doorinfo", KeepDoorInfo, null, EGmLevel.AnyGM, 0, "Prints door information about your current target."),
-            new GmCommandHandler("aiinfo", AIInfo, null, EGmLevel.AllStaff, 0, "Sends information about the targeted creature's AI state."),
+            new GmCommandHandler("togglerank", GmMgr.ToggleShowRank, null, EGmLevel.GM, 0, "Toggles whether or not to display your staff rank in chat messages."),
+            new GmCommandHandler("name", SetSurname, null, EGmLevel.GM, 1, "Changes your last name (string Surname) - use 'clear' to clear the name"),
+            new GmCommandHandler("info", Info, null, EGmLevel.GM, 0, "Prints general information about your current target."),
+            new GmCommandHandler("doorinfo", KeepDoorInfo, null, EGmLevel.GM, 0, "Prints door information about your current target."),
+            new GmCommandHandler("aiinfo", AIInfo, null, EGmLevel.GM, 0, "Sends information about the targeted creature's AI state."),
             new GmCommandHandler("prevpos", PreviousPosition, null, EGmLevel.AllStaff, 1,
                 "Creates an object at the position which a player held a certain time ago (int millisecondDelta)"),
             new GmCommandHandler("latency", OverrideLatency, null, EGmLevel.AllStaff, 1, "Overrides the server's opinion of your latency (int latency)"),
@@ -376,14 +376,14 @@ namespace WorldServer.Managers.Commands
 
 
             // All empowered staff
-            new GmCommandHandler("kill", Kill, null, EGmLevel.GM, 0, "Slays the targeted Unit."),
-            new GmCommandHandler("wound", Wound, null, EGmLevel.GM, 0, "Wounds the targeted Unit."),
+            new GmCommandHandler("kill", Kill, null, EGmLevel.AnyGM, 0, "Slays the targeted Unit."),
+            new GmCommandHandler("wound", Wound, null, EGmLevel.AnyGM, 0, "Wounds the targeted Unit."),
             new GmCommandHandler("nuke", Nuke, null, EGmLevel.EmpoweredStaff, 2,
                 "Slays everyone in radius. Takes 2 parameters, realm and radius in ft. Realm 0 - all, 1 - order, 2 - destro"),
 
             new GmCommandHandler("boot", Reboot, null, EGmLevel.EmpoweredStaff, 0, "Reboots the server."),
-            new GmCommandHandler("clearboot", ClearServer, null, EGmLevel.GM, 0, "Removes all players from server."),
-            new GmCommandHandler("revive", Revive, null, EGmLevel.GM, 0, "Resurrects the targeted Unit."),
+            new GmCommandHandler("clearboot", ClearServer, null, EGmLevel.AnyGM, 0, "Removes all players from server."),
+            new GmCommandHandler("revive", Revive, null, EGmLevel.AnyGM, 0, "Resurrects the targeted Unit."),
             new GmCommandHandler("fly", SetFlightState, null, EGmLevel.GM, 0, "Grants the ability to fly (byte enableFlight)"),
 
             new GmCommandHandler("announce", Announce, null, EGmLevel.GM, 1, "Sends a global message (string Message). SoundID can be specified .announce sound <id> <message>"),
@@ -402,8 +402,8 @@ namespace WorldServer.Managers.Commands
 
             // GM commands
             new GmCommandHandler("advice", MessageAdvice, null, EGmLevel.GM, 0, "Messages Advice with a generic name."),
-            new GmCommandHandler("csr", CSRMessage, null, EGmLevel.GM, 0, "Sends a CSR-type message to your realm."),
-            new GmCommandHandler("motd", SetMotd, null, EGmLevel.GM, 1, "Changes the Message of the Day (string message)"),
+            new GmCommandHandler("csr", CSRMessage, null, EGmLevel.AnyGM, 0, "Sends a CSR-type message to your realm."),
+            new GmCommandHandler("motd", SetMotd, null, EGmLevel.AnyGM, 1, "Changes the Message of the Day (string message)"),
             new GmCommandHandler("findip", FindIP, null, EGmLevel.GM, 1, "Lists all players with an IP starting with the specified string"),
             new GmCommandHandler("getonlinechar", GetOnlineChar, null, EGmLevel.GM, 1, "Looks for online characters from the given account (string accountName)"),
             new GmCommandHandler("getchar", GetChar, null, EGmLevel.GM, 1, "Lits all characters on the account for given character name (string charname)"),
@@ -413,23 +413,23 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("blockadvice", BlockAdvice, null, EGmLevel.GM, 1, "Blocks the player from using advice (string characterName)"),
             new GmCommandHandler("mute", Mute, null, EGmLevel.GM, 1,
                 "Mutes the player, or lifts if no duration is specified. The muted player will see their own chat, but no one else will. (string characterName, int duration, string durationString, string Reason)"),
-            new GmCommandHandler("eject", Eject, null, EGmLevel.GM, 2, "Closes the client of the player with the specified name (string characterName, string Reason)"),
-            new GmCommandHandler("sever", Sever, null, EGmLevel.GM, 1, "Force disconnects the player (string characterName)"),
-            new GmCommandHandler("exile", Exile, null, EGmLevel.GM, 4, "Exiles the player (string characterName, int duration, string durationString, string Reason)"),
-            new GmCommandHandler("permaban", Ban, null, EGmLevel.GM, 2, "Permanently bans the player (string characterName, string Reason)"),
-            new GmCommandHandler("unban", Unban, null, EGmLevel.GM, 2, "Lifts any type of ban on a player (string characterName, string Reason)"),
+            new GmCommandHandler("eject", Eject, null, EGmLevel.AnyGM, 2, "Closes the client of the player with the specified name (string characterName, string Reason)"),
+            new GmCommandHandler("sever", Sever, null, EGmLevel.AnyGM, 1, "Force disconnects the player (string characterName)"),
+            new GmCommandHandler("exile", Exile, null, EGmLevel.AnyGM, 4, "Exiles the player (string characterName, int duration, string durationString, string Reason)"),
+            new GmCommandHandler("permaban", Ban, null, EGmLevel.AnyGM, 2, "Permanently bans the player (string characterName, string Reason)"),
+            new GmCommandHandler("unban", Unban, null, EGmLevel.AnyGM, 2, "Lifts any type of ban on a player (string characterName, string Reason)"),
             new GmCommandHandler("annihilate", Annihilate, null, EGmLevel.TrustedGM, 1, "Wipes the player's account, after asking for confirmation (string accountName)"),
             new GmCommandHandler("getcharslots", GetCharSlots, null, EGmLevel.TrustedGM, 1,
                 "Displays all character names and the slots that they occupy on the given account (string accountId)"),
             new GmCommandHandler("deletecharat", DeleteCharInSlot, null, EGmLevel.TrustedGM, 2, "Removes a character from the given account (string accountName, int slotId)"),
-            new GmCommandHandler("togglequest", ToggleQuest, null, EGmLevel.GM, 1, ".togglequest <QuestID> <0: Memory | 1: Database>, turns a quest on or off."),
+            new GmCommandHandler("togglequest", ToggleQuest, null, EGmLevel.AnyGM, 1, ".togglequest <QuestID> <0: Memory | 1: Database>, turns a quest on or off."),
             new GmCommandHandler("getguildid", GetGuildID, null, EGmLevel.TrustedGM, 1, "Get the guildID (string GuildName)"),
             new GmCommandHandler("blockname", BlockName, null, EGmLevel.TrustedGM, 2,
                 "Prevents a name from being used by characters (string name, string <Equals|StartsWith|Contains>)"),
             new GmCommandHandler("unblockname", UnblockName, null, EGmLevel.TrustedGM, 1, "Removes a character name filter (string name)"),
             new GmCommandHandler("listblockednames", ListBlockedNames, null, EGmLevel.TrustedGM, 0, "Lists all blocked names"),
             new GmCommandHandler("removequests", RemoveQuests, null, EGmLevel.TrustedGM, 1, "Removes all the quests from a player (string player)"),
-            new GmCommandHandler("hide", Hide, null, EGmLevel.GM, 0, "Hides you from the gmlist"),
+            new GmCommandHandler("hide", Hide, null, EGmLevel.AnyGM, 0, "Hides you from the gmlist"),
 
             // Database dev commands
 
