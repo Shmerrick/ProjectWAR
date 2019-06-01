@@ -27,32 +27,32 @@ namespace WorldServer.Test
 			var flag = new BattlefieldObjective();
 
 			// act
-			var VP = flag.RewardManager.RewardCaptureTick(new HashSet<Player>(), GameData.Realms.REALMS_REALM_ORDER, 4, "thisFlag", 1f, BORewardType.SMALL_CONTESTED);
+			var VP = flag.RewardManager.RewardCaptureTick(new HashSet<Player>(), GameData.Realms.REALMS_REALM_ORDER, 4, "thisFlag", 1f, BORewardType.CAPTURING);
 			// assert
 			Assert.AreEqual(VP.OrderVictoryPoints, 15f, 0f);
 			Assert.AreEqual(VP.DestructionVictoryPoints, 0f, 0f);
 			// act
-			VP = flag.RewardManager.RewardCaptureTick(new HashSet<Player>(), GameData.Realms.REALMS_REALM_DESTRUCTION, 4, "thisFlag", 1f, BORewardType.SMALL_CONTESTED);
+			VP = flag.RewardManager.RewardCaptureTick(new HashSet<Player>(), GameData.Realms.REALMS_REALM_DESTRUCTION, 4, "thisFlag", 1f, BORewardType.CAPTURING);
 			// assert
 			Assert.AreEqual(VP.DestructionVictoryPoints, 15f, 0f);
 			Assert.AreEqual(VP.OrderVictoryPoints, 0f, 0f);
 			// act
-			VP = flag.RewardManager.RewardCaptureTick(new HashSet<Player>(), GameData.Realms.REALMS_REALM_ORDER, 4, "thisFlag", 1f, BORewardType.BIG);
+			VP = flag.RewardManager.RewardCaptureTick(new HashSet<Player>(), GameData.Realms.REALMS_REALM_ORDER, 4, "thisFlag", 1f, BORewardType.CAPTURED);
 			// assert
 			Assert.AreEqual(VP.OrderVictoryPoints, 200f, 0f);
 			Assert.AreEqual(VP.DestructionVictoryPoints, 0f, 0f);
 			// act
-			VP = flag.RewardManager.RewardCaptureTick(new HashSet<Player>(), GameData.Realms.REALMS_REALM_DESTRUCTION, 4, "thisFlag", 1f, BORewardType.BIG);
+			VP = flag.RewardManager.RewardCaptureTick(new HashSet<Player>(), GameData.Realms.REALMS_REALM_DESTRUCTION, 4, "thisFlag", 1f, BORewardType.CAPTURED);
 			// assert
 			Assert.AreEqual(VP.DestructionVictoryPoints, 200f, 0f);
 			Assert.AreEqual(VP.OrderVictoryPoints, 0f, 0f);
 			// act
-			VP = flag.RewardManager.RewardCaptureTick(new HashSet<Player>(), GameData.Realms.REALMS_REALM_ORDER, 4, "thisFlag", 1f, BORewardType.SMALL_LOCKED);
+			VP = flag.RewardManager.RewardCaptureTick(new HashSet<Player>(), GameData.Realms.REALMS_REALM_ORDER, 4, "thisFlag", 1f, BORewardType.GUARDED);
 			// assert
 			Assert.AreEqual(VP.OrderVictoryPoints, 30f, 0f);
 			Assert.AreEqual(VP.DestructionVictoryPoints, 0f, 0f);
 			// act
-			VP = flag.RewardManager.RewardCaptureTick(new HashSet<Player>(), GameData.Realms.REALMS_REALM_DESTRUCTION, 4, "thisFlag", 1f, BORewardType.SMALL_LOCKED);
+			VP = flag.RewardManager.RewardCaptureTick(new HashSet<Player>(), GameData.Realms.REALMS_REALM_DESTRUCTION, 4, "thisFlag", 1f, BORewardType.GUARDED);
 			// assert
 			Assert.AreEqual(VP.DestructionVictoryPoints, 30f, 0f);
 			Assert.AreEqual(VP.OrderVictoryPoints, 0f, 0f);

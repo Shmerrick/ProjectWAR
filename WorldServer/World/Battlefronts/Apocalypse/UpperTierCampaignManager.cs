@@ -378,14 +378,22 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
             ProgressionLogger.Debug($"Removing any siege from active region");
             // Destroy any active siege in this zone.
-            var creaturesInRegion = activeRegion.Objects.Where(x => x.IsCreature());
-            foreach (var creature in creaturesInRegion)
+            try
             {
-                if (creature is Siege)
+                var siegeInRegion = activeRegion?.Objects.Where(x=>x is Siege);
+                foreach (var siege in siegeInRegion)
                 {
-                    ProgressionLogger.Debug($"Calling Destroy on {creature.Name}");
-                    creature.Destroy();
+                    if (siege is Siege)
+                    {
+                        ProgressionLogger.Debug($"Calling Destroy on {siege.Name}");
+                        siege.Destroy();
+                    }
                 }
+
+            }
+            catch (Exception e)
+            {
+                ProgressionLogger.Debug($"{e.Message}{e.StackTrace}");
             }
 
             activeRegion.Campaign.LockBattleFront(realm, forceNumberBags);

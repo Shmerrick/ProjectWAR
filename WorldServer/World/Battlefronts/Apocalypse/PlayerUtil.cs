@@ -206,13 +206,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private static void RecordHonorHistory(ushort oldHonorPoints, ushort infoHonorPoints, uint playerCharacterId, string playerName)
         {
+            var roc = (oldHonorPoints - infoHonorPoints);
+            
             var honorHistory = new HonorHistory
             {
                 CharacterId = playerCharacterId,
                 CharacterName = playerName,
                 CurrentHonorPoints = (uint) infoHonorPoints,
                 OldHonorPoints = oldHonorPoints,
-                RateOfChange =  (oldHonorPoints - infoHonorPoints),
+                RateOfChange = roc,
                 Timestamp = DateTime.UtcNow
             };
             WorldMgr.Database.AddObject(honorHistory);

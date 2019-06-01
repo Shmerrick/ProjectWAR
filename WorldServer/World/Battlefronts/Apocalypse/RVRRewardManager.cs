@@ -10,9 +10,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 {
 	public enum BORewardType
 	{
-		SMALL_CONTESTED = 0,
-		SMALL_LOCKED = 1,
-		BIG = 2
+		CAPTURING = 0,
+		GUARDED = 1,
+		CAPTURED = 2
 	}
 
     /// <summary>
@@ -100,10 +100,29 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 			// Because of the Field of Glory buff, the XP value here is doubled.
 			// The base reward in T4 is therefore 3000 XP.
 			// Population scale factors can up this to 9000 if the region is full of people and then raise or lower it depending on population balance.
-			var baseXp = (boRewardType == BORewardType.SMALL_CONTESTED || boRewardType == BORewardType.SMALL_LOCKED) ? BattleFrontConstants.FLAG_SECURE_REWARD_SCALER * tier * rewardScaleMultiplier * 10 : BattleFrontConstants.FLAG_SECURE_REWARD_SCALER * tier * rewardScaleMultiplier * 25;
-            var baseRp = baseXp / 10f;
-            var baseInf = baseRp / 3.2f;
+            var baseXp = 0;
+            var baseRp = 0;
+            var baseInf = 0;
 
+            if (boRewardType == BORewardType.CAPTURING)
+            {
+                baseXp = Program.Config.BOCapturingRewardXp;
+                baseRp = Program.Config.BOCapturingRewardRp;
+                baseInf = Program.Config.BOCapturingRewardInf;
+            }
+            if (boRewardType == BORewardType.CAPTURED)
+            {
+                baseXp = Program.Config.BOCapturedRewardXp;
+                baseRp = Program.Config.BOCapturedRewardRp;
+                baseInf = Program.Config.BOCapturedRewardInf;
+            }
+            if (boRewardType == BORewardType.GUARDED)
+            {
+                baseXp = Program.Config.BOGuardedRewardXp;
+                baseRp = Program.Config.BOGuardedRewardRp;
+                baseInf = Program.Config.BOGuardedRewardInf;
+            }
+            
             foreach (var player in playersWithinRange)
             {
                 // if the BattlefieldObjective is Neutral, allow rewards. 
@@ -114,49 +133,39 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 }
 
                 
-
-
                 if (player.CurrentArea != null)
                 {
                     if (player.Realm == Realms.REALMS_REALM_ORDER)
                         influenceId = (ushort) player.CurrentArea.OrderInfluenceId;
                     else
                         influenceId = (ushort) player.CurrentArea.DestroInfluenceId;
+
+                    player.AddInfluence(influenceId, Math.Max((ushort)baseInf, (ushort)1));
 					
-					if (boRewardType == BORewardType.SMALL_CONTESTED || boRewardType == BORewardType.SMALL_LOCKED)
-						player.AddInfluence(influenceId, Math.Max((ushort)200f, (ushort)1));
-					else if (boRewardType == BORewardType.BIG)
-						player.AddInfluence(influenceId, Math.Max((ushort)400f, (ushort)1));
-					else
-						player.AddInfluence(influenceId, Math.Max((ushort)baseInf, (ushort)1));
 				}
 
                 Random rnd = new Random();
                 int random = rnd.Next(-25, 25);
                 var xp = (uint)Math.Max((baseXp * (1 + (random / 100))), 1);
-
                 var rr = (uint) Math.Max((baseRp * (1 + (random / 100))), 1);
-
-                rr = rr / 2;
                 
                 player.AddXp(xp, false, false);
                 player.AddRenown(rr, false, RewardType.ObjectiveCapture, objectiveName);
                 
-
                 _logger.Trace($"Player:{player.Name} ScaleMult:{rewardScaleMultiplier} XP:{xp} RR:{rr}");
             }
 
 			VictoryPoint VP = new VictoryPoint(0, 0);
 			switch (boRewardType)
 			{
-				case BORewardType.SMALL_CONTESTED: // small tick
+				case BORewardType.CAPTURING: // small tick
 					if (owningRealm == Realms.REALMS_REALM_ORDER)
 						VP.OrderVictoryPoints += 0;
 					else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
 						VP.DestructionVictoryPoints += 0;
 					break;
 
-				case BORewardType.BIG: // big tick
+				case BORewardType.CAPTURED: // big tick
 				    if (owningRealm == Realms.REALMS_REALM_ORDER)
 				    {
 				        VP.OrderVictoryPoints += 50;
@@ -170,7 +179,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 				    break;
 
-				case BORewardType.SMALL_LOCKED: // small tick
+				case BORewardType.GUARDED: // small tick
 					if (owningRealm == Realms.REALMS_REALM_ORDER)
 						VP.OrderVictoryPoints += 0;
 					else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)

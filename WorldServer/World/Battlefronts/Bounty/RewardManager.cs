@@ -840,7 +840,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             if ((leadInZones != "") && (characterJoinedList !=""))
             {
                 var query =
-                    $"CharacterId in ({characterJoinedList}) and ZoneId in ({leadInZones}) and timestamp BETWEEN DATE_SUB(NOW(), INTERVAL {{Program.Config.PairingContributionTimeIntervalHours}} HOUR) AND NOW() ) ";
+                    $"CharacterId in ({characterJoinedList}) and ZoneId in ({leadInZones}) and timestamp BETWEEN DATE_SUB(UTC_TIMESTAMP(), INTERVAL {Program.Config.PairingContributionTimeIntervalHours} HOUR) AND UTC_TIMESTAMP() ";
                 zoneEligibiltyCharacters = (List<ZoneLockEligibilityHistory>)WorldMgr.Database.SelectObjects<ZoneLockEligibilityHistory>(query);
                 Logger.Debug($"{query}");
                 Logger.Debug($"zoneEligibiltyCharacters : {zoneEligibiltyCharacters.Count}");
@@ -1002,10 +1002,17 @@ namespace WorldServer.World.Battlefronts.Bounty
 
                 foreach (var bonus in bagBonus.Keys.ToList())
                 {
-                    var bonusToWrite = bagBonus[bonus];
-                    logger.Warn($"Finalisation (writing) - bag Bonus {bonusToWrite.ToString()}");
-                    bonusToWrite.Dirty = true;
-                    CharMgr.Database.SaveObject(bonusToWrite);
+                    try
+                    {
+                        var bonusToWrite = bagBonus[bonus];
+                        bonusToWrite.Dirty = true;
+                        CharMgr.Database.SaveObject(bonusToWrite);
+                        logger.Info($"Finalisation (writing) - bag Bonus {bonusToWrite.ToString()}");
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Warn($"{ex.Message} {ex.StackTrace}");
+                    }
                 }
             }
             catch (Exception e)

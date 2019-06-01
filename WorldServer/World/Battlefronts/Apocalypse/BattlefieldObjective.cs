@@ -173,7 +173,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
             _captureProgress = 20000;
             CaptureDuration = 10;
-            EvtInterface.AddEvent(CheckTimers, 3000, 0);
+            EvtInterface.AddEvent(CheckTimers, 1000, 0);
             BuffId = 0;
         }
 
@@ -208,6 +208,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 OnCapturedTimerEnd();
             if (GuardedTimer > 0 && GuardedTimer <= currentTime)
                 OnGuardedTimerEnd();
+
+            DisplayedTimer--;
+            if (DisplayedTimer <= 0)
+                DisplayedTimer = 0;
 
         }
 
@@ -488,7 +492,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 case StateFlags.Secure:
                     //return _secureProgress == MAX_SECURE_PROGRESS ? "GENERATING" : "SECURING";
-                    return "CAPTURED";
+                    return "GUARDED";
 
                 case StateFlags.Abandoned:
                     return "SECURED";
@@ -787,13 +791,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             VictoryPoint VP = new VictoryPoint(0, 0);
 
             // Give extra reward for being Realm Captain
-            activeBattleFrontStatus.DestructionRealmCaptain?.AddRenown(250, false, RewardType.ObjectiveCapture, "For being Realm Captain");
-            activeBattleFrontStatus.OrderRealmCaptain?.AddRenown(250, false, RewardType.ObjectiveCapture, "For being Realm Captain");
+            activeBattleFrontStatus.DestructionRealmCaptain?.AddRenown(150, false, RewardType.ObjectiveCapture, "For being Realm Captain");
+            activeBattleFrontStatus.OrderRealmCaptain?.AddRenown(150, false, RewardType.ObjectiveCapture, "For being Realm Captain");
 
             switch (State)
             {
                 case StateFlags.Contested: // small tick
-                    VP = RewardManager.RewardCaptureTick(closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_CONTESTED);
+                    VP = RewardManager.RewardCaptureTick(closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.CAPTURING);
                     lock (closePlayers)
                     {
                         foreach (var closePlayer in closePlayers)
@@ -804,7 +808,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     break;
 
                 case StateFlags.Secure: // big tick
-                    VP = RewardManager.RewardCaptureTick(closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.BIG);
+                    VP = RewardManager.RewardCaptureTick(closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.CAPTURED);
 
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
 
@@ -823,7 +827,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     }
                     break;
                 case StateFlags.Locked: // unlock tick
-                    VP = RewardManager.RewardCaptureTick(closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.SMALL_LOCKED);
+                    VP = RewardManager.RewardCaptureTick(closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.GUARDED);
                     lock (closePlayers)
                     {
                         foreach (var closePlayer in closePlayers)
@@ -1022,8 +1026,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             var timerLength = GuardedTimerLength + StaticRandom.Instance.Next(60, 120);
 
-            GuardedTimer = TCPManager.GetTimeStamp() + GuardedTimerLength + timerLength;
-            DisplayedTimer = GuardedTimerLength + timerLength;
+            GuardedTimer = TCPManager.GetTimeStamp() + timerLength;
+            DisplayedTimer = timerLength;
 
             State = StateFlags.Secure;
             SendState(CapturingPlayer, true, true);

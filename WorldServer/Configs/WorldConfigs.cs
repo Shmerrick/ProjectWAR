@@ -87,5 +87,15 @@ namespace WorldServer.Configs
         public string AllowRandomContribution = "Y";
         public int KeepDoorPercentHealthBoundary = 98;      // % of door health required to trigger door under attack logic
         public string DebugLootRolls = "N";                    // Display loot roll details to players
+
+        public int BOCapturingRewardXp = 1000;
+        public int BOCapturingRewardRp = 100;
+        public int BOCapturingRewardInf = 100;
+        public int BOCapturedRewardXp = 2000;
+        public int BOCapturedRewardRp = 200;
+        public int BOCapturedRewardInf = 200;
+        public int BOGuardedRewardXp = 1000;
+        public int BOGuardedRewardRp = 200;
+        public int BOGuardedRewardInf = 200;
     }
 }

@@ -38,7 +38,7 @@ namespace Common.Database.World.Battlefront
 
         public override string ToString()
         {
-            return $"{BonusId}. {CharacterName} ({CharacterId}). {GoldBag}/{PurpleBag}/{BlueBag}/{GreenBag}/{WhiteBag}";
+            return $"Id : {BonusId}. {CharacterName} ({CharacterId}). {GoldBag}/{PurpleBag}/{BlueBag}/{GreenBag}/{WhiteBag}";
         }
     }
 }
