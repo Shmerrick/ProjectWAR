@@ -960,7 +960,7 @@ namespace WorldServer.Managers
                     }
                 }
 
-                //Log.Info("LoadPublicQuests", "Loaded public quest "+Info.Entry+" to region "+Zone.Region+" cell at X: "+ ((float)(Info.PinX / 4096) + Zone.OffX)+" "+ (float)(Info.PinY / 4096) + Zone.OffY);
+                Log.Info("LoadPublicQuests", "Loaded public quest "+Info.Entry+" to region "+Zone.Region+" cell at X: "+ ((float)(Info.PinX / 4096) + Zone.OffX)+" "+ (float)(Info.PinY / 4096) + Zone.OffY);
 
                 bool skipLoad = false;
 

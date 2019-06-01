@@ -3920,8 +3920,7 @@ namespace WorldServer.World.Objects
             {
                 _Value.RVRDeaths++;
 
-                // Turned off for the moment - in case this causes lag
-                // RecordKillTracking(this, playerKiller, deathTime);
+                RecordKillTracking(this, playerKiller, deathTime);
 
                 byte subtype = 0;
 
