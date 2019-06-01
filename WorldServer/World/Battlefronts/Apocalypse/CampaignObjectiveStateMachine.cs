@@ -74,7 +74,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             fsm.In(ProcessState.Capturing)
                 .On(Command.OnPlayerInteractionBroken).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
 
-            fsm.In(ProcessState.Capturing)
+            fsm.In(ProcessState.Capturing)  //if BO was already captured by the current realm, go to guarded.
                 .On(Command.OnCaptureTimerEnd).Goto(ProcessState.Captured).Execute(() => Objective.SetObjectiveCaptured());
             fsm.In(ProcessState.Captured)
                 .On(Command.OnGuardedTimerEnd).Goto(ProcessState.Guarded).Execute(() => Objective.SetObjectiveGuarded());

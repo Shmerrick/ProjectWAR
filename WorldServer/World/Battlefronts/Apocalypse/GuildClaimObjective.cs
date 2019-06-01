@@ -394,7 +394,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         //    {
         //        case StateFlags.Secure:
         //            //return _secureProgress == MAX_SECURE_PROGRESS ? "GENERATING" : "SECURING";
-        //            return "CAPTURED";
+        //            return "GUARDED";
 
         //        case StateFlags.Abandoned:
         //            return "SECURED";
