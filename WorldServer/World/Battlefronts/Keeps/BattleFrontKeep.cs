@@ -2119,7 +2119,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     eligiblitySplits.Item2,
                     eligiblitySplits.Item3,
                     PendingRealm,
-                    (ushort)ZoneId, RVRZoneRewardService.RVRRewardFortItems, destructionLootChest, orderLootChest, Info);
+                    (ushort)ZoneId, RVRZoneRewardService.RVRRewardFortItems, destructionLootChest, orderLootChest, Info, this.PlayersKilledInRange);
             }
             else
             {
@@ -2129,7 +2129,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     eligiblitySplits.Item2, //winning
                     eligiblitySplits.Item3, //losing
                     PendingRealm,
-                    (ushort)ZoneId, RVRZoneRewardService.RVRRewardKeepItems, destructionLootChest, orderLootChest, Info);
+                    (ushort)ZoneId, RVRZoneRewardService.RVRRewardKeepItems, destructionLootChest, orderLootChest, Info, this.PlayersKilledInRange);
 
             }
 

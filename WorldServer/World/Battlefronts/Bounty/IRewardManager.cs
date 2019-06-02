@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using Common;
+﻿using Common;
 using Common.Database.World.Battlefront;
 using GameData;
 using NLog;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Objects;
 
@@ -29,7 +29,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         void PlayerKillPVPDrop(Player killer, Player victim);
 
         List<LootBagTypeDefinition> GenerateBagDropAssignments(ConcurrentDictionary<Player, int> realmPlayers,
-            int forceNumberBags, string leadInZones, int forceDropChance = 100);
+            int forceNumberBags, string leadInZones, int additionalBags, int forceDropChance = 100);
 
         void GenerateKeepTakeLootBags(
             ILogger logger,
@@ -41,7 +41,8 @@ namespace WorldServer.World.Battlefronts.Bounty
             List<RVRRewardItem> lootOptions,
             LootChest destructionLootChest,
             LootChest orderLootChest,
-            Keep_Info keep,
+            Keep_Info keep, 
+            int playersKilledInRange,
             int forceNumberBags = 0);
 
         void DistributeKeepTakeBaseRewards(ConcurrentDictionary<Player, int> eligibleLosingRealmPlayers,

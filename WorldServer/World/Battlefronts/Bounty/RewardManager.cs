@@ -781,7 +781,8 @@ namespace WorldServer.World.Battlefronts.Bounty
             return playerItemList.Count(x => x == itemId) > 0;
         }
 
-        public List<LootBagTypeDefinition> GenerateBagDropAssignments(ConcurrentDictionary<Player, int> realmPlayers, int forceNumberBags, string leadInZones, int forceDropChance = 100)
+        public List<LootBagTypeDefinition> GenerateBagDropAssignments(ConcurrentDictionary<Player, int> realmPlayers,
+            int forceNumberBags, string leadInZones, int additionalBags, int forceDropChance = 100)
         {
             List<LootBagTypeDefinition> bagDefinitions = new List<LootBagTypeDefinition>();
             var numberOfBagsToAward = 0;
@@ -814,6 +815,17 @@ namespace WorldServer.World.Battlefronts.Bounty
             Logger.Debug($"===== Number Of Awards (post dropchance {forceDropChance}) : {numberOfBagsToAward}");
             // Determine and build out the bag types to be assigned
             bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
+
+            // Calculate AdditionalBag types
+            Logger.Debug($"===== Calculating Additional Loot Defintions based on additional Bags : {additionalBags}");
+            var additionalBagDefintions = rewardAssigner.DetermineAdditionalBagTypes(additionalBags);
+            foreach (var additionalBagDefintion in additionalBagDefintions)
+            {
+                Logger.Debug($"===== Additional Loot Defintion : {additionalBagDefintion.BagRarity}");    
+            }
+            
+            if (additionalBagDefintions != null)
+                bagDefinitions.AddRange(additionalBagDefintions);
 
             // No bags, leaving.
             if (bagDefinitions.Count == 0)
@@ -875,7 +887,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             List<RVRRewardItem> lootOptions,
             LootChest destructionLootChest,
             LootChest orderLootChest,
-            Keep_Info keep,
+            Keep_Info keep, int playersKilledInRange,
           int forceNumberBags = 0)
         {
             logger.Info($"*************************GenerateKeepTakeLootBags*************************");
@@ -899,7 +911,12 @@ namespace WorldServer.World.Battlefronts.Bounty
                 var leadInZones = String.Join(",", applicableZones);
                 logger.Warn("Lead In Zones : " + leadInZones);
 
-                var rewardAssignments = CalculateRewardAssignments(winningEligiblePlayers, losingEligiblePlayers, forceNumberBags, leadInZones);
+                
+                var additionalBags = CalculateAdditionalBagsDueToKills(playersKilledInRange);
+                additionalBags += CalculateAdditionalBagsDueToEnemyRatio(winningEligiblePlayers, losingEligiblePlayers);
+
+
+                var rewardAssignments = CalculateRewardAssignments(winningEligiblePlayers, losingEligiblePlayers, forceNumberBags, leadInZones, additionalBags);
 
                 if (rewardAssignments == null)
                 {
@@ -1023,7 +1040,31 @@ namespace WorldServer.World.Battlefronts.Bounty
             
         }
 
-       
+        private int CalculateAdditionalBagsDueToEnemyRatio(ConcurrentDictionary<Player, int> winningEligiblePlayers, ConcurrentDictionary<Player, int> losingEligiblePlayers)
+        {
+            if (winningEligiblePlayers.Count == 0)
+                return 0;
+            if (losingEligiblePlayers.Count == 0)
+                return 0;
+
+            if ((winningEligiblePlayers.Count * 3) <= losingEligiblePlayers.Count)
+                return 3;
+
+            if ((winningEligiblePlayers.Count * 2) <= losingEligiblePlayers.Count)
+                return 2;
+
+            if (winningEligiblePlayers.Count <= losingEligiblePlayers.Count)
+                return 1;
+
+            return 0;
+        }
+
+        public int CalculateAdditionalBagsDueToKills(int playersKilledInRange)
+        {
+            return (int) Math.Floor(playersKilledInRange / 30f);
+        }
+
+
         /// <summary>
         /// Bag assigned to player, reset their bag bonus for that bag
         /// </summary>
@@ -1226,21 +1267,23 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <summary>
         /// Given lists of winning and losing players, return bag drop assignments for winners and losers.
         /// </summary>
-        /// <param name="eligiblePlayers"></param>
         /// <param name="winningEligiblePlayers"></param>
         /// <param name="losingEligiblePlayers"></param>
         /// <param name="forceNumberBags"></param>
-
+        /// <param name="leadinZones"></param>
+        /// <param name="additionalBags"></param>
+        /// <param name="eligiblePlayers"></param>
         /// <returns></returns>
         private List<LootBagTypeDefinition> CalculateRewardAssignments(
             ConcurrentDictionary<Player, int> winningEligiblePlayers,
-            ConcurrentDictionary<Player, int> losingEligiblePlayers, int forceNumberBags, string leadinZones)
+            ConcurrentDictionary<Player, int> losingEligiblePlayers, int forceNumberBags, string leadinZones,
+            int additionalBags)
         {
 
             Logger.Info($"=== Generating WINNING REALM rewards for {winningEligiblePlayers.Count} players");
-            var rewardAssignments = GenerateBagDropAssignments(winningEligiblePlayers, forceNumberBags, leadinZones, 100);
+            var rewardAssignments = GenerateBagDropAssignments(winningEligiblePlayers, forceNumberBags, leadinZones, additionalBags, 100);
             Logger.Info($"=== Generating LOSING REALM rewards for {losingEligiblePlayers.Count} players");
-            var losingRewardAssignments = GenerateBagDropAssignments(losingEligiblePlayers, forceNumberBags, leadinZones, 50);
+            var losingRewardAssignments = GenerateBagDropAssignments(losingEligiblePlayers, forceNumberBags, leadinZones, additionalBags, 50);
             if (rewardAssignments != null)
             {
                 if (losingRewardAssignments != null)

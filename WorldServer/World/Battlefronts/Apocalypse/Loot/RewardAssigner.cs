@@ -1,12 +1,10 @@
-﻿using NLog;
+﻿using Common.Database.World.Battlefront;
+using FrameWork;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using Common.Database.World.Battlefront;
 using WorldServer.Configs;
-using WorldServer.Managers;
-using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
@@ -50,7 +48,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                     {
                         numberOfAwards = (byte)Math.Ceiling(eligiblePlayers / 1.6f);
                     }
-                    
+
                 }
             }
             if (eligiblePlayers < numberOfAwards)
@@ -91,7 +89,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             // Preload the tracker
             foreach (var eligiblePlayer in eligiblePlayers)
             {
-                var k = new KeepLockTracker {CharacterId = eligiblePlayer.Key, ZoneContribution = eligiblePlayer.Value};
+                var k = new KeepLockTracker { CharacterId = eligiblePlayer.Key, ZoneContribution = eligiblePlayer.Value };
                 characterKeepTrackerList.Add(k);
             }
 
@@ -116,7 +114,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
             foreach (var lootBagTypeDefinition in bagDefinitions)
             {
-                
+
                 var comparisonDictionary = new Dictionary<uint, int>();
                 foreach (var eligiblePlayer in eligiblePlayers)
                 {
@@ -141,7 +139,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                         }
                     }
 
-                    
+
                     var characterId = eligiblePlayer.Key;
                     var bonus = bagBonuses.SingleOrDefault(x => x.CharacterId == characterId);
                     if ((bonus != null) && (configSettings.AllowBagBonusContribution == "Y"))
@@ -149,44 +147,44 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                         switch (lootBagTypeDefinition.BagRarity)
                         {
                             case LootBagRarity.White:
-                            {
-                                comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.WhiteBag+randomForCharacter+pairingContributionForCharacter);
-                                if (klt != null) klt.WhiteBagBonus = bonus.WhiteBag;
-                                break;
-                            }
+                                {
+                                    comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.WhiteBag + randomForCharacter + pairingContributionForCharacter);
+                                    if (klt != null) klt.WhiteBagBonus = bonus.WhiteBag;
+                                    break;
+                                }
                             case LootBagRarity.Green:
-                            {
-                                comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.GreenBag+randomForCharacter+pairingContributionForCharacter);
-                                if (klt != null) klt.GreenBagBonus = bonus.GreenBag;
-                                break;
-                            }
+                                {
+                                    comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.GreenBag + randomForCharacter + pairingContributionForCharacter);
+                                    if (klt != null) klt.GreenBagBonus = bonus.GreenBag;
+                                    break;
+                                }
                             case LootBagRarity.Blue:
-                            {
-                                comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.BlueBag+randomForCharacter+pairingContributionForCharacter);
-                                if (klt != null) klt.BlueBagBonus = bonus.BlueBag;
-                                break;
-                            }
+                                {
+                                    comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.BlueBag + randomForCharacter + pairingContributionForCharacter);
+                                    if (klt != null) klt.BlueBagBonus = bonus.BlueBag;
+                                    break;
+                                }
                             case LootBagRarity.Purple:
-                            {
-                                comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.PurpleBag+randomForCharacter+pairingContributionForCharacter);
-                                if (klt != null) klt.PurpleBagBonus = bonus.PurpleBag;
-                                break;
-                            }
+                                {
+                                    comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.PurpleBag + randomForCharacter + pairingContributionForCharacter);
+                                    if (klt != null) klt.PurpleBagBonus = bonus.PurpleBag;
+                                    break;
+                                }
                             case LootBagRarity.Gold:
-                            {
-                                comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.GoldBag+randomForCharacter+pairingContributionForCharacter);
-                                if (klt != null) klt.GoldBagBonus = bonus.GoldBag;
-                                break;
-                            }
+                                {
+                                    comparisonDictionary.Add(characterId, eligiblePlayer.Value + bonus.GoldBag + randomForCharacter + pairingContributionForCharacter);
+                                    if (klt != null) klt.GoldBagBonus = bonus.GoldBag;
+                                    break;
+                                }
                         }
                     }
                     else
                     {
-                        comparisonDictionary.Add(characterId,  eligiblePlayer.Value+randomForCharacter+pairingContributionForCharacter);
+                        comparisonDictionary.Add(characterId, eligiblePlayer.Value + randomForCharacter + pairingContributionForCharacter);
                     }
                     //Logger.Debug($"===== Loot Assignment Bonuses : Character {characterId}, Base {eligiblePlayer.Value} Random {randomForCharacter} Pairing {pairingContributionForCharacter}");
                 }
-                
+
                 // Sort the comparison dictionary
                 var comparisonList = comparisonDictionary.OrderBy(x => x.Value).ToList();
                 comparisonList.Reverse();
@@ -198,10 +196,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
                 lootBagTypeDefinition.Assignee = comparisonList[0].Key;
                 // remove this assignee from future comparisons.
-                eligiblePlayers.RemoveAll(x=>x.Key==comparisonList[0].Key);
+                eligiblePlayers.RemoveAll(x => x.Key == comparisonList[0].Key);
                 Logger.Info(
                     $"===== Selected player {lootBagTypeDefinition.Assignee} selected for reward. LootBag Id : {lootBagTypeDefinition.LootBagNumber} ({lootBagTypeDefinition.BagRarity}).");
-                
+
             }
 
             foreach (var keepLockTracker in characterKeepTrackerList)
@@ -228,6 +226,31 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 numberOfBags = (int)DetermineNumberOfAwards(allContributingPlayers.Count());
 
             return numberOfBags;
+        }
+
+        public List<LootBagTypeDefinition> DetermineAdditionalBagTypes(int additionalBags)
+        {
+            var result = new List<LootBagTypeDefinition>();
+
+            for (var i = 0; i < additionalBags; i++)
+            {
+                var rand = StaticRandom.Instance.Next(100);
+                if (rand < 60)
+                    result.Add(new LootBagTypeDefinition { BagRarity = LootBagRarity.Green });
+                else
+                {
+                    if (rand < 80)
+                        result.Add(new LootBagTypeDefinition { BagRarity = LootBagRarity.Blue });
+                    else
+                    {
+                        result.Add(rand < 90
+                            ? new LootBagTypeDefinition {BagRarity = LootBagRarity.Purple}
+                            : new LootBagTypeDefinition {BagRarity = LootBagRarity.Gold});
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }
