@@ -585,6 +585,12 @@ namespace WorldServer.World.Objects
                         // Dynamic Vendor
                         switch (Spawn.Proto.VendorID)
                         {
+                            case 428:  // BlackMarket Vendor
+                            {
+                                var blackMarketVendor = new BlackMarketVendorItem(player);
+                                WorldMgr.SendDynamicVendorItems(player,blackMarketVendor.GetBlackMarketItems(player));
+                                break;
+                            }
                             case 10002:  // Honor Vendor
                             {
                                 WorldMgr.SendDynamicVendorItems(player,
@@ -617,6 +623,15 @@ namespace WorldServer.World.Objects
                         TakeInfluenceItem(player, menu);
                         break;
                     case 11:
+                        // Black market vendor
+                        if (Spawn.Proto.VendorID == 428)
+                        {
+                            var blackMarketVendor = new BlackMarketVendorItem(player);
+                            var items = blackMarketVendor.GetBlackMarketItems(player);
+                            WorldMgr.BuyItemBlackMarketVendor(player, menu, items);
+                            break;
+                        }
+
                         // Dynamic Vendor -- Honor vendor
                         if (Spawn.Proto.VendorID == 10002)
                         {
@@ -1391,4 +1406,6 @@ namespace WorldServer.World.Objects
         }
 
     }
+
+  
 }

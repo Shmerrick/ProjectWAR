@@ -204,6 +204,7 @@
     <Compile Include="Database\World\Instances\Instance_Spawn.cs" />
     <Compile Include="Database\World\Instances\Instance_Spawn_State.cs" />
     <Compile Include="Database\World\Instances\Instance_Spawn_State_Ability.cs" />
+    <Compile Include="Database\World\Items\BlackMarketItem.cs" />
     <Compile Include="Database\World\Items\MailItem.cs" />
     <Compile Include="Database\World\Items\Dye_Info.cs" />
     <Compile Include="Database\World\Items\Item_Info.cs" />

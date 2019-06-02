@@ -77,6 +77,16 @@ namespace WorldServer.NetWork.Handler
                     }
                     break;
 
+                case 19: // Alternate Currency
+                {
+                    byte Slot = packet.GetUint8();
+                    packet.Skip(2);
+                    ushort SlotItem = packet.GetUint16();
+
+                    Plr.ItmInterface.HandleAltAppearance(Slot, SlotItem);
+                }
+                    break;
+
                 case 27: // Barber
                     {
                         packet.Skip(5);
