@@ -440,8 +440,6 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
 
-            PlayersKilledInRange = 0;
-
             ResetAllStateTimers();
 
             if (!Fortress)
@@ -723,7 +721,9 @@ namespace WorldServer.World.Battlefronts.Keeps
             InnerPosternCanBeUsed = false;
             OuterPosternCanBeUsed = false;
 
-            ProgressionLogger.Trace($"Setting Door Timers {Info.Name}. Pending Realm = {PendingRealm}");
+            PlayersKilledInRange /= 2;
+
+            ProgressionLogger.Trace($"Setting Door Timers {Info.Name}. Pending Realm = {PendingRealm}. PlayersKilledInRange {PlayersKilledInRange}");
 
             foreach (var door in Doors)
             {
@@ -771,6 +771,8 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             // Remove all siege
             RemoveAllKeepSiege();
+
+            PlayersKilledInRange = 0;
 
             // Remove any persisted values for this keep.
             RVRProgressionService.RemoveBattleFrontKeepStatus(Info.KeepId);
@@ -2128,7 +2130,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     eligiblitySplits.Item2, //winning
                     eligiblitySplits.Item3, //losing
                     PendingRealm,
-                    (ushort)ZoneId, RVRZoneRewardService.RVRRewardKeepItems, destructionLootChest, orderLootChest, Info, this.PlayersKilledInRange);
+                    (ushort)ZoneId, RVRZoneRewardService.RVRRewardKeepItems, destructionLootChest, orderLootChest, Info, PlayersKilledInRange);
 
             }
 

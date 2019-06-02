@@ -162,15 +162,20 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private void IPCheck()
         {
             var hash = new HashSet<string>();
+            if (PlayersInLakeSet == null)
+                return;
             foreach (var item in PlayersInLakeSet)
             {
-                var ipAddress = item.Client._Account.Ip;
-                if (item.Client._Account.GmLevel == 1)
+                var ipAddress = item?.Client?._Account.Ip;
+                if (ipAddress != "")
                 {
-                    if (!hash.Add(ipAddress))
+                    if (item.Client._Account.GmLevel == 1)
                     {
-                        PlayerUtil.SendGMBroadcastMessage(Player._Players,
-                            $"{item.Name} has a duplicate IP address in game.");
+                        if (!hash.Add(ipAddress))
+                        {
+                            PlayerUtil.SendGMBroadcastMessage(Player._Players,
+                                $"{item.Name} has a duplicate IP address in game.");
+                        }
                     }
                 }
             }

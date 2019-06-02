@@ -104,7 +104,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 Logger.Debug($"{bonus.Key}:{bonus.Value}");
             }
 
-            Logger.Trace($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBagsToAward} Bags");
+            Logger.Debug($"Eligible Player Count = {eligiblePlayers.Count()} for maximum {numberOfBagsToAward} Bags");
 
             if (eligiblePlayers.Count == 0)
                 return null;
@@ -115,7 +115,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 return null;
             }
 
-            Logger.Trace($"Assigning loot. Number of Bags : {bagDefinitions.Count} Number of players : {eligiblePlayers.Count}");
+            Logger.Debug($"Assigning loot. Number of Bags : {bagDefinitions.Count} Number of players : {eligiblePlayers.Count}");
 
             foreach (var lootBagTypeDefinition in bagDefinitions)
             {
@@ -199,11 +199,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                     Logger.Debug($"======= Post modification values for comparison : Character {keyValuePair.Key}, Value {keyValuePair.Value}");
                 }
 
-                lootBagTypeDefinition.Assignee = comparisonList[0].Key;
-                // remove this assignee from future comparisons.
-                eligiblePlayers.RemoveAll(x => x.Key == comparisonList[0].Key);
-                Logger.Info(
-                    $"===== Selected player {lootBagTypeDefinition.Assignee} selected for reward. LootBag Id : {lootBagTypeDefinition.LootBagNumber} ({lootBagTypeDefinition.BagRarity}).");
+                if (comparisonList.Count > 0)
+                {
+                    lootBagTypeDefinition.Assignee = comparisonList[0].Key;
+                    // remove this assignee from future comparisons.
+                    eligiblePlayers.RemoveAll(x => x.Key == comparisonList[0].Key);
+                    Logger.Info(
+                        $"===== Selected player {lootBagTypeDefinition.Assignee} selected for reward. LootBag Id : {lootBagTypeDefinition.LootBagNumber} ({lootBagTypeDefinition.BagRarity}).");
+                }
+                else
+                {
+                    Logger.Info(
+                        $"===== No player available for reward assignment. LootBag Id : {lootBagTypeDefinition.LootBagNumber} ({lootBagTypeDefinition.BagRarity}).");
+                }
 
             }
 
