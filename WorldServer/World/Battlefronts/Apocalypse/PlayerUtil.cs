@@ -206,7 +206,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         private static void RecordHonorHistory(ushort oldHonorPoints, ushort infoHonorPoints, uint playerCharacterId, string playerName)
         {
-            var roc = (oldHonorPoints - infoHonorPoints);
+            var roc = (infoHonorPoints - oldHonorPoints);
             
             var honorHistory = new HonorHistory
             {

@@ -97,5 +97,6 @@ namespace WorldServer.Configs
         public int BOGuardedRewardXp = 1000;
         public int BOGuardedRewardRp = 200;
         public int BOGuardedRewardInf = 200;
+        public double AdditionalBagKillCountStep = 2f;
     }
 }

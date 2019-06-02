@@ -912,9 +912,17 @@ namespace WorldServer.World.Battlefronts.Bounty
                 logger.Warn("Lead In Zones : " + leadInZones);
 
                 
-                var additionalBags = CalculateAdditionalBagsDueToKills(playersKilledInRange);
+                var additionalBags = CalculateAdditionalBagsDueToKills(playersKilledInRange, Program.Config.AdditionalBagKillCountStep);
+                logger.Debug($"Additional Bags {additionalBags} - kill count");
                 additionalBags += CalculateAdditionalBagsDueToEnemyRatio(winningEligiblePlayers, losingEligiblePlayers);
+                logger.Debug($"Additional Bags {additionalBags} - winner {winningEligiblePlayers.Count}/loser ratio {losingEligiblePlayers.Count}");
 
+                foreach (var allEligiblePlayer in allEligiblePlayers)
+                {
+                    (allEligiblePlayer.Key as Player).SendClientMessage($"players Killed in range {playersKilledInRange}");
+                    (allEligiblePlayer.Key as Player).SendClientMessage($"Additional Bags {additionalBags} - kill count");
+                    (allEligiblePlayer.Key as Player).SendClientMessage($"Additional Bags {additionalBags} - winner {winningEligiblePlayers.Count}/loser ratio {losingEligiblePlayers.Count}");
+                }
 
                 var rewardAssignments = CalculateRewardAssignments(winningEligiblePlayers, losingEligiblePlayers, forceNumberBags, leadInZones, additionalBags);
 
@@ -1059,9 +1067,11 @@ namespace WorldServer.World.Battlefronts.Bounty
             return 0;
         }
 
-        public int CalculateAdditionalBagsDueToKills(int playersKilledInRange)
+        public int CalculateAdditionalBagsDueToKills(int playersKilledInRange, double divisor)
         {
-            return (int) Math.Floor(playersKilledInRange / 30f);
+            if (playersKilledInRange < divisor)
+                return 0;
+            return (int) Math.Floor(playersKilledInRange / divisor);
         }
 
 

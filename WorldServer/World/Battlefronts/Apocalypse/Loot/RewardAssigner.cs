@@ -93,6 +93,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 characterKeepTrackerList.Add(k);
             }
 
+            // Sort the bagDefinitions by rarity descending
+            bagDefinitions = bagDefinitions.OrderBy(x => x.BagRarity).ToList();
+            bagDefinitions.Reverse();
+
+
             Logger.Debug($"=== Pairing Contributions");
             foreach (var bonus in pairingContributionBonuses)
             {

@@ -1816,9 +1816,8 @@ namespace WorldServer.World.Battlefronts.Keeps
             _logger.Info($"Attempt to (FORT) Force Lock Zone from {Info.Name}");
             if (IsFortress())
             {
-                OnLockZone(PendingRealm);
-
                 GenerateKeepTakeRewards();
+                OnLockZone(PendingRealm);
 
                 // Create Loot Chests at the Fort GoldChest location 
                 var lootChest = LootChest.Create(
