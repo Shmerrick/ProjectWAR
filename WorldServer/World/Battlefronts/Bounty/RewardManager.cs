@@ -919,6 +919,9 @@ namespace WorldServer.World.Battlefronts.Bounty
 
                 foreach (var allEligiblePlayer in allEligiblePlayers)
                 {
+                    var message = $"Due to intense fighting, an additional reward cache has been unlocked. {additionalBags} bags have been discovered.";
+                    (allEligiblePlayer.Key as Player).SendClientMessage($"{message}");
+
                     (allEligiblePlayer.Key as Player).SendClientMessage($"players Killed in range {playersKilledInRange}");
                     (allEligiblePlayer.Key as Player).SendClientMessage($"Additional Bags {additionalBags} - kill count");
                     (allEligiblePlayer.Key as Player).SendClientMessage($"Additional Bags {additionalBags} - winner {winningEligiblePlayers.Count}/loser ratio {losingEligiblePlayers.Count}");
