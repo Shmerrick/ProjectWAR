@@ -1033,9 +1033,12 @@ namespace WorldServer.World.Battlefronts.Bounty
                     try
                     {
                         var bonusToWrite = bagBonus[bonus];
-                        bonusToWrite.Dirty = true;
-                        CharMgr.Database.SaveObject(bonusToWrite);
-                        logger.Info($"Finalisation (writing) - bag Bonus {bonusToWrite.ToString()}");
+                        if (bonusToWrite != null)
+                        {
+                            bonusToWrite.Dirty = true;
+                            CharMgr.Database.SaveObject(bonusToWrite);
+                            logger.Info($"Finalisation (writing) - bag Bonus {bonusToWrite.ToString()}");
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -1053,11 +1056,11 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         private int CalculateAdditionalBagsDueToEnemyRatio(ConcurrentDictionary<Player, int> winningEligiblePlayers, ConcurrentDictionary<Player, int> losingEligiblePlayers)
         {
-            if (winningEligiblePlayers.Count == 0)
+            if (winningEligiblePlayers.Count <= Program.Config.AdditionalBagRatioMinimumWinners )
                 return 0;
-            if (losingEligiblePlayers.Count == 0)
+            if (losingEligiblePlayers.Count <= Program.Config.AdditionalBagRatioMinimumLosers)
                 return 0;
-
+            
             if ((winningEligiblePlayers.Count * 3) <= losingEligiblePlayers.Count)
                 return 3;
 
@@ -1293,9 +1296,9 @@ namespace WorldServer.World.Battlefronts.Bounty
             int additionalBags)
         {
 
-            Logger.Info($"=== Generating WINNING REALM rewards for {winningEligiblePlayers.Count} players");
+            Logger.Info($"*** Generating WINNING REALM rewards for {winningEligiblePlayers.Count} players ***");
             var rewardAssignments = GenerateBagDropAssignments(winningEligiblePlayers, forceNumberBags, leadinZones, additionalBags, 100);
-            Logger.Info($"=== Generating LOSING REALM rewards for {losingEligiblePlayers.Count} players");
+            Logger.Info($"*** Generating LOSING REALM rewards for {losingEligiblePlayers.Count} players ***");
             var losingRewardAssignments = GenerateBagDropAssignments(losingEligiblePlayers, forceNumberBags, leadinZones, additionalBags, 50);
             if (rewardAssignments != null)
             {
