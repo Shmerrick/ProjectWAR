@@ -376,6 +376,25 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 if (ActiveBattleFront.ZoneId == keep.ZoneId)
                     keep.OnLockZone(realm);
             }
+            ProgressionLogger.Debug($"Removing any siege from active region");
+            // Destroy any active siege in this zone.
+            try
+            {
+                var siegeInRegion = activeRegion?.Objects.Where(x=>x is Siege);
+                foreach (var siege in siegeInRegion)
+                {
+                    if (siege is Siege)
+                    {
+                        ProgressionLogger.Debug($"Calling Destroy on {siege.Name}");
+                        siege.Destroy();
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                ProgressionLogger.Debug($"{e.Message}{e.StackTrace}");
+            }
 
             activeRegion.Campaign.LockBattleFront(realm, forceNumberBags);
 

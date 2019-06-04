@@ -581,7 +581,7 @@ namespace WorldServer.World.Interfaces
 
         }
 
-        public bool IsAbandoned => _leader == null && !_weapon.ObjectWithinRadiusFeet(Creator, 200);
+        public bool IsAbandoned => _leader == null && !_weapon.ObjectWithinRadiusFeet(Creator, 250);
 
         #endregion
 

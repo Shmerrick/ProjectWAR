@@ -109,11 +109,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
 
 
-                fsm.In(ProcessState.GuildClaim)  // Guild claim interacted, go to safe.
+                fsm.In(ProcessState.GuildClaim) // Guild claim interacted, go to safe.
                     .On(Command.OnGuildClaimInteracted)
                     .Goto(ProcessState.Safe)
-                    .Execute<uint>((uint guildId) => Keep.SetGuildClaimed(guildId))
-                    .Execute(() => Keep.SetKeepSafe());
+                    .Execute<uint>((uint guildId) => Keep.SetGuildClaimed(guildId));
+                    //.Execute(() => Keep.SetKeepSafe());
                 fsm.In(ProcessState.GuildClaim)
                     .On(Command.OnGuildClaimTimerEnd)
                     .If(Keep.IsFortress)

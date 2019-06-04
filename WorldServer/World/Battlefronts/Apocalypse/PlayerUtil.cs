@@ -4,6 +4,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using SystemData;
+using Common.Database.World.Battlefront;
 using WorldServer.Managers;
 using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Objects;
@@ -114,6 +116,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     
                     CharMgr.Database.SaveObject(player.Value);
 
+                    PlayerUtil.RecordHonorHistory(currentHonorPoints, (ushort) newHonorPoints, 
+                        player.Value.CharacterId, player.Value.Name);
+
                     if (announce)
                     {
                         if (honorLevel > oldHonorRank)
@@ -121,7 +126,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             var playerToAnnounce = Player.GetPlayer((uint) player.Value.CharacterId);
                             if (playerToAnnounce.CharacterId == player.Value.CharacterId)
                             {
-                                playerToAnnounce.SendClientMessage($"You have reached Honor Rank {honorLevel}");
+                                playerToAnnounce.SendClientMessage($"You have reached Honor Rank {honorLevel}", ChatLogFilters.CHATLOGFILTERS_C_ORANGE_L);
                             }
                         }
                     }
@@ -165,6 +170,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         player.Info.HonorPoints += (ushort)contributingPlayer.Value;
                         Logger.Debug($"Updating honor for {player.Info.Name} ({player.Info.CharacterId}) {oldHonorPoints} => {player.Info.HonorPoints} ({player.Info.HonorRank})");
                         CharMgr.Database.SaveObject(player.Info);
+
+
+                        PlayerUtil.RecordHonorHistory(oldHonorPoints, player.Info.HonorPoints, player.CharacterId, player.Name);
                     }
 
                     if (player.Realm == lockingRealm)
@@ -194,6 +202,34 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             return new Tuple<ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>>(allEligiblePlayerDictionary, winningRealmPlayers, losingRealmPlayers);
 
+        }
+
+        private static void RecordHonorHistory(ushort oldHonorPoints, ushort infoHonorPoints, uint playerCharacterId, string playerName)
+        {
+            var roc = (infoHonorPoints - oldHonorPoints);
+            
+            var honorHistory = new HonorHistory
+            {
+                CharacterId = playerCharacterId,
+                CharacterName = playerName,
+                CurrentHonorPoints = (uint) infoHonorPoints,
+                OldHonorPoints = oldHonorPoints,
+                RateOfChange = roc,
+                Timestamp = DateTime.UtcNow
+            };
+            WorldMgr.Database.AddObject(honorHistory);
+        }
+
+        public static void SendGMBroadcastMessage(List<Player> players, string message)
+        {
+            lock (players)
+            {
+                foreach (Player plr in players)
+                {
+                    if (plr.GmLevel > 1)
+                        plr.SendClientMessage(message, ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+                }
+            }
         }
     }
 }

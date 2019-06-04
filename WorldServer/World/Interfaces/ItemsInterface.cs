@@ -525,6 +525,11 @@ namespace WorldServer.World.Interfaces
                 case 1298378392:
                     CreateItem(208434, 25, true);
                     break;
+                case 1298378521:   // Black market warlord box
+                    var random = StaticRandom.Instance.Next(Program.Config.BlackMarketMinimumWLCrests, Program.Config.BlackMarketMaximumWLCrests);
+                    CreateItem(208454, (ushort)random, true);
+                    (_Owner  as Player).SendClientMessage($"The package contains {random} Warlord Crests!", ChatLogFilters.CHATLOGFILTERS_LOOT);
+                    break;
 
                 default:
                     return;

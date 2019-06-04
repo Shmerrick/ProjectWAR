@@ -781,7 +781,8 @@ namespace WorldServer.World.Battlefronts.Bounty
             return playerItemList.Count(x => x == itemId) > 0;
         }
 
-        public List<LootBagTypeDefinition> GenerateBagDropAssignments(ConcurrentDictionary<Player, int> realmPlayers, int forceNumberBags, string leadInZones, int forceDropChance = 100)
+        public List<LootBagTypeDefinition> GenerateBagDropAssignments(ConcurrentDictionary<Player, int> realmPlayers,
+            int forceNumberBags, string leadInZones, int additionalBags, int forceDropChance = 100)
         {
             List<LootBagTypeDefinition> bagDefinitions = new List<LootBagTypeDefinition>();
             var numberOfBagsToAward = 0;
@@ -815,6 +816,17 @@ namespace WorldServer.World.Battlefronts.Bounty
             // Determine and build out the bag types to be assigned
             bagDefinitions = rewardAssigner.DetermineBagTypes(numberOfBagsToAward);
 
+            // Calculate AdditionalBag types
+            Logger.Debug($"===== Calculating Additional Loot Defintions based on additional Bags : {additionalBags}");
+            var additionalBagDefintions = rewardAssigner.DetermineAdditionalBagTypes(additionalBags);
+            foreach (var additionalBagDefintion in additionalBagDefintions)
+            {
+                Logger.Debug($"===== Additional Loot Defintion : {additionalBagDefintion.BagRarity}");    
+            }
+            
+            if (additionalBagDefintions != null)
+                bagDefinitions.AddRange(additionalBagDefintions);
+
             // No bags, leaving.
             if (bagDefinitions.Count == 0)
                 return bagDefinitions;
@@ -836,12 +848,14 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             // Assign eligible players to the bag definitions.
             var pairingContributions = new Dictionary<uint, int>();
-            var zoneEligibiltyCharacters = new List<KeepLockEligibilityHistory>();
+            var zoneEligibiltyCharacters = new List<ZoneLockEligibilityHistory>();
             if ((leadInZones != "") && (characterJoinedList !=""))
             {
                 var query =
-                    $"CharacterId in ({characterJoinedList}) and ZoneId in ({leadInZones}) and timestamp BETWEEN DATE_SUB(NOW(), INTERVAL {{Program.Config.PairingContributionTimeIntervalHours}} HOUR) AND NOW() ) ";
-                zoneEligibiltyCharacters = (List<KeepLockEligibilityHistory>)WorldMgr.Database.SelectObjects<KeepLockEligibilityHistory>(query);
+                    $"CharacterId in ({characterJoinedList}) and ZoneId in ({leadInZones}) and timestamp BETWEEN DATE_SUB(UTC_TIMESTAMP(), INTERVAL {Program.Config.PairingContributionTimeIntervalHours} HOUR) AND UTC_TIMESTAMP() ";
+                zoneEligibiltyCharacters = (List<ZoneLockEligibilityHistory>)WorldMgr.Database.SelectObjects<ZoneLockEligibilityHistory>(query);
+                Logger.Debug($"{query}");
+                Logger.Debug($"zoneEligibiltyCharacters : {zoneEligibiltyCharacters.Count}");
             }
 
             foreach (var character in sortedPairs)
@@ -853,6 +867,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 {
                     var pairingBonus = Program.Config.PairingBonusIncrement *
                                        zoneEligibiltyCharacters.Count(x => x.CharacterId == character.Key);
+                    Logger.Debug($"Pairing Bonus : {pairingBonus}");
                     pairingContributions.Add(character.Key, pairingBonus);
                 }
             }
@@ -872,7 +887,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             List<RVRRewardItem> lootOptions,
             LootChest destructionLootChest,
             LootChest orderLootChest,
-            Keep_Info keep,
+            Keep_Info keep, int playersKilledInRange,
           int forceNumberBags = 0)
         {
             logger.Info($"*************************GenerateKeepTakeLootBags*************************");
@@ -896,7 +911,23 @@ namespace WorldServer.World.Battlefronts.Bounty
                 var leadInZones = String.Join(",", applicableZones);
                 logger.Warn("Lead In Zones : " + leadInZones);
 
-                var rewardAssignments = CalculateRewardAssignments(winningEligiblePlayers, losingEligiblePlayers, forceNumberBags, leadInZones);
+                
+                var additionalBags = CalculateAdditionalBagsDueToKills(playersKilledInRange, Program.Config.AdditionalBagKillCountStep);
+                logger.Debug($"Additional Bags {additionalBags} - kill count");
+                additionalBags += CalculateAdditionalBagsDueToEnemyRatio(winningEligiblePlayers, losingEligiblePlayers);
+                logger.Debug($"Additional Bags {additionalBags} - winner {winningEligiblePlayers.Count}/loser ratio {losingEligiblePlayers.Count}");
+
+                foreach (var allEligiblePlayer in allEligiblePlayers)
+                {
+                    var message = $"Due to intense fighting, an additional reward cache has been unlocked. {additionalBags} bags have been discovered.";
+                    (allEligiblePlayer.Key as Player).SendClientMessage($"{message}");
+
+                    (allEligiblePlayer.Key as Player).SendClientMessage($"players Killed in range {playersKilledInRange}");
+                    (allEligiblePlayer.Key as Player).SendClientMessage($"Additional Bags {additionalBags} - kill count");
+                    (allEligiblePlayer.Key as Player).SendClientMessage($"Additional Bags {additionalBags} - winner {winningEligiblePlayers.Count}/loser ratio {losingEligiblePlayers.Count}");
+                }
+
+                var rewardAssignments = CalculateRewardAssignments(winningEligiblePlayers, losingEligiblePlayers, forceNumberBags, leadInZones, additionalBags);
 
                 if (rewardAssignments == null)
                 {
@@ -999,9 +1030,20 @@ namespace WorldServer.World.Battlefronts.Bounty
 
                 foreach (var bonus in bagBonus.Keys.ToList())
                 {
-                    var bonusToWrite = bagBonus[bonus];
-                    bonusToWrite.Dirty = true;
-                    CharMgr.Database.SaveObject(bonusToWrite);
+                    try
+                    {
+                        var bonusToWrite = bagBonus[bonus];
+                        if (bonusToWrite != null)
+                        {
+                            bonusToWrite.Dirty = true;
+                            CharMgr.Database.SaveObject(bonusToWrite);
+                            logger.Info($"Finalisation (writing) - bag Bonus {bonusToWrite.ToString()}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Warn($"{ex.Message} {ex.StackTrace}");
+                    }
                 }
             }
             catch (Exception e)
@@ -1012,7 +1054,33 @@ namespace WorldServer.World.Battlefronts.Bounty
             
         }
 
-       
+        private int CalculateAdditionalBagsDueToEnemyRatio(ConcurrentDictionary<Player, int> winningEligiblePlayers, ConcurrentDictionary<Player, int> losingEligiblePlayers)
+        {
+            if (winningEligiblePlayers.Count <= Program.Config.AdditionalBagRatioMinimumWinners )
+                return 0;
+            if (losingEligiblePlayers.Count <= Program.Config.AdditionalBagRatioMinimumLosers)
+                return 0;
+            
+            if ((winningEligiblePlayers.Count * 3) <= losingEligiblePlayers.Count)
+                return 3;
+
+            if ((winningEligiblePlayers.Count * 2) <= losingEligiblePlayers.Count)
+                return 2;
+
+            if (winningEligiblePlayers.Count <= losingEligiblePlayers.Count)
+                return 1;
+
+            return 0;
+        }
+
+        public int CalculateAdditionalBagsDueToKills(int playersKilledInRange, double divisor)
+        {
+            if (playersKilledInRange < divisor)
+                return 0;
+            return (int) Math.Floor(playersKilledInRange / divisor);
+        }
+
+
         /// <summary>
         /// Bag assigned to player, reset their bag bonus for that bag
         /// </summary>
@@ -1215,21 +1283,23 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <summary>
         /// Given lists of winning and losing players, return bag drop assignments for winners and losers.
         /// </summary>
-        /// <param name="eligiblePlayers"></param>
         /// <param name="winningEligiblePlayers"></param>
         /// <param name="losingEligiblePlayers"></param>
         /// <param name="forceNumberBags"></param>
-
+        /// <param name="leadinZones"></param>
+        /// <param name="additionalBags"></param>
+        /// <param name="eligiblePlayers"></param>
         /// <returns></returns>
         private List<LootBagTypeDefinition> CalculateRewardAssignments(
             ConcurrentDictionary<Player, int> winningEligiblePlayers,
-            ConcurrentDictionary<Player, int> losingEligiblePlayers, int forceNumberBags, string leadinZones)
+            ConcurrentDictionary<Player, int> losingEligiblePlayers, int forceNumberBags, string leadinZones,
+            int additionalBags)
         {
 
-            Logger.Info($"=== Generating WINNING REALM rewards for {winningEligiblePlayers.Count} players");
-            var rewardAssignments = GenerateBagDropAssignments(winningEligiblePlayers, forceNumberBags, leadinZones, 100);
-            Logger.Info($"=== Generating LOSING REALM rewards for {losingEligiblePlayers.Count} players");
-            var losingRewardAssignments = GenerateBagDropAssignments(losingEligiblePlayers, forceNumberBags, leadinZones, 50);
+            Logger.Info($"*** Generating WINNING REALM rewards for {winningEligiblePlayers.Count} players ***");
+            var rewardAssignments = GenerateBagDropAssignments(winningEligiblePlayers, forceNumberBags, leadinZones, additionalBags, 100);
+            Logger.Info($"*** Generating LOSING REALM rewards for {losingEligiblePlayers.Count} players ***");
+            var losingRewardAssignments = GenerateBagDropAssignments(losingEligiblePlayers, forceNumberBags, leadinZones, additionalBags, 50);
             if (rewardAssignments != null)
             {
                 if (losingRewardAssignments != null)

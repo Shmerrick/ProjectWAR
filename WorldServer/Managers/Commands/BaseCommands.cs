@@ -5,7 +5,6 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security;
 using SystemData;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
@@ -4750,7 +4749,7 @@ namespace WorldServer.Managers.Commands
                 else
                 {
 
-                    ((Player)playerTarget).SetTitleId((ushort) Convert.ToInt32(values[0]));
+                    ((Player)playerTarget).SetTitleId((ushort)Convert.ToInt32(values[0]));
                 }
             }
             return true;
@@ -4768,22 +4767,28 @@ namespace WorldServer.Managers.Commands
             {
                 new LootBagTypeDefinition
                 {
-                    BagRarity = LootBagRarity.Blue,
+                    BagRarity = LootBagRarity.Gold,
                     LootBagNumber = 0,
                     RenownBand = 0,
                     ItemId = 208470,
                     ItemCount = 5
                 },
+                new LootBagTypeDefinition
                 {
+                    BagRarity = LootBagRarity.Purple,
+                    LootBagNumber = 0,
+                    RenownBand = 0,
+                    ItemId = 208470,
+                    ItemCount = 5
+                },
                     new LootBagTypeDefinition
                     {
-                        BagRarity = LootBagRarity.Purple,
+                        BagRarity = LootBagRarity.Blue,
                         LootBagNumber = 1,
                         RenownBand = 0,
                         ItemId = 208454,
                         ItemCount = 5
                     }
-                }
             };
 
 
@@ -4815,8 +4820,8 @@ namespace WorldServer.Managers.Commands
                 },
                 new PQContribution
                 {
-                    CharacterId = 271,
-                    CharacterName = "Ik",
+                    CharacterId = plr.CharacterId,
+                    CharacterName = plr.Name,
                     ContributionValue = 750,
                     RandomBonus = 80,
                     BagBonus = 50
@@ -4841,25 +4846,32 @@ namespace WorldServer.Managers.Commands
 
             WritePreRolls(Out, contributionList);
 
+            // Sort contribution.
+            var p = contributionList.OrderBy(x => x.ContributionValue + x.RandomBonus).ToList();
+            p.Reverse();
+
+
             Out.WriteStringBytes(plr.Name);
             Out.Fill(0, 24 - plr.Name.Length);
             Out.Fill(0, 2);
-            Out.WriteUInt16R((ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).RandomBonus);
+            Out.WriteUInt16R((ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).RandomBonus);   
             Out.WriteUInt16R((ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).ContributionValue);
-            Out.WriteUInt16R((ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).BagBonus);
-            Out.WriteUInt16((ushort)(1)); // place
+            Out.WriteUInt16R(0);//(ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).BagBonus
+            Out.WriteUInt16((ushort)(p.FindIndex(x=>x.CharacterId == plr.CharacterId)+1)); // place (you have the nth highest....)
 
-            WritePostRolls(Out, contributionList);
 
-            Out.WriteUInt16((ushort)(1)); // place
+            WritePostRolls(Out, p, lootBags);
+
+            // I think this is the "final view" of the rewards
+            Out.WriteUInt16((ushort)(1)); // place -- highlighted user - should be #1 rank
             Out.WriteStringBytes(plr.Name);
             Out.Fill(0, 24 - plr.Name.Length);
             Out.Fill(0, 2);
             Out.WriteUInt16R((ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).RandomBonus);  //random
             Out.WriteUInt16R((ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).ContributionValue);  // Contrib
-            Out.WriteUInt16R((ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).BagBonus);  // persistence
+            Out.WriteUInt16R(0);  // persistence(ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).BagBonus
             Out.WriteByte(1);  // ???
-            Out.WriteByte((int)LootBagRarity.Purple);  // bag won
+            Out.WriteByte((int)LootBagRarity.Gold);  // bag won by the highlighted user
 
             Out.Fill(0, 2);
             //Out.WriteUInt16(TIME_PQ_RESET);
@@ -4902,9 +4914,9 @@ namespace WorldServer.Managers.Commands
                 Out.WriteStringBytes(pl[i]?.CharacterName);
                 Out.Fill(0, 24 - pl[i].CharacterName.Length);
                 Out.Fill(0, 2);
-                Out.WriteUInt16R((ushort) ((ushort)pl[i]?.RandomBonus+5));
-                Out.WriteUInt16R((ushort) ((ushort)pl[i]?.ContributionValue+5));
-                Out.WriteUInt16R((ushort) ((ushort)pl[i]?.BagBonus+5));
+                Out.WriteUInt16R((ushort)((ushort)pl[i]?.RandomBonus));
+                Out.WriteUInt16R((ushort)((ushort)pl[i]?.ContributionValue));
+                Out.WriteUInt16R(0); //(ushort)((ushort)pl[i]?.BagBonus)
             }
 
             if (maxCount < 24)
@@ -4912,25 +4924,35 @@ namespace WorldServer.Managers.Commands
                     Out.Fill(0, 32);
         }
 
-        private static void WritePostRolls(PacketOut Out, List<PQContribution> pl)
+        private static void WritePostRolls(PacketOut Out, List<PQContribution> p, List<LootBagTypeDefinition> lootBags)
         {
-            int maxCount = Math.Min(24, pl.Count);
+            int maxCount = Math.Min(24, p.Count);
 
+          
+
+            var bagIndex = 0;
             for (int i = 0; i < maxCount; i++)
             {
-                if (i == pl.Count)
+                if (i == p.Count)
                     break;
 
                 //ContributionInfo curRoll = _postRoll[i].Value;
 
-                Out.WriteStringBytes(pl[i]?.CharacterName);
-                Out.Fill(0, 24 - pl[i].CharacterName.Length);
+                Out.WriteStringBytes(p[i]?.CharacterName);
+                Out.Fill(0, 24 - p[i].CharacterName.Length);
                 Out.Fill(0, 2);
-                Out.WriteUInt16R((ushort)pl[i]?.RandomBonus);
-                Out.WriteUInt16R((ushort)pl[i]?.ContributionValue);
-                Out.WriteUInt16R((ushort)pl[i]?.BagBonus);
+                Out.WriteUInt16R((ushort)p[i]?.RandomBonus);
+                Out.WriteUInt16R((ushort)p[i]?.ContributionValue);
+                Out.WriteUInt16R(0);  //(ushort)p[i]?.BagBonus
                 Out.WriteByte(1);  // ???
-                Out.WriteByte((int)LootBagRarity.Blue);  // bag won
+                if (i < lootBags.Count)
+                    Out.WriteByte((byte) ((byte) lootBags[bagIndex].BagRarity+1));  // bag won (needs the +1)?
+                else
+                {
+                    Out.WriteByte(0);
+                }
+
+                bagIndex++;
             }
 
             if (maxCount < 24)

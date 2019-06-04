@@ -440,8 +440,6 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
 
-            PlayersKilledInRange = 0;
-
             ResetAllStateTimers();
 
             if (!Fortress)
@@ -723,7 +721,9 @@ namespace WorldServer.World.Battlefronts.Keeps
             InnerPosternCanBeUsed = false;
             OuterPosternCanBeUsed = false;
 
-            ProgressionLogger.Trace($"Setting Door Timers {Info.Name}. Pending Realm = {PendingRealm}");
+            PlayersKilledInRange /= 2;
+
+            ProgressionLogger.Trace($"Setting Door Timers {Info.Name}. Pending Realm = {PendingRealm}. PlayersKilledInRange {PlayersKilledInRange}");
 
             foreach (var door in Doors)
             {
@@ -771,6 +771,8 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             // Remove all siege
             RemoveAllKeepSiege();
+
+            PlayersKilledInRange = 0;
 
             // Remove any persisted values for this keep.
             RVRProgressionService.RemoveBattleFrontKeepStatus(Info.KeepId);
@@ -1816,9 +1818,8 @@ namespace WorldServer.World.Battlefronts.Keeps
             _logger.Info($"Attempt to (FORT) Force Lock Zone from {Info.Name}");
             if (IsFortress())
             {
-                OnLockZone(PendingRealm);
-
                 GenerateKeepTakeRewards();
+                OnLockZone(PendingRealm);
 
                 // Create Loot Chests at the Fort GoldChest location 
                 var lootChest = LootChest.Create(
@@ -1987,17 +1988,30 @@ namespace WorldServer.World.Battlefronts.Keeps
         {
             bool isFortress = false;
           
-
-            var eligiblitySplits =
-                Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.DetermineEligiblePlayers(_logger, PendingRealm);
-
             var zone = ZoneService.GetZone_Info((ushort)ZoneId);
-
             var fortZones = new List<int> { 4, 10, 104, 110, 204, 210 };
             if (fortZones.Contains((ushort)ZoneId))
             {
                 isFortress = true;
+
+                // Add contribution for players in fort zone.
+                foreach (var player in PlayerUtil.GetAllFlaggedPlayersInZone((int) ZoneId))
+                {
+                    try
+                    {
+                        Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(
+                            player.CharacterId, (byte) ContributionDefinitions.FORT_ZONE_LOCK_PRESENCE);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+                }
             }
+            
+            var eligiblitySplits =
+                Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.DetermineEligiblePlayers(_logger, PendingRealm);
 
             RecordKeepEligibilityHistory(eligiblitySplits.Item1, zone, Info, PendingRealm);
 
@@ -2082,18 +2096,20 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             if (isFortress)
             {
-                // Give all players in the zone WLC.
-                foreach (var player in PlayerUtil.GetAllFlaggedPlayersInZone((int) ZoneId))
+                
+
+                // Give all eligible players in the zone WLC.
+                foreach (var player in eligiblitySplits.Item1)
                 {
                     try
                     {
-                        _logger.Debug($"Assigning Warlord Crests for Fort Zone Flip {player.Name}");
-                        player.SendClientMessage($"You have been awarded 5 Warlord Crests - check your mail.", ChatLogFilters.CHATLOGFILTERS_LOOT);
-                        Region.Campaign.GetActiveBattleFrontStatus().RewardManagerInstance.MailItem(player.CharacterId, ItemService.GetItem_Info(208454), 5, Info.Name, "Fortress Battle", "Warlord crests");
+                        _logger.Debug($"Assigning Warlord Crests for Fort Zone Flip {player.Key.Name}");
+                        player.Key.SendClientMessage($"You have been awarded 5 Warlord Crests - check your mail.", ChatLogFilters.CHATLOGFILTERS_LOOT);
+                        Region.Campaign.GetActiveBattleFrontStatus().RewardManagerInstance.MailItem(player.Key.CharacterId, ItemService.GetItem_Info(208454), 5, Info.Name, "Fortress Battle", "Warlord crests");
                     }
                     catch (Exception)
                     {
-                        _logger.Warn($"Could not mail warlord crests (5) to {player.CharacterId}");
+                        _logger.Warn($"Could not mail warlord crests (5) to {player.Key.CharacterId}");
                     }
                 }
 
@@ -2104,7 +2120,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     eligiblitySplits.Item2,
                     eligiblitySplits.Item3,
                     PendingRealm,
-                    (ushort)ZoneId, RVRZoneRewardService.RVRRewardFortItems, destructionLootChest, orderLootChest, Info);
+                    (ushort)ZoneId, RVRZoneRewardService.RVRRewardFortItems, destructionLootChest, orderLootChest, Info, this.PlayersKilledInRange);
             }
             else
             {
@@ -2114,7 +2130,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     eligiblitySplits.Item2, //winning
                     eligiblitySplits.Item3, //losing
                     PendingRealm,
-                    (ushort)ZoneId, RVRZoneRewardService.RVRRewardKeepItems, destructionLootChest, orderLootChest, Info);
+                    (ushort)ZoneId, RVRZoneRewardService.RVRRewardKeepItems, destructionLootChest, orderLootChest, Info, PlayersKilledInRange);
 
             }
 

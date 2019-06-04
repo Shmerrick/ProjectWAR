@@ -1259,13 +1259,12 @@ namespace WorldServer.World.Scenarios
         {
             Group grp = player.PriorityGroup;
 
-            if (grp != null && grp.IsWarband)
-            {
-                player.SendClientMessage("You are not allowed to queue for scenarios while participating in a warband. Please leave your warband first.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-                grp.Leader?.SendClientMessage(player.Name+" attempted to queue for a scenario.");
-                return;
-            }
-
+            if (grp != null && grp.IsWarband) 
+            { 
+                player.SendClientMessage("You are not allowed to queue for scenarios while participating in a warband. Please leave your warband first.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR); 
+                grp.Leader?.SendClientMessage(player.Name+" attempted to queue for a scenario."); 
+                return; 
+            } 
             if (player.IsBanned)
             {
                 player.SendClientMessage("You request to join a battle... but there was no one to listen.", ChatLogFilters.CHATLOGFILTERS_EMOTE);

@@ -39,7 +39,7 @@ namespace WorldServer.Managers.Commands
                 {
                     plr.SendClientMessage("[System] The following GMs are online(character - user):", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     foreach (Player player in GmList)
-                        plr.SendClientMessage(player.Name + " - " + player.Client._Account.Username, ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+                        plr.SendClientMessage(player.Name, ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     plr.SendClientMessage("Before messaging a GM, please verify that your issue cannot be solved by asking /advice or on the forum and that it truly merits messaging a GM.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     plr.SendClientMessage("Remember - they're playing too.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                 }

@@ -149,10 +149,36 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(UpdateCampaignObjectiveBuffs, 10000, 0);
             _EvtInterface.AddEvent(CheckKeepTimers, 10000, 0);
             _EvtInterface.AddEvent(UpdateKeepResources, 60000, 0);
+            _EvtInterface.AddEvent(IPCheck, 180000, 0);
             // _EvtInterface.AddEvent(RefreshObjectiveStatus, 20000, 0);
             _EvtInterface.AddEvent(CountdownFortDefenceTimer, FORT_DEFENCE_TIMER, 0);
 
             RegionLockManager = new RegionLockManager(Region);
+        }
+
+        /// <summary>
+        /// Loop through players in the campaign and if any have the same IP - inform a GM.
+        /// </summary>
+        private void IPCheck()
+        {
+            var hash = new HashSet<string>();
+            if (PlayersInLakeSet == null)
+                return;
+            foreach (var item in PlayersInLakeSet)
+            {
+                var ipAddress = item?.Client?._Account.Ip;
+                if (ipAddress != "")
+                {
+                    if (item.Client._Account.GmLevel == 1)
+                    {
+                        if (!hash.Add(ipAddress))
+                        {
+                            PlayerUtil.SendGMBroadcastMessage(Player._Players,
+                                $"{item.Name} has a duplicate IP address in game.");
+                        }
+                    }
+                }
+            }
         }
 
         private void DetermineCaptains()
@@ -1068,6 +1094,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         Logger.Debug($"Assigning Invader Crests for Zone Flip {player.Key.Name}");
                         player.Key.SendClientMessage($"You have been awarded 5 Invader Crests - check your mail.", ChatLogFilters.CHATLOGFILTERS_LOOT);
                         Region.Campaign.GetActiveBattleFrontStatus().RewardManagerInstance.MailItem(player.Key.CharacterId, ItemService.GetItem_Info(208453), 5, zoneDescription , "Zone Flip", "Invader crests");
+
+                        RecordZoneLockEligibilityHistory(player, lockingRealm, Region.Campaign.GetActiveBattleFrontStatus().ZoneId);
                     }
                     catch (Exception ex)
                     {
@@ -1086,6 +1114,24 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         }
 
+        private void RecordZoneLockEligibilityHistory(KeyValuePair<Player, int> player, Realms lockingRealm, int zoneId)
+        {
+            var zone = ZoneService.GetZone_Info((ushort)zoneId);
+
+            var zoneLockEligibility = new ZoneLockEligibilityHistory
+            {
+                CharacterId = (int) player.Key.CharacterId,
+                CharacterName = player.Key.Name,
+                ContributionValue = player.Value,
+                LockingRealm = (int) lockingRealm,
+                Timestamp = DateTime.UtcNow,
+                ZoneId = zoneId,
+                ZoneName = zone.Name,
+                Dirty = true
+            };
+            WorldMgr.Database.AddObject(zoneLockEligibility);
+
+        }
 
 
         public void ClearDictionaries()

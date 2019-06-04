@@ -5,9 +5,11 @@ using ByteOperations;
 using Common;
 using FrameWork;
 using GameData;
+using NLog;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Objects;
 using Item = WorldServer.World.Objects.Item;
 using Opcodes = WorldServer.NetWork.Opcodes;
@@ -30,6 +32,7 @@ namespace WorldServer.World.Interfaces
     public class MailInterface : BaseInterface
     {
         private readonly Object _lockObject = new Object();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private static uint MAIL_EXPIRE_UNREAD = 28*24*60*60; // 28 Days
         private static uint MAIL_EXPIRE_READ = 3*24*60*60; // 28 Days
@@ -73,19 +76,7 @@ namespace WorldServer.World.Interfaces
             byte nameSize = packet.GetUint8();
             string name = packet.GetString(nameSize);
 
-            Character receiver = CharMgr.GetCharacter(Player.AsCharacterName(name), false);
-
-            if (receiver == null || receiver.Realm != (byte)plr.Realm)
-            {
-                SendResult(MailResult.TEXT_MAIL_RESULT7);
-                return;
-            }
-
-            if (receiver.Name == plr.Name) // You cannot mail yourself
-            {
-                plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_PLAYER_CANT_MAIL_YOURSELF);
-                return;
-            }
+            
 
             // Subject (client is limited to send 30 chars but its probably a ushort anyway)
             ushort subjectSize = ByteSwap.Swap(packet.GetUint16());
@@ -102,38 +93,90 @@ namespace WorldServer.World.Interfaces
             byte cr = packet.GetUint8();
 
             // Item
-            byte itemcounts = packet.GetUint8();
+            byte itemsToSendCount = packet.GetUint8();
 
-            Log.Debug("Mail", "Itemcount: " + itemcounts + "");
+            Log.Debug("Mail", "Itemcount: " + itemsToSendCount + "");
 
             List<ushort> itemSlots = new List<ushort>();
-            for (byte i = 0; i < itemcounts; ++i)
+            var itemList = new List<Item>();
+
+            for (byte i = 0; i < itemsToSendCount; ++i)
             {
-                ushort itmslot = ByteSwap.Swap(packet.GetUint16());
+                ushort itemSlot = ByteSwap.Swap(packet.GetUint16());
                 packet.Skip(2);
 
-                Item itm = plr.ItmInterface.GetItemInSlot(itmslot);
-                if (itm == null || itm.Info == null)
+                Item item = plr.ItmInterface.GetItemInSlot(itemSlot);
+                if (item == null || item.Info == null)
                 {
                     SendResult(MailResult.TEXT_MAIL_RESULT16);
                     return;
                 }
-                if (itm.BoundtoPlayer || itm.Info.Bind == 1) 
+                if (item.BoundtoPlayer || item.Info.Bind == 1) 
                 {
                     SendResult(MailResult.TEXT_MAIL_RESULT9);
                     return;
                 }
 
-                itemSlots.Add(itmslot);
+                itemSlots.Add(itemSlot);
+                itemList.Add(item);
             }
 
-            if ((cr == 0 && !plr.HasMoney(money)) || !plr.RemoveMoney((cr == 0 ? money : 0) + MAIL_PRICE))
+            if ((name.ToLower() == "black market") || (name.ToLower() == "blackmarket"))
             {
-                SendResult(MailResult.TEXT_MAIL_RESULT8);
-                return;
-            }
+                // Ensure that what is being sent is a warlord item
+                if (itemsToSendCount == 0)
+                {
+                    SendResult(MailResult.TEXT_MAIL_RESULT9);
+                    return;
+                }
 
-            SendMail(receiver, subject, message, money, cr == 1, itemSlots);
+                var blackMarketManager = new BlackMarketManager();
+
+                // Sending multiple items.
+                foreach (var item in itemList)
+                {
+                    if (blackMarketManager.IsItemOnBlackMarket(item.Info.Entry))
+                    {
+                        _logger.Info($"Sending {item.Info.Name} ({item.Info.Entry}) to BlackMarket");
+                        blackMarketManager.SendBlackMarketReward(plr, item.Info.Entry);
+                        _logger.Debug($"Email Sent.");
+                        plr.ItmInterface.RemoveItems(item.Info.Entry, 1);
+                        _logger.Info($"Removed {item.Info.Name} ({item.Info.Entry}) from {plr.Name}");
+                        plr.SendClientMessage($"Trusting to your luck, you have sent {string.Join(",", itemList.Select(x => x.Info.Name))} to the Black Market, hoping for just recompense.");
+                    }
+                    else
+                    {
+                        SendResult(MailResult.TEXT_MAIL_RESULT9);
+                        return;
+                    }
+                }
+                SendResult(MailResult.TEXT_MAIL_RESULT4);   
+            }
+            else
+            {
+                Character receiver = CharMgr.GetCharacter(Player.AsCharacterName(name), false);
+
+                if (receiver == null || receiver.Realm != (byte)plr.Realm)
+                {
+                    SendResult(MailResult.TEXT_MAIL_RESULT7);
+                    return;
+                }
+                if (receiver.Name == plr.Name) // You cannot mail yourself
+                {
+                    plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_PLAYER_CANT_MAIL_YOURSELF);
+                    return;
+                }
+                if ((cr == 0 && !plr.HasMoney(money)) || !plr.RemoveMoney((cr == 0 ? money : 0) + MAIL_PRICE))
+                {
+                    SendResult(MailResult.TEXT_MAIL_RESULT8);
+                    return;
+                }
+
+                SendMail(receiver, subject, message, money, cr == 1, itemSlots);
+            }
+            
+
+           
         }
 
         public void SendMail(Character receiver, string subject, string message, uint money, bool cashOnDelivery, List<ushort> itemSlots = null)
