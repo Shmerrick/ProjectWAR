@@ -40,16 +40,27 @@ namespace WorldServer.World.Interfaces
             public void AddItemBonusStat(ushort value)
             {
                 _itemBonusStat += value;
+            }
 
-                //if (_myPlayer != null)
-                //   _myPlayer.DebugMessage("[AddItemBonusStat]\nAdding " + Value + " to " + ((statAffil <= 16) ? Enum.GetName(typeof(GameData.Stats), statAffil)  : Enum.GetName(typeof(GameData.BonusTypes), statAffil)) + "\nTotal bonus is now " + _itemBonusStat);
+            // Adds a multiplicitive item bonus to a stat - be aware of the rounding. This will have an impact if you add/remove items as the rounded
+            // value will be used when removing items from a player
+            public void AddItemBonusStat(ushort value, ushort percentage)
+            {
+              //  var oldValue = _itemBonusStat;
+                _itemBonusStat *= (ushort)(1+Math.Round(value/100f));
+              //  (_stsInterface._Owner as Player)?.SendClientMessage($"DEBUG : {oldValue}=>{oldValue*(1+(value/100f))}");
+            }
+
+            public void RemoveItemBonusStat(ushort value, ushort percentage)
+            {
+              //  var oldValue = _itemBonusStat;
+                _itemBonusStat /= (ushort)(1+Math.Round(value/100f));
+               // (_stsInterface._Owner as Player)?.SendClientMessage($"DEBUG : {oldValue}=>{oldValue/(1+(value/100f))}");
             }
 
             public void RemoveItemBonusStat(ushort value)
             {
                 _itemBonusStat -= value;
-                //if (_myPlayer != null)
-                //    _myPlayer.DebugMessage("[AddItemBonusStat]\nRemoving " + Value + " from " + ((statAffil <= 16) ? Enum.GetName(typeof(GameData.Stats), statAffil) : Enum.GetName(typeof(GameData.BonusTypes), statAffil)) + "\nTotal bonus is now " + _itemBonusStat);
             }
 
             #endregion
@@ -369,6 +380,8 @@ namespace WorldServer.World.Interfaces
             }
 
             #endregion
+
+           
         }
         internal void LoadPetOverrides(List<PetStatOverride> list, object v)
         {
@@ -900,10 +913,25 @@ namespace WorldServer.World.Interfaces
             }
         }
 
-        public void AddItemBonusStat(Stats bonusType, ushort stat)
+        /// <summary>
+        /// Add item bonuses to stats
+        /// </summary>
+        /// <param name="bonusType"></param>
+        /// <param name="stat"></param>
+        /// <param name="percentage">0:Additive, 1:Multiplicative</param>
+        public void AddItemBonusStat(Stats bonusType, ushort stat, ushort percentage=0)
         {
             if (bonusType < Stats.MaxStatCount)
-                GetUnitStat(bonusType).AddItemBonusStat(stat);
+            {
+                if (percentage == 0)
+                {
+                    GetUnitStat(bonusType).AddItemBonusStat(stat);
+                }
+                else
+                {
+                    GetUnitStat(bonusType).AddItemBonusStat(stat, percentage);
+                }
+            }
 
             if (bonusType <= Stats.Intelligence)
                 ItemStatTotal += stat;
@@ -935,12 +963,22 @@ namespace WorldServer.World.Interfaces
             }
         }
 
-        public void RemoveItemBonusStat(Stats bonusType, ushort stat)
+        public void RemoveItemBonusStat(Stats bonusType, ushort stat, ushort percentage=0)
         {
             byte type = (byte)bonusType;
 
             if (bonusType < Stats.MaxStatCount)
-                _statModifiers[type].RemoveItemBonusStat(stat);
+            {
+                if (percentage == 0)
+                {
+                    _statModifiers[type].RemoveItemBonusStat(stat);
+                }
+                else
+                {
+                    _statModifiers[type].RemoveItemBonusStat(stat, percentage);
+                }
+            }
+
 
             if (bonusType <= Stats.Intelligence)
                 ItemStatTotal -= stat;
