@@ -222,7 +222,6 @@ namespace WorldServer.World.Abilities.Buffs
             _commandList.Add("Mount", Mount);
             _commandList.Add("Backpack", Backpack);
             _commandList.Add("GreatweaponMastery", GreatweaponMastery);
-            _commandList.Add("OutgoingDamagePercentModification", OutgoingDamagePercentModification);
             _commandList.Add("OppressingBlows", OppressingBlows);
             _commandList.Add("ModifyStatIfHasShield", ModifyStatIfHasShield);
             _commandList.Add("ModifyPercentageStatIfHasShield", ModifyPercentageStatIfHasShield);
@@ -2489,34 +2488,7 @@ namespace WorldServer.World.Abilities.Buffs
 
         #region Item
 
-        private static bool OutgoingDamagePercentModification(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
-        {
-            Item myItem = hostBuff.Caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.MAIN_HAND);
-
-            switch (hostBuff.BuffState)
-            {
-                case BUFF_START:
-                    if (myItem != null)
-                    {
-                        cmd.CommandResult = 1;
-                        hostBuff.Target.StsInterface.AddBonusMultiplier(Stats.OutgoingDamagePercent, 0.1f, hostBuff.GetBuffClass(cmd));
-                    }
-
-                    hostBuff.AddBuffParameter(1, 5);
-                    hostBuff.AddBuffParameter(2, 10);
-                    break;
-
-                case BUFF_END:
-                    if (cmd.CommandResult == 0)
-                        return true;
-                    hostBuff.Target.StsInterface.RemoveBonusMultiplier(Stats.OutgoingDamagePercent, 0.1f, hostBuff.GetBuffClass(cmd));
-                    break;
-                case BUFF_REMOVE: goto case 4;
-            }
-
-            return true;
-        }
-
+        
         private static bool GreatweaponMastery(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
             Item myItem = hostBuff.Caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.MAIN_HAND);
