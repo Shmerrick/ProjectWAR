@@ -73,19 +73,7 @@ namespace WorldServer.World.Interfaces
             byte nameSize = packet.GetUint8();
             string name = packet.GetString(nameSize);
 
-            Character receiver = CharMgr.GetCharacter(Player.AsCharacterName(name), false);
-
-            if (receiver == null || receiver.Realm != (byte)plr.Realm)
-            {
-                SendResult(MailResult.TEXT_MAIL_RESULT7);
-                return;
-            }
-
-            if (receiver.Name == plr.Name) // You cannot mail yourself
-            {
-                plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_PLAYER_CANT_MAIL_YOURSELF);
-                return;
-            }
+            
 
             // Subject (client is limited to send 30 chars but its probably a ushort anyway)
             ushort subjectSize = ByteSwap.Swap(packet.GetUint16());
@@ -102,38 +90,84 @@ namespace WorldServer.World.Interfaces
             byte cr = packet.GetUint8();
 
             // Item
-            byte itemcounts = packet.GetUint8();
+            byte itemsToSendCount = packet.GetUint8();
 
-            Log.Debug("Mail", "Itemcount: " + itemcounts + "");
+            Log.Debug("Mail", "Itemcount: " + itemsToSendCount + "");
 
             List<ushort> itemSlots = new List<ushort>();
-            for (byte i = 0; i < itemcounts; ++i)
+            var itemList = new List<Item>();
+
+            for (byte i = 0; i < itemsToSendCount; ++i)
             {
-                ushort itmslot = ByteSwap.Swap(packet.GetUint16());
+                ushort itemSlot = ByteSwap.Swap(packet.GetUint16());
                 packet.Skip(2);
 
-                Item itm = plr.ItmInterface.GetItemInSlot(itmslot);
-                if (itm == null || itm.Info == null)
+                Item item = plr.ItmInterface.GetItemInSlot(itemSlot);
+                if (item == null || item.Info == null)
                 {
                     SendResult(MailResult.TEXT_MAIL_RESULT16);
                     return;
                 }
-                if (itm.BoundtoPlayer || itm.Info.Bind == 1) 
+                if (item.BoundtoPlayer || item.Info.Bind == 1) 
                 {
                     SendResult(MailResult.TEXT_MAIL_RESULT9);
                     return;
                 }
 
-                itemSlots.Add(itmslot);
+                itemSlots.Add(itemSlot);
+                itemList.Add(item);
             }
 
-            if ((cr == 0 && !plr.HasMoney(money)) || !plr.RemoveMoney((cr == 0 ? money : 0) + MAIL_PRICE))
+            if ((name.ToLower() == "black market") || (name.ToLower() == "blackmarket"))
             {
-                SendResult(MailResult.TEXT_MAIL_RESULT8);
-                return;
+                // Ensure that what is being sent is a warlord item
+                if (itemsToSendCount == 0)
+                {
+                    SendResult(MailResult.TEXT_MAIL_RESULT9);
+                    return;
+                }
+                // Sending multiple items.
+                foreach (var item in itemList)
+                {
+                    if ((item.Info.Name.ToLower().Contains("warlord")) && ((item.Info.Rarity == 4) && (item.Info.MinRenown > 50))
+                    {
+                        // Its a warlord item.
+                        var blackMarketVendor = new BlackMarketVendor();
+                        sender.ItmInterface.DeleteItem(itmslot, itm.Count);
+                        1298378521
+                    }
+                    else
+                    {
+                        SendResult(MailResult.TEXT_MAIL_RESULT9);
+                        return;
+                    }
+                }
             }
+            else
+            {
+                Character receiver = CharMgr.GetCharacter(Player.AsCharacterName(name), false);
 
-            SendMail(receiver, subject, message, money, cr == 1, itemSlots);
+                if (receiver == null || receiver.Realm != (byte)plr.Realm)
+                {
+                    SendResult(MailResult.TEXT_MAIL_RESULT7);
+                    return;
+                }
+                if (receiver.Name == plr.Name) // You cannot mail yourself
+                {
+                    plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_PLAYER_CANT_MAIL_YOURSELF);
+                    return;
+                }
+                if ((cr == 0 && !plr.HasMoney(money)) || !plr.RemoveMoney((cr == 0 ? money : 0) + MAIL_PRICE))
+                {
+                    SendResult(MailResult.TEXT_MAIL_RESULT8);
+                    return;
+                }
+
+                SendMail(receiver, subject, message, money, cr == 1, itemSlots);
+            }
+            
+
+           
         }
 
         public void SendMail(Character receiver, string subject, string message, uint money, bool cashOnDelivery, List<ushort> itemSlots = null)
