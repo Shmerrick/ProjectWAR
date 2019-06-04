@@ -23,6 +23,7 @@ namespace WorldServer.NetWork.Handler
 
             if (!cclient.IsPlaying())
                 return;
+            
 
             byte Type = packet.GetUint8();
 
@@ -75,6 +76,35 @@ namespace WorldServer.NetWork.Handler
 
                         Plr.ItmInterface.HandleAltAppearance(Slot, SlotItem);
                     }
+                    break;
+
+                case 19: // Alternate Currency
+                {
+                    packet.Skip(7);
+                    //var a = packet.GetUint8();
+                    //var b = packet.GetUint8();
+                    //var c = packet.GetUint8();
+                    //var d = packet.GetUint8();
+                    //var e = packet.GetUint8();
+                    //var f = packet.GetUint8();
+                    //var g = packet.GetUint8();
+                    var h = packet.GetUint16();
+                    //var i = packet.GetUint8();
+                    //var j = packet.GetUint8();
+                    //var k = packet.GetUint8();
+                    //var l = packet.GetUint8();
+                    //var m = packet.GetUint8();
+                    //var n = packet.GetUint8();
+                    
+                    // ushort SlotItem = packet.GetUint8();
+
+                    var item = Plr.ItmInterface.GetItemInSlot(h);
+
+                   // Plr.ItmInterface.DeleteItem(h, 1);
+
+
+
+                }
                     break;
 
                 case 27: // Barber

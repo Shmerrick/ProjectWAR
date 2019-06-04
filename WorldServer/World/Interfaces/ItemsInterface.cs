@@ -525,6 +525,11 @@ namespace WorldServer.World.Interfaces
                 case 1298378392:
                     CreateItem(208434, 25, true);
                     break;
+                case 1298378521:   // Black market warlord box
+                    var random = StaticRandom.Instance.Next(10, 20);
+                    CreateItem(208454, (ushort)random, true);
+                    (_Owner  as Player).SendClientMessage($"You uncovered {random} Warlord Crests!");
+                    break;
 
                 default:
                     return;

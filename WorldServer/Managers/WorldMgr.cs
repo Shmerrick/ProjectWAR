@@ -313,7 +313,7 @@ namespace WorldServer.Managers
 
         #endregion
 
-        #region Vendors
+        #region items
 
 
         public static void SendDynamicVendorItems(Player plr, List<Vendor_items> items)
@@ -373,9 +373,9 @@ namespace WorldServer.Managers
 
             Plr.ItmInterface.SendBuyBack();
         }
-        public static void SendVendorPage(Player Plr, ref List<Vendor_items> Vendors, byte Count, byte Page)
+        public static void SendVendorPage(Player Plr, ref List<Vendor_items> items, byte Count, byte Page)
         {
-            Count = (byte)Math.Min(Count, Vendors.Count);
+            Count = (byte)Math.Min(Count, items.Count);
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_INIT_STORE, 256);
             Out.WriteByte(3);
@@ -393,16 +393,16 @@ namespace WorldServer.Managers
             {
                 Out.WriteByte(i);
                 Out.WriteByte(1);
-                Out.WriteUInt32(Vendors[i].Price);
-                Item.BuildItem(ref Out, null, Vendors[i].Info, null, 0, 1);
+                Out.WriteUInt32(items[i].Price);
+                Item.BuildItem(ref Out, null, items[i].Info, null, 0, 1);
 
-                if (Plr != null && Plr.ItmInterface != null && Vendors[i].Info != null && Vendors[i].Info.ItemSet != 0)
-                    Plr.ItmInterface.SendItemSetInfoToPlayer(Plr, Vendors[i].Info.ItemSet);
+                if (Plr != null && Plr.ItmInterface != null && items[i].Info != null && items[i].Info.ItemSet != 0)
+                    Plr.ItmInterface.SendItemSetInfoToPlayer(Plr, items[i].Info.ItemSet);
 
-                if ((byte)Vendors[i].ItemsReq.Count > 0)
+                if ((byte)items[i].ItemsReq.Count > 0)
                 {
                     Out.WriteByte(1);
-                    foreach (KeyValuePair<uint, ushort> Kp in Vendors[i].ItemsReq)
+                    foreach (KeyValuePair<uint, ushort> Kp in items[i].ItemsReq)
                     {
                         Item_Info item = ItemService.GetItem_Info(Kp.Key);
                         Out.WriteUInt32(Kp.Key);
@@ -412,9 +412,9 @@ namespace WorldServer.Managers
                     }
 
                 }
-                if ((byte)Vendors[i].ItemsReq.Count == 1)
+                if ((byte)items[i].ItemsReq.Count == 1)
                     Out.Fill(0, 18);
-                else if ((byte)Vendors[i].ItemsReq.Count == 2)
+                else if ((byte)items[i].ItemsReq.Count == 2)
                     Out.Fill(0, 9);
                 else
                     Out.Fill(0, 1);
@@ -424,7 +424,7 @@ namespace WorldServer.Managers
             Out.WriteByte(0);
             Plr.SendPacket(Out);
 
-            Vendors.RemoveRange(0, Count);
+            items.RemoveRange(0, Count);
         }
 
         public static void BuyItemVendor(Player Plr, InteractMenu Menu, ushort id)
@@ -1682,6 +1682,37 @@ namespace WorldServer.Managers
                     player.SendPacket(playerCampaignStatus);
                 }
             }
+        }
+
+        public static void BuyItemBlackMarketVendor(Player plr, InteractMenu menu, List<Vendor_items> items)
+        {
+            int Num = (menu.Page * VendorService.MAX_ITEM_PAGE) + menu.Num;
+            ushort Count = menu.Packet.GetUint16();
+            if (Count == 0)
+                Count = 1;
+
+            if (items.Count <= Num)
+                return;
+            
+            ItemResult result = plr.ItmInterface.CreateItem(items[Num].Info, (ushort)1);
+            if (result == ItemResult.RESULT_OK)
+            {
+                plr.RemoveMoney(items[Num].Price * Count);
+                foreach (KeyValuePair<uint, ushort> Kp in items[Num].ItemsReq)
+                    plr.ItmInterface.RemoveItems(Kp.Key, (ushort)(Kp.Value * Count));
+
+                items.Remove(items[Num]);
+
+            }
+            else if (result == ItemResult.RESULT_MAX_BAG)
+            {
+                plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_MERCHANT_INSUFFICIENT_SPACE_TO_BUY);
+            }
+            else if (result == ItemResult.RESULT_ITEMID_INVALID)
+            {
+
+            }
+
         }
     }
 }
