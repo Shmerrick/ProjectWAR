@@ -46,16 +46,18 @@ namespace WorldServer.World.Interfaces
             // value will be used when removing items from a player
             public void AddItemBonusStat(ushort value, ushort percentage)
             {
-              //  var oldValue = _itemBonusStat;
-                _itemBonusStat *= (ushort)(1+Math.Round(value/100f));
-              //  (_stsInterface._Owner as Player)?.SendClientMessage($"DEBUG : {oldValue}=>{oldValue*(1+(value/100f))}");
+                
+
+                var oldValue = _itemBonusStat;
+                _itemBonusStat += (ushort)(1+Math.Round(value/100f));
+                (_stsInterface._Owner as Player)?.SendClientMessage($"DEBUG : {oldValue}=>{oldValue*(1+(value/100f))}");
             }
 
             public void RemoveItemBonusStat(ushort value, ushort percentage)
             {
-              //  var oldValue = _itemBonusStat;
-                _itemBonusStat /= (ushort)(1+Math.Round(value/100f));
-               // (_stsInterface._Owner as Player)?.SendClientMessage($"DEBUG : {oldValue}=>{oldValue/(1+(value/100f))}");
+                var oldValue = _itemBonusStat;
+                _itemBonusStat -= (ushort)(1+Math.Round(value/100f));
+                (_stsInterface._Owner as Player)?.SendClientMessage($"DEBUG : {oldValue}=>{oldValue/(1+(value/100f))}");
             }
 
             public void RemoveItemBonusStat(ushort value)
@@ -929,7 +931,8 @@ namespace WorldServer.World.Interfaces
                 }
                 else
                 {
-                    GetUnitStat(bonusType).AddItemBonusStat(stat, percentage);
+                    AddBonusMultiplier(Stats.OutgoingDamagePercent, stat, BuffClass.Career);
+                    //GetUnitStat(bonusType).AddItemBonusStat(stat, percentage);
                 }
             }
 
@@ -975,7 +978,8 @@ namespace WorldServer.World.Interfaces
                 }
                 else
                 {
-                    _statModifiers[type].RemoveItemBonusStat(stat, percentage);
+                    RemoveBonusMultiplier(Stats.OutgoingDamagePercent, stat, BuffClass.Career);
+                    //_statModifiers[type].RemoveItemBonusStat(stat, percentage);
                 }
             }
 
