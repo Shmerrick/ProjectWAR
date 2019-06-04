@@ -5,9 +5,11 @@ using ByteOperations;
 using Common;
 using FrameWork;
 using GameData;
+using NLog;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
+using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Objects;
 using Item = WorldServer.World.Objects.Item;
 using Opcodes = WorldServer.NetWork.Opcodes;
@@ -30,6 +32,7 @@ namespace WorldServer.World.Interfaces
     public class MailInterface : BaseInterface
     {
         private readonly Object _lockObject = new Object();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private static uint MAIL_EXPIRE_UNREAD = 28*24*60*60; // 28 Days
         private static uint MAIL_EXPIRE_READ = 3*24*60*60; // 28 Days
@@ -126,15 +129,20 @@ namespace WorldServer.World.Interfaces
                     SendResult(MailResult.TEXT_MAIL_RESULT9);
                     return;
                 }
+
+                var blackMarketManager = new BlackMarketManager();
+
                 // Sending multiple items.
                 foreach (var item in itemList)
                 {
-                    if ((item.Info.Name.ToLower().Contains("warlord")) && ((item.Info.Rarity == 4) && (item.Info.MinRenown > 50))
+                    if (blackMarketManager.IsItemOnBlackMarket(item.Info.Entry))
                     {
-                        // Its a warlord item.
-                        var blackMarketVendor = new BlackMarketVendor();
-                        sender.ItmInterface.DeleteItem(itmslot, itm.Count);
-                        1298378521
+                        _logger.Info($"Sending {item.Info.Name} ({item.Info.Entry}) to BlackMarket");
+                        blackMarketManager.SendBlackMarketReward(plr, item.Info.Entry);
+                        _logger.Debug($"Email Sent.");
+                        plr.ItmInterface.RemoveItems(item.Info.Entry, 1);
+                        _logger.Info($"Removed {item.Info.Name} ({item.Info.Entry}) from {plr.Name}");
+                        plr.SendClientMessage($"Trusting to your luck, you have sent {string.Join(",", itemList.Select(x => x.Info.Name))} to the Black Market, hoping for just recompense.");
                     }
                     else
                     {
@@ -142,6 +150,7 @@ namespace WorldServer.World.Interfaces
                         return;
                     }
                 }
+                SendResult(MailResult.TEXT_MAIL_RESULT4);   
             }
             else
             {
