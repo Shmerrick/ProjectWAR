@@ -733,7 +733,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 //{
                 //    victim.SetLootable(true, killer);
                 //}
-                var item = ItemService.GetItem_Info((uint) availableGearDrop.ItemId);
+                var item = ItemService.GetItem_Info((uint)availableGearDrop.ItemId);
 
                 killer.ItmInterface.CreateItem(item, (ushort)1);
 
@@ -821,9 +821,9 @@ namespace WorldServer.World.Battlefronts.Bounty
             var additionalBagDefintions = rewardAssigner.DetermineAdditionalBagTypes(additionalBags);
             foreach (var additionalBagDefintion in additionalBagDefintions)
             {
-                Logger.Debug($"===== Additional Loot Defintion : {additionalBagDefintion.BagRarity}");    
+                Logger.Debug($"===== Additional Loot Defintion : {additionalBagDefintion.BagRarity}");
             }
-            
+
             if (additionalBagDefintions != null)
                 bagDefinitions.AddRange(additionalBagDefintions);
 
@@ -849,7 +849,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             // Assign eligible players to the bag definitions.
             var pairingContributions = new Dictionary<uint, int>();
             var zoneEligibiltyCharacters = new List<ZoneLockEligibilityHistory>();
-            if ((leadInZones != "") && (characterJoinedList !=""))
+            if ((leadInZones != "") && (characterJoinedList != ""))
             {
                 var query =
                     $"CharacterId in ({characterJoinedList}) and ZoneId in ({leadInZones}) and timestamp BETWEEN DATE_SUB(UTC_TIMESTAMP(), INTERVAL {Program.Config.PairingContributionTimeIntervalHours} HOUR) AND UTC_TIMESTAMP() ";
@@ -872,7 +872,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 }
             }
 
-            return rewardAssigner.AssignLootToPlayers(numberOfBagsToAward, bagDefinitions, sortedPairs, bagBonusCharacters, randomRollList, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y"});
+            return rewardAssigner.AssignLootToPlayers(numberOfBagsToAward, bagDefinitions, sortedPairs, bagBonusCharacters, randomRollList, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y" });
 
         }
 
@@ -907,15 +907,15 @@ namespace WorldServer.World.Battlefronts.Bounty
                     return;
                 }
 
-                var applicableZones = ZoneService._Zone_Info.Where(x => x.Pairing == zone.Pairing).Select(y=>y.ZoneId);
+                var applicableZones = ZoneService._Zone_Info.Where(x => x.Pairing == zone.Pairing).Select(y => y.ZoneId);
                 var leadInZones = String.Join(",", applicableZones);
                 logger.Warn("Lead In Zones : " + leadInZones);
 
-                
+
                 var additionalBags = CalculateAdditionalBagsDueToKills(playersKilledInRange, Program.Config.AdditionalBagKillCountStep);
-                logger.Debug($"Additional Bags {additionalBags} - kill count");
-                additionalBags += CalculateAdditionalBagsDueToEnemyRatio(winningEligiblePlayers, losingEligiblePlayers);
-                logger.Debug($"Additional Bags {additionalBags} - winner {winningEligiblePlayers.Count}/loser ratio {losingEligiblePlayers.Count}");
+                logger.Debug($"Additional Bags is now {additionalBags} - kill count");
+                additionalBags += CalculateAdditionalBagsDueToEnemyRatio(winningEligiblePlayers.Count, losingEligiblePlayers.Count, Program.Config);
+                logger.Debug($"Additional Bags is now {additionalBags} - winner {winningEligiblePlayers.Count}/loser ratio {losingEligiblePlayers.Count}");
 
                 foreach (var allEligiblePlayer in allEligiblePlayers)
                 {
@@ -947,7 +947,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 {
                     bagBonus[bonus] = UpdatePlayerBagBonus(bonus.CharacterId, bonus.Name, bagBonus[bonus], Program.Config);
                 }
-                
+
                 var bagContentSelector = new BagContentSelector(lootOptions, StaticRandom.Instance);
                 var lootBagReportList = new List<KeyValuePair<Item_Info, List<Talisman>>>();
 
@@ -1051,23 +1051,23 @@ namespace WorldServer.World.Battlefronts.Bounty
                 logger.Warn($"Unexpectedexception {zoneId} {keep.KeepId} {e.Message} {e.StackTrace}");
             }
 
-            
+
         }
 
-        private int CalculateAdditionalBagsDueToEnemyRatio(ConcurrentDictionary<Player, int> winningEligiblePlayers, ConcurrentDictionary<Player, int> losingEligiblePlayers)
+        public int CalculateAdditionalBagsDueToEnemyRatio(int winningEligiblePlayers, int losingEligiblePlayers, WorldConfigs config)
         {
-            if (winningEligiblePlayers.Count <= Program.Config.AdditionalBagRatioMinimumWinners )
+            if (winningEligiblePlayers <= config.AdditionalBagRatioMinimumWinners)
                 return 0;
-            if (losingEligiblePlayers.Count <= Program.Config.AdditionalBagRatioMinimumLosers)
+            if (losingEligiblePlayers <= config.AdditionalBagRatioMinimumLosers)
                 return 0;
-            
-            if ((winningEligiblePlayers.Count * 3) <= losingEligiblePlayers.Count)
+
+            if ((winningEligiblePlayers * 3) <= losingEligiblePlayers)
                 return 3;
 
-            if ((winningEligiblePlayers.Count * 2) <= losingEligiblePlayers.Count)
+            if ((winningEligiblePlayers * 2) <= losingEligiblePlayers)
                 return 2;
 
-            if (winningEligiblePlayers.Count <= losingEligiblePlayers.Count)
+            if (winningEligiblePlayers <= losingEligiblePlayers)
                 return 1;
 
             return 0;
@@ -1077,7 +1077,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             if (playersKilledInRange < divisor)
                 return 0;
-            return (int) Math.Floor(playersKilledInRange / divisor);
+            return (int)Math.Floor(playersKilledInRange / divisor);
         }
 
 
@@ -1097,24 +1097,27 @@ namespace WorldServer.World.Battlefronts.Bounty
                 {
                     case 9940:
                         bagBonus.Value.WhiteBag = 0;
-                        bagDescription = "White"; 
+                        bagDescription = "White";
                         break;
                     case 9941:
                         bagBonus.Value.GreenBag = 0;
-                        bagDescription = "Green"; 
+                        bagDescription = "Green";
                         break;
-                    case 9942: bagBonus.Value.BlueBag = 0; 
-                        bagDescription = "Blue"; 
+                    case 9942:
+                        bagBonus.Value.BlueBag = 0;
+                        bagDescription = "Blue";
                         break;
-                    case 9943: bagBonus.Value.PurpleBag = 0; 
-                        bagDescription = "Purple"; 
+                    case 9943:
+                        bagBonus.Value.PurpleBag = 0;
+                        bagDescription = "Purple";
                         break;
-                    case 9980: bagBonus.Value.GoldBag = 0; 
-                        bagDescription = "Gold"; 
+                    case 9980:
+                        bagBonus.Value.GoldBag = 0;
+                        bagDescription = "Gold";
                         break;
                 }
                 bagBonus.Value.Timestamp = DateTime.UtcNow;
-                
+
                 Logger.Debug($"Resetting bag bonus for {item.Entry} {bagDescription} ({player.CharacterId}). {bagBonus.Value.ToString()} {bagBonus.Value.Timestamp.ToShortDateString()}");
 
             }
@@ -1125,7 +1128,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <summary>
         /// Add bag bonus value to each eligible player (ie increment their bonus)
         /// </summary>
-        
+
         /// <param name="bonus"></param>
         public RVRPlayerBagBonus UpdatePlayerBagBonus(uint characterId, string characterName, RVRPlayerBagBonus bonus, WorldConfigs settings)
         {
@@ -1135,7 +1138,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
                 var bagBonus = new RVRPlayerBagBonus
                 {
-                    CharacterId = (int) characterId,
+                    CharacterId = (int)characterId,
                     GoldBag = increment,
                     BlueBag = increment,
                     PurpleBag = increment,
