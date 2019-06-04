@@ -931,7 +931,7 @@ namespace WorldServer.World.Interfaces
                 }
                 else
                 {
-                    AddBonusMultiplier(Stats.OutgoingDamagePercent, stat, BuffClass.Career);
+                     AddBonusMultiplier(Stats.OutgoingDamagePercent, stat/100f, BuffClass.Career);
                     //GetUnitStat(bonusType).AddItemBonusStat(stat, percentage);
                 }
             }
@@ -978,7 +978,7 @@ namespace WorldServer.World.Interfaces
                 }
                 else
                 {
-                    RemoveBonusMultiplier(Stats.OutgoingDamagePercent, stat, BuffClass.Career);
+                    RemoveBonusMultiplier(Stats.OutgoingDamagePercent, stat/100f, BuffClass.Career);
                     //_statModifiers[type].RemoveItemBonusStat(stat, percentage);
                 }
             }
