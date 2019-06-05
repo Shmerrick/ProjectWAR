@@ -955,7 +955,7 @@
         </xs:attribute>
         <xs:attribute name="source" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Value to be used as the event Source.</xs:documentation>
+            <xs:documentation>value to be used as the event Source.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="onOverflow" type="NLog.Targets.EventLogTargetOverflowAction">
@@ -1126,7 +1126,7 @@
         </xs:attribute>
         <xs:attribute name="forceMutexConcurrentWrites" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Value indicationg whether file creation calls should be synchronized by a system global mutex.</xs:documentation>
+            <xs:documentation>value indicationg whether file creation calls should be synchronized by a system global mutex.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="writeFooterOnArchivingOnly" type="xs:boolean">
@@ -1141,7 +1141,7 @@
         </xs:attribute>
         <xs:attribute name="archiveDateFormat" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Value specifying the date format to use when archiving files.</xs:documentation>
+            <xs:documentation>value specifying the date format to use when archiving files.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="archiveOldFileOnStartup" type="xs:boolean">
@@ -2022,7 +2022,7 @@
           <xs:element name="counterHelp" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="counterName" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="counterType" minOccurs="0" maxOccurs="1" type="System.Diagnostics.PerformanceCounterType" />
-          <xs:element name="incrementValue" minOccurs="0" maxOccurs="1" type="Layout" />
+          <xs:element name="incrementvalue" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="instanceName" minOccurs="0" maxOccurs="1" type="xs:string" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
@@ -2055,7 +2055,7 @@
             <xs:documentation>Performance counter type.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="incrementValue" type="SimpleLayoutAttribute">
+        <xs:attribute name="incrementvalue" type="SimpleLayoutAttribute">
           <xs:annotation>
             <xs:documentation>The value by which to increment the counter.</xs:documentation>
           </xs:annotation>
@@ -2279,12 +2279,12 @@
         </xs:attribute>
         <xs:attribute name="escapeDataNLogLegacy" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Value whether escaping be done according to the old NLog style (Very non-standard)</xs:documentation>
+            <xs:documentation>value whether escaping be done according to the old NLog style (Very non-standard)</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="escapeDataRfc3986" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Value whether escaping be done according to Rfc3986 (Supports Internationalized Resource Identifiers - IRIs)</xs:documentation>
+            <xs:documentation>value whether escaping be done according to Rfc3986 (Supports Internationalized Resource Identifiers - IRIs)</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="methodName" type="xs:string">
