@@ -3443,40 +3443,52 @@ namespace WorldServer.World.Objects
 
         #region Influence
 
-        public void AddInfluence(ushort Chapter, ushort Value)
+        public void AddInfluence(ushort chapter, ushort value)
         {
-            if (Chapter == 0)
+            _logger.Debug($"Adding influence for {Name} to {value} for chapter {chapter}");
+            if (chapter == 0)
                 return;
 
-            Chapter_Info info = ChapterService.GetChapterEntry(Chapter);
+            Chapter_Info info = ChapterService.GetChapterEntry(chapter);
             if (info == null)
+            {
+                _logger.Debug($"chapter {chapter} not found");
                 return;
+            }
 
             if (Info.Influences == null)
                 Info.Influences = new List<Characters_influence>();
 
             Characters_influence infl = null;
-            foreach (Characters_influence inf in Info.Influences)
-                if (inf.InfluenceId == Chapter) { infl = inf; break; }
+
+            infl = Info.Influences.SingleOrDefault(x => x.InfluenceId == chapter);
+            
+            //foreach (Characters_influence inf in Info.Influences)
+            //    if (inf.InfluenceId == chapter) { infl = inf; break; }
 
             if (Region != null && Region.Matches((Races)Info.Race))
-                Value = (ushort)Math.Ceiling(Value * RACIAL_INF_FACTOR);
+                value = (ushort)Math.Ceiling(value * RACIAL_INF_FACTOR);
 
             if (infl == null)
             {
-                infl = new Characters_influence((int)Info.CharacterId, Chapter, Value);
+                _logger.Debug($"chapter influence not found - adding");
+                infl = new Characters_influence((int)Info.CharacterId, chapter, value);
                 Info.Influences.Add(infl);
                 CharMgr.Database.AddObject(infl);
             }
             else
-                infl.InfluenceCount += Value;
+            {
+                infl.InfluenceCount += value;
+                _logger.Debug($"chapter influence found - modifying");
+            }
+
             // If influence > max influence for the chapter.
             if (infl.InfluenceCount > info.Tier3InfluenceCount)
                 infl.InfluenceCount = (ushort)info.Tier3InfluenceCount;
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_INFLUENCE_UPDATE, 12);
             Out.WriteByte(0);
-            Out.WriteByte((byte)Chapter);
+            Out.WriteByte((byte)chapter);
             Out.Fill(0, 4);
             Out.WriteUInt16((ushort)infl.InfluenceCount);          // needs curretn value + mew value
             Out.WriteByte(1);
@@ -3486,36 +3498,43 @@ namespace WorldServer.World.Objects
 
         }
 
-        public void SetInfluence(ushort Chapter, ushort Value)
+        public void SetInfluence(ushort chapter, ushort value)
         {
-
-            Chapter_Info info = ChapterService.GetChapterEntry(Chapter);
+            _logger.Debug($"Setting influence for {Name} to {value} for chapter {chapter}");
+            Chapter_Info info = ChapterService.GetChapterEntry(chapter);
             if (info == null)
+            {
+                _logger.Debug($"chapter {chapter} not found");
                 return;
+            }
 
-            if (Value > info.Tier3InfluenceCount)
-                Value = (ushort)info.Tier3InfluenceCount;
+            if (value > info.Tier3InfluenceCount)
+                value = (ushort)info.Tier3InfluenceCount;
 
 
             if (Info.Influences == null)
                 Info.Influences = new List<Characters_influence>();
 
-            Characters_influence infl = Info.Influences.Find(x => x.InfluenceId == Chapter);
+            Characters_influence infl = Info.Influences.Find(x => x.InfluenceId == chapter);
 
             if (infl == null)
             {
-                infl = new Characters_influence((int)Info.CharacterId, Chapter, Value);
+                _logger.Debug($"chapter influence not found - adding");
+                infl = new Characters_influence((int)Info.CharacterId, chapter, value);
                 Info.Influences.Add(infl);
                 CharMgr.Database.AddObject(infl);
             }
             else
-                infl.InfluenceCount = Value;
+            {
+                _logger.Debug($"chapter influence found - modifying");
+                infl.InfluenceCount = value;
+            }
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_INFLUENCE_UPDATE, 12);
             Out.WriteByte(0);
-            Out.WriteByte((byte)Chapter);
+            Out.WriteByte((byte)chapter);
             Out.Fill(0, 4);
-            Out.WriteUInt16(Value);
+            Out.WriteUInt16(value);
             Out.WriteByte(1);
             Out.Fill(0, 3);
             SendPacket(Out);

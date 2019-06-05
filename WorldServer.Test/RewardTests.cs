@@ -26,6 +26,78 @@ namespace WorldServer.Test
 
         }
 
+        /*
+         *   var additionalBags = CalculateAdditionalBagsDueToKills(playersKilledInRange, Program.Config.AdditionalBagKillCountStep);
+                logger.Debug($"Additional Bags is now {additionalBags} - kill count");
+                additionalBags += CalculateAdditionalBagsDueToEnemyRatio(winningEligiblePlayers, losingEligiblePlayers);
+                logger.Debug($"Additional Bags is now {additionalBags} - winner {winningEligiblePlayers.Count}/loser ratio {losingEligiblePlayers.Count}");
+         */
+
+        [TestMethod]
+        public void CalculateAdditionalBagsDueToEnemyRatio()
+        {
+            var fakeBountyManager = A.Fake<IBountyManager>();
+            var fakeContributionManager = A.Fake<IContributionManager>();
+            var fakeImpactMatrixManager = A.Fake<IImpactMatrixManager>();
+            var fakeRewardManager = A.Fake<RewardManager>();
+            var fakeStaticWrapper = A.Fake<IStaticWrapper>();
+
+
+            var rm = new RewardManager(
+                fakeContributionManager,
+                fakeStaticWrapper, new List<RewardPlayerKill>(),
+                fakeImpactMatrixManager);
+
+            var config = new WorldConfigs {AdditionalBagRatioMinimumLosers = 3, AdditionalBagRatioMinimumWinners = 3};
+
+            var bags1 = rm.CalculateAdditionalBagsDueToEnemyRatio(0, 0, config);
+            Assert.IsTrue(bags1 == 0);
+            var bags2 = rm.CalculateAdditionalBagsDueToEnemyRatio(0, 3, config);
+            Assert.IsTrue(bags2 == 0);
+            var bags3 = rm.CalculateAdditionalBagsDueToEnemyRatio(3, 3, config);
+            Assert.IsTrue(bags3 == 0);
+            var bags4 = rm.CalculateAdditionalBagsDueToEnemyRatio(4, 4, config);
+            Assert.IsTrue(bags4 == 1);
+            var bags5 = rm.CalculateAdditionalBagsDueToEnemyRatio(4, 3, config);
+            Assert.IsTrue(bags5 == 0);
+            var bags6 = rm.CalculateAdditionalBagsDueToEnemyRatio(4, 10, config);
+            Assert.IsTrue(bags6 == 2);
+            var bags7 = rm.CalculateAdditionalBagsDueToEnemyRatio(40, 10, config);
+            Assert.IsTrue(bags7 ==0);
+            var bags8 = rm.CalculateAdditionalBagsDueToEnemyRatio(10, 40, config);
+            Assert.IsTrue(bags8 ==3);
+
+        }
+
+
+        [TestMethod]
+        public void AdditionalBagsDueToKills()
+        {
+            var fakeBountyManager = A.Fake<IBountyManager>();
+            var fakeContributionManager = A.Fake<IContributionManager>();
+            var fakeImpactMatrixManager = A.Fake<IImpactMatrixManager>();
+            var fakeRewardManager = A.Fake<RewardManager>();
+            var fakeStaticWrapper = A.Fake<IStaticWrapper>();
+
+
+            var rm = new RewardManager(
+                fakeContributionManager,
+                fakeStaticWrapper, new List<RewardPlayerKill>(),
+                fakeImpactMatrixManager);
+
+            var bags1 = rm.CalculateAdditionalBagsDueToKills(0, 10);
+            Assert.IsTrue(bags1 == 0);
+            var bags2 = rm.CalculateAdditionalBagsDueToKills(5, 2);
+            Assert.IsTrue(bags2 == 2);
+            var bags3 = rm.CalculateAdditionalBagsDueToKills(80, 30);
+            Assert.IsTrue(bags3 == 2);
+            var bags4 = rm.CalculateAdditionalBagsDueToKills(0, 30);
+            Assert.IsTrue(bags4 == 0);
+            var bags5 = rm.CalculateAdditionalBagsDueToKills(20, 2);
+            Assert.IsTrue(bags5 == 10);
+        }
+
+
         [TestMethod]
         public void AssignLootDisableViaConfig()
         {

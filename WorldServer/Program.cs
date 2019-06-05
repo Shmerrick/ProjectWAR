@@ -138,8 +138,7 @@ namespace WorldServer
             LoaderMgr.Start();
             // Clean up rvr_metrics
             Log.Info("Battlefront Manager", "Clearing rvr_metrics", ConsoleColor.Cyan);
-            WorldMgr.Database.ExecuteNonQuery("DELETE FROM rvr_metrics WHERE TIMESTAMP < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 60 DAY))");
-
+            WorldMgr.Database.ExecuteNonQuery("DELETE FROM rvr_metrics WHERE TIMESTAMP NOT BETWEEN DATE_SUB(UTC_TIMESTAMP(), INTERVAL 60 DAY) AND UTC_TIMESTAMP()");
 
             Log.Info("Battlefront Manager", "Creating Upper Tier Campaign Manager", ConsoleColor.Cyan);
             if (RVRProgressionService._RVRProgressions.Count == 0)

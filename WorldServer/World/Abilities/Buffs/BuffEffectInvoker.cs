@@ -2488,6 +2488,7 @@ namespace WorldServer.World.Abilities.Buffs
 
         #region Item
 
+        
         private static bool GreatweaponMastery(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
             Item myItem = hostBuff.Caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.MAIN_HAND);
