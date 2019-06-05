@@ -100,7 +100,5 @@ namespace WorldServer.Configs
         public double AdditionalBagKillCountStep = 2f;
         public int AdditionalBagRatioMinimumWinners = 3;        // Minimum eligible winners before bag ratios are applied
         public int AdditionalBagRatioMinimumLosers = 3;         // Minimum eligible losers before bag ratios are applied
-        public int BlackMarketMinimumWLCrests = 10;
-        public int BlackMarketMaximumWLCrests = 20;
     }
 }

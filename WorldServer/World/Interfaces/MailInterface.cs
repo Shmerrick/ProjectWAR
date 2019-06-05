@@ -32,7 +32,7 @@ namespace WorldServer.World.Interfaces
     public class MailInterface : BaseInterface
     {
         private readonly Object _lockObject = new Object();
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetLogger("MailLogger");
 
         private static uint MAIL_EXPIRE_UNREAD = 28*24*60*60; // 28 Days
         private static uint MAIL_EXPIRE_READ = 3*24*60*60; // 28 Days
@@ -95,7 +95,7 @@ namespace WorldServer.World.Interfaces
             // Item
             byte itemsToSendCount = packet.GetUint8();
 
-            Log.Debug("Mail", "Itemcount: " + itemsToSendCount + "");
+            var isBlackMarket = ((name.ToLower() == "black market") || (name.ToLower() == "blackmarket"));
 
             List<ushort> itemSlots = new List<ushort>();
             var itemList = new List<Item>();
@@ -111,18 +111,25 @@ namespace WorldServer.World.Interfaces
                     SendResult(MailResult.TEXT_MAIL_RESULT16);
                     return;
                 }
-                if (item.BoundtoPlayer || item.Info.Bind == 1) 
+
+                // Allow black market items to be sent in mail
+                if (!isBlackMarket)
                 {
-                    SendResult(MailResult.TEXT_MAIL_RESULT9);
-                    return;
+                    if (item.BoundtoPlayer || item.Info.Bind == 1)
+                    {
+                        SendResult(MailResult.TEXT_MAIL_RESULT9);
+                        return;
+                    }
                 }
 
                 itemSlots.Add(itemSlot);
                 itemList.Add(item);
             }
 
-            if ((name.ToLower() == "black market") || (name.ToLower() == "blackmarket"))
+            if (isBlackMarket)
             {
+                _logger.Debug($"Sending mail to the BLACK MARKET");
+
                 // Ensure that what is being sent is a warlord item
                 if (itemsToSendCount == 0)
                 {
@@ -147,10 +154,11 @@ namespace WorldServer.World.Interfaces
                     }
                     else
                     {
-                        SendResult(MailResult.TEXT_MAIL_RESULT9);
+                        _logger.Debug($"{MailResult.TEXT_MAIL_RESULT9}");
                         return;
                     }
                 }
+                
                 SendResult(MailResult.TEXT_MAIL_RESULT4);   
             }
             else
@@ -174,6 +182,11 @@ namespace WorldServer.World.Interfaces
                 }
 
                 SendMail(receiver, subject, message, money, cr == 1, itemSlots);
+                _logger.Info($"Sending mail {subject} to {receiver} from {plr.Name}. Money={money}, items = {itemSlots}");
+                foreach (var itemSlot in itemSlots)
+                {
+                    _logger.Info($"Item : {itemSlot}");
+                }
             }
             
 
@@ -223,6 +236,7 @@ namespace WorldServer.World.Interfaces
 
         public void AddMail(Character_mail mail)
         {
+            _logger.Debug("Adding mail to count");
             _mails.Add(mail);
             SendMailCount();
         }
@@ -681,6 +695,8 @@ namespace WorldServer.World.Interfaces
 
         public void SendResult(MailResult result)
         {
+            _logger.Debug($"{result}");
+
             if (result == MailResult.TEXT_MAIL_UNK)
                 return;
 

@@ -1586,21 +1586,23 @@ namespace WorldServer.Managers
 
         public static void AddMail(Character_mail mail)
         {
-            Character chara = GetCharacter(mail.CharacterId, false);
+            Character character = GetCharacter(mail.CharacterId, false);
 
-            if (chara == null)
+            if (character == null)
                 return;
 
-            if (chara.Mails == null)
+            if (character.Mails == null)
             {
-                Log.Info("Mail System", "Loading mail for " + chara.Name);
-                chara.Mails = (List<Character_mail>)Database.SelectObjects<Character_mail>("CharacterId='" + mail.CharacterId + "'");
+                _logger.Info("Mail System loading mail for " + character.Name);
+                character.Mails = (List<Character_mail>)Database.SelectObjects<Character_mail>("CharacterId='" + mail.CharacterId + "'");
             }
 
-            chara.Mails.Add(mail);
+            character.Mails.Add(mail);
             Database.AddObject(mail);
 
+            _logger.Info($"Mail System mail count = {character.Mails.Count}");
             Player receiver = Player.GetPlayer(mail.ReceiverName);
+            _logger.Debug($"Mail Receiver : {mail.ReceiverName}");
 
             receiver?.MlInterface?.AddMail(mail);
         }

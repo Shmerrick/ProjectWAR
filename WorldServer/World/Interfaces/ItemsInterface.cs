@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
@@ -176,7 +176,7 @@ namespace WorldServer.World.Interfaces
 
                 break;
 
-                Continue:
+            Continue:
                 ;
             }
 
@@ -321,7 +321,7 @@ namespace WorldServer.World.Interfaces
 
             uint skills = item.Skills << 1;
             long playerSkill = 0;
-            if(_playerOwner != null)
+            if (_playerOwner != null)
                 playerSkill = _playerOwner._Value.Skills;
 
             if (skills != 0 && (playerSkill & skills) != skills)
@@ -526,9 +526,56 @@ namespace WorldServer.World.Interfaces
                     CreateItem(208434, 25, true);
                     break;
                 case 1298378521:   // Black market warlord box
-                    var random = StaticRandom.Instance.Next(Program.Config.BlackMarketMinimumWLCrests, Program.Config.BlackMarketMaximumWLCrests);
-                    CreateItem(208454, (ushort)random, true);
-                    (_Owner  as Player).SendClientMessage($"The package contains {random} Warlord Crests!", ChatLogFilters.CHATLOGFILTERS_LOOT);
+
+                    var random = StaticRandom.Instance.Next(0, 10000);
+                    var count = 0;
+
+                    if (random >= 9950)
+                    {
+                        count = StaticRandom.Instance.Next(200, 245);
+                    }
+                    else
+                    {
+                        if (random >= 9900)
+                            count = StaticRandom.Instance.Next(130, 160);
+                        else
+                        {
+                            if (random >= 9700)
+                                count = StaticRandom.Instance.Next(95, 105);
+                            else
+                            {
+                                if (random >= 9400)
+                                    count = StaticRandom.Instance.Next(75, 85);
+                                else
+                                {
+                                    if (random >= 9100)
+                                        count = StaticRandom.Instance.Next(65, 75);
+                                    else
+                                    {
+                                        if (random >= 8500)
+                                            count = StaticRandom.Instance.Next(55, 65);
+                                        else
+                                        { if (random >= 7500)
+                                                count = StaticRandom.Instance.Next(45, 55);
+                                            else
+                                            {
+                                                if (random >= 6500)
+                                                    count = StaticRandom.Instance.Next(35, 45);
+                                                else
+                                                {
+                                                    if (random >= 0)
+                                                        count = StaticRandom.Instance.Next(15, 25);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    CreateItem(208454, (ushort)count, true);
+                    (_Owner as Player).SendClientMessage($"The package contains {count} Warlord Crests!", ChatLogFilters.CHATLOGFILTERS_LOOT);
                     break;
 
                 default:
@@ -1148,7 +1195,7 @@ namespace WorldServer.World.Interfaces
             Out.WriteByte((byte)slots.Count);
             Out.Fill(0, 3);
             for (int i = 0; i < slots.Count; ++i)
-                Item.BuildItem(ref Out, GetItemInSlot(slots[i]), null, null, slots[i], 0,_Owner.GetPlayer());
+                Item.BuildItem(ref Out, GetItemInSlot(slots[i]), null, null, slots[i], 0, _Owner.GetPlayer());
             plr.SendPacket(Out);
 
             // If the item is in a set send its info
@@ -1469,30 +1516,30 @@ namespace WorldServer.World.Interfaces
                 Out.WriteByte(flags);
                 Out.WriteByte((byte)slot);
 
-                if (flags == (int) ItemFlags.Trophy)
+                if (flags == (int)ItemFlags.Trophy)
                 {
-                    Out.WriteUInt16((ushort) curItem.ModelId);
-                    Out.WriteUInt16((ushort) curItem.AltAppearanceEntry);
+                    Out.WriteUInt16((ushort)curItem.ModelId);
+                    Out.WriteUInt16((ushort)curItem.AltAppearanceEntry);
                 }
 
                 else
-                { 
+                {
                     Out.WriteUInt16(curItem.GetModel());
 
-                    if (Utils.HasFlag(flags, (byte) ItemFlags.ColorOverride))
+                    if (Utils.HasFlag(flags, (byte)ItemFlags.ColorOverride))
                     {
-                        if (Utils.HasFlag(flags, (byte) ItemFlags.PriColorExpansion))
+                        if (Utils.HasFlag(flags, (byte)ItemFlags.PriColorExpansion))
                             Out.WriteUInt16(curItem.GetPrimaryColor());
                         else
-                            Out.WriteByte((byte) curItem.GetPrimaryColor());
+                            Out.WriteByte((byte)curItem.GetPrimaryColor());
 
-                        if (Utils.HasFlag(flags, (byte) ItemFlags.SecColorExpansion))
+                        if (Utils.HasFlag(flags, (byte)ItemFlags.SecColorExpansion))
                             Out.WriteUInt16(curItem.GetSecondaryColor());
                         else
-                            Out.WriteByte((byte) curItem.GetSecondaryColor());
+                            Out.WriteByte((byte)curItem.GetSecondaryColor());
                     }
 
-                    if (Utils.HasFlag(flags, (byte) ItemFlags.Heraldry))
+                    if (Utils.HasFlag(flags, (byte)ItemFlags.Heraldry))
                     {
                         if (_playerOwner.GldInterface.Guild != null)
                         {
@@ -2204,7 +2251,7 @@ namespace WorldServer.World.Interfaces
             }
             else
                 return false;
-            
+
         }
 
         private List<ushort> _stacked = new List<ushort>(); // List des Objets stackable
@@ -2382,123 +2429,123 @@ namespace WorldServer.World.Interfaces
             try
             {
 
-            
-            TradingUpdated = false;
 
-            byte Status = packet.GetUint8();
-            byte Unk = packet.GetUint8();
-            ushort Oid = packet.GetUint16();
+                TradingUpdated = false;
 
-            if (!_Owner.IsInWorld())
-                return;
+                byte Status = packet.GetUint8();
+                byte Unk = packet.GetUint8();
+                ushort Oid = packet.GetUint16();
 
-            if (_playerOwner == null)
-                return;
+                if (!_Owner.IsInWorld())
+                    return;
 
-            Player Plr = _playerOwner;
+                if (_playerOwner == null)
+                    return;
 
-            if (Oid <= 0)
-            {
-                Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_NO_TARGET);
-                SendTradeClose(Oid);
-                return;
-            }
+                Player Plr = _playerOwner;
 
-            if (Oid == _Owner.Oid)
-            {
-                Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_CANT_TRADE_WITH_YOURSELF);
-                SendTradeClose(Oid);
-                return;
-            }
-
-
-
-            //Log.Success("HandleTrade", "Status=" + Status + ",oid=" + oid);
-
-            Trading = Plr.Region.GetPlayer(Oid);
-
-            if (Trading == null)
-            {
-                SendTradeClose(Oid);
-                return;
-            }
-
-            if (Status == 0 && TradingAccepted == 0) // New Trade
-            {
-                if (!CanOpenTrade(Trading))
+                if (Oid <= 0)
                 {
-                    Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_TARGET_ALREADY_TRADING);
-                    CloseTrade();
+                    Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_NO_TARGET);
+                    SendTradeClose(Oid);
                     return;
                 }
 
-                TradeItems = new KeyValuePair<ushort, Item>[MAX_TRADE_SLOT];
-                SendTradeInfo(this);
-                Trading.ItmInterface.SendTradeInfo(this);
-                TradingAccepted = 1;
-            }
-            else if (Status == 1 && IsTrading()) // Update trade
-            {
-                uint Money = packet.GetUint32();
-                byte Update = packet.GetUint8();
-                byte ItemCounts = packet.GetUint8();
-
-                //Log.info("Trade", "Money=" + Money + ",Update=" + Update + ",Items=" + ItemCounts);
-                if (TradeItems == null)
-                    TradeItems = new KeyValuePair<ushort, Item>[MAX_TRADE_SLOT];
-
-                for (int i = 0; i < MAX_TRADE_SLOT; i++)
+                if (Oid == _Owner.Oid)
                 {
-                    ushort itemslot = packet.GetUint16();
-                    Item item = GetItemInSlot(itemslot);
+                    Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_CANT_TRADE_WITH_YOURSELF);
+                    SendTradeClose(Oid);
+                    return;
+                }
 
-                    if (item != null)
+
+
+                //Log.Success("HandleTrade", "Status=" + Status + ",oid=" + oid);
+
+                Trading = Plr.Region.GetPlayer(Oid);
+
+                if (Trading == null)
+                {
+                    SendTradeClose(Oid);
+                    return;
+                }
+
+                if (Status == 0 && TradingAccepted == 0) // New Trade
+                {
+                    if (!CanOpenTrade(Trading))
                     {
-                        if (item.BoundtoPlayer || item.Info.Bind == 1)
-                        {
-                            Plr.SendLocalizeString(item.Info.Name, ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_OBJECT_CANT_BE_TRADED);
-                            return;
-                        }
-                        TradeItems[i] = new KeyValuePair<ushort, Item>(itemslot, item);
-                        SendItemToTradeWindow(Plr, (ushort)(MY_TRADE_SLOT + i), item, item.Count);
-                        SendItemToTradeWindow(Trading, (ushort)(OTHER_TRADE_SLOT + i), item, item.Count);
+                        Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_TARGET_ALREADY_TRADING);
+                        CloseTrade();
+                        return;
                     }
-                    else
-                        TradeItems[i] = new KeyValuePair<ushort, Item>(0, null);
+
+                    TradeItems = new KeyValuePair<ushort, Item>[MAX_TRADE_SLOT];
+                    SendTradeInfo(this);
+                    Trading.ItmInterface.SendTradeInfo(this);
+                    TradingAccepted = 1;
                 }
-
-                Trading.ItmInterface.TradingAccepted = 1;
-                TradingAccepted = 1;
-
-                TradingMoney = Money;
-                if (TradingMoney > Plr.GetMoney())
+                else if (Status == 1 && IsTrading()) // Update trade
                 {
-                    TradingMoney = Plr.GetMoney();
-                    Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_INSUFFICIENT_MONEY);
+                    uint Money = packet.GetUint32();
+                    byte Update = packet.GetUint8();
+                    byte ItemCounts = packet.GetUint8();
+
+                    //Log.info("Trade", "Money=" + Money + ",Update=" + Update + ",Items=" + ItemCounts);
+                    if (TradeItems == null)
+                        TradeItems = new KeyValuePair<ushort, Item>[MAX_TRADE_SLOT];
+
+                    for (int i = 0; i < MAX_TRADE_SLOT; i++)
+                    {
+                        ushort itemslot = packet.GetUint16();
+                        Item item = GetItemInSlot(itemslot);
+
+                        if (item != null)
+                        {
+                            if (item.BoundtoPlayer || item.Info.Bind == 1)
+                            {
+                                Plr.SendLocalizeString(item.Info.Name, ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_OBJECT_CANT_BE_TRADED);
+                                return;
+                            }
+                            TradeItems[i] = new KeyValuePair<ushort, Item>(itemslot, item);
+                            SendItemToTradeWindow(Plr, (ushort)(MY_TRADE_SLOT + i), item, item.Count);
+                            SendItemToTradeWindow(Trading, (ushort)(OTHER_TRADE_SLOT + i), item, item.Count);
+                        }
+                        else
+                            TradeItems[i] = new KeyValuePair<ushort, Item>(0, null);
+                    }
+
+                    Trading.ItmInterface.TradingAccepted = 1;
+                    TradingAccepted = 1;
+
+                    TradingMoney = Money;
+                    if (TradingMoney > Plr.GetMoney())
+                    {
+                        TradingMoney = Plr.GetMoney();
+                        Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_TRADE, Localized_text.TEXT_TRADE_ERR_INSUFFICIENT_MONEY);
+                    }
+
+                    SendTradeInfo(this);
+                    Trading.ItmInterface.SendTradeInfo(this);
+
                 }
+                else if (Status == 2 && IsTrading()) // Accept trade
+                {
+                    TradingAccepted = 2;
 
-                SendTradeInfo(this);
-                Trading.ItmInterface.SendTradeInfo(this);
+                    Trading.ItmInterface.SendTradeInfo(this);
 
-            }
-            else if (Status == 2 && IsTrading()) // Accept trade
-            {
-                TradingAccepted = 2;
-
-                Trading.ItmInterface.SendTradeInfo(this);
-
-                if (TradingAccepted == 2 && Trading.ItmInterface.TradingAccepted == 2)
-                    Trade(Trading.ItmInterface);
-            }
-            else if (Status == 3 && IsTrading()) // Close trade
-            {
-                Trading.ItmInterface.SendTradeClose(_Owner.Oid);
-                SendTradeClose(Oid);
-            }
+                    if (TradingAccepted == 2 && Trading.ItmInterface.TradingAccepted == 2)
+                        Trade(Trading.ItmInterface);
+                }
+                else if (Status == 3 && IsTrading()) // Close trade
+                {
+                    Trading.ItmInterface.SendTradeClose(_Owner.Oid);
+                    SendTradeClose(Oid);
+                }
             }
             catch (Exception e)
             {
-               _logger.Error($"Handletrade error {e.Message} {e.StackTrace}");
+                _logger.Error($"Handletrade error {e.Message} {e.StackTrace}");
             }
         }
         public void Trade(ItemsInterface distInter)
@@ -2598,24 +2645,24 @@ namespace WorldServer.World.Interfaces
             try
             {
 
-           
-            PacketOut Out = new PacketOut((byte)Opcodes.F_TRADE_STATUS);
-            Out.WriteByte(distInterface.TradingAccepted);
-            Out.WriteByte(0);
-            Out.WriteUInt16(distInterface != this ? distInterface._Owner.Oid : (ushort)0);
 
-            if (distInterface.TradingAccepted == 2)
-                Out.Fill(0, 24);
-            else
-            {
-                Out.WriteUInt32(distInterface.TradingMoney);
-                Out.WriteByte(3); // ?
-                Out.WriteByte((byte)distInterface.TradeItems.Count(i => i.Value != null));
-                for (int i = 0; i < MAX_TRADE_SLOT; i++)
-                    Out.WriteUInt16((ushort)(distInterface.TradeItems[i].Value == null ? 0 : 1));
-            }
+                PacketOut Out = new PacketOut((byte)Opcodes.F_TRADE_STATUS);
+                Out.WriteByte(distInterface.TradingAccepted);
+                Out.WriteByte(0);
+                Out.WriteUInt16(distInterface != this ? distInterface._Owner.Oid : (ushort)0);
 
-            _playerOwner.SendPacket(Out);
+                if (distInterface.TradingAccepted == 2)
+                    Out.Fill(0, 24);
+                else
+                {
+                    Out.WriteUInt32(distInterface.TradingMoney);
+                    Out.WriteByte(3); // ?
+                    Out.WriteByte((byte)distInterface.TradeItems.Count(i => i.Value != null));
+                    for (int i = 0; i < MAX_TRADE_SLOT; i++)
+                        Out.WriteUInt16((ushort)(distInterface.TradeItems[i].Value == null ? 0 : 1));
+                }
+
+                _playerOwner.SendPacket(Out);
             }
             catch (Exception e)
             {
@@ -2664,7 +2711,7 @@ namespace WorldServer.World.Interfaces
             for (int i = BuyBack.Count - 1; i >= 0; --i)
             {
                 Out.WriteUInt32(BuyBack[i].Info.SellPrice);
-                Item.BuildItem(ref Out, BuyBack[i], null, null, 0, 0,_Owner.GetPlayer());
+                Item.BuildItem(ref Out, BuyBack[i], null, null, 0, 0, _Owner.GetPlayer());
             }
             Out.WriteByte(0);
             _playerOwner.SendPacket(Out);
