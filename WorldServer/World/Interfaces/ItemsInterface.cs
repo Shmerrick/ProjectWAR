@@ -532,7 +532,7 @@ namespace WorldServer.World.Interfaces
 
                     if (random >= 9950)
                     {
-                        count = StaticRandom.Instance.Next(200, 245);
+                        count = StaticRandom.Instance.Next(200, 235);
                     }
                     else
                     {
