@@ -139,10 +139,10 @@ namespace WorldServer.World.Interfaces
                     {
                         _logger.Info($"Sending {item.Info.Name} ({item.Info.Entry}) to BlackMarket");
                         blackMarketManager.SendBlackMarketReward(plr, item.Info.Entry);
+                        plr.SendClientMessage($"Trusting to your luck, you have sent {string.Join(",", itemList.Select(x => x.Info.Name))} to the Black Market, hoping for just recompense.");
                         _logger.Debug($"Email Sent.");
                         plr.ItmInterface.RemoveItems(item.Info.Entry, 1);
                         _logger.Info($"Removed {item.Info.Name} ({item.Info.Entry}) from {plr.Name}");
-                        plr.SendClientMessage($"Trusting to your luck, you have sent {string.Join(",", itemList.Select(x => x.Info.Name))} to the Black Market, hoping for just recompense.");
                         plr.SendClientMessage($"A suspicious looking package has arrived in your mail.", ChatLogFilters.CHATLOGFILTERS_LOOT);
                     }
                     else
