@@ -56,7 +56,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 }
             }
 
-            player.SendClientMessage($"A suspicious looking package has arrived in your mail.", ChatLogFilters.CHATLOGFILTERS_LOOT);
+            
         }
     }
 }
