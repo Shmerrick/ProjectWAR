@@ -148,10 +148,10 @@ namespace WorldServer.World.Battlefronts.Keeps
                     if (!player.Initialized)
                         continue;
 
-                    if (!player.IsAFK)
+                    if (player.IsAFK)
                         continue;
 
-                    if (!player.IsAutoAFK)
+                    if (player.IsAutoAFK)
                         continue;
 
                     var scaler = 0.5f;

@@ -83,6 +83,7 @@ namespace WorldServer.World.Objects.Instances
             new Thread(Update).Start();
 			
             Log.Success("Opening Instance","Instance ID "+ID+"  Map: "+Info.Name);
+            // TOVL
             if (zoneid == 179)
             {
                 foreach (var p in GameObjectService.GameObjectSpawns.Where(e => e.Value.ZoneId == 179))
