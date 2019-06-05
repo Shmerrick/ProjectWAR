@@ -1,12 +1,11 @@
 ﻿using Common;
+using FrameWork;
 using GameData;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using FrameWork;
-using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Objects;
 
@@ -50,7 +49,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             }
         }
 
-        public static void InnerDoorReward(KeepDoor door, Realms attackingRealm,  string description, ContributionManager contributionManagerInstance)
+        public static void InnerDoorReward(KeepDoor door, Realms attackingRealm, string description, ContributionManager contributionManagerInstance)
         {
             var attackingPlayers = door.GameObject.PlayersInRange.Where(x => x.Realm == attackingRealm);
 
@@ -62,7 +61,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
                 RewardLogger.Trace($"Inner Door reward for player : {player.Name} ");
 
-                
+
                 var random = StaticRandom.Instance.Next(1, 25);
                 player.AddXp((uint)(INNER_DOOR_XP * (1 + (float)random / 100)), false, false);
                 player.AddRenown((uint)(INNER_DOOR_RP * (1 + (float)random / 100)), false, RewardType.None, $"Destruction of {description}'s inner door");
@@ -85,9 +84,9 @@ namespace WorldServer.World.Battlefronts.Keeps
                 {
                     var influenceId = plr.Realm == Realms.REALMS_REALM_DESTRUCTION ? plr.CurrentArea.DestroInfluenceId : plr.CurrentArea.OrderInfluenceId;
                     var random = StaticRandom.Instance.Next(80, 120);
-                    var totalXp = 2000 * keep.Tier * random/100;
-                    var totalRenown = 300 * keep.Tier * random/100;
-                    var totalInfluence = 100 * keep.Tier * random/100;
+                    var totalXp = 2000 * keep.Tier * random / 100;
+                    var totalRenown = 300 * keep.Tier * random / 100;
+                    var totalInfluence = 100 * keep.Tier * random / 100;
 
                     if (keep.PlayersKilledInRange < 4 * keep.Tier)
                     {
@@ -139,32 +138,71 @@ namespace WorldServer.World.Battlefronts.Keeps
             {
                 RewardLogger.Info($"Processing {playersInRange.Count()} players for Keep lock rewards");
 
-                foreach (var player in playersInRange)
+                foreach (var eligibleCharacterId in eligiblePlayers)
                 {
+                    var player = Player.GetPlayer(eligibleCharacterId.Key);
+
                     if (player == null)
                         continue;
 
                     if (!player.Initialized)
                         continue;
 
-                    // Player in range must be eligible
-                    if (eligiblePlayers.Any(x => x.Key == player.CharacterId))
-                    {
+                    if (!player.IsAFK)
+                        continue;
 
-                        if (player.ValidInTier(keep.Tier, true))
-                            player.QtsInterface.HandleEvent(Objective_Type.QUEST_CAPTURE_KEEP, keep.Info.KeepId, 1);
+                    if (!player.IsAutoAFK)
+                        continue;
+
+                    var scaler = 0.5f;
+
+                    RewardLogger.Trace($"Player {player.Name} is in range");
+
+                    // Player in range must be eligible
+                    if (playersInRange.Any(x => x.CharacterId == eligibleCharacterId.Key))
+                    {
+                        scaler += 0.5f;
+                        RewardLogger.Trace($"Player {player.Name} is in range and eligible");
+                    }
+
+                    totalXp = (int)(totalXp * scaler);
+                    totalRenown = (int)(totalRenown * scaler);
+                    
+
+                    // Racial influence
+                    if ((player.Info.Race == (int) Races.RACES_GOBLIN) || (player.Info.Race == (int) Races.RACES_ORC))
+                    {
+                        if (keep.Info.Race == 2)
+                        {
+                            totalInfluence= (int)(totalInfluence* scaler*1.2f);
+                            RewardLogger.Trace($"Player {player.Name} +20% INF in keep");
+                        }
+                    }
+                    else
+                    {
+                        if (player.Info.Race == keep.Info.Race)
+                        {
+                            totalInfluence= (int)(totalInfluence* scaler*1.2f);
+                            RewardLogger.Trace($"Player {player.Name} +20% INF in keep");
+                        }
+                    }
+                   
+
+                    if (player.ValidInTier(keep.Tier, true))
+                    {
+                        player.QtsInterface.HandleEvent(Objective_Type.QUEST_CAPTURE_KEEP, keep.Info.KeepId, 1);
 
                         RewardLogger.Trace($"Player {player.Name} is valid");
 
-                        player.AddXp((uint) totalXp, false, false);
-                        player.AddRenown((uint) totalRenown, false, RewardType.ZoneKeepCapture, keep.Info.Name);
+                        player.AddXp((uint)totalXp, false, false);
+                        player.AddRenown((uint)totalRenown, false, RewardType.ZoneKeepCapture, keep.Info.Name);
 
                         if ((influenceId == 0) && player.CurrentArea != null)
                         {
                             influenceId = player.Realm == Realms.REALMS_REALM_DESTRUCTION
                                 ? player.CurrentArea.DestroInfluenceId
                                 : player.CurrentArea.OrderInfluenceId;
-                            player.AddInfluence((ushort) influenceId, (ushort) totalInfluence);
+                            player.AddInfluence((ushort)influenceId, (ushort)totalInfluence);
                         }
                         else
                         {
