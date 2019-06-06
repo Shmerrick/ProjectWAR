@@ -6871,7 +6871,7 @@ namespace WorldServer.World.Objects
             string Info = "";
 
             Info += "Name=" + Name + ",Ip=" + (Client != null ? Client.GetIp() + " ClientId " + Client.Id : "Disconnected") + base.ToString();
-
+            Info += $"CurrentArea={CurrentArea?.AreaName}/{CurrentArea?.IsRvR}/{CurrentArea?.DestroInfluenceId}/{CurrentArea?.OrderInfluenceId}";
             return Info;
         }
 

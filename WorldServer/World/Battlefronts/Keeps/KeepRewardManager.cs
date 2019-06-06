@@ -151,9 +151,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                     if (player.IsAFK)
                         continue;
 
-                    if (player.IsAutoAFK)
-                        continue;
-
                     var scaler = 0.5f;
 
                     RewardLogger.Trace($"Player {player.Name} is in range");
