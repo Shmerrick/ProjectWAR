@@ -162,9 +162,10 @@ namespace WorldServer.World.Battlefronts.Keeps
                         RewardLogger.Trace($"Player {player.Name} is in range and eligible");
                     }
 
+                    RewardLogger.Debug($"Player {player.Name} totalRenown = {totalRenown} scaler = {scaler}");
                     totalXp = (int)(totalXp * scaler);
                     totalRenown = (int)(totalRenown * scaler);
-                    
+                    RewardLogger.Debug($"Player {player.Name} totalRenown = {totalRenown} scaler = {scaler}");
 
                     // Racial influence
                     if ((player.Info.Race == (int) Races.RACES_GOBLIN) || (player.Info.Race == (int) Races.RACES_ORC))
