@@ -145,7 +145,7 @@ namespace WorldServer.World.Scenarios
     public abstract class Scenario
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private static readonly uint[] _emblemIds = { 208470, 208470, 208470, 208470 };
+        private static readonly uint[] _emblemIds = { 208436, 208436, 208436, 208436 };
         public Scenario_Info Info { get; }
 
         public int Tier;
