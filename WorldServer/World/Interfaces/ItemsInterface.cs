@@ -578,6 +578,28 @@ namespace WorldServer.World.Interfaces
                     (_Owner as Player).SendClientMessage($"The package contains {count} Warlord Crests!", ChatLogFilters.CHATLOGFILTERS_LOOT);
                     break;
 
+                case 1298378528:
+                    CreateItem(208470, 5, true);
+                    break;
+                case 1298378529:
+                    CreateItem(208454, 5, true);
+                    break;
+                case 1298378530:
+                    CreateItem(208470, 25, true);
+                    break;
+                case 1298378531:
+                    CreateItem(208453, 5, true);
+                    break;
+                case 1298378532:
+                    CreateItem(208453, 25, true);
+                    break;
+                case 1298378533:
+                    CreateItem(208470, 5, true);
+                    break;
+                case 1298378534:
+                    CreateItem(208470, 25, true);
+                    break;
+
                 default:
                     return;
             }
