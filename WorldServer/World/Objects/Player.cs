@@ -4288,11 +4288,9 @@ namespace WorldServer.World.Objects
             }
 
             killer.AddXp(totalXP, 1, false, false);
-            killer.AddRenown(totalRenown, false, RewardType.Kill, $"Killing {Name}");
+            //killer.AddRenown(totalRenown, false, RewardType.Kill, $"Killing {Name}");
             killer.AddInfluence(influenceId, (ushort)totalInfluence);
-
-            RewardLogger.Debug($"Total XP : {totalXP} RP : {totalRenown} INF : {totalInfluence} ==> {killer.Name}");
-
+            
             #endregion
 
             #region Remove players irrelevant to the kill
@@ -4318,6 +4316,12 @@ namespace WorldServer.World.Objects
 
             #endregion
 
+            uint sumDamage = 0;
+            foreach (KeyValuePair<Player, uint> kvpair in DamageSources)
+            {
+                sumDamage += kvpair.Value;
+            }
+
             foreach (KeyValuePair<Player, uint> kvpair in DamageSources)
             {
                 //#region Get reward values for this player
@@ -4330,6 +4334,25 @@ namespace WorldServer.World.Objects
                 curPlayer.EvtInterface.Notify(EventName.OnKill, killer, null);
                 curPlayer._Value.RVRKills++;
                 curPlayer.SendRVRStats();
+
+                if (curPlayer.PriorityGroup != null)
+                {
+                    var memberCount = curPlayer.PriorityGroup.Members.Count;
+                    foreach (var priorityGroupMember in curPlayer.PriorityGroup.Members)
+                    {
+                        uint rr = (uint) ((totalRenown * kvpair.Value) / (sumDamage * memberCount));
+                        priorityGroupMember.AddRenown(rr, false, RewardType.Kill);
+                        RewardLogger.Debug($"{priorityGroupMember.Name} received {rr} for assisting kill on {this.Name}");
+                        priorityGroupMember.SendClientMessage($"{priorityGroupMember.Name} received {rr} for assisting kill on {this.Name}. {totalRenown} * {kvpair.Value} / {sumDamage} * {memberCount}");
+                    }
+                }
+                else
+                {
+                    uint rr = (uint) ((totalRenown * kvpair.Value) / (sumDamage * 1));
+                    curPlayer.AddRenown(rr, false, RewardType.Kill);
+                    RewardLogger.Debug($"{curPlayer.Name} received {rr} for solo kill on {this.Name}");
+                    curPlayer.SendClientMessage($"{curPlayer.Name} received {rr} for solo kill on {this.Name}. {totalRenown} * {kvpair.Value} / {sumDamage} * {1}");
+                }
             }
         }
 

@@ -306,7 +306,7 @@ namespace WorldServer.Managers
             uint renownPoints = (uint)(7.31f * (victim.AdjustedRenown + victim.AdjustedLevel));
 
             if (killer.AdjustedLevel > 15 && killer.AdjustedLevel < 31)
-                renownPoints = (uint)(renownPoints * 1.5f);
+                renownPoints = (uint)(renownPoints * 1.0f);
 
             return renownPoints;
         }
