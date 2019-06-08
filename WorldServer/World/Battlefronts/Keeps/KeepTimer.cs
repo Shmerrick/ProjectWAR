@@ -34,7 +34,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         public int Start()
         {
             Value = TCPManager.GetTimeStamp() + Length;
-            _logger.Debug($"{this.KeepTimerName} started, value={Value} ({FromUnixTime(Value).ToString("R")})");
+            _logger.Trace($"{this.KeepTimerName} started, value={Value} ({FromUnixTime(Value).ToString("R")})");
 
             return Value;
         }
