@@ -1989,7 +1989,11 @@ namespace WorldServer.World.Objects
                         }
 
                         Out.WriteByte(0);
-                        Out.WritePascalString(CreatureService.GetCreatureProto(Bossentry).Name);
+                        var boss = CreatureService.GetCreatureProto(Bossentry);
+                        if (boss == null)
+                            Out.WritePascalString("");
+                        else
+                            Out.WritePascalString(boss.Name);
                     }
                     else
                     {
