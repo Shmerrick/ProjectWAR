@@ -4,6 +4,7 @@ using GameData;
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using SystemData;
 using WorldServer.Services.World;
@@ -4960,6 +4961,30 @@ namespace WorldServer.Managers.Commands
                     Out.Fill(0, 34);  // i just send empty once here
         }
 
+        public static bool BulkMailItems(Player plr, ref List<string> values)
+        {
+            var fileName = values[0];
+
+            var fileContent = File.ReadAllLines(fileName);
+
+            foreach (var line in fileContent)
+            {
+
+                var lineSplit = line.Split('|');
+                var item = lineSplit[1].Split(':')[0];
+                var result = MailService.MailItem(Convert.ToUInt32(lineSplit[0]), Convert.ToUInt32(item), Convert.ToUInt16(lineSplit[2]));
+
+                if (!result)
+                {
+                    plr.SendClientMessage($"{lineSplit[0]}-{item} failed to send.");
+                    var outputFile =  Path.ChangeExtension(fileName, ".failed");
+                    File.AppendAllText(outputFile, line+"\n");
+                }
+            }
+
+            return true;
+        }
+
         public static bool MailItem(Player plr, ref List<string> values)
         {
             var characterId = values[0];
@@ -4973,32 +4998,8 @@ namespace WorldServer.Managers.Commands
             if (count == "")
                 return true;
 
-            var character = CharMgr.GetCharacter(Convert.ToUInt32(characterId), true);
-            var characterName = character?.Name;
-
-
-
-            Character_mail mail = new Character_mail
-            {
-                Guid = CharMgr.GenerateMailGuid(),
-                CharacterId = Convert.ToUInt32(characterId), //CharacterId
-                SenderName = plr.Name,
-                ReceiverName = characterName,
-                SendDate = (uint)TCPManager.GetTimeStamp(),
-                Title = "",
-                Content = "",
-                Money = 0,
-                Opened = false,
-                CharacterIdSender = plr.CharacterId
-            };
-
-            MailItem item = new MailItem(Convert.ToUInt32(itemId), Convert.ToUInt16(count));
-            if (item != null)
-            {
-                mail.Items.Add(item);
-                CharMgr.AddMail(mail);
-            }
-
+            MailService.MailItem(Convert.ToUInt32(characterId), Convert.ToUInt32(itemId), Convert.ToUInt16(count));
+            
             plr.SendClientMessage($"MAIL Item {itemId} x{count} to {characterId}");
 
             GMCommandLog log = new GMCommandLog

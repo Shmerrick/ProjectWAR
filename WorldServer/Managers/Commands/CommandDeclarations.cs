@@ -489,6 +489,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("mailitem", MailItem, null, EGmLevel.SourceDev, 3, "Mail an item to a character"),
             new GmCommandHandler("testscoreboard", Scoreboard, null, EGmLevel.SourceDev, 0, "test scoreboard"),
             new GmCommandHandler("title", SetTitle, null, EGmLevel.SourceDev, 1, "Set player title"),
+            new GmCommandHandler("bulkmail", BulkMailItems, null, EGmLevel.SourceDev, 1, "Mail items from a file to characters"),
             
             
 

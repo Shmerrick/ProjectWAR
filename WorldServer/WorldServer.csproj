@@ -312,6 +312,7 @@
     <Compile Include="Services\World\DyeService.cs" />
     <Compile Include="Services\World\GameObjectService.cs" />
     <Compile Include="Services\World\GuildService.cs" />
+    <Compile Include="Services\World\MailService.cs" />
     <Compile Include="Services\World\ItemService.cs" />
     <Compile Include="Services\World\BattlefrontService.cs" />
     <Compile Include="Services\World\InstanceService.cs" />
