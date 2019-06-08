@@ -132,23 +132,18 @@ namespace WorldServer.Managers
                 // Scenario respawn - random if > 1 
                 if (player.ScnInterface.Scenario != null)
                 {
-                    List<Zone_Respawn> respawns = ZoneService.GetZoneRespawns(zoneId);
-                    List<Zone_Respawn> options = new List<Zone_Respawn>();
-                    foreach (Zone_Respawn res in respawns)
-                    {
-                        if (res.Realm != realm)
-                            continue;
-
-                        options.Add(res);
-                    }
-
-                    return new SpawnPoint(options.Count == 1 ? options[0] : options[StaticRandom.Instance.Next(options.Count)]);
+                    var warcamp = BattleFrontService.GetWarcampEntrance(zoneId, player.Realm);
+                    var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)zoneId), (ushort)warcamp.X, (ushort)warcamp.Y, (ushort)warcamp.Z);
+                    return new SpawnPoint(zoneId, target.X, target.Y, target.Z);
                 }
 
                 // Keep respawn.
                 if (player.CurrentKeep != null)
+                {
+                    _logger.Debug($"Player {player.Name} is attached to keep {player.CurrentKeep.Name} - using Keep respawn");
                     return player.CurrentKeep.GetSpawnPoint(player);
-                
+                }
+
                 ushort respawnId = realm == 1
                     ? player.CurrentArea.OrderRespawnId
                     : player.CurrentArea.DestroRespawnId;
@@ -156,6 +151,7 @@ namespace WorldServer.Managers
                 if (respawnId > 0)
                 {
                     // PVE respawn
+                    _logger.Debug($"Player {player.Name} Area:{player.CurrentArea.AreaId} PVE respawn {respawnId}");
                     return new SpawnPoint(ZoneService.GetZoneRespawn(respawnId));
                 }
                 else
@@ -185,6 +181,7 @@ namespace WorldServer.Managers
                     if (distance < lastDistance)
                     {
                         lastDistance = distance;
+                        _logger.Debug($"Player {player.Name} Zone {zoneId} World respawn");
                         return new SpawnPoint(res);
                     }
                 }
