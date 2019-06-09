@@ -1043,7 +1043,9 @@ namespace WorldServer.World.Scenarios
             // Reset to nearest spawn point if taking SC in ORvR area while in presence of BattlefieldObjective or keep
             if (plr.CurrentArea != null && plr.CurrentArea.IsRvR && plr.Zone != null && (plr.CurrentKeep != null || plr.CurrentObjectiveFlag != null))
             {
-                var warcampRespawn = WorldMgr.GetZoneRespawn(plr.Zone.ZoneId, (byte)plr.Realm, plr);
+                var warcamp = BattleFrontService.GetWarcampEntrance(plr.Zone.ZoneId, plr.Realm);
+                var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)plr.Zone.ZoneId), (ushort)warcamp.X, (ushort)warcamp.Y, (ushort)warcamp.Z);
+                var warcampRespawn =  new SpawnPoint(plr.Zone.ZoneId, target.X, target.Y, target.Z);
 
                 plr.ScnInterface.ScenarioEntryWorldX = warcampRespawn.X;
                 plr.ScnInterface.ScenarioEntryWorldY = warcampRespawn.Y;

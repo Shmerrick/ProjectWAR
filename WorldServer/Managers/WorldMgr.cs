@@ -132,9 +132,17 @@ namespace WorldServer.Managers
                 // Scenario respawn - random if > 1 
                 if (player.ScnInterface.Scenario != null)
                 {
-                    var warcamp = BattleFrontService.GetWarcampEntrance(zoneId, player.Realm);
-                    var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)zoneId), (ushort)warcamp.X, (ushort)warcamp.Y, (ushort)warcamp.Z);
-                    return new SpawnPoint(zoneId, target.X, target.Y, target.Z);
+                    List<Zone_Respawn> respawns = ZoneService.GetZoneRespawns(zoneId);
+                    List<Zone_Respawn> options = new List<Zone_Respawn>();
+                    foreach (Zone_Respawn res in respawns)
+                    {
+                        if (res.Realm != realm)
+                            continue;
+
+                        options.Add(res);
+                    }
+
+                    return new SpawnPoint(options.Count == 1 ? options[0] : options[StaticRandom.Instance.Next(options.Count)]);
                 }
 
                 // Keep respawn.
