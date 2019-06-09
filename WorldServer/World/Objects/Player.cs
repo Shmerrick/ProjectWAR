@@ -4347,7 +4347,7 @@ namespace WorldServer.World.Objects
                         uint rr = (uint) ((totalRenown * kvpair.Value) / (sumDamage * memberCount));
                         priorityGroupMember.AddRenown(rr, false, RewardType.Kill);
                         RewardLogger.Debug($"{priorityGroupMember.Name} received {rr} for assisting kill on {this.Name}");
-                        priorityGroupMember.SendClientMessage($"{priorityGroupMember.Name} received {rr} for assisting kill on {this.Name}. {totalRenown} * {kvpair.Value} / {sumDamage} * {memberCount}");
+                        //priorityGroupMember.SendClientMessage($"{priorityGroupMember.Name} received {rr} for assisting kill on {this.Name}. {totalRenown} * {kvpair.Value} / {sumDamage} * {memberCount}");
                     }
                 }
                 else
@@ -4355,7 +4355,7 @@ namespace WorldServer.World.Objects
                     uint rr = (uint) ((totalRenown * kvpair.Value) / (sumDamage * 1));
                     curPlayer.AddRenown(rr, false, RewardType.Kill);
                     RewardLogger.Debug($"{curPlayer.Name} received {rr} for solo kill on {this.Name}");
-                    curPlayer.SendClientMessage($"{curPlayer.Name} received {rr} for solo kill on {this.Name}. {totalRenown} * {kvpair.Value} / {sumDamage} * {1}");
+                    //curPlayer.SendClientMessage($"{curPlayer.Name} received {rr} for solo kill on {this.Name}. {totalRenown} * {kvpair.Value} / {sumDamage} * {1}");
                 }
             }
         }
