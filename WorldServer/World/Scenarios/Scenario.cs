@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using SystemData;
@@ -1043,10 +1044,58 @@ namespace WorldServer.World.Scenarios
             // Reset to nearest spawn point if taking SC in ORvR area while in presence of BattlefieldObjective or keep
             if (plr.CurrentArea != null && plr.CurrentArea.IsRvR && plr.Zone != null && (plr.CurrentKeep != null || plr.CurrentObjectiveFlag != null))
             {
-                var warcamp = BattleFrontService.GetWarcampEntrance(plr.Zone.ZoneId, plr.Realm);
-                var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)plr.Zone.ZoneId), (ushort)warcamp.X, (ushort)warcamp.Y, (ushort)warcamp.Z);
-                var warcampRespawn =  new SpawnPoint(plr.Zone.ZoneId, target.X, target.Y, target.Z);
+                SpawnPoint warcampRespawn = null;
 
+                var zone = ZoneService.GetZone_Info((ushort)plr.Zone.ZoneId);
+                var fortZones = new List<int> { 4, 10, 104, 110, 204, 210 };
+                if (fortZones.Contains((ushort)plr.Zone.ZoneId))
+                {
+                    if (plr.CurrentKeep == null)
+                    {
+                        // City
+                        if (plr.Realm == Realms.REALMS_REALM_ORDER)
+                        {
+                            // Altdorf
+                            warcampRespawn =  new SpawnPoint(ZoneService.GetZoneRespawn(34));
+                        }
+                        else
+                        {
+                            // IC
+                            warcampRespawn =  new SpawnPoint(ZoneService.GetZoneRespawn(6));
+                        }
+                    }
+                    else
+                    {
+                        var warCampZoneId = 0;
+                        Point3D wc = new Point3D();
+
+                        if (plr.Realm == Realms.REALMS_REALM_ORDER)
+                        {
+                            warCampZoneId = plr.CurrentKeep.PlayerSpawnLocation.Value.OrderFeedZoneId;
+                            wc = BattleFrontService.GetWarcampEntrance((ushort) warCampZoneId, Realms.REALMS_REALM_ORDER);
+                        }
+                        else
+                        {
+                            warCampZoneId = plr.CurrentKeep.PlayerSpawnLocation.Value.DestructionFeedZoneId;
+                            wc = BattleFrontService.GetWarcampEntrance((ushort) warCampZoneId, Realms.REALMS_REALM_ORDER);
+                        }
+                        
+                        var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort) warCampZoneId),
+                            (ushort) wc.X, (ushort) wc.Y, (ushort) wc.Z);
+                        warcampRespawn =  new SpawnPoint((ushort)warCampZoneId, target.X, target.Y, target.Z);
+                    }
+
+                }
+                else
+                {
+                    var warcamp = BattleFrontService.GetWarcampEntrance(plr.Zone.ZoneId, plr.Realm);
+                    var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)plr.Zone.ZoneId), (ushort)warcamp.X, (ushort)warcamp.Y, (ushort)warcamp.Z);
+                    warcampRespawn =  new SpawnPoint(plr.Zone.ZoneId, target.X, target.Y, target.Z);
+                }
+
+                if (warcampRespawn == null)
+                    _logger.Error($"Null warcampRespawn for {plr.Name}");
+                
                 plr.ScnInterface.ScenarioEntryWorldX = warcampRespawn.X;
                 plr.ScnInterface.ScenarioEntryWorldY = warcampRespawn.Y;
                 plr.ScnInterface.ScenarioEntryWorldZ = warcampRespawn.Z;

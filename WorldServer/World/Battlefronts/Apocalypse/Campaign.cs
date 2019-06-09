@@ -166,7 +166,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 return;
             foreach (var item in PlayersInLakeSet)
             {
-                var ipAddress = item?.Client?._Account.Ip;
+                var ipAddress = item?.Client?._Account?.Ip;
                 if (ipAddress != "")
                 {
                     if (item.Client._Account.GmLevel == 1)
