@@ -128,7 +128,7 @@ namespace WorldServer.World.Interfaces
 
             if (isBlackMarket)
             {
-                _logger.Debug($"Sending mail to the BLACK MARKET");
+                _logger.Debug($"Sending mail to the BLACK MARKET. Number items {itemsToSendCount}");
 
                 // Ensure that what is being sent is a warlord item
                 if (itemsToSendCount == 0)
@@ -182,7 +182,8 @@ namespace WorldServer.World.Interfaces
                 }
 
                 SendMail(receiver, subject, message, money, cr == 1, itemSlots);
-                _logger.Info($"Sending mail {subject} to {receiver} from {plr.Name}. Money={money}, items = {itemSlots}");
+                
+                _logger.Info($"Sending mail {subject} to {receiver.Name} from {plr.Name}. Money={money}, Item Count={itemSlots.Count}");
                 foreach (var itemSlot in itemSlots)
                 {
                     _logger.Info($"Item : {itemSlot}");
@@ -236,7 +237,7 @@ namespace WorldServer.World.Interfaces
 
         public void AddMail(Character_mail mail)
         {
-            _logger.Debug("Adding mail to count");
+            
             _mails.Add(mail);
             SendMailCount();
         }

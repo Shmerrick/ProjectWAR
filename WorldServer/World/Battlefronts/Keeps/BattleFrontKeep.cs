@@ -1083,7 +1083,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             // If NPC has been killed
             if (pctHealth == 0)
             {
-                _logger.Debug($"NPC Killed, starting the defence tick timer from the top {pctHealth}");
+                _logger.Trace($"NPC Killed, starting the defence tick timer from the top {pctHealth}");
                 DefenceTickTimer.Start();
             }
 
@@ -1092,7 +1092,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public void OnOuterDoorAttacked(byte pctHealth, uint doorId)
         {
-            ProgressionLogger.Debug($" {Info.Name} : Outer Door ({doorId}) Attacked");
+            ProgressionLogger.Trace($" {Info.Name} : Outer Door ({doorId}) Attacked");
             SendRegionMessage($"{Info.Name}'s outer door is under attack!");
 
             EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
@@ -1100,7 +1100,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public void OnInnerDoorAttacked(byte pctHealth, uint doorId)
         {
-            ProgressionLogger.Debug($" {Info.Name} : Inner Door ({doorId}) Attacked");
+            ProgressionLogger.Trace($" {Info.Name} : Inner Door ({doorId}) Attacked");
             SendRegionMessage($"{Info.Name}'s inner door is under attack!");
 
             OuterPosternCanBeUsed = true;
@@ -1126,7 +1126,14 @@ namespace WorldServer.World.Battlefronts.Keeps
         public void OnKeepLordAttacked(byte pctHealth)
         {
             DefenceTickTimer.Start();
-            ProgressionLogger.Debug($"Keep Lord attacked health remaining {pctHealth}%");
+            if (pctHealth < 10)
+                ProgressionLogger.Debug($"Keep Lord attacked health remaining {pctHealth}%");
+            else
+            {
+                ProgressionLogger.Trace($"Keep Lord attacked health remaining {pctHealth}%");
+            }
+
+            
 
         }
 

@@ -592,7 +592,9 @@ namespace WorldServer.World.Scenarios
             {
                 winningTeam = (Score[0] > Score[1] ? (byte)0 : (byte)1);
 
-                endingRenown[winningTeam] *= 2;
+                endingRenown[0] *= 2;
+                endingRenown[1] *= 2;
+
                 ++emblemCount[winningTeam];
 
                 if (Score[winningTeam] == 500)
@@ -779,12 +781,12 @@ namespace WorldServer.World.Scenarios
 
         public bool SoloBlock(Player killer, bool announce = true)
         {
-            if (killer.ScenarioGroup == null || (killer.ScenarioGroup.Members.Count == 1 && PartialGroupExistsFor(killer)))
-            {
-                if (announce)
-                    killer.SendClientMessage("Because you are choosing to play solo, you received no XP, Renown or drops from this player.");
-                return true;
-            }
+            //if (killer.ScenarioGroup == null || (killer.ScenarioGroup.Members.Count == 1 && PartialGroupExistsFor(killer)))
+            //{
+            //    if (announce)
+            //        killer.SendClientMessage("Because you are choosing to play solo, you received no XP, Renown or drops from this player.");
+            //    return true;
+            //}
 
             return false;
         }

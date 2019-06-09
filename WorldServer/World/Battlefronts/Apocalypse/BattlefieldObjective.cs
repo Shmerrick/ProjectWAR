@@ -15,6 +15,7 @@ using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Battlefronts.Objectives;
 using WorldServer.World.Map;
 using WorldServer.World.Objects;
+using WorldServer.World.Positions;
 using WorldServer.World.Scenarios.Objects;
 using Object = WorldServer.World.Objects.Object;
 using Opcodes = WorldServer.NetWork.Opcodes;
@@ -790,9 +791,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             VictoryPoint VP = new VictoryPoint(0, 0);
 
-            // Give extra reward for being Realm Captain
-            activeBattleFrontStatus.DestructionRealmCaptain?.AddRenown(150, false, RewardType.ObjectiveCapture, "For being Realm Captain");
-            activeBattleFrontStatus.OrderRealmCaptain?.AddRenown(150, false, RewardType.ObjectiveCapture, "For being Realm Captain");
+            // Check RC is within range of this BO to award RP for.
+            var destructionRealmCaptain = activeBattleFrontStatus.DestructionRealmCaptain;
+            if (destructionRealmCaptain?.GetDistanceToObject(this) < 200)
+            {
+                destructionRealmCaptain?.AddRenown(150, false, RewardType.ObjectiveCapture,
+                    "for being Realm Captain");
+            }
+            var orderRealmCaptain = activeBattleFrontStatus.OrderRealmCaptain;
+            if (orderRealmCaptain?.GetDistanceToObject(this) < 200)
+            {
+                orderRealmCaptain?.AddRenown(150, false, RewardType.ObjectiveCapture,
+                    "for being Realm Captain");
+            }
 
             switch (State)
             {
