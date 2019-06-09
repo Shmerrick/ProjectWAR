@@ -105,7 +105,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public int GuardedTimer;
 
         public const int CaptureTimerLength = 2 * 60;
-        public const int GuardedTimerLength = 3 * 60;
+        public const int GuardedTimerLength = 1 * 60;
         #endregion
 
         /// <summary>
@@ -1035,7 +1035,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattlefrontLogger.Info($"Setting Campaign Objective Buff {campaignObjectiveBuff.BuffId} for Objective {Id}");
             }
 
-            var timerLength = GuardedTimerLength + StaticRandom.Instance.Next(60, 120);
+            var timerLength = GuardedTimerLength + StaticRandom.Instance.Next(30, 60);
 
             GuardedTimer = TCPManager.GetTimeStamp() + timerLength;
             DisplayedTimer = timerLength;
