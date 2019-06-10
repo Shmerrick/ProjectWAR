@@ -181,6 +181,7 @@ namespace WorldServer.World.Objects.Instances
             foreach (var player in PlayersInRange)
             {
                 Instance.ApplyLockout(new List<Player> { player });
+                player.SendClientMessage($"LOCKOUT applied..");
             }
         }
 
