@@ -173,6 +173,11 @@ namespace WorldServer.World.Objects.Instances
                 }
             }
 
+            EvtInterface.AddEvent(ApplyDelayedLockout, 180000, 1);
+        }
+
+        private void ApplyDelayedLockout()
+        {
             foreach (var player in PlayersInRange)
             {
                 Instance.ApplyLockout(new List<Player> { player });
