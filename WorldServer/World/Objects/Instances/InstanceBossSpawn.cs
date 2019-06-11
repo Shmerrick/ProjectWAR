@@ -178,7 +178,7 @@ namespace WorldServer.World.Objects.Instances
 
         private void ApplyDelayedLockout()
         {
-            foreach (var player in PlayersInRange)
+            foreach (var player in Player._Players.Where(x=>x.InstanceID == InstanceID.ToString()))
             {
                 Instance.ApplyLockout(new List<Player> { player });
                 player.SendClientMessage($"LOCKOUT applied..");
