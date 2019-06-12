@@ -172,6 +172,17 @@ namespace WorldServer.World.Objects.Instances
                         plr.ItmInterface.CreateItem(11435, 1);
                 }
             }
+
+            EvtInterface.AddEvent(ApplyDelayedLockout, 180000, 1);
+        }
+
+        private void ApplyDelayedLockout()
+        {
+            foreach (var player in Player._Players.Where(x=>x.InstanceID == InstanceID.ToString()))
+            {
+                Instance.ApplyLockout(new List<Player> { player });
+                player.SendClientMessage($"LOCKOUT applied..");
+            }
         }
 
         public override void TryLoot(Player player, InteractMenu menu)
@@ -202,7 +213,7 @@ namespace WorldServer.World.Objects.Instances
                         if (!player.HasLockout((ushort)ZoneId, BossId))
                         {
                             lootContainer.SendInteract(player, menu);
-                            Instance.ApplyLockout(new List<Player> { player });
+                            
                         }
                     }
                 }
