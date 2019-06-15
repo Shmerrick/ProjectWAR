@@ -1,4 +1,4 @@
-﻿using Common;
+using Common;
 using FrameWork;
 using NLog;
 using System;
@@ -173,7 +173,7 @@ namespace WorldServer.World.Objects.Instances
                 }
             }
 
-            EvtInterface.AddEvent(ApplyDelayedLockout, 180000, 1);
+            EvtInterface.AddEvent(ApplyDelayedLockout, 40000, 1);
         }
 
         private void ApplyDelayedLockout()
