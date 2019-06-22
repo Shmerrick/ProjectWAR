@@ -154,7 +154,8 @@ namespace WorldServer.World.Abilities.Components
         EventInstigator = 32,
 
         Siege = 64,
-        SiegeCannon = 68
+        SiegeCannon = 68,
+        NPCAlly = 69
     };
 
     public enum WeaponRequirements : byte

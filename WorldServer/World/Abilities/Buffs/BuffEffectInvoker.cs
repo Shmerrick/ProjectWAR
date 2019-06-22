@@ -378,6 +378,14 @@ namespace WorldServer.World.Abilities.Buffs
                 {
                     var target = cmd.TargetType == 0 ? lastTarget : GetTargetFor(hostBuff, cmd.TargetType);
 
+                    if (cmd.TargetType == CommandTargetTypes.NPCAlly)
+                    {
+                        var possibleTargets = hostBuff.Caster.GetInRange<Creature>(cmd.EffectRadius).Where(x => x.Entry == cmd.SecondaryValue).ToList();
+                        var rand = StaticRandom.Instance.Next(possibleTargets.Count);
+                        target = possibleTargets[rand];
+                        
+                    }
+
                     if (target == null || !_commandList[cmd.CommandName](hostBuff, cmd, target))
                         return;
 
