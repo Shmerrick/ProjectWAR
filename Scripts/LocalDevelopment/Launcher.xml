@@ -3,7 +3,7 @@
   <IConfiguredTheFile>true</IConfiguredTheFile>
   <LauncherServerPort>8000</LauncherServerPort>
   <Version>1</Version>
-  <Message>Invalid launcher version.
+  <Message>Invalid launcher version.</Message>
   <SeverOnConnect>true</SeverOnConnect>
   <RpcInfo>
     <RpcLocalIp>127.0.0.1</RpcLocalIp>
