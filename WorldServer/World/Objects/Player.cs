@@ -1006,8 +1006,8 @@ namespace WorldServer.World.Objects
                 _nextSpeedPenLiftTime += 1000;
             }
 
-            // Removed as mobs cannot tell where walls/cliffs are.
-            //ForceCloseMobsToWander(200);
+           
+            ForceCloseMobsToWander(200);
 
 
             if (StealthLevel == 0 || msTick - _lastStealthCheck <= STEALTH_CHECK_INTERVAL)
