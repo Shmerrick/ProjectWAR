@@ -1,0 +1,222 @@
+-- MySQL dump 10.13  Distrib 5.5.37, for Win32 (AMD64)
+--
+-- Host: 127.0.0.1    Database: war_world
+-- ------------------------------------------------------
+-- Server version	8.0.18
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `rvr_zone_lock_summary`
+--
+
+DROP TABLE IF EXISTS `rvr_zone_lock_summary`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rvr_zone_lock_summary` (
+  `LockId` bigint(20) NOT NULL,
+  `RegionId` int(11) NOT NULL,
+  `Timestamp` datetime NOT NULL,
+  `Tier` int(11) NOT NULL,
+  `LockingRealm` int(11) NOT NULL,
+  `Description` text NOT NULL,
+  `OrderVP` int(11) NOT NULL,
+  `DestroVP` int(11) NOT NULL,
+  `EligiblePlayersAtLock` int(11) NOT NULL,
+  `TotalPlayersAtLock` int(11) NOT NULL,
+  PRIMARY KEY (`LockId`,`RegionId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rvr_zone_lock_summary`
+--
+
+LOCK TABLES `rvr_zone_lock_summary` WRITE;
+/*!40000 ALTER TABLE `rvr_zone_lock_summary` DISABLE KEYS */;
+INSERT INTO `rvr_zone_lock_summary` VALUES (201901040255,2,'2019-01-04 02:55:36',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',4,100,8,3),
+(201901040454,2,'2019-01-04 04:54:59',0,2,'Locking Battlefront Kadrin Valley to REALMS_REALM_DESTRUCTION...',32,100,3,3),
+(201901040456,4,'2019-01-04 04:56:29',0,2,'Locking Battlefront Dragonwake to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201901040457,4,'2019-01-04 04:57:05',0,2,'Locking Battlefront Eataine to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201901041108,11,'2019-01-04 11:08:55',0,1,'Locking Battlefront Praag to REALMS_REALM_ORDER...',100,0,1,2),
+(201901041126,11,'2019-01-04 11:26:04',0,1,'Locking Battlefront Chaos Wastes to REALMS_REALM_ORDER...',100,5,2,3),
+(201901041210,2,'2019-01-04 12:10:41',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',7,100,4,2),
+(201901050057,2,'2019-01-05 00:57:51',0,2,'Locking Battlefront Kadrin Valley to REALMS_REALM_DESTRUCTION...',0,100,2,2),
+(201901050106,4,'2019-01-05 01:06:22',0,1,'Locking Battlefront Dragonwake to REALMS_REALM_ORDER...',100,5,2,2),
+(201901050127,4,'2019-01-05 01:27:55',0,1,'Locking Battlefront Caledor to REALMS_REALM_ORDER...',100,0,2,0),
+(201901050332,11,'2019-01-05 03:32:32',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',15,100,8,3),
+(201901121921,11,'2019-01-12 19:21:54',0,2,'Locking Battlefront Reikland to REALMS_REALM_DESTRUCTION...',61,100,4,0),
+(201901121938,2,'2019-01-12 19:38:29',0,1,'Locking Battlefront Thunder Mountain to REALMS_REALM_ORDER...',100,30,0,0),
+(201901121939,2,'2019-01-12 19:39:11',0,2,'Locking Battlefront Black Crag to REALMS_REALM_DESTRUCTION...',0,100,0,0),
+(201901172226,11,'2019-01-17 22:26:02',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201901192020,2,'2019-01-19 20:20:21',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',30,100,2,1),
+(201901192022,2,'2019-01-19 20:22:15',0,2,'Locking Battlefront Kadrin Valley to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201901192041,4,'2019-01-19 20:41:28',0,2,'Locking Battlefront Dragonwake to REALMS_REALM_DESTRUCTION...',0,100,1,1),
+(201901192042,4,'2019-01-19 20:42:28',0,2,'Locking Battlefront Eataine to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201901200948,11,'2019-01-20 09:48:34',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,100,0,2),
+(201901201204,11,'2019-01-20 12:04:27',0,2,'Locking Battlefront Reikland to REALMS_REALM_DESTRUCTION...',0,100,1,1),
+(201901201304,11,'2019-01-20 13:04:59',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201901211424,11,'2019-01-21 14:24:22',0,2,'Locking Battlefront Reikland to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201901211437,2,'2019-01-21 14:37:53',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',30,100,0,0),
+(201901211440,2,'2019-01-21 14:40:05',0,2,'Locking Battlefront Kadrin Valley to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201901211440,4,'2019-01-21 14:40:50',0,2,'Locking Battlefront Dragonwake to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201901211441,4,'2019-01-21 14:41:14',0,2,'Locking Battlefront Eataine to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201901211445,11,'2019-01-21 14:45:53',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,100,1,1),
+(201901211504,11,'2019-01-21 15:04:28',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201901211505,11,'2019-01-21 15:05:46',0,2,'Locking Battlefront Reikland to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201901222057,11,'2019-01-22 20:57:19',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',0,100,1,1),
+(201901222102,11,'2019-01-22 21:02:43',0,2,'Locking Battlefront Reikland to REALMS_REALM_DESTRUCTION...',0,100,1,1),
+(201901222104,11,'2019-01-22 21:04:31',0,2,'Locking Battlefront Reikwald to REALMS_REALM_DESTRUCTION...',30,100,1,1),
+(201901260301,11,'2019-01-26 03:01:31',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201901260302,11,'2019-01-26 03:02:20',0,2,'Locking Battlefront Reikland to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201901281054,11,'2019-01-28 10:54:06',0,2,'Locking Battlefront Reikwald to REALMS_REALM_DESTRUCTION...',0,100,1,1),
+(201901281152,11,'2019-01-28 11:52:14',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',0,100,1,1),
+(201901281234,11,'2019-01-28 12:34:50',0,2,'Locking Battlefront Reikland to REALMS_REALM_DESTRUCTION...',65,100,1,3),
+(201901281253,11,'2019-01-28 12:53:27',0,1,'Locking Battlefront Reikwald to REALMS_REALM_ORDER...',100,30,0,1),
+(201901281654,11,'2019-01-28 16:54:41',0,1,'Locking Battlefront Praag to REALMS_REALM_ORDER...',100,30,1,1),
+(201901281728,11,'2019-01-28 17:28:20',0,1,'Locking Battlefront Chaos Wastes to REALMS_REALM_ORDER...',100,77,2,2),
+(201901282219,11,'2019-01-28 22:19:57',0,2,'Locking Battlefront The Maw to REALMS_REALM_DESTRUCTION...',0,100,0,1),
+(201901282220,2,'2019-01-28 22:20:50',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201901282221,2,'2019-01-28 22:21:08',0,2,'Locking Battlefront Kadrin Valley to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201901282222,4,'2019-01-28 22:22:11',0,2,'Locking Battlefront Dragonwake to REALMS_REALM_DESTRUCTION...',30,100,0,0),
+(201901282223,11,'2019-01-28 22:23:15',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,100,0,0),
+(201901290738,11,'2019-01-29 07:38:01',0,1,'Locking Battlefront Reikwald to REALMS_REALM_ORDER...',30,0,3,0),
+(201902011226,11,'2019-02-01 12:26:43',0,1,'Locking Battlefront Praag to REALMS_REALM_ORDER...',100,30,0,1),
+(201902030328,11,'2019-02-03 03:28:06',0,1,'Locking Battlefront Chaos Wastes to REALMS_REALM_ORDER...',100,60,0,0),
+(201902030329,11,'2019-02-03 03:29:24',0,1,'Locking Battlefront The Maw to REALMS_REALM_ORDER...',100,30,0,0),
+(201902030345,2,'2019-02-03 03:45:30',0,1,'Locking Battlefront Thunder Mountain to REALMS_REALM_ORDER...',100,30,0,1),
+(201902030355,2,'2019-02-03 03:55:06',0,2,'Locking Battlefront Black Crag to REALMS_REALM_DESTRUCTION...',0,100,1,1),
+(201902030410,2,'2019-02-03 04:10:18',0,1,'Locking Battlefront Kadrin Valley to REALMS_REALM_ORDER...',100,0,0,1),
+(201902030412,2,'2019-02-03 04:12:42',0,1,'Locking Battlefront Thunder Mountain to REALMS_REALM_ORDER...',100,60,0,1),
+(201902030728,2,'2019-02-03 07:28:02',0,2,'Locking Battlefront Black Crag to REALMS_REALM_DESTRUCTION...',0,100,0,1),
+(201902041747,2,'2019-02-04 17:47:46',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',0,100,2,2),
+(201902041802,2,'2019-02-04 18:02:11',0,2,'Locking Battlefront Kadrin Valley to REALMS_REALM_DESTRUCTION...',60,100,2,2),
+(201902041837,4,'2019-02-04 18:37:50',0,1,'Locking Battlefront Dragonwake to REALMS_REALM_ORDER...',100,35,2,2),
+(201902041924,4,'2019-02-04 19:24:15',0,2,'Locking Battlefront Caledor to REALMS_REALM_DESTRUCTION...',0,100,2,2),
+(201902051230,4,'2019-02-05 12:30:09',0,2,'Locking Battlefront Eataine to REALMS_REALM_DESTRUCTION...',30,100,2,2),
+(201902051231,11,'2019-02-05 12:31:52',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201902051232,11,'2019-02-05 12:32:16',0,1,'Locking Battlefront Reikland to REALMS_REALM_ORDER...',100,0,0,0),
+(201902051306,11,'2019-02-05 13:06:50',0,1,'Locking Battlefront Praag to REALMS_REALM_ORDER...',100,30,0,1),
+(201902051309,11,'2019-02-05 13:09:32',0,1,'Locking Battlefront Chaos Wastes to REALMS_REALM_ORDER...',100,60,0,1),
+(201902051344,11,'2019-02-05 13:44:45',0,2,'Locking Battlefront The Maw to REALMS_REALM_DESTRUCTION...',0,100,1,2),
+(201902051352,11,'2019-02-05 13:52:40',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201902051407,11,'2019-02-05 14:07:11',0,2,'Locking Battlefront Reikland to REALMS_REALM_DESTRUCTION...',30,100,2,2),
+(201902052351,2,'2019-02-05 23:51:28',0,1,'Locking Battlefront Thunder Mountain to REALMS_REALM_ORDER...',0,0,0,0),
+(201902060942,2,'2019-02-06 09:42:41',0,2,'Locking Battlefront Black Crag to REALMS_REALM_DESTRUCTION...',0,100,2,1),
+(201902061529,11,'2019-02-06 15:29:34',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201902061530,11,'2019-02-06 15:30:04',0,2,'Locking Battlefront Reikland to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201902061544,11,'2019-02-06 15:44:19',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201902061545,11,'2019-02-06 15:45:14',0,2,'Locking Battlefront Reikland to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201902061546,11,'2019-02-06 15:46:20',0,2,'Locking Battlefront Reikwald to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201902061548,2,'2019-02-06 15:48:44',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201902061549,2,'2019-02-06 15:49:26',0,2,'Locking Battlefront Kadrin Valley to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201902061600,2,'2019-02-06 16:00:31',0,2,'Locking Battlefront Stonewatch to REALMS_REALM_DESTRUCTION...',0,100,0,0),
+(201902061601,4,'2019-02-06 16:01:22',0,2,'Locking Battlefront Dragonwake to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201902061605,4,'2019-02-06 16:05:58',0,2,'Locking Battlefront Shining Way to REALMS_REALM_DESTRUCTION...',0,100,0,1),
+(201902061608,11,'2019-02-06 16:08:14',0,1,'Locking Battlefront Praag to REALMS_REALM_ORDER...',100,30,0,1),
+(201902061609,11,'2019-02-06 16:09:26',0,1,'Locking Battlefront Chaos Wastes to REALMS_REALM_ORDER...',100,60,0,1),
+(201902061610,11,'2019-02-06 16:10:20',0,1,'Locking Battlefront The Maw to REALMS_REALM_ORDER...',100,30,0,1),
+(201902061611,2,'2019-02-06 16:11:14',0,1,'Locking Battlefront Thunder Mountain to REALMS_REALM_ORDER...',100,30,0,1),
+(201902061612,2,'2019-02-06 16:12:02',0,1,'Locking Battlefront Black Crag to REALMS_REALM_ORDER...',100,60,0,1),
+(201902061616,4,'2019-02-06 16:16:41',0,1,'Locking Battlefront Dragonwake to REALMS_REALM_ORDER...',100,60,0,1),
+(201902071425,4,'2019-02-07 14:25:53',0,2,'Locking Battlefront Fell Landing to REALMS_REALM_DESTRUCTION...',0,30,1,0),
+(201902091344,11,'2019-02-09 13:44:21',0,1,'Locking Battlefront Praag to REALMS_REALM_ORDER...',100,30,1,1),
+(201902111632,11,'2019-02-11 16:32:07',0,2,'Locking Battlefront Chaos Wastes to REALMS_REALM_DESTRUCTION...',0,100,0,1),
+(201902111634,11,'2019-02-11 16:34:08',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201902111720,11,'2019-02-11 17:20:22',0,1,'Locking Battlefront Reikwald to REALMS_REALM_ORDER...',100,0,0,1),
+(201902111724,2,'2019-02-11 17:24:09',0,1,'Locking Battlefront Thunder Mountain to REALMS_REALM_ORDER...',100,30,0,1),
+(201902111729,2,'2019-02-11 17:29:03',0,2,'Locking Battlefront Black Crag to REALMS_REALM_DESTRUCTION...',0,100,0,1),
+(201902111732,2,'2019-02-11 17:32:09',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201902112030,2,'2019-02-11 20:30:50',0,2,'Locking Battlefront Kadrin Valley to REALMS_REALM_DESTRUCTION...',60,100,0,2),
+(201902112035,2,'2019-02-11 20:35:56',0,2,'Locking Battlefront Stonewatch to REALMS_REALM_DESTRUCTION...',0,100,0,2),
+(201902112038,4,'2019-02-11 20:38:35',0,2,'Locking Battlefront Dragonwake to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201902120727,4,'2019-02-12 07:27:32',0,2,'Locking Battlefront Eataine to REALMS_REALM_DESTRUCTION...',30,100,3,1),
+(201902120728,4,'2019-02-12 07:28:26',0,2,'Locking Battlefront Shining Way to REALMS_REALM_DESTRUCTION...',0,100,0,1),
+(201902120728,11,'2019-02-12 07:28:54',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,100,0,0),
+(201902120729,11,'2019-02-12 07:29:12',0,2,'Locking Battlefront Reikland to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201902121604,11,'2019-02-12 16:04:29',0,1,'Locking Battlefront Reikwald to REALMS_REALM_ORDER...',30,0,1,0),
+(201902121740,2,'2019-02-12 17:40:09',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201902121742,2,'2019-02-12 17:42:03',0,2,'Locking Battlefront Kadrin Valley to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201902162315,11,'2019-02-16 23:15:55',0,1,'Locking Battlefront Praag to REALMS_REALM_ORDER...',100,30,0,1),
+(201902162317,11,'2019-02-16 23:17:13',0,1,'Locking Battlefront Chaos Wastes to REALMS_REALM_ORDER...',100,60,0,1),
+(201902171300,11,'2019-02-17 13:00:09',0,2,'Locking Battlefront The Maw to REALMS_REALM_DESTRUCTION...',0,30,0,0),
+(201902171431,2,'2019-02-17 14:31:13',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201902171434,2,'2019-02-17 14:34:01',0,2,'Locking Battlefront Kadrin Valley to REALMS_REALM_DESTRUCTION...',60,100,0,0),
+(201902180052,2,'2019-02-18 00:52:46',0,1,'Locking Battlefront Stonewatch to REALMS_REALM_ORDER...',30,0,0,0),
+(201902260920,4,'2019-02-26 09:20:54',0,2,'Locking Battlefront Dragonwake to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201902260924,4,'2019-02-26 09:24:00',0,2,'Locking Battlefront Eataine to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201902261944,11,'2019-02-26 19:44:25',0,1,'Locking Battlefront Reikwald to REALMS_REALM_ORDER...',0,0,1,0),
+(201903180247,11,'2019-03-18 02:47:22',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',0,100,2,2),
+(201903180336,11,'2019-03-18 03:36:27',0,2,'Locking Battlefront Reikland to REALMS_REALM_DESTRUCTION...',30,100,2,2),
+(201903180340,2,'2019-03-18 03:40:48',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201903180340,11,'2019-03-18 03:40:41',0,2,'Locking Battlefront Reikwald to REALMS_REALM_DESTRUCTION...',0,0,3,0),
+(201903180341,2,'2019-03-18 03:41:00',0,2,'Locking Battlefront Kadrin Valley to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201903180343,2,'2019-03-18 03:43:12',0,2,'Locking Battlefront Stonewatch to REALMS_REALM_DESTRUCTION...',0,0,1,0),
+(201903180343,4,'2019-03-18 03:43:24',0,2,'Locking Battlefront Dragonwake to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201903180402,4,'2019-03-18 04:02:12',0,1,'Locking Battlefront Shining Way to REALMS_REALM_ORDER...',0,0,3,1),
+(201903180409,11,'2019-03-18 04:09:18',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',0,100,1,1),
+(201903182350,11,'2019-03-18 23:50:02',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',35,100,6,3),
+(201903182351,11,'2019-03-18 23:51:02',0,2,'Locking Battlefront Reikland to REALMS_REALM_DESTRUCTION...',60,100,0,1),
+(201903190002,2,'2019-03-19 00:02:25',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',0,100,3,3),
+(201903190032,2,'2019-03-19 00:32:33',0,1,'Locking Battlefront Kadrin Valley to REALMS_REALM_ORDER...',100,80,4,3),
+(201903190034,2,'2019-03-19 00:34:27',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',0,100,0,1),
+(201903190048,2,'2019-03-19 00:48:47',0,2,'Locking Battlefront Stonewatch to REALMS_REALM_DESTRUCTION...',0,0,3,3),
+(201903200647,4,'2019-03-20 06:47:05',0,2,'Locking Battlefront Dragonwake to REALMS_REALM_DESTRUCTION...',30,100,0,1),
+(201903200649,4,'2019-03-20 06:49:35',0,2,'Locking Battlefront Shining Way to REALMS_REALM_DESTRUCTION...',30,100,3,1),
+(201903200652,11,'2019-03-20 06:52:11',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,100,7,2),
+(201903200656,11,'2019-03-20 06:56:13',0,2,'Locking Battlefront Reikwald to REALMS_REALM_DESTRUCTION...',0,0,2,1),
+(201903222310,2,'2019-03-22 23:10:50',0,1,'Locking Battlefront Thunder Mountain to REALMS_REALM_ORDER...',100,5,3,1),
+(201903222311,2,'2019-03-22 23:11:38',0,1,'Locking Battlefront Black Crag to REALMS_REALM_ORDER...',100,60,0,1),
+(201903222315,2,'2019-03-22 23:15:20',0,1,'Locking Battlefront Butchers Pass to REALMS_REALM_ORDER...',0,0,1,1),
+(201903222321,4,'2019-03-22 23:21:31',0,1,'Locking Battlefront Dragonwake to REALMS_REALM_ORDER...',100,30,0,0),
+(201903222322,4,'2019-03-22 23:22:32',0,1,'Locking Battlefront Fell Landing to REALMS_REALM_ORDER...',100,30,1,0),
+(201903222327,11,'2019-03-22 23:27:25',0,1,'Locking Battlefront Praag to REALMS_REALM_ORDER...',100,30,7,1),
+(201903222332,11,'2019-03-22 23:32:43',0,1,'Locking Battlefront Chaos Wastes to REALMS_REALM_ORDER...',100,0,1,1),
+(201903222333,11,'2019-03-22 23:33:07',0,1,'Locking Battlefront The Maw to REALMS_REALM_ORDER...',100,30,0,1),
+(201903222337,2,'2019-03-22 23:37:17',0,1,'Locking Battlefront Thunder Mountain to REALMS_REALM_ORDER...',100,0,0,1),
+(201903222338,4,'2019-03-22 23:38:57',0,1,'Locking Battlefront Dragonwake to REALMS_REALM_ORDER...',100,0,0,0),
+(201903222339,4,'2019-03-22 23:39:09',0,1,'Locking Battlefront Caledor to REALMS_REALM_ORDER...',100,0,0,0),
+(201903222340,4,'2019-03-22 23:40:21',0,1,'Locking Battlefront Fell Landing to REALMS_REALM_ORDER...',100,0,0,0),
+(201903222341,11,'2019-03-22 23:41:50',0,1,'Locking Battlefront Praag to REALMS_REALM_ORDER...',100,30,0,1),
+(201903222342,11,'2019-03-22 23:42:08',0,1,'Locking Battlefront Chaos Wastes to REALMS_REALM_ORDER...',100,0,0,1),
+(201903250240,2,'2019-03-25 02:40:24',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',35,100,3,5),
+(201903250352,2,'2019-03-25 03:52:49',0,1,'Locking Battlefront Kadrin Valley to REALMS_REALM_ORDER...',100,20,21,18),
+(201903250353,2,'2019-03-25 03:53:07',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',0,100,0,0),
+(201903250354,2,'2019-03-25 03:54:08',0,1,'Locking Battlefront Kadrin Valley to REALMS_REALM_ORDER...',100,0,0,18),
+(201903250355,2,'2019-03-25 03:55:44',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',0,100,2,1),
+(201903250356,2,'2019-03-25 03:56:08',0,2,'Locking Battlefront Kadrin Valley to REALMS_REALM_DESTRUCTION...',0,100,2,18),
+(201903250421,11,'2019-03-25 04:21:40',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,100,21,1),
+(201903250422,2,'2019-03-25 04:22:52',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',0,100,0,0),
+(201903250422,11,'2019-03-25 04:22:16',0,2,'Locking Battlefront Reikwald to REALMS_REALM_DESTRUCTION...',30,100,2,1),
+(201903250423,2,'2019-03-25 04:23:10',0,2,'Locking Battlefront Kadrin Valley to REALMS_REALM_DESTRUCTION...',0,100,0,1),
+(201903260552,4,'2019-03-26 05:52:20',0,2,'Locking Battlefront Dragonwake to REALMS_REALM_DESTRUCTION...',30,100,11,1),
+(201903260554,4,'2019-03-26 05:54:28',0,2,'Locking Battlefront Shining Way to REALMS_REALM_DESTRUCTION...',0,0,3,1),
+(201903260555,11,'2019-03-26 05:55:22',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',0,100,0,1),
+(201903260557,11,'2019-03-26 05:57:58',0,2,'Locking Battlefront Reikwald to REALMS_REALM_DESTRUCTION...',0,100,0,1),
+(201903260559,2,'2019-03-26 05:59:48',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',0,100,0,1),
+(201903272210,2,'2019-03-27 22:10:39',0,1,'Locking Battlefront Kadrin Valley to REALMS_REALM_ORDER...',100,30,3,2),
+(201903272211,2,'2019-03-27 22:11:33',0,2,'Locking Battlefront Thunder Mountain to REALMS_REALM_DESTRUCTION...',30,100,3,2),
+(201904011429,11,'2019-04-01 14:29:48',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,30,29,0),
+(201904011430,11,'2019-04-01 14:30:04',0,2,'Locking Battlefront Praag to REALMS_REALM_DESTRUCTION...',30,30,0,0);
+/*!40000 ALTER TABLE `rvr_zone_lock_summary` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2020-01-07 15:42:28

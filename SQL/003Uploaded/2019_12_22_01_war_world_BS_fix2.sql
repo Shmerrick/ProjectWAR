@@ -1,0 +1,116 @@
+DELETE FROM `war_world`.`creature_spawns` WHERE (`Guid` = '1086176');
+DELETE FROM `war_world`.`creature_spawns` WHERE (`Guid` = '1086240');
+DELETE FROM `war_world`.`creature_spawns` WHERE (`Guid` = '1086252');
+DELETE FROM `war_world`.`creature_spawns` WHERE (`Guid` = '564211');
+INSERT INTO `war_world`.`instance_creature_spawns` (`Entry`, `WorldX`, `WorldY`, `WorldZ`, `WorldO`, `Instance_spawns_ID`, `Realm`, `Level`, `Emote`, `ZoneID`, `ConnectedBossID`, `SpawnGroupID`) VALUES ('4284', '1409856', '1588332', '5864', '944', '2600000', '1', '40', '0', '260', '0', '0');
+INSERT INTO `war_world`.`instance_creature_spawns` (`Entry`, `WorldX`, `WorldY`, `WorldZ`, `WorldO`, `Instance_spawns_ID`, `Realm`, `Level`, `Emote`, `ZoneID`, `ConnectedBossID`, `SpawnGroupID`) VALUES ('4284', '1409856', '1588332', '5864', '944', '2600001', '2', '40', '0', '260', '0', '0');
+UPDATE `war_world`.`instance_creature_spawns` SET `SpawnGroupID` = '1000' WHERE (`Instance_spawns_ID` = '2601008');
+UPDATE `war_world`.`instance_creature_spawns` SET `SpawnGroupID` = '1000' WHERE (`Instance_spawns_ID` = '2601005');
+UPDATE `war_world`.`instance_creature_spawns` SET `SpawnGroupID` = '1001' WHERE (`Instance_spawns_ID` = '2601006');
+UPDATE `war_world`.`instance_creature_spawns` SET `SpawnGroupID` = '1001' WHERE (`Instance_spawns_ID` = '2601000');
+UPDATE `war_world`.`instance_creature_spawns` SET `SpawnGroupID` = '1001' WHERE (`Instance_spawns_ID` = '2601009');
+UPDATE `war_world`.`instance_creature_spawns` SET `SpawnGroupID` = '1002' WHERE (`Instance_spawns_ID` = '2601007');
+UPDATE `war_world`.`instance_creature_spawns` SET `SpawnGroupID` = '1002' WHERE (`Instance_spawns_ID` = '2601001');
+UPDATE `war_world`.`instance_creature_spawns` SET `SpawnGroupID` = '1002' WHERE (`Instance_spawns_ID` = '2601002');
+UPDATE `war_world`.`instance_creature_spawns` SET `SpawnGroupID` = '1003' WHERE (`Instance_spawns_ID` = '2601003');
+UPDATE `war_world`.`instance_creature_spawns` SET `SpawnGroupID` = '1003' WHERE (`Instance_spawns_ID` = '2601004');
+UPDATE `war_world`.`instance_creature_spawns` SET `SpawnGroupID` = '1003' WHERE (`Instance_spawns_ID` = '2601010');
+INSERT INTO `war_world`.`instance_creature_spawns` (`Entry`, `WorldX`, `WorldY`, `WorldZ`, `WorldO`, `Instance_spawns_ID`, `Realm`, `Level`, `Emote`, `ZoneID`, `ConnectedBossID`, `SpawnGroupID`) VALUES ('4282', '1410129', '1582565', '6104', '4061', '2600002', '0', '40', '0', '260', '0', '0');
+DELETE FROM `war_world`.`creature_spawns` WHERE (`Guid` = '564357');
+UPDATE `war_world`.`instance_objects` SET `instance_objects_ID` = '1' WHERE (`instance_objects_ID` = '2584901');
+UPDATE `war_world`.`instance_objects` SET `instance_objects_ID` = '2' WHERE (`instance_objects_ID` = '2584921');
+
+ALTER TABLE `war_world`.`instance_objects` 
+ADD COLUMN `Realm` INT(10) UNSIGNED NULL DEFAULT NULL AFTER `VfxState`;
+
+UPDATE `war_world`.`instance_objects` SET `Realm` = '0' WHERE (`instance_objects_ID` = '1');
+UPDATE `war_world`.`instance_objects` SET `Realm` = '0' WHERE (`instance_objects_ID` = '2');
+
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '2000' WHERE (`Instance_spawns_ID` = '600000');
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '2001' WHERE (`Instance_spawns_ID` = '600001');
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '2002' WHERE (`Instance_spawns_ID` = '600002');
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '2003' WHERE (`Instance_spawns_ID` = '600003');
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '1999' WHERE (`Instance_spawns_ID` = '2600004');
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '1998' WHERE (`Instance_spawns_ID` = '2600003');
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '1997' WHERE (`Instance_spawns_ID` = '2600002');
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '1996' WHERE (`Instance_spawns_ID` = '2600001');
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '1995' WHERE (`Instance_spawns_ID` = '2600000');
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '3000' WHERE (`Instance_spawns_ID` = '1951000');
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '3001' WHERE (`Instance_spawns_ID` = '1952000');
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '3002' WHERE (`Instance_spawns_ID` = '1953000');
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '3003' WHERE (`Instance_spawns_ID` = '1954000');
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '4003' WHERE (`Instance_spawns_ID` = '1604000');
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '4000' WHERE (`Instance_spawns_ID` = '1601000');
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '4001' WHERE (`Instance_spawns_ID` = '1602000');
+UPDATE `war_world`.`instance_boss_spawns` SET `SpawnGroupID` = '4002' WHERE (`Instance_spawns_ID` = '1603000');
+INSERT INTO `war_world`.`instance_objects` (`instance_objects_ID`, `Entry`, `InstanceID`, `GameObjectSpawnID`, `WorldX`, `WorldY`, `WorldZ`, `WorldO`, `DisplayID`, `VfxState`, `Realm`) VALUES ('3', '100272', '260', '258470', '1404210', '1573508', '7952', '3458', '1789', '0', '0');
+UPDATE `war_world`.`instance_objects` SET `WorldX` = '1410071', `WorldY` = '1581747', `WorldZ` = '6136', `WorldO` = '92' WHERE (`instance_objects_ID` = '1');
+
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Description`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `TwoHanded`, `ItemSet`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `Effects`, `TokUnlock2`, `IsSiege`) VALUES ('126', 'Bloodlust Blasta', 'With great power comes great responsibility; or in this case, a blood sacrifice.', '11', '4', '1115', '10', '4', '0', '1024', '1', '0', '0', '943', '340', '40', '0', '0', '9:160;5:160;67:20;32:10;78:6;', '0', '0', '1', '60', '0', '1', '0', '1', '0', '0', '0', '202', '0', '0');
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Description`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `TwoHanded`, `ItemSet`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `Effects`, `TokUnlock2`, `IsSiege`) VALUES ('127', 'Bloodlust Focus', 'With great power comes great responsibility; or in this case, a blood sacrifice.', '25', '64', '8366', '11', '4', '0', '8388608', '1', '0', '0', '0', '0', '40', '0', '0', '9:100;5:100;67:10;32:5;78:3;', '0', '0', '1', '60', '0', '0', '0', '1', '0', '0', '0', '202', '0', '0');
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Description`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `TwoHanded`, `ItemSet`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `Effects`, `TokUnlock2`, `IsSiege`) VALUES ('128', 'Bloodlust Greatstaff', 'With great power comes great responsibility; or in this case, a blood sacrifice.', '11', '32', '8816', '10', '4', '0', '1024', '1', '0', '0', '943', '340', '40', '0', '0', '9:160;5:160;67:20;32:10;78:6;', '0', '0', '1', '60', '0', '1', '0', '1', '0', '0', '0', '203', '0', '0');
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Description`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `TwoHanded`, `ItemSet`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `Effects`, `TokUnlock2`, `IsSiege`) VALUES ('129', 'Bloodlust Ninestaff', 'With great power comes great responsibility; or in this case, a blood sacrifice.', '11', '64', '8846', '10', '4', '0', '1024', '1', '0', '0', '943', '340', '40', '0', '0', '9:160;5:160;67:20;32:10;78:6;', '0', '0', '1', '60', '0', '1', '0', '1', '0', '0', '0', '202', '0', '0');
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Description`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `TwoHanded`, `ItemSet`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `Effects`, `TokUnlock2`, `IsSiege`) VALUES ('130', 'Bloodlust Skinflayer', 'With great power comes great responsibility; or in this case, a blood sacrifice.', '12', '64', '8361', '10', '4', '0', '2048', '1', '0', '0', '650', '240', '40', '0', '0', '9:100;5:100;67:10;32:5;78:3;', '0', '0', '1', '60', '0', '0', '0', '1', '0', '0', '0', '202', '0', '0');
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Description`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `TwoHanded`, `ItemSet`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `Effects`, `TokUnlock2`, `IsSiege`) VALUES ('131', 'Bloodlust Witchstaff', 'With great power comes great responsibility; or in this case, a blood sacrifice.', '11', '16', '8408', '10', '4', '0', '1024', '1', '0', '0', '943', '340', '40', '0', '0', '9:160;5:160;67:20;32:10;78:6;', '0', '0', '1', '60', '0', '1', '0', '1', '0', '0', '0', '203', '0', '0');
+UPDATE `war_world`.`item_infos` SET `Salvageable` = '1' WHERE (`Entry` = '5501424');
+
+INSERT INTO `war_world`.`vendor_items` (`VendorId`, `ItemId`, `Price`, `ReqTokUnlock`, `ReqGuildlvl`, `ReqItems`) VALUES ('422', '126', '0', '0', '0', '(1,1)');
+INSERT INTO `war_world`.`vendor_items` (`VendorId`, `ItemId`, `Price`, `ReqTokUnlock`, `ReqGuildlvl`, `ReqItems`) VALUES ('422', '127', '0', '0', '0', '(1,1)');
+INSERT INTO `war_world`.`vendor_items` (`VendorId`, `ItemId`, `Price`, `ReqTokUnlock`, `ReqGuildlvl`, `ReqItems`) VALUES ('423', '128', '0', '0', '0', '(1,1)');
+INSERT INTO `war_world`.`vendor_items` (`VendorId`, `ItemId`, `Price`, `ReqTokUnlock`, `ReqGuildlvl`, `ReqItems`) VALUES ('422', '129', '0', '0', '0', '(1,1)');
+INSERT INTO `war_world`.`vendor_items` (`VendorId`, `ItemId`, `Price`, `ReqTokUnlock`, `ReqGuildlvl`, `ReqItems`) VALUES ('422', '130', '0', '0', '0', '(1,1)');
+INSERT INTO `war_world`.`vendor_items` (`VendorId`, `ItemId`, `Price`, `ReqTokUnlock`, `ReqGuildlvl`, `ReqItems`) VALUES ('422', '131', '0', '0', '0', '(1,1)');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:100;5:100;67:10;32:5;76:3;', `Salvageable` = '1' WHERE (`Entry` = '100');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:100;5:100;67:10;32:5;76:3;', `Salvageable` = '1' WHERE (`Entry` = '101');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:100;5:100;67:10;32:5;76:3;', `Salvageable` = '1' WHERE (`Entry` = '102');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:100;5:100;67:10;32:5;76:3;', `Salvageable` = '1' WHERE (`Entry` = '103');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:100;5:100;67:10;32:5;76:3;', `Salvageable` = '1' WHERE (`Entry` = '104');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:100;5:100;67:10;32:5;76:3;', `Salvageable` = '1' WHERE (`Entry` = '105');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:100;5:100;67:10;32:5;76:3;', `Salvageable` = '1' WHERE (`Entry` = '106');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:100;5:100;67:10;32:5;76:3;', `Salvageable` = '1' WHERE (`Entry` = '107');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:100;5:100;67:10;32:5;76:3;' WHERE (`Entry` = '108');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:100;5:100;67:10;32:5;76:3;' WHERE (`Entry` = '112');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:100;5:100;67:10;32:5;76:3;' WHERE (`Entry` = '113');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:100;5:100;67:10;32:5;76:3;' WHERE (`Entry` = '120');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:100;5:100;67:10;32:5;76:3;' WHERE (`Entry` = '121');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:100;5:100;67:10;32:5;76:3;' WHERE (`Entry` = '122');
+UPDATE `war_world`.`item_infos` SET `Stats` = '8:100;5:100;67:10;32:5;77:3;' WHERE (`Entry` = '123');
+UPDATE `war_world`.`item_infos` SET `Stats` = '8:100;5:100;67:10;32:5;77:3;' WHERE (`Entry` = '124');
+UPDATE `war_world`.`item_infos` SET `Stats` = '8:100;5:100;67:10;32:5;77:3;' WHERE (`Entry` = '125');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:160;5:160;67:30;32:10;76:6;' WHERE (`Entry` = '114');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:160;5:160;67:30;32:10;76:6;' WHERE (`Entry` = '115');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:160;5:160;67:30;32:10;76:6;' WHERE (`Entry` = '116');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:160;5:160;67:30;32:10;76:6;' WHERE (`Entry` = '117');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:160;5:160;67:30;32:10;76:6;' WHERE (`Entry` = '118');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:160;5:160;67:30;32:10;76:6;' WHERE (`Entry` = '119');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:160;5:160;67:30;32:10;76:6;' WHERE (`Entry` = '109');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:160;5:160;67:30;32:10;76:6;' WHERE (`Entry` = '110');
+UPDATE `war_world`.`item_infos` SET `Stats` = '1:160;5:160;67:30;32:10;76:6;' WHERE (`Entry` = '111');
+UPDATE `war_world`.`item_infos` SET `Stats` = '9:160;5:160;67:30;32:10;78:6;' WHERE (`Entry` = '128');
+UPDATE `war_world`.`item_infos` SET `Stats` = '9:160;5:160;67:30;32:10;78:6;' WHERE (`Entry` = '129');
+UPDATE `war_world`.`item_infos` SET `Stats` = '9:160;5:160;67:30;32:10;78:6;' WHERE (`Entry` = '131');
+UPDATE `war_world`.`item_infos` SET `Stats` = '9:160;5:160;67:30;32:10;78:6;' WHERE (`Entry` = '126');
+
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `TwoHanded`, `ItemSet`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `Effects`, `TokUnlock2`, `IsSiege`) VALUES ('132', 'Bloodlust Stabba', '14', '4', '8795', '10', '4', '0', '8192', '1', '0', '0', '650', '240', '40', '0', '0', '8:100;5:100;67:10;32:5;77:3;', '0', '0', '1', '60', '0', '0', '0', '1', '0', '0', '0', '203', '0', '0');
+UPDATE `war_world`.`item_infos` SET `Salvageable` = '1' WHERE (`Entry` = '5501375');
+UPDATE `war_world`.`item_infos` SET `Salvageable` = '1' WHERE (`Entry` = '5501373');
+UPDATE `war_world`.`item_infos` SET `Salvageable` = '1' WHERE (`Entry` = '5501383');
+UPDATE `war_world`.`item_infos` SET `Description` = 'With great power comes great responsibility; or in this case, a blood sacrifice.' WHERE (`Entry` = '132');
+
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Description`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `TwoHanded`, `ItemSet`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `Effects`, `TokUnlock2`, `IsSiege`) VALUES ('133', 'Bloodlust Crusher', 'With great power comes great responsibility; or in this case, a blood sacrifice.', '3', '64', '8374', '13', '4', '0', '4', '1', '0', '0', '650', '240', '40', '0', '0', '1:100;5:100;67:10;32:5;76:3;', '0', '0', '1', '60', '0', '0', '1', '0', '0', '0', '203', '0', '0');
+UPDATE `war_world`.`item_infos` SET `Salvageable` = '1' WHERE (`Entry` = '5501423');
+
+INSERT INTO `war_world`.`vendor_items` (`VendorId`, `ItemId`, `Price`, `ReqTokUnlock`, `ReqGuildlvl`, `ReqItems`) VALUES ('422', '132', '0', '0', '0', '(1,1)');
+INSERT INTO `war_world`.`vendor_items` (`VendorId`, `ItemId`, `Price`, `ReqTokUnlock`, `ReqGuildlvl`, `ReqItems`) VALUES ('422', '133', '0', '0', '0', '(1,1)');
+
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Description`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `TwoHanded`, `ItemSet`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `Effects`, `TokUnlock2`, `IsSiege`) VALUES ('134', 'Bloodlust Runestaff', 'With great power comes great responsibility; or in this case, a blood sacrifice.', '11', '1', '9200', '10', '4', '0', '1024', '1', '0', '0', '943', '340', '40', '0', '0', '9:160;5:160;67:30;32:10;78:6;', '0', '0', '1', '60', '0', '1', '0', '1', '0', '0', '0', '202', '0', '0');
+INSERT INTO `war_world`.`vendor_items` (`VendorId`, `ItemId`, `Price`, `ReqTokUnlock`, `ReqGuildlvl`, `ReqItems`) VALUES ('423', '134', '0', '0', '0', '(1,1)');
+INSERT INTO `war_world`.`vendor_items` (`VendorId`, `ItemId`, `Price`, `ReqTokUnlock`, `ReqGuildlvl`, `ReqItems`) VALUES ('423', '135', '0', '0', '0', '(1,1)');
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Description`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `TwoHanded`, `ItemSet`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `Effects`, `TokUnlock2`, `IsSiege`) VALUES ('135', 'Bloodlust Spanner', 'With great power comes great responsibility; or in this case, a blood sacrifice.', '3', '0', '9178', '13', '4', '8', '4', '1', '0', '0', '650', '240', '40', '0', '0', '8:100;5:100;67:10;32:5;77:3;', '0', '0', '1', '60', '0', '0', '0', '1', '0', '0', '0', '203', '0', '0');
+DELETE FROM `war_world`.`gameobject_spawns` WHERE (`Guid` = '2078321');
+DELETE FROM `war_world`.`gameobject_spawns` WHERE (`Guid` = '2078322');
+DELETE FROM `war_world`.`gameobject_spawns` WHERE (`Guid` = '2078323');
+INSERT INTO `war_world`.`vendor_items` (`VendorId`, `ItemId`, `Price`, `ReqTokUnlock`, `ReqGuildlvl`, `ReqItems`) VALUES ('423', '136', '0', '0', '0', '(1,1)');
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Description`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `TwoHanded`, `ItemSet`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `Effects`, `TokUnlock2`, `IsSiege`) VALUES ('136', 'Bloodlust Windstaff', 'With great power comes great responsibility; or in this case, a blood sacrifice.', '11', '8', '9063', '10', '4', '0', '1024', '1', '0', '0', '943', '340', '40', '0', '0', '9:160;5:160;67:30;32:10;78:6;', '0', '0', '1', '60', '0', '1', '0', '1', '0', '0', '0', '202', '0', '0');
+INSERT INTO `war_world`.`vendor_items` (`VendorId`, `ItemId`, `Price`, `ReqTokUnlock`, `ReqGuildlvl`, `ReqItems`) VALUES ('423', '137', '0', '0', '0', '(1,1)');
+INSERT INTO `war_world`.`item_infos` (`Entry`, `Name`, `Description`, `Type`, `Race`, `ModelId`, `SlotId`, `Rarity`, `Career`, `Skills`, `Bind`, `Armor`, `SpellId`, `Dps`, `Speed`, `MinRank`, `MinRenown`, `StartQuest`, `Stats`, `SellPrice`, `TalismanSlots`, `MaxStack`, `ObjectLevel`, `UniqueEquiped`, `TwoHanded`, `ItemSet`, `Salvageable`, `BaseColor1`, `BaseColor2`, `TokUnlock`, `Effects`, `TokUnlock2`, `IsSiege`) VALUES ('137', 'Bloodlust Falcata', 'With great power comes great responsibility; or in this case, a blood sacrifice.', '1', '8', '9010', '13', '4', '0', '1', '1', '0', '0', '650', '240', '40', '0', '0', '8:100;5:100;67:10;32:5;77:3;', '0', '0', '1', '60', '0', '0', '0', '1', '0', '0', '0', '203', '0', '0');

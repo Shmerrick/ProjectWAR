@@ -1,0 +1,16 @@
+truncate table honor_rewards;
+INSERT INTO `war_world`.`honor_rewards` (`ItemId`, `HonorRank`, `Realm`, `Class`, `Cooldown`, `MaxCount`, `ItemCount`) VALUES ('3003052 ', '1', '0', '0', '86400', '5', '5');
+INSERT INTO `war_world`.`honor_rewards` (`ItemId`, `HonorRank`, `Realm`, `Class`, `Cooldown`, `MaxCount`, `ItemCount`) VALUES ('206024', '2', '0', '0', '86400', '1', '1');
+INSERT INTO `war_world`.`honor_rewards` (`ItemId`, `HonorRank`, `Realm`, `Class`, `Cooldown`, `MaxCount`, `ItemCount`) VALUES ('207390', '4', '0', '0', '86400', '1', '1');
+INSERT INTO `war_world`.`honor_rewards` (`ItemId`, `HonorRank`, `Realm`, `Class`, `Cooldown`, `MaxCount`, `ItemCount`) VALUES ('207391', '4', '0', '0', '86400', '1', '1');
+INSERT INTO `war_world`.`honor_rewards` (`ItemId`, `HonorRank`, `Realm`, `Class`, `Cooldown`, `MaxCount`, `ItemCount`) VALUES ('207389', '4', '0', '0', '86400', '1', '1');
+INSERT INTO `war_world`.`honor_rewards` (`ItemId`, `HonorRank`, `Realm`, `Class`, `Cooldown`, `MaxCount`, `ItemCount`) VALUES ('207387', '4', '0', '0', '86400', '1', '1');
+INSERT INTO `war_world`.`honor_rewards` (`ItemId`, `HonorRank`, `Realm`, `Class`, `Cooldown`, `MaxCount`, `ItemCount`) VALUES ('207406', '3', '0', '0', '86400', '1', '1');
+INSERT INTO `war_world`.`honor_rewards` (`ItemId`, `HonorRank`, `Realm`, `Class`, `Cooldown`, `MaxCount`, `ItemCount`) VALUES ('1667', '3', '0', '0', '259200', '1', '1');
+INSERT INTO `war_world`.`honor_rewards` (`ItemId`, `HonorRank`, `Realm`, `Class`, `Cooldown`, `MaxCount`, `ItemCount`) VALUES ('206023', '1', '0', '0', '86400', '1', '1');
+INSERT INTO `war_world`.`honor_rewards` (`ItemId`, `HonorRank`, `Realm`, `Class`, `Cooldown`, `MaxCount`, `ItemCount`) VALUES ('206022', '1', '0', '0', '86400', '1', '1');
+INSERT INTO `war_world`.`honor_rewards` (`ItemId`, `HonorRank`, `Realm`, `Class`, `Cooldown`, `MaxCount`, `ItemCount`) VALUES ('206138', '2', '0', '0', '86400', '1', '1');
+INSERT INTO `war_world`.`honor_rewards` (`ItemId`, `HonorRank`, `Realm`, `Class`, `Cooldown`, `MaxCount`, `ItemCount`) VALUES ('205208', '2', '0', '0', '86400', '1', '1');
+INSERT INTO `war_world`.`honor_rewards` (`ItemId`, `HonorRank`, `Realm`, `Class`, `Cooldown`, `MaxCount`, `ItemCount`) VALUES ('205207', '2', '0', '0', '86400', '1', '1');
+INSERT INTO `war_world`.`honor_rewards` (`ItemId`, `HonorRank`, `Realm`, `Class`, `Cooldown`, `MaxCount`, `ItemCount`) VALUES ('205206', '2', '0', '0', '86400', '1', '1');
+INSERT INTO `war_world`.`honor_rewards` (`ItemId`, `HonorRank`, `Realm`, `Class`, `Cooldown`, `MaxCount`, `ItemCount`) VALUES ('207388', '4', '0', '0', '86400', '1', '1');

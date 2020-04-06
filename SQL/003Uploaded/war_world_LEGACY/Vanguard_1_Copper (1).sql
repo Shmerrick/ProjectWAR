@@ -1,0 +1,1 @@
+UPDATE war_world.vendor_items SET Price = 1 WHERE (VendorId BETWEEN 67 AND 69) OR (VendorId = 70) OR (VendorId = 77) OR (VendorId = 78);

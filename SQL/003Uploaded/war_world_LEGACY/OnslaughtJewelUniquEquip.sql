@@ -1,0 +1,10 @@
+UPDATE `war_world`.`item_infos` SET `UniqueEquiped` = '1' WHERE (`Entry` = '640660');
+UPDATE `war_world`.`item_infos` SET `UniqueEquiped` = '1' WHERE (`Entry` = '640661');
+UPDATE `war_world`.`item_infos` SET `UniqueEquiped` = '1' WHERE (`Entry` = '640662');
+UPDATE `war_world`.`item_infos` SET `UniqueEquiped` = '1' WHERE (`Entry` = '640663');
+UPDATE `war_world`.`item_infos` SET `UniqueEquiped` = '1' WHERE (`Entry` = '640664');
+UPDATE `war_world`.`item_infos` SET `UniqueEquiped` = '1' WHERE (`Entry` = '640665');
+UPDATE `war_world`.`item_infos` SET `UniqueEquiped` = '1' WHERE (`Entry` = '640666');
+UPDATE `war_world`.`item_infos` SET `UniqueEquiped` = '1' WHERE (`Entry` = '640667');
+UPDATE `war_world`.`item_infos` SET `UniqueEquiped` = '1' WHERE (`Entry` = '640668');
+UPDATE `war_world`.`item_infos` SET `UniqueEquiped` = '1' WHERE (`Entry` = '640669');

@@ -1,0 +1,85 @@
+-- MySQL dump 10.13  Distrib 5.5.37, for Win32 (AMD64)
+--
+-- Host: 127.0.0.1    Database: war_world
+-- ------------------------------------------------------
+-- Server version	8.0.18
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `instance_infos`
+--
+
+DROP TABLE IF EXISTS `instance_infos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `instance_infos` (
+  `instance_infos_ID` varchar(255) NOT NULL,
+  `Entry` smallint(5) unsigned DEFAULT NULL,
+  `ZoneID` smallint(5) unsigned DEFAULT NULL,
+  `Name` text,
+  `LockoutTimer` int(10) unsigned DEFAULT NULL,
+  `TrashRespawnTimer` int(10) unsigned DEFAULT NULL,
+  `WardsNeeded` tinyint(3) unsigned DEFAULT NULL,
+  `OrderExitZoneJumpID` int(11) NOT NULL,
+  `DestrExitZoneJumpID` int(11) NOT NULL,
+  PRIMARY KEY (`instance_infos_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `instance_infos`
+--
+
+LOCK TABLES `instance_infos` WRITE;
+/*!40000 ALTER TABLE `instance_infos` DISABLE KEYS */;
+INSERT INTO `instance_infos` VALUES ('152A',152,152,'The Sewers of Altdorf: Wing 1 - Sewers 2',1440,5,NULL,159602472,159602472),
+('153A',153,153,'The Sewers of Altdorf: Wing 2 - Sewers 3',1440,5,NULL,160661672,160661672),
+('154A',154,154,'Warpblade Tunnels 2',1440,5,NULL,161506472,161506472),
+('155A',155,155,'Sacellum Dungeons West Wing',1440,5,NULL,162568744,162568744),
+('156A',156,156,'Sacellum Dungeons East Wing',1440,5,NULL,163617448,163617448),
+('160A',160,160,'Bastion Stair',1440,5,NULL,167782696,168030760),
+('160B',163,163,'Thar\'lgnan',1440,5,NULL,167782696,168030760),
+('160C',164,164,'Lord Slaurith',1440,5,NULL,167782696,168030760),
+('160D',165,165,'Kaarn the Vanquisher',1440,5,NULL,167782696,168030760),
+('160E',166,166,'Skull Lord Var\'throk',1440,5,NULL,167782696,168030760),
+('169A',169,169,'The Sewers of Altdorf: Wing 3 - Sewers',1440,5,NULL,177447144,177447144),
+('173A',173,173,'Sacellum Dungeons Middle Wing',1440,5,NULL,181443176,181443176),
+('176A',176,176,'Sigmar Crypts',1440,5,NULL,184642216,184642216),
+('177A',177,177,'Warpblade Tunnels 1',1440,5,NULL,185623592,185623592),
+('179A',179,179,'Tomb Of The Vulture Lord',1440,5,NULL,200797160,187704296),
+('195A',195,195,'Bloodwrought Enclave',1440,5,NULL,204474536,204474536),
+('196A',196,196,'Bilerot Burrow',1440,5,NULL,205554024,205554024),
+('241A',241,241,'Tomb of the Stars',1440,5,NULL,252708392,252708392),
+('242A',242,242,'Tomb of the Moon',1440,5,NULL,253757096,253757096),
+('243A',243,243,'Tomb of the Sky',1440,5,NULL,254805608,254805608),
+('244A',244,244,'Tomb of the Sun',1440,5,NULL,255854056,255854056),
+('260A',260,260,'The Lost Vale',1440,5,NULL,272804328,272804328),
+('50A',50,50,'Hunter\'s Vale',1440,5,NULL,0,0),
+('60A',60,60,'Gunbad',1440,5,NULL,62928168,62928168),
+('60B',60,63,'Gunbad Nursery',1440,5,NULL,62928168,62928168),
+('60C',60,64,'Gunbad Lab',1440,5,NULL,62928168,62928168),
+('60D',60,65,'Squig Boss',1440,5,NULL,62928168,62928168),
+('60E',60,66,'Gunbad Baracks',1440,5,NULL,62928168,62928168);
+/*!40000 ALTER TABLE `instance_infos` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2020-01-07 15:41:49
