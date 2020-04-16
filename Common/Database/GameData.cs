@@ -3508,7 +3508,8 @@ namespace GameData
         /// </remarks>
         public const double RADIAN_TO_HEADING = (180.0 / Math.PI) * (4096.0 / 360.0);
 
-        public const int UNITS_TO_FEET = 12;
+        public const int UNITS_TO_FEET_MIN = 10;
+        public const int UNITS_TO_FEET_MAX = 12;
 
         //as I typed them I will not erase but they are
         // 2^(i-1) where i is race number in GameData::Races
