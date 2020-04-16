@@ -135,7 +135,11 @@ namespace WorldServer.World.AI
             else if (NewRange == 0)
                 _unit.MvtInterface?.Follow(fighter, (int)crea.BaseRadius, (int)crea.BaseRadius + 1, false, ForceMove);
             else
-                _unit.MvtInterface.Follow(fighter, Math.Max(10, NewRange - Constants.UNITS_TO_FEET_MIN), Math.Max(Constants.UNITS_TO_FEET_MAX, NewRange), false, ForceMove);
+                _unit.MvtInterface.Follow(fighter, 
+			Math.Max(Constants.UNITS_TO_FEET_MIN, NewRange - Constants.UNITS_TO_FEET_MIN), 
+			Math.Max(Constants.UNITS_TO_FEET_MAX, NewRange), 
+			false,
+			ForceMove);
         }
 
         public virtual void Fight()
