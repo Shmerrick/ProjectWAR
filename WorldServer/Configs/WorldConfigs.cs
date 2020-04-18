@@ -34,11 +34,11 @@ namespace WorldServer.Configs
         // Area / NPC
         public bool CleanSpawns = true;
         public bool DiscoverAll = false;
-        public bool OpenRvR = true;
+        public bool OpenRvR = false;
 
         // Loading
         public bool PreloadAllCharacters = true;
-        public string Motd = "Welcome to WAR: Apocalypse, Max Level 32, Max RR 32.";
+        public string Motd = "Welcome to Warhammer Online: Age of Reckoning!";
         public string RegionOcclusionFolder = "los/";
         public string ZoneFolder = "zones/";
 
