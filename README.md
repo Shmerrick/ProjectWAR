@@ -1,4 +1,4 @@
-# ![logo](https://lh3.googleusercontent.com/proxy/8jlpQ89OB6JzB8H0YZQyZSEerjnu7xDun0FEucK47i72tVPHqXwiCBdkxH9zbOpi-D0SNNZbJlPlAPeQPj8lCyOZ8QqZN3IVot41kw) 
+# ![logo](https://3dnews.ru/assets/external/illustrations/2013/04/25/644667/warhammer-online-age-of-reckoning-logo.jpg) 
 
 Discord: https://discordapp.com/invite/MBxsJBQ
 
