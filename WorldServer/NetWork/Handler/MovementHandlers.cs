@@ -265,7 +265,7 @@ namespace WorldServer.NetWork.Handler
 
                 //hardcode to not allow players into gunbad in case we miss to invalidate the zone on push
 #if (!DEBUG)
-                
+                /*
                 if (zoneID == 60 && player.Client.IsPlaying())
                 {
                     if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
@@ -274,7 +274,7 @@ namespace WorldServer.NetWork.Handler
                     else if (player.Realm == Realms.REALMS_REALM_ORDER)
                         player.Teleport(162, 124084, 130213, 12572, 0);
                 }
-                
+                */
                
                if (zoneID == 111 && player.Client.IsPlaying())
                {
@@ -503,7 +503,7 @@ namespace WorldServer.NetWork.Handler
                 }
                 //hardcode to not allow players into gunbad in case we miss to invalidate the zone on push
 #if (!DEBUG)
-                
+                /*
                 if (zoneID == 60 && player.Client.IsPlaying())
                 {
                     if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
@@ -512,7 +512,7 @@ namespace WorldServer.NetWork.Handler
                     else if (player.Realm == Realms.REALMS_REALM_ORDER)
                         player.Teleport(162, 124084, 130213, 12572, 0);
                 }
-                
+                */
 #endif
 
                 //lets move players instantly, if they are in a void (even staff)
