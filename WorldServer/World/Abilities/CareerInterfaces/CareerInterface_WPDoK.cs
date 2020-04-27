@@ -167,7 +167,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                                 if (cmd.CommandName == "StealLife")
                                 {
                                     cmd.DamageInfo.MinDamage = 0;
-                                    cmd.DamageInfo.MaxDamage = 0;
+                                    cmd.DamageInfo.MinDamage = 0;
                                     cmd.PrimaryValue = (short)(cmd.PrimaryValue * 5f);
                                 }
                                 else if (cmd.DamageInfo != null)

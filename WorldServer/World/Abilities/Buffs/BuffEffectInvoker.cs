@@ -1250,12 +1250,12 @@ namespace WorldServer.World.Abilities.Buffs
             if (hostBuff.RemainingTimeMs < 10000)
             {
                 damageThisPass.MinDamage *= 3;
-                damageThisPass.MaxDamage *= 3;
+                damageThisPass.MinDamage *= 3;
             }
             else if (hostBuff.RemainingTimeMs < 20000)
             {
                 damageThisPass.MinDamage *= 2;
-                damageThisPass.MaxDamage *= 2;
+                damageThisPass.MinDamage *= 2;
             }
 
             damageThisPass.IsAoE = true;
@@ -1347,7 +1347,7 @@ namespace WorldServer.World.Abilities.Buffs
                 // Damage inflicted by an artillery weapon increases for every player within 60ft of the blast zone.
                 // Maximum of 50 players, +400% damage, exponential.
                 damageThisPass.MinDamage = (ushort)(damageThisPass.MinDamage * artilleryScale);
-                damageThisPass.MaxDamage = (ushort)(damageThisPass.MaxDamage * artilleryScale);
+                damageThisPass.MinDamage = (ushort)(damageThisPass.MinDamage * artilleryScale);
 
                 weapon.ModifyDamageOut(damageThisPass);
 
@@ -1399,7 +1399,7 @@ namespace WorldServer.World.Abilities.Buffs
 
                 // Maximum +300% damage for hitting same person 6 times with added splash
                 damageThisPass.MinDamage = (ushort)(damageThisPass.MinDamage * 3 * (1 + Math.Min(numStrikes[i], (byte)6) * 0.5f));
-                damageThisPass.MaxDamage = (ushort)(damageThisPass.MaxDamage * 3 * (1 + Math.Min(numStrikes[i], (byte)6) * 0.5f));
+                damageThisPass.MinDamage = (ushort)(damageThisPass.MinDamage * 3 * (1 + Math.Min(numStrikes[i], (byte)6) * 0.5f));
 
                 siege.ModifyDamageOut(damageThisPass);
 
@@ -4351,7 +4351,7 @@ namespace WorldServer.World.Abilities.Buffs
         {
             if (target == eventInstigator)
                 return true;
-            AbilityDamageInfo damageThisPass = new AbilityDamageInfo { Entry = 629, DisplayEntry = 629, DamageType = DamageTypes.RawDamage, MinDamage = (ushort)(damageInfo.Damage), MaxDamage = (ushort)(damageInfo.Damage) };
+            AbilityDamageInfo damageThisPass = new AbilityDamageInfo { Entry = 629, DisplayEntry = 629, DamageType = DamageTypes.RawDamage, MinDamage = (ushort)(damageInfo.Damage) };
 
             CombatManager.InflictProcDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
 
@@ -4499,7 +4499,7 @@ namespace WorldServer.World.Abilities.Buffs
             if (offTarget == null)
                 return false;
 
-            AbilityDamageInfo damageThisPass = new AbilityDamageInfo { Entry = cmd.Entry, DisplayEntry = cmd.Entry, DamageType = (DamageTypes)cmd.SecondaryValue, MinDamage = (ushort)(damageInfo.Damage * cmd.PrimaryValue * 0.01f), MaxDamage = (ushort)(damageInfo.Damage * cmd.PrimaryValue * 0.01f), CastPlayerSubID = (byte)cmd.TertiaryValue };
+            AbilityDamageInfo damageThisPass = new AbilityDamageInfo { Entry = cmd.Entry, DisplayEntry = cmd.Entry, DamageType = (DamageTypes)cmd.SecondaryValue, MinDamage = (ushort)(damageInfo.Damage * cmd.PrimaryValue * 0.01f), CastPlayerSubID = (byte)cmd.TertiaryValue };
 
             CombatManager.InflictProcDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, offTarget);
 

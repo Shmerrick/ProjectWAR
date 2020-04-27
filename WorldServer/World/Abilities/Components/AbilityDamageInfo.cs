@@ -16,7 +16,6 @@ namespace WorldServer.World.Abilities.Components
 
         // Damage
         public ushort MinDamage;
-        public ushort MaxDamage;
         public ushort DamageVariance;
         public float PrecalcDamage;
         public float Damage;
@@ -119,13 +118,6 @@ namespace WorldServer.World.Abilities.Components
             ParentCommandID = dbObj.ParentCommandID;
             ParentCommandSequence = dbObj.ParentCommandSequence;
             MinDamage = dbObj.MinDamage;
-            MaxDamage = dbObj.MaxDamage;
-            if (!string.IsNullOrEmpty(dbObj.DamageType))
-                DamageType = (DamageTypes)Enum.Parse(typeof(DamageTypes), dbObj.DamageType);
-            DamageVariance = dbObj.DamageVariance;
-            CastTimeDamageMult = dbObj.CastTimeDamageMult;
-            if (!string.IsNullOrEmpty(dbObj.WeaponDamageFrom))
-                WeaponMod = (WeaponDamageContribution)Enum.Parse(typeof(WeaponDamageContribution), dbObj.WeaponDamageFrom);
             WeaponDamageScale = dbObj.WeaponDamageScale;
             Undefendable = dbObj.Undefendable;
             NoCrits = dbObj.NoCrits;
@@ -138,6 +130,14 @@ namespace WorldServer.World.Abilities.Components
             ResourceBuild = dbObj.ResourceBuild;
             CastPlayerSubID = dbObj.CastPlayerSubID;
             PriStatMultiplier = dbObj.PriStatMultiplier;
+
+
+            if (!string.IsNullOrEmpty(dbObj.DamageType))
+                DamageType = (DamageTypes)Enum.Parse(typeof(DamageTypes), dbObj.DamageType);
+            DamageVariance = dbObj.DamageVariance;
+            CastTimeDamageMult = dbObj.CastTimeDamageMult;
+            if (!string.IsNullOrEmpty(dbObj.WeaponDamageFrom))
+                WeaponMod = (WeaponDamageContribution)Enum.Parse(typeof(WeaponDamageContribution), dbObj.WeaponDamageFrom);
         }
 
         public static List<AbilityDamageInfo> Convert(List<DBAbilityDamageInfo> dbObjs)
@@ -156,7 +156,7 @@ namespace WorldServer.World.Abilities.Components
 
         public uint GetDamageForLevel(byte level)
         {
-            uint damage = (uint)(MinDamage + (MaxDamage - MinDamage) * ((level - 1) / 39.0f));
+            uint damage = (uint)((MinDamage) * ((level - 1) / 39.0f));
             if (DamageVariance == 0)
                 return damage;
 

@@ -900,7 +900,7 @@ namespace WorldServer.World.Abilities
             if (cmd != null)
             {
                 cmd.DamageInfo.MinDamage = (ushort)myEffect.PrimaryValue;
-                cmd.DamageInfo.MaxDamage = (ushort)myEffect.SecondaryValue;
+                cmd.DamageInfo.MinDamage = (ushort)myEffect.SecondaryValue;
             }
         }
 
@@ -1186,7 +1186,7 @@ namespace WorldServer.World.Abilities
                                     if (abInfo.Entry == 1930 || abInfo.Entry == 9257)
                                     {
                                         cmd.DamageInfo.MinDamage = (ushort) (cmd.LastCommand.DamageInfo.MinDamage*2.5);
-                                        cmd.DamageInfo.MaxDamage = (ushort) (cmd.LastCommand.DamageInfo.MaxDamage*2.5);
+                                        cmd.DamageInfo.MinDamage = (ushort) (cmd.LastCommand.DamageInfo.MinDamage*2.5);
                                         cmd.DamageInfo.StatUsed = 3;
                                         cmd.DamageInfo.StatDamageScale = 2;
                                     }
@@ -1195,7 +1195,7 @@ namespace WorldServer.World.Abilities
                                     else
                                     {
                                         cmd.DamageInfo.MinDamage = 40;
-                                        cmd.DamageInfo.MaxDamage = 300;
+                                        cmd.DamageInfo.MinDamage = 300;
                                     }
                                 }
 
@@ -1276,7 +1276,7 @@ namespace WorldServer.World.Abilities
                                         if (abInfo.Entry == 1930 || abInfo.Entry == 9257)
                                         {
                                             cmd.DamageInfo.MinDamage = (ushort)(cmd.LastCommand.DamageInfo.MinDamage * 2.5);
-                                            cmd.DamageInfo.MaxDamage = (ushort)(cmd.LastCommand.DamageInfo.MaxDamage * 2.5);
+                                            cmd.DamageInfo.MinDamage = (ushort)(cmd.LastCommand.DamageInfo.MinDamage * 2.5);
                                             cmd.DamageInfo.StatUsed = 3;
                                             cmd.DamageInfo.StatDamageScale = 2;
                                         }
@@ -1285,7 +1285,7 @@ namespace WorldServer.World.Abilities
                                         else
                                         {
                                             cmd.DamageInfo.MinDamage = 40;
-                                            cmd.DamageInfo.MaxDamage = 300;
+                                            cmd.DamageInfo.MinDamage = 300;
                                         }
                                     }
 
@@ -1482,7 +1482,7 @@ namespace WorldServer.World.Abilities
             if (cmd != null)
             {
                 cmd.DamageInfo.MinDamage = (ushort)myEffect.PrimaryValue;
-                cmd.DamageInfo.MaxDamage = (ushort)myEffect.SecondaryValue;
+                cmd.DamageInfo.MinDamage = (ushort)myEffect.SecondaryValue;
             }
         }
 
