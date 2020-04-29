@@ -519,6 +519,8 @@
     <Compile Include="World\Battlefronts\Keeps\KeepNpcCreature.cs" />
     <Compile Include="World\MythicAbility\Ability.cs" />
     <Compile Include="World\MythicAbility\AbilityComponent.cs" />
+    <Compile Include="World\MythicAbility\AbilityVariables.cs" />
+    <Compile Include="World\MythicAbility\AbilityComponentVariables.cs" />
     <Compile Include="World\Objects\AdvancedCreature.cs" />
     <Compile Include="World\Objects\CreatureState.cs" />
     <Compile Include="World\Objects\DynamicVendor.cs" />
