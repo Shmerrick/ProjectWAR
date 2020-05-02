@@ -634,9 +634,6 @@
     <Compile Include="World\Scripting\PublicQuests\Destro\DeathstoneQuarry.cs" />
     <Compile Include="World\Scripting\PublicQuests\Order\RavenHostVanguard.cs" />
     <Compile Include="World\Scripting\Quests\BasicQuest.cs" />
-    <Compile Include="World\Scripting\Quests\GrimmenhagenBurning.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
     <Compile Include="World\Scripting\Quests\HeartsAndMinds.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>

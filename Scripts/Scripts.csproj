@@ -50,9 +50,6 @@
     <Compile Include="Scripts\PublicQuests\RavenHostVanguard.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Scripts\Quests\GrimmenhagenBurning.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
     <Compile Include="Scripts\Quests\HeartsAndMinds.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
