@@ -28,8 +28,7 @@ namespace WorldServer
      * spam the same mob.
      * 
      * Todo:
-     * - Some text would be nice.
-     * - make it more like the real quest.
+     * - fix Model1 and Model2 spawns - male and female.// if Fermer has Model1 then Marauder must be Model1, same with Model2
      */
 
     [GeneralScript(false, "",  32, 0)]
@@ -51,6 +50,7 @@ namespace WorldServer
             Creature_spawn Spawn = new Creature_spawn();
             Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
             Proto.Model1 = Obj.GetCreature().Spawn.Proto.Model1;
+            Proto.Model2 = Obj.GetCreature().Spawn.Proto.Model2;
             Spawn.BuildFromProto(Proto);
             Spawn.WorldO = Obj.Heading;
             Spawn.WorldY = Obj.WorldPosition.Y;
@@ -93,6 +93,7 @@ namespace WorldServer
             Creature_spawn Spawn = new Creature_spawn();
             Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
             Proto.Model1 = Obj.GetCreature().Spawn.Proto.Model1;
+            Proto.Model2 = Obj.GetCreature().Spawn.Proto.Model2;
             Spawn.BuildFromProto(Proto);
             Spawn.WorldO = Obj.Heading;
             Spawn.WorldY = Obj.WorldPosition.Y;
