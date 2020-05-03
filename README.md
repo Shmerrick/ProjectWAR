@@ -65,4 +65,4 @@ Commands of interest :
 
 Note : Lockpairing and Advancepairing are only two steps in the 'flip' process. They should only be used by developers (ie dont use them in Production). For testing, it is better to use .campaign setvictorypoints <#> <#>, as this emulates holding BOs/keep takes equivalent to the number of VP.
 
-If it all goes haywire, reset by .campaign SetRegionCaptureStatus 102102102 2  -- this will reset you to Praag.
+If it all goes haywire, reset by .campaign SetRegionCaptureStatus 102102102 2  
