@@ -74,7 +74,7 @@ namespace WorldServer.World.Objects
         {
             List<CharacterInfo_stats> baseStats;
 
-            float statBonusMult = 1;
+            float statBonusMult = 1.0f;
 
             if (Rank > 0)
             {
