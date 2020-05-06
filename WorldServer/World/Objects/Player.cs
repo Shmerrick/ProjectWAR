@@ -57,7 +57,7 @@ namespace WorldServer.World.Objects
         #region Statics
 
         public static int DISCONNECT_TIME = 20 * Time.InMilliseconds;
-        public static int AUTO_SAVE_TIME = Time.Minute;
+        public static int AUTO_SAVE_TIME = 10 * Time.Minute;
 
         /// <summary>Influence bonus depending on players' race</summary>
         private const double RACIAL_INF_FACTOR = 1.5;
