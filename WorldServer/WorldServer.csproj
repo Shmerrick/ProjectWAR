@@ -522,7 +522,6 @@
     <Compile Include="World\Objects\DynamicVendor.cs" />
     <Compile Include="World\Objects\Boss.cs" />
     <Compile Include="World\Objects\BlackMarketVendorItem.cs" />
-    <Compile Include="World\Objects\HelperTime.cs" />
     <Compile Include="World\Objects\HonorVendorItem.cs" />
     <Compile Include="World\Objects\LootChest.cs" />
     <Compile Include="World\Objects\Instances\Bloodwrought Enclave\SimpleBarakustheGodslayer.cs" />
