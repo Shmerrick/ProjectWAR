@@ -2032,10 +2032,37 @@ namespace WorldServer.World.Objects
         {
             _lastCheckedTime = (uint)TCPManager.GetTimeStamp();
 
+            uint seconds = _Value.PlayedTime;
+            uint mins = 0;
+            uint hours = 0;
+            uint days = 0;
+            if (seconds >= 60)
+            {
+                mins = seconds / 60;
+                if (mins > 0)
+                {
+                    seconds -= mins * 60;
+                    if (mins >= 60)
+                    {
+                        hours = mins / 60;
+                        if (hours > 0)
+                        {
+                            mins -= hours * 60;
+                            if (hours >= 24)
+                            {
+                                days = hours / 24;
+                                if (days > 0)
+                                    hours -= days * 24;
+                            }
+                        }
+                    }
+                }
+            }
+
             PacketOut Out = new PacketOut((byte)Opcodes.F_PLAY_TIME_STATS, 12);
-            Out.WriteInt32(Time.Day);
-            Out.WriteInt32(Time.Hour);
-            Out.WriteInt32(Time.Minute);
+            Out.WriteUInt32(days);
+            Out.WriteUInt32(hours);
+            Out.WriteUInt32(mins);
             SendPacket(Out);
         }
 
