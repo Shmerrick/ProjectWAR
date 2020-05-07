@@ -974,7 +974,7 @@ namespace WorldServer.World.Objects.PublicQuests
         public void NotifyKilled(PQuestCreature mob)
         {
             float totalDamageDealt = 1.0f;
-            float totalHits = 0f;
+            float totalHits = 0.f;
             int damagedCount = 0;
 
             // Handle contribution to the PQ.
@@ -1024,7 +1024,7 @@ namespace WorldServer.World.Objects.PublicQuests
 
 #region For healers of damage
 
-            float totalHealing = 0f;
+            float totalHealing = 0.f;
 
             if (_playerHealing.ContainsKey(mob.Oid))
             {

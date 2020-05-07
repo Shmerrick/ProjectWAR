@@ -23,7 +23,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static int THREATEN_RANGE = 200;
 
         /// <summary>Range of warcamp farm detection, applying dealed and received damage debuff</summary>
-        public static float WARCAMP_FARM_RANGE = 250f;
+        public static float WARCAMP_FARM_RANGE = 250.f;
         #endregion
 
         #region Ownership and assault state
