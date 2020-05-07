@@ -170,9 +170,8 @@ namespace WorldServer.World.Objects
             {
                 oldPlayer._Value.Online = false;
                 oldPlayer._Value.DisconcetTime = TCPManager.GetTimeStamp();
+                CharMgr.Database.SaveObject(oldPlayer._Value);
             }
-
-            CharMgr.Database.SaveObject(oldPlayer._Value);
         }
         public static Player GetPlayer(string name)
         {
