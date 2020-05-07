@@ -327,6 +327,11 @@ namespace WorldServer.World.Objects
         public bool IsGameObject() { return this is GameObject; }
         public bool IsChapter() { return this is ChapterObject; }
 
+        public Creature ToCreature() { return IsCreature() ? (this as Creature) : null; }
+        public Player ToPlayer() { return IsPlayer() ? (this as Player) : null; }
+        public GameObject ToGameObject() { return IsGameObject() ? (this as GameObject) : null; }
+        public Unit ToUnit() { return IsUnit() ? (this as Unit) : null; }
+	
         public Unit GetUnit() { return this as Unit; }
         public Player GetPlayer() { return this as Player; }
         public Creature GetCreature() { return this as Creature; }
