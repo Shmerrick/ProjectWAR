@@ -130,12 +130,12 @@ namespace WorldServer.World.Objects.Instances
             return base.ReceiveDamage(caster, damageInfo);
         }
 
-        public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1, uint mitigation = 0)
+        public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1.0f, uint mitigation = 0)
         {
             return base.ReceiveDamage(caster, damage, hatredScale, mitigation);
         }
 
-        public override int ReceiveHeal(Unit caster, uint healAmount, float healHatredScale = 1)
+        public override int ReceiveHeal(Unit caster, uint healAmount, float healHatredScale = 1.0f)
         {
             return base.ReceiveHeal(caster, healAmount, healHatredScale);
         }
