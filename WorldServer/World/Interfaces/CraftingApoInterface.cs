@@ -417,7 +417,7 @@ namespace WorldServer.World.Interfaces
                 {
                     result = 2;
 
-                    if (((float)StaticRandom.Instance.NextDouble() * 100f) <= 50)
+                    if (((float)StaticRandom.Instance.NextDouble() * 100.f) <= 50)
                     {
                         _myPlayer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_CRITICALFAILURE);
                         _myPlayer.ItmInterface.DeleteItem(_container, 1);
@@ -427,7 +427,7 @@ namespace WorldServer.World.Interfaces
                         return;
                     }
                 }
-                else if (((float)StaticRandom.Instance.NextDouble() * 100f) <= (_critChance + 10))
+                else if (((float)StaticRandom.Instance.NextDouble() * 100.f) <= (_critChance + 10))
                 {
                     result = 1;
                     _myPlayer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_CRITICALSUCCESS);
@@ -447,7 +447,7 @@ namespace WorldServer.World.Interfaces
             }
             
 
-                    if (_myPlayer._Value.CraftingSkillLevel < 200 && ((byte)((_myPlayer._Value.CraftingSkillLevel - _myPlayer.ItmInterface.GetItemInSlot(_mainIngredient).Info.Unk27[14]) * 3) < ((float)StaticRandom.Instance.NextDouble() * 100f)))
+                    if (_myPlayer._Value.CraftingSkillLevel < 200 && ((byte)((_myPlayer._Value.CraftingSkillLevel - _myPlayer.ItmInterface.GetItemInSlot(_mainIngredient).Info.Unk27[14]) * 3) < ((float)StaticRandom.Instance.NextDouble() * 100.f)))
                     {
                         _myPlayer._Value.CraftingSkillLevel++;
                         SetBasePower();

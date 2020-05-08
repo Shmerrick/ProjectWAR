@@ -32,14 +32,14 @@ namespace WorldServer.World.Battlefronts
 
             float factor;
             if (orderCount == 0 || destroCount == 0)
-                factor = 0f; // No need to set aao if missing a realm
+                factor = 0.f; // No need to set aao if missing a realm
             else  if (orderCount < destroCount)
-                factor = ((float)destroCount / (float)orderCount) - 1f;
+                factor = ((float)destroCount / (float)orderCount) - 1.0f;
             else
-                factor = ((float)orderCount / (float)destroCount) - 1f;
+                factor = ((float)orderCount / (float)destroCount) - 1.0f;
 
             // Inferior rounding (20%, 40%, 60% etc.)
-            newMult = (int)(factor * 5f);
+            newMult = (int)(factor * 5.0f);
 
             // Less order than destro AAO (negative)
             if (orderCount < destroCount)

@@ -155,7 +155,7 @@ namespace WorldServer.World.Interfaces
             }
         }
 
-        private float _speedScaler = 1f;
+        private float _speedScaler = 1.f;
 
         public void SetBaseSpeed(ushort newSpeed)
         {
@@ -244,7 +244,7 @@ namespace WorldServer.World.Interfaces
 
         private float GetMoveFactor(long deltaMs)
         {
-            return Math.Min(1f, deltaMs/_moveDuration);
+            return Math.Min(1.f, deltaMs/_moveDuration);
         }
 
         /// <summary>

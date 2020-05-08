@@ -94,7 +94,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
 
             /// <summary>Inflicts damage upon this unit and returns whether lethal damage was dealt.</summary>
-            public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1f, uint mitigation = 0)
+            public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1.f, uint mitigation = 0)
             {
                 // RB   6/8/2016    Posterns shouldn't be dealt damage.
                 if (_keepDoor != null && _keepDoor.Info.Number != (int)KeepDoorType.InnerMain && _keepDoor.Info.Number != (int)KeepDoorType.OuterMain)

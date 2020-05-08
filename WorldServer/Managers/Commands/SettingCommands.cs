@@ -50,7 +50,7 @@ namespace WorldServer.Managers.Commands
                 if (doorRegen > 0)
                 {
                     WorldMgr.WorldSettingsMgr.SetDoorRegenValue(doorRegen);
-                    plr.SendClientMessage("Changed Door Regen to " + doorRegen + " which amounts to " + (float)doorRegen / 10000f * 100f + "% per 1 tick from BattlefieldObjective.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
+                    plr.SendClientMessage("Changed Door Regen to " + doorRegen + " which amounts to " + (float)doorRegen / 10000.f * 100.f + "% per 1 tick from BattlefieldObjective.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
                 }
                 else
                     plr.SendClientMessage("Door Regen cannot be set to 0 or less.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
@@ -58,7 +58,7 @@ namespace WorldServer.Managers.Commands
             }
             else
             {
-                plr.SendClientMessage("Current Door Regen is equal to " + WorldMgr.WorldSettingsMgr.GetDoorRegenValue() + " which amounts to " + (float)WorldMgr.WorldSettingsMgr.GetDoorRegenValue() / 10000f * 100f + "% per 1 tick from BattlefieldObjective.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
+                plr.SendClientMessage("Current Door Regen is equal to " + WorldMgr.WorldSettingsMgr.GetDoorRegenValue() + " which amounts to " + (float)WorldMgr.WorldSettingsMgr.GetDoorRegenValue() / 10000.f * 100.f + "% per 1 tick from BattlefieldObjective.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
             }
         }
 

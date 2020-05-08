@@ -641,7 +641,7 @@ namespace WorldServer.World.Objects
                             // A rank 17 in the old game managed to fill his bars completely over 4 days of rest.
                             // 150% in 4 days => 37% every day => ~12% every 8 hours. 1.5% an hour?
                             // Assume about 1% an hour, with capital city boost, for players at rank 39.
-                            float restXpFactorPerHour = (1 - (Level / 40f) * 0.5f) * 0.01f;
+                            float restXpFactorPerHour = (1 - (Level / 40.f) * 0.5f) * 0.01f;
 
                             // Capital city bonus x2
                             if (_Value.ZoneId == 162 || _Value.ZoneId == 161)
@@ -3414,7 +3414,7 @@ namespace WorldServer.World.Objects
         {
             int rankDiff = (AdjustedLevel + AdjustedRenown) - (victim.AdjustedLevel + victim.AdjustedRenown);
 
-            return Clamp(-0.0289f * rankDiff + 1.1397f, 0f, 10f);
+            return Clamp(-0.0289f * rankDiff + 1.1397f, 0.f, 10.f);
         }
 
         #endregion
@@ -3689,7 +3689,7 @@ namespace WorldServer.World.Objects
 
         /// <summary>Scaler applied to damage received or dealed when farming warcamps</summary>
         /// <remarks>The scaler is hidden to player, lower than 1 if debuffed (intended feature)</remarks>
-        public volatile float WarcampFarmScaler = 1f;
+        public volatile float WarcampFarmScaler = 1.f;
 
         /// <summary>
         /// Provides an opportunity for this unit to modify incoming ability damage from enemies.
@@ -3794,7 +3794,7 @@ namespace WorldServer.World.Objects
             return HealAggroInfo;
         }
 
-        public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1f, uint mitigation = 0)
+        public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1.f, uint mitigation = 0)
         {
             bool wasKilled = false;
             Player creditedPlayer = null;
@@ -4240,18 +4240,18 @@ namespace WorldServer.World.Objects
 
             #region Initialize reward values
 
-            float deathRewardScaler = 1f;
+            float deathRewardScaler = 1.f;
 
             if (_lastPvPDeathSeconds > 0)
-                deathRewardScaler = Math.Min(1f, (TCPManager.GetTimeStamp() - _lastPvPDeathSeconds) / (ScnInterface.Scenario == null ? 300f : 60f));
+                deathRewardScaler = Math.Min(1.f, (TCPManager.GetTimeStamp() - _lastPvPDeathSeconds) / (ScnInterface.Scenario == null ? 300.f : 60.f));
 
             _lastPvPDeathSeconds = TCPManager.GetTimeStamp();
 
             if (bonusMod == 0)
                 bonusMod = 1;
 
-            uint totalXP = (uint)(WorldMgr.GenerateXPCount(killer, this) * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
-            uint totalRenown = (uint)(WorldMgr.GenerateRenownCount(killer, this) * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
+            uint totalXP = (uint)(WorldMgr.GenerateXPCount(killer, this) * bonusMod * (1.f + killer.AAOBonus) * deathRewardScaler);
+            uint totalRenown = (uint)(WorldMgr.GenerateRenownCount(killer, this) * bonusMod * (1.f + killer.AAOBonus) * deathRewardScaler);
 
             if (Constants.DoomsdaySwitch > 0 && totalRenown < 100)
                 totalRenown = 100;
@@ -4262,7 +4262,7 @@ namespace WorldServer.World.Objects
             if (killer.CurrentArea != null && killer.CurrentArea.IsRvR)
             {
                 influenceId = (killer.Realm == Realms.REALMS_REALM_DESTRUCTION) ? (ushort)killer.CurrentArea.DestroInfluenceId : (ushort)killer.CurrentArea.OrderInfluenceId;
-                totalInfluence = (uint)(100 * bonusMod * (1f + killer.AAOBonus) * deathRewardScaler);
+                totalInfluence = (uint)(100 * bonusMod * (1.f + killer.AAOBonus) * deathRewardScaler);
             }
 
             killer.AddXp(totalXP, 1, false, false);
@@ -4344,7 +4344,7 @@ namespace WorldServer.World.Objects
                     looter.WorldGroup.AddMoney(looter, (uint)(Level * 12 * dropMod));
             }
 
-            lootContainer = LootsMgr.GenerateLoot(this, looter, 1f);
+            lootContainer = LootsMgr.GenerateLoot(this, looter, 1.f);
 
             if (lootContainer == null)
                 return;
@@ -4875,7 +4875,7 @@ namespace WorldServer.World.Objects
 
             // Offset the pull by a random factor of between 5 and 15 feet of the caster's position.
             if (fivefeetoverride == false)
-                pullOffsetFactor = Math.Min(1f, (10f + StaticRandom.Instance.Next(10)) / GetDistanceToObject(caster));
+                pullOffsetFactor = Math.Min(1.f, (10.f + StaticRandom.Instance.Next(10)) / GetDistanceToObject(caster));
             //if the 5 feet override is true then set it to 5 feet instead.
             else
                 pullOffsetFactor = 1f / GetDistanceToObject(caster);
@@ -5158,7 +5158,7 @@ namespace WorldServer.World.Objects
                 }
 
                 // More difficult for a target to spot a stealther if the approach is from the side or back
-                float spotDistMod = plr.IsObjectInFront(this, 90) ? 1f : (plr.IsObjectInFront(this, 240) ? 0.4f : 0.2f);
+                float spotDistMod = plr.IsObjectInFront(this, 90) ? 1.f : (plr.IsObjectInFront(this, 240) ? 0.4f : 0.2f);
                 // If stationary, much more difficult to spot
                 if (!IsMoving)
                     spotDistMod *= 0.2f;
@@ -5496,8 +5496,8 @@ namespace WorldServer.World.Objects
             // Applying bolster
             if (newMaxLevel > Level)
             {
-                StsInterface.BolsterFactor = (newMaxLevel == 0 ? 1f : (newMaxLevel + 1) / (float)(Level + 1));
-                ItmInterface.BolsterFactor = (newMaxLevel == 0 ? 0f : (newMaxLevel + 1) / (float)(Level + 1) - 1f);
+                StsInterface.BolsterFactor = (newMaxLevel == 0 ? 1.f : (newMaxLevel + 1) / (float)(Level + 1));
+                ItmInterface.BolsterFactor = (newMaxLevel == 0 ? 0.f : (newMaxLevel + 1) / (float)(Level + 1) - 1.f);
                 SendClientMessage($"Your Battle Rank has been increased to {newMaxLevel}!\nThis effect will persist until you leave the RvR area.");
             }
 
@@ -5516,8 +5516,8 @@ namespace WorldServer.World.Objects
 
             else
             {
-                StsInterface.BolsterFactor = (newMaxLevel == 0 ? 1f : (newMaxLevel + 1) / (float)(Level + 1));
-                ItmInterface.BolsterFactor = (newMaxLevel == 0 ? 0f : (newMaxLevel + 1) / (float)(Level + 1) - 1f);
+                StsInterface.BolsterFactor = (newMaxLevel == 0 ? 1.f : (newMaxLevel + 1) / (float)(Level + 1));
+                ItmInterface.BolsterFactor = (newMaxLevel == 0 ? 0.f : (newMaxLevel + 1) / (float)(Level + 1) - 1.f);
                 SendClientMessage($"Your Battle Rank of {Level} has been restored.");
                 Pet pet = CrrInterface.GetTargetOfInterest() as Pet;
                 pet?.Dismiss(null, null);

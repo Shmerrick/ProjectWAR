@@ -24,7 +24,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         // Minimum impact value for the record to be stored in the Impact Matrix
         public const int MIN_IMPACT_VALIDITY = 50;
         // The multiplier in the log curve for the impact of the bounty differences. Make this higher to see more pronounced effects between RR differences
-        public const float MODIFICATION_VALUE_MULTIPLIER = 3f;
+        public const float MODIFICATION_VALUE_MULTIPLIER = 3.0f;
         protected readonly EventInterface _EvtInterface = new EventInterface();
 
         public ImpactMatrixManager()

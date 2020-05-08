@@ -22,11 +22,11 @@ namespace WorldServer.World.Battlefronts.Bounty
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public const float BOUNTY_BASE_RP_MODIFIER = 180f;
+        public const float BOUNTY_BASE_RP_MODIFIER = 180.f;
         public const float BOUNTY_BASE_XP_MODIFIER = 5.5f;
         public const float BOUNTY_BASE_INF_MODIFIER = 0.4f;
-        public const float BOUNTY_BASE_MONEY_MODIFIER = 10f;
-        public const float BASE_RP_CEILING = 700f;
+        public const float BOUNTY_BASE_MONEY_MODIFIER = 10.f;
+        public const float BASE_RP_CEILING = 700.f;
         public const int BASE_MONEY_REWARD = 1000;
         public const int BASE_INFLUENCE_REWARD = 200;
         public const int BASE_XP_REWARD = 1000;
@@ -114,7 +114,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         public void DistributePlayerKillRewards(Player victim, Player killer, float aaoBonus, ushort influenceId, Dictionary<uint, Player> playerDictionary)
         {
-            float ASSIST_CREST_CHANCE = 12f;
+            float ASSIST_CREST_CHANCE = 12.f;
             RewardLogger.Info($"=============== START : {victim.Name} killed by {killer.Name}. AAO = {aaoBonus}===============");
             var repeatKillReward = GetRepeatKillModifier(victim, killer);
             RewardLogger.Trace($"+repeatKillReward={repeatKillReward}");
@@ -319,13 +319,13 @@ namespace WorldServer.World.Battlefronts.Bounty
             var xpRandom = StaticRandom.Instance.Next(50);
             if (xpRandom != 0)
             {
-                var xpMultipler = (xpRandom / 100f) + 1f;
+                var xpMultipler = (xpRandom / 100.f) + 1.0f;
                 return (int)Math.Floor(BASE_XP_REWARD * xpMultipler * externalModifier * impactFraction);
             }
             return 0;
         }
 
-        private float CalculateBaseRenownPoints(Player killer, Player victim, float modificationValue = 1)
+        private float CalculateBaseRenownPoints(Player killer, Player victim, float modificationValue = 1.0f)
         {
             var victimContributionValue = ContributionManager.GetContributionValue(victim.CharacterId);
             var killerContributionValue = ContributionManager.GetContributionValue(killer.CharacterId);
@@ -401,7 +401,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             var baseInfluence = 0;
             if (influenceRandom != 0)
             {
-                var influenceModifier = (influenceRandom / 100f) + 1f;
+                var influenceModifier = (influenceRandom / 100.f) + 1.0f;
                 return (int)Math.Floor(BASE_INFLUENCE_REWARD * influenceModifier * externalModifier * impactFraction);
             }
             return baseInfluence;
@@ -419,7 +419,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             var moneyRandom = StaticRandom.Instance.Next(50);
             if (moneyRandom != 0)
             {
-                var moneyMultipler = (moneyRandom / 100f) + 1f;
+                var moneyMultipler = (moneyRandom / 100.f) + 1.0f;
                 return (int)Math.Floor(BASE_MONEY_REWARD * moneyMultipler * externalModifier * impactFraction);
             }
             return 0;

@@ -553,7 +553,7 @@ namespace WorldServer.World.Scenarios
 
             else
             {
-                float scaleFactor = (500 - Score[winningTeam]) * (1f / _rampFactor) / Score[winningTeam];
+                float scaleFactor = (500 - Score[winningTeam]) * (1.f / _rampFactor) / Score[winningTeam];
 
                 GivePoints(losingTeam + 1, (uint)(Score[losingTeam] * scaleFactor));
                 GivePoints(winningTeam + 1, (uint)(Score[winningTeam] * scaleFactor));
@@ -1264,7 +1264,7 @@ namespace WorldServer.World.Scenarios
             float popFactor;
 
             if (Players[0].Count == 0 || Players[1].Count == 0)
-                popFactor = 2f;
+                popFactor = 2.f;
 
             else
             {

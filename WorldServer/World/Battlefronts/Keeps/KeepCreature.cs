@@ -19,7 +19,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         public KeepNpcCreature FlagGuard;
         private readonly BattleFrontKeep _keep;
         /// <summary>Incoming damage scaler from 0.25 to 1<summary>
-        private volatile float _damageScaler = 1f;
+        private volatile float _damageScaler = 1.f;
         public AIInterface NearAiInterface = null;
         public int DefenceRank { get; set; }
 
@@ -60,7 +60,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             }
         }
 
-        public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1f, uint mitigation = 0)
+        public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1.f, uint mitigation = 0)
         {
             if (_keep.KeepStatus == KeepStatus.KEEPSTATUS_LOCKED)
                 return false;

@@ -15,11 +15,11 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
         private int rangeMax = 25;
 
-        private float _rangeBonusPct1 = 0f;
-        private readonly float _rangeBonusPct2Pet = 0f;
-        private readonly float _rangeReductionPct3 = 0f;
+        private float _rangeBonusPct1 = 0.f;
+        private readonly float _rangeBonusPct2Pet = 0.f;
+        private readonly float _rangeReductionPct3 = 0.f;
 
-        private readonly float _radiusBonusPctMaster = 50f/8f;
+        private readonly float _radiusBonusPctMaster = 50.f/8.f;
         private readonly ushort _dodgeDisruptBonus = 0;
         private readonly ushort _dodgeDisruptBonusPet = 0;
 

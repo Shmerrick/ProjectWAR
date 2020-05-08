@@ -225,21 +225,21 @@ namespace WorldServer.World.Interfaces
 
             if (ownerPlayer._Value.GatheringSkillLevel < 200)
             {
-                if ((ownerPlayer._Value.GatheringSkillLevel - _seedLvl) * 3 <= (float)StaticRandom.Instance.NextDouble() * 100f)
+                if ((ownerPlayer._Value.GatheringSkillLevel - _seedLvl) * 3 <= (float)StaticRandom.Instance.NextDouble() * 100.f)
                 { 
                     ownerPlayer._Value.GatheringSkillLevel++;
                     _ownerInterface.PendingSkillUpdate = true;
                 }
             }
 
-            if ((float)StaticRandom.Instance.NextDouble() * 100f <= _failureChance)
+            if ((float)StaticRandom.Instance.NextDouble() * 100.f <= _failureChance)
                 _result = 0;
             else
             {
                 _result = 1;
-                if ((float)StaticRandom.Instance.NextDouble() * 100f <= _criticalChance)
+                if ((float)StaticRandom.Instance.NextDouble() * 100.f <= _criticalChance)
                     _result = 2;
-                if ((float)StaticRandom.Instance.NextDouble() * 100f <= _specialMomentChance)
+                if ((float)StaticRandom.Instance.NextDouble() * 100.f <= _specialMomentChance)
                     _result = 3;
             }
         }
@@ -311,7 +311,7 @@ namespace WorldServer.World.Interfaces
                         harvester.ItmInterface.CreateItem(dyepigment += 3, 1, true);
                     else
                     {
-                        if (50 > (float)StaticRandom.Instance.NextDouble() * 100f)
+                        if (50 > (float)StaticRandom.Instance.NextDouble() * 100.f)
                             harvester.ItmInterface.CreateItem(dyepigment += 4, 1, true);
                         else
                             harvester.ItmInterface.CreateItem(dyepigment += 5, 1, true);

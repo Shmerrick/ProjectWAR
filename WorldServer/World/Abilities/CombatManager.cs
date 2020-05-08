@@ -836,14 +836,14 @@ namespace WorldServer.World.Abilities
             {
                 #region Armour / Resistance
 
-                float originalResistance, damageTypeResistance = 0;
+                float originalResistance, damageTypeResistance = 0.f;
 
                 if (damageInfo.DamageType == 0) // physical damage
                 {
                     if (damageInfo.SubDamageType != SubDamageTypes.Oil)
                     {
                         float secondaryStat = caster.StsInterface.GetTotalStat(Stats.WeaponSkill);
-                        float pen = secondaryStat / (7.5f * caster.EffectiveLevel + 50f) * 0.25f;
+                        float pen = secondaryStat / (7.5f * caster.EffectiveLevel + 50.f) * 0.25f;
 
                         originalResistance = target.StsInterface.GetTotalStat(Stats.Armor);
 
@@ -1029,8 +1029,8 @@ namespace WorldServer.World.Abilities
 
         public static void InflictDamage(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target)
         {
-            float damageBonus = 0;
-            float damageReduction = 1;
+            float damageBonus = 0.f;
+            float damageReduction = 1.f;
 
             caster.CbtInterface.RefreshCombatTimer();
             target.CbtInterface.OnAttacked(caster);
@@ -1217,8 +1217,8 @@ namespace WorldServer.World.Abilities
 
         public static void InflictAutoAttackDamage(EquipSlot slot, Unit caster, Unit target)
         {
-            float damageBonus = 0;
-            float damageReduction = 1;
+            float damageBonus = 0.f;
+            float damageReduction = 1.f;
 
             AbilityDamageInfo damageInfo = new AbilityDamageInfo { StatDamageScale = 1 };
 
@@ -1426,8 +1426,8 @@ namespace WorldServer.World.Abilities
 
         public static void InflictOffhandDamage(Unit caster, Unit target)
         {
-            float damageBonus = 0;
-            float damageReduction = 1;
+            float damageBonus = 0.f;
+            float damageReduction = 1.f;
 
             AbilityDamageInfo damageInfo = new AbilityDamageInfo { StatUsed = 1, StatDamageScale = 1 };
 
@@ -2286,7 +2286,7 @@ namespace WorldServer.World.Abilities
 
             float secondaryStat = casterStats.GetTotalStat(Stats.WeaponSkill);
             float bonusStat = (casterStats.GetBonusStat(Stats.ArmorPenetration) - casterStats.GetReducedStat(Stats.ArmorPenetration)) * 0.01f;
-            float pen = Math.Min(1f, secondaryStat / (7.5f * caster.EffectiveLevel + 50f) * 0.25f + bonusStat);
+            float pen = Math.Min(1.f, secondaryStat / (7.5f * caster.EffectiveLevel + 50.f) * 0.25f + bonusStat);
             float penRes = targetStats.GetBonusStat(Stats.ArmorPenetrationReduction) * 0.01f;
 
             if (penRes > pen)
