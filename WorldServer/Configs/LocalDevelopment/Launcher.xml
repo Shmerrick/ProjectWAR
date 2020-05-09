@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <LauncherConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <IConfiguredTheFile>true</IConfiguredTheFile>
+  <IConfiguredTheFile>false</IConfiguredTheFile>
   <LauncherServerPort>8000</LauncherServerPort>
   <Version>1</Version>
   <Message>Invalid launcher version.
@@ -22,5 +22,5 @@
   <PatcherFilesPath>PatcherFilesDirectory</PatcherFilesPath>
   <TempFilesPath>TempFilesDirectory</TempFilesPath>
   <ServerState>CLOSED</ServerState>
-  <PatchNotes>Welcome to WAR: Apocalypse</PatchNotes>
+  <PatchNotes>Welcome to Warhammer Online: Age of Reckoning!</PatchNotes>
 </LauncherConfig>

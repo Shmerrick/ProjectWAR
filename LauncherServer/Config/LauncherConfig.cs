@@ -17,6 +17,6 @@ namespace AuthenticationServer.Config
         public string PatcherFilesPath = "PatcherFilesDirectory";
         public string TempFilesPath = "TempFilesDirectory";
         public ServerState ServerState = ServerState.CLOSED;
-        public string PatchNotes = "Welcome to WAR: Apocalypse";
+        public string PatchNotes = "Welcome to Warhammer Online: Age of Reckoning!";
     }
 }
