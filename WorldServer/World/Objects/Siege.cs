@@ -271,7 +271,7 @@ namespace WorldServer.World.Objects
 
         // RB   5/21/2016   Damage Resistance for siege
         /// <summary>Inflicts damage upon this unit.</summary>
-        public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1.f, uint mitigation = 0)
+        public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1f, uint mitigation = 0)
         {
             bool wasKilled = false;
             Player creditedPlayer = null;
@@ -558,8 +558,8 @@ namespace WorldServer.World.Objects
 
             #region Initialize reward values
 
-            uint totalXP = (uint)(500 * Region.GetTier() * Math.Min(6.f, _damageOut / (float)100) * (1.f + killer.AAOBonus));
-            uint totalRenown = (uint)(100 * Region.GetTier() * Math.Min(6.f, _damageOut / (float)100) * (1.f + killer.AAOBonus));
+            uint totalXP = (uint)(500 * Region.GetTier() * Math.Min(6f, _damageOut / (float)100) * (1f + killer.AAOBonus));
+            uint totalRenown = (uint)(100 * Region.GetTier() * Math.Min(6f, _damageOut / (float)100) * (1f + killer.AAOBonus));
 
             ushort influenceId = 0;
             uint totalInfluence = 0;
@@ -567,7 +567,7 @@ namespace WorldServer.World.Objects
             if (killer.CurrentArea != null && killer.CurrentArea.IsRvR)
             {
                 influenceId = (killer.Realm == Realms.REALMS_REALM_DESTRUCTION) ? (ushort)killer.CurrentArea.DestroInfluenceId : (ushort)killer.CurrentArea.OrderInfluenceId;
-                totalInfluence = (uint)(100 * (1.f + killer.AAOBonus));
+                totalInfluence = (uint)(100 * (1f + killer.AAOBonus));
             }
 
             #endregion
@@ -592,7 +592,7 @@ namespace WorldServer.World.Objects
                 uint renownShare = (uint)(totalRenown * damageFactor);
                 ushort influenceShare = (ushort)(totalInfluence * damageFactor);
 
-                if (damageFactor >= 2.f)
+                if (damageFactor >= 2f)
                 {
                     curPlayer.SendClientMessage("You dealt " + kvpair.Value + " damage to " + Name + ", but they only took " + TotalDamageTaken + " total damage. No rewards have been given.");
                     continue;

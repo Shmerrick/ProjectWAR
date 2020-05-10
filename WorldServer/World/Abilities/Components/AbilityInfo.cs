@@ -141,7 +141,7 @@ namespace WorldServer.World.Abilities.Components
         public bool CanCastWhileMoving;
 
         public CommandTargetTypes TargetType { get; set; }
-        public float FlightTimeMod = 1.f;
+        public float FlightTimeMod = 1f;
 
         public Unit Instigator;
         public Unit Target;

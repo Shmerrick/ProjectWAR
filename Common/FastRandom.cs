@@ -49,7 +49,7 @@ namespace Common
 
         public float randomFloat()
         {
-            return randomLong() / (long.MaxValue - 1.0f);
+            return randomLong() / (long.MaxValue - 1f);
         }
 
         public float randomPosFloat()
@@ -154,7 +154,7 @@ namespace Common
 
         public float randomFloat()
         {
-            return randomLong() / (long.MaxValue - 1.0f);
+            return randomLong() / (long.MaxValue - 1f);
         }
 
         public float randomPosFloat()

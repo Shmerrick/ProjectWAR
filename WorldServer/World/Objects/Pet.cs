@@ -43,12 +43,12 @@ namespace WorldServer.World.Objects
 
         public bool IsHeeling;
 
-        public float SpeedMult = 1.f;
+        public float SpeedMult = 1f;
         public static long COMMAND_ATTACK_REUSE = 500;
         public long AttackReuseTimer = TCPManager.GetTimeStampMS();
 
         private WeaponDamageContribution _weaponDamageContribution;
-        private float _weaponDamageFactor = 1.f;
+        private float _weaponDamageFactor = 1f;
 
         private bool _ignoreZ;
 
@@ -121,7 +121,7 @@ namespace WorldServer.World.Objects
         {
             if (Owner.Info.CareerLine == (int)CareerLine.CAREERLINE_MAGUS)
                 StsInterface.Load(CharMgr.GetCharacterInfoStats((byte) CareerLine.CAREERLINE_MAGUS, Math.Min(Level, (byte) 40)));
-            float armorMod = 1.0f, resistMod = 1.0f, woundsMod = 1.f, itemWoundsMod = 0.f;
+            float armorMod = 1.0f, resistMod = 1.0f, woundsMod = 1f, itemWoundsMod = 0f;
 
             switch (Spawn.Proto.Model1)
             {
@@ -132,8 +132,8 @@ namespace WorldServer.World.Objects
                 case 134:
                 case 135:
                     StsInterface.Load(CharMgr.GetCharacterInfoStats((byte)CareerLine.CAREERLINE_WAR_LION, Math.Min(Level, (byte)40)));
-                    woundsMod = 1.f;
-                    itemWoundsMod = 1.f;
+                    woundsMod = 1f;
+                    itemWoundsMod = 1f;
                     _weaponDamageContribution = WeaponDamageContribution.MainHand;
                     break;
 
@@ -143,8 +143,8 @@ namespace WorldServer.World.Objects
                 case 1142: // Giant Scorpion
                 case 1272: // Hydra
                     StsInterface.Load(CharMgr.GetCharacterInfoStats((byte)CareerLine.CAREERLINE_WAR_MANTICORE, Math.Min(Level, (byte)40)));
-                    woundsMod = 1.f;
-                    itemWoundsMod = 1.f;
+                    woundsMod = 1f;
+                    itemWoundsMod = 1f;
                     _weaponDamageContribution = WeaponDamageContribution.MainHand;
                     break;
 
@@ -152,7 +152,7 @@ namespace WorldServer.World.Objects
                 case 136:
                     StsInterface.Load(CharMgr.GetCharacterInfoStats((byte)CareerLine.CAREERLINE_SQUIG, Math.Min(Level, (byte)40)));
                     armorMod = 2.0f;
-                    woundsMod = 1.f;
+                    woundsMod = 1f;
                     itemWoundsMod = 0.5f;
                     _weaponDamageContribution = WeaponDamageContribution.MainHand;
                     break; 
@@ -161,8 +161,8 @@ namespace WorldServer.World.Objects
                     StsInterface.Load(CharMgr.GetCharacterInfoStats((byte)CareerLine.CAREERLINE_HORNED_SQUIG, Math.Min(Level, (byte)40)));
                     armorMod = 2.0f;
                     resistMod = 0.5f;
-                    woundsMod = 1.f;
-                    itemWoundsMod = 1.f;
+                    woundsMod = 1f;
+                    itemWoundsMod = 1f;
                     _weaponDamageContribution = WeaponDamageContribution.MainAndRanged;
                     break;
                 // Spiked Squig
@@ -191,8 +191,8 @@ namespace WorldServer.World.Objects
                     break;
                 // Blue Horror 
                 case 142:
-                    armorMod = 2.f;
-                    woundsMod = 1.f;
+                    armorMod = 2f;
+                    woundsMod = 1f;
                     _weaponDamageContribution = WeaponDamageContribution.MainHand;
                     _weaponDamageFactor = 0.85f;
                     break;
@@ -219,16 +219,16 @@ namespace WorldServer.World.Objects
                     break;
                 // Flame Turret
                 case 147:
-                    armorMod = 2.f;
-                    woundsMod = 1.f;
+                    armorMod = 2f;
+                    woundsMod = 1f;
                     _weaponDamageContribution = WeaponDamageContribution.MainAndRanged;
                     break;
 
                 // This is to handle .setpet command, it sets the stats of Lion / Manticore
                 default:
                     StsInterface.Load(CharMgr.GetCharacterInfoStats((byte)CareerLine.CAREERLINE_WAR_MANTICORE, Math.Min(Level, (byte)40)));
-                    woundsMod = 1.f;
-                    itemWoundsMod = 1.f;
+                    woundsMod = 1f;
+                    itemWoundsMod = 1f;
                     _weaponDamageContribution = WeaponDamageContribution.MainHand;
                     break;
             }
@@ -237,7 +237,7 @@ namespace WorldServer.World.Objects
 
             StsInterface.AddItemBonusStat(Stats.Willpower, Owner.StsInterface.GetItemStat(Stats.Willpower));
 
-            if (itemWoundsMod > 0.f)
+            if (itemWoundsMod > 0f)
                 StsInterface.AddItemBonusStat(Stats.Wounds, (ushort)(Owner.StsInterface.GetItemStat(Stats.Wounds) * itemWoundsMod));
 
             StsInterface.AddItemBonusStat(Stats.Initiative, Owner.StsInterface.GetItemStat(Stats.Initiative));
@@ -256,11 +256,11 @@ namespace WorldServer.World.Objects
                 /*if(Owner.Info.CareerLine == (int)CareerLine.CAREERLINE_WHITELION)
                     return (ushort)(Owner.ItmInterface.GetWeaponDamage(_weaponDamageContribution) * 2.5f * _weaponDamageFactor);
                 else*/
-                    return (ushort)(Owner.ItmInterface.GetWeaponDamage(_weaponDamageContribution) * 10.f * _weaponDamageFactor);
+                    return (ushort)(Owner.ItmInterface.GetWeaponDamage(_weaponDamageContribution) * 10f * _weaponDamageFactor);
 
             if (Spawn.Proto.Ranged <= 30)
-                return (ushort)(19.f * Level); // 76 DPS at rank 40
-            return (ushort)(12.f * Level); // 48 DPS at rank 40
+                return (ushort)(19f * Level); // 76 DPS at rank 40
+            return (ushort)(12f * Level); // 48 DPS at rank 40
         }
 
         public void DistanceDebug()

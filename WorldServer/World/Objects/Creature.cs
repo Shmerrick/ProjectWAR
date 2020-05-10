@@ -81,8 +81,8 @@ namespace WorldServer.World.Objects
                 switch (Rank)
                 {
                     case 1: statBonusMult = 2.25f; break;
-                    case 2: statBonusMult = 6.f; break;
-                    case 3: statBonusMult = 12.f; break;
+                    case 2: statBonusMult = 6f; break;
+                    case 3: statBonusMult = 12f; break;
                 }
             }
             // NPC Career:
@@ -266,12 +266,12 @@ namespace WorldServer.World.Objects
 
         public virtual ushort GetStrikeDamage()
         {
-            ushort strikeDamage = (ushort)(50.f * Level); // Normal NPC
+            ushort strikeDamage = (ushort)(50f * Level); // Normal NPC
             switch (Rank)
             {
-                case 1: strikeDamage = (ushort)(120.f * Level); break; // Champ
-                case 2: strikeDamage = (ushort)(300.f * Level); break; // Hero
-                case 3: strikeDamage = (ushort)(700.f * Level); break; // Lord
+                case 1: strikeDamage = (ushort)(120f * Level); break; // Champ
+                case 2: strikeDamage = (ushort)(300f * Level); break; // Hero
+                case 3: strikeDamage = (ushort)(700f * Level); break; // Lord
             }
 
             if (Spawn.Proto.WeaponDPS != 0)
@@ -282,7 +282,7 @@ namespace WorldServer.World.Objects
 
         protected ushort GenerateWounds(byte level, byte rank)
         {
-            float wounds = 0.f;
+            float wounds = 0;
             wounds += 70 * (level + level / 2);
 
             switch (rank)

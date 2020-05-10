@@ -345,7 +345,7 @@ namespace WorldServer.World.Interfaces
             Boolean sppecialmoment = false;
             Boolean critt = false;
 
-            float rand = ((float)StaticRandom.Instance.NextDouble() * 100.f);
+            float rand = ((float)StaticRandom.Instance.NextDouble() * 100f);
 
             if (rand <= 3)
             {
@@ -427,7 +427,7 @@ namespace WorldServer.World.Interfaces
             _myPlayer.ItmInterface.CreateItem(itemid, 1);
 
 
-                if (_myPlayer._Value.CraftingSkillLevel < 200 && (((_myPlayer._Value.CraftingSkillLevel - _myPlayer.ItmInterface.GetItemInSlot(_slot1).Info.Unk27[14]) * 3) < ((float)StaticRandom.Instance.NextDouble() * 100.f)))
+                if (_myPlayer._Value.CraftingSkillLevel < 200 && (((_myPlayer._Value.CraftingSkillLevel - _myPlayer.ItmInterface.GetItemInSlot(_slot1).Info.Unk27[14]) * 3) < ((float)StaticRandom.Instance.NextDouble() * 100f)))
                 {
                     _myPlayer._Value.CraftingSkillLevel++;
                     SetBasePower();

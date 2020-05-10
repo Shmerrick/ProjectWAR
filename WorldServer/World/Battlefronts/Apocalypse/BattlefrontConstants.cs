@@ -43,7 +43,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static int FLAG_SECURE_REWARD_INTERVAL = 6000;
 
         /// <summary>Base reward scaler for players defending a secured flag</summary>
-        public static float FLAG_SECURE_REWARD_SCALER = 50.f; 
+        public static float FLAG_SECURE_REWARD_SCALER = 50f; //50f
 
         /// <summary>Scaler applied to contributions in order to compute lock rewards</summary>
         public static float LOCK_REWARD_SCALER = 0.25f;
@@ -54,7 +54,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// Minimal number of victory points required for locking
         /// NOT What the game is using as lock values.
         /// </summary>
-        public static float LOCK_VICTORY_POINTS = 1000.f;
+        public static float LOCK_VICTORY_POINTS = 1000f;
 
         #endregion
 

@@ -13,10 +13,10 @@ namespace WorldServer.World.Interfaces
         public bool MoveAndShoot { get; set; }
 
         private float _autoAttackSpeedBonus
-            => _player.StsInterface.GetBonusStat(Stats.AutoAttackSpeed) / 100.f;
+            => _player.StsInterface.GetBonusStat(Stats.AutoAttackSpeed) / 100f;
 
         private float _autoAttackSpeedReduction
-            => _player.StsInterface.GetReducedStat(Stats.AutoAttackSpeed) / 100.f;
+            => _player.StsInterface.GetReducedStat(Stats.AutoAttackSpeed) / 100f;
 
         public override void SetOwner(Object owner)
         {

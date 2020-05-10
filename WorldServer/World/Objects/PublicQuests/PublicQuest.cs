@@ -1058,7 +1058,7 @@ namespace WorldServer.World.Objects.PublicQuests
 
 #endregion
 
-            float leftoverFactor = 1.f - totalHealing / totalDamageDealt;
+            float leftoverFactor = 1f - totalHealing / totalDamageDealt;
 
             if (leftoverFactor > 0)
             {
@@ -1139,8 +1139,8 @@ namespace WorldServer.World.Objects.PublicQuests
                 // Divide the contribution by the number of members, 
                 // and add a scaling bonus depending on how
                 // balanced the current group is, up to 4x.
-                float balanceBonusMult = 1.f - _balance.Magnitude;
-                contrib = (uint)(contrib * (1.f / _inGroup.Count) * (1 + balanceBonusMult));
+                float balanceBonusMult = 1f - _balance.Magnitude;
+                contrib = (uint)(contrib * (1f / _inGroup.Count) * (1 + balanceBonusMult));
 
                 foreach (Player player in _inGroup)
                 {

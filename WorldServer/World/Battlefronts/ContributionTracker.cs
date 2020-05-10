@@ -24,7 +24,7 @@ namespace WorldServer.World.Battlefronts
         private readonly int _tier;
         private readonly RegionMgr _region;
 
-        private float WinnerShare = 1.f;
+        private float WinnerShare = 1f;
         private float LoserShare = 0.1f;
 
         /// <summary>
@@ -67,13 +67,13 @@ namespace WorldServer.World.Battlefronts
             // Better rewards depending on group organization status.
             if (plr.WorldGroup == null)
             {
-                contributionScaler = 1.f;
+                contributionScaler = 1f;
                 contrib.ActiveTimeEnd = TCPManager.GetTimeStamp() + 90; // 1.5 minutes for solo
             }
             else
             {
                 int memberCount = plr.WorldGroup.TotalMemberCount;
-                contributionScaler = 1.f + memberCount * 0.05f;
+                contributionScaler = 1f + memberCount * 0.05f;
                 contrib.ActiveTimeEnd = TCPManager.GetTimeStamp() + 90 + (10 * memberCount); // 4.5 minutes for full warband
             }
 
@@ -109,7 +109,7 @@ namespace WorldServer.World.Battlefronts
                 foreach (var kVr in _toRemove)
                 {
                     // Convert contribution to XP/RP based on current loss rates.
-                    float contributionFactor = Math.Min(1.f, kVr.Value.BaseContribution / (maxContrib * 0.7f));
+                    float contributionFactor = Math.Min(1f, kVr.Value.BaseContribution / (maxContrib * 0.7f));
 
                     uint rp = (uint)(Math.Min(rpCap, maxContrib * 1.5f * LoserShare * contributionFactor));
                     uint xp = rp * 5;
@@ -356,7 +356,7 @@ namespace WorldServer.World.Battlefronts
                     if (winRP == 0)
                         continue;
 
-                    float contributionFactor = Math.Min(1.f, contrib.BaseContribution / (winMaxContrib * 0.7f));
+                    float contributionFactor = Math.Min(1f, contrib.BaseContribution / (winMaxContrib * 0.7f));
 
                     string contributionDesc;
 
@@ -471,7 +471,7 @@ namespace WorldServer.World.Battlefronts
                     if (lossRP == 0)
                         continue;
 
-                    float scaleFactor = Math.Min(1.f, contrib.BaseContribution / (loserMaxContrib * 0.7f));
+                    float scaleFactor = Math.Min(1f, contrib.BaseContribution / (loserMaxContrib * 0.7f));
 
                     string contributionDesc;
 

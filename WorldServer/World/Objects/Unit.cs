@@ -214,7 +214,7 @@ namespace WorldServer.World.Objects
         /// <summary>
         /// Scaler applied to damage/heal received or dealed in instance boss fights.
         /// </summary>
-        public volatile float ModifyDmgHealScaler = 1.f;
+        public volatile float ModifyDmgHealScaler = 1f;
 
         public Unit()
         {

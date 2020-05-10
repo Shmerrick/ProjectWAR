@@ -150,9 +150,9 @@ namespace WorldServer.Managers
         /*private const float DROP_BONUS_CHAMP = 0.2f;
         private const float DROP_BONUS_HERO = 0.04f;
 
-        private const float RARITY_COMMON_GEAR = 20.f;
+        private const float RARITY_COMMON_GEAR = 20f;
 
-        private static readonly float[] RARITIES = { 5.0f, 0.4f, 0.02f };
+        private static readonly float[] RARITIES = { 5f, 0.4f, 0.02f };
 
         private const byte MAX_EASE_IN_LEVEL = 7;*/
 
