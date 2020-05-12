@@ -1,8 +1,7 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.29521.150
-MinimumVisualStudioVersion = 10.0.40219.1
+VisualStudioVersion = 16.5.5
+MinimumVisualStudioVersion = 16.0.29521.150
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{8BC085CD-429B-41D1-BB47-9621FD32EC23}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D5C98F3A-D5D2-4AED-A5A7-06D2DE095095} = {D5C98F3A-D5D2-4AED-A5A7-06D2DE095095}
