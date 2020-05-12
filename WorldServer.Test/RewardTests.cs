@@ -36,9 +36,6 @@ namespace WorldServer.Test
         [TestMethod]
         public void CalculateAdditionalBagsDueToEnemyRatio()
         {
-
-            var x = (int) (1000 * 1.0f);
-
             var fakeBountyManager = A.Fake<IBountyManager>();
             var fakeContributionManager = A.Fake<IContributionManager>();
             var fakeImpactMatrixManager = A.Fake<IImpactMatrixManager>();

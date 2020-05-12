@@ -367,7 +367,7 @@ namespace Launcher
         {
             if (!Enum.IsDefined(typeof(Opcodes), (byte)packet.Opcode))
             {
-                Print($"Invalid opcode : {packet.Opcode.ToString("X02")}");
+                Print($"Invalid opcode : {packet.Opcode:X02}");
                 return;
             }
 

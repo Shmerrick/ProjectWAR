@@ -210,7 +210,7 @@ namespace WorldServer.API
                     _server.DeleteClient(client);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                // _server._log.Append("Client disconnected", LogType.NET);
             }

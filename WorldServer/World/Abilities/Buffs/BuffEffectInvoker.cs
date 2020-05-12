@@ -4694,7 +4694,9 @@ namespace WorldServer.World.Abilities.Buffs
         {
             return true;
 
+#pragma warning disable CS0162 // Обнаружен недостижимый код
             Player player = (Player)hostBuff.Caster;
+#pragma warning restore CS0162 // Обнаружен недостижимый код
 
             return player.CurrentSiege == null;
         }

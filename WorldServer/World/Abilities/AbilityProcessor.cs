@@ -185,10 +185,10 @@ namespace WorldServer.World.Abilities
 
                 temp += " " + abInfo.abilityID.ToString();
 
-                if (abInfo.effectID2 != null)
+                if (abInfo.effectID2 != 0)
                     temp += " " + abInfo.effectID2.ToString();
 
-                if (abInfo.Time != null && (!abInfo.VFXTarget.Contains("Pet") || (abInfo.VFXTarget.Contains("Hostile") && (_caster as Player).CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY).IsPlayer()) || (abInfo.VFXTarget.Contains("Friendly") && (_caster as Player).CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ALLY).IsPlayer())))
+                if (abInfo.Time != 0 && (!abInfo.VFXTarget.Contains("Pet") || (abInfo.VFXTarget.Contains("Hostile") && (_caster as Player).CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY).IsPlayer()) || (abInfo.VFXTarget.Contains("Friendly") && (_caster as Player).CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ALLY).IsPlayer())))
                     temp += " " + abInfo.Time.ToString() + " 0";
 
                 if (abInfo.VFXTarget.Contains("aoe"))

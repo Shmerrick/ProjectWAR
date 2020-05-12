@@ -36,7 +36,9 @@ namespace Common
         public string Description { get; set; }
 
         [DataElement(Varchar = 255, AllowDbNull = false)]
+#pragma warning disable CS0108 // Член скрывает унаследованный член: отсутствует новое ключевое слово
         public string ObjectId { get; set; }
+#pragma warning restore CS0108 // Член скрывает унаследованный член: отсутствует новое ключевое слово
 
         [DataElement(Varchar = 255, AllowDbNull = true)]
         public string ObjectId2 { get; set; }

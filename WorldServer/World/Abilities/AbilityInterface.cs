@@ -529,13 +529,13 @@ namespace WorldServer.World.Abilities
             {
                 long nextTimestamp = 0;
 
-                if (abInfo.CDcap != null && abInfo.CDcap * 1000 > duration)
+                if (abInfo.CDcap != 0 && abInfo.CDcap * 1000 > duration)
                     nextTimestamp = (abInfo.CDcap * 1000) + TCPManager.GetTimeStampMS();
 
                 else
                     nextTimestamp = (duration) + TCPManager.GetTimeStampMS();
 
-                if (duration == -1 && abInfo.CDcap == null)
+                if (duration == -1 && abInfo.CDcap == 0)
                     nextTimestamp = 0;
                 Cooldowns[abilityId] = nextTimestamp;
 

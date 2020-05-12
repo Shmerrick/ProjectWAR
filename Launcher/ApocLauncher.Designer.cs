@@ -513,7 +513,6 @@ namespace Launcher
 
         private System.Windows.Forms.TextBox T_username;
         private System.Windows.Forms.MaskedTextBox T_password;
-        private System.Windows.Forms.Button B_start;
         private System.Windows.Forms.DataGridViewTextBoxColumn RealmName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Online;
         private System.Windows.Forms.DataGridViewTextBoxColumn Players;
