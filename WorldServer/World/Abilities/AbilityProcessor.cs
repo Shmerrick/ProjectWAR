@@ -166,7 +166,7 @@ namespace WorldServer.World.Abilities
             SendStart();
 
             //Secondary system for VFX
-            if (abInfo.VFXTarget != null && abInfo.abilityID != null && _caster is Player)
+            if (abInfo.VFXTarget != null && abInfo.abilityID != 0 && _caster is Player)
             {
                 string temp = "";
 

@@ -4037,7 +4037,9 @@ namespace WorldServer.Managers.Commands
             }
             else
             {
-                values = (List<string>)values;
+#pragma warning disable CS1717 // Назначение выполнено для той же переменной
+                values = values;
+#pragma warning restore CS1717 // Назначение выполнено для той же переменной
                 SetEffectStateSelf(plr, ref values);
             }
             return true;

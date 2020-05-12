@@ -1432,8 +1432,10 @@ namespace WorldServer.World.Abilities.Buffs
                 case BUFF_TICK:
                 case BUFF_END:
                     Player player = (Player)hostBuff.Caster;
+#pragma warning disable CS1030 // Директива #warning
 #warning EX mode - link offhand regen to battlefield conditions
                     if (cmd.Entry > 14000 && player.CrrInterface.ExperimentalMode)
+#pragma warning restore CS1030 // Директива #warning
                         player.CrrInterface.AddResource((byte)cmd.PrimaryValue, cmd.SecondaryValue == 1);
                     else if (cmd.PrimaryValue > 0)
                         player.CrrInterface.AddResource((byte)cmd.PrimaryValue, cmd.SecondaryValue == 1);

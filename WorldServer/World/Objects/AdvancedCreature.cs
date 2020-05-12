@@ -19,12 +19,12 @@ namespace WorldServer.World.Objects
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public Creature_spawn Spawn;
+        public new Creature_spawn Spawn;
         public uint ProtoEntryId { get; set; }
-        protected byte Scale { get; set; }
-        public ushort Ranged { get; set; }
-        public ushort Model1 { get; set; }
-        public ushort Model2 { get; set; }
+        protected new byte Scale { get; set; }
+        public new ushort Ranged { get; set; }
+        public new ushort Model1 { get; set; }
+        public new ushort Model2 { get; set; }
 
         public List<Waypoint> Waypoints { get; set; }
 
@@ -49,7 +49,7 @@ namespace WorldServer.World.Objects
 
             
         }
-        public long GetTimeStampInMilliseconds()
+        public new long GetTimeStampInMilliseconds()
         {
             return DateTime.Now.Millisecond;
         }

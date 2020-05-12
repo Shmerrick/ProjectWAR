@@ -503,7 +503,7 @@ namespace WorldServer.World.Abilities
             if (abInfo.IgnoreCooldownReduction == 1 && (abInfo.Cooldown * 1000) >= duration)
             {
                 long nextTimestamp = 0;
-                if (abInfo.CDcap != null && abInfo.CDcap * 1000 > duration)
+                if (abInfo.CDcap != 0 && abInfo.CDcap * 1000 > duration)
                     nextTimestamp = (abInfo.CDcap * 1000) + TCPManager.GetTimeStampMS();
 
                 else
