@@ -90,7 +90,6 @@ namespace WorldServer.World.Battlefronts.Bounty
                 }
                 return new CharacterBounty();
             }
-            return new CharacterBounty();
         }
     }
 }

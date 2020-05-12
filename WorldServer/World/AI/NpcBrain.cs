@@ -25,7 +25,7 @@ namespace WorldServer.World.AI
         public IEnumerable<CreatureSmartAbilities> Abilities { get; set; }
         public Dictionary<CreatureSmartAbilities, long> AbilityTracker { get; set; }
 
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static new readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public Creature_proto Proto { get; set; }
 

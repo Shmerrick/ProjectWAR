@@ -899,8 +899,10 @@ namespace WorldServer.World.Abilities
                     Out.Fill(0, 4);
                     _playerOwner.SendPacket(Out);
 
+#pragma warning disable CS1030 // Директива #warning
 #warning FIXME. This is a skill send packet, but it sends 5 skills - 4 empties and this mastery skill at rank 0. Why is it here? - Az
                     if (_activeSkillsInTree[i, j] == 1)
+#pragma warning restore CS1030 // Директива #warning
                     {
                         Out = new PacketOut((byte)Opcodes.F_CHARACTER_INFO, 48);
                         Out.WriteByte(1);

@@ -7,7 +7,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 {
     class CareerInterface_WhiteLion : CareerInterface, IPetCareerInterface
     {
-        public Pet myPet { get; set; }
+        public new Pet myPet { get; set; }
 
         // This is variable that store current pet health
         uint currentHealth;

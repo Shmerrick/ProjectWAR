@@ -181,7 +181,7 @@ namespace WorldServer.API
 
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //  _server.DeleteClient(this);
             }

@@ -1165,7 +1165,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         /// A scale factor determined by the population ratio between the realms as determined by the maximum players they fielded over the last 15 minutes.
         /// </summary>
-        private float _relativePopulationFactor;
+        private readonly float _relativePopulationFactor;
 
         /// <summary>
         /// Returns the enemy lockingRealm's population divided by the input lockingRealm's population.

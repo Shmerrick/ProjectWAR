@@ -1070,8 +1070,11 @@ namespace WorldServer.World.Abilities.Buffs
                     {
                         buff.BuffHasExpired = true;
 
-                        #warning Danger of lock recursion exception.
+
+#pragma warning disable CS1030 // Директива #warning
+#warning Danger of lock recursion exception.
                         buff.RemoveBuff(true);
+#pragma warning restore CS1030 // Директива #warning
                     }
                 }
             }

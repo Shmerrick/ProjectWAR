@@ -2033,7 +2033,7 @@ namespace WorldServer.World.Objects
                 var selected = StaticRandom.Instance.Next(MemberCount);
                 return this.Members[selected];
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }

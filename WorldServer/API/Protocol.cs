@@ -37,7 +37,7 @@ namespace WorldServer.API
                     _handlers[packet.OP](client, packet);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
         }
