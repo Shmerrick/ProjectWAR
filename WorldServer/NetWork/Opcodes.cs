@@ -1,7 +1,7 @@
 ﻿
 namespace WorldServer.NetWork
 {
-    public enum Opcodes
+    public enum Opcodes : uint
     {
         F_UNK1 = 0x01,
         F_QUEST = 0x02,
@@ -211,7 +211,7 @@ namespace WorldServer.NetWork
         F_PLAY_VOICE_OVER = 0xFE,
 
         //these opcodes were missing need checks to confirm the right value
-        F_CURRENT_EVENTS = 0x95, // works but prob sub id?
+        //F_CURRENT_EVENTS = 0x95, // works but prob sub id?
         //F_VIEW_LOOT_BAG = 0x60
         //F_MARKETING_REWARD_LIST = 0x065
         F_ADVANCED_WAR_REPORT = 0x95, //works but prob sub id?
