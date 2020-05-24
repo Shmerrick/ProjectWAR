@@ -1035,6 +1035,7 @@ namespace WorldServer.World.Objects
                 && x.Spawn.Proto.VendorID == 0
                 && x.Spawn.Proto.LairBoss == false
                 && x.Spawn.Proto.Title == 0
+                && x.Spawn.Proto.Emote >= 0
                 && !(x is Keep_Creature)
                 && x.Spawn.Proto.FinishingQuests == null
                      && !(x is Pet)
