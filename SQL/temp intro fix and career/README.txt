@@ -1,1 +1,1 @@
-Put file intro.txt into the core bin folder Abilities
+Put all files *.txt into the core bin folder Abilities
