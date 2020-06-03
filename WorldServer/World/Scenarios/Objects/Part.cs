@@ -15,7 +15,7 @@ namespace WorldServer.World.Scenarios.Objects
     {
         private int _pickupTime = 0;
         private int _dropTime = 0;
-        private BuffInfo _buff;
+        private readonly BuffInfo _buff;
         public Point3D Position;
         class Interact
         {

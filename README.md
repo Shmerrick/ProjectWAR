@@ -12,6 +12,10 @@ https://drive.google.com/open?id=1mmajzgHVQIVi2isdXloFmkBY7dsGnkBf
 zones:
 https://drive.google.com/open?id=1RAVHzU0ADr08HHuU5fdaJ6Ddn1MtE8fw
 
+#### Development Tools for Server ####
+
+https://gitlab.com/Shmerrick/projectwar2-tools
+
 #### nuget packages ####
 * If you get an error compiling, complaining about NLog, you may need to force the VS package manager to get NLog. Do the following : 
 	* install-package NLog  

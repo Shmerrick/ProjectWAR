@@ -733,7 +733,6 @@ namespace WorldServer.World.Interfaces
                     if (this._weapon.Entry == 72675)
                     {
                         var targetPosition = ZoneService.GetWorldPosition(_weapon.Zone.Info, targetX, targetY, targetZ);
-                        float speed = 6400f;
                         float flightTimePuntee = 4;//(float)this._leader.GetDistanceSquare(new Point3D(targetPosition.X, targetPosition.Y, targetPosition.Z)) / speed / 1000f;
                         this._leader.Catapult(_weapon.Zone, new Point3D(targetPosition.X, targetPosition.Y, targetPosition.Z), (ushort)flightTimePuntee, (ushort)340);
                         this._leader.AbtInterface.Cancel(true);

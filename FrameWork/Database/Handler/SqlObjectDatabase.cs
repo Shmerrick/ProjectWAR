@@ -480,7 +480,6 @@ namespace FrameWork
 
         protected override bool RunTransaction(List<DataObject> dataObjects)
         {
-            bool isNew;
             long startTime = TCPManager.GetTimeStampMS();
 
            SqlConnection sqlConn = (SqlConnection)Connection.GetConnection();

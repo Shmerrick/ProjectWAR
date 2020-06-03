@@ -37,7 +37,7 @@ namespace WorldServer.API
                     _handlers[packet.OP](client, packet);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
         }
@@ -117,6 +117,7 @@ namespace WorldServer.API
         }
 
         [ControlHandler(Opcodes.EXECUTE_SCRIPT)]
+        [Obsolete]
         public void EXECUTE_SCRIPT(Client client, ApiPacket packet)
         {
             var name = packet.ReadPascalString();
@@ -157,8 +158,6 @@ namespace WorldServer.API
                             }";
 
             string result = template.Replace("[@@CODE@@]", script);
-            string errors = "";
-
             System.CodeDom.Compiler.ICodeCompiler compiler = new Microsoft.CSharp.CSharpCodeProvider().CreateCompiler();
             System.CodeDom.Compiler.CompilerParameters param = new System.CodeDom.Compiler.CompilerParameters();
             param.GenerateExecutable = false;

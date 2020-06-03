@@ -56,8 +56,8 @@ namespace WorldServer.World.Objects
     {
         #region Statics
 
-        public static int DISCONNECT_TIME = 20000;
-        public static int AUTO_SAVE_TIME = 60000;
+        public static int DISCONNECT_TIME = 20 * Time.InMilliseconds;
+        public static int AUTO_SAVE_TIME = 10 * Time.Minute;
 
         /// <summary>Influence bonus depending on players' race</summary>
         private const double RACIAL_INF_FACTOR = 1.5;
@@ -1021,7 +1021,7 @@ namespace WorldServer.World.Objects
         }
 
         private void ForceCloseMobsToWander(int distance)
-        {
+         {
 
 
             // Simple random seed.
@@ -1051,26 +1051,42 @@ namespace WorldServer.World.Objects
                     {
                         var returnHome = new Point3D(creature.Spawn.WorldX, creature.Spawn.WorldY, creature.Spawn.WorldZ);
                         //SendClientMessage($"Asking {creature.Name} to return home");
-                        creature.MvtInterface.SetBaseSpeed(50);
+                        creature.MvtInterface.SetBaseSpeed(50);//50
                         creature.MvtInterface.Move(returnHome);
-                        creature.MvtInterface.SetBaseSpeed(100);
+                        creature.MvtInterface.SetBaseSpeed(100);// 100
                     }
                     else
                     {
-                        var point = CalculatePoint(random, 200, creature.Spawn.WorldX, creature.Spawn.WorldY);
+                        var point = CalculatePoint(random, 100, creature.Spawn.WorldX, creature.Spawn.WorldY);//200
 
                         if (creature.LOSHit((ushort)ZoneId, new Point3D(point.X, point.Y, creature.Z)))
                         {
                             //SendClientMessage($"Asking {creature.Name} to move from {creature.Spawn.WorldX},{creature.Spawn.WorldY} to {point.X},{point.Y}");
-                            creature.MvtInterface.SetBaseSpeed(50);
+                            creature.MvtInterface.SetBaseSpeed(50);// 50
                             creature.MvtInterface.Move(point.X, point.Y, creature.Z);
-                            creature.MvtInterface.SetBaseSpeed(100);
+                            creature.MvtInterface.SetBaseSpeed(100);// 100
+
+
+                            if (creature.MvtInterface.MoveState == MovementInterface.EMoveState.None)
+                            {
+                                creature.MvtInterface.Move(point.X, point.Y, creature.Z);
+                            }
+
+                            if (creature.LOSHit((ushort)ZoneId, new Point3D(point.X, point.Y, creature.Z)))
+                            {
+                                var returnHome = new Point3D(creature.Spawn.WorldX, creature.Spawn.WorldY, creature.Spawn.WorldZ);
+
+                                creature.MvtInterface.Move(returnHome);
+
+                                creature.MvtInterface.SetBaseSpeed(50);// 100
+                         
+                            }
+
                         }
                     }
-
                 }
             }
-            //}
+            
         }
 
         public static bool BetweenRanges(int a, int b, int number)
@@ -2032,37 +2048,10 @@ namespace WorldServer.World.Objects
         {
             _lastCheckedTime = (uint)TCPManager.GetTimeStamp();
 
-            uint seconds = _Value.PlayedTime;
-            uint mins = 0;
-            uint hours = 0;
-            uint days = 0;
-            if (seconds >= 60)
-            {
-                mins = seconds / 60;
-                if (mins > 0)
-                {
-                    seconds -= mins * 60;
-                    if (mins >= 60)
-                    {
-                        hours = mins / 60;
-                        if (hours > 0)
-                        {
-                            mins -= hours * 60;
-                            if (hours >= 24)
-                            {
-                                days = hours / 24;
-                                if (days > 0)
-                                    hours -= days * 24;
-                            }
-                        }
-                    }
-                }
-            }
-
             PacketOut Out = new PacketOut((byte)Opcodes.F_PLAY_TIME_STATS, 12);
-            Out.WriteUInt32(days);
-            Out.WriteUInt32(hours);
-            Out.WriteUInt32(mins);
+            Out.WriteInt32(Time.Day);
+            Out.WriteInt32(Time.Hour);
+            Out.WriteInt32(Time.Minute);
             SendPacket(Out);
         }
 

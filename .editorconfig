@@ -1,0 +1,7 @@
+﻿[*.{cs,vb}]
+
+# IDE0032: Использовать свойство auto
+dotnet_style_prefer_auto_properties = true:silent
+
+# IDE0040: Добавьте модификаторы доступности
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:silent

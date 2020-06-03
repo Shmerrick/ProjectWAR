@@ -13,7 +13,7 @@ namespace WorldServer.World.AI
 {
     public class BlackguardBrain : ABrain
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static new readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public BlackguardBrain(Unit myOwner)
             : base(myOwner)

@@ -66,8 +66,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <returns></returns>
         public PlayerImpact UpdateMatrix(uint targetCharacterId, PlayerImpact playerImpact)
         {
-            bool attackerFound = false;
-            
+
             // Only add if minimum value passed.
             if (playerImpact.ImpactValue < MIN_IMPACT_VALIDITY)
                 return playerImpact;

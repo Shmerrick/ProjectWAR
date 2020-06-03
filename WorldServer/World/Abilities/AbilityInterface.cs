@@ -503,7 +503,7 @@ namespace WorldServer.World.Abilities
             if (abInfo.IgnoreCooldownReduction == 1 && (abInfo.Cooldown * 1000) >= duration)
             {
                 long nextTimestamp = 0;
-                if (abInfo.CDcap != null && abInfo.CDcap * 1000 > duration)
+                if (abInfo.CDcap != 0 && abInfo.CDcap * 1000 > duration)
                     nextTimestamp = (abInfo.CDcap * 1000) + TCPManager.GetTimeStampMS();
 
                 else
@@ -529,13 +529,13 @@ namespace WorldServer.World.Abilities
             {
                 long nextTimestamp = 0;
 
-                if (abInfo.CDcap != null && abInfo.CDcap * 1000 > duration)
+                if (abInfo.CDcap != 0 && abInfo.CDcap * 1000 > duration)
                     nextTimestamp = (abInfo.CDcap * 1000) + TCPManager.GetTimeStampMS();
 
                 else
                     nextTimestamp = (duration) + TCPManager.GetTimeStampMS();
 
-                if (duration == -1 && abInfo.CDcap == null)
+                if (duration == -1 && abInfo.CDcap == 0)
                     nextTimestamp = 0;
                 Cooldowns[abilityId] = nextTimestamp;
 
@@ -899,8 +899,10 @@ namespace WorldServer.World.Abilities
                     Out.Fill(0, 4);
                     _playerOwner.SendPacket(Out);
 
+#pragma warning disable CS1030 // Директива #warning
 #warning FIXME. This is a skill send packet, but it sends 5 skills - 4 empties and this mastery skill at rank 0. Why is it here? - Az
                     if (_activeSkillsInTree[i, j] == 1)
+#pragma warning restore CS1030 // Директива #warning
                     {
                         Out = new PacketOut((byte)Opcodes.F_CHARACTER_INFO, 48);
                         Out.WriteByte(1);

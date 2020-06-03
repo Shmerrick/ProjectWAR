@@ -1153,7 +1153,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         #region Range
 
-        public HashSet<Player> PlayersInRange;
+        public new HashSet<Player> PlayersInRange;
 
         public void AddPlayer(Player plr)
         {

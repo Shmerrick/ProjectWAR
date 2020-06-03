@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <WorldConfigs xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <IConfiguredTheFile>true</IConfiguredTheFile>
+  <IConfiguredTheFile>false</IConfiguredTheFile>
   <AccountCacherInfo>
     <RpcLocalIp>127.0.0.1</RpcLocalIp>
     <RpcServerIp>127.0.0.1</RpcServerIp>
@@ -56,9 +56,9 @@
   <CreateBothRealms>true</CreateBothRealms>
   <CleanSpawns>true</CleanSpawns>
   <DiscoverAll>false</DiscoverAll>
-  <OpenRvR>true</OpenRvR>
+  <OpenRvR>false</OpenRvR>
   <PreloadAllCharacters>true</PreloadAllCharacters>
-  <Motd>Welcome WAR: Apocalypse</Motd>
+  <Motd>Welcome to Warhammer Online: Age of Reckoning!</Motd>
   <RegionOcclusionFolder>los/</RegionOcclusionFolder>
   <ZoneFolder>zones/</ZoneFolder>
   <EnableAPI>true</EnableAPI>

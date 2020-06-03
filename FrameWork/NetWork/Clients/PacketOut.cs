@@ -205,7 +205,7 @@ namespace FrameWork
                     hexDump.AppendLine("|" + hex.ToString().PadRight(48) + "|" + text.ToString().PadRight(16) + "|");
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // Log.Error("HexDump", e.ToString());
             }

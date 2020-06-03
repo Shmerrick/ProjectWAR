@@ -312,6 +312,7 @@ namespace WorldServer.NetWork.Handler
         struct RandomNameInfo
         {
             public byte Race, Unk, Slot;
+            
         }
 
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_RANDOM_NAME_LIST_INFO, (int)eClientState.CharScreen, "onRandomNameListInfo")]

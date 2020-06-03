@@ -11,8 +11,12 @@ namespace WorldServer.World.Objects.Instances
         
         public InstanceSpawn(Creature_spawn spawn, uint bossId,Instance instance):base(spawn)
         {
+#pragma warning disable CS1717 // Назначение выполнено для той же переменной
             instanceGroupSpawnId = instanceGroupSpawnId;
+#pragma warning restore CS1717 // Назначение выполнено для той же переменной
+#pragma warning disable CS1717 // Назначение выполнено для той же переменной
             bossId = bossId;
+#pragma warning restore CS1717 // Назначение выполнено для той же переменной
             Instance = instance;
             EvtInterface.AddEventNotify(EventName.OnEnterCombat, OnEnterCombat);
             EvtInterface.AddEventNotify(EventName.OnLeaveCombat, OnLeaveCombat);
