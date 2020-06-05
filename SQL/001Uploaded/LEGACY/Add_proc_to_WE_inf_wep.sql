@@ -1,0 +1,4 @@
+INSERT INTO `war_world`.`buff_infos` (`Entry`, `Name`, `BuffClassString`, `MaxCopies`, `MaxStack`, `PersistsOnDeath`, `CanRefresh`, `Silent`) VALUES ('10055', 'Concussion VII', '', '1', '1', '1', '1', '1');
+INSERT INTO `war_world`.`ability_damage_heals` (`Entry`, `Index`, `Name`, `MinDamage`, `MaxDamage`, `DamageType`, `ParentCommandID`, `ParentCommandSequence`, `NoCrits`, `CastPlayerSubID`, `HatredScale`, `HealHatredScale`) VALUES ('10055', '1', 'Concussion VII', '267', '267', 'Physical', '0', '0', '1', '0', '1', '1');
+INSERT INTO `war_world`.`buff_commands` (`Entry`, `Name`, `CommandID`, `CommandSequence`, `CommandName`, `Target`, `EventIDString`, `EventChance`, `BuffLine`) VALUES ('10055', 'Concussion VII', '0', '0', 'DealProcDamage', 'EventInstigator', 'DirectDamageDealt', '5', '1');
+UPDATE `war_world`.`item_infos` SET `Effects` = '10055' WHERE (`Entry` = '475142');

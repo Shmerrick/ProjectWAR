@@ -1,9 +1,0 @@
-UPDATE `war_world`.`gameobject_spawns` SET `VfxState` = '1' WHERE (`Guid` = '250546');
-UPDATE `war_world`.`gameobject_spawns` SET `VfxState` = '1' WHERE (`Guid` = '250598');
-UPDATE `war_world`.`gameobject_spawns` SET `VfxState` = '1' WHERE (`Guid` = '250579');
-UPDATE `war_world`.`gameobject_spawns` SET `VfxState` = '1' WHERE (`Guid` = '250578');
-UPDATE `war_world`.`gameobject_spawns` SET `VfxState` = '1' WHERE (`Guid` = '250577');
-UPDATE `war_world`.`gameobject_spawns` SET `VfxState` = '1' WHERE (`Guid` = '250627');
-UPDATE `war_world`.`gameobject_spawns` SET `VfxState` = '1' WHERE (`Guid` = '250600');
-UPDATE `war_world`.`gameobject_spawns` SET `VfxState` = '1' WHERE (`Guid` = '250625');
-UPDATE `war_world`.`gameobject_spawns` SET `VfxState` = '1' WHERE (`Guid` = '250601');

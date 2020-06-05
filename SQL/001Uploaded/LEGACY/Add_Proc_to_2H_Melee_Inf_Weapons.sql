@@ -1,0 +1,17 @@
+UPDATE `war_world`.`item_infos` SET `Effects` = '10161' WHERE (`Entry` = '475093');
+UPDATE `war_world`.`item_infos` SET `Effects` = '10161' WHERE (`Entry` = '475095');
+UPDATE `war_world`.`item_infos` SET `Effects` = '10161' WHERE (`Entry` = '475158');
+UPDATE `war_world`.`item_infos` SET `Effects` = '10161' WHERE (`Entry` = '475157');
+UPDATE `war_world`.`item_infos` SET `Effects` = '10161' WHERE (`Entry` = '475119');
+UPDATE `war_world`.`item_infos` SET `Effects` = '10161' WHERE (`Entry` = '475109');
+UPDATE `war_world`.`item_infos` SET `Effects` = '10161' WHERE (`Entry` = '475110');
+UPDATE `war_world`.`item_infos` SET `Effects` = '10161' WHERE (`Entry` = '475161');
+UPDATE `war_world`.`item_infos` SET `Effects` = '10161' WHERE (`Entry` = '475114');
+UPDATE `war_world`.`item_infos` SET `Effects` = '28502; 10161' WHERE (`Entry` = '475116');
+UPDATE `war_world`.`item_infos` SET `Effects` = '10161' WHERE (`Entry` = '475165');
+UPDATE `war_world`.`item_infos` SET `Effects` = '10161' WHERE (`Entry` = '476601');
+UPDATE `war_world`.`item_infos` SET `Effects` = '10161' WHERE (`Entry` = '476598');
+UPDATE `war_world`.`item_infos` SET `Effects` = '10161' WHERE (`Entry` = '476597');
+UPDATE `war_world`.`item_infos` SET `Effects` = '10161' WHERE (`Entry` = '476550');
+UPDATE `war_world`.`item_infos` SET `Effects` = '10161' WHERE (`Entry` = '476559');
+UPDATE `war_world`.`item_infos` SET `Effects` = '10161' WHERE (`Entry` = '476554');

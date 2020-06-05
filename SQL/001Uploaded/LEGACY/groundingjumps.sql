@@ -1,0 +1,1 @@
+INSERT INTO `war_world`.`ability_modifier_checks` (`Entry`, `SourceAbility`, `Affecting`, `AffectedAbility`, `PreOrPost`, `ID`, `Sequence`, `CommandName`, `FailCode`, `PrimaryValue`, `SecondaryValue`, `ability_modifier_checks_ID`) VALUES ('9057', 'Wings of Heaven', '9057', 'Wings of Heaven', '0', '0', '1', 'IsGrounded', '1', '0', '0', '6c77fb67-875d-11e9-b8e1-5a000199677e');

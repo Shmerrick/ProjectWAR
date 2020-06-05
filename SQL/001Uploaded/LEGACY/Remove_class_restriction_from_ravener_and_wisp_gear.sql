@@ -1,0 +1,1 @@
+UPDATE war_world.item_infos SET Career = 0 WHERE ((NAME like '%ravener%' or name like '%of the wisp%') AND MinRank > 36);
