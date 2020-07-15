@@ -1,0 +1,1 @@
+UPDATE war_world.loot_group_items SET MaxRank = 40 WHERE ((LootGroupId = 162 OR LootGroupId = 171) AND MinRank = 36 AND MaxRank = 37);

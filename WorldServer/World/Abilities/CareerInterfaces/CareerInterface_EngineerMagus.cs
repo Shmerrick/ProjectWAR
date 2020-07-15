@@ -25,7 +25,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
         private readonly ushort _resourceID;
 
-        public Pet myPet { get; set; }
+        public new Pet myPet { get; set; }
 
         public byte AIMode { get; set; } = 5;
 

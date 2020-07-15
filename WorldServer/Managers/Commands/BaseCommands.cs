@@ -4037,7 +4037,9 @@ namespace WorldServer.Managers.Commands
             }
             else
             {
-                values = (List<string>)values;
+#pragma warning disable CS1717 // Назначение выполнено для той же переменной
+                values = values;
+#pragma warning restore CS1717 // Назначение выполнено для той же переменной
                 SetEffectStateSelf(plr, ref values);
             }
             return true;
@@ -4045,7 +4047,7 @@ namespace WorldServer.Managers.Commands
 
         public static bool Spooky(Player plr, ref List<string> values)
         {
-            /*if (!plr.Spooky)
+            if (!plr.Spooky)
             {
                 var target = plr;
 
@@ -4161,7 +4163,7 @@ namespace WorldServer.Managers.Commands
                 plr.EvtInterface.AddEvent(plr.SpreadSpooky, 120 * 1000, 0, prms);
                 plr.SetGearShowing(2, false);
 
-            }*/
+            }
 
             plr.SendClientMessage("Halloween is over!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
@@ -4171,9 +4173,9 @@ namespace WorldServer.Managers.Commands
         public static bool NotSpooky(Player plr, ref List<string> values)
         {
             plr.SendClientMessage("Halloween is over!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-            /*plr.SendClientMessage("You are not affected by spookiness... For now...", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+            plr.SendClientMessage("You are not affected by spookiness... For now...", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
             plr.SendClientMessage("If you don't want to be affected by spookiness you must run this command when you log in into the game.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-            plr.Spooky = true;*/
+            plr.Spooky = true;
             return true;
         }
         #endregion

@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Common</RootNamespace>
     <AssemblyName>Common</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -94,21 +94,17 @@
     <Compile Include="Database\Account\AccountSanctionInfo.cs" />
     <Compile Include="Database\Account\Account_value.cs" />
     <Compile Include="Database\Account\Ip_ban.cs" />
-    <Compile Include="Database\Character\Characters_bag_pools.cs" />
-    <Compile Include="Database\Patch\Launcher_myps.cs" />
+    <Compile Include="Database\Account\Realm.cs" />
     <Compile Include="Database\Character\Auction.cs" />
     <Compile Include="Database\Character\BannedNameRecord.cs" />
     <Compile Include="Database\Character\Bug_report.cs" />
     <Compile Include="Database\Character\CharacterDeletionRecord.cs" />
     <Compile Include="Database\Character\Characters.cs" />
+    <Compile Include="Database\Character\Characters_bag_pools.cs" />
     <Compile Include="Database\Character\CharacterSavedBuff.cs" />
     <Compile Include="Database\Character\Characters_info.cs" />
     <Compile Include="Database\Character\CharacterClientData.cs" />
-    <Compile Include="Database\Character\Guild_Alliance_info.cs" />
-    <Compile Include="Database\Character\Guild_event.cs" />
-    <Compile Include="Database\Character\GuildVaultItem.cs" />
     <Compile Include="Database\Character\Characters_items.cs" />
-    <Compile Include="Database\Account\Realm.cs" />
     <Compile Include="Database\Character\Characters_mails.cs" />
     <Compile Include="Database\Character\Characters_quests.cs" />
     <Compile Include="Database\Character\Characters_socials.cs" />
@@ -116,12 +112,17 @@
     <Compile Include="Database\Character\Characters_tok.cs" />
     <Compile Include="Database\Character\Characters_ability.cs" />
     <Compile Include="Database\Character\Characters_influence.cs" />
+    <Compile Include="Database\Character\GMCommandLog.cs" />
+    <Compile Include="Database\Character\Guild_Alliance_info.cs" />
+    <Compile Include="Database\Character\Guild_event.cs" />
     <Compile Include="Database\Character\Guild_info.cs" />
     <Compile Include="Database\Character\Guild_log.cs" />
     <Compile Include="Database\Character\Guild_members.cs" />
     <Compile Include="Database\Character\Guild_rank.cs" />
     <Compile Include="Database\Character\ScenarioDurationRecord.cs" />
+    <Compile Include="Database\Character\GuildVaultItem.cs" />
     <Compile Include="Database\GameData.cs" />
+    <Compile Include="Database\Patch\Launcher_myps.cs" />
     <Compile Include="Database\SystemData.cs" />
     <Compile Include="Database\World\Ability\AbilityKnockbackInfo.cs" />
     <Compile Include="Database\World\Ability\AbilityModifierEffects.cs" />
@@ -172,6 +173,7 @@
     <Compile Include="Database\World\Characters\HonorRewardCooldon.cs" />
     <Compile Include="Database\World\Characters\PetStatOverride.cs" />
     <Compile Include="Database\World\Characters\PetMasteryModifiers.cs" />
+    <Compile Include="Database\World\Characters\Random_names.cs" />
     <Compile Include="Database\World\Characters\CharacterInfo_stats.cs" />
     <Compile Include="Database\World\Characters\HonorReward.cs" />
     <Compile Include="Database\World\Characters\Tok_Bestary.cs" />
@@ -187,10 +189,10 @@
     <Compile Include="Database\World\Creatures\Creature_text.cs" />
     <Compile Include="Database\World\Creatures\Vendor_items.cs" />
     <Compile Include="Database\World\Creatures\Creature_vendor.cs" />
-    <Compile Include="Database\Character\GMCommandLog.cs" />
     <Compile Include="Database\World\GameObjects\GameObject_loot.cs" />
     <Compile Include="Database\World\GameObjects\GameObject_proto.cs" />
     <Compile Include="Database\World\GameObjects\GameObject_spawn.cs" />
+    <Compile Include="Database\World\GMCommands\GMCommands.cs" />
     <Compile Include="Database\World\Instances\InstanceAttribute.cs" />
     <Compile Include="Database\World\Instances\Instances_Statistics.cs" />
     <Compile Include="Database\World\Instances\Instance_Encounter.cs" />
@@ -208,7 +210,6 @@
     <Compile Include="Database\World\Items\MailItem.cs" />
     <Compile Include="Database\World\Items\Dye_Info.cs" />
     <Compile Include="Database\World\Items\Item_Info.cs" />
-    <Compile Include="Database\World\Characters\Random_names.cs" />
     <Compile Include="Database\World\Items\Item_Set.cs" />
     <Compile Include="Database\World\Items\Mount_Info.cs" />
     <Compile Include="Database\World\Levels\Guild_Xp.cs" />
@@ -225,6 +226,7 @@
     <Compile Include="Database\World\Maps\CellSpawns.cs" />
     <Compile Include="Database\World\Maps\RallyPoint.cs" />
     <Compile Include="Database\World\Maps\Zone_Area.cs" />
+    <Compile Include="Database\World\Maps\Zone_Info.cs" />
     <Compile Include="Database\World\Maps\Zone_Jump.cs" />
     <Compile Include="Database\World\Maps\Zone_Respawn.cs" />
     <Compile Include="Database\World\Maps\Zone_Taxi.cs" />
@@ -238,7 +240,6 @@
     <Compile Include="Database\World\Quests\Quests_Creature_Starter.cs" />
     <Compile Include="Database\World\Quests\Quests_Map.cs" />
     <Compile Include="Database\World\Quests\Quests_Objectives.cs" />
-    <Compile Include="Database\World\Maps\Zone_Info.cs" />
     <Compile Include="Database\World\Scenarios\Scenario_Object.cs" />
     <Compile Include="Database\World\Scenarios\Scenario_Info.cs" />
     <Compile Include="Database\World\TimedAnnounce.cs" />
@@ -280,6 +281,9 @@
     <Content Include="Icons\world.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>

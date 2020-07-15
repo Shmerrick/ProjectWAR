@@ -1,0 +1,7 @@
+INSERT INTO `war_world`.`buff_infos` (`Entry`, `Name`, `BuffClassString`, `Group`, `MaxCopies`, `MaxStack`, `PersistsOnDeath`) VALUES ('15734', 'Aid VII', 'Career', '4', '1', '1', '1');
+INSERT INTO `war_world`.`buff_infos` (`Entry`, `Name`, `MaxStack`, `Duration`, `Interval`, `Silent`) VALUES ('15952', 'Aid VII Proc', '1', '9', '3000', '1');
+INSERT INTO `war_world`.`ability_damage_heals` (`Entry`, `Index`, `Name`, `MinDamage`, `MaxDamage`, `DamageType`, `ParentCommandID`, `ParentCommandSequence`, `HealHatredScale`) VALUES ('15952', '1', 'Aid VII Proc', '261', '261', 'Healing', '0', '0', '1');
+INSERT INTO `war_world`.`buff_commands` (`Entry`, `Name`, `CommandID`, `CommandSequence`, `CommandName`, `PrimaryValue`, `InvokeOn`, `Target`, `EffectRadius`, `EventIDString`, `EventChance`, `BuffLine`) VALUES ('15734', 'Aid VII', '0', '0', 'InvokeBuff', '15952', '0', 'EventInstigator', '0', 'DirectHealDealt', '5', '1');
+INSERT INTO `war_world`.`buff_commands` (`Entry`, `Name`, `CommandID`, `CommandSequence`, `CommandName`, `InvokeOn`, `Target`, `BuffLine`) VALUES ('15952', 'Aid VII Proc', '0', '0', 'DamageOverTime', '7', 'Host', '1');
+UPDATE `war_world`.`item_infos` SET `Stats` = '15:0:0:0;14:0:0:0;1:76:0:0;7:58:0:0;' WHERE (`Entry` = '475116');
+UPDATE `war_world`.`item_infos` SET `Stats` = '3:37;0:0;89:3;29:1;0:0;0:0;0:0;0:0;0:0;0:0;0:0;0:0;', `Effects` = '15734' WHERE (`Entry` = '475092');

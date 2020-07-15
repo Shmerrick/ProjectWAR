@@ -30,7 +30,7 @@ namespace WorldServer.API
         private int _port;
         private string _address;
         private TcpListener _listener;
-        private int _bufferSize;
+        private readonly int _bufferSize;
         private Protocol _proto = new Protocol();
         public Server(string address, int port, int maxConnections, int bufferSize = 0xFFFF)
         {

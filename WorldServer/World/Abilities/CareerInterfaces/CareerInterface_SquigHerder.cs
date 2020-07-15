@@ -7,7 +7,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
     class CareerInterface_SquigHerder : CareerInterface, IPetCareerInterface
     {
         private Pet _myPet;
-        public Pet myPet { get { return _myPet; } set { _myPet = value; } }
+        public new Pet myPet { get { return _myPet; } set { _myPet = value; } }
 
         private byte _AIMode = 5;
         public byte AIMode { get { return _AIMode; } set { _AIMode = value; } }

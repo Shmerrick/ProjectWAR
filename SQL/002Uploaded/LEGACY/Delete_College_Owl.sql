@@ -1,1 +1,0 @@
-DELETE FROM war_world.creature_protos WHERE ENTRY = 98800;

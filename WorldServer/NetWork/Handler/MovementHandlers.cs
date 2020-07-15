@@ -175,8 +175,10 @@ namespace WorldServer.NetWork.Handler
             }
             if (Jump.Type >= 4 && Jump.Type <= 6)
             {
-                if(!WorldMgr.InstanceMgr.ZoneIn(cclient.Plr,Jump.Type,Jump));
-                    SendJumpFailed(cclient.Plr);
+#pragma warning disable CS0642 // Возможно, ошибочный пустой оператор
+                if (!WorldMgr.InstanceMgr.ZoneIn(cclient.Plr, Jump.Type, Jump)) ;
+#pragma warning restore CS0642 // Возможно, ошибочный пустой оператор
+                SendJumpFailed(cclient.Plr);
                 return;
             }
 

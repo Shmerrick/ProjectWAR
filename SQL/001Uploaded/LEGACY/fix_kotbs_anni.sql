@@ -1,0 +1,1 @@
+UPDATE war_world.item_sets SET item_sets.BonusString='34:1,62,0|35:14,320,0|36:93,2,0|37:29,5,0|' WHERE item_sets.Entry=4096;

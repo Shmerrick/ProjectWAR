@@ -1,1 +1,0 @@
-UPDATE war_world.vendor_items SET Price = 1 WHERE ItemId BETWEEN 5501200 AND 5501669;

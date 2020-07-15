@@ -58,7 +58,7 @@ namespace FrameWork
                 else
                     _length++;
             }
-            catch(Exception e)
+            catch (Exception)
             {
 
             }

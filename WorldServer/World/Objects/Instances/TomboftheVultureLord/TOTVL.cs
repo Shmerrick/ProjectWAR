@@ -277,7 +277,9 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
 
         bool Pendulum_Trap_init = false;
         bool Pendulum_Left_active = false;
+#pragma warning disable IDE0052 // Удалить непрочитанные закрытые члены
         bool Pendulum_Right_active = false;
+#pragma warning restore IDE0052 // Удалить непрочитанные закрытые члены
         bool Firetrap_active = true;
         bool Darttrap_active = true;
 

@@ -1,0 +1,4 @@
+DELETE FROM  war_world.creature_spawns where guid in ('7210860','7210869');
+
+INSERT INTO war_world.creature_spawns (Guid, Entry, ZoneId, WorldX, WorldY, WorldZ, WorldO, Icone, Emote, Faction, WaypointType, Level, Oid, RespawnMinutes, Enabled) VALUES ('7210860', '10505153', '161', '431197', '130122', '17514', '224', '18', '0', '0', '0', '0', '0', '0', '1');
+INSERT INTO war_world.creature_spawns (Guid, Entry, ZoneId, WorldX, WorldY, WorldZ, WorldO, Icone, Emote, Faction, WaypointType, Level, Oid, RespawnMinutes, Enabled) VALUES ('7210869', '10505152', '162', '118049', '145470', '13393', '12', '0', '0', '0', '0', '0', '0', '0', '1');
