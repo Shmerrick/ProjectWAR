@@ -1765,29 +1765,39 @@ namespace WorldServer.World.Objects
             Out.WriteUInt16(_Value.RallyPoint);
             SendPacket(Out);
 
-        }/*// temp fix hunters vale should be that it reads the data from database
-        public void SendUpdatehv()
-        {
-            PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE);
-            Out.WriteUInt16(0016);   // area id
-            Out.WriteByte(0x11);
-            Out.WriteByte(2);
-            Out.WriteByte(1);
+
+
+
+            //WAR REPORT TESTING
+            Out = new PacketOut((byte)Opcodes.F_WAR_REPORT);
+            Out.WriteUInt16(0x0118); // id ??
+            Out.Fill(0, 6);
+            Out.WriteUInt16(0x04B0);//04 B0// = 1200 seconds/ = 20 min
+            Out.WriteUInt16(0);
             Out.WriteByte(0);
-            Out.Fill(0, 4);
+
+            Out.WriteUInt32(0);//
+            Out.WriteUInt32(0);//
+
+
+            Out.WriteUInt32(0x0000000F);//00 00 00 0F //0F= objective =15//Info.PQuestId
+            Out.WriteUInt16(0);
+            Out.WriteByte(0);
+            Out.WriteUInt16(0x0600);//= 06 00//zoneid
+
+
+
             SendPacket(Out);
 
-            //TOVL temp fix should be that it reads the data from database
-            Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE);
-            Out.WriteUInt16(0031);   // area id
-            Out.WriteByte(0x11);
-            Out.WriteByte(2);
-            Out.WriteByte(1);
-            Out.WriteByte(0);
-            Out.Fill(0, 4);
-            SendPacket(Out);
-        }*/
-        public void SendXpTable()
+
+
+
+
+
+
+
+
+            public void SendXpTable()
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_EXPERIENCE_TABLE, 2048);
             Out.WritePacketString(@"|1C 00 00 00 0A 96 00 00 00 18 C4 00 00 |................|
