@@ -77,6 +77,8 @@ namespace WorldServer.NetWork
         F_ENCRYPTKEY = 0x5C,
         F_PQLOOT_TRIGGER = 0x5D,
         F_SET_TARGET = 0x5E,
+        // 0x5F Last massive packet loaded before in game world
+        // 0x5F Last massive packet loaded before in game world
         F_MYSTERY_BAG = 0x60,
         F_PLAY_SOUND = 0x61,
         F_PLAYER_STATE2 = 0x62,
