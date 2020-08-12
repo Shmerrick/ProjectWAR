@@ -3,6 +3,7 @@ namespace WorldServer.NetWork
 {
     public enum Opcodes : uint
     {
+        F_RRQ = 0x00,
         F_UNK1 = 0x01,
         F_QUEST = 0x02,
         F_UPDATE_SIEGE_LOOK_AT = 0x03,
@@ -39,12 +40,13 @@ namespace WorldServer.NetWork
         F_REQUEST_TOK_REWARD = 0x27,
         F_SURVEY_BEGIN = 0x28,
         F_SHOW_DIALOG = 0x29,
+        F_PLAYERORG_APPROVAL = 0x2A,
         F_QUEST_INFO = 0x2B,
         F_RANDOM_NAME_LIST_INFO = 0x2C,
         F_INVITE_GROUP = 0x2F,
-        F_PLAYERORG_APPROVAL = 0x2A,
         F_JOIN_GROUP = 0x30,
         F_PLAYER_DEATH = 0x31,
+        // 0x33 Frquent. Occurs globally
         F_DUMP_ARENAS_LARGE = 0x35,
         F_GROUP_COMMAND = 0x37,
         F_ZONEJUMP = 0x38,
@@ -57,10 +59,10 @@ namespace WorldServer.NetWork
         F_MONSTER_STATS = 0x47,
         F_PLAY_EFFECT = 0x48,
         F_REMOVE_PLAYER = 0x49,
-        F_PLAYER_RENOWN = 0x4E,
-        F_MOUNT_UPDATE = 0x4F,
         F_ZONEJUMP_FAILED = 0x4A,
         F_TRADE_STATUS = 0x4B,
+        F_PLAYER_RENOWN = 0x4E,
+        F_MOUNT_UPDATE = 0x4F,
         F_PLAYER_LEVEL_UP = 0x50,
         F_ANIMATION = 0x51,
         F_PLAYER_WEALTH = 0x52,
@@ -73,8 +75,8 @@ namespace WorldServer.NetWork
         F_SEND_CHARACTER_ERROR = 0x59,
         F_PING_DATAGRAM = 0x5A,
         F_ENCRYPTKEY = 0x5C,
-        F_SET_TARGET = 0x5E,
         F_PQLOOT_TRIGGER = 0x5D,
+        F_SET_TARGET = 0x5E,
         F_MYSTERY_BAG = 0x60,
         F_PLAY_SOUND = 0x61,
         F_PLAYER_STATE2 = 0x62,
@@ -89,12 +91,13 @@ namespace WorldServer.NetWork
         F_CREATE_STATIC = 0x71,
         F_CREATE_MONSTER = 0x72,
         F_PLAYER_IMAGENUM = 0x73,
+        // 0x74 PvE T1 Dark Elves
         F_TRANSFER_ITEM = 0x75,
         F_CRAFTING_STATUS = 0x79,
+        F_REQUEST_LASTNAME = 0x7A,
         F_INIT_PLAYER = 0x7C,
         F_REQUEST_INIT_PLAYER = 0x7D,
         F_SET_ABILITY_TIMER = 0x7E,
-        F_REQUEST_LASTNAME = 0x7A,
         S_PID_ASSIGN = 0x80,
         S_PONG = 0x81,
         S_CONNECTED = 0x82,
@@ -115,15 +118,15 @@ namespace WorldServer.NetWork
         F_DELETE_CHARACTER = 0x92,
         F_GFX_MOD = 0x93,
         F_INSTANCE_INFO = 0x94,
-        F_BAG_INFO  =   0x95,
+        F_ADVANCED_WAR_REPORT = 0x95,
         F_KEEP_STATUS = 0x96,
         F_PLAY_TIME_STATS = 0x97,
         F_CATAPULT = 0x98,
         F_GRAVITY_UPDATE = 0x99,
-        F_UPDATE_LASTNAME = 0x9B,
-        F_CRASH_PACKET = 0x9F,
         F_HELP_DATA = 0x9A,
+        F_UPDATE_LASTNAME = 0x9B,
         F_GET_CULTIVATION_INFO = 0x9E,
+        F_CRASH_PACKET = 0x9F,
         F_LOGINQUEUE = 0xA0,
         F_INTERRUPT = 0xA1,
         F_INSTANCE_SELECTED = 0xA2,
@@ -209,17 +212,6 @@ namespace WorldServer.NetWork
         F_INFLUENCE_INFO = 0xFC,
         F_KNOCKBACK = 0xFD,
         F_PLAY_VOICE_OVER = 0xFE,
-
-        //these opcodes were missing need checks to confirm the right value
-        //F_CURRENT_EVENTS = 0x95, // works but prob sub id?
-        //F_VIEW_LOOT_BAG = 0x60
-        //F_MARKETING_REWARD_LIST = 0x065
-        F_ADVANCED_WAR_REPORT = 0x95, //works but prob sub id?
-        //F_MONSTER_POSITION =???
-        //F_ACTION_COUNTER_TIMESTAMP_INFO = ???
-        F_RRQ = 0x00,
-
-        //part of old ones but needs to be bottom
         MAX_GAME_OPCODE = 0xFF
     };
 }
