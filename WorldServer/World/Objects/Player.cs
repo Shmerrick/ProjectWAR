@@ -1006,7 +1006,7 @@ namespace WorldServer.World.Objects
                 _nextSpeedPenLiftTime += 1000;
             }
 
-           
+            // Removed as mobs cannot tell where walls/cliffs are.
             ForceCloseMobsToWander(200);
 
 
@@ -1035,7 +1035,6 @@ namespace WorldServer.World.Objects
                 && x.Spawn.Proto.VendorID == 0
                 && x.Spawn.Proto.LairBoss == false
                 && x.Spawn.Proto.Title == 0
-                && x.Spawn.Proto.Emote >= 0
                 && !(x is Keep_Creature)
                 && x.Spawn.Proto.FinishingQuests == null
                      && !(x is Pet)
@@ -1049,37 +1048,46 @@ namespace WorldServer.World.Objects
                 {
                     if (!BetweenRanges(creature.Spawn.WorldX - 10, creature.Spawn.WorldX + 10, creature.WorldPosition.X))
                     {
+
                         var returnHome = new Point3D(creature.Spawn.WorldX, creature.Spawn.WorldY, creature.Spawn.WorldZ);
-                        //SendClientMessage($"Asking {creature.Name} to return home");
+                        SendClientMessage($"Asking {creature.Name} to return home");
                         creature.MvtInterface.SetBaseSpeed(50);//50
                         creature.MvtInterface.Move(returnHome);
                         creature.MvtInterface.SetBaseSpeed(100);// 100
                     }
                     else
                     {
+                        //var point = CalculatePoint(random, 200, creature.Spawn.WorldX, creature.Spawn.WorldY);//200
                         var point = CalculatePoint(random, 100, creature.Spawn.WorldX, creature.Spawn.WorldY);//200
 
                         if (creature.LOSHit((ushort)ZoneId, new Point3D(point.X, point.Y, creature.Z)))
                         {
-                            //SendClientMessage($"Asking {creature.Name} to move from {creature.Spawn.WorldX},{creature.Spawn.WorldY} to {point.X},{point.Y}");
+                            SendClientMessage($"Asking {creature.Name} to move from {creature.Spawn.WorldX},{creature.Spawn.WorldY} to {point.X},{point.Y}");
                             creature.MvtInterface.SetBaseSpeed(50);// 50
                             creature.MvtInterface.Move(point.X, point.Y, creature.Z);
                             creature.MvtInterface.SetBaseSpeed(100);// 100
 
 
-                            if (creature.MvtInterface.MoveState == MovementInterface.EMoveState.None)
+
+
                             {
-                                creature.MvtInterface.Move(point.X, point.Y, creature.Z);
+                               
                             }
 
-                            if (creature.LOSHit((ushort)ZoneId, new Point3D(point.X, point.Y, creature.Z)))
-                            {
-                                var returnHome = new Point3D(creature.Spawn.WorldX, creature.Spawn.WorldY, creature.Spawn.WorldZ);
 
-                                creature.MvtInterface.Move(returnHome);
+                            if (creature.LOSHit((ushort)ZoneId, new Point3D(point.X, point.Y, creature.Z)))
+
+                            {
+
+
+
+
+
+
+                                creature.MvtInterface.Move(point.X, point.Y, creature.Z);
 
                                 creature.MvtInterface.SetBaseSpeed(50);// 100
-                         
+
                             }
 
                         }
@@ -1783,7 +1791,7 @@ namespace WorldServer.World.Objects
             Out.WriteUInt32(0x0000000F);//00 00 00 0F //0F= objective =15//Info.PQuestId
             Out.WriteUInt16(0);
             Out.WriteByte(0);
-            Out.WriteUInt16(0x0600);//= 06 00//zoneid
+            Out.WriteUInt16(06);//= 06 00//zoneid//= 06 00//zoneid
 
 
 
