@@ -78,7 +78,6 @@ namespace WorldServer.NetWork
         F_PQLOOT_TRIGGER = 0x5D,
         F_SET_TARGET = 0x5E,
         // 0x5F Last massive packet loaded before in game world
-        // 0x5F Last massive packet loaded before in game world
         F_MYSTERY_BAG = 0x60,
         F_PLAY_SOUND = 0x61,
         F_PLAYER_STATE2 = 0x62,
@@ -120,6 +119,7 @@ namespace WorldServer.NetWork
         F_DELETE_CHARACTER = 0x92,
         F_GFX_MOD = 0x93,
         F_INSTANCE_INFO = 0x94,
+        F_BAG_INFO = 0x95,
         F_ADVANCED_WAR_REPORT = 0x95,
         F_KEEP_STATUS = 0x96,
         F_PLAY_TIME_STATS = 0x97,
