@@ -1802,7 +1802,7 @@ namespace WorldServer.World.Objects
 
 
 
-
+        }
 
 
             public void SendXpTable()
