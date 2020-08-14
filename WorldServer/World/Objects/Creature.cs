@@ -20,6 +20,8 @@ namespace WorldServer.World.Objects
 {
     public class Creature : Unit, IClock
     {
+        public long LastMove { get; set; }
+        
         public Creature_spawn Spawn;
         public SiegeInterface SiegeInterface;
         public uint Entry => Spawn?.Entry ?? 0;

@@ -1006,7 +1006,7 @@ namespace WorldServer.World.Objects
                 _nextSpeedPenLiftTime += 1000;
             }
 
-            // Removed as mobs cannot tell where walls/cliffs are.
+           
             ForceCloseMobsToWander(200);
 
 
@@ -1020,25 +1020,25 @@ namespace WorldServer.World.Objects
 
         }
 
+        // Simple random seed.
+        static Random random = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));
+      
         private void ForceCloseMobsToWander(int distance)
          {
-
-
-            // Simple random seed.
-            var random = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));
-            var creaturesClose = GetInRange<Creature>(distance).Take(StaticRandom.Instance.Next(2, 6));
-            // Filter the creatures - less than equal to level 43, not hero or above, not siege, not vendors, not questline.
-            var creaturesToWander = creaturesClose.Where(
+            var creaturesToWander = GetInRange<Creature>(distance).Where(
                 x => x.Level <= 43
                 && x.Spawn.Proto.Unk2 <= 1001
                 && x.Spawn.Proto.CreatureType != 32
                 && x.Spawn.Proto.VendorID == 0
                 && x.Spawn.Proto.LairBoss == false
                 && x.Spawn.Proto.Title == 0
-                && !(x is Keep_Creature)
+                && x.Spawn.Proto.Emote >= 0
+                //&& !(x is Keep_Creature)
                 && x.Spawn.Proto.FinishingQuests == null
-                     && !(x is Pet)
-                && x.Spawn.Proto.StartingQuests == null);
+                && !(x is Pet)
+                && x.Spawn.Proto.StartingQuests == null
+                && x.LastMove + random.Next(30000, 50000) >= Program.TickCount); // 30-50 seconds passed since last move
+            // Filter the creatures - less than equal to level 43, not hero or above, not siege, not vendors, not questline.
             foreach (var creature in creaturesToWander)
             {
                 // Not in original position.
@@ -1048,53 +1048,44 @@ namespace WorldServer.World.Objects
                 {
                     if (!BetweenRanges(creature.Spawn.WorldX - 10, creature.Spawn.WorldX + 10, creature.WorldPosition.X))
                     {
-
                         var returnHome = new Point3D(creature.Spawn.WorldX, creature.Spawn.WorldY, creature.Spawn.WorldZ);
-                        SendClientMessage($"Asking {creature.Name} to return home");
+                        //SendClientMessage($"Asking {creature.Name} to return home");
                         creature.MvtInterface.SetBaseSpeed(50);//50
                         creature.MvtInterface.Move(returnHome);
                         creature.MvtInterface.SetBaseSpeed(100);// 100
+                        creature.LastMove = Program.TickCount;
                     }
                     else
                     {
-                        //var point = CalculatePoint(random, 200, creature.Spawn.WorldX, creature.Spawn.WorldY);//200
                         var point = CalculatePoint(random, 100, creature.Spawn.WorldX, creature.Spawn.WorldY);//200
 
                         if (creature.LOSHit((ushort)ZoneId, new Point3D(point.X, point.Y, creature.Z)))
                         {
-                            SendClientMessage($"Asking {creature.Name} to move from {creature.Spawn.WorldX},{creature.Spawn.WorldY} to {point.X},{point.Y}");
+                            //SendClientMessage($"Asking {creature.Name} to move from {creature.Spawn.WorldX},{creature.Spawn.WorldY} to {point.X},{point.Y}");
                             creature.MvtInterface.SetBaseSpeed(50);// 50
                             creature.MvtInterface.Move(point.X, point.Y, creature.Z);
                             creature.MvtInterface.SetBaseSpeed(100);// 100
+                            creature.LastMove = Program.TickCount;
 
-
-
-
+                            if (creature.MvtInterface.MoveState == MovementInterface.EMoveState.None)
                             {
-                               
+                                creature.MvtInterface.Move(point.X, point.Y, creature.Z);
                             }
 
-
                             if (creature.LOSHit((ushort)ZoneId, new Point3D(point.X, point.Y, creature.Z)))
-
                             {
+                                var returnHome = new Point3D(creature.Spawn.WorldX, creature.Spawn.WorldY, creature.Spawn.WorldZ);
 
-
-
-
-
-
-                                creature.MvtInterface.Move(point.X, point.Y, creature.Z);
+                                creature.MvtInterface.Move(returnHome);
 
                                 creature.MvtInterface.SetBaseSpeed(50);// 100
-
+                         
                             }
 
                         }
                     }
                 }
             }
-            
         }
 
         public static bool BetweenRanges(int a, int b, int number)
@@ -1773,39 +1764,29 @@ namespace WorldServer.World.Objects
             Out.WriteUInt16(_Value.RallyPoint);
             SendPacket(Out);
 
-
-
-
-            //WAR REPORT TESTING
-            Out = new PacketOut((byte)Opcodes.F_WAR_REPORT);
-            Out.WriteUInt16(0x0118); // id ??
-            Out.Fill(0, 6);
-            Out.WriteUInt16(0x04B0);//04 B0// = 1200 seconds/ = 20 min
-            Out.WriteUInt16(0);
+        }/*// temp fix hunters vale should be that it reads the data from database
+        public void SendUpdatehv()
+        {
+            PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE);
+            Out.WriteUInt16(0016);   // area id
+            Out.WriteByte(0x11);
+            Out.WriteByte(2);
+            Out.WriteByte(1);
             Out.WriteByte(0);
-
-            Out.WriteUInt32(0);//
-            Out.WriteUInt32(0);//
-
-
-            Out.WriteUInt32(0x0000000F);//00 00 00 0F //0F= objective =15//Info.PQuestId
-            Out.WriteUInt16(0);
-            Out.WriteByte(0);
-            Out.WriteUInt16(06);//= 06 00//zoneid//= 06 00//zoneid
-
-
-
+            Out.Fill(0, 4);
             SendPacket(Out);
 
-
-
-
-
-
-        }
-
-
-            public void SendXpTable()
+            //TOVL temp fix should be that it reads the data from database
+            Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE);
+            Out.WriteUInt16(0031);   // area id
+            Out.WriteByte(0x11);
+            Out.WriteByte(2);
+            Out.WriteByte(1);
+            Out.WriteByte(0);
+            Out.Fill(0, 4);
+            SendPacket(Out);
+        }*/
+        public void SendXpTable()
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_EXPERIENCE_TABLE, 2048);
             Out.WritePacketString(@"|1C 00 00 00 0A 96 00 00 00 18 C4 00 00 |................|

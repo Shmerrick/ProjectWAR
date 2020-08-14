@@ -112,7 +112,7 @@ namespace FrameWork
 
                     if (consoleHandlerAttribs.Length > 0)
                     {
-                        Log.Dump("ConsoleMgr", "." + consoleHandlerAttribs[0].Command + " : " + consoleHandlerAttribs[0].Description);
+                        Log.Info("ConsoleMgr", "." + consoleHandlerAttribs[0].Command + " : " + consoleHandlerAttribs[0].Description);
                         RegisterHandler(consoleHandlerAttribs[0].Command, (IConsoleHandler)Activator.CreateInstance(type));
                     }
                     Log.Dump("ConsoleMgr", type.FullName);
