@@ -7,6 +7,7 @@ namespace Common.Database.World.GMCommands
     [Serializable]
     public class GMCommands : DataObject
     {
+        [PrimaryKey]
         [DataElement(AllowDbNull = false)]  // Command name
         public string name { get; set; }
 		

@@ -266,7 +266,7 @@ namespace FrameWork
                     if (colIndex == -1)
                         Log.Error("DataConnection", $"Column index out of range for {table.TableName}, {table.Columns[i].ColumnName}");
 
-                    else if (databaseColumnTypes[colIndex].ToString() != TypeDescStrings[systype])
+                    else if (databaseColumnTypes[colIndex].ToString() != TypeDescStrings[systype] && !table.Columns[i].AutoIncrement) //To remove errors about type mistmatch for guids
                     {
                         Log.Error($"Table {table.TableName} column {databaseColumns[colIndex]}",  $"Type mismatch ({databaseColumnTypes[colIndex]} in DB - {TypeDescStrings[systype]} in emulator)");
                     }
