@@ -16,6 +16,7 @@ using WorldServer.World.Auction;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Objects;
+using System.Diagnostics;
 
 namespace WorldServer
 {
@@ -27,7 +28,11 @@ namespace WorldServer
         public static TCPServer Server;
         public static Realm Rm;
         private static Timer _timer;
-        
+
+        private static readonly double _HighFrequency = 1000.0 / Stopwatch.Frequency;
+        public static long TickCount => (long)Ticks;
+
+        public static double Ticks => Stopwatch.GetTimestamp() * _HighFrequency;
 
         [STAThread]
         static void Main(string[] args)
@@ -70,7 +75,7 @@ namespace WorldServer
             if (!Log.InitLog(Config.LogLevel, "WorldServer"))
                 ConsoleMgr.WaitAndExit(2000);
 
-#if DEBUG 
+#if DEBUG
             API.Server api = null;
             if (Config.EnableAPI)
             {
@@ -180,8 +185,106 @@ namespace WorldServer
         static void onError(object sender, UnhandledExceptionEventArgs e)
         {
             Log.Error("onError", e.ExceptionObject.ToString());
+            GenerateCrashReport(e);
         }
 
+        private static string GetRoot()
+        {
+            try
+            {
+                return Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
+            }
+            catch
+            {
+                return "";
+            }
+        }
+        private static string GetTimeStamp()
+        {
+            DateTime now = DateTime.Now;
+
+            return String.Format("{0}-{1}-{2}-{3}-{4}-{5}",
+                    now.Day,
+                    now.Month,
+                    now.Year,
+                    now.Hour,
+                    now.Minute,
+                    now.Second
+                );
+        }
+
+        private static string Combine(string path1, string path2)
+        {
+            if (path1.Length == 0)
+                return path2;
+
+            return Path.Combine(path1, path2);
+        }
+
+        private static void GenerateCrashReport(UnhandledExceptionEventArgs e)
+        {
+            Console.WriteLine("Crash: Generating report...");
+
+            try
+            {
+                string timeStamp = GetTimeStamp();
+                string fileName = String.Format("Crash {0}.log", timeStamp);
+
+                string root = GetRoot();
+                string filePath = Combine(root, fileName);
+
+                using (StreamWriter op = new StreamWriter(filePath))
+                {
+                    Version ver = Assembly.GetCallingAssembly().GetName().Version;
+
+                    op.WriteLine("Server Crash Report");
+                    op.WriteLine("===================");
+                    op.WriteLine();
+                    op.WriteLine("WarEmu Version {0}.{1}, Build {2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision);
+                    op.WriteLine("Operating System: {0}", Environment.OSVersion);
+                    op.WriteLine(".NET Framework: {0}", Environment.Version);
+                    op.WriteLine("Time: {0}", DateTime.Now);
+
+                    op.WriteLine("Exception:");
+                    op.WriteLine(e.ExceptionObject);
+                    op.WriteLine();
+
+                    op.WriteLine("Clients:");
+
+                    try
+                    {
+                        List<Player> states = Player._Players;
+
+                        op.WriteLine("- Count: {0}", states.Count);
+
+                        for (int i = 0; i < states.Count; ++i)
+                        {
+                            Player state = states[i];
+
+                            op.Write("+ {0}:", state);
+
+                            Account a = state.Client._Account;
+
+                            if (a != null)
+                                op.Write(" (account = {0})", a.Username);
+                            op.Write(" (mobile = 0x{0:X} '{1}')", state.CharacterId, state.Name);
+
+                            op.WriteLine();
+                        }
+                    }
+                    catch
+                    {
+                        op.WriteLine("- Failed");
+                    }
+                }
+
+                Console.WriteLine("done");
+            }
+            catch
+            {
+                Console.WriteLine("failed");
+            }
+        }
         public static void OnClose(object obj, object Args)
         {
             Log.Info("Closing", "Closing the server");
