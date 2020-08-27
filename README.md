@@ -12,10 +12,6 @@ https://projectwar.online/
 
 https://gitlab.com/Shmerrick/projectwar2-tools
 
-#### Original Warhammer Online Client 1.4.8 ####
-
-https://mega.nz/#!BbAzEKCZ!coE_wIhepffbwTuPv4pVkCVkrUCld9_P8NnRm_3Tvw0
-
 #### nuget packages ####
 * If you get an error compiling, complaining about NLog, you may need to force the VS package manager to get NLog. Do the following : 
 	* install-package NLog  
