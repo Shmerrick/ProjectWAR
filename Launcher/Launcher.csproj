@@ -200,7 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="nlog">
-      <Version>4.6.3</Version>
+      <Version>4.6.8</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

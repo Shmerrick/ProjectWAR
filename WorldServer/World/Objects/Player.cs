@@ -1020,15 +1020,12 @@ namespace WorldServer.World.Objects
 
         }
 
+        // Simple random seed.
+        static Random random = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));
+      
         private void ForceCloseMobsToWander(int distance)
          {
-
-
-            // Simple random seed.
-            var random = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));
-            var creaturesClose = GetInRange<Creature>(distance).Take(StaticRandom.Instance.Next(2, 6));
-            // Filter the creatures - less than equal to level 43, not hero or above, not siege, not vendors, not questline.
-            var creaturesToWander = creaturesClose.Where(
+            var creaturesToWander = GetInRange<Creature>(distance).Where(
                 x => x.Level <= 43
                 && x.Spawn.Proto.Unk2 <= 1001
                 && x.Spawn.Proto.CreatureType != 32
@@ -1036,10 +1033,12 @@ namespace WorldServer.World.Objects
                 && x.Spawn.Proto.LairBoss == false
                 && x.Spawn.Proto.Title == 0
                 && x.Spawn.Proto.Emote >= 0
-                && !(x is Keep_Creature)
+                //&& !(x is Keep_Creature)
                 && x.Spawn.Proto.FinishingQuests == null
-                     && !(x is Pet)
-                && x.Spawn.Proto.StartingQuests == null);
+                && !(x is Pet)
+                && x.Spawn.Proto.StartingQuests == null
+                && x.LastMove + random.Next(30000, 50000) >= Program.TickCount); // 30-50 seconds passed since last move
+            // Filter the creatures - less than equal to level 43, not hero or above, not siege, not vendors, not questline.
             foreach (var creature in creaturesToWander)
             {
                 // Not in original position.
@@ -1054,6 +1053,7 @@ namespace WorldServer.World.Objects
                         creature.MvtInterface.SetBaseSpeed(50);//50
                         creature.MvtInterface.Move(returnHome);
                         creature.MvtInterface.SetBaseSpeed(100);// 100
+                        creature.LastMove = Program.TickCount;
                     }
                     else
                     {
@@ -1065,7 +1065,7 @@ namespace WorldServer.World.Objects
                             creature.MvtInterface.SetBaseSpeed(50);// 50
                             creature.MvtInterface.Move(point.X, point.Y, creature.Z);
                             creature.MvtInterface.SetBaseSpeed(100);// 100
-
+                            creature.LastMove = Program.TickCount;
 
                             if (creature.MvtInterface.MoveState == MovementInterface.EMoveState.None)
                             {
@@ -1086,7 +1086,6 @@ namespace WorldServer.World.Objects
                     }
                 }
             }
-            
         }
 
         public static bool BetweenRanges(int a, int b, int number)
@@ -1765,28 +1764,39 @@ namespace WorldServer.World.Objects
             Out.WriteUInt16(_Value.RallyPoint);
             SendPacket(Out);
 
-        }/*// temp fix hunters vale should be that it reads the data from database
-        public void SendUpdatehv()
-        {
-            PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE);
-            Out.WriteUInt16(0016);   // area id
+
+
+            // Mount Gunbad dungeon chapter bar Temporary Fix
+            //Dwarf order side
+            Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE);
+            Out.WriteUInt16(0x001F);   // area id
             Out.WriteByte(0x11);
             Out.WriteByte(2);
             Out.WriteByte(1);
-            Out.WriteByte(0);
+            Out.WriteByte(1);
             Out.Fill(0, 4);
             SendPacket(Out);
 
-            //TOVL temp fix should be that it reads the data from database
-            Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE);
-            Out.WriteUInt16(0031);   // area id
-            Out.WriteByte(0x11);
-            Out.WriteByte(2);
-            Out.WriteByte(1);
+
+
+            //WAR REPORT Temporary
+            Out = new PacketOut((byte)Opcodes.F_WAR_REPORT);
+            Out.WriteUInt16(0x0118); // id ??
+            Out.Fill(0, 6);
+            Out.WriteUInt16(0x1C20);//04 B0// = 7200 seconds/ = 120 min live servers
+            Out.WriteUInt16(0);
             Out.WriteByte(0);
-            Out.Fill(0, 4);
+            Out.WriteUInt32(0xB6010201);//
+            Out.WriteUInt32(0x5F32F0E5);//
+            //Objects.PublicQuests;
+            Out.WriteUInt32(0x0000000F);//00 00 00 0F //0F= objective =15//Info.PQuestId
+            Out.WriteUInt16(0);
+            Out.WriteByte(0);
+            Out.WriteUInt16(0x0600);//= 06 00//zoneid
             SendPacket(Out);
-        }*/
+
+
+        }
         public void SendXpTable()
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_EXPERIENCE_TABLE, 2048);
