@@ -32,17 +32,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbUtilityTool", "DbUtilityT
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WarZone", "WarZone\WarZone\WarZone.vcxproj", "{FD6A5A60-8FDD-423C-9E7F-802AA097EB91}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{BC0B5C1C-1695-447E-A1D0-C3635E1D783C}"
-	ProjectSection(SolutionItems) = preProject
-		CharValueDump.sql = CharValueDump.sql
-		CreateCharValueDump.sql = CreateCharValueDump.sql
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EBFAA12C-6718-4934-BCCC-E800BF24BADC}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
