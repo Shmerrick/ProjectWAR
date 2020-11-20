@@ -8,6 +8,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows.Forms;
+using WarZoneLib;
 
 namespace Launcher
 {
@@ -390,14 +391,7 @@ namespace Launcher
                             Close();
                             break;
                         case CheckResult.LAUNCHER_FILE:
-
-                            string File = packet.GetString();
-                            byte[] Bt = Encoding.ASCII.GetBytes(File);
-
-                            FileInfo Info = new FileInfo("mythloginserviceconfig.xml");
-                            FileStream Str = Info.Create();
-                            Str.Write(Bt, 0, Bt.Length);  // Bt is sent from the server (configs/mythloginserviceconfig.xml) - it overwrites the file on the client side.
-                            Str.Close();
+                            Client.UpdateWarData(Encoding.ASCII.GetBytes(packet.GetString()));
                             break;
                     }
                     break;
@@ -486,7 +480,7 @@ namespace Launcher
                             }
                             else
                             {
-                                _logger.Info($"Not launching WAR.Exe (in {warDirectory}) "+ " --acctname=" + Convert.ToBase64String(Encoding.ASCII.GetBytes(User)) + " --sesstoken=" +
+                                _logger.Info($"Not launching WAR.Exe (in {warDirectory}) " + " --acctname=" + Convert.ToBase64String(Encoding.ASCII.GetBytes(User)) + " --sesstoken=" +
                                              Convert.ToBase64String(Encoding.ASCII.GetBytes(authToken)));
                             }
                         }
@@ -606,51 +600,50 @@ namespace Launcher
                 _logger.Info("Not Patching WAR.exe");
             }
         }
-        public static void UpdateWarData()
+        public static void UpdateWarData(byte[] data)
         {
-            if (ApocLauncher.Acc.AllowServerPatch)
+            try
             {
-                try
+                _logger.Info("Updating mythloginserviceconfig.xml");
+                using (FileStream fs = new FileStream(Application.StartupPath + "\\mythloginserviceconfig.xml", FileMode.CreateNew, FileAccess.Write))
                 {
-                    _logger.Info("Updating mythloginserviceconfig.xml and data.myp");
-                    FileStream fs = new FileStream(Application.StartupPath + "\\mythloginserviceconfig.xml", FileMode.Open, FileAccess.Read);
-
-                    Directory.SetCurrentDirectory(Directory.GetCurrentDirectory() + "\\..\\");
-
-                    HashDictionary hashDictionary = new HashDictionary();
-                    hashDictionary.AddHash(0x3FE03665, 0x349E2A8C, "mythloginserviceconfig.xml", 0);
-                    MYPHandler.MYPHandler mypHandler = new MYPHandler.MYPHandler("data.myp", null, null, hashDictionary);
-                    mypHandler.GetFileTable();
-
-                    FileInArchive theFile = mypHandler.SearchForFile("mythloginserviceconfig.xml");
-
-                    if (theFile == null)
-                    {
-                        _logger.Error("Can not find config file in data.myp");
-                        return;
-                    }
-
-                    if (File.Exists(Application.StartupPath + "\\mythloginserviceconfig.xml") == false)
-                    {
-                        _logger.Error("Missing file : mythloginserviceconfig.xml");
-                        return;
-                    }
-
-                    mypHandler.ReplaceFile(theFile, fs);
-
-                    fs.Close();
-                }
-                catch (Exception e)
-                {
-                    Print(e.ToString());
+                    fs.Write(data, 0, data.Length);
                 }
             }
-            else
+            catch (Exception e)
             {
-                _logger.Info("Not Patching data.myp");
+                Print(e.ToString());
+                _logger.Info(e.ToString());
             }
         }
+        public static void UpdateWarData()
+        {
+            try
+            {
+                _logger.Info("Updating data.myp");
+                FileStream fileStream = File.Open("..\\data.myp", FileMode.Open, FileAccess.ReadWrite);
+                MYP myp = new MYP(MythicPackage.ART, (Stream)fileStream);
 
+                if (File.Exists(Application.StartupPath + "\\mythloginserviceconfig.xml") == false)
+                {
+                    _logger.Error("Missing file : mythloginserviceconfig.xml");
+                    return;
+                }
+                using (FileStream reader = new FileStream(Application.StartupPath + "\\mythloginserviceconfig.xml", FileMode.Open))
+                {
+                    byte[] data = new byte[reader.Length];
+                    reader.Read(data, 0, data.Length);
+                    myp.UpdateFile(0x0B3E7AC0C6762BF7, data);
+                }
+                myp.Save();
+                fileStream.Close();
+            }
+            catch (Exception e)
+            {
+                Print(e.ToString());
+                _logger.Info(e.ToString());
+            }
+        }
 
 
 
