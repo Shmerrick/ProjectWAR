@@ -125,7 +125,9 @@
     <Compile Include="ApocLauncher.Designer.cs">
       <DependentUpon>ApocLauncher.cs</DependentUpon>
     </Compile>
+    <Compile Include="NetWork\CRC32.cs" />
     <Compile Include="NetWork\Marshal.cs" />
+    <Compile Include="NetWork\MYP.cs" />
     <Compile Include="NetWork\Opcodes.cs" />
     <Compile Include="NetWork\PacketIn.cs" />
     <Compile Include="NetWork\PacketOut.cs" />
