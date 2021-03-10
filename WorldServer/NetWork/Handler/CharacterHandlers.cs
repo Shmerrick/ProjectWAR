@@ -330,9 +330,28 @@ namespace WorldServer.NetWork.Handler
             Out.WriteUInt16(0);
             Out.WriteByte((byte)Names.Count);
 
-            for (int i = Names.Count - 1; i >= 0; --i)
-                Out.FillString(Names[i].Name, Names[i].Name.Length + 1);
+            // Added to create better randomness
+            Random random = new Random();
+            int MinNumber = 0;
+            int MaxNumber = Names.Count;
+            int randomNumber = (random.Next(MinNumber, MaxNumber));
 
+            /*
+            Improves the system slightly by giving a random starting place.
+            The old system would just take the total count of the random names tables, subtract one
+            from it and the place all other numbers less than the total in memory.
+            I was noticing that it would always start at 206 and then decrement from there.
+            This still does not solve the issue intirely as I don't understand what the FillString
+            is actually doing as if I modify it at all, string information stops being passed.
+            Inrementing the int i also sends it into an infinte loop.
+            */
+
+            // Original for (int i = Names.Count -1; i >= 0; --i)
+
+            for (int i = randomNumber; i >= 0; --i)
+            {
+                Out.FillString(Names[i].Name, Names[i].Name.Length + 1);
+            }
             cclient.SendPacket(Out);
         }
 
