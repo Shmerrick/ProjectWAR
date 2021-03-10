@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Reflection;
 using System.Xml.Serialization;
@@ -87,7 +85,6 @@ namespace FrameWork
                         Xml.Serialize(fs, Obj);
                         fs.Close();
 
-
                         if (FirstLoad || !Obj.IConfiguredTheFile)
                             MustRestart = true;
 
@@ -107,7 +104,6 @@ namespace FrameWork
                 }
             }
         }
-
 
         public static void SaveConfig(aConfig Obj)
         {
@@ -131,7 +127,7 @@ namespace FrameWork
             aConfig Conf = null;
             Conf = _Configs.Find(info => info.GetType() == typeof(T));
 
-            if(Conf != null)
+            if (Conf != null)
                 return (T)Convert.ChangeType(Conf, typeof(T));
             else
                 return (T)Convert.ChangeType(null, typeof(T));

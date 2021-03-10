@@ -1,13 +1,13 @@
-﻿using System;
-using Common;
+﻿using Common;
 using FrameWork;
+using System;
 using WorldServer.Services.World;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Objects.Instances
 {
     public class InstanceObject : GameObject
-	{
+    {
         public readonly Instance_Object Info;
         protected readonly Instance Instance;
 
@@ -28,7 +28,7 @@ namespace WorldServer.World.Objects.Instances
 
             XOffset = (ushort)Math.Truncate((decimal)(X / 4096 + zone.OffX));
             YOffset = (ushort)Math.Truncate((decimal)(Y / 4096 + zone.OffY));
-          
+
             IsActive = true;
             VfxState = (byte)info.VfxState;
         }

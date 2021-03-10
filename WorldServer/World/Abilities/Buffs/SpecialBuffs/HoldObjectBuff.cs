@@ -1,6 +1,6 @@
-﻿using System.Threading;
-using FrameWork;
+﻿using FrameWork;
 using GameData;
+using System.Threading;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Objects;
 using WorldServer.World.Scenarios.Objects;
@@ -117,7 +117,7 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 
             BuffState = (byte)EBuffState.Removed;
 
-            Player player = (Player) Caster;
+            Player player = (Player)Caster;
 
             if (player.HeldObject != HeldObject)
                 Log.Error(player.Name, "Holding multiple objects!");
@@ -136,6 +136,4 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
             return new HoldObjectBuff();
         }
     }
-
-
 }

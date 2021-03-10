@@ -8,8 +8,10 @@ namespace AuthenticationServer.Addon
     {
         [XmlAttribute(AttributeName = "gameVersion")]
         public string aGameVersion { get; set; }
+
         [XmlAttribute(AttributeName = "windowsVersion")]
         public string aWindowsVersion { get; set; }
+
         [XmlAttribute(AttributeName = "savedVariablesVersion")]
         public string aSavedVariablesVersion { get; set; }
     }
@@ -19,6 +21,7 @@ namespace AuthenticationServer.Addon
     {
         [XmlAttribute(AttributeName = "name")]
         public string Name { get; set; }
+
         [XmlAttribute(AttributeName = "email")]
         public string Email { get; set; }
     }
@@ -63,6 +66,7 @@ namespace AuthenticationServer.Addon
     {
         [XmlElement(ElementName = "Categories")]
         public aCategories Categories { get; set; }
+
         [XmlElement(ElementName = "Careers")]
         public aCareers Careers { get; set; }
     }
@@ -93,6 +97,7 @@ namespace AuthenticationServer.Addon
     {
         [XmlAttribute(AttributeName = "name")]
         public string Name { get; set; }
+
         [XmlAttribute(AttributeName = "show")]
         public string Show { get; set; }
     }
@@ -102,6 +107,7 @@ namespace AuthenticationServer.Addon
     {
         [XmlElement(ElementName = "CreateWindow")]
         public List<aCreateWindow> CreateWindow { get; set; }
+
         [XmlElement(ElementName = "CallFunction")]
         public aCallFunction CallFunction { get; set; }
     }
@@ -111,6 +117,7 @@ namespace AuthenticationServer.Addon
     {
         [XmlAttribute(AttributeName = "name")]
         public string Name { get; set; }
+
         [XmlAttribute(AttributeName = "global")]
         public string Global { get; set; }
     }
@@ -141,28 +148,40 @@ namespace AuthenticationServer.Addon
     {
         [XmlElement(ElementName = "VersionSettings")]
         public aVersionSettings VersionSettings { get; set; }
+
         [XmlElement(ElementName = "Author")]
         public aAuthor Author { get; set; }
+
         [XmlElement(ElementName = "Description")]
         public aDescription Description { get; set; }
+
         [XmlElement(ElementName = "WARInfo")]
         public aWARInfo WARInfo { get; set; }
+
         [XmlElement(ElementName = "Files")]
         public aFiles Files { get; set; }
+
         [XmlElement(ElementName = "OnInitialize")]
         public aOnInitialize OnInitialize { get; set; }
+
         [XmlElement(ElementName = "SavedVariables")]
         public aSavedVariables SavedVariables { get; set; }
+
         [XmlElement(ElementName = "OnUpdate")]
         public aOnUpdate OnUpdate { get; set; }
+
         [XmlElement(ElementName = "OnShutdown")]
         public aOnShutdown OnShutdown { get; set; }
+
         [XmlAttribute(AttributeName = "name")]
         public string Name { get; set; }
+
         [XmlAttribute(AttributeName = "version")]
         public string Version { get; set; }
+
         [XmlAttribute(AttributeName = "date")]
         public string Date { get; set; }
+
         [XmlAttribute(AttributeName = "autoenabled")]
         public string Autoenabled { get; set; }
     }
@@ -172,8 +191,8 @@ namespace AuthenticationServer.Addon
     {
         [XmlElement(ElementName = "UiMod")]
         public aUiMod UiMod { get; set; }
+
         [XmlAttribute(AttributeName = "xsi", Namespace = "http://www.w3.org/2000/xmlns/")]
         public string Xsi { get; set; }
     }
-
 }

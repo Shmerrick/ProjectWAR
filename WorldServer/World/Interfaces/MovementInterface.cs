@@ -1,6 +1,6 @@
-﻿using System;
-using Common;
+﻿using Common;
 using FrameWork;
+using System;
 using WorldServer.Managers;
 using WorldServer.World.Abilities.Objects;
 using WorldServer.World.Objects;
@@ -56,20 +56,23 @@ namespace WorldServer.World.Interfaces
                 _lastState = MoveState;
             }
             */
-            
+
             switch (MoveState)
             {
                 case EMoveState.Move:
                     UpdateMove(tick);
                     break;
+
                 case EMoveState.Follow:
                     UpdateFollow(tick);
                     if (_moveDuration > 0)
                         UpdateMove(tick);
                     break;
+
                 case EMoveState.Recall:
                     UpdateRecall(tick);
                     break;
+
                 case EMoveState.TacticalWithdrawl:
                     UpdateWithdrawl(tick);
                     if (_moveDuration > 0)
@@ -124,7 +127,6 @@ namespace WorldServer.World.Interfaces
                     _destWithdrawlPos.X += (int)(_toTarget.X * _minWithdrawlTolerance * 12);
                     _destWithdrawlPos.Y += (int)(_toTarget.Y * _minWithdrawlTolerance * 12);
                 }
-
                 else
                 {
                     _destWithdrawlPos.X -= (int)(_toTarget.X * _minWithdrawlTolerance * 12);
@@ -186,10 +188,12 @@ namespace WorldServer.World.Interfaces
                 case EMoveState.Move:
                     Move(_destWorldPos);
                     break;
+
                 case EMoveState.Follow:
                     _nextFollowUpdate = 0;
                     Follow(FollowTarget, _minFollowTolerance, _maxFollowTolerance);
                     break;
+
                 case EMoveState.TacticalWithdrawl:
                     _nextWithdrawlUpdate = 0;
                     TacticalWithdrawl(ThreateningTarget, _minWithdrawlTolerance, _maxWithdrawlTolerance);
@@ -197,7 +201,7 @@ namespace WorldServer.World.Interfaces
             }
         }
 
-        #endregion
+        #endregion Speed Change
 
         #region Facing
 
@@ -213,10 +217,9 @@ namespace WorldServer.World.Interfaces
             }
         }
 
-
         public void TurnAwayFrom(Point3D destWorldPos)
         {
-            ushort newHeading = (ushort) (_unit.WorldPosition.GetHeading(destWorldPos)+2048);
+            ushort newHeading = (ushort)(_unit.WorldPosition.GetHeading(destWorldPos) + 2048);
 
             if (newHeading != _unit.Heading)
             {
@@ -226,7 +229,7 @@ namespace WorldServer.World.Interfaces
             }
         }
 
-        #endregion
+        #endregion Facing
 
         #region Move
 
@@ -234,7 +237,7 @@ namespace WorldServer.World.Interfaces
         private readonly Point3D _startWorldPos = new Point3D(0, 0, 0);
         private ushort _destZoneId;
 
-        const int MOVE_TOLERANCE_UNITS = 2;
+        private const int MOVE_TOLERANCE_UNITS = 2;
         private long _moveStartTime;
         private float _moveDuration;
 
@@ -244,7 +247,7 @@ namespace WorldServer.World.Interfaces
 
         private float GetMoveFactor(long deltaMs)
         {
-            return Math.Min(1f, deltaMs/_moveDuration);
+            return Math.Min(1f, deltaMs / _moveDuration);
         }
 
         /// <summary>
@@ -284,12 +287,12 @@ namespace WorldServer.World.Interfaces
 
             _unit.Heading = _unit.WorldPosition.GetHeading(_destWorldPos);
 
-            _unit.AiInterface.Debugger?.SendClientMessage("MOVE: Start: " + _startWorldPos + " End: " + _destWorldPos +" New Heading: "+ _unit.Heading+" Speed: "+_totalSpeed);
+            _unit.AiInterface.Debugger?.SendClientMessage("MOVE: Start: " + _startWorldPos + " End: " + _destWorldPos + " New Heading: " + _unit.Heading + " Speed: " + _totalSpeed);
 
             if (MovementSpeed > 0)
             {
                 _moveStartTime = TCPManager.GetTimeStampMS();
-                _moveDuration = (distance/ _totalSpeed) *1000;
+                _moveDuration = (distance / _totalSpeed) * 1000;
             }
 
             if (MoveState == EMoveState.None)
@@ -319,7 +322,6 @@ namespace WorldServer.World.Interfaces
 
             _unit.SetPosition(pinX, pinY, pinZ, _unit.Heading, destZone.ZoneId);
 
-            
             if (tick > _moveStartTime + _moveDuration)
             {
                 if (MoveState == EMoveState.Move)
@@ -353,7 +355,7 @@ namespace WorldServer.World.Interfaces
             UpdateMovementState(null);
         }
 
-        #endregion
+        #endregion Move
 
         #region Follow
 
@@ -364,12 +366,14 @@ namespace WorldServer.World.Interfaces
         public Unit FollowTarget { get; private set; }
         private long _nextFollowUpdate;
         private int _minFollowTolerance, _maxFollowTolerance;
+
         /// <summary>
         /// Indicates that the unit should path to a spot on the far side of the unit (towed siege)
         /// </summary>
         private bool _pathThrough;
-        const int FOLLOW_PATH_UPDATE_INTERVAL = 500;
-        const int WITHDRAWL_PATH_UPDATE_INTERVAL = 500;
+
+        private const int FOLLOW_PATH_UPDATE_INTERVAL = 500;
+        private const int WITHDRAWL_PATH_UPDATE_INTERVAL = 500;
         public int FollowReacquisitionInterval = 500;
         public int WithdrawlReacquisitionInterval = 500;
 
@@ -400,7 +404,6 @@ namespace WorldServer.World.Interfaces
             if (_unit.WorldPosition.IsWithinRadiusFeet(FollowTarget.WorldPosition, minTolerance))
                 TurnTo(FollowTarget.WorldPosition);
         }
-
 
         public void TacticalWithdrawl(Unit threateningTarget, int minTolerance, int maxTolerance, bool pathThrough = false, bool ForceMove = false)
         {
@@ -433,9 +436,8 @@ namespace WorldServer.World.Interfaces
 
         private void UpdateFollow(long tick)
         {
-
             if (IsMoving)
-            { 
+            {
                 if (_unit.GetDistanceTo(FollowTarget) < _minFollowTolerance)
                 {
                     StopFollowMove();
@@ -474,10 +476,9 @@ namespace WorldServer.World.Interfaces
 
                 if (!_pathThrough || !FollowTarget.IsMoving)
                 {
-                    _destFollowPos.X += (int) (_toTarget.X * _minFollowTolerance*12);
-                    _destFollowPos.Y += (int) (_toTarget.Y * _minFollowTolerance*12);
+                    _destFollowPos.X += (int)(_toTarget.X * _minFollowTolerance * 12);
+                    _destFollowPos.Y += (int)(_toTarget.Y * _minFollowTolerance * 12);
                 }
-
                 else
                 {
                     _destFollowPos.X -= (int)(_toTarget.X * _minFollowTolerance * 12);
@@ -488,7 +489,7 @@ namespace WorldServer.World.Interfaces
             }
         }
 
-        #endregion
+        #endregion Follow
 
         #region Recall
 
@@ -564,7 +565,7 @@ namespace WorldServer.World.Interfaces
             _unit.SetPosition(pinX, pinY, pinZ, _unit.Heading, destZone.ZoneId);
         }
 
-        #endregion
+        #endregion Recall
 
         private bool _forcePositionUpdate;
 
@@ -605,7 +606,6 @@ namespace WorldServer.World.Interfaces
                 _unit.DispatchPacket(Out, false);
             else
                 player.SendPacket(Out);
-
         }
 
         public void WriteMovementState(PacketOut Out)
@@ -635,25 +635,23 @@ namespace WorldServer.World.Interfaces
             {
                 flags = (byte)Utils.setBit(flags, 2, true);
             }
-            
-            // flying  
-            if(_unit.IsCreature())
-            if ((Utils.getBit(_unit.Faction,5) || (Utils.getBit(_unit.GetCreature().Spawn.Proto.Faction, 5) &&  Utils.HasFlag(flags, (int)EObjectState.Moving))) && _unit.Z - ClientFileMgr.GetHeight(_unit.Zone.ZoneId, _unit.X, _unit.Y) > 50)
-                flags = (byte)Utils.setBit(flags, 5, true);
-                
+
+            // flying
+            if (_unit.IsCreature())
+                if ((Utils.getBit(_unit.Faction, 5) || (Utils.getBit(_unit.GetCreature().Spawn.Proto.Faction, 5) && Utils.HasFlag(flags, (int)EObjectState.Moving))) && _unit.Z - ClientFileMgr.GetHeight(_unit.Zone.ZoneId, _unit.X, _unit.Y) > 50)
+                    flags = (byte)Utils.setBit(flags, 5, true);
+
             Out.WriteByte(flags);
             Out.WriteByte((byte)_unit.Zone.ZoneId);
-           
 
             if (_unit is BuffHostObject)
             {
                 Out.WriteByte(4); // Unk1
                 Out.WriteUInt32(3); // Unk2
             }
-
             else
             {
-                Out.WriteByte(_forcePositionUpdate? (byte)6 : (byte)0);
+                Out.WriteByte(_forcePositionUpdate ? (byte)6 : (byte)0);
                 Out.WriteUInt32(0);
             }
 
@@ -671,7 +669,6 @@ namespace WorldServer.World.Interfaces
 
             if (Utils.HasFlag(flags, (int)EObjectState.LookingAt))
                 Out.WriteUInt16R(FollowTarget.Oid);
-
         }
     }
 }

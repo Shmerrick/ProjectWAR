@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Threading;
-using SystemData;
-using Common;
+﻿using Common;
 using Common.Database.World.Battlefront;
 using FrameWork;
 using GameData;
 using NLog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
@@ -122,12 +121,17 @@ namespace WorldServer.World.Scenarios
     {
         // Entry from ScenarioMgr
         AddPendingPlayer,
+
         AddPendingGroup,
+
         // Pop acceptance or decline from client
         AddPlayer,
+
         RemovePendingPlayer,
+
         // Removal of existing player from scenario
         RemovePlayer,
+
         NotifyPlayerLeft
     }
 
@@ -218,10 +222,12 @@ namespace WorldServer.World.Scenarios
                     SendToAll(WorldMgr.ScenarioMgr.BuildScenarioInfo(this));
                     SendChatMessage("One minute until the battle for " + Info.Name + " begins!");
                     break;
+
                 case 2:
                     ++_countdownStage;
                     SendChatMessage("Thirty seconds until the battle for " + Info.Name + " begins!");
                     break;
+
                 case 3:
                     SendChatMessage("The battle for " + Info.Name + " has begun!");
                     StartTime = TCPManager.GetTimeStampMS();
@@ -302,7 +308,6 @@ namespace WorldServer.World.Scenarios
         {
             if (_shutdownLevel > 1 || (ShouldEnd && HasStarted && !HasEnded))
                 End();
-
             else if (_dominatingRealm > 0)
                 GivePoints((int)_dominatingRealm, 5);
         }
@@ -389,7 +394,7 @@ namespace WorldServer.World.Scenarios
             IsClosed = true;
         }
 
-        #endregion
+        #endregion Progression
 
         #region Scoring and Rewards
 
@@ -443,7 +448,7 @@ namespace WorldServer.World.Scenarios
                 Renown = renown;
             }
         }
-        
+
         private readonly Dictionary<Player, DeferredReward> _deferredReward = new Dictionary<Player, DeferredReward>(); */
 
         public virtual bool DeferKillReward(Player killer, uint xp, uint renown)
@@ -451,7 +456,7 @@ namespace WorldServer.World.Scenarios
             return Info.DeferKills && !HasEnded && killer.Region == Region;
         }
 
-        #endregion
+        #endregion Delayed Reward
 
         private int _lootIssued;
 
@@ -532,13 +537,11 @@ namespace WorldServer.World.Scenarios
                 winningTeam = 0;
                 losingTeam = 1;
             }
-
             else if (Score[1] > Score[0])
             {
                 winningTeam = 1;
                 losingTeam = 0;
             }
-
             else
             {
                 winningTeam = StaticRandom.Instance.Next(0, 1);
@@ -550,7 +553,6 @@ namespace WorldServer.World.Scenarios
                 GivePoints(losingTeam + 1, (uint)(500 * (1f / _rampFactor)));
                 GivePoints(winningTeam + 1, (uint)(500 * (1f / _rampFactor)));
             }
-
             else
             {
                 float scaleFactor = (500 - Score[winningTeam]) * (1f / _rampFactor) / Score[winningTeam];
@@ -610,7 +612,6 @@ namespace WorldServer.World.Scenarios
             // Winner rewards for stomping are halved
             if (_dominatingRealm != Realms.REALMS_REALM_NEUTRAL)
             {
-
                 endingXp[(int)_dominatingRealm - 1] /= 2;
                 endingRenown[(int)_dominatingRealm - 1] /= 2;
                 emblemCount[(int)_dominatingRealm - 1] /= 2;
@@ -634,9 +635,7 @@ namespace WorldServer.World.Scenarios
                 contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.PLAY_SCENARIO);
                 plr.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
 
-                
                 _logger.Debug($"Giving PLAY_SCEN contribution to {plr.Name}");
-
 
                 if (realmIndex == winningTeam)
                 {
@@ -659,7 +658,6 @@ namespace WorldServer.World.Scenarios
                         WorldMgr.UpperTierCampaignManager.GetActiveCampaign().GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(plr.CharacterId, (byte)ContributionDefinitions.WIN_SCENARIO);
                         contributionDefinition = new BountyService().GetDefinition((byte)ContributionDefinitions.WIN_SCENARIO);
                         plr.BountyManagerInstance.AddCharacterBounty(plr.CharacterId, contributionDefinition.ContributionValue);
-
                     }
 
                     plr.QtsInterface.HandleEvent(Objective_Type.QUEST_WIN_SCENARIO, Info.ScenarioId, 1);
@@ -670,7 +668,6 @@ namespace WorldServer.World.Scenarios
                     plr.SendLocalizeString(new[] { desiredItem.Name, "4" }, ChatLogFilters.CHATLOGFILTERS_LOOT,
                         Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
                 }
-
             }
 
             try
@@ -689,16 +686,12 @@ namespace WorldServer.World.Scenarios
                     _logger.Debug($"Suggest {Score[0] / 10} additional VP to winner,  {Score[1] / 20} to loser.");
                     new ApocCommunications().Broadcast("Order has defeated Destruction in a critical battle! Their forces come closer to victory.", Tier);
                     WorldMgr.UpperTierCampaignManager.GetActiveCampaign().VictoryPointProgress.AddScenarioWin(Realms.REALMS_REALM_ORDER);
-
                 }
-
             }
             catch (Exception e)
             {
                 _logger.Error($"Scenario reporting exception {e.Message}");
             }
-
-
 
             SendScoreboardUpdate();
         }
@@ -792,7 +785,7 @@ namespace WorldServer.World.Scenarios
             return false;
         }
 
-        #endregion
+        #endregion Scoring and Rewards
 
         #region Queue and Player Management
 
@@ -853,21 +846,27 @@ namespace WorldServer.World.Scenarios
                     case EScenarioQueueAction.AddPendingPlayer:
                         AddPendingPlayer((Player)action.MyObject);
                         break;
+
                     case EScenarioQueueAction.AddPendingGroup:
                         AddPendingGroup((List<Player>)action.MyObject);
                         break;
+
                     case EScenarioQueueAction.AddPlayer:
                         AddPlayer((Player)action.MyObject);
                         break;
+
                     case EScenarioQueueAction.RemovePendingPlayer:
                         RemovePendingPlayer((Player)action.MyObject);
                         break;
+
                     case EScenarioQueueAction.RemovePlayer:
                         RemovePlayer((Player)action.MyObject, true);
                         break;
+
                     case EScenarioQueueAction.NotifyPlayerLeft:
                         RemovePlayer((Player)action.MyObject, false);
                         break;
+
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -876,12 +875,14 @@ namespace WorldServer.World.Scenarios
             _currentActionList.Clear();
         }
 
-        #endregion
+        #endregion Queue Processing
 
         #region Player Entry / Exit
+
         public virtual void GmCommand(Player plr, ref List<string> values)
         {
         }
+
         private readonly ScenarioGroupsHandler[] _scGroupsHandlers = new ScenarioGroupsHandler[2];
         public Vector2[] BalanceVectors { get; } = { new Vector2(), new Vector2() };
         public bool IsPickup;
@@ -1056,12 +1057,12 @@ namespace WorldServer.World.Scenarios
                         if (plr.Realm == Realms.REALMS_REALM_ORDER)
                         {
                             // Altdorf
-                            warcampRespawn =  new SpawnPoint(ZoneService.GetZoneRespawn(34));
+                            warcampRespawn = new SpawnPoint(ZoneService.GetZoneRespawn(34));
                         }
                         else
                         {
                             // IC
-                            warcampRespawn =  new SpawnPoint(ZoneService.GetZoneRespawn(6));
+                            warcampRespawn = new SpawnPoint(ZoneService.GetZoneRespawn(6));
                         }
                     }
                     else
@@ -1072,37 +1073,35 @@ namespace WorldServer.World.Scenarios
                         if (plr.Realm == Realms.REALMS_REALM_ORDER)
                         {
                             warCampZoneId = plr.CurrentKeep.PlayerSpawnLocation.Value.OrderFeedZoneId;
-                            wc = BattleFrontService.GetWarcampEntrance((ushort) warCampZoneId, Realms.REALMS_REALM_ORDER);
+                            wc = BattleFrontService.GetWarcampEntrance((ushort)warCampZoneId, Realms.REALMS_REALM_ORDER);
                         }
                         else
                         {
                             warCampZoneId = plr.CurrentKeep.PlayerSpawnLocation.Value.DestructionFeedZoneId;
-                            wc = BattleFrontService.GetWarcampEntrance((ushort) warCampZoneId, Realms.REALMS_REALM_ORDER);
+                            wc = BattleFrontService.GetWarcampEntrance((ushort)warCampZoneId, Realms.REALMS_REALM_ORDER);
                         }
-                        
-                        var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort) warCampZoneId),
-                            (ushort) wc.X, (ushort) wc.Y, (ushort) wc.Z);
-                        warcampRespawn =  new SpawnPoint((ushort)warCampZoneId, target.X, target.Y, target.Z);
-                    }
 
+                        var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)warCampZoneId),
+                            (ushort)wc.X, (ushort)wc.Y, (ushort)wc.Z);
+                        warcampRespawn = new SpawnPoint((ushort)warCampZoneId, target.X, target.Y, target.Z);
+                    }
                 }
                 else
                 {
                     var warcamp = BattleFrontService.GetWarcampEntrance(plr.Zone.ZoneId, plr.Realm);
                     var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)plr.Zone.ZoneId), (ushort)warcamp.X, (ushort)warcamp.Y, (ushort)warcamp.Z);
-                    warcampRespawn =  new SpawnPoint(plr.Zone.ZoneId, target.X, target.Y, target.Z);
+                    warcampRespawn = new SpawnPoint(plr.Zone.ZoneId, target.X, target.Y, target.Z);
                 }
 
                 if (warcampRespawn == null)
                     _logger.Error($"Null warcampRespawn for {plr.Name}");
-                
+
                 plr.ScnInterface.ScenarioEntryWorldX = warcampRespawn.X;
                 plr.ScnInterface.ScenarioEntryWorldY = warcampRespawn.Y;
                 plr.ScnInterface.ScenarioEntryWorldZ = warcampRespawn.Z;
                 plr.ScnInterface.ScenarioEntryWorldO = plr.Heading;
                 plr.ScnInterface.ScenarioEntryZoneId = warcampRespawn.ZoneId;
             }
-
             else
             {
                 plr.ScnInterface.ScenarioEntryZoneId = plr._Value.ZoneId;
@@ -1153,7 +1152,6 @@ namespace WorldServer.World.Scenarios
 
             plr.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_SCENARIO_CHAT_INSTRUCTIONS);
 
-
             _scGroupsHandlers[plr.Realm == Realms.REALMS_REALM_DESTRUCTION ? 1 : 0].AddScenarioMember(plr);
 
             SendReservedSlots(plr.Realm);
@@ -1165,7 +1163,6 @@ namespace WorldServer.World.Scenarios
         {
             if (plr.ScnInterface.Scenario != this)
                 return;
-
 
             plr.RemoveBolster();
 
@@ -1250,7 +1247,7 @@ namespace WorldServer.World.Scenarios
                 plr.Teleport(zoneID, worldX, worldY, worldZ, worldO);
         }
 
-        #endregion
+        #endregion Player Entry / Exit
 
         #region Population checking
 
@@ -1265,7 +1262,6 @@ namespace WorldServer.World.Scenarios
 
             if (Players[0].Count == 0 || Players[1].Count == 0)
                 popFactor = 2f;
-
             else
             {
                 popFactor = Players[0].Count / (float)Players[1].Count;
@@ -1292,14 +1288,13 @@ namespace WorldServer.World.Scenarios
                     }
                 }
             }
-
             else
                 _shutdownLevel = 0;
         }
 
-        #endregion
+        #endregion Population checking
 
-        #endregion
+        #endregion Queue and Player Management
 
         #region Event
 
@@ -1324,7 +1319,7 @@ namespace WorldServer.World.Scenarios
         {
         }
 
-        #endregion
+        #endregion Event
 
         #region Packets
 
@@ -1418,7 +1413,7 @@ namespace WorldServer.World.Scenarios
             SendToTeam(Out, team);
         }
 
-        #endregion
+        #endregion Packets
 
         #region Domination / Farm check
 
@@ -1503,7 +1498,6 @@ namespace WorldServer.World.Scenarios
                 }
                 EvtInterface.RemoveEvent(TickDomination);
             }
-
             else
             {
                 for (int i = 0; i < 2; ++i)
@@ -1536,16 +1530,15 @@ namespace WorldServer.World.Scenarios
             checking.SendClientMessage("Destruction total kills " + _totalKills[1] + ", spawncamping factor: " + _spawncampingFactor[1]);
         }
 
-
         public void GetScenarioScore(Player player)
         {
             player.SendClientMessage($"Kills:{PlayerScoreboard[player].Kills} " +
                                      $"Guard Damage:{PlayerScoreboard[player].GuardDamage} " +
-                                     $"Solo Kills:{PlayerScoreboard[player].SoloKills} "+
+                                     $"Solo Kills:{PlayerScoreboard[player].SoloKills} " +
                                      $"Healing:{PlayerScoreboard[player].Healing} ");
         }
 
-        #endregion
+        #endregion Domination / Farm check
 
         #region Scenario Objects
 
@@ -1560,6 +1553,7 @@ namespace WorldServer.World.Scenarios
                     Region.AddObject(essence, Info.MapId);
                     AddTrackedObject(essence);
                     break;
+
                 case "Murderball":
                     HoldObject murderball = new HoldObject(obj.Identifier, obj.ObjectiveName, new Point3D(obj.WorldPosX, obj.WorldPosY, obj.PosZ), 14053, 30000, ObjectPickedUp, ObjectDropped, ObjectReset, null, 3463, 3463);
                     Region.AddObject(murderball, Info.MapId);
@@ -1569,7 +1563,7 @@ namespace WorldServer.World.Scenarios
             }
         }
 
-        #endregion
+        #endregion Scenario Objects
 
         #region Map tracking for carried objectives
 
@@ -1645,9 +1639,11 @@ namespace WorldServer.World.Scenarios
                     Out.WriteUInt32(ball.Holder.CharacterId);
                     Out.WritePascalString(ball.Holder.GenderedName);
                     break;
+
                 case EHeldState.Ground:
                     Out.WriteUInt32(ball.Holder?.CharacterId ?? 0);
                     break;
+
                 default:
                     Out.Fill(0, 2);
                     break;
@@ -1674,7 +1670,6 @@ namespace WorldServer.World.Scenarios
                 Out.WriteUInt32((uint)ball.Holder.WorldPosition.Y);
                 Out.WriteUInt32((uint)ball.Holder.Z);
             }
-
             else
             {
                 Out.WriteByte(0);
@@ -1687,7 +1682,7 @@ namespace WorldServer.World.Scenarios
             plr.SendPacket(Out);
         }
 
-        #endregion
+        #endregion Map tracking for carried objectives
 
         public virtual bool TooCloseToSpawn(Player plr)
         {

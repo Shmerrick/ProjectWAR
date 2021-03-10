@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
 using WorldServer.World.Interfaces;
@@ -187,19 +187,19 @@ namespace WorldServer.Managers
             {
                 List<LootInfo> lootList = new List<LootInfo>();
 
-                uint corpseCareer = (uint) Math.Pow(2, deadPlayer.Info.CareerLine - 1);
+                uint corpseCareer = (uint)Math.Pow(2, deadPlayer.Info.CareerLine - 1);
                 uint corpseLevel = deadPlayer.AdjustedLevel;
                 uint corpseRenown = deadPlayer.AdjustedRenown;
 
                 // Scenario zones all have a war_world.zone_infos.type value of 1.
                 // Note - if "1" refers to "instance" instead of "scenario", there could be problems
-                // with players receiving scenario-restricted loot for a PVP kill made in an instance 
+                // with players receiving scenario-restricted loot for a PVP kill made in an instance
                 lootGroups = CreatureService.GetLootGroupsByEvent(deadPlayer.Zone.Info.Type == 1 ? KILL_EVENT_SCENARIO : KILL_EVENT_RVR);
 
                 // This will be our narrowed down list of loot groups that are relevant to the kill in question.
                 List<Loot_Group> candidateLootGroups = new List<Loot_Group>();
 
-                // Whittle down the loot groups into a new candidate list, based on the killed player's career, 
+                // Whittle down the loot groups into a new candidate list, based on the killed player's career,
                 // and whether the kill occurred in the correct zone (if any) and whether the player has the required quest (if any)
                 foreach (Loot_Group lg in lootGroups)
                 {
@@ -215,7 +215,7 @@ namespace WorldServer.Managers
 
                     if ((corpseCareer & lg.CreatureID) != corpseCareer)
                         continue;
-                        
+
                     if (lg.SpecificZone != 0 && deadPlayer.Zone.Info.ZoneId != lg.SpecificZone)
                         continue;
 
@@ -288,7 +288,7 @@ namespace WorldServer.Managers
                                 }
                             }
 
-                            // If the loot group requires that the dropped loot be usable by a member of 
+                            // If the loot group requires that the dropped loot be usable by a member of
                             // the killer's party, then remove non-compatible loot from the candidate list.
                             if (lg.ReqGroupUsable)
                             {
@@ -347,9 +347,7 @@ namespace WorldServer.Managers
                     //corpse.EvtInterface.Notify(EventName.ON_GENERATE_LOOT, looter, Lt);
                     return lt;
                 }
-
             }
-
             else if (corpse.IsCreature())
             {
                 Creature deadCreature = corpse.GetCreature();
@@ -385,11 +383,9 @@ namespace WorldServer.Managers
                     }
                 }
 
-
-
                 // Generate items from remaining loot groups
                 foreach (Loot_Group lg in candidateLootGroups)
-                { 
+                {
                     try
                     {
                         if (lg == null)
@@ -432,7 +428,7 @@ namespace WorldServer.Managers
                                     }
                                 }
 
-                                // If the loot group requires that the dropped loot be usable by a member of 
+                                // If the loot group requires that the dropped loot be usable by a member of
                                 // the killer's party, then remove non-compatible loot from the candidate list.
                                 if (lg.ReqGroupUsable)
                                 {
@@ -442,7 +438,6 @@ namespace WorldServer.Managers
                                         members = player.PriorityGroup.GetPlayerListCopy();
                                     else
                                         members = new List<Player> { player };
-
 
                                     for (int itemIndex = 0; itemIndex < candidateItems.Count; ++itemIndex)
                                     {
@@ -496,7 +491,6 @@ namespace WorldServer.Managers
                     return lt;
                 }
             }
-
             else if (corpse.IsGameObject())
             {
                 // This will generate gameobject loot. Currently this only shows loot
@@ -545,7 +539,7 @@ namespace WorldServer.Managers
             return null;
         }
 
-		public static LootContainer GetScenarioLoot(Player player, int scenTier, ZoneMgr zone)
+        public static LootContainer GetScenarioLoot(Player player, int scenTier, ZoneMgr zone)
         {
             List<LootInfo> lootList = new List<LootInfo>();
 
@@ -554,13 +548,13 @@ namespace WorldServer.Managers
 
             // Scenario zones all have a war_world.zone_infos.type value of 1.
             // Note - if "1" refers to "instance" instead of "scenario", there could be problems
-            // with players receiving scenario-restricted loot for a PVP kill made in an instance 
-            List<Loot_Group>lootGroups = CreatureService.GetLootGroupsByEvent(1);
+            // with players receiving scenario-restricted loot for a PVP kill made in an instance
+            List<Loot_Group> lootGroups = CreatureService.GetLootGroupsByEvent(1);
 
             // This will be our narrowed down list of loot groups that are relevant to the kill in question.
             List<Loot_Group> candidateLootGroups = new List<Loot_Group>();
 
-            // Whittle down the loot groups into a new candidate list, based on the killed player's career, 
+            // Whittle down the loot groups into a new candidate list, based on the killed player's career,
             // and whether the kill occurred in the correct zone (if any) and whether the player has the required quest (if any)
             foreach (Loot_Group lg in lootGroups)
             {
@@ -614,7 +608,7 @@ namespace WorldServer.Managers
                             candidateItems.Add(lgi);
                         }
 
-                        // If the loot group requires that the dropped loot be usable by a member of 
+                        // If the loot group requires that the dropped loot be usable by a member of
                         // the killer's party, then remove non-compatible loot from the candidate list.
                         if (lg.ReqGroupUsable)
                         {
@@ -657,7 +651,6 @@ namespace WorldServer.Managers
                             lootList.Add(new LootInfo(winningItem));
                         }
                     }
-
                 }
             }
 

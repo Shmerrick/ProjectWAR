@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-
-using FrameWork;
+﻿using FrameWork;
 using GameData;
+using System;
+using System.Collections.Generic;
 
 namespace Common
 {
@@ -30,7 +29,7 @@ namespace Common
         DEAMONS_OF_NURGLE = 10,
         DEAMONS_OF_SLAANESH = 11,
         BEASMEN = 12,
-        DWARFS =14,
+        DWARFS = 14,
         GREENSKINS = 15,
         HUMANS = 16,
         OGRES = 17,
@@ -1428,7 +1427,7 @@ namespace Common
             set
             {
                 _title = value;
-                TitleId = (CreatureTitle) value;
+                TitleId = (CreatureTitle)value;
             }
         }
 
@@ -1436,49 +1435,49 @@ namespace Common
         public ushort Unk
         {
             get { return _Unks[0]; }
-            set { if (_Unks == null)_Unks = new ushort[7]; _Unks[0] = value; }
+            set { if (_Unks == null) _Unks = new ushort[7]; _Unks[0] = value; }
         }
 
         [DataElement(AllowDbNull = false)]
         public ushort Unk1
         {
             get { return _Unks[1]; }
-            set { if (_Unks == null)_Unks = new ushort[7]; _Unks[1] = value; }
+            set { if (_Unks == null) _Unks = new ushort[7]; _Unks[1] = value; }
         }
 
         [DataElement(AllowDbNull = false)]
         public ushort Unk2
         {
             get { return _Unks[2]; }
-            set { if (_Unks == null)_Unks = new ushort[7]; _Unks[2] = value; }
+            set { if (_Unks == null) _Unks = new ushort[7]; _Unks[2] = value; }
         }
 
         [DataElement(AllowDbNull = false)]
         public ushort Unk3
         {
             get { return _Unks[3]; }
-            set { if (_Unks == null)_Unks = new ushort[7]; _Unks[3] = value; }
+            set { if (_Unks == null) _Unks = new ushort[7]; _Unks[3] = value; }
         }
 
         [DataElement(AllowDbNull = false)]
         public ushort Unk4
         {
             get { return _Unks[4]; }
-            set { if (_Unks == null)_Unks = new ushort[7]; _Unks[4] = value; }
+            set { if (_Unks == null) _Unks = new ushort[7]; _Unks[4] = value; }
         }
 
         [DataElement(AllowDbNull = false)]
         public ushort Unk5
         {
             get { return _Unks[5]; }
-            set { if (_Unks == null)_Unks = new ushort[7]; _Unks[5] = value; }
+            set { if (_Unks == null) _Unks = new ushort[7]; _Unks[5] = value; }
         }
 
         [DataElement(AllowDbNull = false)]
         public ushort Unk6
         {
             get { return _Unks[6]; }
-            set { if (_Unks == null)_Unks = new ushort[7]; _Unks[6] = value; }
+            set { if (_Unks == null) _Unks = new ushort[7]; _Unks[6] = value; }
         }
 
         [DataElement(Varchar = 255, AllowDbNull = false)]

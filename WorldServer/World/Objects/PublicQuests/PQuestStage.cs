@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace WorldServer.World.Objects.PublicQuests
 {
@@ -22,8 +19,8 @@ namespace WorldServer.World.Objects.PublicQuests
         {
             foreach (PQuestObjective Obj in Objectives)
             {
-                    Obj.Count = 0;
-                    Obj.Reset();
+                Obj.Count = 0;
+                Obj.Reset();
             }
         }
 

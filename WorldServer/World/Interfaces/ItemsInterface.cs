@@ -54,7 +54,7 @@ namespace WorldServer.World.Interfaces
         public static ushort DELETE_SLOT = 1040;
         public static ushort QUEST_START_SLOT = 700;
 
-        #endregion
+        #endregion Define
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -63,6 +63,7 @@ namespace WorldServer.World.Interfaces
         public Item[] Items;
         private long _movedItems = 0;
         private byte _bagBuy;
+
         public byte BagBuy
         {
             get
@@ -78,10 +79,10 @@ namespace WorldServer.World.Interfaces
                 else
                     _bagBuy = value;
             }
-
         }
 
         private byte _bankBuy;
+
         public byte BankBuy
         {
             get
@@ -97,7 +98,6 @@ namespace WorldServer.World.Interfaces
                 else
                     _bankBuy = value;
             }
-
         }
 
         private Player _playerOwner;
@@ -127,7 +127,6 @@ namespace WorldServer.World.Interfaces
                     // Because item restrictions can change in patches
                     if (IsEquipmentSlot(itm.SlotId) && (!CanUse(itm.Info, _playerOwner, false, false) /*|| (itm.Info.UniqueEquiped == 1 && _uniqueEquipped.Contains(item.Entry))*/ || (EquipSlot)itm.SlotId == EquipSlot.OFF_HAND && itm.Info.TwoHanded) && _playerOwner.GmLevel == 1)
                         SlotCollidingItems.Add(itm);
-
                     else if (Items[itm.SlotId] == null)
                     {
                         Items[itm.SlotId] = itm;
@@ -135,7 +134,6 @@ namespace WorldServer.World.Interfaces
                         if (IsEquipmentSlot(itm.SlotId))
                             EquipItem(itm);
                     }
-
                     else
                         SlotCollidingItems.Add(itm);
                 }
@@ -183,6 +181,7 @@ namespace WorldServer.World.Interfaces
             HandleSlotCollisions();
             base.Load();
         }
+
         public void Load(List<Creature_item> creatureItems)
         {
             if (IsLoad)
@@ -192,7 +191,6 @@ namespace WorldServer.World.Interfaces
                 Items = new Item[OVERFLOW_END_SLOT];
             else
                 Items = new Item[MAX_EQUIPMENT_SLOT];
-
 
             foreach (Creature_item Item in creatureItems)
             {
@@ -254,7 +252,6 @@ namespace WorldServer.World.Interfaces
 
         public override void Update(long tick)
         {
-
         }
 
         public override void Save()
@@ -287,7 +284,7 @@ namespace WorldServer.World.Interfaces
             }
         }
 
-        #endregion
+        #endregion Slot Collisions
 
         private readonly HashSet<uint> _uniqueEquipped = new HashSet<uint>();
 
@@ -299,14 +296,14 @@ namespace WorldServer.World.Interfaces
             if (item.Career != 0 && (item.Career & (1 << _playerOwner.Info.CareerLine - 1)) == 0)
                 return false;
 
-            // Race restrictions. 
+            // Race restrictions.
             if (item.Race != 0 && (item.Race & (1 << _playerOwner.Info.Race - 1)) == 0)
                 return false;
 
             if (item.UniqueEquiped == 1 && _uniqueEquipped.Contains(item.Entry))
                 return false;
 
-            //check profession 
+            //check profession
 
             // todo
 
@@ -336,90 +333,105 @@ namespace WorldServer.World.Interfaces
                     if (item.Type == 2 || item.Type == 5 || item.Type == 3 || item.Type == 20)
                         return true;
                     break;
+
                 case 2:
                     if (slotId == 11 && !(item.SlotId == 13 || item.SlotId == 11))
                         return false;
                     if (item.Type == 2 || item.Type == 3 || item.Type == 19)
                         return true;
                     break;
+
                 case 3:
                     if (slotId == 11)
                         return false;
                     if (item.Type == 11 || item.Type == 6)
                         return true;
                     break;
+
                 case 4:
                     if (slotId == 11)
                         return false;
                     if (item.Type == 3 || item.Type == 9 || item.Type == 18)
                         return true;
                     break;
+
                 case 5:
                     if (slotId == 11 && item.Type != 5)
                         return false;
                     if (item.Type == 1 || item.Type == 5 || item.Type == 2 || item.Type == 20)
                         return true;
                     break;
+
                 case 6:
                     if (slotId == 11 && !(item.SlotId == 13 || item.SlotId == 11))
                         return false;
                     if (item.Type == 1 || item.Type == 2 || item.Type == 3 || item.Type == 19)
                         return true;
                     break;
+
                 case 7:
                     if (slotId == 11)
                         return false;
                     if (item.Type == 11 || item.Type == 6)
                         return true;
                     break;
+
                 case 8:
                     if (slotId == 11)
                         return false;
                     if (item.Type == 14 || item.Type == 7 || item.Type == 18)
                         return true;
                     break;
+
                 case 9:
                     if (slotId == 11 && item.Type != 15)
                         return false;
                     if (item.Type == 1 || item.Type == 15 || item.Type == 18)
                         return true;
                     break;
+
                 case 10:
                     if (slotId == 11 && item.Type != 5)
                         return false;
                     if (item.Type == 1 || item.Type == 5 || item.Type == 20)
                         return true;
                     break;
+
                 case 11:
                     if (slotId == 11)
                         return false;
                     if (item.Type == 11 || item.Type == 6)
                         return true;
                     break;
+
                 case 12:
                     if (slotId == 11 && item.Type != 25)
                         return false;
                     if (item.Type == 3 || item.Type == 22 || item.Type == 25)
                         return true;
                     break;
+
                 case 13:
                     if (slotId == 11 && item.Type != 5)
                         return false;
                     if (item.Type == 1 || item.Type == 2 || item.Type == 5 || item.Type == 20)
                         return true;
                     break;
+
                 case 14:
                     if (slotId == 11 && !(item.SlotId == 13 || item.SlotId == 11))
                         return false;
                     if (item.Type == 3 || item.Type == 2 || item.Type == 19)
                         return true;
                     break;
+
                 case 15:
                     if (slotId == 11 && item.Type != 25)
                         return false;
                     if (item.Type == 6 || item.Type == 12 || item.Type == 25)
                         return true;
                     break;
+
                 case 16:
                     if (slotId == 11)
                         return false;
@@ -433,42 +445,49 @@ namespace WorldServer.World.Interfaces
                     if (item.Type == 1 || item.Type == 5 || item.Type == 20)
                         return true;
                     break;
+
                 case 18:
                     if (slotId == 11)
                         return false;
                     if (item.Type == 1 || item.Type == 7 || item.Type == 18)
                         return true;
                     break;
+
                 case 19:
                     if (slotId == 11)
                         return false;
                     if (item.Type == 2 || item.Type == 19)
                         return true;
                     break;
+
                 case 20:
                     if (slotId == 11)
                         return false;
                     if (item.Type == 11 || item.Type == 6)
                         return true;
                     break;
+
                 case 21:
                     if (slotId == 11 && item.Type != 5)
                         return false;
                     if (item.Type == 1 || item.Type == 14 || item.Type == 5 || item.Type == 20)
                         return true;
                     break;
+
                 case 22:
                     if (slotId == 11 && !(item.SlotId == 13 || item.SlotId == 11))
                         return false;
                     if (item.Type == 12 || item.Type == 18)
                         return true;
                     break;
+
                 case 23:
                     if (slotId == 11 && !(item.SlotId == 13 || item.SlotId == 11 || item.SlotId == 25))
                         return false;
                     if (item.Type == 1 || item.Type == 25 || item.Type == 22)
                         return true;
                     break;
+
                 case 24:
                     if (slotId == 11)
                         return false;
@@ -486,45 +505,59 @@ namespace WorldServer.World.Interfaces
                 case 208424:
                     CreateItem(208400, 5, true);
                     break;
+
                 case 208425:
                     CreateItem(208400, 25, true);
                     break;
+
                 case 208426:
                     CreateItem(208401, 5, true);
                     break;
+
                 case 208427:
                     CreateItem(208401, 25, true);
                     break;
+
                 case 208428:
                     CreateItem(208402, 5, true);
                     break;
+
                 case 208447:
                     CreateItem(208431, 5, true);
                     break;
+
                 case 208448:
                     CreateItem(208431, 25, true);
                     break;
+
                 case 208449:
                     CreateItem(208432, 5, true);
                     break;
+
                 case 208450:
                     CreateItem(208432, 25, true);
                     break;
+
                 case 208451:
                     CreateItem(208433, 5, true);
                     break;
+
                 case 1298378389:
                     CreateItem(208403, 5, true);
                     break;
+
                 case 1298378390:
                     CreateItem(208434, 5, true);
                     break;
+
                 case 1298378391:
                     CreateItem(208403, 25, true);
                     break;
+
                 case 1298378392:
                     CreateItem(208434, 25, true);
                     break;
+
                 case 1298378521:   // Black market warlord box
 
                     var random = StaticRandom.Instance.Next(0, 10000);
@@ -555,7 +588,8 @@ namespace WorldServer.World.Interfaces
                                         if (random >= 8500)
                                             count = StaticRandom.Instance.Next(55, 65);
                                         else
-                                        { if (random >= 7500)
+                                        {
+                                            if (random >= 7500)
                                                 count = StaticRandom.Instance.Next(45, 55);
                                             else
                                             {
@@ -581,21 +615,27 @@ namespace WorldServer.World.Interfaces
                 case 1298378528:
                     CreateItem(208470, 5, true);
                     break;
+
                 case 1298378529:
                     CreateItem(208454, 5, true);
                     break;
+
                 case 1298378530:
                     CreateItem(208470, 25, true);
                     break;
+
                 case 1298378531:
                     CreateItem(208453, 5, true);
                     break;
+
                 case 1298378532:
                     CreateItem(208453, 25, true);
                     break;
+
                 case 1298378533:
                     CreateItem(208470, 5, true);
                     break;
+
                 case 1298378534:
                     CreateItem(208470, 25, true);
                     break;
@@ -888,7 +928,8 @@ namespace WorldServer.World.Interfaces
                 _playerOwner.BuffInterface.RemoveBuffByEntry(effectEntry);
             }
         }
-        #endregion
+
+        #endregion Stats
 
         #region Accessor
 
@@ -948,8 +989,11 @@ namespace WorldServer.World.Interfaces
         public bool HasMaxBank => BankBuy >= 20;
 
         private byte GetTotalSlot() => (byte)(GetMaxInventorySlot() - INVENTORY_START_SLOT);
+
         private byte GetMaxInventorySlot() => (byte)(INVENTORY_START_SLOT + 32 + BagBuy * INVENTORY_SLOT_COUNT);
+
         private ushort GetTotalBankSlot() => (ushort)(GetMaxBankSlot() - BANK_START_SLOT);
+
         private ushort GetMaxBankSlot() => (ushort)(BANK_START_SLOT + 80 + BankBuy * BANK_SLOT_COUNT);
 
         public uint GetBagPrice()
@@ -960,6 +1004,7 @@ namespace WorldServer.World.Interfaces
             price *= Math.Pow(10, bag);
             return (uint)price;
         }
+
         public uint GetBankPrice()
         {
             double bank = BankBuy;
@@ -1044,6 +1089,7 @@ namespace WorldServer.World.Interfaces
          *    Appends to 'stacks' all item stacks matching 'info' and in the range given
          *    by startIndex, SlotCount.
          */
+
         private void AddStacksInRange(List<ushort> stacks, Item_Info info, ushort startIndex, ushort stopIndex)
         {
             for (ushort slot = startIndex; slot < stopIndex; slot++)
@@ -1053,6 +1099,7 @@ namespace WorldServer.World.Interfaces
         }
 
         private ushort GetMaxCurrencyItemSlots() => 32;
+
         public ushort GetMaxCraftingItemSlots()
         {
             Player player = (Player)_Owner;
@@ -1061,24 +1108,29 @@ namespace WorldServer.World.Interfaces
             space += (ushort)(16 * player._Value.CraftingBags);
             return space;
         }
+
         private ushort GetMaxQuestItemSlots() => 100;
 
         private bool IsMainInventorySlot(ushort slot)
         {
             return slot >= MAX_EQUIPMENT_SLOT && slot < MAX_EQUIPMENT_SLOT + GetMaxInventorySlot();
         }
+
         private bool IsCraftingInventorySlot(ushort slot)
         {
             return slot >= CRAFTING_START_SLOT && slot < CRAFTING_START_SLOT + GetMaxCraftingItemSlots();
         }
+
         private bool IsCurrencyInventorySlot(ushort slot)
         {
             return slot >= CURRENCY_START_SLOT && slot < CURRENCY_START_SLOT + GetMaxCurrencyItemSlots();
         }
+
         private bool IsQuestItemInventorySlot(ushort slot)
         {
             return slot >= QUEST_START_SLOT && slot < QUEST_START_SLOT + GetMaxQuestItemSlots();
         }
+
         private bool IsBankInventorySlot(ushort slot)
         {
             return slot >= BANK_START_SLOT && slot <= BANK_END_SLOT;
@@ -1148,7 +1200,7 @@ namespace WorldServer.World.Interfaces
             return false;
         }
 
-        #endregion
+        #endregion Accessor
 
         #region Packets
 
@@ -1162,6 +1214,7 @@ namespace WorldServer.World.Interfaces
             Out.WriteByte(0xF4);
             Out.WriteUInt16((ushort)(GetPlayer().StsInterface.GetTotalStat(Stats.Armor)));
         }
+
         public void SendMaxInventory(Player plr) // 1.3.5
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_BAG_INFO, 18);
@@ -1175,6 +1228,7 @@ namespace WorldServer.World.Interfaces
             Out.WriteUInt32R(GetBankPrice());               // GameData.Player.bankExpansionSlotsCost
             plr.SendPacket(Out);
         }
+
         private static void SendBuffer(Player plr, ref PacketOut buffer, ref byte Count)
         {
             // On Envoi le Packet des items
@@ -1208,6 +1262,7 @@ namespace WorldServer.World.Interfaces
             if (item?.Info != null)
                 SendItemSetInfo(plr, item.Info.ItemSet);
         }
+
         private void SendItemsInSlots(Player plr, List<ushort> slots)
         {
             if (slots.Count <= 0)
@@ -1224,6 +1279,7 @@ namespace WorldServer.World.Interfaces
             for (int i = 0; i < slots.Count; ++i)
                 SendItemSetInfo(plr, GetItemInSlot(slots[i]));
         }
+
         private void SendItemSwap(Player plr, ushort destination, ushort source)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_GET_ITEM);
@@ -1237,13 +1293,13 @@ namespace WorldServer.World.Interfaces
             SendItemSetInfo(plr, GetItemInSlot(destination));
             SendItemSetInfo(plr, GetItemInSlot(source));
         }
+
         public void SendAllItems(Player plr)
         {
             SendMaxInventory(plr); // 1.3.5
 
             // On Envoi les items 16 par 16
             byte count = 0;
-
 
             //item sets to send
             List<uint> itemSets = new List<uint>();
@@ -1273,8 +1329,8 @@ namespace WorldServer.World.Interfaces
             // If the item is in a set send its info
             foreach (uint setId in itemSets)
                 SendItemSetInfo(plr, setId);
-
         }
+
         private static void SendItemToTradeWindow(Player plr, ushort slot, Item info, ushort count)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_GET_ITEM);
@@ -1294,6 +1350,7 @@ namespace WorldServer.World.Interfaces
 
             SendItemSetInfo(plr, item.Info.ItemSet);
         }
+
         private static void SendItemSetInfo(Player plr, uint id)
         {
             if (id == 0)
@@ -1457,9 +1514,9 @@ namespace WorldServer.World.Interfaces
                 if (Items[i] != null)
                     itms.Add(i);
 
-
             SendEquipped(plr, itms);
         }
+
         private void SendEquipped(Player plr, ushort slot)
         {
             if (!IsEquipmentSlot(slot))
@@ -1469,6 +1526,7 @@ namespace WorldServer.World.Interfaces
 
             SendEquipped(plr, items);
         }
+
         private void SendEquipped(Player plr, ushort destination, ushort source)
         {
             int Invalide = !IsEquipmentSlot(destination) ? 1 : 0;
@@ -1485,6 +1543,7 @@ namespace WorldServer.World.Interfaces
 
             SendEquipped(plr, Itms);
         }
+
         private void SendEquipped(Player plr, List<ushort> items)
         {
             if (_Owner is Pet)
@@ -1543,7 +1602,6 @@ namespace WorldServer.World.Interfaces
                     Out.WriteUInt16((ushort)curItem.ModelId);
                     Out.WriteUInt16((ushort)curItem.AltAppearanceEntry);
                 }
-
                 else
                 {
                     Out.WriteUInt16(curItem.GetModel());
@@ -1601,13 +1659,12 @@ namespace WorldServer.World.Interfaces
                     Item.BuildItem(ref Out, Items[i], null, null, 0, 0);
                     if (Items[i] != null && Items[i].Info != null && Items[i].Info.ItemSet != 0 && plr.ItmInterface != null)
                         plr.ItmInterface.SendItemSetInfoToPlayer(plr, Items[i].Info.ItemSet);
-
                 }
             Out.WriteByte(0);
             plr.SendPacket(Out);
         }
 
-        #endregion
+        #endregion Packets
 
         #region Creation
 
@@ -1675,7 +1732,6 @@ namespace WorldServer.World.Interfaces
                                 count = 0;
                                 _toSend.Add(stackableSlot);
                             }
-
                         }
 
                         toCreate = NumStacksRequiredToHold(count, info.MaxStack); // Nombre d'objet qui doit être créé count/MaxStack
@@ -1689,7 +1745,6 @@ namespace WorldServer.World.Interfaces
                 ushort totalFreeSlot = GetTotalFreeInventorySlot(info, overflow); // Nombre de slots total dont je dispose
 
                 //Log.info("ItemsInterface", "count=" + count + ",FreeSlot=" + TotalFreeSlot + ",ToCreate=" + ToCreate+",CanStack="+CanStack);
-
 
                 if (totalFreeSlot < toCreate) // Je n'ai pas assez de slots disponible pour créer ces objets
                     return ItemResult.RESULT_MAX_BAG;
@@ -1730,6 +1785,7 @@ namespace WorldServer.World.Interfaces
 
             return ItemResult.RESULT_OK;
         }
+
         public ItemResult CreateItem(uint itemId, ushort count, bool overflow = false, ushort bagSlot = 0)
         {
             Item_Info info = ItemService.GetItem_Info(itemId);
@@ -1832,7 +1888,7 @@ namespace WorldServer.World.Interfaces
         //    return ItemResult.RESULT_OK;
         //}
 
-        #endregion
+        #endregion Creation
 
         #region Moving
 
@@ -2134,6 +2190,7 @@ namespace WorldServer.World.Interfaces
                                 // Moving a currency item into currency bag
                                 destinationSlot = GetFreeItemSlotInRange(CURRENCY_START_SLOT, (ushort)(CURRENCY_START_SLOT + GetMaxCurrencyItemSlots()));
                                 break;
+
                             case (byte)Item.ItemType.Crafting:
                                 // Moving a crafting item from main inventory to crafting bag
                                 destinationSlot = GetFreeItemSlotInRange(CRAFTING_START_SLOT, (ushort)(CRAFTING_START_SLOT + GetMaxCraftingItemSlots()));
@@ -2187,7 +2244,6 @@ namespace WorldServer.World.Interfaces
                             DeleteItem(sourceSlot);
                             moveSuccess = true;
                         }
-
                         else
                         {   // Partial addition.
                             sourceItem.Count -= (ushort)(destinationItem.Info.MaxStack - destinationItem.Count);
@@ -2220,11 +2276,10 @@ namespace WorldServer.World.Interfaces
                             SendEquipped(null, destinationSlot, sourceSlot);
 
                             if (_playerOwner != null && IsEquipmentSlot(destinationSlot) && sourceItem.Info.TokUnlock > 0)
-                                // the 2nd value here is true because this is item we currently equipped and this might trigger 
+                                // the 2nd value here is true because this is item we currently equipped and this might trigger
                                 // set unlock
                                 _playerOwner.TokInterface.AddTok(sourceItem.Info.TokUnlock, true);
                         }
-
                         else
                             _playerOwner?.SendLocalizeString(sourceItem.Info.Name, ChatLogFilters.CHATLOGFILTERS_USER_ERROR, IsEquipmentSlot(destinationSlot) ?
                                 Localized_text.TEXT_ITEM_ERR_CANT_EQUIP_X
@@ -2247,7 +2302,6 @@ namespace WorldServer.World.Interfaces
                             Items[destinationSlot] = newDestItem;
                     }
 
-
                     if (IsEquipmentSlot(sourceSlot) && !IsEquipmentSlot(destinationSlot))
                         UnEquipItem(sourceItem);
                     else if (IsEquipmentSlot(destinationSlot) && !IsEquipmentSlot(sourceSlot))
@@ -2256,7 +2310,7 @@ namespace WorldServer.World.Interfaces
                     SendEquipped(null, destinationSlot, sourceSlot);
 
                     if (_playerOwner != null && IsEquipmentSlot(destinationSlot) && sourceItem.Info.TokUnlock > 0)
-                        // the 2nd value here is true because this is item we currently equipped and this might trigger 
+                        // the 2nd value here is true because this is item we currently equipped and this might trigger
                         // set unlock
                         _playerOwner.TokInterface.AddTok(sourceItem.Info.TokUnlock, true);
 
@@ -2273,7 +2327,6 @@ namespace WorldServer.World.Interfaces
             }
             else
                 return false;
-
         }
 
         private List<ushort> _stacked = new List<ushort>(); // List des Objets stackable
@@ -2286,7 +2339,7 @@ namespace WorldServer.World.Interfaces
             return (ushort)((itemCount + maxStack - 1) / maxStack);
         }
 
-        #endregion
+        #endregion Moving
 
         #region Removal / Deletion
 
@@ -2435,7 +2488,7 @@ namespace WorldServer.World.Interfaces
             }
         }
 
-        #endregion
+        #endregion Removal / Deletion
 
         #region Trading
 
@@ -2450,8 +2503,6 @@ namespace WorldServer.World.Interfaces
         {
             try
             {
-
-
                 TradingUpdated = false;
 
                 byte Status = packet.GetUint8();
@@ -2479,8 +2530,6 @@ namespace WorldServer.World.Interfaces
                     SendTradeClose(Oid);
                     return;
                 }
-
-
 
                 //Log.Success("HandleTrade", "Status=" + Status + ",oid=" + oid);
 
@@ -2548,7 +2597,6 @@ namespace WorldServer.World.Interfaces
 
                     SendTradeInfo(this);
                     Trading.ItmInterface.SendTradeInfo(this);
-
                 }
                 else if (Status == 2 && IsTrading()) // Accept trade
                 {
@@ -2570,6 +2618,7 @@ namespace WorldServer.World.Interfaces
                 _logger.Error($"Handletrade error {e.Message} {e.StackTrace}");
             }
         }
+
         public void Trade(ItemsInterface distInter)
         {
             //Log.Success("Trade", "TRADE !");
@@ -2662,12 +2711,11 @@ namespace WorldServer.World.Interfaces
 
             CloseTrade();
         }
+
         public void SendTradeInfo(ItemsInterface distInterface)
         {
             try
             {
-
-
                 PacketOut Out = new PacketOut((byte)Opcodes.F_TRADE_STATUS);
                 Out.WriteByte(distInterface.TradingAccepted);
                 Out.WriteByte(0);
@@ -2691,14 +2739,17 @@ namespace WorldServer.World.Interfaces
                 _logger.Error($"Exception : {e.Message} {e.StackTrace} {e.Source}");
             }
         }
+
         public bool IsTrading()
         {
             return Trading != null;
         }
+
         public bool CanOpenTrade(Player plr)
         {
             return plr.ItmInterface.Trading == null || plr.ItmInterface.Trading == _playerOwner;
         }
+
         public void CloseTrade()
         {
             Trading = null;
@@ -2706,6 +2757,7 @@ namespace WorldServer.World.Interfaces
             TradingAccepted = 0;
             TradingUpdate = 0;
         }
+
         public void SendTradeClose(ushort oid)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_TRADE_STATUS);
@@ -2718,11 +2770,12 @@ namespace WorldServer.World.Interfaces
             CloseTrade();
         }
 
-        #endregion
+        #endregion Trading
 
         #region BuyBack
 
         public List<Item> BuyBack = new List<Item>();
+
         public void SendBuyBack()
         {
             if (_playerOwner == null)
@@ -2738,6 +2791,7 @@ namespace WorldServer.World.Interfaces
             Out.WriteByte(0);
             _playerOwner.SendPacket(Out);
         }
+
         public void SellItem(InteractMenu menu)
         {
             ushort slotId = (ushort)(menu.Num + (menu.Page * 256));
@@ -2836,6 +2890,7 @@ namespace WorldServer.World.Interfaces
             CreateItem(itm.Info, itm.Count, itm.GetTalismans(), itm.GetPrimaryDye(), itm.GetSecondaryDye(), itm.BoundtoPlayer);
             SendBuyBack();
         }
+
         public void AddBuyBack(Item itm)
         {
             itm.SlotId = 0;
@@ -2848,6 +2903,7 @@ namespace WorldServer.World.Interfaces
             }
             BuyBack.Add(itm);
         }
+
         public Item GetBuyBack(ushort num, ushort count)
         {
             if (num >= BuyBack.Count)
@@ -2871,7 +2927,7 @@ namespace WorldServer.World.Interfaces
             return New;
         }
 
-        #endregion
+        #endregion BuyBack
 
         #region Dye
 
@@ -2891,7 +2947,6 @@ namespace WorldServer.World.Interfaces
                 SendEquipped(null, itm.SlotId);
         }
 
-
         public void DyeItem(Item itm, ushort primary, ushort secondary)
         {
             if (_playerOwner == null)
@@ -2909,9 +2964,10 @@ namespace WorldServer.World.Interfaces
                 SendEquipped(null, itm.SlotId);
         }
 
-        #endregion
+        #endregion Dye
 
         #region ItemSets
+
         private Dictionary<uint, byte> _itemSets;
 
         private bool _strikethroughActive, _dualParryActive;
@@ -2930,7 +2986,7 @@ namespace WorldServer.World.Interfaces
                         _itemSets.Add(Items[i].Info.ItemSet, 1);
                 }
 
-            //10 = mainhand // 11 offhand 
+            //10 = mainhand // 11 offhand
 
             AddItemSetBonus();
         }
@@ -3034,7 +3090,7 @@ namespace WorldServer.World.Interfaces
             }
         }
 
-        #endregion
+        #endregion ItemSets
 
         public void TalismanCheck()
         {
@@ -3062,22 +3118,27 @@ namespace WorldServer.World.Interfaces
                     if (GetItemInSlot((ushort)EquipSlot.MAIN_HAND) == null)
                         result = AbilityResult.ABILITYRESULT_NEED_MELEE_WEAPON;
                     break;
+
                 case WeaponRequirements.OffHand:
                     if (GetItemInSlot((ushort)EquipSlot.OFF_HAND) == null)
                         result = AbilityResult.ABILITYRESULT_NEED_MELEE_WEAPON;
                     break;
+
                 case WeaponRequirements.Ranged:
                     if (GetItemInSlot((ushort)EquipSlot.RANGED_WEAPON) == null)
                         result = AbilityResult.ABILITYRESULT_NEEDRANGED;
                     break;
+
                 case WeaponRequirements.TwoHander:
                     if (GetItemInSlot((ushort)EquipSlot.MAIN_HAND) == null || GetItemInSlot((ushort)EquipSlot.MAIN_HAND).Info.TwoHanded == false)
                         result = AbilityResult.ABILITYRESULT_WRONG_WEAPON_TYPE;
                     break;
+
                 case WeaponRequirements.DualWield:
                     if (GetItemInSlot((ushort)EquipSlot.MAIN_HAND) == null || GetItemInSlot((ushort)EquipSlot.OFF_HAND) == null)
                         result = AbilityResult.ABILITYRESULT_WRONG_WEAPON_TYPE;
                     break;
+
                 case WeaponRequirements.Shield:
                     if (GetItemInSlot((ushort)EquipSlot.OFF_HAND) == null || GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info.Type != (byte)ItemTypes.ITEMTYPES_SHIELD)
                         result = AbilityResult.ABILITYRESULT_WRONG_WEAPON_TYPE;
@@ -3121,7 +3182,6 @@ namespace WorldServer.World.Interfaces
             _foundItemEntries.Clear();
             _foundItems.Clear();
         }
-
 
         public void SendMysteryBag(ushort slot)
         {
@@ -3189,7 +3249,6 @@ namespace WorldServer.World.Interfaces
             return items;
         }
 
-
         public void SendItemCooldown(ushort spellEntry, ushort cooldown)
         {
             long nextUseTime = TCPManager.GetTimeStamp() + cooldown;
@@ -3223,6 +3282,6 @@ namespace WorldServer.World.Interfaces
             _foundItems.Clear();
         }
 
-        #endregion
+        #endregion Ability
     }
 }

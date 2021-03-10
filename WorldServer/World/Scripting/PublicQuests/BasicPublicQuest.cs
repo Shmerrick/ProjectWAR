@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
-using Common;
 using WorldServer.Services.World;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
@@ -9,7 +9,7 @@ using Object = WorldServer.World.Objects.Object;
 
 namespace WorldServer.World.Scripting.PublicQuests
 {
-    class BasicPublicQuest : AGeneralScript
+    internal class BasicPublicQuest : AGeneralScript
     {
         protected Object Obj; // This is creature
         public Random random = new Random();
@@ -86,6 +86,5 @@ namespace WorldServer.World.Scripting.PublicQuests
             c.EvtInterface.AddEvent(c.Destroy, 10000, 1);
             return false;
         }
-
     }
 }

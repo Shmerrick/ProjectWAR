@@ -19,7 +19,7 @@ namespace WorldServer.NetWork.Handler
             CommandMgr.HandleText(cclient.Plr, Text);
         }
 
-        [PacketHandler(PacketHandlerType.TCP, (int) Opcodes.F_EMOTE, (int) eClientState.Playing, "onEmote")]
+        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_EMOTE, (int)eClientState.Playing, "onEmote")]
         public static void F_EMOTE(BaseClient client, PacketIn packet)
         {
             GameClient cclient = client as GameClient;
@@ -31,7 +31,7 @@ namespace WorldServer.NetWork.Handler
                 return;
 
             if (cclient.Plr.IsBanned)
-            { 
+            {
                 cclient.Plr.SendClientMessage("You feel that this isn't the time or the place for any emotional outbursts.", SystemData.ChatLogFilters.CHATLOGFILTERS_EMOTE);
                 return;
             }
@@ -60,13 +60,11 @@ namespace WorldServer.NetWork.Handler
 
                 Out.WriteUInt16(0);
             }
-
             else
             {
                 Out.WriteUInt16(0);
                 Out.WriteUInt16(0);
             }
-                
 
             cclient.Plr.DispatchPacket(Out, false);
             cclient.Plr.SendPacket(Out);

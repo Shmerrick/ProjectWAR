@@ -13,7 +13,6 @@ using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Map;
@@ -59,7 +58,8 @@ namespace WorldServer.Managers
         private static Thread _groupThread;
         private static bool _running = true;
         public static long StartingPairing;
-        // DEV - Development mode, PRD - Production Mode. 
+
+        // DEV - Development mode, PRD - Production Mode.
         public static string ServerMode;
 
         public static UpperTierCampaignManager UpperTierCampaignManager;
@@ -67,14 +67,12 @@ namespace WorldServer.Managers
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public static RVRArea RVRArea = new RVRArea();
 
-
         //Log.Success("StartingPairing: ", StartingPairing.ToString());
 
         #region Region
 
         public static List<RegionMgr> _Regions = new List<RegionMgr>();
         private static ReaderWriterLockSlim RegionsRWLock = new ReaderWriterLockSlim();
-
 
         public static RegionMgr GetRegion(ushort RegionId, bool Create, string name = "")
         {
@@ -101,11 +99,9 @@ namespace WorldServer.Managers
 
             ScenarioMgr.Stop();
             _running = false;
-
         }
 
-
-        #endregion
+        #endregion Region
 
         #region Zones
 
@@ -129,7 +125,7 @@ namespace WorldServer.Managers
                             return new SpawnPoint(res);
                 }
 
-                // Scenario respawn - random if > 1 
+                // Scenario respawn - random if > 1
                 if (player.ScnInterface.Scenario != null)
                 {
                     List<Zone_Respawn> respawns = ZoneService.GetZoneRespawns(zoneId);
@@ -164,13 +160,11 @@ namespace WorldServer.Managers
                 }
                 else
                 {
-
                     // Crude patch - if no currentarea, respawn into current zoneid
                     _logger.Warn(
                         $"Respawning player {player.Name} from respawnId=0 area {player.CurrentArea.AreaId}");
                     return new SpawnPoint(ZoneService.GetZoneRespawn(zoneId, realm));
                 }
-
             }
             else
             {
@@ -198,7 +192,6 @@ namespace WorldServer.Managers
                 _logger.Warn($"Respawning player {player.Name} from NULL area");
                 return new SpawnPoint(ZoneService.GetZoneRespawn(zoneId, realm));
             }
-
         }
 
         public static List<Zone_Taxi> GetTaxis(Player Plr)
@@ -229,10 +222,12 @@ namespace WorldServer.Managers
                             if (!(Plr.TokInterface.HasTok(11) || Plr.TokInterface.HasTok(44) || Plr.TokInterface.HasTok(75) || Plr.TokInterface.HasTok(140) || Plr.TokInterface.HasTok(171) || Plr.TokInterface.HasTok(107)))
                                 continue;
                             break;
+
                         case 3:
                             if (!(Plr.TokInterface.HasTok(12) || Plr.TokInterface.HasTok(50) || Plr.TokInterface.HasTok(81) || Plr.TokInterface.HasTok(108) || Plr.TokInterface.HasTok(146) || Plr.TokInterface.HasTok(177)))
                                 continue;
                             break;
+
                         case 4:
                             if (!(Plr.TokInterface.HasTok(18) || Plr.TokInterface.HasTok(55) || Plr.TokInterface.HasTok(86) || Plr.TokInterface.HasTok(114) || Plr.TokInterface.HasTok(182) || Plr.TokInterface.HasTok(151)))
                                 continue;
@@ -245,9 +240,7 @@ namespace WorldServer.Managers
             return L;
         }
 
-
-
-        #endregion
+        #endregion Zones
 
         #region Xp / Renown
 
@@ -257,7 +250,7 @@ namespace WorldServer.Managers
             uint VLvl = victim.AdjustedLevel;
 
             if (KLvl > VLvl + 8)
-                    return 0;
+                return 0;
 
             uint XP = VLvl * 100;
 
@@ -293,7 +286,6 @@ namespace WorldServer.Managers
 
             if (killer.PriorityGroup == null)
             {
-
                 killer.AddXp((uint)(GenerateXPCount(killer, victim) * bonusMod), true, true);
             }
             else
@@ -316,16 +308,14 @@ namespace WorldServer.Managers
             return renownPoints;
         }
 
-        #endregion
+        #endregion Xp / Renown
 
         #region items
-
 
         public static void SendDynamicVendorItems(Player plr, List<Vendor_items> items)
         {
             if (plr == null)
                 return;
-
 
             byte Page = 0;
             int Count = items.Count;
@@ -360,7 +350,6 @@ namespace WorldServer.Managers
                 Items.Add(vi);
             }
 
-
             byte Page = 0;
             int Count = Items.Count;
             while (Count > 0)
@@ -378,6 +367,7 @@ namespace WorldServer.Managers
 
             Plr.ItmInterface.SendBuyBack();
         }
+
         public static void SendVendorPage(Player Plr, ref List<Vendor_items> items, byte Count, byte Page)
         {
             Count = (byte)Math.Min(Count, items.Count);
@@ -415,7 +405,6 @@ namespace WorldServer.Managers
                         Out.WritePascalString(item.Name);
                         Out.WriteUInt16(Kp.Value);
                     }
-
                 }
                 if ((byte)items[i].ItemsReq.Count == 1)
                     Out.Fill(0, 18);
@@ -423,7 +412,6 @@ namespace WorldServer.Managers
                     Out.Fill(0, 9);
                 else
                     Out.Fill(0, 1);
-
             }
 
             Out.WriteByte(0);
@@ -484,7 +472,6 @@ namespace WorldServer.Managers
             }
             else if (result == ItemResult.RESULT_ITEMID_INVALID)
             {
-
             }
         }
 
@@ -497,7 +484,6 @@ namespace WorldServer.Managers
 
             if (items.Count <= Num)
                 return;
-
 
             var honorVendor = new HonorVendorItem(plr);
             var reward = HonorService.HonorRewards.SingleOrDefault(x => x.ItemId == items[Num].Info.Entry);
@@ -541,9 +527,7 @@ namespace WorldServer.Managers
             }
             else if (result == ItemResult.RESULT_ITEMID_INVALID)
             {
-
             }
-
         }
 
         public static void BuyItemRealmCaptainDynamicVendor(Player plr, InteractMenu Menu, List<Vendor_items> items)
@@ -567,9 +551,10 @@ namespace WorldServer.Managers
             var newBuff = buff;
         }
 
-        #endregion
+        #endregion items
 
         #region Quests
+
         // TODO move that to QuestService
         public static void GenerateObjective(Quest_Objectives Obj, Quest Q)
         {
@@ -599,7 +584,6 @@ namespace WorldServer.Managers
                             if (Obj.Description == null || Obj.Description.Length <= Obj.Creature.Name.Length)
                                 Obj.Description = "Speak to " + Obj.Creature.Name;
                         }
-
                     }
                     break;
 
@@ -620,7 +604,6 @@ namespace WorldServer.Managers
                             if (Obj.Description == null || Obj.Description.Length <= Obj.GameObject.Name.Length)
                                 Obj.Description = "Find " + Obj.GameObject.Name;
                         }
-
                     }
                     break;
 
@@ -641,7 +624,6 @@ namespace WorldServer.Managers
                             if (Obj.Description == null || Obj.Description.Length <= Obj.Creature.Name.Length)
                                 Obj.Description = "Kill " + Obj.Creature.Name;
                         }
-
                     }
                     break;
 
@@ -662,7 +644,6 @@ namespace WorldServer.Managers
                             if (Obj.Description == null || Obj.Description.Length <= Obj.GameObject.Name.Length)
                                 Obj.Description = "Destroy " + Obj.GameObject.Name;
                         }
-
                     }
                     break;
 
@@ -785,7 +766,8 @@ namespace WorldServer.Managers
                     break;
             }
         }
-        #endregion
+
+        #endregion Quests
 
         #region Relation
 
@@ -805,10 +787,8 @@ namespace WorldServer.Managers
 
                         info.Realm = Kp.Value.Realm;
                         break;
-
                     }
                 }
-
                 else if (info.Race > 0)
                 {
                     if (((Constants.RaceMaskDwarf + Constants.RaceMaskHighElf + Constants.RaceMaskEmpire) & info.Race) > 0)
@@ -902,7 +882,6 @@ namespace WorldServer.Managers
                     }
                 }
 
-
                 foreach (Chapter_Reward Reward in Info.T1Rewards.ToArray())
                 {
                     Reward.Item = ItemService.GetItem_Info(Reward.ItemId);
@@ -932,11 +911,10 @@ namespace WorldServer.Managers
                 CellSpawnService.GetRegionCell(Zone.Region, (ushort)((float)(Info.PinX / 4096) + Zone.OffX), (ushort)((float)(Info.PinY / 4096) + Zone.OffY)).AddChapter(Info);
             }
 
-
-
             if (InvalidChapters > 0)
                 _logger.Warn("LoadChapters", "[" + InvalidChapters + "] Invalid Chapter(s)");
         }
+
         public static void LoadPublicQuests()
         {
             Zone_Info Zone = null;
@@ -949,7 +927,6 @@ namespace WorldServer.Managers
                 Zone = ZoneService.GetZone_Info(Info.ZoneId);
                 if (Zone == null)
                     continue;
-
 
                 if (!PQuestService._PQuest_Objectives.TryGetValue(Info.Entry, out Info.Objectives))
                     Info.Objectives = new List<PQuest_Objective>();
@@ -965,7 +942,7 @@ namespace WorldServer.Managers
                     }
                 }
 
-                Log.Info("LoadPublicQuests", "Loaded public quest "+Info.Entry+" to region "+Zone.Region+" cell at X: "+ ((float)(Info.PinX / 4096) + Zone.OffX)+" "+ (float)(Info.PinY / 4096) + Zone.OffY);
+                Log.Info("LoadPublicQuests", "Loaded public quest " + Info.Entry + " to region " + Zone.Region + " cell at X: " + ((float)(Info.PinX / 4096) + Zone.OffX) + " " + (float)(Info.PinY / 4096) + Zone.OffY);
 
                 bool skipLoad = false;
 
@@ -986,6 +963,7 @@ namespace WorldServer.Managers
             if (skippedPQs.Count > 0)
                 Log.Info("Skipped PQs", string.Join(", ", skippedPQs));
         }
+
         public static void LoadQuestsRelation()
         {
             QuestService.LoadQuestCreatureStarter();
@@ -1089,8 +1067,7 @@ namespace WorldServer.Managers
             }
         }
 
-
-        #endregion
+        #endregion Relation
 
         #region Scripts
 
@@ -1229,9 +1206,10 @@ namespace WorldServer.Managers
             GeneralScripts.Update(Tick);
         }
 
-        #endregion
+        #endregion Scripts
 
         #region Scenarios
+
         public static ScenarioMgr ScenarioMgr;
 
         public static InstanceMgr InstanceMgr;
@@ -1248,7 +1226,7 @@ namespace WorldServer.Managers
             InstanceMgr = new InstanceMgr();
         }
 
-        #endregion
+        #endregion Scenarios
 
         #region Settings
 
@@ -1260,9 +1238,7 @@ namespace WorldServer.Managers
             WorldSettingsMgr = new WorldSettingsMgr();
         }
 
-        #endregion
-
-
+        #endregion Settings
 
         #region Campaign
 
@@ -1281,7 +1257,6 @@ namespace WorldServer.Managers
             _groupThread = new Thread(GroupUpdate);
             _groupThread.Start();
         }
-
 
         public static Dictionary<int, int> GetZonesFightLevel()
         {
@@ -1355,7 +1330,6 @@ namespace WorldServer.Managers
             }
         }
 
-
         private static void WorldUpdate()
         {
             while (_running)
@@ -1374,9 +1348,7 @@ namespace WorldServer.Managers
                 }
                 Thread.Sleep(15000);
             }
-
         }
-
 
         private static void GroupUpdate()
         {
@@ -1431,14 +1403,12 @@ namespace WorldServer.Managers
 
                 Thread.Sleep(100);
             }
-
         }
 
-
-
-        #endregion
+        #endregion Campaign
 
         #region Keep registry, to remove it's static bullshit
+
         public static Dictionary<uint, BattleFrontKeep> _Keeps = new Dictionary<uint, BattleFrontKeep>();
 
         public static void SendKeepStatus(Player Plr)
@@ -1468,9 +1438,11 @@ namespace WorldServer.Managers
                 }
             }
         }
-        #endregion
+
+        #endregion Keep registry, to remove it's static bullshit
 
         #region Logging
+
         [LoadingFunction(true)]
         public static void ResetPacketLogSettings()
         {
@@ -1478,16 +1450,11 @@ namespace WorldServer.Managers
             Log.Debug("WorldMgr", "Resetting user packet log settings...");
             Database.ExecuteNonQuery("update war_accounts.accounts set PacketLog = 0");
         }
-        #endregion
 
-        #region Other
-
-
-        #endregion
+        #endregion Logging
 
         public static void AttachCampaignsToRegions()
         {
-
             foreach (var regionMgr in _Regions)
             {
                 var objectiveList = LoadObjectives(regionMgr);
@@ -1496,9 +1463,11 @@ namespace WorldServer.Managers
                     case 1: // t1 dw/gs
                         regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierCampaignManager, new ApocCommunications());
                         break;
+
                     case 3: // t1 he/de
                         regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierCampaignManager, new ApocCommunications());
                         break;
+
                     case 8: // t1 em/ch
                         regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.LowerTierCampaignManager, new ApocCommunications());
                         break;
@@ -1506,9 +1475,11 @@ namespace WorldServer.Managers
                     case 11:
                         regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierCampaignManager, new ApocCommunications());
                         break;
+
                     case 2:
                         regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierCampaignManager, new ApocCommunications());
                         break;
+
                     case 4:
                         regionMgr.Campaign = new Campaign(regionMgr, objectiveList, new HashSet<Player>(), WorldMgr.UpperTierCampaignManager, new ApocCommunications());
                         break;
@@ -1548,7 +1519,6 @@ namespace WorldServer.Managers
             _logger.Trace("F_CAMPAIGN_STATUS1");
             PacketOut Out = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS, 159);
             Out.WriteHexStringBytes("0005006700CB00"); // 7
-
 
             // Dwarfs vs Greenskins T1
             Out.WriteByte(0);    // 0 and ignored
@@ -1633,7 +1603,6 @@ namespace WorldServer.Managers
             Out.WriteByte(0); // Order underdog rating
             Out.WriteByte(0); // Destruction underdog rating
 
-
             /*Out.WriteByte(0);
             Out.WriteByte(0);
             Out.WriteByte(0);
@@ -1671,7 +1640,6 @@ namespace WorldServer.Managers
 
                     if (player.Region?.Campaign != null)
                     {
-
                         Out.WriteByte((byte)75);
                         Out.WriteByte((byte)25);
 
@@ -1698,7 +1666,7 @@ namespace WorldServer.Managers
 
             if (items.Count <= Num)
                 return;
-            
+
             ItemResult result = plr.ItmInterface.CreateItem(items[Num].Info, (ushort)1);
             if (result == ItemResult.RESULT_OK)
             {
@@ -1707,7 +1675,6 @@ namespace WorldServer.Managers
                     plr.ItmInterface.RemoveItems(Kp.Key, (ushort)(Kp.Value * Count));
 
                 items.Remove(items[Num]);
-
             }
             else if (result == ItemResult.RESULT_MAX_BAG)
             {
@@ -1715,9 +1682,7 @@ namespace WorldServer.Managers
             }
             else if (result == ItemResult.RESULT_ITEMID_INVALID)
             {
-
             }
-
         }
     }
 }

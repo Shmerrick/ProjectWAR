@@ -66,8 +66,10 @@ namespace WorldServer.World.Objects
         public static Dictionary<uint, Player> PlayersByCharId = new Dictionary<uint, Player>();
         public static uint OrderCount;
         public static uint DestruCount;
-        // The bounty level for this player. 
+
+        // The bounty level for this player.
         public int BaseBountyValue => (_Value.Level) + (2 * _Value.RenownRank);
+
         public float AAOBonus { get; set; }
 
         public string InstanceID { get; set; } = string.Empty;
@@ -89,7 +91,6 @@ namespace WorldServer.World.Objects
 
                     Program.Rm.OnlinePlayers = (uint)_Players.Count;
                     Program.AcctMgr.UpdateRealm(Program.Rm.RealmId, Program.Rm.OnlinePlayers, OrderCount, DestruCount);
-
                 }
             }
 
@@ -120,7 +121,6 @@ namespace WorldServer.World.Objects
             }
             else
             {
-
                 Out = new PacketOut((byte)Opcodes.F_SET_ABILITY_TIMER, 12);
                 Out.WriteByte(0);
                 Out.WriteByte(1);
@@ -173,16 +173,19 @@ namespace WorldServer.World.Objects
                 CharMgr.Database.SaveObject(oldPlayer._Value);
             }
         }
+
         public static Player GetPlayer(string name)
         {
             lock (_Players)
                 return _Players.Find(plr => name.Equals(plr.Name, StringComparison.OrdinalIgnoreCase));
         }
+
         public static Player GetPlayer(uint characterId)
         {
             lock (_Players)
                 return _Players.Find(plr => plr.CharacterId == characterId);
         }
+
         public static Player CreatePlayer(GameClient client, Character Char)
         {
             GameClient other = ((TCPServer)client.Server).GetClientByAccount(client, Char.AccountId);
@@ -200,6 +203,7 @@ namespace WorldServer.World.Objects
 
             return new Player(client, Char);
         }
+
         public static List<Player> GetPlayers(string name, string guildName, ushort career, ushort zoneId, byte minLevel, byte maxLevel, Player caller = null)
         {
             List<Player> players = new List<Player>();
@@ -229,13 +233,14 @@ namespace WorldServer.World.Objects
 
             return players;
         }
+
         public static void Stop()
         {
             foreach (Player plr in _Players)
                 plr.Quit();
         }
 
-        #endregion
+        #endregion Statics
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
@@ -259,8 +264,10 @@ namespace WorldServer.World.Objects
         public bool IsAFK = false;
         public bool IsAutoAFK = false;
         public string AFKMessage = "";
+
         // This is used by Halloween event
         public bool Spooky = false;
+
         public long deathTime = 0;
 
         public BattleFrontStatus ActiveBattleFrontStatus => GetBattlefrontManager(Region.RegionId).GetActiveCampaign().GetActiveBattleFrontStatus();
@@ -341,7 +348,6 @@ namespace WorldServer.World.Objects
                             modelID = 156;
                         }
                     }
-
                 }
                 else
                 {
@@ -364,10 +370,8 @@ namespace WorldServer.World.Objects
                             modelID = 1038;
                         }
                     }
-
                     else if (plr.Info.Race == 7) // Chaos
                     {
-
                         if (plr.Info.CareerFlags == 4096)
                         {
                             modelID = 1034;
@@ -385,7 +389,6 @@ namespace WorldServer.World.Objects
                             modelID = 156;
                         }
                     }
-
                 }
 
                 target.ImageNum = (ushort)modelID;
@@ -405,6 +408,7 @@ namespace WorldServer.World.Objects
                     case 1:
                         vfx = 2498;
                         break;
+
                     case 2:
                         vfx = 3155;
                         break;
@@ -415,7 +419,6 @@ namespace WorldServer.World.Objects
                 var prms = new List<object>() { plr };
                 plr.EvtInterface.AddEvent(plr.SpreadSpooky, 120 * 1000, 0, prms);
                 plr.SetGearShowing(2, false);
-
             }
             return true;
         }
@@ -446,19 +449,14 @@ namespace WorldServer.World.Objects
 
                 if (_broadcastRank)
                 {
-
                     if (Utils.HasFlag(GmLevel, (int)EGmLevel.Management))
                         UpdateLastName("[Lead]");
-
                     else if (Utils.HasFlag(GmLevel, (int)EGmLevel.SourceDev))
                         UpdateLastName("[Dev]");
-
                     else if (Utils.HasFlag(GmLevel, (int)EGmLevel.DatabaseDev))
                         UpdateLastName("[DB]");
-
                     else if (Utils.HasFlag(GmLevel, (int)EGmLevel.AnyGM))
                         UpdateLastName("[GM]");
-
                     else
                         UpdateLastName("[Tester]");
                 }
@@ -492,7 +490,7 @@ namespace WorldServer.World.Objects
 
         public int noSurname => Client?._Account.noSurname ?? 0;
 
-        public ushort ImageNum; //overlay npc model with F_PLAYER_IMAGENUM if set 
+        public ushort ImageNum; //overlay npc model with F_PLAYER_IMAGENUM if set
         public List<byte> EffectStates = new List<byte>(); //list of active effects (ie: mutations, city champ mode, etc)
 
         public override string Name
@@ -554,8 +552,6 @@ namespace WorldServer.World.Objects
             Out.WriteUInt16(Oid);
             Out.WritePascalString(ChatName);
             DispatchPacket(Out, true);
-
-
         }
 
         public override void OnLoad()
@@ -625,7 +621,6 @@ namespace WorldServer.World.Objects
                 {
                     if (Level == Program.Config.RankCap)
                         _Value.RestXp = 0;
-
                     else
                     {
                         int diffSeconds = TCPManager.GetTimeStamp() - _Value.LastSeen;
@@ -656,8 +651,6 @@ namespace WorldServer.World.Objects
                         _Value.LastSeen = TCPManager.GetTimeStamp();
                     }
                 }
-
-
             }
 
             base.OnLoad();
@@ -674,8 +667,6 @@ namespace WorldServer.World.Objects
             // this is to check if the talisman window was still open if yes move all items back to the inventory
             ItmInterface.TalismanCheck();
 
-
-
             // Add any pending XP or Renown
             if (_Value.PendingXp > 0 || _Value.PendingRenown > 0)
             {
@@ -690,14 +681,12 @@ namespace WorldServer.World.Objects
 
             if (GmLevel > 1)
             {
-
                 //if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
                 if (GmLevel >= (int)EGmLevel.AnyGM && !GmMgr.GmList.Contains(this))
                 {
                     SendClientMessage("You have been added to the GM Account List");
                     GmMgr.NotifyGMOnline(this);
                 }
-
             }
 
             // This is Terror debuff - with this you cannot be ressurected
@@ -705,7 +694,6 @@ namespace WorldServer.World.Objects
             {
                 BuffInterface.RemoveBuffByEntry(5968);
             }
-
         }
 
         private void SetMaxActionPoints(byte valueRenownRank)
@@ -762,7 +750,6 @@ namespace WorldServer.World.Objects
                     SendRenown();
                     SendStats();
 
-
                     //if the loaded player has the GM tag (though we exclude DB people) we make them avilable to the gmlist
                     if (GmLevel >= (int)EGmLevel.AnyGM && !GmMgr.GmList.Contains(this))
                     {
@@ -812,7 +799,6 @@ namespace WorldServer.World.Objects
 
                 SendClientData();
 
-
                 /*{
 					PacketOut Out = new PacketOut((byte)Opcodes.F_INFLUENCE_INFO);
 					Out.WriteHexStringBytes("00000000");
@@ -840,7 +826,6 @@ namespace WorldServer.World.Objects
 
                 if (ImageNum != 0)
                     EvtInterface.AddEvent(SendImageNum, 15000, 1);
-
 
                 WorldMgr.SendZoneFightLevel(this);
 
@@ -899,6 +884,7 @@ namespace WorldServer.World.Objects
                     player.SendPacket(Out);
             }
         }
+
         private void SendImageNum()
         {
             if (ImageNum != 0)
@@ -910,6 +896,7 @@ namespace WorldServer.World.Objects
                 SendPacket(Out);
             }
         }
+
         public override void Update(long msTick)
         {
             if (Client == null)
@@ -988,7 +975,6 @@ namespace WorldServer.World.Objects
                     _pendingXP = 0;
                 }
 
-
                 _lastLevelResourceAdd = msTick + RENOWN_UPDATE_INTERVAL;
 
                 if (_pingSampleCount < 10)
@@ -1006,25 +992,20 @@ namespace WorldServer.World.Objects
                 _nextSpeedPenLiftTime += 1000;
             }
 
-           
             ForceCloseMobsToWander(200);
-
 
             if (StealthLevel == 0 || msTick - _lastStealthCheck <= STEALTH_CHECK_INTERVAL)
                 return;
 
             CheckStealth();
             _lastStealthCheck = msTick + STEALTH_CHECK_INTERVAL;
-
-
-
         }
 
         // Simple random seed.
-        static Random random = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));
-      
+        private static Random random = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));
+
         private void ForceCloseMobsToWander(int distance)
-         {
+        {
             var creaturesToWander = GetInRange<Creature>(distance).Where(
                 x => x.Level <= 43
                 && x.Spawn.Proto.Unk2 <= 1001
@@ -1079,9 +1060,7 @@ namespace WorldServer.World.Objects
                                 creature.MvtInterface.Move(returnHome);
 
                                 creature.MvtInterface.SetBaseSpeed(50);// 100
-                         
                             }
-
                         }
                     }
                 }
@@ -1092,6 +1071,7 @@ namespace WorldServer.World.Objects
         {
             return (a <= number && number <= b);
         }
+
         private Point2D CalculatePoint(Random random, int radius, int originX, int originY)
         {
             var angle = random.NextDouble() * Math.PI * 2;
@@ -1137,7 +1117,6 @@ namespace WorldServer.World.Objects
                 CharacterInfo info = CharMgr.GetCharacterInfo(Info.Career);
                 Teleport(info.ZoneId, (uint)info.WorldX, (uint)info.WorldY, (ushort)info.WorldZ, (ushort)info.WorldO);
             }
-
             else
             {
                 if (GmLevel == 1)
@@ -1146,7 +1125,6 @@ namespace WorldServer.World.Objects
                     SendClientMessage("You will be transported to your binding point upon logout.\nTo use the old handling of /stuck instead and warp to Nordland or Norsca, enter the /stuck command again within 5 seconds.");
                     Quit(false, true);
                 }
-
                 else
                 {
                     CharacterInfo info = CharMgr.GetCharacterInfo(Info.Career);
@@ -1155,7 +1133,7 @@ namespace WorldServer.World.Objects
             }
         }
 
-        #endregion
+        #endregion Stuck
 
         //Function to instantly kill this player
         public void Terminate()
@@ -1180,7 +1158,6 @@ namespace WorldServer.World.Objects
 
         public override void Dispose()
         {
-
             QtsInterface.PublicQuest?.RemovePlayer(this, true);
             CurrentKeep?.RemovePlayer(this);
 
@@ -1198,7 +1175,6 @@ namespace WorldServer.World.Objects
             {
                 if (CurrentArea.IsRvR)
                 {
-
                     // NEWDAWN
                     if (Region.Campaign != null)
                     {
@@ -1226,7 +1202,6 @@ namespace WorldServer.World.Objects
 
                 ForceSave();
             }
-
             else if (_pendingStuck || ScnInterface.Scenario != null)
             {
                 // Warp a player to their bind point on logout if they were stuck.
@@ -1252,7 +1227,6 @@ namespace WorldServer.World.Objects
 
                 ForceSave();
             }
-
             else Save();
 
             ClearTrackedDamage();
@@ -1348,7 +1322,6 @@ namespace WorldServer.World.Objects
                     return true;
                 }
             }
-
             else if (_throttleCount > 0)
             {
                 if (deltaTime > 5000)
@@ -1428,7 +1401,7 @@ namespace WorldServer.World.Objects
             + "\nRenown Cap is: " + Program.Config.RenownCap
             + "\nThe server rules are available in-game by entering the command '.rules'.";
 
-        #endregion
+        #endregion Channel / Chat
 
         // Network
 
@@ -1457,7 +1430,6 @@ namespace WorldServer.World.Objects
             }
 
             _pinger.SendAsync(Client.GetIp().Split(':')[0], 500, _pingBuffer, new PingOptions(64, true));
-
         }
 
         private void OnPingReply(object sender, PingCompletedEventArgs args)
@@ -1479,7 +1451,7 @@ namespace WorldServer.World.Objects
             }
         }
 
-        #endregion
+        #endregion Ping
 
         #region Packets
 
@@ -1501,6 +1473,7 @@ namespace WorldServer.World.Objects
             else
                 Client.Server.HandlePacket(Client, packet);
         }
+
         public void SendPacket(PacketOut Out)
         {
             if (Client == null)
@@ -1520,7 +1493,6 @@ namespace WorldServer.World.Objects
                 if (Region != null && Region.LogPacketVolume)
                     Region.NotifyOutgoingPacket((byte)Out.Opcode, (uint)Out.Length);
             }
-
             else
                 Client.SendPacket(Out);
         }
@@ -1546,7 +1518,6 @@ namespace WorldServer.World.Objects
                     if (player != this)
                         player.SendCopy(Out);
         }
-
 
         public override void DispatchPacket(PacketOut Out, bool sendToSelf, bool playerstate = false)
         {
@@ -1622,7 +1593,6 @@ namespace WorldServer.World.Objects
                             if (partyMember != this)
                                 partyMember.SendCopy(Out);
                         }
-
                     }
                 }
             }
@@ -1638,8 +1608,8 @@ namespace WorldServer.World.Objects
             packet.Write(Buf, 0, Buf.Length);
             SendPacket(packet);
             */
-
         }
+
         public void GetPacketIn(bool Clear)
         {
             _internalIn.Clear();
@@ -1650,6 +1620,7 @@ namespace WorldServer.World.Objects
                 if (Clear) _packetIn.Clear();
             }
         }
+
         public void UpdatePackets()
         {
             if (Client == null)
@@ -1672,7 +1643,6 @@ namespace WorldServer.World.Objects
                         _packetOut.RemoveAt(0);
                     }
                 }
-
                 else
                 {
                     if (_packetOut.Count > 0)
@@ -1684,7 +1654,7 @@ namespace WorldServer.World.Objects
             }
         }
 
-        #endregion
+        #endregion Packets
 
         #region Senders
 
@@ -1697,7 +1667,6 @@ namespace WorldServer.World.Objects
             Out.WriteByte((byte)(Speed != 0 ? 1 : 0));
             Out.WriteByte(100);
             SendPacket(Out);
-
         }
 
         public void SendSpeed(ushort newSpeed)
@@ -1716,6 +1685,7 @@ namespace WorldServer.World.Objects
             Out.WriteUInt32(_Value.Money);
             SendPacket(Out);
         }
+
         public void SendHealth()
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_PLAYER_HEALTH, 24);
@@ -1727,6 +1697,7 @@ namespace WorldServer.World.Objects
             Out.WriteUInt16(0x0E10); // Idem
             SendPacket(Out);
         }
+
         public void SendInited()
         {
             PacketOut Out = new PacketOut((byte)Opcodes.S_PLAYER_INITTED, 64);
@@ -1753,6 +1724,7 @@ namespace WorldServer.World.Objects
 
             SendPacket(Out);
         }
+
         public void SendSkills()
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_CHARACTER_INFO, 12);
@@ -1764,8 +1736,6 @@ namespace WorldServer.World.Objects
             Out.WriteUInt16(_Value.RallyPoint);
             SendPacket(Out);
 
-
-
             // Mount Gunbad dungeon chapter bar Temporary Fix
             //Dwarf order side
             Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE);
@@ -1776,8 +1746,6 @@ namespace WorldServer.World.Objects
             Out.WriteByte(1);
             Out.Fill(0, 4);
             SendPacket(Out);
-
-
 
             //WAR REPORT Temporary
             Out = new PacketOut((byte)Opcodes.F_WAR_REPORT);
@@ -1794,9 +1762,8 @@ namespace WorldServer.World.Objects
             Out.WriteByte(0);
             Out.WriteUInt16(0x0600);//= 06 00//zoneid
             SendPacket(Out);
-
-
         }
+
         public void SendXpTable()
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_EXPERIENCE_TABLE, 2048);
@@ -1892,6 +1859,7 @@ namespace WorldServer.World.Objects
 |00                                              |.               |");
             SendPacket(Out);
         }
+
         public void SendXp()
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_PLAYER_EXPERIENCE, 16);
@@ -1909,6 +1877,7 @@ namespace WorldServer.World.Objects
             Out.WriteByte(0);
             SendPacket(Out);
         }
+
         public void SendLevelUp(Dictionary<byte, ushort> diff)
         {
             SendRankUpdate(null);
@@ -1923,6 +1892,7 @@ namespace WorldServer.World.Objects
             }
             SendPacket(Out);
         }
+
         public void SendRankUpdate(Player Plr)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_PLAYER_RANK_UPDATE, 4);
@@ -1935,6 +1905,7 @@ namespace WorldServer.World.Objects
             else
                 Plr.SendPacket(Out);
         }
+
         public void SendRenown(RewardType type = RewardType.None, string text = null)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_PLAYER_RENOWN, 12);
@@ -1970,7 +1941,6 @@ namespace WorldServer.World.Objects
             //Check if LockoutTimer Expired and remove the Lockout if needed
             for (int i = 0; i < lockouts.Count; i++)
             {
-
                 if ((Convert.ToInt64(lockouts[i].Split(':')[1])) < TCPManager.GetTimeStamp())
                 {
                     _Value.RemoveLockout(lockouts[i]);
@@ -2034,12 +2004,10 @@ namespace WorldServer.World.Objects
 
         public void SendBestiary()
         {
-
             PacketOut Out = new PacketOut((byte)Opcodes.F_ACTION_COUNTER_INFO);
             TokInterface.SendBestiary(ref Out);
 
             SendPacket(Out);
-
         }
 
         public void SendRvrTracker()
@@ -2120,8 +2088,8 @@ namespace WorldServer.World.Objects
             }
             Out.Fill(0, 3);
             SendPacket(Out);
-
         }
+
         public void SendInitComplete()
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_PLAYER_INIT_COMPLETE, 2);
@@ -2194,6 +2162,7 @@ namespace WorldServer.World.Objects
             Out.Fill(0, 4);
             SendPacket(Out);
         }
+
         public void SendTitleUpdate()
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
@@ -2308,7 +2277,6 @@ namespace WorldServer.World.Objects
             SendPacket(Out);
         }
 
-
         public void SendDialog(Dialog type, ushort Value)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_SHOW_DIALOG, 6);
@@ -2317,6 +2285,7 @@ namespace WorldServer.World.Objects
             Out.WriteUInt16(Value);
             SendPacket(Out);
         }
+
         public void SendDialog(Dialog type, ushort objectId, ushort value)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_SHOW_DIALOG, 6);
@@ -2325,6 +2294,7 @@ namespace WorldServer.World.Objects
             Out.WriteUInt16(value);
             SendPacket(Out);
         }
+
         public void SendDialog(Dialog type, string text)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_SHOW_DIALOG, 32);
@@ -2333,6 +2303,7 @@ namespace WorldServer.World.Objects
             Out.WritePascalString(text);
             SendPacket(Out);
         }
+
         public void SendDialog(Dialog type, string text, string text2)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_SHOW_DIALOG, 48);
@@ -2451,7 +2422,6 @@ namespace WorldServer.World.Objects
                             }
                             Out.WriteByte(0);
                         }
-
                     }
                 } while ((l = messageText.IndexOf("<LINK", l + 12)) >= 0);
 
@@ -2474,6 +2444,7 @@ namespace WorldServer.World.Objects
         {
             SendMessage(0, Text, "", Filter, 0);
         }
+
         public void SendClientMessage(string Text, ChatLogFilters filter = ChatLogFilters.CHATLOGFILTERS_SAY, bool debugOnly = false)
         {
 #if !DEBUG
@@ -2482,6 +2453,7 @@ namespace WorldServer.World.Objects
 #endif
             SendLocalizeString(Text, filter, Localized_text.CHAT_TAG_DEFAULT);
         }
+
         public void SendObjectiveText(string Text)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_OBJECTIVE_INFO, 32);
@@ -2546,7 +2518,6 @@ namespace WorldServer.World.Objects
                 Out.WritePascalString(GenderedName);
             else
                 Out.WritePascalString(Info.TempFirstName);
-
 
             if (Info.TempLastName != null)
                 Out.WritePascalString(Info.TempLastName);
@@ -2617,7 +2588,6 @@ namespace WorldServer.World.Objects
                 plr.EvtInterface.AddEvent(() =>
                 {
                     SendEffectStates(plr);
-
                 }, 1000, 1);
             }
         }
@@ -2635,7 +2605,6 @@ namespace WorldServer.World.Objects
                 if (_Value.CraftingBags == 3 && _Value.GatheringSkillLevel == 200 && _Value.CraftingSkillLevel == 200)
                     _Value.CraftingBags = 4;
             }
-
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_TRADE_SKILL_UPDATE, 6);
             Out.WriteByte(skill);   // skill  1  Butchering  2 Scavaging 3 Cultivation 4 Apotekari 5 Talisman 6  Salvage
@@ -2669,7 +2638,7 @@ namespace WorldServer.World.Objects
             SendPacket(Out);
         }
 
-        #endregion
+        #endregion Senders
 
         //
 
@@ -2778,7 +2747,6 @@ namespace WorldServer.World.Objects
                             //add movement speed 3 (45%)
                         }
 
-
                         foreach (uint buffspellid in GldInterface.Guild.GetBannerBuffs(banner))
                         {
                             if (buffspellid > 0)
@@ -2818,13 +2786,11 @@ namespace WorldServer.World.Objects
                 else if (SpellId == 14502)
                     banner = 2;
 
-
                 PlantedStandard = new Standard(spawn, this, banner);
                 Region.AddObject(PlantedStandard, spawn.ZoneId);
 
                 Standard(0);
                 ItmInterface.DeleteItem(14, 1);
-
             }
         }
 
@@ -2839,7 +2805,7 @@ namespace WorldServer.World.Objects
             ItmInterface.SendEquipped(null);
         }
 
-        #endregion
+        #endregion Standard
 
         #region Mounting
 
@@ -2977,7 +2943,7 @@ namespace WorldServer.World.Objects
             else Plr.SendPacket(Out);
         }
 
-        #endregion
+        #endregion Mounting
 
         #region Appearance/Titles/Name
 
@@ -2990,6 +2956,7 @@ namespace WorldServer.World.Objects
 
             SendHelmCloakShowing();
         }
+
         public void SendHelmCloakShowing()
         {
             DispatchUpdateState((byte)StateOpcode.HelmCloak,
@@ -3004,6 +2971,7 @@ namespace WorldServer.World.Objects
             _Value.TitleId = titleId;
             SendTitleUpdate();
         }
+
         public void SetLastName(string lastName)
         {
             Info.Surname = lastName;
@@ -3021,7 +2989,7 @@ namespace WorldServer.World.Objects
             DispatchPacket(Out, true);
         }
 
-        #endregion
+        #endregion Appearance/Titles/Name
 
         // Resources
 
@@ -3047,13 +3015,11 @@ namespace WorldServer.World.Objects
             // Reset the bounty score for the player upon gaining an XP Level
             BountyManagerInstance?.ResetCharacterBounty(CharacterId, this);
 
-
             //Check area for bolster
             CheckArea();
 
             EvtInterface.Notify(EventName.OnLevelUp, this, null);
         }
-
 
         /// <summary>
         /// Used for kill rewards.
@@ -3074,6 +3040,7 @@ namespace WorldServer.World.Objects
             // _logger.Debug($"PVP AddXp. XP {xp} for {this.Name} Scale: {scaleFactor}");
             InternalAddXp(xp, shouldPool, scalesWithRest);
         }
+
         public void AddXp(uint xp, bool shouldPool, bool scalesWithRest)
         {
             // _logger.Trace($"Player {this.Name}");
@@ -3089,6 +3056,7 @@ namespace WorldServer.World.Objects
             // _logger.Debug($"PVE AddXp. XP {xp} for {this.Name} Scale: {scaleFactor}");
             InternalAddXp(xp, shouldPool, scalesWithRest);
         }
+
         private void InternalAddXp(uint xp, bool shouldPool, bool scalesWithRest)
         {
             RewardLogger.Trace($"{xp} XP awarded to {Name}");
@@ -3135,9 +3103,9 @@ namespace WorldServer.World.Objects
         {
             _pendingXP += addAmount;
         }
+
         public void LevelUp(uint restXp)
         {
-
             if (Level >= Program.Config.RankCap)
                 return;
 
@@ -3162,6 +3130,7 @@ namespace WorldServer.World.Objects
             else
                 CheckArea();
         }
+
         public Dictionary<byte, ushort> ApplyLevel()
         {
             Dictionary<byte, ushort> Diff = new Dictionary<byte, ushort>();
@@ -3184,7 +3153,7 @@ namespace WorldServer.World.Objects
             return Diff;
         }
 
-        #endregion
+        #endregion Xp
 
         #region Renown
 
@@ -3312,8 +3281,6 @@ namespace WorldServer.World.Objects
             //if (bonus > 0)
             //    killer.SendClientMessage($"You gain {bonus} Renown points for fighting near a Battlefield Objective!");
 
-
-
             renown = (uint)(renown * scaleFactor);
             AddKillRenown(renown, killer, victim, participants);
         }
@@ -3327,7 +3294,6 @@ namespace WorldServer.World.Objects
             Realms aaoRealm = Realms.REALMS_REALM_NEUTRAL;
             if (Region != null && Region.Campaign != null)
             {
-
                 if (Region.Campaign != null)
                 {
                     aaoMult = Math.Abs(Region.Campaign.AgainstAllOddsMult);
@@ -3368,7 +3334,6 @@ namespace WorldServer.World.Objects
 
             _renownPool += (uint)(renown * 0.25f);
 
-
             // RB   4/17/2016   Lock Renown Rank to double the Career Rank. Cannot gain renown if Renown Rank is higher than 2*Career Rank.
             if (_Value.RenownRank >= Program.Config.RenownCap || (_Value.Level < 32 && _Value.RenownRank > (2 * _Value.Level)))
                 return;
@@ -3393,13 +3358,11 @@ namespace WorldServer.World.Objects
                     _Value.Renown = CurrentRenown.Renown - 1;
                     SendRenown(type, text);
                 }
-
             }
             else
             {
                 _Value.Renown += renown;
                 SendRenown(type, text);
-
             }
         }
 
@@ -3443,7 +3406,7 @@ namespace WorldServer.World.Objects
             return Clamp(-0.0289f * rankDiff + 1.1397f, 0f, 10f);
         }
 
-        #endregion
+        #endregion Renown
 
         #region Influence
 
@@ -3466,7 +3429,7 @@ namespace WorldServer.World.Objects
             Characters_influence infl = null;
 
             infl = Info.Influences.SingleOrDefault(x => x.InfluenceId == chapter);
-            
+
             //foreach (Characters_influence inf in Info.Influences)
             //    if (inf.InfluenceId == chapter) { infl = inf; break; }
 
@@ -3498,8 +3461,6 @@ namespace WorldServer.World.Objects
             Out.WriteByte(1);
             Out.Fill(0, 3);
             SendPacket(Out);
-
-
         }
 
         public void SetInfluence(ushort chapter, ushort value)
@@ -3514,7 +3475,6 @@ namespace WorldServer.World.Objects
 
             if (value > info.Tier3InfluenceCount)
                 value = (ushort)info.Tier3InfluenceCount;
-
 
             if (Info.Influences == null)
                 Info.Influences = new List<Characters_influence>();
@@ -3554,7 +3514,6 @@ namespace WorldServer.World.Objects
 
         public void SendInfluenceInfo()
         {
-
             if (Info.Influences == null)
                 return;
 
@@ -3571,7 +3530,6 @@ namespace WorldServer.World.Objects
             Out.WriteByte(0);
 
             SendPacket(Out);
-
         }
 
         public void SendInfluenceItems(byte chapter)
@@ -3651,10 +3609,15 @@ namespace WorldServer.World.Objects
             SendPacket(Out);
         }
 
-        #endregion
+        #endregion Influence
+
         #region Money
 
-        public bool HasMoney(uint Money) { return _Value.Money >= Money; }
+        public bool HasMoney(uint Money)
+        {
+            return _Value.Money >= Money;
+        }
+
         public bool RemoveMoney(uint Money)
         {
             if (!HasMoney(Money))
@@ -3664,14 +3627,19 @@ namespace WorldServer.World.Objects
             SendMoney();
             return true;
         }
-        public uint GetMoney() { return _Value.Money; }
+
+        public uint GetMoney()
+        {
+            return _Value.Money;
+        }
+
         public void AddMoney(uint Money)
         {
             _Value.Money += Money;
             SendMoney();
         }
 
-        #endregion
+        #endregion Money
 
         // Combat
 
@@ -3734,7 +3702,7 @@ namespace WorldServer.World.Objects
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="caster"></param>
         /// <param name="healAmount"></param>
@@ -3802,11 +3770,11 @@ namespace WorldServer.World.Objects
         }
 
         /// <summary>
-        /// We are using aggro list from combat interface to store the details about healing - 
+        /// We are using aggro list from combat interface to store the details about healing -
         /// this is needed for hate management
         /// </summary>
 
-        AggroInfo HealAggroInfo;
+        private AggroInfo HealAggroInfo;
         public Dictionary<ushort, AggroInfo> HealAggros = new Dictionary<ushort, AggroInfo>();
 
         public AggroInfo GetHealAggro(ushort oid)
@@ -3861,7 +3829,6 @@ namespace WorldServer.World.Objects
 
                     TotalDamageTaken = PendingTotalDamageTaken;
                     PendingTotalDamageTaken = 0;
-
                 }
                 else
                 {
@@ -3888,7 +3855,6 @@ namespace WorldServer.World.Objects
 
             if (wasKilled)
                 SetDeath(caster);
-
             else if (!_isCriticallyWounded && PctHealth < 11)
             {
                 _isCriticallyWounded = true;
@@ -3952,72 +3918,95 @@ namespace WorldServer.World.Objects
                     case 1:
                         subtype = 69;
                         break;
+
                     case 2:
                         subtype = 68;
                         break;
+
                     case 3:
                         subtype = 70;
                         break;
+
                     case 4:
                         subtype = 67;
                         break;
+
                     case 5:
                         subtype = 77;
                         break;
+
                     case 6:
                         subtype = 78;
                         break;
+
                     case 7:
                         subtype = 84;
                         break;
+
                     case 8:
                         subtype = 87;
                         break;
+
                     case 9:
                         subtype = 98;
                         break;
+
                     case 10:
                         subtype = 94;
                         break;
+
                     case 11:
                         subtype = 88;
                         break;
+
                     case 12:
                         subtype = 97;
                         break;
+
                     case 13:
                         subtype = 90;
                         break;
+
                     case 14:
                         subtype = 96;
                         break;
+
                     case 15:
                         subtype = 99;
                         break;
+
                     case 16:
                         subtype = 95;
                         break;
+
                     case 17:
                         subtype = 75;
                         break;
+
                     case 18:
                         subtype = 74;
                         break;
+
                     case 19:
                         subtype = 76;
                         break;
+
                     case 20:
                         subtype = 72;
                         break;
+
                     case 21:
                         subtype = 61;
                         break;
+
                     case 22:
                         subtype = 65;
                         break;
+
                     case 23:
                         subtype = 63;
                         break;
+
                     case 24:
                         subtype = 64;
                         break;
@@ -4043,7 +4032,6 @@ namespace WorldServer.World.Objects
                             subPlayer.TokInterface.AddKill(subtype);
                         }
                     }
-
                 }
                 else
                     playerKiller.TokInterface.AddKill(subtype);
@@ -4074,7 +4062,7 @@ namespace WorldServer.World.Objects
 
             ///
             /// Increment the players killed in range value.
-            /// 
+            ///
             if (CurrentKeep != null)
             {
                 if (killer is Player)
@@ -4090,7 +4078,7 @@ namespace WorldServer.World.Objects
         {
             // 31 - Mourkain temple - need a impactmatrix at least for each scen... possibly a BF manager
             //if (regionId == 31)
-            //return 
+            //return
 
             foreach (var regionMgr in WorldMgr._Regions)
             {
@@ -4136,7 +4124,7 @@ namespace WorldServer.World.Objects
             WorldMgr.Database.AddObject(tracker);
         }
 
-        #endregion
+        #endregion Health/Damage
 
         #region Rewards
 
@@ -4176,7 +4164,6 @@ namespace WorldServer.World.Objects
 
             else
             {
-
                 if (Region.Campaign.PreventKillReward() || (killer.Client?._Account != null && CheckKillFarm(killer)))
                     return;
 
@@ -4198,7 +4185,6 @@ namespace WorldServer.World.Objects
                     }
 
                     ActiveBattleFrontStatus.RewardManagerInstance.DistributePlayerKillRewards(this, killer, AAOBonus, influenceId, PlayersByCharId);
-
                 }
 
                 // Record the recent killers of this toon.
@@ -4210,9 +4196,8 @@ namespace WorldServer.World.Objects
                 killer.SendClientMessage($"+2 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
             }
 
-            #endregion
+            #endregion RvR Bonus Mod and Rewards
         }
-
 
         /// <summary>
         /// Update a character's contribution & bounty
@@ -4233,7 +4218,7 @@ namespace WorldServer.World.Objects
 
                 var definition = new BountyService().GetDefinition(contributionDefinitionId);
 
-                // Add bounty to the death blow killer  
+                // Add bounty to the death blow killer
                 BountyManagerInstance.AddCharacterBounty(CharacterId, definition.ContributionValue);
                 //SendClientMessage($"[Contrib]:+{definition.ContributionValue} {definition.ContributionDescription}");
                 RewardLogger.Info($"+++ Update player Bounty character Id : {CharacterId} Contribution Def : {contributionDefinitionId} ({definition.ContributionDescription})");
@@ -4262,7 +4247,6 @@ namespace WorldServer.World.Objects
         private void HandleXPRenown(Player killer, float bonusMod, World.Battlefronts.Apocalypse.BattleFrontStatus activeBattleFrontStatus = null)
         {
             List<Player> damageSourceRemovals = new List<Player>();
-
 
             #region Initialize reward values
 
@@ -4294,8 +4278,8 @@ namespace WorldServer.World.Objects
             killer.AddXp(totalXP, 1, false, false);
             //killer.AddRenown(totalRenown, false, RewardType.Kill, $"Killing {Name}");
             killer.AddInfluence(influenceId, (ushort)totalInfluence);
-            
-            #endregion
+
+            #endregion Initialize reward values
 
             #region Remove players irrelevant to the kill
 
@@ -4318,7 +4302,7 @@ namespace WorldServer.World.Objects
             if (DamageSources.Count == 0 || TotalDamageTaken == 0)
                 return;
 
-            #endregion
+            #endregion Remove players irrelevant to the kill
 
             uint sumDamage = 0;
             foreach (KeyValuePair<Player, uint> kvpair in DamageSources)
@@ -4344,7 +4328,7 @@ namespace WorldServer.World.Objects
                     var memberCount = curPlayer.PriorityGroup.Members.Count;
                     foreach (var priorityGroupMember in curPlayer.PriorityGroup.Members)
                     {
-                        uint rr = (uint) ((totalRenown * kvpair.Value) / (sumDamage * memberCount));
+                        uint rr = (uint)((totalRenown * kvpair.Value) / (sumDamage * memberCount));
                         priorityGroupMember.AddRenown(rr, false, RewardType.Kill);
                         RewardLogger.Debug($"{priorityGroupMember.Name} received {rr} for assisting kill on {this.Name}");
                         //priorityGroupMember.SendClientMessage($"{priorityGroupMember.Name} received {rr} for assisting kill on {this.Name}. {totalRenown} * {kvpair.Value} / {sumDamage} * {memberCount}");
@@ -4352,7 +4336,7 @@ namespace WorldServer.World.Objects
                 }
                 else
                 {
-                    uint rr = (uint) ((totalRenown * kvpair.Value) / (sumDamage * 1));
+                    uint rr = (uint)((totalRenown * kvpair.Value) / (sumDamage * 1));
                     curPlayer.AddRenown(rr, false, RewardType.Kill);
                     RewardLogger.Debug($"{curPlayer.Name} received {rr} for solo kill on {this.Name}");
                     //curPlayer.SendClientMessage($"{curPlayer.Name} received {rr} for solo kill on {this.Name}. {totalRenown} * {kvpair.Value} / {sumDamage} * {1}");
@@ -4396,11 +4380,10 @@ namespace WorldServer.World.Objects
                     string message = "Suspicious kill pattern detected: " + killer.Name + " has " + _lastKillerKillCount + " kills against " + Name;
 
                     PlayerUtil.SendGMBroadcastMessage(_Players, message);
-                    
+
                     return true;
                 }
             }
-
             else
             {
                 _lastKillerAccountId = killerAccountId;
@@ -4410,7 +4393,7 @@ namespace WorldServer.World.Objects
             return false;
         }
 
-        #endregion
+        #endregion Rewards
 
         #region Respawning
 
@@ -4432,7 +4415,6 @@ namespace WorldServer.World.Objects
                     SendDialog(Dialog.Respawning, (ushort)respDelay);
                     EvtInterface.AddEvent(RespawnPlayer, respDelay * 1000, 1);
                 }
-
                 else
                 {
                     SendDialog(Dialog.Respawning, 5);
@@ -4471,7 +4453,6 @@ namespace WorldServer.World.Objects
             // SendClientMessage($"DEBUG ONLY : Respawning player {this.Name} in Zone {spawnPoint.ToString()}");
             if (spawnPoint != null)
             {
-
                 Teleport((ushort)spawnPoint.ZoneId, (uint)spawnPoint.X, (uint)spawnPoint.Y, (ushort)spawnPoint.Z, Heading);
             }
             else
@@ -4575,12 +4556,10 @@ namespace WorldServer.World.Objects
             BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.OnResurrect, null, instigator);
             deathTime = 0;
 
-
-
             //_isResurrecting = false;
         }
 
-        #endregion
+        #endregion Respawning
 
         #region RvR
 
@@ -4589,7 +4568,7 @@ namespace WorldServer.World.Objects
         public RvRStructure Palisade { get; set; }
         public BattlefieldObjective CurrentObjectiveFlag { get; set; }
 
-        #endregion
+        #endregion RvR
 
         #region Stats
 
@@ -4607,7 +4586,7 @@ namespace WorldServer.World.Objects
             SendSpeed(Speed);
         }
 
-        #endregion
+        #endregion Stats
 
         #region Action Points
 
@@ -4634,7 +4613,6 @@ namespace WorldServer.World.Objects
         }
 
         public ushort MaxActionPoints { get; set; }
-
 
         public byte PctAp => (byte)((ActionPoints * 100) / MaxActionPoints);
 
@@ -4721,7 +4699,7 @@ namespace WorldServer.World.Objects
             _lastAPCheck = tick;
         }
 
-        #endregion
+        #endregion Action Points
 
         #region Morale
 
@@ -4780,12 +4758,10 @@ namespace WorldServer.World.Objects
 
             if (toConsume >= _morale)
                 _morale = 0;
-
             else _morale -= (ushort)toConsume;
 
             SendHealth();
         }
-
 
         public void UpdateMorale(long tick)
         {
@@ -4801,7 +4777,6 @@ namespace WorldServer.World.Objects
                         SendHealth();
                     }
                 }
-
                 else if (!Panicked && tick <= CbtInterface.LastInteractionTime + MORALE_REGEN_HOLD)
                 {
                     if (_morale < 3600)
@@ -4821,7 +4796,7 @@ namespace WorldServer.World.Objects
             }
         }
 
-        #endregion
+        #endregion Morale
 
         #region CrowdControl
 
@@ -4843,7 +4818,6 @@ namespace WorldServer.World.Objects
             Player player = caster as Player;
             if (player != null)
                 puntedWorldPos = GetHistoricalPosition(TCPManager.GetTimeStampMS() - player.Latency);
-
             else
                 puntedWorldPos = WorldPosition;
 
@@ -4895,7 +4869,6 @@ namespace WorldServer.World.Objects
         {
             if (IsImmovable || NoKnockbacks)
                 return;
-
 
             float pullOffsetFactor;
 
@@ -4953,7 +4926,6 @@ namespace WorldServer.World.Objects
                     IsImmovable = true;
             }
 
-
             FallGuard = true;
             IsMoving = true;
             PuntedBy = caster;
@@ -4979,7 +4951,6 @@ namespace WorldServer.World.Objects
             Out.WriteUInt16(arcHeight);
             Out.WriteByte((byte)flightTime);
             Out.Fill(0, 19);
-
 
             DispatchPacket(Out, true);
 
@@ -5042,6 +5013,7 @@ namespace WorldServer.World.Objects
 
             AbtInterface.Cancel(true);
         }
+
         public void ApplyKnockback(Point3D point, ushort power, byte angle, ushort ext, byte gravity, byte unk)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_KNOCKBACK, 64);
@@ -5124,7 +5096,7 @@ namespace WorldServer.World.Objects
             _knockbackTime = DateTime.Now;
         }
 
-        #endregion
+        #endregion CrowdControl
 
         #region Stealth
 
@@ -5198,7 +5170,6 @@ namespace WorldServer.World.Objects
                         SendRemove(plr);
                     }
                 }
-
                 else if (IsWithinRadiusFeet(plr, (int)(STEALTH_DETECT_RANGE_MAX * spotDistMod)))
                 {
                     int dist = GetDistanceToObject(plr);
@@ -5230,7 +5201,7 @@ namespace WorldServer.World.Objects
             _spotters.Clear();
         }
 
-        #endregion
+        #endregion Stealth
 
         #region Bolster
 
@@ -5304,6 +5275,7 @@ namespace WorldServer.World.Objects
                         return true;
                     }
                     return false;
+
                 case 2:
                 case 3:
                     if (AbtInterface.GetTotalSpent() > 13)
@@ -5344,9 +5316,11 @@ namespace WorldServer.World.Objects
                 {
                     case 1:
                         return Level < 15;
+
                     case 2:
                     case 3:
                         return Level > 15 && Level < 30;
+
                     case 4:
                         return Level > 30;
                 }
@@ -5449,6 +5423,7 @@ namespace WorldServer.World.Objects
                             else
                                 newMaxLevel = 13;
                             break;
+
                         case 2:
                             if (Level > 18)
                                 newMaxLevel = 21;
@@ -5457,6 +5432,7 @@ namespace WorldServer.World.Objects
                             else
                                 newMaxLevel = 23;
                             break;
+
                         case 3:
                             if (Level > 28)
                                 newMaxLevel = 31;
@@ -5503,9 +5479,7 @@ namespace WorldServer.World.Objects
 
                     if (newMaxLevel <= Level)
                         return;
-
                 }
-
             }
 
             // Debolster lifted
@@ -5539,7 +5513,6 @@ namespace WorldServer.World.Objects
 
                 SendClientMessage($"Your Battle Rank has been reduced to {newMaxLevel}!\nThis effect will persist until you leave the RvR area or violate the conditions for debolstering.");
             }
-
             else
             {
                 StsInterface.BolsterFactor = (newMaxLevel == 0 ? 1f : (newMaxLevel + 1) / (float)(Level + 1));
@@ -5556,7 +5529,7 @@ namespace WorldServer.World.Objects
             }
         }
 
-        #endregion
+        #endregion Bolster
 
         #region Dueling
 
@@ -5738,7 +5711,6 @@ namespace WorldServer.World.Objects
                 Aggressor.Defender = null;
                 Aggressor = null;
             }
-
             else if (Defender != null)
             {
                 SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_DUEL_YOU_SURRENDER);
@@ -5753,7 +5725,7 @@ namespace WorldServer.World.Objects
             SetDuelFaction(false);
         }
 
-        #endregion
+        #endregion Dueling
 
         #region RvR Flagging
 
@@ -5774,7 +5746,6 @@ namespace WorldServer.World.Objects
                     DispatchUpdateState((byte)StateOpcode.RvRFlag, 1, 1);
                 else DispatchUpdateState((byte)StateOpcode.RvRFlag, 1);
             }
-
             else
             {
                 EvtInterface.RemoveEvent(RvRCountdownEnd);
@@ -5811,7 +5782,6 @@ namespace WorldServer.World.Objects
                 if (ScnInterface.Scenario == null && ShouldDebolster(Zone.Info.Tier))
                     TryDebolster(ScnInterface.Scenario?.Tier ?? Zone.Info.Tier);
             }
-
             else
             {
                 if (ChickenDebuff != null)
@@ -5835,15 +5805,16 @@ namespace WorldServer.World.Objects
             ChickenDebuff = chickendebuff;
         }
 
-        #endregion
+        #endregion RvR Flagging
 
-        // 
+        //
 
         #region Quit
 
         public int DisconnectTime = DISCONNECT_TIME; // 20 Secondes = 20000
         public bool CloseClient;
         public bool Leaving;
+
         public bool StopQuit()
         {
             if (Leaving)
@@ -5856,6 +5827,7 @@ namespace WorldServer.World.Objects
 
             return false;
         }
+
         public bool CancelQuit(Object Sender, object Args)
         {
             if (StopQuit())
@@ -5871,6 +5843,7 @@ namespace WorldServer.World.Objects
         {
             Quit(false, false);
         }
+
         public void Quit(bool closeClient, bool moveToBind)
         {
             try
@@ -5911,9 +5884,7 @@ namespace WorldServer.World.Objects
                     EvtInterface.AddEvent(Quit, 5000, 5);
                 }
 
-
                 Leaving = true;
-
 
                 _pendingStuck = moveToBind;
 
@@ -5941,6 +5912,7 @@ namespace WorldServer.World.Objects
             EvtInterface.AddEvent(Save, AUTO_SAVE_TIME, 0);
             return true;
         }
+
         public override void Save()
         {
             CalculatePlayedTime();
@@ -5963,7 +5935,6 @@ namespace WorldServer.World.Objects
             CalculatePlayedTime();
             CharMgr.Database.SaveObject(_Value);
 
-
             if (Info.Influences != null)
                 foreach (Characters_influence Obj in Info.Influences)
                     CharMgr.Database.SaveObject(Obj);
@@ -5983,7 +5954,7 @@ namespace WorldServer.World.Objects
 
         public long LastKeepAliveTime { get; set; }
 
-        #endregion
+        #endregion Quit
 
         #region Positions
 
@@ -6040,7 +6011,6 @@ namespace WorldServer.World.Objects
                     _positionHistory[0].Pos.Z = WorldPosition.Z;
                     _positionHistory[0].Timestamp = TCPManager.GetTimeStampMS();
                 }
-
                 else
                 {
                     for (int i = MAX_POSITION_HISTORY - 1; i > 0; --i)
@@ -6052,7 +6022,6 @@ namespace WorldServer.World.Objects
                         _positionHistory[i].Pos.Y = _positionHistory[i - 1].Pos.Y;
                         _positionHistory[i].Pos.Z = _positionHistory[i - 1].Pos.Z;
                         _positionHistory[i].Timestamp = _positionHistory[i - 1].Timestamp;
-
                     }
 
                     _positionHistory[0].Pos.X = WorldPosition.X;
@@ -6063,7 +6032,6 @@ namespace WorldServer.World.Objects
                     _lastPositionHistoryShift = timestamp;
                 }
             }
-
             else
             {
                 for (int i = 0; i < MAX_POSITION_HISTORY; ++i)
@@ -6276,7 +6244,6 @@ namespace WorldServer.World.Objects
             }
             catch
             {
-
             }
 
             if (CbtInterface.IsPvp)
@@ -6303,7 +6270,6 @@ namespace WorldServer.World.Objects
                 }
             }
 
-
             Scenario sc = ScnInterface.Scenario;
 
             if (sc != null && oldRegion != null && oldRegion.Scenario == sc)
@@ -6313,6 +6279,7 @@ namespace WorldServer.World.Objects
         #region Fall/Jump
 
         private bool _wasGrounded = true;
+
         public bool WasGrounded
         {
             get { return _wasGrounded; }
@@ -6325,13 +6292,13 @@ namespace WorldServer.World.Objects
                 }
 
                 _wasGrounded = value;
-
             }
         }
 
         private bool _apexHit;
 
         private byte _fallState;
+
         public byte FallState
         {
             get { return _fallState; }
@@ -6348,8 +6315,10 @@ namespace WorldServer.World.Objects
 
         public bool FallGuard { get; private set; }
         public Unit PuntedBy { get; set; }
+
         /// <summary> Number of packets received which indicated that the player was airborne. Set to -1 when the player lands. </summary>
         public sbyte AirCount;
+
         private bool _slowOnLand;
 
         public void CalculateFallDamage(bool terminal = false)
@@ -6430,7 +6399,6 @@ namespace WorldServer.World.Objects
                             player.SendPacket(Out);
                     }
                 }
-
             }
         }
 
@@ -6452,7 +6420,7 @@ namespace WorldServer.World.Objects
             _nextSpeedPenLiftTime = TCPManager.GetTimeStampMS() + 2000;
         }
 
-        #endregion
+        #endregion Fall/Jump
 
         #region Area Detection
 
@@ -6553,11 +6521,9 @@ namespace WorldServer.World.Objects
                                 // NEWDAWN
                                 if (Region.Campaign != null)
                                     Region.Campaign.NotifyEnteredLake(this);
-
                             }
                         }
                     }
-
                     else
                     {
                         if (StsInterface.BolsterLevel > 0 && (Zone?.Info == null || !ShouldDebolster(Zone.Info.Tier)))
@@ -6572,7 +6538,6 @@ namespace WorldServer.World.Objects
                         }
                     }
                 }
-
                 else
                 {
                     if (CurrentArea != null && CurrentArea.IsRvR)
@@ -6587,7 +6552,7 @@ namespace WorldServer.World.Objects
                 CurrentArea = newArea;
                 SendChapterBar();
             }
-            //     else 
+            //     else
             //SendClientMessage("Same Area");
         }
 
@@ -6613,7 +6578,6 @@ namespace WorldServer.World.Objects
                     EvtInterface.AddEvent(Rescue, 5000, 1);
                 }
             }
-
             else if (_pendingRescue)
             {
                 EvtInterface.RemoveEvent(Rescue);
@@ -6621,6 +6585,7 @@ namespace WorldServer.World.Objects
             }
         }
         */
+
         public void Rescue()
         {
             RallyPoint rallyPoint = RallyPointService.GetRallyPoint(Info.Value.RallyPoint);
@@ -6634,9 +6599,9 @@ namespace WorldServer.World.Objects
             }
         }
 
-        #endregion
+        #endregion Area Detection
 
-        #endregion
+        #endregion Positions
 
         #region Range
 
@@ -6672,7 +6637,6 @@ namespace WorldServer.World.Objects
                 _myLocationObject = new GameObject(spawn);
                 Region.AddObject(_myLocationObject, spawn.ZoneId);
             }
-
             else if (_myLocationObject.Zone != null)
             {
                 _myLocationObject.SendRemove(null);
@@ -6688,7 +6652,6 @@ namespace WorldServer.World.Objects
                     0,
                     Zone.ZoneId);
 
-                
                 _myLocationObject.SendMeTo(player);
                 _myLocationObject.SendMeTo(this);
             }
@@ -6709,7 +6672,6 @@ namespace WorldServer.World.Objects
                 _myAttackerObject = new GameObject(spawn);
                 Region.AddObject(_myAttackerObject, spawn.ZoneId);
             }
-
             else if (_myAttackerObject.Zone != null)
             {
                 _myAttackerObject.SendRemove(null);
@@ -6748,7 +6710,6 @@ namespace WorldServer.World.Objects
                         desiredLocation.Y = _positionHistory[i].Pos.Y;
                         desiredLocation.Z = _positionHistory[i].Pos.Z;
                     }
-
                     else // Interpolate between this point and the next most recent one.
                     {
                         Point3D oldPoint = _positionHistory[i].Pos;
@@ -6874,12 +6835,13 @@ namespace WorldServer.World.Objects
             obj.SendRemove(this);
         }
 
-        #endregion
+        #endregion Range
 
         #region Player State Send
 
         /// <summary> Indicates that the server should broadcast the next PLAYER_STATE2 packet received. </summary>
         public bool ForceSendPosition { get; set; }
+
         /// <summary> Set when the player has sent a PLAYER_STATE2 packet. </summary>
         public long LastStateRecvTime { get; set; }
 
@@ -6889,7 +6851,7 @@ namespace WorldServer.World.Objects
         {
         }
 
-        #endregion
+        #endregion Player State Send
 
         #region Info
 
@@ -6911,7 +6873,7 @@ namespace WorldServer.World.Objects
             return char.ToUpper(name[0]) + name.Substring(1);
         }
 
-        #endregion
+        #endregion Info
 
         #region Group
 
@@ -6936,11 +6898,11 @@ namespace WorldServer.World.Objects
             ScenarioGroup.AddScenarioMember(this);
         }
 
-        #endregion
+        #endregion Group
 
         #region Played LastUpdatedTime
 
-        uint _lastCheckedTime = (uint)TCPManager.GetTimeStampMS();
+        private uint _lastCheckedTime = (uint)TCPManager.GetTimeStampMS();
 
         public long NextJumpTime;
 
@@ -6955,7 +6917,7 @@ namespace WorldServer.World.Objects
             _Value.PlayedTime += dTime;
         }
 
-        #endregion
+        #endregion Played LastUpdatedTime
 
         public bool CheckHotSpot(Object sender, object args)
         {
@@ -6967,8 +6929,6 @@ namespace WorldServer.World.Objects
 
             var targetPlayer = (Player)sender;
 
-
-
             if (Zone != null)
             {
                 var halfway = Point2D.Lerp(new Point2D(targetPlayer.X, targetPlayer.Y), new Point2D(X, Y), 0.5f);
@@ -6976,7 +6936,6 @@ namespace WorldServer.World.Objects
             }
 
             return false;
-
         }
 
         public Pet Companion { get; set; }
@@ -7003,7 +6962,7 @@ namespace WorldServer.World.Objects
             return false;
         }
 
-        #endregion
+        #endregion Lockouts
 
         public void GroupRefresh()
         {
@@ -7014,7 +6973,6 @@ namespace WorldServer.World.Objects
                 SendClientMessage($"Warband...");
             else
             {
-
                 SendClientMessage($"Party...");
             }
 
@@ -7029,10 +6987,7 @@ namespace WorldServer.World.Objects
                 SendClientMessage($"Group is open..");
             else
                 SendClientMessage($"Group is closed..");
-
-
         }
-
 
         public bool GetCountOfPlayerItems(int itemId, int maxCount)
         {
@@ -7048,8 +7003,8 @@ namespace WorldServer.World.Objects
                     $"+ Skipping rewards for {Name} ({CharacterId}) - different zone / afk/ not pvp/scen to victim");
                 return false;
             }
-                    
-            if (GetObjectInRange(victim.Oid) ==null)
+
+            if (GetObjectInRange(victim.Oid) == null)
             {
                 RewardLogger.Debug(
                     $"+ Skipping rewards for {Name} ({CharacterId})  - distance from victim");
@@ -7060,4 +7015,3 @@ namespace WorldServer.World.Objects
         }
     }
 }
-

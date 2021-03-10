@@ -1,11 +1,6 @@
-﻿
-using System;
+﻿using FrameWork;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Security.Cryptography;
-
-using FrameWork;
 
 namespace LobbyServer
 {
@@ -98,7 +93,6 @@ namespace LobbyServer
 
         public void SendTCPCuted(PacketOut outPacket)
         {
-
             long pSize = outPacket.Length - outPacket.OpcodeLen - PacketOut.SizeLen; // Size = Size-len-opcode
 
             byte[] packet = new byte[pSize];
@@ -155,7 +149,6 @@ namespace LobbyServer
             Log.Tcp("Header", header.ToArray(), 0, header.Count);
             SendTCP(header.ToArray());
 
-
             // ugly needs to fix
             byte[] buffer;
             long bytesleft = pSize;
@@ -164,9 +157,9 @@ namespace LobbyServer
             {
                 if (bytesleft < 1460) break;
 
-                 buffer = new byte[(start + 1460) - start];
-                 Out.Read(buffer, start, (start + 1460));
-                 SendTCP(buffer);
+                buffer = new byte[(start + 1460) - start];
+                Out.Read(buffer, start, (start + 1460));
+                SendTCP(buffer);
                 start += 1461;
                 bytesleft -= 1461;
             }
@@ -177,8 +170,6 @@ namespace LobbyServer
                 Out.Read(buffer, start, (int)(start + bytesleft));
                 SendTCP(buffer);
             }
-
-
         }
     }
 }

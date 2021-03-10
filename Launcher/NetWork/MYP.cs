@@ -7,7 +7,6 @@ using System.Text;
 
 namespace WarZoneLib
 {
-
     public enum MythicPackage
     {
         ART = 1,
@@ -23,7 +22,6 @@ namespace WarZoneLib
         WARTEST = 11, // 0x0000000B
         WORLD = 12, // 0x0000000C
     }
-
 
     public class MYP : IDisposable
     {

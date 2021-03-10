@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using System.Linq;
 using Common;
 using FrameWork;
 using GameData;
+using System.Collections.Generic;
+using System.Linq;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
@@ -11,18 +11,20 @@ using Object = WorldServer.World.Objects.Object;
 
 namespace WorldServer.World.Scenarios.Objects
 {
-    public class Part: GameObject
+    public class Part : GameObject
     {
         private int _pickupTime = 0;
         private int _dropTime = 0;
         private readonly BuffInfo _buff;
         public Point3D Position;
-        class Interact
+
+        private class Interact
         {
             public Player Player;
             public EventDelegateEx Del;
             public Part Part;
             public EventDelegate DamageDel;
+
             public Interact(Part part, Player player, EventDelegateEx del)
             {
                 Player = player;
@@ -43,19 +45,19 @@ namespace WorldServer.World.Scenarios.Objects
             }
         }
 
-
         private List<Interact> _interacting = new List<Interact>();
         private Player _carrier = null;
         private GameObject _targetCart = null;
         private EventDelegateEx _dropDel;
         private FLAG_EFFECTS? _flagEffect;
+
         public delegate void PartDelegate(Player plr, Part part);
 
         public PartDelegate PickedUp;
         public PartDelegate Lost;
         public PartDelegate DroppedOff;
 
-        public Part(GameObject_spawn spawn, FLAG_EFFECTS? flagEffect, int pickUpTime=0, int dropTime = 0) :base(spawn)
+        public Part(GameObject_spawn spawn, FLAG_EFFECTS? flagEffect, int pickUpTime = 0, int dropTime = 0) : base(spawn)
         {
             _pickupTime = pickUpTime;
             _dropTime = dropTime;
@@ -84,7 +86,7 @@ namespace WorldServer.World.Scenarios.Objects
                     }
                     if (interact != null)
                     {
-                        plr.KneelDown(Oid, true, (ushort)_pickupTime );
+                        plr.KneelDown(Oid, true, (ushort)_pickupTime);
                         plr.EvtInterface.AddEventNotify(EventName.OnMove, OnPlayerMove);
                         plr.EvtInterface.AddEventNotify(EventName.OnDie, OnPlayerDied);
                         plr.EvtInterface.AddEventNotify(EventName.OnReceiveDamage, OnPlayerDamage);
@@ -99,9 +101,8 @@ namespace WorldServer.World.Scenarios.Objects
 
         private void StopInteract(Player plr)
         {
-          
 #if (DEBUG)
-                Log.Info("Part.StopInteract()", "Stopping interaction for " + plr.Name);
+            Log.Info("Part.StopInteract()", "Stopping interaction for " + plr.Name);
 #endif
             plr.EvtInterface.RemoveEventNotify(EventName.OnMove, OnPlayerMove);
             plr.EvtInterface.RemoveEventNotify(EventName.OnDie, OnPlayerDied);
@@ -133,7 +134,6 @@ namespace WorldServer.World.Scenarios.Objects
 
             if (interact != null)
             {
-           
                 EvtInterface.RemoveEvent(interact.Del);
             }
             if (_targetCart == null)
@@ -153,6 +153,7 @@ namespace WorldServer.World.Scenarios.Objects
             StopInteract((Player)player);
             return false;
         }
+
         private bool OnPlayerDied(Object player, object a)
         {
             PartLost((Player)player);
@@ -188,8 +189,6 @@ namespace WorldServer.World.Scenarios.Objects
 #if (DEBUG)
                     Log.Info("Part.BeginDropOff()", "Event Added: OnDroppedOff should be called in 2s");
 #endif
-
-
                 }
                 else
                     DropOff(plr);
@@ -208,12 +207,12 @@ namespace WorldServer.World.Scenarios.Objects
         private void OnPickedUp(object obj)
         {
             Player plr = (Player)obj;
-           
+
             if (_carrier == null)
             {
                 //cancel pickup by everyone
                 var players = new List<Interact>();
-                lock(_interacting)
+                lock (_interacting)
                 {
                     players = _interacting.ToList();
                     _interacting.Clear();
@@ -226,7 +225,6 @@ namespace WorldServer.World.Scenarios.Objects
                 _carrier = plr;
             }
         }
-
 
         public void Pickup(Player plr)
         {
@@ -247,12 +245,11 @@ namespace WorldServer.World.Scenarios.Objects
         public void PartLost(Player plr)
         {
             _carrier = null;
-         
+
             plr.CanMount = true;
 
             if (_flagEffect.HasValue)
                 plr.OSInterface.RemoveEffect(0xB);
-
 
             if (Lost != null)
                 Lost(plr, this);
@@ -279,9 +276,8 @@ namespace WorldServer.World.Scenarios.Objects
             }
             if (_dropDel != null)
 
-            if (_flagEffect.HasValue)
-                plr.OSInterface.RemoveEffect(0xB);
-
+                if (_flagEffect.HasValue)
+                    plr.OSInterface.RemoveEffect(0xB);
 
             if (DroppedOff != null)
                 DroppedOff(plr, this);

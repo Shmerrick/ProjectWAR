@@ -1,20 +1,14 @@
-﻿using System;
+﻿using FrameWork.Database.Connection;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Odbc;
-using System.Data.OleDb;
+using System.Data.Common;
 using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
-using System.Security.Policy;
 using System.Text;
-
-using System.Data.Common;
-using FrameWork.Database.Connection;
-using Microsoft.SqlServer.Server;
 
 namespace FrameWork
 {
@@ -29,6 +23,7 @@ namespace FrameWork
             public bool IsPrimaryKey { get; set; }
             public bool IsForeignKey { get; set; }
             public bool IsDbGenerated { get; set; }
+
             public Column(string name = null, bool isPrimaryKey = false, bool isForeignKey = false, bool isDbGenerated = true)
             {
                 Name = name;
@@ -42,10 +37,13 @@ namespace FrameWork
         {
             [DataElement]
             public string COLUMN_NAME { get; set; }
+
             [DataElement]
             public int ORDINAL_POSITION { get; set; }
+
             [DataElement]
             public string DATA_TYPE { get; set; }
+
             [DataElement]
             public string CHARACTER_MAX_LENGTH { get; set; }
 
@@ -53,24 +51,28 @@ namespace FrameWork
             {
                 return COLUMN_NAME;
             }
-
         }
 
         public class TableSchema
         {
             [DataElement]
             public string TABLE_CATALOG { get; set; }
+
             [DataElement]
             public string TABLE_SCHEMA { get; set; }
+
             [DataElement]
             public string TABLE_NAME { get; set; }
 
             [DataElement]
             public string COLUMN_NAME { get; set; }
+
             [DataElement]
             public int ORDINAL_POSITION { get; set; }
+
             [DataElement]
             public string DATA_TYPE { get; set; }
+
             [DataElement]
             public string CHARACTER_MAX_LENGTH { get; set; }
 
@@ -97,6 +99,7 @@ namespace FrameWork
                 public bool IsPrimaryKey;
                 public bool IsForeignKey;
                 public bool IsDbGenerated;
+
                 public override string ToString()
                 {
                     return ClrName;
@@ -152,21 +155,18 @@ namespace FrameWork
                                                            | BindingFlags.Public
                                                            | BindingFlags.Instance))
                 {
-
                     string colName = prop.Name;
 
-                  
-                    var col = (DataElement)prop.GetCustomAttributes(typeof(DataElement),true).FirstOrDefault();
+                    var col = (DataElement)prop.GetCustomAttributes(typeof(DataElement), true).FirstOrDefault();
                     if (col != null)
                     {
-
                         map.ClrToSqlFields[prop.Name] = new CLRMap.Column()
                         {
                             SqlName = colName,
                             ClrName = prop.Name,
                             Type = prop.PropertyType,
                         };
-                        map.SqlToClrFields[colName] = map.ClrToSqlFields[prop.Name]; 
+                        map.SqlToClrFields[colName] = map.ClrToSqlFields[prop.Name];
                     }
 
                     var pk = (PrimaryKey)prop.GetCustomAttributes(typeof(PrimaryKey), true).FirstOrDefault();
@@ -187,7 +187,6 @@ namespace FrameWork
 
             if (map.TableSchema == null)
             {
-
                 if (Schemas.ContainsKey(map.TableName.ToLower()))
                 {
                     map.TableSchema = Schemas[map.TableName.ToLower()];
@@ -243,8 +242,8 @@ namespace FrameWork
                 return p;
             }
             return param;
-
         }
+
         private void LoadSchemas()
         {
             Schemas.Clear();
@@ -276,7 +275,6 @@ namespace FrameWork
                 };
             }
         }
-
 
         public static Type GetClrType(SqlDbType sqlType)
         {
@@ -346,16 +344,13 @@ namespace FrameWork
                 default:
                     throw new ArgumentOutOfRangeException("sqlType");
             }
-
         }
-      
 
         public override DbConnection GetConnection()
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
             // Get connection from pool
             DbConnection conn = null;
-
 
             long start1 = Environment.TickCount;
             conn = new SqlConnection(_connString);
@@ -367,14 +362,12 @@ namespace FrameWork
 
             Log.Debug("DataConnection", "New DB Connection");
 
-
             return conn;
         }
 
         /// <summary> Executes a non-blocking request (INSERT, DELETE, UPDATE)</summary>
         public override int ExecuteNonQuery(string sqlcommand)
         {
-
             Log.Debug("DataConnection", "SQL: " + sqlcommand);
 
             int affected = 0;
@@ -396,7 +389,6 @@ namespace FrameWork
                         {
                             Log.Notice("DataConnection", "SQL NonQuery took " + (Environment.TickCount - start) + "ms!\n" + sqlcommand + "\nTrace: " + Environment.StackTrace);
                         }
-
 
                         conn.Close();
 
@@ -498,8 +490,6 @@ namespace FrameWork
             } while (repeat);
         }
 
-
-
         protected override void InitTypeMapping()
         {
             TypeDescStrings[typeof(string)] = SqlDbType.NVarChar.ToString();
@@ -551,7 +541,7 @@ namespace FrameWork
 
             if (!Schemas.ContainsKey(key))
             {
-               // var schema = Schemas[SchemaName + "." + table.TableName];
+                // var schema = Schemas[SchemaName + "." + table.TableName];
                 var builder = new StringBuilder();
 
                 builder.AppendLine("CREATE TABLE [" + SchemaName.ToLower() + "].[" + table.TableName.ToLower() + "](");
@@ -569,7 +559,6 @@ namespace FrameWork
                         else if (col.DataType == typeof(string))
                             builder.Append("(max) ");
                     }
-
 
                     if (col.AllowDBNull)
                         builder.Append("NULL ");
@@ -589,14 +578,13 @@ namespace FrameWork
                 builder.AppendLine(") ON [PRIMARY]");
                 ExecuteScalar(builder.ToString());
             }
-
             else
             {
                 var schema = Schemas[SchemaName.ToLower() + "." + table.TableName.ToLower()];
                 bool primaryKeysDirty = false;
                 try
                 {
-                    var dbCols = schema.Columns.OrderBy(e=>e.Value.ORDINAL_POSITION).Select(e=>e.Value).ToList();
+                    var dbCols = schema.Columns.OrderBy(e => e.Value.ORDINAL_POSITION).Select(e => e.Value).ToList();
                     //rename changed columns
                     //for(int i=0; i<table.Columns.Count && i < dbCols.Count; i++)
                     //{
@@ -608,7 +596,6 @@ namespace FrameWork
                     //        dbCols[i].COLUMN_NAME = table.Columns[i].ColumnName;
                     //    }
                     //}
-
 
                     //add new columns
                     foreach (DataColumn col in table.Columns)
@@ -630,7 +617,6 @@ namespace FrameWork
                                     builder.Append("(max) ");
                             }
 
-
                             if (col.AllowDBNull)
                                 builder.Append("NULL ");
                             else
@@ -639,14 +625,11 @@ namespace FrameWork
                             ExecuteScalar(builder.ToString());
                         }
                     }
-
-                   
                 }
                 catch (Exception e)
                 {
                     Log.Debug("DataConnection", "Unable to check primary keys: " + e);
                 }
-
 
                 //if (columnsToAdd.Count > 0)
                 //    AddColumnsToDatabase(table.TableName, columnsToAdd);
@@ -659,8 +642,6 @@ namespace FrameWork
             }
         }
 
-
-
         // Exécute un scale sur la DB
         public override object ExecuteScalar(string sqlcommand)
         {
@@ -671,7 +652,6 @@ namespace FrameWork
             SqlConnection conn = null;
             do
             {
-                
                 try
                 {
                     conn = (SqlConnection)GetConnection();
@@ -708,7 +688,6 @@ namespace FrameWork
 
             return obj;
         }
-
 
         private void AddColumnsToDatabase(string tableName, List<string> columnDefs)
         {
@@ -778,6 +757,5 @@ namespace FrameWork
 
             return "yyyy-MM-dd HH:mm:ss";
         }
-
     }
 }

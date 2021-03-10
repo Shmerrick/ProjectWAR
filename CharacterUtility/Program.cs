@@ -1,24 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using CommandLine;
+﻿using CommandLine;
 using Dapper;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog;
-using NLog.LayoutRenderers;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace CharacterUtility
 {
-    class Program
+    internal class Program
     {
         private static Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         private static string ConnectionString = System.Configuration.ConfigurationManager.AppSettings["WAR.ConnectionString"];
@@ -26,7 +19,7 @@ namespace CharacterUtility
         private static IEnumerable<ItemBonus> ItemBonusList;
         private static IEnumerable<NdClass> ClassList;
 
-        static int Main(string[] args)
+        private static int Main(string[] args)
         {
             Logger.Info("Character Utility");
 
@@ -57,7 +50,6 @@ namespace CharacterUtility
             }
 
             return 1;
-
         }
 
         private static IEnumerable<ItemBonus> GetItemBonusList()
@@ -134,8 +126,6 @@ namespace CharacterUtility
 
         private static int RebuildItemSet()
         {
-
-
             ClearExistingItemSetValues();
 
             UpdateItemSetLists();
@@ -170,7 +160,6 @@ namespace CharacterUtility
 
                 // Items in the Set.
                 var itemSetList = itemSetObject.ItemsString.Split('|');
-
 
                 var itemArray = new JArray();
                 var classId = 0;
@@ -213,7 +202,6 @@ namespace CharacterUtility
                 UpdateItemSetFullDescription(itemSetObject.Entry, returnJson.ToString());
                 Logger.Debug($"Processed : {i / totalCount} records");
             }
-
         }
 
         /// <summary>
@@ -233,13 +221,11 @@ namespace CharacterUtility
             {
                 var setBonus = new SetBonus().CalculateSetBonus(bonus, ItemBonusList);
 
-
                 if (setBonus != null)
                 {
                     setBonus.NumberPieces = ++count;
                     setBonusList.Add(setBonus);
                 }
-
             }
             return setBonusList;
         }
@@ -255,11 +241,10 @@ namespace CharacterUtility
         ///         1736,
         ///         1748,
         ///         1760
-        ///         ] 
+        ///         ]
         /// </summary>
         private static void UpdateItemSetLists()
         {
-
             var itemSetObjects = GetItemSetList();
             var totalCount = itemSetObjects.Count();
             var i = 0;
@@ -302,14 +287,10 @@ namespace CharacterUtility
                 Logger.Debug($"Updating Item Set List with {JsonConvert.SerializeObject(returnJson, Formatting.Indented)}");
                 Logger.Debug($"Updating Item Set Class with {classId}");
                 UpdateItemSetList(itemSetObject.Entry, JsonConvert.SerializeObject(returnJson, Formatting.Indented), classId);
-                
-                Logger.Debug($"Processed : {i/ totalCount} records");
+
+                Logger.Debug($"Processed : {i / totalCount} records");
             }
-
-
         }
-
-        
 
         private static void UpdateItemSetList(int setEntryId, string jsonSetList, int classId)
         {
@@ -330,7 +311,6 @@ namespace CharacterUtility
                 connection.Close();
             }
         }
-
 
         private static void UpdateItemSetFullDescription(int setEntryId, string jsonFullDescription)
         {
@@ -354,7 +334,6 @@ namespace CharacterUtility
 
         private static ItemInfo GetItemDetails(string setItemId)
         {
-
             var connection = new MySqlConnection(ConnectionString);
             try
             {
@@ -391,8 +370,6 @@ namespace CharacterUtility
             {
                 connection.Close();
             }
-
-
         }
 
         private static void ClearExistingItemSetValues()
@@ -424,7 +401,6 @@ namespace CharacterUtility
 
         private static int CreateCharacters(CommandLineOptions.CreateOptions opts)
         {
-
             var templateFile = opts.TemplateFileName;
             var character = CreateCharacterFromTemplate(templateFile);
             SaveCharacter(character);
@@ -451,8 +427,6 @@ namespace CharacterUtility
                     return;
                 }
 
-
-
                 var newCharacterSql =
                     $"insert into war_characters.characters (CharacterId, Name, RealmId, AccountId, SlotId, ModelId, Career, CareerLine, Realm,  HeldLeft, Race, Traits, Sex, Surname, Anonymous, Hidden, OldName, PetName, PetModel) " +
                     $"values ({characterObject.MaxId + 1}, '{character.Name}', {character.RealmId}, {character.AccountId}, {slotObject.MaxSlotId + 1}, {character.ModelId}, {character.Career}, {character.CareerLine}, {character.Realm}, 0, {character.Race}, '', {character.Sex}, '{character.Surname}', 0, 0, '', '', 0)";
@@ -473,7 +447,6 @@ namespace CharacterUtility
                 connection.Execute(newCharacterValueSql);
 
                 Logger.Info($"Done creating character : {character.Name}");
-
             }
             catch (Exception e)
             {
@@ -539,7 +512,6 @@ namespace CharacterUtility
                 var account = connection.QueryFirstOrDefault($"select * from war_accounts.accounts where Username = '{accountUserCode}'");
 
                 return account.AccountId;
-
             }
             catch (Exception e)
             {
@@ -550,7 +522,6 @@ namespace CharacterUtility
             finally
             {
                 connection.Close();
-
             }
         }
 
@@ -563,7 +534,6 @@ namespace CharacterUtility
                 var character = connection.QueryFirstOrDefault($"select * from war_characters.characters where Name = '{name}'");
 
                 return (character != null);
-
             }
             catch (Exception e)
             {
@@ -574,7 +544,6 @@ namespace CharacterUtility
             finally
             {
                 connection.Close();
-
             }
         }
 
@@ -588,7 +557,6 @@ namespace CharacterUtility
                 var characterInfo = connection.Query<CharacterInfo>($"select * from war_world.characterinfo where CareerName = '{career}'");
 
                 return characterInfo.FirstOrDefault();
-
             }
             catch (Exception e)
             {
@@ -671,7 +639,6 @@ namespace CharacterUtility
                 Logger.Info($"Connecting to {ConnectionString}. Exporting to {importFileName}");
                 Logger.Info("Start Character Import");
 
-
                 using (MySqlConnection conn = new MySqlConnection(ConnectionString))
                 {
                     using (MySqlCommand cmd = new MySqlCommand())
@@ -700,7 +667,6 @@ namespace CharacterUtility
 
             return 0;
         }
-
 
         //private static void HandleParseError(IEnumerable<Error> errs)
         //{

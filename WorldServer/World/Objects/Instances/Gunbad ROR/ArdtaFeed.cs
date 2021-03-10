@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Common;
+using System.Collections.Generic;
 using System.Linq;
-using Common;
 using WorldServer.Services.World;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Positions;
@@ -9,7 +9,7 @@ using WorldServer.World.Scripting;
 namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 15102, 0)]
-    class ArdtaFeed : BasicGunbad
+    internal class ArdtaFeed : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -346,9 +346,9 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 2000945, 0)]
-    class ArdSquigFood : BasicGunbad
+    internal class ArdSquigFood : BasicGunbad
     {
-        List<Creature> ArdList = new List<Creature>();
+        private List<Creature> ArdList = new List<Creature>();
 
         public override void OnObjectLoad(Object Obj)
         {
@@ -382,11 +382,10 @@ namespace WorldServer.World.Objects.Instances.Gunbad
 
             return true;
         }
-
     }
 
     [GeneralScript(false, "", 2000941, 0)]
-    class ArdCloudOfSquigs : BasicGunbad
+    internal class ArdCloudOfSquigs : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -489,7 +488,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 0, 2000579)]
-    class MourkainGemArdtaFeed : BasicGunbad
+    internal class MourkainGemArdtaFeed : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -510,7 +509,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 0, 2000602)]
-    class ArdSlime : BasicGunbad
+    internal class ArdSlime : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -573,5 +572,4 @@ namespace WorldServer.World.Objects.Instances.Gunbad
                 go.EvtInterface.RemoveEvent(SpawnAdds);
         }
     }
-
 }

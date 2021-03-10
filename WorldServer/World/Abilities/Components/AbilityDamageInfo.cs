@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Common;
+﻿using Common;
 using FrameWork;
+using System;
+using System.Collections.Generic;
 using WorldServer.World.Objects;
 
 namespace WorldServer.World.Abilities.Components
@@ -16,6 +16,7 @@ namespace WorldServer.World.Abilities.Components
 
         // Damage
         public ushort MinDamage;
+
         public ushort MaxDamage;
         public ushort DamageVariance;
         public float PrecalcDamage;
@@ -108,7 +109,6 @@ namespace WorldServer.World.Abilities.Components
 
         public AbilityDamageInfo()
         {
-
         }
 
         public AbilityDamageInfo(DBAbilityDamageInfo dbObj)
@@ -150,7 +150,7 @@ namespace WorldServer.World.Abilities.Components
             return dmgInfo;
         }
 
-        #endregion
+        #endregion Load
 
         #region Interface
 
@@ -223,6 +223,6 @@ namespace WorldServer.World.Abilities.Components
             return cDmgInfo;
         }
 
-        #endregion
+        #endregion Interface
     }
 }

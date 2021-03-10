@@ -1,9 +1,6 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 
@@ -11,7 +8,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
     public class LootBagBuilder : ILootBagBuilder
     {
-
         /// <summary>
         /// Builds the bag containing the players items.
         /// </summary>
@@ -32,9 +28,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             };
 
             // RewardLogger.Info($"Distributing reward of {lootBagItem.Name}, containing {lootBag.ItemId} ({lootBag.ItemCount}) to {player.Name}. Result = {result}");
-            
-            return new KeyValuePair<Item_Info, List<Talisman>>(lootBagItem, lootBagContents);
 
+            return new KeyValuePair<Item_Info, List<Talisman>>(lootBagItem, lootBagContents);
         }
 
         /// <summary>

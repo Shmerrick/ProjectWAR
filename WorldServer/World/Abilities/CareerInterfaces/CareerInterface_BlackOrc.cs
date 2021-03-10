@@ -7,7 +7,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 {
     public class CareerInterface_BlackOrc : CareerInterface
     {
-
         public CareerInterface_BlackOrc(Player player) : base(player)
         {
             _maxResource = 2;

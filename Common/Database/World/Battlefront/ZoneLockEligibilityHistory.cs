@@ -1,25 +1,25 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common.Database.World.Battlefront
 {
-    // Fixed value of a character 
+    // Fixed value of a character
     [DataTable(PreCache = false, TableName = "rvr_zone_lock_eligibility_history", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class ZoneLockEligibilityHistory : DataObject
     {
-        [PrimaryKey (AutoIncrement = true)]
+        [PrimaryKey(AutoIncrement = true)]
         public long HistoryId { get; set; }
 
         [DataElement(AllowDbNull = false), PrimaryKey]
         public int ZoneId { get; set; }
-        
+
         [DataElement(AllowDbNull = false)]
         public DateTime Timestamp { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public int LockingRealm { get; set; }
-        
+
         [DataElement(AllowDbNull = false)]
         public int CharacterId { get; set; }
 
@@ -31,7 +31,5 @@ namespace Common.Database.World.Battlefront
 
         [DataElement(AllowDbNull = false)]
         public int ContributionValue { get; set; }
-
     }
 }
-

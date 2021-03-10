@@ -16,6 +16,7 @@ namespace WorldServer.Services.World
 
             Log.Success("LoadQuests", "Loaded " + _Quests.Count + " Quests");
         }
+
         public static Quest GetQuest(ushort QuestID)
         {
             Quest Q;
@@ -115,6 +116,7 @@ namespace WorldServer.Services.World
             _CreatureFinisher.TryGetValue(CreatureID, out Quests);
             return Quests;
         }
+
         public static uint GetQuestCreatureFinisher(ushort QuestId)
         {
             foreach (KeyValuePair<uint, List<Quest>> Kp in _CreatureFinisher)
@@ -139,6 +141,5 @@ namespace WorldServer.Services.World
 
             return false;
         }
-
     }
 }

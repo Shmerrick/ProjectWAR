@@ -15,7 +15,6 @@ using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Battlefronts.Objectives;
 using WorldServer.World.Map;
 using WorldServer.World.Objects;
-using WorldServer.World.Positions;
 using WorldServer.World.Scenarios.Objects;
 using Object = WorldServer.World.Objects.Object;
 using Opcodes = WorldServer.NetWork.Opcodes;
@@ -39,7 +38,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>
         public static int MAX_CONTROL_GAUGE = MAX_SECURE_PROGRESS * 200;
 
-
         /// <summary>The tier within which the Campaign exists.</summary>
         public readonly byte Tier;
 
@@ -53,7 +51,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public readonly ushort RegionId;
 
         /// <summary>Influence area containing the objective</summary>
-        
 
         /// <summary>Set of all players in close range, not limited</summary>
         // private ISet<Player> _closePlayers = new HashSet<Player>();
@@ -93,20 +90,22 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         // Position of the capture
         private int _captureProgress;
+
         // Whether a capture is in progress
         private bool _captureInProgress;
+
         // Positive between 0 and SECURE_PROGRESS_MAX indicating the objective securisation indicator, in seconds
         private int _secureProgress;
 
-
-
         #region timers
+
         public int CaptureTimer;
         public int GuardedTimer;
 
         public const int CaptureTimerLength = 2 * 60;
         public const int GuardedTimerLength = 1 * 60;
-        #endregion
+
+        #endregion timers
 
         /// <summary>
         /// Constructor to assist in isolation testing.
@@ -190,7 +189,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             // Initial state
             IsActive = true;
-
         }
 
         public override string ToString()
@@ -213,7 +211,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             DisplayedTimer--;
             if (DisplayedTimer <= 0)
                 DisplayedTimer = 0;
-
         }
 
         private void OnGuardedTimerEnd()
@@ -333,12 +330,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 BattlefrontLogger.Debug($"Stopping BattlefieldObjective {Name} FSM...");
                 fsm.Stop();
-                
+
                 BattlefrontLogger.Debug($"Starting BattlefieldObjective {Name} FSM...");
                 fsm.Fire(CampaignObjectiveStateMachine.Command.OnOpenBattleFront);
                 fsm.Start();
             }
-
         }
 
         /// <summary>
@@ -384,7 +380,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             base.RemoveInRange(obj);
         }
-
 
         /// <summary>
         ///     Broadcasts flag state to all players withing range.
@@ -468,7 +463,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     Out.WritePascalString("");
                     break;
             }
-
 
             Out.WriteUInt16(0); // _displayedTimer
             Out.WriteUInt16((ushort)DisplayedTimer); // Timer on map UI
@@ -607,8 +601,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="msTick"></param>
         public override void Update(long msTick)
         {
-
-
             EvtInterface.Update(msTick);
 
             if (State == StateFlags.ZoneLocked)
@@ -617,8 +609,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var frnt = BattleFront;
             if (frnt != null && frnt.IsBattleFrontLocked())
                 return;
-
-
         }
 
         /// <summary>
@@ -722,13 +712,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 if (plr != null)
                 {
                     plr.SendPacket(Out);
-                    
                 }
                 else
                     foreach (var player in Region.Players)
                     {
                         player.SendPacket(Out); // Objective's state
-                        
 
                         if (string.IsNullOrEmpty(message) || !player.CbtInterface.IsPvp)
                             continue;
@@ -736,7 +724,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         // Notify RvR flagged players of activity
                         player.SendLocalizeString(message, ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
                         player.SendLocalizeString(message, largeFilter, Localized_text.CHAT_TAG_DEFAULT);
-                        
+
                         if (snd != null)
                             player.SendPacket(snd);
                     }
@@ -770,9 +758,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             player.SendClientMessage($"Control progress: {_captureProgress}");
             player.SendClientMessage($"Secure progress: {_secureProgress}");
             player.SendClientMessage($"Flag status: {State}");
-
         }
-
 
         /// <summary>
         /// Grants rewards for taking this battlefield objective from the enemy.
@@ -836,6 +822,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         }
                     }
                     break;
+
                 case StateFlags.Locked: // unlock tick
                     VP = RewardManager.RewardCaptureTick(closePlayers, capturingRealm, Tier, Name, 1f, BORewardType.GUARDED);
                     lock (closePlayers)
@@ -843,7 +830,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         foreach (var closePlayer in closePlayers)
                         {
                             // ContributionManagerInstance holds the long term values of contribution for a player.
-                            closePlayer.UpdatePlayerBountyEvent((byte) ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
+                            closePlayer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.BO_TAKE_UNLOCK_TICK);
                         }
                     }
 
@@ -907,18 +894,23 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 case StateFlags.Unsecure:
                     result = true;
                     break;
+
                 case StateFlags.ZoneLocked:
                     result = false;
                     break;
+
                 case StateFlags.Secure:
                     result = false;
                     break;
+
                 case StateFlags.Contested:
                     result = plr.Realm != AssaultingRealm;  // interact if not the assaulting realm
                     break;
+
                 case StateFlags.Locked:
                     result = plr.Realm != OwningRealm;      // interact if not the owning realm
                     break;
+
                 default:
                     result = false;
                     break;
@@ -928,7 +920,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return result;
         }
 
-        #endregion
+        #endregion Interaction
 
         public void SetObjectiveSafe()
         {
@@ -948,7 +940,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             CaptureTimer = 0;
 
             RemoveGlow();
-
         }
 
         public void SetObjectiveLocked()
@@ -989,7 +980,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             GrantCaptureRewards(AssaultingRealm);
 
             AddGlow(AssaultingRealm);
-
         }
 
         private void AddGlow(Realms assaultingRealm)

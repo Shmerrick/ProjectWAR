@@ -1,10 +1,9 @@
-﻿using System;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System;
+using SystemData;
 using WorldServer.World.Abilities.Components;
-using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
@@ -14,9 +13,8 @@ namespace WorldServer.World.Abilities
 {
     public static class CombatManager
     {
-
-
         #region Defense
+
         public static bool CheckDefense(AbilityCommandInfo cmdInfo, Unit caster, Unit target, bool isAoE)
         {
             if (target is KeepDoor.KeepGameObject)
@@ -51,6 +49,7 @@ namespace WorldServer.World.Abilities
             byte defenseEvent = 0;
 
             #region GetStat
+
             switch (cmdInfo.AttackingStat)
             {
                 case 1: // Strength and Weaponskill
@@ -59,22 +58,26 @@ namespace WorldServer.World.Abilities
                         defensiveStat = Math.Max(1, (int)target.StsInterface.GetTotalStat(Stats.WeaponSkill));
                     }
                     break;
+
                 case 8: // Ballistic and Initiative
                     {
                         offensiveStat = Math.Max(1, (int)caster.StsInterface.GetTotalStat(Stats.BallisticSkill));
                         defensiveStat = Math.Max(1, (int)target.StsInterface.GetTotalStat(Stats.Initiative));
                     }
                     break;
+
                 case 9: // Intelligence and Willpower
                     {
                         offensiveStat = Math.Max(1, (int)caster.StsInterface.GetTotalStat(Stats.Intelligence));
                         defensiveStat = Math.Max(1, (int)target.StsInterface.GetTotalStat(Stats.Willpower));
                     }
                     break;
+
                 default:
                     return false;
             }
-            #endregion
+
+            #endregion GetStat
 
             #region Block
 
@@ -112,11 +115,11 @@ namespace WorldServer.World.Abilities
                 }
             }
 
-            #endregion
+            #endregion Block
 
             if (defenseEvent == 0)
             {
-                #region Parry, Dodge, Disrupt                
+                #region Parry, Dodge, Disrupt
 
                 ////Parry/Dodge/Disrupt chance from tooltip
                 //double secondaryDefense = (int)((((double)defensiveStat / offensiveStat * 0.075) * 100));
@@ -150,6 +153,7 @@ namespace WorldServer.World.Abilities
                             }
                         }
                         break;
+
                     case 8: // Evade
                         {
                             //secondaryDefense += target.StsInterface.GetTotalStat(Stats.Evade) - caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough);
@@ -163,6 +167,7 @@ namespace WorldServer.World.Abilities
                             }
                         }
                         break;
+
                     case 9: // Disrupt
                         {
                             //secondaryDefense += target.StsInterface.GetTotalStat(Stats.Disrupt) - caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough);
@@ -178,7 +183,7 @@ namespace WorldServer.World.Abilities
                         break;
                 }
 
-                #endregion
+                #endregion Parry, Dodge, Disrupt
 
                 if (defenseEvent == 0)
                     return false;
@@ -200,7 +205,7 @@ namespace WorldServer.World.Abilities
 
             target.DispatchPacketUnreliable(outl, true, caster);
 
-            #endregion
+            #endregion Packet
 
             AbilityDamageInfo tempDmg = new AbilityDamageInfo
             {
@@ -290,7 +295,6 @@ namespace WorldServer.World.Abilities
 
             target.DispatchPacketUnreliable(outl, true, caster);
 
-
             caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.WasDefended, tempDmg, target);
             target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DefendedAgainst, tempDmg, caster);
 
@@ -371,6 +375,7 @@ namespace WorldServer.World.Abilities
             int offensiveStat, defensiveStat;
 
             #region GetStat
+
             switch (damageInfo.StatUsed)
             {
                 case 1: // Strength and Weaponskill
@@ -379,22 +384,26 @@ namespace WorldServer.World.Abilities
                         defensiveStat = Math.Max(1, (int)target.StsInterface.GetTotalStat(Stats.WeaponSkill));
                     }
                     break;
+
                 case 8: // Ballistic and Initiative
                     {
                         offensiveStat = Math.Max(1, (int)caster.StsInterface.GetTotalStat(Stats.BallisticSkill));
                         defensiveStat = Math.Max(1, (int)target.StsInterface.GetTotalStat(Stats.Initiative));
                     }
                     break;
+
                 case 9: // Intelligence and Willpower
                     {
                         offensiveStat = Math.Max(1, (int)caster.StsInterface.GetTotalStat(Stats.Intelligence));
                         defensiveStat = Math.Max(1, (int)target.StsInterface.GetTotalStat(Stats.Willpower));
                     }
                     break;
+
                 default:
                     return false;
             }
-            #endregion
+
+            #endregion GetStat
 
             #region Block
 
@@ -402,7 +411,6 @@ namespace WorldServer.World.Abilities
             {
                 if (target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND) != null && target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info?.Type == 5)
                 {
-
                     double block = CalculateBlockRoll(target.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info.Armor, offensiveStat, damageInfo, target.StsInterface.GetTotalStat(Stats.Block), caster.StsInterface.GetStatLinearModifier(Stats.BlockStrikethrough));
                     if (StaticRandom.Instance.Next(100) <= block)
                     {
@@ -415,10 +423,9 @@ namespace WorldServer.World.Abilities
                 }
             }
 
-            #endregion
+            #endregion Block
 
             #region Parry, Dodge, Disrupt
-
 
             double secondaryDefense = 0.0;
             switch (damageInfo.StatUsed)
@@ -440,6 +447,7 @@ namespace WorldServer.World.Abilities
                         }
                     }
                     break;
+
                 case 8: // Evade
                     {
                         //secondaryDefense += target.StsInterface.GetTotalStat(Stats.Evade) - caster.StsInterface.GetStatLinearModifier(Stats.EvadeStrikethrough);
@@ -457,6 +465,7 @@ namespace WorldServer.World.Abilities
                         }
                     }
                     break;
+
                 case 9: // Disrupt
                     {
                         //secondaryDefense += target.StsInterface.GetTotalStat(Stats.Disrupt) - caster.StsInterface.GetStatLinearModifier(Stats.DisruptStrikethrough);
@@ -476,12 +485,12 @@ namespace WorldServer.World.Abilities
                     break;
             }
 
-            #endregion
+            #endregion Parry, Dodge, Disrupt
 
             return false;
         }
 
-        #endregion
+        #endregion Defense
 
         #region DoT
 
@@ -500,7 +509,7 @@ namespace WorldServer.World.Abilities
 
             damageInfo.PrecalcDamage = damageInfo.GetDamageForLevel(level);
 
-            #endregion
+            #endregion Base Damage
 
             caster.ModifyDamageOut(damageInfo);
             target.ModifyDamageIn(damageInfo);
@@ -541,7 +550,7 @@ namespace WorldServer.World.Abilities
             damageInfo.DamageReduction *= target.StsInterface.GetStatReductionModifier(damageInfo.StatUsed == 9 ? Stats.IncomingMagicDamage : Stats.IncomingMeleeDamage)
                 * caster.StsInterface.GetStatReductionModifier(damageInfo.StatUsed == 9 ? Stats.MagicPower : Stats.MeleePower);
 
-            #endregion
+            #endregion Phys/Mag multipliers
 
             damageInfo.ApplyDamageModifiers(true);
 
@@ -608,9 +617,11 @@ namespace WorldServer.World.Abilities
                 target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ShieldPass, damageInfo, caster);
 
                 #region Dealing/Receiving Event
+
                 caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DealingDamage, damageInfo, target);
                 target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivingDamage, damageInfo, caster);
-                #endregion
+
+                #endregion Dealing/Receiving Event
 
                 CheckCriticalHit(caster, target, damageInfo);
 
@@ -626,7 +637,7 @@ namespace WorldServer.World.Abilities
                     target.StsInterface.GetStatReductionModifier(Stats.IncomingDamagePercent)
                     * caster.StsInterface.GetStatReductionModifier(Stats.OutgoingDamagePercent);
 
-                #endregion
+                #endregion General Multipliers
 
                 // Guard is separate because it needs to come after shielding
                 target.BuffInterface.CheckGuard(damageInfo, caster);
@@ -678,7 +689,7 @@ namespace WorldServer.World.Abilities
                 }
             }
 
-            #endregion
+            #endregion Application
         }
 
         public static void PrecalculatedHealTarget(AbilityDamageInfo damageInfo, Unit caster, Unit target, byte divisor, bool bFinalize)
@@ -705,7 +716,8 @@ namespace WorldServer.World.Abilities
                         else
                             damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_HIT;
                     }
-                    #endregion
+
+                    #endregion CriticalHeal
                 }
 
                 caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DealingHeal, damageInfo, target);
@@ -717,8 +729,7 @@ namespace WorldServer.World.Abilities
 
                 target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivingHeal, damageInfo, caster);
 
-                AwardOutOfGroupHealing(caster, target, (int) damageInfo.Damage, 45, 4);
-                
+                AwardOutOfGroupHealing(caster, target, (int)damageInfo.Damage, 45, 4);
             }
 
             #region Application
@@ -745,7 +756,7 @@ namespace WorldServer.World.Abilities
 
             target.DispatchPacketUnreliable(outl, true, caster);
 
-            #endregion
+            #endregion Application
         }
 
         private static void AwardOutOfGroupHealing(Unit caster, Unit target, int healAmount, int divisor, int random)
@@ -761,19 +772,18 @@ namespace WorldServer.World.Abilities
                         if (rand < HEAL_CONTRIBUTION_CHANCE)
                             (caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.GENERAL_HEALING);
 
-
                         // Check for out of group healing
                         if (((caster as Player).PriorityGroup != (target as Player).PriorityGroup) || ((caster as Player).PriorityGroup == null))
                         {
                             if (rand < HEAL_CONTRIBUTION_CHANCE)
                             {
-                                (caster as Player)?.UpdatePlayerBountyEvent((byte) ContributionDefinitions
+                                (caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions
                                     .OUT_OF_GROUP_HEALING);
                             }
                             if (StaticRandom.Instance.Next(100) < OOG_HEAL_RENOWN_CHANCE)
                             {
                                 (caster as Player).AddRenown(
-                                    (uint) (healAmount / divisor) + (uint) StaticRandom.Instance.Next(random),
+                                    (uint)(healAmount / divisor) + (uint)StaticRandom.Instance.Next(random),
                                     false,
                                     RewardType.None, "Out of Group Healing");
                             }
@@ -783,7 +793,7 @@ namespace WorldServer.World.Abilities
             }
         }
 
-        #endregion
+        #endregion DoT
 
         #region Proc
 
@@ -802,7 +812,7 @@ namespace WorldServer.World.Abilities
 
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
 
-            #endregion
+            #endregion Base Damage
 
             target.ModifyDamageIn(damageInfo);
 
@@ -815,10 +825,11 @@ namespace WorldServer.World.Abilities
             if (damageInfo.DamageType != DamageTypes.RawDamage)
             {
                 #region Weapon DPS
+
                 // Procs SHOULD NOT add damage from weapons.
                 // damageInfo.Damage += caster.ItmInterface.GetWeaponDamage(damageInfo.WeaponMod)*damageInfo.WeaponDamageScale*damageInfo.CastTimeDamageMult;
 
-                #endregion
+                #endregion Weapon DPS
 
                 if (damageInfo.StatUsed > 0)
                 {
@@ -890,7 +901,7 @@ namespace WorldServer.World.Abilities
                 damageInfo.Mitigation += (ushort)(damageInfo.Damage * damageTypeResistance);
                 damageInfo.Damage -= (ushort)(damageInfo.Damage * damageTypeResistance);
 
-                #endregion
+                #endregion Armour / Resistance
 
                 target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivedDamage, damageInfo, caster);
 
@@ -938,8 +949,8 @@ namespace WorldServer.World.Abilities
                         SendDeathSpam(damageInfo, plrCaster, plrTarget);
                 }
             }
-            #endregion
 
+            #endregion Application
         }
 
         public static void ProcHealTarget(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target)
@@ -951,7 +962,7 @@ namespace WorldServer.World.Abilities
 
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
 
-            #endregion
+            #endregion Base Damage
 
             target.ModifyHealIn(damageInfo);
 
@@ -960,6 +971,7 @@ namespace WorldServer.World.Abilities
             if (damageInfo.DamageType != DamageTypes.RawHealing)
             {
                 /*
+
                 #region CriticalHeal
 
                 int rand = StaticRandom.Instance.Next(0, 100);
@@ -977,7 +989,8 @@ namespace WorldServer.World.Abilities
                         damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_HIT;
                 }
 
-                #endregion
+                #endregion CriticalHeal
+
                 */
 
                 caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DealingHeal, damageInfo, target);
@@ -1015,10 +1028,10 @@ namespace WorldServer.World.Abilities
 
             target.DispatchPacketUnreliable(outl, true, null);
 
-            #endregion
+            #endregion Application
         }
 
-        #endregion
+        #endregion Proc
 
         #region Damage
 
@@ -1045,7 +1058,7 @@ namespace WorldServer.World.Abilities
 
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
 
-            #endregion
+            #endregion Base Damage
 
             caster.ModifyDamageOut(damageInfo);
             target.ModifyDamageIn(damageInfo);
@@ -1059,6 +1072,7 @@ namespace WorldServer.World.Abilities
             if (damageInfo.DamageEvent > 0 || damageInfo.DamageType != DamageTypes.RawDamage)
             {
                 #region Defense
+
                 // Perform Block/Parry/Dodge/Evasion check
                 if (damageInfo.DamageEvent > 0 || (!damageInfo.Undefendable && WasDefended(damageInfo, caster, target)))
                 {
@@ -1082,7 +1096,7 @@ namespace WorldServer.World.Abilities
                     return;
                 }
 
-                #endregion
+                #endregion Defense
 
                 if (damageInfo.PriStatMultiplier > 0.0f)
                 {
@@ -1100,9 +1114,11 @@ namespace WorldServer.World.Abilities
                 }
 
                 #region Dealing/Receiving Event
+
                 caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DealingDamage, damageInfo, target);
                 target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivingDamage, damageInfo, caster);
-                #endregion
+
+                #endregion Dealing/Receiving Event
 
                 target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ShieldPass, damageInfo, caster);
 
@@ -1121,16 +1137,17 @@ namespace WorldServer.World.Abilities
                 damageReduction *= target.StsInterface.GetStatReductionModifier(damageInfo.StatUsed == 9 ? Stats.IncomingMagicDamage : Stats.IncomingMeleeDamage)
                     * caster.StsInterface.GetStatReductionModifier(damageInfo.StatUsed == 9 ? Stats.MagicPower : Stats.MeleePower);
 
-                #endregion
+                #endregion Phys/Mag multipliers
 
                 #region General Multipliers
+
                 damageBonus += caster.StsInterface.GetStatBonusModifier(Stats.OutgoingDamagePercent) + target.StsInterface.GetStatBonusModifier(Stats.IncomingDamagePercent);
                 damageReduction *= target.StsInterface.GetStatReductionModifier(Stats.IncomingDamagePercent) * caster.StsInterface.GetStatReductionModifier(Stats.OutgoingDamagePercent);
 
                 damageInfo.DamageBonus += damageBonus;
                 damageInfo.DamageReduction *= damageReduction;
 
-                #endregion
+                #endregion General Multipliers
 
                 // Guard is separate because it needs to come after shielding
                 target.BuffInterface.CheckGuard(damageInfo, caster);
@@ -1199,7 +1216,7 @@ namespace WorldServer.World.Abilities
                 }
             }
 
-            #endregion
+            #endregion Application
 
             // 8: OnPostDealt/ReceivedDamage event (Tooth of Tzeentch, Shining Blade, Blurring Shock, Skull Thumper, etc)
             if (damageInfo.DamageType != DamageTypes.RawDamage)
@@ -1251,6 +1268,7 @@ namespace WorldServer.World.Abilities
             }
 
             #region Defense
+
             // Perform Block/Parry/Dodge/Evasion check
             if (damageInfo.DamageEvent > 0 || WasDefended(damageInfo, caster, target))
             {
@@ -1272,11 +1290,10 @@ namespace WorldServer.World.Abilities
                 target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DefendedAgainst, damageInfo, caster);
             }
 
-            #endregion
+            #endregion Defense
 
             else
             {
-
                 if (damageInfo.PriStatMultiplier > 0.0f)
                 {
                     damageInfo.Damage = (caster.ItmInterface.GetWeaponDamage(slot)) * damageInfo.PriStatMultiplier;
@@ -1295,7 +1312,6 @@ namespace WorldServer.World.Abilities
                     }
                 }
 
-
                 if (damageInfo.StatUsed > 0)
                 {
                     AddOffensiveStats(caster, damageInfo, 0.1f, false, true);
@@ -1303,9 +1319,11 @@ namespace WorldServer.World.Abilities
                 }
 
                 #region Dealing/Receiving Event
+
                 caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DealingDamage, damageInfo, target);
                 target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivingDamage, damageInfo, caster);
-                #endregion
+
+                #endregion Dealing/Receiving Event
 
                 target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ShieldPass, damageInfo, caster);
 
@@ -1324,9 +1342,10 @@ namespace WorldServer.World.Abilities
                 damageReduction *= target.StsInterface.GetStatReductionModifier(damageInfo.StatUsed == 9 ? Stats.IncomingMagicDamage : Stats.IncomingMeleeDamage)
                     * caster.StsInterface.GetStatReductionModifier(damageInfo.StatUsed == 9 ? Stats.MagicPower : Stats.MeleePower);
 
-                #endregion
+                #endregion Phys/Mag multipliers
 
                 #region General Multipliers
+
                 damageBonus += caster.StsInterface.GetStatBonusModifier(Stats.OutgoingDamagePercent) + caster.StsInterface.GetStatBonusModifier(Stats.AutoAttackDamage) + target.StsInterface.GetStatBonusModifier(Stats.IncomingDamagePercent);
 
                 damageReduction *= target.StsInterface.GetStatReductionModifier(Stats.IncomingDamagePercent) * caster.StsInterface.GetStatReductionModifier(Stats.OutgoingDamagePercent);
@@ -1334,7 +1353,7 @@ namespace WorldServer.World.Abilities
                 damageInfo.DamageBonus += damageBonus;
                 damageInfo.DamageReduction *= damageReduction;
 
-                #endregion
+                #endregion General Multipliers
 
                 if (caster is Creature && !(caster is Pet) && caster.Level > target.EffectiveLevel + 3)
                     damageInfo.DamageBonus += (caster.Level - 3 - target.EffectiveLevel) * 0.4f;
@@ -1385,7 +1404,6 @@ namespace WorldServer.World.Abilities
                     {
                         Player victim = (Player)target;
 
-
                         PacketOut Out = new PacketOut((byte)Opcodes.F_DEATHSPAM, 96);
                         WriteKillerDeathSpamInfo(Out, killer);
                         WriteVictimDeathSpamInfo(Out, victim);
@@ -1404,7 +1422,7 @@ namespace WorldServer.World.Abilities
                     }
                 }
 
-                #endregion
+                #endregion Application
 
                 // 8: OnPostDealt/ReceivedDamage event (Tooth of Tzeentch, Shining Blade, Blurring Shock, Skull Thumper, etc)
                 caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DirectDamageDealt, damageInfo, target);
@@ -1440,6 +1458,7 @@ namespace WorldServer.World.Abilities
             }
 
             #region Defense
+
             // Perform Block/Parry/Dodge/Evasion check
             if (damageInfo.DamageEvent > 0 || WasDefended(damageInfo, caster, target))
             {
@@ -1463,7 +1482,7 @@ namespace WorldServer.World.Abilities
                 return;
             }
 
-            #endregion
+            #endregion Defense
 
             float wSpeed = caster.ItmInterface.GetAttackTime(EquipSlot.MAIN_HAND) * 0.01f;
             float ohWdps = caster.ItmInterface.GetWeaponDamage(EquipSlot.OFF_HAND);
@@ -1480,14 +1499,13 @@ namespace WorldServer.World.Abilities
 
             if (stat > hardcap)
                 stat = hardcap;
-
             else if (stat > softcap)
                 stat = softcap + ((stat - softcap) / 3);
             // End
 
             damageInfo.Damage += wSpeed * stat * OFFHAND_STAT_COEFF * OFFHAND_DAMAGE_PEN;
 
-            #endregion
+            #endregion Offensive Stat
 
             #region Toughness Mitigation
 
@@ -1499,7 +1517,6 @@ namespace WorldServer.World.Abilities
 
             if (stat > hardcap)
                 stat = hardcap;
-
             else if (stat > softcap)
                 stat = softcap + ((stat - softcap) / 3);
 
@@ -1513,7 +1530,7 @@ namespace WorldServer.World.Abilities
             else
                 damageInfo.Damage -= damageInfo.Mitigation;
 
-            #endregion
+            #endregion Toughness Mitigation
 
             if (caster.StsInterface.GetBonusStat(Stats.OffhandDamage) > 0)
             {
@@ -1522,9 +1539,11 @@ namespace WorldServer.World.Abilities
             }
 
             #region Dealing/Receiving Event
+
             caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DealingDamage, damageInfo, target);
             target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivingDamage, damageInfo, caster);
-            #endregion
+
+            #endregion Dealing/Receiving Event
 
             target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ShieldPass, damageInfo, caster);
 
@@ -1545,16 +1564,17 @@ namespace WorldServer.World.Abilities
             damageReduction *= target.StsInterface.GetStatReductionModifier(damageInfo.StatUsed == 9 ? Stats.IncomingMagicDamage : Stats.IncomingMeleeDamage)
                 * caster.StsInterface.GetStatReductionModifier(damageInfo.StatUsed == 9 ? Stats.MagicPower : Stats.MeleePower);
 
-            #endregion
+            #endregion Phys/Mag multipliers
 
             #region General Multipliers
+
             damageBonus += caster.StsInterface.GetStatBonusModifier(Stats.OutgoingDamagePercent) + caster.StsInterface.GetStatBonusModifier(Stats.AutoAttackDamage) + target.StsInterface.GetStatBonusModifier(Stats.IncomingDamagePercent);
             damageReduction *= target.StsInterface.GetStatReductionModifier(Stats.IncomingDamagePercent) * caster.StsInterface.GetStatReductionModifier(Stats.OutgoingDamagePercent);
 
             damageInfo.DamageBonus += damageBonus;
             damageInfo.DamageReduction *= damageReduction;
 
-            #endregion
+            #endregion General Multipliers
 
             // Guard is separate because it needs to come after shielding
             target.BuffInterface.CheckGuard(damageInfo, caster);
@@ -1564,9 +1584,11 @@ namespace WorldServer.World.Abilities
             // 6: DealtDamage event (Shielding)
 
             #region Dealt/Received Event
+
             caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DealtDamage, damageInfo, target);
             target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivedDamage, damageInfo, caster);
-            #endregion
+
+            #endregion Dealt/Received Event
 
             #region Application
 
@@ -1612,8 +1634,6 @@ namespace WorldServer.World.Abilities
                         WriteWeaponDeathSpamInfo(Out, killer, EquipSlot.OFF_HAND);
                     else WritePetDeathSpamInfo(Out, killer);
 
-
-
                     lock (Player._Players)
                     {
                         foreach (Player subPlayer in Player._Players)
@@ -1624,14 +1644,17 @@ namespace WorldServer.World.Abilities
                     }
                 }
             }
-            #endregion
+
+            #endregion Application
 
             // 8: OnPostDealt/ReceivedDamage event (Tooth of Tzeentch, Shining Blade, Blurring Shock, Skull Thumper, etc)
 
             #region PostDamage Event
+
             caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DirectDamageDealt, damageInfo, target);
             target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DirectDamageReceived, damageInfo, caster);
-            #endregion
+
+            #endregion PostDamage Event
         }
 
         public static void InflictGuardDamage(Unit attacker, Player receiver, ushort entry, AbilityDamageInfo originalDamage, float casterDamageSplitFactor)
@@ -1653,6 +1676,7 @@ namespace WorldServer.World.Abilities
                 int offensiveStat, defensiveStat;
 
                 #region GetStat
+
                 switch (originalDamage.StatUsed)
                 {
                     case 1: // Strength and Weaponskill
@@ -1661,18 +1685,21 @@ namespace WorldServer.World.Abilities
                             defensiveStat = Math.Max(1, (int)receiver.StsInterface.GetTotalStat(Stats.WeaponSkill));
                         }
                         break;
+
                     case 8: // Ballistic and Initiative
                         {
                             offensiveStat = Math.Max(1, (int)attacker.StsInterface.GetTotalStat(Stats.BallisticSkill));
                             defensiveStat = Math.Max(1, (int)receiver.StsInterface.GetTotalStat(Stats.Initiative));
                         }
                         break;
+
                     case 9: // Intelligence and Willpower
                         {
                             offensiveStat = Math.Max(1, (int)attacker.StsInterface.GetTotalStat(Stats.Intelligence));
                             defensiveStat = Math.Max(1, (int)receiver.StsInterface.GetTotalStat(Stats.Willpower));
                         }
                         break;
+
                     default:
                         {
                             offensiveStat = Math.Max(1, (int)attacker.StsInterface.GetTotalStat(Stats.Strength));
@@ -1680,7 +1707,9 @@ namespace WorldServer.World.Abilities
                         }
                         break;
                 }
-                #endregion
+
+                #endregion GetStat
+
                 //try a block
                 if (receiver.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND) != null && receiver.ItmInterface.GetItemInSlot((ushort)EquipSlot.OFF_HAND).Info.Type == 5)
                 {
@@ -1741,7 +1770,6 @@ namespace WorldServer.World.Abilities
 
             if (defenseEvent != 0)
                 outl.WriteByte(0);
-
             else
             {
                 outl.WriteZigZag(-(ushort)tempDmg.Damage);
@@ -1794,10 +1822,10 @@ namespace WorldServer.World.Abilities
 
             receiver.DispatchPacketUnreliable(outl, true, null);
 
-            #endregion
+            #endregion Application
         }
 
-        public static void HealTarget(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target, int criticalNumerator=0)
+        public static void HealTarget(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target, int criticalNumerator = 0)
         {
             #region Base Damage
 
@@ -1806,7 +1834,7 @@ namespace WorldServer.World.Abilities
 
             damageInfo.Damage = damageInfo.GetDamageForLevel(level);
 
-            #endregion
+            #endregion Base Damage
 
             target.ModifyHealOut(damageInfo);
             target.ModifyHealIn(damageInfo);
@@ -1843,7 +1871,7 @@ namespace WorldServer.World.Abilities
                 else
                     damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_HIT;
 
-                #endregion
+                #endregion CriticalHeal
 
                 caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DealingHeal, damageInfo, target);
 
@@ -1854,7 +1882,6 @@ namespace WorldServer.World.Abilities
 
                 target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.ReceivingHeal, damageInfo, caster);
             }
-
             else
             {
                 damageInfo.ApplyDamageModifiers();
@@ -1892,7 +1919,7 @@ namespace WorldServer.World.Abilities
 
             target.DispatchPacketUnreliable(outl, true, caster);
 
-            #endregion
+            #endregion Application
 
             if (damageInfo.DamageType != DamageTypes.RawHealing)
             {
@@ -1919,7 +1946,7 @@ namespace WorldServer.World.Abilities
             else
                 damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_HIT;
 
-            #endregion
+            #endregion CriticalHeal
 
             caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DealingHeal, damageInfo, target);
 
@@ -1957,7 +1984,7 @@ namespace WorldServer.World.Abilities
 
             target.DispatchPacketUnreliable(outl, true, caster);
 
-            #endregion
+            #endregion Application
 
             caster.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DirectHealDealt, damageInfo, target);
             target.BuffInterface.NotifyCombatEvent((byte)BuffCombatEvents.DirectHealReceived, damageInfo, caster);
@@ -1988,7 +2015,7 @@ namespace WorldServer.World.Abilities
             return pointsHealed;
         }
 
-        #endregion
+        #endregion Damage
 
         private static void SendDeathSpam(AbilityDamageInfo damageInfo, Player killer, Player victim)
         {
@@ -2009,7 +2036,6 @@ namespace WorldServer.World.Abilities
             //Out.WriteStringBytes("Save The Queen");
             Out.WriteByte(0);
             Out.WriteByte(0);
-
 
             lock (Player._Players)
             {
@@ -2073,18 +2099,22 @@ namespace WorldServer.World.Abilities
                     name = "Turret";
                     type = 9;
                     break;
+
                 case CareerLine.CAREERLINE_MAGUS:
                     name = "Daemon";
                     type = 1;
                     break;
+
                 case CareerLine.CAREERLINE_SQUIG_HERDER:
                     name = "Squig";
                     type = 9;
                     break;
+
                 case CareerLine.CAREERLINE_WHITELION:
                     name = "War Lion";
                     type = 1;
                     break;
+
                 default:
                     name = "pet";
                     break;
@@ -2122,7 +2152,6 @@ namespace WorldServer.World.Abilities
 
             if (stat > hardcap)
                 stat = hardcap;
-
             else if (stat > softcap)
                 stat = softcap + ((stat - softcap) / 3);
 
@@ -2132,12 +2161,15 @@ namespace WorldServer.World.Abilities
                 case 1:
                     stat += (uint)caster.StsInterface.GetBonusStat(Stats.MeleePower);
                     break;
+
                 case 3:
                     stat += (uint)caster.StsInterface.GetBonusStat(Stats.HealingPower);
                     break;
+
                 case 8:
                     stat += (uint)caster.StsInterface.GetBonusStat(Stats.RangedPower);
                     break;
+
                 case 9:
                     stat += (uint)caster.StsInterface.GetBonusStat(Stats.MagicPower);
                     break;
@@ -2168,7 +2200,6 @@ namespace WorldServer.World.Abilities
 
             if (stat > hardcap)
                 stat = hardcap;
-
             else if (stat > softcap)
                 stat = softcap + (stat - softcap) / 3;
             if (damageInfo.PriStatMultiplier > 0.0f)
@@ -2211,7 +2242,6 @@ namespace WorldServer.World.Abilities
                     else
                         damageInfo.PrecalcDamage -= damageInfo.PrecalcMitigation;
                 }
-
                 else
                 {
                     damageInfo.Mitigation = stat * coefficient * damageInfo.StatDamageScale * damageInfo.CastTimeDamageMult;
@@ -2245,9 +2275,11 @@ namespace WorldServer.World.Abilities
                 case 1:
                     chanceToBeCrit += caster.StsInterface.GetTotalStat(Stats.MeleeCritRate);
                     break;
+
                 case 8:
                     chanceToBeCrit += caster.StsInterface.GetTotalStat(Stats.RangedCritRate);
                     break;
+
                 case 9:
                     chanceToBeCrit += caster.StsInterface.GetTotalStat(Stats.MagicCritRate);
                     break;
@@ -2274,7 +2306,6 @@ namespace WorldServer.World.Abilities
             }
             else
                 damageInfo.DamageEvent = (byte)CombatEvent.COMBATEVENT_HIT;
-
         }
 
         private static void CheckArmorReduction(Unit caster, Unit target, AbilityDamageInfo damageInfo, bool toPrecalc)
@@ -2312,7 +2343,6 @@ namespace WorldServer.World.Abilities
                 damageInfo.PrecalcMitigation += (ushort)(damageInfo.PrecalcDamage * damageTypeResistance);
                 damageInfo.PrecalcDamage -= (ushort)(damageInfo.PrecalcDamage * damageTypeResistance);
             }
-
             else
             {
                 damageInfo.Mitigation += (ushort)(damageInfo.Damage * damageTypeResistance);
@@ -2339,7 +2369,6 @@ namespace WorldServer.World.Abilities
                 damageInfo.PrecalcMitigation += (ushort)(damageInfo.PrecalcDamage * damageTypeResistance);
                 damageInfo.PrecalcDamage -= (ushort)(damageInfo.PrecalcDamage * damageTypeResistance);
             }
-
             else
             {
                 damageInfo.Mitigation += (ushort)(damageInfo.Damage * damageTypeResistance);
@@ -2347,6 +2376,6 @@ namespace WorldServer.World.Abilities
             }
         }
 
-        #endregion
+        #endregion Calculations
     }
 }

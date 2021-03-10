@@ -1,5 +1,4 @@
-﻿
-using WorldServer.World.Objects;
+﻿using WorldServer.World.Objects;
 
 namespace WorldServer.World.Interfaces
 {
@@ -22,7 +21,6 @@ namespace WorldServer.World.Interfaces
 
         public virtual void Update(long tick)
         {
-
         }
 
         public virtual void Stop()
@@ -31,7 +29,6 @@ namespace WorldServer.World.Interfaces
 
         public virtual void Save()
         {
-
         }
 
         public virtual bool HasObject()
@@ -46,6 +43,7 @@ namespace WorldServer.World.Interfaces
 
             return _Owner.IsPlayer();
         }
+
         public virtual bool HasPet()
         {
             if (!HasObject())
@@ -60,7 +58,6 @@ namespace WorldServer.World.Interfaces
                 return false;
 
             return _Owner.IsUnit();
-
         }
 
         public virtual Unit GetUnit()

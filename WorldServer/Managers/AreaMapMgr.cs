@@ -100,7 +100,7 @@
             {
                 Area.Information.Loaded = true;
                 string FileName = Program.Config.ZoneFolder + "zone" + String.Format("{0:000}", ZoneID) + "/piece" + String.Format("{0:00}", Area.Information.PieceId) + ".jpg";
-                
+
                 try
                 {
                     Area.Information.File = new Bitmap(FileName);

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
+using System.Text;
 
 namespace Launcher
 {
@@ -70,10 +68,6 @@ namespace Launcher
             for (int i = 0; i < SizeLen; ++i)
                 WriteByte(0);
         }
-
-        #region IPacket Members
-
-        #endregion
 
         public virtual void WriteUInt16(ushort val)
         {
@@ -219,7 +213,6 @@ namespace Launcher
                     case sizeof(ulong):
                         WriteUInt64((ulong)(size));
                         break;
-
                 }
             }
             else

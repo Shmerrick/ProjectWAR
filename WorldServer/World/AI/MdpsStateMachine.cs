@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Appccelerate.StateMachine;
+﻿using Appccelerate.StateMachine;
 using NLog;
-using WorldServer.Services.World;
+using System;
 using WorldServer.World.Battlefronts.Apocalypse;
 
 namespace WorldServer.World.AI
@@ -19,7 +14,6 @@ namespace WorldServer.World.AI
             OnAttack,
             OnCheckHealth,
             OnFlee
-           
         }
 
         public enum ProcessState
@@ -29,9 +23,7 @@ namespace WorldServer.World.AI
             Closing,
             Combat,
             HealthCheck
-
         }
-
 
         public MarauderBrain Brain { get; set; }
         public PassiveStateMachine<ProcessState, Command> fsm { get; set; }
@@ -62,7 +54,6 @@ namespace WorldServer.World.AI
             //    .On(Command.OnCheckHealth)
             //    .Goto(ProcessState.HealthCheck)
             //    .Execute(() => brain.PerformHealthCheck());
-
         }
 
         private void RecordTransition(object sender, EventArgs e)

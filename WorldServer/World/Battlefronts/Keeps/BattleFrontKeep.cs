@@ -9,7 +9,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using WorldServer.Configs;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
@@ -55,6 +54,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         public IRewardManager RewardManager { get; set; }
 
         #region timers
+
         public KeepTimer SeizedTimer;
         public KeepTimer LordKilledTimer;
         public KeepTimer DefenceTickTimer;
@@ -65,7 +65,8 @@ namespace WorldServer.World.Battlefronts.Keeps
         //public const int LordKilledTimerLength = 1 * 2;
         //public const int DefenceTickTimerLength = 20 * 60;
         //public const int BackToSafeTimerLength = 3 * 60;  // should be "short", as it's the time between def tick and doors up
-        #endregion
+
+        #endregion timers
 
         public List<KeepNpcCreature> Creatures = new List<KeepNpcCreature>();
         public List<KeepDoor> Doors = new List<KeepDoor>();
@@ -91,6 +92,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         public byte Tier;
         public int PlayersKilledInRange { get; set; }
         public Realms PendingRealm { get; set; }
+
         public Realms AttackingRealm
         {
             get
@@ -103,6 +105,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 }
             }
         }
+
         public Guild.Guild OwningGuild { get; set; }
         public PassiveStateMachine<SM.ProcessState, SM.Command> fsm { get; set; }
         public KeepNpcCreature KeepLord => Creatures?.Find(x => x.Info.KeepLord);
@@ -140,6 +143,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                                     keepSiegeSpawnPointse.Z,
                                     keepSiegeSpawnPointse.O));
                             break;
+
                         case (int)SiegeType.RAM:
                             HardPoints.Add(
                                 new Hardpoint(
@@ -153,7 +157,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                             //case (int) SiegeType.DIRECT:
                             //case (int) SiegeType.SNIPER:
                             //{
-
                             //    GameObject_proto glowProto = GameObjectService.GetGameObjectProto(99858);//99858
 
                             //        if (glowProto != null)
@@ -197,9 +200,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             BackToSafeTimer = new KeepTimer($"Back to Safe {Info.Name} Keep Timer", 0, Program.Config.BackToSafeTimerLength);
 
             Fortress = isFortress;
-
         }
-
 
         public override void OnLoad()
         {
@@ -247,9 +248,9 @@ namespace WorldServer.World.Battlefronts.Keeps
                 WorldMgr._Keeps.Add(Info.KeepId, this);
         }
 
-        /// <summary> 
-        /// Each time this ticks, add one to the FortDefenceCounter. Once it's == 4 (60 mins), Lock the fort in favour of the defender. 
-        /// </summary> 
+        /// <summary>
+        /// Each time this ticks, add one to the FortDefenceCounter. Once it's == 4 (60 mins), Lock the fort in favour of the defender.
+        /// </summary>
         public void CountdownFortDefenceTimer(int fortDefenceTimerTickLength)
         {
             if (IsFortress())
@@ -258,19 +259,18 @@ namespace WorldServer.World.Battlefronts.Keeps
 
                 if (FortDefenceCounter >= DEFENCE_LOCK_COUNT)
                 {
-                    //if (this.Info.Realm == (int) Realms.REALMS_REALM_ORDER) 
-                    //    SendRegionMessage("Weakened by the long crusade, the forces of Chaos have been thrown back from Reikwald. The Empire prepares their army for a counterattack."); 
-                    //if (this.Info.Realm == (int)Realms.REALMS_REALM_DESTRUCTION) 
-                    //    SendRegionMessage($"The Dark gods have blessed the fortress defenders." + 
-                    //                      $"Chaos will spread across the Old World with renewed strength."); 
+                    //if (this.Info.Realm == (int) Realms.REALMS_REALM_ORDER)
+                    //    SendRegionMessage("Weakened by the long crusade, the forces of Chaos have been thrown back from Reikwald. The Empire prepares their army for a counterattack.");
+                    //if (this.Info.Realm == (int)Realms.REALMS_REALM_DESTRUCTION)
+                    //    SendRegionMessage($"The Dark gods have blessed the fortress defenders." +
+                    //                      $"Chaos will spread across the Old World with renewed strength.");
 
-                  
                     GenerateKeepTakeRewards();
 
-                    // Lock the keep for the defending realm 
+                    // Lock the keep for the defending realm
                     OnLockZone((Realms)Info.Realm);
 
-                    // Create Loot Chests at the Fort GoldChest location. 
+                    // Create Loot Chests at the Fort GoldChest location.
                     var orderLootChest = LootChest.Create(
                         Region,
                         new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ),
@@ -298,22 +298,22 @@ namespace WorldServer.World.Battlefronts.Keeps
                 {
                     if (Info.Realm == (int)Realms.REALMS_REALM_ORDER)
                     {
-                        // Inform players on the defending side of the remaining time. 
+                        // Inform players on the defending side of the remaining time.
                         SendRegionMessage(
                             $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter) * (fortDefenceTimerTickLength)} minutes remaining to defend the fortress.",
                             (int)Realms.REALMS_REALM_ORDER);
-                        // Inform players on the defending side of the remaining time. 
+                        // Inform players on the defending side of the remaining time.
                         SendRegionMessage(
                             $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter) * fortDefenceTimerTickLength} minutes remaining to take the fortress.",
                             (int)Realms.REALMS_REALM_DESTRUCTION);
                     }
                     else
                     {
-                        // Inform players on the defending side of the remaining time. 
+                        // Inform players on the defending side of the remaining time.
                         SendRegionMessage(
                             $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter) * fortDefenceTimerTickLength} minutes remaining to defend the fortress.",
                             (int)Realms.REALMS_REALM_DESTRUCTION);
-                        // Inform players on the defending side of the remaining time. 
+                        // Inform players on the defending side of the remaining time.
                         SendRegionMessage(
                             $"You have {(DEFENCE_LOCK_COUNT - FortDefenceCounter) * fortDefenceTimerTickLength} minutes remaining to take the fortress.",
                             (int)Realms.REALMS_REALM_ORDER);
@@ -323,14 +323,12 @@ namespace WorldServer.World.Battlefronts.Keeps
             }
         }
 
-
         public void SetGuildOwner(Guild.Guild guild)
         {
             OwningGuild = guild;
             SendRegionMessage($"{guild.Info.Name} has taken {Info.Name} as their own!", (int)Realms.REALMS_REALM_ORDER);
             SendRegionMessage($"{guild.Info.Name} has taken {Info.Name} as their own!", (int)Realms.REALMS_REALM_DESTRUCTION);
         }
-
 
         /// <summary>
         /// Check the various timers and determine whether to fire any events
@@ -373,15 +371,12 @@ namespace WorldServer.World.Battlefronts.Keeps
             //ScaleLord(PlayersInRange.Count(x => x.Realm == Realm));
         }
 
-
-
         public void SetKeepSeized()
         {
             SeizedTimer.Start();
 
             KeepStatus = KeepStatus.KEEPSTATUS_SEIZED;
             KeepCommunications.SendKeepStatus(null, this);
-
         }
 
         public void SetLordKilled()
@@ -451,8 +446,6 @@ namespace WorldServer.World.Battlefronts.Keeps
             }
 
             SetGuildFlagState(StateFlags.Unsecure);
-
-
         }
 
         private void SetGuildFlagState(StateFlags newState)
@@ -508,7 +501,6 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public void SetDoorRepaired(uint doorId)
         {
-
             foreach (var keepDoor in Doors)
             {
                 if (keepDoor.GameObject.DoorId == doorId)
@@ -552,7 +544,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             Region.Campaign.GetActiveBattleFrontStatus().OrderRealmCaptain?.AddRenown(500, false, RewardType.None, "For being Realm Captain");
             Region.Campaign.GetActiveBattleFrontStatus().DestructionRealmCaptain?.AddRenown(500, false, RewardType.None, "For being Realm Captain");
 
-            // Remove any placed rams. 
+            // Remove any placed rams.
             foreach (var h in HardPoints)
             {
                 if (h.SiegeType == SiegeType.RAM)
@@ -563,7 +555,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                 }
             }
 
-
             DefenceTickTimer.Start();
 
             //DoorRepairTimers[doorId] = new KeepTimer($"Door {doorId} Repair Timer", 0, DoorRepairTimerLength);
@@ -572,7 +563,6 @@ namespace WorldServer.World.Battlefronts.Keeps
             KeepStatus = KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK;
 
             KeepCommunications.SendKeepStatus(null, this);
-
         }
 
         public void SetOuterDoorDown(uint doorId)
@@ -592,8 +582,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             Region.Campaign.GetActiveBattleFrontStatus().OrderRealmCaptain?.AddRenown(250, false, RewardType.None, "For being Realm Captain");
             Region.Campaign.GetActiveBattleFrontStatus().DestructionRealmCaptain?.AddRenown(250, false, RewardType.None, "For being Realm Captain");
 
-
-            // Remove any placed rams. 
+            // Remove any placed rams.
             foreach (var h in HardPoints)
             {
                 if (h.SiegeType == SiegeType.RAM)
@@ -612,7 +601,6 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             KeepStatus = KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK;
             KeepCommunications.SendKeepStatus(null, this);
-
         }
 
         public bool AllDoorsRepaired()
@@ -632,9 +620,6 @@ namespace WorldServer.World.Battlefronts.Keeps
             return true;
         }
 
-
-
-
         /// <summary>
         /// Set the keep safe
         /// </summary>
@@ -652,7 +637,6 @@ namespace WorldServer.World.Battlefronts.Keeps
             SendRegionMessage(Info.Name + " has been successfully defended!", (int)Realms.REALMS_REALM_ORDER);
             SendRegionMessage(Info.Name + " has been successfully defended!", (int)Realms.REALMS_REALM_DESTRUCTION);
 
-
             KeepRewardManager.DefenceTickReward(this, PlayersInRange.ToList(), Info.Name, Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance);
 
             foreach (var plr in Region.Players)
@@ -660,7 +644,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                 SendKeepInfo(plr);
             }
             KeepCommunications.SendKeepStatus(null, this);
-
         }
 
         /// <summary>
@@ -675,7 +658,6 @@ namespace WorldServer.World.Battlefronts.Keeps
             KeepStatus = KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK;
         }
 
-
         /// <summary>
         /// Set the keep safe
         /// </summary>
@@ -685,7 +667,6 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             SendRegionMessage(Info.Name + " is now safe!", (int)Realms.REALMS_REALM_ORDER);
             SendRegionMessage(Info.Name + " is now safe!", (int)Realms.REALMS_REALM_DESTRUCTION);
-
 
             Realm = PendingRealm;
             // Must be set before the doors are spawned.
@@ -703,10 +684,8 @@ namespace WorldServer.World.Battlefronts.Keeps
                 if (!crea.Info.IsPatrol)
                     crea.SpawnGuard(Realm);
 
-
             // Remove all siege
             RemoveAllAttackingKeepSiege();
-
 
             // Update all players within 200 range - update the map.
             foreach (var plr in GetInRange<Player>(300))
@@ -731,11 +710,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 {
                     DoorRepairTimers.TryAdd(door.GameObject.DoorId, new KeepTimer($"Door {door.GameObject.DoorId} Repair Timer", 0, Program.Config.DoorRepairTimerLength));
                 }
-
             }
-          
-
-
         }
 
         /// <summary>
@@ -780,7 +755,6 @@ namespace WorldServer.World.Battlefronts.Keeps
             //  this.fsm.Stop();
         }
 
-
         public bool AttackerCanUsePostern(int posternNum)
         {
             if (posternNum == (int)KeepDoorType.OuterPostern)
@@ -790,7 +764,6 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             return false;
         }
-
 
         public void SendDiagnostic(Player plr)
         {
@@ -846,7 +819,6 @@ namespace WorldServer.World.Battlefronts.Keeps
             }
         }
 
-
         public bool IsRamDeployed()
         {
             return _activeMateriel[(int)MaterielType.Ram].Count > 0;
@@ -868,14 +840,13 @@ namespace WorldServer.World.Battlefronts.Keeps
                 return;
             }
 
-            // Detect if there is a save state for this Keep. If so, load it. 
+            // Detect if there is a save state for this Keep. If so, load it.
             var status = RVRProgressionService.GetBattleFrontKeepStatus(Info.KeepId);
             if (status != null)
             {
                 ProgressionLogger.Debug($"Existing BattlefrontKeepStatus located. Loading.. {status.Status}");
                 if (!fsm.IsRunning)
                     fsm.Initialize((SM.ProcessState)status.Status);
-
             }
             else
             {
@@ -900,8 +871,6 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             if (!fsm.IsRunning)
                 _logger.Error($"** Keep FSM is NOT Running! {Info.Name}");
-
-
         }
 
         public void OnDoorRepaired(uint doorId)
@@ -917,8 +886,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                 _logger.Debug($"Inner Door has been repaired {doorId}");
                 SetDoorRepaired(doorId);
             }
-
-
         }
 
         public void OnGuildClaimTimerEnd()
@@ -960,7 +927,6 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public void OnLockZone(Realms lockingRealm)
         {
-
             PendingRealm = lockingRealm;
             if (!Fortress)
                 fsm.Fire(SM.Command.OnLockZone);
@@ -1002,7 +968,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 fsm.Fire(SM.Command.OnLordWounded);
         }
 
-        #endregion
+        #endregion State Event Handlers
 
         #region Update AAO multiplier
 
@@ -1024,15 +990,12 @@ namespace WorldServer.World.Battlefronts.Keeps
                 if (Realm == Realms.REALMS_REALM_ORDER && aaoMultiplier < 0 // keep is order and aao is on destro
                     || Realm == Realms.REALMS_REALM_DESTRUCTION && aaoMultiplier > 0) // keep is destro and aao is on order
                     size = (int)Math.Round(Math.Abs(aaoMultiplier) / 2.5); // 20 / 2.5 = 8 -> 8 is max guard size
-
-
             }
         }
 
-        #endregion
+        #endregion Update AAO multiplier
 
         #region Keep Progression
-
 
         public void OnKeepDoorAttacked(byte number, byte pctHealth, uint doorId)
         {
@@ -1066,12 +1029,12 @@ namespace WorldServer.World.Battlefronts.Keeps
             }
             KeepStatus = KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK;
 
-
             switch (number)
             {
                 case INNER_DOOR:
                     OnInnerDoorAttacked(pctHealth, doorId);
                     break;
+
                 case OUTER_DOOR:
                     OnOuterDoorAttacked(pctHealth, doorId);
                     break;
@@ -1108,7 +1071,6 @@ namespace WorldServer.World.Battlefronts.Keeps
             EvtInterface.AddEvent(UpdateStateOfTheRealmKeep, 100, 1);
         }
 
-
         public void OnDoorDestroyed(byte number, Realms realm, uint doorId)
         {
             switch (number)
@@ -1116,12 +1078,12 @@ namespace WorldServer.World.Battlefronts.Keeps
                 case INNER_DOOR:
                     OnInnerDoorDown(doorId);
                     break;
+
                 case OUTER_DOOR:
                     OnOuterDoorDown(doorId);
                     break;
             }
         }
-
 
         public void OnKeepLordAttacked(byte pctHealth)
         {
@@ -1132,12 +1094,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             {
                 ProgressionLogger.Trace($"Keep Lord attacked health remaining {pctHealth}%");
             }
-
-            
-
         }
-
-
 
         /// <summary>
         ///     Scales the lord depending on defender population.
@@ -1149,7 +1106,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     crea.Creature.ScaleLord(defenderPlayerCount);
         }
 
-        #endregion
+        #endregion Keep Progression
 
         #region Range
 
@@ -1157,8 +1114,6 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public void AddPlayer(Player plr)
         {
-
-
             if (plr == null)
                 return;
             SendKeepInfoLeft(plr);
@@ -1211,7 +1166,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             return closePlayers;
         }
 
-        #endregion
+        #endregion Range
 
         #region Materiel
 
@@ -1287,7 +1242,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                                 _materielSupply[i] = Math.Min(0.9f, _materielSupply[i] + 1f / _materielRegenTime[i][Rank]);
                             else _materielSupply[i] = Math.Min(0.9f, _materielSupply[i] + 0.1f / _materielRegenTime[i][Rank]);
                     }
-
                     else if (_materielSupply[i] + _activeMateriel[i].Count < _materielCaps[i][Rank])
                     {
                         if (KeepStatus == KeepStatus.KEEPSTATUS_SAFE)
@@ -1327,9 +1281,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     siege.AddShots(ammo);
         }
 
-
-
-        #endregion
+        #endregion Materiel
 
         #region Util
 
@@ -1339,15 +1291,20 @@ namespace WorldServer.World.Battlefronts.Keeps
             {
                 case KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK:
                     return "Destroy the Sanctum Door";
+
                 case KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK:
                     return "Kill the Lord";
+
                 case KeepStatus.KEEPSTATUS_SEIZED:
                     return "Hold your ground until reinforcements arrive";
+
                 case KeepStatus.KEEPSTATUS_SAFE:
                 case KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK:
                     return "Destroy the Outer Door";
+
                 case KeepStatus.KEEPSTATUS_LOCKED:
                     return "RegionLockManager";
+
                 default:
                     return "Destroy the Outer Door";
             }
@@ -1359,15 +1316,20 @@ namespace WorldServer.World.Battlefronts.Keeps
             {
                 case KeepStatus.KEEPSTATUS_SEIZED:
                     return "Keep Has Fallen";
+
                 case KeepStatus.KEEPSTATUS_LOCKED:
                     return "Keep Locked";
+
                 case KeepStatus.KEEPSTATUS_SAFE:
                 case KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK:
                     return plr.Realm == Realm ? "Defend Outer Door" : "Destroy Outer Door";
+
                 case KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK:
                     return plr.Realm == Realm ? "Defend Sanctum Door" : "Destroy Sanctum Door";
+
                 case KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK:
                     return plr.Realm == Realm ? "Defend the Lord" : "Kill the Lord";
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -1380,10 +1342,13 @@ namespace WorldServer.World.Battlefronts.Keeps
                 case KeepStatus.KEEPSTATUS_SAFE:
                 case KeepStatus.KEEPSTATUS_OUTER_WALLS_UNDER_ATTACK:
                     return $"The Outer Door of {Info.Name} stands strong!";
+
                 case KeepStatus.KEEPSTATUS_INNER_SANCTUM_UNDER_ATTACK:
                     return $"The Sanctum Door of {Info.Name} stands strong!";
+
                 case KeepStatus.KEEPSTATUS_KEEP_LORD_UNDER_ATTACK:
                     return $"The Keep Lord of {Info.Name} stands strong!";
+
                 case KeepStatus.KEEPSTATUS_SEIZED:
                     if (realm == Realm)
                         return $"The Keep Lord of {Info.Name} has been defeated! Maintain overall control of the Battlefield Objectives to lock this zone!";
@@ -1391,16 +1356,17 @@ namespace WorldServer.World.Battlefronts.Keeps
                         $"The Keep Lord of {Info.Name} has been defeated, granting the enemy control of this keep for 45 minutes! Hold 50% of the Victory Points to reclaim this keep after the time has expired!";
                 case KeepStatus.KEEPSTATUS_LOCKED:
                     return $"{Info.Name} is not attackable at the moment!";
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        #endregion
+        #endregion Util
 
         #region Senders
 
-        // Updates objective text  
+        // Updates objective text
         public void SendKeepInfo(Player plr)
         {
             var Out = new PacketOut((byte)Opcodes.F_OBJECTIVE_INFO, 32);
@@ -1480,10 +1446,8 @@ namespace WorldServer.World.Battlefronts.Keeps
             }
         }
 
-
-
         //reconstructed packet from client dissasmbly
-        //player must have role of SystemData.GuildPermissons.KEEPUPGRADE_EDIT 
+        //player must have role of SystemData.GuildPermissons.KEEPUPGRADE_EDIT
         //for detailed UI logic, look at interface/default/ea_interactionwindow/source/interactionkeepupgrades.lua
         public void SendKeepUpgradesInteract(Player plr)
         {
@@ -1503,7 +1467,6 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             var keepRankCount = 5;
             var unkCount = 5;
-
 
             for (var i = 0; i < availibleUpgradeCount; i++)
             {
@@ -1544,7 +1507,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 plr.SendPacket(Out);
         }
 
-        #endregion
+        #endregion Senders
 
         #region Siege Weapon Management
 
@@ -1556,7 +1519,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                 player.SendClientMessage("You cannot deploy oil at a keep you do not own.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 return;
             }
-
 
             var entry = player.ItmInterface.GetItemInSlot(slot).Info.Entry;
 
@@ -1589,7 +1551,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                     WorldY = h.Y,
                     WorldZ = h.Z,
                     WorldO = h.Heading
-
                 };
 
                 spawn.BuildFromProto(proto);
@@ -1632,6 +1593,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                         return false;
                     }
                     break;
+
                 case CreatureSubTypes.SIEGE_SINGLE_TARGET:
                     type = (int)MaterielType.Cannon;
                     if ((int)_materielSupply[type] < 1f || _activeMateriel[type].Count >= _materielCaps[type][Rank])
@@ -1641,6 +1603,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                         return false;
                     }
                     break;
+
                 case CreatureSubTypes.SIEGE_RAM:
                     type = (int)MaterielType.Ram;
 
@@ -1652,13 +1615,13 @@ namespace WorldServer.World.Battlefronts.Keeps
                         return false;
                     }
                     break;
+
                 default:
                     return true;
             }
 
             return true;
         }
-
 
         public void RemoveKeepSiege(Siege weapon)
         {
@@ -1749,7 +1712,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                     return HEAVY_GREENSKIN_OIL;
                 if (targetRealm == Realms.REALMS_REALM_ORDER)
                     return HEAVY_DWARF_OIL;
-
             }
             // Empire or Chaos (Human). Depending on which realm owns the keep, return the correct type of oil.
             if (Info.Race == 3 || Info.Race == 4)
@@ -1758,7 +1720,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                     return HEAVY_CHAOS_OIL;
                 if (targetRealm == Realms.REALMS_REALM_ORDER)
                     return HEAVY_EMPIRE_OIL;
-
             }
             // High Elf or Dark Elf
             if (Info.Race == 5 || Info.Race == 6)
@@ -1767,22 +1728,19 @@ namespace WorldServer.World.Battlefronts.Keeps
                     return HEAVY_DARKELF_OIL;
                 if (targetRealm == Realms.REALMS_REALM_ORDER)
                     return HEAVY_HIGHELF_OIL;
-
             }
             return 0;
-
         }
 
-        #endregion
+        #endregion Siege Weapon Management
 
         public void OnKeepSiegeAttacked(byte pctHealth)
         {
             ProgressionLogger.Debug($"Keep Siege Attacked {pctHealth}% health");
         }
 
-
         /// <summary>
-        /// Record players that were within range of the Keep Lord. 
+        /// Record players that were within range of the Keep Lord.
         /// </summary>
         public void CheckKeepPlayersInvolved()
         {
@@ -1816,7 +1774,6 @@ namespace WorldServer.World.Battlefronts.Keeps
             }
         }
 
-
         /// <summary>
         /// Force Zone lock for the attacker - only to be used for Forts.
         /// </summary>
@@ -1828,7 +1785,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                 GenerateKeepTakeRewards();
                 OnLockZone(PendingRealm);
 
-                // Create Loot Chests at the Fort GoldChest location 
+                // Create Loot Chests at the Fort GoldChest location
                 var lootChest = LootChest.Create(
                     Region,
                     new Point3D(Info.PQuest.GoldChestWorldX, Info.PQuest.GoldChestWorldY, Info.PQuest.GoldChestWorldZ),
@@ -1877,7 +1834,6 @@ namespace WorldServer.World.Battlefronts.Keeps
             return !Fortress;
         }
 
-
         /// <summary>
         /// Keep guild claim flag has been interacted with and a guild has claimed this keep.
         /// </summary>
@@ -1894,7 +1850,6 @@ namespace WorldServer.World.Battlefronts.Keeps
             }
 
             KeepCommunications.SendKeepStatus(null, this);
-
         }
 
         /// <summary>
@@ -1918,7 +1873,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                     return new SpawnPoint(Zone.ZoneId, PlayerSpawnLocation.Value.DefenderKeepSafeX,
                         PlayerSpawnLocation.Value.DefenderKeepSafeY,
                         PlayerSpawnLocation.Value.DefenderKeepSafeZ);
-
                 }
             }
 
@@ -1941,8 +1895,6 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             //if (Fortress)
             //{
-
-
             //        //return new SpawnPoint(Zone.ZoneId, PlayerSpawnLocation.Value.DefenderKeepUnderAttackX,
             //        //    PlayerSpawnLocation.Value.DefenderKeepUnderAttackY,
             //        //    PlayerSpawnLocation.Value.DefenderKeepUnderAttackZ);
@@ -1970,15 +1922,10 @@ namespace WorldServer.World.Battlefronts.Keeps
             //        }
             //    }
             //}
-
-
         }
-
-
 
         public void OnPlayerKilledInRange(Player victim, Unit killer)
         {
-
             if (!DefenceTickTimer.IsExpired())
             {
                 _logger.Debug($"Player {victim.Name} killed by {killer.Name} near keep, resetting defence timer.");
@@ -1994,7 +1941,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         public void GenerateKeepTakeRewards()
         {
             bool isFortress = false;
-          
+
             var zone = ZoneService.GetZone_Info((ushort)ZoneId);
             var fortZones = new List<int> { 4, 10, 104, 110, 204, 210 };
             if (fortZones.Contains((ushort)ZoneId))
@@ -2002,12 +1949,12 @@ namespace WorldServer.World.Battlefronts.Keeps
                 isFortress = true;
 
                 // Add contribution for players in fort zone.
-                foreach (var player in PlayerUtil.GetAllFlaggedPlayersInZone((int) ZoneId))
+                foreach (var player in PlayerUtil.GetAllFlaggedPlayersInZone((int)ZoneId))
                 {
                     try
                     {
                         Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.UpdateContribution(
-                            player.CharacterId, (byte) ContributionDefinitions.FORT_ZONE_LOCK_PRESENCE);
+                            player.CharacterId, (byte)ContributionDefinitions.FORT_ZONE_LOCK_PRESENCE);
                     }
                     catch (Exception e)
                     {
@@ -2016,7 +1963,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     }
                 }
             }
-            
+
             var eligiblitySplits =
                 Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.DetermineEligiblePlayers(_logger, PendingRealm);
 
@@ -2031,9 +1978,9 @@ namespace WorldServer.World.Battlefronts.Keeps
                 {
                     var orderWCId = PlayerSpawnLocation.Value.OrderFeedZoneId;
                     var wc = BattleFrontService.GetWarcampEntrance((ushort)orderWCId, Realms.REALMS_REALM_ORDER);
-                    var orderWCZone = ZoneService.GetZone_Info((ushort) orderWCId);
+                    var orderWCZone = ZoneService.GetZone_Info((ushort)orderWCId);
                     var target = ZoneService.GetWorldPosition(ZoneService.GetZone_Info((ushort)orderWCId), (ushort)wc.X, (ushort)wc.Y, (ushort)wc.Z);
-                    
+
                     //// There is no WC in Fort zone - look for the feedin zone.
                     //var spawnPoint = new SpawnPoint(Zone.ZoneId, PlayerSpawnLocation.Value.DefenderKeepSafeX,
                     //    PlayerSpawnLocation.Value.DefenderKeepSafeY,
@@ -2056,12 +2003,9 @@ namespace WorldServer.World.Battlefronts.Keeps
 
                 destructionLootChest.SenderName = $"{zone.Name} assault";
                 destructionLootChest.Title = "Successful assault";
-
-                
             }
             if (PendingRealm == Realms.REALMS_REALM_ORDER)
             {
-
                 if (isFortress)
                 {
                     // There is no WC in Fort zone - look for the feedin zone.
@@ -2070,16 +2014,13 @@ namespace WorldServer.World.Battlefronts.Keeps
                         PlayerSpawnLocation.Value.DefenderKeepSafeZ);
 
                     destructionLootChest = LootChest.Create(Region, spawnPoint.As3DPoint(), (ushort)spawnPoint.ZoneId, !isFortress);
-
                 }
                 else
                 {
                     var wc = BattleFrontService.GetWarcampEntrance((ushort)ZoneId, Realms.REALMS_REALM_ORDER);
                     destructionLootChest = LootChest.Create(Region, wc, (ushort)ZoneId, !isFortress);
-
                 }
                 destructionLootChest.SenderName = $"{zone.Name} defence";
-
 
                 orderLootChest = LootChest.Create(
                     Region,
@@ -2103,8 +2044,6 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             if (isFortress)
             {
-                
-
                 // Give all eligible players in the zone WLC.
                 foreach (var player in eligiblitySplits.Item1)
                 {
@@ -2119,7 +2058,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                         _logger.Warn($"Could not mail warlord crests (5) to {player.Key.CharacterId}");
                     }
                 }
-
 
                 Region.Campaign.GetActiveBattleFrontStatus().RewardManagerInstance.GenerateKeepTakeLootBags(
                     _logger,
@@ -2138,14 +2076,11 @@ namespace WorldServer.World.Battlefronts.Keeps
                     eligiblitySplits.Item3, //losing
                     PendingRealm,
                     (ushort)ZoneId, RVRZoneRewardService.RVRRewardKeepItems, destructionLootChest, orderLootChest, Info, PlayersKilledInRange);
-
             }
-
         }
 
         private void RecordKeepEligibilityHistory(ConcurrentDictionary<Player, int> eligiblePlayers, Zone_Info zone, Keep_Info info, Realms lockingRealm)
         {
-
             foreach (var eligiblePlayer in eligiblePlayers)
             {
                 var history = new KeepLockEligibilityHistory
@@ -2164,7 +2099,6 @@ namespace WorldServer.World.Battlefronts.Keeps
 
                 WorldMgr.Database.AddObject(history);
             }
-
         }
     }
 }

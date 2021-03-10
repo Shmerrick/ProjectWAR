@@ -1,9 +1,6 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using FrameWork;
 
 namespace Common
 {
@@ -126,10 +123,10 @@ namespace Common
                 foreach (MailItem Item in Items)
                 {
                     String aditionaldata = Item.GetSaveString();
-                    if(aditionaldata == null)
+                    if (aditionaldata == null)
                         Value += Item.id + ":" + Item.count + "|";
                     else
-                        Value += Item.id + ":"+aditionaldata+":" + Item.count + "|";
+                        Value += Item.id + ":" + aditionaldata + ":" + Item.count + "|";
                 }
                 return Value;
             }
@@ -147,8 +144,8 @@ namespace Common
 
                     string[] ItemInfo = Obj.Split(':');
 
-                    if(ItemInfo.Length == 2)
-                        Items.Add(new MailItem(uint.Parse(ItemInfo[0]),null, ushort.Parse(ItemInfo[1])));
+                    if (ItemInfo.Length == 2)
+                        Items.Add(new MailItem(uint.Parse(ItemInfo[0]), null, ushort.Parse(ItemInfo[1])));
                     else
                         Items.Add(new MailItem(uint.Parse(ItemInfo[0]), ItemInfo[1], ushort.Parse(ItemInfo[2])));
                 }

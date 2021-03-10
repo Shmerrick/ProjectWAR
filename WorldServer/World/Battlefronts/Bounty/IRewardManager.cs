@@ -41,7 +41,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             List<RVRRewardItem> lootOptions,
             LootChest destructionLootChest,
             LootChest orderLootChest,
-            Keep_Info keep, 
+            Keep_Info keep,
             int playersKilledInRange,
             int forceNumberBags = 0);
 

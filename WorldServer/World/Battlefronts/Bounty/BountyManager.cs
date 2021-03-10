@@ -1,9 +1,5 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NLog;
+﻿using NLog;
+using System.Collections.Concurrent;
 using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Bounty
@@ -11,6 +7,7 @@ namespace WorldServer.World.Battlefronts.Bounty
     public class BountyManager : IBountyManager
     {
         private static readonly Logger BountyLogger = LogManager.GetLogger("BountyLogger");
+
         // Holds the characterId, the last death time since epoch, and the amount of bounty
         public ConcurrentDictionary<uint, CharacterBounty> BountyDictionary { get; set; }
 
@@ -28,7 +25,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         public bool ResetCharacterBounty(uint targetCharacterId, Player player)
         {
             RemoveCharacter(targetCharacterId);
-            return this.BountyDictionary.TryAdd(targetCharacterId,new CharacterBounty(player));
+            return this.BountyDictionary.TryAdd(targetCharacterId, new CharacterBounty(player));
         }
 
         public bool AddCharacterBounty(uint targetCharacterId, int additionalContribution)

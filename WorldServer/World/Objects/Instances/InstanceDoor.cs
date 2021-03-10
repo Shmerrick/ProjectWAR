@@ -2,7 +2,7 @@
 
 namespace WorldServer.World.Objects.Instances
 {
-    public class InstanceDoor : InstanceObject 
+    public class InstanceDoor : InstanceObject
     {
         public bool IsOpen
         {
@@ -19,13 +19,11 @@ namespace WorldServer.World.Objects.Instances
                     Instance.DoorOpened(this);
                 else
                     Instance.DoorClosed(this);
-
             }
         }
 
         public InstanceDoor(Instance instance, Instance_Object info) : base(instance, info)
         {
-
         }
     }
 }

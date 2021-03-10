@@ -2,9 +2,7 @@
 using FrameWork;
 using System.Collections.Generic;
 using System.Linq;
-using Common;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.Objects;
 
 namespace WorldServer.Services.World
 {
@@ -15,7 +13,6 @@ namespace WorldServer.Services.World
         public static List<RVRPairing> _RVRPairings;
         public static List<CampaignObjectiveBuff> _CampaignObjectiveBuffs;
         public static List<RVRAreaPolygon> _RVRAreaPolygons;
-        
 
         [LoadingFunction(true)]
         public static void LoadRVRProgressions()
@@ -49,8 +46,6 @@ namespace WorldServer.Services.World
             Log.Success("RVRProgression", "Loaded " + _RVRAreaPolygons.Count + " RVR Area Polygons");
         }
 
-       
-
         public static void SaveRVRProgression(List<RVRProgression> rvrProg)
         {
             if (rvrProg == null || rvrProg.Count <= 0)
@@ -73,7 +68,7 @@ namespace WorldServer.Services.World
 
         public static void SaveBattleFrontKeepState(byte keepId, SM.ProcessState state)
         {
-            var statusEntity = new BattleFrontKeepStatus {KeepId = keepId, Status = (int) state};
+            var statusEntity = new BattleFrontKeepStatus { KeepId = keepId, Status = (int)state };
 
             Log.Debug("WorldMgr", $"Saving battlefront keep status {keepId} {(int)state}...");
             RemoveBattleFrontKeepStatus(keepId);
@@ -91,8 +86,5 @@ namespace WorldServer.Services.World
             var status = Database.SelectObject<BattleFrontKeepStatus>($"KeepId={keepId}");
             return status;
         }
-
-
-
     }
 }

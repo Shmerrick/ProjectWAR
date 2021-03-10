@@ -1,5 +1,5 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common.Database.World.Battlefront
 {
@@ -21,6 +21,5 @@ namespace Common.Database.World.Battlefront
 
         [DataElement(AllowDbNull = false)]
         public DateTime Timestamp { get; set; }
-
     }
 }

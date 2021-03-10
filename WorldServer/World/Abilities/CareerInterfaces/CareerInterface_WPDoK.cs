@@ -17,7 +17,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
         {
             _maxResource = 250;
             _careerResource = _maxResource;
-            if (player.Info.CareerLine == (byte) CareerLine.CAREERLINE_WARRIOR_PRIEST)
+            if (player.Info.CareerLine == (byte)CareerLine.CAREERLINE_WARRIOR_PRIEST)
             {
                 _resourceID = 308;
                 _conversionMod = 0.16f;
@@ -63,14 +63,13 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                     {
                         if (_careerResource < 250 && newResourceVal > 0)
                         {
-                            AddResource((byte) newResourceVal, true);
-                            myPlayer.BuffInterface.NotifyResourceEvent((byte) BuffCombatEvents.ResourceSet, _lastResource, ref _careerResource);
+                            AddResource((byte)newResourceVal, true);
+                            myPlayer.BuffInterface.NotifyResourceEvent((byte)BuffCombatEvents.ResourceSet, _lastResource, ref _careerResource);
                         }
-
                         else if (_careerResource > 0 && newResourceVal < 0)
                         {
-                            ConsumeResource((byte) -newResourceVal, true);
-                            myPlayer.BuffInterface.NotifyResourceEvent((byte) BuffCombatEvents.ResourceSet, _lastResource, ref _careerResource);
+                            ConsumeResource((byte)-newResourceVal, true);
+                            myPlayer.BuffInterface.NotifyResourceEvent((byte)BuffCombatEvents.ResourceSet, _lastResource, ref _careerResource);
                         }
                     }
                 }
@@ -138,7 +137,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                 if (dpsMastery > myPlayer.AbtInterface.GetMasteryLevelFor(2) && dpsMastery > myPlayer.AbtInterface.GetMasteryLevelFor(1))
                     return EArchetype.ARCHETYPE_DPS;
             }
-
             else
             {
                 int dpsMastery = myPlayer.AbtInterface.GetMasteryLevelFor(2);
@@ -149,7 +147,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
             return EArchetype.ARCHETYPE_Healer;
         }
-     
+
         public override void ExperimentalModeModifyAbility(AbilityInfo abInfo)
         {
             switch (abInfo.Entry)
@@ -179,6 +177,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                         }
                     }
                     break;
+
                 case 8267: // Sigmar's Shield
                     if (_currentStance == 2)
                     {
@@ -192,14 +191,17 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                         }
                     }
                     break;
+
                 case 8270: // Absence of Faith
                     abInfo.Cooldown = 10;
                     break;
+
                 case 9555: // Terrifying Vision
                 case 8245: // Repent
                     if (_currentStance == 2)
                         abInfo.Cooldown = 25;
                     break;
+
                 case 8242: // Prayer of Absolution
                 case 9563: // Covenant of Tenacity
                 case 8249: // Prayer of Devotion
@@ -207,8 +209,9 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                     if (_currentStance == 1)
                         abInfo.Cooldown = (ushort)(DPS_SWITCH_CD_MS / 1000);
                     else
-                        abInfo.Cooldown = (ushort)(SWITCH_CD_MS/1000);
+                        abInfo.Cooldown = (ushort)(SWITCH_CD_MS / 1000);
                     break;
+
                 case 8243: // Prayer of Righteousness
                 case 9559: // Covenant of Celerity
                     abInfo.Cooldown = (ushort)(DPS_SWITCH_CD_MS / 1000);
@@ -254,7 +257,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                 case 8242:
                     if (target != myPlayer)
                         return;
-                    
+
                     // Reduces armor by 50% and converts Strength to Willpower
                     buffInfo.AddBuffCommand(AbilityMgr.GetBuffCommand(buffInfo.Entry, 1));
                     // Adds 8 RF/sec
@@ -370,6 +373,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                     }
                     CurrentStance = 1;
                     break;
+
                 case 8244: // Divine Assault
                 case 9554: // Rend Soul
                     if (_currentStance == 2)
@@ -390,6 +394,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                         }
                     }
                     break;
+
                 case 8270: // Absence of Faith becomes 50% with DPS on
                     if (_currentStance == 1)
                         buffInfo.CommandInfo[0].SecondaryValue = -50;

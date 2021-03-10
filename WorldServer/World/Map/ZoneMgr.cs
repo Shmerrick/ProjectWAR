@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Common;
+﻿using Common;
 using FrameWork;
+using System;
+using System.Collections.Generic;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
@@ -26,7 +26,8 @@ namespace WorldServer.World.Map
         // List of pqs in the zone
         public List<PublicQuest> PQuests = new List<PublicQuest>();
 
-        private int[,] _heatmap = new int[64,64];
+        private int[,] _heatmap = new int[64, 64];
+
         // list of hot spots in the zone
         public List<HotSpot> HotSpots = new List<HotSpot>();
 
@@ -40,6 +41,7 @@ namespace WorldServer.World.Map
             Running = true;
             ClientInfo = ClientFileMgr.GetZoneInfo(Info.ZoneId);
         }
+
         public void Stop()
         {
             Log.Debug("ZoneMgr", "[" + ZoneId + "] Stop");
@@ -69,6 +71,7 @@ namespace WorldServer.World.Map
 
             obj.LastRangeCheck = new Point2D();
         }
+
         public void RemoveObject(Object obj)
         {
             if (obj.Zone == this)
@@ -86,6 +89,7 @@ namespace WorldServer.World.Map
             if (obj is HotSpot)
                 HotSpots.Remove((HotSpot)obj);
         }
+
         /*
         public bool Run(long Tick)
         {
@@ -96,22 +100,23 @@ namespace WorldServer.World.Map
             lock (_Objects)
             {
                 UpdateAnnounces(Tick);
-
             }
 
             return true;
         }*/
 
-        #endregion
+        #endregion Objects
 
         #region HotSpots
+
         public void AddHotspotDamage(int zoneX, int zoneY)
         {
             int x = (int)Point2D.Clamp(zoneX / 1024, 0, 63);
             int y = (int)Point2D.Clamp(zoneY / 1024, 0, 63);
-            if(_heatmap[x, y] <= LARGE_FIGHT+1000)
-                _heatmap[x,y]++;
+            if (_heatmap[x, y] <= LARGE_FIGHT + 1000)
+                _heatmap[x, y]++;
         }
+
         public List<Tuple<Point3D, int>> GetHotSpots()
         {
             List<Tuple<Point3D, int>> HotSpots = new List<Tuple<Point3D, int>>();
@@ -119,9 +124,9 @@ namespace WorldServer.World.Map
             for (int x = 0; x < 64; x++)
                 for (int y = 0; y < 64; y++)
                 {
-                    if (_heatmap[x, y] >= LOW_FIGHT )
+                    if (_heatmap[x, y] >= LOW_FIGHT)
                     {
-                        HotSpots.Add(new Tuple<Point3D, int>(new Point3D(x * 1024 + 512, y*1024 + 512,0), (int)(_heatmap[x, y])));
+                        HotSpots.Add(new Tuple<Point3D, int>(new Point3D(x * 1024 + 512, y * 1024 + 512, 0), (int)(_heatmap[x, y])));
                     }
                 }
             return HotSpots;
@@ -129,14 +134,12 @@ namespace WorldServer.World.Map
 
         public void DecayHotspots(int amount = 25)
         {
-
             for (int x = 0; x < 64; x++)
                 for (int y = 0; y < 64; y++)
                 {
                     if (_heatmap[x, y] > 0)
                     {
-                      
-                        if(_heatmap[x, y] > MEDIUM_FIGHT)
+                        if (_heatmap[x, y] > MEDIUM_FIGHT)
                             _heatmap[x, y] -= amount * 3;
                         else
                             _heatmap[x, y] -= amount;
@@ -170,7 +173,7 @@ namespace WorldServer.World.Map
             }
 
             if (Plr == null)
-                lock(Players)
+                lock (Players)
                     foreach (Player pPlr in Players)
                     {
                         if (pPlr == null || pPlr.IsDisposed || !pPlr.IsInWorld())
@@ -182,7 +185,7 @@ namespace WorldServer.World.Map
                 Plr.SendPacket(Out);
         }
 
-        #endregion
+        #endregion HotSpots
 
         #region Range
 
@@ -191,7 +194,7 @@ namespace WorldServer.World.Map
             return ZoneService.CalculPin(Info, (int)WorldPos, x);
         }
 
-        #endregion
+        #endregion Range
 
         #region Announces
 
@@ -223,10 +226,6 @@ namespace WorldServer.World.Map
             }*/
         }
 
-        #endregion
-
-        #region Statics
-
-        #endregion
+        #endregion Announces
     }
 }

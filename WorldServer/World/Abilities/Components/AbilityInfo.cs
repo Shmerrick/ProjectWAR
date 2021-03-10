@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
-using Common;
 using WorldServer.World.Objects;
 using WorldServer.World.Positions;
 
@@ -13,7 +13,6 @@ namespace WorldServer.World.Abilities.Components
 
         public AbilityInfo()
         {
-            
         }
 
         public AbilityInfo(DBAbilityInfo dbObj)
@@ -73,7 +72,6 @@ namespace WorldServer.World.Abilities.Components
                 System.Console.WriteLine(e);
                 throw;
             }
-            
         }
 
         public void AppendAbilityCommandWithDamage(AbilityCommandInfo cmd, byte slot)
@@ -102,7 +100,6 @@ namespace WorldServer.World.Abilities.Components
                         toDelete.NextCommand = null;
                     }
                     toDelete.LastCommand = null;
-
                 }
             }
         }
@@ -147,11 +144,12 @@ namespace WorldServer.World.Abilities.Components
         public Unit Target;
         public long InvocationTimestamp;
         public Point3D TargetPosition;
-        
+
         /// <summary>
         /// Used for ignoring cd reductions
         /// </summary>
         public ushort IgnoreCooldownReduction;
+
         /// <summary>
         /// A cap for how much an ability can be reduced to
         /// </summary>

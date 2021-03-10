@@ -34,6 +34,5 @@ namespace WorldServer.Services.World
                     return point;
             return null;
         }
-
     }
 }

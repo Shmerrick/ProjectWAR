@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Serialization;
-
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -15,7 +12,7 @@ namespace Common
 
         [DataElement(Varchar = 255)]
         public string Name { get; set; }
-        
+
         [DataElement(Varchar = 8)]
         public string BuffClassString { get; set; }
 

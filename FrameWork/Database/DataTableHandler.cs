@@ -50,7 +50,6 @@ namespace FrameWork
             return _precache[key] as DataObject;
         }
 
-
         // Method of loading items from this table
         public EBindingMethod BindingMethod { get; set; }
     }

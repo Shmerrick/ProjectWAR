@@ -1,13 +1,13 @@
-﻿using System;
-using System.IO;
-using AuthenticationServer.Config;
+﻿using AuthenticationServer.Config;
 using AuthenticationServer.Server;
 using Common;
 using FrameWork;
+using System;
+using System.IO;
 
 namespace AuthenticationServer
 {
-    class Program
+    internal class Program
     {
         public static RpcClient Client;
         public static LauncherConfig Config;
@@ -20,7 +20,7 @@ namespace AuthenticationServer
                 return Config.Version;
             }
         }
-        
+
         public static string Message
         {
             get
@@ -41,7 +41,7 @@ namespace AuthenticationServer
         }
 
         [STAThread]
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(onError);
 
@@ -83,7 +83,7 @@ namespace AuthenticationServer
             ConsoleMgr.Start();
         }
 
-        static void onError(object sender, UnhandledExceptionEventArgs e)
+        private static void onError(object sender, UnhandledExceptionEventArgs e)
         {
             Log.Error("OnError", e.ExceptionObject.ToString());
         }

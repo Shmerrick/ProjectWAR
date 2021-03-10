@@ -8,10 +8,10 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Scenarios.Objects
 {
-    public class Bomb: HoldObject
+    public class Bomb : HoldObject
     {
-        public Bomb(uint identifier, string name, Point3D homeLoc, ushort buffId, ushort groundResetTime, InteractAction onPickupAction, BallAction onDropAction, BallAction onResetAction, 
-            BuffQueueInfo.BuffCallbackDelegate onBuffCallback, ushort groundModelId, ushort homeModelId):base(identifier, name, homeLoc, buffId, groundResetTime, onPickupAction, 
+        public Bomb(uint identifier, string name, Point3D homeLoc, ushort buffId, ushort groundResetTime, InteractAction onPickupAction, BallAction onDropAction, BallAction onResetAction,
+            BuffQueueInfo.BuffCallbackDelegate onBuffCallback, ushort groundModelId, ushort homeModelId) : base(identifier, name, homeLoc, buffId, groundResetTime, onPickupAction,
                 onDropAction, onResetAction, onBuffCallback, groundModelId, homeModelId)
         {
             ObjectType = 1;
@@ -21,7 +21,6 @@ namespace WorldServer.World.Scenarios.Objects
         {
             if (b == null)
                 HolderDied();
-
             else if (Holder != null)
             {
                 MyBuff = (HoldObjectBuff)b;
@@ -48,6 +47,7 @@ namespace WorldServer.World.Scenarios.Objects
             if (CapturingPlayer != null)
                 CapturingPlayer.CanMount = true;
         }
+
         public override void NotifyInteractionComplete(NewBuff b)
         {
             if (CapturingPlayer == null || HeldState == EHeldState.Inactive)

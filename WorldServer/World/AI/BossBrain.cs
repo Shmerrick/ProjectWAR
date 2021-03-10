@@ -1,32 +1,24 @@
-﻿using System;
+﻿using Common.Database.World.Creatures;
+using FrameWork;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common;
-using Common.Database.World.Creatures;
-using FrameWork;
-using GameData;
-using NLog;
-using WorldServer.Services.World;
-using WorldServer.World.Abilities;
-using WorldServer.World.Abilities.Components;
 using WorldServer.World.AI.Abilities;
 using WorldServer.World.Interfaces;
-using WorldServer.World.Map;
 using WorldServer.World.Objects;
-using Object = WorldServer.World.Objects.Object;
 
 //test with .spawnmobinstance 2000681
 namespace WorldServer.World.AI
 {
     public class BossBrain : ABrain
     {
-
-        // Cooldown between special attacks 
+        // Cooldown between special attacks
         public static int NEXT_ATTACK_COOLDOWN = 2000;
+
         public Conditions ConditionManager { get; set; }
         public Executions ExecutionManager { get; set; }
-
 
         private static new readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -44,9 +36,9 @@ namespace WorldServer.World.AI
 
         public Dictionary<BossSpawnAbilities, long> AbilityTracker { get; set; }
 
-
         // List of Adds that the boss has spawned, and their states.
         public List<Creature> SpawnList { get; set; }
+
         public List<BossSpawnPhase> Phases { get; set; }
         public int CurrentPhase { get; set; }
 
@@ -60,7 +52,7 @@ namespace WorldServer.World.AI
             // Only bother to seek targets if we're actually being observed by a player
             if (Combat.CurrentTarget == null && _unit.PlayersInRange.Count > 0)
             {
-                if (_pet != null && (_pet.IsHeeling || ((CombatInterface_Pet) _pet.CbtInterface).IgnoreDamageEvents))
+                if (_pet != null && (_pet.IsHeeling || ((CombatInterface_Pet)_pet.CbtInterface).IgnoreDamageEvents))
                     return;
 
                 var target = _unit.AiInterface.GetAttackableUnit();
@@ -75,7 +67,7 @@ namespace WorldServer.World.AI
                 var phaseAbilities = GetPhaseAbilities();
 
                 // Get abilities that can fire now.
-                    FilterAbilities(tick, phaseAbilities);
+                FilterAbilities(tick, phaseAbilities);
 
                 // Sort dictionary in value (time) order.
                 var myList = AbilityTracker.ToList();
@@ -140,9 +132,9 @@ namespace WorldServer.World.AI
                             _logger.Trace($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
 
                             PerformSpeech(keyValuePair.Key);
-                           
+
                             PerformSound(keyValuePair.Key);
-                            
+
                             _logger.Debug($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
 
                             NextTryCastTime = TCPManager.GetTimeStampMS() + NEXT_ATTACK_COOLDOWN;
@@ -186,7 +178,6 @@ namespace WorldServer.World.AI
         {
             if (!string.IsNullOrEmpty(key.Speech))
                 _unit.Say(key.Speech, ChatLogFilters.CHATLOGFILTERS_SHOUT);
-
         }
 
         public List<BossSpawnAbilities> GetStartCombatAbilities()
@@ -202,7 +193,6 @@ namespace WorldServer.World.AI
             }
             return result;
         }
-
 
         private List<BossSpawnAbilities> GetPhaseAbilities()
         {
@@ -226,7 +216,6 @@ namespace WorldServer.World.AI
             return result;
         }
 
-
         public void ExecuteStartUpAbilities()
         {
             var abilities = GetStartCombatAbilities();
@@ -238,10 +227,9 @@ namespace WorldServer.World.AI
 
                 PerformSpeech(startUpAbility);
 
-                    PerformSound(startUpAbility);
+                PerformSound(startUpAbility);
             }
         }
-
 
         public override void OnTaunt(Unit taunter, byte lvl)
         {
@@ -250,8 +238,6 @@ namespace WorldServer.World.AI
                 if ((_unit as Boss).CanBeTaunted)
                     base.OnTaunt(taunter, lvl);
             }
-
-            
         }
     }
 }

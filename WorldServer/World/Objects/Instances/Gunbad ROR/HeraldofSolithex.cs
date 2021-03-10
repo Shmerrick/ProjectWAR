@@ -5,7 +5,7 @@ using WorldServer.World.Scripting;
 namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 37964, 0)]
-    class HeraldofSolithex : BasicGunbad
+    internal class HeraldofSolithex : BasicGunbad
     {
         public override bool OnEnterCombat(Object npc = null, object instigator = null)
         {

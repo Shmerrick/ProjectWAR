@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using FrameWork;
-using System;
+﻿using FrameWork;
+using System.Collections.Generic;
 using WorldServer.World.Objects;
 
 namespace WorldServer.Managers.Commands
@@ -8,6 +7,7 @@ namespace WorldServer.Managers.Commands
     public class GmCommandHandler
     {
         public delegate bool GmComHandler(Player plr, ref List<string> values);
+
         public GmCommandHandler(string name, GmComHandler handler, List<GmCommandHandler> handlers, EGmLevel accessRequired, int valueCount, string description)
         {
             Name = name;
@@ -22,11 +22,12 @@ namespace WorldServer.Managers.Commands
         public GmComHandler Handler;
         public List<GmCommandHandler> Handlers;
         public EGmLevel AccessRequired;
+
         /// <summary>
         /// Expected argument count, for legacy purpose.
         /// </summary>
         public int ValueCount;
+
         public string Description;
     }
-    
 }

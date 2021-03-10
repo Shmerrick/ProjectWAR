@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using FrameWork;
+﻿using FrameWork;
+using System.Linq;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 using Object = WorldServer.World.Objects.Object;
@@ -9,7 +9,7 @@ namespace WorldServer.World.Interfaces
 {
     public class LiveEventInterface : BaseInterface
     {
-        Player _myPlayer;
+        private Player _myPlayer;
 
         public override void SetOwner(Object owner)
         {
@@ -53,7 +53,6 @@ namespace WorldServer.World.Interfaces
 
                         var pos = packet.Position;
                         packet.WriteUInt32R(0); //items length
-
 
                         packet.WriteUInt32R(0); //unk5
                         packet.WriteUInt32R(0); //unk6
@@ -103,7 +102,6 @@ namespace WorldServer.World.Interfaces
                     _myPlayer.SendPacket(packet);
                 }
             }
-
         }
     }
 }

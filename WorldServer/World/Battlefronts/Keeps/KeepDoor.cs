@@ -22,6 +22,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         InnerPostern,
         OuterPostern
     }
+
     public class KeepDoor
     {
         public RegionMgr Region;
@@ -40,8 +41,8 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public class KeepGameObject : GameObject
         {
-            KeepDoor _keepDoor;
-            BattleFrontKeep _keep;
+            private KeepDoor _keepDoor;
+            private BattleFrontKeep _keep;
 
             public uint DoorId
             {
@@ -61,7 +62,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                 Spawn = spawn;
                 Name = spawn.Proto.Name;
                 _keepDoor = keepDoor;
-
 
                 if (keepDoor.Info.Number == (int)KeepDoorType.InnerMain || keepDoor.Info.Number == (int)KeepDoorType.OuterMain)
                 {
@@ -90,8 +90,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                 _keep.OnDoorDestroyed(_keepDoor.Info.Number, killer.Realm, _keepDoor.GameObject.DoorId);
                 Occlusion.SetFixtureVisible(_keepDoor.Info.DoorId, false);
             }
-
-
 
             /// <summary>Inflicts damage upon this unit and returns whether lethal damage was dealt.</summary>
             public override bool ReceiveDamage(Unit caster, uint damage, float hatredScale = 1f, uint mitigation = 0)
@@ -148,7 +146,6 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             public bool OnReceiveDamage(Object sender, object args)
             {
-
                 _keep.OnKeepDoorAttacked(_keepDoor.Info.Number, PctHealth, DoorId);
 
                 return false;
@@ -307,10 +304,6 @@ namespace WorldServer.World.Battlefronts.Keeps
             GameObject.SetAttackable(attackable);
 
             Occlusion.SetFixtureVisible(Info.DoorId, true);
-
         }
-
-
-
     }
 }

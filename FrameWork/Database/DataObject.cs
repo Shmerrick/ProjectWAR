@@ -1,7 +1,7 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.ComponentModel;
 using System.Xml.Serialization;
-using MySql.Data.MySqlClient;
 
 namespace FrameWork
 {
@@ -11,8 +11,8 @@ namespace FrameWork
     [Serializable]
     public abstract class DataObject
     {
-        bool m_allowAdd = true;
-        bool m_allowDelete = true;
+        private bool m_allowAdd = true;
+        private bool m_allowDelete = true;
 
         // Génération d'un objet unique pour chaque DataObject
         protected DataObject()
@@ -102,7 +102,7 @@ namespace FrameWork
 
             if ((attri.Length >= 1) && (attri[0] is DataTable))
             {
-                var tab = (DataTable) attri[0];
+                var tab = (DataTable)attri[0];
                 string name = tab.TableName;
                 if (name != null)
                     return name;
@@ -117,7 +117,7 @@ namespace FrameWork
 
             if ((attri.Length >= 1) && (attri[0] is DataTable))
             {
-                var tab = (DataTable) attri[0];
+                var tab = (DataTable)attri[0];
                 string name = tab.ViewName;
                 if (name != null)
                     return name;
@@ -132,7 +132,7 @@ namespace FrameWork
             object[] attri = myType.GetCustomAttributes(typeof(DataTable), true);
             if ((attri.Length >= 1) && (attri[0] is DataTable))
             {
-                var tab = (DataTable) attri[0];
+                var tab = (DataTable)attri[0];
                 return tab.PreCache;
             }
 
@@ -162,9 +162,11 @@ namespace FrameWork
                     IsValid = true;
                     IsDeleted = false;
                     break;
+
                 case DatabaseOp.DOO_Update:
                     IsValid = true;
                     break;
+
                 case DatabaseOp.DOO_Delete:
                     IsValid = false;
                     IsDeleted = true;
@@ -189,15 +191,18 @@ namespace FrameWork
         /// Uses compiled expressions to bind to properties. Faster than reflection.
         /// </summary>
         CompiledExpression,
+
         /// <summary>
         /// <para>Uses cached accessors which assign to a constant object, which is then cloned.</para>
         /// <para>Fast, but not thread safe and requires additional logic for classes which create instance members during their load phase.</para>
         /// </summary>
         StaticBound,
+
         /// <summary>
         /// Uses PropertyInfo.SetValue. The slowest, original method.
         /// </summary>
         Reflected,
+
         /// <summary>
         /// Causes the loader to invoke the constructor with the DataReader supplied as a parameter. Fast and thread safe but requires explicit binding code.
         /// </summary>

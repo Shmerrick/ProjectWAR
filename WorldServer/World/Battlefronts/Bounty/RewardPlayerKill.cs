@@ -1,5 +1,5 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
@@ -13,16 +13,22 @@ namespace WorldServer.World.Battlefronts.Bounty
     {
         [PrimaryKey]
         public int RenownBand { get; set; }
+
         [DataElement(AllowDbNull = false)]
         public int CrestId { get; set; }
+
         [DataElement(AllowDbNull = false)]
         public int Money { get; set; }
+
         [DataElement(AllowDbNull = false)]
         public int CrestCount { get; set; }
+
         [DataElement(AllowDbNull = false)]
         public int BaseRP { get; set; }
+
         [DataElement(AllowDbNull = false)]
         public int BaseXP { get; set; }
+
         [DataElement(AllowDbNull = false)]
         public int BaseInf { get; set; }
 

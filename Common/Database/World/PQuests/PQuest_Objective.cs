@@ -1,9 +1,6 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using FrameWork;
 
 namespace Common
 {
@@ -38,6 +35,7 @@ namespace Common
         [DataElement(Varchar = 255, AllowDbNull = false)]
 #pragma warning disable CS0108 // Член скрывает унаследованный член: отсутствует новое ключевое слово
         public string ObjectId { get; set; }
+
 #pragma warning restore CS0108 // Член скрывает унаследованный член: отсутствует новое ключевое слово
 
         [DataElement(Varchar = 255, AllowDbNull = true)]

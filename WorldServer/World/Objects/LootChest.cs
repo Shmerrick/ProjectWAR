@@ -1,32 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Map;
-using WorldServer.World.Objects.PublicQuests;
 using WorldServer.World.Positions;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Objects
 {
-
     public class LootChest : GameObject
     {
         // Dictionary of characterId, and Bag -* List of Bag Contents
         public Dictionary<uint, KeyValuePair<Item_Info, List<Talisman>>> LootBags { get; set; }
+
         public string Title { get; set; }
         public string SenderName { get; set; }
         public string Content { get; set; }
 
-        
         public LootChest(GameObject_spawn spawn)
         {
             Spawn = spawn;
@@ -39,7 +35,6 @@ namespace WorldServer.World.Objects
             this.Y = spawn.WorldY;
             this.Z = spawn.WorldZ;
             this.X = spawn.WorldX;
-            
 
             EvtInterface.AddEvent(Destroy, 180 * 1000, 1);
         }
@@ -52,10 +47,8 @@ namespace WorldServer.World.Objects
             }
             else
             {
-                return $"{Name}. {X}.{Y}.{Z}";    
+                return $"{Name}. {X}.{Y}.{Z}";
             }
-
-            
         }
 
         public static LootChest Create(RegionMgr region, Point3D location, ushort zoneId, bool convertPin = true)
@@ -65,42 +58,38 @@ namespace WorldServer.World.Objects
                 Log.Error("LootChest", "Attempt to create for NULL region");
                 return null;
             }
-            
+
             GameObject_proto proto = GameObjectService.GetGameObjectProto(188);
             GameObject_spawn spawn = new GameObject_spawn();
 
             if (convertPin)  // Non-fort zone location points are PIN position system, forts are worldposition.
             {
-                var targetPosition = ZoneService.GetWorldPosition(ZoneService.GetZone_Info(zoneId), (ushort) location.X,
-                    (ushort) location.Y, (ushort) location.Z);
+                var targetPosition = ZoneService.GetWorldPosition(ZoneService.GetZone_Info(zoneId), (ushort)location.X,
+                    (ushort)location.Y, (ushort)location.Z);
 
                 spawn.Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID();
                 spawn.WorldO = 0;
-                spawn.WorldY = targetPosition.Y+StaticRandom.Instance.Next(50,100);
+                spawn.WorldY = targetPosition.Y + StaticRandom.Instance.Next(50, 100);
                 spawn.WorldZ = targetPosition.Z;
-                spawn.WorldX = targetPosition.X+StaticRandom.Instance.Next(50,100);
+                spawn.WorldX = targetPosition.X + StaticRandom.Instance.Next(50, 100);
                 spawn.ZoneId = zoneId;
             }
             else
             {
                 spawn.Guid = (uint)GameObjectService.GenerateGameObjectSpawnGUID();
                 spawn.WorldO = 0;
-                spawn.WorldY = location.Y+StaticRandom.Instance.Next(50,100);
+                spawn.WorldY = location.Y + StaticRandom.Instance.Next(50, 100);
                 spawn.WorldZ = location.Z;
-                spawn.WorldX = location.X+StaticRandom.Instance.Next(50,100);
+                spawn.WorldX = location.X + StaticRandom.Instance.Next(50, 100);
                 spawn.ZoneId = zoneId;
             }
-
 
             spawn.BuildFromProto(proto);
             var chest = region.CreateLootChest(spawn);
             chest.LootBags = new Dictionary<uint, KeyValuePair<Item_Info, List<Talisman>>>();
-            
-            
+
             return chest;
         }
-
-        
 
         // Called by Destroy of Object
         public override void Dispose()
@@ -133,25 +122,20 @@ namespace WorldServer.World.Objects
                         Money = 0,
                         Opened = false
                     };
-                 
+
                     mail.CharacterIdSender = lootBag.Key;
-                    MailItem item = new MailItem((uint)lootBag.Value.Key.Entry, lootBag.Value.Value, 0, 0,(ushort)lootBag.Value.Value.Count);
+                    MailItem item = new MailItem((uint)lootBag.Value.Key.Entry, lootBag.Value.Value, 0, 0, (ushort)lootBag.Value.Value.Count);
                     if (item != null)
                     {
                         mail.Items.Add(item);
                         CharMgr.AddMail(mail);
                     }
-
-                
-
                 }
             }
             catch (Exception ex)
             {
                 Log.Error("LootChest", $"Failed to mail loot. {ex.Message} {ex.StackTrace}");
             }
-
-            
 
             base.Dispose();
         }
@@ -175,7 +159,6 @@ namespace WorldServer.World.Objects
             // Unknown if needed TODO
             //GoldBag bag;
 
-           
             if (this.LootBags.ContainsKey(player.CharacterId))
             {
                 KeyValuePair<Item_Info, List<Talisman>> lootBag;
@@ -185,7 +168,7 @@ namespace WorldServer.World.Objects
                 Out.WriteByte(4);
                 Out.WriteByte(1);
                 Out.WriteByte(1);
-                Item.BuildItem(ref Out, null,lootBag.Key, null, 0, 1);
+                Item.BuildItem(ref Out, null, lootBag.Key, null, 0, 1);
                 player.SendPacket(Out);
             }
             else
@@ -209,23 +192,18 @@ namespace WorldServer.World.Objects
                 foreach (var talisman in bag.Value)
                 {
                     // Adding bag to the player
-                    ItemResult result = plr.ItmInterface.CreateItem(bag.Key, 1, bag.Value,    0, 0, false);
+                    ItemResult result = plr.ItmInterface.CreateItem(bag.Key, 1, bag.Value, 0, 0, false);
 
                     if (result == ItemResult.RESULT_OK)
                         LootBags.Remove(plr.CharacterId);
                     else if (result == ItemResult.RESULT_MAX_BAG)
                         plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_LOOT,
                             Localized_text.TEXT_OVERAGE_CANT_LOOT);
-
-
                 }
 
                 //ItemResult result = plr.ItmInterface.CreateItem(bag.Key, 1, items.talisman,
                 //    items.primary_dye, items.secondary_dye, false);
-
-
             }
-
         }
 
         public void TakeAll(Player player)
@@ -236,7 +214,6 @@ namespace WorldServer.World.Objects
                 TakeLoot(player);
         }
 
-       
         public override void SendMeTo(Player plr)
         {
             // Log.Info("STATIC", "Creating static oid=" + Oid + " name=" + Name + " x=" + Spawn.WorldX + " y=" + Spawn.WorldY + " z=" + Spawn.WorldZ + " doorID=" + Spawn.DoorId);
@@ -298,7 +275,6 @@ namespace WorldServer.World.Objects
 
         //public void Scoreboard(ContributionInfo playerRoll, int preIndex, int postIndex)
         //{
-
         //    Player targPlayer = Player.GetPlayer(playerRoll.PlayerCharId);
 
         //    if (targPlayer == null)
@@ -341,7 +317,6 @@ namespace WorldServer.World.Objects
         //    Out.WriteByte(0);
         //    Out.WriteByte(3);
 
-
         //    Out.WriteByte(0);
         //    Out.WriteByte(0);
         //    Out.WriteByte(1);
@@ -349,9 +324,8 @@ namespace WorldServer.World.Objects
         //    //
         //    // no clue yet seams to be if you didnt won anything you get that item
 
-
         //    /*
-        //    Out.WritePacketString(@"|d4 c0 01 |...d............|     
+        //    Out.WritePacketString(@"|d4 c0 01 |...d............|
         //    |57 61 72 20 43 72 65 73 74 00 00 00 00 00 00 00 |War Crest.......|
         //    |00 00 00 00 00 00 00 00 00 00 00                |...........     |
         //    ");
@@ -421,7 +395,6 @@ namespace WorldServer.World.Objects
         //    Out.WriteByte(0);
         //    Out.WriteByte(3);
 
-
         //    Out.WriteByte(0);
         //    Out.WriteByte(0);
         //    Out.WriteByte(1);
@@ -429,9 +402,8 @@ namespace WorldServer.World.Objects
         //    //
         //    // no clue yet seams to be if you didnt won anything you get that item
 
-
         //    /*
-        //    Out.WritePacketString(@"|d4 c0 01 |...d............|     
+        //    Out.WritePacketString(@"|d4 c0 01 |...d............|
         //    |57 61 72 20 43 72 65 73 74 00 00 00 00 00 00 00 |War Crest.......|
         //    |00 00 00 00 00 00 00 00 00 00 00                |...........     |
         //    ");
@@ -510,6 +482,4 @@ namespace WorldServer.World.Objects
             LootBags.Add(characterId, generatedLootBag);
         }
     }
-
-  
 }

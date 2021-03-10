@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using GameData;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using SystemData;
-using Common;
-using FrameWork;
-using GameData;
-using NLog;
 using WorldServer.Managers;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Objectives;
@@ -25,7 +25,7 @@ namespace WorldServer.World.Objects
         private readonly List<Player> _playersGreeding = new List<Player>();
         private readonly List<Player> _playersNeeding = new List<Player>();
         private readonly List<Player> _playersPassing = new List<Player>();
-        
+
         public LootRoll(byte lootID, Item_Info item)
         {
             LootID = lootID;
@@ -55,7 +55,7 @@ namespace WorldServer.World.Objects
                 }
             }
             catch (Exception e) { Log.Error("Exception", e.Message + "\r\n" + e.StackTrace); }
-            
+
             switch (vote)
             {
                 case 0:
@@ -70,10 +70,12 @@ namespace WorldServer.World.Objects
                     _playersNeeding.Add(voter);
                     voter.SendLocalizeString(Item.Name, ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL, Localized_text.TEXT_YOU_SELECT_NEED_FOR);
                     return 0;
+
                 case 1:
                     _playersGreeding.Add(voter);
                     voter.SendLocalizeString(Item.Name, ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL, Localized_text.TEXT_YOU_SELECT_GREED_FOR);
                     return 1;
+
                 case 2:
                     _playersPassing.Add(voter);
                     voter.SendLocalizeString(Item.Name, ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL, Localized_text.TEXT_YOU_SELECT_PASS_FOR);
@@ -114,9 +116,7 @@ namespace WorldServer.World.Objects
                             mem.SendLocalizeString(new string[] { plr.Name, value.ToString() }, ChatLogFilters.CHATLOGFILTERS_LOOT_ROLL, Localized_text.TEXT_NAME_ROLLS_NUMBER);
                     }
                 }
-
             }
-
             else if (_playersGreeding.Count > 0)
             {
                 foreach (Player player in gr.Members)
@@ -214,6 +214,7 @@ namespace WorldServer.World.Objects
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
 
         private static int _maxGroupID;
+
         public static int GetNextGroupId()
         {
             if (_maxGroupID > 60000)
@@ -224,6 +225,7 @@ namespace WorldServer.World.Objects
 
             return Interlocked.Increment(ref _maxGroupID);
         }
+
         public static List<Group> WorldGroups = new List<Group>();
 
         private static readonly ReaderWriterLockSlim GroupLockStatic = new ReaderWriterLockSlim();
@@ -253,6 +255,7 @@ namespace WorldServer.World.Objects
 
             player.SendPacket(Out);
         }
+
         public static List<Group> GetWorldGroups(int realm)
         {
             List<Group> groups = new List<Group>();
@@ -277,9 +280,7 @@ namespace WorldServer.World.Objects
             return groups;
         }
 
-        #endregion
-
-        
+        #endregion Static
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -298,7 +299,9 @@ namespace WorldServer.World.Objects
 
         public Realms Realm { get; private set; }
 
-        public Group() { }
+        public Group()
+        {
+        }
 
         public Group(WarbandHandler wb, bool isScenarioGroup)
         {
@@ -362,7 +365,6 @@ namespace WorldServer.World.Objects
 
         public void Update(long tick)
         {
-
             if (_changingLeader)
             {
                 _changingLeader = false;
@@ -502,7 +504,6 @@ namespace WorldServer.World.Objects
                 else
                     _groupActions.Add(action);
             }
-
         }
 
         private void ProcessGroupActions()
@@ -525,12 +526,14 @@ namespace WorldServer.World.Objects
                         else
                             action.Instigator.GrpInterface.SetGroupState(EGroupJoinState.None);
                         break;
+
                     case EGroupAction.PlayerLeave:
                         if (!_warbandSlave)
                             RemoveMember(action.Instigator);
                         else // Leaving MUST be processed
                             _warbandHandler.RemoveMember(action.Instigator);
                         break;
+
                     case EGroupAction.PlayerKick:
                         if (action.Instigator != Leader)
                         {
@@ -547,6 +550,7 @@ namespace WorldServer.World.Objects
                             }
                         action.Instigator.SendLocalizeString(action.ActionString, ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GROUP_TARGET_NOT_MEMBER);
                         break;
+
                     case EGroupAction.ChangeLeader:
                         if (_warbandSlave)
                             break;
@@ -565,6 +569,7 @@ namespace WorldServer.World.Objects
 
                         action.Instigator.SendLocalizeString(action.ActionString, ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GROUP_TARGET_NOT_MEMBER);
                         break;
+
                     case EGroupAction.ChangeMainAssist:
                         if (action.Instigator != Leader)
                         {
@@ -579,6 +584,7 @@ namespace WorldServer.World.Objects
                             }
                         action.Instigator.SendLocalizeString(action.ActionString, ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GROUP_TARGET_NOT_MEMBER);
                         break;
+
                     case EGroupAction.ChangeMasterLooter:
                         if (action.Instigator != Leader)
                         {
@@ -593,6 +599,7 @@ namespace WorldServer.World.Objects
                             }
                         action.Instigator.SendLocalizeString(action.ActionString, ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_GROUP_TARGET_NOT_MEMBER);
                         break;
+
                     case EGroupAction.ChangeAutoLoot:
                         if (action.Instigator != Leader)
                         {
@@ -601,6 +608,7 @@ namespace WorldServer.World.Objects
                         }
                         ToggleRvRAutoLoot();
                         break;
+
                     case EGroupAction.ChangeNeedOnUse:
                         if (action.Instigator != Leader)
                         {
@@ -609,6 +617,7 @@ namespace WorldServer.World.Objects
                         }
                         ToggleNeedOnUse();
                         break;
+
                     case EGroupAction.OpenParty:
                         if (action.Instigator != Leader)
                         {
@@ -617,6 +626,7 @@ namespace WorldServer.World.Objects
                         }
                         SetPartyOpenStatus(true);
                         break;
+
                     case EGroupAction.CloseParty:
                         if (action.Instigator != Leader)
                         {
@@ -625,6 +635,7 @@ namespace WorldServer.World.Objects
                         }
                         SetPartyOpenStatus(false);
                         break;
+
                     case EGroupAction.FormWarband:
                         if (_warbandSlave)
                             break;
@@ -637,12 +648,12 @@ namespace WorldServer.World.Objects
                         break;
                 }
 
-                End:
+            End:
                 continue;
             }
         }
 
-        #endregion
+        #endregion GroupActions
 
         #region Group Loot
 
@@ -679,7 +690,7 @@ namespace WorldServer.World.Objects
                     }
                 }
                 catch (Exception e) { Log.Error("Exception", e.Message + "\r\n" + e.StackTrace); }
-                
+
                 _nextTick = tick + 1000;
             }
         }
@@ -709,7 +720,7 @@ namespace WorldServer.World.Objects
             }
         }
 
-		public void SubGroupLoot(Player looter, LootContainer lootContainer, List<Player> subGroup)
+        public void SubGroupLoot(Player looter, LootContainer lootContainer, List<Player> subGroup)
         {
             for (byte i = 0; i < lootContainer.LootInfo.Count; ++i)
             {
@@ -726,7 +737,7 @@ namespace WorldServer.World.Objects
                     Out.WriteByte(_lootId);
                     Out.WriteByte(0x00);
                     Item.BuildItem(ref Out, null, lootContainer.LootInfo[i].Item, null, 0, 0);
-					SendToSubGroup(Out, subGroup, true);
+                    SendToSubGroup(Out, subGroup, true);
 
                     lootContainer.LootInfo.RemoveAt(i);
                     --i;
@@ -754,6 +765,7 @@ namespace WorldServer.World.Objects
                             case 0:
                                 t = Localized_text.TEXT_SELECTS_NEED_FOR;
                                 break;
+
                             case 1:
                                 t = Localized_text.TEXT_SELECTS_GREED_FOR;
                                 break;
@@ -781,8 +793,10 @@ namespace WorldServer.World.Objects
                     else
                         _nextLooter = 0;
                     return Members[_nextLooter];
+
                 case 1:
                     return initialLooter;
+
                 case 2:
                     return _masterLooter;
             }
@@ -822,13 +836,12 @@ namespace WorldServer.World.Objects
             wb.MainAssist = _mainAssist;
         }
 
-        #endregion
+        #endregion Group Loot
 
         #region Composition Change Events
 
         public void SendGroupComposition()
         {
-
             int disabled = WorldMgr.WorldSettingsMgr.GetGenericSetting(17);
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_CHARACTER_INFO);
@@ -863,7 +876,6 @@ namespace WorldServer.World.Objects
                 }
                 else
                 {
-
                     Out.WriteVarUInt(0);
                     Out.WriteVarUInt(0);
                     Out.WriteVarUInt(0);
@@ -885,7 +897,6 @@ namespace WorldServer.World.Objects
                     Out.WriteZigZag(plr._Value.ZoneId);
                 else
                     Out.WriteVarUInt(0);
-
 
                 Out.WriteByte(1);
 
@@ -950,7 +961,6 @@ namespace WorldServer.World.Objects
 
         public void SendGroupOidListToMember(Player member)
         {
-
             if (Members.Count > 6)
                 return;
 
@@ -979,7 +989,7 @@ namespace WorldServer.World.Objects
             member.SendPacket(Out);
         }
 
-        #endregion
+        #endregion Composition Change Events
 
         #region Member Management
 
@@ -993,7 +1003,6 @@ namespace WorldServer.World.Objects
 
         public bool AddMember(Player plr, bool broadcast = true)
         {
-
             _memberRWLock.EnterWriteLock();
             if (HasMaxMembers)
             {
@@ -1032,7 +1041,6 @@ namespace WorldServer.World.Objects
 
             _memberRWLock.ExitWriteLock();
             return true;
-
         }
 
         public int TotalMemberCount => _warbandSlave ? _warbandHandler.MemberCount : Members.Count;
@@ -1096,7 +1104,7 @@ namespace WorldServer.World.Objects
             }
         }
 
-        #endregion
+        #endregion Scenario Queue Handling
 
         public List<Player> GetPlayerList()
         {
@@ -1443,12 +1451,12 @@ namespace WorldServer.World.Objects
                 _groupCompositionDirty = true;
         }
 
-        #endregion
+        #endregion Member Management
 
         #region Senders
 
-        const byte TYPE_OPTIONS = 1;
-        const byte TYPE_OPEN_STATUS = 2;
+        private const byte TYPE_OPTIONS = 1;
+        private const byte TYPE_OPEN_STATUS = 2;
 
         public void SendGroupStatus()
         {
@@ -1491,7 +1499,6 @@ namespace WorldServer.World.Objects
                     player.SendCopy(Out);
             }
 
-
             // Party open closed Packet
 
             Out = new PacketOut((byte)Opcodes.F_GROUP_STATUS);
@@ -1526,7 +1533,6 @@ namespace WorldServer.World.Objects
                 }
                 finally { _memberRWLock.ExitReadLock(); }
             }
-
             else
             {
                 foreach (Player player in Members)
@@ -1534,27 +1540,26 @@ namespace WorldServer.World.Objects
             }
         }
 
-		public void SendToSubGroup(PacketOut Out, List<Player> subGroup, bool shouldLock = false)
-		{
-			if (shouldLock)
-			{
-				_memberRWLock.EnterReadLock();
-				try
-				{
-					foreach (Player player in subGroup)
-						player.SendCopy(Out);
-				}
-				finally { _memberRWLock.ExitReadLock(); }
-			}
+        public void SendToSubGroup(PacketOut Out, List<Player> subGroup, bool shouldLock = false)
+        {
+            if (shouldLock)
+            {
+                _memberRWLock.EnterReadLock();
+                try
+                {
+                    foreach (Player player in subGroup)
+                        player.SendCopy(Out);
+                }
+                finally { _memberRWLock.ExitReadLock(); }
+            }
+            else
+            {
+                foreach (Player player in subGroup)
+                    player.SendCopy(Out);
+            }
+        }
 
-			else
-			{
-				foreach (Player player in subGroup)
-					player.SendCopy(Out);
-			}
-		}
-		
-		public void SendExitingGroup(Player player)
+        public void SendExitingGroup(Player player)
         {
             if (player == null)
                 return;
@@ -1617,7 +1622,7 @@ namespace WorldServer.World.Objects
                 plr.SendLocalizeString(rollString, ChatLogFilters.CHATLOGFILTERS_GROUP, Localized_text.TEXT_NAME_ROLLS_NUMBER);
         }
 
-        #endregion
+        #endregion Senders
 
         #region Warband
 
@@ -1637,7 +1642,7 @@ namespace WorldServer.World.Objects
             _leader = null;
         }
 
-        #endregion
+        #endregion Warband
 
         #region Scenario Handling
 
@@ -1748,7 +1753,7 @@ namespace WorldServer.World.Objects
             return Out;
         }
 
-        #endregion
+        #endregion Scenario Handling
 
         #region Reward Distribution
 
@@ -1784,10 +1789,10 @@ namespace WorldServer.World.Objects
                 //}
                 //else
                 //{
-                    xpQuotient = (plr.Level / (lvlSum / 100)) / 100;
-                    _logger.Trace($"xpQuotient : {xpQuotient}");
+                xpQuotient = (plr.Level / (lvlSum / 100)) / 100;
+                _logger.Trace($"xpQuotient : {xpQuotient}");
 
-                    plr.AddXp((uint)((WorldMgr.GenerateXPCount(plr, victim) * bonusMod) * xpQuotient), true, true);
+                plr.AddXp((uint)((WorldMgr.GenerateXPCount(plr, victim) * bonusMod) * xpQuotient), true, true);
                 //}
             }
         }
@@ -1922,16 +1927,15 @@ namespace WorldServer.World.Objects
                         }
                     }
                     if (influenceId != 0)
-					{
-						// ZARU: multiplied infl with 3
-						curPlayer.AddInfluence(influenceId, (ushort)((influence * 3) / members.Count));
-					}
+                    {
+                        // ZARU: multiplied infl with 3
+                        curPlayer.AddInfluence(influenceId, (ushort)((influence * 3) / members.Count));
+                    }
 
                     if (closestFlag != null && closestFlag.State != StateFlags.ZoneLocked)
                     {
                         if (playerVictim != null)
                             closestFlag.RewardManager.AddDelayedRewardsFrom(curPlayer, playerVictim, (uint)(xpShare * transferenceFactor), (uint)(renownShare * transferenceFactor));
-
                     }
                     RewardLogger.Trace($"Level Check. Current player : {curPlayer.EffectiveLevel} Victim : {victim.EffectiveLevel}");
                     // Prevent farming low levels for kill quests, and also stop throttled kills
@@ -1953,11 +1957,10 @@ namespace WorldServer.World.Objects
             }
         }
 
-        #endregion
+        #endregion Reward Distribution
 
         private void BuildOpenPartyInfo(Player player, PacketOut Out)
         {
-
             if (Leader == null)
                 _logger.Warn($"Leader is null for BuildOpenPartyInfo. Player {player}");
 
@@ -1968,7 +1971,6 @@ namespace WorldServer.World.Objects
 
             if (_warbandSlave)
                 _warbandHandler.BuildOpenPartyInfo(player, Out);
-
             else
             {
                 Out.WriteUInt16(0);
@@ -2004,7 +2006,6 @@ namespace WorldServer.World.Objects
                     Out.WriteUInt16(350); //if leader is in different region, give it 6min
                 else
                     Out.WriteUInt16((ushort)(player.GetDistanceToObject(Leader) / 10));
-
 
                 Out.WriteByte(8);
                 Out.WriteUInt64(0x0000003D524000); //group data

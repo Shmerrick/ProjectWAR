@@ -1,6 +1,6 @@
-﻿using System;
+﻿using GameData;
+using System;
 using System.Collections.Generic;
-using GameData;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
@@ -13,13 +13,12 @@ namespace WorldServer.World.Battlefronts
     /// </summary>
     internal class AAOTracker
     {
-
         private readonly List<NewBuff> _orderAAOBuffs = new List<NewBuff>();
         private readonly List<NewBuff> _destroAAOBuffs = new List<NewBuff>();
 
         /// <summary>AAO multiplier, -20 if order has 400 aao, +20 if destro has 400 aao</summary>
         private int _againstAllOddsMult;
-        
+
         /// <summary>
         /// Recalculates aao multiplier and updates buffs.
         /// </summary>
@@ -33,7 +32,7 @@ namespace WorldServer.World.Battlefronts
             float factor;
             if (orderCount == 0 || destroCount == 0)
                 factor = 0f; // No need to set aao if missing a realm
-            else  if (orderCount < destroCount)
+            else if (orderCount < destroCount)
                 factor = ((float)destroCount / (float)orderCount) - 1f;
             else
                 factor = ((float)orderCount / (float)destroCount) - 1f;
@@ -66,7 +65,6 @@ namespace WorldServer.World.Battlefronts
                 UpdateAAOBuffs(newRealm, newMult); // The realm already has AAO. Update it.
             }
 
-
             _againstAllOddsMult = newMult;
         }
 
@@ -78,7 +76,7 @@ namespace WorldServer.World.Battlefronts
         {
             if (realm == Realms.REALMS_REALM_NEUTRAL)
                 return;
-            
+
             foreach (Player plr in players)
                 if (plr.Realm == realm)
                     plr.BuffInterface.QueueBuff(new BuffQueueInfo(plr, 40, AbilityMgr.GetBuffInfo((ushort)GameBuffs.AgainstAllOdds), AaoAssigned));
@@ -207,8 +205,10 @@ namespace WorldServer.World.Battlefronts
             {
                 case Realms.REALMS_REALM_ORDER:
                     return _orderAAOBuffs;
+
                 case Realms.REALMS_REALM_DESTRUCTION:
                     return _orderAAOBuffs;
+
                 default:
                     return null;
             }
@@ -228,6 +228,5 @@ namespace WorldServer.World.Battlefronts
             else // order
                 return Realms.REALMS_REALM_ORDER;
         }
-
     }
 }

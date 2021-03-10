@@ -1,20 +1,19 @@
 ﻿using Common;
+using GameData;
 using System;
 using System.Collections.Generic;
-using SystemData;
 using System.Linq;
-using static WorldServer.Managers.Commands.GMUtils;
-using GameData;
+using SystemData;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 using WorldServer.World.Positions;
+using static WorldServer.Managers.Commands.GMUtils;
 
 namespace WorldServer.Managers.Commands
 {
     /// <summary>Contains the list of teleportation commands under .teleport</summary>
     internal class TeleportCommands
     {
-
         /// <summary>
         /// Teleports you to the specified world coordinates in a given zone (byte ZoneID , uint WorldX, uint WorldY, uint WorldZ)
         /// </summary>
@@ -79,7 +78,7 @@ namespace WorldServer.Managers.Commands
             var zone = ZoneService.GetZone_Info((ushort)BattleFrontObjective.ZoneId);
 
             // X+50 so you dont get stuck on flags on the objective
-            plr.Teleport((ushort)BattleFrontObjective.ZoneId, (uint)BattleFrontObjective.X+50, (uint)BattleFrontObjective.Y, (ushort)BattleFrontObjective.Z, 0);
+            plr.Teleport((ushort)BattleFrontObjective.ZoneId, (uint)BattleFrontObjective.X + 50, (uint)BattleFrontObjective.Y, (ushort)BattleFrontObjective.Z, 0);
 
             return true;
         }

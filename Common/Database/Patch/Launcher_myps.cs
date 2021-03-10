@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Security.Cryptography;
-
-using FrameWork;
-
+﻿using FrameWork;
+using System;
 
 namespace Common.Database.Account
 {
@@ -41,6 +35,5 @@ namespace Common.Database.Account
 
         public ulong ExtractedSize { get; set; }
         public uint AssetCount { get; set; }
-
     }
 }

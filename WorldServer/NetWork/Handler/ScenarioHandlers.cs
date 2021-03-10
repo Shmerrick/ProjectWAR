@@ -1,5 +1,5 @@
-﻿using SystemData;
-using FrameWork;
+﻿using FrameWork;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.World.Objects;
 using WorldServer.World.Scenarios;
@@ -26,6 +26,7 @@ namespace WorldServer.NetWork.Handler
                     if (!player.ScnInterface.IsBlocked())
                         WorldMgr.ScenarioMgr.EnqueuePlayer(player, scenarioId);
                     break;
+
                 case 2: // leave queue
                     player.ScnInterface.PendingScenario?.EnqueueScenarioAction(new ScenarioQueueAction(EScenarioQueueAction.RemovePendingPlayer, player));
                     if (scenarioId != 0)
@@ -35,15 +36,18 @@ namespace WorldServer.NetWork.Handler
                         WorldMgr.ScenarioMgr.DequeuePlayer(player, scenarioId);
                     }
                     break;
+
                 case 3: // click join scenario
                     if (player.ScnInterface.PendingScenario == null)
                         player.SendClientMessage("Scenario join failure: No pending scenario.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                     else
                         player.ScnInterface.PendingScenario?.EnqueueScenarioAction(new ScenarioQueueAction(EScenarioQueueAction.AddPlayer, player));
                     break;
+
                 case 4: //give me more time
                     player.ScnInterface.PendingScenario?.EnqueueScenarioAction(new ScenarioQueueAction(EScenarioQueueAction.AddPendingPlayer, player));
                     break;
+
                 case 7: // group queue
 
                     if (player.WorldGroup == null)
@@ -63,10 +67,7 @@ namespace WorldServer.NetWork.Handler
                     // 19: Trial Account Blocked
 
                     break;
-
             }
-
-
         }
     }
 }

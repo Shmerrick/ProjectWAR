@@ -9,7 +9,6 @@ namespace WorldServer.Managers.Commands
     /// <summary>Mount commands under .mount</summary>
     internal class MountCommands
     {
-
         /// <summary>
         /// Changes the mount of the selected unit (int Entry)
         /// </summary>
@@ -73,7 +72,6 @@ namespace WorldServer.Managers.Commands
                 plr.SendMessage(null, "Modified mount " + info.Name, ChatLogFilters.CHATLOGFILTERS_SHOUT);
             }
 
-
             return true;
         }
 
@@ -123,6 +121,5 @@ namespace WorldServer.Managers.Commands
             }
             return true;
         }
-
     }
 }

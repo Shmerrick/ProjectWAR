@@ -1,8 +1,7 @@
-﻿using System;
-using System.Diagnostics;
-using System.Reflection;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Linq.Expressions;
-using MySql.Data.MySqlClient;
+using System.Reflection;
 
 namespace FrameWork.Database
 {
@@ -34,7 +33,7 @@ namespace FrameWork.Database
             }
             else if (propInfo is FieldInfo)
             {
-                dataType = ((FieldInfo) propInfo).FieldType;
+                dataType = ((FieldInfo)propInfo).FieldType;
             }
             if (dataType.IsValueType && !dataType.IsEnum)
             {
@@ -100,7 +99,6 @@ namespace FrameWork.Database
                     binder.Initialize(propInfo, (r, i) => r.GetFloat(i));
                     return binder;
                 }
-
 
                 if (dataType == typeof(double))
                 {

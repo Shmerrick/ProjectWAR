@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Security.Cryptography;
-
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -14,7 +9,7 @@ namespace Common
     {
         private int _id;
         private int _accountId;
-        private string _installId; 
+        private string _installId;
         private string _ip;
         private string _mac;
         private string _hdSerialHash;
@@ -76,6 +71,5 @@ namespace Common
             get { return _modifyDate; }
             set { _modifyDate = value; Dirty = true; }
         }
-
     }
 }

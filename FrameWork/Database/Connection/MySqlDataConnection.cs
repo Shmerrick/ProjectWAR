@@ -1,38 +1,27 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Odbc;
-using System.Data.OleDb;
-using System.Data.SqlClient;
-using System.IO;
-using System.Linq;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Security.Policy;
-using System.Text;
-
+﻿using FrameWork.Database.Connection;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
 using System.Data.Common;
-using FrameWork.Database.Connection;
+using System.Net.Sockets;
 
 namespace FrameWork
 {
     /// <summary>
     /// Handles MySQL saving and loading.
     /// </summary>
-    public class MySqlDataConnection:DataConnection
+    public class MySqlDataConnection : DataConnection
     {
         public override bool IsSQLConnection
         {
             get
             {
-               return true;
+                return true;
             }
         }
 
         // Construction d'une connexion , Type(Mysql,ODBC,etc..) + paramètre de la connexion
-        public MySqlDataConnection(string connString, string schemaName):base(ConnectionType.DATABASE_MYSQL, connString, schemaName)
+        public MySqlDataConnection(string connString, string schemaName) : base(ConnectionType.DATABASE_MYSQL, connString, schemaName)
         {
         }
 
@@ -97,7 +86,6 @@ namespace FrameWork
                             {
                                 Log.Notice("DataConnection", "SQL NonQuery took " + (Environment.TickCount - start) + "ms!\n" + sqlcommand + "\nTrace: " + Environment.StackTrace);
                             }
-
 
                             conn.Close();
 
@@ -262,7 +250,6 @@ namespace FrameWork
             return null;
         }
 
-
         private void AddColumnsToDatabase(string tableName, List<string> columnDefs)
         {
             string columndef = string.Join(", ", columnDefs.ToArray());
@@ -331,6 +318,5 @@ namespace FrameWork
 
             return "yyyy-MM-dd HH:mm:ss";
         }
-
     }
 }

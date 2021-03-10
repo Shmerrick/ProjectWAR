@@ -1,7 +1,7 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
 using SystemData;
-using FrameWork;
 using WorldServer.World.Guild;
 using WorldServer.World.Objects;
 using Object = WorldServer.World.Objects.Object;
@@ -22,7 +22,7 @@ namespace WorldServer.World.Interfaces
         {
             this.Guild = Guild;
 
-            if(IsInGuild())
+            if (IsInGuild())
                 Guild.AddOnlineMember(_Owner.GetPlayer());
 
             _Owner.EvtInterface.AddEventNotify(EventName.Leave, OnPlayerLeave, true);
@@ -50,7 +50,6 @@ namespace WorldServer.World.Interfaces
             if (IsInGuild())
                 Guild.RemoveOnlineMember(_Owner.GetPlayer());
             return false;
-        
         }
 
         public void Say(string Message)
@@ -91,7 +90,7 @@ namespace WorldServer.World.Interfaces
                 {
                     Guild.Guild gl = World.Guild.Guild.GetGuild(alli);
 
-                    // Filter "+" spam 
+                    // Filter "+" spam
                     bool isAdd = Message.StartsWith("+");
 
                     lock (gl.OnlineMembers)
@@ -114,8 +113,8 @@ namespace WorldServer.World.Interfaces
                 {
                     Guild.Guild gl = World.Guild.Guild.GetGuild(alli);
                     lock (gl.OnlineMembers)
-                    foreach (Player Plr in gl.OnlineMembers)
-                            if(gl.Info.Members[Plr.CharacterId].RankId >= 9 || gl.Info.Members[Plr.CharacterId].AllianceOfficer)
+                        foreach (Player Plr in gl.OnlineMembers)
+                            if (gl.Info.Members[Plr.CharacterId].RankId >= 9 || gl.Info.Members[Plr.CharacterId].AllianceOfficer)
                                 Plr.SendMessage(_Owner, Message, ChatLogFilters.CHATLOGFILTERS_ALLIANCE_OFFICER);
                 }
                 if (Guild.Logger != null)
@@ -123,14 +122,12 @@ namespace WorldServer.World.Interfaces
             }
         }
 
-
         public void ApplyTaxTithe(ref uint Money)
         {
-
             if (Guild.Info.Money + Money > ulong.MaxValue)
                 return;
 
-                if (Guild.Info.Tax > 0)
+            if (Guild.Info.Tax > 0)
             {
                 uint gmoney = Money * Guild.Info.Tax / 100;
                 Guild.Info.Money += gmoney;
@@ -146,7 +143,7 @@ namespace WorldServer.World.Interfaces
             }
         }
 
-        const int MAX_GUILD_SEND = 80;
+        private const int MAX_GUILD_SEND = 80;
 
         public void SendGuilds(List<Guild.Guild> guilds)
         {
@@ -157,7 +154,7 @@ namespace WorldServer.World.Interfaces
 
             int toSend = Math.Min(MAX_GUILD_SEND, guilds.Count);
 
-            PacketOut Out = new PacketOut((byte) Opcodes.F_GUILD_DATA);
+            PacketOut Out = new PacketOut((byte)Opcodes.F_GUILD_DATA);
             Out.WriteByte(0x20);
             Out.WriteByte((byte)toSend);
 

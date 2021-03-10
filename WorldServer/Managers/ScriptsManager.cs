@@ -1,11 +1,11 @@
-﻿using System.CodeDom.Compiler;
+﻿using FrameWork;
+using Microsoft.CSharp;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using FrameWork;
-using Microsoft.CSharp;
 
 namespace WorldServer.Managers
 {
@@ -69,7 +69,7 @@ namespace WorldServer.Managers
                         err.ErrorNumber, err.ErrorText));
                 }
                 var errorOutput = string.Format("Error loading script\r\n{0}", errors);
-                
+
                 Log.Error("Scripting", errorOutput);
             }
 

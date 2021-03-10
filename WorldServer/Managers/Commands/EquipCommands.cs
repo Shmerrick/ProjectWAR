@@ -10,7 +10,6 @@ namespace WorldServer.Managers.Commands
     /// <summary>Creature equipment modification commands under .equip</summary>
     internal class EquipCommands
     {
-
         /// <summary>
         /// Add Equipement to target <Model,Slot,Save>
         /// </summary>
@@ -121,9 +120,7 @@ namespace WorldServer.Managers.Commands
                 }
             }
 
-
             return true;
         }
-
     }
 }

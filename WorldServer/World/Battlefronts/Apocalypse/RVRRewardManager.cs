@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using Common;
-using FrameWork;
+﻿using FrameWork;
 using GameData;
 using NLog;
+using System;
+using System.Collections.Generic;
 using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
-	public enum BORewardType
-	{
-		CAPTURING = 0,
-		GUARDED = 1,
-		CAPTURED = 2
-	}
+    public enum BORewardType
+    {
+        CAPTURING = 0,
+        GUARDED = 1,
+        CAPTURED = 2
+    }
 
     /// <summary>
     /// Manages rewards from RVR mechanic.
@@ -26,7 +25,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public object PlrLevel { get; private set; }
 
         /// <summary>
-        /// Add delayed XPR rewards for kills in RVR. 
+        /// Add delayed XPR rewards for kills in RVR.
         /// </summary>
         /// <param name="killer"></param>
         /// <param name="killed"></param>
@@ -61,32 +60,32 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _logger.Debug($"Delayed Rewards for Player : {killer.Name}  - {xprEntry.ToString()}");
         }
 
-		/// <summary>
-		/// Return an additional scale value based upon who is holding a BattlefieldObjective and how many players from either side are near.
-		/// </summary>
-		/// <param name="owningRealm"></param>
-		/// <param name="nearOrderCount"></param>
-		/// <param name="nearDestroCount"></param>
-		/// <returns></returns>
-		public float CalculateObjectiveRewardScale(Realms owningRealm, short nearOrderCount, short nearDestroCount)
+        /// <summary>
+        /// Return an additional scale value based upon who is holding a BattlefieldObjective and how many players from either side are near.
+        /// </summary>
+        /// <param name="owningRealm"></param>
+        /// <param name="nearOrderCount"></param>
+        /// <param name="nearDestroCount"></param>
+        /// <returns></returns>
+        public float CalculateObjectiveRewardScale(Realms owningRealm, short nearOrderCount, short nearDestroCount)
         {
-			float scale = 0.0f;
+            float scale = 0.0f;
             if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
             {
-				scale = (float)Math.Abs(Math.Log(nearOrderCount / 10f + 1f));
+                scale = (float)Math.Abs(Math.Log(nearOrderCount / 10f + 1f));
             }
             else
             {
                 if (owningRealm == Realms.REALMS_REALM_ORDER)
                 {
                     scale = (float)Math.Abs(Math.Log(nearDestroCount / 10f + 1f));
-				}
+                }
             }
-			if (scale > 1f)
-				scale = 1f;
-			return scale;
+            if (scale > 1f)
+                scale = 1f;
+            return scale;
         }
-		
+
         /// <summary>
         ///     Grants a small reward to all players in close range for defending.
         /// </summary>
@@ -97,9 +96,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             _logger.Trace($"Objective {objectiveName} has {playersWithinRange} players (realm:{owningRealm}) nearby");
 
-			// Because of the Field of Glory buff, the XP value here is doubled.
-			// The base reward in T4 is therefore 3000 XP.
-			// Population scale factors can up this to 9000 if the region is full of people and then raise or lower it depending on population balance.
+            // Because of the Field of Glory buff, the XP value here is doubled.
+            // The base reward in T4 is therefore 3000 XP.
+            // Population scale factors can up this to 9000 if the region is full of people and then raise or lower it depending on population balance.
             var baseXp = 0;
             var baseRp = 0;
             var baseInf = 0;
@@ -122,76 +121,72 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 baseRp = Program.Config.BOGuardedRewardRp;
                 baseInf = Program.Config.BOGuardedRewardInf;
             }
-            
+
             foreach (var player in playersWithinRange)
             {
-                // if the BattlefieldObjective is Neutral, allow rewards. 
+                // if the BattlefieldObjective is Neutral, allow rewards.
                 if (owningRealm != Realms.REALMS_REALM_NEUTRAL)
                 {
                     if (player.Realm != owningRealm || player.IsAFK || player.IsAutoAFK)
                         continue;
                 }
 
-                
                 if (player.CurrentArea != null)
                 {
                     if (player.Realm == Realms.REALMS_REALM_ORDER)
-                        influenceId = (ushort) player.CurrentArea.OrderInfluenceId;
+                        influenceId = (ushort)player.CurrentArea.OrderInfluenceId;
                     else
-                        influenceId = (ushort) player.CurrentArea.DestroInfluenceId;
+                        influenceId = (ushort)player.CurrentArea.DestroInfluenceId;
 
                     player.AddInfluence(influenceId, Math.Max((ushort)baseInf, (ushort)1));
-					
-				}
+                }
 
                 Random rnd = new Random();
                 int random = rnd.Next(-25, 25);
                 var xp = (uint)Math.Max((baseXp * (1 + (random / 100))), 1);
-                var rr = (uint) Math.Max((baseRp * (1 + (random / 100))), 1);
-                
+                var rr = (uint)Math.Max((baseRp * (1 + (random / 100))), 1);
+
                 player.AddXp(xp, false, false);
                 player.AddRenown(rr, false, RewardType.ObjectiveCapture, objectiveName);
-                
+
                 _logger.Trace($"Player:{player.Name} ScaleMult:{rewardScaleMultiplier} XP:{xp} RR:{rr}");
             }
 
-			VictoryPoint VP = new VictoryPoint(0, 0);
-			switch (boRewardType)
-			{
-				case BORewardType.CAPTURING: // small tick
-					if (owningRealm == Realms.REALMS_REALM_ORDER)
-						VP.OrderVictoryPoints += 0;
-					else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
-						VP.DestructionVictoryPoints += 0;
-					break;
+            VictoryPoint VP = new VictoryPoint(0, 0);
+            switch (boRewardType)
+            {
+                case BORewardType.CAPTURING: // small tick
+                    if (owningRealm == Realms.REALMS_REALM_ORDER)
+                        VP.OrderVictoryPoints += 0;
+                    else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
+                        VP.DestructionVictoryPoints += 0;
+                    break;
 
-				case BORewardType.CAPTURED: // big tick
-				    if (owningRealm == Realms.REALMS_REALM_ORDER)
-				    {
-				        VP.OrderVictoryPoints += 50;
-				        VP.DestructionVictoryPoints -= 50;
+                case BORewardType.CAPTURED: // big tick
+                    if (owningRealm == Realms.REALMS_REALM_ORDER)
+                    {
+                        VP.OrderVictoryPoints += 50;
+                        VP.DestructionVictoryPoints -= 50;
                     }
-				    else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
-				    {
-				        VP.DestructionVictoryPoints += 50;
-				        VP.OrderVictoryPoints -= 50;
+                    else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
+                    {
+                        VP.DestructionVictoryPoints += 50;
+                        VP.OrderVictoryPoints -= 50;
                     }
 
-				    break;
+                    break;
 
-				case BORewardType.GUARDED: // small tick
-					if (owningRealm == Realms.REALMS_REALM_ORDER)
-						VP.OrderVictoryPoints += 0;
-					else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
-						VP.DestructionVictoryPoints += 0;
-					break;
+                case BORewardType.GUARDED: // small tick
+                    if (owningRealm == Realms.REALMS_REALM_ORDER)
+                        VP.OrderVictoryPoints += 0;
+                    else if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
+                        VP.DestructionVictoryPoints += 0;
+                    break;
 
-				default:
-					break;
-			}
-			return VP;
-		}
-		
-        
+                default:
+                    break;
+            }
+            return VP;
+        }
     }
 }

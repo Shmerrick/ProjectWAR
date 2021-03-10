@@ -14,13 +14,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using FrameWork;
+using System;
+using System.Collections.Generic;
 
 namespace Common
 {
@@ -29,7 +26,6 @@ namespace Common
     [Serializable]
     public class Vendor_items : DataObject
     {
-
         public ushort _VendorId;
         public Item_Info Info;
         private uint _ItemGuid;
@@ -38,7 +34,6 @@ namespace Common
         private string _ReqItems;
         private ushort _ReqTokUnlock;
         private byte _ReqGuildlvl;
-        
 
         [PrimaryKey]
         public uint ItemGuid
@@ -61,8 +56,6 @@ namespace Common
             set { _ItemId = value; Dirty = true; }
         }
 
-       
-
         [DataElement(AllowDbNull = false)]
         public uint Price
         {
@@ -84,11 +77,11 @@ namespace Common
             set { _ReqGuildlvl = value; Dirty = true; }
         }
 
-        [DataElement(Varchar=255,AllowDbNull = false)]
+        [DataElement(Varchar = 255, AllowDbNull = false)]
         public string ReqItems
         {
             get { return _ReqItems; }
-            set 
+            set
             {
                 _ReqItems = value;
                 string[] Infos = _ReqItems.Split(')');
@@ -109,7 +102,7 @@ namespace Common
                     if (!ItemsReq.ContainsKey(Entry))
                         ItemsReq.Add(Entry, Count);
                 }
-                Dirty = true; 
+                Dirty = true;
             }
         }
 

@@ -7,7 +7,6 @@ namespace WorldServer.World.AI
         public GuardBrain(Unit myOwner)
             : base(myOwner)
         {
-
         }
     }
 }

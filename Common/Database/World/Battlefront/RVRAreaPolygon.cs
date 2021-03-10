@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common.Database.World.Battlefront
 {
-
     [DataTable(PreCache = false, TableName = "Rvr_Area_Polygon", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class RVRAreaPolygon : DataObject
@@ -40,6 +35,5 @@ namespace Common.Database.World.Battlefront
 
         [DataElement()]
         public string PolygonPlanarCoordinates { get; set; }
-
-        }
     }
+}

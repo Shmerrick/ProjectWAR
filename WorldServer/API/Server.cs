@@ -1,10 +1,8 @@
 ﻿using FrameWork;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 
 namespace WorldServer.API
 {
@@ -17,6 +15,7 @@ namespace WorldServer.API
             get { return _clients; }
             set { _clients = value; }
         }
+
         private IPEndPoint _endPoint;
         private string _name = "";
 
@@ -25,6 +24,7 @@ namespace WorldServer.API
             get { return _name; }
             set { _name = value; }
         }
+
         private bool _online;
         private AsyncCallback _asyncAcceptCallback;
         private int _port;
@@ -32,6 +32,7 @@ namespace WorldServer.API
         private TcpListener _listener;
         private readonly int _bufferSize;
         private Protocol _proto = new Protocol();
+
         public Server(string address, int port, int maxConnections, int bufferSize = 0xFFFF)
         {
             _address = address;
@@ -39,7 +40,6 @@ namespace WorldServer.API
             _port = port;
             _endPoint = new IPEndPoint(IPAddress.Parse(address), _port);
             Start();
-
         }
 
         public void Start()
@@ -54,7 +54,6 @@ namespace WorldServer.API
             _listener.BeginAcceptTcpClient(BeginAccept, this);
             Log.Success("API", "WorldServer API started " + _address + ":" + _port);
         }
-
 
         public virtual void DeleteClient(Client client)
         {
@@ -86,18 +85,15 @@ namespace WorldServer.API
                 Client client = new Client(this);
                 client.ID = client.GetHashCode();
 
-
                 lock (_clients)
                 {
                     _clients[client.ID] = client;
                 }
                 try
                 {
-
                     client.Socket = acceptSocket;
 
                     client.Receive();
-
                 }
                 catch (Exception e)
                 {

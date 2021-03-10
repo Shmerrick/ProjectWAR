@@ -7,7 +7,6 @@ namespace WorldServer.NetWork.Handler
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_UNK1, (int)eClientState.WorldEnter, "onUnk1")]
         public static void F_UNK1(BaseClient client, PacketIn packet)
         {
-
         }
     }
 }

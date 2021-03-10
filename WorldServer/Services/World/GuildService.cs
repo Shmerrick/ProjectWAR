@@ -13,7 +13,7 @@ namespace WorldServer.Services.World
         public static void LoadGuild_Info()
         {
             Log.Debug("WorldMgr", "Loading Guild_Xps...");
-            
+
             _Guild_Xps = Database.MapAllObjects<byte, Guild_Xp>("Level", 20);
 
             Log.Success("LoadGuild_Info", "Loaded " + _Guild_Xps.Count + " Guild_Xps");
@@ -25,6 +25,5 @@ namespace WorldServer.Services.World
                 return _Guild_Xps[Level];
             return null;
         }
-
     }
 }

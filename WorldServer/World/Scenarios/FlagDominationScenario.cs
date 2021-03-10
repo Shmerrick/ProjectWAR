@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.World.Map;
 using WorldServer.World.Objects;
 using WorldServer.World.Positions;
@@ -27,14 +27,12 @@ namespace WorldServer.World.Scenarios
                     _capturePoints.Add(cPoint);
                     Region.AddObject(cPoint, info.MapId);
                 }
-
                 else if (obj.Type == "Flag")
                 {
                     _flag = new HoldObject(obj.Identifier, obj.ObjectiveName, new Point3D(obj.WorldPosX, obj.WorldPosY, obj.PosZ), 60001, 13000, FlagPickedUp, ObjectDropped, ObjectReset, null, 299, 299);
                     Region.AddObject(_flag, info.MapId);
                     AddTrackedObject(_flag);
                 }
-
                 else
                     LoadScenarioObject(obj);
             }
@@ -79,7 +77,7 @@ namespace WorldServer.World.Scenarios
                 SetTimerState(true);
         }
 
-        #endregion
+        #endregion Troll Pacifier
 
         #region Troll Stones
 
@@ -177,7 +175,7 @@ namespace WorldServer.World.Scenarios
             }
         }
 
-        #endregion
+        #endregion Troll Stones
 
         #region Progression
 
@@ -203,11 +201,11 @@ namespace WorldServer.World.Scenarios
                     }
                 }
             }
-            
+
             base.UpdateScenario();
         }
 
-        #endregion
+        #endregion Progression
 
         #region Senders
 
@@ -219,14 +217,13 @@ namespace WorldServer.World.Scenarios
 
             if (!active)
             {
-                Out = new PacketOut((byte) Opcodes.F_OBJECTIVE_UPDATE);
+                Out = new PacketOut((byte)Opcodes.F_OBJECTIVE_UPDATE);
                 Out.WriteUInt32(0x1BA0);
                 Out.WriteHexStringBytes("0300000016560100000000");
             }
-
             else
             {
-                Out = new PacketOut((byte) Opcodes.F_OBJECTIVE_INFO);
+                Out = new PacketOut((byte)Opcodes.F_OBJECTIVE_INFO);
                 Out.WriteUInt32(0x1BA0);
                 Out.WriteHexStringBytes("000001000000020000167C00");
 
@@ -260,7 +257,6 @@ namespace WorldServer.World.Scenarios
                 foreach (Player plr in Players[i])
                     plr.SendPacket(Out);
             }
-
         }
 
         public override void SendObjectiveStates(Player plr)
@@ -269,6 +265,6 @@ namespace WorldServer.World.Scenarios
                 cPoint.SendObjectiveState(plr);
         }
 
-        #endregion
+        #endregion Senders
     }
 }

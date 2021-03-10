@@ -1,12 +1,11 @@
 ﻿using Common.Database.World.Battlefront;
+using FrameWork;
 using GameData;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common;
-using FrameWork;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Bounty;
@@ -19,7 +18,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public class UpperTierCampaignManager : IBattleFrontManager
     {
-
         public static int POPULATION_BROADCAST_CHANCE = 0;
         public static int RALLY_CALL_BROADCAST_TIME_LAPSE = 6000;
         public static int RALLY_CALL_ORDER_BROADCAST_BOUNDARY = -5;
@@ -39,7 +37,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public BountyManager BountyManagerInstance { get; set; }
         public volatile int LastAAORallyCall = 0;
 
-
         public UpperTierCampaignManager(List<RVRProgression> _RVRT4Progressions, List<RegionMgr> regionMgrs)
         {
             BattleFrontProgressions = _RVRT4Progressions;
@@ -53,7 +50,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             LastAAORallyCall = FrameWork.TCPManager.GetTimeStamp();
 
             _EvtInterface.AddEvent(BroadcastPlayerMessages, 600000, 0);
-
         }
 
         public void Update(long tick)
@@ -93,7 +89,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 if (GetActiveCampaign().AgainstAllOddsTracker.AgainstAllOddsMult >= RALLY_CALL_DEST_BROADCAST_BOUNDARY)
                 {
-
                     foreach (var player in Player._Players)
                     {
                         if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
@@ -138,7 +133,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         ZoneId = battleFrontProgression.ZoneId,
                         KeepList = keeps,
                         BattlefieldObjectives = battlefieldObjectives
-
                     });
                 }
             }
@@ -232,7 +226,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     foreach (var objective in regionMgr.Campaign.Objectives)
                     {
                         if (forceDefaultRealm)
-                            objective.OwningRealm = (Realms) regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.DefaultRealmLock;
+                            objective.OwningRealm = (Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.DefaultRealmLock;
                         else
                         {
                             objective.OwningRealm = (Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.LastOwningRealm;
@@ -246,7 +240,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {
                         if (forceDefaultRealm)
                             keep.PendingRealm =
-                                (Realms) regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.DefaultRealmLock;
+                                (Realms)regionMgr.Campaign.BattleFrontManager.ActiveBattleFront.DefaultRealmLock;
                         else
                         {
                             keep.PendingRealm =
@@ -274,7 +268,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 activeRegion.Campaign.VictoryPointProgress.Reset(activeRegion.Campaign);
                 ProgressionLogger.Info($"Resetting VP Progress {activeRegion.RegionName} BF Id : {ActiveBattleFront.BattleFrontId} Zone : {ActiveBattleFront.ZoneId} {ActiveBattleFrontName}");
-
 
                 // Find and update the status of the battlefront status.
                 foreach (var apocBattleFrontStatus in BattleFrontStatuses)
@@ -307,7 +300,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     ProgressionLogger.Info($"activeRegion.Campaign is null");
                     return ActiveBattleFront;
                 }
-
 
                 if (activeRegion.Campaign.Objectives == null)
                 {
@@ -344,7 +336,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 activeRegion.Campaign.DestructionDominationCounter = Program.Config.DestructionDominationTimerLength;
                 activeRegion.Campaign.OrderDominationCounter = Program.Config.OrderDominationTimerLength;
 
-
                 return ActiveBattleFront;
             }
             catch (Exception e)
@@ -368,7 +359,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     flag.OwningRealm = realm;
                     flag.SetObjectiveLocked();
                 }
-                
             }
 
             foreach (BattleFrontKeep keep in activeRegion.Campaign.Keeps)
@@ -380,7 +370,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Destroy any active siege in this zone.
             try
             {
-                var siegeInRegion = activeRegion?.Objects.Where(x=>x is Siege);
+                var siegeInRegion = activeRegion?.Objects.Where(x => x is Siege);
                 foreach (var siege in siegeInRegion)
                 {
                     if (siege is Siege)
@@ -389,7 +379,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         siege.Destroy();
                     }
                 }
-
             }
             catch (Exception e)
             {
@@ -421,9 +410,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             return BattleFrontStatuses.Single(x => x.BattleFrontId == battleFrontId);
         }
-
-
-
 
         public List<BattleFrontStatus> GetBattleFrontStatusList()
         {
@@ -523,7 +509,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             newProg.LastOpenedZone = 1;
         }
 
-
         [ConsoleHandler("battlefront-audit", 1, "Audit Battlefront <Tier>")]
         public class AuditBattleFrontConsole : IConsoleHandler
         {
@@ -534,7 +519,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 WorldMgr.UpperTierCampaignManager.AuditBattleFronts(Convert.ToInt32(tier));
 
                 return true;
-
             }
         }
     }

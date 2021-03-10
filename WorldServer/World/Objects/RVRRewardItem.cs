@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common.Database.World.Battlefront;
+﻿using Common.Database.World.Battlefront;
 
 namespace WorldServer.World.Objects
 {
@@ -26,7 +21,6 @@ namespace WorldServer.World.Objects
             ItemId = fortItem.ItemId;
             ItemCount = fortItem.ItemCount;
             CanAwardDuplicate = fortItem.CanAwardDuplicate;
-
         }
 
         public RVRRewardItem(RVRRewardKeepItems keepItem)
@@ -42,7 +36,6 @@ namespace WorldServer.World.Objects
 
         public RVRRewardItem()
         {
-            
         }
     }
 }

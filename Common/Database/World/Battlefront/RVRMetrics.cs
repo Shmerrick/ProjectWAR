@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common.Database.World.Battlefront
 {
-
     [DataTable(PreCache = false, TableName = "rvr_metrics", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class RVRMetrics : DataObject
@@ -59,7 +54,5 @@ namespace Common.Database.World.Battlefront
 
         [DataElement(AllowDbNull = false)]
         public int TotalFlaggedPlayerCount { get; set; }
-
-        
     }
 }

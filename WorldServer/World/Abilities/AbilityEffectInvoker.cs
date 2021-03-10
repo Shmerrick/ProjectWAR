@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
-using WorldServer.Managers.Commands;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.CareerInterfaces;
@@ -32,9 +31,8 @@ namespace WorldServer.World.Abilities
     /// </summary>
     public class AbilityEffectInvoker
     {
-        const int MAX_AOE_TARGETS = 9;
+        private const int MAX_AOE_TARGETS = 9;
         private const int TANK_GUARD_CONTRIBUTION_CHANCE = 8;
-
 
         private readonly Unit _caster;
         private Unit _instigator, _target;
@@ -42,9 +40,11 @@ namespace WorldServer.World.Abilities
 
         // Holds the various commands that abilities can execute.
         private delegate bool AbilityCommandDelegate(AbilityCommandInfo cmd, byte level, Unit target);
+
         private readonly Dictionary<string, AbilityCommandDelegate> _commandList = new Dictionary<string, AbilityCommandDelegate>();
 
         private delegate void AbilityPositionalCommandDelegate(AbilityCommandInfo cmd, byte level, Point3D position);
+
         private readonly Dictionary<string, AbilityPositionalCommandDelegate> _posCommandList = new Dictionary<string, AbilityPositionalCommandDelegate>();
 
         private AbilityInfo _pendingAbility;
@@ -52,10 +52,13 @@ namespace WorldServer.World.Abilities
 
         // Total damage dealt on this ability pass (advanced lifetaps need to read it)
         private int _totalDamage;
+
         // Targets damaged on this ability pass (advanced lifetaps need to read it)
         private int _damagedCount;
+
         // Targets considered on last AoE pass
         private int _targetsFound;
+
         // Allies caught in the last enemy-affecting attack (used to modify power of AoE attacks)
         private float _alliesFound;
 
@@ -150,6 +153,7 @@ namespace WorldServer.World.Abilities
                 _pendingAbilityInvokeTime = TCPManager.GetTimeStampMS() + abInfo.ConstantInfo.InvokeDelay;
             }
         }
+
         /// <summary>
         /// Receives the information about a series of ability commands to be used with respect to a target.
         /// </summary>
@@ -191,7 +195,6 @@ namespace WorldServer.World.Abilities
             {
                 if (abInfo.CommandInfo[0].IsDelayedEffect)
                     _delayedEffects.Add(abInfo);
-
                 else
                 {
                     for (AbilityCommandInfo cmd = abInfo.CommandInfo[0]; cmd != null; cmd = cmd.NextCommand)
@@ -296,7 +299,6 @@ namespace WorldServer.World.Abilities
                         continue;
                     }
                 }
-
                 else
                 {
                     if (cmdInfo.TargetType != 0)
@@ -327,7 +329,7 @@ namespace WorldServer.World.Abilities
             }
         }
 
-        #endregion
+        #endregion Interface
 
         #region Targeting
 
@@ -342,6 +344,7 @@ namespace WorldServer.World.Abilities
                     if (allyTarget == null || allyTarget.IsDead || !CombatInterface.IsFriend(_caster, allyTarget) || (allyTarget is Creature && !(allyTarget is Pet)))
                         return _caster;
                     return allyTarget;
+
                 case CommandTargetTypes.AllyOrCareerTarget:
                     Unit allyPetTarget = _caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ALLY);
                     if (allyPetTarget == null || allyPetTarget.IsDead || !CombatInterface.IsFriend(_caster, allyPetTarget) || (allyPetTarget is Creature && !(allyPetTarget is Pet)))
@@ -352,13 +355,16 @@ namespace WorldServer.World.Abilities
                         return allyPetTarget == _caster ? null : allyPetTarget;
                     }
                     return allyPetTarget == _caster ? null : allyPetTarget;
+
                 case CommandTargetTypes.Enemy:
                     return _target;
+
                 case CommandTargetTypes.CareerTarget:
                     Player player = _caster as Player;
                     if (player != null)
                         return player.CrrInterface.GetTargetOfInterest();
                     return (_caster as Pet)?.Owner;
+
                 default: return _target;
             }
         }
@@ -366,7 +372,7 @@ namespace WorldServer.World.Abilities
         private readonly List<ulong> _targetRangeList = new List<ulong>(MAX_AOE_TARGETS + 1);
 
         /// <summary>
-        /// <para>Returns a List of Units which would be affected by this command.</para> 
+        /// <para>Returns a List of Units which would be affected by this command.</para>
         /// <para>Will only ever be used if the ability can hit multiple targets (i.e. it's Group-affecting or AoE.)</para>
         /// <para>AoE abilities will never include the player specified as the Source in the returned List.</para>
         /// </summary>
@@ -428,7 +434,6 @@ namespace WorldServer.World.Abilities
                             if (source.CanHitWithAoE(curTarget, cmdInfo.EffectAngle, (uint)radius))
                                 ++_alliesFound;
                         }
-
                         else if (curTarget.ObjectWithinRadiusFeet(source, radius) && source.LOSHit(curTarget))
                             ++_alliesFound;
                     }
@@ -454,7 +459,6 @@ namespace WorldServer.World.Abilities
                                 targetList.Add(curTarget);
                                 _targetRangeList.Add(dist);
                             }
-
                             else
                             {
                                 targetList.Insert(i, curTarget);
@@ -471,7 +475,6 @@ namespace WorldServer.World.Abilities
                         }
                     }
                 }
-
                 else if (curTarget.ObjectWithinRadiusFeet(source, radius) && ((cmdInfo.TargetType & CommandTargetTypes.Enemy) == 0 || source.LOSHit(curTarget)))
                 {
                     ulong dist = source.GetDistanceSquare(curTarget);
@@ -486,7 +489,6 @@ namespace WorldServer.World.Abilities
                             targetList.Add(curTarget);
                             _targetRangeList.Add(dist);
                         }
-
                         else
                         {
                             targetList.Insert(i, curTarget);
@@ -543,7 +545,6 @@ namespace WorldServer.World.Abilities
                     if (source.CanHitWithAoE(member, cmdInfo.EffectAngle, cmdInfo.EffectRadius))
                         myTargetList.Add(member);
                 }
-
                 else if (member.ObjectWithinRadiusFeet(source, cmdInfo.EffectRadius))
                     myTargetList.Add(member);
             }
@@ -574,7 +575,7 @@ namespace WorldServer.World.Abilities
             return myTargetList;
         }
 
-        #endregion
+        #endregion Targeting
 
         #region Tick
 
@@ -594,9 +595,9 @@ namespace WorldServer.World.Abilities
                 InvokeDelayedEffects(_delayedEffects.First());
                 _delayedEffects.Remove(_delayedEffects.First());
             }
-
         }
-        #endregion
+
+        #endregion Tick
 
         #region AbilityCommands
 
@@ -841,9 +842,10 @@ namespace WorldServer.World.Abilities
             gt.PlayEffect(effectId);
         }
 
-        #endregion
+        #endregion Health/Damage
 
         #region Transitions
+
         private bool PuntEnemy(AbilityCommandInfo cmd, byte level, Unit target)
         {
             target.ApplyKnockback(_caster, AbilityMgr.GetKnockbackInfo(cmd.Entry, cmd.PrimaryValue));
@@ -878,7 +880,6 @@ namespace WorldServer.World.Abilities
                 return true;
             }
 
-
             PacketOut Out = new PacketOut((byte)Opcodes.F_CATAPULT, 30);
             Out.WriteUInt16(_caster.Oid);
             Out.WriteUInt16(_caster.Zone.ZoneId);
@@ -898,7 +899,6 @@ namespace WorldServer.World.Abilities
                 Out.WriteUInt16((ushort)(target.Y + normalToCaster.Y)); // Destination Y
                 Out.WriteUInt16((ushort)target.Z); // Destination Z
             }
-
             else
             {
                 Out.WriteUInt16((ushort)target.X); // Destination X
@@ -907,8 +907,8 @@ namespace WorldServer.World.Abilities
             }
 
             Out.WriteUInt16(0x010F);    //arc height
-            //Out.WriteUInt16(0x012C); 
-            //Out.WriteUInt16(0x592c);  
+            //Out.WriteUInt16(0x012C);
+            //Out.WriteUInt16(0x592c);
             Out.WriteByte(1);   //flight time in sec, can also use UInt16R or UInt32R but 1 seems to be the lowest time you can set
             Out.Fill(0, 19);
             _caster.DispatchPacket(Out, true);
@@ -920,14 +920,13 @@ namespace WorldServer.World.Abilities
         {
             if (!target.IsPlayer())
                 target.ApplyKnockback(_caster, null);
-
             else
                 ((Player)target).PulledBy(_caster, (ushort)cmd.PrimaryValue, (ushort)cmd.SecondaryValue);
 
             return true;
         }
 
-        #endregion
+        #endregion Transitions
 
         private static bool Interrupt(AbilityCommandInfo cmd, byte level, Unit target)
         {
@@ -1158,7 +1157,7 @@ namespace WorldServer.World.Abilities
             return true;
         }
 
-        #endregion
+        #endregion Buff Management
 
         #region Resource Management
 
@@ -1194,7 +1193,6 @@ namespace WorldServer.World.Abilities
 
             if (plrTarget == null)
                 return true;
-
 
             if (cmd.PrimaryValue < 0)
                 plrTarget.ConsumeMorale(-cmd.PrimaryValue);
@@ -1237,7 +1235,6 @@ namespace WorldServer.World.Abilities
                     if (_caster is Player _plrCaster)
                         (_plrCaster).ModifyActionPoints(-deltaAp);
                 }
-
                 else
                     if (_caster is Player _plrCaster)
                     (_plrCaster).ModifyActionPoints(Math.Abs(cmd.LastCommand.CommandResult));
@@ -1246,7 +1243,7 @@ namespace WorldServer.World.Abilities
             return true;
         }
 
-        #endregion
+        #endregion Resource Management
 
         #region Pet
 
@@ -1276,7 +1273,6 @@ namespace WorldServer.World.Abilities
             var Y = plr.WorldPosition.Y;
             var Z = plr.WorldPosition.Z;
 
-
             Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
             spawn.BuildFromProto(CreatureService.GetCreatureProto(1000155));
 
@@ -1290,7 +1286,6 @@ namespace WorldServer.World.Abilities
             Creature c = plr.Region.CreateCreature(spawn);
             c.PlayersInRange = plr.PlayersInRange;
             c.AiInterface.SetBrain(new AggressiveBrain(c));
-
 
             return true;
         }
@@ -1320,7 +1315,6 @@ namespace WorldServer.World.Abilities
 
         private bool TeleportToTarget(AbilityCommandInfo cmd, byte level, Unit target)
         {
-
             PacketOut Out = new PacketOut((byte)Opcodes.F_CATAPULT, 30);
             Out.WriteUInt16(_caster.Oid);
             Out.WriteUInt16(_caster.Zone.ZoneId);
@@ -1344,6 +1338,7 @@ namespace WorldServer.World.Abilities
 
             return true;
         }
+
         /// <summary>
         /// so abilities can call specific effects similar to how .playeffect works
         /// </summary>
@@ -1357,6 +1352,7 @@ namespace WorldServer.World.Abilities
             target.PlayEffect((ushort)cmd.PrimaryValue);
             return true;
         }
+
         /// <summary>
         /// to play a effect from a location, similar to the command .playeffect but instead of on a person, place it on the floor at the target location
         /// still need a way to turn the effect off. Initially I had a groundtarget that disappeared after a while aking to groundattack but I could not apply effect to it.
@@ -1369,7 +1365,6 @@ namespace WorldServer.World.Abilities
         {
             //still need a way to turn the effect off. Initially I had a groundtarget that disappeared after a while aking to groundattack but I could not apply effect to it.
             target.PlayEffect((ushort)cmd.PrimaryValue, target.WorldPosition);
-
 
             return true;
         }
@@ -1395,15 +1390,15 @@ namespace WorldServer.World.Abilities
 
                 for (int i = 0; i < cmd.SecondaryValue; i++)
                 {
-                    var spawn = new Creature_spawn {Guid = (uint) CreatureService.GenerateCreatureSpawnGUID()};
-                    var proto = CreatureService.GetCreatureProto((uint) cmd.PrimaryValue);
+                    var spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
+                    var proto = CreatureService.GetCreatureProto((uint)cmd.PrimaryValue);
                     spawn.BuildFromProto(proto);
 
                     spawn.WorldO = facing;
                     spawn.WorldX = X + StaticRandom.Instance.Next(500);
                     spawn.WorldY = Y + StaticRandom.Instance.Next(500);
                     spawn.WorldZ = Z;
-                    spawn.ZoneId = (ushort) target.ZoneId;
+                    spawn.ZoneId = (ushort)target.ZoneId;
 
                     var player = _caster as Player;
 
@@ -1414,13 +1409,12 @@ namespace WorldServer.World.Abilities
 
                     creature.EvtInterface.AddEvent(creature.Destroy, 30000, 1);
                 }
-
             }
 
             return true;
         }
 
-        #endregion
+        #endregion Pet
 
         private bool CastPlayerEffect(AbilityCommandInfo cmd, byte level, Unit target)
         {
@@ -1467,12 +1461,12 @@ namespace WorldServer.World.Abilities
             if (!cmd.LastCommand.DamageInfo.WasLethalDamage)
                 return false;
 
-            CombatManager.HealTarget(cmd.DamageInfo.Clone(), level, _caster, _caster,100);
+            CombatManager.HealTarget(cmd.DamageInfo.Clone(), level, _caster, _caster, 100);
 
             Unit oathFriend = ((Player)_caster).CrrInterface.GetTargetOfInterest();
 
             if (oathFriend != null)
-                CombatManager.HealTarget(cmd.DamageInfo, level, _caster, oathFriend,100);
+                CombatManager.HealTarget(cmd.DamageInfo, level, _caster, oathFriend, 100);
 
             return true;
         }
@@ -1543,7 +1537,7 @@ namespace WorldServer.World.Abilities
             return true;
         }
 
-        #endregion
+        #endregion AbilityCommands
 
         #region ItemCommands
 
@@ -1595,7 +1589,7 @@ namespace WorldServer.World.Abilities
         {
             Player player = (Player)_caster;
 
-            var siege = Siege.SpawnSiegeWeapon(player, (ushort) player.ZoneId, (uint)cmd.PrimaryValue, true);
+            var siege = Siege.SpawnSiegeWeapon(player, (ushort)player.ZoneId, (uint)cmd.PrimaryValue, true);
             player.Region.AddObject(siege, (ushort)player.ZoneId);
             player.Region.Campaign.SiegeManager.Add(siege, player.Realm);
 
@@ -1609,7 +1603,7 @@ namespace WorldServer.World.Abilities
             return true;
         }
 
-        #endregion
+        #endregion ItemCommands
 
         #region Position Commands
 
@@ -1701,7 +1695,7 @@ namespace WorldServer.World.Abilities
             InvokeCooldown(cmd, level, null);
         }
 
-        #endregion
+        #endregion Position Commands
 
         public void ClearPending()
         {

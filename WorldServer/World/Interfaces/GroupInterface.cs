@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using SystemData;
-using FrameWork;
+﻿using FrameWork;
 using GameData;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.World.Objects;
 using Object = WorldServer.World.Objects.Object;
@@ -39,7 +39,7 @@ namespace WorldServer.World.Interfaces
         public override bool Load()
         {
             _Owner.EvtInterface.AddEventNotify(EventName.Leave, OnPlayerLeave, true);
-            _myPlayer = (Player) _Owner;
+            _myPlayer = (Player)_Owner;
             return base.Load();
         }
 
@@ -85,7 +85,7 @@ namespace WorldServer.World.Interfaces
                 if (_groupJoinState == EGroupJoinState.Grouped || _groupJoinState == EGroupJoinState.None)
                 {
                     ++_inviteCount;
-                   // _myPlayer.SendClientMessage("Invite sent - count: "+_inviteCount);
+                    // _myPlayer.SendClientMessage("Invite sent - count: "+_inviteCount);
                     return true;
                 }
                 return false;
@@ -97,11 +97,11 @@ namespace WorldServer.World.Interfaces
             lock (_groupSync)
             {
                 --_inviteCount;
-               // _myPlayer.SendClientMessage("Invite removed - count: " + _inviteCount);
+                // _myPlayer.SendClientMessage("Invite removed - count: " + _inviteCount);
             }
         }
 
-        #endregion
+        #endregion Events
 
         #region Group Invitations
 
@@ -120,7 +120,7 @@ namespace WorldServer.World.Interfaces
 
             if (invited.IsBanned)
             {
-                _myPlayer.SendClientMessage("You tried to invite "+invited.Name+" to your group, but your invitation was lost in the winds of Chaos.");
+                _myPlayer.SendClientMessage("You tried to invite " + invited.Name + " to your group, but your invitation was lost in the winds of Chaos.");
                 return false;
             }
 
@@ -169,8 +169,8 @@ namespace WorldServer.World.Interfaces
                 ReleaseInviteLock();
                 return false;
             }
-            
-            lock(_groupInvitations)
+
+            lock (_groupInvitations)
                 _groupInvitations.Add(new GroupInvitation(invited, TCPManager.GetTimeStampMS() + 65000));
 
             invited.GrpInterface.NotifyInvitationReceived(_myPlayer, _myPlayer.WorldGroup != null && _myPlayer.WorldGroup.IsWarband);
@@ -220,7 +220,7 @@ namespace WorldServer.World.Interfaces
         {
             _invitedBy = invitingPlayer;
 
-            _myPlayer.SendLocalizeString(_invitedBy.Name, ChatLogFilters.CHATLOGFILTERS_SAY, isWarband? Localized_text.TEXT_BG_YOU_WERE_INVITED : Localized_text.TEXT_GROUP_YOU_WERE_INVITED);
+            _myPlayer.SendLocalizeString(_invitedBy.Name, ChatLogFilters.CHATLOGFILTERS_SAY, isWarband ? Localized_text.TEXT_BG_YOU_WERE_INVITED : Localized_text.TEXT_GROUP_YOU_WERE_INVITED);
             _myPlayer.SendDialog(isWarband ? Dialog.WarbandInvite : Dialog.PartyInvite, _invitedBy.Name);
         }
 
@@ -235,6 +235,7 @@ namespace WorldServer.World.Interfaces
                 }
             }
         }
+
         public void RejectInvitation()
         {
             lock (_groupSync)
@@ -315,6 +316,7 @@ namespace WorldServer.World.Interfaces
 
             ReleaseInviteLock();
         }
+
         private void ProcessRejected(Player invited)
         {
             _myPlayer.SendLocalizeString(invited.Name, ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_ERROR_INVITE_DECLINED);
@@ -322,7 +324,7 @@ namespace WorldServer.World.Interfaces
             ReleaseInviteLock();
         }
 
-        #endregion
+        #endregion Group Invitations
 
         public bool OnPlayerLeave(Object sender, object args)
         {
@@ -366,6 +368,5 @@ namespace WorldServer.World.Interfaces
                 Group.EnqueueGroupAction(groupId, new GroupAction(EGroupAction.PlayerLeave, plr));
             return true;
         }
-       
     }
 }

@@ -6,12 +6,12 @@ namespace WorldServer.NetWork
     {
         public TCPServer()
         {
-            PacketOut.SizeLen       = sizeof(ushort);
-            PacketOut.OpcodeInLen   = false;
-            PacketOut.SizeInLen     = false;
+            PacketOut.SizeLen = sizeof(ushort);
+            PacketOut.OpcodeInLen = false;
+            PacketOut.SizeInLen = false;
             PacketOut.OpcodeReverse = false;
-            PacketOut.SizeReverse   = false;
-            PacketOut.Struct        = PackStruct.SizeAndOpcode;
+            PacketOut.SizeReverse = false;
+            PacketOut.Struct = PackStruct.SizeAndOpcode;
         }
 
         protected override BaseClient GetNewClient()
@@ -21,10 +21,10 @@ namespace WorldServer.NetWork
             return client;
         }
 
-        public GameClient GetClientByAccount(GameClient Me,int AccountId)
+        public GameClient GetClientByAccount(GameClient Me, int AccountId)
         {
-            lock(Clients)
-                for(int i=0;i<Clients.Length;++i)
+            lock (Clients)
+                for (int i = 0; i < Clients.Length; ++i)
                     if (Clients[i] != null && Clients[i] != Me)
                     {
                         GameClient client = Clients[i] as GameClient;

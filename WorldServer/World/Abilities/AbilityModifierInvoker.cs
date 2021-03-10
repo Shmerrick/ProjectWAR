@@ -1,11 +1,11 @@
 ﻿//#define MODIFIER_DEBUG
 
-using System;
-using System.Collections.Generic;
-using SystemData;
 using Common;
 using FrameWork;
 using GameData;
+using System;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
@@ -16,10 +16,9 @@ using Item = WorldServer.World.Objects.Item;
 
 namespace WorldServer.World.Abilities
 {
-
     /// <summary>
     /// <para>Contains a set of ability checks and the effects that should be invoked if those checks pass.</para>
-    /// </summary>  
+    /// </summary>
     public class AbilityModifier
     {
         private readonly List<AbilityModifierCheck> _myCheckList = new List<AbilityModifierCheck>();
@@ -83,7 +82,9 @@ namespace WorldServer.World.Abilities
     public static class AbilityModifierInvoker
     {
         private delegate bool AbilityCheckDelegate(Unit caster, Unit target, AbilityInfo myInfo, AbilityModifierCheck myCheck);
+
         private delegate void AbilityModifierDelegate(Unit caster, AbilityInfo abInfo, AbilityModifierEffect myEffect);
+
         private delegate void BuffModifierDelegate(Unit caster, BuffInfo buffInfo, AbilityModifierEffect myEffect);
 
         private static readonly Dictionary<string, AbilityCheckDelegate> CheckList = new Dictionary<string, AbilityCheckDelegate>();
@@ -284,7 +285,7 @@ namespace WorldServer.World.Abilities
             }
         }
 
-        #endregion
+        #endregion Interface
 
         #region Checks
 
@@ -309,9 +310,10 @@ namespace WorldServer.World.Abilities
             return caster.Z > target.Z || target.Z - caster.Z < myCheck.PrimaryValue * 12;
         }
 
-        #endregion
+        #endregion Positions
 
         #region Health
+
         private static bool HasCriticalBackstab(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
         {
             return !target.IsObjectInFront(caster, 180) && target.PctHealth < 11;
@@ -321,9 +323,11 @@ namespace WorldServer.World.Abilities
         {
             return target.PctHealth < myCheck.PrimaryValue;
         }
-        #endregion
+
+        #endregion Health
 
         #region Crowd Control
+
         private static bool IsCCed(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
         {
             return target.CrowdControlType != 0 || target.StsInterface.IsImpeded();
@@ -340,14 +344,15 @@ namespace WorldServer.World.Abilities
                 return false;*/
             return !caster.StsInterface.IsRooted();
         }
-        #endregion
+
+        #endregion Crowd Control
 
         #region Resources
+
         private static bool HasResource(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
         {
             if (caster is Player)
             {
-
                 Player plr = caster as Player;
 
                 if (myCheck.SecondaryValue == 0)
@@ -366,9 +371,11 @@ namespace WorldServer.World.Abilities
         {
             return StaticRandom.Instance.Next(100) < ((Player)caster).CrrInterface.CareerResource * 10;
         }
-        #endregion
+
+        #endregion Resources
 
         #region Buff Management
+
         private static bool HasBuff(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
         {
             NewBuff buff = caster.BuffInterface.GetBuff((ushort)myCheck.PrimaryValue, null);
@@ -387,7 +394,6 @@ namespace WorldServer.World.Abilities
             {
                 return true;
             }
-
         }
 
         private static bool TargetHasBuff(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
@@ -422,7 +428,7 @@ namespace WorldServer.World.Abilities
             return !plrTarget.ImmuneToCC((byte)CrowdControlTypes.Root, null, 0);
         }
 
-        #endregion
+        #endregion Buff Management
 
         #region Combat
 
@@ -463,9 +469,11 @@ namespace WorldServer.World.Abilities
         {
             return abInfo.TargetType == CommandTargetTypes.Enemy && abInfo.ConstantInfo.IsDamaging;
         }
-        #endregion
+
+        #endregion Combat
 
         #region Relations to Target
+
         private static bool CasterTargetRelation(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
         {
             if (myCheck.PrimaryValue == 0)
@@ -482,7 +490,6 @@ namespace WorldServer.World.Abilities
 
         private static bool TargetWithinRange(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
         {
-
             return target != null && caster.ObjectWithinRadiusFeet(target, myCheck.PrimaryValue);
         }
 
@@ -532,7 +539,8 @@ namespace WorldServer.World.Abilities
         {
             return target == caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY);
         }
-        #endregion
+
+        #endregion Relations to Target
 
         #region RvR
 
@@ -619,7 +627,8 @@ namespace WorldServer.World.Abilities
             }
             return false;
         }
-        #endregion
+
+        #endregion RvR
 
         private static bool IsOffensive(Unit caster, Unit target, AbilityInfo abInfo, AbilityModifierCheck myCheck)
         {
@@ -668,7 +677,7 @@ namespace WorldServer.World.Abilities
                 return true;
         }
 
-        #endregion
+        #endregion Checks
 
         #region BlockingChecks
 
@@ -687,7 +696,7 @@ namespace WorldServer.World.Abilities
             return caster.BuffInterface.CanAcceptAura();
         }
 
-        #endregion
+        #endregion BlockingChecks
 
         #region Modifiers
 
@@ -712,7 +721,6 @@ namespace WorldServer.World.Abilities
             // Cast time multiplier.
             else if (myEffect.PrimaryValue > 0 && myEffect.PrimaryValue < 100)
                 abInfo.CastTime = (ushort)(abInfo.CastTime * myEffect.PrimaryValue * 0.01f);
-
             else
             {
                 // Subtractive cast time.
@@ -889,7 +897,7 @@ namespace WorldServer.World.Abilities
                 abInfo.ApCost = (byte)(abInfo.ApCost * (caster.PctHealth / 25 + 1) * 0.25f);
         }
 
-        #endregion
+        #endregion Modifiers
 
         #region CommandModifiers
 
@@ -968,15 +976,19 @@ namespace WorldServer.World.Abilities
                 case 1:
                     cmd.EffectRadius = 30;
                     break;
+
                 case 2:
                     cmd.EffectRadius = 35;
                     break;
+
                 case 3:
                     cmd.EffectRadius = 40;
                     break;
+
                 case 4:
                     cmd.EffectRadius = 44;
                     break;
+
                 case 5:
                     cmd.EffectRadius = 49;
                     break;
@@ -1079,10 +1091,8 @@ namespace WorldServer.World.Abilities
                 if (myResource > 5)
                     return;
 
-
                 abInfo.CastTime = (ushort)(abInfo.CastTime * 0.60f);
                 //abInfo.ApCost = (byte) (abInfo.ApCost*0.60f);
-
             }
 
             // Tranquility bonus - Force casts faster
@@ -1090,7 +1100,6 @@ namespace WorldServer.World.Abilities
             {
                 if (myResource < 6)
                     return;
-
 
                 abInfo.Level = plr.EffectiveLevel;
                 abInfo.BoostLevel = plr.EffectiveLevel; // necessary for secondary effects
@@ -1113,7 +1122,6 @@ namespace WorldServer.World.Abilities
                             break;
                         */
                 }
-
             }
 
             if (abInfo.CastTime == 0)
@@ -1348,11 +1356,8 @@ namespace WorldServer.World.Abilities
 
                     abInfo.BoostLevel = plr.EffectiveLevel;
                 }
-
                 else
                     cmd.DamageInfo.DamageBonus += 0.05f * myResource;
-
-
             }
             // Tranquility bonus - Force damage increases
             else
@@ -1368,13 +1373,12 @@ namespace WorldServer.World.Abilities
 
                     abInfo.Level = plr.EffectiveLevel;
                 }
-
                 else
                     cmd.DamageInfo.DamageBonus += 0.05f * (myResource - 5);
             }
         }
 
-        #endregion
+        #endregion Healer Shifter Mechanic
 
         #region Add/Remove
 
@@ -1450,7 +1454,7 @@ namespace WorldServer.World.Abilities
             abInfo.DeleteCommand((byte)myEffect.PrimaryValue, (byte)myEffect.SecondaryValue);
         }
 
-        #endregion
+        #endregion Add/Remove
 
         private static void ModifyMaxTargets(Unit caster, AbilityInfo abInfo, AbilityModifierEffect myEffect)
         {
@@ -1471,7 +1475,7 @@ namespace WorldServer.World.Abilities
             }
         }
 
-        #endregion
+        #endregion CommandModifiers
 
         #region BuffModifiers
 
@@ -1587,7 +1591,7 @@ namespace WorldServer.World.Abilities
             }
         }
 
-        #endregion
+        #endregion General Mods
 
         private static void ModifyBuffCommandArmorPenScale(Unit caster, BuffInfo buffInfo, AbilityModifierEffect myEffect)
         {
@@ -1676,7 +1680,6 @@ namespace WorldServer.World.Abilities
             {
                 if (cmd.SecondaryValue == 0)
                     cmd.PrimaryValue = (int)(cmd.PrimaryValue * ((Player)caster).CrrInterface.GetCurrentResourceLevel((byte)myEffect.PrimaryValue) * (0.01f * myEffect.SecondaryValue));
-
                 else
                 {
                     cmd.SecondaryValue = (int)(cmd.SecondaryValue * ((Player)caster).CrrInterface.GetCurrentResourceLevel((byte)myEffect.PrimaryValue) * (0.01f * myEffect.SecondaryValue));
@@ -1739,7 +1742,7 @@ namespace WorldServer.World.Abilities
             buffInfo.DeleteCommand((byte)myEffect.PrimaryValue, (byte)myEffect.SecondaryValue);
         }
 
-        #endregion
+        #endregion Add/Remove
 
         #region Healer shifter mechanic
 
@@ -1801,7 +1804,6 @@ namespace WorldServer.World.Abilities
                     cmd.DamageInfo.DamageBonus += 0.25f;
                     cmd.DamageInfo.UseItemStatTotal = true;
                 }
-
                 else
                     cmd.DamageInfo.DamageBonus += 0.05f * myResource;
             }
@@ -1817,13 +1819,12 @@ namespace WorldServer.World.Abilities
                     cmd.DamageInfo.DamageBonus += 0.25f;
                     cmd.DamageInfo.UseItemStatTotal = true;
                 }
-
                 else
                     cmd.DamageInfo.DamageBonus += 0.05f * (myResource - 5);
             }
         }
 
-        #endregion
+        #endregion Healer shifter mechanic
 
         private static void FuriousReprisalSetup(Unit caster, BuffInfo buffInfo, AbilityModifierEffect myEffect)
         {
@@ -1854,6 +1855,6 @@ namespace WorldServer.World.Abilities
             buffInfo.Interval = (ushort)(buffInfo.Interval * scaleFactor);
         }
 
-        #endregion
+        #endregion BuffModifiers
     }
 }

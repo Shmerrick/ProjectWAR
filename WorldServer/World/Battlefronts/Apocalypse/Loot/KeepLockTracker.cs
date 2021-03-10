@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WorldServer.World.Battlefronts.Apocalypse.Loot
+﻿namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
     public class KeepLockTracker
     {
@@ -23,5 +17,4 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             return $"Character {CharacterId}, Base {ZoneContribution} Random {RandomBonus} Pairing {PairingBonus} Bag Bonus : {GoldBagBonus}/{PurpleBagBonus}/{BlueBagBonus}/{GreenBagBonus}/{WhiteBagBonus}";
         }
     }
-
 }

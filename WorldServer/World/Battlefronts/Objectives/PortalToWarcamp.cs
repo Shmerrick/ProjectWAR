@@ -1,6 +1,6 @@
-﻿using SystemData;
-using Common.Database.World.BattleFront;
+﻿using Common.Database.World.BattleFront;
 using GameData;
+using SystemData;
 using WorldServer.NetWork.Handler;
 using WorldServer.World.Objects;
 using WorldServer.World.Positions;
@@ -11,12 +11,13 @@ namespace WorldServer.World.Battlefronts.Objectives
     /// Game object representing a portal around an objective
     /// allowing port to warcamp.
     /// </summary>
-    class PortalToWarcamp : PortalBase
+    internal class PortalToWarcamp : PortalBase
     {
         private const string NAME = "Portal to warcamp";
 
         /// <summary>Portal targets depending on realm</summary>
         private BattleFrontObject _orderTarget, _destroTarget;
+
         private Point3D _orderTargetPos, _destroTargetPos;
 
         public PortalToWarcamp(
@@ -58,6 +59,5 @@ namespace WorldServer.World.Battlefronts.Objectives
 
             Teleport(player, target.ZoneId, targetPos);
         }
-
     }
 }

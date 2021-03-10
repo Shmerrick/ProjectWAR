@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
 using System.IO;
+using System.Reflection;
 
 namespace FrameWork
 {
@@ -50,7 +49,6 @@ namespace FrameWork
             return Result;
         }
     }
-
 
     public class DBManager
     {

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using System;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
@@ -93,7 +93,6 @@ namespace WorldServer.World.Battlefronts
                 {
                     kV.Value.BaseContribution += (uint)(125 * _tier * RENOWN_CONTRIBUTION_FACTOR);
                 }
-
                 else if (curTimeSeconds - kV.Value.ActiveTimeEnd > CONTRIB_ELAPSE_INTERVAL)
                     _toRemove.Add(kV);
             }
@@ -129,7 +128,6 @@ namespace WorldServer.World.Battlefronts
                             if (medallionCount > 0 && player.ItmInterface.CreateItem(medallionInfo, medallionCount) == ItemResult.RESULT_OK)
                                 player.SendLocalizeString(new[] { medallionInfo.Name, medallionCount.ToString() }, ChatLogFilters.CHATLOGFILTERS_LOOT, Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
                         }
-
                         else
                         {
                             player.AddPendingXP(xp);
@@ -156,7 +154,6 @@ namespace WorldServer.World.Battlefronts
                             }
                         }
                     }
-
                     else
                     {
                         Character chara = CharMgr.GetCharacter(kVr.Key, false);
@@ -261,12 +258,12 @@ namespace WorldServer.World.Battlefronts
 
             The ticker, if kicked consistently by a player during the course of one hour, will grant contribution which converts to 3000 RP over 60 minutes.
             Rewards are based on a player's contribution performance relative to the best player on their realm.
-            The RP from a lock cannot exceed Tier * 5000, and by extension, the XP cannot exceed Tier * 15000, 
+            The RP from a lock cannot exceed Tier * 5000, and by extension, the XP cannot exceed Tier * 15000,
             the Influence cannot exceed Tier * 500 and there can be no more than 6 medallions issued.
 
             The rewards are scaled by the proximity of a zone to the enemy fortress.
 
-            The rewards are also scaled by the relative Campaign scaler, which cripples rewards for players 
+            The rewards are also scaled by the relative Campaign scaler, which cripples rewards for players
             refusing to fight in the most hotly contested zone.
 
             For the losing side, the reward is also scaled by the % of rewards, linked to the Victory Point pool.
@@ -280,12 +277,12 @@ namespace WorldServer.World.Battlefronts
             else
                 zoneName = ZoneService.GetZone_Info((ushort)zoneId).Name;
 
-
             uint xpCap = (uint)(tier * 19000);
             uint rpCap = (uint)(tier * 10000);
             ushort infCap = (ushort)(tier * 2000);
 
             #region Init winner rewards
+
             Dictionary<uint, ContributionInfo> winnerContrib = GetContributorsFromRealm(realm);
 
             uint winMaxContrib = GetMaxContribution(winnerContrib);
@@ -298,7 +295,7 @@ namespace WorldServer.World.Battlefronts
 
             //Log.Info(zoneName, $"Lock XP: {winXP} RP: {winRP} Inf: {winInf} Medals: {winMedallionCount}");
 
-            #endregion
+            #endregion Init winner rewards
 
             #region Init loser rewards
 
@@ -315,7 +312,7 @@ namespace WorldServer.World.Battlefronts
 
             //Log.Info(zoneName, $"Lock XP: {lossXP} RP: {lossRP} Inf: {lossInf} Medallions: {lossMedallionCount}");
 
-            #endregion
+            #endregion Init loser rewards
 
             Item_Info medallionInfo = ItemService.GetItem_Info((uint)(208399 + tier));
             Item_Info T3Token = ItemService.GetItem_Info(2165);
@@ -336,7 +333,7 @@ namespace WorldServer.World.Battlefronts
                 {
                     plr.SendLocalizeString(lockMessage, ChatLogFilters.CHATLOGFILTERS_RVR, Localized_text.CHAT_TAG_DEFAULT);
                     plr.SendLocalizeString(lockMessage, realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE, Localized_text.CHAT_TAG_DEFAULT);
-                    // AAO multiplier needs to be multiplied with 20 to get the AAO that player sees. 
+                    // AAO multiplier needs to be multiplied with 20 to get the AAO that player sees.
                     // AAO mult is the global value for the server to grab the difference in size of the teams while AAOBonus is the players individual bonus
                     int aaoBuff = Convert.ToInt32(plr.AAOBonus);
                     if (aaoBuff < 0.1)
@@ -394,16 +391,13 @@ namespace WorldServer.World.Battlefronts
                                     plr.AddInfluence(influenceId, Math.Min(infCap, (ushort)(winInf * contributionFactor)));
                                 }
                             }
-
                         }
-
                         else
                         {
                             plr.AddPendingXP(Math.Min(xpCap, (uint)(winXP * contributionFactor)));
                             plr.AddPendingRenown(Math.Min(rpCap, (uint)(winRP * contributionFactor)));
                         }
                     }
-
                     else if (chara.Value != null)
                     {
                         chara.Value.PendingXp += Math.Min(xpCap, (uint)(winXP * contributionFactor));
@@ -436,7 +430,6 @@ namespace WorldServer.World.Battlefronts
                         {
                             plr.SendLocalizeString(new[] { medallionInfo.Name, resultantCount.ToString() }, ChatLogFilters.CHATLOGFILTERS_LOOT, Localized_text.TEXT_YOU_RECEIVE_ITEM_X);
                         }
-
                         else
                         {
                             Character_mail medallionMail = new Character_mail
@@ -465,7 +458,6 @@ namespace WorldServer.World.Battlefronts
                         }
                     }
                 }
-
                 else
                 {
                     if (lossRP == 0)
@@ -509,16 +501,13 @@ namespace WorldServer.World.Battlefronts
                                     plr.AddInfluence(influenceId, (ushort)Math.Min(infCap * 0.9f, lossInf * scaleFactor));
                                 }
                             }
-
                         }
-
                         else
                         {
                             plr.AddPendingXP((uint)Math.Min(xpCap * 0.9f, lossXP * scaleFactor));
                             plr.AddPendingRenown((uint)Math.Min(rpCap * 0.9f, lossRP * scaleFactor));
                         }
                     }
-
                     else if (chara.Value != null)
                     {
                         chara.Value.PendingXp += (uint)Math.Min(xpCap * 0.9f, lossXP * scaleFactor);
@@ -583,7 +572,6 @@ namespace WorldServer.World.Battlefronts
             PlayerContributions.Clear();
         }
 
-
         internal void UpdateLoserShare(int _orderCount, int _destroCount)
         {
             int minPlayerCount = Math.Min(_orderCount, _destroCount);
@@ -605,6 +593,5 @@ namespace WorldServer.World.Battlefronts
                     max = info.BaseContribution;
             return max;
         }
-
     }
 }

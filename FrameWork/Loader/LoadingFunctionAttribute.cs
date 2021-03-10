@@ -14,7 +14,7 @@ namespace FrameWork
         {
             _immediate = immediate;
         }
-        
+
         public bool Immediate { get { return _immediate; } }
     }
 }

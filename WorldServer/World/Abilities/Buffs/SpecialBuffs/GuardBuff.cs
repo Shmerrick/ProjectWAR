@@ -12,7 +12,6 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 
         public override void StartBuff()
         {
-            
             if (Caster is Player)
             {
                 // Reduce Guard damage by 30% (Stoic)
@@ -51,12 +50,12 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
             if (Caster.IsDead || !Caster.ObjectWithinRadiusFeet(Target, 30))
                 return false;
 
-           // (Caster as Player).SendClientMessage($"Caster Split:{_casterDamageSplitFactor} Original Damage:({damageInfo.Damage}) Caster Damage (post Guard):({damageInfo.Damage*_casterDamageSplitFactor})");
+            // (Caster as Player).SendClientMessage($"Caster Split:{_casterDamageSplitFactor} Original Damage:({damageInfo.Damage}) Caster Damage (post Guard):({damageInfo.Damage*_casterDamageSplitFactor})");
 
             damageInfo.Damage *= _targetDamageSplitFactor;
             damageInfo.Mitigation *= _targetDamageSplitFactor;
 
-          //  (Caster as Player).SendClientMessage($"Target Split:{_targetDamageSplitFactor} Target Damage (post Guard):({damageInfo.Damage})");
+            //  (Caster as Player).SendClientMessage($"Target Split:{_targetDamageSplitFactor} Target Damage (post Guard):({damageInfo.Damage})");
 
             CombatManager.InflictGuardDamage(attacker, (Player)Caster, Entry, damageInfo, _casterDamageSplitFactor);
 

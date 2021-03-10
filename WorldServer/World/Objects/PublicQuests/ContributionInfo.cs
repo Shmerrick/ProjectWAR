@@ -1,9 +1,5 @@
-﻿using Common;
-using GameData;
-using System;
+﻿using GameData;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace WorldServer.World.Objects.PublicQuests
 {
@@ -27,10 +23,12 @@ namespace WorldServer.World.Objects.PublicQuests
         /// A random factor for the roll.
         /// </summary>
         public uint RandomBonus;
+
         /// <summary>
         /// A bonus to the roll based on consecutive PQs completed without success.
         /// </summary>
         public uint PersistenceBonus;
+
         /// <summary>
         /// A bonus to the roll derived from the player's relative ContributionManagerInstance value.
         /// </summary>

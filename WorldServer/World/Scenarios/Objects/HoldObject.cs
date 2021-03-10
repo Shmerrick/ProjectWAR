@@ -1,7 +1,7 @@
-﻿using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using SystemData;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
@@ -23,6 +23,7 @@ namespace WorldServer.World.Scenarios.Objects
         Carried,
         Ground
     }
+
     /// <summary>
     /// An object which can be picked up by players.
     /// </summary>
@@ -44,6 +45,7 @@ namespace WorldServer.World.Scenarios.Objects
 
         // Appearance
         protected ushort GroundModelId, HomeModelId;
+
         public ushort VfxState;
 
         private GameObject _glowObject;
@@ -54,6 +56,7 @@ namespace WorldServer.World.Scenarios.Objects
 
         // Delegates
         public delegate void InteractAction(HoldObject ball, Player holder);
+
         public delegate void BallAction(HoldObject ball);
 
         protected InteractAction OnPickupAction;
@@ -62,6 +65,7 @@ namespace WorldServer.World.Scenarios.Objects
 
         // Granted Buff
         protected ushort BuffId;
+
         protected int GroundResetTime;
         public int HoldResetTimeSeconds;
         private long _holdResetTime;
@@ -147,12 +151,14 @@ namespace WorldServer.World.Scenarios.Objects
                 case Realms.REALMS_REALM_NEUTRAL:
                     _glowObject.VfxState = 0;
                     break;
+
                 case Realms.REALMS_REALM_ORDER:
                     if (ColorMatchesRealm)
                         _glowObject.VfxState = 1;
                     else
                         _glowObject.VfxState = 2;
                     break;
+
                 case Realms.REALMS_REALM_DESTRUCTION:
                     if (ColorMatchesRealm)
                         _glowObject.VfxState = 2;
@@ -213,14 +219,13 @@ namespace WorldServer.World.Scenarios.Objects
             Holder.BuffInterface.QueueBuff(new BuffQueueInfo(Holder, Holder.EffectiveLevel, buffInfo, HoldObjectBuff.GetNew, HoldObjectCallback));
 
             OnPickupAction?.Invoke(this, Holder);
-
         }
 
         public override void SendRemove(Player plr)
         {
             /*if (plr != null)
                 Log.Info("SendRemove", "Removing from "+plr.Name);
-            else 
+            else
                 Log.Info("SendRemove", "Removing from all");*/
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_OBJECT_DEATH, 12);
@@ -236,7 +241,7 @@ namespace WorldServer.World.Scenarios.Objects
                 DispatchPacket(Out, false);
         }
 
-        #endregion
+        #endregion Capturing
 
         public Realms RealmCapturableFor { get; protected set; }
 
@@ -251,38 +256,41 @@ namespace WorldServer.World.Scenarios.Objects
         {
             HeldState = newState;
 
-                switch (HeldState)
-                {
-                    case EHeldState.Carried:
-                        if (_glowObject != null && _glowObject.IsActive)
-                            _glowObject.IsActive = false;
-                        IsActive = false;
-                        if (HoldResetTimeSeconds > 0)
-                        {
-                            _holdResetTime = TCPManager.GetTimeStampMS() + HoldResetTimeSeconds*1000;
-                            CapturingPlayer?.SendClientMessage($"You may hold this object for up to {HoldResetTimeSeconds / 60} minutes before it will reset.");
-                            CapturingPlayer?.SendClientMessage($"You may hold this object for up to {HoldResetTimeSeconds / 60} minutes before it will reset.", ChatLogFilters.CHATLOGFILTERS_C_WHITE);
-                        }
-                        break;
-                    case EHeldState.Ground:
-                        _holdResetTime = 0;
-                        if (_glowObject != null && _glowObject.IsActive)
-                            _glowObject.IsActive = false;
-                        IsActive = true;
-                        break;
-                    case EHeldState.Home:
-                        _holdResetTime = 0;
-                        if (_glowObject != null && !_glowObject.IsActive)
-                            _glowObject.IsActive = true;
-                        IsActive = true;
-                        break;
-                    case EHeldState.Inactive:
-                        _holdResetTime = 0;
-                        if (_glowObject != null && !_glowObject.IsActive)
-                            _glowObject.IsActive = true;
-                        IsActive = false;
-                        break;
-                }
+            switch (HeldState)
+            {
+                case EHeldState.Carried:
+                    if (_glowObject != null && _glowObject.IsActive)
+                        _glowObject.IsActive = false;
+                    IsActive = false;
+                    if (HoldResetTimeSeconds > 0)
+                    {
+                        _holdResetTime = TCPManager.GetTimeStampMS() + HoldResetTimeSeconds * 1000;
+                        CapturingPlayer?.SendClientMessage($"You may hold this object for up to {HoldResetTimeSeconds / 60} minutes before it will reset.");
+                        CapturingPlayer?.SendClientMessage($"You may hold this object for up to {HoldResetTimeSeconds / 60} minutes before it will reset.", ChatLogFilters.CHATLOGFILTERS_C_WHITE);
+                    }
+                    break;
+
+                case EHeldState.Ground:
+                    _holdResetTime = 0;
+                    if (_glowObject != null && _glowObject.IsActive)
+                        _glowObject.IsActive = false;
+                    IsActive = true;
+                    break;
+
+                case EHeldState.Home:
+                    _holdResetTime = 0;
+                    if (_glowObject != null && !_glowObject.IsActive)
+                        _glowObject.IsActive = true;
+                    IsActive = true;
+                    break;
+
+                case EHeldState.Inactive:
+                    _holdResetTime = 0;
+                    if (_glowObject != null && !_glowObject.IsActive)
+                        _glowObject.IsActive = true;
+                    IsActive = false;
+                    break;
+            }
         }
 
         public void SetRealmAssociation(Realms realm)
@@ -296,7 +304,7 @@ namespace WorldServer.World.Scenarios.Objects
             {
                 SetGlowColorFor(RealmCapturableFor);
 
-                PacketOut Out = new PacketOut((byte) Opcodes.F_UPDATE_STATE, 20);
+                PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 20);
 
                 Out.WriteUInt16(_glowObject.Oid);
                 Out.WriteByte(6); //state
@@ -315,7 +323,6 @@ namespace WorldServer.World.Scenarios.Objects
         {
             if (b == null)
                 HolderDied();
-
             else if (Holder != null)
             {
                 MyBuff = (HoldObjectBuff)b;
@@ -376,7 +383,7 @@ namespace WorldServer.World.Scenarios.Objects
 
             // Object already visible so we must manually update range
             SetHeldState(EHeldState.Home);
-            
+
             Region.UpdateRange(this, true);
 
             OnResetAction?.Invoke(this);

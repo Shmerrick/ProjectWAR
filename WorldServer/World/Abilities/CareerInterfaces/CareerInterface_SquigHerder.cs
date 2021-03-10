@@ -4,7 +4,7 @@ using WorldServer.World.Objects;
 
 namespace WorldServer.World.Abilities.CareerInterfaces
 {
-    class CareerInterface_SquigHerder : CareerInterface, IPetCareerInterface
+    internal class CareerInterface_SquigHerder : CareerInterface, IPetCareerInterface
     {
         private Pet _myPet;
         public new Pet myPet { get { return _myPet; } set { _myPet = value; } }
@@ -36,10 +36,10 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
         public override void SendResource()
         {
-
         }
 
         private bool _summoning;
+
         public void SummonPet(ushort myID)
         {
             if (_summoning)
@@ -66,31 +66,37 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                         Proto.Model1 = 136;
                         Proto.Ranged = 0;
                         break;
+
                     case 1842:
                         Proto.Name = myPlayer.Name + "'s Horned Squig";
                         Proto.Model1 = 137;
                         Proto.Ranged = 0;
                         break;
+
                     case 1843:
                         Proto.Name = myPlayer.Name + "'s Gas Squig";
                         Proto.Model1 = 139;
                         Proto.Ranged = 100;
                         break;
+
                     case 1844:
                         Proto.Name = myPlayer.Name + "'s Spiked Squig";
                         Proto.Model1 = 138;
                         Proto.Ranged = 100;
                         break;
+
                     case 1845:
                         Proto.Name = myPlayer.Name + "'s Battle Squig";
                         Proto.Model1 = 140;
                         Proto.Ranged = 0;
                         break;
+
                     case 2828:
                         Proto.Name = myPlayer.Name + "'s Horned Squig";
                         Proto.Model1 = 137;
                         Proto.Ranged = 0;
                         break;
+
                     case 2829:
                         Proto.Name = myPlayer.Name + "'s Gas Squig";
                         Proto.Model1 = 139;
@@ -99,7 +105,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                 }
 
                 Creature_spawn Spawn = new Creature_spawn();
-
 
                 Proto.MinScale = 50;
                 Proto.MaxScale = 50;
@@ -114,7 +119,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                 Spawn.Proto.MinLevel = Spawn.Proto.MaxLevel = myPlayer.EffectiveLevel;
 
                 if (Spawn.Proto.MinLevel > 40)
-                { 
+                {
                     Spawn.Proto.MinLevel = 40;
                     Spawn.Proto.MaxLevel = 40;
                 }
@@ -136,7 +141,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
         public void Notify_PetDown()
         {
-            #warning FIXME - implement with InvokeCooldown
+#warning FIXME - implement with InvokeCooldown
             // For I Got Lots
             if (myPlayer.BuffInterface.GetBuff(1862, null) == null)
                 myPlayer.AbtInterface.SetCooldown(_currentPetID, 30000);

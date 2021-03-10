@@ -1,8 +1,8 @@
-﻿using System.Text;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System.Text;
+using SystemData;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
@@ -22,6 +22,7 @@ namespace WorldServer.World.Scenarios
         private Player _carrier;
         private bool _salvageMoved = true;
         private Point3D _salvageSpawn = new Point3D();
+
         public DropPartScenario(Scenario_Info info, int tier)
             : base(info, tier)
         {
@@ -41,7 +42,6 @@ namespace WorldServer.World.Scenarios
 
                 if (scBall.ObjectiveName == "Center Glow")
                     _centerGlow = AddObject(scBall.WorldPosX, scBall.WorldPosY, scBall.PosZ, scBall.Heading, 99858);
-
             }
             _orderCart.Flags = 0x24;
             _destroCart.Flags = 0x24;
@@ -75,7 +75,6 @@ namespace WorldServer.World.Scenarios
                 Lost = new Part.PartDelegate(SalvageLost)
             };
             Region.AddObject(_salvage, spawn.ZoneId);
-           
         }
 
         public override void OnClose()
@@ -87,14 +86,16 @@ namespace WorldServer.World.Scenarios
                 _carrier = null;
             }
         }
+
         public override void RemovePlayer(Player plr, bool logout)
         {
             base.RemovePlayer(plr, logout);
             if (_carrier == plr)
             {
-               ResetPart();
+                ResetPart();
             }
         }
+
         private void SalvagePickedUp(Player plr, Part part)
         {
             _salvage.RemoveFromWorld();
@@ -107,7 +108,6 @@ namespace WorldServer.World.Scenarios
             for (int i = 0; i < 2; ++i)
                 foreach (Player player in Players[i])
                 {
-
                     PacketOut Out = new PacketOut((byte)Opcodes.F_LOCALIZED_STRING, 64);
 
                     Out.WriteUInt16((ushort)256);
@@ -118,11 +118,9 @@ namespace WorldServer.World.Scenarios
                     Out.WriteUInt16(0x0003);
                     Out.WriteUInt16(0x0100);
 
-
                     byte[] bytes = Encoding.GetEncoding("iso-8859-1").GetBytes(plr.Name);
                     Out.WriteByte((byte)(bytes.Length + 1));
                     Out.Write(bytes, 0, bytes.Length);
-
 
                     Out.Fill(0, 5);
                     if (plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
@@ -137,13 +135,11 @@ namespace WorldServer.World.Scenarios
                     Out.WriteByte((byte)(bytes.Length + 1));
                     Out.Write(bytes, 0, bytes.Length);
 
-
                     Out.WriteByte(0);
 
                     player.SendPacket(Out);
                     SendObjectiveStates(player);
                 }
-
         }
 
         public void PartTimer()
@@ -176,11 +172,9 @@ namespace WorldServer.World.Scenarios
                     Out.WriteUInt16(0x0003);
                     Out.WriteUInt16(0x0100);
 
-
                     byte[] bytes = Encoding.GetEncoding("iso-8859-1").GetBytes(plr.Name);
                     Out.WriteByte((byte)(bytes.Length + 1));
                     Out.Write(bytes, 0, bytes.Length);
-
 
                     Out.Fill(0, 5);
                     if (plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
@@ -195,7 +189,6 @@ namespace WorldServer.World.Scenarios
                     Out.WriteByte((byte)(bytes.Length + 1));
                     Out.Write(bytes, 0, bytes.Length);
 
-
                     Out.WriteByte(0);
 
                     player.SendPacket(Out);
@@ -207,9 +200,9 @@ namespace WorldServer.World.Scenarios
             //rewarding the player turning in the salvage so it gets more focused on objectives
             plr.AddRenown(70, true);
             if (plr.Realm == Realms.REALMS_REALM_ORDER)
-                _orderCart.PlayEffect(1136, new Point3D(_orderCart.Spawn.WorldX, _orderCart.Spawn.WorldY, _orderCart.Spawn.WorldZ+50));
+                _orderCart.PlayEffect(1136, new Point3D(_orderCart.Spawn.WorldX, _orderCart.Spawn.WorldY, _orderCart.Spawn.WorldZ + 50));
             else
-                _destroCart.PlayEffect(1136, new Point3D(_destroCart.Spawn.WorldX, _destroCart.Spawn.WorldY, _destroCart.Spawn.WorldZ+50));
+                _destroCart.PlayEffect(1136, new Point3D(_destroCart.Spawn.WorldX, _destroCart.Spawn.WorldY, _destroCart.Spawn.WorldZ + 50));
         }
 
         private void SalvageLost(Player plr, Part part)
@@ -247,7 +240,6 @@ namespace WorldServer.World.Scenarios
             if ((obj == _orderCart && plr.Realm == Realms.REALMS_REALM_ORDER && plr == _carrier)
                 || (obj == _destroCart && plr.Realm == Realms.REALMS_REALM_DESTRUCTION && plr == _carrier))
                 PutPartInCart(plr, obj);
-
             else if (_carrier == null && obj == _salvage)
             {
                 if (plr.StealthLevel > 0)
@@ -284,14 +276,13 @@ namespace WorldServer.World.Scenarios
         {
             if (_carrier == plr)
                 _salvage.BeginDropOff(plr, targetCart);
-
         }
 
         public override bool OnPlayerKilled(Object pkilled, object instigator)
         {
             if (pkilled == _carrier)
             {
-                if(_carrier != null)
+                if (_carrier != null)
                     _carrier.CanMount = true;
 
                 _salvage.Lost(_carrier, _salvage);
@@ -317,12 +308,11 @@ namespace WorldServer.World.Scenarios
                         Out.WriteUInt32((uint)pos.Z);
                         plr.SendPacket(Out);
                     }
-                _salvageMoved = false;         
+                _salvageMoved = false;
             }
 
             if (_carrier != null)
             {
-
                 if (_carrier.StealthLevel > 0)
                 {
                     _carrier.Uncloak();
@@ -332,7 +322,6 @@ namespace WorldServer.World.Scenarios
                 {
                     _salvageMoved = true;
                     _salvage.Position = new Point3D(_carrier.WorldPosition.X, _carrier.WorldPosition.Y, _carrier.WorldPosition.Z);
-
                 }
                 for (int i = 0; i < 2; i++)
                 {
@@ -343,13 +332,9 @@ namespace WorldServer.World.Scenarios
                         break;
                     }
                 }
-
             }
-
 
             base.UpdateScenario();
         }
-
-
     }
 }

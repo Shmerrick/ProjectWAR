@@ -11,14 +11,11 @@ namespace WorldServer.World.Objects.Instances.The_Lost_Vale
 
         public SimpleDralel(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
-
         }
 
         #endregion Constructors
 
-        #region Attributes
 
-        #endregion Attributes
 
         #region Overrides
 
@@ -28,7 +25,7 @@ namespace WorldServer.World.Objects.Instances.The_Lost_Vale
 
             AiInterface.SetBrain(new InstanceBossBrain(this));
         }
-        
+
         public override bool OnEnterCombat(Object mob, object args)
         {
             bool res = base.OnEnterCombat(mob, args);
@@ -46,7 +43,7 @@ namespace WorldServer.World.Objects.Instances.The_Lost_Vale
         #endregion Overrides
 
         #region Methods
-        
+
         /// <summary>
         /// 402, 403 = Unstoppable
         /// 408 = Immovable

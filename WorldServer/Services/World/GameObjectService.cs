@@ -9,6 +9,7 @@ namespace WorldServer.Services.World
     public class GameObjectService : ServiceBase
     {
         #region GameObjects
+
         public static Dictionary<uint, GameObject_proto> GameObjectProtos;
         public static Dictionary<uint, GameObject_spawn> GameObjectSpawns;
         public static int MaxGameObjectGUID;
@@ -50,11 +51,13 @@ namespace WorldServer.Services.World
 
             Log.Success("WorldMgr", "Loaded " + GameObjectSpawns.Count + " GameObject_Spawns");
         }
-        #endregion
+
+        #endregion GameObjects
 
         #region GameObjectLoots
 
         public static Dictionary<uint, List<GameObject_loot>> GameObjectLoots = new Dictionary<uint, List<GameObject_loot>>();
+
         private static void LoadGameObjectLoots(uint entry)
         {
             if (!GameObjectLoots.ContainsKey(entry))
@@ -96,6 +99,7 @@ namespace WorldServer.Services.World
                     Log.Error("LoadLoots", "[" + MissingGameObject + "] Misssing GameObject proto");
             }
         }
+
         public static List<GameObject_loot> GetGameObjectLoots(uint Entry)
         {
             LoadGameObjectLoots(Entry);
@@ -107,6 +111,7 @@ namespace WorldServer.Services.World
 
             return Loots;
         }
-        #endregion
+
+        #endregion GameObjectLoots
     }
 }

@@ -6,7 +6,7 @@ using WorldServer.World.Scripting;
 namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 36608, 0)]
-    class BroodMotherSzikalax : BasicGunbad
+    internal class BroodMotherSzikalax : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -92,7 +92,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 36597, 0)]
-    class SpiderBroodMotherSzikalax : BasicGunbad
+    internal class SpiderBroodMotherSzikalax : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -141,7 +141,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 2000904, 0)]
-    class SpiderAddBroodMotherSzikalax : BasicGunbad
+    internal class SpiderAddBroodMotherSzikalax : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -190,5 +190,4 @@ namespace WorldServer.World.Objects.Instances.Gunbad
             return false;
         }
     }
-
 }

@@ -1,10 +1,10 @@
-﻿using System;
+﻿using FrameWork;
+using GameData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using SystemData;
-using FrameWork;
-using GameData;
 using WorldServer.Managers;
 using WorldServer.World.Interfaces;
 using Opcodes = WorldServer.NetWork.Opcodes;
@@ -22,7 +22,6 @@ namespace WorldServer.World.Objects
         public bool IsFull => AllMembers.Count == 24;
         public bool IsEmpty => AllMembers.Count == 0;
 
-
         public uint ZeroIndexGroupId = 0;
 
         public Player Leader { get; private set; }
@@ -34,6 +33,7 @@ namespace WorldServer.World.Objects
         public Player MasterLooter { get; set; }
 
         public readonly ReaderWriterLockSlim _updateRWLock = new ReaderWriterLockSlim();
+
         public bool PartyOpen
         {
             get { return Groups[0].PartyOpen; }
@@ -154,9 +154,11 @@ namespace WorldServer.World.Objects
                         else
                             action.Instigator.GrpInterface.SetGroupState(EGroupJoinState.None);
                         break;
+
                     case EGroupAction.PlayerLeave:
                         RemoveMember(action.Instigator);
                         break;
+
                     case EGroupAction.PlayerKick:
                         if (action.Instigator != Leader)
                         {
@@ -188,6 +190,7 @@ namespace WorldServer.World.Objects
                             }
                         action.Instigator.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_BG_PLAYER_NOT_IN_BG);
                         break;
+
                     case EGroupAction.ChangeMainAssist:
                         if (action.Instigator != Leader)
                         {
@@ -202,6 +205,7 @@ namespace WorldServer.World.Objects
                             }
                         action.Instigator.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_BG_PLAYER_NOT_IN_BG);
                         break;
+
                     case EGroupAction.ChangeLootOption:
                         if (action.Instigator != Leader)
                         {
@@ -210,6 +214,7 @@ namespace WorldServer.World.Objects
                         }
                         SetLootOption(Convert.ToByte(action.ActionString));
                         break;
+
                     case EGroupAction.ChangeMasterLooter:
                         if (action.Instigator != Leader)
                         {
@@ -224,6 +229,7 @@ namespace WorldServer.World.Objects
                             }
                         action.Instigator.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_BG_PLAYER_NOT_IN_BG);
                         break;
+
                     case EGroupAction.ChangeAutoLoot:
                         if (action.Instigator != Leader)
                         {
@@ -232,6 +238,7 @@ namespace WorldServer.World.Objects
                         }
                         ToggleRvRAutoLoot();
                         break;
+
                     case EGroupAction.ChangeNeedOnUse:
                         if (action.Instigator != Leader)
                         {
@@ -240,6 +247,7 @@ namespace WorldServer.World.Objects
                         }
                         ToggleNeedOnUse();
                         break;
+
                     case EGroupAction.OpenParty:
                         if (action.Instigator != Leader)
                         {
@@ -248,6 +256,7 @@ namespace WorldServer.World.Objects
                         }
                         SetPartyOpenStatus(true);
                         break;
+
                     case EGroupAction.CloseParty:
                         if (action.Instigator != Leader)
                         {
@@ -256,6 +265,7 @@ namespace WorldServer.World.Objects
                         }
                         SetPartyOpenStatus(false);
                         break;
+
                     case EGroupAction.WarbandMove:
                         if (action.Instigator != Leader)
                         {
@@ -266,6 +276,7 @@ namespace WorldServer.World.Objects
                         action.ActionString = action.ActionString.Remove(0, action.ActionString.Length - 2);
                         WarbandMove(name, Convert.ToByte(action.ActionString));
                         break;
+
                     case EGroupAction.WarbandSwap:
                         if (action.Instigator != Leader)
                         {
@@ -277,12 +288,12 @@ namespace WorldServer.World.Objects
                         break;
                 }
 
-                End:
+            End:
                 continue;
             }
         }
 
-        #endregion
+        #endregion GroupActions
 
         #region Member Management
 
@@ -316,13 +327,10 @@ namespace WorldServer.World.Objects
                            player.GrpInterface.SetGroupState(EGroupJoinState.None);
                            return;
                        }
-
                    } */
                 }
                 if (Groups[i].HasMaxMembers)
                     continue;
-
-                
 
                 player.SetGroup(Groups[i]);
 
@@ -360,7 +368,7 @@ namespace WorldServer.World.Objects
                 AllMembers.Remove(Leader);
                 AllMembers.Insert(0, Leader);
             }
-            finally {  _membersRWLock.ExitWriteLock(); }
+            finally { _membersRWLock.ExitWriteLock(); }
 
             player.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_BG_LEADER_PROMOTE);
 
@@ -403,7 +411,7 @@ namespace WorldServer.World.Objects
             groupIndex -= 1;
 
             if (groupIndex > 4)
-            { 
+            {
                 Leader.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_BG_INVALID_MOVE_INDEX);
                 return;
             }
@@ -503,7 +511,7 @@ namespace WorldServer.World.Objects
             finally { _membersRWLock.ExitReadLock(); }
         }
 
-        #endregion
+        #endregion Member Management
 
         private void SetLootOption(byte val)
         {
@@ -540,7 +548,7 @@ namespace WorldServer.World.Objects
             #region Warband Update
 
             int disabled = WorldMgr.WorldSettingsMgr.GetGenericSetting(17);
-            PacketOut Out = new PacketOut((byte) Opcodes.F_CHARACTER_INFO);
+            PacketOut Out = new PacketOut((byte)Opcodes.F_CHARACTER_INFO);
             Out.WriteByte(0x06); // Group info
             Out.WriteByte(3);
             Out.WriteByte(1); // Unknown
@@ -552,7 +560,7 @@ namespace WorldServer.World.Objects
                 else
                 {
                     Out.WriteVarUInt(Groups[i].GroupId);
-                    Out.WriteByte((byte) Groups[i].Members.Count);
+                    Out.WriteByte((byte)Groups[i].Members.Count);
 
                     foreach (Player plr in Groups[i].Members)
                     {
@@ -563,21 +571,21 @@ namespace WorldServer.World.Objects
                         Out.WriteByte(plr.Level);
                         Out.WriteByte(plr.StsInterface.BolsterLevel); // Real level? shows ^ - x = this byte
                         Out.WriteByte(plr.Info.CareerLine);
-                        Out.WriteByte((byte) plr.Realm);
-                        Out.WriteByte((byte) (plr == Leader ? 1 : 0)); // Will be 1 for at least one member. Perhaps Leader?
+                        Out.WriteByte((byte)plr.Realm);
+                        Out.WriteByte((byte)(plr == Leader ? 1 : 0)); // Will be 1 for at least one member. Perhaps Leader?
                         Out.WriteByte(0);
                         Out.WriteByte(1); // Online = 1, Offline = 0
-                        Out.WriteByte((byte) plr.Name.Length);
+                        Out.WriteByte((byte)plr.Name.Length);
                         Out.Fill(0, 3);
                         Out.WriteStringBytes(plr.Name);
-                        Out.WriteByte((byte) plr.GldInterface.GetGuildName().Length);
+                        Out.WriteByte((byte)plr.GldInterface.GetGuildName().Length);
                         Out.Fill(0, 3);
                         Out.WriteStringBytes(plr.GldInterface.GetGuildName());
                         Out.WriteVarUInt((uint)plr.X);
                         Out.WriteVarUInt((uint)plr.Y);
                         Out.WriteVarUInt((uint)plr.Z);
                         byte[] data = { 0x27, 0x25, 0x05, 0x40, 0x00, 0x00 };
-                        byte[] data2 = { 0x27, 0x25, 0x05, 0x40, 0x01, 0x02};
+                        byte[] data2 = { 0x27, 0x25, 0x05, 0x40, 0x01, 0x02 };
 
                         // FIXME: Best guess right now is this data is actually 4 bytes + 2 varints.
                         //        Most likely it has something to do with state that is only relevant
@@ -599,8 +607,9 @@ namespace WorldServer.World.Objects
 
             WarbandStatusDirty = true;
 
-            #endregion
+            #endregion Warband Update
         }
+
         protected virtual void SendPartyOidListsToMembers(Player member)
         {
             // This next block sends an F_CHARACTER_INFO that tells the game client which
@@ -608,7 +617,6 @@ namespace WorldServer.World.Objects
             // frames to update in response to F_PLAYER_STATE2 packets.
             for (int i = 0; i < MaxGroups; i++)
             {
-
                 if (Groups[i] != null && !Groups[i].IsEmpty)
                 {
                     // Send an F_CHARACTER_INFO (BE 06 04 version) with
@@ -621,7 +629,6 @@ namespace WorldServer.World.Objects
 
                     foreach (Player plr in Groups[i].Members)
                     {
-
                         int OutOfZone = 0;
                         if (plr == null || plr.Region != member.Region)
                         {
@@ -634,12 +641,12 @@ namespace WorldServer.World.Objects
                         // For any unused spots in the party, just write a 0.
                         for (int j = Groups[i].Members.Count - OutOfZone; j < 6; j++)
                             Out.WriteByte(0);
-
                     }
                     member.SendPacket(Out);
                 }
             }
         }
+
         protected virtual void SendWarbandStatus()
         {
             // Leader
@@ -654,7 +661,7 @@ namespace WorldServer.World.Objects
             // Group options
             Out = new PacketOut((byte)Opcodes.F_GROUP_STATUS, 20);
             Out.WriteUInt16(Groups[0].GroupId);
-            Out.WriteByte(0x01);      //1    
+            Out.WriteByte(0x01);      //1
             Out.WriteByte(0x00);     // Setting FF hides the status of members.
             Out.WriteByte(LootOption);      // round robin = 0 free for all = 1 master loot = 2
             Out.WriteByte(LootThreshold);      //1   loottresh
@@ -674,21 +681,21 @@ namespace WorldServer.World.Objects
                 foreach (Player member in AllMembers)
                     member.SendCopy(Out);
             }
-            finally {  _membersRWLock.ExitReadLock(); }
-
+            finally { _membersRWLock.ExitReadLock(); }
         }
+
         public virtual void SendMessageToWarband(Player sender, string text)
         {
             _membersRWLock.EnterReadLock();
             try
             {
                 foreach (Player member in AllMembers)
-                member.SendMessage(sender, text, ChatLogFilters.CHATLOGFILTERS_BATTLEGROUP);
+                    member.SendMessage(sender, text, ChatLogFilters.CHATLOGFILTERS_BATTLEGROUP);
             }
             finally { _membersRWLock.ExitReadLock(); }
         }
 
-        #endregion
+        #endregion Senders
 
         public void BuildOpenPartyInfo(Player player, PacketOut Out)
         {
@@ -703,7 +710,7 @@ namespace WorldServer.World.Objects
                 Out.WriteByte(4);
             else if (RVRArea.IsPlayerInRvR(Leader, WorldMgr.RVRArea.GetZoneRVRAreas()))
                 Out.WriteByte(2);
-            else if (Leader.QtsInterface.PublicQuest!= null && Leader.QtsInterface.PublicQuest.ObjectWithinRadiusFeet(Leader, 1000))
+            else if (Leader.QtsInterface.PublicQuest != null && Leader.QtsInterface.PublicQuest.ObjectWithinRadiusFeet(Leader, 1000))
                 Out.WriteByte(3);
             else
                 Out.WriteByte(1);
@@ -714,7 +721,7 @@ namespace WorldServer.World.Objects
             Out.WriteByte(0);
 
             //PQ name
-            if (Leader.QtsInterface.PublicQuest!= null)
+            if (Leader.QtsInterface.PublicQuest != null)
                 Out.WritePascalString(Leader.QtsInterface.PublicQuest.Name);
             else
                 Out.WriteByte(0);

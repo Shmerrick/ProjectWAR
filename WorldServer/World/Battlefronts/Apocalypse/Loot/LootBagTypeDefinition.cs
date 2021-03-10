@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using WorldServer.Managers;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
@@ -17,8 +14,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         public uint ItemId { get; set; }
         public uint ItemCount { get; set; }
         public byte RenownBand { get; set; }
-
-        
 
         public LootBagTypeDefinition()
         {
@@ -65,7 +60,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
             for (byte i = 0; i < numberGoldBags; i++)
             {
-                result.Add(new LootBagTypeDefinition { LootBagNumber= lootBagNumber++, Assignee = 0, BagRarity = LootBagRarity.Gold });
+                result.Add(new LootBagTypeDefinition { LootBagNumber = lootBagNumber++, Assignee = 0, BagRarity = LootBagRarity.Gold });
             }
             for (byte i = 0; i < numberPurpleBags; i++)
             {

@@ -10,7 +10,6 @@ namespace WorldServer.Managers.Commands
     /// <summary>Public Quest commands under .pq</summary>
     internal class PqCommands
     {
-
         /// <summary>
         /// Spawn a PQ NPC <object id> <objective id> <type 1 = NPC>
         /// </summary>
@@ -26,7 +25,7 @@ namespace WorldServer.Managers.Commands
             plr.UpdateWorldPosition();
 
             PQuest_Spawn spawn = new PQuest_Spawn();
-            //Added pquest_spawns_ID here as it is required to correctly save it to DB after this field was 
+            //Added pquest_spawns_ID here as it is required to correctly save it to DB after this field was
             //added in PQuest_spawn.cs
             spawn.pquest_spawns_ID = Guid.NewGuid().ToString();
             spawn.Entry = (uint)entry;
@@ -68,7 +67,7 @@ namespace WorldServer.Managers.Commands
                     WorldMgr.Database.DeleteObject(spawn);
 
                     PQuest_Spawn newSpawn = new PQuest_Spawn();
-                    //Added pquest_spawns_ID here as it is required to correctly save it to DB after this field was 
+                    //Added pquest_spawns_ID here as it is required to correctly save it to DB after this field was
                     //added in PQuest_spawn.cs
                     newSpawn.pquest_spawns_ID = Guid.NewGuid().ToString();
                     newSpawn.Entry = spawn.Entry;
@@ -84,6 +83,7 @@ namespace WorldServer.Managers.Commands
 
                     WorldMgr.Database.AddObject(newSpawn);
                     break;
+
                 case 2:
                     if (!obj.IsGameObject())
                         return false;
@@ -120,12 +120,7 @@ namespace WorldServer.Managers.Commands
                     newSpawnintgo.Type = 3; // change interaction of a spawned go
                     WorldMgr.Database.AddObject(newSpawnintgo);
                     break;
-
             }
-
-
-
-
 
             return true;
         }

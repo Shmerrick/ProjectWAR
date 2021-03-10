@@ -28,7 +28,7 @@ namespace WorldServer.World.Abilities.Buffs
     [Service(typeof(WorldMgr))]
     public static class BuffEffectInvoker
     {
-        const byte MAX_AOE_TARGETS = 9;
+        private const byte MAX_AOE_TARGETS = 9;
         private const int HOLD_THE_LINE_CONTRIBUTION_CHANCE = 8;
 
         private const byte BUFF_START = 1;
@@ -37,13 +37,17 @@ namespace WorldServer.World.Abilities.Buffs
         private const byte BUFF_REMOVE = 5;
 
         private delegate bool BuffCommandDelegate(NewBuff hostBuff, BuffCommandInfo cmd, Unit target);
+
         private delegate void BuffAbilityUseCommandDelegate(NewBuff hostBuff, BuffCommandInfo cmd, AbilityInfo abInfo);
 
         private delegate bool BuffEventCheckDelegate(NewBuff hostBuff, AbilityDamageInfo damageInfo, uint value, Unit eventInstigator);
 
         private delegate bool BuffEventCommandDelegate(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator);
+
         private delegate void PetEventCommandDelegate(NewBuff hostBuff, BuffCommandInfo cmd, Pet myPet);
+
         private delegate void ResourceEventCommandDelegate(NewBuff hostBuff, BuffCommandInfo cmd, byte oldVal, ref byte change);
+
         private delegate void ItemEventCommandDelegate(NewBuff hostBuff, BuffCommandInfo cmd, Item_Info itemInfo);
 
         private static readonly Dictionary<string, BuffEventCheckDelegate> _eventChecks = new Dictionary<string, BuffEventCheckDelegate>();
@@ -94,11 +98,13 @@ namespace WorldServer.World.Abilities.Buffs
             _eventChecks.Add("CheckDefenseFlagsNotSelf", CheckDefenseFlagsNotSelf);
             _eventChecks.Add("InstigatorNotSelf", InstigatorNotSelf);
             _eventChecks.Add("MissingBuff", MissingBuff);
-            #endregion
+
+            #endregion Event Checks
 
             #region General Commands
 
             #region Damage
+
             _commandList.Add("DamageOverTime", DamageOverTime);
             _commandList.Add("IllegalZone", IllegalZone);
             _commandList.Add("InstantTickDoT", InstantTickDoT);
@@ -114,9 +120,11 @@ namespace WorldServer.World.Abilities.Buffs
             _commandList.Add("NapalmGrenade", NapalmGrenade);
             _commandList.Add("BrimstoneBauble", BrimstoneBauble);
             _commandList.Add("ArtilleryStrike", ArtilleryStrike);
-            #endregion
+
+            #endregion Damage
 
             #region Buffs
+
             _commandList.Add("InvokeBuff", InvokeBuff);
             _commandList.Add("InvokeChildBuff", InvokeChildBuff);
             _commandList.Add("InvokeBuffOnPet", InvokeBuffOnPet);
@@ -126,9 +134,11 @@ namespace WorldServer.World.Abilities.Buffs
             _commandList.Add("ReapplyGroupBuff", ReapplyGroupBuff);
             _commandList.Add("CleanseDebuffType", CleanseDebuffType);
             _commandList.Add("RemoveBuff", RemoveBuff);
-            #endregion
+
+            #endregion Buffs
 
             #region Resource Management
+
             _commandList.Add("SetCareerRes", SetCareerRes);
             _commandList.Add("ModifyCareerRes", ModifyCareerRes);
             _commandList.Add("SetAP", SetAp);
@@ -137,9 +147,10 @@ namespace WorldServer.World.Abilities.Buffs
             _commandList.Add("ModifyMorale", ModifyMorale);
             _commandList.Add("Panic", Panic);
 
-            #endregion
+            #endregion Resource Management
 
             #region Stats
+
             _commandList.Add("ModifyStat", ModifyStat);
             _commandList.Add("ModifyStatNoStack", ModifyStatNoStack);
             _commandList.Add("ModifyStatByNearbyFoes", ModifyStatByNearbyFoes);
@@ -154,9 +165,11 @@ namespace WorldServer.World.Abilities.Buffs
             _commandList.Add("ModifyStatRealmwise", ModifyStatRealmwise);
             _commandList.Add("GiftItemStatTo", GiftItemStatTo);
             _commandList.Add("AddItemStatMultiplier", AddItemStatMultiplier);
-            #endregion
+
+            #endregion Stats
 
             #region Crowd Control
+
             _commandList.Add("ModifySpeed", ModifySpeed);
             _commandList.Add("Root", Root);
             _commandList.Add("Grapple", Grapple);
@@ -166,9 +179,11 @@ namespace WorldServer.World.Abilities.Buffs
             _commandList.Add("Pull", Pull);
             _commandList.Add("RiftPull", RiftPull);
             _commandList.Add("CCGuard", CCGuard);
-            #endregion
+
+            #endregion Crowd Control
 
             #region Utility
+
             _commandList.Add("GrantTempAbility", GrantTempAbility);
             _commandList.Add("DetauntDamage", DetauntDamage);
             _commandList.Add("AddBuffLine", AddBuffParameter);
@@ -183,16 +198,20 @@ namespace WorldServer.World.Abilities.Buffs
             _commandList.Add("ResourceHandler", ResourceHandler);
             _commandList.Add("GfxMod", GfxMod);
             _commandList.Add("BlockScenarioQueue", BlockScenarioQueue);
-            #endregion
+
+            #endregion Utility
 
             #region Archetype Specific
+
             _commandList.Add("HoldTheLine", HoldTheLine);
             _commandList.Add("TauntDamage", TauntMob);
             _commandList.Add("Challenge", TauntMob);
             _commandList.Add("MoveAndShoot", MoveAndShoot);
-            #endregion
+
+            #endregion Archetype Specific
 
             #region Class Specific
+
             _commandList.Add("BerserkerRegen", BerserkerRegen);
             _commandList.Add("GitToTheChoppa", GitToTheChoppa);
             _commandList.Add("ObjectEffectState", ObjectEffectState);
@@ -200,13 +219,17 @@ namespace WorldServer.World.Abilities.Buffs
             _commandList.Add("BounceBuff", BounceBuff);
             _commandList.Add("RestoreAPOnDeath", RestoreAPOnDeath);
             _commandList.Add("RefreshIfMoving", RefreshIfMoving);
-            #endregion
+
+            #endregion Class Specific
 
             #region NPCs
+
             _commandList.Add("SpawnCreature", SpawnCreature);
-            #endregion
+
+            #endregion NPCs
 
             #region Pets
+
             _commandList.Add("ManagePetAbilities", ManagePetAbilities);
             _commandList.Add("ResetAttackTimer", ResetAttackTimer);
             _commandList.Add("MasterPetModifyStat", MasterPetModifyStat);
@@ -216,9 +239,11 @@ namespace WorldServer.World.Abilities.Buffs
             _commandList.Add("TickMoraleIfHasPet", TickMoraleIfHasPet);
             _commandList.Add("DismissPet", DismissPet);
             _commandList.Add("SummonVanityPet", SummonVanityPet);
-            #endregion
+
+            #endregion Pets
 
             #region Items
+
             _commandList.Add("Mount", Mount);
             _commandList.Add("Backpack", Backpack);
             _commandList.Add("GreatweaponMastery", GreatweaponMastery);
@@ -226,9 +251,10 @@ namespace WorldServer.World.Abilities.Buffs
             _commandList.Add("ModifyStatIfHasShield", ModifyStatIfHasShield);
             _commandList.Add("ModifyPercentageStatIfHasShield", ModifyPercentageStatIfHasShield);
             _commandList.Add("ItemSwap", ItemSwap);
-            #endregion
 
-            #endregion
+            #endregion Items
+
+            #endregion General Commands
 
             _abUseCommandList.Add("DamageByAbilityType", DamageByAbilityType);
             _abUseCommandList.Add("ModifyAP", AbEventModifyAp);
@@ -239,6 +265,7 @@ namespace WorldServer.World.Abilities.Buffs
             #region Damage Event Commands
 
             #region Damage
+
             _damageEventCommandList.Add("DealDamage", DealDamage);
             _damageEventCommandList.Add("DealProcDamage", DealProcDamage);
             _damageEventCommandList.Add("HealHPBelow", HealHPBelow);
@@ -249,38 +276,48 @@ namespace WorldServer.World.Abilities.Buffs
             _damageEventCommandList.Add("ReduceDamage", ReduceDamage);
             _damageEventCommandList.Add("DamageByCareerResource", DamageByCareerResource);
             _damageEventCommandList.Add("SelfRez", SelfRez);
-            #endregion
+
+            #endregion Damage
 
             #region Buffs
+
             _damageEventCommandList.Add("InvokeBuff", InvokeBuff);
             _damageEventCommandList.Add("InvokeBuffIfResAttack", InvokeBuffIfResAttack);
             _damageEventCommandList.Add("RemoveBuff", RemoveBuff);
-            #endregion
+
+            #endregion Buffs
 
             #region Resource
+
             _damageEventCommandList.Add("ModifyAP", EventModifyAp);
             _damageEventCommandList.Add("ModifyCareerRes", EventModifyCareerRes);
             _damageEventCommandList.Add("ModifyCareerResOver", BuffOverrideModifyCareerRes);
             _damageEventCommandList.Add("SetCareerRes", EventSetCareerRes);
             _damageEventCommandList.Add("ModifyMorale", EventModifyMorale);
-            #endregion
+
+            #endregion Resource
 
             #region Archetype
+
             _damageEventCommandList.Add("TauntDamage", TauntDamage);
             _damageEventCommandList.Add("Challenge", ChallengeDamage);
             _damageEventCommandList.Add("TauntRemoveStack", TauntRemoveStack);
-            #endregion
+
+            #endregion Archetype
 
             #region Utility
+
             _damageEventCommandList.Add("DetauntDamage", EventDetauntDamage);
             _damageEventCommandList.Add("RemoveStack", RemoveStack);
             _damageEventCommandList.Add("CastPlayerEffect", EventCastPlayerEffect);
             _damageEventCommandList.Add("PuntEnemy", PuntEnemy);
             _damageEventCommandList.Add("SoftRefresh", SoftRefresh);
             _damageEventCommandList.Add("ResourceHandler", ResourceHandler);
-            #endregion
+
+            #endregion Utility
 
             #region Class Specific
+
             _damageEventCommandList.Add("SpreadBuff", SpreadBuff);
             _damageEventCommandList.Add("DaGreenest", DaGreenest);
             _damageEventCommandList.Add("IncreaseCritDamageByHPLost", IncreaseCritDamageByHPLost);
@@ -295,11 +332,13 @@ namespace WorldServer.World.Abilities.Buffs
             _damageEventCommandList.Add("CleanseDebuffType", CleanseDebuffType);
             _damageEventCommandList.Add("TransferDamage", TransferDamage);
             _damageEventCommandList.Add("BroadSwings", BroadSwings);
-            #endregion
 
-            #endregion
+            #endregion Class Specific
+
+            #endregion Damage Event Commands
 
             #region Pet Event Commands
+
             _petEventCommandList.Add("MasterPetModifyStat", MasterPetModifyStat);
             _petEventCommandList.Add("PetModifyStat", PetModifyStat);
             _petEventCommandList.Add("PetModifySpeed", PetModifySpeed);
@@ -308,15 +347,18 @@ namespace WorldServer.World.Abilities.Buffs
             _petEventCommandList.Add("InvokeAuraOnPet", InvokeAuraOnPet);
             _petEventCommandList.Add("MasterInvokeBuffOnPetDie", MasterInvokeBuffOnPetDie);
             _petEventCommandList.Add("MasterModifyMoraleOnPetDie", MasterModifyMoraleOnPetDie);
-            #endregion
+
+            #endregion Pet Event Commands
 
             #region Resource Event Commands
+
             _resourceEventCommandList.Add("ModifyCareerRes", ResEventModifyCareerRes);
             _resourceEventCommandList.Add("ModifyStatByResourceLevel", ResEventModifyStatByResourceLevel);
             _resourceEventCommandList.Add("ModifyPercentageStatByResourceLevel", ResEventModifyPercentageStatByResourceLevel);
             _resourceEventCommandList.Add("ModifyStatIfHasResource", ResEventModifyStatIfHasResource);
             _resourceEventCommandList.Add("ViolentImpacts", ViolentImpacts);
-            #endregion
+
+            #endregion Resource Event Commands
 
             _itemEventCommandList.Add("GreatweaponMastery", EventGreatweaponMastery);
             _itemEventCommandList.Add("OppressingBlows", EventOppressingBlows);
@@ -383,7 +425,6 @@ namespace WorldServer.World.Abilities.Buffs
                         var possibleTargets = hostBuff.Caster.GetInRange<Creature>(cmd.EffectRadius).Where(x => x.Entry == cmd.SecondaryValue).ToList();
                         var rand = StaticRandom.Instance.Next(possibleTargets.Count);
                         target = possibleTargets[rand];
-                        
                     }
 
                     if (target == null || !_commandList[cmd.CommandName](hostBuff, cmd, target))
@@ -571,7 +612,7 @@ namespace WorldServer.World.Abilities.Buffs
             return _eventChecks[cmd.EventCheck](hostBuff, damageInfo, cmd.EventCheckParam, eventInstigator);
         }
 
-        #endregion
+        #endregion Interface
 
         #region Targeting
 
@@ -581,14 +622,17 @@ namespace WorldServer.World.Abilities.Buffs
             {
                 case CommandTargetTypes.Enemy:
                     return hostBuff.Caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY);
+
                 case CommandTargetTypes.CareerTarget:
                     return ((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest();
+
                 case CommandTargetTypes.Host: return hostBuff.Target;
                 case CommandTargetTypes.AllyOrSelf:
                     Unit allyTarget = hostBuff.Caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ALLY);
                     if (allyTarget == null || allyTarget.IsDead || !CombatInterface.IsFriend(hostBuff.Caster, allyTarget) || (allyTarget is Creature && !(allyTarget is Pet)))
                         return hostBuff.Caster;
                     return allyTarget;
+
                 case CommandTargetTypes.Ally: return hostBuff.Caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ALLY);
                 case CommandTargetTypes.Caster: return hostBuff.Caster;
                 case CommandTargetTypes.AllyOrCareerTarget:
@@ -601,6 +645,7 @@ namespace WorldServer.World.Abilities.Buffs
                         return allyPetTarget == hostBuff.Caster ? null : allyPetTarget;
                     }
                     return allyPetTarget == hostBuff.Caster ? null : allyPetTarget;
+
                 default: return hostBuff.Target;
             }
         }
@@ -633,7 +678,6 @@ namespace WorldServer.World.Abilities.Buffs
                             if (source.CanHitWithAoE(member, myCommand.EffectAngle, myCommand.EffectRadius))
                                 myTargetList.Add(member);
                         }
-
                         else if (member.ObjectWithinRadiusFeet(source, myCommand.EffectRadius))
                             myTargetList.Add(member);
                     }
@@ -645,7 +689,7 @@ namespace WorldServer.World.Abilities.Buffs
                 }
             }
 
-            #endregion
+            #endregion Group
 
             else
             {
@@ -695,7 +739,6 @@ namespace WorldServer.World.Abilities.Buffs
                                     if (source.CanHitWithAoE(curTarget, myCommand.EffectAngle, myCommand.EffectRadius))
                                         ++alliesFound;
                                 }
-
                                 else if (curTarget.ObjectWithinRadiusFeet(source, myCommand.EffectRadius) && source.LOSHit(curTarget))
                                     ++alliesFound;
                             }
@@ -727,7 +770,6 @@ namespace WorldServer.World.Abilities.Buffs
                                         myTargetList.Add(curTarget);
                                         myRangeList.Add(dist);
                                     }
-
                                     else
                                     {
                                         myTargetList.Insert(i, curTarget);
@@ -758,7 +800,6 @@ namespace WorldServer.World.Abilities.Buffs
                                     myTargetList.Add(curTarget);
                                     myRangeList.Add(dist);
                                 }
-
                                 else
                                 {
                                     myTargetList.Insert(i, curTarget);
@@ -775,7 +816,6 @@ namespace WorldServer.World.Abilities.Buffs
                             }
                         }
                     }
-
                     else if (curTarget.ObjectWithinRadiusFeet(source, myCommand.EffectRadius) && source.LOSHit(curTarget))
                     {
                         ulong dist = source.GetDistanceSquare(curTarget);
@@ -790,7 +830,6 @@ namespace WorldServer.World.Abilities.Buffs
                                 myTargetList.Add(curTarget);
                                 myRangeList.Add(dist);
                             }
-
                             else
                             {
                                 myTargetList.Insert(i, curTarget);
@@ -808,7 +847,6 @@ namespace WorldServer.World.Abilities.Buffs
                     }
                 }
 
-
                 hostBuff.AoEMod = 1f - (alliesFound * 0.2f);
                 if (myTargetList.Count > 6)
                     hostBuff.AoEMod += (myTargetList.Count - 6) * 0.3f;
@@ -819,11 +857,12 @@ namespace WorldServer.World.Abilities.Buffs
             return myTargetList;
         }
 
-        #endregion
+        #endregion Targeting
 
         #region Commands
 
         #region Damage
+
         private static bool DealDamage(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
             if (hostBuff.BuffState == BUFF_REMOVE && (hostBuff.WasManuallyRemoved || cmd.SecondaryValue == 0))
@@ -890,7 +929,6 @@ namespace WorldServer.World.Abilities.Buffs
             if (cmd.DamageInfo.IsHeal)
                 CombatManager.ProcHealTarget(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
             else CombatManager.InflictProcDamage(damageThisPass, hostBuff.BuffLevel, hostBuff.Caster, target);
-
 
             if ((cmd.EffectRadius == 0 || cmd.CommandResult == 0) && hostBuff.BuffState == BUFF_START)
                 hostBuff.AddBuffParameter(cmd.BuffLine, (int)(damageThisPass.Damage + damageThisPass.Mitigation));
@@ -998,7 +1036,6 @@ namespace WorldServer.World.Abilities.Buffs
 
         private static bool IllegalZone(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
-
             if (hostBuff.BuffState == BUFF_START)
             {
                 hostBuff.Caster.GetPlayer().SendClientMessage("The gods are angry that you are trying to leave the world, turn back now!", ChatLogFilters.CHATLOGFILTERS_C_ORANGE_L);
@@ -1006,7 +1043,6 @@ namespace WorldServer.World.Abilities.Buffs
 
             if (hostBuff.BuffState == BUFF_END)
             {
-
                 hostBuff.Caster.ReceiveDamage(hostBuff.Caster, int.MaxValue);
 
                 PacketOut damageOut = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 24);
@@ -1178,7 +1214,6 @@ namespace WorldServer.World.Abilities.Buffs
         {
             // We are handling terror here
 
-
             Player t = hostBuff.Target as Player;
             Player c = hostBuff.Caster as Player;
 
@@ -1201,8 +1236,6 @@ namespace WorldServer.World.Abilities.Buffs
                     hostBuff.OptionalObject = new Point3D(hostBuff.Caster.WorldPosition);
                     ((Player)hostBuff.Target).SendDialog(Dialog.ResurrectionOffer, hostBuff.Caster.Oid, 60);
                     hostBuff.AddBuffParameter(cmd.BuffLine, -1);
-
-
 
                     break;
             }
@@ -1286,12 +1319,12 @@ namespace WorldServer.World.Abilities.Buffs
             return true;
         }
 
-        #endregion
+        #endregion Damage
 
         #region Siege
 
         /// <summary>
-        /// Strikes all targets within the specified command radius. 
+        /// Strikes all targets within the specified command radius.
         /// Inflicts damage to each target which is scaled by the number of additional targets present within a certain distance.
         /// </summary>
         private static bool ArtilleryStrike(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
@@ -1407,8 +1440,7 @@ namespace WorldServer.World.Abilities.Buffs
             }
         }
 
-
-        #endregion
+        #endregion Siege
 
         #region Resources
 
@@ -1429,6 +1461,7 @@ namespace WorldServer.World.Abilities.Buffs
                     if (cmd.InvokeOn == BUFF_START || cmd.TertiaryValue == 1)
                         goto case BUFF_TICK;
                     break;
+
                 case BUFF_TICK:
                 case BUFF_END:
                     Player player = (Player)hostBuff.Caster;
@@ -1486,7 +1519,6 @@ namespace WorldServer.World.Abilities.Buffs
                         hostBuff.RemoveStack();
                     break;
             }
-
 
             return true;
         }
@@ -1554,9 +1586,11 @@ namespace WorldServer.World.Abilities.Buffs
                 case BUFF_START:
                     plr.ChangePanicState(true);
                     break;
+
                 case BUFF_END:
                     plr.ChangePanicState(false);
                     break;
+
                 case BUFF_REMOVE:
                     goto case BUFF_END;
             }
@@ -1564,7 +1598,7 @@ namespace WorldServer.World.Abilities.Buffs
             return true;
         }
 
-        #endregion
+        #endregion Resources
 
         #region Stats
 
@@ -1592,9 +1626,11 @@ namespace WorldServer.World.Abilities.Buffs
 
                     hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
                     break;
+
                 case BUFF_TICK:
                     Log.Error("BuffEffectInvoker", "ModifyStat from " + hostBuff.Entry + " should never tick!");
                     break;
+
                 case BUFF_END:
                 case BUFF_REMOVE:
                     if (cmd.CommandResult < 0)
@@ -1622,14 +1658,17 @@ namespace WorldServer.World.Abilities.Buffs
 
                     hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
                     break;
+
                 case BUFF_TICK:
                     Log.Error("BuffEffectInvoker", "ModifyStatNoStack from " + hostBuff.Entry + " should never tick!");
                     break;
+
                 case BUFF_END:
                     if (cmd.CommandResult < 0)
                         target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     break;
+
                 case BUFF_REMOVE:
                     goto case 4;
             }
@@ -1661,12 +1700,14 @@ namespace WorldServer.World.Abilities.Buffs
                     for (byte i = 1; i <= ((Player)hostBuff.Caster).CrrInterface.GetResourceLevelMax((byte)cmd.EventCheckParam); ++i)
                         hostBuff.AddBuffParameter(i, cmd.SecondaryValue * i);
                     break;
+
                 case BUFF_END:
                     if (cmd.CommandResult < 0)
                         target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     else if (cmd.CommandResult > 0)
                         target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     break;
+
                 case BUFF_REMOVE:
                     goto case 4;
             }
@@ -1698,11 +1739,13 @@ namespace WorldServer.World.Abilities.Buffs
                     else
                         hostBuff.AddBuffParameter(cmd.BuffLine, 100 + cmd.CommandResult);
                     break;
+
                 case BUFF_END:
                     if (cmd.CommandResult < 0)
                         target.StsInterface.RemoveReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
                     else target.StsInterface.RemoveBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
                     break;
+
                 case BUFF_REMOVE:
                     goto case 4;
             }
@@ -1729,6 +1772,7 @@ namespace WorldServer.World.Abilities.Buffs
 
                     hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
                     break;
+
                 case BUFF_END:
                     if (cmd.CommandResult < 0)
                         target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
@@ -1737,6 +1781,7 @@ namespace WorldServer.World.Abilities.Buffs
                     cmd.CommandResult = 0;
 
                     break;
+
                 case BUFF_REMOVE: goto case 4;
             }
 
@@ -1782,21 +1827,23 @@ namespace WorldServer.World.Abilities.Buffs
 
                     hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
                     break;
+
                 case BUFF_TICK:
                     Log.Error("BuffEffectInvoker", "ModifyStat should never tick!");
                     break;
+
                 case BUFF_END:
                     if (cmd.CommandResult < 0)
                         target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     break;
+
                 case BUFF_REMOVE:
                     goto case 4;
             }
 
             return true;
         }
-
 
         private static bool ModifyStatByNearbyAllies(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
@@ -1824,7 +1871,6 @@ namespace WorldServer.World.Abilities.Buffs
 
                     cmd.CommandResult *= count;
 
-
                     if (cmd.CommandResult < 0)
                         target.StsInterface.AddReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     else
@@ -1832,14 +1878,17 @@ namespace WorldServer.World.Abilities.Buffs
 
                     hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
                     break;
+
                 case BUFF_TICK:
                     Log.Error("BuffEffectInvoker", "ModifyStat should never tick!");
                     break;
+
                 case BUFF_END:
                     if (cmd.CommandResult < 0)
                         target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     break;
+
                 case BUFF_REMOVE:
                     goto case 4;
             }
@@ -1873,19 +1922,21 @@ namespace WorldServer.World.Abilities.Buffs
                     if (count > cmd.MaxTargets)
                         count = cmd.MaxTargets;
 
-
                     cmd.CommandResult = count;
 
                     target.StsInterface.AddReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult * cmd.SecondaryValue) * 0.01f, hostBuff.GetBuffClass(cmd));
 
                     hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
                     break;
+
                 case BUFF_TICK:
                     Log.Error("BuffEffectInvoker", "ModifyStat should never tick!");
                     break;
+
                 case BUFF_END:
                     target.StsInterface.RemoveReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult * cmd.SecondaryValue) * 0.01f, hostBuff.GetBuffClass(cmd));
                     break;
+
                 case BUFF_REMOVE:
                     goto case 4;
             }
@@ -1903,9 +1954,11 @@ namespace WorldServer.World.Abilities.Buffs
                     target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
                     break;
+
                 case BUFF_END:
                     target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     break;
+
                 case BUFF_REMOVE:
                     goto case 4;
             }
@@ -1930,11 +1983,13 @@ namespace WorldServer.World.Abilities.Buffs
                     else
                         hostBuff.AddBuffParameter(cmd.BuffLine, 100 + cmd.CommandResult);
                     break;
+
                 case BUFF_END:
                     if (cmd.CommandResult < 0)
                         target.StsInterface.RemoveReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
                     else target.StsInterface.RemoveBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
                     break;
+
                 case BUFF_REMOVE:
                     goto case 4;
                 default:
@@ -1962,11 +2017,13 @@ namespace WorldServer.World.Abilities.Buffs
                     else
                         hostBuff.AddBuffParameter(cmd.BuffLine, 100 + cmd.CommandResult);
                     break;
+
                 case BUFF_END:
                     if (cmd.CommandResult < 0)
                         target.StsInterface.RemoveReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
                     else target.StsInterface.RemoveBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
                     break;
+
                 case BUFF_REMOVE:
                     goto case 4;
                 default:
@@ -2000,16 +2057,18 @@ namespace WorldServer.World.Abilities.Buffs
                         hostBuff.AddBuffParameter((byte)(cmd.BuffLine + 1), cmd.CommandResult);
                     }
 
-
                     break;
+
                 case BUFF_TICK:
                     Log.Error("BuffEffectInvoker", "ModifyStat should never tick!");
                     break;
+
                 case BUFF_END:
                     if (hostBuff.Caster.Realm != target.Realm)
                         target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     break;
+
                 case BUFF_REMOVE:
                     goto case 4;
             }
@@ -2074,9 +2133,11 @@ namespace WorldServer.World.Abilities.Buffs
                         hostBuff.AddBuffParameter(cmd.BuffLine, speedMod);
                     }
                     break;
+
                 case BUFF_TICK:
                     Log.Error("BuffEffectInvoker", "ModifySpeed from Entry " + hostBuff.Entry + " should never tick!");
                     break;
+
                 case BUFF_END:
                 case BUFF_REMOVE:
                     if (target.StsInterface != null && cmd.CommandResult == 0)
@@ -2086,9 +2147,10 @@ namespace WorldServer.World.Abilities.Buffs
             return true;
         }
 
-        #endregion
+        #endregion Stats
 
         #region CC
+
         /// <summary>
         /// <para>Applies any type of hard CC to the target.</para>
         /// <para>PrimaryValue: The type of CC to apply.</para>
@@ -2102,7 +2164,7 @@ namespace WorldServer.World.Abilities.Buffs
                     hostBuff.CrowdControl = (byte)(hostBuff.CrowdControl | Math.Min(cmd.PrimaryValue, 16));
                     if (target.StsInterface != null)
                     {
-                        // Hurried Restore / Dat Makes Me Dizzy 
+                        // Hurried Restore / Dat Makes Me Dizzy
                         //if (hostBuff.Caster != hostBuff.Target)
                         //{
                         if (target.ImmuneToCC(hostBuff.CrowdControl, hostBuff.Caster, hostBuff.Entry))
@@ -2124,13 +2186,14 @@ namespace WorldServer.World.Abilities.Buffs
                         target.CrowdControlType = (byte)cmd.PrimaryValue;
                         target.AbtInterface.OnPlayerCCed();
 
-                        // 
+                        //
                         if ((cmd.PrimaryValue == 16) && (cmd.SecondaryValue == 1))
                         {
                             (hostBuff.Caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.KNOCK_DOWN);
                         }
 
                         #region Client Effect
+
                         if (cmd.PrimaryValue >= 16)
                         {
                             target.StsInterface.AddVelocityModifier(hostBuff, 0);
@@ -2147,7 +2210,9 @@ namespace WorldServer.World.Abilities.Buffs
                             Out.WriteByte(0);
                             target.DispatchPacket(Out, true);
                         }
-                        #endregion
+
+                        #endregion Client Effect
+
                         hostBuff.AddBuffParameter(cmd.BuffLine, 0);
                     }
                     break;
@@ -2158,6 +2223,7 @@ namespace WorldServer.World.Abilities.Buffs
                         target.CrowdControlType = 0;
 
                         #region ClientEffect
+
                         if (cmd.PrimaryValue >= 16)
                         {
                             target.StsInterface.RemoveVelocityModifier(hostBuff);
@@ -2177,18 +2243,21 @@ namespace WorldServer.World.Abilities.Buffs
                             else if (hostBuff.Caster.IsPlayer())
                                 ((Player)hostBuff.Caster).DispatchPacket(Out, true);
                         }
-                        #endregion
+
+                        #endregion ClientEffect
                     }
 
                     hostBuff.DeleteBuffParameter(cmd.BuffLine);
                     hostBuff.Resend();
                     break;
+
                 case BUFF_END:
                     if (cmd.CommandResult == 0)
                     {
                         target.CrowdControlType = 0;
 
                         #region ClientEffect
+
                         if (cmd.PrimaryValue >= 16)
                         {
                             target.StsInterface.RemoveVelocityModifier(hostBuff);
@@ -2208,9 +2277,11 @@ namespace WorldServer.World.Abilities.Buffs
                             else if (hostBuff.Caster.IsPlayer())
                                 ((Player)hostBuff.Caster).DispatchPacket(Out, true);
                         }
-                        #endregion
+
+                        #endregion ClientEffect
                     }
                     break;
+
                 case BUFF_REMOVE:
                     goto case 4;
             }
@@ -2228,7 +2299,6 @@ namespace WorldServer.World.Abilities.Buffs
                     {
                         if (cmd.PrimaryValue == 1)
                             target.StsInterface.AddVelocityModifier(hostBuff, 0);
-
                         else if (target.ImmuneToCC((int)CrowdControlTypes.Root, hostBuff.Caster, hostBuff.Entry) || !target.TryRoot(hostBuff))
                         {
                             cmd.CommandResult = 1;
@@ -2241,10 +2311,12 @@ namespace WorldServer.World.Abilities.Buffs
                     }
 
                     break;
+
                 case BUFF_END:
                     if (cmd.CommandResult == 0)
                         target.StsInterface?.RemoveVelocityModifier(hostBuff);
                     break;
+
                 case BUFF_REMOVE:
                     goto case 4;
             }
@@ -2270,6 +2342,7 @@ namespace WorldServer.World.Abilities.Buffs
                         hostBuff.AddBuffParameter(cmd.BuffLine, 0);
                     }
                     break;
+
                 case BUFF_END:
                     if (cmd.CommandResult == 0 && target.StsInterface != null)
                     {
@@ -2277,6 +2350,7 @@ namespace WorldServer.World.Abilities.Buffs
                         target.NoKnockbacks = false;
                     }
                     break;
+
                 case BUFF_REMOVE:
                     goto case 4;
             }
@@ -2293,9 +2367,11 @@ namespace WorldServer.World.Abilities.Buffs
                     if (cmd.PrimaryValue == 1)
                         target.SetImmovable(true);
                     break;
+
                 case BUFF_END:
                     target.SetImmovable(false);
                     break;
+
                 case BUFF_REMOVE:
                     goto case 4;
             }
@@ -2356,7 +2432,6 @@ namespace WorldServer.World.Abilities.Buffs
         {
             if (target is Player)
                 ((Player)target).ApplyWindsKnockback(hostBuff.Caster, AbilityMgr.GetKnockbackInfo(cmd.Entry, cmd.PrimaryValue));
-
             else
                 target.ApplyKnockback(hostBuff.Caster, null);
 
@@ -2403,32 +2478,37 @@ namespace WorldServer.World.Abilities.Buffs
                             hostBuff.AddBuffParameter(1, 2);
                             hostBuff.AddBuffParameter(4, 2);
                             break;
+
                         case 8095:
                         case 9395:
                             hostBuff.AddBuffParameter(1, 2);
                             hostBuff.AddBuffParameter(4, 2);
                             break;
+
                         case 8408:
                         case 9173:
                             hostBuff.AddBuffParameter(4, 2);
                             hostBuff.AddBuffParameter(5, 2);
                             hostBuff.AddBuffParameter(6, 2);
                             break;
+
                         default:
                             hostBuff.AddBuffParameter(cmd.BuffLine, 2);
                             break;
                     }
                     break;
+
                 case BUFF_END:
                     target.RemoveCrowdControlImmunity(cmd.PrimaryValue);
                     break;
+
                 case BUFF_REMOVE:
                     goto case 4;
             }
             return true;
         }
 
-        #endregion
+        #endregion CC
 
         #region DamageMod
 
@@ -2441,6 +2521,7 @@ namespace WorldServer.World.Abilities.Buffs
                     hostBuff.Type = (BuffTypes)((int)hostBuff.Type | 32);
                     hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
                     break;
+
                 default:
                     Log.Error("BuffEffectInvoker", "Shield from entry " + hostBuff.Entry + " invoked in unsupported state!");
                     break;
@@ -2464,11 +2545,12 @@ namespace WorldServer.World.Abilities.Buffs
                     break;
                 /*case BUFF_END:
                     if (target.Detaunters.ContainsKey(hostBuff.Caster.Oid))
-                    { 
+                    {
                         target.Detaunters.Remove(hostBuff.Caster.Oid);
                         Log.Texte("Removing...", "Removing...", ConsoleColor.Cyan);
                     }
                 break;
+
                 case BUFF_REMOVE:
                     if (target.Detaunters.ContainsKey(hostBuff.Caster.Oid))
                     {
@@ -2494,11 +2576,10 @@ namespace WorldServer.World.Abilities.Buffs
             return true;
         }
 
-        #endregion
+        #endregion DamageMod
 
         #region Item
 
-        
         private static bool GreatweaponMastery(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
             Item myItem = hostBuff.Caster.ItmInterface.GetItemInSlot((ushort)EquipSlot.MAIN_HAND);
@@ -2523,6 +2604,7 @@ namespace WorldServer.World.Abilities.Buffs
                     hostBuff.Target.StsInterface.RemoveBonusMultiplier(Stats.OutgoingDamagePercent, 0.1f, hostBuff.GetBuffClass(cmd));
                     hostBuff.Target.StsInterface.RemoveBonusStat(Stats.Parry, 5, hostBuff.GetBuffClass(cmd));
                     break;
+
                 case BUFF_REMOVE: goto case 4;
             }
 
@@ -2550,6 +2632,7 @@ namespace WorldServer.World.Abilities.Buffs
                         return true;
                     hostBuff.Target.StsInterface.RemoveBonusStat(Stats.CriticalHitRate, 15, hostBuff.GetBuffClass(cmd));
                     break;
+
                 case BUFF_REMOVE: goto case 4;
             }
 
@@ -2576,6 +2659,7 @@ namespace WorldServer.World.Abilities.Buffs
 
                     hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
                     break;
+
                 case BUFF_END:
                     if (cmd.CommandResult == 0)
                         break;
@@ -2583,6 +2667,7 @@ namespace WorldServer.World.Abilities.Buffs
                         target.StsInterface.RemoveReducedStat((Stats)cmd.PrimaryValue, (ushort)-cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     else target.StsInterface.RemoveBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     break;
+
                 case BUFF_REMOVE: goto case 4;
             }
 
@@ -2609,6 +2694,7 @@ namespace WorldServer.World.Abilities.Buffs
 
                     hostBuff.AddBuffParameter(cmd.BuffLine, cmd.CommandResult);
                     break;
+
                 case BUFF_END:
                     if (cmd.CommandResult == 0)
                         break;
@@ -2616,6 +2702,7 @@ namespace WorldServer.World.Abilities.Buffs
                         target.StsInterface.RemoveReducedMultiplier((Stats)cmd.PrimaryValue, (100 + cmd.CommandResult) * 0.01f, hostBuff.GetBuffClass(cmd));
                     else target.StsInterface.RemoveBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
                     break;
+
                 case BUFF_REMOVE: goto case 4;
             }
 
@@ -2689,6 +2776,7 @@ namespace WorldServer.World.Abilities.Buffs
                 case BUFF_START:
                     plr.MountFromBuff(hostBuff, (ushort)cmd.PrimaryValue, (ushort)cmd.SecondaryValue, 1f + (cmd.LastCommand.PrimaryValue * 0.01f));
                     break;
+
                 case BUFF_REMOVE:
                     // Send dismount smoke/effect
                     PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
@@ -2723,6 +2811,7 @@ namespace WorldServer.World.Abilities.Buffs
                 case BUFF_START:
                     plr.MountBackpackFromBuff(hostBuff, (ushort)cmd.PrimaryValue, 1f + (cmd.LastCommand.PrimaryValue * 0.01f));
                     break;
+
                 case BUFF_REMOVE:
                     // Send dismount smoke/effect
                     PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
@@ -2742,7 +2831,7 @@ namespace WorldServer.World.Abilities.Buffs
             return true;
         }
 
-        #endregion
+        #endregion Item
 
         #region Buff
 
@@ -2774,6 +2863,7 @@ namespace WorldServer.World.Abilities.Buffs
                     for (byte i = 0; i < 10; ++i)
                         hostBuff.AddBuffParameter(i, 1);
                     break;
+
                 case BUFF_END:
                     if (hostBuff.Caster.Realm == Realms.REALMS_REALM_ORDER)
                         target.OSInterface.RemoveEffect((byte)GameData.ObjectEffectState.OBJECTEFFECTSTATE_ORDER_CHICKEN);
@@ -2786,8 +2876,8 @@ namespace WorldServer.World.Abilities.Buffs
                     target.StsInterface.RemoveReducedMultiplier(Stats.Block, 0f, BuffClass.Career);
                     target.StsInterface.RemoveReducedMultiplier(Stats.Parry, 0f, BuffClass.Career);
 
-
                     break;
+
                 case BUFF_REMOVE:
                     goto case 4;
             }
@@ -2811,13 +2901,13 @@ namespace WorldServer.World.Abilities.Buffs
                         (hostBuff.Caster as Player)?.UpdatePlayerBountyEvent((byte)ContributionDefinitions.HOLD_THE_LINE);
                     }
                     break;
+
                 case BUFF_END:
                 case BUFF_REMOVE:
                     if (hostBuff.Caster == hostBuff.Target)
                         target.StsInterface.HTLStacks -= 3;
                     else --target.StsInterface.HTLStacks;
                     break;
-
             }
             return true;
         }
@@ -2862,6 +2952,7 @@ namespace WorldServer.World.Abilities.Buffs
                     hostBuff.AddBuffParameter(cmd.BuffLine, 1);
                     myPet?.BuffInterface.QueueBuff(new BuffQueueInfo(myPet, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue)));
                     break;
+
                 case BUFF_REMOVE:
                     myPet?.BuffInterface.RemoveBuffByEntry((ushort)cmd.PrimaryValue);
                     break;
@@ -2880,6 +2971,7 @@ namespace WorldServer.World.Abilities.Buffs
                     hostBuff.AddBuffParameter(cmd.BuffLine, 1);
                     myPet?.BuffInterface.QueueBuff(new BuffQueueInfo(myPet, hostBuff.BuffLevel, AbilityMgr.GetBuffInfo((ushort)cmd.PrimaryValue), CreateAura));
                     break;
+
                 case BUFF_REMOVE:
                     myPet?.BuffInterface.RemoveBuffByEntry((ushort)cmd.PrimaryValue);
                     break;
@@ -2962,16 +3054,15 @@ namespace WorldServer.World.Abilities.Buffs
                 return target.BuffInterface.CleanseDebuffType((byte)cmd.PrimaryValue, (byte)cmd.SecondaryValue) > 0;
             return false;
         }
+
         private static bool RemoveBuff(NewBuff hostbuff, BuffCommandInfo cmd, Unit target)
         {
-
-
             target.BuffInterface.RemoveBuffByEntry(Convert.ToUInt16(cmd.PrimaryValue));
 
             return true;
         }
 
-        #endregion
+        #endregion Buff
 
         #region Misc
 
@@ -2987,9 +3078,11 @@ namespace WorldServer.World.Abilities.Buffs
                 case BUFF_START:
                     plr.TacInterface.RegisterGeneralBuff(hostBuff);
                     break;
+
                 case BUFF_END:
                     plr.TacInterface.UnregisterGeneralBuff(hostBuff);
                     break;
+
                 case BUFF_REMOVE:
                     goto case BUFF_END;
             }
@@ -3004,6 +3097,7 @@ namespace WorldServer.World.Abilities.Buffs
                 case BUFF_START:
                     hostBuff.Target.AbtInterface.GrantAbility((ushort)cmd.PrimaryValue);
                     break;
+
                 case BUFF_END:
                 case BUFF_REMOVE:
                     hostBuff.Target.AbtInterface.RemoveGrantedAbility((ushort)cmd.PrimaryValue);
@@ -3021,9 +3115,11 @@ namespace WorldServer.World.Abilities.Buffs
                     target.BuffInterface.DetauntWard = true;
                     hostBuff.AddBuffParameter(1, cmd.BuffLine);
                     break;
+
                 case BUFF_END:
                     target.BuffInterface.DetauntWard = false;
                     break;
+
                 case BUFF_REMOVE: goto case 4;
             }
 
@@ -3096,11 +3192,13 @@ namespace WorldServer.World.Abilities.Buffs
                         hostBuff.Caster.CbtInterface.IsAttacking = false;
                     }
                     return true;
+
                 case BUFF_END:
                     target.OSInterface.RemoveEffect((byte)cmd.PrimaryValue);
                     if (cmd.PrimaryValue == (byte)GameData.ObjectEffectState.OBJECTEFFECTSTATE_STEALTH && hostBuff.Caster is Player)
                         ((Player)hostBuff.Caster).Uncloak();
                     return true;
+
                 case BUFF_REMOVE:
                     goto case 4;
                 default:
@@ -3139,6 +3237,7 @@ namespace WorldServer.World.Abilities.Buffs
                 case BUFF_START:
                     hostBuff.Caster.AbtInterface.SetCooldown(hostBuff.Entry, 120000, true);
                     break;
+
                 case BUFF_END:
                 case BUFF_REMOVE:
                     hostBuff.Caster.AbtInterface.SetCooldown(hostBuff.Entry, AbilityMgr.GetCooldownFor(hostBuff.Entry) * 1000);
@@ -3200,6 +3299,7 @@ namespace WorldServer.World.Abilities.Buffs
                 case BUFF_START:
                     hostBuff.AddBuffParameter(1, 1);
                     break;
+
                 case BUFF_END:
                     hostBuff.Target.BuffInterface.Hotswap(hostBuff, (ushort)cmd.PrimaryValue);
                     break;
@@ -3225,7 +3325,6 @@ namespace WorldServer.World.Abilities.Buffs
                     player.SendClientMessage("You are carrying a resource out of the RvR area. Holding a resource outside of the RvR area too long will cause it to reset.", ChatLogFilters.CHATLOGFILTERS_RVR);
                     player.SendClientMessage("Must return to the RvR area when carrying a resource!", player.Realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE);
                 }
-
                 else
                 {
                     HoldObjectBuff buff = (HoldObjectBuff)hostBuff;
@@ -3270,6 +3369,7 @@ namespace WorldServer.World.Abilities.Buffs
                     ((Player)hostBuff.Target).ScnInterface.BlockQueue = true;
                     hostBuff.AddBuffParameter(cmd.BuffLine, -1);
                     break;
+
                 case BUFF_END:
                 case BUFF_REMOVE:
                     ((Player)hostBuff.Target).ScnInterface.BlockQueue = false;
@@ -3279,9 +3379,10 @@ namespace WorldServer.World.Abilities.Buffs
             return true;
         }
 
-        #endregion
+        #endregion Misc
 
         #region NPCs
+
         private static bool SpawnCreature(NewBuff hostBuff, BuffCommandInfo cmd, Unit target)
         {
             switch (hostBuff.BuffState)
@@ -3335,7 +3436,7 @@ namespace WorldServer.World.Abilities.Buffs
             return false;
         }
 
-        #endregion
+        #endregion NPCs
 
         #region Pet
 
@@ -3382,15 +3483,16 @@ namespace WorldServer.World.Abilities.Buffs
                         myPlayer.SendClientMessage("You cannot summon vanity pet when you are flagged for RvR.", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
                     }
                     return true;
+
                 case BUFF_REMOVE:
                     if (myPlayer.Companion != null && myPlayer.Companion.IsVanity)
                     {
                         myPlayer.Companion.RemoveVanityPet();
                     }
                     return true;
+
                 default:
                     return true;
-
             }
         }
 
@@ -3406,9 +3508,11 @@ namespace WorldServer.World.Abilities.Buffs
                 case BUFF_START:
                     myPet.AddAbilities((ushort)cmd.PrimaryValue, (ushort)cmd.SecondaryValue);
                     return true;
+
                 case BUFF_END:
                     myPet.RemoveAbilities();
                     return true;
+
                 case BUFF_REMOVE:
                     goto case 4;
                 default:
@@ -3443,7 +3547,6 @@ namespace WorldServer.World.Abilities.Buffs
 
                     hostBuff.AddBuffParameter(cmd.BuffLine, (short)(cmd.SecondaryValue + (cmd.TertiaryValue - cmd.SecondaryValue) * ((hostBuff.BuffLevel - 1) / 39.0f)));
                     break;
-
 
                 case BUFF_REMOVE:
                     if (cmd.CommandResult > 0)
@@ -3481,6 +3584,7 @@ namespace WorldServer.World.Abilities.Buffs
                             myPet.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
                     }
                     break;
+
                 case BUFF_REMOVE:
                     myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
 
@@ -3548,6 +3652,7 @@ namespace WorldServer.World.Abilities.Buffs
                         myPet.StsInterface.AddVelocityModifier(hostBuff, cmd.PrimaryValue / 100f);
                     hostBuff.AddBuffParameter(cmd.BuffLine, 1);
                     break;
+
                 case BUFF_REMOVE:
                     myPet = (((Player)hostBuff.Caster).CrrInterface.GetTargetOfInterest() as Pet);
                     if (PetAlive(myPet))
@@ -3566,9 +3671,10 @@ namespace WorldServer.World.Abilities.Buffs
 
             return true;
         }
-        #endregion
 
-        #endregion
+        #endregion Pet
+
+        #endregion Commands
 
         #region AbilityUseCommands
 
@@ -3601,10 +3707,9 @@ namespace WorldServer.World.Abilities.Buffs
             {
                 CombatManager.HealTarget(cmd.DamageInfo, hostBuff.BuffLevel, hostBuff.Caster, hostBuff.Target);
             }
-
         }
 
-        #endregion
+        #endregion AbilityUseCommands
 
         #region PetEventCommands
 
@@ -3711,7 +3816,7 @@ namespace WorldServer.World.Abilities.Buffs
             }
         }
 
-        #endregion
+        #endregion PetEventCommands
 
         #region ResourceEventCommands
 
@@ -3819,7 +3924,7 @@ namespace WorldServer.World.Abilities.Buffs
             change = (byte)(change - 25);
         }
 
-        #endregion
+        #endregion ResourceEventCommands
 
         #region ItemEventCommands
 
@@ -3835,7 +3940,6 @@ namespace WorldServer.World.Abilities.Buffs
                 hostBuff.Target.StsInterface.AddBonusMultiplier(Stats.OutgoingDamagePercent, 0.1f, hostBuff.GetBuffClass(cmd));
                 hostBuff.Target.StsInterface.AddBonusStat(Stats.Parry, 5, hostBuff.GetBuffClass(cmd));
             }
-
             else
             {
                 cmd.CommandResult = 0;
@@ -3843,6 +3947,7 @@ namespace WorldServer.World.Abilities.Buffs
                 hostBuff.Target.StsInterface.RemoveBonusStat(Stats.Parry, 5, hostBuff.GetBuffClass(cmd));
             }
         }
+
         private static void EventOppressingBlows(NewBuff hostBuff, BuffCommandInfo cmd, Item_Info itemInfo)
         {
             if (itemInfo.TwoHanded ^ cmd.CommandResult == 0)
@@ -3853,7 +3958,6 @@ namespace WorldServer.World.Abilities.Buffs
                 cmd.CommandResult = 1;
                 hostBuff.Target.StsInterface.AddBonusStat(Stats.CriticalHitRate, 15, hostBuff.GetBuffClass(cmd));
             }
-
             else
             {
                 cmd.CommandResult = 0;
@@ -3877,7 +3981,6 @@ namespace WorldServer.World.Abilities.Buffs
                 else
                     hostBuff.Target.StsInterface.AddBonusStat((Stats)cmd.PrimaryValue, (ushort)cmd.CommandResult, hostBuff.GetBuffClass(cmd));
             }
-
             else
             {
                 if (cmd.CommandResult < 0)
@@ -3904,7 +4007,6 @@ namespace WorldServer.World.Abilities.Buffs
                 else
                     hostBuff.Target.StsInterface.AddBonusMultiplier((Stats)cmd.PrimaryValue, cmd.CommandResult * 0.01f, hostBuff.GetBuffClass(cmd));
             }
-
             else
             {
                 if (cmd.CommandResult < 0)
@@ -3915,11 +4017,12 @@ namespace WorldServer.World.Abilities.Buffs
             }
         }
 
-        #endregion
+        #endregion ItemEventCommands
 
         #region DamageEventCommands
 
         #region Damage
+
         private static bool DealDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
         {
             if (cmd.TargetType == CommandTargetTypes.EventInstigator)
@@ -4056,7 +4159,6 @@ namespace WorldServer.World.Abilities.Buffs
                 damageInfo.Mitigation = 0;
                 damageInfo.Absorption = 0;
             }
-
             else
             {
                 damageInfo.Damage *= damageReductionFactor;
@@ -4088,7 +4190,7 @@ namespace WorldServer.World.Abilities.Buffs
             return true;
         }
 
-        #endregion
+        #endregion Damage
 
         #region Resource
 
@@ -4120,12 +4222,9 @@ namespace WorldServer.World.Abilities.Buffs
             {
                 if (cmd.TertiaryValue != 1)
                     ((Player)hostBuff.Caster).CrrInterface.AddResourceOverride((byte)cmd.PrimaryValue, cmd.SecondaryValue == 1, false);
-
                 else
                     ((Player)hostBuff.Caster).CrrInterface.AddResourceOverride((byte)cmd.PrimaryValue, cmd.SecondaryValue == 1, true);
             }
-
-
             else if (!((Player)hostBuff.Caster).CrrInterface.ConsumeResource((byte)-cmd.PrimaryValue, cmd.SecondaryValue == 1))
             {
                 hostBuff.RemoveStack();
@@ -4158,7 +4257,7 @@ namespace WorldServer.World.Abilities.Buffs
             return true;
         }
 
-        #endregion
+        #endregion Resource
 
         #region Taunt/Detaunt
 
@@ -4206,7 +4305,7 @@ namespace WorldServer.World.Abilities.Buffs
             return true;
         }
 
-        #endregion
+        #endregion Taunt/Detaunt
 
         #region Stack Management
 
@@ -4225,7 +4324,7 @@ namespace WorldServer.World.Abilities.Buffs
             return true;
         }
 
-        #endregion
+        #endregion Stack Management
 
         #region Buff Spread
 
@@ -4247,7 +4346,6 @@ namespace WorldServer.World.Abilities.Buffs
 
             return true;
         }
-
 
         private static bool RemoveBuff(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
         {
@@ -4297,7 +4395,7 @@ namespace WorldServer.World.Abilities.Buffs
             return true;
         }
 
-        #endregion
+        #endregion Buff Spread
 
         #region Special
 
@@ -4349,6 +4447,7 @@ namespace WorldServer.World.Abilities.Buffs
         }
 
         #region MDPS
+
         private static bool BroadSwings(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
         {
             if (target == eventInstigator)
@@ -4360,9 +4459,10 @@ namespace WorldServer.World.Abilities.Buffs
             return true;
         }
 
-        #endregion
+        #endregion MDPS
 
         #region BattlefieldObjective
+
         private static bool DaGreenest(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
         {
             cmd.CommandResult = damageInfo.DamageType == 0 ? (short)3242 : (short)(3238 + (int)damageInfo.DamageType);
@@ -4374,9 +4474,11 @@ namespace WorldServer.World.Abilities.Buffs
 
             return true;
         }
-        #endregion
+
+        #endregion BattlefieldObjective
 
         #region WL
+
         private static bool AddCriticalChance(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
         {
             damageInfo.CriticalHitRate += (byte)cmd.PrimaryValue;
@@ -4390,7 +4492,8 @@ namespace WorldServer.World.Abilities.Buffs
 
             return true;
         }
-        #endregion
+
+        #endregion WL
 
         #region Slayer
 
@@ -4408,9 +4511,10 @@ namespace WorldServer.World.Abilities.Buffs
             return true;
         }
 
-        #endregion
+        #endregion Slayer
 
         #region SH
+
         private static bool ToiSplitDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
         {
             Unit myToi = (hostBuff.Caster as Player).CrrInterface.GetTargetOfInterest();
@@ -4430,16 +4534,19 @@ namespace WorldServer.World.Abilities.Buffs
 
             return true;
         }
-        #endregion
+
+        #endregion SH
 
         #region Engi/Magus
+
         private static bool EventSlay(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
         {
             target.ReceiveDamage(target, int.MaxValue);
 
             return true;
         }
-        #endregion
+
+        #endregion Engi/Magus
 
         #region AM/Shaman
 
@@ -4478,9 +4585,10 @@ namespace WorldServer.World.Abilities.Buffs
             return false;
         }
 
-        #endregion
+        #endregion AM/Shaman
 
         #region Zealot
+
         private static bool TransferDamage(NewBuff hostBuff, BuffCommandInfo cmd, AbilityDamageInfo damageInfo, Unit target, Unit eventInstigator)
         {
             Unit offTarget;
@@ -4490,9 +4598,11 @@ namespace WorldServer.World.Abilities.Buffs
                 case CommandTargetTypes.EventInstigator:
                     offTarget = eventInstigator;
                     break;
+
                 case CommandTargetTypes.Enemy:
                     offTarget = hostBuff.Caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY);
                     break;
+
                 default:
                     offTarget = target;
                     break;
@@ -4507,11 +4617,12 @@ namespace WorldServer.World.Abilities.Buffs
 
             return true;
         }
-        #endregion
 
-        #endregion
+        #endregion Zealot
 
-        #endregion
+        #endregion Special
+
+        #endregion DamageEventCommands
 
         #region Event Checks
 
@@ -4606,7 +4717,6 @@ namespace WorldServer.World.Abilities.Buffs
 
         private static bool MissingBuff(NewBuff hostBuff, AbilityDamageInfo damageInfo, uint value, Unit eventInstigator)
         {
-
             NewBuff buff = hostBuff.Caster.BuffInterface.GetBuff((ushort)value, null);
             if (buff != null && buff.BuffHasExpired)
             {
@@ -4717,7 +4827,7 @@ namespace WorldServer.World.Abilities.Buffs
             return true;
         }
 
-        #endregion
+        #endregion Event Checks
 
         #region Buff Creators
 
@@ -4755,6 +4865,7 @@ namespace WorldServer.World.Abilities.Buffs
         {
             return new BouncingBuff();
         }
-        #endregion
+
+        #endregion Buff Creators
     }
 }

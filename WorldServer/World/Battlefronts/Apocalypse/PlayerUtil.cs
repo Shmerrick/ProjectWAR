@@ -1,11 +1,11 @@
-﻿using GameData;
+﻿using Common.Database.World.Battlefront;
+using GameData;
 using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common.Database.World.Battlefront;
 using WorldServer.Managers;
 using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Objects;
@@ -16,7 +16,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public static readonly float HONOR_REDUCTION_PERCENT = 0.998f;
-
 
         public static byte CalculateRenownBand(byte playerRenown)
         {
@@ -63,7 +62,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-
         public static List<Player> GetOrderPlayersInZone(int zoneId)
         {
             lock (Player._Players)
@@ -94,7 +92,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             foreach (var player in eligiblePlayers)
             {
-               
                 try
                 {
                     var currentHonorPoints = player.Value.HonorPoints;
@@ -103,27 +100,27 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     if (currentHonorPoints < 10)
                         newHonorPoints = 0;
                     else
-                        newHonorPoints = (int) (currentHonorPoints * HONOR_REDUCTION_PERCENT);
+                        newHonorPoints = (int)(currentHonorPoints * HONOR_REDUCTION_PERCENT);
 
-                    player.Value.HonorPoints = (ushort) newHonorPoints;
+                    player.Value.HonorPoints = (ushort)newHonorPoints;
                     var oldHonorRank = player.Value.HonorRank;
 
                     // Recalculate Honor Rank
-                    var honorLevel = new Common.HonorCalculation().GetHonorLevel((int) newHonorPoints);
-                    player.Value.HonorRank = (ushort) honorLevel;
+                    var honorLevel = new Common.HonorCalculation().GetHonorLevel((int)newHonorPoints);
+                    player.Value.HonorRank = (ushort)honorLevel;
                     Logger.Trace(
-                        $"Updating honor for {player.Value.Name} [{currentHonorPoints-newHonorPoints}] ({player.Value.CharacterId}) Current => New Honor Pts: {currentHonorPoints} => {player.Value.HonorPoints} ({player.Value.HonorRank}) ");
-                    
+                        $"Updating honor for {player.Value.Name} [{currentHonorPoints - newHonorPoints}] ({player.Value.CharacterId}) Current => New Honor Pts: {currentHonorPoints} => {player.Value.HonorPoints} ({player.Value.HonorRank}) ");
+
                     CharMgr.Database.SaveObject(player.Value);
 
-                    PlayerUtil.RecordHonorHistory(currentHonorPoints, (ushort) newHonorPoints, 
+                    PlayerUtil.RecordHonorHistory(currentHonorPoints, (ushort)newHonorPoints,
                         player.Value.CharacterId, player.Value.Name);
 
                     if (announce)
                     {
                         if (honorLevel > oldHonorRank)
                         {
-                            var playerToAnnounce = Player.GetPlayer((uint) player.Value.CharacterId);
+                            var playerToAnnounce = Player.GetPlayer((uint)player.Value.CharacterId);
                             if (playerToAnnounce.CharacterId == player.Value.CharacterId)
                             {
                                 playerToAnnounce.SendClientMessage($"You have reached Honor Rank {honorLevel}", ChatLogFilters.CHATLOGFILTERS_C_ORANGE_L);
@@ -136,7 +133,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     Logger.Error($"{e.Message} {e.StackTrace}");
                 }
             }
-
         }
 
         /// <summary>
@@ -156,8 +152,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var losingRealmPlayers = new ConcurrentDictionary<Player, int>();
             var allEligiblePlayerDictionary = new ConcurrentDictionary<Player, int>();
 
-
-            // Partition the players by winning realm. 
+            // Partition the players by winning realm.
             foreach (var contributingPlayer in allContributingPlayers)
             {
                 var player = Player.GetPlayer(contributingPlayer.Key);
@@ -170,7 +165,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         player.Info.HonorPoints += (ushort)contributingPlayer.Value;
                         Logger.Debug($"Updating honor for {player.Info.Name} ({player.Info.CharacterId}) {oldHonorPoints} => {player.Info.HonorPoints} ({player.Info.HonorRank})");
                         CharMgr.Database.SaveObject(player.Info);
-
 
                         PlayerUtil.RecordHonorHistory(oldHonorPoints, player.Info.HonorPoints, player.CharacterId, player.Name);
                     }
@@ -194,25 +188,23 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         // Record the contribution types and values for the player for analytics
                         PlayerContributionManager.RecordContributionAnalytics(player, contributionDictionary);
                     }
-
                 }
             }
             // Update and inform players of change in Honor Rank.
             UpdateHonorRankAllPlayers(false);
 
             return new Tuple<ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>, ConcurrentDictionary<Player, int>>(allEligiblePlayerDictionary, winningRealmPlayers, losingRealmPlayers);
-
         }
 
         private static void RecordHonorHistory(ushort oldHonorPoints, ushort infoHonorPoints, uint playerCharacterId, string playerName)
         {
             var roc = (infoHonorPoints - oldHonorPoints);
-            
+
             var honorHistory = new HonorHistory
             {
                 CharacterId = playerCharacterId,
                 CharacterName = playerName,
-                CurrentHonorPoints = (uint) infoHonorPoints,
+                CurrentHonorPoints = (uint)infoHonorPoints,
                 OldHonorPoints = oldHonorPoints,
                 RateOfChange = roc,
                 Timestamp = DateTime.UtcNow

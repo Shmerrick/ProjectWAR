@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System.Collections.Generic;
+using System.Linq;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 using WorldServer.World.Scenarios.Objects;
@@ -22,7 +22,7 @@ namespace WorldServer.World.Scenarios
             int i = 0;
             int flagCount = info.ScenObjects.Where(e => e.Type == "Flag").ToList().Count;
 
-            foreach (Scenario_Object scenarioObject in info.ScenObjects.OrderBy(e=>e.Identifier).ToList())
+            foreach (Scenario_Object scenarioObject in info.ScenObjects.OrderBy(e => e.Identifier).ToList())
             {
                 if (scenarioObject.Type == "Flag")
                 {
@@ -34,7 +34,7 @@ namespace WorldServer.World.Scenarios
 
                     clickFlag.Open = false;
 
-                    if (i < (flagCount / 2) )
+                    if (i < (flagCount / 2))
                     {
                         clickFlag.Open = false;
                         clickFlag.Owner = 1;
@@ -52,9 +52,7 @@ namespace WorldServer.World.Scenarios
                         clickFlag.Owner = 2;
                     }
                     i++;
-                    
                 }
-
                 else
                     LoadScenarioObject(scenarioObject);
             }
@@ -137,7 +135,6 @@ namespace WorldServer.World.Scenarios
             //unlock foward flag
             if (flag.Owner == 1)
             {
-
                 for (int i = index + 1; i < Flags.Count; i++)
                 {
                     Flags[i].Open = true;
@@ -157,7 +154,6 @@ namespace WorldServer.World.Scenarios
                     Flags[i].Owner = 0;
                     break;
                 }
-
             }
 
             CreateGlow(CurrentFlag);
@@ -212,7 +208,6 @@ namespace WorldServer.World.Scenarios
 
                 if (flag.Owner == 2 && Flags.IndexOf(flag) <= (Flags.Count / 2))
                     points[1] += flag.TickPoints;
-
             }
 
             GivePoints(1, points[0]);

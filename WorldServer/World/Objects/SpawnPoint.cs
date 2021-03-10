@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common;
+﻿using Common;
 using WorldServer.Services.World;
 using WorldServer.World.Positions;
 
@@ -27,36 +22,32 @@ namespace WorldServer.World.Objects
 
             if (respawn.InZoneID != 0)
             {
-                 world = ZoneService.GetWorldPosition(
-                    ZoneService.GetZone_Info(
-                        (ushort)respawn.InZoneID), respawn.PinX, respawn.PinY, respawn.PinZ);
-                 ZoneId = (ushort) respawn.InZoneID;
-
+                world = ZoneService.GetWorldPosition(
+                   ZoneService.GetZone_Info(
+                       (ushort)respawn.InZoneID), respawn.PinX, respawn.PinY, respawn.PinZ);
+                ZoneId = (ushort)respawn.InZoneID;
             }
             else
             {
-                 world = ZoneService.GetWorldPosition(
-                    ZoneService.GetZone_Info(
-                        (ushort)respawn.ZoneID), respawn.PinX, respawn.PinY, respawn.PinZ);
-                 ZoneId = (ushort) respawn.ZoneID;
+                world = ZoneService.GetWorldPosition(
+                   ZoneService.GetZone_Info(
+                       (ushort)respawn.ZoneID), respawn.PinX, respawn.PinY, respawn.PinZ);
+                ZoneId = (ushort)respawn.ZoneID;
             }
 
-
-            
             X = world.X;
             Y = world.Y;
             Z = world.Z;
-            
         }
 
-        public  override string ToString()
+        public override string ToString()
         {
             return $"RESPAWN : ZoneId={ZoneId},X={X},Y={Y},Z={Z}";
         }
 
         public Point3D As3DPoint()
         {
-            return new Point3D(X,Y,Z);
+            return new Point3D(X, Y, Z);
         }
     }
 }

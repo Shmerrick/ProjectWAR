@@ -95,6 +95,7 @@ public static class Time
     {
         return DateTimeOffset.FromUnixTimeSeconds(unixTime).LocalDateTime;
     }
+
     public static long DateTimeToUnixTime(DateTime dateTime)
     {
         return ((DateTimeOffset)dateTime).ToUnixTimeSeconds();
@@ -104,10 +105,12 @@ public static class Time
     {
         return DateTimeToUnixTime((DateTime.Now.Date + new TimeSpan(hours, 0, 0)));
     }
+
     public static long GetNextResetUnixTime(int days, int hours)
     {
         return DateTimeToUnixTime((DateTime.Now.Date + new TimeSpan(days, hours, 0, 0)));
     }
+
     public static long GetNextResetUnixTime(int months, int days, int hours)
     {
         return DateTimeToUnixTime((DateTime.Now.Date + new TimeSpan(months + days, hours, 0)));
@@ -156,15 +159,19 @@ public static class Time
                     case 'd':
                         multiplier = Day;
                         break;
+
                     case 'h':
                         multiplier = Hour;
                         break;
+
                     case 'm':
                         multiplier = Minute;
                         break;
+
                     case 's':
                         multiplier = 1;
                         break;
+
                     default:
                         return 0;                         //bad format
                 }
@@ -192,7 +199,7 @@ public static class Time
         System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.High;
         System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.Highest;
 
-        // warm up 
+        // warm up
         func();
 
         var watch = new System.Diagnostics.Stopwatch();
@@ -239,7 +246,8 @@ public class TimeTrackerSmall
     {
         return i_expiryTime;
     }
-    int i_expiryTime;
+
+    private int i_expiryTime;
 }
 
 public class TimeTracker
@@ -269,7 +277,7 @@ public class TimeTracker
         return i_expiryTime;
     }
 
-    long i_expiryTime;
+    private long i_expiryTime;
 }
 
 public class IntervalTimer
@@ -312,8 +320,8 @@ public class IntervalTimer
         return _current;
     }
 
-    long _interval;
-    long _current;
+    private long _interval;
+    private long _current;
 }
 
 public class PeriodicTimer
@@ -341,9 +349,17 @@ public class PeriodicTimer
 
     // Tracker interface
     public void TUpdate(int diff) { i_expireTime -= diff; }
-    public bool TPassed() { return i_expireTime <= 0; }
-    public void TReset(int diff, int period) { i_expireTime += period > diff ? period : diff; }
 
-    int i_period;
-    int i_expireTime;
+    public bool TPassed()
+    {
+        return i_expireTime <= 0;
+    }
+
+    public void TReset(int diff, int period)
+    {
+        i_expireTime += period > diff ? period : diff;
+    }
+
+    private int i_period;
+    private int i_expireTime;
 }

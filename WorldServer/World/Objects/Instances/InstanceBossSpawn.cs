@@ -27,7 +27,6 @@ namespace WorldServer.World.Objects.Instances
 
         public InstanceBossSpawn(Creature_spawn spawn, uint bossId, ushort instanceId, Instance instance) : base(spawn)
         {
-            
             Name = spawn.Proto.Name;
             BossId = bossId;
             Instance = instance;
@@ -61,18 +60,16 @@ namespace WorldServer.World.Objects.Instances
                 Instance.CurrentBossId = BossId;
             }
 
+            //         Unit Attacker = mob.GetCreature().CbtInterface.GetTarget(GameData.TargetTypes.TARGETTYPES_TARGET_ENEMY);
 
-   //         Unit Attacker = mob.GetCreature().CbtInterface.GetTarget(GameData.TargetTypes.TARGETTYPES_TARGET_ENEMY);
+            //         if(InstanceGroupSpawnId > 0)
+            //         {
+            //             Instance.BossAttackTarget(InstanceGroupSpawnId, Attacker);
+            //}
 
-   //         if(InstanceGroupSpawnId > 0)
-   //         {
-   //             Instance.BossAttackTarget(InstanceGroupSpawnId, Attacker);
-			//}
+            BossTimer = new Stopwatch();
+            BossTimer.Start();
 
-			BossTimer = new Stopwatch();
-			BossTimer.Start();
-
-            
             return false;
         }
 
@@ -96,7 +93,7 @@ namespace WorldServer.World.Objects.Instances
                 // save statistics
                 InstanceService.SaveTtkPerBoss(Instance.ZoneID + ":" + Instance.ID, this, BossTimer.Elapsed);
             }
-            // Want to keep the add list on the boss instance. 
+            // Want to keep the add list on the boss instance.
             //// reset add list
             //AddDictionary = new List<Creature>();
 
@@ -142,7 +139,6 @@ namespace WorldServer.World.Objects.Instances
 
         protected override void SetRespawnTimer()
         {
-
         }
 
         protected override void SetDeath(Unit killer)
@@ -178,7 +174,7 @@ namespace WorldServer.World.Objects.Instances
 
         private void ApplyDelayedLockout()
         {
-            foreach (var player in Player._Players.Where(x=>x.InstanceID == InstanceID.ToString()))
+            foreach (var player in Player._Players.Where(x => x.InstanceID == InstanceID.ToString()))
             {
                 Instance.ApplyLockout(new List<Player> { player });
                 player.SendClientMessage($"LOCKOUT applied..");
@@ -213,7 +209,6 @@ namespace WorldServer.World.Objects.Instances
                         if (!player.HasLockout((ushort)ZoneId, BossId))
                         {
                             lootContainer.SendInteract(player, menu);
-                            
                         }
                     }
                 }
@@ -229,7 +224,7 @@ namespace WorldServer.World.Objects.Instances
 
         public InstanceBossSpawn RezInstanceSpawn()
         {
-            InstanceBossSpawn newCreature = new InstanceBossSpawn(Spawn, BossId, InstanceID,Instance);
+            InstanceBossSpawn newCreature = new InstanceBossSpawn(Spawn, BossId, InstanceID, Instance);
             Region.AddObject(newCreature, Spawn.ZoneId);
             Destroy();
             return newCreature;

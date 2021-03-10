@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using Common;
-using FrameWork;
 using WorldServer.Services.World;
 using Color = System.Drawing.Color;
 
@@ -57,15 +57,15 @@ namespace WorldServer.Managers
 
             return false;
         }
-        
 
         public override string ToString()
         {
             return "Id:" + Id + ",Area:" + Area;
         }
     }
-    
+
     */
+
     public class ClientZoneInfo
     {
         public ushort ZoneId;
@@ -211,14 +211,14 @@ namespace WorldServer.Managers
             }
         }
 
-        public Zone_Area GetZoneAreaFor(ushort pinX, ushort pinY, ushort zoneId,ushort pinz = 0)
+        public Zone_Area GetZoneAreaFor(ushort pinX, ushort pinY, ushort zoneId, ushort pinz = 0)
         {
             byte areaId = AreaPixels[pinX >> 6, pinY >> 6];
-           // Log.Error("areaid", "    " + areaId);
-           // fix for black craig keep in the dungeon
-            if(ZoneId == 3 && areaId > 20)
+            // Log.Error("areaid", "    " + areaId);
+            // fix for black craig keep in the dungeon
+            if (ZoneId == 3 && areaId > 20)
             {
-                if(pinz < 8394)
+                if (pinz < 8394)
                     areaId = 3;
                 else
                     areaId -= 15;
@@ -261,7 +261,7 @@ namespace WorldServer.Managers
             pinY = (int)(pinY / 64f);
             Bitmap off = null;
             lock (Offset)
-            { 
+            {
                 off = (Bitmap)Offset.Clone();
             }
 
@@ -270,7 +270,6 @@ namespace WorldServer.Managers
             {
                 terr = (Bitmap)Terrain.Clone();
             }
-
 
             try
             {
@@ -347,7 +346,7 @@ namespace WorldServer.Managers
             return info.GetHeight(pinX, pinY) / 2;
         }
 
-        #endregion
+        #endregion HeightMap Images
 
         #region MapPiece and CSV
 
@@ -367,6 +366,6 @@ namespace WorldServer.Managers
             return info;
         }
 
-        #endregion
+        #endregion MapPiece and CSV
     }
 }

@@ -10,7 +10,7 @@ using WorldServer.World.Objects;
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {
     /// <summary>
-    /// Responsibility : To calculate the number of rewards, select players and assign 
+    /// Responsibility : To calculate the number of rewards, select players and assign
     /// </summary>
     public class RewardAssigner : IRewardAssigner
     {
@@ -48,7 +48,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                     {
                         numberOfAwards = (byte)Math.Ceiling(eligiblePlayers / 1.6f);
                     }
-
                 }
             }
             if (eligiblePlayers < numberOfAwards)
@@ -58,7 +57,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
             return numberOfAwards;
         }
-
 
         public List<LootBagTypeDefinition> DetermineBagTypes(int numberOfBags)
         {
@@ -97,7 +95,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
             bagDefinitions = bagDefinitions.OrderBy(x => x.BagRarity).ToList();
             bagDefinitions.Reverse();
 
-
             Logger.Debug($"=== Pairing Contributions");
             foreach (var bonus in pairingContributionBonuses)
             {
@@ -119,7 +116,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
             foreach (var lootBagTypeDefinition in bagDefinitions)
             {
-
                 var comparisonDictionary = new Dictionary<uint, int>();
                 foreach (var eligiblePlayer in eligiblePlayers)
                 {
@@ -143,7 +139,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                             if (klt != null) klt.PairingBonus = pairingContributionForCharacter;
                         }
                     }
-
 
                     var characterId = eligiblePlayer.Key;
                     var bonus = bagBonuses.SingleOrDefault(x => x.CharacterId == characterId);
@@ -212,7 +207,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                     Logger.Info(
                         $"===== No player available for reward assignment. LootBag Id : {lootBagTypeDefinition.LootBagNumber} ({lootBagTypeDefinition.BagRarity}).");
                 }
-
             }
 
             foreach (var keepLockTracker in characterKeepTrackerList)
@@ -257,8 +251,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                     else
                     {
                         result.Add(rand < 90
-                            ? new LootBagTypeDefinition {BagRarity = LootBagRarity.Purple}
-                            : new LootBagTypeDefinition {BagRarity = LootBagRarity.Gold});
+                            ? new LootBagTypeDefinition { BagRarity = LootBagRarity.Purple }
+                            : new LootBagTypeDefinition { BagRarity = LootBagRarity.Gold });
                     }
                 }
             }

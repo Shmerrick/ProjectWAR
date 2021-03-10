@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using GameData;
+﻿using GameData;
 using NLog;
+using System;
+using System.Collections.Generic;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
@@ -21,7 +20,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         /// <summary>AAO multiplier, -20 if order has 400 aao, +20 if destro has 400 aao</summary>
         public int AgainstAllOddsMult;
-        
+
         /// <summary>
         /// Recalculates aao multiplier and updates buffs.
         /// </summary>
@@ -35,7 +34,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             float factor;
             if (orderCount == 0 || destroCount == 0)
                 factor = 0f; // No need to set aao if missing a realm
-            else  if (orderCount < destroCount)
+            else if (orderCount < destroCount)
                 factor = ((float)destroCount / (float)orderCount) - 1f;
             else
                 factor = ((float)orderCount / (float)destroCount) - 1f;
@@ -67,7 +66,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 UpdateAAOBuffs(newRealm, newMult); // The realm already has AAO. Update it.
             }
-			
+
             AgainstAllOddsMult = newMult;
         }
 
@@ -79,7 +78,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             if (realm == Realms.REALMS_REALM_NEUTRAL)
                 return;
-            
+
             foreach (Player plr in players)
                 if (plr.Realm == realm)
                     plr.BuffInterface.QueueBuff(new BuffQueueInfo(plr, 40, AbilityMgr.GetBuffInfo((ushort)GameBuffs.AgainstAllOdds), AAOAssigned));
@@ -252,6 +251,5 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             else // order
                 return Realms.REALMS_REALM_ORDER;
         }
-
     }
 }

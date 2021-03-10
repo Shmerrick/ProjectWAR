@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using System;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.AI;
@@ -17,15 +17,16 @@ namespace WorldServer.World.Objects
 {
     public class Siege : Creature
     {
-//        public BattleFrontKeep Keep { get; }
+        //        public BattleFrontKeep Keep { get; }
         private readonly SiegeType _type;
+
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public BattleFrontKeep AssignedKeep { get; set; }
         public const int MAX_SHOTS = 15;
         public int ShotCount = MAX_SHOTS;
-        public long SiegeLifeSpan = (int) TimeSpan.FromMinutes(5).TotalMilliseconds;
+        public long SiegeLifeSpan = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
 
-        public Siege(Creature_spawn spawn, Player owner, SiegeType type, BattleFrontKeep keep=null) : base(spawn)
+        public Siege(Creature_spawn spawn, Player owner, SiegeType type, BattleFrontKeep keep = null) : base(spawn)
         {
             _type = type;
             SiegeInterface = AddInterface<SiegeInterface>();
@@ -33,8 +34,6 @@ namespace WorldServer.World.Objects
             AssignedKeep = keep;  // Only need to assign keep for oil
             SiegeInterface.DeathTime = TCPManager.GetTimeStampMS() + SiegeLifeSpan;
         }
-
-        
 
         public static Siege SpawnSiegeWeapon(Player plr, ushort zoneId, uint entry, bool defender)
         {
@@ -51,7 +50,7 @@ namespace WorldServer.World.Objects
                 ZoneId = zoneId,
                 Level = 40
             };
-            
+
             spawn.BuildFromProto(proto);
 
             return new Siege(spawn, plr, GetSiegeType(entry).Value);
@@ -241,11 +240,10 @@ namespace WorldServer.World.Objects
                 ReceiveDamage(this, MaxHealth / 10);
                 _nextDamageTime = msTick + 20 * 1000;
             }
-
-
         }
 
         private int _outofAreaCount;
+
         private void OutOfAreaDecay()
         {
             _outofAreaCount++;
@@ -259,7 +257,6 @@ namespace WorldServer.World.Objects
         // Azarael - Siege weapons don't resurrect
         protected override void SetRespawnTimer()
         {
-
         }
 
         #region Health/Damage
@@ -343,7 +340,6 @@ namespace WorldServer.World.Objects
             if (killer is Player)
                 (killer as Player).SendClientMessage($"{(killer as Player).Name} has killed a siege item!");
 
-
             if (this.SiegeInterface.Creator != null)
             {
                 this.SiegeInterface.Creator.SendClientMessage($"Your siege has been destroyed!");
@@ -375,15 +371,16 @@ namespace WorldServer.World.Objects
                 case SiegeType.OIL:
                     EvtInterface.AddEvent(Destroy, 180000, 1); // Oil is replacable after 180 seconds
                     break;
+
                 case SiegeType.GTAOE:
                 case SiegeType.SNIPER:
                     EvtInterface.AddEvent(Destroy, 30000, 1);
                     break;
+
                 case SiegeType.RAM:
                     EvtInterface.AddEvent(Destroy, 30000, 1);
                     break;
             }
-
         }
 
         public override bool ShouldDefend(Unit attacker, AbilityDamageInfo incDamage)
@@ -397,6 +394,7 @@ namespace WorldServer.World.Objects
             {
                 case SubDamageTypes.Oil:
                     return true;
+
                 case SubDamageTypes.None:
                     if (subType == CreatureSubTypes.SIEGE_RAM)
                         return incDamage.StatUsed != 1;
@@ -421,16 +419,19 @@ namespace WorldServer.World.Objects
                     case SubDamageTypes.Cleave:
                         incDamage.DamageReduction = 0.15f;
                         break;
+
                     case SubDamageTypes.Artillery:
                         incDamage.Mitigation = incDamage.Damage * 0.975f;
                         incDamage.Damage *= 0.025f;
                         break;
+
                     case SubDamageTypes.Oil:
                         incDamage.Damage = 0;
                         incDamage.PrecalcDamage = 0;
                         incDamage.DamageReduction = 0f;
                         incDamage.DamageEvent = (byte)CombatEvent.COMBATEVENT_BLOCK;
                         break;
+
                     case SubDamageTypes.Cannon:
                         if (SiegeInterface.IsDeployed)
                         {
@@ -443,6 +444,7 @@ namespace WorldServer.World.Objects
                             incDamage.Damage *= 0.25f;
                         }
                         break;
+
                     case SubDamageTypes.None:
                         switch (incDamage.DamageType)
                         {
@@ -457,12 +459,14 @@ namespace WorldServer.World.Objects
                                 else
                                     incDamage.DamageReduction *= 0.066f;
                                 break;
+
                             case DamageTypes.RawDamage:
                                 incDamage.Mitigation = incDamage.Damage * 0.99f;
                                 incDamage.Damage *= 0.01f;
                                 incDamage.PrecalcMitigation = incDamage.PrecalcDamage * 0.99f;
                                 incDamage.PrecalcDamage *= 0.01f;
                                 break;
+
                             default:
                                 incDamage.DamageReduction *= 0.005f;
                                 break;
@@ -470,26 +474,29 @@ namespace WorldServer.World.Objects
                         break;
                 }
             }
-
             else switch (incDamage.SubDamageType)
                 {
                     case SubDamageTypes.Cleave:
                         incDamage.DamageReduction *= 0.8f;
                         break;
+
                     case SubDamageTypes.Artillery:
                         incDamage.Mitigation = incDamage.Damage * 0.95f;
                         incDamage.Damage *= 0.05f;
                         break;
+
                     case SubDamageTypes.Oil:
                         incDamage.Damage = 0;
                         incDamage.PrecalcDamage = 0;
                         incDamage.DamageReduction = 0f;
                         incDamage.DamageEvent = (byte)CombatEvent.COMBATEVENT_BLOCK;
                         break;
+
                     case SubDamageTypes.Cannon:
                         incDamage.Mitigation = incDamage.Damage * 0.5f;
                         incDamage.Damage *= 0.5f;
                         break;
+
                     case SubDamageTypes.None:
                         switch (incDamage.DamageType)
                         {
@@ -504,10 +511,12 @@ namespace WorldServer.World.Objects
                                 else
                                     incDamage.DamageReduction *= 0.4f;
                                 break;
+
                             case DamageTypes.RawDamage:
                                 incDamage.Mitigation = incDamage.Damage * 0.5f;
                                 incDamage.Damage *= 0.5f;
                                 break;
+
                             default:
                                 incDamage.DamageReduction *= 0.05f;
                                 break;
@@ -527,7 +536,7 @@ namespace WorldServer.World.Objects
             base.ModifyDamageOut(outDamage);
         }
 
-        #endregion
+        #endregion Health/Damage
 
         public void AddShots(int shots)
         {
@@ -570,7 +579,7 @@ namespace WorldServer.World.Objects
                 totalInfluence = (uint)(100 * (1f + killer.AAOBonus));
             }
 
-            #endregion
+            #endregion Initialize reward values
 
             #region Remove players irrelevant to the kill
 
@@ -579,11 +588,12 @@ namespace WorldServer.World.Objects
             if (DamageSources.Count == 0 || TotalDamageTaken == 0)
                 return;
 
-            #endregion
+            #endregion Remove players irrelevant to the kill
 
             foreach (KeyValuePair<Player, uint> kvpair in DamageSources)
             {
                 #region Get reward values for this player
+
                 Player curPlayer = kvpair.Key;
 
                 float damageFactor = (float)kvpair.Value / TotalDamageTaken;
@@ -598,44 +608,48 @@ namespace WorldServer.World.Objects
                     continue;
                 }
 
-                #endregion
+                #endregion Get reward values for this player
 
                 if (curPlayer.PriorityGroup == null)
                 {
                     #region Handle solo rewards
+
                     if (curPlayer.ScnInterface.Scenario == null || !curPlayer.ScnInterface.Scenario.DeferKillReward(curPlayer, xpShare, renownShare))
                     {
                         curPlayer.AddXp(xpShare, true, true);
                         curPlayer.AddRenown(renownShare, true);
                         if (influenceId != 0)
                             curPlayer.AddInfluence(influenceId, influenceShare);
-
                     }
 
                     curPlayer.EvtInterface.Notify(EventName.OnKill, killer, null);
                     curPlayer._Value.RVRKills++;
                     curPlayer.SendRVRStats();
-                    #endregion
-                }
 
+                    #endregion Handle solo rewards
+                }
                 else
                 {
                     #region Collate group rewards
+
                     if (groupXPRenown.ContainsKey(kvpair.Key.PriorityGroup))
                         groupXPRenown[kvpair.Key.PriorityGroup].Add(xpShare, renownShare, influenceShare);
                     else
                         groupXPRenown.Add(kvpair.Key.PriorityGroup, new XpRenown(xpShare, renownShare, influenceId, influenceShare, TCPManager.GetTimeStamp()));
-                    #endregion
+
+                    #endregion Collate group rewards
                 }
             }
 
             #region Apply group rewards
+
             if (groupXPRenown.Count > 0)
             {
                 foreach (KeyValuePair<Group, XpRenown> kvpair in groupXPRenown)
                     kvpair.Key.HandleKillRewards(this, killer, 1, kvpair.Value.XP, kvpair.Value.Renown, influenceId, kvpair.Value.Influence, 1, null);
             }
-            #endregion
+
+            #endregion Apply group rewards
         }
 
         public override void Destroy()
@@ -675,7 +689,7 @@ namespace WorldServer.World.Objects
             {
                 _logger.Debug($"{e.Message}{e.StackTrace}");
             }
-            
+
             PendingDisposal = true;
         }
 
@@ -688,24 +702,26 @@ namespace WorldServer.World.Objects
 
         public static SiegeType? GetSiegeType(uint primaryValue)
         {
-           var siegeProto =  CreatureService.GetCreatureProto(primaryValue);
+            var siegeProto = CreatureService.GetCreatureProto(primaryValue);
             if (siegeProto == null)
                 return null;
 
             SiegeType siegeType;
-
 
             switch ((GameData.CreatureSubTypes)siegeProto.CreatureSubType)
             {
                 case GameData.CreatureSubTypes.SIEGE_GTAOE:
                     siegeType = SiegeType.GTAOE;
                     break;
+
                 case GameData.CreatureSubTypes.SIEGE_SINGLE_TARGET:
                     siegeType = SiegeType.SNIPER;
                     break;
+
                 case GameData.CreatureSubTypes.SIEGE_RAM:
                     siegeType = SiegeType.RAM;
                     break;
+
                 default:
                     siegeType = SiegeType.RAM;
                     break;

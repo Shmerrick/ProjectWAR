@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
-using Common;
 using WorldServer.World.AI;
 
 namespace WorldServer.World.Objects.Instances.SigmarCrypts
@@ -8,6 +8,7 @@ namespace WorldServer.World.Objects.Instances.SigmarCrypts
     public class SimpleCryptwebQueen : InstanceBossSpawn
     {
         #region Constructors
+
         public SimpleCryptwebQueen(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
@@ -71,6 +72,7 @@ namespace WorldServer.World.Objects.Instances.SigmarCrypts
                 return;
             }
         }
+
         //private void CheckBossRageTimer()
         //{
         //	// check rage timer

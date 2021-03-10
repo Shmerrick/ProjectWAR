@@ -14,9 +14,7 @@ namespace WorldServer.World.Objects.Instances.RemovedBosses
 
         #endregion Constructors
 
-        #region Attributes
-        
-        #endregion Attributes
+
 
         #region Overrides
 

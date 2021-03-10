@@ -1,6 +1,6 @@
-﻿using SystemData;
-using FrameWork;
+﻿using FrameWork;
 using GameData;
+using SystemData;
 using WorldServer.World.Objects;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
@@ -57,10 +57,10 @@ namespace WorldServer.World.Interfaces
                 _player.Strike(target);
                 NextAttackTime = tick + (ushort)((_player.ItmInterface.GetAttackTime(EquipSlot.MAIN_HAND) * 10) / (1 + _autoAttackSpeedBonus - _autoAttackSpeedReduction));
             }
-            else if ((!_player.IsMoving || MoveAndShoot) && 
+            else if ((!_player.IsMoving || MoveAndShoot) &&
                 (_player.Info.CareerLine != 8 || _player.CrrInterface.CareerResource != 1) && // Squig Armor
                 (_player.Info.CareerLine != 18 || _player.CrrInterface.CareerResource != 3) && // Shadow Warrior Assault Stance
-                _player.ItmInterface.GetItemInSlot((ushort)EquipSlot.RANGED_WEAPON) != null && 
+                _player.ItmInterface.GetItemInSlot((ushort)EquipSlot.RANGED_WEAPON) != null &&
                 _player.IsInCastRange(target, (uint)(90 + _player.StsInterface.GetBonusStat(Stats.Range)))) // Ranged
             {
                 if (!_player.LOSHit(target))
@@ -85,11 +85,11 @@ namespace WorldServer.World.Interfaces
             Out.WriteByte(0);
             _player.DispatchPacket(Out, false);
 
-          //  _player.DebugMessage("Send Target " + type);
+            //  _player.DebugMessage("Send Target " + type);
         }
+
         public override void SetTarget(ushort oid, TargetTypes targetType)
         {
-
             if (targetType == TargetTypes.TARGETTYPES_TARGET_ALLY && oid == 0)
                 SendTarget(oid, SwitchTargetTypes.FRIENDLY_CLEAR);
             else if (targetType == TargetTypes.TARGETTYPES_TARGET_ALLY && oid != 0)
@@ -98,7 +98,7 @@ namespace WorldServer.World.Interfaces
                 SendTarget(oid, SwitchTargetTypes.ENEMY_CEAR);
             else if (targetType == TargetTypes.TARGETTYPES_TARGET_ENEMY && oid != 0)
                 SendTarget(oid, SwitchTargetTypes.ENEMY_SET);
- 
+
             if (targetType == 0)    // this is needed cause if you select an frendly target then a enemytarget the enemy target is type 0
             {
                 if (oid == Targets[2])
@@ -135,6 +135,7 @@ namespace WorldServer.World.Interfaces
         {
             return Targets[(int)type] != 0;
         }
+
         public override Unit GetTarget(TargetTypes type)
         {
             if (_Owner?.Region == null)
@@ -146,6 +147,7 @@ namespace WorldServer.World.Interfaces
                 u = _Owner.Region.GetObject(oid) as Unit;
             return u;
         }
+
         public override Unit GetCurrentTarget()
         {
             ushort oid;
@@ -165,7 +167,7 @@ namespace WorldServer.World.Interfaces
             return null;
         }
 
-        #endregion
+        #endregion Targets
 
         #region Events
 
@@ -225,7 +227,7 @@ namespace WorldServer.World.Interfaces
             _Owner.EvtInterface.Notify(EventName.OnTargetDie, victim, null);
         }
 
-        #endregion
+        #endregion Events
 
         #region PVP
 
@@ -263,7 +265,7 @@ namespace WorldServer.World.Interfaces
 
         public void DisablePvp(long tick, bool force)
         {
-            if (!IsPvp) 
+            if (!IsPvp)
                 return;
 
             if (!force && (NextAllowedDisable >= tick || NextAllowedDisable == 0 || _player.CurrentArea == null || _player.CurrentArea.IsRvR))
@@ -282,7 +284,7 @@ namespace WorldServer.World.Interfaces
             NextAllowedDisable = 0;
         }
 
-        #endregion
+        #endregion PVP
 
         public override bool CanAttackPlayer(Player plr)
         {

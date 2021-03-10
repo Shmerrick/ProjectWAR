@@ -1,11 +1,10 @@
 ﻿using Common;
 using FrameWork;
+using GameData;
 using System;
 using System.Collections.Generic;
-using SystemData;
 using System.Linq;
-using GameData;
-using WorldServer.World.Battlefronts.Apocalypse;
+using SystemData;
 using WorldServer.World.Guild;
 using WorldServer.World.Map;
 using WorldServer.World.Objects;
@@ -18,7 +17,6 @@ namespace WorldServer.Managers.Commands
     /// <summary>Unit modification commands under .modify</summary>
     internal class ModifyCommands
     {
-
         /// <summary>
         /// Changes the speed of the targeted player (int Speed, 0-1000)
         /// </summary>
@@ -80,7 +78,6 @@ namespace WorldServer.Managers.Commands
             }
 
             string newName = values[1][0].ToString().ToUpper() + values[1].ToLower().Substring(1);
-
 
             CharMgr.UpdateCharacterName(charToRename, newName);
 
@@ -216,7 +213,6 @@ namespace WorldServer.Managers.Commands
                 plr.SendClientMessage("That guildname is already taken");
                 return true;
             }
-
             else
             {
                 plr.SendClientMessage("Changing from " + guild.Info.Name + " to " + guildName);
@@ -239,7 +235,6 @@ namespace WorldServer.Managers.Commands
 
                 return true;
             }
-
         }
 
         /// <summary>
@@ -435,7 +430,7 @@ namespace WorldServer.Managers.Commands
         /// <returns></returns>
         public static bool ModifyContribution(Player plr, ref List<string> values)
         {
-            Player target = GetTargetOrMe(plr) as Player; 
+            Player target = GetTargetOrMe(plr) as Player;
 
             var activeCampaign = WorldMgr.UpperTierCampaignManager.GetActiveCampaign();
             var status = activeCampaign?.ActiveBattleFrontStatus;
@@ -444,7 +439,7 @@ namespace WorldServer.Managers.Commands
                 lock (status)
                 {
                     status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
-                        (byte) ContributionDefinitions.DESTROY_INNER_DOOR);
+                        (byte)ContributionDefinitions.DESTROY_INNER_DOOR);
                     status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
                         (byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
                     status.ContributionManagerInstance.UpdateContribution(target.CharacterId,
@@ -491,9 +486,6 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
-
-
-        
 
         /// <summary>
         /// Changes your proficiency in your current gathering skill (byte Skill)
@@ -554,7 +546,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            var guild = Guild.GetGuild((uint) guildId);
+            var guild = Guild.GetGuild((uint)guildId);
             if (guild == null)
             {
                 plr.SendClientMessage($"MODIFY KEEP GUILD: Guild {guildId} not found");
@@ -594,6 +586,5 @@ namespace WorldServer.Managers.Commands
             plr.SendClientMessage("MODIFY STAT: Changed " + target.Name + "'s stat " + stat + " to " + value + ".");
             return true;
         }
-
     }
 }

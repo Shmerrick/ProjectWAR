@@ -18,22 +18,20 @@ namespace WorldServer.World.AI
 
         #endregion Constructors
 
-        #region Members
 
-        #endregion Members
 
         #region Methods
-        
+
         public override Unit GetNextTarget()
         {
             return base.GetNextTarget();
         }
-        
+
         public override void Think(long tick)
         {
             base.Think(tick);
         }
-        
+
         public override void TryUseAbilities()
         {
             if (_unit.AbtInterface.NPCAbilities == null)
@@ -60,7 +58,6 @@ namespace WorldServer.World.AI
         {
             _unit.AbtInterface.NPCAbilities = new List<NPCAbility>()
             {
-
                 //new NPCAbility(13682, 150, 0, true, "<character name>, be restored by our chaos gods!", 0, 100, 1, 1, 1, 0, 0, 0, 0)
                 //new NPCAbility(1904, 150, 0, true, "<character name>, be restored by our chaos gods!", 0, 100, 1, 1, 1, 0, 0, 0, 0)
             };

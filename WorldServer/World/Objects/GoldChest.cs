@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using GameData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common;
-using FrameWork;
-using GameData;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
@@ -15,8 +15,7 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Objects
 {
-
-    static class RandomEnumerable
+    internal static class RandomEnumerable
     {
         public static T RandomElement<T>(this IEnumerable<T> enumerable)
         {
@@ -39,6 +38,7 @@ namespace WorldServer.World.Objects
         public uint bagWon;
         public byte careerLine;
         public string plrName;
+
         public GoldBag(uint OurBagWon, byte OurPlrCareer, string OurPlrName)
         {
             bagWon = OurBagWon;
@@ -49,8 +49,8 @@ namespace WorldServer.World.Objects
 
     public class GoldChest : GameObject
     {
-        const int white = 0, green = 1, blue = 2, purple = 3, gold = 4;
-        double goldChance = 0.01, purpChance = 0.05, blueChance = 0.1, greenChance = 0.15, whiteChance = 0.2;
+        private const int white = 0, green = 1, blue = 2, purple = 3, gold = 4;
+        private double goldChance = 0.01, purpChance = 0.05, blueChance = 0.1, greenChance = 0.15, whiteChance = 0.2;
 
         private readonly byte[] _bags =
         {
@@ -72,10 +72,10 @@ namespace WorldServer.World.Objects
 
         private readonly byte[] _availableBags = new byte[5];
 
-        List<KeyValuePair<uint, ContributionInfo>> _preRoll;
-        List<KeyValuePair<uint, ContributionInfo>> _postRoll;
-        List<Characters_bag_pools> _bagPools;
-        Dictionary<uint, GoldBag> _lootBags = new Dictionary<uint, GoldBag>();
+        private List<KeyValuePair<uint, ContributionInfo>> _preRoll;
+        private List<KeyValuePair<uint, ContributionInfo>> _postRoll;
+        private List<Characters_bag_pools> _bagPools;
+        private Dictionary<uint, GoldBag> _lootBags = new Dictionary<uint, GoldBag>();
 
         private readonly PQuest_Info _publicQuestInfo;
 
@@ -108,14 +108,13 @@ namespace WorldServer.World.Objects
                     Scoreboard(playerRoll.Value, _preRoll.IndexOf(playerRoll), _postRoll.IndexOf(playerRoll));
 
                 EvtInterface.AddEvent(Destroy, 180 * 1000, 1);
-
             }
         }
 
         private void GenerateLootBags(int playerCount)
         {
             //generate lootbags
-            // RB   5/14/2016   Establish minimums based on type.        
+            // RB   5/14/2016   Establish minimums based on type.
             switch (_publicQuestInfo.PQType)
             {
                 // RB   5/14/2016   PvE PQs have bag counts based on rarity and random chance.
@@ -135,6 +134,7 @@ namespace WorldServer.World.Objects
                             _bags[green] = 2;
                             _bags[white] = 2;
                             break;
+
                         case PublicQuestDifficulty.Medium:
                             _bags[gold] = 0;
                             _bags[purple] = 0;
@@ -148,6 +148,7 @@ namespace WorldServer.World.Objects
                             _bags[green] = 3;
                             _bags[white] = 1;
                             break;
+
                         case PublicQuestDifficulty.Hard:
                             _bags[gold] = 1;
                             if ((StaticRandom.Instance.NextDouble() * 100d) < (25 + (playerCount / 2)))
@@ -159,6 +160,7 @@ namespace WorldServer.World.Objects
                             _bags[green] = 3;
                             _bags[white] = 0;
                             break;
+
                         default:
                             _bags[gold] = 0;
                             break;
@@ -221,7 +223,6 @@ namespace WorldServer.World.Objects
                                 }
                             }
                         }
-
                     }
                     break;
             }
@@ -248,7 +249,6 @@ namespace WorldServer.World.Objects
         // Sevetar - commented out as it contains legacy RVR calls. Kept in as it might include useful logic
         //private void RollForPersonalBag(ContributionInfo player, float bagCountMod, Dictionary<uint, ContributionInfo> players, RegionMgr region)
         //{
-
         //    for (int i = 0; i < 5; ++i)
         //    {
         //        _availableBags[i] = 0;
@@ -502,7 +502,6 @@ namespace WorldServer.World.Objects
         //        _availableBags[i] = _bags[i];
         //    }
 
-
         //    byte bagWon = GetWonBagType(player.OptOutType == 2);
         //    if (bagWon == 0)
         //    {
@@ -701,7 +700,6 @@ namespace WorldServer.World.Objects
                 _lootBags.Remove(plr.CharacterId);
             else if (result == ItemResult.RESULT_MAX_BAG)
                 plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_LOOT, Localized_text.TEXT_OVERAGE_CANT_LOOT);
-
         }
 
         public void TakeAll(Player player)
@@ -731,16 +729,13 @@ namespace WorldServer.World.Objects
                 case 9980: bagtype = 5; break;
             }
 
-
             // need to generate loot talsimans are the items pri dye the crafting id secondary dye the money
-
 
             List<Talisman> items = new List<Talisman>();
 
             var results = from pqitems in PQuestService._PQLoot
                           where ((pqitems.PQType == _publicQuestInfo.PQType) && (pqitems.Career & (1 << bag.careerLine - 1)) != 0) && pqitems.Bag == bagtype && (pqitems.Chapter == _publicQuestInfo.Chapter || pqitems.PQTier == _publicQuestInfo.PQTier || pqitems.PQEntry == _publicQuestInfo.Entry)
                           select pqitems;
-
 
             if (results.Count() == 0)
             {
@@ -762,7 +757,6 @@ namespace WorldServer.World.Objects
             if (itemid > 0)
                 items.Add(new Talisman(itemid, 1, 0, 0));
 
-
             // This is generating medallion rewards inside bags
             if (_publicQuestInfo.PQType == 2)
             {
@@ -776,7 +770,6 @@ namespace WorldServer.World.Objects
                     case 6: chestitem = 208470; break; //was fused inv
 
 #warning need to add chests for fort city and so on
-
                 }
                 if (Constants.DoomsdaySwitch > 0 && (_publicQuestInfo.PQTier == 2 || _publicQuestInfo.PQTier == 3))
                 {
@@ -784,15 +777,12 @@ namespace WorldServer.World.Objects
                 }
 
                 items.Add(new Talisman(chestitem, (byte)(bagtype == 4 ? 5 : bagtype), 0, 0));
-
             }
-
-
 
             ushort money = (ushort)(100 * _publicQuestInfo.PQDifficult * _publicQuestInfo.Chapter * bagtype);
             return new MailItem(bag.bagWon, items, _publicQuestInfo.PQCraftingBag, money, 1);
-
         }
+
         public byte GetWonBagType(bool optOutGold)
         {
             for (int i = gold; i >= 0; --i)
@@ -896,7 +886,6 @@ namespace WorldServer.World.Objects
 
         public void Scoreboard(ContributionInfo playerRoll, int preIndex, int postIndex)
         {
-
             Player targPlayer = Player.GetPlayer(playerRoll.PlayerCharId);
 
             if (targPlayer == null)
@@ -939,7 +928,6 @@ namespace WorldServer.World.Objects
             Out.WriteByte(0);
             Out.WriteByte(3);
 
-
             Out.WriteByte(0);
             Out.WriteByte(0);
             Out.WriteByte(1);
@@ -947,9 +935,8 @@ namespace WorldServer.World.Objects
             //
             // no clue yet seams to be if you didnt won anything you get that item
 
-
             /*
-            Out.WritePacketString(@"|d4 c0 01 |...d............|     
+            Out.WritePacketString(@"|d4 c0 01 |...d............|
             |57 61 72 20 43 72 65 73 74 00 00 00 00 00 00 00 |War Crest.......|
             |00 00 00 00 00 00 00 00 00 00 00                |...........     |
             ");
@@ -1019,7 +1006,6 @@ namespace WorldServer.World.Objects
             Out.WriteByte(0);
             Out.WriteByte(3);
 
-
             Out.WriteByte(0);
             Out.WriteByte(0);
             Out.WriteByte(1);
@@ -1027,9 +1013,8 @@ namespace WorldServer.World.Objects
             //
             // no clue yet seams to be if you didnt won anything you get that item
 
-
             /*
-            Out.WritePacketString(@"|d4 c0 01 |...d............|     
+            Out.WritePacketString(@"|d4 c0 01 |...d............|
             |57 61 72 20 43 72 65 73 74 00 00 00 00 00 00 00 |War Crest.......|
             |00 00 00 00 00 00 00 00 00 00 00                |...........     |
             ");

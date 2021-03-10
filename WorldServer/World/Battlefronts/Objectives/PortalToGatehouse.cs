@@ -1,6 +1,5 @@
-﻿using SystemData;
-using Common.Database.World.BattleFront;
-using FrameWork;
+﻿using FrameWork;
+using SystemData;
 using WorldServer.NetWork.Handler;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Objects;
@@ -11,12 +10,13 @@ namespace WorldServer.World.Battlefronts.Objectives
     /// <summary>
     /// Game object representing a portal allowing teleport to the gatehouse
     /// </summary>
-    class PortalToGatehouse : PortalBase
-    { 
+    internal class PortalToGatehouse : PortalBase
+    {
         private const string NAME_START = "Portal to gatehouse ";
 
         /// <summary>Portal targets depending on realm</summary>
         private PortalBase targetPortal;
+
         private Point3D targetPosition;
 
         private long _nextAvailableTimestamp;
@@ -30,9 +30,8 @@ namespace WorldServer.World.Battlefronts.Objectives
             //var target = new PortalBase(zoneId, x2, y2, z2, o2);
 
             //targetPortal = target;
-            targetPosition = new Point3D(x2, y2,z2);
+            targetPosition = new Point3D(x2, y2, z2);
         }
-
 
         public override void SendInteract(Player player, InteractMenu menu)
         {
@@ -45,7 +44,7 @@ namespace WorldServer.World.Battlefronts.Objectives
 
             _nextAvailableTimestamp = now + BattleFrontConstants.PORTAL_DELAY;
 
-            Teleport(player, (int) targetPortal.ZoneId, targetPosition);
+            Teleport(player, (int)targetPortal.ZoneId, targetPosition);
         }
     }
 }

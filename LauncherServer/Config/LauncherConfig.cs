@@ -13,7 +13,6 @@ namespace AuthenticationServer.Config
         public RpcClientConfig RpcInfo = new RpcClientConfig("127.0.0.1", "127.0.0.1", 6800);
         public LogInfo LogLevel = new LogInfo();
 
-
         public string PatcherFilesPath = "PatcherFilesDirectory";
         public string TempFilesPath = "TempFilesDirectory";
         public ServerState ServerState = ServerState.CLOSED;

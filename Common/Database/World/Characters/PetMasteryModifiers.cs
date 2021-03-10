@@ -15,12 +15,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using FrameWork;
+using System;
 
 namespace Common
 {
@@ -34,7 +30,7 @@ namespace Common
         private byte _PointStart;
         private byte _PointEnd;
         private float _MasteryModifierPercent;
-        private ushort  _MasteryModifierAddition;
+        private ushort _MasteryModifierAddition;
         private bool _Active;
         private string _UUID;
 
@@ -101,6 +97,7 @@ namespace Common
             set { _Active = value; Dirty = true; }
         }
     }
+
     public class DBPetMasteryModifiersInfo : DataObject
     {
         [PrimaryKey]

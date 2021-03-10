@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using GameData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using SystemData;
-using Common;
-using FrameWork;
-using GameData;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities.CareerInterfaces;
 using WorldServer.World.Battlefronts.Bounty;
@@ -16,27 +16,29 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Scenarios
 {
-    enum ScenarioQueueType
+    internal enum ScenarioQueueType
     {
         Standard,
         Premade,
         Duo
     }
-    enum EPendingQueueAction
+
+    internal enum EPendingQueueAction
     {
         PQA_Add,
         PQA_Remove,
+
         /// <summary>Unused</summary>
         PQA_RemoveAll
     }
 
-    abstract class PendingQueueAction
+    internal abstract class PendingQueueAction
     {
         public EPendingQueueAction Action { get; set; }
         public ushort ScenarioId { get; set; }
     }
 
-    class PlayerQueueAction : PendingQueueAction
+    internal class PlayerQueueAction : PendingQueueAction
     {
         public Player MyPlayer { get; }
 
@@ -48,7 +50,7 @@ namespace WorldServer.World.Scenarios
         }
     }
 
-    class GroupQueueAction : PendingQueueAction
+    internal class GroupQueueAction : PendingQueueAction
     {
         public Group MyGroup { get; }
 
@@ -56,7 +58,7 @@ namespace WorldServer.World.Scenarios
 
         public float BalanceVectorMag;
 
-        public List<Player> CurMembers { get; set; } 
+        public List<Player> CurMembers { get; set; }
 
         public GroupQueueAction(Group grp, EPendingQueueAction action, ushort scenarioId)
         {
@@ -69,7 +71,7 @@ namespace WorldServer.World.Scenarios
     /// <summary>
     /// Archetype priority when searching to fill a scenario with solo players.
     /// </summary>
-    enum EArchetypePriority
+    internal enum EArchetypePriority
     {
         Tanks,
         NoTanks,
@@ -80,7 +82,7 @@ namespace WorldServer.World.Scenarios
         None
     }
 
-    class SoloQueueHandler
+    internal class SoloQueueHandler
     {
         private const int TANK_QUEUE = 0;
         private const int DPS_QUEUE = 1;
@@ -219,6 +221,7 @@ namespace WorldServer.World.Scenarios
                     else if (_archetypePlayerLists[TANK_QUEUE].Count != 0 && !forceBalance)
                         fetchedPlayer = GetFromAndRemove(TANK_QUEUE);
                     return fetchedPlayer;
+
                 default:
                     throw new InvalidOperationException("Impossible??");
             }
@@ -298,14 +301,15 @@ namespace WorldServer.World.Scenarios
             }
 
             return players;
-        } 
+        }
     }
 
-    class GroupQueueHandler
+    internal class GroupQueueHandler
     {
         // Order ascending (2 => 6)
         public readonly List<GroupQueueAction>[] QueuedGroups = new List<GroupQueueAction>[5];
-        private readonly int[] _index = { -1, -1, -1, -1, -1};
+
+        private readonly int[] _index = { -1, -1, -1, -1, -1 };
 
         public bool HasGroups => QueuedGroups.Any(group => group.Count > 0);
         public bool HasFullGroups => QueuedGroups[4].Count > 0;
@@ -327,7 +331,7 @@ namespace WorldServer.World.Scenarios
             int maxIndex = maxGroupSize - 1; //  i < 5
 
             // Tries every possible combination of groups.
-            for (;;)
+            for (; ; )
             {
                 ++_index[minIndex];
 
@@ -474,6 +478,7 @@ namespace WorldServer.World.Scenarios
 
         /// <summary>List of queued solo players, indexed by info / tier number / [0,1] for [order,destro]</summary>
         private readonly Dictionary<Scenario_Info, Dictionary<byte, SoloQueueHandler[]>> _queuedPlayers = new Dictionary<Scenario_Info, Dictionary<byte, SoloQueueHandler[]>>();
+
         /// <summary>List of queued groups, indexed by info / tier number / [0,1] for [order,destro]</summary>
         private readonly Dictionary<Scenario_Info, Dictionary<byte, GroupQueueHandler[]>> _queuedGroups = new Dictionary<Scenario_Info, Dictionary<byte, GroupQueueHandler[]>>();
 
@@ -482,9 +487,9 @@ namespace WorldServer.World.Scenarios
 
         public static ImpactMatrixManager ImpactMatrixManagerInstance { get; set; }
 
-
         /// <summary>Flag to ask for delayed manager stop</summary>
         private bool Running = true;
+
         /// <summary>Dedicated event of the manager</summary>
         private readonly EventInterface _evtInterface;
 
@@ -508,14 +513,14 @@ namespace WorldServer.World.Scenarios
             foreach (Scenario_Info scenario in ScenarioService.Scenarios)
             {
                 _instances.Add(scenario, new Dictionary<byte, List<Scenario>>());
-                _queuedPlayers.Add(scenario, new Dictionary<byte, SoloQueueHandler[]> ());
+                _queuedPlayers.Add(scenario, new Dictionary<byte, SoloQueueHandler[]>());
                 _queuedGroups.Add(scenario, new Dictionary<byte, GroupQueueHandler[]>());
 
                 for (byte i = 1; i <= 4; i++) // per tier
                 {
                     _instances[scenario].Add(i, new List<Scenario>());
-                    _queuedPlayers[scenario].Add(i, new [] { new SoloQueueHandler(), new SoloQueueHandler() });
-                    _queuedGroups[scenario].Add(i, new[] { new GroupQueueHandler(), new GroupQueueHandler()});
+                    _queuedPlayers[scenario].Add(i, new[] { new SoloQueueHandler(), new SoloQueueHandler() });
+                    _queuedGroups[scenario].Add(i, new[] { new GroupQueueHandler(), new GroupQueueHandler() });
                 }
 
                 if (scenario.QueueType == 2) // duo ??
@@ -536,13 +541,13 @@ namespace WorldServer.World.Scenarios
             Running = false;
         }
 
-        const int SCENARIO_UPDATE_INTERVAL = 100;
+        private const int SCENARIO_UPDATE_INTERVAL = 100;
 
         #region Updating
 
         private long _lastUpdateTime;
 
-        public int SecondsSinceUpdate => (int)((TCPManager.GetTimeStampMS() - _lastUpdateTime)/1000);
+        public int SecondsSinceUpdate => (int)((TCPManager.GetTimeStampMS() - _lastUpdateTime) / 1000);
 
         public void Update()
         {
@@ -583,8 +588,7 @@ namespace WorldServer.World.Scenarios
                         }
                     }
 
-                    #endregion
-
+                    #endregion Remove ended scenarios
                 }
                 catch (Exception e)
                 {
@@ -621,7 +625,7 @@ namespace WorldServer.World.Scenarios
 
             if (pendingActionCount == 0)
                 return; // No pending request -> nothing to do
-            
+
             PendingQueueAction[] myActions;
             lock (_pendingQueueActions)
             {
@@ -638,16 +642,17 @@ namespace WorldServer.World.Scenarios
                         {
                             try
                             {
-                                AddGroup((GroupQueueAction) action);
+                                AddGroup((GroupQueueAction)action);
                             }
                             catch
                             {
                                 Log.Error("ScenarioMgr", "Exception thrown from AddGroup");
-                                ((GroupQueueAction) action).MyGroup.LatentDequeueAll();
+                                ((GroupQueueAction)action).MyGroup.LatentDequeueAll();
                             }
                         }
-                        else AddPlayer((PlayerQueueAction) action);
+                        else AddPlayer((PlayerQueueAction)action);
                         break;
+
                     case EPendingQueueAction.PQA_Remove:
                         if (action is GroupQueueAction)
                         {
@@ -660,8 +665,7 @@ namespace WorldServer.World.Scenarios
                                 Log.Error("ScenarioMgr", "Exception thrown from RemoveGroup");
                             }
                         }
-                                
-                        else RemovePlayer((PlayerQueueAction) action);
+                        else RemovePlayer((PlayerQueueAction)action);
                         break;
                 }
             }
@@ -684,7 +688,7 @@ namespace WorldServer.World.Scenarios
             }
         }
 
-        #endregion
+        #endregion Updating
 
         private static T[] Randomize<T>(List<T> list)
         {
@@ -710,11 +714,12 @@ namespace WorldServer.World.Scenarios
             ProcessPendingQueue(); // Why here ? already invoked in main Update() method
 
             #region Remove Invalid Player Entries
+
             // Hack to remove players in unexpected state (logged out, warband bug...)
             _queuedPlayers[info][tier][0].ValidationHack();
             _queuedPlayers[info][tier][1].ValidationHack();
 
-            #endregion
+            #endregion Remove Invalid Player Entries
 
             foreach (Scenario scenario in _instances[info][tier])
             {
@@ -734,12 +739,14 @@ namespace WorldServer.World.Scenarios
                             else
                                 TryFillWithGroups(scenario, tier, 1, 6);
                             break;
+
                         case ScenarioQueueType.Premade:
                             if (scenario.IsPickup)
                                 TryFillWithSolos(scenario, tier);
                             //else
                             //    TryFillWithGroups(scenario, tier, 6, 6);
                             break;
+
                         case ScenarioQueueType.Duo:
                             if (!_queuedGroups[info][tier][0].HasGroups && !_queuedGroups[info][tier][1].HasGroups)
                                 TryFillWithSolos(scenario, tier);
@@ -748,7 +755,6 @@ namespace WorldServer.World.Scenarios
                             break;
                     }
                 }
-
                 catch (IndexOutOfRangeException e)
                 {
                     Log.Error("ScenarioMgr", "Failed to iterate over scenario array for " + info.Name + " on tier " + tier + " (" + e + ")");
@@ -761,11 +767,12 @@ namespace WorldServer.World.Scenarios
             ProcessPendingQueue(); // Why here ? already invoked in main Update() method
 
             #region Remove Invalid Player Entries
+
             // Hack to remove players in unexpected state (logged out, warband bug...)
             _queuedPlayers[info][tier][0].ValidationHack();
             _queuedPlayers[info][tier][1].ValidationHack();
 
-            #endregion
+            #endregion Remove Invalid Player Entries
 
             switch ((ScenarioQueueType)info.QueueType)
             {
@@ -781,6 +788,7 @@ namespace WorldServer.World.Scenarios
                     else
                         TryCreateWithGroups(info, tier, 1, 6, false);
                     break;
+
                 case ScenarioQueueType.Duo:
                     if (!_queuedGroups[info][tier][0].HasGroups && !_queuedGroups[info][tier][1].HasGroups)
                         TryCreatePugScenario(info, tier, true);
@@ -840,11 +848,10 @@ namespace WorldServer.World.Scenarios
 
         private void TryCreatePugScenario(Scenario_Info info, byte tier, bool favoursPug)
         {
-
             if (!favoursPug && info.Name == PickupScenarioName)
                 return;
 
-            // Check that the number of players that each side can field (while still respecting 
+            // Check that the number of players that each side can field (while still respecting
             // 2/2/2 balance as well as is possible) is above the scenario's minimum player threshold.
             int orderPlayerCount = _queuedPlayers[info][tier][0].GetMaxInitiallyFieldable();
 
@@ -867,13 +874,8 @@ namespace WorldServer.World.Scenarios
             if (destroPlayerCount < info.MinPlayers)
                 return;
 
-
             if (orderPlayerCount < info.MinPlayers)
                 return;
-
-          
-
-           
 
             List<Player> orderPlayers = _queuedPlayers[info][tier][0].GetPlayers(desiredPlayerCount);
             List<Player> destroPlayers = _queuedPlayers[info][tier][1].GetPlayers(desiredPlayerCount);
@@ -914,6 +916,7 @@ namespace WorldServer.World.Scenarios
             byte minPlayers = (byte)(info.MinPlayers == 0 ? info.MinPlayers : info.MinPlayers - 1);
 
             #region Go through the entries working out if, in combination with solo players, a given exact number of players can be added to the scenario.
+
             for (int team = 0; team < 2; ++team)
             {
                 int lastAllGroupedMatchIndex = -1;
@@ -942,15 +945,15 @@ namespace WorldServer.World.Scenarios
                 }
             }
 
-            #endregion
+            #endregion Go through the entries working out if, in combination with solo players, a given exact number of players can be added to the scenario.
 
             #region Determine the maximum number of players which can be added at once while maintaining scenario balance.
 
             int smallTeam = 1;
             int bigTeam = 0;
 
-            // The zero-based (i.e. zero = 1 player) index in the array of possible groups of players which should be selected 
-            // to add players from. This may point to a location which doesn't have enough grouped players to satisfy the need, 
+            // The zero-based (i.e. zero = 1 player) index in the array of possible groups of players which should be selected
+            // to add players from. This may point to a location which doesn't have enough grouped players to satisfy the need,
             // in which case solo players are used to make up the shortfall.
             uint[] playersNeeded = { QUEUE_ASSEMBLY_NO_MATCH, QUEUE_ASSEMBLY_NO_MATCH };
 
@@ -994,8 +997,8 @@ namespace WorldServer.World.Scenarios
                     break;
                 }
             }
-            #endregion
 
+            #endregion Determine the maximum number of players which can be added at once while maintaining scenario balance.
 
             if (playersNeeded[0] == QUEUE_ASSEMBLY_NO_MATCH || playersNeeded[1] == QUEUE_ASSEMBLY_NO_MATCH)
                 return;
@@ -1043,6 +1046,7 @@ namespace WorldServer.World.Scenarios
                     addedPlayers[teamIndex].AddRange(_queuedPlayers[info][tier][teamIndex].GetPlayers((int)(playersNeeded[teamIndex] + 1)));
 
                 /*
+
                 #region Build scenario manager string.
 
                 sb.Append((teamIndex == 0 ? "Order:" : "Destruction:") + "\n");
@@ -1057,13 +1061,15 @@ namespace WorldServer.World.Scenarios
                 if (teamIndex == 0)
                     sb.Append("\n");
 
-                #endregion
+                #endregion Build scenario manager string.
+
                 */
             }
 
-            #endregion
+            #endregion Create the scenario and add the players to it.
 
             #region Notify players of the scenario teams.
+
             for (int i = 0; i < 2; ++i)
             {
                 foreach (Player player in addedPlayers[i])
@@ -1072,7 +1078,8 @@ namespace WorldServer.World.Scenarios
                     AddPlayerToScenarioTeam(newScenario, player);
                 }
             }
-            #endregion
+
+            #endregion Notify players of the scenario teams.
         }
 
         private void TryFillWithGroups(Scenario scenario, byte tier, int minUnit, int maxUnit)
@@ -1090,13 +1097,12 @@ namespace WorldServer.World.Scenarios
             };
 
             // Free space left in the scenario teams.
-            #warning Is sometimes negative o_O
+#warning Is sometimes negative o_O
             int[] teamSpace =
             {
                 Math.Max(0, scenario.Info.MaxPlayers - scenario.GetTotalTeamCount(0)),
                 Math.Max(0, scenario.Info.MaxPlayers - scenario.GetTotalTeamCount(1))
             };
-
 
             // Holds the index of the slot which can be used (perhaps in combination with solo players) for index+1 players to be added.
             byte[][] combinationIndexFor =
@@ -1139,12 +1145,11 @@ namespace WorldServer.World.Scenarios
             int smallTeam = teamSpace[1] > teamSpace[0] ? 1 : 0;
             int bigTeam = teamSpace[1] > teamSpace[0] ? 0 : 1;
 
-            // The zero-based (i.e. zero = 1 player) index in the array of possible groups of players which should be selected 
-            // to add players from. This may point to a location which doesn't have enough grouped players to satisfy the need, 
+            // The zero-based (i.e. zero = 1 player) index in the array of possible groups of players which should be selected
+            // to add players from. This may point to a location which doesn't have enough grouped players to satisfy the need,
             // in which case solo players are used to make up the shortfall.
 
             uint[] playersNeeded = { QUEUE_ASSEMBLY_NO_MATCH, QUEUE_ASSEMBLY_NO_MATCH };
-
 
             // Determine the maximum number of players which can be added at once while maintaining scenario balance.
             for (int i = teamSpace[smallTeam] - 1; i >= 0; --i)
@@ -1173,7 +1178,7 @@ namespace WorldServer.World.Scenarios
                         }
                     }
 
-                    // We can add outright, because the large team has at 
+                    // We can add outright, because the large team has at
                     // least as many players as we want to add.
                     else
                     {
@@ -1201,7 +1206,6 @@ namespace WorldServer.World.Scenarios
                         groupQueueInfo.MyGroup.DirectDequeueAll();
                         foreach (Player member in groupQueueInfo.CurMembers)
                             AddPlayerToScenarioTeam(scenario, member);
-
                     }
 
                     // This index wasn't completely full and needs to be supplemented with solo players.
@@ -1213,10 +1217,8 @@ namespace WorldServer.World.Scenarios
                             AddPlayerToScenarioTeam(scenario, next);
                             AddToBalanceVector(balanceVector, next);
                         }
-
                     }
                 }
-
                 else
                 {
                     for (int j = 0; j <= playersNeeded[teamIndex]; ++j)
@@ -1248,7 +1250,7 @@ namespace WorldServer.World.Scenarios
             }
         }
 
-        #endregion
+        #endregion Creation/Fill
 
         #region Player/Group Queue Functions
 
@@ -1259,12 +1261,12 @@ namespace WorldServer.World.Scenarios
         {
             Group grp = player.PriorityGroup;
 
-            if (grp != null && grp.IsWarband) 
-            { 
-                player.SendClientMessage("You are not allowed to queue for scenarios while participating in a warband. Please leave your warband first.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR); 
-                grp.Leader?.SendClientMessage(player.Name+" attempted to queue for a scenario."); 
-                return; 
-            } 
+            if (grp != null && grp.IsWarband)
+            {
+                player.SendClientMessage("You are not allowed to queue for scenarios while participating in a warband. Please leave your warband first.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                grp.Leader?.SendClientMessage(player.Name + " attempted to queue for a scenario.");
+                return;
+            }
             if (player.IsBanned)
             {
                 player.SendClientMessage("You request to join a battle... but there was no one to listen.", ChatLogFilters.CHATLOGFILTERS_EMOTE);
@@ -1301,7 +1303,7 @@ namespace WorldServer.World.Scenarios
             lock (_pendingQueueActions)
                 _pendingQueueActions.Add(new GroupQueueAction(group, EPendingQueueAction.PQA_Remove, (ushort)scenarioId));
         }
-        
+
         /// <summary>
         /// Tries to add the given player to current queued list (direct)
         /// and sends this operation result to client.
@@ -1373,8 +1375,7 @@ namespace WorldServer.World.Scenarios
             }
 
             foreach (byte tier in _instances[info].Keys)
-                _queuedPlayers[info][tier][(byte)playerAction.MyPlayer.Realm-1].RemovePlayer(playerAction.MyPlayer);
-
+                _queuedPlayers[info][tier][(byte)playerAction.MyPlayer.Realm - 1].RemovePlayer(playerAction.MyPlayer);
 
             SendScenarioStatus(playerAction.MyPlayer, ScenarioUpdateType.Leave, info);
 
@@ -1485,7 +1486,7 @@ namespace WorldServer.World.Scenarios
                 return;
             }
 
-            GroupQueueHandler curGrpHandler = _queuedGroups[info][(byte) leaderTier][leader.Realm == Realms.REALMS_REALM_ORDER ? 0 : 1];
+            GroupQueueHandler curGrpHandler = _queuedGroups[info][(byte)leaderTier][leader.Realm == Realms.REALMS_REALM_ORDER ? 0 : 1];
 
             if (curGrpHandler == null)
                 return;
@@ -1512,7 +1513,7 @@ namespace WorldServer.World.Scenarios
 
             groupAction.BalanceVectorMag = groupAction.BalanceVector.Magnitude;
 
-            _queuedGroups[info][(byte) leaderTier][leader.Realm == Realms.REALMS_REALM_ORDER ? 0 : 1].AddGroup(groupAction);
+            _queuedGroups[info][(byte)leaderTier][leader.Realm == Realms.REALMS_REALM_ORDER ? 0 : 1].AddGroup(groupAction);
         }
 
         public void RemoveGroup(Group group, ushort scenarioId)
@@ -1549,14 +1550,13 @@ namespace WorldServer.World.Scenarios
             if (groupAction.MyGroup.Leader == null)
                 Log.Notice("ScenarioMgr", "Removing a leaderless group from " + info.Name);
             //else
-             //   Log.Success("ScenarioMgr", "Removing " + groupInfo.MyGroup.Leader.Name + "'s group from " + info.Name);
+            //   Log.Success("ScenarioMgr", "Removing " + groupInfo.MyGroup.Leader.Name + "'s group from " + info.Name);
 
             foreach (byte tier in _instances[info].Keys)
                 bRemoved = bRemoved | _queuedGroups[info][tier][targetRealm].RemoveGroup(groupAction);
 
             if (!bRemoved)
                 Log.Error("ScenarioMgr", "!!!!Failed to remove any group from RemoveGroup!!!!");
-
             else
             {
                 foreach (Player member in groupAction.CurMembers)
@@ -1569,11 +1569,11 @@ namespace WorldServer.World.Scenarios
             }
         }
 
-        #endregion
+        #endregion Player/Group Queue Functions
 
         #region Scenario Rotation
 
-        const int MAX_SCENARIOS = 2;
+        private const int MAX_SCENARIOS = 2;
 
         /*
         public void RotateScenarios()
@@ -1653,7 +1653,7 @@ namespace WorldServer.World.Scenarios
             }
         }
 
-        #endregion
+        #endregion Scenario Rotation
 
         #region Archetype Balance
 
@@ -1666,10 +1666,12 @@ namespace WorldServer.World.Scenarios
                     balanceVector.X -= 0.866f;
                     balanceVector.Y -= 0.5f;
                     break;
+
                 case EArchetype.ARCHETYPE_DPS:
                     balanceVector.X += 0.866f;
                     balanceVector.Y -= 0.5f;
                     break;
+
                 case EArchetype.ARCHETYPE_Healer:
                     balanceVector.Y += 1f;
                     break;
@@ -1684,17 +1686,19 @@ namespace WorldServer.World.Scenarios
                     balanceVector.X += 0.866f;
                     balanceVector.Y += 0.5f;
                     break;
+
                 case EArchetype.ARCHETYPE_DPS:
                     balanceVector.X -= 0.866f;
                     balanceVector.Y += 0.5f;
                     break;
+
                 case EArchetype.ARCHETYPE_Healer:
                     balanceVector.Y -= 1f;
                     break;
             }
         }
 
-        #endregion
+        #endregion Archetype Balance
 
         private Scenario CreateInstance(Scenario_Info info, byte tier)
         {
@@ -1705,40 +1709,51 @@ namespace WorldServer.World.Scenarios
                 case 1:
                     scenario = new DominationScenario(info, tier);
                     break;
+
                 case 2:
                     scenario = new MurderballScenario(info, tier);
                     break;
+
                 case 3:
                     scenario = new DoubleDominationScenario(info, tier);
                     break;
+
                 case 4:
                     scenario = new DropBombScenario(info, tier);
                     break;
+
                 case 5:
                     scenario = new DropPartScenario(info, tier);
                     break;
+
                 case 6:
                     scenario = new DominationScenarioPushCenter(info, tier);
                     break;
+
                 case 7:
                     scenario = new DominationScenarioEC(info, tier);
                     break;
+
                 case 8:
                     scenario = new DominationScenarioKhaine(info, tier);
                     break;
+
                 case 9:
                     scenario = new FlagDominationScenario(info, tier);
                     break;
+
                 case 10:
                     scenario = new CaptureTheFlagScenario(info, tier);
                     break;
+
                 case 11:
                     scenario = new DominationScenarioPush(info, tier);
                     break;
+
                 default:
                     throw new ArgumentException($"The provided scenario type of {info.Type} is not valid.");
             }
-            
+
             if (_instances.ContainsKey(info))
                 _instances[info][tier].Add(scenario);
             else
@@ -1768,23 +1783,27 @@ namespace WorldServer.World.Scenarios
                 case ScenarioUpdateType.List:
                     BuildScenarioList(Out);
                     break;
+
                 case ScenarioUpdateType.Queued:
                     plr.SendLocalizeString(scenario.Name, ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_SCENARIO_JOIN_SOLO);
-                    
+
                     Out.WriteUInt16(0);
                     Out.WriteUInt16(scenario.ScenarioId);
 
                     break;
+
                 case ScenarioUpdateType.Leave:
                     Out.WriteUInt16(0);
                     Out.WriteUInt16(scenario.ScenarioId);
                     break;
+
                 case ScenarioUpdateType.Pop:
                     Out.WriteUInt16(0);
                     Out.WriteUInt16(scenario.ScenarioId);
                     //play a sound when a pop occurs
                     //plr.PlaySound(705,false);
                     break;
+
                 case ScenarioUpdateType.GroupQueued:
                     if (plr.WorldGroup.Leader == plr)
                         plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_SCENARIO_JOIN_GROUP_LEADER);
@@ -1859,11 +1878,11 @@ namespace WorldServer.World.Scenarios
             players.Remove(player);
         }
 
-        #endregion
+        #endregion Scenario Add/Remove
 
         public void ScenariosInfo(Player plr)
         {
-            plr.SendLocalizeString("Queue last updated "+SecondsSinceUpdate+" seconds ago.", ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_MONSTER_EMOTE);
+            plr.SendLocalizeString("Queue last updated " + SecondsSinceUpdate + " seconds ago.", ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_MONSTER_EMOTE);
 
             foreach (Scenario_Info info in _instances.Keys)
             {
@@ -1881,7 +1900,6 @@ namespace WorldServer.World.Scenarios
                                 scenario.Players[1].Count + " Order Score: " + scenario.Score[0] + " Destro Score: " +
                                 scenario.Score[1], ChatLogFilters.CHATLOGFILTERS_MISC,
                                 Localized_text.CHAT_TAG_MONSTER_EMOTE);
-
                         }
                     }
                 }
@@ -1938,6 +1956,6 @@ namespace WorldServer.World.Scenarios
             //plr.BuffInterface.QueueBuff(new BuffQueueInfo(plr, 1, AbilityMgr.GetBuffInfo((ushort)GameBuffs.Quitter)));
         }
 
-        #endregion
+        #endregion Quitters
     }
 }

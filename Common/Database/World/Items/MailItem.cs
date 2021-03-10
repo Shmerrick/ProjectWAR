@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Common
 {
@@ -34,8 +32,8 @@ namespace Common
                         return;
                     talisman.Add(new Talisman(UInt32.Parse(detail[i].Split('\'')[0]), (byte)UInt16.Parse(detail[i].Split('\'')[1]), (byte)UInt16.Parse(detail[i].Split('\'')[2]), UInt32.Parse(detail[i].Split('\'')[3])));
                 }
-                    primary_dye = ushort.Parse(ItemInfo[1].Split('-')[0]);
-                    secondary_dye = ushort.Parse(ItemInfo[1].Split('-')[1]);
+                primary_dye = ushort.Parse(ItemInfo[1].Split('-')[0]);
+                secondary_dye = ushort.Parse(ItemInfo[1].Split('-')[1]);
             }
         }
 
@@ -48,7 +46,6 @@ namespace Common
             this.secondary_dye = secondary_dye;
         }
 
-
         public Talisman GetTalisman(byte i)
         {
             foreach (Talisman tali in talisman)
@@ -58,19 +55,19 @@ namespace Common
             }
             return null;
         }
+
         public String GetSaveString()
         {
-
             if (talisman.Count == 0 && primary_dye == 0 && secondary_dye == 0)
                 return null;
-            String Str="";
+            String Str = "";
 
             foreach (Talisman tali in talisman)
             {
                 Str += tali.Entry + "'" + tali.Slot + "'" + tali.Fused + "'" + tali.Timer + ";";
             }
-            Str += "!"+primary_dye + "-" + secondary_dye;
-            
+            Str += "!" + primary_dye + "-" + secondary_dye;
+
             return Str;
         }
     }

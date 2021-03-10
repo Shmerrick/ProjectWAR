@@ -19,7 +19,6 @@ namespace WorldServer.Managers.Commands
     /// <summary>NPC commands under .npc</summary>
     internal class NpcCommands
     {
-
         /// <summary>
         /// Spawn an npc
         /// </summary>
@@ -60,7 +59,6 @@ namespace WorldServer.Managers.Commands
             var c = plr.Region.CreateCreature(spawn);
             c.AiInterface.SetBrain(new PassiveBrain(c));
 
-
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;
             log.AccountId = (uint)plr.Client._Account.AccountId;
@@ -71,10 +69,8 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        
-
         /// <summary>
-        /// Move a keep npc 
+        /// Move a keep npc
         /// </summary>
         /// <param name="plr">Player that initiated the command</param>
         /// <param name="values">List of command arguments (after command name)</param>
@@ -93,7 +89,6 @@ namespace WorldServer.Managers.Commands
             var oldY = creature.WorldPosition.Y;
             var oldZ = creature.WorldPosition.Z;
             var oldO = creature.Heading;
-
 
             var keep = plr.Region.Campaign.GetClosestKeep(plr.WorldPosition, (ushort)plr.ZoneId);
 
@@ -151,7 +146,7 @@ namespace WorldServer.Managers.Commands
         {
             var destroId = values[0];
             var orderId = values[1];
-            
+
             Creature_proto proto = null;
             Creature_proto protoOrder = null;
 
@@ -190,7 +185,7 @@ namespace WorldServer.Managers.Commands
                 }
             }
 
-           plr.UpdateWorldPosition();
+            plr.UpdateWorldPosition();
 
             //Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
             //spawn.BuildFromProto(proto);
@@ -208,11 +203,10 @@ namespace WorldServer.Managers.Commands
             kc.ZoneId = plr.Zone.ZoneId;
             kc.DestroId = Convert.ToUInt32(destroId);
             kc.OrderId = Convert.ToUInt32(orderId);
-            
 
             kc.IsPatrol = false;
-                var keep = plr.Region.Campaign.GetClosestKeep(plr.WorldPosition, (ushort) plr.ZoneId);
-                kc.KeepId = keep.Info.KeepId;
+            var keep = plr.Region.Campaign.GetClosestKeep(plr.WorldPosition, (ushort)plr.ZoneId);
+            kc.KeepId = keep.Info.KeepId;
 
             kc.KeepLord = false;
             kc.X = plr._Value.WorldX;
@@ -230,7 +224,7 @@ namespace WorldServer.Managers.Commands
             GMCommandLog log = new GMCommandLog();
             log.PlayerName = plr.Name;
             log.AccountId = (uint)plr.Client._Account.AccountId;
-            log.Command = "SPAWN KEEP CREATURE "+ kc.ZoneId + " " + plr._Value.WorldX + " " + plr._Value.WorldY;
+            log.Command = "SPAWN KEEP CREATURE " + kc.ZoneId + " " + plr._Value.WorldX + " " + plr._Value.WorldY;
             log.Date = DateTime.Now;
             CharMgr.Database.AddObject(log);
 
@@ -311,7 +305,6 @@ namespace WorldServer.Managers.Commands
 
             target.GetCreature().MvtInterface.Move(plr.WorldPosition);
             return true;
-
         }
 
         /// <summary>
@@ -583,6 +576,5 @@ namespace WorldServer.Managers.Commands
 
             return false;
         }
-
     }
 }

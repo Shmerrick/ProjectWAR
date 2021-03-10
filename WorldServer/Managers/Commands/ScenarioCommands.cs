@@ -8,9 +8,8 @@ namespace WorldServer.Managers.Commands
     /// <summary>Scenario commands under .scenario</summary>
     internal class ScenarioCommands
     {
-
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="plr">Player that initiated the command</param>
         /// <param name="values">List of command arguments (after command name)</param>
@@ -23,7 +22,7 @@ namespace WorldServer.Managers.Commands
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="plr">Player that initiated the command</param>
         /// <param name="values">List of command arguments (after command name)</param>
@@ -67,7 +66,6 @@ namespace WorldServer.Managers.Commands
                         plr.SendClientMessage(plr.ScnInterface.Scenario.BalanceVectors[1].X < 0 ? "Destro Priority: No Tanks" : "Destro Priority: No DPS");
                 }
             }
-
             else
             {
                 Vector2 balanceVect = new Vector2(GetInt(ref values), GetInt(ref values));
@@ -86,11 +84,9 @@ namespace WorldServer.Managers.Commands
                     plr.SendClientMessage(balanceVect.X < 0 ? "Supplied Priority: DPS" : "Supplied Priority: Tanks");
                 else
                     plr.SendClientMessage(balanceVect.X < 0 ? "Supplied Priority: No Tanks" : "Supplied Priority: No DPS");
-
             }
 
             return true;
-
         }
 
         /// <summary>
@@ -113,7 +109,7 @@ namespace WorldServer.Managers.Commands
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="plr">Player that initiated the command</param>
         /// <param name="values">List of command arguments (after command name)</param>
@@ -133,7 +129,7 @@ namespace WorldServer.Managers.Commands
 
         /*
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="plr">Player that initiated the command</param>
         /// <param name="values">List of command arguments (after command name)</param>

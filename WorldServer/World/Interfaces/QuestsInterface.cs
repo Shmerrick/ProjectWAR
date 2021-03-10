@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using GameData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common;
-using FrameWork;
-using GameData;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
@@ -26,7 +26,7 @@ namespace WorldServer.World.Interfaces
 
                 if (_Owner.IsCreature())
                     return _Owner.GetCreature().Entry;
-               
+
                 return 0;
             }
         }
@@ -41,7 +41,7 @@ namespace WorldServer.World.Interfaces
         public bool HasQuestFinisher(ushort questID)
         {
             List<Quest> quests = QuestService.GetFinishersQuests(Entry);
-            if(quests != null)
+            if (quests != null)
                 return QuestService.GetFinishersQuests(Entry).Find(info => info.Entry == questID) != null;
 
             return false;
@@ -56,7 +56,7 @@ namespace WorldServer.World.Interfaces
             if (finisher == null)
                 return false;
 
-            return  finisher.Find(q => plr.QtsInterface.CanEndQuest(q)) != null;
+            return finisher.Find(q => plr.QtsInterface.CanEndQuest(q)) != null;
         }
 
         public bool CreatureHasQuestToAchieve(Player plr)
@@ -87,12 +87,11 @@ namespace WorldServer.World.Interfaces
             if (starter == null)
                 return false;
 
-            foreach(Quest quest in starter)
+            foreach (Quest quest in starter)
             {
                 if (quest.Repeatable && plr.QtsInterface.CanStartQuest(quest))
                     return true;
             }
-
 
             return false;
         }
@@ -179,7 +178,7 @@ namespace WorldServer.World.Interfaces
                 Out.WriteByte(0);
         }
 
-        #endregion
+        #endregion Npc
 
         #region Players
 
@@ -255,7 +254,7 @@ namespace WorldServer.World.Interfaces
 
         public bool CanStartQuest(Quest quest)
         {
-            if(GetPlayer() == null)
+            if (GetPlayer() == null)
                 return false;
 
             if (quest == null)
@@ -293,7 +292,7 @@ namespace WorldServer.World.Interfaces
             if (quest == null)
                 return false;
 
-            foreach(Quest_Objectives qo in quest.Objectives)
+            foreach (Quest_Objectives qo in quest.Objectives)
             {
                 if (qo.ObjType == (byte)Objective_Type.QUEST_SPEAK_TO && HasQuest(quest.Entry) && !HasDoneQuest(quest.Entry))
                     return true;
@@ -310,7 +309,7 @@ namespace WorldServer.World.Interfaces
             return AcceptQuest(QuestService.GetQuest(questID));
         }
 
-        const int MAX_ACTIVE_QUESTS = 60;
+        private const int MAX_ACTIVE_QUESTS = 60;
 
         public bool AcceptQuest(Quest quest)
         {
@@ -335,7 +334,7 @@ namespace WorldServer.World.Interfaces
             cQuest.CharacterId = GetPlayer().CharacterId;
             cQuest.Quest = quest;
 
-            foreach(Quest_Objectives qObj in quest.Objectives)
+            foreach (Quest_Objectives qObj in quest.Objectives)
             {
                 Character_Objectives cObj = new Character_Objectives();
                 cObj.Quest = cQuest;
@@ -382,8 +381,8 @@ namespace WorldServer.World.Interfaces
 
         public bool DoneQuest(ushort questID)
         {
-             Character_quest quest = GetQuest(questID);
-             bool save= true;
+            Character_quest quest = GetQuest(questID);
+            bool save = true;
 
             if (quest == null || !quest.IsDone() || quest.Done)
                 return false;
@@ -406,7 +405,7 @@ namespace WorldServer.World.Interfaces
 
             foreach (Quest_Objectives obj in quest.Quest.Objectives)
             {
-                if ((Objective_Type)obj.ObjType == Objective_Type.QUEST_GET_ITEM 
+                if ((Objective_Type)obj.ObjType == Objective_Type.QUEST_GET_ITEM
                     || (Objective_Type)obj.ObjType == Objective_Type.QUEST_USE_ITEM)
                 {
                     if (obj.Item != null)
@@ -453,9 +452,8 @@ namespace WorldServer.World.Interfaces
             quest.SelectedRewards.Clear();
             SendQuestState(quest.Quest, QuestCompletion.QUESTCOMPLETION_DONE);
 
-            if(save)
+            if (save)
                 CharMgr.Database.SaveObject(quest);
-
 
             _Owner.EvtInterface.Notify(EventName.OnDoneQuest, _Owner, quest);
             return true;
@@ -488,10 +486,10 @@ namespace WorldServer.World.Interfaces
                 }
             }
 
-             if(_Owner is Pet && _Owner.GetPet().Owner != null)
-                 _Owner.GetPet().Owner.QtsInterface.HandleEvent(type, entry, count, true);
+            if (_Owner is Pet && _Owner.GetPet().Owner != null)
+                _Owner.GetPet().Owner.QtsInterface.HandleEvent(type, entry, count, true);
 
-            // Check every quest a player has... 
+            // Check every quest a player has...
             foreach (KeyValuePair<ushort, Character_quest> questKp in Quests)
             {
                 // For each objective in every quest...
@@ -500,7 +498,7 @@ namespace WorldServer.World.Interfaces
                     if (objective.Objective == null)
                         continue;
 
-                    // RB   7/4/2016    Allow objectives to be completed in an order                 
+                    // RB   7/4/2016    Allow objectives to be completed in an order
                     if (objective.Objective.PreviousObj > 0)
                     {
                         Character_Objectives previousObjective = questKp.Value._Objectives.FirstOrDefault(o => o.Objective.Guid == objective.Objective.PreviousObj);
@@ -510,13 +508,12 @@ namespace WorldServer.World.Interfaces
 
                     if (objective.Objective.ObjType == (uint)type && !objective.IsDone())
                     {
-                        if(objective.Objective.PQArea > 0)
+                        if (objective.Objective.PQArea > 0)
                         {
                             bool skip = true;
 
                             if (player.CurrentKeep != null && player.CurrentKeep.Realm == player.Realm && player.CurrentKeep.Info.PQuest != null && player.CurrentKeep.Info.PQuest.Entry == objective.Objective.PQArea)
                                 skip = false;
-
                             else if (PublicQuest != null && PublicQuest.Info.Entry == objective.Objective.PQArea)
                                 skip = false;
 
@@ -524,13 +521,12 @@ namespace WorldServer.World.Interfaces
                                 continue;
                         }
 
-                        if(!string.IsNullOrEmpty(objective.Objective.inZones))
+                        if (!string.IsNullOrEmpty(objective.Objective.inZones))
                         {
                             string[] temp = objective.Objective.inZones.Split(',');
-                            if (temp != null && (player.Zone == null || !temp.Contains(""+ player.Zone.ZoneId)))
+                            if (temp != null && (player.Zone == null || !temp.Contains("" + player.Zone.ZoneId)))
                                 continue;
                         }
-
 
                         bool canAdd = false;
                         int newCount = objective.Count;
@@ -546,6 +542,7 @@ namespace WorldServer.World.Interfaces
                                     newCount += count;
                                 }
                                 break;
+
                             case Objective_Type.QUEST_KILL_GO:
                                 if (objective.Objective.GameObject != null && entry == objective.Objective.GameObject.Entry)
                                 {
@@ -553,6 +550,7 @@ namespace WorldServer.World.Interfaces
                                     newCount += count;
                                 }
                                 break;
+
                             case Objective_Type.QUEST_KILL_PLAYERS:
                                 if (objective.Objective != null)
                                 {
@@ -581,7 +579,7 @@ namespace WorldServer.World.Interfaces
                             case Objective_Type.QUEST_USE_GO:
                                 if (objective.Objective.GameObject != null && entry == objective.Objective.GameObject.Entry)
                                 {
-                                    // This will turn off Interactable flag on clicked GO, some more work can be  
+                                    // This will turn off Interactable flag on clicked GO, some more work can be
                                     // done with GO despawning and UNKs[3] unk modification
                                     // Default respawn time: 60 seconds
                                     Object target = player.CbtInterface.GetCurrentTarget();
@@ -679,17 +677,17 @@ namespace WorldServer.World.Interfaces
             if (quest == null || !quest.IsDone())
                 return;
 
-             if((num & 1) > 0)
+            if ((num & 1) > 0)
                 quest.SelectedRewards.Add(0);
-             if ((num & 2) > 0)
-                 quest.SelectedRewards.Add(1);
-             if ((num & 4) > 0)
-                 quest.SelectedRewards.Add(2);
-             if ((num & 8) > 0)
-                 quest.SelectedRewards.Add(3);
+            if ((num & 2) > 0)
+                quest.SelectedRewards.Add(1);
+            if ((num & 4) > 0)
+                quest.SelectedRewards.Add(2);
+            if ((num & 8) > 0)
+                quest.SelectedRewards.Add(3);
         }
 
-        #endregion
+        #endregion Players
 
         public static void BuildQuestInfo(PacketOut Out, Player plr, Quest q)
         {
@@ -717,7 +715,6 @@ namespace WorldServer.World.Interfaces
             Out.WriteByte(1);
             Out.WriteUInt32(q.Gold);
             Out.WriteUInt32(q.Xp);
-
         }
 
         public static void BuildQuestInProgress(PacketOut Out, Quest q, bool particular)
@@ -765,20 +762,21 @@ namespace WorldServer.World.Interfaces
             Out.WriteUInt32(q.Gold);
             Out.WriteUInt32(q.Xp);
         }
+
         public static void BuildQuestRewards(PacketOut Out, Player plr, Quest q)
         {
             Dictionary<Item_Info, uint> choices = GenerateRewards(q, plr);
 
-            Out.WriteByte(Math.Min(q.ChoiceCount,(byte)choices.Count));
+            Out.WriteByte(Math.Min(q.ChoiceCount, (byte)choices.Count));
             Out.WriteByte(0);
             Out.WriteByte((byte)choices.Count);
 
             foreach (KeyValuePair<Item_Info, uint> kp in choices)
-                Item.BuildItem(ref Out, null, kp.Key,null, 0, (ushort)kp.Value);
+                Item.BuildItem(ref Out, null, kp.Key, null, 0, (ushort)kp.Value);
         }
 
         /// <summary>Writes 10 bytes.</summary>
-        public static void BuildQuestInteract(PacketOut Out,ushort questID, ushort senderOid, ushort receiverOid)
+        public static void BuildQuestInteract(PacketOut Out, ushort questID, ushort senderOid, ushort receiverOid)
         {
             Out.WriteUInt16(questID);
             Out.WriteUInt16(0);
@@ -887,7 +885,7 @@ namespace WorldServer.World.Interfaces
 
             foreach (KeyValuePair<Item_Info, uint> kp in rewards)
             {
-                Item.BuildItem(ref packet, null, kp.Key,null, 0, (ushort)kp.Value);
+                Item.BuildItem(ref packet, null, kp.Key, null, 0, (ushort)kp.Value);
             }
 
             packet.WriteByte(0);
@@ -952,7 +950,7 @@ namespace WorldServer.World.Interfaces
             plr.SendPacket(Out);
         }
 
-        public void SendQuestState(Quest quest,QuestCompletion state)
+        public void SendQuestState(Quest quest, QuestCompletion state)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_QUEST_LIST_UPDATE, 32);
             Out.WriteUInt16(quest.Entry);
@@ -987,9 +985,9 @@ namespace WorldServer.World.Interfaces
             GetPlayer().SendPacket(Out);
         }
 
-        public static Dictionary<Item_Info,uint> GenerateRewards(Quest q, Player plr)
+        public static Dictionary<Item_Info, uint> GenerateRewards(Quest q, Player plr)
         {
-            Dictionary<Item_Info,uint> rewards = new Dictionary<Item_Info,uint>();
+            Dictionary<Item_Info, uint> rewards = new Dictionary<Item_Info, uint>();
 
             foreach (KeyValuePair<Item_Info, uint> kp in q.Rewards)
                 if (ItemsInterface.CanUse(kp.Key, plr, true, false))
@@ -1055,9 +1053,9 @@ namespace WorldServer.World.Interfaces
 
         public void NotifyHealingReceived(Player healer, uint count)
         {
-            PublicQuest?.NotifyPlayerHealed((Player) _Owner, healer, count);
+            PublicQuest?.NotifyPlayerHealed((Player)_Owner, healer, count);
         }
 
-        #endregion
+        #endregion Public Quest
     }
 }

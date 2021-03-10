@@ -1,5 +1,5 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -13,7 +13,6 @@ namespace Common
 
         public BattleFrontStatus()
         {
-            
         }
 
         public BattleFrontStatus(int regionId)

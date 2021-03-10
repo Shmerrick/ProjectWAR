@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Common;
+﻿using Common;
 using WorldServer.World.AI;
 
 namespace WorldServer.World.Objects.Instances.The_Lost_Vale
@@ -16,9 +14,7 @@ namespace WorldServer.World.Objects.Instances.The_Lost_Vale
 
         #endregion Constructors
 
-        #region Attributes
 
-        #endregion Attributes
 
         #region Overrides
 

@@ -14,7 +14,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 using System;
 
 namespace FrameWork
@@ -25,7 +25,7 @@ namespace FrameWork
         UDP = 0x02
     }
 
-    public delegate void PacketFunction(BaseClient client,PacketIn packet);
+    public delegate void PacketFunction(BaseClient client, PacketIn packet);
 
     [AttributeUsage(AttributeTargets.Method)]
     public class PacketHandlerAttribute : Attribute
@@ -40,9 +40,8 @@ namespace FrameWork
         public string Description { get; }
 
         public PacketHandlerAttribute(PacketHandlerType type, int opcode, string desc)
-            : this(type,opcode,0,desc)
+            : this(type, opcode, 0, desc)
         {
-
         }
 
         public PacketHandlerAttribute(PacketHandlerType type, int opcode, int statelevel, string desc)

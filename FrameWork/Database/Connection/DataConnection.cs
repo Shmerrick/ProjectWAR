@@ -1,27 +1,23 @@
-﻿using System;
+﻿using FrameWork.Database.Connection;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.Odbc;
 using System.Data.OleDb;
 using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
 using System.Net.Sockets;
-using System.Reflection;
-using System.Security.Policy;
 using System.Text;
-
-using System.Data.Common;
 using System.Text.RegularExpressions;
-using FrameWork.Database.Connection;
 
 namespace FrameWork
 {
     /// <summary>
     /// Handles MySQL saving and loading.
     /// </summary>
-    public abstract class DataConnection:IDataConnection
+    public abstract class DataConnection : IDataConnection
     {
         protected readonly string _connString;
         public readonly string SchemaName;
@@ -37,6 +33,7 @@ namespace FrameWork
             SchemaName = schemaName;
             InitTypeMapping();
         }
+
         protected abstract void InitTypeMapping();
 
         public ConnectionType ConnectionType { get; }
@@ -55,7 +52,6 @@ namespace FrameWork
         /// <summary>Escapes invalid characters in the string.</summary>
         public virtual string Escape(string s)
         {
-
             s = s.Replace("\\", "\\\\");
             s = s.Replace("\"", "\\\"");
             s = s.Replace("'", "\\'");
@@ -69,7 +65,6 @@ namespace FrameWork
 
         /// <summary> Executes a non-blocking request (INSERT, DELETE, UPDATE)</summary>
         public abstract int ExecuteNonQuery(string sqlcommand);
-    
 
         private static bool HandleException(Exception e)
         {
@@ -93,10 +88,10 @@ namespace FrameWork
                 case 10054:
                 case 10057:
                 case 10058:
-                {
-                    ret = true;
-                    break;
-                }
+                    {
+                        ret = true;
+                        break;
+                    }
             }
 
             Log.Notice("DataConnection", $"Socket exception: ({socketException.ErrorCode}) {socketException.Message}; repeat: {ret}");
@@ -111,7 +106,6 @@ namespace FrameWork
         public abstract object ExecuteScalar(string sqlcommand);
 
         protected Dictionary<Type, string> TypeDescStrings = new Dictionary<Type, string>();
-
 
         protected virtual void AppendTypeString(Type type, StringBuilder bldr)
         {
@@ -138,17 +132,16 @@ namespace FrameWork
             {
                 int tableCount;
 
-                object count = ExecuteScalar("SELECT COUNT(*) FROM information_schema.tables WHERE TABLE_SCHEMA = \"" + SchemaName + "\" AND TABLE_NAME = \"" + table.TableName+"\"");
+                object count = ExecuteScalar("SELECT COUNT(*) FROM information_schema.tables WHERE TABLE_SCHEMA = \"" + SchemaName + "\" AND TABLE_NAME = \"" + table.TableName + "\"");
                 if (count is long)
-                    tableCount = (int) (long) count;
-                else tableCount = (int) count;
+                    tableCount = (int)(long)count;
+                else tableCount = (int)count;
 
                 if (tableCount == 0)
                 {
                     createNewTable = true;
-                    Log.Info("DataConnection", "Table "+SchemaName+"."+table.TableName+" is missing and will be created...");
+                    Log.Info("DataConnection", "Table " + SchemaName + "." + table.TableName + " is missing and will be created...");
                 }
-
                 else
                 {
                     ExecuteSelect("DESCRIBE `" + table.TableName + "`", (reader) =>
@@ -169,7 +162,6 @@ namespace FrameWork
                         }
 
                         Log.Debug("DataConnection", databaseColumns.Count + " in table");
-
                     }, IsolationLevel.DEFAULT);
 
                     /*
@@ -184,10 +176,9 @@ namespace FrameWork
                     */
                 }
             }
-
             catch (Exception e)
             {
-                Log.Debug("DataConnection", "CRITICAL: Failed either to check whether the table "+SchemaName+"."+table.TableName+" exists, or to describe it: "+e);
+                Log.Debug("DataConnection", "CRITICAL: Failed either to check whether the table " + SchemaName + "." + table.TableName + " exists, or to describe it: " + e);
                 Environment.Exit(0);
             }
 
@@ -202,7 +193,7 @@ namespace FrameWork
             StringBuilder colBuilder = new StringBuilder(24);
 
             // Build information about the existing columns.
-            // This will be used both to create a new table if required, 
+            // This will be used both to create a new table if required,
             // and to add any columns that are missing from an existing table.
             for (int i = 0; i < table.Columns.Count; i++)
             {
@@ -236,7 +227,6 @@ namespace FrameWork
                     else
                         colBuilder.Append("TEXT");
                 }
-
                 else AppendTypeString(systype, colBuilder);
 
                 // Append any modifiers
@@ -259,16 +249,15 @@ namespace FrameWork
                 }
 
                 // Check that the DB type matches the data type
-                else if(systype != typeof(string) && systype != typeof(bool) && systype != typeof(float) && TypeDescStrings.ContainsKey(systype))
+                else if (systype != typeof(string) && systype != typeof(bool) && systype != typeof(float) && TypeDescStrings.ContainsKey(systype))
                 {
                     int colIndex = databaseColumns.IndexOf(table.Columns[i].ColumnName.ToLower());
 
                     if (colIndex == -1)
                         Log.Error("DataConnection", $"Column index out of range for {table.TableName}, {table.Columns[i].ColumnName}");
-
                     else if (databaseColumnTypes[colIndex].ToString() != TypeDescStrings[systype] && !table.Columns[i].AutoIncrement) //To remove errors about type mistmatch for guids
                     {
-                        Log.Error($"Table {table.TableName} column {databaseColumns[colIndex]}",  $"Type mismatch ({databaseColumnTypes[colIndex]} in DB - {TypeDescStrings[systype]} in emulator)");
+                        Log.Error($"Table {table.TableName} column {databaseColumns[colIndex]}", $"Type mismatch ({databaseColumnTypes[colIndex]} in DB - {TypeDescStrings[systype]} in emulator)");
                     }
                 }
             }
@@ -276,6 +265,7 @@ namespace FrameWork
             if (createNewTable)
             {
                 #region Create New Table
+
                 string columndef = string.Join(", ", columnDefs.ToArray());
 
                 // create primary keys
@@ -295,7 +285,7 @@ namespace FrameWork
                     columndef += ")";
                 }
 
-                // Index Unique			
+                // Index Unique
                 for (int i = 0; i < table.Columns.Count; i++)
                 {
                     if (table.Columns[i].Unique && !primaryKeys.Contains(table.Columns[i].ColumnName))
@@ -324,25 +314,24 @@ namespace FrameWork
                 {
                     Log.Error("DataConnection", "Error at creating table " + table.TableName + e);
                 }
-                #endregion
-            }
 
+                #endregion Create New Table
+            }
             else
             {
                 bool primaryKeysDirty = false;
                 try
                 {
                     // Ensure that the PKs in the database match.
-                    ExecuteSelect("SHOW INDEX FROM `" + table.TableName + "`",  (reader) =>
-                    {
-                        System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
-                        while (reader.Read())
-                        {
-                            if (reader.GetString(2).Equals("PRIMARY"))
-                                databasePrimaryKeys.Add(reader.GetString(4));
-                        }
-
-                    }, IsolationLevel.DEFAULT);
+                    ExecuteSelect("SHOW INDEX FROM `" + table.TableName + "`", (reader) =>
+                   {
+                       System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+                       while (reader.Read())
+                       {
+                           if (reader.GetString(2).Equals("PRIMARY"))
+                               databasePrimaryKeys.Add(reader.GetString(4));
+                       }
+                   }, IsolationLevel.DEFAULT);
 
                     // Check for changed primary keys, so we can update them.
 
@@ -362,9 +351,8 @@ namespace FrameWork
                 }
                 catch (Exception e)
                 {
-                    Log.Debug("DataConnection", "Unable to check primary keys: "+ e);
+                    Log.Debug("DataConnection", "Unable to check primary keys: " + e);
                 }
-
 
                 if (columnsToAdd.Count > 0)
                     AddColumnsToDatabase(table.TableName, columnsToAdd);
@@ -385,7 +373,7 @@ namespace FrameWork
             {
                 Log.Debug("DataConnection", alterTable);
                 ExecuteNonQuery(alterTable);
-                Log.Success(tableName, "Added columns: "+columndef);
+                Log.Success(tableName, "Added columns: " + columndef);
             }
             catch (Exception e)
             {
@@ -623,7 +611,7 @@ namespace FrameWork
                         {
                             if (row.HasErrors && row.RowState == DataRowState.Deleted)
                             {
-                                Log.Error("DataConnection","Error deleting row in table " + table.TableName + ": " + row.RowError);
+                                Log.Error("DataConnection", "Error deleting row in table " + table.TableName + ": " + row.RowError);
 
                                 var sb = new StringBuilder();
                                 foreach (DataColumn col in table.Columns)
@@ -658,6 +646,5 @@ namespace FrameWork
                 }
             }
         }
-
     }
 }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.Common;
-using System.Linq;
-using System.Text;
 
 namespace FrameWork.Database.Connection
 {
@@ -20,9 +16,11 @@ namespace FrameWork.Database.Connection
     {
         /// <summary> Retrieves connection from the pool. </summary>
         DbConnection GetConnection();
+
         int ExecuteNonQuery(string sqlcommand);
 
         bool IsSQLConnection { get; }
+
         /// <summary> Executes a blocking SELECT and returns the corresponding dataset. </summary>
         void ExecuteSelect(string sqlcommand, QueryCallback callback, IsolationLevel isolation);
 
@@ -42,5 +40,5 @@ namespace FrameWork.Database.Connection
 
         // Affiche les erreur du dataset
         void PrintDatasetErrors(DataSet dataset);
-    } 
+    }
 }

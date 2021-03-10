@@ -15,11 +15,11 @@ namespace Common.Database.World.Creatures
 
         [DataElement(AllowDbNull = false)]
         public int SpawnGuid { get; set; }
-        
+
         [DataElement(AllowDbNull = true)]
         public string Name { get; set; }
 
-        [DataElement (AllowDbNull = false)]
-        public int Enabled{ get; set; }
+        [DataElement(AllowDbNull = false)]
+        public int Enabled { get; set; }
     }
 }

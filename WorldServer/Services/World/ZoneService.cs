@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Common.Database.World.Battlefront;
-using Common.Database.World.Maps;
 using WorldServer.Managers;
 using WorldServer.World.Positions;
 
@@ -15,7 +13,6 @@ namespace WorldServer.Services.World
     [Service]
     public class ZoneService : ServiceBase
     {
-
         public static List<Zone_Info> _Zone_Info;
 
         [LoadingFunction(true)]
@@ -48,12 +45,13 @@ namespace WorldServer.Services.World
         {
             return _Zone_Info.FirstOrDefault(zone => zone != null && zone.ZoneId == ZoneId);
         }
-            /// <summary>
-            /// Gets all zones in given region.
-            /// </summary>
-            /// <param name="RegionId">Region id to get zones of.</param>
-            /// <returns>List on known regions, cannot be null, may be empty</returns>
-            public static List<Zone_Info> GetZoneRegion(ushort RegionId)
+
+        /// <summary>
+        /// Gets all zones in given region.
+        /// </summary>
+        /// <param name="RegionId">Region id to get zones of.</param>
+        /// <returns>List on known regions, cannot be null, may be empty</returns>
+        public static List<Zone_Info> GetZoneRegion(ushort RegionId)
         {
             List<Zone_Info> list = new List<Zone_Info>();
             foreach (Zone_Info zone in _Zone_Info)
@@ -61,6 +59,7 @@ namespace WorldServer.Services.World
                     list.Add(zone);
             return list;
         }
+
         public static Zone_Info GetZoneFromOffsets(int OffsetX, int OffsetY)
         {
             foreach (Zone_Info Info in _Zone_Info)
@@ -98,6 +97,7 @@ namespace WorldServer.Services.World
 
             Log.Success("LoadZone_Jump", "Loaded " + Zone_Jumps.Count + " Zone_Jump");
         }
+
         public static Zone_jump GetZoneJump(uint Entry)
         {
             Zone_jump jump;
@@ -115,7 +115,7 @@ namespace WorldServer.Services.World
             return null;
         }
 
-        #endregion
+        #endregion Zone Portals
 
         #region Zone Areas
 
@@ -147,6 +147,7 @@ namespace WorldServer.Services.World
 
             Areas.Add(Area);
         }
+
         public static List<Zone_Area> GetZoneAreas(ushort ZoneID)
         {
             List<Zone_Area> Areas;
@@ -155,7 +156,7 @@ namespace WorldServer.Services.World
             return Areas;
         }
 
-        #endregion
+        #endregion Zone Areas
 
         #region Zone Respawns
 
@@ -226,9 +227,10 @@ namespace WorldServer.Services.World
             return respawns;
         }
 
-        #endregion
+        #endregion Zone Respawns
 
         #region Inter-Zone Flight
+
         public static Dictionary<ushort, Zone_Taxi[]> _Zone_Taxi = new Dictionary<ushort, Zone_Taxi[]>();
 
         [LoadingFunction(true)]
@@ -262,9 +264,11 @@ namespace WorldServer.Services.World
 
             return null;
         }
-        #endregion
+
+        #endregion Inter-Zone Flight
 
         #region Utilities
+
         public static ushort CalculPin(Zone_Info Info, int WorldPos, bool x)
         {
             ushort Pin = 0;
@@ -304,8 +308,7 @@ namespace WorldServer.Services.World
         {
             return (uint)Math.Truncate((decimal)(Pin / 4096 + (x ? Info.OffX : Info.OffY))) << 12;
         }
-        #endregion
 
-       
+        #endregion Utilities
     }
 }

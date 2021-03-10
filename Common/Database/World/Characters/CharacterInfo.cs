@@ -14,13 +14,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using FrameWork;
+using System;
 
 namespace Common
 {
@@ -49,14 +45,14 @@ namespace Common
             set { _CareerLine = value; Dirty = true; }
         }
 
-        [DataElement(AllowDbNull=false)]
+        [DataElement(AllowDbNull = false)]
         public byte Career
         {
             get { return _Career; }
             set { _Career = value; Dirty = true; }
         }
 
-        [DataElement(AllowDbNull = false,Varchar=255)]
+        [DataElement(AllowDbNull = false, Varchar = 255)]
         public string CareerName
         {
             get { return _CareerName; }

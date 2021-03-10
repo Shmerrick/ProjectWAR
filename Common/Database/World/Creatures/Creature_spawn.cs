@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -101,6 +97,7 @@ namespace Common
             get { return _Faction; }
             set { _Faction = value; Dirty = true; }
         }
+
         [DataElement()]
         public byte WaypointType { get; set; } = 0; // 0 = Loop Start->End->Start, 1 = Start->End, 2 = Random
 

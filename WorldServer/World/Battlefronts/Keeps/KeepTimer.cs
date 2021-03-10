@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FrameWork;
-using GameData;
+﻿using FrameWork;
 using NLog;
+using System;
 
 namespace WorldServer.World.Battlefronts.Keeps
 {
     public class KeepTimer
     {
-        
         public string KeepTimerName { get; set; }
         public int Value { get; set; }
         public int Length { get; set; }
@@ -25,12 +19,12 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             _logger.Trace($"{this.KeepTimerName} created, value={Value}, length={Length}");
         }
-      
+
         public static DateTime FromUnixTime(long unixTime)
         {
             return new DateTime(1970, 1, 1).AddSeconds(unixTime);
         }
-      
+
         public int Start()
         {
             Value = TCPManager.GetTimeStamp() + Length;
@@ -61,6 +55,5 @@ namespace WorldServer.World.Battlefronts.Keeps
             _logger.Debug($"{this.KeepTimerName} reset");
             Value = 0;
         }
-
     }
 }

@@ -14,6 +14,5 @@
         public int RallyPt { get; set; }
         public int Skills { get; set; }
         public int Realm { get; set; }
-
     }
 }

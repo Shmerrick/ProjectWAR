@@ -31,13 +31,15 @@ namespace WorldServer.NetWork.Handler
 
                         if (Plr.CurrentSiege != null && Plr.CurrentSiege.SiegeInterface.IsDeployed)
                             Plr.CurrentSiege.SiegeInterface.RemovePlayer(Plr);
+                    }
+                    break;
 
-
-                    } break;
                 case 1: // Mail sent
                     {
                         Plr.MlInterface.SendPacketMail(packet);
-                    } break;
+                    }
+                    break;
+
                 case 2: // Open mail
                 case 3: // Return mail
                 case 4: // Delete mail

@@ -1,7 +1,7 @@
 ﻿using Common;
+using Common.Database.World.Items;
 using FrameWork;
 using System.Collections.Generic;
-using Common.Database.World.Items;
 
 namespace WorldServer.Services.World
 {
@@ -111,7 +111,6 @@ namespace WorldServer.Services.World
             return null;
         }
 
-
         public static List<BlackMarketItem> _BlackMarket_Items;
 
         [LoadingFunction(true)]
@@ -119,7 +118,7 @@ namespace WorldServer.Services.World
         {
             Log.Debug("WorldMgr", "LoadBlackMarketItems...");
 
-            _BlackMarket_Items= new List<BlackMarketItem>();
+            _BlackMarket_Items = new List<BlackMarketItem>();
 
             IList<BlackMarketItem> items = Database.SelectAllObjects<BlackMarketItem>();
 
@@ -130,6 +129,5 @@ namespace WorldServer.Services.World
 
             Log.Success("LoadBlackMarketItems", "Loaded " + _Item_Sets.Count + " LoadBlackMarketItems");
         }
-
     }
 }

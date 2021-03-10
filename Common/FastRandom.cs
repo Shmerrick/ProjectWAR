@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Common
@@ -14,7 +12,7 @@ namespace Common
             _seed = seed;
         }
 
-        long randomLong()
+        private long randomLong()
         {
             _seed ^= (_seed << 21);
             _seed ^= (_seed >> 35) & 0xFF;
@@ -77,7 +75,6 @@ namespace Common
 
         public double standNormalDistrDouble()
         {
-
             double q = double.MaxValue;
             double u1 = 0;
             double u2;
@@ -119,7 +116,7 @@ namespace Common
             _seed = seed;
         }
 
-        long randomLong()
+        private long randomLong()
         {
             _seed ^= (_seed << 21);
             _seed ^= (_seed >> 35) & 0xFF;
@@ -182,7 +179,6 @@ namespace Common
 
         public double standNormalDistrDouble()
         {
-
             double q = double.MaxValue;
             double u1 = 0;
             double u2;

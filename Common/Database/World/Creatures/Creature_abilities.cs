@@ -1,5 +1,5 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -41,10 +41,10 @@ namespace Common
         [DataElement]
         public byte RandomTarget { get; set; }
 
-		[DataElement]
-		public byte TargetFocus { get; set; }
+        [DataElement]
+        public byte TargetFocus { get; set; }
 
-		[DataElement]
+        [DataElement]
         public byte MinRange { get; set; }
     }
 }

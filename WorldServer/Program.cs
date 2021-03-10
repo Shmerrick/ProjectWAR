@@ -1,26 +1,23 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Reflection;
-
-using Common;
-using FrameWork;
+using System.Threading;
 using WorldServer.Configs;
 using WorldServer.Managers;
 using WorldServer.NetWork;
 using WorldServer.Services.World;
 using WorldServer.World.Auction;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Objects;
-using System.Diagnostics;
 
 namespace WorldServer
 {
-    class Program
+    internal class Program
     {
         public static WorldConfigs Config;
         public static RpcClient Client;
@@ -35,7 +32,7 @@ namespace WorldServer
         public static double Ticks => Stopwatch.GetTimestamp() * _HighFrequency;
 
         [STAThread]
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(onError);
             Console.CancelKeyPress += new ConsoleCancelEventHandler(OnClose);
@@ -62,10 +59,9 @@ namespace WorldServer
                 {
                     WorldMgr.ServerMode = "DEV";
                 }
-            }  
+            }
 
             Log.Info("", "SERVER running in " + WorldMgr.ServerMode + " mode", ConsoleColor.Cyan);
-            
 
             // Loading all configs files
             ConfigMgr.LoadConfigs();
@@ -81,7 +77,7 @@ namespace WorldServer
             {
                 try
                 {
-                    api = new API.Server(Config.APIAddress, Config.APIPort,100);
+                    api = new API.Server(Config.APIAddress, Config.APIPort, 100);
                 }
                 catch (Exception e)
                 {
@@ -125,8 +121,6 @@ namespace WorldServer
                 Log.Error("Directory Check", "Abilities directory does not exist");
                 ConsoleMgr.WaitAndExit(2000);
             }
-
-
 
             Client = new RpcClient("WorldServer-" + Config.RealmId, Config.AccountCacherInfo.RpcLocalIp, 1);
             if (!Client.Start(Config.AccountCacherInfo.RpcServerIp, Config.AccountCacherInfo.RpcServerPort))
@@ -182,7 +176,7 @@ namespace WorldServer
             ConsoleMgr.Start();
         }
 
-        static void onError(object sender, UnhandledExceptionEventArgs e)
+        private static void onError(object sender, UnhandledExceptionEventArgs e)
         {
             Log.Error("onError", e.ExceptionObject.ToString());
             GenerateCrashReport(e);
@@ -199,6 +193,7 @@ namespace WorldServer
                 return "";
             }
         }
+
         private static string GetTimeStamp()
         {
             DateTime now = DateTime.Now;
@@ -285,6 +280,7 @@ namespace WorldServer
                 Console.WriteLine("failed");
             }
         }
+
         public static void OnClose(object obj, object Args)
         {
             Log.Info("Closing", "Closing the server");

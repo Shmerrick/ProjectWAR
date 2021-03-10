@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Reflection;
+using System.Threading;
 
 namespace FrameWork
 {
@@ -83,10 +81,11 @@ namespace FrameWork
         {
             Func.Invoke();
         }
-        public static void InitMultiLoad(MultiLoadFunction Func,int Count)
+
+        public static void InitMultiLoad(MultiLoadFunction Func, int Count)
         {
             for (int i = 0; i < Count; ++i)
-                new LoaderMgr(Func, Count,i);
+                new LoaderMgr(Func, Count, i);
         }
 
         public static void Wait()
@@ -95,9 +94,10 @@ namespace FrameWork
                 Thread.Sleep(50);
         }
 
-        #endregion
+        #endregion Static
 
         public delegate void LoadFunction();
+
         public delegate void MultiLoadFunction(int ThreadCount, int Id);
 
         private int Id;
@@ -151,8 +151,8 @@ namespace FrameWork
             {
                 if (_MultiFunction != null)
                 {
-                    Log.Debug("Load", "Loading : " + _MultiFunction.Method.Name +", Id="+Id);
-                    _MultiFunction.Invoke(Count,Id);
+                    Log.Debug("Load", "Loading : " + _MultiFunction.Method.Name + ", Id=" + Id);
+                    _MultiFunction.Invoke(Count, Id);
                 }
             }
             catch (Exception e)

@@ -11,14 +11,13 @@ namespace FrameWork
         {
             Name = name;
             Unique = unique;
-            if(columns != null)
+            if (columns != null)
                 Columns = columns.ToList();
         }
 
         public Index(params string[] info)
         {
         }
-
 
         // Défini le nom de la table a charger
         public string Name { get; set; }
@@ -28,5 +27,4 @@ namespace FrameWork
 
         public List<string> Columns { get; set; }
     }
-
 }

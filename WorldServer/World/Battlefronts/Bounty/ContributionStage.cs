@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WorldServer.World.Battlefronts.Bounty
+﻿namespace WorldServer.World.Battlefronts.Bounty
 {
     public class ContributionStage
     {
@@ -16,7 +10,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
         public override string ToString()
         {
-            return $"{Description} {ContributionStageSum}/{ContributionStageMax* ContributionStageValue}";
+            return $"{Description} {ContributionStageSum}/{ContributionStageMax * ContributionStageValue}";
         }
     }
 }

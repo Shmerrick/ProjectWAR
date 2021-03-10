@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace FrameWork
 {
     public interface IObjectDatabase
     {
         bool AddObject(DataObject dataObject);
+
         void ForceSave();
+
         void SaveObject(DataObject dataObject);
+
         long GetMaxColValue<TObject>(string column) where TObject : DataObject;
 
         string GetSchemaName();
+
         void RegisterAction(Action action);
 
         void DeleteObject(DataObject dataObject);
@@ -128,7 +131,6 @@ namespace FrameWork
         /// <returns>Dictionary of entities indexed by key valur, never null</returns>
         Dictionary<TKey, TObject> MapAllObjects<TKey, TObject>(string keyName, string whereClause, int expectedRowCount, IsolationLevel isolation)
             where TObject : DataObject;
-
 
         int GetNextAutoIncrement<TObject>()
             where TObject : DataObject;

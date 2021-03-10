@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Common;
-using FrameWork;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
@@ -32,7 +32,6 @@ namespace WorldServer.World.Interfaces
                     if (!_tokUnlocks.ContainsKey(tok.TokEntry))
                         _tokUnlocks.Add(tok.TokEntry, tok);
                 }
-
             }
 
             if (toksKills != null)
@@ -70,12 +69,11 @@ namespace WorldServer.World.Interfaces
                 CharMgr.Database.AddObject(kills);
             }
 
-
-
             _loaded = true;
 
             base.Load();
         }
+
         public override void Save()
         {
             foreach (KeyValuePair<ushort, Character_tok> Kp in _tokUnlocks)
@@ -124,6 +122,7 @@ namespace WorldServer.World.Interfaces
             if (Info != null)
                 AddTok(Info.Entry);
         }
+
         // variable itemEquipedToK checks if this ToK was triggered by equiping item. If it is true it was, otherwise it is false
         public void AddTok(ushort Entry, bool itemEquipedToK = false)
         {
@@ -143,7 +142,6 @@ namespace WorldServer.World.Interfaces
 
             if (Info.Realm != 0 && Info.Realm != _Owner.GetPlayer().Info.Realm)
                 return;
-
 
             SendTok(Entry, true);
 
@@ -180,7 +178,7 @@ namespace WorldServer.World.Interfaces
                                 count--;
                             }
                         }
-                        // If we have all required unlocks count = 0 and we can proceed 
+                        // If we have all required unlocks count = 0 and we can proceed
                         if (count == 0)
                         {
                             // Tok is send to player
@@ -235,9 +233,9 @@ namespace WorldServer.World.Interfaces
 
             CharMgr.Database.AddObject(Tok);
         }
+
         public void SendAllToks()
         {
-
             PacketOut Out = new PacketOut((byte)Opcodes.F_TOK_ENTRY_UPDATE, 1509);
             Out.WriteByte(1);
             Out.WriteByte(0);
@@ -266,6 +264,7 @@ namespace WorldServer.World.Interfaces
             }
             GetPlayer().SendPacket(Out);
         }
+
         public void SendTok(ushort Entry, bool Print)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_TOK_ENTRY_UPDATE);
@@ -290,14 +289,12 @@ namespace WorldServer.World.Interfaces
 
         public void SendActionCounterUpdate(ushort Subtype, uint Count)
         {
-
             PacketOut Out = new PacketOut((byte)Opcodes.F_ACTION_COUNTER_UPDATE, 11);
             Out.WriteUInt16(Subtype);
             Out.WriteByte(0);
             Out.WriteByte(0);
             Out.WriteUInt32(Count);
             _Owner.GetPlayer().SendPacket(Out);
-
         }
 
         public void AddKill(ushort type)
@@ -313,7 +310,6 @@ namespace WorldServer.World.Interfaces
                 kills.Dirty = true;
                 CharMgr.Database.SaveObject(kills);
             }
-
             else
             {
                 kills = new Character_tok_kills
@@ -493,7 +489,7 @@ namespace WorldServer.World.Interfaces
                 return;
 
             if (!HasTok(Entry))
-            { 
+            {
                 SendTok(Entry, true);
 
                 GetPlayer().AddXp(Info.Xp, false, false);
@@ -501,7 +497,7 @@ namespace WorldServer.World.Interfaces
                 _tokUnlocks.Add(Entry, Tok);
 
                 GetPlayer().Info.Toks = _tokUnlocks.Values.ToList();
-                
+
                 CharMgr.Database.AddObject(Tok);
             }
         }
@@ -511,10 +507,10 @@ namespace WorldServer.World.Interfaces
             //IList<Item_Info> tokItems = WorldMgr.Database.SelectObjects<Item_Info>("career=" + GetPlayer().Info.CareerFlags + " AND TokUnlock2 = " + item.Info.TokUnlock2);
             List<Item_Info> tokItems = new List<Item_Info>();
 
-            for (ushort i = 10; i<35; i++)
+            for (ushort i = 10; i < 35; i++)
             {
                 if (i != 29 && i != 30)
-                { 
+                {
                     Item item = GetPlayer().ItmInterface.GetItemInSlot(i);
                     if (item != null)
                         tokItems.Add(WorldMgr.Database.SelectObject<Item_Info>("entry =" + item.Info.Entry));
@@ -577,7 +573,6 @@ namespace WorldServer.World.Interfaces
                             CharMgr.Database.AddObject(Tok2);
                             CharMgr.Database.AddObject(Tok2Title);
                         }
-                        
                     }
                 }
             }

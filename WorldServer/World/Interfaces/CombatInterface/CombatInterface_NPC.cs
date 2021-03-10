@@ -26,7 +26,7 @@ namespace WorldServer.World.Interfaces
         public override void Update(long tick)
         {
             if (CombatLeaveTime < tick && IsInCombat)
-            { 
+            {
                 LeaveCombat();
                 Creature p = UnitOwner as Creature;
                 if (p != null && p.Spawn != null)
@@ -60,7 +60,6 @@ namespace WorldServer.World.Interfaces
                 p.Strike(CurrentTarget, p.IsInCastRange(CurrentTarget, (uint)p.BaseRadius) ? EquipSlot.MAIN_HAND : EquipSlot.RANGED_WEAPON);
                 NextAttackTime = tick + 1500 + StaticRandom.Instance.Next(0, 1000);
             }
-
             else
             {
                 if (!p.IsInCastRange(CurrentTarget, (uint)(0.5f + p.BaseRadius)))
@@ -79,20 +78,19 @@ namespace WorldServer.World.Interfaces
                 return;
             Targets[(int)targetType] = oid;
 
-            CurrentTarget = (Unit) _Owner.Region?.GetObject(oid);
+            CurrentTarget = (Unit)_Owner.Region?.GetObject(oid);
         }
 
         public void SetTarget(Unit target, TargetTypes targetType)
         {
             if (target == null)
             {
-                Targets[(int) targetType] = 0;
+                Targets[(int)targetType] = 0;
                 CurrentTarget = null;
             }
-
             else
             {
-                Targets[(int) targetType] = target.Oid;
+                Targets[(int)targetType] = target.Oid;
 
                 CurrentTarget = target;
             }
@@ -104,7 +102,7 @@ namespace WorldServer.World.Interfaces
 
         public override Unit GetCurrentTarget() => CurrentTarget;
 
-        #endregion
+        #endregion Targets
 
         #region Events
 
@@ -152,7 +150,7 @@ namespace WorldServer.World.Interfaces
             _Owner.EvtInterface.Notify(EventName.OnTargetDie, victim, null);
         }
 
-        #endregion
+        #endregion Events
 
         public override bool CanAttackPlayer(Player plr)
         {
@@ -163,7 +161,6 @@ namespace WorldServer.World.Interfaces
 
         public static void AnimateCreature(Creature creature, byte animId)
         {
-
             var Out = new PacketOut((byte)Opcodes.F_ANIMATION);
 
             Out.WriteUInt16(creature.Oid);
@@ -174,7 +171,6 @@ namespace WorldServer.World.Interfaces
             creature.DispatchPacket(Out, true);
         }
 
-
-        #endregion
+        #endregion NPC Anim
     }
 }

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Common;
-using FrameWork;
 using WorldServer.Managers;
 using WorldServer.World.Objects;
 
@@ -20,7 +20,7 @@ namespace WorldServer.NetWork.Handler
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_CREATE_CHARACTER, (int)eClientState.CharScreen, "onCreateCharacter")]
         public static void F_CREATE_CHARACTER(BaseClient client, PacketIn packet)
         {
-            GameClient cclient = (GameClient) client;
+            GameClient cclient = (GameClient)client;
             CreateInfo Info;
 
             Info.slot = packet.GetUint8();
@@ -51,7 +51,6 @@ namespace WorldServer.NetWork.Handler
 
                     if (duplicate > 3)
                         break;
-
                 }
             }
 
@@ -64,7 +63,6 @@ namespace WorldServer.NetWork.Handler
                 }
                 else
                 {
-
                     //Log.Success("OnCreate", "New Character : " + Name);
 
                     Character Char = new Character
@@ -88,7 +86,7 @@ namespace WorldServer.NetWork.Handler
                     }
                     else
                     {
-                        List < CharacterInfo_item > Items = CharMgr.GetCharacterInfoItem(Char.CareerLine);
+                        List<CharacterInfo_item> Items = CharMgr.GetCharacterInfoItem(Char.CareerLine);
 
                         foreach (CharacterInfo_item Itm in Items)
                         {
@@ -157,7 +155,7 @@ namespace WorldServer.NetWork.Handler
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_CRASH_PACKET, (int)eClientState.WorldEnter, "F_CRASH_PACKET")]
         public static void F_CRASH_PACKET(BaseClient client, PacketIn packet)
         {
-            GameClient cclient = (GameClient) client;
+            GameClient cclient = (GameClient)client;
 
             if (cclient.Plr != null)
                 cclient.Plr.DisconnectType = Player.EDisconnectType.Crash;
@@ -174,14 +172,14 @@ namespace WorldServer.NetWork.Handler
                 while (!cclient.PLogBuf.IsEmpty)
                 {
                     var p = cclient.PLogBuf.Dequeue();
-                    if(p is PacketIn)
+                    if (p is PacketIn)
                         builder.AppendLine(Utils.ToLogHexString((byte)((PacketIn)p).Opcode, false, ((PacketIn)p).ToArray()));
-                    else if(p is PacketOut)
-                            builder.AppendLine(Utils.ToLogHexString((byte)((PacketOut)p).Opcode, true, ((PacketOut)p).ToArray()));
+                    else if (p is PacketOut)
+                        builder.AppendLine(Utils.ToLogHexString((byte)((PacketOut)p).Opcode, true, ((PacketOut)p).ToArray()));
                 }
-               
+
                 string name = "";
-                if(cclient.Plr != null && cclient.Plr.Name != null)
+                if (cclient.Plr != null && cclient.Plr.Name != null)
                     name = "_" + cclient.Plr.Name;
 
                 if (builder.Length > 0)
@@ -189,21 +187,18 @@ namespace WorldServer.NetWork.Handler
             }
             catch (Exception e)
             {
-                Log.Error("F_CRASH_PACKET","Error saving crash log. " + e.Message + "\r\n" + builder.ToString() +"\r\n");
+                Log.Error("F_CRASH_PACKET", "Error saving crash log. " + e.Message + "\r\n" + builder.ToString() + "\r\n");
             }
-
-
         }
 
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_PLAYER_EXIT, (int)eClientState.WorldEnter, "F_PLAYER_EXIT")]
         public static void F_PLAYER_EXIT(BaseClient client, PacketIn packet)
         {
-            GameClient cclient = (GameClient) client;
+            GameClient cclient = (GameClient)client;
 
             if (cclient.Plr != null)
                 cclient.Plr.DisconnectType = Player.EDisconnectType.Clean;
         }
-
 
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_DELETE_CHARACTER, (int)eClientState.CharScreen, "onDeleteCharacter")]
         public static void F_DELETE_CHARACTER(BaseClient client, PacketIn packet)
@@ -284,7 +279,7 @@ namespace WorldServer.NetWork.Handler
                     cclient.Plr = Player.CreatePlayer(cclient, Char);
 
                 if (cclient.Plr == null)
-                { 
+                {
                     cclient.Disconnect("NULL Player from CreatePlayer?");
                     return;
                 }
@@ -308,11 +303,9 @@ namespace WorldServer.NetWork.Handler
             }
         }
 
-
-        struct RandomNameInfo
+        private struct RandomNameInfo
         {
             public byte Race, Unk, Slot;
-            
         }
 
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_RANDOM_NAME_LIST_INFO, (int)eClientState.CharScreen, "onRandomNameListInfo")]

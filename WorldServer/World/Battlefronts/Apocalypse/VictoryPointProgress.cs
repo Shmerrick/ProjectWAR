@@ -7,7 +7,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 {
     public class VictoryPointProgress
     {
-
         public const int MAX_NUMBER_PLAYER_KILLS = 25;
         public const int MAX_NUMBER_SCENARIO_WINS = 6;
 
@@ -40,6 +39,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
         private float _oVP;
+
         public float OrderVictoryPoints
         {
             get
@@ -148,11 +148,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 OrderVictoryPoints = 0;
                 DestructionVictoryPoints = 0;
             }
-
         }
 
         /// <summary>
-        /// Reset the realm to be owned by Neutral. 
+        /// Reset the realm to be owned by Neutral.
         /// </summary>
         public void Reset(Campaign BattleFront)
         {
@@ -213,7 +212,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         //    }
         //}
 
-
         public void UpdateStatus(Campaign campaign)
         {
             DestructionVictoryPoints = 0;
@@ -241,7 +239,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                 OrderVictoryDominationCount++;
                             }
                         }
-
                     }
                 }
             }
@@ -284,7 +281,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 _logger.Info($"VPP {OrderVictoryPoints}/{DestructionVictoryPoints}");
             }
         }
-
 
         public int GetDominationCount(Realms realm)
         {

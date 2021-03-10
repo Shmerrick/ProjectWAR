@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System.Collections.Generic;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Map;
@@ -12,40 +12,40 @@ namespace WorldServer.World.Scenarios.Objects
 {
     public class GuardCreature : Creature
     {
-        FlagGuard FlagGrd;
+        private FlagGuard FlagGrd;
 
-        public GuardCreature(Creature_spawn spawn, FlagGuard FlagGrd) : base (spawn)
+        public GuardCreature(Creature_spawn spawn, FlagGuard FlagGrd) : base(spawn)
         {
             this.FlagGrd = FlagGrd;
         }
 
         public override void RezUnit()
         {
-			FlagGrd.UpdateFlagOwningRealm();
+            FlagGrd.UpdateFlagOwningRealm();
 
-			FlagGrd.Creature = new GuardCreature(Spawn, FlagGrd);
+            FlagGrd.Creature = new GuardCreature(Spawn, FlagGrd);
             Region.AddObject(FlagGrd.Creature, Spawn.ZoneId);
             Destroy();
         }
 
-		public override void OnLoad()
-		{
-			base.OnLoad();
-		}
-	}
+        public override void OnLoad()
+        {
+            base.OnLoad();
+        }
+    }
 
     public class FlagGuard
     {
-        uint OrderId;
-        uint DestroId;
-        int x;
-        int y;
-        int z;
-        int o;
-        ushort ZoneId;
-        RegionMgr Region;
+        private uint OrderId;
+        private uint DestroId;
+        private int x;
+        private int y;
+        private int z;
+        private int o;
+        private ushort ZoneId;
+        private RegionMgr Region;
         public GuardCreature Creature;
-		int team;
+        private int team;
 
         public FlagGuard(BattlefieldObjective flag, RegionMgr Region, ushort ZoneId, uint OrderId, uint DestroId, int x, int y, int z, int o)
         {
@@ -63,7 +63,7 @@ namespace WorldServer.World.Scenarios.Objects
         {
             if (Creature != null)
                 Creature.Destroy();
-			this.team = team;
+            this.team = team;
 
             Creature_proto Proto = CreatureService.GetCreatureProto(team == 1 ? OrderId : DestroId);
             if (Proto == null)
@@ -79,35 +79,35 @@ namespace WorldServer.World.Scenarios.Objects
             Spawn.WorldZ = z;
             Spawn.WorldX = x;
             Spawn.ZoneId = ZoneId;
-			Spawn.RespawnMinutes = 3;
+            Spawn.RespawnMinutes = 3;
 
-			Creature = new GuardCreature(Spawn, this);
-			Region.AddObject(Creature, Spawn.ZoneId);
+            Creature = new GuardCreature(Spawn, this);
+            Region.AddObject(Creature, Spawn.ZoneId);
         }
 
-		public void DespawnGuard()
-		{
-			Region.RemoveObject(Creature);
-		}
+        public void DespawnGuard()
+        {
+            Region.RemoveObject(Creature);
+        }
 
-		public void UpdateFlagOwningRealm()
-		{
-			Creature_proto Proto = CreatureService.GetCreatureProto(team == 1 ? OrderId : DestroId);
-			if (Proto == null)
-			{
-				Log.Error("FlagGuard", "No FlagGuard Proto");
-				return;
-			}
+        public void UpdateFlagOwningRealm()
+        {
+            Creature_proto Proto = CreatureService.GetCreatureProto(team == 1 ? OrderId : DestroId);
+            if (Proto == null)
+            {
+                Log.Error("FlagGuard", "No FlagGuard Proto");
+                return;
+            }
 
-			Creature.Spawn = new Creature_spawn();
-			Creature.Spawn.BuildFromProto(Proto);
-			Creature.Spawn.WorldO = o;
-			Creature.Spawn.WorldY = y;
-			Creature.Spawn.WorldZ = z;
-			Creature.Spawn.WorldX = x;
-			Creature.Spawn.ZoneId = ZoneId;
-			Creature.Spawn.RespawnMinutes = 3;
-		}
+            Creature.Spawn = new Creature_spawn();
+            Creature.Spawn.BuildFromProto(Proto);
+            Creature.Spawn.WorldO = o;
+            Creature.Spawn.WorldY = y;
+            Creature.Spawn.WorldZ = z;
+            Creature.Spawn.WorldX = x;
+            Creature.Spawn.ZoneId = ZoneId;
+            Creature.Spawn.RespawnMinutes = 3;
+        }
     }
 
     public class ProximityFlag : Object
@@ -157,8 +157,8 @@ namespace WorldServer.World.Scenarios.Objects
 
         public override void OnLoad()
         {
-            X = Zone.CalculPin((uint) (_x), true);
-            Y = Zone.CalculPin((uint) (_y), false);
+            X = Zone.CalculPin((uint)(_x), true);
+            Y = Zone.CalculPin((uint)(_y), false);
             Z = _z;
 
             base.OnLoad();
@@ -167,21 +167,21 @@ namespace WorldServer.World.Scenarios.Objects
             WorldPosition.Y = _y;
             WorldPosition.Z = Z;
 
-            SetOffset((ushort) (_x >> 12), (ushort) (_y >> 12));
+            SetOffset((ushort)(_x >> 12), (ushort)(_y >> 12));
 
             IsActive = true;
         }
 
         public override void SendMeTo(Player plr)
         {
-            PacketOut Out = new PacketOut((byte) Opcodes.F_CREATE_STATIC, 42 + ObjectiveName.Length);
+            PacketOut Out = new PacketOut((byte)Opcodes.F_CREATE_STATIC, 42 + ObjectiveName.Length);
             Out.WriteUInt16(Oid);
             Out.WriteUInt16(0);
 
             Out.WriteUInt16(Heading);
-            Out.WriteUInt16((ushort) _z);
-            Out.WriteUInt32((uint) _x);
-            Out.WriteUInt32((uint) _y);
+            Out.WriteUInt16((ushort)_z);
+            Out.WriteUInt32((uint)_x);
+            Out.WriteUInt32((uint)_y);
 
             int displayId = 3442;
             if (OwningRealm == 0)
@@ -191,7 +191,7 @@ namespace WorldServer.World.Scenarios.Objects
             else
                 displayId = 3438;
 
-            Out.WriteUInt16((ushort) displayId);
+            Out.WriteUInt16((ushort)displayId);
 
             Out.WriteUInt16(0x1E00);
             Out.WriteUInt16(0);
@@ -285,7 +285,6 @@ namespace WorldServer.World.Scenarios.Objects
                         }
                     }
                 }
-                
                 else if (playersInRange[1].Count > playersInRange[0].Count)
                 {
                     //DeltaOwnership = Math.Min(6 + (playersInRange[1].Count - 1)*2, 12);
@@ -322,6 +321,7 @@ namespace WorldServer.World.Scenarios.Objects
                         }
                         DeltaOwnership = 0;
                         break;
+
                     case 155:
                         if (OwningRealm != 1)
                         {
@@ -330,6 +330,7 @@ namespace WorldServer.World.Scenarios.Objects
                         }
                         DeltaOwnership = 0;
                         break;
+
                     case 255:
                         goto case 0;
                     case 0:

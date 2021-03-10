@@ -1,6 +1,6 @@
-﻿using SystemData;
-using Common.Database.World.BattleFront;
+﻿using Common.Database.World.BattleFront;
 using FrameWork;
+using SystemData;
 using WorldServer.NetWork.Handler;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Objects;
@@ -12,12 +12,13 @@ namespace WorldServer.World.Battlefronts.Objectives
     /// Game object representing a portal around an objective
     /// allowing port to warcamp.
     /// </summary>
-    class PortalToObjective : PortalBase
+    internal class PortalToObjective : PortalBase
     {
         private const string NAME_START = "Portal to ";
 
         /// <summary>Portal targets depending on realm</summary>
         private BattleFrontObject _target;
+
         private Point3D _targetPos;
 
         private long _nextAvailableTimestamp;

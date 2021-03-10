@@ -1,6 +1,6 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using SystemData;
-using FrameWork;
 using WorldServer.Managers;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Interfaces;
@@ -8,10 +8,12 @@ using WorldServer.World.Objects;
 
 namespace WorldServer.World.Abilities.CareerInterfaces
 {
-    interface IPetCareerInterface
+    internal interface IPetCareerInterface
     {
         void SummonPet(ushort petID);
+
         void Notify_PetDown();
+
         Pet myPet
         {
             get;
@@ -71,52 +73,76 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             {
                 case 1:
                     return new CareerInterface_Ironbreaker(Plr);
+
                 case 2:
                     return new CareerInterface_SlayerChoppa(Plr);
+
                 case 3:
                     return new CareerInterface_RPZealot(Plr);
+
                 case 4:
                     return new CareerInterface_EngineerMagus(Plr);
+
                 case 5:
                     return new CareerInterface_BlackOrc(Plr);
+
                 case 6:
                     return new CareerInterface_SlayerChoppa(Plr);
+
                 case 7:
                     return new CareerInterface_AMShaman(Plr);
+
                 case 8:
                     return new CareerInterface_SquigHerder(Plr);
+
                 case 9:
                     return new CareerInterface_WHWE(Plr);
+
                 case 10:
                     return new CareerInterface_KnightChosen(Plr);
+
                 case 11:
                     return new CareerInterface_BWSorc(Plr);
+
                 case 12:
                     return new CareerInterface_WPDoK(Plr);
+
                 case 13:
                     return new CareerInterface_KnightChosen(Plr);
+
                 case 14:
                     return new CareerInterface_Marauder(Plr);
+
                 case 15:
                     return new CareerInterface_RPZealot(Plr);
+
                 case 16:
                     return new CareerInterface_EngineerMagus(Plr);
+
                 case 17:
                     return new CareerInterface_Swordmaster(Plr);
+
                 case 18:
                     return new CareerInterface_ShadowWarrior(Plr);
+
                 case 19:
                     return new CareerInterface_WhiteLion(Plr);
+
                 case 20:
                     return new CareerInterface_AMShaman(Plr);
+
                 case 21:
                     return new CareerInterface_Blackguard(Plr);
+
                 case 22:
                     return new CareerInterface_WHWE(Plr);
+
                 case 23:
                     return new CareerInterface_WPDoK(Plr);
+
                 case 24:
                     return new CareerInterface_BWSorc(Plr);
+
                 default:
                     return new CareerInterface_BlackOrc(Plr);
             }
@@ -151,7 +177,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
         public virtual void NotifyClientLoaded()
         {
-            
         }
 
         public virtual void SetResource(byte amount, bool blockEvent)
@@ -285,7 +310,8 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             SetResource(0, false);
         }
 
-        #endregion
+        #endregion Resource Management
+
         /// <summary>
         /// Gets the archetype of the player associated with this interface,
         /// considering his current build if necessary (for am/sham/dok/wp for example).
@@ -306,7 +332,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
         public virtual void ExperimentalModeModifyBuff(BuffInfo buffInfo, Unit target)
         {
-
         }
 
         public virtual void ExperimentalModeModifyAbility(AbilityInfo abInfo)

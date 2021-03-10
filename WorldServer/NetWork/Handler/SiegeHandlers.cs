@@ -63,7 +63,6 @@ namespace WorldServer.NetWork.Handler
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_START_SIEGE_MULTIUSER, (int)eClientState.WorldEnter, "onStartSiegeMultiUser")]
         public static void F_START_SIEGE_MULTIUSER(BaseClient client, PacketIn packet)
         {
-
             GameClient cclient = client as GameClient;
 
             if (cclient.Plr == null || !cclient.Plr.IsInWorld())

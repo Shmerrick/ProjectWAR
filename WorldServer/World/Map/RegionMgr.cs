@@ -1,14 +1,14 @@
 ﻿//#define NO_CREATURE
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using Common;
 using Common.Database.World.Maps;
 using FrameWork;
 using GameData;
 using NLog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
@@ -65,14 +65,16 @@ namespace WorldServer.World.Map
             {
                 switch (ZonesInfo[0].Pairing)
                 {
-                    case (byte) Pairing.PAIRING_GREENSKIN_DWARVES:
-                        _races = new[] {Races.RACES_DWARF, Races.RACES_GOBLIN};
+                    case (byte)Pairing.PAIRING_GREENSKIN_DWARVES:
+                        _races = new[] { Races.RACES_DWARF, Races.RACES_GOBLIN };
                         break;
-                    case (byte) Pairing.PAIRING_EMPIRE_CHAOS:
-                        _races = new[] {Races.RACES_EMPIRE, Races.RACES_CHAOS};
+
+                    case (byte)Pairing.PAIRING_EMPIRE_CHAOS:
+                        _races = new[] { Races.RACES_EMPIRE, Races.RACES_CHAOS };
                         break;
-                    case (byte) Pairing.PAIRING_ELVES_DARKELVES:
-                        _races = new[] {Races.RACES_HIGH_ELF, Races.RACES_DARK_ELF};
+
+                    case (byte)Pairing.PAIRING_ELVES_DARKELVES:
+                        _races = new[] { Races.RACES_HIGH_ELF, Races.RACES_DARK_ELF };
                         break;
                 }
             }
@@ -89,7 +91,6 @@ namespace WorldServer.World.Map
         }
 
         public IApocCommunications ApocCommunications { get; set; }
-
 
         public void Stop()
         {
@@ -213,7 +214,6 @@ namespace WorldServer.World.Map
 
                     ScenarioMgr.ImpactMatrixManagerInstance?.Update(stampMs);
                 }
-
                 catch (Exception e)
                 {
                     Log.Error("Error", e.ToString());
@@ -224,12 +224,11 @@ namespace WorldServer.World.Map
                 _lastRegionUpdate = TCPManager.GetTimeStampMS();
 
                 // If we updated the region in less time than the REGION_UPDATE_INTERVAL sleep until the interval has expired.
-                if (elapsed < REGION_UPDATE_INTERVAL) Thread.Sleep((int) (REGION_UPDATE_INTERVAL - elapsed));
+                if (elapsed < REGION_UPDATE_INTERVAL) Thread.Sleep((int)(REGION_UPDATE_INTERVAL - elapsed));
             }
 
             DisposeActors();
         }
-
 
         /// <summary>
         ///     A list of players currently within this region. Should only be accessed from within this region's thread!
@@ -267,7 +266,6 @@ namespace WorldServer.World.Map
                                 }
                             }
                         }
-
                         else
                         {
                             obj.Obj.Zone.RemoveObject(obj.Obj);
@@ -312,8 +310,8 @@ namespace WorldServer.World.Map
                                 Objects[removeInfo.Oid] = null;
 
                                 /*
-                                    Player Oid could previously be zeroed after another region had set it. 
-                                    If this were to happen, NPC mounts in the zone would display 
+                                    Player Oid could previously be zeroed after another region had set it.
+                                    If this were to happen, NPC mounts in the zone would display
                                     the player's name, title and guild, and the player's mount would not display.
                                 */
                                 if (removeInfo.Obj.Oid == removeInfo.Oid && removeInfo.Zone == removeInfo.Obj.Zone)
@@ -321,7 +319,7 @@ namespace WorldServer.World.Map
                             }
 
                         if (removeInfo.Obj is Player)
-                            Players.Remove((Player) removeInfo.Obj);
+                            Players.Remove((Player)removeInfo.Obj);
                     }
 
                     _objectsToRemove.Clear();
@@ -361,7 +359,7 @@ namespace WorldServer.World.Map
 
                     if (obj is Player)
                     {
-                        ((Player) obj).SendClientMessage(e.GetType().Name + " was thrown from " + e.TargetSite?.Name +
+                        ((Player)obj).SendClientMessage(e.GetType().Name + " was thrown from " + e.TargetSite?.Name +
                                                          ".");
                     }
                     else if (obj is IApocBattleFront)
@@ -377,7 +375,6 @@ namespace WorldServer.World.Map
                             Log.Error("RegionMgr", "Exception throw within Player exception notification");
                         }
                     }
-
                     else
                     {
                         obj.Say(e.GetType().Name + " was thrown from " + e.TargetSite?.Name +
@@ -445,9 +442,9 @@ namespace WorldServer.World.Map
                 plr.SendClientMessage(entry.Key + " " + entry.Value);
         }
 
-        #endregion
+        #endregion Diagnostic
 
-        #endregion
+        #endregion ZoneMgr
 
         #region Ranged
 
@@ -506,19 +503,19 @@ namespace WorldServer.World.Map
                 if (point.X - aradius >= mapX && point.X + aradius <= mapX + 0xFFFF &&
                     point.Y - aradius >= mapY && point.Y + aradius <= mapY + 0xFFFF) //is the point on this zone?
                 {
-                    var offX = (ushort) Math.Truncate((decimal) ((point.X - mapX) / 4096 + zone.OffX));
-                    var offY = (ushort) Math.Truncate((decimal) ((point.Y - mapY) / 4096 + zone.OffY));
+                    var offX = (ushort)Math.Truncate((decimal)((point.X - mapX) / 4096 + zone.OffX));
+                    var offY = (ushort)Math.Truncate((decimal)((point.Y - mapY) / 4096 + zone.OffY));
 
                     for (var x = offX - 1; x < offX + 1; x++) //scan all cells within radius
-                    for (var y = offY - 1; y < offY + 1; y++)
-                        if (x >= 0 && x <= MaxCellID && y >= 0 && y <= MaxCellID)
-                            if (Cells[x, y] != null)
-                                foreach (var obj in Cells[x, y].Objects.ToList())
-                                {
-                                    count++;
-                                    if (obj is T && obj.PointWithinRadiusFeet(point, radius) && !list.Contains(obj))
-                                        list.Add((T) obj);
-                                }
+                        for (var y = offY - 1; y < offY + 1; y++)
+                            if (x >= 0 && x <= MaxCellID && y >= 0 && y <= MaxCellID)
+                                if (Cells[x, y] != null)
+                                    foreach (var obj in Cells[x, y].Objects.ToList())
+                                    {
+                                        count++;
+                                        if (obj is T && obj.PointWithinRadiusFeet(point, radius) && !list.Contains(obj))
+                                            list.Add((T)obj);
+                                    }
                 }
             }
 
@@ -526,7 +523,6 @@ namespace WorldServer.World.Map
                 return list.Where(predicate).ToList();
             return list;
         }
-
 
         public bool UpdateRange(Object curObj, bool forceUpdate = false)
         {
@@ -599,7 +595,7 @@ namespace WorldServer.World.Map
             return true;
         }
 
-        #endregion
+        #endregion Ranged
 
         #region Oid
 
@@ -631,8 +627,8 @@ namespace WorldServer.World.Map
 
                 if (Objects[i] == null)
                 {
-                    MaxOid = (ushort) i;
-                    return (ushort) i;
+                    MaxOid = (ushort)i;
+                    return (ushort)i;
                 }
             }
 
@@ -728,15 +724,15 @@ namespace WorldServer.World.Map
 
         public ushort GetObjects()
         {
-            return (ushort) Objects.Count(obj => obj != null);
+            return (ushort)Objects.Count(obj => obj != null);
         }
 
         public List<T> GetObjects<T>() where T : Object
         {
-            return Objects.Where(obj => obj != null && obj is T).Select(e => (T) e).ToList();
+            return Objects.Where(obj => obj != null && obj is T).Select(e => (T)e).ToList();
         }
 
-        #endregion
+        #endregion Oid
 
         #region Cells
 
@@ -746,8 +742,8 @@ namespace WorldServer.World.Map
 
         public CellMgr GetCell(ushort x, ushort y)
         {
-            if (x >= MaxCellID) x = (ushort) (MaxCellID - 1);
-            if (y >= MaxCellID) y = (ushort) (MaxCellID - 1);
+            if (x >= MaxCellID) x = (ushort)(MaxCellID - 1);
+            if (y >= MaxCellID) y = (ushort)(MaxCellID - 1);
 
             return Cells[x, y] ?? (Cells[x, y] = new CellMgr(this, x, y));
         }
@@ -762,18 +758,18 @@ namespace WorldServer.World.Map
             if (cellFunction == null)
                 return;
 
-            var minX = (ushort) Math.Max(0, x - range);
-            var maxX = (ushort) Math.Min(MaxCellID - 1, x + range);
+            var minX = (ushort)Math.Max(0, x - range);
+            var maxX = (ushort)Math.Min(MaxCellID - 1, x + range);
 
-            var minY = (ushort) Math.Max(0, y - range);
-            var maxY = (ushort) Math.Min(MaxCellID - 1, y + range);
+            var minY = (ushort)Math.Max(0, y - range);
+            var maxY = (ushort)Math.Min(MaxCellID - 1, y + range);
 
             for (var ox = minX; ox <= maxX; ++ox)
-            for (var oy = minY; oy <= maxY; ++oy)
-                cellFunction(GetCell(ox, oy));
+                for (var oy = minY; oy <= maxY; ++oy)
+                    cellFunction(GetCell(ox, oy));
         }
 
-        #endregion
+        #endregion Cells
 
         #region Spawns
 
@@ -786,8 +782,8 @@ namespace WorldServer.World.Map
 
         public CellSpawns GetCellSpawn(ushort x, ushort y)
         {
-            x = (ushort) Math.Min(MaxCellID - 1, x);
-            y = (ushort) Math.Min(MaxCellID - 1, y);
+            x = (ushort)Math.Min(MaxCellID - 1, x);
+            y = (ushort)Math.Min(MaxCellID - 1, y);
 
             return _cellSpawns[x, y] ?? (_cellSpawns[x, y] = new CellSpawns(RegionId, x, y));
         }
@@ -868,7 +864,7 @@ namespace WorldServer.World.Map
             return obj;
         }
 
-        #endregion
+        #endregion Spawns
 
         #region Outgoing packet logging
 
@@ -896,7 +892,6 @@ namespace WorldServer.World.Map
             {
                 LogPacketVolume = true;
             }
-
             else
             {
                 lock (_packetVolume)
@@ -917,12 +912,12 @@ namespace WorldServer.World.Map
                 plr.SendClientMessage("[Total Packet Volume]");
 
                 foreach (var pair in _packetVolume)
-                    plr.SendClientMessage((Opcodes) pair.Key + ": " + $"{pair.Value * 0.001f:0.0##}" + "KB");
+                    plr.SendClientMessage((Opcodes)pair.Key + ": " + $"{pair.Value * 0.001f:0.0##}" + "KB");
 
                 _sending = false;
             }
         }
 
-        #endregion
+        #endregion Outgoing packet logging
     }
 }

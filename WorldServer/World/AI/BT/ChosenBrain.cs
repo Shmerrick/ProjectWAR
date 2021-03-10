@@ -1,16 +1,13 @@
-﻿
-using BehaviourTree;
+﻿using BehaviourTree;
 using BehaviourTree.FluentBuilder;
 using FrameWork;
 using GameData;
 using NLog;
 using System.Linq;
-using System.Threading;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Objects;
-
 
 //test with .spawnmobinstance 2000681 -- https://github.com/Eraclys/BehaviourTree
 namespace WorldServer.World.AI.BT
@@ -21,21 +18,15 @@ namespace WorldServer.World.AI.BT
         public IBehaviour<Creature> BehaviourTree { get; set; }
         public PartyDirective Directive { get; set; }
 
-
-
         public ChosenBrain(Unit myOwner)
             : base(myOwner)
         {
-
         }
-
-
 
         public override void Think(long tick)
         {
             if (_unit.IsDead)
                 return;
-
 
             base.Think(tick);
 
@@ -45,7 +36,6 @@ namespace WorldServer.World.AI.BT
             }
 
             BehaviourTree.Tick((Creature)_unit);
-
 
             // Guard nearest friend
             //var friendlyPlayers = arg.GetPlayersInRange(30, false).Where(x => x.Realm == arg.Realm).ToList();
@@ -59,12 +49,8 @@ namespace WorldServer.World.AI.BT
             //        lbi.Initialize();
             //    }
             //}
-
-            
-
         }
 
-     
         public IBehaviour<Creature> ProcessDirectiveBehaviour()
         {
             return FluentBuilder.Create<Creature>()
@@ -97,14 +83,11 @@ namespace WorldServer.World.AI.BT
                 .Build();
         }
 
-        
-
         public IBehaviour<Creature> AttackBehaviour()
         {
             return FluentBuilder.Create<Creature>()
                 .Selector("attack-behaviour")
                 //.Wait("GCD", 1400)
-
 
                 .Random("change-to-random", .05)
                     .Do("change-to-random", ChangeToRandomTarget)
@@ -134,7 +117,6 @@ namespace WorldServer.World.AI.BT
                 .Subtree(HighLevelActionBehaviour())
                 .End()
                 .Build();
-
         }
 
         private BehaviourStatus SetNewTarget(Creature arg)
@@ -169,7 +151,6 @@ namespace WorldServer.World.AI.BT
             Combat.SetTarget(target, TargetTypes.TARGETTYPES_TARGET_ENEMY);
             SpeakYourMind($"New target selected : {target?.Name}. Buffing!");
 
-
             //if (arg.AbtInterface.NPCAbilities == null)
             //    return;
 
@@ -183,8 +164,6 @@ namespace WorldServer.World.AI.BT
             //}
 
             arg.AiInterface.ProcessCombatStart(target);
-                
-
         }
 
         private bool IsInCombat(Creature arg)
@@ -197,7 +176,6 @@ namespace WorldServer.World.AI.BT
             }
             return arg.CbtInterface.IsInCombat;
         }
-
 
         public bool HasDirective(Creature unit)
         {
@@ -228,11 +206,11 @@ namespace WorldServer.World.AI.BT
             }
             return unit.CbtInterface.GetCurrentTarget() == null;
         }
+
         public bool HasTarget(Creature unit)
         {
             return !HasNoTarget(unit);
         }
-
 
         public bool HasLowHealth(Creature arg)
         {
@@ -303,7 +281,6 @@ namespace WorldServer.World.AI.BT
             if (TargetIsUnstoppable(arg))
                 return BehaviourStatus.Failed;
 
-
             SpeakYourMind($" using Repel vs {(arg.CbtInterface.GetCurrentTarget() as Player).Name}");
             arg.CbtInterface.GetCurrentTarget().ApplyKnockback(arg, AbilityMgr.GetKnockbackInfo(8329, 0));
             return BehaviourStatus.Succeeded;
@@ -372,7 +349,6 @@ namespace WorldServer.World.AI.BT
             return arg.AbtInterface.StartCast(arg, 608, 1) ? BehaviourStatus.Succeeded : BehaviourStatus.Failed;
         }
 
-
         public BehaviourStatus SeverBlessing(Creature arg)
         {
             if (!TargetInMeleeRange(arg))
@@ -387,12 +363,7 @@ namespace WorldServer.World.AI.BT
 
             return BehaviourStatus.Failed;
         }
-        
-        
-
     }
-
-
 
     public class PartyDirective
     {

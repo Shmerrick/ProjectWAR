@@ -1,9 +1,9 @@
 ﻿//#define DIST_DEBUG
 
-using System;
 using Common;
 using FrameWork;
 using GameData;
+using System;
 using WorldServer.Managers;
 using WorldServer.NetWork;
 using WorldServer.Services.World;
@@ -54,7 +54,7 @@ namespace WorldServer.World.Objects
 
         public bool IsVanity = false;
 
-        public Pet(ushort petId, Creature_spawn spawn, Player owner, byte aiMode, bool isStationary, bool isCombative) : base (spawn)
+        public Pet(ushort petId, Creature_spawn spawn, Player owner, byte aiMode, bool isStationary, bool isCombative) : base(spawn)
         {
             PetId = petId;
             Owner = owner;
@@ -66,7 +66,6 @@ namespace WorldServer.World.Objects
 
             if (!isCombative)
                 IsInvulnerable = true;
-
             else
                 SpeedMult = 1.2f;
 
@@ -74,7 +73,7 @@ namespace WorldServer.World.Objects
             {
                 case 3: AiInterface.SetBrain(new PassiveBrain(this)); break;
                 case 4: AiInterface.SetBrain(new GuardBrain(this)); break;
-                case 5: AiInterface.SetBrain(new AggressiveBrain(this)); break; 
+                case 5: AiInterface.SetBrain(new AggressiveBrain(this)); break;
             }
             Realm = owner.Realm;
             Faction = (byte)(owner.Realm == Realms.REALMS_REALM_DESTRUCTION ? 8 : 6);
@@ -91,7 +90,7 @@ namespace WorldServer.World.Objects
             Owner.Companion.Dismiss(null, null);
             Owner.Companion = null;
 
-            NewBuff vanityPet = Owner.BuffInterface.GetBuff(15188,null);
+            NewBuff vanityPet = Owner.BuffInterface.GetBuff(15188, null);
             if (vanityPet != null)
                 Owner.BuffInterface.RemoveBuffByEntry(15188);
             vanityPet = Owner.BuffInterface.GetBuff(15190, null);
@@ -113,14 +112,15 @@ namespace WorldServer.World.Objects
             Owner.EvtInterface.AddEventNotify(EventName.OnDie, Dismiss);
             Owner.EvtInterface.AddEventNotify(EventName.OnRemoveFromWorld, Dismiss);
 
-			#if DIST_DEBUG && DEBUG
+#if DIST_DEBUG && DEBUG
             Owner.EvtInterface.AddEvent(DistanceDebug, 1000, 0);
-			#endif
+#endif
         }
+
         protected override void SetCreatureStats()
         {
             if (Owner.Info.CareerLine == (int)CareerLine.CAREERLINE_MAGUS)
-                StsInterface.Load(CharMgr.GetCharacterInfoStats((byte) CareerLine.CAREERLINE_MAGUS, Math.Min(Level, (byte) 40)));
+                StsInterface.Load(CharMgr.GetCharacterInfoStats((byte)CareerLine.CAREERLINE_MAGUS, Math.Min(Level, (byte)40)));
             float armorMod = 1.0f, resistMod = 1.0f, woundsMod = 1f, itemWoundsMod = 0f;
 
             switch (Spawn.Proto.Model1)
@@ -155,7 +155,7 @@ namespace WorldServer.World.Objects
                     woundsMod = 1f;
                     itemWoundsMod = 0.5f;
                     _weaponDamageContribution = WeaponDamageContribution.MainHand;
-                    break; 
+                    break;
                 // Horned Squig
                 case 137:
                     StsInterface.Load(CharMgr.GetCharacterInfoStats((byte)CareerLine.CAREERLINE_HORNED_SQUIG, Math.Min(Level, (byte)40)));
@@ -189,7 +189,7 @@ namespace WorldServer.World.Objects
                     _weaponDamageContribution = WeaponDamageContribution.MainHand;
                     _weaponDamageFactor = 0.7f;
                     break;
-                // Blue Horror 
+                // Blue Horror
                 case 142:
                     armorMod = 2f;
                     woundsMod = 1f;
@@ -256,7 +256,7 @@ namespace WorldServer.World.Objects
                 /*if(Owner.Info.CareerLine == (int)CareerLine.CAREERLINE_WHITELION)
                     return (ushort)(Owner.ItmInterface.GetWeaponDamage(_weaponDamageContribution) * 2.5f * _weaponDamageFactor);
                 else*/
-                    return (ushort)(Owner.ItmInterface.GetWeaponDamage(_weaponDamageContribution) * 10f * _weaponDamageFactor);
+                return (ushort)(Owner.ItmInterface.GetWeaponDamage(_weaponDamageContribution) * 10f * _weaponDamageFactor);
 
             if (Spawn.Proto.Ranged <= 30)
                 return (ushort)(19f * Level); // 76 DPS at rank 40
@@ -268,7 +268,7 @@ namespace WorldServer.World.Objects
             Owner?.SendClientMessage("Your pet is now " + Owner.GetDistanceToObject(this) + " feet away from you.");
         }
 
-#region Orders
+        #region Orders
 
         public bool Attack(Object obj, object args)
         {
@@ -336,9 +336,9 @@ namespace WorldServer.World.Objects
             return false;
         }
 
-#endregion
+        #endregion Orders
 
-#region Death/Rez
+        #region Death/Rez
 
         public override void SendMeTo(Player plr)
         {
@@ -449,9 +449,9 @@ namespace WorldServer.World.Objects
             base.Dispose();
         }
 
-#endregion
+        #endregion Death/Rez
 
-#region Send/Update
+        #region Send/Update
 
         protected override void SendCreateMonster(Player plr)
         {
@@ -499,7 +499,7 @@ namespace WorldServer.World.Objects
             Out.WriteUInt16(0x010A); // Fig leaf data
             Out.WriteByte(0);
             Out.WriteUInt16(Owner.Oid);
-            
+
             // Need to write OBJECT_STATE length here
             long objStateLenPos = Out.Position;
             Out.WriteByte(0);
@@ -596,12 +596,11 @@ namespace WorldServer.World.Objects
                 AbilityInfo abInfo = AbilityMgr.GetAbilityInfo(minBound);
                 if (abInfo != null && abInfo.ConstantInfo.MinimumRank <= Level)
                 {
-                    NPCAbility npcAbility = new NPCAbility(abInfo.Entry, abInfo.ConstantInfo.AIRange, (byte) abInfo.Cooldown, true, "");
+                    NPCAbility npcAbility = new NPCAbility(abInfo.Entry, abInfo.ConstantInfo.AIRange, (byte)abInfo.Cooldown, true, "");
                     AbtInterface.NPCAbilities.Add(npcAbility);
                     SendPetAbility(npcAbility);
                 }
             }
-
             else
             {
                 for (ushort i = minBound; i <= maxBound; ++i)
@@ -609,7 +608,7 @@ namespace WorldServer.World.Objects
                     AbilityInfo abInfo = AbilityMgr.GetAbilityInfo(i);
                     if (abInfo == null || abInfo.ConstantInfo.MinimumRank > Level)
                         continue;
-                    NPCAbility npcAbility = new NPCAbility(abInfo.Entry, abInfo.ConstantInfo.AIRange, (byte) abInfo.Cooldown, true, "");
+                    NPCAbility npcAbility = new NPCAbility(abInfo.Entry, abInfo.ConstantInfo.AIRange, (byte)abInfo.Cooldown, true, "");
                     AbtInterface.NPCAbilities.Add(npcAbility);
                     SendPetAbility(npcAbility);
                 }
@@ -627,7 +626,7 @@ namespace WorldServer.World.Objects
         {
             foreach (NPCAbility ab in AbtInterface.NPCAbilities)
             {
-                PacketOut Out = new PacketOut((byte) Opcodes.F_PET_INFO, 12);
+                PacketOut Out = new PacketOut((byte)Opcodes.F_PET_INFO, 12);
                 Out.WriteUInt16(Oid);
                 Out.WriteUInt16(CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY)?.Oid ?? 0); // Pet target?
                 Out.WriteUInt16(ab.Entry);
@@ -658,9 +657,9 @@ namespace WorldServer.World.Objects
             Owner.SendPacket(Out);
         }
 
-#endregion
+        #endregion Send/Update
 
-#region Teleport
+        #region Teleport
 
         public void SafePinTeleport(ushort pinX, ushort pinY, ushort pinZ, ushort worldO)
         {
@@ -675,13 +674,13 @@ namespace WorldServer.World.Objects
         {
             if (worldX == 0 || worldY == 0)
                 return;
-           
+
             X = Zone.CalculPin(worldX, true);
             Y = Zone.CalculPin(worldY, true);
             SetPosition((ushort)X, (ushort)Y, worldZ, worldO, Zone.ZoneId);
         }
 
-#endregion
+        #endregion Teleport
 
         /*
         0000
@@ -692,6 +691,7 @@ namespace WorldServer.World.Objects
         01
         01
         0000000000000000*/
+
         public override int GetAbilityRangeTo(Unit caster)
         {
             if (_ignoreZ)
@@ -707,16 +707,22 @@ namespace WorldServer.World.Objects
             {
                 case 145:
                     break;
+
                 case 146:
                     break;
+
                 case 147:
                     break;
+
                 case 141: // pink
                     break;
+
                 case 142: // blue
                     break;
+
                 case 143: // flamer
                     break;
+
                 default:
                     base.SendAttackMovement(target); return;
             }
@@ -779,7 +785,7 @@ namespace WorldServer.World.Objects
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_COMMAND_CONTROLLED, (int)eClientState.Playing, "F_COMMAND_CONTROLLED")]
         public static void F_COMMAND_CONTROLLED(BaseClient client, PacketIn packet)
         {
-            GameClient cclient = (GameClient) client;
+            GameClient cclient = (GameClient)client;
 
             if (cclient.Plr?.CrrInterface == null)
                 return;
@@ -837,7 +843,7 @@ namespace WorldServer.World.Objects
                     break; // mode Aggressive
                 case PetCommand.Attack:
                     long now = TCPManager.GetTimeStampMS();
-                    if (cclient.Plr.IsMounted ||  now <= myPet.AttackReuseTimer + COMMAND_ATTACK_REUSE)
+                    if (cclient.Plr.IsMounted || now <= myPet.AttackReuseTimer + COMMAND_ATTACK_REUSE)
                         return;
                     myPet.AttackReuseTimer = now;
                     Unit target = cclient.Plr.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY);
@@ -848,7 +854,7 @@ namespace WorldServer.World.Objects
                     {
                         return;
                     }
-                    
+
                     myPet.AiInterface.Debugger?.SendClientMessage("[MR]: Attacking by request.");
                     myPet.IsHeeling = false;
                     myPet.FollowMode = 0;
@@ -860,6 +866,7 @@ namespace WorldServer.World.Objects
                 case PetCommand.Release:
                     myPet.Destroy();
                     break;
+
                 case PetCommand.AbilityCast:
                     if (cclient.Plr.IsMounted)
                         return;
@@ -878,6 +885,7 @@ namespace WorldServer.World.Objects
                         }
                     }
                     break;
+
                 case PetCommand.Autocast:
                     if (cclient.Plr.IsMounted)
                         return;
@@ -891,7 +899,7 @@ namespace WorldServer.World.Objects
                         break;
                     }
                     break;
-           }
+            }
         }
     }
 }

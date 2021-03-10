@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
-using Common;
 using WorldServer.World.AI;
 
 namespace WorldServer.World.Objects.Instances.Bloodwrought_Enclave
@@ -8,6 +8,7 @@ namespace WorldServer.World.Objects.Instances.Bloodwrought_Enclave
     public class SimpleBarakustheGodslayer : InstanceBossSpawn
     {
         #region Constructors
+
         public SimpleBarakustheGodslayer(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
@@ -71,6 +72,7 @@ namespace WorldServer.World.Objects.Instances.Bloodwrought_Enclave
                 return;
             }
         }
+
         //private void CheckBossRageTimer()
         //{
         //	// check rage timer

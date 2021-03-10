@@ -1,7 +1,7 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using FrameWork;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
@@ -27,8 +27,8 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
         private int _propInterval;
         protected Player _myPlayer;
 
-        protected Dictionary<Unit, NewBuff>    _groupTargetList;
-        protected Dictionary<Unit, AuraInfo>    _otherTargetList;
+        protected Dictionary<Unit, NewBuff> _groupTargetList;
+        protected Dictionary<Unit, AuraInfo> _otherTargetList;
         protected List<NewBuff> _groupPendingTargetList, _otherPendingTargetList;
 
         protected const int MAX_GROUP_RADIUS = 100;
@@ -47,6 +47,7 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
                     _groupTargetList = new Dictionary<Unit, NewBuff>();
                     _groupPendingTargetList = new List<NewBuff>();
                     break;
+
                 case "Foe":
                 case "Foe20":
                 case "Foe30":
@@ -55,12 +56,14 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
                     _otherTargetList = new Dictionary<Unit, AuraInfo>();
                     _otherPendingTargetList = new List<NewBuff>();
                     break;
+
                 case "All":
                     _groupTargetList = new Dictionary<Unit, NewBuff>();
                     _groupPendingTargetList = new List<NewBuff>();
                     _otherTargetList = new Dictionary<Unit, AuraInfo>();
                     _otherPendingTargetList = new List<NewBuff>();
                     break;
+
                 case "HTL":
                     _otherTargetList = new Dictionary<Unit, AuraInfo>();
                     _otherPendingTargetList = new List<NewBuff>();
@@ -107,29 +110,36 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
                     case "Group":
                         PropagateGroup();
                         break;
+
                     case "Foe":
                         PropagateFoe();
                         break;
+
                     case "Foe20":
                         MaxFoeRadius = 20;
                         PropagateFoe();
                         break;
+
                     case "Foe30":
                         MaxFoeRadius = 30;
                         PropagateFoe();
                         break;
+
                     case "Foe40":
                         MaxFoeRadius = 40;
                         PropagateFoe();
                         break;
+
                     case "Foe250":
                         MaxFoeRadius = 250;
                         PropagateFoe();
                         break;
+
                     case "All":
                         PropagateGroup();
                         PropagateFoe();
                         break;
+
                     case "HTL":
                         PropagateBehind();
                         break;
@@ -147,7 +157,7 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
         // within master thread
         public override void RemoveBuff(bool wasManual)
         {
-            if (BuffState == (byte) EBuffState.Running)
+            if (BuffState == (byte)EBuffState.Running)
             {
                 BuffEnded(true, wasManual);
 
@@ -173,7 +183,6 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
                         info.Buff.BuffHasExpired = true;
                 }
 
-
                 if (_otherPendingTargetList != null && _otherPendingTargetList.Count > 0)
                 {
                     lock (_otherPendingTargetList)
@@ -190,7 +199,7 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 
         private int _passNum;
 
-        protected virtual void PropagateGroup() 
+        protected virtual void PropagateGroup()
         {
             if (_groupPendingTargetList.Count > 0)
             {
@@ -228,11 +237,10 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
                         else
                         {
                             BuffInfo BI = AbilityMgr.GetBuffInfo(_buffInfo.Entry, Caster, member);
-                            BI.Duration = (ushort)(Math.Max(1, RemainingTimeMs*0.001f));
+                            BI.Duration = (ushort)(Math.Max(1, RemainingTimeMs * 0.001f));
                             member.BuffInterface.QueueBuff(new BuffQueueInfo(Caster, BuffLevel, BI, RegisterGroupBuff));
                         }
                     }
-
                     else
                     {
                         if (_groupTargetList.ContainsKey(member))
@@ -245,7 +253,6 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
                     }
                 }
             }
-
             else
             {
                 if (_myPlayer != Target)
@@ -257,7 +264,6 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
                             if (_groupTargetList[_myPlayer].BuffHasExpired)
                                 _groupTargetList.Remove(_myPlayer);
                         }
-
                         else if (Duration == 0)
                             _myPlayer.BuffInterface.QueueBuff(new BuffQueueInfo(Caster, BuffLevel, AbilityMgr.GetBuffInfo(_buffInfo.Entry, Caster, _myPlayer), RegisterGroupBuff));
                         else
@@ -267,7 +273,6 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
                             _myPlayer.BuffInterface.QueueBuff(new BuffQueueInfo(Caster, BuffLevel, BI, RegisterGroupBuff));
                         }
                     }
-
                     else
                     {
                         if (_groupTargetList.ContainsKey(_myPlayer))
@@ -278,11 +283,8 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
                             _groupTargetList.Remove(_myPlayer);
                         }
                     }
-
                 }
-
             }
-
 
             List<Unit> gtlKeys = _groupTargetList.Keys.ToList();
 
@@ -299,7 +301,7 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
             }
         }
 
-        private void PropagateFoe() 
+        private void PropagateFoe()
         {
             int addedThisTick = 0;
 
@@ -347,7 +349,6 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 
                     ++addedThisTick;
                 }
-
                 else
                 {
                     if (!_otherTargetList.ContainsKey(foe))
@@ -360,7 +361,6 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
                     _otherTargetList.Remove(foe);
                 }
             }
-
 
             List<Unit> oldUnits = _otherTargetList.Keys.ToList();
 
@@ -375,7 +375,7 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
             }
         }
 
-        private void PropagateBehind() 
+        private void PropagateBehind()
         {
             if (_otherPendingTargetList.Count > 0)
             {
@@ -410,7 +410,6 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 
                     if (Duration == 0)
                         ally.BuffInterface.QueueBuff(new BuffQueueInfo(Caster, BuffLevel, AbilityMgr.GetBuffInfo(_buffInfo.Entry, Caster, ally), RegisterOtherBuff));
-
                     else if (RemainingTimeMs * 0.001f > 0)
                     {
                         BuffInfo bi = AbilityMgr.GetBuffInfo(_buffInfo.Entry, Caster, ally);
@@ -419,7 +418,6 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
                         ally.BuffInterface.QueueBuff(new BuffQueueInfo(Caster, BuffLevel, bi, RegisterOtherBuff));
                     }
                 }
-
                 else
                 {
                     if (!_otherTargetList.ContainsKey(ally))
@@ -446,7 +444,7 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
             }
         }
 
-        #endregion
+        #endregion Propagation
 
         // cross thread
         public void RegisterGroupBuff(NewBuff buff)
@@ -479,7 +477,6 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
                 buff.OptionalObject = OptionalObject;
                 lock (_otherPendingTargetList)
                     _otherPendingTargetList.Add(buff);
-
             }
         }
     }

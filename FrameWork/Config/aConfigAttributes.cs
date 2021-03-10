@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace FrameWork
 {
     public abstract class aConfig
     {
-        public bool IConfiguredTheFile=false;
+        public bool IConfiguredTheFile = false;
     }
-    
-    public delegate void ConfigMethod(aConfigAttributes Attributes,aConfig Conf,bool FirstLoad);
+
+    public delegate void ConfigMethod(aConfigAttributes Attributes, aConfig Conf, bool FirstLoad);
 
     [AttributeUsage(AttributeTargets.Method)]
     public class aConfigMethod : Attribute

@@ -5,9 +5,10 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Abilities.CareerInterfaces
 {
-    class CareerInterface_WHWE : CareerInterface
+    internal class CareerInterface_WHWE : CareerInterface
     {
         private ushort _resourceBuff;
+
         public CareerInterface_WHWE(Player player) : base(player)
         {
             _maxResource = 5;

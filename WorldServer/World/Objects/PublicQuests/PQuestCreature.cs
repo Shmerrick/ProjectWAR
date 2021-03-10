@@ -1,10 +1,7 @@
 ﻿using Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SystemData;
 using FrameWork;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.World.Interfaces;
 
@@ -30,7 +27,8 @@ namespace WorldServer.World.Objects.PublicQuests
         {
             if (_objective.Objective.NoRespawn != 1 && this.Spawn.NoRespawn != 1)
             {
-                lock (_objective.ActiveCreatures) {
+                lock (_objective.ActiveCreatures)
+                {
                     _objective.ActiveCreatures.Remove(this);
                     PQuestCreature newCreature = new PQuestCreature(Spawn, _objective, _publicQuest);
                     newCreature.PQSpawnId = this.PQSpawnId;
@@ -39,7 +37,6 @@ namespace WorldServer.World.Objects.PublicQuests
                 }
                 Destroy();
             }
-
         }
 
         protected override void SetRespawnTimer()
@@ -104,12 +101,13 @@ namespace WorldServer.World.Objects.PublicQuests
                     case 1:
                         rankMod = 4;
                         break;
+
                     case 2:
                         rankMod = 20; break;
                     default:
                         rankMod = 1; break;
                 }
-                
+
                 _publicQuest.HandleEvent(curPlayer, Objective_Type.QUEST_KILL_MOB, Spawn.Entry, bestDamage == 0 ? 1 : 0, (ushort)(100 * damageFactor * rankMod));
                 curPlayer.SendClientMessage("Received " + 100 * damageFactor * rankMod + " contribution for dealing damage.", ChatLogFilters.CHATLOGFILTERS_QUEST, true);
 
@@ -123,7 +121,6 @@ namespace WorldServer.World.Objects.PublicQuests
                         bestDamage = kvpair.Value;
                     }
                 }
-
                 else
                 {
                     if (groupXPRenown.ContainsKey(curPlayer.PriorityGroup))
@@ -158,7 +155,7 @@ namespace WorldServer.World.Objects.PublicQuests
         {
             _objective.Quest.HandleEvent(null, Objective_Type.QUEST_PROTECT_UNIT, Spawn.Entry, _objective.Objective.Count, (ushort)(_objective.Objective.Time * 40));
         }
-        
+
         /// <summary>
         /// Objective property necessary for scripts.
         /// </summary>

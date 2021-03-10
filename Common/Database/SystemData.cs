@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SystemData
+﻿namespace SystemData
 {
     public enum GuildAllianceRank
     {
@@ -17,7 +15,7 @@ namespace SystemData
         GUILD_EVENT_GUILD_LEFT = 1,
         GUILD_EVENT_GUILD_KICKED = 2,
         GUILD_EVENT_PLAYER_RANK = 3,
-        GUILD_EVENT_PLAYER_RENOWN= 4,
+        GUILD_EVENT_PLAYER_RENOWN = 4,
         GUILD_EVENT_ALLIANCE_JOIN = 5,
         GUILD_EVENT_ALLICANCE_LEFT = 6,
         GUILD_EVENT_ALLIANCE_KICKED = 7,
@@ -34,7 +32,6 @@ namespace SystemData
         GUILD_EVENT_GUILD_EVENT_CANCEL = 19,
         GUILD_EVENT_KEEP_LOW_FUND = 20,
         GUILD_EVENT_KEEP_TAKEXP = 21
-
     };
 
     public enum CityStates
@@ -91,6 +88,7 @@ namespace SystemData
         VeryRare = 5,
         Mythic = 6
     };
+
     public enum Dialog
     {
         Confirm = 1,
@@ -115,7 +113,6 @@ namespace SystemData
         RallyCall = 22,
         KeepUpgrades = 23
     };
-
 
     public enum EventTypes
     {
@@ -656,7 +653,6 @@ namespace SystemData
         EVENTS_MAILBOX_HEADER_UPDATED = 262313
     };
 
-
     public enum AlertContainer
     {
         ALERTCONTAINER_COMBAT = 1,
@@ -898,6 +894,7 @@ namespace SystemData
 
         // Centre Screen Text
         CHATLOGFILTERS_C_WHITE = 256,
+
         CHATLOGFILTERS_C_ABILITY_ERROR = 257,
         CHATLOGFILTERS_C_ABILITY_ERROR_XS = 258,
         CHATLOGFILTERS_C_WHITE_1 = 259,
@@ -925,6 +922,7 @@ namespace SystemData
 
         // System
         CHATLOGFILTERS_COMBAT_DEFAULT = 1000,
+
         CHATLOGFILTERS_YOUR_DMG_FROM_PC = 1001,
         CHATLOGFILTERS_YOUR_HITS = 1002,
         CHATLOGFILTERS_YOUR_HEALS = 1003,
@@ -998,5 +996,4 @@ namespace SystemData
         StartsWith,
         Contains
     }
-
 }

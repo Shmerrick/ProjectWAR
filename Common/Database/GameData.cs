@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace GameData
 {
@@ -254,13 +251,17 @@ namespace GameData
         WeaponSkill = 7,
         BallisticSkill = 8,
         Intelligence = 9,
+
         // Defensive stats - NOT USED.
         BlockSkill = 10,
+
         ParrySkill = 11,
         EvadeSkill = 12,
         DisruptSkill = 13,
+
         // Resists
         SpiritResistance = 14,
+
         ElementalResistance = 15,
         CorporealResistance = 16,
 
@@ -272,14 +273,17 @@ namespace GameData
 
         // Damage
         IncomingDamage = 22,
+
         IncomingDamagePercent = 23, // M
         OutgoingDamage = 24,
         OutgoingDamagePercent = 25, // M
 
         Armor = 26,
         Velocity = 27, // M
+
         // THESE ARE THE ONES THAT ARE USED
         Block = 28,
+
         Parry = 29,
         Evade = 30,
         Disrupt = 31,
@@ -305,10 +309,12 @@ namespace GameData
 
         // Setback
         SetbackChance = 48, // M
+
         SetbackValue = 49,
 
         // Mob stuff
         XPWorth = 50,
+
         RenownWorth = 51,
         InfluenceWorth = 52,
         MonetaryWorth = 53,
@@ -322,6 +328,7 @@ namespace GameData
 
         // Trade skills
         Butchering = 59,
+
         Scavenging = 60,
         Cultivation = 61,
         Apothecary = 62,
@@ -330,10 +337,12 @@ namespace GameData
 
         // Stealth
         Stealth = 65,
+
         StealthDetection = 66,
 
         // Hate
         HateCaused = 67, // M
+
         HateReceived = 68, // M
 
         OffhandProcChance = 69, // M
@@ -358,8 +367,10 @@ namespace GameData
 
         ArmorPenetrationReduction = 83,
         CriticalHitRateReduction = 84,
+
         // Strikethrough
         BlockStrikethrough = 85,
+
         ParryStrikethrough = 86,
         EvadeStrikethrough = 87,
         DisruptStrikethrough = 88,
@@ -368,7 +379,7 @@ namespace GameData
 
         MaxActionPoints = 90, // RB   4/17/2016
 
-        Mastery1Bonus = 91, // RB   4/9/2016 
+        Mastery1Bonus = 91, // RB   4/9/2016
         Mastery2Bonus = 92, // RB   4/9/2016
         Mastery3Bonus = 93, // RB   4/9/2016
         HealingPower = 94,
@@ -376,6 +387,7 @@ namespace GameData
 
         //own hope they work
         OutgoingHealPercent = 100,
+
         SnareDuration = 101,
         KnockdownDuration = 102,
         IncomingHealPercent = 103,
@@ -396,12 +408,16 @@ namespace GameData
             {
                 case Stats.Strength:
                     return Stats.MeleePower;
+
                 case Stats.BallisticSkill:
                     return Stats.RangedPower;
+
                 case Stats.Willpower:
                     return Stats.HealingPower;
+
                 case Stats.Intelligence:
                     return Stats.MagicPower;
+
                 default:
                     return Stats.None;
             }
@@ -413,17 +429,20 @@ namespace GameData
             {
                 case Stats.Strength:
                     return Stats.MeleeCritRate;
+
                 case Stats.BallisticSkill:
                     return Stats.RangedCritRate;
+
                 case Stats.Willpower:
                     return Stats.HealCritRate;
+
                 case Stats.Intelligence:
                     return Stats.MagicCritRate;
+
                 default:
                     return Stats.CriticalHitRate;
             }
         }
-
     }
 
     public enum ConType
@@ -929,7 +948,6 @@ namespace GameData
         COMBATEVENT_ABSORB = 8,
         COMBATEVENT_ABILITY_CRITICAL = 9, // 3
         COMBATEVENT_IMMUNE = 10 //9
-
     };
 
     public enum PublicQuestDifficulty
@@ -1392,6 +1410,7 @@ namespace GameData
 
         //pets get their own careerlines now
         CAREERLINE_WAR_LION = 25,
+
         CAREERLINE_SQUIG = 26,
         CAREERLINE_HORNED_SQUIG = 27,
         CAREERLINE_GAS_SQUIG = 28,
@@ -1399,6 +1418,7 @@ namespace GameData
 
         //NPCs are no worst and got classes too...
         CAREERLINE_NPC_TANK = 30,
+
         CAREERLINE_NPC_MDPS = 31,
         CAREERLINE_NPC_MAGIC_RDPS = 32,
         CAREERLINE_NPC_PHYS_RDPS = 33,
@@ -1555,7 +1575,6 @@ namespace GameData
         SALVAGINGTYPES_MUNDANE = 1
     };
 
-    
     public enum Localized_text
     {
         TEXT_CONNECTING_TO_SERVER,	//Connecting to server...
@@ -1679,7 +1698,7 @@ namespace GameData
         TEXT_EVADED,	//dodged
         TEXT_DISRUPTED,	//disrupted
         TEXT_AUTOATTACK,	//Auto-Attack
-        TEXT_STORE_NAME_SUFFIX,	//Merchant - 
+        TEXT_STORE_NAME_SUFFIX,	//Merchant -
         TEXT_YOU_GAIN_X_EXP,	//You gain <<1>> experience<<n:2[/ $s/ $s]>>.
         TEXT_YOU_GAIN_X_RENOWN,	//You gain <<1>> renown<<n:2[/ $s/ $s]>>.
         TEXT_YOU_GAIN_X_INFL,	//You gain <<1>> influence<<n:2[/ $s/ $s]>>.
@@ -1837,7 +1856,7 @@ namespace GameData
         TEXT_OUTPUT_FORMAT_ACHIEVEMENTS,	//<<1>> [<<2>> - <<3>> - <<4>>]
         TEXT_OUTPUT_FORMAT_WARSTORY,	//<<1>> [<<2>> - <<3>> - <<4>>]
         TEXT_OUTPUT_FORMAT_TITLE,	//<<1>> [<<2>> - <<3>>]
-        TEXT_OUTPUT_FORMAT_NOTEWORTHY,	//<<1>> [<<2>> - <<4>>] 
+        TEXT_OUTPUT_FORMAT_NOTEWORTHY,	//<<1>> [<<2>> - <<4>>]
         TEXT_OUTPUT_FORMAT_HISTORY,	//<<1>> [<<2>> - <<4>>]
         CHAT_TAG_SCENARIO,	//[Scenario][<<1>>]: <<X:2>>
         CHAT_TAG_SCENARIO_GROUP,	//[Scenario Party][<<1>>]: <<X:2>>
@@ -2025,10 +2044,12 @@ namespace GameData
         TEXT_PAIRING_EMPIRE_AND_CHAOS,	//Empire & Chaos
         TEXT_PAIRING_HIGHELVES_AND_DARKELVES,	//High Elves & Dark Elves
         TEXT_GUILD_RANK_INCREASED,  //Your guild has earned rank <<1>>!
+
         //=========================
         // APOTHECARY
         //=========================
         TEXT_CRAFT_ALREADY_HAS_CONTAINER,	//Already has container.
+
         TEXT_CRAFT_NOT_CRAFT_OBJ,	//Item is not a crafting object.
         TEXT_CRAFT_SKILL_TOO_LOW,	//Your <<1>> skill is too low to use this item!
         TEXT_CRAFT_ITEM_ALREADY_IN_CONTAINER,	//Item already in container.
@@ -2046,10 +2067,12 @@ namespace GameData
         TEXT_CRAFT_NOTHING_THERE,	//Nothing to remove.
         TEXT_CRAFT_CANT_PERFORM,	//Nothing to perform.
         TEXT_SCENARIO_SHUTDOWN_IMBALANCED,	//The scenario population is currently imbalanced.  If balance is not restored, the scenario will shut down in 60 seconds.
+
         //=========================
         // WARBANDS
         //=========================
         TEXT_BG_NOT_IN_GROUP,	//You must be in a party to create a warband.
+
         TEXT_BG_ALREADY_IN,	//You are already in a warband.
         TEXT_BG_NOT_GROUP_LEADER,	//You must be the party leader to create a warband.
         TEXT_BG_UNSPECIFIED_ERROR,	//An unspecified warband error was encountered.
@@ -2089,8 +2112,10 @@ namespace GameData
         TEXT_BG_ERR_PRIVATE,	//That warband is private.
         TEXT_BG_ERR_INVALID_PASSWORD,	//Invalid password.
         TEXT_BG_ERR_PLAYER_NOT_IN_BG,   //That player is not in a warband.
+
         //=========================
         TEXT_SCENARIO_JOIN_SOLO,	//You have joined a scenario queue for <<1>>
+
         TEXT_SCENARIO_JOIN_GROUP,	//Your party has joined a scenario queue for <<1>>
         TEXT_SCENARIO_JOIN_GROUP_LEADER,	//You and your party are now in a scenario queue
         TEXT_RECEIVED_ITEM_X_FROM_PLAYER_Y,	//You received <<1>> from <<2>>.
@@ -2108,10 +2133,12 @@ namespace GameData
         TEXT_YOU_HAVE_X_UNREAD_MESSAGES_IN_YOUR_MAILBOX,	//You have <<1>> unread <<1[message/messages]>> in your inbox.
         TEXT_KILLING_SPREE_ADVANCED,	//Your killing spree has advanced to stage <<1>>. (+<<2>>%% XP).
         TEXT_KILLING_SPREE_ENDED,   //Your killing spree has ended.
+
         //=========================
         // APPEAL SYSTEM
         //=========================
         TEXT_COPTER_UNUSED1,	//UNUSED
+
         TEXT_COPTER_UNUSED2,	//UNUSED
         TEXT_COPTER_UNUSED3,	//UNUSED
         TEXT_COPTER_UNUSED4,	//UNUSED
@@ -2145,15 +2172,17 @@ namespace GameData
         TEXT_COPTER_SUPPORT_COMMAND_SPAM_WARNING,	//You have submitted a large number of reports in a short period of time. Future reports from your account will not be accepted until we've reviewed your current submissions.
         TEXT_COPTER_SUPPORT_COMMAND_ABUSE_WARNING,	//Abuse of in-game customer support and bug reporting commands could result in action taken against your account.
         TEXT_COPTER_YOUR_APPEAL_HAS_MAXIMUM_NOTES,	//Your appeal already has the maximum number of notes appended to it.
-        TEXT_COPTER_YOU_HAVE_AN_ACTIVE_APPEAL,	//You have an active appeal in the CS queue.    
+        TEXT_COPTER_YOU_HAVE_AN_ACTIVE_APPEAL,	//You have an active appeal in the CS queue.
         TEXT_COPTER_APPEAL_PRIORITY_POLICY,	//Your appeal will be addressed by the next available CSR. CSRs take appeals based on their priority. Your appeal is important, and will be handled as soon as possible. Thank you!
         TEXT_COPTER_YOU_DO_NOT_HAVE_AN_ACTIVE_APPEAL,	//You do not have an active appeal in the CS queue.
         TEXT_COPTER_UNUSED15,	//UNUSED
         TEXT_COPTER_UNUSED16,	//UNUSED
         TEXT_COPTER_UNUSED17,	//UNUSED
         TEXT_COPTER_A_CSR_WILL_CONTACT_YOU_ASAP,    //A CSR will contact you as soon as possible. Thank you!
+
         //=========================
         TEXT_RESPAWNING,	//Respawning...
+
         TEXT_CAREER_RESPEC_NOTIFICATION,	//Your career has been updated and your advancement points have been refunded.
         TEXT_LEAVE_ZONE_CONFIRMATION,	//Are you sure you want to leave? Leaving may incur penalties.
         TEXT_NAME_X_HAS_OFFERED_YOU_RES,	//<<C:1>> has offered you resurrection. Do you accept?
@@ -2524,7 +2553,7 @@ namespace GameData
         TEXT_SELECTS_PASS_FOR,	//<<1>> selects Pass for <<2>>.
         TEXT_LOOT_RULES_SET_RR,	//Loot Rules set to Round Robin.
         TEXT_LOOT_RULES_SET_FFA,	//Loot Rules set to Free for All.
-        TEXT_LOOT_RULES_SET_MASTER,	//Loot Rules set to Master Looter with permissions: 
+        TEXT_LOOT_RULES_SET_MASTER,	//Loot Rules set to Master Looter with permissions:
         TEXT_ADD_MASTER_LOOT_PERM,	//Master loot permissions added for <<1>>.
         TEXT_REM_MASTER_LOOT_PERM,	//Master loot permissions removed for <<1>>.
         TEXT_LOOT_THRESHOLD_SET,	//Loot threshold set to <<1>>.
@@ -2590,7 +2619,7 @@ namespace GameData
         TEXT_ITEM_CANT_BE_ENHANCED,	//That item cannot be enhanced.
         TEXT_CANT_REMOVE_ENHANCE,	//You cannot remove that enhancement.
         TEXT_CANT_CREATE_ENH_ITEM,	//You could not create enhanced item.
-        TEXT_INSTANCE_NOT_SYNCED,	//You cannot enter this instance because your saved progress is not compatible with your group's. 
+        TEXT_INSTANCE_NOT_SYNCED,	//You cannot enter this instance because your saved progress is not compatible with your group's.
         TEXT_GUILDNEWS_EVENT_CANCELLED,	//[<<1>>] A guild event (<<2>>) has been cancelled.
         TEXT_KEEP_CLAIM_ERROR_NOT_YOUR_REALM,	//You cannot claim a keep that is not owned by your realm.
         TEXT_YOU_HAVENT_RECEIVED_ANY_TELLS,	//You haven't received any private messages.
@@ -2836,7 +2865,7 @@ namespace GameData
         TEXT_RVR_CAMPAIGN_CONTESTED_ZONE_MOVED,	//The battle now wages on in <<1>>.
         TEXT_RVR_FORTRESS_UNLOCKED_DEFENDER,	//<<1>> is under attack, defend her with your life!
         TEXT_RVR_FORTRESS_UNLOCKED_ATTACKER,	//<<1>> is upon the gates of <<2>>, time to join the fight!
-        TEXT_RVR_FORTRESS_CAPTURED,	//The fortress of <<1>> <<2[lies in ruin/has fallen/]>>! 
+        TEXT_RVR_FORTRESS_CAPTURED,	//The fortress of <<1>> <<2[lies in ruin/has fallen/]>>!
         TEXT_RVR_CITY_FIRST_FORTRESS_FALLEN,	//The battle continues in other areas
         TEXT_RVR_CITY_SECOND_FORTRESS_FALLEN,	//<<1>> lies undefended! <<2[To arms, to arms!/Charge!/]>>
         TEXT_RVR_CITY_CONTESTED_FAIL_ATTACKER,	//<<1>> and the Realm of <<2>> have withstood. The siege is broken.
@@ -2891,7 +2920,7 @@ namespace GameData
         TEXT_PLAYER_DESTROYED_ITEM,	//You destroyed <<1>><<2[// x$d]>>.
         TEXT_PLAYER_NOT_ENOUGH_INV_SPACE_QUEST_FINISH,	//You don't have enough inventory space to accept the reward and finish the quest!
         TEXT_PLAYER_PUT_ITEM_IN_BANK,	//You deposited <<1>><<2[// x$d]>> in the bank.
-        TEXT_PLAYER_GOT_ITEM_FROM_BANK,	//You withdrew <<1>><<2[// x$d]>> from the bank. 
+        TEXT_PLAYER_GOT_ITEM_FROM_BANK,	//You withdrew <<1>><<2[// x$d]>> from the bank.
         TEXT_BOOTED_FROM_SERVER_MESSAGETEXT,	//You have been removed from the server.  Please check your e-mail for further details.
         TEXT_BOOTED_FROM_SERVER_TITLEBAR,	//Removed from server
         TEXT_GUILDNEWS_RVR_CLAIM_UPKEEP_WARNING,	//[<<1>>] The guild coffers are low on funds.  The claim on <<2>> will be lost soon if money is not added to cover the periodic upkeep cost of <<3>>.
@@ -3259,7 +3288,6 @@ namespace GameData
         TEXT_FORTRESS_UNCLAIMNOTOWNER,	//Only the guild owning the asset can unclaim it.
         TEXT_FORTRESS_SEIZEOWNREALM,	//You cannot seize what your realm already controls.
         TEXT_ERR_JUMP_WITH_RELIC  //You cannot leave this area while carrying a relic!
-        
     };
 
     public enum MailResult
@@ -3302,7 +3330,7 @@ namespace GameData
         Knockdown = 16,
         Stagger = 32,
         Grapple = 128,
-        
+
         MoveImpedance = 3,
         Unstoppable = 28,
         AllStandardCC = 31,
@@ -3482,13 +3510,14 @@ namespace GameData
         RelicGuardian,
         WarCrestVaultKeeper
     }
+
     public class Constants
     {
         public const uint LastNameLevelRequirement = 20;
         public const uint LastNameChangeCost = 50000; // 5g
         public const uint LastNameCharacterLimit = 12;
 
-        const int NumberOfEquipSlots = 20;
+        private const int NumberOfEquipSlots = 20;
 
         /// <summary>
         /// The factor to convert a heading value to radians
@@ -3515,6 +3544,7 @@ namespace GameData
         //as I typed them I will not erase but they are
         // 2^(i-1) where i is race number in GameData::Races
         public const int RaceMaskDwarf = 0x01;
+
         public const int RaceMaskOrc = 0x02;
         public const int RaceMaskGoblin = 0x04;
         public const int RaceMaskHighElf = 0x08;
@@ -3523,55 +3553,53 @@ namespace GameData
         public const int RaceMaskChaos = 0x40;
 
         // 2^(i-1) where i is career number in GameData::CareerLine
-        const int CareerMaskIronbreaker = 0x00000001;
-        const int CareerMaskSlayer = 0x00000002;
-        const int CareerMaskRunepriest = 0x00000004;
-        const int CareerMaskEngineer = 0x00000008;
-        const int CareerMaskBlackOrc = 0x00000010;
-        const int CareerMaskChoppa = 0x00000020;
-        const int CareerMaskShaman = 0x00000040;
-        const int CareerMaskSquigherder = 0x00000080;
+        private const int CareerMaskIronbreaker = 0x00000001;
 
-        const int CareerMaskWitchhunter = 0x00000100;
-        const int CareerMaskKnightoftheblazingsun = 0x00000200;
-        const int CareerMaskBrightwizard = 0x00000400;
-        const int CareerMaskWarriorpriest = 0x00000800;
-        const int CareerMaskChosen = 0x00001000;
-        const int CareerMaskMarauder = 0x00002000;
-        const int CareerMaskZealot = 0x00004000;
-        const int CareerMaskMagus = 0x00008000;
+        private const int CareerMaskSlayer = 0x00000002;
+        private const int CareerMaskRunepriest = 0x00000004;
+        private const int CareerMaskEngineer = 0x00000008;
+        private const int CareerMaskBlackOrc = 0x00000010;
+        private const int CareerMaskChoppa = 0x00000020;
+        private const int CareerMaskShaman = 0x00000040;
+        private const int CareerMaskSquigherder = 0x00000080;
 
-        const int CareerMaskSwordmaster = 0x00010000;
-        const int CareerMaskShadowwarrior = 0x00020000;
-        const int CareerMaskWhitelion = 0x00040000;
-        const int CareerMaskArchmage = 0x00080000;
-        const int CareerMaskBlackguard = 0x00100000;
-        const int CareerMaskWitchelf = 0x00200000;
-        const int CareerMaskDiscipleofkhaine = 0x00400000;
-        const int CareerMaskSorcerer = 0x00800000;
+        private const int CareerMaskWitchhunter = 0x00000100;
+        private const int CareerMaskKnightoftheblazingsun = 0x00000200;
+        private const int CareerMaskBrightwizard = 0x00000400;
+        private const int CareerMaskWarriorpriest = 0x00000800;
+        private const int CareerMaskChosen = 0x00001000;
+        private const int CareerMaskMarauder = 0x00002000;
+        private const int CareerMaskZealot = 0x00004000;
+        private const int CareerMaskMagus = 0x00008000;
 
-
+        private const int CareerMaskSwordmaster = 0x00010000;
+        private const int CareerMaskShadowwarrior = 0x00020000;
+        private const int CareerMaskWhitelion = 0x00040000;
+        private const int CareerMaskArchmage = 0x00080000;
+        private const int CareerMaskBlackguard = 0x00100000;
+        private const int CareerMaskWitchelf = 0x00200000;
+        private const int CareerMaskDiscipleofkhaine = 0x00400000;
+        private const int CareerMaskSorcerer = 0x00800000;
 
         // same concept with skill mask on uint32 as 2^(i-1) where i is the skill number in GameData::SkillType
 
-        const int MAX_RENOWN = 100;
+        private const int MAX_RENOWN = 100;
 
         // Values for default, not Dooms Day campaign
         /*public static int[] MinTierLevel = { 0, 16, 16, 31 };
         public static int[] MaxTierLevel = { 15, 30, 30, 40 };*/
 
-        #if DEBUG
+#if DEBUG
         public static int DoomsdaySwitch = 2; // DoomsdaySwitch = 0 - Aza age RvR; 1 - single pairing open; 2 - 1 zone open per pairing
         public static bool DisableDebolster = true;
-        public static int[] MinTierLevel = {0, 16, 16, 40};
-        public static int[] MaxTierLevel = {15, 39, 39, 40};
+        public static int[] MinTierLevel = { 0, 16, 16, 40 };
+        public static int[] MaxTierLevel = { 15, 39, 39, 40 };
 #else
         public static int DoomsdaySwitch = 2;
         public static bool DisableDebolster = true;
         public static int[] MinTierLevel = {0, 16, 16, 16};
         public static int[] MaxTierLevel = {15, 40, 40, 40};
 #endif
-
 
         public static string[] RacesName = new string[8]
         {

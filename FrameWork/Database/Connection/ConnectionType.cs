@@ -9,7 +9,7 @@
         // MicroSoft SQL Serveur
         DATABASE_MSSQL,
 
-       // ODBC database serveur
+        // ODBC database serveur
         DATABASE_ODBC,
 
         // OLE database serveur

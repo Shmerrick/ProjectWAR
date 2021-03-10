@@ -6,7 +6,7 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Abilities.CareerInterfaces
 {
-    class CareerInterface_RPZealot : CareerInterface
+    internal class CareerInterface_RPZealot : CareerInterface
     {
         private readonly ushort _fakeBuffEntry;
         private readonly ushort _vfxid;
@@ -145,7 +145,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             }
             else
             {
-                Out = new PacketOut((byte) Opcodes.F_CAST_PLAYER_EFFECT, 10);
+                Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
                 Out.WriteUInt16(myPlayer.Oid);
                 Out.WriteUInt16(myPlayer.Oid);
                 Out.WriteUInt16(_fakeBuffEntry); // 00 00 07 D D
@@ -256,7 +256,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
         public override void SendResource()
         {
-
         }
 
         public override EArchetype GetArchetype()

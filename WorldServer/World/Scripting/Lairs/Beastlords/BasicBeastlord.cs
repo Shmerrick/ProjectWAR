@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using FrameWork;
+using System.Collections.Generic;
 using System.Linq;
-using FrameWork;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
 using Object = WorldServer.World.Objects.Object;
@@ -10,8 +10,8 @@ namespace WorldServer.World.Scripting.Lairs.Beastlords
 {
     public abstract class BasicBeastlord : AGeneralScript
     {
-        Object Obj; // This is creature
-        List<Object> stuffInRange = new List<Object>(); // This is list of stuff that entered range
+        private Object Obj; // This is creature
+        private List<Object> stuffInRange = new List<Object>(); // This is list of stuff that entered range
 
         public override void OnObjectLoad(Object Obj)
         {

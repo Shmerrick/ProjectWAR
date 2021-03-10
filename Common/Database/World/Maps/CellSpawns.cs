@@ -7,7 +7,7 @@ namespace Common.Database.World.Maps
     /// </summary>
     public class CellSpawns
     {
-        ushort _x, _y, _regionId;
+        private ushort _x, _y, _regionId;
         public List<Creature_spawn> CreatureSpawns = new List<Creature_spawn>();
         public List<GameObject_spawn> GameObjectSpawns = new List<GameObject_spawn>();
         public List<Chapter_Info> ChapterSpawns = new List<Chapter_Info>();

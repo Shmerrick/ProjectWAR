@@ -36,10 +36,10 @@ namespace WorldServer.Managers.Commands
     /// </summary>
     internal static class BaseCommands
     {
-
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         #region Functions
+
         public static bool HandleCommand(Player plr, string command, string text)
         {
             if (plr.Client._Account.GmLevel < 0 || text.Length <= 0)
@@ -63,7 +63,6 @@ namespace WorldServer.Managers.Commands
                     else
                         temp = text.Substring(4, text.Length - 4);
                 }
-
                 else temp = text;
             }
 
@@ -81,6 +80,7 @@ namespace WorldServer.Managers.Commands
 
             return !DecodeCommand(plr, ref values, CommandDeclarations.BaseCommand, null);
         }
+
         public static bool DecodeCommand(Player plr, ref List<string> values, List<GmCommandHandler> handlers, List<GmCommandHandler> baseHandlers)
         {
             string command = GetString(ref values).ToLower();
@@ -125,7 +125,8 @@ namespace WorldServer.Managers.Commands
 
             return false;
         }
-        #endregion
+
+        #endregion Functions
 
         #region Commands
 
@@ -138,15 +139,11 @@ namespace WorldServer.Managers.Commands
             if (unit == null || unit.IsPlayer())
                 unit = plr;
 
-
             unit.IsInvulnerable = !unit.IsInvulnerable;
             plr.SendClientMessage("INVINCIBLE: " + unit.Name + ", " + unit.IsInvulnerable);
 
-
             if (unit.IsInvulnerable)
             {
-
-
                 GMCommandLog log = new GMCommandLog
                 {
                     PlayerName = plr.Name,
@@ -157,11 +154,8 @@ namespace WorldServer.Managers.Commands
 
                 CharMgr.Database.AddObject(log);
             }
-
             else
             {
-
-
                 GMCommandLog log = new GMCommandLog
                 {
                     PlayerName = plr.Name,
@@ -180,10 +174,8 @@ namespace WorldServer.Managers.Commands
         {
             Unit unit = plr;
 
-
             unit.IsInvulnerable = !unit.IsInvulnerable;
             plr.SendClientMessage("INVINCIBLE: " + unit.Name + ", " + unit.IsInvulnerable);
-
 
             if (unit.IsInvulnerable)
             {
@@ -201,7 +193,6 @@ namespace WorldServer.Managers.Commands
 
                 CharMgr.Database.AddObject(log);
             }
-
             else
             {
                 string temp = "3 0";
@@ -233,7 +224,6 @@ namespace WorldServer.Managers.Commands
             byte flag = (byte)GetInt(ref values);
             if (flag > 1)
                 flag = 1;
-
 
             if (plr.CbtInterface.GetCurrentTarget() != null && plr.CbtInterface.GetCurrentTarget().IsCreature() && npcupdateflag != 0)
             {
@@ -272,6 +262,7 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
+
         public static bool PlaySound(Player plr, ref List<string> values)
         {
             bool server = false;
@@ -318,7 +309,6 @@ namespace WorldServer.Managers.Commands
                                         {
                                             foreach (Player subPlayer in Player._Players)
                                             {
-
                                                 if (Params[0].ToString().Length > 0 && Params[1].ToString().Length > 0)
                                                 {
                                                     subPlayer.SendMessage(0, Params[0].ToString(), Params[1].ToString(), ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
@@ -368,7 +358,6 @@ namespace WorldServer.Managers.Commands
 
                 var playerName = GetString(ref values);
 
-
                 Player target = Player.GetPlayer(playerName);
 
                 if (target == null)
@@ -383,10 +372,7 @@ namespace WorldServer.Managers.Commands
                     return true;
                 }
 
-
                 target.PlayEffect(effectID);
-
-
             }
             return true;
         }
@@ -403,14 +389,12 @@ namespace WorldServer.Managers.Commands
 
                 var playerName = GetString(ref values);
 
-
                 Unit target = Player.GetPlayer(playerName);
 
                 if (target == null)
                 {
                     return true;
                 }
-
 
                 PacketOut Out = new PacketOut((byte)Opcodes.F_USE_ABILITY, 10);
                 Out.WriteUInt16(0);
@@ -450,21 +434,16 @@ namespace WorldServer.Managers.Commands
                             }
                         }
 
-
-
                     if (int.TryParse(values[2], out duration))
                     {
                         ushort vfxID = 0;
                         for (int i = 3; i < values.Count; i++)
                         {
-
-
                             if (values[i].Contains("AOE"))
                                 continue;
 
                             if (ushort.TryParse(values[i], out vfxID))
                             {
-
                                 foreach (var t in players)
                                 {
                                     Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 200);
@@ -495,26 +474,19 @@ namespace WorldServer.Managers.Commands
                                         Out.WriteByte((byte)0);
                                         Out.WriteByte((byte)0);
                                         plr.DispatchPacket(Out, true);
-
                                     }, duration * 1000, 1, prms);
                                 }
                             }
-
                         }
                     }
                 }
-
-
-
             }
 
             return true;
         }
 
-
         private static void OnAttachEffect(object data)
         {
-
             var obj = (GameObject)((object[])data)[0];
             var effectId = (ushort)((object[])data)[1];
             var displayType = (ushort)((object[])data)[2];
@@ -591,13 +563,14 @@ namespace WorldServer.Managers.Commands
                     CharMgr.Database.AddObject(logOn);
 
                     break;
+
                 case 1:
                     plr.SendClientMessage("Shroud cannot be used if legitimate stealth is active.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                     break;
+
                 case 2:
                     plr.Uncloak();
                     plr.OSInterface.RemoveEffect(0x0C);
-
 
                     GMCommandLog logOff = new GMCommandLog
                     {
@@ -611,8 +584,6 @@ namespace WorldServer.Managers.Commands
 
                     break;
             }
-
-
 
             return true;
         }
@@ -693,7 +664,6 @@ namespace WorldServer.Managers.Commands
             {
                 foreach (Player subPlayer in Player._Players)
                 {
-
                     if (message.Length > 0)
                     {
                         subPlayer.SendClientMessage($"[Announcement][{plr.Client._Account.Username}]: {message}", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
@@ -702,7 +672,6 @@ namespace WorldServer.Managers.Commands
                     subPlayer.SendPacket(Out);
                 }
             }
-
 
             return true;
         }
@@ -774,7 +743,6 @@ namespace WorldServer.Managers.Commands
             }
 
             return true;
-
         }
 
         public static bool TellBlock(Player plr, ref List<string> values)
@@ -786,7 +754,7 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        #endregion
+        #endregion GM
 
         #region Info
 
@@ -841,7 +809,6 @@ namespace WorldServer.Managers.Commands
 | 64 65 72 20 4A 75 6E 6B 69 65 73 00 |............    |");
             plr.SendPacket(Out);
 
-
             Out = new PacketOut((byte)Opcodes.F_ADVANCED_WAR_REPORT);
             Out.WritePacketString(@"|1D 06 65 00 00 00 01 12 4F 72 64 65 72 |.k...e.....Order |
 | 20 61 6E 64 20 50 72 6F 67 72 65 73 73 00 66 00 | and Progress.f.|
@@ -861,9 +828,7 @@ namespace WorldServer.Managers.Commands
 | 72 64 65 72 20 4A 75 6E 6B 69 65 73 00 |.............   |");
             plr.SendPacket(Out);
 
-
             //end of blastoise test
-
 
             Object other = GetObjectTarget(plr);
             GameObject go = other as GameObject;
@@ -939,7 +904,6 @@ namespace WorldServer.Managers.Commands
                 }
 
                 plr.SendMessage(0, "", result, ChatLogFilters.CHATLOGFILTERS_EMOTE);
-
             }
             else if (p != null && p.IsPlayer())
             {
@@ -1004,6 +968,7 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
+
         public static bool MindRead(Player player, ref List<string> values)
         {
             Creature crea = player.CbtInterface.GetCurrentTarget() as Creature;
@@ -1025,13 +990,11 @@ namespace WorldServer.Managers.Commands
                 crea.AiInterface.Debugger = null;
                 player.SendClientMessage("Ceased mindreading " + crea.Name + ".");
             }
-
             else if (crea.AiInterface.Debugger == null)
             {
                 crea.AiInterface.Debugger = player;
                 player.SendClientMessage("Began mindreading " + crea.Name + ".");
             }
-
             else
             {
                 player.SendClientMessage("A player is already mindreading " + crea.Name + ".");
@@ -1072,7 +1035,7 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        #endregion
+        #endregion Info
 
         #region Save
 
@@ -1083,7 +1046,7 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        #endregion
+        #endregion Save
 
         #region Gps
 
@@ -1109,7 +1072,6 @@ namespace WorldServer.Managers.Commands
                     plr.SendClientMessage("Dist=" + plr.GetDistanceToObject(obj));
                 }
             }
-
             else
             {
                 plr.SendClientMessage(pos);
@@ -1122,7 +1084,8 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
-        #endregion
+
+        #endregion Gps
 
         private static AbilityKnockbackInfo _jumpbackInfo = new AbilityKnockbackInfo { Angle = 75, Power = 200, GravMultiplier = 2 };
 
@@ -1134,7 +1097,6 @@ namespace WorldServer.Managers.Commands
                 return false;
             }
 
-
             if (plr.NextJumpTime < TCPManager.GetTimeStampMS())
             {
                 if (plr.CbtInterface.IsInCombat)
@@ -1144,7 +1106,6 @@ namespace WorldServer.Managers.Commands
 
                 plr.ApplySelfKnockback(_jumpbackInfo);
             }
-
             else plr.SendClientMessage("Next unlocking attempt allowed in " + (plr.NextJumpTime - TCPManager.GetTimeStampMS()) / 1000 + " seconds.");
 
             return true;
@@ -1228,8 +1189,6 @@ namespace WorldServer.Managers.Commands
             Plr.SendPacket(Out);
             */
 
-
-
             Out.WritePacketString(@"|07 01 00 1D 00 00 00 00 00 00 E2 90 00 |.S..............|
     |01 38 80 0D 53 6F 72 63 65 72 65 72 20 53 70 65 |.8..Sorcerer Spe|
     |63 00 18 00 01 00 02 00 03 00 04 00 05 00 06 00 |c...............|
@@ -1237,7 +1196,6 @@ namespace WorldServer.Managers.Commands
     |0F 00 10 00 11 00 12 00 13 00 14 00 15 00 16 00 |................|
     |17 00 18 00 00 00                               |......          |");
             plr.SendPacket(Out);
-
 
             Out = new PacketOut((byte)Opcodes.F_CAREER_PACKAGE_INFO);
             /*
@@ -1286,14 +1244,11 @@ namespace WorldServer.Managers.Commands
     |10 06 00 00 00 00 00 0F 00 00 00 00 00          |.............   |");
             plr.SendPacket(Out);
 
-
             // adds spells to the mastery tree
             //Plr.SendMasterySkills();
 
-
             // adds core spells to mastery tree propably alos to the career trainer
             Out = new PacketOut((byte)Opcodes.F_CAREER_CATEGORY);
-
 
             Out.WritePacketString(@"| 00 01 00 00 00 00 00 00 00 00 E2 90 00 |.L..............|
     |01 38 80 12 53 6F 72 63 65 72 65 72 20 41 62 69 |.8..Sorcerer Abi|
@@ -1310,7 +1265,6 @@ namespace WorldServer.Managers.Commands
     |6D 62 75 72 73 74 00 00 00 00 00                |...........     |");
             plr.SendPacket(Out);
 
-
             Out = new PacketOut((byte)Opcodes.F_CAREER_PACKAGE_INFO);
             Out.WritePacketString(@"|00 01 00 0F 00 19 00 00 01 01 00 00 00 |.K..............|
     |00 00 00 00 00 00 00 00 00 00 00 00 00 0C 35 01 |..............5.|
@@ -1320,15 +1274,9 @@ namespace WorldServer.Managers.Commands
     ");
             plr.SendPacket(Out);
 
-
             // sends renown spells to renown trainer
 
-
-
-
             // Plr.SendRenownDefensiveCrittsSkills();
-
-
 
             //Plr.SendInfluenceInfo();
             /*
@@ -1396,9 +1344,7 @@ namespace WorldServer.Managers.Commands
                             .ToArray();
         }
 
-
-        #endregion
-
+        #endregion Commands
 
         public static bool GroupRefresh(Player plr, ref List<string> values)
         {
@@ -1411,7 +1357,6 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-
         public static bool GetPing(Player plr, ref List<string> values)
         {
             Unit target = plr.CbtInterface.GetCurrentTarget();
@@ -1423,7 +1368,6 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
-
 
         #region DeathKill
 
@@ -1463,7 +1407,6 @@ namespace WorldServer.Managers.Commands
 
         public static bool AssignStandard(Player plr, ref List<string> values)
         {
-
             if (!plr.GldInterface.IsInGuild())
                 return false;
 
@@ -1579,8 +1522,6 @@ namespace WorldServer.Managers.Commands
                 target.ReceiveDamage(player, Convert.ToUInt32(values[0]));
             }
 
-
-
             PacketOut damageOut = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 24);
 
             damageOut.WriteUInt16(player.Oid);
@@ -1599,8 +1540,6 @@ namespace WorldServer.Managers.Commands
             {
                 damageOut.WriteZigZag(-1 * Convert.ToInt32(values[0]));
             }
-
-
 
             damageOut.WriteByte(0);
 
@@ -1666,31 +1605,30 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        #endregion
+        #endregion DeathKill
 
         #region Toks
+
         public static bool AllTok(Player plr, ref List<string> values)
         {
-
             for (ushort i = 1; i < 11999; i++)
             {
                 plr.TokInterface.AddTok(i);
             }
-
 
             return true;
         }
 
         public static bool AllTokbestary(Player plr, ref List<string> values)
         {
-
             for (int i = 1; i < 1000; i++)
             {
                 plr.TokInterface.SendActionCounterUpdate((ushort)i, (uint)i);
             }
             return true;
         }
-        #endregion
+
+        #endregion Toks
 
         #region GChat Interception
 
@@ -1724,7 +1662,7 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        #endregion
+        #endregion GChat Interception
 
         public static bool ScoutChamps(Player plr, ref List<string> values)
         {
@@ -1791,7 +1729,6 @@ namespace WorldServer.Managers.Commands
                 bool enabled = true;
                 if (byte.TryParse(values[0], out effectID))
                 {
-
                     if (values.Count > 1)
                     {
                         enabled = false;
@@ -1800,7 +1737,6 @@ namespace WorldServer.Managers.Commands
                     }
                     else if (!player.EffectStates.Contains(effectID))
                         player.EffectStates.Add(effectID);
-
 
                     var Out = new PacketOut((byte)Opcodes.F_OBJECT_EFFECT_STATE);
 
@@ -1826,7 +1762,6 @@ namespace WorldServer.Managers.Commands
                 bool enabled = true;
                 if (byte.TryParse(values[0], out effectID))
                 {
-
                     if (values.Count > 1)
                     {
                         enabled = false;
@@ -1835,7 +1770,6 @@ namespace WorldServer.Managers.Commands
                     }
                     else if (!player.EffectStates.Contains(effectID))
                         player.EffectStates.Add(effectID);
-
 
                     var Out = new PacketOut((byte)Opcodes.F_OBJECT_EFFECT_STATE);
 
@@ -1871,16 +1805,13 @@ namespace WorldServer.Managers.Commands
             {
                 if (optOutType == "all")
                 {
-
                 }
                 else if (optOutType == "gold")
                 {
-
                 }
             }
             else if (tier == "t4")
             {
-
             }
             return false;
         }
@@ -1889,7 +1820,6 @@ namespace WorldServer.Managers.Commands
         {
             if (values.Count > 0)
             {
-
                 int vfx = 0;
                 int oid = 0;
 
@@ -1937,6 +1867,7 @@ namespace WorldServer.Managers.Commands
             }
             return true;
         }
+
         public static bool CreatePlayer(Player plr, ref List<string> values)
         {
             if (plr != null && plr.CbtInterface.GetCurrentTarget() != null)
@@ -1950,6 +1881,7 @@ namespace WorldServer.Managers.Commands
             }
             return true;
         }
+
         public static bool PreviewItemModel(Player plr, ref List<string> values)
         {
             if (values.Count > 1)
@@ -2133,6 +2065,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
         }
+
         /// <summary>
         /// removes a guild from its alliance
         /// </summary>
@@ -2162,7 +2095,6 @@ namespace WorldServer.Managers.Commands
                 plr.SendClientMessage("The Guild specified does not belong to an alliance");
                 return true;
             }
-
             else
             {
                 plr.SendClientMessage("Removing " + guild.Info.Name + " from its alliance");
@@ -2180,7 +2112,6 @@ namespace WorldServer.Managers.Commands
 
                 return true;
             }
-
         }
 
         public static bool GetCharSlots(Player plr, ref List<string> values)
@@ -2231,7 +2162,6 @@ namespace WorldServer.Managers.Commands
             }
             return true;
         }
-
 
         private static List<Tuple<uint, int, long>> _deletionRequests = new List<Tuple<uint, int, long>>();
 
@@ -2323,7 +2253,7 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        #endregion
+        #endregion Character Access
 
         #region Motd
 
@@ -2397,6 +2327,7 @@ namespace WorldServer.Managers.Commands
                     plr.SendClientMessage("Tier 1: No more than 2 mastery points spent, no more than 13 renown points spent, no equipped gear above level 13 and no talismans in gear.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     plr.SendClientMessage("Tier 2/3: No more than 13 mastery points spent, no more than 28 renown points spent, and no equipped gear above level 28", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     break;
+
                 case "balance":
                     plr.SendClientMessage("===================================== Features: Balance Changes =====================================\n", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     plr.SendClientMessage("There have been several changes to Career and Combat mechanics.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
@@ -2408,12 +2339,14 @@ namespace WorldServer.Managers.Commands
                     plr.SendClientMessage("General changes:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     plr.SendClientMessage("Resurrection Illness now applies a 25% stat debuff (down from 50%, still excluding Wounds)", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     break;
+
                 case "items":
                     plr.SendClientMessage("=====================================\nRoR Features: New Items and Sets\n=====================================\n", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     plr.SendClientMessage("Most item sets have had their stats adjusted to be more favorable.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     plr.SendClientMessage("Other item sets have been adjusted for reasons of balance.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     plr.SendClientMessage("There are too many changes to list here, but in general, do not trust old sources to be accurate.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     break;
+
                 default:
                     plr.SendClientMessage("===================================== Features =====================================\n", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     plr.SendClientMessage("Information about unique features", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
@@ -2423,7 +2356,6 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
-
 
         public static bool GiveBag(Player plr, ref List<string> values)
         {
@@ -2442,7 +2374,6 @@ namespace WorldServer.Managers.Commands
             var result = plr.ItmInterface.CreateItem(lootBagItem, 1, internalBagContainer, 0, 0, false, 0, false);
 
             return true;
-
         }
 
         public static bool GearTester(Player plr, ref List<string> values)
@@ -2486,7 +2417,6 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
-
 
         public static bool QuestComplete(Player plr, ref List<string> values)
         {
@@ -2592,6 +2522,7 @@ namespace WorldServer.Managers.Commands
             plr.SendClientMessage("State of the Realm Addon Enabled: 1.0.3", SystemData.ChatLogFilters.CHATLOGFILTERS_SAY);
             return true;
         }
+
         public static bool PugScenario(Player plr, ref List<string> values)
         {
             plr.SendClientMessage("The current pickup scenario is " + ScenarioMgr.PickupScenarioName + ".", ChatLogFilters.CHATLOGFILTERS_SCENARIO);
@@ -2652,7 +2583,6 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
-
 
         public static bool RequestNameChange(Player plr, ref List<string> values)
         {
@@ -2740,7 +2670,6 @@ namespace WorldServer.Managers.Commands
 
                     if (duplicate > 3)
                         break;
-
                 }
             }
             if (duplicate > 3)
@@ -2806,7 +2735,7 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        #endregion
+        #endregion Motd
 
         #region Kick / Ban
 
@@ -2964,7 +2893,6 @@ namespace WorldServer.Managers.Commands
                                 sanction.IssuedBy,
                                 sanction.ActionLog));
                 }
-
                 else
                 {
                     plr.SendClientMessage("[No Sanctions Logged]");
@@ -3053,7 +2981,6 @@ namespace WorldServer.Managers.Commands
 
             Program.AcctMgr.UpdateAccount(account);
 
-
             GMCommandLog log = new GMCommandLog
             {
                 PlayerName = plr.Name,
@@ -3112,18 +3039,23 @@ namespace WorldServer.Managers.Commands
                 case "months":
                     durationMult = 86400 * 30;
                     break;
+
                 case "days":
                     durationMult = 86400;
                     break;
+
                 case "hours":
                     durationMult = 3600;
                     break;
+
                 case "minutes":
                     durationMult = 60;
                     break;
+
                 case "seconds":
                     durationMult = 1;
                     break;
+
                 default:
                     plr.SendClientMessage("Specified duration modifier is invalid.");
                     return true;
@@ -3145,7 +3077,6 @@ namespace WorldServer.Managers.Commands
             target.SendClientMessage("You have been blocked from the Advice channel for " + (duration + " " + lengthTypeString) + " by " + plr.Client._Account.Username + "for the following reason:\n" + reasonString + ".\nNext time, read the rules (.rules command).", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
             return true;
-
         }
 
         public static bool Mute(Player plr, ref List<string> values)
@@ -3195,22 +3126,27 @@ namespace WorldServer.Managers.Commands
                 case "month":
                     durationMult = 86400 * 30;
                     break;
+
                 case "days":
                 case "day":
                     durationMult = 86400;
                     break;
+
                 case "hours":
                 case "hour":
                     durationMult = 3600;
                     break;
+
                 case "minutes":
                 case "minute":
                     durationMult = 60;
                     break;
+
                 case "seconds":
                 case "second":
                     durationMult = 1;
                     break;
+
                 default:
                     plr.SendClientMessage("Specified duration modifier is invalid.");
                     return true;
@@ -3239,7 +3175,6 @@ namespace WorldServer.Managers.Commands
             CharMgr.Database.AddObject(log);
 
             return true;
-
         }
 
         public static bool Eject(Player plr, ref List<string> values)
@@ -3317,7 +3252,6 @@ namespace WorldServer.Managers.Commands
             CharMgr.Database.AddObject(log);
 
             return true;
-
         }
 
         public static bool Ban(Player plr, ref List<string> values)
@@ -3388,8 +3322,6 @@ namespace WorldServer.Managers.Commands
         {
             try
             {
-
-
                 string playerName = GetString(ref values);
 
                 Player target = Player.GetPlayer(playerName);
@@ -3432,22 +3364,27 @@ namespace WorldServer.Managers.Commands
                     case "month":
                         durationMult = 86400 * 30;
                         break;
+
                     case "days":
                     case "day":
                         durationMult = 86400;
                         break;
+
                     case "hours":
                     case "hour":
                         durationMult = 3600;
                         break;
+
                     case "minutes":
                     case "minute":
                         durationMult = 60;
                         break;
+
                     case "seconds":
                     case "second":
                         durationMult = 1;
                         break;
+
                     default:
                         plr.SendClientMessage("Specified duration modifier is invalid.");
                         return true;
@@ -3509,7 +3446,6 @@ namespace WorldServer.Managers.Commands
                     Date = DateTime.UtcNow
                 };
                 CharMgr.Database.AddObject(log);
-
             }
             catch (Exception ex)
             {
@@ -3587,7 +3523,6 @@ namespace WorldServer.Managers.Commands
                 Date = DateTime.UtcNow
             };
             CharMgr.Database.AddObject(log);
-
 
             return true;
         }
@@ -3891,7 +3826,6 @@ namespace WorldServer.Managers.Commands
             {
                 if (CharMgr.AddBannedName(name, NameFilterType.Equals))
                     plr.SendClientMessage($"{name} is now prohibited as a character name.");
-
                 else
                     plr.SendClientMessage($"BLOCKNAME: The string {name} is already filtered, either directly or through a more general existing filter.");
                 return true;
@@ -3980,8 +3914,6 @@ namespace WorldServer.Managers.Commands
 
                 return true;
             }
-
-
         }
 
         public static bool Hide(Player plr, ref List<string> values)
@@ -3991,7 +3923,6 @@ namespace WorldServer.Managers.Commands
                 plr.SendClientMessage("You are not on the gmlist currently", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 return true;
             }
-
             else
             {
                 GmMgr.NotifyGMOffline(plr);
@@ -4010,17 +3941,15 @@ namespace WorldServer.Managers.Commands
             }
         }
 
-        #endregion
+        #endregion Kick / Ban
 
         #region Events
-
 
         public static bool Morph(Player plr, ref List<string> values)
         {
             ushort modelID = Convert.ToUInt16(values[0]);
 
             plr.ImageNum = (ushort)modelID;
-
 
             var Out = new PacketOut((byte)Opcodes.F_PLAYER_IMAGENUM); //F_PLAYER_INVENTORY
             Out.WriteUInt16(plr.Oid);
@@ -4088,7 +4017,6 @@ namespace WorldServer.Managers.Commands
                             modelID = 156;
                         }
                     }
-
                 }
                 else
                 {
@@ -4111,10 +4039,8 @@ namespace WorldServer.Managers.Commands
                             modelID = 1038;
                         }
                     }
-
                     else if (plr.Info.Race == 7) // Chaos
                     {
-
                         if (plr.Info.CareerFlags == 4096)
                         {
                             modelID = 1034;
@@ -4134,7 +4060,6 @@ namespace WorldServer.Managers.Commands
                     }
                 }
 
-
                 target.ImageNum = (ushort)modelID;
 
                 var Out = new PacketOut((byte)Opcodes.F_PLAYER_IMAGENUM); //F_PLAYER_INVENTORY
@@ -4152,6 +4077,7 @@ namespace WorldServer.Managers.Commands
                     case 1:
                         vfx = 2498;
                         break;
+
                     case 2:
                         vfx = 3155;
                         break;
@@ -4162,7 +4088,6 @@ namespace WorldServer.Managers.Commands
                 var prms = new List<object>() { plr };
                 plr.EvtInterface.AddEvent(plr.SpreadSpooky, 120 * 1000, 0, prms);
                 plr.SetGearShowing(2, false);
-
             }
 
             plr.SendClientMessage("Halloween is over!", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
@@ -4178,9 +4103,11 @@ namespace WorldServer.Managers.Commands
             plr.Spooky = true;
             return true;
         }
-        #endregion
+
+        #endregion Events
 
         #region Pets
+
         public static bool Beastmaster(Player plr, ref List<string> values)
         {
             if (plr.Info.CareerLine == 19)
@@ -4277,7 +4204,6 @@ namespace WorldServer.Managers.Commands
 
         public static bool SummonPet(Player plr, ref List<string> values)
         {
-
             if (plr == null || plr.CrrInterface == null)
                 return false;
             IPetCareerInterface petInterface = plr.CrrInterface as IPetCareerInterface;
@@ -4404,7 +4330,6 @@ namespace WorldServer.Managers.Commands
             {
                 Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == bossSpawnId).ToList(),
                 Phases = CreatureService.BossSpawnPhases.Where(x => x.BossSpawnId == bossSpawnId).ToList()
-
             };
             // Assign the brain
             boss.AiInterface.SetBrain(brain);
@@ -4418,12 +4343,10 @@ namespace WorldServer.Managers.Commands
 
         public static bool SummonGoremane(Player plr, ref List<string> values)
         {
-
             var bossSpawnId = 33182;
             var boss = SummonBoss(bossSpawnId, plr);
             boss.CanBeKnockedBack = false;
             boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
-
 
             var bossSpawn = new BossSpawn { Creature = null, ProtoId = 6896, Type = BrainType.HealerBrain };
 
@@ -4438,7 +4361,6 @@ namespace WorldServer.Managers.Commands
 
         public static bool SummonLordSlaurith(Player plr, ref List<string> values)
         {
-
             var bossSpawnId = 48112;
             var boss = SummonBoss(bossSpawnId, plr);
             boss.CanBeKnockedBack = false;
@@ -4468,7 +4390,6 @@ namespace WorldServer.Managers.Commands
 
         public static bool CreateGoldChest(Player plr, ref List<string> values)
         {
-
             GameObject_proto proto = GameObjectService.GetGameObjectProto(Convert.ToUInt32(188));
 
             // If no value passed, create the chest on the player
@@ -4503,24 +4424,19 @@ namespace WorldServer.Managers.Commands
                     new Point3D(keep.PQuest.GoldChestWorldX, keep.PQuest.GoldChestWorldY, keep.PQuest.GoldChestWorldZ),
                     (ushort)plr.ZoneId);
 
-
                 orderLootChest.Title = $"Zone Assault ";
                 orderLootChest.Content = $"Zone Assault Rewards";
                 orderLootChest.SenderName = $"BaseCommand";
-
-
             }
 
             return true;
         }
+
         public static bool SummonOrcapult(Player plr, ref List<string> values)
         {
-
             var X = plr.WorldPosition.X;
             var Y = plr.WorldPosition.Y;
             var Z = plr.WorldPosition.Z;
-
-
 
             Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
             var proto = CreatureService.GetCreatureProto((uint)72675);
@@ -4539,14 +4455,11 @@ namespace WorldServer.Managers.Commands
 
             // Check SendInteract on Siege interface and creature itself.
 
-
             return true;
         }
 
-
         public static bool SummonZekaraz(Player plr, ref List<string> values)
         {
-
             var bossSpawnId = 46325;
             var boss = SummonBoss(bossSpawnId, plr);
             boss.CanBeTaunted = false;
@@ -4558,7 +4471,6 @@ namespace WorldServer.Managers.Commands
 
         public static bool SummonGahlvoth(Player plr, ref List<string> values)
         {
-
             var bossSpawnId = 45224;
             var boss = SummonBoss(bossSpawnId, plr);
             boss.CanBeKnockedBack = false;
@@ -4572,13 +4484,10 @@ namespace WorldServer.Managers.Commands
 
         public static bool SummonBorzhar(Player plr, ref List<string> values)
         {
-
             var bossSpawnId = 2000690;
             var boss = SummonBoss(bossSpawnId, plr);
             boss.CanBeKnockedBack = false;
             boss.CrowdControlImmunities.Add(GameData.CrowdControlTypes.All);
-
-
 
             var bossSpawn = new BossSpawn { Creature = null, ProtoId = 6926, Type = BrainType.AggressiveBrain };
 
@@ -4604,7 +4513,6 @@ namespace WorldServer.Managers.Commands
             var Y = plr.WorldPosition.Y;
             var Z = plr.WorldPosition.Z;
 
-
             Creature_spawn spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
             var proto = CreatureService.GetCreatureProto(Convert.ToUInt32(values[0]));
             if (proto == null)
@@ -4623,7 +4531,6 @@ namespace WorldServer.Managers.Commands
             // Force zones to update
             plr.Region.Update();
 
-
             //c.AiInterface.SetBrain(new ChosenBrain(c));
             //var itemDetails = ItemService.GetItem_Info(208221);
             //var item = new Creature_item { Entry = itemDetails.Entry, ModelId = (ushort) itemDetails.ModelId, SlotId = 10, EffectId = 0 };
@@ -4631,11 +4538,8 @@ namespace WorldServer.Managers.Commands
 
             //c.ItmInterface.AddCreatureItem(item);
             //c.OnLoad();
-            //c.WaypointGUID = 
+            //c.WaypointGUID =
             c.PlayersInRange = plr.PlayersInRange;
-
-
-
 
             return true;
         }
@@ -4660,7 +4564,6 @@ namespace WorldServer.Managers.Commands
         // blue / red keep image top right
         public static bool SendKeepStatusWrapper(Player plr, ref List<string> values)
         {
-
             var Out = new PacketOut((byte)Opcodes.F_KEEP_STATUS, 26);
             Out.WriteByte(18);  // garrison of skulls
 
@@ -4673,7 +4576,6 @@ namespace WorldServer.Managers.Commands
                 Out.WriteByte(Convert.ToByte(values[1])); // Door health
                 Out.WriteByte(0); // Next rank %
             }
-
 
             Out.Fill(0, 18);
 
@@ -4743,7 +4645,6 @@ namespace WorldServer.Managers.Commands
 
             if (playerTarget is Player)
             {
-
                 if (playerTarget == null)
                 {
                     plr.SendClientMessage("No target selected.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
@@ -4751,19 +4652,16 @@ namespace WorldServer.Managers.Commands
                 }
                 else
                 {
-
                     ((Player)playerTarget).SetTitleId((ushort)Convert.ToInt32(values[0]));
                 }
             }
             return true;
-
         }
 
         public static bool Scoreboard(Player plr, ref List<string> values)
         {
             //foreach (KeyValuePair<uint, ContributionInfo> playerRoll in players)
             //    Scoreboard(playerRoll.Value, _preRoll.IndexOf(playerRoll), _postRoll.IndexOf(playerRoll));
-
 
             var scoreBoardName = "TEST : Hatred's Way";
             var lootBags = new List<LootBagTypeDefinition>
@@ -4793,7 +4691,6 @@ namespace WorldServer.Managers.Commands
                         ItemCount = 5
                     }
             };
-
 
             var contributionList = new List<PQContribution>
             {
@@ -4831,7 +4728,6 @@ namespace WorldServer.Managers.Commands
                 }
             };
 
-
             Player targPlayer = plr;
 
             if (targPlayer == null)
@@ -4853,15 +4749,13 @@ namespace WorldServer.Managers.Commands
             var p = contributionList.OrderBy(x => x.ContributionValue + x.RandomBonus).ToList();
             p.Reverse();
 
-
             Out.WriteStringBytes(plr.Name);
             Out.Fill(0, 24 - plr.Name.Length);
             Out.Fill(0, 2);
-            Out.WriteUInt16R((ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).RandomBonus);   
+            Out.WriteUInt16R((ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).RandomBonus);
             Out.WriteUInt16R((ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).ContributionValue);
             Out.WriteUInt16R(0);//(ushort)contributionList.Single(x => x.CharacterId == plr.CharacterId).BagBonus
-            Out.WriteUInt16((ushort)(p.FindIndex(x=>x.CharacterId == plr.CharacterId)+1)); // place (you have the nth highest....)
-
+            Out.WriteUInt16((ushort)(p.FindIndex(x => x.CharacterId == plr.CharacterId) + 1)); // place (you have the nth highest....)
 
             WritePostRolls(Out, p, lootBags);
 
@@ -4881,7 +4775,6 @@ namespace WorldServer.Managers.Commands
             Out.WriteByte(0);
             Out.WriteByte(3);
 
-
             Out.WriteByte(0);
             Out.WriteByte(0);
             Out.WriteByte(1);
@@ -4889,9 +4782,8 @@ namespace WorldServer.Managers.Commands
             //
             // no clue yet seams to be if you didnt won anything you get that item
 
-
             /*
-            Out.WritePacketString(@"|d4 c0 01 |...d............|     
+            Out.WritePacketString(@"|d4 c0 01 |...d............|
             |57 61 72 20 43 72 65 73 74 00 00 00 00 00 00 00 |War Crest.......|
             |00 00 00 00 00 00 00 00 00 00 00                |...........     |
             ");
@@ -4913,7 +4805,6 @@ namespace WorldServer.Managers.Commands
                 if (i == pl.Count)
                     break;
 
-
                 Out.WriteStringBytes(pl[i]?.CharacterName);
                 Out.Fill(0, 24 - pl[i].CharacterName.Length);
                 Out.Fill(0, 2);
@@ -4931,8 +4822,6 @@ namespace WorldServer.Managers.Commands
         {
             int maxCount = Math.Min(24, p.Count);
 
-          
-
             var bagIndex = 0;
             for (int i = 0; i < maxCount; i++)
             {
@@ -4949,7 +4838,7 @@ namespace WorldServer.Managers.Commands
                 Out.WriteUInt16R(0);  //(ushort)p[i]?.BagBonus
                 Out.WriteByte(1);  // ???
                 if (i < lootBags.Count)
-                    Out.WriteByte((byte) ((byte) lootBags[bagIndex].BagRarity+1));  // bag won (needs the +1)?
+                    Out.WriteByte((byte)((byte)lootBags[bagIndex].BagRarity + 1));  // bag won (needs the +1)?
                 else
                 {
                     Out.WriteByte(0);
@@ -4971,7 +4860,6 @@ namespace WorldServer.Managers.Commands
 
             foreach (var line in fileContent)
             {
-
                 var lineSplit = line.Split('|');
                 var item = lineSplit[1].Split(':')[0];
                 var result = MailService.MailItem(Convert.ToUInt32(lineSplit[0]), Convert.ToUInt32(item), Convert.ToUInt16(lineSplit[2]));
@@ -4979,8 +4867,8 @@ namespace WorldServer.Managers.Commands
                 if (!result)
                 {
                     plr.SendClientMessage($"{lineSplit[0]}-{item} failed to send.");
-                    var outputFile =  Path.ChangeExtension(fileName, ".failed");
-                    File.AppendAllText(outputFile, line+"\n");
+                    var outputFile = Path.ChangeExtension(fileName, ".failed");
+                    File.AppendAllText(outputFile, line + "\n");
                 }
             }
 
@@ -5001,7 +4889,7 @@ namespace WorldServer.Managers.Commands
                 return true;
 
             MailService.MailItem(Convert.ToUInt32(characterId), Convert.ToUInt32(itemId), Convert.ToUInt16(count));
-            
+
             plr.SendClientMessage($"MAIL Item {itemId} x{count} to {characterId}");
 
             GMCommandLog log = new GMCommandLog
@@ -5015,7 +4903,6 @@ namespace WorldServer.Managers.Commands
             CharMgr.Database.AddObject(log);
 
             return true;
-
         }
 
         public static bool CheckPlayerHonor(Player plr, ref List<string> values)
@@ -5047,13 +4934,11 @@ namespace WorldServer.Managers.Commands
                 case 4:
                     plr.SendClientMessage($"-----MAX-----");
                     return true;
-
             }
             plr.SendClientMessage($"-----{percent:00}%-----");
 
             return true;
         }
-
 
         public static bool MakeRealmCaptain(Player plr, ref List<string> values)
         {
@@ -5061,7 +4946,6 @@ namespace WorldServer.Managers.Commands
 
             if (playerTarget is Player)
             {
-
                 if (playerTarget == null)
                 {
                     plr.SendClientMessage("No target selected.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
@@ -5090,7 +4974,6 @@ namespace WorldServer.Managers.Commands
                 status.SetAsRealmCaptain((Player)playerTarget);
 
                 RealmCaptainManager.MarkPlayerAsRealmCaptain((Player)playerTarget, Player._Players, 1);
-
             }
 
             return true;
@@ -5155,16 +5038,11 @@ namespace WorldServer.Managers.Commands
 
             Creature c = plr.Region.CreateCreature(spawn);
 
-
-
-
             return true;
         }
 
-
         public static bool SendCampaignStatusWrapper(Player plr, ref List<string> values)
         {
-
             //            PacketOut Out = new PacketOut((byte)Opcodes.F_WAR_REPORT);
             //            Out.WritePacketString(@"|01 0F 00 00 00 00 00 00 1C 20 00 00 06 |.'.......... ...|
             //|09 02 03 01 00 00 00 C5 00 00 00 E4 00 00 00 6A |...............j|
@@ -5202,7 +5080,6 @@ namespace WorldServer.Managers.Commands
 |02 FE 3C 28 0A 3C 00 00 00 03 84 00 00 00 00    |............... |");
             plr.SendPacket(Out1);
 
-
             //PacketOut Out2 = new PacketOut((byte)Opcodes.F_CAMPAIGN_STATUS);
             //Out2.WritePacketString(@"|00 9C 1A 00 05 00 67 00 CD 00 00 00 19 00 32 32 |......g.......22 |
             //    | 00 32 32 00 32 32 00 21 43 00 32 32 00 32 32 00 |.22.22.!C.22.22.|
@@ -5229,7 +5106,6 @@ namespace WorldServer.Managers.Commands
             //|02 FE 3C 28 0A 3C 00 00 00 03 84 00 00 00 00    |............... |");
             //            plr.SendPacket(Out2);
 
-
             //| 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F | 0123456789ABCDEF |
             //| ------------------------------------------------| ----------------|
             //| 00 9C 1A 00 05 00 67 00 CD 00 00 00 19 00 32 32 |......g.......22 |
@@ -5246,7 +5122,7 @@ namespace WorldServer.Managers.Commands
             //     new ApocCommunications().SendCampaignStatus(plr, new VictoryPointProgress(50f, 50f), Realms.REALMS_REALM_DESTRUCTION);
             return true;
         }
-        #endregion
+
+        #endregion Pets
     }
 }
-

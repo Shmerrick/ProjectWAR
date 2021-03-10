@@ -7,7 +7,6 @@ namespace WorldServer.Managers.Commands
     /// <summary>State modification commands under .state</summary>
     internal class StatesCommand
     {
-
         /// <summary>
         /// Add State To Target <Id>
         /// </summary>

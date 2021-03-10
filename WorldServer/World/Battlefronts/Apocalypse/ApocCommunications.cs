@@ -1,9 +1,8 @@
-﻿using System;
-using System.Drawing;
-using SystemData;
-using FrameWork;
+﻿using FrameWork;
 using GameData;
 using NLog;
+using System;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.World.Map;
 using WorldServer.World.Objects;
@@ -38,9 +37,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             //    Out.Fill(0, 3);
             //else
             //{
-                Out.WriteByte((byte)0);
-                Out.WriteByte((byte)0);
-                Out.WriteByte((byte)1);
+            Out.WriteByte((byte)0);
+            Out.WriteByte((byte)0);
+            Out.WriteByte((byte)1);
             //}
             //region.Campaign.WriteBattleFrontStatus(Out);
         }
@@ -52,7 +51,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Out.WriteHexStringBytes("0005006700CB00"); // 7
 
             // Dwarfs vs Greenskins T1
-            
+
             Out.WriteByte(0);    // 0 and ignored
             Out.WriteByte(100);  // % Order lock
             Out.WriteByte(0);    // % Dest lock
@@ -116,23 +115,22 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             if (string.IsNullOrEmpty(forceT4))
             {
-
                 Out.WriteByte(3); //dwarf fort
-                Out.WriteByte((byte) 1); // KV 0 contested, 1 order, 2 dest
-                Out.WriteByte((byte) 0); // TM
-                Out.WriteByte((byte) 2); // BC
+                Out.WriteByte((byte)1); // KV 0 contested, 1 order, 2 dest
+                Out.WriteByte((byte)0); // TM
+                Out.WriteByte((byte)2); // BC
                 Out.WriteByte(3); //fort
 
                 Out.WriteByte(3); //emp fort
-                Out.WriteByte((byte) 1); // reik
-                Out.WriteByte((byte) 0); // praag
-                Out.WriteByte((byte) 2); // cw
+                Out.WriteByte((byte)1); // reik
+                Out.WriteByte((byte)0); // praag
+                Out.WriteByte((byte)2); // cw
                 Out.WriteByte(3); //fort
 
                 Out.WriteByte(3); //elf fort
-                Out.WriteByte((byte) 1); // Eataine
-                Out.WriteByte((byte) 0); // DW
-                Out.WriteByte((byte) 2); // Caledor
+                Out.WriteByte((byte)1); // Eataine
+                Out.WriteByte((byte)0); // DW
+                Out.WriteByte((byte)2); // Caledor
                 Out.WriteByte(3); //fort
             }
             else
@@ -164,7 +162,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             Out.Fill(0, 4);
 
-            _logger.Debug("APOCCOMM:"+Out.ToString());
+            _logger.Debug("APOCCOMM:" + Out.ToString());
 
             plr.SendPacket(Out);
         }
@@ -244,7 +242,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     plr.SendPacket(Out);
                 else
                 {
-
                     lock (Player._Players)
                     {
                         foreach (Player player in Player._Players)
@@ -257,7 +254,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                             if (player.Region?.Campaign != null)
                                 WriteVictoryPoints(player.Realm, playerCampaignStatus, vpp);
-
                             else
                                 playerCampaignStatus.Fill(0, 9);
 
@@ -272,7 +268,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 if (plr.Region?.Campaign != null)
                     WriteVictoryPoints(plr.Realm, Out, vpp);
-
                 else
                     Out.Fill(0, 9);
 
@@ -284,7 +279,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void WriteVictoryPoints(Realms realm, PacketOut Out, VictoryPointProgress vpp)
         {
-
             Out.WriteByte((byte)vpp.OrderVictoryPoints);
             Out.WriteByte((byte)vpp.DestructionVictoryPoints);
 
@@ -293,7 +287,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Out.WriteByte(0);
 
             Out.WriteByte(00);
-
 
             Out.WriteUInt32(0);
             //local timer for poolupdates
@@ -331,9 +324,5 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 plr.SendLocalizeString(message, realm == Realms.REALMS_REALM_ORDER ? ChatLogFilters.CHATLOGFILTERS_C_ORDER_RVR_MESSAGE : ChatLogFilters.CHATLOGFILTERS_C_DESTRUCTION_RVR_MESSAGE, Localized_text.CHAT_TAG_DEFAULT);
             }
         }
-
-
     }
-
-
 }

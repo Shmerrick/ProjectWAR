@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Common;
+﻿using Common;
 using Common.Database.World.Characters;
+using System.Collections.Generic;
+using System.Linq;
 using WorldServer.Services.World;
 
 namespace WorldServer.World.Objects
@@ -14,7 +14,6 @@ namespace WorldServer.World.Objects
         {
             items = GetHonorRankItems(player, player.Info.HonorRank);
         }
-
 
         private List<Vendor_items> GetHonorRankItems(Player player, int rank)
         {

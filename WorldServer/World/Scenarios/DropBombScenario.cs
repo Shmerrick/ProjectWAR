@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using GameData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common;
-using FrameWork;
-using GameData;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
@@ -38,8 +38,9 @@ namespace WorldServer.World.Scenarios
                 _carrier2 = value;
             }
         }
+
         private Point3D _bombSpawn = new Point3D();
-     
+
         public DropBombScenario(Scenario_Info info, int tier)
             : base(info, tier)
         {
@@ -57,10 +58,6 @@ namespace WorldServer.World.Scenarios
 
                 if (scenarioObject.ObjectiveName == "Gun Powder" && scenarioObject.Identifier == 2)
                     _destroGunPowder = AddObject(scenarioObject.WorldPosX, scenarioObject.WorldPosY, scenarioObject.PosZ, scenarioObject.Heading, 100331);
-
-
-
-
             }
             _orderGunPowder.Flags = 0x24;
             _destroGunPowder.Flags = 0x24;
@@ -91,8 +88,6 @@ namespace WorldServer.World.Scenarios
                 WorldY = y,
                 WorldZ = (ushort)z,
                 ZoneId = Region.RegionId,
-               
-                
             };
             spawn.BuildFromProto(glowProto);
 
@@ -103,9 +98,8 @@ namespace WorldServer.World.Scenarios
                 Lost = new Part.PartDelegate(BombLost)
             };
             Region.AddObject(_bomb, spawn.ZoneId);
-            if(_centerGlow != null)
+            if (_centerGlow != null)
                 _centerGlow.VfxState = 0;
-
         }
 
         public override void OnClose()
@@ -125,15 +119,14 @@ namespace WorldServer.World.Scenarios
             plr.OSInterface.RemoveEffect((byte)0xB);
             plr.CanMount = true;
 
-
             if (_carrier == plr)
             {
-               CreateBomb();
+                CreateBomb();
             }
         }
+
         private void BombPickedUp(Player plr, Part part)
         {
-
             RemoveBombFromWorld();
 
             _carrier = plr;
@@ -148,9 +141,7 @@ namespace WorldServer.World.Scenarios
                 _centerGlow.VfxState = 1;
 
             Broadcast(new[] { plr.GenderedName, (plr.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"), _bomb.Name }, ChatLogFilters.CHATLOGFILTERS_C_WHITE, Localized_text.TEXT_FLAG_CAPTURE);
-
         }
-
 
         private void BombDroppedOff(Player plr, Part part)
         {
@@ -197,12 +188,11 @@ namespace WorldServer.World.Scenarios
             return obj;
         }
 
-       
         public override void Interact(GameObject obj, Player plr, InteractMenu menu)
         {
             base.Interact(obj, plr, menu);
 
-            if ((obj == _destroGunPowder  && plr.Realm == Realms.REALMS_REALM_ORDER && plr == _carrier) ||
+            if ((obj == _destroGunPowder && plr.Realm == Realms.REALMS_REALM_ORDER && plr == _carrier) ||
                 (obj == _orderGunPowder && plr.Realm == Realms.REALMS_REALM_DESTRUCTION && plr == _carrier))
             {
                 //drop part
@@ -216,16 +206,13 @@ namespace WorldServer.World.Scenarios
                     return;
                 }
 
-
                 if (_carrier == null)
                     _bomb.BeginPickup(plr);
-            
             }
         }
 
         private void RemoveBombFromWorld()
         {
-         
             var bombs = Region.GetObjects<GameObject>();
             if (bombs != null)
                 foreach (var obj in bombs.Where(e => e.Name == "Powder Keg").ToList())
@@ -234,8 +221,8 @@ namespace WorldServer.World.Scenarios
                 }
 
             EvtInterface.RemoveEvent(CarrierBombTimer);
-
         }
+
         private void RemoveBombBuff(Player player)
         {
             if (player != null)
@@ -252,7 +239,6 @@ namespace WorldServer.World.Scenarios
             _plantedBomb = null;
 
             CreateBomb(_bombSpawn.X, _bombSpawn.Y, _bombSpawn.Z, 0);
-     
         }
 
         public void DropPart()
@@ -264,13 +250,12 @@ namespace WorldServer.World.Scenarios
             if (_carrier == plr)
             {
                 if ((powder == _destroGunPowder && plr.Realm == Realms.REALMS_REALM_ORDER)
-                    || (powder == _orderGunPowder &&  plr.Realm == Realms.REALMS_REALM_DESTRUCTION))
+                    || (powder == _orderGunPowder && plr.Realm == Realms.REALMS_REALM_DESTRUCTION))
                 {
                     _bomb.BeginDropOff(plr, powder);
                     _plantedBomb = powder;
                 }
             }
-
         }
 
         private void Explosion(Point3D location, Player target = null)
@@ -295,7 +280,6 @@ namespace WorldServer.World.Scenarios
                 CastPlayerSubID = 0
             };
 
-
             PacketOut Out = new PacketOut((byte)Opcodes.F_PLAY_EFFECT, 30);
             Out.WriteUInt16(264);
             Out.WriteUInt16(0);
@@ -307,14 +291,11 @@ namespace WorldServer.World.Scenarios
             Out.WriteUInt16(100);
             Out.WriteUInt16(0);
 
-
             Region.DispatchPacket(Out, location, 400);
-
 
             foreach (var player in killPlayers)
             {
                 CombatManager.InflictDamage(damageThisPass, 20, player, player);
-               
             }
 
             foreach (var player in Region.WorldQuery<Player>(location, 50))
@@ -332,11 +313,10 @@ namespace WorldServer.World.Scenarios
                         MaxDamage = (ushort)(val),
                         CastPlayerSubID = 0
                     }, player.Level, player, player);
-
                 }
             }
 
-            if(_carrier != null)
+            if (_carrier != null)
             {
                 _carrier.CanMount = true;
                 RemoveBombBuff(_carrier);
@@ -349,7 +329,6 @@ namespace WorldServer.World.Scenarios
         {
             if (_plantedBomb != null)
                 Explosion(_plantedBomb.WorldPosition);
-
         }
 
         public void Broadcast(string msg)
@@ -361,6 +340,7 @@ namespace WorldServer.World.Scenarios
                     SendObjectiveStates(plr);
                 }
         }
+
         public void Broadcast(string[] Msgs, ChatLogFilters filter, Localized_text localizeEntry)
         {
             for (int i = 0; i < 2; ++i)
@@ -371,10 +351,8 @@ namespace WorldServer.World.Scenarios
                 }
         }
 
-
         public override bool OnPlayerKilled(Object pkilled, object instigator)
         {
-        
             if (pkilled == _carrier)
             {
                 ((Player)pkilled).OSInterface.RemoveEffect(0xB);
@@ -415,16 +393,12 @@ namespace WorldServer.World.Scenarios
 
                 if (_carrier != null)
                 {
-
                     if (_carrier.StealthLevel > 0 || _carrier.IsMounted) //if player mounts or stealths with bomb, explode it
                     {
                         _carrier.Uncloak();
                         Explosion(_carrier.WorldPosition, _carrier);
-
                     }
-                  
                 }
-
             }
             catch (Exception e)
             {

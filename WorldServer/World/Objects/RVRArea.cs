@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WorldServer.Services.World;
 
 namespace WorldServer.World.Objects
@@ -19,7 +16,7 @@ namespace WorldServer.World.Objects
             {
                 return ZoneAreas;
             }
-            
+
             foreach (var rvrAreaPolygon in RVRProgressionService._RVRAreaPolygons)
             {
                 ZoneAreas.Add(rvrAreaPolygon.ZoneId, rvrAreaPolygon.PolygonPlanarCoordinates.Split(',').Select(ushort.Parse).ToList());
@@ -48,6 +45,5 @@ namespace WorldServer.World.Objects
         {
             return zoneRVRAreas.ContainsKey(player.Zone.ZoneId) && InPoly(zoneRVRAreas[player.Zone.ZoneId], (ushort)player.X, (ushort)player.Y);
         }
-
     }
 }

@@ -2,7 +2,6 @@
 using GameData;
 using NLog;
 using System.Linq;
-using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Objects;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
@@ -57,8 +56,5 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             _logger.Trace($"F_KEEP_STATUS {keep.Info.Name} Status : {keep.KeepStatus} ");
         }
-
     }
-
-
 }

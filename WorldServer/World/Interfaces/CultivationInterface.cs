@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 using Item = WorldServer.World.Objects.Item;
@@ -25,7 +25,7 @@ namespace WorldServer.World.Interfaces
         private const int TYPE_WATER = 3;
         private const int TYPE_NUTRIENTS = 4;
 
-        #endregion
+        #endregion Constants
 
         private byte _stage;
         private byte _stageTime, _currentStageTime, _stage2Time, _stage3Time;
@@ -82,11 +82,16 @@ namespace WorldServer.World.Interfaces
             {
                 switch (_stage)
                 {
-                    case STAGE_GERMINATION: _nextUpdateTime = TCPManager.GetTimeStampMS() + 1000;
+                    case STAGE_GERMINATION:
+                        _nextUpdateTime = TCPManager.GetTimeStampMS() + 1000;
                         break;
-                    case STAGE_SEEDLING: _currentStageTime = _stage2Time; _stage2Time = 0;
+
+                    case STAGE_SEEDLING:
+                        _currentStageTime = _stage2Time; _stage2Time = 0;
                         break;
-                    case STAGE_FLOWERING: _currentStageTime = _stage3Time; _stage3Time = 0;
+
+                    case STAGE_FLOWERING:
+                        _currentStageTime = _stage3Time; _stage3Time = 0;
                         break;
                 }
                 _ownerInterface.GetPlayer().SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, Localized_text.TEXT_CULTIVATION_PLOT_FLOWERING_ADVANCED);
@@ -98,7 +103,7 @@ namespace WorldServer.World.Interfaces
         public bool AddSeed(Item_Info seedInfo)
         {
             if (_stage != STAGE_EMPTY)
-            { 
+            {
                 _ownerInterface.GetPlayer().SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_CULTIVATION_PLOT_STILL_HAS_PLANTS);
                 return false;
             }
@@ -183,6 +188,7 @@ namespace WorldServer.World.Interfaces
                                 else
                                     _currentStageTime = 1;
                                 break;
+
                             case TYPE_WATER:
                                 reduce = (byte)(_stageTime * (byte)ushort.Parse(st.Split(':')[1]) / 100);
                                 if (_stage == STAGE_SEEDLING)
@@ -193,6 +199,7 @@ namespace WorldServer.World.Interfaces
                                         _currentStageTime = 1;
                                 }
                                 break;
+
                             case TYPE_NUTRIENTS:
                                 reduce = (byte)(_stageTime * (byte)ushort.Parse(st.Split(':')[1]) / 100);
                                 if (_stage == STAGE_FLOWERING)
@@ -212,12 +219,13 @@ namespace WorldServer.World.Interfaces
                         else
                             _failureChance -= (byte)ushort.Parse(st.Split(':')[1]);
                         break;
+
                     case 14: _specialMomentChance += (byte)ushort.Parse(st.Split(':')[1]); break;
                 }
             }
         }
 
-        #endregion
+        #endregion Component Add
 
         private void GenerateResult()
         {
@@ -226,7 +234,7 @@ namespace WorldServer.World.Interfaces
             if (ownerPlayer._Value.GatheringSkillLevel < 200)
             {
                 if ((ownerPlayer._Value.GatheringSkillLevel - _seedLvl) * 3 <= (float)StaticRandom.Instance.NextDouble() * 100f)
-                { 
+                {
                     ownerPlayer._Value.GatheringSkillLevel++;
                     _ownerInterface.PendingSkillUpdate = true;
                 }
@@ -261,7 +269,7 @@ namespace WorldServer.World.Interfaces
             Item_Info subItem = ItemService.GetItem_Info(uint.Parse(ItemService.GetItem_Info(_seedItemID).Craftresult.Split(';')[1]));
 
             if (harvester.ItmInterface.GetTotalFreeInventorySlot(mainItem) < 4)
-            { 
+            {
                 harvester.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_CRAFTING, Localized_text.TEXT_CULTIVATION_CANT_HARVEST_SEED_BACKPACK_FULL);
                 return;
             }
@@ -274,12 +282,14 @@ namespace WorldServer.World.Interfaces
 
                     harvester.SendLocalizeString(ItemService.GetItem_Info(84918).Name, ChatLogFilters.CHATLOGFILTERS_CRAFTING, Localized_text.TEXT_CRAFT_RECIPE_CRITFAILURE);
                     break;
+
                 case 1:
                     if (harvester.ItmInterface.CreateItem(mainItem, 2, 0, true) != ItemResult.RESULT_OK)
                         return;
 
-                    harvester.SendLocalizeString(new [] { "2",  mainItem.Name }, ChatLogFilters.CHATLOGFILTERS_CRAFTING, Localized_text.TEXT_CRAFT_CULTIVATION_HARVEST);
+                    harvester.SendLocalizeString(new[] { "2", mainItem.Name }, ChatLogFilters.CHATLOGFILTERS_CRAFTING, Localized_text.TEXT_CRAFT_CULTIVATION_HARVEST);
                     break;
+
                 case 2:
                     if (harvester.ItmInterface.CreateItem(mainItem, 3, 0, true) != ItemResult.RESULT_OK)
                         return;
@@ -287,6 +297,7 @@ namespace WorldServer.World.Interfaces
                     harvester.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, Localized_text.TEXT_CRAFT_CRITICALSUCCESS);
                     harvester.SendLocalizeString(new[] { "3", mainItem.Name }, ChatLogFilters.CHATLOGFILTERS_CRAFTING, Localized_text.TEXT_CRAFT_CULTIVATION_HARVEST);
                     break;
+
                 case 3:
                     if (harvester.ItmInterface.CreateItem(uint.Parse(ItemService.GetItem_Info(_seedItemID).Craftresult.Split(';')[0]), 2, true) != ItemResult.RESULT_OK)
                         return;
@@ -299,7 +310,6 @@ namespace WorldServer.World.Interfaces
 
                     uint dyepigment = 199901;
                     byte seedlvl = CultivationInterface.GetCraft(9, ItemService.GetItem_Info(_seedItemID).Crafts);
-
 
                     if (seedlvl < 50)
                         harvester.ItmInterface.CreateItem(dyepigment, 1, true);
@@ -319,7 +329,7 @@ namespace WorldServer.World.Interfaces
                     harvester.SendLocalizeString(new[] { "2", mainItem.Name }, ChatLogFilters.CHATLOGFILTERS_CRAFTING, Localized_text.TEXT_CRAFT_CULTIVATION_HARVEST);
                     harvester.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, Localized_text.TEXT_CRAFT_SPECIALMOMENT);
                     harvester.SendLocalizeString(new[] { "1", subItem.Name }, ChatLogFilters.CHATLOGFILTERS_CRAFTING, Localized_text.TEXT_CRAFT_CULTIVATION_HARVEST);
-                    harvester.SendLocalizeString(new[] { "1", ItemService.GetItem_Info(dyepigment).Name}, ChatLogFilters.CHATLOGFILTERS_CRAFTING, Localized_text.TEXT_CRAFT_CULTIVATION_HARVEST);
+                    harvester.SendLocalizeString(new[] { "1", ItemService.GetItem_Info(dyepigment).Name }, ChatLogFilters.CHATLOGFILTERS_CRAFTING, Localized_text.TEXT_CRAFT_CULTIVATION_HARVEST);
                     break;
             }
 
@@ -477,21 +487,24 @@ namespace WorldServer.World.Interfaces
                 return;
             }
 
-            switch(itm.Info.Unk27[15])
+            switch (itm.Info.Unk27[15])
             {
                 case 5:
                 case 1:
                     if (_plots[index].AddSeed(itm.Info))
                         _myPlayer.ItmInterface.DeleteItem(itemSlot, 1);
                     break;
+
                 case 2:
                     if (_plots[index].AddSoil(itm.Info))
                         _myPlayer.ItmInterface.DeleteItem(itemSlot, 1);
                     break;
+
                 case 3:
                     if (_plots[index].AddWater(itm.Info))
                         _myPlayer.ItmInterface.DeleteItem(itemSlot, 1);
                     break;
+
                 case 4:
                     if (_plots[index].AddNutrients(itm.Info))
                         _myPlayer.ItmInterface.DeleteItem(itemSlot, 1);
@@ -541,7 +554,7 @@ namespace WorldServer.World.Interfaces
             uint arborealResin = 84711;
 
             byte lvl = CraftingApoInterface.GetCraft(9, plr.ItmInterface.GetItemInSlot(slot).Info.Crafts);
-            if(lvl > 1)
+            if (lvl > 1)
                 arborealResin += (uint)(lvl / 25);
 
             plr.ItmInterface.CreateItem(arborealResin, 1, true);

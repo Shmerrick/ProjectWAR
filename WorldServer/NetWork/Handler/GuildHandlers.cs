@@ -1,7 +1,7 @@
-﻿using System;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
+using System;
+using SystemData;
 using WorldServer.World.Guild;
 using WorldServer.World.Objects;
 
@@ -38,11 +38,15 @@ namespace WorldServer.NetWork.Handler
                         Plr.GldInterface.invitedTo = null;
 
                         Plr.GldInterface.Guild.JoinGuild(Plr);
-                    } break;
+                    }
+                    break;
+
                 case 2: // Declined Invite
                     {
                         Plr.GldInterface.invitedTo = null;
-                    } break;
+                    }
+                    break;
+
                 case 3: // Leave Guild
                     {
                         if (!Plr.GldInterface.IsInGuild())
@@ -58,29 +62,36 @@ namespace WorldServer.NetWork.Handler
                         Guild_member GldMem = Plr.GldInterface.Guild.Info.Members[Plr.CharacterId];
 
                         Plr.GldInterface.Guild.LeaveGuild(GldMem, false);
+                    }
+                    break;
 
-                    } break;
                 case 5: // Promote
                     {
                         if (!Plr.GldInterface.IsInGuild())
                             return;
 
                         Plr.GldInterface.Guild.PromoteMember(Plr, CharacterId);
-                    } break;
+                    }
+                    break;
+
                 case 6: // Demote
                     {
                         if (!Plr.GldInterface.IsInGuild())
                             return;
 
                         Plr.GldInterface.Guild.DemoteMember(Plr, CharacterId);
-                    } break;
+                    }
+                    break;
+
                 case 7: // Assign as leader
                     {
                         if (!Plr.GldInterface.IsInGuild())
                             return;
 
                         Plr.GldInterface.Guild.AssignLeader(Plr, CharacterId);
-                    } break;
+                    }
+                    break;
+
                 case 9: // Guild NPC
                     {
                         PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE, 4);
@@ -90,7 +101,9 @@ namespace WorldServer.NetWork.Handler
                         Out.WriteByte(0);
                         Plr.SendPacket(Out);
                         Log.Info("GUILd", "CREATE");
-                    } break;
+                    }
+                    break;
+
                 case 10: // Create guild
                     {
                         packet.Skip(1);
@@ -120,7 +133,8 @@ namespace WorldServer.NetWork.Handler
 
                             new GuildInvitation(Plr, name);
                         }
-                    } break;
+                    }
+                    break;
 
                 case 16: // Accepted Alliance Invite
                     {
@@ -129,7 +143,7 @@ namespace WorldServer.NetWork.Handler
                             Plr.GldInterface.Guild.JoinAlliance(Plr.GldInterface.AllianceinvitedTo);
                             Plr.GldInterface.AllianceinvitedTo = 0;
                         }
-                        else if(Plr.GldInterface.AllianceFormGuildId > 0 )  // alli form
+                        else if (Plr.GldInterface.AllianceFormGuildId > 0)  // alli form
                         {
                             Plr.GldInterface.Guild.FormAlliance(Plr.GldInterface.AllianceFormName, Plr.GldInterface.AllianceFormGuildId);
                             Plr.GldInterface.AllianceFormGuildId = 0;
@@ -142,6 +156,7 @@ namespace WorldServer.NetWork.Handler
                         }
                     }
                     break;
+
                 case 17: // Declined Alliance Invite
                     {
                         //CharMgr.GetCharacter().SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_SAY, GameData.Localized_text.TEXT_ALLIANCE_INVITE_DECLINED);
@@ -156,7 +171,8 @@ namespace WorldServer.NetWork.Handler
                         packet.Skip(1);
                         string spell = packet.GetStringToZero();
                         Plr.GldInterface.Guild.TrainGuildTactics((byte)CharacterId, ushort.Parse(spell));
-                    } break;
+                    }
+                    break;
 
                 case 22:  // calendar create
                     {
@@ -169,9 +185,9 @@ namespace WorldServer.NetWork.Handler
                         String description = packet.GetPascalString();
                         byte alliance = packet.GetUint8();
                         byte locked = packet.GetUint8();
-                        Plr.GldInterface.Guild.CreateEvent(Plr.GetPlayer().CharacterId,begin,end,name,description,alliance,locked);
-
-                    } break;
+                        Plr.GldInterface.Guild.CreateEvent(Plr.GetPlayer().CharacterId, begin, end, name, description, alliance, locked);
+                    }
+                    break;
 
                 case 23:  // calendar save
                     {
@@ -187,7 +203,7 @@ namespace WorldServer.NetWork.Handler
                         String description = packet.GetPascalString();
                         byte alliance = packet.GetUint8();
                         byte locked = packet.GetUint8();
-                        Plr.GldInterface.Guild.EventEdit(Plr,eventid,guildid, begin, end, name, description, alliance, locked);
+                        Plr.GldInterface.Guild.EventEdit(Plr, eventid, guildid, begin, end, name, description, alliance, locked);
                     }
                     break;
 
@@ -199,8 +215,7 @@ namespace WorldServer.NetWork.Handler
                         packet.Skip(151);
                         byte eventid = packet.GetUint8();
                         uint guildid = packet.GetUint32R();
-                        Plr.GldInterface.Guild.DeleteEvent(Plr,eventid,guildid);
-
+                        Plr.GldInterface.Guild.DeleteEvent(Plr, eventid, guildid);
                     }
                     break;
 
@@ -215,6 +230,7 @@ namespace WorldServer.NetWork.Handler
                         Plr.GldInterface.Guild.EventSignup(Plr, eventid, guildid);
                     }
                     break;
+
                 case 26:  // calendar signup cancel
                     {
                         if (!Plr.GldInterface.IsInGuild())
@@ -236,7 +252,7 @@ namespace WorldServer.NetWork.Handler
                         byte eventid = packet.GetUint8();
                         uint guildid = packet.GetUint32R();
                         uint characterid = packet.GetUint32R();
-                        Plr.GldInterface.Guild.EventSignupKick(Plr, eventid, guildid,characterid);
+                        Plr.GldInterface.Guild.EventSignupKick(Plr, eventid, guildid, characterid);
                     }
                     break;
 
@@ -249,7 +265,7 @@ namespace WorldServer.NetWork.Handler
                         byte eventid = packet.GetUint8();
                         uint guildid = packet.GetUint32R();
                         uint charid = packet.GetUint32R();
-                        Plr.GldInterface.Guild.EventSignupApproved(Plr, eventid, guildid,charid);
+                        Plr.GldInterface.Guild.EventSignupApproved(Plr, eventid, guildid, charid);
                     }
                     break;
 
@@ -264,23 +280,28 @@ namespace WorldServer.NetWork.Handler
                         ushort spell2 = packet.GetUint16R();
                         packet.Skip(2);
                         ushort spell3 = packet.GetUint16R();
-                        Plr.GldInterface.Guild.SaveBanner((byte)(banner-1),post,spell1,spell2,spell3);
-                    } break;
+                        Plr.GldInterface.Guild.SaveBanner((byte)(banner - 1), post, spell1, spell2, spell3);
+                    }
+                    break;
 
                 case 30:  // reserve banner
                     {
                         packet.Skip(151);
-                        ushort emblem =packet.GetUint16R();
+                        ushort emblem = packet.GetUint16R();
                         ushort pattern = packet.GetUint16R();
-                        byte color1 =packet.GetUint8();
-                        byte color2 =packet.GetUint8();    
-                        byte shape =packet.GetUint8();    
-                        Plr.GldInterface.Guild.ReserveBanner(Plr,emblem,  pattern, color1, color2, shape);
-                    } break;
+                        byte color1 = packet.GetUint8();
+                        byte color2 = packet.GetUint8();
+                        byte shape = packet.GetUint8();
+                        Plr.GldInterface.Guild.ReserveBanner(Plr, emblem, pattern, color1, color2, shape);
+                    }
+                    break;
+
                 case 37:  //close guild vault
                     {
                         Plr.GldInterface.Guild.GuildVaultClosed(Plr);
-                    } break;
+                    }
+                    break;
+
                 case 38:  // Drop item to guild vault
                     {
                         packet.Skip(151);
@@ -296,35 +317,45 @@ namespace WorldServer.NetWork.Handler
                             Plr.GldInterface.Guild.DepositVaultItem(Plr, destVault, slot, itemSlot);
                         else
                             Plr.GldInterface.Guild.WithdrawVaultItem(Plr, sourceVault, itemSlot, slot);
-                    } break;
+                    }
+                    break;
+
                 case 39:  // Deposit money to guild vault
                     {
                         packet.Skip(151);
                         uint Money = packet.GetUint32R();
-                        Plr.GldInterface.Guild.DepositMoney(Plr , Money);
-                    } break;
+                        Plr.GldInterface.Guild.DepositMoney(Plr, Money);
+                    }
+                    break;
+
                 case 40:  // Withdraw money to guild vault
                     {
                         packet.Skip(151);
                         uint Money = packet.GetUint32R();
-                        Plr.GldInterface.Guild.WithdrawMoney(Plr , Money);
-                    } break;
+                        Plr.GldInterface.Guild.WithdrawMoney(Plr, Money);
+                    }
+                    break;
+
                 case 41:  // Lock item in guild vault
                     {
                         packet.Skip(151);
                         byte Vault = packet.GetUint8();
                         byte slot = packet.GetUint8();
-                     //   Log.Info("slot", "" + slot + "  vault " + Vault);
+                        //   Log.Info("slot", "" + slot + "  vault " + Vault);
                         Plr.GldInterface.Guild.LockVaultItem(Plr, Vault, slot, 0);
-                    } break;
+                    }
+                    break;
+
                 case 42:  // cancel guild vault item move
                     {
                         packet.Skip(151);
                         byte Vault = packet.GetUint8();
                         byte slot = packet.GetUint8();
-                     //   Log.Info("slot", "" + slot + "  vault " + Vault);
-                        Plr.GldInterface.Guild.ReleaseVaultItemLock(Plr, Vault,slot);
-                    } break;
+                        //   Log.Info("slot", "" + slot + "  vault " + Vault);
+                        Plr.GldInterface.Guild.ReleaseVaultItemLock(Plr, Vault, slot);
+                    }
+                    break;
+
                 case 46: // Update recruit page save
                     {
                         if (!Plr.GldInterface.IsInGuild())
@@ -346,8 +377,9 @@ namespace WorldServer.NetWork.Handler
                         //packet.Skip(6);
 
                         Plr.GldInterface.Guild.SetRecruitmentInfo(BriefDescription, Summary, PlayStyle, Atmosphere, CareersNeeded, RanksNeeded, Interests, ActivelyRecruiting);
+                    }
+                    break;
 
-                    } break;
                 case 47: // Search guilds
                     {
                         packet.Skip(151);
@@ -363,19 +395,24 @@ namespace WorldServer.NetWork.Handler
                         byte Rank = packet.GetUint8();
 
                         Plr.GldInterface.SendGuilds(Guild.GetGuilds(Plr.Realm, Style, Atmosphere, MyLevelCareer, Plr.Level, Plr.Info.Career, Pop, Online, Rank));
-                    } break;
+                    }
+                    break;
+
                 case 52: // guild tactic respec
                     {
                         Plr.GldInterface.Guild.GuildsTacticRespec(Plr);
-                    } break;
+                    }
+                    break;
+
                 case 53: // Buy Guild Vault Slot
                     {
                         packet.Skip(151);
                         byte Vault = packet.GetUint8();
                         uint Money = packet.GetUint32R();
-                   //     Log.Info("", "vault " + Vault+"   prize"+Money);
-                        Plr.GldInterface.Guild.BuyVaultSlot(Plr,Vault,Money);
-                    } break;
+                        //     Log.Info("", "vault " + Vault+"   prize"+Money);
+                        Plr.GldInterface.Guild.BuyVaultSlot(Plr, Vault, Money);
+                    }
+                    break;
             }
         }
 

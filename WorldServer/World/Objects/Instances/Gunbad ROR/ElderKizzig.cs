@@ -8,7 +8,7 @@ using WorldServer.World.Scripting;
 namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 36612, 0)]
-    class ElderKizzig : BasicGunbad
+    internal class ElderKizzig : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -119,7 +119,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 36598, 0)]
-    class ChipfangKizzig : BasicGunbad
+    internal class ChipfangKizzig : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -146,7 +146,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
                     //BuffInfo b = AbilityMgr.GetBuffInfo(13155, creature, creature); // Rage
                     //creature.BuffInterface.QueueBuff(new BuffQueueInfo(creature, creature.Level, b));
 
-                    var prms = new List<object>() {creature, (ushort)13155, "No, it cannot be... Nau DIE!" }; // Rage
+                    var prms = new List<object>() { creature, (ushort)13155, "No, it cannot be... Nau DIE!" }; // Rage
                     creature.EvtInterface.AddEvent(DelayedBuff, 100, 1, prms);
                 }
             }
@@ -181,7 +181,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 2000903, 0)]
-    class FalseSnotlingKizzig : BasicGunbad
+    internal class FalseSnotlingKizzig : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {

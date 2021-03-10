@@ -8,7 +8,7 @@
   "realm": 1,
   "modelId": 51,
   "sex": 1,
-  "realmId" :  1, 
+  "realmId": 1,
   "itemset": "itemset-invader-chosen.json",
   "items": [
 
@@ -28,7 +28,6 @@
 //5	Dark Elves
 //6	Empire
 //7	Chaos
-
 
 //Careers
 

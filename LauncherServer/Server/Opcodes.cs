@@ -14,18 +14,20 @@
         CL_INFO = 0x07,   // The client requests information about the realms
         LCR_INFO = 0x08,   // server response on realms
 
-
         //NEW CLIENT LAUNCHER PROTOCOL
 
         CL_VERSION = 100,                   //client tells server current launcher exe version
         LCR_VERSION = 101,                  //server responds with current ror launcher version
-        //CL_REQUEST_PATCHER_DOWNLOAD = 102,  //client asks for new launcher exe 
+
+        //CL_REQUEST_PATCHER_DOWNLOAD = 102,  //client asks for new launcher exe
         //LCR_PATCHER_DOWNLOAD = 103,         //server responds with launcher exe (gzip compressed).
         CL_REQUEST_MANIFEST = 104,          //client asks for list of hashes for specified myp
+
         //LCR_MANIFEST = 105,                 //server responds with gzip compressed list of hashes for specified myp
         //CLR_REQUEST_ASSETS = 106,           //client requests list of assets.
         //LCR_ASSET = 107,                    //server sends mypID, hash, assetData for requested asset
         CL_LOGIN = 108,                     //client sends username/password/patcher version/computer info
+
         LCR_LOGIN = 109,                    //server responds with session token, accountID. Client writes accountID into data.myp
         //CL_REQUEST_NEWS = 110,              //client request current news from ror site (patch notes, etc)
         //LCR_REQUEST_NEWS = 111,             //server responds with news from site in xml document
@@ -43,16 +45,21 @@
         //CL_SET_MANIFEST = 155,
         //CL_SET_ASSET_INFO = 156,
         LCR_DATA_START = 157,
+
         LCR_DATA_PART = 158,
+
         //LCR_DATA_COMPLETE = 159,
         //CL_DATA_START = 160,
         //CL_DATA_PART = 161,
         //CL_DATA_COMPLETE = 162,
         CL_DATA_REQUEST_PARTS = 163,
+
         //LCR_DATA_ABORT = 164,      //server tells clients patching has been aborted (happens if devs have changed server files). Further patch requests are halted
         LCR_ERROR = 165,
+
         //CL_REQUEST_SERVER_STATUS = 166, //returns info on patcher server, lobby server, game servers
         LCR_SERVER_STATUS = 167,
+
         //CL_SET_SERVER_STATUS = 168,
         //LCR_SERVER_STATUS_UPDATE = 169,
         //LCR_DATA_REQUEST_PARTS = 170,
@@ -60,9 +67,11 @@
         //LCR_SERVER_STATE_UPDATE = 172,
         //LCR_DATA_READY = 173, //tell client server is able to receive more files
         CL_REQUEST_MANIFEST_LIST = 174,
+
         LCR_REQUEST_MANIFEST_LIST = 175,
 
         LCR_DATA_NOT_FOUND = 176, //server does not have requested asset
+
         //CL_SERVER_CMD = 178,
         //LCR_ASSET_CHANGES_DETECTED = 179,
         CL_DATA_READY = 180,
@@ -70,6 +79,7 @@
         CL_REQUEST_ASSET = 181,
         LCR_PATCH_NOTES = 182,
         CL_SET_PATCH_NOTES = 183,
+
         //CL_DELETE_ASSETS = 184,
         CL_PATCHER_LOG = 185
     }
@@ -118,14 +128,12 @@
         ERROR_CREATING_ACCOUNT = 7
     }
 
-
     public enum CheckResult : byte
     {
         LAUNCHER_OK = 0x00,   // Le Launcher est ok
         LAUNCHER_VERSION = 0x01,   // Mauvaise version du launcher
         LAUNCHER_FILE = 0x02   // Fichier manquant dans le launcher
     };
-
 
     public enum DownloadResult
     {

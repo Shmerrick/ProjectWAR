@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace FrameWork
 {
@@ -347,7 +344,6 @@ namespace FrameWork
             return true;
         }
 
-
         public bool WriteInt16R(ushort data)
         {
             if (_level + 2 > _capacity)
@@ -364,7 +360,6 @@ namespace FrameWork
             _level += 2;
             return true;
         }
-
 
         public bool WriteInt32(UInt32 data)
         {

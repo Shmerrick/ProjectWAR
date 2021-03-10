@@ -1,6 +1,4 @@
-﻿using MYPHandler;
-using NLog;
-using nsHashDictionary;
+﻿using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -38,8 +36,6 @@ namespace Launcher
         {
             try
             {
-
-
                 if (_Socket != null)
                     _Socket.Close();
 
@@ -76,11 +72,9 @@ namespace Launcher
             {
                 if (_Socket != null)
                     _Socket.Close();
-
             }
             catch (Exception)
             {
-
             }
         }
 
@@ -95,27 +89,35 @@ namespace Launcher
                 case "French":
                     LangueId = 2;
                     break;
+
                 case "English":
                     LangueId = 1;
                     break;
+
                 case "Deutch":
                     LangueId = 3;
                     break;
+
                 case "Italian":
                     LangueId = 4;
                     break;
+
                 case "Spanish":
                     LangueId = 5;
                     break;
+
                 case "Korean":
                     LangueId = 6;
                     break;
+
                 case "Chinese":
                     LangueId = 7;
                     break;
+
                 case "Japanese":
                     LangueId = 9;
                     break;
+
                 case "Russian":
                     LangueId = 10;
                     break;
@@ -166,13 +168,13 @@ namespace Launcher
         #region Sender
 
         // Buffer en train d'être envoyé
-        static byte[] m_tcpSendBuffer = new byte[65000];
+        private static byte[] m_tcpSendBuffer = new byte[65000];
 
         // Liste des packets a sender
-        static readonly Queue<byte[]> m_tcpQueue = new Queue<byte[]>(256);
+        private static readonly Queue<byte[]> m_tcpQueue = new Queue<byte[]>(256);
 
         // True si un send est en cours
-        static bool m_sendingTcp;
+        private static bool m_sendingTcp;
 
         // Envoi un packet
         public static void SendTCP(PacketOut packet)
@@ -196,7 +198,6 @@ namespace Launcher
             //Check if client is connected
             if (_Socket.Connected)
             {
-
                 try
                 {
                     lock (m_tcpQueue)
@@ -222,9 +223,9 @@ namespace Launcher
             }
         }
 
-        static readonly AsyncCallback m_asyncTcpCallback = AsyncTcpSendCallback;
+        private static readonly AsyncCallback m_asyncTcpCallback = AsyncTcpSendCallback;
 
-        static void AsyncTcpSendCallback(IAsyncResult ar)
+        private static void AsyncTcpSendCallback(IAsyncResult ar)
         {
             try
             {
@@ -254,7 +255,6 @@ namespace Launcher
                 }
 
                 _Socket.BeginSend(data, 0, count, SocketFlags.None, m_asyncTcpCallback, null);
-
             }
             catch (Exception)
             {
@@ -292,13 +292,12 @@ namespace Launcher
             SendTCP((byte[])packet.GetBuffer().Clone());
         }
 
-        #endregion
+        #endregion Sender
 
         #region Receiver
 
         private static readonly AsyncCallback ReceiveCallback = OnReceiveHandler;
-        static byte[] _pBuf = new byte[2048];
-
+        private static byte[] _pBuf = new byte[2048];
 
         private static void OnReceiveHandler(IAsyncResult ar)
         {
@@ -315,7 +314,6 @@ namespace Launcher
                     PacketIn pack = new PacketIn(buffer, 0, bufferSize);
                     OnReceive(pack);
                     BeginReceive();
-
                 }
                 else
                 {
@@ -347,13 +345,12 @@ namespace Launcher
             }
         }
 
-        #endregion
+        #endregion Receiver
 
         public static void OnReceive(PacketIn packet)
         {
             lock (packet)
             {
-
                 packet.Size = packet.GetUint32();
                 packet.Opcode = packet.GetUint8();
                 _logger.Debug($"OnReceive Packet size : {packet.Size} opCode : {packet.Opcode}");
@@ -385,11 +382,13 @@ namespace Launcher
                         case CheckResult.LAUNCHER_OK:
                             Start();
                             break;
+
                         case CheckResult.LAUNCHER_VERSION:
                             string Message = packet.GetString();
                             Print(Message);
                             Close();
                             break;
+
                         case CheckResult.LAUNCHER_FILE:
                             Client.UpdateWarData(Encoding.ASCII.GetBytes(packet.GetString()));
                             break;
@@ -437,7 +436,6 @@ namespace Launcher
                         _logger.Info($"Authentication Token Received : {authToken}");
                         try
                         {
-
                             var warDirectory = Directory.GetParent(Application.StartupPath);
                             ApocLauncher.Acc.sendUI("Patching..");
                             patchExe();
@@ -463,7 +461,6 @@ namespace Launcher
 
                             if (ApocLauncher.Acc.AllowWarClientLaunch)
                             {
-
                                 Process process = new Process
                                 {
                                     StartInfo =
@@ -496,7 +493,6 @@ namespace Launcher
                 case Opcodes.LCR_INFO:
                     {
                         _logger.Info($"Processing LCR_INFO : Number Realms : {packet.GetUint8()} Name : {packet.GetString()} Parsed : {packet.GetParsedString()}");
-
                     }
                     break;
 
@@ -525,7 +521,6 @@ namespace Launcher
 
                         return;
                     }
-
 
                     break;
             }
@@ -558,15 +553,14 @@ namespace Launcher
 
             SendTCP(Out);
         }
+
         public static void patchExe()
         {
             if (ApocLauncher.Acc.AllowServerPatch)
             {
-
                 _logger.Info("Patching WAR.exe");
                 using (Stream stream = new FileStream(Directory.GetCurrentDirectory() + "\\..\\WAR.exe", FileMode.OpenOrCreate))
                 {
-
                     int encryptAddress = (0x00957FBE + 3) - 0x00400000;
                     stream.Seek(encryptAddress, SeekOrigin.Begin);
                     stream.WriteByte(0x01);
@@ -577,7 +571,6 @@ namespace Launcher
                     //0xF8 == 248
                     //0xEB == 235
                     //0x32 == 50
-
 
                     //0x934b468a ==147.75.70.138
 
@@ -600,6 +593,7 @@ namespace Launcher
                 _logger.Info("Not Patching WAR.exe");
             }
         }
+
         public static void UpdateWarData(byte[] data)
         {
             try
@@ -616,6 +610,7 @@ namespace Launcher
                 _logger.Info(e.ToString());
             }
         }
+
         public static void UpdateWarData()
         {
             try
@@ -645,9 +640,6 @@ namespace Launcher
             }
         }
 
-
-
-
-        #endregion
+        #endregion Packet
     }
 }

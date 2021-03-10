@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
-
 
 namespace Launcher
 {
@@ -59,7 +55,6 @@ namespace Launcher
 
                 using (var stream = response.GetResponseStream())
                 {
-
                     long current = 0;
                     long total = response.ContentLength;
                     byte[] block = new byte[blockSize];
@@ -85,6 +80,5 @@ namespace Launcher
                 Console.WriteLine(e.Message);
             }
         }
-
     }
 }

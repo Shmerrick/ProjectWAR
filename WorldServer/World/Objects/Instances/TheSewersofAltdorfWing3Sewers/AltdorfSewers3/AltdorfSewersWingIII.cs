@@ -25,7 +25,6 @@ namespace WorldServer.World.Objects.Instances.AltdorfSewers3
             this.Obj = Obj;
 
             //Obj.EvtInterface.AddEvent(CheckHP, 1000, 0);
-
         }
 
         // When Boss kills player this event is run
@@ -70,11 +69,10 @@ namespace WorldServer.World.Objects.Instances.AltdorfSewers3
 
         public bool OnDmg(Object pkilled, object instigator)
         {
-
             return false;
         }
 
-        // When something gets in range (I think it is 350 or 400) we want 
+        // When something gets in range (I think it is 350 or 400) we want
         // to add it to correct lists and set some events
         public override void OnEnterRange(Object Obj, Object DistObj)
         {

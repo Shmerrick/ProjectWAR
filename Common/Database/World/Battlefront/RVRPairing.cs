@@ -1,9 +1,9 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common.Database.World.Battlefront
 {
-    // Fixed value of a character 
+    // Fixed value of a character
     [DataTable(PreCache = false, TableName = "pairing_infos", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class RVRPairing : DataObject
@@ -13,6 +13,5 @@ namespace Common.Database.World.Battlefront
 
         [DataElement(AllowDbNull = false)]
         public string PairingName { get; set; }
-
     }
 }

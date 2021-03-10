@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Common;
+using Common.Database.Account;
+using FrameWork;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using Common;
-using Common.Database.Account;
-using FrameWork;
 
 namespace AuthenticationServer.Server
 {
@@ -15,17 +15,15 @@ namespace AuthenticationServer.Server
         public long LastInfoRequest = 0;
         private Account _account;
         private string _sessionToken;
-        Queue<FileUploadInfo> _uploadQueue = new Queue<FileUploadInfo>();
+        private Queue<FileUploadInfo> _uploadQueue = new Queue<FileUploadInfo>();
         private bool _uploading = false;
         public static int UPLOAD_SIZE = 0xFFFFA;
 
-        PatcherFile _uploadFile;
-
+        private PatcherFile _uploadFile;
 
         public Client(TCPManager srv)
             : base(srv)
         {
-
         }
 
         public override void OnConnect()
@@ -38,12 +36,11 @@ namespace AuthenticationServer.Server
             Log.Info("Disconnection", GetIp() + " (" + reason + ")");
         }
 
-
         public override void SendTCPRaw(PacketOut packet)
         {
             base.SendTCPRaw(packet);
-
         }
+
         protected override void OnReceive(byte[] packetBuffer)
         {
             lock (this)
@@ -96,7 +93,6 @@ namespace AuthenticationServer.Server
                 Out.WriteByte((byte)result);
                 Out.WriteUInt32((uint)Program.Config.ServerState);
 
-
                 if (result == LoginResult.LOGIN_SUCCESS)
                 {
                     string token = Program.AcctMgr.GenerateToken(username);
@@ -144,7 +140,6 @@ namespace AuthenticationServer.Server
 
             var list = PatchMgr._Patch_Assets;
 
-
             var files = PatchMgr._Patch_Files.ToList();
 
             PacketOut Out = new PacketOut((byte)Opcodes.LCR_REQUEST_MANIFEST_LIST);
@@ -165,7 +160,6 @@ namespace AuthenticationServer.Server
                     //Console.WriteLine("CRC32: " + asset.CRC32 + " HH:" + hashhash);
                 }
 
-
                 Out.WriteByte((byte)pMYP.Id);
                 Out.WriteUInt32(pMYP.AssetCount);
                 Out.WriteUInt64(pMYP.ExtractedSize);
@@ -176,7 +170,6 @@ namespace AuthenticationServer.Server
 
             foreach (var file in files)
             {
-
                 Out.WriteString(file.Name);
                 Out.WriteUInt32(file.CRC32);
                 Out.WriteUInt64((ulong)file.Size);
@@ -207,13 +200,11 @@ namespace AuthenticationServer.Server
                         csv.WriteCol(7, String.IsNullOrEmpty(asset.File) ? 0 : 1);
                     }
                 }
-
-                
             }
             else
                 foreach (var archive in archiveList)
                 {
-                    var pAssets = PatchMgr._Patch_Assets.Where( m => m.Key.Id == (int)archive).First().Value;
+                    var pAssets = PatchMgr._Patch_Assets.Where(m => m.Key.Id == (int)archive).First().Value;
 
                     foreach (var asset in pAssets)
                     {
@@ -233,7 +224,6 @@ namespace AuthenticationServer.Server
             QueueFileUpload(FileType.MANIFEST_SET, "MANIFEST", data, FileCompressionMode.WHOLE);
             ProcessFileUploadQueue();
         }
-
 
         private void QueueFileUpload(FileType type, string destination, byte[] data, FileCompressionMode compress)
         {
@@ -327,7 +317,6 @@ namespace AuthenticationServer.Server
                 Out.WriteUInt16(0);
 
             SendTCPRaw(Out);
-
         }
 
         public void OnFilePartRequest(long offset, int size, int sequence)
@@ -354,6 +343,7 @@ namespace AuthenticationServer.Server
                 }
             }
         }
+
         public void RequestAsset(Archive archive, ulong hash)
         {
             // Verify that server can give all requested assets
@@ -420,7 +410,6 @@ namespace AuthenticationServer.Server
                     if (_account != null && Utils.HasFlag(_account.GmLevel, (int)flag))
                         return true;
                 }
-
             }
             else
                 Close(); //client has not sent login packet
@@ -452,7 +441,6 @@ namespace AuthenticationServer.Server
             Out.WriteUInt32((uint)Program.Config.ServerState);
             Out.WriteString(g.ToString());
             SendTCPRaw(Out);
-
         }
 
         public void OnPatcherLog(string log)
@@ -472,11 +460,10 @@ namespace AuthenticationServer.Server
             Close();
             return false;
         }
+
         public void Close()
         {
             _socket.Close();
         }
-
-
     }
 }

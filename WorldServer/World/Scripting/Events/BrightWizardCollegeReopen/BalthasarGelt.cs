@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Common;
+﻿using Common;
+using System.Collections.Generic;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Interfaces;
@@ -12,7 +12,7 @@ namespace WorldServer.World.Scripting.Events.BrightWizardCollegeReopen
     public class BalthasarGelt : AGeneralScript
     {
         private Object Obj; // This is creature 1990
-        List<Object> stuffInRange = new List<Object>(); // This list keeps all objects in range
+        private List<Object> stuffInRange = new List<Object>(); // This list keeps all objects in range
 
         // With this we can do some stuff when creature 1990 spawns
         public override void OnObjectLoad(Object Obj)
@@ -21,7 +21,7 @@ namespace WorldServer.World.Scripting.Events.BrightWizardCollegeReopen
             Obj.EvtInterface.AddEventNotify(EventName.OnReceiveDamage, CheckHP);
         }
 
-        // When something gets in range (I think it is 350 or 400) we want 
+        // When something gets in range (I think it is 350 or 400) we want
         // to add it to correct lists and set some events
         public override void OnEnterRange(Object Obj, Object DistObj)
         {
@@ -119,8 +119,6 @@ namespace WorldServer.World.Scripting.Events.BrightWizardCollegeReopen
                 if (player != null && player.IsPlayer())
                     player.Teleport(162, 130110, 132173, 12360, 3770);
             }
-
-
         }
     }
 }

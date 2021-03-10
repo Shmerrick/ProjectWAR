@@ -7,7 +7,6 @@ namespace WorldServer.Services.World
     [Service]
     public class ChapterService : ServiceBase
     {
-
         public static Dictionary<uint, Chapter_Info> _Chapters;
 
         [LoadingFunction(true)]
@@ -19,6 +18,7 @@ namespace WorldServer.Services.World
 
             Log.Success("LoadChapter_Infos", "Loaded " + _Chapters.Count + " Chapter_Infos");
         }
+
         public static Chapter_Info GetChapter(uint Entry)
         {
             Chapter_Info Info;
@@ -83,6 +83,5 @@ namespace WorldServer.Services.World
             _Chapters_Reward.TryGetValue(Entry, out Info);
             return Info;
         }
-
     }
 }

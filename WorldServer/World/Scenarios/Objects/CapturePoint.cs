@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities.Buffs;
@@ -29,7 +29,7 @@ namespace WorldServer.World.Scenarios.Objects
 
         public bool Locked;
 
-        private readonly Func<Player, bool> _captureCheck; 
+        private readonly Func<Player, bool> _captureCheck;
         private readonly Action<CapturePoint> _onCapture;
 
         private string _captureText, _captureDesc, _captureAnnouncement;
@@ -160,7 +160,7 @@ namespace WorldServer.World.Scenarios.Objects
             SendObjectiveLeft(plr);
         }
 
-        #endregion
+        #endregion Range
 
         #region Interaction
 
@@ -195,7 +195,7 @@ namespace WorldServer.World.Scenarios.Objects
             BeginInteraction(player);
         }
 
-        #endregion
+        #endregion Interaction
 
         #region Capturing
 
@@ -289,7 +289,7 @@ namespace WorldServer.World.Scenarios.Objects
             Locked = false;
         }
 
-        #endregion
+        #endregion Capturing
 
         #region Senders
 
@@ -308,7 +308,7 @@ namespace WorldServer.World.Scenarios.Objects
 
         public void SendRealmBonus(Player plr)
         {
-            PacketOut Out = new PacketOut((byte) Opcodes.F_REALM_BONUS);
+            PacketOut Out = new PacketOut((byte)Opcodes.F_REALM_BONUS);
             Out.WriteByte((byte)OwningRealm);
             Out.WriteUInt16(0);
             plr.SendPacket(Out);
@@ -317,39 +317,39 @@ namespace WorldServer.World.Scenarios.Objects
         public void SendObjectiveInfo(Player plr)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_OBJECTIVE_INFO, 64);
-                Out.WriteUInt32(ObjectiveID);
-                Out.WriteByte(0);
-                Out.WriteByte((byte)OwningRealm);
-                Out.WriteByte(1);
-                Out.WriteUInt16(0);
-                Out.WritePascalString(ObjectiveName);
-                Out.WriteByte(2);
-                Out.WriteUInt32(0x0000348F);
-                Out.WriteUInt32(0x0000FF00);
+            Out.WriteUInt32(ObjectiveID);
+            Out.WriteByte(0);
+            Out.WriteByte((byte)OwningRealm);
+            Out.WriteByte(1);
+            Out.WriteUInt16(0);
+            Out.WritePascalString(ObjectiveName);
+            Out.WriteByte(2);
+            Out.WriteUInt32(0x0000348F);
+            Out.WriteUInt32(0x0000FF00);
 
-                if (plr.Realm == OwningRealm)
-                    Out.WritePascalString(_holdText);
-                else
-                    Out.WritePascalString(_captureText);
+            if (plr.Realm == OwningRealm)
+                Out.WritePascalString(_holdText);
+            else
+                Out.WritePascalString(_captureText);
 
-                Out.WriteByte(0);
+            Out.WriteByte(0);
 
-                if (plr.Realm == OwningRealm)
-                    Out.WritePascalString(_holdDesc);
-                else
-                    Out.WritePascalString(_captureDesc);
+            if (plr.Realm == OwningRealm)
+                Out.WritePascalString(_holdDesc);
+            else
+                Out.WritePascalString(_captureDesc);
 
-                uint timerend = (uint)(CountdownTimerEnd > TCPManager.GetTimeStamp() ? CountdownTimerEnd - TCPManager.GetTimeStamp() : 0);
-                Out.WriteUInt32(timerend);
-                Out.WriteUInt32(timerend);
+            uint timerend = (uint)(CountdownTimerEnd > TCPManager.GetTimeStamp() ? CountdownTimerEnd - TCPManager.GetTimeStamp() : 0);
+            Out.WriteUInt32(timerend);
+            Out.WriteUInt32(timerend);
 
-                Out.Fill(0, 9);
+            Out.Fill(0, 9);
             plr.SendPacket(Out);
         }
 
         public void UpdateGlow(Player plr)
         {
-            _glowObject.VfxState = (byte) OwningRealm;
+            _glowObject.VfxState = (byte)OwningRealm;
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 20);
 
@@ -373,6 +373,6 @@ namespace WorldServer.World.Scenarios.Objects
             plr.SendPacket(Out);
         }
 
-        #endregion
+        #endregion Senders
     }
 }

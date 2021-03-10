@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Common;
 using WorldServer.World.AI;
 
 namespace WorldServer.World.Objects.Instances.RemovedBosses
@@ -31,7 +31,7 @@ namespace WorldServer.World.Objects.Instances.RemovedBosses
 
             AiInterface.SetBrain(new InstanceBossBrain(this));
         }
-        
+
         #endregion Overrides
 
         #region Methods
@@ -51,7 +51,7 @@ namespace WorldServer.World.Objects.Instances.RemovedBosses
 
                 // modify the scaler that is used in combatmanager
                 brother.ModifyDmgHealScaler = ModifyDmgHealScaler = DMGHEAL_SCALE * distance;
-                
+
                 List<Player> plrs = GetPlayersInRange(300, false);
                 foreach (Player plr in plrs)
                 {

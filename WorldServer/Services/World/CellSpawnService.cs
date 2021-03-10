@@ -8,7 +8,7 @@ using WorldServer.World.Map;
 namespace WorldServer.Services.World
 {
     [Service(typeof(CreatureService), typeof(GameObjectService), typeof(ZoneService))]
-    class CellSpawnService : ServiceBase
+    internal class CellSpawnService : ServiceBase
     {
         public static Dictionary<ushort, CellSpawns[,]> _RegionCells = new Dictionary<ushort, CellSpawns[,]>();
 
@@ -28,6 +28,7 @@ namespace WorldServer.Services.World
 
             return _RegionCells[RegionId][X, Y];
         }
+
         public static CellSpawns[,] GetCells(ushort RegionId)
         {
             if (!_RegionCells.ContainsKey(RegionId))
@@ -44,7 +45,7 @@ namespace WorldServer.Services.World
             if (Program.Config.CleanSpawns)
                 RemoveDoubleSpawns();
         }
-        
+
         public static void LoadRegionSpawns()
         {
             long InvalidSpawns = 0;
@@ -72,7 +73,7 @@ namespace WorldServer.Services.World
                         Y = (ushort)(Spawn.WorldY >> 12);
 
                         GetRegionCell(Info.Region, X, Y).AddSpawn(Spawn);
-                        
+
                         if (!RegionCount.ContainsKey(Info.Name))
                             RegionCount.Add(Info.Name, 0);
 
@@ -83,7 +84,6 @@ namespace WorldServer.Services.World
                         Log.Debug("LoadRegionSpawns", "ZoneId (" + Spawn.ZoneId + ") invalid, Spawn Guid(" + Spawn.Guid + ")");
                         ++InvalidSpawns;
                     }
-                    
                 }
             }
 
@@ -198,7 +198,6 @@ namespace WorldServer.Services.World
                 Log.Info("Spawns", "DELETE FROM creature_spawns WHERE Guid in " + L + ";");
                 Database.ExecuteNonQuery("DELETE FROM creature_spawns WHERE Guid in " + L + ";");
             }
-
 
             for (i = 0; i < 255; ++i)
             {

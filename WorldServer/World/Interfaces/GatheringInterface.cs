@@ -1,7 +1,7 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
 using SystemData;
-using FrameWork;
 using WorldServer.NetWork;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
@@ -12,7 +12,7 @@ namespace WorldServer.World.Interfaces
 {
     public class GatheringInterface : BaseInterface
     {
-        Player _myPlayer;
+        private Player _myPlayer;
 
         public override bool Load()
         {
@@ -28,7 +28,6 @@ namespace WorldServer.World.Interfaces
 
         public void Gather(byte itemlevel)
         {
-
             if (_myPlayer._Value.GatheringSkillLevel <= 25 && (StaticRandom.Instance.Next(100) >= (((float)_myPlayer._Value.GatheringSkillLevel / (3 * itemlevel)) * 10)))
             //Beispiel skillevel = 25 , itemlevel = 1 -> sollte 16.66667% chance auf gain sein
             {
@@ -60,19 +59,19 @@ namespace WorldServer.World.Interfaces
                 _myPlayer._Value.GatheringSkillLevel++;
                 _myPlayer.SendTradeSkill(_myPlayer._Value.GatheringSkill, _myPlayer._Value.GatheringSkillLevel);
             }
-                /*
-                if (_myPlayer._Value.GatheringSkillLevel < 200 && ((((float)_myPlayer._Value.GatheringSkillLevel / npclvl) * 10) < ((float)StaticRandom.Instance.NextDouble() * 100f)))
-                {
-                    _myPlayer._Value.GatheringSkillLevel++;
-                    _myPlayer.SendTradeSkill(_myPlayer._Value.GatheringSkill, _myPlayer._Value.GatheringSkillLevel);
-                }
-                */
+            /*
+            if (_myPlayer._Value.GatheringSkillLevel < 200 && ((((float)_myPlayer._Value.GatheringSkillLevel / npclvl) * 10) < ((float)StaticRandom.Instance.NextDouble() * 100f)))
+            {
+                _myPlayer._Value.GatheringSkillLevel++;
+                _myPlayer.SendTradeSkill(_myPlayer._Value.GatheringSkill, _myPlayer._Value.GatheringSkillLevel);
             }
-        public bool CanGather(byte profession ,byte npclvl)
+            */
+        }
+
+        public bool CanGather(byte profession, byte npclvl)
         {
             if (_myPlayer._Value.GatheringSkill != profession)
                 return false;
-
 
             if (npclvl >= 40)
             {
@@ -101,10 +100,10 @@ namespace WorldServer.World.Interfaces
             ushort Slot = packet.GetUint16();
             ushort Stat = packet.GetUint16();
 
-            cclient.Plr.GatherInterface.Salvage_Item(Slot,Stat);
+            cclient.Plr.GatherInterface.Salvage_Item(Slot, Stat);
         }
 
-        public void Salvage_Item(ushort Slot,ushort Stat)
+        public void Salvage_Item(ushort Slot, ushort Stat)
         {
             uint Talid = 0;
             uint Essence = 907701;
@@ -135,14 +134,11 @@ namespace WorldServer.World.Interfaces
                     chance = 0;
             }
 
-
             if (chance < ((float)StaticRandom.Instance.NextDouble() * 100f))
             {
                 _myPlayer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_CRITICALFAILURE);
                 fail = true;
             }
-
-                
 
             // double check never trust the client
             if (Stat > 0)
@@ -156,8 +152,6 @@ namespace WorldServer.World.Interfaces
 
                 if (Realstat == false)
                     return;
-
-
 
                 switch (Stat)
                 {
@@ -200,7 +194,7 @@ namespace WorldServer.World.Interfaces
                     case 15: //elemental
                         Talid = 907981;
                         break;
-                        
+
                     case 16: //corp
                         Talid = 907941;
                         break;
@@ -208,13 +202,11 @@ namespace WorldServer.World.Interfaces
                     default:
                         _myPlayer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, GameData.Localized_text.TEXT_CRAFT_INVALID_PRODUCT);
                         return;
-                       
                 }
             }
 
             Gather(itm.Info.ObjectLevel);
 
-                       
             if (itm.Info.ObjectLevel >= 40)
                 Essence += 8;
             else
@@ -225,11 +217,10 @@ namespace WorldServer.World.Interfaces
             else
                 Dust += (uint)(itm.Info.ObjectLevel / 5);
 
-
             if (Talid > 0)
             {
-                if (!fail) { 
-
+                if (!fail)
+                {
                     if (Stat >= 14 && itm.Info.Rarity > 3)
                         Talid += 2;
                     else if (itm.Info.Rarity > 4)
@@ -243,7 +234,7 @@ namespace WorldServer.World.Interfaces
                 if (Stat >= 14)
                     statjump = 3;
 
-                    if (itm.Info.ObjectLevel >= 40)
+                if (itm.Info.ObjectLevel >= 40)
                     Talid += (uint)8 * statjump;
                 else
                     Talid += (uint)(itm.Info.ObjectLevel / 5 * statjump);
@@ -253,7 +244,6 @@ namespace WorldServer.World.Interfaces
 
                 if (!fail)
                 {
-
                     if (((float)StaticRandom.Instance.NextDouble() * 100f) <= 50)
                     {
                         _Owner.GetPlayer().ItmInterface.CreateItem(Dust, (ushort)(itm.Info.Rarity), true);

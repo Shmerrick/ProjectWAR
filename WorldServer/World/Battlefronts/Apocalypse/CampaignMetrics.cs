@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common.Database.World.Battlefront;
+﻿using Common.Database.World.Battlefront;
 using NLog;
+using System;
+using System.Linq;
 using WorldServer.Managers;
 using WorldServer.World.Map;
 using WorldServer.World.Objects;
@@ -57,9 +54,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 logger.Error($"Could not write rvr metrics..continuing. {e.Message} {e.StackTrace}");
             }
-
         }
-
-        
     }
 }

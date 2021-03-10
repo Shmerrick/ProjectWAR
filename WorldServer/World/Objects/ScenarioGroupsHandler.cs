@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using FrameWork;
+﻿using FrameWork;
+using System.Collections.Generic;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Objects
 {
     /// <summary>
     /// <para>The manager for the six scenario groups, as well as for the solo players therein.</para>
-    /// <para>Unlike a regular warband, responsibility for updating this class lies with the scenario 
+    /// <para>Unlike a regular warband, responsibility for updating this class lies with the scenario
     /// that created it, and as the players within a scenario are on the same thread, this class is thread safe.</para>
     /// </summary>
     public class ScenarioGroupsHandler : WarbandHandler
@@ -80,11 +80,11 @@ namespace WorldServer.World.Objects
 
             _soloists.Remove(player);
 
-            player.SetScenarioGroup(Groups[groupIndex-1]);
+            player.SetScenarioGroup(Groups[groupIndex - 1]);
 
             WarbandCompositionDirty = true;
 
-            _groupsDirty[groupIndex-1] = true;
+            _groupsDirty[groupIndex - 1] = true;
         }
 
         public void RemoveMemberFromGroup(Player player)
@@ -115,9 +115,7 @@ namespace WorldServer.World.Objects
             if (!AllMembers.Contains(player))
                 return;
 
-
             AllMembers.Remove(player);
-
 
             if (_soloists.Contains(player))
                 _soloists.Remove(player);
@@ -136,9 +134,10 @@ namespace WorldServer.World.Objects
             WarbandCompositionDirty = true;
         }
 
-        #endregion
+        #endregion Member Management
 
         #region Senders
+
         protected override void SendWarbandComposition()
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_SCENARIO_PLAYER_INFO);
@@ -179,13 +178,22 @@ namespace WorldServer.World.Objects
             foreach (Player member in Groups[groupIndex].Members)
                 member.SendPacket(Out);
             //foreach (Player member in _soloists)
-             //   member.SendPacket(Out);
+            //   member.SendPacket(Out);
         }
 
-        protected override void SendPartyOidListsToMembers(Player member) { }
-        protected override void SendWarbandStatus() { }
-        public override void SendMessageToWarband(Player sender, string text) { }
-        #endregion
+        protected override void SendPartyOidListsToMembers(Player member)
+        {
+        }
+
+        protected override void SendWarbandStatus()
+        {
+        }
+
+        public override void SendMessageToWarband(Player sender, string text)
+        {
+        }
+
+        #endregion Senders
 
         /// <summary>
         /// Determines whether there exists a partially filled group other than the one specified.

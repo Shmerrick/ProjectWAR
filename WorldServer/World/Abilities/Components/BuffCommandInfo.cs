@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
-using Common;
 
 namespace WorldServer.World.Abilities.Components
 {
@@ -106,7 +106,7 @@ namespace WorldServer.World.Abilities.Components
 
         public bool NoAutoUse;
 
-        #endregion
+        #endregion Vars
 
         #region Command Access
 
@@ -137,7 +137,6 @@ namespace WorldServer.World.Abilities.Components
                     LastCommand = slaveCommand;
                     slaveCommand.NextCommand = this;
                 }
-
                 else if (NextCommand == null)
                 {
                     NextCommand = slaveCommand;
@@ -154,7 +153,7 @@ namespace WorldServer.World.Abilities.Components
             return NextCommand?.GetSubcommand(commandSeq);
         }
 
-        #endregion
+        #endregion Command Access
 
         public BuffCommandInfo CloneChain()
         {

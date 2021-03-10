@@ -10,7 +10,7 @@ using WorldServer.World.Scripting;
 namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 37967, 0)]
-    class MastaMixa : BasicGunbad
+    internal class MastaMixa : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -38,7 +38,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
 
             SpawnDaStaff();
 
-            Obj.EvtInterface.AddEvent(SpawnDaStaff, (50 + random.Next(1,41)) * 1000, 0); // Spawns staff
+            Obj.EvtInterface.AddEvent(SpawnDaStaff, (50 + random.Next(1, 41)) * 1000, 0); // Spawns staff
 
             var prms = new List<object>() { 2000899, 977879, 994054, 26299, Obj.Heading }; // Masta Mixa Fanatic
             c.EvtInterface.AddEvent(SpawnAdds, 30 * 1000, 0, prms);
@@ -96,7 +96,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
 
             Obj.EvtInterface.RemoveEvent(SpawnAdds);
             Obj.EvtInterface.RemoveEvent(SpawnAdds);
-            Obj.EvtInterface.RemoveEvent(CastFistOfGork); 
+            Obj.EvtInterface.RemoveEvent(CastFistOfGork);
 
             CreateExitPortal(spawnWorldX, spawnWorldY, spawnWorldZ, Obj.Heading);
         }
@@ -106,7 +106,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
             Creature c = Obj as Creature;
 
             if (!c.IsDead)
-            { 
+            {
                 bool staffActive = false;
 
                 foreach (Object obj in Obj.ObjectsInRange.ToList())
@@ -166,7 +166,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 2000851, 0)]
-    class DaStaffMastaMixa : BasicGunbad
+    internal class DaStaffMastaMixa : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -212,14 +212,14 @@ namespace WorldServer.World.Objects.Instances.Gunbad
             foreach (Player player in Obj.PlayersInRange.ToList())
             {
                 player.BuffInterface.RemoveBuffByEntry(5240); // Removing Disable
-                //NewBuff newBuff = player.BuffInterface.GetBuff(5240, null);
-                //if (newBuff != null)
-                    //newBuff.RemoveBuff(true);
+                                                              //NewBuff newBuff = player.BuffInterface.GetBuff(5240, null);
+                                                              //if (newBuff != null)
+                                                              //newBuff.RemoveBuff(true);
 
                 player.BuffInterface.RemoveBuffByEntry(5239); // Removing Disable
-                //newBuff = player.BuffInterface.GetBuff(5239, null);
-                //if (newBuff != null)
-                    //newBuff.RemoveBuff(true);
+                                                              //newBuff = player.BuffInterface.GetBuff(5239, null);
+                                                              //if (newBuff != null)
+                                                              //newBuff.RemoveBuff(true);
             }
 
             Obj.EvtInterface.AddEvent(Obj.Destroy, 100, 1);
@@ -324,13 +324,13 @@ namespace WorldServer.World.Objects.Instances.Gunbad
                     Stage = 1;
                 }
             }
-            
+
             return false;
         }
     }
 
     [GeneralScript(false, "", 2000899, 0)]
-    class MixaFanatics : BasicGunbad
+    internal class MixaFanatics : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -340,7 +340,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 2000902, 0)]
-    class MixaFistOfGork : BasicGunbad
+    internal class MixaFistOfGork : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {

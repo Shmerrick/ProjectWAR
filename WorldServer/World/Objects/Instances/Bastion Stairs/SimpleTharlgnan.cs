@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
-using Common;
 using WorldServer.World.AI;
 
 namespace WorldServer.World.Objects.Instances.Bastion_Stairs
@@ -72,6 +72,7 @@ namespace WorldServer.World.Objects.Instances.Bastion_Stairs
                 return;
             }
         }
+
         //private void CheckBossRageTimer()
         //{
         //	// check rage timer

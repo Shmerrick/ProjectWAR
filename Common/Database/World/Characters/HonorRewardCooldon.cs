@@ -7,8 +7,6 @@ namespace Common.Database.World.Characters
     [Serializable]
     public class HonorRewardCooldown : DataObject
     {
-
-        
         [PrimaryKey]
         public uint CharacterId { get; set; }
 
@@ -17,7 +15,5 @@ namespace Common.Database.World.Characters
 
         [DataElement(AllowDbNull = false)]
         public long Cooldown { get; set; }
-
-     
     }
 }

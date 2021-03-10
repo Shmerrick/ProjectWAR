@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using FrameWork;
+﻿using FrameWork;
+using System.Linq;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 
@@ -10,7 +10,6 @@ namespace WorldServer.World.AI
     {
         public Unit FriendlyTarget { get; set; }
         public int runeofShieldingCooldown { get; set; }
-        
 
         public RunepriestBrain(Unit myOwner)
             : base(myOwner)
@@ -27,7 +26,7 @@ namespace WorldServer.World.AI
 
             if ((FriendlyTarget == null))
             {
-                var friendlyPlayers = _unit.GetInRange<Unit>(120).Where(x => x.Realm == _unit.Realm&& x.PctHealth< 100).OrderBy(o=>o.PctHealth).ToList();
+                var friendlyPlayers = _unit.GetInRange<Unit>(120).Where(x => x.Realm == _unit.Realm && x.PctHealth < 100).OrderBy(o => o.PctHealth).ToList();
                 if (friendlyPlayers.Count() > 0)
                 {
                     _logger.Debug($"{_unit} changing friendly target to  {(friendlyPlayers[0]).Name}");
@@ -70,8 +69,6 @@ namespace WorldServer.World.AI
                     return;
                 }
 
-               
-
                 var rand = StaticRandom.Instance.Next(10);
                 switch (rand)
                 {
@@ -107,20 +104,18 @@ namespace WorldServer.World.AI
                     case 4:
                     case 5:
                     case 6:
-                    {
-                        var friendlyPlayers = _unit.GetInRange<Unit>(120).Where(x => x.Realm == _unit.Realm && x.PctHealth < 100).OrderBy(o => o.PctHealth).ToList();
-                        if (friendlyPlayers.Count() > 0)
                         {
-                            _logger.Debug($"{_unit} changing friendly target to  {(friendlyPlayers[0]).Name}");
-                            FriendlyTarget = friendlyPlayers[0];
-                        }
+                            var friendlyPlayers = _unit.GetInRange<Unit>(120).Where(x => x.Realm == _unit.Realm && x.PctHealth < 100).OrderBy(o => o.PctHealth).ToList();
+                            if (friendlyPlayers.Count() > 0)
+                            {
+                                _logger.Debug($"{_unit} changing friendly target to  {(friendlyPlayers[0]).Name}");
+                                FriendlyTarget = friendlyPlayers[0];
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                 }
             }
-
-
         }
     }
 }

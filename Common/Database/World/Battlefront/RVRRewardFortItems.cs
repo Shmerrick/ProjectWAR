@@ -1,9 +1,8 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common.Database.World.Battlefront
 {
-
     [DataTable(PreCache = false, TableName = "rvr_reward_fort_items", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class RVRRewardFortItems : DataObject
@@ -28,9 +27,5 @@ namespace Common.Database.World.Battlefront
 
         [DataElement(AllowDbNull = false)]
         public byte CanAwardDuplicate { get; set; }
-
-        
     }
-
-
 }

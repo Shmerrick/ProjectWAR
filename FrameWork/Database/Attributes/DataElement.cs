@@ -3,7 +3,7 @@
 namespace FrameWork
 {
     // Must be used as a hit
-    [AttributeUsage(AttributeTargets.Property|AttributeTargets.Field)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
     public class DataElement : Attribute
     {
         public DataElement()

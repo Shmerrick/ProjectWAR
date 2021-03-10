@@ -69,10 +69,9 @@ namespace WorldServer.Services.World
 
             IList<Instance_Info> InstanceInfo = Database.SelectAllObjects<Instance_Info>();
 
-            foreach(Instance_Info II in InstanceInfo)
+            foreach (Instance_Info II in InstanceInfo)
             {
                 _InstanceInfo.Add(II.ZoneID, II);
-
             }
             Log.Success("WorldMgr", "Loaded " + _InstanceInfo.Count + "Instance_Info");
         }
@@ -131,10 +130,10 @@ namespace WorldServer.Services.World
             Log.Success("WorldMgr", "Loaded " + _InstanceStatistics.Count + "Instances_Statistics");
         }
 
-        #endregion
+        #endregion loading methods
 
         #region access methods
-        
+
         private static Instances_Statistics AddNewInstanceStatisticsEntry(string instanceID)
         {
             Instances_Statistics stat = new Instances_Statistics()
@@ -187,7 +186,7 @@ namespace WorldServer.Services.World
                 newStr += plr.CharacterId.ToString() + ":" + plr.Name + ";";
             }
             stat.playerIDs = newStr;
-            
+
             stat.Dirty = true;
             Database.SaveObject(stat);
             Database.ForceSave();
@@ -203,7 +202,7 @@ namespace WorldServer.Services.World
 
             if (!_InstanceStatistics.TryGetValue(instanceID, out Instances_Statistics stat))
                 stat = AddNewInstanceStatisticsEntry(instanceID);
-            
+
             string[] split = stat.ttkPerBoss.Split(';');
             int idx = -1;
             foreach (var s in split)
@@ -331,7 +330,7 @@ namespace WorldServer.Services.World
             Database.ForceSave();
         }
 
-        public static Instance_Encounter GetInstanceEncounter(uint instanceID,uint bossId)
+        public static Instance_Encounter GetInstanceEncounter(uint instanceID, uint bossId)
         {
             _InstanceEncounter.TryGetValue(instanceID, out List<Instance_Encounter> bosses);
             foreach (Instance_Encounter IE in bosses)
@@ -356,6 +355,6 @@ namespace WorldServer.Services.World
             Database.SaveObject(plr._Value);
         }
 
-        #endregion
+        #endregion access methods
     }
 }

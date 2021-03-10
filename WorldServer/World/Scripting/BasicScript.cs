@@ -1,7 +1,7 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using FrameWork;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
@@ -13,7 +13,7 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Scripting
 {
-    class BasicScript : AGeneralScript
+    internal class BasicScript : AGeneralScript
     {
         protected Object Obj; // This is creature
         public Random random = new Random();
@@ -188,7 +188,6 @@ namespace WorldServer.World.Scripting
             }
         }
 
-
         public void LoopVfx(object parameters)
         {
             var Params = (List<object>)parameters;
@@ -197,7 +196,7 @@ namespace WorldServer.World.Scripting
             ushort effectId = (ushort)((int)Params[1]);
 
             if (o != null)
-            { 
+            {
                 o.PlayEffect(effectId);
             }
         }

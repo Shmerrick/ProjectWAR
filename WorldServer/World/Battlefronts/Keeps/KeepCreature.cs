@@ -4,7 +4,6 @@ using GameData;
 using NLog;
 using System;
 using SystemData;
-using Common.Database.World.Battlefront;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
@@ -18,8 +17,10 @@ namespace WorldServer.World.Battlefronts.Keeps
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         public KeepNpcCreature FlagGuard;
         private readonly BattleFrontKeep _keep;
+
         /// <summary>Incoming damage scaler from 0.25 to 1<summary>
         private volatile float _damageScaler = 1f;
+
         public AIInterface NearAiInterface = null;
         public int DefenceRank { get; set; }
 
@@ -73,8 +74,6 @@ namespace WorldServer.World.Battlefronts.Keeps
             return base.ReceiveDamage(caster, damage, hatredScale);
         }
 
-        
-
         public override bool ReceiveDamage(Unit caster, AbilityDamageInfo damageInfo)
         {
             if (_keep.KeepStatus == KeepStatus.KEEPSTATUS_LOCKED)
@@ -118,7 +117,6 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             AbtInterface.Cancel(true);
             ScrInterface.OnDie(this);
-
 
             BuffInterface.RemoveBuffsOnDeath();
 
@@ -207,7 +205,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                     this.DefenceRank = 3;
                 }
             }
-
 
             if (oldRank > this.DefenceRank)
             {

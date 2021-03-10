@@ -1,5 +1,5 @@
-﻿using SystemData;
-using FrameWork;
+﻿using FrameWork;
+using SystemData;
 using WorldServer.World.Objects;
 using Object = WorldServer.World.Objects.Object;
 using Opcodes = WorldServer.NetWork.Opcodes;
@@ -8,23 +8,23 @@ namespace WorldServer.World.Interfaces
 {
     public class CraftingApoInterface : BaseInterface
     {
-        Player _myPlayer;
-        byte _stage;
-        ushort _container;
-        ushort _mainIngredient;
-        ushort _slot2;
-        ushort _slot3;
-        ushort _slot4;
-        bool _dyecrafting;
-        short _stability;
-        byte _power;
-        byte _duration;
-        byte _multiplier;
-        byte _critChance;
+        private Player _myPlayer;
+        private byte _stage;
+        private ushort _container;
+        private ushort _mainIngredient;
+        private ushort _slot2;
+        private ushort _slot3;
+        private ushort _slot4;
+        private bool _dyecrafting;
+        private short _stability;
+        private byte _power;
+        private byte _duration;
+        private byte _multiplier;
+        private byte _critChance;
 
-        byte _baseStability;
-        byte _basePower;
-        bool locked;
+        private byte _baseStability;
+        private byte _basePower;
+        private bool locked;
 
         public override bool Load()
         {
@@ -40,8 +40,8 @@ namespace WorldServer.World.Interfaces
             _myPlayer = owner as Player;
         }
 
-         public void AddContainer(ushort slot)
-         {
+        public void AddContainer(ushort slot)
+        {
             if (locked)
                 return;
             locked = true;
@@ -71,7 +71,7 @@ namespace WorldServer.World.Interfaces
                 return;
             }
 
-            if (GetCraft(9,Itm.Info.Crafts) > _myPlayer._Value.CraftingSkillLevel)
+            if (GetCraft(9, Itm.Info.Crafts) > _myPlayer._Value.CraftingSkillLevel)
             {
                 _myPlayer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_CRAFTING, GameData.Localized_text.TEXT_CRAFT_SKILL_TOO_LOW);
                 Crafting();
@@ -116,7 +116,7 @@ namespace WorldServer.World.Interfaces
                 locked = false;
                 return;
             }
-            if (!_dyecrafting && (_slot2 != 0 && _slot3 != 0 && _slot4!=0))
+            if (!_dyecrafting && (_slot2 != 0 && _slot3 != 0 && _slot4 != 0))
             {
                 Crafting();
                 locked = false;
@@ -127,8 +127,7 @@ namespace WorldServer.World.Interfaces
                 _dyecrafting = true;
             }
 
-
-            if(slot == _slot2 || slot == _slot3 || slot == _slot4)
+            if (slot == _slot2 || slot == _slot3 || slot == _slot4)
             {
                 byte count = 1;
                 if (slot == _slot2)
@@ -138,19 +137,20 @@ namespace WorldServer.World.Interfaces
                 if (slot == _slot4)
                     count++;
 
-                if(count > _myPlayer.ItmInterface.GetItemInSlot(slot).Count)
+                if (count > _myPlayer.ItmInterface.GetItemInSlot(slot).Count)
                 {
                     Crafting();
                     locked = false;
                     return;
                 }
             }
-            switch(_stage)
+            switch (_stage)
             {
                 case 0:
                     _container = slot;
-                    _stage = 1;               
+                    _stage = 1;
                     break;
+
                 case 1:
                     _mainIngredient = slot;
                     if (_dyecrafting)
@@ -158,35 +158,35 @@ namespace WorldServer.World.Interfaces
                     else
                         _stage = 3;
                     break;
+
                 case 2:
-                        if (_slot2 == 0)
-                        {
-                            _slot2 = slot;
-                            _stage = 3;
-                        }
+                    if (_slot2 == 0)
+                    {
+                        _slot2 = slot;
+                        _stage = 3;
+                    }
                     break;
-                   
+
                 case 3:
-                        if (_dyecrafting)
-                            break;
+                    if (_dyecrafting)
+                        break;
                     if (_slot2 == 0)
                         _slot2 = slot;
                     else if (_slot3 == 0)
                         _slot3 = slot;
                     else if (_slot4 == 0)
                         _slot4 = slot;
-                break;
+                    break;
             }
 
             AddBonuses(_myPlayer.ItmInterface.GetItemInSlot(slot).Info.Crafts.Split(';'));
             Crafting();
             locked = false;
-             //_Owner.GetPlayer().SendMessage(_Owner.Oid,"Power ", "" + (_power + _basePower) + "  stabi  " + (_stability+ _baseStability) + "  crittchance "+_critChance+"  duration  "+_duration+"  multi "+_multiplier ,SystemData.ChatLogFilters.CHATLOGFILTERS_SHOUT);
+            //_Owner.GetPlayer().SendMessage(_Owner.Oid,"Power ", "" + (_power + _basePower) + "  stabi  " + (_stability+ _baseStability) + "  crittchance "+_critChance+"  duration  "+_duration+"  multi "+_multiplier ,SystemData.ChatLogFilters.CHATLOGFILTERS_SHOUT);
         }
 
-        public void RemoveContainer(ushort slot,bool consumeItem = false,byte count = 1)
+        public void RemoveContainer(ushort slot, bool consumeItem = false, byte count = 1)
         {
-
             if (!consumeItem)
             {
                 if (locked)
@@ -198,43 +198,42 @@ namespace WorldServer.World.Interfaces
                 locked = false;
                 return;
             }
-           if(_container == slot)
-           {
-                if (consumeItem) 
+            if (_container == slot)
+            {
+                if (consumeItem)
                     _myPlayer.ItmInterface.DeleteItem(slot, 1);
                 Reset(0);
                 locked = false;
                 return;
-           } 
-           if(_mainIngredient == slot)
-           {
+            }
+            if (_mainIngredient == slot)
+            {
                 RemoveContainer(_slot2);
                 RemoveContainer(_slot3);
                 RemoveContainer(_slot4);
                 _stage = 1;
                 _mainIngredient = 0;
-           }
-           if (_slot2 == slot)
-           {
-               if (_dyecrafting)
-                   _stage = 2;
-               _slot2 = 0;
-           }
-           else if (_slot3 == slot)
-           {
-               _slot3 = 0;
-           }
-           else if (_slot4 == slot)
-           {
-               _slot4 = 0;
-           }
+            }
+            if (_slot2 == slot)
+            {
+                if (_dyecrafting)
+                    _stage = 2;
+                _slot2 = 0;
+            }
+            else if (_slot3 == slot)
+            {
+                _slot3 = 0;
+            }
+            else if (_slot4 == slot)
+            {
+                _slot4 = 0;
+            }
             RemoveBonuses(_myPlayer.ItmInterface.GetItemInSlot(slot).Info.Crafts.Split(';'));
 
-           
             if (consumeItem)
                 _myPlayer.ItmInterface.DeleteItem(slot, count);
-           
-                Crafting();
+
+            Crafting();
 
             if (!consumeItem)
                 locked = false;
@@ -244,23 +243,22 @@ namespace WorldServer.World.Interfaces
 
         public void AddBonuses(string[] bonuses)
         {
-           foreach(string st in bonuses)
-           {
-               if (st.Length>0)
-               switch((ushort.Parse(st.Split(':')[0])))
-               {
-                   case 1: _stability += (short)(ushort.Parse(st.Split(':')[1])); break;
-                   case 2: _power += (byte)(ushort.Parse(st.Split(':')[1])); break;
-                   case 3: _duration += (byte)(ushort.Parse(st.Split(':')[1])); break;
-                   case 4: _multiplier += (byte)(ushort.Parse(st.Split(':')[1])); break;
-                   case 10: break; // time
-                  // case 12: Pots.ElementAt(Pot).Crittchance += (byte)(UInt16.Parse(st.Split(':')[1])); break;
-                  // case 13: Pots.ElementAt(Pot).Failchance -= (byte)(UInt16.Parse(st.Split(':')[1])); break;
-                   case 14: _critChance += (byte)(ushort.Parse(st.Split(':')[1])); break;
-                 //  case 15: Power += (byte)(UInt16.Parse(st.Split(':')[1])); break;
-               }
-           }
-
+            foreach (string st in bonuses)
+            {
+                if (st.Length > 0)
+                    switch ((ushort.Parse(st.Split(':')[0])))
+                    {
+                        case 1: _stability += (short)(ushort.Parse(st.Split(':')[1])); break;
+                        case 2: _power += (byte)(ushort.Parse(st.Split(':')[1])); break;
+                        case 3: _duration += (byte)(ushort.Parse(st.Split(':')[1])); break;
+                        case 4: _multiplier += (byte)(ushort.Parse(st.Split(':')[1])); break;
+                        case 10: break; // time
+                                        // case 12: Pots.ElementAt(Pot).Crittchance += (byte)(UInt16.Parse(st.Split(':')[1])); break;
+                                        // case 13: Pots.ElementAt(Pot).Failchance -= (byte)(UInt16.Parse(st.Split(':')[1])); break;
+                        case 14: _critChance += (byte)(ushort.Parse(st.Split(':')[1])); break;
+                            //  case 15: Power += (byte)(UInt16.Parse(st.Split(':')[1])); break;
+                    }
+            }
         }
 
         public void RemoveBonuses(string[] bonuses)
@@ -278,7 +276,7 @@ namespace WorldServer.World.Interfaces
                         // case 12: Pots.ElementAt(Pot).Crittchance += (byte)(UInt16.Parse(st.Split(':')[1])); break;
                         // case 13: Pots.ElementAt(Pot).Failchance -= (byte)(UInt16.Parse(st.Split(':')[1])); break;
                         case 14: _critChance -= (byte)(ushort.Parse(st.Split(':')[1])); break;
-                        //  case 15: Power += (byte)(UInt16.Parse(st.Split(':')[1])); break;
+                            //  case 15: Power += (byte)(UInt16.Parse(st.Split(':')[1])); break;
                     }
             }
         }
@@ -329,15 +327,12 @@ namespace WorldServer.World.Interfaces
             uint itemid;
             byte multiplierlvl = 1;
 
-
-            if(_power > 25 || _duration > 25 || _multiplier > 25  )
+            if (_power > 25 || _duration > 25 || _multiplier > 25)
             {
                 _Owner.GetPlayer().SendMessage("An Error in the crafting system occured if the problem is repeatable please report it", SystemData.ChatLogFilters.CHATLOGFILTERS_SHOUT);
-               Reset(1);
+                Reset(1);
                 return;
             }
-
-
 
             if (!_dyecrafting && _stability + _baseStability < 0)
             {
@@ -412,7 +407,6 @@ namespace WorldServer.World.Interfaces
 
                 byte result = 0;
 
-
                 if (_stability + _baseStability == 0)
                 {
                     result = 2;
@@ -443,185 +437,172 @@ namespace WorldServer.World.Interfaces
                 else
                     itemid += (uint)((powerlvl - 1) * 5);
                 itemid += ((uint)durationlvl - 1);
-
             }
-            
 
-                    if (_myPlayer._Value.CraftingSkillLevel < 200 && ((byte)((_myPlayer._Value.CraftingSkillLevel - _myPlayer.ItmInterface.GetItemInSlot(_mainIngredient).Info.Unk27[14]) * 3) < ((float)StaticRandom.Instance.NextDouble() * 100f)))
-                    {
-                        _myPlayer._Value.CraftingSkillLevel++;
-                        SetBasePower();
-                        _myPlayer.SendTradeSkill(_myPlayer._Value.CraftingSkill, _myPlayer._Value.CraftingSkillLevel);
-                    }
-
-
-                    _myPlayer.ItmInterface.CreateItem(itemid, multiplierlvl);
-
-
-                    if (_slot2 != 0 && _slot2 == _slot3 && _slot2 == _slot4)
-                    {
-                        ushort count = _myPlayer.ItmInterface.GetItemInSlot(_slot2).Count;
-
-                        if (count >= 6)
-                            _myPlayer.ItmInterface.DeleteItem(_slot2, 3);
-                        else if (count >= 5)
-                        {
-                            RemoveContainer(_slot2,true);
-                            _myPlayer.ItmInterface.DeleteItem(_slot3, 2);
-                        }
-                        else if (count >= 4)
-                        {
-                            RemoveContainer(_slot2,true);
-                            RemoveContainer(_slot3,true);
-                            _myPlayer.ItmInterface.DeleteItem(_slot4, 1);
-                        }
-                        else
-                        {
-                            ushort sl = _slot2;
-                            RemoveContainer(_slot2,true);
-                            RemoveContainer(_slot3,true);
-                            RemoveContainer(_slot4,true);
-
-                        }
-                    }
-
-                    else if (_slot2 != 0 && _slot2 == _slot3)
-                    {
-                        ushort count = _myPlayer.ItmInterface.GetItemInSlot(_slot2).Count;
-
-                        if (count >= 4)
-                            _myPlayer.ItmInterface.DeleteItem(_slot2, 2);
-                        else if (count >= 3)
-                        {
-                            RemoveContainer(_slot2,true);
-                            _myPlayer.ItmInterface.DeleteItem(_slot3, 1);
-                        }
-                        else
-                        {
-                            ushort sl = _slot2;
-                            RemoveContainer(_slot2,true);
-                            RemoveContainer(_slot3,true);
-                        }
-
-                        if (_myPlayer.ItmInterface.GetItemInSlot(_slot4) == null || _myPlayer.ItmInterface.GetItemInSlot(_slot4).Count == 1)
-                        {
-                            RemoveContainer(_slot4, true);
-                        }
-                        else
-                        {
-                            _myPlayer.ItmInterface.DeleteItem(_slot4, 1);
-                        }
-
+            if (_myPlayer._Value.CraftingSkillLevel < 200 && ((byte)((_myPlayer._Value.CraftingSkillLevel - _myPlayer.ItmInterface.GetItemInSlot(_mainIngredient).Info.Unk27[14]) * 3) < ((float)StaticRandom.Instance.NextDouble() * 100f)))
+            {
+                _myPlayer._Value.CraftingSkillLevel++;
+                SetBasePower();
+                _myPlayer.SendTradeSkill(_myPlayer._Value.CraftingSkill, _myPlayer._Value.CraftingSkillLevel);
             }
-                    else if (_slot2 != 0 && _slot2 == _slot4)
-                    {
-                        ushort count = _myPlayer.ItmInterface.GetItemInSlot(_slot2).Count;
 
-                        if (count >= 4)
-                            _myPlayer.ItmInterface.DeleteItem(_slot2, 2);
-                        else if (count >= 3)
-                        {
-                            RemoveContainer(_slot2,true);
-                            _myPlayer.ItmInterface.DeleteItem(_slot4, 1);
-                        }
-                        else
-                        {
-                            ushort sl = _slot2;
-                            RemoveContainer(_slot2,true);
-                            RemoveContainer(_slot4,true);
-                        }
+            _myPlayer.ItmInterface.CreateItem(itemid, multiplierlvl);
 
-                        if (_myPlayer.ItmInterface.GetItemInSlot(_slot3) == null || _myPlayer.ItmInterface.GetItemInSlot(_slot3).Count == 1)
-                        {
-                            RemoveContainer(_slot3, true);
-                        }
-                        else
-                        {
-                            _myPlayer.ItmInterface.DeleteItem(_slot3, 1);
-                        }
+            if (_slot2 != 0 && _slot2 == _slot3 && _slot2 == _slot4)
+            {
+                ushort count = _myPlayer.ItmInterface.GetItemInSlot(_slot2).Count;
 
-                    }
-                    else if (_slot3 != 0 && _slot3 == _slot4)
-                    {
-                        ushort count = _myPlayer.ItmInterface.GetItemInSlot(_slot3).Count;
-
-                        if (count >= 4)
-                            _myPlayer.ItmInterface.DeleteItem(_slot3, 2);
-                        else if (count >= 3)
-                        {
-                            RemoveContainer(_slot3,true);
-                            _myPlayer.ItmInterface.DeleteItem(_slot4, 1);
-                        }
-                        else
-                        {
-                            ushort sl = _slot3;
-                            RemoveContainer(_slot3,true);
-                            RemoveContainer(_slot4,true);
-                        }
-
-
-                        if (_myPlayer.ItmInterface.GetItemInSlot(_slot2) == null || _myPlayer.ItmInterface.GetItemInSlot(_slot2).Count == 1)
-                        {
-                            RemoveContainer(_slot2, true);
-                        }
-                        else
-                        {
-                            _myPlayer.ItmInterface.DeleteItem(_slot2, 1);
-                        }
+                if (count >= 6)
+                    _myPlayer.ItmInterface.DeleteItem(_slot2, 3);
+                else if (count >= 5)
+                {
+                    RemoveContainer(_slot2, true);
+                    _myPlayer.ItmInterface.DeleteItem(_slot3, 2);
+                }
+                else if (count >= 4)
+                {
+                    RemoveContainer(_slot2, true);
+                    RemoveContainer(_slot3, true);
+                    _myPlayer.ItmInterface.DeleteItem(_slot4, 1);
+                }
+                else
+                {
+                    ushort sl = _slot2;
+                    RemoveContainer(_slot2, true);
+                    RemoveContainer(_slot3, true);
+                    RemoveContainer(_slot4, true);
+                }
             }
-                    else
-                    {
-                        if (_slot2 != 0)
-                            if (_slot2 != 0 && _myPlayer.ItmInterface.GetItemInSlot(_slot2) == null || _myPlayer.ItmInterface.GetItemInSlot(_slot2).Count == 1)
-                            {
-                                RemoveContainer(_slot2, true);
-                            }
-                            else
-                            {
-                                _myPlayer.ItmInterface.DeleteItem(_slot2, 1);
-                            }
-                        if (_slot3 != 0)
-                            if (_myPlayer.ItmInterface.GetItemInSlot(_slot3) == null || _myPlayer.ItmInterface.GetItemInSlot(_slot3).Count == 1)
-                            {
-                                RemoveContainer(_slot3, true);
-                            }
-                            else
-                            {
-                                _myPlayer.ItmInterface.DeleteItem(_slot3, 1);
-                            }
-                        if (_slot4 != 0)
-                            if (_myPlayer.ItmInterface.GetItemInSlot(_slot4) == null || _myPlayer.ItmInterface.GetItemInSlot(_slot4).Count == 1)
-                            {
-                                RemoveContainer(_slot4, true);
-                            }
-                            else
-                            {
-                                _myPlayer.ItmInterface.DeleteItem(_slot4, 1);
-                            }
-                    }
+            else if (_slot2 != 0 && _slot2 == _slot3)
+            {
+                ushort count = _myPlayer.ItmInterface.GetItemInSlot(_slot2).Count;
 
-                    if (_myPlayer.ItmInterface.GetItemInSlot(_mainIngredient) == null || _myPlayer.ItmInterface.GetItemInSlot(_mainIngredient).Count == 1)
+                if (count >= 4)
+                    _myPlayer.ItmInterface.DeleteItem(_slot2, 2);
+                else if (count >= 3)
+                {
+                    RemoveContainer(_slot2, true);
+                    _myPlayer.ItmInterface.DeleteItem(_slot3, 1);
+                }
+                else
+                {
+                    ushort sl = _slot2;
+                    RemoveContainer(_slot2, true);
+                    RemoveContainer(_slot3, true);
+                }
+
+                if (_myPlayer.ItmInterface.GetItemInSlot(_slot4) == null || _myPlayer.ItmInterface.GetItemInSlot(_slot4).Count == 1)
+                {
+                    RemoveContainer(_slot4, true);
+                }
+                else
+                {
+                    _myPlayer.ItmInterface.DeleteItem(_slot4, 1);
+                }
+            }
+            else if (_slot2 != 0 && _slot2 == _slot4)
+            {
+                ushort count = _myPlayer.ItmInterface.GetItemInSlot(_slot2).Count;
+
+                if (count >= 4)
+                    _myPlayer.ItmInterface.DeleteItem(_slot2, 2);
+                else if (count >= 3)
+                {
+                    RemoveContainer(_slot2, true);
+                    _myPlayer.ItmInterface.DeleteItem(_slot4, 1);
+                }
+                else
+                {
+                    ushort sl = _slot2;
+                    RemoveContainer(_slot2, true);
+                    RemoveContainer(_slot4, true);
+                }
+
+                if (_myPlayer.ItmInterface.GetItemInSlot(_slot3) == null || _myPlayer.ItmInterface.GetItemInSlot(_slot3).Count == 1)
+                {
+                    RemoveContainer(_slot3, true);
+                }
+                else
+                {
+                    _myPlayer.ItmInterface.DeleteItem(_slot3, 1);
+                }
+            }
+            else if (_slot3 != 0 && _slot3 == _slot4)
+            {
+                ushort count = _myPlayer.ItmInterface.GetItemInSlot(_slot3).Count;
+
+                if (count >= 4)
+                    _myPlayer.ItmInterface.DeleteItem(_slot3, 2);
+                else if (count >= 3)
+                {
+                    RemoveContainer(_slot3, true);
+                    _myPlayer.ItmInterface.DeleteItem(_slot4, 1);
+                }
+                else
+                {
+                    ushort sl = _slot3;
+                    RemoveContainer(_slot3, true);
+                    RemoveContainer(_slot4, true);
+                }
+
+                if (_myPlayer.ItmInterface.GetItemInSlot(_slot2) == null || _myPlayer.ItmInterface.GetItemInSlot(_slot2).Count == 1)
+                {
+                    RemoveContainer(_slot2, true);
+                }
+                else
+                {
+                    _myPlayer.ItmInterface.DeleteItem(_slot2, 1);
+                }
+            }
+            else
+            {
+                if (_slot2 != 0)
+                    if (_slot2 != 0 && _myPlayer.ItmInterface.GetItemInSlot(_slot2) == null || _myPlayer.ItmInterface.GetItemInSlot(_slot2).Count == 1)
                     {
-                        RemoveContainer(_mainIngredient, true);
+                        RemoveContainer(_slot2, true);
                     }
                     else
                     {
-                        _myPlayer.ItmInterface.DeleteItem(_mainIngredient, 1);
+                        _myPlayer.ItmInterface.DeleteItem(_slot2, 1);
                     }
-
-                    if (_myPlayer.ItmInterface.GetItemInSlot(_container) == null || _myPlayer.ItmInterface.GetItemInSlot(_container).Count == 1)
+                if (_slot3 != 0)
+                    if (_myPlayer.ItmInterface.GetItemInSlot(_slot3) == null || _myPlayer.ItmInterface.GetItemInSlot(_slot3).Count == 1)
                     {
-                        RemoveContainer(_container, true);
+                        RemoveContainer(_slot3, true);
                     }
                     else
                     {
-                        _myPlayer.ItmInterface.DeleteItem(_container, 1);
+                        _myPlayer.ItmInterface.DeleteItem(_slot3, 1);
                     }
+                if (_slot4 != 0)
+                    if (_myPlayer.ItmInterface.GetItemInSlot(_slot4) == null || _myPlayer.ItmInterface.GetItemInSlot(_slot4).Count == 1)
+                    {
+                        RemoveContainer(_slot4, true);
+                    }
+                    else
+                    {
+                        _myPlayer.ItmInterface.DeleteItem(_slot4, 1);
+                    }
+            }
 
+            if (_myPlayer.ItmInterface.GetItemInSlot(_mainIngredient) == null || _myPlayer.ItmInterface.GetItemInSlot(_mainIngredient).Count == 1)
+            {
+                RemoveContainer(_mainIngredient, true);
+            }
+            else
+            {
+                _myPlayer.ItmInterface.DeleteItem(_mainIngredient, 1);
+            }
 
-                
-            
-            
+            if (_myPlayer.ItmInterface.GetItemInSlot(_container) == null || _myPlayer.ItmInterface.GetItemInSlot(_container).Count == 1)
+            {
+                RemoveContainer(_container, true);
+            }
+            else
+            {
+                _myPlayer.ItmInterface.DeleteItem(_container, 1);
+            }
+
             Crafting();
             locked = false;
         }
@@ -645,25 +626,25 @@ namespace WorldServer.World.Interfaces
             }
         }
 
-
         public void Crafting()
         {
-             PacketOut Out;
-             Out = new PacketOut((byte)Opcodes.F_CRAFTING_STATUS, 32);
-             Out.WriteByte(_myPlayer._Value.CraftingSkill);
-             Out.WriteByte(0);
-             Out.WriteByte(0);
-             Out.WriteByte(_myPlayer._Value.CraftingSkillLevel);
-             Out.WriteByte(_stage);  //stage
-             Out.WriteByte(0);
-             Out.WriteUInt16(_container);
+            PacketOut Out;
+            Out = new PacketOut((byte)Opcodes.F_CRAFTING_STATUS, 32);
+            Out.WriteByte(_myPlayer._Value.CraftingSkill);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.WriteByte(_myPlayer._Value.CraftingSkillLevel);
+            Out.WriteByte(_stage);  //stage
+            Out.WriteByte(0);
+            Out.WriteUInt16(_container);
             if (_myPlayer._Value.CraftingSkill == 4)
             {
                 Out.WriteUInt16(_mainIngredient);
                 Out.WriteUInt16(_slot2);
                 Out.WriteUInt16(_slot3);
                 Out.WriteUInt16(_slot4);
-            }else
+            }
+            else
             {
                 byte nuller = 0;
                 if (_mainIngredient == 0)
@@ -683,26 +664,25 @@ namespace WorldServer.World.Interfaces
                 else
                     Out.WriteUInt16(_slot4);
 
-                for(byte x = 0;x<nuller ; x++)
+                for (byte x = 0; x < nuller; x++)
                 {
                     Out.WriteUInt16(0);
                 }
-
             }
 
             Out.WriteByte(0);
-             Out.WriteByte(0);
-             if (_stability + _baseStability == 0)
-                 Out.WriteByte(2);     // apo 0 normal  1 bad    3 good
-             else if (_stability + _baseStability > 0)
-                 Out.WriteByte(3);
-             else if (_stability + _baseStability < 0)
-                 Out.WriteByte(1);  
-             Out.WriteByte(0);
-             Out.WriteByte(0);
-             Out.WriteByte(_power);          // talis 0-49
-             Out.WriteByte(0);
-             _myPlayer.SendPacket(Out);
+            Out.WriteByte(0);
+            if (_stability + _baseStability == 0)
+                Out.WriteByte(2);     // apo 0 normal  1 bad    3 good
+            else if (_stability + _baseStability > 0)
+                Out.WriteByte(3);
+            else if (_stability + _baseStability < 0)
+                Out.WriteByte(1);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.WriteByte(_power);          // talis 0-49
+            Out.WriteByte(0);
+            _myPlayer.SendPacket(Out);
         }
     }
 }

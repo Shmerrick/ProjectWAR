@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common.Database.World.Items
 {
@@ -17,8 +13,5 @@ namespace Common.Database.World.Items
 
         [DataElement(AllowDbNull = false)]
         public byte RealmId { get; set; }
-
     }
-
-
 }

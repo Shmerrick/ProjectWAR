@@ -1,6 +1,4 @@
-﻿
-
-namespace FrameWork
+﻿namespace FrameWork
 {
     // Niveau d'isolation des Transactions
     public enum IsolationLevel

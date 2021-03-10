@@ -42,6 +42,6 @@ namespace FrameWork
             }
         }
 
-        #endregion
+        #endregion ICache Members
     }
 }

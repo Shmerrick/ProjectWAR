@@ -1,12 +1,8 @@
 ﻿using FrameWork;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Common
 {
-
     [DataTable(PreCache = false, TableName = "instance_scripts", DatabaseName = "World")]
     [Serializable]
     public class Instance_Script : DataObject

@@ -49,6 +49,5 @@ namespace Common.Database.World.BattleFront
         /// <summary>when the event occurred</summary>
         [DataElement(AllowDbNull = false)]
         public long Timestamp { get; set; }
-
     }
 }

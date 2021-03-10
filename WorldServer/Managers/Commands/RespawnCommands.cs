@@ -10,9 +10,8 @@ namespace WorldServer.Managers.Commands
     /// <summary>Respawn modification commands under .respawn</summary>
     internal class RespawnCommands
     {
-
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="plr">Player that initiated the command</param>
         /// <param name="values">List of command arguments (after command name)</param>
@@ -60,7 +59,7 @@ namespace WorldServer.Managers.Commands
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="plr">Player that initiated the command</param>
         /// <param name="values">List of command arguments (after command name)</param>
@@ -86,7 +85,7 @@ namespace WorldServer.Managers.Commands
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="plr">Player that initiated the command</param>
         /// <param name="values">List of command arguments (after command name)</param>

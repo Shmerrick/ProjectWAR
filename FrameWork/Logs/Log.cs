@@ -1,9 +1,9 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
+using System.Text;
 using System.Threading;
-using NLog;
 
 namespace FrameWork
 {
@@ -26,9 +26,9 @@ namespace FrameWork
         private static ManualResetEventSlim _entriesEvent = new ManualResetEventSlim(false);
         private static object _writeLock = new object();
 
-        static bool isMono = Type.GetType("Mono.Runtime") != null;
+        private static bool isMono = Type.GetType("Mono.Runtime") != null;
 
-        static Entry getNextEntry()
+        private static Entry getNextEntry()
         {
             while (true)
             {
@@ -75,7 +75,7 @@ namespace FrameWork
             }
         }
 
-        static void AdjustConsoleHeight()
+        private static void AdjustConsoleHeight()
         {
             int h = Console.WindowWidth - 20;
             if (Console.BufferHeight != h)
@@ -169,7 +169,6 @@ namespace FrameWork
                 }
                 catch (Exception)
                 {
-
                 }
 
                 FileDir += "/" + Config.PreFileName + Config.FileName;
@@ -239,13 +238,13 @@ namespace FrameWork
         public static void Info(string name, string message, bool sync = false)
         {
             if (_config.Info.Info)
-                Log._logger.Info("I "+ name + " " + message, ConsoleColor.White, sync);
+                Log._logger.Info("I " + name + " " + message, ConsoleColor.White, sync);
         }
 
         public static void Info(string name, string message, ConsoleColor c)
         {
             if (_config.Info.Info)
-                Log._logger.Info("I " + name +" "+ message, c);
+                Log._logger.Info("I " + name + " " + message, c);
         }
 
         public static void Success(string name, string message, bool sync = false)
@@ -288,11 +287,11 @@ namespace FrameWork
             if (Force || _config.Info.Tcp)
             {
                 byte[] Buff = Packet.ToArray();
-                Log._logger.Trace("P " + name +" "+ Hex(Buff, 0, Buff.Length), ConsoleColor.Gray, sync);
+                Log._logger.Trace("P " + name + " " + Hex(Buff, 0, Buff.Length), ConsoleColor.Gray, sync);
             }
         }
 
-        public static void Tcp(string name, byte[] dump, int start, int len, bool Force=false, bool sync = false)
+        public static void Tcp(string name, byte[] dump, int start, int len, bool Force = false, bool sync = false)
         {
             if (Force || _config.Info.Tcp)
                 Log._logger.Trace("P " + " " + name, Hex(dump, start, len), ConsoleColor.Gray, sync);
@@ -310,7 +309,7 @@ namespace FrameWork
         public static void Dump(string name, byte[] dump, int start, int len, bool Force = false, bool sync = false)
         {
             if (_config.Info.Dump)
-                Log._logger.Trace("U " + " " + name, Hex(dump,start,len), ConsoleColor.Gray, sync);
+                Log._logger.Trace("U " + " " + name, Hex(dump, start, len), ConsoleColor.Gray, sync);
         }
 
         public static void Compare(string Name, byte[] First, byte[] Second, bool sync = false)
@@ -350,7 +349,6 @@ namespace FrameWork
                             LastDiff = false;
                             hex.Append("]");
                         }
-                          
 
                         byte val = First[j + i];
                         //hex.Append(" ");
@@ -408,13 +406,13 @@ namespace FrameWork
                             LastDiff = false;
                             hex.Append("]");
                         }
-  
+
                         hex.Append("  ");
                     }
                 }
             }
 
-            Log._logger.Trace("C " + Name+" " + hex.ToString(), ConsoleColor.Gray, sync);
+            Log._logger.Trace("C " + Name + " " + hex.ToString(), ConsoleColor.Gray, sync);
         }
 
         public static string Hex(byte[] dump, int start, int len)
@@ -455,7 +453,7 @@ namespace FrameWork
                         }
                     }
                     hex.Append("  ");
-                    hex.Append("//"+text);
+                    hex.Append("//" + text);
                     hexDump.Append(hex);
                 }
             }

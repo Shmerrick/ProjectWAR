@@ -15,6 +15,7 @@ namespace WorldServer.Configs
 
         // Level / Looting
         public int GlobalLootRate = 1;
+
         public int CommonLootRate = 1;
         public int UncommonLootRate = 1;
         public int RareLootRate = 1;
@@ -29,32 +30,36 @@ namespace WorldServer.Configs
 
         // Crossrealming
         public bool ChatBetweenRealms = true;
+
         public bool CreateBothRealms = true;
 
         // Area / NPC
         public bool CleanSpawns = true;
+
         public bool DiscoverAll = false;
         public bool OpenRvR = false;
 
         // Loading
         public bool PreloadAllCharacters = true;
+
         public string Motd = "Welcome to Warhammer Online: Age of Reckoning!";
         public string RegionOcclusionFolder = "los/";
         public string ZoneFolder = "zones/";
 
         // API
         public bool EnableAPI = true;
+
         public string APIAddress = "127.0.0.1";
         public int APIPort = 51932;
 
         // Networking
         public int PacketCollateLength = 0;
 
-
         // RVR Configuration
 
         // Minimum number of defenders to set Lord Rank.
         public int LordRankOne = 40;        // When there are at least this many defenders, set the Lord's rank to 1 (weakest)
+
         public int LordRankTwo = 20;
         public int LordRankThree = 0;
 

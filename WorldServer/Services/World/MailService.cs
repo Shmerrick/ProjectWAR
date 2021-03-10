@@ -1,6 +1,4 @@
-﻿using System;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using WorldServer.Managers;
 
@@ -14,7 +12,7 @@ namespace WorldServer.Services.World
             var character = CharMgr.GetCharacter(characterId, true);
             if (character == null) return false;
             var characterName = character?.Name;
-            
+
             Character_mail mail = new Character_mail
             {
                 Guid = CharMgr.GenerateMailGuid(),

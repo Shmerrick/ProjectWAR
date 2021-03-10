@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using MySql.Data.MySqlClient;
+using MySql.Data.Types;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 using System.Text;
-using System.IO;
-using System.Xml;
-
-using MySql.Data.MySqlClient;
-using MySql.Data.Types;
 
 namespace FrameWork
 {
@@ -38,43 +33,35 @@ namespace FrameWork
                 Obj = ((double)val).ToString(Nfi);
             else if (val is string)
                 Obj = Escape((string)val);
-
             else if (val is List<byte>)
-                Obj = Utils.ConvertArrayToString<byte>(((List<byte>) val).ToArray());
+                Obj = Utils.ConvertArrayToString<byte>(((List<byte>)val).ToArray());
             else if (val is byte[])
-                Obj = Utils.ConvertArrayToString<byte>(((byte[]) val));
-
+                Obj = Utils.ConvertArrayToString<byte>(((byte[])val));
             else if (val is List<short>)
-                Obj = Utils.ConvertArrayToString<short>(((List<short>) val).ToArray());
+                Obj = Utils.ConvertArrayToString<short>(((List<short>)val).ToArray());
             else if (val is short[])
-                Obj = Utils.ConvertArrayToString<short>(((short[]) val));
-
+                Obj = Utils.ConvertArrayToString<short>(((short[])val));
             else if (val is List<int>)
-                Obj = Utils.ConvertArrayToString<int>(((List<int>) val).ToArray());
+                Obj = Utils.ConvertArrayToString<int>(((List<int>)val).ToArray());
             else if (val is int[])
-                Obj = Utils.ConvertArrayToString<int>(((int[]) val));
-
+                Obj = Utils.ConvertArrayToString<int>(((int[])val));
             else if (val is List<uint>)
-                Obj = Utils.ConvertArrayToString<uint>(((List<uint>) val).ToArray());
+                Obj = Utils.ConvertArrayToString<uint>(((List<uint>)val).ToArray());
             else if (val is uint[])
-                Obj = Utils.ConvertArrayToString<uint>(((uint[]) val));
-
+                Obj = Utils.ConvertArrayToString<uint>(((uint[])val));
             else if (val is List<float>)
-                Obj = Utils.ConvertArrayToString<float>(((List<float>) val).ToArray());
+                Obj = Utils.ConvertArrayToString<float>(((List<float>)val).ToArray());
             else if (val is float[])
-                Obj = Utils.ConvertArrayToString<float>(((float[]) val));
-
+                Obj = Utils.ConvertArrayToString<float>(((float[])val));
             else if (val is List<ulong>)
-                Obj = Utils.ConvertArrayToString<ulong>(((List<ulong>) val).ToArray());
+                Obj = Utils.ConvertArrayToString<ulong>(((List<ulong>)val).ToArray());
             else if (val is ulong[])
-                Obj = Utils.ConvertArrayToString<ulong>(((ulong[]) val));
-
+                Obj = Utils.ConvertArrayToString<ulong>(((ulong[])val));
             else if (val is List<long>)
-                Obj = Utils.ConvertArrayToString<long>(((List<long>) val).ToArray());
+                Obj = Utils.ConvertArrayToString<long>(((List<long>)val).ToArray());
             else if (val is long[])
-                Obj = Utils.ConvertArrayToString<long>(((long[]) val));
-
-            else if(val != null)
+                Obj = Utils.ConvertArrayToString<long>(((long[])val));
+            else if (val != null)
                 Obj = Escape(val.ToString());
 
             return Obj;
@@ -82,7 +69,7 @@ namespace FrameWork
 
         protected object ConvertFromDatabaseFormat(Type type, object val)
         {
-            if (type == typeof (bool))
+            if (type == typeof(bool))
                 return Convert.ToBoolean(Convert.ToInt32(val));
 
             if (type == typeof(DateTime))
@@ -95,45 +82,45 @@ namespace FrameWork
             if (!(val is string) || type == typeof(string))
                 return val;
 
-            if (type == typeof (byte[]))
-                return Utils.ConvertStringToArray<byte>((string) val).ToArray();
+            if (type == typeof(byte[]))
+                return Utils.ConvertStringToArray<byte>((string)val).ToArray();
             if (type == typeof(List<byte>))
-                return Utils.ConvertStringToArray<byte>((string) val);
+                return Utils.ConvertStringToArray<byte>((string)val);
 
             if (type == typeof(short[]))
-                return Utils.ConvertStringToArray<short>((string) val).ToArray();
+                return Utils.ConvertStringToArray<short>((string)val).ToArray();
             if (type == typeof(List<short>))
-                return Utils.ConvertStringToArray<short>((string) val);
+                return Utils.ConvertStringToArray<short>((string)val);
 
             if (type == typeof(ushort[]))
-                return Utils.ConvertStringToArray<ushort>((string) val).ToArray();
+                return Utils.ConvertStringToArray<ushort>((string)val).ToArray();
             if (type == typeof(List<ushort>))
-                return Utils.ConvertStringToArray<ushort>((string) val);
+                return Utils.ConvertStringToArray<ushort>((string)val);
 
             if (type == typeof(int[]))
-                return Utils.ConvertStringToArray<int>((string) val).ToArray();
+                return Utils.ConvertStringToArray<int>((string)val).ToArray();
             if (type == typeof(List<int>))
-                return Utils.ConvertStringToArray<int>((string) val);
+                return Utils.ConvertStringToArray<int>((string)val);
 
             if (type == typeof(uint[]))
-                return Utils.ConvertStringToArray<uint>((string) val).ToArray();
+                return Utils.ConvertStringToArray<uint>((string)val).ToArray();
             if (type == typeof(List<uint>))
-                return Utils.ConvertStringToArray<uint>((string) val);
+                return Utils.ConvertStringToArray<uint>((string)val);
 
             if (type == typeof(long[]))
-                return Utils.ConvertStringToArray<long>((string) val).ToArray();
+                return Utils.ConvertStringToArray<long>((string)val).ToArray();
             if (type == typeof(List<long>))
-                return Utils.ConvertStringToArray<long>((string) val);
+                return Utils.ConvertStringToArray<long>((string)val);
 
             if (type == typeof(ulong[]))
-                return Utils.ConvertStringToArray<ulong>((string) val).ToArray();
+                return Utils.ConvertStringToArray<ulong>((string)val).ToArray();
             if (type == typeof(List<ulong>))
-                return Utils.ConvertStringToArray<ulong>((string) val);
+                return Utils.ConvertStringToArray<ulong>((string)val);
 
             if (type == typeof(float[]))
-                return Utils.ConvertStringToArray<float>((string) val).ToArray();
+                return Utils.ConvertStringToArray<float>((string)val).ToArray();
             if (type == typeof(List<float>))
-                return Utils.ConvertStringToArray<float>((string) val);
+                return Utils.ConvertStringToArray<float>((string)val);
 
             return val;
         }
@@ -147,9 +134,9 @@ namespace FrameWork
             {
                 Type type;
                 if (info is FieldInfo)
-                    type = ((FieldInfo) info).FieldType;
+                    type = ((FieldInfo)info).FieldType;
                 else if (info is PropertyInfo)
-                    type = ((PropertyInfo) info).PropertyType;
+                    type = ((PropertyInfo)info).PropertyType;
                 else
                     return null;
 
@@ -157,12 +144,11 @@ namespace FrameWork
 
                 if (info is PropertyInfo)
                 {
-                    ((PropertyInfo) info).SetValue(Object, obj, null);
+                    ((PropertyInfo)info).SetValue(Object, obj, null);
                 }
-                else ((FieldInfo) info).SetValue(Object, obj);
-
+                else ((FieldInfo)info).SetValue(Object, obj);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return e;
             }
@@ -170,13 +156,12 @@ namespace FrameWork
             return null;
         }
 
-        #endregion
+        #endregion Value conversion
 
         #region Insert/Update/Delete
 
         private readonly StringBuilder _opBuilder = new StringBuilder(2048);
         private readonly StringBuilder _whereBuilder = new StringBuilder(1024);
-
 
         /// <summary>
         /// Returns a MySQL statement which would add the given object to the database.
@@ -296,7 +281,6 @@ namespace FrameWork
                     _whereBuilder.Append('\'');
                     _whereBuilder.Append(val);
                     _whereBuilder.Append('\'');
-
                 }
 
                 // Add other elements to the SET clause.
@@ -330,7 +314,7 @@ namespace FrameWork
 
             _opBuilder.Append(_whereBuilder);
 
-           return _opBuilder.ToString();
+            return _opBuilder.ToString();
         }
 
         /// <summary>
@@ -376,7 +360,6 @@ namespace FrameWork
                     _whereBuilder.Append('\'');
                     _whereBuilder.Append(val);
                     _whereBuilder.Append('\'');
-
                 }
             }
 
@@ -434,8 +417,6 @@ namespace FrameWork
             string sql = FormulateUpdate(dataObject, out hasRelations);
             try
             {
-               
-
                 Log.Debug("MysqlObject", sql);
 
                 int res = Connection.ExecuteNonQuery(sql);
@@ -457,7 +438,7 @@ namespace FrameWork
             }
             catch (Exception e)
             {
-                Log.Error("MysqlObject", "Modify error : " + dataObject.TableName + " " + dataObject.ObjectId + e + "SQL="+sql);
+                Log.Error("MysqlObject", "Modify error : " + dataObject.TableName + " " + dataObject.ObjectId + e + "SQL=" + sql);
             }
         }
 
@@ -489,7 +470,7 @@ namespace FrameWork
             }
         }
 
-        #endregion
+        #endregion Insert/Update/Delete
 
         #region Transactions
 
@@ -561,7 +542,7 @@ namespace FrameWork
             }
         }
 
-        #endregion
+        #endregion Transactions
 
         #region Locators
 
@@ -654,7 +635,7 @@ namespace FrameWork
             return null;
         }
 
-        #endregion
+        #endregion Locators
 
         #region Select
 
@@ -765,7 +746,7 @@ namespace FrameWork
         // Sélectionne tous les objets d'une table
         protected override IList<TObject> SelectObjectsImpl<TObject>(string whereClause, IsolationLevel isolation)
         {
-            string tableName = GetTableOrViewName(typeof (TObject));
+            string tableName = GetTableOrViewName(typeof(TObject));
             bool useObjectID = TableDatasets[tableName].RequiresObjectId;
 
             // build sql command
@@ -775,7 +756,7 @@ namespace FrameWork
 
             bool first = true;
 
-            BindingInfo[] bindingInfo = GetBindingInfo(typeof (TObject));
+            BindingInfo[] bindingInfo = GetBindingInfo(typeof(TObject));
             for (int i = 0; i < bindingInfo.Length; i++)
             {
                 if (!bindingInfo[i].HasRelation)
@@ -807,19 +788,23 @@ namespace FrameWork
             {
                 case EBindingMethod.Reflected:
                     return ReflectionSelect<TObject>(isolation, tableName, sql, bindingInfo, useObjectID);
+
                 case EBindingMethod.StaticBound:
                     return StaticBindSelect<TObject>(isolation, tableName, sql, bindingInfo, useObjectID);
+
                 case EBindingMethod.CompiledExpression:
                     return CompiledExpressionSelect<TObject>(isolation, tableName, sql, bindingInfo, useObjectID);
+
                 case EBindingMethod.Manual:
                     return ManualSelect<TObject>(isolation, tableName, sql, bindingInfo, useObjectID);
+
                 default:
                     throw new DatabaseException($"No valid binding method exists for {tableName}.");
             }
         }
 
         protected List<TObject> ReflectionSelect<TObject>(IsolationLevel isolation, string tableName, string sqlCommand, BindingInfo[] bindingInfo, bool useObjectID)
-            where TObject: DataObject
+            where TObject : DataObject
         {
             List<TObject> dataObjects = new List<TObject>(64);
 
@@ -841,7 +826,7 @@ namespace FrameWork
 #endif
                     reader.GetValues(data);
 
-                    TObject currentObject = (TObject) Activator.CreateInstance(typeof(TObject));
+                    TObject currentObject = (TObject)Activator.CreateInstance(typeof(TObject));
 
                     int field = 0;
 
@@ -975,15 +960,15 @@ namespace FrameWork
                             object obj = null;
 
                             if (val != null && !Convert.IsDBNull(val))
-                                obj = ConvertFromDatabaseFormat(((PropertyInfo) bind.Member).PropertyType, val);
-                            
+                                obj = ConvertFromDatabaseFormat(((PropertyInfo)bind.Member).PropertyType, val);
+
                             try
                             {
                                 staticBindInfo.DataBinders[i].Assign(obj);
                             }
                             catch (InvalidCastException)
                             {
-                                Log.Error(tableName, "Failed to cast " + ((PropertyInfo) bind.Member).Name);
+                                Log.Error(tableName, "Failed to cast " + ((PropertyInfo)bind.Member).Name);
                             }
                         }
                     }
@@ -1042,7 +1027,7 @@ namespace FrameWork
                     ++count;
 #endif
 
-                    TObject currentObject = (TObject) Activator.CreateInstance(typeof(TObject));
+                    TObject currentObject = (TObject)Activator.CreateInstance(typeof(TObject));
 
                     int field = 0;
 
@@ -1064,7 +1049,7 @@ namespace FrameWork
                         if (!bind.HasRelation && bind.MySqlBinder != null && !mySqlReader.IsDBNull(field))
                         {
                             // Value type
-                            if (((PropertyInfo) bind.Member).PropertyType.IsValueType && !((PropertyInfo) bind.Member).PropertyType.IsEnum)
+                            if (((PropertyInfo)bind.Member).PropertyType.IsValueType && !((PropertyInfo)bind.Member).PropertyType.IsEnum)
                             {
                                 //try
                                 //{
@@ -1076,13 +1061,12 @@ namespace FrameWork
                                 //    Environment.Exit(0);
                                 //}
                             }
-
                             else
                             {
                                 //try
                                 //{
-                                    object obj = ConvertFromDatabaseFormat(((PropertyInfo) bind.Member).PropertyType, mySqlReader.GetValue(field));
-                                      bind.MySqlBinder.AssignObject(currentObject, obj);
+                                object obj = ConvertFromDatabaseFormat(((PropertyInfo)bind.Member).PropertyType, mySqlReader.GetValue(field));
+                                bind.MySqlBinder.AssignObject(currentObject, obj);
                                 //}
                                 //catch (Exception)
                                 //{
@@ -1145,7 +1129,7 @@ namespace FrameWork
                     ++count;
 #endif
 
-                    TObject currentObject = (TObject) Activator.CreateInstance(typeof(TObject));
+                    TObject currentObject = (TObject)Activator.CreateInstance(typeof(TObject));
 
                     int field = 0;
 
@@ -1185,9 +1169,11 @@ namespace FrameWork
         {
             return SelectObjectsImpl<TObject>("", isolation);
         }
-        #endregion
+
+        #endregion Select
 
         #region Map
+
         protected override Dictionary<TKey, TObject> MapAllObjectsImpl<TKey, TObject>(string keyName, string whereClause, int expectedRowCount, IsolationLevel isolation)
         {
             string tableName = GetTableOrViewName(typeof(TObject));
@@ -1235,12 +1221,16 @@ namespace FrameWork
             {
                 case EBindingMethod.Reflected:
                     return ReflectionMap<TKey, TObject>(keyIndex, expectedRowCount, isolation, tableName, sql, bindingInfo, useObjectID);
+
                 case EBindingMethod.StaticBound:
                     return StaticBindMap<TKey, TObject>(keyIndex, expectedRowCount, isolation, tableName, sql, bindingInfo, useObjectID);
+
                 case EBindingMethod.CompiledExpression:
                     return CompiledExpressionMap<TKey, TObject>(keyIndex, expectedRowCount, isolation, tableName, sql, bindingInfo, useObjectID);
+
                 case EBindingMethod.Manual:
                     return ManualMap<TKey, TObject>(keyIndex, expectedRowCount, isolation, tableName, sql, bindingInfo, useObjectID);
+
                 default:
                     throw new DatabaseException($"No valid binding method exists for {tableName}.");
             }
@@ -1575,7 +1565,7 @@ namespace FrameWork
 
                     currentObject.Load(mySqlReader, field);
 
-                    dataObjects[(TKey) reader.GetValue(keyIndex)] = currentObject;
+                    dataObjects[(TKey)reader.GetValue(keyIndex)] = currentObject;
 
                     currentObject.IsValid = true;
                     currentObject.AllowAdd = false; // exists already
@@ -1596,16 +1586,17 @@ namespace FrameWork
 
             return dataObjects;
         }
-        #endregion
+
+        #endregion Map
 
         #region General DB accessor
 
-        ///<summary>Returns the next auto-increment for the supplied object.</summary> 
+        ///<summary>Returns the next auto-increment for the supplied object.</summary>
         protected override int GetNextAutoIncrementImpl<TObject>()
-        {   
+        {
             string sqlQuery = "SELECT * FROM information_schema.TABLES WHERE TABLE_NAME = '" + GetTableOrViewName(typeof(TObject)) + "'";
             int nextAutoIncrement = 0;
-            
+
             if (Connection.IsSQLConnection)
             {
                 Connection.ExecuteSelect(sqlQuery, (r) =>
@@ -1616,7 +1607,6 @@ namespace FrameWork
 
                     while (reader.Read())
                         nextAutoIncrement = Convert.ToInt32(reader.GetInt64("AUTO_INCREMENT"));
-
                 }, IsolationLevel.DEFAULT);
             }
             return nextAutoIncrement;
@@ -1656,7 +1646,7 @@ namespace FrameWork
 
             if (Connection.IsSQLConnection)
             {
-                string query = "SELECT MAX(" + column+ ") FROM " + tableName;
+                string query = "SELECT MAX(" + column + ") FROM " + tableName;
 
                 object count = Connection.ExecuteScalar(query);
                 if (count is DBNull)
@@ -1667,7 +1657,7 @@ namespace FrameWork
             return 0;
         }
 
-        #endregion
+        #endregion General DB accessor
 
         /// <summary>
         /// Executes a non-blocking request.
@@ -1713,7 +1703,6 @@ namespace FrameWork
                             result = reader.GetInt64(0);
                     }
                 }, IsolationLevel.DEFAULT);
-
             }
             catch (Exception e)
             {

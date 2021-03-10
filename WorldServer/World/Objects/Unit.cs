@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using System;
+using System.Collections.Generic;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
-using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
@@ -49,7 +47,6 @@ namespace WorldServer.World.Objects
         public long LastUpdatedTime { get; set; }
         public ushort InfluenceId { get; }
         public ushort Influence { get; set; }
-
 
         public XpRenown(uint xp, uint renown, ushort infId, ushort inf, long lastUpdatedTime)
         {
@@ -112,12 +109,15 @@ namespace WorldServer.World.Objects
                 case CreatureTitle.ExpeditionQuartermaster:
                     type = InteractType.INTERACTTYPE_FLIGHT_MASTER;
                     break;
+
                 case CreatureTitle.GuildRegistrar:
                     type = InteractType.INTERACTTYPE_GUILD_REGISTRAR;
                     break;
+
                 case CreatureTitle.Healer:
                     type = InteractType.INTERACTTYPE_HEALER;
                     break;
+
                 case CreatureTitle.Banker:
                     type = InteractType.INTERACTTYPE_BANKER;
                     break;
@@ -191,7 +191,7 @@ namespace WorldServer.World.Objects
             return type;
         }
 
-        #endregion
+        #endregion Static
 
         public List<byte> States = new List<byte>();
         public InteractType InteractType = InteractType.INTERACTTYPE_IDLE_CHAT;
@@ -206,11 +206,12 @@ namespace WorldServer.World.Objects
 
         /// <summary>The ID of a model to use as this player's mount.</summary>
         public ushort MountID { get; protected set; }
+
         /// <summary>Mount armor for medium mounts.</summary>
         public ushort MountArmor { get; protected set; }
 
         public bool CanMount { get; set; } = true;
-        
+
         /// <summary>
         /// Scaler applied to damage/heal received or dealed in instance boss fights.
         /// </summary>
@@ -219,7 +220,7 @@ namespace WorldServer.World.Objects
         public Unit()
         {
             ItmInterface = AddInterface<ItemsInterface>();
-            CbtInterface = (CombatInterface) AddInterface(CombatInterface.GetInterfaceFor(this));
+            CbtInterface = (CombatInterface)AddInterface(CombatInterface.GetInterfaceFor(this));
             StsInterface = AddInterface<StatsInterface>();
             QtsInterface = AddInterface<QuestsInterface>();
             MvtInterface = AddInterface<MovementInterface>();
@@ -235,7 +236,7 @@ namespace WorldServer.World.Objects
 
             LoadInterfaces();
         }
- 
+
         protected void SaveSpawnData()
         {
             SpawnPoint.SetCoordsFrom(this);
@@ -292,11 +293,11 @@ namespace WorldServer.World.Objects
 
         public virtual void SendMovementState(Player player, ushort targetX, ushort targetY, ushort targetZ, bool isRun)
         {
-            PacketOut Out = new PacketOut((byte) Opcodes.F_OBJECT_STATE, 28);
+            PacketOut Out = new PacketOut((byte)Opcodes.F_OBJECT_STATE, 28);
             Out.WriteUInt16(Oid);
-            Out.WriteUInt16((ushort) X);
-            Out.WriteUInt16((ushort) Y);
-            Out.WriteUInt16((ushort) Z);
+            Out.WriteUInt16((ushort)X);
+            Out.WriteUInt16((ushort)Y);
+            Out.WriteUInt16((ushort)Z);
             Out.WriteByte(PctHealth);
             // Possibly flags:
             // 1: Destination position update (Rotation update if 0)
@@ -308,7 +309,7 @@ namespace WorldServer.World.Objects
             if (CbtInterface.GetCurrentTarget() != null)
                 flags |= 2;
             Out.WriteByte(flags);
-            Out.WriteByte((byte) Zone.ZoneId);
+            Out.WriteByte((byte)Zone.ZoneId);
             Out.WriteByte(0); // Unk1
             Out.WriteUInt32(0); // Unk2
 
@@ -322,9 +323,9 @@ namespace WorldServer.World.Objects
             Out.WriteUInt16R(targetX);
             Out.WriteUInt16R(targetY);
             Out.WriteUInt16R(targetZ);
-            Out.WriteByte((byte) Zone.ZoneId);
+            Out.WriteByte((byte)Zone.ZoneId);
             if ((flags & 2) == 2)
-            Out.WriteUInt16R(CbtInterface.GetCurrentTarget()?.Oid ?? 0);
+                Out.WriteUInt16R(CbtInterface.GetCurrentTarget()?.Oid ?? 0);
 
             if (player == null)
                 DispatchPacket(Out, false);
@@ -332,7 +333,7 @@ namespace WorldServer.World.Objects
                 player.SendPacket(Out);
         }
 
-        public virtual void SendState(Player plr=null)
+        public virtual void SendState(Player plr = null)
         {
             if (!IsInWorld())
                 return;
@@ -345,13 +346,13 @@ namespace WorldServer.World.Objects
 
         public virtual void SendAnimation()
         {
-            PacketOut Out = new PacketOut((byte) Opcodes.F_ANIMATION, 6);
+            PacketOut Out = new PacketOut((byte)Opcodes.F_ANIMATION, 6);
             Out.WriteUInt16(Oid);
             Out.WriteUInt32(0);
             DispatchPacket(Out, false);
         }
 
-        #endregion
+        #endregion Sender
 
         #region Interfaces
 
@@ -365,7 +366,7 @@ namespace WorldServer.World.Objects
         public BuffInterface BuffInterface;
         public AIInterface AiInterface;
 
-        #endregion
+        #endregion Interfaces
 
         #region Health & Damage
 
@@ -384,12 +385,12 @@ namespace WorldServer.World.Objects
                 _health = value;
                 StateDirty = true;
                 if (this is Player)
-                    ((Player) this).SendHealth();
+                    ((Player)this).SendHealth();
             }
         }
 
         public long NextHpRegen;
- 
+
         public uint TotalHealth => MaxHealth + BonusHealth;
         public byte PctHealth => (byte)((Health * 100) / (TotalHealth == 0 ? 1 : TotalHealth));
 
@@ -411,12 +412,12 @@ namespace WorldServer.World.Objects
             int bonusHP = StsInterface.GetTotalStat(Stats.HealthRegen) * 4;
 
             if (!CbtInterface.IsInCombat && AiInterface.State != AiState.FIGHTING)
-                bonusHP += (int)TotalHealth/8;
+                bonusHP += (int)TotalHealth / 8;
 
             if (bonusHP > 0)
                 ReceiveHeal(null, (uint)bonusHP);
         }
-    
+
         /// <summary>Heals this unit and returns the points healed, or -1 if the unit died before it could be healed.</summary>
         public virtual int ReceiveHeal(Unit caster, uint healAmount, float healHatredScale = 1.0f)
         {
@@ -573,15 +574,13 @@ namespace WorldServer.World.Objects
                 else
                 {
                     impactManagerInstance = ScenarioMgr.ImpactMatrixManagerInstance;
-
                 }
 
-                var modificationValue = (float) impactManagerInstance.CalculateModificationValue((float) player.BaseBountyValue, (float) caster.BaseBountyValue);
+                var modificationValue = (float)impactManagerInstance.CalculateModificationValue((float)player.BaseBountyValue, (float)caster.BaseBountyValue);
 
                 // Added impact to ImpactMatrix
                 if (this.CbtInterface.IsPvp)
                 {
-
                     if (Region == null)
                         DeathLogger.Debug($"Region is null for caster {caster.Name}");
                     if (Region?.Campaign == null)
@@ -592,7 +591,7 @@ namespace WorldServer.World.Objects
                         {
                             CharacterId = caster.Info.CharacterId,
                             ExpiryTimestamp = FrameWork.TCPManager.GetTimeStamp() + ImpactMatrixManager.IMPACT_EXPIRY_TIME,
-                            ImpactValue = (int) damage,
+                            ImpactValue = (int)damage,
                             ModificationValue = modificationValue
                         });
                 }
@@ -626,8 +625,6 @@ namespace WorldServer.World.Objects
         /// <summary>Flags this unit as dead and generates XP and loot.</summary>
         protected virtual void SetDeath(Unit killer)
         {
-            
-
             DeathLogger.Trace($"Base.SetDeath {killer.Name}");
             try
             {
@@ -667,11 +664,10 @@ namespace WorldServer.World.Objects
 
                 EvtInterface.Notify(EventName.OnDie, this, credited ?? killer);
 
-                DeathLogger.Trace($"Base HandleDeath {killer.Name} {credited?.Name}" );
+                DeathLogger.Trace($"Base HandleDeath {killer.Name} {credited?.Name}");
 
                 if (credited != null && credited.Zone != null && !credited.PendingDisposal)
                     HandleDeathRewards(credited);
-                
 
                 DeathLogger.Trace($"Clearing {killer.Name}");
 
@@ -682,7 +678,6 @@ namespace WorldServer.World.Objects
                 DeathLogger.Warn($"Exception : {e.Message} {e.StackTrace}");
                 throw;
             }
-            
         }
 
         protected virtual void HandleDeathRewards(Player killer)
@@ -722,7 +717,6 @@ namespace WorldServer.World.Objects
         /// </summary>
         public virtual void CheckDamageCaster(Unit caster, AbilityDamageInfo incDamage)
         {
-
         }
 
         /// <summary>
@@ -730,7 +724,6 @@ namespace WorldServer.World.Objects
         /// </summary>
         public virtual void ModifyDamageIn(AbilityDamageInfo incDamage)
         {
-            
         }
 
         /// <summary>
@@ -738,7 +731,6 @@ namespace WorldServer.World.Objects
         /// </summary>
         public virtual void ModifyDamageOut(AbilityDamageInfo outDamage)
         {
-            
         }
 
         /// <summary>
@@ -784,7 +776,7 @@ namespace WorldServer.World.Objects
         /// <returns></returns>
         public Dictionary<ushort, float> Detaunters = new Dictionary<ushort, float>();
 
-        #endregion
+        #endregion Health & Damage
 
         #region Action Points
 
@@ -807,7 +799,7 @@ namespace WorldServer.World.Objects
             return true;
         }
 
-        #endregion
+        #endregion Action Points
 
         #region Combat
 
@@ -887,8 +879,6 @@ namespace WorldServer.World.Objects
 
             World.Map.Occlusion.SegmentIntersect(Zone.ZoneId, Zone.ZoneId, fromRegionX, fromRegionY, Z + CHARACTER_HEIGHT, toRegionX, toRegionY, target.Z + CHARACTER_HEIGHT, true, true, 190, ref playnice);
 
-
-
             return playnice.Result == World.Map.OcclusionResult.NotOccluded;
         }
 
@@ -914,11 +904,11 @@ namespace WorldServer.World.Objects
             int toRegionY = pinPos.Y + (Zone.Info.OffY << 12);
 
             World.Map.Occlusion.SegmentIntersect(Zone.ZoneId, Zone.ZoneId, fromRegionX, fromRegionY, Z + CHARACTER_HEIGHT, toRegionX, toRegionY, pinPos.Z + CHARACTER_HEIGHT, true, true, 190, ref playnice);
-          
-//            #if DEBUG
-//            //if (IsPlayer())
-//               // GetPlayer().SendLocalizeString(playnice.ToString(), SystemData.ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_DEFAULT);
-//#endif
+
+            //            #if DEBUG
+            //            //if (IsPlayer())
+            //               // GetPlayer().SendLocalizeString(playnice.ToString(), SystemData.ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_DEFAULT);
+            //#endif
 
             return playnice.Result == World.Map.OcclusionResult.NotOccluded;
         }
@@ -946,7 +936,7 @@ namespace WorldServer.World.Objects
             DispatchPacket(Out, true);
         }
 
-        #endregion
+        #endregion Combat
 
         #region Loot
 
@@ -964,14 +954,14 @@ namespace WorldServer.World.Objects
         public virtual void GenerateLoot(Player looter, float dropMod)
         {
             RewardLogger.Debug($"Looter : {looter.Name}");
-            
+
             lootContainer = LootsMgr.GenerateLoot(this, looter, dropMod);
-            
+
             if (lootContainer != null)
-                SetLootable(true, looter);          
+                SetLootable(true, looter);
         }
-		
-		public void SetLootable(bool value, Player looter)
+
+        public void SetLootable(bool value, Player looter)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
             Out.WriteUInt16(Oid);
@@ -992,7 +982,6 @@ namespace WorldServer.World.Objects
             Out.WriteByte((byte)(value ? 1 : 0));
             Out.Fill(0, 6);
 
-
             foreach (Player player in PlayersInRange)
             {
                 if (player._Value.GatheringSkill == gatherProfession)
@@ -1000,7 +989,7 @@ namespace WorldServer.World.Objects
             }
         }
 
-        #endregion
+        #endregion Loot
 
         #region Interact
 
@@ -1025,7 +1014,7 @@ namespace WorldServer.World.Objects
             }
         }
 
-        #endregion
+        #endregion Interact
 
         #region Values
 
@@ -1049,9 +1038,11 @@ namespace WorldServer.World.Objects
         }
 
         private byte _level = 1;
+
         public byte Level
         {
-            get {
+            get
+            {
                 return IsPlayer() ? GetPlayer()._Value.Level : _level;
             }
             set
@@ -1074,6 +1065,7 @@ namespace WorldServer.World.Objects
         public byte AdjustedLevel => StsInterface.BolsterLevel == 0 ? Level : Math.Min(Level, StsInterface.BolsterLevel);
 
         private byte _renown = 1;
+
         public byte RenownRank
         {
             get
@@ -1099,6 +1091,7 @@ namespace WorldServer.World.Objects
         public byte AdjustedRenown => _adjustedRenown > 0 ? _adjustedRenown : RenownRank;
 
         private ushort _model;
+
         public ushort Model
         {
             get
@@ -1152,13 +1145,13 @@ namespace WorldServer.World.Objects
             }
         }
 
-        #endregion
+        #endregion Values
 
         #region Range
 
         public override void AddInRange(Object obj)
         {
-           // Log.Info("InRange", "AddInRange : For=" + Name + " To " + obj.Name + " id=" + obj.Oid + " distance=" + GetAdjustedDistanceTo(obj));
+            // Log.Info("InRange", "AddInRange : For=" + Name + " To " + obj.Name + " id=" + obj.Oid + " distance=" + GetAdjustedDistanceTo(obj));
             if (obj.IsUnit())
                 AiInterface.AddRange(obj.GetUnit());
 
@@ -1179,7 +1172,7 @@ namespace WorldServer.World.Objects
             base.ClearRange(fromNewRegion);
         }
 
-        #endregion
+        #endregion Range
 
         #region UpdateState
 
@@ -1195,7 +1188,7 @@ namespace WorldServer.World.Objects
             Out.WriteByte(val2);
             Out.WriteByte(val3);    // guild heraldy
             Out.Fill(0, 5);
-            ((Player) this).SendPacket(Out);
+            ((Player)this).SendPacket(Out);
         }
 
         public void DispatchUpdateState(byte stateID, byte val1, byte val2 = 0, byte val3 = 0)
@@ -1221,7 +1214,7 @@ namespace WorldServer.World.Objects
             DispatchPacket(Out, true);
         }
 
-        #endregion
+        #endregion UpdateState
 
         #region Mounting
 
@@ -1256,7 +1249,7 @@ namespace WorldServer.World.Objects
             DispatchPacket(Out, true);
         }
 
-        #endregion
+        #endregion Mounting
 
         #region CrowdControl
 
@@ -1283,6 +1276,7 @@ namespace WorldServer.World.Objects
 
         /// <summary>Active crowd control effects.</summary>
         public byte CrowdControlType { get; set; }
+
         public int CrowdControlBlock { get; protected set; }
 
         private readonly byte[] _crowdControlBlocks = new byte[5];
@@ -1291,9 +1285,9 @@ namespace WorldServer.World.Objects
 
         public bool IsKeepLord = false;
 
-		public bool IsPatrol = false;
+        public bool IsPatrol = false;
 
-		public uint WaypointGUID { get; set; } = 0;
+        public uint WaypointGUID { get; set; } = 0;
 
         public void AddCrowdControlImmunity(int flags)
         {
@@ -1397,7 +1391,6 @@ namespace WorldServer.World.Objects
 
         public virtual void ApplyKnockback(Unit caster, AbilityKnockbackInfo kbInfo)
         {
-
         }
 
         /// <summary>Indicates whether a unit is incapable of moving or acting.</summary>
@@ -1447,7 +1440,6 @@ namespace WorldServer.World.Objects
             }
         }
 
-
         public void SetImmovable(bool state)
         {
             lock (MovementCCLock)
@@ -1459,7 +1451,7 @@ namespace WorldServer.World.Objects
             }
         }
 
-        #endregion
+        #endregion CrowdControl
 
         #region GFX
 
@@ -1498,6 +1490,6 @@ namespace WorldServer.World.Objects
             _gfxModList.Add(new Tuple<ushort, ushort>(oldMod, newMod));
         }
 
-        #endregion
+        #endregion GFX
     }
 }

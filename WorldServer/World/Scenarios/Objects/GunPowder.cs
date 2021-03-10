@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using FrameWork;
+using System.Collections.Generic;
 using SystemData;
-using FrameWork;
 using WorldServer.NetWork.Handler;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Objects;
@@ -23,6 +23,7 @@ namespace WorldServer.World.Scenarios.Objects
         public byte TickPoints { get; private set; }
         public Player InteractPlayer { get; set; }
         public List<FlagGuard> Guards = new List<FlagGuard>();
+
         public delegate void InteractPileAction(GunPowder pile, Player player);
 
         protected InteractPileAction _onInteractWithPowder;
@@ -39,7 +40,6 @@ namespace WorldServer.World.Scenarios.Objects
             _onInteractWithPowder = powederInteract;
             _onBombPlanted = onBombPlanted;
         }
-
 
         public override void OnLoad()
         {
@@ -71,7 +71,6 @@ namespace WorldServer.World.Scenarios.Objects
                 player.SendClientMessage("You can't interact with objects while in stealth.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 return;
             }
-
 
             try
             {
@@ -121,6 +120,5 @@ namespace WorldServer.World.Scenarios.Objects
 
             base.SendMeTo(plr);
         }
-
     }
 }

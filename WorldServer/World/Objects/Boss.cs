@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Timers;
-using Common;
-using FrameWork;
+﻿using Common;
 using GameData;
 using NLog;
-using WorldServer.Managers;
+using System.Collections.Generic;
+using System.Timers;
 using WorldServer.NetWork.Handler;
-using WorldServer.Services.World;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.AI;
 using WorldServer.World.Interfaces;
-using WorldServer.World.Objects.Instances;
-using WorldServer.World.Objects.Instances.The_Lost_Vale;
 
 namespace WorldServer.World.Objects
 {
@@ -22,19 +14,24 @@ namespace WorldServer.World.Objects
     {
         // Creature Proto Id
         public uint BossProtoId;
+
         public Timer BossCombatTimer { get; set; } = null;
         public static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         // List of Adds that the Boss can spawn
         public List<BossSpawn> AddDictionary;
+
         public List<BossSpawn> SpawnDictionary;
         public int PlayerDeathsCount { get; set; } = 0;
+
         // List of CC that the Boss is immune to.
         public List<GameData.CrowdControlTypes> CrowdControlImmunities { get; set; }
+
         // Whether the boss can be knockedback/down
         public bool CanBeKnockedBack { get; set; }
+
         public bool CanBeTaunted { get; set; }
         public int BossCombatTimerInterval { get; set; } = 30000;
-        
 
         public override string Name => Spawn.Proto.Name;
 
@@ -57,12 +54,11 @@ namespace WorldServer.World.Objects
 
             foreach (var crowdControlImmunity in CrowdControlImmunities)
             {
-                AddCrowdControlImmunity((int) crowdControlImmunity);
+                AddCrowdControlImmunity((int)crowdControlImmunity);
             }
 
             BossCombatTimer.Enabled = false;
         }
-
 
         public override void Update(long msTick)
         {
@@ -83,11 +79,9 @@ namespace WorldServer.World.Objects
         {
             BossCombatTimer.Interval = BossCombatTimerInterval;
 
-                if (this.AiInterface.CurrentBrain is BossBrain)
+            if (this.AiInterface.CurrentBrain is BossBrain)
             {
                 (this.AiInterface.CurrentBrain as BossBrain).ExecuteStartUpAbilities();
-
-               
             }
 
             return false;
@@ -95,7 +89,6 @@ namespace WorldServer.World.Objects
 
         public virtual bool OnLeaveCombat(Object mob, object args)
         {
-            
             //// reset all Modify Scalers
             //ModifyDmgHealScaler = 1f;
             //List<Player> plrs = GetPlayersInRange(300, false);
@@ -143,7 +136,6 @@ namespace WorldServer.World.Objects
 
         protected override void SetRespawnTimer()
         {
-
         }
 
         protected override void SetDeath(Unit killer)
@@ -191,7 +183,6 @@ namespace WorldServer.World.Objects
                         if (!player.HasLockout((ushort)ZoneId, BossProtoId))
                         {
                             lootContainer.SendInteract(player, menu);
-                            
                         }
                     }
                 }
@@ -204,8 +195,6 @@ namespace WorldServer.World.Objects
                 }
             }
         }
-
-
 
         public override string ToString()
         {

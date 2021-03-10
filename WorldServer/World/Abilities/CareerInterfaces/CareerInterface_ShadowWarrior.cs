@@ -2,7 +2,7 @@
 
 namespace WorldServer.World.Abilities.CareerInterfaces
 {
-    class CareerInterface_ShadowWarrior : CareerInterface
+    internal class CareerInterface_ShadowWarrior : CareerInterface
     {
         public CareerInterface_ShadowWarrior(Player player) : base(player)
         {

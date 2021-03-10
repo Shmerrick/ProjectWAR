@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using GameData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common;
-using FrameWork;
-using GameData;
 using WorldServer.Managers;
 using WorldServer.World.Objects;
 using Object = WorldServer.World.Objects.Object;
@@ -17,7 +17,7 @@ namespace WorldServer.World.Interfaces
         private Player _player;
 
         private readonly Dictionary<uint, Character_social> _friendCharacterIds = new Dictionary<uint, Character_social>();
-        private readonly Dictionary<uint, Character_social> _ignoreCharacterIds = new Dictionary<uint, Character_social>();  
+        private readonly Dictionary<uint, Character_social> _ignoreCharacterIds = new Dictionary<uint, Character_social>();
 
         public List<Character_social> GetFriendList()
         {
@@ -60,7 +60,6 @@ namespace WorldServer.World.Interfaces
             {
                 if (_player != null)
                 {
-
                     _player.Info.Hidden = false;   // Force hidden disabled.
                     CharMgr.Database.SaveObject(_player.Info);
                     //CharMgr.Database.ForceSave();
@@ -75,7 +74,7 @@ namespace WorldServer.World.Interfaces
 
         public override void SetOwner(Object obj)
         {
-            _player = (Player) obj;
+            _player = (Player)obj;
         }
 
         public override bool Load()
@@ -111,7 +110,6 @@ namespace WorldServer.World.Interfaces
                                 _ignoreCharacterIds.Add(social.DistCharacterId, social);
                             }
                         }
-
 
                         if (social.Friend == 1)
                         {
@@ -154,10 +152,10 @@ namespace WorldServer.World.Interfaces
 
             foreach (var friend in players)
             {
-                if(friend != _player)
+                if (friend != _player)
                     if (friend.SocInterface.HasFriend(_player.CharacterId) && (!HasIgnore(friend.CharacterId) || friend.GmLevel != 1)) //notify people who have this char as friend, except ones ignored.
                     {
-                        if(sendOnlineText)
+                        if (sendOnlineText)
                             friend.SendLocalizeString(_player.Name, ChatLogFilters.CHATLOGFILTERS_SHOUT, Localized_text.TEXT_SN_FRIEND_LOGON);
                         friend.SocInterface.SendFriend(_player, true);
                     }
@@ -189,6 +187,7 @@ namespace WorldServer.World.Interfaces
             lock (_friendCharacterIds)
                 return _friendCharacterIds.ContainsKey(characterId);
         }
+
         public bool HasIgnore(uint characterId)
         {
             lock (_ignoreCharacterIds)
@@ -317,7 +316,7 @@ namespace WorldServer.World.Interfaces
                 CharMgr.Database.DeleteObject(social);
             }
 
-            lock(_friendCharacterIds)
+            lock (_friendCharacterIds)
                 _friendCharacterIds.Remove(social.DistCharacterId);
 
             //CharMgr.Database.ForceSave();
@@ -342,7 +341,7 @@ namespace WorldServer.World.Interfaces
             }
             bool applyIgnore = true;
 
-            lock(_ignoreCharacterIds)
+            lock (_ignoreCharacterIds)
                 if (_ignoreCharacterIds.ContainsKey(characterId))
                     applyIgnore = false;
 
@@ -483,7 +482,6 @@ namespace WorldServer.World.Interfaces
                 noHide);
         }
 
-
         public void SendFriend(Player Plr, bool online)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_SOCIAL_NETWORK, 25 + (online ? 1 : Plr.Info.Name.Length + Plr.GldInterface.GetGuildName().Length));
@@ -565,6 +563,5 @@ namespace WorldServer.World.Interfaces
             Out.WriteByte((byte)(players.Count > MAX_SEND ? 1 : 0));
             _player.SendPacket(Out);
         }
-
     }
 }

@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using FrameWork;
+using System.Collections.Generic;
 using System.Linq;
-using FrameWork;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Positions;
 using WorldServer.World.Scripting;
@@ -9,7 +9,7 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 38829, 0)]
-    class GlompdaSquigMasta : BasicGunbad
+    internal class GlompdaSquigMasta : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -125,7 +125,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
                 Stage = 0; // Setting control value to 0
             }
 
-            if (c.Health < c.TotalHealth * 0.3  && Stage < 4 && !c.IsDead) // At 20% HP he fails to summon anything
+            if (c.Health < c.TotalHealth * 0.3 && Stage < 4 && !c.IsDead) // At 20% HP he fails to summon anything
             {
                 ApplyIronSkin();
 
@@ -133,7 +133,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
 
                 SquigForm(1);
 
-                c.Say("I almost 'ad ya!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY); 
+                c.Say("I almost 'ad ya!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
 
                 c.PlayEffect(2185); // Mount puff effect
 
@@ -276,9 +276,9 @@ namespace WorldServer.World.Objects.Instances.Gunbad
                 c.OSInterface.RemoveEffect(1); // State 1 Champ, State 7 Super Champ
 
             AggroInfo aggro = c.AiInterface.CurrentBrain.GetMaxAggroHate();
-            
+
             if (aggro != null)
-            { 
+            {
                 foreach (Player player in c.PlayersInRange)
                 {
                     if (c.PlayersInRange.ToList().Count() == 1 || (player != null && aggro.Oid != player.Oid))
@@ -293,7 +293,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 2000864, 0)]
-    class SkeweringGlompSquig : BasicGunbad
+    internal class SkeweringGlompSquig : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -303,7 +303,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 2000865, 0)]
-    class StinkspewinGlompSquig : BasicGunbad
+    internal class StinkspewinGlompSquig : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -313,7 +313,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 2000866, 0)]
-    class SpikestabbinGlompSquig : BasicGunbad
+    internal class SpikestabbinGlompSquig : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {

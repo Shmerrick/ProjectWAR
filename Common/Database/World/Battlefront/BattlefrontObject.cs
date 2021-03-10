@@ -49,6 +49,5 @@ namespace Common.Database.World.BattleFront
         /// <summary>Orientation, 0 if Type == WARCAMP_ENTRANCE</summary>
         [DataElement(AllowDbNull = false)]
         public int O { get; set; }
-
     }
 }

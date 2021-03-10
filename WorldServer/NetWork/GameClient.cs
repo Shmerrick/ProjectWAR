@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Common;
-using FrameWork;
 using WorldServer.World.Objects;
 
 namespace WorldServer.NetWork
@@ -19,7 +19,7 @@ namespace WorldServer.NetWork
         Playing = 0x04,
         Linkdead = 0x05,
         Disconnected = 0x06
-    } ;
+    };
 
     public class GameClient : BaseClient
     {
@@ -41,7 +41,6 @@ namespace WorldServer.NetWork
         public GameClient(TCPManager srv)
             : base(srv)
         {
-
         }
 
         public override void OnConnect()
@@ -49,6 +48,7 @@ namespace WorldServer.NetWork
             Log.Debug("WorldServer..Connection", GetIp());
             State = (int)eClientState.Connecting;
         }
+
         public override void OnDisconnect(string reason)
         {
             string ipString = GetIp();
@@ -81,10 +81,12 @@ namespace WorldServer.NetWork
         {
             return State == (int)eClientState.Playing;
         }
+
         public bool HasPlayer()
         {
             return Plr != null;
         }
+
         public bool HasAccount()
         {
             return _Account != null;
@@ -94,7 +96,7 @@ namespace WorldServer.NetWork
         private long _packetSize;
 
         public bool ReadingData;
-        public ushort SequenceID,SessionID,Unk1;
+        public ushort SequenceID, SessionID, Unk1;
         public byte Unk2;
 
         private void LogInPacket(PacketIn packet)
@@ -105,7 +107,7 @@ namespace WorldServer.NetWork
                 _logThread.Start();
             }
 
-            lock(_packetLog)
+            lock (_packetLog)
             {
                 _packetLog.Add(Utils.ToLogHexString((byte)packet.Opcode, false, packet.ToArray()));
             }
@@ -136,10 +138,11 @@ namespace WorldServer.NetWork
                 Thread.Sleep(5000);
             }
         }
+
         private void FlushPacketLog()
         {
             var packets = new List<String>();
-            lock(_packetLog)
+            lock (_packetLog)
             {
                 packets = _packetLog.ToList();
                 _packetLog.Clear();
@@ -161,7 +164,7 @@ namespace WorldServer.NetWork
 
         public override void SendPacket(PacketOut packet)
         {
-            if(PacketLog)
+            if (PacketLog)
                 LogOutPacket(packet);
 
             PLogBuf.Enqueue(packet);
@@ -175,7 +178,6 @@ namespace WorldServer.NetWork
                 LogOutPacket(packet);
 
             PLogBuf.Enqueue(packet);
-
 
             return base.SendPacketNoBlock(packet);
         }
@@ -220,7 +222,7 @@ namespace WorldServer.NetWork
                         if (bufferLength < _packetSize + 10)
                             return;
 
-                        inStream.Size = (ulong)_packetSize+10;
+                        inStream.Size = (ulong)_packetSize + 10;
                         Decrypt(inStream);
 
                         SequenceID = inStream.GetUint16();
@@ -243,13 +245,13 @@ namespace WorldServer.NetWork
 
                         if (bufferLength >= _packetSize + 2)
                         {
-                            byte[] bPack = new byte[_packetSize+2];
+                            byte[] bPack = new byte[_packetSize + 2];
                             inStream.Read(bPack, 0, (int)(_packetSize + 2));
 
                             PacketIn packet = new PacketIn(bPack, 0, bPack.Length)
                             {
                                 Opcode = _opcode,
-                                Size = (ulong) _packetSize
+                                Size = (ulong)_packetSize
                             };
 
                             if (PacketLog)

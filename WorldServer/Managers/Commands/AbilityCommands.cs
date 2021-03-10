@@ -1,15 +1,12 @@
 ﻿using FrameWork;
+using GameData;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using static WorldServer.Managers.Commands.GMUtils;
-using GameData;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Objects;
+using static WorldServer.Managers.Commands.GMUtils;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.Managers.Commands
@@ -32,7 +29,6 @@ namespace WorldServer.Managers.Commands
 
             plr.SendClientMessage("Added " + statValue + " to " + Enum.GetName(typeof(Stats), statType));
             return true;
-
         }
 
         /// <summary>
@@ -64,7 +60,6 @@ namespace WorldServer.Managers.Commands
             plr.SendPacket(Out);
 
             return true;
-
         }
 
         /// <summary>
@@ -160,19 +155,18 @@ namespace WorldServer.Managers.Commands
         /// <returns>True if command was correctly handled, false if operation was canceled</returns>
         public static bool ExperimentalMode(Player plr, ref List<string> values)
         {
-         /*   if (plr.CbtInterface.IsInCombat)
-            {
-                plr.SendClientMessage("This command cannot be invoked if you are in combat.");
-                return true;
-            }
+            /*   if (plr.CbtInterface.IsInCombat)
+               {
+                   plr.SendClientMessage("This command cannot be invoked if you are in combat.");
+                   return true;
+               }
 
-            plr.CrrInterface.SetExperimentalMode(true);
+               plr.CrrInterface.SetExperimentalMode(true);
 
-            return true;*/
+               return true;*/
             plr.SendClientMessage("This command is no longer available");
             return true;
         }
-
 
         /// <summary>
         /// Displays a list of changes made to the career.
@@ -248,26 +242,26 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-		/// <summary>
-		/// Gets the complete ability list of target (creature).
-		/// </summary>
-		/// <param name="plr">Player that initiated the command</param>
-		/// <param name="values">NPCAbility list of target</param>
-		/// <returns></returns>
-		public static bool GetAbilityList(Player plr, ref List<string> values)
-		{
-			Creature obj = GetObjectTarget(plr) as Creature;
-			if (obj == null)
-				return false;
+        /// <summary>
+        /// Gets the complete ability list of target (creature).
+        /// </summary>
+        /// <param name="plr">Player that initiated the command</param>
+        /// <param name="values">NPCAbility list of target</param>
+        /// <returns></returns>
+        public static bool GetAbilityList(Player plr, ref List<string> values)
+        {
+            Creature obj = GetObjectTarget(plr) as Creature;
+            if (obj == null)
+                return false;
 
-			plr.SendClientMessage("All loaded abilities of target <Entry, Name>:");
+            plr.SendClientMessage("All loaded abilities of target <Entry, Name>:");
 
-			foreach (NPCAbility ab in obj.AbtInterface.NPCAbilities)
-			{
-				plr.SendClientMessage("<" + ab.Entry + ", " + AbilityMgr.GetAbilityInfo(ab.Entry).Name + ">");
-			}
+            foreach (NPCAbility ab in obj.AbtInterface.NPCAbilities)
+            {
+                plr.SendClientMessage("<" + ab.Entry + ", " + AbilityMgr.GetAbilityInfo(ab.Entry).Name + ">");
+            }
 
-			return true;
-		}
-	}
+            return true;
+        }
+    }
 }

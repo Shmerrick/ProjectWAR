@@ -1,5 +1,5 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -90,7 +90,7 @@ namespace Common
         }
 
         [DataElement(AllowDbNull = false)]
-        public byte Emote   
+        public byte Emote
         {
             get { return _Emote; }
             set { _Emote = value; Dirty = true; }

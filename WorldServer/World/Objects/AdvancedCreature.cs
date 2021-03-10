@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BehaviourTree;
+﻿using BehaviourTree;
 using Common;
 using FrameWork;
 using NLog;
-using WorldServer.World.AI;
-using WorldServer.World.AI.BT;
+using System;
+using System.Collections.Generic;
 
 namespace WorldServer.World.Objects
 {
@@ -46,20 +41,17 @@ namespace WorldServer.World.Objects
                 BaseRadius = spawn.Proto.BaseRadiusUnits * (Scale / 50f) / UNITS_TO_FEET;
             else
                 BaseRadius *= (Scale / 50f);
-
-            
         }
+
         public new long GetTimeStampInMilliseconds()
         {
             return DateTime.Now.Millisecond;
         }
-
 
         public override void OnLoad()
         {
             _logger.Trace($"Calling AdvCreature.OnLoad");
             base.OnLoad();
         }
-
     }
 }

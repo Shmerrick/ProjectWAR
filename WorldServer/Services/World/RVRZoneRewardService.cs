@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common.Database.World.Battlefront;
+﻿using Common.Database.World.Battlefront;
 using FrameWork;
-using GameData;
+using System.Collections.Generic;
 using WorldServer.World.Objects;
 
 namespace WorldServer.Services.World
@@ -80,7 +75,5 @@ namespace WorldServer.Services.World
             RVRKeepLockRewards = Database.SelectAllObjects<RVRKeepLockReward>() as List<RVRKeepLockReward>;
             if (RVRKeepLockRewards != null) Log.Success("RVRKeepLockRewards", "Loaded " + RVRKeepLockRewards.Count + " RVRKeepLockRewards");
         }
-
     }
-
 }

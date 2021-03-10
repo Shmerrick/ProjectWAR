@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Common.Database.World.Battlefront;
+﻿using Common.Database.World.Battlefront;
 using FrameWork;
+using System;
+using System.Collections.Generic;
 
 namespace Common
 {
@@ -76,7 +74,6 @@ namespace Common
             set { _PQuestId = value; Dirty = true; }
         }
 
-
         [DataElement(AllowDbNull = false)]
         public int X { get; set; }
 
@@ -136,8 +133,6 @@ namespace Common
 
         [DataElement(AllowDbNull = false)]
         public int OilOuter2O { get; set; }
-
-
 
         // RB   5/15/2016   Fixed Ram locations in DB
 
@@ -199,6 +194,5 @@ namespace Common
         public List<Keep_Creature> Creatures;
         public List<Keep_Door> Doors;
         public PQuest_Info PQuest;
-
     }
 }

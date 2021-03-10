@@ -45,8 +45,10 @@ namespace WorldServer.World.Abilities.Components
         Morale = 1,
         Tactic = 2,
         Career = 3,
+
         /// <summary>Buff class intended to exclude the buff from all auto-removal algorithms (debolster...)</summary>
         Persist = 4,
+
         MaxBuffClasses = 5
     }
 

@@ -1,8 +1,5 @@
 ﻿using FrameWork;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Common
 {
@@ -21,7 +18,7 @@ namespace Common
 
         [DataElement]
         public string ttkPerBoss { get; set; }
-        
+
         [DataElement]
         public string deathCountPerBoss { get; set; }
 

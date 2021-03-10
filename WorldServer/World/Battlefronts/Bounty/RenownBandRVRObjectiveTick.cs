@@ -1,5 +1,5 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
@@ -11,19 +11,24 @@ namespace WorldServer.World.Battlefronts.Bounty
     [Serializable]
     public class RenownBandRVRObjectiveTick : DataObject
     {
-
         [PrimaryKey]
         public int RenownBand { get; set; }
+
         [DataElement(AllowDbNull = false)]
         public uint CrestId { get; set; }
+
         [DataElement(AllowDbNull = false)]
         public uint Money { get; set; }
+
         [DataElement(AllowDbNull = false)]
         public uint CrestCount { get; set; }
+
         [DataElement(AllowDbNull = false)]
         public uint BaseRP { get; set; }
+
         [DataElement(AllowDbNull = false)]
         public uint BaseXP { get; set; }
+
         [DataElement(AllowDbNull = false)]
         public uint BaseInf { get; set; }
 
@@ -33,4 +38,3 @@ namespace WorldServer.World.Battlefronts.Bounty
         }
     }
 }
- 

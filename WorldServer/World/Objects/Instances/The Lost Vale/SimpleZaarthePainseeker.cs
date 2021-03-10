@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
-using Common;
 using WorldServer.World.AI;
 
 namespace WorldServer.World.Objects.Instances.The_Lost_Vale
@@ -8,6 +8,7 @@ namespace WorldServer.World.Objects.Instances.The_Lost_Vale
     public class SimpleZaarthePainseeker : InstanceBossSpawn
     {
         #region Constructors
+
         public SimpleZaarthePainseeker(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
@@ -71,6 +72,7 @@ namespace WorldServer.World.Objects.Instances.The_Lost_Vale
                 return;
             }
         }
+
         //private void CheckBossRageTimer()
         //{
         //	// check rage timer

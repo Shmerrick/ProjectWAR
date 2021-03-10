@@ -1,10 +1,8 @@
-﻿using System;
-
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
-
     [DataTable(PreCache = false, TableName = "zone_areas", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class Zone_Area : DataObject

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -21,7 +17,7 @@ namespace Common
         [DataElement(AllowDbNull = false)]
         public byte Realm { get; set; }
 
-        [DataElement(AllowDbNull=false)]
+        [DataElement(AllowDbNull = false)]
         public ushort PinX { get; set; }
 
         [DataElement(AllowDbNull = false)]

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Common;
-using FrameWork;
 using WorldServer.Managers;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Objects;
@@ -16,20 +16,23 @@ namespace WorldServer.World.Abilities
 
         // Abilities
         public static Dictionary<ushort, AbilityInfo> NewAbilityVolatiles = new Dictionary<ushort, AbilityInfo>();
+
         public static Dictionary<ushort, List<AbilityCommandInfo>> AbilityCommandInfos = new Dictionary<ushort, List<AbilityCommandInfo>>();
 
         // Modifiers
         public static Dictionary<ushort, List<AbilityModifier>> AbilityPreCastModifiers = new Dictionary<ushort, List<AbilityModifier>>();
+
         public static Dictionary<ushort, List<AbilityModifier>> AbilityModifiers = new Dictionary<ushort, List<AbilityModifier>>();
         public static Dictionary<ushort, List<AbilityModifier>> AbilityDelayedModifiers = new Dictionary<ushort, List<AbilityModifier>>();
         public static Dictionary<ushort, List<AbilityModifier>> BuffModifiers = new Dictionary<ushort, List<AbilityModifier>>();
 
         // Buffs
         public static Dictionary<ushort, BuffInfo> BuffInfos = new Dictionary<ushort, BuffInfo>();
+
         public static Dictionary<ushort, List<BuffCommandInfo>> BuffCommandInfos = new Dictionary<ushort, List<BuffCommandInfo>>();
-        
+
         // Knockback
-        public static Dictionary<ushort, List<AbilityKnockbackInfo>> KnockbackInfos = new Dictionary<ushort, List<AbilityKnockbackInfo>>(); 
+        public static Dictionary<ushort, List<AbilityKnockbackInfo>> KnockbackInfos = new Dictionary<ushort, List<AbilityKnockbackInfo>>();
 
         // Extra Damage Info (type-2 damage)
         public static Dictionary<ushort, List<List<AbilityDamageInfo>>> ExtraDamage = new Dictionary<ushort, List<List<AbilityDamageInfo>>>();
@@ -53,7 +56,7 @@ namespace WorldServer.World.Abilities
 
             ExtraDamage.Clear();
 
-            for(byte i=0;i<24;++i)
+            for (byte i = 0; i < 24; ++i)
                 CareerAbilities[i].Clear();
 
             LoadNewAbilityInfo();
@@ -68,7 +71,7 @@ namespace WorldServer.World.Abilities
 
             #region Database
 
-            List<DBAbilityInfo> dbAbilities = (List<DBAbilityInfo>) db.SelectAllObjects<DBAbilityInfo>();
+            List<DBAbilityInfo> dbAbilities = (List<DBAbilityInfo>)db.SelectAllObjects<DBAbilityInfo>();
 
             List<AbilityInfo> abVolatiles = AbilityInfo.Convert(dbAbilities);
             Dictionary<ushort, AbilityConstants> abConstants = AbilityConstants.Convert(dbAbilities).ToDictionary(key => key.Entry);
@@ -87,7 +90,8 @@ namespace WorldServer.World.Abilities
             List<BuffCommandInfo> slaveBuffCommands = new List<BuffCommandInfo>();
 
             Dictionary<ushort, int> damageTypeDictionary = new Dictionary<ushort, int>();
-            #endregion
+
+            #endregion Database
 
             for (byte i = 0; i < 24; ++i)
                 CareerAbilities[i] = new List<AbilityInfo>();
@@ -108,7 +112,6 @@ namespace WorldServer.World.Abilities
 
                             AbilityPreCastModifiers[check.Entry][check.ID].AddCheck(check);
                         }
-
                         else
                         {
                             if (AbilityPreCastModifiers[check.Entry].Count == check.ID)
@@ -126,7 +129,6 @@ namespace WorldServer.World.Abilities
                                 AbilityModifiers[check.Entry].Add(new AbilityModifier(check.Entry, check.Affecting));
                             AbilityModifiers[check.Entry][check.ID].AddCheck(check);
                         }
-
                         else
                         {
                             if (AbilityModifiers[check.Entry].Count == check.ID)
@@ -134,6 +136,7 @@ namespace WorldServer.World.Abilities
                             AbilityModifiers[check.Entry][check.ID].AddCheck(check);
                         }
                         break;
+
                     case 2:
                         if (!BuffModifiers.ContainsKey(check.Entry))
                         {
@@ -142,7 +145,6 @@ namespace WorldServer.World.Abilities
                                 BuffModifiers[check.Entry].Add(new AbilityModifier(check.Entry, check.Affecting));
                             BuffModifiers[check.Entry][check.ID].AddCheck(check);
                         }
-
                         else
                         {
                             if (BuffModifiers[check.Entry].Count == check.ID)
@@ -150,6 +152,7 @@ namespace WorldServer.World.Abilities
                             BuffModifiers[check.Entry][check.ID].AddCheck(check);
                         }
                         break;
+
                     case 3:
                         if (!AbilityDelayedModifiers.ContainsKey(check.Entry))
                         {
@@ -160,7 +163,6 @@ namespace WorldServer.World.Abilities
 
                             AbilityDelayedModifiers[check.Entry][check.ID].AddCheck(check);
                         }
-
                         else
                         {
                             if (AbilityDelayedModifiers[check.Entry].Count == check.ID)
@@ -171,13 +173,13 @@ namespace WorldServer.World.Abilities
                 }
             }
 
-            #endregion
+            #endregion AbilityChecks
 
             #region AbilityModifiers
 
             foreach (AbilityModifierEffect effect in abMods)
             {
-                switch(effect.PreOrPost)
+                switch (effect.PreOrPost)
                 {
                     case 0:
                         if (!AbilityPreCastModifiers.ContainsKey(effect.Entry))
@@ -186,7 +188,6 @@ namespace WorldServer.World.Abilities
                             AbilityPreCastModifiers[effect.Entry].Add(new AbilityModifier(effect.Entry, effect.Affecting));
                             AbilityPreCastModifiers[effect.Entry][0].AddModifier(effect);
                         }
-
                         else
                         {
                             if (AbilityPreCastModifiers[effect.Entry].Count == effect.Sequence)
@@ -194,6 +195,7 @@ namespace WorldServer.World.Abilities
                             AbilityPreCastModifiers[effect.Entry][effect.Sequence].AddModifier(effect);
                         }
                         break;
+
                     case 1:
                         if (!AbilityModifiers.ContainsKey(effect.Entry))
                         {
@@ -201,7 +203,6 @@ namespace WorldServer.World.Abilities
                             AbilityModifiers[effect.Entry].Add(new AbilityModifier(effect.Entry, effect.Affecting));
                             AbilityModifiers[effect.Entry][0].AddModifier(effect);
                         }
-
                         else
                         {
                             if (AbilityModifiers[effect.Entry].Count == effect.Sequence)
@@ -209,6 +210,7 @@ namespace WorldServer.World.Abilities
                             AbilityModifiers[effect.Entry][effect.Sequence].AddModifier(effect);
                         }
                         break;
+
                     case 2:
                         if (!BuffModifiers.ContainsKey(effect.Entry))
                         {
@@ -216,7 +218,6 @@ namespace WorldServer.World.Abilities
                             BuffModifiers[effect.Entry].Add(new AbilityModifier(effect.Entry, effect.Affecting));
                             BuffModifiers[effect.Entry][0].AddModifier(effect);
                         }
-
                         else
                         {
                             if (BuffModifiers[effect.Entry].Count == effect.Sequence)
@@ -224,6 +225,7 @@ namespace WorldServer.World.Abilities
                             BuffModifiers[effect.Entry][effect.Sequence].AddModifier(effect);
                         }
                         break;
+
                     case 3:
                         if (!AbilityDelayedModifiers.ContainsKey(effect.Entry))
                         {
@@ -231,7 +233,6 @@ namespace WorldServer.World.Abilities
                             AbilityDelayedModifiers[effect.Entry].Add(new AbilityModifier(effect.Entry, effect.Affecting));
                             AbilityDelayedModifiers[effect.Entry][0].AddModifier(effect);
                         }
-
                         else
                         {
                             if (AbilityDelayedModifiers[effect.Entry].Count == effect.Sequence)
@@ -241,7 +242,8 @@ namespace WorldServer.World.Abilities
                         break;
                 }
             }
-            #endregion
+
+            #endregion AbilityModifiers
 
             #region CommandInfo
 
@@ -250,7 +252,6 @@ namespace WorldServer.World.Abilities
             {
                 if (abCommand.CommandSequence != 0)
                     slaveCommands.Add(abCommand);
-
                 else
                 {
                     if (!AbilityCommandInfos.ContainsKey(abCommand.Entry))
@@ -268,7 +269,7 @@ namespace WorldServer.World.Abilities
                     Log.Debug("AbilityMgr", "Slave command with entry " + slaveCommand.Entry + " and depending upon master command ID " + slaveCommand.CommandID + " has no master!");
             }
 
-            #endregion
+            #endregion CommandInfo
 
             #region BuffCommands
 
@@ -292,7 +293,7 @@ namespace WorldServer.World.Abilities
                     Log.Debug("AbilityMgr", "Slave buff command with entry " + slaveBuffCommand.Entry + " and depending upon master command ID " + slaveBuffCommand.CommandID + " has no master!");
             }
 
-            #endregion
+            #endregion BuffCommands
 
             #region Damage/Heals
 
@@ -301,7 +302,7 @@ namespace WorldServer.World.Abilities
             {
                 if (abDmgHeal.DisplayEntry == 0)
                     abDmgHeal.DisplayEntry = abDmgHeal.Entry;
-                switch(abDmgHeal.Index)
+                switch (abDmgHeal.Index)
                 {
                     case 0:
                         if (AbilityCommandInfos.ContainsKey(abDmgHeal.Entry))
@@ -333,6 +334,7 @@ namespace WorldServer.World.Abilities
                                 damageTypeDictionary.Add(abDmgHeal.Entry, (int)abDmgHeal.DamageType);
                         }
                         break;
+
                     case 2:
                         if (!ExtraDamage.ContainsKey(abDmgHeal.Entry))
                             ExtraDamage.Add(abDmgHeal.Entry, new List<List<AbilityDamageInfo>>());
@@ -340,12 +342,13 @@ namespace WorldServer.World.Abilities
                             ExtraDamage[abDmgHeal.Entry].Add(new List<AbilityDamageInfo>());
                         ExtraDamage[abDmgHeal.Entry][abDmgHeal.ParentCommandID].Add(abDmgHeal);
                         break;
+
                     default:
                         throw new Exception("Invalid index specified for ability damage with ID " + abDmgHeal.Entry);
                 }
             }
 
-            #endregion
+            #endregion Damage/Heals
 
             #region KnockbackInfo
 
@@ -356,7 +359,7 @@ namespace WorldServer.World.Abilities
                 KnockbackInfos[kbInfo.Entry].Add(kbInfo);
             }
 
-            #endregion
+            #endregion KnockbackInfo
 
             // Volatiles -> Constants
             //           -> Commands -> DamageHeals
@@ -383,7 +386,7 @@ namespace WorldServer.World.Abilities
 
                     if (damageTypeDictionary.ContainsKey(abConstant.Entry))
                     {
-                        if (damageTypeDictionary[abConstant.Entry] == (ushort) DamageTypes.Healing || damageTypeDictionary[abConstant.Entry] == (ushort) DamageTypes.RawHealing)
+                        if (damageTypeDictionary[abConstant.Entry] == (ushort)DamageTypes.Healing || damageTypeDictionary[abConstant.Entry] == (ushort)DamageTypes.RawHealing)
                             abConstant.IsHealing = true;
                         else abConstant.IsDamaging = true;
                     }
@@ -401,7 +404,7 @@ namespace WorldServer.World.Abilities
                 }
             }
 
-            #endregion
+            #endregion ConstantInfo
 
             #region Damage to ConstantInfo linkage
 
@@ -411,7 +414,7 @@ namespace WorldServer.World.Abilities
                     damageInfo.MasteryTree = abConstants[damageInfo.Entry].MasteryTree;
             }
 
-            #endregion
+            #endregion Damage to ConstantInfo linkage
 
             #region Buff/Command linkage
 
@@ -427,7 +430,7 @@ namespace WorldServer.World.Abilities
                     buffInfo.MasteryTree = abConstants[buffInfo.Entry].MasteryTree;
             }
 
-            #endregion
+            #endregion Buff/Command linkage
 
             Log.Success("AbilityMgr", "Finished loading " + NewAbilityVolatiles.Count + " abilities and " + BuffInfos.Count + " buffs!");
 
@@ -474,8 +477,9 @@ namespace WorldServer.World.Abilities
             return null;
         }
 
-        #endregion
-        #endregion
+        #endregion Creature Abilities
+
+        #endregion Ability System Setup
 
         #region Accessors
 
@@ -483,6 +487,7 @@ namespace WorldServer.World.Abilities
         {
             return AbilityPreCastModifiers.ContainsKey(entry);
         }
+
         public static List<AbilityModifier> GetAbilityPreCastModifiers(ushort entry)
         {
             return AbilityPreCastModifiers.ContainsKey(entry) ? AbilityPreCastModifiers[entry] : null;
@@ -492,6 +497,7 @@ namespace WorldServer.World.Abilities
         {
             return AbilityModifiers.ContainsKey(entry);
         }
+
         public static List<AbilityModifier> GetAbilityModifiers(ushort entry)
         {
             return AbilityModifiers.ContainsKey(entry) ? AbilityModifiers[entry] : null;
@@ -531,8 +537,7 @@ namespace WorldServer.World.Abilities
             }
 
             return masteryAbilities;
-
-        } 
+        }
 
         public static AbilityInfo GetAbilityInfo(ushort entry)
         {
@@ -541,6 +546,7 @@ namespace WorldServer.World.Abilities
 
             return NewAbilityVolatiles[entry].Clone();
         }
+
         public static string GetAbilityNameFor(ushort abilityEntry)
         {
             if (NewAbilityVolatiles.ContainsKey(abilityEntry))
@@ -549,18 +555,21 @@ namespace WorldServer.World.Abilities
                 return BuffInfos[abilityEntry].Name;
             return "attack";
         }
+
         public static byte GetMasteryTreeFor(ushort entry)
         {
             if (NewAbilityVolatiles.ContainsKey(entry))
                 return NewAbilityVolatiles[entry].ConstantInfo.MasteryTree;
             return 0;
         }
+
         public static ushort GetCooldownFor(ushort entry)
         {
             if (NewAbilityVolatiles.ContainsKey(entry))
                 return NewAbilityVolatiles[entry].Cooldown;
             return 0;
         }
+
         public static AbilityDamageInfo GetExtraDamageFor(ushort entry, byte id, byte index)
         {
             try
@@ -569,10 +578,11 @@ namespace WorldServer.World.Abilities
             }
             catch (Exception)
             {
-                Log.Error("AbilityMgr", "Couldn't get damage info for Entry " + entry + " ID "+ id +" Index " + index);
+                Log.Error("AbilityMgr", "Couldn't get damage info for Entry " + entry + " ID " + id + " Index " + index);
                 return null;
             }
         }
+
         public static bool RequiresResource(ushort entry)
         {
             if (!NewAbilityVolatiles.ContainsKey(entry))
@@ -590,6 +600,7 @@ namespace WorldServer.World.Abilities
         {
             return AbilityCommandInfos.ContainsKey(abilityEntry);
         }
+
         public static void GetCommandsFor(Unit caster, AbilityInfo abInfo)
         {
             if (AbilityCommandInfos.ContainsKey(abInfo.Entry))
@@ -616,12 +627,13 @@ namespace WorldServer.World.Abilities
         {
             return AbilityCommandInfos[entry][comIndex].Clone(caster);
         }
+
         public static AbilityCommandInfo GetAbilityCommand(Unit caster, ushort entry, byte comIndex, byte comSeq)
         {
             return AbilityCommandInfos[entry][comIndex].GetSubcommand(comSeq).Clone(caster);
         }
 
-        #endregion
+        #endregion Accessors
 
         #region Buff Interface
 
@@ -675,6 +687,6 @@ namespace WorldServer.World.Abilities
             return BuffCommandInfos[entry][commandIndex].GetSubcommand(comSeq).CloneChain();
         }
 
-        #endregion
+        #endregion Buff Interface
     }
 }

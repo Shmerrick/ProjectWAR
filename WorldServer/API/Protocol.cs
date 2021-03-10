@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
@@ -14,7 +12,8 @@ namespace WorldServer.API
     public class Protocol
     {
         private Dictionary<Opcodes, FrameDelegate> _handlers = new Dictionary<Opcodes, FrameDelegate>();
-        delegate void FrameDelegate(Client client, ApiPacket packet);
+
+        private delegate void FrameDelegate(Client client, ApiPacket packet);
 
         private List<Client> _clients = new List<Client>();
 
@@ -64,7 +63,6 @@ namespace WorldServer.API
             if (player != null)
                 player.Teleport(zoneId, x, y, (ushort)ClientFileMgr.GetHeight((int)zoneId, (int)x, (int)y), player.Heading);
         }
-
 
         [ControlHandler(Opcodes.CHAR_SEND_PACKET)]
         public void CHAR_SEND_PACKET(Client client, ApiPacket packet)
@@ -122,7 +120,7 @@ namespace WorldServer.API
         {
             var name = packet.ReadPascalString();
             var script = System.Text.ASCIIEncoding.ASCII.GetString(packet.ReadByteArray());
-  
+
             int lineCount = 16;
 
             var template = @"using System;
@@ -197,7 +195,7 @@ namespace WorldServer.API
                 }
                 catch (Exception e)
                 {
-                    if(e.InnerException != null)
+                    if (e.InnerException != null)
                         SendScriptException(client, name, e.InnerException.Message);
                     else
                         SendScriptException(client, name, e.Message);
@@ -242,7 +240,7 @@ namespace WorldServer.API
                 {
                     Out.WriteByte(1);
                     Out.Fill(0, 3);
-                    Item.BuildItem(ref Out, item, null,null ,slotIndex, 0, player);
+                    Item.BuildItem(ref Out, item, null, null, slotIndex, 0, player);
                     var pos = Out.Position;
                     Out.Position = 14;
                     Out.WriteUInt16(modelID);
@@ -290,7 +288,7 @@ namespace WorldServer.API
             client.SendPacket(Out);
         }
 
-        [ControlHandler(Opcodes.GET_CHARACTER_LIST)] 
+        [ControlHandler(Opcodes.GET_CHARACTER_LIST)]
         public void GET_CHARACTER_LIST(Client client, ApiPacket packet)
         {
             var Out = new ApiPacket(Opcodes.CHAR_LIST);
@@ -318,21 +316,20 @@ namespace WorldServer.API
             client.SendPacket(Out);
         }
 
-
         public void SendOK(Client client)
         {
             var packet = new ApiPacket(Opcodes.OK);
             client.SendPacket(packet);
         }
-
     }
+
     public class ControlHandler : Attribute
     {
         public Opcodes OP { get; set; }
+
         public ControlHandler(Opcodes op)
         {
             OP = op;
         }
     }
-
 }

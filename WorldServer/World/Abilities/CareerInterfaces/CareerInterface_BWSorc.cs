@@ -1,13 +1,13 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
 using GameData;
+using System;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Objects;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Abilities.CareerInterfaces
 {
-    public class CareerInterface_BWSorc: CareerInterface
+    public class CareerInterface_BWSorc : CareerInterface
     {
         private ushort _resourceID, _backlashID;
 
@@ -28,7 +28,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             }
             else
             {
-                _resourceID= 348;
+                _resourceID = 348;
                 _backlashID = 291;
             }
         }
@@ -91,7 +91,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                     _decayTimer -= 2000;
                 }
             }
-
             else
                 _decayTimer = 0;
 
@@ -115,9 +114,8 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                 {
                     NoCrits = true,
                     Entry = _backlashID,
-                    Damage = (int) ((_backlashBase + (_backlashGain*(myPlayer.Level - 1)/39))*0.1f*_critDmgBonuses[lastResLevel > 0 ? lastResLevel - 1 : 0])
+                    Damage = (int)((_backlashBase + (_backlashGain * (myPlayer.Level - 1) / 39)) * 0.1f * _critDmgBonuses[lastResLevel > 0 ? lastResLevel - 1 : 0])
                 };
-
 
                 damageOut.WriteUInt16(myPlayer.Oid);
                 damageOut.WriteUInt16(myPlayer.Oid);

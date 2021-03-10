@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Reflection;
 using System.Text;
-using System.IO;
-using System.Xml;
-using System.Data.SqlClient;
-using System.Data.Common;
-using System.Data.SqlTypes;
-using FrameWork.Database.Connection;
-using System.Diagnostics;
 
 namespace FrameWork
 {
@@ -39,42 +32,34 @@ namespace FrameWork
                 Obj = ((double)val).ToString(Nfi);
             else if (val is string)
                 Obj = Escape((string)val);
-
             else if (val is List<byte>)
                 Obj = Utils.ConvertArrayToString<byte>(((List<byte>)val).ToArray());
             else if (val is byte[])
                 Obj = Utils.ConvertArrayToString<byte>(((byte[])val));
-
             else if (val is List<short>)
                 Obj = Utils.ConvertArrayToString<short>(((List<short>)val).ToArray());
             else if (val is short[])
                 Obj = Utils.ConvertArrayToString<short>(((short[])val));
-
             else if (val is List<int>)
                 Obj = Utils.ConvertArrayToString<int>(((List<int>)val).ToArray());
             else if (val is int[])
                 Obj = Utils.ConvertArrayToString<int>(((int[])val));
-
             else if (val is List<uint>)
                 Obj = Utils.ConvertArrayToString<uint>(((List<uint>)val).ToArray());
             else if (val is uint[])
                 Obj = Utils.ConvertArrayToString<uint>(((uint[])val));
-
             else if (val is List<float>)
                 Obj = Utils.ConvertArrayToString<float>(((List<float>)val).ToArray());
             else if (val is float[])
                 Obj = Utils.ConvertArrayToString<float>(((float[])val));
-
             else if (val is List<ulong>)
                 Obj = Utils.ConvertArrayToString<ulong>(((List<ulong>)val).ToArray());
             else if (val is ulong[])
                 Obj = Utils.ConvertArrayToString<ulong>(((ulong[])val));
-
             else if (val is List<long>)
                 Obj = Utils.ConvertArrayToString<long>(((List<long>)val).ToArray());
             else if (val is long[])
                 Obj = Utils.ConvertArrayToString<long>(((long[])val));
-
             else if (val != null)
                 Obj = Escape(val.ToString());
 
@@ -108,42 +93,35 @@ namespace FrameWork
                     obj = Utils.ConvertStringToArray<byte>(val as string).ToArray();
                 else if (type == typeof(List<byte>))
                     obj = Utils.ConvertStringToArray<byte>(val as string);
-
                 else if (type == typeof(short[]))
                     obj = Utils.ConvertStringToArray<short>(val as string).ToArray();
                 else if (type == typeof(List<short>))
                     obj = Utils.ConvertStringToArray<short>(val as string);
-
                 else if (type == typeof(ushort[]))
                     obj = Utils.ConvertStringToArray<ushort>(val as string).ToArray();
                 else if (type == typeof(List<ushort>))
                     obj = Utils.ConvertStringToArray<ushort>(val as string);
-
                 else if (type == typeof(int[]))
                     obj = Utils.ConvertStringToArray<int>(val as string).ToArray();
                 else if (type == typeof(List<int>))
                     obj = Utils.ConvertStringToArray<int>(val as string);
-
                 else if (type == typeof(uint[]))
                     obj = Utils.ConvertStringToArray<uint>(val as string).ToArray();
                 else if (type == typeof(List<uint>))
                     obj = Utils.ConvertStringToArray<uint>(val as string);
-
                 else if (type == typeof(long[]))
                     obj = Utils.ConvertStringToArray<long>(val as string).ToArray();
                 else if (type == typeof(List<long>))
                     obj = Utils.ConvertStringToArray<long>(val as string);
-
                 else if (type == typeof(ulong[]))
                     obj = Utils.ConvertStringToArray<ulong>(val as string).ToArray();
                 else if (type == typeof(List<ulong>))
                     obj = Utils.ConvertStringToArray<ulong>(val as string);
-
                 else if (type == typeof(float[]))
                     obj = Utils.ConvertStringToArray<float>(val as string).ToArray();
                 else if (type == typeof(List<float>))
                     obj = Utils.ConvertStringToArray<float>(val as string);
-                else if (val is long &&  type == typeof(uint))
+                else if (val is long && type == typeof(uint))
                     obj = Convert.ToUInt32(val);
                 else if (val is int && type == typeof(ushort))
                     obj = Convert.ToUInt16(val);
@@ -163,7 +141,6 @@ namespace FrameWork
                     ((PropertyInfo)info).SetValue(Object, obj, null);
                 }
                 else ((FieldInfo)info).SetValue(Object, obj);
-
             }
             catch (Exception e)
             {
@@ -173,7 +150,7 @@ namespace FrameWork
             return null;
         }
 
-        #endregion
+        #endregion Value conversion
 
         #region Insert/Update/Delete
 
@@ -286,7 +263,6 @@ namespace FrameWork
                     _whereBuilder.Append('\'');
                     _whereBuilder.Append(val);
                     _whereBuilder.Append('\'');
-
                 }
 
                 // Add other elements to the SET clause.
@@ -361,7 +337,6 @@ namespace FrameWork
                     _whereBuilder.Append('\'');
                     _whereBuilder.Append(val);
                     _whereBuilder.Append('\'');
-
                 }
             }
 
@@ -420,7 +395,6 @@ namespace FrameWork
 
             try
             {
-                
                 Log.Debug("mssqlObject", sql);
 
                 int res = Connection.ExecuteNonQuery(sql);
@@ -442,7 +416,7 @@ namespace FrameWork
             }
             catch (Exception e)
             {
-                Log.Error("mssqlObject", "Modify error : " + dataObject.TableName + " " + dataObject.ObjectId + e + " SQL:"+ sql);
+                Log.Error("mssqlObject", "Modify error : " + dataObject.TableName + " " + dataObject.ObjectId + e + " SQL:" + sql);
             }
         }
 
@@ -474,7 +448,7 @@ namespace FrameWork
             }
         }
 
-        #endregion
+        #endregion Insert/Update/Delete
 
         #region Transactions
 
@@ -482,9 +456,9 @@ namespace FrameWork
         {
             long startTime = TCPManager.GetTimeStampMS();
 
-           SqlConnection sqlConn = (SqlConnection)Connection.GetConnection();
-           SqlCommand sqlCommand = sqlConn.CreateCommand();
-           SqlTransaction transaction = sqlConn.BeginTransaction();
+            SqlConnection sqlConn = (SqlConnection)Connection.GetConnection();
+            SqlCommand sqlCommand = sqlConn.CreateCommand();
+            SqlTransaction transaction = sqlConn.BeginTransaction();
 
             sqlCommand.Connection = sqlConn;
             sqlCommand.Transaction = transaction;
@@ -546,7 +520,7 @@ namespace FrameWork
             }
         }
 
-        #endregion
+        #endregion Transactions
 
         #region Locators
 
@@ -639,7 +613,7 @@ namespace FrameWork
             return null;
         }
 
-        #endregion
+        #endregion Locators
 
         #region Select
 
@@ -751,7 +725,6 @@ namespace FrameWork
         {
             return "LEN";
         }
-
 
         // Sélectionne tous les objets d'une table
         protected override IList<TObject> SelectObjectsImpl<TObject>(string whereClause, IsolationLevel isolation)
@@ -865,11 +838,11 @@ namespace FrameWork
             return SelectObjectsImpl<TObject>("", isolation);
         }
 
-        #endregion
+        #endregion Select
 
         #region General DB accessor
 
-        ///<summary>Returns the next auto-increment for the supplied object.</summary> 
+        ///<summary>Returns the next auto-increment for the supplied object.</summary>
         protected override int GetNextAutoIncrementImpl<TObject>()
         {
             string sqlQuery = "SELECT * FROM information_schema.TABLES WHERE TABLE_NAME = '" + GetTableOrViewName(typeof(TObject)) + "'";
@@ -885,7 +858,6 @@ namespace FrameWork
 
                     while (reader.Read())
                         nextAutoIncrement = Convert.ToInt32(reader.GetInt64(0));//"AUTO_INCREMENT"));
-
                 }, IsolationLevel.DEFAULT);
             }
             return nextAutoIncrement;
@@ -932,7 +904,7 @@ namespace FrameWork
             return 0;
         }
 
-        #endregion
+        #endregion General DB accessor
 
         /// <summary>
         /// Executes a non-blocking request.

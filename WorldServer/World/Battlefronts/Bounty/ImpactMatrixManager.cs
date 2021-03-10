@@ -1,30 +1,33 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NLog;
 using WorldServer.World.Interfaces;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
-    
     public class ImpactMatrixManager : IImpactMatrixManager
     {
         /// <summary>
-        /// The ImpactMatrix records the list of impacts upon a character (the Key) by an attacker (represented by the Value). 
+        /// The ImpactMatrix records the list of impacts upon a character (the Key) by an attacker (represented by the Value).
         /// </summary>
         public ConcurrentDictionary<uint, List<PlayerImpact>> ImpactMatrix { get; set; }
+
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         // Number of seconds until the impact is removed from the ImpactMatrix.
         public const int IMPACT_EXPIRY_TIME = 60;
+
         // Maximum number of PlayerImpacts to return when calculating a kill
         public const int MAX_REWARD_IMPACT_COUNT = 20;
+
         // Minimum impact value for the record to be stored in the Impact Matrix
         public const int MIN_IMPACT_VALIDITY = 50;
+
         // The multiplier in the log curve for the impact of the bounty differences. Make this higher to see more pronounced effects between RR differences
         public const float MODIFICATION_VALUE_MULTIPLIER = 3f;
+
         protected readonly EventInterface _EvtInterface = new EventInterface();
 
         public ImpactMatrixManager()
@@ -43,8 +46,6 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             _EvtInterface.Update(tick);
         }
-
-
 
         public string ToString(uint characterId)
         {
@@ -66,14 +67,12 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <returns></returns>
         public PlayerImpact UpdateMatrix(uint targetCharacterId, PlayerImpact playerImpact)
         {
-
             // Only add if minimum value passed.
             if (playerImpact.ImpactValue < MIN_IMPACT_VALIDITY)
                 return playerImpact;
 
             lock (ImpactMatrix)
             {
-
                 if (this.ImpactMatrix.ContainsKey(targetCharacterId))
                 {
                     var targetPlayerImpactList = ImpactMatrix[targetCharacterId];
@@ -88,7 +87,6 @@ namespace WorldServer.World.Battlefronts.Bounty
                                 playerImpact.ExpiryTimestamp + IMPACT_EXPIRY_TIME,
                                 playerImpact.ModificationValue,
                                 playerImpact.CharacterId);
-
                         }
                     }
                     // Couldnt find the player in playerimpact, add.
@@ -98,7 +96,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 else
                 {
                     // No dictionary entry
-                    this.ImpactMatrix.TryAdd(targetCharacterId, new List<PlayerImpact> {playerImpact});
+                    this.ImpactMatrix.TryAdd(targetCharacterId, new List<PlayerImpact> { playerImpact });
                     return playerImpact;
                 }
             }
@@ -181,7 +179,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         public int GetTotalImpact(uint targetCharacterId)
         {
             var killImpacts = GetKillImpacts(targetCharacterId);
-            if (killImpacts == null) 
+            if (killImpacts == null)
                 return 0;
             else
             {
@@ -189,10 +187,9 @@ namespace WorldServer.World.Battlefronts.Bounty
             }
         }
 
-
         public float CalculateModificationValue(float targetBaseBounty, float killerBaseBounty)
         {
-            var result =  (float)Math.Log((targetBaseBounty / (killerBaseBounty) + 1), 2) * MODIFICATION_VALUE_MULTIPLIER;
+            var result = (float)Math.Log((targetBaseBounty / (killerBaseBounty) + 1), 2) * MODIFICATION_VALUE_MULTIPLIER;
 
             return result;
         }
@@ -201,8 +198,5 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             return this.ImpactMatrix.ContainsKey(characterId);
         }
-
-    }   
-
-
+    }
 }

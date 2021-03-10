@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CharacterUtility
+﻿namespace CharacterUtility
 {
     public class Character
     {
@@ -25,14 +18,10 @@ namespace CharacterUtility
         public int Realm { get; set; }
 
         public CharacterInfo BaseCharacterInfo { get; set; }
-        
 
         public Character()
         {
             BaseCharacterInfo = new CharacterInfo();
         }
-
-
-
     }
 }

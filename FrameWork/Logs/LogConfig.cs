@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -8,21 +6,20 @@ namespace FrameWork
 {
     public class LogInfo
     {
-        public bool Info=true;
-        public bool Successs=true;
-        public bool Notice=true;
-        public bool Error=true;
+        public bool Info = true;
+        public bool Successs = true;
+        public bool Notice = true;
+        public bool Error = true;
 
         public bool Debug;
         public bool Tcp;
         public bool Dump;
     }
 
-
     public class LogConfig
     {
         public LogInfo Info = new LogInfo();
-        public int _level=1;
+        public int _level = 1;
 
         public string PreFileName = "";
         public string FileName = "Log.txt";
@@ -31,9 +28,9 @@ namespace FrameWork
         public int Level
         {
             get { return _level; }
-            set 
+            set
             {
-                _level = (value < 1 ? 1 : ( value > 4 ? 4 : value) );
+                _level = (value < 1 ? 1 : (value > 4 ? 4 : value));
 
                 switch (_level)
                 {
@@ -52,6 +49,7 @@ namespace FrameWork
                         Info.Info = true;
                         Info.Successs = true;
                         break;
+
                     default:
                         Info.Info = true;
                         Info.Successs = true;
@@ -97,7 +95,6 @@ namespace FrameWork
                 }
                 else
                     Info = S.Deserialize(Stream) as LogInfo;
-
             }
             catch (Exception e)
             {
@@ -107,7 +104,5 @@ namespace FrameWork
 
             return true;
         }
-
-
     }
 }

@@ -1,8 +1,8 @@
-using System;
 using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using System;
 using WorldServer.Services.World;
 using WorldServer.World.Map;
 
@@ -23,14 +23,12 @@ namespace WorldServer.World.Battlefronts.Keeps
             Keep = keep;
         }
 
-
         public void SpawnGuard(Realms realm)
         {
             if (Creature != null)
             {
                 Creature.Destroy();
                 Creature = null;
-
             }
 
             if (realm != Realms.REALMS_REALM_NEUTRAL)
@@ -59,8 +57,7 @@ namespace WorldServer.World.Battlefronts.Keeps
                     Creature = new KeepCreature(spawn, this, Keep);
                     Creature.WaypointGUID = Convert.ToUInt32(Info.WaypointGUID);
                     if (Info.WaypointGUID > 0)
-                        Creature.AiInterface.Waypoints =  WaypointService.GetKeepNpcWaypoints(Info.WaypointGUID);
-
+                        Creature.AiInterface.Waypoints = WaypointService.GetKeepNpcWaypoints(Info.WaypointGUID);
 
                     Region.AddObject(Creature, spawn.ZoneId);
                 }

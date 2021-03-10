@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using FrameWork;
+﻿using FrameWork;
 using GameData;
+using System.Linq;
 using WorldServer.Services.World;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
@@ -11,10 +11,8 @@ namespace WorldServer.World.AI
 {
     public class SlayerBrain : ABrain
     {
-
         public bool potionUsed { get; set; }
         public int nextDetauntAvailable { get; set; }
-
 
         public SlayerBrain(Unit myOwner)
             : base(myOwner)
@@ -27,7 +25,6 @@ namespace WorldServer.World.AI
         {
             if (_unit.IsDead)
                 return;
-
 
             base.Think(tick);
 
@@ -113,8 +110,6 @@ namespace WorldServer.World.AI
                         }
                     }
                 }
-
-
 
                 var rand = StaticRandom.Instance.Next(20);
                 switch (rand)

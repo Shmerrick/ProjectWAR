@@ -1,7 +1,6 @@
 ﻿using Common;
 using FrameWork;
 using System;
-using System.Collections.Generic;
 using SystemData;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
@@ -13,7 +12,6 @@ namespace WorldServer.Managers.Commands
     /// <summary>Game object commands under .go</summary>
     internal class GoCommands
     {
-
         [CommandAttribute(EGmLevel.DatabaseDev, "Spawn an Go")]
         public static void Spawn(Player plr, uint entry)
         {
@@ -97,6 +95,7 @@ namespace WorldServer.Managers.Commands
 #if !DEBUG
         [CommandAttribute(EGmLevel.SourceDev, "Set the health of GO to value percent - 100 is 100%, 50 is 50%")]
 #else
+
         [CommandAttribute(EGmLevel.DatabaseDev, "Set the health of GO to value percent - 100 is 100%, 50 is 50%")]
 #endif
         public static bool Health(Player plr, int healthPercent)

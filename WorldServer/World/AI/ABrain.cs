@@ -1,10 +1,10 @@
-﻿using System;
+﻿using FrameWork;
+using GameData;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using FrameWork;
-using GameData;
-using NLog;
 using WorldServer.Managers;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
@@ -12,9 +12,9 @@ using WorldServer.World.Abilities.Components;
 using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
+using WorldServer.World.Objects.Instances;
 using WorldServer.World.Positions;
 using Object = WorldServer.World.Objects.Object;
-using WorldServer.World.Objects.Instances;
 
 namespace WorldServer.World.AI
 {
@@ -59,7 +59,6 @@ namespace WorldServer.World.AI
 
         public virtual void Think(long tick)
         {
-
         }
 
         public void SpeakYourMind(string message)
@@ -67,8 +66,6 @@ namespace WorldServer.World.AI
             _logger.Debug($"{_unit.Name} : {message}");
             _unit.Say(message);
         }
-        
-        
 
         protected List<Player> GetClosePlayers(int range = 30)
         {
@@ -77,27 +74,29 @@ namespace WorldServer.World.AI
 
         private long _nextDistanceCheckTime;
 
-		#region Combat
-		/// <summary> Causes the NPC to begin attacking the specified unit. </summary>
-		/// <notes>Only needs to be overridden for pets.</notes>
+        #region Combat
 
-		private readonly object _combatStart_LockObj = new object();
-		private long _combatStart;
-		public long CombatStart
-		{
-			get { lock (_combatStart_LockObj) { return _combatStart; } }
-			set { lock (_combatStart_LockObj) { _combatStart = value; } }
-		}
+        /// <summary> Causes the NPC to begin attacking the specified unit. </summary>
+        /// <notes>Only needs to be overridden for pets.</notes>
+
+        private readonly object _combatStart_LockObj = new object();
+        private long _combatStart;
+
+        public long CombatStart
+        {
+            get { lock (_combatStart_LockObj) { return _combatStart; } }
+            set { lock (_combatStart_LockObj) { _combatStart = value; } }
+        }
 
         public virtual bool StartCombat(Unit fighter)
         {
-                if (_unit.IsDead)
+            if (_unit.IsDead)
                 return false;
 
             // We try to buff NPC here
             BuffAtCombatStart();
 
-			CombatStart = TCPManager.GetTimeStampMS();
+            CombatStart = TCPManager.GetTimeStampMS();
 
             GetAggro(fighter.Oid).DamageReceived += 100;
 
@@ -106,7 +105,7 @@ namespace WorldServer.World.AI
             Combat.SetTarget(fighter, TargetTypes.TARGETTYPES_TARGET_ENEMY);
 
             //if (fighter != null && _unit.IsKeepLord)
-                //_unit.Say("Die " + fighter.Name + "!");
+            //_unit.Say("Die " + fighter.Name + "!");
 
             Chase(fighter);
 
@@ -122,24 +121,24 @@ namespace WorldServer.World.AI
 
             if (!RangeOverride)
                 NewRange = crea.Ranged;
-			
-			// set speed to 100 when combat starts for keep patrol guard
-			if (_unit is KeepCreature keepGuard && keepGuard.IsPatrol)
-			{
-				keepGuard.Speed = 100;
-				keepGuard.UpdateSpeed();
-			}
 
-			if (crea == null)
+            // set speed to 100 when combat starts for keep patrol guard
+            if (_unit is KeepCreature keepGuard && keepGuard.IsPatrol)
+            {
+                keepGuard.Speed = 100;
+                keepGuard.UpdateSpeed();
+            }
+
+            if (crea == null)
                 _unit.MvtInterface?.Follow(fighter, Constants.UNITS_TO_FEET_MIN, Constants.UNITS_TO_FEET_MAX, false, ForceMove);
             else if (NewRange == 0)
                 _unit.MvtInterface?.Follow(fighter, (int)crea.BaseRadius, (int)crea.BaseRadius + 1, false, ForceMove);
             else
-                _unit.MvtInterface.Follow(fighter, 
-			Math.Max(Constants.UNITS_TO_FEET_MIN, NewRange - Constants.UNITS_TO_FEET_MIN), 
-			Math.Max(Constants.UNITS_TO_FEET_MAX, NewRange), 
-			false,
-			ForceMove);
+                _unit.MvtInterface.Follow(fighter,
+            Math.Max(Constants.UNITS_TO_FEET_MIN, NewRange - Constants.UNITS_TO_FEET_MIN),
+            Math.Max(Constants.UNITS_TO_FEET_MAX, NewRange),
+            false,
+            ForceMove);
         }
 
         public virtual void Fight()
@@ -188,7 +187,6 @@ namespace WorldServer.World.AI
                         Combat.SetTarget(_pet.AiInterface.GetAttackableUnit(), TargetTypes.TARGETTYPES_TARGET_ENEMY);
                     }
                 }
-
                 else
                 {
                     Unit nextTarget = GetNextTarget();
@@ -197,9 +195,8 @@ namespace WorldServer.World.AI
                         _unit.Say("Die " + nextTarget.Name + "!");
                 }
 
-                    if (Combat.CurrentTarget != null)
+                if (Combat.CurrentTarget != null)
                     StartCombat(Combat.CurrentTarget);
-
                 else
                 {
                     AI.Debugger?.SendClientMessage("[MR]: Failed to acquire a new target. Disengaging.");
@@ -220,6 +217,7 @@ namespace WorldServer.World.AI
                     player.SendClientMessage("[MR]: Unit: " + _unit.Name + " (OID: " + _unit.Oid + ") Current Hate: " + GetAggro(player.Oid).Hatred);
             }
         }
+
         /// <summary>
         /// This method assigns aggro from heals and selects new target, based on current max hate
         /// </summary>
@@ -293,7 +291,7 @@ namespace WorldServer.World.AI
             Combat.SetTarget(null, TargetTypes.TARGETTYPES_TARGET_ENEMY);
 
             _unit.MvtInterface.StopMove();
-			
+
             Aggros = new Dictionary<ushort, AggroInfo>();
 
             if (_pet == null)
@@ -313,7 +311,7 @@ namespace WorldServer.World.AI
 
             _unit.EvtInterface.Notify(EventName.OnLeaveCombat, _unit, null);
             if (_unit is Creature && _unit.AbtInterface.NPCAbilities != null)
-            { 
+            {
                 foreach (NPCAbility ability in _unit.AbtInterface.NPCAbilities)
                     ability.AbilityUsed = 0;
             }
@@ -336,43 +334,43 @@ namespace WorldServer.World.AI
                 Creature npc = (Creature)_unit;
                 npc.BuffInterface.RemoveAllBuffs();
                 npc.ReceiveHeal(null, npc.MaxHealth);
-                
-				if (_unit is KeepCreature keepGuard && keepGuard.IsPatrol
-					&& keepGuard.AiInterface != null && keepGuard.AiInterface.CurrentWaypoint != null)
-				{
-					keepGuard.AiInterface.State = AiState.MOVING;
-					keepGuard.MvtInterface.Move(new Point3D((ushort)keepGuard.AiInterface.CurrentWaypoint.X, (ushort)keepGuard.AiInterface.CurrentWaypoint.Y, (ushort)keepGuard.AiInterface.CurrentWaypoint.Z));
-				}
-				else
-				{
-					npc.SetPosition((ushort)npc.SpawnPoint.X, (ushort)npc.SpawnPoint.Y, (ushort)npc.SpawnPoint.Z, npc.SpawnHeading, npc.Spawn.ZoneId, true);
-				}
-			}
+
+                if (_unit is KeepCreature keepGuard && keepGuard.IsPatrol
+                    && keepGuard.AiInterface != null && keepGuard.AiInterface.CurrentWaypoint != null)
+                {
+                    keepGuard.AiInterface.State = AiState.MOVING;
+                    keepGuard.MvtInterface.Move(new Point3D((ushort)keepGuard.AiInterface.CurrentWaypoint.X, (ushort)keepGuard.AiInterface.CurrentWaypoint.Y, (ushort)keepGuard.AiInterface.CurrentWaypoint.Z));
+                }
+                else
+                {
+                    npc.SetPosition((ushort)npc.SpawnPoint.X, (ushort)npc.SpawnPoint.Y, (ushort)npc.SpawnPoint.Z, npc.SpawnHeading, npc.Spawn.ZoneId, true);
+                }
+            }
         }
 
+        #endregion Combat
 
+        #region Ability Usage
 
-		#endregion
+        private readonly object _nextTryCastTime_LockObj = new object();
+        private long _nextTryCastTime;
 
-		#region Ability Usage
+        public long NextTryCastTime
+        {
+            get { lock (_nextTryCastTime_LockObj) { return _nextTryCastTime; } }
+            set { lock (_nextTryCastTime_LockObj) { _nextTryCastTime = value; } }
+        }
 
-		private readonly object _nextTryCastTime_LockObj = new object();
-		private long _nextTryCastTime;
-		public long NextTryCastTime
-		{
-			get { lock(_nextTryCastTime_LockObj) { return _nextTryCastTime; } }
-			set { lock (_nextTryCastTime_LockObj) { _nextTryCastTime = value; } }
-		}
+        private readonly object _oneshotPercentCast_LockObj = new object();
+        private long _oneshotPercentCast = 0;
 
-		private readonly object _oneshotPercentCast_LockObj = new object();
-		private long _oneshotPercentCast = 0;
-		public long OneshotPercentCast
-		{
-			get { lock (_oneshotPercentCast_LockObj) { return _oneshotPercentCast; } }
-			set { lock (_oneshotPercentCast_LockObj) { _oneshotPercentCast = value; } }
-		}
+        public long OneshotPercentCast
+        {
+            get { lock (_oneshotPercentCast_LockObj) { return _oneshotPercentCast; } }
+            set { lock (_oneshotPercentCast_LockObj) { _oneshotPercentCast = value; } }
+        }
 
-		protected void BuffAtCombatStart()
+        protected void BuffAtCombatStart()
         {
             if (_unit.AbtInterface.NPCAbilities == null)
                 return;
@@ -430,20 +428,20 @@ namespace WorldServer.World.AI
 
                     if (ability.DisableAtHealthPercent != 0)
                     {
-                        if (_unit.Health+1 < (_unit.TotalHealth * ability.DisableAtHealthPercent) / 100)
+                        if (_unit.Health + 1 < (_unit.TotalHealth * ability.DisableAtHealthPercent) / 100)
                             continue;
                     }
 
                     if (ability.ActivateAtHealthPercent != 0)
                     {
                         // This checks if we can add new ability to ability cycle
-                        if (ability.AbilityCycle == 1 && _unit.Health < (_unit.TotalHealth * ability.ActivateAtHealthPercent) / 100 )
+                        if (ability.AbilityCycle == 1 && _unit.Health < (_unit.TotalHealth * ability.ActivateAtHealthPercent) / 100)
                             AllowPercentAbilityCycle = 1;
 
                         // This checks if we can reset the ability if NPC healed - if it's still on cooldwon, we do not refresh it
                         if (ability.AbilityCycle == 0 && ability.AbilityUsed == 1 && (_unit.Health > (_unit.TotalHealth * ability.ActivateAtHealthPercent) / 100) && OneshotPercentCast < curTimeMs)
                             ability.AbilityUsed = 0;
-                        
+
                         // This will play ability after NPC is wounded below X %
                         if (ability.AbilityCycle == 0 && ability.AbilityUsed == 0 && (_unit.Health < (_unit.TotalHealth * ability.ActivateAtHealthPercent) / 100) && OneshotPercentCast < curTimeMs)
                         {
@@ -456,25 +454,24 @@ namespace WorldServer.World.AI
 
                             if (ability.Text != "") _unit.Say(ability.Text.Replace("<character name>", _unit.CbtInterface.GetCurrentTarget().Name));
                             _unit.EvtInterface.AddEvent(StartDelayedCast, 1000, 1, prms);
-							OneshotPercentCast = TCPManager.GetTimeStampMS() + ability.Cooldown * 1000;
+                            OneshotPercentCast = TCPManager.GetTimeStampMS() + ability.Cooldown * 1000;
                             ability.AbilityUsed = 1;
                             continue;
                         }
                     }
 
-                    if (ability.AutoUse && !_unit.AbtInterface.IsCasting() && ability.CooldownEnd < curTimeMs && _unit.AbtInterface.CanCastCooldown(ability.Entry) && curTimeMs > CombatStart + ability.TimeStart * 1000) 
+                    if (ability.AutoUse && !_unit.AbtInterface.IsCasting() && ability.CooldownEnd < curTimeMs && _unit.AbtInterface.CanCastCooldown(ability.Entry) && curTimeMs > CombatStart + ability.TimeStart * 1000)
                     {
                         uint ExtraRange = 0;
                         if (Combat != null && Combat.CurrentTarget != null && Combat.CurrentTarget.IsMoving)
                             ExtraRange = 5;
-
 
                         if ((ability.Range == 0 || _unit.IsInCastRange(Combat.CurrentTarget, Math.Max(5 + ExtraRange, (uint)(ability.Range * rangeFactor)))))
                         {
                             if (ability.ActivateAtHealthPercent == 0 || AllowPercentAbilityCycle == 1)
                             {
                                 if (!_unit.LOSHit(Combat.CurrentTarget))
-									NextTryCastTime = TCPManager.GetTimeStampMS() + 1000;
+                                    NextTryCastTime = TCPManager.GetTimeStampMS() + 1000;
                                 else
                                 {
                                     // This set random target if needed
@@ -500,7 +497,6 @@ namespace WorldServer.World.AI
                             Chase(_unit.CbtInterface.GetCurrentTarget(), true, true, ability.Range);
                         }
                     }
-
                 }
             }
         }
@@ -515,12 +511,9 @@ namespace WorldServer.World.AI
             {
                 _logger.Debug($"{_unit.Name} using {description} on {target.Name}");
             }
-            
+
             caster.AbtInterface.StartCast(caster, (ushort)abilityId, 1);
-            
-
         }
-
 
         public Player SetRandomTarget()
         {
@@ -560,7 +553,7 @@ namespace WorldServer.World.AI
                 plr.EvtInterface.AddEvent(DelayedAggroRemoval, 1000, 1, delayedAggroRemoval);
             }
 
-			return plr;
+            return plr;
         }
 
         private void DelayedAggroRemoval(object creature)
@@ -573,11 +566,9 @@ namespace WorldServer.World.AI
             {
                 AddHatred(_target, true, -5000);
             }
-
-            
         }
 
-        Random random = new Random();
+        private Random random = new Random();
         public Unit CurTarget;
 
         public void StartDelayedCast(object creature)
@@ -609,7 +600,7 @@ namespace WorldServer.World.AI
             Chase(_unit.CbtInterface.GetCurrentTarget(), true);
         }
 
-        #endregion
+        #endregion Ability Usage
 
         #region AggroSystem
 
@@ -668,18 +659,19 @@ namespace WorldServer.World.AI
                 //If no delayed ability cast - delayed abilities will handle this anyways!
                 //if (CurTarget == null)
                 //{
-                    AI.Debugger?.SendClientMessage("[MR]: Switching target from "+Combat.CurrentTarget.Name + " to "+fighter.Name + ".");
-                    AI.Debugger?.SendClientMessage("[MR]: Fighter hate: " + GetAggro(fighter.Oid).Hatred);
+                AI.Debugger?.SendClientMessage("[MR]: Switching target from " + Combat.CurrentTarget.Name + " to " + fighter.Name + ".");
+                AI.Debugger?.SendClientMessage("[MR]: Fighter hate: " + GetAggro(fighter.Oid).Hatred);
 
-                    //This should take care of finding the proper target
-                    Unit nextTarget = GetNextTarget();
-                    Combat.SetTarget(nextTarget, TargetTypes.TARGETTYPES_TARGET_ENEMY);
-                    if (nextTarget != null && _unit.IsKeepLord)
-                        _unit.Say("Die " + nextTarget.Name + "!");
-                    Chase(Combat.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY), true);
+                //This should take care of finding the proper target
+                Unit nextTarget = GetNextTarget();
+                Combat.SetTarget(nextTarget, TargetTypes.TARGETTYPES_TARGET_ENEMY);
+                if (nextTarget != null && _unit.IsKeepLord)
+                    _unit.Say("Die " + nextTarget.Name + "!");
+                Chase(Combat.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY), true);
                 //}
             }
         }
+
         public virtual void AddHealReceive(ushort oid, bool isPlayer, uint count)
         {
             AggroInfo info = GetAggro(oid);
@@ -708,7 +700,7 @@ namespace WorldServer.World.AI
                         maxHate = hate;
                 }
 
-                uint newHatred = (uint)((300 + 1950 * ((lvl - 1)/39.0f)) * taunter.StsInterface.GetStatPercentageModifier(Stats.HateCaused));
+                uint newHatred = (uint)((300 + 1950 * ((lvl - 1) / 39.0f)) * taunter.StsInterface.GetStatPercentageModifier(Stats.HateCaused));
                 AddHatred(taunter, true, newHatred);
             }
         }
@@ -722,7 +714,6 @@ namespace WorldServer.World.AI
             }
             else
                 return 1.0f;*/
-
 
             NewBuff buff = _unit.BuffInterface.GetBuff(1441, null);
             if (buff != null && caster == buff.Caster.Oid)
@@ -824,7 +815,6 @@ namespace WorldServer.World.AI
             if (buff != null && caster == buff.Caster.Oid)
                 return 0.5f;
 
-
             return 1.0f;
         }
 
@@ -857,6 +847,6 @@ namespace WorldServer.World.AI
                 AI.ProcessCombatEnd();
         }
 
-        #endregion
+        #endregion AggroSystem
     }
 }

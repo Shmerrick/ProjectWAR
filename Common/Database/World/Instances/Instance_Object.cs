@@ -1,8 +1,6 @@
 ﻿using FrameWork;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Common
 {
@@ -46,11 +44,10 @@ namespace Common
         [DataElement]
         public uint VfxState { get; set; }
 
-
         public List<Instance_Spawn_State> Scripts = new List<Instance_Spawn_State>();
         public List<Instance_Attribute> Attributes = new List<Instance_Attribute>();
         public List<Instance_Event> Events = new List<Instance_Event>();
-   
+
         public override string ToString()
         {
             return Name;

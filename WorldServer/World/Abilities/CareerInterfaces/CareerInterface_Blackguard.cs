@@ -1,5 +1,5 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Objects;
@@ -7,13 +7,14 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Abilities.CareerInterfaces
 {
-    public class CareerInterface_Blackguard: CareerInterface
+    public class CareerInterface_Blackguard : CareerInterface
     {
         private const ushort _resourceID = 296, _masterID = 295;
         private Player _darkProtector;
         private long _nextTimer = 0;
         private long _nextOTimer = 0;
         private long Now = 0;
+
         // I'm given to understand the lock statement is implemented as a hybrid mutex
         private object _resourceLock = new object();
 
@@ -48,7 +49,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
         public override bool AddResource(byte amount, bool blockEvent)
         {
-            
             Now = TCPManager.GetTimeStampMS();
             if (Now < _nextTimer)
                 return true;
@@ -98,7 +98,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
             return true;
         }
-        
+
         public override bool ConsumeResource(byte amount, bool blockEvent)
         {
             if (!blockEvent)
@@ -127,11 +127,13 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             {
                 case 2:
                     return (byte)(Math.Min((byte)90, CareerResource) / 30);
+
                 case 3:
-                    return (byte) (CareerResource / 10);
+                    return (byte)(CareerResource / 10);
+
                 default:
                     return (byte)(CareerResource / 25);
-            }           
+            }
         }
 
         public override byte GetLevelForResource(byte res, byte which)
@@ -140,8 +142,10 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             {
                 case 2:
                     return (byte)(Math.Min((byte)90, res) / 30);
+
                 case 3:
                     return (byte)(res / 10);
+
                 default:
                     return (byte)(res / 25);
             }
@@ -153,8 +157,10 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             {
                 case 2:
                     return 3;
+
                 case 3:
                     return 10;
+
                 default:
                     return 4;
             }
@@ -175,7 +181,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                     _decayTimer -= 2000;
                 }
             }
-
             else
                 _decayTimer = 0;
 

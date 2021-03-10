@@ -1,5 +1,5 @@
-﻿using System;
-using Common;
+﻿using Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
@@ -12,7 +12,6 @@ namespace WorldServer.Managers.Commands
     /// <summary>Search commands under .search</summary>
     internal class SearchCommands
     {
-
         /// <summary>
         /// Search an item by name <name>
         /// </summary>
@@ -122,6 +121,7 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
+
         /// <summary>
         /// Seach a player's inventory by name <name>
         /// </summary>
@@ -177,8 +177,6 @@ namespace WorldServer.Managers.Commands
                     }
                 }
             }
-
-
 
             return true;
         }

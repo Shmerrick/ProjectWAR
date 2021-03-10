@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
-using Common;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.AI;
 
@@ -12,7 +12,6 @@ namespace WorldServer.World.Objects.Instances.The_Lost_Vale
 
         public SimpleHorgulul(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
-            
         }
 
         #endregion Constructors
@@ -51,7 +50,7 @@ namespace WorldServer.World.Objects.Instances.The_Lost_Vale
             EvtInterface.RemoveEvent(RemoveAllCCImmunitiesFromPlayers);
             return res;
         }
-        
+
         #endregion Overrides
 
         #region Methods
@@ -68,7 +67,7 @@ namespace WorldServer.World.Objects.Instances.The_Lost_Vale
 
                 EvtInterface.RemoveEvent(SpawnAdds);
 
-                switch((double)threshold)
+                switch ((double)threshold)
                 {
                     case 0.75:
                         EvtInterface.AddEvent(SpawnAdds, 1000, 0, 0.5);

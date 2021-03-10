@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Objects;
@@ -29,7 +29,6 @@ namespace WorldServer.World.Scenarios
                     _capturePoints.Add(cPoint);
                     Region.AddObject(cPoint, info.MapId);
                 }
-
                 else
                     LoadScenarioObject(scenarioObject);
             }
@@ -79,7 +78,6 @@ namespace WorldServer.World.Scenarios
                 EvtInterface.AddEvent(Lockdown, 15000, 1);
                 _pendingLockdown = true;
             }
-
             else
             {
                 if (!_pendingLockdown)
@@ -96,12 +94,11 @@ namespace WorldServer.World.Scenarios
 
                 _pendingLockdown = false;
             }
-
         }
 
         public void Lockdown()
         {
-            GivePoints((byte) _capturePoints[0].OwningRealm, 80);
+            GivePoints((byte)_capturePoints[0].OwningRealm, 80);
 
             _capturePoints[0].Locked = true;
             _capturePoints[1].Locked = true;
@@ -121,7 +118,7 @@ namespace WorldServer.World.Scenarios
                 Player plr = obj as Player;
                 if (plr != null)
                 {
-                    plr.SendLocalizeString((_capturePoints[0].OwningRealm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction") + " has locked down " + _capturePoints[0].ObjectiveName + " and " + _capturePoints[1].ObjectiveName+"!", ChatLogFilters.CHATLOGFILTERS_C_WHITE, Localized_text.CHAT_TAG_DEFAULT);
+                    plr.SendLocalizeString((_capturePoints[0].OwningRealm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction") + " has locked down " + _capturePoints[0].ObjectiveName + " and " + _capturePoints[1].ObjectiveName + "!", ChatLogFilters.CHATLOGFILTERS_C_WHITE, Localized_text.CHAT_TAG_DEFAULT);
                     plr.SendPacket(Out);
 
                     // 25% damage buff for 30 seconds

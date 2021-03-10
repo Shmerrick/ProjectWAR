@@ -24,7 +24,7 @@ namespace FrameWork.Database
             DataBinder binder;
 
             if (type.IsValueType && !type.IsEnum)
-                binder = (DataBinder)Activator.CreateInstance(typeof (StructDataBinder<>).MakeGenericType(type));
+                binder = (DataBinder)Activator.CreateInstance(typeof(StructDataBinder<>).MakeGenericType(type));
             else
                 binder = (DataBinder)Activator.CreateInstance(typeof(ClassDataBinder<>).MakeGenericType(type));
 
@@ -40,7 +40,7 @@ namespace FrameWork.Database
 
         public override void Initialize(object target, MethodInfo desiredMethod)
         {
-            _assignmentAction = (Action<T>) Delegate.CreateDelegate(typeof (Action<T>), target, desiredMethod);
+            _assignmentAction = (Action<T>)Delegate.CreateDelegate(typeof(Action<T>), target, desiredMethod);
         }
 
         public override void Assign(object o)
@@ -59,7 +59,7 @@ namespace FrameWork.Database
             {
                 Log.Error("StructDataBinder<" + typeof(T).FullName + ">", "Could not convert value " + o + " of type " + o.GetType().FullName);
                 throw;
-            }            
+            }
         }
     }
 

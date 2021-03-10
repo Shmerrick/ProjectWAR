@@ -1,8 +1,6 @@
 ﻿using FrameWork;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Common
 {
@@ -31,10 +29,10 @@ namespace Common
         [DataElement]
         public uint OrderExitZoneJumpID { get; set; }
 
-		[DataElement]
-		public uint DestrExitZoneJumpID { get; set; }
+        [DataElement]
+        public uint DestrExitZoneJumpID { get; set; }
 
-		public List<Instance_Script> Scripts = new List<Instance_Script>();
+        public List<Instance_Script> Scripts = new List<Instance_Script>();
         public List<Instance_Attribute> Attributes = new List<Instance_Attribute>();
         public List<Instance_Encounter> Encounters = new List<Instance_Encounter>();
         public List<Instance_Spawn> Monsters = new List<Instance_Spawn>();

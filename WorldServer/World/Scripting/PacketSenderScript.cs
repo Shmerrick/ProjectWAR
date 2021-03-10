@@ -1,7 +1,7 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using FrameWork;
 using WorldServer.World.Objects;
 using Object = WorldServer.World.Objects.Object;
 
@@ -134,7 +134,6 @@ namespace WorldServer.World.Scripting
 
         public virtual void Analyze(object obj)
         {
-
         }
     }
 
@@ -168,6 +167,7 @@ namespace WorldServer.World.Scripting
         {
             this.Parent = Parent;
         }
+
         public SniffFile Parent;
         public int Size;
         public byte Opcode;

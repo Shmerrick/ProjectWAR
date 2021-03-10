@@ -14,20 +14,18 @@ namespace WorldServer.World.Objects
             BlackMarketVendorItems = GetBlackMarketItems(player);
         }
 
-
         public List<Vendor_items> GetBlackMarketItems(Player player)
         {
-            var items = ItemService._BlackMarket_Items.Where(x => x.RealmId == (int) player.Realm).ToList();
+            var items = ItemService._BlackMarket_Items.Where(x => x.RealmId == (int)player.Realm).ToList();
             var resultList = new List<Vendor_items>();
             var playerItems = player.ItmInterface.Items;
 
             foreach (var blackMarketItem in items)
             {
-                if (player.ItmInterface.HasItemCountInInventory((uint) blackMarketItem.ItemId, 1))
+                if (player.ItmInterface.HasItemCountInInventory((uint)blackMarketItem.ItemId, 1))
                 {
-
                     // Create new Item to trade the blackmarket item for
-                    var tradingItem = ItemService.GetItem_Info((uint) 1298378521);
+                    var tradingItem = ItemService.GetItem_Info((uint)1298378521);
                     tradingItem.Description = "Black Market";
 
                     var item = new Vendor_items
@@ -36,7 +34,8 @@ namespace WorldServer.World.Objects
                         ItemId = tradingItem.Entry,
                         Price = 0,
                         //VendorId = 0, ReqItems = $"(1,208470)"
-                        VendorId = 0, ReqItems = $"(1,{blackMarketItem.ItemId})"
+                        VendorId = 0,
+                        ReqItems = $"(1,{blackMarketItem.ItemId})"
                     };
                     resultList.Add(item);
                 }

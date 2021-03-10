@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using GameData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common;
-using FrameWork;
-using GameData;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities.CareerInterfaces;
 using WorldServer.World.Scenarios;
@@ -12,7 +12,6 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Objects.PublicQuests
 {
-
     public class PublicQuest : Object
     {
         public PQuest_Info Info;
@@ -21,9 +20,9 @@ namespace WorldServer.World.Objects.PublicQuests
         public Dictionary<uint, ContributionInfo> Players;
         public List<PQuestStage> Stages;
 
-        const ushort TIME_PQ_RESET = 180;
-        const ushort TIME_DUNGEON_RESET = 28800;
-        const ushort TIME_EACH_STAGE = 540;
+        private const ushort TIME_PQ_RESET = 180;
+        private const ushort TIME_DUNGEON_RESET = 28800;
+        private const ushort TIME_EACH_STAGE = 540;
 
         private bool _started;
         private bool _ended;
@@ -32,7 +31,6 @@ namespace WorldServer.World.Objects.PublicQuests
 
         public PublicQuest()
         {
-
         }
 
         /// <summary>
@@ -96,10 +94,10 @@ namespace WorldServer.World.Objects.PublicQuests
              if(!started && ended)
                  SendReinitTime(plr, TIME_PQ_RESET);
 */
-            // TODO
-            // Send Quest Info && Current Stage && Current Players
+        // TODO
+        // Send Quest Info && Current Stage && Current Players
         /*}*/
-    
+
         public void SendReinitTime(Player player, ushort time)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_OBJECTIVE_INFO);
@@ -189,21 +187,18 @@ namespace WorldServer.World.Objects.PublicQuests
                 Out.WriteUInt32(0);
                 player.SendPacket(Out);
 
-
                 if (player.DebugMode)
                     player.SendLocalizeString("PQ STAGE ID: " + Stage.Objectives.First().ObjectiveID, ChatLogFilters.CHATLOGFILTERS_ALLIANCE, GameData.Localized_text.CHAT_TAG_MONSTER_EMOTE);
-
-
             }
         }
 
-        #endregion
+        #endregion Packet Sending
 
         public override void OnLoad()
         {
-            #if DEBUG
+#if DEBUG
             Log.Success("PQ", "Loading :" + Info.Name);
-            #endif
+#endif
 
             X = (int)Info.PinX;
             Y = (int)Info.PinY;
@@ -221,8 +216,7 @@ namespace WorldServer.World.Objects.PublicQuests
 
         public void AddPlayer(Player plr)
         {
-  
-            if (Info.Type !=0  && (byte)plr.Realm != Info.Type)
+            if (Info.Type != 0 && (byte)plr.Realm != Info.Type)
                 return;
 
             if (plr.QtsInterface.PublicQuest != null)
@@ -240,10 +234,11 @@ namespace WorldServer.World.Objects.PublicQuests
                     {
                         Players.Add(plr.CharacterId, new ContributionInfo(plr));
                     }
-                    #if DEBUG
+#if DEBUG
                     Log.Success("PQuest", "Adding " + plr.Name);
-                    #endif
+#endif
                     break;
+
                 case 2:
                     if (plr.Level > 8) // Players level 9 or higher can get T2 PQ rewards now.
                     {
@@ -256,11 +251,12 @@ namespace WorldServer.World.Objects.PublicQuests
                         {
                             Players.Add(plr.CharacterId, new ContributionInfo(plr));
                         }
-                        #if DEBUG
+#if DEBUG
                         Log.Success("PQuest", "Adding " + plr.Name);
-                        #endif
+#endif
                     }
                     break;
+
                 case 3:
                     if (plr.Level > 17)
                     {
@@ -272,11 +268,12 @@ namespace WorldServer.World.Objects.PublicQuests
                         {
                             Players.Add(plr.CharacterId, new ContributionInfo(plr));
                         }
-                        #if DEBUG
+#if DEBUG
                         Log.Success("PQuest", "Adding " + plr.Name);
-                        #endif
+#endif
                     }
                     break;
+
                 case 4:
                     if (plr.Level > 27)
                     {
@@ -288,9 +285,9 @@ namespace WorldServer.World.Objects.PublicQuests
                         {
                             Players.Add(plr.CharacterId, new ContributionInfo(plr));
                         }
-                        #if DEBUG
+#if DEBUG
                         Log.Success("PQuest", "Adding " + plr.Name);
-                        #endif
+#endif
                     }
                     break;
             }
@@ -310,16 +307,16 @@ namespace WorldServer.World.Objects.PublicQuests
 
         public void RemovePlayer(Player plr, bool ForceRemove = false)
         {
-            if(ActivePlayers.Contains(plr.CharacterId))
+            if (ActivePlayers.Contains(plr.CharacterId))
                 ActivePlayers.Remove(plr.CharacterId);
             if (ForceRemove)
             {
                 if (Players.ContainsKey(plr.CharacterId))
                     Players.Remove(plr.CharacterId);
             }
-            #if DEBUG
+#if DEBUG
             Log.Success("PQuest", "Removing " + plr.Name);
-            #endif
+#endif
 
             plr.QtsInterface.PublicQuest = null;
 
@@ -340,7 +337,6 @@ namespace WorldServer.World.Objects.PublicQuests
             {
                 try
                 {
-
                     if (sStage.Number == 0)
                     {
                         Stage = sStage;
@@ -355,7 +351,6 @@ namespace WorldServer.World.Objects.PublicQuests
                         }
                         break;
                     }
-
                 }
                 catch
                 {
@@ -363,9 +358,9 @@ namespace WorldServer.World.Objects.PublicQuests
                 }
             }
 
-            #if DEBUG
+#if DEBUG
             Log.Success("PQuest", "Starting Quest " + Info.Name);
-            #endif
+#endif
 
             _started = true;
         }
@@ -383,10 +378,9 @@ namespace WorldServer.World.Objects.PublicQuests
                 if (go.Spawn.AllowVfxUpdate == 1) go.VfxState = 0;
                 go.Interactable = true;
             }
-
         }
 
-    public void HandleEvent(Player player, Objective_Type type, uint entry, int count, ushort contributionGain,string pqGoClicked = null)
+        public void HandleEvent(Player player, Objective_Type type, uint entry, int count, ushort contributionGain, string pqGoClicked = null)
         {
             if (Stage == null)
                 return;
@@ -461,7 +455,7 @@ namespace WorldServer.World.Objects.PublicQuests
                     case Objective_Type.QUEST_USE_GO:
                         if (obj.Objective.GameObject != null && entry == obj.Objective.GameObject.Entry)
                         {
-                            // This will turn off Interactable flag on clicked GO, some more work can be  
+                            // This will turn off Interactable flag on clicked GO, some more work can be
                             // done with GO despawning and UNKs[3] unk modification
                             // Default respawn time: 60 seconds
                             Object target = player.CbtInterface.GetCurrentTarget();
@@ -491,7 +485,6 @@ namespace WorldServer.World.Objects.PublicQuests
                         if (obj.Objective.Guid == entry)
                             obj.Count += count;
                         break;
-
                 }
 
                 if (obj.Count != oldCount)
@@ -511,8 +504,6 @@ namespace WorldServer.World.Objects.PublicQuests
                         {
                             influenceid = Info.ChapterId;
                         }
-
-
 
                         if (player.WorldGroup == null)
                             player.AddInfluence((ushort)influenceid, (ushort)(100));
@@ -575,15 +566,14 @@ namespace WorldServer.World.Objects.PublicQuests
                 _nextContributionTick = TCPManager.GetTimeStamp() + 3;
             }
 
-                if (curTimeSeconds > _nextContributionTick)
+            if (curTimeSeconds > _nextContributionTick)
             {
                 _nextContributionTick = TCPManager.GetTimeStamp() + 3;
 
                 List<uint> PendingRemovals = new List<uint>();
                 List<uint> PendingActiveRemovals = new List<uint>();
 
-
-                foreach(uint plrInfo in ActivePlayers)
+                foreach (uint plrInfo in ActivePlayers)
                 {
                     Player targPlayer = Player.GetPlayer(plrInfo);
                     if (targPlayer != null)
@@ -595,7 +585,7 @@ namespace WorldServer.World.Objects.PublicQuests
                     }
                     else
                     {
-                            PendingActiveRemovals.Add(plrInfo);
+                        PendingActiveRemovals.Add(plrInfo);
                     }
                 }
 
@@ -604,7 +594,6 @@ namespace WorldServer.World.Objects.PublicQuests
                     Player targPlayer = Player.GetPlayer(plrInfo.PlayerCharId);
                     if (targPlayer != null)
                     {
-
                         if (plrInfo.PendingContribution > 0)
                         {
                             if (targPlayer != null)
@@ -656,7 +645,7 @@ namespace WorldServer.World.Objects.PublicQuests
                 if (targPlayer != null)
                 {
                     if (tokunlocked > 0)
-                       targPlayer.TokInterface.AddTok(tokunlocked);
+                        targPlayer.TokInterface.AddTok(tokunlocked);
                 }
             }
 
@@ -752,7 +741,7 @@ namespace WorldServer.World.Objects.PublicQuests
 
             // We are playing some sounds when we finish the whole PQ
             if (Info.SoundPQEnd != 0)
-            { 
+            {
                 GameObject_proto Proto = GameObjectService.GetGameObjectProto(2000489);
 
                 GameObject_spawn S = new GameObject_spawn();
@@ -793,7 +782,6 @@ namespace WorldServer.World.Objects.PublicQuests
             Players.Clear();
             Players = new Dictionary<uint, ContributionInfo>();
             _playerHealing = new Dictionary<ushort, Dictionary<uint, uint>>();
-            
 
             _started = false;
             _ended = false;
@@ -822,7 +810,7 @@ namespace WorldServer.World.Objects.PublicQuests
             }
         }
 
-#endregion
+        #endregion Progression
 
         public static uint GetBag(int bagWon)
         {
@@ -830,12 +818,16 @@ namespace WorldServer.World.Objects.PublicQuests
             {
                 case 1:
                     return 9940;
+
                 case 2:
                     return 9941;
+
                 case 3:
                     return 9942;
+
                 case 4:
                     return 9943;
+
                 case 5:
                     return 9980;
             }
@@ -869,12 +861,12 @@ namespace WorldServer.World.Objects.PublicQuests
             player.SendPacket(Out);
         }
 
-#region ContributionManagerInstance
+        #region ContributionManagerInstance
 
         /// <summary>
         /// Contains information about the players who healed damage dealt by mobs in this PQ. Indices: mob OID, CharacterID, player healing
         /// </summary>
-        Dictionary<ushort, Dictionary<uint, uint>> _playerHealing = new Dictionary<ushort, Dictionary<uint, uint>>();
+        private Dictionary<ushort, Dictionary<uint, uint>> _playerHealing = new Dictionary<ushort, Dictionary<uint, uint>>();
 
         /// <summary>
         /// When a player receives a hit from a Public Quest mob, tracks the damage dealt.
@@ -894,7 +886,6 @@ namespace WorldServer.World.Objects.PublicQuests
                     Players[target.CharacterId].DamageTakenFrom[mob.Oid].DamageTaken += damage;
                 Players[target.CharacterId].DamageTakenFrom[mob.Oid].NumHits++;
             }
-
         }
 
         /// <summary>
@@ -927,7 +918,6 @@ namespace WorldServer.World.Objects.PublicQuests
                     //healer.SendClientMessage("Received " + targetInfo.HealingContribPool + " contribution from emptying the target's healing contribution pool.", ChatLogFilters.CHATLOGFILTERS_QUEST, true);
                     targetInfo.HealingContribPool = 0;
                 }
-
                 else
                 {
                     float contribFactor = (float)healCount / targetInfo.HealingDamagePool;
@@ -953,7 +943,6 @@ namespace WorldServer.World.Objects.PublicQuests
                     hitInfo.DamageTaken = 0;
                     healCount -= deltaHeal;
                 }
-
                 else
                 {
                     deltaHeal = healCount;
@@ -985,13 +974,15 @@ namespace WorldServer.World.Objects.PublicQuests
                 case 1:
                     rankMod = 4;
                     break;
+
                 case 2:
                     rankMod = 20; break;
                 default:
                     rankMod = 1; break;
             }
 
-#region For having taken damage
+            #region For having taken damage
+
             foreach (ContributionInfo plrInfo in Players.Values)
             {
                 if (plrInfo.DamageTakenFrom.ContainsKey(mob.Oid))
@@ -1020,9 +1011,10 @@ namespace WorldServer.World.Objects.PublicQuests
                     tankerInfo.ActiveTimeEnd = TCPManager.GetTimeStamp() + 5;
                 }
             }
-#endregion
 
-#region For healers of damage
+            #endregion For having taken damage
+
+            #region For healers of damage
 
             float totalHealing = 0;
 
@@ -1056,7 +1048,7 @@ namespace WorldServer.World.Objects.PublicQuests
                 }
             }
 
-#endregion
+            #endregion For healers of damage
 
             float leftoverFactor = 1f - totalHealing / totalDamageDealt;
 
@@ -1116,10 +1108,8 @@ namespace WorldServer.World.Objects.PublicQuests
                     Players[earnedBy.CharacterId].BaseContribution += contrib;
                 }
             }
-
             else
             {
-
                 earnedBy.WorldGroup.GetPlayerList(_inGroup);
 
                 for (int i = 0; i < _inGroup.Count; ++i)
@@ -1129,14 +1119,13 @@ namespace WorldServer.World.Objects.PublicQuests
                         _inGroup.RemoveAt(i);
                         --i;
                     }
-
                     else
                         ScenarioMgr.AddToBalanceVector(_balance, _inGroup[i]);
                 }
 
                 _balance.Multiply(1f / _inGroup.Count);
 
-                // Divide the contribution by the number of members, 
+                // Divide the contribution by the number of members,
                 // and add a scaling bonus depending on how
                 // balanced the current group is, up to 4x.
                 float balanceBonusMult = 1f - _balance.Magnitude;
@@ -1155,25 +1144,26 @@ namespace WorldServer.World.Objects.PublicQuests
                 _balance.Y = 0;
             }
         }
+
 #if DEBUG
         private const int CONTRIB_ELAPSE_INTERVAL = 60 * 1; // 1 mins of no contribution forfeits.
 #else
         private const int CONTRIB_ELAPSE_INTERVAL = 60 * 15; // 15 mins of no contribution forfeits.
 #endif
         private readonly List<KeyValuePair<uint, ContributionInfo>> _toRemove = new List<KeyValuePair<uint, ContributionInfo>>(8);
+
         private void TickContribution(long curTimeSeconds)
         {
             foreach (KeyValuePair<uint, ContributionInfo> kV in Players)
             {
                 if (kV.Value.ActiveTimeEnd == 0) // no contribution yet
                     continue;
-              if (curTimeSeconds - kV.Value.ActiveTimeEnd > CONTRIB_ELAPSE_INTERVAL && !ActivePlayers.Contains(kV.Key)) //make sure they aren't in the pq area before removing them
+                if (curTimeSeconds - kV.Value.ActiveTimeEnd > CONTRIB_ELAPSE_INTERVAL && !ActivePlayers.Contains(kV.Key)) //make sure they aren't in the pq area before removing them
                     _toRemove.Add(kV);
             }
 
             if (_toRemove.Count > 0)
             {
-            
                 foreach (var kVr in _toRemove)
                 {
                     Players.Remove(kVr.Key);
@@ -1182,6 +1172,6 @@ namespace WorldServer.World.Objects.PublicQuests
             }
         }
 
-        #endregion
+        #endregion ContributionManagerInstance
     }
 }

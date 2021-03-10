@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using GameData;
+﻿using FrameWork;
+using System.Collections.Generic;
 using SystemData;
-using FrameWork;
 using WorldServer.World.Objects;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
@@ -9,7 +8,9 @@ namespace WorldServer.Managers.Commands
 {
     public class GmMgr
     {
-        private GmMgr() { }
+        private GmMgr()
+        {
+        }
 
         public static List<Player> GmList = new List<Player>();
 
@@ -47,7 +48,6 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
-
 
         public static bool ToggleShowRank(Player plr, ref List<string> values)
         {

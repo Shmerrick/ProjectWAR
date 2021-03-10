@@ -1,5 +1,5 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -11,7 +11,7 @@ namespace Common
         [PrimaryKey]
         public uint Entry { get; set; }
 
-        [DataElement(Varchar=255)]
+        [DataElement(Varchar = 255)]
         public string Name { get; set; }
 
         [DataElement(AllowDbNull = true)]

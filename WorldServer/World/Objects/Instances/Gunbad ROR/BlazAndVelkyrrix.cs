@@ -8,7 +8,7 @@ using WorldServer.World.Scripting;
 namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 38909, 0)]
-    class BlazDaTaminMasta : BasicGunbad
+    internal class BlazDaTaminMasta : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -64,7 +64,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
 
             return false;
         }
-        
+
         public override bool OnLeaveCombat(Object npc = null, object instigator = null)
         {
             Creature c = Obj as Creature;
@@ -75,7 +75,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
                 creature.Destroy();
             foreach (GameObject go in goList)
                 go.Destroy();
-           
+
             addList = new List<Creature>();
             goList = new List<GameObject>();
 
@@ -98,7 +98,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 38907, 0)]
-    class Velkyrrix : BasicGunbad
+    internal class Velkyrrix : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -218,7 +218,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 38720, 0)]
-    class VelkyrrixSpawn : BasicGunbad
+    internal class VelkyrrixSpawn : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -228,7 +228,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 0, 2000569)]
-    class VelkyrrixEgg : BasicGunbad
+    internal class VelkyrrixEgg : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {

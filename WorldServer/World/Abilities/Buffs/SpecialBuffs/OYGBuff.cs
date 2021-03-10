@@ -3,7 +3,7 @@ using WorldServer.World.Objects;
 
 namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 {
-    class OYGBuff : NewBuff
+    internal class OYGBuff : NewBuff
     {
         private OYGAuraBuff _masterAuraBuff;
         public OYGAuraBuff MasterAuraBuff { set { _masterAuraBuff = value; } }

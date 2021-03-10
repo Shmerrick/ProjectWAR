@@ -64,10 +64,12 @@ public class RandomHelper
     {
         return rand.Next(minValue, maxValue);
     }
+
     public static uint URand(dynamic minValue, dynamic maxValue)
     {
         return (uint)rand.Next(Convert.ToInt32(minValue), Convert.ToInt32(maxValue));
     }
+
     public static float FRand(float min, float max)
     {
         return (float)(rand.NextDouble() * (max - min) + min);

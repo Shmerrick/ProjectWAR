@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using FrameWork;
+﻿using FrameWork;
+using System.Collections.Generic;
 using WorldServer.World.Map;
 using WorldServer.World.Objects;
 using WorldServer.World.Objects.PublicQuests;
@@ -32,8 +32,8 @@ namespace WorldServer.NetWork.Handler
                     {
                         if (Crea.QtsInterface.HasQuestStarter(QuestID))
                             Crea.QtsInterface.BuildQuest(QuestID, cclient.Plr);
-
-                    } break;
+                    }
+                    break;
 
                 case 2: // Accept Quest
                     {
@@ -48,8 +48,8 @@ namespace WorldServer.NetWork.Handler
                                 }
                             }
                         }
-
-                    }break;
+                    }
+                    break;
 
                 case 3: // Quest Done
                     {
@@ -61,35 +61,33 @@ namespace WorldServer.NetWork.Handler
                                 Crea.SendMeTo(cclient.Plr);
                             }
                         }
-
-                    } break;
+                    }
+                    break;
 
                 case 4: // Quest Done Info
                     {
-
                         if (Crea.QtsInterface.HasQuestFinisher(QuestID))
                             Crea.QtsInterface.SendQuestDoneInfo(cclient.Plr, QuestID);
                         else if (Crea.QtsInterface.HasQuestStarter(QuestID))
                         {
                             Crea.QtsInterface.SendQuestInProgressInfo(cclient.Plr, QuestID);
                         }
-
-                    } break;
+                    }
+                    break;
 
                 case 5: // Select Quest Reward
                     {
                         if (Crea.QtsInterface.HasQuestFinisher(QuestID))
                             cclient.Plr.QtsInterface.SelectRewards(QuestID, Unk3);
-
-                    } break;
-
+                    }
+                    break;
             }
         }
 
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_REQUEST_QUEST, (int)eClientState.WorldEnter, "onRequestQuest")]
         public static void F_REQUEST_QUEST(BaseClient client, PacketIn packet)
         {
-            GameClient cclient = (GameClient) client;
+            GameClient cclient = (GameClient)client;
 
             ushort questID = packet.GetUint16();
             byte state = packet.GetUint8();
@@ -99,18 +97,20 @@ namespace WorldServer.NetWork.Handler
                 case 0: // Show Quest
                     {
                         cclient.Plr.QtsInterface.SendQuest(questID);
-                    } break;
+                    }
+                    break;
 
                 case 1: // Decline Quest
                     {
                         cclient.Plr.QtsInterface.AbandonQuest(questID);
-                    } break;
+                    }
+                    break;
 
                 case 2: // Send To Group
                     {
-                        if(cclient.Plr.WorldGroup != null)
+                        if (cclient.Plr.WorldGroup != null)
                         {
-                            foreach(Player member in cclient.Plr.WorldGroup.GetPlayersCloseTo(cclient.Plr, 25))
+                            foreach (Player member in cclient.Plr.WorldGroup.GetPlayersCloseTo(cclient.Plr, 25))
                             {
                                 if (member != cclient.Plr)
                                 {
@@ -130,7 +130,8 @@ namespace WorldServer.NetWork.Handler
                             //WorldServer.Services.World.QuestService._Quests[questID].Shareable = 1;
                             //WorldServer.Services.World.QuestService._
                         }
-                    } break;
+                    }
+                    break;
             }
         }
 
@@ -188,6 +189,7 @@ namespace WorldServer.NetWork.Handler
 
                     pQuest.ProcessOptOut(cclient.Plr, optOutType);
                     break;
+
                 default:
                     Log.Error("F_OBJECTIVE_UPDATE", $"Received unknown op {op} from client");
                     break;

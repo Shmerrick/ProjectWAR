@@ -1,5 +1,5 @@
-﻿using System;
-using NLog;
+﻿using NLog;
+using System;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {

@@ -1,11 +1,11 @@
 ﻿using Common.Database.World.BattleFront;
 using FrameWork;
 using GameData;
+using NLog;
 using System;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using NLog;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Keeps;
@@ -21,6 +21,7 @@ namespace WorldServer.Managers.Commands
     internal class CampaignCommands
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>Constant initials extractor<summary>
         private static readonly Regex INITIALS = new Regex(@"([A-Z])[A-Z1-9]*_?");
 
@@ -64,7 +65,6 @@ namespace WorldServer.Managers.Commands
                 plr.SendClientMessage($"DoorId : {door.Info.DoorId} Interact:{door.GameObject.InteractState} AutoAttack:{door.GameObject.CanAutoAttack}");
                 plr.SendClientMessage("Occlusion_Visible:" + Occlusion.GetFixtureVisible(door.GameObject.DoorId));
             }
-
         }
 
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Updates some constant parameters. Give no arg to list constants.")]
@@ -114,9 +114,6 @@ namespace WorldServer.Managers.Commands
                 SendCsr(plr, "Please enter a valid constant name");
         }
 
-
-
-
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks the pairing the player is in for the given realm (1 - Order, 2 - Dest). forceNumberOfBags = 0 for default.")]
         public static void LockPairing(Player plr, Realms realm, int forceNumberOfBags = 0)
         {
@@ -134,7 +131,6 @@ namespace WorldServer.Managers.Commands
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Advances the pairing the player is in ")]
         public static void AdvancePairing(Player plr, Realms realm, int tier)
         {
-
             if (tier == 1)
             {
                 var progression = WorldMgr.LowerTierCampaignManager.AdvanceBattleFront(realm);
@@ -168,7 +164,6 @@ namespace WorldServer.Managers.Commands
             var lockingRealm = Realms.REALMS_REALM_NEUTRAL;
             foreach (var status in WorldMgr.UpperTierCampaignManager.BattleFrontStatuses)
             {
-
                 if (status.BattleFrontId == BattleFrontConstants.BATTLEFRONT_DWARF_GREENSKIN_TIER4_KADRIN_VALLEY)
                 {
                     lockingRealm = GetLockRealmFromT4Progression(T4Progression[0].ToString());
@@ -230,8 +225,10 @@ namespace WorldServer.Managers.Commands
             {
                 case "1":
                     return Realms.REALMS_REALM_ORDER;
+
                 case "0":
                     return Realms.REALMS_REALM_NEUTRAL;
+
                 case "2":
                     return Realms.REALMS_REALM_DESTRUCTION;
             }
@@ -259,11 +256,7 @@ namespace WorldServer.Managers.Commands
             }
 
             new ApocCommunications().ResetProgressionCommunications(player, lockingRealm, vpp, forceT4);
-
         }
-
-
-
 
         [CommandAttribute(EGmLevel.SourceDev, "Report on the status of the t4 progression")]
         public static void ProgressionStatus(Player plr)
@@ -280,7 +273,6 @@ namespace WorldServer.Managers.Commands
 
             plr.SendClientMessage($"Porgression Status : {lockStr}");
         }
-
 
         [CommandAttribute(EGmLevel.EmpoweredStaff, "Locks a battle objective for the given realm (1 - Order, 2 - Dest), values = 0 (all), otherwise objectiveid")]
         public static void LockObj(Player plr, Realms realm, int values)
@@ -320,10 +312,6 @@ namespace WorldServer.Managers.Commands
                 VictoryPointProgress.UpdateStatus(WorldMgr.UpperTierCampaignManager.GetActiveCampaign());
         }
 
-
-
-
-
         [CommandAttribute(EGmLevel.DatabaseDev, "Sets the number of VP for a realm")]
         public static void SetVictoryPoints(Player plr, Realms realm, int points)
         {
@@ -342,7 +330,6 @@ namespace WorldServer.Managers.Commands
             plr.SendClientMessage($"Victory Points set to {points} for realm {realm}");
             _logger.Info($"{plr.Name} set Victory Points set to {points} for realm {realm}");
         }
-
 
         [CommandAttribute(EGmLevel.DatabaseDev, "Returns the World Campaign Status")]
         public static void Status(Player plr)
@@ -365,11 +352,7 @@ namespace WorldServer.Managers.Commands
 
             foreach (var flag in plr.Region.Campaign.Objectives)
                 plr.SendClientMessage($"{flag.ToString()}");
-
-
-
         }
-
 
         [CommandAttribute(EGmLevel.DatabaseDev, "Get or sets warcamp entrance, use realm parameter order|destruction or 1|2 to update entrance coordinate")]
         public static void Warcamp(Player plr, string realm = "")
@@ -415,8 +398,6 @@ namespace WorldServer.Managers.Commands
             SendCsr(plr, $"CAMPAIGN WARCAMP: {(newRealm == Realms.REALMS_REALM_ORDER ? "order" : "destruction")} warcamp is set");
         }
 
-
-
         /// <summary>
         /// Computes distance of player to warcamp of given realm.
         /// </summary>
@@ -456,9 +437,6 @@ namespace WorldServer.Managers.Commands
         [CommandAttribute(EGmLevel.DatabaseDev, "Resets the World Campaign to default values")]
         public static void ResetAllCampaign(Player plr)
         {
-            
-
-
             foreach (var progression in WorldMgr.UpperTierCampaignManager.BattleFrontProgressions)
             {
                 if (progression.Tier == 4)
@@ -472,7 +450,7 @@ namespace WorldServer.Managers.Commands
                     {
                         progression.LastOpenedZone = 1;
                         WorldMgr.UpperTierCampaignManager.ActiveBattleFront = progression;
-                        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x=>x.Info.KeepId == progression.OrderKeepId).Realm = Realms.REALMS_REALM_ORDER;
+                        WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x => x.Info.KeepId == progression.OrderKeepId).Realm = Realms.REALMS_REALM_ORDER;
                         WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x => x.Info.KeepId == progression.OrderKeepId).SetKeepSafe();
                         WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x => x.Info.KeepId == progression.OrderKeepId).Realm = Realms.REALMS_REALM_DESTRUCTION;
                         WorldMgr.UpperTierCampaignManager.GetActiveCampaign().Keeps.SingleOrDefault(x => x.Info.KeepId == progression.DestroKeepId).SetKeepSafe();
@@ -493,13 +471,11 @@ namespace WorldServer.Managers.Commands
                             status.Locked = false;
                         }
                         status.OpenTimeStamp = FrameWork.TCPManager.GetTimeStamp();
-                        status.LockingRealm = (Realms) progression.DefaultRealmLock;
+                        status.LockingRealm = (Realms)progression.DefaultRealmLock;
                         status.FinalVictoryPoint = new VictoryPointProgress();
                         status.LockTimeStamp = 0;
                         // Reset the population for the battle front status
                         WorldMgr.UpperTierCampaignManager.GetActiveCampaign().InitializePopulationList(status.BattleFrontId);
-
-                        
                     }
                 }
             }

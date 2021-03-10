@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using FrameWork;
+﻿using FrameWork;
 using NLog;
+using System.Linq;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
@@ -25,9 +25,8 @@ namespace WorldServer.World.AI
             if (_unit.IsDead)
                 return;
 
-          
-           base.Think(tick);
-            
+            base.Think(tick);
+
             // Only bother to seek targets if we're actually being observed by a player
             if (Combat.CurrentTarget == null && _unit.PlayersInRange.Count > 0)
             {
@@ -67,7 +66,6 @@ namespace WorldServer.World.AI
                         // 7872 - Potion of Healing ability
                         _logger.Debug($"{_unit} using Potion of Healing");
                         _unit.AbtInterface.StartCast(_unit, (ushort)7872, 1);
-
                     }
                 }
 
@@ -75,7 +73,6 @@ namespace WorldServer.World.AI
 
                 if ((buff == null) && (_unit.GetDistanceToObject(_unit.CbtInterface.GetCurrentTarget()) < 5))
                 {
-
                     //// If the target is guarding someone - punt them
                     //var guardBuff = target.BuffInterface.GetBuff((ushort)8325, target);
 
@@ -94,10 +91,8 @@ namespace WorldServer.World.AI
                         _logger.Debug($"{_unit} using Exile vs {(target as Player).Name}");
                         //                        _unit.AbtInterface.StartCast(_unit, 8356, 1);
                         target.ApplyKnockback(_unit, AbilityMgr.GetKnockbackInfo(9328, 0));
-
                     }
                 }
-
 
                 var rand = StaticRandom.Instance.Next(20);
                 switch (rand)
@@ -162,16 +157,11 @@ namespace WorldServer.World.AI
                                 // 9337 - Shatter Enchantment
                                 _logger.Debug($"{_unit} using Shatter Enchantment vs {(target as Player).Name}");
                                 _unit.AbtInterface.StartCast(_unit, 9337, 1);
-
                             }
                             break;
                         }
                 }
-
-
             }
-
         }
-
     }
 }

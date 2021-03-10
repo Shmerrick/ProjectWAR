@@ -1,5 +1,5 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Abilities.Objects;
@@ -34,6 +34,7 @@ namespace WorldServer.World.Abilities
         }
 
         #region Interface
+
         /*
         public void Initialize(Unit caster, Unit target, ushort baseEntry, ushort channelId, byte castSequence)
         {
@@ -47,6 +48,7 @@ namespace WorldServer.World.Abilities
             else StartChannel();
         }
         */
+
         public void Initialize(AbilityInfo abInfo, byte castSequence)
         {
             _target = abInfo.Target;
@@ -62,7 +64,7 @@ namespace WorldServer.World.Abilities
             return _channelInfo != null;
         }
 
-        #endregion
+        #endregion Interface
 
         #region Init
 
@@ -125,10 +127,9 @@ namespace WorldServer.World.Abilities
             Out.WriteByte((byte)1);
             Out.WriteByte((byte)0);
             _host.DispatchPacket(Out, true);
-
         }
 
-        #endregion
+        #endregion Init
 
         #region Tick
 
@@ -142,7 +143,7 @@ namespace WorldServer.World.Abilities
                 _channelBuff = null;
                 _parent.NotifyChannelEnded();
             }
-          
+
             // Cast finishes
             if (_channelInfo != null)
             {
@@ -153,24 +154,23 @@ namespace WorldServer.World.Abilities
                     _channelInfo = null;
                     _channelBuff = null;
                 }
-
                 else if (TCPManager.GetTimeStampMS() >= _nextTickTime)
                 {
                     if (_channelInfo.ApCost > 0 && !_host.ConsumeActionPoints(_channelInfo.ApCost))
-                        _parent.CancelCast((byte) GameData.AbilityResult.ABILITYRESULT_AP);
-                    else if (_playerHost != null && _channelInfo.SpecialCost > 3 && !_playerHost.CrrInterface.ConsumeResource((byte) _channelInfo.SpecialCost, true))
+                        _parent.CancelCast((byte)GameData.AbilityResult.ABILITYRESULT_AP);
+                    else if (_playerHost != null && _channelInfo.SpecialCost > 3 && !_playerHost.CrrInterface.ConsumeResource((byte)_channelInfo.SpecialCost, true))
                         _parent.CancelCast(1);
-                    else if (_target != _host && !_host.IsInCastRange(_target, Math.Max((uint) 25, _channelInfo.Range)))
-                        _parent.CancelCast((byte) GameData.AbilityResult.ABILITYRESULT_OUTOFRANGE);
+                    else if (_target != _host && !_host.IsInCastRange(_target, Math.Max((uint)25, _channelInfo.Range)))
+                        _parent.CancelCast((byte)GameData.AbilityResult.ABILITYRESULT_OUTOFRANGE);
                     else if (_checkVisibility && !_host.LOSHit(_target))
-                        _parent.CancelCast((byte) GameData.AbilityResult.ABILITYRESULT_NOT_VISIBLE);
+                        _parent.CancelCast((byte)GameData.AbilityResult.ABILITYRESULT_NOT_VISIBLE);
                     else
                         _nextTickTime += 1000;
                 }
             }
         }
 
-        #endregion
+        #endregion Tick
 
         #region Interruption
 
@@ -181,7 +181,8 @@ namespace WorldServer.World.Abilities
                 _channelBuff.RemoveBuff(true);
             _channelBuff = null;
         }
-        #endregion
+
+        #endregion Interruption
 
         #region Casting
 
@@ -190,13 +191,13 @@ namespace WorldServer.World.Abilities
             byte desiredLevel = _channelInfo.Level;
 
             if (_channelInfo.BoostLevel > 0 && _caster != _target)
-			{
+            {
                 desiredLevel = _channelInfo.BoostLevel;
 
-	            #if DEBUG
-	            ((Player)_caster).SendClientMessage("Boost debug: Casting with level "+desiredLevel+" on target "+_target.Name);
-	            #endif
-			}
+#if DEBUG
+                ((Player)_caster).SendClientMessage("Boost debug: Casting with level " + desiredLevel + " on target " + _target.Name);
+#endif
+            }
 
             BuffInfo buffInfo = AbilityMgr.GetBuffInfo(_channelInfo.Entry, _host, _target);
             if (!string.IsNullOrEmpty(buffInfo.AuraPropagation))
@@ -209,7 +210,7 @@ namespace WorldServer.World.Abilities
         /// </summary>
         public void ChannelInitialization(NewBuff channelBuff)
         {
-			// Was cancelled before the channel callback
+            // Was cancelled before the channel callback
             if (_channelInfo == null || _host == null || _host.IsDead)
             {
                 if (channelBuff != null)
@@ -218,13 +219,13 @@ namespace WorldServer.World.Abilities
                     _channelBuff = null;
                 }
             }
-			// Couldn't create a channel buff, so cancel
+            // Couldn't create a channel buff, so cancel
             else if (channelBuff == null)
             {
                 _parent.CancelCast(0);
                 _channelInfo = null;
             }
-			// Successful link
+            // Successful link
             else
             {
                 _channelBuff = channelBuff;
@@ -238,7 +239,7 @@ namespace WorldServer.World.Abilities
 
         public void NotifyBuffStarted()
         {
-            if (_channelInfo != null)  
+            if (_channelInfo != null)
                 SendChannelStart();
         }
 
@@ -275,6 +276,7 @@ namespace WorldServer.World.Abilities
             Out.WriteByte((byte)0);
             _host.DispatchPacket(Out, true);
         }
-#endregion
+
+        #endregion Casting
     }
 }

@@ -1,12 +1,12 @@
 ﻿//#define NO_RESPOND
 
+using Common;
+using FrameWork;
+using GameData;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using SystemData;
-using Common;
-using FrameWork;
-using GameData;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.AI;
@@ -25,12 +25,13 @@ namespace WorldServer.World.Interfaces
         public static int BrainThinkTime = 3000; // Update think every 3sec
         public static int MaxAggroRange = 15; // Max Range To Aggro
 
-		private bool _StopWaypoints = false;
+        private bool _StopWaypoints = false;
 
         private Unit _unit;
         public Player Debugger { get; set; }
 
         private AiState _state = AiState.STANDING;
+
         public AiState State
         {
             get
@@ -47,7 +48,7 @@ namespace WorldServer.World.Interfaces
                         OnCombatStop();
                     else if (value == AiState.MOVING)
                         OnWalkStart();
-                    else if(_state == AiState.MOVING)
+                    else if (_state == AiState.MOVING)
                         OnWalkEnd();
 
                     _state = value;
@@ -82,7 +83,7 @@ namespace WorldServer.World.Interfaces
                 {
                     if ((_unit as Creature).Spawn != null)
                     {
-                        if ((_unit is GuardCreature) ||(_unit is Siege) || (_unit is Pet))
+                        if ((_unit is GuardCreature) || (_unit is Siege) || (_unit is Pet))
                         {
                         }
                         else
@@ -92,7 +93,6 @@ namespace WorldServer.World.Interfaces
                     }
                 }
             }
-
 
             return base.Load();
         }
@@ -106,7 +106,6 @@ namespace WorldServer.World.Interfaces
             {
                 _thinkInterval = 1000;
             }
-
             else
                 _thinkInterval = BrainThinkTime;
         }
@@ -167,15 +166,13 @@ namespace WorldServer.World.Interfaces
 
         public void OnWalkStart()
         {
-
         }
 
         public void OnWalkEnd()
         {
-
         }
 
-        #endregion
+        #endregion States
 
         #region Brain
 
@@ -225,23 +222,23 @@ namespace WorldServer.World.Interfaces
             if (creature == null || creature is Pet)
                 return;
 
-			if (_unit is KeepCreature patrol && patrol.IsPatrol && patrol.AiInterface != null && patrol.AiInterface.CurrentWaypoint != null)
-			{
-				if (!patrol.PointWithinRadiusFeet(new Point3D((int)patrol.AiInterface.CurrentWaypoint.X, (int)patrol.AiInterface.CurrentWaypoint.Y, (int)patrol.AiInterface.CurrentWaypoint.Z), 200))
-				{
-					ProcessCombatEnd();
-				}
-			}
-			else
-			{
-				if (!creature.PointWithinRadiusFeet(creature.WorldSpawnPoint, 200))
-				{
-					ProcessCombatEnd();
-				}
-			}
+            if (_unit is KeepCreature patrol && patrol.IsPatrol && patrol.AiInterface != null && patrol.AiInterface.CurrentWaypoint != null)
+            {
+                if (!patrol.PointWithinRadiusFeet(new Point3D((int)patrol.AiInterface.CurrentWaypoint.X, (int)patrol.AiInterface.CurrentWaypoint.Y, (int)patrol.AiInterface.CurrentWaypoint.Z), 200))
+                {
+                    ProcessCombatEnd();
+                }
+            }
+            else
+            {
+                if (!creature.PointWithinRadiusFeet(creature.WorldSpawnPoint, 200))
+                {
+                    ProcessCombatEnd();
+                }
+            }
         }
 
- #region Combat Events
+        #region Combat Events
 
         /// <summary> Attempts to initiate AI-controlled combat. </summary>
         public void ProcessCombatStart(Unit target)
@@ -255,12 +252,12 @@ namespace WorldServer.World.Interfaces
                 return;
             }
 
-			if (!CurrentBrain.StartCombat(target))
+            if (!CurrentBrain.StartCombat(target))
                 return;
 
-			_StopWaypoints = true;
-			
-			if (!(_unit is KeepCreature))
+            _StopWaypoints = true;
+
+            if (!(_unit is KeepCreature))
                 _thinkInterval = 650;
 
             bool processLink = State != AiState.FIGHTING && target is Player && _unit.Aggressive;
@@ -345,8 +342,8 @@ namespace WorldServer.World.Interfaces
             {
                 ResetThinkInterval();
                 State = AiState.STANDING;
-				_StopWaypoints = false;
-			}
+                _StopWaypoints = false;
+            }
         }
 
         public void ProcessAttacked(Unit attacker)
@@ -357,6 +354,7 @@ namespace WorldServer.World.Interfaces
                 case AiState.MOVING:
                     ProcessCombatStart(attacker);
                     break;
+
                 default:
                     return;
             }
@@ -419,9 +417,9 @@ namespace WorldServer.World.Interfaces
             ProcessCombatEnd();
         }
 
-        #endregion
+        #endregion Combat Events
 
-        #endregion
+        #endregion Brain
 
         #region Ranged
 
@@ -435,7 +433,7 @@ namespace WorldServer.World.Interfaces
 
             if (CombatInterface.IsEnemy(GetUnit(), unit))
             {
-                if ((unit.Realm == Realms.REALMS_REALM_NEUTRAL && !unit.Aggressive) || (!unit.IsPlayer() && !unit.Aggressive) || (!GetUnit().IsPlayer() && !GetUnit().Aggressive) || (unit is Creature && ((Creature) unit).Entry == 47) /*|| (unit is Creature && !unit.IsPlayer() && !unit.IsGameObject() && IsNeutralFaction(unit as Creature))*/)
+                if ((unit.Realm == Realms.REALMS_REALM_NEUTRAL && !unit.Aggressive) || (!unit.IsPlayer() && !unit.Aggressive) || (!GetUnit().IsPlayer() && !GetUnit().Aggressive) || (unit is Creature && ((Creature)unit).Entry == 47) /*|| (unit is Creature && !unit.IsPlayer() && !unit.IsGameObject() && IsNeutralFaction(unit as Creature))*/)
                     return true;
 
                 lock (RangedEnemies)
@@ -443,7 +441,7 @@ namespace WorldServer.World.Interfaces
             }
             else
             {
-                lock(RangedAllies)
+                lock (RangedAllies)
                     RangedAllies.Add(unit.GetUnit());
             }
 
@@ -545,19 +543,20 @@ namespace WorldServer.World.Interfaces
             return target;
         }
 
-        #endregion
+        #endregion Ranged
 
         #region Waypoints
 
-		private List<Waypoint> _Waypoints = new List<Waypoint>();
-		public List<Waypoint> Waypoints
-		{
-			get { return _Waypoints; }
-			set
-			{
-				_Waypoints = value;
-			}
-		}
+        private List<Waypoint> _Waypoints = new List<Waypoint>();
+
+        public List<Waypoint> Waypoints
+        {
+            get { return _Waypoints; }
+            set
+            {
+                _Waypoints = value;
+            }
+        }
 
         public Waypoint CurrentWaypoint;
         public byte CurrentWaypointType = Waypoint.Loop;
@@ -573,7 +572,7 @@ namespace WorldServer.World.Interfaces
         public void AddWaypoint(Waypoint AddWp)
         {
             //System.Diagnostics.Trace.Assert(_Owner.Name != "Heinz Lutzen");
-            
+
             if (_Owner.IsCreature())
             {
                 // If there are no waypoints - create a waypoint where the target is
@@ -626,8 +625,6 @@ namespace WorldServer.World.Interfaces
                     SaveWaypoint(lastWaypoint);
                 }
 
-
-
                 if (_Owner is KeepCreature)
                 {
                     (_Owner as KeepCreature).FlagGuard.Info.WaypointGUID = _Owner.Oid;
@@ -644,7 +641,6 @@ namespace WorldServer.World.Interfaces
             var max = WorldMgr.Database.ExecuteQueryInt("SELECT MAX(GUID) as MAXGUID FROM war_world.waypoints");
             return max + 1;
 
-
             // return Convert.ToInt64(DateTime.Now.ToString("yyMMddHHmmssmmm"));
             //uint thirtyBits = (uint)StaticRandom.Instance.Next(1 << 30);
             //uint twoBits = (uint)StaticRandom.Instance.Next(1 << 2);
@@ -656,14 +652,15 @@ namespace WorldServer.World.Interfaces
         {
             WaypointService.DatabaseSaveWaypoint(SaveWp);
         }
-		
-		public void RemoveWaypoint(Waypoint RemoveWp)
+
+        public void RemoveWaypoint(Waypoint RemoveWp)
         {
             switch (Waypoints.Count)
             {
                 case 0:
                 case 1:
                     break;
+
                 case 2:
                     lock (WaypointsTableLock)
                     {
@@ -674,6 +671,7 @@ namespace WorldServer.World.Interfaces
                         Waypoints.Clear();
                     } //lock
                     break;
+
                 default:
                     lock (WaypointsTableLock)
                     {
@@ -768,8 +766,8 @@ namespace WorldServer.World.Interfaces
         {
             if (_Owner.Get2DDistanceToWorldPoint(new Point3D((int)CurrentWaypoint.X, (int)CurrentWaypoint.Y, (int)CurrentWaypoint.Z)) < 3)
                 return true;
-			else
-				return false;
+            else
+                return false;
         }
 
         public bool CanStartNextWaypoint(long Tick)
@@ -823,14 +821,14 @@ namespace WorldServer.World.Interfaces
             //Log.Info("Waypoints", "Starting Waypoint");
 
             State = AiState.MOVING;
-			_unit.Speed = CurrentWaypoint.Speed;
-			_unit.UpdateSpeed();
+            _unit.Speed = CurrentWaypoint.Speed;
+            _unit.UpdateSpeed();
             _unit.MvtInterface.Move(new Point3D(Convert.ToInt32(CurrentWaypoint.X), Convert.ToInt32(CurrentWaypoint.Y), Convert.ToInt32(CurrentWaypoint.Z)));
             if (!Started)
             {
                 // TODO : Messages,Emotes, etc
 
-                if(CurrentWaypoint.TextOnStart != "")
+                if (CurrentWaypoint.TextOnStart != "")
                     _unit.Say(CurrentWaypoint.TextOnStart, ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
             }
 
@@ -845,7 +843,7 @@ namespace WorldServer.World.Interfaces
             if (!Ended)
             {
                 // TODO : Messages, Emote, etc
-                if(CurrentWaypoint.TextOnEnd != "")
+                if (CurrentWaypoint.TextOnEnd != "")
                     _unit.Say(CurrentWaypoint.TextOnEnd, ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
             }
 
@@ -863,6 +861,6 @@ namespace WorldServer.World.Interfaces
                 NextAllowedMovementTime = TCPManager.GetTimeStampMS() + MSTime;
         }
 
-        #endregion
+        #endregion Waypoints
     }
 }

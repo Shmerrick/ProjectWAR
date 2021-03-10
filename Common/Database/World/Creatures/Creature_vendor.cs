@@ -17,7 +17,7 @@
 
 /*
  OLD SYSTEM, removed
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,8 +71,8 @@ public class Creature_vendor : DataObject
     public string ReqItems
     {
         get { return _ReqItems; }
-        set 
-        { 
+        set
+        {
             _ReqItems = value;
             string[] Infos = _ReqItems.Split(')');
             foreach (string Info in Infos)
@@ -92,7 +92,7 @@ public class Creature_vendor : DataObject
                 if (!ItemsReq.ContainsKey(Entry))
                     ItemsReq.Add(Entry, Count);
             }
-            Dirty = true; 
+            Dirty = true;
         }
     }
 

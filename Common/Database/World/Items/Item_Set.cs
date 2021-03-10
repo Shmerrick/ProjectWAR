@@ -1,14 +1,9 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-
-using FrameWork;
 
 namespace Common
 {
-    
     [FrameWork.DataTable(PreCache = false, TableName = "item_sets", DatabaseName = "World")]
     [Serializable]
     public class Item_Set : DataObject
@@ -49,7 +44,7 @@ namespace Common
                     uint bonusKey = uint.Parse(St[0]);
 
                     if (Items.ContainsKey(bonusKey))
-                        Log.Error("Item set "+Name, "Duplicate bonus type in Items String ("+bonusKey+")");
+                        Log.Error("Item set " + Name, "Duplicate bonus type in Items String (" + bonusKey + ")");
                     else
                         Items.Add(bonusKey, St[1]);
                 }

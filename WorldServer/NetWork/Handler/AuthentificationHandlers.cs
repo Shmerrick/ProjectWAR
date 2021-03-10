@@ -10,8 +10,8 @@ namespace WorldServer.NetWork.Handler
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_CONNECT, 0, "onConnect")]
         public static void F_CONNECT(BaseClient client, PacketIn packet)
         {
-            Log.Success("F_CONNECT", "Entering F_CONNECT " + client.Id.ToString() + " " + packet.Opcode.ToString() );
-            GameClient cclient = (GameClient) client;
+            Log.Success("F_CONNECT", "Entering F_CONNECT " + client.Id.ToString() + " " + packet.Opcode.ToString());
+            GameClient cclient = (GameClient)client;
 
             packet.Skip(8);
             uint Tag = packet.GetUint32();
@@ -54,12 +54,12 @@ namespace WorldServer.NetWork.Handler
                     Log.Success("F_CONNECT", "MeId=" + cclient.Id);
                     Log.Success("F_CONNECT", "User connection : " + Username);
 
-                    GameClient Other = ((TCPServer) cclient.Server).GetClientByAccount(cclient, cclient._Account.AccountId);
+                    GameClient Other = ((TCPServer)cclient.Server).GetClientByAccount(cclient, cclient._Account.AccountId);
                     if (Other != null)
                         Other.Disconnect("Failed to get GameClient for account");
 
                     // Check if ip is banned. (they may have been just banned so launcher server wouldnt have picked it up)
-                    if(!Program.AcctMgr.CheckIp(cclient.GetIp().Split(':')[0]))
+                    if (!Program.AcctMgr.CheckIp(cclient.GetIp().Split(':')[0]))
                     {
                         Log.Error("F_CONNECT", "Banned IP =" + Username);
                         cclient.Disconnect("Banned by IP");
@@ -99,7 +99,7 @@ namespace WorldServer.NetWork.Handler
             PacketOut Out = new PacketOut((byte)Opcodes.S_PONG, 20);
             Out.WriteUInt32(Timestamp);
             Out.WriteUInt64((ulong)TCPManager.GetTimeStamp());
-            Out.WriteUInt32((uint)(cclient.SequenceID+1));
+            Out.WriteUInt32((uint)(cclient.SequenceID + 1));
             Out.WriteUInt32(0);
             cclient.SendPacket(Out);
 
@@ -117,7 +117,7 @@ namespace WorldServer.NetWork.Handler
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_ENCRYPTKEY, "onEncryptKey")]
         public static void F_ENCRYPTKEY(BaseClient client, PacketIn packet)
         {
-            GameClient cclient = (GameClient) client;
+            GameClient cclient = (GameClient)client;
 
             sEncrypt result = BaseClient.ByteToType<sEncrypt>(packet);
 
@@ -141,15 +141,15 @@ namespace WorldServer.NetWork.Handler
             }
         }
 
-        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_DISCONNECT, 0,"onDisconnect")]
+        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_DISCONNECT, 0, "onDisconnect")]
         public static void F_DISCONNECT(BaseClient client, PacketIn packet)
         {
-            GameClient cclient = (GameClient) client;
+            GameClient cclient = (GameClient)client;
 
             if (cclient._Account == null)
                 return;
 
-            TCPServer server = (TCPServer) client.Server;
+            TCPServer server = (TCPServer)client.Server;
             server.GetClientByAccount(cclient, cclient._Account.AccountId)?.Disconnect("F_DISCONNECT"); ;
         }
     }

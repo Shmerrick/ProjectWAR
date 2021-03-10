@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using NLog;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NLog;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Map;
 using WorldServer.World.Objects;
@@ -34,7 +29,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             _EvtInterface.Update(tick);
         }
-
 
         public void Start()
         {

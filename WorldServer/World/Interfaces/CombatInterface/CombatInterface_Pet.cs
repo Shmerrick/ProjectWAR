@@ -10,7 +10,7 @@ namespace WorldServer.World.Interfaces
 
         public override bool Load()
         {
-            _petOwner = (Pet) _Owner;
+            _petOwner = (Pet)_Owner;
             CreditedPlayer = _petOwner.Owner;
             return base.Load();
         }
@@ -29,7 +29,7 @@ namespace WorldServer.World.Interfaces
 
             if (_petOwner.Spawn.Proto.Ranged > 0)
             {
-                if (_petOwner.AbtInterface.IsCasting() || !_petOwner.IsInCastRange(CurrentTarget, (uint) (_petOwner.Spawn.Proto.Ranged*_petOwner.StsInterface.GetStatPercentageModifier(Stats.Range))))
+                if (_petOwner.AbtInterface.IsCasting() || !_petOwner.IsInCastRange(CurrentTarget, (uint)(_petOwner.Spawn.Proto.Ranged * _petOwner.StsInterface.GetStatPercentageModifier(Stats.Range))))
                 {
                     if (_petOwner.AiInterface.Debugger != null)
                         _petOwner.AiInterface.Debugger.SendClientMessage("[MR] Unable to auto attack target, casting ability or too far away.");
@@ -69,6 +69,7 @@ namespace WorldServer.World.Interfaces
                     case AiState.STANDING:
                         AIInterface.ProcessCombatStart(attacker);
                         break;
+
                     case AiState.MOVING:
                         AIInterface.ProcessCombatStart(attacker);
                         break;
@@ -82,13 +83,14 @@ namespace WorldServer.World.Interfaces
 
         public override void OnTakeDamage(Unit fighter, uint damage, float hatredMod, uint mitigation = 0)
         {
-            if (_petOwner.AIMode != (byte) PetCommand.Passive && !_petOwner.IsHeeling && !IgnoreDamageEvents && CurrentTarget == null)
+            if (_petOwner.AIMode != (byte)PetCommand.Passive && !_petOwner.IsHeeling && !IgnoreDamageEvents && CurrentTarget == null)
             {
                 switch (AIInterface.State)
                 {
                     case AiState.STANDING:
                         AIInterface.ProcessCombatStart(fighter);
                         break;
+
                     case AiState.MOVING:
                         AIInterface.ProcessCombatStart(fighter);
                         break;
@@ -104,13 +106,14 @@ namespace WorldServer.World.Interfaces
 
         public override void OnDealDamage(Unit victim, uint damageCount)
         {
-            if (_petOwner.AIMode != (byte) PetCommand.Passive && !_petOwner.IsHeeling && !IgnoreDamageEvents && CurrentTarget == null)
+            if (_petOwner.AIMode != (byte)PetCommand.Passive && !_petOwner.IsHeeling && !IgnoreDamageEvents && CurrentTarget == null)
             {
                 switch (AIInterface.State)
                 {
                     case AiState.STANDING:
                         AIInterface.ProcessCombatStart(victim);
                         break;
+
                     case AiState.MOVING:
                         AIInterface.ProcessCombatStart(victim);
                         break;
@@ -137,16 +140,16 @@ namespace WorldServer.World.Interfaces
         {
         }
 
-        #endregion
+        #endregion Events
 
         public override bool CanAttackPlayer(Player plr)
         {
             if (!plr.CbtInterface.IsPvp)
                 return false;
-            
+
             if (_petOwner.Owner == null)
                 return false;
-            
+
             return _petOwner.Owner.CbtInterface.IsPvp;
         }
     }

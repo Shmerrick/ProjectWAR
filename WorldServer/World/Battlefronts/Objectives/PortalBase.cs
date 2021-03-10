@@ -1,6 +1,6 @@
-﻿using System;
-using Common;
+﻿using Common;
 using Common.Database.World.BattleFront;
+using System;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 using WorldServer.World.Positions;
@@ -11,7 +11,7 @@ namespace WorldServer.World.Battlefronts.Objectives
     /// Game object representing a portal around an objective
     /// allowing port to warcamp.
     /// </summary>
-    class PortalBase : GameObject
+    internal class PortalBase : GameObject
     {
         private const uint PORTAL_PROTO_ENTRY = 242;
         private const uint PORTAL_DISPLAY_ID = 1583;
@@ -80,7 +80,7 @@ namespace WorldServer.World.Battlefronts.Objectives
             proto.Scale = 25;
             // spawn.DisplayID = 1675;
             spawn.DisplayID = 1675;
-            spawn.ZoneId = (ushort) zoneId;
+            spawn.ZoneId = (ushort)zoneId;
 
             spawn.WorldX = x;
             spawn.WorldY = y;
@@ -90,7 +90,7 @@ namespace WorldServer.World.Battlefronts.Objectives
             spawn.IsValid = true;
             spawn.IsDeleted = false;
             spawn.Guid = 132456;
-    
+
             return spawn;
         }
 
@@ -103,8 +103,7 @@ namespace WorldServer.World.Battlefronts.Objectives
         protected void Teleport(Player player, int zoneId, Point3D targetPos)
         {
             Point2D randomPoint = targetPos.GetPointFromHeading((ushort)random.Next(0, 4096), 5);
-            player.Teleport((ushort) zoneId, (uint)randomPoint.X, (uint)randomPoint.Y, (ushort)targetPos.Z, 0);
+            player.Teleport((ushort)zoneId, (uint)randomPoint.X, (uint)randomPoint.Y, (ushort)targetPos.Z, 0);
         }
-
     }
 }

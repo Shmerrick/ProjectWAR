@@ -1,10 +1,10 @@
 ﻿//#define ABILITY_DEVELOPMENT
 
+using FrameWork;
+using GameData;
 using System;
 using System.Collections.Generic;
 using SystemData;
-using FrameWork;
-using GameData;
 using WorldServer.NetWork;
 using WorldServer.World.Abilities.CareerInterfaces;
 using WorldServer.World.Abilities.Components;
@@ -20,11 +20,15 @@ namespace WorldServer.World.Abilities
     public class AbilityInterface : BaseInterface
     {
         #region Static
-        const ushort GLOBAL_COOLDOWN = 1500;
+
+        private const ushort GLOBAL_COOLDOWN = 1500;
+
         // The client attempts to fire abilities 75% of the way through its global cooldown. This compensates for the fact.
-        const long COOLDOWN_GRACE = 400;
+        private const long COOLDOWN_GRACE = 400;
+
         public static bool PreventCasting;
-        #endregion
+
+        #endregion Static
 
         private Unit _unitOwner;
         private Player _playerOwner;
@@ -37,7 +41,11 @@ namespace WorldServer.World.Abilities
         private readonly ushort[] _morales = new ushort[4];
 
         private AbilityProcessor _abilityProcessor;
-        public AbilityProcessor GetAbiityProcessor() { return _abilityProcessor; }
+
+        public AbilityProcessor GetAbiityProcessor()
+        {
+            return _abilityProcessor;
+        }
 
         #region Init/Storage
 
@@ -138,7 +146,7 @@ namespace WorldServer.World.Abilities
             GetPlayer().SendPacket(Out);
         }
 
-        #endregion
+        #endregion Init/Storage
 
         #region Events
 
@@ -184,7 +192,7 @@ namespace WorldServer.World.Abilities
             _morales[slot - 1] = moraleEntry;
         }
 
-        #endregion
+        #endregion Events
 
         #region Validation
 
@@ -240,7 +248,7 @@ namespace WorldServer.World.Abilities
             return false;
         }
 
-        #endregion
+        #endregion Validation
 
         public bool IsCasting()
         {
@@ -299,7 +307,7 @@ namespace WorldServer.World.Abilities
             ((Player)_unitOwner).SendPacket(Out);
         }
 
-        #endregion
+        #endregion Granted Abilities
 
         #region NPC Abilities
 
@@ -323,7 +331,7 @@ namespace WorldServer.World.Abilities
             }
         }
 
-        #endregion
+        #endregion NPC Abilities
 
         #region AbilityCast
 
@@ -356,7 +364,6 @@ namespace WorldServer.World.Abilities
 
             try
             {
-
                 if (AbilityMgr.HasCommandsFor(abilityId) || abInfo.ConstantInfo.ChannelID != 0)
                 {
                     if (_abilityProcessor == null)
@@ -365,7 +372,7 @@ namespace WorldServer.World.Abilities
                     abInfo.Instigator = instigator;
                     abInfo.Level = overrideAbilityLevel;
 
-                        return _abilityProcessor.StartAbility(abInfo, castSequence, cooldownGroup, enemyVisible, friendlyVisible, moving);
+                    return _abilityProcessor.StartAbility(abInfo, castSequence, cooldownGroup, enemyVisible, friendlyVisible, moving);
                 }
                 if (_Owner is Player)
                 {
@@ -374,7 +381,6 @@ namespace WorldServer.World.Abilities
                 }
                 return false;
             }
-
             catch (Exception e)
             {
                 if (_Owner is Player)
@@ -424,7 +430,6 @@ namespace WorldServer.World.Abilities
                 }
                 return false;
             }
-
             catch (Exception e)
             {
                 if (_Owner is Player)
@@ -448,7 +453,7 @@ namespace WorldServer.World.Abilities
                 _abilityProcessor.NotifyCancelled((ushort)AbilityResult.ABILITYRESULT_INTERRUPTED);
         }
 
-        #endregion
+        #endregion AbilityCast
 
         #region Cooldowns
 
@@ -505,7 +510,6 @@ namespace WorldServer.World.Abilities
                 long nextTimestamp = 0;
                 if (abInfo.CDcap != 0 && abInfo.CDcap * 1000 > duration)
                     nextTimestamp = (abInfo.CDcap * 1000) + TCPManager.GetTimeStampMS();
-
                 else
                     nextTimestamp = (abInfo.Cooldown * 1000) + TCPManager.GetTimeStampMS();
 
@@ -531,7 +535,6 @@ namespace WorldServer.World.Abilities
 
                 if (abInfo.CDcap != 0 && abInfo.CDcap * 1000 > duration)
                     nextTimestamp = (abInfo.CDcap * 1000) + TCPManager.GetTimeStampMS();
-
                 else
                     nextTimestamp = (duration) + TCPManager.GetTimeStampMS();
 
@@ -552,7 +555,6 @@ namespace WorldServer.World.Abilities
                 else
                     _playerOwner?.SendPacket(Out);
             }
-
         }
 
         /// <summary>
@@ -634,7 +636,7 @@ namespace WorldServer.World.Abilities
             item.CharSaveInfo.NextAllowedUseTime = curCooldownMS / 1000;
         }
 
-        #endregion
+        #endregion Cooldowns
 
         #region Mastery
 
@@ -716,7 +718,6 @@ namespace WorldServer.World.Abilities
                 _playerOwner.SendPacket(Out);
             }
 
-
             SaveMastery();
             ReloadMastery();
             SendMasteryPointsUpdate();
@@ -777,7 +778,6 @@ namespace WorldServer.World.Abilities
                             break;
                         masString += ";";
                     }
-
                     else masString += ",";
                 }
             _playerOwner._Value.MasterySkills = masString;
@@ -1005,9 +1005,9 @@ namespace WorldServer.World.Abilities
             byte curLevel = _unitOwner.Level;
             if (_unitOwner.AdjustedLevel < curLevel)
                 curLevel = _unitOwner.AdjustedLevel;
-            
+
             return (byte)(10 + ((curLevel - 10) >> 1) + (_unitOwner.EffectiveLevel - curLevel) + _pointsInTree[masteryTree - 1]);
-            
+
             //// The following correctly displays tooltip information.
             //return (byte)(curLevel + (_pointsInTree[masteryTree - 1] * 2));
         }
@@ -1040,7 +1040,6 @@ namespace WorldServer.World.Abilities
                 if (!abInterface.AddPointToTree(tree))
                     return;
             }
-
             else if (tree <= 24)
             {
                 byte targetTree = 1;
@@ -1054,7 +1053,6 @@ namespace WorldServer.World.Abilities
 
                 abInterface.ActivateSkillInTree(targetTree, tree);
             }
-
             else
                 return;
 
@@ -1081,7 +1079,7 @@ namespace WorldServer.World.Abilities
             _abilitySet.Add(_masteryAbilities[tree - 1, skill - 1].Entry);
         }
 
-        #endregion
+        #endregion Mastery Purchasing
 
         public void RespecializeMastery(bool force)
         {
@@ -1090,7 +1088,6 @@ namespace WorldServer.World.Abilities
                 if (_playerOwner.ItmInterface.HasItemCountInInventory(129841000, 1))
                 {
                     _playerOwner.ItmInterface.RemoveItems(129841000, 1);
-                    
                 }
                 else
                 {
@@ -1098,7 +1095,6 @@ namespace WorldServer.World.Abilities
                         return;
                     _playerOwner.RemoveMoney((uint)(GetTotalSpent() * 2000));
                 }
-
             }
 
             _playerOwner.BuffInterface.RemoveCasterBuffs();
@@ -1137,7 +1133,6 @@ namespace WorldServer.World.Abilities
                 _playerOwner.SendPacket(Out);
             }
 
-
             _playerOwner._Value.MasterySkills = (0 + _bonusMasteryPoints[0]) + ";" +
                                                 (0 + _bonusMasteryPoints[1]) + ";" +
                                                 (0 + _bonusMasteryPoints[2]) + ";" +
@@ -1171,5 +1166,6 @@ namespace WorldServer.World.Abilities
             }
         }
     }
-    #endregion
+
+    #endregion Mastery
 }

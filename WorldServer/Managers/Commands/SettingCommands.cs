@@ -1,15 +1,7 @@
-﻿using System;
-using System.Text;
+﻿using FrameWork;
+using System;
 using System.Text.RegularExpressions;
-using System.Collections.Generic;
-using System.Linq;
 using SystemData;
-using Common;
-using FrameWork;
-using GameData;
-using static System.UInt16;
-using static WorldServer.Managers.Commands.GMUtils;
-using WorldServer.Services.World;
 using WorldServer.World.Objects;
 
 namespace WorldServer.Managers.Commands
@@ -33,7 +25,6 @@ namespace WorldServer.Managers.Commands
                 }
                 else
                     plr.SendClientMessage("Scaler cannot be set to 0 or less.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
-
             }
             else
             {
@@ -54,7 +45,6 @@ namespace WorldServer.Managers.Commands
                 }
                 else
                     plr.SendClientMessage("Door Regen cannot be set to 0 or less.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
-
             }
             else
             {
@@ -78,9 +68,8 @@ namespace WorldServer.Managers.Commands
                     WorldMgr.WorldSettingsMgr.SetMovementPacketThrotle(throtleValue);
                     plr.SendClientMessage("Changed Movement Packet Throtle to " + throtleValue, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
                 }
-                else 
+                else
                     plr.SendClientMessage("Incorrect value for Movement Packet Throtle, 0 - disabled 1 - enabled", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
-
             }
             else
             {
@@ -101,7 +90,6 @@ namespace WorldServer.Managers.Commands
                 }
                 else
                     plr.SendClientMessage("Ammo Refresh cannot be set to 0 or less.", ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
-
             }
             else
             {
@@ -135,8 +123,8 @@ namespace WorldServer.Managers.Commands
             int boHold;
             if (targetString != null && Int32.TryParse(targetString, out boHold))
             {
-                    WorldMgr.WorldSettingsMgr.SetGenericSetting(9, boHold);
-                    plr.SendClientMessage("Set minimum BattlefieldObjective hold to " + boHold, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
+                WorldMgr.WorldSettingsMgr.SetGenericSetting(9, boHold);
+                plr.SendClientMessage("Set minimum BattlefieldObjective hold to " + boHold, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
             }
             else
             {
@@ -175,7 +163,7 @@ namespace WorldServer.Managers.Commands
         }
 
         [CommandAttribute(EGmLevel.SourceDev, "Sets the weights for Gold Bags")]
-        public static void SetGoldBagWeights (Player plr, string targetString = null)
+        public static void SetGoldBagWeights(Player plr, string targetString = null)
         {
             int bagWeights;
             if (targetString != null && Int32.TryParse(targetString, out bagWeights))
@@ -283,7 +271,7 @@ namespace WorldServer.Managers.Commands
         public static void DisablePetModifiers(Player plr, string targetString = null)
         {
             int Disabled;
-            if(targetString != null && Int32.TryParse(targetString, out Disabled))
+            if (targetString != null && Int32.TryParse(targetString, out Disabled))
             {
                 WorldMgr.WorldSettingsMgr.SetGenericSetting(19, Disabled);
                 plr.SendClientMessage("Set Pet Modifier System flag Successfully: " + Disabled, ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
@@ -315,7 +303,6 @@ namespace WorldServer.Managers.Commands
                         }
                     }
                 }
-
             }
             else
             {
@@ -337,7 +324,5 @@ namespace WorldServer.Managers.Commands
                 plr.SendClientMessage("Disable PeekPet System System flag is set to: " + WorldMgr.WorldSettingsMgr.GetGenericSetting(20), ChatLogFilters.CHATLOGFILTERS_TELL_RECEIVE);
             }
         }
-
-
     }
 }

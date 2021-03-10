@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -38,7 +34,7 @@ namespace Common
         [DataElement]
         public byte EffectAngle { get; set; }
 
-        [DataElement(Varchar=24)]
+        [DataElement(Varchar = 24)]
         public string Target { get; set; }
 
         [DataElement(Varchar = 24)]

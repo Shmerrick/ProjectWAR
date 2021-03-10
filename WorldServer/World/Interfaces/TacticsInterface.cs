@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using Common;
+﻿using Common;
 using FrameWork;
+using System.Collections.Generic;
 using WorldServer.NetWork;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
@@ -16,29 +16,37 @@ namespace WorldServer.World.Interfaces
 
         /// <summary> A list of all tactic entries the player has active.</summary>
         private readonly List<ushort> _activeTactics = new List<ushort>();
+
         /// <summary> A list of all tactic entries the player has which have applied modifiers.</summary>
         private readonly HashSet<ushort> _modifyingTactics = new HashSet<ushort>();
+
         /// <summary> A list of all the active tactic buffs.</summary>
         private readonly List<NewBuff> _activeBuffs = new List<NewBuff>();
 
         /// <summary>Modifiers which run on all abilities as they begin casting.</summary>
         private readonly List<AbilityModifier> _generalPreCastModifiers = new List<AbilityModifier>();
+
         /// <summary>Modifiers which run on all abilities as they finish casting.</summary>
         private readonly List<AbilityModifier> _generalModifiers = new List<AbilityModifier>();
+
         /// <summary>Modifiers which run on all buffs as they are created.</summary>
         private readonly List<AbilityModifier> _generalBuffModifiers = new List<AbilityModifier>();
 
         /// <summary>Modifiers which run on abilities within a certain mastery tree as they begin casting.</summary>
         private readonly Dictionary<ushort, List<AbilityModifier>> _speclinePreCastModifiers = new Dictionary<ushort, List<AbilityModifier>>();
+
         /// <summary>Modifiers which run on abilities within a certain mastery tree as they finish casting.</summary>
         private readonly Dictionary<ushort, List<AbilityModifier>> _speclineModifiers = new Dictionary<ushort, List<AbilityModifier>>();
+
         /// <summary>Modifiers which run on buffs within a certain mastery tree as they are created.</summary>
         private readonly Dictionary<ushort, List<AbilityModifier>> _speclineBuffModifiers = new Dictionary<ushort, List<AbilityModifier>>();
 
         /// <summary>Modifiers which run on abilities of a particular entry as they begin casting.</summary>
         private readonly Dictionary<ushort, List<AbilityModifier>> _abilityPreCastModifiers = new Dictionary<ushort, List<AbilityModifier>>();
+
         /// <summary>Modifiers which run on abilities of a particular entry as they finish casting.</summary>
         private readonly Dictionary<ushort, List<AbilityModifier>> _abilityModifiers = new Dictionary<ushort, List<AbilityModifier>>();
+
         /// <summary>Modifiers which run on buffs of a particular entry as they are created.</summary>
         private readonly Dictionary<ushort, List<AbilityModifier>> _buffModifiers = new Dictionary<ushort, List<AbilityModifier>>();
 
@@ -61,7 +69,6 @@ namespace WorldServer.World.Interfaces
 
             for (int i = 0; i < numberofTactics; i++)
                 tactics.Add(packet.GetUint16());
-
 
             plr.TacInterface.HandleTactics(tactics);
         }
@@ -336,7 +343,6 @@ namespace WorldServer.World.Interfaces
                 _activeTactics.Add(id);
             }
 
-
             // Update the saved list for the server
             for (int i = 0; i < 4; ++i)
                 _myPlayer._Value.SetTactic((byte)(i + 1), i < _activeTactics.Count ? _activeTactics[i] : (ushort)0);
@@ -439,7 +445,6 @@ namespace WorldServer.World.Interfaces
                 Out.WriteUInt16(tactic);
 
             _myPlayer.SendPacket(Out);
-
         }
 
         /// <summary>
@@ -451,6 +456,7 @@ namespace WorldServer.World.Interfaces
             _activeBuffs.Add(b);
 
             #region PreCast
+
             if (AbilityMgr.HasPreCastModifiers(b.Entry))
             {
                 List<AbilityModifier> tacPrecastModifiers = AbilityMgr.GetAbilityPreCastModifiers(b.Entry);
@@ -459,15 +465,12 @@ namespace WorldServer.World.Interfaces
                 {
                     if (mod.Affecting == 0)
                         _generalPreCastModifiers.Add(mod);
-
                     else if (mod.Affecting <= 3)
                     {
                         if (!_speclinePreCastModifiers.ContainsKey((ushort)(mod.Affecting - 1)))
                             _speclinePreCastModifiers.Add((ushort)(mod.Affecting - 1), new List<AbilityModifier>());
-                        _speclinePreCastModifiers[(byte) (mod.Affecting - 1)].Add(mod);
-
+                        _speclinePreCastModifiers[(byte)(mod.Affecting - 1)].Add(mod);
                     }
-
                     else
                     {
                         if (!_abilityPreCastModifiers.ContainsKey(mod.Affecting))
@@ -483,7 +486,7 @@ namespace WorldServer.World.Interfaces
                 bAdded = true;
             }
 
-            #endregion
+            #endregion PreCast
 
             #region Cast
 
@@ -495,14 +498,12 @@ namespace WorldServer.World.Interfaces
                 {
                     if (mod.Affecting == 0)
                         _generalModifiers.Add(mod);
-
                     else if (mod.Affecting <= 3)
-                    { 
-                        if (!_speclineModifiers.ContainsKey((ushort) (mod.Affecting - 1)))
-                            _speclineModifiers.Add((ushort) (mod.Affecting - 1), new List<AbilityModifier>());
-                        _speclineModifiers[(byte) (mod.Affecting - 1)].Add(mod);
+                    {
+                        if (!_speclineModifiers.ContainsKey((ushort)(mod.Affecting - 1)))
+                            _speclineModifiers.Add((ushort)(mod.Affecting - 1), new List<AbilityModifier>());
+                        _speclineModifiers[(byte)(mod.Affecting - 1)].Add(mod);
                     }
-
                     else
                     {
                         if (!_abilityModifiers.ContainsKey(mod.Affecting))
@@ -518,9 +519,10 @@ namespace WorldServer.World.Interfaces
                 bAdded = true;
             }
 
-            #endregion
+            #endregion Cast
 
             #region Buff
+
             if (AbilityMgr.HasBuffModifiers(b.Entry))
             {
                 List<AbilityModifier> tacBuffModifiers = AbilityMgr.GetBuffModifiers(b.Entry);
@@ -529,14 +531,12 @@ namespace WorldServer.World.Interfaces
                 {
                     if (mod.Affecting == 0)
                         _generalBuffModifiers.Add(mod);
-
                     else if (mod.Affecting <= 3)
                     {
                         if (!_speclineBuffModifiers.ContainsKey((ushort)(mod.Affecting - 1)))
                             _speclineBuffModifiers.Add((ushort)(mod.Affecting - 1), new List<AbilityModifier>());
                         _speclineBuffModifiers[(byte)(mod.Affecting - 1)].Add(mod);
                     }
-
                     else
                     {
                         if (!_buffModifiers.ContainsKey(mod.Affecting))
@@ -552,7 +552,7 @@ namespace WorldServer.World.Interfaces
                 bAdded = true;
             }
 
-            #endregion
+            #endregion Buff
 
             if (bAdded)
                 _modifyingTactics.Add(b.Entry);
@@ -564,6 +564,7 @@ namespace WorldServer.World.Interfaces
         public void RegisterGeneralBuff(NewBuff buff)
         {
             #region PreCast
+
             if (AbilityMgr.HasPreCastModifiers(buff.Entry))
             {
                 List<AbilityModifier> abilityPreCastModifiers = AbilityMgr.GetAbilityPreCastModifiers(buff.Entry);
@@ -572,15 +573,12 @@ namespace WorldServer.World.Interfaces
                 {
                     if (mod.Affecting == 0)
                         _generalPreCastModifiers.Add(mod);
-
                     else if (mod.Affecting <= 3)
                     {
                         if (!_speclinePreCastModifiers.ContainsKey((ushort)(mod.Affecting - 1)))
                             _speclinePreCastModifiers.Add((ushort)(mod.Affecting - 1), new List<AbilityModifier>());
                         _speclinePreCastModifiers[(byte)(mod.Affecting - 1)].Add(mod);
-
                     }
-
                     else
                     {
                         if (!_abilityPreCastModifiers.ContainsKey(mod.Affecting))
@@ -594,7 +592,7 @@ namespace WorldServer.World.Interfaces
                 }
             }
 
-            #endregion
+            #endregion PreCast
 
             #region Cast
 
@@ -606,14 +604,12 @@ namespace WorldServer.World.Interfaces
                 {
                     if (mod.Affecting == 0)
                         _generalModifiers.Add(mod);
-
                     else if (mod.Affecting <= 3)
                     {
                         if (!_speclineModifiers.ContainsKey((ushort)(mod.Affecting - 1)))
                             _speclineModifiers.Add((ushort)(mod.Affecting - 1), new List<AbilityModifier>());
                         _speclineModifiers[(byte)(mod.Affecting - 1)].Add(mod);
                     }
-
                     else
                     {
                         if (!_abilityModifiers.ContainsKey(mod.Affecting))
@@ -622,15 +618,15 @@ namespace WorldServer.World.Interfaces
                         _abilityModifiers[mod.Affecting].Add(mod);
                     }
 
-
                     for (AbilityModifierEffect effect = mod.Effect; effect != null; effect = effect.nextMod)
                         buff.AddBuffParameter(effect.BuffLine, effect.PrimaryValue);
                 }
             }
 
-            #endregion
+            #endregion Cast
 
             #region Buff
+
             if (AbilityMgr.HasBuffModifiers(buff.Entry))
             {
                 List<AbilityModifier> buffModifiers = AbilityMgr.GetBuffModifiers(buff.Entry);
@@ -639,14 +635,12 @@ namespace WorldServer.World.Interfaces
                 {
                     if (mod.Affecting == 0)
                         _generalBuffModifiers.Add(mod);
-
                     else if (mod.Affecting <= 3)
                     {
                         if (!_speclineBuffModifiers.ContainsKey((ushort)(mod.Affecting - 1)))
                             _speclineBuffModifiers.Add((ushort)(mod.Affecting - 1), new List<AbilityModifier>());
                         _speclineBuffModifiers[(byte)(mod.Affecting - 1)].Add(mod);
                     }
-
                     else
                     {
                         if (!_buffModifiers.ContainsKey(mod.Affecting))
@@ -655,13 +649,12 @@ namespace WorldServer.World.Interfaces
                         _buffModifiers[mod.Affecting].Add(mod);
                     }
 
-
                     for (AbilityModifierEffect effect = mod.Effect; effect != null; effect = effect.nextMod)
                         buff.AddBuffParameter(effect.BuffLine, effect.PrimaryValue);
                 }
             }
 
-            #endregion
+            #endregion Buff
         }
 
         public void UnregisterGeneralBuff(NewBuff buff)
@@ -669,6 +662,7 @@ namespace WorldServer.World.Interfaces
             List<ushort> toRemove = new List<ushort>();
 
             #region PreCast
+
             if (AbilityMgr.HasPreCastModifiers(buff.Entry))
             {
                 foreach (AbilityModifier mod in AbilityMgr.GetAbilityPreCastModifiers(buff.Entry))
@@ -687,7 +681,7 @@ namespace WorldServer.World.Interfaces
                 toRemove.Clear();
             }
 
-            #endregion
+            #endregion PreCast
 
             #region Cast
 
@@ -709,7 +703,7 @@ namespace WorldServer.World.Interfaces
                 toRemove.Clear();
             }
 
-            #endregion
+            #endregion Cast
 
             #region Buff
 
@@ -729,10 +723,10 @@ namespace WorldServer.World.Interfaces
                     _buffModifiers[rem].RemoveAll(fmod => fmod.Source == buff.Entry);
             }
 
-            #endregion
+            #endregion Buff
         }
 
-        #endregion
+        #endregion Tactic Add/Remove
 
         public void ModifyInitials(AbilityInfo abInfo)
         {

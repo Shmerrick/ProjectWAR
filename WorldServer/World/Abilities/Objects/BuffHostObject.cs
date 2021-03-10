@@ -8,7 +8,7 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Abilities.Objects
 {
-    class BuffHostObject : Unit
+    internal class BuffHostObject : Unit
     {
         protected Unit Owner;
         protected Creature_proto Proto;
@@ -16,7 +16,6 @@ namespace WorldServer.World.Abilities.Objects
 
         public BuffHostObject()
         {
-            
         }
 
         public BuffHostObject(Unit owner, Point3D spawnVec, Creature_proto proto, long expireTime)
@@ -123,12 +122,12 @@ namespace WorldServer.World.Abilities.Objects
 
             plr.SendPacket(Out);
 
-            Out = new PacketOut((byte) Opcodes.F_UPDATE_STATE);
+            Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE);
             Out.WriteUInt16(Oid);
             Out.WriteByte(1);
             Out.WriteByte(7);
             Out.Fill(0, 6);
-			plr.SendPacket(Out);
+            plr.SendPacket(Out);
 
             base.SendMeTo(plr);
         }

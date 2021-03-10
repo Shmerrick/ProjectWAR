@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Common;
 using System.Linq;
-using Common;
 using WorldServer.Services.World;
 using WorldServer.World.AI;
 
@@ -10,26 +8,22 @@ namespace WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum1
     public class SimpleGoremane : InstanceBossSpawn
     {
         #region Constructors
+
         public SimpleGoremane(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
-            
         }
 
         #endregion Constructors
 
-        #region Attributes
 
-        
-
-        #endregion Attributes
 
         #region Overrides
 
         public override void OnLoad()
         {
             base.OnLoad();
-            
+
             var brain = new BossBrain(this);
             brain.Abilities = CreatureService.BossSpawnAbilities.Where(x => x.BossSpawnId == this.BossId).ToList();
             AiInterface.SetBrain(brain);
@@ -55,7 +49,6 @@ namespace WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum1
 
         #region Methods
 
-        
         //private void CheckBossRageTimer()
         //{
         //	// check rage timer

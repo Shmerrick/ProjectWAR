@@ -1,9 +1,6 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using FrameWork;
 
 namespace Common
 {
@@ -44,7 +41,7 @@ namespace Common
         [PrimaryKey]
         public ushort QuestID { get; set; }
 
-        [DataElement(AllowDbNull=false, Varchar = 64)]
+        [DataElement(AllowDbNull = false, Varchar = 64)]
         public string Objectives
         {
             get

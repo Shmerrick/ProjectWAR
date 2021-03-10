@@ -1,15 +1,10 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Common;
+﻿using Common;
 using FrameWork;
+using System;
 
 namespace LobbyServer
 {
-    class Program
+    internal class Program
     {
         public static LobbyConfigs Config;
 
@@ -18,7 +13,7 @@ namespace LobbyServer
 
         public static AccountMgr AcctMgr => Client.GetServerObject<AccountMgr>();
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(onError);
 
@@ -41,8 +36,6 @@ namespace LobbyServer
 
             Server = TCPManager.GetTcp<TCPServer>("LobbyServer");
 
-            
-
             Log.Debug($"LobbyServer", $"RpcClient on Local Ip {Config.RpcInfo.RpcLocalIp}");
             Log.Debug($"LobbyServer", $"RpcClient Connect (Start) to {Config.RpcInfo.RpcServerIp}:{ Config.RpcInfo.RpcServerPort}");
             Log.Debug($"LobbyServer", $"TcpServer on Port {Config.ClientPort}");
@@ -50,7 +43,7 @@ namespace LobbyServer
             ConsoleMgr.Start();
         }
 
-        static void onError(object sender, UnhandledExceptionEventArgs e)
+        private static void onError(object sender, UnhandledExceptionEventArgs e)
         {
             Log.Error("onError", e.ExceptionObject.ToString());
         }

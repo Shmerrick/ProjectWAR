@@ -21,7 +21,7 @@ namespace WorldServer.World.Objects
     public class Creature : Unit, IClock
     {
         public long LastMove { get; set; }
-        
+
         public Creature_spawn Spawn;
         public SiegeInterface SiegeInterface;
         public uint Entry => Spawn?.Entry ?? 0;
@@ -30,7 +30,6 @@ namespace WorldServer.World.Objects
         public ushort Ranged { get; set; }
         public ushort Model1 { get; set; }
         public ushort Model2 { get; set; }
-
 
         public Creature()
         {
@@ -70,7 +69,7 @@ namespace WorldServer.World.Objects
             return DateTime.Now.Millisecond;
         }
 
-        #endregion
+        #endregion CrowdControl
 
         protected virtual void SetCreatureStats()
         {
@@ -118,6 +117,7 @@ namespace WorldServer.World.Objects
                         StsInterface.AddItemBonusStat(Stats.Strength, (ushort)(5 * statBonusMult * Level * Spawn.Proto.PowerModifier));
                     }
                     break;
+
                 case 1:
                     baseStats = CharMgr.GetCharacterInfoStats((byte)CareerLine.CAREERLINE_IRON_BREAKER, Math.Min(Level, (byte)80));
                     StsInterface.Load(baseStats);
@@ -203,6 +203,7 @@ namespace WorldServer.World.Objects
                         }
                     }
                     break;
+
                 case Stats.BallisticSkill:
                     {
                         if (career == 4) //rdps
@@ -224,6 +225,7 @@ namespace WorldServer.World.Objects
                         }
                     }
                     break;
+
                 case Stats.Toughness:
                     {
                         if (career == 1) //tank
@@ -232,6 +234,7 @@ namespace WorldServer.World.Objects
                         }
                     }
                     break;
+
                 default:
                     {
                         return 1;
@@ -346,15 +349,14 @@ namespace WorldServer.World.Objects
                 AiInterface.SetBrain(new DummyBrain(this));
 
             //if (AiInterface.Waypoints.Count == 0)
-                //if (Scale == 110)
-                //{
-                //    var x = AiInterface.Waypoints;
-                //}
-                //else
-                //{
-                //    AiInterface.Waypoints = WaypointService.GetNpcWaypoints(Spawn.Guid);
-                //}
-
+            //if (Scale == 110)
+            //{
+            //    var x = AiInterface.Waypoints;
+            //}
+            //else
+            //{
+            //    AiInterface.Waypoints = WaypointService.GetNpcWaypoints(Spawn.Guid);
+            //}
 
             if (StsInterface.Speed != 0)
             {
@@ -516,6 +518,7 @@ namespace WorldServer.World.Objects
                                     }
 
                                     break;
+
                                 case CreatureTitle.Butcher:
                                     if (player._Value.GatheringSkill != 1)
                                     {
@@ -527,6 +530,7 @@ namespace WorldServer.World.Objects
                                         player.GatherInterface.Load();
                                     }
                                     break;
+
                                 case CreatureTitle.Cultivator:
 
                                     if (player._Value.GatheringSkill != 3)
@@ -539,6 +543,7 @@ namespace WorldServer.World.Objects
                                         player.CultivInterface.Load();
                                     }
                                     break;
+
                                 case CreatureTitle.Salvager:
                                     if (player._Value.GatheringSkill != 6)
                                     {
@@ -550,6 +555,7 @@ namespace WorldServer.World.Objects
                                         player.GatherInterface.Load();
                                     }
                                     break;
+
                                 case CreatureTitle.Scavenger:
                                     if (player._Value.GatheringSkill != 2)
                                     {
@@ -561,6 +567,7 @@ namespace WorldServer.World.Objects
                                         player.GatherInterface.Load();
                                     }
                                     break;
+
                                 case CreatureTitle.HedgeWizard: //talsiman
                                     if (player._Value.CraftingSkill != 5)
                                     {
@@ -572,6 +579,7 @@ namespace WorldServer.World.Objects
                                         player.CraftTalInterface.Load();
                                     }
                                     break;
+
                                 default:
                                     PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE, 5);
                                     Out.WriteByte(5);
@@ -583,47 +591,49 @@ namespace WorldServer.World.Objects
                             }
                         }
                         break;
+
                     case 9:
                         // Dynamic Vendor
                         switch (Spawn.Proto.VendorID)
                         {
                             case 428:  // BlackMarket Vendor
-                            {
-                                var blackMarketVendor = new BlackMarketVendorItem(player);
-                                WorldMgr.SendDynamicVendorItems(player,blackMarketVendor.GetBlackMarketItems(player));
-                                break;
-                            }
+                                {
+                                    var blackMarketVendor = new BlackMarketVendorItem(player);
+                                    WorldMgr.SendDynamicVendorItems(player, blackMarketVendor.GetBlackMarketItems(player));
+                                    break;
+                                }
                             case 10002:  // Honor Vendor
-                            {
-                                WorldMgr.SendDynamicVendorItems(player,
-                                    new HonorVendorItem(player).items);
-                                break;
-                            }
+                                {
+                                    WorldMgr.SendDynamicVendorItems(player,
+                                        new HonorVendorItem(player).items);
+                                    break;
+                                }
                             case 10001:  // Realm Captain Vendor
-                            {
-                                WorldMgr.SendDynamicVendorItems(player,
-                                    new RealmCaptainVendorItem(player).items);
-                                break;
-                            }
+                                {
+                                    WorldMgr.SendDynamicVendorItems(player,
+                                        new RealmCaptainVendorItem(player).items);
+                                    break;
+                                }
                             case 10000:
-                            {
-                                WorldMgr.SendDynamicVendorItems(player,
-                                    new RenownLevelVendorItem(player._Value.RenownRank, player._Value.Level).items);
-                                break;
-                            }
+                                {
+                                    WorldMgr.SendDynamicVendorItems(player,
+                                        new RenownLevelVendorItem(player._Value.RenownRank, player._Value.Level).items);
+                                    break;
+                                }
                             default:
-                            {
-                                if ((Spawn.Proto.VendorID > 0) && (Spawn.Proto.VendorID <= 9999))
-                                    WorldMgr.SendVendor(player, Spawn.Proto.VendorID);
-                                break;
-                            }
+                                {
+                                    if ((Spawn.Proto.VendorID > 0) && (Spawn.Proto.VendorID <= 9999))
+                                        WorldMgr.SendVendor(player, Spawn.Proto.VendorID);
+                                    break;
+                                }
                         }
 
-                    
                         break;
+
                     case 10:
                         TakeInfluenceItem(player, menu);
                         break;
+
                     case 11:
                         // Black market vendor
                         if (Spawn.Proto.VendorID == 428)
@@ -663,43 +673,54 @@ namespace WorldServer.World.Objects
                                     if (Spawn.Proto.VendorID > 0)
                                         WorldMgr.BuyItemVendor(player, menu, Spawn.Proto.VendorID);
                                 }
-                            }                            
+                            }
                         }
 
                         break;
+
                     case 14:
                         player.ItmInterface.SellItem(menu);
                         break;
+
                     case 24:
                         // unk?
                         break;
+
                     case 25:
                         SetRallyPoint(player, menu);
                         break;
+
                     case 29:
                         player.ItmInterface.RepairItem(menu);
                         break;
+
                     case 32:
                         Repair();
                         break;
+
                     case 36:
                         player.ItmInterface.BuyBackItem(menu);
                         break;
+
                     case 37:
                         SendDyeList(player);
                         break;
+
                     case 38:
                         DyeItem(player, menu);
                         break;
+
                     case 39:
                         DyeAllItems(player, menu);
                         break;
+
                     case 42:
                         if (menu.Num == 3)
                             player.AbtInterface.RespecializeMastery(false);
                         if (menu.Num == 6)
                             player.RenInterface.Respec();
                         break;
+
                     default:
                         GenericInteract(player, menu);
                         break;
@@ -726,9 +747,9 @@ namespace WorldServer.World.Objects
 
                 case InteractType.INTERACTTYPE_STORE:
                     {
-
                     }
                     break;
+
                 case InteractType.INTERACTTYPE_BANKER:
                     {
                         PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE);
@@ -737,12 +758,15 @@ namespace WorldServer.World.Objects
                         player.SendPacket(Out);
                     }
                     break;
+
                 case InteractType.INTERACTTYPE_GUILD_VAULT:
                     player.GldInterface.Guild?.SendGuildVault(player);
                     break;
+
                 case InteractType.INTERACTTYPE_HEALER:
                     HealerInteract(player, menu);
                     break;
+
                 case InteractType.INTERACTTYPE_BARBER_SURGEON:
                     {
                         PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE);
@@ -751,6 +775,7 @@ namespace WorldServer.World.Objects
                         player.SendPacket(Out);
                     }
                     break;
+
                 case InteractType.INTERACTTYPE_AUCTIONEER:
                     {
                         PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE);
@@ -759,6 +784,7 @@ namespace WorldServer.World.Objects
                         player.SendPacket(Out);
                     }
                     break;
+
                 case InteractType.INTERACTTYPE_LASTNAMESHOP:
                     {
                         const int dialogId = 0x1C;
@@ -769,6 +795,7 @@ namespace WorldServer.World.Objects
                         player.SendPacket(Out);
                     }
                     break;
+
                 default:
                     {
                         ushort menuItems = 0;
@@ -808,7 +835,6 @@ namespace WorldServer.World.Objects
                         if (hasQuests)
                             menuItems += 64; // Quests
 
-
                         if (InteractType == InteractType.INTERACTTYPE_GUILD_REGISTRAR)
                         {
                             menuItems += 128; // Guild Register
@@ -816,7 +842,6 @@ namespace WorldServer.World.Objects
                             if (text == string.Empty)
                                 text = "Let's get started. To form a guild, you'll need to have a full group of six adventurers with you. None of you can belong to another guild. For a modest fee of only fifty silver I can create your guild.";
                         }
-
 
                         if (InteractType == InteractType.INTERACTTYPE_TRAINER)
                         {
@@ -840,7 +865,6 @@ namespace WorldServer.World.Objects
                         if (!string.IsNullOrEmpty(text))
                             menuItems += 32; // Text
 
-
                         PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE);
                         Out.WriteByte(0);
                         Out.WriteUInt16(menu.Oid);
@@ -860,7 +884,6 @@ namespace WorldServer.World.Objects
 
                     break;
             }
-
         }
 
         private bool VendorValid()
@@ -889,7 +912,6 @@ namespace WorldServer.World.Objects
                         _gatherType = (byte)TradeSkills.TRADESKILLS_BUTCHERING;
                         GatherLootable(true, player, _gatherType);
                     }
-
                     else if (CreatureService.IsScavengeable(subType))
                     {
                         _gatherType = (byte)TradeSkills.TRADESKILLS_SCAVENGING;
@@ -897,7 +919,6 @@ namespace WorldServer.World.Objects
                     }
                 }
             }
-
             else if (_gatherType > 0 && player._Value.GatheringSkill == _gatherType)
             {
                 if (_gatheringLoot == null)
@@ -915,7 +936,6 @@ namespace WorldServer.World.Objects
                     _gatheringLoot = null;
                 }
             }
-
         }
 
         protected override void HandleDeathRewards(Player killer)
@@ -937,7 +957,6 @@ namespace WorldServer.World.Objects
 
                 CreditQuestKill(credited);
             }
-
             else
             {
                 Dictionary<Group, XpRenown> groupXPRenown = new Dictionary<Group, XpRenown>();
@@ -973,7 +992,6 @@ namespace WorldServer.World.Objects
                             bestDamage = kvpair.Value;
                         }
                     }
-
                     else
                     {
                         if (groupXPRenown.ContainsKey(curPlayer.PriorityGroup))
@@ -1067,13 +1085,16 @@ namespace WorldServer.World.Objects
                     outDamage.SubDamageType = SubDamageTypes.Cannon;
                     outDamage.ContributoryFactor = 0.35f;
                     break;
+
                 case CreatureSubTypes.SIEGE_RAM:
                     outDamage.SubDamageType = SubDamageTypes.Ram;
                     break;
+
                 case CreatureSubTypes.SIEGE_GTAOE:
                     outDamage.SubDamageType = SubDamageTypes.Artillery;
                     outDamage.ContributoryFactor = 0.1f;
                     break;
+
                 case CreatureSubTypes.SIEGE_OIL:
                     outDamage.SubDamageType = SubDamageTypes.Oil;
                     outDamage.ContributoryFactor = 0.1f;
@@ -1089,11 +1110,11 @@ namespace WorldServer.World.Objects
 
             SetRespawnTimer();
         }
+
         protected void Repair()
         {
             if (SiegeInterface != null)
                 SiegeInterface.Repair();
-
         }
 
         protected virtual void SetRespawnTimer()
@@ -1150,7 +1171,6 @@ namespace WorldServer.World.Objects
                 Out.WriteUInt32(costPerHeal); // heal cost per penalty
                 player.SendPacket(Out);
             }
-
             else
             {
                 if (player.RemoveMoney(costPerHeal * stacks))
@@ -1159,6 +1179,7 @@ namespace WorldServer.World.Objects
         }
 
 #warning FIXME. Looks like there's support for taking more than one item at a time.
+
         private void TakeInfluenceItem(Player player, InteractMenu menu)
         {
             ushort slot = menu.Packet.GetUint16();
@@ -1174,7 +1195,6 @@ namespace WorldServer.World.Objects
 
             foreach (Characters_influence Obj in player.Info.Influences)
             {
-
                 if (Obj.InfluenceId == ChapterService.GetChapterByNPCID(Entry))
                 {
                     uint itemId = 0;
@@ -1184,10 +1204,12 @@ namespace WorldServer.World.Objects
                             if (Info.Tier1InfluenceCount <= Obj.InfluenceCount && !Obj.Tier_1_Itemtaken && player.ItmInterface.GetFreeMainBagInventorySlot() > 0)
                                 itemId = GetCharpterRewardItemId(player, 1, Info, slot);
                             break;
+
                         case 1:
                             if (Info.Tier2InfluenceCount <= Obj.InfluenceCount && !Obj.Tier_2_Itemtaken && player.ItmInterface.GetFreeMainBagInventorySlot() > 0)
                                 itemId = GetCharpterRewardItemId(player, 2, Info, slot);
                             break;
+
                         case 2:
                             if (Info.Tier3InfluenceCount <= Obj.InfluenceCount && !Obj.Tier_3_Itemtaken && player.ItmInterface.GetFreeMainBagInventorySlot() > 0)
                                 itemId = GetCharpterRewardItemId(player, 3, Info, slot);
@@ -1385,7 +1407,8 @@ namespace WorldServer.World.Objects
             player.SendPacket(Out);
         }
 
-        #endregion
+        #endregion Interactions
+
         /// <summary>
         /// Determine whether this merchant is a siege merchant
         /// </summary>
@@ -1406,8 +1429,5 @@ namespace WorldServer.World.Objects
 
             return false;
         }
-
     }
-
-  
 }

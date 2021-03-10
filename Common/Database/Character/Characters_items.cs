@@ -1,7 +1,6 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
-
-using FrameWork;
 
 namespace Common
 {
@@ -23,7 +22,6 @@ namespace Common
 
         private uint _alternateAppereanceEntry;
         private long _nextAllowedUseTime;
-
 
         [DataElement(AllowDbNull = false)]
         public long Guid
@@ -109,7 +107,7 @@ namespace Common
                 _Talismans.Clear();
                 foreach (string str in split)
                 {
-                    if(str.Length > 0)
+                    if (str.Length > 0)
                         _Talismans.Add(new Talisman(str));
                 }
             }
@@ -142,9 +140,8 @@ namespace Common
             get { return _alternateAppereanceEntry; }
             set { _alternateAppereanceEntry = value; Dirty = true; }
         }
-
-
     }
+
     public class Talisman
     {
         public uint Entry = 0;
@@ -161,7 +158,8 @@ namespace Common
             Fused = (byte)UInt16.Parse(text.Split(':')[2]);
             Timer = UInt32.Parse(text.Split(':')[3]);
         }
-        public Talisman(uint entry,byte slot,byte fused,uint timer)
+
+        public Talisman(uint entry, byte slot, byte fused, uint timer)
         {
             this.Entry = entry;
             this.Slot = slot;

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using System;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
@@ -61,8 +61,8 @@ namespace WorldServer.World.Objects
             Realm = _constructor.Realm;
 
             Level = _constructor.Level;
-            MaxHealth = (uint)(_info.MaxHealth * Level/40f);
-            Health = TotalHealth/10;
+            MaxHealth = (uint)(_info.MaxHealth * Level / 40f);
+            Health = TotalHealth / 10;
 
             X = Zone.CalculPin((uint)(WorldPosition.X), true);
             Y = Zone.CalculPin((uint)(WorldPosition.Y), false);
@@ -73,7 +73,6 @@ namespace WorldServer.World.Objects
             IsActive = true;
 
             // _logger.Debug($"RVRStructure OnLoad Oid={Oid} {IsActive} {Faction} {Realm} {Level} {X} {Y} {Z} {XOffset} {YOffset} ");
-
         }
 
         public override void SendMeTo(Player plr)
@@ -146,6 +145,7 @@ namespace WorldServer.World.Objects
                 case EConstructionState.Constructing:
                     BeginInteraction(player);
                     break;
+
                 case EConstructionState.Active:
                     HandleUser(player);
                     break;
@@ -161,9 +161,11 @@ namespace WorldServer.World.Objects
                 case EConstructionState.Constructing:
                     ProcessConstruction(msTick);
                     break;
+
                 case EConstructionState.Destroying:
                     ProcessDestruction();
                     break;
+
                 case EConstructionState.Destroyed:
                     foreach (Player player in PlayersInRange)
                         SendRemove(player);
@@ -212,14 +214,12 @@ namespace WorldServer.World.Objects
                     destPos.X += offsetPoint.X;
                     destPos.Y += offsetPoint.Y;
                 }
-
                 else
                 {
                     destPos.X -= offsetPoint.X;
                     destPos.Y -= offsetPoint.Y;
                 }
             }
-
             else
             {
                 Point2D offset = GetOffsetFromHeading(plr.Heading, 10);
@@ -237,7 +237,7 @@ namespace WorldServer.World.Objects
                 if (structure.WorldPosition.GetDistanceTo(destPos) < info.ExclusionRadius + structure._info.ExclusionRadius)
                 {
                     plr.SendClientMessage("Too close to existing structure", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
-                    plr.SendClientMessage("Too close to an existing structure (one exists within "+structure.WorldPosition.GetDistanceTo(destPos)+"ft and "+ (info.ExclusionRadius + structure._info.ExclusionRadius) +"ft clearance is required)", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                    plr.SendClientMessage("Too close to an existing structure (one exists within " + structure.WorldPosition.GetDistanceTo(destPos) + "ft and " + (info.ExclusionRadius + structure._info.ExclusionRadius) + "ft clearance is required)", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                     return;
                 }
             }
@@ -303,7 +303,6 @@ namespace WorldServer.World.Objects
                             return;
                         }
                 }
-
                 else
                     player.BuffInterface.QueueBuff(new BuffQueueInfo(player, player.Level, AbilityMgr.GetBuffInfo((ushort)GameBuffs.Interaction), InteractionBuff.GetNew, LinkToCaptureBuff));
             }
@@ -320,7 +319,6 @@ namespace WorldServer.World.Objects
                     _interactors.Add((Player)b.Caster);
                     _interactionBuffs.Add(captureBuff);
                 }
-
                 else
                     b.BuffHasExpired = true;
             }
@@ -340,7 +338,7 @@ namespace WorldServer.World.Objects
             _interactionBuffs.Remove((InteractionBuff)b);
         }
 
-        #endregion
+        #endregion Construction
 
         #region Usage
 
@@ -360,10 +358,9 @@ namespace WorldServer.World.Objects
                     }
                 }
 
-                player.SendClientMessage("You are no longer in cover behind the "+_info.Name+".");
+                player.SendClientMessage("You are no longer in cover behind the " + _info.Name + ".");
                 player.Palisade = null;
             }
-
             else
             {
                 _interactors.Add(player);
@@ -384,7 +381,7 @@ namespace WorldServer.World.Objects
 
         private bool EventRemovePlayer(Object plr, object args)
         {
-            Player player = (Player) plr;
+            Player player = (Player)plr;
             _interactors.Remove(player);
 
             for (int i = 0; i < _interactionBuffs.Count; ++i)
@@ -408,13 +405,12 @@ namespace WorldServer.World.Objects
             {
                 if (_interactors.Contains((Player)b.Target))
                     _interactionBuffs.Add(b);
-
                 else
                     b.BuffHasExpired = true;
             }
         }
 
-        #endregion
+        #endregion Usage
 
         #region Destruction
 
@@ -460,7 +456,7 @@ namespace WorldServer.World.Objects
                 _buildState = EConstructionState.Destroyed;
         }
 
-        #endregion
+        #endregion Destruction
 
         #region Health/Damage
 
@@ -513,7 +509,6 @@ namespace WorldServer.World.Objects
 
         public override void UpdateHealth(long tick)
         {
-
         }
 
         public override void ModifyDamageIn(AbilityDamageInfo incDamage)
@@ -523,18 +518,22 @@ namespace WorldServer.World.Objects
                 case SubDamageTypes.Cleave:
                     incDamage.DamageReduction *= 0.1f;
                     break;
+
                 case SubDamageTypes.Artillery:
                     incDamage.Damage *= 0.35f;
                     break;
+
                 case SubDamageTypes.None:
                     switch (incDamage.DamageType)
                     {
                         case DamageTypes.Physical:
                             incDamage.DamageEvent = (byte)CombatEvent.COMBATEVENT_BLOCK;
                             break;
+
                         case DamageTypes.RawDamage:
                             incDamage.Damage *= 0.1f;
                             break;
+
                         default:
                             incDamage.DamageReduction *= 0.1f;
                             break;
@@ -543,6 +542,6 @@ namespace WorldServer.World.Objects
             }
         }
 
-        #endregion
+        #endregion Health/Damage
     }
 }

@@ -20,7 +20,6 @@ namespace WorldServer.World.Battlefronts.Keeps
         public const int INNER_DOOR_RP = 400;
         public const int INNER_DOOR_XP = 1500;
 
-
         public static void OuterDoorReward(KeepDoor door, Realms attackingRealm, string description, ContributionManager contributionManagerInstance)
         {
             var attackingPlayers = door.GameObject.PlayersInRange.Where(x => x.Realm == attackingRealm);
@@ -31,14 +30,12 @@ namespace WorldServer.World.Battlefronts.Keeps
                 if (!player.Initialized)
                     continue;
 
-
                 RewardLogger.Trace($"Outer Door reward for player : {player.Name} ");
 
                 var random = StaticRandom.Instance.Next(1, 25);
 
                 player.AddXp((uint)(OUTER_DOOR_XP * (1 + (float)random / 100)), false, false);
                 player.AddRenown((uint)(OUTER_DOOR_RP * (1 + (float)random / 100)), false, RewardType.None, $"Destruction of {description}'s outer door");
-
 
                 player.UpdatePlayerBountyEvent((byte)ContributionDefinitions.DESTROY_OUTER_DOOR);
 
@@ -60,7 +57,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                     continue;
 
                 RewardLogger.Trace($"Inner Door reward for player : {player.Name} ");
-
 
                 var random = StaticRandom.Instance.Next(1, 25);
                 player.AddXp((uint)(INNER_DOOR_XP * (1 + (float)random / 100)), false, false);
@@ -172,11 +168,11 @@ namespace WorldServer.World.Battlefronts.Keeps
                     RewardLogger.Debug($"Player {player.Name} totalRenown = {totalRenown} scaler = {scaler}");
 
                     // Racial influence
-                    if ((player.Info.Race == (int) Races.RACES_GOBLIN) || (player.Info.Race == (int) Races.RACES_ORC))
+                    if ((player.Info.Race == (int)Races.RACES_GOBLIN) || (player.Info.Race == (int)Races.RACES_ORC))
                     {
                         if (keep.Info.Race == 2)
                         {
-                            totalInfluence= (int)(totalInfluence* scaler*1.2f);
+                            totalInfluence = (int)(totalInfluence * scaler * 1.2f);
                             RewardLogger.Debug($"Player {player.Name} +20% INF in keep");
                         }
                     }
@@ -184,11 +180,10 @@ namespace WorldServer.World.Battlefronts.Keeps
                     {
                         if (player.Info.Race == keep.Info.Race)
                         {
-                            totalInfluence= (int)(totalInfluence* scaler*1.2f);
+                            totalInfluence = (int)(totalInfluence * scaler * 1.2f);
                             RewardLogger.Debug($"Player {player.Name} +20% INF in keep");
                         }
                     }
-                   
 
                     if (player.ValidInTier(keep.Tier, true))
                     {
@@ -220,7 +215,6 @@ namespace WorldServer.World.Battlefronts.Keeps
                             $"Distributing rewards for Keep {keep.Info.Name} to {player.Name} RR:{totalRenown} INF:{totalInfluence}");
                     }
                 }
-
             }
             catch (Exception e)
             {
@@ -228,6 +222,5 @@ namespace WorldServer.World.Battlefronts.Keeps
                 throw;
             }
         }
-
     }
 }

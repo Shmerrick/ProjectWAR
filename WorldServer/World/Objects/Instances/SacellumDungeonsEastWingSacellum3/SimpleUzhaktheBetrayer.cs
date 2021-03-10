@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
-using Common;
 using WorldServer.World.AI;
 
 namespace WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum3
@@ -8,6 +8,7 @@ namespace WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum3
     public class SimpleUzhaktheBetrayer : InstanceBossSpawn
     {
         #region Constructors
+
         public SimpleUzhaktheBetrayer(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
@@ -71,6 +72,7 @@ namespace WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum3
                 return;
             }
         }
+
         //private void CheckBossRageTimer()
         //{
         //	// check rage timer

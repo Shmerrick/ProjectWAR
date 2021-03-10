@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Security.Cryptography;
-
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -14,7 +9,6 @@ namespace Common
     {
         private string _ip;
         private int _expire;
-
 
         [PrimaryKey]
         public string Ip

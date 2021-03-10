@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using Common;
-using NLog;
+﻿using NLog;
+using System.Collections.Generic;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 {

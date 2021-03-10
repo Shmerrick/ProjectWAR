@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.World.Objects;
 using WorldServer.World.Positions;
 using WorldServer.World.Scenarios.Objects;
@@ -30,7 +30,6 @@ namespace WorldServer.World.Scenarios
                     Flags.Add(proximityFlag);
                     Region.AddObject(proximityFlag, info.MapId);
                 }
-
                 else
                     LoadScenarioObject(scenarioObject);
             }
@@ -89,7 +88,6 @@ namespace WorldServer.World.Scenarios
                                 SendObjectiveStates(plr);
                         }
                     }
-
                     else
                     {
                         GivePoints(flag.OwningRealm, flag.CapturePoints);
@@ -174,9 +172,7 @@ namespace WorldServer.World.Scenarios
                         }
                     }
                 }
-
             }
-
         }
     }
-}   
+}

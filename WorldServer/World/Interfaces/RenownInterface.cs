@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
@@ -22,7 +22,7 @@ namespace WorldServer.World.Interfaces
         private readonly List<ushort> _activeIds = new List<ushort>();
 
         private readonly List<ushort> _activeAbilities = new List<ushort>();
-        private readonly List<Tuple<string, byte, int>> _savedCommandInfo = new List<Tuple<string, byte, int>>(); 
+        private readonly List<Tuple<string, byte, int>> _savedCommandInfo = new List<Tuple<string, byte, int>>();
 
         private Player _player;
 
@@ -84,7 +84,7 @@ namespace WorldServer.World.Interfaces
                             if (value != 0 || (!string.IsNullOrEmpty(command) && !ren.Passive))
                             {
                                 ExecuteCommand(command, stat, value);
-                               
+
                                 _savedCommandInfo.Add(new Tuple<string, byte, int>(command, stat, value));
                             }
 
@@ -92,7 +92,6 @@ namespace WorldServer.World.Interfaces
                             stat = ren.Stat;
                             value = ren.Value;
                         }
-
                         else
                             value += ren.Value;
 
@@ -106,7 +105,7 @@ namespace WorldServer.World.Interfaces
                 if (command != null)
                 {
                     ExecuteCommand(command, stat, value);
-                  
+
                     _savedCommandInfo.Add(new Tuple<string, byte, int>(command, stat, value));
                 }
 
@@ -115,7 +114,6 @@ namespace WorldServer.World.Interfaces
                     _player.SendClientMessage("Your renown point spend exceeds the number of points available to you. Your renown specialization has been reset.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     Respec();
                 }
-
                 else
                 {
                     _player.StsInterface.ApplyStats();
@@ -129,21 +127,25 @@ namespace WorldServer.World.Interfaces
             switch (cmd)
             {
                 case "ModifyStat":
-                    _player.StsInterface.SetRenownStat((Stats)stat, (ushort) value);
+                    _player.StsInterface.SetRenownStat((Stats)stat, (ushort)value);
                     break;
+
                 case "ModifyEvasion":
                     _player.StsInterface.SetRenownStat(Stats.Evade, (ushort)value);
                     _player.StsInterface.SetRenownStat(Stats.Disrupt, (ushort)value);
                     break;
+
                 case "IncreaseAPPool":
                     _player.MaxActionPoints = (ushort)(_player.MaxActionPoints + value);
                     break;
+
                 case "AddAbility":
                     _activeAbilities.Add((ushort)value);
                     _player.AbtInterface.GrantAbility((ushort)value);
                     break;
+
                 case "AddBuff":
-                    BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort) value);
+                    BuffInfo buffInfo = AbilityMgr.GetBuffInfo((ushort)value);
                     if (buffInfo == null)
                         _player.SendClientMessage("The requested ability is not implemented.");
                     else _player.BuffInterface.QueueBuff(new BuffQueueInfo(_player, _player.EffectiveLevel, buffInfo));
@@ -156,25 +158,30 @@ namespace WorldServer.World.Interfaces
             switch (cmdInfo.Item1)
             {
                 case "ModifyStat":
-                    
+
                     _player.StsInterface.SetRenownStat((Stats)cmdInfo.Item2, 0);
                     break;
+
                 case "ModifyEvasion":
-                  
+
                     _player.StsInterface.SetRenownStat(Stats.Evade, 0);
                     _player.StsInterface.SetRenownStat(Stats.Disrupt, 0);
                     break;
+
                 case "IncreaseAPPool":
-                 
+
                     _player.MaxActionPoints = (ushort)(_player.MaxActionPoints - cmdInfo.Item3);
                     break;
+
                 case "AddAbility":
                     _activeAbilities.Remove((ushort)cmdInfo.Item3);
                     _player.AbtInterface.RemoveGrantedAbility((ushort)cmdInfo.Item3);
                     break;
+
                 case "AddBuff":
                     _player.BuffInterface.RemoveBuffByEntry((ushort)cmdInfo.Item3);
                     break;
+
                 default:
                     _player.SendClientMessage("Assigned nonfunctional renown skill", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
                     _player.SendClientMessage("This skill doesn't work yet.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
@@ -187,7 +194,7 @@ namespace WorldServer.World.Interfaces
             // Remove actives from skillbar
             PacketOut Out = new PacketOut((byte)Opcodes.F_CHARACTER_INFO, 32);
 
-            Out.WriteByte(0x0B); 
+            Out.WriteByte(0x0B);
             Out.WriteByte((byte)_activeAbilities.Count);
 
             foreach (ushort abilityID in _activeAbilities)
@@ -218,11 +225,11 @@ namespace WorldServer.World.Interfaces
 
             string renownString = "";
 
-            for(int i=0;i < 7; i++)
+            for (int i = 0; i < 7; i++)
                 for (int y = 0; y < 20; y++)
                 {
                     if (_trained[i][y] > 0)
-                        renownString += ""+i+":"+y+";"; 
+                        renownString += "" + i + ":" + y + ";";
                 }
             _player._Value.RenownSkills = renownString;
             _player._Value.Dirty = true;
@@ -234,7 +241,7 @@ namespace WorldServer.World.Interfaces
             return (byte)(GetMaxPoints() - PointsSpent);
         }
 
-        public void PurchaseRenownAbility(byte tree,byte skillPos)
+        public void PurchaseRenownAbility(byte tree, byte skillPos)
         {
             if (!CharMgr.RenownAbilityInfo.ContainsKey(tree) || CharMgr.RenownAbilityInfo[tree].Count < skillPos)
             {
@@ -253,7 +260,7 @@ namespace WorldServer.World.Interfaces
                 if (!_passiveIds.Contains(CharMgr.RenownAbilityInfo[tree][skillPos - 2].SpellId) && !_activeIds.Contains(CharMgr.RenownAbilityInfo[tree][skillPos - 2].SpellId))
                     return;
 
-            _trained[tree-9][skillPos-1] = CharMgr.RenownAbilityInfo[tree][skillPos - 1].SpellId;
+            _trained[tree - 9][skillPos - 1] = CharMgr.RenownAbilityInfo[tree][skillPos - 1].SpellId;
 
             PointsSpent += CharMgr.RenownAbilityInfo[tree][skillPos - 1].Renown_Costs;
             pointsAvailable -= CharMgr.RenownAbilityInfo[tree][skillPos - 1].Renown_Costs;
@@ -262,7 +269,6 @@ namespace WorldServer.World.Interfaces
                 _passiveIds.Add(CharMgr.RenownAbilityInfo[tree][skillPos - 1].SpellId);
             else
                 _activeIds.Add(CharMgr.RenownAbilityInfo[tree][skillPos - 1].SpellId);
-
 
             uint respeccost = 58000;   // (uint)PointsSpend * 1000;
 
@@ -289,10 +295,10 @@ namespace WorldServer.World.Interfaces
                 if (lastActives.Count > 0)
                 {
                     // Remove previous actives from skillbar
-                    PacketOut skillClearPacket = new PacketOut((byte) Opcodes.F_CHARACTER_INFO, 32);
+                    PacketOut skillClearPacket = new PacketOut((byte)Opcodes.F_CHARACTER_INFO, 32);
 
                     skillClearPacket.WriteByte(0x0B);
-                    skillClearPacket.WriteByte((byte) lastActives.Count);
+                    skillClearPacket.WriteByte((byte)lastActives.Count);
 
                     foreach (ushort abilityID in lastActives)
                         skillClearPacket.WriteUInt16(abilityID);
@@ -301,7 +307,7 @@ namespace WorldServer.World.Interfaces
                 }
             }
 
-            SendRenownAbility(CharMgr.RenownAbilityInfo[tree][skillPos-1],1);
+            SendRenownAbility(CharMgr.RenownAbilityInfo[tree][skillPos - 1], 1);
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_CAREER_PACKAGE_UPDATE, 20);
             Out.WriteByte(9);
@@ -314,7 +320,6 @@ namespace WorldServer.World.Interfaces
             Out.WriteUInt32(0);
 
             _player.SendPacket(Out);
-
 
             // Check for debolster, and notify if required
             if (_player.AdjustedLevel < _player.Level)
@@ -371,7 +376,7 @@ namespace WorldServer.World.Interfaces
 
             uint respecCost = (uint)PointsSpent * 1000;
 
-            respecCost = 58000; 
+            respecCost = 58000;
 
             string renName = "Renown Stats A";
 
@@ -400,9 +405,9 @@ namespace WorldServer.World.Interfaces
             Out.Fill(0, 2);
             _player.SendPacket(Out);
 
-            for(int i=0;i < CharMgr.RenownAbilityInfo[9].Count; i++)
+            for (int i = 0; i < CharMgr.RenownAbilityInfo[9].Count; i++)
             {
-                SendRenownAbility(CharMgr.RenownAbilityInfo[9][i],(byte)(_trained[0][i] > 0 ? 1:0));
+                SendRenownAbility(CharMgr.RenownAbilityInfo[9][i], (byte)(_trained[0][i] > 0 ? 1 : 0));
             }
 
             Out = new PacketOut((byte)Opcodes.F_CAREER_CATEGORY, 48);
@@ -415,15 +420,12 @@ namespace WorldServer.World.Interfaces
             Out.WriteHexStringBytes("000182B80E52656E6F776E20537461747320420014000100020003000400050006000700080009000A000B000C000D000E000F00100011001200130014000000");
             _player.SendPacket(Out);
 
-
             for (int i = 0; i < CharMgr.RenownAbilityInfo[10].Count; i++)
             {
                 SendRenownAbility(CharMgr.RenownAbilityInfo[10][i], (byte)(_trained[1][i] > 0 ? 1 : 0));
             }
 
-
             Out = new PacketOut((byte)Opcodes.F_CAREER_CATEGORY, 48);
-
 
             Out.WriteUInt16(0x0B01);
             Out.WriteByte(0);
@@ -439,7 +441,6 @@ namespace WorldServer.World.Interfaces
                 SendRenownAbility(CharMgr.RenownAbilityInfo[11][i], (byte)(_trained[2][i] > 0 ? 1 : 0));
             }
 
-
             Out = new PacketOut((byte)Opcodes.F_CAREER_CATEGORY, 48);
 
             Out.WriteUInt16(0x0C01);
@@ -451,12 +452,11 @@ namespace WorldServer.World.Interfaces
             Out.WriteHexStringBytes("000075301952656E6F776E20446566656E7369766520437269746963616C000700010002000300040005000600070008000000");
             _player.SendPacket(Out);
 
-            
             for (int i = 0; i < CharMgr.RenownAbilityInfo[12].Count; i++)
             {
                 SendRenownAbility(CharMgr.RenownAbilityInfo[12][i], (byte)(_trained[3][i] > 0 ? 1 : 0));
             }
-      
+
             Out = new PacketOut((byte)Opcodes.F_CAREER_CATEGORY, 48);
             Out.WriteUInt16(0x0D01);
             Out.WriteByte(0);
@@ -475,8 +475,8 @@ namespace WorldServer.World.Interfaces
             Out = new PacketOut((byte)Opcodes.F_CAREER_CATEGORY, 48);
             Out.WriteUInt16(0x0E01);
             Out.WriteByte(0);
-            Out.WriteByte((byte) PointsSpent);
-            Out.WriteByte((byte) pointsAvailable);
+            Out.WriteByte((byte)PointsSpent);
+            Out.WriteByte((byte)pointsAvailable);
             Out.Fill(0, 3);
             Out.WriteUInt32(respecCost);
             Out.WriteHexStringBytes("000138801952656E6F776E20446566656E736976652050617373697665730011000100020003000400050006000700080009000A000B000C000D000E000F00100011000000");
@@ -486,7 +486,7 @@ namespace WorldServer.World.Interfaces
             {
                 SendRenownAbility(CharMgr.RenownAbilityInfo[14][i], (byte)(_trained[5][i] > 0 ? 1 : 0));
             }
-         
+
             Out = new PacketOut((byte)Opcodes.F_CAREER_CATEGORY, 48);
             Out.WriteUInt16(0x0F01);
             Out.WriteByte(0);
@@ -503,7 +503,7 @@ namespace WorldServer.World.Interfaces
             }
         }
 
-        public void SendRenownAbility(CharacterInfoRenown ren,byte trained)
+        public void SendRenownAbility(CharacterInfoRenown ren, byte trained)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_CAREER_PACKAGE_INFO, 64);
             Out.WriteByte(ren.Tree);
@@ -522,8 +522,7 @@ namespace WorldServer.World.Interfaces
             Out.WriteByte(0);
             Out.WriteUInt16(ren.SpellId);    // ability id
             if (ren.Unk.Length > 0)
-                Out.WriteHexStringBytes(ren.Unk.Replace(" ",""));
-
+                Out.WriteHexStringBytes(ren.Unk.Replace(" ", ""));
             else
             {
                 Out.WriteByte(3);

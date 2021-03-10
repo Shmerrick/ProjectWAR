@@ -1,6 +1,5 @@
-﻿using System;
-
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -8,7 +7,6 @@ namespace Common
     [Serializable]
     public class Characters_influence : DataObject
     {
-
         private int _CharacterId;
         private ushort _InfluenceId;
         private uint _InfluenceCount;
@@ -36,30 +34,35 @@ namespace Common
             get { return _CharacterId; }
             set { _CharacterId = value; Dirty = true; }
         }
+
         [PrimaryKey]
         public ushort InfluenceId
         {
             get { return _InfluenceId; }
             set { _InfluenceId = value; }
         }
+
         [DataElement(AllowDbNull = false)]
         public uint InfluenceCount
         {
             get { return _InfluenceCount; }
             set { _InfluenceCount = value; Dirty = true; }
         }
+
         [DataElement(AllowDbNull = false)]
         public bool Tier_1_Itemtaken
         {
             get { return _Tier_1_Itemtaken; }
             set { _Tier_1_Itemtaken = value; Dirty = true; }
         }
+
         [DataElement(AllowDbNull = false)]
         public bool Tier_2_Itemtaken
         {
             get { return _Tier_2_Itemtaken; }
             set { _Tier_2_Itemtaken = value; Dirty = true; }
         }
+
         [DataElement(AllowDbNull = false)]
         public bool Tier_3_Itemtaken
         {

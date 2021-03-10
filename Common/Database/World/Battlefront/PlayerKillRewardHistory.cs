@@ -1,25 +1,25 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common.Database.World.Battlefront
 {
-    // Fixed value of a character 
+    // Fixed value of a character
     [DataTable(PreCache = false, TableName = "rvr_player_kill_reward_history", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class PlayerKillRewardHistory : DataObject
     {
-        [PrimaryKey(AutoIncrement=true)]
+        [PrimaryKey(AutoIncrement = true)]
         public int KillId { get; set; }
 
         [DataElement(AllowDbNull = false), PrimaryKey]
         public int ZoneId { get; set; }
-        
+
         [DataElement(AllowDbNull = false)]
         public DateTime Timestamp { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public int KillerCharacterId { get; set; }
-        
+
         [DataElement(AllowDbNull = false)]
         public int VictimCharacterId { get; set; }
 
@@ -37,7 +37,5 @@ namespace Common.Database.World.Battlefront
 
         [DataElement(AllowDbNull = false)]
         public string ZoneName { get; set; }
-
-
     }
 }

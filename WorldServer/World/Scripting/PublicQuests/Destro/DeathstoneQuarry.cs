@@ -1,12 +1,11 @@
 ﻿namespace WorldServer.World.Scripting.PublicQuests.Destro
 {
-    class DeathstoneQuarry : BasicPublicQuest
+    internal class DeathstoneQuarry : BasicPublicQuest
     {
-
     }
 
     [GeneralScript(false, "", 1000069, 0)]
-    class ArkusTheChanger : DeathstoneQuarry
+    internal class ArkusTheChanger : DeathstoneQuarry
     {
         /*public override void OnObjectLoad(Object Obj)
         {
@@ -74,6 +73,5 @@
 
             c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds);
         }*/
-
     }
 }

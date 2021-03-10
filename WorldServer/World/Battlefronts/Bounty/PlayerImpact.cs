@@ -2,18 +2,20 @@
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
-    public class PlayerImpact :ICloneable
+    public class PlayerImpact : ICloneable
     {
         public const int MAX_IMPACT_VALUE = 10000;
         public const int MAX_MODIFICATION_VALUE = 5;
-        
 
         // The amount of damage or heal upon a target
         public int ImpactValue { get; set; }
+
         // The timestamp in secs since Epoch that this impact will expire
         public int ExpiryTimestamp { get; set; }
+
         // The modification value (Source to Target) to apply if the Impact rewards
         public float ModificationValue { get; set; }
+
         // The player that performed this impact action
         public uint CharacterId { get; set; }
 
@@ -35,7 +37,6 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// <returns></returns>
         public PlayerImpact SetImpact(int impactValue, int expiryTimestamp, float modificationValue, uint impactingCharacterId)
         {
-            
             if (impactValue > MAX_IMPACT_VALUE)
                 impactValue = MAX_IMPACT_VALUE;
             ImpactValue = impactValue;

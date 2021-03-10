@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using WorldServer.NetWork.Handler;
 using WorldServer.World.Objects;
 using WorldServer.World.Positions;
@@ -12,17 +12,15 @@ namespace WorldServer.World.Scenarios
 {
     public class DominationScenarioEC : DominationScenario
     {
-
         private int _potralShift = 0;
         private Dictionary<Player, DateTime> _fallGuard = new Dictionary<Player, DateTime>();
 
-        private List<Tuple<uint,uint,ushort,ushort>> _portals = new List<Tuple<uint, uint, ushort, ushort>>()
+        private List<Tuple<uint, uint, ushort, ushort>> _portals = new List<Tuple<uint, uint, ushort, ushort>>()
         {
             new Tuple<uint, uint, ushort, ushort>(540362, 1444127, 25567, 3026),
             new Tuple<uint, uint, ushort, ushort>(542883, 1444145, 25567, 980),
             new Tuple<uint, uint, ushort, ushort>(541668, 1445711, 25858, 2050),
         };
-
 
         private List<Point3D> _landingSpots = new List<Point3D>()
         {
@@ -65,7 +63,6 @@ namespace WorldServer.World.Scenarios
         public DominationScenarioEC(Scenario_Info info, int tier)
             : base(info, tier)
         {
-           
         }
 
         public override void OnStart()
@@ -106,7 +103,7 @@ namespace WorldServer.World.Scenarios
             {
                 foreach (var plr in _fallGuard.Keys.ToList())
                 {
-                    if(DateTime.Now.Subtract(_fallGuard[plr]).TotalSeconds > 8)
+                    if (DateTime.Now.Subtract(_fallGuard[plr]).TotalSeconds > 8)
                         _fallGuard.Remove(plr);
                 }
             }
@@ -123,7 +120,7 @@ namespace WorldServer.World.Scenarios
                 }
             }
 
-          EvtInterface.AddEvent(ChaosMonitor, 200, 1);
+            EvtInterface.AddEvent(ChaosMonitor, 200, 1);
         }
 
         private void WindsOfChange()
@@ -145,9 +142,8 @@ namespace WorldServer.World.Scenarios
 
         private void SwapFallPlaces(Player fallingPlayer, Unit punter)
         {
-          
             var landingSpot = _landingSpots[StaticRandom.Instance.Next(_landingSpots.Count)];
-            landingSpot = new Point3D(landingSpot.X + (fallingPlayer.Zone.Info.OffX << 12), landingSpot.Y + (fallingPlayer.Zone.Info.OffY << 12), landingSpot.Z );
+            landingSpot = new Point3D(landingSpot.X + (fallingPlayer.Zone.Info.OffX << 12), landingSpot.Y + (fallingPlayer.Zone.Info.OffY << 12), landingSpot.Z);
             float speed = 180f;
 
             float flightTimePunter = (float)fallingPlayer.GetDistanceSquare(punter) / speed / 1000f;
@@ -179,18 +175,18 @@ namespace WorldServer.World.Scenarios
             bool guarded = false;
             lock (_fallGuard)
             {
-                if(_fallGuard.ContainsKey(player))
+                if (_fallGuard.ContainsKey(player))
                     guarded = true;
             }
             return guarded;
         }
+
         protected override void UpdateScenario()
         {
             for (int i = 0; i < 2; i++)
             {
                 foreach (Player plr in Players[i])
                 {
-
                     if (plr.Z < 24100 && !plr.IsDead && !IsFallGuarded(plr))
                     {
                         plr.CalculateFallDamage(true);

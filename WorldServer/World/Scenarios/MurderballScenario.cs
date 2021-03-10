@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Buffs.SpecialBuffs;
@@ -41,7 +41,7 @@ namespace WorldServer.World.Scenarios
         {
             EvtInterface.AddEvent(ActivateBall, 30000, 1);
 
-            for (int i=0; i<2; ++i)
+            for (int i = 0; i < 2; ++i)
                 foreach (Player plr in Players[i])
                     SendObjectiveStates(plr);
         }
@@ -61,7 +61,7 @@ namespace WorldServer.World.Scenarios
         {
             base.UpdateScenario();
         }
-            
+
         #region Murderball Events
 
         public void BallPickedUp(HoldObject ball, Player pickedBy)
@@ -70,7 +70,7 @@ namespace WorldServer.World.Scenarios
                 foreach (Player plr in Players[i])
                 {
                     SendObjectiveStates(plr);
-                    plr.SendLocalizeString(new [] {pickedBy.GenderedName, (pickedBy.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"), ball.name}, ChatLogFilters.CHATLOGFILTERS_C_WHITE, Localized_text.TEXT_FLAG_PICKUP);
+                    plr.SendLocalizeString(new[] { pickedBy.GenderedName, (pickedBy.Realm == Realms.REALMS_REALM_ORDER ? "Order" : "Destruction"), ball.name }, ChatLogFilters.CHATLOGFILTERS_C_WHITE, Localized_text.TEXT_FLAG_PICKUP);
                 }
 
             EvtInterface.AddEvent(UpdateMapPosition, 1000, 0);
@@ -96,7 +96,7 @@ namespace WorldServer.World.Scenarios
             EvtInterface.RemoveEvent(UpdateMapPosition);
         }
 
-        #endregion
+        #endregion Murderball Events
 
         #region Points
 
@@ -106,7 +106,7 @@ namespace WorldServer.World.Scenarios
         {
             if (tick >= _pointDelayTime)
             {
-                if (TooCloseToSpawn((Player) hostBuff.Caster))
+                if (TooCloseToSpawn((Player)hostBuff.Caster))
                 {
                     if (Info.MapId == 31 || Info.MapId == 232 || Info.MapId == 133)
                     {
@@ -116,7 +116,6 @@ namespace WorldServer.World.Scenarios
                             {
                                 if (player.Realm == hostBuff.Caster.Realm)
                                     player.SendClientMessage("The gods are displeased with your cowardice and snatched " + ball.name + " back to its place", ChatLogFilters.CHATLOGFILTERS_C_WHITE_L);
-
                                 else
                                     player.SendClientMessage("The enemy team displeased their gods, " + ball.name + " has been taken back to its resting place", ChatLogFilters.CHATLOGFILTERS_C_WHITE_L);
                             }
@@ -125,14 +124,14 @@ namespace WorldServer.World.Scenarios
                     }
                 }
                 else
-                    GivePoints((hostBuff.Caster.Realm == Realms.REALMS_REALM_ORDER ? 1 : 2), (uint) (2*((_murderballTicks[ball]/3) + 1)));
+                    GivePoints((hostBuff.Caster.Realm == Realms.REALMS_REALM_ORDER ? 1 : 2), (uint)(2 * ((_murderballTicks[ball] / 3) + 1)));
             }
 
             ++_murderballTicks[ball];
         }
 
-        #endregion
-    
+        #endregion Points
+
         public void UpdateMapPosition()
         {
             for (int i = 0; i < 2; ++i)
@@ -141,13 +140,13 @@ namespace WorldServer.World.Scenarios
                         SendFlagObjectLocation(plr, ball);
         }
 
-        readonly Point2D[][] torAnrocGuardPoints =
+        private readonly Point2D[][] torAnrocGuardPoints =
         {
             new[] { new Point2D(491347, 367492), new Point2D(494445, 364643) },
             new[] { new Point2D(489022, 356120), new Point2D(484365, 359500) }
         };
 
-        readonly Point2D[][] mawGuardPoints =
+        private readonly Point2D[][] mawGuardPoints =
         {
             new[] { new Point2D(550002, 365314), new Point2D(549499, 362996) },
             new[] { new Point2D(560592, 366453), new Point2D(560819, 365133) }

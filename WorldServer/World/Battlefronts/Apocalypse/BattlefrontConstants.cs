@@ -1,5 +1,4 @@
-﻿
-namespace WorldServer.World.Battlefronts.Apocalypse
+﻿namespace WorldServer.World.Battlefronts.Apocalypse
 {
     /// <summary>
     /// Constants for RoR BattleFronts that can be changed using GM Commands.
@@ -10,9 +9,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     /// </remarks>
     public class BattleFrontConstants
     {
-        private BattleFrontConstants() { }
+        private BattleFrontConstants()
+        {
+        }
 
         #region Ranges
+
         /// <summary>LastUpdatedTime in millis between each detection of close players around flags<summary>
         public static int CLOSE_DETECTION_INTERVAL = 5000;
 
@@ -24,9 +26,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         /// <summary>Range of warcamp farm detection, applying dealed and received damage debuff</summary>
         public static float WARCAMP_FARM_RANGE = 250;
-        #endregion
+
+        #endregion Ranges
 
         #region Ownership and assault state
+
         /// <summary>Absolute maximum of the control gauges of the flags<summary>
         public static int MAX_SECURE_PROGRESS = 80;
 
@@ -36,9 +40,11 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         /// <summary>Maximum players each side taken in consideration for assaults a flag</summary>
         public static short MAX_CLOSE_PLAYERS = 6;
-        #endregion
+
+        #endregion Ownership and assault state
 
         #region Reward
+
         /// <summary>Reward check timer for players defending a secured flag</summary>
         public static int FLAG_SECURE_REWARD_INTERVAL = 6000;
 
@@ -47,24 +53,25 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         /// <summary>Scaler applied to contributions in order to compute lock rewards</summary>
         public static float LOCK_REWARD_SCALER = 0.25f;
-        #endregion
+
+        #endregion Reward
 
         #region Victory points
+
         /// <summary>
         /// Minimal number of victory points required for locking
         /// NOT What the game is using as lock values.
         /// </summary>
         public static float LOCK_VICTORY_POINTS = 1000f;
 
-        #endregion
-
+        #endregion Victory points
 
         #region NPCs and misc
 
         /// <summary>Delay between each usage of warcamp to objective portals.</summary>
         public static long PORTAL_DELAY = 5000;
-        #endregion
 
+        #endregion NPCs and misc
 
         #region Battlefront Tiers and Ids
 
@@ -77,7 +84,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static int BATTLEFRONT_DWARF_GREENSKIN_TIER4_STONEWATCH = 14;
         public static int BATTLEFRONT_DWARF_GREENSKIN_TIER4_BUTCHERS_PASS = 16;
 
-
         public static int BATTLEFRONT_EMPIRE_CHAOS_TIER1_NORDLAND = 10;
         public static int BATTLEFRONT_EMPIRE_CHAOS_TIER2 = 11;
         public static int BATTLEFRONT_EMPIRE_CHAOS_TIER3 = 11;
@@ -87,11 +93,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public static int BATTLEFRONT_EMPIRE_CHAOS_TIER4_REIKWALD = 13;
         public static int BATTLEFRONT_EMPIRE_CHAOS_TIER4_THE_MAW = 15;
 
-
         public static int BATTLEFRONT_ELF_DARKELF_TIER1_CHRACE = 12;
         public static int BATTLEFRONT_ELF_DARKELF_TIER2 = 11;
         public static int BATTLEFRONT_ELF_DARKELF_TIER3 = 11;
-        public static int BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE =7;
+        public static int BATTLEFRONT_ELF_DARKELF_TIER4_EATAINE = 7;
         public static int BATTLEFRONT_ELF_DARKELF_TIER4_DRAGONWAKE = 8;
         public static int BATTLEFRONT_ELF_DARKELF_TIER4_CALEDOR = 9;
         public static int BATTLEFRONT_ELF_DARKELF_TIER4_SHINING_WAY = 17;
@@ -101,10 +106,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public const int ZONE_STATUS_ORDER_LOCKED = 1;
         public const int ZONE_STATUS_DESTRO_LOCKED = 2;
 
-
-        #endregion
-
-
-
+        #endregion Battlefront Tiers and Ids
     }
 }

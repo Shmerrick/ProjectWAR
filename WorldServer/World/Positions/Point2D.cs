@@ -1,5 +1,5 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace WorldServer.World.Positions
 {
@@ -95,14 +95,14 @@ namespace WorldServer.World.Positions
         // 180 --------- 0
         //         |
         //        270
-        //        
+        //
         // DOL Heading grid:
         //       2048
         //         |
         // 1024 ------- 3072
         //         |
         //         0
-        // 
+        //
         // The Cartesian grid is 0 at the right side of the X-axis and increases counter-clockwise.
         // The DOL Heading grid is 0 at the bottom of the Y-axis and increases clockwise.
         // General trigonometry and the System.Math library use the Cartesian grid.
@@ -232,13 +232,14 @@ namespace WorldServer.World.Positions
         {
             return val < min ? min : (val > max ? max : val);
         }
+
         public virtual void Clear()
         {
             X = 0;
             Y = 0;
         }
 
-        #endregion
+        #endregion IPoint2D Members
 
         /// <summary>
         /// Creates the string representation of this point

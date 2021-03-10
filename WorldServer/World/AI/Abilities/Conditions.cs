@@ -9,6 +9,7 @@ namespace WorldServer.World.AI.Abilities
     {
         // Melee range for the boss - could use baseradius perhaps?
         public static int BOSS_MELEE_RANGE = 25;
+
         public static int NPC_MELEE_RANGE = 10;
 
         public Conditions(Unit owner, CombatInterface_Npc combat)
@@ -19,7 +20,6 @@ namespace WorldServer.World.AI.Abilities
 
         public Unit Owner { get; }
         public CombatInterface_Npc Combat { get; }
-
 
         public bool PlayersWithinRange()
         {

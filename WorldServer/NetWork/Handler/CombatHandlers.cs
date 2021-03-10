@@ -1,7 +1,7 @@
-﻿using System;
-using SystemData;
-using FrameWork;
+﻿using FrameWork;
 using GameData;
+using System;
+using SystemData;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 using Object = WorldServer.World.Objects.Object;
@@ -35,8 +35,8 @@ namespace WorldServer.NetWork.Handler
             byte LOS = packet.GetUint8();                   // line of sight updates   96 if in los 32 if targeting someone out of los  0 if channiling a spell and target runs out of los
             byte TargetType = packet.GetUint8();
             //cclient.Plr.DebugMessage("F_PLAYER_INFO: SetTarget: "+Oid);
-            if (TargetType == (byte) TargetTypes.TARGETTYPES_TARGET_SELF)
-                TargetType = (byte) TargetTypes.TARGETTYPES_TARGET_ALLY;
+            if (TargetType == (byte)TargetTypes.TARGETTYPES_TARGET_SELF)
+                TargetType = (byte)TargetTypes.TARGETTYPES_TARGET_ALLY;
 
             cclient.Plr.CbtInterface.SetTarget(Oid, (TargetTypes)TargetType);
 
@@ -47,14 +47,14 @@ namespace WorldServer.NetWork.Handler
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_SWITCH_ATTACK_MODE, (int)eClientState.Playing, "onSwitchAttackMode")]
         public static void F_SWITCH_ATTACK_MODE(BaseClient client, PacketIn packet)
         {
-            GameClient cclient = (GameClient) client;
+            GameClient cclient = (GameClient)client;
             if (!cclient.HasPlayer())
                 return;
 
             if (cclient.Plr.WeaponStance != WeaponStance.Standard)
             {
                 packet.Skip(1);
-                cclient.Plr.WeaponStance = (WeaponStance) packet.ReadByte();
+                cclient.Plr.WeaponStance = (WeaponStance)packet.ReadByte();
             }
 
             cclient.Plr.CbtInterface.IsAttacking = !cclient.Plr.CbtInterface.IsAttacking;
@@ -90,11 +90,11 @@ namespace WorldServer.NetWork.Handler
                 Menu.Packet = packet;
                 cclient.Plr.PriorityGroup.LootVote(cclient.Plr, Menu.Num, Menu.Packet.GetUint16());
             }
-            
+
             Object Obj = cclient.Plr.Region.GetObject(Menu.Oid);
             if (Obj == null)
                 return;
-            
+
             if (!Obj.AllowInteract(cclient.Plr))
             {
                 //Log.Error("F_INTERACT", "Distance = " + Obj.GetDistanceBetweenObjects(cclient.Plr));

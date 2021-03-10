@@ -1,11 +1,11 @@
 ﻿//#define ABILITY_DEVELOPMENT
 
+using Common;
+using FrameWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Common;
-using FrameWork;
 using WorldServer.Managers;
 using WorldServer.World.Abilities.Buffs.SpecialBuffs;
 using WorldServer.World.Abilities.Components;
@@ -18,6 +18,7 @@ namespace WorldServer.World.Abilities.Buffs
     public class BuffQueueInfo
     {
         public delegate NewBuff BuffCreationDelegate();
+
         public delegate void BuffCallbackDelegate(NewBuff buff);
 
         public BuffCreationDelegate BuffCreator;
@@ -85,25 +86,28 @@ namespace WorldServer.World.Abilities.Buffs
     {
         #region Define
 
-        private const byte MAX_EVENTS = (byte) BuffCombatEvents.MaxEvents;
+        private const byte MAX_EVENTS = (byte)BuffCombatEvents.MaxEvents;
         private const ushort MAX_BUFFS = 200;
 
         private const byte BUFF_UPDATE_INTERVAL = 250;
 
-        #endregion
+        #endregion Define
 
         private Unit _unitOwner;
         private Player _playerOwner;
 
         /// <summary>The list of the player's current buffs, as visible to other parts of the system.</summary>
         private readonly List<NewBuff> _buffs = new List<NewBuff>();
+
         /// <summary>
         /// <para>Buffs which are pending application.</para>
         /// <para>This is used within Update() calls and is copied to the buffs array at the end of the call.</para>
         /// </summary>
         private readonly List<NewBuff> _pendingBuffs = new List<NewBuff>();
+
         /// <summary>A queue of information about buffs which are yet to be applied.</summary>
         private readonly List<BuffQueueInfo> _queuedInfo = new List<BuffQueueInfo>();
+
         private readonly bool[] _filledSlots = new bool[MAX_BUFFS];
 
         public bool DetauntWard { get; set; }
@@ -130,14 +134,13 @@ namespace WorldServer.World.Abilities.Buffs
         {
             if (_unitOwner == null)
             {
-                _unitOwner = (Unit) _Owner;
+                _unitOwner = (Unit)_Owner;
                 _playerOwner = _Owner as Player;
 
                 if (_playerOwner != null)
                 {
                     if (_playerOwner.Info.Buffs == null)
                         _playerOwner.Info.Buffs = new List<CharacterSavedBuff>();
-
                     else
                         LoadSavedBuffs();
                 }
@@ -158,7 +161,7 @@ namespace WorldServer.World.Abilities.Buffs
             else
             {
                 lock (_queuedInfo)
-                _queuedInfo.Add(queueInfo);
+                    _queuedInfo.Add(queueInfo);
             }
 
             if (_unitOwner != null && _unitOwner.CbtInterface.IsInCombat)
@@ -195,7 +198,7 @@ namespace WorldServer.World.Abilities.Buffs
 
                 curBuff.RemoveBuff(false);
 
-                if (curBuff.PersistsOnLogout && curBuff.BuffState == (byte) EBuffState.Ended)
+                if (curBuff.PersistsOnLogout && curBuff.BuffState == (byte)EBuffState.Ended)
                     RemoveSavedBuff(curBuff);
 
                 _filledSlots[curBuff.BuffId] = false;
@@ -212,9 +215,9 @@ namespace WorldServer.World.Abilities.Buffs
                 else if (curBuff.BuffGroup == BuffGroups.SelfClassSecondaryBuff)
                     _careerBuffs[1] = null;
 
-                #if DEBUG && ABILITY_DEVELOPMENT
+#if DEBUG && ABILITY_DEVELOPMENT
                 _Owner.Say("[X] " + curBuff.BuffName);
-                #endif
+#endif
 
                 _pendingBuffs.RemoveAt(i);
 
@@ -259,7 +262,7 @@ namespace WorldServer.World.Abilities.Buffs
             {
                 pendingLen = _pendingBuffs.Count;
 
-                for(int i=0; i < pendingLen; ++i)
+                for (int i = 0; i < pendingLen; ++i)
                 {
                     if (_pendingBuffs[i].RequiresTargetAlive)
                     {
@@ -362,13 +365,13 @@ namespace WorldServer.World.Abilities.Buffs
         {
             if (buffQueueInfo.BuffInfo == null)
             {
-                Log.Error("TryCreateBuff","NULL BUFFINFO");
+                Log.Error("TryCreateBuff", "NULL BUFFINFO");
                 return null;
             }
 
-            #if DEBUG && ABILITY_DEVELOPMENT
+#if DEBUG && ABILITY_DEVELOPMENT
             _Owner.Say("+++ "+buffQueueInfo.BuffInfo.Name + " (" + buffQueueInfo.BuffInfo.Type + ")");
-            #endif
+#endif
 
             // Cap the level of same-faction buffs
             if (buffQueueInfo.Caster.Realm == _unitOwner.Realm && (float)buffQueueInfo.Caster.EffectiveLevel / _unitOwner.EffectiveLevel > 1.3f)
@@ -383,7 +386,7 @@ namespace WorldServer.World.Abilities.Buffs
 
             if (myBuff != null)
             {
-                myBuff.Initialize(buffQueueInfo.Caster, (Unit) _Owner, buffSlotInfo.Item1,
+                myBuff.Initialize(buffQueueInfo.Caster, (Unit)_Owner, buffSlotInfo.Item1,
                     buffQueueInfo.DesiredLevel, Math.Min(buffQueueInfo.BuffInfo.MaxStack, buffSlotInfo.Item2),
                     buffQueueInfo.BuffInfo, this);
 
@@ -394,7 +397,7 @@ namespace WorldServer.World.Abilities.Buffs
                 else if (myBuff.BuffGroup == BuffGroups.Guard && _Owner != myBuff.Caster)
                 {
                     myBuff.IsGroupBuff = true;
-                    _backingGuardBuffs?.Add((GuardBuff) myBuff);
+                    _backingGuardBuffs?.Add((GuardBuff)myBuff);
                     _guardsChanged = true;
                 }
                 else if (myBuff is AuraBuff && myBuff.Caster == _Owner)
@@ -418,6 +421,7 @@ namespace WorldServer.World.Abilities.Buffs
             switch (newInfo.BuffInfo.Group)
             {
                 #region Guard
+
                 case BuffGroups.Guard:
                     existingBuffs = _pendingBuffs.FindAll(buff => buff.BuffGroup == newInfo.BuffInfo.Group);
 
@@ -425,8 +429,11 @@ namespace WorldServer.World.Abilities.Buffs
                         return null;
 
                     return new Tuple<ushort, byte>(GetFreeSlot(), desiredStackLevel);
-                #endregion
+
+                #endregion Guard
+
                 #region Hold The Line
+
                 case BuffGroups.HoldTheLine:
                     existingBuffs = _pendingBuffs.FindAll(buff => buff.BuffGroup == newInfo.BuffInfo.Group);
                     if (existingBuffs.Count >= 3)
@@ -444,8 +451,11 @@ namespace WorldServer.World.Abilities.Buffs
                         return null;
 
                     return new Tuple<ushort, byte>(GetFreeSlot(), desiredStackLevel);
-                #endregion
+
+                #endregion Hold The Line
+
                 #region Oath Friend
+
                 case BuffGroups.OathFriend:
                     existingBuffs = _pendingBuffs.FindAll(buff => buff.BuffGroup == newInfo.BuffInfo.Group);
                     if (existingBuffs.Count > 0)
@@ -464,7 +474,6 @@ namespace WorldServer.World.Abilities.Buffs
                                 return new Tuple<ushort, byte>(newSlot2, desiredStackLevel);
                             }
                         }
-
                         else
                         {
                             foreach (NewBuff buff in existingBuffs)
@@ -483,24 +492,30 @@ namespace WorldServer.World.Abilities.Buffs
 
                     // Oath friend on enemy. Always apply.
                     return new Tuple<ushort, byte>(GetFreeSlot(), desiredStackLevel);
-                 #endregion
+
+                #endregion Oath Friend
+
                 #region Class self-buffs
+
                 case BuffGroups.SelfClassBuff:
                     existingBuff = _pendingBuffs.Find(buff => buff.BuffGroup == newInfo.BuffInfo.Group);
                     if (existingBuff != null)
                     {
                         if (existingBuff.Entry == newInfo.BuffInfo.Entry && !newInfo.BuffInfo.CanRefresh)
                             return null;
-                        ushort newSlot= existingBuff.BuffId;
+                        ushort newSlot = existingBuff.BuffId;
                         RemoveFromPending(existingBuff);
                         return new Tuple<ushort, byte>(newSlot, desiredStackLevel);
                     }
                     return new Tuple<ushort, byte>(GetFreeSlot(), desiredStackLevel);
-                #endregion
+
+                #endregion Class self-buffs
+
                 #region Class buffs for others
+
                 case BuffGroups.OtherClassBuff:
                     existingBuffs = _pendingBuffs.FindAll(buff => buff.BuffGroup == newInfo.BuffInfo.Group);
-                    foreach(var buff in existingBuffs)
+                    foreach (var buff in existingBuffs)
                     {
                         if (buff.Entry == newInfo.BuffInfo.Entry)
                         {
@@ -517,9 +532,11 @@ namespace WorldServer.World.Abilities.Buffs
                         }
                     }
                     return new Tuple<ushort, byte>(GetFreeSlot(), desiredStackLevel);
-                #endregion
+
+                #endregion Class buffs for others
+
                 #region Auras
-                    
+
                 case BuffGroups.Aura:
                     existingBuff = _pendingBuffs.Find(buff => buff.Entry == newInfo.BuffInfo.Entry);
                     if (existingBuff != null)
@@ -536,11 +553,13 @@ namespace WorldServer.World.Abilities.Buffs
                         }
 
                         return null;
-
                     }
                     return new Tuple<ushort, byte>(GetFreeSlot(), desiredStackLevel);
-                #endregion
+
+                #endregion Auras
+
                 #region Potion Stat Buffs and other exclusives
+
                 case BuffGroups.HealPotion:
                 case BuffGroups.StatPotion:
                 case BuffGroups.DefensePotion:
@@ -550,8 +569,11 @@ namespace WorldServer.World.Abilities.Buffs
                     if (existingBuff != null)
                         RemoveFromPending(existingBuff);
                     return new Tuple<ushort, byte>(GetFreeSlot(), desiredStackLevel);
-                #endregion
+
+                #endregion Potion Stat Buffs and other exclusives
+
                 #region Resurrection
+
                 case BuffGroups.Resurrection:
                     existingBuff = _pendingBuffs.Find(buff => buff.BuffGroup == newInfo.BuffInfo.Group || buff.Entry == 1608 || buff.Entry == 8567);
                     if (existingBuff == null)
@@ -562,8 +584,11 @@ namespace WorldServer.World.Abilities.Buffs
                         return new Tuple<ushort, byte>(GetFreeSlot(), desiredStackLevel);
                     }
                     return null;
-                #endregion
+
+                #endregion Resurrection
+
                 #region Other buffs
+
                 default:
                     if (newInfo.BuffInfo.MaxCopies == 0)
                     {
@@ -605,7 +630,7 @@ namespace WorldServer.World.Abilities.Buffs
 
                     return new Tuple<ushort, byte>(GetFreeSlot(), desiredStackLevel);
 
-                    #endregion
+                    #endregion Other buffs
             }
         }
 
@@ -615,7 +640,6 @@ namespace WorldServer.World.Abilities.Buffs
         /// </summary>
         private ushort GetFreeSlot()
         {
-
             if (_pendingBuffs.Count() >= MAX_BUFFS)
                 return 32000;
 
@@ -628,7 +652,7 @@ namespace WorldServer.World.Abilities.Buffs
             return 32000;
         }
 
-        #endregion
+        #endregion Init/Add
 
         #region Access
 
@@ -638,7 +662,8 @@ namespace WorldServer.World.Abilities.Buffs
             if (needsLock)
                 _buffRWLock.EnterReadLock();
 
-            try {
+            try
+            {
                 foreach (NewBuff buff in _buffs)
                 {
                     if (buff.Entry == entry && (caster == null || buff.Caster == caster))
@@ -646,7 +671,8 @@ namespace WorldServer.World.Abilities.Buffs
                 }
                 return null;
             }
-            finally {
+            finally
+            {
                 if (needsLock)
                     _buffRWLock.ExitReadLock();
             }
@@ -681,7 +707,7 @@ namespace WorldServer.World.Abilities.Buffs
                 {
                     if ((buff.CrowdControl & flags) != 0)
                     {
-                        if(buff.BuffClass != BuffClass.Morale)
+                        if (buff.BuffClass != BuffClass.Morale)
                         {
                             bRemoved = true;
                             buff.BuffHasExpired = true;
@@ -689,7 +715,6 @@ namespace WorldServer.World.Abilities.Buffs
                     }
                 }
             }
-
             finally { _buffRWLock.ExitReadLock(); }
 
             return bRemoved;
@@ -700,7 +725,6 @@ namespace WorldServer.World.Abilities.Buffs
             _buffRWLock.EnterReadLock();
 
             try { return _buffs.Find(buff => ((int)buff.Type & flags) > 0) != null; }
-
             finally { _buffRWLock.ExitReadLock(); }
         }
 
@@ -732,7 +756,7 @@ namespace WorldServer.World.Abilities.Buffs
             return _auraCount < 3;
         }
 
-        #endregion
+        #endregion Access
 
         #region Removals
 
@@ -749,7 +773,6 @@ namespace WorldServer.World.Abilities.Buffs
                 if (toRemove != null)
                     toRemove.BuffHasExpired = true;
             }
-
             finally { _buffRWLock.ExitReadLock(); }
         }
 
@@ -765,7 +788,6 @@ namespace WorldServer.World.Abilities.Buffs
                 if (toRemove.Caster == _Owner && (toRemove.Type == BuffTypes.Blessing || toRemove.Type == BuffTypes.Enchantment))
                     toRemove.BuffHasExpired = true;
             }
-
             finally { _buffRWLock.ExitReadLock(); }
         }
 
@@ -812,7 +834,6 @@ namespace WorldServer.World.Abilities.Buffs
                 }
             }
             finally { _buffRWLock.ExitReadLock(); }
-
         }
 
         public void RemoveBuffsOnDeath()
@@ -846,7 +867,7 @@ namespace WorldServer.World.Abilities.Buffs
             finally { _buffRWLock.ExitReadLock(); }
         }
 
-        #endregion
+        #endregion Removals
 
         #region Guard
 
@@ -867,7 +888,7 @@ namespace WorldServer.World.Abilities.Buffs
             if (_guardBuffs == null)
                 return;
 
-            foreach(GuardBuff g in _guardBuffs)
+            foreach (GuardBuff g in _guardBuffs)
                 if (g.SplitDamage(attacker, damageInfo))
                     return;
         }
@@ -882,7 +903,7 @@ namespace WorldServer.World.Abilities.Buffs
                     return;
         }
 
-        #endregion
+        #endregion Guard
 
         #region Buff Saving
 
@@ -893,9 +914,9 @@ namespace WorldServer.World.Abilities.Buffs
             if (buffList.Count == 0)
                 return;
 
-            uint curTime = (uint) TCPManager.GetTimeStamp();
+            uint curTime = (uint)TCPManager.GetTimeStamp();
 
-            for (int i=0; i < buffList.Count; ++i)
+            for (int i = 0; i < buffList.Count; ++i)
             {
                 if (buffList[i].EndTimeSeconds < curTime + 1)
                 {
@@ -932,13 +953,11 @@ namespace WorldServer.World.Abilities.Buffs
                 }
             }
 
-            CharacterSavedBuff save = new CharacterSavedBuff {CharacterId = _playerOwner.Info.CharacterId, BuffId = b.Entry, Level = b.BuffLevel, StackLevel = b.StackLevel, EndTimeSeconds = (uint)TCPManager.GetTimeStamp() + b.Duration};
+            CharacterSavedBuff save = new CharacterSavedBuff { CharacterId = _playerOwner.Info.CharacterId, BuffId = b.Entry, Level = b.BuffLevel, StackLevel = b.StackLevel, EndTimeSeconds = (uint)TCPManager.GetTimeStamp() + b.Duration };
 
             _playerOwner.Info.Buffs.Add(save);
             CharMgr.Database.AddObject(save);
         }
-
-
 
         public void RemoveSavedBuff(NewBuff b)
         {
@@ -961,7 +980,7 @@ namespace WorldServer.World.Abilities.Buffs
             }
         }
 
-        #endregion
+        #endregion Buff Saving
 
         #region Events
 
@@ -972,7 +991,7 @@ namespace WorldServer.World.Abilities.Buffs
 
         public void AddEventSubscription(NewBuff buff, byte eventID)
         {
-            lock(_buffCombatSubs[eventID - 1])
+            lock (_buffCombatSubs[eventID - 1])
             {
                 _buffCombatSubs[eventID - 1].Add(buff);
             }
@@ -1047,7 +1066,7 @@ namespace WorldServer.World.Abilities.Buffs
             }
         }
 
-        #endregion
+        #endregion Events
 
         #region Stop
 
@@ -1070,7 +1089,6 @@ namespace WorldServer.World.Abilities.Buffs
                     {
                         buff.BuffHasExpired = true;
 
-
 #pragma warning disable CS1030 // Директива #warning
 #warning Danger of lock recursion exception.
                         buff.RemoveBuff(true);
@@ -1078,7 +1096,6 @@ namespace WorldServer.World.Abilities.Buffs
                     }
                 }
             }
-
             finally { _buffRWLock.ExitReadLock(); }
 
             Update(TCPManager.GetTimeStampMS());
@@ -1102,6 +1119,7 @@ namespace WorldServer.World.Abilities.Buffs
             }
             finally { _buffRWLock.ExitReadLock(); }
         }
-        #endregion
+
+        #endregion Stop
     }
 }

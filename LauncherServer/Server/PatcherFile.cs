@@ -1,7 +1,7 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.IO;
 using System.IO.Compression;
-using FrameWork;
 
 namespace AuthenticationServer.Server
 {
@@ -33,6 +33,7 @@ namespace AuthenticationServer.Server
                 return _closed;
             }
         }
+
         public int ArchiveID
         {
             get
@@ -56,6 +57,7 @@ namespace AuthenticationServer.Server
                 _filenameHash = value;
             }
         }
+
         public UInt32 OldCrc
         {
             get
@@ -107,7 +109,7 @@ namespace AuthenticationServer.Server
                 return _destination;
             }
         }
-        
+
         public string Filename
         {
             get
@@ -143,7 +145,6 @@ namespace AuthenticationServer.Server
         public PatcherFile()
         {
         }
-
 
         /// <summary>
         /// Creates in memory file that is being uploaded to client
@@ -311,7 +312,6 @@ namespace AuthenticationServer.Server
 
             if (sendFile != null)
                 sendFile.Position = (long)offset;
-
 
             if (offset + size > (long)_compressedSize)
             {

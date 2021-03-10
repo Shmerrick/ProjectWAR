@@ -1,11 +1,7 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common;
-using Common.Database.World.Battlefront;
-using NLog;
 using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Apocalypse.Loot
@@ -14,7 +10,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
     {
         public List<RVRRewardItem> RVRRewards { get; private set; }
         public Random RandomGenerator { get; }
-        
+
         public BagContentSelector(List<RVRRewardItem> rvrRewards, Random randomGenerator)
         {
             RVRRewards = rvrRewards;
@@ -34,7 +30,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
         {
             logger.Debug($"SelectBagContentForPlayer. Assignee {lootBag.Assignee} Rarity {lootBag.BagRarity} Player RR Band {playerRRBand} Class {playerClass} Shuffle {shuffleRewards} ");
             // get a closer list of matching items.
-            var matchingRewards = RVRRewards.Where(x => lootBag.BagRarity == (LootBagRarity) x.Rarity);
+            var matchingRewards = RVRRewards.Where(x => lootBag.BagRarity == (LootBagRarity)x.Rarity);
             logger.Debug($"Matching Rewards = {matchingRewards.Count()}");
             if (matchingRewards == null)
                 return lootBag;
@@ -79,8 +75,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                 else
                 {
                     logger.Debug($"Player {lootBag.Assignee} does not have item {matchingReward.ItemId} already...assigning");
-                    lootBag.ItemCount = (uint) matchingReward.ItemCount;
-                    lootBag.ItemId = (uint) matchingReward.ItemId;
+                    lootBag.ItemCount = (uint)matchingReward.ItemCount;
+                    lootBag.ItemId = (uint)matchingReward.ItemId;
                     lootBag.RenownBand = playerRRBand;
                     break;
                 }
@@ -88,7 +84,5 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
 
             return lootBag;
         }
-
-      
     }
 }

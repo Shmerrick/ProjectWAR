@@ -1,11 +1,11 @@
 ﻿using Common;
+using Common.Database.World.Creatures;
 using FrameWork;
 using GameData;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Common.Database.World.Creatures;
-using NLog;
 using WorldServer.Managers;
 using WorldServer.World.Objects;
 
@@ -22,6 +22,7 @@ namespace WorldServer.Services.World
         public static List<CreatureSmartAbilities> CreatureSmartAbilities;
 
         #region Creature Proto
+
         [LoadingFunction(true)]
         public static void LoadCreatureProto()
         {
@@ -30,7 +31,7 @@ namespace WorldServer.Services.World
             CreatureProtos = Database.MapAllObjects<uint, Creature_proto>("Entry");
 
             _logger.Trace($"Loading Creature Proto...");
-            
+
             foreach (Creature_proto proto in CreatureProtos.Values)
             {
                 if (proto.Model1 == 0 && proto.Model2 == 0)
@@ -82,11 +83,13 @@ namespace WorldServer.Services.World
                 case CreatureTitle.HedgeWizard:
                     proto.InteractTrainerType = 1;
                     break;
+
                 case CreatureTitle.Trainer:
                 case CreatureTitle.CareerTrainer:
                 case CreatureTitle.ApprenticeCareerTrainer:
                     proto.InteractTrainerType = 6;
                     break;
+
                 case CreatureTitle.RenownTrainer:
                 case CreatureTitle.ApprenticeRenownTrainer:
                     proto.InteractTrainerType = 8;
@@ -107,21 +110,27 @@ namespace WorldServer.Services.World
                     if (proto.InteractTrainerType == 1)
                         states.Add((byte)CreatureState.ConsistentAppearance);
                     break;
+
                 case InteractType.INTERACTTYPE_BANKER:
                     states.Add((byte)CreatureState.Banker);
                     break;
+
                 case InteractType.INTERACTTYPE_AUCTIONEER:
                     states.Add((byte)CreatureState.Auctioneer);
                     break;
+
                 case InteractType.INTERACTTYPE_GUILD_REGISTRAR:
                     states.Add((byte)CreatureState.GuildRegistrar);
                     break;
+
                 case InteractType.INTERACTTYPE_FLIGHT_MASTER:
                     states.Add((byte)CreatureState.FlightMaster);
                     break;
+
                 case InteractType.INTERACTTYPE_HEALER:
                     states.Add((byte)CreatureState.Healer);
                     break;
+
                 case InteractType.INTERACTTYPE_LASTNAMESHOP:
                     states.Add((byte)CreatureState.NameRegistrar);
                     break;
@@ -184,6 +193,7 @@ namespace WorldServer.Services.World
                         case 144: // Career Trainer
                             proto.FigLeafData = new byte[] { 0, 0, 0, 1, 1, 10 };
                             break;
+
                         case 17: // Rally Master
                             byte chapterId = (byte)ChapterService.GetChapterByNPCID(proto.Entry);
                             if (chapterId > 0)
@@ -191,6 +201,7 @@ namespace WorldServer.Services.World
                             else
                                 proto.FigLeafData = _defaultData;
                             break;
+
                         case 4: // Trade skill start
                         case 5:
                         case 6:
@@ -202,6 +213,7 @@ namespace WorldServer.Services.World
                         case 32: // Kill collector
                             proto.FigLeafData = new byte[] { 0, 0, 0, 3, 1, 10 };
                             break;
+
                         default:
                             proto.FigLeafData = _defaultData;
                             break;
@@ -223,24 +235,26 @@ namespace WorldServer.Services.World
                     return Kp.Value;
             return null;
         }
-		#endregion
 
-		//#region patrol calculations
-		
-		//public static Point3D GetNewRandomGuardPosition(uint zoneId, Point3D mid)
-		//{
-		//	Random random = new Random();
-		//	int x = mid.X + 250 - (50 * random.Next(1, 11));
-		//	int y = mid.Y + 250 - (50 * random.Next(1, 11));
-		//	int z = ClientFileMgr.GetHeight((int)zoneId, x, y);
+        #endregion Creature Proto
 
-		//	return new Point3D(x, y, z);
-		//}
+        //#region patrol calculations
 
-		//#endregion
+        //public static Point3D GetNewRandomGuardPosition(uint zoneId, Point3D mid)
+        //{
+        //	Random random = new Random();
+        //	int x = mid.X + 250 - (50 * random.Next(1, 11));
+        //	int y = mid.Y + 250 - (50 * random.Next(1, 11));
+        //	int z = ClientFileMgr.GetHeight((int)zoneId, x, y);
 
-		#region Creature spawn
-		public static Dictionary<uint, Creature_spawn> CreatureSpawns;
+        //	return new Point3D(x, y, z);
+        //}
+
+        //#endregion
+
+        #region Creature spawn
+
+        public static Dictionary<uint, Creature_spawn> CreatureSpawns;
         public static int MaxCreatureGUID;
 
         public static int GenerateCreatureSpawnGUID()
@@ -261,22 +275,17 @@ namespace WorldServer.Services.World
 
             BossSpawnPhases = Database.SelectAllObjects<BossSpawnPhase>();
             Log.Success("LoadBossSpawnPhases", "Loaded " + BossSpawnPhases.Count + " BossSpawnPhase");
-
         }
-
-
-
-
 
         [LoadingFunction(true)]
         public static void LoadCreatureSpawns()
         {
             Log.Debug("WorldMgr", "Loading Creature_Spawns...");
 
-            //Added parameter Enabled = 1, this will allow to disable spawn without removing it from DB. 
+            //Added parameter Enabled = 1, this will allow to disable spawn without removing it from DB.
             //Enabled = 1 means that creature will spawn, Enabled = 0 means it will not spawn.
             CreatureSpawns = Database.MapAllObjects<uint, Creature_spawn>("Guid", "Enabled = 1", 100000);
-            
+
             foreach (Creature_spawn Spawn in CreatureSpawns.Values)
             {
                 if (Spawn.Guid > MaxCreatureGUID)
@@ -285,13 +294,14 @@ namespace WorldServer.Services.World
 
             Log.Success("LoadCreatureSpawns", "Loaded " + CreatureSpawns.Count + " Creature_Spawns");
 
-            CreatureSmartAbilities = (List<CreatureSmartAbilities>) Database.SelectAllObjects<CreatureSmartAbilities>();
+            CreatureSmartAbilities = (List<CreatureSmartAbilities>)Database.SelectAllObjects<CreatureSmartAbilities>();
             Log.Success("CreatureSmartAbilities", "Loaded " + CreatureSmartAbilities.Count + " CreatureSmartAbilities");
-
         }
-        #endregion
+
+        #endregion Creature spawn
 
         #region CreatureText
+
         private static Dictionary<uint, List<Creature_text>> _creatureTexts = new Dictionary<uint, List<Creature_text>>();
 
         [LoadingFunction(true)]
@@ -343,8 +353,9 @@ namespace WorldServer.Services.World
 
             return text;
         }
-        #endregion
-        
+
+        #endregion CreatureText
+
         #region CreatureItems
 
         public static Dictionary<uint, List<Creature_item>> _CreatureItems;
@@ -408,7 +419,7 @@ namespace WorldServer.Services.World
             Database.AddObject(Item);
         }
 
-        #endregion
+        #endregion CreatureItems
 
         #region CreatureStats
 
@@ -423,7 +434,7 @@ namespace WorldServer.Services.World
             IList<Creature_stats> Stats = Database.SelectAllObjects<Creature_stats>();
 
             if (Stats != null)
-            { 
+            {
                 foreach (Creature_stats statInfo in Stats)
                 {
                     if (!_CreatureStats.ContainsKey(statInfo.ProtoEntry))
@@ -455,7 +466,7 @@ namespace WorldServer.Services.World
             return L;
         }
 
-        #endregion
+        #endregion CreatureStats
 
         #region LootGroups
 
@@ -485,13 +496,12 @@ namespace WorldServer.Services.World
                 foreach (Loot_Group lg in dbLootGroups)
                 {
                     Log.Debug("WorldMgr.LoadLootGroups", "Loading LootGroup #" + lg.Entry + " ...");
-                    // Since not all loot groups will have items assigned, we have to make sure we don't load empty loot groups into 
+                    // Since not all loot groups will have items assigned, we have to make sure we don't load empty loot groups into
                     if (LootGroupItems.ContainsKey(lg.Entry))
                     {
                         // Since we already have a list of loot group items in the dictionary, we can copy/reference it directly.
                         lg.LootGroupItems = LootGroupItems[lg.Entry];
                     }
-
                     else
                         lg.LootGroupItems = new List<Loot_Group_Item>();
 
@@ -522,7 +532,7 @@ namespace WorldServer.Services.World
             return candidates;
         }
 
-        #endregion
+        #endregion LootGroups
 
         #region Butchery
 
@@ -600,6 +610,6 @@ namespace WorldServer.Services.World
             return new LootContainer { LootInfo = new List<LootInfo> { new LootInfo(ItemService.GetItem_Info(itemId)) } };
         }
 
-        #endregion
+        #endregion Butchery
     }
 }

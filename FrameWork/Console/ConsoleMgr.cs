@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
 using System.Threading;
 
@@ -8,7 +7,7 @@ namespace FrameWork
 {
     public class ConsoleMgr
     {
-        public readonly Dictionary<string, IConsoleHandler> m_consoleHandlers = new Dictionary<string,IConsoleHandler>();
+        public readonly Dictionary<string, IConsoleHandler> m_consoleHandlers = new Dictionary<string, IConsoleHandler>();
 
         private static ConsoleMgr Instance;
         private bool _IsRunning = true;
@@ -44,25 +43,25 @@ namespace FrameWork
                     break;
                 }
 
-                if ( line == null )
+                if (line == null)
                 {
                     break;
                 }
 
-                    
                 if (line.StartsWith("."))
                 {
                     line = line.Substring(1);
 
                     if (!Instance.ExecuteCommand(line))
                         Log.Error("ConsoleMgr", "Command not found");
-                }else CleanLine(line.Length);
+                }
+                else CleanLine(line.Length);
             }
         }
 
         public static void CleanLine(int size)
         {
-            string clear = new string(' ',size);
+            string clear = new string(' ', size);
             Console.CursorLeft = 0;
             Console.CursorTop -= 1;
             Console.Write(clear);
@@ -95,7 +94,7 @@ namespace FrameWork
 
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                Log.Dump("ConsoleMgr", "Attempting to load : " +  assembly.FullName);
+                Log.Dump("ConsoleMgr", "Attempting to load : " + assembly.FullName);
                 foreach (Type type in assembly.GetTypes())
                 {
                     Log.Dump("ConsoleMgr", "Attempting to load : " + type.FullName);
@@ -123,7 +122,7 @@ namespace FrameWork
 
         private void RegisterHandler(string command, IConsoleHandler Handler)
         {
-            m_consoleHandlers.Add(command,Handler);
+            m_consoleHandlers.Add(command, Handler);
         }
 
         private bool ExecuteCommand(string line)
@@ -137,11 +136,11 @@ namespace FrameWork
                 a = line.Length;
 
             command = line.Substring(0, a);
-            line = line.Remove(0,a);
+            line = line.Remove(0, a);
 
             if (command.Length <= 0)
                 return false;
-            
+
             IConsoleHandler Handler = null;
 
             if (!Instance.m_consoleHandlers.ContainsKey(command))
@@ -152,7 +151,7 @@ namespace FrameWork
             string[] Args = line.Split(' ');
 
             foreach (string str in Args)
-                if( str.Length > 1 || (str.Length == 1 && str[0] != ' ') )
+                if (str.Length > 1 || (str.Length == 1 && str[0] != ' '))
                     args.Add(str);
 
             var consoleHandlerAttribs = (ConsoleHandlerAttribute[])Handler.GetType().GetCustomAttributes(typeof(ConsoleHandlerAttribute), true);
@@ -175,23 +174,23 @@ namespace FrameWork
             return true;
         }
 
-        static int GetInt(List<string> args)
+        private static int GetInt(List<string> args)
         {
             if (args.Count <= 0)
                 return -999;
 
-           int result = int.Parse(args[0]);
-           args.RemoveAt(0);
+            int result = int.Parse(args[0]);
+            args.RemoveAt(0);
 
-           return result;
+            return result;
         }
 
-        static bool GetBool(List<string> args)
+        private static bool GetBool(List<string> args)
         {
             return GetInt(args) > 0;
         }
 
-        static string GetTotalString(List<string> args, int num)
+        private static string GetTotalString(List<string> args, int num)
         {
             string Total = "";
 
@@ -204,6 +203,5 @@ namespace FrameWork
 
             return Total;
         }
-
     }
 }

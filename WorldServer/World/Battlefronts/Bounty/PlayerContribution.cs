@@ -1,5 +1,4 @@
-﻿using System;
-using GameData;
+﻿using GameData;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {

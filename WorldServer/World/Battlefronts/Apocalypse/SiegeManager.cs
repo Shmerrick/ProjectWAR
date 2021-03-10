@@ -1,11 +1,9 @@
-﻿using FrameWork;
+﻿using GameData;
 using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using GameData;
-using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
 
@@ -96,7 +94,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
         /// <summary>
-        /// Determine whether the counts mean we can deploy this siege. 
+        /// Determine whether the counts mean we can deploy this siege.
         /// </summary>
         /// <param name="typeToDeploy"></param>
         /// <returns></returns>
@@ -111,7 +109,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             }
         }
 
-       public int GetNumberByType(SiegeType siegeType, Realms realm)
+        public int GetNumberByType(SiegeType siegeType, Realms realm)
         {
             var tracking = SiegeTracking.SingleOrDefault(x => x.Type == siegeType && x.Realm == realm);
             if (tracking != null)

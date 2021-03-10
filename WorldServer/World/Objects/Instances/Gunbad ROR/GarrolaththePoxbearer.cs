@@ -6,7 +6,7 @@ using WorldServer.World.Scripting;
 namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 38234, 0)]
-    class GarrolathThePoxbearer : BasicGunbad
+    internal class GarrolathThePoxbearer : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -72,14 +72,17 @@ namespace WorldServer.World.Objects.Instances.Gunbad
                     prms = new List<object>() { 2000890, 863573, 855069, 26216, Obj.Heading }; // Nurgling
                     Obj.EvtInterface.AddEvent(SpawnAdds, 20 * 1000, 1, prms);
                     break;
+
                 case 2:
                     prms = new List<object>() { 2000890, 8664337, 856140, 26128, Obj.Heading }; // Nurgling
                     Obj.EvtInterface.AddEvent(SpawnAdds, 20 * 1000, 1, prms);
                     break;
+
                 case 3:
                     prms = new List<object>() { 2000890, 863241, 854360, 26170, Obj.Heading }; // Nurgling
                     Obj.EvtInterface.AddEvent(SpawnAdds, 20 * 1000, 1, prms);
                     break;
+
                 case 4:
                     prms = new List<object>() { 2000890, 865081, 855663, 26252, Obj.Heading }; // Nurgling
                     Obj.EvtInterface.AddEvent(SpawnAdds, 20 * 1000, 1, prms);
@@ -147,7 +150,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 2000890, 0)]
-    class NurglingGarrolath : BasicGunbad
+    internal class NurglingGarrolath : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -156,6 +159,5 @@ namespace WorldServer.World.Objects.Instances.Gunbad
             var prms = new List<object>() { (uint)38234 }; // Here is mommy...
             Obj.EvtInterface.AddEvent(GoToMommy, 200, 1, prms);
         }
-
     }
 }

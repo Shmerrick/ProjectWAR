@@ -1,5 +1,5 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Objects;
@@ -7,13 +7,14 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Abilities.CareerInterfaces
 {
-    public class CareerInterface_Ironbreaker: CareerInterface
+    public class CareerInterface_Ironbreaker : CareerInterface
     {
         private const ushort _resourceID = 252, _masterID = 251;
         private Player _oathFriend;
         private long _nextTimer = 0;
         private long _nextOTimer = 0;
         private long Now = 0;
+
         // I'm given to understand the lock statement is implemented as a hybrid mutex
         private object _resourceLock = new object();
 
@@ -21,7 +22,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
         {
             _maxResource = 100;
             _resourceTimeout = 15000;
-    }
+        }
 
         public override bool Load()
         {
@@ -65,7 +66,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             _lastResourceTime = TCPManager.GetTimeStampMS();
 
             if (!blockEvent)
-                myPlayer.BuffInterface.NotifyResourceEvent((byte) BuffCombatEvents.ResourceGained, _careerResource, ref amount);
+                myPlayer.BuffInterface.NotifyResourceEvent((byte)BuffCombatEvents.ResourceGained, _careerResource, ref amount);
 
             lock (_resourceLock)
             {
@@ -106,11 +107,11 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
             return true;
         }
-        
+
         public override bool ConsumeResource(byte amount, bool blockEvent)
         {
             if (!blockEvent)
-                myPlayer.BuffInterface.NotifyResourceEvent((byte) BuffCombatEvents.ResourceLost, _lastResource, ref amount);
+                myPlayer.BuffInterface.NotifyResourceEvent((byte)BuffCombatEvents.ResourceLost, _lastResource, ref amount);
 
             lock (_resourceLock)
             {
@@ -155,7 +156,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                     _decayTimer -= 2000;
                 }
             }
-
             else
                 _decayTimer = 0;
 

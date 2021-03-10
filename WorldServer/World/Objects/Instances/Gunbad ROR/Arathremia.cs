@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using FrameWork;
+using System.Collections.Generic;
 using System.Linq;
-using FrameWork;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Positions;
 using WorldServer.World.Scripting;
@@ -9,7 +9,7 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 41620, 0)]
-    class Arathremia : BasicGunbad
+    internal class Arathremia : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -235,6 +235,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
                         case 0:
                             creature.Say("She weakens... strike now sisters!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
                             break;
+
                         case 1:
                             creature.Say("We will do your bidding no more!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
                             break;
@@ -290,12 +291,11 @@ namespace WorldServer.World.Objects.Instances.Gunbad
 
             //BuffInfo b = AbilityMgr.GetBuffInfo(14897, c, c); // Iron Body
             //c.BuffInterface.QueueBuff(new BuffQueueInfo(c, c.Level, b)); ()
-
         }
     }
 
     [GeneralScript(false, "", 41619, 0)]
-    class DeceivedSoulArathremia : BasicGunbad
+    internal class DeceivedSoulArathremia : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -305,7 +305,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 2000883, 0)]
-    class OrderDeceivedSoulArathremia : BasicGunbad
+    internal class OrderDeceivedSoulArathremia : BasicGunbad
     {
         public override bool OnEnterCombat(Object npc = null, object instigator = null)
         {
@@ -336,7 +336,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 2000884, 0)]
-    class DestroDeceivedSoulArathremia : BasicGunbad
+    internal class DestroDeceivedSoulArathremia : BasicGunbad
     {
         public override bool OnEnterCombat(Object npc = null, object instigator = null)
         {
@@ -365,5 +365,4 @@ namespace WorldServer.World.Objects.Instances.Gunbad
             return false;
         }
     }
-
 }

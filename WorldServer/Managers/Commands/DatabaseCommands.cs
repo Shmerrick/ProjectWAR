@@ -12,7 +12,6 @@ namespace WorldServer.Managers.Commands
     /// <summary>Database commands under .database</summary>
     internal class DatabaseCommands
     {
-
         /// <summary>
         /// Reload items information
         /// </summary>
@@ -155,6 +154,7 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
+
         public static bool ReloadPetModifiers(Player plr, ref List<string> values)
         {
             lock (Player._Players)

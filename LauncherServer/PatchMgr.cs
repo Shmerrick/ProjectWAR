@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using AuthenticationServer.Server;
+﻿using AuthenticationServer.Server;
 using Common.Database.Account;
 using FrameWork;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Opcodes = AuthenticationServer.Server.Opcodes;
 
 namespace AuthenticationServer
@@ -27,7 +27,6 @@ namespace AuthenticationServer
         public int ArchiveId;
     }
 
-
     public class FileUploadInfo
     {
         public Archive ArchiveID;
@@ -41,16 +40,11 @@ namespace AuthenticationServer
         public FileCompressionMode Compress;
     };
 
-
-    class PatchMgr
+    internal class PatchMgr
     {
-
         public static uint VersionHash;
 
         #region MYP Files
-
-
-
 
         public static List<PatchFile> _Patch_Files;
         public static Dictionary<Patch_MYP, List<PatchAsset>> _Patch_Assets;
@@ -62,7 +56,7 @@ namespace AuthenticationServer
             Log.Debug("PatchMgr", "Loading Patch_Files...");
 
             _Patch_Files = LoadFilesFromDisk();
- 
+
             Log.Success("LoadPatch_Files", "Loaded " + _Patch_Files.Count + " Launcher_File");
         }
 
@@ -88,7 +82,7 @@ namespace AuthenticationServer
                     pfile.Size = fs.Length;
                     patch_files.Add(pfile);
 
-                    if(file.Name.ToUpper() == "WARPATCHER.EXE")
+                    if (file.Name.ToUpper() == "WARPATCHER.EXE")
                     {
                         VersionHash = pfile.CRC32;
                     }
@@ -153,8 +147,8 @@ namespace AuthenticationServer
 
             return patch_assets;
         }
-        #endregion
 
+        #endregion MYP Files
 
         public static void SetServerState(ServerState state)
         {
@@ -171,7 +165,6 @@ namespace AuthenticationServer
 
         public static Archive strToArchive(string name)
         {
-
             if (name == "MFT.MYP")
                 return Archive.MFT;
             if (name == "ART.MYP")
@@ -245,7 +238,6 @@ namespace AuthenticationServer
         {
             uint edx = 0, eax, esi, ebx = 0;
             uint edi, ecx;
-
 
             eax = ecx = edx = ebx = esi = edi = 0;
             ebx = edi = esi = (uint)s.Length + seed;
@@ -330,6 +322,7 @@ namespace AuthenticationServer
             sh = eax;
             return;
         }
-        #endregion
+
+        #endregion Utils
     }
 }

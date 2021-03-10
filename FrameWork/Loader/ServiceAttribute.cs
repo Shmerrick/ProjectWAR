@@ -21,6 +21,5 @@ namespace FrameWork
 
         /// <summary>Services that must be loaded prior to this one.</summary>
         public Type[] Dependencies { get { return _dependencies; } }
-
     }
 }

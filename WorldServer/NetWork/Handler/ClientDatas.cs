@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-using System.IO;
 using FrameWork;
+using System.IO;
 using WorldServer.Managers;
 using WorldServer.World.Objects;
 
@@ -39,7 +39,7 @@ namespace WorldServer.NetWork.Handler
             ushort offset = packet.GetUint16();
             ushort size = packet.GetUint16();
 
-            MemoryStream ms = new MemoryStream(plr.Info.ClientData.Data) {Position = offset};
+            MemoryStream ms = new MemoryStream(plr.Info.ClientData.Data) { Position = offset };
             ms.Write(packet.Read(size), 0, size);
             plr.Info.ClientData.Dirty = true;
             CharMgr.Database.SaveObject(plr.Info.ClientData);

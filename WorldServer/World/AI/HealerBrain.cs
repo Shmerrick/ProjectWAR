@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using FrameWork;
+﻿using FrameWork;
 using GameData;
-using WorldServer.Services.World;
+using System.Linq;
 using WorldServer.World.Objects;
 
 //1174
@@ -12,9 +11,8 @@ namespace WorldServer.World.AI
         public Unit FriendlyTarget { get; set; }
         public int runeofShieldingCooldown { get; set; }
 
-        // Cooldown between special attacks 
+        // Cooldown between special attacks
         public static int NEXT_ATTACK_COOLDOWN = 4000;
-
 
         public HealerBrain(Unit myOwner)
             : base(myOwner)
@@ -31,7 +29,7 @@ namespace WorldServer.World.AI
 
             if ((FriendlyTarget == null))
             {
-                var friendlyPlayers = _unit.GetInRange<Unit>(120).Where(x => x.Realm == _unit.Realm&& x.PctHealth< 100).OrderBy(o=>o.PctHealth).ToList();
+                var friendlyPlayers = _unit.GetInRange<Unit>(120).Where(x => x.Realm == _unit.Realm && x.PctHealth < 100).OrderBy(o => o.PctHealth).ToList();
                 if (friendlyPlayers.Count() > 0)
                 {
                     _logger.Debug($"{_unit} changing friendly target to  {(friendlyPlayers[0]).Name}");
@@ -43,7 +41,6 @@ namespace WorldServer.World.AI
             if (_unit.AbtInterface.CanCastCooldown(0) &&
                 TCPManager.GetTimeStampMS() > NextTryCastTime)
             {
-
                 Combat.SetTarget(FriendlyTarget.Oid, TargetTypes.TARGETTYPES_TARGET_ALLY);
 
                 var rand = StaticRandom.Instance.Next(10);
@@ -81,22 +78,20 @@ namespace WorldServer.World.AI
                     case 4:
                     case 5:
                     case 6:
-                    {
-                        var friendlyPlayers = _unit.GetInRange<Unit>(120).Where(x => x.Realm == _unit.Realm && x.PctHealth < 100).OrderBy(o => o.PctHealth).ToList();
-                        if (friendlyPlayers.Count() > 0)
                         {
-                            _logger.Debug($"{_unit} changing friendly target to  {(friendlyPlayers[0]).Name}");
-                            FriendlyTarget = friendlyPlayers[0];
-                        }
+                            var friendlyPlayers = _unit.GetInRange<Unit>(120).Where(x => x.Realm == _unit.Realm && x.PctHealth < 100).OrderBy(o => o.PctHealth).ToList();
+                            if (friendlyPlayers.Count() > 0)
+                            {
+                                _logger.Debug($"{_unit} changing friendly target to  {(friendlyPlayers[0]).Name}");
+                                FriendlyTarget = friendlyPlayers[0];
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                 }
 
                 NextTryCastTime = TCPManager.GetTimeStampMS() + NEXT_ATTACK_COOLDOWN;
             }
-
-
         }
     }
 }

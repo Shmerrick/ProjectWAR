@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace WorldServer.API
+﻿namespace WorldServer.API
 {
     public class ApiPacket : Packet
     {
-
         private ushort _sequenceID;
 
         public ushort SequenceID
         {
             get { return _sequenceID; }
         }
+
         public ushort _sessionID;
         public ushort _unk1;
         public byte _unk2;
-
 
         public Opcodes OP;
 
@@ -27,16 +21,13 @@ namespace WorldServer.API
             _size = size;
             WriteUInt32(0); //length
             WriteByte((byte)op);
-
         }
 
-     
         public void LoadFrame(int size, CircularBuffer buf)
         {
             //TODO: Check buffer size
             _size = size;
             _offset = 0;
-
 
             buf.Peek(_data, size + 1);
 
@@ -59,13 +50,10 @@ namespace WorldServer.API
             WriteUInt32((ushort)(offset - 5));
             Offset = offset;
         }
+
         public override string ToString()
         {
             return "ControlPacket OP=" + OP.ToString() + " Size=" + _size;
         }
-
-
-
-
     }
 }

@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
-using Common;
 using WorldServer.World.AI;
 
 namespace WorldServer.World.Objects.Instances.Tombs
@@ -8,7 +8,8 @@ namespace WorldServer.World.Objects.Instances.Tombs
     public class SimpleTsekaniHeyafa : InstanceBossSpawn
     {
         #region Constructors
-        public SimpleTsekaniHeyafa(Creature_spawn spawn,  uint bossId, ushort Instanceid, Instance instance) : base(spawn,  bossId, Instanceid, instance)
+
+        public SimpleTsekaniHeyafa(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
         {
             //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
         }
@@ -71,6 +72,7 @@ namespace WorldServer.World.Objects.Instances.Tombs
                 return;
             }
         }
+
         //private void CheckBossRageTimer()
         //{
         //	// check rage timer

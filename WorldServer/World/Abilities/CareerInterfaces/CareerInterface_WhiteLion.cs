@@ -1,16 +1,16 @@
-﻿using System;
-using Common;
+﻿using Common;
+using System;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Objects;
 
 namespace WorldServer.World.Abilities.CareerInterfaces
 {
-    class CareerInterface_WhiteLion : CareerInterface, IPetCareerInterface
+    internal class CareerInterface_WhiteLion : CareerInterface, IPetCareerInterface
     {
         public new Pet myPet { get; set; }
 
         // This is variable that store current pet health
-        uint currentHealth;
+        private uint currentHealth;
 
         public byte AIMode { get; set; } = 5;
 
@@ -51,10 +51,10 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
         public override void SendResource()
         {
-
         }
 
         private bool _summoning;
+
         public void SummonPet(ushort myID)
         {
             if (_summoning)
@@ -93,23 +93,25 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                             faction = 129;
                             name = "War Manticore";
                             break;
+
                         case 2:
                             model1 = 1142;
                             faction = 129;
                             name = "War Scorpion";
                             break;
+
                         case 3:
                             model1 = 1086;
                             faction = 129;
                             name = "Vicious Harpy";
                             break;
+
                         default:
                             model1 = 1272;
                             faction = 129;
                             name = "Hydra Wyrmling";
                             break;
                     }
-                    
                 }
 
                 if (myPlayer.Info.PetModel != 0)

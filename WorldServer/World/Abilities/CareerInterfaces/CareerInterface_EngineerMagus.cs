@@ -1,14 +1,14 @@
-﻿using System;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Objects;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Abilities.CareerInterfaces
 {
-    class CareerInterface_EngineerMagus : CareerInterface, IPetCareerInterface
+    internal class CareerInterface_EngineerMagus : CareerInterface, IPetCareerInterface
     {
         private byte _powerBonus = 4;
         private byte _maxStack = 5;
@@ -19,7 +19,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
         private readonly float _rangeBonusPct2Pet = 0f;
         private readonly float _rangeReductionPct3 = 0f;
 
-        private readonly float _radiusBonusPctMaster = 50f/8f;
+        private readonly float _radiusBonusPctMaster = 50f / 8f;
         private readonly ushort _dodgeDisruptBonus = 0;
         private readonly ushort _dodgeDisruptBonusPet = 0;
 
@@ -31,7 +31,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
         public CareerInterface_EngineerMagus(Player player) : base(player)
         {
-            if (myPlayer.Info.CareerLine == (byte) CareerLine.CAREERLINE_ENGINEER)
+            if (myPlayer.Info.CareerLine == (byte)CareerLine.CAREERLINE_ENGINEER)
                 _resourceID = 1070;
             else
                 _resourceID = 1072;
@@ -43,7 +43,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
         public override bool SetExperimentalMode(bool fullExplanation)
         {
             if (myPlayer.GmLevel < 1)
-            { 
+            {
                 myPlayer.SendClientMessage("This career has no experimental modifications to activate.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                 return false;
             }
@@ -54,7 +54,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
             if (!fullExplanation && ExperimentalMode)
             {
-				_rangeBonusPct1 = 20f/8f;	
+				_rangeBonusPct1 = 20f/8f;
                 myPlayer.SendClientMessage("Experimental mode for Engineer and Magus is currently enabled.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                 return true;
             }
@@ -73,7 +73,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                 myPlayer.SendClientMessage("General changes:", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                 myPlayer.SendClientMessage("- The range bonus for Rifleman and Havoc maxes at 20% instead of 40%.");
             }
-
             else
             {
                 myPlayer.SendClientMessage("Experimental mode has been disabled.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
@@ -154,7 +153,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
         public override void SendResource()
         {
-
         }
 
         private long _lastTick;
@@ -173,9 +171,8 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                 _boostStacks++;
                 AddBonuses();
             }
-
             else if (_boostStacks <= _maxStack)
-            {   
+            {
                 // Stack decay
                 if (myPet == null || !myPet.ObjectWithinRadiusFeet(myPlayer, _careerResource == 2 ? 80 : 25))
                 {
@@ -188,16 +185,14 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                         _boostStacks = 0;
                         SendBoostRemoval();
                     }
-
                     else
                     {
                         _boostStacks = _boostStacks - stackMod;
                         AddBonuses();
                     }
                 }
-
                 else if (_boostStacks < _maxStack && (_careerResource != 2 || myPet.ObjectWithinRadiusFeet(myPlayer, 40)))
-                { 
+                {
                     RemoveBonuses();
                     _boostStacks++;
                     AddBonuses();
@@ -224,7 +219,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
         public override void NotifyPanicked()
         {
-           
         }
 
         private void RemoveBonuses()
@@ -239,10 +233,12 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                     // Pet range increase
                     myPet?.StsInterface.RemoveBonusMultiplier(Stats.Range, Math.Min(rangeMax * 0.01f, _rangeBonusPct1 * 0.01f * _boostStacks), BuffClass.Tactic);
                     break;
+
                 case 2:
                     // Pet range increase
                     myPet?.StsInterface.RemoveBonusMultiplier(Stats.Range, _rangeBonusPct2Pet * 0.01f * _boostStacks, BuffClass.Tactic);
                     break;
+
                 case 3:
                     // Master range reduction
                     myPlayer.StsInterface.RemoveReducedMultiplier(Stats.Range, 1f - _rangeReductionPct3 * 0.01f * _boostStacks, BuffClass.Tactic);
@@ -267,7 +263,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
         private void AddBonuses()
         {
             myPlayer.StsInterface.AddBonusMultiplier(Stats.OutgoingDamagePercent, _powerBonus * 0.01f * _boostStacks, BuffClass.Career);
-            
+
             switch (_careerResource)
             {
                 case 1:
@@ -276,10 +272,12 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                     // Pet range increase
                     myPet?.StsInterface.AddBonusMultiplier(Stats.Range, Math.Min(rangeMax * 0.01f, _rangeBonusPct1 * 0.01f * _boostStacks), BuffClass.Tactic);
                     break;
+
                 case 2:
                     // Pet range increase
                     myPet?.StsInterface.AddBonusMultiplier(Stats.Range, _rangeBonusPct2Pet * 0.01f * _boostStacks, BuffClass.Tactic);
                     break;
+
                 case 3:
                     // Master range reduction
                     myPlayer.StsInterface.AddReducedMultiplier(Stats.Range, 1f - _rangeReductionPct3 * 0.01f * _boostStacks, BuffClass.Tactic);
@@ -331,7 +329,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
             if (_careerResource == 1 || _careerResource == 3)
             {
-                Out = new PacketOut((byte) Opcodes.F_INIT_EFFECTS, 18);
+                Out = new PacketOut((byte)Opcodes.F_INIT_EFFECTS, 18);
                 Out.WriteByte(1);
                 Out.WriteByte(1); // update
                 Out.WriteUInt16(0);
@@ -345,12 +343,12 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                 Out.WriteByte(1);
                 Out.WriteByte(0);
                 if (_careerResource == 1)
-                    Out.WriteZigZag((int)Math.Min(rangeMax, _rangeBonusPct1 *  _boostStacks));
+                    Out.WriteZigZag((int)Math.Min(rangeMax, _rangeBonusPct1 * _boostStacks));
                 else
                     Out.WriteZigZag(-(int)(_rangeBonusPct1 * _boostStacks));
 
                 Out.WriteByte(0);
-                ((Player) _Owner).DispatchPacket(Out, true);
+                ((Player)_Owner).DispatchPacket(Out, true);
             }
         }
 
@@ -369,7 +367,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
             if (_careerResource == 1 || _careerResource == 3)
             {
-                Out = new PacketOut((byte) Opcodes.F_INIT_EFFECTS, 12);
+                Out = new PacketOut((byte)Opcodes.F_INIT_EFFECTS, 12);
                 Out.WriteByte(1);
                 Out.WriteByte(BUFF_REMOVE);
                 Out.WriteUInt16(0);
@@ -378,7 +376,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                 Out.WriteByte(0);
                 Out.WriteUInt16R(10354);
                 Out.WriteByte(0);
-                ((Player) _Owner).DispatchPacket(Out, true);
+                ((Player)_Owner).DispatchPacket(Out, true);
             }
         }
 
@@ -392,7 +390,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
             Creature_proto proto = new Creature_proto();
 
-            switch(myID)
+            switch (myID)
             {
                 case 8474:
                     proto.Name = myPlayer.Name + "'s Pink Horror^M";
@@ -403,6 +401,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                     SpawnPet(proto);
 
                     break;
+
                 case 8476:
                     proto.Name = myPlayer.Name + "'s Blue Horror^M";
                     proto.Model1 = 142;
@@ -412,6 +411,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                     SpawnPet(proto);
 
                     break;
+
                 case 8478:
                     proto.Name = myPlayer.Name + "'s Flamer^M";
                     proto.Model1 = 143;
@@ -421,6 +421,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                     SpawnPet(proto);
 
                     break;
+
                 case 1511:
                     proto.Name = myPlayer.Name + "'s Gun Turret^N";
                     proto.Model1 = 145;
@@ -430,6 +431,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                     SpawnPet(proto);
 
                     break;
+
                 case 1518:
                     proto.Name = myPlayer.Name + "'s Bombardment Turret^N";
                     proto.Model1 = 146;
@@ -439,6 +441,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                     SpawnPet(proto);
 
                     break;
+
                 case 1526:
                     proto.Name = myPlayer.Name + "'s Flame Turret^N";
                     proto.Model1 = 147;
@@ -449,18 +452,18 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
                     break;
 
-
                 case 8535:
                     proto.Name = myPlayer.Name + "'s Firewyrm^N";
-                    proto.Model1 = 144;   // firewyrm  
+                    proto.Model1 = 144;   // firewyrm
                     proto.Faction = 129;  //dest
                     proto.Ranged = 5;
                     SwitchPetBonusType(2);
                     SpawnPet(proto);
 
                     break;
+
                 default:
-                    throw new Exception("Engineer/Magus: Requested pet ID "+myID+" not found for SummonPet");
+                    throw new Exception("Engineer/Magus: Requested pet ID " + myID + " not found for SummonPet");
             }
         }
 
@@ -481,7 +484,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             spawn.Proto.MinLevel = spawn.Proto.MaxLevel = myPlayer.EffectiveLevel;
 
             if (spawn.Proto.MinLevel > 40)
-            { 
+            {
                 spawn.Proto.MinLevel = 40;
                 spawn.Proto.MaxLevel = 40;
             }
@@ -496,10 +499,12 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                         // Pet range increase
                         myPet.StsInterface.AddBonusMultiplier(Stats.Range, _rangeBonusPct1 * 0.01f * _boostStacks, BuffClass.Tactic);
                         break;
+
                     case 2:
                         // Pet range increase
                         myPet.StsInterface.AddBonusMultiplier(Stats.Range, _rangeBonusPct2Pet * 0.01f * _boostStacks, BuffClass.Tactic);
                         break;
+
                     case 3:
                         // Pet dodge/disrupt increase
                         myPet?.StsInterface.AddBonusStat(Stats.Evade, (ushort)(_dodgeDisruptBonusPet * _boostStacks), BuffClass.Tactic);
@@ -555,6 +560,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
         public override EArchetype GetArchetype()
         {
             return EArchetype.ARCHETYPE_DPS;
-        }   
+        }
     }
 }

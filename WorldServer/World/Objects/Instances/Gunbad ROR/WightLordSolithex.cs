@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Common;
+using System.Collections.Generic;
 using System.Linq;
-using Common;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
@@ -12,7 +12,7 @@ using WorldServer.World.Scripting;
 namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 42207, 0)]
-    class WightLordSolithex : BasicGunbad
+    internal class WightLordSolithex : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -145,7 +145,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
             }
             else if (c.Health < c.TotalHealth * 0.2 && Stage < 3 && !c.IsDead)
             {
-                var prms = new List<object>() {c, (ushort)14897, "This battle may be yours but my will persists. If we meet again, it is you that will return to the soil and eternally serve the Mourkain!" }; // Iron Body
+                var prms = new List<object>() { c, (ushort)14897, "This battle may be yours but my will persists. If we meet again, it is you that will return to the soil and eternally serve the Mourkain!" }; // Iron Body
                 c.EvtInterface.AddEvent(DelayedBuff, 100, 1, prms);
 
                 foreach (Object o in c.ObjectsInRange.ToList())
@@ -238,7 +238,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
         public override void RemoveBuffs()
         {
             Creature c = this.Obj as Creature;
-            c.Say("Feel my wrath!",SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+            c.Say("Feel my wrath!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
             c.IsInvulnerable = false;
             foreach (Player plr in c.PlayersInRange.ToList())
                 c.SendMeTo(plr);
@@ -246,7 +246,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 2000876, 0)] // Deathshadow Construct
-    class SolithexDeathshadowConstruct : BasicGunbad
+    internal class SolithexDeathshadowConstruct : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -256,7 +256,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 42211, 0)] // Deathshadow Drudge
-    class SolithexDeathshadowDrudge : BasicGunbad
+    internal class SolithexDeathshadowDrudge : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -266,7 +266,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 0, 100523)]
-    class SolithexArtifact : BasicGunbad
+    internal class SolithexArtifact : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -339,7 +339,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 0, 100524)]
-    class SolithexBarrier : BasicGunbad
+    internal class SolithexBarrier : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -358,7 +358,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 0, 2000561)]
-    class SolithexMourkainPillar : BasicGunbad
+    internal class SolithexMourkainPillar : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -367,8 +367,8 @@ namespace WorldServer.World.Objects.Instances.Gunbad
             GameObject go = Obj as GameObject;
             go.Respawn = 0;
 
-            var prms = new List<object>() { 42211, Obj.WorldPosition.X, Obj.WorldPosition.Y, Obj.WorldPosition.Z, Obj.Heading }; 
-            Obj.EvtInterface.AddEvent(SpawnAdds,5000,1,prms);
+            var prms = new List<object>() { 42211, Obj.WorldPosition.X, Obj.WorldPosition.Y, Obj.WorldPosition.Z, Obj.Heading };
+            Obj.EvtInterface.AddEvent(SpawnAdds, 5000, 1, prms);
         }
 
         public override void SpawnAdds(object crea)

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using FrameWork;
+using System;
 using System.Security.Cryptography;
-
-using FrameWork;
+using System.Text;
 
 namespace Common
 {
@@ -90,7 +87,7 @@ namespace Common
             }
         }
 
-        [DataElement(AllowDbNull=false)]
+        [DataElement(AllowDbNull = false)]
         public sbyte GmLevel
         {
             get { return _gmLevel; }
@@ -160,7 +157,6 @@ namespace Common
             }
         }
 
-
         [DataElement]
         public int LastLogged
         {
@@ -197,7 +193,6 @@ namespace Common
         [DataElement(AllowDbNull = false)]
         public uint InvalidPasswordCount { get; set; } = 0;
 
-
         public static string ConvertSHA256(string value)
         {
             SHA256 sha = SHA256.Create();
@@ -221,8 +216,7 @@ namespace Common
             }
         }
 
-
         [DataElement(AllowDbNull = true)]
         public string Email { get; set; }
     }
-} 
+}

@@ -6,7 +6,7 @@ using WorldServer.World.Scripting;
 namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 36615, 0)]
-    class MastaWranglaGlix : BasicGunbad
+    internal class MastaWranglaGlix : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -38,7 +38,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
 
             Obj.EvtInterface.AddEvent(SpawnTrolls, 100, 1);
             //Obj.EvtInterface.AddEvent(MatureTrolls, 20 * 1000, 0);
-            Obj.EvtInterface.AddEvent(SpawnTrolls, 35 * 1000 , 0);
+            Obj.EvtInterface.AddEvent(SpawnTrolls, 35 * 1000, 0);
 
             return false;
         }
@@ -54,7 +54,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
                 c.EvtInterface.AddEvent(SpawnAdds, 100, 1, prms);
             }
             else
-            { 
+            {
                 //c.EvtInterface.RemoveEvent(MatureTrolls);
                 c.EvtInterface.RemoveEvent(SpawnTrolls);
             }
@@ -118,7 +118,6 @@ namespace WorldServer.World.Objects.Instances.Gunbad
             }
             else if (c.Health < c.TotalHealth * 0.6 && Stage < 2 && !c.IsDead)
             {
-
                 c.EvtInterface.RemoveEvent(SpawnTrolls);
                 c.EvtInterface.RemoveEvent(SpawnTrolls);
                 c.EvtInterface.RemoveEvent(SayStuff);
@@ -164,9 +163,11 @@ namespace WorldServer.World.Objects.Instances.Gunbad
                     case 1:
                         c.Say("Git 'ere! Take 'em! Eat 'em!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
                         break;
+
                     case 2:
                         c.Say("Dose gits ain't nuffink! Get 'em, trolls!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
                         break;
+
                     case 3:
                         c.Say("“Now youse jus' makin' me mad!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
                         break;
@@ -218,7 +219,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
             c.EvtInterface.RemoveEvent(SpawnTrolls);
 
             c.EvtInterface.RemoveEvent(SpawnAdultTrolls);
-            c.EvtInterface.RemoveEvent(SpawnAdultTrolls); 
+            c.EvtInterface.RemoveEvent(SpawnAdultTrolls);
 
             foreach (Creature crea in addList)
                 crea.Destroy();
@@ -238,7 +239,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 2000881, 0)]
-    class GlixYoungTroll : BasicGunbad
+    internal class GlixYoungTroll : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -260,12 +261,12 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 2000882, 0)]
-    class GlixAdultTroll : BasicGunbad
+    internal class GlixAdultTroll : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
             this.Obj = Obj;
-            Obj.EvtInterface.AddEvent(SetRandomTarget, 200 + random.Next(100,201), 1);
+            Obj.EvtInterface.AddEvent(SetRandomTarget, 200 + random.Next(100, 201), 1);
         }
     }
 }

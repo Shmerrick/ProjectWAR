@@ -1,5 +1,5 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -7,7 +7,7 @@ namespace Common
     [Serializable]
     public class ScenarioDurationRecord : DataObject
     {
-        [PrimaryKey(AutoIncrement=true)]
+        [PrimaryKey(AutoIncrement = true)]
         public int Guid { get; set; }
 
         [DataElement]

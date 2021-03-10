@@ -5,7 +5,7 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Abilities.CareerInterfaces
 {
-    public class CareerInterface_AMShaman: CareerInterface
+    public class CareerInterface_AMShaman : CareerInterface
     {
         private readonly ushort _damageBuffID; //, _tranqID;
         private const byte _healMax = 10, _damageMax = 5;
@@ -31,7 +31,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
         public override void Notify_PlayerLoaded()
         {
-            PacketOut Out = new PacketOut((byte) Opcodes.F_INIT_EFFECTS, 48);
+            PacketOut Out = new PacketOut((byte)Opcodes.F_INIT_EFFECTS, 48);
             Out.WriteByte(1);
             Out.WriteByte(1);
             Out.WriteUInt16(0);
@@ -43,12 +43,12 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             else Out.WriteUInt16R(267); // 263 for shammy
             Out.WriteHexStringBytes("E4EECC02");
             Out.WriteUInt16R(myPlayer.Oid);
-            
+
             // Buff Lines
             Out.WriteByte(10);
 
             for (int i = 0; i < 5; ++i)
-            { 
+            {
                 Out.WriteByte((byte)i);
                 if (ExperimentalMode)
                     Out.WriteZigZag(-40);
@@ -79,22 +79,21 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             _lastResource = _careerResource;
 
             // Consume one
-            
-            
+
             if (_careerResource > _healMin)
                 --_careerResource;
             else if (_careerResource == _healMin)
                 _careerResource = _damageMin;
             else
                 ++_careerResource;
-            
+
             /*
             // Consume all
-            
+
             if (_careerResource > _damageMax)
                 _careerResource = _damageMin;
             else _careerResource++;
-            
+
             */
             SendResource();
             return true;
@@ -108,7 +107,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                 return true; // AM / Shaman resource is non-blocking
             _lastResource = _careerResource;
 
-            
             //consume one
             if (_careerResource <= _damageMin)
                 _careerResource = _healMin;
@@ -121,7 +119,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             if (_careerResource <= _damageMax)
                 _careerResource = _healMin;
             else _careerResource++;
-            
+
             */
             SendResource();
             return true;

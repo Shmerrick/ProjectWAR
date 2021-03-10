@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -109,14 +105,14 @@ namespace Common
             get { return _RenownContributed; }
             set { _RenownContributed = value; Dirty = true; }
         }
-        
+
         [DataElement(AllowDbNull = false)]
         public byte Tithe
         {
             get { return _Tithe; }
             set { _Tithe = value; Dirty = true; }
         }
-        
+
         [DataElement(AllowDbNull = false)]
         public ulong TitheContributed
         {

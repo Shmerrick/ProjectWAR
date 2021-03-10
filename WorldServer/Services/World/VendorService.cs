@@ -22,7 +22,7 @@ namespace WorldServer.Services.World
                 Vendors.AddRange(IVendors);
 
                 _newVendors.Add(id, Vendors);
-                // commenting out this next line as it does not seem to be used... 
+                // commenting out this next line as it does not seem to be used...
                 //  Item_Info Req;
                 foreach (Vendor_items Info in Vendors.ToArray())
                 {

@@ -53,9 +53,6 @@ namespace WorldServer.World.Battlefronts.Bounty
             ZoneLockRewardDistributor = new ZoneLockRewardDistributor(new RandomGenerator(), RVRZoneRewardService.RVRZoneLockRewards);
         }
 
-
-
-
         /// <summary>
         /// Determine which players should get insignias for impact.
         /// </summary>
@@ -95,7 +92,6 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             return resultDictionary;
         }
-
 
         private float CalculateImpactFraction(float impactValue, float totalImpact)
         {
@@ -278,7 +274,6 @@ namespace WorldServer.World.Battlefronts.Bounty
             }
 
             RewardLogger.Info($"=============== FINISHED : {victim.Name} killed by {killer.Name}. ===============");
-
         }
 
         public uint GetPlayerRVRDropCandidate(ConcurrentDictionary<uint, float> impactFractions, int forceSelectedInstance = -1)
@@ -305,7 +300,6 @@ namespace WorldServer.World.Battlefronts.Bounty
                     Logger.Debug($"{e.Message} {e.StackTrace}. Selected Instance {selectedInstance} Count {minimumImpactCharacterList.Count}");
                     return 0;
                 }
-
             }
             else
             {
@@ -341,15 +335,13 @@ namespace WorldServer.World.Battlefronts.Bounty
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="playerToBeRewarded"></param>
         /// <param name="victim"></param>
         /// <returns></returns>
         private float CalculateRacialInfluenceModifier(Player playerToBeRewarded, Player victim)
         {
-
-
             //if (playerToBeRewarded.Info.CareerLine == )
             //CAREERLINE_IRON_BREAKER = 1,
             //CAREERLINE_SLAYER = 2,
@@ -381,9 +373,9 @@ namespace WorldServer.World.Battlefronts.Bounty
             //CAREERLINE_DISCIPLE = 23,
             //CAREERLINE_SORCERER = 24,
 
-            //var pairing = 
+            //var pairing =
 
-            //if (playerToBeRewarded.Zone.Info.Pairing == 
+            //if (playerToBeRewarded.Zone.Info.Pairing ==
 
             return 1f;
         }
@@ -454,11 +446,10 @@ namespace WorldServer.World.Battlefronts.Bounty
         }
 
         /// <summary>
-        /// The killer is the player that performed the deathblow. 
+        /// The killer is the player that performed the deathblow.
         /// </summary>
         private void DistributeDeathBlowContributionForPlayerKill(Player killer, string victimName)
         {
-
             RewardLogger.Info($"++ Death Blow contribution given to {killer.Name} ({killer.CharacterId}) for DB to {victimName}");
 
             killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PLAYER_KILL_DEATHBLOW);
@@ -494,7 +485,6 @@ namespace WorldServer.World.Battlefronts.Bounty
             List<Player> allPlayersInZone,
             List<RVRKeepLockReward> rvrKeepRewards)
         {
-
             // Distribute rewards to losing players with eligibility - halve rewards.
             foreach (var losingRealmPlayer in eligibleLosingRealmPlayers)
             {
@@ -561,7 +551,6 @@ namespace WorldServer.World.Battlefronts.Bounty
             return (double)value / (double)maximumContribution;
         }
 
-
         /// <summary>
         /// Distribute rewards for a group involved in a player kill
         /// </summary>
@@ -609,9 +598,9 @@ namespace WorldServer.World.Battlefronts.Bounty
                 killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.PLAYER_KILL_ASSIST_ON_BO);
             }
         }
+
         private void DistributeBaseRewardsForPlayerKill(Player killer, int money, int scaledRenownPoints, int baseRenownPoints, int influence, string description, int xp, int influenceId)
         {
-
             killer.AddXp((uint)((uint)xp), true, true);
             // AAO is applied within this method
             killer.AddRenown((uint)baseRenownPoints + (uint)scaledRenownPoints, true, RewardType.None, description);
@@ -624,12 +613,10 @@ namespace WorldServer.World.Battlefronts.Bounty
                                $"INF : {influence} ";
 
             RewardLogger.Info(logMessage);
-
-
         }
 
         /// <summary>
-        /// The killer has killed a realm captain. 
+        /// The killer has killed a realm captain.
         /// </summary>
         /// <param name="player"></param>
         /// <param name="killer"></param>
@@ -638,7 +625,6 @@ namespace WorldServer.World.Battlefronts.Bounty
         public void RealmCaptainKill(Player victim, Player killer, ushort influenceId, Dictionary<uint, Player> playersByCharId)
         {
             RewardLogger.Info($"Death Blow rewards given to {killer.Name} ({killer.CharacterId}) for realm captain kill");
-
 
             if (killer.PriorityGroup != null)
             {
@@ -678,7 +664,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             var rand = 0;
 
-            //In a scenario, leave. 
+            //In a scenario, leave.
             if (killer.ScnInterface.Scenario != null)
                 return;
 
@@ -720,7 +706,6 @@ namespace WorldServer.World.Battlefronts.Bounty
                 //    new Point3D(victim.WorldPosition.X, victim.WorldPosition.Y, victim.WorldPosition.Z),
                 //    (ushort)victim.ZoneId, false);
 
-
                 //var generatedLootBag =KeepLockRewardDistributor.BuildChestLootBag(LootBagRarity.Gold, availableGearDrop.ItemId, killer);
 
                 //lootChest.Add(killer.CharacterId, generatedLootBag);
@@ -743,9 +728,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 killer.SendClientMessage($"You have been awarded an item of rare worth from {victim.Name} - {item.Name}", ChatLogFilters.CHATLOGFILTERS_LOOT);
 
                 return;
-
             }
-
         }
 
         private void RecordPlayerKillRewardHistory(Player killer, Player victim, uint itemId)
@@ -773,7 +756,6 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
                 RewardLogger.Error($"{e.Message} {e.StackTrace}");
             }
-
         }
 
         private bool ItemExistsForPlayer(uint itemId, List<uint> playerItemList)
@@ -808,7 +790,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                     Logger.Debug($"{e.Message})");
                 }
             }
-            // The number of bags to award is based upon the number of eligible players. 
+            // The number of bags to award is based upon the number of eligible players.
             numberOfBagsToAward = rewardAssigner.GetNumberOfBagsToAward(forceNumberBags, sortedPairs);
             // forceDropChance should alter the number of bags dropped.
             numberOfBagsToAward = (int)Math.Ceiling(numberOfBagsToAward * (forceDropChance / 100f));
@@ -873,9 +855,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             }
 
             return rewardAssigner.AssignLootToPlayers(numberOfBagsToAward, bagDefinitions, sortedPairs, bagBonusCharacters, randomRollList, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y" });
-
         }
-
 
         public void GenerateKeepTakeLootBags(
             ILogger logger,
@@ -910,7 +890,6 @@ namespace WorldServer.World.Battlefronts.Bounty
                 var applicableZones = ZoneService._Zone_Info.Where(x => x.Pairing == zone.Pairing).Select(y => y.ZoneId);
                 var leadInZones = String.Join(",", applicableZones);
                 logger.Warn("Lead In Zones : " + leadInZones);
-
 
                 var additionalBags = CalculateAdditionalBagsDueToKills(playersKilledInRange, Program.Config.AdditionalBagKillCountStep);
                 logger.Debug($"Additional Bags is now {additionalBags} - kill count");
@@ -1016,7 +995,6 @@ namespace WorldServer.World.Battlefronts.Bounty
                                 characterBagBonus = ResetBagBonus(assignedPlayer, generatedLootBag.Key, characterBagBonus);
                                 bagBonus[assignedPlayer] = characterBagBonus.Value;
                                 assignedPlayer.SendClientMessage($"For your efforts, you have received a {generatedLootBag.Key.Name}. Pick up your rewards at your Warcamp.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-
                             }
                             else
                             {
@@ -1028,7 +1006,6 @@ namespace WorldServer.World.Battlefronts.Bounty
                             logger.Warn($"Could not locate player {reward.Assignee} {e.Message} {e.StackTrace}");
                             continue;
                         }
-
                     }
                 }
 
@@ -1054,8 +1031,6 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
                 logger.Warn($"Unexpectedexception {zoneId} {keep.KeepId} {e.Message} {e.StackTrace}");
             }
-
-
         }
 
         public int CalculateAdditionalBagsDueToEnemyRatio(int winningEligiblePlayers, int losingEligiblePlayers, WorldConfigs config)
@@ -1084,7 +1059,6 @@ namespace WorldServer.World.Battlefronts.Bounty
             return (int)Math.Floor(playersKilledInRange / divisor);
         }
 
-
         /// <summary>
         /// Bag assigned to player, reset their bag bonus for that bag
         /// </summary>
@@ -1103,18 +1077,22 @@ namespace WorldServer.World.Battlefronts.Bounty
                         bagBonus.Value.WhiteBag = 0;
                         bagDescription = "White";
                         break;
+
                     case 9941:
                         bagBonus.Value.GreenBag = 0;
                         bagDescription = "Green";
                         break;
+
                     case 9942:
                         bagBonus.Value.BlueBag = 0;
                         bagDescription = "Blue";
                         break;
+
                     case 9943:
                         bagBonus.Value.PurpleBag = 0;
                         bagDescription = "Purple";
                         break;
+
                     case 9980:
                         bagBonus.Value.GoldBag = 0;
                         bagDescription = "Gold";
@@ -1123,7 +1101,6 @@ namespace WorldServer.World.Battlefronts.Bounty
                 bagBonus.Value.Timestamp = DateTime.UtcNow;
 
                 Logger.Debug($"Resetting bag bonus for {item.Entry} {bagDescription} ({player.CharacterId}). {bagBonus.Value.ToString()} {bagBonus.Value.Timestamp.ToShortDateString()}");
-
             }
 
             return bagBonus;
@@ -1172,11 +1149,8 @@ namespace WorldServer.World.Battlefronts.Bounty
             return bonus;
         }
 
-
-
         private void RecordKeepTakeRewardHistory(ILogger logger, Player assignedPlayer, KeyValuePair<Item_Info, List<Talisman>> generatedLootBag, Realms lockingRealm, Keep_Info keep)
         {
-
             logger.Debug($"Recording zone lock bag reward history for {assignedPlayer.Name} ({assignedPlayer.CharacterId}) {generatedLootBag.Key.Name}");
             try
             {
@@ -1249,7 +1223,6 @@ namespace WorldServer.World.Battlefronts.Bounty
             }
         }
 
-
         public void MailItem(uint keyCharacterId, Item_Info itemToSend, int count, string senderName, string title = "", string content = "mail")
         {
             try
@@ -1284,7 +1257,6 @@ namespace WorldServer.World.Battlefronts.Bounty
             {
                 Logger.Warn($"{keyCharacterId} :: {e.Message} {e.StackTrace}");
             }
-
         }
 
         /// <summary>
@@ -1302,7 +1274,6 @@ namespace WorldServer.World.Battlefronts.Bounty
             ConcurrentDictionary<Player, int> losingEligiblePlayers, int forceNumberBags, string leadinZones,
             int additionalBags)
         {
-
             Logger.Info($"*** Generating WINNING REALM rewards for {winningEligiblePlayers.Count} players ***");
             var rewardAssignments = GenerateBagDropAssignments(winningEligiblePlayers, forceNumberBags, leadinZones, additionalBags, 100);
             Logger.Info($"*** Generating LOSING REALM rewards for {losingEligiblePlayers.Count} players ***");
@@ -1388,7 +1359,4 @@ namespace WorldServer.World.Battlefronts.Bounty
             }
         }
     }
-
-
-
 }

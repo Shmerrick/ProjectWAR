@@ -1,10 +1,10 @@
-﻿using System;
+﻿using FrameWork;
+using GameData;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using FrameWork;
-using GameData;
-using NLog;
 using WorldServer.Managers.Commands;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities.Buffs;
@@ -95,7 +95,7 @@ namespace WorldServer.World.Abilities
                 CancelPendingCast();
                 return false;
             }
-                
+
             if (result == 2)
             {
                 _abInterface.SetGlobalCooldown();
@@ -138,7 +138,7 @@ namespace WorldServer.World.Abilities
                 {
                     if (_pendingInfo.SpecialCost > 0)
                     {
-                        if (!plr.CrrInterface.HasResource((byte) _pendingInfo.SpecialCost))
+                        if (!plr.CrrInterface.HasResource((byte)_pendingInfo.SpecialCost))
                         {
                             CancelPendingCast();
                             return false;
@@ -172,10 +172,8 @@ namespace WorldServer.World.Abilities
 
                 if (abInfo.VFXTarget.Contains("Self"))
                     temp = (_caster as Player).Name;
-
                 else if (abInfo.VFXTarget.Contains("Hostile") && (_caster as Player).CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY) != null)
                     temp = (_caster as Player).CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ENEMY).Name;
-
                 else if (abInfo.VFXTarget.Contains("Friendly") && (_caster as Player).CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ALLY) != null)
                     temp = (_caster as Player).CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ALLY).Name;
 
@@ -193,7 +191,6 @@ namespace WorldServer.World.Abilities
 
                 if (abInfo.VFXTarget.Contains("aoe"))
                     temp += " " + abInfo.VFXTarget.Remove(0, abInfo.VFXTarget.IndexOf(' ') + 1);
-
 
                 List<string> paramValue = temp.Split(' ').ToList();
                 if (Regex.IsMatch(paramValue[0], @"^[a-zA-Z]+$"))
@@ -325,16 +322,15 @@ namespace WorldServer.World.Abilities
             {
                 if (plr.StealthLevel > 0 && _pendingInfo.ConstantInfo.StealthInteraction == AbilityStealthType.Block)
                     return false;
-            
+
                 if (_pendingInfo.SpecialCost != 0)
                 {
                     if (_pendingInfo.SpecialCost > 0)
                     {
-                        if (!plr.CrrInterface.HasResource((byte) _pendingInfo.SpecialCost))
+                        if (!plr.CrrInterface.HasResource((byte)_pendingInfo.SpecialCost))
                             return false;
                     }
-
-                    else if (plr.MoraleLevel < -_pendingInfo.SpecialCost || !_abInterface.IsValidMorale(_pendingInfo.Entry, (byte) (-_pendingInfo.SpecialCost)))
+                    else if (plr.MoraleLevel < -_pendingInfo.SpecialCost || !_abInterface.IsValidMorale(_pendingInfo.Entry, (byte)(-_pendingInfo.SpecialCost)))
                         return false;
                 }
             }
@@ -451,9 +447,10 @@ namespace WorldServer.World.Abilities
             _caster.DispatchPacket(Out, true);
         }
 
-        #endregion
+        #endregion Initialization
 
         #region Modification
+
         /// <summary>
         /// Identifies target of an ability before it is casted and checks its validity (pvp flag, visibility...).
         /// </summary>
@@ -472,17 +469,18 @@ namespace WorldServer.World.Abilities
 
             if (_pendingInfo.TargetType == CommandTargetTypes.SiegeCannon)
             {
-                _pendingInfo.Target = ((Creature) _caster).SiegeInterface.BuildTargetList(instigator);
+                _pendingInfo.Target = ((Creature)_caster).SiegeInterface.BuildTargetList(instigator);
                 return true;
             }
 
-            CommandTargetTypes selectType = (CommandTargetTypes) ((int) _pendingInfo.TargetType & 7);
+            CommandTargetTypes selectType = (CommandTargetTypes)((int)_pendingInfo.TargetType & 7);
 
             switch (selectType)
             {
                 case CommandTargetTypes.Caster:
                     _pendingInfo.Target = _caster;
                     break;
+
                 case CommandTargetTypes.Ally:
                     if (!allyVisible)
                         return false;
@@ -514,7 +512,7 @@ namespace WorldServer.World.Abilities
                             return false;
                         }
                     }
-                   
+
                     if (_pendingInfo.Target != _caster)
                     {
                         if (_pendingInfo.TargetType.HasFlag(CommandTargetTypes.Groupmates))
@@ -530,7 +528,7 @@ namespace WorldServer.World.Abilities
                     if (!allyVisible)
                         return false;
                     _pendingInfo.Target = _caster.CbtInterface.GetTarget(TargetTypes.TARGETTYPES_TARGET_ALLY);
-                  
+
                     if (!CombatInterface.IsFriend(_caster, _pendingInfo.Target) || _pendingInfo.Target != null && (_pendingInfo.Target is Creature && !(_pendingInfo.Target is Pet)))
                         return false;
                     if (_pendingInfo.Target != null && _pendingInfo.Target != _caster)
@@ -550,7 +548,7 @@ namespace WorldServer.World.Abilities
                         if (petCareerPlr != null)
                             _pendingInfo.Target = petCareerPlr.CrrInterface.GetTargetOfInterest();
 
-                        if(_pendingInfo.Target == null || _pendingInfo.Target == _caster)
+                        if (_pendingInfo.Target == null || _pendingInfo.Target == _caster)
                         {
                             _pendingInfo.Target = null;
                             return false;
@@ -576,7 +574,7 @@ namespace WorldServer.World.Abilities
                     }
 
                     Player plrTarget = _pendingInfo.Target as Player;
-                    
+
                     if (plrTarget != null && plrTarget.Palisade != null && (plrTarget.Palisade.IsObjectInFront(_caster, 180) ^ plrTarget.Palisade.IsObjectInFront(plrTarget, 180)))
                         _pendingInfo.Target = plrTarget.Palisade;
 
@@ -647,7 +645,7 @@ namespace WorldServer.World.Abilities
                 return 0;
 
             if (_caster is Player)
-                ((Player) _caster).TacInterface.ModifyInitials(_pendingInfo);
+                ((Player)_caster).TacInterface.ModifyInitials(_pendingInfo);
             _caster.StsInterface.ModifyAbilityVolatiles(_pendingInfo);
             return 0;
         }
@@ -668,7 +666,7 @@ namespace WorldServer.World.Abilities
                         {
                             if (result > 1)
                             {
-                                _abInterface.SetCooldown(AbInfo.ConstantInfo.CooldownEntry != 0 ? AbInfo.ConstantInfo.CooldownEntry : AbInfo.Entry, AbInfo.Cooldown*1000);
+                                _abInterface.SetCooldown(AbInfo.ConstantInfo.CooldownEntry != 0 ? AbInfo.ConstantInfo.CooldownEntry : AbInfo.Entry, AbInfo.Cooldown * 1000);
                                 _abInterface.SetGlobalCooldown();
                             }
 
@@ -687,7 +685,7 @@ namespace WorldServer.World.Abilities
             return true;
         }
 
-        #endregion
+        #endregion Modification
 
         #region Tick
 
@@ -707,7 +705,7 @@ namespace WorldServer.World.Abilities
                 _channelHandler.Update(tick);
                 return;
             }
-            if (_shouldCheckRange && tick >= _castStartTime + (long)(AbInfo.CastTime*0.6f))
+            if (_shouldCheckRange && tick >= _castStartTime + (long)(AbInfo.CastTime * 0.6f))
             {
                 _shouldCheckRange = false;
 
@@ -715,16 +713,15 @@ namespace WorldServer.World.Abilities
 
                 if (abRange > AbInfo.Range)
                 {
-                    CancelCast((byte) AbilityResult.ABILITYRESULT_OUTOFRANGE);
+                    CancelCast((byte)AbilityResult.ABILITYRESULT_OUTOFRANGE);
                     return;
                 }
 
                 if (abRange < AbInfo.MinRange)
                 {
-                    CancelCast((byte) AbilityResult.ABILITYRESULT_TOOCLOSE);
+                    CancelCast((byte)AbilityResult.ABILITYRESULT_TOOCLOSE);
                     return;
                 }
-
             }
             if (tick >= _castStartTime + AbInfo.CastTime)
                 Cast();
@@ -742,7 +739,8 @@ namespace WorldServer.World.Abilities
             if (AbInfo != null && _caster.BlockedByCC(AbInfo.ConstantInfo))
                 _failureCode = 1;
         }
-        #endregion
+
+        #endregion Tick
 
         #region Channelling
 
@@ -752,7 +750,7 @@ namespace WorldServer.World.Abilities
             Clear();
         }
 
-        #endregion
+        #endregion Channelling
 
         #region Setback
 
@@ -815,7 +813,8 @@ namespace WorldServer.World.Abilities
 
             plr.SendPacket(Out);
         }
-        #endregion
+
+        #endregion Setback
 
         #region Cancellation
 
@@ -862,9 +861,9 @@ namespace WorldServer.World.Abilities
                 Out.WriteUInt16(0);
                 Out.Fill(0, 4);
                 if (_caster is Pet)
-                    ((Pet) _caster).Owner.SendPacket(Out);
+                    ((Pet)_caster).Owner.SendPacket(Out);
                 else if (_caster is Player)
-                    ((Player) _caster).SendPacket(Out);
+                    ((Player)_caster).SendPacket(Out);
             }
 
             if (_pendingInfo.SpecialCost < 0)
@@ -921,10 +920,9 @@ namespace WorldServer.World.Abilities
 
                 _channelHandler.Interrupt();
             }
-
             else
             {
-                if (failCode == (ushort) AbilityResult.ABILITYRESULT_NOTVISIBLECLIENT && (TCPManager.GetTimeStampMS() - _castStartTime) > AbInfo.CastTime*0.75f)
+                if (failCode == (ushort)AbilityResult.ABILITYRESULT_NOTVISIBLECLIENT && (TCPManager.GetTimeStampMS() - _castStartTime) > AbInfo.CastTime * 0.75f)
                     return;
 
                 // Interruptions on spells with a cast time reset the GCD
@@ -963,10 +961,10 @@ namespace WorldServer.World.Abilities
             // Seems to be sent on forced interrupts and on instant cast ability completion.
             if (force)
             {
-                Out = new PacketOut((byte) Opcodes.F_UPDATE_STATE, 10);
+                Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
 
                 Out.WriteUInt16(_caster.Oid);
-                Out.WriteByte((byte) StateOpcode.CastCompletion);
+                Out.WriteByte((byte)StateOpcode.CastCompletion);
                 Out.WriteUInt16(0);
                 Out.WriteByte(0);
                 Out.WriteUInt16(AbInfo.Entry);
@@ -978,7 +976,8 @@ namespace WorldServer.World.Abilities
 
             Clear();
         }
-        #endregion
+
+        #endregion Cancellation
 
         #region Cast
 
@@ -992,7 +991,6 @@ namespace WorldServer.World.Abilities
                     myResult = AbilityResult.ABILITYRESULT_ILLEGALTARGET_DEAD;
                 else if (!AbInfo.Target.IsDead && AbInfo.ConstantInfo.AffectsDead)
                     myResult = AbilityResult.ABILITYRESULT_ILLEGALTARGET_NOT_DEAD_ALLY;
-
                 else if (AbInfo.Target != _caster)
                 {
                     if (AbInfo.ConstantInfo.CastAngle != 0 && _caster.IsMoving && !_caster.IsObjectInFront(AbInfo.Target, AbInfo.ConstantInfo.CastAngle))
@@ -1031,10 +1029,9 @@ namespace WorldServer.World.Abilities
 
         private void Cast()
         {
-
             if (!AllowCast())
                 return;
-            
+
             if (ModifyFinals())
             {
                 _inCastCompletion = true;
@@ -1051,7 +1048,7 @@ namespace WorldServer.World.Abilities
 
                     AbInfo.InvocationTimestamp = TCPManager.GetTimeStampMS() + abEffectDelay + 150;
                 }
-                
+
                 _abEffectInvoker.StartEffects(AbInfo);
 
                 ApplyCooldown();
@@ -1068,7 +1065,7 @@ namespace WorldServer.World.Abilities
         // which gives some LOS information.
         private void SendProjectileFlightTime(ushort flightTimeMs)
         {
-            flightTimeMs = (ushort) (flightTimeMs*AbInfo.FlightTimeMod);
+            flightTimeMs = (ushort)(flightTimeMs * AbInfo.FlightTimeMod);
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_USE_ABILITY, 20);
 
@@ -1114,7 +1111,7 @@ namespace WorldServer.World.Abilities
             _abInterface._Owner.DispatchPacket(Out, true);
 
             if (AbInfo.CastTime == 0)
-            //if (AbInfo.ConstantInfo.ChannelID == 0)
+                //if (AbInfo.ConstantInfo.ChannelID == 0)
                 _caster.SendUpdateState((byte)StateOpcode.CastCompletion, 0);
         }
 
@@ -1129,7 +1126,6 @@ namespace WorldServer.World.Abilities
                     else
                         _abInterface.SetItemCooldown(AbInfo.Entry, AbInfo.Cooldown);
                 }
-
                 else _abInterface.SetCooldown(AbInfo.ConstantInfo.CooldownEntry != 0 ? AbInfo.ConstantInfo.CooldownEntry : AbInfo.Entry, AbInfo.Cooldown * 1000);
             }
 
@@ -1152,7 +1148,7 @@ namespace WorldServer.World.Abilities
             }
         }
 
-        #endregion
+        #endregion Cast
 
         #region Cast At Pos
 
@@ -1218,6 +1214,6 @@ namespace WorldServer.World.Abilities
             Clear();
         }
 
-        #endregion
+        #endregion Cast At Pos
     }
 }

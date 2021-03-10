@@ -1,5 +1,5 @@
-﻿using SystemData;
-using FrameWork;
+﻿using FrameWork;
+using SystemData;
 using WorldServer.World.Objects;
 
 namespace WorldServer.NetWork.Handler
@@ -22,8 +22,9 @@ namespace WorldServer.NetWork.Handler
             {
                 case 7: // World Groups
                     {
+                    }
+                    break;
 
-                    } break;
                 case 8:
                     {
                         packet.Skip(1);
@@ -49,22 +50,27 @@ namespace WorldServer.NetWork.Handler
                         byte MaxLevel = packet.GetUint8();
 
                         Plr.SocInterface.SendPlayers(Player.GetPlayers(Name, GuildName, Career, ZoneId, MinLevel, MaxLevel, cclient.Plr), Plr.GmLevel != 0); //cant hide location/details from gm
+                    }
+                    break;
 
-                    } break;
                 case 11: // Inspection
                     {
                         Player Target = Plr.CbtInterface.GetTarget(GameData.TargetTypes.TARGETTYPES_TARGET_ALLY) as Player;
                         if (Target == null)
                             Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, GameData.Localized_text.TEXT_SN_LISTS_ERR_PLAYER_NOT_FOUND);
-                        else if(!Target.Info.Anonymous || Plr.GmLevel > 1) //do not allow inspect of anonymous players, unless by gm
+                        else if (!Target.Info.Anonymous || Plr.GmLevel > 1) //do not allow inspect of anonymous players, unless by gm
                             Target.ItmInterface.SendInspect(Plr);
                         else
                             Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, GameData.Localized_text.TEXT_UNABLE_TO_INSPECT_PLAYER_EQUIP);
-                    } break;
+                    }
+                    break;
+
                 case 13: // Nearby Groups
                     {
                         Group.SendWorldGroups(Plr);
-                    } break;
+                    }
+                    break;
+
                 case 18: // AFK
                     {
                         packet.Skip(1);

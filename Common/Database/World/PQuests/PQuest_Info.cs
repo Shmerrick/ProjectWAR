@@ -1,9 +1,6 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using FrameWork;
 
 namespace Common
 {
@@ -14,7 +11,7 @@ namespace Common
         [PrimaryKey]
         public uint Entry { get; set; }
 
-        [DataElement(Varchar=255,AllowDbNull=false)]
+        [DataElement(Varchar = 255, AllowDbNull = false)]
         public string Name { get; set; }
 
         [DataElement(AllowDbNull = false)]
@@ -76,8 +73,6 @@ namespace Common
 
         [DataElement(AllowDbNull = false)]
         public uint RespawnID { get; set; }
-
-
 
         public List<PQuest_Objective> Objectives;
     }

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
@@ -26,6 +26,7 @@ namespace WorldServer.World.Objects
         public byte Respawn = 1;
 
         private byte _vfxState; // This doesn't just handle doors. It can change the object's physical state in other ways too (scenario glows around domination objectives have 3 states)
+
         public byte VfxState
         {
             get
@@ -46,7 +47,6 @@ namespace WorldServer.World.Objects
         public GameObject()
             : base()
         {
-
         }
 
         public GameObject(GameObject_spawn spawn)
@@ -164,7 +164,7 @@ namespace WorldServer.World.Objects
                 flags |= 4; // Interactable
             }
 
-            if(Flags.HasValue)
+            if (Flags.HasValue)
                 Out.WriteUInt16(Flags.Value);
             else
                 Out.WriteUInt16((ushort)flags);
@@ -194,6 +194,7 @@ namespace WorldServer.World.Objects
         #region Interaction
 
         private bool _interactable;
+
         public bool Interactable
         {
             get { return _interactable; }
@@ -209,6 +210,7 @@ namespace WorldServer.World.Objects
         }
 
         private byte _interactState;
+
         public byte InteractState
         {
             get
@@ -243,7 +245,6 @@ namespace WorldServer.World.Objects
 
             if (CaptureDuration > 0)
                 BeginInteraction(player);
-
             else
             {
                 HandleInteractionEvents(player);
@@ -254,7 +255,7 @@ namespace WorldServer.World.Objects
                 {
                     case 242:
                     case 511:       // Inside hunters vale portal  // vale vine
-                    case 99891:     // Hardcoded portal for Thanquil's incursion 
+                    case 99891:     // Hardcoded portal for Thanquil's incursion
                     case 100132:
                     case 99667:
                     case 98845:
@@ -269,7 +270,7 @@ namespace WorldServer.World.Objects
                     case 100612:
                         ZoneJump(player);
                         return;
-                        
+
                     case 98878:     // Hardcoded portal for Gunbad
                         ZoneJump(player, 60);
                         return;
@@ -280,7 +281,6 @@ namespace WorldServer.World.Objects
                     if (VfxState == 0)
                         OpenDoor(true);
                 }
-
                 else
                 {
                     Region?.Scenario?.Interact(this, player, menu);
@@ -315,10 +315,10 @@ namespace WorldServer.World.Objects
             pq?.HandleEvent(player, Objective_Type.QUEST_USE_GO, Spawn.Entry, 1, 50);
 
             if (Spawn.Proto.TokUnlock != null && Spawn.Proto.TokUnlock.Length > 1 && IsAttackable == 0)
-            { 
+            {
                 player.TokInterface.AddToks(Spawn.Proto.TokUnlock);
 
-                // This check if the GO we clicked is a Door - if it is we don't want to mess with its 
+                // This check if the GO we clicked is a Door - if it is we don't want to mess with its
                 // VFXState because we can break it
                 if (this.Spawn.DoorId == 0)
                 {
@@ -330,10 +330,10 @@ namespace WorldServer.World.Objects
             }
 
             if (Spawn.TokUnlock != null && Spawn.TokUnlock.Length > 1 && IsAttackable == 0)
-            { 
+            {
                 player.TokInterface.AddToks(Spawn.TokUnlock);
-                
-                // This check if the GO we clicked is a Door - if it is we don't want to mess with its 
+
+                // This check if the GO we clicked is a Door - if it is we don't want to mess with its
                 // VFXState because we can break it
                 if (this.Spawn.DoorId == 0)
                 {
@@ -408,7 +408,6 @@ namespace WorldServer.World.Objects
                         }
                     }
                 }
-                
             }
         }
 
@@ -454,15 +453,15 @@ namespace WorldServer.World.Objects
                     var prms = new List<object>() { c, Spawn.Proto.CreatureSpawnText };
 
                     if (!String.IsNullOrEmpty(this.Spawn.Proto.CreatureSpawnText)) // It is possible to allow the GO to say something after the NPCs spawned
-                        //if (c != null)
-                            EvtInterface.AddEvent(DelayedSay, 500, 1, prms);
-                            //c.Say(this.Spawn.Proto.CreatureSpawnText, ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+                                                                                   //if (c != null)
+                        EvtInterface.AddEvent(DelayedSay, 500, 1, prms);
+                    //c.Say(this.Spawn.Proto.CreatureSpawnText, ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
                 }
 
                 /*if (!String.IsNullOrEmpty(this.Spawn.Proto.CreatureSpawnText)) // It is possible to allow the GO to say something after the NPCs spawned
                     this.Say(this.Spawn.Proto.CreatureSpawnText, ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);*/
 
-                // This check if the GO we clicked is a Door - if it is we don't want to mess with its 
+                // This check if the GO we clicked is a Door - if it is we don't want to mess with its
                 // VFXState because we can break it
                 if (this.Spawn.DoorId == 0)
                 {
@@ -511,7 +510,7 @@ namespace WorldServer.World.Objects
             base.NotifyInteractionComplete(b);
         }
 
-        #endregion
+        #endregion Interaction
 
         public void UpdateVfxState(byte vfxState)
         {
@@ -573,7 +572,7 @@ namespace WorldServer.World.Objects
             {
                 killer.TokInterface.AddToks(Spawn.TokUnlock);
             }
-           CreditQuestKill(killer);
+            CreditQuestKill(killer);
         }
 
         protected void CreditQuestKill(Player killer)
@@ -606,9 +605,9 @@ namespace WorldServer.World.Objects
 
         private void ZoneJump(Player player)
         {
-            #if DEBUG
+#if DEBUG
             Log.Info("Jump", "Jump to :" + Spawn.Guid);
-            #endif
+#endif
 
             Zone_jump jump = ZoneService.GetZoneJump(Spawn.Guid);
 
@@ -624,7 +623,7 @@ namespace WorldServer.World.Objects
                     return;
                 }
             }
-            if (jump.Enabled || Utils.HasFlag(player.GmLevel, (int) EGmLevel.DatabaseDev))
+            if (jump.Enabled || Utils.HasFlag(player.GmLevel, (int)EGmLevel.DatabaseDev))
                 player.Teleport(jump.ZoneID, jump.WorldX, jump.WorldY, jump.WorldZ, jump.WorldO);
         }
 
@@ -643,16 +642,17 @@ namespace WorldServer.World.Objects
                     break;
             }
 
-            player.Teleport(ZoneId, X,Y,Z,O);
+            player.Teleport(ZoneId, X, Y, Z, O);
         }
 
-        #endregion
+        #endregion Teleport
 
         #region Loot
 
         private const int RELOOTABLE_TIME = 120000; // 2 Mins
 
         private bool _looted;
+
         public bool Looted
         {
             get { return _looted; }
@@ -666,7 +666,7 @@ namespace WorldServer.World.Objects
         }
 
         public override void TryLoot(Player player, InteractMenu menu)
-        { 
+        {
             LootContainer lootsContainer = LootsMgr.GenerateLoot(this, player, 1);
 
             if (lootsContainer != null)
@@ -689,7 +689,7 @@ namespace WorldServer.World.Objects
             Looted = false;
         }
 
-        #endregion
+        #endregion Loot
 
         #region Door
 
@@ -711,7 +711,6 @@ namespace WorldServer.World.Objects
             Out.Fill(0, 10);
             DispatchPacket(Out, false);
 
-
             if (Zone != null && Zone.Region != null && Spawn != null)
                 Occlusion.SetFixtureVisible(Spawn.DoorId, false);
 
@@ -729,21 +728,21 @@ namespace WorldServer.World.Objects
             VfxState = 0;
 
             if (Zone != null && Zone.Region != null && Spawn != null)
-                Occlusion.SetFixtureVisible(Spawn.DoorId, true); 
+                Occlusion.SetFixtureVisible(Spawn.DoorId, true);
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 20);
-                Out.WriteUInt16(Oid);
-                Out.WriteByte(6); //state
-                Out.WriteByte(0);
-                Out.WriteByte(0);
-                Out.WriteByte(8);
-                Out.WriteByte(0);
-                Out.WriteByte(0);
-                Out.Fill(0, 10);
+            Out.WriteUInt16(Oid);
+            Out.WriteByte(6); //state
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.WriteByte(8);
+            Out.WriteByte(0);
+            Out.WriteByte(0);
+            Out.Fill(0, 10);
             DispatchPacket(Out, false);
         }
 
-        #endregion
+        #endregion Door
 
         public override string ToString()
         {

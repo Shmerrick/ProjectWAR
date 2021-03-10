@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using Common;
+﻿using Common;
 using GameData;
+using System.Collections.Generic;
 
 namespace WorldServer.World.Abilities.Components
 {
     public class AbilityConstants
     {
         public AbilityConstants()
-        { 
+        {
         }
 
         public AbilityConstants(DBAbilityInfo dbObj)
@@ -20,18 +20,18 @@ namespace WorldServer.World.Abilities.Components
             MasteryTree = dbObj.MasteryTree;
             PointCost = dbObj.PointCost;
             CashCost = dbObj.CashCost;
-            AbilityType = (AbilityType) dbObj.AbilityType;
+            AbilityType = (AbilityType)dbObj.AbilityType;
             if (dbObj.Specline == "Item")
                 Origin = AbilityOrigin.AO_ITEM;
             ChannelID = dbObj.ChannelID;
             CastAngle = dbObj.CastAngle;
             EffectID = dbObj.EffectID;
-            WeaponNeeded = (WeaponRequirements) dbObj.WeaponNeeded;
+            WeaponNeeded = (WeaponRequirements)dbObj.WeaponNeeded;
             InvokeDelay = dbObj.InvokeDelay;
             EffectDelay = dbObj.EffectDelay;
             IgnoreGlobalCooldown = dbObj.IgnoreGlobalCooldown;
             AffectsDead = dbObj.AffectsDead;
-            StealthInteraction = (AbilityStealthType) dbObj.StealthInteraction;
+            StealthInteraction = (AbilityStealthType)dbObj.StealthInteraction;
             Fragile = dbObj.Fragile;
             CooldownEntry = dbObj.CooldownEntry;
             ToggleEntry = dbObj.ToggleEntry;

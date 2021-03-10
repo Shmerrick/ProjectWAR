@@ -1,11 +1,11 @@
 ﻿using Common;
-using System;
 using FrameWork;
+using System;
 using System.Collections.Generic;
 using WorldServer.World.Battlefronts.Keeps;
-using static WorldServer.Managers.Commands.GMUtils;
 using WorldServer.World.Map;
 using WorldServer.World.Objects;
+using static WorldServer.Managers.Commands.GMUtils;
 using Object = WorldServer.World.Objects.Object;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
@@ -14,7 +14,6 @@ namespace WorldServer.Managers.Commands
     /// <summary>Commands under .</summary>
     internal class InstanceCommands
     {
-           
         public static bool InISpawn(Player plr, ref List<string> values)
         {
             int entry = GetInt(ref values);
@@ -36,7 +35,6 @@ namespace WorldServer.Managers.Commands
             spawn.SpawnGroupID = (uint)spawngroup;
             spawn.ConnectedbossId = (uint)bossId;
             spawn.Realm = (byte)realm;
-
 
             WorldMgr.Database.AddObject(spawn);
 
@@ -95,30 +93,29 @@ namespace WorldServer.Managers.Commands
 
             //creatures only atm
             Object obj = GetObjectTarget(plr);
-                    if (!obj.IsCreature())
-                        return false;
-                    obj.Dispose();
+            if (!obj.IsCreature())
+                return false;
+            obj.Dispose();
 
-                    Creature_spawn spawn = obj.GetCreature().Spawn;
-                    WorldMgr.Database.DeleteObject(spawn);
+            Creature_spawn spawn = obj.GetCreature().Spawn;
+            WorldMgr.Database.DeleteObject(spawn);
 
-                    Instance_Spawn newSpawn = new Instance_Spawn();
- 
-                    newSpawn.Instance_spawns_ID = Guid.NewGuid().ToString();
-                    newSpawn.Entry = spawn.Entry;
-                    newSpawn.WorldO = (ushort)spawn.WorldO;
-                    newSpawn.WorldY = spawn.WorldY;
-                    newSpawn.WorldZ = spawn.WorldZ;
-                    newSpawn.WorldX = spawn.WorldX;
-                    newSpawn.ZoneID = (ushort)spawn.ZoneId;
-                    newSpawn.Emote = spawn.Emote;
-                    newSpawn.Level = spawn.Level;
-                    newSpawn.SpawnGroupID = (uint)spawngroup;
-                    newSpawn.ConnectedbossId = (uint)bossId;
-                    newSpawn.Realm = (byte)realm;
+            Instance_Spawn newSpawn = new Instance_Spawn();
 
+            newSpawn.Instance_spawns_ID = Guid.NewGuid().ToString();
+            newSpawn.Entry = spawn.Entry;
+            newSpawn.WorldO = (ushort)spawn.WorldO;
+            newSpawn.WorldY = spawn.WorldY;
+            newSpawn.WorldZ = spawn.WorldZ;
+            newSpawn.WorldX = spawn.WorldX;
+            newSpawn.ZoneID = (ushort)spawn.ZoneId;
+            newSpawn.Emote = spawn.Emote;
+            newSpawn.Level = spawn.Level;
+            newSpawn.SpawnGroupID = (uint)spawngroup;
+            newSpawn.ConnectedbossId = (uint)bossId;
+            newSpawn.Realm = (byte)realm;
 
-                    WorldMgr.Database.AddObject(newSpawn);
+            WorldMgr.Database.AddObject(newSpawn);
 
             return true;
         }
@@ -155,7 +152,6 @@ namespace WorldServer.Managers.Commands
             newSpawn.bossId = (uint)bossId;
             newSpawn.InstanceID = (byte)instanceid;
 
-
             WorldMgr.Database.AddObject(newSpawn);
 
             return true;
@@ -188,7 +184,6 @@ namespace WorldServer.Managers.Commands
         /// <returns>True if command was correctly handled, false if operation was canceled</returns>
         public static bool InstanceOpenDoor(Player plr, ref List<string> values)
         {
-
             int uniqueID = 0;
             int instanceId = 0;
             int open = 1;
@@ -218,8 +213,6 @@ namespace WorldServer.Managers.Commands
                                         |00 00 52 BF 67 55 BB 00 00 00 00 0E 47 61 74 65 |..R.gU......Gate|
                                         |68 6F 75 73 65 20 44 6F 6F 72 04   |............... |");
                 }
-
-
 
                 uint result = (uint)
                     (
@@ -273,7 +266,6 @@ namespace WorldServer.Managers.Commands
 
                 plr.SendClientMessage("DoorID=" + door.DoorId);
                 plr.SendClientMessage("Occlusion_Visible=" + Occlusion.GetFixtureVisible(door.DoorId));
-
             }
             return true;
         }

@@ -29,7 +29,7 @@ namespace WorldServer.World.Interfaces
 
         public bool ValidForScenario()
         {
-            Player owner = (Player) _Owner;
+            Player owner = (Player)_Owner;
 
             return owner.IsInWorld() && !owner.PendingDisposal && !owner.IsDisposed && owner.Faction != 64 && (owner.WorldGroup == null || !owner.WorldGroup.IsWarband);
         }

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
+using System;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
@@ -55,8 +50,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse.Loot
                     }
                 }
             }
-
-            
         }
     }
 }

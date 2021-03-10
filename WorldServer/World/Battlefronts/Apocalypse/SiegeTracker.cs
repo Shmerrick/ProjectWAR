@@ -29,8 +29,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             CurrentNumberSiege++;
             if (CurrentNumberSiege > MaxNumberSiege)
                 _logger.Warn($"Number of Siege now exceeds maximum!");
-
         }
+
         public void Decrement()
         {
             CurrentNumberSiege--;
@@ -45,8 +45,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 CurrentNumberSiege = 0;
                 _logger.Warn($"Number of Siege now (255)! --  setting to 0");
             }
-
         }
-
     }
 }

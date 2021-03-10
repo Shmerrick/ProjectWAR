@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using System;
+using System.Collections.Generic;
 using WorldServer.Managers;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
@@ -15,6 +15,7 @@ namespace WorldServer.World.Interfaces
     public class StatsInterface : BaseInterface
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         private class UnitStat
         {
             private List<ushort>[] _bonusStats;
@@ -24,7 +25,10 @@ namespace WorldServer.World.Interfaces
 
             private readonly StatsInterface _stsInterface;
 
-            public UnitStat(StatsInterface ownerInterface) { _stsInterface = ownerInterface; }
+            public UnitStat(StatsInterface ownerInterface)
+            {
+                _stsInterface = ownerInterface;
+            }
 
             #region Item and Talisman Bonuses
 
@@ -46,18 +50,16 @@ namespace WorldServer.World.Interfaces
             // value will be used when removing items from a player
             public void AddItemBonusStat(ushort value, ushort percentage)
             {
-                
-
                 var oldValue = _itemBonusStat;
-                _itemBonusStat += (ushort)(1+Math.Round(value/100f));
-                (_stsInterface._Owner as Player)?.SendClientMessage($"DEBUG : {oldValue}=>{oldValue*(1+(value/100f))}");
+                _itemBonusStat += (ushort)(1 + Math.Round(value / 100f));
+                (_stsInterface._Owner as Player)?.SendClientMessage($"DEBUG : {oldValue}=>{oldValue * (1 + (value / 100f))}");
             }
 
             public void RemoveItemBonusStat(ushort value, ushort percentage)
             {
                 var oldValue = _itemBonusStat;
-                _itemBonusStat -= (ushort)(1+Math.Round(value/100f));
-                (_stsInterface._Owner as Player)?.SendClientMessage($"DEBUG : {oldValue}=>{oldValue/(1+(value/100f))}");
+                _itemBonusStat -= (ushort)(1 + Math.Round(value / 100f));
+                (_stsInterface._Owner as Player)?.SendClientMessage($"DEBUG : {oldValue}=>{oldValue / (1 + (value / 100f))}");
             }
 
             public void RemoveItemBonusStat(ushort value)
@@ -65,7 +67,7 @@ namespace WorldServer.World.Interfaces
                 _itemBonusStat -= value;
             }
 
-            #endregion
+            #endregion Item and Talisman Bonuses
 
             #region Additive
 
@@ -231,7 +233,7 @@ namespace WorldServer.World.Interfaces
                 }
             }
 
-            #endregion
+            #endregion Additive
 
             #region Multiplicative
 
@@ -261,7 +263,6 @@ namespace WorldServer.World.Interfaces
                 // Tactics and Career Mechanics stack with everything
                 else if (index > 1)
                     _totalBonusMult += value;
-
                 else
                 {
                     float curFirst = _bonusPctStats[index][0];
@@ -381,10 +382,9 @@ namespace WorldServer.World.Interfaces
                 }
             }
 
-            #endregion
-
-           
+            #endregion Multiplicative
         }
+
         internal void LoadPetOverrides(List<PetStatOverride> list, object v)
         {
             throw new NotImplementedException();
@@ -414,8 +414,9 @@ namespace WorldServer.World.Interfaces
 
             base.Load();
         }*/
+
         public void Load(List<CharacterInfo_stats> stats)
-        { 
+        {
             if (IsLoad)
                 return;
 
@@ -501,7 +502,7 @@ namespace WorldServer.World.Interfaces
 
         public void SetRenownStat(Stats bonusType, ushort value)
         {
-            byte type = (byte) bonusType;
+            byte type = (byte)bonusType;
             if (!_renownStats.ContainsKey(type))
                 _renownStats.Add(type, value);
             else
@@ -537,18 +538,18 @@ namespace WorldServer.World.Interfaces
 
         private UnitStat GetUnitStat(Stats statType)
         {
-            byte type = (byte) statType;
+            byte type = (byte)statType;
 
             if (_statModifiers[type] == null)
                 _statModifiers[type] = new UnitStat(this);
             return _statModifiers[type];
         }
 
-#region Additive
+        #region Additive
 
         public int GetStatLinearModifier(Stats statType)
         {
-            UnitStat modifier = _statModifiers[(int) statType];
+            UnitStat modifier = _statModifiers[(int)statType];
 
             if (modifier == null)
             {
@@ -565,7 +566,7 @@ namespace WorldServer.World.Interfaces
             if (modifier.ItemAddFromStat != 0)
                 linearStat += _statModifiers[modifier.ItemAddFromStat].InternalItemBonus;
 
-            _logger.Trace($"HTStacks : {HTLStacks} linearstat {linearStat}" );
+            _logger.Trace($"HTStacks : {HTLStacks} linearstat {linearStat}");
 
             if (HTLStacks == 0 || (statType != Stats.Disrupt && statType != Stats.Evade))
                 return linearStat;
@@ -593,16 +594,16 @@ namespace WorldServer.World.Interfaces
             return bonusStat + Math.Min((byte)3, HTLStacks) * 15;
         }
 
-        public int GetReducedStat(Stats statType) 
+        public int GetReducedStat(Stats statType)
         {
             if (_statModifiers[(int)statType] == null)
                 return 0;
             return _statModifiers[(int)statType].TotalReducedStat;
         }
 
-#endregion
+        #endregion Additive
 
-#region Percent
+        #region Percent
 
         public float GetStatPercentageModifier(Stats statType)
         {
@@ -619,11 +620,10 @@ namespace WorldServer.World.Interfaces
             return GetUnitStat(statType).TotalReductionMult;
         }
 
-#endregion
+        #endregion Percent
 
         public short GetTotalStat(Stats bonusType)
         {
-
             if (GetUnit() == null)
             {
                 _logger.Trace($" GetUnit is null, returning 0");
@@ -635,12 +635,11 @@ namespace WorldServer.World.Interfaces
             _logger.Trace($" Bonus Type Core Stat value = {value}");
 
             UnitStat statModifier = _statModifiers[(int)bonusType];
-            
 
             if (statModifier == null)
             {
                 _logger.Trace($" statModifier = null {value}");
-                return (short) value;
+                return (short)value;
             }
             else
             {
@@ -684,7 +683,7 @@ namespace WorldServer.World.Interfaces
             return (short)(stat.AvailableItemBonus * (stat.ItemStatMultiplier - 1));
         }
 
-#endregion
+        #endregion Interface
 
         public void BuildStats(ref PacketOut Out)
         {
@@ -694,7 +693,7 @@ namespace WorldServer.World.Interfaces
             {
                 Out.WriteByte(i);
                 if (i == 10 && (_Owner.GetPlayer().ItmInterface.GetItemInSlot(11) != null && _Owner.GetPlayer().ItmInterface.GetItemInSlot(11).Info.Type == 5))
-                { 
+                {
                     Out.WriteUInt16((ushort)((_Owner.GetPlayer().ItmInterface.GetItemInSlot(11).Info.Armor / ((7.5 * (BolsterLevel > 0 ? BolsterLevel : GetPlayer().Level) + 50) * 0.2)) * 100));
                     // My spaghetti I will need to dig in that weird bolster armor bug. One day... One day I say...
                     /*int armor = _Owner.GetPlayer().ItmInterface.GetItemInSlot(11).Info.Armor;
@@ -705,7 +704,6 @@ namespace WorldServer.World.Interfaces
                     ushort simpleresult = (ushort)((armor / ((7.5 * level + 50) * 0.2)) * 100);
                     ushort simpleresult2 = (ushort)((armor / ((7.5 * bolster + 50) * 0.2)) * 100);
                     int iii = 1;*/
-                    
                 }
                 else if (i == 11)
                     Out.WriteUInt16((ushort)((GetTotalStat(Stats.WeaponSkill) / ((7.5 * (BolsterLevel > 0 ? BolsterLevel : GetPlayer().Level) + 50) * 0.075)) * 100));
@@ -720,7 +718,7 @@ namespace WorldServer.World.Interfaces
             }
         }
 
-#region Speed Handling
+        #region Speed Handling
 
         internal class VelocityModifierComparer : Comparer<Tuple<NewBuff, float>>
         {
@@ -750,12 +748,13 @@ namespace WorldServer.World.Interfaces
         public void CheckVelocityModifiers(Player player)
         {
             if (_velocityModifiers.Count == 0)
-            {   player.SendClientMessage("No modifiers.");
+            {
+                player.SendClientMessage("No modifiers.");
                 return;
             }
 
             foreach (var item in _velocityModifiers)
-                player.SendClientMessage("Entry: "+item.Item1.Entry+", Power: "+item.Item2);
+                player.SendClientMessage("Entry: " + item.Item1.Entry + ", Power: " + item.Item2);
         }
 
         private void RecalculateVelocityMod()
@@ -776,7 +775,7 @@ namespace WorldServer.World.Interfaces
             }
 
             if (_Owner is Unit)
-                ((Unit) _Owner).UpdateSpeed();
+                ((Unit)_Owner).UpdateSpeed();
         }
 
         public bool IsImpeded()
@@ -789,9 +788,9 @@ namespace WorldServer.World.Interfaces
             return _velocityModifiers.Count > 0 && _velocityModifiers.Min.Item2 < 0.1f;
         }
 
-#endregion
+        #endregion Speed Handling
 
-#region Additive
+        #region Additive
 
         public void AddBonusStat(Stats bonusType, ushort stat, BuffClass statGroup)
         {
@@ -804,8 +803,9 @@ namespace WorldServer.World.Interfaces
             switch (bonusType)
             {
                 case Stats.Wounds:
-                    (_Owner as Pet)?.ReceiveHeal(null, (ushort)(stat*10));
+                    (_Owner as Pet)?.ReceiveHeal(null, (ushort)(stat * 10));
                     break;
+
                 case Stats.Mastery1Bonus:
                 case Stats.Mastery2Bonus:
                 case Stats.Mastery3Bonus:
@@ -820,14 +820,13 @@ namespace WorldServer.World.Interfaces
                     break;
                 // RB   4/17/2016   Added support for adjusting max AP pool
                 case Stats.MaxActionPoints:
-                        if (_Owner.Loaded && _Owner.IsPlayer())
-                        {
-                            Player p = (_Owner as Player);
-                            p.MaxActionPoints += stat;
-                        }
+                    if (_Owner.Loaded && _Owner.IsPlayer())
+                    {
+                        Player p = (_Owner as Player);
+                        p.MaxActionPoints += stat;
+                    }
                     break;
             }
-                    
         }
 
         public void RemoveBonusStat(Stats bonusType, ushort stat, BuffClass statGroup)
@@ -844,6 +843,7 @@ namespace WorldServer.World.Interfaces
                 case Stats.Armor:
                     ApplyStats();
                     break;
+
                 case Stats.Mastery1Bonus:
                 case Stats.Mastery2Bonus:
                 case Stats.Mastery3Bonus:
@@ -870,7 +870,7 @@ namespace WorldServer.World.Interfaces
 
         public void AddReducedStat(Stats bonusType, ushort stat, BuffClass statGroup)
         {
-                if (bonusType < Stats.MaxStatCount)
+            if (bonusType < Stats.MaxStatCount)
                 GetUnitStat(bonusType).AddReducedStat(stat, (byte)statGroup);
 
             if (bonusType == Stats.Wounds || bonusType == Stats.Armor || bonusType == Stats.Willpower || bonusType == Stats.WeaponSkill || bonusType == Stats.Initiative || bonusType == Stats.Strength || bonusType == Stats.Toughness || bonusType == Stats.BallisticSkill)
@@ -883,9 +883,10 @@ namespace WorldServer.World.Interfaces
                     if (_Owner.Loaded && _Owner.IsPlayer())
                         ArmPen -= stat;
                     break;
+
                 case Stats.MaxActionPoints:
                     if (_Owner.Loaded && _Owner.IsPlayer())
-                        ((Player) _Owner).MaxActionPoints -= stat;
+                        ((Player)_Owner).MaxActionPoints -= stat;
                     break;
             }
         }
@@ -905,6 +906,7 @@ namespace WorldServer.World.Interfaces
                     if (_Owner.Loaded && _Owner.IsPlayer())
                         ArmPen += stat;
                     break;
+
                 case Stats.MaxActionPoints:
                     if (_Owner.Loaded && _Owner.IsPlayer())
                     {
@@ -921,7 +923,7 @@ namespace WorldServer.World.Interfaces
         /// <param name="bonusType"></param>
         /// <param name="stat"></param>
         /// <param name="percentage">0:Additive, 1:Multiplicative</param>
-        public void AddItemBonusStat(Stats bonusType, ushort stat, ushort percentage=0)
+        public void AddItemBonusStat(Stats bonusType, ushort stat, ushort percentage = 0)
         {
             if (bonusType < Stats.MaxStatCount)
             {
@@ -931,7 +933,7 @@ namespace WorldServer.World.Interfaces
                 }
                 else
                 {
-                     AddBonusMultiplier(Stats.OutgoingDamagePercent, stat/100f, BuffClass.Career);
+                    AddBonusMultiplier(Stats.OutgoingDamagePercent, stat / 100f, BuffClass.Career);
                     //GetUnitStat(bonusType).AddItemBonusStat(stat, percentage);
                 }
             }
@@ -956,17 +958,18 @@ namespace WorldServer.World.Interfaces
                         }
                     }
                     break;
+
                 case Stats.MaxActionPoints:
-                        if (_Owner.Loaded && _Owner.IsPlayer())
-                        {
-                            Player p = (_Owner as Player);
-                            p.MaxActionPoints += stat;
-                        }
+                    if (_Owner.Loaded && _Owner.IsPlayer())
+                    {
+                        Player p = (_Owner as Player);
+                        p.MaxActionPoints += stat;
+                    }
                     break;
             }
         }
 
-        public void RemoveItemBonusStat(Stats bonusType, ushort stat, ushort percentage=0)
+        public void RemoveItemBonusStat(Stats bonusType, ushort stat, ushort percentage = 0)
         {
             byte type = (byte)bonusType;
 
@@ -978,11 +981,10 @@ namespace WorldServer.World.Interfaces
                 }
                 else
                 {
-                    RemoveBonusMultiplier(Stats.OutgoingDamagePercent, stat/100f, BuffClass.Career);
+                    RemoveBonusMultiplier(Stats.OutgoingDamagePercent, stat / 100f, BuffClass.Career);
                     //_statModifiers[type].RemoveItemBonusStat(stat, percentage);
                 }
             }
-
 
             if (bonusType <= Stats.Intelligence)
                 ItemStatTotal -= stat;
@@ -1004,19 +1006,20 @@ namespace WorldServer.World.Interfaces
                         }
                     }
                     break;
+
                 case Stats.MaxActionPoints:
                     if (_Owner.Loaded && _Owner.IsPlayer())
-                        {
-                            Player p = (_Owner as Player);
-                            p.MaxActionPoints -= stat;
-                        }
+                    {
+                        Player p = (_Owner as Player);
+                        p.MaxActionPoints -= stat;
+                    }
                     break;
             }
         }
 
-#endregion
+        #endregion Additive
 
-#region Multiplicative
+        #region Multiplicative
 
         public void AddBonusMultiplier(Stats bonusType, float mult, BuffClass statGroup)
         {
@@ -1025,8 +1028,8 @@ namespace WorldServer.World.Interfaces
 
             if (bonusType == Stats.Wounds || bonusType == Stats.Armor || bonusType == Stats.Willpower || bonusType == Stats.WeaponSkill || bonusType == Stats.Initiative || bonusType == Stats.Strength || bonusType == Stats.Toughness || bonusType == Stats.BallisticSkill)
                 ApplyStats();
-
         }
+
         public void RemoveBonusMultiplier(Stats bonusType, float mult, BuffClass statGroup)
         {
             byte type = (byte)bonusType;
@@ -1038,6 +1041,7 @@ namespace WorldServer.World.Interfaces
             if (bonusType == Stats.Wounds || bonusType == Stats.Armor || bonusType == Stats.Willpower || bonusType == Stats.WeaponSkill || bonusType == Stats.Initiative || bonusType == Stats.Strength || bonusType == Stats.Toughness || bonusType == Stats.BallisticSkill)
                 ApplyStats();
         }
+
         public void AddReducedMultiplier(Stats bonusType, float mult, BuffClass statGroup)
         {
             if (bonusType < Stats.MaxStatCount)
@@ -1045,8 +1049,8 @@ namespace WorldServer.World.Interfaces
 
             if (bonusType == Stats.Wounds || bonusType == Stats.Armor || bonusType == Stats.Willpower || bonusType == Stats.WeaponSkill || bonusType == Stats.Initiative || bonusType == Stats.Strength || bonusType == Stats.Toughness || bonusType == Stats.BallisticSkill)
                 ApplyStats();
-
         }
+
         public void RemoveReducedMultiplier(Stats bonusType, float mult, BuffClass statGroup)
         {
             byte type = (byte)bonusType;
@@ -1057,9 +1061,9 @@ namespace WorldServer.World.Interfaces
                 ApplyStats();
         }
 
-#endregion
+        #endregion Multiplicative
 
-#region Ability
+        #region Ability
 
         /// <summary>
         /// Modifies the cast time, cooldown, range and AP cost of an ability according to stats.
@@ -1082,25 +1086,24 @@ namespace WorldServer.World.Interfaces
 
             if (abInfo.Entry != 9553 && abInfo.Entry != 8239 && abInfo.Entry != 9035 && abInfo.Entry != 1734) // exempt divine mend, khaine's invigoration, sudden shift and changin' da plan
             {
-                short cooldownMod = (short) (GetStatLinearModifier(Stats.Cooldown)/1000);
+                short cooldownMod = (short)(GetStatLinearModifier(Stats.Cooldown) / 1000);
                 if (abInfo.Cooldown + cooldownMod <= 0)
                     abInfo.Cooldown = 0;
                 else
-                    abInfo.Cooldown = (ushort) ((abInfo.Cooldown + cooldownMod)*(GetStatPercentageModifier(Stats.Cooldown)));
+                    abInfo.Cooldown = (ushort)((abInfo.Cooldown + cooldownMod) * (GetStatPercentageModifier(Stats.Cooldown)));
             }
 
             float rangeMod = GetStatPercentageModifier(Stats.Range);
 
-            abInfo.FlightTimeMod = 1f/rangeMod;
+            abInfo.FlightTimeMod = 1f / rangeMod;
 
             if (abInfo.Range != 0)
-                abInfo.Range = (ushort) (abInfo.Range * rangeMod);
+                abInfo.Range = (ushort)(abInfo.Range * rangeMod);
             if (abInfo.ApCost != 0)
-                abInfo.ApCost = (byte) ((abInfo.ApCost + GetTotalStat(Stats.ActionPointCost))*GetStatPercentageModifier(Stats.ActionPointCost));
-
+                abInfo.ApCost = (byte)((abInfo.ApCost + GetTotalStat(Stats.ActionPointCost)) * GetStatPercentageModifier(Stats.ActionPointCost));
         }
 
-#endregion
+        #endregion Ability
 
         public void ApplyStats()
         {

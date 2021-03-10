@@ -10,7 +10,7 @@ using WorldServer.World.Scripting;
 namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 36549, 0)]
-    class GriblikdaStinka : BasicGunbad
+    internal class GriblikdaStinka : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -49,7 +49,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 2000900, 0)]
-    class OlGreenwingz : BasicGunbad
+    internal class OlGreenwingz : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -139,8 +139,6 @@ namespace WorldServer.World.Objects.Instances.Gunbad
                 }
             }
 
-
-
             Creature c = Obj as Creature;
 
             c.Say("*** Ol' Greenwingz shots rotten eggs in every direction! ***", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_EMOTE);
@@ -176,13 +174,13 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 0, 2000576)]
-    class RottenEggOlGreenwingz : BasicGunbad
+    internal class RottenEggOlGreenwingz : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
             this.Obj = Obj;
             spawnPoint = Obj as Point3D;
-            Obj.EvtInterface.AddEvent(BreakEgg, (5 + random.Next(1,6)) * 1000, 1);
+            Obj.EvtInterface.AddEvent(BreakEgg, (5 + random.Next(1, 6)) * 1000, 1);
 
             Obj.EvtInterface.AddEventNotify(EventName.OnReceiveDamage, CheckHP);
 
@@ -242,5 +240,4 @@ namespace WorldServer.World.Objects.Instances.Gunbad
             Obj.EvtInterface.AddEvent(Obj.Destroy, 1000, 1);
         }
     }
-
 }

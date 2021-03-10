@@ -1,11 +1,7 @@
-﻿using System;
+﻿using Common;
+using Common.Database.World.Characters;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common;
-using Common.Database.World.Characters;
-using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
 
@@ -41,7 +37,6 @@ namespace WorldServer.World.Objects
             }
         }
 
-
         private List<Vendor_items> GetRealmCaptainItems(Player player)
         {
             var realmCaptainItems = new Dictionary<int, string>
@@ -53,7 +48,6 @@ namespace WorldServer.World.Objects
 
             foreach (var realmCaptainBuff in realmCaptainItems)
             {
-
                 var item = new Vendor_items
                 {
                     Info = ItemService.GetItem_Info((uint)realmCaptainBuff.Key),
@@ -62,7 +56,6 @@ namespace WorldServer.World.Objects
                     VendorId = 0
                 };
                 items.Add(item);
-
             }
             return items;
         }

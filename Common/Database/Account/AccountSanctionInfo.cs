@@ -1,6 +1,5 @@
-﻿using System;
-using System.Data.SqlTypes;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {

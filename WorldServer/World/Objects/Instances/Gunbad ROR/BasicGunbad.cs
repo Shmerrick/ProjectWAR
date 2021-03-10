@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Common;
+using System.Collections.Generic;
 using System.Linq;
-using Common;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
@@ -10,7 +10,7 @@ using WorldServer.World.Scripting;
 
 namespace WorldServer.World.Objects.Instances.Gunbad
 {
-    class BasicGunbad : BasicScript
+    internal class BasicGunbad : BasicScript
     {
         public virtual void SpawnAdds(object crea)
         {
@@ -230,9 +230,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
                     if (newBuff != null)
                         newBuff.RemoveBuff(true);
                 }
-
             }
         }
-
     }
 }

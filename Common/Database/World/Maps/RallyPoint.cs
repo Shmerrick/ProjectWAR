@@ -1,9 +1,8 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
-
     [DataTable(PreCache = false, TableName = "rallypoints", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class RallyPoint : DataObject

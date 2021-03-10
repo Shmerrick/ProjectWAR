@@ -1,9 +1,9 @@
-﻿using System;
+﻿using FrameWork;
+using GameData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using FrameWork;
-using GameData;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Map;
@@ -34,6 +34,7 @@ namespace WorldServer.World.Interfaces
             Tow,
             Pickup
         }
+
         private ushort _strikePower;
         private ushort _strikeTarget;
         private ushort _abilityId;
@@ -71,9 +72,12 @@ namespace WorldServer.World.Interfaces
         private SiegeObjectState _useState = SiegeObjectState.Empty;
 
         private long _deathTime;
-        public long DeathTime {
+
+        public long DeathTime
+        {
             get { return _deathTime; }
-            set {
+            set
+            {
                 if (value > 0)
                     _deathTime = value;
                 else
@@ -84,28 +88,31 @@ namespace WorldServer.World.Interfaces
         public override void SetOwner(Object owner)
         {
             _Owner = owner;
-            _weapon = (Creature) owner;
+            _weapon = (Creature)owner;
 
             switch (_weapon.Spawn.Proto.CreatureSubType)
             {
                 case (byte)CreatureSubTypes.SIEGE_GTAOE:
                     Type = SiegeType.GTAOE;
                     break;
+
                 case (byte)CreatureSubTypes.SIEGE_SINGLE_TARGET:
                     Type = SiegeType.SNIPER;
                     break;
+
                 case (byte)CreatureSubTypes.SIEGE_OIL:
                     Type = SiegeType.OIL;
                     break;
+
                 case (byte)CreatureSubTypes.SIEGE_RAM:
                     Type = SiegeType.RAM;
                     _maxPlayers = 4;
                     break;
+
                 default:
                     Type = SiegeType.DIRECT;
                     break;
             }
-            
         }
 
         /// <summary>
@@ -209,10 +216,10 @@ namespace WorldServer.World.Interfaces
                     player.SendClientMessage("A player is already towing this weapon.");
                     return;
                 }
-                
+
                 if (player == _leader)
                     return;
-                
+
                 RemoveTower(_leader);
             }
 
@@ -515,7 +522,7 @@ namespace WorldServer.World.Interfaces
         public void RemovePlayer(Player player)
         {
             if (!IsDeployed)
-            { 
+            {
                 if (_moveType == MoveType.Tow)
                     RemoveTower(player);
                 else if (_moveType == MoveType.Pickup)
@@ -527,7 +534,7 @@ namespace WorldServer.World.Interfaces
 
             lock (Players)
             {
-                for(byte i= 0;i < Players.Count ;i++)
+                for (byte i = 0; i < Players.Count; i++)
                 {
                     if (Players[i].Key.Oid == player.Oid)
                     {
@@ -578,12 +585,11 @@ namespace WorldServer.World.Interfaces
                         SendSiegeResponse(curPlayer, Type, SiegeControlType.Release, 0);
                 }
             }
-
         }
 
         public bool IsAbandoned => _leader == null && !_weapon.ObjectWithinRadiusFeet(Creator, 250);
 
-        #endregion
+        #endregion Player Management
 
         /// <summary>
         /// Assigns the correct ability to the siege weapon and determines whether or not it is movable.
@@ -600,22 +606,27 @@ namespace WorldServer.World.Interfaces
                             _abilityId = 14379;
                             _moveType = _Owner is Siege ? MoveType.Tow : MoveType.Static;
                             break;
+
                         case 1573: // Greenskin Rock Lobba
                             _abilityId = 14383;
                             _moveType = _Owner is Siege ? MoveType.Tow : MoveType.Static;
                             break;
+
                         case 1553: // Hellblaster Cannon
                             _abilityId = 14387;
                             _moveType = _Owner is Siege ? MoveType.Tow : MoveType.Static;
                             break;
+
                         case 1557: // Chaos Tri-Barrel Hellcannon
                             _abilityId = 14391;
                             _moveType = _Owner is Siege ? MoveType.Tow : MoveType.Static;
                             break;
+
                         case 1561: // High Elf Repeater
                             _abilityId = 14395;
                             _moveType = _Owner is Siege ? MoveType.Pickup : MoveType.Static;
                             break;
+
                         case 1565: // Dark Elf Repeater
                             _abilityId = 14399;
                             _moveType = _Owner is Siege ? MoveType.Pickup : MoveType.Static;
@@ -629,30 +640,34 @@ namespace WorldServer.World.Interfaces
                         case 1567: // Dwarf Oil
                             _abilityId = 14440;
                             break;
+
                         case 1571: // Greenskin Oil
                             _abilityId = 14435;
                             break;
+
                         case 1551: // Empire Oil
                             _abilityId = 14445;
                             break;
+
                         case 1555: // Chaos Oil
                             _abilityId = 14450;
                             break;
+
                         case 1559: // High Elf Oil
                             _abilityId = 14455;
                             break;
+
                         case 1563: // Dark Elf Oil
                             _abilityId = 14460;
                             break;
                     }
 
-
                     /*Point2D displacement = Point2D.GetOffsetFromHeading(_Owner.Heading, 15);
                     Point3D displacement3D = new Point3D(_Owner.X + displacement.X, _Owner.Y + displacement.Y, _Owner.Z);
-                    
+
                     WarZoneLib.Vector3 hitLocation = new WarZoneLib.Vector3();
                     RegionData.OcclusionQuery(_Owner.Zone.ZoneId, displacement3D.X, displacement3D.Y, displacement3D.Z, _Owner.Zone.ZoneId, displacement3D.X, displacement3D.Y, displacement3D.Z - 1200, ref hitLocation);
-                    
+
                     _oilDest = new Point3D((int)hitLocation.X, (int)hitLocation.Y, (int)hitLocation.Z);
                     */
 
@@ -668,23 +683,28 @@ namespace WorldServer.World.Interfaces
                             _abilityId = 14378;
                             _moveType = _Owner is Siege ? MoveType.Tow : MoveType.Static;
                             break;
+
                         case 1574: // Greenskin Supa Chucka
                             _abilityId = 14382;
                             _moveType = _Owner is Siege ? MoveType.Pickup : MoveType.Static;
                             break;
+
                         case 1554: // Empire Great Cannon
                             _abilityId = 14386;
                             _moveType = _Owner is Siege ? MoveType.Tow : MoveType.Static;
                             break;
+
                         case 1558: // Chaos Hellfire Cannon
                         case 1636: // 60 size variant
                             _abilityId = 14390;
                             _moveType = _Owner is Siege ? MoveType.Tow : MoveType.Static;
                             break;
+
                         case 1562: // High Elf Ballista
                             _abilityId = 14394;
                             _moveType = _Owner is Siege ? MoveType.Pickup : MoveType.Static;
                             break;
+
                         case 1566: // Dark Elf Ballista
                             _abilityId = 14398;
                             _moveType = _Owner is Siege ? MoveType.Pickup : MoveType.Static;
@@ -701,7 +721,7 @@ namespace WorldServer.World.Interfaces
                     IsDeployed = false;
                     break;
             }
-              
+
             return base.Load();
         }
 
@@ -713,9 +733,8 @@ namespace WorldServer.World.Interfaces
             // RB   6/25/2016   Reset timer before death every time the siege is fired
             _deathTime = TCPManager.GetTimeStampMS() + 300 * 1000;
 
-
             switch (Type)
-            { 
+            {
                 case SiegeType.GTAOE:
                     Point3D targetPos = ZoneService.GetWorldPosition(_weapon.Zone.Info, targetX, targetY, targetZ);
 
@@ -743,11 +762,12 @@ namespace WorldServer.World.Interfaces
                         _weapon.AbtInterface.StartCastAtPos(player, _abilityId, ZoneService.GetWorldPosition(_weapon.Zone.Info, targetX, targetY, targetZ), _weapon.Zone.ZoneId, 0);
                     }
 
-                    
                     break;
+
                 case SiegeType.OIL:
                     _weapon.AbtInterface.StartCastAtPos(player, _abilityId, ZoneService.GetWorldPosition(_weapon.Zone.Info, targetX, targetY, targetZ), _weapon.Zone.ZoneId, 0);
                     break;
+
                 case SiegeType.SNIPER:
                     Unit target = _weapon.Region.GetObject(targetID) as Unit;
 
@@ -761,6 +781,7 @@ namespace WorldServer.World.Interfaces
                     _weapon.CbtInterface.SetTarget(targetID, TargetTypes.TARGETTYPES_TARGET_ENEMY);
                     _weapon.AbtInterface.StartCast(player, _abilityId, 0, 0, Math.Max((byte)1, (byte)(_weapon.Level * power * 0.01f)));
                     break;
+
                 case SiegeType.RAM:
                     Unit ramTarget = null;
                     foreach (Object obj in _Owner.ObjectsInRange)
@@ -784,9 +805,8 @@ namespace WorldServer.World.Interfaces
                     if (ramTarget != null)
                     {
                         _weapon.CbtInterface.SetTarget(ramTarget.Oid, TargetTypes.TARGETTYPES_TARGET_ENEMY);
-                        _weapon.AbtInterface.StartCast(player, _abilityId, 0, 0, Math.Max((byte) 1, (byte) (_weapon.Level*power*0.01f)));
+                        _weapon.AbtInterface.StartCast(player, _abilityId, 0, 0, Math.Max((byte)1, (byte)(_weapon.Level * power * 0.01f)));
                     }
-
                     else
                         foreach (var plrInfo in Players)
                             plrInfo.Key.SendClientMessage("No target", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
@@ -794,7 +814,6 @@ namespace WorldServer.World.Interfaces
             }
 
             SendSiegeCooldown();
-
 
             // Disable Firing?
             /*
@@ -839,17 +858,15 @@ namespace WorldServer.World.Interfaces
                 {
                     Players[i] = new KeyValuePair<Player, byte>(plr, power);
                     _strikePower += power;
-                    #if (DEBUG)
+#if (DEBUG)
                     Log.Info("SiegeInterface.RamSwing", plr.Name + " is adding " + power + " power to the ram swing. Power total is " + _strikePower);
-                    #endif
+#endif
                 }
             }
         }
 
         public void Repair()
         {
-
-
         }
 
         private bool ArcHit(ushort zoneId, Point3D pinPos, Point3D worldPos)
@@ -857,9 +874,9 @@ namespace WorldServer.World.Interfaces
             if (_weapon.LOSHit(zoneId, pinPos))
                 return true;
 
-            #if DEBUG && ARTILLERY_ARC_DEBUG
+#if DEBUG && ARTILLERY_ARC_DEBUG
             Log.Info("Artillery", "Direct LOS check failed, checking arc...");
-            #endif
+#endif
 
             var playnice = new World.Map.OcclusionInfo();
             int maxZDisplacement = Math.Min(_Owner.Z, pinPos.Z) + 100 * 12; // check 100 feet upwards
@@ -877,37 +894,37 @@ namespace WorldServer.World.Interfaces
             weaponTopPoint.SetCoordsFrom(_weapon);
             destPoint.SetCoordsFrom(_weapon);
 
-            #if DEBUG && ARTILLERY_ARC_DEBUG
+#if DEBUG && ARTILLERY_ARC_DEBUG
             Log.Info("Artillery", "Weapon location: "+weaponTopPoint);
-            #endif
-            
+#endif
+
             // Check LOS between weapon and close apex (if applicable)
             if (weaponTopPoint.Z < maxZDisplacement)
             {
                 destPoint.Z = maxZDisplacement;
 
                 // Check 50 feet in front of the weapon
-                destPoint.X += (int)(toTarget.X*50*12);
-                destPoint.Y += (int)(toTarget.Y*50*12);
+                destPoint.X += (int)(toTarget.X * 50 * 12);
+                destPoint.Y += (int)(toTarget.Y * 50 * 12);
 
 #if DEBUG && ARTILLERY_ARC_DEBUG
                 Log.Info("Artillery", "Checking weapon to destination point: " + destPoint);
 #endif
 
-               fromRegionX = weaponTopPoint.X + (_weapon.Zone.Info.OffX << 12);
-               fromRegionY = weaponTopPoint.Y + (_weapon.Zone.Info.OffY << 12);
-               toRegionX = destPoint.X + (_weapon.Zone.Info.OffX << 12);
-               toRegionY = destPoint.Y + (_weapon.Zone.Info.OffY << 12);
+                fromRegionX = weaponTopPoint.X + (_weapon.Zone.Info.OffX << 12);
+                fromRegionY = weaponTopPoint.Y + (_weapon.Zone.Info.OffY << 12);
+                toRegionX = destPoint.X + (_weapon.Zone.Info.OffX << 12);
+                toRegionY = destPoint.Y + (_weapon.Zone.Info.OffY << 12);
 
                 World.Map.Occlusion.SegmentIntersect(zoneId, zoneId, fromRegionX, fromRegionY, weaponTopPoint.Z + 120, toRegionX, toRegionY, destPoint.Z, true, true, 190, ref playnice);
 
                 if (playnice.Result != OcclusionResult.NotOccluded)
                 {
-                    #if DEBUG && ARTILLERY_ARC_DEBUG
+#if DEBUG && ARTILLERY_ARC_DEBUG
                     Log.Info("Artillery", "Arc check failed (obstruction between cannon and arc apex 1)");
                     foreach (var player in Players)
                         player.Key.ZoneTeleport((ushort)destPoint.X, (ushort)destPoint.Y, (ushort)destPoint.Z, 0);
-                    #endif
+#endif
                     return false;
                 }
 
@@ -916,9 +933,9 @@ namespace WorldServer.World.Interfaces
 
             // Check LOS between target and far apex (if applicable)
             destPoint.SetCoordsFrom(pinPos);
-            #if DEBUG && ARTILLERY_ARC_DEBUG
+#if DEBUG && ARTILLERY_ARC_DEBUG
             Log.Info("Artillery", "Target location: " + pinPos);
-            #endif
+#endif
 
             if (pinPos.Z < maxZDisplacement)
             {
@@ -934,21 +951,20 @@ namespace WorldServer.World.Interfaces
                 //RegionData.OcclusionResult arc2Result = RegionData.OcclusionQuery(
                 //   zoneId, pinPos.X, pinPos.Y, pinPos.Z + 120,
                 //   zoneId, destPoint.X, destPoint.Y, destPoint.Z, ref playnice);
-               fromRegionX = weaponTopPoint.X + (_weapon.Zone.Info.OffX << 12);
-               fromRegionY = weaponTopPoint.Y + (_weapon.Zone.Info.OffY << 12);
-               toRegionX = destPoint.X + (_weapon.Zone.Info.OffX << 12);
-               toRegionY = destPoint.Y + (_weapon.Zone.Info.OffY << 12);
+                fromRegionX = weaponTopPoint.X + (_weapon.Zone.Info.OffX << 12);
+                fromRegionY = weaponTopPoint.Y + (_weapon.Zone.Info.OffY << 12);
+                toRegionX = destPoint.X + (_weapon.Zone.Info.OffX << 12);
+                toRegionY = destPoint.Y + (_weapon.Zone.Info.OffY << 12);
 
                 World.Map.Occlusion.SegmentIntersect(zoneId, zoneId, fromRegionX, fromRegionY, weaponTopPoint.Z + 120, toRegionX, toRegionY, destPoint.Z, true, true, 190, ref playnice);
 
-
                 if (playnice.Result != OcclusionResult.NotOccluded)
                 {
-                    #if DEBUG && ARTILLERY_ARC_DEBUG
+#if DEBUG && ARTILLERY_ARC_DEBUG
                     Log.Info("Artillery", "Arc check failed (obstruction between target point and arc apex 2)");
                     foreach (var player in Players)
                         player.Key.ZoneTeleport((ushort)destPoint.X, (ushort)destPoint.Y, (ushort)destPoint.Z, 0);
-                    #endif
+#endif
                     return false;
                 }
 
@@ -979,9 +995,9 @@ namespace WorldServer.World.Interfaces
                 return false;
             }
 
-            #if DEBUG && ARTILLERY_ARC_DEBUG
+#if DEBUG && ARTILLERY_ARC_DEBUG
             Log.Info("Artillery", "Arc check passed");
-            #endif
+#endif
             return true;
         }
 
@@ -994,7 +1010,7 @@ namespace WorldServer.World.Interfaces
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_INTERACT_RESPONSE);
 
-            Out.WriteByte(0x18); //siege 
+            Out.WriteByte(0x18); //siege
             Out.WriteByte((byte)controlType); //control type LEADER, HELPER, RELEASE
             Out.WriteByte(0);
 
@@ -1040,7 +1056,7 @@ namespace WorldServer.World.Interfaces
                 Out.WriteByte(0);
                 Out.WriteByte(0x10);
                 Out.WriteByte((byte)type);//aim type
-                Out.WriteByte(0);        //time? 
+                Out.WriteByte(0);        //time?
                 Out.WriteByte(0);
                 Out.WriteByte(0x27);
                 Out.WriteByte(0x0);
@@ -1048,6 +1064,7 @@ namespace WorldServer.World.Interfaces
 
             player.SendPacket(Out);
         }
+
         public void SendSiegeMultiuser()
         {
             _strikePower = 0;
@@ -1061,11 +1078,11 @@ namespace WorldServer.World.Interfaces
             Out.WriteByte(0x32);
             Out.WriteByte(0);
 
-            foreach(KeyValuePair<Player,byte> plr in Players)
+            foreach (KeyValuePair<Player, byte> plr in Players)
             {
                 plr.Key.SendPacket(Out);
             }
-           // SendSiegeResult();
+            // SendSiegeResult();
         }
 
         private void SendSiegeUseState(Player player, bool enabled)
@@ -1077,6 +1094,7 @@ namespace WorldServer.World.Interfaces
             Out.WriteByte(enabled ? (byte)0x3 : (byte)0x5); // 0x1c03
             player.SendPacket(Out);
         }
+
         private void SendSiegeResult()
         {
             if (Players != null && Players.Count > 0)
@@ -1100,9 +1118,8 @@ namespace WorldServer.World.Interfaces
 
                 Fire(Players.First().Key, _strikeTarget, 0, 0, 0, 0, _strikePower);
             }
-
         }
-            
+
         /// <summary>
         /// Sends the cooldown after the siege weapon has fired.
         /// </summary>
@@ -1126,7 +1143,6 @@ namespace WorldServer.World.Interfaces
             {
                 plr.Key.SendPacket(Out);
             }
-
         }
 
         /// <summary>
@@ -1169,11 +1185,11 @@ namespace WorldServer.World.Interfaces
             plr.SendPacket(idleTimerPacket);
         }
 
-        #endregion
+        #endregion Senders
 
         #region Cannon Targeting
 
-        public  List<Unit> CurrentTargetList { get; } = new List<Unit>(); 
+        public List<Unit> CurrentTargetList { get; } = new List<Unit>();
 
         /// <summary>
         /// Builds a list of targets which would be hit by a line attack performed by a siege cannon.
@@ -1242,6 +1258,6 @@ namespace WorldServer.World.Interfaces
             return bestTarget;
         }
 
-        #endregion
+        #endregion Cannon Targeting
     }
 }

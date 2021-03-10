@@ -1,9 +1,6 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using FrameWork;
 
 namespace Common
 {
@@ -21,12 +18,11 @@ namespace Common
         private string _Description;
         private bool _Alliance;
         private bool _Locked;
-        public List<KeyValuePair<uint,bool>> _Signups = new List<KeyValuePair<uint, bool>>();
+        public List<KeyValuePair<uint, bool>> _Signups = new List<KeyValuePair<uint, bool>>();
 
         public Guild_event()
             : base()
         {
-
         }
 
         [DataElement(AllowDbNull = false)]
@@ -98,7 +94,7 @@ namespace Common
             get
             {
                 string Str = "";
-                foreach (KeyValuePair<uint,bool> plr in _Signups)
+                foreach (KeyValuePair<uint, bool> plr in _Signups)
                 {
                     Str += plr.Key + ":" + plr.Value + ";";
                 }
@@ -111,7 +107,7 @@ namespace Common
                 foreach (string Str in Split)
                 {
                     if (Str.Length > 0)
-                        _Signups.Add(new KeyValuePair<uint,bool>(UInt32.Parse(Str.Split(':')[0]),Boolean.Parse(Str.Split(':')[1]))); Dirty = true;
+                        _Signups.Add(new KeyValuePair<uint, bool>(UInt32.Parse(Str.Split(':')[0]), Boolean.Parse(Str.Split(':')[1]))); Dirty = true;
                 }
             }
         }

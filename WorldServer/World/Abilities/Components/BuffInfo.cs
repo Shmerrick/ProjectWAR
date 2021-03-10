@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
-using Common;
 
 namespace WorldServer.World.Abilities.Components
 {
@@ -96,7 +96,6 @@ namespace WorldServer.World.Abilities.Components
                         toDelete.NextCommand = null;
                     }
                     toDelete.LastCommand = null;
-
                 }
             }
         }
@@ -110,6 +109,7 @@ namespace WorldServer.World.Abilities.Components
         /// Indicates that this effect was cast from an AoE.
         /// </summary>
         public bool IsAoE { get; set; }
+
         /// <summary>
         /// Indicates that this effect should be removed if the target is not the caster and the target leaves the group.
         /// </summary>
@@ -191,8 +191,8 @@ namespace WorldServer.World.Abilities.Components
         public bool AlwaysOn => PersistsOnDeath == 1;
         public bool RequiresTargetDead => PersistsOnDeath == 2;
 
-        /// <summary> 
-        /// The mastery path in which this buff resides. 
+        /// <summary>
+        /// The mastery path in which this buff resides.
         /// </summary>
         public byte MasteryTree;
 

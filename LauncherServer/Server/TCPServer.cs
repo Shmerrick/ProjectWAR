@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using FrameWork;
+﻿using FrameWork;
+using System.Collections.Generic;
 
 namespace AuthenticationServer.Server
 {

@@ -8,7 +8,7 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Abilities.Objects
 {
-    class LandMine : BuffHostObject
+    internal class LandMine : BuffHostObject
     {
         private bool _hasExploded;
         private long _nextCheckInterval;

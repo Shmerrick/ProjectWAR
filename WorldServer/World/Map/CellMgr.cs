@@ -1,9 +1,9 @@
 ﻿//#define SUPPRESS_LOAD
 
-using System.Collections.Generic;
 using Common;
 using Common.Database.World.Maps;
 using FrameWork;
+using System.Collections.Generic;
 using WorldServer.World.Objects;
 using Object = WorldServer.World.Objects.Object;
 
@@ -21,7 +21,7 @@ namespace WorldServer.World.Map
             Region = mgr;
             X = offX;
             Y = offY;
-            Spawns = mgr.GetCellSpawn(offX,offY);
+            Spawns = mgr.GetCellSpawn(offX, offY);
         }
 
         #region Objects
@@ -37,9 +37,10 @@ namespace WorldServer.World.Map
                 Region.LoadCells(X, Y, 1); // Load nearby cells when a player enters
             }
 
-           Objects.Add(obj);
-           obj._Cell = this;
+            Objects.Add(obj);
+            obj._Cell = this;
         }
+
         public void RemoveObject(Object obj)
         {
             //Log.Success("RemoveObject", "[" + X + "," + Y + "] Cell Remove " + Obj.Name);
@@ -54,11 +55,12 @@ namespace WorldServer.World.Map
             }
         }
 
-        #endregion
+        #endregion Objects
 
         #region Spawns
 
         public bool Loaded;
+
         public void Load()
         {
             lock (this)
@@ -71,7 +73,6 @@ namespace WorldServer.World.Map
 
             Log.Debug(ToString(), "Loading... ");
 
-            
             foreach (Creature_spawn spawn in Spawns.CreatureSpawns)
                 Region.CreateCreature(spawn);
 
@@ -83,14 +84,13 @@ namespace WorldServer.World.Map
 
             foreach (PQuest_Info quest in Spawns.PublicQuests)
                 Region.CreatePQuest(quest);
-            
-    }
+        }
 
         public override string ToString()
         {
-            return "CellMgr["+X+","+Y+"]";
+            return "CellMgr[" + X + "," + Y + "]";
         }
 
-        #endregion
+        #endregion Spawns
     }
 }

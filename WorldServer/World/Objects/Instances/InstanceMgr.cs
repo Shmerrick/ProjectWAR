@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common;
-using FrameWork;
 using WorldServer.Services.World;
 using WorldServer.World.Objects.Instances.TomboftheVultureLord;
 
@@ -15,9 +15,8 @@ namespace WorldServer.World.Objects.Instances
 
         public InstanceMgr()
         {
-
         }
-		
+
         private byte _maxplayers = 6;
 
         public bool ZoneIn(Player player, byte instancetyp, Zone_jump Jump = null)
@@ -35,11 +34,11 @@ namespace WorldServer.World.Objects.Instances
             Instance_Info II;
             InstanceService._InstanceInfo.TryGetValue(zoneID, out II);
             ushort InstanceMainID = II.Entry;
-            
+
             ushort instanceid = 0;
-			
-			// Group Raid Instance
-			if (instancetyp == 5)
+
+            // Group Raid Instance
+            if (instancetyp == 5)
                 _maxplayers = 24;
 
             // instance handling
@@ -112,36 +111,36 @@ namespace WorldServer.World.Objects.Instances
             }
 
             if (instanceid == 0 && Jump == null)
-				return false;
+                return false;
 
-			// create new instance
-			if (instanceid == 0)
-			{
-				instanceid = Create_new_instance(player, Jump);
-			}
-            
+            // create new instance
+            if (instanceid == 0)
+            {
+                instanceid = Create_new_instance(player, Jump);
+            }
+
             if (!Join_Instance(player, instanceid, Jump, InstanceMainID))
-				return false;
+                return false;
 
-			return true;
-		}
+            return true;
+        }
 
-		private TimeSpan GetLockoutTimer(Player plr, ushort zoneID)
-		{
-			string lockout = plr._Value.GetLockout(zoneID);
-			if (lockout == null)
-				return new TimeSpan(0);
-			else
-			{
-				return new TimeSpan(Math.Abs(int.Parse(lockout.Split(':')[1]) - TCPManager.GetTimeStampMS()));
-			}
-		}
+        private TimeSpan GetLockoutTimer(Player plr, ushort zoneID)
+        {
+            string lockout = plr._Value.GetLockout(zoneID);
+            if (lockout == null)
+                return new TimeSpan(0);
+            else
+            {
+                return new TimeSpan(Math.Abs(int.Parse(lockout.Split(':')[1]) - TCPManager.GetTimeStampMS()));
+            }
+        }
 
         private ushort Create_new_instance(Player player, Zone_jump Jump)
         {
             lock (_instances)
             {
-                for (ushort i = 1; i < ushort.MaxValue ; i++)
+                for (ushort i = 1; i < ushort.MaxValue; i++)
                 {
                     if (!_instances.ContainsKey(i))
                     {
@@ -149,14 +148,14 @@ namespace WorldServer.World.Objects.Instances
                         {
                             TOTVL ints = null;
                             Instance_Lockouts deadbosses = null;
-							if (player._Value.GetLockout(Jump.InstanceID) != null)
-							{
-								if (player.PriorityGroup == null) // solo player gets his own lockouts
-									InstanceService._InstanceLockouts.TryGetValue(player._Value.GetLockout(Jump.InstanceID), out deadbosses);
-								else // group players gets the lockout of the leader
-									InstanceService._InstanceLockouts.TryGetValue(player.PriorityGroup.GetLeader()._Value.GetLockout(Jump.InstanceID), out deadbosses);
-							}
-							ints = new TOTVL(Jump.ZoneID, i, 0, deadbosses);
+                            if (player._Value.GetLockout(Jump.InstanceID) != null)
+                            {
+                                if (player.PriorityGroup == null) // solo player gets his own lockouts
+                                    InstanceService._InstanceLockouts.TryGetValue(player._Value.GetLockout(Jump.InstanceID), out deadbosses);
+                                else // group players gets the lockout of the leader
+                                    InstanceService._InstanceLockouts.TryGetValue(player.PriorityGroup.GetLeader()._Value.GetLockout(Jump.InstanceID), out deadbosses);
+                            }
+                            ints = new TOTVL(Jump.ZoneID, i, 0, deadbosses);
                             _instances.Add(i, ints);
                             return i;
                         }
@@ -165,12 +164,12 @@ namespace WorldServer.World.Objects.Instances
                             Instance ints = null;
                             Instance_Lockouts deadbosses = null;
                             if (player._Value.GetLockout(Jump.InstanceID) != null)
-							{	
-								if (player.PriorityGroup == null) // solo player gets his own lockouts
-									InstanceService._InstanceLockouts.TryGetValue(player._Value.GetLockout(Jump.InstanceID), out deadbosses);
-								else if (player.PriorityGroup.GetLeader()._Value.GetLockout(Jump.InstanceID) != null) // group players gets the lockout of the leader
+                            {
+                                if (player.PriorityGroup == null) // solo player gets his own lockouts
+                                    InstanceService._InstanceLockouts.TryGetValue(player._Value.GetLockout(Jump.InstanceID), out deadbosses);
+                                else if (player.PriorityGroup.GetLeader()._Value.GetLockout(Jump.InstanceID) != null) // group players gets the lockout of the leader
                                     InstanceService._InstanceLockouts.TryGetValue(player.PriorityGroup.GetLeader()._Value.GetLockout(Jump.InstanceID), out deadbosses);
-							}
+                            }
                             ints = new Instance(Jump.ZoneID, i, 0, deadbosses);
                             _instances.Add(i, ints);
                             return i;

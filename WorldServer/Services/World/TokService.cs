@@ -43,8 +43,6 @@ namespace WorldServer.Services.World
 
             _ToksBestary = new Dictionary<ushort, Tok_Bestary>();
 
-
-
             IList<Tok_Bestary> IToks = Database.SelectAllObjects<Tok_Bestary>();
 
             if (IToks != null)
@@ -71,6 +69,5 @@ namespace WorldServer.Services.World
             _ToksBestary.TryGetValue(subTypeId, out bestiary);
             return bestiary;
         }
-
     }
 }

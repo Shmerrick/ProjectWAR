@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using SystemData;
-using ByteOperations;
+﻿using ByteOperations;
 using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using System.Collections.Generic;
+using System.Linq;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
@@ -34,8 +34,8 @@ namespace WorldServer.World.Interfaces
         private readonly Object _lockObject = new Object();
         private static readonly Logger _logger = LogManager.GetLogger("MailLogger");
 
-        private static uint MAIL_EXPIRE_UNREAD = 28*24*60*60; // 28 Days
-        private static uint MAIL_EXPIRE_READ = 3*24*60*60; // 28 Days
+        private static uint MAIL_EXPIRE_UNREAD = 28 * 24 * 60 * 60; // 28 Days
+        private static uint MAIL_EXPIRE_READ = 3 * 24 * 60 * 60; // 28 Days
 
         private readonly List<Character_mail> _mails = new List<Character_mail>();
         private uint _nextSend;
@@ -75,8 +75,6 @@ namespace WorldServer.World.Interfaces
             packet.Skip(1);
             byte nameSize = packet.GetUint8();
             string name = packet.GetString(nameSize);
-
-            
 
             // Subject (client is limited to send 30 chars but its probably a ushort anyway)
             ushort subjectSize = ByteSwap.Swap(packet.GetUint16());
@@ -158,8 +156,8 @@ namespace WorldServer.World.Interfaces
                         return;
                     }
                 }
-                
-                SendResult(MailResult.TEXT_MAIL_RESULT4);   
+
+                SendResult(MailResult.TEXT_MAIL_RESULT4);
             }
             else
             {
@@ -182,16 +180,13 @@ namespace WorldServer.World.Interfaces
                 }
 
                 SendMail(receiver, subject, message, money, cr == 1, itemSlots);
-                
+
                 _logger.Info($"Sending mail {subject} to {receiver.Name} from {plr.Name}. Money={money}, Item Count={itemSlots.Count}");
                 foreach (var itemSlot in itemSlots)
                 {
                     _logger.Info($"Item : {itemSlot}");
                 }
             }
-            
-
-           
         }
 
         public void SendMail(Character receiver, string subject, string message, uint money, bool cashOnDelivery, List<ushort> itemSlots = null)
@@ -237,7 +232,6 @@ namespace WorldServer.World.Interfaces
 
         public void AddMail(Character_mail mail)
         {
-            
             _mails.Add(mail);
             SendMailCount();
         }
@@ -260,7 +254,7 @@ namespace WorldServer.World.Interfaces
             Character receiver = CharMgr.GetCharacter(mail.SenderName, false);
 
             // No one to return mail to.
-            if (receiver == null)              
+            if (receiver == null)
                 return MailResult.TEXT_MAIL_RESULT11;
 
             // If mail is COD, remove the COD requirement and remove the money.
@@ -269,7 +263,7 @@ namespace WorldServer.World.Interfaces
                 mail.Cr = false;
                 mail.Money = 0;
             }
-            
+
             CharMgr.DeleteMail(mail);
 
             Character_mail returnMail = new Character_mail
@@ -282,7 +276,7 @@ namespace WorldServer.World.Interfaces
                 ReceiverName = mail.SenderName,
                 Content = "Your mail expired and has been returned to you.",
                 ReadDate = 0,
-                SendDate = (uint) TCPManager.GetTimeStamp(),
+                SendDate = (uint)TCPManager.GetTimeStamp(),
                 Opened = false
             };
 
@@ -353,22 +347,26 @@ namespace WorldServer.World.Interfaces
                         }
                         SendMail(mail);
                         break;
+
                     case MailInteractType.ReturnMail:
                         SendResult(ReturnMail(mail));
                         SendMailCount();
                         SendMailBox();
                         break;
+
                     case MailInteractType.DeleteMail:
                         CharMgr.DeleteMail(mail);
                         SendMailCount();
                         SendMailBox();
                         break;
+
                     case MailInteractType.ChangeReadMarker:
                         packet.Skip(4);
                         mail.Opened = packet.GetUint8() == 1;
                         SendMailCount();
                         SendMailBox();
                         break;
+
                     case MailInteractType.TakeItem:
                         if (mail.Cr && mail.Money > 0)
                         {
@@ -401,6 +399,7 @@ namespace WorldServer.World.Interfaces
                         SendMailUpdate(mail);
                         SendMail(mail);
                         break;
+
                     case MailInteractType.TakeAll:
                         if (mail.Money > 0)
                         {
@@ -480,7 +479,7 @@ namespace WorldServer.World.Interfaces
             else
             {
                 ushort titleLocal = 0;
-                if (mail.AuctionType == 1) // Refund (outbid) 
+                if (mail.AuctionType == 1) // Refund (outbid)
                     titleLocal = (ushort)Localized_text.TEXT_AUCTION_MAIL_SUBJECT_REFUND;
                 else if (mail.AuctionType == 2) // Complete
                     titleLocal = (ushort)Localized_text.TEXT_AUCTION_MAIL_SUBJECT_COMPLETE;
@@ -522,7 +521,7 @@ namespace WorldServer.World.Interfaces
 
             foreach (MailItem item in mail.Items)
             {
-                if(ItemService.GetItem_Info(item.id) != null)
+                if (ItemService.GetItem_Info(item.id) != null)
                     Out.WriteUInt32(ItemService.GetItem_Info(item.id).ModelId);
             }
         }
@@ -573,7 +572,6 @@ namespace WorldServer.World.Interfaces
                 GetPlayer().SendPacket(Out);
             }
 
-
             {
                 PacketOut Out = new PacketOut((byte)Opcodes.F_MAIL);
                 Out.WriteUInt32(0x0E000000);
@@ -581,7 +579,6 @@ namespace WorldServer.World.Interfaces
                 Out.WriteUInt16(0xA33C);
                 GetPlayer().SendPacket(Out);
             }
-
 
             {
                 PacketOut Out = new PacketOut((byte)Opcodes.F_MAIL);
@@ -630,7 +627,6 @@ namespace WorldServer.World.Interfaces
                 return;
             }
 
-
             if (mail.Content == null)
             {
                 Log.Error("MailInterface", "Mail sent with NULL content!");
@@ -656,7 +652,7 @@ namespace WorldServer.World.Interfaces
             else
             {
                 ushort contentLocal = 0;
-                if (mail.AuctionType == 1) // Refund (outbid) 
+                if (mail.AuctionType == 1) // Refund (outbid)
                     contentLocal = (ushort)Localized_text.TEXT_AUCTION_MAIL_BODY_REFUND_ITEM_X;
                 else if (mail.AuctionType == 2) // Complete
                     contentLocal = (ushort)Localized_text.TEXT_AUCTION_MAIL_BODY_COMPLETE_ITEM_X;
@@ -706,6 +702,7 @@ namespace WorldServer.World.Interfaces
             Out.WriteUInt16((ushort)result);
             GetPlayer().SendPacket(Out);
         }
-        #endregion
+
+        #endregion Packets
     }
 }

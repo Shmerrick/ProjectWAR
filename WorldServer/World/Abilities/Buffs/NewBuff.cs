@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Abilities.Objects;
 using WorldServer.World.Objects;
@@ -16,6 +16,7 @@ namespace WorldServer.World.Abilities.Buffs
         #region Definitions
 
         #region BuffInfo Access
+
         protected BuffInfo _buffInfo;
 
         public ushort Entry => _buffInfo.Entry;
@@ -42,6 +43,7 @@ namespace WorldServer.World.Abilities.Buffs
         public BuffTypes Type { get { return _buffInfo.Type; } set { _buffInfo.Type = value; } }
         public ushort Interval => _buffInfo.Interval;
         public BuffClass BuffClass => _buffInfo.BuffClass;
+
         /// <summary>
         /// Gets the buff class considering potential buff command override.
         /// </summary>
@@ -57,7 +59,7 @@ namespace WorldServer.World.Abilities.Buffs
 
         public byte BuffIntervals => _buffInfo.BuffIntervals;
 
-        #endregion
+        #endregion BuffInfo Access
 
         protected NewBuff _linkedBuff; // used for buff pairs like guard and oath friend
 
@@ -66,14 +68,14 @@ namespace WorldServer.World.Abilities.Buffs
         public Unit Caster { get; protected set; }
         public Unit Target { get; protected set; }
 
-        public ushort RemainingTimeMs 
-        { 
-            get 
-            { 
-                if (TCPManager.GetTimeStampMS() > EndTime) 
-                    return 0; 
-                return (ushort)(EndTime - TCPManager.GetTimeStampMS()); 
-            } 
+        public ushort RemainingTimeMs
+        {
+            get
+            {
+                if (TCPManager.GetTimeStampMS() > EndTime)
+                    return 0;
+                return (ushort)(EndTime - TCPManager.GetTimeStampMS());
+            }
         }
 
         public byte StackLevel { get; protected set; }
@@ -121,7 +123,7 @@ namespace WorldServer.World.Abilities.Buffs
         // Used for command storage, since they're delegates
         public object OptionalObject;
 
-        #endregion
+        #endregion Definitions
 
         public void SetLinkedBuff(NewBuff linkedBuff)
         {
@@ -192,13 +194,13 @@ namespace WorldServer.World.Abilities.Buffs
                 leadMs = (uint)-_buffInfo.LeadInDelay;
             // Variable lead-in with range (Rapid Fire channel)
             else if (_buffInfo.LeadInDelay > 0)
-                leadMs = (uint) (_buffInfo.LeadInDelay*Caster.GetDistanceTo(Target)*0.01f);
+                leadMs = (uint)(_buffInfo.LeadInDelay * Caster.GetDistanceTo(Target) * 0.01f);
 
             NextTickTime = TCPManager.GetTimeStampMS() + _buffInfo.Interval + leadMs;
 
             if (Duration > 0)
             {
-                DurationMs = (uint) (_buffInfo.Duration*1000 + leadMs);
+                DurationMs = (uint)(_buffInfo.Duration * 1000 + leadMs);
                 EndTime = TCPManager.GetTimeStampMS() + DurationMs;
             }
         }
@@ -236,6 +238,7 @@ namespace WorldServer.World.Abilities.Buffs
             BuffState = (byte)EBuffState.Running;
 
             #region Check for CC block or no tooltip text
+
             // If a buff is crowd control and no tooltip text was added, a CC immunity blocked it.
             // In this case the buff is removed here.
             if (BuffLines.Count != 0)
@@ -244,12 +247,12 @@ namespace WorldServer.World.Abilities.Buffs
                 {
                     if (CrowdControl == 1)
                     {
-                        DurationMs = (uint) (DurationMs*Target.StsInterface.GetStatReductionModifier(Stats.SnareDuration));
+                        DurationMs = (uint)(DurationMs * Target.StsInterface.GetStatReductionModifier(Stats.SnareDuration));
                         EndTime = TCPManager.GetTimeStampMS() + DurationMs;
                     }
                     if (CrowdControl == 16)
                     {
-                        DurationMs = (uint) (DurationMs*Target.StsInterface.GetStatReductionModifier(Stats.KnockdownDuration));
+                        DurationMs = (uint)(DurationMs * Target.StsInterface.GetStatReductionModifier(Stats.KnockdownDuration));
                         EndTime = TCPManager.GetTimeStampMS() + DurationMs;
                     }
                 }
@@ -260,14 +263,15 @@ namespace WorldServer.World.Abilities.Buffs
             }
             else
             {
-                #if DEBUG
+#if DEBUG
                 Log.Info("Buff " + _buffInfo.Entry, "Couldn't find any buff lines.");
                 if (CrowdControl == 0 && Caster is Player)
-                    ((Player)Caster).SendClientMessage(Entry + " "+ AbilityMgr.GetAbilityNameFor(Entry)+": Couldn't find any buff lines.");
-                #endif
+                    ((Player)Caster).SendClientMessage(Entry + " " + AbilityMgr.GetAbilityNameFor(Entry) + ": Couldn't find any buff lines.");
+#endif
                 BuffHasExpired = true;
             }
-            #endregion
+
+            #endregion Check for CC block or no tooltip text
         }
 
         public void SendStart(Player player, bool forceFX = false, bool suppressFx = false)
@@ -319,22 +323,22 @@ namespace WorldServer.World.Abilities.Buffs
                 Out.WriteByte(_buffInfo.EffectType);   //7
                 Out.WriteByte(0);
 
-				if (forceFX)
-					player.SendPacket(Out);
-				else
-				{
-	                if (Target.PlayersInRange.Count > 100 && !forceSend)
-	                {
-	                    _noFX = true;
-	                    (Target as Player)?.SendPacket(Out);
-	                    (Caster as Player)?.SendPacket(Out);
-	                }
-	                else
-	                    Target.DispatchPacket(Out, true);
-				}
+                if (forceFX)
+                    player.SendPacket(Out);
+                else
+                {
+                    if (Target.PlayersInRange.Count > 100 && !forceSend)
+                    {
+                        _noFX = true;
+                        (Target as Player)?.SendPacket(Out);
+                        (Caster as Player)?.SendPacket(Out);
+                    }
+                    else
+                        Target.DispatchPacket(Out, true);
+                }
             }
 
-            #endregion
+            #endregion Appearance/Animation
         }
 
         private PacketOut BuildBuffStartPacket()
@@ -358,7 +362,6 @@ namespace WorldServer.World.Abilities.Buffs
             Out.WriteUInt16R(_buffInfo.Entry == 3320 ? (ushort)20619 : _buffInfo.Entry); // override for Inevitable Doom
             Out.WriteZigZag(EndTime != 0 ? (int)((EndTime - TCPManager.GetTimeStampMS()) / 1000) : 0);
             Out.WriteUInt16R(Caster.Oid);
-
 
             Out.WriteByte((byte)BuffLines.Count);
             if (BuffLines.Count > 0)
@@ -448,14 +451,14 @@ namespace WorldServer.World.Abilities.Buffs
             BuffLines.RemoveAll(x => x.Item1 == line);
         }
 
-        #endregion
+        #endregion Init
 
         #region Tick
 
         protected long NextTickTime;
         protected long EndTime;
 
-        public virtual void Update (long tick)
+        public virtual void Update(long tick)
         {
             if (BuffState != (byte)EBuffState.Running)
                 return;
@@ -463,19 +466,19 @@ namespace WorldServer.World.Abilities.Buffs
             long curTime = TCPManager.GetTimeStampMS();
 
             if (EndTime > 0 && curTime >= EndTime)
-                 BuffEnded(false, false);
+                BuffEnded(false, false);
             else if (NextTickTime > 0 && curTime >= NextTickTime)
             {
                 NextTickTime += _buffInfo.Interval;
 
-                if(_buffInfo.CommandInfo != null)
+                if (_buffInfo.CommandInfo != null)
                     foreach (BuffCommandInfo command in _buffInfo.CommandInfo)
                         if ((command.InvokeOn & (byte)EBuffState.Running) > 0)
                             BuffEffectInvoker.InvokeCommand(this, command, Target);
-            }                
+            }
         }
 
-        #endregion
+        #endregion Tick
 
         #region End/Remove
 
@@ -514,7 +517,7 @@ namespace WorldServer.World.Abilities.Buffs
             }
             else
             {
-                StackLevel = (byte) (StackLevel - numStacks);
+                StackLevel = (byte)(StackLevel - numStacks);
                 DeleteBuffParameter(_buffInfo.StackLine);
                 AddBuffParameter(_buffInfo.StackLine, StackLevel);
                 SendStart(null, false, true);
@@ -565,7 +568,7 @@ namespace WorldServer.World.Abilities.Buffs
                 {
                     if (command.InvokeOn == 8 && command.TargetType == CommandTargetTypes.Caster)
                     {
-                            Caster.BuffInterface.RemoveEventSubscription(this, command.EventID);
+                        Caster.BuffInterface.RemoveEventSubscription(this, command.EventID);
                     }
                 }
             }
@@ -585,14 +588,14 @@ namespace WorldServer.World.Abilities.Buffs
                 return;
 
             if (!SuppressEndNotification)
-            { 
-                PacketOut Out = new PacketOut((byte) Opcodes.F_INIT_EFFECTS, 12);
+            {
+                PacketOut Out = new PacketOut((byte)Opcodes.F_INIT_EFFECTS, 12);
                 Out.WriteByte(1);
                 Out.WriteByte(2);
                 Out.WriteUInt16(0);
                 Out.WriteUInt16(Target.Oid);
                 Out.WriteUInt16(BuffId);
-                Out.WriteUInt16R(_buffInfo.Entry == 3320 ? (ushort) 20619 : _buffInfo.Entry);
+                Out.WriteUInt16R(_buffInfo.Entry == 3320 ? (ushort)20619 : _buffInfo.Entry);
                 Out.WriteByte(0);
 
                 DispatchBuffPacket(Out);
@@ -602,7 +605,7 @@ namespace WorldServer.World.Abilities.Buffs
 
             // Buff appearance / animation
             {
-                PacketOut Out = new PacketOut((byte) Opcodes.F_CAST_PLAYER_EFFECT, 10);
+                PacketOut Out = new PacketOut((byte)Opcodes.F_CAST_PLAYER_EFFECT, 10);
 
                 if (_buffInfo.Group != BuffGroups.Caltrops)
                 {
@@ -614,7 +617,7 @@ namespace WorldServer.World.Abilities.Buffs
                     Out.WriteUInt16(Caster.Oid);
                     Out.WriteUInt16(Caster.Oid);
                 }
-                
+
                 Out.WriteUInt16(_buffInfo.Entry);
 
                 if (Target is BuffHostObject || Target is GroundTarget)
@@ -640,7 +643,8 @@ namespace WorldServer.World.Abilities.Buffs
                     Target.DispatchPacket(Out, true);
             }
         }
-        #endregion
+
+        #endregion End/Remove
 
         #region Events
 
@@ -683,7 +687,7 @@ namespace WorldServer.World.Abilities.Buffs
 
             if (myCommand.ConsumesStack)
             {
-                while (Interlocked.CompareExchange(ref BuffStackLock, 1, 0) != 0);
+                while (Interlocked.CompareExchange(ref BuffStackLock, 1, 0) != 0) ;
 
                 if (StackLevel == 0)
                 {
@@ -694,8 +698,7 @@ namespace WorldServer.World.Abilities.Buffs
                 RemoveStack();
 
                 if (Entry == 8090 || Entry == 9393)
-                    ((Player) Caster).SendClientMessage((eventInstigator?.Name ?? "Something") + "'s " + AbilityMgr.GetAbilityNameFor(damageInfo.DisplayEntry) + " broke your stealth.");
-
+                    ((Player)Caster).SendClientMessage((eventInstigator?.Name ?? "Something") + "'s " + AbilityMgr.GetAbilityNameFor(damageInfo.DisplayEntry) + " broke your stealth.");
 
                 Interlocked.Exchange(ref BuffStackLock, 0);
             }
@@ -814,10 +817,9 @@ namespace WorldServer.World.Abilities.Buffs
                 Interlocked.Exchange(ref BuffTimerLock, 0);
             }
 
-
             if (myCommand.ConsumesStack)
             {
-                while (Interlocked.CompareExchange(ref BuffStackLock, 1, 0) != 0);
+                while (Interlocked.CompareExchange(ref BuffStackLock, 1, 0) != 0) ;
 
                 if (StackLevel == 0)
                 {
@@ -847,6 +849,6 @@ namespace WorldServer.World.Abilities.Buffs
             BuffEffectInvoker.InvokeItemCommand(this, myCommand, itmInfo);
         }
 
-        #endregion
+        #endregion Events
     }
 }

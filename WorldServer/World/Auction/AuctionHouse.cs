@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common;
-using FrameWork;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
@@ -14,6 +14,7 @@ namespace WorldServer.World.Auction
     public class AuctionHouse
     {
         private const float AUCTION_HOUSE_TAX_MULT = 0.9f;
+
         #region Auction Loading
 
         public static ulong MAX_AUCTION_GUID = 1;
@@ -41,11 +42,10 @@ namespace WorldServer.World.Auction
                     count++;
                 }
 
-
             Log.Success("LoadAuctions", "Loaded " + count + " Auctions");
         }
 
-        #endregion
+        #endregion Auction Loading
 
         public static List<Common.Auction> Auctions;
 
@@ -94,7 +94,7 @@ namespace WorldServer.World.Auction
                             continue;
                         if (types.Count != 0 && !types.Contains(auct.Item.Type))
                             continue;
-                        if (slots.Count != 0 && !slots.Contains((byte) auct.Item.SlotId))
+                        if (slots.Count != 0 && !slots.Contains((byte)auct.Item.SlotId))
                             continue;
                         if (stat != 0 && !auct.Item._Stats.Keys.Contains(stat))
                             continue;
@@ -112,7 +112,6 @@ namespace WorldServer.World.Auction
                         CharMgr.Database.DeleteObject(auct);
                     }
             }
-
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_AUCTION_SEARCH_RESULT, 7 + matching.Count * 300);
             Out.WriteHexStringBytes("0000753400");
@@ -134,7 +133,6 @@ namespace WorldServer.World.Auction
 
                 if (plr != null && plr.ItmInterface != null && auct.Item != null && auct.Item.ItemSet != 0)
                     plr.ItmInterface.SendItemSetInfoToPlayer(plr, auct.Item.ItemSet);
-
             }
 
             plr.SendPacket(Out);
@@ -213,7 +211,7 @@ namespace WorldServer.World.Auction
                 Guid = CharMgr.GenerateMailGuid(),
                 CharacterId = buyer.CharacterId,
                 ReceiverName = buyer.Name,
-                SendDate = (uint) TCPManager.GetTimeStamp(),
+                SendDate = (uint)TCPManager.GetTimeStamp(),
                 AuctionType = cancel ? (byte)3 : (byte)5,
                 Content = auction.Item.Name,
                 Money = 0,
@@ -236,7 +234,7 @@ namespace WorldServer.World.Auction
                 buyer.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_SAY, GameData.Localized_text.TEXT_AUCTION_BUYOUT_SUCCESSFUL);
             }
         }
-    
+
         public static byte PlayerAuctionCount(uint sellerId)
         {
             byte count = 0;
@@ -275,7 +273,7 @@ namespace WorldServer.World.Auction
                             Guid = CharMgr.GenerateMailGuid(),
                             CharacterId = auction.SellerId,
                             ReceiverName = auction.Seller.Name,
-                            SendDate = (uint) TCPManager.GetTimeStamp(),
+                            SendDate = (uint)TCPManager.GetTimeStamp(),
                             AuctionType = 3,
                             Content = auction.Item.Name,
                             Money = 0,
@@ -295,7 +293,7 @@ namespace WorldServer.World.Auction
                     --i;
                 }
 
-                Log.Info("Auction House", $"Removed {removeCount} expired {(removeCount == 1 ? "auction": "auctions")}.");
+                Log.Info("Auction House", $"Removed {removeCount} expired {(removeCount == 1 ? "auction" : "auctions")}.");
             }
         }
     }

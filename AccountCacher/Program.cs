@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
-
-using Common;
+﻿using Common;
 using FrameWork;
+using System;
 
 namespace AccountCacher
 {
-    class Program
+    internal class Program
     {
         public static AccountMgr AcctMgr;
         public static AccountConfigs Config;
         public static RpcServer Server;
 
         [STAThread]
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(onError);
 
@@ -44,7 +39,7 @@ namespace AccountCacher
             ConsoleMgr.Start();
         }
 
-        static void onError(object sender, UnhandledExceptionEventArgs e)
+        private static void onError(object sender, UnhandledExceptionEventArgs e)
         {
             Log.Error("OnError", e.ExceptionObject.ToString());
         }

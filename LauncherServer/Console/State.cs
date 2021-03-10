@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using AuthenticationServer.Server;
+﻿using AuthenticationServer.Server;
 using FrameWork;
+using System;
+using System.Collections.Generic;
 
 namespace AuthenticationServer.Console
 {
@@ -12,7 +12,7 @@ namespace AuthenticationServer.Console
         {
             ServerState State;
 
-            if(!Enum.TryParse(args[0], out State))
+            if (!Enum.TryParse(args[0], out State))
             {
                 Log.Error("ServerState", "Invalid State");
                 return false;

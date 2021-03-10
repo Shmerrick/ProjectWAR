@@ -1,6 +1,4 @@
-﻿using Appccelerate.StateMachine;
-using Common;
-using Common.Database.World.Battlefront;
+﻿using Common;
 using FrameWork;
 using GameData;
 using NLog;
@@ -9,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using SystemData;
 using WorldServer.NetWork.Handler;
-using WorldServer.Services.World;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Battlefronts.Objectives;
@@ -51,7 +48,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <summary>Influence area containing the objective</summary>
         private Zone_Area _area;
 
-
         /// <summary>Set of all players in close range, not limited</summary>
         // private ISet<Player> _closePlayers = new HashSet<Player>();
 
@@ -81,11 +77,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         // Position of the capture
         private int _captureProgress;
+
         // Whether a capture is in progress
         private bool _captureInProgress;
+
         // Positive between 0 and SECURE_PROGRESS_MAX indicating the objective securisation indicator, in seconds
         private int _secureProgress;
-
 
         /// <summary>
         /// Constructor to assist in isolation testing.
@@ -150,7 +147,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             // Initial state
             IsActive = true;
-
         }
 
         public override string ToString()
@@ -169,7 +165,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return true;
         }
 
-        
         public override void SendInteract(Player player, InteractMenu menu)
         {
             if (player.GldInterface == null)
@@ -220,7 +215,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 return;
             }
 
-           
             if (AllowInteract(player) && InteractableFor(player))
             {
                 if (_captureInProgress)  // cross realm fires here
@@ -240,7 +234,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public override void NotifyInteractionBroken(NewBuff b)
         {
-            
             _captureInProgress = false;
             CapturingPlayer = null;
         }
@@ -256,6 +249,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             this.Keep.OnGuildClaimInteracted(this.ClaimingGuild.Info.GuildId);
         }
+
         //public override void AddInRange(Object obj)
         //{
         //    var plr = obj as Player;
@@ -285,7 +279,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         //    base.RemoveInRange(obj);
         //}
-
 
         /// <summary>
         ///     Broadcasts flag state to all players withing range.
@@ -369,7 +362,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         //            Out.WritePascalString("");
         //            break;
         //    }
-
 
         //    Out.WriteUInt16(0); // _displayedTimer
         //    Out.WriteUInt16((ushort)_displayedTimer); // _displayedTimer
@@ -490,7 +482,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // does nothing : base.SendMeTo(plr);
         }
 
-       
         /// <summary>
         ///     Update thread.
         /// </summary>
@@ -505,8 +496,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var frnt = BattleFront;
             if (frnt != null && frnt.IsBattleFrontLocked())
                 return;
-
-
         }
 
         /// <summary>
@@ -637,7 +626,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         //    }
         //}
 
-       
         /// <summary>
         ///     Sends objective diagnostic information to player (gm only).
         /// </summary>
@@ -652,11 +640,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             player.SendClientMessage($"Control progress: {_captureProgress}");
             player.SendClientMessage($"Secure progress: {_secureProgress}");
             player.SendClientMessage($"Flag status: {State}");
-
         }
-
-
-     
 
         /// <summary>
         /// Get players that are close and members of a given realm.
@@ -666,7 +650,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         private ISet<Player> GetClosePlayers(Realms capturingRealm)
         {
             var applicablePlayerList = PlayersInRange.Where(x => x.Realm == capturingRealm).ToList();
-            
+
             return GetClosePlayers(applicablePlayerList);
         }
 
@@ -700,16 +684,19 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             switch (State)
             {
                 case StateFlags.Unsecure:
-                    result= true;
+                    result = true;
                     break;
+
                 case StateFlags.ZoneLocked:
                     result = false;
                     break;
+
                 case StateFlags.Secure:
                     result = false;
                     break;
+
                 default:
-                    result =false;
+                    result = false;
                     break;
             }
             BattlefrontLogger.Trace($"result={result}");
@@ -717,8 +704,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return result;
         }
 
-        #endregion
-
-        
+        #endregion Interaction
     }
 }

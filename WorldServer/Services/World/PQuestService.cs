@@ -92,6 +92,7 @@ namespace WorldServer.Services.World
                             Obj.Description = Obj.Creature.Name;
                     }
                     break;
+
                 case Objective_Type.QUEST_KILL_GO:
                     {
                         uint ObjID = 0;
@@ -104,6 +105,7 @@ namespace WorldServer.Services.World
                             Obj.Description = "Destroy " + Obj.Creature.Name;
                     }
                     break;
+
                 case Objective_Type.QUEST_USE_GO:
                     {
                         uint ObjID = 0;
@@ -116,6 +118,7 @@ namespace WorldServer.Services.World
                             Obj.Description = "Use " + Obj.GameObject.Name;
                     }
                     break;
+
                 case Objective_Type.QUEST_GET_ITEM:
                     {
                         uint ObjID = 0;

@@ -1,16 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using NLog;
 
 namespace CharacterUtility
 {
     public class SetBonus
     {
-     
         public int BonusId { get; set; }
         public string Name { get; set; }
         public int Value { get; set; }
@@ -31,13 +28,12 @@ namespace CharacterUtility
 
             if (String.IsNullOrEmpty(bonus))
                 return null;
-            
+
             var bonusEntry = bonus.Split(':');
 
             // If the form is A:B,C,D
             if (bonusEntry[1].Contains(','))
             {
-
                 var bonusTypeId = bonusEntry[1].Split(',')[0];
                 var bonusValue = bonusEntry[1].Split(',')[1];
 
@@ -58,7 +54,6 @@ namespace CharacterUtility
             }
             else
             {
-
                 var bonusObject = itemBonusList.Single(x => x.Entry == Convert.ToInt32(bonusEntry[0]));
                 // Form is A:B
                 if (bonusObject != null)

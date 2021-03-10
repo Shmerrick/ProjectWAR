@@ -1,5 +1,5 @@
-﻿using System.Threading;
-using GameData;
+﻿using GameData;
+using System.Threading;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Battlefronts.Apocalypse;
 
@@ -7,7 +7,7 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 {
     /// <summary>
     /// Ration wounds debuff applied to RvR players,
-    /// depending on battlegroup 
+    /// depending on battlegroup
     /// </summary>
     public class RationBuff : NewBuff
     {
@@ -37,7 +37,7 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 
             BuffState = (byte)EBuffState.Running;
 
-            Target.StsInterface.AddReducedMultiplier(Stats.Wounds, 1f/_rationDebuffFactor, BuffClass.Career);
+            Target.StsInterface.AddReducedMultiplier(Stats.Wounds, 1f / _rationDebuffFactor, BuffClass.Career);
 
             SendStart(null);
         }

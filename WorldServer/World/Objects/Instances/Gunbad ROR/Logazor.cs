@@ -6,7 +6,7 @@ using WorldServer.World.Scripting;
 namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 2000893, 0)]
-    class Logazor : BasicGunbad
+    internal class Logazor : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {

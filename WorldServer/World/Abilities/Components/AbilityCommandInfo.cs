@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
-using Common;
 using WorldServer.World.Objects;
 
 namespace WorldServer.World.Abilities.Components
@@ -78,7 +78,6 @@ namespace WorldServer.World.Abilities.Components
                     LastCommand = slaveCommand;
                     slaveCommand.NextCommand = this;
                 }
-
                 else if (NextCommand == null)
                 {
                     NextCommand = slaveCommand;
@@ -118,7 +117,6 @@ namespace WorldServer.World.Abilities.Components
                     if (slaveCommand.LastCommand.DamageInfo != null)
                         slaveCommand.DamageInfo = slaveCommand.LastCommand.DamageInfo.Clone();
                 }
-
                 else if (NextCommand == null)
                 {
                     NextCommand = slaveCommand;

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace WorldServer.API
@@ -22,7 +20,6 @@ namespace WorldServer.API
             get { return _data; }
         }
 
-
         public int Offset
         {
             get { return _offset; }
@@ -31,6 +28,7 @@ namespace WorldServer.API
                 _offset = value;
             }
         }
+
         public Packet()
         {
             _data = new byte[0xFFFF];
@@ -53,6 +51,7 @@ namespace WorldServer.API
             _offset += size;
             return result;
         }
+
         public void Skip(int size)
         {
             _offset += size;
@@ -74,7 +73,6 @@ namespace WorldServer.API
             return true;
         }
 
-
         public ushort ReadUInt16()
         {
             ushort result = (ushort)(_data[_offset] << 8 | _data[_offset + 1]);
@@ -89,14 +87,12 @@ namespace WorldServer.API
             return result;
         }
 
-
         public uint ReadUInt32()
         {
             uint result = (uint)(_data[_offset] << 24 | _data[_offset + 1] << 16 | _data[_offset + 2] << 8 | _data[_offset + 3]);
             _offset += 4;
             return result;
         }
-
 
         public int ReadInt32()
         {
@@ -139,6 +135,7 @@ namespace WorldServer.API
             _offset += 8;
             return result;
         }
+
         //public string ReadString(int size)
         //{
         //    return System.Text.ASCIIEncoding.ASCII.GetString(_data, _offset, size);
@@ -160,17 +157,20 @@ namespace WorldServer.API
             System.Buffer.BlockCopy(data, 0, _data, _offset, size);
             _offset += size;
         }
+
         public void WriteByteArray(byte[] data, int offset, int size)
         {
             System.Buffer.BlockCopy(data, offset, _data, _offset, size);
             _offset += size;
         }
+
         public void WriteUInt16(ushort value)
         {
             _data[_offset] = (byte)(value >> 8);
             _data[_offset + 1] = (byte)(value);
             _offset += 2;
         }
+
         public void WriteUInt16R(ushort value)
         {
             _data[_offset] = (byte)(value & 0xFF);
@@ -259,6 +259,7 @@ namespace WorldServer.API
             }
             return msg;
         }
+
         public string ReadPascalString32()
         {
             uint length = ReadUInt32();
@@ -352,9 +353,9 @@ namespace WorldServer.API
 
             _offset += length;
         }
+
         public void WriteString(string str)
         {
-
             System.Buffer.BlockCopy(Encoding.ASCII.GetBytes(str), 0, _data, _offset, str.Length);
 
             _offset += str.Length;
@@ -362,7 +363,6 @@ namespace WorldServer.API
 
         public void WriteCString(string str)
         {
-
             if (str == null)
             {
                 WriteByte(0);
@@ -373,11 +373,8 @@ namespace WorldServer.API
                 WriteByteArray(data, data.Length);
                 WriteByte(0);
             }
-
-
-
-
         }
+
         public void WriteString(string str, int maxLength)
         {
             if (str == null || maxLength <= 0)
@@ -417,6 +414,5 @@ namespace WorldServer.API
                 val = val >> 7;
             }
         }
-
     }
 }

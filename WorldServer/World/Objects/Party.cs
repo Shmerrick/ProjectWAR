@@ -114,7 +114,7 @@ namespace WorldServer.World.Objects
 
         public bool RemovePlayer(Player player)
         {
-            if(_members.Contains(player))
+            if (_members.Contains(player))
                 return _members.Remove(player);
 
             _reserved.ToList().ForEach(e => { if (e == player.CharacterId) e = player.CharacterId; });
@@ -156,7 +156,7 @@ namespace WorldServer.World.Objects
         {
             if (unit != null)
             {
-                var members = _members.ToList(); 
+                var members = _members.ToList();
 
                 foreach (Player player in members)
                 {
@@ -175,7 +175,7 @@ namespace WorldServer.World.Objects
             get
             {
                 var players = new List<Player>();
-                lock(_members)
+                lock (_members)
                     players = _members.ToList();
 
                 return players;

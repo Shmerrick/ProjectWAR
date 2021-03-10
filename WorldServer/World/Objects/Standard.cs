@@ -9,15 +9,13 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Objects
 {
-
-
     public class Standard : Creature
     {
         public Player Owner { get; }
-        byte Bannertyp = 0;
-        Realms RealmStandard;
+        private byte Bannertyp = 0;
+        private Realms RealmStandard;
 
-        public Standard(Creature_spawn spawn,Player owner, byte bannertyp)
+        public Standard(Creature_spawn spawn, Player owner, byte bannertyp)
         {
             Spawn = spawn;
             Name = owner.GldInterface.Guild.Info.Name;
@@ -25,10 +23,6 @@ namespace WorldServer.World.Objects
             RealmStandard = owner.Realm;
             Bannertyp = bannertyp;
             Faction = (byte)(owner.Realm == Realms.REALMS_REALM_DESTRUCTION ? 8 : 6);
-
-            
-            
-       
         }
 
         public override void Destroy()
@@ -64,7 +58,6 @@ namespace WorldServer.World.Objects
                 case 2: itemid = (uint)(RealmStandard == Realms.REALMS_REALM_DESTRUCTION ? 187706 : 187703); break;
             }
 
-
             if (player == Owner)
             {
                 if (player.ItmInterface.GetItemInSlot(14) == null)
@@ -78,7 +71,7 @@ namespace WorldServer.World.Objects
                     player.ItmInterface.CreateItem(ItemService.GetItem_Info(itemid), 1);
                 }
             }
-            else if(player.Realm == RealmStandard)
+            else if (player.Realm == RealmStandard)
             {
                 Character_mail Mail = new Character_mail();
                 Mail.Guid = CharMgr.GenerateMailGuid();
@@ -91,19 +84,16 @@ namespace WorldServer.World.Objects
                 Mail.Content = "Found your Guild Standard";
                 Mail.Money = 0;
                 Mail.Opened = false;
-                Mail.Items.Add(new MailItem(itemid,1));
+                Mail.Items.Add(new MailItem(itemid, 1));
                 CharMgr.AddMail(Mail);
             }
             else
             {
-                player.AddRenown(600,false);
-
+                player.AddRenown(600, false);
             }
 
-            
             player.PlantedStandard = null;
             Dispose();
-
         }
 
         protected override void SendCreateMonster(Player plr)
@@ -122,7 +112,7 @@ namespace WorldServer.World.Objects
 
             Out.WriteByte(50);
             Out.WriteByte(Owner.GldInterface.Guild.Info.Level);
-            if(RealmStandard == Realms.REALMS_REALM_DESTRUCTION)
+            if (RealmStandard == Realms.REALMS_REALM_DESTRUCTION)
                 Out.WriteByte(128);
             else
                 Out.WriteByte(64);
@@ -136,19 +126,16 @@ namespace WorldServer.World.Objects
             Out.WriteByte(0x01);
 
             Owner.GldInterface.Guild.BuildHeraldry(Out);
-            Log.Info("",""+ Owner.GldInterface.Guild.GetBannerPost(Bannertyp));
+            Log.Info("", "" + Owner.GldInterface.Guild.GetBannerPost(Bannertyp));
             Out.WriteByte(Owner.GldInterface.Guild.GetBannerPost(Bannertyp));
             //Out.WriteByte(0x01);
             Out.WriteByte(0x02);
 
-
             Out.WriteStringBytes(Name);
 
             Out.WriteHexStringBytes("000000100303010A0000001205002905CAA286BB2910640005040000100343002905000000");
-            
 
             plr.SendPacket(Out);
-        
         }
     }
 }

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace WorldServer.World.Map
@@ -12,8 +10,10 @@ namespace WorldServer.World.Map
     public enum SurfaceType : int
     {
         SOLID = 0,
+
         //doors
         DOOR1 = 1,
+
         DOOR2 = 2,
         DOOR3 = 3,
         DOOR4 = 4,
@@ -25,6 +25,7 @@ namespace WorldServer.World.Map
 
         //waters
         WATER_GENERIC = 10,
+
         WATER_RIVER = 11,
         WATER_HOTSPRING = 12,
         WATER_OCEAN = 13,
@@ -40,10 +41,12 @@ namespace WorldServer.World.Map
 
         //lavas
         LAVA = 23,
+
         LAVA_MAGMA = 24,
 
         //other
         TAR = 25,
+
         INSTANT_DEATH = 26,
         FIXTURE = 27,
         TERRAIN = 28,
@@ -55,7 +58,6 @@ namespace WorldServer.World.Map
         JUMP5 = 33,
         JUMP6 = 34,
         JUMP7 = 35,
-
     }
 
     public enum OcclusionResult : int
@@ -136,22 +138,18 @@ namespace WorldServer.World.Map
 
         public static void InitZones(string path)
         {
-          
-            
             if (!Initialized)
             {
                 InitZones(path, 190);
                 var tasks = new List<Task>();
 
                 foreach (var file in Directory.GetFiles(path, "*.bin"))
-                    tasks.Add(Task.Run(()=>WorldServer.World.Map.Occlusion.LoadZone(int.Parse(Path.GetFileNameWithoutExtension(file)))));
+                    tasks.Add(Task.Run(() => WorldServer.World.Map.Occlusion.LoadZone(int.Parse(Path.GetFileNameWithoutExtension(file)))));
 
                 Task.WhenAll(tasks).Wait();
-                
+
                 Initialized = true;
             }
-
-           
         }
 
         [SuppressUnmanagedCodeSecurity]

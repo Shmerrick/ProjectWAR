@@ -11,7 +11,6 @@ namespace WorldServer.Managers.Commands
     /// <summary>Waypoint commands under .warpoint</summary>
     internal class WaypointCommands
     {
-
         /// <summary>
         /// Adds a waypoint on your current position to your current target.
         /// </summary>

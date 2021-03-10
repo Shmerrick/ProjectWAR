@@ -14,13 +14,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using FrameWork;
+using System;
+using System.Collections.Generic;
 
 namespace Common
 {
@@ -34,7 +31,7 @@ namespace Common
         [DataElement()]
         public ushort ZoneId { get; set; }
 
-        [DataElement(Varchar=255)]
+        [DataElement(Varchar = 255)]
         public string Name { get; set; }
 
         [DataElement()]
@@ -63,10 +60,10 @@ namespace Common
 
         [DataElement()]
         public uint Tier1InfluenceCount { get; set; }
-        
+
         [DataElement()]
         public uint Tier2InfluenceCount { get; set; }
-        
+
         [DataElement()]
         public uint Tier3InfluenceCount { get; set; }
 
@@ -76,6 +73,5 @@ namespace Common
         public List<Chapter_Reward> T1Rewards;
         public List<Chapter_Reward> T2Rewards;
         public List<Chapter_Reward> T3Rewards;
-
     }
 }

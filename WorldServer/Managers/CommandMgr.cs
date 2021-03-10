@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using GameData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common;
-using FrameWork;
-using GameData;
 using WorldServer.Managers.Commands;
 using WorldServer.World.Abilities.CareerInterfaces;
 using WorldServer.World.Guild;
@@ -16,6 +16,7 @@ namespace WorldServer.Managers
     public class CommandHandler
     {
         public delegate void ComHandler(Player plr, string text);
+
         public CommandHandler(string name, ComHandler handler, CommandHandler[] sub)
         {
             Name = name;
@@ -251,7 +252,7 @@ namespace WorldServer.Managers
             new CommandHandler("/guildinvite", GuildInvite, null)
         };
 
-        #endregion
+        #endregion Handlers
 
         #region Commands
 
@@ -269,6 +270,7 @@ namespace WorldServer.Managers
             if (WorldMgr.GeneralScripts.OnPlayerCommand(plr, text))
                 GetCommand(plr, text, Handlers);
         }
+
         public static void GetCommand(Player plr, string text, CommandHandler[] handlers)
         {
             string command = "";
@@ -307,12 +309,20 @@ namespace WorldServer.Managers
             }
         }
 
-        #endregion
+        #endregion Commands
 
         #region Functions
 
-        public static void PlayerQuit(Player plr, string text) { if (!plr.Leaving) plr.Quit(true, false); }
-        public static void PlayerExit(Player plr, string text) { plr.DisconnectTime = 0; plr.Quit(); }
+        public static void PlayerQuit(Player plr, string text)
+        {
+            if (!plr.Leaving) plr.Quit(true, false);
+        }
+
+        public static void PlayerExit(Player plr, string text)
+        {
+            plr.DisconnectTime = 0; plr.Quit();
+        }
+
         public static void PlayerStuck(Player plr, string text)
         {
             plr.HandleStuck();
@@ -329,7 +339,7 @@ namespace WorldServer.Managers
         public static void Skol(Player plr, string text)
         {
             if (!plr.IsDead)
-                plr.Say($"Yardy wants you to buy him another beer. {text}" );
+                plr.Say($"Yardy wants you to buy him another beer. {text}");
         }
 
         public static void Rude(Player plr, string text)
@@ -343,7 +353,6 @@ namespace WorldServer.Managers
             if (!plr.IsDead)
                 plr.Say($"{plr.Name} compares you to something that does not bear repeating.");
         }
-
 
         public static void PlayerWisp(Player plr, string text)
         {
@@ -382,7 +391,6 @@ namespace WorldServer.Managers
                         plr.SendClientMessage("To report bugs, use the Bugtracker - do not report bugs via in-game chat.");
                         plr.SendClientMessage("For GM assistance, please ask on the forum.");
                     }
-
                     else
                     {
                         plr.SendClientMessage("This player is currently blocking tells from all players outside of their guild.");
@@ -396,8 +404,16 @@ namespace WorldServer.Managers
                 }
             }
         }
-        public static void PlayerShout(Player plr, string text) { if (!plr.IsDead) plr.Say(text, ChatLogFilters.CHATLOGFILTERS_SHOUT); }
-        public static void PlayerEmoteSay(Player plr, string text) { if (!plr.IsDead && plr.Info.TempFirstName == null) plr.Say(text, ChatLogFilters.CHATLOGFILTERS_EMOTE); }
+
+        public static void PlayerShout(Player plr, string text)
+        {
+            if (!plr.IsDead) plr.Say(text, ChatLogFilters.CHATLOGFILTERS_SHOUT);
+        }
+
+        public static void PlayerEmoteSay(Player plr, string text)
+        {
+            if (!plr.IsDead && plr.Info.TempFirstName == null) plr.Say(text, ChatLogFilters.CHATLOGFILTERS_EMOTE);
+        }
 
         public static void PlayerAd(Player sender, string messageString)
         {
@@ -588,6 +604,7 @@ namespace WorldServer.Managers
                                 player.SendMessage(sender.Oid, sender.ChatName, messageString, ChatLogFilters.CHATLOGFILTERS_CHANNEL_BASE, channelNumber);
                             }
                         break;
+
                     case 4: // Trade
                         if (sender.IsBanned)
                         {
@@ -607,11 +624,12 @@ namespace WorldServer.Managers
                                 player.SendMessage(sender.Oid, sender.ChatName, messageString, ChatLogFilters.CHATLOGFILTERS_CHANNEL_BASE, channelNumber);
                             }
                         break;
+
                     case 5: // LFG
                         if (sender.ShouldThrottle())
                             return;
 
-                        // Filter "+" spam 
+                        // Filter "+" spam
                         bool isAdd = messageString.StartsWith("+");
 
                         lock (Player._Players)
@@ -625,7 +643,6 @@ namespace WorldServer.Managers
                             }
                         break;
                 }
-
             }
         }
 
@@ -676,27 +693,44 @@ namespace WorldServer.Managers
             }
         }
 
-        #endregion
+        #endregion Text Chat
 
         #region Friends
 
-        public static void AddFriend(Player plr, string text) { plr.SocInterface.AddFriend(text); }
-        public static void RemoveFriend(Player plr, string text) { plr.SocInterface.RemoveFriend(text); }
+        public static void AddFriend(Player plr, string text)
+        {
+            plr.SocInterface.AddFriend(text);
+        }
 
-        #endregion
+        public static void RemoveFriend(Player plr, string text)
+        {
+            plr.SocInterface.RemoveFriend(text);
+        }
+
+        #endregion Friends
 
         #region Ignore
 
-        public static void ToggleIgnore(Player plr, string text) { plr.SocInterface.Ignore(text); }
+        public static void ToggleIgnore(Player plr, string text)
+        {
+            plr.SocInterface.Ignore(text);
+        }
 
-        #endregion
+        #endregion Ignore
 
         #region Social
 
-        public static void SocialAnon(Player plr, string text) { plr.SocInterface.Anon = !plr.SocInterface.Anon; }
-        public static void SocialHide(Player plr, string text) { plr.SocInterface.Hide = !plr.SocInterface.Hide; }
+        public static void SocialAnon(Player plr, string text)
+        {
+            plr.SocInterface.Anon = !plr.SocInterface.Anon;
+        }
 
-        #endregion
+        public static void SocialHide(Player plr, string text)
+        {
+            plr.SocInterface.Hide = !plr.SocInterface.Hide;
+        }
+
+        #endregion Social
 
         #region Duelling
 
@@ -711,7 +745,7 @@ namespace WorldServer.Managers
             }
         }
 
-        #endregion
+        #endregion Duelling
 
         #region Group
 
@@ -861,7 +895,6 @@ namespace WorldServer.Managers
 
         public static void PartyKick(Player plr, string text)
         {
-
             Group worldGroup = plr.WorldGroup;
 
             uint groupId = 0;
@@ -898,7 +931,6 @@ namespace WorldServer.Managers
 
         public static void PartyOpen(Player plr, string text)
         {
-
             Group worldGroup = plr.WorldGroup;
 
             uint groupId = 0;
@@ -1156,8 +1188,6 @@ namespace WorldServer.Managers
                 {
                     text = text.Remove(0, pos + 1);
 
-
-
                     Group.EnqueueGroupAction(groupId, new GroupAction(EGroupAction.WarbandMove, plr, text));
                 }
             }
@@ -1236,7 +1266,7 @@ namespace WorldServer.Managers
             }
         }
 
-        #endregion
+        #endregion Group
 
         #region Guild
 
@@ -1314,7 +1344,6 @@ namespace WorldServer.Managers
                 plr.SendLocalizeString(text, ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_ALLIANCE_INVITE_BEGIN);
                 receiver.SendDialog(Dialog.AllianceInvite, plr.Name, Alliance.Alliances[plr.GldInterface.Guild.Info.AllianceId].Name);
             }
-
         }
 
         public static void AllianceForm(Player plr, string text)
@@ -1380,6 +1409,7 @@ namespace WorldServer.Managers
                 receiver.SendDialog(Dialog.AllianceInvite, plr.Name, alliname);
             }
         }
+
         public static void AllianceLeave(Player plr, string text)
         {
             if (!plr.GldInterface.IsInGuild())
@@ -1391,17 +1421,12 @@ namespace WorldServer.Managers
                 plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_ALLIANCE_FORM_ERR_LEADER);
             else
                 plr.GldInterface.Guild.LeaveAlliance();
-
         }
+
         public static void AllianceList(Player plr, string text)
         {
-
             // todo AllianceList
-
         }
-
-
-
 
         public static void GuildInvite(Player plr, string text)
         {
@@ -1501,7 +1526,6 @@ namespace WorldServer.Managers
             string[] strings = text.Split(' ');
 
             plr.GldInterface.Guild.SetPermissions(plr, text);
-
         }
 
         public static void GuildNote(Player plr, string Text)
@@ -1575,6 +1599,7 @@ namespace WorldServer.Managers
             }
             plr.GldInterface.Guild.SetRankName(plr, byte.Parse(tmp[0]), text);
         }
+
         public static void GuildSetTax(Player plr, string text)
         {
             if (!plr.GldInterface.IsInGuild())
@@ -1585,6 +1610,7 @@ namespace WorldServer.Managers
             string[] strings = text.Split(' ');
             plr.GldInterface.Guild.SetTax(plr, text);
         }
+
         public static void GuildSetTithe(Player plr, string text)
         {
             if (!plr.GldInterface.IsInGuild())
@@ -1596,7 +1622,7 @@ namespace WorldServer.Managers
             plr.GldInterface.Guild.SetTithe(plr, text);
         }
 
-        #endregion
+        #endregion Guild
 
         #region Appearance
 
@@ -1620,8 +1646,7 @@ namespace WorldServer.Managers
                 plr.SetGearShowing(4, (plr._Value.GearShow & 4) <= 0);
         }
 
-       
-        #endregion
+        #endregion Appearance
 
         #region Pets
 
@@ -1638,11 +1663,10 @@ namespace WorldServer.Managers
             }
         }
 
-        #endregion
+        #endregion Pets
 
         public static void Target(Player plr, string text)
         {
-
         }
 
         public static void Time(Player plr, string text)
@@ -1674,6 +1698,6 @@ namespace WorldServer.Managers
             plr.LastEmoteTime = TCPManager.GetTimeStampMS();
         }
 
-        #endregion
+        #endregion Functions
     }
 }

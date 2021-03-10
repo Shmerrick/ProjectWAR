@@ -2,14 +2,12 @@
 using System;
 using System.Configuration;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using ConfigurationManager = NLog.Internal.ConfigurationManager;
 
 namespace Launcher
 {
@@ -25,7 +23,7 @@ namespace Launcher
         public static string TestServerIP = "projectwar.ddns.net";
         public static int LocalServerPort = 8000;
         public static int TestServerPort = 8000;
-        static HttpClient client = new HttpClient();
+        private static HttpClient client = new HttpClient();
         private Patcher patcher;
 
         private static Logger _logger = LogManager.GetCurrentClassLogger();
@@ -34,13 +32,13 @@ namespace Launcher
         {
             // Read optional app settings (they may not exist in the app.config file)
             AllowWarClientLaunch = SafeReadAppSettings("AutoLaunch", true);
-            AllowMYPPatch = SafeReadAppSettings("PatchMYP", true); 
-            AllowServerPatch = SafeReadAppSettings("PatchExe", true); 
+            AllowMYPPatch = SafeReadAppSettings("PatchMYP", true);
+            AllowServerPatch = SafeReadAppSettings("PatchExe", true);
             LaunchLocalServer = SafeReadAppSettings("LaunchLocal", false);
 
             InitializeComponent();
             Acc = this;
-            
+
             if (LaunchLocalServer)
             {
                 this.bnConnectLocal.Visible = true;
@@ -85,14 +83,12 @@ namespace Launcher
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             var attrs = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
             this.lblVersion.Text = fvi.FileVersion;
             //this.lblVersion.Text = $"{fvi.FileVersion} ({attrs.Single(x => x.Key == "GitHash").Value})";
 
-            
             this.lblDownloading.Visible = false;
             if (this.AllowMYPPatch)
             {
@@ -104,7 +100,7 @@ namespace Launcher
 
                 var patchDirectory = System.Configuration.ConfigurationManager.AppSettings["PatchDirectory"];
 
-                Thread thread = new Thread(() => patcher.Patch(patchDirectory).Wait()) {IsBackground = true};
+                Thread thread = new Thread(() => patcher.Patch(patchDirectory).Wait()) { IsBackground = true };
                 thread.Start();
             }
 
@@ -169,7 +165,6 @@ namespace Launcher
             string userCode = T_username.Text.ToLower();
             string userPassword = T_password.Text.ToLower();
 
-
             Client.User = userCode;
 
             string encryptedPassword = ConvertSHA256(userCode + ":" + userPassword);
@@ -196,10 +191,6 @@ namespace Launcher
             configuration.Save();
 
             System.Configuration.ConfigurationManager.RefreshSection("appSettings");
-
-         
-
-            
         }
 
         private void bnClose_Click(object sender, EventArgs e)
@@ -257,6 +248,7 @@ namespace Launcher
 
             lblConnection.Text = msg;
         }
+
         private void bnCreateLocal_Click(object sender, EventArgs e)
         {
             if (String.IsNullOrEmpty(textBoxUsername.Text) || String.IsNullOrEmpty(textBoxPassword.Text)) return;
@@ -279,8 +271,6 @@ namespace Launcher
             Client.SendTCP(Out);
         }
 
-
-
         private void bnConnectToLocal_Click(object sender, EventArgs e)
         {
             Client.Connect(LocalServerIP, LocalServerPort);
@@ -288,7 +278,6 @@ namespace Launcher
 
             string userCode = T_username.Text.ToLower();
             string userPassword = T_password.Text.ToLower();
-
 
             Client.User = userCode;
 

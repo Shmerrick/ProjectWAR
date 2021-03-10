@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
@@ -33,20 +33,20 @@ namespace WorldServer.NetWork.Handler
             InCombat = 95        // 001011111, 0x5F
         }
 
-		public enum GROUNDTYPE
-		{
-			Solid = 0,
-			ShallowWater = 1,
-			ShallowSludge = 7,
-			DeepWater = 17,
-			DeepSludge = 23,
-			DeepLava = 3,
-			DeepLava2 = 19,
-			LOTDShallowWater = 5,
-			LOTDDeepWater = 21
-		}
-		
-		enum MovementTypes
+        public enum GROUNDTYPE
+        {
+            Solid = 0,
+            ShallowWater = 1,
+            ShallowSludge = 7,
+            DeepWater = 17,
+            DeepSludge = 23,
+            DeepLava = 3,
+            DeepLava2 = 19,
+            LOTDShallowWater = 5,
+            LOTDDeepWater = 21
+        }
+
+        private enum MovementTypes
         {
             GroundForward = 0xC0,
             GroundBackward = 0x54,
@@ -55,7 +55,7 @@ namespace WorldServer.NetWork.Handler
             NotMoving = 0xFE
         }
 
-        enum Strafe  // 
+        private enum Strafe  //
         {
             left1 = 0x20,
             left2 = 0xa0,
@@ -83,7 +83,6 @@ namespace WorldServer.NetWork.Handler
 
             if (_lavaBuffs.ContainsKey(lavaBuff.Caster))
                 _lavaBuffs[lavaBuff.Caster] = lavaBuff;
-
             else _lavaBuffs.Add(lavaBuff.Caster, lavaBuff);
         }
 
@@ -115,24 +114,24 @@ namespace WorldServer.NetWork.Handler
                 return;
             }
 
-			Zone_jump Jump = null;
+            Zone_jump Jump = null;
 
-			// ZARU: zone jump out hackaround for LV leave
-			if (destinationId == 272804328)
-			{
-				Instance_Info II;
-				InstanceService._InstanceInfo.TryGetValue(260, out II);
-				
-				if (cclient.Plr.Realm == Realms.REALMS_REALM_ORDER)
-					Jump = ZoneService.GetZoneJump(II.OrderExitZoneJumpID);
-				else if (cclient.Plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
-					Jump = ZoneService.GetZoneJump(II.DestrExitZoneJumpID);
+            // ZARU: zone jump out hackaround for LV leave
+            if (destinationId == 272804328)
+            {
+                Instance_Info II;
+                InstanceService._InstanceInfo.TryGetValue(260, out II);
 
-				if (Jump == null)
-					Jump = ZoneService.GetZoneJump(destinationId);
-			}
-			else
-				Jump = ZoneService.GetZoneJump(destinationId);
+                if (cclient.Plr.Realm == Realms.REALMS_REALM_ORDER)
+                    Jump = ZoneService.GetZoneJump(II.OrderExitZoneJumpID);
+                else if (cclient.Plr.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                    Jump = ZoneService.GetZoneJump(II.DestrExitZoneJumpID);
+
+                if (Jump == null)
+                    Jump = ZoneService.GetZoneJump(destinationId);
+            }
+            else
+                Jump = ZoneService.GetZoneJump(destinationId);
 
             if (Jump == null)
             {
@@ -191,7 +190,6 @@ namespace WorldServer.NetWork.Handler
             }
         }
 
-
         public static void SendJumpFailed(Player plr)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_ZONEJUMP_FAILED, 1);
@@ -209,8 +207,6 @@ namespace WorldServer.NetWork.Handler
             if (player == null || !player.IsInWorld())
                 return;
 
-            
-
             bool skipSend = false;
 
             long pos = packet.Position;
@@ -222,16 +218,16 @@ namespace WorldServer.NetWork.Handler
             //Out.Write(data, (int)packet.Position, (int)packet.Size); // instead of the line below for testing
             Out.Write(packet.ToArray(), (int)packet.Position, (int)packet.Size);
             Out.WriteByte(0);
-/*
-#if DEBUG
-            State2 stateTest = new State2();
-            stateTest.Read(data, data.Length);
-            Log.Info("state2.HasEnemyTarget", stateTest.HasEnemyTarget.ToString());
-            Log.Info("state2.FreeFall", stateTest.FreeFall.ToString());
-            Log.Info("state2.Falltime", stateTest.FallTime.ToString());
-#endif
-*/
-//End of the testing of state2
+            /*
+            #if DEBUG
+                        State2 stateTest = new State2();
+                        stateTest.Read(data, data.Length);
+                        Log.Info("state2.HasEnemyTarget", stateTest.HasEnemyTarget.ToString());
+                        Log.Info("state2.FreeFall", stateTest.FreeFall.ToString());
+                        Log.Info("state2.Falltime", stateTest.FallTime.ToString());
+            #endif
+            */
+            //End of the testing of state2
 
             packet.Position = pos;
 
@@ -263,7 +259,7 @@ namespace WorldServer.NetWork.Handler
 
                 //Hack Zone ID should be ushort but we only read a byte
                 if (cclient.Plr.ZoneId > 255)
-                    zoneID = (ushort)Utils.setBit(zoneID,8,true);
+                    zoneID = (ushort)Utils.setBit(zoneID, 8, true);
 
                 //hardcode to not allow players into gunbad in case we miss to invalidate the zone on push
 #if (!DEBUG)
@@ -272,38 +268,31 @@ namespace WorldServer.NetWork.Handler
                 {
                     if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
                         player.Teleport(161, 439815, 134493, 16865, 0);
-
                     else if (player.Realm == Realms.REALMS_REALM_ORDER)
                         player.Teleport(162, 124084, 130213, 12572, 0);
                 }
                 */
-               
+
                if (zoneID == 111 && player.Client.IsPlaying())
                {
                    if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
                        player.Teleport(202, 1411789, 1454421, 3516, 0);
-
                    else if (player.Realm == Realms.REALMS_REALM_ORDER)
                        player.Teleport(202, 1449783, 1459746, 3549, 0);
                 }
-               
 
 #endif
-                
+
                 //lets move players instantly, if they are in a void (even staff)
                 if ((zoneID == 0 && player.ZoneId.HasValue) && player.Client.IsPlaying())
                 {
                     player.SendClientMessage("You managed to go outside of the worlds boundries, as such you have been forcefully moved to your capital", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
                         player.Teleport(161, 439815, 134493, 16865, 0);
-                   
-
-
                     else if (player.Realm == Realms.REALMS_REALM_ORDER)
                         player.Teleport(162, 124084, 130213, 12572, 0);
-
                 }
-                
+
                 //stop players from getting stuck below the world like below IC
                 if (player.Z < 150 && !player.IsDead && player.Client.IsPlaying())
                 {
@@ -351,7 +340,7 @@ namespace WorldServer.NetWork.Handler
 
                 player.SetPosition(x, y, z, direction, zoneID);
 
-				player.GroundType = (GROUNDTYPE) groundtype;
+                player.GroundType = (GROUNDTYPE)groundtype;
 
                 //solid, exclude any zones that has to use a hardcode lava to not disable the damage instantly
                 if (groundtype == 0)
@@ -362,13 +351,11 @@ namespace WorldServer.NetWork.Handler
                         _lavaBuffs[player].BuffHasExpired = true;
                         _lavaBuffs.Remove(player);
                     }
-                    
                 }
                 //shallow water 1, have no use for it atm, shallow sludge 7
                 /*
                 if (groundtype == 1 || groundtype == 7)
                 {
-                    
                 }*/
 
                 //deep water 17 in current implementation should be 2 by londos decode, deep sludge 23
@@ -382,7 +369,7 @@ namespace WorldServer.NetWork.Handler
                 if (groundtype == 3 || groundtype == 19 || (player.Zone.ZoneId == 260 && groundtype == 17 || groundtype == 23)) //19 is deep lava, 17 is deep water, 23 is deep sludge
                 {
                     player.Dismount();
-                    if (!player.IsDead )
+                    if (!player.IsDead)
                     {
                         //do lava dmg
                         if (_lavatimer < Now)
@@ -390,13 +377,12 @@ namespace WorldServer.NetWork.Handler
                             player.BuffInterface.QueueBuff(new BuffQueueInfo(player, player.Level, AbilityMgr.GetBuffInfo(14430), AddLavaBuff));
                             _lavatimer = Now + 1000;
                             player.ResetMorale();
-                        } 
-                        
+                        }
                     }
                 }
-                
+
                 //instadeath
-                
+
                 if (groundtype == 5 || groundtype == 21) //should be 4 according to londos notes 5=lotd shallow water 21=lotd deep water
                 {
                     if (!player.IsDead)
@@ -406,7 +392,7 @@ namespace WorldServer.NetWork.Handler
                         player.Terminate();
                     }
                 }
-                
+
                 //bright wizard colleage lava
                 if (zoneID == 197)
                 {
@@ -421,11 +407,11 @@ namespace WorldServer.NetWork.Handler
                     }
                     else
                     {
-                       if (_lavaBuffs.ContainsKey(player))
-                       {
+                        if (_lavaBuffs.ContainsKey(player))
+                        {
                             _lavaBuffs[player].BuffHasExpired = true;
                             _lavaBuffs.Remove(player);
-                       }
+                        }
                     }
                 }
                 if (zoneID == 190)
@@ -453,7 +439,6 @@ namespace WorldServer.NetWork.Handler
                 {
                     if (!player.IsDead && player.BuffInterface.GetBuff(27960, player) == null)
                         player.BuffInterface.QueueBuff(new BuffQueueInfo(player, player.Level, AbilityMgr.GetBuffInfo(27960)));
-                 
                 }
                 else if (!player.Zone.Info.Illegal)
                 {
@@ -475,6 +460,7 @@ namespace WorldServer.NetWork.Handler
             }
 
             #region Long seems to be when the player has a hostile target
+
             else if (packet.Size > 17)
             {
                 long state = System.Net.IPAddress.NetworkToHostOrder(BitConverter.ToInt64(data, 2));
@@ -510,7 +496,6 @@ namespace WorldServer.NetWork.Handler
                 {
                     if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
                         player.Teleport(161, 439815, 134493, 16865, 0);
-
                     else if (player.Realm == Realms.REALMS_REALM_ORDER)
                         player.Teleport(162, 124084, 130213, 12572, 0);
                 }
@@ -523,10 +508,8 @@ namespace WorldServer.NetWork.Handler
                     player.SendClientMessage("You managed to go outside of the worlds boundries, as such you have been forcefully moved to your capital", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                     if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
                         player.Teleport(161, 439815, 134493, 16865, 0);
-
                     else if (player.Realm == Realms.REALMS_REALM_ORDER)
                         player.Teleport(162, 124084, 130213, 12572, 0);
-
                 }
 
                 //player should not be able to cast while in the air.
@@ -561,13 +544,11 @@ namespace WorldServer.NetWork.Handler
                         _lavaBuffs[player].BuffHasExpired = true;
                         _lavaBuffs.Remove(player);
                     }
-
                 }
                 //shallow water 1, have no use for it atm... shallow sludge 7
                 /*
                 if (groundtype == 1 || groundtype == 7)
                 {
-                    
                 }*/
 
                 //deep water 17 in current implementation should be 2 by londos decode, deep sludge 23
@@ -594,7 +575,7 @@ namespace WorldServer.NetWork.Handler
                 }
 
                 //instadeath
-                
+
                 if (groundtype == 5 || groundtype == 21) //should be 4 according to londos notes 5=lotd shallow water 21=lotd deep water
                 {
                     if (!player.IsDead)
@@ -605,7 +586,7 @@ namespace WorldServer.NetWork.Handler
                         player.Terminate();
                     }
                 }
-                
+
                 //bright wizard colleage lava
                 if (zoneID == 197)
                 {
@@ -652,7 +633,6 @@ namespace WorldServer.NetWork.Handler
                 {
                     if (!player.IsDead && player.BuffInterface.GetBuff(27960, player) == null)
                         player.BuffInterface.QueueBuff(new BuffQueueInfo(player, player.Level, AbilityMgr.GetBuffInfo(27960)));
-
                 }
                 else if (!player.Zone.Info.Illegal)
                 {
@@ -673,7 +653,7 @@ namespace WorldServer.NetWork.Handler
                     player.Terminate();
             }
 
-#endregion
+            #endregion Long seems to be when the player has a hostile target
 
             // Packets not conforming to the above are sent at 500ms intervals when the player is still.
             // I don't know their function, but it appears they're of no interest to the client.
@@ -688,7 +668,7 @@ namespace WorldServer.NetWork.Handler
                 return;
             player.SendCounter++;
             //player.DebugMessage("F_PLAYER_STATE2: "+ (TCPManager.GetTimeStampMS() - player.LastStateRecvTime));
-            player.DispatchPacket(Out, false,true);
+            player.DispatchPacket(Out, false, true);
             player.LastStateRecvTime = TCPManager.GetTimeStampMS();
         }
 
@@ -756,7 +736,7 @@ namespace WorldServer.NetWork.Handler
                     if (region.AddObject(Plr, zoneId, true))
                         return;
                 }
-                else if(info?.Type == 4 || info?.Type == 5|| info?.Type == 6)  // login into a instance results in teleport outside
+                else if (info?.Type == 4 || info?.Type == 5 || info?.Type == 6)  // login into a instance results in teleport outside
                 {
                     if (InstanceService._InstanceInfo.TryGetValue(zoneId, out Instance_Info II))
                     {
@@ -869,7 +849,6 @@ namespace WorldServer.NetWork.Handler
             lock (cclient.Plr.PlayersInRange)
                 players = new List<Player>(cclient.Plr.PlayersInRange);
 
-
             foreach (Player obj in players)
                 if (obj != null && obj.Client != null && !obj.IsDisposed && obj.Client.Id == desiredClientId)
                 {
@@ -933,7 +912,7 @@ namespace WorldServer.NetWork.Handler
                     cclient.Plr.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_FLIGHT_LACK_FUNDS);
                     return;
                 }
-                
+
                 Pet pet = cclient.Plr.CrrInterface.GetTargetOfInterest() as Pet;
                 if (pet != null)
                     pet.Destroy();

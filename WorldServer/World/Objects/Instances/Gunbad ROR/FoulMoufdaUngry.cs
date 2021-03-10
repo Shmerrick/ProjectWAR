@@ -5,7 +5,7 @@ using WorldServer.World.Scripting;
 namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 38623, 0)]
-    class FoulMoufdaUngry : BasicGunbad 
+    internal class FoulMoufdaUngry : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -27,7 +27,7 @@ namespace WorldServer.World.Objects.Instances.Gunbad
     }
 
     [GeneralScript(false, "", 38633, 0)]
-    class SlimespawnSquiglingsFoulMouf : BasicGunbad
+    internal class SlimespawnSquiglingsFoulMouf : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {

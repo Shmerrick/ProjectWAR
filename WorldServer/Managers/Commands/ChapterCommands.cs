@@ -9,7 +9,6 @@ namespace WorldServer.Managers.Commands
     /// <summary>Chapter modification commands under .chapter</summary>
     internal class ChapterCommands
     {
-
         /// <summary>
         /// Save chapter position
         /// </summary>

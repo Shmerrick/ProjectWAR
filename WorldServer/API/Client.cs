@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 
 namespace WorldServer.API
 {
@@ -22,7 +20,6 @@ namespace WorldServer.API
         private byte[] _key;
         private byte[] _tmpEncKey = new byte[256];
 
-
         public ushort PID
         {
             get
@@ -36,7 +33,6 @@ namespace WorldServer.API
             get { return _inQueue; }
             set { _inQueue = value; }
         }
-      
 
         public byte[] Key
         {
@@ -75,7 +71,6 @@ namespace WorldServer.API
             return new ApiPacket(Opcodes.OK);
         }
 
-
         private ApiPacket GetNextFrame()
         {
             int frameSize = 0;
@@ -98,17 +93,15 @@ namespace WorldServer.API
             return packet;
         }
 
-
         protected readonly Queue<ApiPacket> _tcpQueue = new Queue<ApiPacket>();
         public bool _sendingTcp = false;
         public byte[] _sendBuffer = new byte[0xFFFF];
 
-
         public void Disconnect()
         {
             _server.DeleteClient(this);
-
         }
+
         public void SendPacket(ApiPacket frame, bool finish = true)
         {
             if (_socket.Connected)
@@ -117,7 +110,6 @@ namespace WorldServer.API
                 {
                     if (frame != null)
                     {
-
                         if (finish)
                             frame.FinishPacket();
                         lock (_tcpQueue)
@@ -131,7 +123,6 @@ namespace WorldServer.API
                             return;
                         }
                     }
-
 
                     List<ArraySegment<byte>> _sendBuffers = new List<ArraySegment<byte>>();
 
@@ -154,14 +145,12 @@ namespace WorldServer.API
                         _sendingTcp = true;
                         _socket.BeginSend(_sendBuffers, SocketFlags.None, SendCallback, this);
                     }
-
                 }
                 catch (Exception e)
                 {
                 }
                 finally
                 {
-
                 }
             }
         }
@@ -175,18 +164,13 @@ namespace WorldServer.API
 
                 client._sendingTcp = false;
 
-
-
                 SendPacket(null);
-
-
             }
             catch (Exception)
             {
                 //  _server.DeleteClient(this);
             }
         }
-
 
         private void BeginReceive(IAsyncResult ar)
         {
@@ -212,7 +196,7 @@ namespace WorldServer.API
             }
             catch (Exception)
             {
-               // _server._log.Append("Client disconnected", LogType.NET);
+                // _server._log.Append("Client disconnected", LogType.NET);
             }
         }
     }

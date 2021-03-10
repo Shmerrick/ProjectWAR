@@ -10,7 +10,7 @@ using Object = WorldServer.World.Objects.Object;
 
 namespace WorldServer.World.Scripting.Events.Halloween
 {
-    class BasicHalloween : AGeneralScript
+    internal class BasicHalloween : AGeneralScript
     {
         protected Object Obj; // This is creature
         public Random random = new Random();
@@ -85,7 +85,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000810, 0)]
-    class NPC0 : BasicHalloween
+    internal class NPC0 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -100,7 +100,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000811, 0)]
-    class NPC1 : BasicHalloween
+    internal class NPC1 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -115,7 +115,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000812, 0)]
-    class NPC2 : BasicHalloween
+    internal class NPC2 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -130,7 +130,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000813, 0)]
-    class NPC3 : BasicHalloween
+    internal class NPC3 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -145,7 +145,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000814, 0)]
-    class NPC4 : BasicHalloween
+    internal class NPC4 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -160,7 +160,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000815, 0)]
-    class NPC5 : BasicHalloween
+    internal class NPC5 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -175,7 +175,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000816, 0)]
-    class NPC6 : BasicHalloween
+    internal class NPC6 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -190,7 +190,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000817, 0)]
-    class NPC7 : BasicHalloween
+    internal class NPC7 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -205,7 +205,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000818, 0)]
-    class NPC8 : BasicHalloween
+    internal class NPC8 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -220,7 +220,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000819, 0)]
-    class NPC9 : BasicHalloween
+    internal class NPC9 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -235,7 +235,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000820, 0)]
-    class NPC10 : BasicHalloween
+    internal class NPC10 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -250,7 +250,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000821, 0)]
-    class NPC11 : BasicHalloween
+    internal class NPC11 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -265,7 +265,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000822, 0)]
-    class NPC12 : BasicHalloween
+    internal class NPC12 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -280,7 +280,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000823, 0)]
-    class NPC13 : BasicHalloween
+    internal class NPC13 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -295,7 +295,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000824, 0)]
-    class NPC14 : BasicHalloween
+    internal class NPC14 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -310,7 +310,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000825, 0)]
-    class NPC15 : BasicHalloween
+    internal class NPC15 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -325,7 +325,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000826, 0)]
-    class NPC16 : BasicHalloween
+    internal class NPC16 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -340,7 +340,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000827, 0)]
-    class NPC17 : BasicHalloween
+    internal class NPC17 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -355,7 +355,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000828, 0)]
-    class NPC18 : BasicHalloween
+    internal class NPC18 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -370,7 +370,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000829, 0)]
-    class NPC19 : BasicHalloween
+    internal class NPC19 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -385,7 +385,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000830, 0)]
-    class NPC20 : BasicHalloween
+    internal class NPC20 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -400,7 +400,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000831, 0)]
-    class NPC21 : BasicHalloween
+    internal class NPC21 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -415,7 +415,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000832, 0)]
-    class NPC22 : BasicHalloween
+    internal class NPC22 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -430,7 +430,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000833, 0)]
-    class NPC23 : BasicHalloween
+    internal class NPC23 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -445,7 +445,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000834, 0)]
-    class NPC24 : BasicHalloween
+    internal class NPC24 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -460,7 +460,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000835, 0)]
-    class NPC25 : BasicHalloween
+    internal class NPC25 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {
@@ -475,7 +475,7 @@ namespace WorldServer.World.Scripting.Events.Halloween
     }
 
     [GeneralScript(false, "", 2000836, 0)]
-    class NPC26 : BasicHalloween
+    internal class NPC26 : BasicHalloween
     {
         public override void OnObjectLoad(Object Obj)
         {

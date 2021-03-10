@@ -1,9 +1,6 @@
 ﻿using Common;
 using FrameWork;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using WorldServer.Services.World;
 
 namespace WorldServer.World.Objects.PublicQuests
@@ -40,12 +37,11 @@ namespace WorldServer.World.Objects.PublicQuests
 
         public void Reset()
         {
-
             if (Objective == null)
             {
                 Log.Error("PQuestObjective.Reset", string.Concat(Quest.Name, " has no objective!"));
                 return;
-            }   
+            }
 
             if (Objective.Spawns == null)
             {
@@ -84,7 +80,7 @@ namespace WorldServer.World.Objects.PublicQuests
                     S.Emote = spawn.Emote;
                     //This sets NPC level from puest_spawns table, we are not using creature_protos here
                     S.Level = spawn.Level;
-                    
+
                     PQuestCreature newCreature = new PQuestCreature(S, this, Quest);
                     newCreature.PQSpawnId = spawn.pquest_spawns_ID.Replace(" ", "");
 
@@ -121,12 +117,11 @@ namespace WorldServer.World.Objects.PublicQuests
                     S.Unks = spawn.Unks;
                     S.Unk3 = spawn.Unk3;
 
-
                     PQuestGameObject NewGo = new PQuestGameObject(S, this);
                     if (NewGo != null)
-                    { 
+                    {
                         lock (ActiveGameObjects)
-                        { 
+                        {
                             ActiveGameObjects.Add(NewGo);
                         }
                         Quest.Region.AddObject(NewGo, spawn.ZoneId);
@@ -144,18 +139,13 @@ namespace WorldServer.World.Objects.PublicQuests
                             NewGo.EvtInterface.AddEvent(PlayPQSound, i * (int)Objective.SoundDelay * 1000 + 500, 1, prms);
                         }
                     }
-
                 }
                 if (spawn.Type == 3)
                 {
-
                     return;
 #warning this sucks cant get gos by spawn id
 
                     ActiveInteractableGameObjects.Add(spawn.Entry);
-
-
-
                 }
             }
         }

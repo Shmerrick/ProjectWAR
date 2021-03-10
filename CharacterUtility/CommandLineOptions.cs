@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CommandLine;
-using CommandLine.Text;
+﻿using CommandLine;
 
 namespace CharacterUtility
 {
@@ -22,7 +16,6 @@ namespace CharacterUtility
         {
             [Option('f', "output-file", Required = false, HelpText = "Character-Export file to be processed.")]
             public string ExportFileName { get; set; }
-
         }
 
         [Verb("create", HelpText = "Create Character directly into DB.")]
@@ -30,7 +23,6 @@ namespace CharacterUtility
         {
             [Option('f', "template-file", Required = true, HelpText = "Template file to be processed.")]
             public string TemplateFileName { get; set; }
-
         }
 
         [Verb("itemset", HelpText = "Extend ItemSet data in DB.")]
@@ -44,9 +36,6 @@ namespace CharacterUtility
 
             [Option('f', "output-file", Required = false, HelpText = "File to extract itemset to")]
             public string ItemsetOutputFile { get; set; }
-
         }
-
-
     }
 }

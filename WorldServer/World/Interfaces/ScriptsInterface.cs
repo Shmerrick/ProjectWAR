@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using FrameWork;
+﻿using FrameWork;
+using System.Collections.Generic;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
 using WorldServer.World.Abilities.Components;
@@ -82,7 +82,7 @@ namespace WorldServer.World.Interfaces
             Scripts.Clear();
         }
 
-        #endregion
+        #endregion General
 
         #region Local
 
@@ -160,7 +160,7 @@ namespace WorldServer.World.Interfaces
                 Scripts[i].OnCastAbility(Ab);
         }
 
-        #endregion
+        #endregion Local
 
         #region World
 
@@ -197,6 +197,6 @@ namespace WorldServer.World.Interfaces
                 Scripts[i].OnWorldZoneEvent(EventName, Zone, Data);
         }
 
-        #endregion
+        #endregion World
     }
 }

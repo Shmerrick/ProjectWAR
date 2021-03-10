@@ -1,6 +1,6 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
 using GameData;
+using System;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Objects;
 using Opcodes = WorldServer.NetWork.Opcodes;
@@ -9,14 +9,14 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 {
     public class CareerInterface_SlayerChoppa : CareerInterface
     {
-        const byte RAGE_FURIOUS = 25;
-        const byte RAGE_BERSERK = 75;
+        private const byte RAGE_FURIOUS = 25;
+        private const byte RAGE_BERSERK = 75;
 
-        const byte EFFECT_FURIOUS = 3;
-        const byte EFFECT_BERSERK = 4;
+        private const byte EFFECT_FURIOUS = 3;
+        private const byte EFFECT_BERSERK = 4;
 
-        const float DMGBONUS_FURIOUS = 0.25f;
-        const float DMGBONUS_BERSERK = 0.5f;
+        private const float DMGBONUS_FURIOUS = 0.25f;
+        private const float DMGBONUS_BERSERK = 0.5f;
 
         private byte _rageState;
 
@@ -33,7 +33,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                 _selfBuff = 1051;
                 _counterBuff = 1052;
             }
-
             else
             {
                 _selfBuff = 1062;
@@ -74,7 +73,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             if (GetCurrentResourceLevel(0) != _rageState)
             {
                 SwitchRageState(GetCurrentResourceLevel(0));
-                myPlayer.BuffInterface.NotifyResourceEvent((byte) BuffCombatEvents.ResourceSet, _lastResource, ref _careerResource);
+                myPlayer.BuffInterface.NotifyResourceEvent((byte)BuffCombatEvents.ResourceSet, _lastResource, ref _careerResource);
             }
         }
 
@@ -88,7 +87,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             if (GetCurrentResourceLevel(0) != _rageState)
             {
                 SwitchRageState(GetCurrentResourceLevel(0));
-                myPlayer.BuffInterface.NotifyResourceEvent((byte) BuffCombatEvents.ResourceSet, _lastResource, ref _careerResource);
+                myPlayer.BuffInterface.NotifyResourceEvent((byte)BuffCombatEvents.ResourceSet, _lastResource, ref _careerResource);
             }
 
             return true;
@@ -109,7 +108,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             if (GetCurrentResourceLevel(0) != _rageState)
             {
                 SwitchRageState(GetCurrentResourceLevel(0));
-                myPlayer.BuffInterface.NotifyResourceEvent((byte) BuffCombatEvents.ResourceSet, _lastResource, ref _careerResource);
+                myPlayer.BuffInterface.NotifyResourceEvent((byte)BuffCombatEvents.ResourceSet, _lastResource, ref _careerResource);
             }
 
             return true;
@@ -143,7 +142,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                         _nextRegenTime = tick + 1000;
                     }
                 }
-
                 else
                 {
                     if (_nextRegenTime <= tick)
@@ -153,7 +151,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                     }
                 }
             }
-
             else
             {
                 _wasFighting = isFighting;
@@ -172,11 +169,13 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             {
                 case 0:
                     break;
+
                 case 1:
                     myPlayer.StsInterface.RemoveBonusMultiplier(Stats.OutgoingDamagePercent, DMGBONUS_FURIOUS, BuffClass.Career);
                     if (newState != 2)
                         SendBerserkOwnerEffect(EFFECT_FURIOUS, 0);
                     break;
+
                 case 2:
                     myPlayer.StsInterface.RemoveBonusMultiplier(Stats.OutgoingDamagePercent, DMGBONUS_BERSERK, BuffClass.Career);
                     myPlayer.StsInterface.RemoveReducedMultiplier(Stats.Armor, 0.5f, BuffClass.Career);
@@ -194,12 +193,14 @@ namespace WorldServer.World.Abilities.CareerInterfaces
             {
                 case 0:
                     break;
+
                 case 1:
                     myPlayer.StsInterface.AddBonusMultiplier(Stats.OutgoingDamagePercent, DMGBONUS_FURIOUS, BuffClass.Career);
                     SendBerserkOwner(newState);
                     if (_rageState == 0)
                         SendBerserkOwnerEffect(EFFECT_FURIOUS, 1);
                     break;
+
                 case 2:
                     myPlayer.StsInterface.AddBonusMultiplier(Stats.OutgoingDamagePercent, DMGBONUS_BERSERK, BuffClass.Career);
 
@@ -240,7 +241,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
                 Out.WriteByte(3);
                 Out.WriteZigZag(1);
             }
-
             else
             {
                 Out.WriteByte(3); // Line count

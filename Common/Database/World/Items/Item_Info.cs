@@ -1,7 +1,6 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
-
-using FrameWork;
 
 namespace Common
 {
@@ -13,8 +12,8 @@ namespace Common
         public static int MaxStats = 12;
 
         private uint _entry;
-        private string _name="";
-        private string _description="";
+        private string _name = "";
+        private string _description = "";
         private byte _type;
         private byte _race;
         private uint _modelId;
@@ -47,54 +46,74 @@ namespace Common
         private ushort _baseColor2;
 
         public Dictionary<byte, ushort> _Stats = new Dictionary<byte, ushort>();
-        public List<ushort> EffectsList = new List<ushort>(); 
+        public List<ushort> EffectsList = new List<ushort>();
         public List<KeyValuePair<byte, ushort>> _Crafts = new List<KeyValuePair<byte, ushort>>();
         public List<KeyValuePair<uint, ushort>> _SellRequiredItems = new List<KeyValuePair<uint, ushort>>();
         public List<KeyValuePair<Item_Info, ushort>> RequiredItems = new List<KeyValuePair<Item_Info, ushort>>();
 
         [PrimaryKey]
         public uint Entry { get { return _entry; } set { _entry = value; } }
+
         [DataElement(Varchar = 255)]
         public string Name { get { return _name; } set { _name = value; } }
+
         [DataElement(Varchar = 255)]
         public string Description { get { return _description; } set { _description = value; } }
-        
+
         [DataElement()]
         public byte Type { get { return _type; } set { _type = value; } }
+
         [DataElement()]
         public byte Race { get { return _race; } set { _race = value; } }
+
         [DataElement()]
-        public uint ModelId  { get { return _modelId; } set { _modelId = value; } }
+        public uint ModelId { get { return _modelId; } set { _modelId = value; } }
+
         [DataElement()]
         public ushort SlotId { get { return _slotId; } set { _slotId = value; } }
+
         [DataElement()]
         public byte Rarity { get { return _rarity; } set { _rarity = value; } }
+
         [DataElement()]
         public uint Career { get { return _career; } set { _career = value; } }
+
         [DataElement()]
-        public uint Skills { get { return _skills; } set {  _skills= value; } }
+        public uint Skills { get { return _skills; } set { _skills = value; } }
+
         [DataElement()]
         public byte Bind { get { return _bind; } set { _bind = value; } }
+
         [DataElement()]
         public ushort Armor { get { return _armor; } set { _armor = value; } }
+
         [DataElement()]
         public ushort SpellId { get { return _spellId; } set { _spellId = value; } }
+
         [DataElement()]
         public uint ItemSet { get { return _itemSet; } set { _itemSet = value; } }
+
         [DataElement()]
         public ushort Dps { get { return _dps; } set { _dps = value; } }
+
         [DataElement()]
         public ushort Speed { get { return _speed; } set { _speed = value; } }
+
         [DataElement()]
         public byte MinRank { get { return _minRank; } set { _minRank = value; } }
+
         [DataElement()]
         public byte MinRenown { get { return _minRenown; } set { _minRenown = value; } }
+
         [DataElement()]
         public byte ObjectLevel { get { return _objectLevel; } set { _objectLevel = value; } }
+
         [DataElement()]
         public byte UniqueEquiped { get { return _uniqueEquiped; } set { _uniqueEquiped = value; } }
+
         [DataElement()]
         public int StartQuest { get { return _startQuest; } set { _startQuest = value; } }
+
         [DataElement()]
         public string Stats
         {
@@ -114,8 +133,8 @@ namespace Common
                 ushort lastValue;
                 string[] val;
 
-                try {
-
+                try
+                {
                     foreach (string str in st)
                         if (str.Length > 1)
                         {
@@ -136,10 +155,9 @@ namespace Common
                                 _Stats[type] = (ushort)(lastValue + Value);
                         }
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     Log.Error("itemstats broken in item entry ", "" + Entry + " statsstring " + value);
-
                 }
             }
         }
@@ -216,6 +234,7 @@ namespace Common
 
         [DataElement()]
         public uint SellPrice { get { return _sellPrice; } set { _sellPrice = value; } }
+
         [DataElement()]
         public string SellRequiredItems
         {
@@ -256,10 +275,12 @@ namespace Common
 
         [DataElement()]
         public byte TalismanSlots { get { return _talismanSlots; } set { _talismanSlots = value; } }
+
         [DataElement()]
         public ushort MaxStack { get { return _maxStack; } set { _maxStack = value; } }
+
         [DataElement()]
-        public byte[] Unk27 
+        public byte[] Unk27
         {
             get
             {
@@ -283,7 +304,7 @@ namespace Common
             }
         }
 
-        [DataElement(Varchar=255)]
+        [DataElement(Varchar = 255)]
         public string ScriptName { get { return _scriptName; } set { _scriptName = value; } }
 
         [DataElement()]
@@ -318,6 +339,5 @@ namespace Common
 
         [DataElement(AllowDbNull = false)]
         public bool IsSiege { get; set; }
-
     }
 }

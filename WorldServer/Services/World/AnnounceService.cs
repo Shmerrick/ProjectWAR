@@ -26,6 +26,5 @@ namespace WorldServer.Services.World
 
             return null;
         }
-
     }
 }

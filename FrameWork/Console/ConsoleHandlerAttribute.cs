@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FrameWork
 {
@@ -11,7 +9,7 @@ namespace FrameWork
         private int _argcount;
         private string _Description;
 
-        public ConsoleHandlerAttribute(string command,int argcount,string Description)
+        public ConsoleHandlerAttribute(string command, int argcount, string Description)
         {
             _command = command;
             _argcount = argcount;

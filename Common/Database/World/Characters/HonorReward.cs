@@ -1,9 +1,9 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common.Database.World.Characters
 {
-    // Fixed value of a character 
+    // Fixed value of a character
     [DataTable(PreCache = false, TableName = "honor_rewards", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class HonorReward : DataObject
@@ -25,6 +25,7 @@ namespace Common.Database.World.Characters
 
         [DataElement(AllowDbNull = false)]
         public int MaxCount { get; set; }
+
         [DataElement(AllowDbNull = false)]
         public int ItemCount { get; set; }
     }

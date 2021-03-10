@@ -13,8 +13,10 @@ namespace WorldServer.Managers.Commands
     /// </summary>
     internal class GMUtils
     {
+        private GMUtils()
+        {
+        }
 
-        private GMUtils() { }
         public static void PrintCommands(Player plr, List<GmCommandHandler> handler)
         {
             byte count = 0;
@@ -40,6 +42,7 @@ namespace WorldServer.Managers.Commands
             }
             plr.SendClientMessage("===================================");
         }
+
         public static string GetTotalString(ref List<string> values)
         {
             string Str = "";
@@ -58,6 +61,7 @@ namespace WorldServer.Managers.Commands
 
             return Str;
         }
+
         /// <summary>
         /// Retrieves a zone id from a gm command parameter.
         /// </summary>
@@ -100,6 +104,7 @@ namespace WorldServer.Managers.Commands
             }
             return -1;
         }
+
         public static string GetString(ref List<string> values)
         {
             if (values.Count <= 0)
@@ -110,6 +115,7 @@ namespace WorldServer.Managers.Commands
 
             return str;
         }
+
         public static int GetInt(ref List<string> values)
         {
             return int.Parse(GetString(ref values));

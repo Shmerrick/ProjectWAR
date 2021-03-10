@@ -1,14 +1,11 @@
 ﻿using Common;
 using FrameWork;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace WorldServer.Services.World
 {
     [Service]
-    class ScenarioService : ServiceBase
+    internal class ScenarioService : ServiceBase
     {
         public static List<Scenario_Info> Scenarios;
         public static List<Scenario_Info> ActiveScenarios;
@@ -47,6 +44,5 @@ namespace WorldServer.Services.World
                     return scenario;
             return null;
         }
-
     }
 }

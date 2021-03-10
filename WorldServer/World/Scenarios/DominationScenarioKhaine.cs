@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Common;
+using FrameWork;
+using GameData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common;
-using FrameWork;
-using GameData;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Components;
@@ -16,7 +16,7 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Scenarios
 {
-    class DominationScenarioKhaine : Scenario
+    internal class DominationScenarioKhaine : Scenario
     {
         public List<ClickFlag> Flags = new List<ClickFlag>();
 
@@ -37,8 +37,7 @@ namespace WorldServer.World.Scenarios
                     clickFlag.Owner = 0;
                     clickFlag.ShowGlow = true;
                     clickFlag.HoldDuration = 0;
-                    clickFlag.CaptureCastTime  = 10;
-
+                    clickFlag.CaptureCastTime = 10;
                 }
                 else
                     LoadScenarioObject(scenarioObject);
@@ -94,7 +93,6 @@ namespace WorldServer.World.Scenarios
                 flag.Owner = 0;
                 flag.HoldOwner = 0;
                 flag.GlowOwner = 0;
-
             }
             for (int i = 0; i < 2; i++)
             {
@@ -115,7 +113,7 @@ namespace WorldServer.World.Scenarios
 
         private void Lock()
         {
-            Broadcast(new[] { "The forces of " + (Flags[0].Owner == (int)Realms.REALMS_REALM_ORDER ? "Order" : "Destruction") + " bring forth Khaine's Wrath!" }, 
+            Broadcast(new[] { "The forces of " + (Flags[0].Owner == (int)Realms.REALMS_REALM_ORDER ? "Order" : "Destruction") + " bring forth Khaine's Wrath!" },
                 ChatLogFilters.CHATLOGFILTERS_C_WHITE, Localized_text.CHAT_TAG_DEFAULT);
 
             foreach (var obj in Region.GetObjects<GameObject>().Where(e => e.Name == "Khaine Flames").ToList())
@@ -139,13 +137,11 @@ namespace WorldServer.World.Scenarios
             GroundTarget gt3 = new GroundTarget(new Point3D(364572, 365590, 12036), GameObjectService.GetGameObjectProto(23));
             Region.AddObject(gt3, 230);
 
-
             EvtInterface.AddEvent(() =>
             {
                 Explosion(gt1);
                 Explosion(gt2);
                 Explosion(gt3);
-
             }, 1000, 1);
 
             //remove ground targets after explosions
@@ -154,7 +150,6 @@ namespace WorldServer.World.Scenarios
                 gt1.RemoveFromWorld();
                 gt2.RemoveFromWorld();
                 gt3.RemoveFromWorld();
-
             }, 10000, 1);
 
             EvtInterface.AddEvent(Unlock, 5000, 1);
@@ -231,7 +226,6 @@ namespace WorldServer.World.Scenarios
                         CombatManager.InflictDamage(damageThisPass, 20, plr, plr);
                     }
                 }
-
             }, (int)(explosionTime / 20), (int)(20));
         }
 
@@ -257,15 +251,12 @@ namespace WorldServer.World.Scenarios
             else if (flag.Owner == (int)Realms.REALMS_REALM_DESTRUCTION)
                 PlaySoundToAll(818);
 
-
             if (Flags[0].Owner == Flags[1].Owner)
             {
-                Broadcast(new[] { (Flags[0].Owner == (int)Realms.REALMS_REALM_ORDER ? "Order" : "Destruction") + " will lock down both control points in 15 seconds!"}, 
+                Broadcast(new[] { (Flags[0].Owner == (int)Realms.REALMS_REALM_ORDER ? "Order" : "Destruction") + " will lock down both control points in 15 seconds!" },
                     ChatLogFilters.CHATLOGFILTERS_C_WHITE, Localized_text.CHAT_TAG_DEFAULT);
                 EvtInterface.AddEvent(Lock, 15000, 1);
-
             }
         }
-
     }
 }

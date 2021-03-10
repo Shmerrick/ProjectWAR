@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using GameData;
+﻿using GameData;
 using WorldServer.World.Objects;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
@@ -25,26 +24,25 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 switch (PlayerRealm)
                 {
                     case Realms.REALMS_REALM_DESTRUCTION:
-                    {
-                        if (test.Entry == 666572)
-                            return true;
-                        else
                         {
-                            break;
+                            if (test.Entry == 666572)
+                                return true;
+                            else
+                            {
+                                break;
+                            }
                         }
-                    }
                     case Realms.REALMS_REALM_ORDER:
-                    {
-                        if (test.Entry == 666571)
-                            return true;
-                        else
                         {
-                            break;
+                            if (test.Entry == 666571)
+                                return true;
+                            else
+                            {
+                                break;
+                            }
                         }
-                    }
                     default:
                         return false;
-
                 }
             }
             return false;

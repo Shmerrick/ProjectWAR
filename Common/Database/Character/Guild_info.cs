@@ -1,9 +1,6 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using FrameWork;
 
 namespace Common
 {
@@ -31,6 +28,7 @@ namespace Common
 
         // Used on recruitment
         private string _BriefDescription;
+
         private string _Summary;
         private byte _PlayStyle;
         private byte _Atmosphere;
@@ -43,7 +41,6 @@ namespace Common
         public Guild_info()
             : base()
         {
-
         }
 
         [PrimaryKey]
@@ -204,7 +201,7 @@ namespace Common
                 {
                     _guildvaultpurchased = new byte[5];
                 }
-                Dirty = true; 
+                Dirty = true;
             }
         }
 
@@ -251,7 +248,7 @@ namespace Common
             set { _AllianceId = value; Dirty = true; }
         }
 
-        public Dictionary<ushort, GuildVaultItem>[] Vaults = 
+        public Dictionary<ushort, GuildVaultItem>[] Vaults =
         {
             new Dictionary<ushort, GuildVaultItem>(),
             new Dictionary<ushort, GuildVaultItem>(),

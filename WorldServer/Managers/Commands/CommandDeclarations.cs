@@ -1,29 +1,25 @@
 ﻿using FrameWork;
 using System.Collections.Generic;
-using static WorldServer.Managers.Commands.BaseCommands;
-using static WorldServer.Managers.Commands.RespawnCommands;
-using static WorldServer.Managers.Commands.SearchCommands;
-using static WorldServer.Managers.Commands.NpcCommands;
-using static WorldServer.Managers.Commands.StatesCommand;
-using static WorldServer.Managers.Commands.EquipCommands;
-using static WorldServer.Managers.Commands.WaypointCommands;
-using static WorldServer.Managers.Commands.GoCommands;
-using static WorldServer.Managers.Commands.ChapterCommands;
-using static WorldServer.Managers.Commands.ModifyCommands;
-using static WorldServer.Managers.Commands.AddCommands;
 using static WorldServer.Managers.Commands.AbilityCommands;
-using static WorldServer.Managers.Commands.CampaignCommands;
+using static WorldServer.Managers.Commands.AddCommands;
+using static WorldServer.Managers.Commands.BaseCommands;
+using static WorldServer.Managers.Commands.ChapterCommands;
 using static WorldServer.Managers.Commands.CheckCommands;
+using static WorldServer.Managers.Commands.DatabaseCommands;
+using static WorldServer.Managers.Commands.EquipCommands;
+using static WorldServer.Managers.Commands.InstanceCommands;
+using static WorldServer.Managers.Commands.ModifyCommands;
+using static WorldServer.Managers.Commands.MountCommands;
+using static WorldServer.Managers.Commands.NpcCommands;
+using static WorldServer.Managers.Commands.PqCommands;
+using static WorldServer.Managers.Commands.RespawnCommands;
 using static WorldServer.Managers.Commands.RespecCommands;
 using static WorldServer.Managers.Commands.ScenarioCommands;
+using static WorldServer.Managers.Commands.SearchCommands;
+using static WorldServer.Managers.Commands.StatesCommand;
 using static WorldServer.Managers.Commands.TeleportCommands;
 using static WorldServer.Managers.Commands.TicketCommands;
-using static WorldServer.Managers.Commands.MountCommands;
-using static WorldServer.Managers.Commands.DatabaseCommands;
-using static WorldServer.Managers.Commands.PqCommands;
-using static WorldServer.Managers.Commands.InstanceCommands;
-using static WorldServer.Managers.Commands.EventCommands;
-using static WorldServer.Managers.Commands.SettingCommands;
+using static WorldServer.Managers.Commands.WaypointCommands;
 
 namespace WorldServer.Managers.Commands
 {
@@ -55,10 +51,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("buffcast", InvokeBuff, null, EGmLevel.DatabaseDev, 2, "Invokes the buff of the specified ID."),
             new GmCommandHandler("zerostats", SendZeroStats, null, EGmLevel.DatabaseDev, 0, "Sends zero stats to the client for debug purposes."),
             new GmCommandHandler("list", GetAbilityList, null, EGmLevel.GM, 0, "Gets the complete ability list of target (creature).")
-
         };
-
-
 
         /// <summary>Addition commands under .add</summary>
         public static List<GmCommandHandler> AddCommands = new List<GmCommandHandler>
@@ -72,8 +65,6 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("eligibility", AddRewardEligibility, null, EGmLevel.TrustedStaff, 0, "Reports on players eligibility"),
             new GmCommandHandler("zonelockbags", AddZoneLockBags, null, EGmLevel.TrustedStaff, 0, "Adds Zone Lock Bags"),
         };
-
-
 
         /// <summary>RvR campaign commmands under .campaign</summary>
         public static List<GmCommandHandler> CampaignCommands = CommandsBuilder.BuildCommands(typeof(CampaignCommands));
@@ -109,7 +100,6 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("keeps", CheckKeeps, null, EGmLevel.GM, 0, "Checks all keeps that they have the minimum required child table records."),
             new GmCommandHandler("captain", CheckCaptain, null, EGmLevel.GM, 0, "Returns captain for either realm in the current region"),
             new GmCommandHandler("oil", CheckOil, null, EGmLevel.GM, 0, "Returns information about the current keep/oil")
-            
         };
 
         /// <summary>Database commands under .database</summary>
@@ -121,7 +111,6 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("gameobjectsreload", ReloadGameObjects, null, EGmLevel.DatabaseDev, 0, "Reload game objects in your region"),
             new GmCommandHandler("reloadabilities", ReloadAbilities, null, EGmLevel.DatabaseDev, 0, "Reload abilities."),
             new GmCommandHandler("reloadpetmodifiers", ReloadPetModifiers, null, EGmLevel.DatabaseDev, 0, "Reload pet modifiers")
-
         };
 
         /// <summary>Creature equipment modification commands under .equip</summary>
@@ -131,7 +120,6 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("remove", EquipRemove, null, EGmLevel.DatabaseDev, 2, "Remove Equipement to target <Slot,Save>"),
             new GmCommandHandler("clear", EquipClear, null, EGmLevel.DatabaseDev, 1, "Remove All Equipements to target <Save>"),
             new GmCommandHandler("list", EquipList, null, EGmLevel.GM, 0, "Draw Equipement list of target")
-
         };
 
         /// <summary>Game object commands under .go</summary>
@@ -149,13 +137,11 @@ namespace WorldServer.Managers.Commands
                 "Converts selected Object to a Instance Boss spawn <BossId> <spawngroup> <instanceid>"),
             new GmCommandHandler("reset", InstanceReset, null, EGmLevel.DatabaseDev, 0, "Resets the current pq"),
             new GmCommandHandler("opendoor", InstanceOpenDoor, null, EGmLevel.DatabaseDev, 0, "Opens door inside instance (uniqueID, instanceID, open=1/close=0)"),
-
         };
 
         /// <summary>Unit modification commands under .modify</summary>
         public static List<GmCommandHandler> ModifyCommands = new List<GmCommandHandler>
         {
-
             new GmCommandHandler("speed", ModifySpeed, null, EGmLevel.AnyGM, 1, "Changes the speed of the targeted player (int Speed, 0-1000)"),
             new GmCommandHandler("playername", ModifyPlayerName, null, EGmLevel.AnyGM, 2, "Changes players name"),
             new GmCommandHandler("playernametemp", ModifyPlayerNameTemp, null, EGmLevel.EmpoweredStaff, 0, "Temporarily changes players name until server restart."),
@@ -190,7 +176,6 @@ namespace WorldServer.Managers.Commands
         /// <summary>NPC commands under .npc</summary>
         public static List<GmCommandHandler> NpcCommands = new List<GmCommandHandler>
         {
-
             new GmCommandHandler("spawn",NpcSpawn, null, EGmLevel.DatabaseDev, 1, "Spawn an npc"),
             new GmCommandHandler("remove",NpcRemove, null, EGmLevel.DatabaseDev, 1, "Delete the target <(0=World,1=Database)>"),
             new GmCommandHandler("go",NpcGoTo, null, EGmLevel.DatabaseDev, 3, "Npc Go To Target <X,Y,Z>"),
@@ -212,13 +197,11 @@ namespace WorldServer.Managers.Commands
         /// <summary>Public Quest commands under .pq</summary>11
         public static List<GmCommandHandler> PqCommands = new List<GmCommandHandler>
         {
-
             new GmCommandHandler("spawn", PqSpawn, null, EGmLevel.DatabaseDev, 3, "Spawn a PQ NPC <object id> <objective id> <type 1 = NPC>"),
             new GmCommandHandler("convert", PqConvert, null, EGmLevel.DatabaseDev, 1, "Converts selected Object to a PQ spawn <objective id>"),
             new GmCommandHandler("next", PqNextStage, null, EGmLevel.AnyGM, 0, "Lets go onto the next pq stage"),
             new GmCommandHandler("clear", PqClear, null, EGmLevel.AnyGM, 0, "Despawns all npc of the current stage stage"),
             new GmCommandHandler("reset", PqReset, null, EGmLevel.AnyGM, 0, "Resets the current pq")
-
         };
 
         /// <summary>Respawn modification commands under .respawn</summary>
@@ -245,7 +228,6 @@ namespace WorldServer.Managers.Commands
 
             // new GmCommandHandler("rotate", ScenarioRotate, null, EGmLevel.TrustedGM, 0, "Rotates the active scenarios.")
         };
-
 
         /// <summary>Search commands under .search</summary>
         public static List<GmCommandHandler> SearchCommands = new List<GmCommandHandler>
@@ -277,7 +259,6 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("set", TeleportSet, null, EGmLevel.AnyGM, 5,
                 "Sets offline/online players coordinates in database (player_name byte byte ZoneID , uint WorldX, uint WorldY, uint WorldZ)"),
             new GmCommandHandler("objective", TeleportObjective, null, EGmLevel.GM, 1, "Teleport player to BattlefieldObjective (ObjectiveId)"),
-
         };
 
         /// <summary>Ticket management commands under .ticket</summary>
@@ -294,7 +275,6 @@ namespace WorldServer.Managers.Commands
         /// <summary>Waypoint commands under .warpoint</summary>
         public static List<GmCommandHandler> WaypointCommands = new List<GmCommandHandler>
         {
-
             new GmCommandHandler("add", NpcAddWaypoint, null, EGmLevel.DatabaseDev, 0, "Adds a waypoint on your current position to your current target."),
             new GmCommandHandler("remove", NpcRemoveWaypoint, null, EGmLevel.DatabaseDev, 1, "Remove a waypoint from the target (int Id)"),
             new GmCommandHandler("move", NpcMoveWaypoint, null, EGmLevel.DatabaseDev, 1, "Moves the specified waypoint of target to your position (int Id)"),
@@ -330,7 +310,7 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("waypoints", null, WaypointCommands, EGmLevel.DatabaseDev, 0, "Waypoint commands."),
             new GmCommandHandler("setting", null, SettingCommands, EGmLevel.SourceDev, 0, "World settings commands."),
 
-            #endregion
+            #endregion Command Group Handlers
 
             #region Standalone Commands
 
@@ -373,7 +353,6 @@ namespace WorldServer.Managers.Commands
                 "Creates an object at the position which a player held a certain time ago (int millisecondDelta)"),
             new GmCommandHandler("latency", OverrideLatency, null, EGmLevel.AllStaff, 1, "Overrides the server's opinion of your latency (int latency)"),
             new GmCommandHandler("getguildlead", GetGuildLead, null, EGmLevel.AllStaff, 1, "Returns the guild leader of the guild specified (string guildname)"),
-
 
             // All empowered staff
             new GmCommandHandler("kill", Kill, null, EGmLevel.AnyGM, 0, "Slays the targeted Unit."),
@@ -490,12 +469,8 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("testscoreboard", Scoreboard, null, EGmLevel.SourceDev, 0, "test scoreboard"),
             new GmCommandHandler("title", SetTitle, null, EGmLevel.SourceDev, 1, "Set player title"),
             new GmCommandHandler("bulkmail", BulkMailItems, null, EGmLevel.SourceDev, 1, "Mail items from a file to characters"),
-            
-            
-
-
         };
 
-        #endregion
+        #endregion Standalone Commands
     };
 }

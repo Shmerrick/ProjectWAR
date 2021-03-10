@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using WorldServer.World.Objects;
+﻿using WorldServer.World.Objects;
 
 namespace WorldServer.World.AI
 {
@@ -13,7 +12,6 @@ namespace WorldServer.World.AI
         public override void Think(long tick)
         {
             base.Think(tick);
-
 
             //if (_unit.PlayersInRange.Count > 0)
             //{

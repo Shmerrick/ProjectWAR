@@ -11,8 +11,6 @@ namespace Common
         public const int HONOR_RANK_3 = 4000;
         public const int HONOR_RANK_4 = 8000;
 
-
-
         public HonorCalculation()
         {
             // This list MUST be descending in sequence for this to work ;)
@@ -20,12 +18,10 @@ namespace Common
             honorLevelReference.Add(3, HONOR_RANK_3);
             honorLevelReference.Add(2, HONOR_RANK_2);
             honorLevelReference.Add(1, HONOR_RANK_1);
-
         }
 
         public int GetHonorLevel(int honorPoints)
         {
-
             foreach (var honorLevel in honorLevelReference)
             {
                 if (honorLevel.Value < honorPoints)
@@ -38,7 +34,6 @@ namespace Common
         {
             return ((int)Math.Round(i / 10.0)) * 10;
         }
-
 
         public static int CalculateRank0Percent(ushort infoHonorPoints)
         {
@@ -54,6 +49,7 @@ namespace Common
         {
             return RoundOffNearestTen((100 * (infoHonorPoints - HonorCalculation.HONOR_RANK_3 + HonorCalculation.HONOR_RANK_2)) / HonorCalculation.HONOR_RANK_2);
         }
+
         public static int CalculateRank3Percent(ushort infoHonorPoints)
         {
             return RoundOffNearestTen((100 * (infoHonorPoints - HonorCalculation.HONOR_RANK_4 + HonorCalculation.HONOR_RANK_3)) / HonorCalculation.HONOR_RANK_3);

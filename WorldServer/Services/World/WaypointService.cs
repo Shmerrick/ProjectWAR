@@ -12,7 +12,7 @@ namespace WorldServer.Services.World
         public static Lookup<uint, Waypoint> LookupWaypoints;
         public static IList<Waypoint> TableWaypoints;
 
-       [LoadingFunction(true)]
+        [LoadingFunction(true)]
         public static void LoadNpcWaypoints()
         {
             Log.Debug("WorldMgr", "Loading Npc Waypoints...");
@@ -34,7 +34,6 @@ namespace WorldServer.Services.World
                     GetNextWayPoint(match.NextWaypointGUID, matchingList);
             }
             return matchingList;
-
         }
 
         public static List<Waypoint> GetNpcWaypoints(uint initialWayPoint)
@@ -48,7 +47,6 @@ namespace WorldServer.Services.World
             //return null;
 
             return TableWaypoints.Where(x => x.CreatureSpawnGUID == initialWayPoint).ToList();
-
 
             //IEnumerable<Waypoint> NpcWaypoints = LookupWaypoints[WayPointUID];
             //return NpcWaypoints.ToList();
@@ -77,19 +75,19 @@ namespace WorldServer.Services.World
             Database.ForceSave();
         }
 
-		/// <summary>
-		/// calculates waypoint offset in range of from to to
-		/// </summary>
-		/// <param name="from"></param>
-		/// <param name="to"></param>
-		/// <returns></returns>
-		public static int ShuffleWaypointOffset(int from, int to)
-		{
-			Random rnd = new Random();
-			bool sign = rnd.NextDouble() > 0.5;
-			int offset = Convert.ToInt32(from + rnd.NextDouble() * 100);
-			if (offset > to) offset = to;
-			return sign ? offset : -offset;
-		}
-	}
+        /// <summary>
+        /// calculates waypoint offset in range of from to to
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns></returns>
+        public static int ShuffleWaypointOffset(int from, int to)
+        {
+            Random rnd = new Random();
+            bool sign = rnd.NextDouble() > 0.5;
+            int offset = Convert.ToInt32(from + rnd.NextDouble() * 100);
+            if (offset > to) offset = to;
+            return sign ? offset : -offset;
+        }
+    }
 }

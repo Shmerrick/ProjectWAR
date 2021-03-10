@@ -33,11 +33,13 @@ namespace WorldServer.World.Interfaces
             HealingTotal = 0;
             HealingReceivedTime = 0;
         }
+
         public void ResetDamage()
         {
             Hatred = 0;
             DamageReceived = 0;
         }
+
         public void Reset()
         {
             ResetDamage();
@@ -61,6 +63,7 @@ namespace WorldServer.World.Interfaces
         /// A player who will receive credit for damage inflicted by the owner of this interface.
         /// </summary>
         public Player CreditedPlayer;
+
         protected long NextAttackTime;
         public bool IsPvp { get; set; }
 
@@ -97,14 +100,14 @@ namespace WorldServer.World.Interfaces
 
                 // Clearing heal hate on combat enter
                 //if (CreditedPlayer != null)
-                    //CreditedPlayer.HealAggros.Clear();
+                //CreditedPlayer.HealAggros.Clear();
             }
 
-            #if DEBUG && ABILITY_DEVELOPMENT
+#if DEBUG && ABILITY_DEVELOPMENT
             CombatLeaveTime = TCPManager.GetTimeStampMS() + 1000;
-            #else
+#else
             CombatLeaveTime = TCPManager.GetTimeStampMS() + 10000;
-            #endif
+#endif
         }
 
         public void LeaveCombat()
@@ -135,29 +138,37 @@ namespace WorldServer.World.Interfaces
                 LeaveCombat();
         }
 
-        #endregion
+        #endregion Combat Entry/Exit
 
         #region Targets
 
         public abstract void SetTarget(ushort oid, TargetTypes targetType);
+
         public abstract bool HasTarget(TargetTypes type);
+
         public abstract Unit GetTarget(TargetTypes type);
+
         public abstract Unit GetCurrentTarget();
 
-        #endregion
+        #endregion Targets
 
         public long LastInteractionTime { get; protected set; }
 
         #region Events
 
         public abstract void OnAttacked(Unit attacker);
+
         public abstract void OnTakeDamage(Unit fighter, uint damage, float hatredMod, uint mitigation = 0);
+
         public abstract void OnDealDamage(Unit victim, uint damage);
+
         public abstract void OnDealHeal(Unit target, uint damageCount);
+
         public abstract void OnTakeHeal(Unit caster);
+
         public abstract void OnTargetDie(Unit victim);
 
-        #endregion
+        #endregion Events
 
         #region Defense Timers
 
@@ -165,6 +176,7 @@ namespace WorldServer.World.Interfaces
 
         // Block, Parry, Dodge, Disrupt
         private readonly long[] _defenseTimers = new long[4];
+
         private readonly long[] _defendedAgainstTimers = new long[4];
 
         public void SetDefenseTimer(byte defenseType)
@@ -206,7 +218,8 @@ namespace WorldServer.World.Interfaces
 
             return false;
         }
-        #endregion
+
+        #endregion Defense Timers
 
         public static TargetTypes GetTargetType(Unit a, Unit b)
         {

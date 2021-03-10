@@ -1,7 +1,6 @@
 ﻿using Appccelerate.StateMachine;
 using NLog;
 using System;
-using WorldServer.Services.World;
 
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
@@ -25,7 +24,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             OnLockZone,
             OnOpenBattleFront
         }
-
 
         public BattlefieldObjective Objective { get; set; }
         public PassiveStateMachine<Apocalypse.CampaignObjectiveStateMachine.ProcessState, Apocalypse.CampaignObjectiveStateMachine.Command> fsm { get; set; }
@@ -63,7 +61,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             fsm.In(ProcessState.Guarded)
                 .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Objective.SetObjectiveLocked());
 
-
             fsm.In(ProcessState.Neutral)
                 .On(Command.OnPlayerInteractionComplete).Goto(ProcessState.Capturing).Execute(() => Objective.SetObjectiveCapturing());
             fsm.In(ProcessState.Neutral)
@@ -83,7 +80,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 .On(Command.OnPlayerInteractionComplete).Goto(ProcessState.Capturing).Execute(() => Objective.SetObjectiveCapturing());
             fsm.In(ProcessState.Guarded)
                 .On(Command.OnPlayerInteractionBroken).Goto(ProcessState.Guarded).Execute(() => Objective.SetObjectiveGuarded());
-
         }
 
         private void RecordTransition(object sender, EventArgs e)
@@ -94,7 +90,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Save the state transition.
             //_logger.Debug($"Saving campaign objective state {Objective.Id},{s.StateId}");
             //RVRProgressionService.SaveBattleFrontKeepState(Objective.Id, s.StateId);
-
         }
     }
 }

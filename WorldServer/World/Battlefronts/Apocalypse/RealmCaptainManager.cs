@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SystemData;
-using FrameWork;
+﻿using FrameWork;
 using GameData;
 using NLog;
+using System.Collections.Generic;
+using System.Linq;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
@@ -32,7 +28,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var status = battleFrontManager.GetActiveCampaign().ActiveBattleFrontStatus;
             lock (status)
             {
-
                 Logger.Trace($"Checking for new Realm Captains...");
                 if (status.RegionId == region.RegionId)
                 {
@@ -50,7 +45,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                     var realmCaptains = status.ContributionManagerInstance.GetHigestContributors(
                         REALM_CAPTAIN_MINIMUM_CONTRIBUTION, zonePlayers);
-
 
                     MarkPlayerAsRealmCaptain(status.DestructionRealmCaptain, Player._Players, UNMARK_PLAYER_REALM_CAPTAIN);
                     MarkPlayerAsRealmCaptain(status.OrderRealmCaptain, Player._Players, UNMARK_PLAYER_REALM_CAPTAIN);
@@ -93,7 +87,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             }
                         }
                     }
-
                 }
             }
         }
@@ -118,7 +111,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             if (upDown == UNMARK_PLAYER_REALM_CAPTAIN)
                 player.EffectStates.Remove((byte)ObjectEffectState.OBJECTEFFECTSTATE_CARRYING_BANNER);
 
-
             foreach (var announce in playersToAnnounce)
             {
                 //announce.DispatchPacket(Out, true);
@@ -135,7 +127,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             player.DispatchPacket(Out, true);
         }
-
 
         public static bool IsPlayerRealmCaptain(uint characterId)
         {

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace Launcher
@@ -10,6 +7,7 @@ namespace Launcher
     {
         // Opcode of the packet
         public ulong Opcode = 0;
+
         public ulong Size = 0;
 
         public PacketIn(int size)
@@ -140,7 +138,6 @@ namespace Launcher
 
         public ulong GetUint64()
         {
-
             ulong value = (GetUint32() << 24) + (GetUint32());
             return value;
         }
@@ -153,9 +150,7 @@ namespace Launcher
             b[2] = (byte)ReadByte();
             b[3] = (byte)ReadByte();
 
-
             return BitConverter.ToSingle(b, 0);
         }
     }
 }
-

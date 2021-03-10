@@ -1,6 +1,6 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using SystemData;
-using FrameWork;
 
 namespace Common
 {

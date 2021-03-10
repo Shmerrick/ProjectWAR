@@ -1,11 +1,6 @@
-﻿using Common;
-using FrameWork;
-using GameData;
-using System;
+﻿using FrameWork;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using WorldServer.World.Battlefronts;
 using WorldServer.World.Battlefronts.Bounty;
 
 namespace WorldServer.Services.World
@@ -13,7 +8,6 @@ namespace WorldServer.Services.World
     [Service]
     public class RewardService : ServiceBase
     {
-
         public static List<RenownBandRVRObjectiveTick> _RewardObjectiveTicks;
         public static List<RenownBandRVRZoneLock> _RewardZoneLocks;
         public static List<RewardPlayerKill> _RewardPlayerKills;
@@ -37,15 +31,11 @@ namespace WorldServer.Services.World
             Log.Debug("WorldMgr", "Loading Player Gear Drops...");
             _PlayerRVRGearDrops = Database.SelectAllObjects<PlayerRVRGearDrop>() as List<PlayerRVRGearDrop>;
             Log.Success("PlayerRVRGearDrops", "Loaded " + _PlayerRVRGearDrops.Count + " rvr_player_gear_drop");
-
         }
 
         public static RewardPlayerKill GetPlayerKillReward(int renownBand)
         {
-            return _RewardPlayerKills.Single(x=>x.RenownBand == renownBand);
+            return _RewardPlayerKills.Single(x => x.RenownBand == renownBand);
         }
-
     }
 }
-
- 

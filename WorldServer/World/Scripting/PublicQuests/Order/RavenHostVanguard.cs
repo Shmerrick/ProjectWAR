@@ -1,5 +1,5 @@
-﻿using System;
-using Common;
+﻿using Common;
+using System;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 using WorldServer.World.Objects.PublicQuests;
@@ -11,20 +11,22 @@ namespace WorldServer.World.Scripting.PublicQuests.Order
      * (needs verifing)
      * The quests requires you to kill 3 Tourchbearers and free 3 villagers from their burning
      * house by opening a door.
-     * 
+     *
      * Whats working:
      * Because we cannot open doors. This will simply spawn a villager when a Tourchbearer dies.
      * You then click on the Villager and he will run away, thanking you for freeing him. However
      * you should 'free' him once you open the door to his house.
-     * 
+     *
      * Todo:
      * - Support with doors
      */
+
     [GeneralScript(false, "", 46, 0)]
     public class FatherSigwaldQuestScript : AGeneralScript
     {
         private Object Obj;
         private int Quote = 0;
+
         public override void OnObjectLoad(Object Obj)
         {
             this.Obj = Obj;
@@ -68,7 +70,6 @@ namespace WorldServer.World.Scripting.PublicQuests.Order
                 //c.GetCreature().MvtInterface.WalkTo(Obj.WorldPosition.X, Obj.WorldPosition.Y, Obj.WorldPosition.Z, MovementInterface.CREATURE_SPEED);
                 c.EvtInterface.AddEvent(c.Destroy, 20000, 1);
             }
-            
         }
 
         public override void OnDie(Object Obj)

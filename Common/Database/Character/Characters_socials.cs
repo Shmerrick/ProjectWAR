@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -33,7 +29,7 @@ namespace Common
             set { _DistCharacterId = value; Dirty = true; }
         }
 
-        [DataElement(Varchar=255,AllowDbNull = false)]
+        [DataElement(Varchar = 255, AllowDbNull = false)]
         public string DistName
         {
             get { return _DistName; }

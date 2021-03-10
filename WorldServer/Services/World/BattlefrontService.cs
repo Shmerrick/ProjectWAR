@@ -1,10 +1,10 @@
 ﻿using Common;
+using Common.Database.World.Battlefront;
 using Common.Database.World.BattleFront;
 using FrameWork;
 using GameData;
 using System.Collections.Generic;
 using System.Linq;
-using Common.Database.World.Battlefront;
 using WorldServer.World.Positions;
 
 namespace WorldServer.Services.World
@@ -28,6 +28,7 @@ namespace WorldServer.Services.World
         }
 
         #region Objectives
+
         public static Dictionary<uint, List<BattleFront_Objective>> _BattleFrontObjectives = new Dictionary<uint, List<BattleFront_Objective>>();
 
         private static void LoadBattleFrontObjectives()
@@ -64,9 +65,11 @@ namespace WorldServer.Services.World
 
             return null;
         }
-        #endregion
+
+        #endregion Objectives
 
         #region Keeps
+
         public static Dictionary<uint, List<Keep_Info>> _KeepInfos = new Dictionary<uint, List<Keep_Info>>();
 
         public static void LoadKeepInfos()
@@ -105,6 +108,7 @@ namespace WorldServer.Services.World
         }
 
         public static Dictionary<int, List<Keep_Creature>> _KeepCreatures = new Dictionary<int, List<Keep_Creature>>();
+
         public static void LoadKeepCreatures()
         {
             _KeepCreatures = new Dictionary<int, List<Keep_Creature>>();
@@ -126,8 +130,8 @@ namespace WorldServer.Services.World
             Log.Success("WorldMgr", "Loaded " + Count + " Keep Creatures");
         }
 
-
         public static Dictionary<int, List<Keep_Door>> _KeepDoors = new Dictionary<int, List<Keep_Door>>();
+
         public static void LoadKeepDoors()
         {
             _KeepDoors = new Dictionary<int, List<Keep_Door>>();
@@ -149,8 +153,8 @@ namespace WorldServer.Services.World
             Log.Success("WorldMgr", "Loaded " + Count + " Keep Doors");
         }
 
-
         public static Dictionary<int, List<KeepSiegeSpawnPoints>> _KeepSiegeSpawnPoints = new Dictionary<int, List<KeepSiegeSpawnPoints>>();
+
         public static void LoadKeepSiegeSpawnPoints()
         {
             _KeepSiegeSpawnPoints = new Dictionary<int, List<KeepSiegeSpawnPoints>>();
@@ -172,8 +176,8 @@ namespace WorldServer.Services.World
             Log.Success("WorldMgr", "Loaded " + Count + " KeepSiegeSpawnPoints");
         }
 
-
         public static Dictionary<int, PlayerKeepSpawn> _PlayerKeepSpawnPoints = new Dictionary<int, PlayerKeepSpawn>();
+
         public static void LoadPlayerKeepSpawnPoints()
         {
             _PlayerKeepSpawnPoints = new Dictionary<int, PlayerKeepSpawn>();
@@ -204,10 +208,13 @@ namespace WorldServer.Services.World
 
             return null;
         }
-        #endregion
+
+        #endregion Keeps
 
         #region Guards
+
         public static Dictionary<int, List<BattleFront_Guard>> _BattleFrontGuards = new Dictionary<int, List<BattleFront_Guard>>();
+
         public static void LoadBattleFrontGuards()
         {
             _BattleFrontGuards = new Dictionary<int, List<BattleFront_Guard>>();
@@ -228,9 +235,11 @@ namespace WorldServer.Services.World
 
             Log.Success("WorldMgr", "Loaded " + Count + " Campaign Guards");
         }
-        #endregion
+
+        #endregion Guards
 
         #region Resources
+
         public static Dictionary<int, List<BattleFrontResourceSpawn>> ResourceSpawns = new Dictionary<int, List<BattleFrontResourceSpawn>>();
 
         private static void LoadResourceSpawns()
@@ -259,9 +268,11 @@ namespace WorldServer.Services.World
         {
             return ResourceSpawns.ContainsKey(objectiveId) ? ResourceSpawns[objectiveId] : null;
         }
-        #endregion
+
+        #endregion Resources
 
         #region RvRObjects
+
         public static List<RvRObjectInfo> RvRObjects;
 
         [LoadingFunction(true)]
@@ -281,9 +292,10 @@ namespace WorldServer.Services.World
             return null;
         }
 
-        #endregion
+        #endregion RvRObjects
 
         #region Generic Campaign objects
+
         /// <summary>
         /// Arrays of warcamp entrances (0/1 for order/destro) indexed by zone id
         /// This must be changed to private later
@@ -292,6 +304,7 @@ namespace WorldServer.Services.World
 
         /// <summary>Arrays of portals to warcamp indexed by zone id and objective ID</summary>
         private static Dictionary<ushort, Dictionary<int, BattleFrontObject>> _portalsToWarcamp;
+
         /// <summary>Arrays of portals to warcamp indexed by zone id, realm (0/1 for order/destro) and objective ID</summary>
         private static Dictionary<ushort, Dictionary<int, BattleFrontObject>[]> _portalsToObjective;
 
@@ -402,10 +415,13 @@ namespace WorldServer.Services.World
             }
             return null;
         }
-        #endregion
+
+        #endregion Generic Campaign objects
 
         #region Status - Updated at runtime
+
         public static Dictionary<int, BattleFrontStatus> BattleFrontStatus;
+
         public static BattleFrontStatus GetStatusFor(int regionId)
         {
             lock (BattleFrontStatus)
@@ -420,9 +436,9 @@ namespace WorldServer.Services.World
 
             return BattleFrontStatus[regionId];
         }
-        #endregion
 
-       
+        #endregion Status - Updated at runtime
+
         public static List<Keep_Info> GetZoneKeeps(int regionId, int zoneId)
         {
             return (from keyValuePair in _KeepInfos.Where(x => x.Key == regionId)
@@ -431,11 +447,10 @@ namespace WorldServer.Services.World
                     select keep).ToList();
         }
 
-
         public static List<BattleFront_Objective> GetZoneBattlefrontObjectives(int regionId, int zoneId)
         {
             return (from keyValuePair in _BattleFrontObjectives.Where(x => x.Key == regionId)
-                    from bo 
+                    from bo
                     in keyValuePair.Value
                     where bo.ZoneId == zoneId
                     select bo).ToList();

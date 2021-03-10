@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SystemData;
-using Common;
+﻿using Common;
 using Common.Database.World.Creatures;
 using FrameWork;
-using GameData;
 using NLog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using SystemData;
 using WorldServer.Services.World;
 using WorldServer.World.AI.Abilities;
 using WorldServer.World.Interfaces;
@@ -48,7 +45,6 @@ namespace WorldServer.World.AI
         {
             if (_unit.IsDead)
                 return;
-
 
             base.Think(tick);
 
@@ -189,7 +185,6 @@ namespace WorldServer.World.AI
                     _logger.Debug($"Skipping : {keyValuePair.Key.Name} => {keyValuePair.Value} (random)");
                 }
             }
-
         }
 
         public void PerformSound(CreatureSmartAbilities key)
@@ -203,7 +198,6 @@ namespace WorldServer.World.AI
         {
             if (!string.IsNullOrEmpty(key.Speech))
                 _unit.Say(key.Speech, ChatLogFilters.CHATLOGFILTERS_SHOUT);
-
         }
 
         public override void OnTaunt(Unit taunter, byte lvl)
@@ -214,7 +208,5 @@ namespace WorldServer.World.AI
                     base.OnTaunt(taunter, lvl);
             }
         }
-
-
     }
 }

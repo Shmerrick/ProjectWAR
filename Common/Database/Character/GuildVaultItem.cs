@@ -1,9 +1,6 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using FrameWork;
 
 namespace Common
 {
@@ -81,7 +78,7 @@ namespace Common
                 _Talismans.Clear();
                 foreach (string Str in Split)
                 {
-                    if(Str.Length > 0)
+                    if (Str.Length > 0)
                         _Talismans.Add(new Talisman(Str));
                 }
             }

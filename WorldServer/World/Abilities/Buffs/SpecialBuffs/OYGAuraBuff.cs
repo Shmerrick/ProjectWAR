@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using FrameWork;
+using System.Collections.Generic;
 using System.Linq;
-using FrameWork;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Objects;
 
 namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 {
-    class OYGAuraBuff : AuraBuff
+    internal class OYGAuraBuff : AuraBuff
     {
         private readonly Dictionary<ushort, long> _nextTargetHitTimes = new Dictionary<ushort, long>();
         private const ushort OYG_INTERVAL = 2000;
@@ -15,7 +15,7 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
         {
             long tick = TCPManager.GetTimeStampMS();
 
-            lock(_nextTargetHitTimes)
+            lock (_nextTargetHitTimes)
             {
                 if (!_nextTargetHitTimes.ContainsKey(Target.Oid))
                 {
@@ -23,7 +23,7 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
                     return true;
                 }
             }
-                
+
             if (tick < _nextTargetHitTimes[Target.Oid])
                 return false;
 
@@ -74,7 +74,6 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
                             member.BuffInterface.QueueBuff(new BuffQueueInfo(Caster, BuffLevel, BI, RegisterGroupBuff));
                         }
                     }
-
                     else
                     {
                         if (_groupTargetList.ContainsKey(member))

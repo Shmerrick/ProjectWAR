@@ -12,6 +12,4 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public string CharacterName { get; set; }
         public Realms CharacterRealm { get; set; }
     }
-
-   
 }

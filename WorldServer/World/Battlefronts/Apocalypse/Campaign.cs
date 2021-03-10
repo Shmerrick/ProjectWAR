@@ -13,7 +13,6 @@ using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
-using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Battlefronts.Objectives;
@@ -22,11 +21,8 @@ using WorldServer.World.Map;
 using WorldServer.World.Objects;
 using WorldServer.World.Positions;
 
-
 namespace WorldServer.World.Battlefronts.Apocalypse
 {
-
-
     /// <summary>
     /// Represents an open RVR front in a given Region (1 Region -> n Zones) Eg Region 14 (T2 Emp -> Zone 101 Troll Country & Zone 107 Ostland
     /// </summary>
@@ -36,7 +32,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public static int DOMINATION_POINTS_REQUIRED = Program.Config.DominationPointsRequired;
         public static int FORT_DEFENCE_TIMER = Program.Config.FortDefenceTimer;  // 15 mins is 900k.
-        static readonly object LockObject = new object();
+        private static readonly object LockObject = new object();
 
         private static readonly Logger BattlefrontLogger = LogManager.GetLogger("BattlefrontLogger");
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -45,13 +41,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public RegionMgr Region { get; set; }
         public IBattleFrontManager BattleFrontManager { get; set; }
         public IApocCommunications CommunicationsEngine { get; }
+
         // List of battlefront statuses for this Campaign
         public List<BattleFrontStatus> ApocBattleFrontStatuses => GetBattleFrontStatuses(Region.RegionId);
+
         public BattleFrontStatus ActiveBattleFrontStatus => BattleFrontManager.GetBattleFrontStatus(BattleFrontManager.ActiveBattleFront.BattleFrontId);
+
         /// <summary>
         /// A list of keeps within this Campaign.
         /// </summary>
         public readonly List<BattleFrontKeep> Keeps = new List<BattleFrontKeep>();
+
         public string ActiveCampaignName => BattleFrontManager.ActiveBattleFrontName;
 
         protected readonly EventInterface _EvtInterface = new EventInterface();
@@ -77,11 +77,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public int _totalMaxOrder = 0;
         public int _totalMaxDestro = 0;
 
-
         public int AgainstAllOddsMult => AgainstAllOddsTracker.AgainstAllOddsMult;
 
-        #endregion
-
+        #endregion Against All Odds
 
         public AAOTracker AgainstAllOddsTracker;
         private RVRRewardManager _rewardManager;
@@ -98,8 +96,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public RegionLockManager RegionLockManager { get; set; }
         public IRewardManager RewardManager { get; set; }
-
-
 
         /// <summary>
         /// Constructor
@@ -127,7 +123,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             AgainstAllOddsTracker = new AAOTracker();
             _rewardManager = new RVRRewardManager();
             SiegeManager = new SiegeManager();
-            
 
             DestructionDominationCounter = Program.Config.DestructionDominationTimerLength;
             OrderDominationCounter = Program.Config.OrderDominationTimerLength;
@@ -195,7 +190,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var k = Keeps.SingleOrDefault(x => x.IsFortress() && x.ZoneId == ActiveBattleFrontStatus.ZoneId && x.KeepStatus != KeepStatus.KEEPSTATUS_LOCKED);
             k?.CountdownFortDefenceTimer((int)FORT_DEFENCE_TIMER / 1000 / 60);
         }
-
 
         /// <summary>
         /// Inform all players in the active battlefront about the objective status
@@ -305,7 +299,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var status = activeCampaign?.ActiveBattleFrontStatus;
             var orderCount = 0;
 
-
             if (status != null)
             {
                 foreach (var keep in status.KeepList)
@@ -325,7 +318,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var activeCampaign = BattleFrontManager.GetActiveCampaign();
             var status = activeCampaign?.ActiveBattleFrontStatus;
             var destCount = 0;
-
 
             if (status != null)
             {
@@ -378,10 +370,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 if (battleFrontKeep.Fortress)
                     return;
-
             }
-
-            
 
             DestructionDominationCounter--;
 
@@ -395,7 +384,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 NotifyPlayersOfDomination($"Destruction is dominating - {DestructionDominationCounter} minutes remain", status);
             }
-
         }
 
         private void OrderDominationCheck()
@@ -432,7 +420,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 {
                     return;
                 }
-                
+
                 if (battleFrontKeep.Fortress)
                     return;
             }
@@ -449,17 +437,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 NotifyPlayersOfDomination($"Order is dominating - {OrderDominationCounter} minutes remain", status);
             }
-
         }
-        
-
 
         private int SecondsToNearestMinute(int seconds)
         {
             return Convert.ToInt32(Math.Round((double)seconds / 60, MidpointRounding.AwayFromZero));
         }
-
-        
 
         private void NotifyPlayersOfDomination(string message, BattleFrontStatus status)
         {
@@ -533,7 +516,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                                         {
                                             player.BuffInterface.RemoveBuffByEntry((ushort)buffId);
                                         }
-
                                     }
                                 }
                             }
@@ -542,8 +524,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 }
             }
         }
-
-
 
         public void UpdateDoorMsg()
         {
@@ -577,7 +557,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     }
                 }
             }
-
         }
 
         public void InitializePopulationList(int battlefrontId)
@@ -617,9 +596,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 throw;
             }
             ;
-
         }
-
 
         private void RecordMetrics()
         {
@@ -636,7 +613,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return BattleFrontManager.GetBattleFrontStatusList().Where(x => x.RegionId == regionId).ToList();
         }
 
-
         private void PlaceObjectives()
         {
             foreach (var battleFrontObjective in Objectives)
@@ -650,7 +626,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             return $"Victory Points Progress for {ActiveCampaignName} : {VictoryPointProgress.ToString()}";
         }
-
 
         private void UpdateAAOBuffs()
         {
@@ -674,9 +649,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 keep.UpdateCurrentAAO(AgainstAllOddsTracker.AgainstAllOddsMult);
             }
-
         }
-
 
         private void SavePlayerContribution()
         {
@@ -777,8 +750,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return bestKeep;
         }
 
-
-
         public BattleFrontKeep GetClosestFriendlyKeep(Point3D destPos, Realms myRealm)
         {
             BattleFrontKeep bestKeep = null;
@@ -805,8 +776,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             return Keeps.Where(x => x.ZoneId == zoneId).ToList();
         }
-
-
 
         //public void WriteCaptureStatus(PacketOut Out)
         //{
@@ -847,7 +816,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             Out.WriteByte((byte)orderPercent);
             Out.WriteByte((byte)destroPercent);
         }
-
 
         public void Update(long tick)
         {
@@ -1016,7 +984,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattlefrontLogger.Warn($"_rewardManager is null!!");
 
             BattlefrontLogger.Info($"*************************BATTLEFRONT LOCK-END [LockId:{lockId}] *********************");
-
         }
 
         private long WriteZoneLockSummary(Realms lockingRealm)
@@ -1047,12 +1014,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 BattlefrontLogger.Error($"Could not write ZoneLockSummary {ex.Message} {ex.StackTrace}");
                 return lockId;
             }
-
-
         }
 
         /// <summary>
-        /// Generate zone lock rewards. 
+        /// Generate zone lock rewards.
         /// </summary>
         /// <param name="lockingRealm"></param>
         /// <param name="zoneId"></param>
@@ -1062,8 +1027,8 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         /// <param name="forceNumberBags">By default 0 allows the system to decide the number of bags, setting to -1 forces no rewards.</param>
         private void GenerateZoneLockRewards(Realms lockingRealm, int zoneId)
         {
-           try
-            { 
+            try
+            {
                 var eligiblitySplits =
                     Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.DetermineEligiblePlayers(BattlefrontLogger, lockingRealm);
 
@@ -1073,10 +1038,10 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 Region.Campaign.GetActiveBattleFrontStatus().RewardManagerInstance.DistributeZoneFlipBaseRewards(
                     eligiblitySplits.Item3,
-                    eligiblitySplits.Item2, 
-                    lockingRealm, 
-                    Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.GetMaximumContribution(), 
-                    Tier == 1 ? 0.5f : 1f, 
+                    eligiblitySplits.Item2,
+                    lockingRealm,
+                    Region.Campaign.GetActiveBattleFrontStatus().ContributionManagerInstance.GetMaximumContribution(),
+                    Tier == 1 ? 0.5f : 1f,
                     allPlayersInZone);
 
                 var fortZones = new List<int> { 4, 10, 104, 110, 204, 210 };
@@ -1085,15 +1050,15 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     return;
                 }
 
-               // For all eligible players present them with 5 invader crests (only for non-fort zones)
-                foreach (var  player in eligiblitySplits.Item1)
+                // For all eligible players present them with 5 invader crests (only for non-fort zones)
+                foreach (var player in eligiblitySplits.Item1)
                 {
                     try
                     {
                         var zoneDescription = Region.Campaign.GetActiveBattleFrontStatus()?.Description;
                         Logger.Debug($"Assigning Invader Crests for Zone Flip {player.Key.Name}");
                         player.Key.SendClientMessage($"You have been awarded 5 Invader Crests - check your mail.", ChatLogFilters.CHATLOGFILTERS_LOOT);
-                        Region.Campaign.GetActiveBattleFrontStatus().RewardManagerInstance.MailItem(player.Key.CharacterId, ItemService.GetItem_Info(208453), 5, zoneDescription , "Zone Flip", "Invader crests");
+                        Region.Campaign.GetActiveBattleFrontStatus().RewardManagerInstance.MailItem(player.Key.CharacterId, ItemService.GetItem_Info(208453), 5, zoneDescription, "Zone Flip", "Invader crests");
 
                         RecordZoneLockEligibilityHistory(player, lockingRealm, Region.Campaign.GetActiveBattleFrontStatus().ZoneId);
                     }
@@ -1101,17 +1066,13 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     {
                         Logger.Warn($"Could not mail invader crests to {player.Key.CharacterId} {ex.Message} {ex.StackTrace}");
                     }
-
                 }
-               
-
             }
             catch (Exception e)
             {
                 BattlefrontLogger.Error($" GenerateZoneLockRewards : {e.Message} {e.StackTrace}");
                 throw;
             }
-
         }
 
         private void RecordZoneLockEligibilityHistory(KeyValuePair<Player, int> player, Realms lockingRealm, int zoneId)
@@ -1120,19 +1081,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             var zoneLockEligibility = new ZoneLockEligibilityHistory
             {
-                CharacterId = (int) player.Key.CharacterId,
+                CharacterId = (int)player.Key.CharacterId,
                 CharacterName = player.Key.Name,
                 ContributionValue = player.Value,
-                LockingRealm = (int) lockingRealm,
+                LockingRealm = (int)lockingRealm,
                 Timestamp = DateTime.UtcNow,
                 ZoneId = zoneId,
                 ZoneName = zone.Name,
                 Dirty = true
             };
             WorldMgr.Database.AddObject(zoneLockEligibility);
-
         }
-
 
         public void ClearDictionaries()
         {
@@ -1177,9 +1136,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             return realm == Realms.REALMS_REALM_DESTRUCTION ? _relativePopulationFactor : 1f / _relativePopulationFactor;
         }
 
-
-
-
         /// <summary>
         /// Sends information to a player about the objectives within a Campaign upon their entry.
         /// </summary>
@@ -1214,9 +1170,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             {
                 flag.Update(TCPManager.GetTimeStampMS());
             }
-
-
-
         }
 
         /// <summary>
@@ -1245,11 +1198,9 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             BattleFrontManager.ActiveBattleFront.OrderVP = (int)Math.Round(VictoryPointProgress.OrderVictoryPoints);
             BattleFrontManager.ActiveBattleFront.DestroVP = (int)Math.Round(VictoryPointProgress.DestructionVictoryPoints);
 
-
-
             ///
             /// Check to Lock and Advance the Battlefront
-            /// 
+            ///
             if (VictoryPointProgress.OrderVictoryPoints >= BattleFrontConstants.LOCK_VICTORY_POINTS)
             {
                 var orderWarcampEntrance = BattleFrontService.GetWarcampEntrance(
@@ -1287,8 +1238,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                     BattlefrontLogger.Error($"Attempt to lock and advance BF failed. {e.Message} {e.StackTrace}");
                     throw;
                 }
-
-
             }
             else if (VictoryPointProgress.DestructionVictoryPoints >=
                      BattleFrontConstants.LOCK_VICTORY_POINTS)
@@ -1364,7 +1313,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public void ExecuteBattleFrontLock(Realms lockingRealm, LootChest orderLootChest, LootChest destructionLootChest, List<RVRRewardItem> lootOptions, int forceNumberBags = 0)
         {
-
             var oldBattleFront = BattleFrontManager.GetActiveBattleFrontFromProgression();
             BattlefrontLogger.Info($"Executing BattleFront Lock on {oldBattleFront.Description} for {lockingRealm}");
             Logger.Info($"***Executing BattleFront Lock on {oldBattleFront.Description} for {lockingRealm}***");
@@ -1420,7 +1368,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                         }
                     }
                 }
-
             }
             // Set the RVR Progression table values.
             BattleFrontManager.UpdateRVRPRogression(lockingRealm, oldBattleFront, nextBattleFront);
@@ -1433,7 +1380,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             // Tell the server that the RVR status has changed.
             WorldMgr.UpdateRegionCaptureStatus(WorldMgr.LowerTierCampaignManager, WorldMgr.UpperTierCampaignManager);
             // Logs the status of all battlefronts known to the Battlefront Manager.
-            // BattleFrontManager.AuditBattleFronts(this.Tier);        
+            // BattleFrontManager.AuditBattleFronts(this.Tier);
         }
 
         private void SendCampaignMovementMessage(RVRProgression nextBattleFront)
@@ -1443,14 +1390,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             CommunicationsEngine.Broadcast(campaignMoveMessage, Tier);
         }
 
-
         public int GetZoneOwnership(ushort zoneId)
         {
             BattlefrontLogger.Trace($"GetZoneOwnership {zoneId}");
             const int ZONE_STATUS_CONTESTED = 0;
             const int ZONE_STATUS_ORDER_LOCKED = 1;
             const int ZONE_STATUS_DESTRO_LOCKED = 2;
-
 
             byte orderKeepsOwned = 0;
             byte destroKeepsOwned = 0;
@@ -1474,7 +1419,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             //Out.WriteByte((byte)GetZoneOwnership(Zones[0].ZoneId));
         }
 
-
         public bool PreventKillReward()
         {
             return BattleFrontManager.IsBattleFrontLocked(BattleFrontManager.ActiveBattleFront.BattleFrontId); // Removed from legacy : && Tier > 1
@@ -1484,9 +1428,5 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             return 1f;
         }
-
-
-
-
     }
 }

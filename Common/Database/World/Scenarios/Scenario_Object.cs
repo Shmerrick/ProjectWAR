@@ -1,5 +1,5 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -13,7 +13,7 @@ namespace Common
         [DataElement]
         public ushort Identifier { get; set; }
 
-        [DataElement(Varchar=255)]
+        [DataElement(Varchar = 255)]
         public string ObjectiveName { get; set; }
 
         [DataElement]

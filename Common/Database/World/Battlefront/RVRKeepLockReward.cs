@@ -1,10 +1,9 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common.Database.World.Battlefront
 {
-
-    // Fixed value of a character 
+    // Fixed value of a character
     [DataTable(PreCache = false, TableName = "rvr_keep_lock_reward", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class RVRKeepLockReward : DataObject
@@ -32,10 +31,5 @@ namespace Common.Database.World.Battlefront
 
         [DataElement(AllowDbNull = false)]
         public int Money { get; set; }
-
-
-
     }
-
-
 }

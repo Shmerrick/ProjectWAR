@@ -1,21 +1,21 @@
-﻿using System;
-using System.Threading;
-using Common;
+﻿using Common;
 using FrameWork;
+using System;
+using System.Threading;
 using WorldServer.Services.World;
 using WorldServer.World.Interfaces;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
 {
-    class Pendulum : GameObject
+    internal class Pendulum : GameObject
     {
-        byte Vfxstart;
-        byte lastswing;
-        byte updatestate;
-        bool swinging = false;
-        bool active = false;
-        byte swings = 0;
+        private byte Vfxstart;
+        private byte lastswing;
+        private byte updatestate;
+        private bool swinging = false;
+        private bool active = false;
+        private byte swings = 0;
 
         public bool damageleft = false;
         public bool damageright = false;
@@ -39,8 +39,8 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
                 lastswing = 5;
             else
                 lastswing = 6;
-
         }
+
         public void stop()
         {
             active = false;
@@ -60,7 +60,6 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
                 updatestate++;
                 if (updatestate == 0)
                     updatestate = 1;
-
 
                 if (swinging)
                     if (damageleft)
@@ -85,7 +84,6 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
                     damageleft = false;
                     damageright = false;
 
-
                     //Log.Success("Pendulum stop", "");
                 }
                 if (updatestate % 16 != 0)
@@ -99,7 +97,6 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
                     UpdateVfxState(4);
                     VfxState = 4;
                     lastswing = 4;
-
                 }
                 else
                 {
@@ -108,7 +105,6 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
                     VfxState = 5;
                     lastswing = 5;
                 }
-
             }
             UpdateVfxState(Vfxstart);
             VfxState = Vfxstart;
@@ -117,31 +113,23 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
         // 0 = right swing fast stopping
         // 1 = left to right 1 swing
         // 2 = stop rechts fast stooping
-        // 3 = right to left 1 swing 
+        // 3 = right to left 1 swing
         // 4 = start links stop rechts 7 schwünge
         // 5 = start rechts stop links 7 schwünge
         // 6 = start links stop rechts 10 schwünge laggy :-(
-
-
-
-
-
     }
 
-    class Switch : GameObject
+    internal class Switch : GameObject
     {
-
-
     }
-    class Firetrap : GameObject
+
+    internal class Firetrap : GameObject
     {
-        byte counter = 0;
+        private byte counter = 0;
         public Boolean on = false;
 
         public Firetrap(GameObject_proto proto, int WX, int WY, int WZ)
         {
-
-
             GameObject_spawn sp = new GameObject_spawn();
             sp.ZoneId = 179;
             sp.DisplayID = proto.DisplayID;
@@ -167,6 +155,7 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
             VfxState = 0;
             on = true;
         }
+
         public void FiretrapOFF()
         {
             UpdateVfxState(2);
@@ -174,6 +163,7 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
             counter = 0;
             on = false;
         }
+
         public void Updates()
         {
             if (!on)
@@ -214,10 +204,9 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
             }
             //checkdamage
         }
-
-
     }
-    class DartTrap : GameObject
+
+    internal class DartTrap : GameObject
     {
         public byte Vfxstart;
 
@@ -244,6 +233,7 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
             if (VfxState > 8)
                 VfxState = 1;
         }
+
         public void rotateL()
         {
             VfxState++;
@@ -251,38 +241,32 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
             if (VfxState > 16)
                 VfxState = 9;
         }
+
         public void Fire()
         {
             AbtInterface.StartCast(this, 9101, 1);
         }
-
-
-
-    }
-    class Pillar : GameObject
-    {
-
-
     }
 
-
-    class TOTVL : Instance
+    internal class Pillar : GameObject
     {
+    }
 
+    internal class TOTVL : Instance
+    {
         private GameObject[] _Pendulums = new GameObject[12];
         private GameObject[] _Firetrap = new GameObject[44];
         private GameObject[] _Darttrap = new GameObject[11];
 
         private EventInterface _evtInterface;
 
-        bool Pendulum_Trap_init = false;
-        bool Pendulum_Left_active = false;
+        private bool Pendulum_Trap_init = false;
+        private bool Pendulum_Left_active = false;
 #pragma warning disable IDE0052 // Удалить непрочитанные закрытые члены
-        bool Pendulum_Right_active = false;
+        private bool Pendulum_Right_active = false;
 #pragma warning restore IDE0052 // Удалить непрочитанные закрытые члены
-        bool Firetrap_active = true;
-        bool Darttrap_active = true;
-
+        private bool Firetrap_active = true;
+        private bool Darttrap_active = true;
 
         public TOTVL(ushort zoneid, ushort id, byte realm, Instance_Lockouts lockouts) : base(zoneid, id, realm, lockouts)
         {
@@ -292,8 +276,6 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
 
             StartFireTrap();
             StartDartTrap();
-
-
         }
 
         public void StopPendulumtrapl()
@@ -335,29 +317,24 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
         public void StopFireTrap()
         {
             Firetrap_active = false;
-
         }
+
         public void StartFireTrap()
         {
             Firetrap_active = true;
             new Thread(Firetrap).Start();
-
         }
-
-
 
         public void StopDartTrap()
         {
             Darttrap_active = false;
-
         }
+
         public void StartDartTrap()
         {
             Darttrap_active = true;
             new Thread(Darttrap).Start();
-
         }
-
 
         public void checkpendulumdamage(Player plr, ushort x, ushort y)
         {
@@ -366,11 +343,6 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
                     pendulumkill(plr, (Pendulum)_Pendulums[0]);
                 else if (y < 37111 && ((Pendulum)_Pendulums[0]).damageright)
                     pendulumkill(plr, (Pendulum)_Pendulums[0]);
-
-
-
-
-
 
             //StopPendulumtrapl();
             if (!Pendulum_Trap_init)
@@ -407,13 +379,9 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
 
             while (Darttrap_active)
             {
-
-
                 counter++;
                 if (counter == 6)
                 {
-
-
                     ((DartTrap)_Darttrap[0]).rotateL();
                     ((DartTrap)_Darttrap[1]).rotateR();
                     ((DartTrap)_Darttrap[2]).rotateL();
@@ -424,15 +392,12 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
                     ((DartTrap)_Darttrap[7]).rotateL();
                     ((DartTrap)_Darttrap[8]).rotateR();
 
-
-
                     counter = 0;
                 }
 
                 Thread.Sleep(500);
                 for (int i = 0; i < 8; i++)
                     ((DartTrap)_Darttrap[i]).Fire();
-
             }
         }
 
@@ -443,7 +408,7 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
             bool[] mainpattern1 = { false, false, false, false, true, true, true, true, true, false, true, true, false, false, false, false, true, true, true, true, true, true, true, true };
             bool[] mainpattern2 = { false, true, true, true, false, false, false, false, true, true, true, true, true, true, true, false, false, false, false, false, true, true, true, true };
             bool[] mainpattern3 = { true, true, true, true, true, true, true, false, false, false, false, false, true, true, true, true, true, true, false, true, false, false, false, false };
-            //mainpattern 6 
+            //mainpattern 6
             //front 3
 
             while (Firetrap_active)
@@ -468,7 +433,6 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
                         else if (!mainpattern1[i - 20] && ((Firetrap)_Firetrap[i]).on)
                             ((Firetrap)_Firetrap[i]).FiretrapOFF();
                     }
-
                 }
                 else if (counter == 6)
                 {
@@ -510,7 +474,6 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
                         ((Firetrap)_Firetrap[i]).FiretrapON();
 
                     // frnt back pattern 4
-
                 }
                 else if (counter == 24)
                 {
@@ -542,7 +505,6 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
                     for (int i = 15; i < 20; i++)
                         ((Firetrap)_Firetrap[i]).FiretrapOFF();
                     // frnt back pattern 6
-
                 }
                 counter++;
                 if (counter == 36)
@@ -558,7 +520,6 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
 
         public void Doors()
         {
-
             //259293
             //259294
 
@@ -566,7 +527,6 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
             // Region.GetGameObject(259293).GetGameObject().Spawn.
             //Region.GetGameObject(259294).GetGameObject().UpdateVfxState(1);
         }
-
 
         public void createPenulums()
         {
@@ -617,7 +577,6 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
             go = new Pendulum(proto, 0, 348184, 280031, 12659);
             _Pendulums[11] = go;
             Region.AddObject(go, ZoneID, true);
-
 
             //firetraps
             //frontrow
@@ -809,8 +768,6 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
             _Firetrap[43] = ft;
             Region.AddObject(ft, ZoneID, true);
 
-
-
             //Darttrap
 
             GameObjectService.GameObjectProtos.TryGetValue(100489, out proto);
@@ -858,8 +815,6 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
             _Darttrap[8] = dt;
             Region.AddObject(dt, ZoneID, true);
 
-
-
             /*
 
             foreach (var p in GameObjectService.GameObjectSpawns.Where(e => e.Value.ZoneId == 179))
@@ -870,15 +825,10 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
 
                     _Objects.Add(go);
                     //Region.AddObject(go, zoneid, true);
-
                 }
             }
 
     */
-
-
         }
-
-
     }
 }

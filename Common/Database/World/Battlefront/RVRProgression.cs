@@ -1,9 +1,9 @@
-﻿using System;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common.Database.World.Battlefront
 {
-    // Fixed value of a character 
+    // Fixed value of a character
     [DataTable(PreCache = false, TableName = "rvr_progression", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class RVRProgression : DataObject
@@ -38,17 +38,17 @@ namespace Common.Database.World.Battlefront
         [DataElement(AllowDbNull = false)]
         public int ResetProgressionOnEntry { get; set; }
 
-		[DataElement(AllowDbNull = false)]
-		public int LastOwningRealm { get; set; }
+        [DataElement(AllowDbNull = false)]
+        public int LastOwningRealm { get; set; }
 
-		[DataElement(AllowDbNull = false)]
-		public int LastOpenedZone { get; set; }
+        [DataElement(AllowDbNull = false)]
+        public int LastOpenedZone { get; set; }
 
-		[DataElement(AllowDbNull = false)]
-		public int OrderVP { get; set; }
+        [DataElement(AllowDbNull = false)]
+        public int OrderVP { get; set; }
 
-		[DataElement(AllowDbNull = false)]
-		public int DestroVP { get; set; }
+        [DataElement(AllowDbNull = false)]
+        public int DestroVP { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public int DestroKeepId { get; set; }

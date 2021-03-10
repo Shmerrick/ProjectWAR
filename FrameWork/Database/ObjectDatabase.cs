@@ -1,11 +1,11 @@
-﻿using System;
+﻿using FrameWork.Database;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using FrameWork.Database;
 
 namespace FrameWork
 {
@@ -23,10 +23,12 @@ namespace FrameWork
     public abstract class ObjectDatabase : IObjectDatabase
     {
         protected static readonly NumberFormatInfo Nfi = new CultureInfo("en-US", false).NumberFormat;
+
         /// <summary>
         /// Holds the binding info array for each DataObject type, which describes that type's members.
         /// </summary>
         private readonly Dictionary<Type, BindingInfo[]> _bindingInfos = new Dictionary<Type, BindingInfo[]>();
+
         private readonly Dictionary<Type, ObjectPool<StaticMemberBindInfo>> _staticBindPools = new Dictionary<Type, ObjectPool<StaticMemberBindInfo>>();
         protected readonly DataConnection Connection;
         private readonly Dictionary<Type, ConstructorInfo> ConstructorByFieldType = new Dictionary<Type, ConstructorInfo>();
@@ -34,25 +36,27 @@ namespace FrameWork
         private readonly Dictionary<MemberInfo, Relation[]> RelationAttributes = new Dictionary<MemberInfo, Relation[]>();
 
         protected readonly Dictionary<string, DataTableHandler> TableDatasets;
+
         public virtual string SqlCommand_CharLength()
         {
             return "CHAR_LENGTH";
         }
+
         private readonly Thread _updater;
 
         private const int PROCESS_INTERVAL = 5000; // 5 second processing of ops queue.
-        private const int SAVE_INTERVAL = 60000; // 1 minute saving of objects. 600000; // 10 minute saving of objects. was 200ms before... 
+        private const int SAVE_INTERVAL = 60000; // 1 minute saving of objects. 600000; // 10 minute saving of objects. was 200ms before...
 
         private long _nextSaveTime;
 
-        private readonly List<Action> _onProcessActions = new List<Action>(); 
+        private readonly List<Action> _onProcessActions = new List<Action>();
 
         protected ObjectDatabase(DataConnection connection)
         {
             TableDatasets = new Dictionary<string, DataTableHandler>();
             Connection = connection;
 
-            _nextSaveTime = TCPManager.GetTimeStampMS() + SAVE_INTERVAL; 
+            _nextSaveTime = TCPManager.GetTimeStampMS() + SAVE_INTERVAL;
 
             ThreadStart start = Update;
             _updater = new Thread(start);
@@ -115,7 +119,6 @@ namespace FrameWork
             }
 
             dataObject.Dirty = false;
-
 
             if (relation)
             {
@@ -208,7 +211,7 @@ namespace FrameWork
             return row;
         }
 
-        #endregion
+        #endregion Data tables
 
         #region Public API
 
@@ -230,7 +233,7 @@ namespace FrameWork
 
         public bool AddObject(DataObject dataObject)
         {
-            lock(_operations)
+            lock (_operations)
             {
                 if (dataObject.AllowAdd)
                 {
@@ -239,7 +242,6 @@ namespace FrameWork
                     return true;
                 }
             }
-
 
             Log.Notice("ObjectDatabase", "Can not save, AllowAdd = False " + dataObject.TableName + " : " + dataObject.ObjectId);
             return false;
@@ -265,7 +267,7 @@ namespace FrameWork
                     return;
                 }
 
-                lock(_operations)
+                lock (_operations)
                     _operations.Add(new Tuple<DataObject, DatabaseOp>(dataObject, DatabaseOp.DOO_Update));
             }
         }
@@ -303,7 +305,6 @@ namespace FrameWork
                         localOperations = new List<Tuple<DataObject, DatabaseOp>>(_operations);
                         _operations.Clear();
                     }
-                    
 
                     foreach (var opInfo in localOperations)
                     {
@@ -321,10 +322,11 @@ namespace FrameWork
                             case DatabaseOp.DOO_Insert:
                                 if (opInfo.Item1.pendingOp == DatabaseOp.DOO_Delete)
                                 {
-                                    Log.Info("ObjectDatabase", "Transforming Delete/Insert on "+opInfo.Item1.GetType()+" into Update.");
+                                    Log.Info("ObjectDatabase", "Transforming Delete/Insert on " + opInfo.Item1.GetType() + " into Update.");
                                     opInfo.Item1.pendingOp = DatabaseOp.DOO_Update;
                                 }
                                 break;
+
                             case DatabaseOp.DOO_Delete:
                                 if (opInfo.Item1.pendingOp == DatabaseOp.DOO_Insert)
                                     opInfo.Item1.pendingOp = DatabaseOp.DOO_None;
@@ -344,7 +346,6 @@ namespace FrameWork
                 if (Start > _nextSaveTime)
                 {
                     _nextSaveTime = Start + SAVE_INTERVAL;
-
 
                     if (_dirtyObjects.Count > 0)
                     {
@@ -519,7 +520,6 @@ namespace FrameWork
 
             return dataObjects ?? new Dictionary<TKey, TObject>();
         }
-        
 
         public void RegisterDataObject(Type objType)
         {
@@ -534,7 +534,7 @@ namespace FrameWork
             List<string> primaryKeys = new List<string>();
 
             MemberInfo[] myMembers = objType.GetMembers();
-            
+
             // Load the primary keys and data elements into the data table
             foreach (MemberInfo memberInfo in myMembers)
             {
@@ -582,11 +582,10 @@ namespace FrameWork
             if (primaryKeys.Count > 0)
             {
                 var index = new DataColumn[primaryKeys.Count];
-                for (int i=0; i < primaryKeys.Count; ++i)
+                for (int i = 0; i < primaryKeys.Count; ++i)
                     index[i] = table.Columns[primaryKeys[i]];
                 table.PrimaryKey = index;
             }
-
             else // Add a primary key column to use
             {
                 table.Columns.Add(tableName + "_ID", typeof(string));
@@ -639,7 +638,7 @@ namespace FrameWork
             return ExecuteQueryIntImpl(rawQuery);
         }
 
-        #endregion
+        #endregion Public API
 
         #region Implementation
 
@@ -687,8 +686,10 @@ namespace FrameWork
             where TObject : DataObject;
 
         protected abstract bool ExecuteNonQueryImpl(string raqQuery);
+
         protected abstract long ExecuteQueryIntImpl(string raqQuery);
-        #endregion
+
+        #endregion Implementation
 
         #region Relations
 
@@ -975,7 +976,7 @@ namespace FrameWork
             }
         }
 
-        #endregion
+        #endregion Relations
 
         #region Cache - Methods within have no references.
 
@@ -1047,7 +1048,7 @@ namespace FrameWork
             }
         }
 
-        #endregion
+        #endregion Cache - Methods within have no references.
 
         #region Helpers
 
@@ -1084,7 +1085,6 @@ namespace FrameWork
                     object[] readonlyAttrib = objMembers[i].GetCustomAttributes(typeof(ReadOnly), true);
                     object[] attrib = objMembers[i].GetCustomAttributes(typeof(DataElement), true);
                     Relation[] relAttrib = GetRelationAttributes(objMembers[i]);
-                    
 
                     if (attrib.Length > 0 || keyAttrib.Length > 0 || relAttrib.Length > 0 || readonlyAttrib.Length > 0)
                     {
@@ -1108,7 +1108,7 @@ namespace FrameWork
         {
             ObjectPool<StaticMemberBindInfo> staticBindPool;
 
-            Type objectType = typeof (T);
+            Type objectType = typeof(T);
 
             if (!_staticBindPools.TryGetValue(objectType, out staticBindPool))
             {
@@ -1141,7 +1141,7 @@ namespace FrameWork
             }
 
             return new StaticMemberBindInfo(assignObject, databaseMembers);
-        } 
+        }
 
         // Lecture de la clef primaire
         public static string GetTableOrViewName(Type objectType)
@@ -1182,7 +1182,7 @@ namespace FrameWork
             }
         }
 
-        #endregion
+        #endregion Helpers
 
         #region Factory
 
@@ -1190,13 +1190,13 @@ namespace FrameWork
         {
             if (connectionType == ConnectionType.DATABASE_MYSQL)
                 return new MySQLObjectDatabase(new MySqlDataConnection(connectionString, schemaName));
-            else if(connectionType == ConnectionType.DATABASE_MSSQL)
-               return new SQLObjectDatabase(new SqlDataConnection(connectionString,schemaName));
+            else if (connectionType == ConnectionType.DATABASE_MSSQL)
+                return new SQLObjectDatabase(new SqlDataConnection(connectionString, schemaName));
 
             return null;
         }
 
-        #endregion
+        #endregion Factory
 
         #region Nested type: BindingInfo
 
@@ -1211,7 +1211,7 @@ namespace FrameWork
 
                 DataBinders = new DataBinder[members.Count];
 
-                for (int i=0; i < members.Count; ++i)
+                for (int i = 0; i < members.Count; ++i)
                 {
                     // Used for the fast static binding method for assigning to properties.
                     PropertyInfo info = members[i] as PropertyInfo;
@@ -1246,6 +1246,6 @@ namespace FrameWork
             }
         }
 
-        #endregion
+        #endregion Nested type: BindingInfo
     }
 }

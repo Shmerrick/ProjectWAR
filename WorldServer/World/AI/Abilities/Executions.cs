@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
 using NLog;
+using System.Linq;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
@@ -20,14 +20,12 @@ namespace WorldServer.World.AI.Abilities
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-
         public Executions(Unit owner, CombatInterface_Npc combat, ABrain brain)
         {
             Owner = owner;
             Combat = combat;
             Brain = brain;
         }
-
 
         //public void IncrementPhase()
         //{
@@ -65,8 +63,8 @@ namespace WorldServer.World.AI.Abilities
 
         public void PuntTarget()
         {
-                Brain.SpeakYourMind($" using Repel vs {(Combat.CurrentTarget as Player)?.Name}");
-                Combat.CurrentTarget.ApplyKnockback(Owner, AbilityMgr.GetKnockbackInfo(8329, 0));
+            Brain.SpeakYourMind($" using Repel vs {(Combat.CurrentTarget as Player)?.Name}");
+            Combat.CurrentTarget.ApplyKnockback(Owner, AbilityMgr.GetKnockbackInfo(8329, 0));
         }
 
         public void Corruption()
@@ -78,7 +76,6 @@ namespace WorldServer.World.AI.Abilities
                 var target = ((Player)Combat.CurrentTarget);
                 Brain.SpeakYourMind($" using Corruption vs {target.Name}");
                 Brain.SimpleCast(Owner, Combat.CurrentTarget, "Corruption", 8400);
-
             }
         }
 
@@ -162,7 +159,6 @@ namespace WorldServer.World.AI.Abilities
                 var target = ((Player)Combat.CurrentTarget);
                 Brain.SpeakYourMind($" using PlagueAura vs {target.Name}");
                 Brain.SimpleCast(Owner, Combat.CurrentTarget, "PlagueAura", 13660);
-
             }
         }
 
@@ -283,7 +279,6 @@ namespace WorldServer.World.AI.Abilities
                 var target = ((Player)Combat.CurrentTarget);
                 Brain.SpeakYourMind($" using BloodscentAura vs {target.Name}");
                 Brain.SimpleCast(Owner, Combat.CurrentTarget, "BloodscentAura", 13728);
-
             }
         }
 
@@ -314,7 +309,6 @@ namespace WorldServer.World.AI.Abilities
 
             var go = Owner.Region.CreateGameObject(spawn);
             go.EvtInterface.AddEventNotify(EventName.OnDie, RemoveGOs);
-
         }
 
         private bool RemoveGOs(Object obj, object args)
@@ -391,7 +385,6 @@ namespace WorldServer.World.AI.Abilities
                     WorldY = newTarget.WorldPosition.Y + StaticRandom.Instance.Next(50),
                     WorldZ = newTarget.WorldPosition.Z,
                     ZoneId = (ushort)Owner.ZoneId
-
                 };
 
                 spawn.BuildFromProto(proto);
@@ -406,7 +399,6 @@ namespace WorldServer.World.AI.Abilities
                 go.BuffInterface.QueueBuff(new BuffQueueInfo(go, 48, AbilityMgr.GetBuffInfo((ushort)1543),
                     BuffAssigned));
             }
-
         }
 
         private bool RemoveAllFluxes(Objects.Object obj, object args)
@@ -432,7 +424,6 @@ namespace WorldServer.World.AI.Abilities
             var Y = Owner.WorldPosition.Y;
             var Z = Owner.WorldPosition.Z;
 
-
             var spawn = new Creature_spawn { Guid = (uint)CreatureService.GenerateCreatureSpawnGUID() };
             var proto = CreatureService.GetCreatureProto(entry.ProtoId);
             if (proto == null)
@@ -445,7 +436,6 @@ namespace WorldServer.World.AI.Abilities
             spawn.WorldZ = Z;
             spawn.ZoneId = (ushort)Owner.ZoneId;
 
-
             var creature = Owner.Region.CreateCreature(spawn);
             creature.EvtInterface.AddEventNotify(EventName.OnDie, RemoveNPC);
             entry.Creature = creature;
@@ -457,7 +447,6 @@ namespace WorldServer.World.AI.Abilities
                 creature.AiInterface.SetBrain(new HealerBrain(creature));
             if (entry.Type == BrainType.PassiveBrain)
                 creature.AiInterface.SetBrain(new PassiveBrain(creature));
-
         }
 
         private bool RemoveNPC(Object obj, object args)
@@ -472,6 +461,7 @@ namespace WorldServer.World.AI.Abilities
         {
             var newBuff = buff;
         }
+
         private void SwitchToLowHealthTarget()
         {
             // Go for Low Health target
@@ -503,6 +493,5 @@ namespace WorldServer.World.AI.Abilities
                     _logger.Debug($"{Owner} => {(randomTarget as Player).Name}");
             }
         }
-
     }
 }

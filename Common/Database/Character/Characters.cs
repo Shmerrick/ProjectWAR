@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Common.Database.World.Characters;
+using FrameWork;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using Common.Database.World.Characters;
-using FrameWork;
 
 namespace Common
 {
@@ -34,7 +34,6 @@ namespace Common
         private ushort _honorPoints;
         private ushort _honorRank;
 
-
         public uint CareerFlags => CareerLine != 0 ? (uint)1 << (_careerLine - 1) : 0;
 
         [PrimaryKey]
@@ -44,7 +43,7 @@ namespace Common
             set { _characterId = value; Dirty = true; }
         }
 
-        [DataElement(Unique = true,AllowDbNull = false,Varchar=24)]
+        [DataElement(Unique = true, AllowDbNull = false, Varchar = 24)]
         public string Name
         {
             get { return _name; }
@@ -125,9 +124,9 @@ namespace Common
         public string Traits
         {
             get { return Encoding.UTF8.GetString(_traits); }
-            set 
+            set
             {
-                _traits = Encoding.UTF8.GetBytes(value); Dirty = true; 
+                _traits = Encoding.UTF8.GetBytes(value); Dirty = true;
             }
         }
 

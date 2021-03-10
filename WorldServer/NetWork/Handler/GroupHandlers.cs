@@ -47,23 +47,26 @@ namespace WorldServer.NetWork.Handler
             byte subGroup = packet.GetUint8();
             byte state = packet.GetUint8();
 
-
             switch (state)
             {
                 case 2: // Accept invitation
                     player.GrpInterface.AcceptInvitation();
                     break;
+
                 case 6: // Decline invitation
                     player.GrpInterface.RejectInvitation();
                     break;
+
                 case 3: // Leave group
                     if (groupId != 0)
                         Group.EnqueueGroupAction(groupId, new GroupAction(EGroupAction.PlayerLeave, player));
                     break;
+
                 case 4: // loot roundrobin
                     if (groupId != 0 && isLeader)
                         Group.EnqueueGroupAction(groupId, new GroupAction(EGroupAction.ChangeLootOption, player, subGroup.ToString()));
                     break;
+
                 case 5: // Set master looter
                     Player newMasterLooter;
                     lock (Player._Players)
@@ -72,6 +75,7 @@ namespace WorldServer.NetWork.Handler
                         if (groupId != 0 && isLeader)
                             Group.EnqueueGroupAction(groupId, new GroupAction(EGroupAction.ChangeMasterLooter, player, newMasterLooter.Name));
                     break;
+
                 case 10: // switch leader
                     Player newLeader;
                     lock (Player._Players)
@@ -80,22 +84,28 @@ namespace WorldServer.NetWork.Handler
                         if (groupId != 0 && isLeader)
                             Group.EnqueueGroupAction(groupId, new GroupAction(EGroupAction.ChangeLeader, cclient.Plr, newLeader.Name));
                     break;
+
                 case 12:
                     if (groupId != 0 && isLeader)
                         Group.EnqueueGroupAction(groupId, new GroupAction(EGroupAction.ChangeNeedOnUse, player));
                     break;
+
                 case 13:
                     player.ScnInterface.Scenario.AddPlayerToGroup(player, subGroup);
                     break;
+
                 case 14:
                     player.ScnInterface.Scenario.RemovePlayerFromGroup(player);
                     break;
+
                 case 15: // Warband invitation acceptance
                     player.GrpInterface.AcceptInvitation();
                     break;
+
                 case 16: // Warband invitation rejection
                     player.GrpInterface.RejectInvitation();
                     break;
+
                 case 17: // Make set mainassist
                     Player newMainAssist;
                     lock (Player._Players)
@@ -104,10 +114,12 @@ namespace WorldServer.NetWork.Handler
                         if (groupId != 0 && isLeader)
                             Group.EnqueueGroupAction(groupId, new GroupAction(EGroupAction.ChangeMainAssist, player, newMainAssist.Name));
                     break;
+
                 case 18: // autolootinrvr
                     if (groupId != 0)
                         Group.EnqueueGroupAction(groupId, new GroupAction(EGroupAction.ChangeAutoLoot, player));
                     break;
+
                 default:
                     Log.Error("GroupHandler", "Unsupported type: " + state);
                     break;

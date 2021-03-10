@@ -1,8 +1,8 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using SystemData;
-using FrameWork;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
 using WorldServer.World.Abilities;
@@ -12,7 +12,6 @@ using WorldServer.World.Abilities.Components;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Map;
 using WorldServer.World.Objects.Instances;
-using WorldServer.World.Objects.Instances.TomboftheVultureLord;
 using WorldServer.World.Positions;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
@@ -74,7 +73,7 @@ namespace WorldServer.World.Objects
             RemoveFromWorld();
         }
 
-        #endregion
+        #endregion Disposal
 
         public virtual void Update(long msTick)
         {
@@ -124,7 +123,7 @@ namespace WorldServer.World.Objects
             }
         }
 
-        #endregion
+        #endregion Load/Save
 
         #region Interfaces
 
@@ -154,7 +153,6 @@ namespace WorldServer.World.Objects
 
         public void PlayEffect(ushort effectID, Point3D position = null)
         {
-
             PacketOut Out = new PacketOut((byte)Opcodes.F_PLAY_EFFECT, 30);
             Out.WriteUInt16(effectID);
             Out.WriteUInt16(0);
@@ -182,10 +180,8 @@ namespace WorldServer.World.Objects
                 ((Player)this).SendPacket(Out);
         }
 
-
-
         /// <summary>
-        /// Sets object interaction state 
+        /// Sets object interaction state
         /// </summary>
         /// <param name="state">1 = interactive, 15=disabled</param>
         public void UpdateInteractState(byte state)
@@ -231,7 +227,7 @@ namespace WorldServer.World.Objects
             return null;
         }
 
-        #endregion
+        #endregion Interfaces
 
         /// <summary>
         /// Sets the object ID in a thread-safe manner.
@@ -258,7 +254,6 @@ namespace WorldServer.World.Objects
 
         public virtual void SendMeTo(Player plr)
         {
-
         }
 
         public virtual void SendRemove(Player plr)
@@ -270,17 +265,18 @@ namespace WorldServer.World.Objects
                 plr.SendPacket(Out);
             else
                 DispatchPacket(Out, false);
-
         }
+
         public virtual void SendInteract(Player player, InteractMenu menu)
         {
             ScrInterface.OnInteract(this, player, menu);
             WorldMgr.GeneralScripts.OnWorldPlayerEvent("INTERACT", player, this);
         }
+
         public virtual void SendInteractEnd(Player plr)
         {
-
         }
+
         public virtual void Say(string message, ChatLogFilters chatFilter = ChatLogFilters.CHATLOGFILTERS_SAY)
         {
             if (string.IsNullOrEmpty(message))
@@ -315,32 +311,101 @@ namespace WorldServer.World.Objects
                     player.SendCopy(Out);
         }
 
-        #endregion
+        #endregion Sender
 
         #region Detection
 
-        public bool IsPlayer() { return this is Player; }
-        public bool IsUnit() { return this is Unit; }
-        public bool IsCreature() { return this is Creature; }
-        public bool IsInstanceSpawn() { return this is InstanceSpawn; }
-        public bool IsPet() { return this is Pet; }
-        public bool IsGameObject() { return this is GameObject; }
-        public bool IsChapter() { return this is ChapterObject; }
+        public bool IsPlayer()
+        {
+            return this is Player;
+        }
 
-        public Creature ToCreature() { return IsCreature() ? (this as Creature) : null; }
-        public Player ToPlayer() { return IsPlayer() ? (this as Player) : null; }
-        public GameObject ToGameObject() { return IsGameObject() ? (this as GameObject) : null; }
-        public Unit ToUnit() { return IsUnit() ? (this as Unit) : null; }
-	
-        public Unit GetUnit() { return this as Unit; }
-        public Player GetPlayer() { return this as Player; }
-        public Creature GetCreature() { return this as Creature; }
-        public InstanceSpawn GetInstanceSpawn() { return this as InstanceSpawn; }
-        public InstanceBossSpawn GetInstanceBossSpawn() { return this as InstanceBossSpawn; }
-        public Pet GetPet() { return this as Pet; }
-        public GameObject GetGameObject() { return this as GameObject; }
+        public bool IsUnit()
+        {
+            return this is Unit;
+        }
 
-        #endregion
+        public bool IsCreature()
+        {
+            return this is Creature;
+        }
+
+        public bool IsInstanceSpawn()
+        {
+            return this is InstanceSpawn;
+        }
+
+        public bool IsPet()
+        {
+            return this is Pet;
+        }
+
+        public bool IsGameObject()
+        {
+            return this is GameObject;
+        }
+
+        public bool IsChapter()
+        {
+            return this is ChapterObject;
+        }
+
+        public Creature ToCreature()
+        {
+            return IsCreature() ? (this as Creature) : null;
+        }
+
+        public Player ToPlayer()
+        {
+            return IsPlayer() ? (this as Player) : null;
+        }
+
+        public GameObject ToGameObject()
+        {
+            return IsGameObject() ? (this as GameObject) : null;
+        }
+
+        public Unit ToUnit()
+        {
+            return IsUnit() ? (this as Unit) : null;
+        }
+
+        public Unit GetUnit()
+        {
+            return this as Unit;
+        }
+
+        public Player GetPlayer()
+        {
+            return this as Player;
+        }
+
+        public Creature GetCreature()
+        {
+            return this as Creature;
+        }
+
+        public InstanceSpawn GetInstanceSpawn()
+        {
+            return this as InstanceSpawn;
+        }
+
+        public InstanceBossSpawn GetInstanceBossSpawn()
+        {
+            return this as InstanceBossSpawn;
+        }
+
+        public Pet GetPet()
+        {
+            return this as Pet;
+        }
+
+        public GameObject GetGameObject()
+        {
+            return this as GameObject;
+        }
+
+        #endregion Detection
 
         #region Position
 
@@ -368,6 +433,7 @@ namespace WorldServer.World.Objects
 
         /// <summary>Current region containing the object, may be null</summary>
         public RegionMgr Region => Zone?.Region;
+
         /// <summary>True is zone is not null</summary>
         public bool IsInWorld() => Zone != null;
 
@@ -568,7 +634,6 @@ namespace WorldServer.World.Objects
             if (IsMoving && obj.IsMoving && radiusFeet == 5)
                 radiusFeet = 8;
 
-
             radiusFeet = (uint)(radiusFeet + BaseRadius + obj.BaseRadius);
 
             return WorldPosition.IsWithinRadiusFeet(obj.WorldPosition, (int)radiusFeet);
@@ -597,7 +662,6 @@ namespace WorldServer.World.Objects
 
         public bool PointWithinRadiusFeet(Point3D point, int radius)
         {
-
             if (WorldPosition == null)
                 return false;
 
@@ -637,7 +701,7 @@ namespace WorldServer.World.Objects
             return false;
         }
 
-        #endregion
+        #endregion Distance and Heading Checks
 
         private bool _isMoving;
         protected DateTime? _knockbackTime;
@@ -673,6 +737,7 @@ namespace WorldServer.World.Objects
             XOffset = OffX;
             YOffset = OffY;
         }
+
         public virtual bool SetPosition(ushort pinX, ushort pinY, ushort pinZ, ushort heading, ushort zoneId, bool sendState = false)
         {
             //Player plr = this as Player;
@@ -731,6 +796,7 @@ namespace WorldServer.World.Objects
         }
 
         private bool _isVisible = true;
+
         public bool IsVisible
         {
             get
@@ -749,6 +815,7 @@ namespace WorldServer.World.Objects
         }
 
         private bool _isActive;
+
         public bool IsActive
         {
             get
@@ -772,7 +839,7 @@ namespace WorldServer.World.Objects
             }
         }
 
-        #endregion
+        #endregion Position
 
         #region Range
 
@@ -901,10 +968,9 @@ namespace WorldServer.World.Objects
 
         public virtual void OnRangeUpdate()
         {
-
         }
 
-        #endregion
+        #endregion Range
 
         #region Interaction
 
@@ -926,7 +992,6 @@ namespace WorldServer.World.Objects
             {
                 if (!CapturingPlayer._Value.Online || GetDistanceTo(CapturingPlayer) > 50)
                     interactor.SendClientMessage($"Removed bugged capturer {CapturingPlayer.Name} from {Name}.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
-
                 else
                 {
                     interactor.SendClientMessage(CapturingPlayer.Name + " is already interacting with this object.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
@@ -966,6 +1031,6 @@ namespace WorldServer.World.Objects
             CapturingPlayer = null;
         }
 
-        #endregion
+        #endregion Interaction
     }
 }

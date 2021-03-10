@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -29,7 +25,7 @@ namespace Common
         private string _Waiting_order = "0";
         private string _Density_destruction = "0";
         private string _Density_order = "0";
-        private string _Openrvr = "1" ;
+        private string _Openrvr = "1";
         private string _Rp = "1";
         private string _Status = "0";
 
@@ -57,7 +53,7 @@ namespace Common
             set { _Adresse = value; Dirty = true; }
         }
 
-        [DataElement(AllowDbNull=false)]
+        [DataElement(AllowDbNull = false)]
         public int Port
         {
             get { return _Port; }

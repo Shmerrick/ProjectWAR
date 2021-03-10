@@ -65,7 +65,7 @@ namespace WorldServer.World.Positions
             Z = 0;
         }
 
-        #endregion
+        #endregion IPoint3D Members
 
         public void SetCoordsFrom(Point3D point)
         {

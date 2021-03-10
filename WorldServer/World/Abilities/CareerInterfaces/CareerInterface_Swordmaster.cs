@@ -7,7 +7,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 {
     public class CareerInterface_Swordmaster : CareerInterface
     {
-
         public CareerInterface_Swordmaster(Player player) : base(player)
         {
             _maxResource = 2;

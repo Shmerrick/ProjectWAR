@@ -1,7 +1,7 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
 using System.Threading;
-using FrameWork;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Objects;
 using Opcodes = WorldServer.NetWork.Opcodes;
@@ -45,12 +45,12 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
             if (Interlocked.CompareExchange(ref BuffEndLock, 1, 0) != 0)
                 return;
 
-                BuffHasExpired = true;
-                WasManuallyRemoved = wasManual;
+            BuffHasExpired = true;
+            WasManuallyRemoved = wasManual;
 
-                if (wasRemoved)
-                    BuffState = (byte)EBuffState.Removed;
-                else BuffState = (byte)EBuffState.Ended;
+            if (wasRemoved)
+                BuffState = (byte)EBuffState.Removed;
+            else BuffState = (byte)EBuffState.Ended;
 
             Interlocked.Exchange(ref BuffEndLock, 0);
 
@@ -68,6 +68,7 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
         public void SendBounceStart(Player Plr = null)
         {
             #region Init Effects packet
+
             // Actual buff
             PacketOut Out = new PacketOut((byte)Opcodes.F_INIT_EFFECTS);
             Out.WriteByte(1);
@@ -84,7 +85,6 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
             Out.WriteUInt16R(_buffInfo.Entry);
             Out.WriteZigZag(EndTime != 0 ? (int)((EndTime - TCPManager.GetTimeStampMS()) / 1000) : 0);
             Out.WriteUInt16R(Caster.Oid);
-
 
             Out.WriteByte((byte)BuffLines.Count);
             if (BuffLines.Count > 0)
@@ -104,13 +104,13 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
                 else if (Caster.IsPlayer())
                     ((Player)Caster).DispatchPacket(Out, true);
             }
-
             else
                 Plr.SendPacket(Out);
 
-            #endregion
+            #endregion Init Effects packet
 
             #region Appearance/Animation
+
             // Buff appearance / animation
             if (Plr == null)
             {
@@ -127,12 +127,13 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
                 Target.DispatchPacketUnreliable(Out, true, Target);
             }
 
-            #endregion
+            #endregion Appearance/Animation
         }
 
         protected void SendBounceEnd()
         {
             #region Init Effects packet
+
             PacketOut Out = new PacketOut((byte)Opcodes.F_INIT_EFFECTS);
             Out.WriteByte(1);
             Out.WriteByte(2);
@@ -147,7 +148,7 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
             else if (Caster.IsPlayer())
                 ((Player)Caster).DispatchPacket(Out, true);
 
-            #endregion
+            #endregion Init Effects packet
 
             if (HasSentEnd)
                 return;
@@ -168,7 +169,7 @@ namespace WorldServer.World.Abilities.Buffs.SpecialBuffs
 
             Target.DispatchPacketUnreliable(Out, true, Target);
 
-            #endregion
+            #endregion Appearance / Animation
         }
 
         public bool CanBounce()

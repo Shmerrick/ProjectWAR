@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.Managers.Commands;
 using WorldServer.World.Objects;
@@ -50,7 +50,7 @@ namespace WorldServer.NetWork.Handler
                         report.AccountId = (uint)Plr.Client._Account.AccountId;
                         report.CharacterId = Plr.CharacterId;
 
-                        //fix for when someone right clicks chat to report or report spam on mails, because mythic thought it was good to classify these as goldsellers... 
+                        //fix for when someone right clicks chat to report or report spam on mails, because mythic thought it was good to classify these as goldsellers...
                         if (Message.StartsWith("[") || Message.StartsWith($"\n[") || Message.StartsWith($"\n ["))
                         {
                             report.Type = 2; // Violation report
@@ -84,9 +84,8 @@ namespace WorldServer.NetWork.Handler
                             break;
                         }
 
-
                         CharMgr.Database.AddObject(report);
-                        lock(CharMgr._report)
+                        lock (CharMgr._report)
                             CharMgr._report.Add(report);
 
                         Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_MISC, GameData.Localized_text.TEXT_COPTER_GENERAL_FEEDBACK_SENT);
@@ -95,7 +94,9 @@ namespace WorldServer.NetWork.Handler
                         {
                             plr.SendClientMessage("NEW_TICKET", ChatLogFilters.CHATLOGFILTERS_CHANNEL_9);
                         }
-                    } break;
+                    }
+                    break;
+
                 case GameData.HelpType.HELPTYPE_CREATE_APPEAL_NON_VALIDATED: // CSR Appeal
                     {
                         GameData.AppealTopic Category = (GameData.AppealTopic)packet.GetUint8();
@@ -137,9 +138,8 @@ namespace WorldServer.NetWork.Handler
                             report.Fields.Add(new KeyValuePair<uint, string>((byte)FieldType, Field.Replace("|", "").Replace(":", "")));
                         }
 
-
                         CharMgr.Database.AddObject(report);
-                        lock(CharMgr._report)
+                        lock (CharMgr._report)
                             CharMgr._report.Add(report);
 
                         Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_MISC, GameData.Localized_text.TEXT_COPTER_GENERAL_FEEDBACK_SENT);
@@ -148,8 +148,9 @@ namespace WorldServer.NetWork.Handler
                         {
                             plr.SendClientMessage("NEW_TICKET", ChatLogFilters.CHATLOGFILTERS_CHANNEL_9);
                         }
+                    }
+                    break;
 
-                    } break;
                 case GameData.HelpType.HELPTYPE_CREATE_BUG_REPORT: // Bug Report
                 case GameData.HelpType.HELPTYPE_CREATE_FEEDBACK: // Feedback
                     {
@@ -180,7 +181,7 @@ namespace WorldServer.NetWork.Handler
                         report.Assigned = "nobody";
 
                         CharMgr.Database.AddObject(report);
-                        lock(CharMgr._report)
+                        lock (CharMgr._report)
                             CharMgr._report.Add(report);
 
                         Plr.SendLocalizeString("", ChatLogFilters.CHATLOGFILTERS_USER_ERROR, GameData.Localized_text.TEXT_COPTER_GENERAL_FEEDBACK_SENT);
@@ -189,7 +190,8 @@ namespace WorldServer.NetWork.Handler
                         {
                             plr.SendClientMessage("NEW_TICKET", ChatLogFilters.CHATLOGFILTERS_CHANNEL_9);
                         }
-                    } break;
+                    }
+                    break;
             }
         }
     }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using WorldServer.World.Objects;
 
 namespace WorldServer.World.AI
@@ -14,7 +13,6 @@ namespace WorldServer.World.AI
         {
             potionUsed = false;
             nextDetauntAvailable = 0;
-
         }
 
         public override void Think(long tick)

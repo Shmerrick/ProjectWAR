@@ -1,8 +1,7 @@
 ﻿using Common;
-using System;
 using FrameWork;
+using System;
 using System.Collections.Generic;
-using WorldServer.Services.World;
 using WorldServer.World.Objects;
 using static WorldServer.Managers.Commands.GMUtils;
 
@@ -10,7 +9,7 @@ namespace WorldServer.Managers.Commands
 {
     /// <summary>Addition commands under .ticket</summary>
     internal class TicketCommands
-    {   
+    {
         /// <summary>
         /// Lists all tickets that are open
         /// </summary>
@@ -19,9 +18,9 @@ namespace WorldServer.Managers.Commands
         /// <returns></returns>
         public static bool ListTickets(Player plr, ref List<string> values)
         {
-            foreach(Bug_report report in CharMgr._report)
+            foreach (Bug_report report in CharMgr._report)
             {
-                string assignee="nobody";
+                string assignee = "nobody";
                 if (report.Assigned != null)
                     assignee = report.Assigned;
 
@@ -29,28 +28,20 @@ namespace WorldServer.Managers.Commands
 
                 if (report.ReportType == "General")
                     subtype = "1";
-
                 else if (report.ReportType == "Harassment")
                     subtype = "2";
-
                 else if (report.ReportType == "Zone Disruption")
                     subtype = "3";
-
                 else if (report.ReportType == "XP or Renown Farming")
                     subtype = "4";
-
                 else if (report.ReportType == "Speed Hacking")
                     subtype = "5";
-
                 else if (report.ReportType == "Macroing")
                     subtype = "6";
-
                 else if (report.ReportType == "Kill Stealing")
                     subtype = "7";
-
                 else if (report.ReportType == "Cross Realming")
                     subtype = "8";
-
 
                 /*  How the category work
                  *  report.type     report.category     what it means
@@ -122,7 +113,6 @@ namespace WorldServer.Managers.Commands
                     account = Program.AcctMgr.GetAccountById((int)report.AccountId).Username;
                 }
 
-
                 //for whatever reason ^ cannot be sent to the client, it will break the rest of the string.
                 string Message = report.Message;
                 if (Message.Contains("^"))
@@ -133,6 +123,7 @@ namespace WorldServer.Managers.Commands
             plr.SendClientMessage("TICKET_END", SystemData.ChatLogFilters.CHATLOGFILTERS_CHANNEL_9);
             return true;
         }
+
         /// <summary>
         /// Assigns a person to a ticket
         /// </summary>
@@ -169,7 +160,6 @@ namespace WorldServer.Managers.Commands
                 plr.SendClientMessage("The Specified report does not exist");
                 return true;
             }
-
             else
             {
                 if (account == "nobody")
@@ -186,6 +176,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
         }
+
         /// <summary>
         /// assigns the current player as the person responsible for the ticket
         /// </summary>
@@ -215,7 +206,6 @@ namespace WorldServer.Managers.Commands
                 plr.SendClientMessage("The Specified report does not exist");
                 return true;
             }
-
             else
             {
                 plr.SendClientMessage("You have assigned yourself to ticket: " + reportID);
@@ -228,6 +218,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
         }
+
         /// <summary>
         /// returns how many tickets there are in the DB to handle
         /// </summary>
@@ -239,6 +230,7 @@ namespace WorldServer.Managers.Commands
             plr.SendClientMessage("TICKET_NUMBER:" + CharMgr._report.Count, SystemData.ChatLogFilters.CHATLOGFILTERS_CHANNEL_9);
             return true;
         }
+
         /// <summary>
         /// Delete the specified ticket
         /// </summary>
@@ -274,7 +266,6 @@ namespace WorldServer.Managers.Commands
                 plr.SendClientMessage("You cannot close a ticket not assigned to you(username), assign it to yourself first if you fixed the ticket");
                 return true;
             }
-
             else
             {
                 plr.SendClientMessage("You have deleted ticket: " + reportID);
@@ -298,6 +289,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
         }
+
         /// <summary>
         /// To answer and close a ticket (answer will be sent as an ingame mail)
         /// </summary>
@@ -346,7 +338,6 @@ namespace WorldServer.Managers.Commands
                 plr.SendClientMessage("The player who created this ticket is deleted or has not logged in for over the preload period, as such we cannot send a mail to the character.");
                 return true;
             }
-
             else
             {
                 plr.SendClientMessage("You have answered ticket: " + reportID);
@@ -373,7 +364,7 @@ namespace WorldServer.Managers.Commands
                     Money = 0,
                     Opened = false
                 };
-                
+
                 CharMgr.AddMail(ticketMail);
                 CharMgr.Database.AddObject(log);
 
@@ -386,6 +377,5 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
         }
-
     }
 }

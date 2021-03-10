@@ -3,14 +3,13 @@ using WorldServer.World.AI;
 
 namespace WorldServer.World.Objects.Instances.The_Lost_Vale
 {
-	public class SimpleMalghorGreathorn : InstanceBossSpawn
-	{
-		#region Constructors
+    public class SimpleMalghorGreathorn : InstanceBossSpawn
+    {
+        #region Constructors
 
-		public SimpleMalghorGreathorn(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
-		{
-			
-		}
+        public SimpleMalghorGreathorn(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
+        {
+        }
 
         #endregion Constructors
 
@@ -31,11 +30,11 @@ namespace WorldServer.World.Objects.Instances.The_Lost_Vale
         #region Overrides
 
         public override void OnLoad()
-		{
-			base.OnLoad();
+        {
+            base.OnLoad();
 
-			AiInterface.SetBrain(new InstanceBossBrain(this));
-		}
+            AiInterface.SetBrain(new InstanceBossBrain(this));
+        }
 
         //public override bool OnEnterCombat(Object mob, object args)
         //{

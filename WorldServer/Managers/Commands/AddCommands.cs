@@ -1,13 +1,12 @@
 ﻿using Common;
+using Common.Database.World.Battlefront;
 using FrameWork;
+using GameData;
+using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using SystemData;
-using Common.Database.World.Battlefront;
-using GameData;
-using NLog;
 using WorldServer.Configs;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
@@ -24,6 +23,7 @@ namespace WorldServer.Managers.Commands
     internal class AddCommands
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Add xp to player
         /// </summary>
@@ -69,7 +69,6 @@ namespace WorldServer.Managers.Commands
                 log.Date = DateTime.Now;
                 CharMgr.Database.AddObject(log);
             }
-
             else
                 plr.SendClientMessage($"Item creation failed: {itemId}");
 
@@ -221,7 +220,7 @@ namespace WorldServer.Managers.Commands
                 var bonuses = new List<RVRPlayerBagBonus>();
                 var randomRolls = new Dictionary<uint, int>();
                 var pairingContributions = new Dictionary<uint, int>();
-                var rewardAssignments = rewardAssigner.AssignLootToPlayers(numberBags, new List<LootBagTypeDefinition> { lootBagTypeDefinition }, eligPlayer, bonuses, randomRolls,pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y"});
+                var rewardAssignments = rewardAssigner.AssignLootToPlayers(numberBags, new List<LootBagTypeDefinition> { lootBagTypeDefinition }, eligPlayer, bonuses, randomRolls, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y" });
 
                 var bagContentSelector = new BagContentSelector(RVRZoneRewardService.RVRRewardKeepItems, StaticRandom.Instance);
 
@@ -245,7 +244,6 @@ namespace WorldServer.Managers.Commands
                                 destructionLootChest.Add(plr.CharacterId, generatedLootBag);
                             if (plr.Realm == Realms.REALMS_REALM_ORDER)
                                 orderLootChest.Add(plr.CharacterId, generatedLootBag);
-
                         }
                         else
                         {
@@ -255,7 +253,6 @@ namespace WorldServer.Managers.Commands
                 }
             }
             return true;
-
         }
     }
 }

@@ -1,15 +1,12 @@
-﻿using Common;
-using Common.Database.World.LiveEvents;
+﻿using Common.Database.World.LiveEvents;
 using FrameWork;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace WorldServer.Services.World
 {
     [Service]
-    class LiveEventService : ServiceBase
+    internal class LiveEventService : ServiceBase
     {
         public static List<LiveEvent_Info> LiveEvents = new List<LiveEvent_Info>();
 
@@ -46,6 +43,5 @@ namespace WorldServer.Services.World
 
             Log.Success("LiveEvent_Info", "Loaded " + LiveEvents.Count + " LiveEvent_Info");
         }
-
     }
 }

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.World.Auction;
 using WorldServer.World.Objects;
 
@@ -12,7 +12,7 @@ namespace WorldServer.NetWork.Handler
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_AUCTION_SEARCH_QUERY, "onAuctionSearchQuery")]
         public static void F_AUCTION_SEARCH_QUERY(BaseClient client, PacketIn packet)
         {
-            GameClient cclient = (GameClient) client;
+            GameClient cclient = (GameClient)client;
 
             if (!cclient.IsPlaying() || !cclient.Plr.IsInWorld())
                 return;
@@ -50,20 +50,20 @@ namespace WorldServer.NetWork.Handler
 
             cclient.IsPlaying();
         }
-        
+
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_AUCTION_POST_ITEM, "onAuctionPostItem")]
         public static void F_AUCTION_POST_ITEM(BaseClient client, PacketIn packet)
         {
-            GameClient cclient = (GameClient) client;
+            GameClient cclient = (GameClient)client;
 
             if (!cclient.IsPlaying() || !cclient.Plr.IsInWorld())
                 return;
 
             Player plr = cclient.Plr;
 
-            if(AuctionHouse.PlayerAuctionCount(plr.CharacterId) >= AuctionHouse.MAX_AUCTIONS_PER_CHAR)
+            if (AuctionHouse.PlayerAuctionCount(plr.CharacterId) >= AuctionHouse.MAX_AUCTIONS_PER_CHAR)
             {
-                plr.SendMessage("You have reached the maximum of " + AuctionHouse.MAX_AUCTIONS_PER_CHAR+" auctions.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
+                plr.SendMessage("You have reached the maximum of " + AuctionHouse.MAX_AUCTIONS_PER_CHAR + " auctions.", ChatLogFilters.CHATLOGFILTERS_USER_ERROR);
                 return;
             }
 
@@ -71,7 +71,7 @@ namespace WorldServer.NetWork.Handler
             packet.Skip(2);
             uint price = packet.GetUint32();
 
-            if(plr.ItmInterface.GetItemInSlot(slot) == null)
+            if (plr.ItmInterface.GetItemInSlot(slot) == null)
                 return;
 
             if (plr.ItmInterface.GetItemInSlot(slot).BoundtoPlayer || plr.ItmInterface.GetItemInSlot(slot).Info.Bind == 1)
@@ -91,9 +91,9 @@ namespace WorldServer.NetWork.Handler
                 Seller = plr.Info,
                 SellerId = plr.CharacterId,
                 SellPrice = price,
-                StartTime = (uint) TCPManager.GetTimeStamp(),
+                StartTime = (uint)TCPManager.GetTimeStamp(),
                 Realm = plr.Info.Realm,
-                AuctionId = (uint) AuctionHouse.GenerateAuctionGUID()
+                AuctionId = (uint)AuctionHouse.GenerateAuctionGUID()
             };
 
             AuctionHouse.AddAuction(auction);
@@ -103,7 +103,7 @@ namespace WorldServer.NetWork.Handler
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_AUCTION_BID_ITEM, "onAuctionBidItem")]
         public static void F_AUCTION_BID_ITEM(BaseClient client, PacketIn packet)
         {
-            GameClient cclient = (GameClient) client;
+            GameClient cclient = (GameClient)client;
 
             if (!cclient.IsPlaying() || !cclient.Plr.IsInWorld())
                 return;

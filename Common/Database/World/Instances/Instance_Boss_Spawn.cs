@@ -1,8 +1,5 @@
 ﻿using FrameWork;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Common
 {
@@ -38,6 +35,7 @@ namespace Common
                     _name = value.Substring(0, caratPos);
             }
         }
+
         public string GenderedName;
 
         [DataElement]
@@ -75,7 +73,5 @@ namespace Common
 
         [DataElement]
         public uint WorldO { get; set; }
-
-
     }
 }

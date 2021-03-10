@@ -5,11 +5,11 @@ namespace WorldServer.World.Objects.Instances
 {
     public class InstanceSpawn : Creature
     {
-        uint instanceGroupSpawnId;
-        uint bossId;
-        Instance Instance;
-        
-        public InstanceSpawn(Creature_spawn spawn, uint bossId,Instance instance):base(spawn)
+        private uint instanceGroupSpawnId;
+        private uint bossId;
+        private Instance Instance;
+
+        public InstanceSpawn(Creature_spawn spawn, uint bossId, Instance instance) : base(spawn)
         {
 #pragma warning disable CS1717 // Назначение выполнено для той же переменной
             instanceGroupSpawnId = instanceGroupSpawnId;
@@ -22,13 +22,12 @@ namespace WorldServer.World.Objects.Instances
             EvtInterface.AddEventNotify(EventName.OnLeaveCombat, OnLeaveCombat);
         }
 
-
         public bool OnEnterCombat(Object mob, object args)
         {
             Unit Attacker = mob.GetCreature().CbtInterface.GetTarget(GameData.TargetTypes.TARGETTYPES_TARGET_ENEMY);
             if (Attacker == null)
                 return false;
-            if(instanceGroupSpawnId > 0)
+            if (instanceGroupSpawnId > 0)
             {
                 Instance.AttackTarget(instanceGroupSpawnId, Attacker);
             }
@@ -46,7 +45,6 @@ namespace WorldServer.World.Objects.Instances
 
         protected override void SetRespawnTimer()
         {
-            
         }
 
         public InstanceSpawn RezInstanceSpawn()
@@ -56,8 +54,6 @@ namespace WorldServer.World.Objects.Instances
             Destroy();
             return newCreature;
         }
-
-
 
         public override string ToString()
         {

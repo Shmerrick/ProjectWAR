@@ -5,7 +5,7 @@ using WorldServer.World.Scripting;
 namespace WorldServer.World.Objects.Instances.Gunbad
 {
     [GeneralScript(false, "", 38904, 0)]
-    class RedeyeBigOaf : BasicGunbad
+    internal class RedeyeBigOaf : BasicGunbad
     {
         public override void OnObjectLoad(Object Obj)
         {

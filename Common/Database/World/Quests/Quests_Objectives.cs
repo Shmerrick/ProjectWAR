@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -28,7 +24,7 @@ namespace Common
     [Serializable]
     public class Quest_Objectives : DataObject
     {
-        [PrimaryKey(AutoIncrement=true)]
+        [PrimaryKey(AutoIncrement = true)]
         public int Guid { get; set; }
 
         [DataElement()]

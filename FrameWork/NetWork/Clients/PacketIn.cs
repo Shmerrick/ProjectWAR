@@ -14,10 +14,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Threading;
 
@@ -39,9 +37,8 @@ namespace FrameWork
         }
 
         public PacketIn(byte[] buf, int start, int size, bool writeable, bool exposable)
-            : base (buf, start, size, writeable, exposable)
+            : base(buf, start, size, writeable, exposable)
         {
-            
         }
 
         public byte[] Read(int size)
@@ -51,10 +48,12 @@ namespace FrameWork
 
             return buf;
         }
+
         public void Skip(long num)
         {
             Seek(num, SeekOrigin.Current);
         }
+
         public long Remain()
         {
             return Length - Position;
@@ -69,6 +68,7 @@ namespace FrameWork
         {
             return Marshal.ConvertToUInt16(GetUint8(), GetUint8());
         }
+
         public virtual ushort GetUint16R()
         {
             byte v1 = GetUint8();
@@ -79,9 +79,10 @@ namespace FrameWork
 
         public virtual short GetInt16()
         {
-            byte[] tmp = { GetUint8() , GetUint8()  };
+            byte[] tmp = { GetUint8(), GetUint8() };
             return BitConverter.ToInt16(tmp, 0);
         }
+
         public virtual short GetInt16R()
         {
             byte v1 = GetUint8();
@@ -100,6 +101,7 @@ namespace FrameWork
 
             return Marshal.ConvertToUInt32(v1, v2, v3, v4);
         }
+
         public virtual uint GetUint32R()
         {
             byte v1 = GetUint8();
@@ -115,6 +117,7 @@ namespace FrameWork
             byte[] tmp = { GetUint8(), GetUint8(), GetUint8(), GetUint8() };
             return BitConverter.ToInt32(tmp, 0);
         }
+
         public virtual int GetInt32R()
         {
             byte v1 = GetUint8();
@@ -131,9 +134,9 @@ namespace FrameWork
             ulong value = (GetUint32() << 24) + (GetUint32());
             return value;
         }
+
         public ulong GetUint64R()
         {
-
             ulong value = (GetUint32()) + (GetUint32() << 24);
             return value;
         }
@@ -207,6 +210,7 @@ namespace FrameWork
 
             return (char)0;
         }
+
         public virtual string GetString()
         {
             int len = (int)GetUint32();
@@ -226,6 +230,7 @@ namespace FrameWork
 
             return Marshal.ConvertToString(buf);
         }
+
         public virtual string GetString(int maxlen)
         {
             var buf = new byte[maxlen];
@@ -233,10 +238,12 @@ namespace FrameWork
 
             return Marshal.ConvertToString(buf);
         }
+
         public virtual string GetPascalString()
         {
             return GetString(GetUint8());
         }
+
         public virtual string GetUnicodeString()
         {
             string tmp = "";
@@ -250,6 +257,7 @@ namespace FrameWork
 
             return tmp;
         }
+
         public virtual string GetStringToZero()
         {
             string value = "";
@@ -260,7 +268,6 @@ namespace FrameWork
                 if (c == 0)
                     break;
                 value += c;
-
             }
 
             return value;
@@ -270,10 +277,12 @@ namespace FrameWork
         {
             return new Vector2(GetFloat(), GetFloat());
         }
+
         public virtual Vector3 GetVector3()
         {
             return new Vector3(GetFloat(), GetFloat(), GetFloat());
         }
+
         public virtual Quaternion GetQuaternion()
         {
             return new Quaternion(GetFloat(), GetFloat(), GetFloat(), GetFloat());
@@ -301,7 +310,6 @@ namespace FrameWork
 
                 if (Length == Capacity)
                     return 0;
-
 
                 mByte = ReadByte();
                 mByteCount++;
@@ -338,7 +346,7 @@ namespace FrameWork
                     k[x] = k[y];
                     k[y] = tmp;
 
-                    tmp = (byte)(( k[x] + k[y] ) & 255);
+                    tmp = (byte)((k[x] + k[y]) & 255);
                     packetBuffer[pos + offset] ^= k[tmp];
                     y = (y + packetBuffer[pos + offset]) & 255;
                 }
@@ -355,16 +363,16 @@ namespace FrameWork
 
                     tmp = (byte)((k[x] + k[y]) & 255);
                     packetBuffer[pos + offset] ^= k[tmp];
-                    y = (y + packetBuffer[pos + offset]) & 255; 
+                    y = (y + packetBuffer[pos + offset]) & 255;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                Log.Error("PacketIn","DecryptMythicRC4 : Failed !" + e);
+                Log.Error("PacketIn", "DecryptMythicRC4 : Failed !" + e);
             }
         }
 
-        #endregion
+        #endregion Mythic
 
         #region GameBryo
 
@@ -378,6 +386,6 @@ namespace FrameWork
             return Size;
         }
 
-        #endregion
+        #endregion GameBryo
     }
 }

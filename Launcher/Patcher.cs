@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -37,7 +35,6 @@ namespace Launcher
                 TotalDownloadSize = 0;
                 Downloaded = 0;
 
-
                 CurrentState = State.RequestManifest;
 
                 _logger.Info($"Requesting files to update from {_address}");
@@ -59,10 +56,9 @@ namespace Launcher
 
                     foreach (var file in manifest.Files)
                     {
-                        string path = Path.Combine(Application.StartupPath+ patchDirectory, file.Name);
+                        string path = Path.Combine(Application.StartupPath + patchDirectory, file.Name);
                         if (File.Exists(path))
                         {
-
                             using (var fs = File.OpenRead(path))
                             {
                                 hash = (int)Utils.Adler32(fs, fs.Length);
@@ -90,7 +86,7 @@ namespace Launcher
                 {
                     CurrentState = State.Downloading;
 
-                    string path = Path.Combine(Application.StartupPath+ patchDirectory, file.Name);
+                    string path = Path.Combine(Application.StartupPath + patchDirectory, file.Name);
                     if (File.Exists(path))
                         File.Delete(path);
 
@@ -124,7 +120,6 @@ namespace Launcher
                         File.Delete(tempFile);
                         return;
                     }
-
 
                     lock (_neededAssets)
                         _neededAssets.Remove(file);

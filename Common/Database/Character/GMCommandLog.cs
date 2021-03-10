@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common
 {
@@ -14,7 +10,7 @@ namespace Common
         [DataElement()]
         public uint AccountId { get; set; }
 
-        [DataElement(Varchar=255)]
+        [DataElement(Varchar = 255)]
         public string PlayerName { get; set; }
 
         [DataElement()]

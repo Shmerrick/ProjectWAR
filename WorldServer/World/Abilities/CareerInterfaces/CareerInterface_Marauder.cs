@@ -4,7 +4,7 @@ using WorldServer.World.Objects;
 
 namespace WorldServer.World.Abilities.CareerInterfaces
 {
-    class CareerInterface_Marauder : CareerInterface
+    internal class CareerInterface_Marauder : CareerInterface
     {
         private static readonly byte[] _armStates = { 0x1A, 0x19, 0x18 };
 

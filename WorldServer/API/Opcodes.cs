@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace WorldServer.API
+﻿namespace WorldServer.API
 {
     public enum Opcodes
     {
@@ -22,7 +17,7 @@ namespace WorldServer.API
         ITEM_ADD,
         ITEM_UPDATE, //include stats
         ITEM_DELETE,
-        
+
         ITEM_SET_ADD,
         ITEM_SET_UPDATE,
         ITEM_SET_DELETE,

@@ -1,20 +1,20 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
-using Common;
 using WorldServer.World.AI;
 
 namespace WorldServer.World.Objects.Instances.The_Lost_Vale
 {
-	public class SimpleAhzranok : InstanceBossSpawn
-	{
-		#region Constructors
+    public class SimpleAhzranok : InstanceBossSpawn
+    {
+        #region Constructors
 
-		public SimpleAhzranok(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base (spawn,  bossId, Instanceid, instance)
-		{
-			//EvtInterface.AddEvent(CheckCleanBoilingWatersDebuff, 500, 0);
-			//EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
-			//EvtInterface.AddEvent(ApplyIncomingDmgIncreaseOnPlayers, 1000, 0);
-		}
+        public SimpleAhzranok(Creature_spawn spawn, uint bossId, ushort Instanceid, Instance instance) : base(spawn, bossId, Instanceid, instance)
+        {
+            //EvtInterface.AddEvent(CheckCleanBoilingWatersDebuff, 500, 0);
+            //EvtInterface.AddEvent(CheckBossRageTimer, 1000, 0);
+            //EvtInterface.AddEvent(ApplyIncomingDmgIncreaseOnPlayers, 1000, 0);
+        }
 
         #endregion Constructors
 
@@ -33,11 +33,11 @@ namespace WorldServer.World.Objects.Instances.The_Lost_Vale
         #region Overrides
 
         public override void OnLoad()
-		{
-			base.OnLoad();
+        {
+            base.OnLoad();
 
-			AiInterface.SetBrain(new InstanceBossBrain(this));
-		}
+            AiInterface.SetBrain(new InstanceBossBrain(this));
+        }
 
         public override bool OnEnterCombat(Object mob, object args)
         {

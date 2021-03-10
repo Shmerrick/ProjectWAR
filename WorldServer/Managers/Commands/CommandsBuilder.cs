@@ -14,19 +14,19 @@ namespace WorldServer.Managers.Commands
     /// </summary>
     /// <remarks>
     /// Method must be public static.
-    /// 
+    ///
     /// First parameter is always the player.
     /// Next parameters should be string, integers (uint, short, etc.) or bool (usage with .command 1 .command true .command on)
     /// Optional arguments are allowed.
-    /// 
+    ///
     /// [CommandMethod(EGmLevel.EmpoweredStaff, "This is a test method")]
     /// public static void Test(Player plr, bool boolArg, string targetString = null)
-    /// 
+    ///
     /// Second argument, if exists, will be set to the current player's target.
-    /// 
+    ///
     /// [CommandMethod(EGmLevel.EmpoweredStaff, "This is a test method")]
     /// public static void Other(Player plr, Unit aTarget, ushort anotherArg)
-    /// 
+    ///
     /// If necessary, methods CAN return a boolean (true if command was handled, false otherwise).
     /// </remarks>
     [AttributeUsage(AttributeTargets.Method)]
@@ -40,7 +40,6 @@ namespace WorldServer.Managers.Commands
 
         public EGmLevel AccessRequired { get; }
         public string Description { get; }
-
     }
 
     /// <summary>
@@ -48,7 +47,9 @@ namespace WorldServer.Managers.Commands
     /// </summary>
     internal class CommandsBuilder
     {
-        private CommandsBuilder() { }
+        private CommandsBuilder()
+        {
+        }
 
         /// <summary>
         /// Builds a list of commands using reflexion on the given class.
@@ -102,7 +103,8 @@ namespace WorldServer.Managers.Commands
                     return null;
 
             // Method invokation handler
-            GmCommandHandler.GmComHandler del = (Player player, ref List<string> rawValues) => {
+            GmCommandHandler.GmComHandler del = (Player player, ref List<string> rawValues) =>
+            {
                 return Invoke(method, player, rawValues);
             };
 
@@ -173,7 +175,7 @@ namespace WorldServer.Managers.Commands
                 Log.Error("CommandsBuilder", string.Concat(CommandToString(parameters[0]), " - ", inner.ToString()));
                 player.SendClientMessage(string.Concat(
                     CommandToString(parameters[0]), " : ", inner.GetType().Name,
-                    string.IsNullOrEmpty(inner.Message) ? "": " - " + inner.Message), ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+                    string.IsNullOrEmpty(inner.Message) ? "" : " - " + inner.Message), ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
                 return true;
             }
         }
@@ -258,7 +260,7 @@ namespace WorldServer.Managers.Commands
 
             bool hasTargetParam = HasTargetParameter(parameters); // Second can be target
             int startIndex = hasTargetParam ? 2 : 1;
-            
+
             sb.Append("<");
             for (int i = startIndex; i < parameters.Length; i++)
             {

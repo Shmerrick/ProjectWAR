@@ -1,19 +1,17 @@
-﻿using System;
-using Common.Database.World.Battlefront;
+﻿using Common.Database.World.Battlefront;
 using GameData;
 using NLog;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Apocalypse;
-using WorldServer.World.Battlefronts.Apocalypse.Loot;
 using WorldServer.World.Objects;
 using Object = WorldServer.World.Objects.Object;
 
 namespace WorldServer.World.Battlefronts.Bounty
 {
-
     /// <summary>
     /// Each character (player) holds a list of contributions that they have earnt in a specific battlefront.
     /// </summary>
@@ -38,7 +36,6 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             ContributionDictionary = contributionDictionary;
             ContributionFactors = contributionFactors;
-
         }
 
         /// <summary>
@@ -78,7 +75,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         }
 
         /// <summary>
-        /// Get the list of playercontributions 
+        /// Get the list of playercontributions
         /// </summary>
         /// <param name="targetCharacterId"></param>
         /// <returns></returns>
@@ -130,7 +127,6 @@ namespace WorldServer.World.Battlefronts.Bounty
                 RewardLogger.Error(
                     $"ContributionManagerInstance exceeds max ({MAXIMUM_CONTRIBUTION}) for Character {targetCharacterId}. {contributionList.Count} contribution records.");
                 contributionValue = MAXIMUM_CONTRIBUTION;
-
             }
 
             RewardLogger.Trace($"Returning contributionValue of {contributionValue} for {targetCharacterId} ");
@@ -156,13 +152,12 @@ namespace WorldServer.World.Battlefronts.Bounty
                 return null;
 
             return GetContributionStageDictionary(contributionList, ContributionFactors);
-
         }
 
         /// <summary>
         /// Convert list of player contributions (which are unlimited in number) into a 'staged' dictionary per reference contribution type.
         /// Limit the number of attained contributions to the maximum number defined in the reference contribution type.
-        /// 
+        ///
         /// </summary>
         /// <param name="contributionList"></param>
         /// <param name="contributionFactors"></param>
@@ -217,7 +212,6 @@ namespace WorldServer.World.Battlefronts.Bounty
 
                                 return v;
                             });
-
                     }
                 }
             }
@@ -227,9 +221,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 RewardLogger.Trace($"Id:{contributionStage.Key} {contributionStage.Value.ToString()}");
             }
 
-
             return result;
-
         }
 
         public ConcurrentDictionary<short, ContributionStage> GetContributionStageDictionary(uint targetCharacterId)
@@ -265,7 +257,6 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             ContributionDictionary.Clear();
         }
-
 
         /// <summary>
         /// Return an ordered list of eligible players based on the highest contribution (result is in ascending order)
@@ -325,7 +316,6 @@ namespace WorldServer.World.Battlefronts.Bounty
                         }
                         else
                         {
-
                             if (orderRealmCaptain == null)
                             {
                                 RewardLogger.Info($"Assigning {player.Name} as RealmCaptain for order");
@@ -345,7 +335,6 @@ namespace WorldServer.World.Battlefronts.Bounty
 
                         return returnList;
                     }
-
                 }
             }
             if (destructionRealmCaptain != null)
@@ -363,7 +352,6 @@ namespace WorldServer.World.Battlefronts.Bounty
         {
             foreach (var playerContribution in playerContributionList)
             {
-
             }
         }
 
@@ -379,7 +367,6 @@ namespace WorldServer.World.Battlefronts.Bounty
             ConcurrentDictionary<Player, int> losingRealmPlayers;
             ConcurrentDictionary<Player, int> eligiblePlayersAllRealms;
 
-            
             var allEligiblePlayers = GetEligiblePlayers(0).ToList();
             // Reverse the order so we have highest eligbility first.
             allEligiblePlayers.Reverse();
@@ -403,7 +390,6 @@ namespace WorldServer.World.Battlefronts.Bounty
             logger.Debug($"losingRealmPlayers Players Count = {losingRealmPlayers.Count()}");
 
             return eligibilitySplits;
-
         }
 
         public int GetMaximumContribution()

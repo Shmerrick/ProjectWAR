@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using SystemData;
-using FrameWork;
+﻿using FrameWork;
 using GameData;
 using NLog;
+using System.Linq;
+using SystemData;
 using WorldServer.Managers;
 using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Keeps;
@@ -23,7 +23,6 @@ namespace WorldServer.NetWork.Handler
 
             if (!cclient.IsPlaying())
                 return;
-            
 
             byte Type = packet.GetUint8();
 
@@ -68,6 +67,7 @@ namespace WorldServer.NetWork.Handler
                         }
                     }
                     break;
+
                 case 18: // Alternate Appereance
                     {
                         byte Slot = packet.GetUint8();
@@ -79,45 +79,39 @@ namespace WorldServer.NetWork.Handler
                     break;
 
                 case 19: // Alternate Currency
-                {
-                    packet.Skip(7);
-                    //var a = packet.GetUint8();
-                    //var b = packet.GetUint8();
-                    //var c = packet.GetUint8();
-                    //var d = packet.GetUint8();
-                    //var e = packet.GetUint8();
-                    //var f = packet.GetUint8();
-                    //var g = packet.GetUint8();
-                    var h = packet.GetUint16();
-                    //var i = packet.GetUint8();
-                    //var j = packet.GetUint8();
-                    //var k = packet.GetUint8();
-                    //var l = packet.GetUint8();
-                    //var m = packet.GetUint8();
-                    //var n = packet.GetUint8();
-                    
-                    // ushort SlotItem = packet.GetUint8();
+                    {
+                        packet.Skip(7);
+                        //var a = packet.GetUint8();
+                        //var b = packet.GetUint8();
+                        //var c = packet.GetUint8();
+                        //var d = packet.GetUint8();
+                        //var e = packet.GetUint8();
+                        //var f = packet.GetUint8();
+                        //var g = packet.GetUint8();
+                        var h = packet.GetUint16();
+                        //var i = packet.GetUint8();
+                        //var j = packet.GetUint8();
+                        //var k = packet.GetUint8();
+                        //var l = packet.GetUint8();
+                        //var m = packet.GetUint8();
+                        //var n = packet.GetUint8();
 
-                    var item = Plr.ItmInterface.GetItemInSlot(h);
+                        // ushort SlotItem = packet.GetUint8();
 
-                   // Plr.ItmInterface.DeleteItem(h, 1);
+                        var item = Plr.ItmInterface.GetItemInSlot(h);
 
-
-
-                }
+                        // Plr.ItmInterface.DeleteItem(h, 1);
+                    }
                     break;
 
                 case 27: // Barber
                     {
                         packet.Skip(5);
 
-
                         byte[] Traits = new byte[8];
                         packet.Read(Traits, 0, Traits.Length);
                         Plr.Info.bTraits = Traits;
                         CharMgr.Database.SaveObject(Plr.Info);
-
-
                     }
                     break;
             }
@@ -149,6 +143,7 @@ namespace WorldServer.NetWork.Handler
 
             cclient.Plr.ItmInterface.HandleTrade(packet);
         }
+
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_TROPHY_SETLOCATION, (int)eClientState.Playing, "onTrophySelection")]
         public static void F_TROPHY_SETLOCATION(BaseClient client, PacketIn packet)
         {
@@ -193,7 +188,7 @@ namespace WorldServer.NetWork.Handler
 
             // Honor rewards
             var honorReward = HonorService.HonorRewards.SingleOrDefault(x => x.ItemId == item.Info.Entry);
-            if (honorReward !=null)
+            if (honorReward != null)
             {
                 if (Plr.Info.HonorRank < honorReward.HonorRank)
                 {
@@ -233,7 +228,7 @@ namespace WorldServer.NetWork.Handler
                     Plr.ItmInterface.GetItemfromMysterybag(slot, mode);
             }
 
-            #endregion
+            #endregion Loot bags
 
             // Banner hack for standards.
             if (item.ModelId >= 6188 && item.ModelId < 6194)
@@ -243,6 +238,7 @@ namespace WorldServer.NetWork.Handler
                 CultivationInterface.ReapResin(Plr, slot);
 
             #region Dye
+
             if (item.Info.Type == 27)
             {
                 Item dye = Plr.ItmInterface.GetItemInSlot(slot);
@@ -255,11 +251,9 @@ namespace WorldServer.NetWork.Handler
 
                 Item itemtodye = Plr.ItmInterface.GetItemInSlot(Slot);
 
-
                 if (dye.Info.BaseColor1 == 0)
                 {
                     Plr.ItmInterface.RemoveDye(itemtodye, prisek == 1, prisek == 2);
-
                 }
                 else
                 {
@@ -271,7 +265,7 @@ namespace WorldServer.NetWork.Handler
                 Plr.ItmInterface.DeleteItem(slot, 1);
             }
 
-            #endregion
+            #endregion Dye
 
             if (item.Info.SpellId == 0)
                 return;
@@ -329,7 +323,7 @@ namespace WorldServer.NetWork.Handler
 
             WorldMgr.GeneralScripts.OnWorldPlayerEvent("USE_ITEM", Plr, item);
 
-            #endregion
+            #endregion Ability Cast
         }
     }
 }

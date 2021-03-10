@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using SystemData;
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
+using System.Collections.Generic;
+using SystemData;
 using WorldServer.NetWork.Handler;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
@@ -15,7 +15,7 @@ using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Scenarios
 {
-    class CaptureTheFlagScenario : Scenario
+    internal class CaptureTheFlagScenario : Scenario
     {
         private readonly List<HoldObject> _flags = new List<HoldObject>();
         private readonly GameObject[] _flagBases = new GameObject[2];
@@ -37,14 +37,12 @@ namespace WorldServer.World.Scenarios
                         _captureScore = obj.PointGain;
                         flag.SetActive(Realms.REALMS_REALM_DESTRUCTION);
                     }
-
                     else if (obj.ObjectiveName == "Destruction Flag")
                     {
                         flag.VfxState = 5;
                         _captureScore = obj.PointGain;
                         flag.SetActive(Realms.REALMS_REALM_ORDER);
                     }
-
                     else
                     {
                         flag.SetActive(0);
@@ -83,32 +81,36 @@ namespace WorldServer.World.Scenarios
                     case "Order Capture":
                         _flagBases[0] = go;
                         break;
+
                     case "Destruction Capture":
                         _flagBases[1] = go;
                         break;
+
                     case "Order Flag Drop":
                         _flagDrops[0] = go;
                         break;
+
                     case "Destruction Flag Drop":
                         _flagDrops[1] = go;
                         break;
                 }
-                
             }
         }
 
         public void FlagBuffAssigned(NewBuff b)
         {
-            HoldObjectBuff hB = (HoldObjectBuff) b;
+            HoldObjectBuff hB = (HoldObjectBuff)b;
 
             switch (hB.HeldObject.RealmCapturableFor)
             {
                 case Realms.REALMS_REALM_ORDER:
                     hB.FlagEffect = FLAG_EFFECTS.Red;
                     break;
+
                 case Realms.REALMS_REALM_DESTRUCTION:
                     hB.FlagEffect = FLAG_EFFECTS.Blue;
                     break;
+
                 default:
                     hB.FlagEffect = FLAG_EFFECTS.Mball1;
                     break;
@@ -157,7 +159,6 @@ namespace WorldServer.World.Scenarios
                     return;
                 }
             }
-
             else if (flagBase == _flagBases[1])
             {
                 if (capturer.Realm == Realms.REALMS_REALM_ORDER)
@@ -166,7 +167,6 @@ namespace WorldServer.World.Scenarios
                     return;
                 }
             }
-
             else
                 return;
 
@@ -176,7 +176,6 @@ namespace WorldServer.World.Scenarios
             {
                 if (flag.Holder == capturer)
                     destFlag = flag;
-
                 else if (flag.HeldState != EHeldState.Home)
                 {
                     capturer.SendClientMessage("You cannot capture the enemy flag if your own is held", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
@@ -220,7 +219,6 @@ namespace WorldServer.World.Scenarios
                     return;
                 }
             }
-
             else if (flagDrop == _flagDrops[1])
             {
                 if (capturer.Realm == Realms.REALMS_REALM_ORDER)
@@ -229,7 +227,6 @@ namespace WorldServer.World.Scenarios
                     return;
                 }
             }
-
             else
                 return;
 
@@ -239,7 +236,6 @@ namespace WorldServer.World.Scenarios
             {
                 if (flag.Holder == capturer)
                     destFlag = flag;
-
                 else if (flag.HeldState != EHeldState.Carried)
                 {
                     capturer.SendClientMessage("You can only drop off the enemy flag if both flags are held", ChatLogFilters.CHATLOGFILTERS_C_ABILITY_ERROR);
@@ -253,11 +249,11 @@ namespace WorldServer.World.Scenarios
                 return;
             }
 
-            GivePoints((int) capturer.Realm, 50);
+            GivePoints((int)capturer.Realm, 50);
 
-            PacketOut Out = new PacketOut((byte) Opcodes.F_PLAY_SOUND);
+            PacketOut Out = new PacketOut((byte)Opcodes.F_PLAY_SOUND);
             Out.WriteByte(0);
-            Out.WriteUInt16(capturer.Realm == Realms.REALMS_REALM_ORDER ? (ushort) 0x0C : (ushort) 0x332);
+            Out.WriteUInt16(capturer.Realm == Realms.REALMS_REALM_ORDER ? (ushort)0x0C : (ushort)0x332);
             Out.Fill(0, 10);
 
             for (int i = 0; i < 2; ++i)

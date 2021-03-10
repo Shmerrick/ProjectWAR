@@ -8,7 +8,7 @@ namespace WorldServer.World.Interfaces
     {
         OnRemoveFromWorld,  // Pet Dismissal (buff should handle?)
 
-        OnMove, 
+        OnMove,
         OnStopMove,  // Unused
         // ON_CHANGE_OFFSET,
         // ON_CHANGE_ZONE,
@@ -48,6 +48,7 @@ namespace WorldServer.World.Interfaces
     };
 
     public delegate void EventDelegate();
+
     public delegate void EventDelegateEx(object userData);
 
     public class EventInfo
@@ -61,13 +62,13 @@ namespace WorldServer.World.Interfaces
         public bool ToDelete;
         public readonly object UserData;
 
-        public EventInfo(EventDelegate del,int interval, int count)
+        public EventInfo(EventDelegate del, int interval, int count)
         {
             Del = del;
             Interval = interval;
             Count = count;
             BaseCount = count;
-            if (interval == 0 )
+            if (interval == 0)
                 ToDelete = true;
 
             //Log.Success("AddEvent", "Del =" + Del.Method.Name + ",Name" + Del.Target.ToString());
@@ -102,12 +103,12 @@ namespace WorldServer.World.Interfaces
 
             if (_nextExecute <= tick)
             {
-                if(BaseCount > 0)
+                if (BaseCount > 0)
                     --Count;
 
                 Del?.Invoke();
 
-                if(UserData != null)
+                if (UserData != null)
                     DelEx?.Invoke(UserData);
 
                 _nextExecute = tick + Interval;
@@ -277,7 +278,7 @@ namespace WorldServer.World.Interfaces
             return false;
         }
 
-        #endregion
+        #endregion Events
 
         #region Notify
 
@@ -291,7 +292,7 @@ namespace WorldServer.World.Interfaces
 
             lock (_notify)
             {
-                if (_notify.TryGetValue((int) name, out eventNotifies))
+                if (_notify.TryGetValue((int)name, out eventNotifies))
                 {
                     for (i = 0; i < eventNotifies.Count; ++i)
                     {
@@ -310,7 +311,7 @@ namespace WorldServer.World.Interfaces
 
             lock (_forceNotify)
             {
-                if (_forceNotify.TryGetValue((int) name, out eventNotifies))
+                if (_forceNotify.TryGetValue((int)name, out eventNotifies))
                 {
                     for (i = 0; i < eventNotifies.Count; ++i)
                     {
@@ -383,8 +384,6 @@ namespace WorldServer.World.Interfaces
             }
         }
 
-        #endregion
-
-
+        #endregion Notify
     }
 }

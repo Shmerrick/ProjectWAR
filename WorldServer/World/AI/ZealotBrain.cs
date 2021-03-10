@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using FrameWork;
+﻿using FrameWork;
+using System.Linq;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 
@@ -9,7 +9,6 @@ namespace WorldServer.World.AI
     {
         public Unit FriendlyTarget { get; set; }
         public int runeofShieldingCooldown { get; set; }
-
 
         public ZealotBrain(Unit myOwner)
             : base(myOwner)
@@ -26,7 +25,7 @@ namespace WorldServer.World.AI
 
             if ((FriendlyTarget == null))
 
-            base.Think(tick);
+                base.Think(tick);
 
             // Only bother to seek targets if we're actually being observed by a player
             if (Combat.CurrentTarget == null && _unit.PlayersInRange.Count > 0)
@@ -73,8 +72,6 @@ namespace WorldServer.World.AI
 
                     return;
                 }
-
-
 
                 var rand = StaticRandom.Instance.Next(10);
                 switch (rand)
@@ -123,8 +120,6 @@ namespace WorldServer.World.AI
                         }
                 }
             }
-
-
         }
     }
 }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace WorldServer.API
 {
@@ -147,7 +143,6 @@ namespace WorldServer.API
                 System.Buffer.BlockCopy(_data, s0, data, s0, s1);
             }
 
-
             _offset = (_offset + size) % _capacity;
             _level -= size;
 
@@ -257,7 +252,6 @@ namespace WorldServer.API
             return result;
         }
 
-
         public bool WriteByte(byte data)
         {
             if (_level + 1 > _capacity)
@@ -291,7 +285,6 @@ namespace WorldServer.API
             return true;
         }
 
-
         public bool WriteInt16R(ushort data)
         {
             if (_level + 2 > _capacity)
@@ -308,7 +301,6 @@ namespace WorldServer.API
             _level += 2;
             return true;
         }
-
 
         public bool WriteInt32(UInt32 data)
         {

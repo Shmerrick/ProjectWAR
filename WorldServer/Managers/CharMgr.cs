@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Common;
+using Common.Database.World.Characters;
+using FrameWork;
+using GameData;
+using NLog;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using SystemData;
-using Common;
-using Common.Database.World.Characters;
-using FrameWork;
-using GameData;
-using NLog;
 using WorldServer.NetWork;
 using WorldServer.Services.World;
 using WorldServer.World.Auction;
@@ -54,6 +54,7 @@ namespace WorldServer.Managers
 
             return true;
         }
+
         public uint RemoveCharacter(byte slot)
         {
             uint characterId = 0;
@@ -72,6 +73,7 @@ namespace WorldServer.Managers
 
             return characterId;
         }
+
         public Character GetCharacterBySlot(byte slot)
         {
             if (slot > Chars.Length)
@@ -90,7 +92,6 @@ namespace WorldServer.Managers
     {
         public static IObjectDatabase Database = null;
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
 
         #region CharacterInfo
 
@@ -120,13 +121,12 @@ namespace WorldServer.Managers
         {
             IList<CharacterInfo_item> referenceListStartingItems = WorldMgr.Database.SelectAllObjects<CharacterInfo_item>();
 
-
             if (referenceListStartingItems != null)
             {
                 foreach (CharacterInfo_item item in referenceListStartingItems)
                 {
                     CharacterStartingItems.AddOrUpdate(
-                        item.CareerLine, new List<CharacterInfo_item>{item}, 
+                        item.CareerLine, new List<CharacterInfo_item> { item },
                         (k, v) =>
                         {
                             v.Add(item);
@@ -211,6 +211,7 @@ namespace WorldServer.Managers
             }
             return stats;
         }
+
         public static void ReloadPetModifiers()
         {
             PetOverrideStats.Clear();
@@ -221,6 +222,7 @@ namespace WorldServer.Managers
             LoadPetMasteryMods();
             LoadCharacterBaseStats();
         }
+
         [LoadingFunction(true)]
         public static void LoadPetStatOverrides()
         {
@@ -238,6 +240,7 @@ namespace WorldServer.Managers
         }
 
         public static Dictionary<ushort, List<PetStatOverride>> PetOverriddenStats = new Dictionary<ushort, List<PetStatOverride>>();
+
         public static List<PetStatOverride> GetPetStatOverride(byte careerLine)
         {
             List<PetStatOverride> overrides = new List<PetStatOverride>();
@@ -257,7 +260,7 @@ namespace WorldServer.Managers
             }
 
             PetOverriddenStats[(ushort)(careerLine << 8)] = overrides;
-            // }  
+            // }
 
             return overrides;
         }
@@ -279,6 +282,7 @@ namespace WorldServer.Managers
         }
 
         public static Dictionary<ushort, List<PetMasteryModifiers>> PetModifiedMastery = new Dictionary<ushort, List<PetMasteryModifiers>>();
+
         public static List<PetMasteryModifiers> GetPetMasteryModifiers(byte careerLine)
         {
             List<PetMasteryModifiers> modifiers = new List<PetMasteryModifiers>();
@@ -315,12 +319,13 @@ namespace WorldServer.Managers
             return RandomNameList;
         }
 
-        #endregion
+        #endregion CharacterInfo
 
         #region Characters
 
         // Only 20 will work
         public static byte MaxSlot = 20;
+
         private static long _maxCharGuid = 1;
         public static Dictionary<uint, Character> Chars = new Dictionary<uint, Character>();
         public static Dictionary<string, uint> CharIdLookup = new Dictionary<string, uint>();
@@ -372,7 +377,6 @@ namespace WorldServer.Managers
 
                 Log.Success("LoadCharacters", count + " characters loaded.");
             }
-
             else
             {
                 string whereString = $"CharacterId IN (SELECT CharacterId FROM {Database.GetSchemaName()}.characters t1 WHERE t1.AccountId IN (SELECT AccountId FROM {Program.AcctMgr.GetAccountSchemaName()}.accounts t2 WHERE t2.LastLogged >= {RecentHistoryTime}))";
@@ -425,7 +429,6 @@ namespace WorldServer.Managers
                     if (Char.HonorCooldowns == null)
                         Char.HonorCooldowns = new List<HonorRewardCooldown>();
 
-
                     AddChar(Char);
                     if (Char.Value != null)
                         GetAccountChar(Char.AccountId).Loaded = true;
@@ -457,8 +460,8 @@ namespace WorldServer.Managers
             }
 
             return Char;
-
         }
+
         public static Character LoadCharacterInfo(uint id, bool fullLoad)
         {
             Character Char = Database.SelectObject<Character>("CharacterId='" + id + "'");
@@ -566,7 +569,6 @@ namespace WorldServer.Managers
                 Database.SaveObject(chara);
                 Database.ForceSave();
             }
-
         }
 
         public static Character GetCharacter(string name, bool fullLoad)
@@ -619,7 +621,6 @@ namespace WorldServer.Managers
             lock (Chars)
                 if (characterId > 0 && Chars.ContainsKey(characterId))
                 {
-
                     CharacterDeletionRecord record = new CharacterDeletionRecord
                     {
                         DeletionIP = client.GetIp(),
@@ -628,7 +629,6 @@ namespace WorldServer.Managers
                         CharacterID = characterId,
                         CharacterName = Chars[characterId].Name,
                         DeletionTimeSeconds = TCPManager.GetTimeStamp()
-
                     };
 
                     Database.AddObject(record);
@@ -649,7 +649,6 @@ namespace WorldServer.Managers
             lock (Chars)
                 if (characterId > 0 && Chars.ContainsKey(characterId))
                 {
-
                     CharacterDeletionRecord record = new CharacterDeletionRecord
                     {
                         DeletionIP = deleter.Client.GetIp(),
@@ -711,7 +710,6 @@ namespace WorldServer.Managers
             }
 
             return true;
-
         }
 
         public static AccountChars GetAccountChar(int accountId)
@@ -724,10 +722,12 @@ namespace WorldServer.Managers
                 return AcctChars[accountId];
             }
         }
+
         public static bool NameIsUsed(string name)
         {
             return Database.SelectObject<Character>("Name='" + Database.Escape(name) + "'") != null;
         }
+
         /// <summary>
         /// To check if the characters name is deleted and a boot has not happened yet
         /// </summary>
@@ -980,10 +980,10 @@ namespace WorldServer.Managers
                     }
 
                     Out.WriteHexStringBytes("0000000000000000010000"); // 05 || 0000 || 0B07000A03000602 || 00 00 00 00 00 00 00 || 00 00 00 00 00 00 00
-                                                                       /*Out.Fill(0, 10);
-                                                                       Out.WriteUInt16(0xFF00);
-                                                                       Out.WriteByte(0);
-                                                                       */
+                    /*Out.Fill(0, 10);
+                    Out.WriteUInt16(0xFF00);
+                    Out.WriteByte(0);
+                    */
                     Out.WriteByte(Char.Race);
                     Out.WriteUInt16(0); // (Char.Value.TitleId); // title canot be seen in char selection this cause crashes
                     Out.Write(Char.bTraits, 0, Char.bTraits.Length);
@@ -995,7 +995,7 @@ namespace WorldServer.Managers
 
         public static Realms GetAccountRealm(int accountId) => GetAccountChar(accountId).Realm;
 
-        #endregion
+        #endregion Characters
 
         #region Name filtering
 
@@ -1098,10 +1098,12 @@ namespace WorldServer.Managers
                             if (name.Equals(rec.NameString, StringComparison.OrdinalIgnoreCase))
                                 return false;
                             break;
+
                         case NameFilterType.StartsWith:
                             if (name.StartsWith(rec.NameString, StringComparison.OrdinalIgnoreCase))
                                 return false;
                             break;
+
                         case NameFilterType.Contains:
                             if (name.IndexOf(rec.NameString, StringComparison.OrdinalIgnoreCase) != -1)
                                 return false;
@@ -1113,7 +1115,7 @@ namespace WorldServer.Managers
             return true;
         }
 
-        #endregion
+        #endregion Name filtering
 
         #region Guilds
 
@@ -1127,7 +1129,6 @@ namespace WorldServer.Managers
                 foreach (Guild_Alliance_info ali in Alliances)
                 {
                     Alliance.Alliances.Add(ali.AllianceId, ali);
-
                 }
             }
             Log.Success("LoadGuildAlliance", Alliance.Alliances.Count + " Alliances loaded.");
@@ -1143,7 +1144,6 @@ namespace WorldServer.Managers
             List<Guild_log> guildLogs = (List<Guild_log>)Database.SelectAllObjects<Guild_log>();
             List<Guild_event> guildEvents = (List<Guild_event>)Database.SelectAllObjects<Guild_event>();
             List<GuildVaultItem> guildVault = (List<GuildVaultItem>)Database.SelectAllObjects<GuildVaultItem>();
-
 
             if (Program.Config.PreloadAllCharacters)
             {
@@ -1185,7 +1185,6 @@ namespace WorldServer.Managers
                         guild.Logs = guildLogs.FindAll(info => info.GuildId == guild.GuildId).OrderBy(info => info.Time).ThenByDescending(info => info.Type).ToList();
                         guild.Event = guildEvents.FindAll(info => info.GuildId == guild.GuildId).OrderBy(info => info.SlotId).ToDictionary(x => x.SlotId, x => x);
                     }
-
                     catch (Exception)
                     {
                         Log.Error("LoadGuilds", "Failed load of guild: " + guild.Name);
@@ -1227,7 +1226,6 @@ namespace WorldServer.Managers
                                 break;
                         }
 
-
                         if (guild.Members.ContainsKey(guild.LeaderId))
                         {
                             Guild_member mem;
@@ -1237,19 +1235,14 @@ namespace WorldServer.Managers
                         }
                     }
 
-
-
-
-
                     //checks for guild leader id player not found guildleader banned or guild leader inactive is so tryes to set a new guild leader if no guildleader can be found guild is set to inactive
                     Account accountEntity = null;
                     var characterEntity = CharMgr.GetCharacter(guild.LeaderId, true);
                     if (characterEntity != null)
-                        accountEntity= Program.AcctMgr.GetAccountById(characterEntity.AccountId);
+                        accountEntity = Program.AcctMgr.GetAccountById(characterEntity.AccountId);
 
                     if ((characterEntity != null) && (accountEntity != null))
                     {
-
                         if (!guild.Members.ContainsKey(guild.LeaderId)
                             || guild.Members[guild.LeaderId].RankId != 9
                             || accountEntity.Banned == 1
@@ -1257,8 +1250,6 @@ namespace WorldServer.Managers
                             || CharMgr.GetCharacter(guild.LeaderId, true).Value.LastSeen + 2246400 <
                             TCPManager.GetTimeStamp())
                         {
-
-
                             bool newleaderfound = false;
 
                             for (int i = 0; i < members.Count; i++)
@@ -1322,7 +1313,6 @@ namespace WorldServer.Managers
                         Guild.MaxGuildGUID = (int)gld.GuildId;
                 }
             }
-
         }
 
         public static bool ChangeGuildName(Guild_info guild, string newName)
@@ -1351,7 +1341,8 @@ namespace WorldServer.Managers
 
             return true;
         }
-        #endregion
+
+        #endregion Guilds
 
         #region CharacterItems
 
@@ -1384,7 +1375,6 @@ namespace WorldServer.Managers
                 foreach (CharacterItem itm in charItems)
                     LoadItem(itm);
 
-
             Log.Success("LoadItems", $"{myCount} inventory items {(Program.Config.PreloadAllCharacters ? "loaded" : "precached")}.");
         }
 
@@ -1393,8 +1383,8 @@ namespace WorldServer.Managers
             LoadItem(item);
             Database.AddObject(item);
             Database.ForceSave();
-
         }
+
         public static void LoadItem(CharacterItem charItem)
         {
             lock (CharItems)
@@ -1474,7 +1464,6 @@ namespace WorldServer.Managers
                 _logger.Debug($"Exception creating items for character {e.Message} {e.StackTrace}");
                 throw;
             }
-
         }
 
         public static void SaveItems(uint characterId, List<Item> oldItems)
@@ -1519,12 +1508,10 @@ namespace WorldServer.Managers
                         continue;
                     }
                     Database.DeleteObject(item);
-
                 }
 
                 if (book == null)
                     CharItems.Remove(characterId);
-
                 else
                 {
                     CharItems[characterId].Clear();
@@ -1533,9 +1520,10 @@ namespace WorldServer.Managers
             }
         }
 
-        #endregion
+        #endregion CharacterItems
 
         #region CharacterMail
+
         private static int _maxMailGuid = 1;
 
         public static int GenerateMailGuid()
@@ -1576,7 +1564,6 @@ namespace WorldServer.Managers
                 }
                 Log.Success("LoadMails", "Loaded " + count + " items of mail.");
             }
-
             else
             {
                 _maxMailGuid = Database.GetObjectCount<Character_mail>();
@@ -1626,7 +1613,8 @@ namespace WorldServer.Managers
 
             chara.Mails.Clear();
         }
-        #endregion
+
+        #endregion CharacterMail
 
         #region Support Tickets
 
@@ -1653,7 +1641,7 @@ namespace WorldServer.Managers
             return ticket;
         }
 
-        #endregion
+        #endregion Support Tickets
 
         public static void RemoveQuestsFromCharacter(Character chara)
         {

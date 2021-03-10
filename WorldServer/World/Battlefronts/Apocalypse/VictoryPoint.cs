@@ -6,6 +6,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     {
         private readonly Object thisLock = new Object();
         private float _dVP;
+
         public float DestructionVictoryPoints
         {
             get { return _dVP; }
@@ -19,6 +20,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
         private float _oVP;
+
         public float OrderVictoryPoints
         {
             get { return _oVP; }

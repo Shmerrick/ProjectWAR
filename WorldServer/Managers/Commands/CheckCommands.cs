@@ -1,14 +1,12 @@
-﻿using System;
+﻿using Common.Database.World.Battlefront;
+using GameData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using static WorldServer.Managers.Commands.GMUtils;
 using System.Text;
-using Common.Database.World.Battlefront;
-using GameData;
-using WorldServer.Services.World;
-using WorldServer.World.Battlefronts.Apocalypse;
 using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Objects;
+using static WorldServer.Managers.Commands.GMUtils;
 
 namespace WorldServer.Managers.Commands
 {
@@ -41,7 +39,7 @@ namespace WorldServer.Managers.Commands
                     result += $"Keep Doors:{doors}.";
 
                     if ((doors < 4) || (numberCreatures < 10) || (numberSpawnPoints < 4))
-                    result += " ** WARNING **";
+                        result += " ** WARNING **";
 
                     if (lord != null)
                     {
@@ -59,7 +57,6 @@ namespace WorldServer.Managers.Commands
 
                     plr.SendClientMessage(result);
                 }
-                
             }
             return true;
         }
@@ -90,7 +87,7 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
-        
+
         /// <summary>
         /// Returns the closest keep and distance to Oil spawn pt
         /// </summary>
@@ -99,10 +96,8 @@ namespace WorldServer.Managers.Commands
         /// <returns>True if command was correctly handled, false if operation was canceled</returns>
         public static bool CheckOil(Player plr, ref List<string> values)
         {
-
             BattleFrontKeep keep = plr.Region.Campaign.GetClosestFriendlyKeep(plr.WorldPosition, plr.Realm);
             plr.SendClientMessage($"Closest Keep : {keep.Info.Name}");
-
 
             foreach (var h in keep.HardPoints)
             {
@@ -271,7 +266,6 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-
         public static bool GetServerPopulation(Player plr, ref List<string> values)
         {
             lock (Player._Players)
@@ -322,8 +316,6 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
-
-
 
         /// <summary>
         /// Finds all players currently in range.
@@ -426,7 +418,6 @@ namespace WorldServer.Managers.Commands
                     else
                         plr.SendClientMessage("LOS=NO" + DateTime.Now.Second);
                 }, 1000, 30);
-
             }
             return true;
         }

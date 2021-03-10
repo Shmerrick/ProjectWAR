@@ -15,7 +15,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
     {
         public static void RecordContributionAnalytics(Player player, ConcurrentDictionary<short, ContributionStage> playerContributionList)
         {
-
             var analyticsRecord = new ContributionAnalytics
             {
                 Timestamp = DateTime.Now,
@@ -48,7 +47,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
         public static void SavePlayerContribution(int battleFrontId, ContributionManager contributionManagerInstance)
         {
-
             WorldMgr.Database.ExecuteNonQuery($"DELETE FROM rvr_player_contribution Where BattleFrontId={battleFrontId};");
 
             foreach (var contribution in contributionManagerInstance.ContributionDictionary)
@@ -65,7 +63,6 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
                 WorldMgr.Database.AddObject(recordToWrite);
             }
-
         }
 
         public static ContributionManager LoadPlayerContribution(int battleFrontId)

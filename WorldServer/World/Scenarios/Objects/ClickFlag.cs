@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Common;
+using FrameWork;
+using System.Collections.Generic;
 using System.Linq;
 using SystemData;
-using Common;
-using FrameWork;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
@@ -26,6 +26,7 @@ namespace WorldServer.World.Scenarios.Objects
         private GameObject _glowObject = null;
         public bool _showGlow = false;
         public ushort CaptureCastTime = 10;
+
         public bool ShowGlow
         {
             get
@@ -67,6 +68,7 @@ namespace WorldServer.World.Scenarios.Objects
         public byte CapturePoints { get; private set; }
         public byte TickPoints { get; private set; }
         public int HoldDuration = 59000;
+
         public bool Open
         {
             get
@@ -85,6 +87,7 @@ namespace WorldServer.World.Scenarios.Objects
         private long HoldStartTime = 0;
 
         public delegate void ClickFlagDelegate(ClickFlag flag);
+
         private ClickFlagDelegate OnHold;
         private ClickFlagDelegate OnCaptured;
 
@@ -249,7 +252,7 @@ namespace WorldServer.World.Scenarios.Objects
         {
             lock (_capturing)
             {
-                if(!_capturing.Contains(player))
+                if (!_capturing.Contains(player))
                     _capturing.Add(player);
             }
 
@@ -272,7 +275,6 @@ namespace WorldServer.World.Scenarios.Objects
             Out.Fill(0, 3); // 2nd byte can be meaningful!
             plr.SendPacket(Out);
         }
-
 
         public void SendFlagInfo(Player plr)
         {
@@ -328,7 +330,7 @@ namespace WorldServer.World.Scenarios.Objects
 
         public override void NotifyInteractionComplete(NewBuff b)
         {
-           if (Open)
+            if (Open)
             {
                 if (HoldOwner != (int)b.Caster.Realm)
                 {
@@ -367,9 +369,7 @@ namespace WorldServer.World.Scenarios.Objects
                     Capture();
                 else
                     EvtInterface.AddEvent(Capture, HoldDuration, 1);
-
             }
-
         }
 
         public override void NotifyInteractionBroken(NewBuff b)

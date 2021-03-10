@@ -12,7 +12,7 @@ namespace FrameWork
             AutoLoad = true;
             AutoDelete = false;
         }
-        
+
         // Relation entre plusieurs champs de table différente
         public string LocalField { get; set; }
 

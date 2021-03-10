@@ -1,5 +1,4 @@
-﻿
-namespace WorldServer.NetWork
+﻿namespace WorldServer.NetWork
 {
     public enum Opcodes : uint
     {
@@ -46,8 +45,10 @@ namespace WorldServer.NetWork
         F_INVITE_GROUP = 0x2F,
         F_JOIN_GROUP = 0x30,
         F_PLAYER_DEATH = 0x31,
+
         // 0x33 Frquent. Occurs globally
         F_DUMP_ARENAS_LARGE = 0x35,
+
         F_GROUP_COMMAND = 0x37,
         F_ZONEJUMP = 0x38,
         F_PLAYER_EXPERIENCE = 0x39,
@@ -77,8 +78,10 @@ namespace WorldServer.NetWork
         F_ENCRYPTKEY = 0x5C,
         F_PQLOOT_TRIGGER = 0x5D,
         F_SET_TARGET = 0x5E,
+
         // 0x5F Last massive packet loaded before in game world
         F_MYSTERY_BAG = 0x60,
+
         F_PLAY_SOUND = 0x61,
         F_PLAYER_STATE2 = 0x62,
         F_QUERY_NAME = 0x63,
@@ -92,8 +95,10 @@ namespace WorldServer.NetWork
         F_CREATE_STATIC = 0x71,
         F_CREATE_MONSTER = 0x72,
         F_PLAYER_IMAGENUM = 0x73,
+
         // 0x74 PvE T1 Dark Elves
         F_TRANSFER_ITEM = 0x75,
+
         F_CRAFTING_STATUS = 0x79,
         F_REQUEST_LASTNAME = 0x7A,
         F_INIT_PLAYER = 0x7C,
