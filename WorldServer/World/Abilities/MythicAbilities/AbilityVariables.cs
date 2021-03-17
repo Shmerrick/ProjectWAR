@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WorldServer.World.MythicAbility
+﻿namespace WorldServer.World.MythicAbility
 {
-    class AbilityVariables
+    internal class AbilityVariables
     {
         public ushort ID;
         public string Name;
@@ -65,7 +59,5 @@ namespace WorldServer.World.MythicAbility
         public ushort ToggleGroup;
         public ushort PatcherFileID;
         public ushort CreateBinData;
-
     }
-
 }

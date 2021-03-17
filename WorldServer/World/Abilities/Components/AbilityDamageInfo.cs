@@ -37,8 +37,8 @@ namespace WorldServer.World.Abilities.Components
         public byte StatUsed;
         public float StatDamageScale;
 
-        public float DamageBonus = 1;
-        public float DamageReduction = 1;
+        public float DamageBonus = 1.0f;
+        public float DamageReduction = 1.0f;
 
         public byte CriticalHitRate;
         public float CriticalHitDamageBonus;
@@ -96,7 +96,7 @@ namespace WorldServer.World.Abilities.Components
         public byte MasteryTree;
 
         // Amount that this damage contributes for XP/RP sharing.
-        public float ContributoryFactor = 1f;
+        public float ContributoryFactor = 1.0f;
 
         // Set if this damage should use a fraction of the Item Stat Total for its stat contribution.
         public bool UseItemStatTotal;

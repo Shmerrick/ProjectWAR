@@ -14,8 +14,6 @@ namespace WorldServer.World.Objects.Instances.RemovedBosses
 
         #endregion Constructors
 
-
-
         #region Overrides
 
         public override void OnLoad()

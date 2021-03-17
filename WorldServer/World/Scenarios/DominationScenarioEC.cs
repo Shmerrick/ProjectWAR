@@ -144,10 +144,10 @@ namespace WorldServer.World.Scenarios
         {
             var landingSpot = _landingSpots[StaticRandom.Instance.Next(_landingSpots.Count)];
             landingSpot = new Point3D(landingSpot.X + (fallingPlayer.Zone.Info.OffX << 12), landingSpot.Y + (fallingPlayer.Zone.Info.OffY << 12), landingSpot.Z);
-            float speed = 180f;
+            float speed = 180.0f;
 
-            float flightTimePunter = (float)fallingPlayer.GetDistanceSquare(punter) / speed / 1000f;
-            float flightTimePuntee = (float)fallingPlayer.GetDistanceSquare(landingSpot) / speed / 1000f;
+            float flightTimePunter = (float)fallingPlayer.GetDistanceSquare(punter) / speed / 1000.0f;
+            float flightTimePuntee = (float)fallingPlayer.GetDistanceSquare(landingSpot) / speed / 1000.0f;
 
             if (StaticRandom.Instance.NextDouble() > .50) // 50/50 chance to suck in punter
             {

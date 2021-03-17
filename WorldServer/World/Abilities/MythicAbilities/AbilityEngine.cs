@@ -15,7 +15,6 @@ using WarServer.Services.Event;
 using WarShared;
 using WarShared.Data;
 
-
 namespace WarGameServer.Game
 {
     public class AbilityEngine
@@ -146,7 +145,6 @@ namespace WarGameServer.Game
             if (data.Target == null)
                 data.Target = data.Component.SelectTarget(data);
 
-
             bool canApply = await CheckComponentRequirments(data, triggeredBy, types);
 
             if (!canApply)
@@ -163,7 +161,6 @@ namespace WarGameServer.Game
 
             if (!result)
                 return;
-
 
             if (data.Component.FlightSpeed > 0 && data.Target != null)
             {
@@ -195,7 +192,6 @@ namespace WarGameServer.Game
         {
             foreach (var buff in buffs)
                 await RemoveBuff(buff);
-
         }
 
         public async Task RemoveBuffs(Entity target)
@@ -422,9 +418,6 @@ namespace WarGameServer.Game
 
             await Task.CompletedTask;
         }
-
-
-
     }
 }
 */

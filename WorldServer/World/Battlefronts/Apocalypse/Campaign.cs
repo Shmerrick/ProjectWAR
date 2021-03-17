@@ -792,7 +792,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         {
             BattlefrontLogger.Trace(".");
             Out.WriteByte(0);
-            float orderPercent, destroPercent = 0;
+            float orderPercent, destroPercent = 0.0f;
             switch (lockingRealm)
             {
                 case Realms.REALMS_REALM_ORDER:

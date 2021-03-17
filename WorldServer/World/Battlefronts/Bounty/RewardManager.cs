@@ -25,8 +25,8 @@ namespace WorldServer.World.Battlefronts.Bounty
         public const float BOUNTY_BASE_RP_MODIFIER = 180f;
         public const float BOUNTY_BASE_XP_MODIFIER = 5.5f;
         public const float BOUNTY_BASE_INF_MODIFIER = 0.4f;
-        public const float BOUNTY_BASE_MONEY_MODIFIER = 10f;
-        public const float BASE_RP_CEILING = 700f;
+        public const float BOUNTY_BASE_MONEY_MODIFIER = 10.0f;
+        public const float BASE_RP_CEILING = 700.0f;
         public const int BASE_MONEY_REWARD = 1000;
         public const int BASE_INFLUENCE_REWARD = 200;
         public const int BASE_XP_REWARD = 1000;

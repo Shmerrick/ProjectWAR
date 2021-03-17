@@ -15,8 +15,6 @@ namespace WorldServer.World.Objects.Instances.The_Lost_Vale
 
         #endregion Constructors
 
-
-
         #region Overrides
 
         public override void OnLoad()

@@ -788,7 +788,7 @@ namespace WorldServer.World.Abilities
         private bool Ram(AbilityCommandInfo cmd, byte level, Unit target)
         {
             float damageFactor = level / (float)_caster.Level;
-            damageFactor = (float)Math.Pow(damageFactor, 1.4);
+            damageFactor = (float)Math.Pow(damageFactor, 1.4f);
 
 #if DEBUG
             Log.Info("Ram", "Damage scale factor: " + damageFactor);

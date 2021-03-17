@@ -19,7 +19,7 @@ namespace Common
         private string _Bonus_destruction = "0";
         private string _Bonus_order = "0";
         private string _Redirect = "0";
-        private string _Region = "STR_REGION_EUROPE";
+        private string _Region = "STR_REGION_NORTHAMERICA";
         private string _Retired = "0";
         private string _Waiting_destruction = "0";
         private string _Waiting_order = "0";

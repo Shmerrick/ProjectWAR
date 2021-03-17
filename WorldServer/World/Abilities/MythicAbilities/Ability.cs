@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Serialization;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
-namespace Common.Database.World.MythicAbility.Ability
+namespace Common.Database.World.MythicAbility
 {
     [DataTable(PreCache = false, TableName = "ability", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
-
     public class Ability : DataObject
     {
         [PrimaryKey]
@@ -179,8 +176,6 @@ namespace Common.Database.World.MythicAbility.Ability
         public ushort PatcherFileID { get; set; }
 
         [PrimaryKey]
-        public ushort CreateBinData { get; set; }    
-
-
+        public ushort CreateBinData { get; set; }
     }
 }

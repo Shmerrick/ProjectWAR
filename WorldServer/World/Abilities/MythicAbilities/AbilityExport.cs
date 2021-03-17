@@ -76,13 +76,10 @@ namespace WarShared.Readers
 
         public Dictionary<int, ExtData> Data { get; set; } = new Dictionary<int, ExtData>();
 
-
         public override string ToString()
         {
             return Name.ToString();
         }
-
-
 
         public List<ExtData> DataList
         {
@@ -217,14 +214,12 @@ namespace WarShared.Readers
                     var v = (ushort)val;
 
                     result += v.ToString() + " ";
-
                 }
                 else if (val is byte)
                 {
                     var v = (byte)val;
 
                     result += v.ToString() + " ";
-
                 }
             }
             return result;
@@ -234,12 +229,9 @@ namespace WarShared.Readers
             string result = "";
             foreach (var val in arr)
             {
-
                 var v = (byte)val;
 
                 result += v.ToString() + " ";
-
-
             }
             return result;
         }
@@ -248,12 +240,9 @@ namespace WarShared.Readers
             string result = "";
             foreach (var val in arr)
             {
-
                 var v = (ushort)val;
 
                 result += v.ToString() + " ";
-
-
             }
             return result;
         }
@@ -262,12 +251,9 @@ namespace WarShared.Readers
             string result = "";
             foreach (var val in arr)
             {
-
                 var v = (short)val;
 
                 result += v.ToString() + " ";
-
-
             }
             return result;
         }
@@ -276,12 +262,9 @@ namespace WarShared.Readers
             string result = "";
             foreach (var val in arr)
             {
-
                 var v = (uint)val;
 
                 result += v.ToString() + " ";
-
-
             }
             return result;
         }
@@ -314,7 +297,6 @@ namespace WarShared.Readers
             IsStatsBuff = (A36_Flags & 0x40000) == 0x40000;
             IsBuffDebuff = ((A36_Flags >> 21) & 0x1) == 1;
 
-
             A40_AbilityID = PacketUtil.GetUint16R(stream);
             A42_EffectID = PacketUtil.GetUint16R(stream);
             A44 = PacketUtil.GetUint16R(stream);
@@ -340,11 +322,8 @@ namespace WarShared.Readers
             for (int i = 0; i < 10; i++)
                 ComponentIDs[i] = PacketUtil.GetUint16R(stream);
 
-
             for (int i = 0; i < 10; i++)
                 Triggers[i] = PacketUtil.GetUint32R(stream);
-
-
 
             for (int i = 0; i < 4; i++)
                 UsableWithBuff[i] = PacketUtil.GetUint16R(stream);
@@ -352,11 +331,9 @@ namespace WarShared.Readers
             A136 = PacketUtil.GetUint32R(stream);
             A140 = PacketUtil.GetUint16R(stream);
 
-
             for (int i = 0; i < 4; i++)
                 Groups[i] = PacketUtil.GetUint16R(stream);
             //   A142C = BitConverter.ToUInt32(A142, 0);
-
 
             for (int i = 0; i < 5; i++)
                 Labels[i] = PacketUtil.GetUint16R(stream);
@@ -384,18 +361,15 @@ namespace WarShared.Readers
                         Val9 = PacketUtil.GetUint8(stream),
                     };
                 }
-
             }
 
             var pos2 = stream.Position;
 
             var total = pos2 - pos1;
-
         }
 
         public void Save(Stream stream)
         {
-
             PacketUtil.WriteUInt32R(stream, A00_Castime);
             PacketUtil.WriteUInt32R(stream, A04_Cooldown);
             PacketUtil.WriteUInt32R(stream, (uint)A08_TacticType);
@@ -450,7 +424,6 @@ namespace WarShared.Readers
 
             for (int i = 0; i < 5; i++)
             {
-
                 if (Data.ContainsKey(i))
                 {
                     PacketUtil.WriteUInt32R(stream, 0XAAAAAAAA);
@@ -464,8 +437,6 @@ namespace WarShared.Readers
             //PacketUtil.WriteUInt32R(stream, 6);
             //PacketUtil.WriteUInt32R(stream, 7);
         }
-
-
     }
 
     public class AbilityExport
@@ -639,7 +610,6 @@ namespace WarShared.Readers
                 for (int i = 0; i < 8; i++)
                     Values[i] = cloneFrom.Values[i];
 
-
                 for (int i = 0; i < 8; i++)
                     Multipliers[i] = cloneFrom.Multipliers[i];
 
@@ -660,14 +630,12 @@ namespace WarShared.Readers
             }
         }
 
-
         public AbilityComponent(Stream stream)
         {
             A00 = PacketUtil.GetUint16R(stream);
 
             for (int i = 0; i < 8; i++)
             {
-                
                 var d = PacketUtil.GetUint32R(stream);
 
                 if (d == 0XAAAAAAAA)
@@ -752,8 +720,6 @@ namespace WarShared.Readers
 
             PacketUtil.WriteByte(stream, MaxTargets);
         }
-
-
     }
 
     public class AbilityComponentExport
@@ -763,11 +729,9 @@ namespace WarShared.Readers
         public List<AbilityComponent> Components = new List<AbilityComponent>();
         public Dictionary<ushort, AbilityComponent> CompHash = new Dictionary<ushort, AbilityComponent>();
         public byte[] Original = null;
-   
 
         public AbilityComponent NewComponent(MYPManager manager, MythicPackage package, AbilityBin ability, AbilityComponent cloneFrom = null)
         {
-
             if (ability.Components.Count < 10)
             {
                 var max = 1;
@@ -837,7 +801,7 @@ namespace WarShared.Readers
                 if (a.A09_Operation == ComponentOperationType.APPLY_ABILITY)
                     a.LinkedAbility = manager.GetString(Language.english, "abilitynames.txt", (ushort)a.Values[0]).Replace("^n", "") + " (" + a.Values[0] + ")";
 
-                //foreach 
+                //foreach
             }
 
             if (stream.Position < stream.Length)
@@ -855,7 +819,6 @@ namespace WarShared.Readers
             PacketUtil.WriteUInt32R(stream, 0x0C);
             PacketUtil.WriteUInt32R(stream, (uint)Components.Count);
 
-
             for (int i = 0; i < Components.Count; i++)
             {
                 var ability = Components[i];
@@ -866,9 +829,6 @@ namespace WarShared.Readers
                 ability.Save(stream);
             }
         }
-
-
-
     }
 
     public class AbilityRequirmentBin
@@ -982,7 +942,6 @@ namespace WarShared.Readers
                         Val9 = PacketUtil.GetUint8(stream),
                     };
                     A02Data[i] = data;
-
                 }
             }
         }
@@ -992,7 +951,6 @@ namespace WarShared.Readers
             PacketUtil.WriteUInt16R(stream, ID);
             for (int i = 0; i < 6; i++)
             {
-
                 if (A02Data.ContainsKey(i))
                 {
                     PacketUtil.WriteUInt32R(stream, 0XAAAAAAAA);
@@ -1001,13 +959,11 @@ namespace WarShared.Readers
                 else
                     PacketUtil.WriteUInt32R(stream, 0);
             }
-
         }
     }
 
     public class AbilityRequirmentExport
     {
-
         public uint Header;
         public uint Size;
         public List<AbilityRequirmentBin> Requirments = new List<AbilityRequirmentBin>();
@@ -1018,7 +974,6 @@ namespace WarShared.Readers
 
             while (stream.Position < stream.Length)
             {
-
                 var a = new AbilityRequirmentBin(stream);
                 Requirments.Add(a);
             }
@@ -1031,13 +986,11 @@ namespace WarShared.Readers
             PacketUtil.WriteUInt32R(stream, 0x01);
             PacketUtil.WriteUInt32R(stream, (uint)Requirments.Count);
 
-
             for (int i = 0; i < Requirments.Count; i++)
             {
                 var ability = Requirments[i];
                 ability.Save(stream);
             }
-
         }
     }
 
@@ -1090,7 +1043,6 @@ namespace WarShared.Readers
                 //A04 = PacketUtil.GetUint8(stream);
                 //A05 = PacketUtil.GetUint8(stream);
                 //A06 = PacketUtil.GetUint8(stream);
-
             }
             public void Save(Stream stream)
             {
@@ -1141,7 +1093,6 @@ namespace WarShared.Readers
                 var item = new UpgradeItem(stream);
                 Items.Add(item);
             }
-
         }
         public void Save(Stream stream)
         {
@@ -1165,7 +1116,6 @@ namespace WarShared.Readers
 
             while (stream.Position < stream.Length)
             {
-
                 var a = new UpgradeTable(stream);
                 Upgrades.Add(a);
             }
@@ -1178,7 +1128,6 @@ namespace WarShared.Readers
         {
             PacketUtil.WriteUInt32R(stream, 0x01);
             PacketUtil.WriteUInt32R(stream, (uint)Upgrades.Count);
-
 
             for (int i = 0; i < Upgrades.Count; i++)
             {
@@ -1205,7 +1154,6 @@ namespace WarShared.Readers
                 index = i;
                 for (int c = 0; c < sequence.Length; c++)
                 {
-
                     if (buff[i + c] == sequence[c])
                     {
                         allMatch = true;
@@ -1241,7 +1189,6 @@ namespace WarShared.Readers
             stream.Read(data, 0, 4);
             return BitConverter.ToSingle(data, 0);
         }
-
 
         public static UInt64 GetUint64(Stream stream)
         {
@@ -1301,7 +1248,6 @@ namespace WarShared.Readers
             return Encoding.GetEncoding("iso-8859-1").GetString(cstyle);
         }
 
-
         public static string GetString(Stream stream)
         {
             int length = (int)GetUint32(stream);
@@ -1309,7 +1255,6 @@ namespace WarShared.Readers
             stream.Read(buffer, 0, length);
             return ConvertToString(buffer);
         }
-
 
         public static string GetPascalString(Stream stream)
         {
@@ -1329,7 +1274,6 @@ namespace WarShared.Readers
                     result += (char)c;
                 else
                     break;
-
             }
             return result;
         }
@@ -1404,7 +1348,6 @@ namespace WarShared.Readers
                 if (stream.Length == stream.Capacity)
                     return 0;
 
-
                 mByte = stream.ReadByte();
                 mByteCount++;
             }
@@ -1451,7 +1394,6 @@ namespace WarShared.Readers
             }
         }
 
-
         public static string Bin(byte[] dump, int start, int len)
         {
             string result = "";
@@ -1461,7 +1403,6 @@ namespace WarShared.Readers
                 result += b;
             }
             return result;
-
         }
         public static string Hex(byte[] dump, int start, int len, int? current = null)
         {
@@ -1477,7 +1418,6 @@ namespace WarShared.Readers
                 {
                     StringBuilder text = new StringBuilder();
                     StringBuilder hex = new StringBuilder();
-
 
                     for (int j = 0; j < 16; j++)
                     {
@@ -1530,7 +1470,6 @@ namespace WarShared.Readers
             stream.WriteByte(data ? (byte)1 : (byte)0);
         }
 
-
         public static void WriteInt16R(Stream stream, short val)
         {
             WriteByte(stream, (byte)(val & 0xff));
@@ -1543,12 +1482,11 @@ namespace WarShared.Readers
 
         public static void WriteParam(Stream stream, byte paramIndex, int paramValue)
         {
-            PacketUtil.WriteByte(stream, paramIndex); //param 
+            PacketUtil.WriteByte(stream, paramIndex); //param
             foreach (byte packed in PacketUtil.Pack(new List<int>() { paramValue }))
             {
                 PacketUtil.WriteByte(stream, packed);
             }
-
         }
 
         public static void WriteBytes(Stream stream, byte[] data)
@@ -1625,7 +1563,6 @@ namespace WarShared.Readers
                 WriteByte(stream, val);
         }
 
-
         public static List<int> Unpack(Stream stream, int count)
         {
             if (stream.Position == stream.Length)
@@ -1642,13 +1579,11 @@ namespace WarShared.Readers
             {
                 byte curByte = GetUint8(stream);
 
-
                 bool more = (curByte & 0x80) >> 7 == 1;
                 int curByteVal = 0;
                 if (readSign)
                 {
                     curByteVal = ((curByte & 0x7F) >> 1);
-
                 }
                 else
                 {
@@ -1702,7 +1637,6 @@ namespace WarShared.Readers
                 byte[] buffer = new byte[length];
                 stream.Read(buffer, 0, length);
                 return ConvertToString(buffer);
-
             }
             return "";
         }
@@ -1731,8 +1665,6 @@ namespace WarShared.Readers
 
         public static void WriteVarInt32(MemoryStream stream, int value)
         {
-
-
             if (value < 0)
             {
                 value = (-value << 1) | 0x1;
@@ -1760,8 +1692,6 @@ namespace WarShared.Readers
 
         public static byte[] ToVarUInt32(uint val)
         {
-
-
             if (val == 0)
             {
                 return new byte[0];
@@ -1782,8 +1712,6 @@ namespace WarShared.Readers
             }
             return result;
         }
-
-
 
         public static void WriteZigZag(MemoryStream stream, int val)
         {
@@ -1817,13 +1745,11 @@ namespace WarShared.Readers
             {
                 byte curByte = GetUint8(stream);
 
-
                 bool more = (curByte & 0x80) >> 7 == 1;
                 uint curByteVal = 0;
                 if (readSign)
                 {
                     curByteVal = (uint)((curByte & 0x7F) >> 1);
-
                 }
                 else
                 {
@@ -1960,7 +1886,6 @@ namespace WarShared.Readers
 
             return r;
         }
-
 
         public static void FillString(Stream stream, string str, int len)
         {

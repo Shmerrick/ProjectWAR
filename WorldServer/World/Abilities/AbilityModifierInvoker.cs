@@ -1849,7 +1849,7 @@ namespace WorldServer.World.Abilities
             if (player == null || !player.CrrInterface.HasResource(2))
                 return;
 
-            float scaleFactor = 1f - (myEffect.PrimaryValue * 0.01f * 0.125f * ((Player)caster).CrrInterface.GetCurrentResourceLevel(0));
+            float scaleFactor = 1.0f - (myEffect.PrimaryValue * 0.01f * 0.125f * ((Player)caster).CrrInterface.GetCurrentResourceLevel(0));
 
             buffInfo.Duration = (ushort)(buffInfo.Duration * scaleFactor);
             buffInfo.Interval = (ushort)(buffInfo.Interval * scaleFactor);

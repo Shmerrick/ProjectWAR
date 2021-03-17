@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace AccountCacher
 {
-    [ConsoleHandler("create", 2, "New Account <Username,Password,GMLevel(0-31)>")]
+    [ConsoleHandler("create", 2, "New Account <Username,Password,GMLevel(0-40)>")]
     public class CreateAccount : IConsoleHandler
     {
         private string[] _bannedNames = { "zyklon", "fuck", "hitler", "nigger", "nigga", "faggot", "jihad", "muhajid" };

@@ -1,18 +1,13 @@
-﻿using Common.Database.World.MythicAbility;
-using WorldServer.World.Objects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace WorldServer.World.MythicAbility
-{    public class AbilityComponentVariables
+{
+    public class AbilityComponentVariables
     {
         public ushort ID;
         public string A00;
         public string Values;
-        public ushort Multipliers;
+        public string Multipliers;
         public ushort ActivationDelay;
         public ushort Duration;
         public ushort Flags;
@@ -26,35 +21,38 @@ namespace WorldServer.World.MythicAbility
         public ushort MaxTargets;
         public ushort Description;
 
-        public ushort baseDamage;
-
-        // Trying to replicate client damage formula
-        public AbilityComponentVariables()
+        public AbilityComponentVariables() // Trying to replicate client damage formula
         {
-            int baseDamage = 0;
-            int _Multipliers = Convert.ToInt32(Multipliers);
-            int _Values = Convert.ToInt32(Values);
-
             WorldServer.World.Abilities.Components.AbilityInfo _AbilityInfo = new WorldServer.World.Abilities.Components.AbilityInfo();
             int Level = _AbilityInfo.Level;
 
-            baseDamage = ((((Level - 1) * (1 / 6) * _Values) + _Values) * _Multipliers) / 100;
-            Console.WriteLine(baseDamage);
+            //float CalculatedValue = ((((Level - 1.0f) * (1 / 6) * Values) + Values) * /*MultipliersOne*/) / 100;
+
+            //Console.WriteLine(CalculatedValue);
             Console.ReadKey();
         }
 
         /*
-        float baseValue = Value;
-        float targetLevel = abilityLevel;
-        float mult = Multiplier;
-
-        float result = ((abilityLevel - 1) * increasePerLevel) * baseValue;
-        int val = (int)Math.Round(result, MidpointRounding.AwayFromZero);
-        val += (int) baseValue;
-        val = val* (int) mult / 100;
-
-        return val;
+        public ItemInfoStats(string stat, IEnumerable<ItemBonus> itemBonusList)
+        {
+            var temp = stat.Split(':');
+            Type = Convert.ToInt32(temp[0]);
+            Value = Convert.ToInt32(temp[1]);
+            Description = itemBonusList.Single(x => x.Entry == Convert.ToInt32(Type)).BonusName;
+        }
         */
-        
     }
+
+    /*
+    float baseValue = Value;
+    float targetLevel = abilityLevel;
+    float mult = Multiplier;
+
+    float result = ((abilityLevel - 1) * increasePerLevel) * baseValue;
+    int val = (int)Math.Round(result, MidpointRounding.AwayFromZero);
+    val += (int) baseValue;
+    val = val* (int) mult / 100;
+
+    return val;
+    */
 }

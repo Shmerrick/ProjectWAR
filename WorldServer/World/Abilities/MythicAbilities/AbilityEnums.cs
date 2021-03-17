@@ -27,7 +27,7 @@ public enum ComponentEventType
         ENCHANTMENT = 1008,
         DEBUFF = 1023,
     }
-	
+
     public enum AbilityDataType
     {
         Hex = 1,
@@ -46,7 +46,7 @@ public enum ComponentEventType
         Offensive = 14,
         Defensive = 15,
     }
-	
+
     public enum AbilityBuildInterruptType
     {
         InterruptWeapons = 47,
@@ -54,7 +54,7 @@ public enum ComponentEventType
         InterruptAll = 63,
         Monsters = 128,
     }
-	
+
     public enum AbilityLogicOperator
     {
         None = 0,
@@ -62,7 +62,6 @@ public enum ComponentEventType
         Or = 9,
     }
 
-	
     public enum AbilitySourceType
     {
         Self = 0,
@@ -96,7 +95,7 @@ public enum ComponentEventType
         OnPreviousComponentEndCast = 2,
         OnBuffEndedRemoved = 10
     }
-	
+
     public enum AbilityOperation
     {
         Default = 0,
@@ -190,7 +189,7 @@ public enum ComponentEventType
         TierCheck88 = 88,
         Unk89 = 89,
     }
-	
+
     public enum AbilityCondition
     {
         None = 0,
@@ -202,7 +201,7 @@ public enum ComponentEventType
         GreaterThan = 7,
         FriendlyTarget = 8
     }
-	
+
     public enum AbilityEvent
     {
         OnDirectDamageHit = 1,
@@ -240,7 +239,7 @@ public enum ComponentEventType
         OnAnyDamage = 40,
         OnEnterWorld = 42,
     }
-	
+
     public enum CCType
     {
         None = 0,
@@ -254,9 +253,8 @@ public enum ComponentEventType
         DisableDefending = 128,
         Stunned = 1024,
         SquigArmor = 8192
-
     }
-	
+
     public enum AbilityAttackType:int
     {
         NONE=0,
@@ -264,14 +262,13 @@ public enum ComponentEventType
         RANGED=2,
         MAGIC=3,
     }
-	
+
     public enum StatChangeType
     {
         SET,
         INCREMENT,
         PERCENT
     }
-
 
     public enum ComponentOperationType
     {

@@ -284,7 +284,7 @@ namespace WorldServer.Managers
                 return -1;
             }
 
-            float fZValue = 0;
+            float fZValue = 0.0f;
 
             try
             {

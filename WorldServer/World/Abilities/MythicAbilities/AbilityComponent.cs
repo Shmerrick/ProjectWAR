@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Serialization;
-using FrameWork;
+﻿using FrameWork;
+using System;
 
 namespace Common.Database.World.MythicAbility
 {
     [DataTable(PreCache = false, TableName = "ability_component", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
-
     public class AbilityComponent : DataObject
     {
         [PrimaryKey]
@@ -20,7 +17,7 @@ namespace Common.Database.World.MythicAbility
         public string Values { get; set; }
 
         [PrimaryKey]
-        public ushort Multipliers { get; set; }
+        public string Multipliers { get; set; }
 
         [PrimaryKey]
         public ushort ActivationDelay { get; set; }

@@ -18,8 +18,6 @@ namespace WorldServer.World.AI
 
         #endregion Constructors
 
-
-
         #region Methods
 
         public override Unit GetNextTarget()

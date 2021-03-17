@@ -963,7 +963,7 @@ namespace WorldServer.World.Objects.PublicQuests
         public void NotifyKilled(PQuestCreature mob)
         {
             float totalDamageDealt = 1.0f;
-            float totalHits = 0;
+            float totalHits = 0.0f;
             int damagedCount = 0;
 
             // Handle contribution to the PQ.

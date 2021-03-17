@@ -1042,8 +1042,8 @@ namespace WorldServer.World.Abilities
 
         public static void InflictDamage(AbilityDamageInfo damageInfo, byte level, Unit caster, Unit target)
         {
-            float damageBonus = 0;
-            float damageReduction = 1;
+            float damageBonus = 0.0f;
+            float damageReduction = 1.0f;
 
             caster.CbtInterface.RefreshCombatTimer();
             target.CbtInterface.OnAttacked(caster);

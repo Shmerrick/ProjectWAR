@@ -19,7 +19,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         private readonly BattleFrontKeep _keep;
 
         /// <summary>Incoming damage scaler from 0.25 to 1<summary>
-        private volatile float _damageScaler = 1f;
+        private volatile float _damageScaler = 1.0f;
 
         public AIInterface NearAiInterface = null;
         public int DefenceRank { get; set; }

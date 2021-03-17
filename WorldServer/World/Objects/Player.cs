@@ -3683,7 +3683,7 @@ namespace WorldServer.World.Objects
 
         /// <summary>Scaler applied to damage received or dealed when farming warcamps</summary>
         /// <remarks>The scaler is hidden to player, lower than 1 if debuffed (intended feature)</remarks>
-        public volatile float WarcampFarmScaler = 1f;
+        public volatile float WarcampFarmScaler = 1.0f;
 
         /// <summary>
         /// Provides an opportunity for this unit to modify incoming ability damage from enemies.

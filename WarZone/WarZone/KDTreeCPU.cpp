@@ -263,7 +263,7 @@ KDTreeNode* KDTreeCPU::constructTreeMedianSpaceSplit( int num_tris, int *tri_ind
 	node->split_plane_axis = longest_side;
 
 	// Compute median value for longest side as well as "loose-fitting" bounding boxes.
-	float median_val = 0.0;
+	float median_val = 0.0f;
 	BoundingBox left_bbox = bounds;
 	BoundingBox right_bbox = bounds;
 	if ( longest_side == X_AXIS ) {

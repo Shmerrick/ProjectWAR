@@ -129,7 +129,7 @@ namespace FrameWork
 
         public float ReadFloat(int col)
         {
-            float result = 0;
+            float result = 0.0f;
             float.TryParse(Lines[RowIndex][col], out result);
             return result;
         }

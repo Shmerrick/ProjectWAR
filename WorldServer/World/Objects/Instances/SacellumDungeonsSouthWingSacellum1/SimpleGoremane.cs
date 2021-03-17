@@ -16,8 +16,6 @@ namespace WorldServer.World.Objects.Instances.SacellumDungeonsWestWingSacellum1
 
         #endregion Constructors
 
-
-
         #region Overrides
 
         public override void OnLoad()

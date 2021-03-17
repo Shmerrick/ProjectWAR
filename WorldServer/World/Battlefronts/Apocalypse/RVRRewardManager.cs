@@ -72,17 +72,17 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             float scale = 0.0f;
             if (owningRealm == Realms.REALMS_REALM_DESTRUCTION)
             {
-                scale = (float)Math.Abs(Math.Log(nearOrderCount / 10f + 1f));
+                scale = (float)Math.Abs(Math.Log(nearOrderCount / 10.0f + 1.0f));
             }
             else
             {
                 if (owningRealm == Realms.REALMS_REALM_ORDER)
                 {
-                    scale = (float)Math.Abs(Math.Log(nearDestroCount / 10f + 1f));
+                    scale = (float)Math.Abs(Math.Log(nearDestroCount / 10.0f + 1.0f));
                 }
             }
-            if (scale > 1f)
-                scale = 1f;
+            if (scale > 1.0f)
+                scale = 1.0f;
             return scale;
         }
 

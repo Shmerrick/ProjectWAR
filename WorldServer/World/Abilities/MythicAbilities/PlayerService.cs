@@ -27,7 +27,6 @@ namespace WarServer.Services.PlayerSvc
 
         public PlayerService(IWarServiceProvider provider, CancellationTokenSource token) : base(provider, token)
         {
-
         }
 
         public async Task InitPlayer(GameClient client)
@@ -107,7 +106,7 @@ namespace WarServer.Services.PlayerSvc
         public async Task SetLevel(Player player, byte level, bool buyAll = false)
         {
             byte prevLevel = (byte)player.EffectiveLevel;
-          
+
             player.Level = level;
             await player.InitVitals();
             if ((byte)level > prevLevel)
@@ -124,9 +123,7 @@ namespace WarServer.Services.PlayerSvc
             await player.AdjustHealth(await GetService<CombatService>().GetNullComponent(player), 0);
             //recaculate ability data
             await player.Client.Send(F_INTERACT_RESPONSE.Create(0, 5, level));
-
         }
-
 
         public async Task QuitPlayer(GameClient client)
         {
@@ -134,7 +131,6 @@ namespace WarServer.Services.PlayerSvc
             {
                 await client.Player.Controller.RemovePlayer(client.Player);
             }
-
         }
 
         private async Task EquipMorale(GameClient client, byte slotIndex, ushort abilityID)
@@ -165,16 +161,18 @@ namespace WarServer.Services.PlayerSvc
             }
         }
 
+        #region Events
 
-        #region Events 
         [EventHandler(EventType.PLAYER_DISCONNECTED_GAME)]
         public async Task PLAYER_DISCONNECTED_GAME(GameClient client)
         {
             await QuitPlayer(client);
         }
-        #endregion
+
+        #endregion Events
 
         #region Handlers
+
         [FrameRoute((int)GameOp.F_GROUP_COMMAND, FrameType.Game)]
         public async Task F_GROUP_COMMAND(GameClient client, F_GROUP_COMMAND frame)
         {
@@ -184,14 +182,17 @@ namespace WarServer.Services.PlayerSvc
                     if (client.Player.PendingGroup.Group != null)
                         await client.Player.PendingGroup.Group.AcceptInvite(client);
                     break;
+
                 case GroupCommand.DECLINE_INVITATION:
                     if (client.Player.PendingGroup.Group != null)
                         await client.Player.PendingGroup.Group.DeclineInvite(client);
                     break;
+
                 case GroupCommand.REMOVE_CHARACTER:
                     if (client.Player.Group != null)
                         await client.Player.Group.LeaveGroup(client.Player);
                     break;
+
                 case GroupCommand.CLAIM_ASSIST:
                     if (client.Player.Group != null)
                         await client.Player.Group.ClaimMainAssist(client.Player);
@@ -239,7 +240,7 @@ namespace WarServer.Services.PlayerSvc
                 await GetService<CombatService>().ApplyPassiveBuff(client.Player, ca.Package.Ability, false, 0, 0);
             }
 
-            await GetService<DataService>().UpdatePackages(list); 
+            await GetService<DataService>().UpdatePackages(list);
 
             await client.Send(new F_TACTICS() { Tactics = client.Player.GetSlottedTactics().Select(e => (ushort)e.ID).ToList() });
         }
@@ -260,8 +261,8 @@ namespace WarServer.Services.PlayerSvc
 
             await Task.CompletedTask;
         }
-        #endregion
 
+        #endregion Handlers
     }
 }
 */

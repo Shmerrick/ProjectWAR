@@ -622,7 +622,7 @@ namespace WorldServer.World.AI
         public AggroInfo GetMaxAggroHate()
         {
             AggroInfo maxAggro = null;
-            float maxHate = 50;
+            float maxHate = 50.0f;
 
             foreach (AggroInfo aggro in Aggros.Values)
             {

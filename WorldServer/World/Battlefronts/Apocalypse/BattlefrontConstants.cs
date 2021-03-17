@@ -25,7 +25,7 @@
         public static int THREATEN_RANGE = 200;
 
         /// <summary>Range of warcamp farm detection, applying dealed and received damage debuff</summary>
-        public static float WARCAMP_FARM_RANGE = 250;
+        public static float WARCAMP_FARM_RANGE = 250.0f;
 
         #endregion Ranges
 

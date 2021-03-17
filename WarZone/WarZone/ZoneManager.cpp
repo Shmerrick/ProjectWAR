@@ -112,7 +112,7 @@ OcclusionResult ZoneManager::SegmentIntersect(int zoneIDA, int zoneIDB,
 
 	glm::vec3 dir = glm::normalize(target - from);
 	double distance = Util::GetDistance(from, target);
-	float t = 0;
+	float t = 0.0f;
 	int count = 0;
 
 	int hit = _zones[zoneIDA]->kd_tree->intersect(from, dir, t, hit_point, normal);
@@ -270,7 +270,7 @@ int ZoneManager::Pin(int zoneID, int xLoc, int yLoc, int triCount)
 	float ave3 = (ave + z4) / 2;
 	glm::vec3 ray_o, ray1, ray2, ray3, hitpoint, ray_target;
 
-	float d = 0;
+	float d = 0.0f;
 
 	ray_o[0] = (float)xLoc;
 	ray_o[1] = (float)yLoc;

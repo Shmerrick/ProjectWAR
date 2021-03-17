@@ -11,7 +11,6 @@ using WarServer.Services.Combat;
 using WarShared;
 using WarShared.Data;
 
-
 namespace WarServer.Game.Ability.Ext.Components
 {
     public enum DamageFlag
@@ -45,7 +44,6 @@ namespace WarServer.Game.Ability.Ext.Components
 
         private Task<bool> TryDefend(CombatService svc, Entity target, CastToken token, Buff buff, int index, int tick, int totalTicks)
         {
-
             //token.Result = AbilityResult.DISRUPT;
 
             //await svc.RemoveBuff(buff);
@@ -58,7 +56,7 @@ namespace WarServer.Game.Ability.Ext.Components
             //    casterID = token.Caster?.ObjectID ?? 0,
             //    ComponentIndex = (byte)index,
             //    result = token.Result,
-            //    showEffect = true 
+            //    showEffect = true
             //});
 
             //return true;
@@ -67,12 +65,11 @@ namespace WarServer.Game.Ability.Ext.Components
 
         public override float CalculateBaseValue(ComponentData data)
         {
-            if ((data.Component.ValueType == ComponentValueType.ReducePct 
+            if ((data.Component.ValueType == ComponentValueType.ReducePct
                 || data.Component.ValueType == ComponentValueType.ReduceToPct))
                 return Value;
 
             float increasePerLevel = IncreasePerLevel;
-
 
             int intr = 1;
 
@@ -192,7 +189,6 @@ namespace WarServer.Game.Ability.Ext.Components
 
             if (send)
             {
-
                 bool immune = await IsImmune(data, triggeredBy);
 
                 if (!defended && !immune)
@@ -219,11 +215,9 @@ namespace WarServer.Game.Ability.Ext.Components
                 await Svc.EventSvc.Raise(EventType.ON_HIT, triggeredBy, data.Caster, data);
                 await Svc.EventSvc.Raise(EventType.ON_BEING_HIT, triggeredBy, data.Target, data);
 
-
                 return true;
             }
             return false;
-
         }
     }
 }

@@ -43,7 +43,7 @@ namespace WorldServer.World.Objects
 
         public bool IsHeeling;
 
-        public float SpeedMult = 1f;
+        public float SpeedMult = 1.0f;
         public static long COMMAND_ATTACK_REUSE = 500;
         public long AttackReuseTimer = TCPManager.GetTimeStampMS();
 

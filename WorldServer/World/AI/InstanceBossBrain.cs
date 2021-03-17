@@ -18,8 +18,6 @@ namespace WorldServer.World.AI
 
         #endregion Constructors
 
-
-
         #region Overrides
 
         public override void Think(long tick)
