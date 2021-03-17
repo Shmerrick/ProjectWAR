@@ -26,7 +26,7 @@ namespace WorldServer.Configs
         public int RenownRate = 1;
         public int InfluenceRate = 1;
         public int RankCap = 40;
-        public int RenownCap = 40;
+        public int RenownCap = 100;
 
         // Crossrealming
         public bool ChatBetweenRealms = true;
