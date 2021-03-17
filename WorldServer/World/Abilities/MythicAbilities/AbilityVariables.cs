@@ -1,4 +1,4 @@
-﻿namespace WorldServer.World.MythicAbility
+﻿namespace WorldServer.World.MythicAbilities
 {
     internal class AbilityVariables
     {

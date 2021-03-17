@@ -1,7 +1,7 @@
 ﻿using FrameWork;
 using System;
 
-namespace Common.Database.World.MythicAbility
+namespace WorldServer.World.MythicAbilities
 {
     [DataTable(PreCache = false, TableName = "ability_component", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]

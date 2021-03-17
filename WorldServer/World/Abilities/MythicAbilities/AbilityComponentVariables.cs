@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WorldServer.World.MythicAbility
+namespace WorldServer.World.MythicAbilities
 {
     public class AbilityComponentVariables
     {
