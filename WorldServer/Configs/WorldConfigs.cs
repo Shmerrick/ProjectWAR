@@ -15,7 +15,6 @@ namespace WorldServer.Configs
 
         // Level / Looting
         public int GlobalLootRate = 1;
-
         public int CommonLootRate = 1;
         public int UncommonLootRate = 1;
         public int RareLootRate = 1;
