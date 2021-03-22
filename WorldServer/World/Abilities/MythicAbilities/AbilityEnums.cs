@@ -1,8 +1,5 @@
-using System;
-using WorldServer.World.Abilities.MythicAbilities;
-
 // Londo's Work
-public enum ComponentEventType
+    public enum ComponentEventType
     {
         Applied = 1,
         Purged = 2,

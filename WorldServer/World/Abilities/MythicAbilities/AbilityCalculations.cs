@@ -1,4 +1,8 @@
-﻿namespace WorldServer.World.Abilities.MythicAbilities
+﻿using System;
+using Common;
+
+
+namespace WorldServer.World.Abilities.MythicAbilities
 {
     public class AbilityCalculations
     {
