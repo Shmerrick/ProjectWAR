@@ -15,6 +15,8 @@ namespace FrameWork
         private bool m_allowDelete = true;
 
         // Génération d'un objet unique pour chaque DataObject
+        // Generating a unique object for each DataObject
+
         protected DataObject()
         {
             IsValid = false;
@@ -24,6 +26,7 @@ namespace FrameWork
         }
 
         // Nom de la table dont l'objet provient
+        // Name of the table from which the object comes
         [Browsable(false)]
         public virtual string TableName
         {
@@ -35,6 +38,7 @@ namespace FrameWork
         }
 
         // Chargement en cache ou non de l'objet
+        // Cache loading or not of the object
         [Browsable(false)]
         public virtual bool UsesPreCaching
         {
@@ -46,11 +50,13 @@ namespace FrameWork
         }
 
         // Objet Valide ?
+        // Valid object?
         [XmlIgnore()]
         [Browsable(false)]
         public bool IsValid { get; set; }
 
         // Peut être ou non ajouté a la DB
+        // May or may not be added to the DB
         [XmlIgnore()]
         [Browsable(false)]
         public virtual bool AllowAdd
@@ -60,6 +66,7 @@ namespace FrameWork
         }
 
         // Peut être ou non supprimé de la DB
+        // May or may not be deleted from DB
         [XmlIgnore()]
         [Browsable(false)]
         public virtual bool AllowDelete
@@ -69,16 +76,19 @@ namespace FrameWork
         }
 
         // Numéro de l'objet dans la table
+        // Object number in the table
         [XmlIgnore()]
         [Browsable(false)]
         public string ObjectId { get; set; }
 
         // Objet différent ke celui de la table ?
+        // Different object than that of the table?
         [XmlIgnore()]
         [Browsable(false)]
         public virtual bool Dirty { get; set; }
 
         // Cette objet a été delete de la table ?
+        // Was this object deleted from the table?
         [XmlIgnore()]
         [Browsable(false)]
         public virtual bool IsDeleted { get; set; }
@@ -96,6 +106,7 @@ namespace FrameWork
         }
 
         // Récupère la table name en lisant les attributs
+        // Get the table name by reading the attributes
         public static string GetTableName(Type myType)
         {
             object[] attri = myType.GetCustomAttributes(typeof(DataTable), true);
@@ -127,6 +138,7 @@ namespace FrameWork
         }
 
         // Précache au démarrage ?
+        // Precache at startup?
         public static bool GetPreCachedFlag(Type myType)
         {
             object[] attri = myType.GetCustomAttributes(typeof(DataTable), true);
@@ -140,6 +152,7 @@ namespace FrameWork
         }
 
         // Récupère la table name en lisant les attributs
+        // Get the table name by reading the attributes
         public static EBindingMethod GetBindingMethod(Type myType)
         {
             object[] attri = myType.GetCustomAttributes(typeof(DataTable), true);

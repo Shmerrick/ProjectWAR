@@ -1,4 +1,7 @@
-/* Londo
+using System;
+using WorldServer.World.Abilities.MythicAbilities;
+
+// Londo's Work
 public enum ComponentEventType
     {
         Applied = 1,
@@ -71,7 +74,7 @@ public enum ComponentEventType
         EventReq = 4,
         Result = 6,
         Immunity = 7
-    }a
+    }
 
     public enum SpellFormula
     {
@@ -326,4 +329,3 @@ public enum ComponentEventType
         TauntChallange = 1020,
         Stuns = 1030
     }
-*/
