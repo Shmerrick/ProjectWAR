@@ -257,13 +257,13 @@
 
     public enum AbilityAttackType:int
     {
-        NONE=0,
-        MELEE=1,
-        RANGED=2,
-        MAGIC=3,
+        NONE = 0,
+        MELEE = 1,
+        RANGED = 2,
+        MAGIC = 3,
     }
 
-    public enum StatChangeType
+    public enum StatChangeType // Why is this set to auto increment?
     {
         SET,
         INCREMENT,
