@@ -1,5 +1,7 @@
-﻿using CommandLine;
+﻿using AccountCacher;
+using CommandLine;
 using Dapper;
+using FrameWork;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -8,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using WorldServer.Configs;
 
 namespace CharacterUtility
 {
@@ -18,9 +21,13 @@ namespace CharacterUtility
         private static string AccountUserCode = System.Configuration.ConfigurationManager.AppSettings["AccountUserCode"];
         private static IEnumerable<ItemBonus> ItemBonusList;
         private static IEnumerable<NdClass> ClassList;
+        private static AccountConfigs AccountConfig;
+        private static WorldConfigs WorldConfig;
 
         private static int Main(string[] args)
         {
+            AccountConfig = ConfigMgr.GetConfig<AccountConfigs>();
+            WorldConfig = ConfigMgr.GetConfig<WorldConfigs>();
             Logger.Info("Character Utility");
 
             return CommandLine.Parser.Default.ParseArguments<CommandLineOptions.ImportOptions, CommandLineOptions.ExportOptions, CommandLineOptions.CreateOptions, CommandLineOptions.ItemSetOptions>(args)
@@ -58,7 +65,7 @@ namespace CharacterUtility
             try
             {
                 connection.Open();
-                var itemsetList = connection.Query<ItemBonus>($"select * from war_world.item_bonus");
+                var itemsetList = connection.Query<ItemBonus>($"select * from `{WorldConfig.WorldDatabase.Database}`.item_bonus");
                 return itemsetList;
             }
             catch (Exception e)
@@ -79,7 +86,7 @@ namespace CharacterUtility
             try
             {
                 connection.Open();
-                var classList = connection.Query<NdClass>($"select * from war_world.classes");
+                var classList = connection.Query<NdClass>($"select * from `{WorldConfig.WorldDatabase.Database}`.classes");
                 return classList;
             }
             catch (Exception e)
@@ -100,7 +107,7 @@ namespace CharacterUtility
             try
             {
                 connection.Open();
-                var itemsetList = connection.Query<ItemSet>($"select * from war_world.item_sets");
+                var itemsetList = connection.Query<ItemSet>($"select * from `{WorldConfig.WorldDatabase.Database}`.item_sets");
                 return itemsetList;
             }
             catch (Exception e)
@@ -298,7 +305,7 @@ namespace CharacterUtility
             try
             {
                 connection.Open();
-                var result = connection.Execute($"update war_world.item_sets set ItemSetList =  @json, ClassId = @newClassId where Entry = @EntryId", new { json = jsonSetList, EntryId = setEntryId, newClassId = classId });
+                var result = connection.Execute($"update `{WorldConfig.WorldDatabase.Database}`.item_sets set ItemSetList =  @json, ClassId = @newClassId where Entry = @EntryId", new { json = jsonSetList, EntryId = setEntryId, newClassId = classId });
                 Logger.Debug($"Rows Effected {result}");
             }
             catch (Exception e)
@@ -318,7 +325,7 @@ namespace CharacterUtility
             try
             {
                 connection.Open();
-                var result = connection.Execute($"update war_world.item_sets set ItemSetFullDescription =  @json where Entry = @EntryId", new { json = jsonFullDescription, EntryId = setEntryId });
+                var result = connection.Execute($"update `{WorldConfig.WorldDatabase.Database}`.item_sets set ItemSetFullDescription =  @json where Entry = @EntryId", new { json = jsonFullDescription, EntryId = setEntryId });
                 Logger.Debug($"Rows Effected {result}");
             }
             catch (Exception e)
@@ -338,7 +345,7 @@ namespace CharacterUtility
             try
             {
                 connection.Open();
-                var itemAvailable = connection.QueryFirstOrDefault<ItemInfo>($"select * from war_world.Item_Infos where Entry= {setItemId}");
+                var itemAvailable = connection.QueryFirstOrDefault<ItemInfo>($"select * from `{WorldConfig.WorldDatabase.Database}`.Item_Infos where Entry= {setItemId}");
 
                 var individualStatItems = itemAvailable.Stats.Split(';');
 
@@ -380,7 +387,7 @@ namespace CharacterUtility
             try
             {
                 connection.Open();
-                var result = connection.Execute($"update war_world.item_sets set ItemSetList = null, ItemSetFullDescription=null, ClassId=null");
+                var result = connection.Execute($"update `{WorldConfig.WorldDatabase.Database}`.item_sets set ItemSetList = null, ItemSetFullDescription=null, ClassId=null");
                 Logger.Debug($"Rows Effected {result}");
             }
             catch (Exception e)
@@ -415,8 +422,8 @@ namespace CharacterUtility
             {
                 connection.Open();
 
-                var characterObject = connection.QueryFirstOrDefault($"select max(CharacterId) as MaxId from war_characters.characters");
-                var slotObject = connection.QueryFirstOrDefault($"select max(SlotId) as MaxSlotId from war_characters.characters where AccountId = {character.AccountId}");
+                var characterObject = connection.QueryFirstOrDefault($"select max(CharacterId) as MaxId from {WorldConfig.CharacterDatabase.Database}.characters");
+                var slotObject = connection.QueryFirstOrDefault($"select max(SlotId) as MaxSlotId from {WorldConfig.CharacterDatabase.Database}.characters where AccountId = {character.AccountId}");
 
                 Logger.Info($"Creating Character : {character.Name}");
 
@@ -428,13 +435,13 @@ namespace CharacterUtility
                 }
 
                 var newCharacterSql =
-                    $"insert into war_characters.characters (CharacterId, Name, RealmId, AccountId, SlotId, ModelId, Career, CareerLine, Realm,  HeldLeft, Race, Traits, Sex, Surname, Anonymous, Hidden, OldName, PetName, PetModel) " +
+                    $"insert into {WorldConfig.CharacterDatabase.Database}.characters (CharacterId, Name, RealmId, AccountId, SlotId, ModelId, Career, CareerLine, Realm,  HeldLeft, Race, Traits, Sex, Surname, Anonymous, Hidden, OldName, PetName, PetModel) " +
                     $"values ({characterObject.MaxId + 1}, '{character.Name}', {character.RealmId}, {character.AccountId}, {slotObject.MaxSlotId + 1}, {character.ModelId}, {character.Career}, {character.CareerLine}, {character.Realm}, 0, {character.Race}, '', {character.Sex}, '{character.Surname}', 0, 0, '', '', 0)";
 
                 Logger.Debug(newCharacterSql);
 
                 var newCharacterValueSql =
-                    $"insert into war_characters.characters_value (CharacterId, Level, Xp, XpMode, RestXp, Renown, RenownRank, Money, Speed, RegionId, ZoneId, WorldX, WorldY, WorldZ, WorldO, RallyPoint, BagBuy, Skills, Online, PlayedTime, LastSeen, BankBuy, GearShow, TitleId, " +
+                    $"insert into {WorldConfig.CharacterDatabase.Database}.characters_value (CharacterId, Level, Xp, XpMode, RestXp, Renown, RenownRank, Money, Speed, RegionId, ZoneId, WorldX, WorldY, WorldZ, WorldO, RallyPoint, BagBuy, Skills, Online, PlayedTime, LastSeen, BankBuy, GearShow, TitleId, " +
                     $"RenownSkills, MasterySkills, GatheringSkill, GatheringSkillLevel, CraftingSkill, CraftingSkillLevel, ExperimentalMode, RVRKills, RVRDeaths, CraftingBags, Lockouts, DisconcetTime) " +
                     $"values ({characterObject.MaxId + 1}, '{character.Level}', 0, 0, 0, 0, {character.RenownRank}, 500000, 100, " +
                     $"{character.BaseCharacterInfo.Region}, {character.BaseCharacterInfo.ZoneId}, {character.BaseCharacterInfo.WorldX}, " +
@@ -509,7 +516,7 @@ namespace CharacterUtility
             try
             {
                 connection.Open();
-                var account = connection.QueryFirstOrDefault($"select * from war_accounts.accounts where Username = '{accountUserCode}'");
+                var account = connection.QueryFirstOrDefault($"select * from {AccountConfig.AccountDB.Database}.accounts where Username = '{accountUserCode}'");
 
                 return account.AccountId;
             }
@@ -531,7 +538,7 @@ namespace CharacterUtility
             try
             {
                 connection.Open();
-                var character = connection.QueryFirstOrDefault($"select * from war_characters.characters where Name = '{name}'");
+                var character = connection.QueryFirstOrDefault($"select * from {WorldConfig.CharacterDatabase.Database}.characters where Name = '{name}'");
 
                 return (character != null);
             }
@@ -554,7 +561,7 @@ namespace CharacterUtility
             {
                 var information = new CharacterInfo();
                 connection.Open();
-                var characterInfo = connection.Query<CharacterInfo>($"select * from war_world.characterinfo where CareerName = '{career}'");
+                var characterInfo = connection.Query<CharacterInfo>($"select * from `{WorldConfig.WorldDatabase.Database}`.characterinfo where CareerName = '{career}'");
 
                 return characterInfo.FirstOrDefault();
             }

@@ -191,6 +191,20 @@
   <ItemGroup>
     <Analyzer Include="..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AccountCacher\AccountCacher.csproj">
+      <Project>{174C9135-A25B-4842-BD53-EA1EA133A5F5}</Project>
+      <Name>AccountCacher</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FrameWork\FrameWork.csproj">
+      <Project>{D5C98F3A-D5D2-4AED-A5A7-06D2DE095095}</Project>
+      <Name>FrameWork</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WorldServer\WorldServer.csproj">
+      <Project>{1552992A-BA62-4639-AB53-6FA36E5B4AB1}</Project>
+      <Name>WorldServer</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

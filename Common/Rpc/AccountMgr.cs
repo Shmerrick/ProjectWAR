@@ -204,7 +204,7 @@ namespace Common
                     {
                         ++Acct.InvalidPasswordCount;
                         Log.Info("CheckAccount", "Invalid password for account " + username);
-                        Database.ExecuteNonQuery("UPDATE war_accounts.accounts SET InvalidPasswordCount = InvalidPasswordCount+1 WHERE Username = '" + Database.Escape(username) + "'");
+                        Database.ExecuteNonQuery($"UPDATE `{Database.GetSchemaName()}`.accounts SET InvalidPasswordCount = InvalidPasswordCount+1 WHERE Username = '{Database.Escape(username)}'");
                         return LoginResult.LOGIN_INVALID_USERNAME_PASSWORD;
                     }
                 }
@@ -297,7 +297,7 @@ namespace Common
 
             Acct.Token = Convert.ToBase64String(Encoding.ASCII.GetBytes(GUID));
 
-            Database.ExecuteNonQuery("UPDATE war_accounts.accounts SET Token='" + Acct.Token + "' WHERE Username = '" + Database.Escape(username) + "'");
+            Database.ExecuteNonQuery($"UPDATE `{Database.GetSchemaName()}`.accounts SET Token='{Acct.Token}' WHERE Username = '{Database.Escape(username)}'");
             return Acct.Token;
         }
 
@@ -456,7 +456,7 @@ namespace Common
             Rm.OrderCharacters = OrderCharacters;
             Rm.DestruCharacters = DestruCharacters;
             Rm.Dirty = true;
-            Database.ExecuteNonQuery("UPDATE war_accounts.realms SET OrderCharacters =" + OrderCharacters + ", DestruCharacters=" + DestruCharacters + " WHERE RealmId = " + RealmId);
+            Database.ExecuteNonQuery($"UPDATE `{Database.GetSchemaName()}`.realms SET OrderCharacters = {OrderCharacters}, DestruCharacters = {DestruCharacters} WHERE RealmId = {RealmId}");
         }
 
         private ClusterProp setProp(string name, string value)
@@ -568,7 +568,7 @@ namespace Common
             };
 
             Acct.CryptPassword = Account.ConvertSHA256(Acct.Username + ":" + Acct.Password);
-            //  Database.ExecuteNonQuery($"INSERT INTO war_accounts.accounts (Username, Password, CryptPassword, Ip, GmLevel) " +
+            //  Database.ExecuteNonQuery($"INSERT INTO {Database.GetSchemaName()}.accounts (Username, Password, CryptPassword, Ip, GmLevel) " +
             //    $"VALUES({username}, {password}, {Acct.CryptPassword}, {ip}, {gmLevel})");
 
             Acct.Password = password;

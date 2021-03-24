@@ -800,6 +800,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AccountCacher\AccountCacher.csproj">
+      <Project>{174C9135-A25B-4842-BD53-EA1EA133A5F5}</Project>
+      <Name>AccountCacher</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{8bc085cd-429b-41d1-bb47-9621fd32ec23}</Project>
       <Name>Common</Name>

@@ -116,7 +116,7 @@ namespace WorldServer.Managers.Commands
             keepNpcCreature.Info.Z = plr.WorldPosition.Z;
             keepNpcCreature.Info.O = plr.Oid;
             keepNpcCreature.Info.WaypointGUID = Convert.ToInt32(values[0]);
-            var sql = $"UPDATE war_world.keep_creatures " +
+            var sql = $"UPDATE `{WorldMgr.Database.GetSchemaName()}`.keep_creatures " +
                       $"SET X={keepNpcCreature.Info.X}, Y={keepNpcCreature.Info.Y}, Z = {keepNpcCreature.Info.Z}, O={keepNpcCreature.Info.O}, " +
                       $"WaypointGUID = {keepNpcCreature.Info.WaypointGUID} " +
                       $"where KeepId = {keep.Info.KeepId} and X={oldX} and Y={oldY} and Z={oldZ}";

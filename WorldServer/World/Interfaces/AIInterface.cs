@@ -638,7 +638,7 @@ namespace WorldServer.World.Interfaces
 
         private long GenerateRandomUint()
         {
-            var max = WorldMgr.Database.ExecuteQueryInt("SELECT MAX(GUID) as MAXGUID FROM war_world.waypoints");
+            var max = WorldMgr.Database.ExecuteQueryInt($"SELECT MAX(GUID) as MAXGUID FROM `{WorldMgr.Database.GetSchemaName()}`.waypoints");
             return max + 1;
 
             // return Convert.ToInt64(DateTime.Now.ToString("yyMMddHHmmssmmm"));

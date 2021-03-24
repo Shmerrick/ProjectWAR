@@ -1,4 +1,5 @@
-﻿using Common;
+﻿using AccountCacher;
+using Common;
 using FrameWork;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace WorldServer
     internal class Program
     {
         public static WorldConfigs Config;
+        public static AccountConfigs AccountConfig;
         public static RpcClient Client;
         public static AccountMgr AcctMgr => Client?.GetServerObject<AccountMgr>();
         public static TCPServer Server;
@@ -66,6 +68,7 @@ namespace WorldServer
             // Loading all configs files
             ConfigMgr.LoadConfigs();
             Config = ConfigMgr.GetConfig<WorldConfigs>();
+            AccountConfig = ConfigMgr.GetConfig<AccountConfigs>();
 
             // Loading log level from file
             if (!Log.InitLog(Config.LogLevel, "WorldServer"))

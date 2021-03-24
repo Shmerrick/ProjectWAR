@@ -807,7 +807,7 @@ namespace WorldServer.Managers
                     if (PQuestService._PQuests.ContainsKey(keepInfo.PQuestId))
                         keepInfo.PQuest = PQuestService._PQuests[keepInfo.PQuestId];
 
-            CharMgr.Database.ExecuteNonQuery("UPDATE war_characters.characters_value SET Online=0;");
+            CharMgr.Database.ExecuteNonQuery($"UPDATE `{CharMgr.Database.GetSchemaName()}`.characters_value SET Online = 0");
 
             // Preload T4 regions
             Log.Info("Regions", "Preloading pairing regions...");
@@ -1448,7 +1448,7 @@ namespace WorldServer.Managers
         {
             //turn off user specific packet logging when server restarts. This is because devs/gm forget to turn it off and log file grows > 20GB
             Log.Debug("WorldMgr", "Resetting user packet log settings...");
-            Database.ExecuteNonQuery("update war_accounts.accounts set PacketLog = 0");
+            Database.ExecuteNonQuery($"update `{Program.AccountConfig.AccountDB.Database}`.accounts set PacketLog = 0");
         }
 
         #endregion Logging
