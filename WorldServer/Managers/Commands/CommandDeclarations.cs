@@ -245,7 +245,8 @@ namespace WorldServer.Managers.Commands
         {
             new GmCommandHandler("add", StatesAdd, null, EGmLevel.SourceDev, 1, "Add State To Target <Id>"),
             new GmCommandHandler("remove", StatesRemove, null, EGmLevel.SourceDev, 1, "Remove state from target <Id>"),
-            new GmCommandHandler("list", StatesList, null, EGmLevel.GM, 0, "Show target States List")
+            new GmCommandHandler("list", StatesList, null, EGmLevel.GM, 0, "Show target States List"),
+            new GmCommandHandler("send", StatesUpdate, null, EGmLevel.SourceDev, 3, "Send Update State to Target")
         };
 
         /// <summary>Contains the list of teleportation commands under .teleport</summary>
