@@ -422,8 +422,8 @@ namespace CharacterUtility
             {
                 connection.Open();
 
-                var characterObject = connection.QueryFirstOrDefault($"select max(CharacterId) as MaxId from {WorldConfig.CharacterDatabase.Database}.characters");
-                var slotObject = connection.QueryFirstOrDefault($"select max(SlotId) as MaxSlotId from {WorldConfig.CharacterDatabase.Database}.characters where AccountId = {character.AccountId}");
+                var characterObject = connection.QueryFirstOrDefault($"select max(CharacterId) as MaxId from `{WorldConfig.CharacterDatabase.Database}`.characters");
+                var slotObject = connection.QueryFirstOrDefault($"select max(SlotId) as MaxSlotId from `{WorldConfig.CharacterDatabase.Database}`.characters where AccountId = {character.AccountId}");
 
                 Logger.Info($"Creating Character : {character.Name}");
 
@@ -435,13 +435,13 @@ namespace CharacterUtility
                 }
 
                 var newCharacterSql =
-                    $"insert into {WorldConfig.CharacterDatabase.Database}.characters (CharacterId, Name, RealmId, AccountId, SlotId, ModelId, Career, CareerLine, Realm,  HeldLeft, Race, Traits, Sex, Surname, Anonymous, Hidden, OldName, PetName, PetModel) " +
+                    $"insert into `{WorldConfig.CharacterDatabase.Database}`.characters (CharacterId, Name, RealmId, AccountId, SlotId, ModelId, Career, CareerLine, Realm,  HeldLeft, Race, Traits, Sex, Surname, Anonymous, Hidden, OldName, PetName, PetModel) " +
                     $"values ({characterObject.MaxId + 1}, '{character.Name}', {character.RealmId}, {character.AccountId}, {slotObject.MaxSlotId + 1}, {character.ModelId}, {character.Career}, {character.CareerLine}, {character.Realm}, 0, {character.Race}, '', {character.Sex}, '{character.Surname}', 0, 0, '', '', 0)";
 
                 Logger.Debug(newCharacterSql);
 
                 var newCharacterValueSql =
-                    $"insert into {WorldConfig.CharacterDatabase.Database}.characters_value (CharacterId, Level, Xp, XpMode, RestXp, Renown, RenownRank, Money, Speed, RegionId, ZoneId, WorldX, WorldY, WorldZ, WorldO, RallyPoint, BagBuy, Skills, Online, PlayedTime, LastSeen, BankBuy, GearShow, TitleId, " +
+                    $"insert into `{WorldConfig.CharacterDatabase.Database}`.characters_value (CharacterId, Level, Xp, XpMode, RestXp, Renown, RenownRank, Money, Speed, RegionId, ZoneId, WorldX, WorldY, WorldZ, WorldO, RallyPoint, BagBuy, Skills, Online, PlayedTime, LastSeen, BankBuy, GearShow, TitleId, " +
                     $"RenownSkills, MasterySkills, GatheringSkill, GatheringSkillLevel, CraftingSkill, CraftingSkillLevel, ExperimentalMode, RVRKills, RVRDeaths, CraftingBags, Lockouts, DisconcetTime) " +
                     $"values ({characterObject.MaxId + 1}, '{character.Level}', 0, 0, 0, 0, {character.RenownRank}, 500000, 100, " +
                     $"{character.BaseCharacterInfo.Region}, {character.BaseCharacterInfo.ZoneId}, {character.BaseCharacterInfo.WorldX}, " +
@@ -538,7 +538,7 @@ namespace CharacterUtility
             try
             {
                 connection.Open();
-                var character = connection.QueryFirstOrDefault($"select * from {WorldConfig.CharacterDatabase.Database}.characters where Name = '{name}'");
+                var character = connection.QueryFirstOrDefault($"select * from `{WorldConfig.CharacterDatabase.Database}`.characters where Name = '{name}'");
 
                 return (character != null);
             }
