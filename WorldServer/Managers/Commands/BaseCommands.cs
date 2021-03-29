@@ -248,7 +248,7 @@ namespace WorldServer.Managers.Commands
             plr.SendUpdateState((byte)StateOpcode.Flight, flag, flag);
 
             if (flag == 1)
-                plr.SendClientMessage("Flight access has been enabled. Use # to toggle flight mode, WASD to move, hold Jump to rise and hold Z to descend.");
+                plr.SendClientMessage("Flight access has been enabled. Use # or \ key button to toggle flight mode, WASD to move, hold Jump to rise and hold Z to descend.");
             else
                 plr.SendClientMessage("Flight access has been disabled.");
             return true;
