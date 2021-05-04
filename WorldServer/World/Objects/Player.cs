@@ -992,7 +992,7 @@ namespace WorldServer.World.Objects
                 _nextSpeedPenLiftTime += 1000;
             }
 
-            ForceCloseMobsToWander(200);
+            //ForceCloseMobsToWander(200);
 
             if (StealthLevel == 0 || msTick - _lastStealthCheck <= STEALTH_CHECK_INTERVAL)
                 return;
