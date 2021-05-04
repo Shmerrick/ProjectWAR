@@ -27,6 +27,8 @@ namespace WorldServer.World.AI
         protected Pet _pet;
         protected CombatInterface_Npc Combat;
         protected AIInterface AI;
+        // Whether to announce any execution being processed.  
+        private static readonly bool AnnounceExecution = true;
 
         protected static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -512,6 +514,17 @@ namespace WorldServer.World.AI
                 _logger.Debug($"{_unit.Name} using {description} on {target.Name}");
             }
 
+            if (AnnounceExecution)
+            {
+                if (Combat.CurrentTarget != null)
+                {
+                    if (Combat.CurrentTarget is Player)
+                    {
+                        SpeakYourMind($" using {description} vs {(Combat.CurrentTarget as Player)?.Name}");
+                    }
+                }
+            }
+
             caster.AbtInterface.StartCast(caster, (ushort)abilityId, 1);
         }
 
@@ -621,7 +634,7 @@ namespace WorldServer.World.AI
 
         public AggroInfo GetMaxAggroHate()
         {
-            AggroInfo maxAggro = null;
+            AggroInfo maxAggro = Aggros.Values.FirstOrDefault();
             float maxHate = 50.0f;
 
             foreach (AggroInfo aggro in Aggros.Values)

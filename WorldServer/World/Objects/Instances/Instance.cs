@@ -345,6 +345,8 @@ namespace WorldServer.World.Objects.Instances
                     spawn.WorldX = obj.WorldX;
                     spawn.ZoneId = obj.ZoneID;
                     spawn.Enabled = 1;
+                    spawn.Level = spawn.Proto.MinLevel;
+                    spawn.Level = obj.Level;
 
                     InstanceBossSpawn IS = null;
 

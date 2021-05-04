@@ -1,1 +1,0 @@
-UPDATE war_world.item_infos Set Bind = 1 WHERE Name LIKE '%sentinel%' AND SLotId = 28;

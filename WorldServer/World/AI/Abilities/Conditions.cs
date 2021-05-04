@@ -25,7 +25,8 @@ namespace WorldServer.World.AI.Abilities
         {
             if (Owner != null)
             {
-                var players = Owner.GetPlayersInRange(30, false);
+                //Cooler wanted 100. I'll do 50. Default RoR is 30.
+                var players = Owner.GetPlayersInRange(50, false);
                 if (players == null)
                     return false;
                 return true;
@@ -100,6 +101,13 @@ namespace WorldServer.World.AI.Abilities
         public bool TwentyPercentHealth()
         {
             if (Owner.PctHealth <= 20)
+                return true;
+            return false;
+        }
+
+        public bool ThirtyPercentHealth()
+        {
+            if (Owner.PctHealth <= 30)
                 return true;
             return false;
         }

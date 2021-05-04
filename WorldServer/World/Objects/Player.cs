@@ -992,7 +992,7 @@ namespace WorldServer.World.Objects
                 _nextSpeedPenLiftTime += 1000;
             }
 
-            ForceCloseMobsToWander(200);
+            //ForceCloseMobsToWander(200);
 
             if (StealthLevel == 0 || msTick - _lastStealthCheck <= STEALTH_CHECK_INTERVAL)
                 return;
@@ -1018,7 +1018,7 @@ namespace WorldServer.World.Objects
                 && x.Spawn.Proto.FinishingQuests == null
                 && !(x is Pet)
                 && x.Spawn.Proto.StartingQuests == null
-                && x.LastMove + random.Next(30000, 50000) >= Program.TickCount); // 30-50 seconds passed since last move
+                && x.LastMove + random.Next(3000, 5000) >= Program.TickCount); // 3-5 seconds passed since last move
             // Filter the creatures - less than equal to level 43, not hero or above, not siege, not vendors, not questline.
             foreach (var creature in creaturesToWander)
             {

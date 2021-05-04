@@ -39,8 +39,13 @@ namespace WorldServer.World.AI.Abilities
         //}
         public void ShatterBlessing()
         {
-            Brain.SpeakYourMind($" using Shatter Confidence vs {(Combat.CurrentTarget as Player)?.Name}");
+            //Brain.SpeakYourMind($" using Shatter Confidence vs {(Combat.CurrentTarget as Player)?.Name}");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "Shatter Confidence", 8023);
+        }
+
+        public void PoisonSpit()
+        {
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "PoisonSpit", 5414);
         }
 
         public void PrecisionStrike()
@@ -194,7 +199,7 @@ namespace WorldServer.World.AI.Abilities
 
         public void LegTear()
         { // 10 sec snare
-            Brain.SpeakYourMind($" using LegTear vs {(Combat.CurrentTarget as Player)?.Name}");
+            //Brain.SpeakYourMind($" using LegTear vs {(Combat.CurrentTarget as Player)?.Name}");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "LegTear", 46);
         }
 
@@ -268,6 +273,42 @@ namespace WorldServer.World.AI.Abilities
         {
             Brain.SpeakYourMind($" using BloodPulse vs {(Combat.CurrentTarget as Player)?.Name}");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "BloodPulse", 5066);
+        }
+
+        public void ScytheGash()
+        {
+            Brain.SpeakYourMind($" using ScytheGash vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "ScytheGash", 12591);
+        }
+
+        public void SimpleStrike()
+        {
+            Brain.SpeakYourMind($" using SimpleStrike vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "SimpleStrike", 8005);
+        }
+
+        public void RuneofStriking()
+        {
+            Brain.SpeakYourMind($" using RuneofStriking vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "RuneofStriking", 1586);
+        }
+
+        public void Gore()
+        {
+            Brain.SpeakYourMind($" using Gore vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "Gore", 438);
+        }
+
+        public void GunTurret()
+        {
+            Brain.SpeakYourMind($" using GunTurret vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "GunTurret", 1511);
+        }
+
+        public void MinorPotionofHealing()
+        {
+            Brain.SpeakYourMind($" using MinorPotionofHealing");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "MinorPotionofHealing", 7871);
         }
 
         public void BloodscentAura()

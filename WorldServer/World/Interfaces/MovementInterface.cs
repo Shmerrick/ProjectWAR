@@ -249,6 +249,10 @@ namespace WorldServer.World.Interfaces
         {
             return Math.Min(1f, deltaMs / _moveDuration);
         }
+        internal void Move(Point3D point3D, Zone_Info zone)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Moves the creature to given coordinates.
@@ -354,6 +358,9 @@ namespace WorldServer.World.Interfaces
             FollowTarget = null;
             UpdateMovementState(null);
         }
+
+        public delegate void dgEventRaiser();
+        public event dgEventRaiser OnMovementComplete;
 
         #endregion Move
 

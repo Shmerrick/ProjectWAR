@@ -1,9 +1,0 @@
-UPDATE `war_world`.`rvr_progression` SET `DestroKeepId`='19', `OrderKeepId`='20' WHERE `BattleFrontId`='1';
-UPDATE `war_world`.`rvr_progression` SET `DestroKeepId`='18', `OrderKeepId`='17' WHERE `BattleFrontId`='2';
-UPDATE `war_world`.`rvr_progression` SET `DestroKeepId`='15', `OrderKeepId`='16' WHERE `BattleFrontId`='3';
-UPDATE `war_world`.`rvr_progression` SET `DestroKeepId`='10', `OrderKeepId`='9' WHERE `BattleFrontId`='4';
-UPDATE `war_world`.`rvr_progression` SET `DestroKeepId`='7', `OrderKeepId`='8' WHERE `BattleFrontId`='5';
-UPDATE `war_world`.`rvr_progression` SET `DestroKeepId`='6', `OrderKeepId`='5' WHERE `BattleFrontId`='6';
-UPDATE `war_world`.`rvr_progression` SET `DestroKeepId`='26', `OrderKeepId`='25' WHERE `BattleFrontId`='7';
-UPDATE `war_world`.`rvr_progression` SET `DestroKeepId`='28', `OrderKeepId`='27' WHERE `BattleFrontId`='8';
-UPDATE `war_world`.`rvr_progression` SET `DestroKeepId`='29', `OrderKeepId`='30' WHERE `BattleFrontId`='9';
