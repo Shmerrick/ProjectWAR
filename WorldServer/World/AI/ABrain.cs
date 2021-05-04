@@ -621,7 +621,7 @@ namespace WorldServer.World.AI
 
         public AggroInfo GetMaxAggroHate()
         {
-            AggroInfo maxAggro = null;
+            AggroInfo maxAggro = Aggros.Values.FirstOrDefault();
             float maxHate = 50.0f;
 
             foreach (AggroInfo aggro in Aggros.Values)

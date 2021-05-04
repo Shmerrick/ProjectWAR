@@ -268,6 +268,9 @@ namespace WorldServer.World.Objects
                     case 100610:
                     case 100611:
                     case 100612:
+                    case 66699895:
+                    case 66699896:
+                    case 66699897:
                         ZoneJump(player);
                         return;
 

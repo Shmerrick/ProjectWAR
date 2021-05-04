@@ -170,7 +170,8 @@ namespace WorldServer.World.Objects.Instances
                                 else if (player.PriorityGroup.GetLeader()._Value.GetLockout(Jump.InstanceID) != null) // group players gets the lockout of the leader
                                     InstanceService._InstanceLockouts.TryGetValue(player.PriorityGroup.GetLeader()._Value.GetLockout(Jump.InstanceID), out deadbosses);
                             }
-                            ints = new Instance(Jump.ZoneID, i, 0, deadbosses);
+                            //ints = new Instance(Jump.ZoneID, i, 0, deadbosses);
+                            ints = new Instance(Jump.ZoneID, i, (byte)player.Realm, deadbosses);
                             _instances.Add(i, ints);
                             return i;
                         }
