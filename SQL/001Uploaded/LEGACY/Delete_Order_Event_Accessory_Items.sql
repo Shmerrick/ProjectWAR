@@ -1,1 +1,0 @@
-DELETE FROM war_characters.characters_items WHERE Entry BETWEEN 300000 AND 300042;

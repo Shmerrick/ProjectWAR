@@ -1,1 +1,0 @@
-UPDATE `war_world`.`item_infos` SET `Stats` = '1:33;5:10;6:21;84:3;0:0;0:0;0:0;0:0;0:0;0:0;0:0;0:0;' WHERE (`Entry` = '435029');

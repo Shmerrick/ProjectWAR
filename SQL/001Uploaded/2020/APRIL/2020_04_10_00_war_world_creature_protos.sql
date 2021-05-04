@@ -1,1 +1,0 @@
-UPDATE `creature_protos` SET `Ranged` = 10 WHERE `Ranged` = 5;
