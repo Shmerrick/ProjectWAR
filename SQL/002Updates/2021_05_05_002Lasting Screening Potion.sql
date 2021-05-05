@@ -1,0 +1,27 @@
+-- Remove duplicate entries. Might break potion crafting
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003004');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003009');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003064');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003014');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003069');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003019');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003074');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003129');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003024');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003079');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003134');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003029');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003084');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003139');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003034');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003089');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003144');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003039');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003094');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003149');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003044');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003099');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003049');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003104');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003159');
+DELETE FROM `war_world`.`item_infos` WHERE (`Entry` = '3003054');

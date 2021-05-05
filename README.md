@@ -66,3 +66,13 @@ Commands of interest :
 Note : Lockpairing and Advancepairing are only two steps in the 'flip' process. They should only be used by developers (ie dont use them in Production). For testing, it is better to use .campaign setvictorypoints <#> <#>, as this emulates holding BOs/keep takes equivalent to the number of VP.
 
 If it all goes haywire, reset by .campaign SetRegionCaptureStatus 102102102 2  
+
+### Database - Updated May 2021 ###
+
+The ability system controls everything in the game, from potions, to skills, to hidden buffs, etc, etc.
+
+Potion System
+Item Level = MinLevel + Rarity
+
+The item level will cast the potion ability at the given level.
+
