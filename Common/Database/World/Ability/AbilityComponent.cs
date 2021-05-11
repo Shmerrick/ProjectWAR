@@ -8,7 +8,7 @@ namespace Common//new
     public class AbilityComponent : DataObject
     {
         [PrimaryKey]
-        public ushort ID { get; set; }
+        public long ID { get; set; }
 
         [PrimaryKey]
         public string A00 { get; set; }
@@ -20,39 +20,39 @@ namespace Common//new
         public string Multipliers { get; set; }
 
         [PrimaryKey]
-        public ushort ActivationDelay { get; set; }
+        public long ActivationDelay { get; set; }
 
         [PrimaryKey]
-        public ushort Duration { get; set; }
+        public long Duration { get; set; }
 
         [PrimaryKey]
-        public ushort Flags { get; set; }
+        public long Flags { get; set; }
 
         [PrimaryKey]
-        public ushort IconAlwaysVisible { get; set; }
+        public long IconAlwaysVisible { get; set; }
 
         [PrimaryKey]
-        public ushort Operation { get; set; }
+        public long Operation { get; set; }
 
         [PrimaryKey]
-        public ushort Interval { get; set; }
+        public long Interval { get; set; }
 
         [PrimaryKey]
-        public ushort Radius { get; set; }
+        public int Radius { get; set; }
 
         [PrimaryKey]
-        public ushort ConeAngle { get; set; }
+        public int ConeAngle { get; set; }
 
         [PrimaryKey]
-        public ushort FlightSpeed { get; set; }
+        public int FlightSpeed { get; set; }
 
         [PrimaryKey]
-        public ushort A15 { get; set; }
+        public int A15 { get; set; }
 
         [PrimaryKey]
-        public ushort MaxTargets { get; set; }
+        public byte MaxTargets { get; set; }
 
         [PrimaryKey]
-        public ushort Description { get; set; }
+        public string Description { get; set; }
     }
 }

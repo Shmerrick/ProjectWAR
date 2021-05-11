@@ -8,24 +8,24 @@ namespace Common//new
     class AbilityComponentXComponent : DataObject
     {
         [PrimaryKey]
-        public int ID { get; set; }
+        public long ID { get; set; }
 
         [DataElement]
-        public int AbilityID { get; set; }
+        public long AbilityID { get; set; }
 
         [DataElement]
-        public int ComponentID { get; set; }
+        public long ComponentID { get; set; }
 
         [DataElement]
-        public int Trigger { get; set; }
+        public long Trigger { get; set; }
 
         [DataElement]
-        public ushort VfxID { get; set; }
+        public byte VfxID { get; set; }
 
         [DataElement]
-        public ushort Index { get; set; }
+        public byte Index { get; set; }
 
         [DataElement]
-        public ushort Disabled { get; set; }
+        public byte Disabled { get; set; }
     }
 }

@@ -8,28 +8,28 @@ namespace Common//new
     class AbilityExpression : DataObject
     {
         [PrimaryKey]
-        public int ID { get; set; }
+        public long ID { get; set; }
 
         [DataElement]
-        public int AbilityID { get; set; }
+        public long AbilityID { get; set; }
 
         [DataElement]
-        public int ComponentID { get; set; }
+        public long ComponentID { get; set; }
 
         [DataElement]
         public int Index { get; set; }
 
         [DataElement]
-        public int Type { get; set; }
+        public long Type { get; set; }
 
         [DataElement]
-        public int Operation { get; set; }
+        public long Operation { get; set; }
 
         [DataElement]
-        public int Condition { get; set; }
+        public long Condition { get; set; }
 
         [DataElement]
-        public int LogicOperator { get; set; }
+        public long LogicOperator { get; set; }
 
         [DataElement]
         public int Val5 { get; set; }
@@ -47,9 +47,9 @@ namespace Common//new
         public int Val9 { get; set; }
 
         [DataElement]
-        public int RequirmentID { get; set; }
+        public long RequirmentID { get; set; }
 
         [DataElement]
-        public ushort Disabled { get; set; }
+        public byte Disabled { get; set; }
     }
 }

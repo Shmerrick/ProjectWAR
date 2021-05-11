@@ -8,7 +8,7 @@ namespace Common//new
     public class Ability : DataObject
     {
         [PrimaryKey]
-        public ushort ID { get; set; }
+        public long ID { get; set; }
 
         [DataElement]
         public string Name { get; set; }
@@ -17,165 +17,165 @@ namespace Common//new
         public string Description { get; set; }
 
         [DataElement]
-        public ushort Castime { get; set; }
+        public long Castime { get; set; }
 
         [DataElement]
-        public ushort Cooldown { get; set; }
+        public long Cooldown { get; set; }
 
         [DataElement]
-        public ushort TacticType { get; set; }
+        public long TacticType { get; set; }
 
         [DataElement]
-        public ushort AbilityType { get; set; }
+        public long AbilityType { get; set; }
 
         [DataElement]
-        public ushort A20 { get; set; }
+        public long A20 { get; set; }
 
         [DataElement]
-        public ushort A24 { get; set; }
+        public long A24 { get; set; }
 
         [DataElement]
-        public ushort CareerLine { get; set; }
+        public long CareerLine { get; set; }
 
         [DataElement]
-        public ushort A32 { get; set; }
+        public long A32 { get; set; }
 
         [DataElement]
-        public ushort Flags { get; set; }
+        public long Flags { get; set; }
 
         [DataElement]
-        public ushort EffectID { get; set; }
+        public int EffectID { get; set; }
 
         [DataElement]
-        public ushort A44 { get; set; }
+        public int A44 { get; set; }
 
         [DataElement]
-        public ushort Range { get; set; }
+        public int Range { get; set; }
 
         [DataElement]
-        public ushort Angle { get; set; }
+        public int Angle { get; set; }
 
         [DataElement]
-        public ushort MoraleCost { get; set; }
+        public int MoraleCost { get; set; }
 
         [DataElement]
-        public ushort ChannelInterval { get; set; }
+        public int ChannelInterval { get; set; }
 
         [DataElement]
-        public ushort A54 { get; set; }
+        public int A54 { get; set; }
 
         [DataElement]
-        public ushort ScaleStatMult { get; set; }
+        public int ScaleStatMult { get; set; }
 
         [DataElement]
-        public ushort NumTacticSlots { get; set; }
+        public byte NumTacticSlots { get; set; }
 
         [DataElement]
-        public ushort AP { get; set; }
+        public byte AP { get; set; }
 
         [DataElement]
-        public ushort A61 { get; set; }
+        public byte A61 { get; set; }
 
         [DataElement]
-        public ushort A62 { get; set; }
+        public byte A62 { get; set; }
 
         [DataElement]
-        public ushort A63 { get; set; }
+        public byte A63 { get; set; }
 
         [DataElement]
-        public ushort AbilityImprovementThreshold { get; set; }
+        public byte AbilityImprovementThreshold { get; set; }
 
         [DataElement]
-        public ushort Specialization { get; set; }
+        public byte Specialization { get; set; }
 
         [DataElement]
-        public ushort StanceOrder { get; set; }
+        public byte StanceOrder { get; set; }
 
         [DataElement]
-        public ushort A68 { get; set; }
+        public byte A68 { get; set; }
 
         [DataElement]
-        public ushort MinLevel { get; set; }
+        public byte MinLevel { get; set; }
 
         [DataElement]
-        public ushort A70 { get; set; }
+        public byte A70 { get; set; }
 
         [DataElement]
-        public ushort A71 { get; set; }
+        public byte A71 { get; set; }
 
         [DataElement]
-        public ushort A132 { get; set; }
+        public string A132 { get; set; }
 
         [DataElement]
-        public ushort A136 { get; set; }
+        public long A136 { get; set; }
 
         [DataElement]
-        public ushort A140 { get; set; }
+        public int A140 { get; set; }
 
         [DataElement]
-        public ushort A142C { get; set; }
+        public long A142C { get; set; }
 
         [DataElement]
-        public ushort Disabled { get; set; }
+        public byte Disabled { get; set; }
 
         [DataElement]
-        public ushort CanClickOff { get; set; }
+        public byte CanClickOff { get; set; }
 
         [DataElement]
-        public ushort ScaleStat { get; set; }
+        public long ScaleStat { get; set; }
 
         [DataElement]
-        public ushort CantCrit { get; set; }
+        public byte CantCrit { get; set; }
 
         [DataElement]
-        public ushort MoraleLevel { get; set; }
+        public int MoraleLevel { get; set; }
 
         [DataElement]
-        public ushort AttackType { get; set; }
+        public long AttackType { get; set; }
 
         [DataElement]
-        public ushort CounterAmount { get; set; }
+        public long CounterAmount { get; set; }
 
         [DataElement]
-        public ushort RangeMin { get; set; }
+        public int RangeMin { get; set; }
 
         [DataElement]
-        public ushort EnemyTargetIgnoreLOS { get; set; }
+        public byte EnemyTargetIgnoreLOS { get; set; }
 
         [DataElement]
-        public ushort FriendlyTargetIgnoreLOS { get; set; }
+        public byte FriendlyTargetIgnoreLOS { get; set; }
 
         [DataElement]
-        public ushort RangeMax { get; set; }
+        public int RangeMax { get; set; }
 
         [DataElement]
-        public ushort UniqueGroup { get; set; }
+        public int UniqueGroup { get; set; }
 
         [DataElement]
-        public ushort Faction { get; set; }
+        public long Faction { get; set; }
 
         [DataElement]
-        public ushort UsableWithBuff { get; set; }
+        public string UsableWithBuff { get; set; }
 
         [DataElement]
-        public ushort AnimationDelay { get; set; }
+        public int AnimationDelay { get; set; }
 
         [DataElement]
-        public ushort BinIndex { get; set; }
+        public int BinIndex { get; set; }
 
         [DataElement]
-        public ushort SpellDamageType { get; set; }
+        public long SpellDamageType { get; set; }
 
         [DataElement]
-        public ushort Toggle { get; set; }
+        public byte Toggle { get; set; }
 
         [DataElement]
-        public ushort ToggleGroup { get; set; }
+        public long ToggleGroup { get; set; }
 
         [DataElement]
-        public ushort PatcherFileID { get; set; }
+        public long PatcherFileID { get; set; }
 
         [DataElement]
-        public ushort CreateBinData { get; set; }
+        public byte CreateBinData { get; set; }
     }
 }

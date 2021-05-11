@@ -8,7 +8,7 @@ namespace Common//new
     class AbilityLineName : DataObject
     {
         [PrimaryKey]
-        public int ID { get; set; }
+        public long ID { get; set; }
 
         [DataElement]
         public string Name { get; set; }
