@@ -17,7 +17,6 @@ namespace Common
         public int _WorldY;
         public int _WorldZ;
         public int _WorldO;
-        private string _Bytes;
         private byte _Icone;
         private byte _Emote;
         private byte _Faction;
