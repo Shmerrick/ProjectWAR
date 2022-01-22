@@ -1,0 +1,1 @@
+UPDATE `war_world`.`creature_protos` SET `Emote` = '31' WHERE `Entry` = '7212'; 

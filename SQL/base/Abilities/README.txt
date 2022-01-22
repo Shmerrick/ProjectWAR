@@ -1,0 +1,1 @@
+Put all files *.txt into the core bin folder Abilities
