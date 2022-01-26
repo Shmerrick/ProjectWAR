@@ -22,7 +22,7 @@ namespace WorldServer.World.Interfaces
         private byte _duration;
         private byte _multiplier;
         private byte _critChance;
-        private byte _basePower;
+        
 
         private bool locked;
 
@@ -487,6 +487,7 @@ namespace WorldServer.World.Interfaces
             locked = false;
         }
 
+        private byte _basePower;
         public void SetBasePower()
         {
             if (_myPlayer._Value.CraftingSkillLevel == 200)

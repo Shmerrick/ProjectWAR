@@ -141,7 +141,6 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
         public void Notify_PetDown()
         {
-#warning FIXME - implement with InvokeCooldown
             // For I Got Lots
             if (myPlayer.BuffInterface.GetBuff(1862, null) == null)
                 myPlayer.AbtInterface.SetCooldown(_currentPetID, 30000);

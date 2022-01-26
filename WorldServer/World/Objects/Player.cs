@@ -3158,8 +3158,7 @@ namespace WorldServer.World.Objects
         public Renown_Info CurrentRenown;
 
         private uint _renownPool;
-        private uint _pendingRenown;
-
+        
         public void SetRenownLevel(byte level)
         {
             if (level < _Value.RenownRank)
@@ -6872,8 +6871,6 @@ namespace WorldServer.World.Objects
         #endregion Info
 
         #region Group
-
-#warning MOVE TO GROUPINTERFACE
 
         public Group PriorityGroup => ScenarioGroup ?? WorldGroup;
         public Group ScenarioGroup { get; set; }

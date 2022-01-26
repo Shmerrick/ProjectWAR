@@ -99,8 +99,6 @@ namespace WorldServer.World.Objects
                 GenerateLootBags(Math.Min(_amountOfBags, 24));
                 // Note - if there are more than 42 players, the lowest rarity bag should be green.
 
-#warning if there are more than 114 players, 25 bags will be awarded. Nalgol has the PQ boards restricted to 24 players, for an unknown reason. This could cause something to break.
-
                 AssignLoot(players);
 
                 foreach (KeyValuePair<uint, ContributionInfo> playerRoll in players)
@@ -768,7 +766,6 @@ namespace WorldServer.World.Objects
                     case 5: chestitem = 208470; break; //was conq
                     case 6: chestitem = 208470; break; //was fused inv
 
-#warning need to add chests for fort city and so on
                 }
                 if (Constants.DoomsdaySwitch > 0 && (_publicQuestInfo.PQTier == 2 || _publicQuestInfo.PQTier == 3))
                 {

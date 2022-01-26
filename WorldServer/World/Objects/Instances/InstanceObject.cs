@@ -81,7 +81,7 @@ namespace WorldServer.World.Objects.Instances
             base.SendMeTo(plr);
         }
 
-        public void UpdateVfxState(byte state)
+        public new void UpdateVfxState(byte state)
         {
             VfxState = state;
             PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 20);

@@ -261,7 +261,7 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
         private EventInterface _evtInterface;
 
         private bool Pendulum_Trap_init = false;
-        private bool Pendulum_Left_active = false;
+        
 
         private bool Pendulum_Right_active = false;
 
@@ -277,7 +277,7 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
             StartFireTrap();
             StartDartTrap();
         }
-
+        private bool Pendulum_Left_active = false;
         public void StopPendulumtrapl()
         {
             for (int i = 0; i < 12; i += 2)

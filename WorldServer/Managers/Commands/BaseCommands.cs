@@ -2381,9 +2381,6 @@ namespace WorldServer.Managers.Commands
             // Removing this code as some people cannot be trusted to call this command even if protected by a fail safe!!
             plr.SendClientMessage($"Gear tester has been turned off (glares at Brig)... Ikthaleon.", ChatLogFilters.CHATLOGFILTERS_SAY);
             return false;
-            // Ensure this code is only ever called IN DEV!!
-            if (WorldMgr.ServerMode != "DEV")
-                return false;
 
             foreach (var regionMgr in WorldMgr._Regions)
             {

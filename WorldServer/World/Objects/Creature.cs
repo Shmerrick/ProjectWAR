@@ -1178,8 +1178,6 @@ namespace WorldServer.World.Objects
             }
         }
 
-#warning FIXME. Looks like there's support for taking more than one item at a time.
-
         private void TakeInfluenceItem(Player player, InteractMenu menu)
         {
             ushort slot = menu.Packet.GetUint16();
