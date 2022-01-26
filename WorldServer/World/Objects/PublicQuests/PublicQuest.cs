@@ -27,8 +27,7 @@ namespace WorldServer.World.Objects.PublicQuests
         private bool _started;
         private bool _ended;
         private int _stageTimeEnd;
-        private ushort _interactiveGO;
-
+        
         public PublicQuest()
         {
         }
@@ -366,8 +365,7 @@ namespace WorldServer.World.Objects.PublicQuests
         }
 
         private long _nextContributionTick;
-        private bool _activityTickPending;
-
+        
         // This is run by an event handler in HandleEvent method, sets Interactable flag to true
         public void MakeGOInteractable(object target)
         {

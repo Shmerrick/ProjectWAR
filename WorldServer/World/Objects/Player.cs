@@ -6605,9 +6605,6 @@ namespace WorldServer.World.Objects
 
         #region Range
 
-        private static GameObject _myLocationObject;
-        private static GameObject _myAttackerObject;
-
         private int _enemiesInRange;
 
         public override int GetAbilityRangeTo(Unit caster)
