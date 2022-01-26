@@ -95,12 +95,12 @@ namespace WorldServer.API
 
                     client.Receive();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     DeleteClient(client);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
             finally

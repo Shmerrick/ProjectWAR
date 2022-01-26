@@ -16,7 +16,6 @@ namespace WorldServer.API
         private CircularBuffer _buffer = new CircularBuffer(0xFFFF);
         private byte[] _data = new byte[0xFFFF];
         private byte[] _sendData = new byte[0xFFFF];
-        private bool _sending = false;
         private byte[] _key;
         private byte[] _tmpEncKey = new byte[256];
 
@@ -117,7 +116,6 @@ namespace WorldServer.API
                             _tcpQueue.Enqueue(frame);
                         }
 
-                        bool exit = false;
                         if (_sendingTcp)
                         {
                             return;
@@ -146,7 +144,7 @@ namespace WorldServer.API
                         _socket.BeginSend(_sendBuffers, SocketFlags.None, SendCallback, this);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                 }
                 finally

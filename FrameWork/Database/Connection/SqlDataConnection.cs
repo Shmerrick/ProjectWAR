@@ -536,7 +536,6 @@ namespace FrameWork
             ArrayList databaseColumns = new ArrayList();
             List<string> databasePrimaryKeys = new List<string>();
 
-            bool createNewTable = false;
             string key = SchemaName.ToLower() + "." + table.TableName.ToLower();
 
             if (!Schemas.ContainsKey(key))
