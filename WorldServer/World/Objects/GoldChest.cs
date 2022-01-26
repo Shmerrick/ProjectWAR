@@ -50,8 +50,7 @@ namespace WorldServer.World.Objects
     public class GoldChest : GameObject
     {
         private const int white = 0, green = 1, blue = 2, purple = 3, gold = 4;
-        private double goldChance = 0.01, purpChance = 0.05, blueChance = 0.1, greenChance = 0.15, whiteChance = 0.2;
-
+        
         private readonly byte[] _bags =
         {
             1, // wht
@@ -74,7 +73,7 @@ namespace WorldServer.World.Objects
 
         private List<KeyValuePair<uint, ContributionInfo>> _preRoll;
         private List<KeyValuePair<uint, ContributionInfo>> _postRoll;
-        private List<Characters_bag_pools> _bagPools;
+        //private List<Characters_bag_pools> _bagPools;
         private Dictionary<uint, GoldBag> _lootBags = new Dictionary<uint, GoldBag>();
 
         private readonly PQuest_Info _publicQuestInfo;

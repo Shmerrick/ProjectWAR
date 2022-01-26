@@ -262,9 +262,9 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
 
         private bool Pendulum_Trap_init = false;
         private bool Pendulum_Left_active = false;
-#pragma warning disable IDE0052 // Удалить непрочитанные закрытые члены
+
         private bool Pendulum_Right_active = false;
-#pragma warning restore IDE0052 // Удалить непрочитанные закрытые члены
+
         private bool Firetrap_active = true;
         private bool Darttrap_active = true;
 

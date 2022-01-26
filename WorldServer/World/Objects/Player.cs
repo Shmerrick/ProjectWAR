@@ -246,8 +246,6 @@ namespace WorldServer.World.Objects
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
         private static readonly Logger DeathLogger = LogManager.GetLogger("DeathLogger");
 
-        private ushort _maxActionPoints;
-
         public Character Info;
         public Character_value _Value;
 
@@ -6561,8 +6559,9 @@ namespace WorldServer.World.Objects
             return CurrentKeep?.Info.Name ?? CurrentObjectiveFlag?.Name ?? CurrentArea?.AreaName ?? Zone.Info.Name;
         }
 
-        private bool _pendingRescue;
         /*
+        private bool _pendingRescue;
+        
         private void CheckZoneValidity()
         {
             if (Zone != null && Zone.Info.Illegal)
