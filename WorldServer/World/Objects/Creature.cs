@@ -1057,7 +1057,7 @@ namespace WorldServer.World.Objects
             killer.QtsInterface.HandleEvent(Objective_Type.QUEST_KILL_MOB, Spawn.Entry, 1);
         }
 
-        public void CheckDamageCaster(Unit caster, AbilityDamageInfo damageInfo)
+        public new void CheckDamageCaster(Unit caster, AbilityDamageInfo damageInfo)
         {
             int LevelDiff = Spawn.Level - caster.Level;
 

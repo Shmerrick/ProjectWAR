@@ -187,34 +187,6 @@ namespace WorldServer.World.Battlefronts.Keeps
         public void ScaleLord(int defenderPlayerCount)
         {
             return;
-
-            var oldRank = this.DefenceRank;
-
-            if (defenderPlayerCount > Program.Config.LordRankOne)
-            {
-                this.DefenceRank = 1;
-            }
-            else
-            {
-                if (defenderPlayerCount > Program.Config.LordRankTwo)
-                {
-                    this.DefenceRank = 2;
-                }
-                else
-                {
-                    this.DefenceRank = 3;
-                }
-            }
-
-            if (oldRank > this.DefenceRank)
-            {
-                Say("I grow weaker!", ChatLogFilters.CHATLOGFILTERS_SHOUT);
-            }
-            else if (oldRank < this.DefenceRank)
-            {
-                Say("I grow stronger!", ChatLogFilters.CHATLOGFILTERS_SHOUT);
-            }
-            _logger.Trace($"Lord Rank scaled to {this.Rank} population {defenderPlayerCount}");
         }
 
         //public override ushort GetStrikeDamage()
