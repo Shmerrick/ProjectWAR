@@ -15,7 +15,7 @@ namespace WorldServer.World.Battlefronts.Objectives
         private const string NAME_START = "Portal to gatehouse ";
 
         /// <summary>Portal targets depending on realm</summary>
-        private PortalBase targetPortal;
+        private PortalBase targetPortal = null;
 
         private Point3D targetPosition;
 

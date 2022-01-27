@@ -22,7 +22,7 @@ namespace WorldServer.World.Scenarios.Objects
             public Player Player;
             public EventDelegateEx Del;
             public Part Part;
-            public EventDelegate DamageDel;
+            public EventDelegate DamageDel = null;
 
             public Interact(Part part, Player player, EventDelegateEx del)
             {
