@@ -6228,10 +6228,7 @@ namespace WorldServer.World.Objects
             {
                 _fallState = value;
                 if (value > 3)
-                    _apexHit = true;
-                // Slow players when they jump.
-                else if (CbtInterface.IsInCombat && value == 2)
-                    _slowOnLand = true;
+                    _apexHit = true;                    
             }
         }
 
@@ -6241,7 +6238,7 @@ namespace WorldServer.World.Objects
         /// <summary> Number of packets received which indicated that the player was airborne. Set to -1 when the player lands. </summary>
         public sbyte AirCount;
 
-        private bool _slowOnLand;
+        
 
         public void CalculateFallDamage(bool terminal = false)
         {

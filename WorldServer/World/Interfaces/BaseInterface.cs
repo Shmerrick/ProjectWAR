@@ -2,10 +2,11 @@
 
 namespace WorldServer.World.Interfaces
 {
-    public abstract class BaseInterface
+    public abstract class BaseInterface : BaseInterfaceBase
     {
         public Object _Owner;
         public bool Loaded;
+
         public bool IsLoad => Loaded;
 
         public virtual void SetOwner(Object owner)

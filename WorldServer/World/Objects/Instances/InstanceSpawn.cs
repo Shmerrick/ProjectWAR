@@ -5,9 +5,9 @@ namespace WorldServer.World.Objects.Instances
 {
     public class InstanceSpawn : Creature
     {
-        private uint instanceGroupSpawnId;
-        private uint bossId;
-        private Instance Instance;
+        private uint instanceGroupSpawnId = 0;
+        private uint bossId = 0;
+        private Instance Instance = null;
 
         public InstanceSpawn(Creature_spawn spawn, uint bossId, Instance instance) : base(spawn)
         {

@@ -360,7 +360,6 @@ namespace WorldServer.World.Interfaces
         }
 
         public delegate void dgEventRaiser();
-        public event dgEventRaiser OnMovementComplete;
 
 
         #endregion Move
