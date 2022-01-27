@@ -34,7 +34,7 @@ namespace WorldServer.World.Interfaces
         }
 
         public EMoveState MoveState { get; private set; }
-        private EMoveState _lastState;
+        
 
         private Unit _unit;
 
@@ -361,6 +361,7 @@ namespace WorldServer.World.Interfaces
 
         public delegate void dgEventRaiser();
         public event dgEventRaiser OnMovementComplete;
+
 
         #endregion Move
 

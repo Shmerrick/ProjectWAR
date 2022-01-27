@@ -263,7 +263,7 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
         private bool Pendulum_Trap_init = false;
         
 
-        private bool Pendulum_Right_active = false;
+        
 
         private bool Firetrap_active = true;
         private bool Darttrap_active = true;
@@ -277,14 +277,14 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
             StartFireTrap();
             StartDartTrap();
         }
-        private bool Pendulum_Left_active = false;
+        
         public void StopPendulumtrapl()
         {
             for (int i = 0; i < 12; i += 2)
             {
                 ((Pendulum)_Pendulums[i]).stop();
             }
-            Pendulum_Left_active = false;
+            
         }
 
         public void StopPendulumtrapr()
@@ -293,7 +293,7 @@ namespace WorldServer.World.Objects.Instances.TomboftheVultureLord
             {
                 ((Pendulum)_Pendulums[i]).stop();
             }
-            Pendulum_Right_active = false;
+            
         }
 
         public void StartPendulumtrapl()
