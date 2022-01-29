@@ -135,7 +135,7 @@ namespace WorldServer.World.Scenarios
             //unlock foward flag
             if (flag.Owner == 1)
             {
-                for (int i = index + 1; i < Flags.Count; i++)
+                for (int i = index + 1; i < Flags.Count;) 
                 {
                     Flags[i].Open = true;
                     CurrentFlag = Flags[i];
@@ -146,7 +146,7 @@ namespace WorldServer.World.Scenarios
             }
             else if (flag.Owner == 2)
             {
-                for (int i = index - 1; i >= 0; i--)
+                for (int i = index - 1; i >= 0;)
                 {
                     Flags[i].Open = true;
                     CurrentFlag = Flags[i];
