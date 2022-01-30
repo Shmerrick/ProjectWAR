@@ -45,7 +45,7 @@ namespace WorldServer.API
         public void Start()
         {
             _online = true;
-            _listener = new TcpListener(_port);
+            _listener = new TcpListener(IPAddress.Parse(_address), _port);
             _listener.Server.ReceiveBufferSize = _bufferSize;
             _listener.Server.SendBufferSize = _bufferSize;
             _listener.Server.NoDelay = true;
