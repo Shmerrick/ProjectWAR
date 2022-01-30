@@ -3,6 +3,7 @@
     public class ApiPacket : Packet
     {
         private ushort _sequenceID;
+        
         public ushort SequenceID
         {
             get { return _sequenceID; }
