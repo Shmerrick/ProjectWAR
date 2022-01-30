@@ -166,7 +166,7 @@ namespace WorldServer.Managers.Commands
         public static bool InstanceReset(Player plr, ref List<string> values)
         {
             //TODO
-            return true;
+            
             if (plr.QtsInterface.PublicQuest != null)
             {
                 plr.QtsInterface.PublicQuest.Stage.Cleanup();
