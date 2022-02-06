@@ -38,26 +38,37 @@ namespace WorldServer
 		{
 			// Make sure the player has the quest and hasn't already finished the objectives.
 			if (!Target.GetPlayer().QtsInterface.HasQuest(30003) || Target.GetPlayer().QtsInterface.HasFinishQuest(30003))
-			   return;
-
-			// Spawn the bad npc 
-			Creature_proto Proto = CreatureService.GetCreatureProto((uint)31);
-			if (Proto == null)
+			{
 				return;
+			}
+			// Spawn the bad npc 
+			Creature_proto Proto = CreatureService.GetCreatureProto(31);
+			if (Proto == null)
+			{
+				return;
+			}
 
 			Obj.UpdateWorldPosition();
 
 			Creature_spawn Spawn = new Creature_spawn();
-			Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
-			Proto.Model1 = Obj.GetCreature().Spawn.Proto.Model1;
-			Proto.Model2 = Obj.GetCreature().Spawn.Proto.Model2;
-			Spawn.BuildFromProto(Proto);
-			Spawn.WorldO = Obj.Heading;
-			Spawn.WorldY = Obj.WorldPosition.Y;
-			Spawn.WorldZ = Obj.WorldPosition.Z;
-			Spawn.WorldX = Obj.WorldPosition.X;
-			Spawn.ZoneId = Obj.Zone.ZoneId;
-			Spawn.Faction = 129;
+			{
+				Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
+				if (Proto.Model1 == 1540)
+				{
+					Proto.Model1 = Obj.GetCreature().Spawn.Proto.Model1;
+				}
+				if (Proto.Model2 == 1541)
+				{
+					Proto.Model2 = Obj.GetCreature().Spawn.Proto.Model2;
+				}
+				Spawn.BuildFromProto(Proto);
+				Spawn.WorldO = Obj.Heading;
+				Spawn.WorldY = Obj.WorldPosition.Y;
+				Spawn.WorldZ = Obj.WorldPosition.Z;
+				Spawn.WorldX = Obj.WorldPosition.X;
+				Spawn.ZoneId = Obj.Zone.ZoneId;
+				Spawn.Faction = 129;
+			}
 
 			Creature c =  Obj.Region.CreateCreature(Spawn);
 			c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds);
@@ -84,24 +95,33 @@ namespace WorldServer
 		public override void OnDie(Object Obj)
 		{
 			// Respawn the orginal npc 
-			Creature_proto Proto = CreatureService.GetCreatureProto((uint)32);
+			Creature_proto Proto = CreatureService.GetCreatureProto(32);
 			if (Proto == null)
+			{
 				return;
-
+			}
+				
 			Obj.UpdateWorldPosition();
 
 			Creature_spawn Spawn = new Creature_spawn();
-			Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
-			Proto.Model1 = Obj.GetCreature().Spawn.Proto.Model1;
-			Proto.Model2 = Obj.GetCreature().Spawn.Proto.Model2;
-			Spawn.BuildFromProto(Proto);
-			Spawn.WorldO = Obj.Heading;
-			Spawn.WorldY = Obj.WorldPosition.Y;
-			Spawn.WorldZ = Obj.WorldPosition.Z;
-			Spawn.WorldX = Obj.WorldPosition.X;
-			Spawn.ZoneId = Obj.Zone.ZoneId;
-			Spawn.Faction = 65;
-			
+			{
+				Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
+				if (Proto.Model1 == 1220)
+				{
+					Proto.Model1 = Obj.GetCreature().Spawn.Proto.Model1;
+				}
+				if (Proto.Model2 == 1221)
+				{
+					Proto.Model2 = Obj.GetCreature().Spawn.Proto.Model2;
+				}
+				Spawn.BuildFromProto(Proto);
+				Spawn.WorldO = Obj.Heading;
+				Spawn.WorldY = Obj.WorldPosition.Y;
+				Spawn.WorldZ = Obj.WorldPosition.Z;
+				Spawn.WorldX = Obj.WorldPosition.X;
+				Spawn.ZoneId = Obj.Zone.ZoneId;
+				Spawn.Faction = 65;
+			}
 			Creature c = Obj.Region.CreateCreature(Spawn);
 
 			//  Set the new NPC to dead, there should be a method to do this perhaps.
