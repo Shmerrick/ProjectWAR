@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Common;
+﻿using Common;
 using FrameWork;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
@@ -41,9 +36,9 @@ namespace WorldServer
 			{
 				return;
 			}
-			// Spawn the bad npc 
-			Creature_proto Proto = CreatureService.GetCreatureProto(31);
-			if (Proto == null)
+			// Spawn Marauder Sympathizer
+			Creature_proto MarauderSympathizer = CreatureService.GetCreatureProto(31);
+			if (MarauderSympathizer == null)
 			{
 				return;
 			}
@@ -51,24 +46,17 @@ namespace WorldServer
 			Obj.UpdateWorldPosition();
 
 			Creature_spawn Spawn = new Creature_spawn();
-			{
-				Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
-				if (Proto.Model1 == 1540)
-				{
-					Proto.Model1 = Obj.GetCreature().Spawn.Proto.Model1;
-				}
-				if (Proto.Model2 == 1541)
-				{
-					Proto.Model2 = Obj.GetCreature().Spawn.Proto.Model2;
-				}
-				Spawn.BuildFromProto(Proto);
-				Spawn.WorldO = Obj.Heading;
-				Spawn.WorldY = Obj.WorldPosition.Y;
-				Spawn.WorldZ = Obj.WorldPosition.Z;
-				Spawn.WorldX = Obj.WorldPosition.X;
-				Spawn.ZoneId = Obj.Zone.ZoneId;
-				Spawn.Faction = 129;
-			}
+			Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
+			MarauderSympathizer.Model1 = Obj.GetCreature().Spawn.Proto.Model1;
+			MarauderSympathizer.Model2 = Obj.GetCreature().Spawn.Proto.Model2;
+			Spawn.BuildFromProto(MarauderSympathizer);
+			Spawn.WorldO = Obj.Heading;
+			Spawn.WorldY = Obj.WorldPosition.Y;
+			Spawn.WorldZ = Obj.WorldPosition.Z;
+			Spawn.WorldX = Obj.WorldPosition.X;
+			Spawn.ZoneId = Obj.Zone.ZoneId;
+			Spawn.Faction = 129;
+			
 
 			Creature c =  Obj.Region.CreateCreature(Spawn);
 			c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds);
@@ -95,8 +83,8 @@ namespace WorldServer
 		public override void OnDie(Object Obj)
 		{
 			// Respawn the orginal npc 
-			Creature_proto Proto = CreatureService.GetCreatureProto(32);
-			if (Proto == null)
+			Creature_proto GrimmenhagenFarmer = CreatureService.GetCreatureProto(32);
+			if (GrimmenhagenFarmer == null)
 			{
 				return;
 			}
@@ -104,24 +92,18 @@ namespace WorldServer
 			Obj.UpdateWorldPosition();
 
 			Creature_spawn Spawn = new Creature_spawn();
-			{
-				Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
-				if (Proto.Model1 == 1220)
-				{
-					Proto.Model1 = Obj.GetCreature().Spawn.Proto.Model1;
-				}
-				if (Proto.Model2 == 1221)
-				{
-					Proto.Model2 = Obj.GetCreature().Spawn.Proto.Model2;
-				}
-				Spawn.BuildFromProto(Proto);
-				Spawn.WorldO = Obj.Heading;
-				Spawn.WorldY = Obj.WorldPosition.Y;
-				Spawn.WorldZ = Obj.WorldPosition.Z;
-				Spawn.WorldX = Obj.WorldPosition.X;
-				Spawn.ZoneId = Obj.Zone.ZoneId;
-				Spawn.Faction = 65;
-			}
+			
+			Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
+			GrimmenhagenFarmer.Model1 = Obj.GetCreature().Spawn.Proto.Model1;
+			GrimmenhagenFarmer.Model2 = Obj.GetCreature().Spawn.Proto.Model2;
+			Spawn.BuildFromProto(GrimmenhagenFarmer);
+			Spawn.WorldO = Obj.Heading;
+			Spawn.WorldY = Obj.WorldPosition.Y;
+			Spawn.WorldZ = Obj.WorldPosition.Z;
+			Spawn.WorldX = Obj.WorldPosition.X;
+			Spawn.ZoneId = Obj.Zone.ZoneId;
+			Spawn.Faction = 65;
+			
 			Creature c = Obj.Region.CreateCreature(Spawn);
 
 			//  Set the new NPC to dead, there should be a method to do this perhaps.
