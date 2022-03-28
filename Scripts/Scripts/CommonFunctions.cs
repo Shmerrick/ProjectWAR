@@ -9,10 +9,10 @@ namespace WorldServer
     
     public class CommonFunctions : AGeneralScript
     {
-        public void RemoveBuffs(Object Obj)
+        public void RemoveBuffs(Object Creature)
         {
-            Creature c = Obj as Creature;
-            //c.IsImmovable = false;
+            Creature c = Creature as Creature;
+            c.IsImmovable = false;
             c.IsInvulnerable = false;
         }
 

@@ -18,7 +18,7 @@ namespace WorldServer
     [GeneralScript(false, "", 33401, 0)]
     public class AltdorfSewersWing3Boss : AGeneralScript
     {
-        private Object Obj; // This is creature 33401
+        private Object Creature; // This is creature 33401
         private int Stage = -1; // This is variable that controls combat Stage
         private int AddsSpawnTimer = 3000; // When `The Creator` summons his adds this variable is used - after this many milliseconds adds will be spawned
         List<Object> stuffInRange = new List<Object>(); // This list keeps all objects in range
@@ -26,11 +26,11 @@ namespace WorldServer
         List<Creature> addList = new List<Creature>(); // this list keeps all adds spawned by `The Creator`
 
         // With this we can do some stuff when creature 33401 spawns
-        public override void OnObjectLoad(Object Obj)
+        public override void OnObjectLoad(Object Creature)
         {
-            this.Obj = Obj;
+            this.Creature = Creature;
 
-            //Obj.EvtInterface.AddEvent(CheckHP, 1000, 0);
+            // Creature.EvtInterface.AddEvent(CheckHP, 1000, 0);
 
         }
 
@@ -40,7 +40,7 @@ namespace WorldServer
             Player plr = pkilled as Player; // Casting object pkilled to Player type
             if (plr.IsPlayer())
             {
-                this.Obj.Say("Hahaha " + pkilled.Name + " I killed you!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY); // Boss will say this
+                this.Creature.Say("Hahaha " + pkilled.Name + " I killed you!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY); // Boss will say this
             }
 
             // Below we check if the killed player was the last alive player in the instance - we check this for group and for individual players
@@ -119,21 +119,21 @@ namespace WorldServer
         // Words for final stage
         public void FinalWords()
         {
-            Obj.Say("Noo! You should work!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
-            Obj.Say("Nevermind, I will destroy you myself!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+            Creature.Say("Noo! You should work!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+            Creature.Say("Nevermind, I will destroy you myself!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
         }
 
         // Possible banter here
         public void SayStuff()
         {
-            Obj.Say("Noo! You should work!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
-            Obj.Say("Nevermind, I will destroy you myself!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+            Creature.Say("Noo! You should work!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+            Creature.Say("Nevermind, I will destroy you myself!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
         }
 
         //This checks the current HP of boss
-        public bool CheckHP(Object Obj, object instigator)
+        public bool CheckHP(Object Creature, object instigator)
         {
-            Creature c = this.Obj as Creature; // We are casting the script initiator as a Creature
+            Creature c = this.Creature as Creature; // We are casting the script initiator as a Creature
 
             if (Stage < 0 && !c.IsDead)
             {
@@ -201,7 +201,7 @@ namespace WorldServer
         // Removal of immovability and invulnerability
         public void RemoveBuffs()
         {
-            Creature c = this.Obj as Creature;
+            Creature c = this.Creature as Creature;
             //c.IsImmovable = false;
             c.IsInvulnerable = false;
         }
@@ -235,7 +235,7 @@ namespace WorldServer
             };
 
             spawn.BuildFromProto(proto);
-            GameObject GO = Obj.Region.CreateGameObject(spawn);
+            GameObject GO = Creature.Region.CreateGameObject(spawn);
             GO.Say("**Wall of magical force is now blocking the exit**", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
             magicWalls.Add(GO);
         }
@@ -252,13 +252,13 @@ namespace WorldServer
                 Creature_spawn Spawn = new Creature_spawn();
                 Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
                 Spawn.BuildFromProto(Proto);
-                Spawn.WorldO = Obj.Heading;
+                Spawn.WorldO = Creature.Heading;
                 Spawn.WorldX = (int)(137065 + 150 - 300 * rand.NextDouble());
                 Spawn.WorldY = (int)(524884 + 150 - 300 * rand.NextDouble());
                 Spawn.WorldZ = 11103;
                 Spawn.ZoneId = 169;
                 Spawn.Level = 1;
-                Creature c = Obj.Region.CreateCreature(Spawn);
+                Creature c = Creature.Region.CreateCreature(Spawn);
                 c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds); // We are removing spawns from server when adds die
                 addList.Add(c); // Adding adds to the list for easy removal
             }
@@ -276,13 +276,13 @@ namespace WorldServer
                 Creature_spawn Spawn = new Creature_spawn();
                 Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
                 Spawn.BuildFromProto(Proto);
-                Spawn.WorldO = Obj.Heading;
+                Spawn.WorldO = Creature.Heading;
                 Spawn.WorldX = (int)(137065 + 150 - 300 * rand.NextDouble());
                 Spawn.WorldY = (int)(524884 + 150 - 300 * rand.NextDouble());
                 Spawn.WorldZ = 11103;
                 Spawn.ZoneId = 169;
                 Spawn.Level = 1;
-                Creature c = Obj.Region.CreateCreature(Spawn);
+                Creature c = Creature.Region.CreateCreature(Spawn);
                 c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds);
                 addList.Add(c);
             }
@@ -300,13 +300,13 @@ namespace WorldServer
                 Creature_spawn Spawn = new Creature_spawn();
                 Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
                 Spawn.BuildFromProto(Proto);
-                Spawn.WorldO = Obj.Heading;
+                Spawn.WorldO = Creature.Heading;
                 Spawn.WorldX = (int)(137065 + 150 - 300 * rand.NextDouble());
                 Spawn.WorldY = (int)(524884 + 150 - 300 * rand.NextDouble());
                 Spawn.WorldZ = 11103;
                 Spawn.ZoneId = 169;
                 Spawn.Level = 1;
-                Creature c = Obj.Region.CreateCreature(Spawn);
+                Creature c = Creature.Region.CreateCreature(Spawn);
                 c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds);
                 addList.Add(c);
             }
