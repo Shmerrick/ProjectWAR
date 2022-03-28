@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Common;
-using FrameWork;
-using WorldServer.Services.World;
-using WorldServer.World.Objects;
+﻿using WorldServer.World.Objects;
 using WorldServer.World.Scripting;
 using Object = WorldServer.World.Objects.Object;
 
