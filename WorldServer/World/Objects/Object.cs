@@ -975,8 +975,9 @@ namespace WorldServer.World.Objects
 		#region Interaction
 
 		public long CountdownTimerEnd { get; set; }
+        public object PQCreature { get; set; }
 
-		protected Player CapturingPlayer;
+        protected Player CapturingPlayer;
 		protected object CaptureLock = new object();
 		public ushort CaptureDuration;
 

@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Common;
-using FrameWork;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 using WorldServer.World.Objects.PublicQuests;
@@ -29,13 +24,13 @@ namespace WorldServer
     [GeneralScript(false, "", 46, 0)]
     public class FatherSigwaldQuestScript : AGeneralScript
     {
-        private Object Obj;
+        private Object Creature;
         private int Quote = 0;
-        public override void OnObjectLoad(Object Obj)
+        public override void OnObjectLoad(Object Creature)
         {
-            this.Obj = Obj;
+            this.Creature = Creature;
 
-            Obj.EvtInterface.AddEvent(SpawnBaddies, 9000, 5);
+            Creature.EvtInterface.AddEvent(SpawnBaddies, 9000, 5);
         }
 
         public void SpawnBaddies()
@@ -46,15 +41,15 @@ namespace WorldServer
                 return;
 
             if (Quote == 0)
-                Obj.Say("Hold your ground, hold your ground! ", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+                Creature.Say("Hold your ground, hold your ground! ", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
             else if (Quote == 1)
-                Obj.Say("I see in your eyes the same fear that would take the heart of me.", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+                Creature.Say("I see in your eyes the same fear that would take the heart of me.", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
             else if (Quote == 2)
-                Obj.Say("A day may come when the courage of men fails, when we forsake our friends and break all bonds of fellowship, but it is not this day.", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+                Creature.Say("A day may come when the courage of men fails, when we forsake our friends and break all bonds of fellowship, but it is not this day.", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
             else if (Quote == 3)
-                Obj.Say("An hour of wolves and shattered shields, when the age of men comes crashing down!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+                Creature.Say("An hour of wolves and shattered shields, when the age of men comes crashing down!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
             else if (Quote == 4)
-                Obj.Say("But it is not this day! This day we fight!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+                Creature.Say("But it is not this day! This day we fight!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
 
             Quote++;
 
@@ -65,30 +60,28 @@ namespace WorldServer
                 Creature_spawn Spawn = new Creature_spawn();
                 Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
                 Spawn.BuildFromProto(Proto);
-                Spawn.WorldO = Obj.Heading;
-                Spawn.WorldX = (int)(Obj.WorldPosition.X + 150 - 300 * rand.NextDouble());
-                Spawn.WorldY = (int)(Obj.WorldPosition.Y + 150 - 300 * rand.NextDouble());
-                Spawn.WorldZ = Obj.WorldPosition.Z;
-                Spawn.ZoneId = Obj.Zone.ZoneId;
-                Creature c = Obj.Region.CreateCreature(Spawn);
-                //c.GetCreature().MvtInterface.WalkTo(Obj.WorldPosition.X, Obj.WorldPosition.Y, Obj.WorldPosition.Z, MovementInterface.CREATURE_SPEED);
+                Spawn.WorldO = Creature.Heading;
+                Spawn.WorldX = (int)(Creature.WorldPosition.X + 150 - 300 * rand.NextDouble());
+                Spawn.WorldY = (int)(Creature.WorldPosition.Y + 150 - 300 * rand.NextDouble());
+                Spawn.WorldZ = Creature.WorldPosition.Z;
+                Spawn.ZoneId = Creature.Zone.ZoneId;
+                Creature c = Creature.Region.CreateCreature(Spawn);
+                //c.GetCreature().MvtInterface.WalkTo(Creature.WorldPosition.X, Creature.WorldPosition.Y, Creature.WorldPosition.Z, MovementInterface.CREATURE_SPEED);
                 c.EvtInterface.AddEvent(c.Destroy, 20000, 1);
             }
             
         }
 
-        public override void OnDie(Object Obj)
+        public override void OnDie(Object Creature)
         {
-            if (!(Obj is PQuestCreature))
+            if (!(Creature is PQuestCreature))
                 return;
 
-            PQuestCreature Crea = Obj as PQuestCreature;
+            PQuestCreature PQCreature = Creature as PQuestCreature;
 
-            Crea.Objective.Quest.Failed();
+            Creature.Say("You fools!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
 
-            Crea.Say("You fools!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
-
-            base.OnDie(Obj);
+            base.OnDie(Creature);
         }
     }
 }
