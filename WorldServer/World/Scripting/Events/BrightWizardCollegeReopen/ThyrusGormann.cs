@@ -11,29 +11,29 @@ namespace WorldServer.World.Scripting.Events.BrightWizardCollegeReopen
     [GeneralScript(false, "", 1989, 0)]
     public class ThyrusGorman : AGeneralScript
     {
-        private Object Obj; // This is creature 1989
+        private Object Creature; // This is creature 1989
         private List<Object> stuffInRange = new List<Object>(); // This list keeps all objects in range
 
         // With this we can do some stuff when creature 1990 spawns
-        public override void OnObjectLoad(Object Obj)
+        public override void OnObjectLoad(Object Creature)
         {
-            this.Obj = Obj;
-            Obj.EvtInterface.AddEventNotify(EventName.OnReceiveDamage, CheckHP);
+            this.Creature = Creature;
+            Creature.EvtInterface.AddEventNotify(EventName.OnReceiveDamage, CheckHP);
         }
 
         // When something gets in range (I think it is 350 or 400) we want
         // to add it to correct lists and set some events
-        public override void OnEnterRange(Object Obj, Object DistObj)
+        public override void OnEnterRange(Object Creature, Object DistCreature)
         {
-            if (DistObj.IsPlayer())
+            if (DistCreature.IsPlayer())
             {
-                stuffInRange.Add(DistObj);
+                stuffInRange.Add(DistCreature);
             }
         }
 
-        public bool CheckHP(Object Obj, object instigator)
+        public bool CheckHP(Object Creature, object instigator)
         {
-            Creature c = this.Obj as Creature; // We are casting the script initiator as a Creature
+            Creature c = this.Creature as Creature; // We are casting the script initiator as a Creature
 
             if (c.Health < c.TotalHealth * 0.1 && !c.IsDead && c.IsCreature() && c.Entry == 1989) // At 10% HP magic happens
             {
@@ -51,7 +51,7 @@ namespace WorldServer.World.Scripting.Events.BrightWizardCollegeReopen
 
         public void RemoveBuffs()
         {
-            Creature c = this.Obj as Creature;
+            Creature c = this.Creature as Creature;
             c.IsInvulnerable = false;
         }
 
