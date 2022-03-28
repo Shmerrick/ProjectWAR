@@ -6,7 +6,7 @@ namespace WorldServer.World.Scripting.Quests
 {
     public class BasicQuest : AGeneralScript
     {
-        protected Object Obj; // This is creature
+        protected Object Creature; // This is creature for scripting. Set ID.
         public Random random = new Random();
 
         protected Point3D spawnPoint;

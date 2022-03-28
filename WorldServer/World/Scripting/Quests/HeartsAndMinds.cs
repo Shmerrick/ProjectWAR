@@ -31,10 +31,10 @@ namespace WorldServer.World.Scripting.Quests
     [GeneralScript(false, "", 32, 0)]
     public class HeartsAndMindsSpawnQuestScript : BasicQuest
     {
-        public override void OnObjectLoad(Object Obj)
+        public override void OnObjectLoad(Object Creature)
         {
-            this.Obj = Obj;
-            spawnPoint = Obj as Point3D;
+            this.Creature = Creature;
+            spawnPoint = Creature as Point3D;
         }
 
         public override void OnInteract(Object Obj, Player Target, InteractMenu Menu)
@@ -85,36 +85,36 @@ namespace WorldServer.World.Scripting.Quests
     {
         private int X, Y, Z, O;
 
-        public override void OnObjectLoad(Object Obj)
+        public override void OnObjectLoad(Object Creature)
         {
-            this.Obj = Obj;
-            X = Obj.WorldPosition.X;
-            Y = Obj.WorldPosition.Y;
-            Z = Obj.WorldPosition.Z;
-            O = Obj.Heading;
+            this.Creature = Creature;
+            X = Creature.WorldPosition.X;
+            Y = Creature.WorldPosition.Y;
+            Z = Creature.WorldPosition.Z;
+            O = Creature.Heading;
         }
 
-        public override void OnDie(Object Obj)
+        public override void OnDie(Object Creature)
         {
             // Respawn the orginal npc
             Creature_proto Proto = CreatureService.GetCreatureProto((uint)32);
             if (Proto == null)
                 return;
 
-            Obj.UpdateWorldPosition();
+            Creature.UpdateWorldPosition();
 
             Creature_spawn Spawn = new Creature_spawn();
             Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
-            Proto.Model1 = Obj.GetCreature().Spawn.Proto.Model1;
+            Proto.Model1 = Creature.GetCreature().Spawn.Proto.Model1;
             Spawn.BuildFromProto(Proto);
             Spawn.WorldO = O;
             Spawn.WorldY = Y;
             Spawn.WorldZ = Z;
             Spawn.WorldX = X;
-            Spawn.ZoneId = Obj.Zone.ZoneId;
+            Spawn.ZoneId = Creature.Zone.ZoneId;
             //Spawn.Faction = 65;
 
-            Creature c = Obj.Region.CreateCreature(Spawn);
+            Creature c = Creature.Region.CreateCreature(Spawn);
 
             //  Set the new NPC to dead, there should be a method to do this perhaps.
             c.Health = 0;
@@ -136,7 +136,7 @@ namespace WorldServer.World.Scripting.Quests
             c.EvtInterface.AddEvent(c.RezUnit, 30000 + c.Level * 1000, 1); // 30 seconde Rez
 
             // Remove the old npc
-            Obj.Destroy();
+            Creature.Destroy();
 
             return;
         }
