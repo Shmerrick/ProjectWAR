@@ -29,7 +29,7 @@ namespace WorldServer
 	[GeneralScript(false, "",  32, 0)]
 	public class HeartsAndMindsSpawnQuestScript : AGeneralScript
 	{
-		public override void OnInteract(Object Obj, Player Target, InteractMenu Menu)
+		public override void OnInteract(Object Creature, Player Target, InteractMenu Menu)
 		{
 			// Make sure the player has the quest and hasn't already finished the objectives.
 			if (!Target.GetPlayer().QtsInterface.HasQuest(30003) || Target.GetPlayer().QtsInterface.HasFinishQuest(30003))
@@ -43,26 +43,42 @@ namespace WorldServer
 				return;
 			}
 
-			Obj.UpdateWorldPosition();
+			Creature.UpdateWorldPosition();
 
+			Creature_proto GrimmenhagenFarmer = CreatureService.GetCreatureProto(32);
 			Creature_spawn Spawn = new Creature_spawn();
 			Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
-			MarauderSympathizer.Model1 = Obj.GetCreature().Spawn.Proto.Model1;
-			MarauderSympathizer.Model2 = Obj.GetCreature().Spawn.Proto.Model2;
+			if (GrimmenhagenFarmer.Model1 == 1540)
+			{
+				MarauderSympathizer.Model1 = Creature.GetCreature().Spawn.Proto.Model1;
+			}
+			else
+			{
+				MarauderSympathizer.Model1 = Creature.GetCreature().Spawn.Proto.Model2;
+			}
+
+			if (GrimmenhagenFarmer.Model2 == 1541)
+			{
+				MarauderSympathizer.Model2 = Creature.GetCreature().Spawn.Proto.Model2;
+			}
+			else
+			{
+				MarauderSympathizer.Model2 = Creature.GetCreature().Spawn.Proto.Model1;
+			}
 			Spawn.BuildFromProto(MarauderSympathizer);
-			Spawn.WorldO = Obj.Heading;
-			Spawn.WorldY = Obj.WorldPosition.Y;
-			Spawn.WorldZ = Obj.WorldPosition.Z;
-			Spawn.WorldX = Obj.WorldPosition.X;
-			Spawn.ZoneId = Obj.Zone.ZoneId;
+			Spawn.WorldO = Creature.Heading;
+			Spawn.WorldY = Creature.WorldPosition.Y;
+			Spawn.WorldZ = Creature.WorldPosition.Z;
+			Spawn.WorldX = Creature.WorldPosition.X;
+			Spawn.ZoneId = Creature.Zone.ZoneId;
 			Spawn.Faction = 129;
 			
 
-			Creature c =  Obj.Region.CreateCreature(Spawn);
+			Creature c = Creature.Region.CreateCreature(Spawn);
 			c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds);
 
 			// Remove the old npc
-			Obj.Destroy();
+			Creature.Destroy();
 
 			return;
 		}
@@ -80,7 +96,7 @@ namespace WorldServer
 	[GeneralScript(false, "",  31,  0)]
 	public class HeartsAndMindsDieQuestScript : AGeneralScript
 	{
-		public override void OnDie(Object Obj)
+		public override void OnDie(Object Creature)
 		{
 			// Respawn the orginal npc 
 			Creature_proto GrimmenhagenFarmer = CreatureService.GetCreatureProto(32);
@@ -88,23 +104,41 @@ namespace WorldServer
 			{
 				return;
 			}
-				
-			Obj.UpdateWorldPosition();
 
+			Creature.UpdateWorldPosition();
+			Creature_proto MarauderSympathizer = CreatureService.GetCreatureProto(31);
 			Creature_spawn Spawn = new Creature_spawn();
 			
 			Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
-			GrimmenhagenFarmer.Model1 = Obj.GetCreature().Spawn.Proto.Model1;
-			GrimmenhagenFarmer.Model2 = Obj.GetCreature().Spawn.Proto.Model2;
+
+			if (MarauderSympathizer.Model1 == 1220)
+			{
+				GrimmenhagenFarmer.Model1 = Creature.GetCreature().Spawn.Proto.Model1;
+			}
+			else
+			{
+				GrimmenhagenFarmer.Model1 = Creature.GetCreature().Spawn.Proto.Model2;
+			}
+
+			if (MarauderSympathizer.Model2 == 1221)
+			{
+				GrimmenhagenFarmer.Model2 = Creature.GetCreature().Spawn.Proto.Model2;
+			}
+			else
+			{
+				MarauderSympathizer.Model2 = Creature.GetCreature().Spawn.Proto.Model1;
+			}
+
+			GrimmenhagenFarmer.Model2 = Creature.GetCreature().Spawn.Proto.Model2;
 			Spawn.BuildFromProto(GrimmenhagenFarmer);
-			Spawn.WorldO = Obj.Heading;
-			Spawn.WorldY = Obj.WorldPosition.Y;
-			Spawn.WorldZ = Obj.WorldPosition.Z;
-			Spawn.WorldX = Obj.WorldPosition.X;
-			Spawn.ZoneId = Obj.Zone.ZoneId;
+			Spawn.WorldO = Creature.Heading;
+			Spawn.WorldY = Creature.WorldPosition.Y;
+			Spawn.WorldZ = Creature.WorldPosition.Z;
+			Spawn.WorldX = Creature.WorldPosition.X;
+			Spawn.ZoneId = Creature.Zone.ZoneId;
 			Spawn.Faction = 65;
 			
-			Creature c = Obj.Region.CreateCreature(Spawn);
+			Creature c = Creature.Region.CreateCreature(Spawn);
 
 			//  Set the new NPC to dead, there should be a method to do this perhaps.
 			c.Health = 0;
@@ -123,7 +157,7 @@ namespace WorldServer
 			c.EvtInterface.AddEvent(c.RezUnit, 30000 + c.Level * 1000, 1); // 30 seconde Rez
 
 			// Remove the old npc
-			Obj.Destroy();
+			Creature.Destroy();
 
 			return;
 		}
