@@ -345,5 +345,15 @@ namespace Launcher
         {
             this.WindowState = FormWindowState.Minimized;
         }
+
+        private void textBoxUsername_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBoxPassword_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -81,12 +81,12 @@ namespace Launcher
             this.T_username.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.T_username.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.T_username.ForeColor = System.Drawing.Color.DarkOrange;
-            this.T_username.Location = new System.Drawing.Point(768, 607);
+            this.T_username.Location = new System.Drawing.Point(1024, 747);
             this.T_username.Margin = new System.Windows.Forms.Padding(0);
             this.T_username.MaxLength = 50;
             this.T_username.Multiline = true;
             this.T_username.Name = "T_username";
-            this.T_username.Size = new System.Drawing.Size(303, 44);
+            this.T_username.Size = new System.Drawing.Size(403, 54);
             this.T_username.TabIndex = 0;
             this.T_username.KeyDown += new System.Windows.Forms.KeyEventHandler(this.T_username_KeyDown);
             // 
@@ -97,40 +97,51 @@ namespace Launcher
             this.T_password.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.T_password.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.T_password.ForeColor = System.Drawing.Color.DarkOrange;
-            this.T_password.Location = new System.Drawing.Point(768, 655);
+            this.T_password.Location = new System.Drawing.Point(1024, 806);
             this.T_password.Margin = new System.Windows.Forms.Padding(0);
             this.T_password.Name = "T_password";
-            this.T_password.Size = new System.Drawing.Size(303, 44);
+            this.T_password.Size = new System.Drawing.Size(403, 53);
             this.T_password.TabIndex = 1;
             this.T_password.UseSystemPasswordChar = true;
             this.T_password.KeyDown += new System.Windows.Forms.KeyEventHandler(this.T_password_KeyDown);
             // 
             // RealmName
             // 
+            this.RealmName.MinimumWidth = 6;
             this.RealmName.Name = "RealmName";
+            this.RealmName.Width = 125;
             // 
             // Online
             // 
+            this.Online.MinimumWidth = 6;
             this.Online.Name = "Online";
+            this.Online.Width = 125;
             // 
             // Players
             // 
+            this.Players.MinimumWidth = 6;
             this.Players.Name = "Players";
+            this.Players.Width = 125;
             // 
             // Destruction
             // 
+            this.Destruction.MinimumWidth = 6;
             this.Destruction.Name = "Destruction";
+            this.Destruction.Width = 125;
             // 
             // Order
             // 
+            this.Order.MinimumWidth = 6;
             this.Order.Name = "Order";
+            this.Order.Width = 125;
             // 
             // lblLauncherServer
             // 
             this.lblLauncherServer.AutoSize = true;
-            this.lblLauncherServer.Location = new System.Drawing.Point(12, 117);
+            this.lblLauncherServer.Location = new System.Drawing.Point(16, 144);
+            this.lblLauncherServer.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblLauncherServer.Name = "lblLauncherServer";
-            this.lblLauncherServer.Size = new System.Drawing.Size(0, 13);
+            this.lblLauncherServer.Size = new System.Drawing.Size(0, 17);
             this.lblLauncherServer.TabIndex = 11;
             // 
             // bnConnectToServer
@@ -142,10 +153,10 @@ namespace Launcher
             this.bnConnectToServer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bnConnectToServer.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bnConnectToServer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.bnConnectToServer.Location = new System.Drawing.Point(1095, 607);
+            this.bnConnectToServer.Location = new System.Drawing.Point(1460, 747);
             this.bnConnectToServer.Margin = new System.Windows.Forms.Padding(0);
             this.bnConnectToServer.Name = "bnConnectToServer";
-            this.bnConnectToServer.Size = new System.Drawing.Size(176, 91);
+            this.bnConnectToServer.Size = new System.Drawing.Size(235, 112);
             this.bnConnectToServer.TabIndex = 12;
             this.bnConnectToServer.Text = "Login";
             this.bnConnectToServer.UseVisualStyleBackColor = false;
@@ -155,7 +166,7 @@ namespace Launcher
             // 
             this.edHashCode.Location = new System.Drawing.Point(6, 78);
             this.edHashCode.Name = "edHashCode";
-            this.edHashCode.Size = new System.Drawing.Size(385, 20);
+            this.edHashCode.Size = new System.Drawing.Size(385, 22);
             this.edHashCode.TabIndex = 16;
             // 
             // label7
@@ -196,14 +207,14 @@ namespace Launcher
             // 
             this.edPassword.Location = new System.Drawing.Point(198, 39);
             this.edPassword.Name = "edPassword";
-            this.edPassword.Size = new System.Drawing.Size(193, 20);
+            this.edPassword.Size = new System.Drawing.Size(193, 22);
             this.edPassword.TabIndex = 5;
             // 
             // edNewUserCode
             // 
             this.edNewUserCode.Location = new System.Drawing.Point(6, 39);
             this.edNewUserCode.Name = "edNewUserCode";
-            this.edNewUserCode.Size = new System.Drawing.Size(175, 20);
+            this.edNewUserCode.Size = new System.Drawing.Size(175, 22);
             this.edNewUserCode.TabIndex = 4;
             // 
             // lblConnection
@@ -212,9 +223,10 @@ namespace Launcher
             this.lblConnection.BackColor = System.Drawing.Color.Transparent;
             this.lblConnection.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.749999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblConnection.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.lblConnection.Location = new System.Drawing.Point(691, 540);
+            this.lblConnection.Location = new System.Drawing.Point(921, 665);
+            this.lblConnection.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblConnection.Name = "lblConnection";
-            this.lblConnection.Size = new System.Drawing.Size(577, 24);
+            this.lblConnection.Size = new System.Drawing.Size(769, 30);
             this.lblConnection.TabIndex = 13;
             this.lblConnection.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -227,10 +239,10 @@ namespace Launcher
             this.bnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bnClose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.bnClose.Location = new System.Drawing.Point(1220, 9);
+            this.bnClose.Location = new System.Drawing.Point(1627, 11);
             this.bnClose.Margin = new System.Windows.Forms.Padding(0);
             this.bnClose.Name = "bnClose";
-            this.bnClose.Size = new System.Drawing.Size(51, 49);
+            this.bnClose.Size = new System.Drawing.Size(68, 60);
             this.bnClose.TabIndex = 14;
             this.bnClose.Text = "X";
             this.bnClose.UseVisualStyleBackColor = false;
@@ -249,9 +261,10 @@ namespace Launcher
             this.panelCreateAccount.Controls.Add(this.textBoxPassword);
             this.panelCreateAccount.Controls.Add(this.textBoxUsername);
             this.panelCreateAccount.Controls.Add(this.label1);
-            this.panelCreateAccount.Location = new System.Drawing.Point(366, 177);
+            this.panelCreateAccount.Location = new System.Drawing.Point(488, 218);
+            this.panelCreateAccount.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panelCreateAccount.Name = "panelCreateAccount";
-            this.panelCreateAccount.Size = new System.Drawing.Size(590, 309);
+            this.panelCreateAccount.Size = new System.Drawing.Size(787, 380);
             this.panelCreateAccount.TabIndex = 15;
             this.panelCreateAccount.Visible = false;
             // 
@@ -260,9 +273,10 @@ namespace Launcher
             this.bnCreateLocal.BackColor = System.Drawing.Color.Transparent;
             this.bnCreateLocal.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.bnCreateLocal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.bnCreateLocal.Location = new System.Drawing.Point(385, 210);
+            this.bnCreateLocal.Location = new System.Drawing.Point(513, 258);
+            this.bnCreateLocal.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.bnCreateLocal.Name = "bnCreateLocal";
-            this.bnCreateLocal.Size = new System.Drawing.Size(176, 21);
+            this.bnCreateLocal.Size = new System.Drawing.Size(235, 26);
             this.bnCreateLocal.TabIndex = 23;
             this.bnCreateLocal.Text = "LOCAL";
             this.bnCreateLocal.UseVisualStyleBackColor = false;
@@ -277,10 +291,10 @@ namespace Launcher
             this.buttonAccountClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonAccountClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonAccountClose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.buttonAccountClose.Location = new System.Drawing.Point(539, 1);
+            this.buttonAccountClose.Location = new System.Drawing.Point(719, 1);
             this.buttonAccountClose.Margin = new System.Windows.Forms.Padding(0);
             this.buttonAccountClose.Name = "buttonAccountClose";
-            this.buttonAccountClose.Size = new System.Drawing.Size(51, 44);
+            this.buttonAccountClose.Size = new System.Drawing.Size(68, 54);
             this.buttonAccountClose.TabIndex = 22;
             this.buttonAccountClose.Text = "X";
             this.buttonAccountClose.UseVisualStyleBackColor = false;
@@ -291,9 +305,10 @@ namespace Launcher
             this.buttonCreate.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.buttonCreate.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonCreate.ForeColor = System.Drawing.Color.DarkOrange;
-            this.buttonCreate.Location = new System.Drawing.Point(30, 237);
+            this.buttonCreate.Location = new System.Drawing.Point(40, 292);
+            this.buttonCreate.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonCreate.Name = "buttonCreate";
-            this.buttonCreate.Size = new System.Drawing.Size(531, 51);
+            this.buttonCreate.Size = new System.Drawing.Size(708, 63);
             this.buttonCreate.TabIndex = 16;
             this.buttonCreate.Text = "Create";
             this.buttonCreate.UseVisualStyleBackColor = true;
@@ -304,9 +319,10 @@ namespace Launcher
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.DarkOrange;
-            this.label3.Location = new System.Drawing.Point(3, 153);
+            this.label3.Location = new System.Drawing.Point(4, 188);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(272, 53);
+            this.label3.Size = new System.Drawing.Size(363, 65);
             this.label3.TabIndex = 20;
             this.label3.Text = "Password";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -316,9 +332,10 @@ namespace Launcher
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.DarkOrange;
-            this.label2.Location = new System.Drawing.Point(3, 78);
+            this.label2.Location = new System.Drawing.Point(4, 96);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(272, 53);
+            this.label2.Size = new System.Drawing.Size(363, 65);
             this.label2.TabIndex = 19;
             this.label2.Text = "Login";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -330,14 +347,15 @@ namespace Launcher
             this.textBoxPassword.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBoxPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxPassword.ForeColor = System.Drawing.Color.DarkOrange;
-            this.textBoxPassword.Location = new System.Drawing.Point(277, 153);
+            this.textBoxPassword.Location = new System.Drawing.Point(369, 188);
             this.textBoxPassword.Margin = new System.Windows.Forms.Padding(0);
             this.textBoxPassword.MaxLength = 50;
             this.textBoxPassword.Multiline = true;
             this.textBoxPassword.Name = "textBoxPassword";
             this.textBoxPassword.PasswordChar = '*';
-            this.textBoxPassword.Size = new System.Drawing.Size(284, 53);
+            this.textBoxPassword.Size = new System.Drawing.Size(378, 65);
             this.textBoxPassword.TabIndex = 17;
+            this.textBoxPassword.TextChanged += new System.EventHandler(this.textBoxPassword_TextChanged);
             // 
             // textBoxUsername
             // 
@@ -346,13 +364,14 @@ namespace Launcher
             this.textBoxUsername.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBoxUsername.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxUsername.ForeColor = System.Drawing.Color.DarkOrange;
-            this.textBoxUsername.Location = new System.Drawing.Point(277, 78);
+            this.textBoxUsername.Location = new System.Drawing.Point(369, 96);
             this.textBoxUsername.Margin = new System.Windows.Forms.Padding(0);
             this.textBoxUsername.MaxLength = 50;
             this.textBoxUsername.Multiline = true;
             this.textBoxUsername.Name = "textBoxUsername";
-            this.textBoxUsername.Size = new System.Drawing.Size(284, 52);
+            this.textBoxUsername.Size = new System.Drawing.Size(378, 64);
             this.textBoxUsername.TabIndex = 16;
+            this.textBoxUsername.TextChanged += new System.EventHandler(this.textBoxUsername_TextChanged);
             // 
             // label1
             // 
@@ -360,9 +379,10 @@ namespace Launcher
             this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.DarkOrange;
-            this.label1.Location = new System.Drawing.Point(3, 2);
+            this.label1.Location = new System.Drawing.Point(4, 2);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(587, 49);
+            this.label1.Size = new System.Drawing.Size(783, 60);
             this.label1.TabIndex = 18;
             this.label1.Text = "Create Account";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -374,9 +394,10 @@ namespace Launcher
             this.buttonPanelCreateAccount.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonPanelCreateAccount.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonPanelCreateAccount.ForeColor = System.Drawing.Color.DarkOrange;
-            this.buttonPanelCreateAccount.Location = new System.Drawing.Point(922, 9);
+            this.buttonPanelCreateAccount.Location = new System.Drawing.Point(1229, 11);
+            this.buttonPanelCreateAccount.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.buttonPanelCreateAccount.Name = "buttonPanelCreateAccount";
-            this.buttonPanelCreateAccount.Size = new System.Drawing.Size(226, 49);
+            this.buttonPanelCreateAccount.Size = new System.Drawing.Size(301, 60);
             this.buttonPanelCreateAccount.TabIndex = 21;
             this.buttonPanelCreateAccount.Text = "CREATE ACCOUNT";
             this.buttonPanelCreateAccount.UseVisualStyleBackColor = false;
@@ -388,9 +409,10 @@ namespace Launcher
             this.lblVersion.AutoSize = true;
             this.lblVersion.BackColor = System.Drawing.Color.Transparent;
             this.lblVersion.ForeColor = System.Drawing.Color.DarkOrange;
-            this.lblVersion.Location = new System.Drawing.Point(1096, 702);
+            this.lblVersion.Location = new System.Drawing.Point(1461, 864);
+            this.lblVersion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblVersion.Name = "lblVersion";
-            this.lblVersion.Size = new System.Drawing.Size(0, 13);
+            this.lblVersion.Size = new System.Drawing.Size(0, 17);
             this.lblVersion.TabIndex = 22;
             // 
             // bnConnectLocal
@@ -399,9 +421,10 @@ namespace Launcher
             this.bnConnectLocal.BackColor = System.Drawing.Color.Transparent;
             this.bnConnectLocal.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.bnConnectLocal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.bnConnectLocal.Location = new System.Drawing.Point(1183, 700);
+            this.bnConnectLocal.Location = new System.Drawing.Point(1577, 862);
+            this.bnConnectLocal.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.bnConnectLocal.Name = "bnConnectLocal";
-            this.bnConnectLocal.Size = new System.Drawing.Size(88, 20);
+            this.bnConnectLocal.Size = new System.Drawing.Size(117, 25);
             this.bnConnectLocal.TabIndex = 25;
             this.bnConnectLocal.Text = "LOCAL";
             this.bnConnectLocal.UseVisualStyleBackColor = false;
@@ -420,9 +443,10 @@ namespace Launcher
             this.lblDownloading.BackColor = System.Drawing.Color.Transparent;
             this.lblDownloading.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.749999F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDownloading.ForeColor = System.Drawing.Color.DarkOrange;
-            this.lblDownloading.Location = new System.Drawing.Point(700, 576);
+            this.lblDownloading.Location = new System.Drawing.Point(933, 709);
+            this.lblDownloading.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblDownloading.Name = "lblDownloading";
-            this.lblDownloading.Size = new System.Drawing.Size(568, 21);
+            this.lblDownloading.Size = new System.Drawing.Size(757, 26);
             this.lblDownloading.TabIndex = 27;
             this.lblDownloading.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
@@ -433,9 +457,10 @@ namespace Launcher
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.DarkOrange;
-            this.label4.Location = new System.Drawing.Point(666, 607);
+            this.label4.Location = new System.Drawing.Point(888, 747);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(96, 37);
+            this.label4.Size = new System.Drawing.Size(118, 46);
             this.label4.TabIndex = 29;
             this.label4.Text = "Login";
             // 
@@ -446,9 +471,10 @@ namespace Launcher
             this.label8.BackColor = System.Drawing.Color.Transparent;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.Color.DarkOrange;
-            this.label8.Location = new System.Drawing.Point(610, 654);
+            this.label8.Location = new System.Drawing.Point(813, 805);
+            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(158, 37);
+            this.label8.Size = new System.Drawing.Size(196, 46);
             this.label8.TabIndex = 30;
             this.label8.Text = "Password";
             // 
@@ -461,10 +487,10 @@ namespace Launcher
             this.bnMinimise.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bnMinimise.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bnMinimise.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.bnMinimise.Location = new System.Drawing.Point(1160, 9);
+            this.bnMinimise.Location = new System.Drawing.Point(1547, 11);
             this.bnMinimise.Margin = new System.Windows.Forms.Padding(0);
             this.bnMinimise.Name = "bnMinimise";
-            this.bnMinimise.Size = new System.Drawing.Size(51, 49);
+            this.bnMinimise.Size = new System.Drawing.Size(68, 60);
             this.bnMinimise.TabIndex = 31;
             this.bnMinimise.Text = "_";
             this.bnMinimise.UseVisualStyleBackColor = false;
@@ -472,12 +498,12 @@ namespace Launcher
             // 
             // ApocLauncher
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
             this.BackgroundImage = global::Launcher.Properties.Resources.M55rLv3;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.ClientSize = new System.Drawing.Size(1280, 720);
+            this.ClientSize = new System.Drawing.Size(1707, 886);
             this.Controls.Add(this.bnMinimise);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label4);
@@ -494,6 +520,7 @@ namespace Launcher
             this.Controls.Add(this.T_username);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ApocLauncher";
