@@ -5,19 +5,12 @@ namespace WorldServer.World.Objects.Instances
 {
     public class InstanceSpawn : Creature
     {
-        private uint instanceGroupSpawnId;
-        private uint bossId;
-        private Instance Instance;
+        private uint instanceGroupSpawnId = 0;
+        private uint bossId = 0;
+        private Instance Instance = null;
 
         public InstanceSpawn(Creature_spawn spawn, uint bossId, Instance instance) : base(spawn)
         {
-#pragma warning disable CS1717 // Назначение выполнено для той же переменной
-            instanceGroupSpawnId = instanceGroupSpawnId;
-#pragma warning restore CS1717 // Назначение выполнено для той же переменной
-#pragma warning disable CS1717 // Назначение выполнено для той же переменной
-            bossId = bossId;
-#pragma warning restore CS1717 // Назначение выполнено для той же переменной
-            Instance = instance;
             EvtInterface.AddEventNotify(EventName.OnEnterCombat, OnEnterCombat);
             EvtInterface.AddEventNotify(EventName.OnLeaveCombat, OnLeaveCombat);
         }

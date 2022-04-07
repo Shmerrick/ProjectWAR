@@ -69,8 +69,7 @@ namespace WorldServer.World.Interfaces
         /// <summary>
         /// The handling state of the siege weapon with respect to the current player, if any.
         /// </summary>
-        private SiegeObjectState _useState = SiegeObjectState.Empty;
-
+        
         private long _deathTime;
 
         public long DeathTime

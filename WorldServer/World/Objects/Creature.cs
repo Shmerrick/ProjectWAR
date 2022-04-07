@@ -1057,7 +1057,7 @@ namespace WorldServer.World.Objects
             killer.QtsInterface.HandleEvent(Objective_Type.QUEST_KILL_MOB, Spawn.Entry, 1);
         }
 
-        public void CheckDamageCaster(Unit caster, AbilityDamageInfo damageInfo)
+        public new void CheckDamageCaster(Unit caster, AbilityDamageInfo damageInfo)
         {
             int LevelDiff = Spawn.Level - caster.Level;
 
@@ -1177,8 +1177,6 @@ namespace WorldServer.World.Objects
                     healDebuff.RemoveStacks(menu.Num);
             }
         }
-
-#warning FIXME. Looks like there's support for taking more than one item at a time.
 
         private void TakeInfluenceItem(Player player, InteractMenu menu)
         {

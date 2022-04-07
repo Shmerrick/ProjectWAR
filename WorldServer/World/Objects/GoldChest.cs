@@ -50,8 +50,7 @@ namespace WorldServer.World.Objects
     public class GoldChest : GameObject
     {
         private const int white = 0, green = 1, blue = 2, purple = 3, gold = 4;
-        private double goldChance = 0.01, purpChance = 0.05, blueChance = 0.1, greenChance = 0.15, whiteChance = 0.2;
-
+        
         private readonly byte[] _bags =
         {
             1, // wht
@@ -74,7 +73,7 @@ namespace WorldServer.World.Objects
 
         private List<KeyValuePair<uint, ContributionInfo>> _preRoll;
         private List<KeyValuePair<uint, ContributionInfo>> _postRoll;
-        private List<Characters_bag_pools> _bagPools;
+        //private List<Characters_bag_pools> _bagPools;
         private Dictionary<uint, GoldBag> _lootBags = new Dictionary<uint, GoldBag>();
 
         private readonly PQuest_Info _publicQuestInfo;
@@ -99,8 +98,6 @@ namespace WorldServer.World.Objects
             {
                 GenerateLootBags(Math.Min(_amountOfBags, 24));
                 // Note - if there are more than 42 players, the lowest rarity bag should be green.
-
-#warning if there are more than 114 players, 25 bags will be awarded. Nalgol has the PQ boards restricted to 24 players, for an unknown reason. This could cause something to break.
 
                 AssignLoot(players);
 
@@ -769,7 +766,6 @@ namespace WorldServer.World.Objects
                     case 5: chestitem = 208470; break; //was conq
                     case 6: chestitem = 208470; break; //was fused inv
 
-#warning need to add chests for fort city and so on
                 }
                 if (Constants.DoomsdaySwitch > 0 && (_publicQuestInfo.PQTier == 2 || _publicQuestInfo.PQTier == 3))
                 {

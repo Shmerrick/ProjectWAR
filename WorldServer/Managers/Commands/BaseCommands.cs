@@ -2376,41 +2376,7 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        public static bool GearTester(Player plr, ref List<string> values)
-        {
-            // Removing this code as some people cannot be trusted to call this command even if protected by a fail safe!!
-            plr.SendClientMessage($"Gear tester has been turned off (glares at Brig)... Ikthaleon.", ChatLogFilters.CHATLOGFILTERS_SAY);
-            return false;
-            // Ensure this code is only ever called IN DEV!!
-            if (WorldMgr.ServerMode != "DEV")
-                return false;
-
-            foreach (var regionMgr in WorldMgr._Regions)
-            {
-                foreach (var player in regionMgr.Players)
-                {
-                    int money = 10000000;
-                    player.AddMoney((uint)money);
-
-                    // Setting SC and RvR currencies
-                    Item_Info conqMedallion = ItemService.GetItem_Info(1698);
-                    Item_Info conqEmblem = ItemService.GetItem_Info(1699);
-                    Item_Info warCrest = ItemService.GetItem_Info(208470);
-
-                    player.ItmInterface.CreateItem(conqMedallion, 5000);
-                    player.ItmInterface.CreateItem(conqEmblem, 5000);
-                    player.ItmInterface.CreateItem(warCrest, 8000);
-
-                    player.SetLevel((byte)40);
-
-                    player.SetRenownLevel((byte)60);
-
-                    plr.SendClientMessage($"Giving gear to {player.Name}", ChatLogFilters.CHATLOGFILTERS_SAY);
-                }
-            }
-            return true;
-        }
-
+        
         public static bool Gunbad(Player player, ref List<string> values)
         {
             player.Teleport(2, 1241652, 897090, 7499, 0);

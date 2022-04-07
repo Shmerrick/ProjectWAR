@@ -1,0 +1,1 @@
+UPDATE `creature_spawns` SET `RespawnMinutes`= 3 WHERE `RespawnMinutes`= 0;

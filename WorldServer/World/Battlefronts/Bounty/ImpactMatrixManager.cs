@@ -100,7 +100,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                     return playerImpact;
                 }
             }
-            return null;
+            
         }
 
         /// <summary>

@@ -20,11 +20,10 @@ namespace WorldServer.World.Battlefronts
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private const float RENOWN_CONTRIBUTION_FACTOR = 0.1f;
         private const int CONTRIB_ELAPSE_INTERVAL = 60 * 60; // 1 hour of no contribution forfeits.
-
+        
         private readonly int _tier;
         private readonly RegionMgr _region;
 
-        private float WinnerShare = 1.0f;
         private float LoserShare = 0.1f;
 
         /// <summary>

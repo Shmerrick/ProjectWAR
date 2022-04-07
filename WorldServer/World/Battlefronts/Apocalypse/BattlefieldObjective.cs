@@ -73,7 +73,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         public Campaign BattleFront { get; set; }
         public BattleFrontStatus battleFrontStatus { get; set; }
 
-        public string Name { get; set; }
+        public new string Name { get; set; }
 
         public StateFlags State { get; set; }
 

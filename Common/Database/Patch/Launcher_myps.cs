@@ -10,8 +10,7 @@ namespace Common.Database.Account
         private int _Id;
         private string _name;
         private int _CRC32;
-        private ulong _extractedSize;
-
+        
         [PrimaryKey(AutoIncrement = true)]
         public int Id
         {

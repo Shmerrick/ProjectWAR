@@ -15,7 +15,6 @@ namespace WorldServer.World.Scenarios.Objects
     {
         private int _pickupTime = 0;
         private int _dropTime = 0;
-        private readonly BuffInfo _buff;
         public Point3D Position;
 
         private class Interact
@@ -23,7 +22,7 @@ namespace WorldServer.World.Scenarios.Objects
             public Player Player;
             public EventDelegateEx Del;
             public Part Part;
-            public EventDelegate DamageDel;
+            public EventDelegate DamageDel = null;
 
             public Interact(Part part, Player player, EventDelegateEx del)
             {

@@ -169,7 +169,7 @@ namespace WorldServer.World.Abilities.CareerInterfaces
 
         protected long _lastResourceTime, _nextCheckTime = TCPManager.GetTimeStampMS() + 1000;
         protected long _resourceTimeout = 10000;
-        internal Pet myPet;
+        
 
         public virtual void Notify_PlayerLoaded()
         {

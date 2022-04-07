@@ -92,72 +92,72 @@ namespace WorldServer.World.Interfaces
                 Scripts[i].OnWorldUpdate(Tick);
         }
 
-        public void OnObjectLoad(Object Obj)
+        public void OnObjectLoad(Object Creature)
         {
             for (int i = 0; i < Scripts.Count; ++i)
-                Scripts[i].OnObjectLoad(Obj);
+                Scripts[i].OnObjectLoad(Creature);
         }
 
-        public void OnInteract(Object Obj, Player Target, InteractMenu Menu)
+        public void OnInteract(Object Creature, Player Target, InteractMenu Menu)
         {
             //Log.Info("ScriptsInterface", "OnInteract Scripts : " + Scripts.Count);
 
             for (int i = 0; i < Scripts.Count; ++i)
-                Scripts[i].OnInteract(Obj, Target, Menu);
+                Scripts[i].OnInteract(Creature, Target, Menu);
         }
 
-        public virtual void OnEnterWorld(Object Obj)
+        public virtual void OnEnterWorld(Object Creature)
         {
             for (int i = 0; i < Scripts.Count; ++i)
-                Scripts[i].OnEnterWorld(Obj);
+                Scripts[i].OnEnterWorld(Creature);
         }
 
-        public void OnRemoveFromWorld(Object Obj)
+        public void OnRemoveFromWorld(Object Creature)
         {
             for (int i = 0; i < Scripts.Count; ++i)
-                Scripts[i].OnRemoveFromWorld(Obj);
+                Scripts[i].OnRemoveFromWorld(Creature);
         }
 
-        public void OnEnterRange(Object Obj, Object DistObj)
+        public void OnEnterRange(Object Creature, Object DistObj)
         {
             for (int i = 0; i < Scripts.Count; ++i)
-                Scripts[i].OnEnterRange(Obj, DistObj);
+                Scripts[i].OnEnterRange(Creature, DistObj);
         }
 
-        public void OnLeaveRange(Object Obj, Object DistObj)
+        public void OnLeaveRange(Object Creature, Object DistanceCreature)
         {
             for (int i = 0; i < Scripts.Count; ++i)
-                Scripts[i].OnLeaveRange(Obj, DistObj);
+                Scripts[i].OnLeaveRange(Creature, DistanceCreature);
         }
 
-        public void OnReceiveDamages(Object Obj, Object Attacker)
+        public void OnReceiveDamages(Object Creature, Object Attacker)
         {
             for (int i = 0; i < Scripts.Count; ++i)
-                Scripts[i].OnReceiveDamages(Obj, Attacker);
+                Scripts[i].OnReceiveDamages(Creature, Attacker);
         }
 
-        public void OnDealDamages(Object Obj, Object Target)
+        public void OnDealDamages(Object Creature, Object Target)
         {
             for (int i = 0; i < Scripts.Count; ++i)
-                Scripts[i].OnDealDamages(Obj, Target);
+                Scripts[i].OnDealDamages(Creature, Target);
         }
 
-        public void OnDie(Object Obj)
+        public void OnDie(Object Creature)
         {
             for (int i = 0; i < Scripts.Count; ++i)
-                Scripts[i].OnDie(Obj);
+                Scripts[i].OnDie(Creature);
         }
 
-        public void OnRevive(Object Obj)
+        public void OnRevive(Object Creature)
         {
             for (int i = 0; i < Scripts.Count; ++i)
-                Scripts[i].OnRevive(Obj);
+                Scripts[i].OnRevive(Creature);
         }
 
-        public void OnCastAbility(AbilityInfo Ab)
+        public void OnCastAbility(AbilityInfo Ability)
         {
             for (int i = 0; i < Scripts.Count; ++i)
-                Scripts[i].OnCastAbility(Ab);
+                Scripts[i].OnCastAbility(Ability);
         }
 
         #endregion Local
@@ -185,10 +185,10 @@ namespace WorldServer.World.Interfaces
                 Scripts[i].OnWorldCreatureEvent(EventName, Creature, Data);
         }
 
-        public void OnWorldGameObjectEvent(string EventName, GameObject Obj, object Data)
+        public void OnWorldGameObjectEvent(string EventName, GameObject GameObject, object Data)
         {
             for (int i = 0; i < Scripts.Count; ++i)
-                Scripts[i].OnWorldGameObjectEvent(EventName, Obj, Data);
+                Scripts[i].OnWorldGameObjectEvent(EventName, GameObject, Data);
         }
 
         public void OnWorldZoneEvent(string EventName, ZoneMgr Zone, object Data)

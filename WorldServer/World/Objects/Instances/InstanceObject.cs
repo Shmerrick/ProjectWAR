@@ -11,7 +11,7 @@ namespace WorldServer.World.Objects.Instances
         public readonly Instance_Object Info;
         protected readonly Instance Instance;
 
-        protected byte VfxState = 0;
+        protected new byte VfxState = 0;
 
         public InstanceObject(Instance instance, Instance_Object info)
         {
@@ -81,7 +81,7 @@ namespace WorldServer.World.Objects.Instances
             base.SendMeTo(plr);
         }
 
-        public void UpdateVfxState(byte state)
+        public new void UpdateVfxState(byte state)
         {
             VfxState = state;
             PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 20);

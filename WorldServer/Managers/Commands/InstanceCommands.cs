@@ -165,8 +165,7 @@ namespace WorldServer.Managers.Commands
         /// <returns>True if command was correctly handled, false if operation was canceled</returns>
         public static bool InstanceReset(Player plr, ref List<string> values)
         {
-            //TODO
-            return true;
+                        
             if (plr.QtsInterface.PublicQuest != null)
             {
                 plr.QtsInterface.PublicQuest.Stage.Cleanup();

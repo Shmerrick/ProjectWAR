@@ -78,7 +78,7 @@ namespace WorldServer.World.Battlefronts.Keeps
         public byte Rank = 0;
         public bool RamDeployed;
         public Realms Realm;
-        public RegionMgr Region;
+        public new RegionMgr Region;
 
         public bool InnerPosternCanBeUsed { get; set; }
         public bool OuterPosternCanBeUsed { get; set; }
