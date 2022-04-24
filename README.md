@@ -6,7 +6,7 @@ Discord: https://discordapp.com/invite/MBxsJBQ
 
 #### Download los and zones files, put it in your server folder ####
 
-https://projectwar.online/
+https://drive.google.com/file/d/1TgHnAsn-reUbLyGavd9hLUVuXR5dEbf2/view?usp=sharing
 
 #### Development Tools for Server ####
 
