@@ -162,7 +162,7 @@ namespace WorldServer.World.AI.Abilities
             if (Combat.CurrentTarget is Player)
             {
                 var target = ((Player)Combat.CurrentTarget);
-                Brain.SpeakYourMind($" using PlagueAura vs {target.Name}");
+                //Brain.SpeakYourMind($" using PlagueAura vs {target.Name}");
                 Brain.SimpleCast(Owner, Combat.CurrentTarget, "PlagueAura", 13660);
             }
         }
@@ -396,7 +396,7 @@ namespace WorldServer.World.AI.Abilities
 
         public void EnergyFlux()
         {
-            Brain.SpeakYourMind(" using EnergyFlux");
+            // Brain.SpeakYourMind(" using EnergyFlux");
 
             // Remove any old electron fluxes (max of 4)
             var fluxes = Owner.GetInRange<GameObject>(150);
