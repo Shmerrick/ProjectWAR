@@ -318,7 +318,7 @@ namespace WorldServer.World.AI.Abilities
             if (Combat.CurrentTarget is Player)
             {
                 var target = ((Player)Combat.CurrentTarget);
-                Brain.SpeakYourMind($" using BloodscentAura vs {target.Name}");
+                //Brain.SpeakYourMind($" using BloodscentAura vs {target.Name}");
                 Brain.SimpleCast(Owner, Combat.CurrentTarget, "BloodscentAura", 13728);
             }
         }
@@ -331,7 +331,7 @@ namespace WorldServer.World.AI.Abilities
         /// </summary>
         public void DeployBannerOfBloodlust()
         {
-            Brain.SpeakYourMind(" using DeployBannerOfBloodlust");
+            //Brain.SpeakYourMind(" using DeployBannerOfBloodlust");
 
             GameObject_proto proto = GameObjectService.GetGameObjectProto(3100412);
 
