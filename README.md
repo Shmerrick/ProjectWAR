@@ -11,10 +11,22 @@ https://drive.google.com/file/d/1TgHnAsn-reUbLyGavd9hLUVuXR5dEbf2/view?usp=shari
 #### Download Full WAR Client ####
 
 https://mega.nz/file/3AVRCRSZ#GTvN2wphlqjOflUe1OdAcT1oyjSw0y0Aqq5U4x2o3F4
+Mirror 2: https://mega.nz/file/8OYXgQIZ#Pshha5mzTifZbxQzSwekI8DX5V_dsssARXJ51JDlLyk
+Mirror 3: https://drive.google.com/file/d/1QODsa-Bp5ON_2FTz8Nqca9c-MwM5_Lyl/view?usp=sharing 
+
+#### Language Packs ####
+French Language Pack: https://drive.google.com/file/d/18DMb2OjRVjtIBi1Oj462_mAcKugC8463/view
+Spanish Language Pack: https://drive.google.com/file/d/1PMcimU7vfN5DiaW4I0VLIR3va54ngQho/view
+Russian Language Pack: https://drive.google.com/file/d/1hdh7-tYh_NkLQt4kzy12zYrN9kOk8ylb/view
+German Language Pack: https://drive.google.com/file/d/1FzQvQf52o-oneNlnSEBiy8VakWbhmL_c/view
 
 #### Development Tools for Server ####
 
 https://gitlab.com/Shmerrick/projectwar2-tools
+
+#### YouTube channel ####
+
+https://www.youtube.com/channel/UCZVtxRU0aEML7qRcIuukZtQ
 
 #### nuget packages ####
 * If you get an error compiling, complaining about NLog, you may need to force the VS package manager to get NLog. Do the following : 
