@@ -147,8 +147,48 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             _EvtInterface.AddEvent(IPCheck, 180000, 0);
             // _EvtInterface.AddEvent(RefreshObjectiveStatus, 20000, 0);
             _EvtInterface.AddEvent(CountdownFortDefenceTimer, FORT_DEFENCE_TIMER, 0);
-
+            _EvtInterface.AddEvent(UpdateWanderingMobs, 5000, 0);
             RegionLockManager = new RegionLockManager(Region);
+        }
+
+        public void StartWanderingMobs(int zoneId)
+        {
+
+            var activeCreatures = this.Region.GetObjects<Creature>().Where(x => x.ZoneId == zoneId);
+            foreach (var creature in activeCreatures)
+            {
+                creature.SetWander(true);
+                BattlefrontLogger.Debug($"Setting mob wandering : {creature.Name} {creature.Entry}");
+            }
+        }
+
+        public void UpdateWanderingMobs()
+        {
+            var activeCampaign = BattleFrontManager.GetActiveCampaign();
+            var status = activeCampaign?.ActiveBattleFrontStatus;
+            if (status != null)
+            {
+                if (activeCampaign != this)
+                    return;
+
+                var activeCreatures = this.Region.GetObjects<Creature>().Where(x => x.ZoneId == status.ZoneId && x.IsActive && !x.IsDisposed && !x.IsKeepLord && x.IsCreature());
+
+                foreach (var creature in activeCreatures)
+                {
+
+                    if (creature.IsWandering)
+                    {
+                        creature.MvtInterface.Move(
+                            creature.WorldPosition.X + StaticRandom.Instance.Next(2000),
+                            creature.WorldPosition.Y + StaticRandom.Instance.Next(2000),
+                            creature.WorldPosition.Z);
+                    }
+                    else
+                    {
+                        creature.SetWander(true);
+                    }
+                }
+            }
         }
 
         /// <summary>
