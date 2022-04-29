@@ -520,7 +520,7 @@ namespace WorldServer.World.AI
                 {
                     if (Combat.CurrentTarget is Player)
                     {
-                        SpeakYourMind($" using {description} vs {(Combat.CurrentTarget as Player)?.Name}");
+                        //SpeakYourMind($" using {description} vs {(Combat.CurrentTarget as Player)?.Name}");
                     }
                 }
             }
