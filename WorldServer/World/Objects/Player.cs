@@ -1005,13 +1005,23 @@ namespace WorldServer.World.Objects
 		private void ForceCloseMobsToWander(int distance)
 		{
 			var random = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));
-			var creaturesClose = GetInRange<Creature>(distance);
+			var creaturesClose = GetInRange<Creature>(distance).Where(
+				x => x.Level <= 43
+				&& x.Spawn.Proto.Unk2 <= 1001
+				&& x.Spawn.Proto.CreatureType != 32
+				&& x.Spawn.Proto.VendorID == 0
+				&& x.Spawn.Proto.LairBoss == false
+				&& x.Spawn.Proto.Title == 0
+				&& x.Spawn.Proto.Emote >= 0
+				&& x.Spawn.Proto.FinishingQuests == null
+				&& !(x is Pet)
+				&& x.Spawn.Proto.StartingQuests == null);
 			foreach (var creature in creaturesClose)
 			{
 				if (!creature.MvtInterface.IsMoving)
 				{
-					creature.MvtInterface.SetBaseSpeed(50);
-					var point = CalculatePoint(random, 800, creature.Spawn.WorldX, creature.Spawn.WorldY);
+					creature.MvtInterface.SetBaseSpeed(100);
+					var point = CalculatePoint(random, 500, creature.Spawn.WorldX, creature.Spawn.WorldY);
 					creature.MvtInterface.Move(point.X, point.Y, creature.Z);
 
 				}
