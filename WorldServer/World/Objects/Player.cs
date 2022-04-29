@@ -1011,7 +1011,7 @@ namespace WorldServer.World.Objects
 				if (!creature.MvtInterface.IsMoving)
 				{
 					creature.MvtInterface.SetBaseSpeed(50);
-					var point = CalculatePoint(random, 1500, creature.Spawn.WorldX, creature.Spawn.WorldY);
+					var point = CalculatePoint(random, 800, creature.Spawn.WorldX, creature.Spawn.WorldY);
 					creature.MvtInterface.Move(point.X, point.Y, creature.Z);
 
 				}
