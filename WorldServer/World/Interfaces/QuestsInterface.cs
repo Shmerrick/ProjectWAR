@@ -4,6 +4,7 @@ using GameData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using SystemData;
 using WorldServer.Managers;
 using WorldServer.Services.World;
@@ -1037,7 +1038,14 @@ namespace WorldServer.World.Interfaces
                     gameObject = obj.GetGameObject();
                     //Loot Loots = LootsMgr.GenerateLoot(GameObject, _Owner.GetPlayer());
                     //if (Loots != null && Loots.IsLootable())
-                    gameObject.SendMeTo(_Owner.GetPlayer());
+                    gameObject.SendRemove(_Owner.GetPlayer());
+                    Timer timer = new Timer(delegate (object state)
+                    {
+                        Player plr2 = ((object[])state)[0] as Player;
+                        if (plr2 != null)
+                            gameObject.SendMeTo(plr2);
+
+                    }, (object)(new object[] { _Owner.GetPlayer() }), 500, Timeout.Infinite);
                 }
             }
         }

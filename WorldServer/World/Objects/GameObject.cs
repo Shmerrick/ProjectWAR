@@ -4,6 +4,7 @@ using GameData;
 using System;
 using System.Collections.Generic;
 using SystemData;
+using System.Threading;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
@@ -205,7 +206,18 @@ namespace WorldServer.World.Objects
 
                 _interactable = value;
                 foreach (Player plr in PlayersInRange)
-                    SendMeTo(plr);
+                {
+                    {
+                        SendRemove(plr);
+                        Timer timer = new Timer(delegate (object state)
+                        {
+                            Player plr2 = ((object[])state)[0] as Player;
+                            if (plr2 != null)
+                                SendMeTo(plr2);
+
+                        }, (object)(new object[] { plr }), 500, Timeout.Infinite);
+                    }
+                }
             }
         }
 
@@ -564,8 +576,15 @@ namespace WorldServer.World.Objects
             Destroy();
         }
 
-        protected override void HandleDeathRewards(Player killer)
+        protected override void HandleDeathRewards(Unit unitKiller)
         {
+            Player killer = unitKiller as Player;
+            if (unitKiller is Pet pet)
+            {
+                killer = pet.Owner;
+            }
+            if (killer == null)
+                return; //Sanity;
             if (Spawn.Proto.TokUnlock != null && Spawn.Proto.TokUnlock.Length > 1 && Spawn.Proto.HealthPoints > 1)
             {
                 killer.TokInterface.AddToks(Spawn.Proto.TokUnlock);
@@ -577,6 +596,7 @@ namespace WorldServer.World.Objects
             }
             CreditQuestKill(killer);
         }
+
 
         protected void CreditQuestKill(Player killer)
         {
@@ -664,7 +684,18 @@ namespace WorldServer.World.Objects
                 if (_looted == value) return;
                 _looted = value;
                 foreach (Player plr in PlayersInRange)
-                    SendMeTo(plr);
+                {
+                    SendRemove(plr);
+
+                    Timer timer = new Timer(delegate (object state)
+                    {
+                        Player plr2 = ((object[])state)[0] as Player;
+                        if (plr2 != null)
+                            SendMeTo(plr2);
+
+                    }, (object)(new object[] { plr }), 500, Timeout.Infinite);
+                }
+
             }
         }
 

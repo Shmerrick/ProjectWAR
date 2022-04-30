@@ -4013,7 +4013,7 @@ namespace WorldServer.World.Objects
 
 		private int _lastPvPDeathSeconds;
 
-		protected override void HandleDeathRewards(Player killer)
+		protected override void HandleDeathRewards(Unit killer)
 		{
 			if (ChickenDebuff != null)
 				return;
@@ -4026,51 +4026,59 @@ namespace WorldServer.World.Objects
 				killer = DamageSources.Keys.First();
 			}
 
-			Scenario currentScenario = killer.ScnInterface.Scenario;
+			Player killerPlr = killer as Player;
+			if (killer is Pet pet)
+			{
+				killerPlr = pet.Owner;
+			}
+			if (killerPlr == null)
+				return;
+
+			Scenario currentScenario = killerPlr.ScnInterface.Scenario;
 
 			// Manage player deaths in a scenario
 			if (currentScenario != null)
 			{
-				HandleXPRenown(killer, 1f);
+				HandleXPRenown(killerPlr, 1f);
 
-				if (!currentScenario.SoloBlock(killer, false) && !currentScenario.PreventKillReward())
-					GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : killer, 5f);
+				if (!currentScenario.SoloBlock(killerPlr, false) && !currentScenario.PreventKillReward())
+					GenerateLoot(killerPlr.PriorityGroup != null ? killerPlr.PriorityGroup.GetGroupLooter(killerPlr) : killerPlr, 5f);
 			}
 
 			#region RvR Bonus Mod and Rewards
 
 			else
 			{
-				if (Region.Campaign.PreventKillReward() || (killer.Client?._Account != null && CheckKillFarm(killer)))
+				if (Region.Campaign.PreventKillReward() || (killerPlr.Client?._Account != null && CheckKillFarm(killerPlr)))
 					return;
 
 				// Distribute Player Kill Rewards
 				if (ActiveBattleFrontStatus != null)
 				{
-					var influenceId = GetKillerInfluenceId(killer);
+					var influenceId = GetKillerInfluenceId(killerPlr);
 
 					// If the victim was a realm captain, give extra rewards
 					if (ActiveBattleFrontStatus.DestructionRealmCaptain?.CharacterId == CharacterId)
 					{
-						ActiveBattleFrontStatus.RewardManagerInstance.RealmCaptainKill(this, killer, influenceId, PlayersByCharId);
+						ActiveBattleFrontStatus.RewardManagerInstance.RealmCaptainKill(this, killerPlr, influenceId, PlayersByCharId);
 						ActiveBattleFrontStatus.RemoveAsRealmCaptain(this);
 					}
 					if (ActiveBattleFrontStatus.OrderRealmCaptain?.CharacterId == CharacterId)
 					{
-						ActiveBattleFrontStatus.RewardManagerInstance.RealmCaptainKill(this, killer, influenceId, PlayersByCharId);
+						ActiveBattleFrontStatus.RewardManagerInstance.RealmCaptainKill(this, killerPlr, influenceId, PlayersByCharId);
 						ActiveBattleFrontStatus.RemoveAsRealmCaptain(this);
 					}
 
-					ActiveBattleFrontStatus.RewardManagerInstance.DistributePlayerKillRewards(this, killer, AAOBonus, influenceId, PlayersByCharId);
+					ActiveBattleFrontStatus.RewardManagerInstance.DistributePlayerKillRewards(this, killerPlr, AAOBonus, influenceId, PlayersByCharId);
 				}
 
 				// Record the recent killers of this toon.
-				if (!_recentLooters.ContainsKey(killer.CharacterId))
-					_recentLooters.Add(killer.CharacterId, TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL);
-				else _recentLooters[killer.CharacterId] = TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL;
+				if (!_recentLooters.ContainsKey(killerPlr.CharacterId))
+					_recentLooters.Add(killerPlr.CharacterId, TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL);
+				else _recentLooters[killerPlr.CharacterId] = TCPManager.GetTimeStampMS() + SOLO_DROP_INTERVAL;
 
-				killer.Region.Campaign.VictoryPointProgress.AddPlayerKill(killer.Realm);
-				killer.SendClientMessage($"+2 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
+				killerPlr.Region.Campaign.VictoryPointProgress.AddPlayerKill(killerPlr.Realm);
+				killerPlr.SendClientMessage($"+2 VP awarded for assisting your realm secure this campaign.", ChatLogFilters.CHATLOGFILTERS_RVR);
 			}
 
 			#endregion RvR Bonus Mod and Rewards
@@ -4182,15 +4190,22 @@ namespace WorldServer.World.Objects
 			#endregion Remove players irrelevant to the kill
 
 			uint sumDamage = 0;
-			foreach (KeyValuePair<Player, uint> kvpair in DamageSources)
+			foreach (KeyValuePair<Unit, uint> kvpair in DamageSources)
 			{
-				sumDamage += kvpair.Value;
+				if (kvpair.Key is Player || kvpair.Key is Pet)
+					sumDamage += kvpair.Value;
 			}
 
-			foreach (KeyValuePair<Player, uint> kvpair in DamageSources)
+			foreach (KeyValuePair<Unit, uint> kvpair in DamageSources)
 			{
 				//#region Get reward values for this player
-				Player curPlayer = kvpair.Key;
+				Player curPlayer = kvpair.Key as Player;
+				if (kvpair.Key is Pet pet)
+				{
+					curPlayer = pet.Owner;
+				}
+				else
+					continue;
 
 				// Prevent farming low levels for kill quests, and also stop throttled kills
 				if (curPlayer.EffectiveLevel <= EffectiveLevel + 10)

@@ -28,7 +28,7 @@ namespace WorldServer.World.AI
         protected CombatInterface_Npc Combat;
         protected AIInterface AI;
         // Whether to announce any execution being processed.  
-        private static readonly bool AnnounceExecution = true;
+        private static readonly bool AnnounceExecution = false;
 
         protected static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 

@@ -18,6 +18,7 @@ namespace WorldServer.World.AI
         public override void Think(long tick)
         {
             base.Think(tick);
+            AI.Debugger?.SendClientMessage("[MR]: Seeking attackable unit...");
 
             // Only bother to seek targets if we're actually being observed by a player
             if (Combat.CurrentTarget == null && _unit.PlayersInRange.Count > 0)
