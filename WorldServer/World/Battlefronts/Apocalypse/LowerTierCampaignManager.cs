@@ -229,7 +229,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             foreach (var flag in activeRegion.Campaign.Objectives)
             {
-                if (ActiveBattleFront.RegionId == flag.RegionId)
+                if (ActiveBattleFront.ZoneId == flag.ZoneId)
                 {
                     flag.OwningRealm = realm;
                     flag.SetObjectiveLocked();
