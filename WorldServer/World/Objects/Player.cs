@@ -999,9 +999,6 @@ namespace WorldServer.World.Objects
 			_lastStealthCheck = msTick + STEALTH_CHECK_INTERVAL;
 		}
 
-		// Simple random seed.
-		private static Random random = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));
-
 		private void ForceCloseMobsToWander(int distance)
 		{
 			var random = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));

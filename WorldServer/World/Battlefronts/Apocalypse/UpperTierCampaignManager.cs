@@ -354,7 +354,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             foreach (var flag in activeRegion.Campaign.Objectives)
             {
-                if (ActiveBattleFront.ZoneId == flag.ZoneId)
+                if (ActiveBattleFront.RegionId == flag.RegionId)
                 {
                     flag.OwningRealm = realm;
                     flag.SetObjectiveLocked();
