@@ -1,0 +1,1 @@
+UPDATE `creature_protos` SET `IsWandering` = 1 WHERE `CreatureType` = 3 AND `CreatureSubType` = 20;
