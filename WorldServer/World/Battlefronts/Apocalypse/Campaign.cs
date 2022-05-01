@@ -157,7 +157,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
             var activeCreatures = this.Region.GetObjects<Creature>().Where(x => x.ZoneId == zoneId);
             foreach (var creature in activeCreatures)
             {
-                creature.SetWander(true);
+                creature.SetWander(1);
                 BattlefrontLogger.Debug($"Setting mob wandering : {creature.Name} {creature.Entry}");
             }
         }
@@ -176,17 +176,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                 foreach (var creature in activeCreatures)
                 {
 
-                    if (creature.IsWandering)
-                    {
+                        creature.SetWander(1);
                         creature.MvtInterface.Move(
                             creature.WorldPosition.X + StaticRandom.Instance.Next(2000),
                             creature.WorldPosition.Y + StaticRandom.Instance.Next(2000),
                             creature.WorldPosition.Z);
-                    }
-                    else
-                    {
-                        creature.SetWander(true);
-                    }
+                    
                 }
             }
         }

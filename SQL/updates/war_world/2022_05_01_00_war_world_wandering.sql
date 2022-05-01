@@ -1,0 +1,1 @@
+ALTER TABLE `creature_protos` ADD COLUMN `IsWandering` SMALLINT(5) UNSIGNED DEFAULT 0 NOT NULL AFTER `Ranged`;

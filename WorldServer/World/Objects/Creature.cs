@@ -30,7 +30,7 @@ namespace WorldServer.World.Objects
         public ushort Ranged { get; set; }
         public ushort Model1 { get; set; }
         public ushort Model2 { get; set; }
-        public bool IsWandering { get; set; }
+        public ushort IsWandering { get; set; }
 
         public Creature()
         {
@@ -45,7 +45,11 @@ namespace WorldServer.World.Objects
             Ranged = spawn.Proto.Ranged;
             Model1 = spawn.Proto.Model1;
             Model2 = spawn.Proto.Model2;
-            IsWandering = false;
+            IsWandering = spawn.Proto.IsWandering;
+            if (spawn.Proto.Emote >= 0)
+            {
+                IsWandering = 0;
+            }
             if (spawn.Proto.Invulnerable == 1)
                 IsInvulnerable = true;
 
@@ -1449,9 +1453,9 @@ namespace WorldServer.World.Objects
 
             return false;
         }
-        public void SetWander(bool wander)
+        public void SetWander(ushort wander)
         {
-            this.IsWandering = true;
+            IsWandering = 1;
         }
     }
 }

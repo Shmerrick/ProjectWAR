@@ -990,7 +990,7 @@ namespace WorldServer.World.Objects
 				_nextSpeedPenLiftTime += 1000;
 			}
 
-			//ForceCloseMobsToWander(200);
+			ForceCloseMobsToWander(200); // make creatures moves when player goes close (200 yards)
 
 			if (StealthLevel == 0 || msTick - _lastStealthCheck <= STEALTH_CHECK_INTERVAL)
 				return;
@@ -1003,22 +1003,13 @@ namespace WorldServer.World.Objects
 		{
 			var random = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));
 			var creaturesClose = GetInRange<Creature>(distance).Where(
-				x => x.Level <= 43
-				&& x.Spawn.Proto.Unk2 <= 1001
-				&& x.Spawn.Proto.CreatureType != 32
-				&& x.Spawn.Proto.VendorID == 0
-				&& x.Spawn.Proto.LairBoss == false
-				&& x.Spawn.Proto.Title == 0
-				&& x.Spawn.Proto.Emote >= 0
-				&& x.Spawn.Proto.FinishingQuests == null
-				&& !(x is Pet)
-				&& x.Spawn.Proto.StartingQuests == null);
+				x => x.Spawn.Proto.IsWandering == 1);
 			foreach (var creature in creaturesClose)
 			{
 				if (!creature.MvtInterface.IsMoving)
 				{
 					creature.MvtInterface.SetBaseSpeed(100);
-					var point = CalculatePoint(random, 500, creature.Spawn.WorldX, creature.Spawn.WorldY);
+					var point = CalculatePoint(random, 300, creature.Spawn.WorldX, creature.Spawn.WorldY);
 					creature.MvtInterface.Move(point.X, point.Y, creature.Z);
 
 				}

@@ -1413,6 +1413,9 @@ namespace Common
         public ushort Ranged { get; set; }
 
         [DataElement(AllowDbNull = false)]
+        public ushort IsWandering { get; set; }
+
+        [DataElement(AllowDbNull = false)]
         public byte Icone { get; set; }
 
         [DataElement(AllowDbNull = false)]
