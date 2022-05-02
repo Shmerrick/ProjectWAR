@@ -473,7 +473,6 @@
     <Compile Include="World\AI\RangedBrain.cs" />
     <Compile Include="World\AI\ZealotBrain.cs" />
     <Compile Include="World\AI\MarauderBrain.cs" />
-    <Compile Include="World\AI\AgressiveBrain.cs" />
     <Compile Include="World\AI\DummyBrain.cs" />
     <Compile Include="World\AI\GuardBrain.cs" />
     <Compile Include="World\AI\InstanceBossBrain.cs" />

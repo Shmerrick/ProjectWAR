@@ -1153,7 +1153,6 @@ namespace WorldServer.World.Objects
             {
                 if (Aggressive)
                 {
-                    //AiInterface.SetBrain(new AggressiveBrain(this));
                     AiInterface.SetBrain(new NpcBrain(this));
                 }
                 else

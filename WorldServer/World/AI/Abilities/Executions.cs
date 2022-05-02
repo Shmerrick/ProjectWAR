@@ -483,7 +483,7 @@ namespace WorldServer.World.AI.Abilities
             (Owner as Boss).SpawnDictionary.Add(entry);
 
             if (entry.Type == BrainType.AggressiveBrain)
-                creature.AiInterface.SetBrain(new AggressiveBrain(creature));
+                creature.AiInterface.SetBrain(new NpcBrain(creature));
             if (entry.Type == BrainType.HealerBrain)
                 creature.AiInterface.SetBrain(new HealerBrain(creature));
             if (entry.Type == BrainType.PassiveBrain)

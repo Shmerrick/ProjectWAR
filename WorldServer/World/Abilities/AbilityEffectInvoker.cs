@@ -1285,8 +1285,7 @@ namespace WorldServer.World.Abilities
 
             Creature c = plr.Region.CreateCreature(spawn);
             c.PlayersInRange = plr.PlayersInRange;
-            c.AiInterface.SetBrain(new AggressiveBrain(c));
-
+            
             return true;
         }
 
@@ -1403,7 +1402,7 @@ namespace WorldServer.World.Abilities
                     var player = _caster as Player;
 
                     var creature = target.Region.CreateCreature(spawn);
-                    creature.AiInterface.SetBrain(new AggressiveBrain(creature));
+                    creature.AiInterface.SetBrain(new NpcBrain(creature));
                     creature.CbtInterface.SetTarget(_caster.CbtInterface.GetCurrentTarget().Oid,
                         TargetTypes.TARGETTYPES_TARGET_NONE);
 

@@ -73,7 +73,7 @@ namespace WorldServer.World.Objects
             {
                 case 3: AiInterface.SetBrain(new PassiveBrain(this)); break;
                 case 4: AiInterface.SetBrain(new GuardBrain(this)); break;
-                case 5: AiInterface.SetBrain(new AggressiveBrain(this)); break;
+                case 5: AiInterface.SetBrain(new NpcBrain(this)); break;
             }
             Realm = owner.Realm;
             Faction = (byte)(owner.Realm == Realms.REALMS_REALM_DESTRUCTION ? 8 : 6);
@@ -836,7 +836,6 @@ namespace WorldServer.World.Objects
                     myPet.AiInterface.Debugger?.SendClientMessage("[MR]: Defensive state.");
                     break; // mode Defensive
                 case PetCommand.Aggressive:
-                    myPet.AiInterface.SetBrain(new AggressiveBrain(myPet));
                     petInterface.AIMode = 5;
                     myPet.AIMode = 5;
                     myPet.AiInterface.Debugger?.SendClientMessage("[MR]: Aggressive state.");
