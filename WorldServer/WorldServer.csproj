@@ -421,12 +421,6 @@
     <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_SlayerChoppa.cs" />
     <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_BlackOrc.cs" />
     <Compile Include="World\Abilities\CareerInterfaces\CareerInterface_Swordmaster.cs" />
-    <Compile Include="World\Abilities\MythicAbilities\AbilityCalculations.cs" />
-    <Compile Include="World\Abilities\MythicAbilities\AbilityEngine.cs" />
-    <Compile Include="World\Abilities\MythicAbilities\AbilityEnums.cs" />
-    <Compile Include="World\Abilities\MythicAbilities\AbilityExport.cs" />
-    <Compile Include="World\Abilities\MythicAbilities\DAMAGE.cs" />
-    <Compile Include="World\Abilities\MythicAbilities\PlayerService.cs" />
     <Compile Include="World\Abilities\NewChannelHandler.cs" />
     <Compile Include="World\Abilities\AbilityProcessor.cs" />
     <Compile Include="World\Abilities\CombatManager.cs" />
