@@ -56,7 +56,7 @@ namespace FrameWork
                                 byte result = 0;
                                 if (!byte.TryParse(Val, out result))
                                 {
-                                    Log.Error("FrameWork.Utils.ConvertStringToArray", "Unable to convert to byte " + Val);
+                                  //  Log.Error("FrameWork.Utils.ConvertStringToArray", "Unable to convert to byte " + Val);
                                 }
                                 L.Add((T)(object)result);
                             }
@@ -65,7 +65,7 @@ namespace FrameWork
                                 ushort result = 0;
                                 if (!ushort.TryParse(Val, out result))
                                 {
-                                    Log.Error("FrameWork.Utils.ConvertStringToArray", "Unable to convert to ushort " + Val);
+                                   // Log.Error("FrameWork.Utils.ConvertStringToArray", "Unable to convert to ushort " + Val);
                                 }
                                 L.Add((T)(object)result);
                             }
@@ -75,7 +75,7 @@ namespace FrameWork
                     }
                     catch
                     {
-                        Log.Error("FrameWork.Utils.ConvertStringToArray", "Overflow exception when attempting to cast to type " + typeof(T));
+                        //Log.Error("FrameWork.Utils.ConvertStringToArray", "Overflow exception when attempting to cast to type " + typeof(T));
                         L.Add((T)Convert.ChangeType("0", typeof(T)));
                     }
                 }
