@@ -2384,6 +2384,19 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
+        public static bool EightPeaks(Player player, ref List<string> values)
+        {
+            player.Teleport(61, 1396569, 1059261, 13087, 0);
+
+            return true;
+        }
+        public static bool Karaz(Player player, ref List<string> values)
+        {
+            player.Teleport(62, 204917, 1497879, 29900, 0);
+
+            return true;
+        }
+
         public static bool QuestComplete(Player plr, ref List<string> values)
         {
             ushort QuestId = 0;

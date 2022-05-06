@@ -40,7 +40,6 @@ namespace WorldServer.Managers.Commands
         {
             new GmCommandHandler("exmode", ExperimentalMode, null, 0, 0, "Enables experimental mode on the current target if the current class supports it."),
             new GmCommandHandler("changelist", CareerChangeList, null, 0, 0, "Displays a list of changes made to the career."),
-
             new GmCommandHandler("addstat", AddStatBonus, null, EGmLevel.DatabaseDev, 2, "Increases a given stat by a given value."),
             new GmCommandHandler("buff", SendBuffAppearance, null, EGmLevel.DatabaseDev, 1, "Sends a fake buff start packet (int buffId)"),
             new GmCommandHandler("effect", SendCastPlayerEffect, null, EGmLevel.DatabaseDev, 2, "Sends a cast player effect packet."),
@@ -147,11 +146,9 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("playernametemp", ModifyPlayerNameTemp, null, EGmLevel.EmpoweredStaff, 0, "Temporarily changes players name until server restart."),
             new GmCommandHandler("guildleader", ModifyGuildLeader, null, EGmLevel.EmpoweredStaff, 2, "Changes the leader of the guild (string newLeader, string guildName)"),
             new GmCommandHandler("guildnamebyid", ModifyGuildNameByID, null, EGmLevel.TrustedGM, 2, "Changes the name of the guild by ID (int guildID string guildName)"),
-
             new GmCommandHandler("level", ModifyLevel, null, EGmLevel.Management, 1, "Changes the level of the targeted player (int Rank)"),
             new GmCommandHandler("renown", ModifyRenown, null, EGmLevel.Management, 2, "Changes the renown rank of a player (string playerName, int RenownRank)"),
             new GmCommandHandler("stat", ModifyStat, null, EGmLevel.SourceDev, 2, "Changes your proficiency in your current crafting skill (byte Skill)"),
-
             new GmCommandHandler("access", ModifyAccess, null, EGmLevel.Management, 1, "Changes the access level of the designated account (string username, int newAccessLevel)"),
             new GmCommandHandler("morale", ModifyMorale, null, EGmLevel.SourceDev, 1, "Changes the morale of the selected player (int Morale)"),
             new GmCommandHandler("faction", ModifyFaction, null, EGmLevel.SourceDev, 1, "Changes the current faction of selected Unit (byte Faction)"),
@@ -331,20 +328,16 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("changename", RequestNameChange, null, EGmLevel.GM, 1, "Requests a name change, one per account per month (string newName)"),
             new GmCommandHandler("ping", GetPing, null, 0, 0, "Returns an avg of 10 latency packets"),
             new GmCommandHandler("sorenable", SoREnable, null, 0, 0, "Enables SoR addon."),
-            // new GmCommandHandler("pug", PugScenario, null, 0, 0, "Displays current PUG scenario."),
+            new GmCommandHandler("pug", PugScenario, null, 0, 0, "Displays current PUG scenario."),
             new GmCommandHandler("sorenable", SoREnable, null, 0, 0, "Enables SoR addon."),
-            //   new GmCommandHandler("version", GetVersion, null, 0, 0, "Gets the WorldServer version."),
             // Halloween event stuff
             new GmCommandHandler("spooky", Spooky, null, EGmLevel.GM, 0, "This command will make you spooky..."),
             new GmCommandHandler("notspooky", NotSpooky, null, EGmLevel.GM, 0,
                 "You don't want to be spooky :(... You need to run this command upon logging on server, it do not disable spookieness if you are already spooky."),
             new GmCommandHandler("morph", Morph, null, EGmLevel.GM, 0, "This command will make you morph..."),
             // All staff
-#if (DEBUG)
             new GmCommandHandler("debugmode", SetDebugMode, null, EGmLevel.SourceDev, 0, "Enables debugging messages (byte enableDebug)"),
-#else
             new GmCommandHandler("debugmode", SetDebugMode, null, EGmLevel.AllStaff, 0, "Enables debugging messages (byte enableDebug)"),
-            #endif
             new GmCommandHandler("togglerank", GmMgr.ToggleShowRank, null, EGmLevel.GM, 0, "Toggles whether or not to display your staff rank in chat messages."),
             new GmCommandHandler("name", SetSurname, null, EGmLevel.GM, 1, "Changes your last name (string Surname) - use 'clear' to clear the name"),
             new GmCommandHandler("info", Info, null, EGmLevel.GM, 0, "Prints general information about your current target."),
@@ -424,8 +417,11 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("quest", QuestComplete, null, EGmLevel.DatabaseDev, 2,
                 "Used to debug quests <QuestId> <Operation> Operation 1 - add, 2 - finish quest, 3 - delete quest from player"),
             new GmCommandHandler("givebag", GiveBag, null, EGmLevel.SourceDev, 0,
-                "Used to give a character a bag <Rarity><Item1><Item2>.."), // Don't worry, this is only on DEV, dosen't go to Live
-            //new GmCommandHandler("gunbad", Gunbad, null, EGmLevel.GM, 0, "Used to to set character for tester"), // Don't worry, this is only on DEV, dosen't go to Live
+                "Used to give a character a bag <Rarity><Item1><Item2>.."), 
+            new GmCommandHandler("gunbad", Gunbad, null, EGmLevel.GM, 0, "Used to to set character for tester"),
+            new GmCommandHandler("eightpeaks", EightPeaks, null, EGmLevel.GM, 0, "Used to to set character for tester"),
+            new GmCommandHandler("karaz", Karaz, null, EGmLevel.GM, 0, "Used to to set character for tester"),
+
 
             // Source dev commands
             new GmCommandHandler("lockcasting", PreventCasting, null, EGmLevel.SourceDev, 0, "Prevents all casting (byte blockAllCasts)"),
@@ -442,7 +438,6 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("structure", CreateRvRObject, null, EGmLevel.SourceDev, 0, "Creates a structure."),
             new GmCommandHandler("bolsterlevel", BolsterLevel, null, EGmLevel.SourceDev, 1, "Changes max bolster level for T2 T3 and T4."),
             new GmCommandHandler("playerdrop", ChangePlayerDrop, null, EGmLevel.SourceDev, 1, "Switch that changes how medallions are generated for killed players."),
-
             new GmCommandHandler("beastmaster", Beastmaster, null, EGmLevel.SourceDev, 0, "Changes your whitelion to beastmaster."),
             new GmCommandHandler("setpet", SetPet, null, EGmLevel.SourceDev, 1, "Changes your pet model to number provided."),
             new GmCommandHandler("summonpet", SummonPet, null, EGmLevel.SourceDev, 1, "Summons the pet requested."),
