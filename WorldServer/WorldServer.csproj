@@ -442,7 +442,7 @@
     <Compile Include="World\AI\EnhancedAI\TargetSelectionMethod.cs" />
     <Compile Include="World\AI\EnhancedAI\UnitAdaptor.cs" />
     <Compile Include="World\AI\HealerBrain.cs" />
-    <Compile Include="World\AI\NpcBrain.cs" />
+    <Compile Include="World\AI\AggressiveBrain.cs" />
     <Compile Include="World\AI\PathFinding\AStar.cs" />
     <Compile Include="World\AI\PathFinding\AStar\ComparePfNodeMatrix.cs" />
     <Compile Include="World\AI\PathFinding\AStar\HeuristicFormula.cs" />

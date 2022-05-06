@@ -13,7 +13,7 @@ using WorldServer.World.Objects;
 
 namespace WorldServer.World.AI
 {
-    public class NpcBrain : ABrain
+    public class AggressiveBrain : ABrain
     {
         private static long ABILITY_COOLDOWN = 5000;
         public long NextAbilityExecution { get; set; }
@@ -26,7 +26,7 @@ namespace WorldServer.World.AI
 
         public Creature_proto Proto { get; set; }
 
-        public NpcBrain(Unit myOwner) : base(myOwner)
+        public AggressiveBrain(Unit myOwner) : base(myOwner)
         {
             NextAbilityExecution = 0;
             ConditionManager = new Conditions(_unit, Combat);

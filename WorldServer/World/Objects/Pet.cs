@@ -73,7 +73,7 @@ namespace WorldServer.World.Objects
             {
                 case 3: AiInterface.SetBrain(new PassiveBrain(this)); break;
                 case 4: AiInterface.SetBrain(new GuardBrain(this)); break;
-                case 5: AiInterface.SetBrain(new NpcBrain(this)); break;
+                case 5: AiInterface.SetBrain(new AggressiveBrain(this)); break;
             }
             Realm = owner.Realm;
             Faction = (byte)(owner.Realm == Realms.REALMS_REALM_DESTRUCTION ? 8 : 6);
