@@ -203,6 +203,21 @@ namespace WorldServer.World.AI.Abilities
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "LegTear", 46);
         }
 
+        public void DaemonicFire()
+        { // 10 sec snare
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "DaemonicFire", 54);
+        }
+
+        public void DaemonicConsumption()
+        { 
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "DaemonicConsumption", 55);
+        }
+
+        public void WarpingEnergy()
+        {
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "DaemonicConsumption", 56);
+        }
+
         public void WhitefireWebBolt()
         { // knockback and snare
            // Brain.SpeakYourMind($" using WhitefireWebBolt vs {(Combat.CurrentTarget as Player)?.Name}");
