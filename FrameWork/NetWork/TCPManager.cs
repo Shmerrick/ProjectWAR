@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Collections;
 using System.Threading;
 using System.Reflection;
 using System.Linq;
@@ -592,8 +589,12 @@ namespace FrameWork
         public void HandlePacket(BaseClient client, PacketIn packet)
         {
             //#if DEBUG
-            Log.Debug("HandlePacket", $"Packet : {packet.Opcode} ({packet.Opcode.ToString("X8")})");
-            Log.Dump("HandlePacket", packet.ToArray(), 0, packet.ToArray().Length);
+            if (packet.Opcode != (ulong)Opcodes.F_PING)
+            {
+
+                Log.Debug("HandlePacket", $"Packet : {packet.Opcode} ({((Opcodes)packet.Opcode).ToString()} - 0x{packet.Opcode.ToString("X2")})");
+                Log.Dump("HandlePacket", Log.Hex(packet.ToArray(), 0, packet.ToArray().Length));
+            }
             //#endif
 
             if (client == null)

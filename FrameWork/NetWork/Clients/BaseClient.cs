@@ -345,7 +345,8 @@ namespace FrameWork
 
         public virtual bool SendPacketNoBlock(PacketOut packet)
         {
-            Log.Debug("BaseClient", $"Socket Connected : {Socket.Connected} Packet : {packet.Opcode}", true);
+            if (packet.Opcode != (ulong)Opcodes.S_PONG)
+                Log.Debug("BaseClient", $"Socket Connected : {Socket.Connected} Packet : {packet.Opcode} ({((Opcodes)packet.Opcode).ToString()} - 0x{packet.Opcode.ToString("X2")}), Size: {packet.GetSize()}", true);
             if (!Socket.Connected)
                 return false;
 

@@ -215,6 +215,12 @@ namespace FrameWork
                 + Position + "\r\n" + Hex(ToArray(), 0, (int)Position) + "\r\n";
         }
 
+        public long GetSize()
+        {
+            long size = OpcodeInLen == false ? (Length - OpcodeLen) : Length;
+            if (!SizeInLen) size -= SizeLen;
+            return size;
+        }
         public virtual ulong WritePacketLength()
         {
             if (Struct == PackStruct.OpcodeAndSize)
@@ -224,8 +230,7 @@ namespace FrameWork
             else
                 Position = 0;
 
-            long size = OpcodeInLen == false ? (Length - OpcodeLen) : Length;
-            if (!SizeInLen) size -= SizeLen;
+            long size = GetSize();
 
             switch (SizeLen)
             {

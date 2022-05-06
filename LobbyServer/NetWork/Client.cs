@@ -113,11 +113,11 @@ namespace LobbyServer
             header.Add((byte)(pSize));
             header.Add((byte)(outPacket.Opcode));
 
-            Log.Tcp("Header", header.ToArray(), 0, header.Count);
-            Log.Tcp("Packet", packet, 0, packet.Length);
+            //Log.Tcp("Header", header.ToArray(), 0, header.Count);
+            //Log.Tcp("Packet", packet, 0, packet.Length);
 
-            //Log.Dump("Header", header.ToArray(), 0, header.Count);
-            //Log.Dump("Packet", packet, 0, packet.Length);
+            //Log.Dump("Header", Log.Hex(header.ToArray(), 0, header.Count));
+            //Log.Dump("Packet", Log.Hex(packet, 0, packet.Length));
 
             SendTCP(header.ToArray());
             SendTCP(packet);

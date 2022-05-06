@@ -197,6 +197,19 @@ namespace WorldServer.NetWork.Handler
             plr.SendPacket(Out);
         }
 
+        public static string LongToBinary(long number)
+        {
+            char[] buff = new char[64];
+
+            for (int i = 63; i >= 0; i--)
+            {
+                int mask = 0x1 << i;
+                buff[63 - i] = (number & mask) != 0 ? '1' : '0';
+            }
+
+            return new string(buff);
+        }
+
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_PLAYER_STATE2, (int)eClientState.WorldEnter, "F_PLAYER_STATE2")]
         public static void F_PLAYER_STATE2(BaseClient client, PacketIn packet)
         {
@@ -241,8 +254,16 @@ namespace WorldServer.NetWork.Handler
 
             if (packet.Size > 9 && packet.Size < 18)
             {
-                long state = System.Net.IPAddress.NetworkToHostOrder(BitConverter.ToInt64(data, 2));
-                long state2 = System.Net.IPAddress.NetworkToHostOrder(BitConverter.ToInt64(data, 10));
+                Log.Debug("F_PLAYER_STATE2", $"PacketSize = {packet.Size}");
+                Log.Debug("F_PLAYER_STATE2", Log.Hex(data, 0, data.Length));
+                long state = BitConverter.ToInt64(data, 2);
+                long state2 = BitConverter.ToInt64(data, 10);
+
+                Log.Debug("F_PLAYER_STATE2", $"raw state1: {LongToBinary(state)}, state2: {LongToBinary(state2)}");
+
+                state = System.Net.IPAddress.NetworkToHostOrder(state);
+                state2 = System.Net.IPAddress.NetworkToHostOrder(state2);
+                Log.Debug("F_PLAYER_STATE2", $"converted state1: {LongToBinary(state)}, state2: {LongToBinary(state2)}");
 
                 ushort x = ((ushort)(((state2 >> 56 & 0x1) << 15) | ((state >> 0 & 0xFF) << 7) | ((state >> 9 & 0x7F))));
                 ushort y = ((ushort)(((state2 >> 40 & 0x1) << 15) | ((state2 >> 48 & 0xFF) << 7) | ((state2 >> 57 & 0x7F))));
@@ -256,6 +277,7 @@ namespace WorldServer.NetWork.Handler
                 bool moving = ((((state >> 49 & 0x1))) == 1);
                 bool notMoving = ((((state >> 63 & 0x1))) == 1);
                 byte groundtype = ((byte)(((state2 >> 82 & 0x1F))));
+                Log.Debug("F_PLAYER_STATE2", $"x = {x}, y = {y}, z = {z}, zoneID = {zoneID}, direction = {direction}, grounded = {grounded}, walking={walking}, moving = {moving}, notMoving = {notMoving}, fallState = {fallState}, groundtype = {groundtype}");
 
                 //Hack Zone ID should be ushort but we only read a byte
                 if (cclient.Plr.ZoneId > 255)
@@ -477,6 +499,7 @@ namespace WorldServer.NetWork.Handler
                 bool notMoving = ((((state >> 63 & 0x1))) == 1);
                 byte fallState = ((byte)(((state >> 40 & 0x1F))));
                 byte groundtype = ((byte)(((state2 >> 73 & 0x1F))));
+                Log.Debug("F_PLAYER_STATE2", $"x = {x}, y = {y}, z = {z}, zoneID = {zoneID}, direction = {direction}, grounded = {grounded}, walking={walking}, moving = {moving}, notMoving = {notMoving}, fallState = {fallState}, groundtype = {groundtype}");
 
                 if (fallState != 31 || ((moving || walking || !notMoving || !grounded) && player.Speed > 0))
                     player.IsMoving = true;

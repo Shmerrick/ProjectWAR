@@ -123,9 +123,11 @@ namespace WorldServer.NetWork.Handler
 
             string version = result.major + "." + result.minor + "." + result.revision;
 
-            Log.Debug("F_ENCRYPTKEY", "Version = " + version);
+            //Log.Debug("F_ENCRYPTKEY", $"Version = {version}, AppID = {result.application}, Unk1 = {result.unk1}");
             // Should be a connection to the remote client.
-            //Log.Debug("F_ENCRYPTKEY", "Client Ip = " + cclient.);
+            byte[] encryptKey = new byte[256];
+            packet.Read(encryptKey, 0, encryptKey.Length);
+            //Log.Debug("F_ENCRYPTKEY", "Client Key = " + Log.Hex(encryptKey, 0, encryptKey.Length));
 
             if (result.cipher == 0)
             {
@@ -135,8 +137,6 @@ namespace WorldServer.NetWork.Handler
             }
             else if (result.cipher == 1)
             {
-                byte[] encryptKey = new byte[256];
-                packet.Read(encryptKey, 0, encryptKey.Length);
                 cclient.AddCrypt("RC4Crypto", new CryptKey(encryptKey), new CryptKey(encryptKey));
             }
         }
