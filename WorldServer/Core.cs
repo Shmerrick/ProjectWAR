@@ -18,7 +18,7 @@ using WorldServer.World.Objects;
 
 namespace WorldServer
 {
-    internal class Program
+    internal class Core
     {
         public static WorldConfigs Config;
         public static AccountConfigs AccountConfig;

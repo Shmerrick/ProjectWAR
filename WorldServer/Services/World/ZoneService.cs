@@ -24,9 +24,9 @@ namespace WorldServer.Services.World
 
             Log.Success("LoadZone_Info", "Loaded " + _Zone_Info.Count + " Zone_Info");
 
-            if (Program.Config.RegionOcclusionFolder != null && Directory.Exists(WorldServer.Program.Config.RegionOcclusionFolder))
+            if (Core.Config.RegionOcclusionFolder != null && Directory.Exists(WorldServer.Core.Config.RegionOcclusionFolder))
             {
-                WorldServer.World.Map.Occlusion.InitZones(WorldServer.Program.Config.RegionOcclusionFolder);
+                WorldServer.World.Map.Occlusion.InitZones(WorldServer.Core.Config.RegionOcclusionFolder);
             }
             else
                 Log.Error("WorldServer", "RegionOcclusionFolder not specified/found in World.config. No server side LOS will be performed.");

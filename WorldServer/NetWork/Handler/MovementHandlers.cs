@@ -815,7 +815,7 @@ namespace WorldServer.NetWork.Handler
 
             Log.Debug("F_PLAYER_ENTER_FULL", "Enter the game : " + CharName + ",Slot=" + characterSlot);
 
-            if (Program.Rm.RealmId != serverID)
+            if (Core.Rm.RealmId != serverID)
                 cclient.Disconnect("Requested realm ID does not match this server's ID");
             else
             {

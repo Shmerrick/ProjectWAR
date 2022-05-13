@@ -336,7 +336,7 @@ namespace WorldServer.Managers
         [LoadingFunction(true)]
         public static void LoadCharacters()
         {
-            if (Program.Config.PreloadAllCharacters)
+            if (Core.Config.PreloadAllCharacters)
             {
                 List<Character> chars = (List<Character>)Database.SelectAllObjects<Character>();
                 Dictionary<uint, Character_value> charValues = Database.SelectAllObjects<Character_value>().GroupBy(v => v.CharacterId).ToDictionary(g => g.Key, g => g.FirstOrDefault());
@@ -379,7 +379,7 @@ namespace WorldServer.Managers
             }
             else
             {
-                string whereString = $"CharacterId IN (SELECT CharacterId FROM `{Database.GetSchemaName()}`.characters t1 WHERE t1.AccountId IN (SELECT AccountId FROM `{Program.AcctMgr.GetAccountSchemaName()}`.accounts t2 WHERE t2.LastLogged >= {RecentHistoryTime}))";
+                string whereString = $"CharacterId IN (SELECT CharacterId FROM `{Database.GetSchemaName()}`.characters t1 WHERE t1.AccountId IN (SELECT AccountId FROM `{Core.AcctMgr.GetAccountSchemaName()}`.accounts t2 WHERE t2.LastLogged >= {RecentHistoryTime}))";
                 /*_maxCharGuid = Database.GetMaxColValue<Character>("CharacterId");
 
                 Log.Success("LoadCharacters", _maxCharGuid + " is the max char GUID.");
@@ -638,7 +638,7 @@ namespace WorldServer.Managers
                     RemoveItemsFromCharacterId(characterId);
                     DeleteChar(Char);
 
-                    Program.AcctMgr.UpdateRealmCharacters(Program.Rm.RealmId, (uint)Database.GetObjectCount<Character>(" Realm=1"), (uint)Database.GetObjectCount<Character>(" Realm=2"));
+                    Core.AcctMgr.UpdateRealmCharacters(Core.Rm.RealmId, (uint)Database.GetObjectCount<Character>(" Realm=1"), (uint)Database.GetObjectCount<Character>(" Realm=2"));
                 }
         }
 
@@ -666,7 +666,7 @@ namespace WorldServer.Managers
                     RemoveItemsFromCharacterId(characterId);
                     DeleteChar(Char);
 
-                    Program.AcctMgr.UpdateRealmCharacters(Program.Rm.RealmId, (uint)Database.GetObjectCount<Character>(" Realm=1"), (uint)Database.GetObjectCount<Character>(" Realm=2"));
+                    Core.AcctMgr.UpdateRealmCharacters(Core.Rm.RealmId, (uint)Database.GetObjectCount<Character>(" Realm=1"), (uint)Database.GetObjectCount<Character>(" Realm=2"));
                 }
         }
 
@@ -733,7 +733,7 @@ namespace WorldServer.Managers
         /// </summary>
         public static bool NameIsDeleted(string name)
         {
-            Realm Rm = Program.Rm;
+            Realm Rm = Core.Rm;
             return Database.SelectObject<CharacterDeletionRecord>("CharacterName='" + Database.Escape(name) + "' AND DeletionTimeSeconds > " + Rm.BootTime) != null;
         }
 
@@ -742,7 +742,7 @@ namespace WorldServer.Managers
         /// </summary>
         public static void LoadPendingCharacters()
         {
-            AccountMgr mgr = Program.AcctMgr;
+            AccountMgr mgr = Core.AcctMgr;
 
             if (mgr == null)
             {
@@ -755,7 +755,7 @@ namespace WorldServer.Managers
             if (accountIds == null)
                 return;
 
-            StringBuilder sb = new StringBuilder($"CharacterId IN (SELECT CharacterId FROM {Database.GetSchemaName()}.characters t1 WHERE t1.AccountId IN (SELECT AccountId FROM {Program.AcctMgr.GetAccountSchemaName()}.accounts t2 WHERE t2.AccountId IN (");
+            StringBuilder sb = new StringBuilder($"CharacterId IN (SELECT CharacterId FROM {Database.GetSchemaName()}.characters t1 WHERE t1.AccountId IN (SELECT AccountId FROM {Core.AcctMgr.GetAccountSchemaName()}.accounts t2 WHERE t2.AccountId IN (");
 
             for (int i = 0; i < accountIds.Count; ++i)
             {
@@ -837,7 +837,7 @@ namespace WorldServer.Managers
         {
             AccountChars accountChars = GetAccountChar(accountId);
 
-            if (accountChars.Loaded || Program.Config.PreloadAllCharacters)
+            if (accountChars.Loaded || Core.Config.PreloadAllCharacters)
                 return accountChars.Chars;
 
             string whereString = $"CharacterId IN (SELECT CharacterId from `{Database.GetSchemaName()}`.characters WHERE AccountId = '{accountId}')";
@@ -1123,7 +1123,7 @@ namespace WorldServer.Managers
         {
             Log.Info("LoadGuildAllianes", "Loading guild Allianes...");
 
-            if (Program.Config.PreloadAllCharacters)
+            if (Core.Config.PreloadAllCharacters)
             {
                 List<Guild_Alliance_info> Alliances = (List<Guild_Alliance_info>)Database.SelectAllObjects<Guild_Alliance_info>();
                 foreach (Guild_Alliance_info ali in Alliances)
@@ -1145,7 +1145,7 @@ namespace WorldServer.Managers
             List<Guild_event> guildEvents = (List<Guild_event>)Database.SelectAllObjects<Guild_event>();
             List<GuildVaultItem> guildVault = (List<GuildVaultItem>)Database.SelectAllObjects<GuildVaultItem>();
 
-            if (Program.Config.PreloadAllCharacters)
+            if (Core.Config.PreloadAllCharacters)
             {
                 List<Guild_member> toRemove = new List<Guild_member>();
 
@@ -1239,7 +1239,7 @@ namespace WorldServer.Managers
                     Account accountEntity = null;
                     var characterEntity = CharMgr.GetCharacter(guild.LeaderId, true);
                     if (characterEntity != null)
-                        accountEntity = Program.AcctMgr.GetAccountById(characterEntity.AccountId);
+                        accountEntity = Core.AcctMgr.GetAccountById(characterEntity.AccountId);
 
                     if ((characterEntity != null) && (accountEntity != null))
                     {
@@ -1361,11 +1361,11 @@ namespace WorldServer.Managers
 
             IList<CharacterItem> charItems;
 
-            if (Program.Config.PreloadAllCharacters)
+            if (Core.Config.PreloadAllCharacters)
                 charItems = Database.SelectAllObjects<CharacterItem>();
             else
             {
-                string whereString = $"CharacterId IN (SELECT CharacterId FROM `{Database.GetSchemaName()}`.characters t1 WHERE t1.AccountId IN (SELECT AccountId FROM `{Program.AcctMgr.GetAccountSchemaName()}`.accounts t2 WHERE t2.LastLogged >= {RecentHistoryTime}))";
+                string whereString = $"CharacterId IN (SELECT CharacterId FROM `{Database.GetSchemaName()}`.characters t1 WHERE t1.AccountId IN (SELECT AccountId FROM `{Core.AcctMgr.GetAccountSchemaName()}`.accounts t2 WHERE t2.LastLogged >= {RecentHistoryTime}))";
                 charItems = Database.SelectObjects<CharacterItem>(whereString);
             }
 
@@ -1375,7 +1375,7 @@ namespace WorldServer.Managers
                 foreach (CharacterItem itm in charItems)
                     LoadItem(itm);
 
-            Log.Success("LoadItems", $"{myCount} inventory items {(Program.Config.PreloadAllCharacters ? "loaded" : "precached")}.");
+            Log.Success("LoadItems", $"{myCount} inventory items {(Core.Config.PreloadAllCharacters ? "loaded" : "precached")}.");
         }
 
         public static void CreateItem(CharacterItem item)
@@ -1534,7 +1534,7 @@ namespace WorldServer.Managers
         [LoadingFunction(true)]
         public static void LoadMailCount()
         {
-            if (Program.Config.PreloadAllCharacters)
+            if (Core.Config.PreloadAllCharacters)
             {
                 Log.Debug("WorldMgr", "Loading Character_mails...");
 

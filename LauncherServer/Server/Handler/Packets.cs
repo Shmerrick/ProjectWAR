@@ -26,11 +26,11 @@ namespace AuthenticationServer.Server.Handler
             string ip = client.GetIp().Split(':')[0];
 
             // Check Ip Ban
-            if (Program.AcctMgr.CheckIp(ip))
+            if (Core.AcctMgr.CheckIp(ip))
             {
                 Log.Debug("CL_CREATE", "Create Account Request : " + username + " " + result);
 
-                if (Program.AcctMgr.CreateAccount(username, password, 1, ip))
+                if (Core.AcctMgr.CreateAccount(username, password, 1, ip))
                 {
                     result = CreteAccountResult.ACCOUNT_NAME_SUCCESS;
                     Log.Debug("CL_CREATE", "Create Account Request SUCCESS");
@@ -66,16 +66,16 @@ namespace AuthenticationServer.Server.Handler
             string ip = client.GetIp().Split(':')[0];
 
             // Check Ip Ban
-            if (Program.AcctMgr.CheckIp(ip))
+            if (Core.AcctMgr.CheckIp(ip))
             {
-                result = Program.AcctMgr.CheckAccount(username, password, ip);
+                result = Core.AcctMgr.CheckAccount(username, password, ip);
                 Log.Debug("CL_START", "Authentication Request : " + username + " " + result);
 
                 Out.WriteByte((byte)result);
 
                 if (result == LoginResult.LOGIN_SUCCESS)
                 {
-                    var token = Program.AcctMgr.GenerateToken(username);
+                    var token = Core.AcctMgr.GenerateToken(username);
                     Log.Debug("CL_START", "Sending token to client : " + username + " token : " + token);
                     Out.WriteString(token);
                 }
@@ -86,7 +86,7 @@ namespace AuthenticationServer.Server.Handler
             cclient.SendPacketNoBlock(Out);
 
 #if !DEBUG
-            if (result == LoginResult.LOGIN_SUCCESS && Program.Config.SeverOnConnect)
+            if (result == LoginResult.LOGIN_SUCCESS && Core.Config.SeverOnConnect)
                 cclient.Disconnect("Transaction complete");
 #endif
         }
@@ -101,10 +101,10 @@ namespace AuthenticationServer.Server.Handler
 
             PacketOut Out = new PacketOut((byte)Opcodes.LCR_CHECK);
 
-            if (version != Program.Version)
+            if (version != Core.Version)
             {
                 Out.WriteByte((byte)CheckResult.LAUNCHER_VERSION); // Version incorrect + message
-                Out.WriteString(Program.Message);
+                Out.WriteString(Core.Message);
                 client.SendPacketNoBlock(Out);
 
                 cclient.Disconnect("Incorrect game version");
@@ -119,10 +119,10 @@ namespace AuthenticationServer.Server.Handler
                 Log.Debug("CHECK", "Has mythic file info");
                 len = packet.GetUint64();
 
-                if ((long)len != Program.Info.Length)
+                if ((long)len != Core.Info.Length)
                 {
                     Out.WriteByte((byte)CheckResult.LAUNCHER_FILE);
-                    Out.WriteString(Program.StrInfo);
+                    Out.WriteString(Core.StrInfo);
                     cclient.SendPacketNoBlock(Out);
                     return;
                 }
@@ -175,7 +175,7 @@ namespace AuthenticationServer.Server.Handler
             {
                 cclient.LastInfoRequest = TCPManager.GetTimeStampMS();
 
-                List<Realm> Rms = Program.AcctMgr.GetRealms();
+                List<Realm> Rms = Core.AcctMgr.GetRealms();
 
                 PacketOut Out = new PacketOut((byte)Opcodes.LCR_INFO);
                 Out.WriteByte((byte)Rms.Count);

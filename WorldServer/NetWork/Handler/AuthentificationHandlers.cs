@@ -20,7 +20,7 @@ namespace WorldServer.NetWork.Handler
             string Username = packet.GetString(23);
 
             // TODO
-            AuthResult Result = Program.AcctMgr.CheckToken(Username, Token);
+            AuthResult Result = Core.AcctMgr.CheckToken(Username, Token);
 #if DEBUG
             Result = AuthResult.AUTH_SUCCESS;
 #endif
@@ -43,7 +43,7 @@ namespace WorldServer.NetWork.Handler
             }
             else
             {
-                cclient._Account = Program.AcctMgr.GetAccount(Username);
+                cclient._Account = Core.AcctMgr.GetAccount(Username);
                 if (cclient._Account == null)
                 {
                     Log.Error("F_CONNECT", "Invalid Account =" + Username);
@@ -59,7 +59,7 @@ namespace WorldServer.NetWork.Handler
                         Other.Disconnect("Failed to get GameClient for account");
 
                     // Check if ip is banned. (they may have been just banned so launcher server wouldnt have picked it up)
-                    if (!Program.AcctMgr.CheckIp(cclient.GetIp().Split(':')[0]))
+                    if (!Core.AcctMgr.CheckIp(cclient.GetIp().Split(':')[0]))
                     {
                         Log.Error("F_CONNECT", "Banned IP =" + Username);
                         cclient.Disconnect("Banned by IP");
@@ -74,13 +74,13 @@ namespace WorldServer.NetWork.Handler
                         PacketOut Out = new PacketOut((byte)Opcodes.S_CONNECTED, 48);
                         Out.WriteUInt32(0);
                         Out.WriteUInt32(Tag);
-                        Out.WriteByte(Program.Rm.RealmId);
+                        Out.WriteByte(Core.Rm.RealmId);
                         Out.WriteByte(0);
                         Out.WriteByte(0);
                         Out.WriteByte(0);
                         Out.WriteByte(0); // TRANSFER_FLAG (1 - Low population server..free transfers...)
                         Out.WritePascalString(Username);
-                        Out.WritePascalString(Program.Rm.Name);
+                        Out.WritePascalString(Core.Rm.Name);
                         Out.WriteByte(0);
                         Out.WriteUInt16(0);
                         cclient.SendPacket(Out);

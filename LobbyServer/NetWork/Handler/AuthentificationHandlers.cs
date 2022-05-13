@@ -89,7 +89,7 @@ namespace LobbyServer.NetWork.Handler
             Log.Debug("LServ", "GetClusterListReq");
             Client cclient = (Client)client;
             PacketOut Out = new PacketOut((byte)Opcodes.SMSG_GetClusterListReply);
-            byte[] ClustersList = Program.AcctMgr.BuildClusterList();
+            byte[] ClustersList = Core.AcctMgr.BuildClusterList();
 
             Log.Debug("LServ", "Received " + ClustersList.Length + " clusters");
 
@@ -109,7 +109,7 @@ namespace LobbyServer.NetWork.Handler
             Out.Write(new byte[] { 0x08, 00 });
             cclient.SendTCPCuted(Out);
 
-            if (Program.Config.SeverOnFinish)
+            if (Core.Config.SeverOnFinish)
                 cclient.Disconnect("Transaction complete");
         }
     }

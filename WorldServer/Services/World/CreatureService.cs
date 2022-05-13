@@ -561,8 +561,8 @@ namespace WorldServer.Services.World
             if (!ButcheryEntries.ContainsKey(creatureSubType))
                 return null;
 
-            if (skillLv > Program.Config.RankCap * 5)
-                skillLv = (byte)(Program.Config.RankCap * 5);
+            if (skillLv > Core.Config.RankCap * 5)
+                skillLv = (byte)(Core.Config.RankCap * 5);
 
             uint itemId = ButcheryEntries[creatureSubType][StaticRandom.Instance.Next(ButcheryEntries[creatureSubType].Count)] + (uint)Math.Min(8, skillLv / 25);
 
@@ -580,8 +580,8 @@ namespace WorldServer.Services.World
         {
             uint itemId;
 
-            if (skillLv > Program.Config.RankCap * 5)
-                skillLv = (byte)(Program.Config.RankCap * 5);
+            if (skillLv > Core.Config.RankCap * 5)
+                skillLv = (byte)(Core.Config.RankCap * 5);
 
             if (StaticRandom.Instance.Next(100) <= 40)
             {

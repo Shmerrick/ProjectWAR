@@ -270,8 +270,8 @@ namespace WorldServer.Managers
             if (KLvl > VLvl)
                 XP -= (uint)((XP / (float)100) * (KLvl - VLvl + 1)) * 5;
 
-            if (Program.Config.XpRate > 0)
-                XP *= (uint)Program.Config.XpRate;
+            if (Core.Config.XpRate > 0)
+                XP *= (uint)Core.Config.XpRate;
 
             return XP;
         }
@@ -1161,8 +1161,8 @@ namespace WorldServer.Managers
 
             if (Reload)
             {
-                if (Program.Server != null)
-                    Program.Server.LoadPacketHandler();
+                if (Core.Server != null)
+                    Core.Server.LoadPacketHandler();
             }
         }
 
@@ -1448,7 +1448,7 @@ namespace WorldServer.Managers
         {
             //turn off user specific packet logging when server restarts. This is because devs/gm forget to turn it off and log file grows > 20GB
             Log.Debug("WorldMgr", "Resetting user packet log settings...");
-            Database.ExecuteNonQuery($"update `{Program.AccountConfig.AccountDB.Database}`.accounts set PacketLog = 0");
+            Database.ExecuteNonQuery($"update `{Core.AccountConfig.AccountDB.Database}`.accounts set PacketLog = 0");
         }
 
         #endregion Logging

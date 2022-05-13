@@ -82,7 +82,7 @@ namespace WorldServer.Managers
         {
             ZoneId = zoneId;
             Influences = new List<AreaInfluence>();
-            Folder = Program.Config.ZoneFolder + "zone" + string.Format("{0:000}", zoneId) + "/";
+            Folder = Core.Config.ZoneFolder + "zone" + string.Format("{0:000}", zoneId) + "/";
             Areas = ZoneService.GetZoneAreas(zoneId).OrderBy(area => area.PieceId).ToList();
 
             try
@@ -317,8 +317,8 @@ namespace WorldServer.Managers
 
             try
             {
-                Offset = new Bitmap(Program.Config.ZoneFolder + "zone" + string.Format("{0:000}", ZoneID) + "/offset.png"); // /zones/zone003/offset.png
-                Terrain = new Bitmap(Program.Config.ZoneFolder + "zone" + string.Format("{0:000}", ZoneID) + "/terrain.png"); // /zones/zone003/offset.png
+                Offset = new Bitmap(Core.Config.ZoneFolder + "zone" + string.Format("{0:000}", ZoneID) + "/offset.png"); // /zones/zone003/offset.png
+                Terrain = new Bitmap(Core.Config.ZoneFolder + "zone" + string.Format("{0:000}", ZoneID) + "/terrain.png"); // /zones/zone003/offset.png
             }
             catch (Exception e)
             {

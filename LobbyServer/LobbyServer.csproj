@@ -85,7 +85,7 @@
     <Compile Include="NetWork\Handler\AuthentificationHandlers.cs" />
     <Compile Include="NetWork\Opcodes.cs" />
     <Compile Include="NetWork\TCPServer.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Core.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

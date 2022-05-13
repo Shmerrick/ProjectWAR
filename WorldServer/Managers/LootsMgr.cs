@@ -400,7 +400,7 @@ namespace WorldServer.Managers
                                 // Assemble valid drops from the group
                                 List<Loot_Group_Item> candidateItems = new List<Loot_Group_Item>();
 
-                                int effectiveLevel = Math.Min(Program.Config.RankCap, deadCreature.Level);
+                                int effectiveLevel = Math.Min(Core.Config.RankCap, deadCreature.Level);
 
                                 if (lg.LootGroupItems != null)
                                 {

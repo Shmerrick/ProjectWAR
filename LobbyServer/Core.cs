@@ -4,7 +4,7 @@ using System;
 
 namespace LobbyServer
 {
-    internal class Program
+    internal class Core
     {
         public static LobbyConfigs Config;
 

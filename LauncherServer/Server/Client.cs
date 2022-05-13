@@ -71,13 +71,13 @@ namespace AuthenticationServer.Server
             LoginResult result = LoginResult.LOGIN_BANNED;
             PacketOut Out = new PacketOut((byte)Opcodes.LCR_LOGIN);
 
-            if (Program.AcctMgr.CheckIp(ip))
+            if (Core.AcctMgr.CheckIp(ip))
             {
                 int accountId;
 
-                result = Program.AcctMgr.CheckAccount(username, password, ip, out accountId);
+                result = Core.AcctMgr.CheckAccount(username, password, ip, out accountId);
 
-                var account = Program.AcctMgr.GetAccount(accountId);
+                var account = Core.AcctMgr.GetAccount(accountId);
                 if (account == null)
                 {
                     result = LoginResult.LOGIN_INVALID_USERNAME_PASSWORD;
@@ -91,11 +91,11 @@ namespace AuthenticationServer.Server
                     }
                 }
                 Out.WriteByte((byte)result);
-                Out.WriteUInt32((uint)Program.Config.ServerState);
+                Out.WriteUInt32((uint)Core.Config.ServerState);
 
                 if (result == LoginResult.LOGIN_SUCCESS)
                 {
-                    string token = Program.AcctMgr.GenerateToken(username);
+                    string token = Core.AcctMgr.GenerateToken(username);
                     Out.WriteString(token);
 
                     OnLogin(account, token, installID);
@@ -123,9 +123,9 @@ namespace AuthenticationServer.Server
             _account = account;
             _sessionToken = token;
 
-            Program.AcctMgr.UpdateAccountBio(account.AccountId, ((IPEndPoint)_socket.RemoteEndPoint).Address.ToString(), installID);
+            Core.AcctMgr.UpdateAccountBio(account.AccountId, ((IPEndPoint)_socket.RemoteEndPoint).Address.ToString(), installID);
             PacketOut Out = new PacketOut((byte)Opcodes.LCR_PATCH_NOTES);
-            Out.WriteString(Program.Config.PatchNotes);
+            Out.WriteString(Core.Config.PatchNotes);
 
             SendTCPRaw(Out);
         }
@@ -135,7 +135,7 @@ namespace AuthenticationServer.Server
             if (!VerifyLoggedIn())
                 return;
 
-            if (Program.Config.ServerState == ServerState.PATCH)
+            if (Core.Config.ServerState == ServerState.PATCH)
                 return;
 
             var list = PatchMgr._Patch_Assets;
@@ -257,7 +257,7 @@ namespace AuthenticationServer.Server
             {
                 File = asset,
                 Compress = compress,
-                LocalFile = Path.Combine(Program.Config.PatcherFilesPath, asset.Name)
+                LocalFile = Path.Combine(Core.Config.PatcherFilesPath, asset.Name)
             };
             lock (_uploadQueue)
                 _uploadQueue.Enqueue(info);
@@ -282,7 +282,7 @@ namespace AuthenticationServer.Server
 
                 if (upload.Asset != null) // Asset
                 {
-                    var content = File.ReadAllBytes(Path.Combine(Program.Config.PatcherFilesPath, upload.Asset.File));
+                    var content = File.ReadAllBytes(Path.Combine(Core.Config.PatcherFilesPath, upload.Asset.File));
                     p.CreateUpload(upload.Asset, content, FileCompressionMode.WHOLE, FileType.MYP_ASSET);
                 }
                 else if (upload.Data != null) // Manifest
@@ -350,7 +350,7 @@ namespace AuthenticationServer.Server
             var foundAsset = PatchMgr._Patch_Assets.Where(m => m.Key.Id == (int)archive).First().Value.Where(a => a.Hash == hash).First();
 
             // If asset is not found in database, of server does not have local file
-            if (foundAsset == null || string.IsNullOrEmpty(foundAsset.File) || !File.Exists(Path.Combine(Program.Config.PatcherFilesPath, foundAsset.File)))
+            if (foundAsset == null || string.IsNullOrEmpty(foundAsset.File) || !File.Exists(Path.Combine(Core.Config.PatcherFilesPath, foundAsset.File)))
             {
                 PacketOut Out = new PacketOut((byte)Opcodes.LCR_DATA_NOT_FOUND);
                 Out.WriteUInt32((uint)archive);
@@ -369,7 +369,7 @@ namespace AuthenticationServer.Server
             var foundAsset = PatchMgr._Patch_Files.Where(f => f.CRC32 == hash).First();
 
             //if asset is not found in database, of server does not have local file
-            if (foundAsset == null || string.IsNullOrEmpty(foundAsset.Name) || !File.Exists(Path.Combine(Program.Config.PatcherFilesPath, foundAsset.Name)))
+            if (foundAsset == null || string.IsNullOrEmpty(foundAsset.Name) || !File.Exists(Path.Combine(Core.Config.PatcherFilesPath, foundAsset.Name)))
             {
                 PacketOut Out = new PacketOut((byte)Opcodes.LCR_DATA_NOT_FOUND);
                 Out.WriteUInt32((uint)Archive.NONE);
@@ -392,8 +392,8 @@ namespace AuthenticationServer.Server
             if (!VerifyGMLevel(EGmLevel.AllStaff))
                 return;
 
-            Program.Config.PatchNotes = notes;
-            ConfigMgr.SaveConfig(Program.Config);
+            Core.Config.PatchNotes = notes;
+            ConfigMgr.SaveConfig(Core.Config);
 
             PacketOut Out = new PacketOut((byte)Opcodes.LCR_PATCH_NOTES);
             Out.WriteString(notes);
@@ -438,7 +438,7 @@ namespace AuthenticationServer.Server
 
             PacketOut Out = new PacketOut((byte)Opcodes.LCR_VERSION);
             Out.WriteUInt32R((uint)PatchMgr.VersionHash);
-            Out.WriteUInt32((uint)Program.Config.ServerState);
+            Out.WriteUInt32((uint)Core.Config.ServerState);
             Out.WriteString(g.ToString());
             SendTCPRaw(Out);
         }
@@ -450,7 +450,7 @@ namespace AuthenticationServer.Server
                 Close();
                 return;
             }
-            Program.AcctMgr.UpdateClientPatcherLog(_account.AccountId, log);
+            Core.AcctMgr.UpdateClientPatcherLog(_account.AccountId, log);
         }
 
         private bool VerifyLoggedIn()

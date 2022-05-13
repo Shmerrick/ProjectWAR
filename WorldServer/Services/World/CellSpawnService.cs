@@ -42,7 +42,7 @@ namespace WorldServer.Services.World
         {
             LoadRegionSpawns();
 
-            if (Program.Config.CleanSpawns)
+            if (Core.Config.CleanSpawns)
                 RemoveDoubleSpawns();
         }
 

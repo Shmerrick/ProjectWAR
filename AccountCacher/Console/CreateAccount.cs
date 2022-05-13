@@ -15,7 +15,7 @@ namespace AccountCacher
             string Password = args[1];
             int GmLevel = int.Parse(args[2]);
 
-            return Program.AcctMgr.CreateAccount(Username, Password, GmLevel);
+            return Core.AcctMgr.CreateAccount(Username, Password, GmLevel);
         }
     }
 
@@ -27,7 +27,7 @@ namespace AccountCacher
             string userName = args[0];
             string password = args[1];
 
-            var account = Program.AcctMgr.LoadAccount(userName);
+            var account = Core.AcctMgr.LoadAccount(userName);
             if (account == null)
             {
                 Log.Error("ResetPassword", $"Could not locate {userName} to reset password");

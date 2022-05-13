@@ -64,7 +64,7 @@ namespace AuthenticationServer
         {
             List<PatchFile> patch_files = new List<PatchFile>();
 
-            DirectoryInfo d = new DirectoryInfo(Program.Config.PatcherFilesPath);
+            DirectoryInfo d = new DirectoryInfo(Core.Config.PatcherFilesPath);
 #if DEBUG
             if (!d.Exists)
                 return patch_files;
@@ -106,7 +106,7 @@ namespace AuthenticationServer
         {
             Dictionary<Patch_MYP, List<PatchAsset>> patch_assets = new Dictionary<Patch_MYP, List<PatchAsset>>();
 
-            DirectoryInfo d = new DirectoryInfo(Program.Config.PatcherFilesPath);
+            DirectoryInfo d = new DirectoryInfo(Core.Config.PatcherFilesPath);
 #if DEBUG
             if (!d.Exists)
                 return patch_assets;
@@ -152,13 +152,13 @@ namespace AuthenticationServer
 
         public static void SetServerState(ServerState state)
         {
-            Program.Config.ServerState = state;
-            ConfigMgr.SaveConfig(Program.Config);
+            Core.Config.ServerState = state;
+            ConfigMgr.SaveConfig(Core.Config);
 
             PacketOut Out = new PacketOut((byte)Opcodes.LCR_SERVER_STATUS);
             Out.WriteUInt32((uint)state);
 
-            Program.Server.DispatchPatcket(Out);
+            Core.Server.DispatchPatcket(Out);
         }
 
         #region Utils

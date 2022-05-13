@@ -632,20 +632,20 @@ namespace WorldServer.World.Battlefronts.Bounty
                 {
                     groupMember.SendClientMessage($"Awarded {1} Crest(s) to " + killer.Name + " for killing realm captain");
                     RewardLogger.Trace($"Awarded {1} Crest(s) to " + killer.Name + " for killing realm captain");
-                    groupMember.ItmInterface.CreateItem(208470, (ushort)Program.Config.REALM_CAPTAIN_ASSIST_CRESTS);
-                    groupMember.AddRenown((uint)Program.Config.REALM_CAPTAIN_RENOWN_KILL_PARTY, 1f, false);
-                    groupMember.SendClientMessage($"Awarded {Program.Config.REALM_CAPTAIN_RENOWN_KILL_PARTY} RR {(ushort)Math.Floor((double)(Program.Config.REALM_CAPTAIN_INFLUENCE_KILL / killer.PriorityGroup.Members.Count))} INF to " + groupMember.Name + " for killing realm captain");
-                    groupMember.AddInfluence(influenceId, (ushort)Math.Floor((double)(Program.Config.REALM_CAPTAIN_INFLUENCE_KILL / killer.PriorityGroup.Members.Count)));
+                    groupMember.ItmInterface.CreateItem(208470, (ushort)Core.Config.REALM_CAPTAIN_ASSIST_CRESTS);
+                    groupMember.AddRenown((uint)Core.Config.REALM_CAPTAIN_RENOWN_KILL_PARTY, 1f, false);
+                    groupMember.SendClientMessage($"Awarded {Core.Config.REALM_CAPTAIN_RENOWN_KILL_PARTY} RR {(ushort)Math.Floor((double)(Core.Config.REALM_CAPTAIN_INFLUENCE_KILL / killer.PriorityGroup.Members.Count))} INF to " + groupMember.Name + " for killing realm captain");
+                    groupMember.AddInfluence(influenceId, (ushort)Math.Floor((double)(Core.Config.REALM_CAPTAIN_INFLUENCE_KILL / killer.PriorityGroup.Members.Count)));
                     groupMember.UpdatePlayerBountyEvent((byte)ContributionDefinitions.REALM_CAPTAIN_KILL);
                 }
             }
             else
             {
-                ushort crests = (ushort)StaticRandom.Instance.Next(Program.Config.REALM_CAPTAIN_KILL_CRESTS);
+                ushort crests = (ushort)StaticRandom.Instance.Next(Core.Config.REALM_CAPTAIN_KILL_CRESTS);
                 RewardLogger.Trace($"Awarded {crests} Crest(s) to " + killer.Name + " for killing realm captain");
 
-                killer.AddRenown((uint)Program.Config.REALM_CAPTAIN_RENOWN_KILL_SOLO, 1f, false);
-                killer.AddInfluence(influenceId, (ushort)Program.Config.REALM_CAPTAIN_INFLUENCE_KILL);
+                killer.AddRenown((uint)Core.Config.REALM_CAPTAIN_RENOWN_KILL_SOLO, 1f, false);
+                killer.AddInfluence(influenceId, (ushort)Core.Config.REALM_CAPTAIN_INFLUENCE_KILL);
                 killer.UpdatePlayerBountyEvent((byte)ContributionDefinitions.REALM_CAPTAIN_KILL);
                 killer.SendClientMessage($"Awarded {crests} Crest(s) to " + killer.Name + " for killing realm captain");
                 killer.SendClientMessage($"You have been awarded additional contribution in assisting with the downfall of the enemy");
@@ -834,7 +834,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             if ((leadInZones != "") && (characterJoinedList != ""))
             {
                 var query =
-                    $"CharacterId in ({characterJoinedList}) and ZoneId in ({leadInZones}) and timestamp BETWEEN DATE_SUB(UTC_TIMESTAMP(), INTERVAL {Program.Config.PairingContributionTimeIntervalHours} HOUR) AND UTC_TIMESTAMP() ";
+                    $"CharacterId in ({characterJoinedList}) and ZoneId in ({leadInZones}) and timestamp BETWEEN DATE_SUB(UTC_TIMESTAMP(), INTERVAL {Core.Config.PairingContributionTimeIntervalHours} HOUR) AND UTC_TIMESTAMP() ";
                 zoneEligibiltyCharacters = (List<ZoneLockEligibilityHistory>)WorldMgr.Database.SelectObjects<ZoneLockEligibilityHistory>(query);
                 Logger.Debug($"{query}");
                 Logger.Debug($"zoneEligibiltyCharacters : {zoneEligibiltyCharacters.Count}");
@@ -842,12 +842,12 @@ namespace WorldServer.World.Battlefronts.Bounty
 
             foreach (var character in sortedPairs)
             {
-                var random = StaticRandom.Instance.Next(Program.Config.BagRollRandomLowerLimit, Program.Config.BagRollRandomUpperLimit);
+                var random = StaticRandom.Instance.Next(Core.Config.BagRollRandomLowerLimit, Core.Config.BagRollRandomUpperLimit);
                 randomRollList.Add(character.Key, random);
 
                 if (leadInZones != "")
                 {
-                    var pairingBonus = Program.Config.PairingBonusIncrement *
+                    var pairingBonus = Core.Config.PairingBonusIncrement *
                                        zoneEligibiltyCharacters.Count(x => x.CharacterId == character.Key);
                     Logger.Debug($"Pairing Bonus : {pairingBonus}");
                     pairingContributions.Add(character.Key, pairingBonus);
@@ -891,9 +891,9 @@ namespace WorldServer.World.Battlefronts.Bounty
                 var leadInZones = String.Join(",", applicableZones);
                 logger.Warn("Lead In Zones : " + leadInZones);
 
-                var additionalBags = CalculateAdditionalBagsDueToKills(playersKilledInRange, Program.Config.AdditionalBagKillCountStep);
+                var additionalBags = CalculateAdditionalBagsDueToKills(playersKilledInRange, Core.Config.AdditionalBagKillCountStep);
                 logger.Debug($"Additional Bags is now {additionalBags} - kill count");
-                additionalBags += CalculateAdditionalBagsDueToEnemyRatio(winningEligiblePlayers.Count, losingEligiblePlayers.Count, Program.Config);
+                additionalBags += CalculateAdditionalBagsDueToEnemyRatio(winningEligiblePlayers.Count, losingEligiblePlayers.Count, Core.Config);
                 logger.Debug($"Additional Bags is now {additionalBags} - winner {winningEligiblePlayers.Count}/loser ratio {losingEligiblePlayers.Count}");
 
                 foreach (var allEligiblePlayer in allEligiblePlayers)
@@ -928,7 +928,7 @@ namespace WorldServer.World.Battlefronts.Bounty
 
                 foreach (var bonus in bagBonus.Keys.ToList())
                 {
-                    bagBonus[bonus] = UpdatePlayerBagBonus(bonus.CharacterId, bonus.Name, bagBonus[bonus], Program.Config);
+                    bagBonus[bonus] = UpdatePlayerBagBonus(bonus.CharacterId, bonus.Name, bagBonus[bonus], Core.Config);
                 }
 
                 var bagContentSelector = new BagContentSelector(lootOptions, StaticRandom.Instance);

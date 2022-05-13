@@ -244,7 +244,7 @@ namespace WorldServer.World.Interfaces
             Out.WriteByte(0);
 
             byte flags = 0;
-            if (Program.Config.DiscoverAll)
+            if (Core.Config.DiscoverAll)
             {
                 Out.Fill(0xFF, 1500);
             }

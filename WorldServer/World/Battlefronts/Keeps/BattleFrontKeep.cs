@@ -194,10 +194,10 @@ namespace WorldServer.World.Battlefronts.Keeps
 
             PlayersCloseToLord = new HashSet<Player>();
 
-            SeizedTimer = new KeepTimer($"GuildClaim Keep {Info.Name} Timer", 0, Program.Config.SeizedTimerLength);
-            LordKilledTimer = new KeepTimer($"Lord Killed {Info.Name} Timer", 0, Program.Config.LordKilledTimerLength);
-            DefenceTickTimer = new KeepTimer($"Defence Tick {Info.Name} Timer", 0, Program.Config.DefenceTickTimerLength);
-            BackToSafeTimer = new KeepTimer($"Back to Safe {Info.Name} Keep Timer", 0, Program.Config.BackToSafeTimerLength);
+            SeizedTimer = new KeepTimer($"GuildClaim Keep {Info.Name} Timer", 0, Core.Config.SeizedTimerLength);
+            LordKilledTimer = new KeepTimer($"Lord Killed {Info.Name} Timer", 0, Core.Config.LordKilledTimerLength);
+            DefenceTickTimer = new KeepTimer($"Defence Tick {Info.Name} Timer", 0, Core.Config.DefenceTickTimerLength);
+            BackToSafeTimer = new KeepTimer($"Back to Safe {Info.Name} Keep Timer", 0, Core.Config.BackToSafeTimerLength);
 
             Fortress = isFortress;
         }
@@ -708,7 +708,7 @@ namespace WorldServer.World.Battlefronts.Keeps
             {
                 if (!DoorRepairTimers.ContainsKey(door.GameObject.DoorId))
                 {
-                    DoorRepairTimers.TryAdd(door.GameObject.DoorId, new KeepTimer($"Door {door.GameObject.DoorId} Repair Timer", 0, Program.Config.DoorRepairTimerLength));
+                    DoorRepairTimers.TryAdd(door.GameObject.DoorId, new KeepTimer($"Door {door.GameObject.DoorId} Repair Timer", 0, Core.Config.DoorRepairTimerLength));
                 }
             }
         }
@@ -999,7 +999,7 @@ namespace WorldServer.World.Battlefronts.Keeps
 
         public void OnKeepDoorAttacked(byte number, byte pctHealth, uint doorId)
         {
-            if (pctHealth >= Program.Config.KeepDoorPercentHealthBoundary)
+            if (pctHealth >= Core.Config.KeepDoorPercentHealthBoundary)
                 return;
 
             _logger.Debug($"Keep Door attacked, starting the defence tick timer from the top {number}/{doorId}/{pctHealth}");

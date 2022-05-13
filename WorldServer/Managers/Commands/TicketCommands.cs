@@ -103,14 +103,14 @@ namespace WorldServer.Managers.Commands
                         if (CharMgr.GetCharacter(report.CharacterId, false).AccountId == report.AccountId)
                         {
                             name = CharMgr.GetCharacter(report.CharacterId, false).Name;
-                            account = Program.AcctMgr.GetAccountById((int)report.AccountId).Username;
+                            account = Core.AcctMgr.GetAccountById((int)report.AccountId).Username;
                         }
                     }
                 }
 
                 if (CharMgr.GetCharacter(report.CharacterId, false) == null && report.AccountId != 0)
                 {
-                    account = Program.AcctMgr.GetAccountById((int)report.AccountId).Username;
+                    account = Core.AcctMgr.GetAccountById((int)report.AccountId).Username;
                 }
 
                 //for whatever reason ^ cannot be sent to the client, it will break the rest of the string.

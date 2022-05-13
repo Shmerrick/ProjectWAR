@@ -231,7 +231,7 @@ namespace WorldServer.World.Interfaces
 
             if (charInfo != null && _player.GmLevel == 1)
             {
-                Account acct = Program.AcctMgr.GetAccountById(charInfo.AccountId);
+                Account acct = Core.AcctMgr.GetAccountById(charInfo.AccountId);
 
                 if (acct != null && acct.GmLevel > 1)
                 {

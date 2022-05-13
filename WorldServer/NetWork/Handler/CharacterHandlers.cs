@@ -75,7 +75,7 @@ namespace WorldServer.NetWork.Handler
                         Name = name,
                         Race = Info.race,
                         Realm = CharInfo.Realm,
-                        RealmId = Program.Rm.RealmId,
+                        RealmId = Core.Rm.RealmId,
                         Sex = Info.sex,
                         FirstConnect = true
                     };
@@ -129,7 +129,7 @@ namespace WorldServer.NetWork.Handler
                         };
 
                         CharMgr.Database.AddObject(CInfo);
-                        Program.AcctMgr.UpdateRealmCharacters(Program.Rm.RealmId, (uint)CharMgr.Database.GetObjectCount<Character>(" Realm=1"), (uint)CharMgr.Database.GetObjectCount<Character>(" Realm=2"));
+                        Core.AcctMgr.UpdateRealmCharacters(Core.Rm.RealmId, (uint)CharMgr.Database.GetObjectCount<Character>(" Realm=1"), (uint)CharMgr.Database.GetObjectCount<Character>(" Realm=2"));
 
                         CharacterClientData clientData = new CharacterClientData { CharacterId = Char.CharacterId };
                         CharMgr.Database.AddObject(clientData);
@@ -257,7 +257,7 @@ namespace WorldServer.NetWork.Handler
                 return;
             }
 
-            if (Program.Rm.OnlinePlayers >= Program.Rm.MaxPlayers && cclient._Account.GmLevel == 1)
+            if (Core.Rm.OnlinePlayers >= Core.Rm.MaxPlayers && cclient._Account.GmLevel == 1)
             {
                 PacketOut Out = new PacketOut((byte)Opcodes.F_LOGINQUEUE);
                 client.SendPacket(Out);
@@ -370,7 +370,7 @@ namespace WorldServer.NetWork.Handler
                 Out.WriteUInt32(0); //RemainingLockoutTime
                 Out.WriteByte(0);
 
-                if (cclient._Account.GmLevel == 1 && !Program.Config.CreateBothRealms)
+                if (cclient._Account.GmLevel == 1 && !Core.Config.CreateBothRealms)
                     Out.WriteByte((byte)CharMgr.GetAccountRealm(cclient._Account.AccountId));
                 else
                     Out.WriteByte(0);

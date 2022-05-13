@@ -110,7 +110,7 @@
   <ItemGroup>
     <Compile Include="Configs\AccountConfigs.cs" />
     <Compile Include="Console\CreateAccount.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Core.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

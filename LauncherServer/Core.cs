@@ -7,7 +7,7 @@ using System.IO;
 
 namespace AuthenticationServer
 {
-    internal class Program
+    internal class Core
     {
         public static RpcClient Client;
         public static LauncherConfig Config;

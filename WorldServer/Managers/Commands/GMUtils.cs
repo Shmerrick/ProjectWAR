@@ -223,7 +223,7 @@ namespace WorldServer.Managers.Commands
 
         public static void LogSanction(int accountId, Player issuedBy, string actionType, string actionDuration, string actionReason)
         {
-            Program.AcctMgr.AddSanction(
+            Core.AcctMgr.AddSanction(
                 new AccountSanctionInfo
                 {
                     AccountId = accountId,

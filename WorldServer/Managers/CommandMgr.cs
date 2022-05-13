@@ -371,7 +371,7 @@ namespace WorldServer.Managers
 
             Player receiver = Player.GetPlayer(receiverName);
 
-            if (receiver == null || !receiver.IsInWorld() || (plr.GmLevel == 1 && receiver.GmLevel == 1 && !Program.Config.ChatBetweenRealms && plr.Realm != receiver.Realm))
+            if (receiver == null || !receiver.IsInWorld() || (plr.GmLevel == 1 && receiver.GmLevel == 1 && !Core.Config.ChatBetweenRealms && plr.Realm != receiver.Realm))
                 plr.SendLocalizeString(receiverName, ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_SN_LISTS_ERR_PLAYER_NOT_FOUND);
             else if (receiver == plr)
                 plr.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_USER_ERROR, Localized_text.TEXT_TELL_ERR_TO_SELF);

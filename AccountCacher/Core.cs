@@ -4,7 +4,7 @@ using System;
 
 namespace AccountCacher
 {
-    internal class Program
+    internal class Core
     {
         public static AccountMgr AcctMgr;
         public static AccountConfigs Config;

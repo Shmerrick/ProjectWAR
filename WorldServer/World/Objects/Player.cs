@@ -89,8 +89,8 @@ namespace WorldServer.World.Objects
 					else
 						++DestruCount;
 
-					Program.Rm.OnlinePlayers = (uint)_Players.Count;
-					Program.AcctMgr.UpdateRealm(Program.Rm.RealmId, Program.Rm.OnlinePlayers, OrderCount, DestruCount);
+					Core.Rm.OnlinePlayers = (uint)_Players.Count;
+					Core.AcctMgr.UpdateRealm(Core.Rm.RealmId, Core.Rm.OnlinePlayers, OrderCount, DestruCount);
 				}
 			}
 
@@ -158,8 +158,8 @@ namespace WorldServer.World.Objects
 					else
 						--DestruCount;
 
-					Program.Rm.OnlinePlayers = (uint)_Players.Count;
-					Program.AcctMgr.UpdateRealm(Program.Rm.RealmId, Program.Rm.OnlinePlayers, OrderCount, DestruCount);
+					Core.Rm.OnlinePlayers = (uint)_Players.Count;
+					Core.AcctMgr.UpdateRealm(Core.Rm.RealmId, Core.Rm.OnlinePlayers, OrderCount, DestruCount);
 
 					if (oldPlayer.BroadcastRank)
 						GmMgr.NotifyGMOffline(oldPlayer);
@@ -566,7 +566,7 @@ namespace WorldServer.World.Objects
 			if (Client._Account?.Banned == 2)
 			{
 				Client._Account.Banned = TCPManager.GetTimeStamp() + 60;
-				Program.AcctMgr.UpdateAccount(Client._Account);
+				Core.AcctMgr.UpdateAccount(Client._Account);
 			}
 
 			if (!_initialized && !_initInProgress)
@@ -617,7 +617,7 @@ namespace WorldServer.World.Objects
 				// Generate rested experience
 				if (_Value.LastSeen > 0)
 				{
-					if (Level == Program.Config.RankCap)
+					if (Level == Core.Config.RankCap)
 						_Value.RestXp = 0;
 					else
 					{
@@ -1341,8 +1341,8 @@ namespace WorldServer.World.Objects
 		}
 
 		private static string _motd = "\nWelcome to WAR: Apocalypse\n"
-			+ "Rank Cap is: " + Program.Config.RankCap
-			+ "\nRenown Cap is: " + Program.Config.RenownCap
+			+ "Rank Cap is: " + Core.Config.RankCap
+			+ "\nRenown Cap is: " + Core.Config.RenownCap
 			+ "\nThe server rules are available in-game by entering the command '.rules'.";
 
 		#endregion Channel / Chat
@@ -1576,7 +1576,7 @@ namespace WorldServer.World.Objects
 
 			lock (_packetOut)
 			{
-				if (Program.Config.PacketCollateLength == 0)
+				if (Core.Config.PacketCollateLength == 0)
 				{
 					// Send packets until no more can be sent, or an error occurs
 					while (_packetOut.Count > 0)
@@ -1591,7 +1591,7 @@ namespace WorldServer.World.Objects
 				{
 					if (_packetOut.Count > 0)
 					{
-						if (Client.SendPacketsNoBlock(_packetOut, Program.Config.PacketCollateLength))
+						if (Client.SendPacketsNoBlock(_packetOut, Core.Config.PacketCollateLength))
 							_packetOut.Clear();
 					}
 				}
@@ -1663,7 +1663,7 @@ namespace WorldServer.World.Objects
 			Out.WriteByte(0);
 			Out.WriteByte(Info.Career);
 			Out.Fill(0, 6);
-			Out.WritePascalString(Program.Rm.Name);
+			Out.WritePascalString(Core.Rm.Name);
 			Out.Fill(0, 3);
 
 			SendPacket(Out);
@@ -2282,7 +2282,7 @@ namespace WorldServer.World.Objects
 				if (receiver.BlocksChatFrom(this))
 					continue;
 
-				if (receiver.Realm == Realm || receiver.GmLevel > 1 || GmLevel > 1 || (Program.Config.ChatBetweenRealms && chatFilter != ChatLogFilters.CHATLOGFILTERS_SHOUT))
+				if (receiver.Realm == Realm || receiver.GmLevel > 1 || GmLevel > 1 || (Core.Config.ChatBetweenRealms && chatFilter != ChatLogFilters.CHATLOGFILTERS_SHOUT))
 					receiver.SendMessage(this, message, chatFilter);
 				else
 					receiver.SendLocalizeString(ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.TEXT_REALM_RESTRICTED_SAY);
@@ -3012,7 +3012,7 @@ namespace WorldServer.World.Objects
 			if (_currentXp == null)
 				return;
 
-			if (Level >= Program.Config.RankCap)
+			if (Level >= Core.Config.RankCap)
 				return;
 
 			if (scalesWithRest && _Value.RestXp > 0)
@@ -3050,7 +3050,7 @@ namespace WorldServer.World.Objects
 
 		public void LevelUp(uint restXp)
 		{
-			if (Level >= Program.Config.RankCap)
+			if (Level >= Core.Config.RankCap)
 				return;
 
 			_Value.Xp = 0;
@@ -3146,8 +3146,8 @@ namespace WorldServer.World.Objects
 				return;
 
 			// apply renown rate from server
-			if (Program.Config.RenownRate > 0)
-				renown *= (uint)Program.Config.RenownRate;
+			if (Core.Config.RenownRate > 0)
+				renown *= (uint)Core.Config.RenownRate;
 
 			// apply aao bonus
 			if ((ScnInterface == null || ScnInterface.Scenario == null)
@@ -3188,7 +3188,7 @@ namespace WorldServer.World.Objects
 			if (shouldPool)
 				_renownPool += (uint)(renown * 0.25f);
 
-			if (value.RenownRank >= Program.Config.RenownCap)
+			if (value.RenownRank >= Core.Config.RenownCap)
 				return;
 
 			if (CurrentRenown == null)
@@ -3237,7 +3237,7 @@ namespace WorldServer.World.Objects
 		public void RenownUp(uint remainder)
 		{
 			// RB   4/17/2016   Lock Renown Rank to Double Career Rank. Cannot gain renown if Renown Rank is higher than 2*Career Rank.
-			if (_Value.RenownRank >= Program.Config.RenownCap || (_Value.Level < 32 && _Value.RenownRank >= (2 * _Value.Level)))
+			if (_Value.RenownRank >= Core.Config.RenownCap || (_Value.Level < 32 && _Value.RenownRank >= (2 * _Value.Level)))
 				return;
 
 			CurrentRenown = XpRenownService.GetRenown_Info((byte)(_Value.RenownRank + 1));
@@ -6380,7 +6380,7 @@ namespace WorldServer.World.Objects
 
 					TokInterface.AddTok(newArea.TokExploreEntry);
 
-					if (Program.Config.OpenRvR || newArea.IsRvR)
+					if (Core.Config.OpenRvR || newArea.IsRvR)
 					{
 						if (!CbtInterface.IsPvp && !_isRvRCountdown)
 							SetRvRCountdown(true);

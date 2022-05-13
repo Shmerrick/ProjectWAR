@@ -719,7 +719,7 @@ namespace WorldServer.Managers.Commands
 
                 if (player != null)
                 {
-                    var acct = Program.AcctMgr.GetAccountById(player.AccountId);
+                    var acct = Core.AcctMgr.GetAccountById(player.AccountId);
 
                     if (acct != null)
                     {
@@ -734,7 +734,7 @@ namespace WorldServer.Managers.Commands
                             plr.SendClientMessage("Disabled packet logging for account '" + acct.Username + "' for player '" + player.Name + "'");
                         }
 
-                        Program.AcctMgr.UpdateAccount(acct);
+                        Core.AcctMgr.UpdateAccount(acct);
                         plr.Client.PacketLog = acct.PacketLog;
                     }
                 }
@@ -1950,9 +1950,9 @@ namespace WorldServer.Managers.Commands
 
         public static bool SetCollationLength(Player plr, ref List<string> values)
         {
-            Program.Config.PacketCollateLength = Math.Max(0, Math.Min(GetInt(ref values), 32768));
+            Core.Config.PacketCollateLength = Math.Max(0, Math.Min(GetInt(ref values), 32768));
 
-            plr.SendClientMessage(Program.Config.PacketCollateLength == 0 ? "No longer collating packets." : $"Packets will be collated until {Program.Config.PacketCollateLength} bytes.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+            plr.SendClientMessage(Core.Config.PacketCollateLength == 0 ? "No longer collating packets." : $"Packets will be collated until {Core.Config.PacketCollateLength} bytes.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
             return true;
         }
@@ -2130,7 +2130,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            Account acct = Program.AcctMgr.GetAccount(accountName);
+            Account acct = Core.AcctMgr.GetAccount(accountName);
 
             if (acct == null)
             {
@@ -2181,7 +2181,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            Account acct = Program.AcctMgr.GetAccount(accountName);
+            Account acct = Core.AcctMgr.GetAccount(accountName);
 
             if (acct == null)
             {
@@ -2261,11 +2261,11 @@ namespace WorldServer.Managers.Commands
         {
             string motd = GetTotalString(ref values);
 
-            Program.Config.Motd = motd;
+            Core.Config.Motd = motd;
 
             foreach (Player pPlr in Player._Players)
             {
-                pPlr.SendLocalizeString(Program.Config.Motd, ChatLogFilters.CHATLOGFILTERS_CITY_ANNOUNCE, Localized_text.TEXT_SERVER_MOTD);
+                pPlr.SendLocalizeString(Core.Config.Motd, ChatLogFilters.CHATLOGFILTERS_CITY_ANNOUNCE, Localized_text.TEXT_SERVER_MOTD);
             }
 
             return true;
@@ -2571,7 +2571,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            IList<AccountSanctionInfo> sanctions = Program.AcctMgr.GetSanctionsFor(plr.Info.AccountId);
+            IList<AccountSanctionInfo> sanctions = Core.AcctMgr.GetSanctionsFor(plr.Info.AccountId);
 
             foreach (var sanction in sanctions)
             {
@@ -2658,7 +2658,7 @@ namespace WorldServer.Managers.Commands
             }
 
             plr.Client._Account.LastNameChanged = TCPManager.GetTimeStamp();
-            Program.AcctMgr.UpdateAccount(plr.Client._Account);
+            Core.AcctMgr.UpdateAccount(plr.Client._Account);
 
             string newName = values[0][0].ToString().ToUpper() + values[0].ToLower().Substring(1);
             CharMgr.UpdateCharacterName(plr.Info, newName);
@@ -2730,7 +2730,7 @@ namespace WorldServer.Managers.Commands
             if (chara == null)
                 return null;
 
-            return Program.AcctMgr.GetAccountById(chara.AccountId);
+            return Core.AcctMgr.GetAccountById(chara.AccountId);
         }
 
         public static bool GetChar(Player plr, ref List<string> values)
@@ -2756,7 +2756,7 @@ namespace WorldServer.Managers.Commands
                 .OrderBy(e => e.Realm)
                 .ThenBy(e => e.Name).ToList();
 
-            Account account = Program.AcctMgr.GetAccountById(chr.AccountId);
+            Account account = Core.AcctMgr.GetAccountById(chr.AccountId);
             string result = "Player '" + Player.AsCharacterName(charName) + "' (account='" + account.Username + "') has " + chars.Count + " characters.";
 
             if (account.GmLevel > 0)
@@ -2788,7 +2788,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            Account acct = Program.AcctMgr.GetAccount(accountName);
+            Account acct = Core.AcctMgr.GetAccount(accountName);
 
             if (acct == null)
             {
@@ -2837,9 +2837,9 @@ namespace WorldServer.Managers.Commands
 
             foreach (var target in targets)
             {
-                Account acct = Program.AcctMgr.GetAccountById(target.AccountId);
+                Account acct = Core.AcctMgr.GetAccountById(target.AccountId);
 
-                List<AccountSanctionInfo> sanctions = Program.AcctMgr.GetSanctionsFor(target.AccountId).OrderBy(x => x.ActionTime).ToList();
+                List<AccountSanctionInfo> sanctions = Core.AcctMgr.GetSanctionsFor(target.AccountId).OrderBy(x => x.ActionTime).ToList();
 
                 if (sanctions.Count > 0)
                 {
@@ -2950,7 +2950,7 @@ namespace WorldServer.Managers.Commands
 
             LogSanction(chara.AccountId, plr, "Warning", "", warningReason);
 
-            Account account = Program.AcctMgr.GetAccountById(chara.AccountId);
+            Account account = Core.AcctMgr.GetAccountById(chara.AccountId);
 
             if (account == null)
                 return true;
@@ -2958,7 +2958,7 @@ namespace WorldServer.Managers.Commands
             account.BanReason = "(Warned while offline) " + warningReason;
             account.Banned = 2;
 
-            Program.AcctMgr.UpdateAccount(account);
+            Core.AcctMgr.UpdateAccount(account);
 
             GMCommandLog log = new GMCommandLog
             {
@@ -2998,7 +2998,7 @@ namespace WorldServer.Managers.Commands
                 target.SendClientMessage("[System] The Advice channel block against you has been removed.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
                 target.Client._Account.AdviceBlockEnd = 0;
-                Program.AcctMgr.UpdateAccount(target.Client._Account);
+                Core.AcctMgr.UpdateAccount(target.Client._Account);
 
                 return true;
             }
@@ -3049,7 +3049,7 @@ namespace WorldServer.Managers.Commands
             }
 
             target.Client._Account.AdviceBlockEnd = TCPManager.GetTimeStamp() + duration * durationMult;
-            Program.AcctMgr.UpdateAccount(target.Client._Account);
+            Core.AcctMgr.UpdateAccount(target.Client._Account);
 
             plr.SendClientMessage("User " + playerName + " is no longer allowed to use Advice chat.");
             LogSanction(target.Client._Account.AccountId, plr, "Advice Block", duration + " " + lengthTypeString, reasonString);
@@ -3084,7 +3084,7 @@ namespace WorldServer.Managers.Commands
                 plr.SendClientMessage("User " + playerName + " is no longer muted.");
 
                 target.Client._Account.StealthMuteEnd = 0;
-                Program.AcctMgr.UpdateAccount(target.Client._Account);
+                Core.AcctMgr.UpdateAccount(target.Client._Account);
 
                 return true;
             }
@@ -3140,7 +3140,7 @@ namespace WorldServer.Managers.Commands
             }
 
             target.Client._Account.StealthMuteEnd = TCPManager.GetTimeStamp() + duration * durationMult;
-            Program.AcctMgr.UpdateAccount(target.Client._Account);
+            Core.AcctMgr.UpdateAccount(target.Client._Account);
             LogSanction(target.Client._Account.AccountId, plr, "Mute", duration + " " + lengthTypeString, reasonString);
             plr.SendClientMessage("User " + playerName + " is now hellmuted.");
 
@@ -3254,7 +3254,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            Account account = target?.Client != null ? target.Client._Account : Program.AcctMgr.GetAccountById(chara.AccountId);
+            Account account = target?.Client != null ? target.Client._Account : Core.AcctMgr.GetAccountById(chara.AccountId);
 
             if (account.GmLevel > 1)
             {
@@ -3272,7 +3272,7 @@ namespace WorldServer.Managers.Commands
             account.BanReason = reasonString;
             LogSanction(account.AccountId, plr, "Permanent Ban", "", reasonString);
 
-            Program.AcctMgr.UpdateAccount(account);
+            Core.AcctMgr.UpdateAccount(account);
 
             if (target != null)
             {
@@ -3379,7 +3379,7 @@ namespace WorldServer.Managers.Commands
 
                 account.Banned = Math.Max(account.Banned, TCPManager.GetTimeStamp() + duration * durationMult);
                 account.BanReason = reasonString;
-                Program.AcctMgr.UpdateAccount(account);
+                Core.AcctMgr.UpdateAccount(account);
 
                 LogSanction(account.AccountId, plr, "Exile", duration + " " + lengthTypeString, reasonString);
 
@@ -3463,7 +3463,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            List<AccountSanctionInfo> sanctions = Program.AcctMgr.GetSanctionsFor(account.AccountId).OrderBy(x => x.ActionTime).ToList();
+            List<AccountSanctionInfo> sanctions = Core.AcctMgr.GetSanctionsFor(account.AccountId).OrderBy(x => x.ActionTime).ToList();
 
             for (int i = sanctions.Count - 1; i > 0; --i)
             {
@@ -3492,7 +3492,7 @@ namespace WorldServer.Managers.Commands
 
             LogSanction(account.AccountId, plr, "Lift Ban", "", liftString);
 
-            Program.AcctMgr.UpdateAccount(account);
+            Core.AcctMgr.UpdateAccount(account);
 
             GMCommandLog log = new GMCommandLog
             {
@@ -3518,7 +3518,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            Account account = Program.AcctMgr.GetAccount(accountName);
+            Account account = Core.AcctMgr.GetAccount(accountName);
 
             if (account == null)
             {
@@ -3681,7 +3681,7 @@ namespace WorldServer.Managers.Commands
             }
 
             account.noSurname = 1;
-            Program.AcctMgr.UpdateAccount(account);
+            Core.AcctMgr.UpdateAccount(account);
 
             plr.SendClientMessage("You set " + playerName + " to not be able to select a surname");
 
@@ -3730,7 +3730,7 @@ namespace WorldServer.Managers.Commands
             }
 
             account.noSurname = 0;
-            Program.AcctMgr.UpdateAccount(account);
+            Core.AcctMgr.UpdateAccount(account);
 
             plr.SendClientMessage("You set " + playerName + " to be able to select a surname again");
 
@@ -3771,7 +3771,7 @@ namespace WorldServer.Managers.Commands
             }
 
             target.SetLastName("");
-            Program.AcctMgr.UpdateAccount(account);
+            Core.AcctMgr.UpdateAccount(account);
 
             plr.SendClientMessage("You cleared " + playerName + "s surname");
 

@@ -323,7 +323,7 @@ namespace WorldServer.Managers.Commands
                 return true;
             }
 
-            Account acct = Program.AcctMgr.GetAccount(username);
+            Account acct = Core.AcctMgr.GetAccount(username);
 
             if (acct == null)
             {
@@ -333,7 +333,7 @@ namespace WorldServer.Managers.Commands
 
             sbyte newAccess = (sbyte)GetInt(ref values);
             acct.GmLevel = newAccess;
-            Program.AcctMgr.UpdateAccount(acct);
+            Core.AcctMgr.UpdateAccount(acct);
 
             plr.SendClientMessage($"MODIFY ACCESS: The access level of {username} has been changed to {newAccess}.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 

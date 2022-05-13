@@ -105,21 +105,21 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             if (boRewardType == BORewardType.CAPTURING)
             {
-                baseXp = Program.Config.BOCapturingRewardXp;
-                baseRp = Program.Config.BOCapturingRewardRp;
-                baseInf = Program.Config.BOCapturingRewardInf;
+                baseXp = Core.Config.BOCapturingRewardXp;
+                baseRp = Core.Config.BOCapturingRewardRp;
+                baseInf = Core.Config.BOCapturingRewardInf;
             }
             if (boRewardType == BORewardType.CAPTURED)
             {
-                baseXp = Program.Config.BOCapturedRewardXp;
-                baseRp = Program.Config.BOCapturedRewardRp;
-                baseInf = Program.Config.BOCapturedRewardInf;
+                baseXp = Core.Config.BOCapturedRewardXp;
+                baseRp = Core.Config.BOCapturedRewardRp;
+                baseInf = Core.Config.BOCapturedRewardInf;
             }
             if (boRewardType == BORewardType.GUARDED)
             {
-                baseXp = Program.Config.BOGuardedRewardXp;
-                baseRp = Program.Config.BOGuardedRewardRp;
-                baseInf = Program.Config.BOGuardedRewardInf;
+                baseXp = Core.Config.BOGuardedRewardXp;
+                baseRp = Core.Config.BOGuardedRewardRp;
+                baseInf = Core.Config.BOGuardedRewardInf;
             }
 
             foreach (var player in playersWithinRange)
