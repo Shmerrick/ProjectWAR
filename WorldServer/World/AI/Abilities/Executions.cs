@@ -202,7 +202,11 @@ namespace WorldServer.World.AI.Abilities
             //Brain.SpeakYourMind($" using LegTear vs {(Combat.CurrentTarget as Player)?.Name}");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "LegTear", 46);
         }
-
+        public void BatScreech()
+        { // 10 sec snare
+            //Brain.SpeakYourMind($" using LegTear vs {(Combat.CurrentTarget as Player)?.Name}");
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "BatScreech", 12012);
+        }
         public void DaemonicFire()
         { // 10 sec snare
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "DaemonicFire", 54);
