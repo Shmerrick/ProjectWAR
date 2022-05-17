@@ -3597,8 +3597,8 @@ namespace GameData
 #else
         public static int DoomsdaySwitch = 2;
         public static bool DisableDebolster = true;
-        public static int[] MinTierLevel = {0, 16, 16, 16};
-        public static int[] MaxTierLevel = {15, 40, 40, 40};
+        public static int[] MinTierLevel = { 0, 16, 16, 16 };
+        public static int[] MaxTierLevel = { 15, 40, 40, 40 };
 #endif
 
         public static string[] RacesName = new string[8]

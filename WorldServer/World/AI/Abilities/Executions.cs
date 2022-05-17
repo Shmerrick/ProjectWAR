@@ -209,7 +209,7 @@ namespace WorldServer.World.AI.Abilities
         }
 
         public void DaemonicConsumption()
-        { 
+        {
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "DaemonicConsumption", 55);
         }
 
@@ -220,7 +220,7 @@ namespace WorldServer.World.AI.Abilities
 
         public void WhitefireWebBolt()
         { // knockback and snare
-           // Brain.SpeakYourMind($" using WhitefireWebBolt vs {(Combat.CurrentTarget as Player)?.Name}");
+          // Brain.SpeakYourMind($" using WhitefireWebBolt vs {(Combat.CurrentTarget as Player)?.Name}");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "WhitefireWebBolt", 4462);
         }
 
@@ -546,7 +546,7 @@ namespace WorldServer.World.AI.Abilities
                 _logger.Debug($"{Owner} using Changing Targets {(Combat.GetCurrentTarget() as Player).Name}");
                 var randomTarget = Owner.AiInterface.CurrentBrain.SetRandomTarget();
                 if (randomTarget != null)
-                    _logger.Debug($"{Owner} => {(randomTarget as Player).Name}");
+                    _logger.Debug($"{Owner} => {randomTarget.Name}");
             }
         }
     }
