@@ -1,162 +1,161 @@
 ﻿using Common;
 using FrameWork;
-using System.Collections.Generic;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
-using WorldServer.World.Positions;
 using Object = WorldServer.World.Objects.Object;
 using Opcodes = WorldServer.NetWork.Opcodes;
+using WorldServer.World.Scripting;
 
-namespace WorldServer.World.Scripting.Quests
+namespace WorldServer
 {
-    /* Quest: Hearts And Minds
-     * (needs verifing)
-     * The quests requires you to talk to some farmers to get them to take up arms,
-     * they turn agressive once you talk to them and once ou do enough damage to them
-     * they are meant to turn back to allies and they'd be 'persuaded' to take up arms.
-     *
-     * Whats working:
-     * Currently once you talk to the farmer he will despawn and a new agressive mob will
-     * be spawned. Allowing you to kill him and do the objective. Then the old mob will spawn
-     * dead where he was. This allows the farmer to respawn in about 30 seconds so a player can't
-     * spam the same mob.
-     *
-     * Todo:
-     * - Some text would be nice.
-     * - make it more like the real quest.
-     */
+	/* Quest: Hearts And Minds
+	 * (needs verifing)
+	 * The quests requires you to talk to some farmers to get them to take up arms,
+	 * they turn agressive once you talk to them and once ou do enough damage to them
+	 * they are meant to turn back to allies and they'd be 'persuaded' to take up arms.
+	 * 
+	 * Whats working:
+	 * Currently once you talk to the farmer he will despawn and a new agressive mob will
+	 * be spawned. Allowing you to kill him and do the objective. Then the old mob will spawn
+	 * dead where he was. This allows the farmer to respawn in about 30 seconds so a player can't
+	 * spam the same mob.
+	 * 
+	 * Todo:
+	 * - fix Model1 and Model2 spawns - male and female.// if Fermer has Model1 then Marauder must be Model1, same with Model2
+	 */
 
-    [GeneralScript(false, "", 32, 0)]
-    public class HeartsAndMindsSpawnQuestScript : BasicQuest
-    {
-        public override void OnObjectLoad(Object Creature)
-        {
-            this.Creature = Creature;
-            spawnPoint = Creature as Point3D;
-        }
+	[GeneralScript(false, "", 32, 0)]
+	public class HeartsAndMindsSpawnQuestScript : AGeneralScript
+	{
+		public override void OnInteract(Object Creature, Player Target, InteractMenu Menu)
+		{
+			// Make sure the player has the quest and hasn't already finished the objectives.
+			if (!Target.GetPlayer().QtsInterface.HasQuest(30003) || Target.GetPlayer().QtsInterface.HasFinishQuest(30003))
+			{
+				return;
+			}
+			// Spawn Marauder Sympathizer
+			uint MarauderSympathizerID = 31; // NPC ID from DB
 
-        public override void OnInteract(Object Obj, Player Target, InteractMenu Menu)
-        {
-            // Make sure the player has the quest and hasn't already finished the objectives.
-            if (!Target.GetPlayer().QtsInterface.HasQuest(30003) || Target.GetPlayer().QtsInterface.HasFinishQuest(30003))
-                return;
+			Creature_proto MarauderSympathizer = CreatureService.GetCreatureProto(MarauderSympathizerID);
+			if (MarauderSympathizer == null)
+			{
+				return;
+			}
 
-            // Spawn the bad npc
-            Creature_proto Proto = CreatureService.GetCreatureProto((uint)31);
-            if (Proto == null)
-                return;
+			Creature.UpdateWorldPosition();
 
-            Obj.UpdateWorldPosition();
+			Creature_proto GrimmenhagenFarmer = CreatureService.GetCreatureProto(32);
+			Creature_spawn Spawn = new Creature_spawn();
+			Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
+			if (GrimmenhagenFarmer.Model1 == 1540)
+			{
+				MarauderSympathizer.Model1 = Creature.GetCreature().Spawn.Proto.Model1;
+			}
+			if (GrimmenhagenFarmer.Model2 == 1541)
+			{
+				MarauderSympathizer.Model2 = Creature.GetCreature().Spawn.Proto.Model2;
+			}
+			Spawn.BuildFromProto(MarauderSympathizer);
+			Spawn.WorldO = Creature.Heading;
+			Spawn.WorldY = Creature.WorldPosition.Y;
+			Spawn.WorldZ = Creature.WorldPosition.Z;
+			Spawn.WorldX = Creature.WorldPosition.X;
+			Spawn.ZoneId = Creature.Zone.ZoneId;
+			Spawn.Faction = 129;
 
-            Creature_spawn Spawn = new Creature_spawn();
-            Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
-            Proto.Model1 = Obj.GetCreature().Spawn.Proto.Model1;
-            Spawn.BuildFromProto(Proto);
-            Spawn.WorldO = Obj.Heading;
-            Spawn.WorldY = Obj.WorldPosition.Y;
-            Spawn.WorldZ = Obj.WorldPosition.Z;
-            Spawn.WorldX = Obj.WorldPosition.X;
-            Spawn.ZoneId = Obj.Zone.ZoneId;
-            //Spawn.Faction = 129;
+			Creature creature = Creature.Region.CreateCreature(Spawn);
+			creature.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds);
 
-            Creature c = Obj.Region.CreateCreature(Spawn);
-            c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds);
+			// Remove the old npc
+			Creature.Destroy();
 
-            // Remove the old npc
-            Obj.Destroy();
+			return;
+		}
 
-            return;
-        }
+		// This remove adds from game
+		public bool RemoveAdds(Object npc = null, object instigator = null)
+		{
+			Creature creature = npc as Creature;
+			creature.EvtInterface.AddEvent(creature.Destroy, 20000, 1);
 
-        // This remove adds from game
-        public bool RemoveAdds(Object npc = null, object instigator = null)
-        {
-            Creature c = npc as Creature;
-            c.EvtInterface.AddEvent(c.Destroy, 20000, 1);
+			return false;
+		}
+	}
 
-            return false;
-        }
-    }
+	[GeneralScript(false, "", 31, 0)]
+	public class HeartsAndMindsDieQuestScript : AGeneralScript
+	{
+		public override void OnDie(Object Creature)
+		{
+			// Respawn the orginal npc 
+			Creature_proto GrimmenhagenFarmer = CreatureService.GetCreatureProto(32);
+			if (GrimmenhagenFarmer == null)
+			{
+				return;
+			}
 
-    [GeneralScript(false, "", 31, 0)]
-    public class HeartsAndMindsDieQuestScript : BasicQuest
-    {
-        private int X, Y, Z, O;
+			Creature.UpdateWorldPosition();
+			uint MarauderSympathizerID = 31; // NPC ID from DB
 
-        public override void OnObjectLoad(Object Creature)
-        {
-            this.Creature = Creature;
-            X = Creature.WorldPosition.X;
-            Y = Creature.WorldPosition.Y;
-            Z = Creature.WorldPosition.Z;
-            O = Creature.Heading;
-        }
+			Creature_proto MarauderSympathizer = CreatureService.GetCreatureProto(MarauderSympathizerID);
+			Creature_spawn Spawn = new Creature_spawn();
 
-        public override void OnDie(Object Creature)
-        {
-            // Respawn the orginal npc
-            Creature_proto Proto = CreatureService.GetCreatureProto((uint)32);
-            if (Proto == null)
-                return;
+			Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
 
-            Creature.UpdateWorldPosition();
+			if (MarauderSympathizer.Model1 == 1220)
+			{
+				GrimmenhagenFarmer.Model1 = Creature.GetCreature().Spawn.Proto.Model1;
+			}
 
-            Creature_spawn Spawn = new Creature_spawn();
-            Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
-            Proto.Model1 = Creature.GetCreature().Spawn.Proto.Model1;
-            Spawn.BuildFromProto(Proto);
-            Spawn.WorldO = O;
-            Spawn.WorldY = Y;
-            Spawn.WorldZ = Z;
-            Spawn.WorldX = X;
-            Spawn.ZoneId = Creature.Zone.ZoneId;
-            //Spawn.Faction = 65;
+			if (MarauderSympathizer.Model2 == 1221)
+			{
+				GrimmenhagenFarmer.Model2 = Creature.GetCreature().Spawn.Proto.Model2;
+			}
 
-            Creature c = Creature.Region.CreateCreature(Spawn);
+			GrimmenhagenFarmer.Model2 = Creature.GetCreature().Spawn.Proto.Model2;
+			Spawn.BuildFromProto(GrimmenhagenFarmer);
+			Spawn.WorldO = Creature.Heading;
+			Spawn.WorldY = Creature.WorldPosition.Y;
+			Spawn.WorldZ = Creature.WorldPosition.Z;
+			Spawn.WorldX = Creature.WorldPosition.X;
+			Spawn.ZoneId = Creature.Zone.ZoneId;
+			Spawn.Faction = 65;
 
-            //  Set the new NPC to dead, there should be a method to do this perhaps.
-            c.Health = 0;
+			Creature creature = Creature.Region.CreateCreature(Spawn);
 
-            c.States.Add(3); // Death State
+			//  Set the new NPC to dead, there should be a method to do this perhaps.
+			creature.Health = 0;
 
-            PacketOut Out = new PacketOut((byte)Opcodes.F_OBJECT_DEATH);
-            Out.WriteUInt16(c.Oid);
-            Out.WriteByte(1);
-            Out.WriteByte(0);
-            Out.WriteUInt16(0);
-            Out.Fill(0, 6);
-            c.DispatchPacket(Out, true);
+			creature.States.Add(3); // Death State
 
-            //  Make it respawn
-            //var prms = new List<object>() { c };
+			PacketOut Out = new PacketOut((byte)Opcodes.F_OBJECT_DEATH);
+			Out.WriteUInt16(creature.Oid);
+			Out.WriteByte(1);
+			Out.WriteByte(0);
+			Out.WriteUInt16(0);
+			Out.Fill(0, 6);
+			creature.DispatchPacket(Out, true);
 
-            //c.EvtInterface.AddEvent(TeleportToSpawnPlace, 29000 + c.Level * 1000, 1, prms);
-            c.EvtInterface.AddEvent(c.RezUnit, 30000 + c.Level * 1000, 1); // 30 seconde Rez
+			//  Make it respawn
+			creature.EvtInterface.AddEvent(creature.RezUnit, 30000 + creature.Level * 1000, 1); // 30 seconde Rez
 
-            // Remove the old npc
-            Creature.Destroy();
+			// Remove the old npc
+			Creature.Destroy();
 
-            return;
-        }
+			return;
+		}
 
-        public void TeleportToSpawnPlace(object obj)
-        {
-            var Params = (List<object>)obj;
+		// This remove adds from game
+		public bool RemoveAdds(Object npc = null, object instigator = null)
+		{
+			Creature creature = npc as Creature;
+			creature.EvtInterface.AddEvent(creature.Destroy, 20000, 1);
 
-            Creature c = Params[0] as Creature;
+			return false;
+		}
 
-            c.MvtInterface.Teleport(spawnPoint);
-        }
-
-        // This remove adds from game
-        public bool RemoveAdds(Object npc = null, object instigator = null)
-        {
-            Creature c = npc as Creature;
-            c.EvtInterface.AddEvent(c.Destroy, 20000, 1);
-
-            return false;
-        }
-    }
+	}
 }
