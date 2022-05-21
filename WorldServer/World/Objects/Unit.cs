@@ -478,7 +478,7 @@ namespace WorldServer.World.Objects
                     if (creditedPlayer != null)
                     {
                         PendingTotalDamageTaken += damage;
-                        AddTrackedDamage(caster, damage);
+                        AddTrackedDamage(creditedPlayer, damage);
                     }
 
                     TotalDamageTaken = PendingTotalDamageTaken;
@@ -551,9 +551,9 @@ namespace WorldServer.World.Objects
             SendHit(_health >= _lastHealth ? LastHealOid : LastHitOid);
         }
 
-        protected readonly Dictionary<Unit, uint> DamageSources = new Dictionary<Unit, uint>();
+        protected readonly Dictionary<Player, uint> DamageSources = new Dictionary<Player, uint>();
 
-        protected void AddTrackedDamage(Unit caster, uint damage)
+        protected void AddTrackedDamage(Player caster, uint damage)
         {
             if (caster == this)
                 return;
@@ -561,7 +561,7 @@ namespace WorldServer.World.Objects
                 DamageSources[caster] += damage;
             else DamageSources.Add(caster, damage);
 
-            if (this is Player player && caster is Player casterPlr)
+            if (this is Player player)
             {
                 DeathLogger.Trace($"Looking for instanceManagerInstance");
                 ImpactMatrixManager impactManagerInstance;
@@ -576,7 +576,8 @@ namespace WorldServer.World.Objects
                     impactManagerInstance = ScenarioMgr.ImpactMatrixManagerInstance;
                 }
 
-                var modificationValue = (float)impactManagerInstance.CalculateModificationValue((float)player.BaseBountyValue, (float)casterPlr.BaseBountyValue);
+                var modificationValue = (float)impactManagerInstance.CalculateModificationValue((float)player.BaseBountyValue, (float)caster.BaseBountyValue);
+
                 // Added impact to ImpactMatrix
                 if (this.CbtInterface.IsPvp)
                 {
@@ -588,7 +589,7 @@ namespace WorldServer.World.Objects
                     impactManagerInstance.UpdateMatrix(player.CharacterId,
                         new PlayerImpact
                         {
-                            CharacterId = player.Info.CharacterId,
+                            CharacterId = caster.Info.CharacterId,
                             ExpiryTimestamp = FrameWork.TCPManager.GetTimeStamp() + ImpactMatrixManager.IMPACT_EXPIRY_TIME,
                             ImpactValue = (int)damage,
                             ModificationValue = modificationValue
@@ -631,24 +632,10 @@ namespace WorldServer.World.Objects
 
                 States.Add((byte)CreatureState.Dead); // Death State
                 DeathLogger.Trace($"SendCollatedHit {killer.Name}");
+                SendCollatedHit();
 
-                Unit credited = killer;
-                if (!DamageSources.ContainsKey(killer))
-                {
-                    if (DamageSources.Count > 0)
-                    {
-                        credited = DamageSources.RandomElement().Key;
-                    }
-                }
-                foreach (Unit damager in DamageSources.Keys)
-                {
-                    if (DamageSources[damager] > DamageSources[credited] && (damager is Pet || damager is Player))
-                    {
-                        credited = damager;
-                    }
-                }
-                Pet pet = (credited as Pet);
-                credited = (pet != null) ? pet.Owner : credited;
+                Pet pet = (killer as Pet);
+                Player credited = (pet != null) ? pet.Owner : (killer as Player);
 
                 if (credited == null)
                     DeathLogger.Trace($"Credited is empty {killer.Name}");
@@ -693,17 +680,15 @@ namespace WorldServer.World.Objects
             }
         }
 
-        protected virtual void HandleDeathRewards(Unit killer)
+        protected virtual void HandleDeathRewards(Player killer)
         {
             DeathLogger.Warn($"Unit.HandleDeathRewards : {killer.Name}");
             if (killer == this)
                 return;
-            if (killer is Player plr)
-            {
-                WorldMgr.GenerateXP(plr, this, 1f);
 
-                GenerateLoot(plr.PriorityGroup != null ? plr.PriorityGroup.GetGroupLooter(plr) : GetLooter(plr), 1f);
-            }
+            WorldMgr.GenerateXP(killer, this, 1f);
+
+            GenerateLoot(killer.PriorityGroup != null ? killer.PriorityGroup.GetGroupLooter(killer) : GetLooter(killer), 1f);
         }
 
         /// <summary>

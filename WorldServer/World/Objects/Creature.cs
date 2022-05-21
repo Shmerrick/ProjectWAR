@@ -944,7 +944,7 @@ namespace WorldServer.World.Objects
             }
         }
 
-        protected override void HandleDeathRewards(Unit killer)
+        protected override void HandleDeathRewards(Player killer)
         {
             if (Rank < 2)
             {
@@ -953,12 +953,9 @@ namespace WorldServer.World.Objects
                 CombatInterface_Npc npc = CbtInterface as CombatInterface_Npc;
 
                 if (npc != null)
-                    credited = npc.FirstStriker ?? killer as Player;
+                    credited = npc.FirstStriker ?? killer;
                 else
-                    credited = killer as Player;
-
-                if (credited == null)
-                    return;
+                    credited = killer;
 
                 WorldMgr.GenerateXP(credited, this, 1f);
 
@@ -970,7 +967,7 @@ namespace WorldServer.World.Objects
             {
                 Dictionary<Group, XpRenown> groupXPRenown = new Dictionary<Group, XpRenown>();
 
-                uint totalXP = WorldMgr.GenerateXPCount(killer as Player, this);
+                uint totalXP = WorldMgr.GenerateXPCount(killer, this);
 
                 RemoveDistantDamageSources();
 
@@ -979,27 +976,12 @@ namespace WorldServer.World.Objects
 
                 Player looter = null;
                 uint bestDamage = 0;
-                float otherDamage = 0;
-                foreach (KeyValuePair<Unit, uint> kvpair in DamageSources)
+
+                foreach (KeyValuePair<Player, uint> kvpair in DamageSources)
                 {
-                    Unit unitDamager = kvpair.Key;
-                    Player curPlayer = null;
-                    if (unitDamager is Player)
-                    {
-                        curPlayer = unitDamager as Player;
-                    }
+                    Player curPlayer = kvpair.Key;
 
-                    if (unitDamager is Pet pet)
-                    {
-                        curPlayer = pet.Owner;
-                    }
-                    if (curPlayer == null)
-                    {
-                        otherDamage = (float)kvpair.Value;
-                        continue;
-                    }
-
-                    float damageFactor = (float)kvpair.Value / (TotalDamageTaken - otherDamage);
+                    float damageFactor = (float)kvpair.Value / TotalDamageTaken;
 
                     uint xpShare = (uint)(totalXP * damageFactor);
 
@@ -1036,9 +1018,7 @@ namespace WorldServer.World.Objects
                 if (groupXPRenown.Count > 0)
                 {
                     foreach (KeyValuePair<Group, XpRenown> kvpair in groupXPRenown)
-                    {
-                        kvpair.Key.AddXpCount(killer as Player, kvpair.Value.XP);
-                    }
+                        kvpair.Key.AddXpCount(killer, kvpair.Value.XP);
                 }
 
                 if (looter != null)

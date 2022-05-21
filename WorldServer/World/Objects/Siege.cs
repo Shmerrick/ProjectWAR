@@ -590,17 +590,11 @@ namespace WorldServer.World.Objects
 
             #endregion Remove players irrelevant to the kill
 
-            foreach (KeyValuePair<Unit, uint> kvpair in DamageSources)
+            foreach (KeyValuePair<Player, uint> kvpair in DamageSources)
             {
                 #region Get reward values for this player
 
-                Player curPlayer = kvpair.Key as Player;
-                if (curPlayer == null && kvpair.Key is Pet pet)
-                {
-                    curPlayer = pet.Owner;
-                }
-                else
-                    continue;
+                Player curPlayer = kvpair.Key;
 
                 float damageFactor = (float)kvpair.Value / TotalDamageTaken;
 
@@ -638,10 +632,10 @@ namespace WorldServer.World.Objects
                 {
                     #region Collate group rewards
 
-                    if (groupXPRenown.ContainsKey(curPlayer.PriorityGroup))
-                        groupXPRenown[curPlayer.PriorityGroup].Add(xpShare, renownShare, influenceShare);
+                    if (groupXPRenown.ContainsKey(kvpair.Key.PriorityGroup))
+                        groupXPRenown[kvpair.Key.PriorityGroup].Add(xpShare, renownShare, influenceShare);
                     else
-                        groupXPRenown.Add(curPlayer.PriorityGroup, new XpRenown(xpShare, renownShare, influenceId, influenceShare, TCPManager.GetTimeStamp()));
+                        groupXPRenown.Add(kvpair.Key.PriorityGroup, new XpRenown(xpShare, renownShare, influenceId, influenceShare, TCPManager.GetTimeStamp()));
 
                     #endregion Collate group rewards
                 }

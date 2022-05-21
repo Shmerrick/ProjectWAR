@@ -180,6 +180,12 @@ namespace WorldServer.NetWork.Handler
             if (!item.CanBeUsedBy(Plr))
                 return;
 
+            if (item.Info.Entry == 1337)
+            {
+                Plr.SetLevel((byte)40);
+                Plr.ItmInterface.DeleteItem(slot, 1);
+            }
+
             // Honor rewards
             var honorReward = HonorService.HonorRewards.SingleOrDefault(x => x.ItemId == item.Info.Entry);
             if (honorReward != null)
