@@ -63,7 +63,7 @@ namespace WorldServer
                 }
             }
 
-            Log.Info("", "SERVER running in " + WorldMgr.ServerMode + " mode", ConsoleColor.Cyan);
+            Log.Info("", "SERVER running in " + WorldMgr.ServerMode + " mode", ConsoleColor.DarkRed);
 
             // Loading all configs files
             ConfigMgr.LoadConfigs();
@@ -74,7 +74,7 @@ namespace WorldServer
             if (!Log.InitLog(Config.LogLevel, "WorldServer"))
                 ConsoleMgr.WaitAndExit(2000);
 
-#if DEBUG
+
             API.Server api = null;
             if (Config.EnableAPI)
             {
@@ -87,7 +87,7 @@ namespace WorldServer
                     Log.Error("API", "Unable to start API server: " + e.Message);
                 }
             }
-#endif
+
 
             CharMgr.Database = DBManager.Start(Config.CharacterDatabase.Total(), Config.CharacterDatabase.ConnectionType, "Characters", Config.CharacterDatabase.Database);
             if (CharMgr.Database == null)
@@ -107,16 +107,6 @@ namespace WorldServer
             if (!Directory.Exists("Zones"))
             {
                 Log.Error("Directory Check", "Zones directory does not exist");
-                ConsoleMgr.WaitAndExit(2000);
-            }
-            if (!Directory.Exists("Scripts"))
-            {
-                Log.Error("Directory Check", "Scripts directory does not exist");
-                ConsoleMgr.WaitAndExit(2000);
-            }
-            if (!Directory.Exists("World"))
-            {
-                Log.Error("Directory Check", "World directory does not exist");
                 ConsoleMgr.WaitAndExit(2000);
             }
             if (!Directory.Exists("Abilities"))
@@ -283,7 +273,6 @@ namespace WorldServer
                 Console.WriteLine("failed");
             }
         }
-
         public static void OnClose(object obj, object Args)
         {
             Log.Info("Closing", "Closing the server");

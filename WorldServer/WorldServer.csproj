@@ -392,7 +392,6 @@
     <Compile Include="Managers\CommandMgr.cs" />
     <Compile Include="Managers\Commands\BaseCommands.cs" />
     <Compile Include="Managers\LootsMgr.cs" />
-    <Compile Include="Managers\ScriptsManager.cs" />
     <Compile Include="NetWork\Handler\AuctionHandlers.cs" />
     <Compile Include="NetWork\Handler\AuthentificationHandlers.cs" />
     <Compile Include="NetWork\Handler\CharacterHandlers.cs" />
@@ -669,6 +668,7 @@
     <Compile Include="World\Objects\Instances\Gunbad ROR\RedeyeBigOaf.cs" />
     <Compile Include="World\Objects\Instances\Gunbad ROR\BlazAndVelkyrrix.cs" />
     <Compile Include="World\Objects\Instances\Gunbad ROR\WightLordSolithex.cs" />
+    <Compile Include="World\Scripting\Dungeons\AltdorfSewersWingIII.cs" />
     <Compile Include="World\Scripting\Events\Halloween\BasicHalloween.cs" />
     <Compile Include="World\Scripting\Lairs\Beastlords\BasicBeastlord.cs" />
     <Compile Include="World\Scripting\Lairs\Beastlords\AllBeastlords.cs" />
@@ -676,9 +676,8 @@
     <Compile Include="World\Scripting\PublicQuests\Destro\DeathstoneQuarry.cs" />
     <Compile Include="World\Scripting\PublicQuests\Order\RavenHostVanguard.cs" />
     <Compile Include="World\Scripting\Quests\BasicQuest.cs" />
-    <Compile Include="World\Scripting\Quests\HeartsAndMinds.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
+    <Compile Include="World\Scripting\Quests\GrimmenhagenBurning.cs" />
+    <Compile Include="World\Scripting\Quests\HeartsAndMinds.cs" />
     <Compile Include="World\WorldSettings\WorldSettings.cs" />
     <Compile Include="World\Objects\Instances\Instance.cs" />
     <Compile Include="World\Objects\Instances\InstanceDoor.cs" />

@@ -29,6 +29,17 @@ namespace WorldServer
 
         }
 
+        public class CommonFunctions : AGeneralScript
+        {
+            public void RemoveBuffs(Object Creature)
+            {
+                Creature c = Creature as Creature;
+                c.IsImmovable = false;
+                c.IsInvulnerable = false;
+            }
+
+        }
+
         // When Boss kills player this event is run
         public bool OnKilledPlayer(Object pkilled, object instigator)
         {

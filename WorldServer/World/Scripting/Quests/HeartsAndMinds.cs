@@ -50,14 +50,8 @@ namespace WorldServer
 			Creature_proto GrimmenhagenFarmer = CreatureService.GetCreatureProto(32);
 			Creature_spawn Spawn = new Creature_spawn();
 			Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
-			if (GrimmenhagenFarmer.Model1 == 1540)
-			{
-				MarauderSympathizer.Model1 = Creature.GetCreature().Spawn.Proto.Model1;
-			}
-			if (GrimmenhagenFarmer.Model2 == 1541)
-			{
-				MarauderSympathizer.Model2 = Creature.GetCreature().Spawn.Proto.Model2;
-			}
+			//MarauderSympathizer.Model1 = Creature.GetCreature().Spawn.Proto.Model1;
+			//MarauderSympathizer.Model2 = Creature.GetCreature().Spawn.Proto.Model2;
 			Spawn.BuildFromProto(MarauderSympathizer);
 			Spawn.WorldO = Creature.Heading;
 			Spawn.WorldY = Creature.WorldPosition.Y;
@@ -105,17 +99,9 @@ namespace WorldServer
 
 			Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
 
-			if (MarauderSympathizer.Model1 == 1220)
-			{
-				GrimmenhagenFarmer.Model1 = Creature.GetCreature().Spawn.Proto.Model1;
-			}
+			//GrimmenhagenFarmer.Model1 = Creature.GetCreature().Spawn.Proto.Model1;
+			//GrimmenhagenFarmer.Model2 = Creature.GetCreature().Spawn.Proto.Model2;
 
-			if (MarauderSympathizer.Model2 == 1221)
-			{
-				GrimmenhagenFarmer.Model2 = Creature.GetCreature().Spawn.Proto.Model2;
-			}
-
-			GrimmenhagenFarmer.Model2 = Creature.GetCreature().Spawn.Proto.Model2;
 			Spawn.BuildFromProto(GrimmenhagenFarmer);
 			Spawn.WorldO = Creature.Heading;
 			Spawn.WorldY = Creature.WorldPosition.Y;

@@ -1070,8 +1070,7 @@ namespace WorldServer.Managers
         #endregion Relation
 
         #region Scripts
-
-        public static CSharpScriptCompiler ScriptCompiler;
+        
         public static Dictionary<string, Type> LocalScripts = new Dictionary<string, Type>();
         public static Dictionary<string, AGeneralScript> GlobalScripts = new Dictionary<string, AGeneralScript>();
         public static Dictionary<uint, Type> CreatureScripts = new Dictionary<uint, Type>();
@@ -1081,9 +1080,7 @@ namespace WorldServer.Managers
         public static void LoadScripts(bool Reload)
         {
             GeneralScripts = new ScriptsInterface();
-
-            ScriptCompiler = new CSharpScriptCompiler();
-            ScriptCompiler.LoadScripts();
+                     
             GeneralScripts.ClearScripts();
 
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
