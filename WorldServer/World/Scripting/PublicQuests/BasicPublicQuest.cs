@@ -11,7 +11,7 @@ namespace WorldServer.World.Scripting.PublicQuests
 {
     internal class BasicPublicQuest : AGeneralScript
     {
-        protected Object Obj; // This is creature
+        protected Object Creature; // This is creature
         public Random random = new Random();
 
         protected Point3D spawnPoint;
@@ -24,22 +24,22 @@ namespace WorldServer.World.Scripting.PublicQuests
         protected List<Objects.GameObject> goList = new List<Objects.GameObject>(); // this list keeps all adds spawned by boss
         protected int Stage = -1; // This is variable that controls combat Stage
 
-        public override void OnObjectLoad(Object Obj)
+        public override void OnObjectLoad(Object Creature)
         {
-            this.Obj = Obj;
-            spawnPoint = Obj as Point3D;
-            spawnWorldX = (int)Obj.WorldPosition.X;
-            spawnWorldY = (int)Obj.WorldPosition.Y;
-            spawnWorldZ = (int)Obj.WorldPosition.Z;
-            spawnWorldO = (int)Obj.Heading;
+            this.Creature = Creature;
+            spawnPoint = Creature as Point3D;
+            spawnWorldX = (int)Creature.WorldPosition.X;
+            spawnWorldY = (int)Creature.WorldPosition.Y;
+            spawnWorldZ = (int)Creature.WorldPosition.Z;
+            spawnWorldO = (int)Creature.Heading;
 
-            Obj.EvtInterface.AddEventNotify(EventName.OnEnterCombat, OnEnterCombat);
-            Obj.EvtInterface.AddEventNotify(EventName.OnLeaveCombat, OnLeaveCombat);
+            Creature.EvtInterface.AddEventNotify(EventName.OnEnterCombat, OnEnterCombat);
+            Creature.EvtInterface.AddEventNotify(EventName.OnLeaveCombat, OnLeaveCombat);
         }
 
         public bool OnEnterCombat(Object npc = null, object instigator = null)
         {
-            Creature c = Obj as Creature;
+            Creature c = Creature as Creature;
             c.IsInvulnerable = false;
             Stage = -1;
             return false;
@@ -47,7 +47,7 @@ namespace WorldServer.World.Scripting.PublicQuests
 
         public bool OnLeaveCombat(Object npc = null, object instigator = null)
         {
-            Creature c = Obj as Creature;
+            Creature c = Creature as Creature;
             c.IsInvulnerable = false;
             Stage = -1;
 
@@ -73,9 +73,9 @@ namespace WorldServer.World.Scripting.PublicQuests
             Spawn.WorldX = X;
             Spawn.WorldY = Y;
             Spawn.WorldZ = Z;
-            Spawn.ZoneId = (ushort)Obj.ZoneId;
+            Spawn.ZoneId = (ushort)Creature.ZoneId;
             Spawn.Level = 3;
-            Creature c = Obj.Region.CreateCreature(Spawn);
+            Creature c = Creature.Region.CreateCreature(Spawn);
             c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds); // We are removing spawns from server when adds die
             addList.Add(c); // Adding adds to the list for easy removal
         }
