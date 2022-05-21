@@ -53,7 +53,10 @@ namespace WorldServer.World.AI.Abilities
             //Brain.SpeakYourMind($" using PrecisionStrike vs {(Combat.CurrentTarget as Player)?.Name}");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "PrecisionStrike", 8005);
         }
-
+        public void ClawSweep()
+        {
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "ClawSweep", 42);
+        }
         public void SeepingWound()
         {
             //Brain.SpeakYourMind($" using Seeping Wound vs {(Combat.CurrentTarget as Player)?.Name}");
@@ -171,6 +174,10 @@ namespace WorldServer.World.AI.Abilities
         { //Heal debuff 50 % 30 sec
             //Brain.SpeakYourMind($" using CorrosiveVomit vs {(Combat.CurrentTarget as Player)?.Name}");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "CorrosiveVomit", 5303);
+        }
+        public void FoulVomit()
+        { //Heal debuff 50 % 30 sec
+            Brain.SimpleCast(Owner, Combat.CurrentTarget, "FoulVomit", 12522);
         }
 
         public void RampantSlash()
