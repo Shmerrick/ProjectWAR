@@ -68,13 +68,14 @@ namespace WorldServer.World.Objects.PublicQuests
         /// Distributes the loot and contribution rewards for this particular NPC.
         /// </summary>
         /// <param name="killer"></param>
-        protected override void HandleDeathRewards(Player killer)
-        {
+        protected override void HandleDeathRewards(Unit killer)
+        {            
+            if (killer == null && killer is Pet pet)
+                            killer = pet.Owner;
+            
             Dictionary<Group, XpRenown> groupXPRenown = new Dictionary<Group, XpRenown>();
 
-            uint totalXP = WorldMgr.GenerateXPCount(killer, this);
-
-            RemoveDistantDamageSources();
+            uint totalXP = WorldMgr.GenerateXPCount(killer as Player , this);
 
             if (DamageSources.Count == 0 || TotalDamageTaken == 0)
                 return;
@@ -82,9 +83,9 @@ namespace WorldServer.World.Objects.PublicQuests
             Player looter = null;
             uint bestDamage = 0;
 
-            foreach (KeyValuePair<Player, uint> kvpair in DamageSources)
+            foreach (KeyValuePair<Unit, uint> kvpair in DamageSources)
             {
-                Player curPlayer = kvpair.Key;
+                Player curPlayer = kvpair.Key as Player;
 
                 if (curPlayer == null)
                     continue;
@@ -141,7 +142,7 @@ namespace WorldServer.World.Objects.PublicQuests
             if (groupXPRenown.Count > 0)
             {
                 foreach (KeyValuePair<Group, XpRenown> kvpair in groupXPRenown)
-                    kvpair.Key.AddXpCount(killer, kvpair.Value.XP);
+                    kvpair.Key.AddXpCount(killer as Player, kvpair.Value.XP);
             }
 
             if (looter != null)
