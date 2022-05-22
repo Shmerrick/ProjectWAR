@@ -4,10 +4,10 @@ using GameData;
 using System;
 using System.Collections.Generic;
 using SystemData;
+using System.Threading;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
-using System.Threading;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Map;
@@ -576,8 +576,15 @@ namespace WorldServer.World.Objects
             Destroy();
         }
 
-        protected override void HandleDeathRewards(Player killer)
+        protected override void HandleDeathRewards(Unit unitKiller)
         {
+            Player killer = unitKiller as Player;
+            if (unitKiller is Pet pet)
+            {
+                killer = pet.Owner;
+            }
+            if (killer == null)
+                return; //Sanity;
             if (Spawn.Proto.TokUnlock != null && Spawn.Proto.TokUnlock.Length > 1 && Spawn.Proto.HealthPoints > 1)
             {
                 killer.TokInterface.AddToks(Spawn.Proto.TokUnlock);
@@ -589,6 +596,7 @@ namespace WorldServer.World.Objects
             }
             CreditQuestKill(killer);
         }
+
 
         protected void CreditQuestKill(Player killer)
         {
@@ -687,6 +695,7 @@ namespace WorldServer.World.Objects
 
                     }, (object)(new object[] { plr }), 500, Timeout.Infinite);
                 }
+
             }
         }
 
