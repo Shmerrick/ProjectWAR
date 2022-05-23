@@ -8,6 +8,10 @@ Discord: https://discordapp.com/invite/MBxsJBQ
 
 https://drive.google.com/file/d/1TgHnAsn-reUbLyGavd9hLUVuXR5dEbf2/view?usp=sharing
 
+#### Download MySQL Community Downloads ####
+
+https://dev.mysql.com/downloads/installer/
+
 #### Download Full WAR Client ####
 
 https://mega.nz/file/3AVRCRSZ#GTvN2wphlqjOflUe1OdAcT1oyjSw0y0Aqq5U4x2o3F4
