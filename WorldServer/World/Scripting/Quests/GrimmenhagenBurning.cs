@@ -31,39 +31,6 @@ namespace WorldServer.World.Scripting.Quests
 
             Target.GetPlayer().QtsInterface.HandleEvent(Objective_Type.QUEST_UNKNOWN, 1314, 1, true);
 
-            Creature c = Obj.GetCreature();
-            Random rand = new Random();
-
-			//  Make the villager say something
-            Double chance = rand.NextDouble();
-            if (chance >= 0.8)
-                c.Say("Thanks for saving me!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
-            else if (chance >= 0.6)
-                c.Say("Phew, that was close!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
-            else if (chance >= 0.4)
-                c.Say("Ahh, run for your life!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
-            else if (chance >= 0.2)
-                c.Say("I could have taken him myself!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
-            else
-                c.Say("Please help my friend!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
-
-
-			//  Make the villager run to either the start or the village
-            chance = rand.NextDouble();
-            if (chance >= 0.5)
-                c.GetCreature().MvtInterface.Move(22347, 53688, 7425);
-            else
-                c.GetCreature().MvtInterface.Move(15548, 51104, 7228);
-
-        }
-    }
-
-    [GeneralScript(false, "", 98324, 0)]
-    public class GrimmenhagenBurningTorchbearerQuestScript : AGeneralScript
-    {
-        public override void OnDie(Object Obj)
-        {
-            // Spawn the bad npc 
             Creature_proto Proto = CreatureService.GetCreatureProto((uint)135);
             if (Proto == null)
                 return;
@@ -81,10 +48,32 @@ namespace WorldServer.World.Scripting.Quests
             Spawn.Faction = 72;
             Spawn.Emote = 53;
 
-            Creature c = Obj.Region.CreateCreature(Spawn);
+            Creature creature = Obj.Region.CreateCreature(Spawn);            
+            Random rand = new Random();
 
-			//  The villager will be disposed in 20 secs
-            c.EvtInterface.AddEvent(c.Destroy, 20000, 1);
+			//  Make the villager say something
+            Double chance = rand.NextDouble();
+            if (chance >= 0.8)
+                creature.Say("Thanks for saving me!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+            else if (chance >= 0.6)
+                creature.Say("Phew, that was close!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+            else if (chance >= 0.4)
+                creature.Say("Ahh, run for your life!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+            else if (chance >= 0.2)
+                creature.Say("I could have taken him myself!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+            else
+                creature.Say("Please help my friend!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+
+
+			//  Make the villager run to either the start or the village
+            chance = rand.NextDouble();
+            if (chance >= 1)
+                creature.GetCreature().MvtInterface.Move(22347, 53688, 7425);
+            else
+                creature.GetCreature().MvtInterface.Move(15548, 51104, 7228);
+
+            creature.EvtInterface.AddEvent(creature.Destroy, 20000, 1);
+
         }
-    }
+    }    
 }
