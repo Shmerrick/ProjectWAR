@@ -60,7 +60,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
@@ -121,7 +121,7 @@
     </Compile>
     <Compile Include="ApocLauncher.Designer.cs">
       <DependentUpon>ApocLauncher.cs</DependentUpon>
-    </Compile>
+    </Compile>	
     <Compile Include="NetWork\CRC32.cs" />
     <Compile Include="NetWork\Marshal.cs" />
     <Compile Include="NetWork\MYP.cs" />
@@ -144,7 +144,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="app.config" />
+    <None Include="app.config" />	
+	<Content Include="LocalDevelopment\mythloginserviceconfig.xml" />	
     <None Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -187,7 +188,7 @@
     <Content Include="Artwork\background.png" />
     <None Include="Artwork\logo-2_yellow.png" />
     <Content Include="Artwork\WAR.ico" />
-    <Content Include="Artwork\WAR.png" />
+    <Content Include="Artwork\WAR.png" />    
     <None Include="Resources\M55rLv3.jpg" />
     <Content Include="WAR.ico" />
   </ItemGroup>
