@@ -1,4 +1,4 @@
-# ![logo](https://3dnews.ru/assets/external/illustrations/2013/04/25/644667/warhammer-online-age-of-reckoning-logo.jpg) 
+# ![logo](https://user-images.githubusercontent.com/812439/170816868-98fbcf66-8f8a-4d30-989f-4f97bb1c0254.png)
 
 Discord: https://discordapp.com/invite/MBxsJBQ
 
@@ -108,4 +108,3 @@ The item level will cast the potion ability at the given level.
 ### creature_smart_ability - Updated May 2022 ###
 	
 We updated systemfor use one of more production creature systemin the game. Anyway we can script creatures by the types.
-
