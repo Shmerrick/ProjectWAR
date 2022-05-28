@@ -2,7 +2,7 @@
 
 namespace AccountCacher
 {
-    [aConfigAttributes("Config/AccountConfig.xml")]
+    [aConfigAttributes("Configs/AccountConfig.xml")]
     public class AccountConfig : aConfig
     {
         public RpcServerConfig RpcInfo = new RpcServerConfig("127.0.0.1", 6800, 6000);

@@ -2,7 +2,7 @@
 
 namespace WorldServer.Configs
 {
-    [aConfigAttributes("Config/WorldConfig.xml")]
+    [aConfigAttributes("Configs/WorldConfig.xml")]
     public class WorldConfig : aConfig
     {
         public RpcClientConfig AccountCacherInfo = new RpcClientConfig("127.0.0.1", "127.0.0.1", 6800);
