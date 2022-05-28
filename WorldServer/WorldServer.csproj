@@ -297,7 +297,7 @@
     <Compile Include="API\Packet.cs" />
     <Compile Include="API\Protocol.cs" />
     <Compile Include="API\Server.cs" />
-    <Compile Include="Configs\WorldConfigs.cs" />
+    <Compile Include="Config\WorldConfig.cs" />
     <Compile Include="Managers\Commands\AbilityCommands.cs" />
     <Compile Include="Managers\Commands\AddCommands.cs" />
     <Compile Include="Managers\Commands\CampaignCommands.cs" />
@@ -825,10 +825,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Configs\LocalDevelopment\Account.xml" />
-    <Content Include="Configs\LocalDevelopment\Launcher.xml" />
-    <Content Include="Configs\LocalDevelopment\Lobby.xml" />
-    <Content Include="Configs\LocalDevelopment\World.xml" />
+    <Content Include="Config\WorldConfig.xml" />
     <Content Include="world.ico" />
     <Content Include="WarZone64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

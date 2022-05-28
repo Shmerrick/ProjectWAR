@@ -854,7 +854,7 @@ namespace WorldServer.World.Battlefronts.Bounty
                 }
             }
 
-            return rewardAssigner.AssignLootToPlayers(numberOfBagsToAward, bagDefinitions, sortedPairs, bagBonusCharacters, randomRollList, pairingContributions, new WorldConfigs { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y" });
+            return rewardAssigner.AssignLootToPlayers(numberOfBagsToAward, bagDefinitions, sortedPairs, bagBonusCharacters, randomRollList, pairingContributions, new WorldConfig { AllowBagBonusContribution = "Y", AllowPairingContribution = "Y", AllowRandomContribution = "Y" });
         }
 
         public void GenerateKeepTakeLootBags(
@@ -1033,7 +1033,7 @@ namespace WorldServer.World.Battlefronts.Bounty
             }
         }
 
-        public int CalculateAdditionalBagsDueToEnemyRatio(int winningEligiblePlayers, int losingEligiblePlayers, WorldConfigs config)
+        public int CalculateAdditionalBagsDueToEnemyRatio(int winningEligiblePlayers, int losingEligiblePlayers, WorldConfig config)
         {
             if (winningEligiblePlayers <= config.AdditionalBagRatioMinimumWinners)
                 return 0;
@@ -1111,7 +1111,7 @@ namespace WorldServer.World.Battlefronts.Bounty
         /// </summary>
 
         /// <param name="bonus"></param>
-        public RVRPlayerBagBonus UpdatePlayerBagBonus(uint characterId, string characterName, RVRPlayerBagBonus bonus, WorldConfigs settings)
+        public RVRPlayerBagBonus UpdatePlayerBagBonus(uint characterId, string characterName, RVRPlayerBagBonus bonus, WorldConfig settings)
         {
             var increment = settings.EligiblePlayerBagBonusIncrement;
 

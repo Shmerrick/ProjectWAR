@@ -3,7 +3,7 @@ using FrameWork;
 
 namespace AuthenticationServer.Config
 {
-    [aConfigAttributes("Configs/Launcher.xml")]
+    [aConfigAttributes("Config/LauncherConfig.xml")]
     public class LauncherConfig : aConfig
     {
         public int LauncherServerPort = 8000;

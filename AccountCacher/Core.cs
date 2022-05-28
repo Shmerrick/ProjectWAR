@@ -7,7 +7,7 @@ namespace AccountCacher
     internal class Core
     {
         public static AccountMgr AcctMgr;
-        public static AccountConfigs Config;
+        public static AccountConfig Config;
         public static RpcServer Server;
 
         [STAThread]
@@ -19,7 +19,7 @@ namespace AccountCacher
 
             // Loading all configs files
             ConfigMgr.LoadConfigs();
-            Config = ConfigMgr.GetConfig<AccountConfigs>();
+            Config = ConfigMgr.GetConfig<AccountConfig>();
 
             // Loading log level from file
             if (!Log.InitLog(Config.LogLevel, "AccountCacher"))
