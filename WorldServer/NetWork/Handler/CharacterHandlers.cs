@@ -303,9 +303,10 @@ namespace WorldServer.NetWork.Handler
             }
         }
 
-        private struct RandomNameInfo
+        public struct RandomNameInfo
         {
             public byte Race, Unk, Slot;
+            
         }
 
         [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.F_RANDOM_NAME_LIST_INFO, (int)eClientState.CharScreen, "onRandomNameListInfo")]
