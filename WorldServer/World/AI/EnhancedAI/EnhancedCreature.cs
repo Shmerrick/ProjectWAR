@@ -73,8 +73,6 @@ namespace WorldServer.World.AI.EnhancedAI
                 new PathFinderOptions {PunishChangeDirection = true, Diagonals = true});
 
             if (!PatrolStateMachine.fsm.IsRunning)
-                PatrolStateMachine.fsm.Initialize(NonCombatCreatureStateMachine.ProcessState.Initial);
-            if (!PatrolStateMachine.fsm.IsRunning)
                 PatrolStateMachine.fsm.Start();
             
             PatrolStateMachine.fsm.Fire(NonCombatCreatureStateMachine.Command.OnLoading);
@@ -97,8 +95,6 @@ namespace WorldServer.World.AI.EnhancedAI
         {
             InCombat = true;
 
-            if (!CombatStateMachine.fsm.IsRunning)
-                CombatStateMachine.fsm.Initialize(CombatCreatureStateMachine.ProcessState.PreparingForCombat);
             if (!CombatStateMachine.fsm.IsRunning)
                 CombatStateMachine.fsm.Start();
 
