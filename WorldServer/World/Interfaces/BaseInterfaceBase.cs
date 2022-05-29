@@ -1,6 +1,7 @@
 ﻿namespace WorldServer.World.Interfaces
 {
-    public abstract class BaseInterfaceBase : BaseInterfaceBaseBase
+    public abstract class BaseInterfaceBase
     {
+        public event MovementInterface.dgEventRaiser OnMovementComplete;
     }
 }

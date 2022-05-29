@@ -2,6 +2,6 @@
 {
     public abstract class BaseInterfaceBaseBase
     {
-        public event MovementInterface.dgEventRaiser OnMovementComplete;
+        public abstract event MovementInterface.dgEventRaiser OnMovementComplete;
     }
 }
