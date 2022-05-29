@@ -487,7 +487,7 @@ namespace WorldServer.World.Interfaces
             locked = false;
         }
 
-        private byte _basePower;
+        public byte _basePower;
         public void SetBasePower()
         {
             if (_myPlayer._Value.CraftingSkillLevel == 200)
