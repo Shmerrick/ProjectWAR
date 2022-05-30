@@ -1,19 +1,3 @@
-/*
- Navicat Premium Data Transfer
-
- Source Server         : warserver
- Source Server Type    : MySQL
- Source Server Version : 80028
- Source Host           : localhost:3306
- Source Schema         : projectwar-world
-
- Target Server Type    : MySQL
- Target Server Version : 80028
- File Encoding         : 65001
-
- Date: 30/05/2022 16:44:04
-*/
-
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
