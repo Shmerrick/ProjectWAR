@@ -7,20 +7,6 @@ using Object = WorldServer.World.Objects.Object;
 
 namespace WorldServer.World.Scripting.PublicQuests.Order
 {
-    /* Quest: Grimmenhagen Burning
-     * (needs verifing)
-     * The quests requires you to kill 3 Tourchbearers and free 3 villagers from their burning
-     * house by opening a door.
-     *
-     * Whats working:
-     * Because we cannot open doors. This will simply spawn a villager when a Tourchbearer dies.
-     * You then click on the Villager and he will run away, thanking you for freeing him. However
-     * you should 'free' him once you open the door to his house.
-     *
-     * Todo:
-     * - Support with doors
-     */
-
     [GeneralScript(false, "", 46, 0)]
     public class FatherSigwaldQuestScript : AGeneralScript
     {
