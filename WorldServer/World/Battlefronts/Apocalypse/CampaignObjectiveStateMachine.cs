@@ -26,59 +26,59 @@ namespace WorldServer.World.Battlefronts.Apocalypse
         }
 
         public BattlefieldObjective Objective { get; set; }
-        public PassiveStateMachine<Apocalypse.CampaignObjectiveStateMachine.ProcessState, Apocalypse.CampaignObjectiveStateMachine.Command> fsm { get; set; }
+        public PassiveStateMachine<ProcessState, Command> Fsm { get; set; }
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public CampaignObjectiveStateMachine(BattlefieldObjective objective)
         {
             Objective = objective;
-            fsm = new PassiveStateMachine<ProcessState, Command>();
+            Fsm = new PassiveStateMachine<ProcessState, Command>();
 
-            fsm.TransitionCompleted += RecordTransition;
+            Fsm.TransitionCompleted += RecordTransition;
 
             /* Initial State */
-            fsm.In(ProcessState.Neutral)
+            Fsm.In(ProcessState.Neutral)
                 .On(Command.OnOpenBattleFront).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
-            fsm.In(ProcessState.Guarded)
+            Fsm.In(ProcessState.Guarded)
                 .On(Command.OnOpenBattleFront).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
-            fsm.In(ProcessState.Locked)
+            Fsm.In(ProcessState.Locked)
                 .On(Command.OnOpenBattleFront).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
-            fsm.In(ProcessState.Captured)
+            Fsm.In(ProcessState.Captured)
                 .On(Command.OnOpenBattleFront).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
-            fsm.In(ProcessState.Capturing)
+            Fsm.In(ProcessState.Capturing)
                 .On(Command.OnOpenBattleFront).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
 
             /* Any call to Lock Zone will execute Lock */
-            fsm.In(ProcessState.Neutral)
+            Fsm.In(ProcessState.Neutral)
                 .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Objective.SetObjectiveLocked());
-            fsm.In(ProcessState.Capturing)
+            Fsm.In(ProcessState.Capturing)
                 .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Objective.SetObjectiveLocked());
-            fsm.In(ProcessState.Captured)
+            Fsm.In(ProcessState.Captured)
                 .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Objective.SetObjectiveLocked());
-            fsm.In(ProcessState.Locked)
+            Fsm.In(ProcessState.Locked)
                 .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Objective.SetObjectiveLocked());
-            fsm.In(ProcessState.Guarded)
+            Fsm.In(ProcessState.Guarded)
                 .On(Command.OnLockZone).Goto(ProcessState.Locked).Execute(() => Objective.SetObjectiveLocked());
 
-            fsm.In(ProcessState.Neutral)
+            Fsm.In(ProcessState.Neutral)
                 .On(Command.OnPlayerInteractionComplete).Goto(ProcessState.Capturing).Execute(() => Objective.SetObjectiveCapturing());
-            fsm.In(ProcessState.Neutral)
+            Fsm.In(ProcessState.Neutral)
                 .On(Command.OnPlayerInteractionBroken).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
 
-            fsm.In(ProcessState.Capturing)
+            Fsm.In(ProcessState.Capturing)
                 .On(Command.OnPlayerInteractionComplete).Goto(ProcessState.Capturing).Execute(() => Objective.SetObjectiveCapturing());
-            fsm.In(ProcessState.Capturing)
+            Fsm.In(ProcessState.Capturing)
                 .On(Command.OnPlayerInteractionBroken).Goto(ProcessState.Neutral).Execute(() => Objective.SetObjectiveSafe());
 
-            fsm.In(ProcessState.Capturing)  //if BO was already captured by the current realm, go to guarded.
+            Fsm.In(ProcessState.Capturing)  //if BO was already captured by the current realm, go to guarded.
                 .On(Command.OnCaptureTimerEnd).Goto(ProcessState.Captured).Execute(() => Objective.SetObjectiveCaptured());
-            fsm.In(ProcessState.Captured)
+            Fsm.In(ProcessState.Captured)
                 .On(Command.OnGuardedTimerEnd).Goto(ProcessState.Guarded).Execute(() => Objective.SetObjectiveGuarded());
 
-            fsm.In(ProcessState.Guarded)
+            Fsm.In(ProcessState.Guarded)
                 .On(Command.OnPlayerInteractionComplete).Goto(ProcessState.Capturing).Execute(() => Objective.SetObjectiveCapturing());
-            fsm.In(ProcessState.Guarded)
+            Fsm.In(ProcessState.Guarded)
                 .On(Command.OnPlayerInteractionBroken).Goto(ProcessState.Guarded).Execute(() => Objective.SetObjectiveGuarded());
         }
 

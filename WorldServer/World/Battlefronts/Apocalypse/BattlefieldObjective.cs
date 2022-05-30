@@ -162,7 +162,7 @@ namespace WorldServer.World.Battlefronts.Apocalypse
 
             CommsEngine = new ApocCommunications();
             RewardManager = new RVRRewardManager();
-            fsm = new CampaignObjectiveStateMachine(this).fsm;
+            fsm = new CampaignObjectiveStateMachine(this).Fsm;
             fsm.Initialize(CampaignObjectiveStateMachine.ProcessState.Neutral);
             if (objective.Guards != null)
             {

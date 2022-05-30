@@ -93,8 +93,8 @@
     <ApplicationIcon>world.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Appccelerate.StateMachine, Version=5.0.0.0, Culture=neutral, PublicKeyToken=917bca444d1f2b4c, processorArchitecture=MSIL">
-      <HintPath>..\packages\Appccelerate.StateMachine.5.1.0\lib\netstandard1.3\Appccelerate.StateMachine.dll</HintPath>
+    <Reference Include="Appccelerate.StateMachine, Version=4.4.0.0, Culture=neutral, PublicKeyToken=917bca444d1f2b4c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Appccelerate.StateMachine.4.4.0\lib\netstandard1.0\Appccelerate.StateMachine.dll</HintPath>
     </Reference>
     <Reference Include="BehaviourTree, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\BehaviourTree.1.0.73\lib\netstandard1.0\BehaviourTree.dll</HintPath>
