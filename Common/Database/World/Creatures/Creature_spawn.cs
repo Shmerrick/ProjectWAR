@@ -134,16 +134,5 @@ namespace Common
         }
 
         public byte NoRespawn = 0;
-
-        public Creature_spawn(Creature_proto proto, uint guid, ushort zoneId, int worldX, int worldY, int worldZ, int worldO)
-        {
-            BuildFromProto(proto);
-            _Guid = guid;
-            _ZoneId = zoneId;
-            _WorldX = worldX;
-            _WorldY = worldY;
-            _WorldZ = worldZ;
-            _WorldO = worldO;
-        }
     }
 }
