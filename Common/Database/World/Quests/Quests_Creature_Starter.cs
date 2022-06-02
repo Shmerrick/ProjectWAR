@@ -8,10 +8,10 @@ namespace Common
     [Serializable]
     public class Quest_Creature_Starter : DataObject
     {
-        [PrimaryKey]
-        public ushort Entry { get; set; }
-
         [DataElement()]
         public uint CreatureID { get; set; }
+
+        [PrimaryKey]
+        public ushort Entry { get; set; }
     }
 }

@@ -3,7 +3,6 @@ using System;
 
 namespace Common
 {
-    // Valeur Fixe d'un character
     [DataTable(PreCache = false, TableName = "creature_items", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class Creature_item : DataObject

@@ -7,65 +7,8 @@ namespace Common
     [Serializable]
     public class DBAbilityInfo : DataObject
     {
-        [PrimaryKey]
-        public ushort Entry { get; set; }
-
         [DataElement]
-        public uint CareerLine { get; set; }
-
-        [DataElement(Varchar = 255)]
-        public string Name { get; set; }
-
-        [DataElement]
-        public byte MinRange { get; set; }
-
-        [DataElement]
-        public ushort Range { get; set; }
-
-        [DataElement]
-        public ushort CastTime { get; set; }
-
-        [DataElement]
-        public ushort Cooldown { get; set; }
-
-        [DataElement]
-        public byte ApCost { get; set; }
-
-        /// <summary>
-        /// Used for morale and career resource costs
-        /// </summary>
-        [DataElement]
-        public short SpecialCost { get; set; }
-
-        [DataElement]
-        public bool MoveCast { get; set; } = false;
-
-        [DataElement]
-        public byte MinimumRank { get; set; }
-
-        [DataElement]
-        public byte MinimumRenown { get; set; }
-
-        [DataElement]
-        public ushort IconId { get; set; }
-
-        [DataElement(Varchar = 255)]
-        public string Specline { get; set; }
-
-        [DataElement]
-        public byte MasteryTree { get; set; }
-
-        [DataElement]
-        public byte Category { get; set; }
-
-        [DataElement]
-        public ushort Flags { get; set; }
-
-        [DataElement]
-        public byte PointCost { get; set; }
-
-        [DataElement]
-        public uint CashCost { get; set; }
+        public ushort abilityID { get; set; }
 
         /// <summary>
         ///  None - Melee - Ranged - Magical
@@ -74,19 +17,40 @@ namespace Common
         public byte AbilityType { get; set; }
 
         [DataElement]
-        public ushort ChannelID { get; set; }
+        public bool AffectsDead { get; set; } = false;
+
+        [DataElement]
+        public ushort AIRange { get; set; }
+
+        [DataElement]
+        public byte ApCost { get; set; }
+
+        [DataElement]
+        public uint CareerLine { get; set; }
+
+        [DataElement]
+        public uint CashCost { get; set; }
 
         [DataElement]
         public ushort CastAngle { get; set; }
 
-        [DataElement(AllowDbNull = false)]
-        public ushort EffectID { get; set; }
+        [DataElement]
+        public ushort CastTime { get; set; }
 
         [DataElement]
-        public byte WeaponNeeded { get; set; }
+        public byte Category { get; set; }
 
         [DataElement]
-        public ushort InvokeDelay { get; set; }
+        public ushort CDcap { get; set; }
+
+        [DataElement]
+        public ushort ChannelID { get; set; }
+
+        [DataElement]
+        public ushort Cooldown { get; set; }
+
+        [DataElement]
+        public ushort CooldownEntry { get; set; }
 
         /// <summary>
         /// <para>The abs value of this is the delay (in ms) required before commands with IsDelayedEffect will execute.</para>
@@ -96,29 +60,22 @@ namespace Common
         [DataElement]
         public short EffectDelay { get; set; }
 
-        [DataElement]
-        public bool IgnoreGlobalCooldown { get; set; } = false;
+        [DataElement(AllowDbNull = false)]
+        public ushort EffectID { get; set; }
 
         [DataElement]
-        public bool AffectsDead { get; set; } = false;
+        public ushort effectID2 { get; set; }
 
+        [PrimaryKey]
+        public ushort Entry { get; set; }
         [DataElement]
-        public int StealthInteraction { get; set; }
+        public ushort Flags { get; set; }
 
         [DataElement]
         public byte Fragile { get; set; }
 
         [DataElement]
-        public ushort CooldownEntry { get; set; }
-
-        [DataElement]
-        public ushort ToggleEntry { get; set; }
-
-        [DataElement]
-        public bool IgnoreOwnModifiers { get; set; }
-
-        [DataElement]
-        public ushort AIRange { get; set; }
+        public ushort IconId { get; set; }
 
         /// <summary>
         /// if this is set it will ignore any modifications to the cooldown
@@ -127,18 +84,56 @@ namespace Common
         public ushort IgnoreCooldownReduction { get; set; }
 
         [DataElement]
-        public ushort CDcap { get; set; }
+        public bool IgnoreGlobalCooldown { get; set; } = false;
+
+        [DataElement]
+        public bool IgnoreOwnModifiers { get; set; }
+
+        [DataElement]
+        public ushort InvokeDelay { get; set; }
+
+        [DataElement]
+        public byte MasteryTree { get; set; }
+
+        [DataElement]
+        public byte MinimumRank { get; set; }
+
+        [DataElement]
+        public byte MinimumRenown { get; set; }
+
+        [DataElement]
+        public byte MinRange { get; set; }
+
+        [DataElement]
+        public bool MoveCast { get; set; } = false;
+
+        [DataElement(Varchar = 255)]
+        public string Name { get; set; }
+        [DataElement]
+        public byte PointCost { get; set; }
+
+        [DataElement]
+        public ushort Range { get; set; }
+        /// <summary>
+        /// Used for morale and career resource costs
+        /// </summary>
+        [DataElement]
+        public short SpecialCost { get; set; }
+        [DataElement(Varchar = 255)]
+        public string Specline { get; set; }
+        [DataElement]
+        public int StealthInteraction { get; set; }
+
+        [DataElement]
+        public ushort Time { get; set; }
+
+        [DataElement]
+        public ushort ToggleEntry { get; set; }
 
         [DataElement(Varchar = 255)]
         public string VFXTarget { get; set; }
 
         [DataElement]
-        public ushort abilityID { get; set; }
-
-        [DataElement]
-        public ushort effectID2 { get; set; }
-
-        [DataElement]
-        public ushort Time { get; set; }
+        public byte WeaponNeeded { get; set; }
     }
 }
