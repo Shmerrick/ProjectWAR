@@ -8,41 +8,20 @@ namespace Common
     [Serializable]
     public class PQuest_Info : DataObject
     {
-        [PrimaryKey]
-        public uint Entry { get; set; }
+        public List<PQuest_Objective> Objectives;
 
-        [DataElement(Varchar = 255, AllowDbNull = false)]
-        public string Name { get; set; }
+        public ushort OffX;
 
-        [DataElement(AllowDbNull = false)]
-        public byte Type { get; set; }
+        public ushort OffY;
 
         [DataElement(AllowDbNull = false)]
-        public byte Level { get; set; }
-
-        [DataElement(AllowDbNull = false)]
-        public ushort ZoneId { get; set; }
-
-        [DataElement(AllowDbNull = false)]
-        public uint PinX { get; set; }
-
-        [DataElement(AllowDbNull = false)]
-        public uint PinY { get; set; }
+        public byte Chapter { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public uint ChapterId { get; set; }
 
-        [DataElement(AllowDbNull = false)]
-        public byte PQAreaId { get; set; }
-
-        [DataElement(AllowDbNull = false)]
-        public uint TokDiscovered { get; set; }
-
-        [DataElement(AllowDbNull = false)]
-        public uint TokUnlocked { get; set; }
-
-        public ushort OffX;
-        public ushort OffY;
+        [PrimaryKey]
+        public uint Entry { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public int GoldChestWorldX { get; set; }
@@ -54,26 +33,47 @@ namespace Common
         public int GoldChestWorldZ { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public byte PQType { get; set; }
+        public byte Level { get; set; }
+
+        [DataElement(Varchar = 255, AllowDbNull = false)]
+        public string Name { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public byte PQDifficult { get; set; }
+        public uint PinX { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public byte Chapter { get; set; }
+        public uint PinY { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public byte PQTier { get; set; }
+        public byte PQAreaId { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public byte PQCraftingBag { get; set; }
 
         [DataElement(AllowDbNull = false)]
-        public uint SoundPQEnd { get; set; }
+        public byte PQDifficult { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public byte PQTier { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public byte PQType { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public uint RespawnID { get; set; }
 
-        public List<PQuest_Objective> Objectives;
+        [DataElement(AllowDbNull = false)]
+        public uint SoundPQEnd { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public uint TokDiscovered { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public uint TokUnlocked { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public byte Type { get; set; }
+        [DataElement(AllowDbNull = false)]
+        public ushort ZoneId { get; set; }
     }
 }

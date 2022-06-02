@@ -3,11 +3,12 @@ using System;
 
 namespace Common
 {
-    // Valeur Fixe d'un character
+    // Fixed value of a character
     [DataTable(PreCache = false, TableName = "characters_socials", DatabaseName = "Characters", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class Character_social : DataObject
     {
+        public object Event;
         private uint _CharacterId;
 
         private uint _DistCharacterId;
@@ -49,9 +50,6 @@ namespace Common
             get { return _Ignore; }
             set { _Ignore = value; Dirty = true; }
         }
-
-        public object Event;
-
         public T GetEvent<T>()
         {
             return (T)Convert.ChangeType(Event, typeof(T));

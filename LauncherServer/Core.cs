@@ -11,13 +11,16 @@ namespace AuthenticationServer
     {
         public static RpcClient Client;
         public static LauncherConfig Config;
+        public static FileInfo Info;
         public static TCPServer Server;
 
-        public static int Version
+        public static string StrInfo;
+
+        public static AccountMgr AcctMgr
         {
             get
             {
-                return Config.Version;
+                return Client.GetServerObject<AccountMgr>();
             }
         }
 
@@ -29,17 +32,13 @@ namespace AuthenticationServer
             }
         }
 
-        public static FileInfo Info;
-        public static string StrInfo;
-
-        public static AccountMgr AcctMgr
+        public static int Version
         {
             get
             {
-                return Client.GetServerObject<AccountMgr>();
+                return Config.Version;
             }
         }
-
         [STAThread]
         private static void Main(string[] args)
         {

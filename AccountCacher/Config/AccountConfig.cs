@@ -1,5 +1,4 @@
 ﻿using FrameWork;
-
 namespace AccountCacher
 {
     [aConfigAttributes("Configs/AccountConfig.xml")]

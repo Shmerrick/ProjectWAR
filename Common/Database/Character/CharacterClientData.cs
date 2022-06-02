@@ -7,9 +7,8 @@ namespace Common
     [Serializable]
     public class CharacterClientData : DataObject
     {
-        private uint _characterId;
         public byte[] Data = new byte[1024];
-
+        private uint _characterId;
         [PrimaryKey]
         public uint CharacterId
         {
