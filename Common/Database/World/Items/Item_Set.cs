@@ -8,49 +8,11 @@ namespace Common
     [Serializable]
     public class Item_Set : DataObject
     {
-        [PrimaryKey]
-        public uint Entry { get; set; }
+        public Dictionary<byte, string> Bonus = new Dictionary<byte, string>();
 
-        [DataElement(AllowDbNull = false, Varchar = 255)]
-        public string Name { get; set; }
+        public Dictionary<uint, string> Items = new Dictionary<uint, string>();
 
-        [DataElement(AllowDbNull = false)]
-        public byte Unk { get; set; } // Spell modifier?
-
-        [DataElement(AllowDbNull = false)]
-        public string ItemsString
-        {
-            get
-            {
-                string Value = "";
-                foreach (KeyValuePair<uint, string> Item in Items)
-                    Value += Item.Key + ":" + Item.Value + "|";
-                return Value;
-            }
-            set
-            {
-                if (value.Length <= 0)
-                    return;
-
-                string[] Objs = value.Split('|');
-
-                foreach (string Obj in Objs)
-                {
-                    if (Obj.Length <= 0)
-                        continue;
-
-                    string[] St = Obj.Split(':');
-
-                    uint bonusKey = uint.Parse(St[0]);
-
-                    if (Items.ContainsKey(bonusKey))
-                        Log.Error("Item set " + Name, "Duplicate bonus type in Items String (" + bonusKey + ")");
-                    else
-                        Items.Add(bonusKey, St[1]);
-                }
-                Dirty = true;
-            }
-        }
+        private readonly List<ItemSetBonusInfo> _bonusList = new List<ItemSetBonusInfo>();
 
         [DataElement(AllowDbNull = false)]
         public string BonusString
@@ -96,17 +58,55 @@ namespace Common
         [DataElement(AllowDbNull = false)]
         public string Comments { get; set; }
 
-        [DataElement(AllowDbNull = false)]
-        public string ItemSetList { get; set; }
+        [PrimaryKey]
+        public uint Entry { get; set; }
 
         [DataElement(AllowDbNull = false)]
         public String ItemSetFullDescription { get; set; }
 
-        public Dictionary<uint, string> Items = new Dictionary<uint, string>();
-        public Dictionary<byte, string> Bonus = new Dictionary<byte, string>();
+        [DataElement(AllowDbNull = false)]
+        public string ItemSetList { get; set; }
 
-        private readonly List<ItemSetBonusInfo> _bonusList = new List<ItemSetBonusInfo>();
+        [DataElement(AllowDbNull = false)]
+        public string ItemsString
+        {
+            get
+            {
+                string Value = "";
+                foreach (KeyValuePair<uint, string> Item in Items)
+                    Value += Item.Key + ":" + Item.Value + "|";
+                return Value;
+            }
+            set
+            {
+                if (value.Length <= 0)
+                    return;
 
+                string[] Objs = value.Split('|');
+
+                foreach (string Obj in Objs)
+                {
+                    if (Obj.Length <= 0)
+                        continue;
+
+                    string[] St = Obj.Split(':');
+
+                    uint bonusKey = uint.Parse(St[0]);
+
+                    if (Items.ContainsKey(bonusKey))
+                        Log.Error("Item set " + Name, "Duplicate bonus type in Items String (" + bonusKey + ")");
+                    else
+                        Items.Add(bonusKey, St[1]);
+                }
+                Dirty = true;
+            }
+        }
+
+        [DataElement(AllowDbNull = false, Varchar = 255)]
+        public string Name { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public byte Unk { get; set; } // Spell modifier?
         public List<ItemSetBonusInfo> GetBonusList(byte setItemsEquipped)
         {
             List<ItemSetBonusInfo> bonusList = new List<ItemSetBonusInfo>();
@@ -125,12 +125,11 @@ namespace Common
 
     public class ItemSetBonusInfo
     {
-        public byte ItemsRequired;
         public byte ActionType;
+        public byte ItemsRequired;
+        public ushort Percentage;
         public ushort StatOrSpell;
         public ushort Value;
-        public ushort Percentage;
-
         public ItemSetBonusInfo(ushort actionType, ushort spell)
         {
             // 8x -> x is the number of items required
