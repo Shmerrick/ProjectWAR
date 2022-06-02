@@ -9,27 +9,20 @@ namespace Common
     [Serializable]
     public class Character_mail : DataObject
     {
-        private int _Guid;
+        public List<MailItem> Items = new List<MailItem>();
         private byte _AuctionType;
         private uint _CharacterId;
         private uint _CharacterIdSender;
-        private string _SenderName;
+        private string _Content;
+        private bool _Cr;
+        private int _Guid;
+        private uint _Money;
+        private bool _Opened;
+        private uint _ReadDate;
         private string _ReceiverName;
         private uint _SendDate;
-        private uint _ReadDate;
+        private string _SenderName;
         private string _Title;
-        private string _Content;
-        private uint _Money;
-        private bool _Cr;
-        private bool _Opened;
-
-        [PrimaryKey(AutoIncrement = true)]
-        public int Guid
-        {
-            get { return _Guid; }
-            set { _Guid = value; Dirty = true; }
-        }
-
         [DataElement(AllowDbNull = false)]
         public byte AuctionType
         {
@@ -51,53 +44,11 @@ namespace Common
             set { _CharacterIdSender = value; Dirty = true; }
         }
 
-        [DataElement(Varchar = 255, AllowDbNull = false)]
-        public string SenderName
-        {
-            get { return _SenderName; }
-            set { _SenderName = value; Dirty = true; }
-        }
-
-        [DataElement(Varchar = 255, AllowDbNull = false)]
-        public string ReceiverName
-        {
-            get { return _ReceiverName; }
-            set { _ReceiverName = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false)]
-        public uint SendDate
-        {
-            get { return _SendDate; }
-            set { _SendDate = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false)]
-        public uint ReadDate
-        {
-            get { return _ReadDate; }
-            set { _ReadDate = value; Dirty = true; }
-        }
-
-        [DataElement(Varchar = 255, AllowDbNull = false)]
-        public string Title
-        {
-            get { return _Title; }
-            set { _Title = value; Dirty = true; }
-        }
-
         [DataElement(AllowDbNull = false)]
         public string Content
         {
             get { return _Content; }
             set { _Content = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false)]
-        public uint Money
-        {
-            get { return _Money; }
-            set { _Money = value; Dirty = true; }
         }
 
         [DataElement(Varchar = 255, AllowDbNull = false)]
@@ -107,13 +58,12 @@ namespace Common
             set { _Cr = value; Dirty = true; }
         }
 
-        [DataElement(Varchar = 255, AllowDbNull = false)]
-        public bool Opened
+        [PrimaryKey(AutoIncrement = true)]
+        public int Guid
         {
-            get { return _Opened; }
-            set { _Opened = value; Dirty = true; }
+            get { return _Guid; }
+            set { _Guid = value; Dirty = true; }
         }
-
         [DataElement(AllowDbNull = false)]
         public string ItemsString
         {
@@ -153,6 +103,52 @@ namespace Common
             }
         }
 
-        public List<MailItem> Items = new List<MailItem>();
+        [DataElement(AllowDbNull = false)]
+        public uint Money
+        {
+            get { return _Money; }
+            set { _Money = value; Dirty = true; }
+        }
+
+        [DataElement(Varchar = 255, AllowDbNull = false)]
+        public bool Opened
+        {
+            get { return _Opened; }
+            set { _Opened = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public uint ReadDate
+        {
+            get { return _ReadDate; }
+            set { _ReadDate = value; Dirty = true; }
+        }
+
+        [DataElement(Varchar = 255, AllowDbNull = false)]
+        public string ReceiverName
+        {
+            get { return _ReceiverName; }
+            set { _ReceiverName = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public uint SendDate
+        {
+            get { return _SendDate; }
+            set { _SendDate = value; Dirty = true; }
+        }
+
+        [DataElement(Varchar = 255, AllowDbNull = false)]
+        public string SenderName
+        {
+            get { return _SenderName; }
+            set { _SenderName = value; Dirty = true; }
+        }
+        [DataElement(Varchar = 255, AllowDbNull = false)]
+        public string Title
+        {
+            get { return _Title; }
+            set { _Title = value; Dirty = true; }
+        }
     }
 }

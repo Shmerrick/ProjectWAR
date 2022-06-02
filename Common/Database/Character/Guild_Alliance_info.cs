@@ -8,6 +8,7 @@ namespace Common
     [Serializable]
     public class Guild_Alliance_info : DataObject
     {
+        public List<uint> Members = new List<uint>();
         private uint _AllianceId;
         private string _Name;
 
@@ -24,7 +25,5 @@ namespace Common
             get { return _Name; }
             set { _Name = value; Dirty = true; }
         }
-
-        public List<uint> Members = new List<uint>();
     }
 }

@@ -9,8 +9,7 @@ namespace Common
     [Serializable]
     public class BannedNameRecord : DataObject
     {
-        [PrimaryKey]
-        public string NameString { get; set; }
+        public NameFilterType FilterType;
 
         [DataElement]
         public string FilterTypeString
@@ -26,6 +25,7 @@ namespace Common
             }
         }
 
-        public NameFilterType FilterType;
+        [PrimaryKey]
+        public string NameString { get; set; }
     }
 }

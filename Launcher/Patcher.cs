@@ -12,18 +12,34 @@ namespace Launcher
     public class Patcher
     {
         private string _address;
-        public long TotalDownloadSize { get; private set; }
-        public long Downloaded { get; private set; }
-        public string CurrentFile { get; private set; }
-        public State CurrentState { get; private set; } = State.RequestManifest;
         private Logger _logger;
-
         private List<FileManifestItem> _neededAssets = new List<FileManifestItem>();
-
         public Patcher(Logger logger, string address)
         {
             _address = address;
             _logger = logger;
+        }
+
+        public enum State
+        {
+            RequestManifest,
+            ProcessManifest,
+            Downloading,
+            Done,
+            Error,
+            ServerOffline,
+        }
+
+        public string CurrentFile { get; private set; }
+        public State CurrentState { get; private set; } = State.RequestManifest;
+        public long Downloaded { get; private set; }
+        public long TotalDownloadSize { get; private set; }
+        public int GetRemainingFiles()
+        {
+            lock (_neededAssets)
+            {
+                return _neededAssets.Count;
+            }
         }
 
         public async Task Patch(string patchDirectory)
@@ -139,37 +155,18 @@ namespace Launcher
                     File.Delete(tempFile);
             }
         }
-
-        public int GetRemainingFiles()
+        public class FileManifest
         {
-            lock (_neededAssets)
-            {
-                return _neededAssets.Count;
-            }
+            public List<FileManifestItem> Files { get; set; } = new List<FileManifestItem>();
+            public int TotalFiles { get; set; }
         }
 
         public class FileManifestItem
         {
+            public int CRC32 { get; set; }
             public int Id { get; set; }
             public string Name { get; set; }
-            public int CRC32 { get; set; }
             public long Size { get; set; }
-        }
-
-        public class FileManifest
-        {
-            public int TotalFiles { get; set; }
-            public List<FileManifestItem> Files { get; set; } = new List<FileManifestItem>();
-        }
-
-        public enum State
-        {
-            RequestManifest,
-            ProcessManifest,
-            Downloading,
-            Done,
-            Error,
-            ServerOffline,
         }
     }
 }

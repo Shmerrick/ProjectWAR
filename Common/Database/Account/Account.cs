@@ -10,22 +10,21 @@ namespace Common
     public class Account : DataObject
     {
         private int _accountId;
-        private string _username;
-        private string _password;
-        private string _ip;
-        private string _token;
-        private sbyte _gmLevel;
-        private int _banned;
-        private bool _packetLog;
         private int _adviceBlockEnd;
-        private int _stealthMuteEnd;
+        private int _banned;
         private string _banReason;
+        private int _coreLevel;
+        private sbyte _gmLevel;
+        private string _ip;
         private int _lastLogged;
         private int _lastNameChange;
         private string _lastPatcherLog;
-        private int _coreLevel;
         private sbyte _noSurname;
-
+        private bool _packetLog;
+        private string _password;
+        private int _stealthMuteEnd;
+        private string _token;
+        private string _username;
         [PrimaryKey(AutoIncrement = true)]
         public int AccountId
         {
@@ -33,67 +32,13 @@ namespace Common
             set { _accountId = value; Dirty = true; }
         }
 
-        [DataElement()]
-        public bool PacketLog
+        [DataElement]
+        public int AdviceBlockEnd
         {
-            get { return _packetLog; }
-            set { _packetLog = value; Dirty = true; }
-        }
-
-        [DataElement(Unique = true, Varchar = 255)]
-        public string Username
-        {
-            get { return _username; }
+            get { return _adviceBlockEnd; }
             set
             {
-                _username = value;
-                Dirty = true;
-            }
-        }
-
-        [DataElement(Varchar = 255)]
-        public string Password
-        {
-            get { return _password; }
-            set
-            {
-                _password = value;
-                Dirty = true;
-            }
-        }
-
-        [DataElement(Varchar = 255)]
-        public string CryptPassword { get; set; }
-
-        [DataElement(Varchar = 255)]
-        public string Ip
-        {
-            get { return _ip; }
-            set
-            {
-                _ip = value;
-                Dirty = true;
-            }
-        }
-
-        [DataElement(Varchar = 255)]
-        public string Token
-        {
-            get { return _token; }
-            set
-            {
-                _token = value;
-                Dirty = true;
-            }
-        }
-
-        [DataElement(AllowDbNull = false)]
-        public sbyte GmLevel
-        {
-            get { return _gmLevel; }
-            set
-            {
-                _gmLevel = value;
+                _adviceBlockEnd = value;
                 Dirty = true;
             }
         }
@@ -120,32 +65,6 @@ namespace Common
             }
         }
 
-        public bool IsBanned => _banned > TCPManager.GetTimeStamp();
-        public bool IsStealthMuted => _stealthMuteEnd > TCPManager.GetTimeStamp();
-        public bool IsAdviceBlocked => _adviceBlockEnd > TCPManager.GetTimeStamp();
-
-        [DataElement]
-        public int AdviceBlockEnd
-        {
-            get { return _adviceBlockEnd; }
-            set
-            {
-                _adviceBlockEnd = value;
-                Dirty = true;
-            }
-        }
-
-        [DataElement]
-        public int StealthMuteEnd
-        {
-            get { return _stealthMuteEnd; }
-            set
-            {
-                _stealthMuteEnd = value;
-                Dirty = true;
-            }
-        }
-
         [DataElement]
         public int CoreLevel
         {
@@ -156,6 +75,43 @@ namespace Common
                 Dirty = true;
             }
         }
+
+        [DataElement(Varchar = 255)]
+        public string CryptPassword { get; set; }
+
+        [DataElement(AllowDbNull = true)]
+        public string Email { get; set; }
+
+        [DataElement(AllowDbNull = false)]
+        public sbyte GmLevel
+        {
+            get { return _gmLevel; }
+            set
+            {
+                _gmLevel = value;
+                Dirty = true;
+            }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public uint InvalidPasswordCount { get; set; } = 0;
+
+        [DataElement(Varchar = 255)]
+        public string Ip
+        {
+            get { return _ip; }
+            set
+            {
+                _ip = value;
+                Dirty = true;
+            }
+        }
+
+        public bool IsAdviceBlocked => _adviceBlockEnd > TCPManager.GetTimeStamp();
+
+        public bool IsBanned => _banned > TCPManager.GetTimeStamp();
+
+        public bool IsStealthMuted => _stealthMuteEnd > TCPManager.GetTimeStamp();
 
         [DataElement]
         public int LastLogged
@@ -191,8 +147,66 @@ namespace Common
         }
 
         [DataElement(AllowDbNull = false)]
-        public uint InvalidPasswordCount { get; set; } = 0;
+        public sbyte noSurname
+        {
+            get { return _noSurname; }
+            set
+            {
+                _noSurname = value;
+                Dirty = true;
+            }
+        }
 
+        [DataElement()]
+        public bool PacketLog
+        {
+            get { return _packetLog; }
+            set { _packetLog = value; Dirty = true; }
+        }
+
+        [DataElement(Varchar = 255)]
+        public string Password
+        {
+            get { return _password; }
+            set
+            {
+                _password = value;
+                Dirty = true;
+            }
+        }
+
+        [DataElement]
+        public int StealthMuteEnd
+        {
+            get { return _stealthMuteEnd; }
+            set
+            {
+                _stealthMuteEnd = value;
+                Dirty = true;
+            }
+        }
+
+        [DataElement(Varchar = 255)]
+        public string Token
+        {
+            get { return _token; }
+            set
+            {
+                _token = value;
+                Dirty = true;
+            }
+        }
+
+        [DataElement(Unique = true, Varchar = 255)]
+        public string Username
+        {
+            get { return _username; }
+            set
+            {
+                _username = value;
+                Dirty = true;
+            }
+        }
         public static string ConvertSHA256(string value)
         {
             SHA256 sha = SHA256.Create();
@@ -204,19 +218,5 @@ namespace Common
             }
             return sb.ToString();
         }
-
-        [DataElement(AllowDbNull = false)]
-        public sbyte noSurname
-        {
-            get { return _noSurname; }
-            set
-            {
-                _noSurname = value;
-                Dirty = true;
-            }
-        }
-
-        [DataElement(AllowDbNull = true)]
-        public string Email { get; set; }
     }
 }

@@ -7,16 +7,8 @@ namespace Common
     [Serializable]
     public class Ip_ban : DataObject
     {
-        private string _ip;
         private int _expire;
-
-        [PrimaryKey]
-        public string Ip
-        {
-            get { return _ip; }
-            set { _ip = value; Dirty = true; }
-        }
-
+        private string _ip;
         [DataElement]
         public int Expire
         {
@@ -26,6 +18,13 @@ namespace Common
                 _expire = value;
                 Dirty = true;
             }
+        }
+
+        [PrimaryKey]
+        public string Ip
+        {
+            get { return _ip; }
+            set { _ip = value; Dirty = true; }
         }
     }
 }

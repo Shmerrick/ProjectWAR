@@ -68,14 +68,18 @@ namespace WorldServer.World.Objects.PublicQuests
         /// Distributes the loot and contribution rewards for this particular NPC.
         /// </summary>
         /// <param name="killer"></param>
-        protected override void HandleDeathRewards(Unit killer)
-        {            
-            if (killer == null && killer is Pet pet)
-                            killer = pet.Owner;
-            
+        protected override void HandleDeathRewards(Unit unitKiller)
+        {
+            Player killer = unitKiller as Player;
+            Creature creature = new Creature();
+            if (killer == null && unitKiller is Pet pet)
+                   killer = pet.Owner;
+            else if (creature == unitKiller)
+                killer = (Player)unitKiller;
+
             Dictionary<Group, XpRenown> groupXPRenown = new Dictionary<Group, XpRenown>();
 
-            uint totalXP = WorldMgr.GenerateXPCount(killer as Player , this);
+            uint totalXP = WorldMgr.GenerateXPCount(killer, this);
 
             if (DamageSources.Count == 0 || TotalDamageTaken == 0)
                 return;
@@ -86,9 +90,10 @@ namespace WorldServer.World.Objects.PublicQuests
             foreach (KeyValuePair<Unit, uint> kvpair in DamageSources)
             {
                 Player curPlayer = kvpair.Key as Player;
-
-                if (curPlayer == null)
-                    continue;
+                if (curPlayer == null && kvpair.Key is Pet pet2)
+                         curPlayer = pet2.Owner;
+                
+                
 
                 float damageFactor = (float)kvpair.Value / TotalDamageTaken;
 
@@ -142,7 +147,7 @@ namespace WorldServer.World.Objects.PublicQuests
             if (groupXPRenown.Count > 0)
             {
                 foreach (KeyValuePair<Group, XpRenown> kvpair in groupXPRenown)
-                    kvpair.Key.AddXpCount(killer as Player, kvpair.Value.XP);
+                    kvpair.Key.AddXpCount(killer, kvpair.Value.XP);
             }
 
             if (looter != null)
@@ -151,6 +156,7 @@ namespace WorldServer.World.Objects.PublicQuests
             CreditQuestKill(looter);
             _publicQuest.NotifyKilled(this);
         }
+
 
         public void Protected()
         {
