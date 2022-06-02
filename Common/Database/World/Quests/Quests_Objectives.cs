@@ -24,39 +24,42 @@ namespace Common
     [Serializable]
     public class Quest_Objectives : DataObject
     {
-        [PrimaryKey(AutoIncrement = true)]
-        public int Guid { get; set; }
+        public BattleFront_Objective BattleFrontObjective = null;
 
-        [DataElement()]
-        public ushort Entry { get; set; }
+        public Creature_proto Creature = null;
 
-        [DataElement()]
-        public uint ObjType { get; set; }
+        public GameObject_proto GameObject = null;
 
-        [DataElement()]
-        public uint ObjCount { get; set; }
+        public Item_Info Item = null;
+
+        public Keep_Info Keep = null;
+
+        public Quest Quest;
+
+        public Scenario_Info Scenario = null;
 
         [DataElement()]
         public string Description { get; set; }
 
         [DataElement()]
-        public string ObjID { get; set; }
+        public ushort Entry { get; set; }
 
-        [DataElement()]
-        public ushort PQArea { get; set; }
-
+        [PrimaryKey(AutoIncrement = true)]
+        public int Guid { get; set; }
         [DataElement()]
         public string inZones { get; set; }
 
         [DataElement()]
-        public int PreviousObj { get; set; }
+        public uint ObjCount { get; set; }
 
-        public Quest Quest;
-        public Item_Info Item = null;
-        public Creature_proto Creature = null;
-        public GameObject_proto GameObject = null;
-        public Scenario_Info Scenario = null;
-        public BattleFront_Objective BattleFrontObjective = null;
-        public Keep_Info Keep = null;
+        [DataElement()]
+        public string ObjID { get; set; }
+
+        [DataElement()]
+        public uint ObjType { get; set; }
+        [DataElement()]
+        public ushort PQArea { get; set; }
+        [DataElement()]
+        public int PreviousObj { get; set; }
     }
 }
