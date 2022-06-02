@@ -9,17 +9,18 @@ namespace Common
     [Serializable]
     public class Auction : DataObject
     {
-        private ulong _AuctionId;
-        private byte _Realm;
-        private uint _SellerId;
-        private uint _ItemId;
         public List<Talisman> _Talismans = new List<Talisman>();
+        public Item_Info Item;
+        public Character Seller;
+        private ulong _AuctionId;
+        private ushort _Count;
+        private uint _ItemId;
         private ushort _PrimaryDye;
+        private byte _Realm;
         private ushort _SecondaryDye;
+        private uint _SellerId;
         private uint _SellPrice;
         private uint _StartTime;
-        private ushort _Count;
-
         [PrimaryKey]
         public ulong AuctionId
         {
@@ -28,17 +29,10 @@ namespace Common
         }
 
         [DataElement(AllowDbNull = false)]
-        public byte Realm
+        public ushort Count
         {
-            get { return _Realm; }
-            set { _Realm = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false, Varchar = 255)]
-        public uint SellerId
-        {
-            get { return _SellerId; }
-            set { _SellerId = value; Dirty = true; }
+            get { return _Count; }
+            set { _Count = value; Dirty = true; }
         }
 
         [DataElement(AllowDbNull = false)]
@@ -49,19 +43,38 @@ namespace Common
         }
 
         [DataElement(AllowDbNull = false)]
+        public ushort PrimaryDye
+        {
+            get { return _PrimaryDye; }
+            set { _PrimaryDye = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public byte Realm
+        {
+            get { return _Realm; }
+            set { _Realm = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public ushort SecondaryDye
+        {
+            get { return _SecondaryDye; }
+            set { _SecondaryDye = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false, Varchar = 255)]
+        public uint SellerId
+        {
+            get { return _SellerId; }
+            set { _SellerId = value; Dirty = true; }
+        }
+        [DataElement(AllowDbNull = false)]
         public uint SellPrice
         {
             get { return _SellPrice; }
             set { _SellPrice = value; Dirty = true; }
         }
-
-        [DataElement(AllowDbNull = false)]
-        public ushort Count
-        {
-            get { return _Count; }
-            set { _Count = value; Dirty = true; }
-        }
-
         [DataElement(AllowDbNull = false)]
         public uint StartTime
         {
@@ -100,22 +113,5 @@ namespace Common
                 }
             }
         }
-
-        [DataElement(AllowDbNull = false)]
-        public ushort PrimaryDye
-        {
-            get { return _PrimaryDye; }
-            set { _PrimaryDye = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false)]
-        public ushort SecondaryDye
-        {
-            get { return _SecondaryDye; }
-            set { _SecondaryDye = value; Dirty = true; }
-        }
-
-        public Item_Info Item;
-        public Character Seller;
     }
 }
