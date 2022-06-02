@@ -344,6 +344,7 @@ namespace Common
         #region Realm
 
         public Dictionary<byte, Realm> _Realms = new Dictionary<byte, Realm>();
+        private readonly string[] _bannedNames = { "zyklon", "fuck", "hitler", "nigger", "nigga", "faggot", "jihad", "muhajid" };
 
         public bool AddRealm(Realm Rm)
         {
