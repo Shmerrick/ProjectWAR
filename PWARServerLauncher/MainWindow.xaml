@@ -1,0 +1,21 @@
+﻿<Window x:Name="PWARServerLauncher" x:Class="PWARServerLauncher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PWARServerLauncher"
+        mc:Ignorable="d"
+        Title="ProjectWAR Server Launcher" Height="450" Width="580" FontSize="20" ResizeMode="CanMinimize" WindowStartupLocation="Manual" WindowState="Normal" Icon="/WAR.ico" BorderBrush="#FF120505" Cursor="Arrow" WindowStyle="ToolWindow">
+    <Window.Background>
+        <ImageBrush ImageSource="/LauncherTitleImage.jpg"/>
+    </Window.Background>
+    <Grid>
+        <CheckBox x:Name="checkBox_AccountCacher" Content="Start Account Cacher" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Background="#FFAE3030" BorderBrush="#FF6D3434" Foreground="#FFBA4949" Width="212" VerticalContentAlignment="Center" FontFamily="Palatino Linotype" IsChecked="True" Cursor="Arrow"/>
+        <CheckBox x:Name="checkBox_LauncherServer" Content="Start Launcher Server" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top" Background="#FFAE3030" BorderBrush="#FF6D3434" Foreground="#FFBA4949" Width="212" VerticalContentAlignment="Center" FontFamily="Palatino Linotype" IsChecked="True" Cursor="Arrow"/>
+        <CheckBox x:Name="checkBox_LobbyServer" Content="Start Lobby Server" HorizontalAlignment="Left" Margin="10,134,0,0" VerticalAlignment="Top" Background="#FFAE3030" BorderBrush="#FF6D3434" Foreground="#FFBA4949" Width="212" VerticalContentAlignment="Center" FontFamily="Palatino Linotype" IsChecked="True" Cursor="Arrow"/>
+        <CheckBox x:Name="checkBox_WorldServer" Content="Start World Server" HorizontalAlignment="Left" Margin="10,165,0,0" VerticalAlignment="Top" Background="#FFAE3030" BorderBrush="#FF6D3434" Foreground="#FFBA4949" Width="212" VerticalContentAlignment="Center" FontFamily="Palatino Linotype" IsChecked="True" Cursor="Arrow"/>
+        <Button x:Name="button_StartSelected" Content="Start Selected" HorizontalAlignment="Left" Margin="10,288,0,0" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="#FFAB1B1B" Foreground="#FF9D0909" FontFamily="Buxton Sketch" FontSize="24" Width="145"/>
+        <Button x:Name="button_StopSelected" Content="Stop Selected" HorizontalAlignment="Left" Margin="116,338,0,0" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="#FFAB1B1B" Foreground="#FF9D0909" FontFamily="Buxton Sketch" FontSize="24" Width="146"/>
+
+    </Grid>
+</Window>
