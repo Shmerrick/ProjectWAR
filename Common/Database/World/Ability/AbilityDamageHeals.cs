@@ -9,14 +9,29 @@ namespace Common
     {
         #region Database Elements
 
-        [DataElement]
-        public float ArmorResistPenFactor { get; set; }
+        [PrimaryKey]
+        public ushort Entry { get; set; }
 
         [DataElement]
-        public byte CastPlayerSubID { get; set; }
+        public ushort DisplayEntry { get; set; }
+
+        [DataElement(Varchar = 36)]
+        public string Name { get; set; }
+
+        [PrimaryKey]
+        public byte Index { get; set; }
+
+        [PrimaryKey]
+        public byte ParentCommandID { get; set; }
+
+        [PrimaryKey]
+        public byte ParentCommandSequence { get; set; }
 
         [DataElement]
-        public float CastTimeDamageMult { get; set; }
+        public ushort MinDamage { get; set; }
+
+        [DataElement]
+        public ushort MaxDamage { get; set; }
 
         [DataElement(Varchar = 16)]
         public string DamageType { get; set; }
@@ -26,29 +41,19 @@ namespace Common
         public ushort DamageVariance { get; set; }
 
         [DataElement]
-        public ushort DisplayEntry { get; set; }
+        public float CastTimeDamageMult { get; set; }
 
-        [PrimaryKey]
-        public ushort Entry { get; set; }
-        [DataElement]
-        public float HatredScale { get; set; } = 1.0f;
+        [DataElement(Varchar = 16)]
+        public string WeaponDamageFrom { get; set; }
 
         [DataElement]
-        public float HealHatredScale { get; set; } = 1.0f;
+        public float WeaponDamageScale { get; set; }
 
-        [PrimaryKey]
-        public byte Index { get; set; }
-
-        [DataElement]
-        public ushort MaxDamage { get; set; }
-
-        [DataElement]
-        public ushort MinDamage { get; set; }
-
-        [DataElement(Varchar = 36)]
-        public string Name { get; set; }
         [DataElement]
         public bool NoCrits { get; set; }
+
+        [DataElement]
+        public bool Undefendable { get; set; }
 
         /// <summary>
         /// <para>Used to force a certain DamageEvent when an ability is defended.</para>
@@ -57,20 +62,6 @@ namespace Common
         [DataElement]
         public byte OverrideDefenseEvent { get; set; }
 
-        [PrimaryKey]
-        public byte ParentCommandID { get; set; }
-
-        [PrimaryKey]
-        public byte ParentCommandSequence { get; set; }
-        [DataElement]
-        public float PriStatMultiplier { get; set; }
-
-        [DataElement]
-        public short ResourceBuild { get; set; }
-
-        [DataElement]
-        public float StatDamageScale { get; set; }
-
         /// <summary>
         /// The stat used to calculate damage bonus.
         /// </summary>
@@ -78,13 +69,26 @@ namespace Common
         public byte StatUsed { get; set; }
 
         [DataElement]
-        public bool Undefendable { get; set; }
-
-        [DataElement(Varchar = 16)]
-        public string WeaponDamageFrom { get; set; }
+        public float StatDamageScale { get; set; }
 
         [DataElement]
-        public float WeaponDamageScale { get; set; }
+        public float ArmorResistPenFactor { get; set; }
+
+        [DataElement]
+        public float HatredScale { get; set; } = 1.0f;
+
+        [DataElement]
+        public float HealHatredScale { get; set; } = 1.0f;
+
+        [DataElement]
+        public short ResourceBuild { get; set; }
+
+        [DataElement]
+        public byte CastPlayerSubID { get; set; }
+
+        [DataElement]
+        public float PriStatMultiplier { get; set; }
+
         #endregion Database Elements
     }
 }
