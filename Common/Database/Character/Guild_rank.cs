@@ -3,28 +3,29 @@ using System;
 
 namespace Common
 {
-    // Fixed value of a character
+    // Valeur Fixe d'un character
     [DataTable(PreCache = false, TableName = "guild_ranks", DatabaseName = "Characters", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class Guild_rank : DataObject
     {
-        private bool _Enabled;
         private uint _GuildId;
+        private byte _RankId;
         private string _Name;
         private string _Permissions;
-        private byte _RankId;
-        [DataElement(AllowDbNull = false)]
-        public bool Enabled
-        {
-            get { return _Enabled; }
-            set { _Enabled = value; Dirty = true; }
-        }
+        private bool _Enabled;
 
         [PrimaryKey]
         public uint GuildId
         {
             get { return _GuildId; }
             set { _GuildId = value; Dirty = true; }
+        }
+
+        [PrimaryKey]
+        public byte RankId
+        {
+            get { return _RankId; }
+            set { _RankId = value; Dirty = true; }
         }
 
         [DataElement(AllowDbNull = false)]
@@ -41,11 +42,11 @@ namespace Common
             set { _Permissions = value; Dirty = true; }
         }
 
-        [PrimaryKey]
-        public byte RankId
+        [DataElement(AllowDbNull = false)]
+        public bool Enabled
         {
-            get { return _RankId; }
-            set { _RankId = value; Dirty = true; }
+            get { return _Enabled; }
+            set { _Enabled = value; Dirty = true; }
         }
     }
 }
