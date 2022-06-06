@@ -8,10 +8,11 @@ namespace Common
     public class Character_ability : DataObject
     {
         [DataElement()]
-        public ushort AbilityID { get; set; }
+        public int CharacterID { get; set; }
 
         [DataElement()]
-        public int CharacterID { get; set; }
+        public ushort AbilityID { get; set; }
+
         [DataElement()]
         public int LastCast { get; set; }
     }
