@@ -7,19 +7,7 @@ namespace Common
     [Serializable]
     public class Instance_Boss_Spawn : DataObject
     {
-        public string GenderedName;
         private string _Instance_spawns_ID;
-
-        private string _name;
-
-        [DataElement]
-        public uint bossId { get; set; }
-
-        [DataElement]
-        public byte Emote { get; set; }
-
-        [DataElement]
-        public uint Entry { get; set; }
 
         [PrimaryKey(AutoIncrement = false)]
         public string Instance_spawns_ID
@@ -27,11 +15,8 @@ namespace Common
             get { return _Instance_spawns_ID; }
             set { _Instance_spawns_ID = value; Dirty = true; }
         }
-        [DataElement]
-        public ushort InstanceID { get; set; }
 
-        [DataElement]
-        public byte Level { get; set; }
+        private string _name;
 
         [DataElement(Varchar = 255, AllowDbNull = false)]
         public string Name
@@ -50,13 +35,32 @@ namespace Common
                     _name = value.Substring(0, caratPos);
             }
         }
-        [DataElement]
-        public byte Realm { get; set; }
-        [DataElement]
-        public uint SpawnGroupID { get; set; }
+
+        public string GenderedName;
 
         [DataElement]
-        public uint WorldO { get; set; }
+        public uint Entry { get; set; }
+
+        [DataElement]
+        public byte Realm { get; set; }
+
+        [DataElement]
+        public byte Level { get; set; }
+
+        [DataElement]
+        public byte Emote { get; set; }
+
+        [DataElement]
+        public ushort ZoneID { get; set; }
+
+        [DataElement]
+        public ushort InstanceID { get; set; }
+
+        [DataElement]
+        public uint bossId { get; set; }
+
+        [DataElement]
+        public uint SpawnGroupID { get; set; }
 
         [DataElement]
         public int WorldX { get; set; }
@@ -68,6 +72,6 @@ namespace Common
         public int WorldZ { get; set; }
 
         [DataElement]
-        public ushort ZoneID { get; set; }
+        public uint WorldO { get; set; }
     }
 }
