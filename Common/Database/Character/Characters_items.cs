@@ -9,30 +9,25 @@ namespace Common
     [Serializable]
     public class CharacterItem : DataObject
     {
-        public List<Talisman> _Talismans = new List<Talisman>();
-        private uint _alternateAppereanceEntry;
-        private bool _boundtoPlayer;
-        private uint _characterId;
-        private ushort _counts;
-        private uint _entry;
         private long _guid;
+        private uint _characterId;
+        private uint _entry;
+        private ushort _slotId;
         private uint _modelId;
-        private long _nextAllowedUseTime;
+        private ushort _counts;
+        public List<Talisman> _Talismans = new List<Talisman>();
         private ushort _primaryDye;
         private ushort _secondaryDye;
-        private ushort _slotId;
-        [DataElement(AllowDbNull = false)]
-        public uint Alternate_AppereanceEntry
-        {
-            get { return _alternateAppereanceEntry; }
-            set { _alternateAppereanceEntry = value; Dirty = true; }
-        }
+        private bool _boundtoPlayer;
+
+        private uint _alternateAppereanceEntry;
+        private long _nextAllowedUseTime;
 
         [DataElement(AllowDbNull = false)]
-        public bool BoundtoPlayer
+        public long Guid
         {
-            get { return _boundtoPlayer; }
-            set { _boundtoPlayer = value; Dirty = true; }
+            get { return _guid; }
+            set { _guid = value; Dirty = true; }
         }
 
         [DataElement(AllowDbNull = false)]
@@ -43,13 +38,6 @@ namespace Common
         }
 
         [DataElement(AllowDbNull = false)]
-        public ushort Counts
-        {
-            get { return _counts; }
-            set { _counts = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false)]
         public uint Entry
         {
             get { return _entry; }
@@ -57,11 +45,12 @@ namespace Common
         }
 
         [DataElement(AllowDbNull = false)]
-        public long Guid
+        public ushort SlotId
         {
-            get { return _guid; }
-            set { _guid = value; Dirty = true; }
+            get { return _slotId; }
+            set { _slotId = value; Dirty = true; }
         }
+
         [DataElement(AllowDbNull = false)]
         public uint ModelId
         {
@@ -69,18 +58,18 @@ namespace Common
             set { _modelId = value; Dirty = true; }
         }
 
+        [DataElement(AllowDbNull = false)]
+        public ushort Counts
+        {
+            get { return _counts; }
+            set { _counts = value; Dirty = true; }
+        }
+
         //[DataElement]
         public long NextAllowedUseTime
         {
             get { return _nextAllowedUseTime; }
             set { _nextAllowedUseTime = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false)]
-        public ushort PrimaryDye
-        {
-            get { return _primaryDye; }
-            set { _primaryDye = value; Dirty = true; }
         }
 
         public ushort RemainingCooldown
@@ -94,19 +83,6 @@ namespace Common
             }
         }
 
-        [DataElement(AllowDbNull = false)]
-        public ushort SecondaryDye
-        {
-            get { return _secondaryDye; }
-            set { _secondaryDye = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false)]
-        public ushort SlotId
-        {
-            get { return _slotId; }
-            set { _slotId = value; Dirty = true; }
-        }
         // Note:
         //
         // If the Timer is implemented, this field may no longer be big enough to hold the data
@@ -135,6 +111,34 @@ namespace Common
                         _Talismans.Add(new Talisman(str));
                 }
             }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public ushort PrimaryDye
+        {
+            get { return _primaryDye; }
+            set { _primaryDye = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public ushort SecondaryDye
+        {
+            get { return _secondaryDye; }
+            set { _secondaryDye = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public bool BoundtoPlayer
+        {
+            get { return _boundtoPlayer; }
+            set { _boundtoPlayer = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public uint Alternate_AppereanceEntry
+        {
+            get { return _alternateAppereanceEntry; }
+            set { _alternateAppereanceEntry = value; Dirty = true; }
         }
     }
 
