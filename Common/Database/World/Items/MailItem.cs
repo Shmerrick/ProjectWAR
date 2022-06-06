@@ -5,11 +5,12 @@ namespace Common
 {
     public class MailItem
     {
-        public ushort count;
         public uint id;
+        public List<Talisman> talisman = new List<Talisman>();
         public ushort primary_dye;
         public ushort secondary_dye;
-        public List<Talisman> talisman = new List<Talisman>();
+        public ushort count;
+
         public MailItem(uint id, ushort count)
         {
             this.id = id;
@@ -45,6 +46,16 @@ namespace Common
             this.secondary_dye = secondary_dye;
         }
 
+        public Talisman GetTalisman(byte i)
+        {
+            foreach (Talisman tali in talisman)
+            {
+                if (tali.Slot == i)
+                    return tali;
+            }
+            return null;
+        }
+
         public String GetSaveString()
         {
             if (talisman.Count == 0 && primary_dye == 0 && secondary_dye == 0)
@@ -58,16 +69,6 @@ namespace Common
             Str += "!" + primary_dye + "-" + secondary_dye;
 
             return Str;
-        }
-
-        public Talisman GetTalisman(byte i)
-        {
-            foreach (Talisman tali in talisman)
-            {
-                if (tali.Slot == i)
-                    return tali;
-            }
-            return null;
         }
     }
 }

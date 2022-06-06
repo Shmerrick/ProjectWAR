@@ -5,7 +5,8 @@ namespace Common.Database.World.Items
 {
     [DataTable(PreCache = false, TableName = "black_market_vendor_items", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
-    public class BlackMarketItem : DataObject
+    public class BlackMarketItem
+        : DataObject
     {
         [PrimaryKey]
         public int ItemId { get; set; }
