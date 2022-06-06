@@ -130,14 +130,13 @@ namespace WorldServer.World.AI
                 keepGuard.Speed = 100;
                 keepGuard.UpdateSpeed();
             }
-            if (_unit is Creature creature)
-            {
-                creature.Speed = 100;
-                creature.UpdateSpeed();
-            }
 
             if (crea == null)
+            {
                 _unit.MvtInterface?.Follow(fighter, Constants.UNITS_TO_FEET_MIN, Constants.UNITS_TO_FEET_MAX, false, ForceMove);
+                crea.Speed = 150;
+                crea.UpdateSpeed();
+            }
             else if (NewRange == 0)
                 _unit.MvtInterface?.Follow(fighter, (int)crea.BaseRadius, (int)crea.BaseRadius + 1, false, ForceMove);
             else
