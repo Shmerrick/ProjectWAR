@@ -10,13 +10,13 @@ namespace Common
         [DataElement()]
         public uint AccountId { get; set; }
 
+        [DataElement(Varchar = 255)]
+        public string PlayerName { get; set; }
+
         [DataElement()]
         public string Command { get; set; }
 
         [DataElement()]
         public DateTime Date { get; set; }
-
-        [DataElement(Varchar = 255)]
-        public string PlayerName { get; set; }
     }
 }

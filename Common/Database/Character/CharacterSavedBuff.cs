@@ -8,17 +8,18 @@ namespace Common
     public class CharacterSavedBuff : DataObject
     {
         [PrimaryKey]
-        public ushort BuffId { get; set; }
+        public uint CharacterId { get; set; }
 
         [PrimaryKey]
-        public uint CharacterId { get; set; }
-        [DataElement]
-        public uint EndTimeSeconds { get; set; }
+        public ushort BuffId { get; set; }
 
         [DataElement]
         public byte Level { get; set; }
 
         [DataElement]
         public byte StackLevel { get; set; }
+
+        [DataElement]
+        public uint EndTimeSeconds { get; set; }
     }
 }

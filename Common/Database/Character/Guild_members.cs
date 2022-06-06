@@ -8,26 +8,26 @@ namespace Common
     [Serializable]
     public class Guild_member : DataObject
     {
-        public Character Member;
-        private bool _AllianceOfficer;
-        private uint _CharacterId;
         private uint _GuildId;
-        private bool _GuildRecruiter;
+        private uint _CharacterId;
+        private byte _RankId;
+        private string _PublicNote;
+        private string _OfficerNote;
         private uint _JoinDate;
         private uint _LastSeen;
-        private string _OfficerNote;
-        private string _PublicNote;
-        private byte _RankId;
         private bool _RealmCaptain;
-        private ulong _RenownContributed;
+        private bool _AllianceOfficer;
         private bool _StandardBearer;
+        private bool _GuildRecruiter;
+        private ulong _RenownContributed;
         private byte _Tithe;
         private ulong _TitheContributed;
 
-        public bool AllianceOfficer
+        [DataElement(AllowDbNull = false)]
+        public uint GuildId
         {
-            get { return _AllianceOfficer; }
-            set { _AllianceOfficer = value; Dirty = true; }
+            get { return _GuildId; }
+            set { _GuildId = value; Dirty = true; }
         }
 
         [PrimaryKey]
@@ -38,16 +38,24 @@ namespace Common
         }
 
         [DataElement(AllowDbNull = false)]
-        public uint GuildId
+        public byte RankId
         {
-            get { return _GuildId; }
-            set { _GuildId = value; Dirty = true; }
+            get { return _RankId; }
+            set { _RankId = value; Dirty = true; }
         }
+
         [DataElement(AllowDbNull = false)]
-        public bool GuildRecruiter
+        public string PublicNote
         {
-            get { return _GuildRecruiter; }
-            set { _GuildRecruiter = value; Dirty = true; }
+            get { return _PublicNote; }
+            set { _PublicNote = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public string OfficerNote
+        {
+            get { return _OfficerNote; }
+            set { _OfficerNote = value; Dirty = true; }
         }
 
         [DataElement(AllowDbNull = false)]
@@ -65,36 +73,16 @@ namespace Common
         }
 
         [DataElement(AllowDbNull = false)]
-        public string OfficerNote
-        {
-            get { return _OfficerNote; }
-            set { _OfficerNote = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false)]
-        public string PublicNote
-        {
-            get { return _PublicNote; }
-            set { _PublicNote = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false)]
-        public byte RankId
-        {
-            get { return _RankId; }
-            set { _RankId = value; Dirty = true; }
-        }
-        [DataElement(AllowDbNull = false)]
         public bool RealmCaptain
         {
             get { return _RealmCaptain; }
             set { _RealmCaptain = value; Dirty = true; }
         }
-        [DataElement(AllowDbNull = false)]
-        public ulong RenownContributed
+
+        public bool AllianceOfficer
         {
-            get { return _RenownContributed; }
-            set { _RenownContributed = value; Dirty = true; }
+            get { return _AllianceOfficer; }
+            set { _AllianceOfficer = value; Dirty = true; }
         }
 
         [DataElement(AllowDbNull = false)]
@@ -103,6 +91,21 @@ namespace Common
             get { return _StandardBearer; }
             set { _StandardBearer = value; Dirty = true; }
         }
+
+        [DataElement(AllowDbNull = false)]
+        public bool GuildRecruiter
+        {
+            get { return _GuildRecruiter; }
+            set { _GuildRecruiter = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public ulong RenownContributed
+        {
+            get { return _RenownContributed; }
+            set { _RenownContributed = value; Dirty = true; }
+        }
+
         [DataElement(AllowDbNull = false)]
         public byte Tithe
         {
@@ -116,5 +119,7 @@ namespace Common
             get { return _TitheContributed; }
             set { _TitheContributed = value; Dirty = true; }
         }
+
+        public Character Member;
     }
 }

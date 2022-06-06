@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace Common
 {
+    // Valeur Fixe d'un character
     [DataTable(PreCache = false, TableName = "item_infos", DatabaseName = "World")]
     [Serializable]
     public class Item_Info : DataObject

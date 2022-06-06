@@ -6,10 +6,11 @@ namespace Common
 {
     public class Character_Objectives
     {
-        public int _Count;
+        public Character_quest Quest;
         public Quest_Objectives Objective;
         public int ObjectiveID;
-        public Character_quest Quest;
+        public int _Count;
+
         public int Count
         {
             get
@@ -29,22 +30,16 @@ namespace Common
         }
     }
 
-    // Fixed value of a character
+    // Valeur Fixe d'un character
     [DataTable(PreCache = false, TableName = "characters_quests", DatabaseName = "Characters")]
     [Serializable]
     public class Character_quest : DataObject
     {
-        public List<Character_Objectives> _Objectives = new List<Character_Objectives>();
-
-        public Quest Quest;
-
-        public List<byte> SelectedRewards = new List<byte>();
-
         [PrimaryKey]
         public uint CharacterId { get; set; }
 
-        [DataElement(AllowDbNull = false)]
-        public bool Done { get; set; }
+        [PrimaryKey]
+        public ushort QuestID { get; set; }
 
         [DataElement(AllowDbNull = false, Varchar = 64)]
         public string Objectives
@@ -82,11 +77,18 @@ namespace Common
             }
         }
 
-        [PrimaryKey]
-        public ushort QuestID { get; set; }
+        [DataElement(AllowDbNull = false)]
+        public bool Done { get; set; }
+
         public bool IsDone()
         {
             return _Objectives.TrueForAll(obj => obj.IsDone());
         }
+
+        public List<Character_Objectives> _Objectives = new List<Character_Objectives>();
+
+        public Quest Quest;
+
+        public List<byte> SelectedRewards = new List<byte>();
     }
 }

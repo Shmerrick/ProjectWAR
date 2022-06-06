@@ -7,19 +7,11 @@ namespace Common
     [Serializable]
     public class Zone_Taxi : DataObject
     {
-        public Zone_Info Info;
-
-        [DataElement()]
-        public bool Enable { get; set; }
+        [PrimaryKey]
+        public ushort ZoneID { get; set; }
 
         [PrimaryKey]
         public byte RealmID { get; set; }
-
-        [DataElement()]
-        public byte Tier { get; set; }
-
-        [DataElement()]
-        public ushort WorldO { get; set; }
 
         [DataElement()]
         public uint WorldX { get; set; }
@@ -30,7 +22,15 @@ namespace Common
         [DataElement()]
         public ushort WorldZ { get; set; }
 
-        [PrimaryKey]
-        public ushort ZoneID { get; set; }
+        [DataElement()]
+        public ushort WorldO { get; set; }
+
+        [DataElement()]
+        public byte Tier { get; set; }
+
+        [DataElement()]
+        public bool Enable { get; set; }
+
+        public Zone_Info Info;
     }
 }

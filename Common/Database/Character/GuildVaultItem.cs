@@ -9,20 +9,21 @@ namespace Common
     [Serializable]
     public class GuildVaultItem : DataObject
     {
-        public List<Talisman> _Talismans = new List<Talisman>();
-        public uint LockedPlayerId;
-        private ushort _Counts;
-        private uint _Entry;
         private uint _GuildId;
+        private uint _Entry;
+        private byte _VaultId;
+        private ushort _SlotId;
+        private ushort _Counts;
+        public List<Talisman> _Talismans = new List<Talisman>();
         private ushort _PrimaryDye;
         private ushort _SecondaryDye;
-        private ushort _SlotId;
-        private byte _VaultId;
-        [DataElement(AllowDbNull = false)]
-        public ushort Counts
+        public uint LockedPlayerId;
+
+        [PrimaryKey]
+        public uint GuildId
         {
-            get { return _Counts; }
-            set { _Counts = value; Dirty = true; }
+            get { return _GuildId; }
+            set { _GuildId = value; Dirty = true; }
         }
 
         [DataElement(AllowDbNull = false)]
@@ -33,23 +34,10 @@ namespace Common
         }
 
         [PrimaryKey]
-        public uint GuildId
+        public byte VaultId
         {
-            get { return _GuildId; }
-            set { _GuildId = value; Dirty = true; }
-        }
-        [DataElement(AllowDbNull = false)]
-        public ushort PrimaryDye
-        {
-            get { return _PrimaryDye; }
-            set { _PrimaryDye = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false)]
-        public ushort SecondaryDye
-        {
-            get { return _SecondaryDye; }
-            set { _SecondaryDye = value; Dirty = true; }
+            get { return _VaultId; }
+            set { _VaultId = value; Dirty = true; }
         }
 
         [PrimaryKey]
@@ -57,6 +45,13 @@ namespace Common
         {
             get { return _SlotId; }
             set { _SlotId = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public ushort Counts
+        {
+            get { return _Counts; }
+            set { _Counts = value; Dirty = true; }
         }
 
         // Note:
@@ -89,11 +84,18 @@ namespace Common
             }
         }
 
-        [PrimaryKey]
-        public byte VaultId
+        [DataElement(AllowDbNull = false)]
+        public ushort PrimaryDye
         {
-            get { return _VaultId; }
-            set { _VaultId = value; Dirty = true; }
+            get { return _PrimaryDye; }
+            set { _PrimaryDye = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public ushort SecondaryDye
+        {
+            get { return _SecondaryDye; }
+            set { _SecondaryDye = value; Dirty = true; }
         }
     }
 }

@@ -21,9 +21,8 @@ namespace WorldServer.NetWork.Handler
             ushort Unk4 = packet.GetUint16();
             ushort CreatureOID = packet.GetUint16();
 
-            Creature Crea = cclient?.Plr?.Region?.GetObject(CreatureOID) as Creature;
 
-            if (Crea == null)
+            if (!(cclient?.Plr?.Region?.GetObject(CreatureOID) is Creature Crea))
                 return;
 
             switch (State)

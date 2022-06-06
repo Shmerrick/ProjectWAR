@@ -11,10 +11,10 @@ namespace Common
         [PrimaryKey]
         public uint CharacterId { get; set; }
 
-        [DataElement()]
-        public uint Count { get; set; }
-
         [PrimaryKey]
         public ushort NPCEntry { get; set; }
+
+        [DataElement()]
+        public uint Count { get; set; }
     }
 }

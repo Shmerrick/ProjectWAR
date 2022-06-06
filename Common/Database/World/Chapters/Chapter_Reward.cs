@@ -7,20 +7,19 @@ namespace Common
     [Serializable]
     public class Chapter_Reward : DataObject
     {
-        public Chapter_Info Chapter;
-
-        public Item_Info Item;
-
         [PrimaryKey]
         public uint Entry { get; set; }
 
         [DataElement]
-        public uint InfluenceCount { get; set; }
+        public byte Realm { get; set; }
 
         [PrimaryKey]
         public uint ItemId { get; set; }
 
         [DataElement]
-        public byte Realm { get; set; }
+        public uint InfluenceCount { get; set; }
+
+        public Chapter_Info Chapter;
+        public Item_Info Item;
     }
 }

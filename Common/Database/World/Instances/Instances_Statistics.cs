@@ -8,12 +8,6 @@ namespace Common
     public class Instances_Statistics : DataObject
     {
         [DataElement]
-        public string attemptsPerBoss { get; set; }
-
-        [DataElement]
-        public string deathCountPerBoss { get; set; }
-
-        [DataElement]
         public string InstanceID { get; set; }
 
         [DataElement]
@@ -24,5 +18,11 @@ namespace Common
 
         [DataElement]
         public string ttkPerBoss { get; set; }
+
+        [DataElement]
+        public string deathCountPerBoss { get; set; }
+
+        [DataElement]
+        public string attemptsPerBoss { get; set; }
     }
 }

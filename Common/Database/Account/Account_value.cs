@@ -7,14 +7,21 @@ namespace Common
     [Serializable]
     public class Account_value : DataObject
     {
-        private int _accountId;
-        private string _cpuidHash;
-        private string _hdSerialHash;
         private int _id;
+        private int _accountId;
         private string _installId;
         private string _ip;
         private string _mac;
+        private string _hdSerialHash;
+        private string _cpuidHash;
         private DateTime _modifyDate;
+
+        [PrimaryKey(AutoIncrement = true)]
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; Dirty = true; }
+        }
 
         [DataElement]
         public int AccountId
@@ -23,26 +30,6 @@ namespace Common
             set { _accountId = value; Dirty = true; }
         }
 
-        [DataElement]
-        public string CPUIDHash
-        {
-            get { return _cpuidHash; }
-            set { _cpuidHash = value; Dirty = true; }
-        }
-
-        [DataElement]
-        public string HDSerialHash
-        {
-            get { return _hdSerialHash; }
-            set { _hdSerialHash = value; Dirty = true; }
-        }
-
-        [PrimaryKey(AutoIncrement = true)]
-        public int Id
-        {
-            get { return _id; }
-            set { _id = value; Dirty = true; }
-        }
         [DataElement]
         public string InstallId
         {
@@ -63,6 +50,21 @@ namespace Common
             get { return _mac; }
             set { _mac = value; Dirty = true; }
         }
+
+        [DataElement]
+        public string HDSerialHash
+        {
+            get { return _hdSerialHash; }
+            set { _hdSerialHash = value; Dirty = true; }
+        }
+
+        [DataElement]
+        public string CPUIDHash
+        {
+            get { return _cpuidHash; }
+            set { _cpuidHash = value; Dirty = true; }
+        }
+
         [DataElement]
         public DateTime ModifyDate
         {

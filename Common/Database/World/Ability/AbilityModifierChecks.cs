@@ -9,44 +9,44 @@ namespace Common
     {
         public AbilityModifierCheck nextCheck;
 
-        [DataElement(Varchar = 48)]
-        public string AffectedAbility { get; set; }
-
-        [DataElement]
-        public ushort Affecting { get; set; }
-
-        [DataElement(Varchar = 255)]
-        public string CommandName { get; set; }
-
-        [DataElement]
-        public ushort Entry { get; set; }
-
-        [DataElement]
-        public byte FailCode { get; set; }
-
-        [DataElement]
-        public byte ID { get; set; }
-
-        [DataElement]
-        public byte PreOrPost { get; set; }
-
-        [DataElement]
-        public int PrimaryValue { get; set; }
-
-        [DataElement]
-        public int SecondaryValue { get; set; }
-
-        [DataElement]
-        public byte Sequence { get; set; }
-
-        [DataElement(Varchar = 48)]
-        public string SourceAbility { get; set; }
-
         public void AddCheck(AbilityModifierCheck newCheck)
         {
             if (nextCheck != null)
                 nextCheck.AddCheck(newCheck);
             else nextCheck = newCheck;
         }
+
+        [DataElement]
+        public ushort Entry { get; set; }
+
+        [DataElement(Varchar = 48)]
+        public string SourceAbility { get; set; }
+
+        [DataElement]
+        public ushort Affecting { get; set; }
+
+        [DataElement(Varchar = 48)]
+        public string AffectedAbility { get; set; }
+
+        [DataElement]
+        public byte PreOrPost { get; set; }
+
+        [DataElement]
+        public byte ID { get; set; }
+
+        [DataElement]
+        public byte Sequence { get; set; }
+
+        [DataElement(Varchar = 255)]
+        public string CommandName { get; set; }
+
+        [DataElement]
+        public byte FailCode { get; set; }
+
+        [DataElement]
+        public int PrimaryValue { get; set; }
+
+        [DataElement]
+        public int SecondaryValue { get; set; }
     }
 }

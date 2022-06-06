@@ -7,9 +7,6 @@ namespace Common
     [Serializable]
     public class ScenarioDurationRecord : DataObject
     {
-        [DataElement]
-        public uint DurationSeconds { get; set; }
-
         [PrimaryKey(AutoIncrement = true)]
         public int Guid { get; set; }
 
@@ -17,9 +14,12 @@ namespace Common
         public ushort ScenarioId { get; set; }
 
         [DataElement]
+        public byte Tier { get; set; }
+
+        [DataElement]
         public long StartTime { get; set; }
 
         [DataElement]
-        public byte Tier { get; set; }
+        public uint DurationSeconds { get; set; }
     }
 }

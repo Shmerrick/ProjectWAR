@@ -15,7 +15,7 @@ namespace WorldServer.World.AI
 {
     public class AggressiveBrain : ABrain
     {
-        private static long ABILITY_COOLDOWN = 5000;
+        private static readonly long ABILITY_COOLDOWN = 5000;
         public long NextAbilityExecution { get; set; }
         public Conditions ConditionManager { get; set; }
         public Executions ExecutionManager { get; set; }
