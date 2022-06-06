@@ -7,9 +7,10 @@ namespace Common
     [Serializable]
     public class Characters_bag_pools : DataObject
     {
-        private int _BagPool_Value;
-        private int _BagType;
         private int _CharacterId;
+        private int _BagType;
+        private int _BagPool_Value;
+
         public Characters_bag_pools()
         {
         }
@@ -19,6 +20,13 @@ namespace Common
             _CharacterId = CharacterId;
             _BagType = Bag_Type;
             _BagPool_Value = BagPool_Value;
+        }
+
+        [PrimaryKey]
+        public int CharacterId
+        {
+            get { return _CharacterId; }
+            set { _CharacterId = value; Dirty = true; }
         }
 
         [PrimaryKey]
@@ -33,13 +41,6 @@ namespace Common
         {
             get { return _BagPool_Value; }
             set { _BagPool_Value = value; Dirty = true; }
-        }
-
-        [PrimaryKey]
-        public int CharacterId
-        {
-            get { return _CharacterId; }
-            set { _CharacterId = value; Dirty = true; }
         }
     }
 }
