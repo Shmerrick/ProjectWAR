@@ -8,6 +8,9 @@ namespace Common
     public class CharacterDeletionRecord : DataObject
     {
         [DataElement]
+        public string DeletionIP { get; set; }
+
+        [DataElement]
         public int AccountID { get; set; }
 
         [DataElement]
@@ -19,8 +22,6 @@ namespace Common
         [DataElement]
         public string CharacterName { get; set; }
 
-        [DataElement]
-        public string DeletionIP { get; set; }
         [DataElement]
         public int DeletionTimeSeconds { get; set; }
     }
