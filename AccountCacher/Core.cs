@@ -13,9 +13,9 @@ namespace AccountCacher
         [STAThread]
         private static void Main(string[] args)
         {
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(OnError);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(onError);
 
-            Log.Info("", "-------------------- Account Cacher  -------------------", ConsoleColor.Red);
+            Log.Info("", "-------------------- Account Cacher  -------------------", ConsoleColor.DarkRed);
 
             // Loading all configs files
             ConfigMgr.LoadConfigs();
@@ -39,7 +39,7 @@ namespace AccountCacher
             ConsoleMgr.Start();
         }
 
-        private static void OnError(object sender, UnhandledExceptionEventArgs e)
+        private static void onError(object sender, UnhandledExceptionEventArgs e)
         {
             Log.Error("OnError", e.ExceptionObject.ToString());
         }
