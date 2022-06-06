@@ -341,10 +341,10 @@ namespace WorldServer.World.Objects
             MvtInterface.UpdateMovementState(plr);
 
             if (MvtInterface.IsMoving)
-                SendAnimation();
+                SendAnimation(0);
         }
 
-        public virtual void SendAnimation()
+        public virtual void SendAnimation(int value)
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_ANIMATION, 6);
             Out.WriteUInt16(Oid);
