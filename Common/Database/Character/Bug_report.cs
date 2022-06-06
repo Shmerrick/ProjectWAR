@@ -9,18 +9,18 @@ namespace Common
     [Serializable]
     public class Bug_report : DataObject
     {
-        public List<KeyValuePair<uint, string>> Fields = new List<KeyValuePair<uint, string>>();
         private uint _AccountId;
-        private string _Assigned;
-        private byte _Category;
         private uint _CharacterId;
-        private string _Message;
-        private string _ReportType;
-        private uint _Time;
-        private byte _Type;
+        private ushort _ZoneId;
         private ushort _X;
         private ushort _Y;
-        private ushort _ZoneId;
+        private uint _Time;
+        private byte _Type;
+        private byte _Category;
+        private string _Message;
+        private string _ReportType;
+        private string _Assigned;
+
         [DataElement(AllowDbNull = false, Varchar = 255)]
         public uint AccountId
         {
@@ -28,11 +28,46 @@ namespace Common
             set { _AccountId = value; Dirty = true; }
         }
 
-        [DataElement(AllowDbNull = true)]
-        public string Assigned
+        [DataElement(AllowDbNull = false, Varchar = 255)]
+        public uint CharacterId
         {
-            get { return _Assigned; }
-            set { _Assigned = value; Dirty = true; }
+            get { return _CharacterId; }
+            set { _CharacterId = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false, Varchar = 255)]
+        public ushort ZoneId
+        {
+            get { return _ZoneId; }
+            set { _ZoneId = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false, Varchar = 255)]
+        public ushort X
+        {
+            get { return _X; }
+            set { _X = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false, Varchar = 255)]
+        public ushort Y
+        {
+            get { return _Y; }
+            set { _Y = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false, Varchar = 255)]
+        public uint Time
+        {
+            get { return _Time; }
+            set { _Time = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public byte Type
+        {
+            get { return _Type; }
+            set { _Type = value; Dirty = true; }
         }
 
         [DataElement(AllowDbNull = false)]
@@ -42,11 +77,18 @@ namespace Common
             set { _Category = value; Dirty = true; }
         }
 
-        [DataElement(AllowDbNull = false, Varchar = 255)]
-        public uint CharacterId
+        [DataElement(AllowDbNull = false)]
+        public string Message
         {
-            get { return _CharacterId; }
-            set { _CharacterId = value; Dirty = true; }
+            get { return _Message; }
+            set { _Message = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public string ReportType
+        {
+            get { return _ReportType; }
+            set { _ReportType = value; Dirty = true; }
         }
 
         [DataElement(AllowDbNull = false)]
@@ -78,53 +120,13 @@ namespace Common
             }
         }
 
-        [DataElement(AllowDbNull = false)]
-        public string Message
+        [DataElement(AllowDbNull = true)]
+        public string Assigned
         {
-            get { return _Message; }
-            set { _Message = value; Dirty = true; }
+            get { return _Assigned; }
+            set { _Assigned = value; Dirty = true; }
         }
 
-        [DataElement(AllowDbNull = false)]
-        public string ReportType
-        {
-            get { return _ReportType; }
-            set { _ReportType = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false, Varchar = 255)]
-        public uint Time
-        {
-            get { return _Time; }
-            set { _Time = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false)]
-        public byte Type
-        {
-            get { return _Type; }
-            set { _Type = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false, Varchar = 255)]
-        public ushort X
-        {
-            get { return _X; }
-            set { _X = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false, Varchar = 255)]
-        public ushort Y
-        {
-            get { return _Y; }
-            set { _Y = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false, Varchar = 255)]
-        public ushort ZoneId
-        {
-            get { return _ZoneId; }
-            set { _ZoneId = value; Dirty = true; }
-        }
+        public List<KeyValuePair<uint, string>> Fields = new List<KeyValuePair<uint, string>>();
     }
 }
