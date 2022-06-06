@@ -3,7 +3,7 @@ using System;
 
 namespace Common
 {
-    // Fixed value of a character
+    // Valeur Fixe d'un character
     [DataTable(PreCache = false, TableName = "characters_toks", DatabaseName = "Characters", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class Character_tok : DataObject
@@ -11,10 +11,10 @@ namespace Common
         [PrimaryKey]
         public uint CharacterId { get; set; }
 
-        [DataElement()]
-        public uint Count { get; set; }
-
         [PrimaryKey]
         public ushort TokEntry { get; set; }
+
+        [DataElement()]
+        public uint Count { get; set; }
     }
 }
