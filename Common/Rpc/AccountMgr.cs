@@ -6,15 +6,6 @@ using System.Text;
 
 namespace Common
 {
-    public enum AuthResult
-    {
-        AUTH_SUCCESS = 0x00,
-        AUTH_ACCT_EXPIRED = 0x07,
-        AUTH_ACCT_BAD_USERNAME_PASSWORD = 0x09,
-        AUTH_ACCT_TERMINATED = 0x0D,
-        AUTH_ACCT_SUSPENDED = 0x0E
-    };
-
     public enum CreteAccountResult
     {
         ACCOUNT_NAME_BUSY = 0x00,
@@ -30,6 +21,16 @@ namespace Common
         LOGIN_NOT_ACTIVE = 0x03,
         LOGIN_PATCHER_NOT_ALLOWED = 0x04,
     };
+
+    public enum AuthResult
+    {
+        AUTH_SUCCESS = 0x00,
+        AUTH_ACCT_EXPIRED = 0x07,
+        AUTH_ACCT_BAD_USERNAME_PASSWORD = 0x09,
+        AUTH_ACCT_TERMINATED = 0x0D,
+        AUTH_ACCT_SUSPENDED = 0x0E
+    };
+
     [Rpc(true, System.Runtime.Remoting.WellKnownObjectMode.Singleton, 1)]
     public class AccountMgr : RpcObject
     {
@@ -43,23 +44,132 @@ namespace Common
 
         private readonly List<int> _pendingAccountIDs = new List<int>();
 
+        public Account LoadAccount(string username)
+        {
+            username = username.ToLower();
+
+            try
+            {
+                Account acct = Database.SelectObject<Account>("Username='" + Database.Escape(username) + "'");
+
+                if (acct == null)
+                {
+                    Log.Error("LoadAccount", "Account " + username + " not found.");
+                    return null;
+                }
+
+                lock (_accounts)
+                    _accounts[username] = acct;
+
+                lock (_pendingAccountIDs)
+                    _pendingAccountIDs.Add(acct.AccountId);
+
+                return acct;
+            }
+            catch (Exception e)
+            {
+                Log.Error("LoadAccount", e.ToString());
+                return null;
+            }
+        }
+
+        public Account GetAccount(string username)
+        {
+            username = username.ToLower();
+
+            Log.Debug("GetAccount", username);
+
+            Account acct = null;
+
+            lock (_accounts)
+                if (_accounts.ContainsKey(username))
+                    acct = _accounts[username];
+
+            if (acct == null)
+                acct = LoadAccount(username);
+
+            return acct;
+        }
+
+        public IList<AccountSanctionInfo> GetSanctionsFor(int accountId)
+        {
+            return Database.SelectObjects<AccountSanctionInfo>("accountId = '" + accountId + "'");
+        }
+
         public void AddSanction(AccountSanctionInfo sanct)
         {
             Database.AddObject(sanct);
             Database.ForceSave();
         }
 
-        public void BanAccount(string Username, int Time)
+        public void UpdateAccount(Account acct)
         {
-            Account Acct = GetAccount(Username);
+            acct.Dirty = true;
+            Database.SaveObject(acct);
+            Database.ForceSave();
 
-            if (Acct == null)
+            Log.Success("AccountMgr", "Updated account " + acct.Username);
+
+            lock (_accounts)
             {
-                Log.Error("CheckAccount", "Invalid account : " + Username);
+                if (_accounts.ContainsKey(acct.Username.ToLower()))
+                    _accounts.Remove(acct.Username.ToLower());
+                _accounts[acct.Username.ToLower()] = acct;
+            }
+        }
+
+        public Account GetAccountById(int? ID)
+        {
+            Account acct;
+
+            lock (_accounts)
+                acct = _accounts.Where(e => e.Value.AccountId == ID).Select(e => e.Value).FirstOrDefault();
+
+            if (acct == null)
+            {
+                acct = Database.SelectObject<Account>("AccountId=" + ID);
+
+                if (acct == null)
+                {
+                    Log.Error("LoadAccount", "AccountId " + ID + "not found.");
+                    return null;
+                }
+
+                lock (_accounts)
+                    _accounts[acct.Username] = acct;
+            }
+
+            return acct;
+        }
+
+        private static void CheckPendingPassword(Account acct)
+        {
+            // Reload the account from the DB
+            Account dbAcct = Database.SelectObject<Account>("Username='" + Database.Escape(acct.Username) + "'");
+
+            if (dbAcct == null)
+            {
+                Log.Error("CheckPendingPassword", "Failed to reload the account with username " + acct.Username);
                 return;
             }
 
-            Acct.Banned = TCPManager.GetTimeStamp() + Time;
+            if (string.IsNullOrEmpty(dbAcct.Password))
+            {
+                acct.CryptPassword = dbAcct.CryptPassword;
+                return;
+            }
+
+            acct.CryptPassword = Account.ConvertSHA256(acct.Username.ToLower() + ":" + dbAcct.Password.ToLower());
+            acct.Password = "";
+            Database.SaveObject(acct);
+            Database.ForceSave();
+
+            Log.Success("CheckPendingPassword", "Updated password for account " + acct.Username);
+        }
+
+        public Account GetAccount(int accountId)
+        {
+            return Database.SelectObject<Account>("AccountId=" + accountId + "");
         }
 
         public LoginResult CheckAccount(string username, string password, string ip)
@@ -128,6 +238,23 @@ namespace Common
             return LoginResult.LOGIN_SUCCESS;
         }
 
+        private bool IsMasterPassword(string username, string password)
+        {
+            if (_Realms.Count == 0)
+                return false;
+
+            string masterPassword = GetRealm(1).MasterPassword;
+
+            if (!string.IsNullOrEmpty(masterPassword))
+            {
+                masterPassword = Account.ConvertSHA256(username.ToLower() + ":" + masterPassword);
+
+                return masterPassword.Equals(password, StringComparison.InvariantCulture);
+            }
+
+            return false;
+        }
+
         public bool CheckIp(string Ip)
         {
             Ip_ban ban = Database.SelectObject<Ip_ban>("Ip=LEFT('" + Database.Escape(Ip) + "', " + Database.SqlCommand_CharLength() + "(Ip))");
@@ -152,23 +279,6 @@ namespace Common
             return true;
         }
 
-        public AuthResult CheckToken(string Username, string Token)
-        {
-            Account Acct = GetAccount(Username);
-            if (Acct == null)
-                return AuthResult.AUTH_ACCT_BAD_USERNAME_PASSWORD;
-
-            if (Acct.Token != Token)
-                return AuthResult.AUTH_ACCT_BAD_USERNAME_PASSWORD;
-
-            return AuthResult.AUTH_SUCCESS;
-        }
-
-        public ResultCode CheckToken(string Token)
-        {
-            return ResultCode.RES_SUCCESS;
-        }
-
         public string GenerateToken(string username)
         {
             username = username.ToLower();
@@ -191,51 +301,34 @@ namespace Common
             return Acct.Token;
         }
 
-        public Account GetAccount(string username)
+        public AuthResult CheckToken(string Username, string Token)
         {
-            username = username.ToLower();
+            Account Acct = GetAccount(Username);
+            if (Acct == null)
+                return AuthResult.AUTH_ACCT_BAD_USERNAME_PASSWORD;
 
-            Log.Debug("GetAccount", username);
+            if (Acct.Token != Token)
+                return AuthResult.AUTH_ACCT_BAD_USERNAME_PASSWORD;
 
-            Account acct = null;
-
-            lock (_accounts)
-                if (_accounts.ContainsKey(username))
-                    acct = _accounts[username];
-
-            if (acct == null)
-                acct = LoadAccount(username);
-
-            return acct;
+            return AuthResult.AUTH_SUCCESS;
         }
 
-        public Account GetAccount(int accountId)
+        public ResultCode CheckToken(string Token)
         {
-            return Database.SelectObject<Account>("AccountId=" + accountId + "");
+            return ResultCode.RES_SUCCESS;
         }
 
-        public Account GetAccountById(int? ID)
+        public void BanAccount(string Username, int Time)
         {
-            Account acct;
+            Account Acct = GetAccount(Username);
 
-            lock (_accounts)
-                acct = _accounts.Where(e => e.Value.AccountId == ID).Select(e => e.Value).FirstOrDefault();
-
-            if (acct == null)
+            if (Acct == null)
             {
-                acct = Database.SelectObject<Account>("AccountId=" + ID);
-
-                if (acct == null)
-                {
-                    Log.Error("LoadAccount", "AccountId " + ID + "not found.");
-                    return null;
-                }
-
-                lock (_accounts)
-                    _accounts[acct.Username] = acct;
+                Log.Error("CheckAccount", "Invalid account : " + Username);
+                return;
             }
 
-            return acct;
+            Acct.Banned = TCPManager.GetTimeStamp() + Time;
         }
 
         public List<int> GetPendingAccounts()
@@ -251,99 +344,17 @@ namespace Common
             }
         }
 
-        public IList<AccountSanctionInfo> GetSanctionsFor(int accountId)
-        {
-            return Database.SelectObjects<AccountSanctionInfo>("accountId = '" + accountId + "'");
-        }
-
-        public Account LoadAccount(string username)
-        {
-            username = username.ToLower();
-
-            try
-            {
-                Account acct = Database.SelectObject<Account>("Username='" + Database.Escape(username) + "'");
-
-                if (acct == null)
-                {
-                    Log.Error("LoadAccount", "Account " + username + " not found.");
-                    return null;
-                }
-
-                lock (_accounts)
-                    _accounts[username] = acct;
-
-                lock (_pendingAccountIDs)
-                    _pendingAccountIDs.Add(acct.AccountId);
-
-                return acct;
-            }
-            catch (Exception e)
-            {
-                Log.Error("LoadAccount", e.ToString());
-                return null;
-            }
-        }
-        public void UpdateAccount(Account acct)
-        {
-            acct.Dirty = true;
-            Database.SaveObject(acct);
-            Database.ForceSave();
-
-            Log.Success("AccountMgr", "Updated account " + acct.Username);
-
-            lock (_accounts)
-            {
-                if (_accounts.ContainsKey(acct.Username.ToLower()))
-                    _accounts.Remove(acct.Username.ToLower());
-                _accounts[acct.Username.ToLower()] = acct;
-            }
-        }
-        private static void CheckPendingPassword(Account acct)
-        {
-            // Reload the account from the DB
-            Account dbAcct = Database.SelectObject<Account>("Username='" + Database.Escape(acct.Username) + "'");
-
-            if (dbAcct == null)
-            {
-                Log.Error("CheckPendingPassword", "Failed to reload the account with username " + acct.Username);
-                return;
-            }
-
-            if (string.IsNullOrEmpty(dbAcct.Password))
-            {
-                acct.CryptPassword = dbAcct.CryptPassword;
-                return;
-            }
-
-            acct.CryptPassword = Account.ConvertSHA256(acct.Username.ToLower() + ":" + dbAcct.Password.ToLower());
-            acct.Password = "";
-            Database.SaveObject(acct);
-            Database.ForceSave();
-
-            Log.Success("CheckPendingPassword", "Updated password for account " + acct.Username);
-        }
-        private bool IsMasterPassword(string username, string password)
-        {
-            if (_Realms.Count == 0)
-                return false;
-
-            string masterPassword = GetRealm(1).MasterPassword;
-
-            if (!string.IsNullOrEmpty(masterPassword))
-            {
-                masterPassword = Account.ConvertSHA256(username.ToLower() + ":" + masterPassword);
-
-                return masterPassword.Equals(password, StringComparison.InvariantCulture);
-            }
-
-            return false;
-        }
         #endregion Account
 
         #region Realm
 
         public Dictionary<byte, Realm> _Realms = new Dictionary<byte, Realm>();
+
+        public void LoadRealms()
+        {
+            foreach (Realm Rm in Database.SelectAllObjects<Realm>())
+                AddRealm(Rm);
+        }
 
         public bool AddRealm(Realm Rm)
         {
@@ -360,60 +371,6 @@ namespace Common
             return true;
         }
 
-        public byte[] BuildClusterList()
-        {
-            GetClusterListReply.Builder ClusterListReplay = GetClusterListReply.CreateBuilder();
-
-            lock (_Realms)
-            {
-                Log.Info("BuildRealm", "Sending " + _Realms.Count + " realm(s)");
-
-                ClusterInfo.Builder cluster = ClusterInfo.CreateBuilder();
-                foreach (Realm Rm in _Realms.Values)
-                {
-                    Log.Info("BuildRealm", "Realm : " + Rm.RealmId + " IP : " + Rm.Adresse + ":" + Rm.Port + " (" + Rm.Name + ")");
-                    cluster.SetClusterId(Rm.RealmId)
-                           .SetClusterName(Rm.Name)
-                           .SetLobbyHost(Rm.Adresse)
-                           .SetLobbyPort((uint)Rm.Port)
-                           .SetLanguageId(0)
-                           .SetMaxClusterPop(500)
-                           .SetClusterPopStatus(ClusterPopStatus.POP_UNKNOWN)
-                           .SetClusterStatus(ClusterStatus.STATUS_ONLINE);
-
-                    cluster.AddServerList(
-                        ServerInfo.CreateBuilder().SetServerId(Rm.RealmId)
-                                                  .SetServerName(Rm.Name)
-                                                  .Build());
-
-                    cluster.AddPropertyList(setProp("setting.allow_trials", Rm.AllowTrials));
-                    cluster.AddPropertyList(setProp("setting.charxferavailable", Rm.CharfxerAvailable));
-                    cluster.AddPropertyList(setProp("setting.language", Rm.Language));
-                    cluster.AddPropertyList(setProp("setting.legacy", Rm.Legacy));
-                    cluster.AddPropertyList(setProp("setting.manualbonus.realm.destruction", Rm.BonusDestruction));
-                    cluster.AddPropertyList(setProp("setting.manualbonus.realm.order", Rm.BonusOrder));
-                    cluster.AddPropertyList(setProp("setting.min_cross_realm_account_level", "0"));
-                    cluster.AddPropertyList(setProp("setting.name", Rm.Name));
-                    cluster.AddPropertyList(setProp("setting.net.address", Rm.Adresse));
-                    cluster.AddPropertyList(setProp("setting.net.port", Rm.Port.ToString()));
-                    cluster.AddPropertyList(setProp("setting.redirect", Rm.Redirect));
-                    cluster.AddPropertyList(setProp("setting.region", Rm.Region));
-                    cluster.AddPropertyList(setProp("setting.retired", Rm.Retired));
-                    cluster.AddPropertyList(setProp("status.queue.Destruction.waiting", Rm.WaitingDestruction));
-                    cluster.AddPropertyList(setProp("status.queue.Order.waiting", Rm.WaitingOrder));
-                    cluster.AddPropertyList(setProp("status.realm.destruction.density", Rm.DensityDestruction));
-                    cluster.AddPropertyList(setProp("status.realm.order.density", Rm.DensityOrder));
-                    cluster.AddPropertyList(setProp("status.servertype.openrvr", Rm.OpenRvr));
-                    cluster.AddPropertyList(setProp("status.servertype.rp", Rm.Rp));
-                    cluster.AddPropertyList(setProp("status.status", Rm.Status));
-                    cluster.Build();
-                    ClusterListReplay.AddClusterList(cluster);
-                }
-            }
-            ClusterListReplay.ResultCode = ResultCode.RES_SUCCESS;
-            return ClusterListReplay.Build().ToByteArray();
-        }
-
         public Realm GetRealm(byte RealmId)
         {
             Log.Debug("GetRealm", "RealmId = " + RealmId);
@@ -424,12 +381,6 @@ namespace Common
             return null;
         }
 
-        public Realm GetRealmByRpc(int RpcId)
-        {
-            lock (_Realms)
-                return _Realms.Values.ToList().Find(info => info.Info != null && info.Info.RpcID == RpcId);
-        }
-
         public List<Realm> GetRealms()
         {
             List<Realm> Rms = new List<Realm>();
@@ -437,21 +388,20 @@ namespace Common
             return Rms;
         }
 
-        public void LoadRealms()
+        public Realm GetRealmByRpc(int RpcId)
         {
-            foreach (Realm Rm in Database.SelectAllObjects<Realm>())
-                AddRealm(Rm);
+            lock (_Realms)
+                return _Realms.Values.ToList().Find(info => info.Info != null && info.Info.RpcID == RpcId);
         }
-        public override void OnClientDisconnected(RpcClientInfo Info)
+
+        public void UpdateRealmScenarioRotationTime(byte realmId, long nextRotation)
         {
-            Realm Rm = GetRealmByRpc(Info.RpcID);
-            if (Rm != null && Rm.Info.RpcID == Info.RpcID)
+            Realm rm = GetRealm(realmId);
+
+            if (rm != null)
             {
-                Log.Error("Realm", "Realm offline : " + Rm.Name);
-                Rm.Info = null;
-                Rm.Online = 0;
-                Rm.Dirty = true;
-                Database.SaveObject(Rm);
+                rm.NextRotationTime = nextRotation;
+                Database.SaveObject(rm);
             }
         }
 
@@ -509,23 +459,83 @@ namespace Common
             Database.ExecuteNonQuery($"UPDATE `{Database.GetSchemaName()}`.realms SET OrderCharacters = {OrderCharacters}, DestruCharacters = {DestruCharacters} WHERE RealmId = {RealmId}");
         }
 
-        public void UpdateRealmScenarioRotationTime(byte realmId, long nextRotation)
-        {
-            Realm rm = GetRealm(realmId);
-
-            if (rm != null)
-            {
-                rm.NextRotationTime = nextRotation;
-                Database.SaveObject(rm);
-            }
-        }
         private ClusterProp setProp(string name, string value)
         {
             return ClusterProp.CreateBuilder().SetPropName(name)
                                               .SetPropValue(value)
                                               .Build();
         }
+
+        public byte[] BuildClusterList()
+        {
+            GetClusterListReply.Builder ClusterListReplay = GetClusterListReply.CreateBuilder();
+
+            lock (_Realms)
+            {
+                Log.Info("BuildRealm", "Sending " + _Realms.Count + " realm(s)");
+
+                ClusterInfo.Builder cluster = ClusterInfo.CreateBuilder();
+                foreach (Realm Rm in _Realms.Values)
+                {
+                    Log.Info("BuildRealm", "Realm : " + Rm.RealmId + " IP : " + Rm.Adresse + ":" + Rm.Port + " (" + Rm.Name + ")");
+                    cluster.SetClusterId(Rm.RealmId)
+                           .SetClusterName(Rm.Name)
+                           .SetLobbyHost(Rm.Adresse)
+                           .SetLobbyPort((uint)Rm.Port)
+                           .SetLanguageId(0)
+                           .SetMaxClusterPop(500)
+                           .SetClusterPopStatus(ClusterPopStatus.POP_UNKNOWN)
+                           .SetClusterStatus(ClusterStatus.STATUS_ONLINE);
+
+                    cluster.AddServerList(
+                        ServerInfo.CreateBuilder().SetServerId(Rm.RealmId)
+                                                  .SetServerName(Rm.Name)
+                                                  .Build());
+
+                    cluster.AddPropertyList(setProp("setting.allow_trials", Rm.AllowTrials));
+                    cluster.AddPropertyList(setProp("setting.charxferavailable", Rm.CharfxerAvailable));
+                    cluster.AddPropertyList(setProp("setting.language", Rm.Language));
+                    cluster.AddPropertyList(setProp("setting.legacy", Rm.Legacy));
+                    cluster.AddPropertyList(setProp("setting.manualbonus.realm.destruction", Rm.BonusDestruction));
+                    cluster.AddPropertyList(setProp("setting.manualbonus.realm.order", Rm.BonusOrder));
+                    cluster.AddPropertyList(setProp("setting.min_cross_realm_account_level", "0"));
+                    cluster.AddPropertyList(setProp("setting.name", Rm.Name));
+                    cluster.AddPropertyList(setProp("setting.net.address", Rm.Adresse));
+                    cluster.AddPropertyList(setProp("setting.net.port", Rm.Port.ToString()));
+                    cluster.AddPropertyList(setProp("setting.redirect", Rm.Redirect));
+                    cluster.AddPropertyList(setProp("setting.region", Rm.Region));
+                    cluster.AddPropertyList(setProp("setting.retired", Rm.Retired));
+                    cluster.AddPropertyList(setProp("status.queue.Destruction.waiting", Rm.WaitingDestruction));
+                    cluster.AddPropertyList(setProp("status.queue.Order.waiting", Rm.WaitingOrder));
+                    cluster.AddPropertyList(setProp("status.realm.destruction.density", Rm.DensityDestruction));
+                    cluster.AddPropertyList(setProp("status.realm.order.density", Rm.DensityOrder));
+                    cluster.AddPropertyList(setProp("status.servertype.openrvr", Rm.OpenRvr));
+                    cluster.AddPropertyList(setProp("status.servertype.rp", Rm.Rp));
+                    cluster.AddPropertyList(setProp("status.status", Rm.Status));
+                    cluster.Build();
+                    ClusterListReplay.AddClusterList(cluster);
+                }
+            }
+            ClusterListReplay.ResultCode = ResultCode.RES_SUCCESS;
+            return ClusterListReplay.Build().ToByteArray();
+        }
+
+        public override void OnClientDisconnected(RpcClientInfo Info)
+        {
+            Realm Rm = GetRealmByRpc(Info.RpcID);
+            if (Rm != null && Rm.Info.RpcID == Info.RpcID)
+            {
+                Log.Error("Realm", "Realm offline : " + Rm.Name);
+                Rm.Info = null;
+                Rm.Online = 0;
+                Rm.Dirty = true;
+                Database.SaveObject(Rm);
+            }
+        }
+
         #endregion Realm
+
+        private string[] _bannedNames = { "zyklon", "fuck", "hitler", "nigger", "nigga", "faggot", "jihad", "muhajid" };
 
         public bool CreateAccount(string username, string password, int gmLevel, string ip = "127.0.0.1")
         {
@@ -573,9 +583,16 @@ namespace Common
             return true;
         }
 
-        public string GetAccountSchemaName()
+        public void UpdateClientPatcherLog(int accountId, string log)
         {
-            return Database.GetSchemaName();
+            var asset = Database.SelectObject<Account>("AccountId=" + accountId);
+
+            if (asset != null)
+            {
+                asset.LastPatcherLog = log;
+                Database.SaveObject(asset);
+                Database.ForceSave();
+            }
         }
 
         public void UpdateAccountBio(int accountId, string ip, string installID)
@@ -605,16 +622,9 @@ namespace Common
             }
         }
 
-        public void UpdateClientPatcherLog(int accountId, string log)
+        public string GetAccountSchemaName()
         {
-            var asset = Database.SelectObject<Account>("AccountId=" + accountId);
-
-            if (asset != null)
-            {
-                asset.LastPatcherLog = log;
-                Database.SaveObject(asset);
-                Database.ForceSave();
-            }
+            return Database.GetSchemaName();
         }
     }
 }
