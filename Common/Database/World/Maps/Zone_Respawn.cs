@@ -3,6 +3,7 @@ using System;
 
 namespace Common
 {
+    // Valeur Fixe d'un character
     [DataTable(PreCache = false, TableName = "zone_respawns", DatabaseName = "World", BindMethod = EBindingMethod.StaticBound)]
     [Serializable]
     public class Zone_Respawn : DataObject
