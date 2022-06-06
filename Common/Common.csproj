@@ -274,7 +274,6 @@
     <Content Include="Icons\account.ico" />
     <Content Include="Icons\launcher.ico" />
     <Content Include="Icons\lobby.ico" />
-    <Content Include="Icons\server.ico" />
     <Content Include="Icons\world.ico" />
   </ItemGroup>
   <ItemGroup>
