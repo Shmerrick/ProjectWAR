@@ -130,6 +130,11 @@ namespace WorldServer.World.AI
                 keepGuard.Speed = 100;
                 keepGuard.UpdateSpeed();
             }
+            if (_unit is Creature creature)
+            {
+                creature.Speed = 100;
+                creature.UpdateSpeed();
+            }
 
             if (crea == null)
                 _unit.MvtInterface?.Follow(fighter, Constants.UNITS_TO_FEET_MIN, Constants.UNITS_TO_FEET_MAX, false, ForceMove);
@@ -261,8 +266,7 @@ namespace WorldServer.World.AI
 
                 foreach (Object obj in _unit.ObjectsInRange.ToList())
                 {
-                    Unit u = obj as Unit;
-                    if (u != null && (!u.IsDead && !u.PendingDisposal && !u.IsDisposed) && CombatInterface.CanAttack(_unit, u))
+                    if (obj is Unit u && (!u.IsDead && !u.PendingDisposal && !u.IsDisposed) && CombatInterface.CanAttack(_unit, u))
                     {
                         foreach (KeyValuePair<ushort, AggroInfo> aggro in Aggros)
                         {
@@ -345,7 +349,7 @@ namespace WorldServer.World.AI
                 }
                 else
                 {
-                    npc.SetPosition((ushort)npc.SpawnPoint.X, (ushort)npc.SpawnPoint.Y, (ushort)npc.SpawnPoint.Z, npc.SpawnHeading, npc.Spawn.ZoneId, true);
+                    npc.MvtInterface.Move(new Point3D((ushort)npc.SpawnPoint.X, (ushort)npc.SpawnPoint.Y, (ushort)npc.SpawnPoint.Z));
                 }
             }
         }
