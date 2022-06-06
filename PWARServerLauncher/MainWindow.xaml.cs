@@ -1,19 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PWARServerLauncher
 {
@@ -26,13 +14,16 @@ namespace PWARServerLauncher
         {
             InitializeComponent();
         }
+
         // add Processes to RAM
         public Process AccountCacher;
+
         public Process LauncherServer;
         public Process LobbyServer;
         public Process WorldServer;
 
         #region Start Button
+
         /// <summary>
         /// We start AccountCacher.exe,LauncherServer.exe,LobbyServer.exe,
         /// WorldServer.exe by pressing this button
@@ -47,7 +38,7 @@ namespace PWARServerLauncher
                 AccountCacher = new Process();
                 AccountCacher.StartInfo.FileName = "AccountCacher.exe";
                 AccountCacher.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
-                AccountCacher.Start();                
+                AccountCacher.Start();
             }
             else
             {
@@ -109,13 +100,15 @@ namespace PWARServerLauncher
                     MessageBoxImage.Warning
                     );
             }
-
         }
-        #endregion
+
+        #endregion Start Button
+
         #region Stop Button
+
         /// <summary>
         /// We stop AccountCacher.exe,LauncherServer.exe,LobbyServer.exe,
-        /// WorldServer.exe by pressing this button 
+        /// WorldServer.exe by pressing this button
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -145,8 +138,8 @@ namespace PWARServerLauncher
                 if (AccountCacher != null) AccountCacher.Kill();
             }
             catch (Exception) { }
-
         }
-        #endregion
+
+        #endregion Stop Button
     }
 }
