@@ -10,6 +10,15 @@ namespace Common
         [DataElement]
         public int AccountId { get; set; }
 
+        [DataElement(Varchar = 24)]
+        public string IssuedBy { get; set; }
+
+        [DataElement(Varchar = 24)]
+        public string ActionType { get; set; }
+
+        [DataElement]
+        public int IssuerGmLevel { get; set; }
+
         [DataElement]
         public string ActionDuration { get; set; }
 
@@ -18,13 +27,5 @@ namespace Common
 
         [DataElement]
         public int ActionTime { get; set; }
-
-        [DataElement(Varchar = 24)]
-        public string ActionType { get; set; }
-
-        [DataElement(Varchar = 24)]
-        public string IssuedBy { get; set; }
-        [DataElement]
-        public int IssuerGmLevel { get; set; }
     }
 }
