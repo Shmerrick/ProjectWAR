@@ -39,6 +39,7 @@ namespace Common
 
         [DataElement(AllowDbNull = false)]
         public int WaypointGUID { get; set; }
+
         public Keep_Creature CreateDeepCopy()
         {
             #region customValues for keeps
@@ -138,17 +139,6 @@ namespace Common
         }
 
         /// <summary>
-        /// calculates creatureID offset of maximum max
-        /// </summary>
-        /// <param name="max"></param>
-        /// <returns></returns>
-        public static uint ShuffleCreatureIdOffset(int max)
-        {
-            Random rnd = new Random();
-            return Convert.ToUInt32(Math.Round(rnd.NextDouble() * max));
-        }
-
-        /// <summary>
         /// calculates random offset in range of from to to
         /// </summary>
         /// <param name="from"></param>
@@ -161,6 +151,17 @@ namespace Common
             int offset = Convert.ToInt32(from + rnd.NextDouble() * 100);
             if (offset > to) offset = to;
             return sign ? offset : -offset;
+        }
+
+        /// <summary>
+        /// calculates creatureID offset of maximum max
+        /// </summary>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        public static uint ShuffleCreatureIdOffset(int max)
+        {
+            Random rnd = new Random();
+            return Convert.ToUInt32(Math.Round(rnd.NextDouble() * max));
         }
     }
 }
