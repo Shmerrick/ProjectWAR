@@ -8,8 +8,8 @@ namespace Common
     public class Characters_influence : DataObject
     {
         private int _CharacterId;
-        private uint _InfluenceCount;
         private ushort _InfluenceId;
+        private uint _InfluenceCount;
         private bool _Tier_1_Itemtaken;
         private bool _Tier_2_Itemtaken;
         private bool _Tier_3_Itemtaken;
@@ -35,6 +35,13 @@ namespace Common
             set { _CharacterId = value; Dirty = true; }
         }
 
+        [PrimaryKey]
+        public ushort InfluenceId
+        {
+            get { return _InfluenceId; }
+            set { _InfluenceId = value; }
+        }
+
         [DataElement(AllowDbNull = false)]
         public uint InfluenceCount
         {
@@ -42,12 +49,6 @@ namespace Common
             set { _InfluenceCount = value; Dirty = true; }
         }
 
-        [PrimaryKey]
-        public ushort InfluenceId
-        {
-            get { return _InfluenceId; }
-            set { _InfluenceId = value; }
-        }
         [DataElement(AllowDbNull = false)]
         public bool Tier_1_Itemtaken
         {
