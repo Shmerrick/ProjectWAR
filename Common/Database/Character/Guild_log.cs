@@ -9,21 +9,15 @@ namespace Common
     public class Guild_log : DataObject
     {
         private uint _GuildId;
-        private string _Text;
         private uint _Time;
         private byte _Type;
+        private string _Text;
+
         [DataElement(AllowDbNull = false)]
         public uint GuildId
         {
             get { return _GuildId; }
             set { _GuildId = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false)]
-        public string Text
-        {
-            get { return _Text; }
-            set { _Text = value; Dirty = true; }
         }
 
         [DataElement(AllowDbNull = false, Varchar = 255)]
@@ -38,6 +32,13 @@ namespace Common
         {
             get { return _Type; }
             set { _Type = value; Dirty = true; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public string Text
+        {
+            get { return _Text; }
+            set { _Text = value; Dirty = true; }
         }
     }
 }
