@@ -103,10 +103,6 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Config\LauncherConfig.xml" />
-    <Content Include="launcher.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{8bc085cd-429b-41d1-bb47-9621fd32ec23}</Project>
       <Name>Common</Name>
@@ -115,6 +111,10 @@
       <Project>{d5c98f3a-d5d2-4aed-a5a7-06d2de095095}</Project>
       <Name>FrameWork</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Config\LauncherConfig.xml" />
+    <Content Include="launcher.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
