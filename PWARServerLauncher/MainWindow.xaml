@@ -7,11 +7,20 @@
         mc:Ignorable="d"
         Title="ProjectWAR Server Launcher" Height="450" Width="580" FontSize="20" ResizeMode="CanMinimize" WindowStartupLocation="Manual" WindowState="Normal" Icon="/WAR.ico" BorderBrush="#FF120505" Cursor="Arrow" WindowStyle="ToolWindow">
     <Window.Background>
-        <ImageBrush ImageSource="/LauncherTitleImage.jpg" Stretch="Fill" TileMode="Tile"/>
+        <ImageBrush ImageSource="/LauncherTitleImage.jpg" Stretch="Fill" TileMode="Tile" />
     </Window.Background>
     <Grid>
-        <Button x:Name="button_StartSelected" Content="Start Server" HorizontalAlignment="Left" Margin="10,87,0,0" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="#FFAB1B1B" Foreground="#FF9D0909" FontFamily="Buxton Sketch" FontSize="36" Width="191" Click="Button_StartSelected_Click"/>
-        <Button x:Name="button_StopSelected" Content="Stop Server" HorizontalAlignment="Left" Margin="61,154,0,0" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="#FFAB1B1B" Foreground="#FF9D0909" FontFamily="Buxton Sketch" FontSize="36" Width="191" Click="Button_StopSelected_Click"/>
-
+        <Button x:Name="button_StartSelected" Content="Start Server"
+                HorizontalAlignment="Left" Margin="10,87,0,0"
+                VerticalAlignment="Top" Background="{x:Null}"
+                BorderBrush="#FFAB1B1B" Foreground="#FF9D0909"
+                FontFamily="Buxton Sketch" FontSize="36" Padding="5 0"
+                Click="Button_StartSelected_Click" />
+        <Button x:Name="button_StopSelected" Content="Stop Server"
+                HorizontalAlignment="Left" Margin="61,154,0,0"
+                VerticalAlignment="Top" Background="{x:Null}"
+                BorderBrush="#FFAB1B1B" Foreground="#FF9D0909"
+                FontFamily="Buxton Sketch" FontSize="36" Padding="5 0"
+                Click="Button_StopSelected_Click" />
     </Grid>
 </Window>
