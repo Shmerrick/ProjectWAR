@@ -356,7 +356,6 @@ namespace WorldServer.World.AI
                 }
                 else
                 {
-                    npc.AiInterface.State = AiState.STANDING;
                     npc.MvtInterface.Move(new Point3D((ushort)npc.SpawnPoint.X, (ushort)npc.SpawnPoint.Y, (ushort)npc.SpawnPoint.Z));
                 }
             }
@@ -593,7 +592,7 @@ namespace WorldServer.World.AI
             }
         }
 
-        private Random random = new Random();
+        private readonly Random random = new Random();
         public Unit CurTarget;
 
         public void StartDelayedCast(object creature)
