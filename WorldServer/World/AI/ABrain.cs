@@ -27,7 +27,8 @@ namespace WorldServer.World.AI
         protected Pet _pet;
         protected CombatInterface_Npc Combat;
         protected AIInterface AI;
-        // Whether to announce any execution being processed.  
+
+        // Whether to announce any execution being processed.
         private static readonly bool AnnounceExecution = false;
 
         protected static readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -120,6 +121,8 @@ namespace WorldServer.World.AI
                 return;
 
             Creature crea = _unit as Creature;
+            crea.Speed = 150;
+            crea.UpdateSpeed();
 
             if (!RangeOverride)
                 NewRange = crea.Ranged;
@@ -134,17 +137,19 @@ namespace WorldServer.World.AI
             if (crea == null)
             {
                 _unit.MvtInterface?.Follow(fighter, Constants.UNITS_TO_FEET_MIN, Constants.UNITS_TO_FEET_MAX, false, ForceMove);
-                crea.Speed = 150;
-                crea.UpdateSpeed();
             }
             else if (NewRange == 0)
+            {
                 _unit.MvtInterface?.Follow(fighter, (int)crea.BaseRadius, (int)crea.BaseRadius + 1, false, ForceMove);
+            }
             else
+            {
                 _unit.MvtInterface.Follow(fighter,
             Math.Max(Constants.UNITS_TO_FEET_MIN, NewRange - Constants.UNITS_TO_FEET_MIN),
             Math.Max(Constants.UNITS_TO_FEET_MAX, NewRange),
             false,
             ForceMove);
+            }
         }
 
         public virtual void Fight()
@@ -337,6 +342,9 @@ namespace WorldServer.World.AI
             else
             {
                 Creature npc = (Creature)_unit;
+                npc.Speed = 150;
+                npc.UpdateSpeed();
+
                 npc.BuffInterface.RemoveAllBuffs();
                 npc.ReceiveHeal(null, npc.MaxHealth);
 
@@ -584,7 +592,7 @@ namespace WorldServer.World.AI
             }
         }
 
-        private Random random = new Random();
+        private readonly Random random = new Random();
         public Unit CurTarget;
 
         public void StartDelayedCast(object creature)
