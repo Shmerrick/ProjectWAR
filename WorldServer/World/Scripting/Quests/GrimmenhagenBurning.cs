@@ -1,12 +1,6 @@
-﻿using System;
-using System.Linq;
-using Common;
-using FrameWork;
-using GameData;
+﻿using Common;
 using WorldServer.NetWork.Handler;
-using WorldServer.Services.World;
 using WorldServer.World.AI;
-using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
 using Object = WorldServer.World.Objects.Object;
 
@@ -15,17 +9,17 @@ namespace WorldServer.World.Scripting.Quests
     [GeneralScript(false, "", 0, 2)]
     public class GrimmenhagenBurningDoor : AGeneralScript
     {
-        Creature Villager;
-        Creature Marauder;
-        Objects.GameObject pObject;
+        private Creature Villager;
+        private Creature Marauder;
+        private Objects.GameObject pObject;
 
-        enum GrimmenhagenNPC
+        private enum GrimmenhagenNPC
         {
             Villager = 135,  // Grimmenhagen Villager
             Torchbearer = 98324 // Marauder Torchbearer
         }
 
-        enum GrimmenhagenObjectives
+        private enum GrimmenhagenObjectives
         {
             MarauderKilled = 1313,  // Marauder Torchbearers Killed
             HouseSearched = 1314    // House searched door
@@ -76,7 +70,7 @@ namespace WorldServer.World.Scripting.Quests
 
                     if (Villager != null)
                     {
-                        Villager.SendAnimation(0);                        
+                        Villager.SendAnimation(0);
                         Villager.UpdateWorldPosition(); // useful ?
                         Villager.MvtInterface.Move(pObject.WorldPosition);
 
