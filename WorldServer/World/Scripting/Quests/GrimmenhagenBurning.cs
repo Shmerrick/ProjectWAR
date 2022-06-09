@@ -27,6 +27,8 @@ namespace WorldServer.World.Scripting.Quests
 
         public override void OnInteract(Object Obj, Player Target, InteractMenu Menu)
         {
+            if (!Target.GetPlayer().QtsInterface.HasQuest(30001) || Target.GetPlayer().QtsInterface.HasFinishQuest(30001))
+                return;
             pObject = Obj.GetGameObject();
             switch (pObject.Spawn.Guid)
             {
