@@ -10,43 +10,7 @@ namespace WorldServer.World.Scripting
     {
         public string ScriptName;
 
-        public virtual void OnInitObject(Object Obj)
-        {
-        }
-
-        public virtual void OnRemoveObject(Object Obj)
-        {
-        }
-
-        public virtual void OnWorldUpdate(long Tick)
-        {
-        }
-
-        public virtual void OnObjectLoad(Object Obj)
-        {
-        }
-
-        public virtual void OnInteract(Object Obj, Player Target, InteractMenu Menu)
-        {
-        }
-
-        public virtual void OnEnterWorld(Object Obj)
-        {
-        }
-
-        public virtual void OnRemoveFromWorld(Object Obj)
-        {
-        }
-
-        public virtual void OnEnterRange(Object Obj, Object DistObj)
-        {
-        }
-
-        public virtual void OnLeaveRange(Object Obj, Object DistObj)
-        {
-        }
-
-        public virtual void OnReceiveDamages(Object Obj, Object Attacker)
+        public virtual void OnCastAbility(AbilityInfo Ab)
         {
         }
 
@@ -58,11 +22,51 @@ namespace WorldServer.World.Scripting
         {
         }
 
+        public virtual void OnEnterRange(Object Obj, Object DistObj)
+        {
+        }
+
+        public virtual void OnEnterWorld(Object Obj)
+        {
+        }
+
+        public virtual void OnInitObject(Object Obj)
+        {
+        }
+
+        public virtual void OnInteract(Object Obj, Player Target, InteractMenu Menu)
+        {
+        }
+
+        public virtual void OnInteract(Object Obj, Player Target)
+        {
+        }
+
+        public virtual void OnLeaveRange(Object Obj, Object DistObj)
+        {
+        }
+
+        public virtual void OnObjectLoad(Object Obj)
+        {
+        }
+
+        public virtual void OnReceiveDamages(Object Obj, Object Attacker)
+        {
+        }
+
+        public virtual void OnRemoveFromWorld(Object Obj)
+        {
+        }
+
+        public virtual void OnRemoveObject(Object Obj)
+        {
+        }
+
         public virtual void OnRevive(Object Obj)
         {
         }
 
-        public virtual void OnCastAbility(AbilityInfo Ab)
+        public virtual void OnWorldUpdate(long Tick)
         {
         }
 
@@ -73,15 +77,15 @@ namespace WorldServer.World.Scripting
             return true; // True if the text can be draw
         }
 
-        public virtual void OnWorldPlayerEvent(string EventName, Player Plr, object Data)
-        {
-        }
-
         public virtual void OnWorldCreatureEvent(string EventName, Creature Creature, object Data)
         {
         }
 
         public virtual void OnWorldGameObjectEvent(string EventName, Objects.GameObject Obj, object Data)
+        {
+        }
+
+        public virtual void OnWorldPlayerEvent(string EventName, Player Plr, object Data)
         {
         }
 
