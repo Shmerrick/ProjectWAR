@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.Collections.Generic;
-using Common;
 using WorldServer.Services.World;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Objects;
@@ -16,9 +16,9 @@ namespace WorldServer
         private Object Creature; // This is creature 33401
         private int Stage = -1; // This is variable that controls combat Stage
         private int AddsSpawnTimer = 3000; // When `The Creator` summons his adds this variable is used - after this many milliseconds adds will be spawned
-        List<Object> stuffInRange = new List<Object>(); // This list keeps all objects in range
-        List<GameObject> magicWalls = new List<GameObject>(); // this list keeps all magic walls in range
-        List<Creature> addList = new List<Creature>(); // this list keeps all adds spawned by `The Creator`
+        private List<Object> stuffInRange = new List<Object>(); // This list keeps all objects in range
+        private List<GameObject> magicWalls = new List<GameObject>(); // this list keeps all magic walls in range
+        private List<Creature> addList = new List<Creature>(); // this list keeps all adds spawned by `The Creator`
 
         // With this we can do some stuff when creature 33401 spawns
         public override void OnObjectLoad(Object Creature)
@@ -26,7 +26,6 @@ namespace WorldServer
             this.Creature = Creature;
 
             // Creature.EvtInterface.AddEvent(CheckHP, 1000, 0);
-
         }
 
         public class CommonFunctions : AGeneralScript
@@ -37,7 +36,6 @@ namespace WorldServer
                 c.IsImmovable = false;
                 c.IsInvulnerable = false;
             }
-
         }
 
         // When Boss kills player this event is run
@@ -82,11 +80,10 @@ namespace WorldServer
 
         public bool OnDmg(Object pkilled, object instigator)
         {
-
             return false;
         }
 
-        // When something gets in range (I think it is 350 or 400) we want 
+        // When something gets in range (I think it is 350 or 400) we want
         // to add it to correct lists and set some events
         public override void OnEnterRange(Object Obj, Object DistObj)
         {
@@ -122,6 +119,7 @@ namespace WorldServer
                 }
             }
         }
+
         // Words for final stage
         public void FinalWords()
         {
