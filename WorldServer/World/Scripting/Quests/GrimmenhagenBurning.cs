@@ -3,6 +3,7 @@ using Common;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
+using WorldServer.World.Interfaces;
 using Object = WorldServer.World.Objects.Object;
 
 namespace WorldServer.World.Scripting.Quests
@@ -52,7 +53,7 @@ namespace WorldServer.World.Scripting.Quests
     [GeneralScript(false, "", 0, 2)]
     public class GrimmenhagenBurningTorchbearerQuestScript : AGeneralScript
     {
-        public override void OnInteract(Object Obj, Player Target, InteractMenu Menu)
+        public override void OnInteract(Object Obj, Player Target)
         {
             if (!Target.GetPlayer().QtsInterface.HasQuest(30001) || Target.GetPlayer().QtsInterface.HasFinishQuest(30001))
                 return;
