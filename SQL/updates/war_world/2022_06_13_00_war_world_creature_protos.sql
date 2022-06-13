@@ -1,0 +1,1 @@
+UPDATE `creature_protos` SET `Emote` = '53' WHERE `Entry` = '135'; 
