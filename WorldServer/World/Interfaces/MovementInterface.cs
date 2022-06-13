@@ -575,6 +575,7 @@ namespace WorldServer.World.Interfaces
         #endregion Recall
 
         private bool _forcePositionUpdate;
+        internal Action OnMovementComplete;
 
         public void Teleport(Point3D destWorldPos)
         {

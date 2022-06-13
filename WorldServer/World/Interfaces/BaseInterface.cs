@@ -2,11 +2,10 @@
 
 namespace WorldServer.World.Interfaces
 {
-    public abstract class BaseInterface 
+    public abstract class BaseInterface
     {
         public Object _Owner;
         public bool Loaded;
-        public event MovementInterface.dgEventRaiser OnMovementComplete;
 
         public bool IsLoad => Loaded;
 

@@ -53,10 +53,12 @@ namespace WorldServer.World.AI.Abilities
             //Brain.SpeakYourMind($" using PrecisionStrike vs {(Combat.CurrentTarget as Player)?.Name}");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "PrecisionStrike", 8005);
         }
+
         public void ClawSweep()
         {
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "ClawSweep", 42);
         }
+
         public void SeepingWound()
         {
             //Brain.SpeakYourMind($" using Seeping Wound vs {(Combat.CurrentTarget as Player)?.Name}");
@@ -175,6 +177,7 @@ namespace WorldServer.World.AI.Abilities
             //Brain.SpeakYourMind($" using CorrosiveVomit vs {(Combat.CurrentTarget as Player)?.Name}");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "CorrosiveVomit", 5303);
         }
+
         public void FoulVomit()
         { //Heal debuff 50 % 30 sec
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "FoulVomit", 12522);
@@ -209,11 +212,13 @@ namespace WorldServer.World.AI.Abilities
             //Brain.SpeakYourMind($" using LegTear vs {(Combat.CurrentTarget as Player)?.Name}");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "LegTear", 46);
         }
+
         public void BatScreech()
         { // 10 sec snare
             //Brain.SpeakYourMind($" using LegTear vs {(Combat.CurrentTarget as Player)?.Name}");
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "BatScreech", 12012);
         }
+
         public void DaemonicFire()
         { // 10 sec snare
             Brain.SimpleCast(Owner, Combat.CurrentTarget, "DaemonicFire", 54);
@@ -372,7 +377,7 @@ namespace WorldServer.World.AI.Abilities
             };
 
             spawn.BuildFromProto(proto);
-            proto.IsAttackable = 1;
+            proto.CreatureSpawnIsAttackable = 1;
 
             var go = Owner.Region.CreateGameObject(spawn);
             go.EvtInterface.AddEventNotify(EventName.OnDie, RemoveGOs);
@@ -455,7 +460,7 @@ namespace WorldServer.World.AI.Abilities
                 };
 
                 spawn.BuildFromProto(proto);
-                proto.IsAttackable = 1;
+                proto.CreatureSpawnIsAttackable = 1;
 
                 var go = Owner.Region.CreateGameObject(spawn);
                 // When the gameobject dies, remove it.

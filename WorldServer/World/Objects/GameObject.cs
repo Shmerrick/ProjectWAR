@@ -101,7 +101,7 @@ namespace WorldServer.World.Objects
             Looted = false;
             Interactable = true;
 
-            IsAttackable = Spawn.Proto.IsAttackable;
+            IsAttackable = Spawn.Proto.CreatureSpawnIsAttackable;
 
             if (Entry == 2000589)
                 EvtInterface.AddEvent(CheckPlayersInCloseRange, 6000, 0);
@@ -214,7 +214,6 @@ namespace WorldServer.World.Objects
                             Player plr2 = ((object[])state)[0] as Player;
                             if (plr2 != null)
                                 SendMeTo(plr2);
-
                         }, (object)(new object[] { plr }), 500, Timeout.Infinite);
                     }
                 }
@@ -314,7 +313,7 @@ namespace WorldServer.World.Objects
                 player.QtsInterface.HandleEvent(Objective_Type.QUEST_USE_GO, Spawn.Entry, 1);
 
             // This will spawn a creature after interacting with the GO
-            if (this.Spawn.Proto.CreatureId != 0 && IsAttackable == 0) SpawnNPCFromGO();
+            if (this.Spawn.Proto.CreatureSpawnId != 0 && IsAttackable == 0) SpawnNPCFromGO();
 
             // This will play sound after clicking on the GO
             long now = TCPManager.GetTimeStampMS();
@@ -337,7 +336,7 @@ namespace WorldServer.World.Objects
                 // VFXState because we can break it
                 if (this.Spawn.DoorId == 0)
                 {
-                    this.EvtInterface.AddEvent(EventSendMeTo, 60000, 1);
+                    this.EvtInterface.AddEvent(EventSendMeTo, 5000, 1);
                     if (this.Spawn.AllowVfxUpdate == 1) this.VfxState = 1;
                     foreach (Player plr in PlayersInRange)
                         this.UpdateVfxState(VfxState);
@@ -352,7 +351,7 @@ namespace WorldServer.World.Objects
                 // VFXState because we can break it
                 if (this.Spawn.DoorId == 0)
                 {
-                    this.EvtInterface.AddEvent(EventSendMeTo, 60000, 1);
+                    this.EvtInterface.AddEvent(EventSendMeTo, 5000, 1);
 
                     if (this.Spawn.AllowVfxUpdate == 1) this.VfxState = 1;
                     foreach (Player plr in PlayersInRange)
@@ -433,15 +432,17 @@ namespace WorldServer.World.Objects
             {
                 Random rand = new Random();
 
-                Creature_proto Proto = CreatureService.GetCreatureProto(this.Spawn.Proto.CreatureId);
-                for (int i = 0; i < this.Spawn.Proto.CreatureCount; i++) // CreatureCount - how many creatures are spawned
+                Creature_proto Proto = CreatureService.GetCreatureProto(this.Spawn.Proto.CreatureSpawnId);
+                for (int i = 0; i < this.Spawn.Proto.CreatureSpawnCount; i++) // CreatureCount - how many creatures are spawned
                 {
-                    Creature_spawn CreSpawn = new Creature_spawn();
-                    CreSpawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
+                    Creature_spawn CreSpawn = new Creature_spawn
+                    {
+                        Guid = (uint)CreatureService.GenerateCreatureSpawnGUID()
+                    };
                     CreSpawn.BuildFromProto(Proto);
                     CreSpawn.WorldO = this.Spawn.WorldO;
-                    CreSpawn.WorldX = (int)(this.Spawn.WorldX + 50 - 150 * rand.NextDouble());
-                    CreSpawn.WorldY = (int)(this.Spawn.WorldY + 50 - 150 * rand.NextDouble());
+                    CreSpawn.WorldX = (int)(this.Spawn.WorldX + 50 - 100 * rand.NextDouble());
+                    CreSpawn.WorldY = (int)(this.Spawn.WorldY + 50 - 100 * rand.NextDouble());
                     CreSpawn.WorldZ = this.Spawn.WorldZ;
                     CreSpawn.ZoneId = this.Spawn.ZoneId;
                     Creature c = null;
@@ -450,16 +451,16 @@ namespace WorldServer.World.Objects
                     else
                         c = this.Region.CreateCreature(CreSpawn);
 
-                    if (this.Spawn.Proto.CreatureCooldownMinutes > 0)
+                    if (this.Spawn.Proto.CreatureSpawnCooldownMinutes > 0)
                     {
-                        CreatureSpawnCooldown = TCPManager.GetTimeStampMS() + (int)this.Spawn.Proto.CreatureCooldownMinutes * 60000; // Cannot be spawned more often than once per respawn time
+                        CreatureSpawnCooldown = TCPManager.GetTimeStampMS() + (int)this.Spawn.Proto.CreatureSpawnCooldownMinutes * 60000; // Cannot be spawned more often than once per respawn time
                         c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveNPC);
-                        c.EvtInterface.AddEvent(c.Destroy, (int)this.Spawn.Proto.CreatureCooldownMinutes * 60000, 1); // Creature goes away after the respawn time
-                        this.EvtInterface.AddEvent(EventSendMeTo, (int)this.Spawn.Proto.CreatureCooldownMinutes * 60000, 1);
+                        c.EvtInterface.AddEvent(c.Destroy, (int)this.Spawn.Proto.CreatureSpawnCooldownMinutes * 60000, 1); // Creature goes away after the respawn time
+                        this.EvtInterface.AddEvent(EventSendMeTo, (int)this.Spawn.Proto.CreatureSpawnCooldownMinutes * 60000, 1);
                     }
                     else
                     {
-                        CreatureSpawnCooldown = TCPManager.GetTimeStampMS() + 120000; // Creature cannot be spawned more than once every 120 second if it is normal NPC
+                        CreatureSpawnCooldown = TCPManager.GetTimeStampMS() + 5000; // Creature cannot be spawned more than once every 5 second if it is normal NPC
                         c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveNPC);
                         c.EvtInterface.AddEvent(c.Destroy, 120000, 1); // Creature goes away after 2 minutes
                         this.EvtInterface.AddEvent(EventSendMeTo, 120000, 1);
@@ -480,7 +481,7 @@ namespace WorldServer.World.Objects
                 // VFXState because we can break it
                 if (this.Spawn.DoorId == 0)
                 {
-                    this.EvtInterface.AddEvent(EventSendMeTo, 60000, 1);
+                    this.EvtInterface.AddEvent(EventSendMeTo, 5000, 1);
                     if (this.Spawn.AllowVfxUpdate == 1) this.VfxState = 1;
                     foreach (Player plr in PlayersInRange)
                         this.UpdateVfxState(this.VfxState);
@@ -488,7 +489,7 @@ namespace WorldServer.World.Objects
             }
             else
             {
-                this.Say("**You must wait a little longer...**", ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
+                //this.Say("**You must wait a little longer...**", ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
             }
         }
 
@@ -557,7 +558,7 @@ namespace WorldServer.World.Objects
             if (Name != "Keep Door" && Entry != 100 && Respawn == 1)
                 SetRespawnTimer();
 
-            if (this.IsAttackable == 1 && this.Spawn.Proto.CreatureId != 0) SpawnNPCFromGO();
+            if (this.IsAttackable == 1 && this.Spawn.Proto.CreatureSpawnId != 0) SpawnNPCFromGO();
 
             base.SetDeath(killer);
 
@@ -596,7 +597,6 @@ namespace WorldServer.World.Objects
             }
             CreditQuestKill(killer);
         }
-
 
         protected void CreditQuestKill(Player killer)
         {
@@ -692,10 +692,8 @@ namespace WorldServer.World.Objects
                         Player plr2 = ((object[])state)[0] as Player;
                         if (plr2 != null)
                             SendMeTo(plr2);
-
                     }, (object)(new object[] { plr }), 500, Timeout.Infinite);
                 }
-
             }
         }
 
