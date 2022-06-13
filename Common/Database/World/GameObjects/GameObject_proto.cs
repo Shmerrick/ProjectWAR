@@ -3,7 +3,6 @@ using System;
 
 namespace Common
 {
-    // Fixed value of a character
     [DataTable(PreCache = false, TableName = "gameobject_protos", DatabaseName = "World")]
     [Serializable]
     public class GameObject_proto : DataObject
@@ -59,18 +58,18 @@ namespace Common
         public string ScriptName { get; set; }
 
         [DataElement()] // Used to spawn NPCs from GOs
-        public uint CreatureId { get; set; }
+        public uint CreatureSpawnId { get; set; }
 
         [DataElement()] // Used to spawn NPCs from GOs
-        public uint CreatureCount { get; set; }
+        public uint CreatureSpawnCount { get; set; }
 
         [DataElement()] // Used to spawn NPCs from GOs
         public string CreatureSpawnText { get; set; }
 
         [DataElement()] // Used to spawn NPCs from GOs
-        public uint CreatureCooldownMinutes { get; set; }
+        public uint CreatureSpawnCooldownMinutes { get; set; }
 
         [DataElement(AllowDbNull = true)]
-        public byte IsAttackable { get; set; }
+        public byte CreatureSpawnIsAttackable { get; set; }
     }
 }
