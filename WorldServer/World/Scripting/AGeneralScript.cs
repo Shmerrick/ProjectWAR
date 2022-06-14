@@ -93,6 +93,15 @@ namespace WorldServer.World.Scripting
         {
         }
 
+        // This remove adds from game
+        public bool RemoveAdds(Object npc = null, object = null)
+        {
+            Creature creature = npc as Creature;
+            creature.EvtInterface.AddEvent(creature.Destroy, 20000, 1);
+
+            return false;
+        }
+
         #endregion World
     }
 }

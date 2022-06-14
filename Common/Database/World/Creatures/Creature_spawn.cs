@@ -126,6 +126,21 @@ namespace Common
             Icone = Proto.Icone;
         }
 
+        public Creature_spawn(Creature_proto proto, uint guid, ushort zoneId, int worldX, int worldY, int worldZ, int worldO)
+        {
+            BuildFromProto(proto);
+            _Guid = guid;
+            _ZoneId = zoneId;
+            _WorldX = worldX;
+            _WorldY = worldY;
+            _WorldZ = worldZ;
+            _WorldO = worldO;
+        }
+
+        public Creature_spawn()
+        {
+        }
+
         [DataElement(AllowDbNull = false)]
         public byte Enabled
         {
