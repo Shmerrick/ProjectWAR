@@ -1,4 +1,14 @@
-﻿namespace WorldServer.World.Scripting.PublicQuests.Destro
+﻿using Common;
+using System;
+using System.Collections.Generic;
+using WorldServer.Managers;
+using WorldServer.Services.World;
+using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
+using WorldServer.World.Objects;
+using WorldServer.World.Positions;
+
+namespace WorldServer.World.Scripting.PublicQuests.Destro
 {
     internal class DeathstoneQuarry : BasicPublicQuest
     {
@@ -7,9 +17,11 @@
     [GeneralScript(false, "", 1000069, 0)]
     internal class ArkusTheChanger : DeathstoneQuarry
     {
-        /*public override void OnObjectLoad(Object Obj)
+        private Creature Obj;
+
+        public override void OnObjectLoad(Objects.Object Obj)
         {
-            this.Obj = Obj;
+            this.Obj = (Creature)Obj;
             spawnPoint = Obj as Point3D;
 
             Obj.EvtInterface.AddEventNotify(EventName.OnEnterCombat, OnEnterCombat);
@@ -17,7 +29,7 @@
             Obj.EvtInterface.AddEventNotify(EventName.OnReceiveDamage, CheckHP);
         }
 
-        public bool CheckHP(Object Obj, object instigator)
+        public bool CheckHP(System.Object Obj, object instigator)
         {
             Creature c = this.Obj as Creature; // We are casting the script initiator as a Creature
 
@@ -27,7 +39,7 @@
             }
             else if (c.Health < c.TotalHealth * 0.06 && Stage < 1 && !c.IsDead)
             {
-                var prms = new List<object>() { 2000561, 1109983, 1119476, 19138, (int)Obj.Heading }; // Deathshadow Drudge
+                var prms = new List<object>() { 2000561, 1109983, 1119476, 19138, (int)Obj }; // Deathshadow Drudge
                 c.EvtInterface.AddEvent(SpawnAdds, 100, 1, prms);
 
                 c.Say("Feel my wrath mortal!", SystemData.ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
@@ -72,6 +84,6 @@
             //PQuestCreature LordOfChange = new PQuestCreature(Spawn, region.PublicQuests[201]);
 
             c.EvtInterface.AddEventNotify(EventName.OnDie, RemoveAdds);
-        }*/
+        }
     }
 }
