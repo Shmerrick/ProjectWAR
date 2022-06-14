@@ -61,7 +61,6 @@ namespace WorldServer.World.Scripting.Quests
             Target.GetPlayer().QtsInterface.HandleEvent(Objective_Type.QUEST_UNKNOWN, 1314, 1, true);
 
             // Spawn villager
-
             Creature_proto Proto = CreatureService.GetCreatureProto((uint)135);
             if (Proto == null)
                 return;

@@ -124,6 +124,10 @@ namespace Common
             Icone = Proto.Icone;
         }
 
+        public void CreatureDeathState()
+        {
+        }
+
         public Creature_spawn(Creature_proto proto, uint guid, ushort zoneId, int worldX, int worldY, int worldZ, int worldO)
         {
             BuildFromProto(proto);
