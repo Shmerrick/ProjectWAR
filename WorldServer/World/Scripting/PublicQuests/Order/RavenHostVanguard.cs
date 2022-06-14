@@ -44,8 +44,10 @@ namespace WorldServer.World.Scripting.PublicQuests.Order
 
             for (int i = 0; i < 3; i++)
             {
-                Creature_spawn Spawn = new Creature_spawn();
-                Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
+                Creature_spawn Spawn = new Creature_spawn
+                {
+                    Guid = (uint)CreatureService.GenerateCreatureSpawnGUID()
+                };
                 Spawn.BuildFromProto(Proto);
                 Spawn.WorldO = Obj.Heading;
                 Spawn.WorldX = (int)(Obj.WorldPosition.X + 150 - 300 * rand.NextDouble());
