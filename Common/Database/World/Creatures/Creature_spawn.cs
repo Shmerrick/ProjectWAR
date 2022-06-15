@@ -117,13 +117,42 @@ namespace Common
         public void BuildFromProto(Creature_proto Proto)
         {
             if (Proto == null)
-            {
                 return;
-            }
             this.Proto = Proto;
             Entry = Proto.Entry;
             Emote = Proto.Emote;
             Icone = Proto.Icone;
+        }
+
+        public void CreatureDeathState()
+        {
+        }
+
+        public Creature_spawn(Creature_proto proto, uint guid, ushort zoneId, int worldX, int worldY, int worldZ, int worldO)
+        {
+            BuildFromProto(proto);
+            _Guid = guid;
+            _ZoneId = zoneId;
+            _WorldX = worldX;
+            _WorldY = worldY;
+            _WorldZ = worldZ;
+            _WorldO = worldO;
+        }
+
+        public Creature_spawn(Creature_proto proto, uint guid, ushort zoneId, int worldX, int worldY, int worldZ, int worldO, byte level)
+        {
+            BuildFromProto(proto);
+            _Guid = guid;
+            _ZoneId = zoneId;
+            _WorldX = worldX;
+            _WorldY = worldY;
+            _WorldZ = worldZ;
+            _WorldO = worldO;
+            _Level = level;
+        }
+
+        public Creature_spawn()
+        {
         }
 
         [DataElement(AllowDbNull = false)]

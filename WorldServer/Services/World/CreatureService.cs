@@ -223,8 +223,7 @@ namespace WorldServer.Services.World
 
         public static Creature_proto GetCreatureProto(uint Entry)
         {
-            Creature_proto Proto;
-            CreatureProtos.TryGetValue(Entry, out Proto);
+            CreatureProtos.TryGetValue(Entry, out Creature_proto Proto);
             return Proto;
         }
 
