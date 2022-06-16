@@ -337,14 +337,15 @@ namespace WorldServer.World.AI
                 InstanceSpawn npc = (InstanceSpawn)_unit;
                 npc.BuffInterface.RemoveAllBuffs();
                 npc.ReceiveHeal(null, npc.MaxHealth);
-                npc.SetPosition((ushort)npc.SpawnPoint.X, (ushort)npc.SpawnPoint.Y, (ushort)npc.SpawnPoint.Z, npc.SpawnHeading, npc.Spawn.ZoneId, true);
+                npc.AiInterface.State = AiState.MOVING;
+                npc.MvtInterface.Move(new Point3D((ushort)npc.SpawnPoint.X, (ushort)npc.SpawnPoint.Y, (ushort)npc.SpawnPoint.Z));
             }
             else
             {
                 Creature npc = (Creature)_unit;
                 npc.Speed = 150;
                 npc.UpdateSpeed();
-
+                npc.AiInterface.State = AiState.MOVING;
                 npc.BuffInterface.RemoveAllBuffs();
                 npc.ReceiveHeal(null, npc.MaxHealth);
 
@@ -356,6 +357,8 @@ namespace WorldServer.World.AI
                 }
                 else
                 {
+                    npc.AiInterface.State = AiState.MOVING;
+                    npc.UpdateWorldPosition();
                     npc.MvtInterface.Move(new Point3D((ushort)npc.SpawnPoint.X, (ushort)npc.SpawnPoint.Y, (ushort)npc.SpawnPoint.Z));
                 }
             }
