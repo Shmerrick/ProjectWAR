@@ -1,0 +1,2 @@
+UPDATE `creature_protos` SET `IsWandering` = '1' WHERE (`MinLevel`<= '43' AND `MaxLevel`<= '43' AND `Unk2`<= '1001' AND `CreatureType` != '32' AND `VendorID`= '0'
+AND `LairBoss`= '0' AND `Title`= '0' AND `Title`= '0' AND `Emote`= '0');
