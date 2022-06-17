@@ -358,8 +358,7 @@ namespace WorldServer.World.AI
                 else
                 {
                     npc.AiInterface.State = AiState.MOVING;
-                    npc.UpdateWorldPosition();
-                    npc.MvtInterface.Move(new Point3D((ushort)npc.SpawnPoint.X, (ushort)npc.SpawnPoint.Y, (ushort)npc.SpawnPoint.Z));
+                    npc.MvtInterface.Move(new Point3D((ushort)npc.Spawn._WorldX, (ushort)npc.Spawn._WorldY, (ushort)npc.Spawn._WorldZ));
                 }
             }
         }
