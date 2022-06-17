@@ -25,18 +25,18 @@ namespace Common
     [Serializable]
     public class CharacterInfo : DataObject
     {
-        public byte _CareerLine;
-        public byte _Career;
-        public string _CareerName;
-        public byte _Realm;
-        public ushort _Region;
-        public ushort _ZoneId;
-        public int _WorldX;
-        public int _WorldY;
-        public int _WorldZ;
-        public int _WorldO;
-        public ushort _RallyPt;
-        public uint _Skills;
+        private byte _CareerLine;
+        private byte _Career;
+        private string _CareerName;
+        private byte _Realm;
+        private ushort _Region;
+        private ushort _ZoneId;
+        private int _WorldX;
+        private int _WorldY;
+        private int _WorldZ;
+        private int _WorldO;
+        private ushort _RallyPt;
+        private uint _Skills;
 
         [PrimaryKey]
         public byte CareerLine

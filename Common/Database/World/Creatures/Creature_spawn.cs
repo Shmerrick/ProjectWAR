@@ -13,10 +13,10 @@ namespace Common
         private uint _Guid;
         private uint _Entry;
         private ushort _ZoneId;
-        public int _WorldX;
-        public int _WorldY;
-        public int _WorldZ;
-        public int _WorldO;
+        private int _WorldX;
+        private int _WorldY;
+        private int _WorldZ;
+        private int _WorldO;
         private byte _Icone;
         private byte _Emote;
         private byte _Faction;
