@@ -24,5 +24,20 @@ namespace PWARClientLauncher
         {
             InitializeComponent();
         }
+
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            button.Background = Brushes.DarkRed;
+            Content = null;
+        }
+
+        private void button_MouseEnter(object sender, MouseEventArgs e)
+        {
+        }
+
+        private void button_MouseLeave(object sender, MouseEventArgs e)
+        {
+            button.Background = Brushes.DarkRed;
+        }
     }
 }
