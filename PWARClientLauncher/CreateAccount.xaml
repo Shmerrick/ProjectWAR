@@ -14,7 +14,7 @@
                 <GradientStop Color="#FF4B0707" Offset="1" />
             </LinearGradientBrush>
         </Grid.Background>
-        <Button x:Name="button" Content="X" HorizontalAlignment="Left" Margin="390,0,0,0" VerticalAlignment="Top" Height="29" Background="{x:Null}" Foreground="#FFCE0B0B" Width="29" Click="button_Click" BorderBrush="#FFC90F0F" />
+        <Button x:Name="button" Content="X" HorizontalAlignment="Left" Margin="390,10,0,0" VerticalAlignment="Top" Height="22" Background="{x:Null}" Foreground="#FFCE0B0B" Width="29" Click="button_Click" BorderBrush="#FFC90F0F" />
         <Label x:Name="Label_CreateAccount" Content="CREATE ACCOUNT" HorizontalAlignment="Left" Margin="121,14,0,0" VerticalAlignment="Top" Height="36" Width="184" Background="{x:Null}" Foreground="#FF9D0909" FontSize="24" FontFamily="Calibri" />
         <Label x:Name="LabelCA_Login" Content="Login :" HorizontalAlignment="Left" Margin="112,55,0,0" VerticalAlignment="Top" Foreground="#FFBBA2A2" Height="44" Width="82" FontSize="24" />
         <Label x:Name="LabelCA_Password" Content="Password :" HorizontalAlignment="Left" Margin="72,104,0,0" VerticalAlignment="Top" Foreground="#FFBBA2A2" Height="44" Width="122" FontSize="24" />
@@ -34,6 +34,6 @@
                 </LinearGradientBrush>
             </PasswordBox.BorderBrush>
         </PasswordBox>
-        <Button x:Name="ButtonCA_Create" Content="Create" HorizontalAlignment="Left" Margin="318,141,0,0" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="#FFE20D0D" Foreground="#FF9D0909" Width="86" Height="53" FontSize="24" />
+        <Button x:Name="ButtonCA_Create" Content="Create" HorizontalAlignment="Left" Margin="318,155,0,0" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="#FFE20D0D" Foreground="#FF9D0909" Width="86" Height="53" FontSize="24" />
     </Grid>
 </Page>
