@@ -363,6 +363,33 @@ namespace WorldServer.World.Objects
         // This is for handling custom GO interaction
         private void HandleCustomInteraction()
         {
+			{
+				// for Grimmenhagen Burning quest
+				Creature_proto Proto = CreatureService.GetCreatureProto(this.Spawn.Proto.QuestCreatureId);
+                for (int i = 0; i < this.Spawn.Proto.QuestCreatureCount; i++)
+                    if (Proto == null)
+                    return;
+
+                this.UpdateWorldPosition();
+
+                Creature_spawn Spawn = new Creature_spawn();
+                Spawn.Guid = (uint)CreatureService.GenerateCreatureSpawnGUID();
+                Spawn.BuildFromProto(Proto);
+                Spawn.WorldO = this.Heading;// need fix for spawn to face player
+                Spawn.WorldY = this.WorldPosition.Y;
+                Spawn.WorldZ = this.WorldPosition.Z;
+                Spawn.WorldX = this.WorldPosition.X;
+                Spawn.ZoneId = this.Zone.ZoneId;
+                Spawn.Faction = 72;
+                Spawn.Emote = 53;
+
+                Creature c = this.Region.CreateCreature(Spawn);
+                c.EvtInterface.AddEvent(c.Destroy, 20000, 1);
+				
+			}
+			
+			
+			
             if (Entry == 2000579) // This is Mourkain Gem for Ard 'ta Feed Gunbad Boss and part of his mechanics
             {
                 if (LastUsedTimestamp == 0)
