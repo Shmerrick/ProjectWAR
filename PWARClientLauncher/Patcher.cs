@@ -55,7 +55,7 @@ namespace PWARClientLauncher
 
                     foreach (var file in manifest.Files)
                     {
-                        string path = Path.Combine(Application.StartupPath + patchDirectory, file.Name);
+                        string path = Path.Combine(patchDirectory, file.Name);
                         if (File.Exists(path))
                         {
                             using (var fs = File.OpenRead(path))
@@ -85,7 +85,7 @@ namespace PWARClientLauncher
                 {
                     CurrentState = State.Downloading;
 
-                    string path = Path.Combine(Application.StartupPath + patchDirectory, file.Name);
+                    string path = Path.Combine(patchDirectory, file.Name);
                     if (File.Exists(path))
                         File.Delete(path);
 

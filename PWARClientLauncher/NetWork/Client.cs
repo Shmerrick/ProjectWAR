@@ -1,10 +1,12 @@
 ﻿using NLog;
+using PWARClientLauncher;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Windows;
 using WarZoneLib;
 
 namespace Launcher
@@ -24,11 +26,10 @@ namespace Launcher
         // TCP
         public static Socket _Socket;
 
-        private static Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public static void Print(string Message)
         {
-            ApocLauncher.Acc.Print(Message);
         }
 
         public static bool Connect(string ip, int port)
@@ -396,7 +397,7 @@ namespace Launcher
 
                 case Opcodes.LCR_START:
 
-                    ApocLauncher.Acc.ReceiveStart();
+                    MainWindow.Acc.ReceiveStart();
 
                     byte response = packet.GetUint8();
                     _logger.Debug($"HandlePacket. Response Code : {response}");
@@ -404,28 +405,28 @@ namespace Launcher
                     if (response == 1) //invalud user/pass
                     {
                         _logger.Warn($"Invalid User / Pass");
-                        ApocLauncher.Acc.sendUI("Invalid User / Pass");
+                        MessageBox.Show("Invalid User / Pass");
 
                         return;
                     }
                     else if (response == 2) //banned
                     {
                         _logger.Warn($"Account is banned");
-                        ApocLauncher.Acc.sendUI("Account is banned");
+                        MessageBox.Show("Account is banned");
 
                         return;
                     }
                     else if (response == 3) //account not active
                     {
                         _logger.Warn($"Account is not active");
-                        ApocLauncher.Acc.sendUI("Account is not active");
+                        MessageBox.Show("Account is not active");
 
                         return;
                     }
                     else if (response > 3)
                     {
                         _logger.Error($"Unknown Response");
-                        ApocLauncher.Acc.sendUI("Unknown Response");
+                        MessageBox.Show("Unknown Response");
 
                         return;
                     }
@@ -435,30 +436,30 @@ namespace Launcher
                         _logger.Info($"Authentication Token Received : {authToken}");
                         try
                         {
-                            var warDirectory = Directory.GetParent(Application.StartupPath);
-                            ApocLauncher.Acc.sendUI("Patching..");
+                            var warDirectory = Directory.GetParent(".");
+                            MessageBox.Show("Patching..");
                             patchExe();
                             UpdateWarData();
-                            ApocLauncher.Acc.sendUI("Patched. Starting WAR.exe");
+                            MessageBox.Show("Patched. Starting WAR.exe");
 
                             _logger.Info($"Double checking mythlogin file exists.");
-                            if (!File.Exists(Application.StartupPath + "\\mythloginserviceconfig.xml"))
+                            if (!File.Exists("\\mythloginserviceconfig.xml"))
                             {
-                                _logger.Warn($"{Application.StartupPath + "\\mythloginserviceconfig.xml"} does not exist.");
-                                ApocLauncher.Acc.sendUI("Cannot locate mythloginserviceconfig.xml");
+                                _logger.Warn($"{"\\mythloginserviceconfig.xml"} does not exist.");
+                                MessageBox.Show("Cannot locate mythloginserviceconfig.xml");
                                 return;
                             }
                             // Use world.myp to determine whether we are in the correct directory.
                             if (!File.Exists(warDirectory.FullName + "\\world.myp"))
                             {
                                 _logger.Warn($"{warDirectory.FullName + "\\world.myp"} does not exist.");
-                                ApocLauncher.Acc.sendUI("Is your launcher in the Launcher folder?");
+                                MessageBox.Show("Is your launcher in the Launcher folder?");
                                 return;
                             }
 
                             _logger.Info($"Starting Client {warDirectory.FullName}\\WAR.exe");
 
-                            if (ApocLauncher.Acc.AllowWarClientLaunch)
+                            if (MainWindow.Acc.AllowWarClientLaunch)
                             {
                                 Process process = new Process
                                 {
@@ -483,7 +484,7 @@ namespace Launcher
                         catch (Exception e)
                         {
                             _logger.Info($"Failed to start Client {e.ToString()}");
-                            ApocLauncher.Acc.sendUI("Failed to start client.");
+                            MessageBox.Show("Failed to start client.");
                         }
                     }
 
@@ -503,20 +504,20 @@ namespace Launcher
                     if (respons == 0) //invalud user/pass
                     {
                         _logger.Warn($"Account Name busy!");
-                        ApocLauncher.Acc.sendUI("Account Name busy!");
+                        MessageBox.Show("Account Name busy!");
 
                         return;
                     }
                     else if (respons == 1) //success
                     {
                         _logger.Warn($"Account created!");
-                        ApocLauncher.Acc.sendUI("Account created!");
+                        MessageBox.Show("Account created!");
                         return;
                     }
                     else if (respons == 2) //banned
                     {
                         _logger.Warn($"Account is banned!");
-                        ApocLauncher.Acc.sendUI("Account is banned!");
+                        MessageBox.Show("Account is banned!");
 
                         return;
                     }
@@ -555,7 +556,7 @@ namespace Launcher
 
         public static void patchExe()
         {
-            if (ApocLauncher.Acc.AllowServerPatch)
+            if (MainWindow.Acc.AllowServerPatch)
             {
                 _logger.Info("Patching WAR.exe");
                 using (Stream stream = new FileStream(Directory.GetCurrentDirectory() + "\\..\\WAR.exe", FileMode.OpenOrCreate))
@@ -598,7 +599,7 @@ namespace Launcher
             try
             {
                 _logger.Info("Updating mythloginserviceconfig.xml");
-                using (FileStream fs = new FileStream(Application.StartupPath + "\\mythloginserviceconfig.xml", FileMode.CreateNew, FileAccess.Write))
+                using (FileStream fs = new FileStream("\\mythloginserviceconfig.xml", FileMode.CreateNew, FileAccess.Write))
                 {
                     fs.Write(data, 0, data.Length);
                 }
@@ -618,12 +619,12 @@ namespace Launcher
                 FileStream fileStream = File.Open("..\\data.myp", FileMode.Open, FileAccess.ReadWrite);
                 MYP myp = new MYP(MythicPackage.ART, (Stream)fileStream);
 
-                if (File.Exists(Application.StartupPath + "\\mythloginserviceconfig.xml") == false)
+                if (File.Exists("\\mythloginserviceconfig.xml") == false)
                 {
                     _logger.Error("Missing file : mythloginserviceconfig.xml");
                     return;
                 }
-                using (FileStream reader = new FileStream(Application.StartupPath + "\\mythloginserviceconfig.xml", FileMode.Open))
+                using (FileStream reader = new FileStream("\\mythloginserviceconfig.xml", FileMode.Open))
                 {
                     byte[] data = new byte[reader.Length];
                     reader.Read(data, 0, data.Length);

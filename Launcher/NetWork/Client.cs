@@ -390,7 +390,7 @@ namespace Launcher
                             break;
 
                         case CheckResult.LAUNCHER_FILE:
-                            Client.UpdateWarData(Encoding.ASCII.GetBytes(packet.GetString()));
+                            UpdateWarData(Encoding.ASCII.GetBytes(packet.GetString()));
                             break;
                     }
                     break;
