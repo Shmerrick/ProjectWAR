@@ -57,15 +57,15 @@ namespace Common
         [DataElement(Varchar = 255, AllowDbNull = true)]
         public string ScriptName { get; set; }
 
-        [DataElement()] // Used to spawn Quest NPCs from GOs
-        public uint QuestCreatureId { get; set; }
-
-        [DataElement()] // Used to spawn Quest NPCs from GOs
-        public uint QuestCreatureCount { get; set; }
-
         [DataElement()] // Used to spawn NPCs from GOs
         public uint CreatureSpawnId { get; set; }
-
+		
+		[DataElement()] // Used to spawn NPCs from GOs
+        public uint QuestCreatureId { get; set; }
+		
+        [DataElement()] // Used to spawn NPCs from GOs
+        public uint QuestCreatureCount { get; set; }
+		
         [DataElement()] // Used to spawn NPCs from GOs
         public uint CreatureSpawnCount { get; set; }
 

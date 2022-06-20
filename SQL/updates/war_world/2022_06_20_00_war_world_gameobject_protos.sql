@@ -1,2 +1,0 @@
- ALTER TABLE `gameobject_protos` ADD COLUMN `QuestCreatureId` INT(10) UNSIGNED NOT NULL AFTER `Unk4`; 
- ALTER TABLE `gameobject_protos` ADD COLUMN `QuestCreatureCount` INT(10) UNSIGNED DEFAULT 0 NOT NULL AFTER `QuestCreatureId`; 
