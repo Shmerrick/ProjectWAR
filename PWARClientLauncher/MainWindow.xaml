@@ -34,8 +34,8 @@
         <Button x:Name="Button_CreateAccount" Content="CREATE ACCOUNT" HorizontalAlignment="Left" Margin="352,10,0,0" VerticalAlignment="Top" Width="205" Background="{x:Null}" Foreground="#FF9D0909" FontFamily="Calisto MT" FontSize="20" BorderBrush="#FFE20D0D" Click="Button_CreateAccount_Click" />
         <Frame x:Name="MainFrame"
                NavigationUIVisibility="Hidden"
-               VerticalAlignment="Stretch"
-               HorizontalAlignment="Stretch"
+               VerticalAlignment="Center"
+               HorizontalAlignment="Center"
                Grid.Row="1"
                Grid.ColumnSpan="3" Navigated="MainFrame_Navigated">
         </Frame>

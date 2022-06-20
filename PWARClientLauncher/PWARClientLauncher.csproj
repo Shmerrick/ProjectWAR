@@ -58,8 +58,31 @@
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HashCreator">
+      <HintPath>..\deps\EasyMyp\HashCreator.dll</HintPath>
+    </Reference>
+    <Reference Include="HashDictionary">
+      <HintPath>..\deps\EasyMyp\HashDictionary.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\deps\EasyMyp\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="MYPHandler">
+      <HintPath>..\deps\EasyMyp\MYPHandler.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>packages\NLog.5.0.1\lib\net46\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -68,6 +91,9 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WarhammerOnlineHash">
+      <HintPath>..\deps\EasyMyp\WarhammerOnlineHash.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -93,12 +119,21 @@
     <Compile Include="CreateAccount.xaml.cs">
       <DependentUpon>CreateAccount.xaml</DependentUpon>
     </Compile>
+    <Compile Include="HttpUtil.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NetWork\Client.cs" />
+    <Compile Include="NetWork\CRC32.cs" />
+    <Compile Include="NetWork\Marshal.cs" />
+    <Compile Include="NetWork\MYP.cs" />
+    <Compile Include="NetWork\Opcodes.cs" />
+    <Compile Include="NetWork\PacketIn.cs" />
+    <Compile Include="NetWork\PacketOut.cs" />
+    <Compile Include="Patcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -116,6 +151,11 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="NLog.config" />
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -141,6 +181,19 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Config\mythloginserviceconfig.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{8bc085cd-429b-41d1-bb47-9621fd32ec23}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FrameWork\FrameWork.csproj">
+      <Project>{d5c98f3a-d5d2-4aed-a5a7-06d2de095095}</Project>
+      <Name>FrameWork</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
