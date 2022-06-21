@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using Launcher;
+using System.Windows.Input;
 
 namespace PWARClientLauncher
 {
@@ -28,14 +29,13 @@ namespace PWARClientLauncher
         public static MainWindow Acc;
 
         public static string LocalServerIP = "127.0.0.1";
-        public static string TestServerIP = "projectwar.ddns.net";
+        public static string TestServerIP = "127.0.0.1";
         public static int LocalServerPort = 8000;
         public static int TestServerPort = 8000;
         private static HttpClient client = new HttpClient();
-        private Patcher patcher;
+        //private Patcher patcher;
 
         private static Logger _logger = LogManager.GetCurrentClassLogger();
-
         private readonly CreateAccount createAccount = new CreateAccount();
 
         public MainWindow()
@@ -111,13 +111,12 @@ namespace PWARClientLauncher
             return sb.ToString();
         }
 
-        private void Button_Start(object sender, EventArgs e)
+        private void Button_Start_Click(object sender, RoutedEventArgs e)
         {
             Client.Connect(TestServerIP, TestServerPort);
-            lblConnection.Text = $@"Connecting to : {TestServerIP}:{TestServerPort}";
 
             string userCode = TextBox_login.Text.ToLower();
-            string userPassword = PasswordBox_password.Text.ToLower();
+            string userPassword = TextBox_password.Text.ToLower();
 
             Client.User = userCode;
 
@@ -136,11 +135,11 @@ namespace PWARClientLauncher
 
             if (configuration.AppSettings.Settings["LastUSerCode"] == null)
             {
-                configuration.AppSettings.Settings.Add("LastUserCode", T_username.Text);
+                configuration.AppSettings.Settings.Add("LastUserCode", TextBox_login.Text);
             }
             else
             {
-                configuration.AppSettings.Settings["LastUserCode"].Value = T_username.Text;
+                configuration.AppSettings.Settings["LastUserCode"].Value = TextBox_login.Text;
             }
             configuration.Save();
 
@@ -149,6 +148,12 @@ namespace PWARClientLauncher
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            this.Button_Start_Click(this, new RoutedEventArgs());
+        }
+
+        private void TextBox_PasswordChanged(object sender, TextChangedEventArgs e)
+        {
+            this.Button_Start_Click(this, new RoutedEventArgs());
         }
 
         private void Button_CreateAccount_Click(object sender, RoutedEventArgs e)

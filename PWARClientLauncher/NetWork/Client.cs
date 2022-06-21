@@ -443,9 +443,9 @@ namespace Launcher
                             MessageBox.Show("Patched. Starting WAR.exe");
 
                             _logger.Info($"Double checking mythlogin file exists.");
-                            if (!File.Exists("\\mythloginserviceconfig.xml"))
+                            if (!File.Exists("mythloginserviceconfig.xml"))
                             {
-                                _logger.Warn($"{"\\mythloginserviceconfig.xml"} does not exist.");
+                                _logger.Warn($"{"mythloginserviceconfig.xml"} does not exist.");
                                 MessageBox.Show("Cannot locate mythloginserviceconfig.xml");
                                 return;
                             }
@@ -599,7 +599,7 @@ namespace Launcher
             try
             {
                 _logger.Info("Updating mythloginserviceconfig.xml");
-                using (FileStream fs = new FileStream("\\mythloginserviceconfig.xml", FileMode.CreateNew, FileAccess.Write))
+                using (FileStream fs = new FileStream("mythloginserviceconfig.xml", FileMode.CreateNew, FileAccess.Write))
                 {
                     fs.Write(data, 0, data.Length);
                 }

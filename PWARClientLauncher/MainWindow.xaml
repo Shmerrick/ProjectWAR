@@ -22,15 +22,15 @@
             </TextBox.BorderBrush>
         </TextBox>
         <Label x:Name="Password" Content="Password :" HorizontalAlignment="Left" Margin="232,329,0,0" Foreground="#FFB9C5A6" Width="120" FontFamily="Calisto MT" FontSize="24" VerticalAlignment="Top" />
-        <PasswordBox x:Name="PasswordBox_password" HorizontalAlignment="Left" Margin="352,333,0,0" VerticalAlignment="Top" Width="105" Background="{x:Null}" Height="29" Foreground="#FFE80B0B" SelectionBrush="#FFE80B0B" RenderTransformOrigin="0.483,0.346">
-            <PasswordBox.BorderBrush>
+        <TextBox x:Name="TextBox_password" HorizontalAlignment="Left" Margin="352,333,0,0" VerticalAlignment="Top" Width="105" Background="{x:Null}" Height="29" Foreground="#FFE80B0B" SelectionBrush="#FFE80B0B" RenderTransformOrigin="0.483,0.346" TextChanged="TextBox_PasswordChanged">
+            <TextBox.BorderBrush>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black" />
                     <GradientStop Color="#FFD61D1D" Offset="1" />
                 </LinearGradientBrush>
-            </PasswordBox.BorderBrush>
-        </PasswordBox>
-        <Button x:Name="Button_Start" Content="Start" HorizontalAlignment="Left" Margin="471,321,0,0" VerticalAlignment="Top" Height="53" Width="86" Foreground="#FF9D0909" Background="{x:Null}" BorderBrush="#FFE20D0D" FontFamily="Calisto MT" FontSize="24" Cursor="Arrow" />
+            </TextBox.BorderBrush>
+        </TextBox>
+        <Button x:Name="Button_Start" Content="Start" HorizontalAlignment="Left" Margin="471,321,0,0" VerticalAlignment="Top" Height="53" Width="86" Foreground="#FF9D0909" Background="{x:Null}" BorderBrush="#FFE20D0D" FontFamily="Calisto MT" FontSize="24" Cursor="Arrow" Click="Button_Start_Click" />
         <Button x:Name="Button_CreateAccount" Content="CREATE ACCOUNT" HorizontalAlignment="Left" Margin="352,10,0,0" VerticalAlignment="Top" Width="205" Background="{x:Null}" Foreground="#FF9D0909" FontFamily="Calisto MT" FontSize="20" BorderBrush="#FFE20D0D" Click="Button_CreateAccount_Click" />
         <Frame x:Name="MainFrame"
                NavigationUIVisibility="Hidden"
