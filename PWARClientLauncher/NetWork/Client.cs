@@ -30,6 +30,7 @@ namespace Launcher
 
         public static void Print(string Message)
         {
+            MainWindow.Acc.Print(Message);
         }
 
         public static bool Connect(string ip, int port)
@@ -43,10 +44,10 @@ namespace Launcher
                 _logger.Info($"Connecting to Launcher Server {ip}:{port}");
                 _Socket.Connect(ip, port);
 
-                int size = sizeof(UInt32);
-                UInt32 on = 1;
-                UInt32 keepAliveInterval = 10000; //Send a packet once every 10 seconds.
-                UInt32 retryInterval = 1000; //If no response, resend every second.
+                int size = sizeof(uint);
+                uint on = 1;
+                uint keepAliveInterval = 10000; //Send a packet once every 10 seconds.
+                uint retryInterval = 1000; //If no response, resend every second.
                 byte[] inArray = new byte[size * 3];
                 Array.Copy(BitConverter.GetBytes(on), 0, inArray, 0, size);
                 Array.Copy(BitConverter.GetBytes(keepAliveInterval), 0, inArray, size, size);

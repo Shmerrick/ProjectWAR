@@ -20,11 +20,9 @@ namespace PWARClientLauncher
     /// </summary>
     public partial class MainWindow : Window
     {
-        public bool LaunchLocalServer { get; }
         public bool AllowMYPPatch { get; }
         public bool AllowServerPatch { get; }
         public bool AllowWarClientLaunch { get; }
-        public object T_username { get; private set; }
 
         public static MainWindow Acc;
 
@@ -32,28 +30,28 @@ namespace PWARClientLauncher
         public static string TestServerIP = "127.0.0.1";
         public static int LocalServerPort = 8000;
         public static int TestServerPort = 8000;
-        private static HttpClient client = new HttpClient();
+        private static readonly HttpClient client = new HttpClient();
         //private Patcher patcher;
 
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly CreateAccount createAccount = new CreateAccount();
 
         public MainWindow()
         {
-            // Read optional app settings (they may not exist in the app.config file)
+            // Read optional app settings (they may not exist in the App.config file)
             AllowWarClientLaunch = SafeReadAppSettings("AutoLaunch", true);
             AllowMYPPatch = SafeReadAppSettings("PatchMYP", true);
             AllowServerPatch = SafeReadAppSettings("PatchExe", true);
-            LaunchLocalServer = SafeReadAppSettings("LaunchLocal", false);
 
             InitializeComponent();
             Acc = this;
         }
 
+
         private bool SafeReadAppSettings(string keyName, bool defaultValue)
         {
             var s = System.Configuration.ConfigurationManager.AppSettings[keyName];
-            if (!String.IsNullOrEmpty(s))
+            if (!string.IsNullOrEmpty(s))
             {
                 // Key exists
                 if (s == "false")
@@ -110,6 +108,9 @@ namespace PWARClientLauncher
             }
             return sb.ToString();
         }
+        public void Print(string Message)
+        {
+        }
 
         private void Button_Start_Click(object sender, RoutedEventArgs e)
         {
@@ -148,7 +149,8 @@ namespace PWARClientLauncher
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            this.Button_Start_Click(this, new RoutedEventArgs());
+            if (e.Source == Key.Enter)
+                this.Button_Start_Click(this, new RoutedEventArgs());
         }
 
         private void TextBox_PasswordChanged(object sender, TextChangedEventArgs e)
