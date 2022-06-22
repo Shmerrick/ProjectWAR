@@ -438,10 +438,10 @@ namespace Launcher
                         try
                         {
                             var warDirectory = Directory.GetParent("WAR.exe");
-                            MessageBox.Show("Patching..");
+                            //MessageBox.Show("Patching..");
                             patchExe();
                             UpdateWarData();
-                            MessageBox.Show("Patched. Starting WAR.exe");
+                            //MessageBox.Show("Patched. Starting WAR.exe");
 
                             _logger.Info($"Double checking mythlogin file exists.");
                             if (!File.Exists(System.AppDomain.CurrentDomain.BaseDirectory + "\\mythloginserviceconfig.xml"))
@@ -454,7 +454,8 @@ namespace Launcher
                             if (!File.Exists(warDirectory.FullName + "\\world.myp"))
                             {
                                 _logger.Warn($"{warDirectory.FullName + "\\world.myp"} does not exist.");
-                                MessageBox.Show("Is your launcher in the Launcher folder?");
+                                MessageBox.Show("WARNING!!!" +
+                                    "\nYour PWARClientLauncher.exe not in WAR Client folder!");
                                 return;
                             }
 
