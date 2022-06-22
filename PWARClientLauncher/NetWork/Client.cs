@@ -437,16 +437,16 @@ namespace Launcher
                         _logger.Info($"Authentication Token Received : {authToken}");
                         try
                         {
-                            var warDirectory = Directory.GetParent(".");
+                            var warDirectory = Directory.GetParent("WAR.exe");
                             MessageBox.Show("Patching..");
                             patchExe();
                             UpdateWarData();
                             MessageBox.Show("Patched. Starting WAR.exe");
 
                             _logger.Info($"Double checking mythlogin file exists.");
-                            if (!File.Exists("mythloginserviceconfig.xml"))
+                            if (!File.Exists(System.AppDomain.CurrentDomain.BaseDirectory + "\\mythloginserviceconfig.xml"))
                             {
-                                _logger.Warn($"{"mythloginserviceconfig.xml"} does not exist.");
+                                _logger.Warn($"{System.AppDomain.CurrentDomain.BaseDirectory + "\\mythloginserviceconfig.xml"} does not exist.");
                                 MessageBox.Show("Cannot locate mythloginserviceconfig.xml");
                                 return;
                             }
@@ -600,7 +600,7 @@ namespace Launcher
             try
             {
                 _logger.Info("Updating mythloginserviceconfig.xml");
-                using (FileStream fs = new FileStream("mythloginserviceconfig.xml", FileMode.CreateNew, FileAccess.Write))
+                using (FileStream fs = new FileStream(System.AppDomain.CurrentDomain.BaseDirectory + "\\mythloginserviceconfig.xml", FileMode.CreateNew, FileAccess.Write))
                 {
                     fs.Write(data, 0, data.Length);
                 }
@@ -620,12 +620,12 @@ namespace Launcher
                 FileStream fileStream = File.Open("..\\data.myp", FileMode.Open, FileAccess.ReadWrite);
                 MYP myp = new MYP(MythicPackage.ART, (Stream)fileStream);
 
-                if (File.Exists("\\mythloginserviceconfig.xml") == false)
+                if (File.Exists(System.AppDomain.CurrentDomain.BaseDirectory + "\\mythloginserviceconfig.xml") == false)
                 {
                     _logger.Error("Missing file : mythloginserviceconfig.xml");
                     return;
                 }
-                using (FileStream reader = new FileStream("\\mythloginserviceconfig.xml", FileMode.Open))
+                using (FileStream reader = new FileStream(System.AppDomain.CurrentDomain.BaseDirectory + "\\mythloginserviceconfig.xml", FileMode.Open))
                 {
                     byte[] data = new byte[reader.Length];
                     reader.Read(data, 0, data.Length);

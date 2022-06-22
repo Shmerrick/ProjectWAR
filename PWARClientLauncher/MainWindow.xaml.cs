@@ -1,17 +1,12 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Navigation;
+﻿using Launcher;
 using NLog;
-using System;
 using System.Configuration;
-using System.Diagnostics;
 using System.Net.Http;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
-using Launcher;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Navigation;
 
 namespace PWARClientLauncher
 {
@@ -45,8 +40,9 @@ namespace PWARClientLauncher
 
             InitializeComponent();
             Acc = this;
+            this.TextBox_login.Text = System.Configuration.ConfigurationManager.AppSettings["LastUserCode"];
+            this.TextBox_password.Text = System.Configuration.ConfigurationManager.AppSettings["LastUSerPass"];
         }
-
 
         private bool SafeReadAppSettings(string keyName, bool defaultValue)
         {
@@ -71,32 +67,6 @@ namespace PWARClientLauncher
         {
         }
 
-        //private void Form1_Load(object sender, EventArgs e)
-        //{
-        //    System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-        //    FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-        //    var attrs = assembly.GetCustomAttributes<AssemblyMetadataAttribute>();
-
-        //    //this.lblVersion.Text = $"{fvi.FileVersion} ({attrs.Single(x => x.Key == "GitHash").Value})";
-
-        //    if (this.AllowMYPPatch)
-        //    {
-        //        _logger.Debug($"Calling Patcher Server on {System.Configuration.ConfigurationManager.AppSettings["ServerPatchIPAddress"]}:{System.Configuration.ConfigurationManager.AppSettings["ServerPatchPort"]}");
-        //        patcher = new Patcher(_logger,
-        //            $"{System.Configuration.ConfigurationManager.AppSettings["ServerPatchIPAddress"]}:{System.Configuration.ConfigurationManager.AppSettings["ServerPatchPort"]}");
-
-        //        var patchDirectory = System.Configuration.ConfigurationManager.AppSettings["PatchDirectory"];
-
-        //        Thread thread = new Thread(() => patcher.Patch(patchDirectory).Wait()) { IsBackground = true };
-        //        thread.Start();
-        //    }
-        //}
-
-        //private void Disconnect(object sender, FormClosedEventArgs e)
-        //{
-        //    Client.Close();
-        //}
-
         public static string ConvertSHA256(string value)
         {
             SHA256 sha = SHA256.Create();
@@ -108,6 +78,7 @@ namespace PWARClientLauncher
             }
             return sb.ToString();
         }
+
         public void Print(string Message)
         {
         }
@@ -142,20 +113,30 @@ namespace PWARClientLauncher
             {
                 configuration.AppSettings.Settings["LastUserCode"].Value = TextBox_login.Text;
             }
+
+            if (configuration.AppSettings.Settings["LastUSerPass"] == null)
+            {
+                configuration.AppSettings.Settings.Add("LastUSerPass", TextBox_password.Text);
+            }
+            else
+            {
+                configuration.AppSettings.Settings["LastUSerPass"].Value = TextBox_password.Text;
+            }
             configuration.Save();
 
             System.Configuration.ConfigurationManager.RefreshSection("appSettings");
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void TextBox_login_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Source == Key.Enter)
+            if (e.Key == Key.Enter)
                 this.Button_Start_Click(this, new RoutedEventArgs());
         }
 
-        private void TextBox_PasswordChanged(object sender, TextChangedEventArgs e)
+        private void TextBox_password_KeyDown(object sender, KeyEventArgs e)
         {
-            this.Button_Start_Click(this, new RoutedEventArgs());
+            if (e.Key == Key.Enter)
+                this.Button_Start_Click(this, new RoutedEventArgs());
         }
 
         private void Button_CreateAccount_Click(object sender, RoutedEventArgs e)

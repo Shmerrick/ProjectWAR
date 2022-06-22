@@ -13,7 +13,7 @@
         <Grid.RowDefinitions>
         </Grid.RowDefinitions>
         <Label x:Name="Login" Content="Login :" HorizontalAlignment="Left" Margin="39,329,0,0" Foreground="#FFB9C5A6" Width="83" FontFamily="Calisto MT" FontSize="24" VerticalAlignment="Top" />
-        <TextBox x:Name="TextBox_login" HorizontalAlignment="Left" Margin="127,333,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="105" TextChanged="TextBox_TextChanged" Background="{x:Null}" Height="29" Foreground="#FFE80B0B" SelectionBrush="#FFE80B0B" RenderTransformOrigin="0.483,0.346">
+        <TextBox x:Name="TextBox_login" HorizontalAlignment="Left" Margin="127,333,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="105" Background="{x:Null}" Height="29" Foreground="#FFE80B0B" SelectionBrush="#FFE80B0B" RenderTransformOrigin="0.483,0.346" KeyDown="TextBox_login_KeyDown">
             <TextBox.BorderBrush>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black" />
@@ -22,7 +22,7 @@
             </TextBox.BorderBrush>
         </TextBox>
         <Label x:Name="Password" Content="Password :" HorizontalAlignment="Left" Margin="232,329,0,0" Foreground="#FFB9C5A6" Width="120" FontFamily="Calisto MT" FontSize="24" VerticalAlignment="Top" />
-        <TextBox x:Name="TextBox_password" HorizontalAlignment="Left" Margin="352,333,0,0" VerticalAlignment="Top" Width="105" Background="{x:Null}" Height="29" Foreground="#FFE80B0B" SelectionBrush="#FFE80B0B" RenderTransformOrigin="0.483,0.346" TextChanged="TextBox_PasswordChanged">
+        <TextBox x:Name="TextBox_password" HorizontalAlignment="Left" Margin="352,333,0,0" VerticalAlignment="Top" Width="105" Background="{x:Null}" Height="29" Foreground="#FFE80B0B" SelectionBrush="#FFE80B0B" RenderTransformOrigin="0.483,0.346" KeyDown="TextBox_password_KeyDown">
             <TextBox.BorderBrush>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black" />
