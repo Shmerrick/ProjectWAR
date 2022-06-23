@@ -26,14 +26,14 @@
                 </LinearGradientBrush>
             </TextBox.BorderBrush>
         </TextBox>
-        <PasswordBox x:Name="PasswordBoxCA_password" HorizontalAlignment="Left" Margin="200,112,0,0" VerticalAlignment="Top" Width="105" Background="{x:Null}" Height="28" Foreground="#FFE80B0B" SelectionBrush="#FFE80B0B" RenderTransformOrigin="0.483,0.346" FontSize="20">
-            <PasswordBox.BorderBrush>
+        <TextBox x:Name="PasswordBoxCA_password" HorizontalAlignment="Left" Margin="200,112,0,0" VerticalAlignment="Top" Width="105" Background="{x:Null}" Height="28" Foreground="#FFE80B0B" SelectionBrush="#FFE80B0B" RenderTransformOrigin="0.483,0.346" FontSize="20">
+            <TextBox.BorderBrush>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black" />
                     <GradientStop Color="#FFD61D1D" Offset="1" />
                 </LinearGradientBrush>
-            </PasswordBox.BorderBrush>
-        </PasswordBox>
-        <Button x:Name="ButtonCA_Create" Content="Create" HorizontalAlignment="Left" Margin="318,155,0,0" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="#FFE20D0D" Foreground="#FF9D0909" Width="86" Height="53" FontSize="24" FontFamily="Calisto MT" />
+            </TextBox.BorderBrush>
+        </TextBox>
+        <Button x:Name="ButtonCA_Create" Content="Create" HorizontalAlignment="Left" Margin="318,155,0,0" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="#FFE20D0D" Foreground="#FF9D0909" Width="86" Height="53" FontSize="24" FontFamily="Calisto MT" Click="ButtonCA_Create_Click" />
     </Grid>
 </Page>

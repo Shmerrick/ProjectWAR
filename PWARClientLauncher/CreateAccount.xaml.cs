@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Launcher;
+using NLog;
+using PWARClientLauncher;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +23,10 @@ namespace PWARClientLauncher
     /// </summary>
     public partial class CreateAccount : Page
     {
+        public string TestServerIP = "127.0.0.1";
+        public int TestServerPort = 8000;
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
         public CreateAccount()
         {
             InitializeComponent();
@@ -31,13 +38,27 @@ namespace PWARClientLauncher
             Content = null;
         }
 
-        private void button_MouseEnter(object sender, MouseEventArgs e)
+        //creation
+        private void ButtonCA_Create_Click(object sender, RoutedEventArgs e)
         {
-        }
+            if (String.IsNullOrEmpty(TextBoxCA_login.Text) || String.IsNullOrEmpty(PasswordBoxCA_password.Text)) return;
 
-        private void button_MouseLeave(object sender, MouseEventArgs e)
-        {
-            button.Background = Brushes.DarkRed;
+            Client.Connect(TestServerIP, TestServerPort);
+            MessageBox.Show($@"Connecting to : {TestServerIP}:{TestServerPort}");
+
+            string userCode = TextBoxCA_login.Text.ToLower();
+            string userPassword = PasswordBoxCA_password.Text.ToLower();
+
+            Client.User = userCode;
+
+            _logger.Info($@"Create account : {TestServerIP}:{TestServerPort} as {userCode}");
+
+            _logger.Info($"Sending CL_CREATE to {TestServerIP}:{TestServerPort}");
+            PacketOut Out = new PacketOut((byte)Opcodes.CL_CREATE);
+            Out.WriteString(userCode);
+            Out.WriteString(userPassword);
+
+            Client.SendTCP(Out);
         }
     }
 }

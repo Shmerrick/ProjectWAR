@@ -21,11 +21,9 @@ namespace PWARClientLauncher
 
         public static MainWindow Acc;
 
-        public static string LocalServerIP = "127.0.0.1";
-        public static string TestServerIP = "127.0.0.1";
-        public static int LocalServerPort = 8000;
-        public static int TestServerPort = 8000;
-        private static readonly HttpClient client = new HttpClient();
+        public string TestServerIP = "127.0.0.1";
+        public int TestServerPort = 8000;
+        private readonly HttpClient client = new HttpClient();
         //private Patcher patcher;
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
