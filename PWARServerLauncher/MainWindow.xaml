@@ -10,17 +10,17 @@
         <ImageBrush ImageSource="/LauncherTitleImage.jpg" Stretch="Fill" TileMode="Tile" />
     </Window.Background>
     <Grid>
-        <Button x:Name="button_StartSelected" Content="Start Server"
-                HorizontalAlignment="Left" Margin="10,87,0,0"
+        <Button x:Name="button_StartSelected" Content="START SERVER"
+                HorizontalAlignment="Left" Margin="19,98,0,0"
                 VerticalAlignment="Top" Background="{x:Null}"
                 BorderBrush="#FFAB1B1B" Foreground="#FF9D0909"
-                FontFamily="Buxton Sketch" FontSize="36" Padding="5 0"
+                FontFamily="Calisto MT" FontSize="32" Padding="5 0"
                 Click="Button_StartSelected_Click" />
-        <Button x:Name="button_StopSelected" Content="Stop Server"
+        <Button x:Name="button_StopSelected" Content="STOP SERVER"
                 HorizontalAlignment="Left" Margin="61,154,0,0"
                 VerticalAlignment="Top" Background="{x:Null}"
                 BorderBrush="#FFAB1B1B" Foreground="#FF9D0909"
-                FontFamily="Buxton Sketch" FontSize="36" Padding="5 0"
+                FontFamily="Calisto MT" FontSize="32" Padding="5 0"
                 Click="Button_StopSelected_Click" />
     </Grid>
 </Window>

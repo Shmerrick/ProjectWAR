@@ -80,7 +80,7 @@ namespace WorldServer.World.Scripting.PublicQuests
             addList.Add(c); // Adding adds to the list for easy removal
         }
 
-        public bool RemoveAdds(Object npc = null, object instigator = null)
+        public new bool RemoveAdds(Object npc = null, object instigator = null)
         {
             Creature c = npc as Creature;
             c.EvtInterface.AddEvent(c.Destroy, 10000, 1);

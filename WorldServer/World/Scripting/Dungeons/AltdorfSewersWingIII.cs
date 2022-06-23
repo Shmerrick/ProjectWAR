@@ -317,7 +317,7 @@ namespace WorldServer
         }
 
         // This remove adds from game
-        public bool RemoveAdds(Object npc = null, object instigator = null)
+        public new bool RemoveAdds(Object npc = null, object instigator = null)
         {
             Creature c = npc as Creature;
             c.EvtInterface.AddEvent(c.Destroy, 20000, 1);
