@@ -1,5 +1,4 @@
-﻿using Launcher;
-using NLog;
+﻿using NLog;
 using System.Configuration;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -21,14 +20,17 @@ namespace PWARClientLauncher
 
         public static MainWindow Acc;
 
-        public string TestServerIP = "127.0.0.1";
-        public int TestServerPort = 8000;
+        public string TestServerIP = "127.0.0.1"; // IP for your server
+        public int TestServerPort = 8000; // Port for your server
         private readonly HttpClient client = new HttpClient();
         //private Patcher patcher;
 
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly CreateAccount createAccount = new CreateAccount();
 
+        /// <summary>
+        /// Main Program Window here
+        /// </summary>
         public MainWindow()
         {
             // Read optional app settings (they may not exist in the App.config file)
@@ -42,6 +44,12 @@ namespace PWARClientLauncher
             this.TextBox_password.Text = System.Configuration.ConfigurationManager.AppSettings["LastUSerPass"];
         }
 
+        /// <summary>
+        /// Settings for your all here
+        /// </summary>
+        /// <param name="keyName"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
         private bool SafeReadAppSettings(string keyName, bool defaultValue)
         {
             var s = System.Configuration.ConfigurationManager.AppSettings[keyName];
@@ -61,10 +69,18 @@ namespace PWARClientLauncher
             return defaultValue;
         }
 
+        /// <summary>
+        /// Start MainWindow program
+        /// </summary>
         public void ReceiveStart()
         {
         }
 
+        /// <summary>
+        /// enscrypt for password Textbox ( I don't use it )
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string ConvertSHA256(string value)
         {
             SHA256 sha = SHA256.Create();
@@ -81,6 +97,11 @@ namespace PWARClientLauncher
         {
         }
 
+        /// <summary>
+        /// Button Start functions here
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Start_Click(object sender, RoutedEventArgs e)
         {
             Client.Connect(TestServerIP, TestServerPort);
@@ -125,23 +146,43 @@ namespace PWARClientLauncher
             System.Configuration.ConfigurationManager.RefreshSection("appSettings");
         }
 
+        /// <summary>
+        /// Login TextBox window functions
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TextBox_login_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
                 this.Button_Start_Click(this, new RoutedEventArgs());
         }
 
+        /// <summary>
+        /// Password TextBox window functions
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TextBox_password_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
                 this.Button_Start_Click(this, new RoutedEventArgs());
         }
 
+        /// <summary>
+        /// We start Create account page here
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_CreateAccount_Click(object sender, RoutedEventArgs e)
         {
             MainFrame.Content = new CreateAccount();
         }
 
+        /// <summary>
+        /// Create account page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainFrame_Navigated(object sender, NavigationEventArgs e)
         {
         }

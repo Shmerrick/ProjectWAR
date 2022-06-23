@@ -1,5 +1,4 @@
-﻿using Launcher;
-using NLog;
+﻿using NLog;
 using PWARClientLauncher;
 using System;
 using System.Collections.Generic;
@@ -23,8 +22,8 @@ namespace PWARClientLauncher
     /// </summary>
     public partial class CreateAccount : Page
     {
-        public string TestServerIP = "127.0.0.1";
-        public int TestServerPort = 8000;
+        public string TestServerIP = "127.0.0.1"; // IP for your server
+        public int TestServerPort = 8000; // Port for your server
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public CreateAccount()
@@ -32,19 +31,28 @@ namespace PWARClientLauncher
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Close window button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button_Click(object sender, RoutedEventArgs e)
         {
             button.Background = Brushes.DarkRed;
             Content = null;
         }
 
-        //creation
+        /// <summary>
+        /// Create account button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonCA_Create_Click(object sender, RoutedEventArgs e)
         {
             if (String.IsNullOrEmpty(TextBoxCA_login.Text) || String.IsNullOrEmpty(PasswordBoxCA_password.Text)) return;
 
             Client.Connect(TestServerIP, TestServerPort);
-            MessageBox.Show($@"Connecting to : {TestServerIP}:{TestServerPort}");
+            //MessageBox.Show($@"Connecting to : {TestServerIP}:{TestServerPort}");
 
             string userCode = TextBoxCA_login.Text.ToLower();
             string userPassword = PasswordBoxCA_password.Text.ToLower();

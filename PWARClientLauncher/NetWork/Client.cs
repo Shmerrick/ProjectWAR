@@ -9,11 +9,12 @@ using System.Text;
 using System.Windows;
 using WarZoneLib;
 
-namespace Launcher
+namespace PWARClientLauncher
 {
     public static class Client
     {
         public static int Version = 1;
+        public static string TestServerIP = "127.0.0.1";
         public static string LocalServerIP = "127.0.0.1";
         public static int LocalServerPort = 8000;
         public static int TestServerPort = 8000;
@@ -561,7 +562,7 @@ namespace Launcher
             if (MainWindow.Acc.AllowServerPatch)
             {
                 _logger.Info("Patching WAR.exe");
-                using (Stream stream = new FileStream(Directory.GetCurrentDirectory() + "\\..\\WAR.exe", FileMode.OpenOrCreate))
+                using (Stream stream = new FileStream(Directory.GetCurrentDirectory() + "\\.\\WAR.exe", FileMode.OpenOrCreate))
                 {
                     int encryptAddress = (0x00957FBE + 3) - 0x00400000;
                     stream.Seek(encryptAddress, SeekOrigin.Begin);

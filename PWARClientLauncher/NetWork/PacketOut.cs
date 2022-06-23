@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Launcher
+namespace PWARClientLauncher
 {
     public class PacketOut : MemoryStream
     {

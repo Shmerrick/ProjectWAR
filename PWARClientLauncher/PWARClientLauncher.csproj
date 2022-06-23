@@ -135,7 +135,6 @@
     <Compile Include="NetWork\Opcodes.cs" />
     <Compile Include="NetWork\PacketIn.cs" />
     <Compile Include="NetWork\PacketOut.cs" />
-    <Compile Include="Patcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
