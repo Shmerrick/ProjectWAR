@@ -1,4 +1,5 @@
-﻿using FrameWork;
+﻿using Common;
+using FrameWork;
 using GameData;
 using NLog;
 using System;
@@ -6,13 +7,16 @@ using System.Collections.Generic;
 using System.Linq;
 using SystemData;
 using WorldServer.Managers;
+using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
 using WorldServer.World.Objects;
 using WorldServer.World.Objects.Instances;
+using WorldServer.World.Physics;
 using WorldServer.World.Positions;
 using Object = WorldServer.World.Objects.Object;
 
@@ -60,8 +64,71 @@ namespace WorldServer.World.AI
             return true;
         }
 
+        // Random movement
+        private static Random _walkRandom = new Random(Convert.ToInt32(DateTime.Now.ToString("ss")));
+
         public virtual void Think(long tick)
         {
+            if (_unit is Creature creature)
+            {
+                bool canWander = creature.Spawn.Proto.IsWandering == 1
+                                 && creature.NextMove <= Core.TickCount
+                                 && ZoneService.OcclusionProvider.Initialized;
+                if (Utils.RandomBool() && canWander && AI.State == AiState.STANDING && (creature.MvtInterface.MoveState == MovementInterface.EMoveState.None || creature.MvtInterface.MoveState == MovementInterface.EMoveState.Move || creature.MvtInterface.MoveState == MovementInterface.EMoveState.Turn))
+                {
+                    if (!Utils.BetweenRanges(creature.Spawn.WorldX - 10, creature.Spawn.WorldX + 10, creature.WorldPosition.X))
+                    {
+                        var returnHome = new Point3D(creature.Spawn.WorldX, creature.Spawn.WorldY, creature.Spawn.WorldZ);
+                        //SpeakYourMind($"Asking {creature.Name} to return home");
+                        creature.MvtInterface.SetBaseSpeed(50);//50
+                        creature.MvtInterface.Move(returnHome);
+                        creature.MvtInterface.SetBaseSpeed(100);// 100
+                        creature.NextMove = Core.TickCount + _walkRandom.Next(2000, 18000);
+                    }
+                    else
+                    {
+                        Point2D point = WorldUtils.CalculatePoint(_walkRandom, 150, creature.Spawn.WorldX, creature.Spawn.WorldY);//200
+                        //to zone coords
+                        point.X -= creature.Zone.Info.OffX << 12;
+                        point.Y -= creature.Zone.Info.OffY << 12;
+                        int Z = ZoneService.OcclusionProvider.GetTerrainZ((int)creature.ZoneId, point.X, point.Y);
+                        bool losHit = creature.LOSHit(new Point3D(point.X, point.Y, Z), out OcclusionInfo info);
+                        if (!losHit)
+                        {
+                            //occlusion already handles zone->server coordinate conversion
+                            point.X = (int)info.HitX;
+                            point.Y = (int)info.HitY;
+                        }
+                        else
+                        {
+                            //to world coords
+                            point.X += (creature.Zone.Info.OffX << 12);
+                            point.Y += (creature.Zone.Info.OffY << 12);
+                        }
+                        //if ()
+                        //{
+                        //  SpeakYourMind($"Asking {creature.Name} to move from {creature.WorldPosition.X}, {creature.WorldPosition.Y}, {creature.Z} to {point.X}, {point.Y}, {Z}");
+                        creature.MvtInterface.SetBaseSpeed(50);// 50
+                        creature.MvtInterface.Move(point.X, point.Y, Z);
+                        creature.MvtInterface.SetBaseSpeed(100);// 100
+                        creature.NextMove = Core.TickCount + _walkRandom.Next(2000, 18000);
+
+                        if (creature.MvtInterface.MoveState == MovementInterface.EMoveState.None)
+                        {
+                            creature.MvtInterface.Move(creature.WorldPosition.X, creature.WorldPosition.Y, creature.WorldPosition.Z);
+                        }
+
+                        if (creature.LOSHit(new Point3D(creature.WorldPosition.X, creature.WorldPosition.Y, creature.WorldPosition.Z)))
+                        {
+                            var returnHome = new Point3D(creature.Spawn.WorldX, creature.Spawn.WorldY, creature.Spawn.WorldZ);
+
+                            creature.MvtInterface.Move(returnHome);
+
+                            creature.MvtInterface.SetBaseSpeed(50);// 100
+                        }
+                    }
+                }
+            }
         }
 
         public void SpeakYourMind(string message)

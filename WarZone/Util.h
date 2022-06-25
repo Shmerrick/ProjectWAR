@@ -1,6 +1,7 @@
 #include <mmsystem.h>
 #include <psapi.h>
 #include "Platform.h"
+#include <string>
 
 class Util
 {
@@ -87,7 +88,6 @@ public:
 		if (GetProcessMemoryInfo(hProcess, &pmc, sizeof(pmc)))
 		{
 			printf("\tWorkingSetSize: %dMB\r\n", (int)(pmc.WorkingSetSize / 1024 / 1024));
-
 		}
 
 		CloseHandle(hProcess);

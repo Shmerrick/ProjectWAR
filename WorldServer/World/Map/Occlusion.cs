@@ -1,97 +1,15 @@
-﻿using System;
+﻿using FrameWork;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading.Tasks;
+using WorldServer.World.Physics;
 
 namespace WorldServer.World.Map
 {
-    public enum SurfaceType : int
-    {
-        SOLID = 0,
-
-        //doors
-        DOOR1 = 1,
-
-        DOOR2 = 2,
-        DOOR3 = 3,
-        DOOR4 = 4,
-        DOOR5 = 5,
-        DOOR6 = 6,
-        DOOR7 = 7,
-        DOOR8 = 8,
-        DOOR9 = 9,
-
-        //waters
-        WATER_GENERIC = 10,
-
-        WATER_RIVER = 11,
-        WATER_HOTSPRING = 12,
-        WATER_OCEAN = 13,
-        WATER_DIRTY = 14,
-        WATER_STREAM = 15,
-        WATER_TAINTED = 16,
-        WATER_BOG = 17,
-        WATER_ICY = 18,
-        WATER_POISON = 19,
-        WATER_LAKE = 20,
-        WATER_MARSH = 21,
-        WATER_MUCK = 22,
-
-        //lavas
-        LAVA = 23,
-
-        LAVA_MAGMA = 24,
-
-        //other
-        TAR = 25,
-
-        INSTANT_DEATH = 26,
-        FIXTURE = 27,
-        TERRAIN = 28,
-
-        JUMP1 = 29,
-        JUMP2 = 30,
-        JUMP3 = 31,
-        JUMP4 = 32,
-        JUMP5 = 33,
-        JUMP6 = 34,
-        JUMP7 = 35,
-    }
-
-    public enum OcclusionResult : int
-    {
-        NotLoaded = -1,
-        NotOccluded = 0,
-        OccludedByGeometry = 1,
-        OccludedByTerrain = 2,
-        OccludedByWater = 3,
-        OccludedByLava = 4,
-        OccludedByDynamicObject = 5,
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct OcclusionInfo
-    {
-        public OcclusionResult Result;
-        public float HitX;
-        public float HitY;
-        public float HitZ;
-        public float SafeX;
-        public float SafeY;
-        public float SafeZ;
-        public int FixtureID;
-        public SurfaceType SurfaceType;
-        public float WaterDepth;
-
-        public override string ToString()
-        {
-            return "";
-            //return $"Result:{Result} HitX:{HitX} HitY:{HitY} HitZ{HitZ} Surface:{SurfaceType} WaterDepth:{WaterDepth} Fixture{FixtureID}";
-        }
-    }
-
     [StructLayout(LayoutKind.Sequential)]
     public struct FixtureInfo
     {
@@ -132,65 +50,134 @@ namespace WorldServer.World.Map
         }
     }
 
-    public static class Occlusion
+    public class Occlusion : IOcclusionProvider
     {
-        public static bool Initialized { get; private set; }
+        public bool Initialized { get; set; }
 
-        public static void InitZones(string path)
+        public int TrisCount = 190;
+
+        public Occlusion()
+        {
+        }
+
+        public void InitZones(string path)
         {
             if (!Initialized)
             {
-                InitZones(path, 190);
+                InitZones(path, TrisCount);
                 var tasks = new List<Task>();
 
                 foreach (var file in Directory.GetFiles(path, "*.bin"))
-                    tasks.Add(Task.Run(() => WorldServer.World.Map.Occlusion.LoadZone(int.Parse(Path.GetFileNameWithoutExtension(file)))));
+                    WorldServer.World.Map.Occlusion.LoadZone(int.Parse(Path.GetFileNameWithoutExtension(file)));
 
-                Task.WhenAll(tasks).Wait();
-
+                //Task.WhenAll(tasks).Wait();
+                //Testing
+                /* Stopwatch watch = Stopwatch.StartNew();
+                 watch.Start();
+                 for (int i = 0; i < 1000; ++i)
+                 {
+                     for (int j = 0; j < 1000; ++j)
+                         Log.Info("[Z TEST]", $"{i} {j} {GetTerrainZ(1, i, j)}");
+                 }
+                 watch.Stop();
+                 Log.Info("[Z TEST]", $"1000000 get terrainZ done in: {watch.ElapsedMilliseconds} ms. {(float)watch.ElapsedMilliseconds / 1000000f} ms per Z call");
+                 watch = Stopwatch.StartNew();
+                 OcclusionInfo result = new OcclusionInfo();
+                 int notOccluded = 0;
+                 int occluded = 0;
+                 watch.Start();
+                 for (int i = 0; i < 1000; ++i)
+                 {
+                     for (int j = 0; j < 1000; ++j)
+                     {
+                         Raytest(1, i, j, 65535f, i, j, 65535f, true, ref result);
+                         if(result.Result != OcclusionResult.NotOccluded)
+                         {
+                             if(result.SurfaceType == SurfaceType.TERRAIN)
+                             {
+                                 Log.Info("[RAY TEST]", $"Hit terrain at: {result.HitX} {result.HitY} {result.HitZ}");
+                             }
+                             else if(result.SurfaceType == SurfaceType.FIXTURE)
+                             {
+                                 Log.Info("[RAY TEST]", $"Hit fixture ({result.FixtureID}) at: {result.HitX} {result.HitY} {result.HitZ}");
+                             }else if(result.SurfaceType == SurfaceType.WATER_BOG)
+                             {
+                                 Log.Info("[RAY TEST]", $"Hit water at: {result.HitX} {result.HitY} {result.HitZ}");
+                             }
+                             occluded++;
+                         }
+                         else
+                         {
+                             notOccluded++;
+                         }
+                     }
+                 }
+                  watch.Stop();
+                 Log.Info("[RAY TEST]", $"1000000 raytests done in: {watch.ElapsedMilliseconds} ms. {(float)watch.ElapsedMilliseconds / 1000000f} ms per Z call");
+                 */
                 Initialized = true;
             }
         }
 
+        public int GetTerrainZ(int zoneId, int x, int y)
+        {
+            return Occlusion.Pin(zoneId, x, y);
+        }
+
+        public int Raytest(int zoneIDA,
+        float originX, float originY, float originZ,
+        float targetX, float targetY, float targetZ,
+        bool terrain, ref OcclusionInfo result)
+        {
+            return Occlusion.SegmentIntersect(zoneIDA, zoneIDA,
+                                              originX, originY, originZ,
+                                              targetX, targetY, targetZ,
+                                              terrain, true, TrisCount, ref result);
+        }
+
         [SuppressUnmanagedCodeSecurity]
-        [DllImport(@"WarZone64.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"WarZone.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall, EntryPoint = "Pin")]
+        public static extern int Pin(int zoneId, int x, int y);
+
+        [SuppressUnmanagedCodeSecurity]
+        [DllImport(@"WarZone.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall, EntryPoint = "InitZones")]
         private static extern void InitZones(string path, int triCount);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport(@"WarZone64.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl, EntryPoint = "LoadZone")]
+        [DllImport(@"WarZone.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall, EntryPoint = "LoadZone")]
         private static extern void LoadZoneInternal(int zoneID);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport(@"WarZone64.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"WarZone.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall, EntryPoint = "LoadZone")]
         public static extern void LoadZone(int zoneID);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport(@"WarZone64.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"WarZone.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall, EntryPoint = "SegmentIntersect")]
         public static extern int SegmentIntersect(int zoneIDA, int zoneIDB,
         float originX, float originY, float originZ,
         float targetX, float targetY, float targetZ,
         bool terrain, bool normalTest, int triCount, ref OcclusionInfo result);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport(@"WarZone64.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"WarZone.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall, EntryPoint = "TerrainIntersect")]
         public static extern bool TerrainIntersect(int zoneIDA, int zoneIDB,
         float originX, float originY, float originZ,
         float targetX, float targetY, float targetZ, int triCount, ref OcclusionInfo result);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport(@"WarZone64.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"WarZone.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall, EntryPoint = "GetFixtureCount")]
         public static extern int GetFixtureCount(int zoneID);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport(@"WarZone64.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"WarZone.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall, EntryPoint = "GetFixtureInfo")]
         public static extern bool GetFixtureInfo(int zoneID, int index, ref FixtureInfo info);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport(@"WarZone64.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"WarZone.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall, EntryPoint = "SetFixtureVisible")]
         public static extern bool SetFixtureVisible(int zoneID, UInt32 uniqueID, byte instanceID, bool visible);
 
         [SuppressUnmanagedCodeSecurity]
-        [DllImport(@"WarZone64.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"WarZone.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall, EntryPoint = "GetFixtureVisible")]
         public static extern bool GetFixtureVisible(int zoneID, UInt32 uniqueID, byte instanceID);
 
         public static bool SetFixtureVisible(uint doorID, bool visible)

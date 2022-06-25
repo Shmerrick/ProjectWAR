@@ -12,6 +12,7 @@ using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Interfaces;
 using WorldServer.World.Map;
 using WorldServer.World.Objects.PublicQuests;
+using WorldServer.World.Positions;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
 namespace WorldServer.World.Objects
@@ -287,6 +288,13 @@ namespace WorldServer.World.Objects
 
                     case 98878:     // Hardcoded portal for Gunbad
                         ZoneJump(player, 60);
+                        return;
+
+                    case 3100418: //rift of time
+                        ZoneJump(player, 161);
+                        Zone_Info info = ZoneService.GetZone_Info(161);
+                        Point3D pos = ZoneService.GetWorldPosition(info, 30612, 42142, 17057);
+                        player.Teleport(161, (uint)pos.X, (uint)pos.Y, (ushort)pos.Z, 4092);
                         return;
                 }
 

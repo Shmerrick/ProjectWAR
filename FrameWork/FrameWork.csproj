@@ -57,7 +57,7 @@
       <HintPath>..\packages\MySql.Data.8.0.29\lib\net48\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.5.0.0\lib\net46\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.5.0.1\lib\net46\NLog.dll</HintPath>
     </Reference>
     <Reference Include="Renci.SshNet, Version=2020.0.2.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
       <HintPath>..\packages\SSH.NET.2020.0.2\lib\net40\Renci.SshNet.dll</HintPath>
@@ -138,6 +138,8 @@
     <Compile Include="Loader\LoadingFunctionAttribute.cs" />
     <Compile Include="Logs\Log.cs" />
     <Compile Include="Logs\LogConfig.cs" />
+    <Compile Include="Misc\CrashGuard.cs" />
+    <Compile Include="Misc\Insensitive.cs" />
     <Compile Include="NetWork\ByteSwap.cs" />
     <Compile Include="NetWork\Clients\BaseClient.cs" />
     <Compile Include="NetWork\Clients\IPacketHandler.cs" />

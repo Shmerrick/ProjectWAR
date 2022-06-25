@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using WorldServer.Managers;
+using WorldServer.Physics;
+using WorldServer.World.Map;
+using WorldServer.World.Physics;
 using WorldServer.World.Positions;
 
 namespace WorldServer.Services.World
@@ -14,6 +17,7 @@ namespace WorldServer.Services.World
     public class ZoneService : ServiceBase
     {
         public static List<Zone_Info> _Zone_Info;
+        public static IOcclusionProvider OcclusionProvider = new Occlusion();
 
         [LoadingFunction(true)]
         public static void LoadZone_Info()
@@ -24,13 +28,17 @@ namespace WorldServer.Services.World
 
             Log.Success("LoadZone_Info", "Loaded " + _Zone_Info.Count + " Zone_Info");
 
-            if (Core.Config.RegionOcclusionFolder != null && Directory.Exists(WorldServer.Core.Config.RegionOcclusionFolder))
+            if (Core.LoadPhysics)
             {
-                WorldServer.World.Map.Occlusion.InitZones(WorldServer.Core.Config.RegionOcclusionFolder);
+                if (Core.Config.RegionOcclusionFolder != null && Directory.Exists(WorldServer.Core.Config.RegionOcclusionFolder))
+                {
+                    OcclusionProvider.InitZones(WorldServer.Core.Config.RegionOcclusionFolder);
+                }
+                else
+                {
+                    Log.Error("WorldServer", "RegionOcclusionFolder not specified/found in World.config. No server side LOS will be performed.");
+                }
             }
-            else
-                Log.Error("WorldServer", "RegionOcclusionFolder not specified/found in World.config. No server side LOS will be performed.");
-
             LoadZoneJumps();
             WorldMgr.WorldUpdateStart();
             WorldMgr.GroupUpdateStart();

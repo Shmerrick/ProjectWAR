@@ -1,5 +1,6 @@
 ﻿using Common;
 using FrameWork;
+using FrameWork.Misc;
 using System;
 
 namespace LobbyServer
@@ -37,7 +38,7 @@ namespace LobbyServer
             Server = TCPManager.GetTcp<TCPServer>("LobbyServer");
 
             Log.Debug($"LobbyServer", $"RpcClient on Local Ip {Config.RpcInfo.RpcLocalIp}");
-            Log.Debug($"LobbyServer", $"RpcClient Connect (Start) to {Config.RpcInfo.RpcServerIp}:{ Config.RpcInfo.RpcServerPort}");
+            Log.Debug($"LobbyServer", $"RpcClient Connect (Start) to {Config.RpcInfo.RpcServerIp}:{Config.RpcInfo.RpcServerPort}");
             Log.Debug($"LobbyServer", $"TcpServer on Port {Config.ClientPort}");
 
             ConsoleMgr.Start();
@@ -46,6 +47,7 @@ namespace LobbyServer
         private static void onError(object sender, UnhandledExceptionEventArgs e)
         {
             Log.Error("onError", e.ExceptionObject.ToString());
+            CrashGuard.GenerateCrashReport(e);
         }
     }
 }

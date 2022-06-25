@@ -39,7 +39,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>7.3</LangVersion>
@@ -91,6 +91,7 @@
   <ItemGroup>
     <Compile Include="Database\Account\Account.cs" />
     <Compile Include="Database\Account\AccountSanctionInfo.cs" />
+    <Compile Include="Database\Account\Account_pending.cs" />
     <Compile Include="Database\Account\Account_value.cs" />
     <Compile Include="Database\Account\Ip_ban.cs" />
     <Compile Include="Database\Account\Realm.cs" />
@@ -244,6 +245,7 @@
     <Compile Include="Database\World\TimedAnnounce.cs" />
     <Compile Include="Database\World\Waypoint.cs" />
     <Compile Include="Database\World\World_Settings.cs" />
+    <Compile Include="Email\EmailClient.cs" />
     <Compile Include="FastRandom.cs" />
     <Compile Include="HonorCalculation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

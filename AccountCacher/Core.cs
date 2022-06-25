@@ -1,5 +1,6 @@
 ﻿using Common;
 using FrameWork;
+using FrameWork.Misc;
 using System;
 
 namespace AccountCacher
@@ -35,6 +36,7 @@ namespace AccountCacher
 
             AcctMgr = Server.GetLocalObject<AccountMgr>();
             AcctMgr.LoadRealms();
+            AcctMgr.LoadPending();
 
             ConsoleMgr.Start();
         }
@@ -42,6 +44,7 @@ namespace AccountCacher
         private static void onError(object sender, UnhandledExceptionEventArgs e)
         {
             Log.Error("OnError", e.ExceptionObject.ToString());
+            CrashGuard.GenerateCrashReport(e);
         }
     }
 }

@@ -54,7 +54,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <DebugType>none</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>none</ErrorReport>
@@ -62,6 +62,7 @@
     </CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
     <WarningLevel>0</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>WorldServer.Core</StartupObject>
@@ -72,6 +73,15 @@
     </Reference>
     <Reference Include="BehaviourTree, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\BehaviourTree.1.0.73\lib\netstandard1.0\BehaviourTree.dll</HintPath>
+    </Reference>
+    <Reference Include="BepuPhysics, Version=2.3.0.0, Culture=neutral, PublicKeyToken=9345ce38ee48a1cd, processorArchitecture=MSIL">
+      <HintPath>..\packages\BepuPhysics.2.3.0\lib\netstandard2.0\BepuPhysics.dll</HintPath>
+    </Reference>
+    <Reference Include="BepuUtilities, Version=2.3.0.0, Culture=neutral, PublicKeyToken=a595ef937c270ac9, processorArchitecture=MSIL">
+      <HintPath>..\packages\BepuUtilities.2.3.0\lib\netstandard2.0\BepuUtilities.dll</HintPath>
+    </Reference>
+    <Reference Include="BulletSharp, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BulletSharp.0.11.1\lib\net40-client\BulletSharp.dll</HintPath>
     </Reference>
     <Reference Include="Evolve, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Evolve.3.0.0\lib\netstandard2.0\Evolve.dll</HintPath>
@@ -94,8 +104,14 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Niflib">
+      <HintPath>..\deps\NifLib\Niflib.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.5.0.0\lib\net46\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.5.0.1\lib\net46\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK">
+      <HintPath>..\deps\NifLib\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -234,8 +250,8 @@
     <Reference Include="System.Text.Encodings.Web, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Encodings.Web.6.0.0\lib\net461\System.Text.Encodings.Web.dll</HintPath>
     </Reference>
-    <Reference Include="System.Text.Json, Version=6.0.0.4, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Json.6.0.4\lib\net461\System.Text.Json.dll</HintPath>
+    <Reference Include="System.Text.Json, Version=6.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.6.0.5\lib\net461\System.Text.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.RegularExpressions.4.3.1\lib\net463\System.Text.RegularExpressions.dll</HintPath>
@@ -277,6 +293,7 @@
     <Compile Include="Managers\Commands\CampaignCommands.cs" />
     <Compile Include="Managers\Commands\ChapterCommands.cs" />
     <Compile Include="Managers\Commands\CheckCommands.cs" />
+    <Compile Include="Managers\Commands\OcclusionCommands.cs" />
     <Compile Include="Managers\Commands\TicketCommands.cs" />
     <Compile Include="Managers\Commands\CommandDeclarations.cs" />
     <Compile Include="Managers\Commands\CommandsBuilder.cs" />
@@ -329,6 +346,7 @@
     <Compile Include="Services\World\WaypointService.cs" />
     <Compile Include="Services\World\XpRenownService.cs" />
     <Compile Include="Services\World\ZoneService.cs" />
+    <Compile Include="WorldUtils.cs" />
     <Compile Include="World\Abilities\AbilityModifierInvoker.cs" />
     <Compile Include="World\Abilities\Buffs\SpecialBuffs\BouncingBuff.cs" />
     <Compile Include="World\Abilities\Buffs\SpecialBuffs\AuraBuff.cs" />
@@ -531,6 +549,9 @@
     <Compile Include="World\Abilities\Buffs\BuffInterface.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepDoor.cs" />
     <Compile Include="World\Battlefronts\Keeps\KeepNpcCreature.cs" />
+    <Compile Include="World\Map\BulletOcclusion.cs" />
+    <Compile Include="World\Map\IOcclusionProvider.cs" />
+    <Compile Include="World\Map\Physics\Format.cs" />
     <Compile Include="World\Objects\AdvancedCreature.cs" />
     <Compile Include="World\Objects\CreatureState.cs" />
     <Compile Include="World\Objects\DynamicVendor.cs" />
@@ -800,11 +821,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\WorldConfig.xml" />
-    <Content Include="world.ico" />
-    <Content Include="WarZone64.dll">
+    <Content Include="WarZone.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="world.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -812,9 +837,11 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />
-    <Error Condition="!Exists('..\packages\System.Text.Json.6.0.4\build\System.Text.Json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Text.Json.6.0.4\build\System.Text.Json.targets'))" />
+    <Error Condition="!Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets'))" />
+    <Error Condition="!Exists('..\packages\System.Text.Json.6.0.5\build\System.Text.Json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Text.Json.6.0.5\build\System.Text.Json.targets'))" />
   </Target>
-  <Import Project="..\packages\System.Text.Json.6.0.4\build\System.Text.Json.targets" Condition="Exists('..\packages\System.Text.Json.6.0.4\build\System.Text.Json.targets')" />
+  <Import Project="..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" />
+  <Import Project="..\packages\System.Text.Json.6.0.5\build\System.Text.Json.targets" Condition="Exists('..\packages\System.Text.Json.6.0.5\build\System.Text.Json.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

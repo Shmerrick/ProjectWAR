@@ -34,7 +34,7 @@ namespace WorldServer.World.Interfaces
         public static ushort OTHER_TRADE_SLOT = 241;
         public static ushort TALISMAN_SLOT_WINDOW = 255;
         public static ushort BUY_BACK_SLOT = 20;
-        public static ushort BASE_BAG_PRICE = 100;
+        public static ushort BASE_BAG_PRICE = 100 * 20;
         public static ushort MAX_TRADE_SLOT = 9;
         public static ushort INVENTORY_SLOT_COUNT = 16;
         public static ushort MAX_EQUIPMENT_SLOT = 40;

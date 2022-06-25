@@ -6,12 +6,15 @@ using System;
 using System.Collections.Generic;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
+using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
 using WorldServer.World.AI;
 using WorldServer.World.Battlefronts.Bounty;
 using WorldServer.World.Interfaces;
+using WorldServer.World.Map;
+using WorldServer.World.Physics;
 using WorldServer.World.Positions;
 using WorldServer.World.Scenarios;
 using AbilityType = WorldServer.World.Abilities.Components.AbilityType;
@@ -21,17 +24,21 @@ namespace WorldServer.World.Objects
 {
     public enum StateOpcode
     {
-        None = 0,
-        Wireframe = 1,
-        Flight = 2,
-        RvRFlag = 4,
-        RenownTitle = 8,
-        Lootable = 9,
+        None = 0x00,
+        Wireframe = 0x01,
+        Flight = 0x02,
+        QuestStatus = 0x03,
+        RvRFlag = 0x04,
+        Effect = 0x06,
+        RenownTitle = 0x08,
+        Lootable = 0x09,
         ToKTitle = 0xC,
         ZoneEntry = 0x11,
-        Down = 19,
+        Down = 0x13,
         Combat = 0x1A,
         CastCompletion = 0x1B,
+        FireState = 0x1C, // <- for siege
+        UserList = 0x1D, // <- for siege
         Butcherable = 0x1F,
         Scavengeable = 0x20,
         SiegeIdleTimer = 0x21,
@@ -80,6 +87,7 @@ namespace WorldServer.World.Objects
 
         private static readonly Logger DeathLogger = LogManager.GetLogger("DeathLogger");
         private static readonly Logger RewardLogger = LogManager.GetLogger("RewardLogger");
+        public static float CHARACTER_HEIGHT = 72.0f;
 
         public static InteractType GenerateInteractType(Creature_proto proto)
         {
@@ -341,10 +349,10 @@ namespace WorldServer.World.Objects
             MvtInterface.UpdateMovementState(plr);
 
             if (MvtInterface.IsMoving)
-                SendAnimation(0);
+                SendAnimation();
         }
 
-        public virtual void SendAnimation(int value)
+        public virtual void SendAnimation()
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_ANIMATION, 6);
             Out.WriteUInt16(Oid);
@@ -577,6 +585,7 @@ namespace WorldServer.World.Objects
                 }
 
                 var modificationValue = (float)impactManagerInstance.CalculateModificationValue((float)player.BaseBountyValue, (float)casterPlr.BaseBountyValue);
+
                 // Added impact to ImpactMatrix
                 if (this.CbtInterface.IsPvp)
                 {
@@ -631,7 +640,7 @@ namespace WorldServer.World.Objects
 
                 States.Add((byte)CreatureState.Dead); // Death State
                 DeathLogger.Trace($"SendCollatedHit {killer.Name}");
-
+                SendCollatedHit();
                 Unit credited = killer;
                 if (!DamageSources.ContainsKey(killer))
                 {
@@ -851,8 +860,6 @@ namespace WorldServer.World.Objects
             return false;
         }
 
-        public static float CHARACTER_HEIGHT = 72.0f;
-
         public bool LOSHit(Unit target)
         {
             if (Zone == null)
@@ -873,10 +880,10 @@ namespace WorldServer.World.Objects
                 return false;
             }
 
-            if (!World.Map.Occlusion.Initialized)
+            if (!ZoneService.OcclusionProvider.Initialized)
             {
                 Log.Error("LOSHit", "Occlusion library not initialized");
-                return false;
+                return true;
             }
 
             if (Zone.ZoneId != target.Zone.ZoneId)
@@ -885,19 +892,19 @@ namespace WorldServer.World.Objects
                 return false;
             }
 
-            var playnice = new World.Map.OcclusionInfo();
+            var playnice = new World.Physics.OcclusionInfo();
 
             int fromRegionX = X + (Zone.Info.OffX << 12);
             int fromRegionY = Y + (Zone.Info.OffY << 12);
             int toRegionX = target.X + (Zone.Info.OffX << 12);
             int toRegionY = target.Y + (Zone.Info.OffY << 12);
 
-            World.Map.Occlusion.SegmentIntersect(Zone.ZoneId, Zone.ZoneId, fromRegionX, fromRegionY, Z + CHARACTER_HEIGHT, toRegionX, toRegionY, target.Z + CHARACTER_HEIGHT, true, true, 190, ref playnice);
+            ZoneService.OcclusionProvider.Raytest(Zone.ZoneId, fromRegionX, fromRegionY, Z + CHARACTER_HEIGHT, toRegionX, toRegionY, target.Z + CHARACTER_HEIGHT, true, ref playnice);
 
-            return playnice.Result == World.Map.OcclusionResult.NotOccluded;
+            return playnice.Result == World.Physics.OcclusionResult.NotOccluded;
         }
 
-        public bool LOSHit(ushort zoneId, Point3D pinPos)
+        public bool LOSHit(Point3D pinPos)
         {
             if (Zone == null)
             {
@@ -905,27 +912,55 @@ namespace WorldServer.World.Objects
                 return false;
             }
 
-            if (!World.Map.Occlusion.Initialized)
+            if (!ZoneService.OcclusionProvider.Initialized)
             {
                 Log.Error("LOSHit", "Occlusion library not initialized");
                 return false;
             }
 
-            var playnice = new World.Map.OcclusionInfo();
+            var playnice = new World.Physics.OcclusionInfo();
 
             int fromRegionX = X + (Zone.Info.OffX << 12);
             int fromRegionY = Y + (Zone.Info.OffY << 12);
             int toRegionX = pinPos.X + (Zone.Info.OffX << 12);
             int toRegionY = pinPos.Y + (Zone.Info.OffY << 12);
 
-            World.Map.Occlusion.SegmentIntersect(Zone.ZoneId, Zone.ZoneId, fromRegionX, fromRegionY, Z + CHARACTER_HEIGHT, toRegionX, toRegionY, pinPos.Z + CHARACTER_HEIGHT, true, true, 190, ref playnice);
+            ZoneService.OcclusionProvider.Raytest(Zone.ZoneId, fromRegionX, fromRegionY, Z + CHARACTER_HEIGHT, toRegionX, toRegionY, pinPos.Z + CHARACTER_HEIGHT, true, ref playnice);
 
             //            #if DEBUG
             //            //if (IsPlayer())
             //               // GetPlayer().SendLocalizeString(playnice.ToString(), SystemData.ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_DEFAULT);
             //#endif
+            return playnice.Result == World.Physics.OcclusionResult.NotOccluded;
+        }
 
-            return playnice.Result == World.Map.OcclusionResult.NotOccluded;
+        public bool LOSHit(Point3D pinPos, out OcclusionInfo info)
+        {
+            info = new World.Physics.OcclusionInfo();
+            if (Zone == null)
+            {
+                Log.Error("LOSHit", "No Zone");
+                return false;
+            }
+
+            if (!ZoneService.OcclusionProvider.Initialized)
+            {
+                Log.Error("LOSHit", "Occlusion library not initialized");
+                return false;
+            }
+
+            int fromRegionX = X + (Zone.Info.OffX << 12);
+            int fromRegionY = Y + (Zone.Info.OffY << 12);
+            int toRegionX = pinPos.X + (Zone.Info.OffX << 12);
+            int toRegionY = pinPos.Y + (Zone.Info.OffY << 12);
+
+            ZoneService.OcclusionProvider.Raytest(Zone.ZoneId, fromRegionX, fromRegionY, Z + CHARACTER_HEIGHT, toRegionX, toRegionY, pinPos.Z + CHARACTER_HEIGHT, true, ref info);
+
+            //            #if DEBUG
+            //            //if (IsPlayer())
+            //               // GetPlayer().SendLocalizeString(playnice.ToString(), SystemData.ChatLogFilters.CHATLOGFILTERS_SAY, Localized_text.CHAT_TAG_DEFAULT);
+            //#endif
+            return info.Result == World.Physics.OcclusionResult.NotOccluded;
         }
 
         /// <summary>Performs an auto-attack against the target using the specified hand.</summary>
@@ -980,7 +1015,7 @@ namespace WorldServer.World.Objects
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
             Out.WriteUInt16(Oid);
-            Out.WriteByte(9);
+            Out.WriteByte((byte)StateOpcode.Lootable);
             Out.WriteByte((byte)(value ? 1 : 0));
             Out.Fill(0, 6);
             if (looter != null)

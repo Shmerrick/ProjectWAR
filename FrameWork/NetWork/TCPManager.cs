@@ -13,6 +13,7 @@ namespace FrameWork
         #region Manager
 
         private static Dictionary<string, TCPManager> _Tcps = new Dictionary<string, TCPManager>();
+
         private static TCPManager ConvertTcp<T>() where T : TCPManager, new()
         {
             if (!typeof(T).IsSubclassOf(typeof(TCPManager)))
@@ -23,6 +24,7 @@ namespace FrameWork
 
             return TTcp;
         }
+
         public static bool Listen<T>(int port, string Name) where T : TCPManager, new()
         {
             try
@@ -54,6 +56,7 @@ namespace FrameWork
 
             return true;
         }
+
         public static bool Connect<T>(string IP, int port, string Name) where T : TCPManager, new()
         {
             if (Name.Length <= 0)
@@ -76,6 +79,7 @@ namespace FrameWork
 
             return true;
         }
+
         public static T GetTcp<T>(string Name)
         {
             if (_Tcps.ContainsKey(Name))
@@ -84,7 +88,7 @@ namespace FrameWork
             return (T)Convert.ChangeType(null, typeof(T));
         }
 
-        #endregion
+        #endregion Manager
 
         private TcpListener Listener;
         private Socket Client;
@@ -96,8 +100,9 @@ namespace FrameWork
         public readonly PacketFunction[] m_packetHandlers = new PacketFunction[0xFF];
         private readonly byte[] stateRequirement = new byte[0xFF];
 
-        public readonly Dictionary<string,ICryptHandler> m_cryptHandlers = new Dictionary<string,ICryptHandler>();
+        public readonly Dictionary<string, ICryptHandler> m_cryptHandlers = new Dictionary<string, ICryptHandler>();
         private static readonly DateTime EpochDateTime = new DateTime(1970, 1, 1);
+
         #region Clients
 
         // Liste des clients connectés
@@ -105,6 +110,7 @@ namespace FrameWork
 
         private ReaderWriterLockSlim ClientRWLock = new ReaderWriterLockSlim();
         public BaseClient[] Clients = new BaseClient[MAX_CLIENT];
+
         public int GetClientCount()
         {
             int Count = 0;
@@ -146,14 +152,15 @@ namespace FrameWork
 
             UnLockWriteClients();
         }
+
         public void RemoveClient(int Id)
         {
             LockWriteClients();
 
-                if (Id >= 0 && Id < Clients.Length)
-                    Clients[Id] = null;
+            if (Id >= 0 && Id < Clients.Length)
+                Clients[Id] = null;
 
-           UnLockWriteClients();
+            UnLockWriteClients();
         }
 
         public BaseClient GetClient(int Id)
@@ -172,20 +179,23 @@ namespace FrameWork
         {
             ClientRWLock.EnterReadLock();
         }
+
         public void UnLockReadClients()
         {
             ClientRWLock.ExitReadLock();
         }
+
         public void LockWriteClients()
         {
             ClientRWLock.EnterWriteLock();
         }
+
         public void UnLockWriteClients()
         {
             ClientRWLock.ExitWriteLock();
         }
 
-        #endregion
+        #endregion Clients
 
         public TCPManager()
         {
@@ -228,7 +238,7 @@ namespace FrameWork
             return true;
         }
 
-        private bool InitSocket(string Ip,int port)
+        private bool InitSocket(string Ip, int port)
         {
             try
             {
@@ -260,15 +270,15 @@ namespace FrameWork
         {
             Log.Info("TCPManager", "Starting...");
 
-            if (!InitSocket(IpToConnect,port))
+            if (!InitSocket(IpToConnect, port))
                 return false;
 
             try
             {
-                if(LoadPacketHandlers)
+                if (LoadPacketHandlers)
                     LoadPacketHandler();
 
-                if(LoadCryptHandlers)
+                if (LoadCryptHandlers)
                     LoadCryptHandler();
 
                 Client.Connect(IpToConnect, port);
@@ -276,14 +286,13 @@ namespace FrameWork
                 if (!Client.Connected)
                     return false;
 
-                Log.Success("TCPManager", "Client connected at : " + IpToConnect+":"+port);
+                Log.Success("TCPManager", "Client connected at : " + IpToConnect + ":" + port);
             }
             catch (SocketException e)
             {
                 Log.Error("TCPManager", e.ToString());
                 return false;
             }
-
 
             return true;
         }
@@ -312,7 +321,6 @@ namespace FrameWork
                 return false;
             }
 
-
             return true;
         }
 
@@ -332,7 +340,7 @@ namespace FrameWork
             }
             catch (Exception e)
             {
-               Log.Error("TCPManager", e.ToString());
+                Log.Error("TCPManager", e.ToString());
             }
 
             lock (Clients.SyncRoot)
@@ -425,7 +433,7 @@ namespace FrameWork
             return new BaseClient(this);
         }
 
-        #endregion
+        #endregion Packet buffer pool
 
         // Thread for incomming connection
         private void ConnectingThread(IAsyncResult ar)
@@ -437,7 +445,7 @@ namespace FrameWork
                 if (Listener == null && Client == null)
                     return;
 
-                if(Listener != null)
+                if (Listener != null)
                     sock = Listener.EndAcceptSocket(ar);
 
                 sock.SendBufferSize = BUF_SIZE;
@@ -450,10 +458,10 @@ namespace FrameWork
                 try
                 {
                     string ip = sock.Connected ? sock.RemoteEndPoint.ToString() : "socket disconnected";
-                    if(Listener != null)
+                    if (Listener != null)
                         Log.Debug("TCPManager", "New Connection : " + ip);
 
-                    if(Client != null)
+                    if (Client != null)
                         Log.Debug("TCPManager", "New connection to : " + ip);
 
                     baseClient = GetNewClient();
@@ -465,7 +473,7 @@ namespace FrameWork
                 catch (SocketException e)
                 {
                     if (baseClient != null)
-                        Disconnect(baseClient, $"ConnectingThread: { Enum.GetName(typeof(SocketError), e.ErrorCode) } ({ e.Message })");
+                        Disconnect(baseClient, $"ConnectingThread: {Enum.GetName(typeof(SocketError), e.ErrorCode)} ({e.Message})");
                 }
                 catch (Exception e)
                 {
@@ -532,7 +540,7 @@ namespace FrameWork
                     foreach (MethodInfo m in type.GetMethods())
                         foreach (object at in m.GetCustomAttributes(typeof(PacketHandlerAttribute), false))
                         {
-                            PacketHandlerAttribute attr = (PacketHandlerAttribute) at;
+                            PacketHandlerAttribute attr = (PacketHandlerAttribute)at;
                             PacketFunction handler = (PacketFunction)Delegate.CreateDelegate(typeof(PacketFunction), m);
 
                             Log.Debug("TCPManager", $"Registering handler for opcode : " +
@@ -575,7 +583,7 @@ namespace FrameWork
         {
             if (m_cryptHandlers.ContainsKey(name))
                 return m_cryptHandlers[name];
-            else 
+            else
                 return null;
         }
 
@@ -586,12 +594,12 @@ namespace FrameWork
         }
 
         public HashSet<ulong> Errors = new HashSet<ulong>();
+
         public void HandlePacket(BaseClient client, PacketIn packet)
         {
             //#if DEBUG
             if (packet.Opcode != (ulong)Opcodes.F_PING)
             {
-
                 Log.Debug("HandlePacket", $"Packet : {packet.Opcode} ({((Opcodes)packet.Opcode).ToString()} - 0x{packet.Opcode.ToString("X2")})");
                 Log.Dump("HandlePacket", Log.Hex(packet.ToArray(), 0, packet.ToArray().Length));
             }
@@ -610,7 +618,7 @@ namespace FrameWork
             else if (!Errors.Contains(packet.Opcode))
             {
                 Errors.Add(packet.Opcode);
-                Log.Error("TCPManager", $"Can not handle :{packet.Opcode} ({packet.Opcode.ToString("X8")})");
+                //Log.Error("TCPManager", $"Can not handle :{packet.Opcode} ({packet.Opcode.ToString("X8")})");
             }
 
             if (packetHandler != null)
@@ -621,13 +629,12 @@ namespace FrameWork
                 However, it didn't actually work; eliminating the reflection and using an array implementation broke the emu and testing confirmed
                 the original check was broken, so I've eliminated it for now.
 
-
                 if (stateRequirement[packet.Opcode] > client.State)
                 {
                     Log.Error("TCPManager", $"Can not handle packet ({packet.Opcode.ToString("X8")}), Invalid client state {client.State} (expected {stateRequirement[packet.Opcode]}) ({client.GetIp()})");
                     PacketHandlerAttribute[] packethandlerattribs = (PacketHandlerAttribute[])packetHandler.GetType().GetCustomAttributes(typeof(PacketHandlerAttribute), true);
                     if (packethandlerattribs.Length > 0)
-                    { 
+                    {
                         Log.Error("TCPManager", $"Old code provided state {packethandlerattribs[0].State}");
                         if (packethandlerattribs[0].State > client.State)
                             return;
@@ -641,7 +648,7 @@ namespace FrameWork
 
                 try
                 {
-                    packetHandler.Invoke(client,packet);
+                    packetHandler.Invoke(client, packet);
                 }
                 catch (Exception e)
                 {

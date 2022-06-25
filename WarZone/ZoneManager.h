@@ -27,11 +27,11 @@ struct Zone
 	int IndexSize;
 	map<int, Fixture*> Fixtures;
 	vector<Fixture*> FixtureList;
-	KDTreeCPU *kd_tree;
-	KDTreeCPU *kd_tree_water;
+	KDTreeCPU* kd_tree;
+	KDTreeCPU* kd_tree_water;
 public:
-	Zone() 
-		: Terrain(0){}
+	Zone()
+		: Terrain(0) {}
 };
 
 class ZoneManager
@@ -44,7 +44,7 @@ public:
 	bool GetFixtureInfo(int zoneID, int index, FixtureInfo* info);
 	bool SetFixtureVisible(int zoneID, uint32_t uniqueID, uint8_t instanceID, bool visible);
 	bool GetFixtureVisible(int zoneID, uint32_t uniqueID, uint8_t instanceID);
-	int Pin(int zoneID, int xLoc, int yLoc, int triCount);
+	int Pin(int zoneID, int xLoc, int yLoc);
 	bool TerrainIntersect(int zoneIDA, int zoneIDB, float originX, float originY, float originZ, float destX, float destY, float destZ, int triCount, OcclussionInfo* result);
 	void UnloadZone(int zoneID);
 	bool LoadZone(int zoneID);

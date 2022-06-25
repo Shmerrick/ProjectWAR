@@ -57,18 +57,18 @@ bool ZoneManager::LoadZone(int zoneID)
 
 			switch (chunkType)
 			{
-				case ChunkType::ChunkType_Collision:
-					LoadCollisionChunk(f, _triCount);
-					break;
-				case ChunkType::ChunkType_Region:
-					LoadRegionChunk(f);
-					break;
-				case ChunkType::ChunkType_Terrain:
-					LoadTerrainChunk(f);
-					break;
-				case ChunkType::ChunkType_Water:
-					LoadWaterCollisionChunk(f, _triCount);
-					break;
+			case ChunkType::ChunkType_Collision:
+				LoadCollisionChunk(f, _triCount);
+				break;
+			case ChunkType::ChunkType_Region:
+				LoadRegionChunk(f);
+				break;
+			case ChunkType::ChunkType_Terrain:
+				LoadTerrainChunk(f);
+				break;
+			case ChunkType::ChunkType_Water:
+				LoadWaterCollisionChunk(f, _triCount);
+				break;
 			}
 			_fseeki64(f, nextChunk, SEEK_SET);
 		}
@@ -79,16 +79,14 @@ bool ZoneManager::LoadZone(int zoneID)
 		return false;
 	}
 	fclose(f);
-
 	return 0;
 }
 
 OcclusionResult ZoneManager::SegmentIntersect(int zoneIDA, int zoneIDB,
-		float originX, float originY, float originZ,
-		float targetX, float targetY, float targetZ,
-		bool terrain, bool normalTest, int triCount, OcclussionInfo* result)
+	float originX, float originY, float originZ,
+	float targetX, float targetY, float targetZ,
+	bool terrain, bool normalTest, int triCount, OcclussionInfo* result)
 {
-
 	if (!LoadZone(zoneIDA) || !LoadZone(zoneIDB))
 		return OcclusionResult::NotLoaded;
 
@@ -123,7 +121,6 @@ OcclusionResult ZoneManager::SegmentIntersect(int zoneIDA, int zoneIDB,
 		{
 			while (hit && normal.z < 0 && count < 10)
 			{
-
 				glm::vec3 newp = Util::Lerp(hit_point, target, 0.001);
 				hit = _zones[zoneIDA]->kd_tree->intersect(newp, dir, t, hit_point, normal);
 				count++;
@@ -220,7 +217,7 @@ bool ZoneManager::SetFixtureVisible(int zoneID, uint32_t uniqueID, uint8_t insta
 	return false;
 }
 
-int ZoneManager::Pin(int zoneID, int xLoc, int yLoc, int triCount)
+int ZoneManager::Pin(int zoneID, int xLoc, int yLoc)
 {
 	if (!LoadZone(zoneID))
 		return 0;
@@ -246,7 +243,6 @@ int ZoneManager::Pin(int zoneID, int xLoc, int yLoc, int triCount)
 		return -1;
 	}
 
-
 	xcoord = (int)floor(x / 64.0f);
 	ycoord = (int)floor(y / 64.0f);
 
@@ -259,7 +255,6 @@ int ZoneManager::Pin(int zoneID, int xLoc, int yLoc, int triCount)
 		ycoord = 0;
 	if (ycoord > 1023)
 		ycoord = 1023;
-
 
 	float  z1 = _zones[zoneID]->Terrain[(ycoord * _zones[zoneID]->TerrainWidth) + xcoord];
 	float  z2 = _zones[zoneID]->Terrain[(ycoord * _zones[zoneID]->TerrainWidth) + (xcoord + 1)];
@@ -294,7 +289,6 @@ int ZoneManager::Pin(int zoneID, int xLoc, int yLoc, int triCount)
 	ray3[1] = ((float)ycoord * 64 + 64);
 	ray3[2] = z4;
 
-
 	if (Intersections::triIntersect(ray_o, dir, ray1, ray2, ray3, d, hitpoint))
 	{
 		return (int)floor((float)0xFFFF - d);
@@ -312,7 +306,6 @@ int ZoneManager::Pin(int zoneID, int xLoc, int yLoc, int triCount)
 	ray3[1] = ((float)ycoord * 64 + 64);
 	ray3[2] = z4;
 
-
 	if (Intersections::triIntersect(ray_o, dir, ray1, ray2, ray3, d, hitpoint))
 	{
 		return (int)floor((float)0xFFFF - d);
@@ -329,11 +322,11 @@ bool ZoneManager::TerrainIntersect(int zoneIDA, int zoneIDB, float originX, floa
 
 	glm::vec3 from, target;
 
-	from[0] =  (originX - _zones[zoneIDA]->OffsetX);
+	from[0] = (originX - _zones[zoneIDA]->OffsetX);
 	from[1] = originY - _zones[zoneIDA]->OffsetY;
 	from[2] = originZ;
 
-	target[0] =  (destX - _zones[zoneIDA]->OffsetX);
+	target[0] = (destX - _zones[zoneIDA]->OffsetX);
 	target[1] = destY - _zones[zoneIDA]->OffsetY;
 	target[2] = destZ;
 
@@ -349,10 +342,9 @@ bool ZoneManager::TerrainIntersect(int zoneIDA, int zoneIDB, float originX, floa
 	//simple height test, no need to do line of sight test
 	if (from[0] == target[0] && from[1] == target[1])
 	{
-
 		waterHit = _zones[zoneIDA]->kd_tree_water->intersect(from, dir, t, hit_point, normal);
 		t = 0xFFFF - t;
-		int height = Pin(zoneIDA, (int)originX - (int)_zones[zoneIDA]->OffsetX, (int)originY - (int)_zones[zoneIDA]->OffsetY, triCount);
+		int height = Pin(zoneIDA, (int)originX - (int)_zones[zoneIDA]->OffsetX, (int)originY - (int)_zones[zoneIDA]->OffsetY);
 		terrainHit = true;
 
 		if (waterHit && t > height)
@@ -384,19 +376,18 @@ bool ZoneManager::TerrainIntersect(int zoneIDA, int zoneIDB, float originX, floa
 
 		if (incr == 0)
 			incr = 1;
-		int height = Pin(zoneIDA, (int)current.x, (int)current.y, triCount);
-		int height2 = Pin(zoneIDA, (int)target.x, (int)target.y, triCount);
+		int height = Pin(zoneIDA, (int)current.x, (int)current.y);
+		int height2 = Pin(zoneIDA, (int)target.x, (int)target.y);
 
 		//perform terrain pin only if terrain is under from and destination
 		if (height < current.z && height2 < target.z)
 		{
-
 			while (currentDistance < distance)
 			{
 				double t = currentDistance / distance;
 				current = Util::Lerp(pointA, pointB, currentDistance / distance);
 
-				height = Pin(zoneIDA, (int)current.x, (int)current.y, triCount);
+				height = Pin(zoneIDA, (int)current.x, (int)current.y);
 				printf("%d\r\n", height);
 				if (height < 0)
 				{
@@ -411,7 +402,6 @@ bool ZoneManager::TerrainIntersect(int zoneIDA, int zoneIDB, float originX, floa
 					terrainHit = true;
 				}
 				currentDistance += incr;
-
 			}
 		}
 	}
@@ -547,7 +537,7 @@ void ZoneManager::LoadCollisionChunk(FILE* f, int triCount)
 	zone->Fixtures[lastUniqueID]->ID = trianglesT[0].uniqueID & 0xFFFFFF;
 	int* triangleIDs = new int[zone->TriangleCount];
 
-	for (int i = 0; i< zone->TriangleCount; i++)
+	for (int i = 0; i < zone->TriangleCount; i++)
 	{
 		t = &trianglesT[i];
 		if ((t->uniqueID) != lastUniqueID)
@@ -573,7 +563,7 @@ void ZoneManager::LoadCollisionChunk(FILE* f, int triCount)
 	{
 		auto fixture = zone->Fixtures[k.first];
 		float minX = (float)0xFFFFFFF, minY = (float)0xFFFFFFF, minZ = (float)0xFFFFFFF, maxX = 0, maxY = 0, maxZ = 0;
-		for (int i = fixture->TriangleStartIndex; i<fixture->TriangleStartIndex + fixture->TriangleCount; i++)
+		for (int i = fixture->TriangleStartIndex; i < fixture->TriangleStartIndex + fixture->TriangleCount; i++)
 		{
 			auto v1 = vertices[trianglesT[i].i0];
 			auto v2 = vertices[trianglesT[i].i1];
@@ -652,7 +642,7 @@ void ZoneManager::LoadCollisionChunk(FILE* f, int triCount)
 	if (zone->ZoneID < 500)
 	{
 		_zones[zone->ZoneID] = zone;
-		Log("Loaded zone " + ::to_string(zone->ZoneID) + " in " + ::to_string( s.MilliSeconds()) + "ms");
+		Log("Loaded zone " + ::to_string(zone->ZoneID) + " in " + ::to_string(s.MilliSeconds()) + "ms");
 		Util::PrintMemoryInfo();
 	}
 }
@@ -699,7 +689,7 @@ void ZoneManager::LoadWaterCollisionChunk(FILE* f, int triCount)
 	zone->Fixtures[lastUniqueID]->ID = trianglesT[0].uniqueID & 0xFFFFFF;
 	int* triangleIDs = new int[zone->TriangleCount];
 
-	for (int i = 0; i< zone->TriangleCount; i++)
+	for (int i = 0; i < zone->TriangleCount; i++)
 	{
 		t = &trianglesT[i];
 		triangleIDs[i] = t->uniqueID;
