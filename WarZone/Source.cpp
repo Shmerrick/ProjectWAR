@@ -2,20 +2,31 @@
 #include "ZoneManager.h"
 #include <Windows.h>
 
-extern "C" { int _afxForceUSRDLL; } 
+extern "C" { int _afxForceUSRDLL; }
 
 static ZoneManager* _manager = nullptr;
 extern "C"
 {
-    __declspec(dllexport) void InitZones (const char* path, int triCount)
-    {
+	__declspec(dllexport) int __stdcall Pin(int zoneID, int x, int y)
+	{
+		if (_manager == nullptr)
+		{
+			printf("WarZone -- Error Must call InitZones() first!");
+			return -1;
+		}
+
+		return _manager->Pin(zoneID, x, y);
+	}
+
+	__declspec(dllexport) void __stdcall InitZones(const char* path, int triCount)
+	{
 		if (_manager != nullptr)
 			delete _manager;
 
 		_manager = new ZoneManager(path, triCount);
-    }
+	}
 
-	__declspec(dllexport) void LoadZone (int zoneID)
+	__declspec(dllexport) void __stdcall LoadZone(int zoneID)
 	{
 		if (_manager == nullptr)
 		{
@@ -24,56 +35,62 @@ extern "C"
 		}
 
 		_manager->LoadZone(zoneID);
-    }
+		/*FILE* f = fopen("D:\\bin\\Debug\\logs\\leaks"+zoneID+".txt", "a+t");
+		_CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_FILE );
+		_CrtSetReportFile( _CRT_WARN, f );
+		_CrtDumpMemoryLeaks();
+		fclose(f);
+		*/
+	}
 
-	__declspec(dllexport) void UnLoadZone (int zoneID)
-    {
+	__declspec(dllexport) void __stdcall UnLoadZone(int zoneID)
+	{
 		if (_manager == nullptr)
 			return;
 
 		_manager->UnloadZone(zoneID);
-    }
+	}
 
-  __declspec(dllexport)  OcclusionResult SegmentIntersect(int zoneIDA, int zoneIDB,
-		float originX, float originY, float originZ, 
-		float targetX, float targetY, float targetZ, 
+	__declspec(dllexport) OcclusionResult __stdcall SegmentIntersect(int zoneIDA, int zoneIDB,
+		float originX, float originY, float originZ,
+		float targetX, float targetY, float targetZ,
 		bool terrain, bool normalTest, int triCount, OcclussionInfo* result)
 	{
-	  if (_manager == nullptr)
-		  return OcclusionResult::NotLoaded;
+		if (_manager == nullptr)
+			return OcclusionResult::NotLoaded;
 
-		return _manager->SegmentIntersect(zoneIDA, zoneIDB, originX, originY, originZ, 
+		return _manager->SegmentIntersect(zoneIDA, zoneIDB, originX, originY, originZ,
 			targetX, targetY, targetZ, terrain, normalTest, triCount, result);
 	}
 
-    __declspec(dllexport)  bool TerrainIntersect(int zoneIDA, int zoneIDB,
-		float originX, float originY, float originZ, 
+	__declspec(dllexport) bool __stdcall TerrainIntersect(int zoneIDA, int zoneIDB,
+		float originX, float originY, float originZ,
 		float targetX, float targetY, float targetZ, int triCount, OcclussionInfo* result)
 	{
 		if (_manager == nullptr)
 			return false;
 
-		return _manager->TerrainIntersect(zoneIDA, zoneIDB, originX, originY, originZ, 
+		return _manager->TerrainIntersect(zoneIDA, zoneIDB, originX, originY, originZ,
 			targetX, targetY, targetZ, triCount, result);
 	}
 
-   __declspec(dllexport) bool SetFixtureVisible(int zoneID, uint32_t uniqueID, uint8_t instanceID, bool visible)
-   {
-	   if (_manager == nullptr)
-		   return false;
+	__declspec(dllexport) bool __stdcall SetFixtureVisible(int zoneID, uint32_t uniqueID, uint8_t instanceID, bool visible)
+	{
+		if (_manager == nullptr)
+			return false;
 
-	   return _manager->SetFixtureVisible(zoneID, uniqueID, instanceID, visible);
-   }
+		return _manager->SetFixtureVisible(zoneID, uniqueID, instanceID, visible);
+	}
 
-   __declspec(dllexport) bool GetFixtureVisible(int zoneID, uint32_t uniqueID, uint8_t instanceID)
-   {
-	   if (_manager == nullptr)
-		   return false;
+	__declspec(dllexport) bool __stdcall GetFixtureVisible(int zoneID, uint32_t uniqueID, uint8_t instanceID)
+	{
+		if (_manager == nullptr)
+			return false;
 
-	   return _manager->GetFixtureVisible(zoneID, uniqueID, instanceID);
-   }
+		return _manager->GetFixtureVisible(zoneID, uniqueID, instanceID);
+	}
 
-    __declspec(dllexport) int GetFixtureCount(int zoneID)
+	__declspec(dllexport) int __stdcall GetFixtureCount(int zoneID)
 	{
 		if (_manager == nullptr)
 			return 0;
@@ -81,7 +98,7 @@ extern "C"
 		return _manager->GetFixtureCount(zoneID);
 	}
 
-	__declspec(dllexport) bool GetFixtureInfo(int zoneID, int index, FixtureInfo* info)
+	__declspec(dllexport) bool __stdcall GetFixtureInfo(int zoneID, int index, FixtureInfo* info)
 	{
 		if (_manager == nullptr)
 			return false;
@@ -92,11 +109,11 @@ extern "C"
 
 BOOL WINAPI DllMain(HANDLE hInst, ULONG ul_reason, LPVOID lpReserved)
 {
-	switch(ul_reason) {
-		case DLL_PROCESS_ATTACH:
-			break;
-		case DLL_PROCESS_DETACH:
-			break;
+	switch (ul_reason) {
+	case DLL_PROCESS_ATTACH:
+		break;
+	case DLL_PROCESS_DETACH:
+		break;
 	}
 	return TRUE;
 }

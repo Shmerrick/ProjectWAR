@@ -20,7 +20,7 @@ namespace WorldServer.World.Objects
 {
     public class Creature : Unit, IClock
     {
-        public long LastMove { get; set; }
+        public long NextMove { get; set; }
 
         public Creature_spawn Spawn;
         public SiegeInterface SiegeInterface;
@@ -32,8 +32,12 @@ namespace WorldServer.World.Objects
         public ushort Model2 { get; set; }
         public ushort IsWandering { get; set; }
 
+        /// <summary>
+        /// Random movement Time set Here
+        /// </summary>
         public Creature()
         {
+            NextMove = Core.TickCount + Utils.RandomMinMax(2000, 18000);
         }
 
         public Creature(Creature_spawn spawn) : this()
@@ -61,6 +65,7 @@ namespace WorldServer.World.Objects
                 BaseRadius *= (Scale / 50f);
 
             SiegeInterface = AddInterface<SiegeInterface>();
+            NextMove = Core.TickCount + Utils.RandomMinMax(2000, 18000);
         }
 
         #region CrowdControl
@@ -1453,6 +1458,7 @@ namespace WorldServer.World.Objects
 
             return false;
         }
+
         public void SetWander(ushort wander)
         {
             IsWandering = 1;

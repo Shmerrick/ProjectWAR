@@ -37,11 +37,11 @@ namespace WorldServer.World.AI.PathFinding
             map.EndNode = map.Nodes[rnd.Next(map.Nodes.Count - 1)];
             map.StartNode = map.Nodes[rnd.Next(map.Nodes.Count - 1)];
 
-            foreach (var node in map.Nodes)
-            {
-                Debug.WriteLine($"{node}");
-                foreach (var cnn in node.Connections) Debug.WriteLine($"{cnn}");
-            }
+            //foreach (var node in map.Nodes)
+            //{
+            //    Debug.WriteLine($"{node}");
+            //    foreach (var cnn in node.Connections) Debug.WriteLine($"{cnn}");
+            //}
 
             return map;
         }
@@ -104,7 +104,7 @@ namespace WorldServer.World.AI.PathFinding
                 //Make it a two way connection if not already connected
                 if (!cnn.ConnectedNode.Connections.Any(cc => cc.ConnectedNode == this))
                 {
-                    var backConnection = new Edge {ConnectedNode = this, Length = cnn.Length};
+                    var backConnection = new Edge { ConnectedNode = this, Length = cnn.Length };
                     cnn.ConnectedNode.Connections.Add(backConnection);
                 }
 
@@ -157,7 +157,7 @@ namespace WorldServer.World.AI.PathFinding
                 //Make it a two way connection if not already connected
                 if (cnn.ConnectedNode.Connections.All(cc => cc.ConnectedNode != this))
                 {
-                    var backConnection = new Edge {ConnectedNode = this, Length = cnn.Length, Cost = cnn.Cost};
+                    var backConnection = new Edge { ConnectedNode = this, Length = cnn.Length, Cost = cnn.Cost };
                     cnn.ConnectedNode.Connections.Add(backConnection);
                 }
 

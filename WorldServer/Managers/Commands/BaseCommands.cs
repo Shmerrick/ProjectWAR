@@ -2273,7 +2273,7 @@ namespace WorldServer.Managers.Commands
 
         public static bool SendRules(Player plr, ref List<string> values)
         {
-            plr.SendClientMessage("===================================== WAR: Apocalypse  =====================================", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+            plr.SendClientMessage("===================================== Project WAR =====================================", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
             plr.SendClientMessage("These rules are a short version of the ones written on the forum and serve as a warning.", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
             plr.SendClientMessage("Because of this, our staff are under no obligation whatsoever to issue a warning before taking action against any player.\n", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
 
@@ -2376,7 +2376,6 @@ namespace WorldServer.Managers.Commands
             return true;
         }
 
-        
         public static bool Gunbad(Player player, ref List<string> values)
         {
             player.Teleport(2, 1241652, 897090, 7499, 0);
@@ -2390,6 +2389,7 @@ namespace WorldServer.Managers.Commands
 
             return true;
         }
+
         public static bool Karaz(Player player, ref List<string> values)
         {
             player.Teleport(62, 204917, 1497879, 29900, 0);

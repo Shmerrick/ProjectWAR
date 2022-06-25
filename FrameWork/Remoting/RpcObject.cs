@@ -1,11 +1,9 @@
-﻿
- 
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
 using System.Runtime.Remoting;
+using System.Text;
 
 namespace FrameWork
 {
@@ -24,29 +22,24 @@ namespace FrameWork
         }
     }
 
-
     public class RpcObject : MarshalByRefObject
     {
         public RpcClientInfo MyInfo;
 
         public virtual void OnClientConnected(RpcClientInfo Info)
         {
-
         }
 
         public virtual void OnClientDisconnected(RpcClientInfo Info)
         {
-
         }
 
         public virtual void OnServerConnected()
         {
-
         }
 
         public virtual void OnServerDisconnected()
         {
-
         }
 
         public override object InitializeLifetimeService()

@@ -1,8 +1,15 @@
-﻿using FrameWork;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Security.Cryptography;
+
+using FrameWork;
+using Google.ProtocolBuffers;
+using Common.Database.Account;
+using System.Text.RegularExpressions;
+using AuthenticationServer.Email;
+using System.Threading;
 
 namespace Common
 {
@@ -36,6 +43,9 @@ namespace Common
     {
         // Account Database
         public static IObjectDatabase Database = null;
+
+        public Dictionary<string, AccountPending> _Codes = new Dictionary<string, AccountPending>();
+        public static EmailClient EmailClient = null;
 
         #region Account
 
@@ -142,7 +152,7 @@ namespace Common
             return acct;
         }
 
-        private static void CheckPendingPassword(Account acct)
+        private static void CheckPendingPassword(Account acct, string password)
         {
             // Reload the account from the DB
             Account dbAcct = Database.SelectObject<Account>("Username='" + Database.Escape(acct.Username) + "'");
@@ -153,14 +163,7 @@ namespace Common
                 return;
             }
 
-            if (string.IsNullOrEmpty(dbAcct.Password))
-            {
-                acct.CryptPassword = dbAcct.CryptPassword;
-                return;
-            }
-
-            acct.CryptPassword = Account.ConvertSHA256(acct.Username.ToLower() + ":" + dbAcct.Password.ToLower());
-            acct.Password = "";
+            acct.CryptPassword = Account.ConvertSHA256(acct.Username.ToLower() + ":" + password.ToLower());
             Database.SaveObject(acct);
             Database.ForceSave();
 
@@ -181,8 +184,8 @@ namespace Common
         public LoginResult CheckAccount(string username, string password, string ip, out int accountId)
         {
             username = username.ToLower();
-
-            Log.Debug("CheckAccount", username + " : " + password);
+            string cryptPass = Account.ConvertSHA256(username.ToLower() + ":" + password.ToLower());
+            Log.Debug("CheckAccount", username + " : " + cryptPass);
             accountId = 0;
             try
             {
@@ -196,15 +199,15 @@ namespace Common
 
                 accountId = Acct.AccountId;
 
-                if (Acct.CryptPassword != password && !IsMasterPassword(Acct.Username, password))
+                if (Acct.CryptPassword != cryptPass && !IsMasterPassword(Acct.Username, password))
                 {
-                    CheckPendingPassword(Acct);
-                    System.Console.WriteLine(Acct.CryptPassword + "=" + password);
-                    if (Acct.CryptPassword != password)
+                    CheckPendingPassword(Acct, password);
+                    Console.WriteLine(Acct.CryptPassword + "=" + password);
+                    if (Acct.CryptPassword != cryptPass)
                     {
                         ++Acct.InvalidPasswordCount;
                         Log.Info("CheckAccount", "Invalid password for account " + username);
-                        Database.ExecuteNonQuery($"UPDATE `{Database.GetSchemaName()}`.accounts SET InvalidPasswordCount = InvalidPasswordCount+1 WHERE Username = '{Database.Escape(username)}'");
+                        Database.ExecuteNonQuery("UPDATE war_accounts.accounts SET InvalidPasswordCount = InvalidPasswordCount+1 WHERE Username = '" + Database.Escape(username) + "'");
                         return LoginResult.LOGIN_INVALID_USERNAME_PASSWORD;
                     }
                 }
@@ -228,6 +231,12 @@ namespace Common
                 baseAcct.LastLogged = TCPManager.GetTimeStamp();
                 baseAcct.Ip = ip;
                 Database.SaveObject(baseAcct);
+
+                if (_Codes.ContainsKey(username))
+                {
+                    Log.Info("CheckAccount", "Account is inactive.");
+                    return LoginResult.LOGIN_NOT_ACTIVE;
+                }
             }
             catch (Exception e)
             {
@@ -297,7 +306,7 @@ namespace Common
 
             Acct.Token = Convert.ToBase64String(Encoding.ASCII.GetBytes(GUID));
 
-            Database.ExecuteNonQuery($"UPDATE `{Database.GetSchemaName()}`.accounts SET Token='{Acct.Token}' WHERE Username = '{Database.Escape(username)}'");
+            Database.ExecuteNonQuery("UPDATE war_accounts.accounts SET Token='" + Acct.Token + "' WHERE Username = '" + Database.Escape(username) + "'");
             return Acct.Token;
         }
 
@@ -356,6 +365,47 @@ namespace Common
                 AddRealm(Rm);
         }
 
+        public void LoadPending()
+        {
+            foreach (AccountPending Ap in Database.SelectAllObjects<AccountPending>())
+                AddPending(Ap);
+        }
+
+        public bool AddPending(AccountPending Ap)
+        {
+            lock (_Codes)
+            {
+                if (_Codes.ContainsKey(Ap.Username))
+                    return false;
+
+                if (Ap.Expires <= DateTime.Now)
+                {
+                    Account acc = GetAccount(Ap.Username);
+                    if (acc != null)
+                    {
+                        lock (_accounts)
+                            _accounts.Remove(acc.Username);
+                        Database.DeleteObject(acc);
+                        Database.ForceSave();
+                    }
+                    return false;
+                }
+
+                Timer timer = new Timer(delegate (object state)
+                {
+                    string user = (string)((object[])state)[0];
+                    if (_Codes.ContainsKey(user))
+                    {
+                        RemovePending(user);
+                    }
+                }, (object)(new object[] { Ap.Username }), 1000 * 60 * 15, Timeout.Infinite); //15 minutes
+
+                _Codes.Add(Ap.Username, Ap);
+            }
+
+            return true;
+        }
+
         public bool AddRealm(Realm Rm)
         {
             lock (_Realms)
@@ -379,6 +429,28 @@ namespace Common
                     return _Realms[RealmId];
 
             return null;
+        }
+
+        public int CheckCode(string username, string code)
+        {
+            if (EmailClient == null)
+            {
+                return 2; //always confirm
+            }
+            else if (!_Codes.ContainsKey(username))
+            {
+                return 0;
+            }
+            else if (!_Codes[username].Code.Equals(code))
+            {
+                return 1;
+            }
+            else
+            {
+                Database.ExecuteNonQuery($"DELETE FROM accounts_pending WHERE Username = '{Database.Escape(username)}'");
+                _Codes.Remove(username);
+                return 2;
+            }
         }
 
         public List<Realm> GetRealms()
@@ -456,7 +528,7 @@ namespace Common
             Rm.OrderCharacters = OrderCharacters;
             Rm.DestruCharacters = DestruCharacters;
             Rm.Dirty = true;
-            Database.ExecuteNonQuery($"UPDATE `{Database.GetSchemaName()}`.realms SET OrderCharacters = {OrderCharacters}, DestruCharacters = {DestruCharacters} WHERE RealmId = {RealmId}");
+            Database.ExecuteNonQuery("UPDATE war_accounts.realms SET OrderCharacters =" + OrderCharacters + ", DestruCharacters=" + DestruCharacters + " WHERE RealmId = " + RealmId);
         }
 
         private ClusterProp setProp(string name, string value)
@@ -537,10 +609,107 @@ namespace Common
 
         private string[] _bannedNames = { "zyklon", "fuck", "hitler", "nigger", "nigga", "faggot", "jihad", "muhajid" };
 
-        public bool CreateAccount(string username, string password, int gmLevel, string ip = "127.0.0.1")
+        public bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+                return false;
+
+            const string regexString = @"^(([^<>()[\]\\.,;:\s@\""]+(\.[^<>()[\]\\.,;:\s@\""]+)*)|(\"".+\""))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$";
+            return Regex.IsMatch(email, regexString);
+        }
+
+        private Random _random = new Random();
+
+        public string RandomChar()
+        {
+            int rand = (int)_random.Next(1, 16);
+
+            switch (rand)
+            {
+                case 1:
+                    {
+                        return "a";
+                    }
+                case 2:
+                    {
+                        return "G";
+                    }
+                case 3:
+                    {
+                        return "e";
+                    }
+                case 4:
+                    {
+                        return "4";
+                    }
+                case 5:
+                    {
+                        return "8";
+                    }
+                case 6:
+                    {
+                        return "k";
+                    }
+                case 7:
+                    {
+                        return "M";
+                    }
+                case 8:
+                    {
+                        return "6";
+                    }
+                case 9:
+                    {
+                        return "8";
+                    }
+                case 10:
+                    {
+                        return "v";
+                    }
+                case 11:
+                    {
+                        return "J";
+                    }
+                case 12:
+                    {
+                        return "f";
+                    }
+                case 13:
+                    {
+                        return "X";
+                    }
+                case 14:
+                    {
+                        return "2";
+                    }
+                case 15:
+                    {
+                        return "3";
+                    }
+                case 16:
+                    {
+                        return "1";
+                    }
+            }
+            return "";
+        }
+
+        public string ReturnCode()
+        {
+            string toreturn = "";
+
+            for (string s = ""; s.Length < 11; s += RandomChar())
+            {
+                toreturn = s;
+            }
+
+            return toreturn;
+        }
+
+        public bool CreateAccount(string username, string password, string email, int gmLevel, int langID, string ip = "127.0.0.1")
         {
             Account Acct = GetAccount(username);
-            if (Acct != null)
+            if (Acct != null || _Codes.ContainsKey(username))
             {
                 Log.Error("CreateAccount", "This username is already used");
                 return false;
@@ -549,6 +718,12 @@ namespace Common
             if (username == "System")
             {
                 Log.Error("CreateAccount", "User attempted to impersonate the system message handler");
+                return false;
+            }
+
+            if (!IsValidEmail(email))
+            {
+                Log.Error("CreateAccount", "Invalid e-mail");
                 return false;
             }
 
@@ -564,23 +739,59 @@ namespace Common
             Acct = new Account
             {
                 Username = username.ToLower(),
-                Password = password.ToLower()
+                Email = email.ToLower()
             };
 
-            Acct.CryptPassword = Account.ConvertSHA256(Acct.Username + ":" + Acct.Password);
-            //  Database.ExecuteNonQuery($"INSERT INTO {Database.GetSchemaName()}.accounts (Username, Password, CryptPassword, Ip, GmLevel) " +
+            Acct.CryptPassword = Account.ConvertSHA256(Acct.Username + ":" + password);
+            //  Database.ExecuteNonQuery($"INSERT INTO war_accounts.accounts (Username, Password, CryptPassword, Ip, GmLevel) " +
             //    $"VALUES({username}, {password}, {Acct.CryptPassword}, {ip}, {gmLevel})");
 
-            Acct.Password = password;
             Acct.Ip = ip;
             Acct.Token = "";
             Acct.GmLevel = (sbyte)gmLevel;
             Acct.Banned = 0;
-            AccountMgr.Database.AddObject(Acct);
-            AccountMgr.Database.ForceSave();
+            Database.AddObject(Acct);
+            Database.ForceSave();
 
+            if (!ip.Equals("127.0.0.1")) //Command created accounts do not need to be verified
+            {
+                string code = ReturnCode();
+                string msg = "";
+                if (langID == 1)
+                    msg = "Спасибо за регистрацию на нашем сервере, для подтверждения получения письма вам нужно ввести 16-значный код, указанный ниже: \n \n" + code;
+                else
+                    msg = "Thank you for registration! To finish verification process, you need to confirm that you recieved this message. Open confirm page in launcher and enter username and the code: \n \n" + code;
+
+                EmailEventArgs eea = new EmailEventArgs(true, null, email, langID == 1 ? "Регистрация аккаунта" : "Account registration", msg, EmailClient);
+
+                AccountPending ap = new AccountPending()
+                {
+                    Code = code,
+                    Expires = DateTime.Now + TimeSpan.FromHours(1.0),
+                    Username = Acct.Username
+                };
+                AddPending(ap);
+                if (EmailClient != null)
+                    EmailClient.SendMail(eea);
+
+                Database.AddObject(ap);
+                Database.ForceSave();
+            }
             Log.Success("CreateAccount", $"Created {Acct.Username}");
             return true;
+        }
+
+        private void RemovePending(string user)
+        {
+            Account acc = GetAccount(_Codes[user].Username);
+            if (acc != null)
+            {
+                lock (_accounts)
+                    _accounts.Remove(acc.Username);
+                Database.DeleteObject(acc);
+            }
+            _Codes.Remove(user);
+            Database.ExecuteNonQuery($"DELETE FROM accounts_pending WHERE Username = '{Database.Escape(user)}'");
         }
 
         public void UpdateClientPatcherLog(int accountId, string log)

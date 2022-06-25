@@ -254,16 +254,16 @@ namespace WorldServer.NetWork.Handler
 
             if (packet.Size > 9 && packet.Size < 18)
             {
-                Log.Debug("F_PLAYER_STATE2", $"PacketSize = {packet.Size}");
-                Log.Debug("F_PLAYER_STATE2", Log.Hex(data, 0, data.Length));
+                //Log.Debug("F_PLAYER_STATE2", $"PacketSize = {packet.Size}");
+                //Log.Debug("F_PLAYER_STATE2", Log.Hex(data, 0, data.Length));
                 long state = BitConverter.ToInt64(data, 2);
                 long state2 = BitConverter.ToInt64(data, 10);
 
-                Log.Debug("F_PLAYER_STATE2", $"raw state1: {LongToBinary(state)}, state2: {LongToBinary(state2)}");
+                //Log.Debug("F_PLAYER_STATE2", $"raw state1: {LongToBinary(state)}, state2: {LongToBinary(state2)}");
 
                 state = System.Net.IPAddress.NetworkToHostOrder(state);
                 state2 = System.Net.IPAddress.NetworkToHostOrder(state2);
-                Log.Debug("F_PLAYER_STATE2", $"converted state1: {LongToBinary(state)}, state2: {LongToBinary(state2)}");
+                //Log.Debug("F_PLAYER_STATE2", $"converted state1: {LongToBinary(state)}, state2: {LongToBinary(state2)}");
 
                 ushort x = ((ushort)(((state2 >> 56 & 0x1) << 15) | ((state >> 0 & 0xFF) << 7) | ((state >> 9 & 0x7F))));
                 ushort y = ((ushort)(((state2 >> 40 & 0x1) << 15) | ((state2 >> 48 & 0xFF) << 7) | ((state2 >> 57 & 0x7F))));
@@ -277,7 +277,7 @@ namespace WorldServer.NetWork.Handler
                 bool moving = ((((state >> 49 & 0x1))) == 1);
                 bool notMoving = ((((state >> 63 & 0x1))) == 1);
                 byte groundtype = ((byte)(((state2 >> 82 & 0x1F))));
-                Log.Debug("F_PLAYER_STATE2", $"x = {x}, y = {y}, z = {z}, zoneID = {zoneID}, direction = {direction}, grounded = {grounded}, walking={walking}, moving = {moving}, notMoving = {notMoving}, fallState = {fallState}, groundtype = {groundtype}");
+                //Log.Debug("F_PLAYER_STATE2", $"x = {x}, y = {y}, z = {z}, zoneID = {zoneID}, direction = {direction}, grounded = {grounded}, walking={walking}, moving = {moving}, notMoving = {notMoving}, fallState = {fallState}, groundtype = {groundtype}");
 
                 //Hack Zone ID should be ushort but we only read a byte
                 if (cclient.Plr.ZoneId > 255)
@@ -295,12 +295,12 @@ namespace WorldServer.NetWork.Handler
                 }
                 */
 
-               if (zoneID == 111 && player.Client.IsPlaying())
-               {
-                   if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
-                       player.Teleport(202, 1411789, 1454421, 3516, 0);
-                   else if (player.Realm == Realms.REALMS_REALM_ORDER)
-                       player.Teleport(202, 1449783, 1459746, 3549, 0);
+                if (zoneID == 111 && player.Client.IsPlaying())
+                {
+                    if (player.Realm == Realms.REALMS_REALM_DESTRUCTION)
+                        player.Teleport(202, 1411789, 1454421, 3516, 0);
+                    else if (player.Realm == Realms.REALMS_REALM_ORDER)
+                        player.Teleport(202, 1449783, 1459746, 3549, 0);
                 }
 
 #endif

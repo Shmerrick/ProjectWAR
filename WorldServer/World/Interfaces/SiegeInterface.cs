@@ -8,6 +8,7 @@ using WorldServer.Services.World;
 using WorldServer.World.Battlefronts.Keeps;
 using WorldServer.World.Map;
 using WorldServer.World.Objects;
+using WorldServer.World.Physics;
 using WorldServer.World.Positions;
 using CreatureSubTypes = GameData.CreatureSubTypes;
 using CreatureTypes = GameData.CreatureTypes;
@@ -69,7 +70,7 @@ namespace WorldServer.World.Interfaces
         /// <summary>
         /// The handling state of the siege weapon with respect to the current player, if any.
         /// </summary>
-        
+
         private long _deathTime;
 
         public long DeathTime
@@ -870,14 +871,14 @@ namespace WorldServer.World.Interfaces
 
         private bool ArcHit(ushort zoneId, Point3D pinPos, Point3D worldPos)
         {
-            if (_weapon.LOSHit(zoneId, pinPos))
+            if (_weapon.LOSHit(pinPos))
                 return true;
 
 #if DEBUG && ARTILLERY_ARC_DEBUG
             Log.Info("Artillery", "Direct LOS check failed, checking arc...");
 #endif
 
-            var playnice = new World.Map.OcclusionInfo();
+            var playnice = new World.Physics.OcclusionInfo();
             int maxZDisplacement = Math.Min(_Owner.Z, pinPos.Z) + 100 * 12; // check 100 feet upwards
 
             Point3D weaponTopPoint = new Point3D();
@@ -915,7 +916,7 @@ namespace WorldServer.World.Interfaces
                 toRegionX = destPoint.X + (_weapon.Zone.Info.OffX << 12);
                 toRegionY = destPoint.Y + (_weapon.Zone.Info.OffY << 12);
 
-                World.Map.Occlusion.SegmentIntersect(zoneId, zoneId, fromRegionX, fromRegionY, weaponTopPoint.Z + 120, toRegionX, toRegionY, destPoint.Z, true, true, 190, ref playnice);
+                ZoneService.OcclusionProvider.Raytest(zoneId, fromRegionX, fromRegionY, weaponTopPoint.Z + 120, toRegionX, toRegionY, destPoint.Z, true, ref playnice);
 
                 if (playnice.Result != OcclusionResult.NotOccluded)
                 {
@@ -955,7 +956,7 @@ namespace WorldServer.World.Interfaces
                 toRegionX = destPoint.X + (_weapon.Zone.Info.OffX << 12);
                 toRegionY = destPoint.Y + (_weapon.Zone.Info.OffY << 12);
 
-                World.Map.Occlusion.SegmentIntersect(zoneId, zoneId, fromRegionX, fromRegionY, weaponTopPoint.Z + 120, toRegionX, toRegionY, destPoint.Z, true, true, 190, ref playnice);
+                ZoneService.OcclusionProvider.Raytest(zoneId, fromRegionX, fromRegionY, weaponTopPoint.Z + 120, toRegionX, toRegionY, destPoint.Z, true, ref playnice);
 
                 if (playnice.Result != OcclusionResult.NotOccluded)
                 {
@@ -980,7 +981,7 @@ namespace WorldServer.World.Interfaces
             toRegionY = pinPos.Y + (_weapon.Zone.Info.OffY << 12);
 
             // Check LOS between two apex points
-            World.Map.Occlusion.SegmentIntersect(zoneId, zoneId, fromRegionX, fromRegionY, weaponTopPoint.Z + 120, toRegionX, toRegionY, pinPos.Z, true, true, 190, ref playnice);
+            ZoneService.OcclusionProvider.Raytest(zoneId, fromRegionX, fromRegionY, weaponTopPoint.Z + 120, toRegionX, toRegionY, pinPos.Z, true, ref playnice);
 
             if (playnice.Result != OcclusionResult.NotOccluded)
             {

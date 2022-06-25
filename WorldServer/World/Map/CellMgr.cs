@@ -1,6 +1,4 @@
-﻿//#define SUPPRESS_LOAD
-
-using Common;
+﻿using Common;
 using Common.Database.World.Maps;
 using FrameWork;
 using System.Collections.Generic;
@@ -11,10 +9,15 @@ namespace WorldServer.World.Map
 {
     public class CellMgr
     {
-        public RegionMgr Region;
-        public ushort X;
-        public ushort Y;
-        public CellSpawns Spawns;
+        public RegionMgr Region { get; private set; }
+        public ushort X { get; private set; }
+        public ushort Y { get; private set; }
+        public CellSpawns Spawns { get; private set; }
+        public bool Active { get; private set; }
+        public bool Loaded { get; private set; }
+
+        public List<Object> Objects = new List<Object>();
+        public List<Player> Players = new List<Player>();
 
         public CellMgr(RegionMgr mgr, ushort offX, ushort offY)
         {
@@ -22,12 +25,8 @@ namespace WorldServer.World.Map
             X = offX;
             Y = offY;
             Spawns = mgr.GetCellSpawn(offX, offY);
+            Active = false;
         }
-
-        #region Objects
-
-        public List<Object> Objects = new List<Object>();
-        public List<Player> Players = new List<Player>();
 
         public void AddObject(Object obj)
         {
@@ -35,6 +34,7 @@ namespace WorldServer.World.Map
             {
                 Players.Add((Player)obj);
                 Region.LoadCells(X, Y, 1); // Load nearby cells when a player enters
+                Active = true;
             }
 
             Objects.Add(obj);
@@ -52,14 +52,10 @@ namespace WorldServer.World.Map
 
                 Objects.Remove(obj);
                 obj._Cell = null;
+                if (Players.Count == 0)
+                    Active = false;
             }
         }
-
-        #endregion Objects
-
-        #region Spawns
-
-        public bool Loaded;
 
         public void Load()
         {
@@ -90,7 +86,5 @@ namespace WorldServer.World.Map
         {
             return "CellMgr[" + X + "," + Y + "]";
         }
-
-        #endregion Spawns
     }
 }

@@ -2,8 +2,10 @@
 using AuthenticationServer.Server;
 using Common;
 using FrameWork;
+using FrameWork.Misc;
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace AuthenticationServer
 {
@@ -86,6 +88,7 @@ namespace AuthenticationServer
         private static void onError(object sender, UnhandledExceptionEventArgs e)
         {
             Log.Error("OnError", e.ExceptionObject.ToString());
+            CrashGuard.GenerateCrashReport(e);
         }
     }
 }

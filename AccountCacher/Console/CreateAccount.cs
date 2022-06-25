@@ -13,9 +13,10 @@ namespace AccountCacher
         {
             string Username = args[0];
             string Password = args[1];
-            int GmLevel = int.Parse(args[2]);
+            string Mail = args[2];
+            int GmLevel = int.Parse(args[3]);
 
-            return Core.AcctMgr.CreateAccount(Username, Password, GmLevel);
+            return Core.AcctMgr.CreateAccount(Username, Password, Mail, GmLevel, 0);
         }
     }
 

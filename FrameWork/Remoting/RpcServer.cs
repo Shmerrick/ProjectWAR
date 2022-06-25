@@ -1,14 +1,12 @@
-﻿
- 
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 using System.Reflection;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
-using System.Runtime.Remoting.Services;
 using System.Runtime.Remoting.Channels.Tcp;
+using System.Runtime.Remoting.Services;
+using System.Text;
+using System.Threading;
 
 namespace FrameWork
 {
@@ -39,7 +37,7 @@ namespace FrameWork
 
         public bool IsRunning = true;
         public Thread Pinger;
-        
+
         // 0 = Client Class
         // 1 = Server Class
         public List<Type>[] RegisteredTypes;
@@ -161,14 +159,13 @@ namespace FrameWork
 
         public T GetLocalObject<T>() where T : RpcObject
         {
-            return GetObject(typeof(T),LocalIp,LocalPort) as T;
+            return GetObject(typeof(T), LocalIp, LocalPort) as T;
         }
 
         public RpcObject GetLocalObject(Type type)
         {
             return GetObject(type, LocalIp, LocalPort);
         }
-
 
         public static T GetObject<T>(RpcClientInfo Info) where T : RpcObject
         {

@@ -1,6 +1,4 @@
-﻿//#define NO_RESPOND
-
-using Common;
+﻿using Common;
 using FrameWork;
 using GameData;
 using System;
@@ -209,7 +207,8 @@ namespace WorldServer.World.Interfaces
                     }
                 }
             }
-
+            if (!_unit._Cell.Active)
+                return;
             if (CurrentBrain != null && CurrentBrain.IsStart && !CurrentBrain.IsStop)
             {
                 CurrentBrain.Think(tick);

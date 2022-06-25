@@ -11,6 +11,7 @@ using static WorldServer.Managers.Commands.InstanceCommands;
 using static WorldServer.Managers.Commands.ModifyCommands;
 using static WorldServer.Managers.Commands.MountCommands;
 using static WorldServer.Managers.Commands.NpcCommands;
+using static WorldServer.Managers.Commands.OcclusionCommands;
 using static WorldServer.Managers.Commands.PqCommands;
 using static WorldServer.Managers.Commands.RespawnCommands;
 using static WorldServer.Managers.Commands.RespecCommands;
@@ -283,6 +284,12 @@ namespace WorldServer.Managers.Commands
         /// <summary>Root commands list.</summary>
         public static List<GmCommandHandler> BaseCommand = new List<GmCommandHandler>
         {
+            #region Occlusion
+
+            new GmCommandHandler("los", LOSTest, null, EGmLevel.GM, 1, "Performs specified amount of LOS checks on target and calculates average check time in ms"),
+
+            #endregion Occlusion
+
             #region Command Group Handlers
 
             new GmCommandHandler("ability", null, AbilityCommands, 0, 0, "Ability commands."),
@@ -407,7 +414,7 @@ namespace WorldServer.Managers.Commands
             // Database dev commands
 
             new GmCommandHandler("playeffect", PlayEffect, null, EGmLevel.DatabaseDev, 2, "Play effect from data/gamedata/effectlist.csv"),
-            new GmCommandHandler("playability", PlayAbility, null, EGmLevel.DatabaseDev, 2, "Plays ability from data/gamedata/effect.csv (string playerName, ushort effectID)"),
+            new GmCommandHandler("playability", PlayAbility, null, EGmLevel.DatabaseDev, 3, "Plays ability from data/gamedata/effect.csv (string playerName, ushort abilityID, ushort effectID)"),
             new GmCommandHandler("playsound", PlaySound, null, EGmLevel.DatabaseDev, 1,
                 "Play sound from data/gamedata/audio_server.csv. Multiple sounds can be specified .playsound <soundID:delayInSeconds> ... (ex: .playsound 628:10 1010:15 1319:25)"),
             new GmCommandHandler("save", Save, null, EGmLevel.DatabaseDev, 0, "Performs a database save on the target."),
@@ -417,11 +424,10 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("quest", QuestComplete, null, EGmLevel.DatabaseDev, 2,
                 "Used to debug quests <QuestId> <Operation> Operation 1 - add, 2 - finish quest, 3 - delete quest from player"),
             new GmCommandHandler("givebag", GiveBag, null, EGmLevel.SourceDev, 0,
-                "Used to give a character a bag <Rarity><Item1><Item2>.."), 
+                "Used to give a character a bag <Rarity><Item1><Item2>.."),
             new GmCommandHandler("gunbad", Gunbad, null, EGmLevel.GM, 0, "Used to to set character for tester"),
             new GmCommandHandler("eightpeaks", EightPeaks, null, EGmLevel.GM, 0, "Used to to set character for tester"),
             new GmCommandHandler("karaz", Karaz, null, EGmLevel.GM, 0, "Used to to set character for tester"),
-
 
             // Source dev commands
             new GmCommandHandler("lockcasting", PreventCasting, null, EGmLevel.SourceDev, 0, "Prevents all casting (byte blockAllCasts)"),

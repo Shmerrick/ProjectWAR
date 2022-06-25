@@ -1,6 +1,4 @@
-﻿
- 
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,7 +44,6 @@ namespace FrameWork
             RpcClientInfo Info = GetClient(Name);
             if (Info == null)
             {
-
                 int RpcId = BitConverter.ToInt32(Guid.NewGuid().ToByteArray(), 0);
 
                 Info = new RpcClientInfo(Name, Ip, ++StartingPort, RpcId);
@@ -79,7 +76,6 @@ namespace FrameWork
 
                 try
                 {
-
                     foreach (Type type in Server.RegisteredTypes[1])
                     {
                         Log.Debug("ServerMgr", Info.Name + " Send to : " + ConnectedClient.Name + ",T=" + type);
@@ -94,7 +90,6 @@ namespace FrameWork
                 }
             }
 
-
             Info.Connected = true;
 
             return true;
@@ -102,7 +97,6 @@ namespace FrameWork
 
         public void Ping()
         {
-
         }
 
         public override object InitializeLifetimeService()

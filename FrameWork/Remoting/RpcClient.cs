@@ -1,16 +1,14 @@
-﻿
- 
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
-using System.Runtime.Remoting.Services;
 using System.Runtime.Remoting.Channels.Tcp;
+using System.Runtime.Remoting.Services;
+using System.Text;
+using System.Threading;
 using System.Timers;
-using System.Diagnostics;
 
 namespace FrameWork
 {
@@ -19,7 +17,6 @@ namespace FrameWork
     {
         public RpcClientConfig()
         {
-
         }
 
         public RpcClientConfig(string RpcLocalIp, string RpcServerIp, int RpcServerPort)
@@ -93,11 +90,11 @@ namespace FrameWork
             }
             catch
             {
-
             }
 
             return Connect(RpcServerIp, RpcServerPort);
         }
+
         public bool Connect(string Ip, int Port)
         {
             Log.Debug("RpcClient", "Connect : " + Ip + ":" + Port);
@@ -113,7 +110,7 @@ namespace FrameWork
 
                 Log.Debug("RpcClient", "Connecting to : " + Ip);
 
-                if(!Pinger.IsAlive)
+                if (!Pinger.IsAlive)
                     Pinger.Start();
 
                 Channel = new TcpClientChannel(ServerName, null);
@@ -131,8 +128,8 @@ namespace FrameWork
                 ChannelServices.RegisterChannel(ServerChannel, false);
 
                 RegisteredTypes = RpcObject.RegisterHandlers(false, AllowedID);
-                    foreach (Type t in RegisteredTypes[1])
-                        RpcServer.GetObject(t, Info.Ip, Info.Port).MyInfo = Info;
+                foreach (Type t in RegisteredTypes[1])
+                    RpcServer.GetObject(t, Info.Ip, Info.Port).MyInfo = Info;
 
                 Mgr.Connected(Info.RpcID);
 
@@ -180,7 +177,6 @@ namespace FrameWork
 
                         Connect();
                     }
-
                 }
                 int Diff = Environment.TickCount - Start;
                 if (Diff < PING_TIME)

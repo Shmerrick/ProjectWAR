@@ -1,12 +1,15 @@
 ﻿using AccountCacher;
 using Common;
 using FrameWork;
+using FrameWork.Misc;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime;
+using System.Text;
 using System.Threading;
 using WorldServer.Configs;
 using WorldServer.Managers;
@@ -27,44 +30,108 @@ namespace WorldServer
         public static TCPServer Server;
         public static Realm Rm;
         private static Timer _timer;
+        private static Process m_Process;
+
+        public static string ExePath
+        {
+            get
+            {
+                return Assembly.GetEntryAssembly().Location;
+            }
+        }
+
+        public static bool Debug { get; private set; }
+        public static bool Dev { get; private set; }
+        public static bool HighPriority { get; private set; }
+        public static bool LoadPhysics { get; private set; }
 
         private static readonly double _HighFrequency = 1000.0 / Stopwatch.Frequency;
         public static long TickCount => (long)Ticks;
 
         public static double Ticks => Stopwatch.GetTimestamp() * _HighFrequency;
 
+        public static string Arguments
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+
+                if (Debug)
+                    Utils.Separate(sb, "-debug", " ");
+
+                if (Dev)
+                    Utils.Separate(sb, "-dev", " ");
+
+                if (HighPriority)
+                    Utils.Separate(sb, "-priority", " ");
+
+                if (LoadPhysics)
+                    Utils.Separate(sb, "-physics", " ");
+
+                return sb.ToString();
+            }
+        }
+
         [STAThread]
         private static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(onError);
             Console.CancelKeyPress += new ConsoleCancelEventHandler(OnClose);
+            m_Process = Process.GetCurrentProcess();
 
             Log.Info("", "-------------------- World Server ---------------------", ConsoleColor.DarkRed);
 
-            // Default the server to DEV mode.
-            if (args.Length == 0)
+            // WorldServer mode load
+            Debug = true;
+            HighPriority = true;
+            Dev = true;
+            LoadPhysics = true;
+
+            if (Dev)
+            {
                 WorldMgr.ServerMode = "DEV";
+            }
             else
             {
-                if (args.Length == 1)
-                {
-                    if (args[0] == "DEV")
-                    {
-                        WorldMgr.ServerMode = "DEV";
-                    }
-                    if (args[0] == "PRD")
-                    {
-                        WorldMgr.ServerMode = "PRD";
-                    }
-                }
-                else
-                {
-                    WorldMgr.ServerMode = "DEV";
-                }
+                WorldMgr.ServerMode = "PRD";
             }
 
-            Log.Info("", "SERVER running in " + WorldMgr.ServerMode + " mode", ConsoleColor.DarkRed);
+            Version ver = Assembly.GetEntryAssembly().GetName().Version;
 
+            Utils.PushColor(ConsoleColor.Cyan);
+            Console.WriteLine("DagonUO Version {0}.{1}, Build {2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision);
+            Console.WriteLine("Core: Running on .NET Framework Version {0}.{1}.{2}", Environment.Version.Major, Environment.Version.Minor, Environment.Version.Build);
+            Utils.PopColor();
+            Console.WriteLine("██╗    ██╗██╗████████╗ ██████╗██╗  ██╗██╗  ██╗██████╗  █████╗ ███████╗████████╗");
+            Console.WriteLine("██║    ██║██║╚══██╔══╝██╔════╝██║  ██║██║ ██╔╝██╔══██╗██╔══██╗██╔════╝╚══██╔══╝");
+            Console.WriteLine("██║ █╗ ██║██║   ██║   ██║     ███████║█████╔╝ ██████╔╝███████║█████╗     ██║   ");
+            Console.WriteLine("╚███╔███╔╝██║   ██║   ╚██████╗██║  ██║██║  ██╗██║  ██║██║  ██║██║        ██║   ");
+            Console.WriteLine(" ╚══╝╚══╝ ╚═╝   ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝   ");
+            Utils.PushColor(ConsoleColor.Cyan);
+            string s = Arguments;
+
+            if (s.Length > 0)
+                Console.WriteLine("Core: Running with arguments: {0}", s);
+
+            try
+            {
+                if (HighPriority)
+                {
+                    Console.WriteLine("Core: Set process priority to Above Normal");
+                    System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.AboveNormal;
+                }
+            }
+            catch (Exception ex)
+            {
+                //Server.Diagnostics.ExceptionLogging.LogException(ex);
+            }
+
+            if (GCSettings.IsServerGC)
+                Console.WriteLine("Core: Server garbage collection mode enabled");
+
+            Log.Info("", "Core: running in " + WorldMgr.ServerMode + " mode");
+            Utils.PopColor();
+            Utils.PushColor(ConsoleColor.Gray);
             // Loading all configs files
             ConfigMgr.LoadConfigs();
             Config = ConfigMgr.GetConfig<WorldConfig>();
@@ -74,7 +141,7 @@ namespace WorldServer
             if (!Log.InitLog(Config.LogLevel, "WorldServer"))
                 ConsoleMgr.WaitAndExit(2000);
 
-
+#if DEBUG
             API.Server api = null;
             if (Config.EnableAPI)
             {
@@ -87,7 +154,7 @@ namespace WorldServer
                     Log.Error("API", "Unable to start API server: " + e.Message);
                 }
             }
-
+#endif
 
             CharMgr.Database = DBManager.Start(Config.CharacterDatabase.Total(), Config.CharacterDatabase.ConnectionType, "Characters", Config.CharacterDatabase.Database);
             if (CharMgr.Database == null)
@@ -109,6 +176,7 @@ namespace WorldServer
                 Log.Error("Directory Check", "Zones directory does not exist");
                 ConsoleMgr.WaitAndExit(2000);
             }
+
             if (!Directory.Exists("Abilities"))
             {
                 Log.Error("Directory Check", "Abilities directory does not exist");
@@ -129,30 +197,30 @@ namespace WorldServer
 
             LoaderMgr.Start();
             // Clean up rvr_metrics
-            Log.Info("Battlefront Manager", "Clearing rvr_metrics", ConsoleColor.Cyan);
+            Log.Debug("Battlefront Manager", "Clearing rvr_metrics");
             WorldMgr.Database.ExecuteNonQuery("DELETE FROM rvr_metrics WHERE TIMESTAMP NOT BETWEEN DATE_SUB(UTC_TIMESTAMP(), INTERVAL 60 DAY) AND UTC_TIMESTAMP()");
 
-            Log.Info("Battlefront Manager", "Creating Upper Tier Campaign Manager", ConsoleColor.Cyan);
+            Log.Debug("Battlefront Manager", "Creating Upper Tier Campaign Manager");
             if (RVRProgressionService._RVRProgressions.Count == 0)
             {
                 Log.Error("RVR Progression", "NO RVR Progressions in DB");
                 return;
             }
             WorldMgr.UpperTierCampaignManager = new UpperTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 4).ToList(), WorldMgr._Regions);
-            Log.Info("Battlefront Manager", "Creating Lower Tier Campaign Manager", ConsoleColor.Cyan);
+            Log.Debug("Battlefront Manager", "Creating Lower Tier Campaign Manager");
             WorldMgr.LowerTierCampaignManager = new LowerTierCampaignManager(RVRProgressionService._RVRProgressions.Where(x => x.Tier == 1).ToList(), WorldMgr._Regions);
-            Log.Info("Battlefront Manager", "Getting Progression based upon rvr_progression.LastOpenedZone", ConsoleColor.Cyan);
+            Log.Debug("Battlefront Manager", "Getting Progression based upon rvr_progression.LastOpenedZone");
             WorldMgr.UpperTierCampaignManager.GetActiveBattleFrontFromProgression();
             WorldMgr.LowerTierCampaignManager.GetActiveBattleFrontFromProgression();
-            Log.Info("Battlefront Manager", "Attaching Campaigns to Regions", ConsoleColor.Cyan);
+            Log.Debug("Battlefront Manager", "Attaching Campaigns to Regions");
             // Attach Battlefronts to regions
             WorldMgr.AttachCampaignsToRegions();
 
-            Log.Info("Battlefront Manager", "Locking Battlefronts", ConsoleColor.Cyan);
+            Log.Debug("Battlefront Manager", "Locking Battlefronts");
             WorldMgr.UpperTierCampaignManager.LockBattleFrontsAllRegions(4);
             WorldMgr.LowerTierCampaignManager.LockBattleFrontsAllRegions(1);
 
-            Log.Info("Battlefront Manager", "Opening Active battlefronts", ConsoleColor.Cyan);
+            Log.Debug("Battlefront Manager", "Opening Active battlefronts");
             WorldMgr.UpperTierCampaignManager.OpenActiveBattlefront();
             WorldMgr.LowerTierCampaignManager.OpenActiveBattlefront();
 
@@ -166,7 +234,19 @@ namespace WorldServer
             AcctMgr.UpdateRealm(Client.Info, Rm.RealmId);
             AcctMgr.UpdateRealmCharacters(Rm.RealmId, (uint)CharMgr.Database.GetObjectCount<Character>("Realm=1"), (uint)CharMgr.Database.GetObjectCount<Character>("Realm=2"));
 
+            // PrintCommands();
+
             ConsoleMgr.Start();
+        }
+
+        public static void Kill(bool restart)
+        {
+            // HandleClosed();
+
+            if (restart)
+                Process.Start(ExePath, Arguments);
+
+            m_Process.Kill();
         }
 
         private static void onError(object sender, UnhandledExceptionEventArgs e)
@@ -175,51 +255,17 @@ namespace WorldServer
             GenerateCrashReport(e);
         }
 
-        private static string GetRoot()
-        {
-            try
-            {
-                return Path.GetDirectoryName(Environment.GetCommandLineArgs()[0]);
-            }
-            catch
-            {
-                return "";
-            }
-        }
-
-        private static string GetTimeStamp()
-        {
-            DateTime now = DateTime.Now;
-
-            return String.Format("{0}-{1}-{2}-{3}-{4}-{5}",
-                    now.Day,
-                    now.Month,
-                    now.Year,
-                    now.Hour,
-                    now.Minute,
-                    now.Second
-                );
-        }
-
-        private static string Combine(string path1, string path2)
-        {
-            if (path1.Length == 0)
-                return path2;
-
-            return Path.Combine(path1, path2);
-        }
-
         private static void GenerateCrashReport(UnhandledExceptionEventArgs e)
         {
             Console.WriteLine("Crash: Generating report...");
 
             try
             {
-                string timeStamp = GetTimeStamp();
-                string fileName = String.Format("Crash {0}.log", timeStamp);
+                string timeStamp = CrashGuard.GetTimeStamp();
+                string fileName = String.Format("WorldServer-Crash {0}.log", timeStamp);
 
-                string root = GetRoot();
-                string filePath = Combine(root, fileName);
+                string root = CrashGuard.GetRoot();
+                string filePath = CrashGuard.Combine(root, fileName);
 
                 using (StreamWriter op = new StreamWriter(filePath))
                 {
@@ -228,7 +274,7 @@ namespace WorldServer
                     op.WriteLine("Server Crash Report");
                     op.WriteLine("===================");
                     op.WriteLine();
-                    op.WriteLine("WarEmu Version {0}.{1}, Build {2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision);
+                    op.WriteLine("App Version {0}.{1}, Build {2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision);
                     op.WriteLine("Operating System: {0}", Environment.OSVersion);
                     op.WriteLine(".NET Framework: {0}", Environment.Version);
                     op.WriteLine("Time: {0}", DateTime.Now);
@@ -273,6 +319,7 @@ namespace WorldServer
                 Console.WriteLine("failed");
             }
         }
+
         public static void OnClose(object obj, object Args)
         {
             Log.Info("Closing", "Closing the server");

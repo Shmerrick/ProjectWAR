@@ -92,10 +92,13 @@ namespace FrameWork
         {
             Log.Info("ConsoleMgr", "Commands list : ");
 
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            try
             {
+                Assembly assembly = Assembly.GetEntryAssembly();
+
                 Log.Dump("ConsoleMgr", "Attempting to load : " + assembly.FullName);
-                foreach (Type type in assembly.GetTypes())
+                Type[] types = assembly.GetTypes();
+                foreach (Type type in types)
                 {
                     Log.Dump("ConsoleMgr", "Attempting to load : " + type.FullName);
                     // Pick up a class
@@ -117,6 +120,9 @@ namespace FrameWork
                     Log.Dump("ConsoleMgr", type.FullName);
                 }
                 Log.Dump("ConsoleMgr", assembly.FullName);
+            }
+            catch (Exception ex)
+            {
             }
         }
 

@@ -12,6 +12,18 @@ namespace WorldServer.Managers.Commands
     /// <summary>Game object commands under .go</summary>
     internal class GoCommands
     {
+        [CommandAttribute(EGmLevel.DatabaseDev, "Set GO's Z component")]
+        public static void SetZ(Player plr, int z)
+        {
+            Object obj = GetObjectTarget(plr);
+            if (!obj.IsGameObject())
+            {
+                plr.SendClientMessage($"GAMEOBJECT REMOVE: Target is not a gameobject", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
+                return;
+            }
+            obj.Z = z;
+        }
+
         [CommandAttribute(EGmLevel.DatabaseDev, "Spawn an Go")]
         public static void Spawn(Player plr, uint entry)
         {
@@ -92,12 +104,7 @@ namespace WorldServer.Managers.Commands
                 WorldMgr.Database.DeleteObject(obj.GetGameObject().Spawn);
         }
 
-#if !DEBUG
         [CommandAttribute(EGmLevel.SourceDev, "Set the health of GO to value percent - 100 is 100%, 50 is 50%")]
-#else
-
-        [CommandAttribute(EGmLevel.DatabaseDev, "Set the health of GO to value percent - 100 is 100%, 50 is 50%")]
-#endif
         public static bool Health(Player plr, int healthPercent)
         {
             Object target = plr.CbtInterface.GetCurrentTarget();

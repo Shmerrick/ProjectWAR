@@ -81,7 +81,10 @@
         CL_SET_PATCH_NOTES = 183,
 
         //CL_DELETE_ASSETS = 184,
-        CL_PATCHER_LOG = 185
+        CL_PATCHER_LOG = 185,
+
+        CL_EMAIL_REGISTRATION = 186,
+        LCR_EMAIL_RESPONCE = 187,
     }
 
     public enum AbortReason : byte

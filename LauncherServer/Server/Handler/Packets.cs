@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Text.RegularExpressions;
 
 namespace AuthenticationServer.Server.Handler
 {
@@ -16,8 +17,9 @@ namespace AuthenticationServer.Server.Handler
 
             string username = packet.GetString();
             string password = packet.GetString();
-
-            Log.Debug("CL_CREATE", $"CL_CREATE Create Request : {username} {password} ");
+            string email = packet.GetString();
+            byte langID = (byte)packet.ReadByte();
+            Log.Debug("CL_CREATE", $"CL_CREATE Create Request : {username} {password} {email} lang: {langID}");
 
             CreteAccountResult result = CreteAccountResult.ACCOUNT_BANNED;
 
@@ -30,7 +32,7 @@ namespace AuthenticationServer.Server.Handler
             {
                 Log.Debug("CL_CREATE", "Create Account Request : " + username + " " + result);
 
-                if (Core.AcctMgr.CreateAccount(username, password, 1, ip))
+                if (Core.AcctMgr.CreateAccount(username, password, email, 1, langID, ip))
                 {
                     result = CreteAccountResult.ACCOUNT_NAME_SUCCESS;
                     Log.Debug("CL_CREATE", "Create Account Request SUCCESS");
@@ -40,7 +42,6 @@ namespace AuthenticationServer.Server.Handler
                     Log.Debug("CL_CREATE", "Create Account Request BUSY");
                     result = CreteAccountResult.ACCOUNT_NAME_BUSY;
                 }
-
                 Out.WriteByte((byte)result);
             }
             else
@@ -303,6 +304,20 @@ namespace AuthenticationServer.Server.Handler
             string log = System.Text.ASCIIEncoding.ASCII.GetString(uncompressedData);
 
             cclient.OnPatcherLog(log);
+        }
+
+        //client sending email code
+        [PacketHandler(PacketHandlerType.TCP, (int)Opcodes.CL_EMAIL_REGISTRATION, 0, "CL_EMAIL_REGISTRATION")]
+        public static void CL_EMAIL_REGISTRATION(BaseClient client, PacketIn packet)
+        {
+            Client cclient = (Client)client;
+
+            string username = packet.GetString().ToLower();
+            string code = packet.GetString();
+            PacketOut Out = new PacketOut((byte)Opcodes.LCR_EMAIL_RESPONCE);
+            Out.WriteInt32(Core.AcctMgr.CheckCode(username, code));
+            Log.Debug("CL_EMAIL_REGISTRATION", $"Writing response to Client {Out} ");
+            cclient.SendPacketNoBlock(Out);
         }
     }
 }
