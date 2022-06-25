@@ -77,20 +77,15 @@ namespace WorldServer
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(onError);
             Console.CancelKeyPress += new ConsoleCancelEventHandler(OnClose);
+            m_Process = Process.GetCurrentProcess();
 
             Log.Info("", "-------------------- World Server ---------------------", ConsoleColor.DarkRed);
 
-            for (int i = 0; i < args.Length; ++i)
-            {
-                if (Insensitive.Equals(args[i], "-debug"))
-                    Debug = true;
-                else
-                {
-                    HighPriority = true;
-                    Dev = true;
-                    LoadPhysics = true;
-                }
-            }
+            // WorldServer mode load
+            Debug = true;
+            HighPriority = true;
+            Dev = true;
+            LoadPhysics = true;
 
             if (Dev)
             {
@@ -137,7 +132,6 @@ namespace WorldServer
             Log.Info("", "Core: running in " + WorldMgr.ServerMode + " mode");
             Utils.PopColor();
             Utils.PushColor(ConsoleColor.Gray);
-
             // Loading all configs files
             ConfigMgr.LoadConfigs();
             Config = ConfigMgr.GetConfig<WorldConfig>();
@@ -147,6 +141,7 @@ namespace WorldServer
             if (!Log.InitLog(Config.LogLevel, "WorldServer"))
                 ConsoleMgr.WaitAndExit(2000);
 
+#if DEBUG
             API.Server api = null;
             if (Config.EnableAPI)
             {
@@ -159,6 +154,7 @@ namespace WorldServer
                     Log.Error("API", "Unable to start API server: " + e.Message);
                 }
             }
+#endif
 
             CharMgr.Database = DBManager.Start(Config.CharacterDatabase.Total(), Config.CharacterDatabase.ConnectionType, "Characters", Config.CharacterDatabase.Database);
             if (CharMgr.Database == null)
@@ -180,6 +176,7 @@ namespace WorldServer
                 Log.Error("Directory Check", "Zones directory does not exist");
                 ConsoleMgr.WaitAndExit(2000);
             }
+
             if (!Directory.Exists("Abilities"))
             {
                 Log.Error("Directory Check", "Abilities directory does not exist");
@@ -237,6 +234,8 @@ namespace WorldServer
             AcctMgr.UpdateRealm(Client.Info, Rm.RealmId);
             AcctMgr.UpdateRealmCharacters(Rm.RealmId, (uint)CharMgr.Database.GetObjectCount<Character>("Realm=1"), (uint)CharMgr.Database.GetObjectCount<Character>("Realm=2"));
 
+            // PrintCommands();
+
             ConsoleMgr.Start();
         }
 
@@ -275,7 +274,7 @@ namespace WorldServer
                     op.WriteLine("Server Crash Report");
                     op.WriteLine("===================");
                     op.WriteLine();
-                    op.WriteLine("ProjectWAR Version {0}.{1}, Build {2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision);
+                    op.WriteLine("App Version {0}.{1}, Build {2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision);
                     op.WriteLine("Operating System: {0}", Environment.OSVersion);
                     op.WriteLine(".NET Framework: {0}", Environment.Version);
                     op.WriteLine("Time: {0}", DateTime.Now);
