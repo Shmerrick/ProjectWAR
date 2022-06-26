@@ -14,6 +14,7 @@ using WorldServer.Managers;
 using WorldServer.Managers.Commands;
 using WorldServer.NetWork;
 using WorldServer.NetWork.Handler;
+using WorldServer.NetWork.Packets;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
@@ -131,7 +132,7 @@ namespace WorldServer.World.Objects
 
             Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 13);
             Out.WriteUInt16(Oid);
-            Out.WriteByte(0x1B);
+            Out.WriteByte((byte)StateOpcode.CastCompletion);
             Out.WriteByte((byte)(kneel ? 1 : 0));
             Out.WriteByte(0);
             Out.WriteByte(0);
@@ -1656,7 +1657,7 @@ namespace WorldServer.World.Objects
             //Dwarf order side
             Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE);
             Out.WriteUInt16(0x001F);   // area id
-            Out.WriteByte(0x11);
+            Out.WriteByte((byte)StateOpcode.ZoneEntry);
             Out.WriteByte(2);
             Out.WriteByte(1);
             Out.WriteByte(1);
@@ -1926,18 +1927,6 @@ namespace WorldServer.World.Objects
             SendPacket(Out);
         }
 
-        public void SendRvrTracker()
-        {
-            PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 13);
-            Out.WriteByte(0);
-            Out.WriteByte(1);
-            Out.WriteByte(0x11);
-            Out.WriteByte(2);
-            Out.WriteByte(1);
-            Out.Fill(0, 5);
-            SendPacket(Out);
-        }
-
         public void SendPlayedTime()
         {
             _lastCheckedTime = (uint)TCPManager.GetTimeStamp();
@@ -2027,51 +2016,21 @@ namespace WorldServer.World.Objects
             PacketOut Out;
             if (CurrentArea.IsRvR)
             {
-                //notify entering lakes, required to show rvr tracker. TODO move it to switch_region
-                Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
-                Out.WriteUInt16(Zone.ZoneId);   //zoneID
-                Out.WriteByte(0x11);
-                Out.WriteByte(1);
-                Out.WriteByte(1);
-                Out.WriteByte(0);
-                Out.WriteByte(0);
-                Out.WriteByte(0);
-                Out.Fill(0, 2);
-                SendPacket(Out);
+                SendPacket(Packets.UpdateZone(Zone.ZoneId, 1, 1));
 
                 //show rvr tracker
-                Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
-                Out.WriteUInt16(_currentAreaId);   //zoneID
-                Out.WriteByte(0x11);
-                Out.WriteByte(2);
-                Out.WriteByte(1);
-                Out.WriteByte(0);
-                Out.WriteByte(0);
-                Out.WriteByte(0);
-                Out.Fill(0, 2);
-                SendPacket(Out);
+                SendPacket(Packets.UpdateZone(_currentAreaId, 2, 1));
             }
             if (_currentAreaId > 0)
             {
-                Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
-                Out.WriteUInt16(_currentAreaId);   // area id
-                                                   //Out.WriteUInt16(1);   // area id
-                Out.WriteByte(0x11);
-                Out.WriteByte(2);
-                Out.WriteByte(2);
-                Out.WriteByte(0);
-                Out.WriteByte(0);
-                Out.WriteByte(0);
-                Out.Fill(0, 2);
-                SendPacket(Out);
+                SendPacket(Packets.UpdateZone(_currentAreaId, 2, 2));
             }
 
             _currentAreaId = CurrentArea.AreaId;
 
             Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
             Out.WriteUInt16(_currentAreaId);   // area id
-                                               //Out.WriteUInt16(1);   // area id
-            Out.WriteByte(0x11);
+            Out.WriteByte((byte)StateOpcode.ZoneEntry);
             Out.WriteByte(2);
             Out.WriteByte(1);
             Out.WriteByte(0);
@@ -2233,7 +2192,7 @@ namespace WorldServer.World.Objects
 
         public void SendLeave()
         {
-            DispatchUpdateState(4, 0); // Unflag client for RvR on quit
+            DispatchUpdateState((byte)StateOpcode.RvRFlag, 0); // Unflag client for RvR on quit
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_PLAYER_QUIT, 2);
             Out.WriteByte(0);
@@ -3090,7 +3049,7 @@ namespace WorldServer.World.Objects
             BountyManagerInstance?.ResetCharacterBounty(CharacterId, this);
 
             if (level % 10 == 0)
-                DispatchUpdateState(8, _Value.RenownRank); // Update renown title.
+                DispatchUpdateState((byte)StateOpcode.RenownTitle, _Value.RenownRank); // Update renown title.
 
             if (Loaded && _initialized)
                 SendRenown();

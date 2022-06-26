@@ -1090,7 +1090,7 @@ namespace WorldServer.World.Interfaces
             //enable fire button
             PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE);
             Out.WriteUInt16(_weapon.Oid);
-            Out.WriteByte(0x1C);
+            Out.WriteByte((byte)StateOpcode.FireState);
             Out.WriteByte(enabled ? (byte)0x3 : (byte)0x5); // 0x1c03
             player.SendPacket(Out);
         }
@@ -1152,7 +1152,7 @@ namespace WorldServer.World.Interfaces
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE);
             Out.WriteUInt16(_Owner.Oid);
-            Out.WriteByte(0x1d);
+            Out.WriteByte((byte)StateOpcode.UserList);
             Out.WriteByte((byte)Players.Count);  // players
             Out.WriteByte(_maxPlayers); // MAXIMUM USERS
             Out.WriteByte((byte)(Players.Count * 2));  // players

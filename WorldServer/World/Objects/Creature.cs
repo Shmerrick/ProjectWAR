@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using SystemData;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
+using WorldServer.NetWork.Packets;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
@@ -487,12 +488,7 @@ namespace WorldServer.World.Objects
             // Send packet to prevent targeting of invulnerables
             if (IsInvulnerable)
             {
-                Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE);
-                Out.WriteUInt16(Oid);
-                Out.WriteByte(1);
-                Out.WriteByte(7);
-                Out.Fill(0, 6);
-                plr.SendPacket(Out);
+                plr.SendPacket(Packets.UpdateCreatureState(Oid, CreatureStateOpcode.Invulnerable));
             }
         }
 

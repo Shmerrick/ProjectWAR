@@ -1934,7 +1934,7 @@ namespace WorldServer.Managers.Commands
 
                 var Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 18);
                 Out.WriteUInt16((byte)oid);
-                Out.WriteByte(6);
+                Out.WriteByte((byte)StateOpcode.Effect);
                 Out.WriteByte(0);
                 Out.WriteUInt16(0x08);
 

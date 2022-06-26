@@ -233,7 +233,7 @@ namespace WorldServer.World.Objects
             set
             {
                 _interactState = value;
-                UpdateInteractState(value);
+                UpdateInteractState((NetWork.Packets.CreatureStateOpcode)value);
             }
         }
 
@@ -540,7 +540,7 @@ namespace WorldServer.World.Objects
         {
             PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 20);
             Out.WriteUInt16(Oid);
-            Out.WriteByte(6); //state
+            Out.WriteByte((byte)StateOpcode.Effect); //state
             Out.WriteByte(0);
             Out.WriteByte(0);
             Out.WriteByte(8);
@@ -742,7 +742,7 @@ namespace WorldServer.World.Objects
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 20);
             Out.WriteUInt16(Oid);
-            Out.WriteByte(6); //state
+            Out.WriteByte((byte)StateOpcode.Effect); //state
             Out.WriteByte(0);
             Out.WriteByte(0);
             Out.WriteByte(8);
@@ -772,7 +772,7 @@ namespace WorldServer.World.Objects
 
             PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 20);
             Out.WriteUInt16(Oid);
-            Out.WriteByte(6); //state
+            Out.WriteByte((byte)StateOpcode.Effect); //state
             Out.WriteByte(0);
             Out.WriteByte(0);
             Out.WriteByte(8);

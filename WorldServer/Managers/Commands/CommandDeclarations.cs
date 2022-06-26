@@ -19,6 +19,7 @@ using static WorldServer.Managers.Commands.ScenarioCommands;
 using static WorldServer.Managers.Commands.SearchCommands;
 using static WorldServer.Managers.Commands.StatesCommand;
 using static WorldServer.Managers.Commands.TeleportCommands;
+using static WorldServer.Managers.Commands.TestCommands;
 using static WorldServer.Managers.Commands.TicketCommands;
 using static WorldServer.Managers.Commands.WaypointCommands;
 
@@ -289,6 +290,9 @@ namespace WorldServer.Managers.Commands
             new GmCommandHandler("los", LOSTest, null, EGmLevel.GM, 1, "Performs specified amount of LOS checks on target and calculates average check time in ms"),
 
             #endregion Occlusion
+
+            new GmCommandHandler("states", SetStateShort, null, EGmLevel.GM, 1, "Sends short UPDATE_STATE packet"),
+            new GmCommandHandler("statel", SetStateLong, null, EGmLevel.GM, 1, "Sends long UPDATE_STATE packet"),
 
             #region Command Group Handlers
 

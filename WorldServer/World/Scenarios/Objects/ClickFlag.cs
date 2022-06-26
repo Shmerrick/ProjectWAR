@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SystemData;
 using WorldServer.NetWork.Handler;
+using WorldServer.NetWork.Packets;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
@@ -79,7 +80,7 @@ namespace WorldServer.World.Scenarios.Objects
             set
             {
                 _Open = value;
-                UpdateInteractState((byte)(_Open ? 1 : 15));
+                UpdateInteractState(_Open ? CreatureStateOpcode.Interactable : CreatureStateOpcode.Disabled);
             }
         }
 

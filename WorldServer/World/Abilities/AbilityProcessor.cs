@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using WorldServer.Managers.Commands;
+using WorldServer.NetWork.Packets;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;
@@ -961,17 +962,7 @@ namespace WorldServer.World.Abilities
             // Seems to be sent on forced interrupts and on instant cast ability completion.
             if (force)
             {
-                Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 10);
-
-                Out.WriteUInt16(_caster.Oid);
-                Out.WriteByte((byte)StateOpcode.CastCompletion);
-                Out.WriteUInt16(0);
-                Out.WriteByte(0);
-                Out.WriteUInt16(AbInfo.Entry);
-                Out.WriteByte(0);
-                Out.WriteByte(0);
-
-                (_caster as Player)?.SendPacket(Out);
+                (_caster as Player)?.SendPacket(Packets.SetCastCompleted(_caster.Oid, AbInfo.Entry));
             }
 
             Clear();
