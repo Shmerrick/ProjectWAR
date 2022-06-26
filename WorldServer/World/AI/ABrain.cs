@@ -83,7 +83,7 @@ namespace WorldServer.World.AI
                         creature.MvtInterface.SetBaseSpeed(50);//50
                         creature.MvtInterface.Move(returnHome);
                         creature.MvtInterface.SetBaseSpeed(100);// 100
-                        creature.NextMove = Core.TickCount + _walkRandom.Next(2000, 18000);
+                        creature.NextMove = Core.TickCount + _walkRandom.Next(2000, 10000);
                     }
                     else
                     {
@@ -111,7 +111,7 @@ namespace WorldServer.World.AI
                         creature.MvtInterface.SetBaseSpeed(50);// 50
                         creature.MvtInterface.Move(point.X, point.Y, Z);
                         creature.MvtInterface.SetBaseSpeed(100);// 100
-                        creature.NextMove = Core.TickCount + _walkRandom.Next(2000, 18000);
+                        creature.NextMove = Core.TickCount + _walkRandom.Next(2000, 10000);
 
                         if (creature.MvtInterface.MoveState == MovementInterface.EMoveState.None)
                         {
