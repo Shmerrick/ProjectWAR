@@ -346,7 +346,7 @@
     <Compile Include="Services\World\WaypointService.cs" />
     <Compile Include="Services\World\XpRenownService.cs" />
     <Compile Include="Services\World\ZoneService.cs" />
-    <Compile Include="WorldUtils.cs" />
+    <Compile Include="Utils\WorldUtils.cs" />
     <Compile Include="World\Abilities\AbilityModifierInvoker.cs" />
     <Compile Include="World\Abilities\Buffs\SpecialBuffs\BouncingBuff.cs" />
     <Compile Include="World\Abilities\Buffs\SpecialBuffs\AuraBuff.cs" />
