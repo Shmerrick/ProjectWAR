@@ -8,7 +8,7 @@ using WorldServer.World.Scripting;
 using Object = WorldServer.World.Objects.Object;
 using Opcodes = WorldServer.NetWork.Opcodes;
 
-namespace WorldServer
+namespace WorldServer.World.Scripting.Quests
 {
     [GeneralScript(false, "", 32, 0)] // 32 - Farmer
     public class HeartsAndMindsSpawnQuestScript : AGeneralScript
