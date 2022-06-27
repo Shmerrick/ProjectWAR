@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WorldServer.World.Objects;
 
-namespace WorldServer.NetWork.Packets
+namespace WorldServer.NetWork
 {
     ///TODO: check for 0x20, 0x40, 0x80 states
     public enum QuestStateOpcode : byte

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using SystemData;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
-using WorldServer.NetWork.Packets;
+using WorldServer.NetWork;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;

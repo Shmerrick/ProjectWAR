@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using WorldServer.Managers.Commands;
-using WorldServer.NetWork.Packets;
+using WorldServer.NetWork;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Components;

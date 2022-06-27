@@ -1,7 +1,7 @@
 ﻿using Common;
 using FrameWork;
 using GameData;
-using WorldServer.NetWork.Packets;
+using WorldServer.NetWork;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 using WorldServer.World.Positions;

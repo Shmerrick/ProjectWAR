@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using SystemData;
 using System.Threading;
 using WorldServer.Managers;
+using WorldServer.NetWork;
 using WorldServer.NetWork.Handler;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities.Buffs;
@@ -233,7 +234,7 @@ namespace WorldServer.World.Objects
             set
             {
                 _interactState = value;
-                UpdateInteractState((NetWork.Packets.CreatureStateOpcode)value);
+                UpdateInteractState((CreatureStateOpcode)value);
             }
         }
 

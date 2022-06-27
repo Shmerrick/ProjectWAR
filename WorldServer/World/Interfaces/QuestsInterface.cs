@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using SystemData;
 using WorldServer.Managers;
-using WorldServer.NetWork.Packets;
+using WorldServer.NetWork;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 using WorldServer.World.Objects.PublicQuests;

@@ -1,5 +1,6 @@
 ﻿using FrameWork;
 using System.Collections.Generic;
+using WorldServer.NetWork;
 using WorldServer.World.Map;
 using WorldServer.World.Objects;
 using WorldServer.World.Objects.PublicQuests;
@@ -21,7 +22,6 @@ namespace WorldServer.NetWork.Handler
             ushort Unk4 = packet.GetUint16();
             ushort CreatureOID = packet.GetUint16();
 
-
             if (!(cclient?.Plr?.Region?.GetObject(CreatureOID) is Creature Crea))
                 return;
 
@@ -42,8 +42,7 @@ namespace WorldServer.NetWork.Handler
                             {
                                 if (!Crea.QtsInterface.CreatureHasStartQuest(cclient.Plr))
                                 {
-                                    Crea.SendRemove(cclient.Plr);
-                                    Crea.SendMeTo(cclient.Plr);
+                                    cclient.Plr.SendPacket(Packets.UpdateQuestState(Crea.Oid, Crea.QtsInterface.GetQuestStatusFor(cclient.Plr, Crea)));
                                 }
                             }
                         }
@@ -56,8 +55,7 @@ namespace WorldServer.NetWork.Handler
                         {
                             if (cclient.Plr.QtsInterface.DoneQuest(QuestID))
                             {
-                                Crea.SendRemove(cclient.Plr);
-                                Crea.SendMeTo(cclient.Plr);
+                                cclient.Plr.SendPacket(Packets.UpdateQuestState(Crea.Oid, Crea.QtsInterface.GetQuestStatusFor(cclient.Plr, Crea)));
                             }
                         }
                     }

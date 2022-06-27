@@ -14,7 +14,6 @@ using WorldServer.Managers;
 using WorldServer.Managers.Commands;
 using WorldServer.NetWork;
 using WorldServer.NetWork.Handler;
-using WorldServer.NetWork.Packets;
 using WorldServer.Services.World;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
@@ -1195,7 +1194,7 @@ namespace WorldServer.World.Objects
         public bool ShouldThrottle()
         {
 #if DEBUG
-			return false;
+            return false;
 #endif
             if (IsBanned)
             {
@@ -2010,7 +2009,7 @@ namespace WorldServer.World.Objects
                 return;
 
 #if DEBUG
-			//Log.Info("new area ", "id " + CurrentArea.AreaId);
+            //Log.Info("new area ", "id " + CurrentArea.AreaId);
 #endif
 
             PacketOut Out;
