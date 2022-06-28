@@ -107,4 +107,4 @@ The item level will cast the potion ability at the given level.
 	
 ### creature_smart_ability - Updated May 2022 ###
 	
-We updated systemfor use one of more production creature systemin the game. Anyway we can script creatures by the types.
+We updated system for use one of more production creature system in the game. Anyway we can script creatures by the types.
