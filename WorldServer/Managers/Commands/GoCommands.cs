@@ -12,18 +12,6 @@ namespace WorldServer.Managers.Commands
     /// <summary>Game object commands under .go</summary>
     internal class GoCommands
     {
-        [CommandAttribute(EGmLevel.DatabaseDev, "Set GO's Z component")]
-        public static void SetZ(Player plr, int z)
-        {
-            Object obj = GetObjectTarget(plr);
-            if (!obj.IsGameObject())
-            {
-                plr.SendClientMessage($"GAMEOBJECT REMOVE: Target is not a gameobject", ChatLogFilters.CHATLOGFILTERS_CSR_TELL_RECEIVE);
-                return;
-            }
-            obj.Z = z;
-        }
-
         [CommandAttribute(EGmLevel.DatabaseDev, "Spawn an Go")]
         public static void Spawn(Player plr, uint entry)
         {

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using SystemData;
 using WorldServer.Managers;
+using WorldServer.NetWork;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 using WorldServer.World.Objects.PublicQuests;
@@ -202,8 +203,8 @@ namespace WorldServer.World.Interfaces
                 // If a quest objective has been deleted in the world db lets remove it from the player
                 quest._Objectives = quest._Objectives.FindAll(o => o.Objective != null);
 
-                if (!this.Quests.ContainsKey(quest.QuestID))
-                    this.Quests.Add(quest.QuestID, quest);
+                if (!Quests.ContainsKey(quest.QuestID))
+                    Quests.Add(quest.QuestID, quest);
             }
         }
 
@@ -370,14 +371,53 @@ namespace WorldServer.World.Interfaces
             // This will make objects unlootable if they were lootable because of a quest.
             UpdateObjects();
 
+            UpdateQuestGiverAround();
+
+            _Owner.EvtInterface.Notify(EventName.OnAcceptQuest, _Owner, quest);
+        }
+
+        public void UpdateQuestGiverAround()
+        {
+            Player plr = _Owner.GetPlayer();
             // Update quest givers around
             foreach (Object obj in _Owner.ObjectsInRange)
             {
-                if (obj.IsCreature())
-                    obj.GetCreature().SendMeTo(_Owner.GetPlayer());
+                Creature creature = obj.GetCreature();
+                if (obj.IsCreature() && creature.QtsInterface.HasQuestsFor(plr, creature))
+                {
+                    plr.SendPacket(Packets.UpdateQuestState(creature.Oid, creature.QtsInterface.GetQuestStatusFor(plr, creature)));
+                }
             }
+        }
 
-            _Owner.EvtInterface.Notify(EventName.OnAcceptQuest, _Owner, quest);
+        public bool HasQuestsFor(Player plr, Creature creature)
+        {
+            QuestsInterface qtsInterface = creature.QtsInterface;
+
+            if (qtsInterface.CreatureHasQuestToComplete(plr))
+                return true;
+            else if (qtsInterface.CreatureHasStartRepeatingQuest(plr))
+                return true;
+            else if (qtsInterface.CreatureHasStartQuest(plr))
+                return true;
+            else if (qtsInterface.CreatureHasQuestToAchieve(plr))
+                return true;
+            return false;
+        }
+
+        public QuestStateOpcode GetQuestStatusFor(Player plr, Creature creature)
+        {
+            QuestsInterface qtsInterface = creature.QtsInterface;
+            if (qtsInterface.CreatureHasQuestToComplete(plr))
+                return QuestStateOpcode.QuestCompleted;
+            else if (qtsInterface.CreatureHasStartRepeatingQuest(plr))
+                return QuestStateOpcode.DailyAvailable;
+            else if (qtsInterface.CreatureHasStartQuest(plr))
+                return QuestStateOpcode.QuestAvailable;
+            else if (qtsInterface.CreatureHasQuestToAchieve(plr))
+                return QuestStateOpcode.QuestsTaken;
+
+            return QuestStateOpcode.None;
         }
 
         public bool DoneQuest(ushort questID)
@@ -425,11 +465,7 @@ namespace WorldServer.World.Interfaces
                     UpdateObjects();
 
                     // Update quest givers around
-                    foreach (Object obje in _Owner.ObjectsInRange)
-                    {
-                        if (obje.IsCreature())
-                            obje.GetCreature().SendMeTo(_Owner.GetPlayer());
-                    }
+                    UpdateQuestGiverAround();
 
                     _Owner.EvtInterface.Notify(EventName.OnAcceptQuest, _Owner, quest);
                 }
@@ -1027,6 +1063,8 @@ namespace WorldServer.World.Interfaces
         // Notes: We could minimise the amount of SendMeTo's by checking if object are already
         // flagged and unflag them or unflagged and need flagging. However it isnt possible
         // to see if its already been flagged at the moment.
+        /// TODO : add personal transient object state for each player, so we can check it and change
+        /// with UPDATE_STATE packet
         public void UpdateObjects()
         {
             GameObject gameObject;
@@ -1038,12 +1076,13 @@ namespace WorldServer.World.Interfaces
                     gameObject = obj.GetGameObject();
                     //Loot Loots = LootsMgr.GenerateLoot(GameObject, _Owner.GetPlayer());
                     //if (Loots != null && Loots.IsLootable())
-
                     gameObject.SendRemove(_Owner.GetPlayer());
                     Timer timer = new Timer(delegate (object state)
                     {
-                        gameObject.SendMeTo(_Owner.GetPlayer());
-                    }, (object)(new object[] { }), 1000 * 1, Timeout.Infinite);
+                        Player plr2 = ((object[])state)[0] as Player;
+                        if (plr2 != null)
+                            gameObject.SendMeTo(plr2);
+                    }, (object)(new object[] { _Owner.GetPlayer() }), 500, Timeout.Infinite);
                 }
             }
         }

@@ -294,6 +294,7 @@
     <Compile Include="Managers\Commands\ChapterCommands.cs" />
     <Compile Include="Managers\Commands\CheckCommands.cs" />
     <Compile Include="Managers\Commands\OcclusionCommands.cs" />
+    <Compile Include="Managers\Commands\TestCommands.cs" />
     <Compile Include="Managers\Commands\TicketCommands.cs" />
     <Compile Include="Managers\Commands\CommandDeclarations.cs" />
     <Compile Include="Managers\Commands\CommandsBuilder.cs" />
@@ -318,6 +319,7 @@
     <Compile Include="Managers\Commands\TeleportCommands.cs" />
     <Compile Include="Managers\Commands\WaypointCommands.cs" />
     <Compile Include="NetWork\Handler\SiegeHandlers.cs" />
+    <Compile Include="NetWork\Packets\UpdateState.cs" />
     <Compile Include="Services\ServiceBase.cs" />
     <Compile Include="Services\World\AnnounceService.cs" />
     <Compile Include="Services\World\CellSpawnService.cs" />

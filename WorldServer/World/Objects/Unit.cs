@@ -25,7 +25,7 @@ namespace WorldServer.World.Objects
     public enum StateOpcode
     {
         None = 0x00,
-        Wireframe = 0x01,
+        CreatureState = 0x01,
         Flight = 0x02,
         QuestStatus = 0x03,
         RvRFlag = 0x04,

@@ -71,11 +71,8 @@ namespace WorldServer.World.Objects.PublicQuests
         protected override void HandleDeathRewards(Unit unitKiller)
         {
             Player killer = unitKiller as Player;
-            Creature creature = new Creature();
             if (killer == null && unitKiller is Pet pet)
-                   killer = pet.Owner;
-            else if (creature == unitKiller)
-                killer = (Player)unitKiller;
+                killer = pet.Owner;
 
             Dictionary<Group, XpRenown> groupXPRenown = new Dictionary<Group, XpRenown>();
 
@@ -91,9 +88,7 @@ namespace WorldServer.World.Objects.PublicQuests
             {
                 Player curPlayer = kvpair.Key as Player;
                 if (curPlayer == null && kvpair.Key is Pet pet2)
-                         curPlayer = pet2.Owner;
-                
-                
+                    curPlayer = pet2.Owner;
 
                 float damageFactor = (float)kvpair.Value / TotalDamageTaken;
 
@@ -157,7 +152,6 @@ namespace WorldServer.World.Objects.PublicQuests
             _publicQuest.NotifyKilled(this);
         }
 
-
         public void Protected()
         {
             _objective.Quest.HandleEvent(null, Objective_Type.QUEST_PROTECT_UNIT, Spawn.Entry, _objective.Objective.Count, (ushort)(_objective.Objective.Time * 40));
@@ -166,6 +160,7 @@ namespace WorldServer.World.Objects.PublicQuests
         /// <summary>
         /// Objective property necessary for scripts.
         /// </summary>
-        public PQuestObjective Objective { get { return _objective; } }
+        public PQuestObjective Objective
+        { get { return _objective; } }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading;
 using SystemData;
 using WorldServer.Managers;
 using WorldServer.NetWork.Handler;
+using WorldServer.NetWork;
 using WorldServer.World.Abilities;
 using WorldServer.World.Abilities.Buffs;
 using WorldServer.World.Abilities.Buffs.SpecialBuffs;
@@ -185,14 +186,9 @@ namespace WorldServer.World.Objects
         /// Sets object interaction state
         /// </summary>
         /// <param name="state">1 = interactive, 15=disabled</param>
-        public void UpdateInteractState(byte state)
+        public void UpdateInteractState(CreatureStateOpcode state)
         {
-            PacketOut Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE, 20);
-            Out.WriteUInt16(Oid);
-            Out.WriteByte(1);
-            Out.WriteByte(state);
-            Out.Fill(0, 6);
-            DispatchPacket(Out, false);
+            DispatchPacket(Packets.UpdateCreatureState(Oid, state), false);
         }
 
         public void PlaySound(ushort soundID, Boolean sendarea = true)

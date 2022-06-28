@@ -1,6 +1,7 @@
 ﻿using Common;
 using FrameWork;
 using GameData;
+using WorldServer.NetWork;
 using WorldServer.Services.World;
 using WorldServer.World.Objects;
 using WorldServer.World.Positions;
@@ -122,12 +123,7 @@ namespace WorldServer.World.Abilities.Objects
 
             plr.SendPacket(Out);
 
-            Out = new PacketOut((byte)Opcodes.F_UPDATE_STATE);
-            Out.WriteUInt16(Oid);
-            Out.WriteByte(1);
-            Out.WriteByte(7);
-            Out.Fill(0, 6);
-            plr.SendPacket(Out);
+            plr.SendPacket(Packets.UpdateCreatureState(Oid, CreatureStateOpcode.Invulnerable));
 
             base.SendMeTo(plr);
         }
