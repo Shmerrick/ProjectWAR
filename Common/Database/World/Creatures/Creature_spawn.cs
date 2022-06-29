@@ -151,6 +151,19 @@ namespace Common
             _Level = level;
         }
 
+        public Creature_spawn(Creature_proto proto, uint guid, ushort zoneId, int worldX, int worldY, int worldZ, int worldO, byte faction, byte level)
+        {
+            BuildFromProto(proto);
+            _Guid = guid;
+            _ZoneId = zoneId;
+            _WorldX = worldX;
+            _WorldY = worldY;
+            _WorldZ = worldZ;
+            _WorldO = worldO;
+            _Faction = faction;
+            _Level = level;
+        }
+
         public Creature_spawn()
         {
         }
