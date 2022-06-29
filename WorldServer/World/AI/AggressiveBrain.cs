@@ -22,7 +22,7 @@ namespace WorldServer.World.AI
         public IEnumerable<CreatureSmartAbilities> Abilities { get; set; }
         public Dictionary<CreatureSmartAbilities, long> AbilityTracker { get; set; }
 
-        private static new readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private new static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public Creature_proto Proto { get; set; }
 
@@ -92,11 +92,11 @@ namespace WorldServer.World.AI
             foreach (var ability in Abilities)
             {
                 var t = ConditionManager.GetType();
-                var method = t.GetMethod(ability.Condition);
-                _logger.Debug($"Checking condition: {ability.Condition} ");
+                var method = t.GetMethod(ability.SpellCondition);
+                _logger.Debug($"Checking condition: {ability.SpellCondition} ");
                 if (method == null)
                 {
-                    _logger.Error($"Method is null: {ability.Condition} ");
+                    _logger.Error($"Method is null: {ability.SpellCondition} ");
                     return;
                 }
                 var conditionTrue = (bool)method.Invoke(ConditionManager, null);
@@ -110,7 +110,7 @@ namespace WorldServer.World.AI
                             AbilityTracker.Add(ability, 0);
                         }
 
-                        _logger.Debug($"Adding ability to the tracker : {AbilityTracker.Count} {ability.Name} 0");
+                        _logger.Debug($"Adding ability to the tracker : {AbilityTracker.Count} {ability.SpellCastName} 0");
                     }
                     else // If this ability is already in the abilitytracker  -- can probably remove this as it should be removed on execution.
                     {
@@ -142,28 +142,28 @@ namespace WorldServer.World.AI
                 _logger.Debug($"tick = {tick} ");
                 if (keyValuePair.Value < tick)
                 {
-                    if (keyValuePair.Key.ExecuteChance >= rand)
+                    if (keyValuePair.Key.SpellExecuteChance >= rand)
                     {
-                        var method = ExecutionManager.GetType().GetMethod(keyValuePair.Key.Execution);
+                        var method = ExecutionManager.GetType().GetMethod(keyValuePair.Key.SpellCastExecution);
                         if (method == null)
                         {
-                            _logger.Warn($"Could not locate method for execution : {keyValuePair.Key.Execution}");
+                            _logger.Warn($"Could not locate method for execution : {keyValuePair.Key.SpellCastExecution}");
                             return;
                         }
 
-                        _logger.Trace($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
+                        _logger.Trace($"Executing  : {keyValuePair.Key.SpellCastName} => {keyValuePair.Value} ");
 
                         PerformSpeech(keyValuePair.Key);
 
                         PerformSound(keyValuePair.Key);
 
-                        _logger.Debug($"Executing  : {keyValuePair.Key.Name} => {keyValuePair.Value} ");
+                        _logger.Debug($"Executing  : {keyValuePair.Key.SpellCastName} => {keyValuePair.Value} ");
 
                         lock (AbilityTracker)
                         {
                             // TODO : See if this is required, or can use ability cool down instead
-                            AbilityTracker[keyValuePair.Key] = tick + keyValuePair.Key.CoolDown * 1000;
-                            _logger.Debug($"Next kv tick = {tick + keyValuePair.Key.CoolDown * 1000} ");
+                            AbilityTracker[keyValuePair.Key] = tick + keyValuePair.Key.SpellCastCoolDown * 1000;
+                            _logger.Debug($"Next kv tick = {tick + keyValuePair.Key.SpellCastCoolDown * 1000} ");
                         }
 
                         try
@@ -177,27 +177,27 @@ namespace WorldServer.World.AI
                         }
 
                         _logger.Trace(
-                            $"Updating the tracker : {keyValuePair.Key.Name} => {tick + keyValuePair.Key.CoolDown * 1000} ");
+                            $"Updating the tracker : {keyValuePair.Key.SpellCastName} => {tick + keyValuePair.Key.SpellCastCoolDown * 1000} ");
                         _logger.Debug($"CoolDowns : {_unit.AbtInterface.Cooldowns.Count}");
                         break; // Leave the loop, come back on next tick
                     }
 
-                    _logger.Debug($"Skipping : {keyValuePair.Key.Name} => {keyValuePair.Value} (random)");
+                    _logger.Debug($"Skipping : {keyValuePair.Key.SpellCastName} => {keyValuePair.Value} (random)");
                 }
             }
         }
 
         public void PerformSound(CreatureSmartAbilities key)
         {
-            if (!string.IsNullOrEmpty(key.Sound))
+            if (!string.IsNullOrEmpty(key.SpellCastSound))
                 foreach (var plr in GetClosePlayers(300))
-                    plr.PlaySound(Convert.ToUInt16(key.Sound));
+                    plr.PlaySound(Convert.ToUInt16(key.SpellCastSound));
         }
 
         public void PerformSpeech(CreatureSmartAbilities key)
         {
-            if (!string.IsNullOrEmpty(key.Speech))
-                _unit.Say(key.Speech, ChatLogFilters.CHATLOGFILTERS_SHOUT);
+            if (!string.IsNullOrEmpty(key.SpellCastSpeech))
+                _unit.Say(key.SpellCastSpeech, ChatLogFilters.CHATLOGFILTERS_MONSTER_SAY);
         }
 
         public override void OnTaunt(Unit taunter, byte lvl)

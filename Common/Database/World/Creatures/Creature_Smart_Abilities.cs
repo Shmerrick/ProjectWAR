@@ -8,7 +8,7 @@ namespace Common.Database.World.Creatures
     public class CreatureSmartAbilities : DataObject
     {
         [PrimaryKey(AutoIncrement = true)]
-        public int UniqueId { get; set; }
+        public int Guid { get; set; }
 
         [PrimaryKey]
         public int CreatureTypeId { get; set; }
@@ -20,24 +20,24 @@ namespace Common.Database.World.Creatures
         public string CreatureTypeDescription { get; set; }
 
         [DataElement(AllowDbNull = false)]  // Name of this ability
-        public string Name { get; set; }
+        public string SpellCastName { get; set; }
 
         [DataElement(AllowDbNull = true)] // Speech to emote on execution
-        public string Speech { get; set; }
+        public string SpellCastSpeech { get; set; }
 
         [DataElement(AllowDbNull = false)]  // Function that must be true for this to activate
-        public string Condition { get; set; }
+        public string SpellCondition { get; set; }
 
         [DataElement(AllowDbNull = false)]  // Function to be called on execution
-        public string Execution { get; set; }
+        public string SpellCastExecution { get; set; }
 
         [DataElement(AllowDbNull = false)]  // Chance of execution if Condition is true
-        public int ExecuteChance { get; set; }
+        public int SpellExecuteChance { get; set; }
 
         [DataElement(AllowDbNull = false)]  // How long to cool down this ability (0 = none)
-        public int CoolDown { get; set; }
+        public int SpellCastCoolDown { get; set; }
 
         [DataElement(AllowDbNull = true)]  // Sounds to play
-        public string Sound { get; set; }
+        public string SpellCastSound { get; set; }
     }
 }
