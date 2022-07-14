@@ -1,0 +1,480 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FE628CFA-50D0-4EB3-A373-FD97EF93673C}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>AbilityTool</RootNamespace>
+    <AssemblyName>AbilityTool</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Images\WAR.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="apoc-api.common">
+      <HintPath>.\apoc-api.common.dll</HintPath>
+    </Reference>
+    <Reference Include="apoc-api.security, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\apoc-api.security.dll</HintPath>
+    </Reference>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>.\packages\BouncyCastle.1.8.5\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="CommonServiceLocator, Version=2.0.5.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>.\packages\CommonServiceLocator.2.0.5\lib\net47\CommonServiceLocator.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>.\packages\Dapper.2.0.30\lib\net461\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="EO.Base, Version=19.2.91.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
+      <HintPath>.\packages\EO.Wpf.19.2.91\lib\EO.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="EO.Wpf, Version=19.2.91.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
+      <HintPath>.\packages\EO.Wpf.19.2.91\lib\EO.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight, Version=5.4.1.0, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
+      <HintPath>.\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Extras, Version=5.4.1.0, Culture=neutral, PublicKeyToken=669f0b5e8f868abf, processorArchitecture=MSIL">
+      <HintPath>.\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Extras.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
+      <HintPath>.\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf, Version=3.11.2.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>.\packages\Google.Protobuf.3.11.2\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>.\packages\Microsoft.Owin.4.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>.\packages\Microsoft.Owin.Host.HttpListener.4.1.0\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>.\packages\Microsoft.Owin.Host.SystemWeb.4.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Hosting, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>.\packages\Microsoft.Owin.Hosting.4.1.0\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=8.0.18.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>.\packages\MySql.Data.8.0.18\lib\net452\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>.\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>.\packages\NLog.4.6.8\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>.\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="QueryBuilder, Version=1.1.7.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>.\packages\SqlKata.1.1.7\lib\net45\QueryBuilder.dll</HintPath>
+    </Reference>
+    <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <HintPath>.\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>.\packages\System.Buffers.4.5.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>.\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>.\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>.\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>.\packages\System.Runtime.CompilerServices.Unsafe.4.7.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>.\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.Owin, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>.\packages\Microsoft.AspNet.WebApi.Owin.5.2.7\lib\net45\System.Web.Http.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>.\packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.7.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>.\packages\Extended.Wpf.Toolkit.3.7.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.7.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>.\packages\Extended.Wpf.Toolkit.3.7.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.7.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>.\packages\Extended.Wpf.Toolkit.3.7.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.7.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>.\packages\Extended.Wpf.Toolkit.3.7.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.7.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>.\packages\Extended.Wpf.Toolkit.3.7.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="apoc-api-serverrunner\Controllers\AbilityController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\AccountController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\ApocApiController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\AuthenticationController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\BlogController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\CharacterController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\CharacterItemController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\CharacterProgressionController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\ClassController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\EmailQueueController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\HeartbeatController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\IconController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\ItemController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\ItemSearchController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\ItemSetController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\NemesisController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\RVRMetricsController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\RVRProgressionController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\SlotController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\TopGuildKillsController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\TopPlayerKillsController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\VendorController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\VendorItemController.cs" />
+    <Compile Include="apoc-api-serverrunner\Controllers\ZoneLockItemOption.cs" />
+    <Compile Include="apoc-api-serverrunner\IDatabaseConnection.cs" />
+    <Compile Include="apoc-api-serverrunner\IpAddress.cs" />
+    <Compile Include="apoc-api-serverrunner\Services\AbilityService.cs" />
+    <Compile Include="apoc-api-serverrunner\Services\EnrichService.cs" />
+    <Compile Include="apoc-api-serverrunner\Services\IconService.cs" />
+    <Compile Include="apoc-api-serverrunner\Services\IEnrichService.cs" />
+    <Compile Include="apoc-api-serverrunner\Startup.cs" />
+    <Compile Include="Client\Commands\Command.cs" />
+    <Compile Include="Client\Converters\BuffCmdEffectSourceConverter.cs" />
+    <Compile Include="Client\Converters\BuffCmdTargetConverter.cs" />
+    <Compile Include="Client\Converters\FailCodeConverter.cs" />
+    <Compile Include="Client\Converters\InvokeOnConverter.cs" />
+    <Compile Include="Client\Converters\AbilityTypeConverter.cs" />
+    <Compile Include="Client\Converters\AttackingStatConverter.cs" />
+    <Compile Include="Client\Converters\BuffGroupsConverter.cs" />
+    <Compile Include="Client\Converters\BuffTypeStringConverter.cs" />
+    <Compile Include="Client\Converters\EventIdStringConverter.cs" />
+    <Compile Include="Client\Converters\CareerLineConverter.cs" />
+    <Compile Include="Client\Converters\DamageTypeConverter.cs" />
+    <Compile Include="Client\Converters\DmgHealIndexConverter.cs" />
+    <Compile Include="Client\Converters\GravityMultiplier.cs" />
+    <Compile Include="Client\Converters\MinRankConverter.cs" />
+    <Compile Include="Client\Converters\MinRRConverter.cs" />
+    <Compile Include="Client\Converters\ConsumesStackConverter.cs" />
+    <Compile Include="Client\Converters\NoAutoUseConverter.cs" />
+    <Compile Include="Client\Converters\NoCritsConverter.cs" />
+    <Compile Include="Client\Converters\AuraPropagationConverter.cs" />
+    <Compile Include="Client\Converters\UndefendableConverter.cs" />
+    <Compile Include="Client\Converters\WeaponDmgConverter.cs" />
+    <Compile Include="Client\Converters\BuffClassStringConverter.cs" />
+    <Compile Include="Client\Converters\PersistOnDeathConverter.cs" />
+    <Compile Include="Client\Converters\WeaponNeededConverter.cs" />
+    <Compile Include="Client\Messages\IOpenAbilityMessage.cs" />
+    <Compile Include="Client\Messages\OpenAbilityBuffCmdMessage.cs" />
+    <Compile Include="Client\Messages\OpenAbilityBuffInfoMessage.cs" />
+    <Compile Include="Client\Messages\OpenAbilityModifierMessage.cs" />
+    <Compile Include="Client\Messages\OpenAbilityModifierChecksMessage.cs" />
+    <Compile Include="Client\Messages\OpenAbilityCommandMessage.cs" />
+    <Compile Include="Client\Messages\OpenAbilityDmgHealMessage.cs" />
+    <Compile Include="Client\Messages\OpenAbilityKnockbackInfoMessage.cs" />
+    <Compile Include="Client\Messages\OpenAbilityMessage.cs" />
+    <Compile Include="Client\Messages\OpenSearchResultEntryMessage.cs" />
+    <Compile Include="Client\Messages\OpenSearchResultAllMessage.cs" />
+    <Compile Include="Client\Messages\OpenSearchResultNpcMessage.cs" />
+    <Compile Include="Client\Messages\OpenSearchResultPlayerMessage.cs" />
+    <Compile Include="Client\Models\AbilityBuffCommandsModel.cs" />
+    <Compile Include="Client\Models\AbilityBuffInfosModel.cs" />
+    <Compile Include="Client\Models\AbilityCommandModel.cs" />
+    <Compile Include="Client\Models\AbilityDamageHealsModel.cs" />
+    <Compile Include="Client\Models\AbilityKnockBackInfoModel.cs" />
+    <Compile Include="Client\Models\AbilityModifiersModel.cs" />
+    <Compile Include="Client\Models\AbilitySingleModel.cs" />
+    <Compile Include="Client\Models\BaseModel.cs" />
+    <Compile Include="Client\Services\BuildService.cs" />
+    <Compile Include="Client\Services\ValidationService.cs" />
+    <Compile Include="Client\Ui\Authentification.xaml.cs">
+      <DependentUpon>Authentification.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Client\Services\ClientBackEndService.cs" />
+    <Compile Include="Client\TokenHolder.cs" />
+    <Compile Include="Client\Ui\CustomDuplicatePresenter.xaml.cs">
+      <DependentUpon>CustomDuplicatePresenter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Client\Ui\SearchResultPresenter.xaml.cs">
+      <DependentUpon>SearchResultPresenter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Client\Ui\WarAbilitiesBuffCommandsPage.xaml.cs">
+      <DependentUpon>WarAbilitiesBuffCommandsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Client\Ui\WarAbilitiesBuffInfoPage.xaml.cs">
+      <DependentUpon>WarAbilitiesBuffInfoPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Client\Ui\WarAbilitiesModifiersPage.xaml.cs">
+      <DependentUpon>WarAbilitiesModifiersPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Client\Ui\WarAbilitiesModifierChecksPage.xaml.cs">
+      <DependentUpon>WarAbilitiesModifierChecksPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Client\Ui\WarAbilitiesKnockBackInfoPage.xaml.cs">
+      <DependentUpon>WarAbilitiesKnockBackInfoPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Client\Ui\WarAbilitiesDmgHealsPage.xaml.cs">
+      <DependentUpon>WarAbilitiesDmgHealsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Client\Ui\WarAbilitiesCommandPage.xaml.cs">
+      <DependentUpon>WarAbilitiesCommandPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Client\Ui\WarAbilitiesPage.xaml.cs">
+      <DependentUpon>WarAbilitiesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Client\Models\AbilityModifierChecksModel.cs" />
+    <Compile Include="Client\ViewModels\AbilitiesBuffCommandViewModel.cs" />
+    <Compile Include="Client\ViewModels\AbilitiesBuffInfoViewModel.cs" />
+    <Compile Include="Client\ViewModels\AbilitiesModifiersViewModel.cs" />
+    <Compile Include="Client\ViewModels\AbilitiesModifierChecksViewModel.cs" />
+    <Compile Include="Client\ViewModels\AbilitiesKnockBackInfoViewModel.cs" />
+    <Compile Include="Client\ViewModels\AbilitiesDmgHealViewModel.cs" />
+    <Compile Include="Client\ViewModels\AbilitiesCommandViewModel.cs" />
+    <Compile Include="Client\ViewModels\BaseViewModel.cs" />
+    <Compile Include="Client\ViewModels\SearchAbilityViewModel.cs" />
+    <Compile Include="Client\ViewModels\AbilitiesSingleViewModel.cs" />
+    <Compile Include="Dtos\AbilityBuffCommands.cs" />
+    <Compile Include="Dtos\AbilityBuffInfos.cs" />
+    <Compile Include="Dtos\AbilityCommand.cs" />
+    <Compile Include="Dtos\AbilityDamageHeals.cs" />
+    <Compile Include="Dtos\AbilityKnockBackInfo.cs" />
+    <Compile Include="Dtos\AbilityModifierChecks.cs" />
+    <Compile Include="Dtos\AbilityModifiers.cs" />
+    <Compile Include="Dtos\AbilitySingle.cs" />
+    <Compile Include="Dtos\Account.cs" />
+    <Compile Include="Dtos\Blog.cs" />
+    <Compile Include="Dtos\Character.cs" />
+    <Compile Include="Dtos\CharacterProgression.cs" />
+    <Compile Include="Dtos\EmailQueue.cs" />
+    <Compile Include="apoc-api-serverrunner\EquipmentSlotEnum.cs" />
+    <Compile Include="Dtos\GuildKillTrack.cs" />
+    <Compile Include="Dtos\HourlyPopulation.cs" />
+    <Compile Include="Dtos\IAbility.cs" />
+    <Compile Include="Dtos\Icon.cs" />
+    <Compile Include="Dtos\Item.cs" />
+    <Compile Include="Dtos\ItemInfoStats.cs" />
+    <Compile Include="Dtos\ItemSet.cs" />
+    <Compile Include="Dtos\KillTracker.cs" />
+    <Compile Include="Dtos\Nemesis.cs" />
+    <Compile Include="Dtos\RVRMetric.cs" />
+    <Compile Include="Dtos\RVRProgression.cs" />
+    <Compile Include="Dtos\Vendor.cs" />
+    <Compile Include="Dtos\VendorItem.cs" />
+    <Compile Include="Dtos\ZoneLockItemOption.cs" />
+    <Compile Include="Client\ViewModels\MainViewModel.cs" />
+    <Compile Include="Client\ViewModels\ViewModelLocator.cs" />
+    <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Page Include="Client\Ui\Authentification.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Client\Ui\CustomDuplicatePresenter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Client\Ui\SearchResultPresenter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Client\Ui\WarAbilitiesBuffCommandsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Client\Ui\WarAbilitiesBuffInfoPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Client\Ui\WarAbilitiesModifiersPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Client\Ui\WarAbilitiesModifierChecksPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Client\Ui\WarAbilitiesKnockBackInfoPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Client\Ui\WarAbilitiesDmgHealsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Client\Ui\WarAbilitiesCommandPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Client\Ui\WarAbilitiesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Resource Include="Images\WAR.ico" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Resource Include="Images\AppIcon.jpg" />
+    <Resource Include="Images\back1.jpg" />
+    <Resource Include="Images\back2.jpg" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 und x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
