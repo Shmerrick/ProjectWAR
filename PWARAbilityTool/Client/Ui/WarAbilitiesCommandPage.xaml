@@ -1,0 +1,135 @@
+﻿<Window
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      xmlns:Converters="clr-namespace:PWARAbilityTool.Client.Converters" x:Class="PWARAbilityTool.Client.Ui.WarAbilitiesCommandPage"
+      mc:Ignorable="d"
+      x:Name="AbilityCommandsPage"
+      Title="{Binding WindowTitle}"  
+      Height="469" Width="695" WindowStartupLocation="CenterScreen" Icon="/AbilityTool;component/Images/AppIcon.jpg">
+    <Window.Resources>
+        <Converters:AttackingStatConverter x:Key="AttackingStatConverter"/>
+        <x:Array x:Key="cmdIds" Type="sys:String">
+            <sys:String>0</sys:String>
+            <sys:String>1</sys:String>
+            <sys:String>2</sys:String>
+            <sys:String>3</sys:String>
+            <sys:String>4</sys:String>
+            <sys:String>5</sys:String>
+            <sys:String>6</sys:String>
+        </x:Array>
+        <x:Array x:Key="cmdSeq" Type="sys:String">
+            <sys:String>0</sys:String>
+            <sys:String>1</sys:String>
+            <sys:String>2</sys:String>
+            <sys:String>3</sys:String>
+            <sys:String>4</sys:String>
+            <sys:String>5</sys:String>
+            <sys:String>6</sys:String>
+        </x:Array>
+        <x:Array x:Key="atStact" Type="sys:String">
+            <sys:String>Strength and Weaponskill</sys:String>
+            <sys:String>Ballistic and Initiative</sys:String>
+            <sys:String>Intelligence and Willpower</sys:String>
+        </x:Array>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Label Content="Entry:"/>
+            <TextBox x:Name="entryBox" MinWidth="100" Margin="5,5,5,5" 
+                     Text="{Binding AbilityCommandModel.Entry, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="Name:"/>
+            <TextBox x:Name="nameBox" MinWidth="200" Margin="5,5,5,5" 
+                     Text="{Binding AbilityCommandModel.AbilityName, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <Label>primary value:</Label>
+            <TextBox x:Name="primVal" MinWidth="80" Margin="5,5,5,5" 
+                     Text="{Binding AbilityCommandModel.PrimaryValue, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label>secondary value:</Label>
+            <TextBox x:Name="secVal" MinWidth="80" Margin="5,5,5,5" 
+                     Text="{Binding AbilityCommandModel.SecondaryValue, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="5" Orientation="Horizontal">
+            <Label Content="CommandName:"/>
+            <ComboBox x:Name="cmdNames" Margin="5,5,5,5" ItemsSource="{Binding cmdNames}"
+                     SelectedItem="{Binding AbilityCommandModel.CommandName, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="CommandId:"/>
+            <ComboBox x:Name="commandId" Margin="5,5,5,5" ItemsSource="{StaticResource cmdIds}"
+                     SelectedItem="{Binding AbilityCommandModel.CommandID, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="Commandsequence:"/>
+            <ComboBox x:Name="commandseq" Margin="5,5,5,5" ItemsSource="{StaticResource cmdSeq}"
+                     SelectedItem="{Binding AbilityCommandModel.CommandSequence, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label>target:</Label>
+            <ComboBox x:Name="targets" Margin="5,5,5,5" ItemsSource="{Binding targets}" 
+                      SelectedItem="{Binding AbilityCommandModel.Target, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="7" Orientation="Horizontal" Width="Auto">
+            <Expander Header="Advanced">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <Label>effect radius:</Label>
+                        <TextBox x:Name="effectRad" MinWidth="60" Margin="5,5,5,5" 
+                             Text="{Binding AbilityCommandModel.EffectRadius, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label>effect angle:</Label>
+                        <TextBox x:Name="effectAngle" MinWidth="60" Margin="5,5,5,5" 
+                             Text="{Binding AbilityCommandModel.EffectAngle, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label>effect source:</Label>
+                        <ComboBox x:Name="effectSources" Margin="5,5,5,5" ItemsSource="{Binding effectSources}"
+                            SelectedItem="{Binding AbilityCommandModel.EffectSource, UpdateSourceTrigger=PropertyChanged}"
+                           />
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Orientation="Horizontal">
+                        <Label>from all targets:</Label>
+                        <TextBox x:Name="fat" MinWidth="60" Margin="5,5,5,5" 
+                             Text="{Binding AbilityCommandModel.FromAllTargets, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label>max targets:</Label>
+                        <TextBox x:Name="maxtargets" MinWidth="60" Margin="5,5,5,5" 
+                             Text="{Binding AbilityCommandModel.MaxTargets, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label>attacking stat:</Label>
+                        <ComboBox x:Name="astat" Margin="5,5,5,5" ItemsSource="{StaticResource atStact}"
+                             SelectedItem="{Binding AbilityCommandModel.AttackingStat, Converter={StaticResource AttackingStatConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="5" Orientation="Horizontal">
+                        <Label>isDelayed:</Label>
+                        <TextBox x:Name="delay" MinWidth="60" Margin="5,5,5,5" 
+                             Text="{Binding AbilityCommandModel.isDelayedEffect, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Label>no auto use:</Label>
+                        <TextBox x:Name="nau" MinWidth="60" Margin="5,5,5,5" 
+                             Text="{Binding AbilityCommandModel.NoAutoUse, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                </Grid>
+            </Expander>
+        </StackPanel>
+        <Button Grid.Row="15" HorizontalAlignment="Right" VerticalAlignment="Bottom" 
+                Width="50" Height="20" Content="Save" Command="{Binding SaveCommand, Mode=OneWay}"/>
+    </Grid>
+</Window>
