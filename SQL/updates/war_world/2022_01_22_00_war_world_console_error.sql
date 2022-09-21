@@ -1,2 +1,0 @@
-ALTER TABLE `war_world`.`ability_expression` CHANGE `Disabled` `Disabled` TINYINT(1) UNSIGNED NULL, DROP FOREIGN KEY `FK_ability_expression_AbilityBin_AbilityID`, DROP FOREIGN KEY `FK_ability_expression_AbilityComponentBin_ComponentID`; 
-ALTER TABLE `war_world`.`ability_expression` CHANGE `Disabled` `Disabled` TINYINT(1) UNSIGNED NULL; 
