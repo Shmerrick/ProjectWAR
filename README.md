@@ -4,18 +4,7 @@
 # README #
 
 
-#### Language Packs ####
-French Language Pack: https://drive.google.com/file/d/18DMb2OjRVjtIBi1Oj462_mAcKugC8463/view
 
-Spanish Language Pack: https://drive.google.com/file/d/1PMcimU7vfN5DiaW4I0VLIR3va54ngQho/view
-
-Russian Language Pack: https://drive.google.com/file/d/1hdh7-tYh_NkLQt4kzy12zYrN9kOk8ylb/view
-
-German Language Pack: https://drive.google.com/file/d/1FzQvQf52o-oneNlnSEBiy8VakWbhmL_c/view
-
-#### Development Tools for Server ####
-
-https://gitlab.com/Shmerrick/projectwar2-tools
 
 
 
