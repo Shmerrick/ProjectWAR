@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package>
+  <BinaryPlatforms>
+    <Platform>Android</Platform>
+    <Platform>iOS</Platform>
+    <Platform>Linux</Platform>
+    <Platform>MacOS</Platform>
+    <Platform>Windows</Platform>
+  </BinaryPlatforms>
+  <Source>
+    <GitCommitHash>3337b1c64f329e32f0f86b7e49512d0921d8577e</GitCommitHash>
+    <GitRepositoryUrl>https://github.com/RedpointGames/AStarPathFinder</GitRepositoryUrl>
+  </Source>
+</Package>

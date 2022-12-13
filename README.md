@@ -33,6 +33,9 @@ Russian Language Pack: https://drive.google.com/file/d/1hdh7-tYh_NkLQt4kzy12zYrN
 
 German Language Pack: https://drive.google.com/file/d/1FzQvQf52o-oneNlnSEBiy8VakWbhmL_c/view
 
+#### Development Tools for Server ####
+
+https://gitlab.com/Shmerrick/projectwar2-tools
 
 #### YouTube channel ####
 

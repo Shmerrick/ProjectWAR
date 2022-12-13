@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AStarPathFinder</name>
+    </assembly>
+    <members>
+        <member name="T:DeenGames.Utils.AStarPathFinder.PathFinderHelper">
+            <summary>
+            Not actually used by the real PathFinder code, but created by
+            Deen Games so we can easily reference path-finder tile values.
+            </summary></member>
+        <member name="M:DeenGames.Utils.AStarPathFinder.PriorityQueueB`1.Push(`0)">
+            <summary>
+            Push an object onto the PQ
+            </summary>
+            <param name="O">The new object</param>
+            <returns>The index in the list where the object is _now_. This will change when objects are taken from or put onto the PQ.</returns></member>
+        <member name="M:DeenGames.Utils.AStarPathFinder.PriorityQueueB`1.Pop">
+            <summary>
+            Get the smallest object and remove it.
+            </summary>
+            <returns>The smallest object</returns></member>
+        <member name="M:DeenGames.Utils.AStarPathFinder.PriorityQueueB`1.Update(System.Int32)">
+            <summary>
+            Notify the PQ that the object at position i has changed
+            and the PQ needs to restore order.
+            Since you dont have access to any indexes (except by using the
+            explicit IList.this) you should not call this function without knowing exactly
+            what you do.
+            </summary>
+            <param name="i">The index of the changed object.</param></member>
+        <member name="M:DeenGames.Utils.AStarPathFinder.PriorityQueueB`1.Peek">
+            <summary>
+            Get the smallest object without removing it.
+            </summary>
+            <returns>The smallest object</returns></member>
+    </members>
+</doc>
