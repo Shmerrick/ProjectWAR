@@ -1,1 +1,0 @@
-ALTER TABLE `war_characters`.`character_saved_buffs` CHANGE `EndTimeSeconds` `EndTimeSeconds` INT(11) UNSIGNED NULL;

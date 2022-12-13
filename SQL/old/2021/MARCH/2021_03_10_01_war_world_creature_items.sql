@@ -1,1 +1,0 @@
-UPDATE `creature_items` SET `SlotId` = '10' WHERE `Entry` = '30' AND `SlotId` = '13';
