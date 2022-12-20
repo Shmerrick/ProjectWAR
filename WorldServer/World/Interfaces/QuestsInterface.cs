@@ -1073,7 +1073,7 @@ namespace WorldServer.World.Interfaces
             {
                 if (obj.IsGameObject())
                 {
-					
+					gameObject = obj.GetGameObject();
                     Timer timer = new Timer(delegate (object state)
                     {
                         Player plr2 = ((object[])state)[0] as Player;
