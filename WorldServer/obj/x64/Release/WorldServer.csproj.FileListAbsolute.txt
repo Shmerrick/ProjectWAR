@@ -1,0 +1,15 @@
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\Abilities\Chaos humans login-logout all classes.txt
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\Abilities\Dark elves login-logout all classes.txt
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\Abilities\Dwarves and their classes login-logout.txt
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\Abilities\High elves and their classes login-logout.txt
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\Abilities\Humans and their classes login-logout.txt
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\Abilities\Orcs login-logout all classes.txt
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\WarZone.dll
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\NLog.config
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\WorldServer.exe.config
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\WorldServer.exe
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\WorldServer\obj\x64\Release\WorldServer.csproj.AssemblyReference.cache
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\WorldServer\obj\x64\Release\WorldServer.csproj.SuggestedBindingRedirects.cache
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\WorldServer\obj\x64\Release\WorldServer.csproj.CoreCompileInputs.cache
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\WorldServer\obj\x64\Release\WorldServer.csproj.CopyComplete
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\WorldServer\obj\x64\Release\WorldServer.exe

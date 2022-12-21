@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<WorldConfig xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<WorldConfigs xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <IConfiguredTheFile>true</IConfiguredTheFile>
   <AccountCacherInfo>
     <RpcLocalIp>127.0.0.1</RpcLocalIp>
@@ -104,4 +104,4 @@
   <AdditionalBagKillCountStep>2</AdditionalBagKillCountStep>
   <AdditionalBagRatioMinimumWinners>3</AdditionalBagRatioMinimumWinners>
   <AdditionalBagRatioMinimumLosers>3</AdditionalBagRatioMinimumLosers>
-</WorldConfig>
+</WorldConfigs>

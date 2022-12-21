@@ -1,0 +1,14 @@
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\Launcher\NLog.config
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\Launcher\NLog.xsd
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\Launcher\Launcher.exe.config
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\Launcher\Launcher.exe
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\Launcher\Launcher.pdb
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\Launcher\obj\Release\Launcher.csproj.AssemblyReference.cache
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\Launcher\obj\Release\Launcher.csproj.SuggestedBindingRedirects.cache
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\Launcher\obj\Release\Launcher.ApocLauncher.resources
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\Launcher\obj\Release\Launcher.Properties.Resources.resources
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\Launcher\obj\Release\Launcher.csproj.GenerateResource.cache
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\Launcher\obj\Release\Launcher.csproj.CoreCompileInputs.cache
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\Launcher\obj\Release\Launcher.csproj.CopyComplete
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\Launcher\obj\Release\Launcher.exe
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\Launcher\obj\Release\Launcher.pdb

@@ -1,0 +1,10 @@
+﻿  Intersections.cpp
+  KDTreeCPU.cpp
+  KDTreeNode.cpp
+  Source.cpp
+  ZoneManager.cpp
+  Intersections.obj : MSIL .netmodule or module compiled with /GL found; restarting link with /LTCG; add /LTCG to the link command line to improve linker performance
+     Creating library C:\Users\6800k\Desktop\github warhammer\ProjectWAR\x64\Release\WarZone64.lib and object C:\Users\6800k\Desktop\github warhammer\ProjectWAR\x64\Release\WarZone64.exp
+  Generating code
+  Finished generating code
+  WarZone.vcxproj -> C:\Users\6800k\Desktop\github warhammer\ProjectWAR\x64\Release\WarZone64.dll

@@ -1,0 +1,7 @@
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\AccountCacher.exe.config
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\AccountCacher.exe
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\AccountCacher\obj\x64\Release\AccountCacher.csproj.AssemblyReference.cache
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\AccountCacher\obj\x64\Release\AccountCacher.csproj.SuggestedBindingRedirects.cache
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\AccountCacher\obj\x64\Release\AccountCacher.csproj.CoreCompileInputs.cache
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\AccountCacher\obj\x64\Release\AccountCacher.csproj.CopyComplete
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\AccountCacher\obj\x64\Release\AccountCacher.exe

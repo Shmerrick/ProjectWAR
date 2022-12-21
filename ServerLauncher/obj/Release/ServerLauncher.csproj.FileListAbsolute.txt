@@ -1,0 +1,11 @@
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\ServerLauncher.exe.config
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\ServerLauncher.exe
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\ServerLauncher.pdb
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\ServerLauncher\obj\Release\ServerLauncher.csproj.AssemblyReference.cache
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\ServerLauncher\obj\Release\ServerLauncher.csproj.SuggestedBindingRedirects.cache
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\ServerLauncher\obj\Release\ServerLauncher.Form1.resources
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\ServerLauncher\obj\Release\ServerLauncher.Properties.Resources.resources
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\ServerLauncher\obj\Release\ServerLauncher.csproj.GenerateResource.cache
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\ServerLauncher\obj\Release\ServerLauncher.csproj.CoreCompileInputs.cache
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\ServerLauncher\obj\Release\ServerLauncher.exe
+C:\Users\6800k\Desktop\github warhammer\ProjectWAR\ServerLauncher\obj\Release\ServerLauncher.pdb

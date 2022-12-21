@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<LobbyConfig xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<LobbyConfigs xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <IConfiguredTheFile>true</IConfiguredTheFile>
   <ClientPort>8048</ClientPort>
   <ClientVersion>1.4.8</ClientVersion>
@@ -18,4 +18,4 @@
     <Tcp>false</Tcp>
     <Dump>false</Dump>
   </LogLevel>
-</LobbyConfig>
+</LobbyConfigs>
