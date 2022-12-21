@@ -102,11 +102,7 @@ namespace WorldServer
             Console.WriteLine("DagonUO Version {0}.{1}, Build {2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision);
             Console.WriteLine("Core: Running on .NET Framework Version {0}.{1}.{2}", Environment.Version.Major, Environment.Version.Minor, Environment.Version.Build);
             Utils.PopColor();
-            Console.WriteLine("██╗    ██╗██╗████████╗ ██████╗██╗  ██╗██╗  ██╗██████╗  █████╗ ███████╗████████╗");
-            Console.WriteLine("██║    ██║██║╚══██╔══╝██╔════╝██║  ██║██║ ██╔╝██╔══██╗██╔══██╗██╔════╝╚══██╔══╝");
-            Console.WriteLine("██║ █╗ ██║██║   ██║   ██║     ███████║█████╔╝ ██████╔╝███████║█████╗     ██║   ");
-            Console.WriteLine("╚███╔███╔╝██║   ██║   ╚██████╗██║  ██║██║  ██╗██║  ██║██║  ██║██║        ██║   ");
-            Console.WriteLine(" ╚══╝╚══╝ ╚═╝   ╚═╝    ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝   ");
+            Console.WriteLine("ARGOG DAN");
             Utils.PushColor(ConsoleColor.Cyan);
             string s = Arguments;
 

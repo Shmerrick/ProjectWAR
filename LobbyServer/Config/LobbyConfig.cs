@@ -2,7 +2,7 @@
 
 namespace LobbyServer
 {
-    [aConfigAttributes("Configs/LobbyConfig.xml")]
+    [aConfigAttributes("Configs/Lobby.xml")]
     public class LobbyConfig : aConfig
     {
         public int ClientPort = 8048;

@@ -4,9 +4,6 @@ Discord: https://discordapp.com/invite/MBxsJBQ
 
 # README #
 
-#### Download los and zones files, put it in your server folder ####
-
-https://drive.google.com/file/d/1TgHnAsn-reUbLyGavd9hLUVuXR5dEbf2/view?usp=sharing
 
 #### Download MySQL Community ####
 
@@ -33,9 +30,6 @@ Russian Language Pack: https://drive.google.com/file/d/1hdh7-tYh_NkLQt4kzy12zYrN
 
 German Language Pack: https://drive.google.com/file/d/1FzQvQf52o-oneNlnSEBiy8VakWbhmL_c/view
 
-#### Development Tools for Server ####
-
-https://gitlab.com/Shmerrick/projectwar2-tools
 
 #### YouTube channel ####
 
