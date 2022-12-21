@@ -287,7 +287,7 @@
     <Compile Include="API\Packet.cs" />
     <Compile Include="API\Protocol.cs" />
     <Compile Include="API\Server.cs" />
-    <Compile Include="Config\WorldConfig.cs" />
+    <Compile Include="Configs\WorldConfigs.cs" />
     <Compile Include="Managers\Commands\AbilityCommands.cs" />
     <Compile Include="Managers\Commands\AddCommands.cs" />
     <Compile Include="Managers\Commands\CampaignCommands.cs" />
@@ -840,7 +840,10 @@
     <Content Include="Abilities\Orcs login-logout all classes.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Config\WorldConfig.xml" />
+    <Content Include="Configs\LocalDevelopment\Account.xml" />
+    <Content Include="Configs\LocalDevelopment\Launcher.xml" />
+    <Content Include="Configs\LocalDevelopment\Lobby.xml" />
+    <Content Include="Configs\LocalDevelopment\World.xml" />
     <Content Include="WarZone.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

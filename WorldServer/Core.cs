@@ -23,7 +23,7 @@ namespace WorldServer
 {
     internal class Core
     {
-        public static WorldConfig Config;
+        public static WorldConfigs Config;
         public static AccountConfig AccountConfig;
         public static RpcClient Client;
         public static AccountMgr AcctMgr => Client?.GetServerObject<AccountMgr>();
@@ -130,7 +130,7 @@ namespace WorldServer
             Utils.PushColor(ConsoleColor.Gray);
             // Loading all configs files
             ConfigMgr.LoadConfigs();
-            Config = ConfigMgr.GetConfig<WorldConfig>();
+            Config = ConfigMgr.GetConfig<WorldConfigs>();
             AccountConfig = ConfigMgr.GetConfig<AccountConfig>();
 
             // Loading log level from file

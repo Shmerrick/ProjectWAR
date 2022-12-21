@@ -102,7 +102,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config\AccountConfig.cs" />
+    <Compile Include="Configs\AccountConfigs.cs" />
     <Compile Include="Console\CreateAccount.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -140,7 +140,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="account.ico" />
-    <Content Include="Config\AccountConfig.xml" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
