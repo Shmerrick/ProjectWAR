@@ -4303,13 +4303,12 @@
             Describes a call constraint, as defined by a method and list of argument constraints.
             </summary>
         </member>
-        <member name="M:FakeItEasy.Expressions.CallConstraintDescriber.DescribeCallOn(FakeItEasy.IOutputWriter,System.Object,System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{FakeItEasy.Core.IArgumentConstraint})">
+        <member name="M:FakeItEasy.Expressions.CallConstraintDescriber.DescribeCallOn(FakeItEasy.IOutputWriter,System.Reflection.MethodInfo,System.Collections.Generic.IEnumerable{FakeItEasy.Core.IArgumentConstraint})">
             <summary>
             Writes a human readable description of the call constraint
             matcher to the supplied writer.
             </summary>
             <param name="writer">The writer on which to describe the call.</param>
-            <param name="callTarget">The object on which the method was called.</param>
             <param name="method">The method to describe.</param>
             <param name="argumentConstraints">The argument constraints applied to the method.</param>
         </member>
@@ -4863,31 +4862,6 @@
         <member name="T:FakeItEasy.MethodInfoExtensions">
             <summary>
             Provides extension methods for <see cref="T:System.Reflection.MethodInfo"/>.
-            </summary>
-        </member>
-        <member name="T:FakeItEasy.ObjectMethod">
-            <summary>
-            Convenient identifiers for the <see cref="T:System.Object"/> method a particular method might correspond to.
-            </summary>
-        </member>
-        <member name="F:FakeItEasy.ObjectMethod.None">
-            <summary>
-            Corresponds to no object method.
-            </summary>
-        </member>
-        <member name="F:FakeItEasy.ObjectMethod.EqualsMethod">
-            <summary>
-            Corresponds to <see cref="M:System.Object.Equals(System.Object)"/>.
-            </summary>
-        </member>
-        <member name="F:FakeItEasy.ObjectMethod.ToStringMethod">
-            <summary>
-            Corresponds to <see cref="M:System.Object.ToString"/>.
-            </summary>
-        </member>
-        <member name="F:FakeItEasy.ObjectMethod.GetHashCodeMethod">
-            <summary>
-            Corresponds to <see cref="M:System.Object.GetHashCode"/>.
             </summary>
         </member>
         <member name="T:FakeItEasy.OutAndRefParametersConfigurationExtensions">
@@ -5613,7 +5587,7 @@
         </member>
         <member name="F:FakeItEasy.StrictFakeOptions.AllowEvents">
             <summary>
-            Calls to event accessors are allowed, and behave as if the fake weren't strict.
+            Calls to event accessors are allowed, and behave as if the fake weren't not strict.
             </summary>
         </member>
         <member name="T:FakeItEasy.StringBuilderExtensions">

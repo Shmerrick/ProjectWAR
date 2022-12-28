@@ -632,21 +632,13 @@
             </summary>
             <param name="ptr"></param>
         </member>
-        <member name="M:K4os.Compression.LZ4.Internal.Mem.CloneAnyArray``1(``0[])">
-            <summary>Clones managed array to unmanaged one.
-            Allows quicker yet less safe unchecked access.</summary>
-            <param name="array">Input array.</param>
-            <returns>Cloned array.</returns>
-        </member>
         <member name="M:K4os.Compression.LZ4.Internal.Mem.CloneArray(System.Int32[])">
-            <summary>Clones managed array to unmanaged one.
-            Allows quicker yet less safe unchecked access.</summary>
+            <summary>Clones managed array to unmanaged one. Allows quicker yet less safe unchecked access.</summary>
             <param name="array">Input array.</param>
             <returns>Cloned array.</returns>
         </member>
         <member name="M:K4os.Compression.LZ4.Internal.Mem.CloneArray(System.UInt32[])">
-            <summary>Clones managed array to unmanaged one.
-            Allows quicker yet less safe unchecked access.</summary>
+            <summary>Clones managed array to unmanaged one. Allows quicker yet less safe unchecked access.</summary>
             <param name="array">Input array.</param>
             <returns>Cloned array.</returns>
         </member>
@@ -939,27 +931,10 @@
             <param name="targetLength">Output buffer length.</param>
             <returns>Number of bytes written, or negative value if output buffer is too small.</returns>
         </member>
-        <member name="M:K4os.Compression.LZ4.LZ4Codec.Decode(System.Byte*,System.Int32,System.Byte*,System.Int32,System.Byte*,System.Int32)">
-            <summary>Decompresses data from given buffer.</summary>
-            <param name="source">Input buffer.</param>
-            <param name="sourceLength">Input buffer length.</param>
-            <param name="target">Output buffer.</param>
-            <param name="targetLength">Output buffer length.</param>
-            <param name="dictionary">Dictionary buffer.</param>
-            <param name="dictionaryLength">Dictionary buffer length.</param>
-            <returns>Number of bytes written, or negative value if output buffer is too small.</returns>
-        </member>
         <member name="M:K4os.Compression.LZ4.LZ4Codec.Decode(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
             <summary>Decompresses data from given buffer.</summary>
             <param name="source">Input buffer.</param>
             <param name="target">Output buffer.</param>
-            <returns>Number of bytes written, or negative value if output buffer is too small.</returns>
-        </member>
-        <member name="M:K4os.Compression.LZ4.LZ4Codec.Decode(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.ReadOnlySpan{System.Byte})">
-            <summary>Decompresses data from given buffer.</summary>
-            <param name="source">Input buffer.</param>
-            <param name="target">Output buffer.</param>
-            <param name="dictionary">Dictionary buffer.</param>
             <returns>Number of bytes written, or negative value if output buffer is too small.</returns>
         </member>
         <member name="M:K4os.Compression.LZ4.LZ4Codec.Decode(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32)">
@@ -970,19 +945,6 @@
             <param name="target">Output buffer.</param>
             <param name="targetOffset">Output buffer offset.</param>
             <param name="targetLength">Output buffer length.</param>
-            <returns>Number of bytes written, or negative value if output buffer is too small.</returns>
-        </member>
-        <member name="M:K4os.Compression.LZ4.LZ4Codec.Decode(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32)">
-            <summary>Decompresses data from given buffer.</summary>
-            <param name="source">Input buffer.</param>
-            <param name="sourceOffset">Input buffer offset.</param>
-            <param name="sourceLength">Input buffer length.</param>
-            <param name="target">Output buffer.</param>
-            <param name="targetOffset">Output buffer offset.</param>
-            <param name="targetLength">Output buffer length.</param>
-            <param name="dictionary">Dictionary buffer.</param>
-            <param name="dictionaryOffset">Dictionary buffer offset.</param>
-            <param name="dictionaryLength">Dictionary buffer length.</param>
             <returns>Number of bytes written, or negative value if output buffer is too small.</returns>
         </member>
         <member name="T:K4os.Compression.LZ4.LZ4Level">
@@ -1025,9 +987,6 @@
             <summary>
             Pickling support with LZ4 compression.
             </summary>
-            <summary>
-            Pickling support with LZ4 compression.
-            </summary>
         </member>
         <member name="M:K4os.Compression.LZ4.LZ4Pickler.Pickle(System.Byte[],K4os.Compression.LZ4.LZ4Level)">
             <summary>Compresses input buffer into self-contained package.</summary>
@@ -1038,15 +997,8 @@
         <member name="M:K4os.Compression.LZ4.LZ4Pickler.Pickle(System.Byte[],System.Int32,System.Int32,K4os.Compression.LZ4.LZ4Level)">
             <summary>Compresses input buffer into self-contained package.</summary>
             <param name="source">Input buffer.</param>
-            <param name="sourceIndex">Input buffer offset.</param>
+            <param name="sourceOffset">Input buffer offset.</param>
             <param name="sourceLength">Input buffer length.</param>
-            <param name="level">Compression level.</param>
-            <returns>Output buffer.</returns>
-        </member>
-        <member name="M:K4os.Compression.LZ4.LZ4Pickler.Pickle(System.Byte*,System.Int32,K4os.Compression.LZ4.LZ4Level)">
-            <summary>Compresses input buffer into self-contained package.</summary>
-            <param name="source">Input buffer.</param>
-            <param name="length">Length of input data.</param>
             <param name="level">Compression level.</param>
             <returns>Output buffer.</returns>
         </member>
@@ -1056,10 +1008,10 @@
             <param name="level">Compression level.</param>
             <returns>Output buffer.</returns>
         </member>
-        <member name="M:K4os.Compression.LZ4.LZ4Pickler.Pickle(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Byte},K4os.Compression.LZ4.LZ4Level)">
+        <member name="M:K4os.Compression.LZ4.LZ4Pickler.Pickle(System.Byte*,System.Int32,K4os.Compression.LZ4.LZ4Level)">
             <summary>Compresses input buffer into self-contained package.</summary>
             <param name="source">Input buffer.</param>
-            <param name="writer">Where the compressed data is written.</param>
+            <param name="sourceLength">Length of input data.</param>
             <param name="level">Compression level.</param>
             <returns>Output buffer.</returns>
         </member>
@@ -1071,14 +1023,8 @@
         <member name="M:K4os.Compression.LZ4.LZ4Pickler.Unpickle(System.Byte[],System.Int32,System.Int32)">
             <summary>Decompresses previously pickled buffer (see: <see cref="T:K4os.Compression.LZ4.LZ4Pickler"/>.</summary>
             <param name="source">Input buffer.</param>
-            <param name="index">Input buffer offset.</param>
-            <param name="count">Input buffer length.</param>
-            <returns>Output buffer.</returns>
-        </member>
-        <member name="M:K4os.Compression.LZ4.LZ4Pickler.Unpickle(System.Byte*,System.Int32)">
-            <summary>Decompresses previously pickled buffer (see: <see cref="T:K4os.Compression.LZ4.LZ4Pickler"/>.</summary>
-            <param name="source">Input buffer.</param>
-            <param name="count">Input buffer length.</param>
+            <param name="sourceOffset">Input buffer offset.</param>
+            <param name="sourceLength">Input buffer length.</param>
             <returns>Output buffer.</returns>
         </member>
         <member name="M:K4os.Compression.LZ4.LZ4Pickler.Unpickle(System.ReadOnlySpan{System.Byte})">
@@ -1086,32 +1032,11 @@
             <param name="source">Input buffer.</param>
             <returns>Output buffer.</returns>
         </member>
-        <member name="M:K4os.Compression.LZ4.LZ4Pickler.Unpickle(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Byte})">
+        <member name="M:K4os.Compression.LZ4.LZ4Pickler.Unpickle(System.Byte*,System.Int32)">
             <summary>Decompresses previously pickled buffer (see: <see cref="T:K4os.Compression.LZ4.LZ4Pickler"/>.</summary>
             <param name="source">Input buffer.</param>
-            <param name="writer">Where the decompressed data is written.</param>
-        </member>
-        <member name="M:K4os.Compression.LZ4.LZ4Pickler.UnpickledSize(System.ReadOnlySpan{System.Byte})">
-            <summary>
-            Returns the uncompressed size of a chunk of compressed data.
-            </summary>
-            <param name="source">The data to inspect.</param>
-            <returns>The size in bytes of the data once unpickled.</returns>
-        </member>
-        <member name="M:K4os.Compression.LZ4.LZ4Pickler.UnpickledSize(K4os.Compression.LZ4.PickleHeader@)">
-            <summary>
-            Returns the uncompressed size of a chunk of compressed data.
-            </summary>
-            <param name="header">Decoded header.</param>
-            <returns>The size in bytes of the data once unpickled.</returns>
-        </member>
-        <member name="M:K4os.Compression.LZ4.LZ4Pickler.Unpickle(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
-            <summary>Decompresses previously pickled buffer (see: <see cref="T:K4os.Compression.LZ4.LZ4Pickler"/>.</summary>
-            <param name="source">Input buffer.</param>
-            <param name="output">Where the decompressed data is written.</param>
-            <remarks>
-            You obtain the size of the output buffer by calling <see cref="M:K4os.Compression.LZ4.LZ4Pickler.UnpickledSize(System.ReadOnlySpan{System.Byte})"/>.
-            </remarks>
+            <param name="sourceLength">Input buffer length.</param>
+            <returns>Output buffer.</returns>
         </member>
     </members>
 </doc>
