@@ -46,6 +46,9 @@
             xxHash 32-bit.
             </summary>
         </member>
+        <member name="T:K4os.Hash.xxHash.XXH32.State">
+            <summary>Internal state of the algorithm.</summary>
+        </member>
         <member name="F:K4os.Hash.xxHash.XXH32.EmptyHash">
             <summary>Hash of empty buffer.</summary>
         </member>
@@ -53,6 +56,13 @@
             <summary>Hash of provided buffer.</summary>
             <param name="bytes">Buffer.</param>
             <param name="length">Length of buffer.</param>
+            <returns>Digest.</returns>
+        </member>
+        <member name="M:K4os.Hash.xxHash.XXH32.DigestOf(System.Void*,System.Int32,System.UInt32)">
+            <summary>Hash of provided buffer.</summary>
+            <param name="bytes">Buffer.</param>
+            <param name="length">Length of buffer.</param>
+            <param name="seed">Seed.</param>
             <returns>Digest.</returns>
         </member>
         <member name="M:K4os.Hash.xxHash.XXH32.DigestOf(System.ReadOnlySpan{System.Byte})">
@@ -70,11 +80,22 @@
         <member name="M:K4os.Hash.xxHash.XXH32.#ctor">
             <summary>Creates xxHash instance.</summary>
         </member>
+        <member name="M:K4os.Hash.xxHash.XXH32.#ctor(System.UInt32)">
+            <summary>Creates xxHash instance.</summary>
+        </member>
         <member name="M:K4os.Hash.xxHash.XXH32.Reset">
             <summary>Resets hash calculation.</summary>
         </member>
+        <member name="M:K4os.Hash.xxHash.XXH32.Reset(System.UInt32)">
+            <summary>Resets hash calculation.</summary>
+        </member>
+        <member name="M:K4os.Hash.xxHash.XXH32.Update(System.Void*,System.Int32)">
+            <summary>Updates the hash using given buffer.</summary>
+            <param name="bytes">Buffer.</param>
+            <param name="length">Length of buffer.</param>
+        </member>
         <member name="M:K4os.Hash.xxHash.XXH32.Update(System.Byte*,System.Int32)">
-            <summary>Updates the has using given buffer.</summary>
+            <summary>Updates the hash using given buffer.</summary>
             <param name="bytes">Buffer.</param>
             <param name="length">Length of buffer.</param>
         </member>
@@ -100,10 +121,33 @@
             <summary>Converts this class to <see cref="T:System.Security.Cryptography.HashAlgorithm"/></summary>
             <returns><see cref="T:System.Security.Cryptography.HashAlgorithm"/></returns>
         </member>
+        <member name="M:K4os.Hash.xxHash.XXH32.Reset(K4os.Hash.xxHash.XXH32.State@,System.UInt32)">
+            <summary>Resets hash calculation.</summary>
+            <param name="state">Hash state.</param>
+            <param name="seed">Hash seed.</param>
+        </member>
+        <member name="M:K4os.Hash.xxHash.XXH32.Update(K4os.Hash.xxHash.XXH32.State@,System.Void*,System.Int32)">
+            <summary>Updates the has using given buffer.</summary>
+            <param name="state">Hash state.</param>
+            <param name="bytes">Buffer.</param>
+            <param name="length">Length of buffer.</param>
+        </member>
+        <member name="M:K4os.Hash.xxHash.XXH32.Update(K4os.Hash.xxHash.XXH32.State@,System.ReadOnlySpan{System.Byte})">
+            <summary>Updates the has using given buffer.</summary>
+            <param name="state">Hash state.</param>
+            <param name="bytes">Buffer.</param>
+        </member>
+        <member name="M:K4os.Hash.xxHash.XXH32.Digest(K4os.Hash.xxHash.XXH32.State@)">
+            <summary>Hash so far.</summary>
+            <returns>Hash so far.</returns>
+        </member>
         <member name="T:K4os.Hash.xxHash.XXH64">
             <summary>
             xxHash 64-bit.
             </summary>
+        </member>
+        <member name="T:K4os.Hash.xxHash.XXH64.State">
+            <summary>Internal state of the algorithm.</summary>
         </member>
         <member name="F:K4os.Hash.xxHash.XXH64.EmptyHash">
             <summary>Hash of empty buffer.</summary>
@@ -112,6 +156,13 @@
             <summary>Hash of provided buffer.</summary>
             <param name="bytes">Buffer.</param>
             <param name="length">Length of buffer.</param>
+            <returns>Digest.</returns>
+        </member>
+        <member name="M:K4os.Hash.xxHash.XXH64.DigestOf(System.Void*,System.Int32,System.UInt64)">
+            <summary>Hash of provided buffer.</summary>
+            <param name="bytes">Buffer.</param>
+            <param name="length">Length of buffer.</param>
+            <param name="seed">Seed.</param>
             <returns>Digest.</returns>
         </member>
         <member name="M:K4os.Hash.xxHash.XXH64.DigestOf(System.ReadOnlySpan{System.Byte})">
@@ -129,11 +180,22 @@
         <member name="M:K4os.Hash.xxHash.XXH64.#ctor">
             <summary>Creates xxHash instance.</summary>
         </member>
+        <member name="M:K4os.Hash.xxHash.XXH64.#ctor(System.UInt64)">
+            <summary>Creates xxHash instance.</summary>
+        </member>
         <member name="M:K4os.Hash.xxHash.XXH64.Reset">
             <summary>Resets hash calculation.</summary>
         </member>
+        <member name="M:K4os.Hash.xxHash.XXH64.Reset(System.UInt64)">
+            <summary>Resets hash calculation.</summary>
+        </member>
+        <member name="M:K4os.Hash.xxHash.XXH64.Update(System.Void*,System.Int32)">
+            <summary>Updates the hash using given buffer.</summary>
+            <param name="bytes">Buffer.</param>
+            <param name="length">Length of buffer.</param>
+        </member>
         <member name="M:K4os.Hash.xxHash.XXH64.Update(System.Byte*,System.Int32)">
-            <summary>Updates the has using given buffer.</summary>
+            <summary>Updates the hash using given buffer.</summary>
             <param name="bytes">Buffer.</param>
             <param name="length">Length of buffer.</param>
         </member>
@@ -158,6 +220,26 @@
         <member name="M:K4os.Hash.xxHash.XXH64.AsHashAlgorithm">
             <summary>Converts this class to <see cref="T:System.Security.Cryptography.HashAlgorithm"/></summary>
             <returns><see cref="T:System.Security.Cryptography.HashAlgorithm"/></returns>
+        </member>
+        <member name="M:K4os.Hash.xxHash.XXH64.Reset(K4os.Hash.xxHash.XXH64.State@,System.UInt64)">
+            <summary>Resets hash calculation.</summary>
+            <param name="state">Hash state.</param>
+            <param name="seed">Hash seed.</param>
+        </member>
+        <member name="M:K4os.Hash.xxHash.XXH64.Update(K4os.Hash.xxHash.XXH64.State@,System.Void*,System.Int32)">
+            <summary>Updates the has using given buffer.</summary>
+            <param name="state">Hash state.</param>
+            <param name="bytes">Buffer.</param>
+            <param name="length">Length of buffer.</param>
+        </member>
+        <member name="M:K4os.Hash.xxHash.XXH64.Update(K4os.Hash.xxHash.XXH64.State@,System.ReadOnlySpan{System.Byte})">
+            <summary>Updates the has using given buffer.</summary>
+            <param name="state">Hash state.</param>
+            <param name="bytes">Buffer.</param>
+        </member>
+        <member name="M:K4os.Hash.xxHash.XXH64.Digest(K4os.Hash.xxHash.XXH64.State@)">
+            <summary>Hash so far.</summary>
+            <returns>Hash so far.</returns>
         </member>
     </members>
 </doc>
