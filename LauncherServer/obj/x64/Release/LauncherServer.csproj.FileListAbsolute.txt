@@ -1,7 +1,0 @@
-C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\LauncherServer.exe.config
-C:\Users\6800k\Desktop\github warhammer\ProjectWAR\bin\Release\LauncherServer.exe
-C:\Users\6800k\Desktop\github warhammer\ProjectWAR\LauncherServer\obj\x64\Release\LauncherServer.csproj.AssemblyReference.cache
-C:\Users\6800k\Desktop\github warhammer\ProjectWAR\LauncherServer\obj\x64\Release\LauncherServer.csproj.SuggestedBindingRedirects.cache
-C:\Users\6800k\Desktop\github warhammer\ProjectWAR\LauncherServer\obj\x64\Release\LauncherServer.csproj.CoreCompileInputs.cache
-C:\Users\6800k\Desktop\github warhammer\ProjectWAR\LauncherServer\obj\x64\Release\LauncherServer.csproj.CopyComplete
-C:\Users\6800k\Desktop\github warhammer\ProjectWAR\LauncherServer\obj\x64\Release\LauncherServer.exe

@@ -294,7 +294,12 @@ namespace WorldServer.World.Battlefronts.Apocalypse
                             apocBattleFrontStatus.Locked = false;
                             apocBattleFrontStatus.OpenTimeStamp = FrameWork.TCPManager.GetTimeStamp();
                             apocBattleFrontStatus.LockingRealm = Realms.REALMS_REALM_NEUTRAL;
-                            apocBattleFrontStatus.FinalVictoryPoint = new VictoryPointProgress();
+                            apocBattleFrontStatus.FinalVictoryPoint = new VictoryPointProgress
+                            (
+                            activeRegion.Campaign.VictoryPointProgress.OrderVictoryPoints = ActiveBattleFront.OrderVP,
+                            activeRegion.Campaign.VictoryPointProgress.DestructionVictoryPoints = ActiveBattleFront.DestroVP);
+                                
+                            
                             apocBattleFrontStatus.LockTimeStamp = 0;
 
                             // Reset the population for the battle front status
